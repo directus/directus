@@ -57,7 +57,7 @@ const radius = computed(() => {
 	const widthPx = props.width * 20 - 24 - 4;
 	let heightPx = props.height * 20 - 24 - 4;
 
-	// Adjust for header if enabled, v-workspace-tile header has a fixed height of 42px
+	// Adjust for header if enabled, v-workspace-tile header has a fixed height of 2.375rem
 	if (props.showHeader) heightPx = heightPx - 42;
 
 	const strokeOffset = props.strokeWidth / 2;

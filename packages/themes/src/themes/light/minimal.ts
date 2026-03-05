@@ -87,7 +87,7 @@ export default defineTheme({
 				form: {
 					field: {
 						input: {
-							height: '42px',
+							height: '2.375rem',
 						},
 					},
 				},

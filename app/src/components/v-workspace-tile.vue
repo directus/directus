@@ -436,13 +436,13 @@ function useDragDrop() {
 }
 
 .tile-content.has-header {
-	block-size: calc(100% - 42px);
+	block-size: calc(100% - 2.375rem);
 }
 
 .header {
 	display: flex;
 	align-items: center;
-	block-size: 42px;
+	block-size: 2.375rem;
 	padding: 0.6875rem;
 }
 
