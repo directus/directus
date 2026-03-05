@@ -940,6 +940,7 @@ overrides:
   minimatch@10: 10.2.3
   minimatch@9: 9.0.7
   basic-ftp: 5.2.0
+  underscore: 1.13.8
 
 importers:
 
@@ -1519,7 +1520,7 @@ importers:
         version: 3.15.3
       nodemailer-mailgun-transport:
         specifier: 'catalog:'
-        version: 2.1.5(lodash@4.17.21)(underscore@1.13.7)
+        version: 2.1.5(lodash@4.17.21)(underscore@1.13.8)
       oracledb:
         specifier: 'catalog:'
         version: 6.10.0
@@ -8312,7 +8313,7 @@ packages:
       toffee: ^0.3.6
       twig: ^1.15.2
       twing: ^5.0.2
-      underscore: ^1.11.0
+      underscore: 1.13.8
       vash: ^0.13.0
       velocityjs: ^2.0.1
       walrus: ^0.10.1
@@ -13843,8 +13844,8 @@ packages:
   undefsafe@2.0.5:
     resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}
 
-  underscore@1.13.7:
-    resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
+  underscore@1.13.8:
+    resolution: {integrity: sha512-DXtD3ZtEQzc7M8m4cXotyHR+FAS18C64asBYY5vqZexfYryNNnDc02W4hKg3rdQuqOYas1jkseX0+nZXjTXnvQ==}
 
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
@@ -20981,12 +20982,12 @@ snapshots:
   console-control-strings@1.1.0:
     optional: true
 
-  consolidate@0.15.1(lodash@4.17.21)(underscore@1.13.7):
+  consolidate@0.15.1(lodash@4.17.21)(underscore@1.13.8):
     dependencies:
       bluebird: 3.7.2
     optionalDependencies:
       lodash: 4.17.21
-      underscore: 1.13.7
+      underscore: 1.13.8
     optional: true
 
   constant-case@3.0.4:
@@ -23381,7 +23382,7 @@ snapshots:
     dependencies:
       JSV: 4.0.2
       chalk: 2.4.2
-      underscore: 1.13.7
+      underscore: 1.13.8
 
   jsonparse@1.3.1: {}
 
@@ -24196,9 +24197,9 @@ snapshots:
 
   node-xmllint@1.0.0: {}
 
-  nodemailer-mailgun-transport@2.1.5(lodash@4.17.21)(underscore@1.13.7):
+  nodemailer-mailgun-transport@2.1.5(lodash@4.17.21)(underscore@1.13.8):
     dependencies:
-      consolidate: 0.15.1(lodash@4.17.21)(underscore@1.13.7)
+      consolidate: 0.15.1(lodash@4.17.21)(underscore@1.13.8)
       form-data: 4.0.4
       mailgun.js: 8.2.2
     transitivePeerDependencies:
@@ -27240,7 +27241,7 @@ snapshots:
 
   undefsafe@2.0.5: {}
 
-  underscore@1.13.7: {}
+  underscore@1.13.8: {}
 
   undici-types@6.20.0: {}
 
