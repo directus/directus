@@ -24,17 +24,17 @@
 }
 
 html {
-	font-size: 14px;
+	/* font-size: left at browser default (typically 16px) for WCAG compliance — do not set a px value */
 	-webkit-tap-highlight-color: rgb(0 0 0 / 0);
 }
 
 body {
 	color: var(--theme--foreground);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
-	line-height: 22px;
+	line-height: 1.5385;
 	background-color: var(--theme--background);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
