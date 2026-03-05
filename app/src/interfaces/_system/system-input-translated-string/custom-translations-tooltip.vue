@@ -92,7 +92,7 @@ const clicked = (toggleTooltip: () => void) => {
 
 <style lang="scss" scoped>
 .v-list {
-	inline-size: 300px;
+	inline-size: 16.875rem;
 }
 
 .custom-translations-display {

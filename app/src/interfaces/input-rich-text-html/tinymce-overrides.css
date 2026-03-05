@@ -101,7 +101,7 @@
 }
 
 .tox-tinymce {
-	min-block-size: 300px;
+	min-block-size: 16.875rem;
 	color: var(--theme--form--field--input--foreground);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

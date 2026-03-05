@@ -140,7 +140,7 @@ const translations = computed(() => {
 
 <style lang="scss" scoped>
 .v-list {
-	inline-size: 300px;
+	inline-size: 16.875rem;
 }
 
 .display-translations {

@@ -437,7 +437,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					inline-size: 100%;
 					border-radius: var(--theme--border-radius);
 					margin-block-start: 0.25rem;
-					max-block-size: 300px;
+					max-block-size: 16.875rem;
 				}
 
 				.display-labels {

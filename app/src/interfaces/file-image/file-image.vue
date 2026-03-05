@@ -332,7 +332,7 @@ img {
 	}
 
 	.message {
-		max-inline-size: 300px;
+		max-inline-size: 16.875rem;
 		padding: 0 0.875rem;
 		text-align: center;
 	}

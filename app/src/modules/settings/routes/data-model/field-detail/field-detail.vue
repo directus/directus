@@ -144,7 +144,7 @@ async function save() {
 	margin-inline-start: auto;
 
 	@media (width > 640px) {
-		inline-size: 300px;
+		inline-size: 16.875rem;
 		margin-block-start: 0;
 	}
 }

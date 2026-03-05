@@ -236,7 +236,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		}
 
 		.main.small-search-input:deep(.search-input.filter-active) {
-			inline-size: 300px !important;
+			inline-size: 16.875rem !important;
 		}
 	}
 
