@@ -146,7 +146,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 0.9375rem;
 	font-weight: 600;
 	line-height: 1.5;
-	margin: 0.625rem 0 0.3125rem;
+	margin: 0.5rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;

@@ -487,8 +487,8 @@ onUnmounted(() => {
 .option-card {
 	display: flex;
 	align-items: center;
-	gap: 0.625rem;
-	padding: 0.625rem 0.75rem;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
 	border-radius: var(--theme--border-radius);
 	border: var(--theme--border-width) solid var(--theme--border-color-accent);
 	background-color: var(--theme--background);
