@@ -182,7 +182,7 @@ const activeSrc = computed(() => {
 
 	/* Styled scrollbar for WebKit browsers */
 	&::-webkit-scrollbar {
-		block-size: 6px;
+		block-size: 0.3125rem;
 	}
 
 	&::-webkit-scrollbar-track {

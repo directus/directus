@@ -195,10 +195,10 @@ function getColor(input?: number) {
 	--v-list-padding: 0;
 	--v-list-border-radius: 0;
 	--v-list-item-border-radius: 0;
-	--v-list-item-padding: 6px;
+	--v-list-item-padding: 0.3125rem;
 	--v-list-item-margin: 0;
 	block-size: 100%;
-	padding: 6px;
+	padding: 0.3125rem;
 	overflow: hidden auto;
 }
 
@@ -229,7 +229,7 @@ function getColor(input?: number) {
 
 .metric-bar-visual {
 	block-size: 20px;
-	border-radius: 6px;
+	border-radius: 0.3125rem;
 }
 
 .metric-bar-text {

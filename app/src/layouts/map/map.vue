@@ -167,7 +167,7 @@ limitWritable.value = selectedSize;
 	position: fixed;
 	z-index: 1;
 	max-inline-size: 80%;
-	padding: 6px 10px;
+	padding: 0.3125rem 10px;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;
 	font-size: 14px;

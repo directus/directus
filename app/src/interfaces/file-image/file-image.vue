@@ -328,7 +328,7 @@ img {
 	padding: 32px;
 
 	.v-icon {
-		margin-block-end: 6px;
+		margin-block-end: 0.3125rem;
 	}
 
 	.message {

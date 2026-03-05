@@ -103,7 +103,7 @@ function onSelection(data: (number | string)[] | null) {
 	block-size: 100%;
 
 	&.show-header {
-		padding-block-start: 6px;
+		padding-block-start: 0.3125rem;
 	}
 
 	&.centered {

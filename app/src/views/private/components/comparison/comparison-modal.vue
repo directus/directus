@@ -535,7 +535,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				display: flex;
 				align-items: center;
 				justify-content: flex-start;
-				gap: 6px;
+				gap: 0.3125rem;
 				font-weight: 600;
 			}
 

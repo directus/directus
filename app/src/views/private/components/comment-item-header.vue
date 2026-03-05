@@ -210,8 +210,8 @@ function useDelete() {
 
 .dot {
 	display: inline-block;
-	inline-size: 6px;
-	block-size: 6px;
+	inline-size: 0.3125rem;
+	block-size: 0.3125rem;
 	margin-inline-end: 0.25rem;
 	vertical-align: middle;
 	background-color: var(--theme--warning);

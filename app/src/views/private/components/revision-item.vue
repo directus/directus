@@ -96,7 +96,7 @@ const user = computed(() => {
 
 		.dot {
 			position: absolute;
-			inset-block-start: 6px;
+			inset-block-start: 0.3125rem;
 			inset-inline-start: -18px;
 			z-index: 2;
 			inline-size: 11px;
@@ -182,8 +182,8 @@ const user = computed(() => {
 
 	.user {
 		span {
-			margin: -6px;
-			padding: 6px;
+			margin: -0.3125rem;
+			padding: 0.3125rem;
 		}
 
 		&:hover {

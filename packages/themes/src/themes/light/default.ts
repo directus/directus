@@ -5,7 +5,7 @@ export default defineTheme({
 	name: '$t:theme_directus_default',
 	appearance: 'light',
 	rules: {
-		borderRadius: '6px',
+		borderRadius: '0.3125rem',
 		borderWidth: '2px',
 
 		foreground: '#4f5464',

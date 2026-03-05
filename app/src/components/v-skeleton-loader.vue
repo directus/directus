@@ -124,7 +124,7 @@ withDefaults(defineProps<Props>(), {
 .text {
 	flex-grow: 1;
 	block-size: 12px;
-	border-radius: 6px;
+	border-radius: 0.3125rem;
 
 	@include loader;
 }
@@ -148,7 +148,7 @@ withDefaults(defineProps<Props>(), {
 	.text {
 		flex-grow: 1;
 		block-size: 12px;
-		border-radius: 6px;
+		border-radius: 0.3125rem;
 
 		@include loader;
 	}

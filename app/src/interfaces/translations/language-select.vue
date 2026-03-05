@@ -137,7 +137,7 @@ const displayValue = computed(() => {
 }
 
 .v-icon {
-	margin-inline-start: 6px;
+	margin-inline-start: 0.3125rem;
 }
 
 .v-list {

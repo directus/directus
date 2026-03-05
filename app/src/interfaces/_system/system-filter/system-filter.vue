@@ -349,10 +349,10 @@ function addKeyAsNode() {
 				}
 			}
 			.add {
-				margin-inline: 6px 0.25rem;
+				margin-inline: 0.3125rem 0.25rem;
 			}
 			.expand_more {
-				margin-inline: auto 6px;
+				margin-inline: auto 0.3125rem;
 				transition: transform var(--medium) var(--transition-out);
 			}
 		}

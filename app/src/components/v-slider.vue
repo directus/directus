@@ -257,7 +257,7 @@ function onInput(event: Event) {
 			inset-block-start: 0;
 			inset-inline-start: calc(var(--_v-slider-percentage) * 1%);
 			inline-size: auto;
-			padding: 2px 6px;
+			padding: 2px 0.3125rem;
 			color: var(--foreground-inverted);
 			font-weight: 600;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));

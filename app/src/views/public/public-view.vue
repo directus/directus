@@ -370,7 +370,7 @@ const logoURL = computed<string | null>(() => {
 				font-size: 15px;
 				line-height: 24px;
 				background-color: rgb(38 50 56 / 0.2);
-				border-radius: 6px;
+				border-radius: 0.3125rem;
 				backdrop-filter: blur(2px);
 				overflow-wrap: break-word;
 			}

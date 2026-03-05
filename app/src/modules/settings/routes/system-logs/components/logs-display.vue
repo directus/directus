@@ -262,8 +262,8 @@ function selectLog(index: number) {
 }
 
 .notice {
-	margin: 6px;
-	padding-inline-start: 6px;
+	margin: 0.3125rem;
+	padding-inline-start: 0.3125rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground-subdued);
 }
@@ -291,12 +291,12 @@ function selectLog(index: number) {
 	justify-content: space-between;
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground);
-	padding: 6px;
+	padding: 0.3125rem;
 	cursor: pointer;
 }
 
 .log-entry > span {
-	padding: 0 6px;
+	padding: 0 0.3125rem;
 }
 
 .message {

@@ -503,7 +503,7 @@ function useColor() {
 }
 
 .swatch {
-	--v-button-padding: 6px;
+	--v-button-padding: 0.3125rem;
 	--v-button-background-color: var(--swatch-color, transparent);
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);

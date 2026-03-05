@@ -389,7 +389,7 @@ function useVariableInput() {
 	display: flex;
 
 	.value:not(:last-child)::after {
-		margin-inline-end: 6px;
+		margin-inline-end: 0.3125rem;
 		content: ',';
 	}
 }

@@ -44,7 +44,7 @@
 	&::after {
 		position: absolute;
 		inset-block-start: -0.3125rem;
-		inset-inline-start: calc(50% - 6px);
+		inset-inline-start: calc(50% - 0.3125rem);
 		inline-size: 0;
 		block-size: 0;
 		border-inline-end: 6px solid transparent;
@@ -65,7 +65,7 @@
 	&.top::after {
 		inset-block-start: unset;
 		inset-block-end: -0.3125rem;
-		inset-inline-start: calc(50% - 6px);
+		inset-inline-start: calc(50% - 0.3125rem);
 		border-block-start: 6px solid var(--tooltip-background-color);
 		border-inline-end: 6px solid transparent;
 		border-block-end: unset;
@@ -82,7 +82,7 @@
 	}
 
 	&.left::after {
-		inset-block-start: calc(50% - 6px);
+		inset-block-start: calc(50% - 0.3125rem);
 		inset-inline-end: -0.3125rem;
 		inset-inline-start: unset;
 		border-block-start: 6px solid transparent;
@@ -101,7 +101,7 @@
 	}
 
 	&.right::after {
-		inset-block-start: calc(50% - 6px);
+		inset-block-start: calc(50% - 0.3125rem);
 		inset-inline-start: -0.3125rem;
 		border-block-start: 6px solid transparent;
 		border-inline-end: 6px solid var(--tooltip-background-color);

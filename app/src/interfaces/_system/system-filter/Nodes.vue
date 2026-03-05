@@ -407,7 +407,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	inline-size: fit-content;
 	margin-inline-end: 18px;
 	margin-block-end: 8px;
-	padding: 2px 6px;
+	padding: 2px 0.3125rem;
 	padding-inline-end: 8px;
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -419,10 +419,10 @@ function isExistingField(node: Record<string, any>): boolean {
 
 		.key {
 			margin-inline-end: 0.25rem;
-			padding: 2px 6px;
+			padding: 2px 0.3125rem;
 			color: var(--theme--primary);
 			background-color: var(--theme--primary-background);
-			border-radius: 6px;
+			border-radius: 0.3125rem;
 			cursor: pointer;
 			transition: var(--fast) var(--transition);
 			transition-property: color, background-color;
@@ -482,7 +482,7 @@ function isExistingField(node: Record<string, any>): boolean {
 			inline-size: calc(100% + 8px);
 			block-size: 100%;
 			background-color: var(--theme--background-normal);
-			border-radius: 6px;
+			border-radius: 0.3125rem;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			content: '';

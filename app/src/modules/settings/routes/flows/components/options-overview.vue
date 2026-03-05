@@ -42,7 +42,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	> div {
 		flex-wrap: wrap;
 		align-items: center;
-		margin-block-end: 6px;
+		margin-block-end: 0.3125rem;
 	}
 
 	dt {

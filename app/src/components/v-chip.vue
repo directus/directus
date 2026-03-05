@@ -147,7 +147,7 @@ function onCloseClick(event: MouseEvent) {
 
 	&.x-small {
 		block-size: 20px;
-		padding: var(--v-chip-padding, 0 6px);
+		padding: var(--v-chip-padding, 0 0.3125rem);
 		font-size: 12px;
 		border-radius: 10px;
 	}

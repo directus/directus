@@ -52,7 +52,7 @@ const value = computed({
 	padding: 12px;
 
 	&.show-header {
-		padding-block-start: 6px;
+		padding-block-start: 0.3125rem;
 	}
 
 	> * {

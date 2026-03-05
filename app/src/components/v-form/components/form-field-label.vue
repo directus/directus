@@ -177,7 +177,7 @@ const isPromotableField = computed(() => {
 		margin-inline-start: 0.1875rem;
 
 		&.has-badge {
-			margin-inline-end: 6px;
+			margin-inline-end: 0.3125rem;
 		}
 	}
 

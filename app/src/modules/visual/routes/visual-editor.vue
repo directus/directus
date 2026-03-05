@@ -323,7 +323,7 @@ function useVersionSelection() {
 }
 
 .version-select-activator {
-	--v-chip-padding: 0 6px 0 12px;
+	--v-chip-padding: 0 0.3125rem 0 12px;
 	--v-chip-color: var(--theme--foreground-accent);
 	--v-chip-color-hover: var(--v-chip-color);
 	--v-chip-background-color-hover: color-mix(

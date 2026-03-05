@@ -349,14 +349,14 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						color: var(--theme--foreground-accent);
-						margin-inline-end: 6px;
+						margin-inline-end: 0.3125rem;
 					}
 				}
 
 				.badge {
 					display: inline-flex;
 					justify-content: center;
-					padding: 0 6px;
+					padding: 0 0.3125rem;
 					block-size: 20px;
 					min-inline-size: 20px;
 					margin-block-start: 2px;
@@ -387,7 +387,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 				.item {
 					display: block;
-					margin: 2px 16px 6px;
+					margin: 2px 16px 0.3125rem;
 					padding: 12px 16px;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
@@ -443,7 +443,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				.display-labels {
 					display: flex;
 					flex-wrap: wrap;
-					margin-block-start: 6px;
+					margin-block-start: 0.3125rem;
 
 					:deep(.v-chip) {
 						border: none;
@@ -453,7 +453,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						margin-block-start: 0.25rem;
 						margin-inline-end: 0.25rem;
 						block-size: 20px;
-						padding: 0 6px;
+						padding: 0 0.3125rem;
 					}
 					:deep(.v-chip + .v-chip) {
 						margin-inline-start: 0;

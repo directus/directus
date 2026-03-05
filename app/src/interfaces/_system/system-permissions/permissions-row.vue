@@ -105,7 +105,7 @@ const emit = defineEmits<{
 		}
 
 		.divider {
-			margin: 0 6px;
+			margin: 0 0.3125rem;
 		}
 	}
 

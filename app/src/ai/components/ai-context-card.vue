@@ -74,8 +74,8 @@ const icon = computed(() => {
 .ai-context-card {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 0.25rem 6px;
+	gap: 0.3125rem;
+	padding: 0.25rem 0.3125rem;
 	flex: 0 0 auto;
 	max-inline-size: 150px;
 	background-color: var(--theme--background);

@@ -204,7 +204,7 @@ watch(range, loadDashboard);
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	padding: 6px 10px;
+	padding: 0.3125rem 10px;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;

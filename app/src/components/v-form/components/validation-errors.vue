@@ -317,7 +317,7 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 .field-row {
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: 0.3125rem;
 	inline-size: 100%;
 	min-inline-size: 0;
 }

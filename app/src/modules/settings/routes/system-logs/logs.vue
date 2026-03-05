@@ -575,7 +575,7 @@ onUnmounted(() => {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding: 6px;
+	padding: 0.3125rem;
 	min-block-size: 300px;
 	background-color: var(--theme--background-subdued);
 	border-block-start: var(--theme--border-width) solid

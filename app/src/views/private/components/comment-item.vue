@@ -97,7 +97,7 @@ function useEdits() {
 	overflow-y: auto;
 	min-inline-size: 100%;
 	max-inline-size: 100%;
-	margin-block-end: -6px;
+	margin-block-end: -0.3125rem;
 	line-height: 1.4;
 }
 
@@ -117,7 +117,7 @@ function useEdits() {
 
 .comment-item .content :deep(blockquote) {
 	margin: 8px 0;
-	padding-inline-start: 6px;
+	padding-inline-start: 0.3125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 	border-inline-start: 2px solid var(--theme--form--field--input--border-color);

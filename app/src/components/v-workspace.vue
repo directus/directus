@@ -166,7 +166,7 @@ const workspaceBoxSize = computed(() => {
 	inline-size: calc(100% + 8px);
 	block-size: calc(100% + 8px);
 	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
-	background-position: -6px -6px;
+	background-position: -0.3125rem -0.3125rem;
 	background-size: 20px 20px;
 	opacity: 0;
 	transition: opacity var(--slow) var(--transition);

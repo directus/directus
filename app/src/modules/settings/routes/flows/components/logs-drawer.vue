@@ -185,7 +185,7 @@ const steps = computed(() => {
 
 	.dot {
 		position: absolute;
-		inset-block-start: 6px;
+		inset-block-start: 0.3125rem;
 		inset-inline-start: -16px;
 		z-index: 2;
 		inline-size: 12px;
