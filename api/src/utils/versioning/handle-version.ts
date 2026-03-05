@@ -60,7 +60,9 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	const itemlessErrors: VersionMeta[] = [];
 	const itemMeta: Record<string, VersionMeta> = {};
 	const primaryKeyField = self.schema.collections[self.collection]!.primary;
-	const hasPrimaryKeyInQuery = query.fields?.includes(primaryKeyField);
+
+	const hasPrimaryKeyInQuery =
+		query.fields?.includes(primaryKeyField) || query.fields?.includes('*') || query.fields?.length === 0;
 
 	await transaction(self.knex, async (trx) => {
 		for (const version of versions) {
