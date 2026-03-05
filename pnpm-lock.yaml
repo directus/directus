@@ -935,7 +935,7 @@ overrides:
   fast-xml-parser: 5.3.8
   '@yarnpkg/shell>cross-spawn': 7.0.6
   '@rollup/plugin-terser>serialize-javascript': 7.0.3
-  tar: 7.5.8
+  tar: 7.5.10
   qs: 6.14.2
   minimatch@10: 10.2.3
   minimatch@9: 9.0.7
@@ -1367,8 +1367,8 @@ importers:
         specifier: 'catalog:'
         version: 1.9.1
       tar:
-        specifier: 7.5.8
-        version: 7.5.8
+        specifier: 7.5.10
+        version: 7.5.10
       tsx:
         specifier: 'catalog:'
         version: 4.20.6
@@ -13496,8 +13496,8 @@ packages:
   tar-stream@3.1.7:
     resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
 
-  tar@7.5.8:
-    resolution: {integrity: sha512-SYkBtK99u0yXa+IWL0JRzzcl7RxNpvX/U08Z+8DKnysfno7M+uExnTZH8K+VGgShf2qFPKtbNr9QBl8n7WBP6Q==}
+  tar@7.5.10:
+    resolution: {integrity: sha512-8mOPs1//5q/rlkNSPcCegA6hiHJYDmSLEI8aMH/CdSQJNWztHC9WHNam5zdQlfpTwB9Xp7IBEsHfV5LKMJGVAw==}
     engines: {node: '>=18'}
 
   tarn@3.0.2:
@@ -20603,7 +20603,7 @@ snapshots:
       promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
-      tar: 7.5.8
+      tar: 7.5.10
       unique-filename: 1.1.1
     transitivePeerDependencies:
       - bluebird
@@ -20621,7 +20621,7 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 7.0.3
       ssri: 12.0.0
-      tar: 7.5.8
+      tar: 7.5.10
       unique-filename: 4.0.0
 
   cache-parser@1.2.6: {}
@@ -24164,7 +24164,7 @@ snapshots:
       nopt: 8.1.0
       proc-log: 5.0.0
       semver: 7.7.3
-      tar: 7.5.8
+      tar: 7.5.10
       tinyglobby: 0.2.15
       which: 5.0.0
     transitivePeerDependencies:
@@ -24180,7 +24180,7 @@ snapshots:
       npmlog: 6.0.2
       rimraf: 3.0.2
       semver: 7.7.3
-      tar: 7.5.8
+      tar: 7.5.10
       which: 2.0.2
     transitivePeerDependencies:
       - bluebird
@@ -26390,7 +26390,7 @@ snapshots:
       bindings: 1.5.0
       node-addon-api: 7.1.1
       prebuild-install: 7.1.3
-      tar: 7.5.8
+      tar: 7.5.10
     optionalDependencies:
       node-gyp: 8.4.1
     transitivePeerDependencies:
@@ -26881,7 +26881,7 @@ snapshots:
       - bare-abort-controller
       - react-native-b4a
 
-  tar@7.5.8:
+  tar@7.5.10:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
