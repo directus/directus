@@ -31,7 +31,7 @@ defineProps<{
 	border-radius: 10px;
 	object-fit: cover;
 	object-position: center center;
-	margin-inline: 2px 9px;
+	margin-inline: 2px 0.5rem;
 }
 
 .verified {

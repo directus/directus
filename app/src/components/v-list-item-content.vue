@@ -9,7 +9,7 @@
 
 	Available Variables:
 
-		--v-list-item-content-padding      [9px 0]
+		--v-list-item-content-padding      [0.5rem 0]
 		--v-list-item-content-font-family  [inherit]
 
 */
@@ -20,7 +20,7 @@
 	flex-wrap: wrap;
 	align-items: center;
 	align-self: center;
-	padding: var(--v-list-item-content-padding, 9px 0);
+	padding: var(--v-list-item-content-padding, 0.5rem 0);
 	overflow: hidden;
 	font-family: var(--v-list-item-content-font-family, inherit);
 }

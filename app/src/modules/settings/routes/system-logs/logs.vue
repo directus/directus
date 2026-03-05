@@ -635,7 +635,7 @@ onUnmounted(() => {
 }
 
 .actions {
-	padding: 0 9px;
+	padding: 0 0.5rem;
 	margin-inline-start: auto;
 }
 
