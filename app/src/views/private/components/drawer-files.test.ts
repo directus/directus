@@ -220,6 +220,49 @@ describe('DrawerFiles', () => {
 		wrapperA2.unmount();
 	});
 
+	test('isolates persisted state between same field on different collections', async () => {
+		// Mount field "thumbnail" on collection "articles" and navigate
+		const wrapperA = mount(DrawerFiles, {
+			props: { collection: 'articles', field: 'thumbnail' },
+			global,
+		});
+
+		await flushPromises();
+
+		const navA = wrapperA.findComponent(FilesNavigationStub);
+		const handlerA = navA.props('customTargetHandler') as (target: { folder?: string }) => void;
+		handlerA({ folder: 'article-images' });
+		await flushPromises();
+
+		wrapperA.unmount();
+
+		// Mount same field "thumbnail" on collection "authors" — should have independent state
+		const wrapperB = mount(DrawerFiles, {
+			props: { collection: 'authors', field: 'thumbnail' },
+			global,
+		});
+
+		await flushPromises();
+
+		const navB = wrapperB.findComponent(FilesNavigationStub);
+		expect(navB.props('currentFolder')).toBeUndefined();
+
+		wrapperB.unmount();
+
+		// Remount on "articles" — should see its own persisted state
+		const wrapperA2 = mount(DrawerFiles, {
+			props: { collection: 'articles', field: 'thumbnail' },
+			global,
+		});
+
+		await flushPromises();
+
+		const navA2 = wrapperA2.findComponent(FilesNavigationStub);
+		expect(navA2.props('currentFolder')).toBe('article-images');
+
+		wrapperA2.unmount();
+	});
+
 	test('isolates persisted state between different root folder props', async () => {
 		// Mount with folder A and navigate to subfolder
 		const wrapperA = mount(DrawerFiles, {
