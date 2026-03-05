@@ -623,7 +623,7 @@ function setAspectRatio() {
 
 .editor-container {
 	inline-size: 100%;
-	block-size: calc(100% - (65px + 1.375rem + 1.375rem)); /* header height + 2x margin */
+	block-size: calc(100% - (3.6875rem + 1.375rem + 1.375rem)); /* header height + 2x margin */
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
