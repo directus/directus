@@ -59,7 +59,7 @@ function update(newSelection: readonly (string | number)[]) {
 	align-items: center;
 	justify-content: center;
 	block-size: 38px;
-	padding: 8px 20px;
+	padding: 0.4375rem 20px;
 	cursor: pointer;
 }
 </style>

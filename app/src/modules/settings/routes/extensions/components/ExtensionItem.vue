@@ -160,7 +160,7 @@ function isAppExtension(type?: ExtensionType) {
 	}
 
 	.version {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	&.disabled {
@@ -171,7 +171,7 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .spinner {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .state {

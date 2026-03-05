@@ -374,8 +374,8 @@ async function copy(id: string) {
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 2;
-	margin-block: 8px;
-	padding-block: 8px;
+	margin-block: 0.4375rem;
+	padding-block: 0.4375rem;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 }

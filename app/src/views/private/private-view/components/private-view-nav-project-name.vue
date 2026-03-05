@@ -61,6 +61,6 @@ const navBarStore = useNavBarStore();
 }
 
 .nav-toggle {
-	margin-inline-end: 8px; // Optically center with header bar icon
+	margin-inline-end: 0.4375rem; // Optically center with header bar icon
 }
 </style>

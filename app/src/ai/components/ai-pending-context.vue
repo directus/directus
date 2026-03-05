@@ -170,7 +170,7 @@ const activeSrc = computed(() => {
 .ai-pending-context {
 	display: flex;
 	flex-wrap: nowrap;
-	gap: 8px;
+	gap: 0.4375rem;
 	inline-size: 100%;
 	min-inline-size: 0;
 	overflow: auto hidden;

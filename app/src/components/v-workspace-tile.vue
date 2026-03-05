@@ -450,7 +450,7 @@ function useDragDrop() {
 	padding: 0 12px;
 	border-block-start: 2px solid var(--theme--border-color-subdued);
 	margin-block-start: auto;
-	padding-block-start: 8px;
+	padding-block-start: 0.4375rem;
 }
 
 .icon {

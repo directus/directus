@@ -671,7 +671,7 @@ async function exportDataFiles() {
 
 .v-checkbox {
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -712,7 +712,7 @@ async function exportDataFiles() {
 	justify-content: center;
 	inline-size: 40px;
 	block-size: 40px;
-	margin-inline-start: -8px;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -750,7 +750,7 @@ async function exportDataFiles() {
 	text-align: center;
 	display: block;
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

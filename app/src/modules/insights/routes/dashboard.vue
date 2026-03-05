@@ -435,7 +435,7 @@ const refreshInterval = computed({
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 		max-inline-size: 100%;
 	}
 }

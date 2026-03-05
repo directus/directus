@@ -856,7 +856,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 
 	span {
 		inline-size: auto;
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.v-select {

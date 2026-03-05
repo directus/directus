@@ -104,7 +104,7 @@ function toggle(item: Record<string, any>) {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	padding: 12px;
 	background-color: var(--theme--background-normal);
 	border: var(--theme--border-width) solid var(--theme--background-normal);

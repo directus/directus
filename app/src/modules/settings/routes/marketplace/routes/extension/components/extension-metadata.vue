@@ -108,11 +108,11 @@ const maintainers = computed(() => {
 	&.buttons {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 0.4375rem;
 
 		@container metadata (width > 580px) {
 			display: grid;
-			gap: 8px 16px;
+			gap: 0.4375rem 16px;
 		}
 	}
 }

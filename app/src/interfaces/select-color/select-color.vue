@@ -514,7 +514,7 @@ function useColor() {
 
 	position: relative;
 	box-sizing: border-box;
-	margin-inline-start: -8px;
+	margin-inline-start: -0.4375rem;
 	inline-size: calc(var(--theme--form--field--input--height) - 20px);
 	block-size: calc(var(--theme--form--field--input--height) - 20px);
 	border-radius: var(--swatch-radius);
@@ -530,7 +530,7 @@ function useColor() {
 	display: flex;
 	inline-size: 100%;
 	margin-block-end: 14px;
-	padding: 8px;
+	padding: 0.4375rem;
 	overflow-x: auto;
 }
 
@@ -584,7 +584,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(.color-type) {
-	--theme--form--field--input--padding: 12px 8px;
+	--theme--form--field--input--padding: 12px 0.4375rem;
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {

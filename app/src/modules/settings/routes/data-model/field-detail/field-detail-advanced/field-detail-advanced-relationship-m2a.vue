@@ -269,7 +269,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .v-list {

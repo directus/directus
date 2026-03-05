@@ -418,7 +418,7 @@ function useURLImport() {
 .item-actions {
 	@include mixins.list-interface-item-actions;
 
-	padding-inline-start: 8px;
+	padding-inline-start: 0.4375rem;
 }
 
 .preview {
@@ -429,7 +429,7 @@ function useURLImport() {
 	justify-content: center;
 	inline-size: 40px;
 	block-size: 40px;
-	margin-inline-start: -8px;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);

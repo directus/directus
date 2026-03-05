@@ -397,7 +397,7 @@ img {
 		inset-inline-start: 0;
 		z-index: 3;
 		inline-size: 100%;
-		padding: 8px 12px;
+		padding: 0.4375rem 12px;
 		line-height: 1.2;
 	}
 

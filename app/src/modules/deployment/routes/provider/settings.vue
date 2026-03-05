@@ -415,7 +415,7 @@ watch(
 
 .checkboxes {
 	display: grid;
-	gap: 8px;
+	gap: 0.4375rem;
 	padding-block: 2px;
 }
 </style>

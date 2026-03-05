@@ -55,7 +55,7 @@ withDefaults(
 	display: inline-block;
 
 	&.dot {
-		--v-badge-size: 8px;
+		--v-badge-size: 0.4375rem;
 
 		&.bordered {
 			--v-badge-size: 12px;

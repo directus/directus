@@ -244,7 +244,7 @@ function useComparisonIndicator() {
 }
 
 .warning {
-	margin-inline-start: 8px;
+	margin-inline-start: 0.4375rem;
 	color: var(--theme--danger);
 }
 </style>

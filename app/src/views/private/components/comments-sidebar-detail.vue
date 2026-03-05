@@ -283,7 +283,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 }
 
 .empty {
-	margin-block: 16px 8px;
+	margin-block: 16px 0.4375rem;
 	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;

@@ -212,7 +212,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 		flex-grow: 1;
 		inline-size: 20px; /* this will auto grow with flex above */
 		margin: 0;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 		padding: 0;
 		background-color: transparent;
 		border: none;

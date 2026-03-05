@@ -100,7 +100,7 @@ function onKeydown(e: KeyboardEvent) {
 	.cell {
 		display: flex;
 		align-items: center;
-		padding: 8px 12px;
+		padding: 0.4375rem 12px;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;

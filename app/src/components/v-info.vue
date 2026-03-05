@@ -74,7 +74,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .title {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .content {

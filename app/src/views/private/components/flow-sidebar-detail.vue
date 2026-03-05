@@ -59,7 +59,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	}
 
 	.v-icon {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 }
 </style>

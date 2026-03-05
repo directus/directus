@@ -223,7 +223,7 @@ function getColor(input?: number) {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
-	gap: 8px;
+	gap: 0.4375rem;
 	min-inline-size: max-content;
 }
 

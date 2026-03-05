@@ -175,7 +175,7 @@ function useExpandCollapseAll() {
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .expand-collapse-action {

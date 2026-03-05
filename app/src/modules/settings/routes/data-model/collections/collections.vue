@@ -299,7 +299,7 @@ async function downloadSnapshot() {
 }
 
 .root-drag-container {
-	padding: 8px 0;
+	padding: 0.4375rem 0;
 	overflow: hidden;
 }
 
@@ -315,7 +315,7 @@ async function downloadSnapshot() {
 }
 
 .collection-icon {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .hidden .collection-name {
@@ -341,7 +341,7 @@ async function downloadSnapshot() {
 }
 
 .expand-collapse-button {
-	padding-block: 0.25rem 8px;
+	padding-block: 0.25rem 0.4375rem;
 	text-align: end;
 	color: var(--theme--foreground-subdued);
 

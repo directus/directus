@@ -89,8 +89,8 @@ const hasValue = computed(() => {
 	color: var(--theme--form--field--input--foreground);
 	inline-size: calc(100% + 16px);
 	text-align: start;
-	padding-inline: 8px;
-	margin-inline-start: -8px;
+	padding-inline: 0.4375rem;
+	margin-inline-start: -0.4375rem;
 
 	&.has-value {
 		position: relative;

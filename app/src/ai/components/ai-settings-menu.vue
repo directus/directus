@@ -197,7 +197,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 1;
-	padding: 8px;
+	padding: 0.4375rem;
 	background-color: var(--theme--popover--menu--background);
 }
 
@@ -211,7 +211,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 8px;
+	gap: 0.4375rem;
 	inline-size: 100%;
 }
 

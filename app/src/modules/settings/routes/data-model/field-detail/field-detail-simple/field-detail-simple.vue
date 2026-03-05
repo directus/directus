@@ -226,7 +226,7 @@ function toggleInterface(id: string) {
 	justify-content: center;
 	inline-size: 160px;
 	block-size: 100px;
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
@@ -256,7 +256,7 @@ function toggleInterface(id: string) {
 	--v-icon-color: var(--theme--primary-subdued);
 
 	display: block;
-	padding: 8px 16px;
+	padding: 0.4375rem 16px;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);

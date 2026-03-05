@@ -217,8 +217,8 @@ function clearVariable() {
 
 	.custom-tags-delimiter,
 	.tag {
-		margin-block-start: 8px;
-		margin-inline-end: 8px;
+		margin-block-start: 0.4375rem;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.custom-tags-delimiter.disabled {

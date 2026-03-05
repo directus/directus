@@ -103,7 +103,7 @@ const user = computed(() => {
 			block-size: 11px;
 			background-color: var(--theme--warning);
 			border: var(--theme--border-width) solid var(--theme--background-normal);
-			border-radius: 8px;
+			border-radius: 0.4375rem;
 
 			&.create {
 				background-color: var(--theme--primary);

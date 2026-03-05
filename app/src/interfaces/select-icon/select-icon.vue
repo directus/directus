@@ -293,7 +293,7 @@ function useIconsPerRow(
 .select-icon-popover {
 	--v-icon-color-hover: var(--theme--form--field--input--foreground);
 
-	padding: 8px;
+	padding: 0.4375rem;
 
 	.v-icon.active {
 		--v-icon-color: var(--theme--primary);
@@ -306,7 +306,7 @@ function useIconsPerRow(
 
 .icon-row {
 	display: grid;
-	gap: var(--gap, 8px);
+	gap: var(--gap, 0.4375rem);
 	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 24px));
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);

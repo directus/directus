@@ -205,7 +205,7 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-card) .v-card-title {
-	padding-block-end: 8px;
+	padding-block-end: 0.4375rem;
 }
 
 .container :slotted(.v-card) .v-card-actions {

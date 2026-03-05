@@ -317,7 +317,7 @@ function stageEdits(item: Record<string, any>) {
 		display: block;
 
 		+ .v-list-item {
-			margin-block-start: 8px;
+			margin-block-start: 0.4375rem;
 		}
 	}
 
@@ -336,7 +336,7 @@ function stageEdits(item: Record<string, any>) {
 			padding: 0;
 
 			> .v-list-item:first-child {
-				margin-block-start: 8px;
+				margin-block-start: 0.4375rem;
 			}
 		}
 	}

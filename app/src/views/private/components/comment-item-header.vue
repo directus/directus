@@ -142,13 +142,13 @@ function useDelete() {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 
 	.v-avatar {
 		--v-avatar-color: var(--theme--background-accent);
 
 		flex-basis: 24px;
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 
 		.v-icon {
 			--v-icon-color: var(--theme--foreground-subdued);
@@ -157,7 +157,7 @@ function useDelete() {
 
 	.name {
 		flex-grow: 1;
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 		font-weight: 600;
 	}
 

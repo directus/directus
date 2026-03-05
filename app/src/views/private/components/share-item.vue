@@ -102,8 +102,8 @@ const formattedTime = computed(() => {
 
 <style lang="scss" scoped>
 .item {
-	margin-block-end: 8px;
-	padding: 8px;
+	margin-block-end: 0.4375rem;
+	padding: 0.4375rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 }

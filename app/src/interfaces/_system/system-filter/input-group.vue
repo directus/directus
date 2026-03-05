@@ -375,7 +375,7 @@ function useVariableInput() {
 	align-items: center;
 
 	.v-icon {
-		margin-inline: 12px 8px;
+		margin-inline: 12px 0.4375rem;
 		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
@@ -395,6 +395,6 @@ function useVariableInput() {
 }
 
 .and {
-	margin: 0 8px;
+	margin: 0 0.4375rem;
 }
 </style>

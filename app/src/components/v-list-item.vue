@@ -159,7 +159,7 @@ function onClick(event: PointerEvent) {
 
 	Available Variables:
 
-		--v-list-item-padding                  [0 8px 0 calc(8px + var(--v-list-item-indent, 0px))]
+		--v-list-item-padding                  [0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0px))]
 		--v-list-item-margin                   [2px 0]
 		--v-list-item-min-height               [32px]
 		--v-list-item-border-radius            [var(--theme--border-radius)]
@@ -189,7 +189,7 @@ function onClick(event: PointerEvent) {
 	min-block-size: var(--v-list-item-min-height, 32px);
 	max-block-size: none;
 	margin: var(--v-list-item-margin, 2px 0);
-	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
+	padding: var(--v-list-item-padding, 0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0px)));
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
 	text-align: start;
@@ -333,7 +333,7 @@ function onClick(event: PointerEvent) {
 		}
 
 		& + & {
-			margin-block-start: var(--v-list-item-margin, 8px);
+			margin-block-start: var(--v-list-item-margin, 0.4375rem);
 		}
 
 		&.grow {
@@ -358,7 +358,7 @@ function onClick(event: PointerEvent) {
 				--v-list-item-border-radius: 0.25rem;
 
 				margin: 2px 0;
-				padding: 0 8px;
+				padding: 0 0.4375rem;
 
 				&:first-child {
 					margin-block-start: 0;

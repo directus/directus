@@ -162,8 +162,8 @@ function onToggle(open: boolean) {
 		inset-block-start: -0.25rem;
 		inset-inline-start: -0.25rem;
 		z-index: 1;
-		inline-size: calc(100% + 8px);
-		block-size: calc(100% + 8px);
+		inline-size: calc(100% + 0.4375rem);
+		block-size: calc(100% + 0.4375rem);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -187,7 +187,7 @@ function onToggle(open: boolean) {
 	}
 
 	& + & {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 	}
 }
 

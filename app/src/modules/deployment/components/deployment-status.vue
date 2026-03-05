@@ -73,7 +73,7 @@ const statusLabel = computed(() => {
 <style scoped lang="scss">
 .deployment-status {
 	&.has-icon {
-		--v-chip-padding: 0 8px 0 0.25rem;
+		--v-chip-padding: 0 0.4375rem 0 0.25rem;
 	}
 
 	&.building {

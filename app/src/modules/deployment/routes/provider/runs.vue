@@ -390,7 +390,7 @@ watch(statsRange, loadStats);
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 	padding: 0.3125rem 10px;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);

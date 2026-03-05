@@ -677,7 +677,7 @@ function setAspectRatio() {
 }
 
 .toolbar-button {
-	padding: 8px;
+	padding: 0.4375rem;
 	background-color: rgb(255 255 255 / 0.2);
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
@@ -689,12 +689,12 @@ function setAspectRatio() {
 }
 
 .drag-mode {
-	margin-inline: -8px 16px;
+	margin-inline: -0.4375rem 16px;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 
 	.v-icon {
 		margin-inline-end: 0;

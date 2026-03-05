@@ -222,8 +222,8 @@ function emitValue() {
 <style lang="scss" scoped>
 .search-badge {
 	--v-badge-background-color: var(--theme--primary);
-	--v-badge-offset-y: 8px;
-	--v-badge-offset-x: 8px;
+	--v-badge-offset-y: 0.4375rem;
+	--v-badge-offset-x: 0.4375rem;
 
 	@media (width <= 400px) {
 		&.active,
@@ -247,7 +247,7 @@ function emitValue() {
 	--icon-size: 18px;
 	--icon-search-padding-left: 0.375rem; // visually center in closed filter
 	--icon-search-padding-right: 0.25rem;
-	--icon-filter-margin-right: 8px;
+	--icon-filter-margin-right: 0.4375rem;
 
 	box-sizing: content-box;
 	display: flex;
@@ -296,7 +296,7 @@ function emitValue() {
 	}
 
 	.spacer {
-		inline-size: 8px;
+		inline-size: 0.4375rem;
 	}
 
 	.icon-clear {
@@ -341,7 +341,7 @@ function emitValue() {
 		inline-size: 200px;
 
 		.icon-clear {
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 
 		input {
@@ -437,7 +437,7 @@ function emitValue() {
 
 	.filter-input {
 		/* Use margin instead of padding to make sure transition expand takes it into account */
-		margin: 10px 8px;
+		margin: 10px 0.4375rem;
 	}
 }
 </style>

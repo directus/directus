@@ -74,7 +74,7 @@ const displayValue = computed(() => {
 
 <style lang="scss" scoped>
 .toggle {
-	--v-chip-padding: 0 8px;
+	--v-chip-padding: 0 0.4375rem;
 
 	&.previous {
 		--v-chip-color: var(--theme--background);

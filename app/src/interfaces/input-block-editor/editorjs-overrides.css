@@ -148,7 +148,7 @@
 	background-color: var(--background-inverted);
 	color: var(--foreground-inverted);
 	border-radius: var(--theme--border-radius);
-	padding: 8px;
+	padding: 0.4375rem;
 	font-size: inherit;
 }
 

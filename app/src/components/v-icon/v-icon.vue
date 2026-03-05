@@ -172,7 +172,7 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.sup {
-		--v-icon-size: 8px;
+		--v-icon-size: 0.4375rem;
 
 		vertical-align: 0.3125rem;
 	}
@@ -194,7 +194,7 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.left {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 
 		&.small {
 			margin-inline-end: 0.25rem;

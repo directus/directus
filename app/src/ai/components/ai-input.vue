@@ -130,7 +130,7 @@ function handleSubmit() {
 .input-controls {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 	flex-shrink: 0;
 	inline-size: 100%;
 

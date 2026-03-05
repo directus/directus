@@ -862,7 +862,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-title-icon {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .modal-item-content {
@@ -903,7 +903,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	position: relative;
 	display: flex;
 	justify-content: end;
-	gap: 8px;
+	gap: 0.4375rem;
 	inset-block-start: 12px;
 	inset-inline-end: 16px;
 }

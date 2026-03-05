@@ -17,7 +17,7 @@
 
 	.emoji-picker__search-container {
 		block-size: 40px;
-		margin: 8px;
+		margin: 0.4375rem;
 
 		.emoji-picker__search-icon {
 			color: var(--theme--foreground-subdued);
@@ -47,11 +47,11 @@
 	}
 
 	.emoji-picker__content {
-		padding: 8px 0 0;
+		padding: 0.4375rem 0 0;
 		block-size: unset;
 
 		.emoji-picker__category-buttons {
-			padding: 0 8px;
+			padding: 0 0.4375rem;
 
 			.emoji-picker__category-button {
 				transition: color var(--fast) var(--transition);

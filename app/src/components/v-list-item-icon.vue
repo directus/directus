@@ -28,7 +28,7 @@ withDefaults(defineProps<Props>(), {
 
 	display: inline-flex;
 	align-self: center;
-	margin: 8px 0;
+	margin: 0.4375rem 0;
 
 	&:not(:only-child) {
 		&:first-child {
@@ -50,11 +50,11 @@ withDefaults(defineProps<Props>(), {
 
 				&:not(:only-child) {
 					&:first-child {
-						margin-inline-end: 8px;
+						margin-inline-end: 0.4375rem;
 					}
 
 					&:last-child {
-						margin-inline-start: 8px;
+						margin-inline-start: 0.4375rem;
 					}
 				}
 			}

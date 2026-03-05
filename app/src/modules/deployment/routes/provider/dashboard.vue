@@ -203,7 +203,7 @@ watch(range, loadDashboard);
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 	padding: 0.3125rem 10px;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
@@ -263,7 +263,7 @@ watch(range, loadDashboard);
 	padding: 0 20px !important;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 
 	@media (max-width: 768px) {
 		flex-wrap: wrap;
@@ -287,7 +287,7 @@ watch(range, loadDashboard);
 	.name-wrapper {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 0.4375rem;
 	}
 
 	.name {
@@ -320,7 +320,7 @@ watch(range, loadDashboard);
 	.deploy-time {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 0.4375rem;
 		color: var(--theme--foreground-subdued);
 		font-size: 14px;
 	}

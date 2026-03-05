@@ -354,7 +354,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	inline-size: 100%;
 	display: flex;
 	gap: calc(var(--theme--form--column-gap) / 2);
-	padding-block-end: 8px;
+	padding-block-end: 0.4375rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	color: var(--header-color, var(--theme--foreground));
 	align-items: baseline;
@@ -373,7 +373,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			display: flex;
 			color: var(--theme--foreground-accent);
 			overflow: hidden;
-			gap: 8px;
+			gap: 0.4375rem;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			font-size: 24px;
@@ -395,7 +395,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			display: flex;
-			gap: 8px;
+			gap: 0.4375rem;
 			align-items: center;
 
 			.v-icon {

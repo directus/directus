@@ -134,7 +134,7 @@ function onClickSelect() {
 	inline-size: 100%;
 	block-size: 52px;
 	margin-block-end: 36px;
-	padding: 0 8px;
+	padding: 0 0.4375rem;
 	background-color: var(--theme--background);
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -173,7 +173,7 @@ function onClickSelect() {
 	}
 
 	.sort-selector {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {

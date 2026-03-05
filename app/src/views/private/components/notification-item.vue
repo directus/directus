@@ -92,7 +92,7 @@ function reload() {
 		border-radius: 50%;
 		inline-size: auto;
 		block-size: auto;
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 		background-color: transparent;
 	}
 

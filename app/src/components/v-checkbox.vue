@@ -167,7 +167,7 @@ function onClickIcon(e: MouseEvent): void {
 
 	.label:not(:empty) {
 		flex-grow: 1;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 		transition: color var(--fast) var(--transition);
 		@include mixins.no-wrap;
 
@@ -276,7 +276,7 @@ function onClickIcon(e: MouseEvent): void {
 	}
 
 	.append {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 }
 </style>

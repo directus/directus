@@ -372,7 +372,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 <style lang="scss" scoped>
 .field-select {
 	--input-height: 40px;
-	--theme--form--field--input--padding: 8px;
+	--theme--form--field--input--padding: 0.4375rem;
 	-webkit-user-select: none;
 	user-select: none;
 }
@@ -465,15 +465,15 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		display: flex;
 		align-items: center;
 		inline-size: 100%;
-		margin-block-end: 8px;
-		padding-block-start: 8px;
+		margin-block-end: 0.4375rem;
+		padding-block-start: 0.4375rem;
 		color: var(--theme--primary);
 		font-family: var(--theme--fonts--monospace--font-family);
 
 		.drag-handle {
 			--v-icon-color: var(--theme--primary);
 
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 
 		.name {
@@ -485,11 +485,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .field-grid {
 	position: relative;
 	display: grid;
-	gap: 8px;
+	gap: 0.4375rem;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 	}
 
 	&.nested {
@@ -522,7 +522,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 			text-overflow: ellipsis;
 
 			.name {
-				margin-inline-end: 8px;
+				margin-inline-end: 0.4375rem;
 				font-family: var(--theme--fonts--monospace--font-family);
 			}
 
@@ -551,7 +551,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .icons {
 	* + *:not(:last-child) {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 }
 
@@ -565,7 +565,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .required {
 	position: relative;
-	inset-inline-start: -8px;
+	inset-inline-start: -0.4375rem;
 	color: var(--theme--primary);
 }
 

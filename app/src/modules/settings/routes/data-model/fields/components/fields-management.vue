@@ -219,7 +219,7 @@ async function setNestedSort(updates?: Field[]) {
 	display: block;
 	inline-size: max-content;
 	margin: 0 auto;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 

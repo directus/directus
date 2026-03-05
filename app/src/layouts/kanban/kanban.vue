@@ -321,7 +321,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			display: flex;
 			flex-direction: column;
 			inline-size: 320px;
-			padding: 8px 0;
+			padding: 0.4375rem 0;
 			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
@@ -336,7 +336,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			.header {
 				display: flex;
 				justify-content: space-between;
-				margin: 0 16px 8px;
+				margin: 0 16px 0.4375rem;
 				font-weight: 700;
 
 				.title {
@@ -465,7 +465,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					margin-block: 8px 2px;
+					margin-block: 0.4375rem 2px;
 
 					.datetime {
 						display: inline-block;
@@ -501,7 +501,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 	.add-group {
 		cursor: pointer;
-		padding: 8px;
+		padding: 0.4375rem;
 		border: var(--theme--border-width) dashed var(--theme--border-color-subdued);
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);

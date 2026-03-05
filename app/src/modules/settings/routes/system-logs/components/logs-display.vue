@@ -326,7 +326,7 @@ function selectLog(index: number) {
 	box-shadow: var(--sidebar-shadow);
 
 	.v-icon {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.label {

@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
 		flex-grow: 1;
 		order: 1;
 		max-inline-size: 100%;
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 		border: solid;
 		border-color: var(--v-divider-color, var(--theme--form--field--input--border-color));
 		border-width: var(--v-divider-thickness, var(--theme--border-width)) 0 0 0;
@@ -80,7 +80,7 @@ withDefaults(defineProps<Props>(), {
 
 		span.wrapper {
 			order: 0;
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 			font-weight: 600;
 			font-size: 14px;
 		}
@@ -104,7 +104,7 @@ withDefaults(defineProps<Props>(), {
 
 		span.wrapper {
 			order: 0;
-			margin: 0 0 8px;
+			margin: 0 0 0.4375rem;
 		}
 	}
 }

@@ -592,7 +592,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 @use '@/styles/mixins';
 
 .grid {
-	--theme--form--row-gap: 8px;
+	--theme--form--row-gap: 0.4375rem;
 
 	@include mixins.form-grid;
 }
@@ -638,9 +638,9 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 	.edit-dot {
 		display: block;
-		inline-size: 8px;
-		block-size: 8px;
-		border-radius: 8px;
+		inline-size: 0.4375rem;
+		block-size: 0.4375rem;
+		border-radius: 0.4375rem;
 		background-color: var(--theme--primary);
 		transition: inherit;
 	}

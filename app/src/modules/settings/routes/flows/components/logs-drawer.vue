@@ -157,8 +157,8 @@ const steps = computed(() => {
 		}
 
 		&:first-child::after {
-			inset-block-start: 8px;
-			block-size: calc(100% - 8px);
+			inset-block-start: 0.4375rem;
+			block-size: calc(100% - 0.4375rem);
 		}
 
 		&:last-child::after {
@@ -192,7 +192,7 @@ const steps = computed(() => {
 		block-size: 12px;
 		background-color: var(--theme--primary);
 		border: var(--theme--border-width) solid var(--theme--background);
-		border-radius: 8px;
+		border-radius: 0.4375rem;
 
 		&.resolve {
 			background-color: var(--theme--primary);

@@ -81,14 +81,14 @@ function useEdits() {
 <style lang="scss" scoped>
 .comment-item {
 	position: relative;
-	margin-block-end: 8px;
-	padding: 8px;
+	margin-block-end: 0.4375rem;
+	padding: 0.4375rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 }
 
 .comment-item:last-of-type {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .comment-item .content {
@@ -116,7 +116,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(blockquote) {
-	margin: 8px 0;
+	margin: 0.4375rem 0;
 	padding-inline-start: 0.3125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
@@ -125,7 +125,7 @@ function useEdits() {
 
 .comment-item .content :deep(img) {
 	max-inline-size: 100%;
-	margin: 8px 0;
+	margin: 0.4375rem 0;
 	border-radius: var(--theme--border-radius);
 	display: block;
 }
@@ -199,7 +199,7 @@ function useEdits() {
 .comment-item.expand .content .expand-text {
 	position: absolute;
 	inset-inline: 0;
-	inset-block-end: 8px;
+	inset-block-end: 0.4375rem;
 	z-index: 2;
 	block-size: 24px;
 	text-align: center;
@@ -239,8 +239,8 @@ function useEdits() {
 
 .buttons {
 	position: absolute;
-	inset-inline-end: 8px;
-	inset-block-end: 8px;
+	inset-inline-end: 0.4375rem;
+	inset-block-end: 0.4375rem;
 }
 
 .cancel {

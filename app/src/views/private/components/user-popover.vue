@@ -115,7 +115,7 @@ function navigateToUser() {
 .user-box {
 	display: flex;
 	min-inline-size: 300px;
-	padding: 8px 0.25rem;
+	padding: 0.4375rem 0.25rem;
 	cursor: pointer;
 
 	.v-avatar {
@@ -170,7 +170,7 @@ function navigateToUser() {
 	display: flex;
 	align-items: center;
 	block-size: 80px;
-	margin: 8px 0.25rem;
+	margin: 0.4375rem 0.25rem;
 
 	.avatar {
 		inline-size: 80px;

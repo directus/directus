@@ -303,7 +303,7 @@ const stageChanges = () => {
 	justify-content: center;
 	inline-size: 160px;
 	block-size: 100px;
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
@@ -333,7 +333,7 @@ const stageChanges = () => {
 	--v-icon-color: var(--theme--primary-75);
 
 	display: block;
-	padding: 8px 16px;
+	padding: 0.4375rem 16px;
 	background-color: var(--background-page);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);

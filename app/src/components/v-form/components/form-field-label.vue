@@ -121,7 +121,7 @@ const isPromotableField = computed(() => {
 .field-label {
 	position: relative;
 	display: flex;
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {
@@ -148,7 +148,7 @@ const isPromotableField = computed(() => {
 	.v-checkbox.comparison-checkbox {
 		--v-checkbox-color: var(--theme--success);
 
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 
 		:deep(.checkbox) {
 			&:hover {

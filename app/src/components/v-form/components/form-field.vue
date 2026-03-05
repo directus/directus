@@ -300,7 +300,7 @@ function useComputedValues() {
 	> .avatars {
 		position: absolute;
 		inset-inline-end: 0;
-		inset-block-end: calc(100% + 8px);
+		inset-block-end: calc(100% + 0.4375rem);
 	}
 }
 

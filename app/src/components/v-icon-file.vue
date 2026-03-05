@@ -55,7 +55,7 @@ defineProps<Props>();
 			inset-inline-start: calc(100% - var(--v-icon-file-label-size, 12px) - 3ch);
 			text-align: start;
 			transform: none;
-			padding-inline-end: 8px;
+			padding-inline-end: 0.4375rem;
 		}
 	}
 }

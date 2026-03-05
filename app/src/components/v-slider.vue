@@ -120,7 +120,7 @@ function onInput(event: Event) {
 	align-items: center;
 
 	.prepend {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.slider {
@@ -146,7 +146,7 @@ function onInput(event: Event) {
 		input {
 			inline-size: 100%;
 			block-size: 0.25rem;
-			padding: 8px 0;
+			padding: 0.4375rem 0;
 			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
 			border-radius: 10px;
@@ -172,8 +172,8 @@ function onInput(event: Event) {
 			&::-webkit-slider-thumb {
 				position: relative;
 				z-index: 3;
-				inline-size: 8px;
-				block-size: 8px;
+				inline-size: 0.4375rem;
+				block-size: 0.4375rem;
 				margin-block-start: -2px;
 				background: var(--theme--background);
 				border: none;
@@ -187,8 +187,8 @@ function onInput(event: Event) {
 			&::-moz-range-thumb {
 				position: relative;
 				z-index: 3;
-				inline-size: 8px;
-				block-size: 8px;
+				inline-size: 0.4375rem;
+				block-size: 0.4375rem;
 				margin-block-start: -2px;
 				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
@@ -311,7 +311,7 @@ function onInput(event: Event) {
 	}
 
 	.append {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 }
 </style>

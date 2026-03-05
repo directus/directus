@@ -338,7 +338,7 @@ function pointerLeave() {
 			font-size: 20px;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
-			margin-block-end: 8px;
+			margin-block-end: 0.4375rem;
 		}
 	}
 
@@ -522,14 +522,14 @@ function pointerLeave() {
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 		max-inline-size: 100%;
 	}
 }
 
 .status-footer {
 	display: flex;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .fade-enter-active,

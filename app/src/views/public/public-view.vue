@@ -365,7 +365,7 @@ const logoURL = computed<string | null>(() => {
 			.note {
 				max-inline-size: 340px;
 				margin: 0 auto;
-				padding: 8px 12px;
+				padding: 0.4375rem 12px;
 				color: var(--white);
 				font-size: 15px;
 				line-height: 24px;

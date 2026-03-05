@@ -206,7 +206,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	.title-container {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 0.4375rem;
 
 		.title {
 			font-size: 20px;
@@ -269,7 +269,7 @@ function getDeltaOptionUser(deltaOption: any) {
 				border: 2px solid var(--theme--border-color);
 				border-radius: var(--theme--border-radius);
 				padding-inline: 16px;
-				padding-block: 8px;
+				padding-block: 0.4375rem;
 				inline-size: 100%;
 
 				@media (min-width: 960px) {

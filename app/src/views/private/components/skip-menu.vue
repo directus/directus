@@ -107,7 +107,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		background-color: var(--theme--popover--menu--background);
 		border-radius: var(--theme--popover--menu--border-radius);
 		box-shadow: var(--theme--popover--menu--box-shadow);
-		padding: 8px;
+		padding: 0.4375rem;
 		font-size: 14px;
 
 		inset-block-start: 0.25rem;

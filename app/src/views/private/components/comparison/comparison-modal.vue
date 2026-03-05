@@ -641,7 +641,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						margin: 0;
 
 						@media (min-width: 544px) {
-							margin-inline-end: 8px;
+							margin-inline-end: 0.4375rem;
 						}
 					}
 

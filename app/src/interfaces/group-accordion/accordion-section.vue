@@ -178,7 +178,7 @@ function useComparisonIndicator() {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	padding: 8px 0;
+	padding: 0.4375rem 0;
 	cursor: pointer;
 
 	&:hover,
@@ -204,7 +204,7 @@ function useComparisonIndicator() {
 
 	.v-chip {
 		margin: 0;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 
 	.edit-dot {
@@ -231,7 +231,7 @@ function useComparisonIndicator() {
 }
 
 .warning {
-	margin-inline-start: 8px;
+	margin-inline-start: 0.4375rem;
 	color: var(--theme--danger);
 }
 

@@ -304,7 +304,7 @@ function remove(id: string) {
 }
 
 .list {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	padding: 0;
 }
 </style>

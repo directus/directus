@@ -216,7 +216,7 @@ async function generateCollection() {
 }
 
 .hints {
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;

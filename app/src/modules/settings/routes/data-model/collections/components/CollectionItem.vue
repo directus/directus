@@ -115,12 +115,12 @@ function onGroupSortChange(collections: Collection[]) {
 
 <style scoped lang="scss">
 .drag-container {
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	margin-inline-start: 20px;
 }
 
 .collection-item {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .collection-item-detail {
@@ -156,7 +156,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-icon {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .drag-handle {

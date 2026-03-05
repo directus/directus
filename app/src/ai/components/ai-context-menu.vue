@@ -386,14 +386,14 @@ function closeList() {
 }
 
 .search-input {
-	padding: 8px;
+	padding: 0.4375rem;
 }
 
 .list-header {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 8px;
+	gap: 0.4375rem;
+	padding: 0.4375rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 

@@ -567,7 +567,7 @@ defineExpose({ abort });
 .uploading {
 	--v-progress-linear-color: var(--white);
 	--v-progress-linear-background-color: rgb(255 255 255 / 0.25);
-	--v-progress-linear-height: 8px;
+	--v-progress-linear-height: 0.4375rem;
 
 	color: var(--white);
 	background-color: var(--theme--primary);

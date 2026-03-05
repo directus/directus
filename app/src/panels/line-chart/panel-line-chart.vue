@@ -371,8 +371,8 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-marker {
-	block-size: 8px !important;
-	inline-size: 8px !important;
+	block-size: 0.4375rem !important;
+	inline-size: 0.4375rem !important;
 	padding: 0.25rem !important;
 }
 

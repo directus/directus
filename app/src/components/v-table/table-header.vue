@@ -474,14 +474,14 @@ function toggleManualSort() {
 }
 
 .description-dot {
-	inline-size: 8px;
-	block-size: 8px;
+	inline-size: 0.4375rem;
+	block-size: 0.4375rem;
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
 	border: var(--theme--background) 6px solid;
 	box-sizing: content-box;
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 	vertical-align: middle;
 }
 </style>

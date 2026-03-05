@@ -84,7 +84,7 @@ function emitValue(): void {
 	appearance: none;
 
 	.label:not(:empty) {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 
 		@include mixins.no-wrap;
 	}

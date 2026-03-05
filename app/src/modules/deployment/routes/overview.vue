@@ -192,6 +192,6 @@ function onSetupComplete() {
 .projects {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 </style>

@@ -240,7 +240,7 @@ const newTranslationDefaults = computed(() => {
 .translation-input {
 	.selected-translation {
 		margin-inline-end: auto;
-		padding: 2px 8px 0;
+		padding: 2px 0.4375rem 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
@@ -265,7 +265,7 @@ const newTranslationDefaults = computed(() => {
 }
 
 .search {
-	padding: 12px 8px 0.3125rem;
+	padding: 12px 0.4375rem 0.3125rem;
 
 	.search-input {
 		--input-height: 40px;

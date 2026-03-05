@@ -422,7 +422,7 @@ function clearFilters() {
 	margin-block-end: 16px;
 
 	.v-skeleton-loader {
-		margin-block-end: 8px;
+		margin-block-end: 0.4375rem;
 
 		&.dense {
 			block-size: 44px;
@@ -438,7 +438,7 @@ function clearFilters() {
 
 			&.dense {
 				min-block-size: 44px;
-				padding: 10px 8px;
+				padding: 10px 0.4375rem;
 			}
 		}
 
@@ -446,7 +446,7 @@ function clearFilters() {
 			inline-size: 100%;
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: 0.4375rem;
 
 			.title {
 				flex-grow: 1;
@@ -458,7 +458,7 @@ function clearFilters() {
 
 		.message {
 			inline-size: 100%;
-			margin-block-start: 8px;
+			margin-block-start: 0.4375rem;
 			cursor: auto;
 
 			:deep() {
@@ -476,12 +476,12 @@ function clearFilters() {
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {
-		margin: 0 calc(8px + var(--theme--border-width)) 12px;
+		margin: 0 calc(0.4375rem + var(--theme--border-width)) 12px;
 	}
 }
 
 .select-all-divider {
-	margin: 8px 0;
+	margin: 0.4375rem 0;
 
 	&.dense {
 		margin: 0.25rem 0;

@@ -166,7 +166,7 @@ function focusIntoView(cid: ClientID) {
 	padding-block: 0.25rem;
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 
 	.collab-header-more-popover-item-content {
 		display: flex;

@@ -105,7 +105,7 @@ withDefaults(defineProps<Props>(), {
 	@include loader;
 
 	& + & {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 	}
 }
 

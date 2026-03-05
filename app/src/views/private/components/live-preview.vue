@@ -581,7 +581,7 @@ function useUrls() {
 		--preview--header--height: 60px;
 
 		.header {
-			padding: 8px 16px;
+			padding: 0.4375rem 16px;
 		}
 	}
 
@@ -596,8 +596,8 @@ function useUrls() {
 		display: flex;
 		align-items: center;
 		z-index: 10;
-		gap: 8px;
-		padding: 0 8px;
+		gap: 0.4375rem;
+		padding: 0 0.4375rem;
 		transition:
 			padding var(--medium) var(--transition),
 			block-size var(--medium) var(--transition);

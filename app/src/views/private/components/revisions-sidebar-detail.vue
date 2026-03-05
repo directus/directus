@@ -149,7 +149,7 @@ defineExpose({
 .v-divider {
 	--v-divider-color: var(--theme--background-accent);
 
-	margin-block: 24px 8px;
+	margin-block: 24px 0.4375rem;
 
 	&:first-of-type {
 		margin-block-start: 0;

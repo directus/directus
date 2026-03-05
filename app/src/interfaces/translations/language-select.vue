@@ -89,11 +89,11 @@ const displayValue = computed(() => {
 
 	.display-value {
 		flex-grow: 1;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 
 	.controls > * + * {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 
 	.secondary & {
@@ -169,7 +169,7 @@ const displayValue = computed(() => {
 		}
 
 		.dot {
-			inline-size: 8px;
+			inline-size: 0.4375rem;
 			block-size: 100%;
 
 			&.show::before {

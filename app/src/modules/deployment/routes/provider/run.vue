@@ -411,7 +411,7 @@ onUnmounted(() => {
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 	padding: 12px 16px;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
@@ -502,7 +502,7 @@ onUnmounted(() => {
 .actions-wrapper {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .currently-deploying {

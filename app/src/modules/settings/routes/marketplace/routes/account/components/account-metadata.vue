@@ -60,7 +60,7 @@ const npmLink = computed(() => {
 }
 
 .about {
-	padding: 0 8px;
+	padding: 0 0.4375rem;
 
 	.divider {
 		margin: 16px 0;
