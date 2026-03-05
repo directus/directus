@@ -541,7 +541,7 @@ function revert(values: Record<string, any>) {
 	display: flex;
 	align-items: center;
 	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
-	block-size: 112px;
+	block-size: 6.3125rem;
 	margin-block-end: var(--theme--form--row-gap);
 	padding: 1.125rem;
 	background-color: var(--theme--background-normal);
