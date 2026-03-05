@@ -56,7 +56,7 @@ h1 {
 }
 h2 {
 	font-size: 1.375rem;
-	line-height: 34px;
+	line-height: 1.9375rem;
 	margin-block-start: 1.25em;
 }
 h3 {

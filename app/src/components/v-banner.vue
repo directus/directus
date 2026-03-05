@@ -208,7 +208,7 @@ defineProps<{
 			font-family: var(--theme--banner--title--font-family);
 			font-weight: var(--theme--banner--title--font-weight);
 			font-size: 1.375rem;
-			line-height: 34px;
+			line-height: 1.9375rem;
 		}
 
 		.subtitle {

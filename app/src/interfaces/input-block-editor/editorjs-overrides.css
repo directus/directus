@@ -453,7 +453,7 @@
 .ce-toolbar__content,
 .ce-block__content {
 	max-inline-size: unset;
-	margin-inline: 34px;
+	margin-inline: 1.9375rem;
 }
 
 .codex-editor .ce-align-left {
@@ -502,7 +502,7 @@
 }
 
 .codex-editor .ce-block h2 {
-	font-size: 34px;
+	font-size: 1.9375rem;
 	line-height: 38px;
 }
 
@@ -546,7 +546,7 @@
 .codex-editor .ce-block ol {
 	margin: 1.375rem 0;
 	font-size: inherit;
-	line-height: 34px;
+	line-height: 1.9375rem;
 }
 
 .codex-editor .ce-block ul ul,
