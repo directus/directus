@@ -382,7 +382,7 @@ function setToNow() {
 
 	.calendar-heading {
 		font-weight: 600;
-		font-size: 1.25rem;
+		font-size: 1rem;
 		color: var(--theme--primary);
 	}
 
@@ -423,7 +423,7 @@ function setToNow() {
 	.calendar-cell {
 		position: relative;
 		font-size: 0.6875rem;
-		line-height: 1.25rem;
+		line-height: 1rem;
 		text-align: center;
 	}
 
