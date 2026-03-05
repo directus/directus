@@ -1011,7 +1011,7 @@ function useItemNavigation() {
 }
 
 .title-loader {
-	inline-size: 260px;
+	inline-size: 14.625rem;
 }
 
 :deep(.type-title) {

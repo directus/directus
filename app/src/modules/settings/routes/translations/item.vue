@@ -340,6 +340,6 @@ async function revert(values: Record<string, any>) {
 }
 
 .title-loader {
-	inline-size: 260px;
+	inline-size: 14.625rem;
 }
 </style>
