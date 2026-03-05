@@ -110,7 +110,7 @@ function onCloseClick(event: MouseEvent) {
 .v-chip {
 	display: inline-flex;
 	align-items: center;
-	block-size: 36px;
+	block-size: 2rem;
 	padding: var(--v-chip-padding, 0 0.4375rem);
 	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);

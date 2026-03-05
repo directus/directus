@@ -187,7 +187,7 @@ limitWritable.value = selectedSize;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	block-size: 36px;
+	block-size: 2rem;
 	padding: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	background: var(--theme--popover--menu--background);

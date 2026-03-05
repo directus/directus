@@ -173,8 +173,8 @@ withDefaults(defineProps<Props>(), {
 		margin: 0 2px;
 		@include loader;
 		border-radius: var(--theme--border-radius);
-		inline-size: 36px;
-		block-size: 36px;
+		inline-size: 2rem;
+		block-size: 2rem;
 	}
 
 	.v-button:first-child {

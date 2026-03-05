@@ -201,11 +201,11 @@ const onDeleteOptions = computed(() =>
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .generated-data {
-	margin-block-start: 36px;
+	margin-block-start: 2rem;
 
 	ul {
 		padding-block-start: 0.25rem;

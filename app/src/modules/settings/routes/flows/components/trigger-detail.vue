@@ -120,6 +120,6 @@ const currentTriggerOptionFields = computed(() => {
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 </style>

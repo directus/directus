@@ -80,7 +80,7 @@ const sizeClass = useSizeClass(props);
 }
 
 .small {
-	--v-avatar-size: 36px;
+	--v-avatar-size: 2rem;
 }
 
 .large {

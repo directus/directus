@@ -223,7 +223,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .scroll-to-bottom-container {
 	position: absolute;
-	inset-block-start: -36px;
+	inset-block-start: -2rem;
 	inset-inline-start: 50%;
 	translate: -50% 0;
 	z-index: 4;

@@ -336,8 +336,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	block-size: 36px;
-	inline-size: 36px;
+	block-size: 2rem;
+	inline-size: 2rem;
 	margin-inline-end: 0.6875rem;
 }
 

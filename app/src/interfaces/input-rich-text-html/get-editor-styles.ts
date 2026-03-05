@@ -50,7 +50,7 @@ h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
 	margin-block-start: 0.5em;
 }
 h1 {
-	font-size: 36px;
+	font-size: 2rem;
 	line-height: 46px;
 	margin-block-start: 1em;
 }

@@ -563,7 +563,7 @@ function handleKeyDown(event: any) {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		block-size: 36px;
+		block-size: 2rem;
 		padding: 0.5625rem;
 		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);

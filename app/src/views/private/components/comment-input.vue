@@ -396,13 +396,13 @@ function pressedEnter() {
 .new-comment :deep(.expand-on-focus:focus textarea),
 .new-comment :deep(.expand-on-focus:focus-within textarea),
 .new-comment :deep(.expand-on-focus.has-content textarea) {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
 	inset-inline: 0;
-	inset-block-end: 36px;
+	inset-block-end: 2rem;
 	block-size: 0.4375rem;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
@@ -420,7 +420,7 @@ function pressedEnter() {
 .new-comment .add-emoji {
 	position: absolute;
 	inset-block-end: 0.4375rem;
-	inset-inline-start: 36px;
+	inset-inline-start: 2rem;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);

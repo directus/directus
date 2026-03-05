@@ -241,7 +241,7 @@ function emitValue() {
 }
 
 .search-input {
-	--button-size: 36px;
+	--button-size: 2rem;
 	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
 	--search-input-radius: calc(var(--button-size) / 2);
 	--icon-size: 1rem;

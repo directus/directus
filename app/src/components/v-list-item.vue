@@ -354,7 +354,7 @@ function onClick(event: PointerEvent) {
 	@at-root {
 		.v-list.nav {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: 36px;
+				--v-list-item-min-height: 2rem;
 				--v-list-item-border-radius: 0.25rem;
 
 				margin: 2px 0;

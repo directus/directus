@@ -133,6 +133,6 @@ const isSearchableType = computed(() => {
 }
 
 .v-notice:not(.no-margin) {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 </style>

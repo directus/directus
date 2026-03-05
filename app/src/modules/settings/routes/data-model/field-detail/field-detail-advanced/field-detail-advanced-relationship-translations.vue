@@ -233,7 +233,7 @@ const relatedPrimaryKey = computed(
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .relational-triggers {
