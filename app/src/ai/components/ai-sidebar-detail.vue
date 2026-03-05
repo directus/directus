@@ -62,7 +62,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 }
 
 .collapsible-trigger-icon {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 }
 
 .collapsible-trigger-title {
@@ -105,7 +105,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 }
 
 .ai-sidebar-content {
-	padding: 12px;
+	padding: 0.6875rem;
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;

@@ -58,7 +58,7 @@ withDefaults(
 		--v-badge-size: 0.4375rem;
 
 		&.bordered {
-			--v-badge-size: 12px;
+			--v-badge-size: 0.6875rem;
 		}
 	}
 

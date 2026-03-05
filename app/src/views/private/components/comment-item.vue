@@ -132,7 +132,7 @@ function useEdits() {
 
 .comment-item .content :deep(hr) {
 	block-size: 2px;
-	margin: 12px 0;
+	margin: 0.6875rem 0;
 	border: 0;
 	border-block-start: 2px solid var(--theme--form--field--input--border-color);
 }
@@ -175,7 +175,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 	font-weight: 600;
 	font-size: 16px;
 	color: var(--theme--foreground-accent);
@@ -207,12 +207,12 @@ function useEdits() {
 }
 
 .comment-item.expand .content .expand-text span {
-	padding: 0.25rem 12px 0.3125rem;
+	padding: 0.25rem 0.6875rem 0.3125rem;
 	color: var(--theme--foreground-subdued);
 	font-weight: 600;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	background-color: var(--theme--background-normal);
-	border-radius: 12px;
+	border-radius: 0.6875rem;
 	transition:
 		color var(--fast) var(--transition),
 		background-color var(--fast) var(--transition);

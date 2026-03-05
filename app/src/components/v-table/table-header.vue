@@ -290,7 +290,7 @@ function toggleManualSort() {
 	.cell {
 		position: relative;
 		block-size: 50px; /* +2px for bottom border */
-		padding: 0 12px;
+		padding: 0 0.6875rem;
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color, var(--theme--background));

@@ -824,7 +824,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 	@media (min-height: 375px) {
 		--button-height: var(--v-button-height, 44px);
-		--button-gap: 12px;
+		--button-gap: 0.6875rem;
 		--shadow-height: 0.375rem;
 		--shadow-cover-height: 0.5625rem;
 
@@ -904,7 +904,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	display: flex;
 	justify-content: end;
 	gap: 0.4375rem;
-	inset-block-start: 12px;
+	inset-block-start: 0.6875rem;
 	inset-inline-end: 16px;
 }
 

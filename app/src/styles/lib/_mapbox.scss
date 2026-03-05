@@ -54,13 +54,13 @@
 .mapboxgl-search-location-dot,
 .mapboxgl-user-location-dot,
 .maplibregl-user-location-dot {
-	inline-size: 12px;
-	block-size: 12px;
+	inline-size: 0.6875rem;
+	block-size: 0.6875rem;
 	pointer-events: none;
 
 	&::before {
-		inline-size: 12px;
-		block-size: 12px;
+		inline-size: 0.6875rem;
+		block-size: 0.6875rem;
 	}
 
 	&::after {
@@ -104,7 +104,7 @@
 
 	.maplibregl-ctrl-attrib-inner,
 	.mapboxgl-ctrl-attrib-inner {
-		font-size: 12px;
+		font-size: 0.6875rem;
 		line-height: 20px;
 	}
 }

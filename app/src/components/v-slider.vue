@@ -281,16 +281,16 @@ function onInput(event: Event) {
 				block-size: 0.25rem;
 
 				&::-webkit-slider-thumb {
-					inline-size: 12px;
-					block-size: 12px;
+					inline-size: 0.6875rem;
+					block-size: 0.6875rem;
 					margin-block-start: -0.25rem;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 
 				&::-moz-range-thumb {
-					inline-size: 12px;
-					block-size: 12px;
+					inline-size: 0.6875rem;
+					block-size: 0.6875rem;
 					margin-block-start: -0.25rem;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;

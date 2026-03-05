@@ -55,7 +55,7 @@ function close() {
 	color: var(--theme--primary);
 	cursor: pointer;
 	font-weight: 600;
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 
 	&[disabled] {
 		cursor: not-allowed;

@@ -232,7 +232,7 @@ const color = computed(() => {
 	font-weight: 800;
 	white-space: nowrap;
 	line-height: 1.2;
-	padding: 12px;
+	padding: 0.6875rem;
 
 	&.sans-serif {
 		font-family: var(--theme--fonts--sans--font-family);

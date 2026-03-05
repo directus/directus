@@ -588,7 +588,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					min-inline-size: auto;
 					flex: 1 1 100%;
 					text-align: center;
-					margin-block-end: 12px;
+					margin-block-end: 0.6875rem;
 					justify-content: start;
 
 					@media (min-width: 706px) {
@@ -613,7 +613,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				.buttons-container {
 					flex: 1 1 100%;
 					display: flex;
-					gap: 12px;
+					gap: 0.6875rem;
 
 					.button-text {
 						display: none;

@@ -93,7 +93,7 @@ watch(form, () => {
 	margin-block-start: 32px;
 
 	.v-icon {
-		margin-inline-end: 12px;
+		margin-inline-end: 0.6875rem;
 	}
 }
 

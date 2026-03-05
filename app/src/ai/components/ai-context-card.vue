@@ -125,7 +125,7 @@ const icon = computed(() => {
 .display-text {
 	flex: 1;
 	min-inline-size: 0;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 	line-height: 1.3;

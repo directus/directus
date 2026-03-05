@@ -539,7 +539,7 @@ function useInlineWarning() {
 		block-size: 38px;
 
 		.input {
-			padding: 0.4375rem 12px;
+			padding: 0.4375rem 0.6875rem;
 		}
 	}
 

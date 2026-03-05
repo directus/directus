@@ -537,7 +537,7 @@ const menuActive = computed(
 	@include mixins.list-interface($deleteable: true);
 
 	.v-notice + & {
-		margin-block-start: 12px;
+		margin-block-start: 0.6875rem;
 	}
 }
 
@@ -568,7 +568,7 @@ const menuActive = computed(
 	@include mixins.list-interface-actions($pagination: true);
 
 	.v-button {
-		--v-button-padding: 0 12px 0 19px;
+		--v-button-padding: 0 0.6875rem 0 19px;
 	}
 
 	.pagination {

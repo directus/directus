@@ -286,14 +286,14 @@ function stageEdits(item: Record<string, any>) {
 @use '@/styles/mixins';
 
 .drag-area {
-	min-block-size: 12px;
+	min-block-size: 0.6875rem;
 
 	&.root {
 		margin-inline-start: 0;
 		padding: 0;
 
 		.v-skeleton-loader {
-			margin: 12px 0 12px auto;
+			margin: 0.6875rem 0 0.6875rem auto;
 			inline-size: calc(100% - 24px);
 		}
 
@@ -326,7 +326,7 @@ function stageEdits(item: Record<string, any>) {
 	}
 
 	.preview {
-		padding: 12px;
+		padding: 0.6875rem;
 		cursor: grab;
 		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--border-color);

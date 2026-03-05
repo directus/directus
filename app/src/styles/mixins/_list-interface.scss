@@ -42,7 +42,7 @@
 }
 
 @mixin list-interface-actions($pagination: false) {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;

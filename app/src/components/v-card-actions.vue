@@ -10,6 +10,6 @@
 }
 
 .v-card-actions > :slotted(.v-button + .v-button) {
-	margin-inline-start: 12px;
+	margin-inline-start: 0.6875rem;
 }
 </style>

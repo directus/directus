@@ -739,14 +739,14 @@ function useGroupedPermissions() {
 	}
 
 	.empty-state {
-		padding: 12px;
+		padding: 0.6875rem;
 		color: var(--theme--foreground-subdued);
 	}
 
 	.reset-toggle {
 		color: var(--theme--foreground-subdued);
 		text-align: center;
-		padding: 12px;
+		padding: 0.6875rem;
 		border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 		button {
@@ -761,11 +761,11 @@ function useGroupedPermissions() {
 
 	.system-divider {
 		--v-divider-label-color: var(--theme--foreground-subdued);
-		padding-inline-start: 12px;
+		padding-inline-start: 0.6875rem;
 	}
 }
 
 .add-collection {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 }
 </style>

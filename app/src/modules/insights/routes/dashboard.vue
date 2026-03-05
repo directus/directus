@@ -419,7 +419,7 @@ const refreshInterval = computed({
 	}
 
 	&.header-offset {
-		inset-block-start: calc(50% - 12px);
+		inset-block-start: calc(50% - 0.6875rem);
 	}
 }
 

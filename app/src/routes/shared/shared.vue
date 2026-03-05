@@ -225,8 +225,8 @@ h2 {
 
 .password.invalid::before {
 	position: absolute;
-	inset-block-start: -12px;
-	inset-inline-start: -12px;
+	inset-block-start: -0.6875rem;
+	inset-inline-start: -0.6875rem;
 	inline-size: calc(100% + 24px);
 	block-size: calc(100% + 24px);
 	background-color: var(--danger-alt);

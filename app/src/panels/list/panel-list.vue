@@ -92,7 +92,7 @@ async function saveEdits(item: Record<string, any>) {
 	--v-list-item-margin: 0;
 
 	block-size: 100%;
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 	overflow-y: auto;
 }
 

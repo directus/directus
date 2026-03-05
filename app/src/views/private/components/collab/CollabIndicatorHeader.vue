@@ -145,7 +145,7 @@ function focusIntoView(cid: ClientID) {
 	}
 
 	:deep(.v-avatar) {
-		font-size: 12px;
+		font-size: 0.6875rem;
 	}
 }
 

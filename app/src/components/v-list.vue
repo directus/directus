@@ -90,7 +90,7 @@ useGroupableParent(
 }
 
 .nav {
-	--v-list-padding: 12px;
+	--v-list-padding: 0.6875rem;
 }
 
 :slotted(.v-divider) {

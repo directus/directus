@@ -274,7 +274,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 2;
-	margin-block: 12px 2px;
+	margin-block: 0.6875rem 2px;
 	padding-block: 0.25rem;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);

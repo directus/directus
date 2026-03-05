@@ -320,8 +320,8 @@ function useComputedValues() {
 }
 
 .invalid {
-	margin: -12px;
-	padding: 12px;
+	margin: -0.6875rem;
+	padding: 0.6875rem;
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);
 	transition: var(--medium) var(--transition);

@@ -133,7 +133,7 @@ const clicked = (toggleTooltip: () => void) => {
 	align-items: center;
 	justify-content: space-between;
 	color: var(--theme--form--field--input--foreground-subdued);
-	font-size: 12px;
+	font-size: 0.6875rem;
 
 	.lang {
 		font-weight: 600;

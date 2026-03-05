@@ -162,7 +162,7 @@ function discardAndLeave() {
 
 <style lang="scss" scoped>
 .title {
-	margin-block-end: 12px;
+	margin-block-end: 0.6875rem;
 
 	.instant-save {
 		margin-inline-start: 0.25rem;

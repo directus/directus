@@ -193,7 +193,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .input-container {
 	flex-shrink: 0;
 	position: relative;
-	padding-inline-end: 12px;
+	padding-inline-end: 0.6875rem;
 }
 
 .error-message {
@@ -252,7 +252,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	pointer-events: none;
 
 	.upload-icon {
-		margin-block-end: 12px;
+		margin-block-end: 0.6875rem;
 	}
 }
 </style>

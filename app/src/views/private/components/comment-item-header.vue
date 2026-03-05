@@ -186,7 +186,7 @@ function useDelete() {
 			inset-inline-end: 0;
 			display: flex;
 			align-items: center;
-			font-size: 12px;
+			font-size: 0.6875rem;
 			white-space: nowrap;
 			text-align: end;
 			text-transform: lowercase;

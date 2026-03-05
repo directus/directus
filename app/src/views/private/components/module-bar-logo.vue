@@ -71,7 +71,7 @@ function stopSpinnerIfQueueIsEmpty() {
 	justify-content: center;
 	inline-size: 60px;
 	block-size: 60px;
-	padding: 12px;
+	padding: 0.6875rem;
 	background-color: var(--project-color);
 
 	.v-progress-linear {

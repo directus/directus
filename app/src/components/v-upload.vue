@@ -529,7 +529,7 @@ defineExpose({ abort });
 	margin-block-end: 18px;
 
 	.v-button {
-		margin-inline-end: 12px;
+		margin-inline-end: 0.6875rem;
 
 		&:last-child {
 			margin-inline-end: 0;
@@ -560,7 +560,7 @@ defineExpose({ abort });
 
 	.upload-icon {
 		margin: 0 auto;
-		margin-block-end: 12px;
+		margin-block-end: 0.6875rem;
 	}
 }
 

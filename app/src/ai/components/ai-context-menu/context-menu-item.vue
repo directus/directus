@@ -64,7 +64,7 @@ defineEmits<{
 }
 
 .item-subtitle {
-	font-size: 12px;
+	font-size: 0.6875rem;
 	color: var(--theme--foreground-subdued);
 	overflow: hidden;
 	text-overflow: ellipsis;

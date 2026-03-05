@@ -198,7 +198,7 @@ function useComparisonIndicator() {
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-block-start: -12px;
+		margin-block-start: -0.6875rem;
 		margin-inline-start: 2px;
 	}
 
@@ -221,7 +221,7 @@ function useComparisonIndicator() {
 }
 
 .icon {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
 

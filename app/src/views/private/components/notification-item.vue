@@ -76,7 +76,7 @@ function reload() {
 	align-items: center;
 	justify-content: flex-start;
 	margin-block-start: 0.25rem;
-	padding: 12px;
+	padding: 0.6875rem;
 	color: var(--white);
 	border-radius: var(--theme--border-radius);
 	inline-size: max-content;
@@ -110,7 +110,7 @@ function reload() {
 
 	&::after {
 		position: absolute;
-		inset-inline-end: 12px;
+		inset-inline-end: 0.6875rem;
 		inset-block-end: -0.3125rem;
 		z-index: -1;
 		display: block;
@@ -161,7 +161,7 @@ function reload() {
 }
 
 .close {
-	margin-inline-start: 12px;
+	margin-inline-start: 0.6875rem;
 }
 
 .reload {

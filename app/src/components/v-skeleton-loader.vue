@@ -123,7 +123,7 @@ withDefaults(defineProps<Props>(), {
 
 .text {
 	flex-grow: 1;
-	block-size: 12px;
+	block-size: 0.6875rem;
 	border-radius: 0.3125rem;
 
 	@include loader;
@@ -139,7 +139,7 @@ withDefaults(defineProps<Props>(), {
 		flex-shrink: 0;
 		inline-size: 24px;
 		block-size: 24px;
-		margin-inline-end: 12px;
+		margin-inline-end: 0.6875rem;
 		border-radius: 50%;
 
 		@include loader;
@@ -147,7 +147,7 @@ withDefaults(defineProps<Props>(), {
 
 	.text {
 		flex-grow: 1;
-		block-size: 12px;
+		block-size: 0.6875rem;
 		border-radius: 0.3125rem;
 
 		@include loader;

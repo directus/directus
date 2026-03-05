@@ -162,14 +162,14 @@ const steps = computed(() => {
 		}
 
 		&:last-child::after {
-			block-size: 12px;
+			block-size: 0.6875rem;
 		}
 
 		.inset {
-			padding-block: 12px 32px;
+			padding-block: 0.6875rem 32px;
 
 			.v-detail + .v-detail {
-				margin-block-start: 12px;
+				margin-block-start: 0.6875rem;
 			}
 		}
 
@@ -188,8 +188,8 @@ const steps = computed(() => {
 		inset-block-start: 0.3125rem;
 		inset-inline-start: -16px;
 		z-index: 2;
-		inline-size: 12px;
-		block-size: 12px;
+		inline-size: 0.6875rem;
+		block-size: 0.6875rem;
 		background-color: var(--theme--primary);
 		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: 0.4375rem;

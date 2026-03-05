@@ -119,7 +119,7 @@ function closeDialog() {
 
 <style lang="scss" scoped>
 .v-card-text.validation-errors-wrapper {
-	padding-block: 12px 0;
+	padding-block: 0.6875rem 0;
 }
 
 .validation-errors-list {

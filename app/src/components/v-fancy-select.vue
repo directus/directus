@@ -105,7 +105,7 @@ function toggle(item: Record<string, any>) {
 	align-items: center;
 	inline-size: 100%;
 	margin-block-end: 0.4375rem;
-	padding: 12px;
+	padding: 0.6875rem;
 	background-color: var(--theme--background-normal);
 	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 0.3125rem;
@@ -129,7 +129,7 @@ function toggle(item: Record<string, any>) {
 		justify-content: center;
 		inline-size: 44px;
 		block-size: 44px;
-		margin-inline-end: 12px;
+		margin-inline-end: 0.6875rem;
 		background-color: var(--theme--background);
 		border-radius: 50%;
 	}

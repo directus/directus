@@ -108,7 +108,7 @@ const customIcon = computed(() => {
 	--columns: 1;
 
 	display: grid;
-	gap: 12px 32px;
+	gap: 0.6875rem 32px;
 	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 

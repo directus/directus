@@ -536,7 +536,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	&.inline {
 		inline-size: auto;
 		margin-inline-end: 0;
-		padding-inline-end: 12px;
+		padding-inline-end: 0.6875rem;
 
 		.delete {
 			inset-inline-end: 0.4375rem;

@@ -355,7 +355,7 @@ onUnmounted(() => {
 <style scoped>
 .ai-ask-user {
 	inline-size: 100%;
-	padding: 12px;
+	padding: 0.6875rem;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--form--field--input--background);

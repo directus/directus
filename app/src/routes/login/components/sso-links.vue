@@ -223,13 +223,13 @@ watch(selectedProviderName, (val) => {
 }
 
 .otp-input {
-	margin-block: 12px;
+	margin-block: 0.6875rem;
 }
 
 .signin-actions {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 0.6875rem;
 }
 
 .sso-link {
@@ -269,7 +269,7 @@ watch(selectedProviderName, (val) => {
 	}
 
 	& + & {
-		margin-block-start: 12px;
+		margin-block-start: 0.6875rem;
 	}
 }
 </style>

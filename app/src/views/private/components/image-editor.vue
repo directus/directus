@@ -667,7 +667,7 @@ function setAspectRatio() {
 }
 
 .dimensions {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }

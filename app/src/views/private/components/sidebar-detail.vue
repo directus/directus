@@ -83,7 +83,7 @@ watch(
 }
 
 .accordion-trigger-icon {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 }
 
 .accordion-trigger-title {

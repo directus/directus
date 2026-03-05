@@ -75,7 +75,7 @@ h5 {
 	margin-block-start: 2em;
 }
 h6 {
-	font-size: 12px;
+	font-size: 0.6875rem;
 	line-height: 22px;
 	margin-block-start: 2em;
 }

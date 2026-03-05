@@ -85,7 +85,7 @@ const user = computed(() => {
 	position: relative;
 	display: block;
 	inline-size: 100%;
-	margin-block-end: 12px;
+	margin-block-end: 0.6875rem;
 	padding-inline-start: 16px;
 	text-align: start;
 
@@ -126,9 +126,9 @@ const user = computed(() => {
 	&::before {
 		position: absolute;
 		inset-block-start: -0.25rem;
-		inset-inline-start: 12px;
+		inset-inline-start: 0.6875rem;
 		z-index: 1;
-		inline-size: calc(100% - 12px);
+		inline-size: calc(100% - 0.6875rem);
 		block-size: calc(100% + 0.5625rem);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
@@ -140,11 +140,11 @@ const user = computed(() => {
 
 	&:not(.last)::after {
 		position: absolute;
-		inset-block-start: 12px;
+		inset-block-start: 0.6875rem;
 		inset-inline-start: 0.1875rem;
 		z-index: 1;
 		inline-size: 1px;
-		block-size: calc(100% + 12px);
+		block-size: calc(100% + 0.6875rem);
 		background-color: var(--theme--background-accent);
 		content: '';
 	}
@@ -165,7 +165,7 @@ const user = computed(() => {
 	}
 
 	& + & {
-		margin-block-start: 12px;
+		margin-block-start: 0.6875rem;
 	}
 }
 

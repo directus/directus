@@ -331,7 +331,7 @@ function selectLog(index: number) {
 
 	.label {
 		font-weight: bold;
-		font-size: 12px;
+		font-size: 0.6875rem;
 		text-transform: uppercase;
 	}
 }

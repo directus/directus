@@ -169,7 +169,7 @@ const translations = computed(() => {
 	align-items: center;
 	justify-content: space-between;
 	color: var(--theme--foreground-subdued);
-	font-size: 12px;
+	font-size: 0.6875rem;
 
 	.lang {
 		font-weight: 600;

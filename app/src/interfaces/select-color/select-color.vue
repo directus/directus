@@ -568,7 +568,7 @@ function useColor() {
 	display: grid;
 	gap: 0;
 	inline-size: 100%;
-	padding: 12px 0.5625rem;
+	padding: 0.6875rem 0.5625rem;
 }
 
 .color-data-inputs .color-data-input {
@@ -584,7 +584,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(.color-type) {
-	--theme--form--field--input--padding: 12px 0.4375rem;
+	--theme--form--field--input--padding: 0.6875rem 0.4375rem;
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
@@ -622,11 +622,11 @@ function useColor() {
 
 .color-data-alphas {
 	display: grid;
-	gap: 12px;
+	gap: 0.6875rem;
 	align-items: baseline;
 	inline-size: 100%;
 	block-size: 45px;
-	padding: 12px 14px;
+	padding: 0.6875rem 14px;
 }
 
 .color-data-alphas .color-data-alpha {

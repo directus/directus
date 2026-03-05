@@ -375,7 +375,7 @@ img {
 		display: flex;
 		justify-content: center;
 		inline-size: 100%;
-		gap: 12px;
+		gap: 0.6875rem;
 
 		::v-deep(.v-button) {
 			transform: translateY(0.5625rem);
@@ -397,7 +397,7 @@ img {
 		inset-inline-start: 0;
 		z-index: 3;
 		inline-size: 100%;
-		padding: 0.4375rem 12px;
+		padding: 0.4375rem 0.6875rem;
 		line-height: 1.2;
 	}
 

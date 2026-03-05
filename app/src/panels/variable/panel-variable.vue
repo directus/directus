@@ -49,7 +49,7 @@ const value = computed({
 	align-content: center;
 	inline-size: 100%;
 	block-size: 100%;
-	padding: 12px;
+	padding: 0.6875rem;
 
 	&.show-header {
 		padding-block-start: 0.3125rem;

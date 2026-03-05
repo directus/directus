@@ -240,7 +240,7 @@ function useComparisonIndicator() {
 }
 
 .header-icon {
-	margin-inline-end: 12px !important;
+	margin-inline-end: 0.6875rem !important;
 }
 
 .warning {

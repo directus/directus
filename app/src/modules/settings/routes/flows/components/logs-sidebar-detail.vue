@@ -127,7 +127,7 @@ function onToggle(open: boolean) {
 }
 
 .v-detail + .v-detail {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 }
 
 .v-icon {

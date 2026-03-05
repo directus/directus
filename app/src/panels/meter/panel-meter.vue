@@ -166,7 +166,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 	inline-size: 100%;
 	block-size: 100%;
 	position: relative;
-	padding: 12px;
+	padding: 0.6875rem;
 	display: grid;
 	place-items: center center;
 	justify-content: center;

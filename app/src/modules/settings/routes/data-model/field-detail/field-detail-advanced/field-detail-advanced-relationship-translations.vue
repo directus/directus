@@ -189,7 +189,7 @@ const relatedPrimaryKey = computed(
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 12px 28px;
+	gap: 0.6875rem 28px;
 
 	.v-input.matches {
 		--v-input-color: var(--theme--primary);
@@ -237,7 +237,7 @@ const relatedPrimaryKey = computed(
 }
 
 .relational-triggers {
-	--theme--form--column-gap: 12px;
+	--theme--form--column-gap: 0.6875rem;
 	--theme--form--row-gap: 24px;
 
 	@include mixins.form-grid;

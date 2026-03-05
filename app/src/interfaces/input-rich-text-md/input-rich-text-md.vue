@@ -572,10 +572,10 @@ textarea {
 }
 
 .table-options {
-	--theme--form--row-gap: 12px;
-	--theme--form--column-gap: 12px;
+	--theme--form--row-gap: 0.6875rem;
+	--theme--form--column-gap: 0.6875rem;
 	min-inline-size: 280px;
-	padding: 12px;
+	padding: 0.6875rem;
 	@include mixins.form-grid;
 
 	.v-input {

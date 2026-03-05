@@ -489,7 +489,7 @@ function useOnUpdate() {
 
 .precision-scale {
 	display: grid;
-	gap: 12px;
+	gap: 0.6875rem;
 	grid-template-columns: 1fr 1fr;
 }
 

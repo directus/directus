@@ -220,7 +220,7 @@ export default defineTheme({
 							boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
 							height: '52px',
-							padding: '12px',
+							padding: '0.6875rem',
 						},
 					},
 				},

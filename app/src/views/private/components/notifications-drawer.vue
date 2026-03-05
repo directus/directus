@@ -476,7 +476,7 @@ function clearFilters() {
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {
-		margin: 0 calc(0.4375rem + var(--theme--border-width)) 12px;
+		margin: 0 calc(0.4375rem + var(--theme--border-width)) 0.6875rem;
 	}
 }
 
@@ -504,6 +504,6 @@ function clearFilters() {
 }
 
 .nav-divider {
-	margin-inline: 12px;
+	margin-inline: 0.6875rem;
 }
 </style>

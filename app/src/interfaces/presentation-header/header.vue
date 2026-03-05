@@ -415,7 +415,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 		.actions-container {
 			display: flex;
-			gap: 12px;
+			gap: 0.6875rem;
 			align-items: center;
 
 			.v-button {

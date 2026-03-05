@@ -175,7 +175,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	flex-direction: column;
 	align-items: flex-start;
 	align-self: stretch;
-	gap: 12px var(--theme--form--column-gap);
+	gap: 0.6875rem var(--theme--form--column-gap);
 
 	@media (min-width: 960px) {
 		block-size: 80px;
@@ -313,6 +313,6 @@ function getDeltaOptionUser(deltaOption: any) {
 }
 
 .meta-selection-option {
-	--v-list-item-padding: 0.25rem 12px;
+	--v-list-item-padding: 0.25rem 0.6875rem;
 }
 </style>

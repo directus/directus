@@ -145,7 +145,7 @@ const hasHiddenCollections = computed(
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 1;
-	padding: 12px;
+	padding: 0.6875rem;
 	padding-block-end: 0;
 	background-color: var(--theme--navigation--background);
 }

@@ -51,7 +51,7 @@ const expandedText = computed(() => {
 	align-items: start;
 	text-align: start;
 	gap: 0.3125rem;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 
@@ -121,9 +121,9 @@ const expandedText = computed(() => {
 }
 
 .reasoning-content {
-	font-size: 12px;
+	font-size: 0.6875rem;
 	color: var(--theme--foreground-normal);
-	padding-inline-start: 12px;
+	padding-inline-start: 0.6875rem;
 	padding-block: 0.25rem;
 	line-height: 1.6;
 	margin-inline-start: 0.25rem;

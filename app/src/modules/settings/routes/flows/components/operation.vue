@@ -329,7 +329,7 @@ function pointerLeave() {
 	}
 
 	.block {
-		padding: 0 12px;
+		padding: 0 0.6875rem;
 		block-size: 100%;
 		overflow-y: auto;
 

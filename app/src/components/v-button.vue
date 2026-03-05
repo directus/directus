@@ -350,10 +350,10 @@ async function onClick(event: MouseEvent) {
 
 .button.x-small {
 	--v-button-height: 28px;
-	--v-button-font-size: 12px;
+	--v-button-font-size: 0.6875rem;
 	--v-button-min-width: 60px;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.small {
@@ -361,14 +361,14 @@ async function onClick(event: MouseEvent) {
 	--v-button-font-size: 14px;
 	--v-button-min-width: 120px;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.large {
 	--v-button-height: 52px;
 	--v-button-min-width: 154px;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.x-large {
@@ -376,7 +376,7 @@ async function onClick(event: MouseEvent) {
 	--v-button-font-size: 18px;
 	--v-button-min-width: 180px;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.icon {

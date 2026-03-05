@@ -212,7 +212,7 @@ async function setNestedSort(updates?: Field[]) {
 	--v-button-background-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-accent);
 
-	margin-block-start: -12px;
+	margin-block-start: -0.6875rem;
 }
 
 .add-field-advanced {

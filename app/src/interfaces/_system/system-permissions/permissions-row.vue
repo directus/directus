@@ -70,7 +70,7 @@ const emit = defineEmits<{
 	.name {
 		flex: 1;
 		inline-size: 1px;
-		padding: 0 12px;
+		padding: 0 0.6875rem;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -82,10 +82,10 @@ const emit = defineEmits<{
 		background: var(--theme--background);
 		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
-		font-size: 12px;
+		font-size: 0.6875rem;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
-		padding-inline-end: 12px;
+		padding-inline-end: 0.6875rem;
 		box-shadow:
 			-12px 0 10px 2px var(--theme--background),
 			-12px 0 12px 2px var(--theme--background);
@@ -116,7 +116,7 @@ const emit = defineEmits<{
 
 	.action {
 		block-size: 48px;
-		padding-inline-start: 12px;
+		padding-inline-start: 0.6875rem;
 		text-align: center;
 	}
 
@@ -137,7 +137,7 @@ const emit = defineEmits<{
 	}
 
 	.remove {
-		padding: 0 12px;
+		padding: 0 0.6875rem;
 
 		.v-icon {
 			--v-icon-size: 20px;

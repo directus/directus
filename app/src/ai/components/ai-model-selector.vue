@@ -78,7 +78,7 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 	border-radius: var(--theme--border-radius);
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
-	font-size: 12px;
+	font-size: 0.6875rem;
 	cursor: pointer;
 	transition: all var(--fast) var(--transition);
 
@@ -93,8 +93,8 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 	block-size: 16px;
 
 	&.small {
-		inline-size: 12px;
-		block-size: 12px;
+		inline-size: 0.6875rem;
+		block-size: 0.6875rem;
 	}
 }
 

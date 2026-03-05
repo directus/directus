@@ -412,7 +412,7 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	gap: 0.4375rem;
-	padding: 12px 16px;
+	padding: 0.6875rem 16px;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	min-inline-size: 0;

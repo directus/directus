@@ -190,7 +190,7 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .options {
-	margin-inline-start: 12px;
+	margin-inline-start: 0.6875rem;
 }
 
 .nested {

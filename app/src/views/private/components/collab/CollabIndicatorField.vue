@@ -62,6 +62,6 @@ const users = computed(() => {
 }
 
 .v-avatar {
-	font-size: 12px;
+	font-size: 0.6875rem;
 }
 </style>

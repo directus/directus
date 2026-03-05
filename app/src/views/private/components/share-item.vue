@@ -114,7 +114,7 @@ const formattedTime = computed(() => {
 
 .item-date {
 	color: var(--theme--foreground-subdued);
-	font-size: 12px;
+	font-size: 0.6875rem;
 }
 
 .item-header {
@@ -137,7 +137,7 @@ const formattedTime = computed(() => {
 
 .share-uses {
 	margin-inline-end: 0.3125rem;
-	font-size: 12px;
+	font-size: 0.6875rem;
 
 	&.no-left {
 		color: var(--theme--danger);
@@ -146,7 +146,7 @@ const formattedTime = computed(() => {
 
 .share-status {
 	font-weight: 600;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	text-align: end;
 	text-transform: uppercase;
 
@@ -184,7 +184,7 @@ const formattedTime = computed(() => {
 		inset-inline-end: 0;
 		display: flex;
 		align-items: center;
-		font-size: 12px;
+		font-size: 0.6875rem;
 		white-space: nowrap;
 		text-align: end;
 		opacity: 1;

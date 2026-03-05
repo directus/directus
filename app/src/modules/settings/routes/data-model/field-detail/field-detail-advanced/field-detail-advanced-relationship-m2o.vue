@@ -168,7 +168,7 @@ const onDeleteOptions = computed(() =>
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 12px 32px;
+	gap: 0.6875rem 32px;
 
 	.v-input.matches {
 		--v-input-color: var(--theme--primary);
@@ -218,7 +218,7 @@ const onDeleteOptions = computed(() =>
 }
 
 .relational-triggers {
-	--theme--form--column-gap: 12px;
+	--theme--form--column-gap: 0.6875rem;
 	--theme--form--row-gap: 24px;
 
 	@include mixins.form-grid;

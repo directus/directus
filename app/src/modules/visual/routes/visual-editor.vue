@@ -311,7 +311,7 @@ function useVersionSelection() {
 .ai-sidebar {
 	block-size: 100%;
 	inline-size: 100%;
-	padding: 12px;
+	padding: 0.6875rem;
 	background-color: var(--theme--sidebar--background);
 	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 	display: flex;
@@ -323,7 +323,7 @@ function useVersionSelection() {
 }
 
 .version-select-activator {
-	--v-chip-padding: 0 0.3125rem 0 12px;
+	--v-chip-padding: 0 0.3125rem 0 0.6875rem;
 	--v-chip-color: var(--theme--foreground-accent);
 	--v-chip-color-hover: var(--v-chip-color);
 	--v-chip-background-color-hover: color-mix(

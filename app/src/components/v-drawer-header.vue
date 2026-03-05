@@ -99,15 +99,15 @@ defineEmits<{
 	@media (width > 400px) {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 0.6875rem;
 	}
 }
 
 .primary {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding-block: 12px;
+	gap: 0.6875rem;
+	padding-block: 0.6875rem;
 
 	@media (width > 400px) {
 		display: contents;
@@ -145,8 +145,8 @@ defineEmits<{
 	--v-breadcrumb-color: var(--theme--header--headline--foreground);
 
 	font-weight: 600;
-	font-size: 12px;
-	line-height: 12px;
+	font-size: 0.6875rem;
+	line-height: 0.6875rem;
 	white-space: nowrap;
 	font-family: var(--theme--header--headline--font-family);
 }

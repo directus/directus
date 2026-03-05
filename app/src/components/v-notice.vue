@@ -74,7 +74,7 @@ const iconName = computed(() => {
 	justify-content: flex-start;
 	inline-size: auto;
 	min-block-size: var(--theme--form--field--input--height);
-	padding: 12px 16px;
+	padding: 0.6875rem 16px;
 	color: var(--v-notice-color, var(--theme--foreground));
 	line-height: 22px;
 	background-color: var(--v-notice-background-color, var(--theme--background-normal));

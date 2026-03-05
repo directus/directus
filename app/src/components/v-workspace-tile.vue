@@ -410,7 +410,7 @@ function useDragDrop() {
 	padding: 2px 11.5px 11.5px 2px;
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
@@ -443,11 +443,11 @@ function useDragDrop() {
 	display: flex;
 	align-items: center;
 	block-size: 42px;
-	padding: 12px;
+	padding: 0.6875rem;
 }
 
 .footer {
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 	border-block-start: 2px solid var(--theme--border-color-subdued);
 	margin-block-start: auto;
 	padding-block-start: 0.4375rem;

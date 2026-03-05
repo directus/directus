@@ -254,7 +254,7 @@ function saveOperation() {
 .required {
 	--v-icon-color: var(--theme--primary);
 
-	margin-block-start: -12px;
+	margin-block-start: -0.6875rem;
 	margin-inline-start: -0.25rem;
 }
 
