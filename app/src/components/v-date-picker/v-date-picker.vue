@@ -369,8 +369,8 @@ function setToNow() {
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		inline-size: 2.5rem;
-		block-size: 2.5rem;
+		inline-size: 2rem;
+		block-size: 2rem;
 		color: var(--theme--foreground-accent);
 		background-color: transparent;
 		cursor: pointer;
