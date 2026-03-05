@@ -228,7 +228,7 @@ function onInput(event: Event) {
 			justify-content: space-between;
 			inline-size: 100%;
 			block-size: 0.25rem;
-			padding: 0 7px;
+			padding: 0 0.375rem;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			pointer-events: none;
@@ -245,7 +245,7 @@ function onInput(event: Event) {
 		.thumb-label-wrapper {
 			position: absolute;
 			inset-block-start: 100%;
-			inset-inline-start: 7px;
+			inset-inline-start: 0.375rem;
 			inline-size: calc(100% - 14px);
 			overflow: visible;
 			pointer-events: none;

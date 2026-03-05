@@ -99,7 +99,7 @@
 .cropper-center::before {
 	inset-block-start: 0;
 	inset-inline-start: -0.1875rem;
-	inline-size: 7px;
+	inline-size: 0.375rem;
 	block-size: 1px;
 }
 
@@ -107,7 +107,7 @@
 	inset-block-start: -0.1875rem;
 	inset-inline-start: 0;
 	inline-size: 1px;
-	block-size: 7px;
+	block-size: 0.375rem;
 }
 
 .cropper-face,

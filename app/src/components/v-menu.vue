@@ -598,7 +598,7 @@ function usePopper(
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-block-end: 7px;
+			inset-block-end: 0.375rem;
 		}
 	}
 }
@@ -609,7 +609,7 @@ function usePopper(
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-block-start: 7px;
+			inset-block-start: 0.375rem;
 		}
 	}
 }
@@ -625,11 +625,11 @@ function usePopper(
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-inline-start: 7px;
+			inset-inline-start: 0.375rem;
 
 			html[dir='rtl'] & {
 				inset-inline-start: unset;
-				inset-inline-end: 7px;
+				inset-inline-end: 0.375rem;
 			}
 		}
 	}
@@ -646,11 +646,11 @@ function usePopper(
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-inline-end: 7px;
+			inset-inline-end: 0.375rem;
 
 			html[dir='rtl'] & {
 				inset-inline-end: unset;
-				inset-inline-start: 7px;
+				inset-inline-start: 0.375rem;
 			}
 		}
 	}

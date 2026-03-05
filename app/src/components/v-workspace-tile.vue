@@ -492,7 +492,7 @@ function useDragDrop() {
 	display: flex;
 	gap: 0.25rem;
 	align-items: center;
-	padding: 7px;
+	padding: 0.375rem;
 	border-start-end-radius: var(--theme--border-radius);
 	border-end-end-radius: var(--theme--border-radius);
 	border-end-start-radius: var(--theme--border-radius);

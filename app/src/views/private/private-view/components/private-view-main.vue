@@ -175,7 +175,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 .scroll-shadow {
 	position: absolute;
 	inset-block: 0;
-	inline-size: 7px;
+	inline-size: 0.375rem;
 	pointer-events: none;
 	z-index: 6;
 	opacity: 0;

@@ -77,7 +77,7 @@ const file = computed(() => toLightboxFile(props.part));
 		flex-shrink: 0;
 
 		--v-icon-size: 34px;
-		--v-icon-file-label-size: 7px;
+		--v-icon-file-label-size: 0.375rem;
 	}
 }
 </style>

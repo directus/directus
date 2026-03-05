@@ -151,7 +151,7 @@ function focusIntoView(cid: ClientID) {
 
 .collab-header-popover {
 	padding: 0.25rem;
-	padding-block-end: 7px;
+	padding-block-end: 0.375rem;
 	display: flex;
 	flex-direction: column;
 }

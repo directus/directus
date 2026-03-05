@@ -245,7 +245,7 @@ function emitValue() {
 	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
 	--search-input-radius: calc(var(--button-size) / 2);
 	--icon-size: 18px;
-	--icon-search-padding-left: 7px; // visually center in closed filter
+	--icon-search-padding-left: 0.375rem; // visually center in closed filter
 	--icon-search-padding-right: 0.25rem;
 	--icon-filter-margin-right: 8px;
 

@@ -210,7 +210,7 @@ function useComparisonIndicator() {
 	.edit-dot {
 		position: absolute;
 		inset-block-start: 14px;
-		inset-inline-start: -7px;
+		inset-inline-start: -0.375rem;
 		display: block;
 		inline-size: 0.25rem;
 		block-size: 0.25rem;

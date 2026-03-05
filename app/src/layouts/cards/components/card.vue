@@ -224,8 +224,8 @@ function handleClick() {
 
 	&::before {
 		position: absolute;
-		inset-block-start: 7px;
-		inset-inline-start: 7px;
+		inset-block-start: 0.375rem;
+		inset-inline-start: 0.375rem;
 		z-index: 2;
 		inline-size: 18px;
 		block-size: 18px;

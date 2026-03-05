@@ -229,8 +229,8 @@ function useComparisonIndicator() {
 
 .v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	inset-block-start: 7px;
-	inset-inline-start: -7px;
+	inset-block-start: 0.375rem;
+	inset-inline-start: -0.375rem;
 	display: block;
 	inline-size: 0.25rem;
 	block-size: 0.25rem;
