@@ -91,7 +91,7 @@ const circleStyle = computed(() => ({
 
 	&.large {
 		--v-progress-circular-size: 2.6875rem;
-		--v-progress-circular-line-size: 2.5px;
+		--v-progress-circular-line-size: 2.5px; /* stylelint-disable-line unit-disallowed-list -- SVG stroke sub-pixel */
 	}
 
 	&.x-large {
@@ -143,6 +143,7 @@ const circleStyle = computed(() => ({
 	}
 }
 
+/* stylelint-disable unit-disallowed-list -- SVG stroke-dasharray requires px */
 @keyframes stroke {
 	0% {
 		stroke-dasharray: 0, 78.5px;
@@ -156,4 +157,6 @@ const circleStyle = computed(() => ({
 		stroke-dasharray: 0, 78.5px;
 	}
 }
+
+/* stylelint-enable unit-disallowed-list */
 </style>

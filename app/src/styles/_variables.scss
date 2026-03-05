@@ -18,8 +18,8 @@
 	--form-column-width: 16.875rem;
 	--form-column-min-width: 12.375rem;
 	--form-column-max-width: 21.375rem;
-	--focus-ring-width: 2px;
-	--focus-ring-offset: 2px;
+	--focus-ring-width: 2px; /* stylelint-disable-line unit-disallowed-list -- must be px for outline rendering */
+	--focus-ring-offset: 2px; /* stylelint-disable-line unit-disallowed-list -- must be px for outline rendering */
 	--focus-ring-offset-invert: calc(-1 * var(--focus-ring-width));
 	--focus-ring-offset-inset: calc(-1 * (var(--focus-ring-width) + var(--focus-ring-offset)));
 	--focus-ring-radius: var(--theme--border-radius);

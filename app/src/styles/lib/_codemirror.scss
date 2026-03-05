@@ -491,7 +491,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-linewidget {
 	position: relative;
 	z-index: 2;
-	padding: 0.1px; /* Force widget margins to stay inside of the container */
+	padding: 0.1px; /* stylelint-disable-line unit-disallowed-list -- sub-pixel hack to force widget margins */
 }
 
 // .CodeMirror-widget {}
@@ -569,7 +569,7 @@ div.CodeMirror-dragcursors {
 
 /* Used to force a border model for a node */
 .cm-force-border {
-	padding-inline-end: 0.1px;
+	padding-inline-end: 0.1px; /* stylelint-disable-line unit-disallowed-list -- sub-pixel hack */
 }
 
 @media print {

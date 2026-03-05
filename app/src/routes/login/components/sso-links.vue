@@ -233,7 +233,7 @@ watch(selectedProviderName, (val) => {
 }
 
 .sso-link {
-	$sso-link-border-width: 2px;
+	$sso-link-border-width: 2px; /* stylelint-disable-line unit-disallowed-list -- SCSS variable for border calc */
 
 	display: flex;
 	inline-size: 100%;

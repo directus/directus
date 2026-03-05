@@ -467,7 +467,7 @@ function setToNow() {
 	}
 
 	.calendar-cell-trigger[data-selected]:focus {
-		--focus-ring-offset: 2px; // Avoid reset by _base.scss L52-60
+		--focus-ring-offset: 2px; /* stylelint-disable-line unit-disallowed-list */ // Avoid reset by _base.scss L52-60
 		outline: var(--focus-ring-width) solid var(--focus-ring-color);
 		outline-offset: var(--focus-ring-offset);
 	}

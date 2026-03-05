@@ -83,6 +83,7 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 .message-text[data-role='user'].has-overflow:not(.is-open) .content-wrapper {
+	/* stylelint-disable-next-line unit-disallowed-list -- v-bind bridge */
 	max-block-size: calc(v-bind(MESSAGE_TEXT_MAX_HEIGHT) * 1px);
 	overflow: hidden;
 

@@ -426,6 +426,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	--comparison-modal--padding-y: 1.125rem;
 	--comparison-modal--border-radius: var(--theme--border-radius);
 	--comparison-modal--peek-width: calc(0.3125rem);
+	/* stylelint-disable-next-line unit-disallowed-list -- fallback value */
 	--comparison-modal--divider-width: var(--theme--border-width, 2px);
 	--comparison-modal--divider-color: var(--theme--border-color-accent);
 	--comparison-modal--divider-dash: calc(var(--comparison-modal--divider-width) * 2);
