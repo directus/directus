@@ -207,7 +207,7 @@ const relatedPrimaryKey = computed(
 		}
 
 		&:first-of-type {
-			inset-block-end: 161px;
+			inset-block-end: 9.0625rem;
 			inset-inline-start: 32.5%;
 		}
 
