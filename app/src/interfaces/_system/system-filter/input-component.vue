@@ -262,6 +262,6 @@ input {
 }
 
 .date-input {
-	min-inline-size: 400px;
+	min-inline-size: 22.5rem;
 }
 </style>

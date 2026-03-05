@@ -373,8 +373,8 @@ function closeList() {
 
 .menu-container {
 	min-inline-size: 18rem;
-	max-inline-size: 400px;
-	max-block-size: 400px;
+	max-inline-size: 22.5rem;
+	max-block-size: 22.5rem;
 	overflow-y: auto;
 }
 

@@ -350,7 +350,7 @@ const logoURL = computed<string | null>(() => {
 
 		.foreground {
 			inline-size: 80%;
-			max-inline-size: 400px;
+			max-inline-size: 22.5rem;
 		}
 
 		.note-container {

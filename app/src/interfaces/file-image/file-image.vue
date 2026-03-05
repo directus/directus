@@ -443,7 +443,7 @@ img {
 	&.fill {
 		.image-preview {
 			block-size: auto;
-			max-block-size: 400px;
+			max-block-size: 22.5rem;
 		}
 	}
 

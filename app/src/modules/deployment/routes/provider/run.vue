@@ -486,8 +486,8 @@ onUnmounted(() => {
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	padding: 0.875rem;
-	min-block-size: 400px;
-	max-block-size: calc(100vh - 400px);
+	min-block-size: 22.5rem;
+	max-block-size: calc(100vh - 22.5rem);
 	overflow: hidden;
 }
 
