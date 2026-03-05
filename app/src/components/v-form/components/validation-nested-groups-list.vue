@@ -29,7 +29,7 @@ const props = defineProps<{
 		:style="{
 			listStyleType: (props.listLogic ?? 'and') === 'and' ? 'disc' : 'square',
 			listStylePosition: 'outside',
-			paddingInlineStart: props.depth === 0 ? '22px' : '1rem',
+			paddingInlineStart: props.depth === 0 ? '1.25rem' : '1rem',
 		}"
 	>
 		<li v-for="(item, idx) in props.items" :key="idx" class="group-item">
