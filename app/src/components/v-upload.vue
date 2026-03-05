@@ -576,7 +576,7 @@ defineExpose({ abort });
 
 	.v-progress-linear {
 		position: absolute;
-		inset-block-end: 30px;
+		inset-block-end: 1.6875rem;
 		inset-inline-start: 1.8125rem;
 		inline-size: calc(100% - 3.625rem);
 	}

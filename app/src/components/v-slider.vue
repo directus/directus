@@ -140,7 +140,7 @@ function onInput(event: Event) {
 		}
 
 		&.thumb-label-visible {
-			margin-block-end: 30px;
+			margin-block-end: 1.6875rem;
 		}
 
 		input {

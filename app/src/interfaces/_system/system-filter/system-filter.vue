@@ -331,7 +331,7 @@ function addKeyAsNode() {
 			display: flex;
 			align-items: center;
 			inline-size: 100%;
-			block-size: 30px;
+			block-size: 1.6875rem;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
 			background-color: var(--theme--form--field--input--background);
