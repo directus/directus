@@ -197,7 +197,7 @@ const options = computed({
 }
 
 .v-divider {
-	margin: 28px 0;
+	margin: 1.5625rem 0;
 }
 
 :deep(.v-notice.normal) {

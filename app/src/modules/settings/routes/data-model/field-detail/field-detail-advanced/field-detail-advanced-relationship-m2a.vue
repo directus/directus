@@ -235,7 +235,7 @@ const unsortableJunctionFields = computed(() => {
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 0.6875rem 28px;
+	gap: 0.6875rem 1.5625rem;
 
 	.field-wrapper {
 		display: flex;

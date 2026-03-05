@@ -44,7 +44,7 @@ const sanitizedContent = computed(() => dompurify.sanitize(props.content));
 }
 
 :deep(h1) {
-	font-size: 28px;
+	font-size: 1.5625rem;
 	font-family: var(--theme--fonts--display--font-family);
 }
 

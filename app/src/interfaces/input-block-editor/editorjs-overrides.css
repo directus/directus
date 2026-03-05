@@ -586,7 +586,7 @@
 }
 
 .codex-editor .ce-block hr::after {
-	font-size: 28px;
+	font-size: 1.5625rem;
 	line-height: 0;
 	letter-spacing: 0.5143em;
 	content: '...';

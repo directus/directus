@@ -64,7 +64,7 @@ const circleStyle = computed(() => ({
 		--v-progress-circular-background-color  [var(--theme--form--field--input--border-color)]
 		--v-progress-circular-transition        [400ms]
 		--v-progress-circular-speed             [2s]
-		--v-progress-circular-size              [28px]
+		--v-progress-circular-size              [1.5625rem]
 		--v-progress-circular-line-size         [0.1875rem]
 
 */
@@ -74,8 +74,8 @@ const circleStyle = computed(() => ({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: var(--v-progress-circular-size, 28px);
-	block-size: var(--v-progress-circular-size, 28px);
+	inline-size: var(--v-progress-circular-size, 1.5625rem);
+	block-size: var(--v-progress-circular-size, 1.5625rem);
 
 	&.x-small {
 		--v-progress-circular-size: 0.6875rem;
@@ -103,8 +103,8 @@ const circleStyle = computed(() => ({
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;
-		inline-size: var(--v-progress-circular-size, 28px);
-		block-size: var(--v-progress-circular-size, 28px);
+		inline-size: var(--v-progress-circular-size, 1.5625rem);
+		block-size: var(--v-progress-circular-size, 1.5625rem);
 
 		&-path {
 			transition: stroke-dasharray var(--v-progress-circular-transition, 400ms) ease-in-out;

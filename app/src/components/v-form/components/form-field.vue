@@ -337,6 +337,6 @@ function useComputedValues() {
 }
 
 .label-spacer {
-	block-size: 28px;
+	block-size: 1.5625rem;
 }
 </style>

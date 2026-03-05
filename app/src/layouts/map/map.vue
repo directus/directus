@@ -223,7 +223,7 @@ limitWritable.value = selectedSize;
 	background-color: transparent !important;
 
 	.pagination {
-		--v-button-height: 28px;
+		--v-button-height: 1.5625rem;
 
 		display: inline-block;
 		margin-inline-end: 0.5625rem;

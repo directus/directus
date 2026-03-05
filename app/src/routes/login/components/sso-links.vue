@@ -245,7 +245,7 @@ watch(selectedProviderName, (val) => {
 	cursor: pointer;
 
 	.sso-icon {
-		--v-icon-size: 28px;
+		--v-icon-size: 1.5625rem;
 
 		display: flex;
 		align-items: center;

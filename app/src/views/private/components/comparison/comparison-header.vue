@@ -166,7 +166,7 @@ function getDeltaOptionUser(deltaOption: any) {
 <style lang="scss" scoped>
 .comparison-header {
 	--comparison-header--padding-y: 1.125rem;
-	--comparison-header--padding-x: var(--comparison-modal--padding-x, 28px);
+	--comparison-header--padding-x: var(--comparison-modal--padding-x, 1.5625rem);
 
 	display: flex;
 	padding-block: var(--comparison-header--padding-y);

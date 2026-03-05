@@ -494,7 +494,7 @@ function setToNow() {
 
 	.calendar-year-input {
 		--v-input-font-family: inherit;
-		block-size: 28px;
+		block-size: 1.5625rem;
 		background-color: transparent;
 
 		:deep(.input) {

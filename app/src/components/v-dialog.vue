@@ -200,7 +200,7 @@ function useOverlayFocusTrap() {
 
 .container :slotted(.v-card) {
 	--v-card-min-width: calc(100vw - 40px);
-	--v-card-padding: 28px;
+	--v-card-padding: 1.5625rem;
 	--v-card-background-color: var(--theme--background);
 }
 
