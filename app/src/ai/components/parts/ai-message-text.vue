@@ -135,7 +135,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 1rem;
 	font-weight: 600;
 	line-height: 1.4;
-	margin: 0.75rem 0 0.375rem;
+	margin: 0.75rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -146,7 +146,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 0.9375rem;
 	font-weight: 600;
 	line-height: 1.5;
-	margin: 0.625rem 0 0.375rem;
+	margin: 0.625rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -157,7 +157,7 @@ useResizeObserver(contentRef, (entries) => {
 	font-size: 0.875rem;
 	font-weight: 600;
 	line-height: 1.5;
-	margin: 0.5rem 0 0.375rem;
+	margin: 0.5rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -198,7 +198,7 @@ useResizeObserver(contentRef, (entries) => {
 /* Code */
 :deep(code) {
 	background-color: var(--ai-message-code-background);
-	padding: 0.125rem 0.375rem;
+	padding: 0.125rem 0.3125rem;
 	border-radius: 0.1875rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-size: 0.875em;

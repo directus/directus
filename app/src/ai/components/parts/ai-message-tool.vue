@@ -111,7 +111,7 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 .tool-error {
 	display: flex;
 	align-items: center;
-	gap: 0.375rem;
+	gap: 0.3125rem;
 	padding: 0.5rem;
 	margin-block-start: 0.5rem;
 	border-radius: var(--theme--border-radius);

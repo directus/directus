@@ -9,7 +9,7 @@
 <style scoped>
 .loading-indicator {
 	display: flex;
-	gap: 0.375rem;
+	gap: 0.3125rem;
 	padding-inline: 3px;
 	align-items: center;
 	block-size: 32px;

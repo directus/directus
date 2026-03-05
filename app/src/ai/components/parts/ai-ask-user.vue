@@ -418,7 +418,7 @@ onUnmounted(() => {
 
 .question-tabs {
 	display: flex;
-	gap: 0.375rem;
+	gap: 0.3125rem;
 	padding-block: 4px;
 	overflow-x: auto;
 	scrollbar-width: none;
@@ -571,7 +571,7 @@ onUnmounted(() => {
 
 .action-buttons {
 	display: flex;
-	gap: 0.375rem;
+	gap: 0.3125rem;
 }
 
 .chat-about-this {

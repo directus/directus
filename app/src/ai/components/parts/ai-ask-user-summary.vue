@@ -44,7 +44,7 @@ function getAnswer(questionId: string): string | undefined {
 }
 
 .completed-answer {
-	padding: 0.375rem 0;
+	padding: 0.3125rem 0;
 
 	& + & {
 		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);

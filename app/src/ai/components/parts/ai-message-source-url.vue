@@ -23,7 +23,7 @@ defineProps<{
 	a {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.375rem;
+		gap: 0.3125rem;
 		padding: 0.5rem 0.75rem;
 		border-radius: var(--theme--border-radius);
 		background-color: var(--theme--background-subdued);
