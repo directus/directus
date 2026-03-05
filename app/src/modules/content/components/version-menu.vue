@@ -616,7 +616,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 }
 
 .version-list {
-	--v-list-max-width: 290px;
+	--v-list-max-width: 16.3125rem;
 }
 
 .version-item {
