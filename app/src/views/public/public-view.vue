@@ -164,7 +164,7 @@ const logoURL = computed<string | null>(() => {
 			max-inline-size: 872px;
 
 			.content {
-				inline-size: 712px;
+				inline-size: 40.0625rem;
 			}
 		}
 
