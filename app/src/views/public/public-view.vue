@@ -415,8 +415,8 @@ const logoURL = computed<string | null>(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 56px;
-		block-size: 56px;
+		inline-size: 3.125rem;
+		block-size: 3.125rem;
 		background-color: var(--project-color);
 		border-radius: calc(var(--theme--border-radius) - 2px);
 
