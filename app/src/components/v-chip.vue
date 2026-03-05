@@ -115,7 +115,7 @@ function onCloseClick(event: MouseEvent) {
 	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);
 	font-family: var(--v-chip-font-family);
-	line-height: 22px;
+	line-height: 1.25rem;
 	background-color: var(--v-chip-background-color, var(--theme--background-normal));
 	border: var(--theme--border-width) solid
 		var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
@@ -163,7 +163,7 @@ function onCloseClick(event: MouseEvent) {
 		block-size: 44px;
 		padding: var(--v-chip-padding, 0 1.125rem);
 		font-size: 0.875rem;
-		border-radius: 22px;
+		border-radius: 1.25rem;
 	}
 
 	&.x-large {

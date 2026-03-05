@@ -263,7 +263,7 @@
 /* Quote block */
 
 .codex-editor .cdx-block.cdx-quote {
-	padding-inline-start: 22px;
+	padding-inline-start: 1.25rem;
 }
 
 .codex-editor .ce-block blockquote {
@@ -512,8 +512,8 @@
 }
 
 .codex-editor .ce-block h4 {
-	font-size: 22px;
-	line-height: 28px;
+	font-size: 1.25rem;
+	line-height: 1.25;
 }
 
 .codex-editor .ce-block h5 {
