@@ -407,7 +407,7 @@ function useDragDrop() {
 	inset-block-end: 0;
 	inset-inline-end: 0;
 	z-index: 2;
-	padding: 2px 11.5px 11.5px 2px;
+	padding: 0.125rem 0.625rem 0.625rem 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
 	font-size: 0.6875rem;
