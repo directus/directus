@@ -301,7 +301,7 @@ const stageChanges = () => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 160px;
+	inline-size: 9rem;
 	block-size: 5.625rem;
 	margin-block-end: 0.4375rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
