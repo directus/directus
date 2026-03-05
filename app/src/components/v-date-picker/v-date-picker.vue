@@ -344,8 +344,8 @@ function setToNow() {
 <style lang="scss" scoped>
 .v-date-picker {
 	.icon {
-		inline-size: 1.5rem;
-		block-size: 1.5rem;
+		inline-size: 1.1875rem;
+		block-size: 1.1875rem;
 	}
 
 	.calendar {
@@ -525,7 +525,7 @@ function setToNow() {
 	}
 
 	.time-field-segment {
-		padding: 0.8125rem 1.5rem;
+		padding: 0.8125rem 1.1875rem;
 		background: var(--theme--form--field--input--background-subdued);
 	}
 

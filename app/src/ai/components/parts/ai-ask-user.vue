@@ -521,8 +521,8 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
-	inline-size: 1.5rem;
-	block-size: 1.5rem;
+	inline-size: 1.1875rem;
+	block-size: 1.1875rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-normal);
 	font-size: 0.5625rem;

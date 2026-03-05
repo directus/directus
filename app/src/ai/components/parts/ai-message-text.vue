@@ -99,7 +99,7 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Headings */
 :deep(h1) {
-	font-size: 1.5rem;
+	font-size: 1.1875rem;
 	font-weight: 700;
 	line-height: 1.3;
 	margin: 0.8125rem 0 0.375rem;
@@ -222,7 +222,7 @@ useResizeObserver(contentRef, (entries) => {
 :deep(ul),
 :deep(ol) {
 	margin: 0.375rem 0;
-	padding-inline-start: 1.5rem;
+	padding-inline-start: 1.1875rem;
 }
 
 :deep(li) {
@@ -325,7 +325,7 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Horizontal Rule */
 :deep(hr) {
-	margin: 1.5rem 0;
+	margin: 1.1875rem 0;
 	border: none;
 	border-block-start: var(--theme--border-width) solid var(--ai-message-text-border-color);
 }

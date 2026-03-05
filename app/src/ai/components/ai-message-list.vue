@@ -33,7 +33,7 @@ onMounted(() => {
 .ai-message-list {
 	display: flex;
 	flex-direction: column;
-	gap: 1.5rem;
+	gap: 1.1875rem;
 	padding-block-end: 0.8125rem;
 	position: relative;
 }
