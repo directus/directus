@@ -366,7 +366,7 @@ async function onClick(event: MouseEvent) {
 
 .button.large {
 	--v-button-height: 2.9375rem;
-	--v-button-min-width: 154px;
+	--v-button-min-width: 8.6875rem;
 
 	padding: 0 0.6875rem;
 }
