@@ -574,8 +574,8 @@ function revert(values: Record<string, any>) {
 		}
 
 		@media (width > 640px) {
-			inline-size: 144px;
-			block-size: 144px;
+			inline-size: 8.125rem;
+			block-size: 8.125rem;
 			margin-inline-end: 1.25rem;
 		}
 	}
