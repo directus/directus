@@ -568,7 +568,7 @@ function useColor() {
 	display: grid;
 	gap: 0;
 	inline-size: 100%;
-	padding: 12px 10px;
+	padding: 12px 0.5625rem;
 }
 
 .color-data-inputs .color-data-input {

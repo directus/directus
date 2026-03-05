@@ -80,7 +80,7 @@ const valueWithDefault = computed(() => {
 
 .theme {
 	background-color: var(--theme--form--field--input--background);
-	padding: 10px;
+	padding: 0.5625rem;
 	border-width: var(--theme--border-width);
 	border-style: solid;
 	border-color: var(--theme--form--field--input--border-color);

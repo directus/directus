@@ -826,7 +826,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		--button-height: var(--v-button-height, 44px);
 		--button-gap: 12px;
 		--shadow-height: 0.375rem;
-		--shadow-cover-height: 10px;
+		--shadow-cover-height: 0.5625rem;
 
 		.v-card-actions {
 			z-index: 100;

@@ -143,7 +143,7 @@ const displayValue = computed(() => {
 .v-list {
 	.v-list-item {
 		display: flex;
-		gap: 10px;
+		gap: 0.5625rem;
 		align-items: center;
 		justify-content: space-between;
 		white-space: nowrap;
@@ -158,7 +158,7 @@ const displayValue = computed(() => {
 		.end {
 			display: flex;
 			flex-grow: 1;
-			gap: 10px;
+			gap: 0.5625rem;
 			align-items: center;
 			justify-content: flex-end;
 			color: var(--theme--form--field--input--foreground-subdued);

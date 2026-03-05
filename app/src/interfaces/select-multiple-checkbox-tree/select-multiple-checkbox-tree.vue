@@ -110,7 +110,7 @@ const searchDebounced = ref('');
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 2;
-	padding: 10px;
+	padding: 0.5625rem;
 	padding-block-end: 0;
 }
 

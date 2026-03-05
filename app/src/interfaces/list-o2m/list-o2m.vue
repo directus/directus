@@ -850,7 +850,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 	align-items: center;
 	justify-content: flex-end;
 	inline-size: 120px;
-	padding: 10px 0;
+	padding: 0.5625rem 0;
 	margin-inline-end: 2px;
 	color: var(--theme--form--field--input--foreground-subdued);
 

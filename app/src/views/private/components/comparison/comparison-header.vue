@@ -238,7 +238,7 @@ function getDeltaOptionUser(deltaOption: any) {
 
 		.meta-content {
 			.meta-text {
-				padding-block-start: 10px;
+				padding-block-start: 0.5625rem;
 				text-align: start;
 
 				@media (min-width: 960px) {

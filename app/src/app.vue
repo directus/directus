@@ -136,7 +136,7 @@ const reload = () => {
 	justify-content: center;
 	inline-size: 100%;
 	block-size: 100%;
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(0.5625rem);
 }
 
 .fade-enter-active,

@@ -378,7 +378,7 @@ img {
 		gap: 12px;
 
 		::v-deep(.v-button) {
-			transform: translateY(10px);
+			transform: translateY(0.5625rem);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
 			transition-property: opacity, transform;

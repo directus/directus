@@ -167,7 +167,7 @@ limitWritable.value = selectedSize;
 	position: fixed;
 	z-index: 1;
 	max-inline-size: 80%;
-	padding: 0.3125rem 10px;
+	padding: 0.3125rem 0.5625rem;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;
 	font-size: 14px;
@@ -188,7 +188,7 @@ limitWritable.value = selectedSize;
 	align-items: center;
 	justify-content: space-between;
 	block-size: 36px;
-	padding: 10px;
+	padding: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);
@@ -218,7 +218,7 @@ limitWritable.value = selectedSize;
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
-	padding: 10px;
+	padding: 0.5625rem;
 	overflow: hidden;
 	background-color: transparent !important;
 
@@ -226,7 +226,7 @@ limitWritable.value = selectedSize;
 		--v-button-height: 28px;
 
 		display: inline-block;
-		margin-inline-end: 10px;
+		margin-inline-end: 0.5625rem;
 
 		button {
 			box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);

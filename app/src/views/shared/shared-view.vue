@@ -73,7 +73,7 @@ const logoURL = computed<string | null>(() => {
 
 header {
 	margin-block-end: 32px;
-	padding: 10px;
+	padding: 0.5625rem;
 	background-color: var(--theme--background);
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }

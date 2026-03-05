@@ -391,7 +391,7 @@ watch(statsRange, loadStats);
 	display: flex;
 	align-items: center;
 	gap: 0.4375rem;
-	padding: 0.3125rem 10px;
+	padding: 0.3125rem 0.5625rem;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;

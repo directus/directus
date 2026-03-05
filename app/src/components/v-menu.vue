@@ -553,8 +553,8 @@ function usePopper(
 .arrow-triangle::before,
 .arrow-triangle::after {
 	position: absolute;
-	inline-size: 10px;
-	block-size: 10px;
+	inline-size: 0.5625rem;
+	block-size: 0.5625rem;
 }
 
 .arrow {
@@ -593,7 +593,7 @@ function usePopper(
 }
 
 [data-placement^='top'] .arrow {
-	inset-block-end: -10px;
+	inset-block-end: -0.5625rem;
 
 	.arrow-triangle {
 		&::before,
@@ -604,7 +604,7 @@ function usePopper(
 }
 
 [data-placement^='bottom'] .arrow {
-	inset-block-start: -10px;
+	inset-block-start: -0.5625rem;
 
 	.arrow-triangle {
 		&::before,
@@ -615,11 +615,11 @@ function usePopper(
 }
 
 [data-placement^='right'] .arrow {
-	inset-inline-start: -10px;
+	inset-inline-start: -0.5625rem;
 
 	html[dir='rtl'] & {
 		inset-inline-start: unset;
-		inset-inline-end: -10px;
+		inset-inline-end: -0.5625rem;
 	}
 
 	.arrow-triangle {
@@ -636,11 +636,11 @@ function usePopper(
 }
 
 [data-placement^='left'] .arrow {
-	inset-inline-end: -10px;
+	inset-inline-end: -0.5625rem;
 
 	html[dir='rtl'] & {
 		inset-inline-end: unset;
-		inset-inline-start: -10px;
+		inset-inline-start: -0.5625rem;
 	}
 
 	.arrow-triangle {

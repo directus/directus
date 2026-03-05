@@ -498,7 +498,7 @@ textarea {
 
 .remaining {
 	position: absolute;
-	inset-inline-end: 10px;
+	inset-inline-end: 0.5625rem;
 	inset-block-end: 0.3125rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;

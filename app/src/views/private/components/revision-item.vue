@@ -129,7 +129,7 @@ const user = computed(() => {
 		inset-inline-start: 12px;
 		z-index: 1;
 		inline-size: calc(100% - 12px);
-		block-size: calc(100% + 10px);
+		block-size: calc(100% + 0.5625rem);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;

@@ -178,7 +178,7 @@ h1 {
 }
 
 .title {
-	margin-block-end: 10px;
+	margin-block-end: 0.5625rem;
 	font-weight: 600;
 }
 

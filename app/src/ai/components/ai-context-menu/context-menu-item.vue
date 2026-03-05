@@ -54,7 +54,7 @@ defineEmits<{
 .item-badge {
 	display: inline-flex;
 	padding: 2px 0.3125rem;
-	font-size: 10px;
+	font-size: 0.5625rem;
 	font-weight: 500;
 	text-transform: uppercase;
 	background-color: var(--theme--primary-background);

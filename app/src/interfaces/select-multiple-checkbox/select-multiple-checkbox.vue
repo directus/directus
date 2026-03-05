@@ -203,7 +203,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 	align-items: center;
 	inline-size: 100%;
 	block-size: var(--theme--form--field--input--height);
-	padding: 10px;
+	padding: 0.5625rem;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 

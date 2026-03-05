@@ -55,7 +55,7 @@ const npmLink = computed(() => {
 
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
-		gap: 10px;
+		gap: 0.5625rem;
 	}
 }
 

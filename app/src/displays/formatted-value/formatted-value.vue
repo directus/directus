@@ -209,7 +209,7 @@ function matchNumber(left: number | bigint, right: number | bigint, operator: st
 	&.has-background,
 	&.has-border {
 		block-size: 28px;
-		padding: 0 10px;
+		padding: 0 0.5625rem;
 		font-size: 14px;
 		line-height: 28px;
 		border-radius: 24px;

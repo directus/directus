@@ -590,14 +590,14 @@ onUnmounted(() => {
 }
 
 .close-button {
-	margin-inline-end: 10px;
+	margin-inline-end: 0.5625rem;
 }
 
 .copy-button {
 	float: inline-end;
 	position: absolute;
-	inset-block-start: 10px;
-	inset-inline-end: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 2;
 }
 

@@ -149,7 +149,7 @@ function onInput(event: Event) {
 			padding: 0.4375rem 0;
 			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
-			border-radius: 10px;
+			border-radius: 0.5625rem;
 			cursor: pointer;
 			appearance: none;
 

@@ -558,13 +558,13 @@ function handleKeyDown(event: any) {
 
 	.basemap-select {
 		position: absolute;
-		inset-inline-end: 10px;
-		inset-block-end: 10px;
+		inset-inline-end: 0.5625rem;
+		inset-block-end: 0.5625rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		block-size: 36px;
-		padding: 10px;
+		padding: 0.5625rem;
 		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);
 		border: var(--theme--border-width) solid var(--theme--background);

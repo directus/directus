@@ -22,13 +22,13 @@ defineProps<{
 
 <style scoped>
 .author {
-	--v-button-padding: 0 10px;
+	--v-button-padding: 0 0.5625rem;
 }
 
 .avatar {
 	inline-size: 20px;
 	block-size: 20px;
-	border-radius: 10px;
+	border-radius: 0.5625rem;
 	object-fit: cover;
 	object-position: center center;
 	margin-inline: 2px 0.5rem;

@@ -399,7 +399,7 @@ function setUpChart() {
 	margin-block-end: 0;
 	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 

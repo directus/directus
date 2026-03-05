@@ -438,7 +438,7 @@ function clearFilters() {
 
 			&.dense {
 				min-block-size: 44px;
-				padding: 10px 0.4375rem;
+				padding: 0.5625rem 0.4375rem;
 			}
 		}
 

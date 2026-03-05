@@ -331,8 +331,8 @@ function isInterpolation(value: any) {
 
 .v-button {
 	position: absolute;
-	inset-block-start: 10px;
-	inset-inline-end: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 4;
 	color: var(--theme--primary);
 	cursor: pointer;

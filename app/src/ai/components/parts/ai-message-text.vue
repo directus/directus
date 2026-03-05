@@ -274,7 +274,7 @@ useResizeObserver(contentRef, (entries) => {
 			position: absolute;
 			inset-inline-start: 0.3125rem;
 			inline-size: 0.3125rem;
-			block-size: 10px;
+			block-size: 0.5625rem;
 			border: solid var(--theme--primary);
 			border-width: 0 2px 2px 0;
 			transform: rotate(45deg);

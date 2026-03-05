@@ -360,7 +360,7 @@ const logoURL = computed<string | null>(() => {
 			display: flex;
 			align-items: flex-end;
 			justify-content: center;
-			block-size: 10px;
+			block-size: 0.5625rem;
 
 			.note {
 				max-inline-size: 340px;

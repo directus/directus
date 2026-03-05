@@ -83,7 +83,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 			border-radius: 0.25rem;
 			position: absolute;
 			inset-block-start: 11px;
-			inset-inline-start: -10px;
+			inset-inline-start: -0.5625rem;
 			display: block;
 		}
 	}

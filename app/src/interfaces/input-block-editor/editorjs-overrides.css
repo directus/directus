@@ -123,7 +123,7 @@
 }
 
 .codex-editor .ce-inline-tool {
-	padding: 0 10px !important;
+	padding: 0 0.5625rem !important;
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm {

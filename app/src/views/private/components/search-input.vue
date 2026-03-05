@@ -437,7 +437,7 @@ function emitValue() {
 
 	.filter-input {
 		/* Use margin instead of padding to make sure transition expand takes it into account */
-		margin: 10px 0.4375rem;
+		margin: 0.5625rem 0.4375rem;
 	}
 }
 </style>
