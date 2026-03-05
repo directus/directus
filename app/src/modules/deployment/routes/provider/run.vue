@@ -465,7 +465,7 @@ onUnmounted(() => {
 	border: none;
 	border-radius: 0;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
-	inline-size: 200px;
+	inline-size: 11.25rem;
 	background: transparent;
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);

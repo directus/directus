@@ -568,7 +568,7 @@ onUnmounted(() => {
 
 .logs-display {
 	flex: 2;
-	min-block-size: 200px;
+	min-block-size: 11.25rem;
 }
 
 .log-detail {

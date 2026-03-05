@@ -75,7 +75,7 @@ const valueWithDefault = computed(() => {
 .interface-system-theme {
 	display: grid;
 	gap: 1.375rem;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
 }
 
 .theme {

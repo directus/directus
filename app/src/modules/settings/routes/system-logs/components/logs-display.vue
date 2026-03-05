@@ -269,7 +269,7 @@ function selectLog(index: number) {
 }
 
 .logs-display {
-	min-block-size: 200px;
+	min-block-size: 11.25rem;
 	block-size: 100%;
 	scroll-snap-type: y proximity;
 	align-content: end;

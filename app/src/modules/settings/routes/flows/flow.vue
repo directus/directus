@@ -797,7 +797,7 @@ function discardAndLeave() {
 }
 
 .container {
-	--column-size: 200px;
+	--column-size: 11.25rem;
 	--row-size: 5.625rem;
 	--gap-size: 2.25rem;
 

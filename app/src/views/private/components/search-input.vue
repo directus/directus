@@ -338,7 +338,7 @@ function emitValue() {
 	}
 
 	&.has-content {
-		inline-size: 200px;
+		inline-size: 11.25rem;
 
 		.icon-clear {
 			margin-inline-end: 0.4375rem;
@@ -364,7 +364,7 @@ function emitValue() {
 		}
 
 		@media (width > 640px) {
-			inline-size: 200px;
+			inline-size: 11.25rem;
 		}
 
 		input {
@@ -384,7 +384,7 @@ function emitValue() {
 		}
 
 		@media (width > 640px) {
-			inline-size: 200px;
+			inline-size: 11.25rem;
 		}
 
 		@media (min-width: 960px) {

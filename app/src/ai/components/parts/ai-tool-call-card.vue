@@ -247,7 +247,7 @@ const handleAlwaysAllow = () => {
 
 	&.has-approval {
 		.card-content {
-			max-block-size: 200px;
+			max-block-size: 11.25rem;
 		}
 	}
 }

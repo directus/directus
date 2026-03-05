@@ -308,7 +308,7 @@ function getDeltaOptionUser(deltaOption: any) {
 
 	.meta-skeleton {
 		block-size: 2.25rem;
-		min-inline-size: 200px;
+		min-inline-size: 11.25rem;
 	}
 }
 
