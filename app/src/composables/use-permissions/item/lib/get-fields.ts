@@ -33,6 +33,10 @@ export function getFields(
 			fields = fields.filter((field) => readableFields.includes(field.field));
 		}
 
+		// Version editing bypasses underlying collection write permissions entirely.
+		// Field-level access is enforced by the backend at promote time.
+		if (unref(isVersion)) return fields;
+
 		let permission;
 
 		if (collectionInfo.value?.meta?.singleton) {
@@ -44,7 +48,7 @@ export function getFields(
 
 			if (storePermission?.access !== 'partial') {
 				permission = storePermission;
-			} else if (unref(isVersion) || fetchedItemPermissions.value.update.access) {
+			} else if (fetchedItemPermissions.value.update.access) {
 				permission = storePermission;
 			} else {
 				permission = null;

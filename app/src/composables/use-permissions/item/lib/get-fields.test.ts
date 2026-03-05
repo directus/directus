@@ -1,5 +1,5 @@
 import { useCollection } from '@directus/composables';
-import { Field, ItemPermissions, Permission, PermissionsAction } from '@directus/types';
+import { Field, ItemPermissions, PermissionsAction } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -123,8 +123,9 @@ describe('non-admin users', () => {
 		vi.mocked(useCollection).mockReturnValue({ fields: ref(sample.fields), info: ref({}) } as any);
 
 		const mockReadPermission = {
+			access: 'full' as const,
 			fields: ['*'],
-		} as Permission;
+		};
 
 		const permissionsStore = mockedStore(usePermissionsStore());
 
@@ -146,8 +147,9 @@ describe('non-admin users', () => {
 		const allowedFields = ['id', 'start_date', 'end_date'];
 
 		const mockReadPermission = {
+			access: 'full' as const,
 			fields: allowedFields,
-		} as Permission;
+		};
 
 		const permissionsStore = mockedStore(usePermissionsStore());
 
@@ -211,7 +213,7 @@ describe('non-admin users', () => {
 
 				const mockActionPermission = {
 					fields: allowedFields,
-				} as Permission;
+				};
 
 				if (collectionType === 'collection') {
 					const permissionsStore = mockedStore(usePermissionsStore());
@@ -247,7 +249,7 @@ describe('non-admin users', () => {
 			it('should not mark any fields as read-only if user has full fields permission', () => {
 				const mockActionPermission = {
 					fields: ['*'],
-				} as Permission;
+				};
 
 				if (collectionType === 'collection') {
 					const permissionsStore = mockedStore(usePermissionsStore());
@@ -283,7 +285,7 @@ describe('non-admin users', () => {
 
 				const mockActionPermission = {
 					presets: { name: namePreset } as Record<string, any>,
-				} as Permission;
+				};
 
 				if (collectionType === 'collection') {
 					const permissionsStore = mockedStore(usePermissionsStore());
@@ -431,7 +433,7 @@ describe('non-admin users', () => {
 			}
 		});
 
-		it('should apply store field restrictions for versions when main item fails custom rule', () => {
+		it('should not apply store field restrictions for versions regardless of field policy', () => {
 			const allowedFields = ['id', 'start_date'];
 
 			const permissionsStore = mockedStore(usePermissionsStore());
@@ -450,8 +452,7 @@ describe('non-admin users', () => {
 			const fields = getFields(sample.collection, false, fetchedItemPermissions, true);
 
 			for (const field of fields.value) {
-				const readonly = allowedFields.includes(field.field) ? undefined : true;
-				expect(field.meta?.readonly).toBe(readonly);
+				expect(!!field.meta?.readonly).toBe(false);
 			}
 		});
 
