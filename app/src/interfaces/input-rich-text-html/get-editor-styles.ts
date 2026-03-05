@@ -60,7 +60,7 @@ h2 {
 	margin-block-start: 1.25em;
 }
 h3 {
-	font-size: 19px;
+	font-size: 1.0625rem;
 	line-height: 29px;
 	margin-block-start: 1.25em;
 }

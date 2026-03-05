@@ -198,7 +198,7 @@ async function onClick(event: MouseEvent) {
 		--v-button-font-weight                [600]
 		--v-button-line-height                [22px]
 		--v-button-min-width                  [140px]
-		--v-button-padding                    [0 19px]
+		--v-button-padding                    [0 1.0625rem]
 
 */
 
@@ -280,7 +280,7 @@ async function onClick(event: MouseEvent) {
 	inline-size: var(--v-button-width, auto);
 	min-inline-size: var(--v-button-min-width, 140px);
 	block-size: var(--v-button-height, 44px);
-	padding: var(--v-button-padding, 0 19px);
+	padding: var(--v-button-padding, 0 1.0625rem);
 	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);
 	font-size: var(--v-button-font-size, 0.875rem);

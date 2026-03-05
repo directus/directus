@@ -568,7 +568,7 @@ const menuActive = computed(
 	@include mixins.list-interface-actions($pagination: true);
 
 	.v-button {
-		--v-button-padding: 0 0.6875rem 0 19px;
+		--v-button-padding: 0 0.6875rem 0 1.0625rem;
 	}
 
 	.pagination {
