@@ -309,7 +309,7 @@ const unsortableJunctionFields = computed(() => {
 		}
 
 		&:last-of-type {
-			inset-block-start: 190px;
+			inset-block-start: 10.6875rem;
 			inset-inline-start: 67.4%;
 		}
 	}
