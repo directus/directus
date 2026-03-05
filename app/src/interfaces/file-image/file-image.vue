@@ -406,7 +406,7 @@ img {
 	}
 
 	.meta {
-		block-size: 17px;
+		block-size: 0.9375rem;
 		max-block-size: 0;
 		overflow: hidden;
 		color: rgb(255 255 255 / 0.75);
@@ -428,7 +428,7 @@ img {
 			}
 
 			.meta {
-				max-block-size: 17px;
+				max-block-size: 0.9375rem;
 			}
 		}
 	}

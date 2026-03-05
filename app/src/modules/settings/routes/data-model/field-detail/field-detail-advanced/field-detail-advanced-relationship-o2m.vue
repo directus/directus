@@ -169,7 +169,7 @@ const unsortableJunctionFields = computed(() => {
 		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
-		inset-block-end: 17px;
+		inset-block-end: 0.9375rem;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
 
@@ -206,7 +206,7 @@ const unsortableJunctionFields = computed(() => {
 		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
-		inset-block-end: 17px;
+		inset-block-end: 0.9375rem;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
 
