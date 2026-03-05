@@ -336,7 +336,7 @@ function addKeyAsNode() {
 			color: var(--theme--form--field--input--foreground-subdued);
 			background-color: var(--theme--form--field--input--background);
 			border: var(--theme--border-width) solid var(--theme--border-color-subdued);
-			border-radius: 100px;
+			border-radius: 5.625rem;
 			transition: border-color var(--fast) var(--transition);
 			&:hover,
 			&.active {

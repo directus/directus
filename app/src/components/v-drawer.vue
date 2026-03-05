@@ -232,7 +232,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
-			scroll-padding-block-start: 100px;
+			scroll-padding-block-start: 5.625rem;
 		}
 
 		.main.small-search-input:deep(.search-input.filter-active) {

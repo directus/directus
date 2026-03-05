@@ -182,7 +182,7 @@ const translations = computed(() => {
 	.v-progress-linear {
 		flex: 1;
 		inline-size: unset;
-		max-inline-size: 100px;
+		max-inline-size: 5.625rem;
 		border-radius: 0.25rem;
 	}
 }

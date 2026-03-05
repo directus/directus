@@ -222,7 +222,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 
 .tool-item :deep(.v-select) {
 	--v-select-font-family: var(--theme--fonts--sans--font-family);
-	min-inline-size: 100px;
+	min-inline-size: 5.625rem;
 }
 
 .tool-item :deep(.inline-display > .v-icon) {

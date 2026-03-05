@@ -86,7 +86,7 @@ watch(form, () => {
 
 <style scoped>
 .setup-form {
-	margin-block-start: 100px;
+	margin-block-start: 5.625rem;
 }
 
 .v-button {

@@ -603,7 +603,7 @@ onUnmounted(() => {
 
 .raw-log {
 	block-size: 100%;
-	min-block-size: 100px;
+	min-block-size: 5.625rem;
 	margin: 0.25rem;
 	position: relative;
 	overflow: auto;

@@ -798,7 +798,7 @@ function discardAndLeave() {
 
 .container {
 	--column-size: 200px;
-	--row-size: 100px;
+	--row-size: 5.625rem;
 	--gap-size: 2.25rem;
 
 	padding-block-start: calc(var(--content-padding) / 2);

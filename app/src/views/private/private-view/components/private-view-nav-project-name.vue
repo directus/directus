@@ -47,7 +47,7 @@ const navBarStore = useNavBarStore();
 
 	.name-container {
 		flex-grow: 1;
-		inline-size: 100px;
+		inline-size: 5.625rem;
 		line-height: 1.3;
 	}
 

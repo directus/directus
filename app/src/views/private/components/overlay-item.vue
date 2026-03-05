@@ -882,7 +882,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 	:deep(.v-form:first-child .first-visible-field .field-label),
 	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
-		--popover-action-width: 100px; // 3 * 28 (button) + 2 * 8 (gap)
+		--popover-action-width: 5.625rem; // 3 * 28 (button) + 2 * 8 (gap)
 
 		max-inline-size: calc(100% - var(--popover-action-width));
 	}

@@ -579,7 +579,7 @@ textarea {
 	@include mixins.form-grid;
 
 	.v-input {
-		min-inline-size: 100px;
+		min-inline-size: 5.625rem;
 	}
 }
 </style>

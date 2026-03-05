@@ -530,7 +530,7 @@ function usePopper(
 	position: fixed;
 	inset-inline-start: -999px;
 	z-index: 600;
-	min-inline-size: 100px;
+	min-inline-size: 5.625rem;
 	transform: translateY(2px);
 	pointer-events: none;
 

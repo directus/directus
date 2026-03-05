@@ -313,7 +313,7 @@ function cancelAndClose() {
 }
 
 .loader {
-	margin: 100px auto;
+	margin: 5.625rem auto;
 }
 
 .qr {

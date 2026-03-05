@@ -213,7 +213,7 @@ function toggleInterface(id: string) {
 }
 
 .interface {
-	min-block-size: 100px;
+	min-block-size: 5.625rem;
 	overflow: hidden;
 	text-align: start;
 }
@@ -225,7 +225,7 @@ function toggleInterface(id: string) {
 	align-items: center;
 	justify-content: center;
 	inline-size: 160px;
-	block-size: 100px;
+	block-size: 5.625rem;
 	margin-block-end: 0.4375rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
