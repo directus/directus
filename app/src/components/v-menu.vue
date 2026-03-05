@@ -528,7 +528,7 @@ function usePopper(
 
 .v-menu-popper {
 	position: fixed;
-	inset-inline-start: -999px;
+	inset-inline-start: -56.1875rem;
 	z-index: 600;
 	min-inline-size: 5.625rem;
 	transform: translateY(2px);
