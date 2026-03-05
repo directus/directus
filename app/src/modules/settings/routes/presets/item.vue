@@ -613,7 +613,7 @@ function discardAndLeave() {
 	margin-block-start: 1.8125rem;
 
 	:deep(#map-container) {
-		min-block-size: 360px;
+		min-block-size: 20.25rem;
 	}
 }
 
