@@ -625,7 +625,7 @@ function useColor() {
 	gap: 0.6875rem;
 	align-items: baseline;
 	inline-size: 100%;
-	block-size: 45px;
+	block-size: 2.5625rem;
 	padding: 0.6875rem 0.8125rem;
 }
 
