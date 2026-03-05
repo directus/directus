@@ -461,7 +461,7 @@ const menuActive = computed(() => imageDialogOpen.value);
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
 	min-block-size: var(--editor-body-min-height);
-	max-block-size: min(1000px, 80vh);
+	max-block-size: min(56.25rem, 80vh);
 }
 
 .interface-input-rich-text-md.disabled:not(.non-editable) {

@@ -358,7 +358,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	position: relative;
 	block-size: 100%;
 	min-block-size: var(--input-height-md);
-	max-block-size: 1000px; // matches wysiwyg
+	max-block-size: 56.25rem; // matches wysiwyg
 	margin-inline-end: -2.8125rem;
 
 	/* 2.8125rem is the magic margin used to hide the element's real scrollbars */
