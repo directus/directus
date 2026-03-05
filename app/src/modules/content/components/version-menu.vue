@@ -354,7 +354,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					</VListItemIcon>
 
 					<VListItemContent>
-						{{ $t('main_version') }}
+						{{ $t('published') }}
 					</VListItemContent>
 				</VListItem>
 
@@ -463,7 +463,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 				<VCardText>
 					{{
 						$t('switch_version_copy', {
-							version: switchTarget ? switchTarget.name || switchTarget.key : $t('main_version'),
+							version: switchTarget ? switchTarget.name || switchTarget.key : $t('published'),
 						})
 					}}
 				</VCardText>

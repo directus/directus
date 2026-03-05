@@ -5,7 +5,7 @@ import { isNil } from 'lodash';
 import { i18n } from '@/lang';
 
 export function getVersionDisplayName(version: Pick<ContentVersion, 'key' | 'name'> | null) {
-	if (version === null) return i18n.global.t('main_version');
+	if (version === null) return i18n.global.t('published');
 
 	if (version.key === VERSION_KEY_DRAFT) return i18n.global.t('draft');
 

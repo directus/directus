@@ -227,14 +227,14 @@ function useVersionSelection() {
 				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
 					<template #activator="{ toggle, active }">
 						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ selectedVersion?.name ?? $t('main_version') }}
+							{{ selectedVersion?.name ?? $t('published') }}
 							<VIcon small name="arrow_drop_down"></VIcon>
 						</VChip>
 					</template>
 
 					<VList>
 						<VListItem clickable :active="selectedVersion === null" @click="onVersionSelect(null)">
-							<VListItemContent>{{ $t('main_version') }}</VListItemContent>
+							<VListItemContent>{{ $t('published') }}</VListItemContent>
 						</VListItem>
 						<VListItem
 							v-for="version in versions"
