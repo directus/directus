@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VERSION_KEY_DRAFT } from '@directus/constants';
+import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { ContentVersion } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
@@ -144,7 +144,7 @@ function useVersionSelection() {
 
 		const extractedVersion = extractVersion(dynamicUrl, activeVersionPlacement.value);
 
-		return extractedVersion === 'main' ? null : extractedVersion;
+		return extractedVersion === VERSION_KEY_PUBLISHED ? null : extractedVersion;
 	});
 
 	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
@@ -169,7 +169,7 @@ function useVersionSelection() {
 	function onVersionSelect(versionKey: ContentVersion['key'] | null) {
 		if (!activeVersionPlacement.value || !dynamicUrl) return;
 
-		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? 'main');
+		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? VERSION_KEY_PUBLISHED);
 		router.replace(getUrlRoute(newUrl));
 	}
 }

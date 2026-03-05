@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
@@ -300,7 +301,7 @@ const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?
 
 const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, {
 	template: previewTemplate,
-	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+	injectData: computed(() => ({ $version: currentVersion.value?.key ?? VERSION_KEY_PUBLISHED })),
 });
 
 const previewUrl = computed(() => {
