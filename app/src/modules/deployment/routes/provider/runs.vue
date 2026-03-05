@@ -358,6 +358,8 @@ watch(statsRange, loadStats);
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .container {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -374,15 +376,15 @@ watch(statsRange, loadStats);
 	gap: 0.875rem;
 	margin-block-end: 0.875rem;
 
-	@media (max-width: 1512px) {
+	@media (width < 94.5rem) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
-	@media (max-width: 1024px) {
+	@include mixins.breakpoint-down('lg') {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	@media (max-width: 768px) {
+	@media (width < 48rem) {
 		grid-template-columns: 1fr;
 	}
 }

@@ -141,6 +141,8 @@ function onBlurCustomInput(otherVal: OtherValue) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .checkboxes {
 	--columns: 1;
 
@@ -150,19 +152,19 @@ function onBlurCustomInput(otherVal: OtherValue) {
 }
 
 .grid-2 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 4;
 	}
 }

@@ -104,6 +104,8 @@ const customIcon = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .radio-buttons {
 	--columns: 1;
 
@@ -113,19 +115,19 @@ const customIcon = computed(() => {
 }
 
 .grid-2 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 4;
 	}
 }

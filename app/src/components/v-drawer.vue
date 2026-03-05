@@ -155,7 +155,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		inset-block-start: 0.6875rem;
 		inset-inline-start: -3.125rem;
 
-		@media (min-width: 960px) {
+		@media (width >= 60rem) {
 			display: inline-flex;
 		}
 	}
@@ -190,7 +190,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 			display: none;
 
-			@media (min-width: 960px) {
+			@media (width >= 60rem) {
 				position: relative;
 				display: block;
 				flex-shrink: 0;
@@ -221,7 +221,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		.v-overlay {
 			--v-overlay-z-index: 1;
 
-			@media (min-width: 960px) {
+			@media (width >= 60rem) {
 				--v-overlay-z-index: none;
 
 				display: none;
@@ -240,7 +240,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		}
 	}
 
-	@media (min-width: 960px) {
+	@media (width >= 60rem) {
 		inline-size: calc(100% - 3.625rem);
 	}
 }
@@ -255,7 +255,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		border-radius: var(--theme--border-radius);
 	}
 
-	@media (min-width: 960px) {
+	@media (width >= 60rem) {
 		display: none;
 	}
 }

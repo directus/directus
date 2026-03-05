@@ -409,7 +409,7 @@ function clearFilters() {
 	white-space: nowrap;
 	align-self: center;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: inline;
 	}
 }

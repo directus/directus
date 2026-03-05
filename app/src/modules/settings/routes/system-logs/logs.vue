@@ -639,13 +639,13 @@ onUnmounted(() => {
 	margin-inline-start: auto;
 }
 
-@media (min-width: 960px) {
+@media (width >= 60rem) {
 	.logs-container {
 		margin-block-end: 0;
 	}
 }
 
-@media (min-width: 1200px) {
+@media (width >= 75rem) {
 	.split-view {
 		flex-direction: row;
 	}

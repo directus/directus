@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :root {
 	--white: #fff;
 	--black: #090c0d;
@@ -23,11 +25,12 @@
 	--focus-ring-radius: var(--theme--border-radius);
 	--focus-ring-color: var(--theme--primary);
 
-	@media (width > 400px) {
+	@media (width > 22.5rem) {
+		/* ~360px, not in breakpoints map */
 		--header-bar-height: 3.375rem;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--content-padding: 1.375rem;
 	}
 }

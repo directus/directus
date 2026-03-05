@@ -176,6 +176,8 @@ function toggleInterface(id: string) {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -199,15 +201,15 @@ function toggleInterface(id: string) {
 	grid-template-columns: repeat(var(--columns), 1fr);
 	gap: 1.8125rem;
 
-	@media (min-width: 400px) {
+	@media (width >= 25rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 52.5rem) {
 		--columns: 4;
 	}
 }

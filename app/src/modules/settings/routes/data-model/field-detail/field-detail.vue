@@ -134,6 +134,8 @@ async function save() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 :deep(.required-mark) {
 	--v-icon-color: var(--theme--primary);
 }
@@ -143,7 +145,7 @@ async function save() {
 	inline-size: 11.25rem;
 	margin-inline-start: auto;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		inline-size: 16.875rem;
 		margin-block-start: 0;
 	}

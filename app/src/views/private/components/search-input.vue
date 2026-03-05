@@ -220,12 +220,14 @@ function emitValue() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .search-badge {
 	--v-badge-background-color: var(--theme--primary);
 	--v-badge-offset-y: 0.4375rem;
 	--v-badge-offset-x: 0.4375rem;
 
-	@media (width <= 400px) {
+	@media (width <= 22.5rem) {
 		&.active,
 		&.filter-active {
 			position: absolute;
@@ -359,11 +361,11 @@ function emitValue() {
 		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
 
-		@media (width > 400px) {
+		@media (width > 22.5rem) {
 			inline-size: 8.4375rem;
 		}
 
-		@media (width > 640px) {
+		@include mixins.breakpoint-up('sm') {
 			inline-size: 11.25rem;
 		}
 
@@ -379,19 +381,19 @@ function emitValue() {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (width > 400px) {
+		@media (width > 22.5rem) {
 			inline-size: 8.4375rem;
 		}
 
-		@media (width > 640px) {
+		@include mixins.breakpoint-up('sm') {
 			inline-size: 11.25rem;
 		}
 
-		@media (min-width: 960px) {
+		@media (min-width: 54rem) {
 			inline-size: 16.875rem;
 		}
 
-		@media (min-width: 1260px) {
+		@media (min-width: 70.875rem) {
 			inline-size: 23.625rem; /* blaze it */
 		}
 	}

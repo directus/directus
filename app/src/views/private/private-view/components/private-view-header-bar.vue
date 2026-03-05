@@ -102,7 +102,9 @@ const showSidebarToggle = computed(() => {
 	</header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .header-bar {
 	position: sticky;
 	inset-block-start: 0;
@@ -122,7 +124,7 @@ const showSidebarToggle = computed(() => {
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	@media (width > 400px) {
+	@media (width > 25rem) {
 		display: flex;
 		align-items: center;
 		gap: 0.6875rem;
@@ -135,7 +137,7 @@ const showSidebarToggle = computed(() => {
 	gap: 0.6875rem;
 	padding-block: 0.6875rem;
 
-	@media (width > 400px) {
+	@media (width > 25rem) {
 		display: contents;
 	}
 }
@@ -143,7 +145,7 @@ const showSidebarToggle = computed(() => {
 .icon {
 	display: none;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: flex;
 	}
 }

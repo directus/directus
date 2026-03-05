@@ -31,6 +31,8 @@ withDefaults(defineProps<Props>(), {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 /*
 
 	Available Variables:
@@ -163,7 +165,7 @@ withDefaults(defineProps<Props>(), {
 		line-height: 2em;
 	}
 
-	@media (min-width: 640px) {
+	@include mixins.breakpoint-up('sm') {
 		.gap {
 			display: inline;
 		}

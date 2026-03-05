@@ -78,6 +78,8 @@ defineEmits<{
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .header-bar {
 	position: sticky;
 	inset-block-start: 0;
@@ -96,7 +98,7 @@ defineEmits<{
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	@media (width > 400px) {
+	@media (width > 25rem) {
 		display: flex;
 		align-items: center;
 		gap: 0.6875rem;
@@ -109,7 +111,7 @@ defineEmits<{
 	gap: 0.6875rem;
 	padding-block: 0.6875rem;
 
-	@media (width > 400px) {
+	@media (width > 25rem) {
 		display: contents;
 	}
 }
@@ -117,7 +119,7 @@ defineEmits<{
 .icon {
 	display: none;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: flex;
 	}
 }
@@ -159,7 +161,7 @@ defineEmits<{
 .cancel-button {
 	display: block;
 
-	@media (min-width: 960px) {
+	@media (width >= 60rem) {
 		display: none;
 	}
 }
@@ -167,7 +169,7 @@ defineEmits<{
 .header-icon {
 	display: none;
 
-	@media (min-width: 960px) {
+	@media (width >= 60rem) {
 		display: flex;
 	}
 }

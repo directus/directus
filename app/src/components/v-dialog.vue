@@ -129,6 +129,8 @@ function useOverlayFocusTrap() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-dialog {
 	--v-dialog-z-index: 100;
 
@@ -234,7 +236,7 @@ function useOverlayFocusTrap() {
 	--v-overlay-z-index: 1;
 }
 
-@media (width > 640px) {
+@include mixins.breakpoint-up('sm') {
 	.container :slotted(.v-card) {
 		--v-card-min-width: 30.375rem;
 	}

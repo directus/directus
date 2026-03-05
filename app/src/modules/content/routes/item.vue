@@ -994,6 +994,8 @@ function useItemNavigation() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
@@ -1050,14 +1052,14 @@ function useItemNavigation() {
 			inset-block-start: 0.25rem;
 		}
 
-		@media (width > 640px) {
+		@include mixins.breakpoint-up('sm') {
 			opacity: 1;
 		}
 	}
 }
 
 .headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (max-width: 600px) {
+	@media (width < 37.5rem) {
 		display: none;
 	}
 }
@@ -1076,7 +1078,7 @@ function useItemNavigation() {
 	background-color: var(--theme--background-subdued);
 	overflow-y: auto;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 }

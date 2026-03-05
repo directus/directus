@@ -164,15 +164,15 @@ const options = computed({
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (min-width: 400px) {
+	@media (width >= 25rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 52.5rem) {
 		--columns: 4;
 	}
 }

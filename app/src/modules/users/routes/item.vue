@@ -521,6 +521,8 @@ function revert(values: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
@@ -573,7 +575,7 @@ function revert(values: Record<string, any>) {
 			object-fit: cover;
 		}
 
-		@media (width > 640px) {
+		@include mixins.breakpoint-up('sm') {
 			inline-size: 8.125rem;
 			block-size: 8.125rem;
 			margin-inline-end: 1.25rem;
@@ -623,7 +625,7 @@ function revert(values: Record<string, any>) {
 		}
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		block-size: 10.5625rem;
 
 		.user-box-content .location {

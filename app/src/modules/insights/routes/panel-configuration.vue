@@ -249,6 +249,8 @@ const stageChanges = () => {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -276,15 +278,15 @@ const stageChanges = () => {
 	grid-template-columns: repeat(var(--columns), 1fr);
 	gap: 1.8125rem;
 
-	@media (min-width: 400px) {
+	@media (width >= 25rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 52.5rem) {
 		--columns: 4;
 	}
 }
@@ -368,15 +370,15 @@ const stageChanges = () => {
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (min-width: 400px) {
+	@media (width >= 25rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 52.5rem) {
 		--columns: 4;
 	}
 }

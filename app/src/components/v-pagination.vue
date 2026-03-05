@@ -125,7 +125,9 @@ function toPage(page: number) {
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-pagination {
 	display: flex;
 }
@@ -137,7 +139,7 @@ function toPage(page: number) {
 	line-height: 2em;
 }
 
-@media (width > 640px) {
+@include mixins.breakpoint-up('sm') {
 	.gap {
 		display: inline;
 	}
@@ -156,7 +158,7 @@ function toPage(page: number) {
 	display: none;
 }
 
-@media (width > 640px) {
+@include mixins.breakpoint-up('sm') {
 	.v-button.page:not(.active) {
 		display: inline;
 	}
