@@ -194,7 +194,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 				position: relative;
 				display: block;
 				flex-shrink: 0;
-				inline-size: 220px;
+				inline-size: 12.375rem;
 				block-size: 100%;
 				background: var(--theme--navigation--background);
 				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);

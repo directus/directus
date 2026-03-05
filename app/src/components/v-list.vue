@@ -63,7 +63,7 @@ useGroupableParent(
 		--v-list-border-radius            [var(--theme--border-radius)]
 		--v-list-max-height               [none]
 		--v-list-max-width                [none]
-		--v-list-min-width                [220px]
+		--v-list-min-width                [12.375rem]
 		--v-list-min-height               [none]
 		--v-list-color                    [var(--theme--foreground-accent)]
 		--v-list-color-hover              [var(--theme--foreground-accent)]
@@ -77,7 +77,7 @@ useGroupableParent(
 .v-list {
 	position: static;
 	display: block;
-	min-inline-size: var(--v-list-min-width, 220px);
+	min-inline-size: var(--v-list-min-width, 12.375rem);
 	max-inline-size: var(--v-list-max-width, none);
 	min-block-size: var(--v-list-min-height, none);
 	max-block-size: var(--v-list-max-height, none);
