@@ -646,7 +646,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					}
 
 					@media (min-width: 544px) {
-						--v-button-min-width: 140px;
+						--v-button-min-width: 7.875rem;
 					}
 				}
 			}

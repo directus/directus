@@ -179,7 +179,7 @@ function navigateToUser() {
 	}
 
 	div {
-		inline-size: 140px;
+		inline-size: 7.875rem;
 
 		.v-skeleton-loader:not(:last-child) {
 			margin-block-end: 0.6875rem;
