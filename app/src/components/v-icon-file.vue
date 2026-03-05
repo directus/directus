@@ -40,7 +40,7 @@ defineProps<Props>();
 		font-size: var(--v-icon-file-label-size, 0.6875rem);
 		font-weight: 800;
 		line-height: 1;
-		padding: 2px 0;
+		padding: 0.125rem 0;
 		text-align: center;
 		transform: translateX(-50%);
 

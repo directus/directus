@@ -371,7 +371,7 @@ const logoURL = computed<string | null>(() => {
 				line-height: 1.5714;
 				background-color: rgb(38 50 56 / 0.2);
 				border-radius: 0.3125rem;
-				backdrop-filter: blur(2px);
+				backdrop-filter: blur(0.125rem);
 				overflow-wrap: break-word;
 			}
 		}
@@ -394,7 +394,7 @@ const logoURL = computed<string | null>(() => {
 		block-size: 3.625rem;
 
 		.title {
-			margin-block-start: 2px;
+			margin-block-start: 0.125rem;
 			margin-inline-start: 0.875rem;
 			overflow: hidden;
 
@@ -418,7 +418,7 @@ const logoURL = computed<string | null>(() => {
 		inline-size: 3.125rem;
 		block-size: 3.125rem;
 		background-color: var(--project-color);
-		border-radius: calc(var(--theme--border-radius) - 2px);
+		border-radius: calc(var(--theme--border-radius) - 0.125rem);
 
 		img {
 			inline-size: 2.25rem;

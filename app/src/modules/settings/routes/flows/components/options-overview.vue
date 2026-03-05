@@ -47,7 +47,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 
 	dt {
 		flex-basis: 100%;
-		margin-block-end: -2px;
+		margin-block-end: -0.125rem;
 	}
 
 	dd {

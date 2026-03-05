@@ -199,7 +199,7 @@ function useComparisonIndicator() {
 		--v-icon-color: var(--theme--primary);
 
 		margin-block-start: -0.6875rem;
-		margin-inline-start: 2px;
+		margin-inline-start: 0.125rem;
 	}
 
 	.v-chip {

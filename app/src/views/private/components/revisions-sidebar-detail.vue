@@ -158,7 +158,7 @@ defineExpose({
 
 .empty {
 	margin-block: 0.875rem;
-	margin-inline-start: 2px;
+	margin-inline-start: 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

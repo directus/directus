@@ -188,7 +188,7 @@ const translations = computed(() => {
 }
 
 .v-list-item-content {
-	padding-block: 0.25rem 2px;
+	padding-block: 0.25rem 0.125rem;
 }
 
 .v-list-item:not(:first-child) {

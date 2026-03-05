@@ -113,11 +113,11 @@ const clicked = (toggleTooltip: () => void) => {
 
 .translation-display-text {
 	margin-inline-end: 0.25rem;
-	padding: 2px 0;
+	padding: 0.125rem 0;
 }
 
 .translation-item-text {
-	padding-block-start: 2px;
+	padding-block-start: 0.125rem;
 }
 
 .translation-display-text,
@@ -152,7 +152,7 @@ const clicked = (toggleTooltip: () => void) => {
 }
 
 .v-list-item-content {
-	padding-block: 0.25rem 2px;
+	padding-block: 0.25rem 0.125rem;
 }
 
 .v-list-item:not(:first-child) {

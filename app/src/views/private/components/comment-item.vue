@@ -131,7 +131,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(hr) {
-	block-size: 2px;
+	block-size: 0.125rem;
 	margin: 0.6875rem 0;
 	border: 0;
 	border-block-start: 2px solid var(--theme--form--field--input--border-color);
@@ -139,7 +139,7 @@ function useEdits() {
 
 .comment-item .content :deep(mark) {
 	display: inline-block;
-	padding: 2px 0.25rem;
+	padding: 0.125rem 0.25rem;
 	color: var(--theme--primary);
 	line-height: 1;
 	background: var(--theme--primary-background);
@@ -148,11 +148,11 @@ function useEdits() {
 }
 
 .comment-item .content :deep(pre) {
-	padding: 2px 0.25rem;
+	padding: 0.125rem 0.25rem;
 	color: var(--theme--foreground);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
-	margin: 2px 0;
+	margin: 0.125rem 0;
 	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 	max-inline-size: 100%;
@@ -160,11 +160,11 @@ function useEdits() {
 }
 
 .comment-item .content :deep(code) {
-	padding: 2px 0.25rem;
+	padding: 0.125rem 0.25rem;
 	color: var(--theme--foreground);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
-	margin: 2px 0;
+	margin: 0.125rem 0;
 	font-family: var(--theme--fonts--monospace--font-family);
 }
 

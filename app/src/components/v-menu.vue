@@ -531,7 +531,7 @@ function usePopper(
 	inset-inline-start: -56.1875rem;
 	z-index: 600;
 	min-inline-size: 5.625rem;
-	transform: translateY(2px);
+	transform: translateY(0.125rem);
 	pointer-events: none;
 
 	&.active {
@@ -730,13 +730,13 @@ function usePopper(
 .attached {
 	&[data-placement^='top'] {
 		> .v-menu-content {
-			transform: translateY(-2px);
+			transform: translateY(-0.125rem);
 		}
 	}
 
 	&[data-placement^='bottom'] {
 		> .v-menu-content {
-			transform: translateY(2px);
+			transform: translateY(0.125rem);
 		}
 	}
 }

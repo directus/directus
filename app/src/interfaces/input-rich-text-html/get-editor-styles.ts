@@ -111,7 +111,7 @@ code {
 	font-size: 0.875rem;
 	line-height: 1.5714;
 	font-weight: 500;
-	padding: 2px 0.25rem;
+	padding: 0.125rem 0.25rem;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
 	background-color: ${cssVar('--theme--background-normal')};
 	border-radius: ${cssVar('--theme--border-radius')};
@@ -179,14 +179,14 @@ figure figcaption {
 .comparison-diff--added {
 	color: ${cssVar('--theme--success')};
 	background-color: ${cssVar('--theme--success-background')};
-	padding: 2px;
+	padding: 0.125rem;
 	border-radius: ${cssVar('--theme--border-radius')};
 }
 
 .comparison-diff--removed {
 	color: ${cssVar('--theme--danger')};
 	background-color: ${cssVar('--theme--danger-background')};
-	padding: 2px;
+	padding: 0.125rem;
 	border-radius: ${cssVar('--theme--border-radius')};
 }`
 			: ''

@@ -103,7 +103,7 @@ const icon = computed(() => {
 .icon-wrapper {
 	flex-shrink: 0;
 	background-color: var(--theme--primary-background);
-	padding: 2px;
+	padding: 0.125rem;
 	border-radius: var(--theme--border-radius);
 	display: flex;
 	align-items: center;
@@ -137,7 +137,7 @@ const icon = computed(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 2px;
+	padding: 0.125rem;
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	opacity: 0.5;

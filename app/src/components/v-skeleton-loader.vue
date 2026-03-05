@@ -170,7 +170,7 @@ withDefaults(defineProps<Props>(), {
 	}
 
 	.v-button {
-		margin: 0 2px;
+		margin: 0 0.125rem;
 		@include loader;
 		border-radius: var(--theme--border-radius);
 		inline-size: 2rem;

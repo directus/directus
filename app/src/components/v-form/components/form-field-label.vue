@@ -210,7 +210,7 @@ const isPromotableField = computed(() => {
 		justify-content: center;
 		block-size: 1.375rem;
 		inline-size: 1.375rem;
-		margin-block-start: -2px;
+		margin-block-start: -0.125rem;
 		margin-inline-start: 0.3125rem;
 		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);

@@ -89,7 +89,7 @@ header {
 	inline-size: max-content;
 	max-inline-size: 100%;
 	block-size: 3.375rem;
-	margin-block-start: 2px;
+	margin-block-start: 0.125rem;
 
 	.title {
 		margin-inline-start: 0.875rem;

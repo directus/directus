@@ -382,7 +382,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 			.v-icon {
 				--v-icon-color: var(--header-color);
-				margin-block-start: 2px;
+				margin-block-start: 0.125rem;
 				flex-shrink: 0;
 			}
 		}
@@ -400,7 +400,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 			.v-icon {
 				--v-icon-color: var(--header-color);
-				margin-block-start: 2px;
+				margin-block-start: 0.125rem;
 				flex-shrink: 0;
 			}
 

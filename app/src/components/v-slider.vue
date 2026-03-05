@@ -174,7 +174,7 @@ function onInput(event: Event) {
 				z-index: 3;
 				inline-size: 0.4375rem;
 				block-size: 0.4375rem;
-				margin-block-start: -2px;
+				margin-block-start: -0.125rem;
 				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
@@ -189,7 +189,7 @@ function onInput(event: Event) {
 				z-index: 3;
 				inline-size: 0.4375rem;
 				block-size: 0.4375rem;
-				margin-block-start: -2px;
+				margin-block-start: -0.125rem;
 				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
 				border-radius: 50%;
@@ -257,7 +257,7 @@ function onInput(event: Event) {
 			inset-block-start: 0;
 			inset-inline-start: calc(var(--_v-slider-percentage) * 1%);
 			inline-size: auto;
-			padding: 2px 0.3125rem;
+			padding: 0.125rem 0.3125rem;
 			color: var(--foreground-inverted);
 			font-weight: 600;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));

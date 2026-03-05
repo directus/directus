@@ -69,7 +69,7 @@ withDefaults(defineProps<Props>(), {
 			.v-icon {
 				--v-icon-color: var(--v-breadcrumb-color, var(--theme--foreground-subdued));
 
-				margin: 0 2px;
+				margin: 0 0.125rem;
 			}
 
 			&:hover {

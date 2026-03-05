@@ -443,11 +443,11 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .loading .loading-indicator .v-progress-linear {
-	--v-progress-linear-height: 2px;
+	--v-progress-linear-height: 0.125rem;
 	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
-	inset-block-start: -2px;
+	inset-block-start: -0.125rem;
 	inset-inline-start: 0;
 	inline-size: 100%;
 }

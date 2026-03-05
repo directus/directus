@@ -412,7 +412,7 @@ function toggleManualSort() {
 
 		.v-icon {
 			position: relative;
-			inset-inline-start: 2px;
+			inset-inline-start: 0.125rem;
 		}
 
 		&.sorted-manually {
@@ -454,7 +454,7 @@ function toggleManualSort() {
 :deep(.header-order-ghost) {
 	&::after,
 	&::before {
-		inline-size: 2px;
+		inline-size: 0.125rem;
 		content: '';
 		display: block;
 		position: absolute;

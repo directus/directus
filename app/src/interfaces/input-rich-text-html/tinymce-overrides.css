@@ -124,13 +124,13 @@
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow {
 	min-block-size: 2.25rem;
-	padding: 2px 0;
+	padding: 0.125rem 0;
 	background: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-pop__dialog .tox-toolbar {
-	margin-block-end: -2px;
+	margin-block-end: -0.125rem;
 }
 
 body.dark .tox .tox-toolbar,
@@ -170,7 +170,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-tbtn + .tox .tox-tbtn {
-	margin-inline-start: 2px;
+	margin-inline-start: 0.125rem;
 }
 
 .tox .tox-swatches__picker-btn:hover {

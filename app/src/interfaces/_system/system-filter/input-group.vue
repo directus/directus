@@ -363,7 +363,7 @@ function useVariableInput() {
 .variable-input-braces {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground-subdued);
-	margin-inline-start: 2px;
+	margin-inline-start: 0.125rem;
 
 	.variable-input + & {
 		margin-inline-start: 0;

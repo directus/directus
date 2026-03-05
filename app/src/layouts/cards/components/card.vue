@@ -318,7 +318,7 @@ function handleClick() {
 	align-items: center;
 	inline-size: 100%;
 	block-size: 1.4375rem;
-	margin-block-start: 2px;
+	margin-block-start: 0.125rem;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;

@@ -240,7 +240,7 @@ const newTranslationDefaults = computed(() => {
 .translation-input {
 	.selected-translation {
 		margin-inline-end: auto;
-		padding: 2px 0.4375rem 0;
+		padding: 0.125rem 0.4375rem 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);

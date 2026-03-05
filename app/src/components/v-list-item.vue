@@ -160,7 +160,7 @@ function onClick(event: PointerEvent) {
 	Available Variables:
 
 		--v-list-item-padding                  [0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0))]
-		--v-list-item-margin                   [2px 0]
+		--v-list-item-margin                   [0.125rem 0]
 		--v-list-item-min-height               [1.8125rem]
 		--v-list-item-border-radius            [var(--theme--border-radius)]
 		--v-list-item-border-color             [var(--theme--border-color-subdued)]
@@ -188,7 +188,7 @@ function onClick(event: PointerEvent) {
 	max-inline-size: none;
 	min-block-size: var(--v-list-item-min-height, 1.8125rem);
 	max-block-size: none;
-	margin: var(--v-list-item-margin, 2px 0);
+	margin: var(--v-list-item-margin, 0.125rem 0);
 	padding: var(--v-list-item-padding, 0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0)));
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
@@ -357,7 +357,7 @@ function onClick(event: PointerEvent) {
 				--v-list-item-min-height: 2rem;
 				--v-list-item-border-radius: 0.25rem;
 
-				margin: 2px 0;
+				margin: 0.125rem 0;
 				padding: 0 0.4375rem;
 
 				&:first-child {

@@ -339,11 +339,11 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0;
-		padding: 2px 0.25rem;
+		padding: 0.125rem 0.25rem;
 		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
-		vertical-align: -2px;
+		vertical-align: -0.125rem;
 		background: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
 

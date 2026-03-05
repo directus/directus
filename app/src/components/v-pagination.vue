@@ -148,7 +148,7 @@ function toPage(page: number) {
 	--v-button-background-color: var(--theme--form--field--input--background-subdued);
 	--v-button-color: var(--theme--foreground);
 
-	margin: 0 2px;
+	margin: 0 0.125rem;
 	vertical-align: middle;
 }
 
