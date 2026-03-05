@@ -227,7 +227,7 @@ function useOverlayFocusTrap() {
 
 .container :slotted(.v-sheet) {
 	--v-sheet-padding: 1.375rem;
-	--v-sheet-max-width: 560px;
+	--v-sheet-max-width: 31.5rem;
 }
 
 .container .v-overlay {
