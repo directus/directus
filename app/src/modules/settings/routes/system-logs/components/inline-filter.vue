@@ -95,7 +95,7 @@ const sortOptions = computed(() => {
 	border: none;
 	border-radius: 0;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
-	inline-size: 180px;
+	inline-size: 10.125rem;
 	background: transparent;
 
 	&::placeholder {
