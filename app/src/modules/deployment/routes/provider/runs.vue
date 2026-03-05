@@ -426,7 +426,7 @@ watch(statsRange, loadStats);
 
 .run-name {
 	font-family: var(--theme--fonts--monospace--font-family);
-	font-size: 13px;
+	font-size: 0.75rem;
 }
 
 :deep(.v-table .table-row) {

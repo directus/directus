@@ -470,9 +470,9 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					.datetime {
 						display: inline-block;
 						color: var(--theme--foreground-subdued);
-						font-size: 13px;
+						font-size: 0.75rem;
 						font-weight: 600;
-						line-height: 24px;
+						line-height: 1.8333;
 					}
 
 					.avatars {
