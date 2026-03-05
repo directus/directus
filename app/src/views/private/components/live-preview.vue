@@ -461,9 +461,9 @@ function useUrls() {
 			collapsible
 			:collapsed-size="0"
 			:collapse-threshold="70"
-			:min-size="280"
-			:max-size="600"
-			:snap-points="[370]"
+			:min-size="252"
+			:max-size="540"
+			:snap-points="[333]"
 			:snap-threshold="6"
 			:transition-duration="125"
 			divider-hit-area="1.375rem"

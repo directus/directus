@@ -39,7 +39,14 @@ useResizeObserver(scrollContainerRef, ([entry]) => {
 });
 
 const enforceShadows = computed(() => props.sidebarShadow || false);
-const contentPadding = computed(() => parseInt(cssVar('--content-padding'), 10) || 12);
+
+const contentPadding = computed(() => {
+	const raw = cssVar('--content-padding');
+	const num = parseFloat(raw);
+	if (!num) return 12;
+	if (raw.endsWith('rem')) return num * parseFloat(getComputedStyle(document.documentElement).fontSize);
+	return num;
+});
 
 const showStartShadow = computed(() => {
 	if (enforceShadows.value) return true;
@@ -91,9 +98,9 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			collapsible
 			:collapsed-size="isMobile ? 0 : 60"
 			:collapse-threshold="70"
-			:min-size="280"
-			:max-size="600"
-			:snap-points="[370]"
+			:min-size="252"
+			:max-size="540"
+			:snap-points="[333]"
 			:direction="userStore.textDirection"
 			:snap-threshold="6"
 			divider-hit-area="1.375rem"

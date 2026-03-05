@@ -56,9 +56,9 @@ const splitterCollapsed = computed({
 			size-unit="px"
 			collapsible
 			:collapse-threshold="70"
-			:min-size="220"
-			:max-size="340"
-			:snap-points="[250]"
+			:min-size="198"
+			:max-size="306"
+			:snap-points="[225]"
 			:snap-threshold="6"
 			:direction="userStore.textDirection"
 			divider-hit-area="1.375rem"
