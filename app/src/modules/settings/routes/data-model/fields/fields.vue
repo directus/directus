@@ -177,7 +177,7 @@ function discardAndLeave() {
 
 .fields {
 	max-inline-size: 800px;
-	margin-block-end: 48px;
+	margin-block-end: 2.6875rem;
 }
 
 .action-delete {

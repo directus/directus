@@ -190,7 +190,7 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.x-large {
-		--v-icon-size: 48px;
+		--v-icon-size: 2.6875rem;
 	}
 
 	&.left {

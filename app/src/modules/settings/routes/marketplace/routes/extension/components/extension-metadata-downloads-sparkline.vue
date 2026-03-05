@@ -99,7 +99,7 @@ onUnmounted(() => {
 
 <style scoped>
 .chart-container {
-	block-size: 48px;
+	block-size: 2.6875rem;
 	border-radius: var(--theme--border-radius);
 	display: flex;
 	overflow: hidden;

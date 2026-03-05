@@ -193,7 +193,7 @@ const onDeleteOptions = computed(() =>
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 2.6875rem 0;
 }
 
 .type-label {
@@ -224,7 +224,7 @@ const onDeleteOptions = computed(() =>
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-block: 48px 0;
+		margin-block: 2.6875rem 0;
 	}
 }
 </style>

@@ -714,7 +714,7 @@ function useUrls() {
 		block-size: 100%;
 		overflow: auto;
 		display: grid;
-		padding: 48px;
+		padding: 2.6875rem;
 
 		#frame {
 			inline-size: 100%;

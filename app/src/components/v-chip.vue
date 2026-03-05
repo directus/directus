@@ -167,7 +167,7 @@ function onCloseClick(event: MouseEvent) {
 	}
 
 	&.x-large {
-		block-size: 48px;
+		block-size: 2.6875rem;
 		padding: var(--v-chip-padding, 0 1.125rem);
 		font-size: 1rem;
 		border-radius: 1.375rem;

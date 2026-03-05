@@ -192,7 +192,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 2.6875rem 0;
 }
 
 .corresponding {
@@ -200,7 +200,7 @@ const unsortableJunctionFields = computed(() => {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 0.6875rem 1.8125rem;
-	margin-block-start: 48px;
+	margin-block-start: 2.6875rem;
 
 	.arrow {
 		--v-icon-color: var(--theme--primary);
@@ -237,7 +237,7 @@ const unsortableJunctionFields = computed(() => {
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	.v-divider {
-		margin-block: 48px 1.375rem;
+		margin-block: 2.6875rem 1.375rem;
 	}
 }
 
@@ -248,7 +248,7 @@ const unsortableJunctionFields = computed(() => {
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-block: 48px 0;
+		margin-block: 2.6875rem 0;
 	}
 }
 </style>

@@ -255,7 +255,7 @@ const stageChanges = () => {
 }
 
 .v-divider {
-	margin: 68px 0 48px;
+	margin: 68px 0 2.6875rem;
 }
 
 .group h2 {

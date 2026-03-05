@@ -525,7 +525,7 @@ function onApply() {
 @use '@/styles/mixins';
 
 .type-title {
-	margin-block-end: 48px;
+	margin-block-end: 2.6875rem;
 }
 
 .grid {

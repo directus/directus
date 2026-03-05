@@ -225,7 +225,7 @@ const relatedPrimaryKey = computed(
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 2.6875rem 0;
 }
 
 .v-list {
@@ -243,7 +243,7 @@ const relatedPrimaryKey = computed(
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-block: 48px 0;
+		margin-block: 2.6875rem 0;
 	}
 }
 </style>

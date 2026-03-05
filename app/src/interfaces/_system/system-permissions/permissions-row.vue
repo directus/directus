@@ -115,7 +115,7 @@ const emit = defineEmits<{
 	}
 
 	.action {
-		block-size: 48px;
+		block-size: 2.6875rem;
 		padding-inline-start: 0.6875rem;
 		text-align: center;
 	}

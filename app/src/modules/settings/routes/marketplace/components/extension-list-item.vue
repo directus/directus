@@ -72,8 +72,8 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 }
 
 .icon {
-	inline-size: 48px;
-	block-size: 48px;
+	inline-size: 2.6875rem;
+	block-size: 2.6875rem;
 	border-radius: 1.375rem;
 	display: flex;
 	align-items: center;

@@ -458,7 +458,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator.sticky th {
 	position: sticky;
-	inset-block-start: 48px;
+	inset-block-start: 2.6875rem;
 	z-index: 2;
 }
 

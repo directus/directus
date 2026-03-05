@@ -206,7 +206,7 @@ function handleClick() {
 			inset-inline-start: 0;
 			z-index: 1;
 			inline-size: 100%;
-			block-size: 48px;
+			block-size: 2.6875rem;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 

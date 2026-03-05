@@ -804,7 +804,7 @@ function discardAndLeave() {
 	padding-block-start: calc(var(--content-padding) / 2);
 
 	&.center {
-		block-size: calc(100% - 48px - var(--header-bar-height));
+		block-size: calc(100% - 2.6875rem - var(--header-bar-height));
 		display: grid;
 		place-items: center;
 	}

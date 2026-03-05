@@ -97,7 +97,7 @@ async function saveEdits(item: Record<string, any>) {
 }
 
 .v-list-item {
-	block-size: 48px;
+	block-size: 2.6875rem;
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
