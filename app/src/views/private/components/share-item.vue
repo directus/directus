@@ -136,7 +136,7 @@ const formattedTime = computed(() => {
 }
 
 .share-uses {
-	margin-inline-end: 5px;
+	margin-inline-end: 0.3125rem;
 	font-size: 12px;
 
 	&.no-left {

@@ -134,28 +134,28 @@
 .cropper-line.line-e {
 	inset-block-start: 0;
 	inset-inline-end: -0.1875rem;
-	inline-size: 5px;
+	inline-size: 0.3125rem;
 	cursor: ew-resize;
 }
 
 .cropper-line.line-n {
 	inset-block-start: -0.1875rem;
 	inset-inline-start: 0;
-	block-size: 5px;
+	block-size: 0.3125rem;
 	cursor: ns-resize;
 }
 
 .cropper-line.line-w {
 	inset-block-start: 0;
 	inset-inline-start: -0.1875rem;
-	inline-size: 5px;
+	inline-size: 0.3125rem;
 	cursor: ew-resize;
 }
 
 .cropper-line.line-s {
 	inset-block-end: -0.1875rem;
 	inset-inline-start: 0;
-	block-size: 5px;
+	block-size: 0.3125rem;
 	cursor: ns-resize;
 }
 
@@ -169,53 +169,53 @@
 
 .cropper-point.point-e {
 	inset-block-start: 50%;
-	inset-inline-end: -5px;
-	margin-block-start: -5px;
+	inset-inline-end: -0.3125rem;
+	margin-block-start: -0.3125rem;
 	cursor: ew-resize;
 }
 
 .cropper-point.point-n {
-	inset-block-start: -5px;
+	inset-block-start: -0.3125rem;
 	inset-inline-start: 50%;
-	margin-inline-start: -5px;
+	margin-inline-start: -0.3125rem;
 	cursor: ns-resize;
 }
 
 .cropper-point.point-w {
 	inset-block-start: 50%;
-	inset-inline-start: -5px;
-	margin-block-start: -5px;
+	inset-inline-start: -0.3125rem;
+	margin-block-start: -0.3125rem;
 	cursor: ew-resize;
 }
 
 .cropper-point.point-s {
-	inset-block-end: -5px;
+	inset-block-end: -0.3125rem;
 	inset-inline-start: 50%;
-	margin-inline-start: -5px;
+	margin-inline-start: -0.3125rem;
 	cursor: s-resize;
 }
 
 .cropper-point.point-ne {
-	inset-block-start: -5px;
-	inset-inline-end: -5px;
+	inset-block-start: -0.3125rem;
+	inset-inline-end: -0.3125rem;
 	cursor: nesw-resize;
 }
 
 .cropper-point.point-nw {
-	inset-block-start: -5px;
-	inset-inline-start: -5px;
+	inset-block-start: -0.3125rem;
+	inset-inline-start: -0.3125rem;
 	cursor: nwse-resize;
 }
 
 .cropper-point.point-sw {
-	inset-block-end: -5px;
-	inset-inline-start: -5px;
+	inset-block-end: -0.3125rem;
+	inset-inline-start: -0.3125rem;
 	cursor: nesw-resize;
 }
 
 .cropper-point.point-se {
-	inset-inline-end: -5px;
-	inset-block-end: -5px;
+	inset-inline-end: -0.3125rem;
+	inset-block-end: -0.3125rem;
 	cursor: nwse-resize;
 }
 

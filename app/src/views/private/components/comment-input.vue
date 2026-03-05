@@ -377,7 +377,7 @@ function pressedEnter() {
 	block-size: 100%;
 	block-size: var(--theme--form--field--input--height);
 	min-block-size: 100px;
-	padding: 5px;
+	padding: 0.3125rem;
 	overflow: scroll;
 	white-space: pre;
 	background-color: var(--theme--form--field--input--background);

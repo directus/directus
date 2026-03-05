@@ -586,7 +586,7 @@ onUnmounted(() => {
 
 .log-detail-controls {
 	display: flex;
-	padding: 5px;
+	padding: 0.3125rem;
 }
 
 .close-button {

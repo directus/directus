@@ -111,13 +111,13 @@ function reload() {
 	&::after {
 		position: absolute;
 		inset-inline-end: 12px;
-		inset-block-end: -5px;
+		inset-block-end: -0.3125rem;
 		z-index: -1;
 		display: block;
 		inline-size: 20px;
 		block-size: 20px;
 		border-radius: 2px;
-		transform: rotate(45deg) translate(-5px, -5px);
+		transform: rotate(45deg) translate(-0.3125rem, -0.3125rem);
 		transition: transform var(--slow) var(--transition);
 		content: '';
 		pointer-events: none;

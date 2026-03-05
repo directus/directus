@@ -424,7 +424,7 @@ function toggleManualSort() {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		inline-size: 5px;
+		inline-size: 0.3125rem;
 		block-size: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);

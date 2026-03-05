@@ -272,8 +272,8 @@ useResizeObserver(contentRef, (entries) => {
 		&::after {
 			content: '';
 			position: absolute;
-			inset-inline-start: 5px;
-			inline-size: 5px;
+			inset-inline-start: 0.3125rem;
+			inline-size: 0.3125rem;
 			block-size: 10px;
 			border: solid var(--theme--primary);
 			border-width: 0 2px 2px 0;

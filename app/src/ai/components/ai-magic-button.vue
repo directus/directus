@@ -69,7 +69,7 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 		d: path(
 			'M12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12ZM12 16L10.75 13.25L8 12L10.75 10.75L12 8L13.25 10.75L16 12L13.25 13.25L12 16Z'
 		);
-		translate: 6px 5px;
+		translate: 6px 0.3125rem;
 		animation-name: sparkle-right;
 	}
 }
@@ -117,7 +117,7 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 @keyframes sparkle-right {
 	0% {
 		opacity: 1;
-		translate: 6px 5px;
+		translate: 6px 0.3125rem;
 		d: path(
 			'M12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12ZM12 16L10.75 13.25L8 12L10.75 10.75L12 8L13.25 10.75L16 12L13.25 13.25L12 16Z'
 		);
@@ -147,7 +147,7 @@ const onAnimationIteration = (star: 'left' | 'right') => {
 
 	100% {
 		opacity: 1;
-		translate: 6px 5px;
+		translate: 6px 0.3125rem;
 		d: path(
 			'M12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12L12 12ZM12 16L10.75 13.25L8 12L10.75 10.75L12 8L13.25 10.75L16 12L13.25 13.25L12 16Z'
 		);

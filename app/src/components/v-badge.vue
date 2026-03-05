@@ -73,7 +73,7 @@ withDefaults(
 		inline-size: max-content;
 		min-inline-size: var(--v-badge-size, 16px);
 		block-size: var(--v-badge-size, 16px);
-		padding: 0 5px;
+		padding: 0 0.3125rem;
 		color: var(--v-badge-color, var(--white));
 		font-weight: 800;
 		font-size: 9px;

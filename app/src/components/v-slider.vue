@@ -209,7 +209,7 @@ function onInput(event: Event) {
 			block-size: 0.25rem;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: 0.25rem;
-			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
+			transform: translateY(-0.3125rem) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
 

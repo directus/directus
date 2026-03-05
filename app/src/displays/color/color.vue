@@ -49,7 +49,7 @@ const addBorder = computed(() => {
 		flex-shrink: 0;
 		inline-size: 10px;
 		block-size: 10px;
-		border-radius: 5px;
+		border-radius: 0.3125rem;
 
 		&.with-border {
 			border: 1px solid var(--theme--form--field--input--border-color);

@@ -103,7 +103,7 @@
 
 		li {
 			display: inline-block;
-			padding: 5px 10px;
+			padding: 0.3125rem 10px;
 		}
 	}
 
@@ -122,8 +122,8 @@
 
 	.svg-pointer {
 		position: absolute;
-		block-size: 5px;
-		margin: 0 0 0 -5px;
+		block-size: 0.3125rem;
+		margin: 0 0 0 -0.3125rem;
 		border: 5px solid transparent;
 		border-block-start-color: rgb(0 0 0 / 0.8);
 		content: ' ';

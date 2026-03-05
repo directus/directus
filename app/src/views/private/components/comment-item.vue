@@ -207,7 +207,7 @@ function useEdits() {
 }
 
 .comment-item.expand .content .expand-text span {
-	padding: 0.25rem 12px 5px;
+	padding: 0.25rem 12px 0.3125rem;
 	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	font-size: 12px;

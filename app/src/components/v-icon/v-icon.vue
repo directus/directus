@@ -174,7 +174,7 @@ function emitClick(event: MouseEvent) {
 	&.sup {
 		--v-icon-size: 8px;
 
-		vertical-align: 5px;
+		vertical-align: 0.3125rem;
 	}
 
 	&.x-small {
