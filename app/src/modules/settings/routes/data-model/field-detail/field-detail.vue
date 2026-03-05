@@ -139,7 +139,7 @@ async function save() {
 }
 
 .v-input.search {
-	--v-input-border-radius: calc(44px / 2);
+	--v-input-border-radius: calc(2.5rem / 2);
 	inline-size: 200px;
 	margin-inline-start: auto;
 

@@ -342,7 +342,7 @@ function onClick(event: PointerEvent) {
 		}
 
 		&.dense {
-			--theme--form--field--input--height: 44px;
+			--theme--form--field--input--height: 2.5rem;
 			padding: calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2);
 
 			& + & {

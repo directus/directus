@@ -727,7 +727,7 @@ function useGroupedPermissions() {
 			display: flex;
 			align-items: center;
 			inline-size: 100%;
-			block-size: 44px;
+			block-size: 2.5rem;
 			padding: 0 0.25rem;
 			color: var(--theme--foreground-subdued);
 			cursor: pointer;

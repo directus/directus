@@ -111,7 +111,7 @@ withDefaults(defineProps<Props>(), {
 
 .block-list-item-dense {
 	inline-size: 100%;
-	block-size: 44px;
+	block-size: 2.5rem;
 	border-radius: var(--theme--border-radius);
 
 	@include loader;

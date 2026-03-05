@@ -571,7 +571,7 @@ function useUrls() {
 	--preview--header--background-color: var(--theme--navigation--modules--background);
 	--preview--header--border-width: var(--theme--navigation--modules--border-width);
 	--preview--header--border-color: var(--theme--navigation--modules--border-color);
-	--preview--header--height: 44px;
+	--preview--header--height: 2.5rem;
 
 	container-type: inline-size;
 	inline-size: 100%;

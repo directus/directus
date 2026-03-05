@@ -81,7 +81,7 @@ function reload() {
 	border-radius: var(--theme--border-radius);
 	inline-size: max-content;
 	max-inline-size: 100%;
-	min-block-size: 44px;
+	min-block-size: 2.5rem;
 
 	.icon {
 		display: block;

@@ -425,7 +425,7 @@ function clearFilters() {
 		margin-block-end: 0.4375rem;
 
 		&.dense {
-			block-size: 44px;
+			block-size: 2.5rem;
 		}
 	}
 
@@ -437,7 +437,7 @@ function clearFilters() {
 			padding: 0.875rem var(--theme--form--field--input--padding) 0.875rem var(--theme--form--field--input--padding);
 
 			&.dense {
-				min-block-size: 44px;
+				min-block-size: 2.5rem;
 				padding: 0.5625rem 0.4375rem;
 			}
 		}

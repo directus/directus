@@ -160,8 +160,8 @@ function onSetupComplete() {
 }
 
 .icon {
-	inline-size: 44px;
-	block-size: 44px;
+	inline-size: 2.5rem;
+	block-size: 2.5rem;
 	border-radius: 1.375rem;
 	display: flex;
 	align-items: center;
