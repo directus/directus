@@ -63,7 +63,7 @@ useResizeObserver(contentRef, (entries) => {
 		--ai-message-text-border-color: var(--theme--border-color);
 
 		.message-content {
-			padding: 0.8rem 1rem;
+			padding: 0.625rem 1rem;
 		}
 
 		--ai-message-code-background: var(--theme--background-normal);
@@ -74,7 +74,7 @@ useResizeObserver(contentRef, (entries) => {
 	}
 
 	&[data-role='user'].has-overflow.is-open .message-content {
-		padding-block-end: 0.8rem;
+		padding-block-end: 0.625rem;
 	}
 }
 
@@ -371,7 +371,7 @@ useResizeObserver(contentRef, (entries) => {
 	position: relative;
 	display: block;
 	inline-size: 100%;
-	padding: 0.375rem 1rem 0.8rem;
+	padding: 0.375rem 1rem 0.625rem;
 	text-align: start;
 	z-index: 1;
 	font-size: 0.875rem;
