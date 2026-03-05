@@ -166,7 +166,7 @@ function getLinkForItem(item: any) {
 
 .links {
 	.v-list-item-content {
-		block-size: var(--v-list-item-min-height, 32px);
+		block-size: var(--v-list-item-min-height, 1.8125rem);
 	}
 }
 </style>

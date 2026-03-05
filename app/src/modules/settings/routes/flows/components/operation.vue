@@ -404,8 +404,8 @@ function pointerLeave() {
 	}
 
 	.button-hint {
-		inline-size: 32px;
-		block-size: 32px;
+		inline-size: 1.8125rem;
+		block-size: 1.8125rem;
 		padding: 0.25rem;
 	}
 

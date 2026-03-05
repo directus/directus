@@ -161,7 +161,7 @@ function onClick(event: PointerEvent) {
 
 		--v-list-item-padding                  [0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0px))]
 		--v-list-item-margin                   [2px 0]
-		--v-list-item-min-height               [32px]
+		--v-list-item-min-height               [1.8125rem]
 		--v-list-item-border-radius            [var(--theme--border-radius)]
 		--v-list-item-border-color             [var(--theme--border-color-subdued)]
 		--v-list-item-border-color-hover       [var(--theme--form--field--input--border-color-hover)]
@@ -186,7 +186,7 @@ function onClick(event: PointerEvent) {
 	inline-size: 100%;
 	min-inline-size: 0;
 	max-inline-size: none;
-	min-block-size: var(--v-list-item-min-height, 32px);
+	min-block-size: var(--v-list-item-min-height, 1.8125rem);
 	max-block-size: none;
 	margin: var(--v-list-item-margin, 2px 0);
 	padding: var(--v-list-item-padding, 0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0px)));
@@ -376,7 +376,7 @@ function onClick(event: PointerEvent) {
 
 		.v-list.nav.dense {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: 32px;
+				--v-list-item-min-height: 1.8125rem;
 			}
 		}
 	}

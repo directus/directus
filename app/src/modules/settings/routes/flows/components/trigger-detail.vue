@@ -106,7 +106,7 @@ const currentTriggerOptionFields = computed(() => {
 
 .type-title,
 .select {
-	margin-block-end: 32px;
+	margin-block-end: 1.8125rem;
 }
 
 .not-found {

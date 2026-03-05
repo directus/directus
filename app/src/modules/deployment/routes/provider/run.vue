@@ -446,7 +446,7 @@ onUnmounted(() => {
 
 .log-filters {
 	display: flex;
-	gap: 32px;
+	gap: 1.8125rem;
 	flex-wrap: wrap;
 	margin-block-end: 0.875rem;
 }

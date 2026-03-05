@@ -168,7 +168,7 @@ const onDeleteOptions = computed(() =>
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0.6875rem 32px;
+	gap: 0.6875rem 1.8125rem;
 
 	.v-input.matches {
 		--v-input-color: var(--theme--primary);

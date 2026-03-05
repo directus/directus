@@ -206,7 +206,7 @@ h2 {
 
 .v-input,
 .v-notice {
-	margin-block-end: 32px;
+	margin-block-end: 1.8125rem;
 }
 
 .hydrating {

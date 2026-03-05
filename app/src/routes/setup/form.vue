@@ -144,13 +144,13 @@ const fields = useFormFields(props.register, value, initialValues);
 
 		.v-checkbox {
 			grid-row: 2;
-			margin-block-end: 32px;
+			margin-block-end: 1.8125rem;
 		}
 	}
 }
 
 .v-form {
-	--theme--form--row-gap: 32px;
+	--theme--form--row-gap: 1.8125rem;
 }
 
 h1 {
@@ -166,11 +166,11 @@ p {
 	font-size: 0.8125rem;
 	font-weight: 500;
 	line-height: 1.3846;
-	margin-block-end: 32px;
+	margin-block-end: 1.8125rem;
 }
 
 .v-notice {
-	margin-block: 32px;
+	margin-block: 1.8125rem;
 }
 
 .v-checkbox {

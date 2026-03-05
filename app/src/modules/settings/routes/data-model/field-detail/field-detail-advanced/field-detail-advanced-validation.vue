@@ -68,8 +68,8 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 @use '@/styles/mixins';
 
 .form {
-	--theme--form--row-gap: 32px;
-	--theme--form--column-gap: 32px;
+	--theme--form--row-gap: 1.8125rem;
+	--theme--form--column-gap: 1.8125rem;
 	@include mixins.form-grid;
 }
 

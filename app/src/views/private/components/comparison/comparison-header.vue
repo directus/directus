@@ -211,7 +211,7 @@ function getDeltaOptionUser(deltaOption: any) {
 		.title {
 			font-size: 1.125rem;
 			font-weight: 600;
-			line-height: 32px;
+			line-height: 1.8125rem;
 			color: var(--theme--foreground-accent);
 			margin: 0;
 		}

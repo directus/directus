@@ -199,6 +199,6 @@ function onToggle(open: boolean) {
 
 .v-pagination {
 	justify-content: center;
-	margin-block-start: 32px;
+	margin-block-start: 1.8125rem;
 }
 </style>

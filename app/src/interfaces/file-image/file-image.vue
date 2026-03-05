@@ -314,7 +314,7 @@ img {
 }
 
 .is-letterbox {
-	padding: 32px;
+	padding: 1.8125rem;
 }
 
 .image-error {
@@ -325,7 +325,7 @@ img {
 	block-size: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--theme--background-normal);
-	padding: 32px;
+	padding: 1.8125rem;
 
 	.v-icon {
 		margin-block-end: 0.3125rem;
@@ -369,7 +369,7 @@ img {
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
-		inset-block-start: calc(50% - 32px);
+		inset-block-start: calc(50% - 1.8125rem);
 		inset-inline-start: 0;
 		z-index: 3;
 		display: flex;

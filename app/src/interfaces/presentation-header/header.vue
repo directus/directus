@@ -455,7 +455,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 .helper-text-outer {
 	padding-block: 40px;
-	padding-inline: 32px;
+	padding-inline: 1.8125rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 	background-color: var(--theme--background-subdued);
 	overflow-y: scroll;

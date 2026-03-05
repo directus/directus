@@ -56,7 +56,7 @@ export default defineTheme({
 		borderColorAccent: '#CBD5E1',
 		borderColorSubdued: '#F1F5F9',
 		form: {
-			rowGap: '32px',
+			rowGap: '1.8125rem',
 			field: {
 				input: {
 					background: '#FFFFFF',

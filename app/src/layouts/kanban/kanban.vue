@@ -483,8 +483,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							margin-inline-start: calc(var(--user-spacing) * -1);
 							border-radius: 1.375rem;
 							border: 4px solid var(--theme--background);
-							block-size: 32px;
-							inline-size: 32px;
+							block-size: 1.8125rem;
+							inline-size: 1.8125rem;
 							margin-block: -0.25rem;
 						}
 

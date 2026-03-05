@@ -163,7 +163,7 @@ function toPage(page: number) {
 }
 
 .v-button :deep(.small) {
-	--v-button-min-width: 32px;
+	--v-button-min-width: 1.8125rem;
 }
 
 .v-button:first-child {

@@ -145,7 +145,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 	--columns: 1;
 
 	display: grid;
-	gap: 0.6875rem 32px;
+	gap: 0.6875rem 1.8125rem;
 	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 

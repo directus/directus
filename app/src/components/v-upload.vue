@@ -502,7 +502,7 @@ defineExpose({ abort });
 	flex-direction: column;
 	justify-content: center;
 	min-block-size: var(--input-height-md);
-	padding: 32px;
+	padding: 1.8125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
@@ -577,7 +577,7 @@ defineExpose({ abort });
 	.v-progress-linear {
 		position: absolute;
 		inset-block-end: 30px;
-		inset-inline-start: 32px;
+		inset-inline-start: 1.8125rem;
 		inline-size: calc(100% - 64px);
 	}
 }

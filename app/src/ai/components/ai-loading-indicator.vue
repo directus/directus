@@ -12,7 +12,7 @@
 	gap: 0.3125rem;
 	padding-inline: 0.1875rem;
 	align-items: center;
-	block-size: 32px;
+	block-size: 1.8125rem;
 
 	span {
 		--delay: 0;

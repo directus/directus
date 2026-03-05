@@ -166,7 +166,7 @@ const steps = computed(() => {
 		}
 
 		.inset {
-			padding-block: 0.6875rem 32px;
+			padding-block: 0.6875rem 1.8125rem;
 
 			.v-detail + .v-detail {
 				margin-block-start: 0.6875rem;

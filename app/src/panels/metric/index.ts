@@ -530,7 +530,7 @@ export default definePanel({
 					interface: 'select-dropdown',
 					options: {
 						choices: [
-							{ text: '$t:fonts.small', value: '32px' },
+							{ text: '$t:fonts.small', value: '1.8125rem' },
 							{ text: '$t:fonts.medium', value: '48px' },
 							{ text: '$t:fonts.large', value: '64px' },
 							{ text: '$t:fonts.auto', value: 'auto' },

@@ -90,7 +90,7 @@ watch(form, () => {
 }
 
 .v-button {
-	margin-block-start: 32px;
+	margin-block-start: 1.8125rem;
 
 	.v-icon {
 		margin-inline-end: 0.6875rem;

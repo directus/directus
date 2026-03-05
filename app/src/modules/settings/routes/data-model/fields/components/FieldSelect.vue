@@ -418,7 +418,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	}
 
 	.duplicate-field + .duplicate-field {
-		margin-block-end: 32px;
+		margin-block-end: 1.8125rem;
 	}
 }
 

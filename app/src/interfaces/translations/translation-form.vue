@@ -225,11 +225,11 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 }
 
 .v-form {
-	--theme--form--row-gap: 32px;
+	--theme--form--row-gap: 1.8125rem;
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-background);
 
-	margin-block-start: 32px;
+	margin-block-start: 1.8125rem;
 
 	&.unselected:not(.disabled) {
 		opacity: 0.5;

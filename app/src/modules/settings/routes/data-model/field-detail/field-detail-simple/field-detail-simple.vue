@@ -197,7 +197,7 @@ function toggleInterface(id: string) {
 
 	display: grid;
 	grid-template-columns: repeat(var(--columns), 1fr);
-	gap: 32px;
+	gap: 1.8125rem;
 
 	@media (min-width: 400px) {
 		--columns: 2;
