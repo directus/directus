@@ -54,7 +54,7 @@ function openLightbox(index: number) {
 .message-file-group {
 	container-type: inline-size;
 	inline-size: 100%;
-	max-inline-size: 18rem;
+	max-inline-size: 14.1875rem;
 	margin-inline-start: auto;
 	padding: calc(var(--focus-ring-width) + var(--focus-ring-offset));
 }
