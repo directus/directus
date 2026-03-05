@@ -267,7 +267,7 @@ async function generateCollection() {
 .type-note {
 	position: relative;
 	display: block;
-	max-inline-size: 520px;
+	max-inline-size: 29.25rem;
 	margin-block-start: 0.25rem;
 }
 </style>
