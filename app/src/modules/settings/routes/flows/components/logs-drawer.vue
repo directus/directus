@@ -150,7 +150,7 @@ const steps = computed(() => {
 			content: '';
 			position: absolute;
 			inline-size: var(--theme--border-width);
-			inset-inline-start: -11px;
+			inset-inline-start: -0.625rem;
 			inset-block-start: 0;
 			background-color: var(--theme--border-color-subdued);
 			block-size: 100%;

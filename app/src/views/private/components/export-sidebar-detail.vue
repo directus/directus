@@ -725,7 +725,7 @@ async function exportDataFiles() {
 .extension {
 	color: var(--theme--primary);
 	font-weight: 600;
-	font-size: 11px;
+	font-size: 0.625rem;
 	text-transform: uppercase;
 }
 

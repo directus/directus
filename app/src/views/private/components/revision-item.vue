@@ -99,8 +99,8 @@ const user = computed(() => {
 			inset-block-start: 0.3125rem;
 			inset-inline-start: -18px;
 			z-index: 2;
-			inline-size: 11px;
-			block-size: 11px;
+			inline-size: 0.625rem;
+			block-size: 0.625rem;
 			background-color: var(--theme--warning);
 			border: var(--theme--border-width) solid var(--theme--background-normal);
 			border-radius: 0.4375rem;

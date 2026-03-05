@@ -102,7 +102,7 @@ const hasValue = computed(() => {
 			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 0.25rem;
 			position: absolute;
-			inset-block-start: 11px;
+			inset-block-start: 0.625rem;
 			inset-inline-start: -1px;
 			display: block;
 		}
