@@ -61,7 +61,7 @@ function openLightbox(index: number) {
 
 .message-file-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(3.125rem, 1fr));
 	gap: 0.3125rem;
 }
 
