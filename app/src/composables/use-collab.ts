@@ -1,6 +1,6 @@
 import { ErrorCode } from '@directus/errors';
 import { DirectusUser, readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
-import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
+import { Avatar, Item, PrimaryKey, WS_TYPE } from '@directus/types';
 import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
@@ -14,6 +14,7 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { notify } from '@/utils/notify';
 
 type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>;
@@ -100,7 +101,7 @@ sdk.onWebSocket('message', async (message: ServerMessage | ServerError) => {
 export function useCollab(
 	collection: Ref<string>,
 	item: Ref<PrimaryKey | null>,
-	version: Ref<ContentVersion | null>,
+	version: Ref<ContentVersionMaybeNew | null>,
 	initialValues: Ref<Item | null>,
 	edits: Ref<Item>,
 	getItem: () => Promise<void>,
@@ -212,7 +213,8 @@ export function useCollab(
 			roomId.value ||
 			joining ||
 			!collection.value ||
-			item.value === '+'
+			item.value === '+' ||
+			version.value?.id === '+'
 		)
 			return;
 

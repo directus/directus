@@ -233,16 +233,12 @@ router.patch(
 			schema: req.schema,
 		});
 
-		// Get provider config
-		const deployment = await service.readByProvider(provider);
-
 		// Validate deployable projects before any mutation
 		if (value.create.length > 0) {
-			const driver = await service.getDriver(provider);
-			await projectsService.validateDeployable(driver, value.create);
+			await projectsService.validateDeployable(provider, value.create);
 		}
 
-		const updatedProjects = await projectsService.updateSelection(deployment.id, value.create, value.delete);
+		const updatedProjects = await projectsService.updateSelection(provider, value.create, value.delete);
 
 		// Sync webhook with updated project list
 		service.syncWebhook(provider).catch((err) => {
@@ -482,6 +478,7 @@ router.get(
 
 		const data = await runsService.getStats(projectId, sinceDate);
 
+		res.locals['cache'] = false;
 		res.locals['payload'] = { data };
 
 		return next();
