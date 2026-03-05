@@ -140,7 +140,7 @@ const hasHiddenCollections = computed(
 }
 
 .search-input {
-	--theme--form--field--input--height: 40px;
+	--theme--form--field--input--height: 2.25rem;
 
 	position: sticky;
 	inset-block-start: 0;

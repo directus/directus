@@ -186,7 +186,7 @@ function useEdits() {
 	inset-inline: 0;
 	inset-block-end: 0.25rem;
 	z-index: 1;
-	block-size: 40px;
+	block-size: 2.25rem;
 	background: linear-gradient(
 		180deg,
 		rgb(var(--background-page-rgb), 0) 0%,

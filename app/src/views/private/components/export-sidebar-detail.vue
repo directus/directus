@@ -710,8 +710,8 @@ async function exportDataFiles() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 40px;
-	block-size: 40px;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
 	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);

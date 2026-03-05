@@ -259,7 +259,7 @@ const stageChanges = () => {
 }
 
 .group h2 {
-	margin-block-end: 40px;
+	margin-block-end: 2.25rem;
 	padding-block-end: 2px;
 	font-weight: 700;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);

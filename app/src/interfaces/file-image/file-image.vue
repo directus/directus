@@ -353,7 +353,7 @@ img {
 		inset-inline-start: 0;
 		z-index: 2;
 		inline-size: 100%;
-		block-size: 40px;
+		block-size: 2.25rem;
 		overflow: hidden;
 		line-height: 1;
 		white-space: nowrap;

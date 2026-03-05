@@ -371,7 +371,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 <style lang="scss" scoped>
 .field-select {
-	--input-height: 40px;
+	--input-height: 2.25rem;
 	--theme--form--field--input--padding: 0.4375rem;
 	-webkit-user-select: none;
 	user-select: none;
@@ -426,7 +426,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	position: relative;
 	min-block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-block: 40px 0.875rem;
+	padding-block: 2.25rem 0.875rem;
 	border-radius: var(--theme--border-radius);
 
 	> * {

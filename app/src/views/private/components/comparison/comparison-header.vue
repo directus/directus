@@ -302,12 +302,12 @@ function getDeltaOptionUser(deltaOption: any) {
 	}
 
 	.title-skeleton {
-		block-size: 40px;
+		block-size: 2.25rem;
 		min-inline-size: 120px;
 	}
 
 	.meta-skeleton {
-		block-size: 40px;
+		block-size: 2.25rem;
 		min-inline-size: 200px;
 	}
 }

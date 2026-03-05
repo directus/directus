@@ -123,7 +123,7 @@
 .tox .tox-toolbar,
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow {
-	min-block-size: 40px;
+	min-block-size: 2.25rem;
 	padding: 2px 0;
 	background: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

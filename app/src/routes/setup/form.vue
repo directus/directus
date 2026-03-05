@@ -155,7 +155,7 @@ const fields = useFormFields(props.register, value, initialValues);
 
 h1 {
 	color: var(--theme--foreground-accent);
-	font-size: 40px;
+	font-size: 2.25rem;
 	font-weight: 600;
 	line-height: 48px;
 

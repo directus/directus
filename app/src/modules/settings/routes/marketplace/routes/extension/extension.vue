@@ -77,7 +77,7 @@ watchEffect(async () => {
 
 .grid {
 	display: grid;
-	gap: 40px;
+	gap: 2.25rem;
 	grid-template-areas: 'banner' 'metadata' 'readme';
 	grid-template-columns: minmax(0, 1fr);
 

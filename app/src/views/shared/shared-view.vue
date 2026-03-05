@@ -118,8 +118,8 @@ header {
 	border-radius: var(--theme--border-radius);
 
 	img {
-		inline-size: 40px;
-		block-size: 40px;
+		inline-size: 2.25rem;
+		block-size: 2.25rem;
 		object-fit: contain;
 		object-position: center center;
 	}

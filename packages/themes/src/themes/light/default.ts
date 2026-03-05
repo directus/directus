@@ -138,7 +138,7 @@ export default defineTheme({
 
 		form: {
 			columnGap: '1.8125rem',
-			rowGap: '40px',
+			rowGap: '2.25rem',
 
 			field: {
 				label: {
@@ -279,7 +279,7 @@ export default defineTheme({
 
 		banner: {
 			background: '#0e1c2f',
-			padding: '40px',
+			padding: '2.25rem',
 			borderRadius: 'var(--theme--border-radius)',
 
 			avatar: {

@@ -193,7 +193,7 @@ const options = computed({
 }
 
 .save {
-	margin-block-start: 40px;
+	margin-block-start: 2.25rem;
 }
 
 .v-divider {

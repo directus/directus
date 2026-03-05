@@ -128,7 +128,7 @@ limitWritable.value = selectedSize;
 
 <style lang="scss" scoped>
 .v-info {
-	padding: 40px;
+	padding: 2.25rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 	pointer-events: none;

@@ -268,7 +268,7 @@ const newTranslationDefaults = computed(() => {
 	padding: 0.6875rem 0.4375rem 0.3125rem;
 
 	.search-input {
-		--input-height: 40px;
+		--input-height: 2.25rem;
 	}
 
 	.search-icon {

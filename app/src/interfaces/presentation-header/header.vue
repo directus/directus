@@ -454,7 +454,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 }
 
 .helper-text-outer {
-	padding-block: 40px;
+	padding-block: 2.25rem;
 	padding-inline: 1.8125rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 	background-color: var(--theme--background-subdued);

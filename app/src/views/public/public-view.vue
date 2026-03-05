@@ -169,7 +169,7 @@ const logoURL = computed<string | null>(() => {
 		}
 
 		@media (min-width: 500px) {
-			padding: 40px 80px;
+			padding: 2.25rem 80px;
 		}
 	}
 
@@ -421,8 +421,8 @@ const logoURL = computed<string | null>(() => {
 		border-radius: calc(var(--theme--border-radius) - 2px);
 
 		img {
-			inline-size: 40px;
-			block-size: 40px;
+			inline-size: 2.25rem;
+			block-size: 2.25rem;
 			object-fit: contain;
 			object-position: center center;
 		}

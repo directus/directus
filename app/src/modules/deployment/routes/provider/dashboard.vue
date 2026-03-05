@@ -185,7 +185,7 @@ watch(range, loadDashboard);
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 0.875rem;
-	margin-block-end: 40px;
+	margin-block-end: 2.25rem;
 
 	@media (max-width: 1512px) {
 		grid-template-columns: repeat(3, 1fr);

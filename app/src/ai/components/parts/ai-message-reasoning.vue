@@ -79,9 +79,9 @@ const expandedText = computed(() => {
 		background:
 			linear-gradient(
 				90deg,
-				transparent calc(50% - var(--spread, 40px)),
+				transparent calc(50% - var(--spread, 2.25rem)),
 				var(--theme--foreground),
-				transparent calc(50% + var(--spread, 40px))
+				transparent calc(50% + var(--spread, 2.25rem))
 			),
 			linear-gradient(var(--theme--foreground-subdued), var(--theme--foreground-subdued));
 		background-size:

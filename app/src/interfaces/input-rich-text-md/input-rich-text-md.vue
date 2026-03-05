@@ -445,7 +445,7 @@ const menuActive = computed(() => imageDialogOpen.value);
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 	--editor-min-height: var(--input-height-lg);
-	--editor-toolbar-height: 40px;
+	--editor-toolbar-height: 2.25rem;
 	--editor-body-min-height: calc(var(--editor-min-height) - var(--editor-toolbar-height));
 
 	min-block-size: var(--editor-min-height);
