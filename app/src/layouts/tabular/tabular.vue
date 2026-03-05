@@ -317,7 +317,7 @@ function removeField(fieldKey: string) {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		inline-size: 240px;
+		inline-size: 13.5rem;
 		color: var(--theme--foreground-subdued);
 
 		span {
