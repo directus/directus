@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -20,7 +21,6 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { DRAFT_VERSION_KEY } from '@/constants';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -48,7 +48,7 @@ const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(pr
 
 const { t } = useI18n();
 
-const draftVersion = computed(() => versions.value.find((version) => version.key === DRAFT_VERSION_KEY));
+const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT));
 const localVersions = computed(() => versions.value.filter((version) => version.type === 'local'));
 
 const {

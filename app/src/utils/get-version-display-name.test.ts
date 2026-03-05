@@ -1,6 +1,6 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { describe, expect, it } from 'vitest';
 import { getVersionDisplayName } from './get-version-display-name';
-import { DRAFT_VERSION_KEY } from '@/constants';
 
 describe('getVersionDisplayName', () => {
 	it('should return "Main" when version is null', () => {
@@ -10,7 +10,7 @@ describe('getVersionDisplayName', () => {
 	it('should return "Draft" for global draft version', () => {
 		const versionDisplayName = getVersionDisplayName({
 			name: null,
-			key: DRAFT_VERSION_KEY,
+			key: VERSION_KEY_DRAFT,
 		});
 
 		expect(versionDisplayName).toBe('Draft');
@@ -19,7 +19,7 @@ describe('getVersionDisplayName', () => {
 	it('should return "Draft" for global draft version even when name is provided', () => {
 		const versionDisplayName = getVersionDisplayName({
 			name: 'Custom Name',
-			key: DRAFT_VERSION_KEY,
+			key: VERSION_KEY_DRAFT,
 		});
 
 		expect(versionDisplayName).toBe('Draft');

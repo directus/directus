@@ -164,8 +164,6 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 	},
 ];
 
-export const DRAFT_VERSION_KEY = 'draft';
-
 /** Contains `integer` and `float` – exclude `bigInteger` and `decimal` to avoid rounding errors. */
 export const APP_NUMERIC_TYPES = ['integer', 'float'];
 /** Treat `bigInteger` and `decimal` as strings to avoid rounding errors. */

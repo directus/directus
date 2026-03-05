@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
@@ -18,7 +19,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { BREAKPOINTS, DRAFT_VERSION_KEY } from '@/constants';
+import { BREAKPOINTS } from '@/constants';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import type { NavigationData } from '@/modules/visual/types';
@@ -147,8 +148,8 @@ function useVersionSelection() {
 	});
 
 	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
-		const versionList = [{ key: DRAFT_VERSION_KEY, name: null }];
-		const isDetectedVersionCustom = !isNil(detectedVersion.value) && detectedVersion.value !== DRAFT_VERSION_KEY;
+		const versionList = [{ key: VERSION_KEY_DRAFT, name: null }];
+		const isDetectedVersionCustom = !isNil(detectedVersion.value) && detectedVersion.value !== VERSION_KEY_DRAFT;
 
 		if (isDetectedVersionCustom) versionList.push({ key: detectedVersion.value!, name: null });
 
