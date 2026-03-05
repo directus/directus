@@ -436,7 +436,7 @@ function setToNow() {
 		border-style: solid;
 		border-color: transparent;
 		font-size: 0.8125rem;
-		line-height: 2.65rem;
+		line-height: 2.0625rem;
 		font-weight: 500;
 		border-radius: var(--theme--border-radius);
 		color: var(--theme--foreground);
