@@ -92,6 +92,7 @@ export interface DeploymentConfig {
 	options: Options | null;
 	webhook_ids: string[] | null;
 	webhook_secret: string | null;
+	last_synced_at: string | null;
 	date_created: string;
 	projects?: StoredProject[];
 }
@@ -136,6 +137,9 @@ export interface StoredProject {
 	deployment: string;
 	external_id: string;
 	name: string;
+	url: string | null;
+	framework: string | null;
+	deployable: boolean;
 	date_created: string;
 }
 
