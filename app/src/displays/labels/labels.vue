@@ -119,7 +119,7 @@ const items = computed(() => {
 
 .v-icon {
 	flex-shrink: 0;
-	vertical-align: -3px;
+	vertical-align: -0.1875rem;
 }
 
 .inline-dot {

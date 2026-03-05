@@ -125,7 +125,7 @@ function onInput(event: Event) {
 
 	.slider {
 		position: relative;
-		inset-block-start: -3px;
+		inset-block-start: -0.1875rem;
 		flex-grow: 1;
 
 		&.disabled {

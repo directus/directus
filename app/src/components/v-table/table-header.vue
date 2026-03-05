@@ -432,7 +432,7 @@ function toggleManualSort() {
 		&::after {
 			position: relative;
 			inset-block-start: 20%;
-			inset-inline-start: 3px;
+			inset-inline-start: 0.1875rem;
 			display: block;
 			inline-size: var(--theme--border-width);
 			block-size: 60%;

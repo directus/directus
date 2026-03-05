@@ -98,13 +98,13 @@
 
 .cropper-center::before {
 	inset-block-start: 0;
-	inset-inline-start: -3px;
+	inset-inline-start: -0.1875rem;
 	inline-size: 7px;
 	block-size: 1px;
 }
 
 .cropper-center::after {
-	inset-block-start: -3px;
+	inset-block-start: -0.1875rem;
 	inset-inline-start: 0;
 	inline-size: 1px;
 	block-size: 7px;
@@ -133,13 +133,13 @@
 
 .cropper-line.line-e {
 	inset-block-start: 0;
-	inset-inline-end: -3px;
+	inset-inline-end: -0.1875rem;
 	inline-size: 5px;
 	cursor: ew-resize;
 }
 
 .cropper-line.line-n {
-	inset-block-start: -3px;
+	inset-block-start: -0.1875rem;
 	inset-inline-start: 0;
 	block-size: 5px;
 	cursor: ns-resize;
@@ -147,13 +147,13 @@
 
 .cropper-line.line-w {
 	inset-block-start: 0;
-	inset-inline-start: -3px;
+	inset-inline-start: -0.1875rem;
 	inline-size: 5px;
 	cursor: ew-resize;
 }
 
 .cropper-line.line-s {
-	inset-block-end: -3px;
+	inset-block-end: -0.1875rem;
 	inset-inline-start: 0;
 	block-size: 5px;
 	cursor: ns-resize;

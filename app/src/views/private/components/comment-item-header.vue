@@ -215,6 +215,6 @@ function useDelete() {
 	margin-inline-end: 4px;
 	vertical-align: middle;
 	background-color: var(--theme--warning);
-	border-radius: 3px;
+	border-radius: 0.1875rem;
 }
 </style>

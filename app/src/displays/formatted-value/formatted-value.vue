@@ -242,7 +242,7 @@ function matchNumber(left: number | bigint, right: number | bigint, operator: st
 
 	.v-icon {
 		flex-shrink: 0;
-		vertical-align: -3px;
+		vertical-align: -0.1875rem;
 	}
 }
 </style>

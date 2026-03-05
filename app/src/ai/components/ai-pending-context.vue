@@ -187,12 +187,12 @@ const activeSrc = computed(() => {
 
 	&::-webkit-scrollbar-track {
 		background: transparent;
-		border-radius: 3px;
+		border-radius: 0.1875rem;
 	}
 
 	&::-webkit-scrollbar-thumb {
 		background: var(--theme--border-color);
-		border-radius: 3px;
+		border-radius: 0.1875rem;
 		transition: background var(--fast) var(--transition);
 
 		&:hover {

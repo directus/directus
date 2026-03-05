@@ -141,7 +141,7 @@ const user = computed(() => {
 	&:not(.last)::after {
 		position: absolute;
 		inset-block-start: 12px;
-		inset-inline-start: 3px;
+		inset-inline-start: 0.1875rem;
 		z-index: 1;
 		inline-size: 1px;
 		block-size: calc(100% + 12px);

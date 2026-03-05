@@ -168,13 +168,13 @@ const isPromotableField = computed(() => {
 	.badge {
 		margin: 0;
 		flex-shrink: 0;
-		margin-inline-start: 3px;
+		margin-inline-start: 0.1875rem;
 	}
 
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-inline-start: 3px;
+		margin-inline-start: 0.1875rem;
 
 		&.has-badge {
 			margin-inline-end: 6px;
@@ -182,7 +182,7 @@ const isPromotableField = computed(() => {
 	}
 
 	.ctx-arrow {
-		margin-block-start: -3px;
+		margin-block-start: -0.1875rem;
 		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -258,7 +258,7 @@ const isPromotableField = computed(() => {
 }
 
 .avatars {
-	margin-block-start: -3px;
+	margin-block-start: -0.1875rem;
 	align-self: start;
 	flex-shrink: 0;
 }

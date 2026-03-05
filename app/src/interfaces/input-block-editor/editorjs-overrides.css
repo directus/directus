@@ -318,7 +318,7 @@
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
 	inset-block-start: 4px;
-	inset-inline-start: 3px;
+	inset-inline-start: 0.1875rem;
 }
 
 /* Attaches */
