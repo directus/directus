@@ -467,7 +467,7 @@ onUnmounted(() => {
 }
 
 .question-text {
-	font-size: 0.9375rem;
+	font-size: 0.75rem;
 	font-weight: 600;
 	color: var(--theme--foreground);
 	margin-block-end: 0.5625rem;

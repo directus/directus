@@ -143,7 +143,7 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h5) {
-	font-size: 0.9375rem;
+	font-size: 0.75rem;
 	font-weight: 600;
 	line-height: 1.5;
 	margin: 0.5rem 0 0.3125rem;
