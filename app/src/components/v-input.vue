@@ -536,7 +536,7 @@ function useInlineWarning() {
 	}
 
 	&.small {
-		block-size: 38px;
+		block-size: 2.125rem;
 
 		.input {
 			padding: 0.4375rem 0.6875rem;
