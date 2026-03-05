@@ -671,7 +671,7 @@ function useUrls() {
 
 		input {
 			border: none;
-			inline-size: 50px;
+			inline-size: 2.8125rem;
 			background-color: transparent;
 
 			&:first-child {

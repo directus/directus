@@ -289,7 +289,7 @@ function toggleManualSort() {
 .table-header {
 	.cell {
 		position: relative;
-		block-size: 50px; /* +2px for bottom border */
+		block-size: 2.8125rem; /* +2px for bottom border */
 		padding: 0 0.6875rem;
 		font-weight: 500;
 		font-size: 0.8125rem;

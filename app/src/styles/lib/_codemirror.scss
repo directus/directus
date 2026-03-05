@@ -136,7 +136,7 @@
 
 .CodeMirror-rulers {
 	position: absolute;
-	inset-block: -50px 0;
+	inset-block: -2.8125rem 0;
 	inset-inline: 0;
 	overflow: hidden;
 }
@@ -359,13 +359,13 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	block-size: 100%;
 	min-block-size: var(--input-height-md);
 	max-block-size: 1000px; // matches wysiwyg
-	margin-inline-end: -50px;
+	margin-inline-end: -2.8125rem;
 
-	/* 50px is the magic margin used to hide the element's real scrollbars */
+	/* 2.8125rem is the magic margin used to hide the element's real scrollbars */
 
 	/* See overflow: hidden in .CodeMirror */
-	margin-block-end: -50px;
-	padding-block-end: 50px;
+	margin-block-end: -2.8125rem;
+	padding-block-end: 2.8125rem;
 	overflow: scroll !important; /* Things will break if this is overridden */
 	outline: none; /* Prevent dragging from highlighting the element */
 }
@@ -420,7 +420,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter {
 	display: inline-block;
 	block-size: 100%;
-	margin-block-end: -50px;
+	margin-block-end: -2.8125rem;
 	white-space: normal;
 	vertical-align: top;
 }
