@@ -814,6 +814,7 @@ ai:
   settings: Agordoj
   tool_approval:
     disabled: Malŝaltita
+  ask_user_next: Sekva
 ai_tools:
   items: Eroj
   files: Dosieroj
