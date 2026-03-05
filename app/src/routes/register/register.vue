@@ -75,7 +75,7 @@ useHead({
 
 <style lang="scss" scoped>
 h1 {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .login {
@@ -91,7 +91,7 @@ h1 {
 	display: flex;
 	align-items: end;
 	justify-content: space-between;
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 
 	.type-title {
 		margin-block-end: 0;
@@ -120,6 +120,6 @@ h1 {
 .after-success {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 1.125rem;
 }
 </style>

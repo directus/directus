@@ -219,7 +219,7 @@ watch(selectedProviderName, (val) => {
 }
 
 .v-notice {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .otp-input {
@@ -259,7 +259,7 @@ watch(selectedProviderName, (val) => {
 	.sso-title {
 		display: flex;
 		align-items: center;
-		padding: 0 0.875rem 0 20px;
+		padding: 0 0.875rem 0 1.125rem;
 		font-size: 0.875rem;
 		overflow: hidden;
 	}

@@ -156,7 +156,7 @@ function onSetupComplete() {
 }
 
 .provider-list-item {
-	--v-list-item-padding: 20px;
+	--v-list-item-padding: 1.125rem;
 }
 
 .icon {
@@ -167,7 +167,7 @@ function onSetupComplete() {
 	align-items: center;
 	justify-content: center;
 	background-color: var(--theme--primary);
-	margin-inline-end: 20px;
+	margin-inline-end: 1.125rem;
 
 	--v-icon-color: var(--foreground-inverted);
 }
@@ -184,7 +184,7 @@ function onSetupComplete() {
 }
 
 .meta {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: end;
 }

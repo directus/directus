@@ -123,7 +123,7 @@ function closeDialog() {
 }
 
 .validation-errors-list {
-	padding-inline-start: 20px;
+	padding-inline-start: 1.125rem;
 	list-style-type: disc;
 
 	.validation-error {

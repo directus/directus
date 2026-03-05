@@ -423,7 +423,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	--comparison-modal--width: max(100% - 8vw, 100% - var(--header-bar-height) * 2);
 	--comparison-modal--height: var(--comparison-modal--width);
 	--comparison-modal--padding-x: 28px;
-	--comparison-modal--padding-y: 20px;
+	--comparison-modal--padding-y: 1.125rem;
 	--comparison-modal--border-radius: var(--theme--border-radius);
 	--comparison-modal--peek-width: calc(0.3125rem);
 	--comparison-modal--divider-width: var(--theme--border-width, 2px);

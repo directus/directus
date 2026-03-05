@@ -390,7 +390,7 @@ const stageChanges = () => {
 }
 
 .setup {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 	margin: 34px;
 }
 </style>

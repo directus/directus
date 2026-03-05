@@ -272,7 +272,7 @@ function addKeyAsNode() {
 	.v-list {
 		min-inline-size: auto;
 		margin: 0 0 0.5625rem;
-		padding: 20px 20px 0.6875rem;
+		padding: 1.125rem 1.125rem 0.6875rem;
 		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 		background: var(--theme--form--field--input--background);
 

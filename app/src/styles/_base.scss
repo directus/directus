@@ -88,14 +88,14 @@ label {
 }
 
 fieldset {
-	padding: 0.5625rem 0 20px;
+	padding: 0.5625rem 0 1.125rem;
 	border: 0;
 
 	&.centered {
 		border-block-start: 1px solid var(--blue-grey-200);
 
 		legend {
-			padding: 0.5625rem 20px;
+			padding: 0.5625rem 1.125rem;
 			color: var(--blue-grey-400);
 			text-align: center;
 		}

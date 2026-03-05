@@ -63,7 +63,7 @@ watch(
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 20px 0;
+	margin: 1.125rem 0;
 }
 
 .description-list {

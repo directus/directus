@@ -325,7 +325,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
-			margin-inline-end: 20px;
+			margin-inline-end: 1.125rem;
 			transition: border-color var(--transition) var(--fast);
 
 			&:not(.disabled).active {
@@ -357,12 +357,12 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					display: inline-flex;
 					justify-content: center;
 					padding: 0 0.3125rem;
-					block-size: 20px;
-					min-inline-size: 20px;
+					block-size: 1.125rem;
+					min-inline-size: 1.125rem;
 					margin-block-start: 2px;
 					text-align: center;
 					font-size: 0.6875rem;
-					line-height: 20px;
+					line-height: 1.125rem;
 					background-color: var(--theme--background-accent);
 					border-radius: 0.6875rem; // var(--theme--border-radius);
 				}
@@ -452,7 +452,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						font-weight: 600;
 						margin-block-start: 0.25rem;
 						margin-inline-end: 0.25rem;
-						block-size: 20px;
+						block-size: 1.125rem;
 						padding: 0 0.3125rem;
 					}
 					:deep(.v-chip + .v-chip) {

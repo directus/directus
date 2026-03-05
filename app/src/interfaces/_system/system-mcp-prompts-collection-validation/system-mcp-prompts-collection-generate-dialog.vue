@@ -210,7 +210,7 @@ async function generateCollection() {
 @use '@/styles/mixins';
 
 .grid {
-	padding-block-start: 20px;
+	padding-block-start: 1.125rem;
 
 	@include mixins.form-grid;
 }

@@ -27,7 +27,7 @@ export default function getEditorStyles(
 body {
 	color: ${cssVar('--theme--form--field--input--foreground')};
 	background-color: ${cssVar('--theme--form--field--input--background')};
-	margin: 20px;
+	margin: 1.125rem;
 	font-family: ${cssVar('--theme--fonts--sans--font-family')};
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;

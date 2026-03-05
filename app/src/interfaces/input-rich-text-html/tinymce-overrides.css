@@ -184,7 +184,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .mce-content-body {
-	margin: 20px;
+	margin: 1.125rem;
 }
 
 /* Modal */
@@ -213,7 +213,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog__header {
-	padding: 20px;
+	padding: 1.125rem;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 0.875rem;
 	background-color: var(--theme--background);
@@ -306,7 +306,7 @@ body.dark .tox .tox-toolbar__overflow {
 	justify-content: center;
 	min-inline-size: 136px;
 	block-size: 44px;
-	padding: 0 20px 1px;
+	padding: 0 1.125rem 1px;
 	color: var(--white);
 	font-weight: 500;
 	font-size: 0.875rem;

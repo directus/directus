@@ -129,7 +129,7 @@ const emit = defineEmits<{
 	}
 
 	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
-		margin-inline-start: 20px;
+		margin-inline-start: 1.125rem;
 	}
 
 	& + .permissions-row td {
@@ -140,7 +140,7 @@ const emit = defineEmits<{
 		padding: 0 0.6875rem;
 
 		.v-icon {
-			--v-icon-size: 20px;
+			--v-icon-size: 1.125rem;
 			--v-icon-color: var(--theme--foreground-subdued);
 			&:hover {
 				--v-icon-color: var(--theme--foreground);

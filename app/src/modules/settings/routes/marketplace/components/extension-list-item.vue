@@ -64,7 +64,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 
 <style scoped>
 .extension-list-item {
-	--v-list-item-padding: 20px;
+	--v-list-item-padding: 1.125rem;
 }
 
 .icon-container {
@@ -81,7 +81,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 	background-color: var(--theme--primary);
 
 	--v-icon-color: var(--foreground-inverted);
-	margin-inline-end: 20px;
+	margin-inline-end: 1.125rem;
 }
 
 .name {
@@ -100,7 +100,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 }
 
 .meta {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: end;
 }

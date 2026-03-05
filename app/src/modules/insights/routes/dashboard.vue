@@ -424,7 +424,7 @@ const refreshInterval = computed({
 }
 
 .panel-error {
-	padding: 20px;
+	padding: 1.125rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;

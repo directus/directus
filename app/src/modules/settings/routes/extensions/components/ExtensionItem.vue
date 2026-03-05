@@ -194,7 +194,7 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .nested {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 
 	&:not(.partial) .options {
 		display: none;

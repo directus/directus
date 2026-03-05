@@ -221,7 +221,7 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 	margin-inline-start: 0;
 }
 

@@ -114,7 +114,7 @@ h1 {
 	display: flex;
 	align-items: end;
 	justify-content: space-between;
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 
 	.type-title {
 		margin-block-end: 0;

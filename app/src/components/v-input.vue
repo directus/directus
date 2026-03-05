@@ -505,7 +505,7 @@ function useInlineWarning() {
 
 	input {
 		flex-grow: 1;
-		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
+		inline-size: 1.125rem; /* allows flex to grow/shrink to allow for slots */
 		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
 		padding-inline: 0;

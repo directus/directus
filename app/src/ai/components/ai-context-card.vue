@@ -115,8 +115,8 @@ const icon = computed(() => {
 }
 
 .chip-image {
-	inline-size: 20px;
-	block-size: 20px;
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 	flex-shrink: 0;

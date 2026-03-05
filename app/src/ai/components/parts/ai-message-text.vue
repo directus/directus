@@ -249,8 +249,8 @@ useResizeObserver(contentRef, (entries) => {
 
 :deep(input[type='checkbox']) {
 	position: relative;
-	inline-size: 20px;
-	block-size: 20px;
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
 	margin-inline-end: 0.375rem;
 	margin-block-start: 0.1em;
 	vertical-align: top;

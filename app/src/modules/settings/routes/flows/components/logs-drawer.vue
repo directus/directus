@@ -134,8 +134,8 @@ const steps = computed(() => {
 	background-color: var(--theme--background-subdued);
 	font-family: var(--theme--fonts--monospace--font-family);
 	border-radius: var(--theme--border-radius);
-	padding: 20px;
-	margin-block-start: 20px;
+	padding: 1.125rem;
+	margin-block-start: 1.125rem;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 }

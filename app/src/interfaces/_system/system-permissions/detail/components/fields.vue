@@ -193,7 +193,7 @@ function useExpandCollapseAll() {
 }
 
 .permissions-field-tree {
-	--v-list-padding: 20px 0.25rem;
+	--v-list-padding: 1.125rem 0.25rem;
 
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

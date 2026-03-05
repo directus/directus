@@ -165,7 +165,7 @@ function getDeltaOptionUser(deltaOption: any) {
 
 <style lang="scss" scoped>
 .comparison-header {
-	--comparison-header--padding-y: 20px;
+	--comparison-header--padding-y: 1.125rem;
 	--comparison-header--padding-x: var(--comparison-modal--padding-x, 28px);
 
 	display: flex;
@@ -209,7 +209,7 @@ function getDeltaOptionUser(deltaOption: any) {
 		gap: 0.4375rem;
 
 		.title {
-			font-size: 20px;
+			font-size: 1.125rem;
 			font-weight: 600;
 			line-height: 32px;
 			color: var(--theme--foreground-accent);

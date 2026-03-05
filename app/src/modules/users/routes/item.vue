@@ -543,7 +543,7 @@ function revert(values: Record<string, any>) {
 	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	block-size: 112px;
 	margin-block-end: var(--theme--form--row-gap);
-	padding: 20px;
+	padding: 1.125rem;
 	background-color: var(--theme--background-normal);
 	border-radius: calc(var(--theme--border-radius) + 0.25rem);
 

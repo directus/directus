@@ -228,7 +228,7 @@ function getColor(input?: number) {
 }
 
 .metric-bar-visual {
-	block-size: 20px;
+	block-size: 1.125rem;
 	border-radius: 0.3125rem;
 }
 

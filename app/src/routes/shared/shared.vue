@@ -201,7 +201,7 @@ useHead({ title });
 
 <style lang="scss" scoped>
 h2 {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .v-input,

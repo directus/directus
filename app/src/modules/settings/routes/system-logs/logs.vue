@@ -541,7 +541,7 @@ onUnmounted(() => {
 }
 
 .filter {
-	margin-block: 24px 20px;
+	margin-block: 24px 1.125rem;
 }
 
 .v-form {

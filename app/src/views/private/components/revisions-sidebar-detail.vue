@@ -164,7 +164,7 @@ defineExpose({
 }
 
 .external {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

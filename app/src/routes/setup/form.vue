@@ -139,7 +139,7 @@ const fields = useFormFields(props.register, value, initialValues);
 	&.skipLicense {
 		.v-notice {
 			grid-row: 1;
-			margin-block: 0 20px;
+			margin-block: 0 1.125rem;
 		}
 
 		.v-checkbox {

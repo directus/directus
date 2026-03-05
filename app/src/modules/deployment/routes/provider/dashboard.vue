@@ -260,7 +260,7 @@ watch(range, loadDashboard);
 	align-items: center;
 	gap: 0.875rem;
 	block-size: 98px !important;
-	padding: 0 20px !important;
+	padding: 0 1.125rem !important;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	margin-block-end: 0.4375rem;
@@ -268,7 +268,7 @@ watch(range, loadDashboard);
 	@media (max-width: 768px) {
 		flex-wrap: wrap;
 		block-size: auto !important;
-		padding: 0.875rem 20px !important;
+		padding: 0.875rem 1.125rem !important;
 	}
 
 	.icon {

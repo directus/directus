@@ -165,7 +165,7 @@ watchEffect(async () => {
 }
 
 .filter {
-	margin-block: 24px 20px;
+	margin-block: 24px 1.125rem;
 }
 
 .results {
@@ -179,7 +179,7 @@ watchEffect(async () => {
 }
 
 .pagination {
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 }
 
 .no-results {

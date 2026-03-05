@@ -506,8 +506,8 @@ function useColor() {
 	--v-button-padding: 0.3125rem;
 	--v-button-background-color: var(--swatch-color, transparent);
 	--v-button-background-color-hover: var(--v-button-background-color);
-	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
-	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
+	--v-button-height: calc(var(--theme--form--field--input--height) - 1.125rem);
+	--v-button-width: calc(var(--theme--form--field--input--height) - 1.125rem);
 	--swatch-radius: calc(var(--theme--border-radius) + 2px);
 	--focus-ring-offset: var(--focus-ring-offset-inset);
 	--focus-ring-radius: var(--swatch-radius);
@@ -515,8 +515,8 @@ function useColor() {
 	position: relative;
 	box-sizing: border-box;
 	margin-inline-start: -0.4375rem;
-	inline-size: calc(var(--theme--form--field--input--height) - 20px);
-	block-size: calc(var(--theme--form--field--input--height) - 20px);
+	inline-size: calc(var(--theme--form--field--input--height) - 1.125rem);
+	block-size: calc(var(--theme--form--field--input--height) - 1.125rem);
 	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
@@ -536,8 +536,8 @@ function useColor() {
 
 .presets .preset {
 	--v-button-background-color-hover: var(--v-button-background-color);
-	--v-button-height: 20px;
-	--v-button-width: 20px;
+	--v-button-height: 1.125rem;
+	--v-button-width: 1.125rem;
 
 	margin: 0 0.25rem;
 

@@ -335,7 +335,7 @@ function pointerLeave() {
 
 		.name {
 			display: inline-block;
-			font-size: 20px;
+			font-size: 1.125rem;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
 			margin-block-end: 0.4375rem;
@@ -414,7 +414,7 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 20px;
+		padding: 1.125rem;
 		padding-inline-start: 60px;
 		transform: translate(-1px, calc(-50% - 2.5px));
 
@@ -424,8 +424,8 @@ function pointerLeave() {
 	}
 
 	.button {
-		inline-size: 20px;
-		block-size: 20px;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -511,7 +511,7 @@ function pointerLeave() {
 }
 
 .options-overview-error {
-	padding: 20px;
+	padding: 1.125rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;

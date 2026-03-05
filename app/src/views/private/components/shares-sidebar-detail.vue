@@ -388,7 +388,7 @@ async function copy(id: string) {
 }
 
 .grid {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 
 	@include mixins.form-grid;
 }

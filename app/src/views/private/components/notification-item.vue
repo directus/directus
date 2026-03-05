@@ -114,8 +114,8 @@ function reload() {
 		inset-block-end: -0.3125rem;
 		z-index: -1;
 		display: block;
-		inline-size: 20px;
-		block-size: 20px;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
 		border-radius: 2px;
 		transform: rotate(45deg) translate(-0.3125rem, -0.3125rem);
 		transition: transform var(--slow) var(--transition);

@@ -168,13 +168,13 @@ useHead({
 
 <style lang="scss" scoped>
 h1 {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .v-input,
 .v-notice,
 .v-error {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .title {

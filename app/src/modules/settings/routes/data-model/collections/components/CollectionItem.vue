@@ -116,7 +116,7 @@ function onGroupSortChange(collections: Collection[]) {
 <style scoped lang="scss">
 .drag-container {
 	margin-block-start: 0.4375rem;
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 }
 
 .collection-item {

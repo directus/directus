@@ -671,7 +671,7 @@ const menuActive = computed(
 @use '@/styles/mixins';
 
 .body {
-	padding: 20px;
+	padding: 1.125rem;
 }
 
 .grid {

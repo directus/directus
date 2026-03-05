@@ -165,7 +165,7 @@ const translations = computed(() => {
 
 .header {
 	display: flex;
-	gap: 20px;
+	gap: 1.125rem;
 	align-items: center;
 	justify-content: space-between;
 	color: var(--theme--foreground-subdued);

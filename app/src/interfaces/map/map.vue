@@ -551,7 +551,7 @@ function handleKeyDown(event: any) {
 	}
 
 	.v-info {
-		padding: 20px;
+		padding: 1.125rem;
 		background-color: var(--theme--form--field--input--background);
 		border-radius: var(--theme--border-radius);
 	}

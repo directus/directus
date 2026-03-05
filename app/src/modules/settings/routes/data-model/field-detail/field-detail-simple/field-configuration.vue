@@ -178,13 +178,13 @@ const options = computed({
 }
 
 .setup {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 
 	margin: 34px;
 }
 
 .schema {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 	@include mixins.form-grid;
 }
 
@@ -206,7 +206,7 @@ const options = computed({
 
 .toggle-advanced {
 	inline-size: 100%;
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	transition: color var(--fast) var(--transition);

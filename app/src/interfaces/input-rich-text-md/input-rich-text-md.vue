@@ -488,7 +488,7 @@ textarea {
 
 .preview-box {
 	display: none;
-	padding: 20px 24px;
+	padding: 1.125rem 24px;
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {
@@ -523,15 +523,15 @@ textarea {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {
-	padding: 0 20px;
+	padding: 0 1.125rem;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:first-of-type) {
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:last-of-type) {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {
