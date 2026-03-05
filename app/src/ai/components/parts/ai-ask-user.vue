@@ -575,7 +575,7 @@ onUnmounted(() => {
 }
 
 .chat-about-this {
-	font-size: 0.8125rem;
+	font-size: 0.625rem;
 	color: var(--theme--foreground-subdued);
 	background: none;
 	border: none;
