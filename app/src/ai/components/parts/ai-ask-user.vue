@@ -478,7 +478,7 @@ onUnmounted(() => {
 	display: flex;
 	flex-direction: column;
 	gap: 0.375rem;
-	max-block-size: 340px;
+	max-block-size: 19.125rem;
 	overflow-y: auto;
 	padding: calc(var(--focus-ring-width) + var(--focus-ring-offset));
 	margin: calc(-1 * (var(--focus-ring-width) + var(--focus-ring-offset)));

@@ -156,7 +156,7 @@ const logoURL = computed<string | null>(() => {
 		}
 
 		.content {
-			inline-size: 340px;
+			inline-size: 19.125rem;
 			max-inline-size: 100%;
 		}
 
@@ -363,7 +363,7 @@ const logoURL = computed<string | null>(() => {
 			block-size: 0.5625rem;
 
 			.note {
-				max-inline-size: 340px;
+				max-inline-size: 19.125rem;
 				margin: 0 auto;
 				padding: 0.4375rem 0.6875rem;
 				color: var(--white);
