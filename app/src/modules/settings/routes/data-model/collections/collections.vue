@@ -341,7 +341,7 @@ async function downloadSnapshot() {
 }
 
 .expand-collapse-button {
-	padding-block: 4px 8px;
+	padding-block: 0.25rem 8px;
 	text-align: end;
 	color: var(--theme--foreground-subdued);
 

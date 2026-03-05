@@ -75,7 +75,7 @@ function reload() {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	padding: 12px;
 	color: var(--white);
 	border-radius: var(--theme--border-radius);

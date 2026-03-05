@@ -284,7 +284,7 @@ const unsortableJunctionFields = computed(() => {
 	margin-block-start: 36px;
 
 	ul {
-		padding-block-start: 4px;
+		padding-block-start: 0.25rem;
 		padding-inline-start: 24px;
 	}
 

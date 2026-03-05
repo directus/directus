@@ -432,9 +432,9 @@ function pressedEnter() {
 }
 
 .buttons {
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	display: flex;
-	gap: 4px;
+	gap: 0.25rem;
 
 	.mention,
 	.emoji-button {

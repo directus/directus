@@ -569,6 +569,6 @@ function onApply() {
 	position: relative;
 	display: block;
 	max-inline-size: 520px;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 }
 </style>

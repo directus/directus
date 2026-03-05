@@ -176,19 +176,19 @@ const translations = computed(() => {
 	}
 
 	.v-icon {
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 	}
 
 	.v-progress-linear {
 		flex: 1;
 		inline-size: unset;
 		max-inline-size: 100px;
-		border-radius: 4px;
+		border-radius: 0.25rem;
 	}
 }
 
 .v-list-item-content {
-	padding-block: 4px 2px;
+	padding-block: 0.25rem 2px;
 }
 
 .v-list-item:not(:first-child) {

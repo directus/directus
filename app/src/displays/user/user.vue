@@ -61,7 +61,7 @@ const src = computed(() => {
 		inline-size: auto;
 		block-size: 100%;
 		vertical-align: -67%;
-		border-radius: 4px;
+		border-radius: 0.25rem;
 
 		&.circle {
 			border-radius: 100%;

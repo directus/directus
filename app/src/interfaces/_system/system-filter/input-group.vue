@@ -332,10 +332,10 @@ function useVariableInput() {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 
 	.comparator + & {
-		margin-inline-start: -4px;
+		margin-inline-start: -0.25rem;
 	}
 
 	&.v-icon {

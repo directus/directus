@@ -224,12 +224,12 @@ function useUpload() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 	}
 }
 

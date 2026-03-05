@@ -43,12 +43,12 @@
 /* PADDING */
 
 .CodeMirror-lines {
-	padding: 4px 0; /* Vertical padding around content */
+	padding: 0.25rem 0; /* Vertical padding around content */
 }
 
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
-	padding: 0 4px; /* Horizontal padding of content */
+	padding: 0 0.25rem; /* Horizontal padding of content */
 }
 
 .CodeMirror-scrollbar-filler,
@@ -288,7 +288,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 /* Default styles for linting */
 .CodeMirror-gutter-elt {
-	inset-inline-start: 4px;
+	inset-inline-start: 0.25rem;
 }
 
 .CodeMirror-lint-markers {
@@ -299,7 +299,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	position: absolute;
 	z-index: 850;
 	max-inline-size: 600px;
-	padding: 4px 8px;
+	padding: 0.25rem 8px;
 	color: var(--foreground-inverted);
 	background-color: var(--background-inverted);
 	border-radius: var(--theme--border-radius);
@@ -323,7 +323,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	display: inline-block;
 	vertical-align: middle;
 	cursor: pointer;
-	inset-inline-start: 4px;
+	inset-inline-start: 0.25rem;
 	block-size: 16px;
 	inline-size: 16px;
 }

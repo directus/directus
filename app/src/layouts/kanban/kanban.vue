@@ -371,7 +371,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					color: var(--theme--foreground-subdued);
 
 					.v-icon {
-						margin-inline-start: 4px;
+						margin-inline-start: 0.25rem;
 						transition: color var(--transition) var(--fast);
 					}
 
@@ -410,7 +410,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					margin-block-end: 4px;
+					margin-block-end: 0.25rem;
 				}
 
 				.title,
@@ -436,7 +436,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				.image {
 					inline-size: 100%;
 					border-radius: var(--theme--border-radius);
-					margin-block-start: 4px;
+					margin-block-start: 0.25rem;
 					max-block-size: 300px;
 				}
 
@@ -450,8 +450,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						background-color: var(--theme--background-normal);
 						font-size: 12px;
 						font-weight: 600;
-						margin-block-start: 4px;
-						margin-inline-end: 4px;
+						margin-block-start: 0.25rem;
+						margin-inline-end: 0.25rem;
 						block-size: 20px;
 						padding: 0 6px;
 					}
@@ -485,7 +485,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							border: 4px solid var(--theme--background);
 							block-size: 32px;
 							inline-size: 32px;
-							margin-block: -4px;
+							margin-block: -0.25rem;
 						}
 
 						.avatar-overflow {

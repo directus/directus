@@ -110,11 +110,11 @@ const items = computed(() => {
 }
 
 .has-icon {
-	--v-chip-padding: 0 8px 0 4px;
+	--v-chip-padding: 0 8px 0 0.25rem;
 }
 
 .v-chip + .v-chip {
-	margin-inline-start: 4px;
+	margin-inline-start: 0.25rem;
 }
 
 .v-icon {
@@ -123,7 +123,7 @@ const items = computed(() => {
 }
 
 .inline-dot {
-	padding: 0 4px;
-	margin-inline-end: 4px;
+	padding: 0 0.25rem;
+	margin-inline-end: 0.25rem;
 }
 </style>

@@ -53,7 +53,7 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 :deep(.layout-options) {
 	--theme--form--row-gap: 20px;
 
-	margin-block-end: 4px;
+	margin-block-end: 0.25rem;
 
 	@include mixins.form-grid;
 }

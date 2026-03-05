@@ -255,12 +255,12 @@ function saveOperation() {
 	--v-icon-color: var(--theme--primary);
 
 	margin-block-start: -12px;
-	margin-inline-start: -4px;
+	margin-inline-start: -0.25rem;
 }
 
 .error {
 	display: block;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	color: var(--theme--danger);
 	font-style: italic;
 }

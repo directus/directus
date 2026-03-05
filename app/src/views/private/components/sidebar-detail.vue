@@ -58,7 +58,7 @@ watch(
 	display: contents;
 
 	:deep(.type-label) {
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 		font-size: 0.8125rem;
 	}
 }
@@ -66,7 +66,7 @@ watch(
 .accordion-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 	--v-badge-offset-x: 15px;
-	--v-badge-offset-y: 4px;
+	--v-badge-offset-y: 0.25rem;
 	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
 	--v-badge-background-color: var(--theme--primary);
 	--v-badge-color: var(--theme--background-normal);

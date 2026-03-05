@@ -232,10 +232,10 @@ function useComparisonIndicator() {
 	inset-block-start: 7px;
 	inset-inline-start: -7px;
 	display: block;
-	inline-size: 4px;
-	block-size: 4px;
+	inline-size: 0.25rem;
+	block-size: 0.25rem;
 	background-color: var(--theme--form--field--input--foreground-subdued);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 	content: '';
 }
 

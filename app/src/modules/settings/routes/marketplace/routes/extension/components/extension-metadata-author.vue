@@ -35,6 +35,6 @@ defineProps<{
 }
 
 .verified {
-	margin-inline-start: 4px;
+	margin-inline-start: 0.25rem;
 }
 </style>

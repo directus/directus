@@ -539,7 +539,7 @@ function useColor() {
 	--v-button-height: 20px;
 	--v-button-width: 20px;
 
-	margin: 0 4px;
+	margin: 0 0.25rem;
 
 	&.low-contrast {
 		--v-button-height: 18px;

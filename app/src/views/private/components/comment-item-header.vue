@@ -212,7 +212,7 @@ function useDelete() {
 	display: inline-block;
 	inline-size: 6px;
 	block-size: 6px;
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 	vertical-align: middle;
 	background-color: var(--theme--warning);
 	border-radius: 0.1875rem;

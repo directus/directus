@@ -545,7 +545,7 @@ function revert(values: Record<string, any>) {
 	margin-block-end: var(--theme--form--row-gap);
 	padding: 20px;
 	background-color: var(--theme--background-normal);
-	border-radius: calc(var(--theme--border-radius) + 4px);
+	border-radius: calc(var(--theme--border-radius) + 0.25rem);
 
 	.avatar {
 		--v-icon-color: var(--theme--foreground-subdued);
@@ -598,7 +598,7 @@ function revert(values: Record<string, any>) {
 			--v-chip-color-hover: var(--theme--foreground-subdued);
 			--v-chip-background-color-hover: var(--theme--background-subdued);
 
-			margin-block-start: 4px;
+			margin-block-start: 0.25rem;
 
 			&.active {
 				--v-chip-color: var(--theme--primary);

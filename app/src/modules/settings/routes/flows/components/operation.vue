@@ -318,7 +318,7 @@ function pointerLeave() {
 .v-workspace-tile.block-container {
 	position: relative;
 	overflow: visible;
-	padding: 4px;
+	padding: 0.25rem;
 
 	:deep(.header .name) {
 		color: var(--theme--primary);
@@ -354,7 +354,7 @@ function pointerLeave() {
 			content: '';
 			inset-block: 0;
 			inset-inline: 0;
-			border-radius: 4px;
+			border-radius: 0.25rem;
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 10px var(--theme--primary);
@@ -406,7 +406,7 @@ function pointerLeave() {
 	.button-hint {
 		inline-size: 32px;
 		block-size: 32px;
-		padding: 4px;
+		padding: 0.25rem;
 	}
 
 	.hint {

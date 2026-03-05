@@ -98,7 +98,7 @@
 	background: transparent;
 	box-shadow: unset;
 	border: 1px solid var(--theme--foreground-subdued);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
@@ -289,7 +289,7 @@
 	background: transparent;
 	border-color: var(--theme--foreground-subdued);
 	border-width: var(--theme--border-width);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .cdx-checklist__item-checkbox-check:hover {
@@ -317,7 +317,7 @@
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
-	inset-block-start: 4px;
+	inset-block-start: 0.25rem;
 	inset-inline-start: 0.1875rem;
 }
 
@@ -375,12 +375,12 @@
 /* InlineCode */
 
 .codex-editor .ce-block .inline-code {
-	padding: 4px;
+	padding: 0.25rem;
 	color: var(--theme--background-normal);
 	font-family: monospace;
 	font-weight: 400;
 	background-color: var(--theme--foreground);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block .inline-code::selection {
@@ -568,7 +568,7 @@
 	font-size: 18px;
 	line-height: 24px;
 	background-color: var(--theme--background-accent);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block video,
@@ -576,7 +576,7 @@
 .codex-editor .ce-block img {
 	max-inline-size: 100%;
 	block-size: auto;
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block hr {

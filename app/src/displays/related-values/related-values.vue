@@ -121,7 +121,7 @@ function getLinkForItem(item: any) {
 	position: relative;
 
 	--toggle-px: 6px;
-	--toggle-py: 4px;
+	--toggle-py: 0.25rem;
 
 	&::before {
 		position: absolute;

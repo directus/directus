@@ -403,14 +403,14 @@ function setupChart() {
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-block-end: 0;
-	padding: 0 4px;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
 	font-size: 10px !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 4px;
+	padding: 0 0 0 0.25rem;
 	font-weight: 600 !important;
 	font-size: 10px !important;
 }

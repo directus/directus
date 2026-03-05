@@ -330,8 +330,8 @@ function setContent() {
 	}
 
 	:deep(.selected-field) {
-		margin: -1px 4px 0;
-		padding: 2px 4px 0;
+		margin: -1px 0.25rem 0;
+		padding: 2px 0.25rem 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);

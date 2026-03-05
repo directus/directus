@@ -51,7 +51,7 @@ export default defineTheme({
 		foreground: '#1E293B',
 		foregroundAccent: '#0F172A',
 		foregroundSubdued: '#94A3B8',
-		borderRadius: '4px',
+		borderRadius: '0.25rem',
 		borderColor: '#E2E8F0',
 		borderColorAccent: '#CBD5E1',
 		borderColorSubdued: '#F1F5F9',

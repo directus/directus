@@ -111,7 +111,7 @@ code {
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
-	padding: 2px 4px;
+	padding: 2px 0.25rem;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
 	background-color: ${cssVar('--theme--background-normal')};
 	border-radius: ${cssVar('--theme--border-radius')};

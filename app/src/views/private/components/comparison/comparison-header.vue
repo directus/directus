@@ -294,7 +294,7 @@ function getDeltaOptionUser(deltaOption: any) {
 
 				.dropdown-icon {
 					color: var(--theme--foreground-subdued);
-					margin-inline-start: 4px;
+					margin-inline-start: 0.25rem;
 					transition: transform var(--fast) var(--transition);
 				}
 			}
@@ -313,6 +313,6 @@ function getDeltaOptionUser(deltaOption: any) {
 }
 
 .meta-selection-option {
-	--v-list-item-padding: 4px 12px;
+	--v-list-item-padding: 0.25rem 12px;
 }
 </style>

@@ -225,7 +225,7 @@ defineExpose({
 }
 
 .input {
-	padding: 8px 4px;
+	padding: 8px 0.25rem;
 
 	&.date,
 	&.timestamp,

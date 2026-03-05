@@ -209,7 +209,7 @@ function clearVariable() {
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0 0;
+	padding: 0.25rem 0 0;
 
 	span.tag-container {
 		display: contents;

@@ -160,8 +160,8 @@ const workspaceBoxSize = computed(() => {
 
 .workspace::before {
 	position: absolute;
-	inset-block-start: -4px;
-	inset-inline-start: -4px;
+	inset-block-start: -0.25rem;
+	inset-inline-start: -0.25rem;
 	display: block;
 	inline-size: calc(100% + 8px);
 	block-size: calc(100% + 8px);

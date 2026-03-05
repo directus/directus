@@ -165,7 +165,7 @@ function discardAndLeave() {
 	margin-block-end: 12px;
 
 	.instant-save {
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 		color: var(--theme--warning);
 	}
 }

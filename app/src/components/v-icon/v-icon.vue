@@ -197,7 +197,7 @@ function emitClick(event: MouseEvent) {
 		margin-inline-end: 8px;
 
 		&.small {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 
@@ -205,7 +205,7 @@ function emitClick(event: MouseEvent) {
 		margin-inline-start: 6px;
 
 		&.small {
-			margin-inline-start: 4px;
+			margin-inline-start: 0.25rem;
 		}
 	}
 

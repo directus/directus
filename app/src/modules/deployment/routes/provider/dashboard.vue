@@ -313,7 +313,7 @@ watch(range, loadDashboard);
 			inline-size: 100%;
 			margin-inline-start: 0;
 			padding-inline-start: 60px; // icon width + gap
-			margin-block-start: 4px;
+			margin-block-start: 0.25rem;
 		}
 	}
 

@@ -159,8 +159,8 @@ function onToggle(open: boolean) {
 
 	&::before {
 		position: absolute;
-		inset-block-start: -4px;
-		inset-inline-start: -4px;
+		inset-block-start: -0.25rem;
+		inset-inline-start: -0.25rem;
 		z-index: 1;
 		inline-size: calc(100% + 8px);
 		block-size: calc(100% + 8px);

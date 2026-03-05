@@ -456,7 +456,7 @@ function useDragDrop() {
 .icon {
 	--v-icon-color: var(--theme--foreground-subdued);
 
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .name {
@@ -490,7 +490,7 @@ function useDragDrop() {
 	inset-inline-end: 0;
 	z-index: 2;
 	display: flex;
-	gap: 4px;
+	gap: 0.25rem;
 	align-items: center;
 	padding: 7px;
 	border-start-end-radius: var(--theme--border-radius);

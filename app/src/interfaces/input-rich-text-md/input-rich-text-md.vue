@@ -545,7 +545,7 @@ textarea {
 	flex-wrap: wrap;
 	align-items: center;
 	min-block-size: var(--editor-toolbar-height);
-	padding: 4px;
+	padding: 0.25rem;
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 

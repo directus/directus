@@ -214,9 +214,9 @@ function getColor(input?: number) {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 4px;
+	gap: 0.25rem;
 	inline-size: 100%;
-	padding-block: 4px;
+	padding-block: 0.25rem;
 }
 
 .metric-labels {

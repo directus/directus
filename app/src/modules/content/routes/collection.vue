@@ -626,7 +626,7 @@ function clearFilters() {
 	}
 
 	.clear {
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 		color: var(--theme--foreground-subdued);
 
 		&:hover {

@@ -125,7 +125,7 @@ const user = computed(() => {
 
 	&::before {
 		position: absolute;
-		inset-block-start: -4px;
+		inset-block-start: -0.25rem;
 		inset-inline-start: 12px;
 		z-index: 1;
 		inline-size: calc(100% - 12px);

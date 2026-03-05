@@ -110,12 +110,12 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		padding: 8px;
 		font-size: 14px;
 
-		inset-block-start: 4px;
-		inset-inline-start: 4px;
+		inset-block-start: 0.25rem;
+		inset-inline-start: 0.25rem;
 		z-index: 999999;
 
 		&.right {
-			inset-inline: auto 4px;
+			inset-inline: auto 0.25rem;
 		}
 
 		&.center {

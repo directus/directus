@@ -139,11 +139,11 @@ function deselect() {
 }
 
 .clipboard-icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .regenerate-icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .clear-icon {

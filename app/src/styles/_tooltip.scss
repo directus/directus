@@ -11,11 +11,11 @@
 	z-index: 850;
 	display: none;
 	max-inline-size: 260px;
-	padding: 4px 8px;
+	padding: 0.25rem 8px;
 	color: var(--tooltip-foreground-color);
 	overflow-wrap: break-word;
 	background-color: var(--tooltip-background-color);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 	transition: opacity 200ms;
 
 	&.inverted {

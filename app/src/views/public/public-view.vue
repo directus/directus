@@ -109,7 +109,7 @@ const logoURL = computed<string | null>(() => {
 	:slotted(.v-icon) {
 		--v-icon-color: var(--theme--foreground-subdued);
 
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 	}
 
 	.container {

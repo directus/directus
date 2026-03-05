@@ -414,7 +414,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .duplicate {
 	.type-label {
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 	}
 
 	.duplicate-field + .duplicate-field {
@@ -439,7 +439,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		inset-block-start: 0;
 		inset-inline-start: -2px;
 		z-index: 1;
-		inline-size: 4px;
+		inline-size: 0.25rem;
 		block-size: 100%;
 		background-color: var(--theme--primary);
 		border-radius: 2px;

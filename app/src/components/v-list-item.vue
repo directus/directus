@@ -203,8 +203,8 @@ function onClick(event: PointerEvent) {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-			inline-size: calc(100% - 4px);
-			block-size: calc(100% - 4px);
+			inline-size: calc(100% - 0.25rem);
+			block-size: calc(100% - 0.25rem);
 			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 			content: '';
 			pointer-events: none;
@@ -346,7 +346,7 @@ function onClick(event: PointerEvent) {
 			padding: calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2);
 
 			& + & {
-				margin-block-start: var(--v-list-item-margin, 4px);
+				margin-block-start: var(--v-list-item-margin, 0.25rem);
 			}
 		}
 	}
@@ -355,7 +355,7 @@ function onClick(event: PointerEvent) {
 		.v-list.nav {
 			#{$this}:not(.dense) {
 				--v-list-item-min-height: 36px;
-				--v-list-item-border-radius: 4px;
+				--v-list-item-border-radius: 0.25rem;
 
 				margin: 2px 0;
 				padding: 0 8px;

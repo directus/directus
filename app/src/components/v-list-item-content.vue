@@ -41,6 +41,6 @@
 
 .v-list:not(.nav) .v-list-item-content,
 .v-list-item:not(.nav) .v-list-item-content {
-	--v-list-item-content-padding: 4px 0;
+	--v-list-item-content-padding: 0.25rem 0;
 }
 </style>

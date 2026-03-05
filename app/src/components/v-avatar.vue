@@ -76,7 +76,7 @@ const sizeClass = useSizeClass(props);
 .x-small {
 	--v-avatar-size: 24px;
 
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .small {

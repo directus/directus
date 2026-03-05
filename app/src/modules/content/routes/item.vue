@@ -1047,7 +1047,7 @@ function useItemNavigation() {
 		}
 
 		.title {
-			inset-block-start: 4px;
+			inset-block-start: 0.25rem;
 		}
 
 		@media (width > 640px) {

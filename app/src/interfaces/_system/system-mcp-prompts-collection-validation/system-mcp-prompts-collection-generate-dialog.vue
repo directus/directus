@@ -219,7 +219,7 @@ async function generateCollection() {
 	margin-block-start: 8px;
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .title {
@@ -255,7 +255,7 @@ async function generateCollection() {
 	margin-block-start: 24px;
 
 	ul {
-		padding-block-start: 4px;
+		padding-block-start: 0.25rem;
 		padding-inline-start: 24px;
 	}
 
@@ -268,6 +268,6 @@ async function generateCollection() {
 	position: relative;
 	display: block;
 	max-inline-size: 520px;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 }
 </style>

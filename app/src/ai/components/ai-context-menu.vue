@@ -404,7 +404,7 @@ function closeList() {
 }
 
 .menu-options-list {
-	padding-block-end: 4px;
+	padding-block-end: 0.25rem;
 }
 
 .no-results {

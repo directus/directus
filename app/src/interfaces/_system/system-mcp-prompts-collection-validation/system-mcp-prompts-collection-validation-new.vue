@@ -32,7 +32,7 @@ defineEmits<{
 
 <style scoped>
 .notice-content {
-	padding-block: 10px 4px;
+	padding-block: 10px 0.25rem;
 	display: flex;
 	flex-direction: column;
 	gap: 10px;

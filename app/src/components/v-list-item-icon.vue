@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
 			#{$this} {
 				--v-icon-color: var(--v-list-item-icon-color, var(--theme--foreground-subdued));
 
-				margin-block: 4px;
+				margin-block: 0.25rem;
 
 				&:not(:only-child) {
 					&:first-child {

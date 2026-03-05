@@ -419,7 +419,7 @@ onUnmounted(() => {
 .question-tabs {
 	display: flex;
 	gap: 0.3125rem;
-	padding-block: 4px;
+	padding-block: 0.25rem;
 	overflow-x: auto;
 	scrollbar-width: none;
 

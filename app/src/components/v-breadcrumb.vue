@@ -57,7 +57,7 @@ withDefaults(defineProps<Props>(), {
 		.v-icon {
 			--v-icon-color: var(--v-breadcrumb-divider-color, var(--theme--foreground-subdued));
 
-			margin: 0 4px;
+			margin: 0 0.25rem;
 		}
 
 		&-link {

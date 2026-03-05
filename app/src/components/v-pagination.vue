@@ -132,7 +132,7 @@ function toPage(page: number) {
 
 .gap {
 	display: none;
-	margin: 0 4px;
+	margin: 0 0.25rem;
 	color: var(--theme--foreground-subdued);
 	line-height: 2em;
 }

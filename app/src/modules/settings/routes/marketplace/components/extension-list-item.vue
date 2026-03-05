@@ -106,7 +106,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 }
 
 .chip {
-	margin-inline-start: 4px;
+	margin-inline-start: 0.25rem;
 	vertical-align: 2px;
 
 	--v-chip-color: var(--theme--primary);

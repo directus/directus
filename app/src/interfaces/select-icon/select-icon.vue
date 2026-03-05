@@ -310,7 +310,7 @@ function useIconsPerRow(
 	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 24px));
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);
-	padding: 4px;
+	padding: 0.25rem;
 }
 
 .open-indicator {

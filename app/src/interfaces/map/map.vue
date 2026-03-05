@@ -572,7 +572,7 @@ function handleKeyDown(event: any) {
 
 		span {
 			inline-size: auto;
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 
 		.v-select {

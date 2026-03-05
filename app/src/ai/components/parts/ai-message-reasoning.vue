@@ -124,9 +124,9 @@ const expandedText = computed(() => {
 	font-size: 12px;
 	color: var(--theme--foreground-normal);
 	padding-inline-start: 12px;
-	padding-block: 4px;
+	padding-block: 0.25rem;
 	line-height: 1.6;
-	margin-inline-start: 4px;
+	margin-inline-start: 0.25rem;
 	border-inline-start: var(--theme--border-width) solid var(--theme--border-color-accent);
 }
 

@@ -69,11 +69,11 @@ const props = defineProps<{
 }
 
 .group-item + .group-item {
-	margin-block-start: var(--validation-errors-line-gap, 4px);
+	margin-block-start: var(--validation-errors-line-gap, 0.25rem);
 }
 
 .group-item > .group-list {
-	margin-block-start: var(--validation-errors-line-gap, 4px);
+	margin-block-start: var(--validation-errors-line-gap, 0.25rem);
 }
 
 .group-prefix {

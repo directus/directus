@@ -490,7 +490,7 @@ function useDisplayValue() {
 }
 
 .inline-display.label {
-	padding: 4px 8px;
+	padding: 0.25rem 8px;
 	padding-inline-end: 26px;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--form--field--input--background-subdued);

@@ -202,7 +202,7 @@ const localVars = computed(() => {
 	svg {
 		inline-size: 100%;
 		border: 1px solid var(--theme--border-color-subdued);
-		border-radius: 4px;
+		border-radius: 0.25rem;
 	}
 }
 </style>

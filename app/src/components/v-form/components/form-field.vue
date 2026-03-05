@@ -308,7 +308,7 @@ function useComputedValues() {
 	position: relative;
 	display: block;
 	max-inline-size: 520px;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 
 	:deep(a) {
 		color: var(--theme--primary);
@@ -331,7 +331,7 @@ function useComputedValues() {
 .validation-error {
 	display: flex;
 	align-items: center;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	color: var(--theme--danger);
 	font-style: italic;
 }

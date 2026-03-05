@@ -121,7 +121,7 @@ const emit = defineEmits<{
 	}
 
 	.action + .action {
-		padding-inline-start: 4px;
+		padding-inline-start: 0.25rem;
 	}
 
 	.null {

@@ -117,7 +117,7 @@ function onClick(event: MouseEvent) {
 
 <style lang="scss" scoped>
 .v-list-group {
-	margin-block-end: 4px;
+	margin-block-end: 0.25rem;
 
 	&:last-child {
 		margin-block-end: 0;

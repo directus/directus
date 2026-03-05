@@ -139,7 +139,7 @@ function useEdits() {
 
 .comment-item .content :deep(mark) {
 	display: inline-block;
-	padding: 2px 4px;
+	padding: 2px 0.25rem;
 	color: var(--theme--primary);
 	line-height: 1;
 	background: var(--theme--primary-background);
@@ -148,7 +148,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(pre) {
-	padding: 2px 4px;
+	padding: 2px 0.25rem;
 	color: var(--theme--foreground);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -160,7 +160,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(code) {
-	padding: 2px 4px;
+	padding: 2px 0.25rem;
 	color: var(--theme--foreground);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -184,7 +184,7 @@ function useEdits() {
 .comment-item.expand .content::after {
 	position: absolute;
 	inset-inline: 0;
-	inset-block-end: 4px;
+	inset-block-end: 0.25rem;
 	z-index: 1;
 	block-size: 40px;
 	background: linear-gradient(
@@ -207,7 +207,7 @@ function useEdits() {
 }
 
 .comment-item.expand .content .expand-text span {
-	padding: 4px 12px 5px;
+	padding: 0.25rem 12px 5px;
 	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	font-size: 12px;
@@ -244,6 +244,6 @@ function useEdits() {
 }
 
 .cancel {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 </style>

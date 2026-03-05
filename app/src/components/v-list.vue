@@ -59,7 +59,7 @@ useGroupableParent(
 
 	Available Variables:
 
-		--v-list-padding                  [4px 0]
+		--v-list-padding                  [0.25rem 0]
 		--v-list-border-radius            [var(--theme--border-radius)]
 		--v-list-max-height               [none]
 		--v-list-max-width                [none]
@@ -81,7 +81,7 @@ useGroupableParent(
 	max-inline-size: var(--v-list-max-width, none);
 	min-block-size: var(--v-list-min-height, none);
 	max-block-size: var(--v-list-max-height, none);
-	padding: var(--v-list-padding, 4px 0);
+	padding: var(--v-list-padding, 0.25rem 0);
 	overflow: auto;
 	color: var(--v-list-color, var(--theme--foreground-accent));
 	line-height: 22px;

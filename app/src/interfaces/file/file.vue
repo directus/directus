@@ -445,7 +445,7 @@ function useURLImport() {
 	}
 
 	&.is-svg {
-		padding: 4px;
+		padding: 0.25rem;
 
 		img {
 			object-fit: contain;

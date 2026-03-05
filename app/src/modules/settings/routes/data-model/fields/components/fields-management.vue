@@ -192,7 +192,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .field-select {
-	margin: 4px;
+	margin: 0.25rem;
 }
 
 .field-select:deep(.field-grid) {
@@ -200,10 +200,10 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .field-select:deep(.field-grid.group.full.nested) {
-	margin: 4px 0;
+	margin: 0.25rem 0;
 
 	.field-select {
-		margin: 4px;
+		margin: 0.25rem;
 	}
 }
 

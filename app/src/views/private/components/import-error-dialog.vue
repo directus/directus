@@ -127,7 +127,7 @@ function closeDialog() {
 	list-style-type: disc;
 
 	.validation-error {
-		margin-block-start: 4px;
+		margin-block-start: 0.25rem;
 	}
 }
 </style>

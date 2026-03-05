@@ -249,7 +249,7 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
+	filter: drop-shadow(0 0 0.25rem var(--theme--primary-subdued));
 }
 
 .preview .fallback {

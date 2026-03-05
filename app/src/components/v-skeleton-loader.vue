@@ -117,7 +117,7 @@ withDefaults(defineProps<Props>(), {
 	@include loader;
 
 	& + & {
-		margin-block-start: 4px;
+		margin-block-start: 0.25rem;
 	}
 }
 
@@ -159,7 +159,7 @@ withDefaults(defineProps<Props>(), {
 
 	.gap {
 		display: none;
-		margin: 0 4px;
+		margin: 0 0.25rem;
 		line-height: 2em;
 	}
 

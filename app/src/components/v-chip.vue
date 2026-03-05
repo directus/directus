@@ -184,13 +184,13 @@ function onCloseClick(event: MouseEvent) {
 
 		.close-outline {
 			position: relative;
-			inset-inline-end: -4px;
+			inset-inline-end: -0.25rem;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
 			inline-size: 14px;
 			block-size: 14px;
-			margin-inline-start: 4px;
+			margin-inline-start: 0.25rem;
 			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 10px;
 

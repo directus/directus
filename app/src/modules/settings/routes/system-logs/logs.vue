@@ -604,7 +604,7 @@ onUnmounted(() => {
 .raw-log {
 	block-size: 100%;
 	min-block-size: 100px;
-	margin: 4px;
+	margin: 0.25rem;
 	position: relative;
 	overflow: auto;
 	background-color: var(--theme--background);

@@ -72,7 +72,7 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 4px;
+	gap: 0.25rem;
 	background: transparent;
 	border: var(--theme--border-width) solid transparent;
 	border-radius: var(--theme--border-radius);
@@ -101,7 +101,7 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 .model-list-item-content {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .select-icon {

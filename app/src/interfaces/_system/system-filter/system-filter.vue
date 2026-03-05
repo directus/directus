@@ -349,7 +349,7 @@ function addKeyAsNode() {
 				}
 			}
 			.add {
-				margin-inline: 6px 4px;
+				margin-inline: 6px 0.25rem;
 			}
 			.expand_more {
 				margin-inline: auto 6px;

@@ -74,7 +74,7 @@ watch(
 		--v-icon-color: var(--theme--foreground-subdued);
 		--v-icon-color-hover: var(--theme--foreground);
 
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 	}
 }
 </style>

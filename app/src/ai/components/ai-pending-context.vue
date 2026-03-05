@@ -174,7 +174,7 @@ const activeSrc = computed(() => {
 	inline-size: 100%;
 	min-inline-size: 0;
 	overflow: auto hidden;
-	padding-block-end: 4px;
+	padding-block-end: 0.25rem;
 
 	/* Styled scrollbar for Firefox */
 	scrollbar-width: thin;

@@ -60,7 +60,7 @@
 		&:not(:has(.fc-event-time)) {
 			color: var(--fc-event-text-color);
 			background-color: var(--theme--primary);
-			padding-inline: 4px;
+			padding-inline: 0.25rem;
 		}
 	}
 
@@ -88,7 +88,7 @@
 			&.fc-prev-button,
 			&.fc-next-button,
 			&.fc-nextYear-button {
-				padding-inline: 4px;
+				padding-inline: 0.25rem;
 			}
 
 			&:focus {

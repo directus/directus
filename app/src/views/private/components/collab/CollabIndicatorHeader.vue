@@ -141,7 +141,7 @@ function focusIntoView(cid: ClientID) {
 	align-items: center;
 
 	:deep(.v-menu + .v-menu .v-avatar) {
-		margin-inline-start: -4px;
+		margin-inline-start: -0.25rem;
 	}
 
 	:deep(.v-avatar) {
@@ -150,7 +150,7 @@ function focusIntoView(cid: ClientID) {
 }
 
 .collab-header-popover {
-	padding: 4px;
+	padding: 0.25rem;
 	padding-block-end: 7px;
 	display: flex;
 	flex-direction: column;
@@ -163,7 +163,7 @@ function focusIntoView(cid: ClientID) {
 }
 
 .collab-header-more-popover-item {
-	padding-block: 4px;
+	padding-block: 0.25rem;
 	display: flex;
 	align-items: center;
 	gap: 8px;

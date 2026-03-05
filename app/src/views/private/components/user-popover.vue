@@ -115,7 +115,7 @@ function navigateToUser() {
 .user-box {
 	display: flex;
 	min-inline-size: 300px;
-	padding: 8px 4px;
+	padding: 8px 0.25rem;
 	cursor: pointer;
 
 	.v-avatar {
@@ -123,7 +123,7 @@ function navigateToUser() {
 	}
 
 	.status {
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 
 		&.active {
 			--v-chip-color: var(--theme--success);
@@ -170,7 +170,7 @@ function navigateToUser() {
 	display: flex;
 	align-items: center;
 	block-size: 80px;
-	margin: 8px 4px;
+	margin: 8px 0.25rem;
 
 	.avatar {
 		inline-size: 80px;

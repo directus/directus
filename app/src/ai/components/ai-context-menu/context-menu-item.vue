@@ -40,7 +40,7 @@ defineEmits<{
 .item-content {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .item-header {

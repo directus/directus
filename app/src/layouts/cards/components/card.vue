@@ -245,7 +245,7 @@ function handleClick() {
 		inset-block-start: 0;
 		inset-inline-start: 0;
 		z-index: 3;
-		margin: 4px;
+		margin: 0.25rem;
 		opacity: 0;
 		transition:
 			opacity var(--fast) var(--transition),

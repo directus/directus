@@ -457,7 +457,7 @@ onUnmounted(() => {
 }
 
 .filter-icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .search-input {
@@ -508,6 +508,6 @@ onUnmounted(() => {
 .currently-deploying {
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 </style>

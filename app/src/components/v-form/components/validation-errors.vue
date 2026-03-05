@@ -275,7 +275,7 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 
 <style lang="scss" scoped>
 .validation-errors {
-	--validation-errors-line-gap: 4px;
+	--validation-errors-line-gap: 0.25rem;
 }
 
 :deep(.v-notice) {
@@ -288,7 +288,7 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 }
 
 .validation-errors-list {
-	margin-block: 4px 0;
+	margin-block: 0.25rem 0;
 	padding-inline-start: 24px;
 	list-style: disc;
 	color: var(--theme--danger);
@@ -304,13 +304,13 @@ function getErrorKey(validationError: ValidationErrorWithDetails) {
 	}
 
 	> li + li {
-		margin-block-start: var(--validation-errors-line-gap, 4px);
+		margin-block-start: var(--validation-errors-line-gap, 0.25rem);
 	}
 }
 
 .field-detail {
 	:deep(> .content) {
-		margin-block: var(--validation-errors-line-gap, 4px) 0;
+		margin-block: var(--validation-errors-line-gap, 0.25rem) 0;
 	}
 }
 

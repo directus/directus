@@ -484,7 +484,7 @@ function clearFilters() {
 	margin: 8px 0;
 
 	&.dense {
-		margin: 4px 0;
+		margin: 0.25rem 0;
 	}
 }
 

@@ -88,7 +88,7 @@ const iconName = computed(() => {
 	position: absolute;
 	inset-block-start: 0;
 	inset-inline-start: 0;
-	inline-size: 4px;
+	inline-size: 0.25rem;
 	block-size: 100%;
 	background-color: var(--v-notice-border-color, var(--theme--primary));
 }

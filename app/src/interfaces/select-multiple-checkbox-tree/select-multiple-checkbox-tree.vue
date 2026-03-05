@@ -125,7 +125,7 @@ const searchDebounced = ref('');
 	z-index: 2;
 	float: inline-end;
 	inline-size: max-content;
-	padding: 4px 8px;
+	padding: 0.25rem 8px;
 	text-align: end;
 	background-color: var(--theme--form--field--input--background);
 	border-start-start-radius: var(--theme--border-radius);

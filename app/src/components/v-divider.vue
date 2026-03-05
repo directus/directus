@@ -57,7 +57,7 @@ withDefaults(defineProps<Props>(), {
 		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 
 		:slotted(.v-icon) {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 			transform: translateY(-1px);
 		}
 	}

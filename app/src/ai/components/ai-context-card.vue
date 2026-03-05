@@ -75,7 +75,7 @@ const icon = computed(() => {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	padding: 4px 6px;
+	padding: 0.25rem 6px;
 	flex: 0 0 auto;
 	max-inline-size: 150px;
 	background-color: var(--theme--background);
@@ -96,7 +96,7 @@ const icon = computed(() => {
 	}
 
 	&.has-image {
-		padding-inline-start: 4px;
+		padding-inline-start: 0.25rem;
 	}
 }
 

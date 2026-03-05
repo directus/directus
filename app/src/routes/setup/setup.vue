@@ -103,6 +103,6 @@ watch(form, () => {
 
 .error-code {
 	font-weight: 700;
-	margin-block-end: 4px;
+	margin-block-end: 0.25rem;
 }
 </style>
