@@ -7,7 +7,12 @@ import type { FormField } from '@/components/v-form/types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 
-export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermissions: Ref<ItemPermissions>) {
+export function getFields(
+	collection: Collection,
+	isNew: IsNew,
+	fetchedItemPermissions: Ref<ItemPermissions>,
+	isVersion: IsNew = false,
+) {
 	const userStore = useUserStore();
 	const { getPermission } = usePermissionsStore();
 	const { fields: rawFields, info: collectionInfo } = useCollection(ref(collection));
@@ -39,14 +44,24 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 
 			if (storePermission?.access !== 'partial') {
 				permission = storePermission;
+			} else if (unref(isVersion) || fetchedItemPermissions.value.update.access) {
+				permission = storePermission;
 			} else {
-				permission = fetchedItemPermissions.value.update.access ? storePermission : null;
+				permission = null;
 			}
 		}
 
-		if (!permission?.fields?.includes('*')) {
+		if (!permission || permission.access === false) {
 			for (const field of fields) {
-				if (!permission?.fields?.includes(field.field)) {
+				(field as FormField).meta = {
+					...(field.meta || {}),
+					readonly: true,
+					non_editable: true,
+				};
+			}
+		} else if (permission.fields && !permission.fields.includes('*')) {
+			for (const field of fields) {
+				if (!permission.fields.includes(field.field)) {
 					(field as FormField).meta = {
 						...(field.meta || {}),
 						readonly: true,

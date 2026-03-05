@@ -180,7 +180,7 @@ describe('non-admin users', () => {
 		const permissionActions: PermissionsAction[] = ['create', 'update'];
 
 		describe.each(permissionActions)('%s', (testAction) => {
-			it('should mark all fields as read-only if user has no (fields) permission', () => {
+			it('should mark all fields as read-only if user has no update/create permission', () => {
 				if (collectionType === 'collection') {
 					const permissionsStore = mockedStore(usePermissionsStore());
 
@@ -344,6 +344,27 @@ describe('non-admin users', () => {
 			}
 		});
 
+		it('should not restrict fields when partial access has no field restriction and item passes custom rule', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'update') return { access: 'partial' }; // no fields property
+				return null;
+			});
+
+			fetchedItemPermissions = computed(() => ({
+				update: { access: true }, // item passes condition
+				delete: { access: false },
+				share: { access: false },
+			}));
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions);
+
+			for (const field of fields.value) {
+				expect(!!field.meta?.readonly).toBe(false);
+			}
+		});
+
 		it('should use store fields when item passes custom rule', () => {
 			const allowedFields = ['id', 'start_date'];
 
@@ -386,6 +407,51 @@ describe('non-admin users', () => {
 
 			for (const field of fields.value) {
 				expect(!!field.meta?.readonly).toBe(false);
+			}
+		});
+
+		it('should use store permission for versions even when main item fails custom rule', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'update') return { access: 'partial', fields: ['*'] };
+				return null;
+			});
+
+			fetchedItemPermissions = computed(() => ({
+				update: { access: false }, // main item fails condition
+				delete: { access: false },
+				share: { access: false },
+			}));
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions, true);
+
+			for (const field of fields.value) {
+				expect(!!field.meta?.readonly).toBe(false);
+			}
+		});
+
+		it('should apply store field restrictions for versions when main item fails custom rule', () => {
+			const allowedFields = ['id', 'start_date'];
+
+			const permissionsStore = mockedStore(usePermissionsStore());
+
+			permissionsStore.getPermission.mockImplementation((_, action) => {
+				if (action === 'update') return { access: 'partial', fields: allowedFields };
+				return null;
+			});
+
+			fetchedItemPermissions = computed(() => ({
+				update: { access: false }, // main item fails condition
+				delete: { access: false },
+				share: { access: false },
+			}));
+
+			const fields = getFields(sample.collection, false, fetchedItemPermissions, true);
+
+			for (const field of fields.value) {
+				const readonly = allowedFields.includes(field.field) ? undefined : true;
+				expect(field.meta?.readonly).toBe(readonly);
 			}
 		});
 

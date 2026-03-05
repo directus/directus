@@ -21,6 +21,7 @@ export function useItemPermissions(
 	collection: Collection,
 	primaryKey: PrimaryKey,
 	isNew: IsNew,
+	isVersion: IsNew = false,
 ): UsableItemPermissions {
 	const { loading, fetchedItemPermissions, refresh } = fetchItemPermissions(collection, primaryKey);
 
@@ -30,7 +31,7 @@ export function useItemPermissions(
 
 	const archiveAllowed = isArchiveAllowed(collection, updateAllowed);
 
-	const fields = getFields(collection, isNew, fetchedItemPermissions);
+	const fields = getFields(collection, isNew, fetchedItemPermissions, isVersion);
 
 	return { loading, refresh, updateAllowed, deleteAllowed, shareAllowed, archiveAllowed, fields };
 }
