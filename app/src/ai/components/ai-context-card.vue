@@ -83,7 +83,7 @@ const icon = computed(() => {
 	border-radius: var(--theme--border-radius);
 
 	&.removable {
-		max-inline-size: 125px;
+		max-inline-size: 7.0625rem;
 		cursor: pointer;
 		transition:
 			border-color var(--fast) var(--transition),
