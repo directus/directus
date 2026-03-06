@@ -3014,9 +3014,6 @@ importers:
       fs-extra:
         specifier: 'catalog:'
         version: 11.3.2
-      ip-matching:
-        specifier: 'catalog:'
-        version: 2.1.2
       joi:
         specifier: 'catalog:'
         version: 18.0.1

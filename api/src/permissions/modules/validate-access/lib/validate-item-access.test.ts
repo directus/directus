@@ -32,7 +32,7 @@ test('Throws error when primary key does not exist in given collection', async (
 	).rejects.toThrowError('Cannot find primary key');
 });
 
-test('Throws error when primary keys are missing for non-singleton collection', async () => {
+test('Returns no access allowed when primary keys are missing for non-singleton collection', async () => {
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
 			c.field('field-a').id();
@@ -45,7 +45,7 @@ test('Throws error when primary keys are missing for non-singleton collection', 
 		validateItemAccess({ accountability: acc, action: 'read', collection: 'collection-a' }, {
 			schema,
 		} as Context),
-	).rejects.toThrowError('Primary keys are required');
+	).resolves.toEqual({ accessAllowed: false });
 });
 
 test('Does not throw error when primary keys are missing for singleton collection', async () => {

@@ -401,6 +401,8 @@ ai:
   settings: Stillingar
   tool_approval:
     disabled: Óvirkt
+  ask_user_submit: Senda inn
+  ask_user_next: Næst
 ai_tools:
   files: Skrár
   flows: Flæðir
