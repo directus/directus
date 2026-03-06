@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { cssVar } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useBreakpoints, useResizeObserver, useScroll } from '@vueuse/core';
 import { computed, type ComputedRef, inject, provide, ref, unref, useTemplateRef, watch } from 'vue';
@@ -40,7 +39,11 @@ useResizeObserver(scrollContainerRef, ([entry]) => {
 
 const enforceShadows = computed(() => props.sidebarShadow || false);
 
-const contentPadding = computed(() => parseInt(cssVar('--content-padding'), 10) || 12);
+const contentPadding = computed(() => {
+	const el = contentEl.value;
+	if (!el) return 11;
+	return parseFloat(getComputedStyle(el).paddingInlineStart) || 11;
+});
 
 const showStartShadow = computed(() => {
 	if (enforceShadows.value) return true;

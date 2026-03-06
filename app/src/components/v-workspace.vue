@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { cssVar } from '@directus/utils/browser';
 import { computed, inject, ref } from 'vue';
 import { AppTile } from './v-workspace-tile.vue';
 import VWorkspaceTile from '@/components/v-workspace-tile.vue';
@@ -34,7 +33,11 @@ defineEmits<{
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
 
-const paddingSize = computed(() => Number(cssVar('--content-padding', mainElement.value)?.slice(0, -2) || 0));
+const paddingSize = computed(() => {
+	const el = mainElement.value;
+	if (!el) return 0;
+	return parseFloat(getComputedStyle(el).paddingInlineStart) || 0;
+});
 
 const workspaceSize = computed(() => {
 	const furthestTileX = props.tiles.reduce(
