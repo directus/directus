@@ -41,6 +41,7 @@ const props = withDefaults(
 		letterbox?: boolean;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		crop: true,
@@ -142,12 +143,9 @@ async function imageErrorHandler() {
 
 const values = inject('values', ref<Record<string, unknown>>({}));
 
-// Image-only filter for file library
-const imageFilter = {
-	type: {
-		_starts_with: 'image/',
-	},
-};
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(
+	computed(() => (props.allowedMimeTypes?.length ? props.allowedMimeTypes : ['image/*'])),
+);
 
 const customFilter = computed(() => {
 	const filter = parseFilter(
@@ -160,10 +158,11 @@ const customFilter = computed(() => {
 		}),
 	);
 
-	if (!filter) return imageFilter;
+	if (!mimeTypeFilter.value) return filter;
+	if (!filter) return mimeTypeFilter.value;
 
 	return {
-		_and: [filter, imageFilter],
+		_and: [filter, mimeTypeFilter.value],
 	};
 });
 
@@ -192,8 +191,6 @@ const menuActive = computed(
 );
 
 const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
-
-const { combinedAcceptString } = useMimeTypeFilter(computed(() => ['image/*']));
 </script>
 
 <template>
