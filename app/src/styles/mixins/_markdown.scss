@@ -12,7 +12,7 @@
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 2rem;
-		line-height: 2.5625rem;
+		line-height: 1.2813;
 	}
 
 	h2 {
@@ -20,7 +20,7 @@
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 1.375rem;
-		line-height: 1.9375rem;
+		line-height: 1.4091;
 	}
 
 	h3 {
@@ -28,7 +28,7 @@
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 1.0625rem;
-		line-height: 1.625rem;
+		line-height: 1.5294;
 	}
 
 	h4 {
@@ -52,7 +52,7 @@
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 0.6875rem;
-		line-height: 2;
+		line-height: 1.8182;
 	}
 
 	a {
@@ -63,7 +63,7 @@
 	p,
 	ul,
 	ol {
-		margin: 1.6em 0; // 1.375rem (line-height) / 15px (font-size) = 1.6
+		margin: 1.5714em 0; // 1.5714 = line-height
 		font-weight: 500;
 		font-size: 0.875rem;
 		line-height: 1.5714;
@@ -84,8 +84,8 @@
 	code {
 		padding: 0.125rem 0.25rem;
 		font-weight: 500;
-		font-size: 0.875rem;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.875rem;
 		line-height: 1.5714;
 		overflow-wrap: break-word;
 		background-color: var(--theme--background-normal);
@@ -96,8 +96,8 @@
 		padding: 1em;
 		overflow: auto;
 		font-weight: 500;
-		font-size: 0.875rem;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		font-size: 0.875rem;
 		line-height: 1.5714;
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
