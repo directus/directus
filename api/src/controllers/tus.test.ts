@@ -29,8 +29,6 @@ const schema = new SchemaBuilder()
 	.build();
 
 describe('tus controller', () => {
-	const mockValidateAccess = vi.mocked(validateAccess);
-
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.restoreAllMocks();
@@ -45,7 +43,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'POST', '/');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).not.toHaveBeenCalled();
+			expect(validateAccess).not.toHaveBeenCalled();
 			expect(next).toHaveBeenCalled();
 		});
 
@@ -64,7 +62,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'POST', '/');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				{
 					action: 'create',
 					collection: 'directus_files',
@@ -99,7 +97,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'POST', '/');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				{
 					action: 'create',
 					collection: 'directus_files',
@@ -136,7 +134,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'POST', '/');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				{
 					action: 'update',
 					collection: 'directus_files',
@@ -171,7 +169,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'POST', '/');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				expect.objectContaining({
 					action: 'update',
 					primaryKeys: ['existing-file-id'],
@@ -202,7 +200,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'POST', '/');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).not.toHaveBeenCalled();
+			expect(validateAccess).not.toHaveBeenCalled();
 			expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 'INVALID_METADATA' }));
 		});
 
@@ -216,7 +214,7 @@ describe('tus controller', () => {
 
 			const accessError = new Error('Forbidden');
 
-			mockValidateAccess.mockRejectedValueOnce(accessError);
+			vi.mocked(validateAccess).mockRejectedValueOnce(accessError);
 
 			const req = createMockRequest({ method: 'POST', accountability, schema });
 			const res = createMockResponse();
@@ -245,7 +243,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'PATCH', '/:id');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				{
 					action: 'update',
 					collection: 'directus_files',
@@ -273,7 +271,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'DELETE', '/:id');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				{
 					action: 'delete',
 					collection: 'directus_files',
@@ -301,7 +299,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'OPTIONS', '/:id');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				{
 					action: 'read',
 					collection: 'directus_files',
@@ -329,7 +327,7 @@ describe('tus controller', () => {
 			const [checkFileAccess] = getRouteHandler(router, 'HEAD', '/:id');
 			await checkFileAccess?.handle(req, res, next);
 
-			expect(mockValidateAccess).toHaveBeenCalledWith(
+			expect(validateAccess).toHaveBeenCalledWith(
 				{
 					action: 'read',
 					collection: 'directus_files',
