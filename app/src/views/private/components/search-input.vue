@@ -335,7 +335,7 @@ function emitValue() {
 	}
 
 	&:focus-within,
-	&:not(.disabled):hover {
+	&:not(.disabled):not(.active):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
