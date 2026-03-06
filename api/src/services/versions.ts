@@ -44,7 +44,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const { error } = versionCreateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		// Reserves the "main" version key for the version query parameter
+		// Reserves the "published" version key for the version query parameter
 		if (isPublishedVersionKey(data['key']))
 			throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
 
@@ -212,7 +212,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const { error } = versionUpdateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		// Reserves the "main" version key for the version query parameter
+		// Reserves the "published" version key for the version query parameter
 		if (isPublishedVersionKey(data['key']))
 			throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
 
