@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { useSessionStorage } from '@vueuse/core';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerCollection from './drawer-collection.vue';
@@ -13,6 +14,7 @@ const props = withDefaults(
 	defineProps<{
 		collection?: string;
 		folder?: string;
+		field?: string;
 		filter?: Filter;
 	}>(),
 	{
@@ -26,8 +28,17 @@ const drawerProps = {
 	sidebarLabel: t('folders'),
 };
 
-const currentFolder = ref<string | undefined>(props.folder);
-const currentSpecial = ref<SpecialFolder>();
+// Positional key so that collection, field, and folder contexts never collide
+// (e.g. field="avatar" → "directus_files:avatar:", collection="articles", field="avatar" → "articles:avatar:")
+const stateKey = `${props.collection ?? ''}:${props.field ?? ''}:${props.folder ?? ''}`;
+
+const persisted = useSessionStorage<{ folder?: string; special?: SpecialFolder }>(
+	`directus-drawer-files-state:${stateKey}`,
+	{ folder: props.folder, special: undefined },
+);
+
+const currentFolder = ref<string | undefined>(persisted.value.folder);
+const currentSpecial = ref<SpecialFolder | undefined>(persisted.value.special);
 const folderFilter = ref<Filter>();
 
 const userStore = useUserStore();
@@ -35,6 +46,7 @@ const userStore = useUserStore();
 watch(
 	[currentFolder, currentSpecial],
 	() => {
+		persisted.value = { folder: currentFolder.value, special: currentSpecial.value };
 		folderFilter.value = getFolderFilter(currentFolder.value, currentSpecial.value, userStore?.currentUser?.id);
 	},
 	{ immediate: true },
