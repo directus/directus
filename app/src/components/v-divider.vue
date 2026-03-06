@@ -64,8 +64,9 @@ withDefaults(defineProps<Props>(), {
 
 	.type-text {
 		inline-size: 100%;
-		color: var(--v-divider-label-color, var(--theme--foreground-accent));
+		line-height: 1;
 		font-weight: 600;
+		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 		transition: color var(--fast) var(--transition);
 	}
 
