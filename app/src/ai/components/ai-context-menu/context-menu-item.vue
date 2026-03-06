@@ -60,7 +60,7 @@ defineEmits<{
 	background-color: var(--theme--primary-background);
 	color: var(--theme--primary);
 	border-radius: var(--theme--border-radius);
-	letter-spacing: 0.028rem;
+	letter-spacing: 0.5px;
 }
 
 .item-subtitle {
