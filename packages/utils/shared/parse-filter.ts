@@ -139,7 +139,11 @@ function parseFilterEntry(
 	}
 }
 
-export function parseDynamicVariable(value: any, accountability: BasicAccountability | null, context: ParseFilterContext) {
+export function parseDynamicVariable(
+	value: any,
+	accountability: BasicAccountability | null,
+	context: ParseFilterContext,
+) {
 	if (typeof value !== 'string') {
 		return value;
 	}
