@@ -133,29 +133,36 @@ watch(
 		}
 
 		// Parse based on type
-		switch (props.type) {
-			case 'date':
-				calendarValue.value = parseDate(newValue);
-				break;
-			case 'time':
-				internalTimeValue.value = parseTime(newValue);
-				break;
+		// Guard against non-date values like dynamic variables (e.g. $NOW, $CURRENT_USER).
+		// If parsing throws, leave the calendar in its current state instead of crashing.
+		try {
+			switch (props.type) {
+				case 'date':
+					calendarValue.value = parseDate(newValue);
+					break;
+				case 'time':
+					internalTimeValue.value = parseTime(newValue);
+					break;
 
-			case 'dateTime': {
-				// Matches legacy Flatpickr format: "yyyy-MM-dd'T'HH:mm:ss"
-				const dt = parseDateTime(newValue);
-				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-				break;
-			}
+				case 'dateTime': {
+					// Matches legacy Flatpickr format: "yyyy-MM-dd'T'HH:mm:ss"
+					const dt = parseDateTime(newValue);
+					calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
+					internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
+					break;
+				}
 
-			case 'timestamp': {
-				// Matches legacy Flatpickr format: Date.toISOString() (absolute timestamp)
-				const dt = parseAbsoluteToLocal(newValue);
-				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
-				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
-				break;
+				case 'timestamp': {
+					// Matches legacy Flatpickr format: Date.toISOString() (absolute timestamp)
+					const dt = parseAbsoluteToLocal(newValue);
+					calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
+					internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
+					break;
+				}
 			}
+		} catch {
+			// Value is not a parseable date string (e.g. a dynamic variable like $NOW).
+			// Leave calendar state unchanged so the picker can still open without crashing.
 		}
 	},
 	{ immediate: true },
