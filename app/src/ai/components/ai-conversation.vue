@@ -114,7 +114,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 			<VInfo v-if="emptyState" icon="magic_button" type="primary" :title="$t(emptyState.title)" class="empty-state">
 				{{ $t(emptyState.description) }}
 				<template v-if="emptyState.showSettings" #append>
-					<VButton to="/settings/ai">{{ $t('ai.go_to_settings') }}</VButton>
+					<VButton :to="{ name: 'settings-ai' }">{{ $t('ai.go_to_settings') }}</VButton>
 				</template>
 			</VInfo>
 

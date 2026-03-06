@@ -161,7 +161,7 @@ async function saveAndStay() {
 
 async function saveAsCopyAndNavigate() {
 	const newPrimaryKey = await saveAsCopy();
-	if (newPrimaryKey) router.push(`/files/${newPrimaryKey}`);
+	if (newPrimaryKey) router.push({ name: 'files-item', params: { primaryKey: newPrimaryKey } });
 }
 
 async function deleteAndQuit() {

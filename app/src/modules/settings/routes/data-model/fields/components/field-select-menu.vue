@@ -35,7 +35,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 		</template>
 
 		<VList>
-			<VListItem :to="`/settings/data-model/${field.collection}/${field.field}`">
+			<VListItem :to="{ name: 'settings-fields-field', params: { collection: field.collection, field: field.field } }">
 				<VListItemIcon><VIcon name="edit" /></VListItemIcon>
 				<VListItemContent>
 					{{ $t('edit_field') }}

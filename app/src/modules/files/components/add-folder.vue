@@ -42,7 +42,7 @@ async function addFolder() {
 		dialogActive.value = false;
 		newFolderName.value = null;
 
-		router.push({ path: `/files/folders/${newFolder.data.data.id}` });
+		router.push({ name: 'folders-collection', params: { folder: newFolder.data.data.id } });
 	} catch (error) {
 		unexpectedError(error);
 	} finally {

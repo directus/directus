@@ -27,11 +27,11 @@ const providerItems = computed(() => {
 
 	return items.map((provider) => {
 		const hasProjects = (provider.projects?.length ?? 0) > 0;
-		let link = `/deployments/${provider.provider}`;
 
-		if (!hasProjects && isAdmin) {
-			link = `/deployments/${provider.provider}/settings`;
-		}
+		const link =
+			!hasProjects && isAdmin
+				? { name: 'deployments-provider-settings', params: { provider: provider.provider } }
+				: { name: 'deployments-provider-dashboard', params: { provider: provider.provider } };
 
 		return {
 			...provider,
@@ -53,7 +53,7 @@ onMounted(async () => {
 
 <template>
 	<VList nav>
-		<VListItem to="/deployments" exact>
+		<VListItem :to="{ name: 'deployments-overview' }" exact>
 			<VListItemIcon>
 				<VIcon name="rocket_launch" />
 			</VListItemIcon>
@@ -94,7 +94,7 @@ onMounted(async () => {
 					<VListItem
 						v-for="project in provider.projects"
 						:key="project.id"
-						:to="`/deployments/${provider.provider}/${project.id}/runs`"
+						:to="{ name: 'deployments-provider-runs', params: { provider: provider.provider, projectId: project.id } }"
 						:active="currentProjectId === project.id"
 					>
 						<VListItemIcon><VIcon :name="provider.provider" /></VListItemIcon>
@@ -105,7 +105,7 @@ onMounted(async () => {
 
 					<VListItem
 						v-if="isAdmin"
-						:to="`/deployments/${provider.provider}/settings`"
+						:to="{ name: 'deployments-provider-settings', params: { provider: provider.provider } }"
 						:active="isSettingsPage && currentProviderKey === provider.provider"
 					>
 						<VListItemIcon><VIcon name="settings" /></VListItemIcon>
