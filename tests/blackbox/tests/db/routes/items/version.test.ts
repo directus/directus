@@ -374,7 +374,7 @@ describe('version deadlocking', () => {
 
 		const [A, B] = await Promise.all([responseA, responseB]);
 
-		expect(JSON.parse(A.text).data).toMatchObject({
+		expect(JSON.parse(A.text).data).toEqual({
 			id: resultA.id,
 			links: [
 				{
@@ -392,7 +392,7 @@ describe('version deadlocking', () => {
 			},
 		});
 
-		expect(JSON.parse(B.text).data).toMatchObject({
+		expect(JSON.parse(B.text).data).toEqual({
 			id: resultB.id,
 			links: [
 				{

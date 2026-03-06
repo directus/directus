@@ -83,14 +83,15 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
 			try {
-				await trx.transaction(async (trxInner) => {
-					const sudoItemsService = new ItemsService<Item>(self.collection, {
-						schema: self.schema,
-						knex: trxInner,
-					});
+				await transaction(
+					trx,
+					async (trxInner) => {
+						const sudoItemsService = new ItemsService<Item>(self.collection, {
+							schema: self.schema,
+							knex: trxInner,
+						});
 
-					if (!item) {
-						try {
+						if (!item) {
 							const item = await sudoItemsService.createOne(rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
@@ -106,19 +107,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 							itemMeta[item] = {
 								version_id: id,
 							};
-						} catch (error: any) {
-							trxInner.rollback(error);
-
-							handleError(error);
-
-							itemlessErrors.push({
-								error: error,
-								version_id: id,
-								delta,
-							});
-						}
-					} else {
-						try {
+						} else {
 							await sudoItemsService.updateOne(item, rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
@@ -134,21 +123,33 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 							itemMeta[item] = {
 								version_id: id,
 							};
-						} catch (error: any) {
-							trxInner.rollback(error);
-
-							handleError(error);
-
-							itemMeta[item] = {
-								error: error,
-								version_id: id,
-								delta,
-							};
 						}
-					}
-				});
-			} catch {
-				// Ignore errors
+					},
+					true,
+				);
+			} catch (error: any) {
+				// Throw an error for single item requests
+				if (key) {
+					throw error;
+				}
+
+				if (!item) {
+					handleError(error);
+
+					itemlessErrors.push({
+						error: error,
+						version_id: id,
+						delta,
+					});
+				} else {
+					handleError(error);
+
+					itemMeta[item] = {
+						error: error,
+						version_id: id,
+						delta,
+					};
+				}
 			}
 		}
 
@@ -196,6 +197,8 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	}
 
 	const defaultItem = Object.fromEntries(requestedFields.map((field) => [field, null]));
+
+	console.log(createdIDs, results);
 
 	results = results.map((result) => {
 		const id = result[primaryKeyField];
@@ -249,7 +252,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			result['$meta'] = meta;
 
 			if (meta.error) {
-				Object.assign(result, defaultItem, pick(meta.delta, requestedFields));
+				result = Object.assign({}, defaultItem, result, pick(meta.delta, requestedFields));
 			}
 		}
 
@@ -261,10 +264,10 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	if (results.length < (query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']))) {
 		results.push(
 			...itemlessErrors.map((errorMeta) => {
-				const item = { $meta: errorMeta };
+				let item = { $meta: errorMeta };
 
 				if (errorMeta.error) {
-					Object.assign(item, defaultItem, pick(errorMeta.delta, requestedFields));
+					item = Object.assign({}, defaultItem, item, pick(errorMeta.delta, requestedFields));
 				}
 
 				return item;
