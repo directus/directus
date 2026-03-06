@@ -414,9 +414,14 @@ export function useItem<T extends Item>(
 
 			const response = await sdk.request<Item[]>(
 				requestEndpoint(getEndpoint(relation.collection), {
-					params: {
-						fields: Array.from(fieldsToFetch),
-						[`filter[${relation.field}][_eq]`]: primaryKey.value,
+					method: 'SEARCH',
+					body: {
+						query: {
+							fields: Array.from(fieldsToFetch),
+							filter: {
+								[relation.field]: { _eq: primaryKey.value },
+							},
+						},
 					},
 				}),
 			);
