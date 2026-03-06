@@ -74,12 +74,12 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
 	const fetchItems = throttle((shouldUpdateCount: boolean, shouldUpdateTotal: boolean = false) => {
-Promise.all([
-getItems(),
-shouldUpdateCount ? getItemCount() : Promise.resolve(),
-shouldUpdateTotal ? getTotalCount() : Promise.resolve(),
-]);
-}, 500);
+		Promise.all([
+			getItems(),
+			shouldUpdateCount ? getItemCount() : Promise.resolve(),
+			shouldUpdateTotal ? getTotalCount() : Promise.resolve(),
+		]);
+	}, 500);
 
 	watch(
 		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep), toRef(filterSystem)],
@@ -111,15 +111,12 @@ shouldUpdateTotal ? getTotalCount() : Promise.resolve(),
 				newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch;
 
 			// determine if the total count needs to be updated based on changes to collection or filterSystem
-			const shouldUpdateTotal =
-				newCollection !== oldCollection || !isEqual(newFilterSystem, oldFilterSystem);
+			const shouldUpdateTotal = newCollection !== oldCollection || !isEqual(newFilterSystem, oldFilterSystem);
 
 			fetchItems(shouldUpdateCount, shouldUpdateTotal);
 		},
 		{ deep: true, immediate: true },
 	);
-
-
 
 	return {
 		itemCount,
