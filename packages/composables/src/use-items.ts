@@ -73,17 +73,21 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
-	const fetchItems = throttle((shouldUpdateCount: boolean) => {
-		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
-	}, 500);
+	const fetchItems = throttle((shouldUpdateCount: boolean, shouldUpdateTotal: boolean = false) => {
+Promise.all([
+getItems(),
+shouldUpdateCount ? getItemCount() : Promise.resolve(),
+shouldUpdateTotal ? getTotalCount() : Promise.resolve(),
+]);
+}, 500);
 
 	watch(
-		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep)],
+		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep), toRef(filterSystem)],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
-			const [newCollection, newLimit, newSort, newSearch, newFilter] = after;
-			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter] = before;
+			const [newCollection, newLimit, newSort, newSearch, newFilter, , , , , newFilterSystem] = after;
+			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, , , , , oldFilterSystem] = before;
 
 			if (!newCollection || !query) return;
 
@@ -106,20 +110,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const shouldUpdateCount =
 				newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch;
 
-			fetchItems(shouldUpdateCount);
+			// determine if the total count needs to be updated based on changes to collection or filterSystem
+			const shouldUpdateTotal =
+				newCollection !== oldCollection || !isEqual(newFilterSystem, oldFilterSystem);
+
+			fetchItems(shouldUpdateCount, shouldUpdateTotal);
 		},
 		{ deep: true, immediate: true },
 	);
 
-	watch(
-		[collection, toRef(filterSystem)],
-		async (after, before) => {
-			if (isEqual(after, before)) return;
 
-			getTotalCount();
-		},
-		{ deep: true, immediate: true },
-	);
 
 	return {
 		itemCount,
