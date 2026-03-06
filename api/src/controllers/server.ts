@@ -12,21 +12,23 @@ import { createAdmin } from '../utils/create-admin.js';
 const router = Router();
 const env = useEnv();
 
-router.get(
-	'/specs/oas',
-	asyncHandler(async (req, res, next) => {
-		const service = new SpecificationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+if (env['OPENAPI_ENABLED'] !== false) {
+	router.get(
+		'/specs/oas',
+		asyncHandler(async (req, res, next) => {
+			const service = new SpecificationService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		res.locals['payload'] = await service.oas.generate(req.headers.host);
-		return next();
-	}),
-	respond,
-);
+			res.locals['payload'] = await service.oas.generate(req.headers.host);
+			return next();
+		}),
+		respond,
+	);
+}
 
-if (env['REST_GRAPHQL_INTROSPECTION'] !== false) {
+if (env['GRAPHQL_INTROSPECTION'] !== false) {
 	router.get(
 		'/specs/graphql/:scope?',
 		asyncHandler(async (req, res) => {

@@ -154,6 +154,18 @@ export function injectSystemResolvers(
 		});
 	}
 
+	if (env['OPENAPI_ENABLED'] !== false) {
+		schemaComposer.Query.addFields({
+			server_specs_oas: {
+				type: GraphQLJSON,
+				resolve: async () => {
+					const service = new SpecificationService({ schema: gql.schema, accountability: gql.accountability });
+					return await service.oas.generate();
+				},
+			},
+		});
+	}
+
 	/** Globally available query */
 	if (env['GRAPHQL_INTROSPECTION'] !== false) {
 		schemaComposer.Query.addFields({
@@ -182,13 +194,6 @@ export function injectSystemResolvers(
 	}
 
 	schemaComposer.Query.addFields({
-		server_specs_oas: {
-			type: GraphQLJSON,
-			resolve: async () => {
-				const service = new SpecificationService({ schema: gql.schema, accountability: gql.accountability });
-				return await service.oas.generate();
-			},
-		},
 		server_ping: {
 			type: GraphQLString,
 			resolve: () => 'pong',
