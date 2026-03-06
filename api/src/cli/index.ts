@@ -107,6 +107,11 @@ export async function createCli(): Promise<Command> {
 			'--ignoreRules <value>',
 			`Comma-separated list of collections and or fields to ignore. Format: "products.title,reviews" this will ignore applying changes to the title field in the products collection and the entire reviews collection`,
 		)
+		.option(
+			'--concurrent-index-creation',
+			'Create indexes concurrently outside of the transaction (reduces table locks)',
+			false,
+		)
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
 

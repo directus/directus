@@ -150,5 +150,24 @@ describe('createCli', () => {
 				expect.anything(),
 			);
 		});
+
+		test('Should parse --concurrent-index-creation flag', async () => {
+			await program.parseAsync([
+				'node',
+				'directus',
+				'schema',
+				'apply',
+				'--concurrent-index-creation',
+				'./snapshot.yaml',
+			]);
+
+			expect(apply).toHaveBeenCalledWith(
+				'./snapshot.yaml',
+				expect.objectContaining({
+					concurrentIndexCreation: true,
+				}),
+				expect.anything(),
+			);
+		});
 	});
 });
