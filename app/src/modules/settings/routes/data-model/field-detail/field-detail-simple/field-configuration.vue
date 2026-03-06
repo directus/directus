@@ -117,7 +117,13 @@ const options = computed({
 						</div>
 
 						<VCheckbox v-if="type === 'boolean'" v-model="defaultValue" block :label="$t('enabled')" />
-						<VInput v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
+						<VInput
+							v-else
+							v-model="defaultValue"
+							class="monospace"
+							:nullable="type !== 'string' && type !== 'text'"
+							placeholder="NULL"
+						/>
 					</div>
 
 					<div class="field half-right">

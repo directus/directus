@@ -398,9 +398,16 @@ function useOnUpdate() {
 			<div v-if="!isAlias && !isPrimaryKey && !isGenerated" class="field full">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 
-				<VInput v-if="['string', 'uuid'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
+				<VInput v-if="type === 'string'" v-model="defaultValue" class="monospace" :nullable="false" placeholder="NULL" />
+				<VInput v-else-if="type === 'uuid'" v-model="defaultValue" class="monospace" placeholder="NULL" />
 
-				<VTextarea v-else-if="['text'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
+				<VTextarea
+					v-else-if="type === 'text'"
+					v-model="defaultValue"
+					class="monospace"
+					:nullable="false"
+					placeholder="NULL"
+				/>
 				<VInput
 					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(type)"
 					v-model="defaultValue"
