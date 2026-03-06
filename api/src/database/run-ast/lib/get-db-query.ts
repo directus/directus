@@ -14,10 +14,8 @@ import { getColumn } from '../utils/get-column.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
-
 import applyQuery from './apply-query/index.js';
 import { applyLimit } from './apply-query/pagination.js';
-
 import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 
 export type DBQueryOptions = {
@@ -83,28 +81,38 @@ export function getDBQuery(
 
 		// When relational filters create JOINs, use wrapper query with deduplication
 		if (hasMultiRelationalFilter) {
-			// Clear unwanted sections from inner query - keep only filters, limit, and offset
-			innerQuery.clear('select').clear('counter').clear('order');
+			// Clear unwanted sections from inner query - keep only filters
+			innerQuery.clear('select').clear('counter').clear('order').clear('limit').clear('offset');
 
 			if (queryCopy.group) {
 				innerQuery.clear('group').clear('having');
 			}
 
-			// Inner query: select distinct PKs with limit/offset applied
-			innerQuery.select(`${table}.${primaryKey}`).distinct();
+			// Inner query: select distinct PKs (use explicit alias for cross-DB compatibility)
+			innerQuery.select(knex.raw('??.?? as ??', [table, primaryKey, primaryKey])).distinct();
 
 			// Wrapper query: join back to deduplicated set
 			const wrapperQuery = knex
 				.from(table)
 				.innerJoin(knex.raw('??', innerQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
-			// Apply aggregation and grouping on wrapper using applyQuery (without limit/offset/filter)
-			// Filter is excluded because filtering is already applied in the inner query for deduplication
-			const { filter: _excludedFilter, ...wrapperQueryBase } = queryCopy;
-			const wrapperQueryCopy: Query = { ...wrapperQueryBase, limit: null, offset: null };
+			// Apply aggregation and grouping on wrapper using applyQuery
+			// Filter, search, and sort are excluded because filtering is already applied in the inner
+			// query and sort/search can introduce unwanted joins on the wrapper
+			const {
+				filter: _excludedFilter,
+				search: _excludedSearch,
+				sort: _excludedSort,
+				...wrapperQueryBase
+			} = queryCopy;
+
+			const wrapperQueryCopy: Query = { ...wrapperQueryBase, limit: null, offset: null, page: null };
+
+			// Use a fresh aliasMap for the wrapper to avoid stale join aliases from the inner query
+			const wrapperAliasMap: AliasMap = Object.create(null);
 
 			applyQuery(knex, table, wrapperQuery, wrapperQueryCopy, schema, cases, permissions, {
-				aliasMap,
+				aliasMap: wrapperAliasMap,
 				groupWhenCases,
 				groupColumnPositions,
 			});
