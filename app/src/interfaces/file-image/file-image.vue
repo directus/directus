@@ -13,6 +13,7 @@ import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -191,6 +192,8 @@ const menuActive = computed(
 );
 
 const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
+
+const { combinedAcceptString } = useMimeTypeFilter(computed(() => ['image/*']));
 </script>
 
 <template>
@@ -298,7 +301,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			:folder="folder"
 			:filter="customFilter"
 			:disabled="internalDisabled"
-			accept="image/*"
+			:accept="combinedAcceptString"
 			@input="onUpload"
 		/>
 	</div>
