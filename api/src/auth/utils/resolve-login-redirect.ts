@@ -40,6 +40,13 @@ export function resolveLoginRedirect(redirect: unknown, opts: { provider?: strin
 		}
 	}
 
+	// Absolute redirect
+	const parsedAbsoluteURL = new URL(redirect);
+
+	if (!['http:', 'https:'].includes(parsedAbsoluteURL.protocol)) {
+		throw new Error('Only http/https redirect protocols are allowed');
+	}
+
 	if (opts.provider) {
 		const envKey = `AUTH_${opts.provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
@@ -48,7 +55,7 @@ export function resolveLoginRedirect(redirect: unknown, opts: { provider?: strin
 			allowedList.push(publicURL);
 
 			if (isUrlAllowed(redirect, allowedList)) {
-				return new URL(redirect).toString();
+				return parsedAbsoluteURL.toString();
 			}
 		}
 	}
@@ -56,7 +63,6 @@ export function resolveLoginRedirect(redirect: unknown, opts: { provider?: strin
 	if (URL.canParse(publicURL) === false) throw new Error('PUBLIC_URL must be a valid URL');
 
 	const { protocol: publicProtocol, host: publicHost } = new URL(publicURL);
-	const parsedAbsoluteURL = new URL(redirect);
 
 	// Reject "app" redirects not matching PUBLIC_URL
 	if (publicProtocol !== parsedAbsoluteURL.protocol || publicHost !== parsedAbsoluteURL.host) {
