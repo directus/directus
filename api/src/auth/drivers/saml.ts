@@ -138,7 +138,8 @@ export function createSAMLAuthRouter(providerName: string) {
 
 				try {
 					redirect = resolveLoginRedirect(redirect, { provider: providerName });
-				} catch {
+				} catch (e) {
+					useLogger().error(e);
 					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 				}
 
@@ -180,7 +181,8 @@ export function createSAMLAuthRouter(providerName: string) {
 			if (redirect) {
 				try {
 					redirect = resolveLoginRedirect(redirect, { provider: providerName });
-				} catch {
+				} catch (e) {
+					useLogger().error(e);
 					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 				}
 			}
