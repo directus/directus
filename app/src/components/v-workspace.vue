@@ -13,12 +13,15 @@ interface Props {
 	zoomToFit?: boolean;
 	/** Makes the panel resizable */
 	resizable?: boolean;
+	/** Grid cell size in px — must match CSS grid-template value */
+	gridSize?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	editMode: false,
 	zoomToFit: false,
 	resizable: true,
+	gridSize: 18,
 });
 
 defineEmits<{
@@ -66,14 +69,14 @@ const workspaceSize = computed(() => {
 
 	if (props.editMode === true) {
 		return {
-			width: (furthestTileX.x + furthestTileX.width + 25) * 20,
-			height: (furthestTileY.y + furthestTileY.height + 25) * 20,
+			width: (furthestTileX.x + furthestTileX.width + 25) * props.gridSize,
+			height: (furthestTileY.y + furthestTileY.height + 25) * props.gridSize,
 		};
 	}
 
 	return {
-		width: (furthestTileX.x + furthestTileX.width - 1) * 20,
-		height: (furthestTileY.y + furthestTileY.height - 1) * 20,
+		width: (furthestTileX.x + furthestTileX.width - 1) * props.gridSize,
+		height: (furthestTileY.y + furthestTileY.height - 1) * props.gridSize,
 	};
 });
 
@@ -117,6 +120,7 @@ const workspaceBoxSize = computed(() => {
 					v-bind="tile"
 					:edit-mode="editMode"
 					:resizable="resizable"
+					:grid-size="gridSize"
 					@preview="$emit('preview', tile)"
 					@edit="$emit('edit', tile)"
 					@update="$emit('update', { edits: $event, id: tile.id })"

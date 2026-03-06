@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
-import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+import { ATTACHMENT_OFFSET, GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
 import OptionsOverview from './options-overview.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
@@ -108,8 +108,8 @@ const pointermove = (event: PointerEvent) => {
 		moving.value = true;
 		if (!down) return;
 
-		let xPos = Math.round((event.pageX - workspaceOffset.x) / 20) * 20;
-		const yPos = Math.round((event.pageY - workspaceOffset.y) / 20) * 20;
+		let xPos = Math.round((event.pageX - workspaceOffset.x) / GRID_SIZE) * GRID_SIZE;
+		const yPos = Math.round((event.pageY - workspaceOffset.y) / GRID_SIZE) * GRID_SIZE;
 
 		if (unref(isRTL)) {
 			xPos = workspaceWidth - xPos;
@@ -191,6 +191,7 @@ function pointerLeave() {
 		]"
 		:edit-mode="editMode"
 		:resizable="false"
+		:grid-size="GRID_SIZE"
 		:show-options="type !== 'trigger'"
 		:style="styleVars"
 		always-update-position

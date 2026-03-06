@@ -61,6 +61,8 @@ type Props = {
 	showOptions?: boolean;
 	/** Constantly updates position, not only after the dragend */
 	alwaysUpdatePosition?: boolean;
+	/** Grid cell size in px */
+	gridSize?: number;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,6 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
 	borderRadius: () => [true, true, true, true],
 	showOptions: true,
 	alwaysUpdatePosition: false,
+	gridSize: 18,
 });
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
@@ -167,8 +170,8 @@ function useDragDrop() {
 		const pointerDeltaX = event.pageX - pointerStartPosX;
 		const pointerDeltaY = event.pageY - pointerStartPosY;
 
-		const gridDeltaX = Math.round(pointerDeltaX / 20);
-		const gridDeltaY = Math.round(pointerDeltaY / 20);
+		const gridDeltaX = Math.round(pointerDeltaX / props.gridSize);
+		const gridDeltaY = Math.round(pointerDeltaY / props.gridSize);
 
 		if (operation === 'move') {
 			editedPosition.position_y = panelStartPosY + gridDeltaY;
