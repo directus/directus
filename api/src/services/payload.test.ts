@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, Item } from '@directus/types';
+import type { Accountability, Item, PayloadAction } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -7,10 +7,20 @@ import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
+import { decrypt, encrypt } from '../utils/encrypt.js';
 import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
+
+vi.mock('../utils/encrypt.js', () => ({
+	encrypt: vi.fn(() => 'encrypted'),
+	decrypt: vi.fn(() => 'decrypted'),
+}));
+
+vi.mock('../utils/get-secret.js', () => ({
+	getSecret: vi.fn().mockReturnValue('test-secret'),
 }));
 
 describe('Integration Tests', () => {
@@ -25,6 +35,7 @@ describe('Integration Tests', () => {
 
 	afterEach(() => {
 		tracker.reset();
+		vi.clearAllMocks();
 	});
 
 	describe('Services / PayloadService', () => {
@@ -124,6 +135,84 @@ describe('Integration Tests', () => {
 					});
 
 					expect(result).toBe('test,directus');
+				});
+			});
+
+			describe('encrypt', () => {
+				test.each([null, '', false, undefined])('Returns falsy value (%s) as-is', async (value) => {
+					const result = await service.transformers['encrypt']!({
+						value,
+						action: 'read',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe(value);
+					expect(decrypt).not.toHaveBeenCalled();
+					expect(encrypt).not.toHaveBeenCalled();
+				});
+
+				test('Returns redacted value on read when accountability is set', async () => {
+					const result = await service.transformers['encrypt']!({
+						value: 'some-encrypted-value',
+						action: 'read',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe('**********');
+					expect(decrypt).not.toHaveBeenCalled();
+				});
+
+				test('Decrypts value on read when accountability is null', async () => {
+					const result = await service.transformers['encrypt']!({
+						value: 'some-encrypted-value',
+						action: 'read',
+						payload: {},
+						accountability: null,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe('decrypted');
+					expect(decrypt).toHaveBeenCalledWith('some-encrypted-value', 'test-secret');
+				});
+
+				test.each<PayloadAction>(['create', 'update'])('Encrypts string value on %s', async (action) => {
+					const result = await service.transformers['encrypt']!({
+						value: 'plain-text',
+						action,
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe('encrypted');
+					expect(encrypt).toHaveBeenCalledWith('plain-text', 'test-secret');
+				});
+
+				test('Returns non-string value as-is on non-read action', async () => {
+					const result = await service.transformers['encrypt']!({
+						value: 123,
+						action: 'create',
+						payload: {},
+						accountability: { role: null } as Accountability,
+						specials: [],
+						helpers,
+						overwriteDefaults: undefined,
+					});
+
+					expect(result).toBe(123);
+					expect(encrypt).not.toHaveBeenCalled();
 				});
 			});
 		});
