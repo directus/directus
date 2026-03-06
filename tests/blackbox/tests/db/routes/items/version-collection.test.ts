@@ -223,9 +223,6 @@ describe('request version on collection a draft item', () => {
 		expect(response.body.data).toMatchObject([
 			{
 				$meta: {
-					delta: {
-						title: 'title',
-					},
 					version_id: version.id,
 				},
 				author: null,
@@ -268,9 +265,6 @@ describe('request version on collection a draft itemless', () => {
 		expect(response.body.data).toMatchObject([
 			{
 				$meta: {
-					delta: {
-						title: 'title',
-					},
 					version_id: version.id,
 				},
 				author: null,
