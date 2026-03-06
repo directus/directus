@@ -44,8 +44,8 @@ withDefaults(
 			--v-badge-color             [var(--white)]
 			--v-badge-background-color  [var(--red)]
 			--v-badge-border-color      [var(--theme--background)]
-			--v-badge-offset-x          [0]
-			--v-badge-offset-y          [0]
+			--v-badge-offset-x          [0rem]
+			--v-badge-offset-y          [0rem]
 			--v-badge-size              [0.875rem]
 
 */
@@ -64,8 +64,8 @@ withDefaults(
 
 	.badge {
 		position: absolute;
-		inset-block-start: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-y, 0));
-		inset-inline-end: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-x, 0));
+		inset-block-start: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-y, 0rem));
+		inset-inline-end: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-x, 0rem));
 		z-index: 1;
 		display: inline-flex;
 		align-items: center;
@@ -82,12 +82,12 @@ withDefaults(
 
 		&.left {
 			inset-inline-end: unset;
-			inset-inline-start: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-x, 0));
+			inset-inline-start: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-x, 0rem));
 		}
 
 		&.bottom {
 			inset-block-start: unset;
-			inset-block-end: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-y, 0));
+			inset-block-end: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-y, 0rem));
 		}
 
 		&.bordered {
