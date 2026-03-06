@@ -40,13 +40,7 @@ useResizeObserver(scrollContainerRef, ([entry]) => {
 
 const enforceShadows = computed(() => props.sidebarShadow || false);
 
-const contentPadding = computed(() => {
-	const raw = cssVar('--content-padding');
-	const num = parseFloat(raw);
-	if (!num) return 12;
-	if (raw.endsWith('rem')) return num * parseFloat(getComputedStyle(document.documentElement).fontSize);
-	return num;
-});
+const contentPadding = computed(() => parseInt(cssVar('--content-padding'), 10) || 12);
 
 const showStartShadow = computed(() => {
 	if (enforceShadows.value) return true;

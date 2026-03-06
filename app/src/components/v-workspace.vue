@@ -34,13 +34,7 @@ defineEmits<{
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
 
-const paddingSize = computed(() => {
-	const raw = cssVar('--content-padding', mainElement.value);
-	const num = parseFloat(raw);
-	if (!num) return 0;
-	if (raw.endsWith('rem')) return num * parseFloat(getComputedStyle(document.documentElement).fontSize);
-	return num;
-});
+const paddingSize = computed(() => Number(cssVar('--content-padding', mainElement.value)?.slice(0, -2) || 0));
 
 const workspaceSize = computed(() => {
 	const furthestTileX = props.tiles.reduce(
