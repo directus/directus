@@ -31,11 +31,13 @@ describe('resolveLoginRedirect', () => {
 
 	describe('relative path redirects', () => {
 		test('throws for relative path redirect', () => {
-			expect(() => resolveLoginRedirect('/admin/users')).toThrow('Invalid relative URL');
+			const result = resolveLoginRedirect('/admin/users');
+			expect(result).toBe('/admin/users');
 		});
 
 		test('throws for root path redirect', () => {
-			expect(() => resolveLoginRedirect('/')).toThrow('Invalid relative URL');
+			const result = resolveLoginRedirect('/');
+			expect(result).toBe('/');
 		});
 
 		test('throws for protocol-relative URL (//example.com)', () => {
@@ -125,15 +127,11 @@ describe('resolveLoginRedirect', () => {
 				PUBLIC_URL: 'invalid-url',
 			});
 
-			expect(() => resolveLoginRedirect('https://example.com/admin')).toThrow(
-				'PUBLIC_URL must be a valid URL',
-			);
+			expect(() => resolveLoginRedirect('https://example.com/admin')).toThrow('PUBLIC_URL must be a valid URL');
 		});
 
 		test('rejects redirect when not in allow list and not PUBLIC_URL origin', () => {
-			expect(() => resolveLoginRedirect('https://different.com/admin')).toThrow(
-				'App "redirect" must match PUBLIC_URL',
-			);
+			expect(() => resolveLoginRedirect('https://different.com/admin')).toThrow('App "redirect" must match PUBLIC_URL');
 		});
 
 		test('allows redirect matching PUBLIC_URL origin', () => {
@@ -211,9 +209,7 @@ describe('resolveLoginRedirect', () => {
 				PUBLIC_URL: 'https://directus.app',
 			});
 
-			expect(() => resolveLoginRedirect('http://directus.app/admin')).toThrow(
-				'App "redirect" must match PUBLIC_URL',
-			);
+			expect(() => resolveLoginRedirect('http://directus.app/admin')).toThrow('App "redirect" must match PUBLIC_URL');
 		});
 
 		test('port must match when PUBLIC_URL has custom port', () => {
@@ -222,9 +218,7 @@ describe('resolveLoginRedirect', () => {
 			});
 
 			// Different port should be rejected
-			expect(() => resolveLoginRedirect('http://localhost:3000/admin')).toThrow(
-				'App "redirect" must match PUBLIC_URL',
-			);
+			expect(() => resolveLoginRedirect('http://localhost:3000/admin')).toThrow('App "redirect" must match PUBLIC_URL');
 		});
 
 		test('allows redirect when port matches PUBLIC_URL', () => {

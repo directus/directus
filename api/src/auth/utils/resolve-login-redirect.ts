@@ -24,15 +24,16 @@ export function resolveLoginRedirect(redirect: unknown, opts: { provider?: strin
 	// Relative URL
 	if (URL.canParse(redirect) === false) {
 		try {
-			const { protocol: dummyProtocol, host: dummyHost } = new URL('http://dummy.local');
-			const parsedRelativeURL = new URL(redirect, publicURL);
+			const dummyDomain = 'http://dummy.local';
+			const { protocol: dummyProtocol, host: dummyHost } = new URL(dummyDomain);
+			const parsedRelativeURL = new URL(redirect, dummyDomain);
 
 			if (dummyProtocol !== parsedRelativeURL.protocol || dummyHost !== parsedRelativeURL.host) {
 				throw new Error('Relative URL mismatch');
 			}
 
 			// If the protocol & host match then it is a safe relative path
-			return parsedRelativeURL.toString().replace(publicURL, '');
+			return parsedRelativeURL.toString().replace(dummyDomain, '');
 		} catch {
 			// Unparsable URL
 			throw new Error('Invalid relative URL');
