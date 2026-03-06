@@ -225,16 +225,16 @@ function saveOperation() {
 }
 
 .v-divider {
-	margin: 20px 0;
+	margin: 1.125rem 0;
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .type-title,
 .select {
-	margin-block-end: 32px;
+	margin-block-end: 1.8125rem;
 }
 
 .not-found {
@@ -248,19 +248,19 @@ function saveOperation() {
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .required {
 	--v-icon-color: var(--theme--primary);
 
-	margin-block-start: -12px;
-	margin-inline-start: -4px;
+	margin-block-start: -0.6875rem;
+	margin-inline-start: -0.25rem;
 }
 
 .error {
 	display: block;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	color: var(--theme--danger);
 	font-style: italic;
 }

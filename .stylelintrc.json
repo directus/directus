@@ -50,6 +50,15 @@
 			{ "ignoreProperties": ["text-rendering"], "ignoreFunctions": ["v-bind"], "ignoreKeywords": ["currentColor"] }
 		],
 
-		"csstools/use-logical": "always"
+		"csstools/use-logical": "always",
+
+		"unit-disallowed-list": [
+			["px"],
+			{
+				"ignoreProperties": {
+					"px": ["/^border/", "outline", "outline-width", "outline-offset", "box-shadow", "filter", "stroke-width"]
+				}
+			}
+		]
 	}
 }

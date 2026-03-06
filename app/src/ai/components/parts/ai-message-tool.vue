@@ -87,22 +87,22 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 
 <style scoped>
 .label {
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	font-weight: 600;
 	text-transform: uppercase;
-	margin-block: 0.5rem 0.25rem;
+	margin-block: 0.375rem 0.1875rem;
 }
 
 .tool-input,
 .tool-output {
-	padding: 0.5rem;
+	padding: 0.375rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	line-height: 1.25;
 
 	code {
-		font-size: 0.75rem;
+		font-size: 0.5625rem;
 		white-space: pre-wrap;
 		overflow-wrap: break-word;
 	}
@@ -111,12 +111,12 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 .tool-error {
 	display: flex;
 	align-items: center;
-	gap: 0.375rem;
-	padding: 0.5rem;
-	margin-block-start: 0.5rem;
+	gap: 0.3125rem;
+	padding: 0.375rem;
+	margin-block-start: 0.375rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--danger-background);
 	color: var(--theme--foreground);
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 }
 </style>

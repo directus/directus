@@ -220,12 +220,14 @@ function emitValue() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .search-badge {
 	--v-badge-background-color: var(--theme--primary);
-	--v-badge-offset-y: 8px;
-	--v-badge-offset-x: 8px;
+	--v-badge-offset-y: 0.4375rem;
+	--v-badge-offset-x: 0.4375rem;
 
-	@media (width <= 400px) {
+	@media (width <= 22.5rem) {
 		&.active,
 		&.filter-active {
 			position: absolute;
@@ -241,13 +243,13 @@ function emitValue() {
 }
 
 .search-input {
-	--button-size: 36px;
+	--button-size: 2rem;
 	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
 	--search-input-radius: calc(var(--button-size) / 2);
-	--icon-size: 18px;
-	--icon-search-padding-left: 7px; // visually center in closed filter
-	--icon-search-padding-right: 4px;
-	--icon-filter-margin-right: 8px;
+	--icon-size: 1rem;
+	--icon-search-padding-left: 0.375rem; // visually center in closed filter
+	--icon-search-padding-right: 0.25rem;
+	--icon-filter-margin-right: 0.4375rem;
 
 	box-sizing: content-box;
 	display: flex;
@@ -296,7 +298,7 @@ function emitValue() {
 	}
 
 	.spacer {
-		inline-size: 8px;
+		inline-size: 0.4375rem;
 	}
 
 	.icon-clear {
@@ -333,15 +335,15 @@ function emitValue() {
 	}
 
 	&:focus-within,
-	&:not(.disabled):hover {
+	&:not(.disabled):not(.active):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
 	&.has-content {
-		inline-size: 200px;
+		inline-size: 11.25rem;
 
 		.icon-clear {
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 
 		input {
@@ -359,12 +361,12 @@ function emitValue() {
 		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
 
-		@media (width > 400px) {
-			inline-size: 150px;
+		@media (width > 22.5rem) {
+			inline-size: 8.4375rem;
 		}
 
-		@media (width > 640px) {
-			inline-size: 200px;
+		@include mixins.breakpoint-up('sm') {
+			inline-size: 11.25rem;
 		}
 
 		input {
@@ -379,20 +381,20 @@ function emitValue() {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (width > 400px) {
-			inline-size: 150px;
+		@media (width > 22.5rem) {
+			inline-size: 8.4375rem;
 		}
 
-		@media (width > 640px) {
-			inline-size: 200px;
+		@include mixins.breakpoint-up('sm') {
+			inline-size: 11.25rem;
 		}
 
-		@media (min-width: 960px) {
-			inline-size: 300px;
+		@media (min-width: 54rem) {
+			inline-size: 16.875rem;
 		}
 
-		@media (min-width: 1260px) {
-			inline-size: 420px; /* blaze it */
+		@media (min-width: 70.875rem) {
+			inline-size: 23.625rem; /* blaze it */
 		}
 	}
 
@@ -437,7 +439,7 @@ function emitValue() {
 
 	.filter-input {
 		/* Use margin instead of padding to make sure transition expand takes it into account */
-		margin: 10px 8px;
+		margin: 0.5625rem 0.4375rem;
 	}
 }
 </style>

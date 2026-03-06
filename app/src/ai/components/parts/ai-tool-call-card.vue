@@ -122,10 +122,10 @@ const handleAlwaysAllow = () => {
 .card-header {
 	display: flex;
 	align-items: center;
-	padding: 0.5rem;
+	padding: 0.375rem;
 	justify-content: space-between;
-	gap: 0.5rem;
-	font-size: 0.875rem;
+	gap: 0.375rem;
+	font-size: 0.6875rem;
 	font-weight: 600;
 	inline-size: 100%;
 
@@ -151,7 +151,7 @@ const handleAlwaysAllow = () => {
 .card-title {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	overflow: hidden;
 
 	&.streaming :deep(span),
@@ -159,9 +159,9 @@ const handleAlwaysAllow = () => {
 		background:
 			linear-gradient(
 				90deg,
-				transparent calc(50% - var(--spread, 40px)),
+				transparent calc(50% - var(--spread, 2.25rem)),
 				var(--theme--foreground),
-				transparent calc(50% + var(--spread, 40px))
+				transparent calc(50% + var(--spread, 2.25rem))
 			),
 			linear-gradient(var(--theme--foreground-subdued), var(--theme--foreground-subdued));
 		background-size:
@@ -191,7 +191,7 @@ const handleAlwaysAllow = () => {
 .card-meta {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.25rem;
+	gap: 0.1875rem;
 	flex-shrink: 0;
 }
 
@@ -202,7 +202,7 @@ const handleAlwaysAllow = () => {
 
 .status-chip {
 	.v-icon {
-		margin-inline-end: 0.25rem;
+		margin-inline-end: 0.1875rem;
 		border: none;
 	}
 
@@ -247,15 +247,15 @@ const handleAlwaysAllow = () => {
 
 	&.has-approval {
 		.card-content {
-			max-block-size: 200px;
+			max-block-size: 11.25rem;
 		}
 	}
 }
 
 .card-content {
-	max-block-size: 280px;
+	max-block-size: 15.75rem;
 	overflow-y: auto;
-	padding-inline: 0.5rem;
+	padding-inline: 0.375rem;
 
 	&[data-state='open'] {
 		animation: slide-down var(--fast) var(--transition-out) forwards;
@@ -266,22 +266,22 @@ const handleAlwaysAllow = () => {
 	}
 
 	& > * {
-		margin-block-end: 0.5rem;
+		margin-block-end: 0.375rem;
 	}
 }
 
 .card-approval-actions {
 	display: flex;
 	flex-direction: column;
-	gap: 0.75rem;
-	padding: 0.75rem 1rem;
+	gap: 0.5625rem;
+	padding: 0.5625rem 0.8125rem;
 	border-block-start: 1px solid var(--theme--border-color-subdued);
 	background-color: var(--theme--background-normal);
 	position: sticky;
 	inset-block-end: 0;
 
 	.approval-message {
-		font-size: 0.875rem;
+		font-size: 0.6875rem;
 		font-weight: 500;
 		color: var(--theme--foreground);
 	}
@@ -289,15 +289,15 @@ const handleAlwaysAllow = () => {
 	.approval-buttons {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem;
+		gap: 0.375rem;
 		justify-content: flex-end;
 
 		.v-button {
 			position: relative;
 
 			.keyboard-hint {
-				margin-inline-start: 0.5rem;
-				font-size: 0.75rem;
+				margin-inline-start: 0.375rem;
+				font-size: 0.5625rem;
 				opacity: 0.6;
 				font-weight: 500;
 			}

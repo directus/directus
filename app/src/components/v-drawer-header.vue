@@ -78,6 +78,8 @@ defineEmits<{
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .header-bar {
 	position: sticky;
 	inset-block-start: 0;
@@ -96,20 +98,20 @@ defineEmits<{
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	@media (width > 400px) {
+	@media (width > 25rem) {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 0.6875rem;
 	}
 }
 
 .primary {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding-block: 12px;
+	gap: 0.6875rem;
+	padding-block: 0.6875rem;
 
-	@media (width > 400px) {
+	@media (width > 25rem) {
 		display: contents;
 	}
 }
@@ -117,7 +119,7 @@ defineEmits<{
 .icon {
 	display: none;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: flex;
 	}
 }
@@ -137,7 +139,7 @@ defineEmits<{
 	&:deep(.type-title) {
 		line-height: 1.2em;
 		max-inline-size: 100%;
-		block-size: 24px;
+		block-size: 1.375rem;
 	}
 }
 
@@ -145,8 +147,8 @@ defineEmits<{
 	--v-breadcrumb-color: var(--theme--header--headline--foreground);
 
 	font-weight: 600;
-	font-size: 12px;
-	line-height: 12px;
+	font-size: 0.6875rem;
+	line-height: 0.6875rem;
 	white-space: nowrap;
 	font-family: var(--theme--header--headline--font-family);
 }
@@ -159,7 +161,7 @@ defineEmits<{
 .cancel-button {
 	display: block;
 
-	@media (min-width: 960px) {
+	@media (width >= 60rem) {
 		display: none;
 	}
 }
@@ -167,7 +169,7 @@ defineEmits<{
 .header-icon {
 	display: none;
 
-	@media (min-width: 960px) {
+	@media (width >= 60rem) {
 		display: flex;
 	}
 }

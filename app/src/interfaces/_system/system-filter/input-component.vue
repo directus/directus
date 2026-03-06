@@ -225,18 +225,18 @@ defineExpose({
 }
 
 .input {
-	padding: 8px 4px;
+	padding: 0.4375rem 0.25rem;
 
 	&.date,
 	&.timestamp,
 	&.time,
 	&.dateTime {
-		min-inline-size: 250px;
+		min-inline-size: 14.0625rem;
 	}
 
 	&.geometry,
 	&.json {
-		inline-size: 500px;
+		inline-size: 28.125rem;
 	}
 }
 
@@ -258,10 +258,10 @@ input {
 
 .dialog {
 	position: relative;
-	min-inline-size: 800px;
+	min-inline-size: 45rem;
 }
 
 .date-input {
-	min-inline-size: 400px;
+	min-inline-size: 22.5rem;
 }
 </style>

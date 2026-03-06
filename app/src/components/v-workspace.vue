@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { cssVar } from '@directus/utils/browser';
 import { computed, inject, ref } from 'vue';
 import { AppTile } from './v-workspace-tile.vue';
 import VWorkspaceTile from '@/components/v-workspace-tile.vue';
@@ -14,12 +13,15 @@ interface Props {
 	zoomToFit?: boolean;
 	/** Makes the panel resizable */
 	resizable?: boolean;
+	/** Grid cell size in px — must match CSS grid-template value */
+	gridSize?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	editMode: false,
 	zoomToFit: false,
 	resizable: true,
+	gridSize: 18,
 });
 
 defineEmits<{
@@ -34,7 +36,11 @@ defineEmits<{
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
 
-const paddingSize = computed(() => Number(cssVar('--content-padding', mainElement.value)?.slice(0, -2) || 0));
+const paddingSize = computed(() => {
+	const el = mainElement.value;
+	if (!el) return 0;
+	return parseFloat(getComputedStyle(el).paddingInlineStart) || 0;
+});
 
 const workspaceSize = computed(() => {
 	const furthestTileX = props.tiles.reduce(
@@ -63,14 +69,14 @@ const workspaceSize = computed(() => {
 
 	if (props.editMode === true) {
 		return {
-			width: (furthestTileX.x + furthestTileX.width + 25) * 20,
-			height: (furthestTileY.y + furthestTileY.height + 25) * 20,
+			width: (furthestTileX.x + furthestTileX.width + 25) * props.gridSize,
+			height: (furthestTileY.y + furthestTileY.height + 25) * props.gridSize,
 		};
 	}
 
 	return {
-		width: (furthestTileX.x + furthestTileX.width - 1) * 20,
-		height: (furthestTileY.y + furthestTileY.height - 1) * 20,
+		width: (furthestTileX.x + furthestTileX.width - 1) * props.gridSize,
+		height: (furthestTileY.y + furthestTileY.height - 1) * props.gridSize,
 	};
 });
 
@@ -114,6 +120,7 @@ const workspaceBoxSize = computed(() => {
 					v-bind="tile"
 					:edit-mode="editMode"
 					:resizable="resizable"
+					:grid-size="gridSize"
 					@preview="$emit('preview', tile)"
 					@edit="$emit('edit', tile)"
 					@update="$emit('update', { edits: $event, id: tile.id })"
@@ -142,10 +149,10 @@ const workspaceBoxSize = computed(() => {
 	position: absolute;
 	inset-inline-start: var(--content-padding);
 	display: grid;
-	grid-template-rows: repeat(auto-fill, 20px);
-	grid-template-columns: repeat(auto-fill, 20px);
+	grid-template-rows: repeat(auto-fill, 1.125rem);
+	grid-template-columns: repeat(auto-fill, 1.125rem);
 	min-inline-size: calc(100%);
-	min-block-size: calc(100% - 120px);
+	min-block-size: calc(100% - 6.75rem);
 	transform: scale(1);
 	transform-origin: top left;
 
@@ -160,14 +167,14 @@ const workspaceBoxSize = computed(() => {
 
 .workspace::before {
 	position: absolute;
-	inset-block-start: -4px;
-	inset-inline-start: -4px;
+	inset-block-start: -0.25rem;
+	inset-inline-start: -0.25rem;
 	display: block;
-	inline-size: calc(100% + 8px);
-	block-size: calc(100% + 8px);
+	inline-size: calc(100% + 0.4375rem);
+	block-size: calc(100% + 0.4375rem);
 	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
-	background-position: -6px -6px;
-	background-size: 20px 20px;
+	background-position: -0.3125rem -0.3125rem;
+	background-size: 1.125rem 1.125rem;
 	opacity: 0;
 	transition: opacity var(--slow) var(--transition);
 	content: '';

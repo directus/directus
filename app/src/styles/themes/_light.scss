@@ -13,7 +13,7 @@
 	--background-inverted: #263238;
 	--background-mark: var(--theme--primary-subdued);
 	--overlay-color: rgb(38 50 56 / 0.8);
-	--sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2);
+	--sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2); /* stylelint-disable-line unit-disallowed-list -- custom property with box-shadow value */
 	--shadow-color: rgb(0 0 0 / 0.1);
 
 	// Generate color variations

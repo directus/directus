@@ -121,14 +121,14 @@ const isPromotableField = computed(() => {
 .field-label {
 	position: relative;
 	display: flex;
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {
 		display: inline;
 		white-space: normal;
 
-		@media (min-width: 960px) {
+		@media (width >= 60rem) {
 			display: initial;
 			white-space: nowrap;
 		}
@@ -139,8 +139,8 @@ const isPromotableField = computed(() => {
 	}
 
 	.v-checkbox {
-		block-size: 18px; // Don't push down label with normal icon height (24px)
-		margin-inline-end: 4px;
+		block-size: 1rem; // Don't push down label with normal icon height (1.375rem)
+		margin-inline-end: 0.25rem;
 		display: inline-flex;
 		align-self: baseline;
 	}
@@ -148,7 +148,7 @@ const isPromotableField = computed(() => {
 	.v-checkbox.comparison-checkbox {
 		--v-checkbox-color: var(--theme--success);
 
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 
 		:deep(.checkbox) {
 			&:hover {
@@ -160,7 +160,7 @@ const isPromotableField = computed(() => {
 	.field-label-content {
 		display: inline;
 
-		@media (min-width: 960px) {
+		@media (width >= 60rem) {
 			display: contents;
 		}
 	}
@@ -168,21 +168,21 @@ const isPromotableField = computed(() => {
 	.badge {
 		margin: 0;
 		flex-shrink: 0;
-		margin-inline-start: 3px;
+		margin-inline-start: 0.1875rem;
 	}
 
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-inline-start: 3px;
+		margin-inline-start: 0.1875rem;
 
 		&.has-badge {
-			margin-inline-end: 6px;
+			margin-inline-end: 0.3125rem;
 		}
 	}
 
 	.ctx-arrow {
-		margin-block-start: -3px;
+		margin-block-start: -0.1875rem;
 		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -208,10 +208,10 @@ const isPromotableField = computed(() => {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		block-size: 24px;
-		inline-size: 24px;
-		margin-block-start: -2px;
-		margin-inline-start: 5px;
+		block-size: 1.375rem;
+		inline-size: 1.375rem;
+		margin-block-start: -0.125rem;
+		margin-inline-start: 0.3125rem;
 		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
@@ -229,13 +229,13 @@ const isPromotableField = computed(() => {
 	&.edited {
 		.edit-dot {
 			position: absolute;
-			inset-block-start: 7px;
-			inset-inline-start: -7px;
+			inset-block-start: 0.375rem;
+			inset-inline-start: -0.375rem;
 			display: block;
-			inline-size: 4px;
-			block-size: 4px;
+			inline-size: 0.25rem;
+			block-size: 0.25rem;
 			background-color: var(--theme--foreground-subdued);
-			border-radius: 4px;
+			border-radius: 0.25rem;
 			content: '';
 		}
 	}
@@ -258,7 +258,7 @@ const isPromotableField = computed(() => {
 }
 
 .avatars {
-	margin-block-start: -3px;
+	margin-block-start: -0.1875rem;
 	align-self: start;
 	flex-shrink: 0;
 }

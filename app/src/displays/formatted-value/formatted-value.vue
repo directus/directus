@@ -208,15 +208,15 @@ function matchNumber(left: number | bigint, right: number | bigint, operator: st
 
 	&.has-background,
 	&.has-border {
-		block-size: 28px;
-		padding: 0 10px;
-		font-size: 14px;
-		line-height: 28px;
-		border-radius: 24px;
+		block-size: 1.5625rem;
+		padding: 0 0.5625rem;
+		font-size: 0.8125rem;
+		line-height: 1.9231;
+		border-radius: 1.375rem;
 	}
 
 	&.has-border {
-		line-height: 26px;
+		line-height: 1.4375rem;
 	}
 
 	&.bold {
@@ -242,7 +242,7 @@ function matchNumber(left: number | bigint, right: number | bigint, operator: st
 
 	.v-icon {
 		flex-shrink: 0;
-		vertical-align: -3px;
+		vertical-align: -0.1875rem;
 	}
 }
 </style>

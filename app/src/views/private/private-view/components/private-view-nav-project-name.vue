@@ -36,8 +36,8 @@ const navBarStore = useNavBarStore();
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	block-size: 60px;
-	padding-inline: 20px 16px; // optically match contents of navigation bar
+	block-size: 3.375rem;
+	padding-inline: 1.125rem 0.875rem; // optically match contents of navigation bar
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
 	background: var(--theme--navigation--project--background);
@@ -47,7 +47,7 @@ const navBarStore = useNavBarStore();
 
 	.name-container {
 		flex-grow: 1;
-		inline-size: 100px;
+		inline-size: 5.625rem;
 		line-height: 1.3;
 	}
 
@@ -61,6 +61,6 @@ const navBarStore = useNavBarStore();
 }
 
 .nav-toggle {
-	margin-inline-end: 8px; // Optically center with header bar icon
+	margin-inline-end: 0.4375rem; // Optically center with header bar icon
 }
 </style>

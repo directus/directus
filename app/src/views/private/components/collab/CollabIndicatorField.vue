@@ -56,12 +56,12 @@ const users = computed(() => {
 
 	.collab-field-lock {
 		align-self: center;
-		font-size: 14px;
+		font-size: 0.8125rem;
 		color: var(--text-50);
 	}
 }
 
 .v-avatar {
-	font-size: 12px;
+	font-size: 0.6875rem;
 }
 </style>

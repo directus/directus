@@ -159,7 +159,7 @@ watch(innerWidth, (value) => {
 .grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
-	gap: 32px 24px;
+	gap: 1.8125rem 1.375rem;
 
 	&.single-row {
 		grid-template-columns: repeat(auto-fit, var(--size));
@@ -170,7 +170,7 @@ watch(innerWidth, (value) => {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding-block-start: 40px;
+	padding-block-start: 2.25rem;
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
@@ -180,12 +180,12 @@ watch(innerWidth, (value) => {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		inline-size: 240px;
+		inline-size: 13.5rem;
 		color: var(--theme--foreground-subdued);
 
 		span {
 			inline-size: auto;
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 
 		.v-select {

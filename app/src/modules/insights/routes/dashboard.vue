@@ -419,12 +419,12 @@ const refreshInterval = computed({
 	}
 
 	&.header-offset {
-		inset-block-start: calc(50% - 12px);
+		inset-block-start: calc(50% - 0.6875rem);
 	}
 }
 
 .panel-error {
-	padding: 20px;
+	padding: 1.125rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -435,7 +435,7 @@ const refreshInterval = computed({
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 		max-inline-size: 100%;
 	}
 }
@@ -448,7 +448,7 @@ const refreshInterval = computed({
 	block-size: 100%;
 
 	&.header-offset {
-		block-size: calc(100% - 24px);
+		block-size: calc(100% - 1.375rem);
 	}
 }
 </style>

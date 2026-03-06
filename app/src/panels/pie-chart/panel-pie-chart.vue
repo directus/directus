@@ -190,7 +190,7 @@ async function setupChart() {
 		dataLabels: {
 			enabled: props.showLabels,
 			style: {
-				fontSize: '10px',
+				fontSize: '0.5625rem',
 			},
 			formatter: function (val: number) {
 				return `${getPercentage(val)}%`;
@@ -288,16 +288,16 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-block-end: 0;
-	padding: 0 4px;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 4px;
+	padding: 0 0 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 }
 
 .apexcharts-tooltip-series-group {
@@ -306,7 +306,7 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 }
 
 .apexcharts-tooltip-series-group .apexcharts-active {
-	padding: 0 4px 0 0 !important;
+	padding: 0 0.25rem 0 0 !important;
 }
 
 .apexcharts-tooltip-series-group:last-child {

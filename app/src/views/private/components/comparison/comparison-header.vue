@@ -165,20 +165,20 @@ function getDeltaOptionUser(deltaOption: any) {
 
 <style lang="scss" scoped>
 .comparison-header {
-	--comparison-header--padding-y: 20px;
-	--comparison-header--padding-x: var(--comparison-modal--padding-x, 28px);
+	--comparison-header--padding-y: 1.125rem;
+	--comparison-header--padding-x: var(--comparison-modal--padding-x, 1.5625rem);
 
 	display: flex;
 	padding-block: var(--comparison-header--padding-y);
 	padding-inline: var(--comparison-header--padding-x);
-	block-size: 144px;
+	block-size: 8.125rem;
 	flex-direction: column;
 	align-items: flex-start;
 	align-self: stretch;
-	gap: 12px var(--theme--form--column-gap);
+	gap: 0.6875rem var(--theme--form--column-gap);
 
-	@media (min-width: 960px) {
-		block-size: 80px;
+	@media (min-width: 54rem) {
+		block-size: 4.5rem;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
@@ -189,7 +189,7 @@ function getDeltaOptionUser(deltaOption: any) {
 		inline-size: 100%;
 		min-inline-size: 0;
 
-		@media (min-width: 960px) {
+		@media (min-width: 54rem) {
 			inline-size: auto;
 		}
 	}
@@ -197,7 +197,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	&.has-dropdown {
 		.title-container,
 		.header-meta {
-			@media (min-width: 1330px) {
+			@media (min-width: 74.8125rem) {
 				inline-size: calc(50% - var(--theme--form--column-gap) / 2);
 			}
 		}
@@ -206,12 +206,12 @@ function getDeltaOptionUser(deltaOption: any) {
 	.title-container {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 0.4375rem;
 
 		.title {
-			font-size: 20px;
+			font-size: 1.125rem;
 			font-weight: 600;
-			line-height: 32px;
+			line-height: 1.8125rem;
 			color: var(--theme--foreground-accent);
 			margin: 0;
 		}
@@ -227,7 +227,7 @@ function getDeltaOptionUser(deltaOption: any) {
 
 	.subtitle {
 		max-inline-size: 80%;
-		font-size: 16px;
+		font-size: 0.875rem;
 		font-weight: 500;
 		color: var(--theme--foreground-subdued);
 		margin: 0;
@@ -238,23 +238,23 @@ function getDeltaOptionUser(deltaOption: any) {
 
 		.meta-content {
 			.meta-text {
-				padding-block-start: 10px;
+				padding-block-start: 0.5625rem;
 				text-align: start;
 
-				@media (min-width: 960px) {
+				@media (min-width: 54rem) {
 					padding-block-start: 0;
 					text-align: end;
 				}
 
 				.meta-date-time {
-					font-size: 14px;
-					line-height: 20px;
+					font-size: 0.8125rem;
+					line-height: 1.3846;
 					font-weight: 600;
 				}
 
 				.meta-user-info {
-					font-size: 14px;
-					line-height: 20px;
+					font-size: 0.8125rem;
+					line-height: 1.3846;
 					color: var(--theme--foreground-subdued);
 				}
 			}
@@ -268,11 +268,11 @@ function getDeltaOptionUser(deltaOption: any) {
 				cursor: pointer;
 				border: 2px solid var(--theme--border-color);
 				border-radius: var(--theme--border-radius);
-				padding-inline: 16px;
-				padding-block: 8px;
+				padding-inline: 0.875rem;
+				padding-block: 0.4375rem;
 				inline-size: 100%;
 
-				@media (min-width: 960px) {
+				@media (min-width: 54rem) {
 					inline-size: auto;
 
 					.meta-text {
@@ -280,7 +280,7 @@ function getDeltaOptionUser(deltaOption: any) {
 					}
 				}
 
-				@media (min-width: 1330px) {
+				@media (min-width: 74.8125rem) {
 					inline-size: 100%;
 				}
 
@@ -294,7 +294,7 @@ function getDeltaOptionUser(deltaOption: any) {
 
 				.dropdown-icon {
 					color: var(--theme--foreground-subdued);
-					margin-inline-start: 4px;
+					margin-inline-start: 0.25rem;
 					transition: transform var(--fast) var(--transition);
 				}
 			}
@@ -302,17 +302,17 @@ function getDeltaOptionUser(deltaOption: any) {
 	}
 
 	.title-skeleton {
-		block-size: 40px;
-		min-inline-size: 120px;
+		block-size: 2.25rem;
+		min-inline-size: 6.75rem;
 	}
 
 	.meta-skeleton {
-		block-size: 40px;
-		min-inline-size: 200px;
+		block-size: 2.25rem;
+		min-inline-size: 11.25rem;
 	}
 }
 
 .meta-selection-option {
-	--v-list-item-padding: 4px 12px;
+	--v-list-item-padding: 0.25rem 0.6875rem;
 }
 </style>

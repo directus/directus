@@ -534,14 +534,14 @@ onUnmounted(() => {
 
 .logs-container {
 	inline-size: 100%;
-	block-size: calc(100% - 110px);
-	min-block-size: 600px;
+	block-size: calc(100% - 6.1875rem);
+	min-block-size: 33.75rem;
 	padding: var(--content-padding);
 	padding-block-start: 0;
 }
 
 .filter {
-	margin-block: 24px 20px;
+	margin-block: 1.375rem 1.125rem;
 }
 
 .v-form {
@@ -551,7 +551,7 @@ onUnmounted(() => {
 .split-view {
 	display: flex;
 	flex-direction: column;
-	block-size: calc(100% - 50px);
+	block-size: calc(100% - 2.8125rem);
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
@@ -568,15 +568,15 @@ onUnmounted(() => {
 
 .logs-display {
 	flex: 2;
-	min-block-size: 200px;
+	min-block-size: 11.25rem;
 }
 
 .log-detail {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding: 6px;
-	min-block-size: 300px;
+	padding: 0.3125rem;
+	min-block-size: 16.875rem;
 	background-color: var(--theme--background-subdued);
 	border-block-start: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
@@ -586,25 +586,25 @@ onUnmounted(() => {
 
 .log-detail-controls {
 	display: flex;
-	padding: 5px;
+	padding: 0.3125rem;
 }
 
 .close-button {
-	margin-inline-end: 10px;
+	margin-inline-end: 0.5625rem;
 }
 
 .copy-button {
 	float: inline-end;
 	position: absolute;
-	inset-block-start: 10px;
-	inset-inline-end: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 2;
 }
 
 .raw-log {
 	block-size: 100%;
-	min-block-size: 100px;
-	margin: 4px;
+	min-block-size: 5.625rem;
+	margin: 0.25rem;
 	position: relative;
 	overflow: auto;
 	background-color: var(--theme--background);
@@ -635,17 +635,17 @@ onUnmounted(() => {
 }
 
 .actions {
-	padding: 0 9px;
+	padding: 0 0.5rem;
 	margin-inline-start: auto;
 }
 
-@media (min-width: 960px) {
+@media (width >= 60rem) {
 	.logs-container {
 		margin-block-end: 0;
 	}
 }
 
-@media (min-width: 1200px) {
+@media (width >= 75rem) {
 	.split-view {
 		flex-direction: row;
 	}

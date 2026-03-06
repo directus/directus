@@ -61,5 +61,5 @@ test('zoomToFit prop', async () => {
 		global,
 	});
 
-	expect(wrapper.get('.workspace').attributes().style).toContain('transform: scale(-0.40714285714285714)');
+	expect(wrapper.get('.workspace').attributes().style).toContain('transform: scale(-0.4523809523809524)');
 });

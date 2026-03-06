@@ -125,19 +125,21 @@ function toPage(page: number) {
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-pagination {
 	display: flex;
 }
 
 .gap {
 	display: none;
-	margin: 0 4px;
+	margin: 0 0.25rem;
 	color: var(--theme--foreground-subdued);
 	line-height: 2em;
 }
 
-@media (width > 640px) {
+@include mixins.breakpoint-up('sm') {
 	.gap {
 		display: inline;
 	}
@@ -148,7 +150,7 @@ function toPage(page: number) {
 	--v-button-background-color: var(--theme--form--field--input--background-subdued);
 	--v-button-color: var(--theme--foreground);
 
-	margin: 0 2px;
+	margin: 0 0.125rem;
 	vertical-align: middle;
 }
 
@@ -156,14 +158,14 @@ function toPage(page: number) {
 	display: none;
 }
 
-@media (width > 640px) {
+@include mixins.breakpoint-up('sm') {
 	.v-button.page:not(.active) {
 		display: inline;
 	}
 }
 
 .v-button :deep(.small) {
-	--v-button-min-width: 32px;
+	--v-button-min-width: 1.8125rem;
 }
 
 .v-button:first-child {

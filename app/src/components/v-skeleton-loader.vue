@@ -31,6 +31,8 @@ withDefaults(defineProps<Props>(), {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 /*
 
 	Available Variables:
@@ -105,26 +107,26 @@ withDefaults(defineProps<Props>(), {
 	@include loader;
 
 	& + & {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 	}
 }
 
 .block-list-item-dense {
 	inline-size: 100%;
-	block-size: 44px;
+	block-size: 2.5rem;
 	border-radius: var(--theme--border-radius);
 
 	@include loader;
 
 	& + & {
-		margin-block-start: 4px;
+		margin-block-start: 0.25rem;
 	}
 }
 
 .text {
 	flex-grow: 1;
-	block-size: 12px;
-	border-radius: 6px;
+	block-size: 0.6875rem;
+	border-radius: 0.3125rem;
 
 	@include loader;
 }
@@ -133,13 +135,13 @@ withDefaults(defineProps<Props>(), {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	block-size: 46px;
+	block-size: 2.5625rem;
 
 	.icon {
 		flex-shrink: 0;
-		inline-size: 24px;
-		block-size: 24px;
-		margin-inline-end: 12px;
+		inline-size: 1.375rem;
+		block-size: 1.375rem;
+		margin-inline-end: 0.6875rem;
 		border-radius: 50%;
 
 		@include loader;
@@ -147,8 +149,8 @@ withDefaults(defineProps<Props>(), {
 
 	.text {
 		flex-grow: 1;
-		block-size: 12px;
-		border-radius: 6px;
+		block-size: 0.6875rem;
+		border-radius: 0.3125rem;
 
 		@include loader;
 	}
@@ -159,22 +161,22 @@ withDefaults(defineProps<Props>(), {
 
 	.gap {
 		display: none;
-		margin: 0 4px;
+		margin: 0 0.25rem;
 		line-height: 2em;
 	}
 
-	@media (min-width: 640px) {
+	@include mixins.breakpoint-up('sm') {
 		.gap {
 			display: inline;
 		}
 	}
 
 	.v-button {
-		margin: 0 2px;
+		margin: 0 0.125rem;
 		@include loader;
 		border-radius: var(--theme--border-radius);
-		inline-size: 36px;
-		block-size: 36px;
+		inline-size: 2rem;
+		block-size: 2rem;
 	}
 
 	.v-button:first-child {

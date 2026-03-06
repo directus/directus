@@ -134,17 +134,19 @@ async function save() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 :deep(.required-mark) {
 	--v-icon-color: var(--theme--primary);
 }
 
 .v-input.search {
-	--v-input-border-radius: calc(44px / 2);
-	inline-size: 200px;
+	--v-input-border-radius: calc(2.5rem / 2);
+	inline-size: 11.25rem;
 	margin-inline-start: auto;
 
-	@media (width > 640px) {
-		inline-size: 300px;
+	@include mixins.breakpoint-up('sm') {
+		inline-size: 16.875rem;
 		margin-block-start: 0;
 	}
 }
