@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
-import { computed, ref, watch } from 'vue';
 import { TabsList, TabsRoot } from 'reka-ui';
-import TabTrigger from './tab-trigger.vue';
+import { computed, ref, watch } from 'vue';
 import TabContent from './tab-content.vue';
+import TabTrigger from './tab-trigger.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import { CollabContext } from '@/composables/use-collab';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
@@ -26,7 +26,7 @@ const props = withDefaults(
 		validationErrors?: ValidationError[];
 		badge?: string;
 		rawEditorEnabled?: boolean;
-		direction?: string;
+		direction?: 'ltr' | 'rtl';
 		fillWidth?: boolean;
 	}>(),
 	{
@@ -110,7 +110,7 @@ function useComputedGroup() {
 		v-model="activeTab"
 		class="group-tabs"
 		:class="{ fill: fillWidth }"
-		:dir="direction as 'ltr' | 'rtl'"
+		:dir="direction"
 	>
 		<TabsList class="tab-list">
 			<TabTrigger

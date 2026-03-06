@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Field, ValidationError } from '@directus/types';
 import formatTitle from '@directus/format-title';
+import { Field, ValidationError } from '@directus/types';
+import { TabsTrigger } from 'reka-ui';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { TabsTrigger } from 'reka-ui';
-import type { ComparisonContext } from '@/components/v-form/types';
 import VChip from '@/components/v-chip.vue';
+import type { ComparisonContext } from '@/components/v-form/types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 
@@ -89,7 +89,13 @@ function useComparisonIndicator() {
 		<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 		<span class="field-name">{{ field.name }}</span>
 		<VChip v-if="badge" x-small>{{ badge }}</VChip>
-		<VIcon v-if="validationMessages.length > 0" v-tooltip="validationMessages.join('\n')" class="warning" name="error" small />
+		<VIcon
+			v-if="validationMessages.length > 0"
+			v-tooltip="validationMessages.join('\n')"
+			class="warning"
+			name="error"
+			small
+		/>
 	</TabsTrigger>
 </template>
 
