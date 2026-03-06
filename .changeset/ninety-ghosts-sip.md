@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix "client side validation breaks if dynamic variable is present".
+Fixed client side validation breaking in drawer when dynamic variable is present.
