@@ -1,10 +1,26 @@
 import { VERSION_KEY_DRAFT } from '@directus/constants';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { createI18n } from 'vue-i18n';
 import { getVersionDisplayName } from './get-version-display-name';
 
+vi.mock('@/lang', () => {
+	const i18n = createI18n({
+		legacy: false,
+		locale: 'en-US',
+		messages: {
+			'en-US': {
+				published: 'Published',
+				draft: 'Draft',
+			},
+		},
+	});
+
+	return { i18n };
+});
+
 describe('getVersionDisplayName', () => {
-	it('should return "Main" when version is null', () => {
-		expect(getVersionDisplayName(null)).toBe('Main');
+	it('should return "Published" when version is null', () => {
+		expect(getVersionDisplayName(null)).toBe('Published');
 	});
 
 	it('should return "Draft" for global draft version', () => {
