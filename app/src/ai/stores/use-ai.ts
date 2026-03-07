@@ -1,13 +1,7 @@
 import { Chat } from '@ai-sdk/vue';
 import { type ContextAttachment, type PrimaryKey, type StandardProviderType, type SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
-import {
-	DefaultChatTransport,
-	type FileUIPart,
-	lastAssistantMessageIsCompleteWithApprovalResponses,
-	lastAssistantMessageIsCompleteWithToolCalls,
-	type UIMessage,
-} from 'ai';
+import { DefaultChatTransport, type FileUIPart, lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -20,6 +14,32 @@ import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+
+const lastAssistantMessageIsCompleteWithToolApprovalResponses = ({ messages }: { messages: UIMessage[] }) => {
+	const message = messages.at(-1);
+
+	if (!message || message.role !== 'assistant') {
+		return false;
+	}
+
+	const lastStepStartIndex = message.parts.reduce((lastIndex, part, index) => {
+		return part.type === 'step-start' ? index : lastIndex;
+	}, -1);
+
+	const lastStepToolInvocations = message.parts
+		.slice(lastStepStartIndex + 1)
+		.filter((part) => part.type === 'dynamic-tool' || part.type.startsWith('tool-')) as Array<{ state: string }>;
+
+	// Include provider-executed tools here. We still need to trigger a new request
+	// after approval responses so the server can continue execution.
+	return (
+		lastStepToolInvocations.some((part) => part.state === 'approval-responded') &&
+		lastStepToolInvocations.every(
+			(part) =>
+				part.state === 'output-available' || part.state === 'output-error' || part.state === 'approval-responded',
+		)
+	);
+};
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -248,7 +268,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			},
 		}),
 		sendAutomaticallyWhen: ({ messages }) =>
-			lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
+			lastAssistantMessageIsCompleteWithToolApprovalResponses({ messages }) ||
 			lastAssistantMessageIsCompleteWithToolCalls({ messages }),
 		onData: (data) => {
 			if (data.type === 'data-usage') {
@@ -486,12 +506,40 @@ export const useAiStore = defineStore('ai-store', () => {
 		return context;
 	});
 
+	const normalizePendingApprovalState = (approvalId: string) => {
+		const lastMessage = chat.messages.at(-1);
+
+		if (!lastMessage || lastMessage.role !== 'assistant') {
+			return;
+		}
+
+		const matchingPart = lastMessage.parts.find((part) => {
+			if (part.type !== 'dynamic-tool' && !part.type.startsWith('tool-')) {
+				return false;
+			}
+
+			return 'approval' in part && part.approval?.id === approvalId;
+		}) as { state: string } | undefined;
+
+		if (!matchingPart) {
+			return;
+		}
+
+		// Some streams provide approval metadata before state settles to
+		// approval-requested. Normalize so addToolApprovalResponse can always apply.
+		if (matchingPart.state === 'input-streaming' || matchingPart.state === 'input-available') {
+			matchingPart.state = 'approval-requested';
+		}
+	};
+
 	const approveToolCall = (approvalId: string) => {
-		chat.addToolApprovalResponse({ id: approvalId, approved: true });
+		normalizePendingApprovalState(approvalId);
+		void chat.addToolApprovalResponse({ id: approvalId, approved: true }).catch(unexpectedError);
 	};
 
 	const denyToolCall = (approvalId: string) => {
-		chat.addToolApprovalResponse({ id: approvalId, approved: false });
+		normalizePendingApprovalState(approvalId);
+		void chat.addToolApprovalResponse({ id: approvalId, approved: false }).catch(unexpectedError);
 	};
 
 	return {
