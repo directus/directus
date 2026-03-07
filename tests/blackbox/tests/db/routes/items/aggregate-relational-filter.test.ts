@@ -163,21 +163,30 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 					item: junctionEntries,
 				});
 
-				// Verify data is available (schema cache may need time to settle)
-				const maxRetries = 5;
+				// Verify M2M relation is queryable (schema cache may need time to settle)
+				const maxRetries = 10;
 
 				for (let retry = 0; retry < maxRetries; retry++) {
 					const verifyResponse = await request(getUrl(vendor))
 						.get(`/items/${localCollectionArticles}`)
-						.query({ aggregate: { count: '*' } })
+						.query({
+							aggregate: { count: '*' },
+							filter: JSON.stringify({
+								categories: {
+									[`${localCollectionCategories}_id`]: {
+										id: { _eq: categoryIds[0] },
+									},
+								},
+							}),
+						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-					if (verifyResponse.statusCode === 200 && Number(verifyResponse.body.data?.[0]?.count) === 5) {
+					if (verifyResponse.statusCode === 200 && Number(verifyResponse.body.data?.[0]?.count) >= 3) {
 						break;
 					}
 
 					// Wait for schema cache to propagate
-					await new Promise((resolve) => setTimeout(resolve, 1000));
+					await new Promise((resolve) => setTimeout(resolve, 2000));
 				}
 			}
 		}, 300000);
