@@ -64,4 +64,41 @@ describe('InputGroup', () => {
 			],
 		]);
 	});
+
+	it('keeps wrapped dynamic-variable strings for _in filters', async () => {
+		const wrapper = mount(InputGroup, {
+			props: {
+				field: {
+					country: {
+						_in: '{{$CURRENT_USER.country_access}}',
+					},
+				},
+				collection: 'country_data',
+			},
+			global: {
+				directives: {
+					tooltip: vi.fn(),
+					'input-auto-width': vi.fn(),
+				},
+				stubs: {
+					VIcon: true,
+				},
+			},
+		});
+
+		expect(wrapper.find('.list').exists()).toBe(false);
+		expect((wrapper.get('input').element as HTMLInputElement).value).toBe('$CURRENT_USER.country_access');
+
+		await wrapper.get('input').setValue('$CURRENT_USER.country_access_codes');
+
+		expect(wrapper.emitted('update:field')).toEqual([
+			[
+				{
+					country: {
+						_in: '{{$CURRENT_USER.country_access_codes}}',
+					},
+				},
+			],
+		]);
+	});
 });
