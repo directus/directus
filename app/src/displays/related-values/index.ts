@@ -5,6 +5,7 @@ import { getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
 import DisplayRelatedValues from './related-values.vue';
 import { useExtension } from '@/composables/use-extension';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -104,6 +105,7 @@ export default defineDisplay({
 
 		if (!relatedCollectionData) return [];
 
+		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
 		const { junctionCollection, relatedCollection, path } = relatedCollectionData;
@@ -128,11 +130,38 @@ export default defineDisplay({
 			const relationsStore = useRelationsStore();
 			const relations = relationsStore.getRelationsForField(collection, field);
 
-			const collectionField = relations.find((relation) => relation.meta?.one_collection_field)?.meta
-				?.one_collection_field;
+			const relation = relations.find((relation) => relation.meta?.one_collection_field);
+			const collectionField = relation?.meta?.one_collection_field;
 
 			if (collectionField && !fields.find((field) => field === collectionField)) {
 				fields.push(collectionField);
+			}
+
+			if (!options?.template && relation?.field) {
+				for (const allowedCollection of relation.meta?.one_allowed_collections ?? []) {
+					const relationPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(allowedCollection);
+
+					if (!relationPrimaryKeyField) continue;
+
+					const displayTemplate =
+						collectionsStore.getCollection(allowedCollection)?.meta?.display_template ||
+						`{{ ${relationPrimaryKeyField.field} }}`;
+
+					const displayFields = adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate), allowedCollection).map(
+						(displayField) => `${relation.field}:${allowedCollection}.${displayField}`,
+					);
+
+					const m2aFields = [
+						...displayFields,
+						`${relation.field}:${allowedCollection}.${relationPrimaryKeyField.field}`,
+					];
+
+					for (const displayField of m2aFields) {
+						if (!fields.includes(displayField)) {
+							fields.push(displayField);
+						}
+					}
+				}
 			}
 		}
 
