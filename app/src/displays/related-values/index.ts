@@ -147,10 +147,9 @@ export default defineDisplay({
 						collectionsStore.getCollection(allowedCollection)?.meta?.display_template ||
 						`{{ ${relationPrimaryKeyField.field} }}`;
 
-					const displayFields = adjustFieldsForDisplays(
-						getFieldsFromTemplate(displayTemplate),
-						allowedCollection,
-					).map((displayField) => `${relation.field}:${allowedCollection}.${displayField}`);
+					const displayFields = adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate), allowedCollection).map(
+						(displayField) => `${relation.field}:${allowedCollection}.${displayField}`,
+					);
 
 					const m2aFields = [
 						...displayFields,

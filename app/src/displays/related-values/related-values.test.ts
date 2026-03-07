@@ -110,11 +110,7 @@ vi.mock('@/components/v-menu.vue', async () => {
 	return {
 		default: defineComponent({
 			setup(_, { slots }) {
-				return () =>
-					h('div', [
-						slots.activator?.({ toggle: () => undefined }),
-						slots.default?.(),
-					]);
+				return () => h('div', [slots.activator?.({ toggle: () => undefined }), slots.default?.()]);
 			},
 		}),
 	};
@@ -168,7 +164,14 @@ const fieldsByCollection: Record<string, Record<string, Field>> = {
 		} as Field,
 	},
 	collection_three_blocks: {
-		id: { collection: 'collection_three_blocks', field: 'id', type: 'integer', name: 'ID', schema: null, meta: null } as Field,
+		id: {
+			collection: 'collection_three_blocks',
+			field: 'id',
+			type: 'integer',
+			name: 'ID',
+			schema: null,
+			meta: null,
+		} as Field,
 		collection: {
 			collection: 'collection_three_blocks',
 			field: 'collection',
@@ -177,11 +180,25 @@ const fieldsByCollection: Record<string, Record<string, Field>> = {
 			schema: null,
 			meta: null,
 		} as Field,
-		item: { collection: 'collection_three_blocks', field: 'item', type: 'json', name: 'Item', schema: null, meta: null } as Field,
+		item: {
+			collection: 'collection_three_blocks',
+			field: 'item',
+			type: 'json',
+			name: 'Item',
+			schema: null,
+			meta: null,
+		} as Field,
 	},
 	collection_one: {
 		id: { collection: 'collection_one', field: 'id', type: 'integer', name: 'ID', schema: null, meta: null } as Field,
-		name: { collection: 'collection_one', field: 'name', type: 'string', name: 'Name', schema: null, meta: null } as Field,
+		name: {
+			collection: 'collection_one',
+			field: 'name',
+			type: 'string',
+			name: 'Name',
+			schema: null,
+			meta: null,
+		} as Field,
 	},
 	collection_two: {
 		id: { collection: 'collection_two', field: 'id', type: 'integer', name: 'ID', schema: null, meta: null } as Field,

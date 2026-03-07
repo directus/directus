@@ -61,7 +61,9 @@ const m2aRelationInfo = computed(() => {
 
 	if (!junction) return null;
 
-	const relation = relations.find((relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field);
+	const relation = relations.find(
+		(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field,
+	);
 
 	if (!relation?.meta?.one_collection_field || !junction.meta?.junction_field) return null;
 
@@ -142,7 +144,7 @@ function getLinkForItem(item: any) {
 }
 
 function getM2ACollection(item: any) {
-	return m2aRelationInfo.value ? item?.[m2aRelationInfo.value.collectionField] ?? null : null;
+	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.collectionField] ?? null) : null;
 }
 
 function getM2ATemplate(item: any) {
@@ -154,7 +156,7 @@ function getM2ATemplate(item: any) {
 }
 
 function getM2AValue(item: any) {
-	return m2aRelationInfo.value ? item?.[m2aRelationInfo.value.junctionField] ?? null : null;
+	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.junctionField] ?? null) : null;
 }
 
 function getM2APrefix(item: any) {
@@ -199,7 +201,9 @@ function getM2APrefix(item: any) {
 						/>
 					</VListItemContent>
 					<VListItemIcon>
-						<RouterLink v-if="getLinkForItem(item)" :to="getLinkForItem(item)!"><VIcon name="launch" small /></RouterLink>
+						<RouterLink v-if="getLinkForItem(item)" :to="getLinkForItem(item)!">
+							<VIcon name="launch" small />
+						</RouterLink>
 					</VListItemIcon>
 				</VListItem>
 			</template>
