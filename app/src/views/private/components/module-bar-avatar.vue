@@ -4,6 +4,7 @@ import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import ThemeToggle from '@/components/theme-toggle.vue';
 import VAvatar from '@/components/v-avatar.vue';
 import VBadge from '@/components/v-badge.vue';
 import VButton from '@/components/v-button.vue';
@@ -65,6 +66,8 @@ const userFullName = userStore.fullName ?? undefined;
 				<VIcon name="notifications" />
 			</VButton>
 		</VBadge>
+
+		<ThemeToggle />
 
 		<div class="space-bar">
 			<VDialog v-model="signOutActive" @esc="signOutActive = false">
