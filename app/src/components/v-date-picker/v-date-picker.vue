@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { parseDynamicVariable } from '@directus/utils';
+import { isDynamicVariable, parseDynamicVariable } from '@directus/utils';
 import {
 	CalendarDate,
 	CalendarDateTime,
@@ -133,7 +133,9 @@ watch(
 			return;
 		}
 
-		if (parseDynamicVariable(newValue, null, {}) !== newValue) return;
+		if (isDynamicVariable(newValue)) {
+			newValue = parseDynamicVariable(newValue, null, {});
+		}
 
 		// Parse based on type
 		switch (props.type) {
