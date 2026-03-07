@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isDynamicVariable, parseDynamicVariable } from '@directus/utils';
 import {
 	CalendarDate,
 	CalendarDateTime,
@@ -130,6 +131,10 @@ watch(
 			internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
 
 			return;
+		}
+
+		if (isDynamicVariable(newValue)) {
+			newValue = parseDynamicVariable(newValue, null, {});
 		}
 
 		// Parse based on type

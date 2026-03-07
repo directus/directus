@@ -8,7 +8,7 @@ import { isObject } from './is-object.js';
 import { parseJSON } from './parse-json.js';
 import { toArray } from './to-array.js';
 
-type ParseFilterContext = {
+export type ParseFilterContext = {
 	// The user can add any custom fields to any of them
 	$CURRENT_USER?: User & Record<string, any>;
 	$CURRENT_ROLE?: Role & Record<string, any>;
@@ -16,7 +16,7 @@ type ParseFilterContext = {
 	$CURRENT_POLICIES?: (Policy & Record<string, any>)[];
 };
 
-type BasicAccountability = Pick<Accountability, 'user' | 'role' | 'roles'>;
+export type BasicAccountability = Pick<Accountability, 'user' | 'role' | 'roles'>;
 
 export function parseFilter(
 	filter: Filter | null,
@@ -139,7 +139,11 @@ function parseFilterEntry(
 	}
 }
 
-function parseDynamicVariable(value: any, accountability: BasicAccountability | null, context: ParseFilterContext) {
+export function parseDynamicVariable(
+	value: any,
+	accountability: BasicAccountability | null,
+	context: ParseFilterContext,
+) {
 	if (typeof value !== 'string') {
 		return value;
 	}

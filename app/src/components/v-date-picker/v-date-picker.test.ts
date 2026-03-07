@@ -10,6 +10,14 @@ vi.mock('@/utils/format-date-picker-model-value', () => ({
 	formatDatePickerModelValue: vi.fn(),
 }));
 
+vi.mock('@directus/utils', () => ({
+	isDynamicVariable: vi.fn((value: unknown) => typeof value === 'string' && value.startsWith('$NOW')),
+	parseDynamicVariable: vi.fn((value: unknown, _accountability: unknown, _context: unknown) => {
+		if (typeof value === 'string' && value.startsWith('$NOW')) return '2024-06-15';
+		return value;
+	}),
+}));
+
 // Mock the user store with configurable values
 const mockUserStore = {
 	language: 'en-US',
@@ -1221,6 +1229,69 @@ describe('v-date-picker', () => {
 			// Component should handle all transitions and emit
 			expect(callCount).toBeGreaterThan(0);
 			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+		});
+	});
+
+	describe('dynamic variable handling (isDynamicVariable / parseDynamicVariable)', () => {
+		it('parses the dynamic variable and uses its resolved value for calendar state', async () => {
+			let capturedCalendarValue: unknown;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				capturedCalendarValue = options.calendarValue;
+				return '2024-06-15T00:00:00';
+			});
+
+			const { parseDynamicVariable: mockParseDV } = await import('@directus/utils');
+
+			vi.mocked(mockParseDV).mockImplementation((value: unknown) => {
+				if (typeof value === 'string' && value.startsWith('$NOW')) return '2024-06-15T00:00:00';
+				return value;
+			});
+
+			const wrapper = createWrapper({
+				type: 'dateTime',
+				modelValue: '$NOW',
+			});
+
+			await nextTick();
+
+			const timeField = wrapper.findComponent(TimeFieldRoot);
+			await timeField.vm.$emit('update:modelValue', new Time(0, 0, 0));
+			await nextTick();
+
+			expect(capturedCalendarValue).toBeDefined();
+
+			const cv = capturedCalendarValue as { year: number; month: number; day: number };
+			expect(cv.year).toBe(2024);
+			expect(cv.month).toBe(6);
+			expect(cv.day).toBe(15);
+		});
+
+		it('does not alter internal state for non-dynamic values — passes them through unchanged', async () => {
+			let capturedCalendarValue: unknown;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				capturedCalendarValue = options.calendarValue;
+				return '2024-03-20T00:00:00';
+			});
+
+			const wrapper = createWrapper({
+				type: 'dateTime',
+				modelValue: '2024-03-20T00:00:00',
+			});
+
+			await nextTick();
+
+			const timeField = wrapper.findComponent(TimeFieldRoot);
+			await timeField.vm.$emit('update:modelValue', new Time(0, 0, 0));
+			await nextTick();
+
+			expect(capturedCalendarValue).toBeDefined();
+
+			const cv = capturedCalendarValue as { year: number; month: number; day: number };
+			expect(cv.year).toBe(2024);
+			expect(cv.month).toBe(3);
+			expect(cv.day).toBe(20);
 		});
 	});
 });
