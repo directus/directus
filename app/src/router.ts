@@ -15,19 +15,40 @@ import TFASetup from '@/routes/tfa-setup.vue';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
+import PrivateLayout from '@/views/private/private-layout.vue';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
+		name: 'private-layout',
 		path: '/',
-		redirect: () => {
-			const serverStore = useServerStore();
+		component: PrivateLayout,
+		children: [
+			{
+				path: '',
+				redirect: () => {
+					const serverStore = useServerStore();
 
-			if (serverStore.info.setupCompleted) {
-				return '/login';
-			} else {
-				return '/setup';
-			}
-		},
+					if (serverStore.info.setupCompleted) {
+						return '/login';
+					} else {
+						return '/setup';
+					}
+				},
+			},
+			{
+				name: 'tfa-setup',
+				path: 'tfa-setup',
+				component: TFASetup,
+				meta: {
+					track: false,
+				},
+			},
+			{
+				name: 'private-404',
+				path: ':_(.+)+',
+				component: PrivateNotFoundRoute,
+			},
+		],
 	},
 	{
 		name: 'setup',
@@ -83,14 +104,6 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		},
 	},
 	{
-		name: 'tfa-setup',
-		path: '/tfa-setup',
-		component: TFASetup,
-		meta: {
-			track: false,
-		},
-	},
-	{
 		name: 'logout',
 		path: '/logout',
 		component: LogoutRoute,
@@ -105,11 +118,6 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		meta: {
 			public: true,
 		},
-	},
-	{
-		name: 'private-404',
-		path: '/:_(.+)+',
-		component: PrivateNotFoundRoute,
 	},
 ];
 

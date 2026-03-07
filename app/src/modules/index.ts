@@ -40,9 +40,9 @@ export function registerModules(modules: ModuleConfig[]): {
 		).filter((module): module is ModuleConfig => module !== null);
 
 		for (const module of registeredModules.value) {
-			router.addRoute({
+			router.addRoute('private-layout', {
 				name: module.id,
-				path: `/${module.id}`,
+				path: module.id,
 				component: RouterPass,
 				children: module.routes,
 			});

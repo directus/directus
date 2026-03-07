@@ -45,11 +45,6 @@ const splitterCollapsed = computed({
 
 <template>
 	<div class="private-view">
-		<template v-if="lg">
-			<SkipMenu section="navigation" />
-			<ModuleBar id="navigation" class="module-bar" />
-		</template>
-
 		<SplitPanel
 			v-model:size="navBarStore.size"
 			v-model:collapsed="splitterCollapsed"
