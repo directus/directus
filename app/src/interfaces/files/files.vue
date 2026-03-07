@@ -331,8 +331,12 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 </script>
 
 <template>
-	<VNotice v-if="!relationInfo && relationMissingPermissions" type="warning">{{ $t('relationship_missing_permissions') }}</VNotice>
-	<VNotice v-else-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
+	<VNotice v-if="!relationInfo && relationMissingPermissions" type="warning">
+		{{ $t('relationship_missing_permissions') }}
+	</VNotice>
+	<VNotice v-else-if="!relationInfo" type="warning">
+		{{ $t('relationship_not_setup') }}
+	</VNotice>
 	<div v-else v-prevent-focusout="menuActive" class="many-to-many">
 		<template v-if="loading">
 			<VSkeletonLoader

@@ -355,8 +355,12 @@ const menuActive = computed(
 </script>
 
 <template>
-	<VNotice v-if="!relationInfo && relationMissingPermissions" type="warning">{{ $t('relationship_missing_permissions') }}</VNotice>
-	<VNotice v-else-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
+	<VNotice v-if="!relationInfo && relationMissingPermissions" type="warning">
+		{{ $t('relationship_missing_permissions') }}
+	</VNotice>
+	<VNotice v-else-if="!relationInfo" type="warning">
+		{{ $t('relationship_not_setup') }}
+	</VNotice>
 	<VNotice v-else-if="allowedCollections.length === 0" type="warning">{{ $t('no_singleton_relations') }}</VNotice>
 	<div v-else v-prevent-focusout="menuActive" class="m2a-builder">
 		<VNotice v-if="!disabled && canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</VNotice>
