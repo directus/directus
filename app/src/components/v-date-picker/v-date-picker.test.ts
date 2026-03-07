@@ -1247,7 +1247,9 @@ describe('v-date-picker', () => {
 			});
 
 			// parseDynamicVariable mock returns "2024-06-15T00:00:00" for $NOW in dateTime context
+
 			const { parseDynamicVariable: mockParseDV } = await import('@directus/utils');
+
 			vi.mocked(mockParseDV).mockImplementation((value: unknown) => {
 				if (typeof value === 'string' && value.startsWith('$NOW')) return '2024-06-15T00:00:00';
 				return value;
