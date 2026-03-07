@@ -1,4 +1,3 @@
-import { normalizeUrl } from './normalize-url';
 import { sameOrigin } from './same-origin';
 import { parseUrl } from '@/utils/parse-url';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
@@ -66,21 +65,21 @@ export function replaceVersion(url: string, placement: VersionPlacement, newVers
 
 	if (placement.type === 'query') {
 		parsed.searchParams.set(placement.paramName, newVersion);
-		return normalizeUrl(parsed.href);
+		return parsed.href;
 	}
 
 	if (placement.type === 'path') {
 		const segments = parsed.pathname.split('/');
 		segments[placement.segmentIndex] = newVersion;
 		parsed.pathname = segments.join('/');
-		return normalizeUrl(parsed.href);
+		return parsed.href;
 	}
 
 	if (placement.type === 'subdomain') {
 		const labels = parsed.hostname.split('.');
 		labels[placement.labelIndex] = newVersion;
 		parsed.hostname = labels.join('.');
-		return normalizeUrl(parsed.href);
+		return parsed.href;
 	}
 
 	if (placement.type === 'hash') {
@@ -89,7 +88,7 @@ export function replaceVersion(url: string, placement: VersionPlacement, newVers
 		const segments = hashContent.split('/');
 		segments[placement.segmentIndex] = newVersion;
 		parsed.hash = prefix + segments.join('/');
-		return normalizeUrl(parsed.href);
+		return parsed.href;
 	}
 
 	return url;
