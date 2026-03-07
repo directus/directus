@@ -15,18 +15,22 @@ const { t } = useI18n();
 
 const props = defineProps<{
 	state: 'input-streaming' | 'input-available' | 'approval-requested' | 'output-available' | 'output-error';
-	approval?: { id: string };
+	approval?: { id: string; approved?: boolean; reason?: string };
 	toolName: string;
 	icon?: string;
 	defaultOpen?: boolean;
 }>();
 
-const isStreaming = computed(() => props.state === 'input-streaming' || props.state === 'input-available');
-const isApprovalRequested = computed(() => props.state === 'approval-requested');
-const shouldBeOpen = computed(() => props.state === 'approval-requested' || props.defaultOpen);
+const hasPendingApproval = computed(() => props.approval?.id !== undefined && props.approval.approved === undefined);
+const effectiveState = computed(() => (hasPendingApproval.value ? 'approval-requested' : props.state));
+const isStreaming = computed(
+	() => effectiveState.value === 'input-streaming' || effectiveState.value === 'input-available',
+);
+const isApprovalRequested = computed(() => effectiveState.value === 'approval-requested');
+const shouldBeOpen = computed(() => isApprovalRequested.value || props.defaultOpen);
 
 const statusConfig = computed(() => {
-	switch (props.state) {
+	switch (effectiveState.value) {
 		case 'input-streaming':
 			return { icon: 'pending', label: t('ai.streaming'), class: 'status-streaming' };
 		case 'input-available':
