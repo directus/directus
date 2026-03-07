@@ -88,5 +88,12 @@ export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
 		} as RelationM2A;
 	});
 
-	return { relationInfo };
+	const relationMissingPermissions = computed(() => {
+		if (relationInfo.value) return false;
+
+		const fieldInfo = fieldsStore.getField(collection.value, field.value);
+		return fieldInfo?.meta?.special?.includes('m2a') ?? false;
+	});
+
+	return { relationInfo, relationMissingPermissions };
 }

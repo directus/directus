@@ -58,7 +58,7 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 const { t, te } = useI18n();
 const { collection, field, primaryKey, limit, version } = toRefs(props);
-const { relationInfo } = useRelationM2A(collection, field);
+const { relationInfo, relationMissingPermissions } = useRelationM2A(collection, field);
 
 const value = computed({
 	get: () => props.value,
@@ -355,7 +355,8 @@ const menuActive = computed(
 </script>
 
 <template>
-	<VNotice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
+	<VNotice v-if="!relationInfo && relationMissingPermissions" type="warning">{{ $t('relationship_missing_permissions') }}</VNotice>
+	<VNotice v-else-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</VNotice>
 	<VNotice v-else-if="allowedCollections.length === 0" type="warning">{{ $t('no_singleton_relations') }}</VNotice>
 	<div v-else v-prevent-focusout="menuActive" class="m2a-builder">
 		<VNotice v-if="!disabled && canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</VNotice>

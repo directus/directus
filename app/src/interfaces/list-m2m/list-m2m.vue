@@ -80,7 +80,7 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 const { t, n } = useI18n();
 const { collection, field, primaryKey, version } = toRefs(props);
-const { relationInfo } = useRelationM2M(collection, field);
+const { relationInfo, relationMissingPermissions } = useRelationM2M(collection, field);
 const fieldsStore = useFieldsStore();
 
 const value = computed({
@@ -486,7 +486,10 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 </script>
 
 <template>
-	<VNotice v-if="!relationInfo" type="warning">
+	<VNotice v-if="!relationInfo && relationMissingPermissions" type="warning">
+		{{ $t('relationship_missing_permissions') }}
+	</VNotice>
+	<VNotice v-else-if="!relationInfo" type="warning">
 		{{ $t('relationship_not_setup') }}
 	</VNotice>
 	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">

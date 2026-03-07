@@ -45,5 +45,12 @@ export function useRelationO2M(collection: Ref<string>, field: Ref<string>) {
 		} as RelationO2M;
 	});
 
-	return { relationInfo };
+	const relationMissingPermissions = computed(() => {
+		if (relationInfo.value) return false;
+
+		const fieldInfo = fieldsStore.getField(collection.value, field.value);
+		return fieldInfo?.meta?.special?.includes('o2m') ?? false;
+	});
+
+	return { relationInfo, relationMissingPermissions };
 }
