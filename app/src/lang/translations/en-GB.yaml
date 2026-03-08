@@ -570,6 +570,7 @@ errors:
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_FOREIGN_KEY: Invalid foreign key
   INVALID_IP: IP Address not allowed
+  INVITE_INVALID: This invitation is no longer valid.  The account may already have been activated.  Please sign in if you have an account.
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider

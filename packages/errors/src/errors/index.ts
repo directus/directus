@@ -8,6 +8,7 @@ export { InternalServerError } from './internal.js';
 export { InvalidCredentialsError } from './invalid-credentials.js';
 export { InvalidForeignKeyError } from './invalid-foreign-key.js';
 export { InvalidIpError } from './invalid-ip.js';
+export { InviteInvalidError } from './invite-invalid.js';
 export { InvalidOtpError } from './invalid-otp.js';
 export { InvalidPayloadError } from './invalid-payload.js';
 export { InvalidPathParameterError } from './invalid-path-parameter.js';

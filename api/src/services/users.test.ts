@@ -1,4 +1,4 @@
-import { InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { InvalidPayloadError, InviteInvalidError, RecordNotUniqueError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -30,6 +30,10 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
+
+vi.mock('../utils/jwt.js', () => ({
+	verifyJWT: vi.fn().mockReturnValue({ email: 'test@example.com', scope: 'invite' }),
+}));
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 
@@ -391,6 +395,33 @@ describe('Integration Tests', () => {
 
 				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([mockUser.id]);
 				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
+			});
+		});
+
+		describe('acceptInvite', () => {
+			it('should throw InviteInvalidError when user is not in invited status', async () => {
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id-accept',
+					status: 'active',
+				});
+
+				await expect(service.acceptInvite('valid-token', 'password123')).rejects.toThrow(InviteInvalidError);
+			});
+
+			it('should throw InviteInvalidError when user does not exist', async () => {
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(undefined);
+
+				await expect(service.acceptInvite('valid-token', 'password123')).rejects.toThrow(InviteInvalidError);
 			});
 		});
 	});

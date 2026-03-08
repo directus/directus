@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, InviteInvalidError, RecordNotUniqueError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	Item,
@@ -421,8 +421,9 @@ export class UsersService extends ItemsService {
 
 		const user = await this.getUserByEmail(email);
 
+		// Invite no longer valid (user already activated).
 		if (user?.status !== 'invited') {
-			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
+			throw new InviteInvalidError();
 		}
 
 		// Allow unauthenticated update
