@@ -4,6 +4,7 @@ export async function up(knex: Knex): Promise<void> {
 	const isSQLite = knex.client.constructor.name === 'Client_SQLite3';
 
 	await knex.schema.alterTable('directus_users', (table) => {
+		// Workaround as sqlite doesn't allow for adding a column with non-constant default and knex doesn't resolve this by itself.
 		if (isSQLite) {
 			table.timestamp('date_created').nullable();
 			table.timestamp('date_updated').nullable();
