@@ -774,7 +774,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = {};
+		const mockAccountability = null;
 		const mockContext = { $CURRENT_POLICIES: [{ id: 'policy-1' }] as unknown as Policy[] };
 		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
 	});
@@ -800,8 +800,79 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = {};
+		const mockAccountability = null;
 		const mockContext = { $CURRENT_POLICIES: [{ key: 'policy-key' }] as unknown as Policy[] };
 		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
+	});
+
+	it('replaces {{fieldName}} with value from $PAYLOAD when context has $PAYLOAD', () => {
+		const mockFilter = {
+			_and: [
+				{
+					end_date: {
+						_gt: '{{start_date}}',
+					},
+				},
+			],
+		} as Filter;
+
+		const startDate = '2024-01-15';
+		const mockContext = { $PAYLOAD: { start_date: startDate } };
+		const result = parseFilter(mockFilter, null, mockContext);
+
+		expect(result).toStrictEqual({
+			_and: [
+				{
+					end_date: {
+						_gt: startDate,
+					},
+				},
+			],
+		});
+	});
+
+	it('replaces {{fieldName}} with date value from $PAYLOAD for validation rules', () => {
+		const mockFilter = {
+			_or: [
+				{ end_date: { _null: true } },
+				{ end_date: { _gt: '{{start_date}}' } },
+			],
+		} as Filter;
+
+		const startDate = new Date('2024-01-15');
+		const mockContext = { $PAYLOAD: { start_date: startDate } };
+		const result = parseFilter(mockFilter, null, mockContext);
+
+		expect(result).toStrictEqual({
+			_or: [
+				{ end_date: { _null: true } },
+				{ end_date: { _gt: startDate } },
+			],
+		});
+	});
+
+	it('leaves {{fieldName}} unchanged when $PAYLOAD is not provided', () => {
+		const mockFilter = {
+			field: {
+				_gt: '{{start_date}}',
+			},
+		} as Filter;
+
+		const result = parseFilter(mockFilter, null, {});
+
+		expect(result).toStrictEqual(mockFilter);
+	});
+
+	it('leaves {{fieldName}} unchanged when field is not in $PAYLOAD', () => {
+		const mockFilter = {
+			field: {
+				_gt: '{{other_field}}',
+			},
+		} as Filter;
+
+		const mockContext = { $PAYLOAD: { start_date: '2024-01-15' } };
+		const result = parseFilter(mockFilter, null, mockContext);
+
+		expect(result).toStrictEqual(mockFilter);
 	});
 });

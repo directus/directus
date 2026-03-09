@@ -58,6 +58,9 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		permissionValidationRules = permissions.map(({ validation }) => validation);
 	}
 
+	const presets = (permissions ?? []).map((permission) => permission.presets);
+	const payloadWithPresets = assign({}, ...presets, options.payload);
+
 	const fields = Object.values(context.schema.collections[options.collection]?.fields ?? {});
 
 	const fieldValidationRules: (Filter | null)[] = [];
@@ -95,15 +98,14 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 					)
 				: undefined;
 
-			const validationFilter = parseFilter(field.validation, options.accountability, filterContext);
+			const validationFilter = parseFilter(field.validation, options.accountability, {
+				...filterContext,
+				$PAYLOAD: payloadWithPresets,
+			} as Parameters<typeof parseFilter>[2]);
 
 			fieldValidationRules.push(validationFilter);
 		}
 	}
-
-	const presets = (permissions ?? []).map((permission) => permission.presets);
-
-	const payloadWithPresets = assign({}, ...presets, options.payload);
 
 	const validationRules = [...fieldValidationRules, ...permissionValidationRules].filter((rule): rule is Filter => {
 		if (rule === null) return false;

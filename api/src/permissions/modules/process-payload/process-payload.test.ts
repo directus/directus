@@ -323,3 +323,73 @@ test('Checks validation rules against payload with defaults', async () => {
 		'field-a': 2,
 	});
 });
+
+describe('Resolves {{fieldName}} in field validation from payload (date validation)', () => {
+	const schema = new SchemaBuilder()
+		.collection('services', (c) => {
+			c.field('id').id();
+			c.field('start_date').date();
+			c.field('end_date')
+				.date()
+				.options({
+					validation: {
+						_and: [
+							{
+								_or: [
+									{ end_date: { _null: true } },
+									{ end_date: { _gt: '{{start_date}}' } },
+								],
+							},
+						],
+					},
+				});
+		})
+		.build();
+
+	test('accepts payload when end_date is greater than start_date', async () => {
+		const acc = { admin: true } as unknown as Accountability;
+
+		const result = await processPayload(
+			{
+				accountability: acc,
+				action: 'create',
+				collection: 'services',
+				payload: {
+					start_date: '2024-01-15',
+					end_date: '2024-06-20',
+				},
+				nested: [],
+			},
+			{ schema } as Context,
+		);
+
+		expect(result).toEqual({
+			start_date: '2024-01-15',
+			end_date: '2024-06-20',
+		});
+	});
+
+	test('throws when end_date is less than or equal to start_date', async () => {
+		const acc = { admin: true } as unknown as Accountability;
+
+		try {
+			await processPayload(
+				{
+					accountability: acc,
+					action: 'create',
+					collection: 'services',
+					payload: {
+						start_date: '2024-06-20',
+						end_date: '2024-01-15',
+					},
+					nested: [],
+				},
+				{ schema } as Context,
+			);
+			expect(true).toBe(false);
+		} catch (errors: any) {
+			expect(errors.length).toBeGreaterThanOrEqual(1);
+			expect(errors[0]).toBeInstanceOf(FailedValidationError);
+		}
+	});
+});

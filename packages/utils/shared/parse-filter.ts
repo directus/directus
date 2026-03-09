@@ -8,12 +8,14 @@ import { isObject } from './is-object.js';
 import { parseJSON } from './parse-json.js';
 import { toArray } from './to-array.js';
 
-type ParseFilterContext = {
+export type ParseFilterContext = {
 	// The user can add any custom fields to any of them
 	$CURRENT_USER?: User & Record<string, any>;
 	$CURRENT_ROLE?: Role & Record<string, any>;
 	$CURRENT_ROLES?: (Role & Record<string, any>)[];
 	$CURRENT_POLICIES?: (Policy & Record<string, any>)[];
+	/** Current item/payload for resolving {{fieldName}} in validation rules */
+	$PAYLOAD?: Record<string, unknown>;
 };
 
 type BasicAccountability = Pick<Accountability, 'user' | 'role' | 'roles'>;
@@ -173,6 +175,16 @@ function parseDynamicVariable(value: any, accountability: BasicAccountability | 
 		if (value === '$CURRENT_POLICIES')
 			return (get(context, value, null) as Policy[] | null)?.map(({ id }) => id) ?? null;
 		return get(context, value, null);
+	}
+
+	// Resolve {{fieldName}} from current item/payload (for validation: end_date > {{start_date}}).
+	const payloadRefMatch = value.match(/^\{\{\s*(.+?)\s*\}\}$/);
+	const payload = context.$PAYLOAD;
+	if (payloadRefMatch && payloadRefMatch[1] !== undefined && payload !== undefined) {
+		const fieldName = payloadRefMatch[1].trim();
+		if (Object.prototype.hasOwnProperty.call(payload, fieldName)) {
+			return payload[fieldName];
+		}
 	}
 
 	return value;

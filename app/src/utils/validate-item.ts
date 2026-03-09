@@ -1,5 +1,5 @@
 import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
-import { validatePayload } from '@directus/utils';
+import { parseFilter, validatePayload } from '@directus/utils';
 import {
 	FailedValidationError,
 	FailedValidationErrorExtensions,
@@ -40,7 +40,10 @@ export function validateItem(
 
 	if (includeCustomValidations) fields.forEach(applyValidationRules);
 
-	const errors = validatePayload(validationRules, updatedItem).map((error) =>
+	const resolvedRules =
+		parseFilter(validationRules, null, { $PAYLOAD: updatedItem } as Parameters<typeof parseFilter>[2]) ??
+		validationRules;
+	const errors = validatePayload(resolvedRules, updatedItem).map((error) =>
 		error.details.map(
 			(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)).extensions,
 		),
