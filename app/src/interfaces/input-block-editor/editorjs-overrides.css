@@ -513,7 +513,7 @@
 
 .codex-editor .ce-block h4 {
 	font-size: 1.25rem;
-	line-height: 28px;
+	line-height: 1.25;
 }
 
 .codex-editor .ce-block h5 {
