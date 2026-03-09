@@ -146,7 +146,7 @@ header {
 		border-radius: var(--theme--border-radius);
 		box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 
-		@media (min-width: 618px) {
+		@media (width >= 34.75rem) {
 			inline-size: 34.75rem;
 		}
 	}
