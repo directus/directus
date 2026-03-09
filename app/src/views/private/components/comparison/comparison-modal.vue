@@ -482,7 +482,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		scroll-snap-stop: always;
 		inline-size: calc(var(--comparison-modal--width) - var(--comparison-modal--peek-width));
 
-		@media (min-width: 544px) {
+		@media (width >= 30.625rem) {
 			flex: 0 0 66%;
 			inline-size: auto;
 		}
@@ -619,7 +619,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					.button-text {
 						display: none;
 
-						@media (min-width: 544px) {
+						@media (width >= 30.625rem) {
 							display: inline;
 						}
 					}
@@ -641,12 +641,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					.v-icon {
 						margin: 0;
 
-						@media (min-width: 544px) {
+						@media (width >= 30.625rem) {
 							margin-inline-end: 0.4375rem;
 						}
 					}
 
-					@media (min-width: 544px) {
+					@media (width >= 30.625rem) {
 						--v-button-min-width: 7.875rem;
 					}
 				}
