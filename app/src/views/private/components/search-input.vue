@@ -227,7 +227,7 @@ function emitValue() {
 	--v-badge-offset-y: 0.4375rem;
 	--v-badge-offset-x: 0.4375rem;
 
-	@media (width <= 400px) {
+	@media (width <= 22.5rem) {
 		&.active,
 		&.filter-active {
 			position: absolute;
@@ -361,7 +361,7 @@ function emitValue() {
 		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
 
-		@media (width > 400px) {
+		@media (width > 22.5rem) {
 			inline-size: 8.4375rem;
 		}
 
@@ -381,7 +381,7 @@ function emitValue() {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (width > 400px) {
+		@media (width > 22.5rem) {
 			inline-size: 8.4375rem;
 		}
 

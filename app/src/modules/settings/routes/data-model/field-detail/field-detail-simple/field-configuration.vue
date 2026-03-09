@@ -164,7 +164,7 @@ const options = computed({
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 

@@ -98,7 +98,7 @@ defineEmits<{
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	@media (width > 400px) {
+	@media (width > 22.5rem) {
 		display: flex;
 		align-items: center;
 		gap: 0.6875rem;
@@ -111,7 +111,7 @@ defineEmits<{
 	gap: 0.6875rem;
 	padding-block: 0.6875rem;
 
-	@media (width > 400px) {
+	@media (width > 22.5rem) {
 		display: contents;
 	}
 }
