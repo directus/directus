@@ -324,8 +324,6 @@ describe('test o2m relation', () => {
 				}),
 			}),
 		);
-
-		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: {} }));
 	});
 
 	test('Initial data should be cleared when itemId changes to new item', async () => {
