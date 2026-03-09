@@ -209,7 +209,7 @@ function toggleInterface(id: string) {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
