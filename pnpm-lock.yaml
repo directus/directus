@@ -496,8 +496,8 @@ catalogs:
       specifier: 7.0.0
       version: 7.0.0
     dompurify:
-      specifier: 3.3.0
-      version: 3.3.0
+      specifier: 3.3.2
+      version: 3.3.2
     dotenv:
       specifier: 17.2.3
       version: 17.2.3
@@ -1807,7 +1807,7 @@ importers:
         version: 7.0.0
       dompurify:
         specifier: 'catalog:'
-        version: 3.3.0
+        version: 3.3.2
       editorjs-toggle-block:
         specifier: 'catalog:'
         version: 0.3.16
@@ -8877,8 +8877,9 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.3.0:
-    resolution: {integrity: sha512-r+f6MYR1gGN1eJv0TVQbhA7if/U7P87cdPl3HN5rikqaBSBxLiCb/b9O+2eG0cxz0ghyU+mU1QkbsOwERMYlWQ==}
+  dompurify@3.3.2:
+    resolution: {integrity: sha512-6obghkliLdmKa56xdbLOpUZ43pAR6xFy1uOrxBaIDjT+yaRuuybLjGS9eVBoSR/UPU5fq3OXClEHLJNGvbxKpQ==}
+    engines: {node: '>=20'}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -19642,7 +19643,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -19721,7 +19722,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -21407,7 +21408,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.3.0:
+  dompurify@3.3.2:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
