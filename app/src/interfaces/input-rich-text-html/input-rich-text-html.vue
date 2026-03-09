@@ -31,8 +31,10 @@ import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { useFocusin } from '@/composables/use-focusin';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -99,6 +101,8 @@ const comparisonEditorKey = ref(0);
 
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const storageAssetTransform = ref('all');
 const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
@@ -597,7 +601,15 @@ const menuActive = computed(
 						</div>
 					</div>
 				</template>
-				<VUpload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
+				<VUpload
+					v-else
+					:multiple="false"
+					from-library
+					from-url
+					:folder="folder"
+					:accept="allowedMimeTypes"
+					@input="onImageSelect"
+				/>
 			</div>
 
 			<template #actions>
@@ -647,7 +659,15 @@ const menuActive = computed(
 								</div>
 							</div>
 						</template>
-						<VUpload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
+						<VUpload
+							v-else
+							:multiple="false"
+							from-library
+							from-url
+							:folder="folder"
+							:accept="allowedMimeTypes"
+							@input="onMediaSelect"
+						/>
 					</VTabItem>
 					<VTabItem value="embed">
 						<div class="grid">

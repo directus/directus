@@ -20,6 +20,7 @@ import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { parseUrl } from '@/utils/parse-url';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 declare global {
@@ -77,7 +78,7 @@ const router = useRouter();
 const slots = useSlots();
 useResizeObserver();
 
-const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, selectUrl } = useUrls();
+const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, matchesDynamicUrl, selectUrl } = useUrls();
 const { visualEditingEnabled, showEditableElements, openInVisualEditor } = useVisualEditing();
 
 const width = ref<number>();
@@ -228,7 +229,10 @@ function useUrls() {
 	const internalFrameSrc = ref<string>();
 	const urlArray = computed(() => (Array.isArray(url) ? url : [url]));
 	const multipleUrls = computed(() => urls.value.length > 1);
-	const dynamicUrlIncluded = computed(() => dynamicUrl && urlArray.value.includes(dynamicUrl));
+
+	const dynamicUrlIncluded = computed(
+		() => dynamicUrl && urlArray.value.map((url) => normalizeUrl(url)).includes(normalizeUrl(dynamicUrl)),
+	);
 
 	const urls = computed(() => {
 		if (dynamicUrl && !dynamicUrlIncluded.value) return [dynamicUrl, ...urlArray.value];
@@ -255,8 +259,21 @@ function useUrls() {
 		urlDisplay,
 		multipleUrls,
 		dynamicUrlIncluded,
+		matchesDynamicUrl,
 		selectUrl,
 	};
+
+	function matchesDynamicUrl(url: string): boolean {
+		if (!dynamicUrl) return false;
+		return normalizeUrl(url) === normalizeUrl(dynamicUrl);
+	}
+
+	function normalizeUrl(url: string): string {
+		const parsed = parseUrl(url);
+		if (!parsed) return '';
+
+		return parsed.href.replace(/\/$/, '');
+	}
 
 	function updateFrameSrcWithDynamicUrl() {
 		if (dynamicUrl) internalFrameSrc.value = dynamicUrl;
@@ -384,7 +401,7 @@ function useUrls() {
 						<VListItem
 							v-for="(urlItem, index) in urls"
 							:key="index"
-							:active="urlItem === dynamicUrl"
+							:active="matchesDynamicUrl(urlItem)"
 							clickable
 							@click="selectUrl(urlItem)"
 						>
