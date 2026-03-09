@@ -98,7 +98,7 @@ defineEmits<{
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	@media (width > 25rem) {
+	@media (width > 400px) {
 		display: flex;
 		align-items: center;
 		gap: 0.6875rem;
@@ -111,7 +111,7 @@ defineEmits<{
 	gap: 0.6875rem;
 	padding-block: 0.6875rem;
 
-	@media (width > 25rem) {
+	@media (width > 400px) {
 		display: contents;
 	}
 }
@@ -161,7 +161,7 @@ defineEmits<{
 .cancel-button {
 	display: block;
 
-	@media (width >= 60rem) {
+	@media (min-width: 960px) {
 		display: none;
 	}
 }
@@ -169,7 +169,7 @@ defineEmits<{
 .header-icon {
 	display: none;
 
-	@media (width >= 60rem) {
+	@media (min-width: 960px) {
 		display: flex;
 	}
 }

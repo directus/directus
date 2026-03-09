@@ -376,7 +376,7 @@ watch(statsRange, loadStats);
 	gap: 0.875rem;
 	margin-block-end: 0.875rem;
 
-	@media (width < 94.5rem) {
+	@media (max-width: 1512px) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
@@ -384,7 +384,7 @@ watch(statsRange, loadStats);
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	@media (width < 48rem) {
+	@media (max-width: 768px) {
 		grid-template-columns: 1fr;
 	}
 }

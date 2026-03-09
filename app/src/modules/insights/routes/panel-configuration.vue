@@ -278,7 +278,7 @@ const stageChanges = () => {
 	grid-template-columns: repeat(var(--columns), 1fr);
 	gap: 1.8125rem;
 
-	@media (width >= 25rem) {
+	@media (min-width: 400px) {
 		--columns: 2;
 	}
 
@@ -286,7 +286,7 @@ const stageChanges = () => {
 		--columns: 3;
 	}
 
-	@media (width >= 52.5rem) {
+	@media (min-width: 840px) {
 		--columns: 4;
 	}
 }
@@ -370,7 +370,7 @@ const stageChanges = () => {
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (width >= 25rem) {
+	@media (min-width: 400px) {
 		--columns: 2;
 	}
 
@@ -378,7 +378,7 @@ const stageChanges = () => {
 		--columns: 3;
 	}
 
-	@media (width >= 52.5rem) {
+	@media (min-width: 840px) {
 		--columns: 4;
 	}
 }

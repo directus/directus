@@ -201,7 +201,7 @@ function toggleInterface(id: string) {
 	grid-template-columns: repeat(var(--columns), 1fr);
 	gap: 1.8125rem;
 
-	@media (width >= 25rem) {
+	@media (min-width: 400px) {
 		--columns: 2;
 	}
 
@@ -209,7 +209,7 @@ function toggleInterface(id: string) {
 		--columns: 3;
 	}
 
-	@media (width >= 52.5rem) {
+	@media (min-width: 840px) {
 		--columns: 4;
 	}
 }

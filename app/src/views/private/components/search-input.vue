@@ -227,7 +227,7 @@ function emitValue() {
 	--v-badge-offset-y: 0.4375rem;
 	--v-badge-offset-x: 0.4375rem;
 
-	@media (width <= 22.5rem) {
+	@media (width <= 400px) {
 		&.active,
 		&.filter-active {
 			position: absolute;
@@ -361,7 +361,7 @@ function emitValue() {
 		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
 
-		@media (width > 22.5rem) {
+		@media (width > 400px) {
 			inline-size: 8.4375rem;
 		}
 
@@ -381,7 +381,7 @@ function emitValue() {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (width > 22.5rem) {
+		@media (width > 400px) {
 			inline-size: 8.4375rem;
 		}
 
@@ -389,11 +389,11 @@ function emitValue() {
 			inline-size: 11.25rem;
 		}
 
-		@media (min-width: 54rem) {
+		@media (min-width: 960px) {
 			inline-size: 16.875rem;
 		}
 
-		@media (min-width: 70.875rem) {
+		@media (min-width: 1260px) {
 			inline-size: 23.625rem; /* blaze it */
 		}
 	}

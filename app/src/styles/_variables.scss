@@ -25,7 +25,7 @@
 	--focus-ring-radius: var(--theme--border-radius);
 	--focus-ring-color: var(--theme--primary);
 
-	@media (width > 22.5rem) {
+	@media (width > 400px) {
 		/* ~360px, not in breakpoints map */
 		--header-bar-height: 3.375rem;
 	}

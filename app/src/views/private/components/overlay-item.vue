@@ -822,7 +822,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	) !important;
 	max-inline-size: 90vw !important;
 
-	@media (min-height: 23.4375rem) {
+	@media (min-height: 375px) {
 		--button-height: var(--v-button-height, 2.5rem);
 		--button-gap: 0.6875rem;
 		--shadow-height: 0.375rem;
