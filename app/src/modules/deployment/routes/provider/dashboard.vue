@@ -189,7 +189,7 @@ watch(range, loadDashboard);
 	gap: 0.875rem;
 	margin-block-end: 2.25rem;
 
-	@media (max-width: 1512px) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
