@@ -546,7 +546,7 @@
 .codex-editor .ce-block ol {
 	margin: 1.375rem 0;
 	font-size: inherit;
-	line-height: 34px;
+	line-height: 1.9375rem;
 }
 
 .codex-editor .ce-block ul ul,
