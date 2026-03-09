@@ -98,7 +98,7 @@ defineEmits<{
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	@media (width > 25rem) {
+	@media (width > 22.5rem) {
 		display: flex;
 		align-items: center;
 		gap: 0.6875rem;
@@ -111,7 +111,7 @@ defineEmits<{
 	gap: 0.6875rem;
 	padding-block: 0.6875rem;
 
-	@media (width > 25rem) {
+	@media (width > 22.5rem) {
 		display: contents;
 	}
 }
@@ -137,7 +137,7 @@ defineEmits<{
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.2em;
+		line-height: 1.2;
 		max-inline-size: 100%;
 		block-size: 1.375rem;
 	}
@@ -148,7 +148,7 @@ defineEmits<{
 
 	font-weight: 600;
 	font-size: 0.6875rem;
-	line-height: 0.6875rem;
+	line-height: 1;
 	white-space: nowrap;
 	font-family: var(--theme--header--headline--font-family);
 }
@@ -161,7 +161,7 @@ defineEmits<{
 .cancel-button {
 	display: block;
 
-	@media (width >= 60rem) {
+	@media (width >= 54rem) {
 		display: none;
 	}
 }
@@ -169,7 +169,7 @@ defineEmits<{
 .header-icon {
 	display: none;
 
-	@media (width >= 60rem) {
+	@media (width >= 54rem) {
 		display: flex;
 	}
 }

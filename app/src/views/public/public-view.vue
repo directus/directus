@@ -151,7 +151,7 @@ const logoURL = computed<string | null>(() => {
 
 		:slotted(.type-title) {
 			font-size: 2.375rem;
-			line-height: 2.9375rem;
+			line-height: 1.2368;
 			color: var(--theme--public--foreground-accent);
 		}
 
@@ -168,7 +168,7 @@ const logoURL = computed<string | null>(() => {
 			}
 		}
 
-		@media (width >= 31.25rem) {
+		@media (width >= 28.125rem) {
 			padding: 2.25rem 4.5rem;
 		}
 	}
@@ -376,7 +376,7 @@ const logoURL = computed<string | null>(() => {
 			}
 		}
 
-		@media (width >= 31.25rem) {
+		@media (width >= 28.125rem) {
 			display: flex;
 		}
 	}

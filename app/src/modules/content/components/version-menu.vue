@@ -602,7 +602,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	display: flex;
 	align-items: center;
 
-	@media (width >= 37.5rem) {
+	@media (width >= 33.75rem) {
 		&::before {
 			content: '•';
 			padding-inline-end: 0.1875rem;

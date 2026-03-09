@@ -157,7 +157,7 @@ h1 {
 	color: var(--theme--foreground-accent);
 	font-size: 2.25rem;
 	font-weight: 600;
-	line-height: 2.6875rem;
+	line-height: 1.1944;
 
 	margin-block-end: 1.375rem;
 }

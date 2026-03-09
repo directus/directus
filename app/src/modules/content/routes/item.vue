@@ -1059,7 +1059,7 @@ function useItemNavigation() {
 }
 
 .headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (width < 37.5rem) {
+	@media (width < 33.75rem) {
 		display: none;
 	}
 }

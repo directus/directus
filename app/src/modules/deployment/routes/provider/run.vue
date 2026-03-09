@@ -398,12 +398,12 @@ onUnmounted(() => {
 	margin-block-end: 1.375rem;
 
 	// 2 columns
-	@media (width < 94.5rem) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
 	// 1 column
-	@media (width < 48rem) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }

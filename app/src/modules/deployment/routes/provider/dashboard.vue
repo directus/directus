@@ -189,7 +189,7 @@ watch(range, loadDashboard);
 	gap: 0.875rem;
 	margin-block-end: 2.25rem;
 
-	@media (width < 94.5rem) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
@@ -197,7 +197,7 @@ watch(range, loadDashboard);
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	@media (width < 48rem) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -267,7 +267,7 @@ watch(range, loadDashboard);
 	border-radius: var(--theme--border-radius);
 	margin-block-end: 0.4375rem;
 
-	@media (width < 48rem) {
+	@media (width < 43.1875rem) {
 		flex-wrap: wrap;
 		block-size: auto !important;
 		padding: 0.875rem 1.125rem !important;
@@ -311,7 +311,7 @@ watch(range, loadDashboard);
 		margin-inline-start: auto;
 		flex-shrink: 0;
 
-		@media (width < 48rem) {
+		@media (width < 43.1875rem) {
 			inline-size: 100%;
 			margin-inline-start: 0;
 			padding-inline-start: 3.375rem; // icon width + gap

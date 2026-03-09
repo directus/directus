@@ -177,7 +177,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	align-self: stretch;
 	gap: 0.6875rem var(--theme--form--column-gap);
 
-	@media (min-width: 54rem) {
+	@media (width >= 54rem) {
 		block-size: 4.5rem;
 		flex-direction: row;
 		justify-content: space-between;
@@ -189,7 +189,7 @@ function getDeltaOptionUser(deltaOption: any) {
 		inline-size: 100%;
 		min-inline-size: 0;
 
-		@media (min-width: 54rem) {
+		@media (width >= 54rem) {
 			inline-size: auto;
 		}
 	}
@@ -197,7 +197,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	&.has-dropdown {
 		.title-container,
 		.header-meta {
-			@media (min-width: 74.8125rem) {
+			@media (width >= 74.8125rem) {
 				inline-size: calc(50% - var(--theme--form--column-gap) / 2);
 			}
 		}
@@ -211,7 +211,7 @@ function getDeltaOptionUser(deltaOption: any) {
 		.title {
 			font-size: 1.125rem;
 			font-weight: 600;
-			line-height: 1.8125rem;
+			line-height: 1.6111;
 			color: var(--theme--foreground-accent);
 			margin: 0;
 		}
@@ -241,7 +241,7 @@ function getDeltaOptionUser(deltaOption: any) {
 				padding-block-start: 0.5625rem;
 				text-align: start;
 
-				@media (min-width: 54rem) {
+				@media (width >= 54rem) {
 					padding-block-start: 0;
 					text-align: end;
 				}
@@ -272,7 +272,7 @@ function getDeltaOptionUser(deltaOption: any) {
 				padding-block: 0.4375rem;
 				inline-size: 100%;
 
-				@media (min-width: 54rem) {
+				@media (width >= 54rem) {
 					inline-size: auto;
 
 					.meta-text {
@@ -280,7 +280,7 @@ function getDeltaOptionUser(deltaOption: any) {
 					}
 				}
 
-				@media (min-width: 74.8125rem) {
+				@media (width >= 74.8125rem) {
 					inline-size: 100%;
 				}
 

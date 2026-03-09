@@ -51,17 +51,17 @@ h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
 }
 h1 {
 	font-size: 2rem;
-	line-height: 2.5625rem;
+	line-height: 1.2813;
 	margin-block-start: 1em;
 }
 h2 {
 	font-size: 1.375rem;
-	line-height: 1.9375rem;
+	line-height: 1.4091;
 	margin-block-start: 1.25em;
 }
 h3 {
 	font-size: 1.0625rem;
-	line-height: 1.625rem;
+	line-height: 1.5294;
 	margin-block-start: 1.25em;
 }
 h4 {
@@ -76,7 +76,7 @@ h5 {
 }
 h6 {
 	font-size: 0.6875rem;
-	line-height: 2;
+	line-height: 1.8182;
 	margin-block-start: 2em;
 }
 p {

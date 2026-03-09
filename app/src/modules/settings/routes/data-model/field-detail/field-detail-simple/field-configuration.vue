@@ -164,7 +164,7 @@ const options = computed({
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (width >= 25rem) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
@@ -172,7 +172,7 @@ const options = computed({
 		--columns: 3;
 	}
 
-	@media (width >= 52.5rem) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }

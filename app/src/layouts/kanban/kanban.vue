@@ -362,7 +362,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					margin-block-start: 0.125rem;
 					text-align: center;
 					font-size: 0.6875rem;
-					line-height: 1.125rem;
+					line-height: 1.6364;
 					background-color: var(--theme--background-accent);
 					border-radius: 0.6875rem; // var(--theme--border-radius);
 				}

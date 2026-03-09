@@ -128,7 +128,7 @@ const isPromotableField = computed(() => {
 		display: inline;
 		white-space: normal;
 
-		@media (width >= 60rem) {
+		@media (width >= 54rem) {
 			display: initial;
 			white-space: nowrap;
 		}
@@ -160,7 +160,7 @@ const isPromotableField = computed(() => {
 	.field-label-content {
 		display: inline;
 
-		@media (width >= 60rem) {
+		@media (width >= 54rem) {
 			display: contents;
 		}
 	}
