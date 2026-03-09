@@ -248,7 +248,6 @@ describe('tus controller', () => {
 					action: 'update',
 					collection: 'directus_files',
 					accountability,
-					primaryKeys: ['file-1'],
 				},
 				{ schema: req.schema, knex: expect.anything() },
 			);
@@ -276,7 +275,6 @@ describe('tus controller', () => {
 					action: 'delete',
 					collection: 'directus_files',
 					accountability,
-					primaryKeys: ['file-1'],
 				},
 				{ schema: req.schema, knex: expect.anything() },
 			);
@@ -304,7 +302,6 @@ describe('tus controller', () => {
 					action: 'read',
 					collection: 'directus_files',
 					accountability,
-					primaryKeys: ['file-1'],
 				},
 				{ schema: req.schema, knex: expect.anything() },
 			);
@@ -332,7 +329,6 @@ describe('tus controller', () => {
 					action: 'read',
 					collection: 'directus_files',
 					accountability,
-					primaryKeys: ['file-1'],
 				},
 				{ schema: req.schema, knex: expect.anything() },
 			);

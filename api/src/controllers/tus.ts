@@ -66,8 +66,6 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 			if (fields.length > 0) {
 				validateAccessOptions.fields = fields;
 			}
-		} else if (req.params['id']) {
-			validateAccessOptions.primaryKeys = [req.params['id']];
 		}
 
 		await validateAccess(validateAccessOptions, {
