@@ -44,7 +44,7 @@
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 0.8125rem;
-		line-height: 24px;
+		line-height: 1.5714;
 	}
 
 	h6 {
@@ -66,7 +66,7 @@
 		margin: 1.5714em 0; // 1.5714 = line-height
 		font-weight: 500;
 		font-size: 0.875rem;
-		line-height: 24px;
+		line-height: 1.5714;
 	}
 
 	ul ul,
@@ -86,7 +86,7 @@
 		font-weight: 500;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
 		font-size: 0.875rem;
-		line-height: 24px;
+		line-height: 1.5714;
 		overflow-wrap: break-word;
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
@@ -98,7 +98,7 @@
 		font-weight: 500;
 		font-family: var(--theme--fonts--monospace--font-family), monospace;
 		font-size: 0.875rem;
-		line-height: 24px;
+		line-height: 1.5714;
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 	}
@@ -108,7 +108,7 @@
 		padding-inline-start: 1em;
 		font-weight: 500;
 		font-size: 0.875rem;
-		line-height: 24px;
+		line-height: 1.5714;
 		border-inline-start: 2px solid var(--theme--form--field--input--border-color);
 	}
 
@@ -134,7 +134,7 @@
 	table {
 		font-weight: 500;
 		font-size: 0.875rem;
-		line-height: 24px;
+		line-height: 1.5714;
 		border-collapse: collapse;
 	}
 

@@ -71,7 +71,7 @@ h4 {
 }
 h5 {
 	font-size: 0.8125rem;
-	line-height: 24px;
+	line-height: 1.5714;
 	margin-block-start: 2em;
 }
 h6 {
@@ -82,7 +82,7 @@ h6 {
 p {
 	font-family: ${userFontFamily}, serif;
 	font-size: 0.875rem;
-	line-height: 24px;
+	line-height: 1.5714;
 	font-weight: 500;
 	margin: 1.5em 0;
 }
@@ -94,7 +94,7 @@ a {
 ul, ol {
 	font-family: ${userFontFamily}, serif;
 	font-size: 0.875rem;
-	line-height: 24px;
+	line-height: 1.5714;
 	font-weight: 500;
 	margin: 1.5em 0;
 }
@@ -109,7 +109,7 @@ b, strong {
 }
 code {
 	font-size: 0.875rem;
-	line-height: 24px;
+	line-height: 1.5714;
 	font-weight: 500;
 	padding: 0.125rem 0.25rem;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
@@ -119,7 +119,7 @@ code {
 }
 pre {
 	font-size: 0.875rem;
-	line-height: 24px;
+	line-height: 1.5714;
 	font-weight: 500;
 	padding: 1em;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
@@ -130,7 +130,7 @@ pre {
 blockquote {
 	font-family: ${userFontFamily}, serif;
 	font-size: 0.875rem;
-	line-height: 24px;
+	line-height: 1.5714;
 	font-weight: 500;
 	border-inline-start: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-inline-start: 1em;
@@ -156,7 +156,7 @@ hr {
 table {
 	border-collapse: collapse;
 	font-size: 0.875rem;
-	line-height: 24px;
+	line-height: 1.5714;
 	font-weight: 500;
 }
 table th,

@@ -182,7 +182,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 		/* Page Content Spacing (Could be converted to Project Setting toggle) */
 		font-size: 0.875rem;
-		line-height: 24px;
+		line-height: 1.5714;
 
 		.sidebar {
 			--v-list-item-background-color-hover: var(--theme--background-accent);
