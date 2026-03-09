@@ -168,7 +168,7 @@ const logoURL = computed<string | null>(() => {
 			}
 		}
 
-		@media (min-width: 500px) {
+		@media (width >= 28.125rem) {
 			padding: 2.25rem 4.5rem;
 		}
 	}
@@ -376,7 +376,7 @@ const logoURL = computed<string | null>(() => {
 			}
 		}
 
-		@media (min-width: 500px) {
+		@media (width >= 28.125rem) {
 			display: flex;
 		}
 	}
