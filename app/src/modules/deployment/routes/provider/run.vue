@@ -403,7 +403,7 @@ onUnmounted(() => {
 	}
 
 	// 1 column
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }

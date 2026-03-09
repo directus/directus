@@ -197,7 +197,7 @@ watch(range, loadDashboard);
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -267,7 +267,7 @@ watch(range, loadDashboard);
 	border-radius: var(--theme--border-radius);
 	margin-block-end: 0.4375rem;
 
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		flex-wrap: wrap;
 		block-size: auto !important;
 		padding: 0.875rem 1.125rem !important;
@@ -311,7 +311,7 @@ watch(range, loadDashboard);
 		margin-inline-start: auto;
 		flex-shrink: 0;
 
-		@media (max-width: 768px) {
+		@media (width < 43.1875rem) {
 			inline-size: 100%;
 			margin-inline-start: 0;
 			padding-inline-start: 3.375rem; // icon width + gap
