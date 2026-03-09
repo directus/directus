@@ -639,7 +639,7 @@ onUnmounted(() => {
 	margin-inline-start: auto;
 }
 
-@media (min-width: 960px) {
+@media (width >= 54rem) {
 	.logs-container {
 		margin-block-end: 0;
 	}

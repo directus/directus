@@ -389,7 +389,7 @@ function emitValue() {
 			inline-size: 11.25rem;
 		}
 
-		@media (min-width: 960px) {
+		@media (width >= 54rem) {
 			inline-size: 16.875rem;
 		}
 

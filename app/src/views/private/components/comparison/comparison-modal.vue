@@ -550,7 +550,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			&.left {
 				display: none;
 
-				@media (min-width: 960px) {
+				@media (width >= 54rem) {
 					display: flex;
 					align-items: center;
 					gap: 1.375rem;
@@ -570,7 +570,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				flex-direction: column;
 				gap: 0.875rem;
 
-				@media (min-width: 960px) {
+				@media (width >= 54rem) {
 					flex-direction: row;
 					justify-content: flex-end;
 				}
@@ -579,7 +579,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					margin-block-end: 0;
 					justify-content: start;
 
-					@media (min-width: 960px) {
+					@media (width >= 54rem) {
 						display: none;
 					}
 				}
@@ -598,7 +598,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						margin-block-end: 0;
 					}
 
-					@media (min-width: 960px) {
+					@media (width >= 54rem) {
 						justify-content: flex-start;
 					}
 				}

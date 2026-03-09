@@ -161,7 +161,7 @@ defineEmits<{
 .cancel-button {
 	display: block;
 
-	@media (min-width: 960px) {
+	@media (width >= 54rem) {
 		display: none;
 	}
 }
@@ -169,7 +169,7 @@ defineEmits<{
 .header-icon {
 	display: none;
 
-	@media (min-width: 960px) {
+	@media (width >= 54rem) {
 		display: flex;
 	}
 }
