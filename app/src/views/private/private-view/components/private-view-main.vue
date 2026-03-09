@@ -93,7 +93,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			primary="end"
 			size-unit="px"
 			collapsible
-			:collapsed-size="isMobile ? 0 : 60"
+			:collapsed-size="isMobile ? 0 : 54"
 			:collapse-threshold="70"
 			:min-size="252"
 			:max-size="540"
