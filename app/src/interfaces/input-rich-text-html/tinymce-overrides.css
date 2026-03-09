@@ -311,7 +311,7 @@ body.dark .tox .tox-toolbar__overflow {
 	font-weight: 500;
 	font-size: 0.875rem;
 	font-family: var(--theme--fonts--sans--font-family);
-	line-height: 19px;
+	line-height: 1.2143;
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border: none;
