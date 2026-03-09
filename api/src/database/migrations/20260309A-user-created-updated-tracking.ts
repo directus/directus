@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
-	const isSQLite = knex.client.constructor.name === 'Client_SQLite3';
+	const isSQLite = getDatabaseClient(knex) === 'sqlite';
 
 	await knex.schema.alterTable('directus_users', (table) => {
 		// Workaround as sqlite doesn't allow for adding a column with non-constant default and knex doesn't resolve this by itself.
