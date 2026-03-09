@@ -415,7 +415,7 @@ function setToNow() {
 	.calendar-head-cell {
 		border-radius: 0.3125rem;
 		font-size: 0.6875rem;
-		line-height: 1rem;
+		line-height: 1.1818;
 		color: var(--theme--foreground-accent);
 		font-weight: 600;
 	}
