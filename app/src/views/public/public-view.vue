@@ -401,7 +401,7 @@ const logoURL = computed<string | null>(() => {
 			h1 {
 				font-weight: 700;
 				font-size: 1rem;
-				line-height: 18px;
+				line-height: 1;
 			}
 
 			.subtitle {

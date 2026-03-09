@@ -179,7 +179,7 @@ const showSidebarToggle = computed(() => {
 
 	font-weight: 600;
 	font-size: 0.6875rem;
-	line-height: 12px;
+	line-height: 1;
 	white-space: nowrap;
 	font-family: var(--theme--header--headline--font-family);
 }
