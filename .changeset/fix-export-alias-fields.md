@@ -1,5 +1,5 @@
 ---
-'directus': patch
+'@directus/app': patch
 ---
 
 Fix: exclude alias fields from export Select All
