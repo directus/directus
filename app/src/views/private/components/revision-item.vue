@@ -173,7 +173,7 @@ const user = computed(() => {
 	position: relative;
 	z-index: 2;
 	color: var(--theme--foreground-subdued);
-	line-height: 16px;
+	line-height: 0.875rem;
 
 	.time {
 		text-transform: lowercase;
