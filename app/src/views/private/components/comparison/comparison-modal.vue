@@ -440,7 +440,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	inline-size: var(--comparison-modal--width);
 	overflow: hidden;
 
-	@media (min-width: 706px) {
+	@media (width >= 39.6875rem) {
 		--comparison-modal--peek-width: 0;
 	}
 
@@ -453,7 +453,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		scroll-snap-type: x proximity;
 		scroll-behavior: smooth;
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			overflow: hidden auto;
 			scroll-snap-type: none;
 		}
@@ -470,7 +470,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		min-block-size: 100%;
 		position: relative;
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			min-inline-size: 100%;
 		}
 	}
@@ -487,7 +487,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			inline-size: auto;
 		}
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			flex: 0 0 50%;
 			inline-size: auto;
 			scroll-snap-align: none;
@@ -592,7 +592,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					margin-block-end: 0.6875rem;
 					justify-content: start;
 
-					@media (min-width: 706px) {
+					@media (width >= 39.6875rem) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
@@ -604,7 +604,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				}
 
 				.footer-actions {
-					@media (min-width: 706px) {
+					@media (width >= 39.6875rem) {
 						display: flex;
 						align-items: center;
 						gap: 1.375rem;
@@ -653,7 +653,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			}
 		}
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			.columns {
 				gap: 0;
 			}
