@@ -51,7 +51,7 @@ h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
 }
 h1 {
 	font-size: 2rem;
-	line-height: 46px;
+	line-height: 1.2813;
 	margin-block-start: 1em;
 }
 h2 {
