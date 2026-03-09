@@ -566,7 +566,7 @@
 	padding: 1.125rem;
 	overflow: auto;
 	font-size: 1rem;
-	line-height: 24px;
+	line-height: 1.375;
 	background-color: var(--theme--background-accent);
 	border-radius: 0.25rem;
 }
