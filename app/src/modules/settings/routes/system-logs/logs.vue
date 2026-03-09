@@ -645,7 +645,7 @@ onUnmounted(() => {
 	}
 }
 
-@media (min-width: 1200px) {
+@media (width >= 67.5rem) {
 	.split-view {
 		flex-direction: row;
 	}
