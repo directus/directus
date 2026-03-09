@@ -216,7 +216,7 @@ function matchNumber(left: number | bigint, right: number | bigint, operator: st
 	}
 
 	&.has-border {
-		line-height: 26px;
+		line-height: 1.7692;
 	}
 
 	&.bold {
