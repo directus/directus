@@ -248,13 +248,13 @@ function getDeltaOptionUser(deltaOption: any) {
 
 				.meta-date-time {
 					font-size: 0.8125rem;
-					line-height: 20px;
+					line-height: 1.3846;
 					font-weight: 600;
 				}
 
 				.meta-user-info {
 					font-size: 0.8125rem;
-					line-height: 20px;
+					line-height: 1.3846;
 					color: var(--theme--foreground-subdued);
 				}
 			}

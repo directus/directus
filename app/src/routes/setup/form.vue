@@ -165,7 +165,7 @@ h1 {
 p {
 	font-size: 0.8125rem;
 	font-weight: 500;
-	line-height: 20px;
+	line-height: 1.3846;
 	margin-block-end: 1.8125rem;
 }
 
