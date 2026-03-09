@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Added tracking of date_created/updated to directus_users
+Added tracking of date/user_created/updated to directus_users

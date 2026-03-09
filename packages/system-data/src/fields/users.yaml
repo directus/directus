@@ -257,3 +257,12 @@ fields:
     special:
       - date-updated
       - cast-timestamp
+
+  - field: user_created
+    special:
+      - user-created
+
+  - field: user_updated
+    special:
+      - user-updated
+
