@@ -581,11 +581,11 @@ export const useAiStore = defineStore('ai-store', () => {
 
 		void chat
 			.addToolApprovalResponse({ id: approvalId, approved })
-			.catch(unexpectedError)
-			.finally(() => {
+			.then(() => {
 				applyLocalApprovalResponseFallback(approvalId, approved);
 				maybeContinueAfterApprovalResponse();
-			});
+			})
+			.catch(unexpectedError);
 	};
 
 	const approveToolCall = (approvalId: string) => respondToToolCall(approvalId, true);

@@ -1,9 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
-import {
-	lastAssistantMessageIsCompleteWithApprovalResponses,
-	lastAssistantMessageIsCompleteWithToolCalls,
-	type UIMessage,
-} from 'ai';
+import { lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
@@ -89,7 +85,6 @@ vi.mock('ai', () => ({
 		lastTransportConfig = config;
 		return config;
 	}),
-	lastAssistantMessageIsCompleteWithApprovalResponses: vi.fn(),
 	lastAssistantMessageIsCompleteWithToolCalls: vi.fn(),
 }));
 
@@ -220,7 +215,6 @@ describe('useAiStore', () => {
 		test('auto-sends when a provider-executed tool approval is responded', () => {
 			useAiStore();
 
-			vi.mocked(lastAssistantMessageIsCompleteWithApprovalResponses).mockReturnValue(false);
 			vi.mocked(lastAssistantMessageIsCompleteWithToolCalls).mockReturnValue(false);
 
 			const shouldSend = lastChatConfig.sendAutomaticallyWhen({
@@ -248,7 +242,6 @@ describe('useAiStore', () => {
 		test('does not auto-send if a tool in the same step is still pending', () => {
 			useAiStore();
 
-			vi.mocked(lastAssistantMessageIsCompleteWithApprovalResponses).mockReturnValue(false);
 			vi.mocked(lastAssistantMessageIsCompleteWithToolCalls).mockReturnValue(false);
 
 			const shouldSend = lastChatConfig.sendAutomaticallyWhen({
