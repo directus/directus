@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed invalid filter being generator for m2m interfaces
+Fixed an invalid filter for M2M interfaces when the item ID is null
