@@ -542,7 +542,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 			.compare-to-label {
 				font-size: 0.8125rem;
-				line-height: 1.3846;
+				line-height: 20px;
 				color: var(--theme--foreground);
 				white-space: nowrap;
 			}
@@ -557,7 +557,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 					.fields-changed {
 						font-size: 0.8125rem;
-						line-height: 1.3846;
+						line-height: 20px;
 						font-weight: 600;
 						color: var(--theme--foreground-subdued);
 					}

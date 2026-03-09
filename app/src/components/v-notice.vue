@@ -76,7 +76,7 @@ const iconName = computed(() => {
 	min-block-size: var(--theme--form--field--input--height);
 	padding: 0.6875rem 0.875rem;
 	color: var(--v-notice-color, var(--theme--foreground));
-	line-height: 1.25rem;
+	line-height: 22px;
 	background-color: var(--v-notice-background-color, var(--theme--background-normal));
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;

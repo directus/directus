@@ -4,7 +4,7 @@
 	font-weight: var(--theme--fonts--display--font-weight);
 	font-family: var(--theme--fonts--display--font-family);
 	font-style: normal;
-	line-height: 1.375;
+	line-height: 24px;
 }
 
 @mixin type-label {
@@ -13,7 +13,7 @@
 	font-weight: var(--theme--form--field--label--font-weight);
 	font-family: var(--theme--form--field--label--font-family);
 	font-style: normal;
-	line-height: 1.2143;
+	line-height: 19px;
 }
 
 @mixin type-text {
@@ -22,7 +22,7 @@
 	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
-	line-height: 1.5385;
+	line-height: 22px;
 }
 
 @mixin type-note {
@@ -31,5 +31,5 @@
 	font-size: 0.75rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: italic;
-	line-height: 1.3333;
+	line-height: 18px;
 }

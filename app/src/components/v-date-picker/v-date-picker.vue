@@ -415,7 +415,7 @@ function setToNow() {
 	.calendar-head-cell {
 		border-radius: 0.3125rem;
 		font-size: 0.6875rem;
-		line-height: 0.8125rem;
+		line-height: 1rem;
 		color: var(--theme--foreground-accent);
 		font-weight: 600;
 	}
@@ -423,7 +423,7 @@ function setToNow() {
 	.calendar-cell {
 		position: relative;
 		font-size: 0.6875rem;
-		line-height: 1rem;
+		line-height: 1.25rem;
 		text-align: center;
 	}
 
@@ -436,7 +436,7 @@ function setToNow() {
 		border-style: solid;
 		border-color: transparent;
 		font-size: 0.8125rem;
-		line-height: 2.0625rem;
+		line-height: 2.65rem;
 		font-weight: 500;
 		border-radius: var(--theme--border-radius);
 		color: var(--theme--foreground);

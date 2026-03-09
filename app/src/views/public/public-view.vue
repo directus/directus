@@ -145,13 +145,13 @@ const logoURL = computed<string | null>(() => {
 
 		/* Page Content Spacing */
 		font-size: 0.875rem;
-		line-height: 1.5714;
+		line-height: 24px;
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-inline-size var(--medium) var(--transition);
 
 		:slotted(.type-title) {
 			font-size: 2.375rem;
-			line-height: 2.9375rem;
+			line-height: 52px;
 			color: var(--theme--public--foreground-accent);
 		}
 
@@ -368,7 +368,7 @@ const logoURL = computed<string | null>(() => {
 				padding: 0.4375rem 0.6875rem;
 				color: var(--white);
 				font-size: 0.875rem;
-				line-height: 1.5714;
+				line-height: 24px;
 				background-color: rgb(38 50 56 / 0.2);
 				border-radius: 0.3125rem;
 				backdrop-filter: blur(0.125rem);
@@ -401,7 +401,7 @@ const logoURL = computed<string | null>(() => {
 			h1 {
 				font-weight: 700;
 				font-size: 1rem;
-				line-height: 1;
+				line-height: 18px;
 			}
 
 			.subtitle {

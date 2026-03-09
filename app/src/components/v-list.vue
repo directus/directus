@@ -84,7 +84,7 @@ useGroupableParent(
 	padding: var(--v-list-padding, 0.25rem 0);
 	overflow: auto;
 	color: var(--v-list-color, var(--theme--foreground-accent));
-	line-height: 1.25rem;
+	line-height: 22px;
 	list-style: none;
 	border-radius: var(--v-list-border-radius, var(--theme--border-radius));
 }

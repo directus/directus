@@ -149,7 +149,7 @@ watch(
 
 	:deep(.CodeMirror) {
 		inline-size: 100%;
-		line-height: 1rem;
+		line-height: 18px;
 		padding: var(--theme--form--field--input--padding);
 
 		.cm-tag {

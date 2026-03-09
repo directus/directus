@@ -40,7 +40,7 @@ withDefaults(defineProps<Props>(), {
 
 	/* Page Content Spacing */
 	font-size: 0.875rem;
-	line-height: 1.5714;
+	line-height: 24px;
 	background-color: var(--v-card-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 

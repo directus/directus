@@ -98,7 +98,7 @@ header {
 			color: var(--theme--foreground);
 			font-weight: 700;
 			font-size: 1.375rem;
-			line-height: 1;
+			line-height: 24px;
 		}
 
 		.subtitle {

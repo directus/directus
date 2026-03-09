@@ -51,38 +51,38 @@ h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
 }
 h1 {
 	font-size: 2rem;
-	line-height: 2.5625rem;
+	line-height: 46px;
 	margin-block-start: 1em;
 }
 h2 {
 	font-size: 1.375rem;
-	line-height: 1.9375rem;
+	line-height: 34px;
 	margin-block-start: 1.25em;
 }
 h3 {
 	font-size: 1.0625rem;
-	line-height: 1.625rem;
+	line-height: 29px;
 	margin-block-start: 1.25em;
 }
 h4 {
 	font-size: 0.875rem;
-	line-height: 1.6429;
+	line-height: 26px;
 	margin-block-start: 1.5em;
 }
 h5 {
 	font-size: 0.8125rem;
-	line-height: 1.6923;
+	line-height: 24px;
 	margin-block-start: 2em;
 }
 h6 {
 	font-size: 0.6875rem;
-	line-height: 2;
+	line-height: 22px;
 	margin-block-start: 2em;
 }
 p {
 	font-family: ${userFontFamily}, serif;
 	font-size: 0.875rem;
-	line-height: 1.5714;
+	line-height: 24px;
 	font-weight: 500;
 	margin: 1.5em 0;
 }
@@ -94,7 +94,7 @@ a {
 ul, ol {
 	font-family: ${userFontFamily}, serif;
 	font-size: 0.875rem;
-	line-height: 1.5714;
+	line-height: 24px;
 	font-weight: 500;
 	margin: 1.5em 0;
 }
@@ -109,7 +109,7 @@ b, strong {
 }
 code {
 	font-size: 0.875rem;
-	line-height: 1.5714;
+	line-height: 24px;
 	font-weight: 500;
 	padding: 0.125rem 0.25rem;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
@@ -119,7 +119,7 @@ code {
 }
 pre {
 	font-size: 0.875rem;
-	line-height: 1.5714;
+	line-height: 24px;
 	font-weight: 500;
 	padding: 1em;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
@@ -130,7 +130,7 @@ pre {
 blockquote {
 	font-family: ${userFontFamily}, serif;
 	font-size: 0.875rem;
-	line-height: 1.5714;
+	line-height: 24px;
 	font-weight: 500;
 	border-inline-start: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-inline-start: 1em;
@@ -156,7 +156,7 @@ hr {
 table {
 	border-collapse: collapse;
 	font-size: 0.875rem;
-	line-height: 1.5714;
+	line-height: 24px;
 	font-weight: 500;
 }
 table th,
