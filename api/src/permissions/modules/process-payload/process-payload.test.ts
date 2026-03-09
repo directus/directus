@@ -323,3 +323,68 @@ test('Checks validation rules against payload with defaults', async () => {
 		'field-a': 2,
 	});
 });
+
+describe('Field validation with count() on array / m:n field', () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('id').id();
+			c.field('photos').json();
+		})
+		.build();
+
+	// Patch schema to use count(photos) validation (schema-builder has no direct way to set this).
+	const schemaWithCountValidation = {
+		...schema,
+		collections: {
+			...schema.collections,
+			'collection-a': {
+				...schema.collections['collection-a']!,
+				fields: {
+					...schema.collections['collection-a']!.fields,
+					photos: {
+						...schema.collections['collection-a']!.fields['photos']!,
+						validation: {
+							'count(photos)': { _eq: 2 },
+						},
+					},
+				},
+			},
+		},
+	};
+
+	const acc = { admin: false } as unknown as Accountability;
+
+	test('passes when payload has array of length 2', async () => {
+		vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['id', 'photos'], validation: null } as Permission]);
+
+		const result = await processPayload(
+			{
+				accountability: acc,
+				action: 'create',
+				collection: 'collection-a',
+				payload: { photos: [1, 2] },
+				nested: [],
+			},
+			{ schema: schemaWithCountValidation } as unknown as Context,
+		);
+
+		expect(result).toEqual({ photos: [1, 2] });
+	});
+
+	test('throws FailedValidationError when array length is not 2', async () => {
+		vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['id', 'photos'], validation: null } as Permission]);
+
+		await expect(
+			processPayload(
+				{
+					accountability: acc,
+					action: 'create',
+					collection: 'collection-a',
+					payload: { photos: [1] },
+					nested: [],
+				},
+				{ schema: schemaWithCountValidation } as unknown as Context,
+			),
+		).rejects.toMatchObject([expect.any(FailedValidationError)]);
+	});
+});

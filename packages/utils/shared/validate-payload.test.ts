@@ -227,4 +227,19 @@ describe('validatePayload', () => {
 			expect(validatePayload(mockFilter, { value: null }, options)).toHaveLength(1);
 		});
 	});
+
+	describe('validates count() on array / m:n field', () => {
+		const countFilter = {
+			_and: [{ 'count(photos)': { _eq: 2 } }],
+		} as Filter;
+
+		it('returns no errors when array length matches', () => {
+			expect(validatePayload(countFilter, { photos: [1, 2] })).toStrictEqual([]);
+		});
+
+		it('returns one error when array length does not match', () => {
+			const errors = validatePayload(countFilter, { photos: [1] });
+			expect(errors).toHaveLength(1);
+		});
+	});
 });

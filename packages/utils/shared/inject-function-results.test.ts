@@ -55,4 +55,20 @@ describe('injectFunctionResults', () => {
 			},
 		});
 	});
+
+	describe('count() for m:n / array fields', () => {
+		it('injects count(photos) as array length when payload has array', () => {
+			const input = { photos: [1, 2] };
+			const filter = { 'count(photos)': { _eq: 2 } };
+			const output = injectFunctionResults(input, filter);
+			expect(output).toHaveProperty('count(photos)', 2);
+			expect(output['photos']).toEqual([1, 2]);
+		});
+
+		it('injects count(photos) as null when payload has no key or non-array', () => {
+			const filter = { 'count(photos)': { _eq: 2 } };
+			expect(injectFunctionResults({}, filter)).toHaveProperty('count(photos)', null);
+			expect(injectFunctionResults({ photos: null }, filter)).toHaveProperty('count(photos)', null);
+		});
+	});
 });
