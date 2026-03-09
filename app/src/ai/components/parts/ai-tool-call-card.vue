@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
@@ -21,16 +21,21 @@ const props = defineProps<{
 	defaultOpen?: boolean;
 }>();
 
-const hasPendingApproval = computed(() => props.approval?.id !== undefined && props.approval.approved === undefined);
-const effectiveState = computed(() => (hasPendingApproval.value ? 'approval-requested' : props.state));
-const isStreaming = computed(
-	() => effectiveState.value === 'input-streaming' || effectiveState.value === 'input-available',
-);
-const isApprovalRequested = computed(() => effectiveState.value === 'approval-requested');
+const isStreaming = computed(() => props.state === 'input-streaming' || props.state === 'input-available');
+const isApprovalRequested = computed(() => props.state === 'approval-requested');
 const shouldBeOpen = computed(() => isApprovalRequested.value || props.defaultOpen);
+const isOpen = ref(false);
+
+watch(
+	shouldBeOpen,
+	(next) => {
+		isOpen.value = next;
+	},
+	{ immediate: true },
+);
 
 const statusConfig = computed(() => {
-	switch (effectiveState.value) {
+	switch (props.state) {
 		case 'input-streaming':
 			return { icon: 'pending', label: t('ai.streaming'), class: 'status-streaming' };
 		case 'input-available':
@@ -68,7 +73,7 @@ const handleAlwaysAllow = () => {
 </script>
 
 <template>
-	<CollapsibleRoot class="tool-call-card" :default-open="shouldBeOpen" :disabled="isApprovalRequested">
+	<CollapsibleRoot v-model:open="isOpen" class="tool-call-card" :disabled="isApprovalRequested">
 		<CollapsibleTrigger
 			class="card-header"
 			:class="{ 'is-disabled': isApprovalRequested }"

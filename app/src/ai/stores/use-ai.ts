@@ -41,6 +41,19 @@ const lastAssistantMessageIsCompleteWithToolApprovalResponses = ({ messages }: {
 	);
 };
 
+type ToolPartLike = { state?: string; approval?: { id: string; approved?: boolean; reason?: string } };
+
+const getEffectiveToolPartState = (part: ToolPartLike) => {
+	if (!part.state) return undefined;
+	if (!part.approval?.id || part.approval.approved !== undefined) return part.state;
+
+	if (part.state === 'input-streaming' || part.state === 'input-available') {
+		return 'approval-requested';
+	}
+
+	return part.state;
+};
+
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
@@ -214,59 +227,61 @@ export const useAiStore = defineStore('ai-store', () => {
 	const pendingContextSnapshot = ref<ContextAttachment[]>([]);
 	const isPreparingSubmission = ref(false);
 
+	const transport = new DefaultChatTransport({
+		api: '/ai/chat',
+		credentials: 'include',
+		body: () => {
+			const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
+
+			// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
+			const approvals: Record<string, 'always' | 'ask'> = {};
+
+			for (const [toolName, mode] of Object.entries(toolsStore.toolApprovals)) {
+				if (mode === 'always' || mode === 'ask') {
+					approvals[toolName] = mode;
+				}
+			}
+
+			// Build context for system prompt
+			const context: {
+				attachments?: ContextAttachment[];
+				page?: { path: string; collection?: string; item?: string | number; module?: string };
+			} = {
+				page: currentPageContext.value,
+			};
+
+			if (pendingContextSnapshot.value.length > 0) {
+				context.attachments = pendingContextSnapshot.value;
+			}
+
+			return {
+				provider: selectedModel.value?.provider,
+				model: selectedModel.value?.model,
+				tools,
+				toolApprovals: approvals,
+				context,
+			};
+		},
+		prepareSendMessagesRequest: (req) => {
+			const limitedMessages =
+				estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
+
+			const messages = sanitizeMessages(limitedMessages);
+
+			return {
+				...req,
+				body: {
+					...req.body,
+					messages,
+				},
+			};
+		},
+	});
+
 	// Chat instance
 	const chat = new Chat<UIMessage>({
 		messages: storedMessages.value,
-		transport: new DefaultChatTransport({
-			api: '/ai/chat',
-			credentials: 'include',
-			body: () => {
-				const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
-
-				// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
-				const approvals: Record<string, 'always' | 'ask'> = {};
-
-				for (const [toolName, mode] of Object.entries(toolsStore.toolApprovals)) {
-					if (mode === 'always' || mode === 'ask') {
-						approvals[toolName] = mode;
-					}
-				}
-
-				// Build context for system prompt
-				const context: {
-					attachments?: ContextAttachment[];
-					page?: { path: string; collection?: string; item?: string | number; module?: string };
-				} = {
-					page: currentPageContext.value,
-				};
-
-				if (pendingContextSnapshot.value.length > 0) {
-					context.attachments = pendingContextSnapshot.value;
-				}
-
-				return {
-					provider: selectedModel.value?.provider,
-					model: selectedModel.value?.model,
-					tools,
-					toolApprovals: approvals,
-					context,
-				};
-			},
-			prepareSendMessagesRequest: (req) => {
-				const limitedMessages =
-					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
-
-				const messages = sanitizeMessages(limitedMessages);
-
-				return {
-					...req,
-					body: {
-						...req.body,
-						messages,
-					},
-				};
-			},
-		}),
+		transport,
 		sendAutomaticallyWhen: ({ messages }) =>
 			lastAssistantMessageIsCompleteWithToolApprovalResponses({ messages }) ||
 			lastAssistantMessageIsCompleteWithToolCalls({ messages }),
@@ -331,7 +346,21 @@ export const useAiStore = defineStore('ai-store', () => {
 	const messages = computed(() =>
 		chat.messages.map((msg) => ({
 			...msg,
-			parts: [...(msg.parts ?? [])],
+			parts: (msg.parts ?? []).map((part) => {
+				if (part.type !== 'dynamic-tool' && !part.type.startsWith('tool-')) {
+					return part;
+				}
+
+				const toolPart = part as ToolPartLike;
+
+				// Always clone tool parts to force Vue prop updates when the SDK mutates
+				// nested fields (state/approval) in place.
+				return {
+					...part,
+					state: getEffectiveToolPartState(toolPart) ?? toolPart.state,
+					...(toolPart.approval ? { approval: { ...toolPart.approval } } : {}),
+				};
+			}),
 		})),
 	);
 
@@ -506,24 +535,19 @@ export const useAiStore = defineStore('ai-store', () => {
 		return context;
 	});
 
-	const normalizePendingApprovalState = (approvalId: string) => {
+	const findMatchingApprovalPart = (approvalId: string) => {
 		const lastMessage = chat.messages.at(-1);
+		if (!lastMessage || lastMessage.role !== 'assistant') return undefined;
 
-		if (!lastMessage || lastMessage.role !== 'assistant') {
-			return;
-		}
-
-		const matchingPart = lastMessage.parts.find((part) => {
-			if (part.type !== 'dynamic-tool' && !part.type.startsWith('tool-')) {
-				return false;
-			}
-
+		return lastMessage.parts.find((part) => {
+			if (part.type !== 'dynamic-tool' && !part.type.startsWith('tool-')) return false;
 			return 'approval' in part && part.approval?.id === approvalId;
-		}) as { state: string } | undefined;
+		}) as (ToolPartLike & { state: string }) | undefined;
+	};
 
-		if (!matchingPart) {
-			return;
-		}
+	const normalizePendingApprovalState = (approvalId: string) => {
+		const matchingPart = findMatchingApprovalPart(approvalId);
+		if (!matchingPart) return;
 
 		// Some streams provide approval metadata before state settles to
 		// approval-requested. Normalize so addToolApprovalResponse can always apply.
@@ -532,15 +556,40 @@ export const useAiStore = defineStore('ai-store', () => {
 		}
 	};
 
-	const approveToolCall = (approvalId: string) => {
-		normalizePendingApprovalState(approvalId);
-		void chat.addToolApprovalResponse({ id: approvalId, approved: true }).catch(unexpectedError);
+	const applyLocalApprovalResponseFallback = (approvalId: string, approved: boolean) => {
+		const matchingPart = findMatchingApprovalPart(approvalId);
+		if (!matchingPart) return;
+
+		matchingPart.state = 'approval-responded';
+
+		matchingPart.approval = {
+			id: approvalId,
+			approved,
+			...(matchingPart.approval?.reason ? { reason: matchingPart.approval.reason } : {}),
+		};
 	};
 
-	const denyToolCall = (approvalId: string) => {
-		normalizePendingApprovalState(approvalId);
-		void chat.addToolApprovalResponse({ id: approvalId, approved: false }).catch(unexpectedError);
+	const maybeContinueAfterApprovalResponse = () => {
+		if (chat.status === 'streaming' || chat.status === 'submitted') return;
+		if (!lastAssistantMessageIsCompleteWithToolApprovalResponses({ messages: chat.messages })) return;
+
+		void chat.sendMessage().catch(unexpectedError);
 	};
+
+	const respondToToolCall = (approvalId: string, approved: boolean) => {
+		normalizePendingApprovalState(approvalId);
+
+		void chat
+			.addToolApprovalResponse({ id: approvalId, approved })
+			.catch(unexpectedError)
+			.finally(() => {
+				applyLocalApprovalResponseFallback(approvalId, approved);
+				maybeContinueAfterApprovalResponse();
+			});
+	};
+
+	const approveToolCall = (approvalId: string) => respondToToolCall(approvalId, true);
+	const denyToolCall = (approvalId: string) => respondToToolCall(approvalId, false);
 
 	return {
 		// UI State

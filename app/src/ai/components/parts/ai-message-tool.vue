@@ -39,10 +39,6 @@ const state = computed(
 );
 
 const approval = computed(() => props.part.approval as { id: string; approved?: boolean; reason?: string } | undefined);
-const isApprovalRequested = computed(
-	() =>
-		state.value === 'approval-requested' || (approval.value?.id !== undefined && approval.value.approved === undefined),
-);
 
 const isAskUser = computed(() => toolName.value === 'ask_user');
 </script>
@@ -58,7 +54,13 @@ const isAskUser = computed(() => toolName.value === 'ask_user');
 	</AiToolCallCard>
 	<template v-else-if="isAskUser && state !== 'output-error'" />
 
-	<AiToolCallCard v-else :state="state" :approval="approval" :tool-name="toolName" :default-open="isApprovalRequested">
+	<AiToolCallCard
+		v-else
+		:state="state"
+		:approval="approval"
+		:tool-name="toolName"
+		:default-open="state === 'approval-requested'"
+	>
 		<template #title>
 			<VTextOverflow :text="toolDisplayName" />
 		</template>

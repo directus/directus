@@ -169,6 +169,28 @@ describe('useAiStore', () => {
 			expect(aiStore.isUiLoading).toBe(false);
 			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
 		});
+
+		test('treats pending approvals as approval-requested when state is input-available', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [
+					{
+						type: 'tool-schema',
+						toolCallId: 'call-1',
+						state: 'input-available',
+						input: {},
+						approval: { id: 'approval-1' },
+					},
+				],
+			} as any);
+
+			expect(aiStore.hasPendingToolCall).toBe(true);
+			expect(aiStore.isAwaitingToolExecution).toBe(false);
+			expect(aiStore.isUiLoading).toBe(false);
+		});
 	});
 
 	describe('tool approval auto-send', () => {
