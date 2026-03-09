@@ -423,7 +423,7 @@ function setToNow() {
 	.calendar-cell {
 		position: relative;
 		font-size: 0.6875rem;
-		line-height: 1.25rem;
+		line-height: 1.4545;
 		text-align: center;
 	}
 
