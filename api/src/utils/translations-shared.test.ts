@@ -13,7 +13,7 @@ describe('translations-shared', () => {
 					schema: {},
 					meta: null,
 					name: 'title',
-				} as any,
+				} as Field,
 			]),
 		).toThrow(InvalidPayloadError);
 
