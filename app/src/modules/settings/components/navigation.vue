@@ -84,6 +84,11 @@ const links = computed<Link[][]>(() => [
 					to: `/settings/ai`,
 				}
 			: undefined,
+		{
+			icon: 'search',
+			name: t('global_search'),
+			to: `/settings/global-search`,
+		},
 	].filter((link) => link) as Link[],
 	[
 		{

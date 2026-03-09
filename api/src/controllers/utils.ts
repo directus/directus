@@ -1,5 +1,6 @@
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
+import type { GlobalSearchCollectionConfig } from '@directus/types';
+import { getFieldsFromTemplate, mergeFilters, toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -11,9 +12,12 @@ import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
+import { ItemsService } from '../services/items.js';
 import { RevisionsService } from '../services/revisions.js';
+import { SettingsService } from '../services/settings.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
+import { createDeepObject } from '../utils/create-deep-object.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { generateTranslations } from '../utils/generate-translations.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
@@ -239,6 +243,72 @@ router.post(
 		} catch {
 			throw new InvalidPayloadError({ reason: `Invalid "redirect" provided` });
 		}
+	}),
+);
+
+const MAX_SEARCH_COLLECTIONS = 20;
+
+router.post(
+	'/search',
+	asyncHandler(async (req, res) => {
+		const { query } = req.body;
+
+		if (!query || typeof query !== 'string') {
+			throw new InvalidPayloadError({ reason: `"query" is required and must be a string` });
+		}
+
+		const settingsService = new SettingsService({ schema: req.schema });
+		const settings = await settingsService.readSingleton({});
+		const config = settings['global_search_config'] as GlobalSearchCollectionConfig[] | null;
+
+		if (!config?.length) {
+			return res.json({ data: {} });
+		}
+
+		const collections = config.slice(0, MAX_SEARCH_COLLECTIONS);
+
+		const results: Record<string, any[]> = {};
+
+		await Promise.allSettled(
+			collections.map(async (collectionConfig) => {
+				try {
+					const service = new ItemsService(collectionConfig.collection, {
+						accountability: req.accountability,
+						schema: req.schema,
+					});
+
+					const searchFilter = {
+						_or: collectionConfig.fields.map((field) => createDeepObject(field, { _icontains: query })),
+					};
+
+					const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
+
+					const templateFields = collectionConfig.display_template
+						? getFieldsFromTemplate(collectionConfig.display_template)
+						: [];
+
+					const fieldsToFetch = [
+						'*',
+						...templateFields,
+						...collectionConfig.fields,
+						...(collectionConfig.description_field ? [collectionConfig.description_field] : []),
+					];
+
+					const items = await service.readByQuery({
+						filter,
+						fields: [...new Set(fieldsToFetch)],
+						limit: collectionConfig.limit ?? 5,
+						sort: collectionConfig.sort ? [collectionConfig.sort] : null,
+					});
+
+					results[collectionConfig.collection] = items;
+				} catch {
+					// Skip collections the user can't access
+				}
+			}),
+		);
+
+		return res.json({ data: results });
 	}),
 );
 

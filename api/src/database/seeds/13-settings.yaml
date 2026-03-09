@@ -47,3 +47,5 @@ columns:
     type: json
   custom_css:
     type: text
+  global_search_config:
+    type: json

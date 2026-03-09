@@ -14,6 +14,7 @@ import VButton from '@/components/v-button.vue';
 import VError from '@/components/v-error.vue';
 import VInfo from '@/components/v-info.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import CommandPalette from '@/components/command-palette/command-palette.vue';
 import { useServerStore } from '@/stores/server';
 import { generateFavicon } from '@/utils/generate-favicon';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -133,6 +134,7 @@ const reload = () => {
 		<RouterView v-else-if="!hydrating" />
 	</div>
 
+	<CommandPalette v-if="appStore.hydrated" />
 	<Teleport to="#custom-css">{{ customCSS }}</Teleport>
 </template>
 

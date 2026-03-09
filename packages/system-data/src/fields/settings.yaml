@@ -1339,3 +1339,109 @@ fields:
     hidden: true
     special:
       - encrypt
+
+  ### Global Search Settings ###
+  # The global_search_group is rendered on a separate settings page in the app
+
+  - field: global_search_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
+  - field: global_search_divider
+    interface: presentation-divider
+    options:
+      icon: search
+      title: $t:global_search
+    special:
+      - alias
+      - no-data
+    width: full
+    group: global_search_group
+
+  - field: global_search_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.global_search_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: global_search_group
+
+  - field: global_search_config
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{collection}}'
+      addLabel: $t:fields.directus_settings.global_search_add_collection
+      fields:
+        - field: collection
+          name: $t:collection
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: system-collection
+            required: true
+            width: full
+            options:
+              includeSingleton: false
+              includeSystem: true
+        - field: display_template
+          name: $t:display_template
+          type: string
+          meta:
+            interface: system-display-template
+            options:
+              collectionField: collection
+            width: full
+        - field: description_field
+          name: $t:fields.directus_settings.global_search_description_field
+          type: string
+          meta:
+            interface: system-field
+            options:
+              collectionField: collection
+            width: half
+        - field: fields
+          name: $t:fields.directus_settings.global_search_fields_to_search
+          type: json
+          meta:
+            interface: system-field-tree
+            options:
+              collectionField: collection
+            note: $t:fields.directus_settings.global_search_fields_note
+            width: full
+        - field: filter
+          name: $t:filter
+          type: json
+          meta:
+            interface: system-filter
+            options:
+              collectionField: collection
+            note: $t:fields.directus_settings.global_search_filter_note
+            width: full
+        - field: limit
+          name: $t:fields.directus_settings.global_search_limit
+          type: integer
+          schema:
+            default_value: 5
+          meta:
+            interface: input
+            width: half
+            note: $t:fields.directus_settings.global_search_limit_note
+        - field: sort
+          name: $t:sort_by
+          type: string
+          meta:
+            interface: system-field
+            options:
+              collectionField: collection
+            width: half
+    width: full
+    group: global_search_group

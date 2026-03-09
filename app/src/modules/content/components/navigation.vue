@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { isNil, orderBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useNavigation } from '../composables/use-navigation';
 import NavigationItem from './NavigationItem.vue';
 import VButton from '@/components/v-button.vue';
@@ -14,6 +15,13 @@ import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useUserStore } from '@/stores/user';
+
+const { t } = useI18n();
+const isMacOS = navigator.platform.toUpperCase().includes('MAC');
+
+function openCommandPalette() {
+	window.dispatchEvent(new CustomEvent('open-command-palette'));
+}
 
 const props = defineProps<{
 	currentCollection?: string;
@@ -46,11 +54,17 @@ const hasHiddenCollections = computed(
 
 <template>
 	<div class="content-navigation-wrapper">
-		<div v-if="showSearch" class="search-input">
-			<VInput v-model="search" type="search" :placeholder="$t('search_collection')">
-				<template #prepend><VIcon name="search" /></template>
-			</VInput>
+		<div class="command-palette-trigger" @click="openCommandPalette">
+			<span>{{ t('search') }}...</span>
+			<span class="keys">
+				<kbd>{{ isMacOS ? '⌘' : 'Ctrl+' }}</kbd>
+				<kbd>K</kbd>
+			</span>
 		</div>
+
+		<!-- <div v-if="showSearch" class="search-input">
+			<VInput v-model="search" type="search" :placeholder="$t('search_collection')" />
+		</div> -->
 
 		<VList
 			v-model="activeGroups"
@@ -155,6 +169,33 @@ const hasHiddenCollections = computed(
 
 .hidden-collection {
 	--v-list-item-color: var(--theme--foreground-subdued);
+}
+
+.command-palette-trigger {
+	cursor: pointer;
+	display: flex;
+	background-color: var(--theme--background);
+	gap: 8px;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid var(--theme--border-color);
+	padding: 6px 12px;
+	border-radius: var(--theme--border-radius);
+	color: var(--theme--foreground-subdued);
+	margin: 12px 12px 0;
+	transition: all var(--fast) var(--transition);
+
+	&:hover {
+		border-color: var(--theme--primary);
+		color: var(--theme--foreground-accent);
+	}
+
+	.keys {
+		border: 1px solid var(--theme--border-color);
+		padding: 0 6px;
+		border-radius: 4px;
+		font-size: 87.5%;
+	}
 }
 
 .search-input {

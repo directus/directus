@@ -1,4 +1,5 @@
 import type { OpenAICompatibleHeader, OpenAICompatibleModel } from '@directus/ai';
+import type { Filter } from './filter.js';
 
 export type SettingsModuleBarModule = {
 	type: 'module';
@@ -31,6 +32,16 @@ export type SettingsStorageAssetPreset = {
 export type CustomAspectRatio = {
 	text: string;
 	value: number;
+};
+
+export type GlobalSearchCollectionConfig = {
+	collection: string;
+	display_template: string | null;
+	description_field: string | null;
+	fields: string[];
+	filter: Filter | null;
+	sort: string | null;
+	limit: number | null;
 };
 
 export type Settings = {
@@ -89,6 +100,7 @@ export type Settings = {
 	collaborative_editing_enabled: boolean;
 	license_key: string | null;
 	license_token: string | null;
+	global_search_config: GlobalSearchCollectionConfig[] | null;
 } & OwnerInformation;
 
 export type OwnerInformation = {

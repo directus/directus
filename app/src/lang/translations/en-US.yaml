@@ -1551,6 +1551,7 @@ licensing:
 danger_zone: Danger Zone
 settings_appearance: Appearance
 settings_ai: AI
+global_search: Global Search
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
@@ -1942,6 +1943,16 @@ fields:
     ai_provider_options: Provider Options
     ai_provider_options_note: Provider-specific options passed to AI endpoints.
     ai_header_name: Header
+    global_search_notice:
+      'Configure which collections are searchable from the command palette. Each collection can have its own display
+      template, search fields, and filters.'
+    global_search_add_collection: Add Collection
+    global_search_description_field: Description Field
+    global_search_fields_to_search: Fields to Search
+    global_search_fields_note: Select the fields to search through.
+    global_search_filter_note: Add a filter to limit the search results.
+    global_search_limit: Number of Results
+    global_search_limit_note: The maximum number of search results per collection.
 
   directus_shares:
     name: Name
@@ -3313,3 +3324,16 @@ text_direction_rtl: Right to Left (RTL)
 set_to_now: Set to Now
 aria:
   more_options: More options
+command_create_item: 'Create {collection}'
+command_go_to_collection: 'Go to {collection}'
+command_search_collection: 'Search {collection}'
+command_configure_collection: 'Configure {collection}'
+command_create_collection: Create Collection
+command_create_flow: Create Flow
+command_view_users: View Users
+command_create_user: Create User
+command_copy_api_url: Copy API URL
+command_type_to_search: 'Type to search {collection}...'
+command_ask_ai: 'Ask AI: "{query}"'
+navigate: Navigate
+command_palette_select: Select
