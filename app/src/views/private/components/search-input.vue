@@ -393,7 +393,7 @@ function emitValue() {
 			inline-size: 16.875rem;
 		}
 
-		@media (min-width: 1260px) {
+		@media (width >= 70.875rem) {
 			inline-size: 23.625rem; /* blaze it */
 		}
 	}
