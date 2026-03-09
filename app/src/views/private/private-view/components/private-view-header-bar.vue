@@ -163,7 +163,7 @@ const showSidebarToggle = computed(() => {
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.2em;
+		line-height: 1.2;
 		max-inline-size: 100%;
 
 		.render-template img,

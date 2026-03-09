@@ -162,7 +162,7 @@ withDefaults(defineProps<Props>(), {
 	.gap {
 		display: none;
 		margin: 0 0.25rem;
-		line-height: 2em;
+		line-height: 2;
 	}
 
 	@include mixins.breakpoint-up('sm') {

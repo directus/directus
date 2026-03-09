@@ -137,7 +137,7 @@ defineEmits<{
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.2em;
+		line-height: 1.2;
 		max-inline-size: 100%;
 		block-size: 1.375rem;
 	}

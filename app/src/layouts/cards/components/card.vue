@@ -320,7 +320,7 @@ function handleClick() {
 	block-size: 1.4375rem;
 	margin-block-start: 0.125rem;
 	overflow: hidden;
-	line-height: 1.3em;
+	line-height: 1.3;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 

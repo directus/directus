@@ -243,7 +243,7 @@ defineExpose({
 input {
 	color: var(--theme--primary);
 	font-family: var(--theme--fonts--monospace--font-family);
-	line-height: 1em;
+	line-height: 1;
 	background-color: var(--theme--form--field--input--background);
 	border: none;
 	max-inline-size: 40ch;
