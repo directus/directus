@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.alterTable('directus_deployment_runs', (table) => {
+	await knex.schema.alterTable('directus_users', (table) => {
 		table.dropColumn('date_created');
 		table.dropColumn('date_updated');
 	});
