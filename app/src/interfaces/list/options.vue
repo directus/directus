@@ -3,6 +3,7 @@ import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Repeater from './list.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
 import VInput from '@/components/v-input.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { FIELD_TYPES_SELECT } from '@/constants';
@@ -243,6 +244,30 @@ const sort = computed({
 	},
 });
 
+const editMode = computed({
+	get() {
+		return props.value?.editMode ?? 'drawer';
+	},
+	set(newEditMode: string) {
+		emit('input', {
+			...(props.value || {}),
+			editMode: newEditMode,
+		});
+	},
+});
+
+const showConfirmDiscard = computed({
+	get() {
+		return props.value?.showConfirmDiscard ?? true;
+	},
+	set(newVal: boolean) {
+		emit('input', {
+			...(props.value || {}),
+			showConfirmDiscard: newVal,
+		});
+	},
+});
+
 const sortFields = computed(() => {
 	if (!repeaterValue.value) return [];
 
@@ -254,12 +279,29 @@ const sortFields = computed(() => {
 
 <template>
 	<div class="grid">
-		<div class="grid-element half">
+		<div class="grid-element half-left">
+			<p class="type-label">{{ $t('interfaces.list.edit_mode') }}</p>
+			<VSelect
+				v-model="editMode"
+				class="input"
+				:items="[
+					{ text: $t('interfaces.list.edit_mode_drawer'), value: 'drawer' },
+					{ text: $t('interfaces.list.edit_mode_inline'), value: 'inline' },
+				]"
+			/>
+		</div>
+
+		<div v-if="editMode === 'inline'" class="grid-element half-right">
+			<p class="type-label">&nbsp;</p>
+			<VCheckbox v-model="showConfirmDiscard" :label="$t('interfaces.list.confirm_remove')" block />
+		</div>
+
+		<div class="grid-element half-left">
 			<p class="type-label">{{ $t('template') }}</p>
 			<VInput v-model="template" class="input" :placeholder="`{{ field }}`" />
 		</div>
 
-		<div class="grid-element half">
+		<div class="grid-element half-right">
 			<p class="type-label">{{ $t('interfaces.list.add_label') }}</p>
 			<InterfaceSystemInputTranslatedString
 				:value="addLabel"

@@ -2071,6 +2071,7 @@ show_link_to_item: Show a link to the item
 navigate_to_item: Navigate to Item
 undo_removed_item: Undo Removed Item
 remove_item: Remove Item
+remove_item_copy: Are you sure you want to remove this item? This action cannot be undone.
 delete_item: Delete Item
 pause: Pause
 resume: Resume
@@ -2311,6 +2312,10 @@ interfaces:
       repeater
     interface_group: Interface Options
     display_group: Display Options
+    edit_mode: Edit Mode
+    edit_mode_drawer: Drawer
+    edit_mode_inline: Inline
+    confirm_remove: Confirm Item Removal
 
   slider:
     slider: Slider
