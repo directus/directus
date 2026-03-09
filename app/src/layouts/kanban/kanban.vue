@@ -415,7 +415,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 				.title,
 				.text {
-					line-height: 24px;
+					line-height: 1.375rem;
 					block-size: 1.375rem;
 
 					& * {
