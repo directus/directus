@@ -646,11 +646,11 @@ catalogs:
       specifier: 10.24.0
       version: 10.24.0
     lodash:
-      specifier: 4.17.21
-      version: 4.17.21
+      specifier: 4.17.23
+      version: 4.17.23
     lodash-es:
-      specifier: 4.17.21
-      version: 4.17.21
+      specifier: 4.17.23
+      version: 4.17.23
     log-symbols:
       specifier: 7.0.1
       version: 7.0.1
@@ -1262,7 +1262,7 @@ importers:
         version: 10.24.0
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
       marked:
         specifier: 'catalog:'
         version: 16.4.1
@@ -1519,7 +1519,7 @@ importers:
         version: 3.15.3
       nodemailer-mailgun-transport:
         specifier: 'catalog:'
-        version: 2.1.5(lodash@4.17.21)(underscore@1.13.8)
+        version: 2.1.5(lodash@4.17.23)(underscore@1.13.8)
       oracledb:
         specifier: 'catalog:'
         version: 6.10.0
@@ -1840,7 +1840,7 @@ importers:
         version: 1.7.6
       lodash:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
       mapbox-gl:
         specifier: 'catalog:'
         version: 1.13.3
@@ -1966,7 +1966,7 @@ importers:
         version: 1.13.5
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
       nanoid:
         specifier: 'catalog:'
         version: 5.1.6
@@ -2080,7 +2080,7 @@ importers:
         version: 17.2.3
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2154,7 +2154,7 @@ importers:
         version: 11.3.2
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
       zod:
         specifier: 'catalog:'
         version: 4.1.12
@@ -2482,7 +2482,7 @@ importers:
         version: link:../types
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2836,7 +2836,7 @@ importers:
         version: 6.0.1
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -3022,7 +3022,7 @@ importers:
         version: 4.1.1
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
       micromustache:
         specifier: 'catalog:'
         version: 8.0.3
@@ -3207,7 +3207,7 @@ importers:
         version: 9.0.5
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.21
+        version: 4.17.23
       mailparser:
         specifier: 3.9.3
         version: 3.9.3
@@ -10669,8 +10669,8 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lodash-es@4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+  lodash-es@4.17.23:
+    resolution: {integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==}
 
   lodash._baseiteratee@4.7.0:
     resolution: {integrity: sha512-nqB9M+wITz0BX/Q2xg6fQ8mLkyfF7MU7eE+MNBNjTHFKeKaZAPEzEg+E8LWxKWf1DQVflNEn9N49yAuqKh2mWQ==}
@@ -10759,6 +10759,9 @@ packages:
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
+  lodash@4.17.23:
+    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 
   log-symbols@6.0.0:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
@@ -20989,11 +20992,11 @@ snapshots:
   console-control-strings@1.1.0:
     optional: true
 
-  consolidate@0.15.1(lodash@4.17.21)(underscore@1.13.8):
+  consolidate@0.15.1(lodash@4.17.23)(underscore@1.13.8):
     dependencies:
       bluebird: 3.7.2
     optionalDependencies:
-      lodash: 4.17.21
+      lodash: 4.17.23
       underscore: 1.13.8
     optional: true
 
@@ -23560,7 +23563,7 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lodash-es@4.17.21: {}
+  lodash-es@4.17.23: {}
 
   lodash._baseiteratee@4.7.0:
     dependencies:
@@ -23629,6 +23632,8 @@ snapshots:
       lodash._baseuniq: 4.6.0
 
   lodash@4.17.21: {}
+
+  lodash@4.17.23: {}
 
   log-symbols@6.0.0:
     dependencies:
@@ -24206,9 +24211,9 @@ snapshots:
 
   node-xmllint@1.0.0: {}
 
-  nodemailer-mailgun-transport@2.1.5(lodash@4.17.21)(underscore@1.13.8):
+  nodemailer-mailgun-transport@2.1.5(lodash@4.17.23)(underscore@1.13.8):
     dependencies:
-      consolidate: 0.15.1(lodash@4.17.21)(underscore@1.13.8)
+      consolidate: 0.15.1(lodash@4.17.23)(underscore@1.13.8)
       form-data: 4.0.4
       mailgun.js: 8.2.2
     transitivePeerDependencies:
