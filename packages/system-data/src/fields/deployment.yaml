@@ -17,6 +17,9 @@ fields:
   - field: webhook_ids
     special:
       - cast-json
+  - field: last_synced_at
+    special:
+      - cast-timestamp
   - field: date_created
     special:
       - date-created

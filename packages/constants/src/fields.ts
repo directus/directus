@@ -70,6 +70,17 @@ export const GENERATE_SPECIAL = [
 
 export const TRANSLATIONS_STRIPPED_ON_CLONE_SPECIALS = [...GENERATE_SPECIAL, 'no-data', 'cast-timestamp'] as const;
 
-export const FUNCTIONS = ['year', 'month', 'week', 'day', 'weekday', 'hour', 'minute', 'second', 'count'] as const;
+export const FUNCTIONS = [
+	'year',
+	'month',
+	'week',
+	'day',
+	'weekday',
+	'hour',
+	'minute',
+	'second',
+	'count',
+	'json',
+] as const;
 
 export const SEARCHABLE_TYPES = ['text', 'string', 'integer', 'bigInteger', 'float', 'decimal', 'uuid'] as const;
