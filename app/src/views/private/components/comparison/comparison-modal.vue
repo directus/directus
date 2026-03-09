@@ -669,7 +669,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			grid-column: start / full;
 		}
 
-		@media (max-width: 1330px) {
+		@media (width < 74.8125rem) {
 			.fill,
 			.full,
 			.half,

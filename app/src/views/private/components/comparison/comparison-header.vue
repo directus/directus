@@ -197,7 +197,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	&.has-dropdown {
 		.title-container,
 		.header-meta {
-			@media (min-width: 1330px) {
+			@media (width >= 74.8125rem) {
 				inline-size: calc(50% - var(--theme--form--column-gap) / 2);
 			}
 		}
@@ -280,7 +280,7 @@ function getDeltaOptionUser(deltaOption: any) {
 					}
 				}
 
-				@media (min-width: 1330px) {
+				@media (width >= 74.8125rem) {
 					inline-size: 100%;
 				}
 
