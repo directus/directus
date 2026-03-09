@@ -1,7 +1,7 @@
 import type { Accountability, Field, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { FieldsService } from '../../../services/fields.js';
-import { fields } from './index.js';
+import { fields, FieldsValidateSchema } from './index.js';
 
 vi.mock('../../../services/fields.js');
 
@@ -242,6 +242,38 @@ describe('fields tool', () => {
 					},
 				});
 			});
+		});
+	});
+
+	describe('validate schema', () => {
+		test('should accept update payload without type', () => {
+			const result = FieldsValidateSchema.safeParse({
+				action: 'update',
+				collection: 'authors',
+				data: [{ field: 'optional', schema: { default_value: 'value100' } }],
+			});
+
+			expect(result.success).toBe(true);
+		});
+
+		test('should require type for create payload', () => {
+			const result = FieldsValidateSchema.safeParse({
+				action: 'create',
+				collection: 'authors',
+				data: { field: 'optional', schema: { default_value: 'value100' } },
+			});
+
+			expect(result.success).toBe(false);
+		});
+
+		test('should accept update payload with type', () => {
+			const result = FieldsValidateSchema.safeParse({
+				action: 'update',
+				collection: 'authors',
+				data: [{ field: 'optional', type: 'string', schema: { default_value: 'value100' } }],
+			});
+
+			expect(result.success).toBe(true);
 		});
 	});
 

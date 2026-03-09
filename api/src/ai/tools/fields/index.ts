@@ -42,7 +42,7 @@ export const FieldsValidateSchema = z.discriminatedUnion('action', [
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('update'),
-		data: z.array(RawFieldItemValidateSchema),
+		data: z.array(RawFieldItemValidateSchema.partial({ type: true })),
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('delete'),
