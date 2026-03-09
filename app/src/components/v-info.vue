@@ -80,7 +80,7 @@ withDefaults(defineProps<Props>(), {
 .content {
 	max-inline-size: 16.875rem;
 	color: var(--theme--foreground-subdued);
-	line-height: 22px;
+	line-height: 1.25rem;
 
 	&:not(:last-child) {
 		margin-block-end: 1.375rem;
