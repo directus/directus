@@ -26,7 +26,7 @@ describe('translations-shared', () => {
 					schema: {},
 					meta: { special: ['uuid'] },
 					name: 'title',
-				} as any,
+				} as Field,
 			]),
 		).toThrow(InvalidPayloadError);
 
