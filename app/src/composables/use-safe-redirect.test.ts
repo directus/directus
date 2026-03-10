@@ -62,7 +62,7 @@ describe('useSafeRedirect', () => {
 
 		await resolveRedirect('http://localhost:8055/admin/content');
 
-		expect(redirect.value).toBe('/admin/content');
+		expect(redirect.value).toBe('/content');
 	});
 
 	test('resolveRedirect preserves query and hash when converting to relative path', async () => {
@@ -72,7 +72,7 @@ describe('useSafeRedirect', () => {
 
 		await resolveRedirect('http://localhost:8055/admin/content?foo=bar#section');
 
-		expect(redirect.value).toBe('/admin/content?foo=bar#section');
+		expect(redirect.value).toBe('/content?foo=bar#section');
 	});
 
 	test('resolveRedirect keeps external URLs as-is', async () => {
