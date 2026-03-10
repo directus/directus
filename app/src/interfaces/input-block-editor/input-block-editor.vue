@@ -10,7 +10,9 @@ import { useFileHandler } from './use-file-handler';
 import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
 import VUpload from '@/components/v-upload.vue';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useCollectionsStore } from '@/stores/collections';
+import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 import './editorjs-overrides.css';
@@ -43,6 +45,8 @@ const bus = useBus();
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
 
 const collectionStore = useCollectionsStore();
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
 	useFileHandler();
@@ -126,6 +130,9 @@ watch(
 		// First value will be set in 'onMounted'
 		if (!editorjsRef.value || !editorjsIsReady.value) return;
 
+		// During refresh, item is temporarily null and the field is disabled — skip to avoid clearing the editor
+		if (newVal === null && props.disabled) return;
+
 		if (haveValuesChanged.value) {
 			haveValuesChanged.value = false;
 			return;
@@ -198,6 +205,7 @@ const menuActive = computed(() => fileHandler.value !== null);
 					:folder="folder"
 					from-library
 					from-url
+					:accept="allowedMimeTypes"
 					@input="handleFile"
 				/>
 			</div>

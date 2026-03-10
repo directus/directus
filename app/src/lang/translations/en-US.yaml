@@ -226,6 +226,7 @@ switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
 rename_version: Rename Version
+reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
@@ -238,6 +239,7 @@ delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
   You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
+content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -1136,13 +1138,11 @@ deployment:
       id: Deployment ID
       started: Started
       author: Author
-      notice:
-        Only deployments triggered from Directus are shown here. Deployments made directly on {provider} will not
-        appear.
       refresh: Refresh
       deploy_preview: Deploy Preview
       empty: No Deployment Runs
       empty_copy: This project has no deployment history yet.
+      external_user: External User
     run:
       title: '{project}: Deployment Details'
       id: Deployment ID
@@ -1156,6 +1156,7 @@ deployment:
       open_deployment: Visit
   no_providers: No Deployment Providers
   no_providers_copy: Configure a deployment provider in the settings to get started.
+  no_providers_copy_nonadmin: No deployment providers are available for your account. Contact an administrator.
   select_provider: Select a Provider
   select_provider_copy: Choose a deployment provider from the sidebar to view your projects.
   no_projects: No Projects
@@ -1175,6 +1176,17 @@ deployment:
   dashboard:
     projects: Projects ({count})
     deployed: Deployed
+    total_projects: 'Total Project: {count} | Total Projects: {count}'
+    active_deployments: 'Active Deployment: {count} | Active Deployments: {count}'
+    failed_builds: 'Failed Build: {count} | Failed Builds: {count}'
+    successful_builds: 'Successful Build: {count} | Successful Builds: {count}'
+    total_deployments: 'Deployment: {count} | Deployments: {count}'
+    average_build_time: 'Avg Build Time: {value}'
+    success_rate: 'Success Rate: {value}%'
+  range:
+    1d: Last 24 Hours
+    7d: Last 7 Days
+    30d: Last 30 Days
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -1535,6 +1547,7 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
+    project_owner: Project Owner
     branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
@@ -1570,7 +1583,11 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    report_feature_url: Report Feature URL
+    report_bug_url: Report Bug URL
+    report_error_url: Report Error URL
     collaborative_editing: Collaborative Editing
+    collaborative_editing_enabled: Enable Collaborative Editing
     collaborative_editing_note: WebSockets are required for collaborative editing to work.
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
@@ -1649,6 +1666,7 @@ fields:
     users: Users in Role
     parent: Parent Role
     children: Child Roles
+    policies: Policies
   directus_policies:
     name: Policy Name
     description: Description
@@ -1828,6 +1846,14 @@ ai:
   prompt_staged: Prompt staged
   items_staged: Items staged
   some_items_staged: '{count} item(s) staged (limit reached)'
+  files_staged: Files staged
+  some_files_staged: '{count} file(s) staged (limit reached)'
+  attach_file_subtitle: Attach existing files
+  upload_file_subtitle: Upload local files
+  file_upload_failed: 'Failed to upload {name}'
+  file_upload_not_supported: File uploads are not supported for this provider
+  unsupported_file_type: Unsupported file type
+  provider_locked_tooltip: Cannot change providers after uploading files. Clear the existing conversation to switch.
   image_preview: Image preview
   item_staged: Item staged
   invalid_collection: Invalid collection
@@ -1947,6 +1973,7 @@ no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
 delete_label: Delete
+discard_label: Discard
 delete_are_you_sure: >-
   This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
