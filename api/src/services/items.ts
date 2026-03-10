@@ -19,7 +19,7 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import { getRelationsForCollection } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
+import { assign, clone, cloneDeep, difference, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
@@ -884,7 +884,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					});
 
 					const relationalFields = getRelationsForCollection(this.schema, this.collection);
-					const snapshotFields = Object.keys(omit(fields, relationalFields));
+					const snapshotFields = difference(fields, relationalFields);
 
 					const snapshots = await itemsService.readMany(keys, {
 						fields: snapshotFields.length > 0 ? snapshotFields : ['*'],
