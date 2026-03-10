@@ -16,11 +16,6 @@ vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('sqlite'),
 }));
 
-vi.mock('../utils/encrypt.js', () => ({
-	encrypt: vi.fn(),
-	decrypt: vi.fn(),
-}));
-
 vi.mock('../utils/get-secret.js', () => ({
 	getSecret: vi.fn(),
 }));
@@ -29,14 +24,7 @@ vi.mock('../logger/index.js', () => ({
 	useLogger: vi.fn(),
 }));
 
-vi.mock('../utils/encrypt.js', () => ({
-	encrypt: vi.fn(() => 'encrypted'),
-	decrypt: vi.fn(() => 'decrypted'),
-}));
-
-vi.mock('../utils/get-secret.js', () => ({
-	getSecret: vi.fn().mockReturnValue('test-secret'),
-}));
+vi.mock('../utils/encrypt.js');
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -179,23 +167,6 @@ describe('Integration Tests', () => {
 					expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad key'));
 				});
 
-				test('returns decrypted value when decrypt succeeds', async () => {
-					vi.mocked(decrypt).mockResolvedValue('plaintext');
-
-					const result = await service.transformers['encrypt']!({
-						value: 'some-encrypted-blob',
-						action: 'read',
-						payload: {},
-						accountability: null,
-						specials: ['encrypt'],
-						helpers,
-						overwriteDefaults: undefined,
-					});
-
-					expect(result).toBe('plaintext');
-					expect(warn).not.toHaveBeenCalled();
-				});
-
 				test.each([null, '', false, undefined])('Returns falsy value (%s) as-is', async (value) => {
 					const result = await service.transformers['encrypt']!({
 						value,
@@ -228,6 +199,8 @@ describe('Integration Tests', () => {
 				});
 
 				test('Decrypts value on read when accountability is null', async () => {
+					vi.mocked(decrypt).mockResolvedValue('decrypted');
+
 					const result = await service.transformers['encrypt']!({
 						value: 'some-encrypted-value',
 						action: 'read',
@@ -240,9 +213,12 @@ describe('Integration Tests', () => {
 
 					expect(result).toBe('decrypted');
 					expect(decrypt).toHaveBeenCalledWith('some-encrypted-value', 'test-secret');
+					expect(warn).not.toHaveBeenCalled();
 				});
 
 				test.each<PayloadAction>(['create', 'update'])('Encrypts string value on %s', async (action) => {
+					vi.mocked(encrypt).mockResolvedValue('encrypted');
+
 					const result = await service.transformers['encrypt']!({
 						value: 'plain-text',
 						action,
