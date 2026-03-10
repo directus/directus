@@ -643,8 +643,8 @@ catalogs:
       specifier: 8.1.3
       version: 8.1.3
     liquidjs:
-      specifier: 10.24.0
-      version: 10.24.0
+      specifier: 10.25.0
+      version: 10.25.0
     lodash:
       specifier: 4.17.23
       version: 4.17.23
@@ -1259,7 +1259,7 @@ importers:
         version: 8.1.3
       liquidjs:
         specifier: 'catalog:'
-        version: 10.24.0
+        version: 10.25.0
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.23
@@ -10637,8 +10637,8 @@ packages:
   linkify-it@5.0.0:
     resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
 
-  liquidjs@10.24.0:
-    resolution: {integrity: sha512-TAUNAdgwaAXjjcUFuYVJm9kOVH7zc0mTKxsG9t9Lu4qdWjB2BEblyVIYpjWcmJLMGgiYqnGNJjpNMHx0gp/46A==}
+  liquidjs@10.25.0:
+    resolution: {integrity: sha512-XpO7AiGULTG4xcTlwkcTI5JreFG7b6esLCLp+aUSh7YuQErJZEoUXre9u9rbdb0057pfWG4l0VursvLd5Q/eAw==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -23518,7 +23518,7 @@ snapshots:
     dependencies:
       uc.micro: 2.1.0
 
-  liquidjs@10.24.0:
+  liquidjs@10.25.0:
     dependencies:
       commander: 10.0.1
 
