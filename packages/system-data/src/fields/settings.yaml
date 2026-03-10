@@ -796,6 +796,10 @@ fields:
           value: gpt-5.2-chat-latest
         - text: GPT-5.2 Pro
           value: gpt-5.2-pro
+        - text: GPT-5.4
+          value: gpt-5.4
+        - text: GPT-5.4 Pro
+          value: gpt-5.4-pro
     width: half
     group: ai_group
 
@@ -823,6 +827,10 @@ fields:
           value: claude-sonnet-4-5
         - text: Claude Opus 4.5
           value: claude-opus-4-5
+        - text: Claude Sonnet 4.6
+          value: claude-sonnet-4-6
+        - text: Claude Opus 4.6
+          value: claude-opus-4-6
     width: half
     group: ai_group
 
@@ -852,6 +860,12 @@ fields:
           value: gemini-2.5-pro
         - text: Gemini 2.5 Flash
           value: gemini-2.5-flash
+        - text: Gemini 3.1 Pro Preview
+          value: gemini-3.1-pro-preview
+        - text: Gemini 3.1 Flash Lite Preview
+          value: gemini-3.1-flash-lite-preview
+        - text: Gemini 2.5 Flash Lite
+          value: gemini-2.5-flash-lite
     width: half
     group: ai_group
 
