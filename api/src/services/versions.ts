@@ -1,4 +1,4 @@
-import { Action, VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
+import { Action, VERSION_KEY_DRAFT } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import {
 	type AbstractServiceOptions,
@@ -46,10 +46,12 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		// Reserves the "published" version key for the version query parameter
 		if (isPublishedVersionKey(data['key']))
-			throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
+			throw new InvalidPayloadError({ reason: `"${data['key']}" is a reserved version key` });
 
 		if (itemLess && data['key'] !== VERSION_KEY_DRAFT) {
-			throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
+			throw new InvalidPayloadError({
+				reason: `Item key is required for version keys other than "${VERSION_KEY_DRAFT}"`,
+			});
 		}
 
 		if (this.accountability) {
@@ -214,7 +216,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		// Reserves the "published" version key for the version query parameter
 		if (isPublishedVersionKey(data['key']))
-			throw new InvalidPayloadError({ reason: `"${VERSION_KEY_PUBLISHED}" is a reserved version key` });
+			throw new InvalidPayloadError({ reason: `"${data['key']}" is a reserved version key` });
 
 		const keyCombos = new Set();
 
@@ -226,7 +228,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			const key = 'key' in data ? data['key'] : existingVersion.key;
 
 			if (key !== VERSION_KEY_DRAFT && item === null)
-				throw new InvalidPayloadError({ reason: `Item key is required for version keys other than "draft"` });
+				throw new InvalidPayloadError({
+					reason: `Item key is required for version keys other than "${VERSION_KEY_DRAFT}"`,
+				});
 
 			const keyCombo = `${key}-${collection}-${item}`;
 
