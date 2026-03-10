@@ -207,7 +207,8 @@ function saveOperation() {
 			<component
 				:is="`operation-options-${operationType}`"
 				v-else-if="operationType && selectedOperation"
-				:options="operation"
+				:value="options"
+				@input="options = $event"
 			/>
 		</div>
 	</VDrawer>
