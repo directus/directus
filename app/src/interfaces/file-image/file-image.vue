@@ -13,6 +13,7 @@ import VNotice from '@/components/v-notice.vue';
 import VRemove from '@/components/v-remove.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
@@ -40,6 +41,7 @@ const props = withDefaults(
 		letterbox?: boolean;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		crop: true,
@@ -141,12 +143,9 @@ async function imageErrorHandler() {
 
 const values = inject('values', ref<Record<string, unknown>>({}));
 
-// Image-only filter for file library
-const imageFilter = {
-	type: {
-		_starts_with: 'image/',
-	},
-};
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(
+	computed(() => (props.allowedMimeTypes?.length ? props.allowedMimeTypes : ['image/*'])),
+);
 
 const customFilter = computed(() => {
 	const filter = parseFilter(
@@ -159,10 +158,11 @@ const customFilter = computed(() => {
 		}),
 	);
 
-	if (!filter) return imageFilter;
+	if (!mimeTypeFilter.value) return filter;
+	if (!filter) return mimeTypeFilter.value;
 
 	return {
-		_and: [filter, imageFilter],
+		_and: [filter, mimeTypeFilter.value],
 	};
 });
 
@@ -186,11 +186,15 @@ const edits = computed(() => {
 	return props.value;
 });
 
+const menuActive = computed(
+	() => lightboxActive.value || editDrawerActive.value || editImageDetails.value || editImageEditor.value,
+);
+
 const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 </script>
 
 <template>
-	<div class="image" :class="[width, { crop }]">
+	<div v-prevent-focusout="menuActive" class="image" :class="[width, { crop }]">
 		<VSkeletonLoader v-if="loading" type="input-tall" />
 
 		<VNotice v-else-if="nonEditable && !image" icon="hide_image" center class="non-editable-notice">
@@ -294,7 +298,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			:folder="folder"
 			:filter="customFilter"
 			:disabled="internalDisabled"
-			accept="image/*"
+			:accept="combinedAcceptString"
 			@input="onUpload"
 		/>
 	</div>

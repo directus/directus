@@ -66,6 +66,11 @@ export const MODULE_BAR_DEFAULT = [
 		enabled: true,
 	},
 	{
+		type: 'module',
+		id: 'deployments',
+		enabled: false,
+	},
+	{
 		type: 'link',
 		id: 'docs',
 		enabled: true,
@@ -158,6 +163,8 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 		value: 'hash',
 	},
 ];
+
+export const DRAFT_VERSION_KEY = 'draft';
 
 /** Contains `integer` and `float` – exclude `bigInteger` and `decimal` to avoid rounding errors. */
 export const APP_NUMERIC_TYPES = ['integer', 'float'];

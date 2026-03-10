@@ -13,7 +13,7 @@ const aiStore = useAiStore();
 		<AiModelSelector />
 		<div class="spacer" />
 		<VButton v-tooltip.left="$t('ai.clear_conversation')" x-small icon secondary @click="aiStore.reset">
-			<VIcon clickable name="delete_history" small />
+			<VIcon name="delete_history" small />
 		</VButton>
 		<AiSettingsMenu class="settings-menu" />
 	</div>

@@ -607,7 +607,6 @@ unexpected_error: Unexpected Error
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
-password_reset_sent: If you have an account, we've sent you a secure link to reset your password
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
@@ -789,6 +788,14 @@ operation_key_unique_error: Operation keys must be unique in a Flow
 operation_handle_resolve: 'Resolve: Click to Add or Drag to Reroute'
 operation_handle_reject: 'Reject: Click to Add or Drag to Reroute'
 insights: Insights
+deployment:
+  provider:
+    settings:
+      delete_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+    run:
+      cancel_confirm: This action is permanent and can not be undone. Are you sure you would like to proceed?
+  target_value:
+    preview: Preview
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -1086,6 +1093,7 @@ fields:
     transformations_presets: Limit transformations to presets below
     image_editor: Image Editor
     custom_aspect_ratios: Custom Aspect Ratios
+    ai_header_name: Header
   directus_shares:
     name: Name
     role: Role
@@ -1218,9 +1226,13 @@ no_shares: No shares to show
 new_share: New Share
 ai:
   input: Input
+  items: Items
+  content: Content
   settings: Settings
   tool_approval:
     disabled: Disabled
+  ask_user_submit: Submit
+  ask_user_next: Next
 ai_tools:
   items: Items
   files: Files
@@ -2061,3 +2073,4 @@ fonts:
   black: Black
   italic: Italic
   auto: Auto
+set_to_now: Set to Now

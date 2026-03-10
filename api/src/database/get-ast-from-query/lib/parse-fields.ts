@@ -1,12 +1,11 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
-import { getRelation } from '@directus/utils';
+import { getRelation, getRelationType, parseFilterFunctionPath } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
-import { getRelationType } from '../../../utils/get-relation-type.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
@@ -71,17 +70,75 @@ export async function parseFields(
 			}
 		}
 
+		// Normalize function calls to move relational prefixes outside the function.
+		// e.g., json(m2m.data, color) → m2m.json(data, color)
+		// This allows the standard relational handling below to process the traversal
+		// uniformly for all functions (json, count, year, etc.).
+		name = parseFilterFunctionPath(name);
+
+		const isFunctionCall = name.includes('(') && name.includes(')');
+
+		if (isFunctionCall) {
+			const functionName = name.split('(')[0]!;
+			const columnName = name.match(REGEX_BETWEEN_PARENS)![1]!;
+
+			const foundField = context.schema.collections[options.parentCollection]!.fields[columnName];
+
+			// Create a FunctionFieldNode for relational count functions (count(related_items))
+			if (functionName === 'count' && foundField && foundField.type === 'alias') {
+				const foundRelation = context.schema.relations.find(
+					(relation) =>
+						relation.related_collection === options.parentCollection && relation.meta?.one_field === columnName,
+				);
+
+				if (foundRelation) {
+					children.push({
+						type: 'functionField',
+						name,
+						fieldKey,
+						query: {},
+						relatedCollection: foundRelation.collection,
+						whenCase: [],
+						cases: [],
+					});
+
+					continue;
+				}
+			}
+
+			// Create a FunctionFieldNode for direct (non-relational) json function calls
+			if (functionName === 'json') {
+				children.push({
+					type: 'functionField',
+					name,
+					fieldKey,
+					query: {},
+					relatedCollection: options.parentCollection,
+					whenCase: [],
+					cases: [],
+				});
+
+				continue;
+			}
+		}
+
+		const isRelationalFunctionCall = isFunctionCall && name.includes('.') && name.indexOf('.') < name.indexOf('(');
+
 		const isRelational =
-			name.includes('.') ||
-			// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
-			// anything
-			!!context.schema.relations.find(
-				(relation) => relation.related_collection === options.parentCollection && relation.meta?.one_field === name,
-			);
+			(!isFunctionCall || isRelationalFunctionCall) &&
+			(name.includes('.') ||
+				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
+				// anything
+				!!context.schema.relations.find(
+					(relation) => relation.related_collection === options.parentCollection && relation.meta?.one_field === name,
+				));
 
 		if (isRelational) {
-			// field is relational
-			const parts = fieldKey.split('.');
+			// For normalized function calls, split on the resolved name since
+			// parseFilterFunctionPath may have moved relational segments outside
+			// the function args (e.g., json(m2m.data, color) → m2m.json(data, color)).
+			// For plain fields, split on fieldKey to preserve existing alias behavior.
+			const parts = (isFunctionCall ? name : fieldKey).split('.');
 
 			let rootField = parts[0]!;
 			let collectionScope: string | null = null;
@@ -115,32 +172,6 @@ export async function parseFields(
 				}
 			}
 		} else {
-			if (name.includes('(') && name.includes(')')) {
-				const columnName = name.match(REGEX_BETWEEN_PARENS)![1]!;
-				const foundField = context.schema.collections[options.parentCollection]!.fields[columnName];
-
-				if (foundField && foundField.type === 'alias') {
-					const foundRelation = context.schema.relations.find(
-						(relation) =>
-							relation.related_collection === options.parentCollection && relation.meta?.one_field === columnName,
-					);
-
-					if (foundRelation) {
-						children.push({
-							type: 'functionField',
-							name,
-							fieldKey,
-							query: {},
-							relatedCollection: foundRelation.collection,
-							whenCase: [],
-							cases: [],
-						});
-
-						continue;
-					}
-				}
-			}
-
 			if (name.includes(':')) {
 				const [key, scope] = name.split(':') as [string, string];
 
@@ -173,6 +204,7 @@ export async function parseFields(
 			relation,
 			collection: options.parentCollection,
 			field: fieldName,
+			useA2O: true,
 		});
 
 		if (!relationType) continue;
