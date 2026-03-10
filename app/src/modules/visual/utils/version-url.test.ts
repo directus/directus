@@ -136,6 +136,36 @@ describe('replaceVersion', () => {
 		const placement: VersionPlacement = { type: 'query', paramName: 'v' };
 		expect(replaceVersion('not-a-url', placement, 'draft')).toBe('not-a-url');
 	});
+
+	it('preserves trailing slash in path segment replacement', () => {
+		const placement: VersionPlacement = { type: 'path', segmentIndex: 1 };
+
+		expect(replaceVersion('https://example.com/main/posts/', placement, 'draft')).toBe(
+			'https://example.com/draft/posts/',
+		);
+	});
+
+	it('preserves trailing slash in query param replacement', () => {
+		const placement: VersionPlacement = { type: 'query', paramName: 'version' };
+
+		expect(replaceVersion('https://example.com/de/?version=main', placement, 'draft')).toBe(
+			'https://example.com/de/?version=draft',
+		);
+	});
+
+	it('preserves trailing slash in subdomain replacement', () => {
+		const placement: VersionPlacement = { type: 'subdomain', labelIndex: 0 };
+
+		expect(replaceVersion('https://main.example.com/posts/', placement, 'draft')).toBe(
+			'https://draft.example.com/posts/',
+		);
+	});
+
+	it('preserves trailing slash in hash replacement', () => {
+		const placement: VersionPlacement = { type: 'hash', segmentIndex: 0 };
+
+		expect(replaceVersion('https://example.com/de/#main', placement, 'draft')).toBe('https://example.com/de/#draft');
+	});
 });
 
 describe('matchesTemplate', () => {

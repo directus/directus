@@ -434,6 +434,8 @@ live_preview:
 ai:
   tool_approval:
     disabled: निष्क्रिय
+  ask_user_submit: दर्ज करें
+  ask_user_next: अगला
 mcp_prompts_collection_schema:
   messages_role_user: यूज़र
 interfaces:

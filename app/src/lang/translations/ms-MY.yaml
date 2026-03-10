@@ -206,6 +206,7 @@ field_options:
 comment: Komen
 ai:
   settings: Tetapan
+  ask_user_next: Kemudian
 ai_tools:
   files: Fail-fail
   schema: Skema

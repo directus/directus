@@ -1,4 +1,4 @@
-import { matches } from 'ip-matching';
+import { IpBlocklist } from './ip-blocklist.js';
 
 /**
  * Checks if an IP address is contained in a list of networks
@@ -7,9 +7,23 @@ import { matches } from 'ip-matching';
  */
 
 export function ipInNetworks(ip: string, networks: string[]) {
-	for (const allowedIp of networks) {
-		if (matches(ip, allowedIp)) return true;
+	const blockList = new IpBlocklist();
+
+	for (const blockNetworkRaw of networks) {
+		const blockNetwork = blockNetworkRaw.trim();
+
+		if (blockNetwork.includes('-')) {
+			blockList.parseRange(blockNetwork);
+			continue;
+		}
+
+		if (blockNetwork.includes('/')) {
+			blockList.parseSubnet(blockNetwork);
+			continue;
+		}
+
+		blockList.parseAddress(blockNetwork);
 	}
 
-	return false;
+	return blockList.checkAddress(ip);
 }
