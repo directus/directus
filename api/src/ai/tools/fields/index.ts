@@ -63,7 +63,7 @@ export const FieldsInputSchema = z.object({
 		.array(
 			FieldItemInputSchema.extend({
 				children: RawFieldItemInputSchema.shape.children,
-			}).partial({ type: true, name: true, collection: true, schema: true, meta: true, children: true }),
+			}).partial().required({ field: true }),
 		)
 		.describe('Array of field objects for create/update actions. Each object must include "field" (the field name).')
 		.optional(),
