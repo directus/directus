@@ -1,11 +1,11 @@
 @use 'sass:map';
 @use 'sass:list';
 
-/// Keep in sync with BREAKPOINTS in constants.ts
+/// Keep in sync with BREAKPOINTS in app/src/constants.ts
 $breakpoints: (
 	'sm': 36rem,
 	'lg': 57.625rem,
-	'xl': 72rem,
+	'xl': 72rem
 ) !default;
 
 @function breakpoint-value($name) {
