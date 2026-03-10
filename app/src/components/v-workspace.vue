@@ -36,10 +36,16 @@ defineEmits<{
 const mainElement = inject('main-element', ref<Element>());
 const mainElementSize = useElementSize(mainElement);
 
-const paddingSize = computed(() => {
-	const el = mainElement.value;
-	if (!el) return 0;
-	return parseFloat(getComputedStyle(el).paddingInlineStart) || 0;
+const cssValues = computed(() => {
+	const styles = getComputedStyle(document.documentElement);
+	const rootFontSize = parseFloat(styles.fontSize);
+	const headerHeightRem = parseFloat(styles.getPropertyValue('--header-bar-height'));
+	const contentPaddingRem = parseFloat(styles.getPropertyValue('--content-padding'));
+
+	return {
+		contentPadding: isNaN(contentPaddingRem) ? 22 : contentPaddingRem * rootFontSize,
+		headerBarHeight: isNaN(headerHeightRem) ? 54 : headerHeightRem * rootFontSize,
+	};
 });
 
 const workspaceSize = computed(() => {
@@ -84,17 +90,18 @@ const zoomScale = computed(() => {
 	if (props.zoomToFit === false) return 1;
 
 	const { width, height } = mainElementSize;
+	const { contentPadding, headerBarHeight } = cssValues.value;
 
-	const scaleWidth: number = (width.value - paddingSize.value * 2) / workspaceSize.value.width;
-	const scaleHeight: number = (height.value - 114 - paddingSize.value * 2) / workspaceSize.value.height;
+	const scaleWidth: number = (width.value - contentPadding * 2) / workspaceSize.value.width;
+	const scaleHeight: number = (height.value - headerBarHeight - contentPadding * 2) / workspaceSize.value.height;
 
 	return Math.min(scaleWidth, scaleHeight);
 });
 
 const workspaceBoxSize = computed(() => {
 	return {
-		width: workspaceSize.value.width * zoomScale.value + paddingSize.value * 2,
-		height: workspaceSize.value.height * zoomScale.value + paddingSize.value * 2,
+		width: workspaceSize.value.width * zoomScale.value + cssValues.value.contentPadding * 2,
+		height: workspaceSize.value.height * zoomScale.value + cssValues.value.contentPadding * 2,
 	};
 });
 </script>
