@@ -5,39 +5,21 @@ import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import sdk from '@/sdk';
 
-vi.mock('@/api', () => {
-	return {
-		default: {
-			get: (path: string, { params }: { params: Record<string, any> }) => {
-				if (path === '/items/worker' && params?.aggregate?.count === 'id') {
-					return Promise.resolve({
-						data: {
-							data: [{ count: { id: workerData.length } }],
-						},
-					});
-				} else if (path === '/items/worker') {
-					return Promise.resolve({
-						data: {
-							data: workerData,
-						},
-					});
-				} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
-					return Promise.resolve({
-						data: {
-							data: [{ count: { id: m2aData.length } }],
-						},
-					});
-				} else {
-					return Promise.resolve({
-						data: {
-							data: m2aData,
-						},
-					});
-				}
-			},
-		},
-	};
+vi.mock('@/sdk', async () => {
+	const { mockSdk } = await import('@/test-utils/sdk');
+	return mockSdk(({ path, params }) => {
+		if (path === '/items/worker' && params?.aggregate?.count === 'id') {
+			return Promise.resolve([{ count: { id: workerData.length } }]);
+		} else if (path === '/items/worker') {
+			return Promise.resolve(workerData);
+		} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
+			return Promise.resolve([{ count: { id: m2aData.length } }]);
+		} else {
+			return Promise.resolve(m2aData);
+		}
+	});
 });
 
 vi.mock('@/utils/unexpected-error', () => {
@@ -292,6 +274,56 @@ describe('test o2m relation', () => {
 			$type: 'updated',
 			$index: 0,
 		});
+	});
+
+	test('should use "_null" operator in filter when item id is "null"', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: null },
+		});
+
+		await flushPromises();
+
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(
+			expect.objectContaining({
+				params: expect.objectContaining({
+					filter: {
+						_and: [
+							{
+								facility: {
+									_null: true,
+								},
+							},
+						],
+					},
+				}),
+			}),
+		);
+	});
+
+	test('should use value directly in filter when item id is defined', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(
+			expect.objectContaining({
+				params: expect.objectContaining({
+					filter: {
+						_and: [
+							{
+								facility: 1,
+							},
+						],
+					},
+				}),
+			}),
+		);
 	});
 
 	test('Initial data should be cleared when itemId changes to new item', async () => {

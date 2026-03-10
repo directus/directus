@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
-import { Field, PrimaryKey, Relation } from '@directus/types';
+import { ContentVersion, Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, set, uniqBy } from 'lodash';
 import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
@@ -31,13 +31,15 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
+import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -60,6 +62,8 @@ export interface OverlayItemProps {
 	popoverProps?: Record<string, any>;
 	applyShortcut?: ApplyShortcut;
 	preventCancelWithEdits?: boolean;
+	// Only use when editing a version directly (e.g. visual editor). Not for regular item editing.
+	version?: ContentVersion['key'] | null | undefined;
 }
 
 export interface OverlayItemEmits {
@@ -292,7 +296,7 @@ const overlayItemContentProps = computed(() => {
 	};
 });
 
-const { provideRunManualFlow } = useFlows({
+const { flowDialogsContext, provideRunManualFlow } = useFlows({
 	collection,
 	primaryKey: primaryKey,
 	location: 'item',
@@ -323,9 +327,13 @@ function useItem() {
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
 
+	const notificationsStore = useNotificationsStore();
+
 	watch(
 		() => props.active,
 		(isActive) => {
+			notificationsStore.setOverlayIsActive(!!isActive);
+
 			if (isActive) {
 				if (props.primaryKey !== '+') fetchItem();
 				if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
@@ -369,7 +377,14 @@ function useItem() {
 		}
 
 		try {
-			const response = await api.get(endpoint, { params: { fields } });
+			const params: Record<string, any> = { fields };
+
+			if (props.version && !!collectionInfo.value?.meta?.versioning) {
+				params.version = props.version;
+				params.versionRaw = true;
+			}
+
+			const response = await api.get(endpoint, { params });
 
 			initialValues.value = response.data.data;
 		} catch (error) {
@@ -619,9 +634,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions>
-			<CollabAvatars
+			<CollabIndicatorHeader
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
+				:focuses="{ ...collab?.focused.value, ...relatedCollab?.focused.value }"
+				:current-connection="collab?.connectionId.value"
 			/>
 			<slot name="actions" />
 
@@ -718,6 +735,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</div>
 	</VMenu>
 
+	<FlowDialogs v-bind="flowDialogsContext" />
+
 	<ComparisonModal
 		v-if="collab"
 		:model-value="Boolean(collab.collabCollision.value) && overlayActive"
@@ -743,7 +762,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -758,7 +777,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndLeave">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>
@@ -766,7 +785,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VDialog>
 
 	<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
 			<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -781,7 +800,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndCancel">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>

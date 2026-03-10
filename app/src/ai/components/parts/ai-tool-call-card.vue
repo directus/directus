@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
@@ -15,7 +15,7 @@ const { t } = useI18n();
 
 const props = defineProps<{
 	state: 'input-streaming' | 'input-available' | 'approval-requested' | 'output-available' | 'output-error';
-	approval?: { id: string };
+	approval?: { id: string; approved?: boolean; reason?: string };
 	toolName: string;
 	icon?: string;
 	defaultOpen?: boolean;
@@ -23,7 +23,16 @@ const props = defineProps<{
 
 const isStreaming = computed(() => props.state === 'input-streaming' || props.state === 'input-available');
 const isApprovalRequested = computed(() => props.state === 'approval-requested');
-const shouldBeOpen = computed(() => props.state === 'approval-requested' || props.defaultOpen);
+const shouldBeOpen = computed(() => isApprovalRequested.value || props.defaultOpen);
+const isOpen = ref(false);
+
+watch(
+	shouldBeOpen,
+	(next) => {
+		isOpen.value = next;
+	},
+	{ immediate: true },
+);
 
 const statusConfig = computed(() => {
 	switch (props.state) {
@@ -64,7 +73,7 @@ const handleAlwaysAllow = () => {
 </script>
 
 <template>
-	<CollapsibleRoot class="tool-call-card" :default-open="shouldBeOpen" :disabled="isApprovalRequested">
+	<CollapsibleRoot v-model:open="isOpen" class="tool-call-card" :disabled="isApprovalRequested">
 		<CollapsibleTrigger
 			class="card-header"
 			:class="{ 'is-disabled': isApprovalRequested }"

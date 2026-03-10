@@ -248,11 +248,10 @@ export function useFlows(options: UseFlowsOptions) {
 			});
 
 			await notificationStore.refreshUnreadCount();
-
-			resetConfirm();
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
+			resetConfirm();
 			runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 		}
 	}

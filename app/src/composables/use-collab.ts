@@ -6,7 +6,6 @@ import {
 	ClientID,
 	ClientMessage,
 	Color,
-	ContentVersion,
 	Item,
 	PrimaryKey,
 	ServerError,
@@ -25,6 +24,7 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { notify } from '@/utils/notify';
 
 type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>;
@@ -111,7 +111,7 @@ sdk.onWebSocket('message', async (message: ServerMessage | ServerError) => {
 export function useCollab(
 	collection: Ref<string>,
 	item: Ref<PrimaryKey | null>,
-	version: Ref<ContentVersion | null>,
+	version: Ref<ContentVersionMaybeNew | null>,
 	initialValues: Ref<Item | null>,
 	edits: Ref<Item>,
 	getItem: () => Promise<void>,
@@ -124,6 +124,8 @@ export function useCollab(
 	connected: Ref<boolean | undefined>;
 	collabCollision: Ref<{ from: Item; to: Item } | undefined>;
 	discard: () => void;
+	focused: Ref<Record<ClientID, string>>;
+	connectionId: Ref<ClientID | null>;
 } {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
@@ -221,7 +223,8 @@ export function useCollab(
 			roomId.value ||
 			joining ||
 			!collection.value ||
-			item.value === '+'
+			item.value === '+' ||
+			version.value?.id === '+'
 		)
 			return;
 
@@ -541,6 +544,7 @@ export function useCollab(
 
 	const onFocus = debounce((field: string | null) => {
 		if (field && Object.values(focused.value).includes(field)) return;
+		if (field && !fieldsStore.getField(collection.value, field)?.schema) return;
 
 		sendMessage({
 			action: ACTION.CLIENT.FOCUS,
@@ -570,5 +574,15 @@ export function useCollab(
 		});
 	}
 
-	return { update, users, collabContext, connected, collabCollision, clearCollidingChanges, discard };
+	return {
+		update,
+		users,
+		collabContext,
+		connected,
+		collabCollision,
+		clearCollidingChanges,
+		discard,
+		focused,
+		connectionId,
+	};
 }

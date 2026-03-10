@@ -13,6 +13,7 @@ import CustomIconGrid4 from './custom-icons/grid_4.vue';
 import CustomIconGrid5 from './custom-icons/grid_5.vue';
 import CustomIconGrid6 from './custom-icons/grid_6.vue';
 import CustomIconLogout from './custom-icons/logout.vue';
+import CustomIconNetlify from './custom-icons/netlify.vue';
 import CustomIconSignalWifi1Bar from './custom-icons/signal_wifi_1_bar.vue';
 import CustomIconSignalWifi2Bar from './custom-icons/signal_wifi_2_bar.vue';
 import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
@@ -37,5 +38,6 @@ export const components: Record<string, any> = {
 	CustomIconFolderMove,
 	CustomIconFolderLock,
 	CustomIconLogout,
+	CustomIconNetlify,
 	CustomIconVercel,
 };

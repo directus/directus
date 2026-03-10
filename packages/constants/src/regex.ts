@@ -1,1 +1,1 @@
-export const REGEX_BETWEEN_PARENS: RegExp = /\(([^)]+)\)/;
+export const REGEX_BETWEEN_PARENS: RegExp = /\(([^()]+)\)/;

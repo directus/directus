@@ -2,17 +2,28 @@ import { InvalidPayloadError, InvalidProviderConfigError } from '@directus/error
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
+import { DeploymentProjectsService } from './deployment-projects.js';
+import { DeploymentRunsService } from './deployment-runs.js';
 import { DeploymentService } from './deployment.js';
 import { ItemsService } from './items.js';
 
-const { mockTestConnection, mockListProjects, mockGetProject, mockGetCacheValueWithTTL, mockSetCacheValueWithExpiry } =
-	vi.hoisted(() => ({
-		mockTestConnection: vi.fn(),
-		mockListProjects: vi.fn(),
-		mockGetProject: vi.fn(),
-		mockGetCacheValueWithTTL: vi.fn(),
-		mockSetCacheValueWithExpiry: vi.fn(),
-	}));
+const {
+	mockTestConnection,
+	mockListProjects,
+	mockGetProject,
+	mockGetCacheValueWithTTL,
+	mockSetCacheValueWithExpiry,
+	mockLoggerDebug,
+	mockLoggerError,
+} = vi.hoisted(() => ({
+	mockTestConnection: vi.fn(),
+	mockListProjects: vi.fn(),
+	mockGetProject: vi.fn(),
+	mockGetCacheValueWithTTL: vi.fn(),
+	mockSetCacheValueWithExpiry: vi.fn(),
+	mockLoggerDebug: vi.fn(),
+	mockLoggerError: vi.fn(),
+}));
 
 vi.mock('../deployment.js', () => ({
 	getDeploymentDriver: vi.fn(() => ({
@@ -31,6 +42,13 @@ vi.mock('../cache.js', () => ({
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
 		CACHE_DEPLOYMENT_TTL: '5s',
+	})),
+}));
+
+vi.mock('../logger/index.js', () => ({
+	useLogger: vi.fn(() => ({
+		debug: mockLoggerDebug,
+		error: mockLoggerError,
 	})),
 }));
 
@@ -386,6 +404,115 @@ describe('DeploymentService', () => {
 			);
 
 			expect(result.data).toEqual(project);
+		});
+	});
+
+	describe('getDashboard / syncProjectMetadataIfStale', () => {
+		let service: DeploymentService;
+
+		const deployment = {
+			id: 'deploy-1',
+			provider: 'vercel',
+			credentials: JSON.stringify({ access_token: 'token' }),
+			options: null,
+			last_synced_at: null as string | null,
+		};
+
+		const selectedProject = {
+			id: 'sp-1',
+			deployment: 'deploy-1',
+			external_id: 'proj-1',
+			name: 'My Project',
+			url: 'https://example.com',
+			framework: 'vuejs',
+			deployable: true,
+			date_created: '2024-01-01T00:00:00Z',
+			user_created: 'user-1',
+		};
+
+		beforeEach(() => {
+			service = new DeploymentService({
+				knex: db,
+				schema,
+			});
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([deployment]);
+
+			tracker.on.select('directus_deployments').response([deployment]);
+		});
+
+		it('should skip sync when last_synced_at is recent', async () => {
+			const recentDeployment = { ...deployment, last_synced_at: new Date().toISOString() };
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([recentDeployment]);
+
+			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
+			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+
+			await service.getDashboard('vercel', new Date());
+
+			// Wait for fire-and-forget
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(mockGetProject).not.toHaveBeenCalled();
+		});
+
+		it('should run sync when last_synced_at is null', async () => {
+			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
+			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+			vi.spyOn(DeploymentProjectsService.prototype, 'updateBatch').mockResolvedValue([]);
+			vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('deploy-1');
+
+			mockGetProject.mockResolvedValueOnce({
+				id: 'proj-1',
+				name: 'Updated Name',
+				url: 'https://new.com',
+				framework: 'remix',
+				deployable: true,
+			});
+
+			await service.getDashboard('vercel', new Date());
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(mockGetProject).toHaveBeenCalledWith('proj-1');
+			expect(DeploymentProjectsService.prototype.updateBatch).toHaveBeenCalled();
+		});
+
+		it('should run sync when last_synced_at is stale', async () => {
+			const staleDeployment = {
+				...deployment,
+				last_synced_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+			};
+
+			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([staleDeployment]);
+			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
+			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+			vi.spyOn(DeploymentProjectsService.prototype, 'updateBatch').mockResolvedValue([]);
+			vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('deploy-1');
+
+			mockGetProject.mockResolvedValueOnce({
+				id: 'proj-1',
+				name: 'Updated',
+				deployable: true,
+			});
+
+			await service.getDashboard('vercel', new Date());
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(mockGetProject).toHaveBeenCalledWith('proj-1');
+		});
+
+		it('should not crash getDashboard if sync fails', async () => {
+			vi.spyOn(DeploymentProjectsService.prototype, 'readByQuery').mockResolvedValue([selectedProject]);
+			vi.spyOn(DeploymentRunsService.prototype, 'readByQuery').mockResolvedValue([]);
+
+			mockGetProject.mockRejectedValueOnce(new Error('API down'));
+
+			const result = await service.getDashboard('vercel', new Date());
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(result.projects).toHaveLength(1);
+			expect(mockLoggerError).toHaveBeenCalled();
 		});
 	});
 });

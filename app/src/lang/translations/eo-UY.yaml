@@ -809,9 +809,12 @@ unlimited_usage: Senlima uzado
 new_share: Nova konigo
 ai:
   unknown: Nekonata
+  items: Eroj
+  content: Enhavo
   settings: Agordoj
   tool_approval:
     disabled: Malŝaltita
+  ask_user_next: Sekva
 ai_tools:
   items: Eroj
   files: Dosieroj

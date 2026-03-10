@@ -107,7 +107,7 @@ async function save() {
 	saving.value = true;
 
 	try {
-		await api.post(`/collections`, {
+		const response = await api.post(`/collections`, {
 			collection: collectionName.value,
 			fields: [getPrimaryKeyField(), ...getSystemFields()],
 			schema: {},
@@ -119,6 +119,8 @@ async function save() {
 				singleton: singleton.value,
 			},
 		});
+
+		const createdCollectionName = response.data.data.collection;
 
 		const storeHydrations: Promise<void>[] = [];
 
@@ -137,7 +139,7 @@ async function save() {
 			title: t('collection_created'),
 		});
 
-		router.replace(`/settings/data-model/${collectionName.value}`);
+		router.replace(`/settings/data-model/${createdCollectionName}`);
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
