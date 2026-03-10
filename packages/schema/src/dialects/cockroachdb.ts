@@ -475,7 +475,7 @@ export default class CockroachDB implements SchemaInspector {
 					crdb_sql_type: string;
 				}>;
 			}>(
-				`SELECT
+				`SELECT 
     c.column_name,
     c.data_type,
     BOOL_OR(c.is_nullable = 'YES') as is_nullable,
