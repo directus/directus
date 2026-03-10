@@ -6,19 +6,9 @@ vi.mock('@directus/env');
 
 const PUBLIC_URL = 'https://directus.app';
 
-const FALSY_INPUTS = [
-	{ input: undefined },
-	{ input: '' },
-	{ input: null },
-	{ input: false },
-	{ input: 0 },
-];
+const FALSY_INPUTS = [{ input: undefined }, { input: '' }, { input: null }, { input: false }, { input: 0 }];
 
-const INVALID_TYPE_INPUTS = [
-	{ input: 123 },
-	{ input: { url: '/admin' } },
-	{ input: ['/admin'] },
-];
+const INVALID_TYPE_INPUTS = [{ input: 123 }, { input: { url: '/admin' } }, { input: ['/admin'] }];
 
 const VALID_RELATIVE_PATHS = [
 	{ input: '/', expected: '/' },
@@ -188,15 +178,11 @@ describe('resolveLoginRedirect', () => {
 
 		describe('not matching PUBLIC_URL', () => {
 			test('rejects different domain', () => {
-				expect(() => resolveLoginRedirect('https://evil.com/admin')).toThrow(
-					'App "redirect" must match PUBLIC_URL',
-				);
+				expect(() => resolveLoginRedirect('https://evil.com/admin')).toThrow('App "redirect" must match PUBLIC_URL');
 			});
 
 			test('rejects different protocol (http vs https)', () => {
-				expect(() => resolveLoginRedirect('http://directus.app/admin')).toThrow(
-					'App "redirect" must match PUBLIC_URL',
-				);
+				expect(() => resolveLoginRedirect('http://directus.app/admin')).toThrow('App "redirect" must match PUBLIC_URL');
 			});
 
 			test('rejects different port', () => {
@@ -255,9 +241,7 @@ describe('resolveLoginRedirect', () => {
 				AUTH_GITHUB_REDIRECT_ALLOW_LIST: ['https://example.com/one', 'https://example.com/two'],
 			});
 
-			expect(resolveLoginRedirect('https://example.com/two', { provider: 'github' })).toBe(
-				'https://example.com/two',
-			);
+			expect(resolveLoginRedirect('https://example.com/two', { provider: 'github' })).toBe('https://example.com/two');
 		});
 
 		test('implicitly allows PUBLIC_URL when allow list is configured', () => {
@@ -312,9 +296,9 @@ describe('resolveLoginRedirect', () => {
 				AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/callback',
 			});
 
-			expect(() =>
-				resolveLoginRedirect('https://frontend.com@evil.com/callback', { provider: 'github' }),
-			).toThrow('App "redirect" must match PUBLIC_URL');
+			expect(() => resolveLoginRedirect('https://frontend.com@evil.com/callback', { provider: 'github' })).toThrow(
+				'App "redirect" must match PUBLIC_URL',
+			);
 		});
 
 		describe('with sub path PUBLIC_URL', () => {
