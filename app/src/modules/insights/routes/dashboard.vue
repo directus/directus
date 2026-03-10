@@ -279,7 +279,7 @@ const refreshInterval = computed({
 			@delete="insightsStore.stagePanelDelete"
 			@move="copyPanelID = $event"
 		>
-			<template #default="{ tile }">
+			<template #default="{ tile, gridSize }">
 				<VProgressCircular
 					v-if="loading.includes(tile.id) && !data[tile.id]"
 					:class="{ 'header-offset': tile.showHeader }"
@@ -310,6 +310,7 @@ const refreshInterval = computed({
 							:width="tile.width"
 							:now="now"
 							:data="data[tile.id]"
+							:grid-size="gridSize"
 						/>
 
 						<template #fallback="{ error }">

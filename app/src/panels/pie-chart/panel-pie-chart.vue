@@ -29,6 +29,7 @@ const props = withDefaults(
 		height: number;
 		width: number;
 		conditionalFill?: ConditionalFillFormat[] | null;
+		gridSize: number;
 	}>(),
 	{
 		showHeader: false,
@@ -112,21 +113,21 @@ async function setupChart() {
 
 	const colors = baseColors.map((baseColor, index) => formatColor(baseColor, series[index]));
 
-	const size = props.height < props.width ? props.height * 20 : props.width * 20;
+	const size = props.height < props.width ? props.height * props.gridSize : props.width * props.gridSize;
 
-	let left = 20;
-	let right = 20;
-	let top = props.showHeader ? 10 : 0;
-	let bottom = props.showHeader ? 40 : 30;
-	let offsetY = props.showHeader ? -15 : 0;
+	let left = props.gridSize;
+	let right = props.gridSize;
+	let top = props.showHeader ? props.gridSize / 2 : 0;
+	let bottom = props.showHeader ? props.gridSize * 4 : props.gridSize * 3;
+	let offsetY = props.showHeader ? props.gridSize * -0.75 : 0;
 
 	if (props.legend === 'right') {
 		left = 0;
-		right = -20;
+		right = -right;
 	} else if (props.legend === 'bottom') {
-		top = props.showHeader ? 10 : -5;
-		bottom = props.showHeader ? 20 : 10;
-		offsetY = props.showHeader ? -20 : -10;
+		top = props.showHeader ? props.gridSize / 2 : -props.gridSize / 4;
+		bottom = props.showHeader ? props.gridSize : props.gridSize / 2;
+		offsetY = props.showHeader ? -props.gridSize : -props.gridSize / 2;
 	}
 
 	chart.value = new ApexCharts(chartEl.value, {

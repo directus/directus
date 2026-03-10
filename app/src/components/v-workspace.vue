@@ -135,7 +135,7 @@ const workspaceBoxSize = computed(() => {
 					@delete="$emit('delete', tile.id)"
 					@duplicate="$emit('duplicate', tile)"
 				>
-					<slot :tile="tile"></slot>
+					<slot :tile="tile" :grid-size="gridSize"></slot>
 				</VWorkspaceTile>
 			</template>
 			<template v-else>
