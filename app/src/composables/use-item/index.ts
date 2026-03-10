@@ -412,21 +412,23 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await sdk.request<Item[]>(
-				requestEndpoint(getEndpoint(relation.collection), {
-					method: 'SEARCH',
-					body: {
-						query: {
-							fields: Array.from(fieldsToFetch),
-							filter: {
-								[relation.field]: { _eq: primaryKey.value },
-							},
-						},
-					},
+			const endpoint = getEndpoint(relation.collection);
+			const requestFields = Array.from(fieldsToFetch);
+			const filter = { [relation.field]: { _eq: primaryKey.value } };
+
+			const queryString = `fields=${requestFields.join(',')}&filter[${relation.field}][_eq]=${primaryKey.value}`;
+
+			if (queryString.length + endpoint.length > 8192) {
+				return await sdk.request<Item[]>(
+					requestEndpoint(endpoint, { method: 'SEARCH', body: { query: { fields: requestFields, filter } } }),
+				);
+			}
+
+			return await sdk.request<Item[]>(
+				requestEndpoint(endpoint, {
+					params: { fields: requestFields, [`filter[${relation.field}][_eq]`]: primaryKey.value },
 				}),
 			);
-
-			return response;
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
