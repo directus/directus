@@ -4,4 +4,4 @@
 '@directus/api': patch
 ---
 
-Use prepareDelta for revisions
+Fixed revisions not using prepareDelta
