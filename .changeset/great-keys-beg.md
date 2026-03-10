@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Updated graphql introspection flag
+Added support for disabling OpenAPI output using `OPENAPI_ENABLED`
