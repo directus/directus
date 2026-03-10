@@ -1208,6 +1208,8 @@ ai:
   settings: Setări
   tool_approval:
     disabled: Dezactivat
+  ask_user_submit: Trimite
+  ask_user_next: Urmatorul
 ai_tools:
   items: Elemente
   files: Fişiere

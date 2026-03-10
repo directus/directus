@@ -21,6 +21,7 @@ import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
 import { formatContextForSystemPrompt } from '../utils/format-context.js';
+import { transformFilePartsForProvider } from './transform-file-parts.js';
 
 export interface CreateUiStreamOptions {
 	provider: ProviderType;
@@ -68,7 +69,7 @@ export const createUiStream = async (
 	const stream = streamText({
 		system: baseSystemPrompt,
 		model: languageModel,
-		messages: await convertToModelMessages(messages),
+		messages: await convertToModelMessages(transformFilePartsForProvider(messages)),
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
 		tools,
