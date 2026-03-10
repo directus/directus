@@ -7,6 +7,7 @@ vi.mock('@editorjs/editorjs', () => ({ default: vi.fn() }));
 vi.mock('./tools', () => ({ default: vi.fn(() => ({})) }));
 vi.mock('@/api', () => ({ default: { defaults: { baseURL: '' } } }));
 vi.mock('@/stores/collections', () => ({ useCollectionsStore: () => ({ getCollection: () => null }) }));
+vi.mock('@/stores/server', () => ({ useServerStore: () => ({ info: { files: { mimeTypeAllowList: null } } }) }));
 vi.mock('vue-router', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 vi.mock('@/utils/unexpected-error', () => ({ unexpectedError: vi.fn() }));
 
