@@ -7,6 +7,7 @@ import {
 } from '@directus/validation';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
+import { parseFilter } from './parse-filter';
 import { useRelationsStore } from '@/stores/relations';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 
@@ -72,7 +73,7 @@ export function validateItem(
 		if (isNil(updatedItem[field.field])) return;
 
 		(field.meta?.validation as LogicalFilterAND)?._and?.forEach((validation: any) => {
-			validationRules._and.push(validation);
+			validationRules._and.push(parseFilter(validation));
 		});
 	}
 }

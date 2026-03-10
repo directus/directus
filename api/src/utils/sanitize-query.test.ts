@@ -9,6 +9,7 @@ import { sanitizeQuery } from './sanitize-query.js';
 vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 vi.mock('../database/index.js');
+vi.mock('../database/helpers/index.js');
 vi.mock('../permissions/lib/fetch-policies.js');
 vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
 

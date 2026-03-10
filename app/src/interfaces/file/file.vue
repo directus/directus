@@ -194,6 +194,7 @@ function useURLImport() {
 				data: {
 					folder: props.folder,
 				},
+				options: { filterMimeType: props.allowedMimeTypes },
 			});
 
 			file.value = response.data.data;
@@ -357,6 +358,7 @@ function useURLImport() {
 		<DrawerFiles
 			v-if="activeDialog === 'choose'"
 			:folder="folder"
+			:field="field"
 			:active="activeDialog === 'choose'"
 			:filter="customFilter"
 			@update:active="activeDialog = null"
