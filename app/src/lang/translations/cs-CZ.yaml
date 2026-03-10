@@ -763,7 +763,6 @@ unexpected_error_copy: Došlo k neočekávané chybě, zkuste to prosím znovu.
 copy_details: Kopírovat podrobnosti
 no_app_access: Žádný přístup k aplikaci
 no_app_access_copy: Tento uživatel nemá oprávnění používat aplikaci pro správu.
-password_reset_sent: Pokud máte účet, zaslali jsme Vám bezpečný odkaz pro obnovení hesla
 password_reset_successful: Heslo bylo úspěšně obnoveno
 back: Zpět
 filter: Filtr
@@ -1509,6 +1508,8 @@ ai:
   settings: Nastavení
   tool_approval:
     disabled: Zakázáno
+  ask_user_submit: Potvrdit
+  ask_user_next: Další
 ai_tools:
   items: Položky
   files: Soubory
@@ -2451,3 +2452,4 @@ search_flow: Prohledat tok...
 percent: '%'
 show_password: Zobrazit heslo
 hide_password: Skrýt heslo
+set_to_now: Nastavit na teď

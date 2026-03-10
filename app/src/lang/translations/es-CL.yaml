@@ -771,7 +771,6 @@ unexpected_error_copy: Ha ocurrido un error inesperado. Por favor, intenta de nu
 copy_details: Copiar Detalles
 no_app_access: Sin Acceso al App
 no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
-password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
@@ -1530,6 +1529,8 @@ ai:
   settings: Configuración
   tool_approval:
     disabled: Desactivado
+  ask_user_submit: Enviar
+  ask_user_next: Próximo
 ai_tools:
   items: Elementos
   files: Archivos
@@ -2499,3 +2500,4 @@ accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)
 text_direction_rtl: Derecha a izquierda (RTL)
+set_to_now: Ajustar a Ahora Mismo

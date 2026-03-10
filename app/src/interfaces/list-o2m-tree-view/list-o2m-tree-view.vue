@@ -116,9 +116,8 @@ const fields = computed(() => {
 
 const addNewOpen = ref(false);
 const selectOpen = ref(false);
-const editOpen = ref(false);
 
-const menuActive = computed(() => addNewOpen.value || selectOpen.value || editOpen.value);
+const menuActive = computed(() => addNewOpen.value || selectOpen.value);
 </script>
 
 <template>
@@ -133,7 +132,6 @@ const menuActive = computed(() => addNewOpen.value || selectOpen.value || editOp
 			v-model="_value"
 			v-model:add-new-open="addNewOpen"
 			v-model:select-open="selectOpen"
-			v-model:edit-open="editOpen"
 			:template="template"
 			:collection="collection"
 			:field="field"

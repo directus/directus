@@ -763,7 +763,6 @@ unexpected_error: Váratlan hiba történt
 copy_details: Részletek másolása
 no_app_access: Nincs alkalmazás hozzáférés
 no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás használatára.
-password_reset_sent: A jelszó visszaállításához szükséges linket elküldtük Önnek
 password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
 filter: Szűrő
@@ -1394,6 +1393,8 @@ ai:
   settings: Beállítások
   tool_approval:
     disabled: Letiltva
+  ask_user_submit: Beküldés
+  ask_user_next: Következő
 ai_tools:
   items: Elemek
   files: Fájlok
@@ -2252,3 +2253,4 @@ fonts:
   black: Fekete
   italic: Dőlt
   auto: Automatikus
+set_to_now: Mai nap

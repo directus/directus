@@ -44,7 +44,7 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
-import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
+import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
@@ -139,6 +139,8 @@ const {
 	collabCollision,
 	update: updateCollab,
 	discard: discardCollab,
+	focused,
+	connectionId,
 } = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
@@ -369,10 +371,9 @@ const livePreviewSize = computed({
 
 provide('live-preview-active', livePreviewActive);
 
-const { visualEditingEnabled, visualEditorUrls, visualModuleEnabled } = useVisualEditing({
+const { visualEditingEnabled, visualModuleEnabled } = useVisualEditing({
 	previewUrl,
 	isNew,
-	currentVersion,
 });
 
 watch(previewUrl, (url) => {
@@ -698,7 +699,12 @@ function useItemNavigation() {
 		</template>
 
 		<template #actions>
-			<CollabAvatars :model-value="collabUsers" :connected="connected" />
+			<CollabIndicatorHeader
+				:model-value="collabUsers"
+				:connected="connected"
+				:focuses="focused"
+				:current-connection="connectionId"
+			/>
 
 			<VButton
 				v-if="previewUrl"
@@ -894,8 +900,8 @@ function useItemNavigation() {
 				<LivePreview
 					v-if="livePreviewActive && previewUrl"
 					:url="previewUrl"
+					:version="currentVersion"
 					:can-enable-visual-editing="visualEditingEnabled"
-					:visual-editor-urls="visualEditorUrls"
 					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"
 					@new-window="livePreviewMode = 'popup'"
@@ -1010,12 +1016,6 @@ function useItemNavigation() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
-
-	.render-template {
-		img {
-			block-size: 20px;
-		}
-	}
 }
 
 .headline-wrapper {

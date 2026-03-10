@@ -2,6 +2,7 @@
 import { type DeploymentDashboardOutput, readDeploymentDashboard } from '@directus/sdk';
 import { formatDistanceToNow } from 'date-fns';
 import { computed, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
@@ -12,20 +13,31 @@ import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
 import { sdk } from '@/sdk';
 import { PrivateView } from '@/views/private';
 
 type Project = DeploymentDashboardOutput['projects'][number];
+type Stats = DeploymentDashboardOutput['stats'];
 
 const props = defineProps<{
 	provider: string;
 }>();
 
+const { t } = useI18n();
 const router = useRouter();
 
 const loading = ref(true);
 const projects = ref<Project[]>([]);
+const stats = ref<Stats>({ active_deployments: 0, successful_builds: 0, failed_builds: 0 });
+const range = ref('1d');
+
+const rangeOptions = [
+	{ text: t('deployment.range.1d'), value: '1d' },
+	{ text: t('deployment.range.7d'), value: '7d' },
+	{ text: t('deployment.range.30d'), value: '30d' },
+];
 
 const projectItems = computed(() =>
 	projects.value.map((project) => ({
@@ -41,10 +53,12 @@ async function loadDashboard() {
 	loading.value = true;
 
 	try {
-		const data = await sdk.request(readDeploymentDashboard(props.provider));
+		const data = await sdk.request(readDeploymentDashboard(props.provider, { range: range.value }));
 		projects.value = data.projects;
+		stats.value = data.stats;
 	} catch {
 		projects.value = [];
+		stats.value = { active_deployments: 0, successful_builds: 0, failed_builds: 0 };
 	} finally {
 		loading.value = false;
 	}
@@ -53,6 +67,7 @@ async function loadDashboard() {
 onMounted(loadDashboard);
 
 watch(() => props.provider, loadDashboard);
+watch(range, loadDashboard);
 </script>
 
 <template>
@@ -73,9 +88,52 @@ watch(() => props.provider, loadDashboard);
 			</VInfo>
 
 			<template v-else>
+				<VSelect v-model="range" :items="rangeOptions" inline label class="range-select" />
+
+				<div class="stats-bar">
+					<div class="stat-card">
+						<VIcon name="folder" class="stat-icon" />
+						<span>{{ $t('deployment.dashboard.total_projects', { count: projects.length }, projects.length) }}</span>
+					</div>
+
+					<div class="stat-card warning">
+						<VIcon name="autorenew" class="stat-icon" />
+						<span>
+							{{
+								$t(
+									'deployment.dashboard.active_deployments',
+									{ count: stats.active_deployments },
+									stats.active_deployments,
+								)
+							}}
+						</span>
+					</div>
+
+					<div class="stat-card danger">
+						<VIcon name="error" class="stat-icon" />
+						<span>
+							{{ $t('deployment.dashboard.failed_builds', { count: stats.failed_builds }, stats.failed_builds) }}
+						</span>
+					</div>
+
+					<div class="stat-card success">
+						<VIcon name="check" class="stat-icon" />
+						<span>
+							{{
+								$t(
+									'deployment.dashboard.successful_builds',
+									{ count: stats.successful_builds },
+									stats.successful_builds,
+								)
+							}}
+						</span>
+					</div>
+				</div>
+
 				<InterfacePresentationDivider
 					:title="$t('deployment.dashboard.projects', { count: projects.length })"
 					icon="folder"
+					class="projects-divider"
 				/>
 
 				<VList class="projects-list">
@@ -123,8 +181,74 @@ watch(() => props.provider, loadDashboard);
 	margin: 120px auto;
 }
 
-:deep(.presentation-divider) {
-	margin-block: 0 var(--theme--form--row-gap);
+.stats-bar {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 16px;
+	margin-block-end: 40px;
+
+	@media (max-width: 1512px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@media (max-width: 1024px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media (max-width: 768px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.stat-card {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+	overflow: hidden;
+
+	&.warning {
+		background-color: var(--warning-10);
+		color: var(--theme--warning);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--warning);
+		}
+	}
+
+	&.danger {
+		background-color: var(--danger-10);
+		color: var(--theme--danger);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--danger);
+		}
+	}
+
+	&.success {
+		background-color: var(--success-10);
+		color: var(--theme--success);
+
+		.stat-icon {
+			--v-icon-color: var(--theme--success);
+		}
+	}
+}
+
+.stat-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+	flex-shrink: 0;
+}
+
+.range-select {
+	display: block;
+	margin-block-end: 16px;
+}
+
+.projects-divider {
+	margin-block-end: var(--theme--form--row-gap);
 }
 
 .projects-list {

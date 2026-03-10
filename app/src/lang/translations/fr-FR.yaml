@@ -785,7 +785,6 @@ unexpected_error_copy: Une erreur inattendue est survenue. Veuillez réessayer.
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
-password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sécurisé pour réinitialiser votre mot de passe
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
@@ -1539,6 +1538,8 @@ ai:
   settings: Réglages
   tool_approval:
     disabled: Désactivé
+  ask_user_submit: Envoyer
+  ask_user_next: Suivant
 ai_tools:
   items: Éléments
   files: Fichiers
@@ -2491,3 +2492,4 @@ search_flow: Rechercher le flux...
 percent: Pourcent
 show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
+set_to_now: Configurer à maintenant

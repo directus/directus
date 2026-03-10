@@ -938,6 +938,8 @@ ai:
   settings: Nastavitve
   tool_approval:
     disabled: Onemogočeno
+  ask_user_submit: Pošlji
+  ask_user_next: Naslednje
 ai_tools:
   items: Zapisi
   files: Datoteke
@@ -1440,3 +1442,4 @@ fonts:
   bold: Krepko
   italic: Ležeče
   auto: Samodejno
+set_to_now: Nastavi na trenutni čas

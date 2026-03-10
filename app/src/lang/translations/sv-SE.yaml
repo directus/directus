@@ -734,7 +734,6 @@ unexpected_error_copy: Ett oväntat fel har uppstått. Försök igen.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
 no_app_access_copy: Den här användaren får inte använda administratörs-appen.
-password_reset_sent: Om du har ett konto har vi skickat en säker länk till dig för att återställa ditt lösenord
 password_reset_successful: Lösenordet har återställts
 back: Tillbaka
 filter: Filtrera
@@ -1390,6 +1389,8 @@ ai:
   settings: Inställningar
   tool_approval:
     disabled: Inaktiverad
+  ask_user_submit: Skicka
+  ask_user_next: Nästa
 ai_tools:
   items: Objekt
   files: Filer
@@ -2164,3 +2165,4 @@ percent: Procent
 show_password: Visa lösenord
 hide_password: Dölj lösenord
 accepted: Accepterad
+set_to_now: Ställ in till nu

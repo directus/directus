@@ -8,10 +8,25 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
+import { useLogger } from '../logger/index.js';
+import { getSecret } from '../utils/get-secret.js';
 import { PayloadService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
-	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	getDatabaseClient: vi.fn().mockReturnValue('sqlite'),
+}));
+
+vi.mock('../utils/encrypt.js', () => ({
+	encrypt: vi.fn(),
+	decrypt: vi.fn(),
+}));
+
+vi.mock('../utils/get-secret.js', () => ({
+	getSecret: vi.fn(),
+}));
+
+vi.mock('../logger/index.js', () => ({
+	useLogger: vi.fn(),
 }));
 
 vi.mock('../utils/encrypt.js', () => ({
@@ -139,6 +154,46 @@ describe('Integration Tests', () => {
 			});
 
 			describe('encrypt', () => {
+				let warn: ReturnType<typeof vi.fn>;
+
+				beforeEach(() => {
+					warn = vi.fn();
+					vi.mocked(useLogger).mockReturnValue({ warn } as any);
+					vi.mocked(getSecret).mockReturnValue('test-secret');
+				});
+
+				test('returns null and logs warning when decrypt throws', async () => {
+					vi.mocked(decrypt).mockRejectedValue(new Error('bad key'));
+
+					const result = await service.transformers['encrypt']!({
+						value: 'some-encrypted-blob',
+						action: 'read',
+						payload: {},
+						accountability: null,
+						specials: ['encrypt'],
+						helpers,
+					});
+
+					expect(result).toBeNull();
+					expect(warn).toHaveBeenCalledWith(expect.stringContaining('bad key'));
+				});
+
+				test('returns decrypted value when decrypt succeeds', async () => {
+					vi.mocked(decrypt).mockResolvedValue('plaintext');
+
+					const result = await service.transformers['encrypt']!({
+						value: 'some-encrypted-blob',
+						action: 'read',
+						payload: {},
+						accountability: null,
+						specials: ['encrypt'],
+						helpers,
+					});
+
+					expect(result).toBe('plaintext');
+					expect(warn).not.toHaveBeenCalled();
+				});
+
 				test.each([null, '', false, undefined])('Returns falsy value (%s) as-is', async (value) => {
 					const result = await service.transformers['encrypt']!({
 						value,
@@ -610,6 +665,193 @@ describe('Integration Tests', () => {
 				await service.prepareDelta(original);
 
 				expect(original).toEqual({ hidden: 'test' });
+			});
+		});
+
+		describe('processJsonFunctionResults', () => {
+			let service: PayloadService;
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema: { collections: {}, relations: [] },
+				});
+			});
+
+			test('Parses stringified JSON objects from json() function results', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: '{"r":255,"g":0,"b":0}',
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+			});
+
+			test('Parses stringified JSON arrays from json() function results', () => {
+				const payload = [
+					{
+						id: 1,
+						data_items_json: '[{"name":"item1"},{"name":"item2"}]',
+					},
+				];
+
+				const aliasMap = {
+					data_items_json: 'json(data.items)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(payload[0]!.data_items_json).toEqual([{ name: 'item1' }, { name: 'item2' }]);
+			});
+
+			test('Preserves string values that are not JSON objects/arrays', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_name_json: 'John Doe',
+					},
+				];
+
+				const aliasMap = {
+					metadata_name_json: 'json(metadata.name)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(payload[0]!.metadata_name_json).toBe('John Doe');
+			});
+
+			test('Preserves already parsed objects', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: { r: 255, g: 0, b: 0 },
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+			});
+
+			test('Handles malformed JSON gracefully', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_data_json: '{invalid json}',
+					},
+				];
+
+				const aliasMap = {
+					metadata_data_json: 'json(metadata.data)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				// Should keep the original string value when parsing fails
+				expect(payload[0]!.metadata_data_json).toBe('{invalid json}');
+			});
+
+			test('Does nothing when aliasMap is empty', () => {
+				const payload = [
+					{
+						id: 1,
+						name: 'test',
+					},
+				];
+
+				service.processJsonFunctionResults(payload, {});
+
+				expect(payload).toEqual(payload);
+			});
+
+			test('Only processes fields from json() functions', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: '{"r":255,"g":0,"b":0}',
+						date_created_year: '2024',
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+					date_created_year: 'year(date_created)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				// JSON field should be parsed
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				// Non-JSON function field should remain unchanged
+				expect(payload[0]!.date_created_year).toBe('2024');
+			});
+
+			test('Handles multiple json() fields in a single payload', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: '{"r":255,"g":0,"b":0}',
+						data_settings_json: '{"theme":"dark","locale":"en"}',
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+					data_settings_json: 'json(data.settings)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(payload[0]!.metadata_color_json).toEqual({ r: 255, g: 0, b: 0 });
+				expect(payload[0]!.data_settings_json).toEqual({ theme: 'dark', locale: 'en' });
+			});
+
+			test('Handles null values', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_color_json: null,
+					},
+				];
+
+				const aliasMap = {
+					metadata_color_json: 'json(metadata.color)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				expect(payload[0]!.metadata_color_json).toBeNull();
+			});
+
+			test('Parses numeric strings as strings, not numbers', () => {
+				const payload = [
+					{
+						id: 1,
+						metadata_value_json: '123',
+					},
+				];
+
+				const aliasMap = {
+					metadata_value_json: 'json(metadata.value)',
+				};
+
+				service.processJsonFunctionResults(payload, aliasMap);
+
+				// Numeric strings should remain as strings since parseJSON returns primitives
+				expect(payload[0]!.metadata_value_json).toBe('123');
 			});
 		});
 	});

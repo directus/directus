@@ -566,7 +566,6 @@ unexpected_error: Neočekivana greška
 copy_details: Kopiraj detalje
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
-password_reset_sent: Ako imate korisnički račun, poslali smo vam sigurni link za ponovno zadavanje lozinke
 password_reset_successful: Lozinka je uspješno resetovana
 back: Povratak
 edit_image: Uredi sliku
@@ -1154,6 +1153,8 @@ ai:
   settings: Postavke
   tool_approval:
     disabled: Onemogućeno
+  ask_user_submit: Pošalji
+  ask_user_next: Nastavi
 ai_tools:
   items: Stavke
   files: Fajlovi
@@ -1903,3 +1904,4 @@ fonts:
   black: Crna
   italic: Kurziv
   auto: Automatski
+set_to_now: Postavi na sad

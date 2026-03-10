@@ -103,7 +103,9 @@ const timeValue = computed<TimeValue | null | undefined>({
 
 const monthFormatter = computed(() => {
 	// Use 'long' for “January”, 'short' for “Jan”, 'narrow' for “J”
-	return new DateFormatter(userStore.language, { month: 'long' });
+	// timeZone: 'UTC' ensures the month name matches the UTC date created by `toDate('UTC')` below,
+	// preventing off-by-one month labels in negative-UTC-offset timezones.
+	return new DateFormatter(userStore.language, { month: 'long', timeZone: 'UTC' });
 });
 
 const monthOptions = computed(() => {
@@ -113,8 +115,6 @@ const monthOptions = computed(() => {
 
 		return {
 			value,
-			// This `DateFormatter` type expects a native `Date`, so we convert using UTC.
-			// (Timezone doesn't matter for month names; this keeps it stable.)
 			text: monthFormatter.value.format(date.toDate('UTC')),
 		};
 	});

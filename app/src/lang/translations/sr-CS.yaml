@@ -815,6 +815,8 @@ ai:
   settings: Podešavanja
   tool_approval:
     disabled: Isključeno
+  ask_user_submit: Pošalji
+  ask_user_next: Sljedeća
 ai_tools:
   items: Stavke
   files: Fajlovi
@@ -1253,3 +1255,4 @@ fonts:
   bold: Podebljano
   italic: Kurziv
   auto: Automatski
+set_to_now: Postavi na Sadašnji
