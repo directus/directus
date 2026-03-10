@@ -9,6 +9,7 @@ import {
 	type Tool,
 	type UIMessage,
 } from 'ai';
+import { applyAnthropicToolSearch } from '../../providers/anthropic-tool-search.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
@@ -49,13 +50,15 @@ export const createUiStream = async (
 	// Compute the full system prompt once to avoid re-computing on each step
 	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
 
+	const finalTools = applyAnthropicToolSearch(provider, model, tools);
+
 	const stream = streamText({
 		system: baseSystemPrompt,
 		model: registry.languageModel(`${provider}:${model}`),
 		messages: await convertToModelMessages(transformFilePartsForProvider(messages)),
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
-		tools,
+		tools: finalTools,
 		/**
 		 * prepareStep is called before each AI step to prepare the system prompt.
 		 * When context exists, we override the system prompt to include context attachments.
