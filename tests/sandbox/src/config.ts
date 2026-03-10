@@ -164,6 +164,7 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
 		NODE_ENV: opts.dev ? 'development' : 'production',
+		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
@@ -201,6 +202,7 @@ export type Env = (typeof baseConfig)[Database] & {
 	CACHE_ENABLED: string;
 	PUBLIC_URL: string;
 	NODE_ENV: string;
+	DOCKER_DEFAULT_PLATFORM?: string;
 } & Partial<typeof minio> &
 	Partial<typeof saml> &
 	Partial<typeof maildev>;
