@@ -11,5 +11,3 @@ export type ContentVersion = {
 	user_updated: string | null;
 	delta: Record<string, any> | null;
 };
-
-export const NEW_VERSION = Symbol('+');
