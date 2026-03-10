@@ -10,6 +10,7 @@ import {
 	getProviderOptions,
 } from '../../providers/index.js';
 import { ObjectRequest } from '../models/object-request.js';
+import { addAdditionalPropertiesToJsonSchema } from '../utils/add-additional-properties-to-json-schema.js';
 
 export const aiObjectPostHandler: RequestHandler = async (req, res, next) => {
 	if (!req.accountability?.app) {
@@ -53,7 +54,7 @@ export const aiObjectPostHandler: RequestHandler = async (req, res, next) => {
 	const result = await generateText({
 		model: registry.languageModel(`${provider}:${model}`),
 		prompt,
-		output: Output.object({ schema: jsonSchema(outputSchema) }),
+		output: Output.object({ schema: jsonSchema(addAdditionalPropertiesToJsonSchema(outputSchema)) }),
 		providerOptions,
 		...(typeof maxOutputTokens === 'number' ? { maxOutputTokens } : {}),
 	});
