@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useElementSize, useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { inject, ref, Ref, watch } from 'vue';
+import { computed, inject, type Ref, ref, watch } from 'vue';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
 import VPagination from '@/components/v-pagination.vue';
@@ -67,6 +67,8 @@ const layoutElement = ref<HTMLElement>();
 
 const { width: innerWidth } = useElementSize(layoutElement);
 
+const columnSize = computed(() => `${props.size * 2.25}rem`);
+
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
 	(value) => String(value),
@@ -88,7 +90,7 @@ watch(innerWidth, (value) => {
 </script>
 
 <template>
-	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
+	<div ref="layoutElement" class="layout-cards">
 		<template v-if="loading || (items.length > 0 && !error)">
 			<CardsHeader
 				v-model:size="sizeWritable"
@@ -157,6 +159,8 @@ watch(innerWidth, (value) => {
 }
 
 .grid {
+	--size: v-bind(columnSize);
+
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
 	gap: 1.8125rem 1.375rem;
