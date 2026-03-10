@@ -5,7 +5,7 @@
 $breakpoints: (
 	'sm': 36rem,
 	'lg': 57.625rem,
-	'xl': 72rem
+	'xl': 72rem,
 ) !default;
 
 @function breakpoint-value($name) {
@@ -15,34 +15,29 @@ $breakpoints: (
 	@return map.get($breakpoints, $name);
 }
 
-/// Viewport at or above the breakpoint
 @mixin breakpoint-up($name) {
 	@media (width >= #{breakpoint-value($name)}) {
 		@content;
 	}
 }
 
-/// Viewport strictly below the breakpoint
 @mixin breakpoint-down($name) {
 	@media (width < #{breakpoint-value($name)}) {
 		@content;
 	}
 }
 
-/// Viewport between two breakpoints (inclusive lower, exclusive upper)
 @mixin breakpoint-between($lower, $upper) {
 	@media (width >= #{breakpoint-value($lower)}) and (width < #{breakpoint-value($upper)}) {
 		@content;
 	}
 }
 
-/// Viewport at the given breakpoint only (up to next breakpoint)
 @mixin breakpoint-only($name) {
 	$keys: map.keys($breakpoints);
 	$i: list.index($keys, $name);
 
 	@if $i == list.length($keys) {
-		// Last breakpoint — no upper bound
 		@include breakpoint-up($name) {
 			@content;
 		}
