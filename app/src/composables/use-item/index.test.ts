@@ -663,7 +663,7 @@ describe('findExistingRelatedItems SEARCH fallback', () => {
 				path: '/items/test_related',
 				params: expect.objectContaining({
 					fields: expect.any(Array),
-					'filter[test_id][_eq]': 1,
+					filter: { test_id: { _eq: 1 } },
 				}),
 			}),
 		);

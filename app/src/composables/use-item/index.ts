@@ -418,17 +418,16 @@ export function useItem<T extends Item>(
 			const endpoint = getEndpoint(relation.collection);
 			const requestFields = Array.from(fieldsToFetch);
 			const filter = { [relation.field]: { _eq: primaryKey.value } };
+			const query = { fields: requestFields, filter };
 
 			const queryString = new URLSearchParams({
 				fields: requestFields.join(','),
-				[`filter[${relation.field}][_eq]`]: String(primaryKey.value),
+				filter: JSON.stringify(filter),
 			}).toString();
 
 			const useSearch = queryString.length + endpoint.length > MAX_QUERY_URL_LENGTH;
 
-			const options = useSearch
-				? { method: 'SEARCH' as const, body: { query: { fields: requestFields, filter } } }
-				: { params: { fields: requestFields, [`filter[${relation.field}][_eq]`]: primaryKey.value } };
+			const options = useSearch ? { method: 'SEARCH' as const, body: { query } } : { params: query };
 
 			return await sdk.request<Item[]>(requestEndpoint(endpoint, options));
 		}
