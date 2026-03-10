@@ -12,6 +12,8 @@ import { userName } from '@/utils/user-name';
 
 interface Props {
 	title: string;
+	subtitle?: string;
+	mode: 'version' | 'revision' | 'collab';
 	dateUpdated: Date | string | null;
 	userUpdated: User | null;
 	userLoading: boolean;
@@ -113,7 +115,8 @@ function getDeltaOptionUser(deltaOption: any) {
 				<VIcon v-if="tooltipMessage" v-tooltip.bottom="tooltipMessage" name="error" class="icon" />
 			</template>
 		</div>
-		<div class="header-meta">
+		<div v-if="subtitle" class="subtitle">{{ subtitle }}</div>
+		<div v-if="mode !== 'collab'" class="header-meta">
 			<VSkeletonLoader v-if="loading" type="text" class="meta-skeleton" />
 
 			<template v-else>
@@ -220,6 +223,14 @@ function getDeltaOptionUser(deltaOption: any) {
 				color: var(--theme--warning);
 			}
 		}
+	}
+
+	.subtitle {
+		max-inline-size: 80%;
+		font-size: 16px;
+		font-weight: 500;
+		color: var(--theme--foreground-subdued);
+		margin: 0;
 	}
 
 	.header-meta {

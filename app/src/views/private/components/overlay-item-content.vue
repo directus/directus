@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { Field, PrimaryKey } from '@directus/types';
-import { cloneDeep } from 'lodash';
-import { computed, useTemplateRef } from 'vue';
+import { cloneDeep, isEqual } from 'lodash';
+import { computed, nextTick, useTemplateRef, watch } from 'vue';
 import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VInfo from '@/components/v-info.vue';
+import type { CollabContext } from '@/composables/use-collab';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 
 const {
@@ -14,6 +15,7 @@ const {
 	relatedCollectionFields,
 	initialValues,
 	fields,
+	validationErrors,
 	junctionFieldLocation = 'bottom',
 	relatedPrimaryKeyField,
 } = defineProps<{
@@ -32,6 +34,8 @@ const {
 	relatedPrimaryKey: PrimaryKey;
 	relatedPrimaryKeyField: string | null;
 	refresh: () => void;
+	collabContext?: CollabContext;
+	relatedCollabContext?: CollabContext;
 }>();
 
 const internalEdits = defineModel<Record<string, any>>('internal-edits');
@@ -39,6 +43,20 @@ const internalEdits = defineModel<Record<string, any>>('internal-edits');
 const { mainInitialValues, junctionInitialValues } = useInitialValues();
 const { file } = useFile();
 const { scrollToField } = useValidationScrollToField();
+
+const validationErrorsEl = useTemplateRef('validationErrors');
+
+watch(
+	() => validationErrors,
+	async (newVal, oldVal) => {
+		if (isEqual(newVal, oldVal)) return;
+
+		if (newVal?.length > 0) {
+			await nextTick();
+			validationErrorsEl.value?.$el?.scrollIntoView({ behavior: 'smooth' });
+		}
+	},
+);
 
 const swapFormOrder = computed(() => junctionFieldLocation === 'top');
 const hasVisibleFieldsRelated = computed(() => relatedCollectionFields.some((field: Field) => !field.meta?.hidden));
@@ -119,6 +137,7 @@ function useValidationScrollToField() {
 		<div v-else class="overlay-item-order" :class="{ swap: swapFormOrder }">
 			<ValidationErrors
 				v-if="validationErrors?.length"
+				ref="validationErrors"
 				class="validation-errors"
 				:validation-errors
 				:fields="[...fields, ...relatedCollectionFields]"
@@ -138,6 +157,7 @@ function useValidationScrollToField() {
 				:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 				:primary-key="relatedPrimaryKey"
 				:fields="relatedCollectionFields"
+				:collab-context="relatedCollabContext"
 				@update:model-value="setRelationEdits"
 			/>
 
@@ -153,6 +173,7 @@ function useValidationScrollToField() {
 				:show-divider="swapFormOrder && hasVisibleFieldsRelated"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:collab-context="collabContext"
 			/>
 		</div>
 	</div>

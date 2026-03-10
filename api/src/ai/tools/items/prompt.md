@@ -99,7 +99,7 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 	"action": "update",
 	"collection": "posts",
 	"keys": ["uuid-1", "uuid-2"],
-	"data": [{ "status": "published" }] // Partial update
+	"data": { "status": "published" }
 }
 ```
 
@@ -123,15 +123,13 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 	"action": "update",
 	"collection": "posts",
 	"keys": ["uuid-1"],
-	"data": [
-		{
-			"categories": {
-				"create": [{ "name": "New Category" }],
-				"update": [{ "id": 3, "name": "Renamed" }],
-				"delete": [5]
-			}
+	"data": {
+		"categories": {
+			"create": [{ "name": "New Category" }],
+			"update": [{ "id": 3, "name": "Renamed" }],
+			"delete": [5]
 		}
-	]
+	}
 }
 ```
 

@@ -64,6 +64,9 @@ const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
+const userSelectOpen = ref(false);
+
+const menuActivce = computed(() => Boolean(activeDialog.value) || userSelectOpen.value);
 
 onUnmounted(() => {
 	uploadController?.abort();
@@ -238,6 +241,8 @@ function useUpload() {
 		if (files) {
 			upload(files);
 		}
+
+		userSelectOpen.value = false;
 	}
 }
 
@@ -339,6 +344,7 @@ function useURLImport() {
 			const response = await api.post(`/files/import`, {
 				url: url.value,
 				data,
+				options: { filterMimeType: props.accept?.split(',') },
 			});
 
 			newUpload.progress.value = 100;
@@ -364,6 +370,7 @@ function useURLImport() {
 }
 
 function openFileBrowser() {
+	userSelectOpen.value = true;
 	input.value?.click();
 }
 
@@ -376,6 +383,7 @@ defineExpose({ abort });
 
 <template>
 	<div
+		v-prevent-focusout="menuActivce"
 		data-dropzone
 		class="v-upload"
 		:class="{ dragging: dragging && fromUser, uploading, disabled }"
@@ -419,6 +427,7 @@ defineExpose({ abort });
 						tabindex="-1"
 						:multiple="multiple"
 						:accept="accept"
+						@cancel="userSelectOpen = false"
 						@input="onBrowseSelect"
 					/>
 					<VIcon name="file_upload" />

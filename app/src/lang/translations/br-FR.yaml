@@ -516,6 +516,12 @@ flow_name: Anv
 flow_tracking_activity: Enrollañ an obererezh hepken
 flow_tracking_null: Enrollañ netra
 code: Kod
+deployment:
+  provider:
+    settings:
+      delete_confirm: Padus e vo ha ne vo ket tu mont war-gil. Sur oc'h e fell deoc'h kenderc'hel ?
+    run:
+      cancel_confirm: Padus e vo ha ne vo ket tu mont war-gil. Sur oc'h e fell deoc'h kenderc'hel ?
 full_screen: Skramm a-bezh
 image_url: Url ar skeudenn
 alt_text: Eil testenn
@@ -753,9 +759,12 @@ live_preview:
   new_window: Digeriñ e-barzh ur prenestr nevez
 ai:
   input: Enkas
+  items: Elfennoù
   settings: Arventennoù
   tool_approval:
     disabled: Diaktivet
+  ask_user_submit: Kas
+  ask_user_next: Da-heul
 ai_tools:
   items: Elfennoù
   files: Restroù
@@ -1177,3 +1186,4 @@ fonts:
   bold: Tev
   italic: Italek
   auto: Emgefreek
+set_to_now: Lakaat da vremañ

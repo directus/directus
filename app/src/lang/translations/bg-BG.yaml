@@ -731,7 +731,6 @@ unexpected_error: Неочаквана грешка
 copy_details: Копиране на детайли
 no_app_access: Без достъп до приложението
 no_app_access_copy: Не е позволено използването на администраторското приложение от потребителя.
-password_reset_sent: Ако профилът съществува, ще бъде изпратен имейл с подсигурена връзка за нулиране на паролата
 password_reset_successful: Паролата е нулирана успешно
 back: Назад
 filter: Филтриране
@@ -927,6 +926,14 @@ operation_key_unique_error: Оперативните ключове трябва
 operation_handle_resolve: 'Изпълнение: Натиснете за добавяне или придърпайте за пренасочване'
 operation_handle_reject: 'Отхвърляне: Натиснете за добавяне или придърпайте за пренасочване'
 insights: Задълбочен анализ
+deployment:
+  provider:
+    settings:
+      delete_confirm: Действието е завинаги и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
+    run:
+      cancel_confirm: Действието е завинаги и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
+  target_value:
+    preview: Преглед
 dashboard: Табло
 panel: Панел
 panel_options: Настройки на панела
@@ -1264,6 +1271,7 @@ fields:
     custom_aspect_ratios: Собствени аспектни съотношения
     theme_light_overrides: Персонализиране на светла тема
     theme_dark_overrides: Персонализиране на тъмна тема
+    ai_header_name: Хедър
   directus_shares:
     name: Име
     role: Роля
@@ -1401,6 +1409,7 @@ live_preview:
   new_window: Отваряне в нов прозорец
   close_window: Отворете в разделен изглед
   toggle_3d: Превключване на 3D
+  display_options: Опции на дисплея
 shares: Споделяния
 unlimited_usage: Неограничено използване
 no_shares: Не е споделено
@@ -1408,9 +1417,13 @@ new_share: Ново споделяне
 ai:
   input: Текстово поле
   unknown: Неизвестен
+  items: Записи
+  content: Съдържание
   settings: Настройки
   tool_approval:
     disabled: Изключване
+  ask_user_submit: Изпращане
+  ask_user_next: Напред
 ai_tools:
   items: Записи
   files: Файлове
@@ -2337,3 +2350,4 @@ search_flow: Поток на търсене...
 percent: Процент
 show_password: Показване на паролата
 hide_password: Скриване на паролата
+set_to_now: Сегашно време

@@ -38,10 +38,8 @@ router.post(
 
 		res.setHeader('Content-Type', 'application/zip');
 
-		res.setHeader(
-			'Content-Disposition',
-			`attachment; filename="folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip"`,
-		);
+		const folderName = `folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip`;
+		res.setHeader('Content-Disposition', contentDisposition(folderName, { type: 'attachment' }));
 
 		archive.pipe(res);
 

@@ -734,7 +734,6 @@ unexpected_error_copy: Ett oväntat fel har uppstått. Försök igen.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
 no_app_access_copy: Den här användaren får inte använda administratörs-appen.
-password_reset_sent: Om du har ett konto har vi skickat en säker länk till dig för att återställa ditt lösenord
 password_reset_successful: Lösenordet har återställts
 back: Tillbaka
 filter: Filtrera
@@ -915,6 +914,15 @@ toggle_editable_elements: Växla redigerbara element
 no_url: Ingen URL angiven
 invalid_url: Ogiltig URL
 insights: Insikter
+deployment:
+  provider:
+    settings:
+      delete_confirm: Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
+    run:
+      cancel_confirm: Denna åtgärd är permanent och kan inte ångras. Är du säker på att du vill fortsätta?
+      log_all: Alla loggnivåer
+  target_value:
+    preview: Förhandsgranska
 dashboard: Kontrollpanel
 panel: Panel
 panel_options: Alternativ för panel
@@ -1371,13 +1379,18 @@ live_preview:
   new_window: Öppna i nytt fönster
   close_window: Öppna i delad vy
   toggle_3d: Växla 3D
+  display_options: Visningsalternativ
 unlimited_usage: Obegränsad användning
 ai:
   input: Inmatning
   unknown: Okänd
+  items: Objekt
+  content: Innehåll
   settings: Inställningar
   tool_approval:
     disabled: Inaktiverad
+  ask_user_submit: Skicka
+  ask_user_next: Nästa
 ai_tools:
   items: Objekt
   files: Filer
@@ -2152,3 +2165,4 @@ percent: Procent
 show_password: Visa lösenord
 hide_password: Dölj lösenord
 accepted: Accepterad
+set_to_now: Ställ in till nu

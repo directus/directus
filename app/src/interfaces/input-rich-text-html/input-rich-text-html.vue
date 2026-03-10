@@ -30,15 +30,16 @@ import VTabs from '@/components/v-tabs.vue';
 import VTextarea from '@/components/v-textarea.vue';
 import VUpload from '@/components/v-upload.vue';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { useFocusin } from '@/composables/use-focusin';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
-
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
-
 import 'tinymce/tinymce';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
@@ -67,7 +68,6 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
@@ -101,6 +101,8 @@ const comparisonEditorKey = ref(0);
 
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const storageAssetTransform = ref('all');
 const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
@@ -409,11 +411,15 @@ function setFocus(val: boolean) {
 	if (editorElement.value == null) return;
 	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
+	const { focus, blur } = useFocusin(body);
+
 	if (body == null) return;
 
 	if (val) {
+		focus();
 		body.classList.add('focus');
 	} else {
+		blur();
 		body.classList.remove('focus');
 	}
 }
@@ -462,10 +468,14 @@ onMounted(() => {
 		'Right to left': t('right_to_left'),
 	});
 });
+
+const menuActive = computed(
+	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
+);
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
+	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
 		<Editor
 			v-if="nonEditable"
 			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
@@ -591,7 +601,15 @@ onMounted(() => {
 						</div>
 					</div>
 				</template>
-				<VUpload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
+				<VUpload
+					v-else
+					:multiple="false"
+					from-library
+					from-url
+					:folder="folder"
+					:accept="allowedMimeTypes"
+					@input="onImageSelect"
+				/>
 			</div>
 
 			<template #actions>
@@ -641,7 +659,15 @@ onMounted(() => {
 								</div>
 							</div>
 						</template>
-						<VUpload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
+						<VUpload
+							v-else
+							:multiple="false"
+							from-library
+							from-url
+							:folder="folder"
+							:accept="allowedMimeTypes"
+							@input="onMediaSelect"
+						/>
 					</VTabItem>
 					<VTabItem value="embed">
 						<div class="grid">

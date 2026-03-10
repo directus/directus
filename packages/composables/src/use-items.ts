@@ -172,7 +172,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
 					limit: unref(limit),
-					fields: fieldsToFetch,
+					fields: fieldsToFetch.join(','),
 					...(alias ? { alias: unref(alias) } : {}),
 					sort: unref(sort),
 					page: unref(page),

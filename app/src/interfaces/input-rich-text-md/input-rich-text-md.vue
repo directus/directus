@@ -18,8 +18,10 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import VUpload from '@/components/v-upload.vue';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useWindowSize } from '@/composables/use-window-size';
+import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -68,6 +70,9 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
+
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const { width } = useWindowSize();
 
@@ -215,11 +220,14 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		applyEdit(codemirror, type, options);
 	}
 }
+
+const menuActive = computed(() => imageDialogOpen.value);
 </script>
 
 <template>
 	<div
 		ref="markdownInterface"
+		v-prevent-focusout="menuActive"
 		class="interface-input-rich-text-md"
 		:class="[view, { disabled, 'non-editable': nonEditable }]"
 	>
@@ -423,7 +431,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 			<VCard>
 				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
 				<VCardText>
-					<VUpload from-url from-library :folder="folder" @input="onImageUpload" />
+					<VUpload from-url from-library :folder="folder" :accept="allowedMimeTypes" @input="onImageUpload" />
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="imageDialogOpen = false">{{ $t('cancel') }}</VButton>

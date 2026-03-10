@@ -12,6 +12,7 @@ import express from 'express';
 import { merge } from 'lodash-es';
 import qs from 'qs';
 import { aiChatRouter } from './ai/chat/router.js';
+import { aiFilesRouter } from './ai/files/router.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -20,6 +21,8 @@ import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
 import commentsRouter from './controllers/comments.js';
 import dashboardsRouter from './controllers/dashboards.js';
+import deploymentWebhookRouter from './controllers/deployment-webhooks.js';
+import deploymentRouter from './controllers/deployment.js';
 import extensionsRouter from './controllers/extensions.js';
 import fieldsRouter from './controllers/fields.js';
 import filesRouter from './controllers/files.js';
@@ -54,6 +57,7 @@ import {
 	validateDatabaseExtensions,
 	validateMigrations,
 } from './database/index.js';
+import { ensureDeploymentWebhooks, registerDeploymentDrivers } from './deployment.js';
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
@@ -114,6 +118,8 @@ export default async function createApp(): Promise<express.Application> {
 	await validateStorage();
 
 	await registerAuthProviders();
+	registerDeploymentDrivers();
+	await ensureDeploymentWebhooks();
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
@@ -125,7 +131,13 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
-	app.set('query parser', (str: string) => qs.parse(str, { depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']) }));
+
+	app.set('query parser', (str: string) =>
+		qs.parse(str, {
+			depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']),
+			arrayLimit: Number(env['QUERYSTRING_ARRAY_LIMIT']),
+		}),
+	);
 
 	if (env['PRESSURE_LIMITER_ENABLED']) {
 		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
@@ -203,6 +215,9 @@ export default async function createApp(): Promise<express.Application> {
 		(
 			express.json({
 				limit: env['MAX_PAYLOAD_SIZE'] as string,
+				verify: (req, _res, buf) => {
+					(req as any).rawBody = buf;
+				},
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -272,6 +287,9 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.get('/server/ping', (_req, res) => res.send('pong'));
 
+	// Public webhook endpoint (signature-verified by the provider)
+	app.use('/deployments/webhooks', deploymentWebhookRouter);
+
 	app.use(authenticate);
 
 	app.use(schema);
@@ -294,6 +312,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/collections', collectionsRouter);
 	app.use('/comments', commentsRouter);
 	app.use('/dashboards', dashboardsRouter);
+	app.use('/deployments', deploymentRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 
@@ -312,6 +331,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (toBoolean(env['AI_ENABLED']) === true) {
 		app.use('/ai/chat', aiChatRouter);
+		app.use('/ai/files', aiFilesRouter);
 	}
 
 	if (env['METRICS_ENABLED'] === true) {

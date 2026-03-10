@@ -763,7 +763,6 @@ unexpected_error_copy: Došlo k neočekávané chybě, zkuste to prosím znovu.
 copy_details: Kopírovat podrobnosti
 no_app_access: Žádný přístup k aplikaci
 no_app_access_copy: Tento uživatel nemá oprávnění používat aplikaci pro správu.
-password_reset_sent: Pokud máte účet, zaslali jsme Vám bezpečný odkaz pro obnovení hesla
 password_reset_successful: Heslo bylo úspěšně obnoveno
 back: Zpět
 filter: Filtr
@@ -964,6 +963,15 @@ operation_key_unique_error: Klíče operace musí být v toku unikátní
 operation_handle_resolve: 'Vyřešit: Klepnutím přidat nebo táhnutím přesměrovat'
 operation_handle_reject: 'Odmítnout: Klepnutím přidat nebo táhnutím přesměrovat'
 insights: Přehledy
+deployment:
+  provider:
+    settings:
+      delete_confirm: Tato akce je trvalá a nelze ji vrátit zpět. Jste si jisti, že chcete pokračovat?
+    run:
+      cancel_confirm: Tato akce je trvalá a nelze ji vrátit zpět. Jste si jisti, že chcete pokračovat?
+      log_all: Všechny úrovně logů
+  target_value:
+    preview: Náhled
 dashboard: Nástěnka
 panel: Panel
 panel_options: Možnosti panelu
@@ -1333,6 +1341,7 @@ fields:
     public_registration_email_filter_note: Pouze e-mailové adresy odpovídající tomuto filtru se mohou zaregistrovat.
     public_registration_verify_email: Ověřit e-mail
     public_registration_verify_email_note: Zašle registrovanému uživateli e-mail a požádá ho, aby klikl na ověřovací odkaz, než se bude moci přihlásit.
+    ai_header_name: Hlavička
   directus_shares:
     name: Jméno
     role: Role
@@ -1485,6 +1494,7 @@ live_preview:
   new_window: Otevřít v novém okně
   close_window: Otevřít ve rozděleném zobrazení
   toggle_3d: Přepnout 3D
+  display_options: Volby zobrazení
 shares: Sdílení
 unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
@@ -1493,9 +1503,13 @@ new_share: Nové sdílení
 ai:
   input: Vstup
   unknown: Neznámý
+  items: Položky
+  content: Obsah
   settings: Nastavení
   tool_approval:
     disabled: Zakázáno
+  ask_user_submit: Potvrdit
+  ask_user_next: Další
 ai_tools:
   items: Položky
   files: Soubory
@@ -2438,3 +2452,4 @@ search_flow: Prohledat tok...
 percent: '%'
 show_password: Zobrazit heslo
 hide_password: Skrýt heslo
+set_to_now: Nastavit na teď

@@ -580,7 +580,6 @@ unexpected_error: Odottamaton virhe
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
-password_reset_sent: Olemme lähettäneet salasanan palautuslinkin, mikäli omaat tilin
 password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
 filter: Suodatin
@@ -749,6 +748,14 @@ create_operation: Luo toiminto
 edit_operation: Muokkaa toimintoa
 code: Koodi
 insights: Yleiskatsaus
+deployment:
+  provider:
+    settings:
+      delete_confirm: Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
+    run:
+      cancel_confirm: Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
+  target_value:
+    preview: Esikatselu
 dashboard: Kojelauta
 panel: Paneeli
 panel_options: Paneelin asetukset
@@ -1021,6 +1028,7 @@ fields:
     transformations_all: Salli kaikki muutokset
     transformations_none: Poista muunnokset käytöstä
     transformations_presets: Rajoita muunnoksia allaoleviin esiasetuksiin
+    ai_header_name: Ylätunniste
   directus_shares:
     name: Nimi
     role: Rooli
@@ -1139,9 +1147,13 @@ live_preview:
   new_window: Avaa uudessa ikkunassa
 ai:
   input: Syöte
+  items: Kohteet
+  content: Sisältö
   settings: Asetukset
   tool_approval:
     disabled: Pois käytöstä
+  ask_user_submit: Lähetä
+  ask_user_next: Seuraava
 ai_tools:
   items: Kohteet
   files: Tiedostot
@@ -1697,3 +1709,4 @@ fonts:
   bold: Lihavoitu
   italic: Kursiivi
   auto: Automaattinen
+set_to_now: Aseta olemaan nyt
