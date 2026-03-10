@@ -46,6 +46,12 @@ type UsableItem<T extends Item> = {
 	validationErrors: Ref<any[]>;
 };
 
+function coerceArchiveValue(value: string | null): string | boolean | null {
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	return value;
+}
+
 export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
@@ -68,15 +74,8 @@ export function useItem<T extends Item>(
 		if (!collectionInfo.value?.meta?.archive_field) return null;
 
 		const { archive_field, archive_value } = collectionInfo.value.meta;
-		const fieldValue = item.value?.[archive_field];
 
-		// archive_value is always a string in the DB, but cast-boolean fields return real booleans
-		// at runtime — coerce to match before comparing.
-		if (archive_value === 'true' || archive_value === 'false') {
-			return fieldValue === (archive_value === 'true');
-		}
-
-		return fieldValue === archive_value;
+		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
 	const permissions = usePermissions(collection, primaryKey, isNew);
@@ -485,20 +484,11 @@ export function useItem<T extends Item>(
 		archiving.value = true;
 
 		const field = collectionInfo.value.meta.archive_field;
-
-		let archiveValue: any = collectionInfo.value.meta.archive_value;
-		if (archiveValue === 'true') archiveValue = true;
-		if (archiveValue === 'false') archiveValue = false;
-
-		let unarchiveValue: any = collectionInfo.value.meta.unarchive_value;
-		if (unarchiveValue === 'true') unarchiveValue = true;
-		if (unarchiveValue === 'false') unarchiveValue = false;
+		const archiveValue = coerceArchiveValue(collectionInfo.value.meta.archive_value);
+		const unarchiveValue = coerceArchiveValue(collectionInfo.value.meta.unarchive_value);
 
 		try {
-			let value: any = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
-
-			if (value === 'true') value = true;
-			if (value === 'false') value = false;
+			const value = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
 			await sdk.request(
 				requestEndpoint(itemEndpoint.value, {
