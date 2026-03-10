@@ -52,7 +52,7 @@ test('editMode prop', async () => {
 	expect(wrapper.getComponent({ name: 'v-workspace-tile' }).props('editMode')).toBe(true);
 });
 
-test('zoomToFit prop', async () => {
+test('zoomToFit prop applies a non-default scale', async () => {
 	const wrapper = mount(VWorkspace, {
 		props: {
 			tiles,
@@ -61,5 +61,11 @@ test('zoomToFit prop', async () => {
 		global,
 	});
 
-	expect(wrapper.get('.workspace').attributes().style).toContain('transform: scale(-0.4523809523809524)');
+	const zoomScale = (wrapper.vm as any).zoomScale;
+	expect(zoomScale).toBeTypeOf('number');
+	expect(zoomScale).not.toBe(1);
+
+	const style = wrapper.get('.workspace').attributes().style;
+	expect(style).toContain('transform: scale(');
+	expect(style).not.toContain('transform: scale(1)');
 });

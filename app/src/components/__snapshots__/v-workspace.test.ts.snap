@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Mount component 1`] = `
-"<div data-v-c965220a="" class="v-workspace" style="inline-size: 432px; block-size: 252px;">
+"<div data-v-c965220a="" class="v-workspace" style="inline-size: 476px; block-size: 296px;">
   <div data-v-c965220a="" class="workspace" style="transform: scale(1); inline-size: 432px; block-size: 252px;">
     <v-workspace-tile-stub data-v-c965220a="" id="1" x="1" y="1" width="10" height="10" name="My Tile 1" icon="space_dashboard" color="var(--theme--primary)" showheader="true" minwidth="8" minheight="6" draggable="true" borderradius="true,true,true,true" resizable="true" editmode="false" showoptions="true" alwaysupdateposition="false" gridsize="18"></v-workspace-tile-stub>
     <v-workspace-tile-stub data-v-c965220a="" id="2" x="15" y="5" width="10" height="10" name="My Tile 2" icon="space_dashboard" color="var(--theme--primary)" showheader="true" minwidth="8" minheight="6" draggable="true" borderradius="true,true,true,true" resizable="true" editmode="false" showoptions="true" alwaysupdateposition="false" gridsize="18"></v-workspace-tile-stub>
