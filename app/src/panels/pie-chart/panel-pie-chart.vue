@@ -200,7 +200,7 @@ async function setupChart() {
 			show: props.legend !== 'none',
 			position: props.legend !== 'none' ? props.legend : undefined,
 			customLegendItems: labels,
-			offsetX: props.legend === 'right' ? -25 : -((props.width - 4) * 5),
+			offsetX: props.legend === 'right' ? -25 : 0,
 			offsetY,
 			markers: {
 				width: 8,
