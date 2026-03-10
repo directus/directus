@@ -1,7 +1,7 @@
 import { VERSION_KEY_PUBLISHED } from '@directus/constants';
 import { computed } from 'vue';
-import { normalizeUrl } from '../utils/normalize-url';
 import { useSettingsStore } from '@/stores/settings';
+import { parseUrl } from '@/utils/parse-url';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 
 export function useVisualEditorUrls() {
@@ -18,7 +18,7 @@ export function useVisualEditorUrls() {
 
 		return urlTemplates.value
 			.map((urlTemplate) => renderPlainStringTemplate(urlTemplate, { $version }) ?? urlTemplate)
-			.map(normalizeUrl)
+			.map((url) => parseUrl(url)?.href ?? '')
 			.filter(Boolean);
 	}
 }
