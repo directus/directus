@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fix "Claude Code AI Assistant Field Update payload #26790"
+Fixed the inconsistency between `FieldsInputSchema` and `FieldsValidateSchema` in `api/src/ai/tools/fields/index.ts`. Therefore, resolved the issues with updating fields via AI. 
