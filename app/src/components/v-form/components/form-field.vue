@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ContentVersion, ValidationError } from '@directus/types';
+import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -13,8 +13,9 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import CollabAvatars from '@/views/private/components/CollabAvatars.vue';
+import CollabIndicatorField from '@/views/private/components/collab/CollabIndicatorField.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -37,7 +38,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
-		version?: ContentVersion | null;
+		version?: ContentVersionMaybeNew | null;
 		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
@@ -208,7 +209,7 @@ function useComputedValues() {
 			},
 		]"
 	>
-		<CollabAvatars v-if="isLabelHidden" :model-value="focusedBy" type="field" class="avatars" />
+		<CollabIndicatorField v-if="isLabelHidden" :model-value="focusedBy" class="avatars" />
 
 		<VMenu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -295,7 +296,6 @@ function useComputedValues() {
 <style lang="scss" scoped>
 .field {
 	position: relative;
-	align-self: baseline;
 
 	> .avatars {
 		position: absolute;

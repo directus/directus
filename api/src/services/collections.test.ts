@@ -149,6 +149,24 @@ describe('Integration Tests', () => {
 				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('new_collection', expect.any(Function));
 			});
 
+			test('should parse collection name before creating', async () => {
+				tracker.on.select('directus_collections').response([]);
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+
+				const parseCollectionNameSpy = vi
+					.spyOn(service.helpers.schema, 'parseCollectionName')
+					.mockResolvedValue('parsed_collection_name');
+
+				const result = await service.createOne({
+					collection: 'ORIGINAL_COLLECTION',
+					schema: {},
+				});
+
+				expect(parseCollectionNameSpy).toHaveBeenCalledWith('ORIGINAL_COLLECTION');
+				expect(result).toBe('parsed_collection_name');
+				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('parsed_collection_name', expect.any(Function));
+			});
+
 			test('should create collection with meta only', async () => {
 				tracker.on.select('directus_collections').response([]);
 

@@ -7,7 +7,25 @@ import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const collapsed = useLocalStorage('nav-bar-collapsed', false);
-	const size = useLocalStorage('nav-bar-size', 250);
+
+	const DEFAULT_SIZE = 250;
+	const storedSize = useLocalStorage('nav-bar-size', DEFAULT_SIZE);
+
+	const size = computed({
+		get() {
+			const val = storedSize.value;
+
+			if (!Number.isFinite(val)) {
+				storedSize.value = DEFAULT_SIZE;
+				return DEFAULT_SIZE;
+			}
+
+			return val;
+		},
+		set(val: number) {
+			if (Number.isFinite(val)) storedSize.value = val;
+		},
+	});
 
 	const route = useRoute();
 	const { lg, xl } = useBreakpoints(BREAKPOINTS);
