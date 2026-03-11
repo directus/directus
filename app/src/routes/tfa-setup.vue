@@ -9,6 +9,7 @@ import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useSafeRedirect } from '@/composables/use-safe-redirect';
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { DEFAULT_AUTH_DRIVER } from '@/constants';
 import { router } from '@/router';
@@ -19,11 +20,21 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 
+const { redirect, resolveRedirect } = useSafeRedirect();
+
 const inputOTP = ref<any>(null);
 
 onMounted(() => {
 	if (appStore.authenticated === false) {
 		router.push('/login');
+	}
+
+	// Validate redirect in the background
+	if (router.currentRoute.value.query.redirect) {
+		resolveRedirect(
+			router.currentRoute.value.query.redirect as string,
+			router.currentRoute.value.query.provider as string | undefined,
+		);
 	}
 });
 
@@ -102,15 +113,13 @@ async function cancel() {
 }
 
 function navigateAfterTFA() {
-	const redirectQuery = router.currentRoute.value.query.redirect as string;
 	const fallback = (userStore.currentUser as User)?.last_page || '/login';
 
-	// If redirect is an absolute URL, navigate via window.location to avoid double "/admin" prefix
-	// This addresses an issue where the redirect URL is doubled when an SSO user is sent through the tfa setup flow
-	if (typeof redirectQuery === 'string' && /^(https?:)?\/\//.test(redirectQuery)) {
-		window.location.href = redirectQuery;
+	// If the redirect was validated as an absolute URL (public URL will be relative), navigate via window.location
+	if (redirect.value && /^(https?:)?\/\//.test(redirect.value)) {
+		window.location.href = redirect.value;
 	} else {
-		router.push(redirectQuery || fallback);
+		router.push(redirect.value ?? fallback);
 	}
 }
 
