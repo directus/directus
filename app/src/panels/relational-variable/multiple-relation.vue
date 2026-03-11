@@ -85,7 +85,7 @@ function deleteItem(elem: Record<string, any>) {
 
 	button {
 		color: var(--theme--primary);
-		padding: 0 4px;
+		padding: 0 0.25rem;
 
 		&:hover {
 			color: var(--theme--primary-accent);

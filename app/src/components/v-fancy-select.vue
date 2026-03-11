@@ -104,11 +104,11 @@ function toggle(item: Record<string, any>) {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	margin-block-end: 8px;
-	padding: 12px;
+	margin-block-end: 0.4375rem;
+	padding: 0.6875rem;
 	background-color: var(--theme--background-normal);
 	border: var(--theme--border-width) solid var(--theme--background-normal);
-	border-radius: 6px;
+	border-radius: 0.3125rem;
 	backface-visibility: hidden;
 	text-align: start;
 	transition-timing-function: var(--transition);
@@ -127,9 +127,9 @@ function toggle(item: Record<string, any>) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 44px;
-		block-size: 44px;
-		margin-inline-end: 12px;
+		inline-size: 2.5rem;
+		block-size: 2.5rem;
+		margin-inline-end: 0.6875rem;
 		background-color: var(--theme--background);
 		border-radius: 50%;
 	}
@@ -181,6 +181,6 @@ function toggle(item: Record<string, any>) {
 }
 
 .v-divider {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 </style>
