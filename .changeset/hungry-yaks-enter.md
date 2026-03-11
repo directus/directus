@@ -1,6 +1,7 @@
 ---
 '@directus/types': major
 '@directus/api': patch
+'@directus/sdk': patch
 ---
 
 Improved build times using `tsdown`’s `oxc-transform`
