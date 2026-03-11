@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface InvalidPathParameterErrorExtensions {
 	reason: string;
@@ -7,8 +7,5 @@ export interface InvalidPathParameterErrorExtensions {
 export const messageConstructor = ({ reason }: InvalidPathParameterErrorExtensions) =>
 	`Invalid path parameter. ${reason}.`;
 
-export const InvalidPathParameterError = createError<InvalidPathParameterErrorExtensions>(
-	ErrorCode.InvalidPathParameter,
-	messageConstructor,
-	400,
-);
+export const InvalidPathParameterError: DirectusErrorConstructor<InvalidPathParameterErrorExtensions> =
+	createError<InvalidPathParameterErrorExtensions>(ErrorCode.InvalidPathParameter, messageConstructor, 400);

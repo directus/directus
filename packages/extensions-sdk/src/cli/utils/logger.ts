@@ -15,7 +15,7 @@ export function log(message: string, type?: 'info' | 'warn' | 'error'): void {
 	}
 }
 
-export function clear() {
+export function clear(): void {
 	const repeatCount = process.stdout.rows - 2;
 	const blank = repeatCount > 0 ? '\n'.repeat(repeatCount) : '';
 	console.log(blank);
