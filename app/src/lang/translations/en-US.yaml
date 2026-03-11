@@ -576,7 +576,7 @@ translation_configuration: Translation Configuration
 translations_invalid_config_warning:
   '{count} translation config could not be resolved and will remain read-only | {count} translation configs could not be
   resolved and will remain read-only'
-translations_collection_already_exists: Translations collection already exists
+translations_collection_already_exists: This translations collection already exists and will be reused
 translations_fields_up_to_date: All eligible fields are already present in the translations collection.
 translations_preview_collections: Collections
 translations_preview_fields: Fields

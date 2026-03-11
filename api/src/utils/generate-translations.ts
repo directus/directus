@@ -29,6 +29,23 @@ function findDuplicate(names: string[]): string | undefined {
 	return names.find((name, index) => names.indexOf(name) !== index);
 }
 
+function buildTranslationsAliasField(
+	languagesFields: Record<string, unknown>,
+): Partial<Field> & { field: string; type: Type | null } {
+	return {
+		field: 'translations',
+		type: 'alias',
+		meta: {
+			interface: 'translations',
+			special: ['translations'],
+			options: {
+				languageField: languagesFields['name'] ? 'name' : null,
+				languageDirectionField: languagesFields['direction'] ? 'direction' : null,
+			},
+		} as unknown as FieldMeta,
+	};
+}
+
 const GenerateTranslationsInput = z.object({
 	collection: dbSafeIdentifierSchema,
 	fields: z.array(dbSafeIdentifierSchema).min(1),
@@ -108,8 +125,16 @@ export async function generateTranslations(
 			);
 		};
 
-		const validateExistingTranslationsCollection = (): { parentRelation: Relation; languageRelation: Relation } => {
-			const parentRelations = currentSchema.relations.filter(
+		const validateExistingTranslationsCollection = async (): Promise<{
+			parentRelation: Relation;
+			languageRelation: Relation;
+		}> => {
+			const invalidCollectionError = new InvalidPayloadError({
+				reason: `Collection "${translationsCollection}" is not a valid translations collection for "${collection}"`,
+			});
+
+			// Find parent relation — first try intact (one_field set), then orphaned (one_field null)
+			let parentRelations = currentSchema.relations.filter(
 				(relation) =>
 					relation.collection === translationsCollection &&
 					relation.related_collection === collection &&
@@ -121,24 +146,92 @@ export async function generateTranslations(
 					relation.meta.junction_field.length > 0,
 			);
 
-			if (parentRelations.length !== 1) {
-				throw new InvalidPayloadError({
-					reason: `Collection "${translationsCollection}" is not a valid translations collection for "${collection}"`,
-				});
+			// When the translations alias field is deleted, one_field gets set to null.
+			// Detect this orphaned state and restore the field + relation.
+			if (parentRelations.length === 0) {
+				const orphanedRelations = currentSchema.relations.filter(
+					(relation) =>
+						relation.collection === translationsCollection &&
+						relation.related_collection === collection &&
+						(relation.meta?.one_collection === null || relation.meta?.one_collection === collection) &&
+						(relation.meta?.many_collection === null || relation.meta?.many_collection === translationsCollection) &&
+						relation.meta?.one_field === null &&
+						typeof relation.meta?.junction_field === 'string' &&
+						relation.meta.junction_field.length > 0,
+				);
+
+				if (orphanedRelations.length === 1) {
+					const orphanedRelation = orphanedRelations[0]!;
+					const languageFkField = orphanedRelation.meta!.junction_field!;
+
+					const orphanedLanguageRelation = currentSchema.relations.find(
+						(relation) =>
+							relation.collection === translationsCollection &&
+							relation.field === languageFkField &&
+							relation.meta?.junction_field === orphanedRelation.field &&
+							typeof relation.related_collection === 'string' &&
+							relation.related_collection.length > 0,
+					);
+
+					if (!orphanedLanguageRelation) throw invalidCollectionError;
+
+					const resolvedLangsCollection = orphanedLanguageRelation.related_collection!;
+					const langsFields = currentSchema.collections[resolvedLangsCollection]?.fields ?? {};
+
+					// Recreate the translations alias field on the parent collection
+					const fieldsService = new FieldsService(getServiceOptions(currentSchema));
+
+					await fieldsService.createField(
+						collection,
+						buildTranslationsAliasField(langsFields),
+						undefined,
+						mutationOptions,
+					);
+
+					// Update relation meta to restore one_field (use ItemsService directly to
+					// avoid RelationsService.updateOne which triggers alterTable/alterType)
+					const relationsItemService = new ItemsService('directus_relations', {
+						knex: trx,
+						schema: currentSchema,
+					});
+
+					await relationsItemService.updateOne(
+						orphanedRelation.meta!.id,
+						{ one_field: 'translations' },
+						mutationOptions,
+					);
+
+					// Refresh schema and sourceCollection reference after restoration
+					currentSchema = await getSchema({ database: trx, bypassCache: true });
+
+					// Re-query with the intact filter now that one_field is restored
+					parentRelations = currentSchema.relations.filter(
+						(relation) =>
+							relation.collection === translationsCollection &&
+							relation.related_collection === collection &&
+							relation.meta?.one_field === 'translations' &&
+							typeof relation.meta?.junction_field === 'string' &&
+							relation.meta.junction_field.length > 0,
+					);
+				}
 			}
+
+			if (parentRelations.length !== 1) throw invalidCollectionError;
 
 			const parentRelation = parentRelations[0]!;
 			const translationField = parentRelation.meta!.one_field!;
-			const sourceTranslationField = sourceCollection.fields[translationField];
+
+			// Use currentSchema (may have been refreshed after orphan recovery) instead of
+			// the potentially stale sourceCollection snapshot
+			const currentSourceCollection = currentSchema.collections[collection];
+			const sourceTranslationField = currentSourceCollection?.fields[translationField];
 
 			const sourceTranslationSpecials = Array.isArray(sourceTranslationField?.special)
 				? sourceTranslationField.special
 				: [];
 
 			if (!sourceTranslationField || !sourceTranslationSpecials.includes('translations')) {
-				throw new InvalidPayloadError({
-					reason: `Collection "${translationsCollection}" is not a valid translations collection for "${collection}"`,
-				});
+				throw invalidCollectionError;
 			}
 
 			const languageForeignKeyField = parentRelation.meta!.junction_field!;
@@ -152,11 +245,7 @@ export async function generateTranslations(
 					relation.related_collection.length > 0,
 			);
 
-			if (!languageRelation) {
-				throw new InvalidPayloadError({
-					reason: `Collection "${translationsCollection}" is not a valid translations collection for "${collection}"`,
-				});
-			}
+			if (!languageRelation) throw invalidCollectionError;
 
 			return { parentRelation, languageRelation };
 		};
@@ -164,34 +253,38 @@ export async function generateTranslations(
 		const existingTranslationsCollection = currentSchema.collections[translationsCollection];
 
 		if (existingTranslationsCollection) {
-			validateExistingTranslationsCollection();
+			await validateExistingTranslationsCollection();
 
-			for (const fieldName of fieldNames) {
+			// Filter out fields that already exist in the junction table (e.g. when re-enabling
+			// translations after deleting the alias field but keeping the junction)
+			const newFieldNames = fieldNames.filter((fieldName) => {
 				if (sourceCollection.fields[fieldName] === undefined) {
 					throw new InvalidPayloadError({ reason: `Field "${fieldName}" does not exist on "${collection}"` });
 				}
 
-				if (existingTranslationsCollection.fields[fieldName] !== undefined) {
-					throw new InvalidPayloadError({
-						reason: `Field "${fieldName}" already exists on "${translationsCollection}"`,
-					});
-				}
-			}
+				return existingTranslationsCollection.fields[fieldName] === undefined;
+			});
 
-			const sourceFields = await readSourceFields();
+			if (newFieldNames.length > 0) {
+				const sourceFieldsService = new FieldsService(getServiceOptions(currentSchema));
 
-			validateFieldsEligibility(sourceFields);
-
-			const clonedFields = cloneFields({ fields: fieldNames, sourceFields });
-			const fieldsService = new FieldsService(getServiceOptions(currentSchema));
-
-			for (const clonedField of clonedFields) {
-				await fieldsService.createField(
-					translationsCollection,
-					clonedField as Parameters<FieldsService['createField']>[1],
-					undefined,
-					mutationOptions,
+				const sourceFields = await Promise.all(
+					newFieldNames.map(async (fieldName) => (await sourceFieldsService.readOne(collection, fieldName)) as Field),
 				);
+
+				validateFieldsEligibility(sourceFields);
+
+				const clonedFields = cloneFields({ fields: newFieldNames, sourceFields });
+				const fieldsService = new FieldsService(getServiceOptions(currentSchema));
+
+				for (const clonedField of clonedFields) {
+					await fieldsService.createField(
+						translationsCollection,
+						clonedField as Parameters<FieldsService['createField']>[1],
+						undefined,
+						mutationOptions,
+					);
+				}
 			}
 
 			return {
@@ -418,24 +511,12 @@ export async function generateTranslations(
 			});
 		}
 
-		const languagesFields = resolvedLanguagesCollection.fields;
-		const languageField = languagesFields['name'] ? 'name' : null;
-		const languageDirectionField = languagesFields['direction'] ? 'direction' : null;
-
-		const translationsAliasField: Partial<Field> & { field: string; type: Type | null } = {
-			field: 'translations',
-			type: 'alias',
-			meta: {
-				interface: 'translations',
-				special: ['translations'],
-				options: {
-					languageField,
-					languageDirectionField,
-				},
-			} as unknown as FieldMeta,
-		};
-
-		await fieldsService.createField(collection, translationsAliasField, undefined, mutationOptions);
+		await fieldsService.createField(
+			collection,
+			buildTranslationsAliasField(resolvedLanguagesCollection.fields),
+			undefined,
+			mutationOptions,
+		);
 
 		return {
 			created: true as const,

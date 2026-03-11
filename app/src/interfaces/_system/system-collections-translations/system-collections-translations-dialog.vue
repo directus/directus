@@ -184,7 +184,11 @@ const fieldNameValidationMessage = computed(() => {
 const previewCollections = computed(() => {
 	if (isManageMode.value) return [];
 
-	const result = [translationsCollectionName.value.trim()].filter(Boolean);
+	const result: string[] = [];
+
+	if (!translationsCollectionExists.value && translationsCollectionName.value.trim()) {
+		result.push(translationsCollectionName.value.trim());
+	}
 
 	if (!languagesCollectionExists.value && languagesCollection.value.trim()) {
 		result.push(languagesCollection.value.trim());
@@ -200,6 +204,19 @@ const previewFields = computed(() => {
 
 	const translationsCollection = translationsCollectionName.value.trim();
 
+	// When the junction table already exists (re-enable case), only show
+	// fields that will actually be created: new translated fields + the alias
+	if (translationsCollectionExists.value) {
+		const existingFields = fieldsStore.getFieldsForCollection(translationsCollection);
+		const existingFieldNames = new Set(existingFields.map((f) => f.field));
+
+		const newFields = selectedFields.value
+			.filter((field) => !existingFieldNames.has(field))
+			.map((field) => `${translationsCollection}.${field}`);
+
+		return [...newFields, `${props.collection}.translations`].filter((field) => !field.includes('..'));
+	}
+
 	const fields = [
 		`${translationsCollection}.id`,
 		`${translationsCollection}.${resolvedParentForeignKeyField.value}`,
@@ -213,6 +230,9 @@ const previewFields = computed(() => {
 
 const previewRelations = computed(() => {
 	if (isManageMode.value) return [];
+
+	// Relations already exist when the junction table exists
+	if (translationsCollectionExists.value) return [];
 
 	const translationsCollection = translationsCollectionName.value.trim();
 	const languages = languagesCollection.value.trim();
@@ -232,7 +252,6 @@ const canSubmit = computed(() => {
 		selectedFields.value.length > 0 &&
 		translationsCollectionName.value.trim().length > 0 &&
 		languagesCollection.value.trim().length > 0 &&
-		!translationsCollectionExists.value &&
 		fieldNameValidationMessage.value === null
 	);
 });
@@ -271,10 +290,6 @@ watch(active, (isActive) => {
 
 	showAdvancedMode.value = false;
 	if (!isManageMode.value) autoFillNames.value = true;
-});
-
-watch(translationsCollectionExists, (exists) => {
-	if (exists) showAdvancedMode.value = true;
 });
 
 watch(
@@ -334,14 +349,14 @@ async function submit() {
 		return;
 	}
 
+	active.value = false;
+	submitting.value = false;
+
 	try {
 		await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), relationsStore.hydrate()]);
 	} catch (error) {
 		unexpectedError(error);
 	}
-
-	active.value = false;
-	submitting.value = false;
 }
 </script>
 
@@ -377,6 +392,10 @@ async function submit() {
 				</div>
 			</section>
 
+			<VNotice v-if="translationsCollectionExists && !isManageMode" type="info" class="reuse-notice">
+				{{ $t('translations_collection_already_exists') }}
+			</VNotice>
+
 			<button type="button" class="toggle-advanced" @click="showAdvancedMode = !showAdvancedMode">
 				{{ showAdvancedMode ? $t('hide_advanced_options') : $t('show_advanced_options') }}
 			</button>
@@ -400,7 +419,6 @@ async function submit() {
 							v-model="translationsCollectionName"
 							db-safe
 							class="monospace"
-							:class="{ error: translationsCollectionExists }"
 							:disabled="isManageMode"
 							:placeholder="$t('a_unique_table_name')"
 						/>
@@ -436,10 +454,6 @@ async function submit() {
 					<VIcon class="arrow" name="arrow_forward" />
 					<VIcon class="arrow" name="arrow_back" />
 				</div>
-
-				<small v-if="translationsCollectionExists" class="error-text">
-					{{ $t('translations_collection_already_exists') }}
-				</small>
 			</section>
 
 			<VButton
@@ -633,16 +647,8 @@ async function submit() {
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 }
 
-.error {
-	--v-input-border-color: var(--theme--danger);
-	--v-input-border-color-hover: var(--theme--danger);
-	--v-input-border-color-focus: var(--theme--danger);
-}
-
-.error-text {
-	display: inline-block;
-	margin-block-start: 0.4375rem;
-	color: var(--theme--danger);
+.reuse-notice {
+	margin-block-start: 0.6875rem;
 }
 
 .generated-data {

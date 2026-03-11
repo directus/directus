@@ -107,7 +107,7 @@ const i18n = createI18n({
 			fields_to_add_to_translations: 'Fields to Add to Translations',
 			translations_collection_name: 'Translations collection name',
 			languages_collection: 'Languages Collection',
-			translations_collection_already_exists: 'Translations collection already exists',
+			translations_collection_already_exists: 'This translations collection already exists and will be reused',
 			translations_fields_up_to_date: 'All eligible fields are already present in the translations collection.',
 			translations_preview_collections: 'Collections',
 			translations_preview_fields: 'Fields',
@@ -578,6 +578,128 @@ describe('system-collections-translations dialog', () => {
 		expect(hydrateFieldsSpy).not.toHaveBeenCalled();
 		expect(hydrateRelationsSpy).not.toHaveBeenCalled();
 		expect(wrapper.emitted('update:active')).toBeUndefined();
+	});
+
+	test('submits re-enable payload when junction table exists', async () => {
+		const collectionsStore = useCollectionsStore();
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+
+		collectionsStore.collections = [
+			makeCollection('articles'),
+			makeCollection('languages'),
+			makeCollection('articles_translations'),
+		];
+
+		fieldsStore.fields = [
+			makeField('articles', 'id', 'integer', { isPrimaryKey: true }),
+			makeField('articles', 'title', 'string'),
+			makeField('articles_translations', 'id', 'integer', { isPrimaryKey: true }),
+			makeField('articles_translations', 'articles_id', 'integer'),
+			makeField('articles_translations', 'languages_code', 'string'),
+			makeField('languages', 'code', 'string', { isPrimaryKey: true }),
+		];
+
+		vi.spyOn(collectionsStore, 'hydrate').mockResolvedValue();
+		vi.spyOn(fieldsStore, 'hydrate').mockResolvedValue();
+		vi.spyOn(relationsStore, 'hydrate').mockResolvedValue();
+		vi.mocked(api.post).mockResolvedValue({ data: { data: {} } } as any);
+
+		const wrapper = mount(SystemCollectionsTranslationsDialog, {
+			props: {
+				collection: 'articles',
+				active: true,
+				mode: 'enable',
+			},
+			global: {
+				plugins: [i18n],
+				stubs: {
+					VDrawer: { template: '<div><slot name="actions" /><slot /></div>' },
+					VNotice: { template: '<div><slot name="title" /><slot /></div>' },
+					VInput: { template: '<input />' },
+					VSelect: { template: '<select />' },
+					VCheckbox: { template: '<input type="checkbox" />' },
+					VIcon: { template: '<i />' },
+					VButton: { template: '<button><slot /></button>' },
+				},
+			},
+		});
+
+		expect((wrapper.vm as any).translationsCollectionExists).toBe(true);
+		expect((wrapper.vm as any).canSubmit).toBe(true);
+
+		(wrapper.vm as any).selectedFields = ['title'];
+		(wrapper.vm as any).languagesCollection = 'languages';
+
+		await (wrapper.vm as any).submit();
+
+		expect(api.post).toHaveBeenCalledWith(
+			'/utils/translations/generate',
+			expect.objectContaining({
+				collection: 'articles',
+				translationsCollection: 'articles_translations',
+				fields: ['title'],
+			}),
+		);
+
+		expect(wrapper.emitted('update:active')).toEqual([[false]]);
+	});
+
+	test('preview excludes existing fields and relations when junction exists', () => {
+		const collectionsStore = useCollectionsStore();
+		const fieldsStore = useFieldsStore();
+
+		collectionsStore.collections = [
+			makeCollection('articles'),
+			makeCollection('languages'),
+			makeCollection('articles_translations'),
+		];
+
+		fieldsStore.fields = [
+			makeField('articles', 'id', 'integer', { isPrimaryKey: true }),
+			makeField('articles', 'title', 'string'),
+			makeField('articles', 'slug', 'string'),
+			makeField('articles_translations', 'id', 'integer', { isPrimaryKey: true }),
+			makeField('articles_translations', 'articles_id', 'integer'),
+			makeField('articles_translations', 'languages_code', 'string'),
+			makeField('articles_translations', 'title', 'string'),
+			makeField('languages', 'code', 'string', { isPrimaryKey: true }),
+		];
+
+		const wrapper = mount(SystemCollectionsTranslationsDialog, {
+			props: {
+				collection: 'articles',
+				active: true,
+				mode: 'enable',
+			},
+			global: {
+				plugins: [i18n],
+				stubs: {
+					VDrawer: { template: '<div><slot name="actions" /><slot /></div>' },
+					VNotice: { template: '<div><slot name="title" /><slot /></div>' },
+					VInput: { template: '<input />' },
+					VSelect: { template: '<select />' },
+					VCheckbox: { template: '<input type="checkbox" />' },
+					VIcon: { template: '<i />' },
+					VButton: { template: '<button><slot /></button>' },
+				},
+			},
+		});
+
+		const vm = wrapper.vm as any;
+
+		// Collections preview should be empty (junction already exists)
+		expect(vm.previewCollections).toEqual([]);
+
+		// Relations preview should be empty (relations already exist)
+		expect(vm.previewRelations).toEqual([]);
+
+		// Fields preview should only show new fields (slug) + the alias, not existing ones (title)
+		expect(vm.previewFields).toContain('articles_translations.slug');
+		expect(vm.previewFields).toContain('articles.translations');
+		expect(vm.previewFields).not.toContain('articles_translations.title');
+		expect(vm.previewFields).not.toContain('articles_translations.id');
+		expect(vm.previewFields).not.toContain('articles_translations.articles_id');
 	});
 
 	test('calls unexpectedError when post-processing fails after successful submit', async () => {
