@@ -48,7 +48,7 @@ export class FilesService extends ItemsService<File> {
 	 */
 	async uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<File> & { storage: string },
+		data: Partial<File> & { storage?: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
@@ -70,7 +70,10 @@ export class FilesService extends ItemsService<File> {
 		// Merge the existing file's folder and filename_download with the new payload
 		const payload = { ...(existingFile ?? {}), ...clone(data) };
 
-		const disk = storage.location(payload.storage);
+		const storageName = payload.storage ?? toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
+		payload.storage = storageName;
+
+		const disk = storage.location(storageName);
 
 		// If no folder is specified, we'll use the default folder from the settings if it exists
 		if ('folder' in payload === false) {
@@ -180,10 +183,10 @@ export class FilesService extends ItemsService<File> {
 			}
 		}
 
-		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
+		const { size } = await storage.location(storageName).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
+		const metadata = await extractMetadata(storageName, payload as Parameters<typeof extractMetadata>[1]);
 
 		payload.uploaded_on = new Date().toISOString();
 
