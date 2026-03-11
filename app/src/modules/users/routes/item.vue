@@ -521,6 +521,8 @@ function revert(values: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
@@ -541,11 +543,11 @@ function revert(values: Record<string, any>) {
 	display: flex;
 	align-items: center;
 	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
-	block-size: 112px;
+	block-size: 6.3125rem;
 	margin-block-end: var(--theme--form--row-gap);
-	padding: 20px;
+	padding: 1.125rem;
 	background-color: var(--theme--background-normal);
-	border-radius: calc(var(--theme--border-radius) + 4px);
+	border-radius: calc(var(--theme--border-radius) + 0.25rem);
 
 	.avatar {
 		--v-icon-color: var(--theme--foreground-subdued);
@@ -554,9 +556,9 @@ function revert(values: Record<string, any>) {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		inline-size: 84px;
-		block-size: 84px;
-		margin-inline-end: 16px;
+		inline-size: 4.75rem;
+		block-size: 4.75rem;
+		margin-inline-end: 0.875rem;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
@@ -573,10 +575,10 @@ function revert(values: Record<string, any>) {
 			object-fit: cover;
 		}
 
-		@media (width > 640px) {
-			inline-size: 144px;
-			block-size: 144px;
-			margin-inline-end: 22px;
+		@include mixins.breakpoint-up('sm') {
+			inline-size: 8.125rem;
+			block-size: 8.125rem;
+			margin-inline-end: 1.25rem;
 		}
 	}
 
@@ -585,11 +587,11 @@ function revert(values: Record<string, any>) {
 		overflow: hidden;
 
 		.v-skeleton-loader {
-			inline-size: 175px;
+			inline-size: 9.875rem;
 		}
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-block-end: 16px;
+			margin-block-end: 0.875rem;
 		}
 
 		.v-chip {
@@ -598,7 +600,7 @@ function revert(values: Record<string, any>) {
 			--v-chip-color-hover: var(--theme--foreground-subdued);
 			--v-chip-background-color-hover: var(--theme--background-subdued);
 
-			margin-block-start: 4px;
+			margin-block-start: 0.25rem;
 
 			&.active {
 				--v-chip-color: var(--theme--primary);
@@ -623,8 +625,8 @@ function revert(values: Record<string, any>) {
 		}
 	}
 
-	@media (width > 640px) {
-		block-size: 188px;
+	@include mixins.breakpoint-up('sm') {
+		block-size: 10.5625rem;
 
 		.user-box-content .location {
 			display: block;

@@ -43,11 +43,11 @@ const { saving, save } = useSave({ name });
 
 <style lang="scss" scoped>
 .form-grid {
-	--theme--form--column-gap: 12px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 0.6875rem;
+	--theme--form--row-gap: 1.375rem;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

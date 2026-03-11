@@ -8,7 +8,7 @@ import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const collapsed = useLocalStorage('nav-bar-collapsed', false);
 
-	const DEFAULT_SIZE = 250;
+	const DEFAULT_SIZE = 225;
 	const storedSize = useLocalStorage('nav-bar-size', DEFAULT_SIZE);
 
 	const size = computed({

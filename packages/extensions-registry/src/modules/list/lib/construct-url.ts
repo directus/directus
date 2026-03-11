@@ -1,8 +1,9 @@
+import { URL } from 'url';
 import { DEFAULT_REGISTRY } from '../../../constants.js';
 import type { ListOptions } from '../types/list-options.js';
 import type { ListQuery } from '../types/list-query.js';
 
-export const constructUrl = (query: ListQuery, options?: ListOptions) => {
+export const constructUrl = (query: ListQuery, options?: ListOptions): URL => {
 	const registry = options?.registry ?? DEFAULT_REGISTRY;
 
 	const url = new URL('/extensions', registry);

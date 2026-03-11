@@ -654,10 +654,10 @@ async function exportDataFiles() {
 }
 
 .fields {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 
@@ -665,13 +665,13 @@ async function exportDataFiles() {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 	padding: var(--content-padding);
 }
 
 .v-checkbox {
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -695,12 +695,12 @@ async function exportDataFiles() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 	}
 }
 
@@ -710,9 +710,9 @@ async function exportDataFiles() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 40px;
-	block-size: 40px;
-	margin-inline-start: -8px;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -725,7 +725,7 @@ async function exportDataFiles() {
 .extension {
 	color: var(--theme--primary);
 	font-weight: 600;
-	font-size: 11px;
+	font-size: 0.625rem;
 	text-transform: uppercase;
 }
 
@@ -750,7 +750,7 @@ async function exportDataFiles() {
 	text-align: center;
 	display: block;
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

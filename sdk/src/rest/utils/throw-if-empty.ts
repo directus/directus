@@ -4,7 +4,7 @@
  * @param message
  * @throws Throws an error if an empty array or string is provided
  */
-export const throwIfEmpty = (value: string | unknown[], message: string) => {
+export const throwIfEmpty = (value: string | unknown[], message: string): void => {
 	if (value.length === 0) {
 		throw new Error(message);
 	}

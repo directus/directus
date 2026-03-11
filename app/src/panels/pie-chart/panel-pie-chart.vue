@@ -29,6 +29,7 @@ const props = withDefaults(
 		height: number;
 		width: number;
 		conditionalFill?: ConditionalFillFormat[] | null;
+		gridSize: number;
 	}>(),
 	{
 		showHeader: false,
@@ -115,21 +116,21 @@ async function setupChart() {
 		return formatColor(baseColor, isNumberColumn.value ? series[index] : rawValue);
 	});
 
-	const size = props.height < props.width ? props.height * 20 : props.width * 20;
+	const size = props.height < props.width ? props.height * props.gridSize : props.width * props.gridSize;
 
-	let left = 20;
-	let right = 20;
-	let top = props.showHeader ? 10 : 0;
-	let bottom = props.showHeader ? 40 : 30;
-	let offsetY = props.showHeader ? -15 : 0;
+	let left = props.gridSize;
+	let right = props.gridSize;
+	let top = props.showHeader ? props.gridSize / 2 : 0;
+	let bottom = props.showHeader ? props.gridSize * 4 : props.gridSize * 3;
+	let offsetY = props.showHeader ? props.gridSize * -0.75 : 0;
 
 	if (props.legend === 'right') {
 		left = 0;
-		right = -20;
+		right = -right;
 	} else if (props.legend === 'bottom') {
-		top = props.showHeader ? 10 : -5;
-		bottom = props.showHeader ? 20 : 10;
-		offsetY = props.showHeader ? -20 : -10;
+		top = props.showHeader ? props.gridSize / 2 : -props.gridSize / 4;
+		bottom = props.showHeader ? props.gridSize : props.gridSize / 2;
+		offsetY = props.showHeader ? -props.gridSize : -props.gridSize / 2;
 	}
 
 	chart.value = new ApexCharts(chartEl.value, {
@@ -193,7 +194,7 @@ async function setupChart() {
 		dataLabels: {
 			enabled: props.showLabels,
 			style: {
-				fontSize: '10px',
+				fontSize: '0.5625rem',
 			},
 			formatter: function (val: number) {
 				return `${getPercentage(val)}%`;
@@ -203,7 +204,7 @@ async function setupChart() {
 			show: props.legend !== 'none',
 			position: props.legend !== 'none' ? props.legend : undefined,
 			customLegendItems: labels,
-			offsetX: props.legend === 'right' ? -25 : -((props.width - 4) * 5),
+			offsetX: props.legend === 'right' ? -25 : 0,
 			offsetY,
 			markers: {
 				width: 8,
@@ -297,16 +298,16 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-block-end: 0;
-	padding: 0 4px;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 4px;
+	padding: 0 0 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 }
 
 .apexcharts-tooltip-series-group {
@@ -315,7 +316,7 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 }
 
 .apexcharts-tooltip-series-group .apexcharts-active {
-	padding: 0 4px 0 0 !important;
+	padding: 0 0.25rem 0 0 !important;
 }
 
 .apexcharts-tooltip-series-group:last-child {
