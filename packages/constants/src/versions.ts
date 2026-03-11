@@ -9,6 +9,6 @@ export const VERSION_KEY_DRAFT = 'draft' as const;
 export const VERSION_KEY_PUBLISHED_LEGACY = 'main' as const;
 
 /**
- * Reserved key for the published (main) version of an item.
+ * Reserved key identifying the published item within a version context
  */
 export const VERSION_KEY_PUBLISHED = 'published' as const;
