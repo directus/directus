@@ -207,7 +207,6 @@ save_version: Verzió mentés
 promote_version: Verzió előléptetés
 apply: Alkalmaz
 select_all_differences: Összes különbség kijelölése
-main_updated_notice: A fő elem megváltozott a jelenlegi verzió létrehozása óta.
 delete_version: Verzió törlése
 delete_version_copy: >-
   Biztosan törölni szeretné a(z) „{version}” verziót? Ez a művelet nem vonható vissza.

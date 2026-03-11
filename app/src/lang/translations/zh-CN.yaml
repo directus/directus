@@ -208,7 +208,6 @@ save_version: 保存版本
 promote_version: 推广版本
 apply: 应用
 select_all_differences: 选择所有差异
-main_updated_notice: 自此版本创建以来，主条目已更新。
 delete_version: 删除版本
 delete_version_copy: >-
   你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
@@ -659,7 +658,6 @@ manual_string: 手动输入字符串
 save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_and_quit: 保存并退出
-save_and_return_to_main: 保存并返回到主页面
 save_as_copy: 另存为
 add_existing: 添加现有
 creating_items: 创建条目

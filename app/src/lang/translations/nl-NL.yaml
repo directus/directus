@@ -207,7 +207,6 @@ save_version: Versie opslaan
 promote_version: Versie promoveren
 apply: Toepassen
 select_all_differences: Selecteer Alle Verschillen
-main_updated_notice: Het hoofditem is bijgewerkt sinds deze versie is aangemaakt.
 delete_version: Versie verwijderen
 delete_version_copy: >-
   Weet je zeker dat je de versie "{version}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
@@ -658,7 +657,6 @@ manual_string: Handmatig ingevoerde tekst
 save_and_create_new: Opslaan en nieuwe aanmaken
 save_and_stay: Sla op en blijf bewerken
 save_and_quit: Opslaan en Afsluiten
-save_and_return_to_main: Opslaan en Terug naar Hoofdscherm
 save_as_copy: Sla op als een kopie
 add_existing: Bestaande toevoegen
 creating_items: Items aanmaken

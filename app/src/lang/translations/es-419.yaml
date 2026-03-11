@@ -206,7 +206,6 @@ save_version: Guardar Versión
 promote_version: Promover Versión
 apply: Aplicar
 select_all_differences: Seleccionar todas las diferencias
-main_updated_notice: El elemento principal se ha actualizado desde que se creó esta versión.
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
@@ -657,7 +656,6 @@ manual_string: Texto introducido manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_and_quit: Guardar y Salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como Copia
 add_existing: Seleccionar
 creating_items: Registros Creados

@@ -233,12 +233,12 @@ promote_version: Promote Version
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
-main_updated_notice: The main item has been updated since this version was created.
+published_updated_notice: The published item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
-  You are about to promote “{version}” to Published. What should happen to “{version}” after promotion?
+  You are about to publish “{version}”. What should happen to “{version}” after publishing?
 content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
@@ -698,12 +698,12 @@ manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_and_quit: Save and Quit
-save_and_return_to_main: Save and Return to Main
+save_and_return_to_published: Save and Return to Published
 save_as_copy: Save as Copy
 add_existing: Add Existing
 creating_items: Creating Items
 enable_create_button: Enable Create Button
-selecting_items: Selecting Items
+selecting_items: Selecting Itemss
 enable_select_button: Enable Select Button
 allow_duplicates: Allow Duplicates
 comments: Comments
