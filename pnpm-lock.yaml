@@ -264,9 +264,6 @@ catalogs:
     '@types/deep-diff':
       specifier: 1.0.5
       version: 1.0.5
-    '@types/destroy':
-      specifier: 1.0.3
-      version: 1.0.3
     '@types/diacritics':
       specifier: 1.3.3
       version: 1.3.3
@@ -486,9 +483,6 @@ catalogs:
     deep-diff:
       specifier: 1.0.2
       version: 1.0.2
-    destroy:
-      specifier: 1.2.0
-      version: 1.2.0
     diacritics:
       specifier: 1.3.0
       version: 1.3.0
@@ -1173,9 +1167,6 @@ importers:
       deep-diff:
         specifier: 'catalog:'
         version: 1.0.2
-      destroy:
-        specifier: 'catalog:'
-        version: 1.2.0
       directus:
         specifier: workspace:*
         version: link:../directus
@@ -1420,9 +1411,6 @@ importers:
       '@types/deep-diff':
         specifier: 'catalog:'
         version: 1.0.5
-      '@types/destroy':
-        specifier: 'catalog:'
-        version: 1.0.3
       '@types/encodeurl':
         specifier: 'catalog:'
         version: 1.0.3
@@ -6800,9 +6788,6 @@ packages:
 
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
-
-  '@types/destroy@1.0.3':
-    resolution: {integrity: sha512-nRcH61sRUBct1KM6dV4kjNzgLBrM6eSafsBfoGo/tOeKkTPbYsqi5uJqh8Rq7M9+stYh0wW+Tg56XFcsCPrjhw==}
 
   '@types/diacritics@1.3.3':
     resolution: {integrity: sha512-wt0tBItmBsOUVZ8+MCrkBMoVfH/EUZeTXwYSekVVYilZlGDYssREUR+sX72mHvl2IrbdCKgpYARXKh3awD2how==}
@@ -19216,10 +19201,6 @@ snapshots:
 
   '@types/deep-eql@4.0.2': {}
 
-  '@types/destroy@1.0.3':
-    dependencies:
-      '@types/node': 24.9.1
-
   '@types/diacritics@1.3.3': {}
 
   '@types/diff@7.0.1': {}
@@ -19643,7 +19624,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -19722,7 +19703,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@1.6.1':
     dependencies:
