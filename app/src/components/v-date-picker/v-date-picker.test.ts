@@ -546,6 +546,7 @@ describe('v-date-picker', () => {
 			await nextTick();
 
 			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
 				'date',
 				expect.objectContaining({
@@ -570,6 +571,7 @@ describe('v-date-picker', () => {
 			await nextTick();
 
 			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
 				'date',
 				expect.objectContaining({
