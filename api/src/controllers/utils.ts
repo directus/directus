@@ -3,6 +3,7 @@ import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
+import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
 import { clearSystemCache } from '../cache.js';
 import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -212,6 +213,29 @@ router.post(
 		await service.clearCache({ system: clearSystemCache });
 
 		res.status(200).end();
+	}),
+);
+
+router.post(
+	'/resolve-redirect',
+	asyncHandler(async (req, res) => {
+		if (!req.body?.redirect) {
+			throw new InvalidPayloadError({ reason: `"redirect" is required` });
+		}
+
+		if (req.body?.provider && typeof req.body.provider !== 'string') {
+			throw new InvalidPayloadError({ reason: `"provider" must be a string` });
+		}
+
+		try {
+			const resolved = resolveLoginRedirect(req.body.redirect, {
+				provider: req.body.provider,
+			});
+
+			return res.json({ data: resolved });
+		} catch {
+			throw new InvalidPayloadError({ reason: `Invalid "redirect" provided` });
+		}
 	}),
 );
 

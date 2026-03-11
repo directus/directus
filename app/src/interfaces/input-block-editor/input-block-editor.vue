@@ -228,7 +228,8 @@ const menuActive = computed(() => fileHandler.value !== null);
 
 .input-block-editor .editor {
 	border-radius: var(--theme--border-radius);
-	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
+	padding: var(--theme--form--field--input--padding)
+		max(1.8125rem, calc(var(--theme--form--field--input--padding) + 0.875rem));
 }
 
 .disabled {

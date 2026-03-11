@@ -279,7 +279,7 @@ function remove(id: string) {
 
 <style scoped lang="scss">
 .icon {
-	margin: 0 12px;
+	margin: 0 0.6875rem;
 }
 
 .system-modules {
@@ -304,7 +304,7 @@ function remove(id: string) {
 }
 
 .list {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	padding: 0;
 }
 </style>

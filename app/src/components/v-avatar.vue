@@ -47,7 +47,7 @@ const sizeClass = useSizeClass(props);
 	--v-avatar-border-width [2px]
 	--v-avatar-border-color [var(--theme--border-color)]
 	--v-avatar-color  [var(--theme--background-normal)]
-	--v-avatar-size   [48px]
+	--v-avatar-size   [2.6875rem]
 */
 
 .v-avatar {
@@ -55,8 +55,8 @@ const sizeClass = useSizeClass(props);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: var(--v-avatar-size, 48px);
-	block-size: var(--v-avatar-size, 48px);
+	inline-size: var(--v-avatar-size, 2.6875rem);
+	block-size: var(--v-avatar-size, 2.6875rem);
 	overflow: hidden;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
@@ -74,21 +74,21 @@ const sizeClass = useSizeClass(props);
 }
 
 .x-small {
-	--v-avatar-size: 24px;
+	--v-avatar-size: 1.375rem;
 
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .small {
-	--v-avatar-size: 36px;
+	--v-avatar-size: 2rem;
 }
 
 .large {
-	--v-avatar-size: 60px;
+	--v-avatar-size: 3.375rem;
 }
 
 .x-large {
-	--v-avatar-size: 80px;
+	--v-avatar-size: 4.5rem;
 }
 
 .round {
