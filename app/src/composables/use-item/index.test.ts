@@ -1,5 +1,5 @@
 import { useCollection } from '@directus/composables';
-import { AppCollection, Field } from '@directus/types';
+import { AppCollection, Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -7,6 +7,8 @@ import { computed, ref } from 'vue';
 import { useItem } from '.';
 import { usePermissions } from '@/composables/use-permissions';
 import sdk from '@/sdk';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { applyConditions } from '@/utils/apply-conditions';
 
 /**
@@ -59,6 +61,13 @@ vi.mock('@/sdk', async () => {
 });
 
 vi.mock('@directus/composables');
+
+vi.mock('@/utils/get-related-collection', () => ({
+	getRelatedCollection: vi.fn(() => ({
+		relatedCollection: 'test_related',
+		junctionCollection: null,
+	})),
+}));
 
 vi.mock('@/utils/apply-conditions', () => ({
 	applyConditions: vi.fn(),
@@ -206,6 +215,119 @@ describe('Save As Copy', () => {
 		await saveAsCopy();
 
 		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(expect.objectContaining({ body: {} }));
+	});
+});
+
+describe('isArchived', () => {
+	const mockPrimaryKeyField = {
+		field: 'id',
+	} as Field;
+
+	test('should return null when no archive_field is configured', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: null,
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived } = useItem(ref('test'), ref(1));
+
+		expect(isArchived.value).toBeNull();
+	});
+
+	test('should return true when item field matches boolean archive_value stored as string', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'archived',
+				archive_value: 'true',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { archived: true } as any;
+
+		expect(isArchived.value).toBe(true);
+	});
+
+	test('should return false when item field does not match boolean archive_value stored as string', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'archived',
+				archive_value: 'true',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { archived: false } as any;
+
+		expect(isArchived.value).toBe(false);
+	});
+
+	test('should return true when item field matches string archive_value', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'status',
+				archive_value: 'archived',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { status: 'archived' } as any;
+
+		expect(isArchived.value).toBe(true);
+	});
+
+	test('should return false when item field does not match string archive_value', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'status',
+				archive_value: 'archived',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { status: 'active' } as any;
+
+		expect(isArchived.value).toBe(false);
 	});
 });
 
@@ -584,5 +706,131 @@ describe('Clear Hidden Fields Condition', () => {
 			method: 'PATCH',
 			body: { status: 'draft' },
 		});
+	});
+});
+
+describe('findExistingRelatedItems SEARCH fallback', () => {
+	const mockCollection = {
+		collection: 'test',
+		meta: {
+			item_duplication_fields: ['related.field_1'],
+		},
+	} as unknown as AppCollection;
+
+	const mockPrimaryKeyField = {
+		field: 'id',
+		schema: { has_auto_increment: true },
+	} as Field;
+
+	function setupRelationMocks() {
+		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
+
+		const relatedPkField = { field: 'id', schema: { has_auto_increment: true } } as Field;
+
+		vi.mocked(fieldsStore.getPrimaryKeyFieldForCollection).mockReturnValue(relatedPkField);
+
+		vi.mocked(relationsStore.getRelationsForCollection).mockReturnValue([
+			{
+				collection: 'test_related',
+				field: 'test_id',
+				related_collection: 'test',
+				meta: {
+					one_field: 'related',
+					junction_field: null,
+				},
+			} as unknown as Relation,
+		]);
+
+		vi.mocked(relationsStore).relations = [];
+
+		return { fieldsStore, relationsStore };
+	}
+
+	test('should use GET when URL is short', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		const mockFields = [mockPrimaryKeyField] as Field[];
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => mockFields),
+		} as any);
+
+		setupRelationMocks();
+
+		sdkSpy
+			.mockResolvedValueOnce({})
+			.mockResolvedValueOnce({ item: { id: 1, related: [{ id: 10 }] } })
+			.mockResolvedValueOnce([{ id: 10, field_1: 'value' }])
+			.mockResolvedValueOnce({});
+
+		const { saveAsCopy } = useItem(ref('test'), ref(1));
+		await saveAsCopy();
+
+		const findCall = sdkSpy.mock.calls[2]?.[0]();
+
+		expect(findCall).toEqual(
+			expect.objectContaining({
+				path: '/items/test_related',
+				params: expect.objectContaining({
+					fields: expect.any(Array),
+					filter: { test_id: { _eq: 1 } },
+				}),
+			}),
+		);
+
+		expect(findCall!.method).toBeUndefined();
+	});
+
+	test('should use SEARCH when URL exceeds 8KB', async () => {
+		const longFields = Array.from(
+			{ length: 200 },
+			(_, i) => `related.very_long_field_name_for_testing_uri_limit_threshold_${i}`,
+		);
+
+		const collectionWithLongFields = {
+			collection: 'test',
+			meta: {
+				item_duplication_fields: longFields,
+			},
+		} as unknown as AppCollection;
+
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		const mockFields = [mockPrimaryKeyField] as Field[];
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => collectionWithLongFields),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => mockFields),
+		} as any);
+
+		setupRelationMocks();
+
+		sdkSpy
+			.mockResolvedValueOnce({}) // getItem
+			.mockResolvedValueOnce({ item: { id: 1, related: [{ id: 10 }] } }) // graphql fetch
+			.mockResolvedValueOnce([{ id: 10, field_1: 'value' }]) // findExistingRelatedItems
+			.mockResolvedValueOnce({}); // save
+
+		const { saveAsCopy } = useItem(ref('test'), ref(1));
+		await saveAsCopy();
+
+		const findCall = sdkSpy.mock.calls[2]?.[0]();
+
+		expect(findCall).toEqual(
+			expect.objectContaining({
+				path: '/items/test_related',
+				method: 'SEARCH',
+				body: {
+					query: {
+						fields: expect.any(Array),
+						filter: { test_id: { _eq: 1 } },
+					},
+				},
+			}),
+		);
 	});
 });

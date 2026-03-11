@@ -21,8 +21,8 @@ export type CollectionMeta = {
 	versioning: boolean;
 	sort_field: string | null;
 	archive_field: string | null;
-	archive_value: string | boolean | null;
-	unarchive_value: string | boolean | null;
+	archive_value: string | null;
+	unarchive_value: string | null;
 	archive_app_filter: boolean;
 	item_duplication_fields: string[] | null;
 	accountability: 'all' | 'activity' | null;

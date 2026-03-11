@@ -25,6 +25,9 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 
+/** Max URL length before switching to SEARCH method to avoid 414/431 errors */
+const MAX_QUERY_URL_LENGTH = 8192;
+
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
 	hasEdits: ComputedRef<boolean>;
@@ -45,6 +48,12 @@ type UsableItem<T extends Item> = {
 	getItem: () => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
+
+function coerceArchiveValue(value: string | null): string | boolean | null {
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	return value;
+}
 
 export function useItem<T extends Item>(
 	collection: Ref<string>,
@@ -68,15 +77,8 @@ export function useItem<T extends Item>(
 		if (!collectionInfo.value?.meta?.archive_field) return null;
 
 		const { archive_field, archive_value } = collectionInfo.value.meta;
-		const fieldValue = item.value?.[archive_field];
 
-		// archive_value is always a string in the DB, but cast-boolean fields return real booleans
-		// at runtime — coerce to match before comparing.
-		if (archive_value === 'true' || archive_value === 'false') {
-			return fieldValue === (archive_value === 'true');
-		}
-
-		return fieldValue === archive_value;
+		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
 	const permissions = usePermissions(collection, primaryKey, isNew);
@@ -417,16 +419,21 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await sdk.request<Item[]>(
-				requestEndpoint(getEndpoint(relation.collection), {
-					params: {
-						fields: Array.from(fieldsToFetch),
-						[`filter[${relation.field}][_eq]`]: primaryKey.value,
-					},
-				}),
-			);
+			const endpoint = getEndpoint(relation.collection);
+			const requestFields = Array.from(fieldsToFetch);
+			const filter = { [relation.field]: { _eq: primaryKey.value } };
+			const query = { fields: requestFields, filter };
 
-			return response;
+			const queryString = new URLSearchParams({
+				fields: requestFields.join(','),
+				filter: JSON.stringify(filter),
+			}).toString();
+
+			const useSearch = queryString.length + endpoint.length > MAX_QUERY_URL_LENGTH;
+
+			const options = useSearch ? { method: 'SEARCH' as const, body: { query } } : { params: query };
+
+			return await sdk.request<Item[]>(requestEndpoint(endpoint, options));
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
@@ -485,20 +492,11 @@ export function useItem<T extends Item>(
 		archiving.value = true;
 
 		const field = collectionInfo.value.meta.archive_field;
-
-		let archiveValue: any = collectionInfo.value.meta.archive_value;
-		if (archiveValue === 'true') archiveValue = true;
-		if (archiveValue === 'false') archiveValue = false;
-
-		let unarchiveValue: any = collectionInfo.value.meta.unarchive_value;
-		if (unarchiveValue === 'true') unarchiveValue = true;
-		if (unarchiveValue === 'false') unarchiveValue = false;
+		const archiveValue = coerceArchiveValue(collectionInfo.value.meta.archive_value);
+		const unarchiveValue = coerceArchiveValue(collectionInfo.value.meta.unarchive_value);
 
 		try {
-			let value: any = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
-
-			if (value === 'true') value = true;
-			if (value === 'false') value = false;
+			const value = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
 			await sdk.request(
 				requestEndpoint(itemEndpoint.value, {
