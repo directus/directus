@@ -493,13 +493,16 @@ describe('v-date-picker', () => {
 			await monthSelect.trigger('change');
 			await nextTick();
 
-			// Trigger emission to capture the new calendar value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
-			// Verify month was updated in internal state
+			// Verify value is emitted immediately without needing further interaction
+			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
 			expect(capturedCalendarValue).toBeDefined();
+
+			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
+				'date',
+				expect.objectContaining({
+					calendarValue: expect.objectContaining({ month: 3 }),
+				}),
+			);
 		});
 
 		it('updates year when year input changes', async () => {
@@ -522,12 +525,16 @@ describe('v-date-picker', () => {
 			await yearInput.trigger('change');
 			await nextTick();
 
-			// Trigger emission to capture the new calendar value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
+			// Verify value is emitted immediately without needing further interaction
+			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
 			expect(capturedCalendarValue).toBeDefined();
+
+			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
+				'date',
+				expect.objectContaining({
+					calendarValue: expect.objectContaining({ year: 2025 }),
+				}),
+			);
 		});
 
 		it('ignores invalid month values (out of range)', async () => {
