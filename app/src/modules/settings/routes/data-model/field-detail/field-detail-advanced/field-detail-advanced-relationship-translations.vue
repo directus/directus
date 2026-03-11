@@ -189,7 +189,7 @@ const relatedPrimaryKey = computed(
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 12px 28px;
+	gap: 0.6875rem 1.5625rem;
 
 	.v-input.matches {
 		--v-input-color: var(--theme--primary);
@@ -207,25 +207,25 @@ const relatedPrimaryKey = computed(
 		}
 
 		&:first-of-type {
-			inset-block-end: 161px;
+			inset-block-end: 9.0625rem;
 			inset-inline-start: 32.5%;
 		}
 
 		&:last-of-type {
-			inset-block-end: 89px;
+			inset-block-end: 5rem;
 			inset-inline-start: 67.4%;
 		}
 	}
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 
 	@include mixins.no-wrap;
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 2.6875rem 0;
 }
 
 .v-list {
@@ -233,17 +233,17 @@ const relatedPrimaryKey = computed(
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .relational-triggers {
-	--theme--form--column-gap: 12px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 0.6875rem;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-block: 48px 0;
+		margin-block: 2.6875rem 0;
 	}
 }
 </style>
