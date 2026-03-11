@@ -1,4 +1,4 @@
-import { Action, VERSION_KEY_DRAFT } from '@directus/constants';
+import { Action, isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import {
 	type AbstractServiceOptions,
@@ -18,7 +18,6 @@ import { getHelpers } from '../database/helpers/index.js';
 import emitter from '../emitter.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { isPublishedVersionKey } from '../utils/versioning/is-published-version-key.js';
 import { splitRecursive } from '../utils/versioning/split-recursive.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';

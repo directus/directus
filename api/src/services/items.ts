@@ -1,4 +1,4 @@
-import { Action } from '@directus/constants';
+import { Action, isPublishedVersionKey } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -34,7 +34,6 @@ import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
-import { isPublishedVersionKey } from '../utils/versioning/is-published-version-key.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isPublishedVersionKey } from './is-published-version-key.js';
+import { isPublishedVersionKey } from './versions.js';
 
 describe('isPublishedVersionKey', () => {
 	it('returns true for current published key', () => {

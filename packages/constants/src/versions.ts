@@ -12,3 +12,11 @@ export const VERSION_KEY_PUBLISHED_LEGACY = 'main' as const;
  * Reserved key identifying the published item within a version context
  */
 export const VERSION_KEY_PUBLISHED = 'published' as const;
+
+/**
+ * Returns true if the given version key represents the published item.
+ * Accepts both the current key ('published') and the legacy key ('main').
+ */
+export function isPublishedVersionKey(key: string | undefined | null): boolean {
+	return key === VERSION_KEY_PUBLISHED || key === VERSION_KEY_PUBLISHED_LEGACY;
+}

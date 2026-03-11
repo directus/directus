@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
+import { isPublishedVersionKey, VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { ContentVersion } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
@@ -144,7 +144,7 @@ function useVersionSelection() {
 
 		const extractedVersion = extractVersion(dynamicUrl, activeVersionPlacement.value);
 
-		return extractedVersion === VERSION_KEY_PUBLISHED ? null : extractedVersion;
+		return isPublishedVersionKey(extractedVersion) ? null : extractedVersion;
 	});
 
 	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
