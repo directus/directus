@@ -177,17 +177,17 @@ useHead({
 
 <style lang="scss" scoped>
 h1 {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .v-input,
 .v-notice,
 .v-error {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .title {
-	margin-block-end: 10px;
+	margin-block-end: 0.5625rem;
 	font-weight: 600;
 }
 
@@ -198,10 +198,10 @@ h1 {
 
 .secret {
 	display: block;
-	margin: 0 auto 16px;
+	margin: 0 auto 0.875rem;
 	color: var(--theme--foreground-subdued);
 	font-family: var(--theme--fonts--monospace--font-family);
-	letter-spacing: 2.6px;
+	letter-spacing: 0.1463rem;
 	text-align: center;
 }
 

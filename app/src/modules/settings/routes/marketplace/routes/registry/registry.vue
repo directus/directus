@@ -157,15 +157,15 @@ watchEffect(async () => {
 
 .page-container {
 	padding: var(--content-padding);
-	max-inline-size: 1200px;
+	max-inline-size: 67.5rem;
 }
 
 .extension-group + .extension-group {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .filter {
-	margin-block: 24px 20px;
+	margin-block: 1.375rem 1.125rem;
 }
 
 .results {
@@ -179,14 +179,14 @@ watchEffect(async () => {
 }
 
 .pagination {
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 }
 
 .no-results {
-	margin-block-start: 120px;
+	margin-block-start: 6.75rem;
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 </style>

@@ -82,13 +82,13 @@ defineProps<FlowDialogsContext>();
 
 <style lang="scss" scoped>
 .confirm-form {
-	--theme--form--column-gap: 24px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 1.375rem;
+	--theme--form--row-gap: 1.375rem;
 
-	margin-block-start: var(--v-card-padding, 16px);
+	margin-block-start: var(--v-card-padding, 0.875rem);
 
 	:deep(.type-label) {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

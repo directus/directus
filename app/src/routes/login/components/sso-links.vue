@@ -215,25 +215,25 @@ watch(selectedProviderName, (val) => {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-notice {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .otp-input {
-	margin-block: 12px;
+	margin-block: 0.6875rem;
 }
 
 .signin-actions {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 0.6875rem;
 }
 
 .sso-link {
-	$sso-link-border-width: 2px;
+	$sso-link-border-width: 2px; /* stylelint-disable-line unit-disallowed-list -- SCSS variable for border calc */
 
 	display: flex;
 	inline-size: 100%;
@@ -245,7 +245,7 @@ watch(selectedProviderName, (val) => {
 	cursor: pointer;
 
 	.sso-icon {
-		--v-icon-size: 28px;
+		--v-icon-size: 1.5625rem;
 
 		display: flex;
 		align-items: center;
@@ -259,8 +259,8 @@ watch(selectedProviderName, (val) => {
 	.sso-title {
 		display: flex;
 		align-items: center;
-		padding: 0 16px 0 20px;
-		font-size: 16px;
+		padding: 0 0.875rem 0 1.125rem;
+		font-size: 0.875rem;
 		overflow: hidden;
 	}
 
@@ -269,7 +269,7 @@ watch(selectedProviderName, (val) => {
 	}
 
 	& + & {
-		margin-block-start: 12px;
+		margin-block-start: 0.6875rem;
 	}
 }
 </style>

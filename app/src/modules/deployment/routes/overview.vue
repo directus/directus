@@ -148,7 +148,7 @@ function onSetupComplete() {
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 :deep(.presentation-divider) {
@@ -156,18 +156,18 @@ function onSetupComplete() {
 }
 
 .provider-list-item {
-	--v-list-item-padding: 20px;
+	--v-list-item-padding: 1.125rem;
 }
 
 .icon {
-	inline-size: 44px;
-	block-size: 44px;
-	border-radius: 24px;
+	inline-size: 2.5rem;
+	block-size: 2.5rem;
+	border-radius: 1.375rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background-color: var(--theme--primary);
-	margin-inline-end: 20px;
+	margin-inline-end: 1.125rem;
 
 	--v-icon-color: var(--foreground-inverted);
 }
@@ -175,16 +175,16 @@ function onSetupComplete() {
 .name {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .description {
 	color: var(--theme--foreground-subdued);
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .meta {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: end;
 }
@@ -192,6 +192,6 @@ function onSetupComplete() {
 .projects {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 </style>

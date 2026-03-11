@@ -209,7 +209,7 @@ function clearVariable() {
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0 0;
+	padding: 0.25rem 0 0;
 
 	span.tag-container {
 		display: contents;
@@ -217,8 +217,8 @@ function clearVariable() {
 
 	.custom-tags-delimiter,
 	.tag {
-		margin-block-start: 8px;
-		margin-inline-end: 8px;
+		margin-block-start: 0.4375rem;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.custom-tags-delimiter.disabled {

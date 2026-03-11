@@ -54,15 +54,15 @@ function openLightbox(index: number) {
 .message-file-group {
 	container-type: inline-size;
 	inline-size: 100%;
-	max-inline-size: 18rem;
+	max-inline-size: 14.1875rem;
 	margin-inline-start: auto;
 	padding: calc(var(--focus-ring-width) + var(--focus-ring-offset));
 }
 
 .message-file-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
-	gap: 0.375rem;
+	grid-template-columns: repeat(auto-fit, minmax(3.125rem, 1fr));
+	gap: 0.3125rem;
 }
 
 .grid-item {
