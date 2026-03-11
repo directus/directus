@@ -30,7 +30,6 @@
 '@directus/utils': patch
 '@directus/validation': patch
 '@directus/sdk': patch
-'tests-blackbox': patch
 ---
 
 Updated `@directus/tsconfig` dependency from 3.0.0 to 4.0.0
