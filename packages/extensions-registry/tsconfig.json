@@ -1,6 +1,9 @@
 {
 	"extends": "@directus/tsconfig/node22",
 	"include": ["src"],
+	"compilerOptions": {
+		"isolatedDeclarations": false
+	},
 	"typedocOptions": {
 		"entryPoints": ["./src"]
 	}
