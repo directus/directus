@@ -5,5 +5,6 @@
 
 Improved buildtimes using tsdown
 
-:: notice
-Changed exports from `@directus/types/collab` to now be exported using just `@directus/types`
+::: notice
+Exports previously available from `@directus/types/collab` are now exported directly from `@directus/types`
+:::
