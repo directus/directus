@@ -85,7 +85,7 @@ const {
 
 const incomingTooltipMessage = computed(() => {
 	if (props.mode === 'revision') return `${t('changes_made')} ${t('no_relational_data')}`;
-	if (comparisonData.value?.outdated) return t('main_updated_notice');
+	if (comparisonData.value?.outdated) return t('published_updated_notice');
 	return undefined;
 });
 
