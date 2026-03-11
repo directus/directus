@@ -206,7 +206,6 @@ save_version: Зберегти версію
 promote_version: Просування версії
 apply: Застосувати
 select_all_differences: Вибрати всі відмінності
-main_updated_notice: Основний елемент був оновлений з моменту створення цієї версії.
 delete_version: Видалити версію
 delete_version_copy: >-
   Ви впевнені, що хочете видалити версію "{version}"? Цю дію не можна скасувати.

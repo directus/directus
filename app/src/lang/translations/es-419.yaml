@@ -206,7 +206,6 @@ save_version: Guardar Versión
 promote_version: Promover Versión
 apply: Aplicar
 select_all_differences: Seleccionar todas las diferencias
-main_updated_notice: El elemento principal se ha actualizado desde que se creó esta versión.
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.

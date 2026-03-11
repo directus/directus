@@ -211,7 +211,6 @@ save_version: バージョンを保存
 promote_version: バージョンを反映
 apply: 適用
 select_all_differences: すべての差異を選択
-main_updated_notice: このバージョンが作成された後、メインアイテムが更新されました。
 delete_version: バージョンを削除
 delete_version_copy: >-
   バージョン {version} を削除してもよろしいですか ? この操作は元に戻せません。

@@ -208,7 +208,6 @@ save_version: 保存版本
 promote_version: 推广版本
 apply: 应用
 select_all_differences: 选择所有差异
-main_updated_notice: 自此版本创建以来，主条目已更新。
 delete_version: 删除版本
 delete_version_copy: >-
   你确定要删除"{version}" 这个版本吗? 此操作无法撤销。

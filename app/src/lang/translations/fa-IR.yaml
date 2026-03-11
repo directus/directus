@@ -225,7 +225,6 @@ promote_version: ارتقای نسخه
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها
-main_updated_notice: مورد اصلی از زمان ایجاد این نسخه به روز شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
