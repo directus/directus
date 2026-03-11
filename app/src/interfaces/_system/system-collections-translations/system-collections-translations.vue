@@ -151,16 +151,16 @@ function openManageDialog() {
 
 .notice-action {
 	inline-size: fit-content;
-	margin-block-start: 10px;
+	margin-block-start: 0.5625rem;
 }
 
 .field-group {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .field-label {
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 </style>

@@ -511,11 +511,11 @@ async function submit() {
 }
 
 .section + .section {
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 }
 
 .section-title-label {
-	margin-block-end: 10px;
+	margin-block-end: 0.5625rem;
 	white-space: normal;
 }
 
@@ -525,7 +525,7 @@ async function submit() {
 	inset-block-end: 0;
 	float: inline-end;
 	inline-size: max-content;
-	padding: 4px 8px;
+	padding: 0.25rem 0.4375rem;
 	text-align: end;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--background);
@@ -548,7 +548,7 @@ async function submit() {
 }
 
 .selection-panel {
-	max-block-size: 280px;
+	max-block-size: 15.75rem;
 	overflow: auto;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -556,15 +556,15 @@ async function submit() {
 }
 
 .selection-content {
-	padding: 12px;
+	padding: 0.6875rem;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .toggle-advanced {
 	display: block;
-	margin-block-start: 14px;
+	margin-block-start: 0.8125rem;
 	color: var(--theme--foreground-subdued);
 	font-weight: 600;
 	transition: color var(--fast) var(--transition);
@@ -575,15 +575,15 @@ async function submit() {
 }
 
 .field-name-warning {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 }
 
 .advanced-section {
-	margin-block-start: 14px;
+	margin-block-start: 0.8125rem;
 }
 
 .relationship-title {
-	margin-block-end: 10px;
+	margin-block-end: 0.5625rem;
 }
 
 .relationship-grid {
@@ -593,8 +593,8 @@ async function submit() {
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 12px 28px;
-	margin-block-start: 10px;
+	gap: 0.6875rem 1.5625rem;
+	margin-block-start: 0.5625rem;
 
 	.v-icon.arrow {
 		--v-icon-color: var(--theme--primary);
@@ -608,19 +608,19 @@ async function submit() {
 		}
 
 		&:first-of-type {
-			inset-block-end: 161px;
+			inset-block-end: 9.0625rem;
 			inset-inline-start: 32.5%;
 		}
 
 		&:last-of-type {
-			inset-block-end: 89px;
+			inset-block-end: 5rem;
 			inset-inline-start: 67.4%;
 		}
 	}
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 
 	@include mixins.no-wrap;
 }
@@ -641,12 +641,12 @@ async function submit() {
 
 .error-text {
 	display: inline-block;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	color: var(--theme--danger);
 }
 
 .generated-data {
-	margin-block-start: 16px;
+	margin-block-start: 0.875rem;
 
 	:deep(.v-notice-title) {
 		inline-size: 100%;
@@ -654,12 +654,12 @@ async function submit() {
 
 	:deep(.v-notice-content) {
 		inline-size: 100%;
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 	}
 
 	ul {
 		margin: 0;
-		padding-inline-start: 20px;
+		padding-inline-start: 1.125rem;
 	}
 
 	li {
@@ -670,7 +670,7 @@ async function submit() {
 .generated-data-title {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .generated-data-note {
@@ -680,11 +680,11 @@ async function submit() {
 }
 
 .generated-data-side-effect-note {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .preview-block + .preview-block {
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 }
 
 .preview-label {
@@ -696,11 +696,11 @@ async function submit() {
 }
 
 .submit-button {
-	margin-block-start: 20px;
-	min-block-size: 44px;
+	margin-block-start: 1.125rem;
+	min-block-size: 2.5rem;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 54rem) {
 	.relationship-grid {
 		grid-template-columns: 1fr;
 
