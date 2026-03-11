@@ -837,7 +837,7 @@ function useItemNavigation() {
 						<VList>
 							<VListItem clickable @click="saveVersionAction('main')">
 								<VListItemIcon><VIcon name="check" /></VListItemIcon>
-								<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
+								<VListItemContent>{{ $t('save_and_return_to_published') }}</VListItemContent>
 								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
 							</VListItem>
 							<VListItem clickable @click="saveVersionAction('quit')">
