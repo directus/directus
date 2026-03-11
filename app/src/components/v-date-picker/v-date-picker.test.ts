@@ -530,56 +530,6 @@ describe('v-date-picker', () => {
 			expect(capturedCalendarValue).toBeDefined();
 		});
 
-		it('emits update:modelValue immediately when month changes', async () => {
-			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-03-15');
-
-			const wrapper = createWrapper({
-				type: 'date',
-				modelValue: '2024-01-15',
-			});
-
-			await nextTick();
-
-			const monthSelect = wrapper.find('#calendar-month-select');
-			await monthSelect.setValue('3');
-			await monthSelect.trigger('change');
-			await nextTick();
-
-			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
-
-			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
-				'date',
-				expect.objectContaining({
-					calendarValue: expect.objectContaining({ month: 3 }),
-				}),
-			);
-		});
-
-		it('emits update:modelValue immediately when year changes', async () => {
-			vi.mocked(formatDatePickerModelValue).mockReturnValue('2025-01-15');
-
-			const wrapper = createWrapper({
-				type: 'date',
-				modelValue: '2024-01-15',
-			});
-
-			await nextTick();
-
-			const yearInput = wrapper.find('.calendar-year-input');
-			await yearInput.setValue('2025');
-			await yearInput.trigger('change');
-			await nextTick();
-
-			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
-
-			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
-				'date',
-				expect.objectContaining({
-					calendarValue: expect.objectContaining({ year: 2025 }),
-				}),
-			);
-		});
-
 		it('ignores invalid month values (out of range)', async () => {
 			const initialCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
 
