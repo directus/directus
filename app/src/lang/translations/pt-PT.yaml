@@ -918,6 +918,7 @@ deployment:
       cancel_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 visible: Visível
 full_screen: Ecrã completo
+fit_to_screen: Ajustar ao ecrã
 save_image: Guardar imagem
 wysiwyg_options:
   forecolor: Cor principal

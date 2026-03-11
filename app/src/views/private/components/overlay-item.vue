@@ -263,7 +263,7 @@ const templatePrimaryKey = computed(() =>
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 
 const isSavable = computed(() => {
-	if (props.disabled || !hasEdits.value) return false;
+	if (props.disabled || (!hasEdits.value && !isNew.value)) return false;
 	if (!relatedCollection.value) return saveAllowed.value;
 	return saveAllowed.value || saveRelatedCollectionAllowed.value;
 });
