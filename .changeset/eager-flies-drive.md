@@ -33,4 +33,4 @@
 'tests-blackbox': patch
 ---
 
-Updated tsconfig to v4.0.0
+Updated `@directus/tsconfig` dependency from 3.0.0 to 4.0.0
