@@ -43,20 +43,20 @@ const expandedText = computed(() => {
 
 <style scoped>
 .message-reasoning {
-	margin: 0.25rem 0;
+	margin: 0.1875rem 0;
 }
 
 .reasoning-header {
 	display: inline-flex;
 	align-items: start;
 	text-align: start;
-	gap: 0.375rem;
-	font-size: 12px;
+	gap: 0.3125rem;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 
 	.v-icon {
-		margin-block-start: 5px;
+		margin-block-start: 0.3125rem;
 	}
 
 	&:hover {
@@ -79,9 +79,9 @@ const expandedText = computed(() => {
 		background:
 			linear-gradient(
 				90deg,
-				transparent calc(50% - var(--spread, 40px)),
+				transparent calc(50% - var(--spread, 2.25rem)),
 				var(--theme--foreground),
-				transparent calc(50% + var(--spread, 40px))
+				transparent calc(50% + var(--spread, 2.25rem))
 			),
 			linear-gradient(var(--theme--foreground-subdued), var(--theme--foreground-subdued));
 		background-size:
@@ -121,12 +121,12 @@ const expandedText = computed(() => {
 }
 
 .reasoning-content {
-	font-size: 12px;
+	font-size: 0.6875rem;
 	color: var(--theme--foreground-normal);
-	padding-inline-start: 12px;
-	padding-block: 4px;
+	padding-inline-start: 0.6875rem;
+	padding-block: 0.25rem;
 	line-height: 1.6;
-	margin-inline-start: 4px;
+	margin-inline-start: 0.25rem;
 	border-inline-start: var(--theme--border-width) solid var(--theme--border-color-accent);
 }
 

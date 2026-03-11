@@ -51,14 +51,14 @@ const ratingPercentage = computed(() => ({
 	&.simple {
 		display: inline-flex;
 		align-items: center;
-		padding: 2px 6px 2px 4px;
+		padding: 0.125rem 0.3125rem 0.125rem 0.25rem;
 		color: #ffc107;
 		font-weight: 600;
 		background-color: rgb(255 193 7 / 0.15);
 		border-radius: var(--theme--border-radius);
 
 		.v-icon {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 
@@ -66,7 +66,7 @@ const ratingPercentage = computed(() => ({
 		position: relative;
 		inline-size: min-content;
 		display: inline-flex;
-		block-size: var(--v-icon-size, 24px);
+		block-size: var(--v-icon-size, 1.375rem);
 
 		.active {
 			position: relative;

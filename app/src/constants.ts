@@ -86,10 +86,11 @@ export const MODULE_BAR_DEFAULT = [
 	},
 ];
 
+// Keep in sync with $breakpoints in app/src/styles/mixins/_breakpoints.scss
 export const BREAKPOINTS = {
-	sm: 640,
-	lg: 1024,
-	xl: 1280,
+	sm: '36rem',
+	lg: '57.625rem',
+	xl: '72rem',
 };
 
 export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider: true }> = [

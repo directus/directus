@@ -537,7 +537,7 @@ const menuActive = computed(
 	@include mixins.list-interface($deleteable: true);
 
 	.v-notice + & {
-		margin-block-start: 12px;
+		margin-block-start: 0.6875rem;
 	}
 }
 
@@ -568,13 +568,13 @@ const menuActive = computed(
 	@include mixins.list-interface-actions($pagination: true);
 
 	.v-button {
-		--v-button-padding: 0 12px 0 19px;
+		--v-button-padding: 0 0.6875rem 0 1.0625rem;
 	}
 
 	.pagination {
 		margin-inline-start: auto;
 		display: flex;
-		gap: 8px 16px;
+		gap: 0.4375rem 0.875rem;
 
 		.per-page {
 			display: flex;
@@ -584,7 +584,7 @@ const menuActive = computed(
 
 			span {
 				inline-size: auto;
-				margin-inline-end: 4px;
+				margin-inline-end: 0.25rem;
 			}
 
 			.v-select {
