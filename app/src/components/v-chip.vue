@@ -103,23 +103,23 @@ function onCloseClick(event: MouseEvent) {
 		--v-chip-close-color             [var(--theme--danger)]
 		--v-chip-close-color-disabled    [var(--theme--primary)]
 		--v-chip-close-color-hover       [var(--theme--primary-accent)]
-		--v-chip-padding                 [0 8px]
+		--v-chip-padding                 [0 0.4375rem]
 
 */
 
 .v-chip {
 	display: inline-flex;
 	align-items: center;
-	block-size: 36px;
-	padding: var(--v-chip-padding, 0 8px);
+	block-size: 2rem;
+	padding: var(--v-chip-padding, 0 0.4375rem);
 	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);
 	font-family: var(--v-chip-font-family);
-	line-height: 22px;
+	line-height: 1.25rem;
 	background-color: var(--v-chip-background-color, var(--theme--background-normal));
 	border: var(--theme--border-width) solid
 		var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
-	border-radius: 16px;
+	border-radius: 0.875rem;
 
 	&.clickable:hover {
 		color: var(--v-chip-color-hover, var(--white));
@@ -146,31 +146,31 @@ function onCloseClick(event: MouseEvent) {
 	}
 
 	&.x-small {
-		block-size: 20px;
-		padding: var(--v-chip-padding, 0 6px);
-		font-size: 12px;
-		border-radius: 10px;
+		block-size: 1.125rem;
+		padding: var(--v-chip-padding, 0 0.3125rem);
+		font-size: 0.6875rem;
+		border-radius: 0.5625rem;
 	}
 
 	&.small {
-		block-size: 24px;
-		padding: var(--v-chip-padding, 0 8px);
-		font-size: 14px;
-		border-radius: 12px;
+		block-size: 1.375rem;
+		padding: var(--v-chip-padding, 0 0.4375rem);
+		font-size: 0.8125rem;
+		border-radius: 0.6875rem;
 	}
 
 	&.large {
-		block-size: 44px;
-		padding: var(--v-chip-padding, 0 20px);
-		font-size: 16px;
-		border-radius: 22px;
+		block-size: 2.5rem;
+		padding: var(--v-chip-padding, 0 1.125rem);
+		font-size: 0.875rem;
+		border-radius: 1.25rem;
 	}
 
 	&.x-large {
-		block-size: 48px;
-		padding: var(--v-chip-padding, 0 20px);
-		font-size: 18px;
-		border-radius: 24px;
+		block-size: 2.6875rem;
+		padding: var(--v-chip-padding, 0 1.125rem);
+		font-size: 1rem;
+		border-radius: 1.375rem;
 	}
 
 	&.label {
@@ -184,15 +184,15 @@ function onCloseClick(event: MouseEvent) {
 
 		.close-outline {
 			position: relative;
-			inset-inline-end: -4px;
+			inset-inline-end: -0.25rem;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			inline-size: 14px;
-			block-size: 14px;
-			margin-inline-start: 4px;
+			inline-size: 0.8125rem;
+			block-size: 0.8125rem;
+			margin-inline-start: 0.25rem;
 			background-color: var(--v-chip-close-color, var(--theme--danger));
-			border-radius: 10px;
+			border-radius: 0.5625rem;
 
 			&.disabled {
 				background-color: var(--v-chip-close-color-disabled, var(--theme--primary));

@@ -195,10 +195,10 @@ function getColor(input?: number) {
 	--v-list-padding: 0;
 	--v-list-border-radius: 0;
 	--v-list-item-border-radius: 0;
-	--v-list-item-padding: 6px;
+	--v-list-item-padding: 0.3125rem;
 	--v-list-item-margin: 0;
 	block-size: 100%;
-	padding: 6px;
+	padding: 0.3125rem;
 	overflow: hidden auto;
 }
 
@@ -214,35 +214,35 @@ function getColor(input?: number) {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 4px;
+	gap: 0.25rem;
 	inline-size: 100%;
-	padding-block: 4px;
+	padding-block: 0.25rem;
 }
 
 .metric-labels {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
-	gap: 8px;
+	gap: 0.4375rem;
 	min-inline-size: max-content;
 }
 
 .metric-bar-visual {
-	block-size: 20px;
-	border-radius: 6px;
+	block-size: 1.125rem;
+	border-radius: 0.3125rem;
 }
 
 .metric-bar-text {
 	white-space: pre;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .metric-bar-number {
 	font-weight: 600;
 	white-space: pre;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	flex-shrink: 0;
 }
 </style>

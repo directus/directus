@@ -111,6 +111,6 @@ const done = async (notification: Snackbar) => {
 }
 
 .v-error {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 }
 </style>

@@ -502,7 +502,7 @@ defineExpose({ abort });
 	flex-direction: column;
 	justify-content: center;
 	min-block-size: var(--input-height-md);
-	padding: 32px;
+	padding: 1.8125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
@@ -526,10 +526,10 @@ defineExpose({ abort });
 .actions {
 	display: flex;
 	justify-content: center;
-	margin-block-end: 18px;
+	margin-block-end: 1rem;
 
 	.v-button {
-		margin-inline-end: 12px;
+		margin-inline-end: 0.6875rem;
 
 		&:last-child {
 			margin-inline-end: 0;
@@ -560,14 +560,14 @@ defineExpose({ abort });
 
 	.upload-icon {
 		margin: 0 auto;
-		margin-block-end: 12px;
+		margin-block-end: 0.6875rem;
 	}
 }
 
 .uploading {
 	--v-progress-linear-color: var(--white);
 	--v-progress-linear-background-color: rgb(255 255 255 / 0.25);
-	--v-progress-linear-height: 8px;
+	--v-progress-linear-height: 0.4375rem;
 
 	color: var(--white);
 	background-color: var(--theme--primary);
@@ -576,9 +576,9 @@ defineExpose({ abort });
 
 	.v-progress-linear {
 		position: absolute;
-		inset-block-end: 30px;
-		inset-inline-start: 32px;
-		inline-size: calc(100% - 64px);
+		inset-block-end: 1.6875rem;
+		inset-inline-start: 1.8125rem;
+		inline-size: calc(100% - 3.625rem);
 	}
 }
 </style>

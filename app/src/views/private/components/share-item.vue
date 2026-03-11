@@ -102,8 +102,8 @@ const formattedTime = computed(() => {
 
 <style lang="scss" scoped>
 .item {
-	margin-block-end: 8px;
-	padding: 8px;
+	margin-block-end: 0.4375rem;
+	padding: 0.4375rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 }
@@ -114,7 +114,7 @@ const formattedTime = computed(() => {
 
 .item-date {
 	color: var(--theme--foreground-subdued);
-	font-size: 12px;
+	font-size: 0.6875rem;
 }
 
 .item-header {
@@ -136,8 +136,8 @@ const formattedTime = computed(() => {
 }
 
 .share-uses {
-	margin-inline-end: 5px;
-	font-size: 12px;
+	margin-inline-end: 0.3125rem;
+	font-size: 0.6875rem;
 
 	&.no-left {
 		color: var(--theme--danger);
@@ -146,7 +146,7 @@ const formattedTime = computed(() => {
 
 .share-status {
 	font-weight: 600;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	text-align: end;
 	text-transform: uppercase;
 
@@ -161,7 +161,7 @@ const formattedTime = computed(() => {
 
 .header-right {
 	position: relative;
-	flex-basis: 24px;
+	flex-basis: 1.375rem;
 	color: var(--theme--foreground-subdued);
 
 	.more {
@@ -184,7 +184,7 @@ const formattedTime = computed(() => {
 		inset-inline-end: 0;
 		display: flex;
 		align-items: center;
-		font-size: 12px;
+		font-size: 0.6875rem;
 		white-space: nowrap;
 		text-align: end;
 		opacity: 1;

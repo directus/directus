@@ -124,8 +124,8 @@ const userFullName = userStore.fullName ?? undefined;
 		&.no-avatar {
 			&::after {
 				position: absolute;
-				inset-block-start: -1px;
-				inset-inline: 8px;
+				inset-block-start: -0.0625rem;
+				inset-inline: 0.4375rem;
 				block-size: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
@@ -164,8 +164,8 @@ const userFullName = userStore.fullName ?? undefined;
 	}
 
 	.notifications-badge {
-		--v-badge-offset-x: 16px;
-		--v-badge-offset-y: 16px;
+		--v-badge-offset-x: 0.875rem;
+		--v-badge-offset-y: 0.875rem;
 	}
 
 	.notifications {

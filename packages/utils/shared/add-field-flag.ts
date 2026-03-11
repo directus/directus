@@ -3,7 +3,7 @@ import type { FieldMeta, RawField } from '@directus/types';
 /**
  * Add a flag to a field.
  */
-export function addFieldFlag(field: RawField, flag: string) {
+export function addFieldFlag(field: RawField, flag: string): void {
 	if (!field.meta) {
 		field.meta = {
 			special: [flag],

@@ -592,7 +592,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 @use '@/styles/mixins';
 
 .grid {
-	--theme--form--row-gap: 8px;
+	--theme--form--row-gap: 0.4375rem;
 
 	@include mixins.form-grid;
 }
@@ -602,10 +602,10 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	display: flex;
 	align-items: center;
 
-	@media (min-width: 600px) {
+	@media (width >= 33.75rem) {
 		&::before {
 			content: '•';
-			padding-inline-end: 0.25rem;
+			padding-inline-end: 0.1875rem;
 			color: var(--theme--foreground-subdued);
 		}
 	}
@@ -616,7 +616,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 }
 
 .version-list {
-	--v-list-max-width: 290px;
+	--v-list-max-width: 16.3125rem;
 }
 
 .version-item {
@@ -631,16 +631,16 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	}
 
 	.version-item-icon {
-		inline-size: var(--v-icon-size, 24px);
+		inline-size: var(--v-icon-size, 1.375rem);
 		display: flex;
 		justify-content: center;
 	}
 
 	.edit-dot {
 		display: block;
-		inline-size: 8px;
-		block-size: 8px;
-		border-radius: 8px;
+		inline-size: 0.4375rem;
+		block-size: 0.4375rem;
+		border-radius: 0.4375rem;
 		background-color: var(--theme--primary);
 		transition: inherit;
 	}
@@ -664,7 +664,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 }
 
 .version-button {
-	--v-icon-size: 1rem;
+	--v-icon-size: 0.8125rem;
 
 	color: var(--theme--foreground-subdued);
 	display: flex;
