@@ -289,10 +289,10 @@ function toggleManualSort() {
 .table-header {
 	.cell {
 		position: relative;
-		block-size: 50px; /* +2px for bottom border */
-		padding: 0 12px;
+		block-size: 2.8125rem; /* +2px for bottom border */
+		padding: 0 0.6875rem;
 		font-weight: 500;
-		font-size: 14px;
+		font-size: 0.8125rem;
 		background-color: var(--v-table-background-color, var(--theme--background));
 		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
@@ -366,7 +366,7 @@ function toggleManualSort() {
 		position: relative;
 
 		.action-icon {
-			margin-inline-start: 4px;
+			margin-inline-start: 0.25rem;
 			color: var(--theme--foreground-subdued);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -412,7 +412,7 @@ function toggleManualSort() {
 
 		.v-icon {
 			position: relative;
-			inset-inline-start: 2px;
+			inset-inline-start: 0.125rem;
 		}
 
 		&.sorted-manually {
@@ -424,7 +424,7 @@ function toggleManualSort() {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		inline-size: 5px;
+		inline-size: 0.3125rem;
 		block-size: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);
@@ -432,7 +432,7 @@ function toggleManualSort() {
 		&::after {
 			position: relative;
 			inset-block-start: 20%;
-			inset-inline-start: 3px;
+			inset-inline-start: 0.1875rem;
 			display: block;
 			inline-size: var(--theme--border-width);
 			block-size: 60%;
@@ -454,7 +454,7 @@ function toggleManualSort() {
 :deep(.header-order-ghost) {
 	&::after,
 	&::before {
-		inline-size: 2px;
+		inline-size: 0.125rem;
 		content: '';
 		display: block;
 		position: absolute;
@@ -474,14 +474,14 @@ function toggleManualSort() {
 }
 
 .description-dot {
-	inline-size: 8px;
-	block-size: 8px;
+	inline-size: 0.4375rem;
+	block-size: 0.4375rem;
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
 	border: var(--theme--background) 6px solid;
 	box-sizing: content-box;
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 	vertical-align: middle;
 }
 </style>

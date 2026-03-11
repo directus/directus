@@ -30,7 +30,7 @@ afterEach(() => {
 describe('sidebar store size guard', () => {
 	it('returns default size on init', () => {
 		const store = useSidebarStore();
-		expect(store.size).toBe(370);
+		expect(store.size).toBe(333);
 	});
 
 	it('accepts finite values', () => {
@@ -42,19 +42,19 @@ describe('sidebar store size guard', () => {
 	it('rejects NaN and returns default', () => {
 		const store = useSidebarStore();
 		store.size = NaN;
-		expect(store.size).toBe(370);
+		expect(store.size).toBe(333);
 	});
 
 	it('rejects Infinity and returns default', () => {
 		const store = useSidebarStore();
 		store.size = Infinity;
-		expect(store.size).toBe(370);
+		expect(store.size).toBe(333);
 	});
 
 	it('rejects -Infinity and returns default', () => {
 		const store = useSidebarStore();
 		store.size = -Infinity;
-		expect(store.size).toBe(370);
+		expect(store.size).toBe(333);
 	});
 
 	it('preserves last valid value after rejected write', () => {
@@ -69,7 +69,7 @@ describe('sidebar store size guard', () => {
 		const storedSize = storageRefs.get('sidebar-size')!;
 
 		storedSize.value = NaN;
-		expect(store.size).toBe(370);
-		expect(storedSize.value).toBe(370);
+		expect(store.size).toBe(333);
+		expect(storedSize.value).toBe(333);
 	});
 });
