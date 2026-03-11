@@ -664,7 +664,6 @@ manual_string: 値を手動で入力する
 save_and_create_new: 保存して新規作成
 save_and_stay: 保存してページに留まる
 save_and_quit: 保存して終了
-save_and_return_to_main: 保存してメインに戻る
 save_as_copy: 複製として保存
 add_existing: 既存を追加
 creating_items: アイテムの作成

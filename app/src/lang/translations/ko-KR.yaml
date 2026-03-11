@@ -617,7 +617,6 @@ manual_string: 수동으로 입력한 문자열
 save_and_create_new: 저장하고 새로 만들기
 save_and_stay: 저장 및 유지
 save_and_quit: 저장하고 종료
-save_and_return_to_main: 저장하고 메인으로 돌아가기
 save_as_copy: 사본으로 저장
 add_existing: 데이터 선택
 creating_items: 데이터 추가

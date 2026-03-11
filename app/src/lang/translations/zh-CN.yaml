@@ -659,7 +659,6 @@ manual_string: 手动输入字符串
 save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_and_quit: 保存并退出
-save_and_return_to_main: 保存并返回到主页面
 save_as_copy: 另存为
 add_existing: 添加现有
 creating_items: 创建条目
