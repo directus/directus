@@ -1,6 +1,6 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
-import type { Readable, Stream } from 'node:stream';
+import type { Readable, Writable } from 'node:stream';
 import { useEnv } from '@directus/env';
 import {
 	createError,
@@ -25,7 +25,6 @@ import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
 import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
-import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
@@ -39,6 +38,7 @@ import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
+import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
@@ -288,8 +288,8 @@ export class ImportService {
 
 							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
-								destroyStream(stream);
-								destroyStream(extractJSON);
+
+								destroyPipedStream(extractJSON, stream);
 								reject();
 							}
 
@@ -302,8 +302,7 @@ export class ImportService {
 					extractJSON.on('data', ({ value }: Record<string, any>) => {
 						if (isSingleton && rowNumber > 1) {
 							saveQueue.kill();
-							destroyStream(stream);
-							destroyStream(extractJSON);
+							destroyPipedStream(extractJSON, stream);
 
 							reject(
 								new InvalidPayloadError({
@@ -318,8 +317,7 @@ export class ImportService {
 					});
 
 					extractJSON.on('error', (err: Error) => {
-						destroyStream(stream);
-						destroyStream(extractJSON);
+						destroyPipedStream(extractJSON, stream);
 
 						reject(new InvalidPayloadError({ reason: err.message }));
 					});
@@ -368,13 +366,13 @@ export class ImportService {
 
 			try {
 				await new Promise<void>((resolve, reject) => {
-					const streams: Stream[] = [stream];
+					const streams: (Readable | Writable)[] = [stream];
 					let rowNumber = 0;
 
 					const cleanup = (destroy = true) => {
 						if (destroy) {
 							for (const stream of streams) {
-								destroyStream(stream);
+								stream.destroy();
 							}
 						}
 
