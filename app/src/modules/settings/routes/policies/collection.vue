@@ -4,10 +4,22 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import { type PolicyItem, useDuplicate } from './use-duplicate';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { Header as TableHeader } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
@@ -18,16 +30,9 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
 
-type PolicyBaseFields = 'id' | 'name' | 'icon' | 'description';
-
-type PolicyResponse = Pick<Policy, PolicyBaseFields> & {
+type PolicyResponse = PolicyItem & {
 	users: [{ count: { user: number } }];
 	roles: [{ count: { role: number } }];
-};
-
-type PolicyItem = Pick<Policy, PolicyBaseFields> & {
-	userCount?: number;
-	roleCount?: number;
 };
 
 const { t } = useI18n();
@@ -36,6 +41,19 @@ const router = useRouter();
 
 const policies = ref<PolicyItem[]>([]);
 const loading = ref(false);
+
+const duplicateDialogActive = ref(false);
+const duplicateSource = ref<PolicyItem | null>(null);
+const duplicateName = ref('');
+
+const { duplicating, duplicate } = useDuplicate({
+	source: duplicateSource,
+	name: duplicateName,
+	onSuccess: async () => {
+		duplicateDialogActive.value = false;
+		await fetchPolicies();
+	},
+});
 
 const search = ref<string | null>(null);
 
@@ -105,7 +123,18 @@ async function fetchPolicies() {
 		const response = await fetchAll<PolicyResponse>(`/policies`, {
 			params: {
 				limit: -1,
-				fields: ['id', 'name', 'icon', 'description', 'admin_access', 'users', 'roles'],
+				fields: [
+					'id',
+					'name',
+					'icon',
+					'description',
+					'enforce_tfa',
+					'ip_access',
+					'app_access',
+					'admin_access',
+					'users',
+					'roles',
+				],
 				deep: {
 					users: {
 						_aggregate: { count: 'user' },
@@ -144,6 +173,12 @@ async function fetchPolicies() {
 
 function navigateToPolicy({ item }: { item: Policy }) {
 	router.push(`/settings/policies/${item.id}`);
+}
+
+function openDuplicateDialog(item: PolicyItem) {
+	duplicateSource.value = item;
+	duplicateName.value = `${item.name} (copy)`;
+	duplicateDialogActive.value = true;
 }
 </script>
 
@@ -189,6 +224,27 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				<template #[`item.description`]="{ item }">
 					<VTextOverflow v-if="item.description" :text="item.description" class="description" :highlight="search" />
 				</template>
+
+				<template #item-append="{ item }">
+					<VMenu placement="left-start" show-arrow>
+						<template #activator="{ toggle }">
+							<VIcon name="more_vert" class="ctx-toggle" clickable @click.stop="toggle" />
+						</template>
+
+						<VList>
+							<VListItem
+								clickable
+								@click="
+									openDuplicateDialog(item);
+									toggle();
+								"
+							>
+								<VListItemIcon><VIcon name="content_copy" /></VListItemIcon>
+								<VListItemContent>{{ $t('duplicate_policy') }}</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
+				</template>
 			</VTable>
 		</div>
 
@@ -199,6 +255,21 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
 			</template>
 		</VInfo>
+
+		<VDialog v-model="duplicateDialogActive" @esc="duplicateDialogActive = false" @apply="duplicate">
+			<VCard>
+				<VCardTitle>{{ $t('duplicate_policy') }}</VCardTitle>
+				<VCardText>
+					<VInput v-model="duplicateName" autofocus />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="duplicateDialogActive = false">{{ $t('cancel') }}</VButton>
+					<VButton :disabled="!duplicateName" :loading="duplicating" @click="duplicate">
+						{{ $t('duplicate') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<RouterView name="add" />
 	</PrivateView>
