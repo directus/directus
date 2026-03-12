@@ -48,7 +48,7 @@ export class FilesService extends ItemsService<File> {
 	 */
 	async uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<File> & { storage?: string },
+		data: Partial<File>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
