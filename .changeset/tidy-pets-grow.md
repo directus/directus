@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed: DateTime field is empty after selecting a month or a year.
+Fixed date picker not emitting value after month/year change.
