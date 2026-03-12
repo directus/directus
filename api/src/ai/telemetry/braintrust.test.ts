@@ -114,6 +114,13 @@ describe('initBraintrust', () => {
 		await initBraintrust(env);
 
 		expect(mockBraintrustSpanProcessor).toHaveBeenCalledWith({ filterAISpans: true });
-		expect(mockNodeTracerProvider).toHaveBeenCalled();
+
+		const [providerOptions] = mockNodeTracerProvider.mock.calls[0] ?? [];
+
+		expect(providerOptions).toEqual(
+			expect.objectContaining({
+				spanProcessors: [mockBraintrustSpanProcessor.mock.instances[0]],
+			}),
+		);
 	});
 });
