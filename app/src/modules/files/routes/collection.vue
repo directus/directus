@@ -2,7 +2,7 @@
 import { useLayout } from '@directus/composables';
 import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
@@ -62,6 +62,7 @@ const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = useP
 
 const confirmDelete = ref(false);
 const batchEditActive = ref(false);
+const isTransitioning = ref(false);
 
 const { breadcrumb, title } = useBreadcrumb();
 
@@ -88,8 +89,15 @@ onBeforeRouteUpdate(() => {
 	selection.value = [];
 	folderSelection.value = [];
 	confirmDelete.value = false;
-	nextTick(() => refresh());
 });
+
+watch(
+	() => [props.folder, props.special],
+	() => {
+		isTransitioning.value = true;
+	},
+	{ flush: 'sync' },
+);
 
 const { isAnyUploadActive, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
@@ -109,6 +117,13 @@ watch(folders, (_newVal, oldVal) => {
 	if (oldVal === null) return; // skip initial load
 	refresh();
 });
+
+watch(
+	() => layoutRef.value?.state?.items,
+	() => {
+		isTransitioning.value = false;
+	},
+);
 
 const {
 	updateAllowed: batchEditAllowed,
@@ -548,7 +563,8 @@ async function downloadFiles() {
 				:is="`layout-${layout}`"
 				v-bind="layoutState"
 				v-model:extra-selection="folderSelection"
-				:has-prepend-content="subfolders.length > 0"
+				:loading="layoutState.loading || isTransitioning"
+				:has-prepend-content="!isTransitioning && subfolders.length > 0"
 				:select-mode="layoutState.selectMode"
 				@select-all="folderSelection = subfolders.map((f) => f.id)"
 			>
