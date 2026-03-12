@@ -120,12 +120,12 @@ function onInput(event: Event) {
 	align-items: center;
 
 	.prepend {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.slider {
 		position: relative;
-		inset-block-start: -3px;
+		inset-block-start: -0.1875rem;
 		flex-grow: 1;
 
 		&.disabled {
@@ -140,41 +140,41 @@ function onInput(event: Event) {
 		}
 
 		&.thumb-label-visible {
-			margin-block-end: 30px;
+			margin-block-end: 1.6875rem;
 		}
 
 		input {
 			inline-size: 100%;
-			block-size: 4px;
-			padding: 8px 0;
+			block-size: 0.25rem;
+			padding: 0.4375rem 0;
 			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
-			border-radius: 10px;
+			border-radius: 0.5625rem;
 			cursor: pointer;
 			appearance: none;
 
 			&::-webkit-slider-runnable-track {
-				block-size: 4px;
+				block-size: 0.25rem;
 				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
-				border-radius: 4px;
+				border-radius: 0.25rem;
 				box-shadow: none;
 			}
 
 			&::-moz-range-track {
-				block-size: 4px;
+				block-size: 0.25rem;
 				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
-				border-radius: 4px;
+				border-radius: 0.25rem;
 				box-shadow: none;
 			}
 
 			&::-webkit-slider-thumb {
 				position: relative;
 				z-index: 3;
-				inline-size: 8px;
-				block-size: 8px;
-				margin-block-start: -2px;
+				inline-size: 0.4375rem;
+				block-size: 0.4375rem;
+				margin-block-start: -0.125rem;
 				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
@@ -187,9 +187,9 @@ function onInput(event: Event) {
 			&::-moz-range-thumb {
 				position: relative;
 				z-index: 3;
-				inline-size: 8px;
-				block-size: 8px;
-				margin-block-start: -2px;
+				inline-size: 0.4375rem;
+				block-size: 0.4375rem;
+				margin-block-start: -0.125rem;
 				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
 				border-radius: 50%;
@@ -206,10 +206,10 @@ function onInput(event: Event) {
 			inset-inline: 0;
 			z-index: 2;
 			inline-size: 100%;
-			block-size: 4px;
+			block-size: 0.25rem;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));
-			border-radius: 4px;
-			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
+			border-radius: 0.25rem;
+			transform: translateY(-0.3125rem) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
 
@@ -220,23 +220,23 @@ function onInput(event: Event) {
 
 		.ticks {
 			position: absolute;
-			inset-block-start: 14px;
+			inset-block-start: 0.8125rem;
 			inset-inline-start: 0;
 			z-index: 2;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			inline-size: 100%;
-			block-size: 4px;
-			padding: 0 7px;
+			block-size: 0.25rem;
+			padding: 0 0.375rem;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			pointer-events: none;
 
 			.tick {
 				display: inline-block;
-				inline-size: 4px;
-				block-size: 4px;
+				inline-size: 0.25rem;
+				block-size: 0.25rem;
 				background-color: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border-radius: 50%;
 			}
@@ -245,8 +245,8 @@ function onInput(event: Event) {
 		.thumb-label-wrapper {
 			position: absolute;
 			inset-block-start: 100%;
-			inset-inline-start: 7px;
-			inline-size: calc(100% - 14px);
+			inset-inline-start: 0.375rem;
+			inline-size: calc(100% - 0.8125rem);
 			overflow: visible;
 			pointer-events: none;
 		}
@@ -257,7 +257,7 @@ function onInput(event: Event) {
 			inset-block-start: 0;
 			inset-inline-start: calc(var(--_v-slider-percentage) * 1%);
 			inline-size: auto;
-			padding: 2px 6px;
+			padding: 0.125rem 0.3125rem;
 			color: var(--foreground-inverted);
 			font-weight: 600;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));
@@ -278,20 +278,20 @@ function onInput(event: Event) {
 		&:hover:not(.disabled),
 		&:focus-within:not(.disabled) {
 			input {
-				block-size: 4px;
+				block-size: 0.25rem;
 
 				&::-webkit-slider-thumb {
-					inline-size: 12px;
-					block-size: 12px;
-					margin-block-start: -4px;
+					inline-size: 0.6875rem;
+					block-size: 0.6875rem;
+					margin-block-start: -0.25rem;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 
 				&::-moz-range-thumb {
-					inline-size: 12px;
-					block-size: 12px;
-					margin-block-start: -4px;
+					inline-size: 0.6875rem;
+					block-size: 0.6875rem;
+					margin-block-start: -0.25rem;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
@@ -311,7 +311,7 @@ function onInput(event: Event) {
 	}
 
 	.append {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 }
 </style>

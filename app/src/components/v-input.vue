@@ -412,7 +412,7 @@ function useInlineWarning() {
 	block-size: var(--theme--form--field--input--height);
 
 	.prepend-outer {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.input {
@@ -433,15 +433,15 @@ function useInlineWarning() {
 		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 
 		.step-up {
-			margin-block-end: -8px;
+			margin-block-end: -0.4375rem;
 		}
 
 		.step-down {
-			margin-block-start: -8px;
+			margin-block-start: -0.4375rem;
 		}
 
 		.step-up,
@@ -499,13 +499,13 @@ function useInlineWarning() {
 
 		.append {
 			flex-shrink: 0;
-			margin-inline-start: 8px;
+			margin-inline-start: 0.4375rem;
 		}
 	}
 
 	input {
 		flex-grow: 1;
-		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
+		inline-size: 1.125rem; /* allows flex to grow/shrink to allow for slots */
 		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
 		padding-inline: 0;
@@ -536,10 +536,10 @@ function useInlineWarning() {
 	}
 
 	&.small {
-		block-size: 38px;
+		block-size: 2.125rem;
 
 		.input {
-			padding: 8px 12px;
+			padding: 0.4375rem 0.6875rem;
 		}
 	}
 
@@ -574,7 +574,7 @@ function useInlineWarning() {
 		}
 
 		.append-outer {
-			margin-inline-start: 8px;
+			margin-inline-start: 0.4375rem;
 		}
 	}
 
@@ -586,7 +586,7 @@ function useInlineWarning() {
 	.inline-warning {
 		--v-icon-color: var(--theme--warning);
 
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	&.disabled .inline-warning {

@@ -42,12 +42,12 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	> div {
 		flex-wrap: wrap;
 		align-items: center;
-		margin-block-end: 6px;
+		margin-block-end: 0.3125rem;
 	}
 
 	dt {
 		flex-basis: 100%;
-		margin-block-end: -2px;
+		margin-block-end: -0.125rem;
 	}
 
 	dd {
@@ -58,7 +58,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	.clipboard-icon {
 		--v-icon-color: var(--theme--foreground-subdued);
 		--v-icon-color-hover: var(--theme--foreground);
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 	}
 }
 </style>
