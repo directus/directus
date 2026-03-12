@@ -249,11 +249,11 @@ describe('Integration Tests', () => {
 					});
 
 					expect(superUpdateOne).toHaveBeenCalledWith(
-						sample.id, 
-						expect.objectContaining({ 
-							storage: 'local' 
-						}), 
-						{ emitEvents: false }
+						sample.id,
+						expect.objectContaining({
+							storage: 'local',
+						}),
+						{ emitEvents: false },
 					);
 				});
 
@@ -273,11 +273,11 @@ describe('Integration Tests', () => {
 					});
 
 					expect(superUpdateOne).toHaveBeenCalledWith(
-						sample.id, 
+						sample.id,
 						expect.objectContaining({
-							storage: 's3'
-						}), 
-						{ emitEvents: false }
+							storage: 's3',
+						}),
+						{ emitEvents: false },
 					);
 				});
 
@@ -300,11 +300,11 @@ describe('Integration Tests', () => {
 					);
 
 					expect(superUpdateOne).toHaveBeenCalledWith(
-						sample.id, 
+						sample.id,
 						expect.objectContaining({
-							storage: 's3' 
-						}), 
-						{ emitEvents: false }
+							storage: 's3',
+						}),
+						{ emitEvents: false },
 					);
 				});
 
@@ -328,11 +328,11 @@ describe('Integration Tests', () => {
 					);
 
 					expect(superUpdateOne).toHaveBeenCalledWith(
-						sample.id, 
+						sample.id,
 						expect.objectContaining({
-							storage: 'local' 
-						}), 
-						{ emitEvents: false }
+							storage: 'local',
+						}),
+						{ emitEvents: false },
 					);
 				});
 			});
