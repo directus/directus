@@ -232,13 +232,7 @@ function openDuplicateDialog(item: PolicyItem) {
 						</template>
 
 						<VList>
-							<VListItem
-								clickable
-								@click="
-									openDuplicateDialog(item);
-									toggle();
-								"
-							>
+							<VListItem clickable @click="openDuplicateDialog(item)">
 								<VListItemIcon><VIcon name="content_copy" /></VListItemIcon>
 								<VListItemContent>{{ $t('duplicate_policy') }}</VListItemContent>
 							</VListItem>

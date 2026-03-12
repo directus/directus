@@ -4,9 +4,7 @@ import { ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-type PolicyFields = keyof Policy;
-
-export type PolicyItem = Pick<Policy, PolicyFields> & {
+export type PolicyItem = Policy & {
 	userCount?: number;
 	roleCount?: number;
 };
@@ -33,7 +31,7 @@ export function useDuplicate({ source, name, onSuccess }: UseDuplicateOptions) {
 				params: {
 					filter: { policy: { _eq: item.id } },
 					limit: -1,
-					fields: ['collection', 'action', 'permissions', 'validation', 'presets', 'fields'],
+					fields: ['collection', 'action', 'permissions', 'validation', 'presets', 'fields', 'policy'],
 				},
 			});
 

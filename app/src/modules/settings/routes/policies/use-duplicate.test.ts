@@ -22,6 +22,8 @@ const source: PolicyItem = {
 	ip_access: null,
 	app_access: true,
 	admin_access: false,
+	userCount: 3,
+	roleCount: 1,
 };
 
 let api: { get: ReturnType<typeof vi.fn>; post: ReturnType<typeof vi.fn> };
@@ -76,7 +78,15 @@ describe('useDuplicate', () => {
 		api.get.mockResolvedValue({
 			data: {
 				data: [
-					{ collection: 'articles', action: 'read', permissions: null, validation: null, presets: null, fields: ['*'] },
+					{
+						collection: 'articles',
+						action: 'read',
+						permissions: null,
+						validation: null,
+						presets: null,
+						fields: ['*'],
+						policy: source.id,
+					},
 					{
 						collection: 'articles',
 						action: 'create',
@@ -84,6 +94,7 @@ describe('useDuplicate', () => {
 						validation: null,
 						presets: null,
 						fields: null,
+						policy: source.id,
 					},
 				],
 			},
