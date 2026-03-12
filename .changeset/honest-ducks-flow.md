@@ -3,4 +3,4 @@
 '@directus/api': minor
 ---
 
-Made storage parameter optional in file uploads
+Updated `FilesService.uploadOne` to make the `storage` parameter optional
