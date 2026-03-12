@@ -535,6 +535,7 @@ function getRollupOptions({
 		external: [...(mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS)],
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
+			// @ts-ignore Libraries should be compatible, just the type is colliding.
 			mode === 'browser' ? vue({ isProduction: true }) : null,
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
