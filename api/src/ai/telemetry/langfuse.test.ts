@@ -1,44 +1,65 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
-import { applyLangfuseEnv, createLangfuseInputOutputCompatSpanProcessor } from './langfuse.js';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { createLangfuseInputOutputCompatSpanProcessor } from './langfuse.js';
 
-describe('applyLangfuseEnv', () => {
+const mockNodeTracerProvider = vi.fn();
+const mockLangfuseSpanProcessor = vi.fn();
+
+vi.mock('@opentelemetry/sdk-trace-node', () => ({
+	NodeTracerProvider: mockNodeTracerProvider,
+}));
+
+vi.mock('@langfuse/otel', () => ({
+	LangfuseSpanProcessor: mockLangfuseSpanProcessor,
+}));
+
+describe('initLangfuse', () => {
 	const originalEnv = { ...process.env };
+	const mockGetTracer = vi.fn().mockReturnValue('tracer-instance');
+	const mockShutdown = vi.fn().mockResolvedValue(undefined);
+
+	beforeEach(() => {
+		mockNodeTracerProvider.mockImplementation(() => ({
+			getTracer: mockGetTracer,
+			shutdown: mockShutdown,
+		}));
+	});
 
 	afterEach(() => {
 		process.env = { ...originalEnv };
 		vi.clearAllMocks();
 	});
 
-	test('sets LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY, LANGFUSE_BASE_URL on process.env', () => {
+	test('returns state with recordIO from env', async () => {
+		const { initLangfuse } = await import('./langfuse.js');
+
 		const env = {
 			LANGFUSE_SECRET_KEY: 'sk-test',
 			LANGFUSE_PUBLIC_KEY: 'pk-test',
-			LANGFUSE_BASE_URL: 'https://langfuse.example.com',
+			LANGFUSE_BASE_URL: '',
+			AI_TELEMETRY_RECORD_IO: true,
 		} as any;
 
-		applyLangfuseEnv(env);
+		const state = await initLangfuse(env);
 
-		expect(process.env['LANGFUSE_SECRET_KEY']).toBe('sk-test');
-		expect(process.env['LANGFUSE_PUBLIC_KEY']).toBe('pk-test');
-		expect(process.env['LANGFUSE_BASE_URL']).toBe('https://langfuse.example.com');
+		expect(state.recordIO).toBe(true);
+		expect(state.tracerProvider).toBeDefined();
+		expect(state.tracerProvider.getTracer).toBeDefined();
+		expect(state.tracerProvider.shutdown).toBeDefined();
 	});
 
-	test('skips empty strings', () => {
+	test('recordIO is false when AI_TELEMETRY_RECORD_IO is not true', async () => {
+		const { initLangfuse } = await import('./langfuse.js');
+
 		const env = {
-			LANGFUSE_SECRET_KEY: '',
-			LANGFUSE_PUBLIC_KEY: '',
+			LANGFUSE_SECRET_KEY: 'sk-test',
+			LANGFUSE_PUBLIC_KEY: 'pk-test',
 			LANGFUSE_BASE_URL: '',
+			AI_TELEMETRY_RECORD_IO: false,
 		} as any;
 
-		delete process.env['LANGFUSE_SECRET_KEY'];
-		delete process.env['LANGFUSE_PUBLIC_KEY'];
-		delete process.env['LANGFUSE_BASE_URL'];
+		const state = await initLangfuse(env);
 
-		applyLangfuseEnv(env);
-
-		expect(process.env['LANGFUSE_SECRET_KEY']).toBeUndefined();
-		expect(process.env['LANGFUSE_PUBLIC_KEY']).toBeUndefined();
-		expect(process.env['LANGFUSE_BASE_URL']).toBeUndefined();
+		expect(state.recordIO).toBe(false);
 	});
 });
 

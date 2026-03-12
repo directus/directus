@@ -91,6 +91,71 @@ describe('initAITelemetry', () => {
 
 		expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('Unknown AI telemetry provider'));
 	});
+
+	test('defaults to langfuse when AI_TELEMETRY_PROVIDER is not set', async () => {
+		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+
+		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
+		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
+
+		await initAITelemetry();
+
+		expect(mockInitLangfuse).toHaveBeenCalled();
+		expect(mockInitBraintrust).not.toHaveBeenCalled();
+	});
+
+	test('deduplicates concurrent init calls', async () => {
+		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+
+		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
+		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
+
+		const [result1, result2] = await Promise.all([initAITelemetry(), initAITelemetry()]);
+
+		expect(result1).toBeUndefined();
+		expect(result2).toBeUndefined();
+		expect(mockInitLangfuse).toHaveBeenCalledTimes(1);
+	});
+
+	test('warns when required config keys are missing', async () => {
+		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+
+		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
+		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
+
+		await initAITelemetry();
+
+		expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY'));
+	});
+
+	test('does not warn about missing keys when they are provided', async () => {
+		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+		mockEnv['AI_TELEMETRY_PROVIDER'] = 'braintrust';
+		mockEnv['BRAINTRUST_API_KEY'] = 'bt-key';
+
+		const mockTracer = { getTracer: vi.fn(), shutdown: vi.fn() };
+		mockInitBraintrust.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
+
+		await initAITelemetry();
+
+		expect(mockLogger.warn).not.toHaveBeenCalled();
+	});
+
+	test('logs warning and leaves telemetry disabled when init fails', async () => {
+		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+
+		mockInitLangfuse.mockRejectedValue(new Error('connection refused'));
+
+		await initAITelemetry();
+
+		expect(mockLogger.warn).toHaveBeenCalledWith(expect.any(Error), 'Failed to initialize AI telemetry');
+
+		const config = getAITelemetryConfig({ provider: 'open_ai' as any, model: 'gpt-4' });
+		expect(config).toBeUndefined();
+	});
 });
 
 describe('getAITelemetryConfig', () => {
@@ -130,5 +195,34 @@ describe('shutdownAITelemetry', () => {
 		await shutdownAITelemetry();
 
 		expect(mockShutdown).toHaveBeenCalled();
+	});
+
+	test('waits for in-flight init before shutting down', async () => {
+		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+
+		const mockShutdown = vi.fn().mockResolvedValue(undefined);
+		const mockTracer = { getTracer: vi.fn(), shutdown: mockShutdown };
+		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
+
+		const initPromise = initAITelemetry();
+		await shutdownAITelemetry();
+		await initPromise;
+
+		expect(mockShutdown).toHaveBeenCalled();
+	});
+
+	test('logs warning when tracerProvider.shutdown() throws', async () => {
+		mockEnv['AI_TELEMETRY_ENABLED'] = true;
+		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+
+		const mockShutdown = vi.fn().mockRejectedValue(new Error('shutdown failed'));
+		const mockTracer = { getTracer: vi.fn(), shutdown: mockShutdown };
+		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
+
+		await initAITelemetry();
+		await shutdownAITelemetry();
+
+		expect(mockLogger.warn).toHaveBeenCalledWith(expect.any(Error), 'Failed to shut down AI telemetry');
 	});
 });
