@@ -69,6 +69,8 @@ const allFields = computed(() => [
 	...(providerConfig.value?.optionsFields || []),
 ]);
 
+const optionsInitialValues = computed(() => config.value?.options || {});
+
 const credentialsFieldNames = computed(
 	() => (providerConfig.value?.credentialsFields || []).map((f) => f.field).filter(Boolean) as string[],
 );
@@ -314,7 +316,7 @@ watch(
 			<VForm
 				v-model="configurationEdits"
 				:fields="allFields as any"
-				:initial-values="config?.options || {}"
+				:initial-values="optionsInitialValues"
 				primary-key="+"
 				class="credentials-saved field full"
 			/>

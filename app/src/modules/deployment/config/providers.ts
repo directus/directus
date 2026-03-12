@@ -34,8 +34,10 @@ export function useProviderConfigs(
 				settingsWarning: t('deployment.provider.vercel.settings_warning'),
 				getDeploymentUrl: (options, projectName, externalId) => {
 					const teamId = options['team_id'];
-					if (!teamId) return null;
-					return `https://vercel.com/${teamId}/${projectName}/${externalId}`;
+					const username = options['username'];
+					const scope = teamId || username;
+					if (!scope) return null;
+					return `https://vercel.com/${scope}/${projectName}/${externalId}`;
 				},
 				credentialsFields: [
 					{
@@ -63,6 +65,27 @@ export function useProviderConfigs(
 				],
 				optionsFields: [
 					{
+						field: 'account_type',
+						name: t('deployment.provider.vercel.account_type.label'),
+						type: 'string',
+						schema: {
+							default_value: 'team',
+						},
+						meta: {
+							interface: 'select-dropdown',
+							width: 'full',
+							required: false,
+							note: t('deployment.provider.vercel.account_type.hint'),
+							options: {
+								choices: [
+									{ text: t('deployment.provider.vercel.account_type.team'), value: 'team' },
+									{ text: t('deployment.provider.vercel.account_type.personal'), value: 'personal' },
+								],
+								allowOther: false,
+							},
+						},
+					},
+					{
 						field: 'team_id',
 						name: t('deployment.provider.vercel.team_id.label'),
 						type: 'string',
@@ -74,6 +97,29 @@ export function useProviderConfigs(
 							options: {
 								placeholder: t('deployment.provider.vercel.team_id.placeholder'),
 							},
+							conditions: [{ rule: { account_type: { _eq: 'personal' } }, hidden: true }],
+						},
+					},
+					{
+						field: 'username',
+						name: t('deployment.provider.vercel.username.label'),
+						type: 'string',
+						meta: {
+							interface: 'input',
+							width: 'full',
+							required: false,
+							note: t('deployment.provider.vercel.username.hint'),
+							options: {
+								placeholder: t('deployment.provider.vercel.username.placeholder'),
+							},
+							conditions: [
+								{
+									rule: {
+										_or: [{ account_type: { _null: true } }, { account_type: { _eq: 'team' } }],
+									},
+									hidden: true,
+								},
+							],
 						},
 					},
 				],
