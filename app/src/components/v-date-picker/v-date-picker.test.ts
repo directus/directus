@@ -490,11 +490,10 @@ describe('v-date-picker', () => {
 
 			const monthSelect = wrapper.find('#calendar-month-select');
 			await monthSelect.setValue('3');
-			await monthSelect.trigger('change');
 			await nextTick();
 
 			// Verify value is emitted immediately without needing further interaction
-			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2024-03-15']]);
 			expect(capturedCalendarValue).toBeDefined();
 
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
@@ -522,11 +521,10 @@ describe('v-date-picker', () => {
 
 			const yearInput = wrapper.find('.calendar-year-input');
 			await yearInput.setValue('2025');
-			await yearInput.trigger('change');
 			await nextTick();
 
 			// Verify value is emitted immediately without needing further interaction
-			expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+			expect(wrapper.emitted('update:modelValue')).toEqual([['2025-01-15']]);
 			expect(capturedCalendarValue).toBeDefined();
 
 			expect(formatDatePickerModelValue).toHaveBeenCalledWith(
@@ -551,7 +549,6 @@ describe('v-date-picker', () => {
 
 			// Simulate invalid value (out of range) - the handler should reject this
 			await monthSelect.setValue('13');
-			await monthSelect.trigger('change');
 			await nextTick();
 
 			// The formatDatePickerModelValue should not have been called again
@@ -575,7 +572,6 @@ describe('v-date-picker', () => {
 
 			// Simulate invalid value - the handler should reject this
 			await yearInput.setValue('0');
-			await yearInput.trigger('change');
 			await nextTick();
 
 			// The formatDatePickerModelValue should not have been called again
@@ -598,7 +594,6 @@ describe('v-date-picker', () => {
 
 			// Simulate non-numeric value that parses to NaN
 			await yearInput.setValue('abc');
-			await yearInput.trigger('change');
 			await nextTick();
 
 			// The formatDatePickerModelValue should not have been called again
@@ -629,7 +624,6 @@ describe('v-date-picker', () => {
 			const monthSelect = wrapper.find('#calendar-month-select');
 			// Change to February (which has 29 days in 2024, a leap year)
 			await monthSelect.setValue('2');
-			await monthSelect.trigger('change');
 			await nextTick();
 
 			// Trigger emission to capture the clamped value
@@ -664,7 +658,6 @@ describe('v-date-picker', () => {
 			const yearInput = wrapper.find('.calendar-year-input');
 			// Change to non-leap year
 			await yearInput.setValue('2023');
-			await yearInput.trigger('change');
 			await nextTick();
 
 			// Trigger emission to capture the clamped value
@@ -694,7 +687,6 @@ describe('v-date-picker', () => {
 
 			const monthSelect = wrapper.find('#calendar-month-select');
 			await monthSelect.setValue('6');
-			await monthSelect.trigger('change');
 			await nextTick();
 
 			// Trigger emission to capture the value
