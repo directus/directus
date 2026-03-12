@@ -3,6 +3,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { z } from 'zod';
 import emitter from '../emitter.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
@@ -18,6 +19,15 @@ vi.mock('./get-schema.js', () => ({
 
 vi.mock('./transaction.js', () => ({
 	transaction: vi.fn(),
+}));
+
+vi.mock('./translations-validation.js', () => ({
+	dbSafeIdentifierSchema: z
+		.string()
+		.trim()
+		.min(1)
+		.max(63)
+		.regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/, 'must be a db-safe identifier (letters, numbers, underscores; cannot start with a number)'),
 }));
 
 vi.mock('../emitter.js', () => ({
@@ -102,6 +112,16 @@ function createSchemaWithTranslations() {
 			},
 		},
 	];
+
+	return schema;
+}
+
+function createOrphanedTranslationsSchema() {
+	const schema = createSchemaWithTranslations();
+
+	delete schema.collections.articles.fields['translations'];
+	schema.relations[0]!.meta!.id = 7;
+	schema.relations[0]!.meta!.one_field = null;
 
 	return schema;
 }
@@ -952,6 +972,101 @@ describe('generateTranslations', () => {
 				schema: emittedSchema,
 			}),
 		);
+	});
+
+	test('restores orphaned translations alias before adding missing cloned fields', async () => {
+		const schema = createOrphanedTranslationsSchema();
+		const restoredSchema = createSchemaWithTranslations();
+		restoredSchema.relations[0]!.meta!.id = schema.relations[0]!.meta!.id;
+
+		const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue(undefined as any);
+		const updateRelationSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue({} as any);
+
+		vi.mocked(getSchema).mockResolvedValueOnce(restoredSchema);
+
+		const result = await generateTranslations(
+			{
+				collection: 'articles',
+				translationsCollection: 'articles_translations',
+				fields: ['title'],
+			},
+			{
+				knex: database as any,
+				schema,
+			},
+		);
+
+		expect(createFieldSpy).toHaveBeenCalledTimes(2);
+
+		expect(createFieldSpy).toHaveBeenNthCalledWith(
+			1,
+			'articles',
+			expect.objectContaining({
+				field: 'translations',
+				type: 'alias',
+				meta: expect.objectContaining({
+					interface: 'translations',
+					special: ['translations'],
+					options: {
+						languageField: 'name',
+						languageDirectionField: 'direction',
+					},
+				}),
+			}),
+			undefined,
+			expect.objectContaining({
+				autoPurgeSystemCache: false,
+				bypassLimits: true,
+				bypassEmitAction: expect.any(Function),
+			}),
+		);
+
+		expect(updateRelationSpy).toHaveBeenCalledWith(
+			7,
+			{ one_field: 'translations' },
+			expect.objectContaining({
+				autoPurgeSystemCache: false,
+				bypassLimits: true,
+				bypassEmitAction: expect.any(Function),
+			}),
+		);
+
+		expect(createFieldSpy).toHaveBeenNthCalledWith(
+			2,
+			'articles_translations',
+			expect.objectContaining({
+				field: 'title',
+				type: 'string',
+				schema: {
+					default_value: 'draft',
+					max_length: 255,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_nullable: true,
+				},
+				meta: expect.objectContaining({
+					required: false,
+					hidden: false,
+					readonly: false,
+					special: null,
+				}),
+			}),
+			undefined,
+			expect.objectContaining({
+				autoPurgeSystemCache: false,
+				bypassLimits: true,
+				bypassEmitAction: expect.any(Function),
+			}),
+		);
+
+		expect(getSchema).toHaveBeenCalledTimes(1);
+		expect(getSchema).toHaveBeenCalledWith({ database: database as any, bypassCache: true });
+
+		expect(result).toEqual({
+			created: false,
+			translationsCollection: 'articles_translations',
+			fields: ['title'],
+		});
 	});
 
 	test('returns success when post-commit schema refresh fails after add-fields commit', async () => {
