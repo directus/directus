@@ -206,13 +206,16 @@ describe('shutdownAITelemetry', () => {
 		const mockShutdown = vi.fn().mockResolvedValue(undefined);
 		const mockTracer = { getTracer: vi.fn(), shutdown: mockShutdown };
 		let resolveInit: ((value: { recordIO: boolean; tracerProvider: typeof mockTracer }) => void) | undefined;
+
 		const initDeferred = new Promise<{ recordIO: boolean; tracerProvider: typeof mockTracer }>((resolve) => {
 			resolveInit = resolve;
 		});
+
 		mockInitLangfuse.mockReturnValue(initDeferred);
 
 		const initPromise = initAITelemetry();
 		let shutdownSettled = false;
+
 		const shutdownPromise = shutdownAITelemetry().then(() => {
 			shutdownSettled = true;
 		});
