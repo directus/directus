@@ -281,22 +281,26 @@ describe('generateTranslations', () => {
 		).rejects.toBeInstanceOf(InvalidPayloadError);
 	});
 
-	test('rejects when field already exists in translation collection', async () => {
+	test('skips fields that already exist in translation collection', async () => {
 		const schema = createSchemaWithTranslations();
 		schema.collections.articles_translations.fields['title'] = { type: 'string' };
 
-		await expect(
-			generateTranslations(
-				{
-					collection: 'articles',
-					fields: ['title'],
-				},
-				{
-					knex: database as any,
-					schema,
-				},
-			),
-		).rejects.toBeInstanceOf(InvalidPayloadError);
+		const result = await generateTranslations(
+			{
+				collection: 'articles',
+				fields: ['title'],
+			},
+			{
+				knex: database as any,
+				schema,
+			},
+		);
+
+		expect(result).toEqual({
+			created: false,
+			fields: ['title'],
+			translationsCollection: 'articles_translations',
+		});
 	});
 
 	test('rejects duplicate field names in request payload', async () => {
