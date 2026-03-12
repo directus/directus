@@ -134,6 +134,9 @@ describe('Integration Tests', () => {
 				const mockDriver: Partial<Driver> = {
 					read: vi.fn().mockResolvedValue(new PassThrough()),
 					write: vi.fn(),
+					delete: vi.fn(),
+					move: vi.fn(),
+					list: vi.fn().mockReturnValue((async function* () {})()),
 					stat: vi.fn().mockReturnValue({ size: sample.filesize }),
 				};
 
@@ -152,7 +155,7 @@ describe('Integration Tests', () => {
 			it('should set the `uploaded_on` field to the current date', async () => {
 				tracker.on
 					.select(
-						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
 					)
 					.response(null);
 
@@ -183,7 +186,7 @@ describe('Integration Tests', () => {
 			it('should update the `filename_disk` extension to the correct mimetype', async () => {
 				tracker.on
 					.select(
-						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
 					)
 					.response(null);
 
@@ -228,6 +231,110 @@ describe('Integration Tests', () => {
 				);
 
 				vi.useRealTimers();
+			});
+
+			describe('storage default behavior', () => {
+				it('should default to the first STORAGE_LOCATIONS when storage is not provided', async () => {
+					mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+					tracker.on
+						.select(
+							'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+						)
+						.response(null);
+
+					await service.uploadOne(new PassThrough(), {
+						type: 'image/jpeg',
+						filename_download: 'test.jpg',
+					});
+
+					expect(superUpdateOne).toHaveBeenCalledWith(
+						sample.id, 
+						expect.objectContaining({ 
+							storage: 'local' 
+						}), 
+						{ emitEvents: false }
+					);
+				});
+
+				it('should use the provided storage when explicitly set', async () => {
+					mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+					tracker.on
+						.select(
+							'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+						)
+						.response(null);
+
+					await service.uploadOne(new PassThrough(), {
+						storage: 's3',
+						type: 'image/jpeg',
+						filename_download: 'test.jpg',
+					});
+
+					expect(superUpdateOne).toHaveBeenCalledWith(
+						sample.id, 
+						expect.objectContaining({
+							storage: 's3'
+						}), 
+						{ emitEvents: false }
+					);
+				});
+
+				it('should preserve the existing file storage on re-upload without storage', async () => {
+					mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+					tracker.on
+						.select(
+							'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+						)
+						.response({ storage: 's3', filename_disk: 'existing.jpg' });
+
+					await service.uploadOne(
+						new PassThrough(),
+						{
+							type: 'image/jpeg',
+							filename_download: 'test.jpg',
+						},
+						sample.id,
+					);
+
+					expect(superUpdateOne).toHaveBeenCalledWith(
+						sample.id, 
+						expect.objectContaining({
+							storage: 's3' 
+						}), 
+						{ emitEvents: false }
+					);
+				});
+
+				it('should override the existing file storage when explicitly provided', async () => {
+					mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+					tracker.on
+						.select(
+							'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+						)
+						.response({ storage: 's3', filename_disk: 'existing.jpg' });
+
+					await service.uploadOne(
+						new PassThrough(),
+						{
+							storage: 'local',
+							type: 'image/jpeg',
+							filename_download: 'test.jpg',
+						},
+						sample.id,
+					);
+
+					expect(superUpdateOne).toHaveBeenCalledWith(
+						sample.id, 
+						expect.objectContaining({
+							storage: 'local' 
+						}), 
+						{ emitEvents: false }
+					);
+				});
 			});
 
 			describe('uploadOne - permanent filesystem errors', () => {
