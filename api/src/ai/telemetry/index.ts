@@ -30,6 +30,19 @@ async function doTelemetryInit(): Promise<void> {
 	const logger = useLogger();
 	const provider = (env['AI_TELEMETRY_PROVIDER'] as string) || 'langfuse';
 
+	const requiredKeys: Record<string, string[]> = {
+		langfuse: ['LANGFUSE_SECRET_KEY', 'LANGFUSE_PUBLIC_KEY'],
+		braintrust: ['BRAINTRUST_API_KEY'],
+	};
+
+	const missing = (requiredKeys[provider] ?? []).filter(
+		(key) => !(typeof env[key] === 'string' && (env[key] as string).length > 0),
+	);
+
+	if (missing.length > 0) {
+		logger.warn(`AI telemetry provider "${provider}" is missing required config: ${missing.join(', ')}`);
+	}
+
 	try {
 		let state: AITelemetryState;
 
