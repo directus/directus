@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed erroring when importing large json files
+Fixed errors during import not propagated while the file is streaming
