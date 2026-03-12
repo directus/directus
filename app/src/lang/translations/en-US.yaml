@@ -2394,6 +2394,10 @@ interfaces:
     empty: (empty)
     all: All
     none: None
+    ai_translating: Translating...
+    translation_has_errors: Some translations failed. Click to view.
+    translation_has_errors_short: Errors
+    new_translation: New Translation
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.

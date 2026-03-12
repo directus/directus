@@ -1,7 +1,9 @@
 import { createTestingPinia } from '@pinia/testing';
 import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { computed, ref } from 'vue';
 import TranslateModal from './translate-modal.vue';
+import type { TranslationJob } from './use-translation-job';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import api from '@/api';
 import { i18n } from '@/lang';
@@ -58,6 +60,26 @@ const fields = [
 const getItemWithLang = (items: Record<string, any>[], lang: string | undefined) =>
 	items.find((item) => item.languages_code?.code === lang);
 
+function createMockTranslationJob(): TranslationJob {
+	return {
+		jobState: ref('idle'),
+		langStatuses: ref({}),
+		isTranslating: computed(() => false),
+		hasErrors: computed(() => false),
+		completedCount: computed(() => 0),
+		translatedCount: computed(() => 0),
+		totalCount: computed(() => 0),
+		progressPercent: computed(() => 0),
+		progressLabel: computed(() => '0/0'),
+		pendingLanguages: computed(() => new Set<string>()),
+		pendingFields: computed(() => new Set<string>()),
+		start: vi.fn(),
+		cancel: vi.fn(),
+		retry: vi.fn(),
+		reset: vi.fn(),
+	} as unknown as TranslationJob;
+}
+
 function getTranslateButton(wrapper: ReturnType<typeof mount>) {
 	return wrapper.findAll('button').find((button) => button.text().includes('Translate'));
 }
@@ -65,11 +87,11 @@ function getTranslateButton(wrapper: ReturnType<typeof mount>) {
 function mountModal({
 	permissions,
 	displayItems,
-	applyTranslatedFields = vi.fn(),
+	translationJob = createMockTranslationJob(),
 }: {
 	permissions: Record<string, any>;
 	displayItems: Record<string, any>[];
-	applyTranslatedFields?: ReturnType<typeof vi.fn>;
+	translationJob?: TranslationJob;
 }) {
 	const pinia = createTestingPinia({
 		createSpy: vi.fn,
@@ -139,8 +161,8 @@ function mountModal({
 			fields,
 			relationInfo,
 			getItemWithLang,
-			applyTranslatedFields,
 			defaultSourceLanguage: 'en',
+			translationJob,
 		},
 		global,
 	});
@@ -171,19 +193,8 @@ describe('translate-modal', () => {
 		expect(vi.mocked(api.post)).not.toHaveBeenCalled();
 	});
 
-	test('submits allowed targets with metadata-driven rules and normalizes slug-safe fields', async () => {
-		const applyTranslatedFields = vi.fn();
-
-		// Now returns flat fields per language (one call per language)
-		vi.mocked(api.post).mockResolvedValue({
-			data: {
-				data: {
-					title: 'Bonjour',
-					slug: 'Conseils essentiels pour les acheteurs de maison',
-					body: '# Bonjour\n\nTexte',
-				},
-			},
-		} as any);
+	test('calls translationJob.start with correct config when translating', async () => {
+		const mockJob = createMockTranslationJob();
 
 		const wrapper = mountModal({
 			permissions: {
@@ -193,7 +204,7 @@ describe('translate-modal', () => {
 				},
 			},
 			displayItems: [{ title: 'Hello', slug: 'hello-world', body: '# Hello\n\nText', languages_code: { code: 'en' } }],
-			applyTranslatedFields,
+			translationJob: mockJob,
 		});
 
 		await wrapper.setProps({ modelValue: true });
@@ -202,24 +213,21 @@ describe('translate-modal', () => {
 		await getTranslateButton(wrapper)!.trigger('click');
 		await flushPromises();
 
-		const requestBody = vi.mocked(api.post).mock.calls[0]?.[1] as any;
+		expect(mockJob.start).toHaveBeenCalledOnce();
 
-		expect(requestBody).toMatchObject({
-			provider: 'anthropic',
-			model: 'claude-sonnet-4-5',
+		const config = (mockJob.start as ReturnType<typeof vi.fn>).mock.calls[0]?.[0];
+
+		expect(config).toMatchObject({
+			sourceLanguage: 'en',
+			model: {
+				provider: 'anthropic',
+				model: 'claude-sonnet-4-5',
+			},
 		});
 
-		expect(requestBody.prompt).toContain('"slug": Generate a localized URL slug');
-		expect(requestBody.prompt).toContain('"body": Preserve markdown syntax and structure exactly.');
-		expect(requestBody.outputSchema.properties.slug.description).toContain('Localized URL slug');
-
-		expect(applyTranslatedFields).toHaveBeenCalledWith(
-			{
-				title: 'Bonjour',
-				slug: 'conseils-essentiels-pour-les-acheteurs-de-maison',
-				body: '# Bonjour\n\nTexte',
-			},
-			'fr',
-		);
+		expect(config.targetLanguages).toContain('fr');
+		expect(config.sourceContent).toHaveProperty('title', 'Hello');
+		expect(config.sourceContent).toHaveProperty('slug', 'hello-world');
+		expect(config.sourceContent).toHaveProperty('body', '# Hello\n\nText');
 	});
 });

@@ -2,6 +2,7 @@
 import { isEmpty } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import LanguageSelect from './language-select.vue';
+import type { TranslationJob } from './use-translation-job';
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -23,6 +24,7 @@ const {
 	remove,
 	loading,
 	updateValue,
+	translationJob,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
@@ -38,6 +40,7 @@ const {
 	remove: (...items: DisplayItem[]) => void;
 	updateValue: (item: DisplayItem | undefined, lang: string | undefined) => void;
 	secondary?: boolean;
+	translationJob?: TranslationJob;
 }>();
 
 const lang = defineModel<string>('lang');
@@ -68,6 +71,11 @@ const {
 	itemPrimaryKey,
 	itemNew,
 );
+
+const isTranslatingLanguage = computed(() => {
+	if (!lang.value || !translationJob) return false;
+	return translationJob.pendingLanguages.value.has(lang.value);
+});
 
 const activatorDisabled = computed(() => {
 	return (
@@ -194,7 +202,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:key="selectedLanguage.value"
 			:primary-key="itemPrimaryKey ?? '+'"
 			:class="{ unselected: !item, disabled }"
-			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
+			:disabled="disabled || !saveAllowed || item?.$type === 'deleted' || isTranslatingLanguage"
 			:non-editable
 			:loading="loading"
 			:fields="fields"

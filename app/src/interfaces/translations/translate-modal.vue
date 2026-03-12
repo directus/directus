@@ -3,13 +3,8 @@ import type { Field } from '@directus/types';
 import { useLocalStorage } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import {
-	buildAiTranslationPrompt,
-	getAiTranslationFieldDescription,
-	normalizeAiTranslatedFields,
-	resolveTranslationTargetPermission,
-	type TranslationTargetPermissionReason,
-} from './ai-translation';
+import { resolveTranslationTargetPermission, type TranslationTargetPermissionReason } from './ai-translation';
+import type { TranslationJob } from './use-translation-job';
 import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import AiModelSelector from '@/ai/components/ai-model-selector.vue';
 import type { AppModelDefinition } from '@/ai/models';
@@ -25,7 +20,6 @@ import VSelect from '@/components/v-select/v-select.vue';
 import type { RelationM2M } from '@/composables/use-relation-m2m';
 import type { DisplayItem } from '@/composables/use-relation-multiple';
 import { usePermissionsStore } from '@/stores/permissions';
-import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -36,8 +30,8 @@ const props = defineProps<{
 	fields: Field[];
 	relationInfo?: RelationM2M;
 	getItemWithLang: (items: Record<string, any>[], lang: string | undefined) => DisplayItem | undefined;
-	applyTranslatedFields: (translatedFields: Record<string, string>, lang: string | undefined) => void;
 	defaultSourceLanguage?: string;
+	translationJob: TranslationJob;
 }>();
 
 const emit = defineEmits<{
@@ -47,15 +41,20 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const aiStore = useAiStore();
 const permissionsStore = usePermissionsStore();
-const settingsStore = useSettingsStore();
 const userStore = useUserStore();
 
-// State
-type ModalState = 'config' | 'translating' | 'complete';
-const modalState = ref<ModalState>('config');
+// Local UI state — whether the user is viewing config vs progress/completion
+const showingConfig = ref(true);
 
-type LangStatus = 'pending' | 'translating' | 'retrying' | 'done' | 'error';
-const langStatuses = ref<Record<string, { status: LangStatus; fieldCount?: number; error?: string }>>({});
+type ModalState = 'config' | 'translating' | 'complete';
+
+const modalState = computed<ModalState>(() => {
+	const job = props.translationJob;
+
+	if (job.jobState.value === 'translating') return 'translating';
+	if (job.jobState.value === 'complete' && !showingConfig.value) return 'complete';
+	return 'config';
+});
 
 const targetPermissions = ref<
 	Record<string, { allowed: boolean; loading: boolean; reason?: TranslationTargetPermissionReason }>
@@ -67,7 +66,6 @@ let permissionRequestId = 0;
 const sourceLanguage = ref<string>(props.defaultSourceLanguage ?? props.languageOptions[0]?.value ?? '');
 const selectedFields = ref<string[]>([]);
 const selectedTargetLanguages = ref<string[]>([]);
-const cancelled = ref(false);
 
 // Model selection — separate from chat, persisted independently
 const selectedModelId = useLocalStorage<string | null>('selected-ai-translation-model', null);
@@ -118,7 +116,6 @@ const translatableFields = computed(() => {
 		if (field.field === reverseJunctionField) return false;
 		if (field.field === pkField) return false;
 		if (field.type !== 'string' && field.type !== 'text') return false;
-		if (field.type === 'alias') return false;
 		if (field.meta?.hidden !== false) return false;
 		if (field.meta?.readonly !== false) return false;
 		if (field.meta?.interface && nonTranslatableInterfaces.has(field.meta.interface)) return false;
@@ -215,9 +212,16 @@ watch(
 	() => props.modelValue,
 	(open) => {
 		if (open) {
-			modalState.value = 'config';
-			langStatuses.value = {};
-			cancelled.value = false;
+			const job = props.translationJob;
+
+			// If a job is running or complete, show progress/completion
+			if (job.jobState.value === 'translating' || job.jobState.value === 'complete') {
+				showingConfig.value = false;
+				return;
+			}
+
+			// Fresh config
+			showingConfig.value = true;
 			permissionsLoaded.value = false;
 			targetPermissions.value = {};
 			sourceLanguage.value = props.defaultSourceLanguage ?? props.languageOptions[0]?.value ?? '';
@@ -424,9 +428,7 @@ const canTranslate = computed(
 		!permissionsLoading.value,
 );
 
-// Translate — one call per language, all concurrent
-const MAX_RETRIES = 3;
-
+// Translate — delegate to composable
 async function translate() {
 	if (!selectedModel.value) return;
 
@@ -434,123 +436,42 @@ async function translate() {
 
 	if (!canTranslate.value) return;
 
-	modalState.value = 'translating';
-	cancelled.value = false;
+	const job = props.translationJob;
 
+	// Handle blocked targets — set error in job's langStatuses before starting
 	const blockedTargets = selectedTargetLanguages.value.filter(
 		(langCode) => targetPermissions.value[langCode]?.allowed !== true,
 	);
 
 	const allowedTargets = permittedTargetLanguages.value;
 
-	for (const langCode of blockedTargets) {
-		langStatuses.value[langCode] = {
-			status: 'error',
-			error: getTargetPermissionReason(langCode) ?? t('not_allowed'),
-		};
-	}
-
 	if (allowedTargets.length === 0) {
-		modalState.value = 'complete';
 		return;
 	}
 
-	// Init statuses
-	for (const langCode of allowedTargets) {
-		langStatuses.value[langCode] = { status: 'pending' };
-	}
-
-	// Fire all concurrently
-	await Promise.allSettled(allowedTargets.map((langCode) => translateLanguage(langCode)));
-
-	if (!cancelled.value) {
-		modalState.value = 'complete';
-	}
-}
-
-async function translateLanguage(langCode: string, retryCount = 0): Promise<void> {
-	if (cancelled.value) return;
-
-	langStatuses.value[langCode] = { status: retryCount > 0 ? 'retrying' : 'translating' };
-
+	// Build field definitions for the snapshot
 	const fieldsWithContent = Object.keys(sourceContent.value);
 
-	const selectedFieldDefinitions = fieldsWithContent
+	const fieldDefinitions = fieldsWithContent
 		.map((fieldName) => translatableFieldsByName.value.get(fieldName))
 		.filter((field): field is Field => field !== undefined);
 
-	// Flat output schema — single language
-	const fieldProperties: Record<string, any> = {};
+	showingConfig.value = false;
 
-	for (const field of selectedFieldDefinitions) {
-		fieldProperties[field.field] = {
-			type: 'string',
-			description: getAiTranslationFieldDescription(field),
-		};
-	}
-
-	const outputSchema = {
-		type: 'object',
-		properties: fieldProperties,
-		required: fieldsWithContent,
-	};
-
-	const langName = props.languageOptions.find((l) => l.value === langCode)?.text ?? langCode;
-
-	const sourceLangName =
-		props.languageOptions.find((l) => l.value === sourceLanguage.value)?.text ?? sourceLanguage.value;
-
-	const prompt = buildAiTranslationPrompt({
-		sourceLangName,
-		targetLangNames: [langName],
-		sourceContent: sourceContent.value,
-		fields: selectedFieldDefinitions,
-		styleGuide: settingsStore.settings?.ai_translation_style_guide,
-		glossary: settingsStore.settings?.ai_translation_glossary,
+	job.start({
+		sourceLanguage: sourceLanguage.value,
+		selectedFields: [...selectedFields.value],
+		targetLanguages: allowedTargets,
+		model: selectedModel.value,
+		sourceContent: { ...sourceContent.value },
+		fieldDefinitions,
 	});
 
-	try {
-		const response = await api.post('/ai/object', {
-			provider: selectedModel.value!.provider,
-			model: selectedModel.value!.model,
-			prompt,
-			outputSchema,
-		});
-
-		if (cancelled.value) return;
-
-		const translations = response.data.data;
-
-		props.applyTranslatedFields(normalizeAiTranslatedFields(translations, selectedFieldDefinitions), langCode);
-
-		langStatuses.value[langCode] = {
-			status: 'done',
-			fieldCount: Object.keys(translations).length,
-		};
-	} catch (error: any) {
-		if (cancelled.value) return;
-
-		const statusCode = error?.response?.status;
-
-		// Rate limit — auto-retry with exponential backoff
-		if (statusCode === 429 && retryCount < MAX_RETRIES) {
-			const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
-			langStatuses.value[langCode] = { status: 'retrying' };
-			await new Promise((resolve) => setTimeout(resolve, delay));
-
-			if (!cancelled.value) {
-				return translateLanguage(langCode, retryCount + 1);
-			}
-
-			return;
-		}
-
-		const errorMessage =
-			error?.response?.data?.errors?.[0]?.message ?? error?.message ?? t('interfaces.translations.translation_error');
-
-		langStatuses.value[langCode] = {
+	// Set blocked targets as errors after start
+	for (const langCode of blockedTargets) {
+		job.langStatuses.value[langCode] = {
 			status: 'error',
-			error: errorMessage,
+			error: getTargetPermissionReason(langCode) ?? t('not_allowed'),
 		};
 	}
 }
@@ -559,7 +480,7 @@ async function retryLanguage(langCode: string) {
 	await ensureTargetPermissionsLoaded();
 
 	if (targetPermissions.value[langCode]?.allowed !== true) {
-		langStatuses.value[langCode] = {
+		props.translationJob.langStatuses.value[langCode] = {
 			status: 'error',
 			error: getTargetPermissionReason(langCode) ?? t('not_allowed'),
 		};
@@ -567,37 +488,26 @@ async function retryLanguage(langCode: string) {
 		return;
 	}
 
-	await translateLanguage(langCode);
-
-	// Check if all done after retry
-	const allDone = Object.values(langStatuses.value).every((s) => s.status === 'done' || s.status === 'error');
-
-	if (allDone && !Object.values(langStatuses.value).some((s) => s.status === 'error')) {
-		modalState.value = 'complete';
-	}
+	await props.translationJob.retry(langCode);
 }
 
-// Progress
-const completedCount = computed(
-	() => Object.values(langStatuses.value).filter((s) => s.status === 'done' || s.status === 'error').length,
-);
+function showNewTranslation() {
+	showingConfig.value = true;
+	props.translationJob.reset();
+}
 
-const translatedCount = computed(() => Object.values(langStatuses.value).filter((s) => s.status === 'done').length);
-
-const totalCount = computed(() => selectedTargetLanguages.value.length);
-
-const progressPercent = computed(() =>
-	totalCount.value > 0 ? Math.round((completedCount.value / totalCount.value) * 100) : 0,
-);
-
-// Close handling
+// Close — no longer cancels
 function close() {
-	if (modalState.value === 'translating') {
-		cancelled.value = true;
-	}
-
 	emit('update:modelValue', false);
 }
+
+function cancelJob() {
+	props.translationJob.cancel();
+	emit('update:modelValue', false);
+}
+
+// Read progress from the job
+const job = computed(() => props.translationJob);
 </script>
 
 <template>
@@ -605,7 +515,6 @@ function close() {
 		:model-value="modelValue"
 		icon="auto_awesome"
 		:title="t('interfaces.translations.ai_translate')"
-		:persistent="modalState === 'translating'"
 		@update:model-value="$emit('update:modelValue', $event)"
 		@cancel="close"
 	>
@@ -750,30 +659,30 @@ function close() {
 			<!-- State 2: Translating -->
 			<template v-if="modalState === 'translating'">
 				<p class="translating-title">
-					{{ t('interfaces.translations.translating_n_languages', selectedTargetCount) }}
+					{{ t('interfaces.translations.translating_n_languages', job.totalCount.value) }}
 				</p>
 
 				<div class="status-list">
-					<div v-for="langCode in selectedTargetLanguages" :key="langCode" class="status-row">
+					<div v-for="langCode in Object.keys(job.langStatuses.value)" :key="langCode" class="status-row">
 						<span class="status-lang">{{ languageOptions.find((l) => l.value === langCode)?.text ?? langCode }}</span>
 
-						<template v-if="langStatuses[langCode]?.status === 'translating'">
+						<template v-if="job.langStatuses.value[langCode]?.status === 'translating'">
 							<span class="status-text translating">{{ t('loading') }}...</span>
 							<VIcon name="progress_activity" class="spinning" small />
 						</template>
 
-						<template v-else-if="langStatuses[langCode]?.status === 'retrying'">
+						<template v-else-if="job.langStatuses.value[langCode]?.status === 'retrying'">
 							<span class="status-text translating">{{ t('interfaces.translations.retrying') }}...</span>
 							<VIcon name="progress_activity" class="spinning" small />
 						</template>
 
-						<template v-else-if="langStatuses[langCode]?.status === 'done'">
+						<template v-else-if="job.langStatuses.value[langCode]?.status === 'done'">
 							<span class="status-text done">{{ t('done') }}</span>
 							<VIcon name="check" class="done" small />
 						</template>
 
-						<template v-else-if="langStatuses[langCode]?.status === 'error'">
-							<span class="status-text error">{{ langStatuses[langCode]?.error }}</span>
+						<template v-else-if="job.langStatuses.value[langCode]?.status === 'error'">
+							<span class="status-text error">{{ job.langStatuses.value[langCode]?.error }}</span>
 							<VButton x-small secondary @click="retryLanguage(langCode)">{{ t('retry') }}</VButton>
 						</template>
 
@@ -783,10 +692,10 @@ function close() {
 					</div>
 				</div>
 
-				<VProgressLinear :value="progressPercent" rounded colorful />
-				<p class="progress-label">{{ completedCount }}/{{ totalCount }} {{ t('done') }}</p>
+				<VProgressLinear :value="job.progressPercent.value" rounded colorful />
+				<p class="progress-label">{{ job.completedCount.value }}/{{ job.totalCount.value }} {{ t('done') }}</p>
 
-				<VButton class="translate-button" secondary full-width @click="close">
+				<VButton class="translate-button" secondary full-width @click="cancelJob">
 					{{ t('cancel') }}
 				</VButton>
 			</template>
@@ -795,30 +704,36 @@ function close() {
 			<template v-if="modalState === 'complete'">
 				<div class="complete-header">
 					<VIcon name="check_circle" class="complete-icon" />
-					<span>{{ t('interfaces.translations.n_languages_translated', translatedCount) }}</span>
+					<span>{{ t('interfaces.translations.n_languages_translated', job.translatedCount.value) }}</span>
 				</div>
 
 				<div class="status-list">
-					<div v-for="langCode in selectedTargetLanguages" :key="langCode" class="status-row">
+					<div v-for="langCode in Object.keys(job.langStatuses.value)" :key="langCode" class="status-row">
 						<span class="status-lang">{{ languageOptions.find((l) => l.value === langCode)?.text ?? langCode }}</span>
 
-						<template v-if="langStatuses[langCode]?.status === 'done'">
+						<template v-if="job.langStatuses.value[langCode]?.status === 'done'">
 							<VIcon name="check" class="done" small />
 							<span class="status-text">
-								{{ t('interfaces.translations.n_fields', langStatuses[langCode]?.fieldCount ?? 0) }}
+								{{ t('interfaces.translations.n_fields', job.langStatuses.value[langCode]?.fieldCount ?? 0) }}
 							</span>
 						</template>
 
-						<template v-else-if="langStatuses[langCode]?.status === 'error'">
+						<template v-else-if="job.langStatuses.value[langCode]?.status === 'error'">
 							<VIcon name="warning" class="error" small />
 							<VButton x-small secondary @click="retryLanguage(langCode)">{{ t('retry') }}</VButton>
 						</template>
 					</div>
 				</div>
 
-				<VButton class="translate-button" full-width @click="close">
-					{{ t('done') }}
-				</VButton>
+				<div class="complete-actions">
+					<VButton secondary full-width @click="showNewTranslation">
+						{{ t('interfaces.translations.new_translation') }}
+					</VButton>
+
+					<VButton full-width @click="close">
+						{{ t('done') }}
+					</VButton>
+				</div>
 			</template>
 		</div>
 	</VDrawer>
@@ -1053,5 +968,12 @@ function close() {
 
 .complete-icon {
 	--v-icon-color: var(--theme--success);
+}
+
+.complete-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-block-start: 1.5rem;
 }
 </style>
