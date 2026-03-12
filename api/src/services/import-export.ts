@@ -652,16 +652,13 @@ export class ExportService {
 				schema: this.schema,
 			});
 
-			const storage: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
-
 			const title = `export-${collection}-${getDateTimeFormatted()}`;
 			const filename = `${title}.${format}`;
 
-			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
+			const fileWithDefaults: Partial<File> & { filename_download: string } = {
 				...(options?.file ?? {}),
 				title: options?.file?.title ?? title,
 				filename_download: options?.file?.filename_download ?? filename,
-				storage: options?.file?.storage ?? storage,
 				type: mimeTypes[format],
 			};
 
