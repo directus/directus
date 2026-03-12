@@ -200,16 +200,37 @@ describe('shutdownAITelemetry', () => {
 	test('waits for in-flight init before shutting down', async () => {
 		mockEnv['AI_TELEMETRY_ENABLED'] = true;
 		mockEnv['AI_TELEMETRY_PROVIDER'] = 'langfuse';
+		mockEnv['LANGFUSE_SECRET_KEY'] = 'sk-test';
+		mockEnv['LANGFUSE_PUBLIC_KEY'] = 'pk-test';
 
 		const mockShutdown = vi.fn().mockResolvedValue(undefined);
 		const mockTracer = { getTracer: vi.fn(), shutdown: mockShutdown };
-		mockInitLangfuse.mockResolvedValue({ recordIO: false, tracerProvider: mockTracer });
+		let resolveInit: ((value: { recordIO: boolean; tracerProvider: typeof mockTracer }) => void) | undefined;
+		const initDeferred = new Promise<{ recordIO: boolean; tracerProvider: typeof mockTracer }>((resolve) => {
+			resolveInit = resolve;
+		});
+		mockInitLangfuse.mockReturnValue(initDeferred);
 
 		const initPromise = initAITelemetry();
-		await shutdownAITelemetry();
+		let shutdownSettled = false;
+		const shutdownPromise = shutdownAITelemetry().then(() => {
+			shutdownSettled = true;
+		});
+
+		await vi.waitFor(() => {
+			expect(mockInitLangfuse).toHaveBeenCalledTimes(1);
+		});
+
+		expect(mockShutdown).not.toHaveBeenCalled();
+		expect(shutdownSettled).toBe(false);
+
+		resolveInit?.({ recordIO: false, tracerProvider: mockTracer });
+
+		await shutdownPromise;
 		await initPromise;
 
-		expect(mockShutdown).toHaveBeenCalled();
+		expect(mockShutdown).toHaveBeenCalledTimes(1);
+		expect(mockLogger.warn).not.toHaveBeenCalled();
 	});
 
 	test('logs warning when tracerProvider.shutdown() throws', async () => {
