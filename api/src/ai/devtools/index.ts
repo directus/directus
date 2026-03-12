@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { getNodeEnv } from '@directus/utils/node';
 import type { LanguageModelMiddleware } from 'ai';
 import { useLogger } from '../../logger/index.js';
 
@@ -12,7 +13,7 @@ async function doDevToolsInit(): Promise<void> {
 
 	const logger = useLogger();
 
-	if (process.env['NODE_ENV'] === 'production') {
+	if (getNodeEnv() === 'production') {
 		logger.warn('AI DevTools is enabled but refused in production');
 		return;
 	}
