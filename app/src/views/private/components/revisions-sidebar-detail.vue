@@ -143,13 +143,13 @@ defineExpose({
 
 <style lang="scss" scoped>
 .v-progress-linear {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-divider {
 	--v-divider-color: var(--theme--background-accent);
 
-	margin-block: 24px 8px;
+	margin-block: 1.375rem 0.4375rem;
 
 	&:first-of-type {
 		margin-block-start: 0;
@@ -157,14 +157,14 @@ defineExpose({
 }
 
 .empty {
-	margin-block: 16px;
-	margin-inline-start: 2px;
+	margin-block: 0.875rem;
+	margin-inline-start: 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .external {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
@@ -177,6 +177,6 @@ defineExpose({
 
 .v-pagination {
 	justify-content: center;
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 </style>
