@@ -1154,6 +1154,7 @@ deployment:
       no_logs: No logs available
       download_logs: Download logs
       open_deployment: Visit
+      open_in_provider: Open in {provider}
   no_providers: No Deployment Providers
   no_providers_copy: Configure a deployment provider in the settings to get started.
   no_providers_copy_nonadmin: No deployment providers are available for your account. Contact an administrator.

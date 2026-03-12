@@ -7,6 +7,7 @@ export interface ProviderConfig {
 	optionsFields: DeepPartial<Field>[];
 	tokenUrl?: string;
 	settingsWarning?: string;
+	getDeploymentUrl?: (options: Record<string, any>, projectName: string, externalId: string) => string | null;
 }
 
 export const availableProviders = ['vercel', 'netlify'];
@@ -31,6 +32,11 @@ export function useProviderConfigs(
 			vercel: {
 				tokenUrl: vercelTokenUrl,
 				settingsWarning: t('deployment.provider.vercel.settings_warning'),
+				getDeploymentUrl: (options, projectName, externalId) => {
+					const teamId = options['team_id'];
+					if (!teamId) return null;
+					return `https://vercel.com/${teamId}/${projectName}/${externalId}`;
+				},
 				credentialsFields: [
 					{
 						field: 'access_token',
@@ -75,6 +81,9 @@ export function useProviderConfigs(
 			netlify: {
 				tokenUrl: netlifyTokenUrl,
 				settingsWarning: t('deployment.provider.netlify.settings_warning'),
+				getDeploymentUrl: (_options, projectName, externalId) => {
+					return `https://app.netlify.com/sites/${projectName}/deploys/${externalId}`;
+				},
 				credentialsFields: [
 					{
 						field: 'access_token',
