@@ -27,7 +27,10 @@ vi.mock('./translations-validation.js', () => ({
 		.trim()
 		.min(1)
 		.max(63)
-		.regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/, 'must be a db-safe identifier (letters, numbers, underscores; cannot start with a number)'),
+		.regex(
+			/^[a-zA-Z_][a-zA-Z0-9_]*$/,
+			'must be a db-safe identifier (letters, numbers, underscores; cannot start with a number)',
+		),
 }));
 
 vi.mock('../emitter.js', () => ({
