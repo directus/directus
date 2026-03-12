@@ -106,13 +106,13 @@ function useComparisonIndicator() {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
-	padding: 4px 12px;
+	padding: 0.25rem 0.625rem;
 	border: var(--theme--border-width) solid transparent;
 	border-radius: var(--theme--border-radius);
 	background-color: transparent;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
-	font-size: var(--theme--form--field--label--font-size, 14px);
+	font-size: var(--theme--form--field--label--font-size, 0.75rem);
 	font-weight: 600;
 	transition:
 		color var(--fast) var(--transition),
@@ -139,14 +139,14 @@ function useComparisonIndicator() {
 
 	.v-chip {
 		margin: 0;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.5rem;
 	}
 
 	.edit-dot {
 		display: inline-block;
-		inline-size: 4px;
-		block-size: 4px;
-		margin-inline-end: 4px;
+		inline-size: 0.25rem;
+		block-size: 0.25rem;
+		margin-inline-end: 0.25rem;
 		background-color: var(--theme--foreground-subdued);
 		border-radius: 50%;
 		flex-shrink: 0;
@@ -170,7 +170,7 @@ function useComparisonIndicator() {
 }
 
 .warning {
-	margin-inline-start: 8px;
+	margin-inline-start: 0.5rem;
 	color: var(--theme--danger);
 }
 </style>
