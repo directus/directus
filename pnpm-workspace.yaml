@@ -304,6 +304,7 @@ catalog:
   typescript-eslint: 8.46.4
   undici: 7.18.2
   universal-cookie: 8.0.1
+  unplugin-vue: 7.1.1
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
