@@ -8,7 +8,7 @@ import type { Report } from '../../types.js';
 
 const checkDirectusConfig = {
 	name: 'directus-config',
-	handler: async (spinner: Ora, reports: Array<Report>) => {
+	handler: async (spinner: Ora, reports: Array<Report>): Promise<string> => {
 		spinner.text = 'Checking package file exists';
 
 		const packagePath = path.resolve('package.json');
