@@ -22,7 +22,7 @@ catalog:
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
   '@directus/schema-builder': workspace:*
-  '@directus/tsconfig': 3.0.0
+  '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*
   '@directus/vue-split-panel': 0.8.6
   '@editorjs/attaches': 1.3.2
