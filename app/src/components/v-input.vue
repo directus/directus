@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import slugify from '@sindresorhus/slugify';
 import { isNil, omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VIcon from './v-icon/v-icon.vue';
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
+import { normalizeDbSafeValue, normalizeSlugValue } from '@/utils/normalize-input-value';
 
 defineOptions({ inheritAttrs: false });
 
@@ -249,17 +249,11 @@ function emitValue(event: InputEvent) {
 		}
 
 		if (props.slug === true) {
-			const endsWithSpace = value.endsWith(' ');
-			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
-			if (endsWithSpace) value += props.slugSeparator;
+			value = normalizeSlugValue(value, props.slugSeparator);
 		}
 
 		if (props.dbSafe === true) {
-			value = value.replace(/\s/g, '_');
-			// Replace é -> e etc
-			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
-			value = value.replace(/[^a-zA-Z0-9_]/g, '');
+			value = normalizeDbSafeValue(value);
 		}
 
 		emit('update:modelValue', value);

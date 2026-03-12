@@ -39,7 +39,7 @@ const displayValue = computed(() => {
 			<button class="toggle" type="button" @click="toggle">
 				<slot name="prepend" />
 				<span class="display-value">{{ displayValue }}</span>
-				<span class="controls"><slot name="controls" :active :toggle /></span>
+				<span class="controls" @click.stop @mousedown.stop><slot name="controls" :active :toggle /></span>
 				<VIcon class="expand" name="expand_more" :class="{ active }" />
 			</button>
 		</template>

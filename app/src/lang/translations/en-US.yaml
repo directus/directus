@@ -1622,6 +1622,11 @@ fields:
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
+    ai_translation: Translation
+    ai_glossary_term: Term
+    ai_glossary_note: Translation Note
+    ai_translation_glossary: Translation Glossary
+    ai_translation_style_guide: Translation Style Guide
     ai_openai_api_key: OpenAI API Key
     ai_openai_allowed_models: OpenAI Allowed Models
     ai_anthropic_api_key: Anthropic API Key
@@ -2369,6 +2374,26 @@ interfaces:
     default_language: Default Language
     language_field: Language Indicator Field
     language_direction_field: Language Direction Field
+    ai_translate: AI Translate
+    ai_translate_tooltip: Translate with AI
+    source_language: Source Language
+    fields_to_translate: Fields to Translate
+    target_languages: Target Languages
+    translate_n_languages: 'Translate {count} language | Translate {count} languages'
+    translating_n_languages: 'Translating {count} language... | Translating {count} languages...'
+    n_languages_translated: '{count} language translated | {count} languages translated'
+    n_fields: '{count} field | {count} fields'
+    no_source_content: The selected source fields have no content to translate.
+    no_additional_languages: No additional languages configured.
+    no_translation_models: No translation models are currently available.
+    translation_error: Translation failed for this language.
+    translation_not_allowed: You don't have permission to translate this language.
+    translation_pending_delete: This language has pending deletion and can't be translated.
+    pending: Pending
+    retrying: Retrying
+    empty: (empty)
+    all: All
+    none: None
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.

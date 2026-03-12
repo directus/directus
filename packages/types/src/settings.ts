@@ -77,6 +77,8 @@ export type Settings = {
 	ai_anthropic_allowed_models: string[] | null;
 	ai_google_allowed_models: string[] | null;
 	ai_system_prompt: string | null;
+	ai_translation_glossary: Array<{ term: string; translation_note: string }> | null;
+	ai_translation_style_guide: string | null;
 	mcp_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;

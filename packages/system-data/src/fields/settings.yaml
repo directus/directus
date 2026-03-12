@@ -877,6 +877,58 @@ fields:
     options:
       label: $t:fields.directus_settings.ai_system_prompt
 
+  - field: ai_translation_divider
+    interface: presentation-divider
+    options:
+      inlineTitle: true
+      color: 'var(--theme--foreground-subdued)'
+      title: $t:fields.directus_settings.ai_translation
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_translation_glossary
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{term}}'
+      limit: 200
+      fields:
+        - field: term
+          name: $t:fields.directus_settings.ai_glossary_term
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: 'Directus'
+        - field: translation_note
+          name: $t:fields.directus_settings.ai_glossary_note
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: 'Never translate, keep as-is'
+    width: full
+    group: ai_group
+
+  - field: ai_translation_style_guide
+    interface: input-rich-text-md
+    group: ai_group
+    width: full
+    options:
+      label: $t:fields.directus_settings.ai_translation_style_guide
+
   - field: ai_openai_compatible_divider
     interface: presentation-divider
     options:

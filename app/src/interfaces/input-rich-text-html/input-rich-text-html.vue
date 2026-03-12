@@ -3,7 +3,7 @@ import type { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
 import tinymce from 'tinymce/tinymce';
-import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import toolbarDefault from './toolbar-default';
@@ -217,6 +217,7 @@ function getBaseEditorOptions() {
 		convert_urls: false,
 		directionality: props.direction,
 		language: i18n.global.locale.value,
+		language_load: false,
 	};
 }
 
@@ -424,7 +425,7 @@ function setFocus(val: boolean) {
 	}
 }
 
-onMounted(() => {
+function registerTinyMceTranslations() {
 	tinymce.addI18n(i18n.global.locale.value, {
 		Undo: t('wysiwyg_options.undo'),
 		Redo: t('wysiwyg_options.redo'),
@@ -467,7 +468,15 @@ onMounted(() => {
 		'Left to right': t('left_to_right'),
 		'Right to left': t('right_to_left'),
 	});
-});
+}
+
+watch(
+	() => i18n.global.locale.value,
+	() => {
+		registerTinyMceTranslations();
+	},
+	{ immediate: true },
+);
 
 const menuActive = computed(
 	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,

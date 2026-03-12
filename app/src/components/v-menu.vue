@@ -149,13 +149,14 @@ function useActiveState() {
 
 	const menuEl = useTemplateRef<HTMLDivElement>('menuEl');
 
-	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
-		escapeDeactivates: false,
-		initialFocus: false,
-		returnFocusOnDeactivate: !props.noFocusReturn,
-		allowOutsideClick: true,
-		clickOutsideDeactivates: props.closeOnClick,
-	});
+		const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
+			escapeDeactivates: false,
+			initialFocus: false,
+			fallbackFocus: () => menuEl.value,
+			returnFocusOnDeactivate: !props.noFocusReturn,
+			allowOutsideClick: true,
+			clickOutsideDeactivates: props.closeOnClick,
+		});
 
 	const isActive = computed<boolean>({
 		get() {
@@ -497,6 +498,7 @@ function usePopper(
 						ref="menuEl"
 						class="v-menu-content"
 						:class="{ seamless }"
+						tabindex="-1"
 						v-on="{
 							...(closeOnContentClick ? { click: onContentClick } : {}),
 							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
