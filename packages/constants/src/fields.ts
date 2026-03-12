@@ -94,11 +94,11 @@ export const GENERATE_SPECIAL = [
 	'user-updated',
 ] as const;
 
-export const TRANSLATIONS_STRIPPED_ON_CLONE_SPECIALS: [
-	...typeof GENERATE_SPECIAL,
+export const TRANSLATIONS_STRIPPED_ON_CLONE_SPECIALS: [...typeof GENERATE_SPECIAL, 'no-data', 'cast-timestamp'] = [
+	...GENERATE_SPECIAL,
 	'no-data',
 	'cast-timestamp',
-] = [...GENERATE_SPECIAL, 'no-data', 'cast-timestamp'] as const;
+] as const;
 
 export const FUNCTIONS = [
 	'year',
