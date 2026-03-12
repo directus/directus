@@ -134,7 +134,15 @@ const {
 const { createAllowed: createFolderAllowed, deleteAllowed: folderDeleteAllowed } =
 	useCollectionPermissions('directus_folders');
 
-function onFolderDeleteDone() {
+async function onFolderDeleteDone() {
+	try {
+		if (selection.value.length > 0) {
+			await api.delete('/files', { data: selection.value });
+		}
+	} catch (e) {
+		unexpectedError(e);
+	}
+
 	selection.value = [];
 	folderSelection.value = [];
 	confirmDelete.value = false;
