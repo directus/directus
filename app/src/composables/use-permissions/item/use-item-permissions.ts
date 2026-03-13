@@ -1,5 +1,5 @@
 import { Field } from '@directus/types';
-import { ComputedRef, Ref } from 'vue';
+import { ComputedRef, MaybeRef, Ref } from 'vue';
 import { isArchiveAllowed } from '../lib/is-archive-allowed';
 import { Collection, IsNew, PrimaryKey } from '../types';
 import { getFields } from './lib/get-fields';
@@ -21,11 +21,11 @@ export function useItemPermissions(
 	collection: Collection,
 	primaryKey: PrimaryKey,
 	isNew: IsNew,
-	isVersion: IsNew = false,
+	isVersion: MaybeRef<boolean> = false,
 ): UsableItemPermissions {
 	const { loading, fetchedItemPermissions, refresh } = fetchItemPermissions(collection, primaryKey);
 
-	const updateAllowed = isActionAllowed(collection, isNew, fetchedItemPermissions, 'update');
+	const updateAllowed = isActionAllowed(collection, isNew, fetchedItemPermissions, 'update', isVersion);
 	const deleteAllowed = isActionAllowed(collection, isNew, fetchedItemPermissions, 'delete');
 	const shareAllowed = isActionAllowed(collection, isNew, fetchedItemPermissions, 'share');
 

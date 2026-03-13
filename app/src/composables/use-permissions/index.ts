@@ -1,4 +1,4 @@
-import { ComputedRef } from 'vue';
+import { ComputedRef, MaybeRef } from 'vue';
 import { UsableCollectionPermissions, useCollectionPermissions } from './collection/use-collection-permissions';
 import { UsableItemPermissions, useItemPermissions } from './item/use-item-permissions';
 import { isSaveAllowed } from './lib/is-save-allowed';
@@ -13,7 +13,7 @@ export function usePermissions(
 	collection: Collection,
 	primaryKey: PrimaryKey,
 	isNew: IsNew,
-	isVersion: IsNew = false,
+	isVersion: MaybeRef<boolean> = false,
 ): UsablePermissions {
 	const collectionPermissions = useCollectionPermissions(collection);
 

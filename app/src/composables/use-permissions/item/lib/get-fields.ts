@@ -1,7 +1,7 @@
 import { useCollection } from '@directus/composables';
 import { Field, ItemPermissions } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { computed, ref, Ref, unref } from 'vue';
+import { computed, MaybeRef, ref, Ref, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
 import type { FormField } from '@/components/v-form/types';
 import { usePermissionsStore } from '@/stores/permissions';
@@ -11,7 +11,7 @@ export function getFields(
 	collection: Collection,
 	isNew: IsNew,
 	fetchedItemPermissions: Ref<ItemPermissions>,
-	isVersion: IsNew = false,
+	isVersion: MaybeRef<boolean> = false,
 ) {
 	const userStore = useUserStore();
 	const { getPermission } = usePermissionsStore();
