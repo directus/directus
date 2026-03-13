@@ -1,5 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import getPort from 'get-port';
 import { Knex } from 'knex';
 import { allVendors, type Vendor } from './get-dbs-to-test';
 
@@ -119,7 +120,7 @@ export const directusConfig = {
 	TUS_ENABLED: 'true',
 	EMAIL_TRANSPORT: 'smtp',
 	EMAIL_SMTP_HOST: '127.0.0.1',
-	EMAIL_SMTP_PORT: '9642',
+	EMAIL_SMTP_PORT: String(await getPort()),
 	...directusAuthConfig,
 	...directusStorageConfig,
 };
