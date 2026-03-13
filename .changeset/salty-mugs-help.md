@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Added duplicate policy action
+Added functionality to duplicate access policies
