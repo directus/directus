@@ -178,7 +178,7 @@ function useComparisonIndicator() {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	padding: 8px 0;
+	padding: 0.4375rem 0;
 	cursor: pointer;
 
 	&:hover,
@@ -198,30 +198,30 @@ function useComparisonIndicator() {
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-block-start: -12px;
-		margin-inline-start: 2px;
+		margin-block-start: -0.6875rem;
+		margin-inline-start: 0.125rem;
 	}
 
 	.v-chip {
 		margin: 0;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 
 	.edit-dot {
 		position: absolute;
-		inset-block-start: 14px;
-		inset-inline-start: -7px;
+		inset-block-start: 0.8125rem;
+		inset-inline-start: -0.375rem;
 		display: block;
-		inline-size: 4px;
-		block-size: 4px;
+		inline-size: 0.25rem;
+		block-size: 0.25rem;
 		background-color: var(--theme--form--field--input--foreground-subdued);
-		border-radius: 4px;
+		border-radius: 0.25rem;
 		content: '';
 	}
 }
 
 .icon {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
 
@@ -231,7 +231,7 @@ function useComparisonIndicator() {
 }
 
 .warning {
-	margin-inline-start: 8px;
+	margin-inline-start: 0.4375rem;
 	color: var(--theme--danger);
 }
 

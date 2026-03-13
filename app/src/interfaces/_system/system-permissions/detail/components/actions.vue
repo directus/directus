@@ -24,6 +24,6 @@ const emit = defineEmits<{
 }
 
 .v-button:not(:last-child) {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 </style>

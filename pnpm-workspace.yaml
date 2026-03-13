@@ -21,7 +21,7 @@ catalog:
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
   '@directus/schema-builder': workspace:*
-  '@directus/tsconfig': 3.0.0
+  '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*
   '@directus/vue-split-panel': 0.8.6
   '@editorjs/attaches': 1.3.2
@@ -96,7 +96,6 @@ catalog:
   '@types/cors': 2.8.19
   '@types/cron': 3.0.11
   '@types/deep-diff': 1.0.5
-  '@types/destroy': 1.0.3
   '@types/diacritics': 1.3.3
   '@types/diff': 7.0.1
   '@types/encodeurl': 1.0.3
@@ -171,7 +170,6 @@ catalog:
   date-fns: 4.1.0
   decamelize: 6.0.1
   deep-diff: 1.0.2
-  destroy: 1.2.0
   diacritics: 1.3.0
   diff: 7.0.0
   dompurify: 3.3.2
@@ -306,10 +304,11 @@ catalog:
   typescript-eslint: 8.46.4
   undici: 7.18.2
   universal-cookie: 8.0.1
+  unplugin-vue: 7.1.1
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 7.2.2
+  vite: 8.0.0
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4

@@ -101,8 +101,8 @@ const { width } = useElementSize(el);
 const gridClass = computed<string | null>(() => {
 	if (el.value === null) return null;
 
-	// 856 (drawer width) - 2 * 24 (content-padding) = 808
-	if (width.value > 808) {
+	// 770 (drawer width) - 2 * 22 (content-padding) = 726
+	if (width.value > 726) {
 		return 'grid with-fill';
 	} else {
 		return 'grid';
@@ -551,7 +551,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 }
 
 .v-divider {
-	margin-block-end: 50px;
+	margin-block-end: 2.8125rem;
 	grid-column: 1 / 3;
 }
 

@@ -74,13 +74,13 @@ const valueWithDefault = computed(() => {
 <style scoped lang="scss">
 .interface-system-theme {
 	display: grid;
-	gap: 24px;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 1.375rem;
+	grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
 }
 
 .theme {
 	background-color: var(--theme--form--field--input--background);
-	padding: 10px;
+	padding: 0.5625rem;
 	border-width: var(--theme--border-width);
 	border-style: solid;
 	border-color: var(--theme--form--field--input--border-color);
@@ -99,7 +99,7 @@ const valueWithDefault = computed(() => {
 		align-items: center;
 
 		.v-icon {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 

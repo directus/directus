@@ -1,5 +1,6 @@
 import type { Knex } from 'knex';
-import type { Column } from '../types/column.js';
+import type { Column, TableColumn } from '../types/column.js';
+import type { ForeignKey } from '../types/foreign-key.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema-inspector.js';
 import type { Table } from '../types/table.js';
@@ -35,7 +36,7 @@ type Constraint = {
  * Converts Postgres default value to JS
  * Eg `'example'::character varying` => `example`
  */
-export function parseDefaultValue(value: string | null) {
+export function parseDefaultValue(value: string | null): string | null {
 	if (value === null) return null;
 	if (value.startsWith('nextval(')) return value;
 
@@ -73,7 +74,7 @@ export default class Postgres implements SchemaInspector {
 	/**
 	 * Set the schema to be used in other methods
 	 */
-	withSchema(schema: string) {
+	withSchema(schema: string): this {
 		this.schema = schema;
 		this.explodedSchema = [this.schema];
 		return this;
@@ -234,7 +235,7 @@ export default class Postgres implements SchemaInspector {
 	/**
 	 * List all existing tables in the current schema/database
 	 */
-	async tables() {
+	async tables(): Promise<string[]> {
 		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
 
 		const result = await this.knex.raw(
@@ -290,7 +291,7 @@ export default class Postgres implements SchemaInspector {
 	/**
 	 * Check if a table exists in the current schema/database
 	 */
-	async hasTable(table: string) {
+	async hasTable(table: string): Promise<boolean> {
 		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
 
 		const result = await this.knex.raw(
@@ -317,7 +318,7 @@ export default class Postgres implements SchemaInspector {
 	/**
 	 * Get all the available columns in the current schema/database. Can be filtered to a specific table
 	 */
-	async columns(table?: string) {
+	async columns(table?: string): Promise<TableColumn[]> {
 		const bindings: any[] = [];
 		if (table) bindings.push(table);
 
@@ -565,7 +566,7 @@ export default class Postgres implements SchemaInspector {
 	/**
 	 * Check if the given table contains the given column
 	 */
-	async hasColumn(table: string, column: string) {
+	async hasColumn(table: string, column: string): Promise<boolean> {
 		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
 
 		const result = await this.knex.raw(
@@ -618,7 +619,7 @@ export default class Postgres implements SchemaInspector {
 	// Foreign Keys
 	// ===============================================================================================
 
-	async foreignKeys(table?: string) {
+	async foreignKeys(table?: string): Promise<ForeignKey[]> {
 		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
 
 		const bindings: any[] = [];
