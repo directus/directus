@@ -28,10 +28,13 @@ const providerItems = computed(() => {
 	return items.map((provider) => {
 		const hasProjects = (provider.projects?.length ?? 0) > 0;
 
-		const link =
-			!hasProjects && isAdmin
-				? { name: 'deployments-provider-settings', params: { provider: provider.provider } }
-				: { name: 'deployments-provider-dashboard', params: { provider: provider.provider } };
+		let link;
+
+		if (!hasProjects && isAdmin) {
+			link = { name: 'deployments-provider-settings', params: { provider: provider.provider } };
+		} else {
+			link = { name: 'deployments-provider-dashboard', params: { provider: provider.provider } };
+		}
 
 		return {
 			...provider,
