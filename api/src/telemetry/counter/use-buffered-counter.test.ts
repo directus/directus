@@ -656,4 +656,4 @@ describe('terminateAllBufferedCounters', () => {
 
 		await flusher2.terminate();
 	});
-})
+});

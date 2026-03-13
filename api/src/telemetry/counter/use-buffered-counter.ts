@@ -187,7 +187,6 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 	};
 };
 
-
 /**
  * Terminate all buffered counters by flushing their counts and clearing their timers.
  * Call this on application shutdown to ensure all buffered counts are flushed.
