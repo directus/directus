@@ -23,7 +23,7 @@ export function getRelation(relations: Relation[], collection: string, field: st
 	return relation;
 }
 
-export function getRelationsForCollection(schema: SchemaOverview, collection: string) {
+export function getRelationsForCollection(schema: SchemaOverview, collection: string): string[] {
 	const fields = schema.collections[collection]?.fields;
 
 	const relationalFields = [];
