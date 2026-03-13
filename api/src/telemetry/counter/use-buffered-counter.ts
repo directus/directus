@@ -97,7 +97,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 		await Promise.all(Object.keys(flusher.counters).map((subKey) => flush(subKey)));
 	};
 
-	const destroy = async (): Promise<void> => {
+	const terminate = async (): Promise<void> => {
 		if (flusher.timer) {
 			clearInterval(flusher.timer);
 			flusher.timer = null;
@@ -183,6 +183,22 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 		/**
 		 * Stop all timers and flush remaining counts. Call on shutdown.
 		 */
-		destroy,
+		terminate,
 	};
+};
+
+
+/**
+ * Terminate all buffered counters by flushing their counts and clearing their timers.
+ * Call this on application shutdown to ensure all buffered counts are flushed.
+ */
+export const terminateAllBufferedCounters = async (): Promise<void> => {
+	await Promise.all(
+		Object.keys(_bufferedCounterCache).map((key) => {
+			if (_bufferedCounterCache[key]) {
+				return useBufferedCounter(key).terminate();
+			}
+			return undefined;
+		}),
+	);
 };

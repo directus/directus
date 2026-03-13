@@ -26,6 +26,7 @@ import {
 	getWebSocketController,
 } from './websocket/controllers/index.js';
 import { getCollabHandler, startWebSocketHandlers } from './websocket/handlers/index.js';
+import { terminateAllBufferedCounters } from './telemetry/counter/use-buffered-counter.js';
 
 export let SERVER_ONLINE = true;
 
@@ -135,6 +136,7 @@ export async function createServer(): Promise<http.Server> {
 		getWebSocketController()?.terminate();
 		getLogsController()?.terminate();
 		await getCollabHandler()?.terminate();
+		await terminateAllBufferedCounters();
 
 		const database = getDatabase();
 		await database.destroy();
