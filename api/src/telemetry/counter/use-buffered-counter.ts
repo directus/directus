@@ -198,6 +198,7 @@ export const terminateAllBufferedCounters = async (): Promise<void> => {
 			if (_bufferedCounterCache[key]) {
 				return useBufferedCounter(key).terminate();
 			}
+
 			return undefined;
 		}),
 	);
