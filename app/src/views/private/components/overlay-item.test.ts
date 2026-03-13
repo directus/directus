@@ -9,6 +9,17 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 
 const mockCollabConnected = ref<boolean | undefined>(false);
+const mockSaveAllowed = ref(true);
+
+vi.mock('@/composables/use-permissions', () => ({
+	usePermissions: () => ({
+		collectionPermissions: {},
+		itemPermissions: {
+			fields: computed(() => []),
+			saveAllowed: computed(() => mockSaveAllowed.value),
+		},
+	}),
+}));
 
 vi.mock('@/composables/use-collab', () => ({
 	useCollab: () => ({
@@ -81,6 +92,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	mockCollabConnected.value = false;
+	mockSaveAllowed.value = true;
 	vi.clearAllMocks();
 });
 
@@ -113,5 +125,82 @@ describe('unsaved-changes dialog', () => {
 
 		expect(wrapper.text()).toContain(i18n.global.t('unsaved_changes_collab'));
 		expect(wrapper.text()).not.toContain(i18n.global.t('unsaved_changes'));
+	});
+});
+
+describe('isSavable', () => {
+	function mountWithActionSlot(props: Record<string, any>) {
+		return mount(OverlayItem, {
+			props: {
+				collection: 'articles',
+				overlay: 'drawer',
+				...props,
+			},
+			global: {
+				...global,
+				stubs: {
+					...globalStubs.stubs,
+					VDrawer: { template: '<div><slot /><slot name="actions" /></div>' },
+				},
+			},
+		});
+	}
+
+	function getSaveButton(wrapper: ReturnType<typeof mount>) {
+		return wrapper.find('private-view-header-bar-action-button-stub');
+	}
+
+	it('enables save button for a new item without edits', () => {
+		const wrapper = mountWithActionSlot({
+			active: true,
+			primaryKey: '+',
+		});
+
+		const saveButton = getSaveButton(wrapper);
+		expect(saveButton.attributes('disabled')).toBe('false');
+	});
+
+	it('disables save button for an existing item without edits', () => {
+		const wrapper = mountWithActionSlot({
+			active: true,
+			primaryKey: '1',
+		});
+
+		const saveButton = getSaveButton(wrapper);
+		expect(saveButton.attributes('disabled')).toBe('true');
+	});
+
+	it('enables save button for an existing item with edits', () => {
+		const wrapper = mountWithActionSlot({
+			active: true,
+			primaryKey: '1',
+			edits: { title: 'updated' },
+		});
+
+		const saveButton = getSaveButton(wrapper);
+		expect(saveButton.attributes('disabled')).toBe('false');
+	});
+
+	it('disables save button when disabled prop is true even for new items', () => {
+		const wrapper = mountWithActionSlot({
+			active: true,
+			primaryKey: '+',
+			disabled: true,
+		});
+
+		const saveButton = getSaveButton(wrapper);
+		expect(saveButton.attributes('disabled')).toBe('true');
+	});
+
+	it('disables save button when save is not allowed by permissions', () => {
+		mockSaveAllowed.value = false;
+
+		const wrapper = mountWithActionSlot({
+			active: true,
+			primaryKey: '+',
+		});
+
+		const saveButton = getSaveButton(wrapper);
+		expect(saveButton.attributes('disabled')).toBe('true');
 	});
 });

@@ -358,6 +358,7 @@ function useURLImport() {
 		<DrawerFiles
 			v-if="activeDialog === 'choose'"
 			:folder="folder"
+			:field="field"
 			:active="activeDialog === 'choose'"
 			:filter="customFilter"
 			@update:active="activeDialog = null"
@@ -418,7 +419,7 @@ function useURLImport() {
 .item-actions {
 	@include mixins.list-interface-item-actions;
 
-	padding-inline-start: 8px;
+	padding-inline-start: 0.4375rem;
 }
 
 .preview {
@@ -427,9 +428,9 @@ function useURLImport() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 40px;
-	block-size: 40px;
-	margin-inline-start: -8px;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -445,7 +446,7 @@ function useURLImport() {
 	}
 
 	&.is-svg {
-		padding: 4px;
+		padding: 0.25rem;
 
 		img {
 			object-fit: contain;
@@ -461,7 +462,7 @@ function useURLImport() {
 .extension {
 	color: var(--theme--primary);
 	font-weight: 600;
-	font-size: 11px;
+	font-size: 0.625rem;
 	text-transform: uppercase;
 }
 </style>

@@ -10,7 +10,9 @@ import { useFileHandler } from './use-file-handler';
 import api from '@/api';
 import VDrawer from '@/components/v-drawer.vue';
 import VUpload from '@/components/v-upload.vue';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
 import { useCollectionsStore } from '@/stores/collections';
+import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 import './editorjs-overrides.css';
@@ -43,6 +45,8 @@ const bus = useBus();
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
 
 const collectionStore = useCollectionsStore();
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
 	useFileHandler();
@@ -201,6 +205,7 @@ const menuActive = computed(() => fileHandler.value !== null);
 					:folder="folder"
 					from-library
 					from-url
+					:accept="allowedMimeTypes"
 					@input="handleFile"
 				/>
 			</div>
@@ -223,7 +228,8 @@ const menuActive = computed(() => fileHandler.value !== null);
 
 .input-block-editor .editor {
 	border-radius: var(--theme--border-radius);
-	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
+	padding: var(--theme--form--field--input--padding)
+		max(1.8125rem, calc(var(--theme--form--field--input--padding) + 0.875rem));
 }
 
 .disabled {

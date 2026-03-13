@@ -409,7 +409,7 @@ function clearFilters() {
 	white-space: nowrap;
 	align-self: center;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: inline;
 	}
 }
@@ -419,13 +419,13 @@ function clearFilters() {
 }
 
 .notifications {
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 
 	.v-skeleton-loader {
-		margin-block-end: 8px;
+		margin-block-end: 0.4375rem;
 
 		&.dense {
-			block-size: 44px;
+			block-size: 2.5rem;
 		}
 	}
 
@@ -434,11 +434,11 @@ function clearFilters() {
 			block-size: unset;
 			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
-			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
+			padding: 0.875rem var(--theme--form--field--input--padding) 0.875rem var(--theme--form--field--input--padding);
 
 			&.dense {
-				min-block-size: 44px;
-				padding: 10px 8px;
+				min-block-size: 2.5rem;
+				padding: 0.5625rem 0.4375rem;
 			}
 		}
 
@@ -446,7 +446,7 @@ function clearFilters() {
 			inline-size: 100%;
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: 0.4375rem;
 
 			.title {
 				flex-grow: 1;
@@ -458,7 +458,7 @@ function clearFilters() {
 
 		.message {
 			inline-size: 100%;
-			margin-block-start: 8px;
+			margin-block-start: 0.4375rem;
 			cursor: auto;
 
 			:deep() {
@@ -472,19 +472,19 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	block-size: 24px;
+	block-size: 1.375rem;
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {
-		margin: 0 calc(8px + var(--theme--border-width)) 12px;
+		margin: 0 calc(0.4375rem + var(--theme--border-width)) 0.6875rem;
 	}
 }
 
 .select-all-divider {
-	margin: 8px 0;
+	margin: 0.4375rem 0;
 
 	&.dense {
-		margin: 4px 0;
+		margin: 0.25rem 0;
 	}
 }
 
@@ -504,6 +504,6 @@ function clearFilters() {
 }
 
 .nav-divider {
-	margin-inline: 12px;
+	margin-inline: 0.6875rem;
 }
 </style>

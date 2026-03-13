@@ -174,8 +174,8 @@ defineProps<{
 
 	.avatar {
 		flex-shrink: 0;
-		inline-size: 120px;
-		block-size: 120px;
+		inline-size: 6.75rem;
+		block-size: 6.75rem;
 		position: relative;
 		overflow: hidden;
 		align-items: center;
@@ -189,7 +189,7 @@ defineProps<{
 			background: transparent;
 		}
 
-		@container (width > 700px) {
+		@container (width > 39.375rem) {
 			display: flex;
 		}
 	}
@@ -207,8 +207,8 @@ defineProps<{
 			color: var(--theme--banner--title--foreground);
 			font-family: var(--theme--banner--title--font-family);
 			font-weight: var(--theme--banner--title--font-weight);
-			font-size: 24px;
-			line-height: 34px;
+			font-size: 1.375rem;
+			line-height: 1.4091;
 		}
 
 		.subtitle {
