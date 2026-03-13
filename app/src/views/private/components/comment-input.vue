@@ -376,8 +376,8 @@ function pressedEnter() {
 	inline-size: 100%;
 	block-size: 100%;
 	block-size: var(--theme--form--field--input--height);
-	min-block-size: 100px;
-	padding: 5px;
+	min-block-size: 5.625rem;
+	padding: 0.3125rem;
 	overflow: scroll;
 	white-space: pre;
 	background-color: var(--theme--form--field--input--background);
@@ -396,22 +396,22 @@ function pressedEnter() {
 .new-comment :deep(.expand-on-focus:focus textarea),
 .new-comment :deep(.expand-on-focus:focus-within textarea),
 .new-comment :deep(.expand-on-focus.has-content textarea) {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
 	inset-inline: 0;
-	inset-block-end: 36px;
-	block-size: 8px;
+	inset-block-end: 2rem;
+	block-size: 0.4375rem;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
 }
 
 .new-comment .add-mention {
 	position: absolute;
-	inset-block-end: 8px;
-	inset-inline-start: 8px;
+	inset-block-end: 0.4375rem;
+	inset-inline-start: 0.4375rem;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
@@ -419,8 +419,8 @@ function pressedEnter() {
 
 .new-comment .add-emoji {
 	position: absolute;
-	inset-block-end: 8px;
-	inset-inline-start: 36px;
+	inset-block-end: 0.4375rem;
+	inset-inline-start: 2rem;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
@@ -432,9 +432,9 @@ function pressedEnter() {
 }
 
 .buttons {
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	display: flex;
-	gap: 4px;
+	gap: 0.25rem;
 
 	.mention,
 	.emoji-button {

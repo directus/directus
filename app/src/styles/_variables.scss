@@ -1,3 +1,5 @@
+@use 'mixins';
+
 :root {
 	--white: #fff;
 	--black: #090c0d;
@@ -7,27 +9,28 @@
 	--fast: 125ms;
 	--medium: 200ms;
 	--slow: 300ms;
-	--header-bar-height: 120px;
-	--content-padding: 12px;
-	--content-padding-bottom: 60px;
-	--input-height-md: 168px;
-	--input-height-lg: 300px;
-	--input-height-xl: 500px;
-	--form-column-width: 300px;
-	--form-column-min-width: 220px;
-	--form-column-max-width: 380px;
-	--focus-ring-width: 2px;
-	--focus-ring-offset: 2px;
+	--header-bar-height: 6.75rem;
+	--content-padding: 0.6875rem;
+	--content-padding-bottom: 3.375rem;
+	--input-height-md: 9.4375rem;
+	--input-height-lg: 16.875rem;
+	--input-height-xl: 28.125rem;
+	--form-column-width: 16.875rem;
+	--form-column-min-width: 12.375rem;
+	--form-column-max-width: 21.375rem;
+	--focus-ring-width: 2px; /* stylelint-disable-line unit-disallowed-list -- must be px for outline rendering */
+	--focus-ring-offset: 2px; /* stylelint-disable-line unit-disallowed-list -- must be px for outline rendering */
 	--focus-ring-offset-invert: calc(-1 * var(--focus-ring-width));
 	--focus-ring-offset-inset: calc(-1 * (var(--focus-ring-width) + var(--focus-ring-offset)));
 	--focus-ring-radius: var(--theme--border-radius);
 	--focus-ring-color: var(--theme--primary);
 
-	@media (width > 400px) {
-		--header-bar-height: 60px;
+	@media (width > 22.5rem) {
+		/* ~360px, not in breakpoints map */
+		--header-bar-height: 3.375rem;
 	}
 
-	@media (width > 640px) {
-		--content-padding: 24px;
+	@include mixins.breakpoint-up('sm') {
+		--content-padding: 1.375rem;
 	}
 }

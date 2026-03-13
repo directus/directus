@@ -72,7 +72,7 @@ const color = computed(() => {
 
 	Available Variables:
 
-	--v-progress-linear-height            [4px]
+	--v-progress-linear-height            [0.25rem]
 	--v-progress-linear-color             [var(--theme--foreground)]
 	--v-progress-linear-background-color  [var(--theme--form--field--input--border-color)]
 
@@ -84,7 +84,7 @@ const color = computed(() => {
 	align-items: center;
 	justify-content: center;
 	inline-size: 100%;
-	block-size: var(--v-progress-linear-height, 4px);
+	block-size: var(--v-progress-linear-height, 0.25rem);
 	overflow: hidden;
 	background-color: var(--v-progress-linear-background-color, var(--theme--form--field--input--border-color));
 
@@ -124,7 +124,7 @@ const color = computed(() => {
 
 	&.rounded,
 	&.rounded .inner {
-		border-radius: calc(var(--v-progress-linear-height, 4px) / 2);
+		border-radius: calc(var(--v-progress-linear-height, 0.25rem) / 2);
 	}
 
 	&.top {

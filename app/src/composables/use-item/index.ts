@@ -25,6 +25,9 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 
+/** Max URL length before switching to SEARCH method to avoid 414/431 errors */
+const MAX_QUERY_URL_LENGTH = 8192;
+
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
 	hasEdits: ComputedRef<boolean>;
@@ -413,16 +416,21 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await sdk.request<Item[]>(
-				requestEndpoint(getEndpoint(relation.collection), {
-					params: {
-						fields: Array.from(fieldsToFetch),
-						[`filter[${relation.field}][_eq]`]: primaryKey.value,
-					},
-				}),
-			);
+			const endpoint = getEndpoint(relation.collection);
+			const requestFields = Array.from(fieldsToFetch);
+			const filter = { [relation.field]: { _eq: primaryKey.value } };
+			const query = { fields: requestFields, filter };
 
-			return response;
+			const queryString = new URLSearchParams({
+				fields: requestFields.join(','),
+				filter: JSON.stringify(filter),
+			}).toString();
+
+			const useSearch = queryString.length + endpoint.length > MAX_QUERY_URL_LENGTH;
+
+			const options = useSearch ? { method: 'SEARCH' as const, body: { query } } : { params: query };
+
+			return await sdk.request<Item[]>(requestEndpoint(endpoint, options));
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {

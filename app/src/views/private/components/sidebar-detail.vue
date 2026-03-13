@@ -58,32 +58,32 @@ watch(
 	display: contents;
 
 	:deep(.type-label) {
-		margin-block-end: 4px;
-		font-size: 1rem;
+		margin-block-end: 0.25rem;
+		font-size: 0.8125rem;
 	}
 }
 
 .accordion-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
-	--v-badge-offset-x: 15px;
-	--v-badge-offset-y: 4px;
+	--v-badge-offset-x: 0.875rem;
+	--v-badge-offset-y: 0.25rem;
 	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
 	--v-badge-background-color: var(--theme--primary);
 	--v-badge-color: var(--theme--background-normal);
 
 	display: flex;
 	align-items: center;
-	block-size: 60px;
+	block-size: 3.375rem;
 	inline-size: 100%;
 	background-color: var(--theme--sidebar--section--toggle--background);
 	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
 		var(--theme--sidebar--section--toggle--border-color);
 	color: var(--theme--sidebar--section--toggle--foreground);
-	padding-inline: 18px 9px;
+	padding-inline: 1rem 0.5rem;
 }
 
 .accordion-trigger-icon {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 }
 
 .accordion-trigger-title {
@@ -146,6 +146,6 @@ watch(
 }
 
 .accordion-content-container {
-	padding: 16px;
+	padding: 0.875rem;
 }
 </style>

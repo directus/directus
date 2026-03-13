@@ -17,6 +17,7 @@ This directory contains mock implementations for commonly used modules in servic
 - **[files-service.ts](#files-servicets)** - FilesService mocks
 - **[folders-service.ts](#folders-servicets)** - FoldersService mocks
 - **[test-helpers.ts](#test-helpersts)** - Test data factory functions
+- **[controllers.ts](#controllersts)** - Controller/router testing helpers
 
 ## Quick Start
 
@@ -521,6 +522,116 @@ const buildTreeSpy = vi.spyOn(FoldersService.prototype, 'buildTree').mockResolve
 
 ---
 
+### controllers.ts
+
+Provides helpers for extracting route handlers from Express routers and creating mock Express request/response objects
+for controller tests.
+
+#### `getRouteHandler(router, method, path)`
+
+Extracts the middleware/handler stack for a specific route from an Express router.
+
+**Parameters:**
+
+- `router`: The Express `Router` instance
+- `method`: HTTP method (`'GET'`, `'POST'`, `'PATCH'`, `'DELETE'`, etc.)
+- `path`: Route path (e.g. `'/'`, `'/:id'`)
+
+**Returns:** Array of `{ handle: (...args) => any }` layers for the matched route
+
+**Throws:** If no matching route is found
+
+**Example:**
+
+```typescript
+import { default as router } from './tus.js';
+import { getRouteHandler } from '../test-utils/controllers.js';
+
+const [checkAccess, handler] = getRouteHandler(router, 'POST', '/');
+await checkAccess?.handle(req, res, next);
+```
+
+#### `createMockRequest(overrides?)`
+
+Creates a mock Express Request pre-populated with common Directus properties (`accountability`, `schema`,
+`sanitizedQuery`, etc.).
+
+**Parameters:**
+
+- `overrides` (optional): Properties to merge into the mock request
+
+**Returns:** Mock `Request` object
+
+**Example:**
+
+```typescript
+import { createMockRequest } from '../test-utils/controllers.js';
+
+// Minimal request
+const req = createMockRequest({ schema });
+
+// With accountability and custom header
+const req = createMockRequest({
+	method: 'POST',
+	accountability,
+	schema,
+	header: vi.fn().mockReturnValue('some-value'),
+});
+```
+
+#### `createMockResponse(overrides?)`
+
+Creates a mock Express Response with chainable methods (`status`, `json`, `send`, `set`, `end`).
+
+**Parameters:**
+
+- `overrides` (optional): Properties to merge into the mock response
+
+**Returns:** Mock `Response` object
+
+**Example:**
+
+```typescript
+import { createMockResponse } from '../test-utils/controllers.js';
+
+const res = createMockResponse();
+```
+
+#### Full Controller Test Example
+
+```typescript
+import { SchemaBuilder } from '@directus/schema-builder';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
+import { default as router } from './controller.js';
+
+const schema = new SchemaBuilder()
+	.collection('collection', (c) => {
+		c.field('id').integer().primary();
+		c.field('title').string();
+	})
+	.build();
+
+describe('controller', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	test('validates access on POST', async () => {
+		const req = createMockRequest({ method: 'POST', accountability, schema });
+		const res = createMockResponse();
+		const next = vi.fn();
+
+		const [firstHandler] = getRouteHandler(router, 'POST', '/');
+		await firstHandler?.handle(req, res, next);
+
+		expect(next).toHaveBeenCalled();
+	});
+});
+```
+
+---
+
 ## Common Patterns
 
 ### Full Service Test Setup
@@ -737,6 +848,7 @@ See these files for complete examples:
 
 - [collections.test.ts](../services/collections.test.ts) - Full service test with schema operations
 - [fields.test.ts](../services/fields.test.ts) - Complex service test with field management
+- [tus.test.ts](../controllers/tus.test.ts) - Controller test with route handler extraction and access validation
 
 ---
 
