@@ -258,6 +258,7 @@ export function useTranslationJob(options: {
 		progressLabel,
 		pendingLanguages,
 		pendingFields,
+		applyTranslatedFields: options.applyTranslatedFields,
 		start,
 		cancel,
 		retry,

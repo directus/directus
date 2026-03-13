@@ -2374,8 +2374,10 @@ interfaces:
     default_language: Default Language
     language_field: Language Indicator Field
     language_direction_field: Language Direction Field
-    ai_translate: AI Translate
-    ai_translate_tooltip: Translate with AI
+    ai_translate: Translate with AI
+    ai_translate_short: Translate
+    ai_translate_tooltip: Translate your content automatically with AI
+    model: Model
     source_language: Source Language
     fields_to_translate: Fields to Translate
     target_languages: Target Languages
@@ -2392,9 +2394,11 @@ interfaces:
     pending: Pending
     retrying: Retrying
     empty: (empty)
+    field_empty_tooltip: This field has no source content to translate
     all: All
     none: None
     ai_translating: Translating...
+    ai_translating_progress: 'Translating {done} of {total} languages...'
     translation_has_errors: Some translations failed. Click to view.
     translation_has_errors_short: Errors
     new_translation: New Translation

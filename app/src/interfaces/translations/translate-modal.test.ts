@@ -8,15 +8,17 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import api from '@/api';
 import { i18n } from '@/lang';
 
+const mockModels = ref([
+	{
+		name: 'Claude Sonnet 4.5',
+		provider: 'anthropic',
+		model: 'claude-sonnet-4-5',
+	},
+]);
+
 vi.mock('@/ai/stores/use-ai', () => ({
 	useAiStore: () => ({
-		models: [
-			{
-				name: 'Claude Sonnet 4.5',
-				provider: 'anthropic',
-				model: 'claude-sonnet-4-5',
-			},
-		],
+		models: mockModels.value,
 	}),
 }));
 
@@ -130,8 +132,24 @@ function mountModal({
 				props: ['modelValue'],
 				template: '<div v-if="modelValue"><slot /><slot name="title" /></div>',
 			},
+			VDivider: { template: '<div />' },
 			VNotice: { template: '<div><slot /></div>' },
 			VIcon: true,
+			VInput: {
+				props: ['modelValue', 'placeholder'],
+				emits: ['update:modelValue', 'click', 'keydown:enter', 'keydown:space'],
+				template:
+					'<label><slot name="prepend" /><input :value="modelValue ?? \'\'" :placeholder="placeholder" @input="$emit(\'update:modelValue\', $event.target.value)" @click="$emit(\'click\')" /><slot name="append" /></label>',
+			},
+			VList: { template: '<div><slot /></div>' },
+			VListItem: { template: '<div><slot /></div>', props: ['active', 'clickable'] },
+			VListItemContent: { template: '<div><slot /></div>' },
+			VListItemIcon: { template: '<div><slot /></div>' },
+			VMenu: {
+				props: ['modelValue'],
+				emits: ['update:modelValue'],
+				template: '<div><slot name="activator" :toggle="() => {}" :active="false" /><slot /></div>',
+			},
 			VProgressLinear: { template: '<div />', props: ['value'] },
 			VButton: {
 				props: ['disabled'],
@@ -149,6 +167,10 @@ function mountModal({
 				emits: ['update:modelValue'],
 				template:
 					'<select :value="modelValue" @change="$emit(\'update:modelValue\', $event.target.value)"><option v-for="item in items" :key="item.value" :value="item.value">{{ item.text }}</option></select>',
+			},
+			VTextOverflow: {
+				props: ['text'],
+				template: '<span>{{ text }}</span>',
 			},
 		},
 	};
@@ -171,9 +193,49 @@ function mountModal({
 beforeEach(() => {
 	localStorage.clear();
 	vi.clearAllMocks();
+
+	mockModels.value = [
+		{
+			name: 'Claude Sonnet 4.5',
+			provider: 'anthropic',
+			model: 'claude-sonnet-4-5',
+		},
+	];
 });
 
 describe('translate-modal', () => {
+	test('renders source language and model fields in the drawer when multiple models are available', async () => {
+		mockModels.value = [
+			{
+				name: 'Claude Sonnet 4.5',
+				provider: 'anthropic',
+				model: 'claude-sonnet-4-5',
+			},
+			{
+				name: 'GPT-5',
+				provider: 'openai',
+				model: 'gpt-5',
+			},
+		];
+
+		const wrapper = mountModal({
+			permissions: {
+				article_translations: {
+					create: { access: 'full' },
+					update: { access: 'full' },
+				},
+			},
+			displayItems: [{ title: 'Hello', slug: 'hello', body: '# Hello', languages_code: { code: 'en' } }],
+		});
+
+		await wrapper.setProps({ modelValue: true });
+		await flushPromises();
+
+		expect(wrapper.findAll('.field-group')).toHaveLength(2);
+		expect(wrapper.text()).toContain('Source Language');
+		expect(wrapper.text()).toContain('Model');
+	});
+
 	test('disables unauthorized targets before translation', async () => {
 		const wrapper = mountModal({
 			permissions: {

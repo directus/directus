@@ -204,6 +204,7 @@ const translationProps = computed(() => ({
 	disabled: props.disabled,
 	nonEditable: props.nonEditable,
 	autofocus: props.autofocus,
+	keepLanguageMenuBehind: showTranslateModal.value,
 	relationInfo: relationInfo.value,
 	getItemWithLang,
 	loading: languagesLoading.value || itemsLoading.value,
@@ -214,6 +215,7 @@ const translationProps = computed(() => ({
 	updateValue,
 	remove,
 	translationJob,
+	showAiTranslate: aiTranslateAvailable.value,
 }));
 
 function useLanguages() {
@@ -407,35 +409,13 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<TranslationForm v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+		<TranslationForm
+			v-model:lang="firstLang"
+			v-bind="translationProps"
+			:class="splitViewEnabled ? 'half' : 'full'"
+			@open-translate-drawer="showTranslateModal = true"
+		>
 			<template #split-view="{ active, toggle }">
-				<!-- Inline translation progress indicator -->
-				<button
-					v-if="translationJob.isTranslating.value"
-					class="translate-indicator translating"
-					@click.stop="showTranslateModal = true"
-				>
-					<VIcon name="progress_activity" class="spinning" x-small />
-					<span>{{ translationJob.progressLabel.value }}</span>
-				</button>
-
-				<button
-					v-else-if="translationJob.hasErrors.value"
-					class="translate-indicator error"
-					@click.stop="showTranslateModal = true"
-				>
-					<VIcon name="warning" x-small />
-					<span>{{ $t('interfaces.translations.translation_has_errors_short') }}</span>
-				</button>
-
-				<VIcon
-					v-else-if="aiTranslateAvailable"
-					v-tooltip="$t('interfaces.translations.ai_translate_tooltip')"
-					name="auto_awesome"
-					clickable
-					@click.stop="showTranslateModal = true"
-				/>
-
 				<VIcon
 					v-if="splitViewAvailable && !splitViewEnabled"
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
@@ -450,7 +430,14 @@ function useNestedValidation() {
 			</template>
 		</TranslationForm>
 
-		<TranslationForm v-if="splitViewEnabled" v-model:lang="secondLang" v-bind="translationProps" secondary class="half">
+		<TranslationForm
+			v-if="splitViewEnabled"
+			v-model:lang="secondLang"
+			v-bind="translationProps"
+			secondary
+			class="half"
+			@open-translate-drawer="showTranslateModal = true"
+		>
 			<template #split-view>
 				<VIcon
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
@@ -512,48 +499,6 @@ function useNestedValidation() {
 		.v-divider {
 			margin-block-start: var(--theme--form--row-gap);
 		}
-	}
-}
-
-.translate-indicator {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.25rem;
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 0.75rem;
-	color: var(--theme--primary);
-	padding: 0;
-
-	&:hover {
-		text-decoration: underline;
-	}
-
-	&.error {
-		color: var(--theme--warning);
-	}
-
-	&.translating {
-		cursor: default;
-
-		&:hover {
-			text-decoration: none;
-		}
-	}
-}
-
-.spinning {
-	animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-	from {
-		transform: rotate(0deg);
-	}
-
-	to {
-		transform: rotate(360deg);
 	}
 }
 </style>

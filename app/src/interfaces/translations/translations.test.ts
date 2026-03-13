@@ -83,8 +83,26 @@ vi.mock('@/utils/fetch-all', () => ({
 vi.mock('./translation-form.vue', () => ({
 	default: defineComponent({
 		name: 'TranslationFormStub',
-		setup(_props, { slots }) {
-			return () => h('div', { 'data-testid': 'translation-form' }, slots['split-view']?.({ active: false, toggle: vi.fn() }));
+		props: {
+			showAiTranslate: Boolean,
+			keepLanguageMenuBehind: Boolean,
+		},
+		emits: ['openTranslateDrawer'],
+		setup(props, { slots, emit }) {
+			return () =>
+				h('div', { 'data-testid': 'translation-form', 'data-keep-behind': String(props.keepLanguageMenuBehind) }, [
+					props.showAiTranslate
+						? h(
+								'button',
+								{
+									'data-testid': 'ai-translate-btn',
+									onClick: () => emit('openTranslateDrawer'),
+								},
+								'AI Translate',
+							)
+						: null,
+					slots['split-view']?.({ active: false, toggle: vi.fn() }),
+				]);
 		},
 	}),
 }));
@@ -94,19 +112,21 @@ vi.mock('./translate-modal.vue', () => ({
 		name: 'TranslateModalStub',
 		props: {
 			modelValue: Boolean,
-			applyTranslatedFields: {
-				type: Function,
-				required: true,
+			translationJob: {
+				type: Object,
+				default: null,
 			},
 		},
 		setup(props) {
 			return () =>
-				props.modelValue
+				props.modelValue && props.translationJob
 					? h(
 							'button',
 							{
 								'data-testid': 'apply-translation',
-								onClick: () => props.applyTranslatedFields({ title: 'Bonjour' }, 'fr'),
+								onClick: () => {
+									(props.translationJob as any).applyTranslatedFields({ title: 'Bonjour' }, 'fr');
+								},
 							},
 							'apply',
 						)
@@ -149,6 +169,7 @@ function mountTranslations() {
 					return () => h('button', { 'data-icon': props.name });
 				},
 			}),
+			AiMagicButton: { template: '<span />' },
 		},
 		directives: {
 			tooltip: () => undefined,
@@ -181,7 +202,7 @@ describe('translations', () => {
 		const wrapper = mountTranslations();
 		await wrapper.vm.$nextTick();
 
-		expect(wrapper.find('[data-icon="auto_awesome"]').exists()).toBe(false);
+		expect(wrapper.find('[data-testid="ai-translate-btn"]').exists()).toBe(false);
 	});
 
 	test('applies AI translations using the existing edit draft', async () => {
@@ -211,7 +232,7 @@ describe('translations', () => {
 		const wrapper = mountTranslations();
 		await wrapper.vm.$nextTick();
 
-		await wrapper.find('[data-icon="auto_awesome"]').trigger('click');
+		await wrapper.find('[data-testid="ai-translate-btn"]').trigger('click');
 		await wrapper.vm.$nextTick();
 		await wrapper.find('[data-testid="apply-translation"]').trigger('click');
 
@@ -228,5 +249,21 @@ describe('translations', () => {
 		});
 
 		expect(createSpy).not.toHaveBeenCalled();
+	});
+
+	test('keeps language menus behind the translate drawer while it is open', async () => {
+		aiState.models = [{ name: 'Claude Sonnet 4.5', provider: 'anthropic', model: 'claude-sonnet-4-5' }];
+
+		const wrapper = mountTranslations();
+		await wrapper.vm.$nextTick();
+
+		expect(wrapper.find('[data-testid="translation-form"]').attributes('data-keep-behind')).toBe('false');
+
+		await wrapper.find('[data-testid="ai-translate-btn"]').trigger('click');
+		await wrapper.vm.$nextTick();
+
+		for (const form of wrapper.findAll('[data-testid="translation-form"]')) {
+			expect(form.attributes('data-keep-behind')).toBe('true');
+		}
 	});
 });
