@@ -2,7 +2,7 @@
 import { useLayout } from '@directus/composables';
 import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
@@ -147,7 +147,6 @@ async function onFolderDeleteDone() {
 	folderSelection.value = [];
 	confirmDelete.value = false;
 	fetchFolders();
-	refresh();
 }
 
 const deletingFiles = ref(false);
@@ -564,7 +563,7 @@ async function downloadFiles() {
 			</template>
 
 			<template #navigation>
-				<FilesNavigation :current-folder="folder" :current-special="special" />
+				<FilesNavigation :subfolders="subfolders" :current-special="special" />
 			</template>
 
 			<component
@@ -579,7 +578,7 @@ async function downloadFiles() {
 				<template v-if="!special" #prepend>
 					<FolderSection
 						v-model:selection="folderSelection"
-						:current-folder="folder"
+						:subfolders="subfolders"
 						:any-selection="selection.length > 0"
 					/>
 				</template>
