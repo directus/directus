@@ -1,3 +1,4 @@
+import { env } from 'node:process';
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
@@ -20,7 +21,7 @@ describe('/server', () => {
 			});
 
 			await new Promise<void>((resolve) =>
-				fakeSMTPServer.listen(1025, '127.0.0.1', () => {
+				fakeSMTPServer.listen(Number(env['EMAIL_SMTP_PORT']), '127.0.0.1', () => {
 					resolve();
 				}),
 			);

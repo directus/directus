@@ -119,7 +119,7 @@ const directusConfig = {
 	TUS_ENABLED: 'true',
 	EMAIL_TRANSPORT: 'smtp',
 	EMAIL_SMTP_HOST: '127.0.0.1',
-	EMAIL_SMTP_PORT: '1025',
+	EMAIL_SMTP_PORT: '9642',
 	...directusAuthConfig,
 	...directusStorageConfig,
 };
