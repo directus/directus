@@ -202,6 +202,7 @@ function setCalendarMonth(month: number): void {
 	// Note: This changes the selected date (not just the view month).
 	// If later we decide to decouple “view month” from “selected date”, we can introduce separate state.
 	calendarValue.value = new CalendarDate(year, month, day);
+	emitValue();
 }
 
 function setCalendarYear(year: number): void {
@@ -212,6 +213,7 @@ function setCalendarYear(year: number): void {
 
 	// Note: This changes the selected date (not just the view year).
 	calendarValue.value = new CalendarDate(year, month, day);
+	emitValue();
 }
 
 function handleMonthChange(value: number | null): void {
