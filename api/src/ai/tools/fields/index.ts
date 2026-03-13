@@ -42,7 +42,7 @@ export const FieldsValidateSchema = z.discriminatedUnion('action', [
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('update'),
-		data: z.array(RawFieldItemValidateSchema),
+		data: z.array(RawFieldItemValidateSchema.partial({ type: true })),
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('delete'),
@@ -53,13 +53,21 @@ export const FieldsValidateSchema = z.discriminatedUnion('action', [
 export const FieldsInputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection').optional(),
-	field: z.string().optional(),
+	field: z
+		.string()
+		.describe(
+			'The name of the field. Required for delete. Optional for read (omit to read all fields). Do not use for create or update.',
+		)
+		.optional(),
 	data: z
 		.array(
 			FieldItemInputSchema.extend({
 				children: RawFieldItemInputSchema.shape.children,
-			}).partial(),
+			})
+				.partial()
+				.required({ field: true }),
 		)
+		.describe('Array of field objects for create/update actions. Each object must include "field" (the field name).')
 		.optional(),
 });
 

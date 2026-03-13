@@ -46,7 +46,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 .collapsible-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	block-size: 60px;
+	block-size: 3.375rem;
 	inline-size: 100%;
 }
 
@@ -57,12 +57,12 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 	color: var(--theme--sidebar--section--toggle--foreground);
 	display: flex;
 	align-items: center;
-	padding-inline: 18px 9px;
+	padding-inline: 1rem 0.5rem;
 	transition: color var(--fast) var(--transition);
 }
 
 .collapsible-trigger-icon {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 }
 
 .collapsible-trigger-title {
@@ -96,16 +96,16 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 .collapsible-content[data-state='open'] {
 	animation: slide-down var(--fast) var(--transition);
-	block-size: calc(100vh - 60px);
+	block-size: calc(100vh - 3.375rem);
 }
 
 .collapsible-content[data-state='closed'] {
 	animation: slide-up var(--fast) var(--transition);
-	block-size: calc(100vh - 60px);
+	block-size: calc(100vh - 3.375rem);
 }
 
 .ai-sidebar-content {
-	padding: 12px;
+	padding: 0.6875rem;
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;
@@ -116,13 +116,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		block-size: 0;
 	}
 	to {
-		block-size: calc(100vh - 60px);
+		block-size: calc(100vh - 3.375rem);
 	}
 }
 
 @keyframes slide-up {
 	from {
-		block-size: calc(100vh - 60px);
+		block-size: calc(100vh - 3.375rem);
 	}
 	to {
 		block-size: 0;

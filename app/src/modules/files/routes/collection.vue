@@ -604,12 +604,12 @@ async function downloadFiles() {
 	&.top,
 	&.bottom {
 		inline-size: 100%;
-		block-size: 4px;
+		block-size: 0.25rem;
 	}
 
 	&.left,
 	&.right {
-		inline-size: 4px;
+		inline-size: 0.25rem;
 		block-size: 100%;
 	}
 

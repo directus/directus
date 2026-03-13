@@ -1,7 +1,17 @@
 import { ErrorCode } from '@directus/errors';
 import { DirectusUser, readUser, readUsers, realtime, RemoveEventHandler, WebSocketClient } from '@directus/sdk';
-import { Avatar, Item, PrimaryKey, WS_TYPE } from '@directus/types';
-import { ACTION, ClientID, ClientMessage, Color, ServerError, ServerMessage } from '@directus/types/collab';
+import {
+	ACTION,
+	Avatar,
+	ClientID,
+	ClientMessage,
+	Color,
+	Item,
+	PrimaryKey,
+	ServerError,
+	ServerMessage,
+	WS_TYPE,
+} from '@directus/types';
 import { isDetailedUpdateSyntax, isObject } from '@directus/utils';
 import { debounce, isEmpty, isEqual, isMatch, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';

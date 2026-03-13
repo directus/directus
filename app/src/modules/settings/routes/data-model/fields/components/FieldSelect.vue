@@ -373,9 +373,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .field-select {
-	--input-height: 40px;
-	--theme--form--field--input--padding: 8px;
+	--input-height: 2.25rem;
+	--theme--form--field--input--padding: 0.4375rem;
 	-webkit-user-select: none;
 	user-select: none;
 }
@@ -417,11 +419,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .duplicate {
 	.type-label {
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 	}
 
 	.duplicate-field + .duplicate-field {
-		margin-block-end: 32px;
+		margin-block-end: 1.8125rem;
 	}
 }
 
@@ -429,7 +431,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	position: relative;
 	min-block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-block: 40px 16px;
+	padding-block: 2.25rem 0.875rem;
 	border-radius: var(--theme--border-radius);
 
 	> * {
@@ -440,12 +442,12 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	&::before {
 		position: absolute;
 		inset-block-start: 0;
-		inset-inline-start: -2px;
+		inset-inline-start: -0.125rem;
 		z-index: 1;
-		inline-size: 4px;
+		inline-size: 0.25rem;
 		block-size: 100%;
 		background-color: var(--theme--primary);
-		border-radius: 2px;
+		border-radius: 0.125rem;
 		content: '';
 	}
 
@@ -468,15 +470,15 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		display: flex;
 		align-items: center;
 		inline-size: 100%;
-		margin-block-end: 8px;
-		padding-block-start: 8px;
+		margin-block-end: 0.4375rem;
+		padding-block-start: 0.4375rem;
 		color: var(--theme--primary);
 		font-family: var(--theme--fonts--monospace--font-family);
 
 		.drag-handle {
 			--v-icon-color: var(--theme--primary);
 
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 
 		.name {
@@ -488,11 +490,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .field-grid {
 	position: relative;
 	display: grid;
-	gap: 8px;
+	gap: 0.4375rem;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 	}
 
 	&.nested {
@@ -525,7 +527,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 			text-overflow: ellipsis;
 
 			.name {
-				margin-inline-end: 8px;
+				margin-inline-end: 0.4375rem;
 				font-family: var(--theme--fonts--monospace--font-family);
 			}
 
@@ -536,7 +538,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);
 
-				@media (width > 640px) {
+				@include mixins.breakpoint-up('sm') {
 					display: initial;
 				}
 			}
@@ -554,7 +556,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .icons {
 	* + *:not(:last-child) {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 }
 
@@ -563,12 +565,12 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 }
 
 .form-grid {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 }
 
 .required {
 	position: relative;
-	inset-inline-start: -8px;
+	inset-inline-start: -0.4375rem;
 	color: var(--theme--primary);
 }
 

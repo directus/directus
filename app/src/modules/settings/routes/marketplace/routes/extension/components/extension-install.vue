@@ -66,6 +66,6 @@ const atLimit = computed(() => {
 
 <style scoped>
 .install {
-	--v-button-padding: 0 10px;
+	--v-button-padding: 0 0.5625rem;
 }
 </style>

@@ -1,4 +1,4 @@
-export const isCompressed = (array: Uint8Array) => {
+export const isCompressed = (array: Uint8Array): boolean => {
 	/**
 	 * Gzipped values always have a 10-byte header, an 8-byte footer, and a minimum value of 1 byte
 	 */

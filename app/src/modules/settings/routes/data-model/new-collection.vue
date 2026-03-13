@@ -525,7 +525,7 @@ function onApply() {
 @use '@/styles/mixins';
 
 .type-title {
-	margin-block-end: 48px;
+	margin-block-end: 2.6875rem;
 }
 
 .grid {
@@ -562,13 +562,13 @@ function onApply() {
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .type-note {
 	position: relative;
 	display: block;
-	max-inline-size: 520px;
-	margin-block-start: 4px;
+	max-inline-size: 29.25rem;
+	margin-block-start: 0.25rem;
 }
 </style>
