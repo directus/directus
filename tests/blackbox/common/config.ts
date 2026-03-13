@@ -89,7 +89,7 @@ const directusStorageConfig = {
 	STORAGE_MINIO_FORCE_PATH_STYLE: 'true',
 };
 
-const directusConfig = {
+export const directusConfig = {
 	...process.env,
 	ADMIN_EMAIL: 'admin@example.com',
 	ADMIN_PASSWORD: 'password',

@@ -1,5 +1,4 @@
-import { env } from 'node:process';
-import { getUrl } from '@common/config';
+import { directusConfig, getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
@@ -29,7 +28,7 @@ describe('Mail', async () => {
 		});
 
 		await new Promise<void>((resolve) =>
-			fakeSMTPServer.listen(Number(env['EMAIL_SMTP_PORT']), '127.0.0.1', () => {
+			fakeSMTPServer.listen(Number(directusConfig.EMAIL_SMTP_PORT), '127.0.0.1', () => {
 				resolve();
 			}),
 		);
