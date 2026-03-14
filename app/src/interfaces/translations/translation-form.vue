@@ -205,14 +205,15 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 				<button
 					v-else-if="showAiTranslate"
-					v-tooltip="$t('interfaces.translations.ai_translate_tooltip')"
 					class="header-translate-btn"
 					@click.stop="emit('openTranslateDrawer')"
 					@mouseenter="isHoveringTranslateButton = true"
 					@mouseleave="isHoveringTranslateButton = false"
 				>
 					<AiMagicButton :animate="isHoveringTranslateButton" class="header-sparkle" />
-					<span>{{ $t('interfaces.translations.ai_translate_short') }}</span>
+					<span v-tooltip="$t('interfaces.translations.ai_translate_tooltip')">
+						{{ $t('interfaces.translations.ai_translate_short') }}
+					</span>
 				</button>
 
 				<VRemove
@@ -278,26 +279,38 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(
-			90deg,
-			transparent 25%,
-			color-mix(in srgb, var(--theme--primary) 5%, transparent) 50%,
-			transparent 75%
-		);
-		background-size: 200% 100%;
-		animation: shimmer 2.5s ease-in-out infinite;
+		background: color-mix(in srgb, var(--theme--primary) 5%, transparent);
 		pointer-events: none;
 		z-index: 1;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset-block: -10%;
+		inset-inline: -45%;
+		background: linear-gradient(
+			108deg,
+			transparent 34%,
+			color-mix(in srgb, var(--theme--primary) 10%, transparent) 43%,
+			color-mix(in srgb, var(--theme--primary) 32%, transparent) 50%,
+			color-mix(in srgb, var(--theme--primary) 10%, transparent) 57%,
+			transparent 66%
+		);
+		transform: translateX(-30%);
+		animation: shimmer 1.35s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+		pointer-events: none;
+		z-index: 2;
 	}
 }
 
 @keyframes shimmer {
 	0% {
-		background-position: 200% 0;
+		transform: translateX(-32%);
 	}
 
 	100% {
-		background-position: -200% 0;
+		transform: translateX(32%);
 	}
 }
 
