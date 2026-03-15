@@ -113,9 +113,12 @@ export default class MySQL implements SchemaInspector {
 				const primaryKeys = columns[0].filter((nested: { column_key: string; table_name: string }) => {
 					return nested.table_name === column.table_name && nested.column_key === 'PRI';
 				});
+
 				const isView = column.table_type === 'VIEW';
+
 				const fallbackPrimary =
-					isView && columns[0].some((nested: { table_name: string; column_name: string }) => {
+					isView &&
+					columns[0].some((nested: { table_name: string; column_name: string }) => {
 						return nested.table_name === column.table_name && nested.column_name === 'id';
 					})
 						? 'id'

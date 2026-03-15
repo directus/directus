@@ -53,7 +53,9 @@ const sharedTests = () => {
 	});
 
 	it('should be disallowed for views', () => {
-		vi.mocked(useCollection).mockReturnValue({ info: ref({ type: 'view', meta: { sort_field: sample.sortField } }) } as any);
+		vi.mocked(useCollection).mockReturnValue({
+			info: ref({ type: 'view', meta: { sort_field: sample.sortField } }),
+		} as any);
 
 		const result = isSortAllowed(sample.collection);
 

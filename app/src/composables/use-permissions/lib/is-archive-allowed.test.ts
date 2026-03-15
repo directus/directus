@@ -63,7 +63,9 @@ const sharedTests = () => {
 	});
 
 	it('should be disallowed for views', () => {
-		vi.mocked(useCollection).mockReturnValue({ info: ref({ type: 'view', meta: { archive_field: sample.archiveField } }) } as any);
+		vi.mocked(useCollection).mockReturnValue({
+			info: ref({ type: 'view', meta: { archive_field: sample.archiveField } }),
+		} as any);
 
 		const result = isArchiveAllowed(
 			sample.collection,
