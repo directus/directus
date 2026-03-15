@@ -134,6 +134,7 @@ describe('admin users', () => {
 		} as any);
 
 		const permissionsStore = mockedStore(usePermissionsStore());
+
 		permissionsStore.getPermission.mockImplementation((_, action) => {
 			if (action === 'read') {
 				return {
