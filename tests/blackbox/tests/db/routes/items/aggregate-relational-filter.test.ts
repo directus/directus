@@ -165,10 +165,38 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 					// Article 5 -> no categories (not in junction)
 				];
 
-				await CreateItem(vendor, {
-					collection: localJunctionCollection,
-					item: junctionEntries,
-				});
+						await CreateItem(vendor, {
+							collection: localJunctionCollection,
+							item: junctionEntries,
+						});
+
+				// Verify schema cache is populated by querying through the M2M relational path.
+				// Concurrent collection creation across PK types can invalidate the schema cache,
+				// causing the API to not recognize M2M relations until the cache stabilizes.
+				const maxRetries = 10;
+
+				for (let attempt = 0; attempt < maxRetries; attempt++) {
+					const verifyResponse = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArticles}`)
+						.query({
+							aggregate: { count: '*' },
+							filter: JSON.stringify({
+								categories: {
+									[`${localCollectionCategories}_id`]: {
+										id: { _eq: categoryIds[0] },
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					if (verifyResponse.statusCode === 200 && Number(verifyResponse.body.data?.[0]?.count) === 3) {
+						break;
+					}
+
+							// Wait for schema cache to stabilize
+							await new Promise((resolve) => setTimeout(resolve, 1000));
+						}
 			}
 		}, 300000);
 
