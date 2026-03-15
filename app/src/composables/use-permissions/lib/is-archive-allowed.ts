@@ -14,6 +14,7 @@ export const isArchiveAllowed = (collection: Collection, updateAllowed: Computed
 		const collectionValue = unref(collection);
 
 		if (!collectionValue) return false;
+		if (collectionInfo.value?.type === 'view') return false;
 
 		const archiveField = collectionInfo.value?.meta?.archive_field;
 		if (!archiveField) return false;

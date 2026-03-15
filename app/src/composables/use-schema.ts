@@ -37,6 +37,7 @@ export function useSchemaOverview(): ComputedRef<SchemaOverview> {
 					accountability: collection.meta?.accountability ?? null,
 					note: collection.meta?.note ?? null,
 					primary: fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field,
+					readonly: collection.type === 'view',
 					singleton: collection.meta?.singleton ?? false,
 					sortField: collection.meta?.sort_field ?? null,
 				};

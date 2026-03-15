@@ -14,6 +14,7 @@ export const isSortAllowed = (collection: Collection) => {
 		const collectionValue = unref(collection);
 
 		if (!collectionValue) return false;
+		if (collectionInfo.value?.type === 'view') return false;
 
 		const sortField = collectionInfo.value?.meta?.sort_field;
 		if (!sortField) return false;

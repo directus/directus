@@ -34,6 +34,15 @@ describe('getCollectionType', () => {
 		expect(getCollectionType(collection)).toBe('table');
 	});
 
+	it('returns "view" when collection schema is a view', () => {
+		const collection = {
+			schema: { name: 'test_view', type: 'view' },
+			meta: { collection: 'test_view' },
+		} as Collection;
+
+		expect(getCollectionType(collection)).toBe('view');
+	});
+
 	it('returns "alias" when schema is null and meta exists', () => {
 		const collection = {
 			schema: null,

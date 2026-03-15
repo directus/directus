@@ -12,6 +12,7 @@ Note that `dbType` varies across databases. This is based on Postgres.
 */
 
 export const COLLECTION_DEFAULTS: CollectionDefaults = {
+	readonly: false,
 	singleton: false,
 	sortField: null,
 	note: null,

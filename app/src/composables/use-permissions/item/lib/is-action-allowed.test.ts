@@ -1,3 +1,4 @@
+import { useCollection } from '@directus/composables';
 import { ItemPermissions } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
@@ -8,6 +9,8 @@ import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { ActionPermission } from '@/types/permissions';
+
+vi.mock('@directus/composables');
 
 let sample: {
 	collection: string;
@@ -51,6 +54,8 @@ const actions = ['update', 'delete', 'share'] as const;
 
 const sharedTests = (action: (typeof actions)[number]) => {
 	it('should be disallowed if no collection is given', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: { value: null } } as any);
+
 		const isNew = false;
 
 		const result = isActionAllowed(null, isNew, fetchedItemPermissions, action);
@@ -60,6 +65,8 @@ const sharedTests = (action: (typeof actions)[number]) => {
 	});
 
 	it('should be disallowed if item is new', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'table' } } } as any);
+
 		const isNew = true;
 
 		const result = isActionAllowed(sample.collection, isNew, fetchedItemPermissions, action);
@@ -79,12 +86,27 @@ describe('admin users', () => {
 		sharedTests(action);
 
 		it('should be allowed if item is not new', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'table' } } } as any);
+
 			const isNew = false;
 
 			const result = isActionAllowed(sample.collection, isNew, fetchedItemPermissions, action);
 
 			expect(result.value).toBe(true);
 			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
+		});
+
+		it('should disallow updates and deletes for views', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'view' } } } as any);
+
+			const isNew = false;
+			const result = isActionAllowed(sample.collection, isNew, fetchedItemPermissions, action);
+
+			if (action === 'share') {
+				expect(result.value).toBe(true);
+			} else {
+				expect(result.value).toBe(false);
+			}
 		});
 	});
 });
@@ -108,6 +130,8 @@ describe('non-admin users', () => {
 		});
 
 		it('should be disallowed if no permissions are configured', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'table' } } } as any);
+
 			const permissionsStore = mockedStore(usePermissionsStore());
 			permissionsStore.getPermission.mockReturnValue(null);
 
@@ -120,6 +144,8 @@ describe('non-admin users', () => {
 		});
 
 		it('should be disallowed if user has no permission', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'table' } } } as any);
+
 			const permissionsStore = mockedStore(usePermissionsStore());
 			permissionsStore.getPermission.mockReturnValue({ access: 'none' } as ActionPermission);
 
@@ -132,6 +158,8 @@ describe('non-admin users', () => {
 		});
 
 		it('should be allowed if user has full permission', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'table' } } } as any);
+
 			const permissionsStore = mockedStore(usePermissionsStore());
 			permissionsStore.getPermission.mockReturnValue({ access: 'full' } as ActionPermission);
 
@@ -144,6 +172,8 @@ describe('non-admin users', () => {
 		});
 
 		it('should check item-based permission for conditional permission rules', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'table' } } } as any);
+
 			const permissionsStore = mockedStore(usePermissionsStore());
 			permissionsStore.getPermission.mockReturnValue({ access: 'partial' } as ActionPermission);
 
@@ -153,6 +183,22 @@ describe('non-admin users', () => {
 
 			expect(result.value).toBe(true);
 			expect(fetchedItemPermissionsSpy).toHaveBeenCalled();
+		});
+
+		it('should disallow updates and deletes for views before checking permissions', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'view' } } } as any);
+
+			const permissionsStore = mockedStore(usePermissionsStore());
+			permissionsStore.getPermission.mockReturnValue({ access: 'full' } as ActionPermission);
+
+			const isNew = false;
+			const result = isActionAllowed(sample.collection, isNew, fetchedItemPermissions, action);
+
+			if (action === 'share') {
+				expect(result.value).toBe(true);
+			} else {
+				expect(result.value).toBe(false);
+			}
 		});
 	});
 });

@@ -19,6 +19,18 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 
 		let fields = cloneDeep(rawFields.value);
 
+		if (collectionInfo?.value?.type === 'view') {
+			for (const field of fields) {
+				(field as FormField).meta = {
+					...(field.meta || {}),
+					readonly: true,
+					non_editable: true,
+				};
+			}
+
+			return fields;
+		}
+
 		if (userStore.isAdmin) return fields;
 
 		const readableFields = getPermission(collectionValue, 'read')?.fields;
@@ -30,7 +42,7 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 
 		let permission;
 
-		if (collectionInfo.value?.meta?.singleton) {
+		if (collectionInfo?.value?.meta?.singleton) {
 			permission = fetchedItemPermissions.value.update;
 		} else if (unref(isNew)) {
 			permission = getPermission(collectionValue, 'create');

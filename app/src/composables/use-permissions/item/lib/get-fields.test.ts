@@ -105,6 +105,24 @@ describe('admin users', () => {
 
 		expect(fields.value.length).toEqual(sample.fields.length);
 	});
+
+	it('should mark all fields as read-only for views', () => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+
+		vi.mocked(useCollection).mockReturnValue({
+			fields: ref(sample.fields),
+			info: ref({ type: 'view' }),
+		} as any);
+
+		const fields = getFields(sample.collection, false, ref({} as ItemPermissions));
+
+		expect(fields.value.length).toEqual(sample.fields.length);
+
+		for (const field of fields.value) {
+			expect(field.meta?.readonly).toBe(true);
+		}
+	});
 });
 
 describe('non-admin users', () => {

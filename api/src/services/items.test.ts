@@ -102,6 +102,23 @@ describe('Integration Tests', () => {
 		});
 
 		describe('createOne', () => {
+			it('should reject create for read-only collections', async () => {
+				const readOnlySchema = new SchemaBuilder()
+					.collection('test', (c) => {
+						c.field('id').id();
+					})
+					.build();
+
+				readOnlySchema.collections.test!.readonly = true;
+
+				const readOnlyService = new ItemsService('test', {
+					knex: db,
+					schema: readOnlySchema,
+				});
+
+				await expect(readOnlyService.createOne({})).rejects.toThrow(/read-only/);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.createOne({}, { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -172,6 +189,23 @@ describe('Integration Tests', () => {
 		});
 
 		describe('updateMany', () => {
+			it('should reject update for read-only collections', async () => {
+				const readOnlySchema = new SchemaBuilder()
+					.collection('test', (c) => {
+						c.field('id').id();
+					})
+					.build();
+
+				readOnlySchema.collections.test!.readonly = true;
+
+				const readOnlyService = new ItemsService('test', {
+					knex: db,
+					schema: readOnlySchema,
+				});
+
+				await expect(readOnlyService.updateMany([1], {})).rejects.toThrow(/read-only/);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.updateMany([1], {}, { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -180,6 +214,23 @@ describe('Integration Tests', () => {
 		});
 
 		describe('deleteMany', () => {
+			it('should reject delete for read-only collections', async () => {
+				const readOnlySchema = new SchemaBuilder()
+					.collection('test', (c) => {
+						c.field('id').id();
+					})
+					.build();
+
+				readOnlySchema.collections.test!.readonly = true;
+
+				const readOnlyService = new ItemsService('test', {
+					knex: db,
+					schema: readOnlySchema,
+				});
+
+				await expect(readOnlyService.deleteMany([1])).rejects.toThrow(/read-only/);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.deleteMany([1], { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 

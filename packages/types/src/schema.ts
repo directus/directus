@@ -21,6 +21,7 @@ export type FieldOverview = {
 export type CollectionOverview = {
 	collection: string;
 	primary: string;
+	readonly: boolean;
 	singleton: boolean;
 	sortField: string | null;
 	note: string | null;

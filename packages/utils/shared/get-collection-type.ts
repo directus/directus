@@ -7,6 +7,7 @@ import type { Collection, CollectionType } from '@directus/types';
  * @returns collection type
  */
 export function getCollectionType(collection: Collection): CollectionType {
+	if (collection.schema?.type === 'view') return 'view';
 	if (collection.schema) return 'table';
 	if (collection.meta) return 'alias';
 	return 'unknown';

@@ -45,7 +45,7 @@ export interface AppCollection extends Collection {
 	color?: string | null;
 }
 
-export type CollectionType = 'alias' | 'table' | 'unknown';
+export type CollectionType = 'alias' | 'table' | 'view' | 'unknown';
 
 export type BaseCollectionMeta = Pick<
 	CollectionMeta,

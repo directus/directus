@@ -1,5 +1,6 @@
 export interface Table {
 	name: string;
+	type?: 'table' | 'view';
 
 	// Not supported in SQLite + comment in mssql
 	comment?: string | null;

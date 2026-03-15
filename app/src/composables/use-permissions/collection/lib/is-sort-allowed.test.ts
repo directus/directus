@@ -51,6 +51,14 @@ const sharedTests = () => {
 
 		expect(result.value).toBe(false);
 	});
+
+	it('should be disallowed for views', () => {
+		vi.mocked(useCollection).mockReturnValue({ info: ref({ type: 'view', meta: { sort_field: sample.sortField } }) } as any);
+
+		const result = isSortAllowed(sample.collection);
+
+		expect(result.value).toBe(false);
+	});
 };
 
 describe('admin users', () => {

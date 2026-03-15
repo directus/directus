@@ -1,5 +1,6 @@
+import { useCollection } from '@directus/composables';
 import { ItemPermissions } from '@directus/types';
-import { computed, Ref, unref } from 'vue';
+import { computed, ref, Ref, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
@@ -10,6 +11,7 @@ export const isActionAllowed = (
 	fetchedItemPermissions: Ref<ItemPermissions>,
 	action: 'update' | 'delete' | 'share',
 ) => {
+	const { info: collectionInfo } = useCollection(ref(collection));
 	const userStore = useUserStore();
 	const { getPermission } = usePermissionsStore();
 
@@ -17,6 +19,7 @@ export const isActionAllowed = (
 		const collectionValue = unref(collection);
 
 		if (!collectionValue) return false;
+		if (collectionInfo.value?.type === 'view' && ['update', 'delete'].includes(action)) return false;
 
 		if (unref(isNew)) return false;
 
