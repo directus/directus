@@ -130,6 +130,25 @@ describe('useSchemaOverview', () => {
 		});
 	});
 
+	test('marks view collections as readonly', () => {
+		const sampleField = { field: 'id', type: 'integer', schema: {}, meta: {} } as any;
+
+		mockCollectionsStore.collections = [
+			{
+				collection: 'order_view',
+				meta: {},
+				type: 'view',
+			},
+		];
+
+		mockFieldsStore.getFieldsForCollection.mockReturnValue([sampleField]);
+		mockFieldsStore.getPrimaryKeyFieldForCollection.mockReturnValue(sampleField);
+
+		const overview = useSchemaOverview();
+
+		expect(overview.value.collections['order_view']?.readonly).toBe(true);
+	});
+
 	test('reactivity: overview updates when stores change', async () => {
 		const overview = useSchemaOverview();
 
