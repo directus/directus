@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Filter, Permission, Query } from '@directus/types';
 import type { Knex } from 'knex';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, omit } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
@@ -46,7 +46,7 @@ export function getDBQuery(
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.from(table);
+		const primaryKey = schema.collections[table]!.primary;
 
 		const fieldNodeMap = Object.fromEntries(
 			fieldNodes.map((node, index): [string, [FieldNode | FunctionFieldNode, number]] => [
@@ -70,22 +70,68 @@ export function getDBQuery(
 		// The positions need to be offset by the number of aggregate terms, since the aggregate terms are selected first
 		const groupColumnPositions = queryCopy.group?.map((field) => fieldNodeMap[field]![1] + 1 + aggregateCount) ?? [];
 
-		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, permissions, {
+		// Apply full query first to check for relational filters
+		const innerQuery = knex.from(table);
+
+		const { hasMultiRelationalFilter } = applyQuery(knex, table, innerQuery, queryCopy, schema, cases, permissions, {
 			aliasMap,
 			groupWhenCases,
 			groupColumnPositions,
-		}).query;
+		});
 
-		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
+		// When relational filters create JOINs, use wrapper query with deduplication
+		if (hasMultiRelationalFilter) {
+			// Clear unwanted sections from inner query - pagination (limit/offset) must not apply
+			// to the inner query, as it would incorrectly restrict the distinct PK set before aggregation
+			innerQuery.clear('select').clear('counter').clear('order').clear('limit').clear('offset');
+
+			if (queryCopy.group) {
+				innerQuery.clear('group').clear('having');
+			}
+
+			// Inner query: select distinct PKs (use explicit alias for cross-DB compatibility)
+			innerQuery.select(knex.raw('??.?? as ??', [table, primaryKey, primaryKey])).distinct();
+
+			// Wrapper query: join back to deduplicated set
+			const wrapperQuery = knex
+				.from(table)
+				.innerJoin(knex.raw('??', innerQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
+
+			// Apply aggregation and grouping on wrapper (filter excluded — inner query handles it)
+			const wrapperQueryCopy: Query = omit(queryCopy, 'filter');
+
+			applyQuery(knex, table, wrapperQuery, wrapperQueryCopy, schema, cases, permissions, {
+				aliasMap,
+				groupWhenCases,
+				groupColumnPositions,
+			});
+
+			// Select field nodes for groupBy
+			if (queryCopy.group) {
+				wrapperQuery.select(fieldNodes.map((node) => preProcess(node)));
+			}
+
+			if (
+				helpers.capabilities.supportsDeduplicationOfParameters() &&
+				!helpers.capabilities.supportsColumnPositionInGroupBy()
+			) {
+				withPreprocessBindings(knex, wrapperQuery);
+			}
+
+			return wrapperQuery;
+		}
+
+		// No relational filters - the query from applyQuery above is already complete
+		innerQuery.select(fieldNodes.map((node) => preProcess(node)));
 
 		if (
 			helpers.capabilities.supportsDeduplicationOfParameters() &&
 			!helpers.capabilities.supportsColumnPositionInGroupBy()
 		) {
-			withPreprocessBindings(knex, dbQuery);
+			withPreprocessBindings(knex, innerQuery);
 		}
 
-		return dbQuery;
+		return innerQuery;
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
