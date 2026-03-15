@@ -19,6 +19,15 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 
 		let fields = cloneDeep(rawFields.value);
 
+		if (!userStore.isAdmin) {
+			const readableFields = getPermission(collectionValue, 'read')?.fields;
+
+			// remove fields without read permissions so they don't show up in the DOM
+			if (readableFields && !readableFields.includes('*')) {
+				fields = fields.filter((field) => readableFields.includes(field.field));
+			}
+		}
+
 		if (collectionInfo?.value?.type === 'view') {
 			for (const field of fields) {
 				(field as FormField).meta = {
@@ -32,13 +41,6 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 		}
 
 		if (userStore.isAdmin) return fields;
-
-		const readableFields = getPermission(collectionValue, 'read')?.fields;
-
-		// remove fields without read permissions so they don't show up in the DOM
-		if (readableFields && !readableFields.includes('*')) {
-			fields = fields.filter((field) => readableFields.includes(field.field));
-		}
 
 		let permission;
 

@@ -123,6 +123,35 @@ describe('admin users', () => {
 			expect(field.meta?.readonly).toBe(true);
 		}
 	});
+
+	it('should only return readable fields for non-admin users on views', () => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = false;
+
+		vi.mocked(useCollection).mockReturnValue({
+			fields: ref(sample.fields),
+			info: ref({ type: 'view' }),
+		} as any);
+
+		const permissionsStore = mockedStore(usePermissionsStore());
+		permissionsStore.getPermission.mockImplementation((_, action) => {
+			if (action === 'read') {
+				return {
+					fields: ['id', 'start_date'],
+				} as Permission;
+			}
+
+			return null;
+		});
+
+		const fields = getFields(sample.collection, false, ref({} as ItemPermissions));
+
+		expect(fields.value.map((field) => field.field)).toEqual(['id', 'start_date']);
+
+		for (const field of fields.value) {
+			expect(field.meta?.readonly).toBe(true);
+		}
+	});
 });
 
 describe('non-admin users', () => {
