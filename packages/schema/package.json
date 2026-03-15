@@ -32,18 +32,14 @@
 	],
 	"scripts": {
 		"build": "tsdown src/index.ts --dts",
-		"dev": "tsdown src/index.ts --dts --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"dev": "tsdown src/index.ts --dts --watch"
 	},
 	"dependencies": {
 		"knex": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
-		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"typescript": "catalog:"
 	}
 }
