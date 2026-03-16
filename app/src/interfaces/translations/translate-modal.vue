@@ -191,29 +191,33 @@ const targetLanguageOptions = computed(() =>
 );
 
 function isLanguageComplete(langCode: string): boolean {
-	const item = props.getItemWithLang(props.displayItems, langCode);
-
-	if (!item) return false;
-
-	return selectedFields.value.every((fieldName) => {
-		const val = item[fieldName];
-		return val !== null && val !== undefined && val !== '';
-	});
+	const progress = languageFieldProgress.value[langCode];
+	if (!progress) return false;
+	return progress.current === progress.max && progress.max > 0;
 }
 
-function getLanguageFieldProgress(langCode: string): { current: number; max: number } {
-	const item = props.getItemWithLang(props.displayItems, langCode);
+const languageFieldProgress = computed(() => {
+	const result: Record<string, { current: number; max: number }> = {};
 	const max = selectedFields.value.length;
 
-	if (!item) return { current: 0, max };
+	for (const lang of targetLanguageOptions.value) {
+		const item = props.getItemWithLang(props.displayItems, lang.value);
 
-	const current = selectedFields.value.filter((fieldName) => {
-		const val = item[fieldName];
-		return val !== null && val !== undefined && val !== '';
-	}).length;
+		if (!item) {
+			result[lang.value] = { current: 0, max };
+			continue;
+		}
 
-	return { current, max };
-}
+		const current = selectedFields.value.filter((fieldName) => {
+			const val = item[fieldName];
+			return val !== null && val !== undefined && val !== '';
+		}).length;
+
+		result[lang.value] = { current, max };
+	}
+
+	return result;
+});
 
 const permittedTargetLanguages = computed(() =>
 	selectedTargetLanguages.value.filter((langCode) => targetPermissions.value[langCode]?.allowed === true),
@@ -224,6 +228,8 @@ const permissionsLoading = computed(() =>
 );
 
 const translatableFieldsByName = computed(() => new Map(translatableFields.value.map((field) => [field.field, field])));
+
+const languageOptionsByCode = computed(() => new Map(props.languageOptions.map((lang) => [lang.value, lang])));
 
 const emptySourceFields = computed(() => {
 	const empty = new Set<string>();
@@ -807,13 +813,16 @@ function isActiveStatus(status: string | undefined) {
 
 									<div class="language-progress">
 										<span class="progress-text">
-											{{ getLanguageFieldProgress(lang.value).current }}/{{ getLanguageFieldProgress(lang.value).max }}
+											{{ languageFieldProgress[lang.value]?.current ?? 0 }}/{{
+												languageFieldProgress[lang.value]?.max ?? 0
+											}}
 										</span>
 
 										<VProgressLinear
 											:value="
-												getLanguageFieldProgress(lang.value).max > 0
-													? (getLanguageFieldProgress(lang.value).current / getLanguageFieldProgress(lang.value).max) *
+												(languageFieldProgress[lang.value]?.max ?? 0) > 0
+													? ((languageFieldProgress[lang.value]?.current ?? 0) /
+															(languageFieldProgress[lang.value]?.max ?? 1)) *
 														100
 													: 0
 											"
@@ -876,14 +885,14 @@ function isActiveStatus(status: string | undefined) {
 							left
 							:class="{ spinning: isActiveStatus(job.langStatuses.value[langCode]?.status) }"
 						/>
-						{{ languageOptions.find((l) => l.value === langCode)?.text ?? langCode }}
+						{{ languageOptionsByCode.get(langCode)?.text ?? langCode }}
 					</VChip>
 				</div>
 
 				<VNotice v-for="langCode in errorLanguages" :key="'err-' + langCode" type="danger" class="error-notice">
 					<div class="error-notice-content">
 						<span>
-							{{ languageOptions.find((l) => l.value === langCode)?.text }}:
+							{{ languageOptionsByCode.get(langCode)?.text }}:
 							{{ job.langStatuses.value[langCode]?.error }}
 						</span>
 						<VButton x-small secondary @click="retryLanguage(langCode)">{{ t('retry') }}</VButton>
@@ -910,14 +919,14 @@ function isActiveStatus(status: string | undefined) {
 						:style="langChipStyle(job.langStatuses.value[langCode]?.status)"
 					>
 						<VIcon :name="langStatusIcon(job.langStatuses.value[langCode]?.status)" x-small left />
-						{{ languageOptions.find((l) => l.value === langCode)?.text ?? langCode }}
+						{{ languageOptionsByCode.get(langCode)?.text ?? langCode }}
 					</VChip>
 				</div>
 
 				<VNotice v-for="langCode in errorLanguages" :key="'err-' + langCode" type="danger" class="error-notice">
 					<div class="error-notice-content">
 						<span>
-							{{ languageOptions.find((l) => l.value === langCode)?.text }}:
+							{{ languageOptionsByCode.get(langCode)?.text }}:
 							{{ job.langStatuses.value[langCode]?.error }}
 						</span>
 						<VButton x-small secondary @click="retryLanguage(langCode)">{{ t('retry') }}</VButton>

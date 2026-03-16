@@ -152,9 +152,10 @@ export function useTranslationJob(options: {
 
 		const config = jobConfig;
 		const fieldsWithContent = Object.keys(config.sourceContent);
+		const fieldDefsByName = new Map(config.fieldDefinitions.map((f) => [f.field, f]));
 
 		const selectedFieldDefinitions = fieldsWithContent
-			.map((fieldName) => config.fieldDefinitions.find((f) => f.field === fieldName))
+			.map((fieldName) => fieldDefsByName.get(fieldName))
 			.filter((field): field is Field => field !== undefined);
 
 		const fieldProperties: Record<string, any> = {};
@@ -172,10 +173,9 @@ export function useTranslationJob(options: {
 			required: fieldsWithContent,
 		};
 
-		const langName = options.languageOptions.value.find((l) => l.value === langCode)?.text ?? langCode;
-
-		const sourceLangName =
-			options.languageOptions.value.find((l) => l.value === config.sourceLanguage)?.text ?? config.sourceLanguage;
+		const langOptionsByCode = new Map(options.languageOptions.value.map((l) => [l.value, l]));
+		const langName = langOptionsByCode.get(langCode)?.text ?? langCode;
+		const sourceLangName = langOptionsByCode.get(config.sourceLanguage)?.text ?? config.sourceLanguage;
 
 		const prompt = buildAiTranslationPrompt({
 			sourceLangName,
