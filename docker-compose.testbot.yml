@@ -1,0 +1,17 @@
+# Lightweight Directus stack for Skyramp Testbot CI.
+# Uses SQLite so no separate database service is needed.
+
+services:
+  directus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8055:8055
+    environment:
+      SECRET: testbot-secret
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin
+      DB_CLIENT: sqlite3
+      DB_FILENAME: /directus/database/database.sqlite
+      WEBSOCKETS_ENABLED: 'false'
