@@ -188,6 +188,7 @@ export const DIRECTUS_VARIABLES = [
 	'AUTH_.+_IDP.+',
 	'AUTH_.+_SP.+',
 	'AUTH_.+_REDIRECT_ALLOW_LIST',
+	'AUTH_.+_COOKIE_SECURE',
 
 	// extensions
 	'PACKAGE_FILE_LOCATION',
