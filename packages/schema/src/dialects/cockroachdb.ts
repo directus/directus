@@ -61,7 +61,8 @@ export default class CockroachDB implements SchemaInspector {
 			.select<{ table_schema: string }>('table_schema')
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
-			.andWhere({ table_name: table, table_type: 'BASE TABLE' })
+			.andWhere({ table_name: table })
+			.whereIn('table_type', ['BASE TABLE', 'VIEW'])
 			.first();
 
 		return row?.table_schema ?? this.explodedSchema[0]!;
@@ -95,6 +96,7 @@ export default class CockroachDB implements SchemaInspector {
 			is_identity: boolean;
 			is_nullable: boolean;
 			is_generated: boolean;
+			table_type: 'BASE TABLE' | 'VIEW';
 		};
 
 		type RawGeometryColumn = {
@@ -104,8 +106,6 @@ export default class CockroachDB implements SchemaInspector {
 		};
 
 		const [columnsResult, primaryKeysResult] = await Promise.all([
-			// Only select columns from BASE TABLEs to exclude views (Postgres views
-			// cannot have primary keys so they cannot be used)
 			this.knex.raw(
 				`
         SELECT c.table_name
@@ -116,12 +116,14 @@ export default class CockroachDB implements SchemaInspector {
           , c.is_generated = 'ALWAYS' is_generated
           , CASE WHEN c.is_identity = 'YES' THEN true ELSE false END is_identity
           , CASE WHEN c.is_nullable = 'YES' THEN true ELSE false END is_nullable
+          , t.table_type
         FROM
           information_schema.columns c
         LEFT JOIN information_schema.tables t
           ON c.table_name = t.table_name
+          AND c.table_schema = t.table_schema
         WHERE
-          t.table_type = 'BASE TABLE'
+          t.table_type IN ('BASE TABLE', 'VIEW')
           AND c.table_schema IN (?);
       `,
 				[this.explodedSchema.join(',')],
@@ -164,7 +166,7 @@ export default class CockroachDB implements SchemaInspector {
 			FROM geometries g
 			JOIN information_schema.tables t
 				ON g.f_table_name = t.table_name
-				AND t.table_type = 'BASE TABLE'
+				AND t.table_type IN ('BASE TABLE', 'VIEW')
 			WHERE f_table_schema in (?)
 			`,
 			[this.explodedSchema.join(',')],
@@ -198,6 +200,20 @@ export default class CockroachDB implements SchemaInspector {
 			} else {
 				/* eslint-disable-next-line no-console */
 				console.error(`Could not set primary key "${column_name}" for unknown table "${table_name}"`);
+			}
+		}
+
+		// Views don't have primary keys — fall back to `id` if available
+		for (const column of columns) {
+			if (column.table_type !== 'VIEW') continue;
+
+			const table = overview[column.table_name];
+			if (!table || table.primary) continue;
+
+			const hasIdColumn = columns.some((c) => c.table_name === column.table_name && c.column_name === 'id');
+
+			if (hasIdColumn) {
+				table.primary = 'id';
 			}
 		}
 
@@ -241,7 +257,7 @@ export default class CockroachDB implements SchemaInspector {
 
 		for (const result of results) {
 			for (const table of result.rows) {
-				if (table.type !== 'table') continue;
+				if (table.type !== 'table' && table.type !== 'view') continue;
 				tables.add(table.table_name);
 			}
 		}
@@ -266,7 +282,7 @@ export default class CockroachDB implements SchemaInspector {
 			),
 		);
 
-		const tables = results.flatMap((r) => r.rows).filter((r) => r.type === 'table');
+		const tables = results.flatMap((r) => r.rows).filter((r) => r.type === 'table' || r.type === 'view');
 
 		if (table) {
 			const tableInfo = tables.find((r) => r.table_name === table);
@@ -277,6 +293,7 @@ export default class CockroachDB implements SchemaInspector {
 
 			return {
 				name: tableInfo.table_name,
+				type: tableInfo.type === 'view' ? 'view' : 'table',
 				schema: tableInfo.schema_name,
 				comment: tableInfo.comment || null,
 			} as Table;
@@ -287,6 +304,7 @@ export default class CockroachDB implements SchemaInspector {
 		return tables.map((r) => {
 			return {
 				name: r.table_name,
+				type: r.type === 'view' ? 'view' : 'table',
 				schema: r.schema_name,
 				comment: r.comment || null,
 			} as Table;

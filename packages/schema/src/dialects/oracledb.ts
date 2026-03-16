@@ -93,6 +93,7 @@ export default class oracleDB implements SchemaInspector {
 			numeric_scale: number | null;
 			column_key: string;
 			max_length: number | null;
+			is_view: number;
 		};
 
 		/**
@@ -112,6 +113,11 @@ export default class oracleDB implements SchemaInspector {
 			INNER JOIN "USER_CONS_COLUMNS" "ucc"
 				ON "uc"."CONSTRAINT_NAME" = "ucc"."CONSTRAINT_NAME"
 				AND "uc"."CONSTRAINT_TYPE" = 'P'
+		),
+		"views" AS (
+			SELECT /*+ MATERIALIZE */
+				"VIEW_NAME"
+			FROM "USER_VIEWS"
 		)
 		SELECT /*+ OPTIMIZER_FEATURES_ENABLE('11.2.0.4') */
 			"c"."TABLE_NAME" "table_name",
@@ -123,12 +129,15 @@ export default class oracleDB implements SchemaInspector {
 			"c"."DATA_SCALE" "numeric_scale",
 			"ct"."CONSTRAINT_TYPE" "column_key",
 			"c"."CHAR_LENGTH" "max_length",
-			"c"."VIRTUAL_COLUMN" "is_generated"
+			"c"."VIRTUAL_COLUMN" "is_generated",
+			CASE WHEN "v"."VIEW_NAME" IS NOT NULL THEN 1 ELSE 0 END "is_view"
 		FROM "USER_TAB_COLS" "c"
 		LEFT JOIN "uc" "ct"
 			ON "c"."TABLE_NAME" = "ct"."TABLE_NAME"
 			AND "c"."COLUMN_NAME" = "ct"."COLUMN_NAME"
 			AND "ct"."CONSTRAINT_COUNT" = 1
+		LEFT JOIN "views" "v"
+			ON "c"."TABLE_NAME" = "v"."VIEW_NAME"
 		WHERE "c"."HIDDEN_COLUMN" = 'NO'
 	`);
 
@@ -136,11 +145,22 @@ export default class oracleDB implements SchemaInspector {
 
 		for (const column of columns) {
 			if (column.table_name in overview === false) {
+				const primaryKey = columns.find((nested: { column_key: string; table_name: string }) => {
+					return nested.table_name === column.table_name && nested.column_key === 'P';
+				})?.column_name;
+
+				const isView = column.is_view === 1;
+
+				const fallbackPrimary =
+					isView &&
+					columns.some((nested: { table_name: string; column_name: string }) => {
+						return nested.table_name === column.table_name && nested.column_name === 'ID';
+					})
+						? 'ID'
+						: undefined;
+
 				overview[column.table_name] = {
-					primary:
-						columns.find((nested: { column_key: string; table_name: string }) => {
-							return nested.table_name === column.table_name && nested.column_key === 'P';
-						})?.column_name || 'id',
+					primary: primaryKey || fallbackPrimary || 'id',
 					columns: {},
 				};
 			}
@@ -167,16 +187,17 @@ export default class oracleDB implements SchemaInspector {
 	 * List all existing tables in the current schema/database
 	 */
 	async tables(): Promise<string[]> {
-		const records = await this.knex
-			.select<Table[]>(
-				this.knex.raw(`
-          /*+ OPTIMIZER_FEATURES_ENABLE('${OPTIMIZER_FEATURES}') */
-            "TABLE_NAME" "name"
-        `),
+		const records = await this.knex.raw(`
+			SELECT /*+ OPTIMIZER_FEATURES_ENABLE('${OPTIMIZER_FEATURES}') */
+				"name"
+			FROM (
+				SELECT "TABLE_NAME" "name" FROM "USER_TABLES"
+				UNION ALL
+				SELECT "VIEW_NAME" "name" FROM "USER_VIEWS"
 			)
-			.from('USER_TABLES');
+		`);
 
-		return records.map(({ name }) => name);
+		return records.map(({ name }: { name: string }) => name);
 	}
 
 	/**
@@ -186,38 +207,59 @@ export default class oracleDB implements SchemaInspector {
 	tableInfo(): Promise<Table[]>;
 	tableInfo(table: string): Promise<Table>;
 	async tableInfo(table?: string) {
-		const query = this.knex
-			.select<Table[]>(
-				this.knex.raw(`
-          /*+ OPTIMIZER_FEATURES_ENABLE('${OPTIMIZER_FEATURES}') */
-            "TABLE_NAME" "name"
-        `),
-			)
-			.from('USER_TABLES');
+		const bindings: string[] = [];
+		let whereClause = '';
 
 		if (table) {
-			return await query.andWhere({ TABLE_NAME: table }).first();
+			whereClause = `WHERE "name" = ?`;
+			bindings.push(table);
 		}
 
-		return await query;
+		const records = await this.knex.raw(
+			`
+			SELECT /*+ OPTIMIZER_FEATURES_ENABLE('${OPTIMIZER_FEATURES}') */
+				"name", "type"
+			FROM (
+				SELECT "TABLE_NAME" "name", 'table' "type" FROM "USER_TABLES"
+				UNION ALL
+				SELECT "VIEW_NAME" "name", 'view' "type" FROM "USER_VIEWS"
+			)
+			${whereClause}
+		`,
+			bindings,
+		);
+
+		const mapped = records.map((row: { name: string; type: string }) => ({
+			name: row.name,
+			type: row.type as 'table' | 'view',
+		}));
+
+		if (table) {
+			return mapped[0];
+		}
+
+		return mapped;
 	}
 
 	/**
 	 * Check if a table exists in the current schema/database
 	 */
 	async hasTable(table: string): Promise<boolean> {
-		const result = await this.knex
-			.select<{ count: 0 | 1 }>(
-				this.knex.raw(`
-          /*+ OPTIMIZER_FEATURES_ENABLE('${OPTIMIZER_FEATURES}') */
-            COUNT(*) "count"
-        `),
+		const result = await this.knex.raw(
+			`
+			SELECT /*+ OPTIMIZER_FEATURES_ENABLE('${OPTIMIZER_FEATURES}') */
+				COUNT(*) "count"
+			FROM (
+				SELECT "TABLE_NAME" "name" FROM "USER_TABLES"
+				UNION ALL
+				SELECT "VIEW_NAME" "name" FROM "USER_VIEWS"
 			)
-			.from('USER_TABLES')
-			.where({ TABLE_NAME: table })
-			.first();
+			WHERE "name" = ?
+		`,
+			[table],
+		);
 
-		return !!result?.count;
+		return !!result?.[0]?.count;
 	}
 
 	// Columns
