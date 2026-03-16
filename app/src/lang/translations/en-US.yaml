@@ -2940,6 +2940,7 @@ series_grouping: Series Grouping
 date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
+duplicate_policy: Duplicate Policy
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent
