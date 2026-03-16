@@ -473,6 +473,8 @@ related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
 translations_collection: Çeviri Koleksiyonu
 languages_collection: Dil Koleksiyonu
+translations_preview_collections: Koleksiyonlar
+translations_preview_fields: Alanlar
 import_data_input_placeholder: CSV ya da JSON...
 import_data_button: İçe Aktarmayı Başlat
 import_data_indeterminate: Veri İçe Aktarılıyor...
