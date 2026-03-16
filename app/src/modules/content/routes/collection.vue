@@ -591,7 +591,7 @@ function clearFilters() {
 }
 
 .reset-preset {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .bookmark-controls {
@@ -626,7 +626,7 @@ function clearFilters() {
 	}
 
 	.clear {
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 		color: var(--theme--foreground-subdued);
 
 		&:hover {

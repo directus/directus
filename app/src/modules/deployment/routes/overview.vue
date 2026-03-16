@@ -7,14 +7,22 @@ import { useDeploymentNavigation } from '../composables/use-deployment-navigatio
 import { availableProviders } from '../config/providers';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { PrivateView } from '@/views/private';
 
 const router = useRouter();
+const userStore = useUserStore();
+const isAdmin = userStore.isAdmin;
+const permissionsStore = usePermissionsStore();
+const canCreateProvider = permissionsStore.hasPermission('directus_deployments', 'create');
+const canReadRuns = permissionsStore.hasPermission('directus_deployment_runs', 'read');
 
 const { providers, loading, fetch } = useDeploymentNavigation();
 
@@ -28,14 +36,24 @@ const setupDrawerActive = computed({
 });
 
 const providersList = computed(() => {
-	return availableProviders.map((type) => {
-		const config = providers.value.find((p) => p.provider === type);
-		return {
-			type,
-			configured: !!config,
-			projectsCount: config?.projects?.length,
-		};
-	});
+	if (isAdmin) {
+		return availableProviders.map((type) => {
+			const config = providers.value.find((p) => p.provider === type);
+			return {
+				type,
+				configured: !!config,
+				projectsCount: config?.projects?.length ?? 0,
+			};
+		});
+	}
+
+	return providers.value
+		.filter((p) => (p.projects?.length ?? 0) > 0 && canReadRuns)
+		.map((p) => ({
+			type: p.provider,
+			configured: true,
+			projectsCount: p.projects?.length ?? 0,
+		}));
 });
 
 function onProviderClick(provider: (typeof providersList.value)[number]) {
@@ -71,6 +89,10 @@ function onSetupComplete() {
 
 		<VProgressCircular v-if="loading && providers.length === 0" class="spinner" indeterminate />
 
+		<VInfo v-else-if="providersList.length === 0" icon="rocket_launch" :title="$t('deployment.no_providers')" center>
+			{{ canCreateProvider ? $t('deployment.no_providers_copy') : $t('deployment.no_providers_copy_nonadmin') }}
+		</VInfo>
+
 		<div v-else class="container">
 			<InterfacePresentationDivider :title="$t('deployment.overview.providers')" icon="settings" />
 
@@ -89,7 +111,7 @@ function onSetupComplete() {
 					</div>
 					<VListItemContent>
 						<div class="name">
-							<span v-if="!provider.configured">{{ $t('deployment.overview.configure') }}</span>
+							<span v-if="canCreateProvider && !provider.configured">{{ $t('deployment.overview.configure') }}</span>
 							{{ $t(`deployment.provider.${provider.type}.name`) }}
 						</div>
 						<div class="description">
@@ -111,7 +133,7 @@ function onSetupComplete() {
 		</div>
 
 		<ProviderSetupDrawer
-			v-if="selectedProvider"
+			v-if="canCreateProvider && selectedProvider"
 			v-model:active="setupDrawerActive"
 			:provider="selectedProvider"
 			@complete="onSetupComplete"
@@ -126,7 +148,7 @@ function onSetupComplete() {
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 :deep(.presentation-divider) {
@@ -134,18 +156,18 @@ function onSetupComplete() {
 }
 
 .provider-list-item {
-	--v-list-item-padding: 20px;
+	--v-list-item-padding: 1.125rem;
 }
 
 .icon {
-	inline-size: 44px;
-	block-size: 44px;
-	border-radius: 24px;
+	inline-size: 2.5rem;
+	block-size: 2.5rem;
+	border-radius: 1.375rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background-color: var(--theme--primary);
-	margin-inline-end: 20px;
+	margin-inline-end: 1.125rem;
 
 	--v-icon-color: var(--foreground-inverted);
 }
@@ -153,16 +175,16 @@ function onSetupComplete() {
 .name {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .description {
 	color: var(--theme--foreground-subdued);
-	font-size: 15px;
+	font-size: 0.875rem;
 }
 
 .meta {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: end;
 }
@@ -170,6 +192,6 @@ function onSetupComplete() {
 .projects {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 </style>

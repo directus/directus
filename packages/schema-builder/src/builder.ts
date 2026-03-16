@@ -9,7 +9,7 @@ export class SchemaBuilder {
 	_last_collection_configured = true;
 	_relation_counter = 0;
 
-	collection(name: string, callback: (collection: CollectionBuilder) => void) {
+	collection(name: string, callback: (collection: CollectionBuilder) => void): this {
 		const existing_index = this._collections.findIndex((collectionBuilder) => collectionBuilder.get_name() === name);
 
 		if (existing_index !== -1) {
@@ -26,7 +26,7 @@ export class SchemaBuilder {
 		return this;
 	}
 
-	options(options: CollectionOveriewBuilderOptions) {
+	options(options: CollectionOveriewBuilderOptions): this {
 		assert(this._collections.length > 0, "You need at least 1 collection to configure it's options");
 		assert(this._last_collection_configured === false, 'You can only configure a collection once');
 
@@ -39,7 +39,7 @@ export class SchemaBuilder {
 		return this;
 	}
 
-	next_relation_index() {
+	next_relation_index(): number {
 		return this._relation_counter++;
 	}
 

@@ -3,7 +3,7 @@ import { CacheLocal } from './local.js';
 import { CacheMulti } from './multi.js';
 import { CacheRedis } from './redis.js';
 
-export const createCache = (config: CacheConfig) => {
+export const createCache = (config: CacheConfig): CacheLocal | CacheRedis | CacheMulti => {
 	if (config.type === 'local') {
 		return new CacheLocal(config);
 	}

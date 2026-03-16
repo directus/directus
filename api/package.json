@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "33.3.1",
+	"version": "34.0.1",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -58,7 +58,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "rimraf ./dist && tsc --project tsconfig.prod.json && copyfiles \"src/**/*.{yaml,liquid,md}\" -u 1 dist",
+		"build": "tsdown && copyfiles \"src/**/*.{yaml,liquid,md}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=true tsx watch --ignore extensions --clear-screen=false src/start.ts",
 		"test": "vitest run",
@@ -123,7 +123,6 @@
 		"cron": "catalog:",
 		"date-fns": "catalog:",
 		"deep-diff": "catalog:",
-		"destroy": "catalog:",
 		"directus": "workspace:*",
 		"dotenv": "catalog:",
 		"encodeurl": "catalog:",
@@ -188,6 +187,7 @@
 		"snappy": "catalog:",
 		"stream-json": "catalog:",
 		"tar": "catalog:",
+		"tsdown": "catalog:",
 		"tsx": "catalog:",
 		"uuid": "catalog:",
 		"wellknown": "catalog:",
@@ -208,7 +208,6 @@
 		"@types/cookie-parser": "catalog:",
 		"@types/cors": "catalog:",
 		"@types/deep-diff": "catalog:",
-		"@types/destroy": "catalog:",
 		"@types/encodeurl": "catalog:",
 		"@types/express": "catalog:",
 		"@types/express-serve-static-core": "catalog:",

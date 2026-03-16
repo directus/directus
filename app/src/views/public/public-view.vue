@@ -109,7 +109,7 @@ const logoURL = computed<string | null>(() => {
 	:slotted(.v-icon) {
 		--v-icon-color: var(--theme--foreground-subdued);
 
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 	}
 
 	.container {
@@ -136,40 +136,40 @@ const logoURL = computed<string | null>(() => {
 		flex-direction: column;
 		justify-content: space-between;
 		inline-size: 100%;
-		max-inline-size: 500px;
+		max-inline-size: 28.125rem;
 		block-size: 100%;
-		padding: 20px;
+		padding: 1.125rem;
 		overflow: hidden auto;
 		background: var(--theme--public--background);
 		color: var(--theme--public--foreground);
 
 		/* Page Content Spacing */
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-inline-size var(--medium) var(--transition);
 
 		:slotted(.type-title) {
-			font-size: 42px;
-			line-height: 52px;
+			font-size: 2.375rem;
+			line-height: 1.2368;
 			color: var(--theme--public--foreground-accent);
 		}
 
 		.content {
-			inline-size: 340px;
+			inline-size: 19.125rem;
 			max-inline-size: 100%;
 		}
 
 		&.wide {
-			max-inline-size: 872px;
+			max-inline-size: 49.0625rem;
 
 			.content {
-				inline-size: 712px;
+				inline-size: 40.0625rem;
 			}
 		}
 
-		@media (min-width: 500px) {
-			padding: 40px 80px;
+		@media (width >= 28.125rem) {
+			padding: 2.25rem 4.5rem;
 		}
 	}
 
@@ -225,7 +225,7 @@ const logoURL = computed<string | null>(() => {
 				inset-inline-start: -25%;
 				block-size: 50%;
 				inline-size: 50%;
-				filter: blur(100px);
+				filter: blur(5.625rem);
 				z-index: 3;
 
 				> div {
@@ -241,7 +241,7 @@ const logoURL = computed<string | null>(() => {
 				inset-inline-start: 15%;
 				block-size: 40%;
 				inline-size: 60%;
-				filter: blur(150px);
+				filter: blur(8.4375rem);
 				z-index: 2;
 
 				> div {
@@ -261,7 +261,7 @@ const logoURL = computed<string | null>(() => {
 				inset-inline-start: 75%;
 				block-size: 20%;
 				inline-size: 40%;
-				filter: blur(50px);
+				filter: blur(2.8125rem);
 				z-index: 1;
 
 				> div {
@@ -350,33 +350,33 @@ const logoURL = computed<string | null>(() => {
 
 		.foreground {
 			inline-size: 80%;
-			max-inline-size: 400px;
+			max-inline-size: 22.5rem;
 		}
 
 		.note-container {
 			position: absolute;
 			inset-inline: 0;
-			inset-block-end: 34px;
+			inset-block-end: 1.9375rem;
 			display: flex;
 			align-items: flex-end;
 			justify-content: center;
-			block-size: 10px;
+			block-size: 0.5625rem;
 
 			.note {
-				max-inline-size: 340px;
+				max-inline-size: 19.125rem;
 				margin: 0 auto;
-				padding: 8px 12px;
+				padding: 0.4375rem 0.6875rem;
 				color: var(--white);
-				font-size: 15px;
-				line-height: 24px;
+				font-size: 0.875rem;
+				line-height: 1.5714;
 				background-color: rgb(38 50 56 / 0.2);
-				border-radius: 6px;
-				backdrop-filter: blur(2px);
+				border-radius: 0.3125rem;
+				backdrop-filter: blur(0.125rem);
 				overflow-wrap: break-word;
 			}
 		}
 
-		@media (min-width: 500px) {
+		@media (width >= 28.125rem) {
 			display: flex;
 		}
 	}
@@ -391,17 +391,17 @@ const logoURL = computed<string | null>(() => {
 		align-items: center;
 		inline-size: max-content;
 		max-inline-size: 100%;
-		block-size: 64px;
+		block-size: 3.625rem;
 
 		.title {
-			margin-block-start: 2px;
-			margin-inline-start: 16px;
+			margin-block-start: 0.125rem;
+			margin-inline-start: 0.875rem;
 			overflow: hidden;
 
 			h1 {
 				font-weight: 700;
-				font-size: 18px;
-				line-height: 18px;
+				font-size: 1rem;
+				line-height: 1;
 			}
 
 			.subtitle {
@@ -415,14 +415,14 @@ const logoURL = computed<string | null>(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 56px;
-		block-size: 56px;
+		inline-size: 3.125rem;
+		block-size: 3.125rem;
 		background-color: var(--project-color);
-		border-radius: calc(var(--theme--border-radius) - 2px);
+		border-radius: calc(var(--theme--border-radius) - 0.125rem);
 
 		img {
-			inline-size: 40px;
-			block-size: 40px;
+			inline-size: 2.25rem;
+			block-size: 2.25rem;
 			object-fit: contain;
 			object-position: center center;
 		}

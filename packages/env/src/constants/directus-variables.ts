@@ -13,6 +13,7 @@ export const DIRECTUS_VARIABLES = [
 	'MAX_PAYLOAD_SIZE',
 	'ROOT_REDIRECT',
 	'SERVE_APP',
+	'OPENAPI_ENABLED',
 	'GRAPHQL_INTROSPECTION',
 	'GRAPHQL_SCHEMA_CACHE_CAPACITY',
 	'GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT',
@@ -246,6 +247,7 @@ export const DIRECTUS_VARIABLES = [
 	'USERS_ADMIN_ACCESS_LIMIT',
 	'USERS_APP_ACCESS_LIMIT',
 	'USERS_API_ACCESS_LIMIT',
+	'MAX_JSON_QUERY_DEPTH',
 
 	// flows
 	'FLOWS_ENV_ALLOW_LIST',
@@ -271,4 +273,4 @@ export const DIRECTUS_VARIABLES = [
 /**
  * Variables in the environment that Directus will read as configuration in RegExp format
  */
-export const DIRECTUS_VARIABLES_REGEX = DIRECTUS_VARIABLES.map((name) => new RegExp(`^${name}$`));
+export const DIRECTUS_VARIABLES_REGEX: RegExp[] = DIRECTUS_VARIABLES.map((name) => new RegExp(`^${name}$`));
