@@ -22,11 +22,13 @@ export function useProviderConfigs(
 		const hasExisting = toValue(hasExistingCredentials);
 		const edit = toValue(isEdit);
 
+		const vercelBaseUrl = 'https://vercel.com';
 		const vercelProvider = t('deployment.provider.vercel.name');
-		const vercelTokenUrl = 'https://vercel.com/account/settings/tokens';
+		const vercelTokenUrl = `${vercelBaseUrl}/account/settings/tokens`;
 
+		const netlifyBaseUrl = 'https://app.netlify.com';
 		const netlifyProvider = t('deployment.provider.netlify.name');
-		const netlifyTokenUrl = 'https://app.netlify.com/user/applications';
+		const netlifyTokenUrl = `${netlifyBaseUrl}/user/applications`;
 
 		return {
 			vercel: {
@@ -37,7 +39,7 @@ export function useProviderConfigs(
 					const username = options['username'];
 					const scope = teamId || username;
 					if (!scope) return null;
-					return `https://vercel.com/${scope}/${projectName}/${externalId}`;
+					return `${vercelBaseUrl}/${scope}/${projectName}/${externalId}`;
 				},
 				credentialsFields: [
 					{
@@ -128,7 +130,7 @@ export function useProviderConfigs(
 				tokenUrl: netlifyTokenUrl,
 				settingsWarning: t('deployment.provider.netlify.settings_warning'),
 				getDeploymentUrl: (_options, projectName, externalId) => {
-					return `https://app.netlify.com/sites/${projectName}/deploys/${externalId}`;
+					return `${netlifyBaseUrl}/sites/${projectName}/deploys/${externalId}`;
 				},
 				credentialsFields: [
 					{
