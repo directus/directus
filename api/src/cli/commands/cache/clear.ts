@@ -12,28 +12,28 @@ export default async function cacheClear({ system, data }: { system?: boolean; d
 		);
 
 		process.exit(0);
-	}
+	} else {
+		const clearAll = !system && !data;
 
-	const clearAll = !system && !data;
+		try {
+			if (clearAll || system) {
+				await clearSystemCache({ forced: true });
+			}
 
-	try {
-		if (clearAll || system) {
-			await clearSystemCache({ forced: true });
+			if (clearAll || data) {
+				const { cache } = getCache();
+				await cache?.clear();
+			}
+
+			const target = clearAll
+				? 'all caches'
+				: [system && 'system cache', data && 'data cache'].filter(Boolean).join(' and ');
+
+			process.stdout.write(`Cleared ${target} successfully\n`);
+			process.exit(0);
+		} catch (err: any) {
+			logger.error(err);
+			process.exit(1);
 		}
-
-		if (clearAll || data) {
-			const { cache } = getCache();
-			await cache?.clear();
-		}
-
-		const target = clearAll
-			? 'all caches'
-			: [system && 'system cache', data && 'data cache'].filter(Boolean).join(' and ');
-
-		process.stdout.write(`Cleared ${target} successfully\n`);
-		process.exit(0);
-	} catch (err: any) {
-		logger.error(err);
-		process.exit(1);
 	}
 }

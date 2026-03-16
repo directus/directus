@@ -20,6 +20,8 @@ describe('cache clear command', () => {
 	let mockCacheClear: any;
 
 	beforeEach(() => {
+		vi.clearAllMocks();
+
 		mockLogger = {
 			error: vi.fn(),
 		};
