@@ -218,9 +218,7 @@ export default class Postgres implements SchemaInspector {
 			const table = overview[column.table_name];
 			if (!table || table.primary) continue;
 
-			const hasIdColumn = columns.some(
-				(c) => c.table_name === column.table_name && c.column_name === 'id',
-			);
+			const hasIdColumn = columns.some((c) => c.table_name === column.table_name && c.column_name === 'id');
 
 			if (hasIdColumn) {
 				table.primary = 'id';
