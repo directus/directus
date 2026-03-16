@@ -107,31 +107,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const readQuery = cloneDeep(query);
 
-		// clear any field select
-		readQuery.fields = [];
-
-		const ast = await getAstFromQuery(
-			{
-				collection: this.collection,
-				query,
-				accountability: this.accountability,
-			},
-			{
-				schema: this.schema,
-				knex: this.knex,
-			},
-		);
-
-		await processAst(
-			{ ast, action: 'read', accountability: this.accountability },
-			{ knex: this.knex, schema: this.schema },
-		);
-
-		// Do not require access to PK
 		readQuery.fields = [primaryKeyField];
 
-		// Allow unauthenticated access
 		const itemsService = new ItemsService(this.collection, {
+			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
 		});
