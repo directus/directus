@@ -353,6 +353,7 @@ related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
 translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
+translations_preview_collections: Pengumpulan
 import_data_input_placeholder: CSV atau JSON...
 import_data_button: Mulai Impor
 import_data_indeterminate: Mengimpor Data...
