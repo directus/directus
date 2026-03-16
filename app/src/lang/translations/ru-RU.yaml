@@ -522,6 +522,8 @@ related_collection: Связанная коллекция
 related_collections: Связанные коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция языков
+translations_preview_collections: Коллекции
+translations_preview_fields: Поля
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Начать импорт
 import_data_indeterminate: Импорт данных...
