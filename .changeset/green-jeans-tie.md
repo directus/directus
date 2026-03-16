@@ -7,4 +7,4 @@
 '@directus/utils': minor
 ---
 
-Add read-only support for introspected MySQL views that expose an `id` field.
+Added read-only support for introspected MySQL and PostgreSQL views that expose an `id` field.

@@ -93,6 +93,7 @@ export default class Postgres implements SchemaInspector {
 			is_identity: boolean;
 			is_nullable: boolean;
 			is_generated: boolean;
+			table_type: 'BASE TABLE' | 'VIEW';
 		};
 
 		type RawGeometryColumn = {
@@ -104,8 +105,6 @@ export default class Postgres implements SchemaInspector {
 		const bindings = this.explodedSchema.map(() => '?').join(',');
 
 		const [columnsResult, primaryKeysResult] = await Promise.all([
-			// Only select columns from BASE TABLEs to exclude views (Postgres views
-			// cannot have primary keys so they cannot be used)
 			this.knex.raw(
 				`
         SELECT c.table_name
@@ -116,12 +115,14 @@ export default class Postgres implements SchemaInspector {
           , c.is_generated = 'ALWAYS' is_generated
           , CASE WHEN c.is_identity = 'YES' THEN true ELSE false END is_identity
           , CASE WHEN c.is_nullable = 'YES' THEN true ELSE false END is_nullable
+          , t.table_type
         FROM
           information_schema.columns c
         LEFT JOIN information_schema.tables t
           ON c.table_name = t.table_name
+          AND c.table_schema = t.table_schema
         WHERE
-          t.table_type = 'BASE TABLE'
+          t.table_type IN ('BASE TABLE', 'VIEW')
           AND c.table_schema IN (${bindings});
       `,
 				this.explodedSchema,
@@ -172,7 +173,7 @@ export default class Postgres implements SchemaInspector {
 				FROM geometries g
 				JOIN information_schema.tables t
 					ON g.f_table_name = t.table_name
-					AND t.table_type = 'BASE TABLE'
+					AND t.table_type IN ('BASE TABLE', 'VIEW')
 				WHERE f_table_schema in (${bindings})
 				`,
 				this.explodedSchema,
@@ -207,6 +208,22 @@ export default class Postgres implements SchemaInspector {
 			} else {
 				/* eslint-disable-next-line no-console */
 				console.error(`Could not set primary key "${column_name}" for unknown table "${table_name}"`);
+			}
+		}
+
+		// Views don't have primary keys — fall back to `id` if available
+		for (const column of columns) {
+			if (column.table_type !== 'VIEW') continue;
+
+			const table = overview[column.table_name];
+			if (!table || table.primary) continue;
+
+			const hasIdColumn = columns.some(
+				(c) => c.table_name === column.table_name && c.column_name === 'id',
+			);
+
+			if (hasIdColumn) {
+				table.primary = 'id';
 			}
 		}
 
@@ -246,7 +263,7 @@ export default class Postgres implements SchemaInspector {
 			pg_class rel
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
-			AND rel.relkind = 'r'
+			AND rel.relkind IN ('r', 'v')
 		 ORDER BY rel.relname
 	  `,
 		);
@@ -271,14 +288,15 @@ export default class Postgres implements SchemaInspector {
 		 SELECT
 			rel.relnamespace::regnamespace::text AS schema,
 			rel.relname AS name,
-			des.description AS comment
+			des.description AS comment,
+			CASE rel.relkind WHEN 'v' THEN 'view' ELSE 'table' END AS type
 		 FROM
 			pg_class rel
 		 LEFT JOIN pg_description des ON rel.oid = des.objoid AND des.objsubid = 0
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
 			${table ? 'AND rel.relname = ?' : ''}
-			AND rel.relkind = 'r'
+			AND rel.relkind IN ('r', 'v')
 		 ORDER BY rel.relname
 	  `,
 			bindings,
@@ -302,7 +320,7 @@ export default class Postgres implements SchemaInspector {
 			pg_class rel
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
-			AND rel.relkind = 'r'
+			AND rel.relkind IN ('r', 'v')
 			AND rel.relname = ?
 		 ORDER BY rel.relname
 	  `,
@@ -335,7 +353,7 @@ export default class Postgres implements SchemaInspector {
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
 			${table ? 'AND rel.relname = ?' : ''}
-			AND rel.relkind = 'r'
+			AND rel.relkind IN ('r', 'v')
 			AND att.attnum > 0
 			AND NOT att.attisdropped;
 	  `,
@@ -437,7 +455,7 @@ export default class Postgres implements SchemaInspector {
 			  rel.relnamespace IN (${schemaIn})
 			  ${table ? 'AND rel.relname = ?' : ''}
 			  ${column ? 'AND att.attname = ?' : ''}
-			  AND rel.relkind = 'r'
+			  AND rel.relkind IN ('r', 'v')
 			  AND att.attnum > 0
 			  AND NOT att.attisdropped
 			ORDER BY rel.relname, att.attnum;
@@ -581,7 +599,7 @@ export default class Postgres implements SchemaInspector {
 			rel.relnamespace IN (${schemaIn})
 			AND rel.relname = ?
 			AND att.attname = ?
-			AND rel.relkind = 'r'
+			AND rel.relkind IN ('r', 'v')
 			AND att.attnum > 0
 			AND NOT att.attisdropped;
 	  `,
