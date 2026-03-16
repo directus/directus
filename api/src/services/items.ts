@@ -109,15 +109,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		readQuery.fields = [primaryKeyField];
 
-		const itemsService = new ItemsService(this.collection, {
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		// We read the IDs of the items based on the query, and then run `updateMany`. `updateMany` does it's own
-		// permissions check for the keys, so we don't have to make this an authenticated read
-		const items = await itemsService.readByQuery(readQuery);
+		/*
+		 * We read the IDs of the items based on the query, and then run `updateMany`.
+		 * Validate 'read' permissions for the query to ensure no data leak (GHSA-2xcm-7h22-3m66)
+		 */
+		const items = await this.readByQuery(readQuery);
 		return items.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 	}
 
