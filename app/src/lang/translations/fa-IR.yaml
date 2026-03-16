@@ -539,6 +539,9 @@ related_collection: مجموعه مرتبط
 related_collections: مجموعه های مرتبط
 translations_collection: مجموعه ترجمه ها
 languages_collection: مجموعه زبانها
+translations_preview_collections: مجموعه‌ها
+translations_preview_fields: کادرها
+translations_preview_relations: رابطه‌ها
 import_data_input_placeholder: CSV یا JSON...
 import_data_button: شروع وارد سازی
 import_data_indeterminate: وارد سازی داده ها...
