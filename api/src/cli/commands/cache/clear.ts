@@ -1,8 +1,8 @@
 import { useEnv } from '@directus/env';
-import { flushCaches } from '../../../cache.js';
+import { clearSystemCache, getCache } from '../../../cache.js';
 import { useLogger } from '../../../logger/index.js';
 
-export default async function cacheClear(): Promise<void> {
+export default async function cacheClear({ system, data }: { system?: boolean; data?: boolean }): Promise<void> {
 	const env = useEnv();
 	const logger = useLogger();
 
@@ -14,9 +14,23 @@ export default async function cacheClear(): Promise<void> {
 		process.exit(0);
 	}
 
+	const clearAll = !system && !data;
+
 	try {
-		await flushCaches(true);
-		process.stdout.write('Cache cleared successfully\n');
+		if (clearAll || system) {
+			await clearSystemCache({ forced: true });
+		}
+
+		if (clearAll || data) {
+			const { cache } = getCache();
+			await cache?.clear();
+		}
+
+		const target = clearAll
+			? 'all caches'
+			: [system && 'system cache', data && 'data cache'].filter(Boolean).join(' and ');
+
+		process.stdout.write(`Cleared ${target} successfully\n`);
 		process.exit(0);
 	} catch (err: any) {
 		logger.error(err);

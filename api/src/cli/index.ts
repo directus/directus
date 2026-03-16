@@ -81,7 +81,13 @@ export async function createCli(): Promise<Command> {
 		.option('--app', `whether or not the role has app access`)
 		.action(rolesCreate);
 
-	program.command('cache').command('clear').description('Clear the data and system caches').action(cacheClear);
+	program
+		.command('cache')
+		.command('clear')
+		.description('Clear the data and system caches')
+		.option('--system', 'Clear the system cache only (schema, permissions)')
+		.option('--data', 'Clear the data cache only')
+		.action(cacheClear);
 
 	program.command('count <collection>').description('Count the amount of items in a given collection').action(count);
 

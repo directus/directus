@@ -103,6 +103,18 @@ describe('createCli', () => {
 			expect(cacheClear).toHaveBeenCalledTimes(1);
 		});
 
+		test('Should pass --system flag to cacheClear', async () => {
+			await program.parseAsync(['node', 'directus', 'cache', 'clear', '--system']);
+
+			expect(cacheClear).toHaveBeenCalledWith(expect.objectContaining({ system: true }), expect.anything());
+		});
+
+		test('Should pass --data flag to cacheClear', async () => {
+			await program.parseAsync(['node', 'directus', 'cache', 'clear', '--data']);
+
+			expect(cacheClear).toHaveBeenCalledWith(expect.objectContaining({ data: true }), expect.anything());
+		});
+
 		test.each([
 			['latest', 'migrate:latest'],
 			['up', 'migrate:up'],
