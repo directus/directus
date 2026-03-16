@@ -217,7 +217,7 @@ interface FileService<T = File> {
 	 */
 	uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<T> & { storage: string },
+		data: Partial<T>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey>;
