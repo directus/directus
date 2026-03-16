@@ -118,6 +118,9 @@ export default class oracleDB implements SchemaInspector {
 			SELECT /*+ MATERIALIZE */
 				"VIEW_NAME"
 			FROM "USER_VIEWS"
+			UNION ALL
+			SELECT "MVIEW_NAME"
+			FROM "USER_MVIEWS"
 		)
 		SELECT /*+ OPTIMIZER_FEATURES_ENABLE('11.2.0.4') */
 			"c"."TABLE_NAME" "table_name",
@@ -192,8 +195,11 @@ export default class oracleDB implements SchemaInspector {
 				"name"
 			FROM (
 				SELECT "TABLE_NAME" "name" FROM "USER_TABLES"
+					WHERE "TABLE_NAME" NOT IN (SELECT "MVIEW_NAME" FROM "USER_MVIEWS")
 				UNION ALL
 				SELECT "VIEW_NAME" "name" FROM "USER_VIEWS"
+				UNION ALL
+				SELECT "MVIEW_NAME" "name" FROM "USER_MVIEWS"
 			)
 		`);
 
@@ -221,8 +227,11 @@ export default class oracleDB implements SchemaInspector {
 				"name", "type"
 			FROM (
 				SELECT "TABLE_NAME" "name", 'table' "type" FROM "USER_TABLES"
+					WHERE "TABLE_NAME" NOT IN (SELECT "MVIEW_NAME" FROM "USER_MVIEWS")
 				UNION ALL
 				SELECT "VIEW_NAME" "name", 'view' "type" FROM "USER_VIEWS"
+				UNION ALL
+				SELECT "MVIEW_NAME" "name", 'view' "type" FROM "USER_MVIEWS"
 			)
 			${whereClause}
 		`,

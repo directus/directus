@@ -96,6 +96,18 @@ export default class Postgres implements SchemaInspector {
 			table_type: 'BASE TABLE' | 'VIEW';
 		};
 
+		type RawMatViewColumn = {
+			table_name: string;
+			column_name: string;
+			default_value: string | null;
+			data_type: string;
+			max_length: number | null;
+			is_identity: boolean;
+			is_nullable: boolean;
+			is_generated: boolean;
+			table_type: 'VIEW';
+		};
+
 		type RawGeometryColumn = {
 			table_name: string;
 			column_name: string;
@@ -104,7 +116,9 @@ export default class Postgres implements SchemaInspector {
 
 		const bindings = this.explodedSchema.map(() => '?').join(',');
 
-		const [columnsResult, primaryKeysResult] = await Promise.all([
+		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
+
+		const [columnsResult, primaryKeysResult, matViewColumnsResult] = await Promise.all([
 			this.knex.raw(
 				`
         SELECT c.table_name
@@ -148,9 +162,36 @@ export default class Postgres implements SchemaInspector {
       `,
 				this.explodedSchema,
 			),
+
+			// Materialized views and foreign tables don't appear in information_schema — query pg_class/pg_attribute directly
+			this.knex.raw<{ rows: RawMatViewColumn[] }>(
+				`
+        SELECT
+          rel.relname AS table_name,
+          att.attname AS column_name,
+          pg_get_expr(ad.adbin, ad.adrelid) AS default_value,
+          att.atttypid::regtype::text AS data_type,
+          CASE
+            WHEN att.atttypid IN (1042, 1043) THEN (att.atttypmod - 4)::int4
+            WHEN att.atttypid IN (1560, 1562) THEN (att.atttypmod)::int4
+            ELSE NULL
+          END AS max_length,
+          FALSE AS is_generated,
+          FALSE AS is_identity,
+          NOT att.attnotnull AS is_nullable,
+          'VIEW' AS table_type
+        FROM pg_attribute att
+        JOIN pg_class rel ON att.attrelid = rel.oid
+        LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
+        WHERE rel.relnamespace IN (${schemaIn})
+          AND rel.relkind IN ('m', 'f')
+          AND att.attnum > 0
+          AND NOT att.attisdropped
+      `,
+			),
 		]);
 
-		const columns: RawColumn[] = columnsResult.rows;
+		const columns: RawColumn[] = [...columnsResult.rows, ...matViewColumnsResult.rows];
 		const primaryKeys = primaryKeysResult.rows;
 		let geometryColumns: RawGeometryColumn[] = [];
 
@@ -171,12 +212,15 @@ export default class Postgres implements SchemaInspector {
 					, f_geometry_column as column_name
 					, type as data_type
 				FROM geometries g
-				JOIN information_schema.tables t
-					ON g.f_table_name = t.table_name
-					AND t.table_type IN ('BASE TABLE', 'VIEW')
+				JOIN pg_class rel
+					ON g.f_table_name = rel.relname
+					AND rel.relkind IN ('r', 'v', 'm', 'f')
+				JOIN pg_namespace ns
+					ON rel.relnamespace = ns.oid
+					AND ns.nspname IN (${bindings})
 				WHERE f_table_schema in (${bindings})
 				`,
-				this.explodedSchema,
+				[...this.explodedSchema, ...this.explodedSchema],
 			);
 
 			geometryColumns = result.rows;
@@ -261,7 +305,7 @@ export default class Postgres implements SchemaInspector {
 			pg_class rel
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
-			AND rel.relkind IN ('r', 'v')
+			AND rel.relkind IN ('r', 'v', 'm', 'f')
 		 ORDER BY rel.relname
 	  `,
 		);
@@ -287,14 +331,14 @@ export default class Postgres implements SchemaInspector {
 			rel.relnamespace::regnamespace::text AS schema,
 			rel.relname AS name,
 			des.description AS comment,
-			CASE rel.relkind WHEN 'v' THEN 'view' ELSE 'table' END AS type
+			CASE WHEN rel.relkind IN ('v', 'm', 'f') THEN 'view' ELSE 'table' END AS type
 		 FROM
 			pg_class rel
 		 LEFT JOIN pg_description des ON rel.oid = des.objoid AND des.objsubid = 0
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
 			${table ? 'AND rel.relname = ?' : ''}
-			AND rel.relkind IN ('r', 'v')
+			AND rel.relkind IN ('r', 'v', 'm', 'f')
 		 ORDER BY rel.relname
 	  `,
 			bindings,
@@ -318,7 +362,7 @@ export default class Postgres implements SchemaInspector {
 			pg_class rel
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
-			AND rel.relkind IN ('r', 'v')
+			AND rel.relkind IN ('r', 'v', 'm', 'f')
 			AND rel.relname = ?
 		 ORDER BY rel.relname
 	  `,
@@ -351,7 +395,7 @@ export default class Postgres implements SchemaInspector {
 		 WHERE
 			rel.relnamespace IN (${schemaIn})
 			${table ? 'AND rel.relname = ?' : ''}
-			AND rel.relkind IN ('r', 'v')
+			AND rel.relkind IN ('r', 'v', 'm', 'f')
 			AND att.attnum > 0
 			AND NOT att.attisdropped;
 	  `,
@@ -453,7 +497,7 @@ export default class Postgres implements SchemaInspector {
 			  rel.relnamespace IN (${schemaIn})
 			  ${table ? 'AND rel.relname = ?' : ''}
 			  ${column ? 'AND att.attname = ?' : ''}
-			  AND rel.relkind IN ('r', 'v')
+			  AND rel.relkind IN ('r', 'v', 'm', 'f')
 			  AND att.attnum > 0
 			  AND NOT att.attisdropped
 			ORDER BY rel.relname, att.attnum;
@@ -597,7 +641,7 @@ export default class Postgres implements SchemaInspector {
 			rel.relnamespace IN (${schemaIn})
 			AND rel.relname = ?
 			AND att.attname = ?
-			AND rel.relkind IN ('r', 'v')
+			AND rel.relkind IN ('r', 'v', 'm', 'f')
 			AND att.attnum > 0
 			AND NOT att.attisdropped;
 	  `,

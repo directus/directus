@@ -62,7 +62,7 @@ export default class CockroachDB implements SchemaInspector {
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
 			.andWhere({ table_name: table })
-			.whereIn('table_type', ['BASE TABLE', 'VIEW'])
+			.whereIn('table_type', ['BASE TABLE', 'VIEW', 'MATERIALIZED VIEW'])
 			.first();
 
 		return row?.table_schema ?? this.explodedSchema[0]!;
@@ -96,7 +96,7 @@ export default class CockroachDB implements SchemaInspector {
 			is_identity: boolean;
 			is_nullable: boolean;
 			is_generated: boolean;
-			table_type: 'BASE TABLE' | 'VIEW';
+			table_type: 'BASE TABLE' | 'VIEW' | 'MATERIALIZED VIEW';
 		};
 
 		type RawGeometryColumn = {
@@ -123,7 +123,7 @@ export default class CockroachDB implements SchemaInspector {
           ON c.table_name = t.table_name
           AND c.table_schema = t.table_schema
         WHERE
-          t.table_type IN ('BASE TABLE', 'VIEW')
+          t.table_type IN ('BASE TABLE', 'VIEW', 'MATERIALIZED VIEW')
           AND c.table_schema IN (?);
       `,
 				[this.explodedSchema.join(',')],
@@ -166,7 +166,7 @@ export default class CockroachDB implements SchemaInspector {
 			FROM geometries g
 			JOIN information_schema.tables t
 				ON g.f_table_name = t.table_name
-				AND t.table_type IN ('BASE TABLE', 'VIEW')
+				AND t.table_type IN ('BASE TABLE', 'VIEW', 'MATERIALIZED VIEW')
 			WHERE f_table_schema in (?)
 			`,
 			[this.explodedSchema.join(',')],
@@ -203,9 +203,9 @@ export default class CockroachDB implements SchemaInspector {
 			}
 		}
 
-		// Views don't have primary keys — fall back to `id` if available
+		// Views and materialized views don't have primary keys — fall back to `id` if available
 		for (const column of columns) {
-			if (column.table_type !== 'VIEW') continue;
+			if (column.table_type !== 'VIEW' && column.table_type !== 'MATERIALIZED VIEW') continue;
 
 			const table = overview[column.table_name];
 			if (!table || table.primary) continue;
@@ -257,7 +257,7 @@ export default class CockroachDB implements SchemaInspector {
 
 		for (const result of results) {
 			for (const table of result.rows) {
-				if (table.type !== 'table' && table.type !== 'view') continue;
+				if (table.type !== 'table' && table.type !== 'view' && table.type !== 'materialized view') continue;
 				tables.add(table.table_name);
 			}
 		}
@@ -282,7 +282,9 @@ export default class CockroachDB implements SchemaInspector {
 			),
 		);
 
-		const tables = results.flatMap((r) => r.rows).filter((r) => r.type === 'table' || r.type === 'view');
+		const tables = results
+			.flatMap((r) => r.rows)
+			.filter((r) => r.type === 'table' || r.type === 'view' || r.type === 'materialized view');
 
 		if (table) {
 			const tableInfo = tables.find((r) => r.table_name === table);
@@ -293,7 +295,7 @@ export default class CockroachDB implements SchemaInspector {
 
 			return {
 				name: tableInfo.table_name,
-				type: tableInfo.type === 'view' ? 'view' : 'table',
+				type: tableInfo.type === 'view' || tableInfo.type === 'materialized view' ? 'view' : 'table',
 				schema: tableInfo.schema_name,
 				comment: tableInfo.comment || null,
 			} as Table;
@@ -304,7 +306,7 @@ export default class CockroachDB implements SchemaInspector {
 		return tables.map((r) => {
 			return {
 				name: r.table_name,
-				type: r.type === 'view' ? 'view' : 'table',
+				type: r.type === 'view' || r.type === 'materialized view' ? 'view' : 'table',
 				schema: r.schema_name,
 				comment: r.comment || null,
 			} as Table;
