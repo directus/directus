@@ -13,7 +13,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ## Requirements
 
-- Node.js 22
+- Node.js 24
 - pnpm >=10 <11
 
 ## Common Commands

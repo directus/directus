@@ -58,6 +58,6 @@
 		"@directus/update-check": "workspace:*"
 	},
 	"engines": {
-		"node": ">=22"
+		"node": ">=24"
 	}
 }
