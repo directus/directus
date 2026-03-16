@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
 import bootstrap from './commands/bootstrap/index.js';
+import cacheClear from './commands/cache/clear.js';
 import dbMigrate from './commands/database/migrate.js';
 import init from './commands/init/index.js';
 import { apply } from './commands/schema/apply.js';
@@ -25,6 +26,10 @@ vi.mock('./load-extensions.js', () => ({
 }));
 
 vi.mock('./commands/bootstrap/index.js', () => ({
+	default: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('./commands/cache/clear.js', () => ({
 	default: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -90,6 +95,12 @@ describe('createCli', () => {
 			await program.parseAsync(['node', 'directus', 'bootstrap']);
 
 			expect(bootstrap).toHaveBeenCalledTimes(1);
+		});
+
+		test('Should call cacheClear when cache clear command is invoked', async () => {
+			await program.parseAsync(['node', 'directus', 'cache', 'clear']);
+
+			expect(cacheClear).toHaveBeenCalledTimes(1);
 		});
 
 		test.each([

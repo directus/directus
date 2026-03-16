@@ -3,6 +3,7 @@ import { version } from 'directus/version';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
 import bootstrap from './commands/bootstrap/index.js';
+import cacheClear from './commands/cache/clear.js';
 import count from './commands/count/index.js';
 import dbInstall from './commands/database/install.js';
 import dbMigrate from './commands/database/migrate.js';
@@ -79,6 +80,13 @@ export async function createCli(): Promise<Command> {
 		.option('--admin', `whether or not the role has admin access`)
 		.option('--app', `whether or not the role has app access`)
 		.action(rolesCreate);
+
+	const cacheCommand = program.command('cache');
+
+	cacheCommand
+		.command('clear')
+		.description('Clear the data and system caches')
+		.action(cacheClear);
 
 	program.command('count <collection>').description('Count the amount of items in a given collection').action(count);
 
