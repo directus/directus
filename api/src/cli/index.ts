@@ -83,10 +83,7 @@ export async function createCli(): Promise<Command> {
 
 	const cacheCommand = program.command('cache');
 
-	cacheCommand
-		.command('clear')
-		.description('Clear the data and system caches')
-		.action(cacheClear);
+	cacheCommand.command('clear').description('Clear the data and system caches').action(cacheClear);
 
 	program.command('count <collection>').description('Count the amount of items in a given collection').action(count);
 
