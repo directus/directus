@@ -462,7 +462,7 @@ async function downloadFiles() {
 				<AddFolder :parent="folder" :disabled="createFolderAllowed !== true" />
 
 				<VDialog
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-model="moveToDialogActive"
 					@esc="moveToDialogActive = false"
 					@apply="moveToFolder"
@@ -538,7 +538,7 @@ async function downloadFiles() {
 				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 					secondary
 					:disabled="batchEditAllowed === false"
@@ -547,7 +547,7 @@ async function downloadFiles() {
 				/>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="$t('download')"
 					secondary
 					icon="download"
