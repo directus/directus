@@ -46,9 +46,11 @@ export default class SQLite implements SchemaInspector {
 			.whereRaw(`type IN ('table', 'view') AND name NOT LIKE 'sqlite_%'`);
 
 		const tables = tableRecords.map(({ name }) => name) as string[];
+
 		const viewNames = new Set(
 			tableRecords.filter((r: { type: string }) => r.type === 'view').map(({ name }: { name: string }) => name),
 		);
+
 		const overview: SchemaOverview = {};
 
 		for (const table of tables) {
@@ -142,6 +144,7 @@ export default class SQLite implements SchemaInspector {
 			.from('sqlite_master')
 			.whereIn('type', ['table', 'view'])
 			.andWhere({ name: table });
+
 		return results.length > 0;
 	}
 
