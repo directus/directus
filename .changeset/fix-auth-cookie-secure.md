@@ -1,5 +1,6 @@
 ---
-'@directus/api': patch
+'@directus/api': minor
+'@directus/env': patch
 ---
 
-Added `secure` attribute to OpenID and OAuth2 state cookies via provider-scoped `AUTH_<PROVIDER>_COOKIE_SECURE` env var
+Added support for setting the `secure` attribute on OpenID/OAuth2 cookies via the `AUTH_<PROVIDER>_COOKIE_SECURE` environment variable
