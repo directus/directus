@@ -253,7 +253,7 @@ export async function generateTranslations(
 		const existingTranslationsCollection = currentSchema.collections[translationsCollection];
 
 		if (existingTranslationsCollection) {
-			await validateExistingTranslationsCollection();
+			const { parentRelation, languageRelation } = await validateExistingTranslationsCollection();
 
 			// Filter out fields that already exist in the junction table (e.g. when re-enabling
 			// translations after deleting the alias field but keeping the junction)
@@ -275,6 +275,66 @@ export async function generateTranslations(
 				validateFieldsEligibility(sourceFields);
 
 				const clonedFields = cloneFields({ fields: newFieldNames, sourceFields });
+
+				// Rebuild sort order so new fields are interleaved with existing fields
+				// in the same relative order as the parent collection
+				const allParentFields: { field: string; sort: number | null }[] = await trx
+					.from('directus_fields')
+					.where({ collection })
+					.select('field', 'sort');
+
+				const parentSortMap = new Map(allParentFields.map((f) => [f.field, f.sort ?? Infinity]));
+
+				const existingTransFields: { field: string; sort: number | null }[] = await trx
+					.from('directus_fields')
+					.where({ collection: translationsCollection })
+					.select('field', 'sort');
+
+				const systemFieldNames = new Set(['id', parentRelation.field, languageRelation.field]);
+
+				const maxSystemSort = existingTransFields
+					.filter((f) => systemFieldNames.has(f.field))
+					.reduce((max, f) => Math.max(max, f.sort ?? 0), 0);
+
+				const existingContentFields = existingTransFields.filter((f) => !systemFieldNames.has(f.field));
+
+				const allContentFieldNames = [...existingContentFields.map((f) => f.field), ...newFieldNames];
+
+				allContentFieldNames.sort((a, b) => {
+					const diff = (parentSortMap.get(a) ?? Infinity) - (parentSortMap.get(b) ?? Infinity);
+					if (diff !== 0) return diff;
+					return a.localeCompare(b);
+				});
+
+				let nextSort = maxSystemSort + 1;
+				const sortAssignments = new Map<string, number>();
+
+				for (const fieldName of allContentFieldNames) {
+					sortAssignments.set(fieldName, nextSort++);
+				}
+
+				for (const existing of existingContentFields) {
+					const newSort = sortAssignments.get(existing.field);
+
+					if (newSort !== undefined && newSort !== existing.sort) {
+						await trx('directus_fields')
+							.where({ collection: translationsCollection, field: existing.field })
+							.update({ sort: newSort });
+					}
+				}
+
+				for (const clonedField of clonedFields) {
+					const sort = sortAssignments.get(clonedField.field);
+
+					if (sort !== undefined) {
+						clonedField.meta = { ...clonedField.meta, sort };
+					}
+				}
+
+				clonedFields.sort(
+					(a, b) => (sortAssignments.get(a.field) ?? Infinity) - (sortAssignments.get(b.field) ?? Infinity),
+				);
+
 				const fieldsService = new FieldsService(getServiceOptions(currentSchema));
 
 				for (const clonedField of clonedFields) {

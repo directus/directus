@@ -1,7 +1,7 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { MockClient } from 'knex-mock-client';
+import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { z } from 'zod';
 import emitter from '../emitter.js';
@@ -131,11 +131,17 @@ function createOrphanedTranslationsSchema() {
 
 describe('generateTranslations', () => {
 	let database: Knex;
+	let tracker: Tracker;
 
 	let sourceFieldsMap: Record<string, Record<string, any>>;
 
 	beforeEach(() => {
 		database = knex.default({ client: Client_PG });
+		tracker = createTracker(database);
+
+		// Default: return empty results for directus_fields queries (sort logic)
+		tracker.on.select('directus_fields').response([]);
+		tracker.on.update('directus_fields').response(0);
 
 		sourceFieldsMap = {
 			title: {
@@ -189,6 +195,7 @@ describe('generateTranslations', () => {
 	});
 
 	afterEach(() => {
+		tracker.reset();
 		vi.clearAllMocks();
 	});
 
@@ -1110,5 +1117,155 @@ describe('generateTranslations', () => {
 		});
 
 		expect(emitter.emitAction).not.toHaveBeenCalled();
+	});
+
+	test('sorts new fields by parent collection field order when adding to existing translation collection', async () => {
+		const schema = createSchemaWithTranslations();
+
+		// Add subtitle field to parent schema
+		schema.collections.articles.fields['subtitle'] = { type: 'string' };
+
+		// title already exists in translations, body and subtitle are new
+		schema.collections.articles_translations.fields['title'] = { type: 'string' };
+
+		sourceFieldsMap['subtitle'] = {
+			field: 'subtitle',
+			type: 'string',
+			schema: { default_value: null, max_length: 255, numeric_precision: null, numeric_scale: null },
+			meta: { sort: 2, special: null },
+		};
+
+		sourceFieldsMap['body'] = {
+			field: 'body',
+			type: 'text',
+			schema: { default_value: null, max_length: null, numeric_precision: null, numeric_scale: null },
+			meta: { sort: 3, special: null },
+		};
+
+		// Reset tracker and set up specific responses
+		tracker.reset();
+
+		// First select: parent collection fields with sort order
+		tracker.on.select('directus_fields').responseOnce([
+			{ field: 'id', sort: 1 },
+			{ field: 'title', sort: 2 },
+			{ field: 'subtitle', sort: 3 },
+			{ field: 'body', sort: 4 },
+		]);
+
+		// Second select: existing translation collection fields
+		tracker.on.select('directus_fields').responseOnce([
+			{ field: 'id', sort: 1 },
+			{ field: 'articles_id', sort: 2 },
+			{ field: 'languages_code', sort: 3 },
+			{ field: 'title', sort: 4 },
+		]);
+
+		// Updates for shifting existing fields
+		tracker.on.update('directus_fields').response(1);
+
+		const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue(undefined as any);
+
+		const result = await generateTranslations(
+			{
+				collection: 'articles',
+				translationsCollection: 'articles_translations',
+				fields: ['body', 'subtitle'],
+			},
+			{
+				knex: database as any,
+				schema,
+			},
+		);
+
+		expect(createFieldSpy).toHaveBeenCalledTimes(2);
+
+		// subtitle (parent sort=3) should be created before body (parent sort=4)
+		const firstCallField = createFieldSpy.mock.calls[0]![1];
+		const secondCallField = createFieldSpy.mock.calls[1]![1];
+
+		expect(firstCallField.field).toBe('subtitle');
+		expect(secondCallField.field).toBe('body');
+
+		// Verify sort values are set: subtitle=5, body=6 (after existing title=4)
+		expect((firstCallField as any).meta.sort).toBe(5);
+		expect((secondCallField as any).meta.sort).toBe(6);
+
+		expect(result).toEqual({
+			created: false,
+			translationsCollection: 'articles_translations',
+			fields: ['body', 'subtitle'],
+		});
+	});
+
+	test('shifts existing translation field sort values when new field is inserted before them', async () => {
+		const schema = createSchemaWithTranslations();
+
+		// body already exists in translations, subtitle is new and sorts before body in parent
+		schema.collections.articles.fields['subtitle'] = { type: 'string' };
+		schema.collections.articles_translations.fields['body'] = { type: 'text' };
+
+		sourceFieldsMap['subtitle'] = {
+			field: 'subtitle',
+			type: 'string',
+			schema: { default_value: null, max_length: 255, numeric_precision: null, numeric_scale: null },
+			meta: { sort: 2, special: null },
+		};
+
+		tracker.reset();
+
+		// Parent fields: subtitle (sort=2) comes before body (sort=3)
+		tracker.on.select('directus_fields').responseOnce([
+			{ field: 'id', sort: 1 },
+			{ field: 'title', sort: 2 },
+			{ field: 'subtitle', sort: 3 },
+			{ field: 'body', sort: 4 },
+		]);
+
+		// Existing translation fields: body is at sort=4
+		tracker.on.select('directus_fields').responseOnce([
+			{ field: 'id', sort: 1 },
+			{ field: 'articles_id', sort: 2 },
+			{ field: 'languages_code', sort: 3 },
+			{ field: 'body', sort: 4 },
+		]);
+
+		const updateQueries: { field: string; sort: number }[] = [];
+
+		tracker.on.update('directus_fields').response((rawQuery: any) => {
+			const bindings = rawQuery.bindings ?? [];
+
+			// knex update bindings: [newSortValue, collection, field]
+			if (bindings.length >= 3) {
+				updateQueries.push({ field: bindings[2] as string, sort: bindings[0] as number });
+			}
+
+			return 1;
+		});
+
+		const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue(undefined as any);
+
+		await generateTranslations(
+			{
+				collection: 'articles',
+				translationsCollection: 'articles_translations',
+				fields: ['subtitle'],
+			},
+			{
+				knex: database as any,
+				schema,
+			},
+		);
+
+		expect(createFieldSpy).toHaveBeenCalledTimes(1);
+
+		const createdField = createFieldSpy.mock.calls[0]![1];
+
+		// subtitle (parent sort=3) should be inserted at sort=4, body shifted to sort=5
+		expect(createdField.field).toBe('subtitle');
+		expect((createdField as any).meta.sort).toBe(4);
+
+		// body should have been updated from sort=4 to sort=5
+		expect(updateQueries).toContainEqual({ field: 'body', sort: 5 });
 	});
 });
