@@ -217,6 +217,71 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
+		describe('Relational depth with json()', () => {
+			describe('allows json() with a deep json path in the second arg', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// json(category_id.metadata, a.b.c.d.e) has relational depth 2 —
+					// only the first arg (category_id.metadata) counts, not the json path.
+					// Naive dot-splitting of the whole string would give depth 6, wrongly
+					// exceeding MAX_RELATIONAL_DEPTH(5).
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArticles}`)
+						.query({
+							fields: 'id,json(category_id.metadata, a.b.c.d.e)',
+							limit: 1,
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+				});
+			});
+
+			describe('denies json() when first arg relational path exceeds depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// json(a.b.c.d.e.f, key): first arg has depth 6 > MAX_RELATIONAL_DEPTH(5)
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArticles}`)
+						.query({
+							fields: 'id,json(a.b.c.d.e.f, key)',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
+				});
+			});
+
+			describe('denies json() when relational prefix combined with first arg exceeds depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// a.b.c.d.json(e.metadata, key): functionDepth(4) + fieldDepth(2) = 6 > MAX_RELATIONAL_DEPTH(5)
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArticles}`)
+						.query({
+							fields: 'id,a.b.c.d.json(e.metadata, key)',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
+				});
+			});
+
+			describe('denies json() when json path depth exceeds limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// json(metadata, a.b.c.d.e.f.g.h.i.j.k): json path has depth 11 > MAX_JSON_QUERY_DEPTH(10)
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArticles}`)
+						.query({
+							fields: 'id,json(metadata, a.b.c.d.e.f.g.h.i.j.k)',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors[0].message).toContain('JSON path depth');
+				});
+			});
+		});
+
 		describe('Error handling', () => {
 			describe('silently ignores non-existent relation in json()', () => {
 				it.each(vendors)('%s', async (vendor) => {
@@ -283,7 +348,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionArticles}`)
 						.query({
 							fields: 'id,title,json(category_id.metadata, color)',
-							sort: '-id',
+							sort: '-title',
 							limit: 2,
 						})
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
@@ -293,15 +358,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toBeDefined();
 					expect(response.body.data).toHaveLength(2);
 
-					// Results should be in descending order by id
-					const firstId = response.body.data[0].id;
-					const secondId = response.body.data[1].id;
-
-					if (pkType === 'integer') {
-						expect(Number(firstId) > Number(secondId)).toBe(true);
-					} else {
-						expect(firstId > secondId).toBe(true);
-					}
+					// Results should be in descending order by title.
+					// Sorting by title (varchar) gives consistent lexicographic ordering across all
+					// vendors. Sorting by id for uuid pkType is unreliable because MSSQL sorts
+					// uniqueidentifier by an internal byte order that differs from JS string comparison.
+					const firstTitle = response.body.data[0].title;
+					const secondTitle = response.body.data[1].title;
+					expect(firstTitle > secondTitle).toBe(true);
 				});
 			});
 		});

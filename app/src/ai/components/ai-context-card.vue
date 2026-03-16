@@ -11,9 +11,11 @@ type ContextItem = ContextAttachment | PendingContextItem;
 const props = withDefaults(
 	defineProps<{
 		item: ContextItem;
+		imageUrl?: string;
 		removable?: boolean;
 	}>(),
 	{
+		imageUrl: undefined,
 		removable: false,
 	},
 );
@@ -41,6 +43,10 @@ const icon = computed(() => {
 		case 'prompt':
 			return 'magic_button';
 
+		case 'file':
+		case 'local-file':
+			return 'description';
+
 		default:
 			return 'attachment';
 	}
@@ -48,8 +54,13 @@ const icon = computed(() => {
 </script>
 
 <template>
-	<div class="ai-context-card" :class="{ removable }" @mouseenter="emit('mouseenter')" @mouseleave="emit('mouseleave')">
-		<div class="icon-wrapper">
+	<div
+		:class="['ai-context-card', { removable, 'has-image': imageUrl }]"
+		@mouseenter="emit('mouseenter')"
+		@mouseleave="emit('mouseleave')"
+	>
+		<img v-if="imageUrl" :src="imageUrl" :alt="item.display" class="chip-image" />
+		<div v-else class="icon-wrapper">
 			<VIcon :name="icon" x-small class="item-icon" />
 		</div>
 		<VTextOverflow :text="String(item.display)" class="display-text" />
@@ -63,16 +74,16 @@ const icon = computed(() => {
 .ai-context-card {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 4px 6px;
+	gap: 0.3125rem;
+	padding: 0.25rem 0.3125rem;
 	flex: 0 0 auto;
-	max-inline-size: 150px;
+	max-inline-size: 8.4375rem;
 	background-color: var(--theme--background);
 	border: 1px solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
 
 	&.removable {
-		max-inline-size: 125px;
+		max-inline-size: 7.0625rem;
 		cursor: pointer;
 		transition:
 			border-color var(--fast) var(--transition),
@@ -83,12 +94,16 @@ const icon = computed(() => {
 			background-color: var(--theme--background-normal);
 		}
 	}
+
+	&.has-image {
+		padding-inline-start: 0.25rem;
+	}
 }
 
 .icon-wrapper {
 	flex-shrink: 0;
 	background-color: var(--theme--primary-background);
-	padding: 2px;
+	padding: 0.125rem;
 	border-radius: var(--theme--border-radius);
 	display: flex;
 	align-items: center;
@@ -99,10 +114,18 @@ const icon = computed(() => {
 	--v-icon-color: var(--purple);
 }
 
+.chip-image {
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
+	object-fit: cover;
+	border-radius: var(--theme--border-radius);
+	flex-shrink: 0;
+}
+
 .display-text {
 	flex: 1;
 	min-inline-size: 0;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 	line-height: 1.3;
@@ -114,8 +137,8 @@ const icon = computed(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 2px;
-	border-radius: 4px;
+	padding: 0.125rem;
+	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	opacity: 0.5;
 	flex-shrink: 0;

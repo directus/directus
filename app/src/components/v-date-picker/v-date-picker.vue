@@ -202,6 +202,7 @@ function setCalendarMonth(month: number): void {
 	// Note: This changes the selected date (not just the view month).
 	// If later we decide to decouple “view month” from “selected date”, we can introduce separate state.
 	calendarValue.value = new CalendarDate(year, month, day);
+	emitValue();
 }
 
 function setCalendarYear(year: number): void {
@@ -212,6 +213,7 @@ function setCalendarYear(year: number): void {
 
 	// Note: This changes the selected date (not just the view year).
 	calendarValue.value = new CalendarDate(year, month, day);
+	emitValue();
 }
 
 function handleMonthChange(value: number | null): void {
@@ -344,13 +346,13 @@ function setToNow() {
 <style lang="scss" scoped>
 .v-date-picker {
 	.icon {
-		inline-size: 1.5rem;
-		block-size: 1.5rem;
+		inline-size: 1.1875rem;
+		block-size: 1.1875rem;
 	}
 
 	.calendar {
 		font-family: var(--v-input-font-family);
-		font-size: 1rem;
+		font-size: 0.8125rem;
 		background: var(--theme--form--field--input--background);
 		border-radius: var(--theme--border-radius);
 		box-shadow: none;
@@ -362,15 +364,15 @@ function setToNow() {
 		align-items: center;
 		color: var(--theme--foreground-accent);
 		background: var(--theme--background-normal);
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-nav-button {
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		inline-size: 2.5rem;
-		block-size: 2.5rem;
+		inline-size: 2rem;
+		block-size: 2rem;
 		color: var(--theme--foreground-accent);
 		background-color: transparent;
 		cursor: pointer;
@@ -382,7 +384,7 @@ function setToNow() {
 
 	.calendar-heading {
 		font-weight: 600;
-		font-size: 1.25rem;
+		font-size: 1rem;
 		color: var(--theme--primary);
 	}
 
@@ -402,28 +404,28 @@ function setToNow() {
 	}
 
 	.calendar-grid-body {
-		margin-block-start: 0.25rem;
+		margin-block-start: 0.1875rem;
 	}
 
 	.calendar-grid-row {
 		display: grid;
-		margin-block-end: 0.25rem;
+		margin-block-end: 0.1875rem;
 		grid-template-columns: repeat(7, minmax(0, 1fr));
 		inline-size: 100%;
 	}
 
 	.calendar-head-cell {
-		border-radius: 0.375rem;
-		font-size: 0.85rem;
-		line-height: 1rem;
+		border-radius: 0.3125rem;
+		font-size: 0.6875rem;
+		line-height: 1.1818;
 		color: var(--theme--foreground-accent);
 		font-weight: 600;
 	}
 
 	.calendar-cell {
 		position: relative;
-		font-size: 0.875rem;
-		line-height: 1.25rem;
+		font-size: 0.6875rem;
+		line-height: 1.4545;
 		text-align: center;
 	}
 
@@ -435,8 +437,8 @@ function setToNow() {
 		border-width: 2px;
 		border-style: solid;
 		border-color: transparent;
-		font-size: 1rem;
-		line-height: 2.65rem;
+		font-size: 0.8125rem;
+		line-height: 2.5385;
 		font-weight: 500;
 		border-radius: var(--theme--border-radius);
 		color: var(--theme--foreground);
@@ -467,7 +469,7 @@ function setToNow() {
 	}
 
 	.calendar-cell-trigger[data-selected]:focus {
-		--focus-ring-offset: 2px; // Avoid reset by _base.scss L52-60
+		--focus-ring-offset: 2px; /* stylelint-disable-line unit-disallowed-list */ // Avoid reset by _base.scss L52-60
 		outline: var(--focus-ring-width) solid var(--focus-ring-color);
 		outline-offset: var(--focus-ring-offset);
 	}
@@ -483,18 +485,18 @@ function setToNow() {
 
 	.calendar-header-inputgroup {
 		display: inline-flex;
-		gap: 0.5rem;
+		gap: 0.375rem;
 		align-items: center;
 		justify-content: center;
-		padding: 0.5rem 0;
+		padding: 0.375rem 0;
 		inline-size: auto;
-		font-size: 16px;
+		font-size: 0.875rem;
 		font-weight: 600;
 	}
 
 	.calendar-year-input {
 		--v-input-font-family: inherit;
-		block-size: 28px;
+		block-size: 1.5625rem;
 		background-color: transparent;
 
 		:deep(.input) {
@@ -517,15 +519,15 @@ function setToNow() {
 	.time-field {
 		display: flex;
 		align-items: center;
-		border-radius: 0.25rem;
-		gap: 0.25rem;
+		border-radius: 0.1875rem;
+		gap: 0.1875rem;
 		border-width: 1px;
 		text-align: center;
 		user-select: none;
 	}
 
 	.time-field-segment {
-		padding: 1rem 1.5rem;
+		padding: 0.8125rem 1.1875rem;
 		background: var(--theme--form--field--input--background-subdued);
 	}
 
@@ -540,7 +542,7 @@ function setToNow() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-today-button {
@@ -549,9 +551,9 @@ function setToNow() {
 		inline-size: 100%;
 		cursor: pointer;
 		color: var(--theme--primary);
-		font-size: 1rem;
+		font-size: 0.8125rem;
 		font-weight: 600;
-		padding: 0.5rem;
+		padding: 0.375rem;
 	}
 
 	.calendar-today-button:focus,

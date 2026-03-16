@@ -261,7 +261,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 						@click="editModalActive = true"
 					/>
 
-					<VIcon v-if="enableSelect" class="expand" name="expand_more" />
+					<VIcon v-if="enableSelect" class="expand" name="expand_more" clickable @click="selectModalActive = true" />
 				</template>
 			</div>
 		</VListItem>

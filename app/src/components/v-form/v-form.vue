@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { ContentVersion, Field, ValidationError } from '@directus/types';
+import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import VDivider from '../v-divider.vue';
@@ -16,6 +16,7 @@ import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import { CollabContext } from '@/composables/use-collab';
 import { useFieldsStore } from '@/stores/fields';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -45,7 +46,7 @@ const props = withDefaults(
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
-		version?: ContentVersion | null;
+		version?: ContentVersionMaybeNew | null;
 		comparison?: ComparisonContext;
 		collabContext?: CollabContext;
 	}>(),
@@ -100,8 +101,8 @@ const { width } = useElementSize(el);
 const gridClass = computed<string | null>(() => {
 	if (el.value === null) return null;
 
-	// 856 (drawer width) - 2 * 24 (content-padding) = 808
-	if (width.value > 808) {
+	// 770 (drawer width) - 2 * 22 (content-padding) = 726
+	if (width.value > 726) {
 		return 'grid with-fill';
 	} else {
 		return 'grid';
@@ -550,7 +551,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 }
 
 .v-divider {
-	margin-block-end: 50px;
+	margin-block-end: 2.8125rem;
 	grid-column: 1 / 3;
 }
 

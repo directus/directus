@@ -229,22 +229,22 @@ function useComparisonIndicator() {
 
 .v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	inset-block-start: 7px;
-	inset-inline-start: -7px;
+	inset-block-start: 0.375rem;
+	inset-inline-start: -0.375rem;
 	display: block;
-	inline-size: 4px;
-	block-size: 4px;
+	inline-size: 0.25rem;
+	block-size: 0.25rem;
 	background-color: var(--theme--form--field--input--foreground-subdued);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 	content: '';
 }
 
 .header-icon {
-	margin-inline-end: 12px !important;
+	margin-inline-end: 0.6875rem !important;
 }
 
 .warning {
-	margin-inline-start: 8px;
+	margin-inline-start: 0.4375rem;
 	color: var(--theme--danger);
 }
 </style>

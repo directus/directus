@@ -5,6 +5,7 @@ import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import sdk from '@/sdk';
 
 vi.mock('@/sdk', async () => {
 	const { mockSdk } = await import('@/test-utils/sdk');
@@ -273,6 +274,56 @@ describe('test o2m relation', () => {
 			$type: 'updated',
 			$index: 0,
 		});
+	});
+
+	test('should use "_null" operator in filter when item id is "null"', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: null },
+		});
+
+		await flushPromises();
+
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(
+			expect.objectContaining({
+				params: expect.objectContaining({
+					filter: {
+						_and: [
+							{
+								facility: {
+									_null: true,
+								},
+							},
+						],
+					},
+				}),
+			}),
+		);
+	});
+
+	test('should use value directly in filter when item id is defined', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		expect(sdkSpy.mock.lastCall?.[0]()).toEqual(
+			expect.objectContaining({
+				params: expect.objectContaining({
+					filter: {
+						_and: [
+							{
+								facility: 1,
+							},
+						],
+					},
+				}),
+			}),
+		);
 	});
 
 	test('Initial data should be cleared when itemId changes to new item', async () => {

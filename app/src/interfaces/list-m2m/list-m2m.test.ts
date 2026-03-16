@@ -1,7 +1,7 @@
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref } from 'vue';
 import ListM2M from './list-m2m.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -50,10 +50,18 @@ vi.mock('@/composables/use-relation-permissions', () => ({
 	}),
 }));
 
+const mockGetField = vi.hoisted(() => vi.fn(() => null as any));
+const mockGetWidth = vi.hoisted(() => vi.fn((_key: string, defaultWidth: number) => defaultWidth));
+const mockUpdateWidths = vi.hoisted(() => vi.fn());
+
+vi.mock('@/composables/use-column-widths', () => ({
+	useColumnWidths: () => ({ getWidth: mockGetWidth, updateWidths: mockUpdateWidths }),
+}));
+
 vi.mock('@/stores/fields', () => ({
 	useFieldsStore: () => ({
 		getFieldsForCollection: vi.fn(() => []),
-		getField: vi.fn(() => null),
+		getField: mockGetField,
 		getPrimaryKeyFieldForCollection: vi.fn(() => ({ field: 'id' })),
 	}),
 }));
@@ -147,6 +155,19 @@ const tableGlobal: GlobalMountOptions = {
 const tableGlobalWithRouterLink: GlobalMountOptions = {
 	...tableGlobal,
 	stubs: { ...tableGlobal.stubs, RouterLink: routerLinkStub },
+};
+
+const tableGlobalWithHeaderEmit: GlobalMountOptions = {
+	...global,
+	stubs: {
+		...global.stubs,
+		VTable: {
+			name: 'VTable',
+			template: '<div class="v-table" />',
+			props: ['modelValue', 'headers', 'items'],
+			emits: ['update:headers'],
+		},
+	},
 };
 
 const listProps = {
@@ -302,6 +323,61 @@ describe('list-m2m', () => {
 
 				expect(wrapper.find('.item-actions').exists()).toBe(true);
 				expect(wrapper.find('.item-actions v-remove-stub').exists()).toBe(true);
+			});
+		});
+
+		describe('column width persistence', () => {
+			beforeEach(() => {
+				mockGetField.mockReset();
+				mockGetWidth.mockImplementation((_key: string, defaultWidth: number) => defaultWidth);
+				mockUpdateWidths.mockReset();
+			});
+
+			it('only calls updateWidths for columns whose width changed', async () => {
+				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
+				// getWidth returns 144 (default), so any other value counts as a resize
+				mockGetWidth.mockReturnValue(144);
+
+				const wrapper = mount(ListM2M, {
+					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
+					global: tableGlobalWithHeaderEmit,
+				});
+
+				const vTable = wrapper.findComponent({ name: 'VTable' });
+
+				// Emit a resize: 'name' changes to 250, different from stored 144
+				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 250 }]);
+				expect(mockUpdateWidths).toHaveBeenCalledWith([{ text: 'Name', value: 'name', width: 250 }]);
+			});
+
+			it('does not call updateWidths when no width changed', async () => {
+				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
+				mockGetWidth.mockReturnValue(144);
+
+				const wrapper = mount(ListM2M, {
+					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
+					global: tableGlobalWithHeaderEmit,
+				});
+
+				const vTable = wrapper.findComponent({ name: 'VTable' });
+
+				// Emit same width as currently rendered — no actual resize
+				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 144 }]);
+				expect(mockUpdateWidths).not.toHaveBeenCalled();
+			});
+
+			it('uses getWidth to restore stored column widths on mount', async () => {
+				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
+				mockGetWidth.mockReturnValue(300); // simulate a stored width of 300
+
+				const wrapper = mount(ListM2M, {
+					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
+					global: tableGlobalWithHeaderEmit,
+				});
+
+				const vTable = wrapper.findComponent({ name: 'VTable' });
+				const headers = vTable.props('headers') as Array<{ value: string; width: number }>;
+				expect(headers?.find((h) => h.value === 'name')?.width).toBe(300);
 			});
 		});
 	});

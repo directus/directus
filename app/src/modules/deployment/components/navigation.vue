@@ -12,21 +12,31 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
+const isAdmin = useUserStore().isAdmin;
+const canReadRuns = usePermissionsStore().hasPermission('directus_deployment_runs', 'read');
 const { providers, loading, openProviders, fetch, currentProviderKey, currentProjectId } = useDeploymentNavigation();
 
 const isSettingsPage = computed(() => route.name === 'deployments-provider-settings');
 
 const providerItems = computed(() => {
-	return providers.value.map((provider) => {
+	const items = isAdmin ? providers.value : providers.value.filter((p) => (p.projects?.length ?? 0) > 0 && canReadRuns);
+
+	return items.map((provider) => {
 		const hasProjects = (provider.projects?.length ?? 0) > 0;
+		let link = `/deployments/${provider.provider}`;
+
+		if (!hasProjects && isAdmin) {
+			link = `/deployments/${provider.provider}/settings`;
+		}
 
 		return {
 			...provider,
 			hasProjects,
-			// Redirect to settings if no projects has been selected
-			link: hasProjects ? `/deployments/${provider.provider}` : `/deployments/${provider.provider}/settings`,
+			link,
 		};
 	});
 });
@@ -71,7 +81,7 @@ onMounted(async () => {
 				"
 				:value="provider.provider"
 				scope="deployment-navigation"
-				:arrow-placement="provider.hasProjects ? 'after' : false"
+				:arrow-placement="provider.hasProjects && canReadRuns ? 'after' : false"
 			>
 				<template #activator>
 					<VListItemIcon><VIcon :name="provider.provider" /></VListItemIcon>
@@ -80,7 +90,7 @@ onMounted(async () => {
 					</VListItemContent>
 				</template>
 
-				<template v-if="provider.hasProjects">
+				<template v-if="provider.hasProjects && canReadRuns">
 					<VListItem
 						v-for="project in provider.projects"
 						:key="project.id"
@@ -94,6 +104,7 @@ onMounted(async () => {
 					</VListItem>
 
 					<VListItem
+						v-if="isAdmin"
 						:to="`/deployments/${provider.provider}/settings`"
 						:active="isSettingsPage && currentProviderKey === provider.provider"
 					>

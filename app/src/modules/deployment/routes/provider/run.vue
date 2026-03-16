@@ -21,6 +21,7 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import LogsDisplay from '@/modules/settings/routes/system-logs/components/logs-display.vue';
 import type { Log as SystemLog } from '@/modules/settings/routes/system-logs/types';
 import { sdk } from '@/sdk';
+import { usePermissionsStore } from '@/stores/permissions';
 import { formatDurationMs } from '@/utils/format-duration-ms';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -34,6 +35,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { currentProject } = useDeploymentNavigation();
+const canCancel = usePermissionsStore().hasPermission('directus_deployment_runs', 'update');
 
 const loading = ref(true);
 const canceling = ref(false);
@@ -119,10 +121,10 @@ const displayLogs = computed<SystemLog[]>(() =>
 );
 
 const duration = computed(() => {
-	if (!run.value) return '—';
+	if (!run.value?.started_at) return '—';
 
-	const start = new Date(run.value.date_created).getTime();
-	const end = run.value.finished_at ? new Date(run.value.finished_at).getTime() : Date.now();
+	const start = new Date(run.value.started_at).getTime();
+	const end = run.value.completed_at ? new Date(run.value.completed_at).getTime() : Date.now();
 
 	return formatDurationMs(end - start);
 });
@@ -142,9 +144,9 @@ async function loadRun() {
 		// Append or replace logs
 		if (data.logs && data.logs.length > 0) {
 			if (lastLogTimestamp.value) {
-				logs.value = [...logs.value, ...data.logs];
+				logs.value = [...logs.value, ...data.logs] as DeploymentLog[];
 			} else {
-				logs.value = data.logs;
+				logs.value = data.logs as DeploymentLog[];
 			}
 
 			const lastLog = data.logs[data.logs.length - 1];
@@ -268,7 +270,7 @@ onUnmounted(() => {
 				</span>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="isBuilding"
+					v-if="isBuilding && canCancel"
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
 					icon="dangerous"
 					secondary
@@ -381,7 +383,7 @@ onUnmounted(() => {
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .content {
@@ -392,16 +394,16 @@ onUnmounted(() => {
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
-	margin-block-end: 24px;
+	gap: 0.875rem;
+	margin-block-end: 1.375rem;
 
 	// 2 columns
-	@media (max-width: 1512px) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
 	// 1 column
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -409,8 +411,8 @@ onUnmounted(() => {
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 12px 16px;
+	gap: 0.4375rem;
+	padding: 0.6875rem 0.875rem;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	min-inline-size: 0;
@@ -444,9 +446,9 @@ onUnmounted(() => {
 
 .log-filters {
 	display: flex;
-	gap: 32px;
+	gap: 1.8125rem;
 	flex-wrap: wrap;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .filter-field {
@@ -455,7 +457,7 @@ onUnmounted(() => {
 }
 
 .filter-icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .search-input {
@@ -463,7 +465,7 @@ onUnmounted(() => {
 	border: none;
 	border-radius: 0;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
-	inline-size: 200px;
+	inline-size: 11.25rem;
 	background: transparent;
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
@@ -483,9 +485,9 @@ onUnmounted(() => {
 	flex-direction: column;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
-	padding: 16px;
-	min-block-size: 400px;
-	max-block-size: calc(100vh - 400px);
+	padding: 0.875rem;
+	min-block-size: 22.5rem;
+	max-block-size: calc(100vh - 22.5rem);
 	overflow: hidden;
 }
 
@@ -500,12 +502,12 @@ onUnmounted(() => {
 .actions-wrapper {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .currently-deploying {
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Filter, Item } from '@directus/types';
+import type { Filter, Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -170,7 +170,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 .preview {
 	display: block;
 	flex-grow: 1;
-	block-size: calc(100% - 16px);
+	block-size: calc(100% - 0.875rem);
 	overflow: hidden;
 }
 </style>
