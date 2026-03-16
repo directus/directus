@@ -5,8 +5,14 @@ import { useLogger } from '../../../logger/index.js';
 import cacheClear from './clear.js';
 
 vi.mock('@directus/env');
-vi.mock('../../../cache.js');
-vi.mock('../../../logger/index.js');
+
+vi.mock('../../../cache.js', () => ({
+	flushCaches: vi.fn(),
+}));
+
+vi.mock('../../../logger/index.js', () => ({
+	useLogger: vi.fn(),
+}));
 
 describe('cache clear command', () => {
 	let mockLogger: any;
