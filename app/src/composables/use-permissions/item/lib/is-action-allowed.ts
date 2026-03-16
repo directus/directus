@@ -1,6 +1,6 @@
 import { useCollection } from '@directus/composables';
 import { ItemPermissions } from '@directus/types';
-import { computed, ref, Ref, unref } from 'vue';
+import { computed, MaybeRef, ref, Ref, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
@@ -10,6 +10,7 @@ export const isActionAllowed = (
 	isNew: IsNew,
 	fetchedItemPermissions: Ref<ItemPermissions>,
 	action: 'update' | 'delete' | 'share',
+	isVersion: MaybeRef<boolean> = false,
 ) => {
 	const { info: collectionInfo } = useCollection(ref(collection));
 	const userStore = useUserStore();
@@ -22,6 +23,10 @@ export const isActionAllowed = (
 		if (collectionInfo.value?.type === 'view' && ['update', 'delete'].includes(action)) return false;
 
 		if (unref(isNew)) return false;
+
+		// Version editing bypasses underlying collection write permissions.
+		// Field-level access is enforced by the backend at promote time.
+		if (action === 'update' && unref(isVersion)) return true;
 
 		if (userStore.isAdmin) return true;
 
