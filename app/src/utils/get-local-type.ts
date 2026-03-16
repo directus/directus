@@ -1,5 +1,4 @@
 import { LocalType, Relation } from '@directus/types';
-import { getRelation } from '@directus/utils';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 
@@ -40,9 +39,15 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 			return 'm2a';
 		}
 
-		const relationForCurrent = getRelation(relations, collection, field);
+		const directRelation = relations.find(
+			(relation) =>
+				relation.collection === collection &&
+				relation.field === field &&
+				relation.meta !== null &&
+				!relation.meta.junction_field,
+		);
 
-		if (relationForCurrent?.collection === collection && relationForCurrent?.field === field) {
+		if (directRelation) {
 			return 'm2o';
 		}
 
