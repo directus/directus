@@ -33,6 +33,10 @@ export function getFields(
 			}
 		}
 
+		// Version editing bypasses underlying collection write permissions entirely.
+		// Field-level access is enforced by the backend at promote time.
+		if (unref(isVersion)) return fields;
+
 		if (collectionInfo?.value?.type === 'view') {
 			for (const field of fields) {
 				(field as FormField).meta = {
@@ -44,10 +48,6 @@ export function getFields(
 
 			return fields;
 		}
-
-		// Version editing bypasses underlying collection write permissions entirely.
-		// Field-level access is enforced by the backend at promote time.
-		if (unref(isVersion)) return fields;
 
 		if (userStore.isAdmin) return fields;
 

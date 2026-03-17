@@ -284,7 +284,7 @@ export default class CockroachDB implements SchemaInspector {
 
 		const tables = results
 			.flatMap((r) => r.rows)
-			.filter((r) => r.type === 'table' || r.type === 'view' || r.type === 'materialized view');
+			.filter((r) => ['table', 'view', 'materialized view'].includes(r.type));
 
 		if (table) {
 			const tableInfo = tables.find((r) => r.table_name === table);

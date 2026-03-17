@@ -96,18 +96,6 @@ export default class Postgres implements SchemaInspector {
 			table_type: 'BASE TABLE' | 'VIEW';
 		};
 
-		type RawMatViewColumn = {
-			table_name: string;
-			column_name: string;
-			default_value: string | null;
-			data_type: string;
-			max_length: number | null;
-			is_identity: boolean;
-			is_nullable: boolean;
-			is_generated: boolean;
-			table_type: 'VIEW';
-		};
-
 		type RawGeometryColumn = {
 			table_name: string;
 			column_name: string;
@@ -164,7 +152,7 @@ export default class Postgres implements SchemaInspector {
 			),
 
 			// Materialized views and foreign tables don't appear in information_schema — query pg_class/pg_attribute directly
-			this.knex.raw<{ rows: RawMatViewColumn[] }>(
+			this.knex.raw<{ rows: RawColumn[] }>(
 				`
         SELECT
           rel.relname AS table_name,
@@ -220,6 +208,7 @@ export default class Postgres implements SchemaInspector {
 					AND ns.nspname IN (${bindings})
 				WHERE f_table_schema in (${bindings})
 				`,
+				// First set binds pg_namespace (rel join), second set binds f_table_schema (WHERE clause)
 				[...this.explodedSchema, ...this.explodedSchema],
 			);
 

@@ -212,6 +212,18 @@ describe('non-admin users', () => {
 			expect(result.value).toBe(true);
 			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
 		});
+
+		it('should be allowed for versions even on view collections', () => {
+			vi.mocked(useCollection).mockReturnValue({ info: { value: { type: 'view' } } } as any);
+
+			const permissionsStore = mockedStore(usePermissionsStore());
+			permissionsStore.getPermission.mockReturnValue(null);
+
+			const result = isActionAllowed(sample.collection, false, fetchedItemPermissions, 'update', true);
+
+			expect(result.value).toBe(true);
+			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
+		});
 	});
 
 	describe.each(['delete', 'share'] as const)('%s', (action) => {

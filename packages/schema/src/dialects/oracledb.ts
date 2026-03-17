@@ -163,7 +163,7 @@ export default class oracleDB implements SchemaInspector {
 						: undefined;
 
 				overview[column.table_name] = {
-					primary: primaryKey || fallbackPrimary || 'id',
+					primary: primaryKey || fallbackPrimary || (undefined as any),
 					columns: {},
 				};
 			}
@@ -262,6 +262,8 @@ export default class oracleDB implements SchemaInspector {
 				SELECT "TABLE_NAME" "name" FROM "USER_TABLES"
 				UNION ALL
 				SELECT "VIEW_NAME" "name" FROM "USER_VIEWS"
+				UNION ALL
+				SELECT "MVIEW_NAME" "name" FROM "USER_MVIEWS"
 			)
 			WHERE "name" = ?
 		`,

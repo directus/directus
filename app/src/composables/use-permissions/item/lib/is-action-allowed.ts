@@ -20,13 +20,14 @@ export const isActionAllowed = (
 		const collectionValue = unref(collection);
 
 		if (!collectionValue) return false;
-		if (collectionInfo.value?.type === 'view' && ['update', 'delete'].includes(action)) return false;
 
 		if (unref(isNew)) return false;
 
 		// Version editing bypasses underlying collection write permissions.
 		// Field-level access is enforced by the backend at promote time.
 		if (action === 'update' && unref(isVersion)) return true;
+
+		if (collectionInfo.value?.type === 'view' && ['update', 'delete'].includes(action)) return false;
 
 		if (userStore.isAdmin) return true;
 
