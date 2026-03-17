@@ -36,19 +36,19 @@ export const defaultRoutes: RouteRecordRaw[] = [
 				},
 			},
 			{
-				name: 'tfa-setup',
-				path: 'tfa-setup',
-				component: TFASetup,
-				meta: {
-					track: false,
-				},
-			},
-			{
 				name: 'private-404',
 				path: ':_(.+)+',
 				component: PrivateNotFoundRoute,
 			},
 		],
+	},
+	{
+		name: 'tfa-setup',
+		path: '/tfa-setup',
+		component: TFASetup,
+		meta: {
+			track: false,
+		},
 	},
 	{
 		name: 'setup',
