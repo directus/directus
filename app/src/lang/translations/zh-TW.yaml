@@ -161,7 +161,6 @@ keep: 保留
 version: 版本
 version_key: 版本鍵值
 version_name: 版本名稱
-main_version: 主要
 switch_version: 切換版本
 switch_version_copy: 您確定要切換到 「{version}」 版本嗎？未保存的變更將會遺失。
 create_version: 創建新版本

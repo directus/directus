@@ -155,7 +155,6 @@ keep: Saxla
 version: Versiya
 version_key: Versiya açarı
 version_name: Versiya adı
-main_version: Əsas
 switch_version: Versiyanı dəyiş
 switch_version_copy: Versiyanı {version} nömrəli versiyaya dəyişmək istədiyinizdən əminmisiniz? Yadda saxlanılmamış dəyişikliklər itəcək.
 create_version: Versiya yarat
