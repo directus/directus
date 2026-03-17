@@ -311,29 +311,27 @@ export default class MSSQL implements SchemaInspector {
 			throw new Error(`Schema '${this.schema}' not found.`);
 		}
 
-		const dbResult = await this.knex.transaction<RawColumn[] | RawColumn>(async (trx) => {
-			await trx.raw(`IF OBJECT_ID('tempdb..#IndexInfo') IS NOT NULL DROP TABLE #IndexInfo;`);
-
-			await trx.raw(`
-			SELECT
-				[ic].[object_id],
-				[ic].[column_id],
-				[ix].[is_unique],
-				[ix].[is_primary_key],
-				[ix].[name] as index_name,
-				MAX([ic].[index_column_id]) OVER (PARTITION BY [ic].[index_id], [ic].[object_id]) AS index_column_count,
-				ROW_NUMBER() OVER (
-					PARTITION BY [ic].[object_id], [ic].[column_id]
-					ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
-				) AS index_priority
-			INTO #IndexInfo
-			FROM [sys].[index_columns] ic
-			JOIN [sys].[indexes] ix ON [ix].[object_id] = [ic].[object_id] AND [ix].[index_id] = [ic].[index_id];`);
-
-			const query = trx
-				.with(
-					'FilteredIndexInfo',
-					this.knex.raw(`
+		const query = this.knex
+			.with(
+				'IndexInfo',
+				this.knex.raw(`
+				SELECT
+					[ic].[object_id],
+					[ic].[column_id],
+					[ix].[is_unique],
+					[ix].[is_primary_key],
+					[ix].[name] as index_name,
+					MAX([ic].[index_column_id]) OVER (PARTITION BY [ic].[index_id], [ic].[object_id]) AS index_column_count,
+					ROW_NUMBER() OVER (
+						PARTITION BY [ic].[object_id], [ic].[column_id]
+						ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
+					) AS index_priority
+				FROM [sys].[index_columns] ic
+				JOIN [sys].[indexes] ix ON [ix].[object_id] = [ic].[object_id] AND [ix].[index_id] = [ic].[index_id]`),
+			)
+			.with(
+				'FilteredIndexInfo',
+				this.knex.raw(`
 				SELECT
 					[object_id],
 					[column_id],
@@ -342,11 +340,11 @@ export default class MSSQL implements SchemaInspector {
 					[index_priority],
 					[index_name],
 					[index_column_count]
-				FROM #IndexInfo
+				FROM IndexInfo
 				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`),
-				)
-				.select(
-					trx.raw(`
+			)
+			.select(
+				this.knex.raw(`
 				[o].[name] AS [table],
 				[c].[name] AS [name],
 				[t].[name] AS [data_type],
@@ -361,7 +359,7 @@ export default class MSSQL implements SchemaInspector {
 				object_definition ([c].[default_object_id]) AS [default_value],
 				[i].[is_primary_key],
 				[i].[is_unique],
-				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
+				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN
 					[i].[index_name]
 				ELSE
 					NULL
@@ -377,41 +375,36 @@ export default class MSSQL implements SchemaInspector {
 				[fk].[referenced_column_id]) AS [foreign_key_column],
 				[cc].[is_computed] as [is_generated],
 				[cc].[definition] as [generation_expression]`),
-				)
-				.from(trx.raw(`??.[sys].[columns] [c]`, [dbName]))
-				.joinRaw(`JOIN [sys].[types] [t] ON [c].[user_type_id] = [t].[user_type_id]`)
-				.joinRaw(`JOIN [sys].[objects] [o] ON [o].[object_id] = [c].[object_id] AND [o].[type] IN ('U', 'V')`)
-				.joinRaw(`JOIN [sys].[schemas] [s] ON [s].[schema_id] = [o].[schema_id]`)
-				.joinRaw(
-					`LEFT JOIN [sys].[computed_columns] AS [cc] ON [cc].[object_id] = [c].[object_id] AND [cc].[column_id] = [c].[column_id]`,
-				)
-				.joinRaw(
-					`LEFT JOIN [sys].[foreign_key_columns] AS [fk] ON [fk].[parent_object_id] = [c].[object_id] AND [fk].[parent_column_id] = [c].[column_id]`,
-				)
-				.joinRaw(
-					`LEFT JOIN FilteredIndexInfo [i] ON [i].[object_id] = [c].[object_id] AND [i].[column_id] = [c].[column_id]`,
-				)
-				.where({ 's.schema_id': schemaId });
+			)
+			.from(this.knex.raw(`??.[sys].[columns] [c]`, [dbName]))
+			.joinRaw(`JOIN [sys].[types] [t] ON [c].[user_type_id] = [t].[user_type_id]`)
+			.joinRaw(`JOIN [sys].[objects] [o] ON [o].[object_id] = [c].[object_id] AND [o].[type] IN ('U', 'V')`)
+			.joinRaw(`JOIN [sys].[schemas] [s] ON [s].[schema_id] = [o].[schema_id]`)
+			.joinRaw(
+				`LEFT JOIN [sys].[computed_columns] AS [cc] ON [cc].[object_id] = [c].[object_id] AND [cc].[column_id] = [c].[column_id]`,
+			)
+			.joinRaw(
+				`LEFT JOIN [sys].[foreign_key_columns] AS [fk] ON [fk].[parent_object_id] = [c].[object_id] AND [fk].[parent_column_id] = [c].[column_id]`,
+			)
+			.joinRaw(
+				`LEFT JOIN FilteredIndexInfo [i] ON [i].[object_id] = [c].[object_id] AND [i].[column_id] = [c].[column_id]`,
+			)
+			.where({ 's.schema_id': schemaId });
 
-			if (table) {
-				query.andWhere({ 'o.name': table });
-			}
+		if (table) {
+			query.andWhere({ 'o.name': table });
+		}
 
-			if (column) {
-				// if a specific column is requested, return only the first record
-				query.andWhere({ 'c.name': column }).first();
-			}
+		if (column) {
+			// if a specific column is requested, return only the first record
+			query.andWhere({ 'c.name': column }).first();
+		}
 
-			const result = await query;
-
-			await trx.raw(`DROP TABLE #IndexInfo;`);
-
-			return result;
-		});
+		const dbResult = await query;
 
 		if (column) {
 			// if a specific column is requested, the db result is a single object
-			return rawColumnToColumn(dbResult as RawColumn);
+			return rawColumnToColumn(dbResult as unknown as RawColumn);
 		}
 
 		return (dbResult as RawColumn[]).map(rawColumnToColumn);
