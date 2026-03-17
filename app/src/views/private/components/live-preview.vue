@@ -84,6 +84,16 @@ const { visualEditingEnabled, showEditableElements, openInVisualEditor } = useVi
 const width = ref<number>();
 const height = ref<number>();
 const zoom = ref<number>(1);
+
+const zoomOptions = [
+	{ text: '25%', value: 0.25 },
+	{ text: '50%', value: 0.5 },
+	{ text: '75%', value: 0.75 },
+	{ text: '100%', value: 1 },
+	{ text: '150%', value: 1.5 },
+	{ text: '200%', value: 2 },
+];
+
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
@@ -393,7 +403,7 @@ function useUrls() {
 							@click="toggle"
 						>
 							<VTextOverflow :text="urlDisplay" placement="bottom" />
-							<VIcon v-if="multipleUrls" name="expand_more" />
+							<VIcon v-if="multipleUrls" small name="arrow_drop_down" />
 						</component>
 					</template>
 
@@ -431,19 +441,15 @@ function useUrls() {
 					:disabled="fullscreen"
 					@input="height = Number(($event as any).target.value)"
 				/>
-				<VSelect
-					v-model="zoom"
-					inline
-					:items="[
-						{ text: '25%', value: 0.25 },
-						{ text: '50%', value: 0.5 },
-						{ text: '75%', value: 0.75 },
-						{ text: '100%', value: 1 },
-						{ text: '150%', value: 1.5 },
-						{ text: '200%', value: 2 },
-					]"
-					:disabled="fullscreen"
-				/>
+
+				<VSelect v-model="zoom" :items="zoomOptions" :disabled="fullscreen" :attached="false" show-arrow>
+					<template #preview="{ toggle, active }">
+						<button type="button" :disabled="fullscreen" :aria-pressed="active" class="zoom-select" @click="toggle">
+							<span>{{ zoomOptions.find((option) => option.value === zoom)?.text || zoom }}</span>
+							<VIcon small name="arrow_drop_down" :class="{ active }" />
+						</button>
+					</template>
+				</VSelect>
 			</div>
 			<VButton
 				v-tooltip.bottom.start="$t('live_preview.change_size')"
@@ -683,6 +689,14 @@ function useUrls() {
 
 			&.disabled {
 				color: var(--preview--color-disabled);
+
+				.zoom-select {
+					cursor: not-allowed;
+				}
+			}
+
+			.zoom-select {
+				white-space: nowrap;
 			}
 		}
 
