@@ -48,7 +48,7 @@ export class FilesService extends ItemsService<File> {
 	 */
 	async uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<File> & { storage: string },
+		data: Partial<File>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
@@ -61,14 +61,18 @@ export class FilesService extends ItemsService<File> {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata')
+					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'storage')
 					.from('directus_files')
 					.where({ id: primaryKey })
 					.first()) ?? null;
 		}
 
 		// Merge the existing file's folder and filename_download with the new payload
-		const payload = { ...(existingFile ?? {}), ...clone(data) };
+		const payload = {
+			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
+			...(existingFile ?? {}),
+			...clone(data),
+		};
 
 		const disk = storage.location(payload.storage);
 
@@ -180,10 +184,10 @@ export class FilesService extends ItemsService<File> {
 			}
 		}
 
-		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
+		const { size } = await storage.location(payload.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
+		const metadata = await extractMetadata(payload.storage, payload as Parameters<typeof extractMetadata>[1]);
 
 		payload.uploaded_on = new Date().toISOString();
 
@@ -290,7 +294,6 @@ export class FilesService extends ItemsService<File> {
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
 			type: mimeType,
 			title: formatTitle(filename),
 			...(body || {}),

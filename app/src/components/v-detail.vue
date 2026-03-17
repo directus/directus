@@ -86,10 +86,10 @@ function toggle() {
 }
 
 .v-icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .content {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 }
 </style>

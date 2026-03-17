@@ -120,8 +120,8 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		justify-content: center;
 
 		video {
-			min-block-size: 80px;
-			min-inline-size: 80px;
+			min-block-size: 4.5rem;
+			min-inline-size: 4.5rem;
 		}
 	}
 
@@ -137,7 +137,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 	&.svg,
 	&.small {
 		.image {
-			padding: 64px;
+			padding: 3.625rem;
 		}
 	}
 

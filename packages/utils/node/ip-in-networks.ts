@@ -6,7 +6,7 @@ import { IpBlocklist } from './ip-blocklist.js';
  * @throws Will throw if list contains invalid network definitions
  */
 
-export function ipInNetworks(ip: string, networks: string[]) {
+export function ipInNetworks(ip: string, networks: string[]): boolean {
 	const blockList = new IpBlocklist();
 
 	for (const blockNetworkRaw of networks) {

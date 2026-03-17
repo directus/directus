@@ -51,12 +51,12 @@ const splitterCollapsed = computed({
 			size-unit="px"
 			collapsible
 			:collapse-threshold="70"
-			:min-size="220"
-			:max-size="340"
-			:snap-points="[250]"
+			:min-size="198"
+			:max-size="306"
+			:snap-points="[225]"
 			:snap-threshold="6"
 			:direction="userStore.textDirection"
-			divider-hit-area="24px"
+			divider-hit-area="1.375rem"
 			:transition-duration="125"
 			primary="start"
 			class="root-split"
@@ -126,13 +126,13 @@ const splitterCollapsed = computed({
 }
 
 .v-list.skip-menu.mobile-skip-menu {
-	/* 60 (module-bar) + 4 (spacing) */
-	inset-inline-start: 64px;
+	/* 54 (module-bar) + 4 (spacing) */
+	inset-inline-start: 3.625rem;
 }
 
 .mobile-nav {
 	inline-size: 0;
-	max-inline-size: 340px;
+	max-inline-size: 19.125rem;
 	flex-grow: 1;
 	flex-shrink: 1;
 }
