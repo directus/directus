@@ -83,6 +83,7 @@ describe('useSchemaOverview', () => {
 		expect(coll.note).toBe('a note');
 		expect(coll.singleton).toBe(false);
 		expect(coll.sortField).toBe('id');
+		expect(coll.readonly).toBe(false);
 
 		expect(coll.fields).toHaveProperty('id');
 

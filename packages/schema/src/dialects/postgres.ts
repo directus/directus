@@ -244,7 +244,7 @@ export default class Postgres implements SchemaInspector {
 			}
 		}
 
-		// Views don't have primary keys — fall back to `id` if available
+		// Views, materialized views, and foreign tables don't have primary keys — fall back to `id` if available
 		for (const column of columns) {
 			if (column.table_type !== 'VIEW') continue;
 

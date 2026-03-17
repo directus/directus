@@ -321,6 +321,7 @@ export default class CockroachDB implements SchemaInspector {
 			.select()
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
+			.whereIn('table_type', ['BASE TABLE', 'VIEW', 'MATERIALIZED VIEW'])
 			.andWhere({ table_name: table });
 
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();

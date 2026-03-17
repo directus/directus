@@ -1,6 +1,7 @@
 import { getUrl } from '@common/config';
 import { ClearCaches, DisableTestCachingSetup } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
+import { requestGraphQL } from '@common/transport';
 import { USER } from '@common/variables';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
@@ -31,12 +32,29 @@ describe('Views (read-only)', () => {
 
 				expect(response.statusCode).toBe(200);
 				expect(response.body.data.length).toBe(2);
+
 				expect(response.body.data).toEqual(
 					expect.arrayContaining([
 						expect.objectContaining({ name: 'item_a', value: 10 }),
 						expect.objectContaining({ name: 'item_b', value: 20 }),
 					]),
 				);
+			});
+		});
+
+		describe('can read items from a view via GraphQL', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				const gqlResponse = await requestGraphQL(getUrl(vendor), false, USER.ADMIN.TOKEN, {
+					query: {
+						[viewName]: {
+							name: true,
+							value: true,
+						},
+					},
+				});
+
+				expect(gqlResponse.statusCode).toBe(200);
+				expect(gqlResponse.body.data[viewName].length).toBe(2);
 			});
 		});
 	});

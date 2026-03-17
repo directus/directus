@@ -15,7 +15,7 @@ export const seedDBStructure = (): void => {
 				const db = knex(config.knexConfig[vendor]!);
 
 				// Clean up any previous runs (wrapped in catch for first-run scenarios)
-				await db.raw(`DROP VIEW ${viewName}`).catch(() => {});
+				await db.raw(`DROP VIEW ??`, [viewName]).catch(() => {});
 				await DeleteCollection(vendor, { collection: viewName }).catch(() => {});
 				await DeleteCollection(vendor, { collection: collectionSource }).catch(() => {});
 
@@ -54,8 +54,14 @@ export const seedDBStructure = (): void => {
 					item: { name: 'item_b', value: 20 },
 				});
 
-				// Create view via raw SQL (vendor-agnostic CREATE VIEW syntax)
-				await db.raw(`CREATE VIEW ${viewName} AS SELECT id, name, value FROM ${collectionSource}`);
+				// Use ?? bindings so knex quotes identifiers correctly per dialect
+				await db.raw(`CREATE VIEW ?? AS SELECT ??, ??, ?? FROM ??`, [
+					viewName,
+					'id',
+					'name',
+					'value',
+					collectionSource,
+				]);
 
 				await db.destroy();
 

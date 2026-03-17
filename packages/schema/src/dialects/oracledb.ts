@@ -260,6 +260,7 @@ export default class oracleDB implements SchemaInspector {
 				COUNT(*) "count"
 			FROM (
 				SELECT "TABLE_NAME" "name" FROM "USER_TABLES"
+					WHERE "TABLE_NAME" NOT IN (SELECT "MVIEW_NAME" FROM "USER_MVIEWS")
 				UNION ALL
 				SELECT "VIEW_NAME" "name" FROM "USER_VIEWS"
 				UNION ALL

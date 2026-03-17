@@ -219,6 +219,7 @@ export default class MySQL implements SchemaInspector {
 				table_schema: this.knex.client.database(),
 				table_name: table,
 			})
+			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW'])
 			.first();
 
 		return (result && result.count === 1) || false;

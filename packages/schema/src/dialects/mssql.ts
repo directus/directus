@@ -256,6 +256,7 @@ export default class MSSQL implements SchemaInspector {
 				table_name: table,
 				TABLE_SCHEMA: this.schema,
 			})
+			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW'])
 			.first();
 
 		return (result && result.count === 1) || false;

@@ -55,6 +55,49 @@ describe('getSchema', () => {
 		mockReadAll.mockResolvedValue([]);
 	});
 
+	test('marks regular tables as not readonly', async () => {
+		mockOverview.mockResolvedValue({
+			products: {
+				primary: 'id',
+				columns: {
+					id: {
+						column_name: 'id',
+						data_type: 'int',
+						is_nullable: false,
+						is_generated: false,
+						numeric_precision: 10,
+						numeric_scale: 0,
+					},
+				},
+			},
+		});
+
+		mockTableInfo.mockResolvedValue([
+			{
+				name: 'products',
+				type: 'table',
+			},
+		]);
+
+		const database = {
+			select: () => ({
+				from: (table: string) => {
+					if (table === 'directus_collections') return Promise.resolve([]);
+					if (table === 'directus_fields') return Promise.resolve([]);
+					return Promise.resolve([]);
+				},
+			}),
+		} as any;
+
+		const schema = await getSchema({ database, bypassCache: true });
+
+		expect(schema.collections.products).toMatchObject({
+			collection: 'products',
+			primary: 'id',
+			readonly: false,
+		});
+	});
+
 	test('marks view-backed collections as readonly', async () => {
 		mockOverview.mockResolvedValue({
 			order_view: {
