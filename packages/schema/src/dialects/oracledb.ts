@@ -154,13 +154,15 @@ export default class oracleDB implements SchemaInspector {
 
 				const isView = column.is_view === 1;
 
-				const fallbackPrimary =
-					isView &&
-					columns.some((nested: { table_name: string; column_name: string }) => {
-						return nested.table_name === column.table_name && nested.column_name === 'ID';
-					})
-						? 'ID'
-						: undefined;
+				// Oracle stores unquoted identifiers as uppercase, but quoted ones preserve case.
+				// Use case-insensitive comparison and return the actual column name.
+				const idColumn = isView
+					? columns.find((nested: { table_name: string; column_name: string }) => {
+							return nested.table_name === column.table_name && nested.column_name.toLowerCase() === 'id';
+						})
+					: undefined;
+
+				const fallbackPrimary = idColumn?.column_name;
 
 				overview[column.table_name] = {
 					primary: primaryKey || fallbackPrimary || (undefined as any),
