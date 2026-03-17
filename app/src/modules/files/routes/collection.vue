@@ -571,11 +571,11 @@ async function downloadFiles() {
 				v-bind="layoutState"
 				v-model:extra-selection="folderSelection"
 				:loading="layoutState.loading || isTransitioning"
-				:has-prepend-content="!isTransitioning && subfolders.length > 0"
+				:has-prepend-content="!isTransitioning && subfolders.length > 0 && !search && !filter"
 				:select-mode="layoutState.selectMode"
 				@select-all="folderSelection = subfolders.map((f) => f.id)"
 			>
-				<template v-if="!special" #prepend>
+				<template v-if="!special && !search && !filter" #prepend>
 					<FolderSection
 						v-model:selection="folderSelection"
 						:subfolders="subfolders"
