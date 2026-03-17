@@ -28,22 +28,26 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
-import { useItemPermissions } from '@/composables/use-permissions';
+import { useCollectionPermissions, useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { useFieldsStore } from '@/stores/fields';
 import { useUserStore } from '@/stores/user';
+import type { ContentVersionWithType } from '@/types/versions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
+import { validateItem } from '@/utils/validate-item';
 import { PrivateView } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -100,7 +104,62 @@ const {
 	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
+	publishVersionLoading,
+	publishVersion,
+	removeVersion,
 } = useVersions(collection, isSingleton, primaryKey);
+
+const comparisonModalActive = ref(false);
+
+const comparableVersion = computed(() => {
+  if (currentVersion.value === null || currentVersion.value.id === '+') return null;
+  return currentVersion.value as ContentVersionWithType;
+});
+
+const fieldsStore = useFieldsStore();
+
+const publishValidationNotice = ref(false);
+
+function onVersionPromote() {
+  const assembledItem = item.value ?? {};
+  const fields = fieldsStore.getFieldsForCollection(collection.value);
+
+  const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
+
+  if (errors.length > 0) {
+    versionValidationErrors.value = errors;
+    publishValidationNotice.value = true;
+    return;
+  }
+
+  versionValidationErrors.value = [];
+  publishValidationNotice.value = false;
+  comparisonModalActive.value = true;
+}
+
+async function onVersionPublish(opts: {
+  versionId: string;
+  mainHash: string;
+  fields: string[];
+  deleteOnPromote: boolean;
+}) {
+  comparisonModalActive.value = false;
+
+  try {
+    await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
+
+    if (opts.deleteOnPromote) {
+      await removeVersion(opts.versionId);
+    } else {
+      currentVersion.value = null;
+    }
+
+    refresh();
+    revisionsSidebarDetailRef.value?.refresh?.();
+  } catch {
+    // publishVersion / removeVersion handle unexpected errors
+  }
+}
 
 const {
 	isNew,
@@ -154,12 +213,16 @@ const {
 	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
 } = permissions;
 
+const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
+
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 const confirmDiscard = ref(false);
+
+
 
 const title = computed(() => {
 	if (te(`collection_names_singular.${props.collection}`)) {
@@ -294,6 +357,7 @@ const disabledOptions = computed(() => {
 
 watch(currentVersion, async () => {
 	edits.value = {};
+	publishValidationNotice.value = false;
 	await refreshLivePreview();
 });
 
@@ -695,6 +759,7 @@ function useItemNavigation() {
 					@update="updateVersion"
 					@delete="deleteVersion"
 					@switch="currentVersion = $event"
+					@promote="onVersionPromote"
 				/>
 			</div>
 		</template>
@@ -877,6 +942,18 @@ function useItemNavigation() {
 			:disabled="isMobile"
 		>
 			<template #start>
+				<VNotice
+					v-if="publishValidationNotice && versionValidationErrors.length > 0"
+					type="danger"
+					class="publish-validation-notice"
+					>
+					{{ $t('validation_errors_on_publish') }}
+					<ul>
+						<li v-for="validationError in versionValidationErrors" :key="validationError.field">
+						{{ fieldsStore.getField(collection, error.field)?.name ?? error.field }}
+						</li>
+					</ul>
+					</VNotice>
 				<VForm
 					ref="form"
 					v-model="edits"
@@ -919,6 +996,7 @@ function useItemNavigation() {
 			</template>
 		</SplitPanel>
 
+		<!-- Collab comparison modal -->
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
 			:collection="collection"
@@ -928,6 +1006,19 @@ function useItemNavigation() {
 			mode="collab"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
+		/>
+		<!-- Version promotion modal -->
+		<ComparisonModal
+			v-if="comparableVersion"
+			v-model="comparisonModalActive"
+			:delete-versions-allowed="deleteVersionsAllowed"
+			:collection="collection"
+			:primary-key="internalPrimaryKey"
+			mode="version"
+			:current-version="comparableVersion"
+			:publish-version-loading="publishVersionLoading"
+			@publish="onVersionPublish"
+			@cancel="comparisonModalActive = false"
 		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
@@ -1094,5 +1185,10 @@ function useItemNavigation() {
 
 .content-split.full-width :deep(.sp-end) {
 	border-inline-start: none;
+}
+
+.publish-validation-notice {
+  margin-inline: var(--content-padding);
+  margin-block-start: var(--content-padding);
 }
 </style>

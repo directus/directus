@@ -9,11 +9,15 @@ import { APIError } from '@/types/error';
 import type { ContentVersionMaybeNew, ContentVersionWithType, NewContentVersion } from '@/types/versions';
 import { unexpectedError } from '@/utils/unexpected-error';
 
+export interface PublishVersionOptions {
+	mainHash: string;
+	fields?: string[];
+}
+
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
-	const saveVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
@@ -91,42 +95,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		{ immediate: true },
 	);
 
-	return {
-		readVersionsAllowed,
-		currentVersion,
-		versions,
-		loading,
-		query,
-		getVersions,
-		addVersion,
-		updateVersion,
-		deleteVersion,
-		saveVersionLoading,
-		saveVersion,
-		validationErrors,
-	};
-
-	function saveVersionErrorHandler(error: any) {
-		if (error?.response?.data?.errors) {
-			validationErrors.value = error.response.data.errors
-				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
-				.map((err: APIError) => {
-					return err.extensions;
-				});
-
-			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
-			);
-
-			if (otherErrors.length > 0) {
-				otherErrors.forEach(unexpectedError);
-			}
-		} else {
-			unexpectedError(error);
-		}
-
-		throw error;
-	}
 
 	async function getVersions() {
 		if (!readVersionsAllowed.value) return;
@@ -191,6 +159,33 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
+	// Save version
+
+	const saveVersionLoading = ref(false);
+
+	function saveVersionErrorHandler(error: any) {
+		if (error?.response?.data?.errors) {
+			validationErrors.value = error.response.data.errors
+				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
+				.map((err: APIError) => {
+					return err.extensions;
+				});
+
+			const otherErrors = error.response.data.errors.filter(
+				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
+			);
+
+			if (otherErrors.length > 0) {
+				otherErrors.forEach(unexpectedError);
+			}
+		} else {
+			unexpectedError(error);
+		}
+
+		throw error;
+	}
+
+
 	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item>) {
 		if (!currentVersion.value) return;
 		saveVersionLoading.value = true;
@@ -231,7 +226,72 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
+	// Publish version
+
+	const publishVersionLoading = ref(false);
+
+
+	function publishVersionErrorHandler(error: any) {
+		unexpectedError(error);
+		throw error;
+	}
+
+	async function publishVersion(versionId: PrimaryKey, options: PublishVersionOptions) {
+		publishVersionLoading.value = true;
+		const { mainHash, fields } = options;
+
+		if (!mainHash) {
+			throw new Error('Main hash is required');
+		}
+
+		try {
+			await api.post(`/versions/${versionId}/promote`, fields ? { mainHash, fields } : { mainHash });
+		} catch (error) {
+			publishVersionErrorHandler(error);
+		} finally {
+			publishVersionLoading.value = false;
+		}
+	}
+
+	async function removeVersion(versionId: PrimaryKey) {
+		loading.value = true;
+
+		if (!readVersionsAllowed.value) return;
+
+		try {
+		  await api.delete(`/versions/${versionId}`);
+
+			const index = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
+			if (index !== -1) rawVersions.value?.splice(index, 1);
+			if (currentVersion.value?.id === versionId) currentVersion.value = null;
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		} finally {
+			loading.value = false;
+		}
+	}
+
+
 	function isVersionSelectable(version: ContentVersionMaybeNew) {
 		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
+
+	return {
+		readVersionsAllowed,
+		currentVersion,
+		versions,
+		loading,
+		query,
+		getVersions,
+		addVersion,
+		updateVersion,
+		deleteVersion,
+		saveVersionLoading,
+		saveVersion,
+		validationErrors,
+		publishVersionLoading,
+		publishVersion,
+		removeVersion,
+	};
 }

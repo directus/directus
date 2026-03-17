@@ -290,4 +290,109 @@ describe('useVersions', () => {
 			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save', { title: 'new value' });
 		});
 	});
+
+	describe('publishVersion', () => {
+		it('should call POST /versions/{id}/promote with mainHash and fields', async () => {
+		  const existingVersion: ContentVersion = {
+			id: 'version-123',
+			key: 'draft',
+			name: null,
+			collection: 'test_collection',
+			item: '1',
+			hash: 'abc',
+			date_created: '2024-01-01',
+			date_updated: '2024-01-01',
+			user_created: 'user-1',
+			user_updated: 'user-1',
+			delta: {},
+		  };
+
+		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+		  vi.mocked(api.post).mockResolvedValueOnce({ data: { data: {} } });
+
+		  const { publishVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+		  await publishVersion('version-123', { mainHash: 'hash-abc', fields: ['title', 'body'] });
+
+		  expect(api.post).toHaveBeenCalledWith('/versions/version-123/promote', {
+			mainHash: 'hash-abc',
+			fields: ['title', 'body'],
+		  });
+		});
+
+		it('should call POST /versions/{id}/promote without fields when not provided', async () => {
+		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+		  vi.mocked(api.post).mockResolvedValueOnce({ data: { data: {} } });
+
+		  const { publishVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+		  await publishVersion('version-123', { mainHash: 'hash-abc' });
+
+		  expect(api.post).toHaveBeenCalledWith('/versions/version-123/promote', { mainHash: 'hash-abc' });
+		});
+
+		it('should set publishVersionLoading to true while publishing and false after', async () => {
+		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+		  let resolvePost!: () => void;
+
+		  vi.mocked(api.post).mockReturnValueOnce(
+			new Promise((resolve) => {
+			  resolvePost = () => resolve({ data: { data: {} } } as any);
+			}),
+		  );
+
+		  const { publishVersion, publishVersionLoading } = useVersions(ref('test_collection'), ref(false), ref('1'));
+		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+		  const publishPromise = publishVersion('version-123', { mainHash: 'hash-abc' });
+		  expect(publishVersionLoading.value).toBe(true);
+
+		  resolvePost();
+		  await publishPromise;
+
+		  expect(publishVersionLoading.value).toBe(false);
+		});
+	  });
+
+	  describe('removeVersion', () => {
+		it('should call DELETE /versions/{id} and remove from rawVersions', async () => {
+		  const existingVersion: ContentVersion = {
+			id: 'version-123',
+			key: 'draft',
+			name: null,
+			collection: 'test_collection',
+			item: '1',
+			hash: 'abc',
+			date_created: '2024-01-01',
+			date_updated: '2024-01-01',
+			user_created: 'user-1',
+			user_updated: 'user-1',
+			delta: {},
+		  };
+
+		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+		  vi.mocked(api.delete).mockResolvedValueOnce({});
+
+		  const { versions, currentVersion, removeVersion } = useVersions(
+			ref('test_collection'),
+			ref(false),
+			ref('1'),
+		  );
+
+		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+		  currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+		  expect(currentVersion.value).not.toBeNull();
+
+		  await removeVersion('version-123');
+
+		  expect(api.delete).toHaveBeenCalledWith('/versions/version-123');
+		  expect(currentVersion.value).toBeNull();
+		  // draft should now be virtual (id '+')
+		  expect(versions.value.find((v) => v.key === 'draft')?.id).toBe('+');
+		});
+	  });
 });
