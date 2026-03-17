@@ -53,6 +53,7 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	query: MaybeRef<Query> = {},
+	isVersion: MaybeRef<boolean> | null = null,
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -77,8 +78,8 @@ export function useItem<T extends Item>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const isVersion = computed(() => !!unref(query).version);
-	const permissions = usePermissions(collection, primaryKey, isNew, isVersion);
+	const isVersionResolved = computed(() => (isVersion !== null ? unref(isVersion) : !!unref(query).version));
+	const permissions = usePermissions(collection, primaryKey, isNew, isVersionResolved);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
 
 	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);

@@ -120,7 +120,12 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(
+	collection,
+	primaryKey,
+	query,
+	computed(() => currentVersion.value !== null),
+);
 
 const toolsStore = useAiToolsStore();
 
