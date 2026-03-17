@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed "Avatar/logo flashing issues occur again on page changes. #26394"
+Fixed avatar and logo flashing on page navigation
