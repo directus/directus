@@ -222,7 +222,7 @@ export default class MSSQL implements SchemaInspector {
 			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW']);
 
 		if (table) {
-			const rawTable: RawTable = await query.andWhere({ table_name: table }).first();
+			const rawTable: RawTable = await query.andWhere({ TABLE_NAME: table }).first();
 
 			return {
 				name: rawTable.TABLE_NAME,
@@ -312,28 +312,27 @@ export default class MSSQL implements SchemaInspector {
 		}
 
 		const dbResult = await this.knex.transaction<RawColumn[] | RawColumn>(async (trx) => {
-			await trx.raw(`IF OBJECT_ID('tempdb..##IndexInfo') IS NOT NULL DROP TABLE ##IndexInfo;`);
-
-			await trx.raw(`
-			SELECT
-				[ic].[object_id],
-				[ic].[column_id],
-				[ix].[is_unique],
-				[ix].[is_primary_key],
-				[ix].[name] as index_name,
-				MAX([ic].[index_column_id]) OVER (PARTITION BY [ic].[index_id], [ic].[object_id]) AS index_column_count,
-				ROW_NUMBER() OVER (
-					PARTITION BY [ic].[object_id], [ic].[column_id]
-					ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
-				) AS index_priority
-			INTO ##IndexInfo
-			FROM [sys].[index_columns] ic
-			JOIN [sys].[indexes] ix ON [ix].[object_id] = [ic].[object_id] AND [ix].[index_id] = [ic].[index_id];`);
-
 			const query = trx
 				.with(
+					'IndexInfoRaw',
+					trx.raw(`
+				SELECT
+					[ic].[object_id],
+					[ic].[column_id],
+					[ix].[is_unique],
+					[ix].[is_primary_key],
+					[ix].[name] as index_name,
+					MAX([ic].[index_column_id]) OVER (PARTITION BY [ic].[index_id], [ic].[object_id]) AS index_column_count,
+					ROW_NUMBER() OVER (
+						PARTITION BY [ic].[object_id], [ic].[column_id]
+						ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
+					) AS index_priority
+				FROM [sys].[index_columns] ic
+				JOIN [sys].[indexes] ix ON [ix].[object_id] = [ic].[object_id] AND [ix].[index_id] = [ic].[index_id]`),
+				)
+				.with(
 					'FilteredIndexInfo',
-					this.knex.raw(`
+					trx.raw(`
 				SELECT
 					[object_id],
 					[column_id],
@@ -342,7 +341,7 @@ export default class MSSQL implements SchemaInspector {
 					[index_priority],
 					[index_name],
 					[index_column_count]
-				FROM ##IndexInfo
+				FROM [IndexInfoRaw]
 				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`),
 				)
 				.select(
@@ -402,11 +401,7 @@ export default class MSSQL implements SchemaInspector {
 				query.andWhere({ 'c.name': column }).first();
 			}
 
-			const result = await query;
-
-			await trx.raw(`DROP TABLE ##IndexInfo;`);
-
-			return result;
+			return await query;
 		});
 
 		if (column) {
