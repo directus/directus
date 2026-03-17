@@ -1,3 +1,6 @@
+// Inline DOM type to avoid requiring "DOM" lib in consumer tsconfig
+type RequestCredentials = "include" | "omit" | "same-origin";
+
 export interface GraphqlClient<_Schema> {
 	query<Output extends object = Record<string, any>>(
 		query: string,

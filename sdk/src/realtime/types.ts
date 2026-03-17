@@ -1,3 +1,10 @@
+// Inline DOM type to avoid requiring "DOM" lib in consumer tsconfig
+interface CloseEvent extends Event {
+  readonly code: number;
+  readonly reason: string;
+  readonly wasClean: boolean;
+}
+
 import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../index.js';
 import type { Query } from '../types/query.js';
 
