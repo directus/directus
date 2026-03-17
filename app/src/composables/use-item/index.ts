@@ -81,7 +81,8 @@ export function useItem<T extends Item>(
 		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
-	const permissions = usePermissions(collection, primaryKey, isNew);
+	const isVersion = computed(() => !!unref(query).version);
+	const permissions = usePermissions(collection, primaryKey, isNew, isVersion);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
 
 	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);

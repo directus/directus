@@ -7,7 +7,7 @@ export const _cache: { id: string | undefined } = { id: undefined };
  * Return a unique hash for the current process on the current machine. Will be different after a
  * restart
  */
-export const processId = () => {
+export const processId = (): string => {
 	if (_cache.id) return _cache.id;
 
 	const parts = [hostname(), process.pid, new Date().getTime()];
