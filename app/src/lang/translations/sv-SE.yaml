@@ -169,7 +169,6 @@ keep: Behåll
 version: Version
 version_key: Versionsnyckel
 version_name: Versionsnamn
-main_version: Huvud
 switch_version: Byt Version
 switch_version_copy: Är du säker på att du vill byta till "{version}" versionen? Osparade ändringar kommer att försvinna.
 create_version: Skapa Version

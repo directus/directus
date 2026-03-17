@@ -157,7 +157,6 @@ keep: Ruaj
 version: Version
 version_key: Çelësi i Versionit
 version_name: Emri i Versionit
-main_version: Kryesore
 switch_version: Ndërro Versionin
 switch_version_copy: A jeni i sigurt që doni të ndërroni në versionin "{version}"? Ndryshimet e paruajtura do të humbasin.
 create_version: Krijo Version

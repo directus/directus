@@ -205,7 +205,6 @@ keep: Оставить
 version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
-main_version: Основная
 your_version: Ваша версия
 switch_version: Сменить Версию
 switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.

@@ -157,7 +157,6 @@ keep: Pasilikti
 version: Versija
 version_key: Versijos identifikatorius
 version_name: Versijos pavadinimas
-main_version: Pagrindinė
 switch_version: Perjungti versiją
 switch_version_copy: Ar tikrai norite persijungti į "{version}" versiją? Neišsaugoti pakeitimai bus prarasti.
 create_version: Sukurti versiją

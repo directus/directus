@@ -201,7 +201,6 @@ keep: 保持
 version: Version
 version_key: バージョンキー
 version_name: バージョン名
-main_version: メイン
 switch_version: バージョンを切り替える
 switch_version_copy: バージョン {version} に切り替えますか ? 保存されていない変更は失われます。
 create_version: バージョンを作成

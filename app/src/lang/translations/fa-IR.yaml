@@ -213,7 +213,6 @@ keep: نگه داشتن
 version: نسخه
 version_key: شماره نسخه
 version_name: نام نسخه
-main_version: اصلی
 your_version: نسخه شما
 switch_version: تغییر نسخه
 switch_version_copy: مطمئنید که می‌خواهید به نسخه «{version}» بروید؟ تغییرات ذخیره‌نشده از دست می‌رود.

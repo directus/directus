@@ -197,7 +197,6 @@ keep: Megtart
 version: Verzió
 version_key: Verzió kulcs
 version_name: Verzió név
-main_version: Fő
 switch_version: Verzióváltás
 switch_version_copy: Biztosan át szeretne váltani a(z) „{version}” verzióra? A nem mentett módosítások elvesznek.
 create_version: Verzió készítés

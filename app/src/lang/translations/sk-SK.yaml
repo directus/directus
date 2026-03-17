@@ -157,7 +157,6 @@ keep: Ponechať
 version: Verzia
 version_key: Kľúč verzie
 version_name: Názov verzie
-main_version: Hlavné
 switch_version: Prepnúť verziu
 switch_version_copy: Naozaj chcete prepnúť na verziu "{version}"? Neuložené zmeny sa stratia.
 create_version: Vytvoriť verziu

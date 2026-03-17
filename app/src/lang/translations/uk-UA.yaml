@@ -196,7 +196,6 @@ keep: Тримати
 version: Версія
 version_key: Ключ версії
 version_name: Назва версії
-main_version: Головна
 switch_version: Змінити версію
 switch_version_copy: Ви впевнені, що бажаєте перейти на версію "{version}"? Незбережені зміни буде втрачено.
 create_version: Створити версію

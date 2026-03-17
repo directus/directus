@@ -157,7 +157,6 @@ keep: Үлдээх
 version: Хувилбар
 version_key: Хувилбарын түлхүүр
 version_name: Хувилбарын нэр
-main_version: Үндсэн
 switch_version: Хувилбар солих
 switch_version_copy: Та {version} хувилбар руу солихыг хүсэж байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
 create_version: Хувилбар үүсгэх

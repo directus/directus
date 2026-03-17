@@ -198,7 +198,6 @@ keep: 保持
 version: 版本号
 version_key: 版本密钥
 version_name: 版本名称
-main_version: 主要
 switch_version: 切换版本
 switch_version_copy: 确定要切换到"{version}"版本？未保存的更改将会丢失。
 create_version: 创建新版本

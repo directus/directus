@@ -145,7 +145,6 @@ keep: Păstrează
 version: Versiune
 version_key: Cheie de versiune
 version_name: Nume Versiune
-main_version: Principal
 switch_version: Schimbă versiunea
 switch_version_copy: Ești sigur că vrei să treci la versiunea “{version}”? Modificările nesalvate vor fi pierdute.
 create_version: Creați versiune

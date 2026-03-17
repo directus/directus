@@ -152,7 +152,6 @@ keep: שמור
 version: גרסה
 version_key: מזהה גרסה
 version_name: שם הגרסה
-main_version: ראשי
 switch_version: החלפת גרסה
 switch_version_copy: האם את/ה רוצה להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
 create_version: צור גרסה

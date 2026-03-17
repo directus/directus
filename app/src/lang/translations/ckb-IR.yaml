@@ -157,7 +157,6 @@ keep: پاراستن
 version: وەشان
 version_key: کلیلی وەشان
 version_name: ناوی وەشان
-main_version: سەرەکی
 switch_version: گۆڕینی وەشان
 switch_version_copy: ئایا دڵنیایت لە گۆڕینی بۆ وەشانی "{version}"؟ گۆڕانکارییە هەڵنەگیراوەکان لە دەست دەچن.
 create_version: دروستکردنی وەشان
