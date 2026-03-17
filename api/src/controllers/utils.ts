@@ -1,4 +1,5 @@
 import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import { toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
@@ -134,7 +135,7 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			try {
-				await service.import(req.params['collection']!, mimeType, fileStream);
+				await service.import(req.params['collection']!, mimeType, fileStream, toBoolean(req.query['background']));
 			} catch (err: any) {
 				return next(err);
 			}

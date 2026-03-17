@@ -128,7 +128,10 @@ export const DEFAULTS: Env = {
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
+	IMPORT_EXPORT_NAMESPACE: 'import-export',
 	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
+	IMPORT_TIMEOUT: '11s',
+	IMPORT_MAXIMUM: 5,
 
 	SERVE_APP: true,
 

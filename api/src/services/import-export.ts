@@ -1,13 +1,16 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
 import type { Readable, Writable } from 'node:stream';
+import type { PrimaryKey } from '@directus/ai';
 import { useEnv } from '@directus/env';
 import {
 	createError,
 	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
+	LimitExceededError,
 	ServiceUnavailableError,
+	TimeoutError,
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -30,6 +33,7 @@ import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
 import { set } from 'lodash-es';
+import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
@@ -40,6 +44,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { getService } from '../utils/get-service.js';
+import { useStore } from '../utils/store.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
@@ -196,6 +201,8 @@ export function createErrorTracker() {
 	};
 }
 
+const store = useStore<{ importCount: number }>(String(env['IMPORT_EXPORT_NAMESPACE']));
+
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -207,7 +214,7 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
-	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
+	async import(collection: string, mimetype: string, stream: Readable, background: boolean = false): Promise<void> {
 		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
 
 		if (this.accountability) {
@@ -236,14 +243,97 @@ export class ImportService {
 			);
 		}
 
+		const limitReached = await store(async (store) => {
+			const count = (await store.get('importCount')) ?? 0;
+
+			if (count > Number(env['IMPORT_MAXIMUM'])) return true;
+
+			await store.set('importCount', count + 1);
+			return false;
+		});
+
+		if (limitReached) {
+			throw new LimitExceededError({
+				category: 'Import',
+			});
+		}
+
+		let promise: Promise<void>;
+
 		switch (mimetype) {
 			case 'application/json':
-				return await this.importJSON(collection, stream);
+				promise = this.importJSON(collection, stream);
+				break;
 			case 'text/csv':
 			case 'application/vnd.ms-excel':
-				return await this.importCSV(collection, stream);
+				promise = this.importCSV(collection, stream);
+				break;
 			default:
 				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
+		}
+
+		if (background) {
+			const notificationsService = new NotificationsService({
+				schema: this.schema,
+			});
+
+			const usersService = new UsersService({
+				schema: this.schema,
+			});
+
+			promise
+				.then(async () => {
+					store(async (store) => {
+						await store.set('importCount', (await store.get('importCount')) - 1);
+					});
+
+					if (this.accountability?.user) {
+						const user = await usersService.readOne(this.accountability.user, {
+							fields: ['first_name', 'last_name', 'email'],
+						});
+
+						await notificationsService.createOne({
+							recipient: this.accountability.user,
+							sender: this.accountability.user,
+							subject: `Your import in ${collection} has been succesful`,
+							message: `
+Hello ${userName(user)},
+
+Your import in ${collection} has been succesful.
+`,
+						});
+					}
+				})
+				.catch(async (error) => {
+					logger.error(error, `Failed to import to ${collection})`);
+
+					if (this.accountability?.user) {
+						const user = await usersService.readOne(this.accountability.user, {
+							fields: ['first_name', 'last_name', 'email'],
+						});
+
+						await notificationsService.createOne({
+							recipient: this.accountability.user,
+							sender: this.accountability.user,
+							subject: `Your import in ${collection} has failed`,
+							message: `
+Hello ${userName(user)},
+
+Your import in ${collection} has failed.
+
+${error.message}.
+`,
+						});
+					}
+				});
+
+			return Promise.resolve();
+		} else {
+			await promise;
+
+			store(async (store) => {
+				await store.set('importCount', (await store.get('importCount')) - 1);
+			});
 		}
 	}
 
@@ -268,15 +358,19 @@ export class ImportService {
 						if (errorTracker.shouldStop()) return;
 
 						try {
+							let id: PrimaryKey;
+
 							if (isSingleton) {
-								return await service.upsertSingleton(task.data, {
+								id = await service.upsertSingleton(task.data, {
 									bypassEmitAction: (params) => nestedActionEvents.push(params),
 								});
 							} else {
-								return await service.upsertOne(task.data, {
+								id = await service.upsertOne(task.data, {
 									bypassEmitAction: (params) => nestedActionEvents.push(params),
 								});
 							}
+
+							return id;
 						} catch (error) {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
@@ -338,6 +432,14 @@ export class ImportService {
 							return resolve();
 						});
 					});
+
+					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+
+					setTimeout(() => {
+						saveQueue.kill();
+						destroyPipedStream(extractJSON, stream);
+						reject(new TimeoutError({ category: 'Import', duration }));
+					}, duration);
 				});
 			} catch (error) {
 				if (!error && errorTracker.hasErrors()) {
@@ -503,6 +605,14 @@ export class ImportService {
 						});
 
 					streams.push(fileWriteStream);
+
+					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+
+					setTimeout(() => {
+						saveQueue.kill();
+						destroyPipedStream(fileWriteStream, stream);
+						reject(new TimeoutError({ category: 'Import', duration }));
+					}, duration);
 
 					stream
 						.on('error', (error) => {
