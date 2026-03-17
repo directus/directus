@@ -133,6 +133,20 @@ async function onVersionPublish(opts: {
 	fields: string[];
 	deleteOnPromote: boolean;
 }) {
+	const clientErrors = validateItem(
+		item.value ?? {},
+		fieldsStore.getFieldsForCollection(collection.value),
+		false,
+		false,
+		currentVersion.value,
+	);
+
+	if (clientErrors.length > 0) {
+		versionValidationErrors.value = clientErrors;
+		comparisonModalActive.value = false;
+		return;
+	}
+
 	comparisonModalActive.value = false;
 
 	try {
