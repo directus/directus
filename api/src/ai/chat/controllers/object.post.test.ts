@@ -1,5 +1,5 @@
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { generateText } from 'ai';
+import { generateText, jsonSchema } from 'ai';
 import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildProviderConfigs, createAIProviderRegistry, getProviderOptions } from '../../providers/index.js';
@@ -211,6 +211,13 @@ describe('aiObjectPostHandler', () => {
 			);
 		});
 
+		it('should inject additionalProperties: false into the output schema', async () => {
+			await aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			const schemaArg = vi.mocked(jsonSchema).mock.calls[0]![0] as Record<string, unknown>;
+			expect(schemaArg).toHaveProperty('additionalProperties', false);
+		});
+
 		it('should not pass maxOutputTokens when not provided', async () => {
 			await aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext);
 
@@ -235,6 +242,14 @@ describe('aiObjectPostHandler', () => {
 
 			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				ServiceUnavailableError,
+			);
+		});
+
+		it('should propagate errors from generateText', async () => {
+			vi.mocked(generateText).mockRejectedValue(new Error('rate limit exceeded'));
+
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				'rate limit exceeded',
 			);
 		});
 

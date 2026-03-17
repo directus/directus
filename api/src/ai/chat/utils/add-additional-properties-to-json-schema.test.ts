@@ -59,6 +59,18 @@ describe('addAdditionalPropertiesToJsonSchema', () => {
 		expect((result.definitions!['Thing'] as any).additionalProperties).toBe(false);
 	});
 
+	it('adds to objects inside $defs', () => {
+		const result = addAdditionalPropertiesToJsonSchema({
+			type: 'object',
+			properties: {},
+			$defs: {
+				Widget: { type: 'object', properties: { label: { type: 'string' } } },
+			},
+		} as any);
+
+		expect((result as any)['$defs']['Widget'].additionalProperties).toBe(false);
+	});
+
 	it('overwrites existing additionalProperties value', () => {
 		const result = addAdditionalPropertiesToJsonSchema({
 			type: 'object',
