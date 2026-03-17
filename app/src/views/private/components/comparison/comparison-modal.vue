@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
-import { isEqual, pick } from 'lodash';
+import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
@@ -15,15 +15,12 @@ import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VNotice from '@/components/v-notice.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { CollabContext } from '@/composables/use-collab';
-import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { validateItem } from '@/utils/validate-item';
 
 interface Props {
 	deleteVersionsAllowed: boolean;
@@ -116,8 +113,7 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote, promoteValidationErrors } =
-	usePromoteDialog();
+const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
 
@@ -181,45 +177,17 @@ watch([isFirstRevision], () => {
 function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
 	const promoting = ref(false);
-	const promoteValidationErrors = ref<{ field: string; label: string }[]>([]);
-	const fieldsStore = useFieldsStore();
 
-	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote, promoteValidationErrors };
+	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
 
 	function onPromoteClick() {
 		if (selectedComparisonFields.value.length === 0) return;
-
-		promoteValidationErrors.value = [];
-
-		if (!validateForPromote()) return;
 
 		if (deleteVersionsAllowed.value) {
 			confirmDeleteOnPromoteDialogActive.value = true;
 		} else {
 			promote(false);
 		}
-	}
-
-	function validateForPromote(): boolean {
-		if (!comparisonData.value || props.mode !== 'version') return true;
-
-		const { base, incoming } = comparisonData.value;
-		const fields = fieldsStore.getFieldsForCollection(collection.value);
-		const isNew = String(primaryKey.value) === '+';
-
-		const assembledItem =
-			selectedComparisonFields.value.length > 0
-				? { ...base, ...pick(incoming, selectedComparisonFields.value) }
-				: incoming;
-
-		const errors = validateItem(assembledItem, fields, isNew);
-
-		promoteValidationErrors.value = errors.map((error) => ({
-			field: error.field ?? '',
-			label: fieldsStore.getField(collection.value, error.field ?? '')?.name ?? error.field ?? '',
-		}));
-
-		return errors.length === 0;
 	}
 
 	async function promote(deleteOnPromote: boolean) {
@@ -371,14 +339,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="validation-errors">
-				<VNotice v-if="promoteValidationErrors.length > 0" type="danger" class="promote-validation-errors">
-					{{ $t('validation_errors_notice') }}
-					<ul>
-						<li v-for="error in promoteValidationErrors" :key="error.field">{{ error.label }}</li>
-					</ul>
-				</VNotice>
 			</div>
 			<div class="footer">
 				<div class="columns">
@@ -754,9 +714,5 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 .comparison-form--incoming {
 	--field-indicator--color-active: var(--theme--success);
 	--field-indicator--color-muted: var(--theme--success-background);
-}
-
-.validation-errors {
-	padding: 1rem 0;
 }
 </style>
