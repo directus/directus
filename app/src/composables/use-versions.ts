@@ -2,17 +2,12 @@ import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
 import { computed, ref, type Ref, watch } from 'vue';
-import { useCollectionPermissions, usePermissions } from './use-permissions';
+import { useCollectionPermissions } from './use-permissions';
 import api from '@/api';
-import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';
 import type { ContentVersionMaybeNew, ContentVersionWithType, NewContentVersion } from '@/types/versions';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { mergeItemData } from '@/utils/merge-item-data';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { validateItem } from '@/utils/validate-item';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
@@ -28,11 +23,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		transform: (value) => (Array.isArray(value) ? value[0] : value),
 		mode: 'push',
 	});
-
-	const permissions = usePermissions(collection, primaryKey, false);
-	const fieldsWithPermissions = permissions.itemPermissions.fields;
-	const { nestedValidationErrors } = useNestedValidation();
-	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
 	const query = computed<Query>(() => {
 		if (!currentVersion.value || currentVersion.value.id === '+') return {};
@@ -205,19 +195,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		if (!currentVersion.value) return;
 		saveVersionLoading.value = true;
 		validationErrors.value = [];
-
-		const payloadToValidate = mergeItemData(defaultValues.value, item.value, edits.value);
-
-		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
-
-		const errors = validateItem(payloadToValidate, fields, false, false, currentVersion.value);
-		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
-
-		if (errors.length > 0) {
-			validationErrors.value = errors;
-			saveVersionLoading.value = false;
-			throw errors;
-		}
 
 		try {
 			let versionId: PrimaryKey;

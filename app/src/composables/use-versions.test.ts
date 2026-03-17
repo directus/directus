@@ -2,7 +2,7 @@ import type { ContentVersion } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useVersions } from './use-versions';
 import api from '@/api';
 
@@ -17,21 +17,6 @@ vi.mock('./use-permissions', () => ({
 		createAllowed: ref(true),
 		readAllowed: ref(true),
 	})),
-	usePermissions: vi.fn(() => ({
-		itemPermissions: {
-			fields: computed(() => []),
-		},
-	})),
-}));
-
-vi.mock('@/composables/use-nested-validation', () => ({
-	useNestedValidation: vi.fn(() => ({
-		nestedValidationErrors: ref([]),
-	})),
-}));
-
-vi.mock('@/utils/get-default-values-from-fields', () => ({
-	getDefaultValuesFromFields: vi.fn(() => ref({})),
 }));
 
 beforeEach(() => {
@@ -230,6 +215,79 @@ describe('useVersions', () => {
 			// currentVersion should remain non-null (Draft stays selected, re-created as virtual)
 			expect(currentVersion.value).not.toBeNull();
 			expect(currentVersion.value?.key).toBe('draft');
+		});
+	});
+
+	describe('saveVersion', () => {
+		it('should save successfully even when required fields are missing (no client-side validation)', async () => {
+			// Arrange: mock a version that exists on the server
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-01',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			// getVersions response
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			// saveVersion POST response
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { title: null } } });
+
+			const { versions, currentVersion, saveVersion, validationErrors } = useVersions(
+				ref('test_collection'),
+				ref(false),
+				ref('1'),
+			);
+
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+
+			const edits = ref<Record<string, any>>({ title: null }); // missing required field
+			const item = ref<Record<string, any>>({ id: '1', title: 'existing' });
+
+			// Act: should NOT throw even though 'title' is null
+			await expect(saveVersion(edits, item)).resolves.not.toThrow();
+			expect(validationErrors.value).toHaveLength(0);
+		});
+
+		it('should call the save API endpoint with the edits', async () => {
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-01',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { title: 'new value' } } });
+			// second api.get for getVersions refresh after save
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+
+			const { versions, currentVersion, saveVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+
+			const edits = ref<Record<string, any>>({ title: 'new value' });
+			const item = ref<Record<string, any>>({ id: '1', title: 'old value' });
+
+			await saveVersion(edits, item);
+
+			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save', { title: 'new value' });
 		});
 	});
 });
