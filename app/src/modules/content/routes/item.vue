@@ -290,7 +290,7 @@ useShortcut(
 	'meta+alt+s',
 	() => {
 		if (unref(currentVersion) !== null) {
-			saveVersionAction('main');
+			saveVersionAction(VERSION_KEY_PUBLISHED);
 		}
 	},
 	form,
@@ -539,14 +539,14 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
+async function saveVersionAction(action: typeof VERSION_KEY_PUBLISHED | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
 		await saveVersion(edits, ref(item.value ?? {}));
 		edits.value = {};
 
-		if (action === 'main') {
+		if (action === VERSION_KEY_PUBLISHED) {
 			currentVersion.value = null;
 			refresh();
 		} else if (action === 'stay') {
@@ -901,7 +901,7 @@ function useItemNavigation() {
 						</template>
 
 						<VList>
-							<VListItem clickable @click="saveVersionAction('main')">
+							<VListItem clickable @click="saveVersionAction(VERSION_KEY_PUBLISHED)">
 								<VListItemIcon><VIcon name="check" /></VListItemIcon>
 								<VListItemContent>{{ $t('save_and_return_to_published') }}</VListItemContent>
 								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>

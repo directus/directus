@@ -161,7 +161,6 @@ keep: შენარჩუნება
 version: ვერსია
 version_key: ვერსიის გასაღები
 version_name: ვერსიის სახელი
-main_version: მთავარი
 switch_version: ვერსიის ცვლილება
 switch_version_copy: დარწმუნებული ხართ, რომ გსურთ "{version}" ვერსიაზე გადართვა? შეუნახავი ცვლილებები დაიკარგება.
 create_version: ვერსიის შექმნა

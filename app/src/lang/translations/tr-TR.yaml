@@ -169,7 +169,6 @@ keep: Tut
 version: Sürüm
 version_key: Sürüm Anahtarı
 version_name: Sürüm Adı
-main_version: Temel
 switch_version: Sürümü Değiştir
 switch_version_copy: '"{version}"'' versiyonuna değiştirmek istediğinize emin misiniz? Kayıt edilmemiş değişikler kaybolacaktır.'
 create_version: Sürüm Oluştur

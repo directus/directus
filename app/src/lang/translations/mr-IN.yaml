@@ -157,7 +157,6 @@ keep: ठेवा
 version: आवृत्ती
 version_key: व्हर्जन की
 version_name: व्हर्जन चे नाव
-main_version: मुख्य
 switch_version: व्हर्जन स्विच करा 
 switch_version_copy: तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन वरती स्विच करू इच्छिता? जतन केले नाहीत असे बदल गमावले जातील.
 create_version: व्हर्जन तयार करा

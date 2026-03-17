@@ -157,7 +157,6 @@ keep: Zachowaj
 version: Wersja
 version_key: Klucz wersji
 version_name: Nazwa wersji
-main_version: Główny
 switch_version: Przełącz wersję
 switch_version_copy: Czy na pewno chcesz przełączyć się na wersję "{version}"? Niezapisane zmiany zostaną utracone.
 create_version: Utwórz wersję

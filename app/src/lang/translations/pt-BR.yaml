@@ -201,7 +201,6 @@ keep: Manter
 version: Versão
 version_key: Chave da Versão
 version_name: Nome da Versão
-main_version: Main
 switch_version: Trocar Versão
 switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? Alterações não salvas serão perdidas.
 create_version: Criar Versão

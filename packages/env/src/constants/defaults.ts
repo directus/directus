@@ -1,8 +1,9 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import type { Env } from '../types/env.js';
 
-export const DEFAULTS = {
+export const DEFAULTS: Env = {
 	CONFIG_PATH: resolve(cwd(), '.env'),
 
 	HOST: '0.0.0.0',
@@ -204,4 +205,14 @@ export const DEFAULTS = {
 	MCP_ENABLED: true,
 
 	AI_ENABLED: true,
+	AI_DEVTOOLS_ENABLED: false,
+	AI_TELEMETRY_ENABLED: false,
+	AI_TELEMETRY_PROVIDER: 'langfuse',
+	AI_TELEMETRY_RECORD_IO: false,
+	LANGFUSE_SECRET_KEY: '',
+	LANGFUSE_PUBLIC_KEY: '',
+	LANGFUSE_BASE_URL: 'https://cloud.langfuse.com',
+	BRAINTRUST_API_KEY: '',
+	BRAINTRUST_PROJECT_NAME: '',
+	BRAINTRUST_API_URL: '',
 } as const;
