@@ -528,10 +528,10 @@ function usePopper(
 
 .v-menu-popper {
 	position: fixed;
-	inset-inline-start: -999px;
+	inset-inline-start: -56.1875rem;
 	z-index: 600;
-	min-inline-size: 100px;
-	transform: translateY(2px);
+	min-inline-size: 5.625rem;
+	transform: translateY(0.125rem);
 	pointer-events: none;
 
 	&.active {
@@ -553,8 +553,8 @@ function usePopper(
 .arrow-triangle::before,
 .arrow-triangle::after {
 	position: absolute;
-	inline-size: 10px;
-	block-size: 10px;
+	inline-size: 0.5625rem;
+	block-size: 0.5625rem;
 }
 
 .arrow {
@@ -593,64 +593,64 @@ function usePopper(
 }
 
 [data-placement^='top'] .arrow {
-	inset-block-end: -10px;
+	inset-block-end: -0.5625rem;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-block-end: 7px;
+			inset-block-end: 0.375rem;
 		}
 	}
 }
 
 [data-placement^='bottom'] .arrow {
-	inset-block-start: -10px;
+	inset-block-start: -0.5625rem;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-block-start: 7px;
+			inset-block-start: 0.375rem;
 		}
 	}
 }
 
 [data-placement^='right'] .arrow {
-	inset-inline-start: -10px;
+	inset-inline-start: -0.5625rem;
 
 	html[dir='rtl'] & {
 		inset-inline-start: unset;
-		inset-inline-end: -10px;
+		inset-inline-end: -0.5625rem;
 	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-inline-start: 7px;
+			inset-inline-start: 0.375rem;
 
 			html[dir='rtl'] & {
 				inset-inline-start: unset;
-				inset-inline-end: 7px;
+				inset-inline-end: 0.375rem;
 			}
 		}
 	}
 }
 
 [data-placement^='left'] .arrow {
-	inset-inline-end: -10px;
+	inset-inline-end: -0.5625rem;
 
 	html[dir='rtl'] & {
 		inset-inline-end: unset;
-		inset-inline-start: -10px;
+		inset-inline-start: -0.5625rem;
 	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			inset-inline-end: 7px;
+			inset-inline-end: 0.375rem;
 
 			html[dir='rtl'] & {
 				inset-inline-end: unset;
-				inset-inline-start: 7px;
+				inset-inline-start: 0.375rem;
 			}
 		}
 	}
@@ -658,7 +658,7 @@ function usePopper(
 
 .v-menu-content {
 	max-block-size: v-bind(maxHeight);
-	padding: 0 4px;
+	padding: 0 0.25rem;
 	overflow: hidden auto;
 	color: var(--theme--popover--menu--foreground);
 	background-color: var(--theme--popover--menu--background);
@@ -730,13 +730,13 @@ function usePopper(
 .attached {
 	&[data-placement^='top'] {
 		> .v-menu-content {
-			transform: translateY(-2px);
+			transform: translateY(-0.125rem);
 		}
 	}
 
 	&[data-placement^='bottom'] {
 		> .v-menu-content {
-			transform: translateY(2px);
+			transform: translateY(0.125rem);
 		}
 	}
 }

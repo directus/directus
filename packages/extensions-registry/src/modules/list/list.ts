@@ -9,7 +9,7 @@ export type { RegistryListResponse } from './schemas/registry-list-response.js';
 export type { ListOptions } from './types/list-options.js';
 export type { ListQuery } from './types/list-query.js';
 
-export const list = async (query: ListQuery, options?: ListOptions) => {
+export const list = async (query: ListQuery, options?: ListOptions): Promise<RegistryListResponse> => {
 	await assertVersionCompatibility(options);
 	const url = constructUrl(query, options);
 	const response = await ky.get(url).json();

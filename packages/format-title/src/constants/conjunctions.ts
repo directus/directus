@@ -24,4 +24,4 @@ export default [
 	'unless',
 	'now',
 	'except',
-];
+] as string[];

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/themes",
-	"version": "1.2.5",
+	"version": "1.2.6",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -22,8 +22,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "vite build",
-		"dev": "vite build --watch",
+		"build": "tsdown",
+		"dev": "tsdown --watch",
 		"test": "vitest run",
 		"test:watch": "vitest"
 	},
@@ -38,14 +38,13 @@
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "catalog:",
 		"@unhead/vue": "catalog:",
-		"@vitejs/plugin-vue": "catalog:",
 		"pinia": "catalog:",
-		"rollup-plugin-node-externals": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vite": "catalog:",
-		"vite-plugin-dts": "catalog:",
+		"unplugin-vue": "catalog:",
 		"vitest": "catalog:",
-		"vue": "catalog:"
+		"vue": "catalog:",
+		"vue-tsc": "catalog:"
 	},
 	"peerDependencies": {
 		"@unhead/vue": "catalog:",
