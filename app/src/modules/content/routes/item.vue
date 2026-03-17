@@ -28,7 +28,6 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import VNotice from '@/components/v-notice.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -112,53 +111,44 @@ const {
 const comparisonModalActive = ref(false);
 
 const comparableVersion = computed(() => {
-  if (currentVersion.value === null || currentVersion.value.id === '+') return null;
-  return currentVersion.value as ContentVersionWithType;
+	if (currentVersion.value === null || currentVersion.value.id === '+') return null;
+	return currentVersion.value as ContentVersionWithType;
 });
 
 const fieldsStore = useFieldsStore();
 
-const publishValidationNotice = ref(false);
-
 function onVersionPromote() {
-  const assembledItem = item.value ?? {};
-  const fields = fieldsStore.getFieldsForCollection(collection.value);
+	const assembledItem = item.value ?? {};
+	const fields = fieldsStore.getFieldsForCollection(collection.value);
 
-  const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
+	const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
 
-  if (errors.length > 0) {
-    versionValidationErrors.value = errors;
-    publishValidationNotice.value = true;
-    return;
-  }
-
-  versionValidationErrors.value = [];
-  publishValidationNotice.value = false;
-  comparisonModalActive.value = true;
+	versionValidationErrors.value = errors;
+	comparisonModalActive.value = true;
 }
 
 async function onVersionPublish(opts: {
-  versionId: string;
-  mainHash: string;
-  fields: string[];
-  deleteOnPromote: boolean;
+	versionId: string;
+	mainHash: string;
+	fields: string[];
+	deleteOnPromote: boolean;
 }) {
-  comparisonModalActive.value = false;
+	comparisonModalActive.value = false;
 
-  try {
-    await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
+	try {
+		await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
 
-    if (opts.deleteOnPromote) {
-      await removeVersion(opts.versionId);
-    } else {
-      currentVersion.value = null;
-    }
+		if (opts.deleteOnPromote) {
+			await removeVersion(opts.versionId);
+		} else {
+			currentVersion.value = null;
+		}
 
-    refresh();
-    revisionsSidebarDetailRef.value?.refresh?.();
-  } catch {
-    // publishVersion / removeVersion handle unexpected errors
-  }
+		refresh();
+		revisionsSidebarDetailRef.value?.refresh?.();
+	} catch {
+		// publishVersion / removeVersion handle unexpected errors
+	}
 }
 
 const {
@@ -355,7 +345,6 @@ const disabledOptions = computed(() => {
 
 watch(currentVersion, async () => {
 	edits.value = {};
-	publishValidationNotice.value = false;
 	await refreshLivePreview();
 });
 
@@ -940,18 +929,6 @@ function useItemNavigation() {
 			:disabled="isMobile"
 		>
 			<template #start>
-				<VNotice
-					v-if="publishValidationNotice && versionValidationErrors.length > 0"
-					type="danger"
-					class="publish-validation-notice"
-					>
-					{{ $t('validation_errors_on_publish') }}
-					<ul>
-						<li v-for="validationError in versionValidationErrors" :key="validationError.field">
-						{{ fieldsStore.getField(collection, error.field)?.name ?? error.field }}
-						</li>
-					</ul>
-					</VNotice>
 				<VForm
 					ref="form"
 					v-model="edits"
@@ -1183,10 +1160,5 @@ function useItemNavigation() {
 
 .content-split.full-width :deep(.sp-end) {
 	border-inline-start: none;
-}
-
-.publish-validation-notice {
-  margin-inline: var(--content-padding);
-  margin-block-start: var(--content-padding);
 }
 </style>

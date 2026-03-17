@@ -95,7 +95,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		{ immediate: true },
 	);
 
-
 	async function getVersions() {
 		if (!readVersionsAllowed.value) return;
 
@@ -163,13 +162,18 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	const saveVersionLoading = ref(false);
 
-	function saveVersionErrorHandler(error: any) {
+	function versionErrorHandler(error: any) {
 		if (error?.response?.data?.errors) {
-			validationErrors.value = error.response.data.errors
+			const serverValidationErrors = error.response.data.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
-				.map((err: APIError) => {
-					return err.extensions;
-				});
+				.map((err: APIError) => err.extensions);
+
+			const existingFields = new Set(validationErrors.value.map((e: any) => e.field));
+
+			validationErrors.value = [
+				...validationErrors.value,
+				...serverValidationErrors.filter((e: any) => !existingFields.has(e.field)),
+			];
 
 			const otherErrors = error.response.data.errors.filter(
 				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
@@ -184,7 +188,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		throw error;
 	}
-
 
 	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item>) {
 		if (!currentVersion.value) return;
@@ -220,7 +223,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return savedData;
 		} catch (error) {
-			saveVersionErrorHandler(error);
+			versionErrorHandler(error);
 		} finally {
 			saveVersionLoading.value = false;
 		}
@@ -230,24 +233,14 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	const publishVersionLoading = ref(false);
 
-
-	function publishVersionErrorHandler(error: any) {
-		unexpectedError(error);
-		throw error;
-	}
-
 	async function publishVersion(versionId: PrimaryKey, options: PublishVersionOptions) {
 		publishVersionLoading.value = true;
 		const { mainHash, fields } = options;
 
-		if (!mainHash) {
-			throw new Error('Main hash is required');
-		}
-
 		try {
 			await api.post(`/versions/${versionId}/promote`, fields ? { mainHash, fields } : { mainHash });
 		} catch (error) {
-			publishVersionErrorHandler(error);
+			versionErrorHandler(error);
 		} finally {
 			publishVersionLoading.value = false;
 		}
@@ -257,7 +250,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		loading.value = true;
 
 		try {
-		  await api.delete(`/versions/${versionId}`);
+			await api.delete(`/versions/${versionId}`);
 
 			const index = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
 			if (index !== -1) rawVersions.value?.splice(index, 1);
@@ -269,7 +262,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			loading.value = false;
 		}
 	}
-
 
 	function isVersionSelectable(version: ContentVersionMaybeNew) {
 		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
