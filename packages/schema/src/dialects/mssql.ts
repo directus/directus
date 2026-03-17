@@ -312,7 +312,7 @@ export default class MSSQL implements SchemaInspector {
 		}
 
 		const dbResult = await this.knex.transaction<RawColumn[] | RawColumn>(async (trx) => {
-			await trx.raw(`IF OBJECT_ID('tempdb..##IndexInfo') IS NOT NULL DROP TABLE ##IndexInfo;`);
+			await trx.raw(`IF OBJECT_ID('tempdb..#IndexInfo') IS NOT NULL DROP TABLE #IndexInfo;`);
 
 			await trx.raw(`
 			SELECT
@@ -326,7 +326,7 @@ export default class MSSQL implements SchemaInspector {
 					PARTITION BY [ic].[object_id], [ic].[column_id]
 					ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
 				) AS index_priority
-			INTO ##IndexInfo
+			INTO #IndexInfo
 			FROM [sys].[index_columns] ic
 			JOIN [sys].[indexes] ix ON [ix].[object_id] = [ic].[object_id] AND [ix].[index_id] = [ic].[index_id];`);
 
@@ -342,7 +342,7 @@ export default class MSSQL implements SchemaInspector {
 					[index_priority],
 					[index_name],
 					[index_column_count]
-				FROM ##IndexInfo
+				FROM #IndexInfo
 				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`),
 				)
 				.select(
@@ -404,7 +404,7 @@ export default class MSSQL implements SchemaInspector {
 
 			const result = await query;
 
-			await trx.raw(`DROP TABLE ##IndexInfo;`);
+			await trx.raw(`DROP TABLE #IndexInfo;`);
 
 			return result;
 		});

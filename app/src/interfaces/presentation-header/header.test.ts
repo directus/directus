@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import Header from './header.vue';
@@ -82,6 +82,14 @@ const urlLink = {
 const flowLink = { icon: 'automation', label: 'flow', type: 'normal' as const, actionType: 'flow', flow: 'test-flow' };
 
 describe('Interface', () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
 	it('should mount', () => {
 		const wrapper = mount(Header, mountOptions);
 
