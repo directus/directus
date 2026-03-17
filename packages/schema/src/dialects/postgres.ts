@@ -93,7 +93,7 @@ export default class Postgres implements SchemaInspector {
 			is_identity: boolean;
 			is_nullable: boolean;
 			is_generated: boolean;
-			table_type: 'BASE TABLE' | 'VIEW';
+			table_type: 'BASE TABLE' | 'VIEW' | 'FOREIGN TABLE';
 		};
 
 		type RawGeometryColumn = {
@@ -106,7 +106,7 @@ export default class Postgres implements SchemaInspector {
 
 		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
 
-		const [columnsResult, primaryKeysResult, matViewColumnsResult] = await Promise.all([
+		const [columnsResult, primaryKeysResult, matViewResult] = await Promise.all([
 			this.knex.raw(
 				`
         SELECT c.table_name
@@ -124,7 +124,7 @@ export default class Postgres implements SchemaInspector {
           ON c.table_name = t.table_name
           AND c.table_schema = t.table_schema
         WHERE
-          t.table_type IN ('BASE TABLE', 'VIEW')
+          t.table_type IN ('BASE TABLE', 'VIEW', 'FOREIGN TABLE')
           AND c.table_schema IN (${bindings});
       `,
 				this.explodedSchema,
@@ -151,7 +151,7 @@ export default class Postgres implements SchemaInspector {
 				this.explodedSchema,
 			),
 
-			// Materialized views and foreign tables don't appear in information_schema — query pg_class/pg_attribute directly
+			// Materialized views don't appear in information_schema — query pg_class/pg_attribute directly
 			this.knex.raw<{ rows: RawColumn[] }>(
 				`
         SELECT
@@ -172,14 +172,14 @@ export default class Postgres implements SchemaInspector {
         JOIN pg_class rel ON att.attrelid = rel.oid
         LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
         WHERE rel.relnamespace IN (${schemaIn})
-          AND rel.relkind IN ('m', 'f')
+          AND rel.relkind = 'm'
           AND att.attnum > 0
           AND NOT att.attisdropped
       `,
 			),
 		]);
 
-		const columns: RawColumn[] = [...columnsResult.rows, ...matViewColumnsResult.rows];
+		const columns: RawColumn[] = [...columnsResult.rows, ...matViewResult.rows];
 		const primaryKeys = primaryKeysResult.rows;
 		let geometryColumns: RawGeometryColumn[] = [];
 
@@ -246,7 +246,7 @@ export default class Postgres implements SchemaInspector {
 
 		// Views, materialized views, and foreign tables don't have primary keys — fall back to `id` if available
 		for (const column of columns) {
-			if (column.table_type !== 'VIEW') continue;
+			if (column.table_type !== 'VIEW' && column.table_type !== 'FOREIGN TABLE') continue;
 
 			const table = overview[column.table_name];
 			if (!table || table.primary) continue;
