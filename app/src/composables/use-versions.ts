@@ -256,8 +256,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	async function removeVersion(versionId: PrimaryKey) {
 		loading.value = true;
 
-		if (!readVersionsAllowed.value) return;
-
 		try {
 		  await api.delete(`/versions/${versionId}`);
 
