@@ -17,21 +17,6 @@ vi.mock('./use-permissions', () => ({
 		createAllowed: ref(true),
 		readAllowed: ref(true),
 	})),
-	usePermissions: vi.fn(() => ({
-		itemPermissions: {
-			fields: computed(() => []),
-		},
-	})),
-}));
-
-vi.mock('@/composables/use-nested-validation', () => ({
-	useNestedValidation: vi.fn(() => ({
-		nestedValidationErrors: ref([]),
-	})),
-}));
-
-vi.mock('@/utils/get-default-values-from-fields', () => ({
-	getDefaultValuesFromFields: vi.fn(() => ref({})),
 }));
 
 vi.mock('@/utils/validate-item', () => ({
