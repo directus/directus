@@ -123,8 +123,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 
-	const [schemaOverview, tables] = await Promise.all([schemaInspector.overview(), schemaInspector.tableInfo()]);
-	const tablesByName = new Map(tables.map((table) => [table.name, table]));
+	const schemaOverview = await schemaInspector.overview();
 
 	const collections = [
 		...(await database
@@ -150,12 +149,11 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 		}
 
 		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
-		const table = tablesByName.get(collection);
 
 		result.collections[collection] = {
 			collection,
 			primary: info.primary,
-			readonly: table?.type === 'view',
+			readonly: info.type === 'view',
 			singleton: toBoolean(collectionMeta?.singleton),
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
