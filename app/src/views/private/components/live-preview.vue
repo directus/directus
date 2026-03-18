@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
+import type { ContentVersion } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -16,8 +17,10 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { parseUrl } from '@/utils/parse-url';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 
 declare global {
@@ -33,7 +36,7 @@ const {
 	dynamicDisplay,
 	singleUrlSubdued = true,
 	canEnableVisualEditing = false,
-	visualEditorUrls = [],
+	version = null,
 	showOpenInVisualEditor = true,
 	defaultShowEditableElements = false,
 	isFullWidth = false,
@@ -52,7 +55,7 @@ const {
 	inPopup?: boolean;
 	centered?: boolean;
 	canEnableVisualEditing?: boolean;
-	visualEditorUrls?: string[];
+	version?: Pick<ContentVersion, 'key' | 'name'> | null;
 	showOpenInVisualEditor?: boolean;
 	defaultShowEditableElements?: boolean;
 	isFullWidth?: boolean;
@@ -73,10 +76,10 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const router = useRouter();
 const slots = useSlots();
-
 useResizeObserver();
 
-const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, selectUrl } = useUrls();
+const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, matchesDynamicUrl, selectUrl } = useUrls();
+const { visualEditingEnabled, showEditableElements, openInVisualEditor } = useVisualEditing();
 
 const width = ref<number>();
 const height = ref<number>();
@@ -84,7 +87,6 @@ const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
-const showEditableElements = ref(defaultShowEditableElements);
 const overlayProvided = computed(() => !!slots.overlay);
 const hasDisplayOptions = computed(() => !!slots['display-options']);
 const hasSidebar = computed(() => !!slots.sidebar);
@@ -129,16 +131,6 @@ const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
 });
 
-const visualEditingEnabled = computed(() => {
-	if (!canEnableVisualEditing) return false;
-	if (invalidUrl) return false;
-
-	const currentUrl = frameSrc.value;
-	if (!currentUrl || !visualEditorUrls.length) return false;
-
-	return visualEditorUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
-});
-
 function toggleFullscreen() {
 	if (fullscreen.value) {
 		width.value = 400;
@@ -164,22 +156,42 @@ function onIframeLoad() {
 	isRefreshing.value = false;
 }
 
-function openInVisualEditor() {
-	if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
-}
-
 window.refreshLivePreview = refresh;
 
-watch(
-	() => frameSrc.value,
-	() => {
-		showEditableElements.value = false;
-	},
-);
+function useVisualEditing() {
+	const { resolveUrls } = useVisualEditorUrls();
+	const showEditableElements = ref(defaultShowEditableElements);
 
-watch(visualEditingEnabled, (enabled) => {
-	if (!enabled) showEditableElements.value = false;
-});
+	const visualEditingEnabled = computed(() => {
+		if (!canEnableVisualEditing) return false;
+		if (invalidUrl) return false;
+
+		const currentUrl = frameSrc.value;
+		if (!currentUrl) return false;
+
+		const allowedUrls = resolveUrls(version?.key);
+		if (!allowedUrls.length) return false;
+
+		return allowedUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
+	});
+
+	watch(
+		() => frameSrc.value,
+		() => {
+			showEditableElements.value = false;
+		},
+	);
+
+	watch(visualEditingEnabled, (enabled) => {
+		if (!enabled) showEditableElements.value = false;
+	});
+
+	return { visualEditingEnabled, showEditableElements, openInVisualEditor };
+
+	function openInVisualEditor() {
+		if (frameSrc.value) router.push(getUrlRoute(frameSrc.value));
+	}
+}
 
 function useResizeObserver() {
 	let observerInitialized = false;
@@ -214,11 +226,13 @@ function useResizeObserver() {
 }
 
 function useUrls() {
-	const initialDynamicUrl = dynamicUrl;
-	const selectedUrl = ref<string>();
+	const internalFrameSrc = ref<string>();
 	const urlArray = computed(() => (Array.isArray(url) ? url : [url]));
 	const multipleUrls = computed(() => urls.value.length > 1);
-	const dynamicUrlIncluded = computed(() => dynamicUrl && urlArray.value.includes(dynamicUrl));
+
+	const dynamicUrlIncluded = computed(
+		() => dynamicUrl && urlArray.value.map((url) => normalizeUrl(url)).includes(normalizeUrl(dynamicUrl)),
+	);
 
 	const urls = computed(() => {
 		if (dynamicUrl && !dynamicUrlIncluded.value) return [dynamicUrl, ...urlArray.value];
@@ -226,9 +240,9 @@ function useUrls() {
 	});
 
 	const frameSrc = computed({
-		get: () => selectedUrl.value ?? initialDynamicUrl ?? urls.value[0],
+		get: () => internalFrameSrc.value ?? urls.value[0],
 		set(value) {
-			selectedUrl.value = value;
+			internalFrameSrc.value = value;
 		},
 	});
 
@@ -237,14 +251,33 @@ function useUrls() {
 		return dynamicDisplay ?? frameSrc.value;
 	});
 
+	watch(urlArray, updateFrameSrcWithDynamicUrl, { immediate: true });
+
 	return {
 		urls,
 		frameSrc,
 		urlDisplay,
 		multipleUrls,
 		dynamicUrlIncluded,
+		matchesDynamicUrl,
 		selectUrl,
 	};
+
+	function matchesDynamicUrl(url: string): boolean {
+		if (!dynamicUrl) return false;
+		return normalizeUrl(url) === normalizeUrl(dynamicUrl);
+	}
+
+	function normalizeUrl(url: string): string {
+		const parsed = parseUrl(url);
+		if (!parsed) return '';
+
+		return parsed.href.replace(/\/$/, '');
+	}
+
+	function updateFrameSrcWithDynamicUrl() {
+		if (dynamicUrl) internalFrameSrc.value = dynamicUrl;
+	}
 
 	function selectUrl(newUrl: string) {
 		emit('selectUrl', newUrl, String(frameSrc.value));
@@ -368,7 +401,7 @@ function useUrls() {
 						<VListItem
 							v-for="(urlItem, index) in urls"
 							:key="index"
-							:active="urlItem === dynamicUrl"
+							:active="matchesDynamicUrl(urlItem)"
 							clickable
 							@click="selectUrl(urlItem)"
 						>
@@ -378,6 +411,8 @@ function useUrls() {
 						</VListItem>
 					</VList>
 				</VMenu>
+
+				<slot name="append-url" />
 			</div>
 
 			<div class="spacer" />
@@ -443,12 +478,12 @@ function useUrls() {
 			collapsible
 			:collapsed-size="0"
 			:collapse-threshold="70"
-			:min-size="280"
-			:max-size="600"
-			:snap-points="[370]"
+			:min-size="252"
+			:max-size="540"
+			:snap-points="[333]"
 			:snap-threshold="6"
 			:transition-duration="125"
-			divider-hit-area="24px"
+			divider-hit-area="1.375rem"
 			class="content-split"
 			@update:size="(size: number) => emit('update:sidebarSize', size)"
 			@update:collapsed="
@@ -483,6 +518,7 @@ function useUrls() {
 								v-if="visualEditingEnabled && !overlayProvided"
 								:frame-el="frameEl"
 								:frame-src="frameSrc"
+								:version="version"
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
 							/>
@@ -524,6 +560,7 @@ function useUrls() {
 						v-if="visualEditingEnabled && !overlayProvided"
 						:frame-el="frameEl"
 						:frame-src="frameSrc"
+						:version="version"
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
 					/>
@@ -551,17 +588,17 @@ function useUrls() {
 	--preview--header--background-color: var(--theme--navigation--modules--background);
 	--preview--header--border-width: var(--theme--navigation--modules--border-width);
 	--preview--header--border-color: var(--theme--navigation--modules--border-color);
-	--preview--header--height: 44px;
+	--preview--header--height: 2.5rem;
 
 	container-type: inline-size;
 	inline-size: 100%;
 	block-size: 100%;
 
 	&.header-expanded {
-		--preview--header--height: 60px;
+		--preview--header--height: 3.375rem;
 
 		.header {
-			padding: 8px 16px;
+			padding: 0.4375rem 0.875rem;
 		}
 	}
 
@@ -576,8 +613,8 @@ function useUrls() {
 		display: flex;
 		align-items: center;
 		z-index: 10;
-		gap: 8px;
-		padding: 0 8px;
+		gap: 0.4375rem;
+		padding: 0 0.4375rem;
 		transition:
 			padding var(--medium) var(--transition),
 			block-size var(--medium) var(--transition);
@@ -631,7 +668,7 @@ function useUrls() {
 				min-inline-size: 0;
 
 				.v-icon {
-					inset-block-start: 1px;
+					inset-block-start: 0.0625rem;
 				}
 			}
 		}
@@ -651,7 +688,7 @@ function useUrls() {
 
 		input {
 			border: none;
-			inline-size: 50px;
+			inline-size: 2.8125rem;
 			background-color: transparent;
 
 			&:first-child {
@@ -659,7 +696,7 @@ function useUrls() {
 			}
 		}
 
-		@container (max-width: 480px) {
+		@container (max-width: 27rem) {
 			.dimensions.disabled {
 				display: none;
 			}
@@ -694,7 +731,7 @@ function useUrls() {
 		block-size: 100%;
 		overflow: auto;
 		display: grid;
-		padding: 48px;
+		padding: 2.6875rem;
 
 		#frame {
 			inline-size: 100%;

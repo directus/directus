@@ -23,7 +23,7 @@ onMounted(() => {
 	<div ref="el" :data-status="aiStore.status" class="ai-message-list">
 		<AiMessage v-for="message in aiStore.messages" :key="message.id" v-bind="message" />
 
-		<AiMessage v-if="aiStore.status === 'submitted'" id="indicator" role="assistant" :parts="[]">
+		<AiMessage v-if="aiStore.showAssistantLoadingIndicator" id="indicator" role="assistant" :parts="[]">
 			<AiLoadingIndicator />
 		</AiMessage>
 	</div>
@@ -33,8 +33,8 @@ onMounted(() => {
 .ai-message-list {
 	display: flex;
 	flex-direction: column;
-	gap: 1.5rem;
-	padding-block-end: 1rem;
+	gap: 1.1875rem;
+	padding-block-end: 0.8125rem;
 	position: relative;
 }
 </style>

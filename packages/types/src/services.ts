@@ -217,7 +217,7 @@ interface FileService<T = File> {
 	 */
 	uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<T> & { storage: string },
+		data: Partial<T>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey>;
@@ -468,7 +468,7 @@ interface DeploymentService {
  */
 interface DeploymentProjectsService {
 	updateSelection(
-		deploymentId: string,
+		provider: ProviderType,
 		create: { external_id: string; name: string }[],
 		deleteIds: PrimaryKey[],
 	): Promise<StoredProject[]>;

@@ -86,23 +86,23 @@ watch(form, () => {
 
 <style scoped>
 .setup-form {
-	margin-block-start: 100px;
+	margin-block-start: 5.625rem;
 }
 
 .v-button {
-	margin-block-start: 32px;
+	margin-block-start: 1.8125rem;
 
 	.v-icon {
-		margin-inline-end: 12px;
+		margin-inline-end: 0.6875rem;
 	}
 }
 
 .v-notice {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .error-code {
 	font-weight: 700;
-	margin-block-end: 4px;
+	margin-block-end: 0.25rem;
 }
 </style>

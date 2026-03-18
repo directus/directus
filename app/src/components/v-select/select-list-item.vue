@@ -87,10 +87,10 @@ const isActive = computed(() => {
 }
 
 .item-text-margin {
-	margin-inline-start: 32px;
+	margin-inline-start: 1.8125rem;
 }
 
 .color-dot {
-	margin-inline: 6px;
+	margin-inline: 0.3125rem;
 }
 </style>

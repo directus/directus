@@ -167,7 +167,7 @@ function onClickIcon(e: MouseEvent): void {
 
 	.label:not(:empty) {
 		flex-grow: 1;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 		transition: color var(--fast) var(--transition);
 		@include mixins.no-wrap;
 
@@ -206,7 +206,7 @@ function onClickIcon(e: MouseEvent): void {
 		position: relative;
 		inline-size: 100%;
 		block-size: var(--theme--form--field--input--height);
-		padding: 10px; // 14 - 4 (border)
+		padding: 0.5625rem; // 14 - 4 (border)
 		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
@@ -272,11 +272,11 @@ function onClickIcon(e: MouseEvent): void {
 	.prepend,
 	.append {
 		display: contents;
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 
 	.append {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 }
 </style>

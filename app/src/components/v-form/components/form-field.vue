@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ContentVersion, ValidationError } from '@directus/types';
+import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -13,6 +13,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { CollabFieldContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import CollabIndicatorField from '@/views/private/components/collab/CollabIndicatorField.vue';
 
@@ -37,7 +38,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
-		version?: ContentVersion | null;
+		version?: ContentVersionMaybeNew | null;
 		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
@@ -299,15 +300,15 @@ function useComputedValues() {
 	> .avatars {
 		position: absolute;
 		inset-inline-end: 0;
-		inset-block-end: calc(100% + 8px);
+		inset-block-end: calc(100% + 0.4375rem);
 	}
 }
 
 .type-note {
 	position: relative;
 	display: block;
-	max-inline-size: 520px;
-	margin-block-start: 4px;
+	max-inline-size: 29.25rem;
+	margin-block-start: 0.25rem;
 
 	:deep(a) {
 		color: var(--theme--primary);
@@ -319,8 +320,8 @@ function useComputedValues() {
 }
 
 .invalid {
-	margin: -12px;
-	padding: 12px;
+	margin: -0.6875rem;
+	padding: 0.6875rem;
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);
 	transition: var(--medium) var(--transition);
@@ -330,12 +331,12 @@ function useComputedValues() {
 .validation-error {
 	display: flex;
 	align-items: center;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	color: var(--theme--danger);
 	font-style: italic;
 }
 
 .label-spacer {
-	block-size: 28px;
+	block-size: 1.5625rem;
 }
 </style>

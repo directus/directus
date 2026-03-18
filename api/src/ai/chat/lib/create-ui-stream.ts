@@ -8,16 +8,20 @@ import {
 	type StreamTextResult,
 	type Tool,
 	type UIMessage,
+	wrapLanguageModel,
 } from 'ai';
+import { getDevToolsMiddleware } from '../../devtools/index.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
 	createAIProviderRegistry,
 	getProviderOptions,
 } from '../../providers/index.js';
+import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
 import { formatContextForSystemPrompt } from '../utils/format-context.js';
+import { transformFilePartsForProvider } from './transform-file-parts.js';
 
 export interface CreateUiStreamOptions {
 	provider: ProviderType;
@@ -25,13 +29,15 @@ export interface CreateUiStreamOptions {
 	tools: { [x: string]: Tool };
 	aiSettings: AISettings;
 	systemPrompt?: string;
+	userId?: string | null;
+	role?: string | null;
 	context?: ChatContext;
 	onUsage?: (usage: Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'>) => void | Promise<void>;
 }
 
 export const createUiStream = async (
 	messages: UIMessage[],
-	{ provider, model, tools, aiSettings, systemPrompt, context, onUsage }: CreateUiStreamOptions,
+	{ provider, model, tools, aiSettings, systemPrompt, userId, role, context, onUsage }: CreateUiStreamOptions,
 ): Promise<StreamTextResult<Record<string, Tool<any, any>>, any>> => {
 	const configs = buildProviderConfigs(aiSettings);
 	const providerConfig = configs.find((c) => c.type === provider);
@@ -45,16 +51,29 @@ export const createUiStream = async (
 	const baseSystemPrompt = systemPrompt || SYSTEM_PROMPT;
 	const contextBlock = context ? formatContextForSystemPrompt(context) : null;
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
+	let languageModel = registry.languageModel(`${provider}:${model}`);
+	const devToolsMiddleware = getDevToolsMiddleware();
+
+	if (devToolsMiddleware) {
+		languageModel = wrapLanguageModel({
+			model: languageModel,
+			middleware: devToolsMiddleware,
+		});
+	}
+
 	// Compute the full system prompt once to avoid re-computing on each step
 	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
 
+	const telemetryConfig = getAITelemetryConfig({ provider, model, userId, role });
+
 	const stream = streamText({
 		system: baseSystemPrompt,
-		model: registry.languageModel(`${provider}:${model}`),
-		messages: await convertToModelMessages(messages),
+		model: languageModel,
+		messages: await convertToModelMessages(transformFilePartsForProvider(messages)),
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
 		tools,
+		...(telemetryConfig ? ({ experimental_telemetry: telemetryConfig } as any) : {}),
 		/**
 		 * prepareStep is called before each AI step to prepare the system prompt.
 		 * When context exists, we override the system prompt to include context attachments.

@@ -1,8 +1,9 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import type { Env } from '../types/env.js';
 
-export const DEFAULTS = {
+export const DEFAULTS: Env = {
 	CONFIG_PATH: resolve(cwd(), '.env'),
 
 	HOST: '0.0.0.0',
@@ -11,7 +12,7 @@ export const DEFAULTS = {
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
 	QUERYSTRING_MAX_PARSE_DEPTH: 10,
-	QUERYSTRING_ARRAY_LIMIT: 100,
+	QUERYSTRING_ARRAY_LIMIT: 500,
 	QUERY_LIMIT_DEFAULT: 100,
 	MAX_BATCH_MUTATION: Infinity,
 	MAX_IMPORT_ERRORS: 1000,
@@ -139,6 +140,8 @@ export const DEFAULTS = {
 	USERS_APP_ACCESS_LIMIT: Infinity,
 	USERS_API_ACCESS_LIMIT: Infinity,
 
+	MAX_JSON_QUERY_DEPTH: 10,
+
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	TUS_ENABLED: false,
@@ -153,6 +156,7 @@ export const DEFAULTS = {
 	REVISIONS_RETENTION: '90d',
 	FLOW_LOGS_RETENTION: '90d',
 
+	OPENAPI_ENABLED: true,
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 5,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
@@ -201,4 +205,14 @@ export const DEFAULTS = {
 	MCP_ENABLED: true,
 
 	AI_ENABLED: true,
+	AI_DEVTOOLS_ENABLED: false,
+	AI_TELEMETRY_ENABLED: false,
+	AI_TELEMETRY_PROVIDER: 'langfuse',
+	AI_TELEMETRY_RECORD_IO: false,
+	LANGFUSE_SECRET_KEY: '',
+	LANGFUSE_PUBLIC_KEY: '',
+	LANGFUSE_BASE_URL: 'https://cloud.langfuse.com',
+	BRAINTRUST_API_KEY: '',
+	BRAINTRUST_PROJECT_NAME: '',
+	BRAINTRUST_API_URL: '',
 } as const;

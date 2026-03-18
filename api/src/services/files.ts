@@ -4,7 +4,12 @@ import zlib from 'node:zlib';
 import path from 'path';
 import url from 'url';
 import { useEnv } from '@directus/env';
-import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import {
+	ContentTooLargeError,
+	InternalServerError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type {
 	AbstractServiceOptions,
@@ -20,6 +25,7 @@ import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
+import { minimatch } from 'minimatch';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
@@ -42,7 +48,7 @@ export class FilesService extends ItemsService<File> {
 	 */
 	async uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<File> & { storage: string },
+		data: Partial<File>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
@@ -55,14 +61,18 @@ export class FilesService extends ItemsService<File> {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata')
+					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'storage')
 					.from('directus_files')
 					.where({ id: primaryKey })
 					.first()) ?? null;
 		}
 
 		// Merge the existing file's folder and filename_download with the new payload
-		const payload = { ...(existingFile ?? {}), ...clone(data) };
+		const payload = {
+			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
+			...(existingFile ?? {}),
+			...clone(data),
+		};
 
 		const disk = storage.location(payload.storage);
 
@@ -149,6 +159,8 @@ export class FilesService extends ItemsService<File> {
 
 			if (err instanceof ContentTooLargeError) {
 				throw err;
+			} else if (err?.code && ['EROFS', 'EACCES', 'EPERM'].includes(err.code)) {
+				throw new InternalServerError();
 			} else {
 				throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
 			}
@@ -172,10 +184,10 @@ export class FilesService extends ItemsService<File> {
 			}
 		}
 
-		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
+		const { size } = await storage.location(payload.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
+		const metadata = await extractMetadata(payload.storage, payload as Parameters<typeof extractMetadata>[1]);
 
 		payload.uploaded_on = new Date().toISOString();
 
@@ -214,7 +226,11 @@ export class FilesService extends ItemsService<File> {
 	/**
 	 * Import a single file from an external URL
 	 */
-	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
+	async importOne(
+		importURL: string,
+		body: Partial<File>,
+		options: { filterMimeType?: string[] } = {},
+	): Promise<PrimaryKey> {
 		if (this.accountability) {
 			await validateAccess(
 				{
@@ -251,10 +267,34 @@ export class FilesService extends ItemsService<File> {
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
 		const filename = decodeURI(path.basename(parsedURL.pathname as string));
 
+		const mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
+
+		// Check against global MIME type allow list from env
+		const globalAllowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const globalMimeTypeAllowed = globalAllowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+
+		if (globalMimeTypeAllowed === false) {
+			throw new InvalidPayloadError({
+				reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
+			});
+		}
+
+		const { filterMimeType } = options;
+
+		// Check against interface-level MIME type restrictions if provided
+		if (filterMimeType && filterMimeType.length > 0) {
+			const interfaceMimeTypeAllowed = filterMimeType.some((pattern: string) => minimatch(mimeType, pattern));
+
+			if (interfaceMimeTypeAllowed === false) {
+				throw new InvalidPayloadError({
+					reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
+				});
+			}
+		}
+
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
-			type: fileResponse.headers['content-type'],
+			type: mimeType,
 			title: formatTitle(filename),
 			...(body || {}),
 		};

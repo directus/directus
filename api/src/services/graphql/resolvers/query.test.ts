@@ -207,7 +207,7 @@ describe('resolveQuery', () => {
 		expect(queryArg).toEqual(expect.objectContaining({ fields: ['count(a)', 'b.sum(c)', 'c.d.max(e)'] }));
 	});
 
-	test('inject group field when groupBy field is named "group"', async () => {
+	test('groupBy field named "group"', async () => {
 		mockReplaceFragments.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({});
 
@@ -238,6 +238,40 @@ describe('resolveQuery', () => {
 		expect(res).toEqual([
 			{ group: { group: 'admin' }, count: { id: 3 } },
 			{ group: { group: 'user' }, count: { id: 7 } },
+		]);
+	});
+
+	test('groupBy function field', async () => {
+		mockReplaceFragments.mockReturnValue([{}]);
+		mockParseArgs.mockReturnValue({});
+
+		mockGetAggregateQuery.mockResolvedValue({
+			group: ['year(date_published)'],
+			aggregate: { count: ['id'] },
+		});
+
+		const gql: any = {
+			scope: 'app',
+			schema: { collections: {} },
+			accountability: {},
+			read: vi.fn(() => [
+				{ date_published_year: 2026, count: { id: 3 } },
+				{ date_published_year: 2025, count: { id: 7 } },
+			]),
+		};
+
+		const info: any = {
+			fieldName: 'items_aggregated',
+			fieldNodes: [{ selectionSet: { selections: [{}] }, arguments: [] }],
+			fragments: {},
+			variableValues: {},
+		};
+
+		const res = await resolveQuery(gql, info);
+
+		expect(res).toEqual([
+			expect.objectContaining({ group: { date_published_year: 2026 }, count: { id: 3 } }),
+			expect.objectContaining({ group: { date_published_year: 2025 }, count: { id: 7 } }),
 		]);
 	});
 

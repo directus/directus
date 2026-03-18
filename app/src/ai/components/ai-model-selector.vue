@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAiStore } from '@/ai/stores/use-ai';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -9,28 +11,42 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 
+const { t } = useI18n();
 const aiStore = useAiStore();
+
+const availableModels = computed(() => {
+	if (!aiStore.isProviderLocked || !aiStore.selectedModel) return aiStore.models;
+	return aiStore.models.filter((m) => m.provider === aiStore.selectedModel!.provider);
+});
+
+const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableModels.value.length <= 1);
 </script>
 
 <template>
-	<VMenu placement="bottom-start" show-arrow>
+	<VMenu placement="bottom-start" show-arrow :disabled="isSelectorDisabled">
 		<template #activator="{ toggle }">
-			<button class="select-trigger" @click="toggle">
+			<button
+				v-tooltip.bottom="aiStore.isProviderLocked ? t('ai.provider_locked_tooltip') : undefined"
+				class="select-trigger"
+				:disabled="isSelectorDisabled"
+				@click="toggle"
+			>
 				<template v-if="aiStore.selectedModel">
 					<component :is="aiStore.selectedModel.icon" class="model-icon small" />
 					{{ aiStore.selectedModel.name }}
 				</template>
 
-				<VIcon name="expand_more" x-small class="select-icon" />
+				<VIcon v-if="aiStore.isProviderLocked" name="lock" x-small class="select-icon" />
+				<VIcon v-else name="expand_more" x-small class="select-icon" />
 			</button>
 		</template>
 
 		<VList>
 			<template
-				v-for="(modelDefinition, index) in aiStore.models"
+				v-for="(modelDefinition, index) in availableModels"
 				:key="`${modelDefinition.provider}:${modelDefinition.model}`"
 			>
-				<VDivider v-if="index !== 0 && modelDefinition.provider !== aiStore.models[index - 1]?.provider" />
+				<VDivider v-if="index !== 0 && modelDefinition.provider !== availableModels[index - 1]?.provider" />
 
 				<VListItem
 					:active="aiStore.selectedModel === modelDefinition"
@@ -56,13 +72,13 @@ const aiStore = useAiStore();
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 4px;
+	gap: 0.25rem;
 	background: transparent;
 	border: var(--theme--border-width) solid transparent;
 	border-radius: var(--theme--border-radius);
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
-	font-size: 12px;
+	font-size: 0.6875rem;
 	cursor: pointer;
 	transition: all var(--fast) var(--transition);
 
@@ -73,19 +89,19 @@ const aiStore = useAiStore();
 }
 
 .model-icon {
-	inline-size: 16px;
-	block-size: 16px;
+	inline-size: 0.875rem;
+	block-size: 0.875rem;
 
 	&.small {
-		inline-size: 12px;
-		block-size: 12px;
+		inline-size: 0.6875rem;
+		block-size: 0.6875rem;
 	}
 }
 
 .model-list-item-content {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .select-icon {

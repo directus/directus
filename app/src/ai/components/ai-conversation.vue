@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { useScroll } from '@vueuse/core';
+import { AI_ALLOWED_MIME_TYPES } from '@directus/ai';
+import { useDropZone, useScroll } from '@vueuse/core';
 import { computed, nextTick, onMounted, useTemplateRef } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { pendingAskUser, useAskUserTool } from '../composables/use-ask-user-tool';
+import { useContextStaging } from '../composables/use-context-staging';
 import { useAiStore } from '../stores/use-ai';
 import AiHeader from './ai-header.vue';
 import AiInput from './ai-input.vue';
 import AiMessageList from './ai-message-list.vue';
+import AiAskUser from './parts/ai-ask-user.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useUserStore } from '@/stores/user';
+import { notify } from '@/utils/notify';
 
+const { t } = useI18n();
 const aiStore = useAiStore();
+const { stageLocalFiles } = useContextStaging();
 const userStore = useUserStore();
+const allowedMimeTypes = new Set<string>(AI_ALLOWED_MIME_TYPES);
+
+useAskUserTool();
 
 const hasProviders = computed(() => aiStore.models.length > 0);
 
@@ -44,12 +55,33 @@ const emptyState = computed(() => {
 	return null;
 });
 
+const conversationRef = useTemplateRef<HTMLElement>('conversation');
 const messagesContainerRef = useTemplateRef<HTMLElement>('messages-container');
+
+const { isOverDropZone: dragging } = useDropZone(conversationRef, {
+	dataTypes: (types) => aiStore.supportsFileUpload && types.some((t) => allowedMimeTypes.has(t)),
+	onDrop(files) {
+		if (!files) return;
+
+		const accepted = files.filter((f) => allowedMimeTypes.has(f.type));
+
+		if (accepted.length < files.length) {
+			notify({ title: t('ai.unsupported_file_type'), type: 'warning' });
+		}
+
+		if (accepted.length > 0) {
+			stageLocalFiles(accepted);
+		}
+
+		aiStore.focusInput();
+	},
+	multiple: true,
+	preventDefaultForUnhandled: true,
+});
 
 const { arrivedState } = useScroll(messagesContainerRef);
 
 const showScrollButton = computed(() => {
-	// Only show if we have messages and are not at the bottom
 	return aiStore.messages.length > 0 && !arrivedState.bottom;
 });
 
@@ -73,7 +105,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 </script>
 
 <template>
-	<div class="ai-conversation">
+	<div ref="conversation" class="ai-conversation">
 		<AiHeader v-if="hasProviders" />
 
 		<div ref="messages-container" class="messages-container">
@@ -114,14 +146,20 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 				</VButton>
 			</div>
 
-			<AiInput />
+			<AiAskUser v-if="pendingAskUser" />
+			<AiInput v-else />
+		</div>
+
+		<div v-if="dragging" class="drop-overlay">
+			<VIcon class="upload-icon" x-large name="file_upload" />
+			<p class="type-label">{{ $t('drop_to_upload') }}</p>
 		</div>
 	</div>
 </template>
 
 <style scoped>
 .error-notice {
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 	max-inline-size: 100%;
 	overflow: hidden;
 }
@@ -137,7 +175,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .messages-container {
 	position: relative;
-	padding-inline: 8px;
+	padding-inline: 0.4375rem;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -149,18 +187,18 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 #scroll-anchor {
 	overflow-anchor: auto;
-	block-size: 1px;
+	block-size: 0.0625rem;
 }
 
 .input-container {
 	flex-shrink: 0;
 	position: relative;
-	padding-inline-end: 12px;
+	padding-inline-end: 0.6875rem;
 }
 
 .error-message {
-	margin-block-end: 1rem;
-	font-size: 0.875rem;
+	margin-block-end: 0.8125rem;
+	font-size: 0.6875rem;
 	inline-size: 100%;
 	max-inline-size: 100%;
 	overflow-wrap: break-word;
@@ -169,13 +207,13 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .error-buttons-container {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
+	gap: 0.8125rem;
 
-	margin-block-start: 1rem;
+	margin-block-start: 0.8125rem;
 	align-items: center;
 
 	.v-icon {
-		margin-inline-end: 0.25rem;
+		margin-inline-end: 0.1875rem;
 	}
 }
 
@@ -185,7 +223,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .scroll-to-bottom-container {
 	position: absolute;
-	inset-block-start: -36px;
+	inset-block-start: -2rem;
 	inset-inline-start: 50%;
 	translate: -50% 0;
 	z-index: 4;
@@ -198,5 +236,23 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .scroll-to-bottom-btn {
 	box-shadow: 0 0 8px rgb(0 0 0 / 0.15);
 	pointer-events: all;
+}
+
+.drop-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 100;
+	background-color: var(--theme--primary-background);
+	border: 2px dashed var(--theme--primary);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: var(--theme--primary);
+	pointer-events: none;
+
+	.upload-icon {
+		margin-block-end: 0.6875rem;
+	}
 }
 </style>

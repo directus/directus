@@ -17,6 +17,7 @@ import VSelect from '@/components/v-select/v-select.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Sort } from '@/components/v-table/types';
 import VTable from '@/components/v-table/v-table.vue';
+import { useColumnWidths } from '@/composables/use-column-widths';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
@@ -78,6 +79,10 @@ const { t, n } = useI18n();
 const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
+
+const { getWidth, updateWidths } = useColumnWidths(
+	() => `directus-o2m-column-widths-${collection.value}-${field.value}`,
+);
 
 const value = computed({
 	get: () => props.value,
@@ -178,15 +183,9 @@ const showingCount = computed(() =>
 	}),
 );
 
-const headers = ref<Array<any>>([]);
-
-watch(
-	[props, relationInfo, displayItems],
-	() => {
-		if (!relationInfo.value) {
-			headers.value = [];
-			return;
-		}
+const headers = computed({
+	get: (): Array<any> => {
+		if (!relationInfo.value) return [];
 
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
 
@@ -204,29 +203,41 @@ watch(
 			});
 		});
 
-		headers.value = props.fields
+		return props.fields
 			.map((key) => {
 				const field = fieldsStore.getField(relatedCollection, key);
 
 				// when user has no permission to this field or junction collection
 				if (!field) return null;
 
+				const defaultWidth =
+					contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 144;
+
 				return {
 					text: field.name,
 					value: key,
-					width: contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					width: getWidth(key, defaultWidth),
 					sortable: !['json'].includes(field.type),
 				};
 			})
-			.filter((key) => key !== null);
+			.filter((h) => h !== null);
 	},
-	{ immediate: true },
-);
+	set: (val: Array<any>) => {
+		const currentHeaders = headers.value;
+
+		const changed = val.filter((h) => {
+			const current = currentHeaders.find((ch: any) => ch.value === h.value);
+			return current && current.width !== h.width;
+		});
+
+		if (changed.length > 0) updateWidths(changed);
+	},
+});
 
 const spacings = {
-	compact: 32,
-	cozy: 48,
-	comfortable: 64,
+	compact: 29,
+	cozy: 43,
+	comfortable: 58,
 };
 
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
@@ -527,10 +538,10 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 					/>
 				</template>
 
-				<template v-if="!nonEditable" #item-append="{ item }">
+				<template v-if="!nonEditable || enableLink" #item-append="{ item }">
 					<div class="item-actions">
 						<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(item)!" custom>
-							<VIcon v-if="disabled || item.$type === 'created'" name="launch" />
+							<VIcon v-if="(disabled && !nonEditable) || item.$type === 'created'" name="launch" />
 
 							<a
 								v-else
@@ -545,7 +556,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 						</RouterLink>
 
 						<VRemove
-							v-if="deleteAllowed || isLocalItem(item)"
+							v-if="!nonEditable && (deleteAllowed || isLocalItem(item))"
 							:disabled
 							:class="{ deleted: item.$type === 'deleted' }"
 							:item-type="item.$type"
@@ -607,9 +618,9 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 
 							<div class="spacer" />
 
-							<div v-if="!nonEditable" class="item-actions">
+							<div v-if="!nonEditable || enableLink" class="item-actions" @click.stop>
 								<RouterLink v-if="enableLink" v-slot="{ href, navigate }" :to="getLinkForItem(element)!" custom>
-									<VIcon v-if="disabled || element.$type === 'created'" name="launch" />
+									<VIcon v-if="(disabled && !nonEditable) || element.$type === 'created'" name="launch" />
 
 									<a
 										v-else
@@ -624,7 +635,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 								</RouterLink>
 
 								<VRemove
-									v-if="deleteAllowed || isLocalItem(element)"
+									v-if="!nonEditable && (deleteAllowed || isLocalItem(element))"
 									:disabled
 									:item-type="element.$type"
 									:item-info="relationInfo"
@@ -765,7 +776,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	padding: var(--v-card-padding, 16px);
+	padding: var(--v-card-padding, 0.875rem);
 }
 
 .v-table .deleted {
@@ -838,14 +849,14 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	inline-size: 120px;
-	padding: 10px 0;
-	margin-inline-end: 2px;
+	inline-size: 6.75rem;
+	padding: 0.5625rem 0;
+	margin-inline-end: 0.125rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		inline-size: auto;
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.v-select {

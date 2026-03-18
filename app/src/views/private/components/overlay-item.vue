@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
-import { Field, PrimaryKey, Relation } from '@directus/types';
+import { ContentVersion, Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, set, uniqBy } from 'lodash';
 import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
@@ -62,6 +62,8 @@ export interface OverlayItemProps {
 	popoverProps?: Record<string, any>;
 	applyShortcut?: ApplyShortcut;
 	preventCancelWithEdits?: boolean;
+	// Only use when editing a version directly (e.g. visual editor). Not for regular item editing.
+	version?: ContentVersion['key'] | null | undefined;
 }
 
 export interface OverlayItemEmits {
@@ -261,7 +263,7 @@ const templatePrimaryKey = computed(() =>
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 
 const isSavable = computed(() => {
-	if (props.disabled || !hasEdits.value) return false;
+	if (props.disabled || (!hasEdits.value && !isNew.value)) return false;
 	if (!relatedCollection.value) return saveAllowed.value;
 	return saveAllowed.value || saveRelatedCollectionAllowed.value;
 });
@@ -375,7 +377,14 @@ function useItem() {
 		}
 
 		try {
-			const response = await api.get(endpoint, { params: { fields } });
+			const params: Record<string, any> = { fields };
+
+			if (props.version && !!collectionInfo.value?.meta?.versioning) {
+				params.version = props.version;
+				params.versionRaw = true;
+			}
+
+			const response = await api.get(endpoint, { params });
 
 			initialValues.value = response.data.data;
 		} catch (error) {
@@ -753,7 +762,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	/>
 
 	<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -768,7 +777,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndLeave">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>
@@ -776,7 +785,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	</VDialog>
 
 	<VDialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
-		<VCard v-if="!collab?.connected">
+		<VCard v-if="!collab?.connected.value">
 			<VCardTitle>{{ $t('discard_all_changes') }}</VCardTitle>
 			<VCardText>{{ $t('discard_changes_copy') }}</VCardText>
 			<VCardActions>
@@ -791,7 +800,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<VCardText>{{ $t('unsaved_changes_copy_collab') }}</VCardText>
 			<VCardActions>
 				<VButton secondary @click="discardAndCancel">
-					{{ $t('close_drawer') }}
+					{{ $t('cancel_anyway') }}
 				</VButton>
 				<VButton @click="confirmCancel = false">{{ $t('keep_editing') }}</VButton>
 			</VCardActions>
@@ -803,8 +812,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 .modal-card,
 .modal-item-content,
 .popover-item-content {
-	--theme--form--column-gap: 16px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 0.875rem;
+	--theme--form--row-gap: 1.375rem;
 }
 
 .modal-card {
@@ -813,11 +822,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 	) !important;
 	max-inline-size: 90vw !important;
 
-	@media (min-height: 375px) {
-		--button-height: var(--v-button-height, 44px);
-		--button-gap: 12px;
-		--shadow-height: 7px;
-		--shadow-cover-height: 10px;
+	@media (min-height: 21.125rem) {
+		--button-height: var(--v-button-height, 2.5rem);
+		--button-gap: 0.6875rem;
+		--shadow-height: 0.375rem;
+		--shadow-cover-height: 0.5625rem;
 
 		.v-card-actions {
 			z-index: 100;
@@ -853,7 +862,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-title-icon {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .modal-item-content {
@@ -873,13 +882,13 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 	:deep(.v-form:first-child .first-visible-field .field-label),
 	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
-		--popover-action-width: 100px; // 3 * 28 (button) + 2 * 8 (gap)
+		--popover-action-width: 5.625rem; // 3 * 28 (button) + 2 * 8 (gap)
 
 		max-inline-size: calc(100% - var(--popover-action-width));
 	}
 
 	&.empty {
-		min-block-size: 232px;
+		min-block-size: 13.0625rem;
 	}
 }
 
@@ -894,9 +903,9 @@ function popoverClickOutsideMiddleware(e: Event) {
 	position: relative;
 	display: flex;
 	justify-content: end;
-	gap: 8px;
-	inset-block-start: 12px;
-	inset-inline-end: 16px;
+	gap: 0.4375rem;
+	inset-block-start: 0.6875rem;
+	inset-inline-end: 0.875rem;
 }
 
 // Puts the action buttons closer to the field
