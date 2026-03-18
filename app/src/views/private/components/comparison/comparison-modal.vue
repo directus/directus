@@ -516,16 +516,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		}
 	}
 
-	.promote-validation-errors {
-		flex: 0 0 auto;
-		margin: 0 var(--comparison-modal--padding-x);
-
-		ul {
-			margin-block-start: 0.25rem;
-			padding-inline-start: 1.25rem;
-		}
-	}
-
 	.footer {
 		flex: 0 0 auto;
 		justify-content: space-between;
