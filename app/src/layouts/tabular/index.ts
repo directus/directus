@@ -30,7 +30,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		sidebar: () => undefined,
 		actions: TabularActions,
 	},
-	headerShadow: false,
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();

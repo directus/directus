@@ -325,7 +325,6 @@ function clearFilters() {
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
 			:icon="archive ? 'archive' : currentCollection.icon"
 			:icon-color="currentCollection.color"
-			:sidebar-shadow="layoutState.sidebarShadow"
 		>
 			<template #headline>
 				<VBreadcrumb v-if="bookmark" :items="breadcrumb" />

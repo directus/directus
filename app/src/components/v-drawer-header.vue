@@ -6,17 +6,11 @@ import { translateShortcut } from '@/utils/translate-shortcut';
 import PrivateViewHeaderBarActions from '@/views/private/private-view/components/private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
-withDefaults(
-	defineProps<{
-		title?: string;
-		shadow?: boolean;
-		icon?: string;
-		iconColor?: string;
-	}>(),
-	{
-		shadow: false,
-	},
-);
+defineProps<{
+	title?: string;
+	icon?: string;
+	iconColor?: string;
+}>();
 
 defineEmits<{
 	cancel: [];
@@ -24,7 +18,7 @@ defineEmits<{
 </script>
 
 <template>
-	<header class="header-bar" :class="{ shadow }">
+	<header class="header-bar">
 		<div class="primary">
 			<VButton
 				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
@@ -88,15 +82,9 @@ defineEmits<{
 	background-color: var(--theme--header--background);
 	inline-size: 100%;
 	padding-inline: var(--content-padding);
-	box-shadow: none;
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 	block-size: var(--header-bar-height);
 	grid-template-rows: repeat(2, 1fr);
-
-	&.shadow {
-		box-shadow: var(--theme--header--box-shadow);
-		transition: box-shadow var(--fast) var(--transition);
-	}
 
 	@media (width > 22.5rem) {
 		display: flex;

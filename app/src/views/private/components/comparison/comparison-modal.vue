@@ -433,7 +433,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 	background: var(--theme--background);
 	border-radius: var(--comparison-modal--border-radius);
-	box-shadow: var(--theme--shadow);
 	display: flex;
 	flex-direction: column;
 	block-size: var(--comparison-modal--height);

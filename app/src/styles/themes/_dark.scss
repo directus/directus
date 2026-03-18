@@ -9,7 +9,7 @@
 		colors.$color-mapping,
 		(
 			'primary': $purple,
-			'secondary': colors.$pink,
+			'secondary': colors.$pink
 		)
 	);
 
@@ -24,7 +24,6 @@
 	--background-inverted: #fff;
 	--background-mark: var(--theme--primary-subdued);
 	--overlay-color: rgb(0 0 0 / 0.9);
-	--sidebar-shadow: 4px 0 7px -4px var(--black); /* stylelint-disable-line unit-disallowed-list -- custom property with box-shadow value */
 	--shadow-color: var(--black);
 
 	// Generate color variations

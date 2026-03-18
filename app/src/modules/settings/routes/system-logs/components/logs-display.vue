@@ -323,7 +323,7 @@ function selectLog(index: number) {
 	--v-chip-close-color: var(--theme--primary);
 
 	cursor: pointer;
-	box-shadow: var(--sidebar-shadow);
+	box-shadow: -4px 0 7px -4px var(--shadow-color);
 
 	.v-icon {
 		margin-inline-end: 0.4375rem;

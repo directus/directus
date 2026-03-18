@@ -204,7 +204,6 @@ const Rules = Type.Object({
 			background: Type.Optional(Type.Ref(Color)),
 			borderWidth: Type.Optional(Type.Ref(LineWidth)),
 			borderColor: Type.Optional(Type.Ref(Color)),
-			boxShadow: Type.Optional(Type.Ref(BoxShadow)),
 			headline: Type.Optional(
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),

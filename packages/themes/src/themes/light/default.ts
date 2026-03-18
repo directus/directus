@@ -124,7 +124,6 @@ export default defineTheme({
 			background: 'var(--theme--background)',
 			borderColor: 'transparent',
 			borderWidth: '0px',
-			boxShadow: '0 4px 7px -4px rgb(0 0 0 / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
 				fontFamily: 'var(--theme--fonts--sans--font-family)',

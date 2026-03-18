@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useScroll } from '@vueuse/core';
 import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
@@ -56,10 +55,6 @@ const internalActive = computed({
 		emit('update:modelValue', newActive);
 	},
 });
-
-const { y } = useScroll(scrollContainer);
-
-const showHeaderShadow = computed(() => y.value > 0);
 </script>
 
 <template>
@@ -106,7 +101,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 				</VResizeable>
 
 				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<VDrawerHeader :title :shadow="showHeaderShadow" :icon :icon-color @cancel="$emit('cancel')">
+					<VDrawerHeader :title :icon :icon-color @cancel="$emit('cancel')">
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
