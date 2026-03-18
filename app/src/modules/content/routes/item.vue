@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import { VERSION_KEY_PUBLISHED } from '@directus/constants';
+import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
@@ -107,6 +107,22 @@ const {
 	publishVersion,
 	removeVersion,
 } = useVersions(collection, isSingleton, primaryKey);
+
+// For new items ('+') in versioned collections, immediately enter draft version context.
+// Run whenever primaryKey, collection meta, or versions list changes.
+watch(
+  [() => props.primaryKey, collectionInfo, versions] as const,
+  ([pk, info, _versions]) => {
+    if (pk === '+' && info?.meta?.versioning) {
+      const draftVersion = versions.value.find((v) => v.key === VERSION_KEY_DRAFT);
+
+      if (draftVersion && currentVersion.value === null) {
+        currentVersion.value = draftVersion;
+      }
+    }
+  },
+  { immediate: true },
+);
 
 const comparisonModalActive = ref(false);
 
@@ -550,8 +566,10 @@ async function saveVersionAction(action: typeof VERSION_KEY_PUBLISHED | 'stay' |
 			currentVersion.value = null;
 			refresh();
 		} else if (action === 'stay') {
-			refresh();
-			revisionsSidebarDetailRef.value?.refresh?.();
+			if (props.primaryKey !== '+') {
+				refresh();
+				revisionsSidebarDetailRef.value?.refresh?.();
+			}
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
 		}
@@ -675,14 +693,14 @@ function revert(values: Record<string, any>) {
 	};
 }
 
-const shouldShowVersioning = computed(
-	() =>
-		collectionInfo.value?.meta?.versioning &&
-		!isNew.value &&
-		internalPrimaryKey.value !== '+' &&
-		readVersionsAllowed.value &&
-		!versionsLoading.value,
-);
+const shouldShowVersioning = computed(() => {
+	if (!collectionInfo.value?.meta?.versioning) return false;
+	if (!readVersionsAllowed.value) return false;
+	if (versionsLoading.value) return false;
+	if (props.primaryKey === '+') return currentVersion.value !== null;
+
+	return !isNew.value && internalPrimaryKey.value !== '+';
+});
 
 function useItemNavigation() {
 	const route = useRoute();
