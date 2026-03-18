@@ -111,17 +111,17 @@ const {
 // For new items ('+') in versioned collections, immediately enter draft version context.
 // Run whenever primaryKey, collection meta, or versions list changes.
 watch(
-  [() => props.primaryKey, collectionInfo, versions] as const,
-  ([pk, info, _versions]) => {
-    if (pk === '+' && info?.meta?.versioning) {
-      const draftVersion = versions.value.find((v) => v.key === VERSION_KEY_DRAFT);
+	[() => props.primaryKey, collectionInfo, versions] as const,
+	([pk, info, _versions]) => {
+		if (pk === '+' && info?.meta?.versioning) {
+			const draftVersion = versions.value.find((v) => v.key === VERSION_KEY_DRAFT);
 
-      if (draftVersion && currentVersion.value === null) {
-        currentVersion.value = draftVersion;
-      }
-    }
-  },
-  { immediate: true },
+			if (draftVersion && currentVersion.value === null) {
+				currentVersion.value = draftVersion;
+			}
+		}
+	},
+	{ immediate: true },
 );
 
 const comparisonModalActive = ref(false);
@@ -133,13 +133,28 @@ const comparableVersion = computed(() => {
 
 const fieldsStore = useFieldsStore();
 
-function onVersionPromote() {
+async function onVersionPromote() {
 	const assembledItem = item.value ?? {};
 	const fields = fieldsStore.getFieldsForCollection(collection.value);
-
 	const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
 
 	versionValidationErrors.value = errors;
+
+	// Item-less draft: no main item exists yet, skip comparison modal and promote directly
+	if (props.primaryKey === '+' && currentVersion.value && currentVersion.value.id !== '+') {
+		try {
+			const newItemKey = await publishVersion(currentVersion.value.id, {});
+
+			if (newItemKey) {
+				router.replace(getItemRoute(props.collection, newItemKey));
+			}
+		} catch {
+			// publishVersion handles unexpected errors
+		}
+
+		return;
+	}
+
 	comparisonModalActive.value = true;
 }
 
@@ -559,7 +574,7 @@ async function saveVersionAction(action: typeof VERSION_KEY_PUBLISHED | 'stay' |
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, ref(item.value ?? {}));
+		await saveVersion(edits, item);
 		edits.value = {};
 
 		if (action === VERSION_KEY_PUBLISHED) {
@@ -771,6 +786,7 @@ function useItemNavigation() {
 					:collection="collection"
 					:primary-key="internalPrimaryKey!"
 					:update-allowed="updateAllowed"
+					:create-allowed="createAllowed"
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"

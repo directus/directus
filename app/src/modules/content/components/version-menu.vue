@@ -29,6 +29,7 @@ interface Props {
 	collection: string;
 	primaryKey: PrimaryKey;
 	updateAllowed: boolean;
+	createAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersionMaybeNew | null;
 	versions: ContentVersionMaybeNew[];
@@ -276,7 +277,6 @@ function useDeleteDialog() {
 	}
 }
 
-
 function useGlobalVersions() {
 	const isCurrentVersionGlobal = computed(() => currentVersion.value?.type === 'global');
 	const isCurrentVersionNew = computed(() => isVersionNew(currentVersion.value));
@@ -380,7 +380,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					<VDivider />
 
 					<VListItem
-						v-if="updateAllowed"
+						v-if="primaryKey === '+' ? createAllowed : updateAllowed"
 						:disabled="isCurrentVersionNew"
 						clickable
 						@click="$emit('promote')"

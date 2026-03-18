@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection, useLayout } from '@directus/composables';
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
@@ -255,7 +256,9 @@ function useBatch() {
 
 function useLinks() {
 	const addNewLink = computed<string>(() => {
-		return getItemRoute(props.collection, '+');
+		return currentCollection.value?.meta?.versioning
+			? getItemRoute(props.collection, '+', VERSION_KEY_DRAFT)
+			: getItemRoute(props.collection, '+');
 	});
 
 	const currentCollectionLink = computed<string>(() => {

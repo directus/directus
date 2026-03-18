@@ -235,8 +235,6 @@ watch([isFirstRevision], () => {
 	}
 });
 
-
-
 function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	if (props.mode !== 'revision') return;
 

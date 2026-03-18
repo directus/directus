@@ -10,7 +10,7 @@ import type { ContentVersionMaybeNew, ContentVersionWithType, NewContentVersion 
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export interface PublishVersionOptions {
-	mainHash: string;
+	mainHash?: string;
 	fields?: string[];
 }
 
@@ -71,38 +71,36 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	watch(
 		[queryVersion, queryVersionId, versions],
 		([newQueryVersion, newQueryVersionId, newVersions]) => {
-		  if (!newVersions) return;
+			if (!newVersions) return;
 
-		  const previouslySelectedKey = currentVersion.value?.key;
+			const previouslySelectedKey = currentVersion.value?.key;
 
-		  if (newQueryVersion) {
-			let found: ContentVersionMaybeNew | null = null;
+			if (newQueryVersion) {
+				let found: ContentVersionMaybeNew | null = null;
 
-			if (newQueryVersionId) {
-			  // Item-less draft: find by ID first (version may not be loaded yet on first render)
-			  found = newVersions.find(
-				(version) => version.id === newQueryVersionId && isVersionSelectable(version),
-			  ) ?? null;
+				if (newQueryVersionId) {
+					// Item-less draft: find by ID first (version may not be loaded yet on first render)
+					found =
+						newVersions.find((version) => version.id === newQueryVersionId && isVersionSelectable(version)) ?? null;
+				}
+
+				if (!found) {
+					// Fall back to key-based lookup (normal versions, or before rawVersions loads)
+					found =
+						newVersions.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null;
+				}
+
+				currentVersion.value = found;
+			} else {
+				currentVersion.value = null;
 			}
 
-			if (!found) {
-			  // Fall back to key-based lookup (normal versions, or before rawVersions loads)
-			  found = newVersions.find(
-				(version) => version.key === newQueryVersion && isVersionSelectable(version),
-			  ) ?? null;
+			if (currentVersion.value?.key !== previouslySelectedKey) {
+				validationErrors.value = [];
 			}
-
-			currentVersion.value = found;
-		  } else {
-			currentVersion.value = null;
-		  }
-
-		  if (currentVersion.value?.key !== previouslySelectedKey) {
-			validationErrors.value = [];
-		  }
 		},
 		{ immediate: true },
-	  );
+	);
 
 	watch(currentVersion, (newCurrentVersion) => {
 		queryVersion.value = newCurrentVersion?.key ?? null;
@@ -226,7 +224,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		throw error;
 	}
 
-	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item>) {
+	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item | null>) {
 		if (!currentVersion.value) return;
 		saveVersionLoading.value = true;
 		validationErrors.value = [];
@@ -258,7 +256,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			} = await api.post(`/versions/${versionId}/save`, edits.value);
 
 			// Update local item with the saved changes
-			Object.assign(item.value, savedData);
+			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
 			if (primaryKey.value !== '+') {
@@ -277,14 +275,25 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	const publishVersionLoading = ref(false);
 
-	async function publishVersion(versionId: PrimaryKey, options: PublishVersionOptions) {
+	async function publishVersion(
+		versionId: PrimaryKey,
+		options: PublishVersionOptions = {},
+	): Promise<PrimaryKey | null> {
 		publishVersionLoading.value = true;
 		const { mainHash, fields } = options;
 
 		try {
-			await api.post(`/versions/${versionId}/promote`, fields ? { mainHash, fields } : { mainHash });
+			const body: Record<string, any> = {};
+			if (mainHash !== undefined) body['mainHash'] = mainHash;
+			if (fields !== undefined) body['fields'] = fields;
+
+			const {
+				data: { data: itemKey },
+			} = await api.post(`/versions/${versionId}/promote`, body);
+			return itemKey ?? null;
 		} catch (error) {
 			versionErrorHandler(error);
+			return null;
 		} finally {
 			publishVersionLoading.value = false;
 		}
