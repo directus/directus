@@ -985,7 +985,6 @@ function useItemNavigation() {
 			</template>
 		</SplitPanel>
 
-		<!-- Collab comparison modal -->
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
 			:collection="collection"
@@ -996,7 +995,7 @@ function useItemNavigation() {
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
 		/>
-		<!-- Version promotion modal -->
+
 		<ComparisonModal
 			v-if="comparableVersion"
 			v-model="comparisonModalActive"
