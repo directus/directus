@@ -305,7 +305,7 @@ Your import in ${collection} has been succesful.
 					}
 				})
 				.catch(async (error) => {
-					logger.error(error, `Failed to import to ${collection})`);
+					logger.error(error, `Failed to import to ${collection}`);
 
 					if (this.accountability?.user) {
 						const user = await usersService.readOne(this.accountability.user, {
@@ -321,7 +321,7 @@ Hello ${userName(user)},
 
 Your import in ${collection} has failed.
 
-${error.message}.
+${error.message ?? ''}
 `,
 						});
 					}
