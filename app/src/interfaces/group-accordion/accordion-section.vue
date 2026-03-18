@@ -141,7 +141,7 @@ function useComparisonIndicator() {
 							:comparison="comparison"
 							:collab-context="collabContext"
 							:direction="direction"
-									:version="version"
+							:version="version"
 							:show-no-visible-fields="false"
 							:show-validation-errors="false"
 							@update:model-value="$emit('apply', $event)"
