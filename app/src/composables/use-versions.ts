@@ -203,7 +203,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				} = await api.post(`/versions`, {
 					key: currentVersion.value.key,
 					collection: collection.value,
-					item: String(primaryKey.value),
+					item: primaryKey.value === '+' ? null : String(primaryKey.value),
 				});
 
 				versionId = version.id;
