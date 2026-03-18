@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { getSchema } from './get-schema.js';
 
 const mockOverview = vi.fn();
-const mockTableInfo = vi.fn();
 const mockReadAll = vi.fn();
 
 vi.mock('@directus/env', () => ({
@@ -14,7 +13,6 @@ vi.mock('@directus/env', () => ({
 vi.mock('@directus/schema', () => ({
 	createInspector: () => ({
 		overview: mockOverview,
-		tableInfo: mockTableInfo,
 	}),
 }));
 
@@ -50,7 +48,6 @@ vi.mock('../logger/index.js', () => ({
 describe('getSchema', () => {
 	beforeEach(() => {
 		mockOverview.mockReset();
-		mockTableInfo.mockReset();
 		mockReadAll.mockReset();
 		mockReadAll.mockResolvedValue([]);
 	});
@@ -71,13 +68,6 @@ describe('getSchema', () => {
 				},
 			},
 		});
-
-		mockTableInfo.mockResolvedValue([
-			{
-				name: 'products',
-				type: 'table',
-			},
-		]);
 
 		const database = {
 			select: () => ({
@@ -102,6 +92,7 @@ describe('getSchema', () => {
 		mockOverview.mockResolvedValue({
 			order_view: {
 				primary: 'id',
+				type: 'view',
 				columns: {
 					id: {
 						column_name: 'id',
@@ -122,13 +113,6 @@ describe('getSchema', () => {
 				},
 			},
 		});
-
-		mockTableInfo.mockResolvedValue([
-			{
-				name: 'order_view',
-				type: 'view',
-			},
-		]);
 
 		const database = {
 			select: () => ({
