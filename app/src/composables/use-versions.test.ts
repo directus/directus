@@ -17,6 +17,33 @@ vi.mock('./use-permissions', () => ({
 		createAllowed: ref(true),
 		readAllowed: ref(true),
 	})),
+	usePermissions: vi.fn(() => ({
+		itemPermissions: {
+			fields: computed(() => []),
+		},
+	})),
+}));
+
+vi.mock('@/composables/use-nested-validation', () => ({
+	useNestedValidation: vi.fn(() => ({
+		nestedValidationErrors: ref([]),
+	})),
+}));
+
+vi.mock('@/utils/get-default-values-from-fields', () => ({
+	getDefaultValuesFromFields: vi.fn(() => ref({})),
+}));
+
+vi.mock('@/utils/validate-item', () => ({
+	validateItem: vi.fn(() => []),
+}));
+
+vi.mock('@/utils/merge-item-data', () => ({
+	mergeItemData: vi.fn((_defaults: any, _item: any, edits: any) => edits),
+}));
+
+vi.mock('@/utils/push-group-options-down', () => ({
+	pushGroupOptionsDown: vi.fn(() => []),
 }));
 
 beforeEach(() => {
@@ -219,6 +246,39 @@ describe('useVersions', () => {
 	});
 
 	describe('saveVersion', () => {
+		it('should use actualPrimaryKey for new version creation on singletons', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({ data: { data: { id: 'new-version-id' } } })
+				.mockResolvedValueOnce({ data: { data: { title: 'saved' } } });
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+			const actualPrimaryKey = 1;
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }), actualPrimaryKey);
+
+			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
+				'/versions',
+				{ key: 'draft', collection: 'singleton_collection', item: '1' },
+			]);
+		});
+
+		it('should return early when actualPrimaryKey is null', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			const actualPrimaryKey = null;
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }), actualPrimaryKey);
+
+			expect(api.post).not.toHaveBeenCalled();
+		});
+
 		it('should save successfully even when required fields are missing (no client-side validation)', async () => {
 			// Arrange: mock a version that exists on the server
 			const existingVersion: ContentVersion = {
@@ -253,7 +313,8 @@ describe('useVersions', () => {
 			const item = ref<Record<string, any>>({ id: '1', title: 'existing' });
 
 			// Act: should NOT throw even though 'title' is null
-			await expect(saveVersion(edits, item)).resolves.not.toThrow();
+			const actualPrimaryKey = 1;
+			await expect(saveVersion(edits, item, actualPrimaryKey)).resolves.not.toThrow();
 			expect(validationErrors.value).toHaveLength(0);
 		});
 
@@ -285,7 +346,8 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'new value' });
 			const item = ref<Record<string, any>>({ id: '1', title: 'old value' });
 
-			await saveVersion(edits, item);
+			const actualPrimaryKey = 1;
+			await saveVersion(edits, item, actualPrimaryKey);
 
 			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save', { title: 'new value' });
 		});
@@ -293,106 +355,102 @@ describe('useVersions', () => {
 
 	describe('publishVersion', () => {
 		it('should call POST /versions/{id}/promote with mainHash and fields', async () => {
-		  const existingVersion: ContentVersion = {
-			id: 'version-123',
-			key: 'draft',
-			name: null,
-			collection: 'test_collection',
-			item: '1',
-			hash: 'abc',
-			date_created: '2024-01-01',
-			date_updated: '2024-01-01',
-			user_created: 'user-1',
-			user_updated: 'user-1',
-			delta: {},
-		  };
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-01',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
 
-		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
-		  vi.mocked(api.post).mockResolvedValueOnce({ data: { data: {} } });
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: {} } });
 
-		  const { publishVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
-		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			const { publishVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
-		  await publishVersion('version-123', { mainHash: 'hash-abc', fields: ['title', 'body'] });
+			await publishVersion('version-123', { mainHash: 'hash-abc', fields: ['title', 'body'] });
 
-		  expect(api.post).toHaveBeenCalledWith('/versions/version-123/promote', {
-			mainHash: 'hash-abc',
-			fields: ['title', 'body'],
-		  });
+			expect(api.post).toHaveBeenCalledWith('/versions/version-123/promote', {
+				mainHash: 'hash-abc',
+				fields: ['title', 'body'],
+			});
 		});
 
 		it('should call POST /versions/{id}/promote without fields when not provided', async () => {
-		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
-		  vi.mocked(api.post).mockResolvedValueOnce({ data: { data: {} } });
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: {} } });
 
-		  const { publishVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
-		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			const { publishVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
-		  await publishVersion('version-123', { mainHash: 'hash-abc' });
+			await publishVersion('version-123', { mainHash: 'hash-abc' });
 
-		  expect(api.post).toHaveBeenCalledWith('/versions/version-123/promote', { mainHash: 'hash-abc' });
+			expect(api.post).toHaveBeenCalledWith('/versions/version-123/promote', { mainHash: 'hash-abc' });
 		});
 
 		it('should set publishVersionLoading to true while publishing and false after', async () => {
-		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
 
-		  let resolvePost!: () => void;
+			let resolvePost!: () => void;
 
-		  vi.mocked(api.post).mockReturnValueOnce(
-			new Promise((resolve) => {
-			  resolvePost = () => resolve({ data: { data: {} } } as any);
-			}),
-		  );
+			vi.mocked(api.post).mockReturnValueOnce(
+				new Promise((resolve) => {
+					resolvePost = () => resolve({ data: { data: {} } } as any);
+				}),
+			);
 
-		  const { publishVersion, publishVersionLoading } = useVersions(ref('test_collection'), ref(false), ref('1'));
-		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			const { publishVersion, publishVersionLoading } = useVersions(ref('test_collection'), ref(false), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
-		  const publishPromise = publishVersion('version-123', { mainHash: 'hash-abc' });
-		  expect(publishVersionLoading.value).toBe(true);
+			const publishPromise = publishVersion('version-123', { mainHash: 'hash-abc' });
+			expect(publishVersionLoading.value).toBe(true);
 
-		  resolvePost();
-		  await publishPromise;
+			resolvePost();
+			await publishPromise;
 
-		  expect(publishVersionLoading.value).toBe(false);
+			expect(publishVersionLoading.value).toBe(false);
 		});
-	  });
+	});
 
-	  describe('removeVersion', () => {
+	describe('removeVersion', () => {
 		it('should call DELETE /versions/{id} and remove from rawVersions', async () => {
-		  const existingVersion: ContentVersion = {
-			id: 'version-123',
-			key: 'draft',
-			name: null,
-			collection: 'test_collection',
-			item: '1',
-			hash: 'abc',
-			date_created: '2024-01-01',
-			date_updated: '2024-01-01',
-			user_created: 'user-1',
-			user_updated: 'user-1',
-			delta: {},
-		  };
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-01',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
 
-		  vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
-		  vi.mocked(api.delete).mockResolvedValueOnce({});
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			vi.mocked(api.delete).mockResolvedValueOnce({});
 
-		  const { versions, currentVersion, removeVersion } = useVersions(
-			ref('test_collection'),
-			ref(false),
-			ref('1'),
-		  );
+			const { versions, currentVersion, removeVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
 
-		  await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
-		  currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
-		  expect(currentVersion.value).not.toBeNull();
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			expect(currentVersion.value).not.toBeNull();
 
-		  await removeVersion('version-123');
+			await removeVersion('version-123');
 
-		  expect(api.delete).toHaveBeenCalledWith('/versions/version-123');
-		  expect(currentVersion.value).toBeNull();
-		  // draft should now be virtual (id '+')
-		  expect(versions.value.find((v) => v.key === 'draft')?.id).toBe('+');
+			expect(api.delete).toHaveBeenCalledWith('/versions/version-123');
+			expect(currentVersion.value).toBeNull();
+			// draft should now be virtual (id '+')
+			expect(versions.value.find((v) => v.key === 'draft')?.id).toBe('+');
 		});
-	  });
+	});
 });
