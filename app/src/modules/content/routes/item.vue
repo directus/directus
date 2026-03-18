@@ -478,7 +478,7 @@ async function saveVersionAction(action: typeof VERSION_KEY_PUBLISHED | 'stay' |
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, ref(item.value ?? {}));
+		await saveVersion(edits, ref(item.value ?? {}), actualPrimaryKey.value);
 		edits.value = {};
 
 		if (action === VERSION_KEY_PUBLISHED) {
