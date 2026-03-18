@@ -56,6 +56,7 @@ describe('getSchema', () => {
 		mockOverview.mockResolvedValue({
 			products: {
 				primary: 'id',
+				type: 'table',
 				columns: {
 					id: {
 						column_name: 'id',

@@ -436,6 +436,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` under the hood.
 	 */
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		this.assertCollectionWritable();
+
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {

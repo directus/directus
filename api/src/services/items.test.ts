@@ -173,6 +173,23 @@ describe('Integration Tests', () => {
 		});
 
 		describe('createMany', () => {
+			it('should reject create for read-only collections', async () => {
+				const readOnlySchema = new SchemaBuilder()
+					.collection('test', (c) => {
+						c.field('id').id();
+					})
+					.build();
+
+				readOnlySchema.collections.test!.readonly = true;
+
+				const readOnlyService = new ItemsService('test', {
+					knex: db,
+					schema: readOnlySchema,
+				});
+
+				await expect(readOnlyService.createMany([{}])).rejects.toThrow(/read-only/);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.createMany([{}], { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 

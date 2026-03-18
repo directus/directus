@@ -166,6 +166,7 @@ export default class oracleDB implements SchemaInspector {
 
 				overview[column.table_name] = {
 					primary: primaryKey || fallbackPrimary || (undefined as any),
+					type: isView ? 'view' : 'table',
 					columns: {},
 				};
 			}

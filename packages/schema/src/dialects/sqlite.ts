@@ -64,6 +64,7 @@ export default class SQLite implements SchemaInspector {
 
 				overview[table] = {
 					primary: primaryKeys.length !== 1 ? fallbackPrimary : primaryKeys[0]!.name!,
+					type: isView ? 'view' : 'table',
 					columns: {},
 				};
 			}

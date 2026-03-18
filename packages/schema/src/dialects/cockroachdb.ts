@@ -184,7 +184,8 @@ export default class CockroachDB implements SchemaInspector {
 			}
 
 			if (column.table_name in overview === false) {
-				overview[column.table_name] = { columns: {}, primary: <any>undefined };
+				const isView = column.table_type === 'VIEW' || column.table_type === 'MATERIALIZED VIEW';
+				overview[column.table_name] = { columns: {}, primary: <any>undefined, type: isView ? 'view' : 'table' };
 			}
 
 			if (['point', 'polygon'].includes(column.data_type)) {

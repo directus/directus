@@ -126,6 +126,7 @@ export default class MySQL implements SchemaInspector {
 
 				overview[column.table_name] = {
 					primary: primaryKeys.length !== 1 ? fallbackPrimary : primaryKeys[0].column_name,
+					type: isView ? 'view' : 'table',
 					columns: {},
 				};
 			}
