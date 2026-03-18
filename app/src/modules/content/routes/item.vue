@@ -237,7 +237,7 @@ const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('direc
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version', 'versionId'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 const confirmDiscard = ref(false);
