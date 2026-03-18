@@ -6,7 +6,7 @@ export default defineTheme({
 	appearance: 'dark',
 	rules: {
 		borderRadius: '0.3125rem',
-		borderWidth: '2px',
+		borderWidth: '1px',
 
 		foreground: '#c9d1d9',
 		foregroundAccent: '#f0f6fc',
