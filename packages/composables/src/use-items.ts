@@ -1,5 +1,6 @@
 import type { Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
+import { until } from '@vueuse/core';
 import axios from 'axios';
 import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
@@ -74,28 +75,17 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
-	const fetchItems = throttle((shouldUpdateCount: boolean, shouldUpdateTotal: boolean) => {
-		const tasks: Promise<void>[] = [getItems()];
-
-		if (shouldUpdateTotal) {
-			// getTotalCount must run before getItemCount so the latter can reuse the result
-			// when filters are empty or match the system filter
-			tasks.push(getTotalCount().then(() => (shouldUpdateCount ? getItemCount() : undefined)));
-		} else if (shouldUpdateCount) {
-			tasks.push(getItemCount());
-		}
-
-		Promise.all(tasks);
+	const fetchItems = throttle((shouldUpdateCount: boolean) => {
+		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
 	}, 500);
 
 	watch(
-		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep), toRef(filterSystem)],
+		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep)],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
-			const [newCollection, newLimit, newSort, newSearch, newFilter, , , , , newFilterSystem] = after;
-
-			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, , , , , oldFilterSystem] = before;
+			const [newCollection, newLimit, newSort, newSearch, newFilter] = after;
+			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter] = before;
 
 			if (!newCollection || !query) return;
 
@@ -118,10 +108,17 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const shouldUpdateCount =
 				newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch;
 
-			// determine if the total count needs to be updated based on changes to collection or system filter
-			const shouldUpdateTotal = newCollection !== oldCollection || !isEqual(newFilterSystem, oldFilterSystem);
+			fetchItems(shouldUpdateCount);
+		},
+		{ deep: true, immediate: true },
+	);
 
-			fetchItems(shouldUpdateCount, shouldUpdateTotal);
+	watch(
+		[collection, toRef(filterSystem)],
+		async (after, before) => {
+			if (isEqual(after, before)) return;
+
+			getTotalCount();
 		},
 		{ deep: true, immediate: true },
 	);
@@ -304,26 +301,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		if (isSearchEmpty && (isFilterEmpty || isEqual(filterVal, filterSystemVal))) {
 			loadingItemCount.value = true;
 
-			try {
-				if (loadingTotalCount.value) {
-					// A getTotalCount request is already in flight — wait for it to complete
-					await new Promise<void>((resolve) => {
-						const unwatch = watch(loadingTotalCount, (loading) => {
-							if (!loading) {
-								unwatch();
-								resolve();
-							}
-						});
-					});
-				} else if (totalCount.value === null) {
-					// No request in flight and no cached value — trigger one
-					await getTotalCount();
-				}
-
-				itemCount.value = totalCount.value;
-			} finally {
-				loadingItemCount.value = false;
+			if (loadingTotalCount.value) {
+				// A getTotalCount request is already in flight — wait for it to complete
+				await until(loadingTotalCount).toBe(false);
+			} else if (totalCount.value === null) {
+				// No request in flight and no cached value — trigger one
+				await getTotalCount();
 			}
+
+			itemCount.value = totalCount.value;
+			loadingItemCount.value = false;
 
 			return;
 		}

@@ -30,6 +30,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"@vueuse/core": "catalog:",
 		"axios": "catalog:",
 		"lodash-es": "catalog:",
 		"nanoid": "catalog:"
