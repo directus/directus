@@ -285,17 +285,17 @@ export class ImportService {
 		}
 
 		if (options?.background) {
-			const notificationsService = new NotificationsService({
-				schema: this.schema,
-			});
-
-			const usersService = new UsersService({
-				schema: this.schema,
-			});
-
 			const notify = async (subject: string, message: string) => {
 				try {
 					if (!this.accountability?.user) return;
+
+					const notificationsService = new NotificationsService({
+						schema: this.schema,
+					});
+
+					const usersService = new UsersService({
+						schema: this.schema,
+					});
 
 					const user = await usersService.readOne(this.accountability.user, {
 						fields: ['first_name', 'last_name', 'email'],
