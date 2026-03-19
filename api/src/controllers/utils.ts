@@ -135,7 +135,9 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			try {
-				await service.import(req.params['collection']!, mimeType, fileStream, toBoolean(req.query['background']));
+				await service.import(req.params['collection']!, mimeType, fileStream, {
+					background: toBoolean(req.query['background']),
+				});
 			} catch (err: any) {
 				return next(err);
 			}

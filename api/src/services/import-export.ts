@@ -214,7 +214,12 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
-	async import(collection: string, mimetype: string, stream: Readable, background: boolean = false): Promise<void> {
+	async import(
+		collection: string,
+		mimetype: string,
+		stream: Readable,
+		options?: { background: boolean },
+	): Promise<void> {
 		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
 
 		if (this.accountability) {
@@ -254,7 +259,7 @@ export class ImportService {
 
 		if (limitReached) {
 			throw new LimitExceededError({
-				category: 'Import',
+				category: 'Concurrent import',
 			});
 		}
 
@@ -272,7 +277,7 @@ export class ImportService {
 				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 
-		if (background) {
+		if (options?.background) {
 			const notificationsService = new NotificationsService({
 				schema: this.schema,
 			});
@@ -329,11 +334,13 @@ ${error.message ?? ''}
 
 			return Promise.resolve();
 		} else {
-			await promise;
-
-			store(async (store) => {
-				await store.set('importCount', (await store.get('importCount')) - 1);
-			});
+			try {
+				await promise;
+			} finally {
+				await store(async (store) => {
+					await store.set('importCount', (await store.get('importCount')) - 1);
+				});
+			}
 		}
 	}
 
@@ -342,6 +349,7 @@ ${error.message ?? ''}
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
+		let timeout: NodeJS.Timeout;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -358,19 +366,15 @@ ${error.message ?? ''}
 						if (errorTracker.shouldStop()) return;
 
 						try {
-							let id: PrimaryKey;
-
 							if (isSingleton) {
-								id = await service.upsertSingleton(task.data, {
+								return await service.upsertSingleton(task.data, {
 									bypassEmitAction: (params) => nestedActionEvents.push(params),
 								});
 							} else {
-								id = await service.upsertOne(task.data, {
+								return await service.upsertOne(task.data, {
 									bypassEmitAction: (params) => nestedActionEvents.push(params),
 								});
 							}
-
-							return id;
 						} catch (error) {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
@@ -435,7 +439,7 @@ ${error.message ?? ''}
 
 					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
 
-					setTimeout(() => {
+					timeout = setTimeout(() => {
 						saveQueue.kill();
 						destroyPipedStream(extractJSON, stream);
 						reject(new TimeoutError({ category: 'Import', duration }));
@@ -447,6 +451,8 @@ ${error.message ?? ''}
 				}
 
 				throw error;
+			} finally {
+				clearTimeout(timeout);
 			}
 		});
 	}
@@ -458,6 +464,7 @@ ${error.message ?? ''}
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
+		let timeout: NodeJS.Timeout;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -608,7 +615,7 @@ ${error.message ?? ''}
 
 					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
 
-					setTimeout(() => {
+					timeout = setTimeout(() => {
 						saveQueue.kill();
 						destroyPipedStream(fileWriteStream, stream);
 						reject(new TimeoutError({ category: 'Import', duration }));
@@ -627,6 +634,8 @@ ${error.message ?? ''}
 				}
 
 				throw error;
+			} finally {
+				clearTimeout(timeout);
 			}
 		});
 	}

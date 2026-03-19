@@ -588,7 +588,7 @@ import_data_button: Start Import
 import_background: Import in background
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
-import_upload_success: '{filename} successfully uploaded'
+import_upload_success: '{filename} successfully uploaded. Importing data in background.'
 import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
