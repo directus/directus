@@ -247,18 +247,8 @@ export class ImportService {
 			);
 		}
 
-		let promise: Promise<void>;
-
-		switch (mimetype) {
-			case 'application/json':
-				promise = this.importJSON(collection, stream);
-				break;
-			case 'text/csv':
-			case 'application/vnd.ms-excel':
-				promise = this.importCSV(collection, stream);
-				break;
-			default:
-				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
+		if (['application/json', 'text/csv', 'application/vnd.ms-excel'].includes(mimetype) === false) {
+			throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 
 		const limitReached = await store(async (store) => {
@@ -274,6 +264,14 @@ export class ImportService {
 			throw new LimitExceededError({
 				category: 'Concurrent import',
 			});
+		}
+
+		let promise: Promise<void>;
+
+		if (mimetype === 'application/json') {
+			promise = this.importJSON(collection, stream);
+		} else {
+			promise = this.importCSV(collection, stream);
 		}
 
 		if (options?.background) {
