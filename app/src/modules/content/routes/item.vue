@@ -147,8 +147,6 @@ async function onVersionPublish(opts: {
 		return;
 	}
 
-	comparisonModalActive.value = false;
-
 	try {
 		await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
 
@@ -162,6 +160,8 @@ async function onVersionPublish(opts: {
 		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// publishVersion / removeVersion handle unexpected errors
+	} finally {
+		comparisonModalActive.value = false;
 	}
 }
 

@@ -30,6 +30,7 @@ interface Props {
 	currentCollab: { from: Item; to: Item } | undefined;
 	revisions?: Revision[] | null;
 	collabContext?: CollabContext;
+	publishVersionLoading?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -379,7 +380,7 @@ function usePromoteDialog() {
 									:disabled="
 										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
 									"
-									:loading="promoting"
+									:loading="promoting || publishVersionLoading"
 									@click="onPromoteClick"
 								>
 									<VIcon :name="'arrow_upload_progress'" left />
