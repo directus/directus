@@ -265,7 +265,7 @@ export class ImportService {
 		const limitReached = await store(async (store) => {
 			const count = (await store.get('importCount')) ?? 0;
 
-			if (count > Number(env['IMPORT_MAX_CONCURRENY'])) return true;
+			if (count > Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
 
 			await store.set('importCount', count + 1);
 			return false;
