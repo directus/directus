@@ -169,6 +169,9 @@ fields:
       collectionField: collection
       allowNone: true
       placeholder: $t:field_options.directus_collections.archive_field_placeholder
+      typeAllowList:
+        - string
+        - boolean
     width: half
 
   - field: archive_app_filter
