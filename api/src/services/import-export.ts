@@ -1,7 +1,6 @@
 import { createReadStream, createWriteStream } from 'node:fs';
 import { appendFile } from 'node:fs/promises';
 import type { Readable, Writable } from 'node:stream';
-import type { PrimaryKey } from '@directus/ai';
 import { useEnv } from '@directus/env';
 import {
 	createError,
