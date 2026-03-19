@@ -66,6 +66,10 @@ const props = withDefaults(
 		closeOnContentClick?: boolean;
 		/** Renders the element inline, good for seamless selections */
 		inline?: boolean;
+		/** Attach the menu to an input */
+		attached?: boolean;
+		/** Show an arrow pointer */
+		showArrow?: boolean;
 		label?: boolean;
 		/** Translation strings to replace items naming */
 		allItemsTranslation?: string;
@@ -88,6 +92,8 @@ const props = withDefaults(
 		placeholder: null,
 		fullWidth: true,
 		closeOnContentClick: true,
+		attached: undefined,
+		showArrow: undefined,
 		multiplePreviewThreshold: 3,
 		placement: 'bottom',
 	},
@@ -277,8 +283,8 @@ function useDisplayValue() {
 		v-model="menuActive"
 		class="v-select"
 		:disabled="isDisabled"
-		:attached="inline === false"
-		:show-arrow="inline === true"
+		:attached="attached ?? !inline"
+		:show-arrow="showArrow ?? inline"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
 		:full-height="menuFullHeight"
