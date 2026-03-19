@@ -163,7 +163,6 @@ keep: Conservar
 version: Versión
 version_key: Version Key
 version_name: Version Name
-main_version: Principal
 switch_version: Cambiar versión
 switch_version_copy: '¿Está seguro que desea cambiar a la versión "{version}"? Se perderán los cambios no guardados.'
 create_version: Crear versión
@@ -605,7 +604,6 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_and_quit: Guardar y salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como Copia
 add_existing: Añadir existente
 creating_items: Creando elementos

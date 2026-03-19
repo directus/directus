@@ -1,3 +1,4 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
 import { computed, ref, type Ref, watch } from 'vue';
@@ -5,7 +6,6 @@ import { useCollectionPermissions, usePermissions } from './use-permissions';
 import api from '@/api';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
-import { DRAFT_VERSION_KEY } from '@/constants';
 import { APIError } from '@/types/error';
 import type { ContentVersionMaybeNew, ContentVersionWithType, NewContentVersion } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -44,7 +44,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	});
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
-		const draftVersion = getGlobalVersion(DRAFT_VERSION_KEY);
+		const draftVersion = getGlobalVersion(VERSION_KEY_DRAFT);
 		const localVersions = rawVersions.value?.filter(versionNotInGlobals)?.map(versionAddLocalType) ?? [];
 
 		return [draftVersion, ...localVersions];
@@ -61,7 +61,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 
 		function versionNotInGlobals(version: ContentVersion) {
-			return version.key !== DRAFT_VERSION_KEY;
+			return version.key !== VERSION_KEY_DRAFT;
 		}
 
 		function versionAddLocalType(version: ContentVersion): ContentVersionWithType {

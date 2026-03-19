@@ -197,7 +197,6 @@ keep: Megtart
 version: Verzió
 version_key: Verzió kulcs
 version_name: Verzió név
-main_version: Fő
 switch_version: Verzióváltás
 switch_version_copy: Biztosan át szeretne váltani a(z) „{version}” verzióra? A nem mentett módosítások elvesznek.
 create_version: Verzió készítés
@@ -207,7 +206,6 @@ save_version: Verzió mentés
 promote_version: Verzió előléptetés
 apply: Alkalmaz
 select_all_differences: Összes különbség kijelölése
-main_updated_notice: A fő elem megváltozott a jelenlegi verzió létrehozása óta.
 delete_version: Verzió törlése
 delete_version_copy: >-
   Biztosan törölni szeretné a(z) „{version}” verziót? Ez a művelet nem vonható vissza.

@@ -213,7 +213,6 @@ keep: نگه داشتن
 version: نسخه
 version_key: شماره نسخه
 version_name: نام نسخه
-main_version: اصلی
 your_version: نسخه شما
 switch_version: تغییر نسخه
 switch_version_copy: مطمئنید که می‌خواهید به نسخه «{version}» بروید؟ تغییرات ذخیره‌نشده از دست می‌رود.
@@ -225,7 +224,6 @@ promote_version: ارتقای نسخه
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها
-main_updated_notice: مورد اصلی از زمان ایجاد این نسخه به روز شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
@@ -678,7 +676,6 @@ manual_string: رشته حرفیِ وارد شده به صورت دستی
 save_and_create_new: ذخیره و ساخت آیتم جدید
 save_and_stay: ذخیره و ماندن
 save_and_quit: ذخیره و خروج
-save_and_return_to_main: ذخیره و بازگشت به اصلی
 save_as_copy: ذخیره به عنوان کپی
 add_existing: اضافه کردن مورد موجود
 creating_items: ساختن موارد

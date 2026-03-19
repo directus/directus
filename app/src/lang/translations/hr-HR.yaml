@@ -157,7 +157,6 @@ keep: Zadrži
 version: Verzija
 version_key: Ključ Verzije
 version_name: Naziv Verzije
-main_version: Glavna
 switch_version: Promijeni Verziju
 switch_version_copy: Jeste li sigurni da želite preći na verziju "{version}"? Nespremljene promjene bit će izgubljene.
 create_version: Kreiraj Verziju

@@ -154,7 +154,6 @@ keep: Запази
 version: Версия
 version_key: Ключ на версията
 version_name: Име на версията
-main_version: Основен
 switch_version: Превключване на версията
 switch_version_copy: Сигурни ли сте, че искате да преминете към версията "{version}"? Незапазените промени ще бъдат загубени.
 create_version: Създаване на версия

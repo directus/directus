@@ -1,4 +1,4 @@
-import { Action } from '@directus/constants';
+import { Action, isPublishedVersionKey } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -494,7 +494,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		if (query.version && query.version !== 'main') {
+		if (query.version && !isPublishedVersionKey(query.version)) {
 			return (await handleVersion(this, opts?.key ?? null, query, opts)) as Item[];
 		}
 
@@ -1179,7 +1179,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		if (query.version && query.version !== 'main') {
+		if (query.version && !isPublishedVersionKey(query.version)) {
 			const primaryKeyField = this.schema.collections[this.collection]!.primary;
 			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
 			opts = { ...opts, key };

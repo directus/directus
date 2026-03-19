@@ -170,7 +170,6 @@ keep: Manter
 version: Versão
 version_key: Chave da Versão
 version_name: Nome da Versão
-main_version: Principal
 switch_version: Trocar versão
 switch_version_copy: Tem a certeza que pretende mudar para a versão "{version}"? As alterações não guardadas serão perdidas.
 create_version: Criar Versão
@@ -608,7 +607,6 @@ manual_string: String inserida manualmente
 save_and_create_new: Guardar e criar novo
 save_and_stay: Guardar e permanecer
 save_and_quit: Guardar e Fechar
-save_and_return_to_main: Salvar e Retornar à Principal
 save_as_copy: Guardar como cópia
 add_existing: Adicionar existente
 creating_items: Criando Itens

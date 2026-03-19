@@ -158,7 +158,6 @@ keep: احتفظ
 version: إصدار
 version_key: مفتاح الإصدار
 version_name: اسم الإصدار
-main_version: رئيسي
 switch_version: تبديل الإصدار
 switch_version_copy: هل أنت متأكد من أنك تريد التبديل إلى الإصدار "{version}"؟ سيتم فقدان التغييرات الغير محفوظة.
 create_version: إنشاء إصدار

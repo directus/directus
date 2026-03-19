@@ -157,7 +157,6 @@ keep: Hêlan
 version: Guherto
 version_key: Mifteya Guhertoye
 version_name: Navê Guhertoye
-main_version: Guhertoya Sereke
 switch_version: Guhertoye Biguherîne
 switch_version_copy: Tu bi rastî dixwazî derbazî guhertoya "{version}" bibî? Guherînên tomarnekirî wê winda bibin.
 create_version: Guherto Biafirîne
@@ -593,7 +592,6 @@ manual_string: Rêzeka bi destî
 save_and_create_new: Tomar Bike û Nû Biafirîne
 save_and_stay: Tomar Bike û Bimîne
 save_and_quit: Tomar Bike û Derkeve
-save_and_return_to_main: Tomar Bike û Vegere Serekê
 save_as_copy: Wek Kopiyê Tomar Bike
 add_existing: Yê Heyî Zêde Bike
 creating_items: Afirandina Hêmanan

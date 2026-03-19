@@ -1,4 +1,4 @@
-import { Action } from '@directus/constants';
+import { Action, isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import {
 	type AbstractServiceOptions,
@@ -42,11 +42,14 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const { error } = versionCreateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		// Reserves the "main" version key for the version query parameter
-		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+		// Reserves the "published" version key for the version query parameter
+		if (isPublishedVersionKey(data['key']))
+			throw new InvalidPayloadError({ reason: `"${data['key']}" is a reserved version key` });
 
 		if (itemLess && data['key'] !== 'draft') {
-			throw new InvalidPayloadError({ reason: `"key" must be 'draft' for versions not linked to an item` });
+			throw new InvalidPayloadError({
+				reason: `"key" must be "${VERSION_KEY_DRAFT}" for versions not linked to an item`,
+			});
 		}
 
 		if (this.accountability) {
@@ -215,8 +218,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const { error } = versionUpdateSchema.validate(data);
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		// Reserves the "main" version key for the version query parameter
-		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
+		// Reserves the "published" version key for the version query parameter
+		if (isPublishedVersionKey(data['key']))
+			throw new InvalidPayloadError({ reason: `"${data['key']}" is a reserved version key` });
 
 		const keyCombos = new Set();
 
@@ -227,8 +231,10 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			const item = 'item' in data ? data['item'] : existingVersion.item;
 			const key = 'key' in data ? data['key'] : existingVersion.key;
 
-			if (key !== 'draft' && item === null) {
-				throw new InvalidPayloadError({ reason: `"key" must be 'draft' for versions not linked to an item` });
+			if (key !== VERSION_KEY_DRAFT && item === null) {
+				throw new InvalidPayloadError({
+					reason: `"key" must be "${VERSION_KEY_DRAFT}" for versions not linked to an item`,
+				});
 			}
 
 			// Skip checking for existing versions or duplicates if the version is itemless.

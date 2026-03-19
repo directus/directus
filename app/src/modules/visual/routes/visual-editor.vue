@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isPublishedVersionKey, VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { ContentVersion } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
@@ -18,7 +19,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { BREAKPOINTS, DRAFT_VERSION_KEY } from '@/constants';
+import { BREAKPOINTS } from '@/constants';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import type { NavigationData } from '@/modules/visual/types';
@@ -143,12 +144,12 @@ function useVersionSelection() {
 
 		const extractedVersion = extractVersion(dynamicUrl, activeVersionPlacement.value);
 
-		return extractedVersion === 'main' ? null : extractedVersion;
+		return isPublishedVersionKey(extractedVersion) ? null : extractedVersion;
 	});
 
 	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
-		const versionList = [{ key: DRAFT_VERSION_KEY, name: null }];
-		const isDetectedVersionCustom = !isNil(detectedVersion.value) && detectedVersion.value !== DRAFT_VERSION_KEY;
+		const versionList = [{ key: VERSION_KEY_DRAFT, name: null }];
+		const isDetectedVersionCustom = !isNil(detectedVersion.value) && detectedVersion.value !== VERSION_KEY_DRAFT;
 
 		if (isDetectedVersionCustom) versionList.push({ key: detectedVersion.value!, name: null });
 
@@ -168,7 +169,7 @@ function useVersionSelection() {
 	function onVersionSelect(versionKey: ContentVersion['key'] | null) {
 		if (!activeVersionPlacement.value || !dynamicUrl) return;
 
-		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? 'main');
+		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? VERSION_KEY_PUBLISHED);
 		router.replace(getUrlRoute(newUrl));
 	}
 }
@@ -226,14 +227,14 @@ function useVersionSelection() {
 				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
 					<template #activator="{ toggle, active }">
 						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ selectedVersion?.name ?? $t('main_version') }}
+							{{ selectedVersion?.name ?? $t('published') }}
 							<VIcon small name="arrow_drop_down"></VIcon>
 						</VChip>
 					</template>
 
 					<VList>
 						<VListItem clickable :active="selectedVersion === null" @click="onVersionSelect(null)">
-							<VListItemContent>{{ $t('main_version') }}</VListItemContent>
+							<VListItemContent>{{ $t('published') }}</VListItemContent>
 						</VListItem>
 						<VListItem
 							v-for="version in versions"

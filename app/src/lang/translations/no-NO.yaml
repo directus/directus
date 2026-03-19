@@ -155,7 +155,6 @@ keep: Behold
 version: Versjon
 version_key: Versjon nøkkel
 version_name: Versjon Navn
-main_version: Hoved
 switch_version: Bytt versjon
 switch_version_copy: Er du sikker på at du vil bytte til versjon "{version}"? Ulagrede endringer vil gå tapt.
 create_version: Opprett versjon

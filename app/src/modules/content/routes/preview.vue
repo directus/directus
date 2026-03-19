@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { VERSION_KEY_PUBLISHED } from '@directus/constants';
 import { computed, toRefs } from 'vue';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
@@ -22,7 +23,7 @@ const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?
 
 const { templateData: previewData } = useTemplateData(collectionInfo, primaryKey, {
 	template: previewTemplate,
-	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+	injectData: computed(() => ({ $version: currentVersion.value?.key ?? VERSION_KEY_PUBLISHED })),
 });
 
 const previewUrl = computed(() => {

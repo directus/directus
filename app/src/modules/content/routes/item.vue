@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
@@ -224,7 +225,7 @@ useShortcut(
 	'meta+alt+s',
 	() => {
 		if (unref(currentVersion) !== null) {
-			saveVersionAction('main');
+			saveVersionAction(VERSION_KEY_PUBLISHED);
 		}
 	},
 	form,
@@ -300,7 +301,7 @@ const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?
 
 const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, {
 	template: previewTemplate,
-	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+	injectData: computed(() => ({ $version: currentVersion.value?.key ?? VERSION_KEY_PUBLISHED })),
 });
 
 const previewUrl = computed(() => {
@@ -473,14 +474,14 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
+async function saveVersionAction(action: typeof VERSION_KEY_PUBLISHED | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
 		await saveVersion(edits, ref(item.value ?? {}), actualPrimaryKey.value);
 		edits.value = {};
 
-		if (action === 'main') {
+		if (action === VERSION_KEY_PUBLISHED) {
 			currentVersion.value = null;
 			refresh();
 		} else if (action === 'stay') {
@@ -834,9 +835,9 @@ function useItemNavigation() {
 						</template>
 
 						<VList>
-							<VListItem clickable @click="saveVersionAction('main')">
+							<VListItem clickable @click="saveVersionAction(VERSION_KEY_PUBLISHED)">
 								<VListItemIcon><VIcon name="check" /></VListItemIcon>
-								<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
+								<VListItemContent>{{ $t('save_and_return_to_published') }}</VListItemContent>
 								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
 							</VListItem>
 							<VListItem clickable @click="saveVersionAction('quit')">

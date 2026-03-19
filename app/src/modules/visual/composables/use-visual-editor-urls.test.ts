@@ -1,3 +1,4 @@
+import { VERSION_KEY_PUBLISHED } from '@directus/constants';
 import { describe, expect, it, vi } from 'vitest';
 import { useVisualEditorUrls } from './use-visual-editor-urls';
 import { useSettingsStore } from '@/stores/settings';
@@ -70,16 +71,16 @@ describe('useVisualEditorUrls', () => {
 			expect(resolveUrls('draft')).toEqual(['https://draft.example.com/preview']);
 		});
 
-		it('defaults to main version when no arg provided', () => {
+		it('defaults to published version when no arg provided', () => {
 			mockSettings([{ url: 'https://example.com/?version={{$version}}' }]);
 			const { resolveUrls } = useVisualEditorUrls();
-			expect(resolveUrls()).toEqual(['https://example.com/?version=main']);
+			expect(resolveUrls()).toEqual([`https://example.com/?version=${VERSION_KEY_PUBLISHED}`]);
 		});
 
 		it('filters out invalid URLs', () => {
 			mockSettings([{ url: 'not-a-url' }, { url: 'https://example.com/?version={{$version}}' }]);
 			const { resolveUrls } = useVisualEditorUrls();
-			expect(resolveUrls()).toEqual(['https://example.com/?version=main']);
+			expect(resolveUrls()).toEqual([`https://example.com/?version=${VERSION_KEY_PUBLISHED}`]);
 		});
 
 		it('returns empty array for empty settings', () => {

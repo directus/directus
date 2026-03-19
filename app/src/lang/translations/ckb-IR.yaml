@@ -157,7 +157,6 @@ keep: پاراستن
 version: وەشان
 version_key: کلیلی وەشان
 version_name: ناوی وەشان
-main_version: سەرەکی
 switch_version: گۆڕینی وەشان
 switch_version_copy: ئایا دڵنیایت لە گۆڕینی بۆ وەشانی "{version}"؟ گۆڕانکارییە هەڵنەگیراوەکان لە دەست دەچن.
 create_version: دروستکردنی وەشان
@@ -593,7 +592,6 @@ manual_string: دەقی دەستی دانراو
 save_and_create_new: پاشەکەوتکردن و دروستکردنی نوێ
 save_and_stay: پاشەکەوتکردن و مانەوە
 save_and_quit: پاشەکەوتکردن و وازهێنان
-save_and_return_to_main: پاشەکەوت بکە و بگەڕێوە بۆ سەرەکی
 save_as_copy: پاشەکەوتکردن وەک لەبەرگرتنەوە
 add_existing: زیادکردنی بەردەست
 creating_items: دروستکردنی مادەکان

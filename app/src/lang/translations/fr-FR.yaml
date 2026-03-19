@@ -176,7 +176,6 @@ keep: Conserver
 version: Version
 version_key: Identifiant de la version
 version_name: Nom De la Version
-main_version: Principal
 switch_version: Changer de version
 switch_version_copy: Êtes-vous sûr de vouloir basculer vers la version "{version}" ? Les modifications non enregistrées seront perdues.
 create_version: Créer une version
@@ -618,7 +617,6 @@ manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_and_quit: Enregistrer et quitter
-save_and_return_to_main: Enregistrer et revenir au menu principal
 save_as_copy: Enregistrer une copie
 add_existing: Sélectionner
 creating_items: Création d'éléments
