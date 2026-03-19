@@ -268,6 +268,16 @@ export class ImportService {
 
 		let promise: Promise<void>;
 
+		const decrementImportCount = async () => {
+			try {
+				await store(async (store) => {
+					await store.set('importCount', (await store.get('importCount')) - 1);
+				});
+			} catch (error) {
+				logger.error(error, `Failed to decrement importCount`);
+			}
+		};
+
 		if (mimetype === 'application/json') {
 			promise = this.importJSON(collection, stream);
 		} else {
@@ -283,62 +293,43 @@ export class ImportService {
 				schema: this.schema,
 			});
 
+			const notify = async (subject: string, message: string) => {
+				try {
+					if (!this.accountability?.user) return;
+
+					const user = await usersService.readOne(this.accountability.user, {
+						fields: ['first_name', 'last_name', 'email'],
+					});
+
+					await notificationsService.createOne({
+						recipient: this.accountability.user,
+						sender: this.accountability.user,
+						subject,
+						message: `Hello ${userName(user)},\n\n${message}\n`,
+					});
+				} catch (error) {
+					logger.error(error, `Failed to notify user`);
+				}
+			};
+
 			promise
 				.then(async () => {
-					if (this.accountability?.user) {
-						const user = await usersService.readOne(this.accountability.user, {
-							fields: ['first_name', 'last_name', 'email'],
-						});
-
-						await notificationsService.createOne({
-							recipient: this.accountability.user,
-							sender: this.accountability.user,
-							subject: `Your import in ${collection} has been successful`,
-							message: `
-Hello ${userName(user)},
-
-Your import in ${collection} has been successful.
-`,
-						});
-					}
-				})
-				.finally(async () => {
-					await store(async (store) => {
-						await store.set('importCount', (await store.get('importCount')) - 1);
-					});
+					await notify('Your import has been successful', `Your import in ${collection} has been successful.`);
 				})
 				.catch(async (error) => {
-					logger.error(error, `Failed to import to ${collection}`);
+					logger.error(error, `Background import to ${collection} failed`);
 
-					if (this.accountability?.user) {
-						const user = await usersService.readOne(this.accountability.user, {
-							fields: ['first_name', 'last_name', 'email'],
-						});
-
-						await notificationsService.createOne({
-							recipient: this.accountability.user,
-							sender: this.accountability.user,
-							subject: `Your import in ${collection} has failed`,
-							message: `
-Hello ${userName(user)},
-
-Your import in ${collection} has failed.
-
-${error.message ?? ''}
-`,
-						});
-					}
+					await notify(
+						'Your import has failed',
+						`Your import in ${collection} has failed.\n\n${(error as any).message ?? ''}`,
+					);
 				})
-				.catch((error) => {
-					logger.error(error, `Failed to notify user of failed import`);
-				});
+				.finally(async () => await decrementImportCount());
 		} else {
 			try {
 				await promise;
 			} finally {
-				await store(async (store) => {
-					await store.set('importCount', (await store.get('importCount')) - 1);
-				});
+				await decrementImportCount();
 			}
 		}
 	}
