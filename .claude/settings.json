@@ -4,9 +4,29 @@
 			{
 				"matcher": "Edit|Write",
 				"hooks": [
-					{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/prettier.sh" },
-					{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/eslint.sh" },
-					{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stylelint.sh" }
+					{
+						"type": "command",
+						"command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/prettier.sh"
+					},
+					{
+						"type": "command",
+						"command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/eslint.sh"
+					},
+					{
+						"type": "command",
+						"command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stylelint.sh"
+					}
+				]
+			}
+		],
+		"PreToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "npx block-no-verify@1.1.2"
+					}
 				]
 			}
 		]
