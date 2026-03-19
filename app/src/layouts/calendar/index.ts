@@ -18,6 +18,7 @@ import { LayoutOptions } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
@@ -58,7 +59,9 @@ export default defineLayout<LayoutOptions>({
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
+		const versionKey = useVersionQuery();
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {

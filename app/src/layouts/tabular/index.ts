@@ -12,6 +12,7 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
@@ -59,7 +60,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
 		);
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
+		const versionKey = useVersionQuery();
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
 		const {
 			items,

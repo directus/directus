@@ -12,6 +12,7 @@ import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './typ
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
@@ -57,7 +58,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields } = useLayoutQuery();
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
+		const versionKey = useVersionQuery();
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
 			title: (field) => field.type === 'string' || fieldIsRelatedField(field),
