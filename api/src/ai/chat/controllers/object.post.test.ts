@@ -1,8 +1,10 @@
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { generateText, jsonSchema } from 'ai';
+import { generateText, jsonSchema, wrapLanguageModel } from 'ai';
 import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getDevToolsMiddleware } from '../../devtools/index.js';
 import { buildProviderConfigs, createAIProviderRegistry, getProviderOptions } from '../../providers/index.js';
+import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { aiObjectPostHandler } from './object.post.js';
 
 vi.mock('ai', () => ({
@@ -11,12 +13,21 @@ vi.mock('ai', () => ({
 	Output: {
 		object: vi.fn(({ schema }: { schema: unknown }) => ({ type: 'object', schema })),
 	},
+	wrapLanguageModel: vi.fn(({ model }: { model: unknown }) => model),
 }));
 
 vi.mock('../../providers/index.js', () => ({
 	buildProviderConfigs: vi.fn(),
 	createAIProviderRegistry: vi.fn(),
 	getProviderOptions: vi.fn(),
+}));
+
+vi.mock('../../devtools/index.js', () => ({
+	getDevToolsMiddleware: vi.fn(),
+}));
+
+vi.mock('../../telemetry/index.js', () => ({
+	getAITelemetryConfig: vi.fn(),
 }));
 
 describe('aiObjectPostHandler', () => {
@@ -216,6 +227,53 @@ describe('aiObjectPostHandler', () => {
 
 			const schemaArg = vi.mocked(jsonSchema).mock.calls[0]![0] as Record<string, unknown>;
 			expect(schemaArg).toHaveProperty('additionalProperties', false);
+		});
+
+		it('should wrap model with devtools middleware when available', async () => {
+			const mockMiddleware = { wrapGenerate: vi.fn() };
+			vi.mocked(getDevToolsMiddleware).mockReturnValue(mockMiddleware as any);
+
+			await aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(wrapLanguageModel)).toHaveBeenCalledWith({
+				model: 'mock-model',
+				middleware: mockMiddleware,
+			});
+		});
+
+		it('should not wrap model when devtools middleware is not available', async () => {
+			vi.mocked(getDevToolsMiddleware).mockReturnValue(null);
+
+			await aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(wrapLanguageModel)).not.toHaveBeenCalled();
+		});
+
+		it('should pass experimental_telemetry when telemetry is configured', async () => {
+			const mockTelemetryConfig = { isEnabled: true, functionId: 'directus-ai-object' };
+			vi.mocked(getAITelemetryConfig).mockReturnValue(mockTelemetryConfig);
+
+			await aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(getAITelemetryConfig)).toHaveBeenCalledWith(
+				{ provider: 'openai', model: 'gpt-5', userId: 'test-user', role: 'test-role' },
+				'directus-ai-object',
+			);
+
+			expect(vi.mocked(generateText)).toHaveBeenCalledWith(
+				expect.objectContaining({
+					experimental_telemetry: mockTelemetryConfig,
+				}),
+			);
+		});
+
+		it('should not pass experimental_telemetry when telemetry is not configured', async () => {
+			vi.mocked(getAITelemetryConfig).mockReturnValue(undefined);
+
+			await aiObjectPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			const callArgs = vi.mocked(generateText).mock.calls[0]![0] as Record<string, unknown>;
+			expect(callArgs).not.toHaveProperty('experimental_telemetry');
 		});
 
 		it('should not pass maxOutputTokens when not provided', async () => {
