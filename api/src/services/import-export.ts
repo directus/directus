@@ -330,7 +330,7 @@ ${error.message ?? ''}
 					}
 				})
 				.catch((error) => {
-					logger.error(error, `Failed to notifiy user of failed import`);
+					logger.error(error, `Failed to notify user of failed import`);
 				});
 		} else {
 			try {
