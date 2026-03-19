@@ -27,19 +27,19 @@ export function useStore<Type extends object>(namespace: string, defaults?: Part
 	const store = createCache(config);
 
 	return <T>(callback: (store: RedisStore<Type>) => Promise<T>) =>
-		store.usingLock(`lock:${namespace}`, async () => {
+		store.usingLock(`lock`, async () => {
 			return await callback({
 				has(key) {
-					return store.has(`${namespace}:${String(key)}`);
+					return store.has(String(key));
 				},
 				async get<K extends keyof Type>(key: K): Promise<Type[K]> {
-					return ((await store.get(`${namespace}:${String(key)}`)) ?? defaults?.[key]) as Promise<Type[K]>;
+					return ((await store.get(String(key))) ?? defaults?.[key]) as Promise<Type[K]>;
 				},
 				set(key, value) {
-					return store.set(`${namespace}:${String(key)}`, value);
+					return store.set(String(key), value);
 				},
 				delete(key) {
-					return store.delete(`${namespace}:${String(key)}`);
+					return store.delete(String(key));
 				},
 			});
 		});
