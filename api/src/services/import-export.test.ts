@@ -16,7 +16,7 @@ vi.mock('@directus/env', () => ({
 		EMAIL_TEMPLATES_PATH: './templates',
 		EXTENSIONS_PATH: './extensions',
 		IMPORT_TIMEOUT: '1m',
-		IMPORT_CONCURRENT_MAX: 10,
+		IMPORT_MAX_CONCURRENY: 10,
 	}),
 }));
 

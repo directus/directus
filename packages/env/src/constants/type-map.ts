@@ -24,7 +24,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	IMPORT_IP_DENY_LIST: 'array',
 	IMPORT_TIMEOUT: 'string',
-	IMPORT_CONCURRENT_MAX: 'number',
+	IMPORT_MAX_CONCURRENY: 'number',
 	IMPORT_EXPORT_NAMESPACE: 'string',
 
 	FILE_METADATA_ALLOW_LIST: 'array',

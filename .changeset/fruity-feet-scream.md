@@ -5,8 +5,8 @@
 '@directus/app': minor
 ---
 
-Added importing of data in the background
+Added support for importing data in the background
 
 ::: notice
-Imports will now timeout after 1 hour and at maximum 20 imports can run at the same time
+Imports now automatically time out after 1 hour, with a maximum of 20 running concurrently. These limits can be configured via `IMPORT_TIMEOUT` and `IMPORT_MAX_CONCURRENY`, respectively.
 :::

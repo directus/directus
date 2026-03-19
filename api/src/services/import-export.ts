@@ -248,21 +248,6 @@ export class ImportService {
 			);
 		}
 
-		const limitReached = await store(async (store) => {
-			const count = (await store.get('importCount')) ?? 0;
-
-			if (count > Number(env['IMPORT_CONCURRENT_MAX'])) return true;
-
-			await store.set('importCount', count + 1);
-			return false;
-		});
-
-		if (limitReached) {
-			throw new LimitExceededError({
-				category: 'Concurrent import',
-			});
-		}
-
 		let promise: Promise<void>;
 
 		switch (mimetype) {
@@ -277,6 +262,21 @@ export class ImportService {
 				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 
+		const limitReached = await store(async (store) => {
+			const count = (await store.get('importCount')) ?? 0;
+
+			if (count > Number(env['IMPORT_MAX_CONCURRENY'])) return true;
+
+			await store.set('importCount', count + 1);
+			return false;
+		});
+
+		if (limitReached) {
+			throw new LimitExceededError({
+				category: 'Concurrent import',
+			});
+		}
+
 		if (options?.background) {
 			const notificationsService = new NotificationsService({
 				schema: this.schema,
@@ -288,10 +288,6 @@ export class ImportService {
 
 			promise
 				.then(async () => {
-					await store(async (store) => {
-						await store.set('importCount', (await store.get('importCount')) - 1);
-					});
-
 					if (this.accountability?.user) {
 						const user = await usersService.readOne(this.accountability.user, {
 							fields: ['first_name', 'last_name', 'email'],
@@ -300,14 +296,19 @@ export class ImportService {
 						await notificationsService.createOne({
 							recipient: this.accountability.user,
 							sender: this.accountability.user,
-							subject: `Your import in ${collection} has been succesful`,
+							subject: `Your import in ${collection} has been successful`,
 							message: `
 Hello ${userName(user)},
 
-Your import in ${collection} has been succesful.
+Your import in ${collection} has been successful.
 `,
 						});
 					}
+				})
+				.finally(async () => {
+					await store(async (store) => {
+						await store.set('importCount', (await store.get('importCount')) - 1);
+					});
 				})
 				.catch(async (error) => {
 					logger.error(error, `Failed to import to ${collection}`);
@@ -330,9 +331,10 @@ ${error.message ?? ''}
 `,
 						});
 					}
+				})
+				.catch((error) => {
+					logger.error(error, `Failed to notifiy user of failed import`);
 				});
-
-			return Promise.resolve();
 		} else {
 			try {
 				await promise;

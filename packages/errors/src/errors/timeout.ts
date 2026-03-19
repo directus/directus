@@ -13,5 +13,5 @@ export const messageConstructor = ({ category, duration }: TimeoutErrorExtension
 export const TimeoutError: DirectusErrorConstructor<TimeoutErrorExtensions> = createError<TimeoutErrorExtensions>(
 	ErrorCode.OutOfTime,
 	messageConstructor,
-	400,
+	408,
 );
