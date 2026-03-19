@@ -1,6 +1,6 @@
 import type { Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
-import { until } from '@vueuse/core';
+import { useMemoize } from '@vueuse/core';
 import axios from 'axios';
 import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
@@ -58,7 +58,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	const itemCount = ref<number | null>(null);
 	const totalCount = ref<number | null>(null);
-	const loadingTotalCount = ref(false);
 
 	const totalPages = computed(() => {
 		if (itemCount.value === null) return 1;
@@ -73,6 +72,39 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	};
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
+
+	const fetchAggregate = useMemoize(
+		async (url: string, filter: Query['filter'], search: Query['search'], requestKey: 'total' | 'filter') => {
+			if (existingRequests[requestKey]) existingRequests[requestKey]!.abort();
+			existingRequests[requestKey] = new AbortController();
+
+			const aggregate = primaryKeyField.value
+				? {
+						countDistinct: primaryKeyField.value.field,
+					}
+				: {
+						count: '*',
+					};
+
+			const response = await api.get<any>(url, {
+				params: {
+					aggregate,
+					...(filter ? { filter } : {}),
+					...(search ? { search } : {}),
+				},
+				signal: existingRequests[requestKey]!.signal,
+			});
+
+			existingRequests[requestKey] = null;
+
+			return primaryKeyField.value
+				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
+				: Number(response.data.data[0].count);
+		},
+		{
+			getKey: (url, filter, search, requestKey) => JSON.stringify({ url, filter, search, requestKey }),
+		},
+	);
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
 	const fetchItems = throttle((shouldUpdateCount: boolean) => {
@@ -248,41 +280,12 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
-		loadingTotalCount.value = true;
-
 		try {
-			if (existingRequests.total) existingRequests.total.abort();
-			existingRequests.total = new AbortController();
-
-			const aggregate = primaryKeyField.value
-				? {
-						countDistinct: primaryKeyField.value.field,
-					}
-				: {
-						count: '*',
-					};
-
-			const response = await api.get<any>(endpoint.value, {
-				params: {
-					aggregate,
-					filter: unref(filterSystem),
-				},
-				signal: existingRequests.total.signal,
-			});
-
-			const count = primaryKeyField.value
-				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
-				: Number(response.data.data[0].count);
-
-			existingRequests.total = null;
-
-			totalCount.value = count;
+			totalCount.value = await fetchAggregate(endpoint.value, unref(filterSystem), undefined, 'total');
 		} catch (err: any) {
 			if (!axios.isCancel(err)) {
 				throw err;
 			}
-		} finally {
-			loadingTotalCount.value = false;
 		}
 	}
 
@@ -297,20 +300,21 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		const isSearchEmpty = !searchVal || searchVal.length === 0;
 
 		// When there's no user filter/search active (or the user filter matches the system filter),
-		// the item count equals the total count — reuse it instead of making a duplicate request.
+		// the item count equals the total count — reuse the memoized result instead of a duplicate request.
 		if (isSearchEmpty && (isFilterEmpty || isEqual(filterVal, filterSystemVal))) {
 			loadingItemCount.value = true;
 
-			if (loadingTotalCount.value) {
-				// A getTotalCount request is already in flight — wait for it to complete
-				await until(loadingTotalCount).toBe(false);
-			} else if (totalCount.value === null) {
-				// No request in flight and no cached value — trigger one
-				await getTotalCount();
+			try {
+				const count = await fetchAggregate(endpoint.value, unref(filterSystem), undefined, 'total');
+				totalCount.value = count;
+				itemCount.value = count;
+			} catch (err: any) {
+				if (!axios.isCancel(err)) {
+					throw err;
+				}
+			} finally {
+				loadingItemCount.value = false;
 			}
-
-			itemCount.value = totalCount.value;
-			loadingItemCount.value = false;
 
 			return;
 		}
@@ -318,33 +322,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		loadingItemCount.value = true;
 
 		try {
-			if (existingRequests.filter) existingRequests.filter.abort();
-			existingRequests.filter = new AbortController();
-
-			const aggregate = primaryKeyField.value
-				? {
-						countDistinct: primaryKeyField.value.field,
-					}
-				: {
-						count: '*',
-					};
-
-			const response = await api.get<any>(endpoint.value, {
-				params: {
-					filter: unref(filter),
-					search: unref(search),
-					aggregate,
-				},
-				signal: existingRequests.filter.signal,
-			});
-
-			const count = primaryKeyField.value
-				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
-				: Number(response.data.data[0].count);
-
-			existingRequests.filter = null;
-
-			itemCount.value = count;
+			itemCount.value = await fetchAggregate(endpoint.value, filterVal, searchVal, 'filter');
 		} catch (err: any) {
 			if (!axios.isCancel(err)) {
 				throw err;

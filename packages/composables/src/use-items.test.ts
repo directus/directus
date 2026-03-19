@@ -97,8 +97,8 @@ describe('useItems', () => {
 		// Fast-forward past throttle delay (500ms)
 		await vi.advanceTimersByTimeAsync(500);
 
-		// Should have been called: items(2) + count(2) + total(1) — itemCount reused totalCount on init
-		expect(mockApiGet).toHaveBeenCalledTimes(5);
+		// Should have been called: items(2) + total(1) + count(1) — memoize deduplicates totalCount on init
+		expect(mockApiGet).toHaveBeenCalledTimes(4);
 	});
 
 	test('should allow subsequent calls after throttle period expires', async () => {
@@ -132,7 +132,7 @@ describe('useItems', () => {
 		// First change (search is now non-empty, so getItemCount makes its own request)
 		query.search.value = 'first';
 		await vi.advanceTimersByTimeAsync(500);
-		expect(mockApiGet).toHaveBeenCalledTimes(5);
+		expect(mockApiGet).toHaveBeenCalledTimes(4);
 
 		// Wait for throttle to reset
 		await vi.advanceTimersByTimeAsync(100);
@@ -140,7 +140,7 @@ describe('useItems', () => {
 		// Second change after throttle period
 		query.search.value = 'second';
 		await vi.advanceTimersByTimeAsync(500);
-		expect(mockApiGet).toHaveBeenCalledTimes(7);
+		expect(mockApiGet).toHaveBeenCalledTimes(6);
 	});
 
 	test('should NOT call getItemCount if only limit changes', async () => {
