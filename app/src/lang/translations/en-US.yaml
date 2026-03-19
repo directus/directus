@@ -55,6 +55,7 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+not_archived: Not Archived
 marketplace: Marketplace
 extensions: Extensions
 skip_link_nav: Skip to Navigation
