@@ -1,7 +1,37 @@
-import type { FieldNode, SelectionNode } from 'graphql';
+import type { SelectionNode } from 'graphql';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { getQuery } from './parse-query.js';
+
+// AST node helpers
+const field = (name: string, opts?: { alias?: string; args?: any[]; children?: any[] }) =>
+	({
+		kind: 'Field',
+		name: { value: name },
+		...(opts?.alias && { alias: { value: opts.alias } }),
+		...(opts?.args && { arguments: opts.args }),
+		...(opts?.children && { selectionSet: { selections: opts.children } }),
+	}) as unknown as SelectionNode;
+
+const inlineFragment = (type: string, children: any[]) =>
+	({
+		kind: 'InlineFragment',
+		typeCondition: { name: { value: type } },
+		selectionSet: { selections: children },
+	}) as unknown as SelectionNode;
+
+const gqlFilterArg = (filter: Record<string, any>): any => {
+	const toObjectValue = (obj: Record<string, any>): any => ({
+		kind: 'ObjectValue',
+		fields: Object.entries(obj).map(([key, val]) => ({
+			kind: 'ObjectField',
+			name: { value: key },
+			value: typeof val === 'object' ? toObjectValue(val) : { kind: 'StringValue', value: val },
+		})),
+	});
+
+	return { name: { value: 'filter' }, value: toObjectValue(filter) };
+};
 
 vi.mock('../../../utils/sanitize-query.js', () => ({
 	sanitizeQuery: vi.fn(async (q) => q),
@@ -74,50 +104,28 @@ describe('parseFields', () => {
 	});
 
 	test('should parse simple field selection', async () => {
-		const selections = [
-			{ kind: 'Field', name: { value: 'id' } },
-			{ kind: 'Field', name: { value: 'name' } },
-		] as SelectionNode[];
+		const selections = [field('id'), field('name')];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['id', 'name']);
 	});
 
 	test('should ignore __typename fields', async () => {
-		const selections = [
-			{ kind: 'Field', name: { value: '__typename' } },
-			{ kind: 'Field', name: { value: 'title' } },
-		] as SelectionNode[];
+		const selections = [field('__typename'), field('title')];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['title']);
 	});
 
 	test('should parse field with alias', async () => {
-		const selections = [{ kind: 'Field', name: { value: 'author' }, alias: { value: 'writer' } }] as SelectionNode[];
+		const selections = [field('author', { alias: 'writer' })];
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['author']);
 		expect(query.alias).toEqual({ writer: 'author' });
 	});
 
 	test('should parse M2A InlineFragment with schema relations', async () => {
-		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'parent' },
-				selectionSet: {
-					selections: [
-						{
-							kind: 'InlineFragment',
-							typeCondition: { name: { value: 'child' } },
-							selectionSet: {
-								selections: [{ kind: 'Field', name: { value: 'id' } }],
-							},
-						},
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+		const selections = [field('parent', { children: [inlineFragment('child', [field('id')])] })];
 
 		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
 		expect(query.fields).toEqual(['parent:child.id']);
@@ -125,18 +133,7 @@ describe('parseFields', () => {
 
 	test('should inline non-M2A InlineFragment without type prefix', async () => {
 		// Page { ...PageFragment } at root level, not M2A
-		const selections = [
-			{
-				kind: 'InlineFragment',
-				typeCondition: { name: { value: 'Page' } },
-				selectionSet: {
-					selections: [
-						{ kind: 'Field', name: { value: 'id' } },
-						{ kind: 'Field', name: { value: 'title' } },
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+		const selections = [inlineFragment('Page', [field('id'), field('title')])];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability, 'Page');
 		expect(query.fields).toEqual(['id', 'title']);
@@ -150,95 +147,40 @@ describe('parseFields', () => {
 					collection: 'author',
 					field: 'page_id',
 					related_collection: 'Page',
-					meta: {
-						one_field: 'author',
-						one_collection_field: null,
-						one_allowed_collections: null,
-					},
+					meta: { one_field: 'author', one_collection_field: null, one_allowed_collections: null },
 				},
 			],
 		} as any;
 
-		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'author' },
-				selectionSet: {
-					selections: [
-						{
-							kind: 'InlineFragment',
-							typeCondition: { name: { value: 'author' } },
-							selectionSet: {
-								selections: [
-									{ kind: 'Field', name: { value: 'name' } },
-									{ kind: 'Field', name: { value: 'email' } },
-								],
-							},
-						},
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+		const selections = [field('author', { children: [inlineFragment('author', [field('name'), field('email')])] })];
 
 		const query = await getQuery({}, o2mSchema, selections, mockVariableValues, mockAccountability, 'Page');
 		expect(query.fields).toEqual(['author.name', 'author.email']);
 	});
 
 	test('should parse nested selectionSet', async () => {
-		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'user' },
-				selectionSet: {
-					selections: [
-						{ kind: 'Field', name: { value: 'id' } },
-						{ kind: 'Field', name: { value: 'email' } },
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+		const selections = [field('user', { children: [field('id'), field('email')] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['user.id', 'user.email']);
 	});
 
 	test('should parse field with arguments', async () => {
-		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'posts' },
-				arguments: [{ name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } }],
-			},
-		] as unknown as FieldNode[];
+		const limitArg = { name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } };
+		const selections = [field('posts', { args: [limitArg] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['posts']);
 	});
 
 	test('should parse M2A InlineFragment with arguments', async () => {
+		const limitArg = { name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } };
+
 		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'parent' },
-				selectionSet: {
-					selections: [
-						{
-							kind: 'InlineFragment',
-							typeCondition: { name: { value: 'child' } },
-							selectionSet: {
-								selections: [
-									{
-										kind: 'Field',
-										name: { value: 'grandchild' },
-										arguments: [{ name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } }],
-									},
-								],
-							},
-						},
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+			field('parent', {
+				children: [inlineFragment('child', [field('grandchild', { args: [limitArg] })])],
+			}),
+		];
 
 		vi.mocked(sanitizeQuery).mockResolvedValue({ limit: 10 });
 
@@ -257,18 +199,7 @@ describe('parseFields', () => {
 	});
 
 	test('should parse _func field with selectionSet', async () => {
-		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'count_func' },
-				selectionSet: {
-					selections: [
-						{ kind: 'Field', name: { value: 'sum' } },
-						{ kind: 'Field', name: { value: 'avg' } },
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+		const selections = [field('count_func', { children: [field('sum'), field('avg')] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['sum(count)', 'avg(count)']);
@@ -281,73 +212,22 @@ describe('parseFields', () => {
 
 	test('M2A InlineFragment with full relation chain produces correct paths', async () => {
 		// contents → item → InlineFragment(ComponentText) with translation filter
+		const filterArg = gqlFilterArg({ languages_code: { code: { _eq: 'en-EN' } } });
+
 		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'contents' },
-				selectionSet: {
-					selections: [
-						{
-							kind: 'Field',
-							name: { value: 'item' },
-							selectionSet: {
-								selections: [
-									{
-										kind: 'InlineFragment',
-										typeCondition: { name: { value: 'ComponentText' } },
-										selectionSet: {
-											selections: [
-												{ kind: 'Field', name: { value: 'id' } },
-												{
-													kind: 'Field',
-													name: { value: 'translations' },
-													arguments: [
-														{
-															name: { value: 'filter' },
-															value: {
-																kind: 'ObjectValue',
-																fields: [
-																	{
-																		kind: 'ObjectField',
-																		name: { value: 'languages_code' },
-																		value: {
-																			kind: 'ObjectValue',
-																			fields: [
-																				{
-																					kind: 'ObjectField',
-																					name: { value: 'code' },
-																					value: {
-																						kind: 'ObjectValue',
-																						fields: [
-																							{
-																								kind: 'ObjectField',
-																								name: { value: '_eq' },
-																								value: { kind: 'StringValue', value: 'en-EN' },
-																							},
-																						],
-																					},
-																				},
-																			],
-																		},
-																	},
-																],
-															},
-														},
-													],
-													selectionSet: {
-														selections: [{ kind: 'Field', name: { value: 'id' } }],
-													},
-												},
-											],
-										},
-									},
-								],
-							},
-						},
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+			field('contents', {
+				children: [
+					field('item', {
+						children: [
+							inlineFragment('ComponentText', [
+								field('id'),
+								field('translations', { args: [filterArg], children: [field('id')] }),
+							]),
+						],
+					}),
+				],
+			}),
+		];
 
 		vi.mocked(sanitizeQuery).mockResolvedValue({
 			filter: { languages_code: { code: { _eq: 'en-EN' } } },
@@ -371,23 +251,7 @@ describe('parseFields', () => {
 	});
 
 	test('should handle deeply nested fields', async () => {
-		const selections = [
-			{
-				kind: 'Field',
-				name: { value: 'parent' },
-				selectionSet: {
-					selections: [
-						{
-							kind: 'Field',
-							name: { value: 'child' },
-							selectionSet: {
-								selections: [{ kind: 'Field', name: { value: 'grandchild' } }],
-							},
-						},
-					],
-				},
-			},
-		] as unknown as SelectionNode[];
+		const selections = [field('parent', { children: [field('child', { children: [field('grandchild')] })] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['parent.child.grandchild']);
