@@ -602,7 +602,7 @@ async function saveAndStay() {
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 
-			router.replace(getItemRoute(props.collection, newPrimaryKey));
+			router.replace(getItemRoute(props.collection, newPrimaryKey, currentVersion.value?.key));
 		} else {
 			revisionsSidebarDetailRef.value?.refresh?.();
 			refresh();
@@ -633,7 +633,7 @@ async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
 
-		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
+		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey, currentVersion.value?.key));
 	} catch {
 		// Save shows unexpected error dialog
 	}
