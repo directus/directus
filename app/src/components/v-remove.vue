@@ -76,7 +76,7 @@ function useConfirmation() {
 		if (itemInfo.type === 'm2o') {
 			return hasEdits(itemEdits, [itemInfo.relatedPrimaryKeyField.field]);
 		} else {
-			if (!itemIsLocal || itemType === 'deleted' || itemType === 'created') return false;
+			if (!itemIsLocal || itemType === 'deleted') return false;
 
 			const relationField = itemInfo.relation.field;
 			if (!relationField) return false;
