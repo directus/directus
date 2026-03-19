@@ -288,7 +288,7 @@ export class ImportService {
 
 			promise
 				.then(async () => {
-					store(async (store) => {
+					await store(async (store) => {
 						await store.set('importCount', (await store.get('importCount')) - 1);
 					});
 
