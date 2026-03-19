@@ -1,4 +1,5 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import { getRelation, getRelationType } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
@@ -35,7 +36,19 @@ export async function getQuery(
 		return aliases;
 	};
 
-	const parseFields = async (selections: readonly SelectionNode[], parent?: string): Promise<string[]> => {
+	const isM2AField = (fieldName: string, fieldCollection: string): boolean => {
+		const relation = getRelation(schema.relations, fieldCollection, fieldName);
+		if (!relation) return false;
+
+		return getRelationType({ relation, collection: fieldCollection, field: fieldName, useA2O: true }) === 'a2o';
+	};
+
+	const parseFields = async (
+		selections: readonly SelectionNode[],
+		parent?: string,
+		currentCollection?: string,
+		parentFieldName?: string,
+	): Promise<string[]> => {
 		const fields: string[] = [];
 
 		for (let selection of selections) {
@@ -45,12 +58,28 @@ export async function getQuery(
 
 			let current: string;
 			let currentAlias: string | null = null;
+			let childCollection: string | undefined = currentCollection;
 
-			// Union type (Many-to-Any)
 			if (selection.kind === 'InlineFragment') {
 				if (selection.typeCondition!.name.value.startsWith('__')) continue;
 
-				current = `${parent}:${selection.typeCondition!.name.value}`;
+				const isM2A = parentFieldName && currentCollection ? isM2AField(parentFieldName, currentCollection) : false;
+
+				if (isM2A) {
+					current = `${parent}:${selection.typeCondition!.name.value}`;
+					childCollection = selection.typeCondition!.name.value;
+				} else {
+					// Non-M2A fragment: inline children with same parent
+					const children = await parseFields(
+						selection.selectionSet?.selections ?? [],
+						parent,
+						currentCollection,
+						parentFieldName,
+					);
+
+					fields.push(...children);
+					continue;
+				}
 			}
 			// Any other field type
 			else {
@@ -83,6 +112,25 @@ export async function getQuery(
 						}
 					}
 				}
+
+				// Resolve child collection for recursive calls
+				if (currentCollection && selection.selectionSet) {
+					const fieldName = selection.name.value;
+					const relation = getRelation(schema.relations, currentCollection, fieldName);
+
+					if (relation) {
+						const relType = getRelationType({
+							relation,
+							collection: currentCollection,
+							field: fieldName,
+							useA2O: true,
+						});
+
+						if (relType === 'o2m') childCollection = relation.collection;
+						else if (relType === 'm2o') childCollection = relation.related_collection ?? undefined;
+						else if (relType === 'a2o') childCollection = relation.collection;
+					}
+				}
 			}
 
 			if (selection.selectionSet) {
@@ -99,7 +147,12 @@ export async function getQuery(
 						children.push(`${subSelection.name!.value}(${rootField})`);
 					}
 				} else {
-					children = await parseFields(selection.selectionSet.selections, currentAlias ?? current);
+					children = await parseFields(
+						selection.selectionSet.selections,
+						currentAlias ?? current,
+						childCollection,
+						selection.kind === 'Field' ? selection.name.value : undefined,
+					);
 				}
 
 				fields.push(...children);
@@ -130,7 +183,7 @@ export async function getQuery(
 	};
 
 	query.alias = parseAliases(selections);
-	query.fields = await parseFields(selections);
+	query.fields = await parseFields(selections, undefined, collection);
 
 	if (query.filter) query.filter = replaceFuncs(query.filter);
 
