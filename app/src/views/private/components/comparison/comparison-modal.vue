@@ -112,68 +112,6 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-function usePromoteDialog() {
-	const confirmDeleteOnPromoteDialogActive = ref(false);
-	const promoting = ref(false);
-
-	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
-
-	function onPromoteClick() {
-		if (selectedComparisonFields.value.length === 0) return;
-
-		if (deleteVersionsAllowed.value) {
-			confirmDeleteOnPromoteDialogActive.value = true;
-		} else {
-			promote(false);
-		}
-	}
-
-	async function promote(deleteOnPromote: boolean) {
-		if (promoting.value) return;
-
-		promoting.value = true;
-
-		try {
-			if (props.mode === 'version') {
-				// Handle version promotion
-				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
-
-				if (versionId) {
-					emit('publish', {
-						versionId,
-						mainHash: unref(mainHash),
-						fields: unref(selectedComparisonFields),
-						deleteOnPromote,
-					});
-				}
-			} else {
-				const restoreData: Record<string, any> = {};
-				const selectedFields = unref(selectedComparisonFields);
-
-				// Get the delta from the comparison data
-				const delta = comparisonData.value!.incoming;
-				const base = comparisonData.value!.base;
-
-				for (const [field, newValue] of Object.entries(delta)) {
-					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
-					const previousValue = base[field] ?? null;
-					if (isEqual(newValue, previousValue)) continue;
-					restoreData[field] = newValue;
-				}
-
-				emit('confirm', restoreData);
-				emit('cancel');
-			}
-
-			confirmDeleteOnPromoteDialogActive.value = false;
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			promoting.value = false;
-		}
-	}
-}
-
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const modalLoading = ref(false);
@@ -239,6 +177,68 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	if (props.mode !== 'revision') return;
 
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
+}
+
+function usePromoteDialog() {
+	const confirmDeleteOnPromoteDialogActive = ref(false);
+	const promoting = ref(false);
+
+	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
+
+	function onPromoteClick() {
+		if (selectedComparisonFields.value.length === 0) return;
+
+		if (deleteVersionsAllowed.value) {
+			confirmDeleteOnPromoteDialogActive.value = true;
+		} else {
+			promote(false);
+		}
+	}
+
+	async function promote(deleteOnPromote: boolean) {
+		if (promoting.value) return;
+
+		promoting.value = true;
+
+		try {
+			if (props.mode === 'version') {
+				// Handle version promotion
+				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
+
+				if (versionId) {
+					emit('publish', {
+						versionId,
+						mainHash: unref(mainHash),
+						fields: unref(selectedComparisonFields),
+						deleteOnPromote,
+					});
+				}
+			} else {
+				const restoreData: Record<string, any> = {};
+				const selectedFields = unref(selectedComparisonFields);
+
+				// Get the delta from the comparison data
+				const delta = comparisonData.value!.incoming;
+				const base = comparisonData.value!.base;
+
+				for (const [field, newValue] of Object.entries(delta)) {
+					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
+					const previousValue = base[field] ?? null;
+					if (isEqual(newValue, previousValue)) continue;
+					restoreData[field] = newValue;
+				}
+
+				emit('confirm', restoreData);
+				emit('cancel');
+			}
+
+			confirmDeleteOnPromoteDialogActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			promoting.value = false;
+		}
+	}
 }
 </script>
 

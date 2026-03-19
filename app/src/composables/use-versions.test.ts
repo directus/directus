@@ -19,6 +19,18 @@ vi.mock('./use-permissions', () => ({
 	})),
 }));
 
+vi.mock('@/utils/validate-item', () => ({
+	validateItem: vi.fn(() => []),
+}));
+
+vi.mock('@/utils/merge-item-data', () => ({
+	mergeItemData: vi.fn((_defaults: any, _item: any, edits: any) => edits),
+}));
+
+vi.mock('@/utils/push-group-options-down', () => ({
+	pushGroupOptionsDown: vi.fn(() => []),
+}));
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
@@ -219,6 +231,39 @@ describe('useVersions', () => {
 	});
 
 	describe('saveVersion', () => {
+		it('should use actualPrimaryKey for new version creation on singletons', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({ data: { data: { id: 'new-version-id' } } })
+				.mockResolvedValueOnce({ data: { data: { title: 'saved' } } });
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+			const actualPrimaryKey = 1;
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }), actualPrimaryKey);
+
+			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
+				'/versions',
+				{ key: 'draft', collection: 'singleton_collection', item: '1' },
+			]);
+		});
+
+		it('should return early when actualPrimaryKey is null', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			const actualPrimaryKey = null;
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }), actualPrimaryKey);
+
+			expect(api.post).not.toHaveBeenCalled();
+		});
+
 		it('should save successfully even when required fields are missing (no client-side validation)', async () => {
 			// Arrange: mock a version that exists on the server
 			const existingVersion: ContentVersion = {
@@ -253,7 +298,8 @@ describe('useVersions', () => {
 			const item = ref<Record<string, any>>({ id: '1', title: 'existing' });
 
 			// Act: should NOT throw even though 'title' is null
-			await expect(saveVersion(edits, item)).resolves.not.toThrow();
+			const actualPrimaryKey = 1;
+			await expect(saveVersion(edits, item, actualPrimaryKey)).resolves.not.toThrow();
 			expect(validationErrors.value).toHaveLength(0);
 		});
 
@@ -285,7 +331,8 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'new value' });
 			const item = ref<Record<string, any>>({ id: '1', title: 'old value' });
 
-			await saveVersion(edits, item);
+			const actualPrimaryKey = 1;
+			await saveVersion(edits, item, actualPrimaryKey);
 
 			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save', { title: 'new value' });
 		});
@@ -411,7 +458,8 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'My Draft' });
 			const item = ref<Record<string, any> | null>(null);
 
-			await saveVersion(edits, item);
+			const actualPrimaryKey = '+';
+			await saveVersion(edits, item, actualPrimaryKey);
 
 			expect(api.post).toHaveBeenCalledWith('/versions', {
 				key: 'draft',
@@ -445,7 +493,8 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'My Draft' });
 			const item = ref<Record<string, any> | null>(null);
 
-			await saveVersion(edits, item);
+			const actualPrimaryKey = '+';
+			await saveVersion(edits, item, actualPrimaryKey);
 
 			expect(item.value).toEqual({ title: 'My Draft' });
 		});
@@ -475,7 +524,8 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'My Draft' });
 			const item = ref<Record<string, any> | null>(null);
 
-			await saveVersion(edits, item);
+			const actualPrimaryKey = '+';
+			await saveVersion(edits, item, actualPrimaryKey);
 
 			// GET should NOT have been called (getVersions skipped for item-less draft)
 			expect(api.get).not.toHaveBeenCalled();

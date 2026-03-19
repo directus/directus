@@ -224,8 +224,14 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		throw error;
 	}
 
-	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item | null>) {
-		if (!currentVersion.value) return;
+	/** @param actualPrimaryKey Resolved PK of the item — needed because for singletons the route PK is null */
+	async function saveVersion(
+		edits: Ref<Record<string, any>>,
+		item: Ref<Item | null>,
+		actualPrimaryKey: PrimaryKey | null,
+	) {
+		if (!currentVersion.value || !actualPrimaryKey) return;
+
 		saveVersionLoading.value = true;
 		validationErrors.value = [];
 
@@ -238,7 +244,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				} = await api.post(`/versions`, {
 					key: currentVersion.value.key,
 					collection: collection.value,
-					item: primaryKey.value === '+' ? null : String(primaryKey.value),
+					item: actualPrimaryKey === '+' ? null : String(actualPrimaryKey),
 				});
 
 				versionId = version.id;
@@ -290,6 +296,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			const {
 				data: { data: itemKey },
 			} = await api.post(`/versions/${versionId}/promote`, body);
+
 			return itemKey ?? null;
 		} catch (error) {
 			versionErrorHandler(error);
