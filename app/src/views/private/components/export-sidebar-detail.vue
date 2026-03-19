@@ -291,11 +291,15 @@ function useUpload() {
 		const formData = new FormData();
 		formData.append('file', file);
 
+		const params: Record<string, unknown> = {};
+
+		if (background.value) {
+			params.background = background.value;
+		}
+
 		try {
 			await api.post(`/utils/import/${collection.value}`, formData, {
-				params: {
-					background: background.value,
-				},
+				params,
 				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
 					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
 					progress.value = percentCompleted;
