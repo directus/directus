@@ -117,7 +117,7 @@ const comparableVersion = computed(() => {
 
 const fieldsStore = useFieldsStore();
 
-function onVersionPromote() {
+function onVersionPromoteCompare() {
 	const assembledItem = item.value ?? {};
 	const fields = fieldsStore.getFieldsForCollection(collection.value);
 
@@ -127,7 +127,7 @@ function onVersionPromote() {
 	comparisonModalActive.value = true;
 }
 
-async function onVersionPublish(opts: {
+async function onVersionPromoteConfirm(opts: {
 	versionId: string;
 	mainHash: string;
 	fields: string[];
@@ -760,7 +760,7 @@ function useItemNavigation() {
 					@update="updateVersion"
 					@delete="deleteVersion"
 					@switch="currentVersion = $event"
-					@promote="onVersionPromote"
+					@promote="onVersionPromoteCompare"
 				/>
 			</div>
 		</template>
@@ -1005,7 +1005,7 @@ function useItemNavigation() {
 			mode="version"
 			:current-version="comparableVersion"
 			:publish-version-loading="publishVersionLoading"
-			@publish="onVersionPublish"
+			@promote="onVersionPromoteConfirm"
 			@cancel="comparisonModalActive = false"
 		/>
 

@@ -39,7 +39,7 @@ const currentRevision = defineModel<Revision | null>('current-revision');
 
 const emit = defineEmits<{
 	cancel: [];
-	publish: [opts: { versionId: string; mainHash: string; fields: string[]; deleteOnPromote: boolean }];
+	promote: [opts: { versionId: string; mainHash: string; fields: string[]; deleteOnPromote: boolean }];
 	confirm: [data: Record<string, any>];
 }>();
 
@@ -207,7 +207,7 @@ function usePromoteDialog() {
 				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
 
 				if (versionId) {
-					emit('publish', {
+					emit('promote', {
 						versionId,
 						mainHash: unref(mainHash),
 						fields: unref(selectedComparisonFields),
