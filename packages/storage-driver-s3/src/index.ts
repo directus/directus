@@ -1,6 +1,5 @@
 import fs, { promises as fsProm } from 'node:fs';
-import { Agent as HttpAgent } from 'node:http';
-import { Agent as HttpsAgent } from 'node:https';
+import { ProxyAgent } from 'proxy-agent';
 import os from 'node:os';
 import { join } from 'node:path';
 import stream, { type Readable, promises as streamProm } from 'node:stream';
@@ -101,8 +100,8 @@ export class DriverS3 implements TusDriver {
 			requestHandler: new NodeHttpHandler({
 				connectionTimeout,
 				socketTimeout,
-				httpAgent: new HttpAgent({ maxSockets, keepAlive }),
-				httpsAgent: new HttpsAgent({ maxSockets, keepAlive }),
+				httpAgent: new ProxyAgent({ maxSockets, keepAlive }),
+				httpsAgent: new ProxyAgent({ maxSockets, keepAlive }),
 			}),
 		};
 
