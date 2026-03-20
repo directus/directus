@@ -1,5 +1,4 @@
 import fs, { promises as fsProm } from 'node:fs';
-import { ProxyAgent } from 'proxy-agent';
 import os from 'node:os';
 import { join } from 'node:path';
 import stream, { type Readable, promises as streamProm } from 'node:stream';
@@ -38,6 +37,7 @@ import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
 import ms, { type StringValue } from 'ms';
+import { ProxyAgent } from 'proxy-agent';
 
 export type DriverS3Config = {
 	root?: string;

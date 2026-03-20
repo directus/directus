@@ -30,8 +30,8 @@ import {
 	randWord,
 } from '@ngneat/falso';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { ProxyAgent } from 'proxy-agent';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
 
@@ -308,7 +308,15 @@ describe('#getClient', () => {
 		vi.mocked(ProxyAgent).mockClear();
 		const maxSockets = randNumber({ min: 1, max: 1000 });
 		const keepAlive = randBoolean();
-		new DriverS3({ key: sample.config.key, secret: sample.config.secret, bucket: sample.config.bucket, maxSockets, keepAlive });
+
+		new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			maxSockets,
+			keepAlive,
+		});
+
 		expect(ProxyAgent).toHaveBeenCalledWith({ maxSockets, keepAlive });
 	});
 
