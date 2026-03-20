@@ -73,17 +73,36 @@ export function getDBQuery(
 		// Apply full query first to check for relational filters
 		const innerQuery = knex.from(table);
 
-		const { hasMultiRelationalFilter } = applyQuery(knex, table, innerQuery, queryCopy, schema, cases, permissions, {
-			aliasMap,
-			groupWhenCases,
-			groupColumnPositions,
-		});
+		// The inner DISTINCT PK set must not be affected by pagination.
+		// When aggregates are used, pagination must apply to the final/outer aggregation result,
+		// not to the DISTINCT root PK set that feeds the aggregation.
+		const innerQueryCopy: Query = {
+			...queryCopy,
+			limit: null,
+			offset: null,
+			page: null,
+		} as Query;
+
+		const { hasMultiRelationalFilter } = applyQuery(
+			knex,
+			table,
+			innerQuery,
+			innerQueryCopy,
+			schema,
+			cases,
+			permissions,
+			{
+				aliasMap,
+				groupWhenCases,
+				groupColumnPositions,
+			},
+		);
 
 		// When relational filters create JOINs, use wrapper query with deduplication
 		if (hasMultiRelationalFilter) {
 			// Clear unwanted sections from inner query - pagination (limit/offset) must not apply
 			// to the inner query, as it would incorrectly restrict the distinct PK set before aggregation
-			innerQuery.clear('select').clear('counter').clear('order').clear('limit').clear('offset');
+			innerQuery.clear('select').clear('counter').clear('order');
 
 			if (queryCopy.group) {
 				innerQuery.clear('group').clear('having');
@@ -121,17 +140,27 @@ export function getDBQuery(
 			return wrapperQuery;
 		}
 
-		// No relational filters - the query from applyQuery above is already complete
-		innerQuery.select(fieldNodes.map((node) => preProcess(node)));
+		// No multi-relational joins were required.
+		// In that case, pagination must apply to the actual aggregate query output,
+		// so rebuild the query with the original `queryCopy` (including LIMIT/OFFSET).
+		const dbQuery = knex.from(table);
+
+		applyQuery(knex, table, dbQuery, queryCopy, schema, cases, permissions, {
+			aliasMap,
+			groupWhenCases,
+			groupColumnPositions,
+		});
+
+		dbQuery.select(fieldNodes.map((node) => preProcess(node)));
 
 		if (
 			helpers.capabilities.supportsDeduplicationOfParameters() &&
 			!helpers.capabilities.supportsColumnPositionInGroupBy()
 		) {
-			withPreprocessBindings(knex, innerQuery);
+			withPreprocessBindings(knex, dbQuery);
 		}
 
-		return innerQuery;
+		return dbQuery;
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
