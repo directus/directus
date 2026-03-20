@@ -272,7 +272,7 @@ export class PayloadService {
 		}
 
 		if (action === 'read') {
-			this.processAggregates(processedPayload, aggregate);
+			await this.processAggregates(processedPayload, aggregate, Object.fromEntries(specialFields));
 		}
 
 		if (Array.isArray(payload)) {
@@ -282,7 +282,7 @@ export class PayloadService {
 		return processedPayload[0]!;
 	}
 
-	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
+	async processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}, specialFields: Record<string, FieldOverview>) {
 		/**
 		 * Build access path with -> delimiter
 		 *
@@ -302,7 +302,21 @@ export class PayloadService {
 		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				const aggregateData = {}
+
+				for (const key of aggregateKeys) {
+					const [operation, fieldName] = key.split('->');
+					const aggregateResult = { [fieldName]: item[key] };
+
+					if (specialFields[fieldName]) {
+						const newValue = await this.processField(specialFields[fieldName], aggregateResult, 'read', this.accountability);
+						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
+					}
+
+					aggregateData[operation] = aggregateResult;
+				}
+
+				Object.assign(item, aggregateData);
 				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}
