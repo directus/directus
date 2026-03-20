@@ -125,7 +125,9 @@ defineEmits<{
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.2;
+		font-family: var(--theme--header--title--font-family);
+		font-weight: var(--theme--header--title--font-weight);
+		color: var(--theme--header--title--foreground);
 		max-inline-size: 100%;
 		block-size: 1.375rem;
 	}
