@@ -334,7 +334,11 @@ function emitValue() {
 		margin-inline-end: var(--icon-filter-margin-right);
 	}
 
-	&:focus-within,
+	&:focus-within {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
+
 	&:not(.disabled):not(.active):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
@@ -359,7 +363,6 @@ function emitValue() {
 
 	&.active {
 		inline-size: 100%;
-		border-color: var(--theme--form--field--input--border-color-focus);
 
 		@media (width > 22.5rem) {
 			inline-size: 8.4375rem;
@@ -434,7 +437,7 @@ function emitValue() {
 	border-end-start-radius: var(--search-input-radius);
 
 	&.active {
-		border-color: var(--theme--form--field--input--border-color-focus);
+		border-color: var(--theme--form--field--input--border-color);
 	}
 
 	.filter-input {
