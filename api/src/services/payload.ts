@@ -324,9 +324,8 @@ export class PayloadService {
 
 					if (!item[operation]) item[operation] = {};
 					item[operation][fieldName] = aggregateResult[fieldName];
+					delete item[key];
 				}
-
-				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}
 	}
