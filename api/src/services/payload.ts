@@ -305,8 +305,6 @@ export class PayloadService {
 		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				const aggregateData = {};
-
 				for (const key of aggregateKeys) {
 					const [operation, fieldName] = key.split('->');
 					const aggregateResult = { [fieldName]: item[key] };
@@ -319,13 +317,11 @@ export class PayloadService {
 							this.accountability,
 						);
 
-						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
+						if (!item[operation]) item[operation] = {};
+						if (newValue !== undefined) item[operation][fieldName] = newValue;
 					}
-
-					aggregateData[operation] = aggregateResult;
 				}
 
-				Object.assign(item, aggregateData);
 				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}
