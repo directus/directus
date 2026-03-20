@@ -109,6 +109,12 @@ const Rules = Type.Object({
 					fontWeight: Type.Optional(Type.Ref(FontWeight)),
 				}),
 			),
+			title: Type.Optional(
+				Type.Object({
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				}),
+			),
 			sans: Type.Optional(
 				Type.Object({
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),

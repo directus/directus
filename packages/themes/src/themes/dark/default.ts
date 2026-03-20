@@ -51,6 +51,10 @@ export default defineTheme({
 				fontFamily: '"Inter", system-ui',
 				fontWeight: '700',
 			},
+			title: {
+				fontFamily: '"Inter", system-ui',
+				fontWeight: '600',
+			},
 			sans: {
 				fontFamily: '"Inter", system-ui',
 				fontWeight: '500',
@@ -129,9 +133,9 @@ export default defineTheme({
 				fontFamily: 'var(--theme--fonts--sans--font-family)',
 			},
 			title: {
-				foreground: 'var(--theme--foreground-accent)',
-				fontFamily: 'var(--theme--fonts--display--font-family)',
-				fontWeight: 'var(--theme--fonts--display--font-weight)',
+				foreground: 'var(--theme--foreground)',
+				fontFamily: 'var(--theme--fonts--title--font-family)',
+				fontWeight: 'var(--theme--fonts--title--font-weight)',
 			},
 		},
 
