@@ -705,6 +705,73 @@ describe('Integration Tests', () => {
 				expect(payload[0]!.metadata_value_json).toBe('123');
 			});
 		});
+
+		describe('processAggregates', () => {
+			let service: PayloadService;
+
+			const REDACT_STR = '**********';
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+
+					c.field('secret')
+						.string()
+						.options({ special: ['conceal'] });
+				})
+				.build();
+
+			const specialFields = schema.collections['test']!.fields;
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test('redacts concealed fields in aggregate results', async () => {
+				const payload = [{ 'min->secret': 'actual-secret' }];
+
+				await service.processAggregates(payload, { min: ['secret'] }, specialFields);
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
+			});
+
+			test('redacts concealed fields with a null value', async () => {
+				const payload = [{ 'max->secret': null }];
+
+				await service.processAggregates(payload, { max: ['secret'] }, specialFields);
+
+				expect(payload[0]!['max']).toMatchObject({ secret: null });
+			});
+
+			test('does not modify non-special fields', async () => {
+				const payload = [{ 'count->name': 42 }];
+
+				await service.processAggregates(payload, { count: ['name'] }, specialFields);
+
+				expect(payload[0]!['count']).toMatchObject({ name: 42 });
+			});
+
+			test('removes the flat arrow-delimited keys from the payload', async () => {
+				const payload = [{ 'min->secret': 'actual-secret' }];
+
+				await service.processAggregates(payload, { min: ['secret'] }, specialFields);
+
+				expect(payload[0]).not.toHaveProperty('min->secret');
+			});
+
+			test('handles multiple aggregate operations on the same concealed field', async () => {
+				const payload = [{ 'min->secret': 'min-value', 'max->secret': 'max-value' }];
+
+				await service.processAggregates(payload, { min: ['secret'], max: ['secret'] }, specialFields);
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
+				expect(payload[0]!['max']).toMatchObject({ secret: REDACT_STR });
+			});
+		});
 	});
 });
 
