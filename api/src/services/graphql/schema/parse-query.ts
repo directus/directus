@@ -1,5 +1,5 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationType } from '@directus/utils';
+import { getRelation, getRelationInfo, getRelationType } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
@@ -36,13 +36,6 @@ export async function getQuery(
 		return aliases;
 	};
 
-	const isM2AField = (fieldName: string, fieldCollection: string): boolean => {
-		const relation = getRelation(schema.relations, fieldCollection, fieldName);
-		if (!relation) return false;
-
-		return getRelationType({ relation, collection: fieldCollection, field: fieldName, useA2O: true }) === 'a2o';
-	};
-
 	const parseFields = async (
 		selections: readonly SelectionNode[],
 		parent?: string,
@@ -63,7 +56,10 @@ export async function getQuery(
 			if (selection.kind === 'InlineFragment') {
 				if (selection.typeCondition!.name.value.startsWith('__')) continue;
 
-				const isM2A = parentFieldName && currentCollection ? isM2AField(parentFieldName, currentCollection) : false;
+				const isM2A =
+					parentFieldName && currentCollection
+						? getRelationInfo(schema.relations, currentCollection, parentFieldName).relationType === 'a2o'
+						: false;
 
 				if (isM2A) {
 					current = `${parent}:${selection.typeCondition!.name.value}`;
