@@ -37,11 +37,10 @@ const FormRules = Type.Optional(
 
 						borderColor: Type.Optional(Type.Ref(Color)),
 						borderColorHover: Type.Optional(Type.Ref(Color)),
-						borderColorFocus: Type.Optional(Type.Ref(Color)),
+
+						focusRingColor: Type.Optional(Type.Ref(Color)),
 
 						boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-						boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
-						boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
 
 						height: Type.Optional(Type.Ref(Size)),
 						padding: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
