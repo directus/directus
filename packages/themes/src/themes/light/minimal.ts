@@ -60,7 +60,6 @@ export default defineTheme({
 				input: {
 					background: '#FFFFFF',
 					backgroundSubdued: '#F8FAFC',
-					boxShadowFocus: 'none',
 					height: '2.9375rem',
 				},
 			},
