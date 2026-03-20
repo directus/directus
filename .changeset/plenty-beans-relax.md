@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Ensure clear field on hidden condition is applied in a drawer
+Refactored "Clear value(s) on save when hidden" condition so it's applied inside a drawer
