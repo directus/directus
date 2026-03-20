@@ -145,7 +145,10 @@ export function applyOperator(
 
 	if (operator === '_nicontains') {
 		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
-			dbQuery[logical].whereRaw(`LOWER(CAST(?? AS text)) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+			dbQuery[logical].whereRaw(`LOWER(CAST(?? AS text)) NOT LIKE ?`, [
+				selectionRaw,
+				`%${compareValue.toLowerCase()}%`,
+			]);
 		} else {
 			dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
 		}

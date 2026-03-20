@@ -18,3 +18,15 @@ test(`_contains allowed on concealed string`, async () => {
 		validateOperator('string', '_contains', ['conceal']);
 	}).toThrowError(`Invalid query. Field with "conceal" special does not allow the "_contains" filter operator.`);
 });
+
+test(`_icontains allowed on json`, async () => {
+	expect(() => {
+		validateOperator('json', '_icontains');
+	}).not.toThrowError();
+});
+
+test(`_nicontains allowed on json`, async () => {
+	expect(() => {
+		validateOperator('json', '_nicontains');
+	}).not.toThrowError();
+});
