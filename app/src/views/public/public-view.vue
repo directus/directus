@@ -65,7 +65,7 @@ const logoURL = computed<string | null>(() => {
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
 				</div>
 				<div class="title">
-					<h1 class="type-title"><VTextOverflow :text="info?.project?.project_name" placement="bottom" /></h1>
+					<h1 class="title-heading"><VTextOverflow :text="info?.project?.project_name" placement="bottom" /></h1>
 					<VTextOverflow
 						class="subtitle"
 						:text="info?.project?.project_descriptor ?? $t('application')"
@@ -101,6 +101,8 @@ const logoURL = computed<string | null>(() => {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .public-view {
 	display: flex;
 	inline-size: 100%;
@@ -149,7 +151,7 @@ const logoURL = computed<string | null>(() => {
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-inline-size var(--medium) var(--transition);
 
-		:slotted(.type-title) {
+		:slotted(.type-display.type-display-public) {
 			font-size: 2.375rem;
 			line-height: 1.2368;
 			color: var(--theme--public--foreground-accent);
@@ -398,10 +400,11 @@ const logoURL = computed<string | null>(() => {
 			margin-inline-start: 0.875rem;
 			overflow: hidden;
 
-			h1 {
-				font-weight: 700;
+			.title-heading {
+				color: var(--theme--foreground-accent);
 				font-size: 1rem;
 				line-height: 1;
+				font-weight: 700;
 			}
 
 			.subtitle {
