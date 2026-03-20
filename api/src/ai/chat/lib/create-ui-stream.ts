@@ -11,6 +11,7 @@ import {
 	wrapLanguageModel,
 } from 'ai';
 import { getDevToolsMiddleware } from '../../devtools/index.js';
+import { applyAnthropicToolSearch } from '../../providers/anthropic-tool-search.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
@@ -64,6 +65,7 @@ export const createUiStream = async (
 	// Compute the full system prompt once to avoid re-computing on each step
 	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
 
+	const finalTools = applyAnthropicToolSearch(provider, model, tools);
 	const telemetryConfig = getAITelemetryConfig({ provider, model, userId, role });
 
 	const stream = streamText({
@@ -72,8 +74,8 @@ export const createUiStream = async (
 		messages: await convertToModelMessages(transformFilePartsForProvider(messages)),
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
-		tools,
-		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
+		tools: finalTools,
+		...(telemetryConfig ? ({ experimental_telemetry: telemetryConfig }) : {}),
 		/**
 		 * prepareStep is called before each AI step to prepare the system prompt.
 		 * When context exists, we override the system prompt to include context attachments.
