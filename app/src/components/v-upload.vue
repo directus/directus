@@ -557,7 +557,7 @@ defineExpose({ abort });
 .dragging {
 	color: var(--theme--primary);
 	background-color: var(--theme--primary-background);
-	border-color: var(--theme--form--field--input--border-color-focus);
+	border-color: var(--theme--primary);
 
 	* {
 		pointer-events: none;
@@ -576,7 +576,7 @@ defineExpose({ abort });
 
 	color: var(--white);
 	background-color: var(--theme--primary);
-	border-color: var(--theme--form--field--input--border-color-focus);
+	border-color: var(--theme--primary);
 	border-style: solid;
 
 	.v-progress-linear {

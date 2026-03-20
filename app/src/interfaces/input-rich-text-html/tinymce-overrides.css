@@ -295,7 +295,8 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
-	border-color: var(--theme--form--field--input--border-color-focus);
+	outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+	outline-offset: var(--focus-ring-offset-invert);
 }
 
 .tox .tox-button {
