@@ -117,7 +117,7 @@ const comparableVersion = computed(() => {
 
 const fieldsStore = useFieldsStore();
 
-function onVersionPromoteCompare() {
+function onVersionPublishCompare() {
 	const assembledItem = item.value ?? {};
 	const fields = fieldsStore.getFieldsForCollection(collection.value);
 
@@ -127,11 +127,11 @@ function onVersionPromoteCompare() {
 	comparisonModalActive.value = true;
 }
 
-async function onVersionPromoteConfirm(opts: {
+async function onVersionPublishConfirm(opts: {
 	versionId: string;
 	mainHash: string;
 	fields: string[];
-	deleteOnPromote: boolean;
+	deleteOnPublish: boolean;
 }) {
 	const clientErrors = validateItem(
 		item.value ?? {},
@@ -150,7 +150,7 @@ async function onVersionPromoteConfirm(opts: {
 	try {
 		await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
 
-		if (opts.deleteOnPromote) {
+		if (opts.deleteOnPublish) {
 			await removeVersion(opts.versionId);
 		} else {
 			currentVersion.value = null;
@@ -760,7 +760,7 @@ function useItemNavigation() {
 					@update="updateVersion"
 					@delete="deleteVersion"
 					@switch="currentVersion = $event"
-					@promote="onVersionPromoteCompare"
+					@publish="onVersionPublishCompare"
 				/>
 			</div>
 		</template>
@@ -1005,7 +1005,7 @@ function useItemNavigation() {
 			mode="version"
 			:current-version="comparableVersion"
 			:publish-version-loading="publishVersionLoading"
-			@promote="onVersionPromoteConfirm"
+			@publish="onVersionPublishConfirm"
 			@cancel="comparisonModalActive = false"
 		/>
 

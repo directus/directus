@@ -39,7 +39,7 @@ const currentRevision = defineModel<Revision | null>('current-revision');
 
 const emit = defineEmits<{
 	cancel: [];
-	promote: [opts: { versionId: string; mainHash: string; fields: string[]; deleteOnPromote: boolean }];
+	publish: [opts: { versionId: string; mainHash: string; fields: string[]; deleteOnPublish: boolean }];
 	confirm: [data: Record<string, any>];
 }>();
 
@@ -113,7 +113,7 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
+const { confirmDeleteOnPublishDialogActive, onPublishClick, publishing, publish } = usePublishDialog();
 
 const modalLoading = ref(false);
 
@@ -180,38 +180,38 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 
-function usePromoteDialog() {
-	const confirmDeleteOnPromoteDialogActive = ref(false);
-	const promoting = ref(false);
+function usePublishDialog() {
+	const confirmDeleteOnPublishDialogActive = ref(false);
+	const publishing = ref(false);
 
-	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
+	return { confirmDeleteOnPublishDialogActive, onPublishClick, publishing, publish };
 
-	function onPromoteClick() {
+	function onPublishClick() {
 		if (selectedComparisonFields.value.length === 0) return;
 
 		if (deleteVersionsAllowed.value) {
-			confirmDeleteOnPromoteDialogActive.value = true;
+			confirmDeleteOnPublishDialogActive.value = true;
 		} else {
-			promote(false);
+			publish(false);
 		}
 	}
 
-	async function promote(deleteOnPromote: boolean) {
-		if (promoting.value) return;
+	async function publish(deleteOnPublish: boolean) {
+		if (publishing.value) return;
 
-		promoting.value = true;
+		publishing.value = true;
 
 		try {
 			if (props.mode === 'version') {
-				// Handle version promotion
+				// Handle version publish
 				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
 
 				if (versionId) {
-					emit('promote', {
+					emit('publish', {
 						versionId,
 						mainHash: unref(mainHash),
 						fields: unref(selectedComparisonFields),
-						deleteOnPromote,
+						deleteOnPublish,
 					});
 				}
 			} else {
@@ -233,11 +233,11 @@ function usePromoteDialog() {
 				emit('cancel');
 			}
 
-			confirmDeleteOnPromoteDialogActive.value = false;
+			confirmDeleteOnPublishDialogActive.value = false;
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
-			promoting.value = false;
+			publishing.value = false;
 		}
 	}
 }
@@ -250,7 +250,7 @@ function usePromoteDialog() {
 		keep-behind
 		@update:model-value="$emit('cancel')"
 		@esc="$emit('cancel')"
-		@apply="onPromoteClick"
+		@apply="onPublishClick"
 	>
 		<div class="comparison-modal">
 			<div class="scrollable-container">
@@ -380,8 +380,8 @@ function usePromoteDialog() {
 									:disabled="
 										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
 									"
-									:loading="promoting || publishVersionLoading"
-									@click="onPromoteClick"
+									:loading="publishing || publishVersionLoading"
+									@click="onPublishClick"
 								>
 									<VIcon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
@@ -396,17 +396,17 @@ function usePromoteDialog() {
 		</div>
 
 		<VDialog
-			v-model="confirmDeleteOnPromoteDialogActive"
-			@esc="confirmDeleteOnPromoteDialogActive = false"
-			@apply="promote(true)"
+			v-model="confirmDeleteOnPublishDialogActive"
+			@esc="confirmDeleteOnPublishDialogActive = false"
+			@apply="publish(true)"
 		>
 			<VCard>
 				<VCardTitle>
 					{{ $t('delete_on_apply_copy', { version: deltaDisplayName }) }}
 				</VCardTitle>
 				<VCardActions>
-					<VButton secondary @click="promote(false)">{{ $t('keep') }}</VButton>
-					<VButton :loading="promoting" kind="danger" @click="promote(true)">
+					<VButton secondary @click="publish(false)">{{ $t('keep') }}</VButton>
+					<VButton :loading="publishing" kind="danger" @click="publish(true)">
 						{{ $t(currentVersion!.type === 'global' ? 'discard_changes' : 'delete_label') }}
 					</VButton>
 				</VCardActions>
