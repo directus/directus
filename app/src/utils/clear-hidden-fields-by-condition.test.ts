@@ -237,7 +237,7 @@ describe('clearHiddenFieldsByCondition', () => {
 						rule: { status: { _eq: 'archived' } },
 						hidden: true,
 						readonly: false,
-						options: null,
+						options: undefined,
 						required: false,
 						clear_hidden_value_on_save: true,
 					},

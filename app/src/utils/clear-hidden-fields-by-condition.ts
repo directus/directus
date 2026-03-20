@@ -7,7 +7,7 @@ import { mergeItemData } from './merge-item-data';
 export function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
 	if (!field.meta?.conditions) return false;
 
-	const fieldWithConditions = applyConditions(currentValues, field, null);
+	const fieldWithConditions = applyConditions(currentValues, field);
 	return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
 }
 
