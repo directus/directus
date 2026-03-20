@@ -1,7 +1,8 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
-import { getRelation, getRelationInfo, getRelationType } from '@directus/utils';
+import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
+import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
@@ -111,21 +112,7 @@ export async function getQuery(
 
 				// Resolve child collection for recursive calls
 				if (currentCollection && selection.selectionSet) {
-					const fieldName = selection.name.value;
-					const relation = getRelation(schema.relations, currentCollection, fieldName);
-
-					if (relation) {
-						const relType = getRelationType({
-							relation,
-							collection: currentCollection,
-							field: fieldName,
-							useA2O: true,
-						});
-
-						if (relType === 'o2m') childCollection = relation.collection;
-						else if (relType === 'm2o') childCollection = relation.related_collection ?? undefined;
-						else if (relType === 'a2o') childCollection = relation.collection;
-					}
+					childCollection = getRelatedCollection(schema, currentCollection, selection.name.value) ?? currentCollection;
 				}
 			}
 
