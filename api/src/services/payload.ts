@@ -317,9 +317,11 @@ export class PayloadService {
 							this.accountability,
 						);
 
-						if (!item[operation]) item[operation] = {};
-						if (newValue !== undefined) item[operation][fieldName] = newValue;
+						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
 					}
+
+					if (!item[operation]) item[operation] = {};
+					item[operation][fieldName] = aggregateResult[fieldName];
 				}
 
 				aggregateKeys.forEach((key) => delete item[key]);

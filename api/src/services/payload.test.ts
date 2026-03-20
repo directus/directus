@@ -771,6 +771,14 @@ describe('Integration Tests', () => {
 				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
 				expect(payload[0]!['max']).toMatchObject({ secret: REDACT_STR });
 			});
+
+			test('preserves all fields when multiple fields share the same aggregate operation', async () => {
+				const payload = [{ 'min->secret': 'actual-secret', 'min->name': 'Alice' }];
+
+				await service.processAggregates(payload, { min: ['secret', 'name'] }, specialFields);
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR, name: 'Alice' });
+			});
 		});
 	});
 });
