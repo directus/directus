@@ -1,8 +1,8 @@
-import type { Item, Query } from '@directus/types';
+import type { Filter, Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
 import { useMemoize } from '@vueuse/core';
 import axios from 'axios';
-import { isEqual, throttle } from 'lodash-es';
+import { isEmpty, isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, toRef, unref, watch } from 'vue';
 import { useCollection } from './use-collection.js';
@@ -65,19 +65,12 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
 	});
 
-	const existingRequests: Record<'items' | 'total' | 'filter', AbortController | null> = {
-		items: null,
-		total: null,
-		filter: null,
-	};
+	let itemsAbort: AbortController | null = null;
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	const fetchAggregate = useMemoize(
-		async (url: string, filter: Query['filter'], search: Query['search'], requestKey: 'total' | 'filter') => {
-			if (existingRequests[requestKey]) existingRequests[requestKey]!.abort();
-			existingRequests[requestKey] = new AbortController();
-
+		async (url: string, filter: Query['filter'], search: Query['search']) => {
 			const aggregate = primaryKeyField.value
 				? {
 						countDistinct: primaryKeyField.value.field,
@@ -92,17 +85,21 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					...(filter ? { filter } : {}),
 					...(search ? { search } : {}),
 				},
-				signal: existingRequests[requestKey]!.signal,
 			});
-
-			existingRequests[requestKey] = null;
 
 			return primaryKeyField.value
 				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
 				: Number(response.data.data[0].count);
 		},
 		{
-			getKey: (url, filter, search, requestKey) => JSON.stringify({ url, filter, search, requestKey }),
+			getKey(url, filter, search) {
+				const key: { url: string; filter?: Filter; search?: string } = { url };
+
+				if (!isEmpty(filter)) key.filter = filter;
+				if (!isEmpty(search)) key.search = search!;
+
+				return JSON.stringify(key);
+			},
 		},
 	);
 
@@ -174,8 +171,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 		let isCurrentRequestCanceled = false;
 
-		if (existingRequests.items) existingRequests.items.abort();
-		existingRequests.items = new AbortController();
+		if (itemsAbort) itemsAbort.abort();
+		itemsAbort = new AbortController();
 
 		error.value = null;
 
@@ -214,11 +211,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					filter: unref(filter),
 					deep: unref(deep),
 				},
-				signal: existingRequests.items.signal,
+				signal: itemsAbort.signal,
 			});
 
 			let fetchedItems = response.data.data;
-			existingRequests.items = null;
+			itemsAbort = null;
 
 			/**
 			 * @NOTE
@@ -281,7 +278,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		if (!endpoint.value) return;
 
 		try {
-			totalCount.value = await fetchAggregate(endpoint.value, unref(filterSystem), undefined, 'total');
+			totalCount.value = await fetchAggregate(endpoint.value, filterSystem?.value, undefined);
 		} catch (err: any) {
 			if (!axios.isCancel(err)) {
 				throw err;
@@ -292,37 +289,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
-		const filterVal = unref(filter);
-		const searchVal = unref(search);
-		const filterSystemVal = unref(filterSystem);
-
-		const isFilterEmpty = !filterVal || Object.keys(filterVal).length === 0;
-		const isSearchEmpty = !searchVal || searchVal.length === 0;
-
-		// When there's no user filter/search active (or the user filter matches the system filter),
-		// the item count equals the total count — reuse the memoized result instead of a duplicate request.
-		if (isSearchEmpty && (isFilterEmpty || isEqual(filterVal, filterSystemVal))) {
-			loadingItemCount.value = true;
-
-			try {
-				const count = await fetchAggregate(endpoint.value, unref(filterSystem), undefined, 'total');
-				totalCount.value = count;
-				itemCount.value = count;
-			} catch (err: any) {
-				if (!axios.isCancel(err)) {
-					throw err;
-				}
-			} finally {
-				loadingItemCount.value = false;
-			}
-
-			return;
-		}
-
 		loadingItemCount.value = true;
 
 		try {
-			itemCount.value = await fetchAggregate(endpoint.value, filterVal, searchVal, 'filter');
+			itemCount.value = await fetchAggregate(endpoint.value, filter.value, search.value);
 		} catch (err: any) {
 			if (!axios.isCancel(err)) {
 				throw err;
