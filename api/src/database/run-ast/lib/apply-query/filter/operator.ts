@@ -136,11 +136,19 @@ export function applyOperator(
 	}
 
 	if (operator === '_icontains') {
-		dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
+			dbQuery[logical].whereRaw(`LOWER(CAST(?? AS text)) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+		} else {
+			dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+		}
 	}
 
 	if (operator === '_nicontains') {
-		dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
+			dbQuery[logical].whereRaw(`LOWER(CAST(?? AS text)) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+		} else {
+			dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+		}
 	}
 
 	if (operator === '_starts_with') {
