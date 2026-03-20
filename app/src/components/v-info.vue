@@ -24,7 +24,7 @@ withDefaults(defineProps<Props>(), {
 		<div v-if="icon !== false" class="icon">
 			<VIcon large :name="icon" />
 		</div>
-		<h2 class="title type-title">{{ title }}</h2>
+		<h2 class="title type-display">{{ title }}</h2>
 		<p class="content"><slot /></p>
 		<slot name="append" />
 	</div>
@@ -80,7 +80,6 @@ withDefaults(defineProps<Props>(), {
 .content {
 	max-inline-size: 16.875rem;
 	color: var(--theme--foreground-subdued);
-	line-height: 1.25rem;
 
 	&:not(:last-child) {
 		margin-block-end: 1.375rem;
