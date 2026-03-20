@@ -119,12 +119,10 @@ const logoURL = computed<string | null>(() => {
 		--theme--form--row-gap: var(--theme--public--form--row-gap);
 		--theme--form--field--input--background-subdued: var(--theme--public--form--field--input--background);
 		--theme--form--field--input--background: var(--theme--public--form--field--input--background);
-		--theme--form--field--input--border-color-focus: var(--theme--public--form--field--input--border-color-focus);
 		--theme--form--field--input--border-color-hover: var(--theme--public--form--field--input--border-color-hover);
 		--theme--form--field--input--border-color: var(--theme--public--form--field--input--border-color);
-		--theme--form--field--input--box-shadow-focus: var(--theme--public--form--field--input--box-shadow-focus);
-		--theme--form--field--input--box-shadow-hover: var(--theme--public--form--field--input--box-shadow-hover);
 		--theme--form--field--input--box-shadow: var(--theme--public--form--field--input--box-shadow);
+		--theme--form--field--input--focus-ring-color: var(--theme--public--form--field--input--focus-ring-color);
 		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
 		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--public--form--field--input--height);
