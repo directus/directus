@@ -11,7 +11,6 @@ import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../type
 import { getService } from '../utils/get-service.js';
 import { createErrorTracker, getHeadingsForCsvExport, ImportService } from './import-export.js';
 import { NotificationsService } from './notifications.js';
-import { UsersService } from './users.js';
 
 const cache: { importCount?: number } = {};
 
