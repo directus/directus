@@ -31,9 +31,11 @@ type Category = {
 	name: string;
 };
 
+// Maps for looking up IDs by name — essential because CreateItem may return
+// items in a different order than the input array (e.g., sorted by UUID value).
 type VendorData = {
-	categoryIds: (string | number)[];
-	articleIds: (string | number)[];
+	articleMap: Record<string, string | number>; // title -> id
+	categoryMap: Record<string, string | number>; // name -> id
 };
 
 function createArticle(pkType: PrimaryKeyType, title: string, status: string): Article {
@@ -116,11 +118,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 				// Create test data:
 				// - 3 categories: A, B, C
 				// - 5 articles:
-				//   - Article 1: belongs to category A (1 junction row)
-				//   - Article 2: belongs to categories A, B (2 junction rows)
-				//   - Article 3: belongs to categories A, B, C (3 junction rows)
-				//   - Article 4: belongs to category B (1 junction row)
-				//   - Article 5: no categories (0 junction rows)
+				//   - Article 1 (published): belongs to category A
+				//   - Article 2 (published): belongs to categories A, B
+				//   - Article 3 (draft):     belongs to categories A, B, C
+				//   - Article 4 (draft):     belongs to category B
+				//   - Article 5 (published): no categories
 
 				const categories = await CreateItem(vendor, {
 					collection: localCollectionCategories,
@@ -131,7 +133,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 					],
 				});
 
-				const categoryIds = categories.map((c: Category) => c.id!);
+				// Build name -> id map (do NOT rely on array index order)
+				const categoryMap: Record<string, string | number> = {};
+
+				for (const c of categories) {
+					categoryMap[c.name] = c.id;
+				}
 
 				const articles = await CreateItem(vendor, {
 					collection: localCollectionArticles,
@@ -144,66 +151,51 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 					],
 				});
 
-				const articleIds = articles.map((a: Article) => a.id!);
+				// Build title -> id map (do NOT rely on array index order)
+				const articleMap: Record<string, string | number> = {};
 
-				// Store IDs per vendor
-				vendorData.set(vendor, { categoryIds, articleIds });
+				for (const a of articles) {
+					articleMap[a.title] = a.id;
+				}
 
-				// Create junction entries
+				// Store maps per vendor
+				vendorData.set(vendor, { articleMap, categoryMap });
+
+				// Create junction entries using name-based lookups (order-independent)
+				const catA = categoryMap['Category A']!;
+				const catB = categoryMap['Category B']!;
+				const catC = categoryMap['Category C']!;
+				const art1 = articleMap['Article 1']!;
+				const art2 = articleMap['Article 2']!;
+				const art3 = articleMap['Article 3']!;
+				const art4 = articleMap['Article 4']!;
+
 				const junctionEntries = [
-					// Article 1 -> Category A
-					{ [`${localCollectionArticles}_id`]: articleIds[0], [`${localCollectionCategories}_id`]: categoryIds[0] },
-					// Article 2 -> Category A, B
-					{ [`${localCollectionArticles}_id`]: articleIds[1], [`${localCollectionCategories}_id`]: categoryIds[0] },
-					{ [`${localCollectionArticles}_id`]: articleIds[1], [`${localCollectionCategories}_id`]: categoryIds[1] },
-					// Article 3 -> Category A, B, C
-					{ [`${localCollectionArticles}_id`]: articleIds[2], [`${localCollectionCategories}_id`]: categoryIds[0] },
-					{ [`${localCollectionArticles}_id`]: articleIds[2], [`${localCollectionCategories}_id`]: categoryIds[1] },
-					{ [`${localCollectionArticles}_id`]: articleIds[2], [`${localCollectionCategories}_id`]: categoryIds[2] },
-					// Article 4 -> Category B
-					{ [`${localCollectionArticles}_id`]: articleIds[3], [`${localCollectionCategories}_id`]: categoryIds[1] },
-					// Article 5 -> no categories (not in junction)
+					// Article 1 (published) -> Category A
+					{ [`${localCollectionArticles}_id`]: art1, [`${localCollectionCategories}_id`]: catA },
+					// Article 2 (published) -> Category A, B
+					{ [`${localCollectionArticles}_id`]: art2, [`${localCollectionCategories}_id`]: catA },
+					{ [`${localCollectionArticles}_id`]: art2, [`${localCollectionCategories}_id`]: catB },
+					// Article 3 (draft) -> Category A, B, C
+					{ [`${localCollectionArticles}_id`]: art3, [`${localCollectionCategories}_id`]: catA },
+					{ [`${localCollectionArticles}_id`]: art3, [`${localCollectionCategories}_id`]: catB },
+					{ [`${localCollectionArticles}_id`]: art3, [`${localCollectionCategories}_id`]: catC },
+					// Article 4 (draft) -> Category B
+					{ [`${localCollectionArticles}_id`]: art4, [`${localCollectionCategories}_id`]: catB },
+					// Article 5 (published) -> no categories
 				];
 
-						await CreateItem(vendor, {
-							collection: localJunctionCollection,
-							item: junctionEntries,
-						});
-
-				// Verify schema cache is populated by querying through the M2M relational path.
-				// Concurrent collection creation across PK types can invalidate the schema cache,
-				// causing the API to not recognize M2M relations until the cache stabilizes.
-				const maxRetries = 10;
-
-				for (let attempt = 0; attempt < maxRetries; attempt++) {
-					const verifyResponse = await request(getUrl(vendor))
-						.get(`/items/${localCollectionArticles}`)
-						.query({
-							aggregate: { count: '*' },
-							filter: JSON.stringify({
-								categories: {
-									[`${localCollectionCategories}_id`]: {
-										id: { _eq: categoryIds[0] },
-									},
-								},
-							}),
-						})
-						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-					if (verifyResponse.statusCode === 200 && Number(verifyResponse.body.data?.[0]?.count) === 3) {
-						break;
-					}
-
-							// Wait for schema cache to stabilize
-							await new Promise((resolve) => setTimeout(resolve, 1000));
-						}
+				await CreateItem(vendor, {
+					collection: localJunctionCollection,
+					item: junctionEntries,
+				});
 			}
 		}, 300000);
 
 		describe('Aggregation Tests with M2M Relational Filters', () => {
 			describe('count(*) with M2M filter returns correct unique count', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const { categoryIds } = vendorData.get(vendor)!;
+					const { categoryMap } = vendorData.get(vendor)!;
 
 					// Filter: articles that belong to Category A
 					// Expected: 3 articles (Article 1, 2, 3) - NOT 6 (which would be the inflated count from JOINs)
@@ -214,7 +206,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 							filter: JSON.stringify({
 								categories: {
 									[`${localCollectionCategories}_id`]: {
-										id: { _eq: categoryIds[0] },
+										id: { _eq: categoryMap['Category A'] },
 									},
 								},
 							}),
@@ -231,7 +223,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 
 			describe('count(field) with M2M filter returns correct unique count', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const { categoryIds } = vendorData.get(vendor)!;
+					const { categoryMap } = vendorData.get(vendor)!;
 
 					// Filter: articles that belong to Category B
 					// Expected: 3 articles (Article 2, 3, 4)
@@ -243,7 +235,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 							filter: JSON.stringify({
 								categories: {
 									[`${localCollectionCategories}_id`]: {
-										id: { _eq: categoryIds[1] },
+										id: { _eq: categoryMap['Category B'] },
 									},
 								},
 							}),
@@ -279,7 +271,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 
 			describe('count(*) with groupBy and M2M filter', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const { categoryIds } = vendorData.get(vendor)!;
+					const { categoryMap } = vendorData.get(vendor)!;
 
 					// Filter: articles that belong to Category A, grouped by status
 					// Expected: 2 groups - 'published' (2 articles: 1, 2) and 'draft' (1 article: 3)
@@ -291,7 +283,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 							filter: JSON.stringify({
 								categories: {
 									[`${localCollectionCategories}_id`]: {
-										id: { _eq: categoryIds[0] },
+										id: { _eq: categoryMap['Category A'] },
 									},
 								},
 							}),
@@ -314,7 +306,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 
 			describe('countDistinct with M2M filter', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const { categoryIds } = vendorData.get(vendor)!;
+					const { categoryMap } = vendorData.get(vendor)!;
 
 					// Filter: articles that belong to Category A
 					// countDistinct on status should return 2 (published, draft)
@@ -325,7 +317,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 							filter: JSON.stringify({
 								categories: {
 									[`${localCollectionCategories}_id`]: {
-										id: { _eq: categoryIds[0] },
+										id: { _eq: categoryMap['Category A'] },
 									},
 								},
 							}),
@@ -366,7 +358,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 
 			describe('count(*) with M2M filter and limit does not restrict aggregate', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const { categoryIds } = vendorData.get(vendor)!;
+					const { categoryMap } = vendorData.get(vendor)!;
 
 					// Filter: articles that belong to Category A, with limit=1
 					// Expected: count should still be 3 (limit should not restrict the aggregate count)
@@ -377,7 +369,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 							filter: JSON.stringify({
 								categories: {
 									[`${localCollectionCategories}_id`]: {
-										id: { _eq: categoryIds[0] },
+										id: { _eq: categoryMap['Category A'] },
 									},
 								},
 							}),
@@ -395,7 +387,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 
 			describe('count(*) with groupBy, M2M filter, and limit does not restrict aggregate', () => {
 				it.each(vendors)('%s', async (vendor) => {
-					const { categoryIds } = vendorData.get(vendor)!;
+					const { categoryMap } = vendorData.get(vendor)!;
 
 					// Edge case: aggregate[count]=*&groupBy=status&filter[relational]&limit=3
 					// The limit should NOT restrict the inner DISTINCT PK set
@@ -408,7 +400,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items aggregation with relational filters', (
 							filter: JSON.stringify({
 								categories: {
 									[`${localCollectionCategories}_id`]: {
-										id: { _eq: categoryIds[0] },
+										id: { _eq: categoryMap['Category A'] },
 									},
 								},
 							}),
