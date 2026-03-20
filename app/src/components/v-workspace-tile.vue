@@ -389,7 +389,7 @@ function useDragDrop() {
 
 		&.dragging {
 			z-index: 3 !important;
-			border-color: var(--theme--form--field--input--border-color-focus);
+			border-color: var(--theme--primary);
 			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
 			-webkit-user-select: none;
 			user-select: none;

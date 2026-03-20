@@ -521,6 +521,11 @@ defineExpose({ abort });
 	&:not(.uploading):not(.disabled):hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
+
+	&:not(.uploading):not(.disabled):focus-within {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
 }
 
 .actions {

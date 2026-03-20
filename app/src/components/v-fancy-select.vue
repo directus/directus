@@ -119,6 +119,11 @@ function toggle(item: Record<string, any>) {
 		border-color: var(--theme--border-color-accent);
 	}
 
+	&:not(.disabled):focus-visible {
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
+
 	&.disabled {
 		cursor: not-allowed;
 	}
