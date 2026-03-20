@@ -271,7 +271,7 @@ export class PayloadService {
 		}
 
 		if (action === 'read') {
-			await this.processAggregates(processedPayload, aggregate, Object.fromEntries(specialFields));
+			await this.processAggregates(processedPayload, aggregate);
 		}
 
 		if (Array.isArray(payload)) {
@@ -284,7 +284,6 @@ export class PayloadService {
 	async processAggregates(
 		payload: Partial<Item>[],
 		aggregate: Aggregate = {},
-		specialFields: Record<string, FieldOverview> = {},
 	) {
 		/**
 		 * Build access path with -> delimiter
@@ -296,6 +295,9 @@ export class PayloadService {
 			acc.push(...values.map((value) => `${key}->${value}`));
 			return acc;
 		}, []);
+
+
+		const fieldEntries = this.schema.collections[this.collection]!.fields;
 
 		/**
 		 * Expand -> delimited keys in the payload to the equivalent expanded object
@@ -309,9 +311,9 @@ export class PayloadService {
 					const [operation, fieldName] = key.split('->');
 					const aggregateResult = { [fieldName]: item[key] };
 
-					if (specialFields[fieldName]) {
+					if (fieldEntries[fieldName]?.special?.length > 0) {
 						const newValue = await this.processField(
-							specialFields[fieldName],
+							fieldEntries[fieldName],
 							aggregateResult,
 							'read',
 							this.accountability,
