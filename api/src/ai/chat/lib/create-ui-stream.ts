@@ -75,7 +75,7 @@ export const createUiStream = async (
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
 		tools: finalTools,
-		...(telemetryConfig ? ({ experimental_telemetry: telemetryConfig }) : {}),
+		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
 		/**
 		 * prepareStep is called before each AI step to prepare the system prompt.
 		 * When context exists, we override the system prompt to include context attachments.
