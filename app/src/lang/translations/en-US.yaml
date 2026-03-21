@@ -2411,7 +2411,6 @@ interfaces:
     target_languages: Target Languages
     translate_n_languages: 'Translate {count} language | Translate {count} languages'
     translating_n_languages: 'Translating {count} language... | Translating {count} languages...'
-    n_languages_translated: '{count} language translated | {count} languages translated'
     n_fields: '{count} field | {count} fields'
     no_source_content: The selected source fields have no content to translate.
     no_additional_languages: No additional languages configured.
@@ -2429,7 +2428,7 @@ interfaces:
     ai_translating_progress: 'Translating {done} of {total} languages...'
     translation_has_errors: Some translations failed. Click to view.
     translation_has_errors_short: Errors
-    new_translation: New Translation
+
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.

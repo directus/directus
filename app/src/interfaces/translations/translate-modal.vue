@@ -53,13 +53,10 @@ const userStore = useUserStore();
 // Local UI state — whether the user is viewing config vs progress/completion
 const showingConfig = ref(true);
 
-type ModalState = 'config' | 'translating' | 'complete';
+type ModalState = 'config' | 'translating';
 
 const modalState = computed<ModalState>(() => {
-	const job = props.translationJob;
-
-	if (job.jobState.value === 'translating') return 'translating';
-	if (job.jobState.value === 'complete' && !showingConfig.value) return 'complete';
+	if (props.translationJob.jobState.value === 'translating') return 'translating';
 	return 'config';
 });
 
@@ -200,7 +197,7 @@ const languageFieldProgress = computed(() => {
 	const result: Record<string, { current: number; max: number }> = {};
 	const max = selectedFields.value.length;
 
-	for (const lang of targetLanguageOptions.value) {
+	for (const lang of props.languageOptions.filter((l) => l.value !== sourceLanguage.value)) {
 		const item = props.getItemWithLang(props.displayItems, lang.value);
 
 		if (!item) {
@@ -260,33 +257,45 @@ watch(
 	() => props.modelValue,
 	(open) => {
 		if (open) {
-			const job = props.translationJob;
-
-			// If a job is running or complete, show progress/completion
-			if (job.jobState.value === 'translating' || job.jobState.value === 'complete') {
+			// If a job is currently running, show progress
+			if (props.translationJob.jobState.value === 'translating') {
 				showingConfig.value = false;
 				return;
 			}
 
 			// Fresh config
-			showingConfig.value = true;
-			permissionsLoaded.value = false;
-			targetPermissions.value = {};
-			sourceLanguage.value = props.defaultSourceLanguage ?? props.languageOptions[0]?.value ?? '';
-			preselectFieldsFromSource();
-
-			// Pre-select incomplete languages
-			selectedTargetLanguages.value = targetLanguageOptions.value
-				.filter((lang) => !isLanguageComplete(lang.value))
-				.map((lang) => lang.value);
-
-			void loadTargetPermissions();
+			resetToConfig();
 		} else {
 			targetPermissions.value = {};
 			permissionsLoaded.value = false;
 		}
 	},
 );
+
+// Auto-reset to config when translation completes
+watch(
+	() => props.translationJob.jobState.value,
+	(state) => {
+		if (state !== 'complete') return;
+
+		props.translationJob.reset();
+		resetToConfig();
+	},
+);
+
+function resetToConfig() {
+	showingConfig.value = true;
+	permissionsLoaded.value = false;
+	targetPermissions.value = {};
+	sourceLanguage.value = props.defaultSourceLanguage ?? props.languageOptions[0]?.value ?? '';
+	preselectFieldsFromSource();
+
+	selectedTargetLanguages.value = targetLanguageOptions.value
+		.filter((lang) => !isLanguageComplete(lang.value))
+		.map((lang) => lang.value);
+
+	void loadTargetPermissions();
+}
 
 watch(sourceLanguage, (newSource, oldSource) => {
 	if (newSource === oldSource) return;
@@ -546,21 +555,6 @@ async function retryLanguage(langCode: string) {
 	}
 
 	await props.translationJob.retry(langCode);
-}
-
-function showNewTranslation() {
-	props.translationJob.reset();
-	showingConfig.value = true;
-	permissionsLoaded.value = false;
-	targetPermissions.value = {};
-	sourceLanguage.value = props.defaultSourceLanguage ?? props.languageOptions[0]?.value ?? '';
-	preselectFieldsFromSource();
-
-	selectedTargetLanguages.value = targetLanguageOptions.value
-		.filter((lang) => !isLanguageComplete(lang.value))
-		.map((lang) => lang.value);
-
-	void loadTargetPermissions();
 }
 
 // Close — no longer cancels
@@ -903,46 +897,6 @@ function isActiveStatus(status: string | undefined) {
 					{{ t('cancel') }}
 				</VButton>
 			</template>
-
-			<!-- State 3: Complete -->
-			<template v-if="modalState === 'complete'">
-				<VNotice :type="job.hasErrors.value ? 'warning' : 'success'" class="complete-notice">
-					{{ t('interfaces.translations.n_languages_translated', job.translatedCount.value) }}
-				</VNotice>
-
-				<div class="lang-chip-grid">
-					<VChip
-						v-for="langCode in Object.keys(job.langStatuses.value)"
-						:key="langCode"
-						small
-						disabled
-						:style="langChipStyle(job.langStatuses.value[langCode]?.status)"
-					>
-						<VIcon :name="langStatusIcon(job.langStatuses.value[langCode]?.status)" x-small left />
-						{{ languageOptionsByCode.get(langCode)?.text ?? langCode }}
-					</VChip>
-				</div>
-
-				<VNotice v-for="langCode in errorLanguages" :key="'err-' + langCode" type="danger" class="error-notice">
-					<div class="error-notice-content">
-						<span>
-							{{ languageOptionsByCode.get(langCode)?.text }}:
-							{{ job.langStatuses.value[langCode]?.error }}
-						</span>
-						<VButton x-small secondary @click="retryLanguage(langCode)">{{ t('retry') }}</VButton>
-					</div>
-				</VNotice>
-
-				<div class="complete-actions">
-					<VButton secondary full-width @click="showNewTranslation">
-						{{ t('interfaces.translations.new_translation') }}
-					</VButton>
-
-					<VButton full-width @click="close">
-						{{ t('done') }}
-					</VButton>
-				</div>
-			</template>
 		</div>
 	</VDrawer>
 </template>
@@ -1180,17 +1134,6 @@ function isActiveStatus(status: string | undefined) {
 	justify-content: space-between;
 	gap: 0.5rem;
 	inline-size: 100%;
-}
-
-.complete-notice {
-	margin-block-end: 1rem;
-}
-
-.complete-actions {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-	margin-block-start: 1.5rem;
 }
 
 @media (width <= 640px) {
