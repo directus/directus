@@ -66,6 +66,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	});
 
 	let itemsAbort: AbortController | null = null;
+	let totalCountGeneration = 0;
+	let itemCountGeneration = 0;
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
@@ -277,8 +279,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
+		const currentGeneration = ++totalCountGeneration;
+
 		try {
-			totalCount.value = await fetchAggregate(endpoint.value, filterSystem?.value, undefined);
+			const count = await fetchAggregate(endpoint.value, filterSystem?.value, undefined);
+
+			// Discard the result if a newer request has been initiated (prevents race conditions
+			// when navigating between collections quickly)
+			if (currentGeneration !== totalCountGeneration) return;
+
+			totalCount.value = count;
 		} catch (err: any) {
 			if (!axios.isCancel(err)) {
 				throw err;
@@ -289,16 +299,26 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
+		const currentGeneration = ++itemCountGeneration;
+
 		loadingItemCount.value = true;
 
 		try {
-			itemCount.value = await fetchAggregate(endpoint.value, filter.value, search.value);
+			const count = await fetchAggregate(endpoint.value, filter.value, search.value);
+
+			// Discard the result if a newer request has been initiated (prevents race conditions
+			// when rapidly changing filters or search terms)
+			if (currentGeneration !== itemCountGeneration) return;
+
+			itemCount.value = count;
 		} catch (err: any) {
 			if (!axios.isCancel(err)) {
 				throw err;
 			}
 		} finally {
-			loadingItemCount.value = false;
+			if (currentGeneration === itemCountGeneration) {
+				loadingItemCount.value = false;
+			}
 		}
 	}
 }
