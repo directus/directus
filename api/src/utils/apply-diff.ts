@@ -79,6 +79,14 @@ export async function applyDiff(
 									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
 							) {
 								return merge(fieldDiff, { type: 'uuid', schema: { data_type: 'uuid', max_length: null } });
+							} else if (
+								database.client.config.client === 'mssql' &&
+								['nvarchar', 'nchar', 'ntext', 'varchar', 'char', 'text'].includes(
+									String(fieldDiff.schema?.data_type).toLowerCase(),
+								) &&
+								fieldDiff.schema?.max_length === -1
+							) {
+								return merge(fieldDiff, { schema: { max_length: null } });
 							} else {
 								return fieldDiff;
 							}
@@ -217,7 +225,19 @@ export async function applyDiff(
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0]?.kind === DiffKind.NEW && !isNestedMetaUpdate(diff?.[0])) {
 				try {
-					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs, undefined, mutationOptions);
+					let rhs = cloneDeep((diff[0] as DiffNew<Field>).rhs);
+
+					if (
+						database.client.config.client === 'mssql' &&
+						['nvarchar', 'nchar', 'ntext', 'varchar', 'char', 'text'].includes(
+							String(rhs.schema?.data_type).toLowerCase(),
+						) &&
+						rhs.schema?.max_length === -1
+					) {
+						rhs = merge({}, rhs, { schema: { max_length: null } });
+					}
+
+					await fieldsService.createField(collection, rhs, undefined, mutationOptions);
 
 					// Refresh the schema
 					fieldsService = new FieldsService({
@@ -237,10 +257,20 @@ export async function applyDiff(
 
 				if (currentField) {
 					try {
-						const newValues = diff.reduce((acc, currentDiff) => {
+						let newValues = diff.reduce((acc, currentDiff) => {
 							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentField));
+
+						if (
+							database.client.config.client === 'mssql' &&
+							['nvarchar', 'nchar', 'ntext', 'varchar', 'char', 'text'].includes(
+								String(newValues.schema?.data_type).toLowerCase(),
+							) &&
+							newValues.schema?.max_length === -1
+						) {
+							newValues = merge({}, newValues, { schema: { max_length: null } });
+						}
 
 						await fieldsService.updateField(collection, newValues, mutationOptions);
 					} catch (err) {
