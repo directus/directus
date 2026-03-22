@@ -25,7 +25,7 @@ export async function getCacheKey(req: Request) {
 		user: req.accountability?.user || null,
 		path,
 		query: isGraphQl ? getGraphqlQueryAndVariables(req) : req.sanitizedQuery,
-		...(req.query && !isGraphQl && { rawQuery: req.query }),
+		...(req.query && Object.keys(req.query).length > 0 && !isGraphQl && { rawQuery: req.query }),
 		...(includeIp && { ip: req.accountability!.ip }),
 	};
 

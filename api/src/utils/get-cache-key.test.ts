@@ -156,6 +156,23 @@ describe('get cache key', async () => {
 		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithoutCustomQuery));
 	});
 
+	test('should not change cache key when req.query is empty', async () => {
+		const reqWithEmptyQuery: any = {
+			method,
+			originalUrl: restUrl,
+			query: {},
+			sanitizedQuery: {},
+		};
+
+		const reqWithoutQuery: any = {
+			method,
+			originalUrl: restUrl,
+			sanitizedQuery: {},
+		};
+
+		expect(await getCacheKey(reqWithEmptyQuery)).toEqual(await getCacheKey(reqWithoutQuery));
+	});
+
 	test('should not include raw query params for GraphQL requests', async () => {
 		const gqlReqWithQuery: any = {
 			method,
