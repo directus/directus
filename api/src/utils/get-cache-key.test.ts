@@ -131,6 +131,47 @@ describe('get cache key', async () => {
 		expect(await getCacheKey(req2)).toEqual(await getCacheKey(postReq2));
 	});
 
+	test('should create a unique key for requests with different custom query params', async () => {
+		const reqWithCustomQuery1: any = {
+			method,
+			originalUrl: `${restUrl}?custom=foo`,
+			query: { custom: 'foo' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithCustomQuery2: any = {
+			method,
+			originalUrl: `${restUrl}?custom=bar`,
+			query: { custom: 'bar' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithoutCustomQuery: any = {
+			method,
+			originalUrl: restUrl,
+			sanitizedQuery: {},
+		};
+
+		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithCustomQuery2));
+		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithoutCustomQuery));
+	});
+
+	test('should not include raw query params for GraphQL requests', async () => {
+		const gqlReqWithQuery: any = {
+			method,
+			originalUrl: graphQlUrl,
+			query: { query: 'query { test { id } }', custom: 'foo' },
+		};
+
+		const gqlReqWithoutCustom: any = {
+			method,
+			originalUrl: graphQlUrl,
+			query: { query: 'query { test { id } }' },
+		};
+
+		expect(await getCacheKey(gqlReqWithQuery)).toEqual(await getCacheKey(gqlReqWithoutCustom));
+	});
+
 	test('it should create a unique key for requests which match a policy ip_access filter', async () => {
 		const reqWithMatchingIp: any = {
 			method,
