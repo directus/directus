@@ -1,7 +1,13 @@
 import type { ReadStream } from 'node:fs';
 import { EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import {
+	ErrorCode,
+	ForbiddenError,
+	isDirectusError,
+	RouteNotFoundError,
+	ServiceUnavailableError,
+} from '@directus/errors';
 import {
 	account,
 	type AccountOptions,
@@ -104,7 +110,24 @@ router.get(
 			options.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const payload = await list(query, options);
+		let payload;
+
+		try {
+			payload = await list(query, options);
+		} catch (error: any) {
+			if (error.name === 'TimeoutError') {
+				throw new ServiceUnavailableError({ service: 'marketplace', reason: 'The registry server is not responding' });
+			} else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+				throw new ServiceUnavailableError({
+					service: 'marketplace',
+					reason: 'Unable to connect to the registry server',
+				});
+			} else if (error instanceof Error) {
+				throw new ServiceUnavailableError({ service: 'marketplace', reason: error.message });
+			} else {
+				throw new ServiceUnavailableError({ service: 'marketplace', reason: 'An unknown error occurred' });
+			}
+		}
 
 		res.locals['payload'] = payload;
 		return next();
