@@ -269,7 +269,7 @@ describe('Service / Files', () => {
 			vi.useRealTimers();
 		});
 
-				describe('storage default behavior', () => {
+		describe('storage default behavior', () => {
 			it('should default to the first STORAGE_LOCATIONS when storage is not provided', async () => {
 				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
 
