@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
 import { useGroupableParent } from '@directus/composables';
+import { toRefs } from 'vue';
 
 interface Props {
 	/** If enabled, at least one item has to be selected */

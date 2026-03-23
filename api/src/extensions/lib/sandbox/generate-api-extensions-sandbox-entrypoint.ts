@@ -1,4 +1,4 @@
-import type { ApiExtensionType, HybridExtensionType } from '@directus/extensions';
+import type { ApiExtensionType, HybridExtensionType } from '@directus/types';
 import { numberGenerator } from '@directus/utils';
 import type { Router } from 'express';
 import { generateHostFunctionReference } from './generate-host-function-reference.js';

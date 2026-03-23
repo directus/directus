@@ -1,18 +1,18 @@
 import {
-	Type,
-	GeometryFormat,
-	Coordinate,
-	AnyGeometry,
-	GeometryOptions,
-	GeoJSONSerializer,
 	AllGeoJSON,
+	AnyGeometry,
+	Coordinate,
 	GeoJSONParser,
+	GeoJSONSerializer,
+	GeometryFormat,
+	GeometryOptions,
 	SimpleGeometry,
+	Type,
 } from '@directus/types';
-import { BBox, Point, Feature, FeatureCollection } from 'geojson';
 import { coordEach } from '@turf/meta';
+import { BBox, Feature, FeatureCollection, Point } from 'geojson';
+import { stringify as geojsonToWKT, parse as wktToGeoJSON } from 'wellknown';
 import { i18n } from '@/lang';
-import { parse as wktToGeoJSON, stringify as geojsonToWKT } from 'wellknown';
 
 export function expandBBox(bbox: BBox, coord: Coordinate): BBox {
 	return [

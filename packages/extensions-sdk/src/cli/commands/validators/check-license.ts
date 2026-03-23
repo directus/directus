@@ -1,11 +1,11 @@
+import path from 'path';
 import fse from 'fs-extra';
 import { type Ora } from 'ora';
 import type { Report } from '../../types.js';
-import path from 'path';
 
 const checkLicense = {
 	name: 'license',
-	handler: async (spinner: Ora, reports: Array<Report>) => {
+	handler: async (spinner: Ora, reports: Array<Report>): Promise<string> => {
 		spinner.text = 'Check for license';
 
 		const packagePath = path.resolve('package.json');

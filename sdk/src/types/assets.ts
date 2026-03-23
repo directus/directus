@@ -15,3 +15,12 @@ export type AssetsQuery =
 			focal_point_y?: number;
 			transforms?: [string, ...any[]][];
 	  };
+
+/**
+ * A Map of response `type` to the corresponding response format.
+ */
+export type AssetResponse = {
+	raw: ReadableStream<Uint8Array>;
+	arrayBuffer: ArrayBuffer;
+	blob: Blob;
+};

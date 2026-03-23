@@ -1,5 +1,5 @@
 import type { DirectusFlow } from '../../../schema/flow.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateFlowOutput<
@@ -18,7 +18,7 @@ export type CreateFlowOutput<
  */
 export const createFlows =
 	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
-		items: Partial<DirectusFlow<Schema>>[],
+		items: NestedPartial<DirectusFlow<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateFlowOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createFlows =
  */
 export const createFlow =
 	<Schema, TQuery extends Query<Schema, DirectusFlow<Schema>>>(
-		item: Partial<DirectusFlow<Schema>>,
+		item: NestedPartial<DirectusFlow<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateFlowOutput<Schema, TQuery>, Schema> =>
 	() => ({

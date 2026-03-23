@@ -4,6 +4,6 @@ import VDivider from './v-divider.vue';
 
 <template>
 	<Story title="VDivider">
-		<v-divider />
+		<VDivider />
 	</Story>
 </template>

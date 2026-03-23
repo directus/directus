@@ -1,10 +1,10 @@
+import { File, SettingsStorageAssetPreset } from '@directus/types';
+import mime from 'mime/lite';
+import { Ref, ref, watch } from 'vue';
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import mime from 'mime/lite';
-import { Ref, ref, watch } from 'vue';
-import { SettingsStorageAssetPreset, File } from '@directus/types';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -88,8 +88,8 @@ export default function useImage(
 					imageUrl,
 					alt,
 					lazy,
-					width: selectedPreset.value ? selectedPreset.value.width ?? undefined : width,
-					height: selectedPreset.value ? selectedPreset.value.height ?? undefined : height,
+					width: selectedPreset.value ? (selectedPreset.value.width ?? undefined) : width,
+					height: selectedPreset.value ? (selectedPreset.value.height ?? undefined) : height,
 					transformationKey,
 					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value),
 				};

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { isNil } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { monoThemeGenerator } from './color-generator';
+import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 
 type ConditionalFillFormat = {
 	operator: StringConditionalFillOperators;
 	color: string;
-	value: number;
+	value: number | string;
 };
 
 const props = withDefaults(
@@ -29,6 +29,7 @@ const props = withDefaults(
 		height: number;
 		width: number;
 		conditionalFill?: ConditionalFillFormat[] | null;
+		gridSize: number;
 	}>(),
 	{
 		showHeader: false,
@@ -110,23 +111,26 @@ async function setupChart() {
 
 	const baseColors: string[] = monoThemeGenerator(props.color || cssVar('--theme--primary'), labels.length);
 
-	const colors = baseColors.map((baseColor, index) => formatColor(baseColor, series[index]));
+	const colors = baseColors.map((baseColor, index) => {
+		const rawValue = props.data[index]?.['group']?.[props.column];
+		return formatColor(baseColor, isNumberColumn.value ? series[index] : rawValue);
+	});
 
-	const size = props.height < props.width ? props.height * 20 : props.width * 20;
+	const size = props.height < props.width ? props.height * props.gridSize : props.width * props.gridSize;
 
-	let left = 20;
-	let right = 20;
-	let top = props.showHeader ? 10 : 0;
-	let bottom = props.showHeader ? 40 : 30;
-	let offsetY = props.showHeader ? -15 : 0;
+	let left = props.gridSize;
+	let right = props.gridSize;
+	let top = props.showHeader ? props.gridSize / 2 : 0;
+	let bottom = props.showHeader ? props.gridSize * 4 : props.gridSize * 3;
+	let offsetY = props.showHeader ? props.gridSize * -0.75 : 0;
 
 	if (props.legend === 'right') {
 		left = 0;
-		right = -20;
+		right = -right;
 	} else if (props.legend === 'bottom') {
-		top = props.showHeader ? 10 : -5;
-		bottom = props.showHeader ? 20 : 10;
-		offsetY = props.showHeader ? -20 : -10;
+		top = props.showHeader ? props.gridSize / 2 : -props.gridSize / 4;
+		bottom = props.showHeader ? props.gridSize : props.gridSize / 2;
+		offsetY = props.showHeader ? -props.gridSize : -props.gridSize / 2;
 	}
 
 	chart.value = new ApexCharts(chartEl.value, {
@@ -190,7 +194,7 @@ async function setupChart() {
 		dataLabels: {
 			enabled: props.showLabels,
 			style: {
-				fontSize: '10px',
+				fontSize: '0.5625rem',
 			},
 			formatter: function (val: number) {
 				return `${getPercentage(val)}%`;
@@ -200,7 +204,7 @@ async function setupChart() {
 			show: props.legend !== 'none',
 			position: props.legend !== 'none' ? props.legend : undefined,
 			customLegendItems: labels,
-			offsetX: props.legend === 'right' ? -25 : -((props.width - 4) * 5),
+			offsetX: props.legend === 'right' ? -25 : 0,
 			offsetY,
 			markers: {
 				width: 8,
@@ -233,33 +237,39 @@ function formatColor(color: string | number, value?: string | number) {
 function checkMatchingConditionalFill(value: string | number, format: ConditionalFillFormat): boolean {
 	let baseValue: string | number = value;
 	let compareValue: string | number = format.value;
+	const operator = format.operator || '>=';
+	const isNumericComparison = ['>', '>=', '<', '<='].includes(operator);
 
-	if (isNumberColumn.value) {
+	if (isNumericComparison) {
 		if (isNaN(Number(value)) || isNaN(Number(format.value))) return false;
+
 		baseValue = Number(value);
 		compareValue = Number(format.value);
+
+		switch (operator) {
+			case '>':
+				return baseValue > compareValue;
+			case '>=':
+				return baseValue >= compareValue;
+			case '<':
+				return baseValue < compareValue;
+			case '<=':
+				return baseValue <= compareValue;
+		}
 	}
 
-	switch (format.operator || '>=') {
+	switch (operator) {
 		case '=':
 			return baseValue === compareValue;
 		case '!=':
 			return baseValue !== compareValue;
-		case '>':
-			return Number(baseValue) > compareValue;
-		case '>=':
-			return Number(baseValue) >= compareValue;
-		case '<':
-			return Number(baseValue) < compareValue;
-		case '<=':
-			return Number(baseValue) < compareValue;
 		case 'contains':
-			return typeof compareValue === 'string' && typeof baseValue === 'string'
-				? (compareValue as string).includes(baseValue)
+			return typeof baseValue === 'string' && typeof compareValue === 'string'
+				? baseValue.includes(compareValue)
 				: false;
 		case 'ncontains':
-			return typeof compareValue === 'string' && typeof baseValue === 'string'
-				? !(compareValue as string).includes(baseValue)
+			return typeof baseValue === 'string' && typeof compareValue === 'string'
+				? !baseValue.includes(compareValue)
 				: false;
 		default:
 			return false;
@@ -275,8 +285,8 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 
 <style scoped>
 .pie-chart {
-	height: 100%;
-	width: 100%;
+	block-size: 100%;
+	inline-size: 100%;
 }
 </style>
 
@@ -287,17 +297,17 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
-	margin-bottom: 0;
-	padding: 0 4px;
+	margin-block-end: 0;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 4px;
+	padding: 0 0 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 }
 
 .apexcharts-tooltip-series-group {
@@ -306,12 +316,11 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 }
 
 .apexcharts-tooltip-series-group .apexcharts-active {
-	padding: 0 4px 0 0 !important;
+	padding: 0 0.25rem 0 0 !important;
 }
 
 .apexcharts-tooltip-series-group:last-child {
-	padding-top: 0;
-	padding-bottom: 0;
+	padding-block: 0;
 }
 
 .apexcharts-tooltip-text {

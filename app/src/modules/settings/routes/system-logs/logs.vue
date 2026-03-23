@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { useClipboard } from '@/composables/use-clipboard';
-import { useShortcut } from '@/composables/use-shortcut';
-import { getRootPath } from '@/utils/get-root-path';
-import { sdk } from '@/sdk';
-import { useServerStore } from '@/stores/server';
 import { realtime } from '@directus/sdk';
 import { useLocalStorage } from '@vueuse/core';
 import CodeMirror from 'codemirror';
-import 'codemirror/mode/javascript/javascript';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
 import LogsDisplay from './components/logs-display.vue';
-import SystemLogsSidebarDetail from './components/system-logs-sidebar-detail.vue';
 import { Log } from './types';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useClipboard } from '@/composables/use-clipboard';
+import { useShortcut } from '@/composables/use-shortcut';
+import InterfaceInput from '@/interfaces/input/input.vue';
+import { sdk } from '@/sdk';
+import { useServerStore } from '@/stores/server';
+import { getRootPath } from '@/utils/get-root-path';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
+import 'codemirror/mode/javascript/javascript';
 
 const { t } = useI18n();
 const reconnectionParams = { delay: 1000, retries: 10 };
@@ -314,7 +321,7 @@ function updateCopyButtonPosition() {
 
 	if (!copyButtonEl || !codeMirrorScrollBarEl) return;
 
-	copyButtonEl.style.right = `${Number(codeMirrorScrollBarEl.style.right.replace('px', '')) + 10}px`;
+	copyButtonEl.style.insetInlineEnd = `${Number(codeMirrorScrollBarEl.style.insetInlineEnd.replace('px', '')) + 10}px`;
 }
 
 function processRawLog() {
@@ -417,44 +424,39 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<private-view :title="t('settings_system_logs')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="terminal" />
-			</v-button>
-		</template>
+	<PrivateView :title="$t('settings_system_logs')" icon="terminal">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled>
-				<v-progress-circular small indeterminate />
-			</v-button>
-			<v-button
+			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
+				<VProgressCircular small indeterminate />
+			</VButton>
+
+			<PrivateViewHeaderBarActionButton
 				v-else-if="!shouldStream"
-				v-tooltip.bottom="t('resume_streaming_logs')"
-				rounded
-				icon
+				v-tooltip.bottom="$t('resume_streaming_logs')"
+				icon="play_arrow"
 				@click="resumeLogsStreaming"
-			>
-				<v-icon name="play_arrow" />
-			</v-button>
-			<v-button v-else v-tooltip.bottom="t('pause_streaming_logs')" rounded icon @click="pauseLogsStreaming">
-				<v-icon name="pause" />
-			</v-button>
-			<v-button
-				v-tooltip.bottom="t('clear_logs')"
-				rounded
-				icon
+			/>
+
+			<PrivateViewHeaderBarActionButton
+				v-else
+				v-tooltip.bottom="$t('pause_streaming_logs')"
+				icon="pause"
+				@click="pauseLogsStreaming"
+			/>
+
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('clear_logs')"
 				:disabled="logs.length === 0"
 				class="action-clear"
+				icon="mop"
 				@click="clearLogs"
-			>
-				<v-icon name="mop" />
-			</v-button>
+			/>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="logs-container">
@@ -468,7 +470,7 @@ onUnmounted(() => {
 			/>
 			<div class="split-view">
 				<div class="logs-display">
-					<logs-display
+					<LogsDisplay
 						ref="logsDisplay"
 						:logs="filteredLogs"
 						:log-levels="allowedLogLevels"
@@ -479,44 +481,40 @@ onUnmounted(() => {
 						@scrolled-to-bottom="onScrollBottom"
 					/>
 				</div>
-				<transition name="fade">
+				<Transition name="fade">
 					<div v-show="logDetailVisible" class="log-detail">
 						<div class="log-detail-controls">
-							<v-button class="close-button" x-large secondary icon @click="minimizeLog">
-								<v-icon name="close" />
-							</v-button>
-							<interface-input
+							<VButton class="close-button" x-large secondary icon @click="minimizeLog">
+								<VIcon name="close" />
+							</VButton>
+							<InterfaceInput
 								:value="logDetailSearch"
 								class="full"
-								:placeholder="t('log_detail_filter_paths')"
+								:placeholder="$t('log_detail_filter_paths')"
 								icon-right="search"
 								spellcheck="false"
 								@input="logDetailSearch = $event"
 							/>
 						</div>
 						<div ref="codemirrorEl" class="raw-log">
-							<v-button
+							<VButton
 								v-if="isCopySupported"
 								class="copy-button"
 								secondary
 								icon
 								@click="copyToClipboard(codemirror?.getValue())"
 							>
-								<v-icon name="content_copy" />
-							</v-button>
+								<VIcon name="content_copy" />
+							</VButton>
 						</div>
 						<div class="actions">
-							<v-checkbox v-model="softWrap" :label="t('soft_wrap_lines')" />
+							<VCheckbox v-model="softWrap" :label="$t('soft_wrap_lines')" />
 						</div>
 					</div>
-				</transition>
+				</Transition>
 			</div>
 		</div>
-
-		<template #sidebar>
-			<system-logs-sidebar-detail />
-		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -535,26 +533,25 @@ onUnmounted(() => {
 }
 
 .logs-container {
-	width: 100%;
-	height: calc(100% - 110px);
-	min-height: 600px;
+	inline-size: 100%;
+	block-size: calc(100% - 6.1875rem);
+	min-block-size: 33.75rem;
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .filter {
-	margin-block-start: 24px;
-	margin-block-end: 20px;
+	margin-block: 1.375rem 1.125rem;
 }
 
 .v-form {
-	padding-bottom: var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 
 .split-view {
 	display: flex;
 	flex-direction: column;
-	height: calc(100% - 50px);
+	block-size: calc(100% - 2.8125rem);
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
@@ -566,22 +563,22 @@ onUnmounted(() => {
 
 .split-view > div {
 	box-sizing: border-box;
-	height: 50%;
+	block-size: 50%;
 }
 
 .logs-display {
 	flex: 2;
-	min-height: 200px;
+	min-block-size: 11.25rem;
 }
 
 .log-detail {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding: 6px;
-	min-height: 300px;
+	padding: 0.3125rem;
+	min-block-size: 16.875rem;
 	background-color: var(--theme--background-subdued);
-	border-top: var(--theme--border-width) solid
+	border-block-start: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	box-shadow: var(--sidebar-shadow);
 	z-index: 1;
@@ -589,25 +586,25 @@ onUnmounted(() => {
 
 .log-detail-controls {
 	display: flex;
-	padding: 5px;
+	padding: 0.3125rem;
 }
 
 .close-button {
-	margin-right: 10px;
+	margin-inline-end: 0.5625rem;
 }
 
 .copy-button {
-	float: right;
+	float: inline-end;
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 2;
 }
 
 .raw-log {
-	height: 100%;
-	min-height: 100px;
-	margin: 4px;
+	block-size: 100%;
+	min-block-size: 5.625rem;
+	margin: 0.25rem;
 	position: relative;
 	overflow: auto;
 	background-color: var(--theme--background);
@@ -618,13 +615,13 @@ onUnmounted(() => {
 }
 
 .raw-log :deep(.CodeMirror) {
-	height: 100%;
-	max-height: 100%;
+	block-size: 100%;
+	max-block-size: 100%;
 }
 
 .raw-log :deep(.CodeMirror-scroll) {
-	height: 100%;
-	max-height: 100%;
+	block-size: 100%;
+	max-block-size: 100%;
 }
 
 .fade-enter-active,
@@ -638,23 +635,23 @@ onUnmounted(() => {
 }
 
 .actions {
-	padding: 0 9px;
-	margin-left: auto;
+	padding: 0 0.5rem;
+	margin-inline-start: auto;
 }
 
-@media (min-width: 960px) {
+@media (width >= 54rem) {
 	.logs-container {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 }
 
-@media (min-width: 1200px) {
+@media (width >= 67.5rem) {
 	.split-view {
 		flex-direction: row;
 	}
 
 	.split-view > div {
-		height: 100%;
+		block-size: 100%;
 	}
 
 	.logs-display {
@@ -663,9 +660,9 @@ onUnmounted(() => {
 
 	.log-detail {
 		flex: 1;
-		max-width: 50%;
-		border-top: none;
-		border-left: var(--theme--border-width) solid
+		max-inline-size: 50%;
+		border-block-start: none;
+		border-inline-start: var(--theme--border-width) solid
 			var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	}
 }

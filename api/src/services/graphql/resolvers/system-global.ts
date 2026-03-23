@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
+import type { Accountability, GraphQLParams } from '@directus/types';
 import argon2 from 'argon2';
 import {
 	GraphQLBoolean,
@@ -16,7 +16,7 @@ import { clearSystemCache, getCache } from '../../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../../constants.js';
 import { rateLimiter } from '../../../middleware/rate-limiter-registration.js';
 import { createDefaultAccountability } from '../../../permissions/utils/create-default-accountability.js';
-import type { AuthenticationMode, GraphQLParams } from '../../../types/index.js';
+import type { AuthenticationMode } from '../../../types/index.js';
 import { generateHash } from '../../../utils/generate-hash.js';
 import { getIPFromReq } from '../../../utils/get-ip-from-req.js';
 import { getSecret } from '../../../utils/get-secret.js';

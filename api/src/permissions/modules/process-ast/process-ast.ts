@@ -7,8 +7,8 @@ import { fieldMapFromAst } from './lib/field-map-from-ast.js';
 import { injectCases } from './lib/inject-cases.js';
 import type { FieldMap } from './types.js';
 import { collectionsInFieldMap } from './utils/collections-in-field-map.js';
-import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
 import { validatePathExistence } from './utils/validate-path/validate-path-existence.js';
+import { validatePathPermissions } from './utils/validate-path/validate-path-permissions.js';
 
 export interface ProcessAstOptions {
 	ast: AST;
@@ -44,7 +44,7 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 			: await fetchPermissions(
 					{ action: 'read', policies, collections, accountability: options.accountability },
 					context,
-			  );
+				);
 
 	// Validate field existence first
 	for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {

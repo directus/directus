@@ -1,5 +1,5 @@
-import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
+import { omit } from 'lodash-es';
 import { afterEach, expect, test, vi } from 'vitest';
 import { useBus } from '../bus/index.js';
 import { LogsStream } from './logs-stream.js';

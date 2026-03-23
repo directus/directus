@@ -1,10 +1,10 @@
-import api from '@/api';
-import { useUserStore } from '@/stores/user';
-import { fetchAll } from '@/utils/fetch-all';
 import { Preset } from '@directus/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
+import api from '@/api';
+import { useUserStore } from '@/stores/user';
+import { fetchAll } from '@/utils/fetch-all';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -114,26 +114,6 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 			},
 		},
 	},
-	directus_webhooks: {
-		collection: 'directus_webhooks',
-		layout: 'tabular',
-		layout_query: {
-			tabular: {
-				fields: ['status', 'method', 'name', 'collections', 'actions'],
-			},
-		},
-		layout_options: {
-			tabular: {
-				widths: {
-					status: 32,
-					method: 100,
-					name: 210,
-					collections: 240,
-					actions: 210,
-				},
-			},
-		},
-	},
 	directus_presets: {
 		collection: 'directus_presets',
 		layout: 'tabular',
@@ -195,7 +175,7 @@ export const usePresetsStore = defineStore({
 								'filter[role][_eq]': role.id,
 								'filter[user][_null]': true,
 							},
-					  })
+						})
 					: Promise.resolve([]),
 				// All global saved bookmarks and presets
 				fetchAll<any>(`/presets`, {

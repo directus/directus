@@ -1,3 +1,7 @@
+import { defineDisplay } from '@directus/extensions';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { get, set } from 'lodash';
+import DisplayTranslations from './translations.vue';
 import { useExtension } from '@/composables/use-extension';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
@@ -5,10 +9,6 @@ import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
-import { defineDisplay } from '@directus/extensions';
-import { getFieldsFromTemplate } from '@directus/utils';
-import { get, set } from 'lodash';
-import DisplayTranslations from './translations.vue';
 
 type Options = {
 	template: string;
@@ -93,7 +93,7 @@ export default defineDisplay({
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,
-				  })
+					})
 				: fieldValue;
 
 			set(stringValues, key, stringValue);

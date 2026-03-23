@@ -1,3 +1,4 @@
+import { Redlock } from '@sesamecare-oss/redlock';
 import {
 	bufferToUint8Array,
 	compress,
@@ -28,13 +29,24 @@ export const SET_MAX_SCRIPT = `
   return true
 `;
 
+const RELEASE_SCRIPT = `
+	if redis.call("GET", KEYS[1]) == ARGV[1] then
+	return redis.call("DEL", KEYS[1])
+	else
+	return 0
+	end
+`;
+
 export class KvRedis implements Kv {
 	private redis: ExtendedRedis;
 	private namespace: string;
 	private compression: boolean;
 	private compressionMinSize: number;
+	private lockTimeout: number;
+	private redlock;
+	private ttl: number | undefined;
 
-	constructor(config: Omit<KvConfigRedis, 'type'>) {
+	constructor(config: Omit<KvConfigRedis, 'type'> & { ttl?: number }) {
 		if ('setMax' in config.redis === false) {
 			config.redis.defineCommand('setMax', {
 				numberOfKeys: 1,
@@ -42,13 +54,30 @@ export class KvRedis implements Kv {
 			});
 		}
 
+		if ('release' in config.redis === false) {
+			config.redis.defineCommand('release', {
+				numberOfKeys: 1,
+				lua: RELEASE_SCRIPT,
+			});
+		}
+
 		this.redis = config.redis as ExtendedRedis;
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
+		this.lockTimeout = config.lockTimeout ?? 5000;
+
+		this.redlock = new Redlock([this.redis], {
+			retryDelay: 50,
+			driftFactor: 0.01,
+			retryCount: 100,
+			retryJitter: 20,
+		});
+
+		this.ttl = config.ttl;
 	}
 
-	async get<T = unknown>(key: string) {
+	async get<T = unknown>(key: string): Promise<T | undefined> {
 		const value = await this.redis.getBuffer(withNamespace(key, this.namespace));
 
 		if (value === null) {
@@ -64,9 +93,13 @@ export class KvRedis implements Kv {
 		return <T>deserialize(binaryArray);
 	}
 
-	async set<T = unknown>(key: string, value: T) {
+	async set<T = unknown>(key: string, value: T): Promise<void> {
 		if (typeof value === 'number') {
-			await this.redis.set(withNamespace(key, this.namespace), value);
+			if (this.ttl) {
+				await this.redis.set(withNamespace(key, this.namespace), value, 'PX', this.ttl);
+			} else {
+				await this.redis.set(withNamespace(key, this.namespace), value);
+			}
 		} else {
 			let binaryArray = serialize(value);
 
@@ -74,29 +107,53 @@ export class KvRedis implements Kv {
 				binaryArray = await compress(binaryArray);
 			}
 
-			await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray));
+			if (this.ttl) {
+				await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray), 'PX', this.ttl);
+			} else {
+				await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray));
+			}
 		}
 	}
 
-	async delete(key: string) {
+	async delete(key: string): Promise<void> {
 		await this.redis.unlink(withNamespace(key, this.namespace));
 	}
 
-	async has(key: string) {
+	async has(key: string): Promise<boolean> {
 		const exists = await this.redis.exists(withNamespace(key, this.namespace));
 		return exists !== 0;
 	}
 
-	async increment(key: string, amount = 1) {
+	async increment(key: string, amount = 1): Promise<number> {
 		return await this.redis.incrby(withNamespace(key, this.namespace), amount);
 	}
 
-	async setMax(key: string, value: number) {
+	async setMax(key: string, value: number): Promise<boolean> {
 		const wasSet = await this.redis.setMax(withNamespace(key, this.namespace), value);
 		return wasSet !== 0;
 	}
 
-	async clear() {
+	async acquireLock(key: string): Promise<{
+		release: () => Promise<void>;
+		extend: (duration: number) => Promise<void>;
+	}> {
+		const lock = await this.redlock.acquire([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout));
+
+		return {
+			release: async () => {
+				await lock.release();
+			},
+			extend: async (duration: number) => {
+				await lock.extend(duration);
+			},
+		};
+	}
+
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return this.redlock.using([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout), callback);
+	}
+
+	async clear(): Promise<void> {
 		const keysStream = this.redis.scanStream({
 			match: withNamespace('*', this.namespace),
 		});

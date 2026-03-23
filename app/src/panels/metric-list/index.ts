@@ -1,9 +1,9 @@
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
 import { definePanel, type PanelQuery } from '@directus/extensions';
 import { computed } from 'vue';
 import PanelMetricList from './panel-metric-list.vue';
 import PreviewSVG from './preview.svg?raw';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 
 export default definePanel({
 	id: 'metric-list',

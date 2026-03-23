@@ -97,16 +97,16 @@ export default definePanel({
 					options: {
 						choices: [
 							{
-								text: '$t:left',
-								value: 'left',
+								text: '$t:start',
+								value: 'start',
 							},
 							{
 								text: '$t:center',
 								value: 'center',
 							},
 							{
-								text: '$t:right',
-								value: 'right',
+								text: '$t:end',
+								value: 'end',
 							},
 							{
 								text: '$t:justify',
@@ -208,9 +208,9 @@ export default definePanel({
 					interface: 'select-dropdown',
 					options: {
 						choices: [
-							{ text: '$t:fonts.small', value: '32px' },
-							{ text: '$t:fonts.medium', value: '48px' },
-							{ text: '$t:fonts.large', value: '64px' },
+							{ text: '$t:fonts.small', value: '1.8125rem' },
+							{ text: '$t:fonts.medium', value: '2.6875rem' },
+							{ text: '$t:fonts.large', value: '3.625rem' },
 							{ text: '$t:fonts.auto', value: 'auto' },
 						],
 					},

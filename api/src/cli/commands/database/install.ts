@@ -1,5 +1,5 @@
-import installSeeds from '../../../database/seeds/run.js';
 import getDatabase from '../../../database/index.js';
+import installSeeds from '../../../database/seeds/run.js';
 import { useLogger } from '../../../logger/index.js';
 
 export default async function start(): Promise<void> {

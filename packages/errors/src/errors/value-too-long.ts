@@ -1,12 +1,17 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface ValueTooLongErrorExtensions {
 	collection: string | null;
 	field: string | null;
+	value: string | null;
 }
 
-export const messageConstructor = ({ collection, field }: ValueTooLongErrorExtensions) => {
+export const messageConstructor = ({ collection, field, value }: ValueTooLongErrorExtensions): string => {
 	let message = 'Value ';
+
+	if (value) {
+		message += `"${value}" `;
+	}
 
 	if (field) {
 		message += `for field "${field}" `;
@@ -21,8 +26,5 @@ export const messageConstructor = ({ collection, field }: ValueTooLongErrorExten
 	return message;
 };
 
-export const ValueTooLongError = createError<ValueTooLongErrorExtensions>(
-	ErrorCode.ValueTooLong,
-	messageConstructor,
-	400,
-);
+export const ValueTooLongError: DirectusErrorConstructor<ValueTooLongErrorExtensions> =
+	createError<ValueTooLongErrorExtensions>(ErrorCode.ValueTooLong, messageConstructor, 400);

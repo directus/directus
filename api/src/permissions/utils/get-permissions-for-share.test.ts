@@ -1,8 +1,8 @@
-import { beforeAll, describe, expect, test, vi } from 'vitest';
-import { getPermissionsForShare } from './get-permissions-for-share.js';
-import type { Accountability } from '@directus/types';
-import type { Context } from '../types.js';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability } from '@directus/types';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
+import type { Context } from '../types.js';
+import { getPermissionsForShare } from './get-permissions-for-share.js';
 
 vi.mock('../modules/fetch-global-access/fetch-global-access.js', () => ({
 	fetchGlobalAccess: vi.fn().mockImplementation((accountability: Accountability) => {
@@ -145,7 +145,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -176,7 +176,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -207,7 +207,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -295,7 +295,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -326,7 +326,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',

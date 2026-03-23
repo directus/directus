@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+first_name: Nombre
+last_name: Apellido
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -30,6 +32,10 @@ draft: Borrador
 archived: Archivado
 marketplace: Mercado
 extensions: Extensiones
+skip_link_nav: Ir a Navegación
+skip_link_module_nav: Ir a Navegación de Módulos
+skip_link_main: Ir a Contenido principal
+skip_link_sidebar: Ir a Barra lateral
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
@@ -42,6 +48,8 @@ location: Ubicación
 collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Reglas condicionales
 input: Entrada
+invalid_input: Entrada no válida
+not_a_number: No es un número
 maps: Mapas
 switch_user: Cambiar de usuario
 item_creation: Creación de elementos
@@ -132,7 +140,6 @@ create_policy: Crear política
 create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
-create_webhook: Crear webhook
 create_custom_translation: Crear traducción personalizada
 edit_custom_translation: Editar traducción personalizada
 no_custom_translations: Sin traducciones personalizadas
@@ -164,19 +171,9 @@ rename_version: Renombrar versión
 compare_version: Comparar versión
 save_version: Guardar versión
 promote_version: Promover versión
-promote_version_disabled: Sin cambios
-promote_version_drawer_title: Promover {version} como Main
-promote_version_changes: Cambios
-promote_version_preview: Vista previa
-outdated_notice: >-
-  El elemento principal ha sido actualizado desde la creación de esta versión. Por favor, revise todos los valores de campo a continuación, y confirme que versión debe utilizarse al promover esta versión al elemento principal.
-promote_notice: >-
-  Por favor, revise todos los valores de campo a continuación, y confirm que versión debe utilizarse para promover esta versión en el elemento principal.
 delete_version: Eleminar versión
 delete_version_copy: >-
   ¿Está seguro que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
-delete_on_promote_copy: >-
-  ¿Desea eliminar o conservar la versión "{version}" después de promover?
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar marcador
@@ -316,6 +313,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restablecer preferencias de la página
 hidden_field: Campo oculto
 hidden_on_detail: Oculto en el detalle
+readonly_field_label: Desactivar el campo en la aplicación
+required_readonly_field_warning: Habilitar sólo lectura y requerido en un campo previene guardar un elemento si el valor está vacío.
 key: Llave
 alias: Alias
 bigInteger: Entero grande
@@ -421,6 +420,7 @@ field_key: Campo clave
 finish_setup: Finalizar configuración
 dismiss: Descartar
 toggle_raw_editor: Alternar editor raw
+toggle_variable_input: Alternar entrada de variables
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor raw
 copy_raw_value: Copiar valor raw
@@ -447,11 +447,11 @@ confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
 display: Mostrar
 settings_update_success: Configuración actualizada
 title: Título
+subtitle: Subtítulo
 revision_delta_created: Creado
 revision_delta_created_externally: Creado externamente
 revision_delta_updated: 'Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
-revision_delta_version_saved: 'Version guardada (1 campo actualizado) | Versión guardada ({count} campos actualizados)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
@@ -552,6 +552,9 @@ original: Original
 url: URL
 import_label: Importar
 file_details: Detalles de Archivo
+copy_id: Copiar ID
+copy_id_success: ID copiado
+copy_id_fail: ID no copiado
 dimensions: Dimensiones
 size: Tamaño
 created: Creado
@@ -639,12 +642,6 @@ file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
 no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
-webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
-webhooks_deprecation_notice: |
-  Los webhooks están obsoletos y no se recomienda el uso posterior.
-
-  Por favor usa **Flows** con la [operación Webhook / Solicitud URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) en su lugar.
-no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando uno a continuación.
 no_notifications: Sin notificaciones
 no_notifications_copy: '¡Estás al día!'
 activity_log: Registro de actividad
@@ -675,7 +672,6 @@ action: Acción
 ip_address: Dirección IP
 user_agent: Agente de usuario
 origin: Origen
-webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor decimal
 min_value: Valor mínimo
@@ -725,6 +721,7 @@ errors:
   COLLECTION_NOT_FOUND: "La Colección no existe"
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   CONTENT_TOO_LARGE: El elemento/archivo enviado es demasiado grande
+  FAILED_VALIDATION: Verificación fallida
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
   GRAPHQL_VALIDATION: Validación GraphQL
@@ -759,7 +756,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   VALUE_TOO_LONG: El valor es demasiado largo
 security: Seguridad
-value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador
 edit_bookmark: Editar Marcador
@@ -775,7 +771,6 @@ unexpected_error_copy: Ha ocurrido un error inesperado. Por favor, intenta de nu
 copy_details: Copiar Detalles
 no_app_access: Sin acceso a la aplicación
 no_app_access_copy: Este usuario no tiene permitido usar la aplicación de administración.
-password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
@@ -935,12 +930,11 @@ label: Etiqueta
 flows: Flujos
 flow: Flujo
 select_a_flow: Selecciona un flujo
-run_flow_confirm: '¿Estás seguro que deseas ejecutar este flujo?'
 run_flow_on_current_collection: Ejecutar flujo en la colección actual
 run_flow_on_current: Ejecutar flujo en el elemento actual
-run_flow_on_current_edited_confirm: Este elemento puede ser actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccione uno o más elementos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} elementos seleccionados
 run_flow: Ejecutar flujo
+trigger_flow_success: El flujo "{flow}" se ha activado correctamente
 field_name_placeholder: Ingresa el nombre del campo...
 field_key_placeholder: Ingresa la clave de campo...
 trigger: Disparador
@@ -980,8 +974,20 @@ operation_handle_reject: 'Rechazar: Haga clic para añadir o arrastrar para reen
 visual_editor: Editor visual
 toggle_navigation: Alternar navegación
 toggle_editable_elements: Alternar elementos editables
+no_url: Ninguna URL introducida
 no_url_copy: Por favor añada una URL en la configuración.
+invalid_url: URL no válida
+invalid_url_copy: La URL especificada no coincide con ninguna URL especificada en la configuración.
 insights: Informes
+deployment:
+  provider:
+    settings:
+      delete_confirm: Esta acción es permanente y no se puede deshacer. ¿Está seguro de que desea continuar?
+    run:
+      cancel_confirm: Esta acción es permanente y no se puede deshacer. ¿Está seguro de que desea continuar?
+      log_all: Todos los niveles de registro
+  target_value:
+    preview: Vista previa
 dashboard: Tablero
 panel: Panel
 panel_options: Opciones del Panel
@@ -1086,6 +1092,7 @@ wysiwyg_options:
   h4: Título 4
   h5: Título 5
   h6: Título 6
+  pre: Preformateado
   fontselect: Seleccionar Fuente
   fontsizeselect: Seleccionar Tamaño de Fuente
   indent: Indentar
@@ -1128,7 +1135,6 @@ settings_roles: Roles de usuario
 settings_permissions: Políticas de acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
-settings_webhooks: Webhooks
 settings_flows: Flujos
 settings_system_logs: Registros del sistema
 settings_presets: Marcadores
@@ -1156,49 +1162,6 @@ discard_changes_copy: '¿Estás seguro que quieres descartar todos los cambios r
 show_x_axis: Mostrar eje X
 show_y_axis: Mostrar eje Y
 keep_editing: Seguir Editando
-page_help_collections_overview: '**Resumen de Colecciones** — Lista de todas las colecciones a las que tienes acceso.'
-page_help_collections_collection: >-
-  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
-page_help_collections_item: >-
-  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un historial completo de revisiones y comentarios incluidos.
-page_help_activity_collection: >-
-  **Navegar en Actividad** - Una lista completa de todas las actividades del sistema y del contenido de su usuario.
-page_help_docs_global: >-
-  **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
-page_help_files_collection: >-
-  **Biblioteca de archivos** — Lista todos los archivos subidos a este proyecto. Personaliza el diseño, los filtros y la ordenación para adaptar su vista, e incluso guardar los marcadores de estas diferentes configuraciones para un acceso rápido.
-page_help_files_item: >-
-  **Detalle de archivo** — Una forma para administrar metadatos de archivos, editar el archivo original y actualizar los ajustes de acceso.
-page_help_settings_project: "**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto."
-page_help_settings_appearance: "**Apariencia** — Opciones de apariencia y temas de tu proyecto."
-page_help_settings_extensions: '**Extensiones** — Las extensiones instaladas en tu proyecto.'
-page_help_settings_datamodel_collections: >-
-  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
-page_help_settings_datamodel_fields: >-
-  **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
-page_help_settings_system_logs: '**Registros del sistema** — Accede a una transmisión en vivo de los registros del sistema.'
-page_help_settings_policies_collection: '**Examinar políticas** — Lista todas las políticas dentro del proyecto.'
-page_help_settings_policies_item: "**Detalle de la política** — Administra los permisos de una política y otros ajusstes."
-page_help_settings_roles_collection: '**Navegar roles** — Lista todos los roles de usuario dentro del proyecto.'
-page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
-page_help_settings_presets_collection: >-
-  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
-page_help_settings_presets_item: >-
-  **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
-page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
-page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
-page_help_settings_flows_collection: '**Explorar flujos** — Lista todos los flujos dentro del proyecto.'
-page_help_settings_flows_item: '**Detalle de flujo** — Espacio de trabajo para gestionar una o más operaciones.'
-page_help_settings_translations_collection: '**Navegar traducciones personalizadas** — Lista todas las traducciones personalizadas dentro del proyecto.'
-page_help_settings_translations_item: '**Detalle de traducciones personalizadas** — Un formulario para ver y administrar este elemento.'
-page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
-page_help_users_item: >-
-  **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
-page_help_insights_overview: '**Informes** — Lista de tableros a los que tiene acceso.'
-page_help_insights_dashboard: '**Tablero** — Espacio de trabajo para administrar uno o más paneles'
-page_help_marketplace_account: '**Cuenta** — Editor o mantenedor de una extensión publicada.'
-page_help_marketplace_registry: '**Registro** — Extensiones disponibles en el Marketplace de Directus.'
-page_help_marketplace_extension: '**Extensión** — Extensión en el Marketplace de Directus.'
 activity_feed: Actividad
 add_new: Añadir nuevo
 create_new: Crear Nuevo
@@ -1234,7 +1197,6 @@ directus_collection:
   directus_dashboards: Tableros dentro del módulo Informes
   directus_fields: Configuración adicional de campos y metadatos
   directus_files: Metadatos para todos los archivos gestionados
-  directus_flows: Flujos automatizados
   directus_folders: Proporciona directorios virtuales para archivos
   directus_migrations: Qué versión de la base de datos estás usando
   directus_notifications: Notificaciones enviadas a usuarios
@@ -1250,7 +1212,6 @@ directus_collection:
   directus_settings: Opciones de configuración del proyecto
   directus_shares: Rastrear elementos compartidos externamente
   directus_users: Usuarios del sistema para la plataforma
-  directus_webhooks: Configuración de peticiones HTTP basadas en eventos
   directus_translations: Traducciones personalizadas
   directus_versions: Versiones de contenido para elementos
   directus_extensions: Configuración de extensiones
@@ -1321,6 +1282,7 @@ fields:
     tags: Etiquetas
     user_preferences: Preferencias de usuario
     language: Idioma
+    text_direction: Dirección del texto
     tfa_secret: Autenticación de dos factores
     admin_options: Opciones de administrador
     status: Estado
@@ -1399,6 +1361,7 @@ fields:
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
     visual_editor_urls: URLs del editor visual
+    ai_header_name: Encabezado
   directus_shares:
     name: Nombre
     role: Rol
@@ -1429,18 +1392,6 @@ fields:
     admin_access: Acceso de administrador
     ip_access: Acceso IP
     enforce_tfa: Requiere 2FA
-  directus_webhooks:
-    name: Nombre
-    method: Método
-    status: Estado
-    data: Datos
-    header: Encabezado
-    value: Valor
-    headers: Solicitar encabezados
-    data_label: Enviar datos del evento
-    triggers: Disparadores
-    actions: Acciones
-    collections: Colecciones
 field_options:
   directus_settings:
     project_name_placeholder: Mi proyecto...
@@ -1542,19 +1493,6 @@ field_options:
     status_dropdown_suspended: Suspendido
     status_dropdown_archived: Archivado
     token: Ingresa un token de acceso seguro...
-  directus_webhooks:
-    status_options_active: Activo
-    status_options_inactive: Inactivo
-    data_label: Enviar datos del evento
-    triggers_divider: Disparadores
-    actions_create: Crear
-    actions_update: Actualización
-    actions_delete: Eliminar
-    actions_login: Iniciar sesión
-    headers:
-      header: Encabezado
-      value: Valor
-      add: Añadir encabezado
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 no_value: Sin valor
 do_nothing: No hacer nada
@@ -1576,11 +1514,35 @@ live_preview:
   new_window: Abrir en nueva ventana
   close_window: Abrir en vista dividida
   toggle_3d: Alterna 3D
+  iframe_title: Vista previa del sitio web en vivo
+  display_options: Opciones de Visualización
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
+ai:
+  input: Entrada
+  unknown: Desconocido
+  items: Elementos
+  content: Contenido
+  settings: Ajustes
+  tool_approval:
+    disabled: Desactivado
+  ask_user_submit: Enviar
+  ask_user_next: Siguiente
+ai_tools:
+  items: Elementos
+  files: Archivos
+  folders: Directorios
+  flows: Flujos
+  trigger-flow: Disparar flujo
+  operations: Operaciones
+  schema: Esquema
+  collections: Colecciones
+  fields: Campos
+mcp_prompts_collection_schema:
+  messages_role_user: Usuario
 expired: Expirado
 upcoming: Próximamente
 share: Compartir
@@ -1615,7 +1577,6 @@ editing_role: 'Rol {role}'
 editing_policy: 'Política {policy}'
 no_permissions: Sin permisos
 permission_add_collection: Añadir colección
-creating_webhook: Creando Webhook
 default_label: Por defecto
 delete_label: Eliminar
 delete_are_you_sure: >-
@@ -1668,6 +1629,8 @@ reset_password: Restablecer Contraseña
 revisions: Revisiones
 no_revisions: Aún no hay revisiones
 no_logs: Todavía no hay registros
+show_failed_only: Mostrar solo fallidos
+no_logs_on_page: No hay registros en esta página
 revert: Revertir
 save: Guardar
 schema: Esquema
@@ -1703,7 +1666,6 @@ translation_placeholder: Ingresa una traducción...
 value: Valor
 view_project: Ver proyecto
 report_error: Reportar Error
-start: Iniciar
 table: Tabla
 list: Lista
 search_filter: Buscar & Filtrar
@@ -1748,9 +1710,7 @@ interfaces:
     accordion_mode: Modo Accordion
     max_one_section_open: Máximo de una sección abierta
   presentation-links:
-    presentation-links: Botón de enlace
-    links: Enlaces
-    description: Botones de enlace configurables para abrir URLs dinámicas
+    presentation-links: Botones
     style: Estilo
     primary: Principal
     link: Enlaces
@@ -2017,6 +1977,7 @@ interfaces:
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
     imageToken_label: Token de acceso estático se añade a la URL de los archivos
+    media_preview_iframe_title: Vista previa de multimedia
   input-block-editor:
     input-block-editor: Editor de Bloques
     description: Editor con estilo de bloque para historias de medios enriquecidos, genera datos limpios en JSON usando Editor.js
@@ -2072,6 +2033,9 @@ interfaces:
   input-password:
     input-password: Introducir contraseña
     description: Entrada de contraseña con interruptor para ocultar el valor
+  header:
+    header: Encabezado
+    links: Enlaces
 displays:
   translations:
     translations: Traducciones
@@ -2286,6 +2250,8 @@ show_labels: Mostrar etiquetas
 show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
+start: Iniciar
+end: Fin
 donut: Dona
 continuous: Continuo
 gap: Brecha
@@ -2355,6 +2321,7 @@ triggers:
     filter: 'Filtro (Bloqueando)'
   webhook:
     name: Webhook
+    error_on_reject: Error en el rechazo
     description: Activadores en una solicitud HTTP entrante
     method: Método
     async: Asincrónico
@@ -2377,11 +2344,9 @@ triggers:
 a_flow_uuid: Seleccione un flujo para disparar...
 any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
-operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condición
-    description: Enrutar un flujo basado en si / Otra lógica
   exec:
     name: Ejecutar script
     description: Ejecutar código arbitrario para modificar el payload
@@ -2433,12 +2398,16 @@ operations:
     name: Enviar email
     description: Enviar un email a una o más personas
     to: A
+    to_placeholder: Añada las direcciones de correo electrónico y presione Enter...
     body: Cuerpo
     template: Plantilla
     data: Datos
     cc: CC
+    cc_placeholder: Añada las direcciones CC de correo electrónico y presione Enter...
     bcc: CCO
+    bcc_placeholder: Añada las direcciones BCC de correo electrónico y presione Enter...
     reply_to: Responder a
+    reply_to_placeholder: Añada las direcciones de respuesta de correo electrónico y presione Enter...
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
@@ -2463,12 +2432,17 @@ operations:
     name: Dormir
     description: Espera un número dado de milisegundos
     milliseconds: Milisegundos
+  throw-error:
+    name: Lanzar error
+    description: Lanza un error en la ruta de rechazo
+    code: Código de error
+    status: Código de estado HTTP
+    message: Mensaje de error
   transform:
     name: Transformar payload
     description: Alterar la payload JSON del flujo
   trigger:
     name: Disparar flujo
-    description: Pasar estos datos a otro flujo
     flows: Flujos
     flow: Flujo
     data: Datos
@@ -2522,3 +2496,8 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar contraseña
 hide_password: Ocultar contraseña
+accepted: Aceptado
+text_direction_auto: Automático (coincidir idioma)
+text_direction_ltr: Izquierda a derecha (LTR)
+text_direction_rtl: Derecha a izquierda (RTL)
+set_to_now: Establecer ahora

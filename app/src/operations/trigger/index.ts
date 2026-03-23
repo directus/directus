@@ -79,7 +79,7 @@ export default defineOperationApp({
 								default_value: 10,
 							},
 						},
-				  ]
+					]
 				: []),
 			{
 				field: 'payload',

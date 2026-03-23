@@ -10,5 +10,5 @@ export default defineDisplay({
 	types: ['uuid'],
 	localTypes: ['file'],
 	options: [],
-	fields: ['id', 'type', 'title'],
+	fields: ['id', 'type', 'title', 'modified_on'],
 });

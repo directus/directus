@@ -1,7 +1,7 @@
-import { useEnv } from '@directus/env';
-import type { Request } from 'express';
 import type { IncomingMessage } from 'http';
 import { isIP } from 'net';
+import { useEnv } from '@directus/env';
+import type { Request } from 'express';
 import proxyAddr from 'proxy-addr';
 import { useLogger } from '../logger/index.js';
 
@@ -50,5 +50,5 @@ export function getIPFromReq(req: IncomingMessage | Request): string | null {
 	}
 
 	// IP addresses starting with ::ffff: are IPv4 addresses in IPv6 format. We can strip the prefix to get back to IPv4
-	return ip?.startsWith('::ffff:') ? ip.substring(7) : ip ?? null;
+	return ip?.startsWith('::ffff:') ? ip.substring(7) : (ip ?? null);
 }

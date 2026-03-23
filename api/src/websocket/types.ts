@@ -1,6 +1,6 @@
-import type { Accountability, Query } from '@directus/types';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
+import type { Accountability, Query } from '@directus/types';
 import type { WebSocket } from 'ws';
 import type { AuthMode } from './messages.js';
 

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
 import { isPlainObject } from 'lodash';
+import { computed, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';
+import { extractErrorCode } from '@/utils/extract-error-code';
 
 interface Props {
 	error: Record<string, any>;
@@ -10,11 +11,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { t } = useI18n();
-
-const code = computed(() => {
-	return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
-});
+const code = computed(() => extractErrorCode(props.error));
 
 const message = computed(() => {
 	let message = props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
@@ -43,11 +40,11 @@ async function copyError() {
 </script>
 
 <template>
-	<div class="v-error selectable">
+	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
-		<v-icon
+		<VIcon
 			v-if="isCopySupported"
-			v-tooltip="t('copy_details')"
+			v-tooltip="$t('copy_details')"
 			small
 			class="copy-error"
 			:name="copied ? 'check' : 'content_copy'"
@@ -59,8 +56,8 @@ async function copyError() {
 
 <style lang="scss" scoped>
 .v-error {
-	max-height: 50vh;
-	padding: 6px 12px;
+	max-block-size: 50vh;
+	padding: 0.3125rem 0.6875rem;
 	overflow: auto;
 	color: var(--theme--danger);
 	font-family: var(--theme--fonts--monospace--font-family);
@@ -68,7 +65,7 @@ async function copyError() {
 	border-radius: var(--theme--border-radius);
 
 	.copy-error {
-		margin-left: 12px;
+		margin-inline-start: 0.6875rem;
 	}
 }
 </style>

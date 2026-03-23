@@ -1,5 +1,6 @@
 import { processId } from '@directus/utils/node';
-import { createBus, type Bus } from '../../bus/index.js';
+import { type Bus, createBus } from '../../bus/index.js';
+import type { Lock } from '../../kv/types/lock.js';
 import type { Cache } from '../types/class.js';
 import type { CacheConfigMulti } from '../types/config.js';
 import { CacheLocal } from './local.js';
@@ -21,7 +22,7 @@ export type CacheMultiMessageClear = {
 };
 
 export class CacheMulti implements Cache {
-	processId = processId();
+	processId: string = processId();
 
 	local: CacheLocal;
 	redis: CacheRedis;
@@ -36,7 +37,7 @@ export class CacheMulti implements Cache {
 		this.bus.subscribe<CacheMultiMessageClear>(CACHE_CHANNEL_KEY, (payload) => this.onMessageClear(payload));
 	}
 
-	async get<T = unknown>(key: string) {
+	async get<T = unknown>(key: string): Promise<T | undefined> {
 		const local = await this.local.get<T>(key);
 
 		if (local !== undefined) {
@@ -46,17 +47,17 @@ export class CacheMulti implements Cache {
 		return await this.redis.get<T>(key);
 	}
 
-	async set(key: string, value: unknown) {
+	async set(key: string, value: unknown): Promise<void> {
 		await Promise.all([this.local.set(key, value), this.redis.set(key, value)]);
 		await this.clearOthers(key);
 	}
 
-	async delete(key: string) {
+	async delete(key: string): Promise<void> {
 		await Promise.all([this.local.delete(key), this.redis.delete(key)]);
 		await this.clearOthers(key);
 	}
 
-	async has(key: string) {
+	async has(key: string): Promise<boolean> {
 		// TODO: should this check local first?
 		return await this.redis.has(key);
 	}
@@ -72,6 +73,14 @@ export class CacheMulti implements Cache {
 	async clear(): Promise<void> {
 		await Promise.all([this.local.clear(), this.redis.clear()]);
 		await this.clearOthers();
+	}
+
+	async acquireLock(key: string): Promise<Lock> {
+		return await this.redis.acquireLock(key);
+	}
+
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return await this.redis.usingLock(key, callback);
 	}
 
 	private async onMessageClear(payload: CacheMultiMessageClear) {

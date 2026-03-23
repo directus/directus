@@ -1,9 +1,10 @@
 import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { DatabaseHelper } from '../types.js';
-import { generateAlias } from '../../run-ast/lib/apply-query/index.js';
 import { applyFilter } from '../../run-ast/lib/apply-query/filter/index.js';
+import { generateRelationalQueryAlias } from '../../run-ast/utils/generate-alias.js';
+import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
 	type: string | undefined;
@@ -15,6 +16,7 @@ export type FnHelperOptions = {
 				permissions: Permission[];
 		  }
 		| undefined;
+	jsonPath: string | undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
@@ -35,6 +37,25 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract minute(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract second(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
+	abstract json(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
+
+	/**
+	 * Parse a value returned from a json() function query.
+	 * Most databases return objects/arrays as stringified JSON — override this to skip parsing
+	 * for drivers that already deserialize the result (e.g. the pg driver for PostgreSQL).
+	 */
+	parseJsonResult(value: unknown): unknown {
+		if (typeof value !== 'string') return value;
+
+		try {
+			const parsed = parseJSON(value);
+			if (typeof parsed === 'object' && parsed !== null) return parsed;
+		} catch {
+			// keep original string value (e.g. actual string data in the JSON path)
+		}
+
+		return value;
+	}
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const collectionName = options?.originalCollectionName || table;
@@ -50,7 +71,7 @@ export abstract class FnHelper extends DatabaseHelper {
 		}
 
 		// generate a unique alias for the relation collection, to prevent collisions in self referencing relations
-		const alias = generateAlias();
+		const alias = generateRelationalQueryAlias(table, column, collectionName, options);
 
 		let countQuery = this.knex
 			.count('*')
@@ -78,6 +99,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			).query;
 		}
 
-		return this.knex.raw('(' + countQuery.toQuery() + ')');
+		const { sql, bindings } = countQuery.toSQL();
+		return this.knex.raw(`(${sql})`, bindings);
 	}
 }

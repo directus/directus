@@ -1,14 +1,20 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { UsersService } from '../services/users.js';
 import type { AuthDriverOptions, User } from '../types/index.js';
 
 export abstract class AuthDriver {
 	knex: Knex;
-	schema: SchemaOverview;
 
 	constructor(options: AuthDriverOptions, _config: Record<string, any>) {
 		this.knex = options.knex;
-		this.schema = options.schema;
+	}
+
+	protected getUsersService(schema: SchemaOverview): UsersService {
+		return new UsersService({
+			knex: this.knex,
+			schema,
+		});
 	}
 
 	/**

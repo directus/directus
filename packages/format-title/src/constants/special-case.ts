@@ -25,6 +25,7 @@ export default [
 	'LLM',
 	'macOS',
 	'McDonalds',
+	'MCP',
 	'ML',
 	'MySQL',
 	'NLG',
@@ -42,4 +43,4 @@ export default [
 	'UUID',
 	'XSS',
 	'YouTube',
-];
+] as string[];

@@ -2,9 +2,9 @@ import type { Item, PrimaryKey } from '@directus/types';
 import type { GraphQLResolveInfo } from 'graphql';
 import { getService } from '../../../utils/get-service.js';
 import { formatError } from '../errors/format.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 import type { GraphQLService } from '../index.js';
 import { getQuery } from '../schema/parse-query.js';
+import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 
 export async function resolveMutation(
 	gql: GraphQLService,
@@ -16,7 +16,7 @@ export async function resolveMutation(
 	if (gql.scope === 'system') collection = `directus_${collection}`;
 
 	const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
-	const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+	const query = await getQuery(args, gql.schema, selections || [], info.variableValues, gql.accountability, collection);
 
 	const singleton =
 		collection.endsWith('_batch') === false &&

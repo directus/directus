@@ -8,6 +8,36 @@ declare global {
 	}
 }
 
+/**
+ * A Vue composable that reactively tracks the size of a DOM element using ResizeObserver.
+ *
+ * @template T - The type of the element being observed, must extend Element
+ * @param target - The element to observe. Can be:
+ *   - A direct element reference
+ *   - A Vue ref containing an element
+ *   - A Vue ref that might be undefined
+ *
+ * @returns An object containing reactive width and height values:
+ *   - width: Ref<number> - The current width of the element in pixels
+ *   - height: Ref<number> - The current height of the element in pixels
+ *
+ * @example
+ * ```typescript
+ * // With a template ref
+ * const elementRef = ref<HTMLDivElement>();
+ * const { width, height } = useElementSize(elementRef);
+ *
+ * // With a direct element
+ * const element = document.getElementById('my-element');
+ * const { width, height } = useElementSize(element);
+ * ```
+ *
+ * @remarks
+ * - The composable automatically sets up a ResizeObserver when the component mounts
+ * - The observer is automatically disconnected when the component unmounts
+ * - Initial values are 0 until the first resize event
+ * - Handles cases where the target element might be undefined
+ */
 export function useElementSize<T extends Element>(
 	target: T | Ref<T> | Ref<undefined>,
 ): {

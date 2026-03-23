@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Apie
+first_name: Vardas
+last_name: Pavardė
 identifier: Identifikatorius
 avatar: Nuotrauka
 application: Aplikacija
@@ -132,7 +134,6 @@ create_policy: Sukurti polisą
 create_user: Sukurti vartotojo paskyrą
 message: Pranešimas
 delete_panel: Pašalinti skydelį
-create_webhook: Sukurti Webhook'ą
 create_custom_translation: Sukurti vertimą
 edit_custom_translation: Redaguoti vertimą
 no_custom_translations: Vertimų nėra
@@ -164,19 +165,9 @@ rename_version: Pervadinti versiją
 compare_version: Palyginti versijas
 save_version: Išsaugoti versiją
 promote_version: Pakelti versiją
-promote_version_disabled: Nėra pakeitimų
-promote_version_drawer_title: Pakelti {version} į pagrindinę
-promote_version_changes: Pakeitimai
-promote_version_preview: Peržiūrėti
-outdated_notice: >-
-  Pagrindinė versija buvo atnaujinta po šios versijos sukūrimo. Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
-promote_notice: >-
-  Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
 delete_version: Pašalinti versiją
 delete_version_copy: >-
   Ar tikrai norite pašalinti "{version}" versiją? Šio veiksmo nebus galima atšaukti.
-delete_on_promote_copy: >-
-  Ar norite ištrinti ar pasilikti "{version}" po pakėlimo į pagrindinę versiją?
 reset_bookmark: Atstatyti skirtuką
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
@@ -447,11 +438,11 @@ confirm_revert_body: Elementas bus atstatytas į pasirinktą būseną.
 display: Rodymas
 settings_update_success: Nustatymai atnaujinti
 title: Pavadinmas
+subtitle: Paantraštė
 revision_delta_created: Sukurta
 revision_delta_created_externally: Sukurta išorėje
 revision_delta_updated: 'Atnaujintas 1 laujas | Atnaujinta {count} laukų'
 revision_delta_deleted: Ištrintas
-revision_delta_version_saved: 'Saugoti versiją (atnaujintas 1 laukas) | Saugoti versiją (atnaujinti {count} laukai)'
 revision_delta_reverted: Atstatytas
 revision_delta_update_message: Laukas buvo atnaujintas. Reikšmė yra paslėpta.
 revision_delta_other: Pakeitimas
@@ -638,12 +629,6 @@ file_count: 'Nėra failų | Vienas failas | {count} failų'
 no_files_copy: Nėra failų.
 user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
 no_users_copy: Nėra vartotojų šioje grupėje.
-webhooks_count: 'Nėra "Webhook"ų | Vienas "Webhook"as | {count} "Webhook"ų"'
-webhooks_deprecation_notice: |
-  Webhooks are deprecated and further use is discouraged.
-
-  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
-no_webhooks_copy: Nėra sukurtų "webhooks".
 no_notifications: Nėra pranešimų
 no_notifications_copy: Perskaitėte visus pranešimus!
 activity_log: Įvykių žurnalas
@@ -674,7 +659,6 @@ action: Veiksmas
 ip_address: IP adresas
 user_agent: Naršyklė
 origin: Šaltinis
-webhooks: '„Webhook“''ai'
 decimals: Trupmeniniai skaičiai
 value_decimals: Trupmeninio skaičiaus reikšmė
 min_value: Mažiausia reikšmė
@@ -722,7 +706,7 @@ auto_fill: Automatinis užpildymas
 corresponding_field: Atitinkamas laukas
 errors:
   COLLECTION_NOT_FOUND: "Kolekcija neegzistuoja"
-  CONTAINS_NULL_VALUES: Laukas turi "null" reikšmių
+  CONTAINS_NULL_VALUES: Laukas turi tuščių reikšmių
   CONTENT_TOO_LARGE: Saugomas įrašas / dokumentas yra per didelis
   FIELD_NOT_FOUND: Laukas nerastas
   FORBIDDEN: Draudžiama
@@ -758,7 +742,6 @@ errors:
   VALUE_OUT_OF_RANGE: Reikšmė yra už imties ribų
   VALUE_TOO_LONG: Reikšmė yra per ilga
 security: Apsauga
-value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
 create_bookmark: Kurti žymę
 edit_bookmark: Redaguoti žymę
@@ -774,7 +757,6 @@ unexpected_error_copy: Įvyko nenumatyta klaida. Bandykite dar kartą.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
 no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
-password_reset_sent: Jeigu Jūs turite paskyrą, tai Jums bus išsiųsta nuorodą su slaptažodžio atstatymo instrukcija
 password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
 filter: Filtras
@@ -931,15 +913,14 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
-flows: Flows
-flow: Flow
-select_a_flow: Pasirinkite Flow
-run_flow_confirm: Ar tikrai norite įvykdyti šį Flow?
-run_flow_on_current_collection: Įvykdyti Flow šiai kolekcijai
-run_flow_on_current: Įvykdyti Flow šiam įrašui
-run_flow_on_current_edited_confirm: Šis Flow gali atnaujinti įrašą. Ar tikrai norite jį įvykdyti?
-run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti Flow vienam įrašui | Vykdyti flow {n} įrašams
-run_flow: Vykdyti Flow
+flows: Procesai
+flow: Procesas
+select_a_flow: Pasirinkite procesą
+run_flow_on_current_collection: Vykdyti procesą šiai kolekcijai
+run_flow_on_current: Vykdyti procesą šiam įrašui
+run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti procesą pasirinktam įrašui | Vykdyti procesą {n} įrašams
+run_flow: Vykdyti procesą
+trigger_flow_success: Procesas „{flow}“ sėkmingai paleistas
 field_name_placeholder: Įveskite lauko pavadinimą...
 field_key_placeholder: Įveskite lauko identifikatorių...
 trigger: Trigeris
@@ -948,35 +929,44 @@ view_trigger: Peržiūrėti trigerį
 create_trigger: Sukurti trigerį
 trigger_setup: Trigerio sukūrimas
 change_trigger: Pakeisti trigerį
-flow_delete_confirm: Ar tikrai norite pašalinti Flow "{flow}"? Šio veiksmo atšaukti negalima.
-set_flow_active: Aktyvuoti Flow
-set_flow_inactive: Deaktyvuoti Flow
-edit_flow: Redaguoti Flow
-delete_flow: Pašalinti Flow
-no_other_flows_copy: Jūs neturite kitų Flows.
-no_flows: Nėra Flows
-no_flows_copy: Nėra sukurtų Flows.
-create_flow: Sukurti Flow
-creating_new_flow: Flow sukūrimas
-updating_flow: Flow atnaujinimas
-flow_setup: Flow sukūrimas
+flow_delete_confirm: Ar tikrai norite ištrinti procesą „{flow}“? Šis veiksmas negali būti atšauktas.
+set_flow_active: Nustatyti procesą kaip aktyvų
+set_flow_inactive: Nustatyti procesą kaip neaktyvų
+edit_flow: Redaguoti procesą
+delete_flow: Pašalinti procesą
+no_other_flows_copy: Jūs dar neturite kitų procesų.
+no_flows: Nėra procesų
+no_flows_copy: Jūs dar neturite procesų.
+create_flow: Sukurti procesą
+creating_new_flow: Kuriamas naujas procesas
+updating_flow: Atnaujinamas procesas
+flow_setup: Proceso nustatymai
 flow_name: Pavadinimas
 flow_tracking: Įvykių žurnalas
 flow_tracking_all: Saugoti visus įvykius ir rezultatus
-flow_tracking_activity: Saugoti įvykius
+flow_tracking_activity: Saugoti tik įvykius
 flow_tracking_null: Nesaugoti jokių įvykių
-start_flow: Pradėti Flow
-stop_flow: Sustabdyti Flow
+start_flow: Paleisti procesą
+stop_flow: Sustabdyti procesą
 create_operation: Sukurti operaciją
 edit_operation: Redaguoti operaciją
 code: Kodas
 operation_options: Operacijos nustatymai
 operation_name: Operacijos pavadinimas...
 operation_key: Identifikatorius...
-operation_key_unique_error: Operacijos pavadinimai turi būti unikalūs esamam Flow
+operation_key_unique_error: Operacijų pavadinimai turi būti unikalūs esamam procesui
 operation_handle_resolve: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 operation_handle_reject: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 insights: Įžvalgos
+deployment:
+  provider:
+    settings:
+      delete_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+    run:
+      cancel_confirm: Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+      log_all: Visi įvykių lygiai
+  target_value:
+    preview: Peržiūra
 dashboard: Prietaisų skydelis
 panel: Skydelis
 panel_options: Skydelio nustatymai
@@ -997,7 +987,7 @@ no_dashboards_copy: Nėra sukurta jokių prietaisų skydelių.
 create_dashboard: Sukurti prietaisų skydelį
 dashboard_name: Prietaisų skydelio pavadinimas
 no_data: Nėra duomenų
-no_data_in_flow: Šis flow nepateikė ir negavo jokių duomenų
+no_data_in_flow: Šis procesas nesukūrė ir negavo jokių duomenų
 accountability: Atsakomybė
 payload: Payload
 details: Išsamesnė informacija
@@ -1123,8 +1113,7 @@ settings_roles: Naudotojo rolės
 settings_permissions: Prieigos polisai
 settings_project: Nustatymai
 settings_appearance: Atvaizdavimas
-settings_webhooks: '„Webhook“''ai'
-settings_flows: Flows
+settings_flows: Procesai
 settings_system_logs: Sistemos žurnalas
 settings_presets: Žymės
 settings_translations: Vertimai
@@ -1151,49 +1140,6 @@ discard_changes_copy: Ar tikrai norite atšaukti visus pakeitimus?
 show_x_axis: Rodyti X ašį
 show_y_axis: Rodyti Y ašį
 keep_editing: Redaguoti toliau
-page_help_collections_overview: '**Kolekcijų peržiūra** — rodomos visos kolekcijos, prie kurių turite prieigą.'
-page_help_collections_collection: >-
-  **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
-page_help_collections_item: >-
-  **Elemento detalės** — forma elemento peržiūrai ir redagavimui. Šiame šoniniame lange taip pat galima peržiūrėti pilną pakeitimų istoriją ir susijusius komentarus.
-page_help_activity_collection: >-
-  **Peržiūrėti veiklą** — išsamus visos sistemos vartotojų veiklos sąrašas.
-page_help_docs_global: >-
-  **Dokumentacijos apžvalga** — Dokumnetacija, sukurta specialiai šiam projektui ir jo duomenų schemai.
-page_help_files_collection: >-
-  ***Failų biblioteka** — rodomi visi projekto failai. Koreguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
-page_help_files_item: >-
-  **Failo duomenys** — forma failo meta duomenų tvarkymui, originalaus failo redagavimui ir prieigos nustatymų atnaujinimui.
-page_help_settings_project: "**Projekto nustatymai** — globali projekto konfigūracija."
-page_help_settings_appearance: "**Atvaizdavimas** — projekto atvaizdavimas ir temos nustatymai."
-page_help_settings_extensions: '**Plėtiniai** — projekto plėtiniai ir jų nustatymai.'
-page_help_settings_datamodel_collections: >-
-  **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
-page_help_settings_datamodel_fields: >-
-  **Duomenų modelis: Kolekcija** — forma kolekcijos ir jos laukų valdymui.
-page_help_settings_system_logs: '**Sistemos žurnalas** — projekto sistemos įvykių žurnalas.'
-page_help_settings_policies_collection: '**Peržiūrėti polisus** - rodomi visi projekto polisai.'
-page_help_settings_policies_item: "**Polisų informacija** - polisų prieigos valdymas ir kiti nustatymai."
-page_help_settings_roles_collection: '**Peržiūrėti roles** - projekto rolės ir naudotojai.'
-page_help_settings_roles_item: "**Grupės duomenys** — Valdykite grupės prieigą prie duomenų ir kitus nustatymus."
-page_help_settings_presets_collection: >-
-  **Peržiurėti ruošinius** — atvaizduojami visi projekto ruošiniai, įskaitant vartotojų, grupių ir bendras žymas bei numatytuosius langus.
-page_help_settings_presets_item: >-
-  **Ruošinio duomenys** — forma žymų ir numatytųjų kolekcijos ruošinių valdymui.
-page_help_settings_webhooks_collection: '**Peržiūrėti Webhook''us** - Rodomi visi projekto Webhook''ai.'
-page_help_settings_webhooks_item: '**Webhook informacija** — projekto webhooks nustatymai.'
-page_help_settings_flows_collection: '**Peržiūrėti flows** - rodomi visi projekto flows.'
-page_help_settings_flows_item: '**Flow informacija** — projekto flow operacijų nustatymai.'
-page_help_settings_translations_collection: '**Bendriniai projekto vertimai** — bendrinių projekto vertimų sąrašas.'
-page_help_settings_translations_item: '**Bendrinių projekto vertimų informacija** — bendrinių projekto vertimų nustatymai.'
-page_help_users_collection: '**Vartotojų aplankas** — rodomi visi šio projekto vartotojai.'
-page_help_users_item: >-
-  **Vartotojo duomenys** — valdykite savo paskyros informaciją arba peržiūrėkite kitų vartotojų duomenis.
-page_help_insights_overview: '**Įžvalgos** — projekto prietaisų skydeliai.'
-page_help_insights_dashboard: '**Prietaisų skydelis** — prietaisų skydelių nustatymai.'
-page_help_marketplace_account: '**Paskyra** — plėtinio kūrėjas arba prižiūrėtojas.'
-page_help_marketplace_registry: '**Registras** — plėtiniai, kurie yra pasiekiami iš Direktus turgavietės.'
-page_help_marketplace_extension: '**Plėtiniai** — Direktus turgavietės plėtiniai.'
 activity_feed: Veiklos srautas
 add_new: Pridėti Naują
 create_new: Sukurti naują
@@ -1229,11 +1175,10 @@ directus_collection:
   directus_dashboards: Prietaisų skydeliai įžvalgų modulyje
   directus_fields: Papildomi lauko nustatymai ir metaduomenys
   directus_files: Visų tvarkomų failų metaduomenys
-  directus_flows: Automation flows
   directus_folders: Pateikia virtualius katalogus failams
   directus_migrations: Naudojama duomenų bazės versija
   directus_notifications: Pranešimai išsiųsti naudotojams
-  directus_operations: Operacijos kurios yra vykdomos flows
+  directus_operations: Operacijos, kurios vykdomos procesuose
   directus_panels: Individualūs skydeliai įžvalgų modulyje
   directus_permissions: Polisų prieigos teisės
   directus_policies: Prieigos teisės
@@ -1245,7 +1190,6 @@ directus_collection:
   directus_settings: Projekto nustatymų parinktys
   directus_shares: Išoriškai pasidalintų įrašų sekimas
   directus_users: Sisteminiai platformos naudotojai
-  directus_webhooks: Event-based HTTP užklausų nustatymai
   directus_translations: Pasirinktiniai vertimai
   directus_versions: Įrašų turinio versijos
   directus_extensions: Plėtinių nustatymai
@@ -1393,6 +1337,7 @@ fields:
     public_registration_email_filter_note: Tik el. pašto adresai, kurie atitinka šį filtrą gali registruotis sistemoje.
     public_registration_verify_email: El. pašto patvirtinimas
     public_registration_verify_email_note: Naudotojui bus išsiųstas el. laiškas su patvirtinimo nuoroda.
+    ai_header_name: Header
   directus_shares:
     name: Pavadinimas
     role: Vaidmuo
@@ -1423,18 +1368,6 @@ fields:
     admin_access: Administratoriaus prieiga
     ip_access: IP adresų filtras
     enforce_tfa: Reikalauti 2FA
-  directus_webhooks:
-    name: Pavadinimas
-    method: Method
-    status: Būsena
-    data: Data
-    header: Header
-    value: Reikšmė
-    headers: Request Headers
-    data_label: Send Event Data
-    triggers: Triggers
-    actions: Actions
-    collections: Kolekcijos
 field_options:
   directus_settings:
     project_name_placeholder: Projektas...
@@ -1536,19 +1469,6 @@ field_options:
     status_dropdown_suspended: Sustabdytas
     status_dropdown_archived: Archyvuotas
     token: Įveskite slaptą access token...
-  directus_webhooks:
-    status_options_active: Aktyvus
-    status_options_inactive: Neaktyvus
-    data_label: Send Event Data
-    triggers_divider: Triggers
-    actions_create: Kurti
-    actions_update: Atnaujinti
-    actions_delete: Pašalinti
-    actions_login: Prisijungti
-    headers:
-      header: Header
-      value: Reikšmė
-      add: Add Header
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
 no_value: Nėra reikšmės
 do_nothing: Nieko nedaryti
@@ -1570,11 +1490,34 @@ live_preview:
   new_window: Atversti naujame lange
   close_window: Atidaryti padalinto vaizdo rėžimu
   toggle_3d: Perjungti į 3D
+  display_options: Atvaizdavimo nustatymai
 shares: Pasidalinimai
 unlimited_usage: Be naudojimo limitų
 uses_left: Išnaudotas naudojimo limitas | Vienas panaudojimas liko | {n} panaudojimų liko
 no_shares: Nėra pasidalinimų
 new_share: Naujas pasidalinimas
+ai:
+  input: Įvestis
+  unknown: Nežinomas
+  items: Įrašai
+  content: Turinys
+  settings: Nustatymai
+  tool_approval:
+    disabled: Išjungta
+  ask_user_submit: Išsaugoti
+  ask_user_next: Tęsti
+ai_tools:
+  items: Įrašai
+  files: Failai
+  folders: Katalogai
+  flows: Procesai
+  trigger-flow: Paleisti procesą
+  operations: Operacijos
+  schema: Schema
+  collections: Kolekcijos
+  fields: Laukai
+mcp_prompts_collection_schema:
+  messages_role_user: Vartotojas
 expired: Nebegalioja
 upcoming: Būsimas
 share: Dalintis
@@ -1609,7 +1552,6 @@ editing_role: '{role} grupė'
 editing_policy: '{policy} polisas'
 no_permissions: Nėra teisių
 permission_add_collection: Pridėti kolekciją
-creating_webhook: Kuriamas Webhook'ą
 default_label: Numatytasis
 delete_label: Pašalinti
 delete_are_you_sure: >-
@@ -1697,7 +1639,6 @@ translation_placeholder: Įveskite lauko vertimą...
 value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
-start: Pradžia
 table: Lentelė
 list: Sąrašas
 search_filter: Paieška ir filtravimas
@@ -1742,9 +1683,7 @@ interfaces:
     accordion_mode: Suskleidžiamų kortelių rėžimas
     max_one_section_open: Vienu metu išskleista tik viena
   presentation-links:
-    presentation-links: Mygtukų nuorodos
-    links: Nuorodos
-    description: Konfigūruojamos mygtukų nuorodos, dinaminių URL kvietimui
+    presentation-links: Mygtukai
     style: Stilius
     primary: Pirminis
     link: Nuorodos
@@ -2066,6 +2005,9 @@ interfaces:
   input-password:
     input-password: Slaptažodžio įvedimas
     description: Slaptažodžio įvedimo laukas, su reikšmės paslėpimo galimybe
+  header:
+    header: Header
+    links: Nuorodos
 displays:
   translations:
     translations: Vertimai
@@ -2280,6 +2222,7 @@ show_labels: Rodyti antraštes
 show_legend: Rodyti legendą
 right: Dešinėje
 left: Kairėje
+start: Pradžia
 donut: Žiedinė
 continuous: Nuolatinė
 gap: Tarpas
@@ -2350,12 +2293,12 @@ triggers:
   webhook:
     name: Webhook
     description: Triggers on an incoming HTTP request
-    method: Method
+    method: Metodas
     async: Asynchronous
   operation:
-    name: Another Flow
-    description: Triggered by another Flow, for chaining
-    preview: Triggered by an operation in a different Flow
+    name: Kitas procesas
+    description: Aktyvuojamas kitu procesu, grandininiam vykdymui
+    preview: Aktyvuojamas operacijos kitame procese
   schedule:
     name: Schedule (CRON)
     description: Triggers at regular points in time
@@ -2368,14 +2311,12 @@ triggers:
     item_only: Item Page Only
     collection_page: Collection Page
     require_selection: Requires Selection
-a_flow_uuid: Select a Flow to trigger...
+a_flow_uuid: Pasirinkite procesą, kurį aktyvuoti…
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
-operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Route a flow based on If / Else logic
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
@@ -2430,7 +2371,7 @@ operations:
     to_placeholder: Add email addresses and press enter...
     body: Body
     template: Šablonas
-    data: Data
+    data: Duomenys
     cc: CC
     cc_placeholder: Add CC email addresses and press enter...
     bcc: BCC
@@ -2451,8 +2392,8 @@ operations:
     description: 'Make a request to a URL'
     url: URL
     url_placeholder: https://example.com/example
-    method: Method
-    data: Data
+    method: Metodas
+    data: Duomenys
     headers: Headers
     header: Header
     header_placeholder: Authorization...
@@ -2463,13 +2404,12 @@ operations:
     milliseconds: Milliseconds
   transform:
     name: Transform Payload
-    description: Alter the Flow's JSON payload
+    description: Keisti proceso JSON turinį
   trigger:
-    name: Trigger Flow
-    description: Pass this data to another flow
-    flows: Flows
-    flow: Flow
-    data: Data
+    name: Paleisti procesą
+    flows: Procesai
+    flow: Procesas
+    data: Duomenys
     iteration_mode: Iteration Mode
     iteration_mode_note: Mode for iterating over arrays.
     serial: Serial
@@ -2516,7 +2456,8 @@ date_precision: Datos tikslumas
 export_dashboard: Eksportuoti skydelį
 duplicate_dashboard: Dublikuoti skydelį
 search_dashboard: Ieškoti skydelio...
-search_flow: Ieškoti flow...
+search_flow: Ieškoti proceso...
 percent: Procentai
 show_password: Rodyti slaptažodį
 hide_password: Nerodyti slaptažodžio
+set_to_now: Nustatyti į dabartinį laiką

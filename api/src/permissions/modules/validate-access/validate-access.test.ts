@@ -80,7 +80,7 @@ test('Throws if you do not have collection access when primary keys are not pass
 	const accountability = { admin: false } as unknown as Accountability;
 	const action = 'read';
 
-	vi.mocked(validateItemAccess).mockResolvedValue(false);
+	vi.mocked(validateItemAccess).mockResolvedValue({ accessAllowed: false });
 
 	await expect(
 		validateAccess({ accountability, action, collection: sample.collection }, sample.context),

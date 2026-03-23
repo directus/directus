@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-c234c7a7="" class="color-dot">
+  <!--v-if-->
+  <div data-v-c234c7a7="" class="dot"></div>
+</div>"
+`;

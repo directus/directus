@@ -4,6 +4,8 @@ import { computed } from 'vue';
 interface Props {
 	/** Disables the slider */
 	disabled?: boolean;
+	/** Set the non-editable state for the radio */
+	nonEditable?: boolean;
 	/** Show the thumb label on drag of the thumb */
 	showThumbLabel?: boolean;
 	/** Maximum allowed value */
@@ -17,11 +19,12 @@ interface Props {
 	/** Always the current selected value */
 	alwaysShowValue?: boolean;
 	/** Model the current selected value */
-	modelValue?: number;
+	modelValue?: number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
+	nonEditable: false,
 	showThumbLabel: false,
 	max: 100,
 	min: 0,
@@ -34,9 +37,22 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['change', 'update:modelValue']);
 
 const styles = computed(() => {
-	if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
+	const min = props.min;
+	const max = props.max;
+	const step = props.step;
 
-	let percentage = ((props.modelValue - props.min) / (props.max - props.min)) * 100;
+	let value = props.modelValue;
+
+	if (value === null || value === undefined) {
+		const mid = min + (max - min) / 2;
+		value = Math.round((mid - min) / step) * step + min;
+	}
+
+	if (max === min) {
+		return { '--_v-slider-percentage': 0 };
+	}
+
+	let percentage = ((value - min) / (max - min)) * 100;
 	if (isNaN(percentage)) percentage = 0;
 	return { '--_v-slider-percentage': percentage };
 });
@@ -57,7 +73,10 @@ function onInput(event: Event) {
 		<div v-if="$slots.prepend" class="prepend">
 			<slot name="prepend" :value="modelValue" />
 		</div>
-		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
+		<div
+			class="slider"
+			:class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue, 'non-editable': nonEditable }"
+		>
 			<input
 				:disabled="disabled"
 				type="range"
@@ -73,7 +92,7 @@ function onInput(event: Event) {
 				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
-				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
+				<div class="thumb-label" :class="{ visible: alwaysShowValue || nonEditable }">
 					<slot name="thumb-label type-text" :value="modelValue">
 						{{ modelValue }}
 					</slot>
@@ -101,55 +120,61 @@ function onInput(event: Event) {
 	align-items: center;
 
 	.prepend {
-		margin-right: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.slider {
 		position: relative;
-		top: -3px;
+		inset-block-start: -0.1875rem;
 		flex-grow: 1;
 
 		&.disabled {
-			--v-slider-thumb-color: var(--theme--foreground-subdued);
-			--v-slider-fill-color: var(--theme--foreground-subdued);
+			input {
+				cursor: not-allowed;
+			}
+
+			&:not(.non-editable) {
+				--v-slider-thumb-color: var(--theme--foreground-subdued);
+				--v-slider-fill-color: var(--theme--foreground-subdued);
+			}
 		}
 
 		&.thumb-label-visible {
-			margin-bottom: 30px;
+			margin-block-end: 1.6875rem;
 		}
 
 		input {
-			width: 100%;
-			height: 4px;
-			padding: 8px 0;
+			inline-size: 100%;
+			block-size: 0.25rem;
+			padding: 0.4375rem 0;
 			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
-			border-radius: 10px;
+			border-radius: 0.5625rem;
 			cursor: pointer;
 			appearance: none;
 
 			&::-webkit-slider-runnable-track {
-				height: 4px;
+				block-size: 0.25rem;
 				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
-				border-radius: 4px;
+				border-radius: 0.25rem;
 				box-shadow: none;
 			}
 
 			&::-moz-range-track {
-				height: 4px;
+				block-size: 0.25rem;
 				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
-				border-radius: 4px;
+				border-radius: 0.25rem;
 				box-shadow: none;
 			}
 
 			&::-webkit-slider-thumb {
 				position: relative;
 				z-index: 3;
-				width: 8px;
-				height: 8px;
-				margin-top: -2px;
+				inline-size: 0.4375rem;
+				block-size: 0.4375rem;
+				margin-block-start: -0.125rem;
 				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
@@ -162,9 +187,9 @@ function onInput(event: Event) {
 			&::-moz-range-thumb {
 				position: relative;
 				z-index: 3;
-				width: 8px;
-				height: 8px;
-				margin-top: -2px;
+				inline-size: 0.4375rem;
+				block-size: 0.4375rem;
+				margin-block-start: -0.125rem;
 				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
 				border-radius: 50%;
@@ -177,38 +202,41 @@ function onInput(event: Event) {
 
 		.fill {
 			position: absolute;
-			top: 50%;
-			right: 0;
-			left: 0;
+			inset-block-start: 50%;
+			inset-inline: 0;
 			z-index: 2;
-			width: 100%;
-			height: 4px;
+			inline-size: 100%;
+			block-size: 0.25rem;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));
-			border-radius: 4px;
-			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
+			border-radius: 0.25rem;
+			transform: translateY(-0.3125rem) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
+
+			html[dir='rtl'] & {
+				transform-origin: right;
+			}
 		}
 
 		.ticks {
 			position: absolute;
-			top: 14px;
-			left: 0;
+			inset-block-start: 0.8125rem;
+			inset-inline-start: 0;
 			z-index: 2;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			width: 100%;
-			height: 4px;
-			padding: 0 7px;
+			inline-size: 100%;
+			block-size: 0.25rem;
+			padding: 0 0.375rem;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			pointer-events: none;
 
 			.tick {
 				display: inline-block;
-				width: 4px;
-				height: 4px;
+				inline-size: 0.25rem;
+				block-size: 0.25rem;
 				background-color: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border-radius: 50%;
 			}
@@ -216,9 +244,9 @@ function onInput(event: Event) {
 
 		.thumb-label-wrapper {
 			position: absolute;
-			top: 100%;
-			left: 7px;
-			width: calc(100% - 14px);
+			inset-block-start: 100%;
+			inset-inline-start: 0.375rem;
+			inline-size: calc(100% - 0.8125rem);
 			overflow: visible;
 			pointer-events: none;
 		}
@@ -226,17 +254,21 @@ function onInput(event: Event) {
 		.thumb-label {
 			z-index: 1;
 			position: absolute;
-			top: 0px;
-			left: calc(var(--_v-slider-percentage) * 1%);
-			width: auto;
-			padding: 2px 6px;
+			inset-block-start: 0;
+			inset-inline-start: calc(var(--_v-slider-percentage) * 1%);
+			inline-size: auto;
+			padding: 0.125rem 0.3125rem;
 			color: var(--foreground-inverted);
 			font-weight: 600;
-			background-color: var(--theme--primary);
+			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: var(--theme--border-radius);
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
+
+			html[dir='rtl'] & {
+				transform: translateX(50%);
+			}
 
 			&.visible {
 				opacity: 1;
@@ -246,20 +278,20 @@ function onInput(event: Event) {
 		&:hover:not(.disabled),
 		&:focus-within:not(.disabled) {
 			input {
-				height: 4px;
+				block-size: 0.25rem;
 
 				&::-webkit-slider-thumb {
-					width: 12px;
-					height: 12px;
-					margin-top: -4px;
+					inline-size: 0.6875rem;
+					block-size: 0.6875rem;
+					margin-block-start: -0.25rem;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 
 				&::-moz-range-thumb {
-					width: 12px;
-					height: 12px;
-					margin-top: -4px;
+					inline-size: 0.6875rem;
+					block-size: 0.6875rem;
+					margin-block-start: -0.25rem;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
@@ -279,7 +311,7 @@ function onInput(event: Event) {
 	}
 
 	.append {
-		margin-left: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 }
 </style>

@@ -1,33 +1,63 @@
 <script setup lang="ts">
+import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import { BREAKPOINTS } from '@/constants';
+import { useNavBarStore } from '@/views/private/private-view/stores/nav-bar';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 const { section } = defineProps<{
-	section: 'nav' | 'moduleNav' | 'main' | 'sidebar';
+	section: 'navigation' | 'module-navigation' | 'main-content' | 'sidebar';
 }>();
 
 const { t } = useI18n();
+const navBarStore = useNavBarStore();
+const sidebarStore = useSidebarStore();
+const { lg, xl, smallerOrEqual } = useBreakpoints(BREAKPOINTS);
+const isMobile = smallerOrEqual('sm');
+
+const inlineNav = computed(() => {
+	return sidebarStore.collapsed ? lg.value : xl.value;
+});
 
 const allItems = [
 	{
-		key: 'nav',
-		href: '#navigation',
+		key: 'navigation',
+		hash: '#navigation',
 		text: t('skip_link_nav'),
+		action() {
+			if (!lg.value) navBarStore.expand();
+			if (isMobile.value) sidebarStore.collapse();
+		},
 	},
 	{
-		key: 'moduleNav',
-		href: '#module-navigation',
+		key: 'module-navigation',
+		hash: '#module-navigation',
 		text: t('skip_link_module_nav'),
+		action() {
+			if (navBarStore.collapsed) navBarStore.expand();
+			if (isMobile.value) sidebarStore.collapse();
+		},
 	},
 	{
-		key: 'main',
-		href: '#main-content',
+		key: 'main-content',
+		hash: '#main-content',
 		text: t('skip_link_main'),
+		action() {
+			if (!inlineNav.value) navBarStore.collapse();
+			if (isMobile.value) sidebarStore.collapse();
+		},
 	},
 	{
 		key: 'sidebar',
-		href: '#sidebar',
+		hash: '#sidebar',
 		text: t('skip_link_sidebar'),
+		action() {
+			if (!inlineNav.value) navBarStore.collapse();
+			sidebarStore.expand();
+		},
 	},
 ];
 
@@ -35,52 +65,66 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 </script>
 
 <template>
-	<v-list v-if="items.length" class="skip-menu" :class="{ right: section === 'sidebar', center: section === 'main' }">
-		<v-list-item v-for="item in items" :key="item" :href="item.href" target="_self">
+	<VList
+		v-if="items.length"
+		class="skip-menu"
+		:class="{ right: section === 'sidebar', center: section === 'main-content' }"
+	>
+		<VListItem
+			v-for="item in items"
+			:key="item.key"
+			:href="$router.resolve(item.hash).href"
+			target="_self"
+			@click="item.action"
+		>
 			{{ item.text }}
-		</v-list-item>
-	</v-list>
+		</VListItem>
+	</VList>
 </template>
 
 <style lang="scss" scoped>
-.skip-menu {
+.skip-menu.v-list {
+	--v-list-min-width: 11.8125rem;
+
 	position: absolute;
-	width: 1px;
-	height: 1px;
+	inline-size: 0.0625rem;
+	block-size: 0.0625rem;
 	padding: 0;
-	margin: -1px;
+	margin: -0.0625rem;
 	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
+	clip-path: rect(0, 0, 0, 0);
 	white-space: nowrap;
 	border-width: 0;
 
 	&:focus-within {
-		width: auto;
-		height: auto;
-		padding: 0;
+		inline-size: auto;
+		block-size: auto;
 		margin: 0;
 		overflow: visible;
-		clip: auto;
+		clip-path: auto;
 		white-space: normal;
 
 		background-color: var(--theme--popover--menu--background);
 		border-radius: var(--theme--popover--menu--border-radius);
 		box-shadow: var(--theme--popover--menu--box-shadow);
-		padding: 8px;
-		font-size: 14px;
+		padding: 0.4375rem;
+		font-size: 0.8125rem;
 
-		top: 4px;
-		left: 4px;
+		inset-block-start: 0.25rem;
+		inset-inline-start: 0.25rem;
 		z-index: 999999;
 
 		&.right {
-			right: 4px;
-			left: auto;
+			inset-inline: auto 0.25rem;
 		}
 
 		&.center {
-			left: 50%;
+			inset-inline-start: 50%;
 			transform: translate(-50%, 0);
+
+			html[dir='rtl'] & {
+				transform: translate(50%, 0);
+			}
 		}
 	}
 }

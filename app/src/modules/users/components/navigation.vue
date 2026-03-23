@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
-import NavigationRole from './navigation-role.vue';
+import NavigationRole from './NavigationRole.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VItemGroup from '@/components/v-item-group.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 
 const props = defineProps<{
 	currentRole?: string;
@@ -11,7 +18,6 @@ const props = defineProps<{
 
 const { currentRole } = toRefs(props);
 
-const { t } = useI18n();
 const router = useRouter();
 
 const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
@@ -22,30 +28,30 @@ function handleClick({ role }: { role: string }) {
 </script>
 
 <template>
-	<v-list nav>
-		<v-list-item to="/users" exact :active="!currentRole">
-			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
-			<v-list-item-content>{{ t('all_users') }}</v-list-item-content>
-		</v-list-item>
+	<VList nav>
+		<VListItem to="/users" exact :active="!currentRole">
+			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
+			<VListItemContent>{{ $t('all_users') }}</VListItemContent>
+		</VListItem>
 
-		<v-divider v-if="(roles && roles.length > 0) || loading" />
+		<VDivider v-if="(roles && roles.length > 0) || loading" />
 
 		<template v-if="loading">
-			<v-list-item v-for="n in 4" :key="n">
-				<v-skeleton-loader type="list-item-icon" />
-			</v-list-item>
+			<VListItem v-for="n in 4" :key="n">
+				<VSkeletonLoader type="list-item-icon" />
+			</VListItem>
 		</template>
 
-		<v-item-group v-model="openRoles" scope="role-navigation" multiple>
-			<navigation-role
+		<VItemGroup v-model="openRoles" scope="role-navigation" multiple>
+			<NavigationRole
 				v-for="role in roleTree"
 				:key="role.id"
 				:role="role"
 				:current-role="currentRole"
 				@click="handleClick"
 			/>
-		</v-item-group>
-	</v-list>
+		</VItemGroup>
+	</VList>
 </template>
 
 <style lang="scss" scoped>

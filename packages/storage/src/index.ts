@@ -1,14 +1,15 @@
 import type { Readable } from 'node:stream';
+import type { ChunkedUploadContext, Range, ReadOptions, Stat } from '@directus/types';
 
 export class StorageManager {
 	private drivers = new Map<string, typeof Driver>();
 	private locations = new Map<string, Driver>();
 
-	registerDriver(name: string, driver: typeof Driver) {
+	registerDriver(name: string, driver: typeof Driver): void {
 		this.drivers.set(name, driver);
 	}
 
-	registerLocation(name: string, config: DriverConfig) {
+	registerLocation(name: string, config: DriverConfig): void {
 		const driverName = config.driver;
 
 		const Driver = this.drivers.get(driverName);
@@ -20,7 +21,7 @@ export class StorageManager {
 		this.locations.set(name, new Driver(config.options));
 	}
 
-	location(name: string) {
+	location(name: string): Driver {
 		const driver = this.locations.get(name);
 
 		if (!driver) {
@@ -30,26 +31,6 @@ export class StorageManager {
 		return driver;
 	}
 }
-
-export interface Range {
-	start: number | undefined;
-	end: number | undefined;
-}
-
-export type Stat = {
-	size: number;
-	modified: Date;
-};
-
-export type ReadOptions = {
-	range?: Range | undefined;
-	version?: string | undefined;
-};
-
-export type ChunkedUploadContext = {
-	size?: number | undefined;
-	metadata: Record<string, string | null> | undefined;
-};
 
 export declare class Driver {
 	constructor(config: Record<string, unknown>);
@@ -81,3 +62,5 @@ export type DriverConfig = {
 	driver: string;
 	options: Record<string, unknown>;
 };
+
+export type { Range, Stat, ReadOptions, ChunkedUploadContext };

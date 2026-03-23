@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
+import { SchemaBuilder } from '@directus/schema-builder';
 import { describe, expect, it } from 'vitest';
 import { validateKeys } from './validate-keys.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 const schema = new SchemaBuilder()
 	.collection('pk_integer', (c) => {

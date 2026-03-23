@@ -1,9 +1,10 @@
+import { basename, join } from 'node:path';
+import { Readable } from 'node:stream';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
-import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
-import { join } from 'node:path';
-import { Readable } from 'node:stream';
 import * as tus from 'tus-js-client';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
@@ -82,7 +83,7 @@ export class DriverSupabase implements TusDriver {
 		return `${this.endpoint}/upload/resumable`;
 	}
 
-	async read(filepath: string, options?: ReadOptions) {
+	async read(filepath: string, options?: ReadOptions): Promise<Readable> {
 		const { range } = options || {};
 
 		const requestInit: RequestInit = { method: 'GET' };
@@ -104,9 +105,18 @@ export class DriverSupabase implements TusDriver {
 		return Readable.fromWeb(response.body);
 	}
 
-	async stat(filepath: string) {
-		const { data, error } = await this.bucket.list(this.config.root, {
-			search: filepath,
+	async stat(filepath: string): Promise<{
+		size: any;
+		modified: Date;
+	}> {
+		let rootPath = join(this.config.root, dirname(filepath));
+		// Supabase expects an empty string for current directory
+		if (rootPath === '.') rootPath = '';
+
+		const rootFolder = normalizePath(rootPath);
+
+		const { data, error } = await this.bucket.list(rootFolder, {
+			search: basename(filepath),
 			limit: 1,
 		});
 
@@ -120,7 +130,7 @@ export class DriverSupabase implements TusDriver {
 		};
 	}
 
-	async exists(filepath: string) {
+	async exists(filepath: string): Promise<boolean> {
 		try {
 			await this.stat(filepath);
 			return true;
@@ -129,24 +139,28 @@ export class DriverSupabase implements TusDriver {
 		}
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		await this.bucket.move(this.fullPath(src), this.fullPath(dest));
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		await this.bucket.copy(this.fullPath(src), this.fullPath(dest));
 	}
 
-	async write(filepath: string, content: Readable, type?: string) {
-		await this.bucket.upload(this.fullPath(filepath), content, {
+	async write(filepath: string, content: Readable, type?: string): Promise<void> {
+		const { error } = await this.bucket.upload(this.fullPath(filepath), content, {
 			contentType: type ?? '',
 			cacheControl: '3600',
 			upsert: true,
 			duplex: 'half',
 		});
+
+		if (error) {
+			throw new Error(`Error uploading file "${filepath}"`, { cause: error });
+		}
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		await this.bucket.remove([this.fullPath(filepath)]);
 	}
 
@@ -185,7 +199,7 @@ export class DriverSupabase implements TusDriver {
 		 */
 		const isDirectory = prefix.endsWith('/');
 		const prefixDirectory = isDirectory ? prefix : dirname(prefix);
-		const search = isDirectory ? '' : prefix.split('/').pop() ?? '';
+		const search = isDirectory ? '' : (prefix.split('/').pop() ?? '');
 
 		do {
 			const { data, error } = await this.bucket.list(prefixDirectory, {
@@ -216,15 +230,20 @@ export class DriverSupabase implements TusDriver {
 		} while (itemCount === limit);
 	}
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 
-	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext) {
+	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
 		return context;
 	}
 
-	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		context: ChunkedUploadContext,
+	): Promise<number> {
 		let bytesUploaded = offset || 0;
 
 		const metadata = {
@@ -280,9 +299,9 @@ export class DriverSupabase implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {}
 
-	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
 		await this.delete(filepath);
 	}
 }

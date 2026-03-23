@@ -1,5 +1,5 @@
-import type { Query } from '../types/query.js';
 import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../index.js';
+import type { Query } from '../types/query.js';
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
@@ -9,6 +9,11 @@ export interface WebSocketConfig {
 		| {
 				delay: number; // in ms
 				retries: number;
+		  }
+		| false;
+	connect?:
+		| {
+				timeout: number; // in ms
 		  }
 		| false;
 	heartbeat?: boolean;
@@ -27,6 +32,7 @@ export type RemoveEventHandler = () => void;
 export type WebSocketEventHandler = (this: WebSocketInterface, ev: Event | CloseEvent | any) => any;
 
 export interface WebSocketClient<Schema> {
+	isConnected(): Promise<boolean>;
 	connect(): Promise<WebSocketInterface>;
 	disconnect(): void;
 	onWebSocket(event: 'open', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;

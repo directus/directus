@@ -1,40 +1,71 @@
-import { afterAll, beforeAll, expect, test, vi, type MockInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { stall } from './stall.js';
 
-let performanceNowSpy: MockInstance;
+describe('stall', () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+	});
 
-beforeAll(() => {
-	vi.useFakeTimers();
+	afterEach(() => {
+		vi.useRealTimers();
+	});
 
-	// fake timers doesn't fake performance.now(), so this is used to mock it
-	performanceNowSpy = vi.spyOn(performance, 'now').mockReturnValue(0);
-});
+	it('resolves immediately when elapsed time exceeds stall time', async () => {
+		const stallTime = 100;
+		const start = performance.now() - 150; // Simulate 150ms already elapsed
 
-afterAll(() => {
-	vi.useRealTimers();
-});
+		const promise = stall(stallTime, start);
 
-const STALL_TIME = 100;
+		// Should resolve immediately without needing timer advancement
+		await expect(promise).resolves.toBeUndefined();
+	});
 
-test('does not stall if elapsed time has already past the stall time', () => {
-	const startTime = performance.now();
+	it('resolves immediately when elapsed time equals stall time', async () => {
+		const stallTime = 100;
+		const start = performance.now() - 100; // Exactly 100ms elapsed
 
-	// intentionally advance past the stall time first
-	performanceNowSpy.mockReturnValueOnce(1000);
+		const promise = stall(stallTime, start);
 
-	stall(STALL_TIME, startTime);
+		await expect(promise).resolves.toBeUndefined();
+	});
 
-	expect(vi.getTimerCount()).toBe(0);
-});
+	it('waits for remaining time when elapsed time is less than stall time', async () => {
+		const stallTime = 100;
+		const start = performance.now() - 30; // Only 30ms elapsed, need 70ms more
 
-test('should stall for a set amount of time', () => {
-	const startTime = performance.now();
+		const promise = stall(stallTime, start);
 
-	stall(STALL_TIME, startTime);
+		vi.advanceTimersByTime(70);
 
-	expect(vi.getTimerCount()).toBe(1);
+		await expect(promise).resolves.toBeUndefined();
+	});
 
-	vi.advanceTimersByTime(STALL_TIME);
+	it('waits for full stall time when starting immediately', async () => {
+		const stallTime = 100;
+		const start = performance.now();
 
-	expect(vi.getTimerCount()).toBe(0);
+		const promise = stall(stallTime, start);
+
+		// Advance timers by full stall time
+		vi.advanceTimersByTime(100);
+
+		await expect(promise).resolves.toBeUndefined();
+	});
+
+	it('handles zero stall time', async () => {
+		const start = performance.now();
+
+		const promise = stall(0, start);
+
+		await expect(promise).resolves.toBeUndefined();
+	});
+
+	it('handles negative remaining time gracefully', async () => {
+		const stallTime = 50;
+		const start = performance.now() - 200; // Way more than stall time elapsed
+
+		const promise = stall(stallTime, start);
+
+		await expect(promise).resolves.toBeUndefined();
+	});
 });

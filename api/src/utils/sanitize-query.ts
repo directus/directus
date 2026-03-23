@@ -7,10 +7,11 @@ import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { contextHasDynamicVariables } from '../permissions/modules/process-ast/utils/context-has-dynamic-variables.js';
+import type { Context } from '../permissions/types.js';
 import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
-import type { Context } from '../permissions/types.js';
+import { splitFields } from './split-fields.js';
 
 /**
  * Sanitize the query parameters and parse them where necessary.
@@ -99,6 +100,10 @@ export async function sanitizeQuery(
 		query.alias = sanitizeAlias(rawQuery['alias']);
 	}
 
+	if ('backlink' in rawQuery) {
+		query.backlink = sanitizeBacklink(rawQuery['backlink']);
+	}
+
 	return query;
 }
 
@@ -107,11 +112,16 @@ function sanitizeFields(rawFields: any) {
 
 	let fields: string[] = [];
 
-	if (typeof rawFields === 'string') fields = rawFields.split(',');
-	else if (Array.isArray(rawFields)) fields = rawFields as string[];
+	if (typeof rawFields === 'string') {
+		fields = splitFields(rawFields);
+	} else if (Array.isArray(rawFields)) {
+		fields = rawFields as string[];
+	} else {
+		throw new InvalidQueryError({ reason: '"fields" must be a string or array' });
+	}
 
 	// Case where array item includes CSV (fe fields[]=id,name):
-	fields = flatten(fields.map((field) => (field.includes(',') ? field.split(',') : field)));
+	fields = flatten(fields.map((field) => (field.includes(',') ? splitFields(field) : field)));
 
 	fields = fields.map((field) => field.trim());
 
@@ -221,6 +231,10 @@ function sanitizeMeta(rawMeta: any) {
 	}
 
 	return [rawMeta];
+}
+
+function sanitizeBacklink(rawBacklink: unknown) {
+	return rawBacklink !== false && rawBacklink !== 'false';
 }
 
 async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {

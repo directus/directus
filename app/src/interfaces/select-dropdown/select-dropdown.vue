@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { isEmpty, isEqual } from 'lodash';
 import { computed, watch } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 
 type Option = {
 	text: string;
@@ -11,20 +12,16 @@ type Option = {
 	children?: Option[];
 };
 
-const props = withDefaults(
-	defineProps<{
-		value: string | number | null;
-		disabled?: boolean;
-		choices?: Option[];
-		icon?: string;
-		allowNone?: boolean;
-		placeholder?: string;
-		allowOther?: boolean;
-	}>(),
-	{
-		placeholder: () => i18n.global.t('select_an_item'),
-	},
-);
+const props = defineProps<{
+	value: string | number | null;
+	disabled?: boolean;
+	nonEditable?: boolean;
+	choices?: Option[];
+	icon?: string;
+	allowNone?: boolean;
+	placeholder?: string;
+	allowOther?: boolean;
+}>();
 
 const emit = defineEmits(['input']);
 
@@ -82,19 +79,20 @@ watch(
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:items="items"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:show-deselect="allowNone"
 		item-icon="icon"
 		item-color="color"
-		:placeholder="placeholder"
+		:placeholder="placeholder || $t('select_an_item')"
 		:allow-other="allowOther"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="showGlobalIcon" #prepend>
-			<v-icon :name="icon" />
+			<VIcon :name="icon" />
 		</template>
-	</v-select>
+	</VSelect>
 </template>

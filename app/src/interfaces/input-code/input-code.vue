@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import CodeMirror, { ModeSpec } from 'codemirror';
+import { computed, onMounted, ref, Ref, watch } from 'vue';
+import importCodemirrorMode from './import-codemirror-mode';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
-import CodeMirror, { ModeSpec } from 'codemirror';
-import { Ref, computed, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import importCodemirrorMode from './import-codemirror-mode';
 
 import 'codemirror/mode/meta';
 
@@ -26,6 +27,7 @@ const props = withDefaults(
 	defineProps<{
 		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
 		lineNumber?: boolean;
@@ -41,8 +43,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { width } = useWindowSize();
 
@@ -100,7 +100,7 @@ onMounted(async () => {
 const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
 
-	if (props.type === 'json' && isInterpolation(props.value)) return props.value;
+	if (props.type === 'json' && isInterpolation(props.value)) return props.value as string;
 
 	return getStringifiedValue(props.value, props.type === 'json');
 });
@@ -123,7 +123,7 @@ watch(stringValue, () => {
 
 async function setLanguage() {
 	if (codemirror) {
-		const lang = props.language.toLowerCase();
+		const lang = (props.language || 'plaintext').toLowerCase();
 
 		if (props.type === 'json' || lang === 'json') {
 			// @ts-ignore
@@ -244,7 +244,7 @@ const cmOptions = computed<Record<string, any>>(() => {
 			lineWrapping: props.lineWrapping,
 			readOnly: readOnly.value,
 			cursorBlinkRate: props.disabled ? -1 : 530,
-			mode: props.language,
+			mode: props.language || 'plaintext',
 			placeholder: props.placeholder,
 		},
 		props.altOptions ? props.altOptions : {},
@@ -297,40 +297,46 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
-			<v-icon name="playlist_add" />
-		</v-button>
+		<VButton
+			v-if="!nonEditable && template"
+			v-tooltip.left="!disabled && $t('fill_template')"
+			:disabled
+			small
+			icon
+			secondary
+			@click="fillTemplate"
+		>
+			<VIcon name="playlist_add" />
+		</VButton>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .input-code {
 	position: relative;
-	width: 100%;
-	font-size: 14px;
+	inline-size: 100%;
+	font-size: 0.8125rem;
 }
 
 .small {
 	position: absolute;
-	right: 0;
-	bottom: -20px;
+	inset-inline-end: 0;
+	inset-block-end: -1.125rem;
 	font-style: italic;
-	text-align: right;
+	text-align: end;
 }
 
 .v-button {
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 4;
 	color: var(--theme--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
-	-webkit-user-select: none;
-	user-select: none;
 
 	&:hover {
 		color: var(--theme--primary-accent);

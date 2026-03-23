@@ -1,10 +1,10 @@
-import type { RequestHandler, Request, Response } from 'express';
+import type { Request, RequestHandler, Response } from 'express';
 import '../types/express.d.ts';
+import { expect, test, vi } from 'vitest';
 import asyncHandler from './async-handler.js';
-import { expect, vi, test } from 'vitest';
 
-let mockRequest: Partial<Request & { token?: string }>;
-let mockResponse: Partial<Response>;
+const mockRequest: Partial<Request & { token?: string }> = {};
+const mockResponse: Partial<Response> = {};
 const nextFunction = vi.fn();
 
 test('Wraps async middleware in Promise resolve that will catch rejects and pass them to the nextFn', async () => {

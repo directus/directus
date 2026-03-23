@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
+import { useExtension } from '@/composables/use-extension';
 
 const props = defineProps<{
 	value: Record<string, unknown> | null;
@@ -18,8 +19,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'input', value: Record<string, unknown> | null): void;
 }>();
-
-const { t } = useI18n();
 
 const options = computed({
 	get() {
@@ -86,16 +85,16 @@ const optionsFields = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!selectedInterface">
-		{{ t('select_interface') }}
-	</v-notice>
+	<VNotice v-if="!selectedInterface">
+		{{ $t('select_interface') }}
+	</VNotice>
 
-	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ t('no_options_available') }}
-	</v-notice>
+	<VNotice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
+		{{ $t('no_options_available') }}
+	</VNotice>
 
 	<div v-else class="inset">
-		<v-form
+		<VForm
 			v-if="usesCustomComponent === false"
 			v-model="options"
 			class="extension-options"
@@ -117,15 +116,15 @@ const optionsFields = computed(() => {
 
 <style lang="scss" scoped>
 .inset {
-	--theme--form--column-gap: 24px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 1.375rem;
+	--theme--form--row-gap: 1.375rem;
 
-	padding: 12px;
+	padding: 0.6875rem;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.type-label) {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

@@ -47,12 +47,12 @@ const value = computed({
 .variable {
 	display: grid;
 	align-content: center;
-	width: 100%;
-	height: 100%;
-	padding: 12px;
+	inline-size: 100%;
+	block-size: 100%;
+	padding: 0.6875rem;
 
 	&.show-header {
-		padding-top: 6px;
+		padding-block-start: 0.3125rem;
 	}
 
 	> * {

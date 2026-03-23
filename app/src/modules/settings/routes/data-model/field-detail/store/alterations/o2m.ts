@@ -1,5 +1,5 @@
-import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
+import { HelperFunctions, State, StateUpdates } from '../types';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -132,7 +132,7 @@ export function generateRelatedField(updates: StateUpdates, state: State) {
 	if (!collection) return;
 
 	const currentCollectionPrimaryKeyFieldType = state.collection
-		? fieldsStore.getPrimaryKeyFieldForCollection(state.collection)?.type ?? 'integer'
+		? (fieldsStore.getPrimaryKeyFieldForCollection(state.collection)?.type ?? 'integer')
 		: 'integer';
 
 	const field = updates.relations?.o2m?.field;

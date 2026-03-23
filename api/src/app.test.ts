@@ -1,7 +1,7 @@
-import { useEnv } from '@directus/env';
-import { Router } from 'express';
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
+import { useEnv } from '@directus/env';
+import { Router } from 'express';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
 
@@ -55,8 +55,9 @@ vi.mock('./auth', () => ({
 	registerAuthProviders: vi.fn(),
 }));
 
-vi.mock('./webhooks', () => ({
-	init: vi.fn(),
+vi.mock('./deployment.js', () => ({
+	registerDeploymentDrivers: vi.fn(),
+	ensureDeploymentWebhooks: vi.fn(),
 }));
 
 vi.mock('./utils/validate-env.js');

@@ -1,4 +1,4 @@
-import type { ExtensionType } from '@directus/extensions';
+import type { ExtensionType } from '@directus/types';
 
 export interface ListQuery {
 	type?: ExtensionType;

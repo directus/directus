@@ -13,10 +13,10 @@ afterEach(() => {
 	vi.resetAllMocks();
 });
 
-test('Throws out of date error if current version is not supported', () => {
+test('Throws out of date error if current version is not supported', async () => {
 	vi.mocked(getApiVersion).mockResolvedValue('some-other-version');
 
-	expect(() => assertVersionCompatibility()).rejects.toBeInstanceOf(OutOfDateError);
+	await expect(() => assertVersionCompatibility()).rejects.toBeInstanceOf(OutOfDateError);
 });
 
 test('Does not throw when version matches', () => {

@@ -39,7 +39,7 @@
 
 .codex-editor .cdx-loader::before {
 	border: 3px solid var(--theme--background-accent);
-	border-left-color: var(--theme--primary);
+	border-inline-start-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-search-field {
@@ -53,7 +53,7 @@
 	border-color: var(--theme--form--field--input--border-color-hover);
 }
 
-.codex-editor .ce-popover {
+.codex-editor .ce-popover__container {
 	background: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
@@ -98,6 +98,7 @@
 	background: transparent;
 	box-shadow: unset;
 	border: 1px solid var(--theme--foreground-subdued);
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
@@ -122,7 +123,7 @@
 }
 
 .codex-editor .ce-inline-tool {
-	padding: 0 10px !important;
+	padding: 0 0.5625rem !important;
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm {
@@ -138,8 +139,8 @@
 	box-shadow: none;
 }
 
-.ct:before,
-.ct:after {
+.ct::before,
+.ct::after {
 	background-color: var(--background-inverted);
 }
 
@@ -147,7 +148,7 @@
 	background-color: var(--background-inverted);
 	color: var(--foreground-inverted);
 	border-radius: var(--theme--border-radius);
-	padding: 8px;
+	padding: 0.4375rem;
 	font-size: inherit;
 }
 
@@ -226,7 +227,7 @@
 
 .codex-editor .ce-inline-tool-input {
 	background: var(--theme--background-normal);
-	border-top-color: var(--theme--form--field--input--border-color);
+	border-block-start-color: var(--theme--form--field--input--border-color);
 }
 
 /* Buttons */
@@ -234,7 +235,7 @@
 .codex-editor .cdx-button {
 	color: var(--foreground-inverted);
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 0.875rem;
 	text-decoration: none;
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -255,18 +256,18 @@
 	line-height: inherit;
 }
 
-.codex-editor .ce-paragraph[data-placeholder]:empty::before {
-	color: var(--theme--form--field--input--foreground-subdued);
+.codex-editor .ce-paragraph[data-placeholder-active]:empty::before {
+	color: var(--theme--foreground-subdued);
 }
 
 /* Quote block */
 
 .codex-editor .cdx-block.cdx-quote {
-	padding-left: 22px;
+	padding-inline-start: 1.25rem;
 }
 
 .codex-editor .ce-block blockquote {
-	border-left: 2px dashed var(--theme--form--field--input--border-color);
+	border-inline-start: 2px dashed var(--theme--form--field--input--border-color);
 }
 
 /* Image Tool */
@@ -279,9 +280,6 @@
 
 .codex-editor .image-tool--loading .image-tool__image {
 	background: var(--theme--background-normal);
-}
-
-.codex-editor .image-tool--loading .image-tool__image {
 	border-color: var(--theme--form--field--input--border-color);
 }
 
@@ -291,7 +289,7 @@
 	background: transparent;
 	border-color: var(--theme--foreground-subdued);
 	border-width: var(--theme--border-width);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .cdx-checklist__item-checkbox-check:hover {
@@ -319,15 +317,8 @@
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
-	top: 4px;
-	left: 3px;
-}
-
-/* Lists */
-
-.codex-editor .ce-block ul,
-.codex-editor .ce-block ol {
-	font-size: inherit !important;
+	inset-block-start: 0.25rem;
+	inset-inline-start: 0.1875rem;
 }
 
 /* Attaches */
@@ -345,23 +336,23 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 36px;
-	width: 36px;
-	margin-right: 12px;
+	block-size: 2rem;
+	inline-size: 2rem;
+	margin-inline-end: 0.6875rem;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
-	height: 100%;
-	width: 100%;
-	margin-right: 0;
+	block-size: 100%;
+	inline-size: 100%;
+	margin-inline-end: 0;
 	background-color: var(--overlay-color);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-label {
-	top: unset;
-	left: unset;
+	inset-block-start: unset;
+	inset-inline-start: unset;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
@@ -384,12 +375,12 @@
 /* InlineCode */
 
 .codex-editor .ce-block .inline-code {
-	padding: 4px;
+	padding: 0.25rem;
 	color: var(--theme--background-normal);
 	font-family: monospace;
 	font-weight: 400;
 	background-color: var(--theme--foreground);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block .inline-code::selection {
@@ -461,13 +452,12 @@
 
 .ce-toolbar__content,
 .ce-block__content {
-	max-width: unset;
-	margin-right: 34px;
-	margin-left: 34px;
+	max-inline-size: unset;
+	margin-inline: 1.9375rem;
 }
 
 .codex-editor .ce-align-left {
-	text-align: left;
+	text-align: start;
 }
 
 .codex-editor .ce-align-center {
@@ -475,7 +465,7 @@
 }
 
 .codex-editor .ce-align-right {
-	text-align: right;
+	text-align: end;
 }
 
 .codex-editor .ce-align-buttons .cdx-settings-button svg {
@@ -499,41 +489,41 @@
 }
 
 .codex-editor .ce-block {
-	margin-top: 1.5em;
-	margin-bottom: 1.5em;
+	margin-block: 1.5em;
+
 	/* Editor.js expect this to default to light */
 	font-weight: 400;
 	font-family: inherit;
 }
 
 .codex-editor .ce-block h1 {
-	font-size: 44px;
-	line-height: 52px;
+	font-size: 2.5rem;
+	line-height: 1.175;
 }
 
 .codex-editor .ce-block h2 {
-	font-size: 34px;
-	line-height: 38px;
+	font-size: 1.9375rem;
+	line-height: 1.0968;
 }
 
 .codex-editor .ce-block h3 {
-	font-size: 26px;
-	line-height: 31px;
+	font-size: 1.4375rem;
+	line-height: 1.2174;
 }
 
 .codex-editor .ce-block h4 {
-	font-size: 22px;
-	line-height: 28px;
+	font-size: 1.25rem;
+	line-height: 1.25;
 }
 
 .codex-editor .ce-block h5 {
-	font-size: 18px;
-	line-height: 26px;
+	font-size: 1rem;
+	line-height: 1.4375;
 }
 
 .codex-editor .ce-block h6 {
-	font-size: 16px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 }
 
 .codex-editor .ce-block a {
@@ -550,11 +540,13 @@
 	background-color: var(--theme--background-accent) !important;
 }
 
+/* Lists */
+
 .codex-editor .ce-block ul,
 .codex-editor .ce-block ol {
-	margin: 24px 0;
-	font-size: 18px;
-	line-height: 34px;
+	margin: 1.375rem 0;
+	font-size: inherit;
+	line-height: 1.9375rem;
 }
 
 .codex-editor .ce-block ul ul,
@@ -571,33 +563,32 @@
 }
 
 .codex-editor .ce-block pre {
-	padding: 20px;
+	padding: 1.125rem;
 	overflow: auto;
-	font-size: 18px;
-	line-height: 24px;
+	font-size: 1rem;
+	line-height: 1.375;
 	background-color: var(--theme--background-accent);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block video,
 .codex-editor .ce-block iframe,
 .codex-editor .ce-block img {
-	max-width: 100%;
-	height: auto;
-	border-radius: 4px;
+	max-inline-size: 100%;
+	block-size: auto;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block hr {
-	margin-top: 52px;
-	margin-bottom: 56px;
+	margin-block: 2.9375rem 3.125rem;
 	text-align: center;
 	border: 0;
 }
 
 .codex-editor .ce-block hr::after {
-	font-size: 28px;
+	font-size: 1.5625rem;
 	line-height: 0;
-	letter-spacing: 16px;
+	letter-spacing: 0.5143em;
 	content: '...';
 }
 
@@ -617,12 +608,12 @@
 
 .codex-editor .ce-block figure {
 	display: table;
-	margin: 1rem auto;
+	margin: 0.8125rem auto;
 }
 
 .codex-editor .ce-block figure figcaption {
 	display: block;
-	margin-top: 0.25rem;
+	margin-block-start: 0.1875rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	text-align: center;
 }

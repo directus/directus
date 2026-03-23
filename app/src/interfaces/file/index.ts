@@ -65,6 +65,26 @@ export default defineInterface({
 					width: 'half',
 				},
 			},
+			{
+				field: 'allowedMimeTypes',
+				name: '$t:interfaces.file.allowed_mime_types',
+				type: 'json',
+				meta: {
+					interface: 'select-multiple-dropdown',
+					options: {
+						placeholder: '$t:interfaces.file.mime_types_placeholder',
+						choices: [
+							{ value: 'image/*', text: 'image/*' },
+							{ value: 'video/*', text: 'video/*' },
+							{ value: 'audio/*', text: 'audio/*' },
+							{ value: 'text/*', text: 'text/*' },
+							{ value: 'application/*', text: 'application/*' },
+						],
+						allowOther: true,
+					},
+					note: '$t:interfaces.file.mime_types_note',
+				},
+			},
 		];
 	},
 	recommendedDisplays: ['file'],

@@ -5,6 +5,7 @@ import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
 import { calculateFieldDepth } from './calculate-field-depth.js';
+import { getFieldRelationalDepth } from './get-field-relational-depth.js';
 
 const env = useEnv();
 
@@ -24,12 +25,13 @@ const querySchema = Joi.object({
 	page: Joi.number().integer().min(0),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
-	export: Joi.string().valid('csv', 'json', 'xml', 'yaml'),
+	export: Joi.string().valid('csv', 'csv_utf8', 'json', 'xml', 'yaml'),
 	version: Joi.string(),
 	versionRaw: Joi.boolean(),
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),
+	backlink: Joi.boolean(),
 }).id('query');
 
 export function validateQuery(query: Query): Query {
@@ -215,7 +217,7 @@ function validateRelationalDepth(query: Query) {
 	fields = uniq(fields);
 
 	for (const field of fields) {
-		if (field.split('.').length > maxRelationalDepth) {
+		if (getFieldRelationalDepth(field) > maxRelationalDepth) {
 			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
 		}
 	}

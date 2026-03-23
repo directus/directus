@@ -33,7 +33,7 @@ const value = ref();
 <template>
 	<Story title="VFancySelect" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-fancy-select v-model="value" v-bind="state">My Button</v-fancy-select>
+			<VFancySelect v-model="value" v-bind="state">My Button</VFancySelect>
 		</template>
 
 		<template #controls>

@@ -1,4 +1,4 @@
-import { ref, provide, inject, onMounted, Ref, InjectionKey } from 'vue';
+import { inject, InjectionKey, onMounted, provide, Ref, ref } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 
 const dialogRouteSymbol: InjectionKey<() => void> = Symbol();

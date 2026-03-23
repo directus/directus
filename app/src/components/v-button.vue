@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { RouteLocationRaw, useRoute, useLink } from 'vue-router';
-import { useSizeClass, useGroupable } from '@directus/composables';
+import { useGroupable, useSizeClass } from '@directus/composables';
 import { isEqual, isNil } from 'lodash';
+import { computed } from 'vue';
+import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
+import VProgressCircular from './v-progress-circular.vue';
+import vFocus from '@/directives/focus';
+import vTooltip from '@/directives/tooltip';
 
 interface Props {
 	/** Automatically focuses on the button */
@@ -15,7 +18,7 @@ interface Props {
 	rounded?: boolean;
 	/** No background */
 	outlined?: boolean;
-	/** Remove padding / min-width. Meant to be used with just an icon as content */
+	/** Remove padding / min-inline-size. Meant to be used with just an icon as content */
 	icon?: boolean;
 	/** Element type to be used */
 	type?: string;
@@ -168,7 +171,7 @@ async function onClick(event: MouseEvent) {
 			</span>
 			<div class="spinner">
 				<slot v-if="loading" name="loading">
-					<v-progress-circular :x-small="xSmall" :small="small" indeterminate />
+					<VProgressCircular :x-small="xSmall" :small="small" indeterminate />
 				</slot>
 			</div>
 		</component>
@@ -182,7 +185,7 @@ async function onClick(event: MouseEvent) {
 	Available Variables:
 
 		--v-button-width                      [auto]
-		--v-button-height                     [44px]
+		--v-button-height                     [2.5rem]
 		--v-button-color                      [var(--foreground-inverted)]
 		--v-button-color-hover                [var(--foreground-inverted)]
 		--v-button-color-active               [var(--foreground-inverted)]
@@ -191,11 +194,11 @@ async function onClick(event: MouseEvent) {
 		--v-button-background-color-hover     [var(--theme--primary-accent)]
 		--v-button-background-color-active    [var(--theme--primary)]
 		--v-button-background-color-disabled  [var(--theme--background-normal)]
-		--v-button-font-size                  [16px]
+		--v-button-font-size                  [0.875rem]
 		--v-button-font-weight                [600]
-		--v-button-line-height                [22px]
-		--v-button-min-width                  [140px]
-		--v-button-padding                    [0 19px]
+		--v-button-line-height                [1.4286]
+		--v-button-min-width                  [7.875rem]
+		--v-button-padding                    [0 1.0625rem]
 
 */
 
@@ -267,28 +270,28 @@ async function onClick(event: MouseEvent) {
 
 .v-button.full-width {
 	display: flex;
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 .button {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: var(--v-button-width, auto);
-	min-width: var(--v-button-min-width, 140px);
-	height: var(--v-button-height, 44px);
-	padding: var(--v-button-padding, 0 19px);
+	inline-size: var(--v-button-width, auto);
+	min-inline-size: var(--v-button-min-width, 7.875rem);
+	block-size: var(--v-button-height, 2.5rem);
+	padding: var(--v-button-padding, 0 1.0625rem);
 	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);
-	font-size: var(--v-button-font-size, 16px);
-	line-height: var(--v-button-line-height, 22px);
+	font-size: var(--v-button-font-size, 0.875rem);
+	line-height: var(--v-button-line-height, 1.4286);
 	text-decoration: none;
 	background-color: var(--v-button-background-color, var(--theme--primary));
 	border: var(--theme--border-width) solid var(--v-button-background-color, var(--theme--primary));
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
-	transition-property: background-color border;
+	transition-property: background-color, border;
 }
 
 .button:hover {
@@ -345,50 +348,50 @@ async function onClick(event: MouseEvent) {
 	border-style: dashed;
 }
 
-.x-small {
-	--v-button-height: 28px;
-	--v-button-font-size: 12px;
-	--v-button-min-width: 60px;
+.button.x-small {
+	--v-button-height: 1.5625rem;
+	--v-button-font-size: 0.6875rem;
+	--v-button-min-width: 3.375rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
-.small {
-	--v-button-height: 36px;
-	--v-button-font-size: 14px;
-	--v-button-min-width: 120px;
+.button.small {
+	--v-button-height: 2rem;
+	--v-button-font-size: 0.8125rem;
+	--v-button-min-width: 6.75rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
-.large {
-	--v-button-height: 52px;
-	--v-button-min-width: 154px;
+.button.large {
+	--v-button-height: 2.9375rem;
+	--v-button-min-width: 8.6875rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
-.x-large {
-	--v-button-height: 60px;
-	--v-button-font-size: 18px;
-	--v-button-min-width: 180px;
+.button.x-large {
+	--v-button-height: 3.375rem;
+	--v-button-font-size: 1rem;
+	--v-button-min-width: 10.125rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
-.icon {
-	width: var(--v-button-height, 44px);
-	min-width: 0;
+.button.icon {
+	inline-size: var(--v-button-height, 2.5rem);
+	min-inline-size: 0;
 	padding: 0;
 }
 
 .button.full-width {
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 .content,
 .spinner {
-	max-width: 100%;
+	max-inline-size: 100%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -407,9 +410,13 @@ async function onClick(event: MouseEvent) {
 
 .spinner {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
+
+	html[dir='rtl'] & {
+		transform: translate(50%, -50%);
+	}
 }
 
 .spinner .v-progress-circular {

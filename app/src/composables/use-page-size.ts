@@ -1,5 +1,5 @@
-import { useServerStore } from '@/stores/server';
 import { computed, ComputedRef, MaybeRef, unref } from 'vue';
+import { useServerStore } from '@/stores/server';
 
 export function usePageSize<T = any>(
 	availableSizes: MaybeRef<number[]>,

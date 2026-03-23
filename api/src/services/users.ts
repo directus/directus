@@ -1,25 +1,32 @@
+import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
-import type { Item, PrimaryKey, RegisterUserInput, User } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Item,
+	MutationOptions,
+	PrimaryKey,
+	RegisterUserInput,
+	User,
+} from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import type { StringValue } from 'ms';
-import { performance } from 'perf_hooks';
 import { clearSystemCache } from '../cache.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
 import { Url } from '../utils/url.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
@@ -49,6 +56,7 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
+				value: '[' + String(duplicates) + ']',
 			});
 		}
 
@@ -67,6 +75,7 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
+				value: '[' + String(emails) + ']',
 			});
 		}
 	}
@@ -128,9 +137,11 @@ export class UsersService extends ItemsService {
 	 */
 	private async getUserByEmail(
 		email: string,
-	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
+	): Promise<
+		{ id: string; role: string; status: string; password: string; email: string; provider: string } | undefined
+	> {
 		return this.knex
-			.select('id', 'role', 'status', 'password', 'email')
+			.select('id', 'role', 'status', 'password', 'email', 'provider')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
 			.first();
@@ -255,6 +266,7 @@ export class UsersService extends ItemsService {
 					throw new RecordNotUniqueError({
 						collection: 'directus_users',
 						field: 'email',
+						value: data['email'],
 					});
 				}
 
@@ -549,6 +561,10 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
+		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
+			throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to reset passwords` });
+		}
+
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active') {
@@ -556,8 +572,9 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenError();
 		}
 
-		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
-			throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to reset passwords` });
+		if (user.provider !== DEFAULT_AUTH_PROVIDER) {
+			await stall(STALL_TIME, timeStart);
+			throw new ForbiddenError();
 		}
 
 		const mailService = new MailService({

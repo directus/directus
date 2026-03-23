@@ -1,15 +1,20 @@
-import { useEnv } from '@directus/env';
-import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { handlePressure } from '@directus/pressure';
-import cookieParser from 'cookie-parser';
-import type { Request, RequestHandler, Response } from 'express';
-import express from 'express';
 import type { ServerResponse } from 'http';
-import { merge } from 'lodash-es';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'path';
+import { useEnv } from '@directus/env';
+import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { handlePressure } from '@directus/pressure';
+import { toBoolean } from '@directus/utils';
+import cookieParser from 'cookie-parser';
+import type { Request, RequestHandler, Response } from 'express';
+import express from 'express';
+import { merge } from 'lodash-es';
 import qs from 'qs';
+import { aiChatRouter } from './ai/chat/router.js';
+import { initAIDevTools } from './ai/devtools/index.js';
+import { aiFilesRouter } from './ai/files/router.js';
+import { initAITelemetry } from './ai/telemetry/index.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -18,6 +23,8 @@ import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
 import commentsRouter from './controllers/comments.js';
 import dashboardsRouter from './controllers/dashboards.js';
+import deploymentWebhookRouter from './controllers/deployment-webhooks.js';
+import deploymentRouter from './controllers/deployment.js';
 import extensionsRouter from './controllers/extensions.js';
 import fieldsRouter from './controllers/fields.js';
 import filesRouter from './controllers/files.js';
@@ -25,6 +32,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
 import notFoundHandler from './controllers/not-found.js';
 import notificationsRouter from './controllers/notifications.js';
@@ -45,13 +53,13 @@ import tusRouter from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
-import webhooksRouter from './controllers/webhooks.js';
 import {
 	isInstalled,
 	validateDatabaseConnection,
 	validateDatabaseExtensions,
 	validateMigrations,
 } from './database/index.js';
+import { ensureDeploymentWebhooks, registerDeploymentDrivers } from './deployment.js';
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
@@ -63,9 +71,11 @@ import { errorHandler } from './middleware/error-handler.js';
 import extractToken from './middleware/extract-token.js';
 import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
+import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import metricsSchedule from './schedules/metrics.js';
+import projectSchedule from './schedules/project.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
 import tusSchedule from './schedules/tus.js';
@@ -97,6 +107,12 @@ export default async function createApp(): Promise<express.Application> {
 		);
 	}
 
+	if (typeof env['SECRET'] === 'string' && Buffer.byteLength(env['SECRET']) < 32) {
+		logger.warn(
+			'"SECRET" env variable is shorter than 32 bytes which is insecure. This is not appropriate for production usage.',
+		);
+	}
+
 	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('"PUBLIC_URL" should be a full URL');
 	}
@@ -105,6 +121,8 @@ export default async function createApp(): Promise<express.Application> {
 	await validateStorage();
 
 	await registerAuthProviders();
+	registerDeploymentDrivers();
+	await ensureDeploymentWebhooks();
 
 	const extensionManager = getExtensionManager();
 	const flowManager = getFlowManager();
@@ -116,7 +134,13 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
-	app.set('query parser', (str: string) => qs.parse(str, { depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']) }));
+
+	app.set('query parser', (str: string) =>
+		qs.parse(str, {
+			depth: Number(env['QUERYSTRING_MAX_PARSE_DEPTH']),
+			arrayLimit: Number(env['QUERYSTRING_ARRAY_LIMIT']),
+		}),
+	);
 
 	if (env['PRESSURE_LIMITER_ENABLED']) {
 		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
@@ -200,6 +224,9 @@ export default async function createApp(): Promise<express.Application> {
 		(
 			express.json({
 				limit: env['MAX_PAYLOAD_SIZE'] as string,
+				verify: (req, _res, buf) => {
+					(req as any).rawBody = buf;
+				},
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -269,11 +296,16 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.get('/server/ping', (_req, res) => res.send('pong'));
 
+	// Public webhook endpoint (signature-verified by the provider)
+	app.use('/deployments/webhooks', deploymentWebhookRouter);
+
 	app.use(authenticate);
 
 	app.use(schema);
 
 	app.use(sanitizeQuery);
+
+	app.use(requestCounter);
 
 	app.use(cache);
 
@@ -291,6 +323,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/collections', collectionsRouter);
 	app.use('/comments', commentsRouter);
 	app.use('/dashboards', dashboardsRouter);
+	app.use('/deployments', deploymentRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 
@@ -302,6 +335,17 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+
+	if (toBoolean(env['MCP_ENABLED']) === true) {
+		app.use('/mcp', mcpRouter);
+	}
+
+	if (toBoolean(env['AI_ENABLED']) === true) {
+		await initAIDevTools();
+		await initAITelemetry();
+		app.use('/ai/chat', aiChatRouter);
+		app.use('/ai/files', aiFilesRouter);
+	}
 
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);
@@ -324,7 +368,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/versions', versionsRouter);
-	app.use('/webhooks', webhooksRouter);
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
@@ -340,6 +383,7 @@ export default async function createApp(): Promise<express.Application> {
 	await telemetrySchedule();
 	await tusSchedule();
 	await metricsSchedule();
+	await projectSchedule();
 
 	await emitter.emitInit('app.after', { app });
 

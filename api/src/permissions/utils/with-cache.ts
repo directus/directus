@@ -2,34 +2,36 @@ import { getSimpleHash } from '@directus/utils';
 import { useCache } from '../cache.js';
 
 /**
- * The `pick` parameter can be used to stabilize cache keys, by only using a subset of the available parameters and
- * ensuring key order.
+ * Wraps a function with caching capabilities.
  *
- * If the `pick` function is provided, we pass the picked result to the handler, in order for TypeScript to ensure that
- * the function only relies on the parameters that are used for generating the cache key.
+ * @param namespace - A unique namespace for the cache key.
+ * @param handler - The function to be wrapped.
+ * @param prepareArg - Optional function to prepare arguments for hashing.
+ * @returns A new function that caches the results of the original function.
  *
- * @NOTE only uses the first parameter for memoization
+ * @NOTE Ensure that the `namespace` is unique to avoid cache key collisions.
+ * @NOTE Ensure that the `prepareArg` function returns a JSON stringifiable representation of the arguments.
  */
-export function withCache<F extends (arg0: Arg0, ...args: any[]) => R, R, Arg0 = Parameters<F>[0]>(
+export function withCache<F extends (...args: any) => any>(
 	namespace: string,
 	handler: F,
-	prepareArg?: (arg0: Arg0) => Arg0,
-) {
+	prepareArg?: (...args: Parameters<F>) => Record<string, unknown>,
+): (...args: Parameters<F>) => Promise<Awaited<ReturnType<F>>> {
 	const cache = useCache();
 
-	return (async (arg0: Arg0, ...args: any[]) => {
-		arg0 = prepareArg ? prepareArg(arg0) : arg0;
-		const key = namespace + '-' + getSimpleHash(JSON.stringify(arg0));
+	return async (...args) => {
+		const hashArgs = prepareArg ? prepareArg(...args) : args;
+		const key = namespace + '-' + getSimpleHash(JSON.stringify(hashArgs));
 		const cached = await cache.get(key);
 
 		if (cached !== undefined) {
-			return cached as R;
+			return cached as Awaited<ReturnType<F>>;
 		}
 
-		const res = await handler(arg0, ...args);
+		const res = await handler(...args);
 
 		cache.set(key, res);
 
 		return res;
-	}) as F;
+	};
 }

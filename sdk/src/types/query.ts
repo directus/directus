@@ -1,3 +1,4 @@
+import type { AggregationTypes, GroupByFields } from './aggregate.js';
 import type { QueryDeep } from './deep.js';
 import type { HasNestedFields, QueryFields } from './fields.js';
 import type { QueryFilter } from './filters.js';
@@ -16,6 +17,7 @@ export interface Query<Schema, Item> {
 	offset?: number | undefined;
 	page?: number | undefined;
 	deep?: IfAny<Schema, Record<string, any>, QueryDeep<Schema, Item>> | undefined;
+	backlink?: boolean | undefined;
 	readonly alias?: IfAny<Schema, Record<string, string>, QueryAlias<Schema, Item>> | undefined;
 }
 
@@ -25,6 +27,23 @@ export interface Query<Schema, Item> {
 export interface QueryItem<Schema, Item> extends Query<Schema, Item> {
 	readonly version?: string | undefined;
 	readonly versionRaw?: boolean | undefined;
+}
+
+/**
+ * All query options with additional aggregate, version, and custom property options
+ */
+export type ExtendedQuery<Schema, Item> = Query<Schema, Item> & {
+	aggregate?: Partial<Record<keyof AggregationTypes, string>>;
+	groupBy?: (string | GroupByFields<Schema, Item>)[];
+	version?: string | undefined;
+	versionRaw?: boolean | undefined;
+} & Record<string, unknown>;
+
+/**
+ * All query options with an additional concurrentIndexCreation query option for updating fields with indexes
+ */
+export interface FieldQuery<Schema, Item> extends Query<Schema, Item> {
+	readonly concurrentIndexCreation?: boolean;
 }
 
 /**
@@ -42,28 +61,31 @@ export type ExtractRelation<Schema, Item extends object, Key> = Key extends keyo
 /**
  * Merge union of optional objects
  */
-export type MergeRelationalFields<FieldList> = Exclude<UnpackList<FieldList>, string> extends infer RelatedFields
-	? {
-			[Key in RelatedFields extends any ? keyof RelatedFields : never]-?: Exclude<RelatedFields[Key], undefined>;
-	  }
-	: never;
+export type MergeRelationalFields<FieldList> =
+	Exclude<UnpackList<FieldList>, string> extends infer RelatedFields
+		? {
+				[Key in RelatedFields extends any ? keyof RelatedFields : never]-?: Exclude<RelatedFields[Key], undefined>;
+			}
+		: never;
 
 /**
  * Merge separate relational objects together
  */
-export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
-	? Extract<UnpackList<FieldList>, string>
-	: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
+export type MergeFields<FieldList> =
+	HasNestedFields<FieldList> extends never
+		? Extract<UnpackList<FieldList>, string>
+		: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
 
 /**
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
  */
-export type QuerySort<_Schema, Item> = UnpackList<Item> extends infer FlatItem
-	? {
-			[Field in keyof FlatItem]: Field | `-${Field & string}`;
-	  }[keyof FlatItem]
-	: never;
+export type QuerySort<_Schema, Item> =
+	UnpackList<Item> extends infer FlatItem
+		? {
+				[Field in keyof FlatItem]: Field | `-${Field & string}`;
+			}[keyof FlatItem]
+		: never;
 
 export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : A) : object extends B ? B : never;
 

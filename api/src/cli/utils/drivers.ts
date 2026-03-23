@@ -1,4 +1,4 @@
-import type { Driver } from '../../types/index.js';
+import type { Driver } from '@directus/types';
 
 export const drivers: Record<Driver, string> = {
 	pg: 'PostgreSQL / Redshift',

@@ -1,26 +1,39 @@
-import { useEnv } from '@directus/env';
-import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import formatTitle from '@directus/format-title';
-import type { BusboyFileStream, File, PrimaryKey, Query } from '@directus/types';
-import { toArray } from '@directus/utils';
-import type { AxiosResponse } from 'axios';
-import encodeURL from 'encodeurl';
-import { clone, cloneDeep } from 'lodash-es';
-import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import zlib from 'node:zlib';
 import path from 'path';
 import url from 'url';
+import { useEnv } from '@directus/env';
+import {
+	ContentTooLargeError,
+	InternalServerError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+} from '@directus/errors';
+import formatTitle from '@directus/format-title';
+import type {
+	AbstractServiceOptions,
+	BusboyFileStream,
+	File,
+	MutationOptions,
+	PrimaryKey,
+	Query,
+	QueryOptions,
+} from '@directus/types';
+import { toArray } from '@directus/utils';
+import type { AxiosResponse } from 'axios';
+import encodeURL from 'encodeurl';
+import { clone, cloneDeep } from 'lodash-es';
+import { extension } from 'mime-types';
+import { minimatch } from 'minimatch';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
-import { ItemsService, type QueryOptions } from './items.js';
+import { ItemsService } from './items.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -35,7 +48,7 @@ export class FilesService extends ItemsService<File> {
 	 */
 	async uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<File> & { storage: string },
+		data: Partial<File>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey> {
@@ -48,14 +61,18 @@ export class FilesService extends ItemsService<File> {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata')
+					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'storage')
 					.from('directus_files')
 					.where({ id: primaryKey })
 					.first()) ?? null;
 		}
 
 		// Merge the existing file's folder and filename_download with the new payload
-		const payload = { ...(existingFile ?? {}), ...clone(data) };
+		const payload = {
+			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
+			...(existingFile ?? {}),
+			...clone(data),
+		};
 
 		const disk = storage.location(payload.storage);
 
@@ -79,16 +96,18 @@ export class FilesService extends ItemsService<File> {
 		const fileExtension =
 			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
+		const filenameDisk = primaryKey + (fileExtension || '');
+
 		// The filename_disk is the FINAL filename on disk
-		payload.filename_disk ||= primaryKey + (fileExtension || '');
+		payload.filename_disk ||= filenameDisk;
 
 		// If the filename_disk extension doesn't match the new mimetype, update it
 		if (isReplacement === true && path.extname(payload.filename_disk!) !== fileExtension) {
-			payload.filename_disk = primaryKey + (fileExtension || '');
+			payload.filename_disk = filenameDisk;
 		}
 
 		// Temp filename is used for replacements
-		const tempFilenameDisk = 'temp_' + payload.filename_disk;
+		const tempFilenameDisk = 'temp_' + filenameDisk;
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';
@@ -140,6 +159,8 @@ export class FilesService extends ItemsService<File> {
 
 			if (err instanceof ContentTooLargeError) {
 				throw err;
+			} else if (err?.code && ['EROFS', 'EACCES', 'EPERM'].includes(err.code)) {
+				throw new InternalServerError();
 			} else {
 				throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
 			}
@@ -147,21 +168,26 @@ export class FilesService extends ItemsService<File> {
 
 		// If the file is a replacement, we need to update the DB record with the new payload, delete the old files, and upgrade the temp file
 		if (isReplacement === true) {
-			await this.updateOne(primaryKey, payload, { emitEvents: false });
+			try {
+				await this.updateOne(primaryKey, payload, { emitEvents: false });
 
-			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			for await (const filepath of disk.list(String(primaryKey))) {
-				await disk.delete(filepath);
+				// delete the previously saved file and thumbnails to ensure they're generated fresh
+				for await (const filepath of disk.list(String(primaryKey))) {
+					await disk.delete(filepath);
+				}
+
+				// Upgrade the temp file to the final filename
+				await disk.move(tempFilenameDisk, payload.filename_disk);
+			} catch (err: any) {
+				await cleanUp();
+				throw err;
 			}
-
-			// Upgrade the temp file to the final filename
-			await disk.move(tempFilenameDisk, payload.filename_disk);
 		}
 
-		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
+		const { size } = await storage.location(payload.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
+		const metadata = await extractMetadata(payload.storage, payload as Parameters<typeof extractMetadata>[1]);
 
 		payload.uploaded_on = new Date().toISOString();
 
@@ -200,7 +226,11 @@ export class FilesService extends ItemsService<File> {
 	/**
 	 * Import a single file from an external URL
 	 */
-	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
+	async importOne(
+		importURL: string,
+		body: Partial<File>,
+		options: { filterMimeType?: string[] } = {},
+	): Promise<PrimaryKey> {
 		if (this.accountability) {
 			await validateAccess(
 				{
@@ -237,10 +267,34 @@ export class FilesService extends ItemsService<File> {
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
 		const filename = decodeURI(path.basename(parsedURL.pathname as string));
 
+		const mimeType = fileResponse.headers['content-type']?.split(';')[0]?.trim() || 'application/octet-stream';
+
+		// Check against global MIME type allow list from env
+		const globalAllowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const globalMimeTypeAllowed = globalAllowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+
+		if (globalMimeTypeAllowed === false) {
+			throw new InvalidPayloadError({
+				reason: `File content type "${mimeType}" is not allowed for upload by your global file type restrictions`,
+			});
+		}
+
+		const { filterMimeType } = options;
+
+		// Check against interface-level MIME type restrictions if provided
+		if (filterMimeType && filterMimeType.length > 0) {
+			const interfaceMimeTypeAllowed = filterMimeType.some((pattern: string) => minimatch(mimeType, pattern));
+
+			if (interfaceMimeTypeAllowed === false) {
+				throw new InvalidPayloadError({
+					reason: `File content type "${mimeType}" is not allowed for upload by this field's file type restrictions`,
+				});
+			}
+		}
+
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env['STORAGE_LOCATIONS'] as string)[0]!,
-			type: fileResponse.headers['content-type'],
+			type: mimeType,
 			title: formatTitle(filename),
 			...(body || {}),
 		};

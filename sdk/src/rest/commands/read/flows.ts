@@ -1,7 +1,7 @@
 import type { DirectusFlow } from '../../../schema/flow.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type ReadFlowOutput<
 	Schema,

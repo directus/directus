@@ -1,10 +1,9 @@
+import { createRequire } from 'node:module';
 import { useEnv } from '@directus/env';
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
 import { useLogger } from './logger/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-
-import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
@@ -25,14 +24,14 @@ export default function getMailer(): Transporter {
 			path: (env['EMAIL_SENDMAIL_PATH'] as string) || '/usr/sbin/sendmail',
 		});
 	} else if (transportName === 'ses') {
-		const aws = require('@aws-sdk/client-ses');
+		const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
 
 		const sesOptions: Record<string, unknown> = getConfigFromEnv('EMAIL_SES_');
 
-		const ses = new aws.SES(sesOptions);
+		const sesClient = new SESv2Client(sesOptions);
 
 		transporter = nodemailer.createTransport({
-			SES: { ses, aws },
+			SES: { sesClient, SendEmailCommand },
 		} as Record<string, unknown>);
 	} else if (transportName === 'smtp') {
 		let auth: boolean | { user?: string; pass?: string } = false;

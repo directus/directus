@@ -8,8 +8,8 @@ import emitter from '../emitter.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import '../types/express.d.ts';
 import { handler } from './authenticate.js';
+import '../types/express.d.ts';
 
 const reqGetImplementation = (string: any) => {
 	switch (string) {
@@ -198,7 +198,7 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 	const res = {} as Response;
 	const next = vi.fn();
 
-	expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
+	await expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
 	expect(next).toHaveBeenCalledTimes(0);
 });
 

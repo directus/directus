@@ -1,7 +1,7 @@
-import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
-import type { RestCommand } from '../../types.js';
 import type { DirectusPolicy } from '../../../schema/policy.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
+import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdatePolicyOutput<
 	Schema,
@@ -20,7 +20,7 @@ export type UpdatePolicyOutput<
 export const updatePolicies =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
 		keys: DirectusPolicy<Schema>['id'][],
-		item: Partial<DirectusPolicy<Schema>>,
+		item: NestedPartial<DirectusPolicy<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdatePolicyOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -63,7 +63,7 @@ export const updatePoliciesBatch =
 export const updatePolicy =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
 		key: DirectusPolicy<Schema>['id'],
-		item: Partial<DirectusPolicy<Schema>>,
+		item: NestedPartial<DirectusPolicy<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdatePolicyOutput<Schema, TQuery>, Schema> =>
 	() => {

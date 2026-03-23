@@ -1,10 +1,10 @@
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { createError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import axios, { AxiosError } from 'axios';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
-import http from 'node:http';
-import type { AddressInfo } from 'node:net';
 import type { Logger } from 'pino';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger/index.js';
@@ -111,7 +111,10 @@ describe('Error handler behaves correctly in express app', () => {
 		expect(spy.mock.calls[0]?.[0]).toBe(error);
 
 		expect(mockLogger.error).toHaveBeenLastCalledWith(
-			Error('Cannot set headers after they are sent to the client'),
+			expect.objectContaining({
+				message: 'Cannot set headers after they are sent to the client',
+				code: 'ERR_HTTP_HEADERS_SENT',
+			}),
 			'Unexpected error in error handler',
 		);
 	});

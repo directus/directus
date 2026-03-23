@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import config, { getUrl } from '@common/config';
 import { CreateItem, ReadItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
@@ -6,17 +7,16 @@ import { requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { findIndex, without } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
-import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
+import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import {
+	type Circle,
 	collectionCircles,
 	collectionShapes,
 	collectionSquares,
 	getTestsSchema,
 	seedDBValues,
-	type Circle,
 	type Shape,
 	type Square,
 } from './m2a.seed';

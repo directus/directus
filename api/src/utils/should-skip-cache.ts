@@ -1,8 +1,8 @@
-import { useEnv } from '@directus/env';
-import type { Request } from 'express';
 import url from 'url';
-import { Url } from './url.js';
+import { useEnv } from '@directus/env';
 import { getEndpoint } from '@directus/utils';
+import type { Request } from 'express';
+import { Url } from './url.js';
 
 /**
  * Whether to skip caching for the current request

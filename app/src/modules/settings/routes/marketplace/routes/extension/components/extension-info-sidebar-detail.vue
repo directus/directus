@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
-		<div v-md="t('page_help_marketplace_extension')" />
-	</sidebar-detail>
+	<SidebarDetail icon="info" :title="$t('information')" close>
+		<div v-md="$t('page_help_marketplace_extension')" />
+	</SidebarDetail>
 </template>

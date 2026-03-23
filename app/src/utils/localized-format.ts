@@ -1,5 +1,5 @@
-import { getDateFNSLocale } from '@/utils/get-date-fns-locale';
 import { format as formatOriginal } from 'date-fns';
+import { getDateFNSLocale } from '@/utils/get-date-fns-locale';
 
 type LocalizedFormat = (...a: Parameters<typeof formatOriginal>) => string;
 

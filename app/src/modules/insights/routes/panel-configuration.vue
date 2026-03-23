@@ -1,23 +1,30 @@
 <script setup lang="ts">
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import { useExtension } from '@/composables/use-extension';
-import { useExtensions } from '@/extensions';
-import { CreatePanel, useInsightsStore } from '@/stores/insights';
 import type { Panel } from '@directus/extensions';
 import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
+import { CreatePanel, useInsightsStore } from '@/stores/insights';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 const props = defineProps<{
 	dashboardKey: string;
 	panelKey: string;
 }>();
-
-const { t } = useI18n();
 
 const isOpen = useDialogRoute();
 
@@ -126,19 +133,22 @@ const stageChanges = () => {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:model-value="isOpen"
-		:title="panel?.name || t('panel')"
-		:subtitle="t('panel_options')"
+		:title="panel?.name || $t('panel')"
+		:subtitle="$t('panel_options')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
 		@cancel="router.push(`/insights/${dashboardKey}`)"
 		@apply="stageChanges"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
-				<v-icon name="check" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('done')"
+				:disabled="!panel.type"
+				icon="check"
+				@click="stageChanges"
+			/>
 		</template>
 		<div class="content">
 			<div class="panel-grid">
@@ -157,54 +167,53 @@ const stageChanges = () => {
 						</template>
 
 						<span v-else class="fallback">
-							<v-icon large :name="pan.icon" />
+							<VIcon large :name="pan.icon" />
 						</span>
 					</div>
-					<v-text-overflow :text="pan.name" class="name" />
+					<VTextOverflow :text="pan.name" class="name" />
 				</button>
 
-				<transition-expand>
+				<TransitionExpand>
 					<div v-if="panel.type" class="field-configuration" :style="configRow ? { 'grid-row': configRow } : {}">
 						<div class="setup">
-							<extension-options
+							<ExtensionOptions
 								:model-value="panel.options"
 								:options="customOptionsFields"
 								type="panel"
 								:extension="panel.type"
 								raw-editor-enabled
-								style="{'grid-template-columns': 'unset'}"
 								@update:model-value="edits.options = $event"
 							/>
-							<v-divider :inline-title="false" large>
-								<template #icon><v-icon name="info" /></template>
-								<template #default>{{ t('panel_header') }}</template>
-							</v-divider>
+							<VDivider :inline-title="false" large>
+								<template #icon><VIcon name="info" /></template>
+								<template #default>{{ $t('panel_header') }}</template>
+							</VDivider>
 
 							<div class="form-grid">
 								<div class="field half-left">
-									<p class="type-label">{{ t('visible') }}</p>
-									<v-checkbox
+									<p class="type-label">{{ $t('visible') }}</p>
+									<VCheckbox
 										:model-value="panel.show_header"
 										block
-										:label="t('show_header')"
+										:label="$t('show_header')"
 										@update:model-value="edits.show_header = $event"
 									/>
 								</div>
 
 								<div class="field half-right">
-									<p class="type-label">{{ t('name') }}</p>
-									<v-input
+									<p class="type-label">{{ $t('name') }}</p>
+									<VInput
 										:model-value="panel.name"
 										:nullable="false"
 										:disabled="panel.show_header !== true"
-										:placeholder="t('panel_name_placeholder')"
+										:placeholder="$t('panel_name_placeholder')"
 										@update:model-value="edits.name = $event"
 									/>
 								</div>
 
 								<div class="field half-left">
-									<p class="type-label">{{ t('icon') }}</p>
-									<interface-select-icon
+									<p class="type-label">{{ $t('icon') }}</p>
+									<InterfaceSelectIcon
 										:value="panel.icon"
 										:disabled="panel.show_header !== true"
 										@input="edits.icon = $event"
@@ -212,8 +221,8 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field half-right">
-									<p class="type-label">{{ t('color') }}</p>
-									<interface-select-color
+									<p class="type-label">{{ $t('color') }}</p>
+									<InterfaceSelectColor
 										:value="panel.color"
 										:disabled="panel.show_header !== true"
 										width="half"
@@ -222,43 +231,44 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field full">
-									<p class="type-label">{{ t('note') }}</p>
-									<v-input
+									<p class="type-label">{{ $t('note') }}</p>
+									<VInput
 										:model-value="panel.note"
 										:disabled="panel.show_header !== true"
-										:placeholder="t('panel_note_placeholder')"
+										:placeholder="$t('panel_note_placeholder')"
 										@update:model-value="edits.note = $event"
 									/>
 								</div>
 							</div>
 						</div>
 					</div>
-				</transition-expand>
+				</TransitionExpand>
 			</div>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .v-divider {
-	margin: 68px 0 48px;
+	margin: 3.8125rem 0 2.6875rem;
 }
 
 .group h2 {
-	margin-bottom: 40px;
-	padding-bottom: 2px;
+	margin-block-end: 2.25rem;
+	padding-block-end: 0.125rem;
 	font-weight: 700;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
-	margin-top: 80px;
+	margin-block-start: 4.5rem;
 }
 
 .panel-grid {
@@ -266,25 +276,25 @@ const stageChanges = () => {
 
 	display: grid;
 	grid-template-columns: repeat(var(--columns), 1fr);
-	gap: 32px;
+	gap: 1.8125rem;
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
 
 .interface {
-	min-height: 100px;
+	min-block-size: 5.625rem;
 	overflow: hidden;
-	text-align: left;
+	text-align: start;
 }
 
 .preview {
@@ -293,9 +303,9 @@ const stageChanges = () => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 160px;
-	height: 100px;
-	margin-bottom: 8px;
+	inline-size: 9rem;
+	block-size: 5.625rem;
+	margin-block-end: 0.4375rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
@@ -303,8 +313,8 @@ const stageChanges = () => {
 }
 
 .preview img {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	object-fit: cover;
 }
 
@@ -313,19 +323,19 @@ const stageChanges = () => {
 }
 
 .preview :deep(svg) {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 .preview :deep(svg) .glow {
-	filter: drop-shadow(0 0 4px var(--theme--primary-subdued));
+	filter: drop-shadow(0 0 0.25rem var(--theme--primary-subdued));
 }
 
 .preview .fallback {
 	--v-icon-color: var(--theme--primary-75);
 
 	display: block;
-	padding: 8px 16px;
+	padding: 0.4375rem 0.875rem;
 	background-color: var(--background-page);
 	border: var(--theme--border-width) solid var(--theme--primary);
 	border-radius: var(--theme--border-radius);
@@ -357,18 +367,18 @@ const stageChanges = () => {
 
 	grid-column: 1 / span var(--columns);
 	background-color: var(--theme--background-subdued);
-	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
@@ -382,7 +392,7 @@ const stageChanges = () => {
 }
 
 .setup {
-	--theme--form--row-gap: 20px;
-	margin: 34px;
+	--theme--form--row-gap: 1.125rem;
+	margin: 1.9375rem;
 }
 </style>

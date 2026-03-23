@@ -1,9 +1,9 @@
-import type { Permission, Query } from '@directus/types';
-import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
+import type { Permission, PrimaryKey, Query } from '@directus/types';
+import { omit } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
-import { getUrl, type Env } from './config';
+import { type Env, getUrl } from './config';
 import vendors, { type Vendor } from './get-dbs-to-test';
 import type { PrimaryKeyType } from './types';
 import { ROLE, USER } from './variables';
@@ -50,6 +50,36 @@ export function EnableTestCaching() {
 export type OptionsCreateRole = {
 	name: string;
 };
+
+export type OptionsCreateVersion = {
+	collection: string;
+	item: PrimaryKey;
+	key: string;
+	name: string;
+};
+
+export async function CreateVersion(vendor: Vendor, options: OptionsCreateVersion) {
+	const response = await request(getUrl(vendor))
+		.post(`/versions`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send(options);
+
+	return response.body.data;
+}
+export async function SaveVersion(
+	vendor: Vendor,
+	options: {
+		id: string;
+		delta: any;
+	},
+) {
+	const response = await request(getUrl(vendor))
+		.post(`/versions/${options.id}/save`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send(options.delta);
+
+	return response.body.data;
+}
 
 export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 	// Action
@@ -668,10 +698,7 @@ export async function CreateItem(vendor: Vendor, options: OptionsCreateItem) {
 		.set('Authorization', `Bearer ${options.token ?? USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
 
-	if (!response.ok) {
-		throw new Error('Could not create item', response.body);
-	}
-
+	expect(response.ok, JSON.stringify(response.body)).toBeTruthy();
 	return response.body.data;
 }
 
@@ -717,7 +744,7 @@ export type OptionsCreatePolicy = {
 	name: string;
 	appAccessEnabled: boolean;
 	adminAccessEnabled: boolean;
-	role?: keyof typeof ROLE;
+	role?: keyof typeof ROLE | { id: string };
 };
 
 export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy) {
@@ -733,15 +760,24 @@ export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy)
 		return roleResponse.body.data[0];
 	}
 
-	let roleId = options.role;
+	let actualRoleId: string | undefined;
 
-	if (roleId && roleId in ROLE) {
-		const role = await request(getUrl(vendor))
-			.get('/roles')
-			.query({ filter: { name: { _eq: ROLE[roleId].NAME } } })
-			.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
+	if (options.role) {
+		if (typeof options.role === 'string') {
+			if (options.role in ROLE) {
+				const roleObj = await request(getUrl(vendor))
+					.get('/roles')
+					.query({ filter: { name: { _eq: ROLE[options.role as keyof typeof ROLE].NAME } } })
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-		roleId = role.body.data[0].id;
+				actualRoleId = roleObj.body.data?.[0]?.id;
+			} else {
+				// Assume it's a raw role ID
+				actualRoleId = options.role;
+			}
+		} else if (typeof options.role === 'object' && 'id' in options.role) {
+			actualRoleId = options.role.id;
+		}
 	}
 
 	const response = await request(getUrl(vendor))
@@ -751,15 +787,23 @@ export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy)
 			name: options.name,
 			app_access: options.appAccessEnabled,
 			admin_access: options.adminAccessEnabled,
-			roles: [{ role: roleId }],
 		});
 
-	return response.body.data;
+	const policy = response.body?.data;
+
+	if (actualRoleId) {
+		await request(getUrl(vendor)).post(`/access`).set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`).send({
+			role: actualRoleId,
+			policy: policy.id,
+		});
+	}
+
+	return policy;
 }
 
 export type OptionsCreatePermission = {
 	role: keyof typeof ROLE;
-	permission: Omit<Partial<Permission>, 'id' | 'role' | 'system'>;
+	permissions: Omit<Partial<Permission>, 'id' | 'role' | 'system' | 'policy'>[];
 	policy?: string;
 	policyName?: string;
 };
@@ -772,7 +816,7 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 		const role = await request(getUrl(vendor))
 			.get('/roles')
 			.query({ filter: { name: { _eq: ROLE[roleId].NAME } } })
-			.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 		roleId = role.body.data[0].id;
 	}
@@ -782,7 +826,9 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 			role: roleId,
 			adminAccessEnabled: false,
 			appAccessEnabled: false,
-			name: options.policyName ? `${options.role}-${options.policyName}` : `${options.role}-${randomUUID()}`,
+			name: options.policyName
+				? `${(options.role as any).name || (options.role as any).id || options.role}-${options.policyName}`
+				: `${(options.role as any).name || (options.role as any).id || options.role}-${randomUUID()}`,
 		});
 
 		policyId = policy.id;
@@ -790,12 +836,29 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 
 	const response = await request(getUrl(vendor))
 		.patch(`/policies/${policyId}`)
-		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send({ permissions: { create: [{ ...options.permission, policy: options.policy }], update: [], delete: [] } });
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+		.send({
+			permissions: {
+				create: options.permissions.map((p) => ({ ...p, policy: policyId })),
+				update: [],
+				delete: [],
+			},
+		});
 
 	return response.body.data;
 }
 
+export type OptionsDeletePermission = {
+	policyId: string;
+};
+
+export async function DeletePermission(vendor: Vendor, { policyId }: OptionsDeletePermission) {
+	const response = await request(getUrl(vendor))
+		.delete(`/policies/${policyId}`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+	return response.body;
+}
+
 // TODO
 // export async function UpdatePermission() {}
-// export async function DeletePermission() {}

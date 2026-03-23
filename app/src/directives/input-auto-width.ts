@@ -34,7 +34,7 @@ function updateWidth(el: AutoWidthElement) {
 	const value = el.value || el.placeholder;
 	el.shadow.textContent = value;
 
-	el.style.width = `${el.shadow.scrollWidth}px`;
+	el.style.inlineSize = `${el.shadow.scrollWidth}px`;
 }
 
 function copyStyles(el: AutoWidthElement) {
@@ -42,10 +42,10 @@ function copyStyles(el: AutoWidthElement) {
 
 	Object.assign(el.shadow.style, {
 		position: 'absolute',
-		top: '0',
-		left: '0',
+		insetBlockStart: '0',
+		insetInlineStart: '0',
 		visibility: 'hidden',
-		height: '0',
+		blockSize: '0',
 		overflow: 'hidden',
 		whiteSpace: 'pre',
 		fontSize: styles.fontSize,
@@ -54,8 +54,8 @@ function copyStyles(el: AutoWidthElement) {
 		fontStyle: styles.fontStyle,
 		letterSpacing: styles.letterSpacing,
 		textTransform: styles.textTransform,
-		paddingRight: `calc(${styles.paddingRight} + ${styles.borderRightWidth})`,
-		paddingLeft: `calc(${styles.paddingLeft} + ${styles.borderLeftWidth})`,
+		paddingInlineEnd: `calc(${styles.paddingInlineEnd} + ${styles.borderInlineEndWidth})`,
+		paddingInlineStart: `calc(${styles.paddingInlineStart} + ${styles.borderInlineStartWidth})`,
 	});
 }
 

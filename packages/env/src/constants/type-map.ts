@@ -26,16 +26,19 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	FILE_METADATA_ALLOW_LIST: 'array',
 
+	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 
 	MAX_BATCH_MUTATION: 'number',
+	MAX_IMPORT_ERRORS: 'number',
 
 	SERVER_SHUTDOWN_TIMEOUT: 'number',
 
 	LOG_HTTP_IGNORE_PATHS: 'array',
 
 	REDIS_ENABLED: 'boolean',
+	REDIS_PASSWORD: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
@@ -46,4 +49,21 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	ADMIN_TOKEN: 'string',
 	KEY: 'string',
 	SECRET: 'string',
+
+	EXTENSIONS_ROLLDOWN: 'boolean',
+
+	EMAIL_SMTP_PASSWORD: 'string',
+
+	'STORAGE_.+_SECRET': 'string',
+
+	'AUTH_.+_BIND_DN': 'string',
+	'AUTH_.+_USER_DN': 'string',
+	'AUTH_.+_GROUP_DN': 'string',
+	'AUTH_.+_BIND_PASSWORD': 'string',
+	'AUTH_.+_COOKIE_SECURE': 'boolean',
 } as const;
+
+export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [
+	new RegExp(`^${name}$`),
+	value,
+]);

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction } from '@/types/panels';
 import type { Filter } from '@directus/types';
 import { abbreviateNumber, adjustDate } from '@directus/utils';
 import ApexCharts from 'apexcharts';
@@ -8,6 +6,8 @@ import { addWeeks } from 'date-fns';
 import { isNil, orderBy, snakeCase } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction } from '@/types/panels';
 
 const props = withDefaults(
 	defineProps<{
@@ -298,7 +298,7 @@ function setupChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 				datetimeUTC: false,
 			},
@@ -323,7 +323,7 @@ function setupChart() {
 						: n(value, 'decimal', {
 								minimumFractionDigits: props.decimals ?? 0,
 								maximumFractionDigits: props.decimals ?? 0,
-						  } as any);
+							} as any);
 				},
 				yaxis: {
 					show: props.showYAxis ?? true,
@@ -340,13 +340,13 @@ function setupChart() {
 								: n(value, 'decimal', {
 										minimumFractionDigits: props.decimals ?? 0,
 										maximumFractionDigits: props.decimals ?? 0,
-								  } as any);
+									} as any);
 						},
 						style: {
 							fontFamily: 'var(--theme--fonts--sans--font-family)',
 							foreColor: 'var(--theme--foreground-subdued)',
 							fontWeight: 600,
-							fontSize: '10px',
+							fontSize: '0.5625rem',
 						},
 					},
 				},
@@ -390,8 +390,8 @@ function setupChart() {
 
 <style scoped>
 .time-series {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>
 
@@ -402,17 +402,17 @@ function setupChart() {
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
-	margin-bottom: 0;
-	padding: 0 4px;
+	margin-block-end: 0;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 4px;
+	padding: 0 0 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 }
 
 .apexcharts-tooltip-series-group {
@@ -421,6 +421,6 @@ function setupChart() {
 }
 
 .apexcharts-tooltip-series-group:last-child {
-	padding-bottom: 0;
+	padding-block-end: 0;
 }
 </style>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 
 const props = withDefaults(
@@ -8,9 +10,8 @@ const props = withDefaults(
 		text?: string;
 		icon?: string | null;
 		type?: 'info' | 'success' | 'warning' | 'error';
-		tail?: boolean;
-		dense?: boolean;
 		showClose?: boolean;
+		showReload?: boolean;
 		loading?: boolean;
 		progress?: number;
 		alwaysShowText?: boolean;
@@ -34,22 +35,30 @@ const done = async () => {
 		notificationsStore.remove(props.id);
 	}
 };
+
+function reload() {
+	window.location.reload();
+}
 </script>
 
 <template>
-	<div class="notification-item" :class="[type, { tail, dense, 'show-text': alwaysShowText }]" @click="done">
+	<div class="notification-item" :class="[type, { 'show-text': alwaysShowText }]" @click="done">
 		<div v-if="loading || progress || icon" class="icon">
-			<v-progress-circular v-if="loading" indeterminate small />
-			<v-progress-circular v-else-if="progress" small :value="progress" />
-			<v-icon v-else :name="icon" />
+			<VProgressCircular v-if="loading" indeterminate small />
+			<VProgressCircular v-else-if="progress" small :value="progress" />
+			<VIcon v-else :name="icon" />
 		</div>
 
 		<div class="content">
-			<p class="title selectable">{{ title }}</p>
-			<p v-if="text" class="text selectable">{{ text }}</p>
+			<p class="title">{{ title }}</p>
+			<p v-if="text" class="text">{{ text }}</p>
+			<button v-if="showReload" class="reload" @click="reload">
+				{{ $t('reload_page') }}
+				<VIcon name="restore_page" clickable />
+			</button>
 		</div>
 
-		<v-icon
+		<VIcon
 			v-if="showClose"
 			v-tooltip="dismissText"
 			:name="dismissIcon ?? 'close'"
@@ -66,12 +75,13 @@ const done = async () => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: 100%;
-	min-height: 44px;
-	margin-top: 4px;
-	padding: 12px;
+	margin-block-start: 0.25rem;
+	padding: 0.6875rem;
 	color: var(--white);
 	border-radius: var(--theme--border-radius);
+	inline-size: max-content;
+	max-inline-size: 100%;
+	min-block-size: 2.5rem;
 
 	.icon {
 		display: block;
@@ -79,11 +89,11 @@ const done = async () => {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
-		margin-right: 12px;
-		background-color: rgb(255 255 255 / 0.25);
 		border-radius: 50%;
+		inline-size: auto;
+		block-size: auto;
+		margin-inline-end: 0.4375rem;
+		background-color: transparent;
 	}
 
 	.text {
@@ -100,46 +110,25 @@ const done = async () => {
 
 	&::after {
 		position: absolute;
-		right: 12px;
-		bottom: -5px;
+		inset-inline-end: 0.6875rem;
+		inset-block-end: -0.3125rem;
 		z-index: -1;
 		display: block;
-		width: 20px;
-		height: 20px;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
 		border-radius: 2px;
-		transform: rotate(45deg) translate(-5px, -5px);
+		transform: rotate(45deg) translate(-0.3125rem, -0.3125rem);
 		transition: transform var(--slow) var(--transition);
 		content: '';
 		pointer-events: none;
 	}
 
-	&.tail::after {
-		transform: rotate(45deg) translate(0px, 0px);
-	}
-
-	&.dense {
-		width: max-content;
-		max-width: 100%;
-		min-height: 44px;
-
-		.icon {
-			width: auto;
-			height: auto;
-			margin-right: 8px;
-			background-color: transparent;
-		}
-
-		&:not(.show-text) .text {
-			display: none;
-		}
+	&:not(.show-text) .text {
+		display: none;
 	}
 
 	&.info {
 		background-color: var(--theme--primary);
-
-		&.tail::after {
-			background-color: var(--theme--primary);
-		}
 
 		.text {
 			color: var(--theme--primary-background);
@@ -149,10 +138,6 @@ const done = async () => {
 	&.success {
 		background-color: var(--theme--success);
 
-		&.tail::after {
-			background-color: var(--theme--success);
-		}
-
 		.text {
 			color: var(--success-alt);
 		}
@@ -160,10 +145,6 @@ const done = async () => {
 
 	&.warning {
 		background-color: var(--theme--warning);
-
-		&.tail::after {
-			background-color: var(--theme--warning);
-		}
 
 		.text {
 			color: var(--warning-alt);
@@ -173,10 +154,6 @@ const done = async () => {
 	&.error {
 		background-color: var(--theme--danger);
 
-		&.tail::after {
-			background-color: var(--theme--danger);
-		}
-
 		.text {
 			color: var(--danger-alt);
 		}
@@ -184,7 +161,12 @@ const done = async () => {
 }
 
 .close {
-	margin-left: 12px;
+	margin-inline-start: 0.6875rem;
+}
+
+.reload {
+	display: block;
+	margin-inline-start: auto;
 }
 
 .v-progress-circular {

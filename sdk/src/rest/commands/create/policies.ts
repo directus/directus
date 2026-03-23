@@ -1,5 +1,5 @@
 import type { DirectusPolicy } from '../../../schema/policy.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreatePolicyOutput<
@@ -18,7 +18,7 @@ export type CreatePolicyOutput<
  */
 export const createPolicies =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
-		items: Partial<DirectusPolicy<Schema>>[],
+		items: NestedPartial<DirectusPolicy<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreatePolicyOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createPolicies =
  */
 export const createPolicy =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
-		item: Partial<DirectusPolicy<Schema>>,
+		item: NestedPartial<DirectusPolicy<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreatePolicyOutput<Schema, TQuery>, Schema> =>
 	() => ({

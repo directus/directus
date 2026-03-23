@@ -2,6 +2,9 @@
 import formatTitle from '@directus/format-title';
 import { isEmpty, isString } from 'lodash';
 import { computed } from 'vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import DisplayColor from '@/displays/color/color.vue';
 
 type Choice = {
 	value: string | number;
@@ -73,7 +76,7 @@ const items = computed(() => {
 <template>
 	<div class="display-labels">
 		<template v-if="!showAsDot">
-			<v-chip
+			<VChip
 				v-for="item in items"
 				:key="item.value"
 				:style="{
@@ -85,13 +88,13 @@ const items = computed(() => {
 				label
 				:class="{ 'has-icon': !!item.icon || !!item.color }"
 			>
-				<v-icon v-if="item.icon" :name="item.icon" :color="item.color" left small />
-				<display-color v-else-if="item.color" class="inline-dot" :value="item.color" />
+				<VIcon v-if="item.icon" :name="item.icon" :color="item.color" left small />
+				<DisplayColor v-else-if="item.color" class="inline-dot" :value="item.color" />
 				{{ item.text }}
-			</v-chip>
+			</VChip>
 		</template>
 		<template v-else>
-			<display-color
+			<DisplayColor
 				v-for="item in items"
 				:key="item.value"
 				v-tooltip="item.text"
@@ -107,20 +110,20 @@ const items = computed(() => {
 }
 
 .has-icon {
-	--v-chip-padding: 0 8px 0 4px;
+	--v-chip-padding: 0 0.4375rem 0 0.25rem;
 }
 
 .v-chip + .v-chip {
-	margin-left: 4px;
+	margin-inline-start: 0.25rem;
 }
 
 .v-icon {
 	flex-shrink: 0;
-	vertical-align: -3px;
+	vertical-align: -0.1875rem;
 }
 
 .inline-dot {
-	padding: 0 4px;
-	margin-right: 4px;
+	padding: 0 0.25rem;
+	margin-inline-end: 0.25rem;
 }
 </style>

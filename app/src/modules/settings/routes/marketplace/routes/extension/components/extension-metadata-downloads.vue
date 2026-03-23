@@ -4,9 +4,9 @@ import MetadataItem from '../../../components/metadata-item.vue';
 
 defineProps<{ downloads: number }>();
 
-const { t, n } = useI18n();
+const { n } = useI18n();
 </script>
 
 <template>
-	<MetadataItem icon="save_alt">{{ t('n_downloads', { n: n(downloads) }) }}</MetadataItem>
+	<MetadataItem icon="save_alt">{{ $t('n_downloads', { n: n(downloads) }) }}</MetadataItem>
 </template>

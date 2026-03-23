@@ -1,9 +1,9 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getCache } from '../cache.js';
-import { scheduleSynchronizedJob } from '../utils/schedule.js';
-import { default as telemetrySchedule, jobCallback } from './telemetry.js';
 import { track } from '../telemetry/index.js';
+import { scheduleSynchronizedJob } from '../utils/schedule.js';
+import { jobCallback, default as telemetrySchedule } from './telemetry.js';
 
 vi.mock('../telemetry/index.js');
 vi.mock('../cache.js');

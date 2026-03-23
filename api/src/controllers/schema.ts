@@ -1,4 +1,5 @@
 import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
+import type { Snapshot, SnapshotDiffWithHash } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
@@ -7,7 +8,6 @@ import { load as loadYaml } from 'js-yaml';
 import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
-import type { Snapshot, SnapshotDiffWithHash } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
 
@@ -43,7 +43,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 		: {
 				...req.headers,
 				'content-type': 'application/octet-stream',
-		  };
+			};
 
 	const busboy = Busboy({ headers });
 

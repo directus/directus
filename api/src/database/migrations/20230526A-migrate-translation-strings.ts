@@ -1,6 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import type { Knex } from 'knex';
 import { set } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 
 type NewTranslationString = {
 	id: string;

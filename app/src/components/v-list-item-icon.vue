@@ -28,15 +28,15 @@ withDefaults(defineProps<Props>(), {
 
 	display: inline-flex;
 	align-self: center;
-	margin: 8px 0;
+	margin: 0.4375rem 0;
 
 	&:not(:only-child) {
 		&:first-child {
-			margin-right: 12px;
+			margin-inline-end: 0.6875rem;
 		}
 
 		&:last-child {
-			margin-left: 12px;
+			margin-inline-start: 0.6875rem;
 		}
 	}
 
@@ -46,23 +46,22 @@ withDefaults(defineProps<Props>(), {
 			#{$this} {
 				--v-icon-color: var(--v-list-item-icon-color, var(--theme--foreground-subdued));
 
-				margin-top: 4px;
-				margin-bottom: 4px;
+				margin-block: 0.25rem;
 
 				&:not(:only-child) {
 					&:first-child {
-						margin-right: 8px;
+						margin-inline-end: 0.4375rem;
 					}
 
 					&:last-child {
-						margin-left: 8px;
+						margin-inline-start: 0.4375rem;
 					}
 				}
 			}
 
 			&.nav #{$this} :slotted(.v-icon) {
 				&.dense {
-					--v-icon-size: 18px;
+					--v-icon-size: 1rem;
 				}
 			}
 

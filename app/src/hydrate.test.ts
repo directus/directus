@@ -1,14 +1,13 @@
-import { setLanguage } from '@/lang/set-language';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
-import { useUserStore } from '@/stores/user';
 import { useAppStore } from '@directus/stores';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
 import { hydrate } from './hydrate';
 import { defaultBasemap } from './utils/geometry/basemap';
+import { setLanguage } from '@/lang/set-language';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
 
 vi.mock('@/lang/set-language', () => ({
 	setLanguage: vi.fn(),
@@ -43,6 +42,14 @@ describe('setLanguage', () => {
 		await hydrate();
 
 		expect(vi.mocked(setLanguage).mock.calls[0]?.[0]).not.toBeNull();
+	});
+
+	test('should be called with user language', async () => {
+		const userStore = useUserStore();
+
+		await hydrate();
+
+		expect(vi.mocked(setLanguage)).toBeCalledWith(userStore.language);
 	});
 });
 

@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type SortRecord } from '../types.js';
+import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
@@ -51,5 +51,25 @@ export class SchemaHelperPostgres extends SchemaHelper {
 
 			groupByFields.push(...sortRecords.map(({ alias }) => alias));
 		}
+	}
+
+	override async createIndex(
+		collection: string,
+		field: string,
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+
+		// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
+		if (options.attemptConcurrentIndex) {
+			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (??)`, [
+				constraintName,
+				collection,
+				field,
+			]);
+		}
+
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }

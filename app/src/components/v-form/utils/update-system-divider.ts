@@ -1,6 +1,6 @@
 import type { Field } from '@directus/types';
 
-export function updateSystemDivider(fields: Field[]) {
+export function updateSystemDivider(fields: Field[], isFieldVisible = (field: Field) => field.meta?.hidden !== true) {
 	let hasVisibleSystemFields = false;
 	let hasVisibleUserFields = false;
 	let systemDivider;
@@ -11,7 +11,7 @@ export function updateSystemDivider(fields: Field[]) {
 			continue;
 		}
 
-		if (field.meta?.hidden) continue;
+		if (!isFieldVisible(field)) continue;
 
 		if (field.meta?.system) {
 			hasVisibleSystemFields = true;

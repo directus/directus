@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 defineProps<{
 	id: string;
@@ -13,30 +12,29 @@ defineProps<{
 </script>
 
 <template>
-	<v-button class="author" secondary full-width align="left" :to="`/settings/marketplace/account/${id}`">
+	<VButton class="author" secondary full-width align="left" :to="`/settings/marketplace/account/${id}`">
 		<img v-if="githubAvatarUrl" :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
-		<v-icon v-else name="face" left />
+		<VIcon v-else name="face" left />
 		{{ githubName ?? username }}
-		<v-icon v-if="verified" v-tooltip="t('verified')" class="verified" name="verified" small />
-	</v-button>
+		<VIcon v-if="verified" v-tooltip="$t('verified')" class="verified" name="verified" small />
+	</VButton>
 </template>
 
 <style scoped>
 .author {
-	--v-button-padding: 0 10px;
+	--v-button-padding: 0 0.5625rem;
 }
 
 .avatar {
-	width: 20px;
-	height: 20px;
-	border-radius: 10px;
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
+	border-radius: 0.5625rem;
 	object-fit: cover;
 	object-position: center center;
-	margin-left: 2px;
-	margin-right: 9px;
+	margin-inline: 0.125rem 0.5rem;
 }
 
 .verified {
-	margin-left: 4px;
+	margin-inline-start: 0.25rem;
 }
 </style>

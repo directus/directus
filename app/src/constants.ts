@@ -66,6 +66,11 @@ export const MODULE_BAR_DEFAULT = [
 		enabled: true,
 	},
 	{
+		type: 'module',
+		id: 'deployments',
+		enabled: false,
+	},
+	{
 		type: 'link',
 		id: 'docs',
 		enabled: true,
@@ -80,6 +85,13 @@ export const MODULE_BAR_DEFAULT = [
 		locked: true,
 	},
 ];
+
+// Keep in sync with $breakpoints in app/src/styles/mixins/_breakpoints.scss
+export const BREAKPOINTS = {
+	sm: '36rem',
+	lg: '57.625rem',
+	xl: '72rem',
+};
 
 export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider: true }> = [
 	{
@@ -153,6 +165,8 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 	},
 ];
 
+export const DRAFT_VERSION_KEY = 'draft';
+
 /** Contains `integer` and `float` – exclude `bigInteger` and `decimal` to avoid rounding errors. */
 export const APP_NUMERIC_TYPES = ['integer', 'float'];
 /** Treat `bigInteger` and `decimal` as strings to avoid rounding errors. */
@@ -164,7 +178,6 @@ export const DEFAULT_AUTH_DRIVER = 'default';
 export const AUTH_SSO_DRIVERS = ['oauth2', 'openid', 'saml'];
 
 export const DEFAULT_REPORT_BUG_URL = 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
-export const DEFAULT_REPORT_FEATURE_URL =
-	'https://github.com/directus/directus/discussions/new?category=draft-feature-requests';
+export const DEFAULT_REPORT_FEATURE_URL = 'https://roadmap.directus.io/';
 
 export const SDK_AUTH_REFRESH_BEFORE_EXPIRES = 10_000;

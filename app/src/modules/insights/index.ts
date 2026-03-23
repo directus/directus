@@ -1,7 +1,7 @@
-import InsightsOverview from './routes/overview.vue';
-import InsightsDashboard from './routes/dashboard.vue';
-import InsightsPanelConfiguration from './routes/panel-configuration.vue';
 import { defineModule } from '@directus/extensions';
+import InsightsDashboard from './routes/dashboard.vue';
+import InsightsOverview from './routes/overview.vue';
+import InsightsPanelConfiguration from './routes/panel-configuration.vue';
 import { useInsightsStore } from '@/stores/insights';
 
 export default defineModule({

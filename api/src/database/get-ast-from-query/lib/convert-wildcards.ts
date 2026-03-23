@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
@@ -10,11 +10,13 @@ export interface ConvertWildcardsOptions {
 	fields: string[];
 	alias: Query['alias'];
 	accountability: Accountability | null;
+	backlink: boolean | undefined;
 }
 
 export interface ConvertWildCardsContext {
 	schema: SchemaOverview;
 	knex: Knex;
+	parentRelation?: Relation;
 }
 
 export async function convertWildcards(options: ConvertWildcardsOptions, context: ConvertWildCardsContext) {
@@ -68,24 +70,39 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 		if (fieldKey.includes('.') && fieldKey.split('.')[0] === '*') {
 			const parts = fieldKey.split('.');
 
-			const relationalFields = allowedFields.includes('*')
-				? context.schema.relations
-						.filter(
-							(relation) =>
-								relation.collection === options.collection || relation.related_collection === options.collection,
-						)
-						.map((relation) => {
-							const isMany = relation.collection === options.collection;
-							return isMany ? relation.field : relation.meta?.one_field;
-						})
-				: allowedFields.filter((fieldKey) => !!getRelation(context.schema.relations, options.collection, fieldKey));
+			let relationalFields: string[] = [];
+
+			if (allowedFields.includes('*')) {
+				relationalFields = context.schema.relations.reduce<string[]>((acc, relation) => {
+					if (relation.collection === options.collection && !acc.includes(relation.field)) {
+						acc.push(relation.field);
+					}
+
+					if (relation.related_collection === options.collection && !acc.includes(relation.meta!.one_field!)) {
+						acc.push(relation.meta!.one_field!);
+					}
+
+					return acc;
+				}, []);
+			} else {
+				relationalFields = allowedFields.filter(
+					(fieldKey) => getRelation(context.schema.relations, options.collection, fieldKey) !== undefined,
+				);
+			}
+
+			if (options.backlink === false) {
+				relationalFields = relationalFields.filter(
+					(relationField) =>
+						getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation,
+				);
+			}
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
 			const aliasFields = Object.keys(options.alias ?? {}).map((fieldKey) => {
 				const name = options.alias![fieldKey];
 
-				if (relationalFields.includes(name)) {
+				if (relationalFields.includes(name!)) {
 					return `${fieldKey}.${parts.slice(1).join('.')}`;
 				}
 

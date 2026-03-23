@@ -20,16 +20,16 @@ withDefaults(defineProps<Props>(), {
 
 	display: inline-flex;
 	align-self: center;
-	margin: 8px 0;
+	margin: 0.4375rem 0;
 	color: var(--theme--foreground-subdued);
 
 	&:not(:only-child) {
 		&:first-child {
-			margin-right: 12px;
+			margin-inline-end: 0.6875rem;
 		}
 
 		&:last-child {
-			margin-left: 12px;
+			margin-inline-start: 0.6875rem;
 		}
 	}
 
@@ -37,16 +37,15 @@ withDefaults(defineProps<Props>(), {
 		.v-list,
 		.v-list-item {
 			#{$this} {
-				margin-top: 4px;
-				margin-bottom: 4px;
+				margin-block: 0.25rem;
 
 				&:not(:only-child) {
 					&:first-child {
-						margin-right: 16px;
+						margin-inline-end: 0.875rem;
 					}
 
 					&:last-child {
-						margin-left: 16px;
+						margin-inline-start: 0.875rem;
 					}
 				}
 			}

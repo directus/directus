@@ -1,7 +1,7 @@
 import { i18n } from '@/lang';
+import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
-import { localizedFormat } from '@/utils/localized-format';
 import { parseDate } from '@/utils/parse-date';
 
 export interface FormatDateOptions {

@@ -1,7 +1,7 @@
-import type { DeepPartial, Field } from '@directus/types';
 import { defineDisplay } from '@directus/extensions';
-import { formatDate, FormatDateOptions } from '@/utils/format-date';
+import type { DeepPartial, Field } from '@directus/types';
 import DisplayDateTime from './datetime.vue';
+import { formatDate, FormatDateOptions } from '@/utils/format-date';
 
 export default defineDisplay({
 	id: 'datetime',

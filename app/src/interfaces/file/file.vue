@@ -1,20 +1,39 @@
 <script setup lang="ts">
+import { Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRef, toRefs } from 'vue';
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import VUpload from '@/components/v-upload.vue';
+import { useMimeTypeFilter } from '@/composables/use-mime-type-filter';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
-import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
-import { deepMap } from '@directus/utils';
-import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type FileInfo = {
 	id: string;
@@ -26,6 +45,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		loading?: boolean;
 		folder?: string;
 		filter?: Filter;
@@ -33,6 +53,7 @@ const props = withDefaults(
 		field: string;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		allowedMimeTypes?: string[];
 	}>(),
 	{
 		enableCreate: true,
@@ -51,12 +72,17 @@ const value = computed({
 	},
 });
 
+const { mimeTypeFilter, combinedAcceptString } = useMimeTypeFilter(toRef(props, 'allowedMimeTypes'));
+
 const query = ref<RelationQuerySingle>({
-	fields: ['id', 'title', 'type', 'filename_download'],
+	fields: ['id', 'title', 'type', 'filename_download', 'modified_on'],
 });
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
+
+const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
+const menuOpen = ref(false);
 
 const {
 	displayItem: file,
@@ -69,25 +95,26 @@ const {
 
 const { createAllowed } = useRelationPermissionsM2O(relationInfo);
 
-const { t } = useI18n();
-
-const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
-
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
 	return readableMimeType(file.value.type, true);
 });
 
-const assetURL = computed(() => {
-	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return getAssetUrl(id);
-});
-
 const imageThumbnail = computed(() => {
 	if (file.value === null || props.value === null) return null;
-	if (file.value.type.includes('svg')) return assetURL.value;
+
 	if (file.value.type.includes('image') === false) return null;
-	return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
+
+	if (file.value.type.includes('svg')) {
+		return getAssetUrl(file.value.id, {
+			cacheBuster: file.value.modified_on,
+		});
+	}
+
+	return getAssetUrl(file.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: file.value.modified_on,
+	});
 });
 
 const imageThumbnailError = ref<any>(null);
@@ -105,7 +132,7 @@ const edits = computed(() => {
 const values = inject('values', ref<Record<string, unknown>>({}));
 
 const customFilter = computed(() => {
-	return parseFilter(
+	const filter = parseFilter(
 		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
@@ -114,11 +141,20 @@ const customFilter = computed(() => {
 			return val;
 		}),
 	);
+
+	if (!mimeTypeFilter.value) return filter;
+	if (!filter) return mimeTypeFilter.value;
+
+	return {
+		_and: [filter, mimeTypeFilter.value],
+	};
 });
 
 const internalDisabled = computed(() => {
 	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
 });
+
+const interfaceOpen = computed(() => Boolean(activeDialog.value) || menuOpen.value || editDrawerActive.value);
 
 function setSelection(selection: (string | number)[] | null) {
 	if (selection![0]) {
@@ -158,6 +194,7 @@ function useURLImport() {
 				data: {
 					folder: props.folder,
 				},
+				options: { filterMimeType: props.allowedMimeTypes },
 			});
 
 			file.value = response.data.data;
@@ -175,25 +212,26 @@ function useURLImport() {
 </script>
 
 <template>
-	<div class="file">
-		<v-menu attached :disabled="loading || internalDisabled" keep-behind>
-			<template #activator="{ toggle, active }">
+	<div v-prevent-focusout="interfaceOpen" class="file">
+		<VMenu v-model="menuOpen" attached :disabled="loading || internalDisabled">
+			<template #activator="{ toggle, active, deactivate }">
 				<div>
-					<v-skeleton-loader v-if="loading" type="input" />
+					<VSkeletonLoader v-if="loading" type="input" />
 
-					<v-list-item
+					<VListItem
 						v-else
 						class="activator"
 						clickable
 						readonly
 						block
 						:active
-						:disabled="internalDisabled"
-						:placeholder="t('no_file_selected')"
+						:disabled="!(nonEditable && file) && internalDisabled"
+						:non-editable="nonEditable"
+						:placeholder="$t('no_file_selected')"
 						:model-value="file && file.title"
-						@click="toggle"
+						@click="!nonEditable ? toggle() : (editDrawerActive = true)"
 					>
-						<v-list-item-icon>
+						<VListItemIcon>
 							<div
 								class="preview"
 								:class="{
@@ -201,7 +239,7 @@ function useURLImport() {
 									'is-svg': file?.type?.includes('svg'),
 								}"
 							>
-								<v-image
+								<VImage
 									v-if="imageThumbnail && !imageThumbnailError"
 									:src="imageThumbnail"
 									:alt="file?.title"
@@ -210,130 +248,144 @@ function useURLImport() {
 								<span v-else-if="fileExtension" class="extension">
 									{{ fileExtension }}
 								</span>
-								<v-icon v-else name="folder_open" />
+								<VIcon v-else name="folder_open" />
 							</div>
-						</v-list-item-icon>
+						</VListItemIcon>
 
-						<v-list-item-content>
-							<v-text-overflow v-if="file?.title" :text="file.title" />
-							<v-text-overflow v-else class="placeholder" :text="$t('no_file_selected')" />
-						</v-list-item-content>
+						<VListItemContent>
+							<VTextOverflow v-if="file?.title" :text="file.title" />
+							<VTextOverflow v-else class="placeholder" :text="$t('no_file_selected')" />
+						</VListItemContent>
 
-						<div class="item-actions">
+						<div v-if="!nonEditable" class="item-actions">
 							<template v-if="file">
-								<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
+								<VIcon
+									v-tooltip="!internalDisabled && $t('edit_item')"
+									name="edit"
+									clickable
+									:disabled="internalDisabled"
+									@click.stop="
+										deactivate();
+										editDrawerActive = true;
+									"
+								/>
 
-								<v-remove
-									v-if="!internalDisabled"
+								<VRemove
 									:item-info="relationInfo"
 									:item-edits="edits"
 									deselect
+									:disabled="internalDisabled"
 									@action="remove"
 								/>
 							</template>
 
-							<v-icon v-else name="attach_file" />
+							<VIcon v-else name="attach_file" />
 						</div>
-					</v-list-item>
+					</VListItem>
 				</div>
 			</template>
 
-			<v-list>
+			<VList>
 				<template v-if="file">
-					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, true)">
-						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
-						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
-					</v-list-item>
+					<VListItem clickable :download="file.filename_download" :href="getAssetUrl(file.id, { isDownload: true })">
+						<VListItemIcon><VIcon name="get_app" /></VListItemIcon>
+						<VListItemContent>{{ $t('download_file') }}</VListItemContent>
+					</VListItem>
 
-					<v-divider v-if="!internalDisabled" />
+					<VDivider v-if="!internalDisabled" />
 				</template>
 				<template v-if="!internalDisabled">
-					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
-						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
-						<v-list-item-content>
-							{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
-						</v-list-item-content>
-					</v-list-item>
+					<VListItem v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
+						<VListItemIcon><VIcon name="phonelink" /></VListItemIcon>
+						<VListItemContent>
+							{{ $t(file ? 'replace_from_device' : 'upload_from_device') }}
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item v-if="enableSelect" clickable @click="activeDialog = 'choose'">
-						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-						<v-list-item-content>
-							{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
-						</v-list-item-content>
-					</v-list-item>
+					<VListItem v-if="enableSelect" clickable @click="activeDialog = 'choose'">
+						<VListItemIcon><VIcon name="folder_open" /></VListItemIcon>
+						<VListItemContent>
+							{{ $t(file ? 'replace_from_library' : 'choose_from_library') }}
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'url'">
-						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
-						<v-list-item-content>
-							{{ t(file ? 'replace_from_url' : 'import_from_url') }}
-						</v-list-item-content>
-					</v-list-item>
+					<VListItem v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'url'">
+						<VListItemIcon><VIcon name="link" /></VListItemIcon>
+						<VListItemContent>
+							{{ $t(file ? 'replace_from_url' : 'import_from_url') }}
+						</VListItemContent>
+					</VListItem>
 				</template>
-			</v-list>
-		</v-menu>
+			</VList>
+		</VMenu>
 
-		<drawer-item
+		<DrawerItem
 			v-if="file"
 			v-model:active="editDrawerActive"
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
 			:disabled="internalDisabled"
+			:non-editable="nonEditable"
 			@input="update"
 		>
 			<template #actions>
-				<v-button secondary rounded icon :download="file.filename_download" :href="getAssetUrl(file.id, true)">
-					<v-icon name="download" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					icon="download"
+					:href="getAssetUrl(file.id, { isDownload: true })"
+					:download="file.filename_download"
+					secondary
+				/>
 			</template>
-		</drawer-item>
+		</DrawerItem>
 
-		<v-dialog
+		<VDialog
 			:model-value="activeDialog === 'upload'"
 			@esc="activeDialog = null"
 			@update:model-value="activeDialog = null"
 		>
-			<v-card>
-				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
-				<v-card-text>
-					<v-upload from-url :folder="folder" @input="onUpload" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="activeDialog = null">{{ t('cancel') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+			<VCard>
+				<VCardTitle>{{ $t('upload_from_device') }}</VCardTitle>
+				<VCardText>
+					<VUpload from-url :folder="folder" :accept="combinedAcceptString" @input="onUpload" />
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="activeDialog = null">{{ $t('cancel') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<drawer-files
+		<DrawerFiles
 			v-if="activeDialog === 'choose'"
 			:folder="folder"
+			:field="field"
 			:active="activeDialog === 'choose'"
 			:filter="customFilter"
 			@update:active="activeDialog = null"
 			@input="setSelection"
 		/>
 
-		<v-dialog
+		<VDialog
 			:model-value="activeDialog === 'url'"
 			:persistent="urlLoading"
 			@update:model-value="activeDialog = null"
 			@esc="activeDialog = null"
 		>
-			<v-card>
-				<v-card-title>{{ t('import_from_url') }}</v-card-title>
-				<v-card-text>
-					<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-						{{ t('cancel') }}
-					</v-button>
-					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-						{{ t('import_label') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+			<VCard>
+				<VCardTitle>{{ $t('import_from_url') }}</VCardTitle>
+				<VCardText>
+					<VInput v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
+				</VCardText>
+				<VCardActions>
+					<VButton :disabled="urlLoading" secondary @click="activeDialog = null">
+						{{ $t('cancel') }}
+					</VButton>
+					<VButton :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+						{{ $t('import_label') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 
@@ -347,9 +399,15 @@ function useURLImport() {
 		var(--v-list-background-color, var(--theme--form--field--input--background))
 	);
 
-	&.active,
-	&:focus-within,
-	&:focus-visible {
+	&.disabled:not(.non-editable) {
+		--v-list-item-color: var(--theme--foreground-subdued);
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+		--v-list-item-border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
+	}
+
+	&.active:not(.disabled),
+	&:focus-within:not(.disabled),
+	&:focus-visible:not(.disabled) {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		--v-list-item-border-color-hover: var(--v-list-item-border-color);
 
@@ -361,7 +419,7 @@ function useURLImport() {
 .item-actions {
 	@include mixins.list-interface-item-actions;
 
-	padding-left: 8px;
+	padding-inline-start: 0.4375rem;
 }
 
 .preview {
@@ -370,16 +428,16 @@ function useURLImport() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40px;
-	height: 40px;
-	margin-left: -8px;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 
 	img {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		object-fit: cover;
 	}
 
@@ -388,11 +446,11 @@ function useURLImport() {
 	}
 
 	&.is-svg {
-		padding: 4px;
+		padding: 0.25rem;
 
 		img {
 			object-fit: contain;
-			filter: drop-shadow(0px 0px 8px rgb(0 0 0 / 0.25));
+			filter: drop-shadow(0 0 8px rgb(0 0 0 / 0.25));
 		}
 	}
 }
@@ -404,7 +462,7 @@ function useURLImport() {
 .extension {
 	color: var(--theme--primary);
 	font-weight: 600;
-	font-size: 11px;
+	font-size: 0.625rem;
 	text-transform: uppercase;
 }
 </style>

@@ -1,7 +1,16 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+
 interface Props {
 	/** Name of another component to mirror */
-	type?: 'input' | 'input-tall' | 'block-list-item' | 'block-list-item-dense' | 'list-item-icon' | 'text';
+	type?:
+		| 'input'
+		| 'input-tall'
+		| 'block-list-item'
+		| 'block-list-item-dense'
+		| 'list-item-icon'
+		| 'text'
+		| 'pagination';
 }
 
 withDefaults(defineProps<Props>(), {
@@ -15,10 +24,15 @@ withDefaults(defineProps<Props>(), {
 			<div class="icon" />
 			<div class="text" />
 		</template>
+		<template v-if="type === 'pagination'">
+			<VButton v-for="page in 3" :key="page" class="page" small disabled></VButton>
+		</template>
 	</div>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 /*
 
 	Available Variables:
@@ -38,31 +52,42 @@ withDefaults(defineProps<Props>(), {
 	overflow: hidden;
 	background-color: var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 
+	/* stylelint-disable-next-line */
 	&::after {
 		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline: 0;
 		z-index: 1;
-		height: 100%;
+		block-size: 100%;
 		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
-		animation: loading 1.5s infinite;
+		animation: loading-ltr 1.5s infinite;
 		content: '';
+
+		html[dir='rtl'] & {
+			transform: translateX(100%);
+			animation: loading-rtl 1.5s infinite;
+		}
 	}
 
-	@keyframes loading {
+	@keyframes loading-ltr {
 		100% {
 			transform: translateX(100%);
+		}
+	}
+
+	@keyframes loading-rtl {
+		100% {
+			transform: translateX(-100%);
 		}
 	}
 }
 
 .input,
 .input-tall {
-	width: 100%;
-	height: var(--theme--form--field--input--height);
+	inline-size: 100%;
+	block-size: var(--theme--form--field--input--height);
 	border: var(--theme--border-width) solid
 		var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
@@ -71,37 +96,37 @@ withDefaults(defineProps<Props>(), {
 }
 
 .input-tall {
-	height: var(--input-height-tall);
+	block-size: var(--input-height-default);
 }
 
 .block-list-item {
-	width: 100%;
-	height: var(--theme--form--field--input--height);
+	inline-size: 100%;
+	block-size: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	@include loader;
 
 	& + & {
-		margin-top: 8px;
+		margin-block-start: 0.4375rem;
 	}
 }
 
 .block-list-item-dense {
-	width: 100%;
-	height: 44px;
+	inline-size: 100%;
+	block-size: 2.5rem;
 	border-radius: var(--theme--border-radius);
 
 	@include loader;
 
 	& + & {
-		margin-top: 4px;
+		margin-block-start: 0.25rem;
 	}
 }
 
 .text {
 	flex-grow: 1;
-	height: 12px;
-	border-radius: 6px;
+	block-size: 0.6875rem;
+	border-radius: 0.3125rem;
 
 	@include loader;
 }
@@ -109,14 +134,14 @@ withDefaults(defineProps<Props>(), {
 .list-item-icon {
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: 46px;
+	inline-size: 100%;
+	block-size: 2.5625rem;
 
 	.icon {
 		flex-shrink: 0;
-		width: 24px;
-		height: 24px;
-		margin-right: 12px;
+		inline-size: 1.375rem;
+		block-size: 1.375rem;
+		margin-inline-end: 0.6875rem;
 		border-radius: 50%;
 
 		@include loader;
@@ -124,10 +149,42 @@ withDefaults(defineProps<Props>(), {
 
 	.text {
 		flex-grow: 1;
-		height: 12px;
-		border-radius: 6px;
+		block-size: 0.6875rem;
+		border-radius: 0.3125rem;
 
 		@include loader;
+	}
+}
+
+.pagination {
+	display: flex;
+
+	.gap {
+		display: none;
+		margin: 0 0.25rem;
+		line-height: 2;
+	}
+
+	@include mixins.breakpoint-up('sm') {
+		.gap {
+			display: inline;
+		}
+	}
+
+	.v-button {
+		margin: 0 0.125rem;
+		@include loader;
+		border-radius: var(--theme--border-radius);
+		inline-size: 2rem;
+		block-size: 2rem;
+	}
+
+	.v-button:first-child {
+		margin-inline-start: 0;
+	}
+
+	.v-button:last-child {
+		margin-inline-end: 0;
 	}
 }
 

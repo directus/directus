@@ -1,15 +1,40 @@
 import { describe, expect, it } from 'vitest';
-
-import { extract, getPublicURL, getRootPath } from '@/utils/get-root-path';
+import { extractPath, extractRoot, getPublicURL, getRootPath } from '@/utils/get-root-path';
 
 Object.defineProperty(window, 'location', {
 	value: { href: '', pathname: '' },
 	writable: true,
 });
 
-describe('extract', () => {
+describe('extractRoot', () => {
 	it('Returns the part of the string leading up to /admin', () => {
-		expect(extract('/path/to/admin/something')).toBe('/path/to/');
+		expect(extractRoot('/path/to/admin/something')).toBe('/path/to/');
+	});
+
+	it('Returns root for full URL', () => {
+		expect(extractRoot('https://example.com/path/to/admin/something')).toBe('https://example.com/path/to/');
+	});
+});
+
+describe('extractPath', () => {
+	it('Returns the part of the string from /admin onwards', () => {
+		expect(extractPath('/path/to/admin/something')).toBe('/something');
+	});
+
+	it('Extracts path from full URL', () => {
+		expect(extractPath('https://example.com/admin/content')).toBe('/content');
+	});
+
+	it('Preserves query string and hash', () => {
+		expect(extractPath('https://example.com/admin/content?foo=bar#section')).toBe('/content?foo=bar#section');
+	});
+
+	it('Returns /admin when at admin root', () => {
+		expect(extractPath('/admin')).toBe('/');
+	});
+
+	it('Handles nested admin paths', () => {
+		expect(extractPath('https://example.com/subpath/admin/settings/project')).toBe('/settings/project');
 	});
 });
 

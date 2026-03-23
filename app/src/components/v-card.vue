@@ -24,29 +24,29 @@ withDefaults(defineProps<Props>(), {
 	Available Variables:
 
 		--v-card-min-width         [none]
-		--v-card-padding           [16px]
+		--v-card-padding           [0.875rem]
 		--v-card-background-color  [var(--theme--form--field--input--background-subdued)]
 
 */
 
 .v-card {
-	--theme--form--row-gap: 52px;
+	--theme--form--row-gap: 2.9375rem;
 
-	min-width: var(--v-card-min-width, none);
-	max-width: 400px;
-	height: auto;
-	max-height: 90vh;
+	min-inline-size: var(--v-card-min-width, none);
+	max-inline-size: 22.5rem;
+	block-size: auto;
+	max-block-size: 90vh;
 	overflow: auto;
 
 	/* Page Content Spacing */
-	font-size: 15px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 	background-color: var(--v-card-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
 
 	& > :first-child {
-		border-top-left-radius: var(--theme--border-radius);
-		border-top-right-radius: var(--theme--border-radius);
+		border-start-start-radius: var(--theme--border-radius);
+		border-start-end-radius: var(--theme--border-radius);
 	}
 
 	&.disabled {

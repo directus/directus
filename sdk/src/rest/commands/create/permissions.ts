@@ -1,5 +1,5 @@
 import type { DirectusPermission } from '../../../schema/permission.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreatePermissionOutput<
@@ -18,7 +18,7 @@ export type CreatePermissionOutput<
  */
 export const createPermissions =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
-		items: Partial<DirectusPermission<Schema>>[],
+		items: NestedPartial<DirectusPermission<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreatePermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createPermissions =
  */
 export const createPermission =
 	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
-		item: Partial<DirectusPermission<Schema>>,
+		item: NestedPartial<DirectusPermission<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreatePermissionOutput<Schema, TQuery>, Schema> =>
 	() => ({

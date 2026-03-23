@@ -10,14 +10,16 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
-test('Errors if limits are exceeded', () => {
-	expect(checkUserLimits({ admin: 4, app: 0, api: 0 })).rejects.toThrowError('Active Admin users limit exceeded.');
+test('Errors if limits are exceeded', async () => {
+	await expect(checkUserLimits({ admin: 4, app: 0, api: 0 })).rejects.toThrowError(
+		'Active Admin users limit exceeded.',
+	);
 
-	expect(checkUserLimits({ admin: 2, app: 2, api: 0 })).rejects.toThrowError('Active App users limit exceeded.');
+	await expect(checkUserLimits({ admin: 2, app: 2, api: 0 })).rejects.toThrowError('Active App users limit exceeded.');
 
-	expect(checkUserLimits({ admin: 0, app: 4, api: 0 })).rejects.toThrowError('Active App users limit exceeded.');
+	await expect(checkUserLimits({ admin: 0, app: 4, api: 0 })).rejects.toThrowError('Active App users limit exceeded.');
 
-	expect(checkUserLimits({ admin: 0, app: 0, api: 4 })).rejects.toThrowError('Active API users limit exceeded.');
+	await expect(checkUserLimits({ admin: 0, app: 0, api: 4 })).rejects.toThrowError('Active API users limit exceeded.');
 });
 
 test('Does not errors if limits are not exceeded', () => {

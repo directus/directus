@@ -1,4 +1,6 @@
 ---
+first_name: Име
+last_name: Презиме
 identifier: Identifikator
 avatar: Аватар
 application: Апликација
@@ -105,6 +107,7 @@ confirm_revert_body: Ovo će vratiti stavku u izabrano stanje.
 display: Pokazatelj
 settings_update_success: Podešavanja su ažurirana
 title: Наслов
+subtitle: Поднаслов
 revision_delta_created: Napravljeno
 revision_delta_created_externally: Spoljna kreacija
 revision_delta_updated: 'Ažurirano 1 polje'
@@ -229,9 +232,6 @@ fields:
     description: Опис
   directus_policies:
     description: Опис
-  directus_webhooks:
-    name: Име
-    status: Стање
 field_options:
   directus_activity:
     create: Креирај
@@ -241,9 +241,9 @@ field_options:
   directus_roles:
     fields:
       name_name: Име
-  directus_webhooks:
-    actions_create: Креирај
 comment: Коментар
+ai_tools:
+  files: Фајлови
 description: Опис
 done: Завршено
 email: Имејл
@@ -297,7 +297,12 @@ layouts:
     compact: Компактни
     cozy: Удобно
 both: Оба
+triggers:
+  webhook:
+    method: Метод
 operations:
   mail:
     template: Шаблон
+  request:
+    method: Метод
 compact: Компактни

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 type InterfaceOptions = {
 	minValue: number;
@@ -26,21 +27,21 @@ const starCount = computed(() => {
 });
 
 const ratingPercentage = computed(() => ({
-	width: (Number(props.value) / starCount.value) * 100 + '%',
+	inlineSize: (Number(props.value) / starCount.value) * 100 + '%',
 }));
 </script>
 
 <template>
 	<span v-if="simple" class="rating simple">
-		<v-icon small name="star" filled />
+		<VIcon small name="star" filled />
 		{{ value }}
 	</span>
 	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
 		<div class="active" :style="ratingPercentage">
-			<v-icon v-for="index in starCount" :key="index" small name="star" filled />
+			<VIcon v-for="index in starCount" :key="index" small name="star" filled />
 		</div>
 		<div class="inactive">
-			<v-icon v-for="index in starCount" :key="index" small name="star" />
+			<VIcon v-for="index in starCount" :key="index" small name="star" />
 		</div>
 	</div>
 </template>
@@ -50,36 +51,36 @@ const ratingPercentage = computed(() => ({
 	&.simple {
 		display: inline-flex;
 		align-items: center;
-		padding: 2px 6px 2px 4px;
+		padding: 0.125rem 0.3125rem 0.125rem 0.25rem;
 		color: #ffc107;
 		font-weight: 600;
 		background-color: rgb(255 193 7 / 0.15);
 		border-radius: var(--theme--border-radius);
 
 		.v-icon {
-			margin-right: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 
 	&.detailed {
 		position: relative;
-		width: min-content;
+		inline-size: min-content;
 		display: inline-flex;
-		height: var(--v-icon-size, 24px);
+		block-size: var(--v-icon-size, 1.375rem);
 
 		.active {
 			position: relative;
 			z-index: 2;
 			display: inline-flex;
-			width: 0%;
+			inline-size: 0%;
 			overflow: hidden;
 			color: #ffc107;
 		}
 
 		.inactive {
 			position: absolute;
-			top: 0;
-			left: 0;
+			inset-block-start: 0;
+			inset-inline-start: 0;
 			z-index: 1;
 			display: inline-flex;
 			color: var(--theme--background-normal);

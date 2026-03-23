@@ -1,12 +1,13 @@
+import type { ReadStream } from 'node:fs';
+import { EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { EXTENSION_TYPES } from '@directus/extensions';
 import {
 	account,
-	describe,
-	list,
 	type AccountOptions,
+	describe,
 	type DescribeOptions,
+	list,
 	type ListOptions,
 	type ListQuery,
 } from '@directus/extensions-registry';
@@ -114,6 +115,10 @@ router.get(
 router.get(
 	`/registry/account/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
 		}
@@ -135,6 +140,10 @@ router.get(
 router.get(
 	`/registry/extension/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
 		}
@@ -294,12 +303,12 @@ router.get(
 		const chunk = req.params['chunk'] as string;
 		const extensionManager = getExtensionManager();
 
-		let source: string | null;
+		let source: ReadStream | null;
 
 		if (chunk === 'index.js') {
-			source = extensionManager.getAppExtensionsBundle();
+			source = await extensionManager.getAppExtensionChunk();
 		} else {
-			source = extensionManager.getAppExtensionChunk(chunk);
+			source = await extensionManager.getAppExtensionChunk(chunk);
 		}
 
 		if (source === null) {
@@ -314,7 +323,7 @@ router.get(
 		);
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
-		res.end(source);
+		source.pipe(res);
 	}),
 );
 

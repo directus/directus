@@ -73,14 +73,14 @@ export default defineInterface({
 							options: {
 								text: '$t:interfaces.list-m2m.display_template_configure_notice',
 							},
-					  }
+						}
 					: {
 							interface: 'system-display-template',
 							note: '$t:interfaces.list-m2a.prefix_note',
 							options: {
 								collectionName: relations.o2m?.collection,
 							},
-					  },
+						},
 		},
 	],
 	preview: PreviewSVG,

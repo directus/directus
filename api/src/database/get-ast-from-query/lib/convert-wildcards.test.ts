@@ -1,11 +1,11 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-
+import type { Accountability } from '@directus/types';
+import { getRelation } from '@directus/utils';
+import knex from 'knex';
 import { expect, test, vi } from 'vitest';
+import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { Client_SQLite3 } from '../../run-ast/lib/apply-query/mock.js';
 import { convertWildcards } from './convert-wildcards.js';
-import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import type { Accountability } from '@directus/types';
-import knex from 'knex';
 
 vi.mock('../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js');
 
@@ -29,7 +29,7 @@ test('converting nothing without any permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: [], alias: {}, accountability },
+		{ collection: 'articles', fields: [], alias: {}, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -40,7 +40,7 @@ test('converting * without any permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['*'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -51,7 +51,7 @@ test('converting * without any permissions and alias is null', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: null, accountability },
+		{ collection: 'articles', fields: ['*'], alias: null, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -62,7 +62,7 @@ test('converting * with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['*'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -73,7 +73,7 @@ test('converting * with just id permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['id']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['*'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -84,7 +84,7 @@ test('converting title with any permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['title']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['title'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['title'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -95,7 +95,7 @@ test('converting invalid field with any permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['invalid'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['invalid'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -106,7 +106,7 @@ test('converting invalid field with id, title permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['id', 'title']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['invalid'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['invalid'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -115,7 +115,13 @@ test('converting invalid field with id, title permissions', async () => {
 
 test('converting * with admin permissions', async () => {
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: {}, accountability: { admin: true } as Accountability },
+		{
+			collection: 'articles',
+			fields: ['*'],
+			alias: {},
+			accountability: { admin: true } as Accountability,
+			backlink: true,
+		},
 		{ knex: db, schema },
 	);
 
@@ -124,7 +130,13 @@ test('converting * with admin permissions', async () => {
 
 test('converting title with admin permissions', async () => {
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['title'], alias: {}, accountability: { admin: true } as Accountability },
+		{
+			collection: 'articles',
+			fields: ['title'],
+			alias: {},
+			accountability: { admin: true } as Accountability,
+			backlink: true,
+		},
 		{ knex: db, schema },
 	);
 
@@ -135,7 +147,7 @@ test('converting alias field with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: { alias: 'id' }, accountability },
+		{ collection: 'articles', fields: ['*'], alias: { alias: 'id' }, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -146,7 +158,7 @@ test('converting invalid alias field with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: { alias: 'invalid' }, accountability },
+		{ collection: 'articles', fields: ['*'], alias: { alias: 'invalid' }, accountability, backlink: true },
 		{ knex: db, schema },
 	);
 
@@ -171,7 +183,7 @@ test('converting *.* with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*.*'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['*.*'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema: schemaRelational },
 	);
 
@@ -182,7 +194,7 @@ test('converting *.*.* with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*.*.*'], alias: {}, accountability },
+		{ collection: 'articles', fields: ['*.*.*'], alias: {}, accountability, backlink: true },
 		{ knex: db, schema: schemaRelational },
 	);
 
@@ -193,7 +205,7 @@ test('converting *.* and alias with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*.*'], alias: { alias: 'title' }, accountability },
+		{ collection: 'articles', fields: ['*.*'], alias: { alias: 'title' }, accountability, backlink: true },
 		{ knex: db, schema: schemaRelational },
 	);
 
@@ -204,7 +216,7 @@ test('converting alias as year(date) with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*.*'], alias: { alias: 'year(date)' }, accountability },
+		{ collection: 'articles', fields: ['*.*'], alias: { alias: 'year(date)' }, accountability, backlink: true },
 		{ knex: db, schema: schemaRelational },
 	);
 
@@ -215,9 +227,50 @@ test('converting year(alias) as date with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*.*'], alias: { 'year(alias)': 'date' }, accountability },
+		{ collection: 'articles', fields: ['*.*'], alias: { 'year(alias)': 'date' }, accountability, backlink: true },
 		{ knex: db, schema: schemaRelational },
 	);
 
 	expect(result).toEqual(['author.*', 'tags.*', 'id', 'title', 'date', 'year(alias)']);
+});
+
+test('converting *.* and alias with id, title and author permissions', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['id', 'title', 'author']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles', fields: ['*.*'], alias: { alias: 'title' }, accountability, backlink: true },
+		{ knex: db, schema: schemaRelational },
+	);
+
+	expect(result).toEqual(['author.*', 'id', 'title', 'alias']);
+});
+
+test('backlink set to true', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles_tags_junction', fields: ['*.*'], alias: {}, accountability, backlink: true },
+		{
+			knex: db,
+			schema: schemaRelational,
+			parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')!,
+		},
+	);
+
+	expect(result).toEqual(['articles_id.*', 'tags_id.*', 'id']);
+});
+
+test('backlink set to false', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles_tags_junction', fields: ['*.*'], alias: {}, accountability, backlink: false },
+		{
+			knex: db,
+			schema: schemaRelational,
+			parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')!,
+		},
+	);
+
+	expect(result).toEqual(['tags_id.*', 'id', 'articles_id']);
 });

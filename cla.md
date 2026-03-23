@@ -16,13 +16,14 @@ distributed or made available by Directus, You reserve all right, title, and int
    Contributor. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the
    direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or
    more of the outstanding shares, or (iii) beneficial ownership of such entity.\
-   "Contribution" shall mean the code, documentation or other original works of authorship, invention or improvement, including
-   any modifications or additions to an existing work, that is intentionally submitted by You to Directus for inclusion in,
-   or documentation of, any of the projects owned or managed by Directus (the "Work"). For the purposes of this definition,
-   "submitted" means any form of electronic, verbal, or written communication sent to Directus or its representatives, including
-   but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems
-   that are managed by, or on behalf of, Directus for the purpose of discussing and improving the Work, but excluding communication
-   that is conspicuously marked or otherwise designated in writing by You as "Not a Contribution."
+   "Contribution" shall mean the code, documentation or other original works of authorship, invention or improvement,
+   including any modifications or additions to an existing work, that is intentionally submitted by You to Directus for
+   inclusion in, or documentation of, any of the projects owned or managed by Directus (the "Work"). For the purposes of
+   this definition, "submitted" means any form of electronic, verbal, or written communication sent to Directus or its
+   representatives, including but not limited to communication on electronic mailing lists, source code control systems,
+   and issue tracking systems that are managed by, or on behalf of, Directus for the purpose of discussing and improving
+   the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by You as "Not
+   a Contribution."
 
 2. Grant of Copyright License. Subject to the terms and conditions of this Agreement, You hereby grant to Directus and
    the recipients of software distributed or made available by Directus a perpetual, worldwide, non-exclusive,

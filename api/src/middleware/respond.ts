@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { getDateTimeFormatted } from '@directus/utils';
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
@@ -8,16 +9,20 @@ import { ExportService } from '../services/import-export.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getCacheKey } from '../utils/get-cache-key.js';
-import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
-import { permissionsCachable } from '../utils/permissions-cachable.js';
+import { permissionsCacheable } from '../utils/permissions-cacheable.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
 	const logger = useLogger();
 
 	const { cache } = getCache();
+
+	// Support custom cache instance and TTL via res.locals
+	const cacheInstance = res.locals['cacheInstance'] || cache;
+	const cacheTTL = res.locals['cacheTTL'] ?? getMilliseconds(env['CACHE_TTL']);
+	const hasCustomCache = !!res.locals['cacheInstance'];
 
 	let exceedsMaxSize = false;
 
@@ -27,33 +32,40 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		if (maxSize !== null) exceedsMaxSize = valueSize > maxSize;
 	}
 
-	if (
-		(req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
-		req.originalUrl?.startsWith('/auth') === false &&
-		env['CACHE_ENABLED'] === true &&
-		cache &&
-		!req.sanitizedQuery.export &&
-		res.locals['cache'] !== false &&
-		exceedsMaxSize === false &&
-		(await permissionsCachable(
-			req.collection,
-			{
-				knex: getDatabase(),
-				schema: req.schema,
-			},
-			req.accountability,
-		))
-	) {
+	// Custom cache bypasses global cache settings (CACHE_ENABLED, permissionsCacheable)
+	const shouldCache = hasCustomCache
+		? res.locals['cache'] !== false && cacheInstance && !req.sanitizedQuery.export && exceedsMaxSize === false
+		: (req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
+			req.originalUrl?.startsWith('/auth') === false &&
+			env['CACHE_ENABLED'] === true &&
+			cache &&
+			!req.sanitizedQuery.export &&
+			res.locals['cache'] !== false &&
+			exceedsMaxSize === false &&
+			(await permissionsCacheable(
+				req.collection,
+				{
+					knex: getDatabase(),
+					schema: req.schema,
+				},
+				req.accountability,
+			));
+
+	if (shouldCache) {
 		const key = await getCacheKey(req);
 
 		try {
-			await setCacheValue(cache, key, res.locals['payload'], getMilliseconds(env['CACHE_TTL']));
-			await setCacheValue(cache, `${key}__expires_at`, { exp: Date.now() + getMilliseconds(env['CACHE_TTL'], 0) });
+			await setCacheValue(cacheInstance, key, res.locals['payload'], cacheTTL);
+			await setCacheValue(cacheInstance, `${key}__expires_at`, { exp: Date.now() + cacheTTL });
 		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
 		}
 
-		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['CACHE_TTL']), true, true));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL, !hasCustomCache, true));
+		res.setHeader('Vary', 'Origin, Cache-Control');
+	} else if (res.locals['cacheTTL'] !== undefined) {
+		// Custom TTL for headers only (no storage) - useful when caching is handled elsewhere
+		res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL, false, true));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 	} else {
 		// Don't cache anything by default
@@ -72,7 +84,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			filename += 'Export';
 		}
 
-		filename += ' ' + getDateFormatted();
+		filename += ' ' + getDateTimeFormatted();
 
 		if (req.sanitizedQuery.export === 'json') {
 			res.attachment(`${filename}.json`);
@@ -90,6 +102,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.attachment(`${filename}.csv`);
 			res.set('Content-Type', 'text/csv');
 			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv'));
+		}
+
+		if (req.sanitizedQuery.export === 'csv_utf8') {
+			res.attachment(`${filename}.csv`);
+			res.set('Content-Type', 'text/csv; charset=utf-8');
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv_utf8'));
 		}
 
 		if (req.sanitizedQuery.export === 'yaml') {

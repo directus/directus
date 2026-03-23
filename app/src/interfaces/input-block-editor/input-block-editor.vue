@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import api from '@/api';
-import { useCollectionsStore } from '@/stores/collections';
-import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
-import { cloneDeep, isEqual } from 'lodash';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { isEqual } from 'lodash';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';
+import { sanitizeValue } from './sanitize';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
+import api from '@/api';
+import VDrawer from '@/components/v-drawer.vue';
+import VUpload from '@/components/v-upload.vue';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import { useCollectionsStore } from '@/stores/collections';
+import { useServerStore } from '@/stores/server';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 import './editorjs-overrides.css';
 
@@ -19,6 +23,7 @@ const RedactorDomChanged = 'redactor dom changed';
 const props = withDefaults(
 	defineProps<{
 		disabled?: boolean;
+		nonEditable?: boolean;
 		autofocus?: boolean;
 		value?: Record<string, any> | null;
 		bordered?: boolean;
@@ -39,9 +44,9 @@ const bus = useBus();
 
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
 
-const { t } = useI18n();
-
 const collectionStore = useCollectionsStore();
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFileHandler, handleFile } =
 	useFileHandler();
@@ -75,6 +80,7 @@ onMounted(async () => {
 	editorjsRef.value = new EditorJS({
 		logLevel: 'ERROR' as EditorJS.LogLevels,
 		holder: editorElement.value,
+		// Do not set readOnly to true here — see the watcher below
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
@@ -107,10 +113,25 @@ onUnmounted(() => {
 });
 
 watch(
+	[editorjsIsReady, () => props.disabled],
+	async ([isReady, isDisabled]) => {
+		if (!isReady) return;
+
+		// Note: EditorJS must be ready before readOnly is toggled; otherwise, the content won’t render, which could result in data loss!
+		await nextTick();
+		editorjsRef.value?.readOnly.toggle(isDisabled);
+	},
+	{ immediate: true },
+);
+
+watch(
 	() => props.value,
 	async (newVal, oldVal) => {
 		// First value will be set in 'onMounted'
 		if (!editorjsRef.value || !editorjsIsReady.value) return;
+
+		// During refresh, item is temporarily null and the field is disabled — skip to avoid clearing the editor
+		if (newVal === null && props.disabled) return;
 
 		if (haveValuesChanged.value) {
 			haveValuesChanged.value = false;
@@ -154,26 +175,22 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 	}
 }
 
-function sanitizeValue(value: any): EditorJS.OutputData | null {
-	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
-
-	return cloneDeep({
-		time: value?.time || Date.now(),
-		version: value?.version || '0.0.0',
-		blocks: value.blocks,
-	});
-}
+const menuActive = computed(() => fileHandler.value !== null);
 </script>
 
 <template>
-	<div class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+	<div v-prevent-focusout="menuActive" class="input-block-editor">
+		<div
+			ref="editorElement"
+			class="editor"
+			:class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"
+		></div>
 
-		<v-drawer
+		<VDrawer
 			v-if="haveFilesAccess && !disabled"
 			:model-value="fileHandler !== null"
 			icon="image"
-			:title="t('upload_from_device')"
+			:title="$t('upload_from_device')"
 			cancelable
 			@update:model-value="unsetFileHandler"
 			@cancel="unsetFileHandler"
@@ -182,16 +199,17 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 				<div v-if="currentPreview" class="uploader-preview-image">
 					<img :src="currentPreview" />
 				</div>
-				<v-upload
+				<VUpload
 					:ref="uploaderComponentElement"
 					:multiple="false"
 					:folder="folder"
 					from-library
 					from-url
+					:accept="allowedMimeTypes"
 					@input="handleFile"
 				/>
 			</div>
-		</v-drawer>
+		</VDrawer>
 	</div>
 </template>
 
@@ -201,31 +219,42 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	background-color: #0d6efd;
 	border-color: #0d6efd;
 }
+
 .btn--gray {
 	color: #fff !important;
 	background-color: #7c7c7c;
 	border-color: #7c7c7c;
 }
 
+.input-block-editor .editor {
+	border-radius: var(--theme--border-radius);
+	padding: var(--theme--form--field--input--padding)
+		max(1.8125rem, calc(var(--theme--form--field--input--padding) + 0.875rem));
+}
+
 .disabled {
-	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--theme--form--field--input--background-subdued);
-	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
+
+	&:not(.non-editable) {
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border-color: var(--theme--form--field--input--border-color);
+	}
 }
 
 .bordered {
-	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
-	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: var(--theme--border-radius);
 
-	&:hover {
-		border-color: var(--theme--form--field--input--border-color-hover);
-	}
+	&:not(.disabled) {
+		background-color: var(--theme--form--field--input--background);
 
-	&:focus-within {
-		border-color: var(--theme--form--field--input--border-color-focus);
+		&:hover {
+			border-color: var(--theme--form--field--input--border-color-hover);
+		}
+
+		&:focus-within {
+			border-color: var(--theme--form--field--input--border-color-focus);
+		}
 	}
 }
 
@@ -243,22 +272,21 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .uploader-drawer-content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 
 .uploader-preview-image {
-	margin-bottom: var(--theme--form--row-gap);
+	margin-block-end: var(--theme--form--row-gap);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 
 .uploader-preview-image img {
 	display: block;
-	width: auto;
-	max-width: 100%;
-	height: auto;
-	max-height: 40vh;
+	inline-size: auto;
+	max-inline-size: 100%;
+	block-size: auto;
+	max-block-size: 40vh;
 	margin: 0 auto;
 	object-fit: contain;
 }

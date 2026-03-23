@@ -1,9 +1,10 @@
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { Field, Relation, Type } from '@directus/types';
 import { getRelationType } from '@directus/utils';
 import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 export type FieldNode = {
 	name: string;
@@ -28,7 +29,10 @@ export function useFieldTree(
 	collection: Ref<string | null>,
 	inject?: Ref<{ fields: Field[]; relations?: Relation[] } | null>,
 	filter: (field: Field, parent?: FieldNode) => boolean = () => true,
+	includeRelations = true,
+	includeAliasFields = false,
 ): FieldTreeContext {
+	const { t } = useI18n();
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
@@ -61,6 +65,7 @@ export function useFieldTree(
 			.concat(injectedFields || [])
 			.filter(
 				(field) =>
+					includeAliasFields ||
 					field.meta?.special?.includes('group') ||
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data')),
 			)
@@ -77,9 +82,7 @@ export function useFieldTree(
 	}
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
-		const { relationType, relatedCollections } = getRelationTypeAndRelatedCollections(field);
 		const pathContext = parent?.path ? parent.path + '.' : '';
-		const keyContext = parent?.key ? parent.key + '.' : '';
 
 		if (field?.meta?.special?.includes('group')) {
 			const node: FieldNode = {
@@ -95,11 +98,11 @@ export function useFieldTree(
 
 			const children = getTree(field.collection, node);
 
-			if (children) {
+			if (includeRelations && children) {
 				for (const child of children) {
 					if (child.relatedCollection) {
 						child.children = [
-							{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
+							{ name: t('loading'), field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
 						];
 					}
 				}
@@ -110,6 +113,21 @@ export function useFieldTree(
 				children,
 			};
 		}
+
+		if (!includeRelations) {
+			return {
+				name: field.name,
+				field: field.field,
+				collection: field.collection,
+				relatedCollection: undefined,
+				key: field.field,
+				path: field.field,
+				type: field.type,
+			};
+		}
+
+		const { relationType, relatedCollections } = getRelationTypeAndRelatedCollections(field);
+		const keyContext = parent?.key ? parent.key + '.' : '';
 
 		if (relatedCollections.length <= 1 && relationType !== 'm2a') {
 			return {

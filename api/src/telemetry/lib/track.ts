@@ -1,5 +1,5 @@
-import { getNodeEnv } from '@directus/utils/node';
 import { setTimeout } from 'timers/promises';
+import { getNodeEnv } from '@directus/utils/node';
 import { useLogger } from '../../logger/index.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
 import { getReport } from './get-report.js';

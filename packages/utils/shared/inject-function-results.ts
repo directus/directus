@@ -1,6 +1,6 @@
-import { cloneDeep, get, isPlainObject, set } from 'lodash-es';
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { FieldFunction, Filter } from '@directus/types';
+import { cloneDeep, get, isPlainObject, set } from 'lodash-es';
 import { functions } from './functions.js';
 
 /**
@@ -17,7 +17,7 @@ import { functions } from './functions.js';
  * // { date: '2022-03-29T11:37:56Z', 'year(date)': 2022 }
  * ```
  */
-export function injectFunctionResults(payload: Record<string, any>, filter: Filter) {
+export function injectFunctionResults(payload: Record<string, any>, filter: Filter): Record<string, any> {
 	const newInput = cloneDeep(payload);
 
 	processFilterLevel(filter);

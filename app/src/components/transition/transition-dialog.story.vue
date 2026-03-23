@@ -7,9 +7,9 @@ const show = ref(true);
 
 <template>
 	<Story title="Transition/TransitionDialog">
-		<transition-dialog>
+		<TransitionDialog>
 			<div v-if="show" class="box">This is inside transition dialog.</div>
-		</transition-dialog>
+		</TransitionDialog>
 
 		<template #controls>
 			<HstCheckbox v-model="show" title="Toggle" />
@@ -20,8 +20,8 @@ const show = ref(true);
 <style>
 .box {
 	background-color: var(--theme--background-normal);
-	height: 200px;
-	width: 400px;
+	block-size: 11.25rem;
+	inline-size: 22.5rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;

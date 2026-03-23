@@ -9,20 +9,18 @@
 
 	Available Variables:
 
-		--v-list-item-content-padding      [9px 0]
+		--v-list-item-content-padding      [0.5rem 0]
 		--v-list-item-content-font-family  [inherit]
 
 */
 
 .v-list-item-content {
 	display: flex;
-	flex-basis: 0;
-	flex-grow: 1;
-	flex-shrink: 1;
+	flex: 1 1 0;
 	flex-wrap: wrap;
 	align-items: center;
 	align-self: center;
-	padding: var(--v-list-item-content-padding, 9px 0);
+	padding: var(--v-list-item-content-padding, 0.5rem 0);
 	overflow: hidden;
 	font-family: var(--v-list-item-content-font-family, inherit);
 }
@@ -33,18 +31,16 @@
 }
 
 .v-list-item-content > :deep(*) {
-	flex-basis: 100%;
-	flex-grow: 1;
-	flex-shrink: 0;
+	flex: 1 0 100%;
 	line-height: 1.4;
 }
 
 .v-list-item-content > :slotted(*:not(:last-child)) {
-	margin-bottom: 2px;
+	margin-block-end: 0.125rem;
 }
 
 .v-list:not(.nav) .v-list-item-content,
 .v-list-item:not(.nav) .v-list-item-content {
-	--v-list-item-content-padding: 4px 0;
+	--v-list-item-content-padding: 0.25rem 0;
 }
 </style>

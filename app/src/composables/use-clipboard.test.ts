@@ -1,9 +1,9 @@
-import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { defineComponent, h, unref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { useClipboard } from './use-clipboard';
+import type { GlobalMountOptions } from '@/__utils__/types';
 
 vi.mock('@/utils/notify', () => ({
 	notify: vi.fn(),
@@ -80,6 +80,8 @@ describe('useClipboard', () => {
 	});
 
 	test('copyToClipboard returns false when it fails', async () => {
+		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
 		Object.defineProperty(navigator, 'clipboard', {
 			value: { writeText: vi.fn().mockImplementation(() => Promise.reject()) },
 			configurable: true,
@@ -92,6 +94,8 @@ describe('useClipboard', () => {
 		const isCopied = await wrapper.vm.copyToClipboard(copyValue);
 
 		expect(isCopied).toBe(false);
+
+		consoleSpy.mockRestore();
 	});
 
 	test('pasteFromClipboard returns string when it succeeds', async () => {
@@ -110,6 +114,8 @@ describe('useClipboard', () => {
 	});
 
 	test('pasteFromClipboard returns null when it fails', async () => {
+		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
 		Object.defineProperty(navigator, 'clipboard', {
 			value: { readText: vi.fn().mockImplementation(() => Promise.reject()) },
 			configurable: true,
@@ -120,5 +126,7 @@ describe('useClipboard', () => {
 		const clipboardValue = await wrapper.vm.pasteFromClipboard();
 
 		expect(clipboardValue).toBe(null);
+
+		consoleSpy.mockRestore();
 	});
 });

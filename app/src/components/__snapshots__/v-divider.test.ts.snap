@@ -2,6 +2,6 @@
 
 exports[`Mount component 1`] = `
 "<div data-v-51167fde="" class="v-divider inlineTitle"><span data-v-51167fde="" class="wrapper"><span data-v-51167fde="" class="type-text">Default slot</span></span>
-  <hr data-v-51167fde="" role="separator" aria-orientation="horizontal">
+  <hr data-v-51167fde="" aria-orientation="horizontal">
 </div>"
 `;
