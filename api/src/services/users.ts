@@ -424,7 +424,15 @@ export class UsersService extends ItemsService {
 
 		const user = await this.getUserByEmail(email);
 
-		if (user?.status !== 'invited') {
+		if (!user) {
+			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
+		}
+
+		if (user.status === 'active') {
+			throw new InvalidPayloadError({ reason: `Email address ${email} is already active` });
+		}
+
+		if (user.status !== 'invited') {
 			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
 		}
 
