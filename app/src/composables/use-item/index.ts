@@ -4,7 +4,7 @@ import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { cloneDeep, mergeWith } from 'lodash';
-import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
@@ -52,7 +52,7 @@ type UsableItem<T extends Item> = {
 export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
-	currentVersion: MaybeRef<ContentVersionMaybeNew | null> = null,
+	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -83,13 +83,8 @@ export function useItem<T extends Item>(
 		return { version: version.key, versionRaw: true };
 	});
 
-	const permissions = usePermissions(
-		collection,
-		primaryKey,
-		isNew,
-		computed(() => unref(currentVersion) !== null),
-	);
-
+	const isVersion = computed(() => unref(currentVersion) !== null);
+	const permissions = usePermissions(collection, primaryKey, isNew, isVersion);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
 
 	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);
@@ -104,7 +99,7 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, computed(() => unref(currentVersion)?.id ?? null)], refresh);
+	watch([collection, primaryKey, query], refresh);
 
 	refreshItem();
 
