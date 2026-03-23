@@ -7,6 +7,7 @@ export interface ProviderConfig {
 	optionsFields: DeepPartial<Field>[];
 	tokenUrl?: string;
 	settingsWarning?: string;
+	getDeploymentUrl?: (options: Record<string, any>, projectName: string, externalId: string) => string | null;
 }
 
 export const availableProviders = ['vercel', 'netlify'];
@@ -21,16 +22,25 @@ export function useProviderConfigs(
 		const hasExisting = toValue(hasExistingCredentials);
 		const edit = toValue(isEdit);
 
+		const vercelBaseUrl = 'https://vercel.com';
 		const vercelProvider = t('deployment.provider.vercel.name');
-		const vercelTokenUrl = 'https://vercel.com/account/settings/tokens';
+		const vercelTokenUrl = `${vercelBaseUrl}/account/settings/tokens`;
 
+		const netlifyBaseUrl = 'https://app.netlify.com';
 		const netlifyProvider = t('deployment.provider.netlify.name');
-		const netlifyTokenUrl = 'https://app.netlify.com/user/applications';
+		const netlifyTokenUrl = `${netlifyBaseUrl}/user/applications`;
 
 		return {
 			vercel: {
 				tokenUrl: vercelTokenUrl,
 				settingsWarning: t('deployment.provider.vercel.settings_warning'),
+				getDeploymentUrl: (options, projectName, externalId) => {
+					const teamId = options['team_id'];
+					const username = options['username'];
+					const scope = teamId || username;
+					if (!scope) return null;
+					return `${vercelBaseUrl}/${scope}/${projectName}/${externalId}`;
+				},
 				credentialsFields: [
 					{
 						field: 'access_token',
@@ -57,6 +67,27 @@ export function useProviderConfigs(
 				],
 				optionsFields: [
 					{
+						field: 'account_type',
+						name: t('deployment.provider.vercel.account_type.label'),
+						type: 'string',
+						schema: {
+							default_value: 'team',
+						},
+						meta: {
+							interface: 'select-dropdown',
+							width: 'full',
+							required: false,
+							note: t('deployment.provider.vercel.account_type.hint'),
+							options: {
+								choices: [
+									{ text: t('deployment.provider.vercel.account_type.team'), value: 'team' },
+									{ text: t('deployment.provider.vercel.account_type.personal'), value: 'personal' },
+								],
+								allowOther: false,
+							},
+						},
+					},
+					{
 						field: 'team_id',
 						name: t('deployment.provider.vercel.team_id.label'),
 						type: 'string',
@@ -68,6 +99,29 @@ export function useProviderConfigs(
 							options: {
 								placeholder: t('deployment.provider.vercel.team_id.placeholder'),
 							},
+							conditions: [{ rule: { account_type: { _eq: 'personal' } }, hidden: true }],
+						},
+					},
+					{
+						field: 'username',
+						name: t('deployment.provider.vercel.username.label'),
+						type: 'string',
+						meta: {
+							interface: 'input',
+							width: 'full',
+							required: false,
+							note: t('deployment.provider.vercel.username.hint'),
+							options: {
+								placeholder: t('deployment.provider.vercel.username.placeholder'),
+							},
+							conditions: [
+								{
+									rule: {
+										_or: [{ account_type: { _null: true } }, { account_type: { _eq: 'team' } }],
+									},
+									hidden: true,
+								},
+							],
 						},
 					},
 				],
@@ -75,6 +129,9 @@ export function useProviderConfigs(
 			netlify: {
 				tokenUrl: netlifyTokenUrl,
 				settingsWarning: t('deployment.provider.netlify.settings_warning'),
+				getDeploymentUrl: (_options, projectName, externalId) => {
+					return `${netlifyBaseUrl}/sites/${projectName}/deploys/${externalId}`;
+				},
 				credentialsFields: [
 					{
 						field: 'access_token',
