@@ -16,6 +16,10 @@
 	transition: all var(--fast) var(--transition);
 }
 
+.codemirror-no-bg-color .CodeMirror {
+	background-color: transparent;
+}
+
 .disabled:not(.non-editable) .CodeMirror {
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--form--field--input--background-subdued);

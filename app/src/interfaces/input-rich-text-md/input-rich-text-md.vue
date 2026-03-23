@@ -404,7 +404,7 @@ const menuActive = computed(() => imageDialogOpen.value);
 			</VItemGroup>
 		</div>
 
-		<div ref="codemirrorEl"></div>
+		<div ref="codemirrorEl" class="codemirror-no-bg-color"></div>
 		<template v-if="softLength">
 			<span
 				class="remaining"
@@ -461,6 +461,7 @@ const menuActive = computed(() => imageDialogOpen.value);
 	transition-duration: var(--fast);
 	transition-timing-function: var(--transition);
 	transition-property: border-color;
+	background-color: var(--theme--form--field--input--background);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
@@ -483,6 +484,10 @@ const menuActive = computed(() => imageDialogOpen.value);
 .interface-input-rich-text-md:not(.disabled):focus-within {
 	outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
 	outline-offset: var(--focus-ring-offset-invert);
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror.CodeMirror-focused) {
+	outline: 0;
 }
 
 textarea {
