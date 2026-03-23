@@ -77,6 +77,19 @@ test('should have click event listener when trigger is "click"', async () => {
 	expect(wrapper.findComponent(button).exists()).toBe(true);
 });
 
+test('should open without throwing when menu content has no tabbable nodes', async () => {
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+		},
+	});
+
+	await expect(wrapper.find('.v-menu').trigger('click')).resolves.toBeUndefined();
+
+	expect(wrapper.findComponent(Content).exists()).toBe(true);
+});
+
 test('should not have click event listener when closeOnContentClick prop is false', async () => {
 	const wrapper = mount(VMenu, {
 		...mountOptions,

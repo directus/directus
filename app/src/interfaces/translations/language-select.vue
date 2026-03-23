@@ -12,6 +12,7 @@ const props = withDefaults(
 		items?: Record<string, any>[];
 		disabled?: boolean;
 		nonEditable?: boolean;
+		keepBehind?: boolean;
 		secondary?: boolean;
 		danger?: boolean;
 	}>(),
@@ -34,12 +35,13 @@ const displayValue = computed(() => {
 		class="language-select"
 		:class="{ secondary, danger, disabled, 'non-editable': nonEditable }"
 		:disabled="disabled && !nonEditable"
+		:keep-behind="keepBehind"
 	>
 		<template #activator="{ toggle, active }">
 			<button class="toggle" type="button" @click="toggle">
 				<slot name="prepend" />
 				<span class="display-value">{{ displayValue }}</span>
-				<span class="controls"><slot name="controls" :active :toggle /></span>
+				<span class="controls" @click.stop @mousedown.stop><slot name="controls" :active :toggle /></span>
 				<VIcon class="expand" name="expand_more" :class="{ active }" />
 			</button>
 		</template>
@@ -90,6 +92,12 @@ const displayValue = computed(() => {
 	.display-value {
 		flex-grow: 1;
 		margin-inline-start: 0.4375rem;
+	}
+
+	.controls {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
 	}
 
 	.controls > * + * {

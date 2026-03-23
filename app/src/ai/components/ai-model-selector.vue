@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { AppModelDefinition } from '@/ai/models';
 import { useAiStore } from '@/ai/stores/use-ai';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -11,32 +12,58 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 
+const props = defineProps<{
+	/** When provided, the component is controlled externally instead of using the AI store */
+	modelValue?: AppModelDefinition | null;
+}>();
+
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: AppModelDefinition): void;
+}>();
+
 const { t } = useI18n();
 const aiStore = useAiStore();
 
+const isControlled = computed(() => props.modelValue !== undefined);
+
+const currentModel = computed(() => (isControlled.value ? props.modelValue : aiStore.selectedModel));
+
 const availableModels = computed(() => {
-	if (!aiStore.isProviderLocked || !aiStore.selectedModel) return aiStore.models;
-	return aiStore.models.filter((m) => m.provider === aiStore.selectedModel!.provider);
+	if (!isControlled.value && aiStore.isProviderLocked && aiStore.selectedModel) {
+		return aiStore.models.filter((m) => m.provider === aiStore.selectedModel!.provider);
+	}
+
+	return aiStore.models;
 });
 
-const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableModels.value.length <= 1);
+const isSelectorDisabled = computed(
+	() => !isControlled.value && aiStore.isProviderLocked && availableModels.value.length <= 1,
+);
+
+function onSelect(model: AppModelDefinition) {
+	if (isControlled.value) {
+		emit('update:modelValue', model);
+	} else {
+		aiStore.selectModel(model);
+	}
+}
 </script>
 
 <template>
 	<VMenu placement="bottom-start" show-arrow :disabled="isSelectorDisabled">
 		<template #activator="{ toggle }">
 			<button
-				v-tooltip.bottom="aiStore.isProviderLocked ? t('ai.provider_locked_tooltip') : undefined"
+				v-tooltip.bottom="!isControlled && aiStore.isProviderLocked ? t('ai.provider_locked_tooltip') : undefined"
 				class="select-trigger"
 				:disabled="isSelectorDisabled"
 				@click="toggle"
 			>
-				<template v-if="aiStore.selectedModel">
-					<component :is="aiStore.selectedModel.icon" class="model-icon small" />
-					{{ aiStore.selectedModel.name }}
+				<template v-if="currentModel">
+					<component :is="currentModel.icon" class="model-icon small" />
+					{{ currentModel.name }}
 				</template>
 
-				<VIcon v-if="aiStore.isProviderLocked" name="lock" x-small class="select-icon" />
+				<VIcon v-if="!isControlled && aiStore.isProviderLocked" name="lock" x-small class="select-icon" />
 				<VIcon v-else name="expand_more" x-small class="select-icon" />
 			</button>
 		</template>
@@ -48,11 +75,7 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 			>
 				<VDivider v-if="index !== 0 && modelDefinition.provider !== availableModels[index - 1]?.provider" />
 
-				<VListItem
-					:active="aiStore.selectedModel === modelDefinition"
-					clickable
-					@click="aiStore.selectModel(modelDefinition)"
-				>
+				<VListItem :active="currentModel === modelDefinition" clickable @click="onSelect(modelDefinition)">
 					<VListItemIcon>
 						<component :is="modelDefinition.icon" v-if="modelDefinition.icon" class="model-icon" />
 					</VListItemIcon>

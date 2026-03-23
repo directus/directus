@@ -4,7 +4,11 @@ import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { buildAiTranslationDraft, isAiTranslateAvailable } from './ai-translation';
+import TranslateModal from './translate-modal.vue';
 import TranslationForm from './translation-form.vue';
+import { useTranslationJob } from './use-translation-job';
+import { useAiStore } from '@/ai/stores/use-ai';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
@@ -12,6 +16,8 @@ import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/compo
 import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -59,6 +65,21 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
+const serverStore = useServerStore();
+const settingsStore = useSettingsStore();
+const aiStore = useAiStore();
+
+const showTranslateModal = ref(false);
+
+const aiTranslateAvailable = computed(() =>
+	isAiTranslateAvailable({
+		aiEnabled: serverStore.info.ai_enabled,
+		availableProviderCount: settingsStore.availableAiProviders.length,
+		availableModelCount: aiStore.models.length,
+		disabled: props.disabled,
+		nonEditable: props.nonEditable,
+	}),
+);
 
 const { languageOptions, firstLang, secondLang, loading: languagesLoading } = useLanguages();
 
@@ -157,11 +178,33 @@ function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 	}
 }
 
+function applyTranslatedFields(translatedFields: Record<string, string>, lang: string | undefined) {
+	const itemInfo = getItemWithLang(displayItems.value, lang);
+
+	if (itemInfo?.$type === 'deleted') {
+		return;
+	}
+
+	const draft = buildAiTranslationDraft(itemInfo, getItemEdits, translatedFields);
+	updateValue(draft, lang);
+}
+
+// Instantiate translation job composable
+const translationJob = useTranslationJob({
+	applyTranslatedFields,
+	languageOptions: computed(() => languageOptions.value),
+	displayItems: computed(() => displayItems.value),
+	fields,
+	relationInfo: computed(() => relationInfo.value),
+	getItemWithLang,
+});
+
 const translationProps = computed(() => ({
 	languageOptions: languageOptions.value,
 	disabled: props.disabled,
 	nonEditable: props.nonEditable,
 	autofocus: props.autofocus,
+	keepLanguageMenuBehind: showTranslateModal.value,
 	relationInfo: relationInfo.value,
 	getItemWithLang,
 	loading: languagesLoading.value || itemsLoading.value,
@@ -171,6 +214,8 @@ const translationProps = computed(() => ({
 	isLocalItem,
 	updateValue,
 	remove,
+	translationJob,
+	showAiTranslate: aiTranslateAvailable.value,
 }));
 
 function useLanguages() {
@@ -364,7 +409,12 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<TranslationForm v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+		<TranslationForm
+			v-model:lang="firstLang"
+			v-bind="translationProps"
+			:class="splitViewEnabled ? 'half' : 'full'"
+			@open-translate-drawer="showTranslateModal = true"
+		>
 			<template #split-view="{ active, toggle }">
 				<VIcon
 					v-if="splitViewAvailable && !splitViewEnabled"
@@ -380,7 +430,14 @@ function useNestedValidation() {
 			</template>
 		</TranslationForm>
 
-		<TranslationForm v-if="splitViewEnabled" v-model:lang="secondLang" v-bind="translationProps" secondary class="half">
+		<TranslationForm
+			v-if="splitViewEnabled"
+			v-model:lang="secondLang"
+			v-bind="translationProps"
+			secondary
+			class="half"
+			@open-translate-drawer="showTranslateModal = true"
+		>
 			<template #split-view>
 				<VIcon
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
@@ -391,6 +448,17 @@ function useNestedValidation() {
 				/>
 			</template>
 		</TranslationForm>
+
+		<TranslateModal
+			v-model="showTranslateModal"
+			:language-options="languageOptions"
+			:display-items="displayItems"
+			:fields="fields"
+			:relation-info="relationInfo"
+			:get-item-with-lang="getItemWithLang"
+			:default-source-language="firstLang"
+			:translation-job="translationJob"
+		/>
 	</div>
 </template>
 

@@ -2,6 +2,8 @@
 import { isEmpty } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import LanguageSelect from './language-select.vue';
+import type { TranslationJob } from './use-translation-job';
+import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -9,6 +11,7 @@ import VRemove from '@/components/v-remove.vue';
 import { usePermissions } from '@/composables/use-permissions';
 import { type RelationM2M } from '@/composables/use-relation-m2m';
 import { type DisplayItem } from '@/composables/use-relation-multiple';
+import vTooltip from '@/directives/tooltip';
 
 const {
 	languageOptions,
@@ -23,6 +26,8 @@ const {
 	remove,
 	loading,
 	updateValue,
+	translationJob,
+	showAiTranslate,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
@@ -38,6 +43,13 @@ const {
 	remove: (...items: DisplayItem[]) => void;
 	updateValue: (item: DisplayItem | undefined, lang: string | undefined) => void;
 	secondary?: boolean;
+	translationJob?: TranslationJob;
+	showAiTranslate?: boolean;
+	keepLanguageMenuBehind?: boolean;
+}>();
+
+const emit = defineEmits<{
+	openTranslateDrawer: [];
 }>();
 
 const lang = defineModel<string>('lang');
@@ -68,6 +80,13 @@ const {
 	itemPrimaryKey,
 	itemNew,
 );
+
+const isTranslatingLanguage = computed(() => {
+	if (!lang.value || !translationJob) return false;
+	return translationJob.pendingLanguages.value.has(lang.value);
+});
+
+const isHoveringTranslateButton = ref(false);
 
 const activatorDisabled = computed(() => {
 	return (
@@ -145,6 +164,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:secondary
 			:disabled="disabled"
 			:non-editable
+			:keep-behind="keepLanguageMenuBehind"
 		>
 			<template #prepend>
 				<span v-if="loading" class="activator-loading-placeholder" />
@@ -174,6 +194,28 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			</template>
 
 			<template #controls="{ active, toggle }">
+				<button
+					v-if="isTranslatingLanguage"
+					class="header-translate-btn translating"
+					@click.stop="emit('openTranslateDrawer')"
+				>
+					<AiMagicButton animate class="header-sparkle" />
+					<span>{{ $t('interfaces.translations.ai_translating') }}</span>
+				</button>
+
+				<button
+					v-else-if="showAiTranslate"
+					class="header-translate-btn"
+					@click.stop="emit('openTranslateDrawer')"
+					@mouseenter="isHoveringTranslateButton = true"
+					@mouseleave="isHoveringTranslateButton = false"
+				>
+					<AiMagicButton :animate="isHoveringTranslateButton" class="header-sparkle" />
+					<span v-tooltip="$t('interfaces.translations.ai_translate_tooltip')">
+						{{ $t('interfaces.translations.ai_translate_short') }}
+					</span>
+				</button>
+
 				<VRemove
 					v-if="item && !(nonEditable && item.$type !== 'deleted')"
 					:class="{ disabled: activatorDisabled }"
@@ -189,23 +231,24 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			</template>
 		</LanguageSelect>
 
-		<VForm
-			v-if="selectedLanguage"
-			:key="selectedLanguage.value"
-			:primary-key="itemPrimaryKey ?? '+'"
-			:class="{ unselected: !item, disabled }"
-			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
-			:non-editable
-			:loading="loading"
-			:fields="fields"
-			:model-value="item"
-			:initial-values="itemInitial"
-			:badge="selectedLanguage.text"
-			:direction="selectedLanguage.direction"
-			:autofocus="autofocus"
-			inline
-			@update:model-value="updateValue($event, lang)"
-		/>
+		<div v-if="selectedLanguage" class="form-wrapper" :class="{ 'is-translating': isTranslatingLanguage }">
+			<VForm
+				:key="selectedLanguage.value"
+				:primary-key="itemPrimaryKey ?? '+'"
+				:class="{ unselected: !item, disabled }"
+				:disabled="disabled || !saveAllowed || item?.$type === 'deleted' || isTranslatingLanguage"
+				:non-editable
+				:loading="loading"
+				:fields="fields"
+				:model-value="item"
+				:initial-values="itemInitial"
+				:badge="selectedLanguage.text"
+				:direction="selectedLanguage.direction"
+				:autofocus="autofocus"
+				inline
+				@update:model-value="updateValue($event, lang)"
+			/>
+		</div>
 
 		<VDivider />
 	</div>
@@ -224,12 +267,81 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 	--v-icon-color: var(--theme--primary-subdued);
 }
 
+.form-wrapper {
+	margin-block-start: 1.8125rem;
+}
+
+.form-wrapper.is-translating :deep(.v-form) {
+	position: relative;
+	overflow: hidden;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: color-mix(in srgb, var(--theme--primary) 5%, transparent);
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset-block: -10%;
+		inset-inline: -45%;
+		background: linear-gradient(
+			108deg,
+			transparent 34%,
+			color-mix(in srgb, var(--theme--primary) 10%, transparent) 43%,
+			color-mix(in srgb, var(--theme--primary) 32%, transparent) 50%,
+			color-mix(in srgb, var(--theme--primary) 10%, transparent) 57%,
+			transparent 66%
+		);
+		transform: translateX(-30%);
+		animation: shimmer 1.35s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+		pointer-events: none;
+		z-index: 2;
+	}
+}
+
+@keyframes shimmer {
+	0% {
+		transform: translateX(-32%);
+	}
+
+	100% {
+		transform: translateX(32%);
+	}
+}
+
+.header-translate-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 0.875rem;
+	color: var(--theme--primary);
+	padding: 0;
+	white-space: nowrap;
+	text-decoration: none;
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--theme--primary-accent);
+	}
+}
+
+.header-sparkle {
+	inline-size: 1.25rem;
+	block-size: 1.25rem;
+}
+
 .v-form {
 	--theme--form--row-gap: 1.8125rem;
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-background);
-
-	margin-block-start: 1.8125rem;
 
 	&.unselected:not(.disabled) {
 		opacity: 0.5;
@@ -249,6 +361,24 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 .secondary {
 	.v-icon.disabled {
 		--v-icon-color: var(--theme--secondary-subdued);
+	}
+
+	.header-translate-btn {
+		color: var(--theme--secondary);
+
+		&:hover {
+			color: var(--theme--secondary-accent);
+		}
+	}
+
+	.form-wrapper.is-translating :deep(.v-form)::before {
+		background: linear-gradient(
+			90deg,
+			transparent 25%,
+			color-mix(in srgb, var(--theme--secondary) 5%, transparent) 50%,
+			transparent 75%
+		);
+		background-size: 200% 100%;
 	}
 
 	.v-form {
