@@ -10,7 +10,7 @@ import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
-import { useExtensions } from '@/extensions';
+import { useAllModules } from '@/extensions';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { translate } from '@/utils/translate-object-values';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -75,10 +75,10 @@ const editing = ref<string | null>();
 const values = ref<SettingsModuleBarLink | null>();
 const initialValues = ref<SettingsModuleBarLink | null>();
 
-const { modules: registeredModules } = useExtensions();
+const allModules = useAllModules();
 
 const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
-	return registeredModules.value
+	return allModules.value
 		.filter((module) => module.hidden !== true)
 		.map(
 			(module): SettingsModuleBarModule => ({
@@ -122,7 +122,7 @@ function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
 	return value
 		.filter((part) => {
 			if (part.type === 'link') return true;
-			return !!registeredModules.value.find((module) => module.id === part.id);
+			return !!allModules.value.find((module) => module.id === part.id);
 		})
 		.map((part) => {
 			if (part.type === 'link') {
@@ -134,7 +134,7 @@ function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
 				};
 			}
 
-			const module = registeredModules.value.find((module) => module.id === part.id)!;
+			const module = allModules.value.find((module) => module.id === part.id)!;
 
 			return {
 				...part,
