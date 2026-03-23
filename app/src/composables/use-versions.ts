@@ -179,7 +179,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	function deleteVersion(deleteOnPromote = true) {
+	function deleteVersion(deleteOnPublish = true) {
 		if (!currentVersion.value || !rawVersions.value) return;
 
 		const isLocalVersion = currentVersion.value?.type === 'local';
@@ -188,7 +188,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
 
 		if (index !== -1) {
-			if (isLocalVersion || deleteOnPromote) currentVersion.value = null;
+			if (isLocalVersion || deleteOnPublish) currentVersion.value = null;
 			rawVersions.value.splice(index, 1);
 		}
 	}
