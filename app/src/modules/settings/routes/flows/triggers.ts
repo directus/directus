@@ -304,7 +304,7 @@ export function getTriggers() {
 					type: 'json',
 					meta: {
 						width: 'full',
-						hidden: !cacheEnabled || (method && method !== 'GET'),
+						hidden: cacheEnabled === false || (method && method !== 'GET'),
 						interface: 'tags',
 						options: {
 							placeholder: '$t:operations.trigger.cache_query_params_placeholder',
