@@ -155,36 +155,46 @@ export function injectSystemResolvers(
 		});
 	}
 
+	if (env['OPENAPI_ENABLED'] !== false) {
+		schemaComposer.Query.addFields({
+			server_specs_oas: {
+				type: GraphQLJSON,
+				resolve: dedupResolver(async () => {
+					const service = new SpecificationService({ schema: gql.schema, accountability: gql.accountability });
+					return await service.oas.generate();
+				}, 'server_specs_oas'),
+			},
+		});
+	}
+
 	/** Globally available query */
-	schemaComposer.Query.addFields({
-		server_specs_oas: {
-			type: GraphQLJSON,
-			resolve: dedupResolver(async () => {
-				const service = new SpecificationService({ schema: gql.schema, accountability: gql.accountability });
-				return await service.oas.generate();
-			}, 'server_specs_oas'),
-		},
-		server_specs_graphql: {
-			type: GraphQLString,
-			args: {
-				scope: new GraphQLEnumType({
-					name: 'graphql_sdl_scope',
-					values: {
-						items: { value: 'items' },
-						system: { value: 'system' },
-					},
+	if (env['GRAPHQL_INTROSPECTION'] !== false) {
+		schemaComposer.Query.addFields({
+			server_specs_graphql: {
+				type: GraphQLString,
+				args: {
+					scope: new GraphQLEnumType({
+						name: 'graphql_sdl_scope',
+						values: {
+							items: { value: 'items' },
+							system: { value: 'system' },
+						},
+					}),
+				},
+				resolve: dedupResolver(async (_, args) => {
+					const service = new GraphQLService({
+						schema: gql.schema,
+						accountability: gql.accountability,
+						scope: args['scope'] ?? 'items',
+					});
+
+					return await generateSchema(service, 'sdl');
 				}),
 			},
-			resolve: dedupResolver(async (_, args) => {
-				const service = new GraphQLService({
-					schema: gql.schema,
-					accountability: gql.accountability,
-					scope: args['scope'] ?? 'items',
-				});
+		});
+	}
 
-				return await generateSchema(service, 'sdl');
-			}),
-		},
+	schemaComposer.Query.addFields({
 		server_ping: {
 			type: GraphQLString,
 			resolve: () => 'pong',

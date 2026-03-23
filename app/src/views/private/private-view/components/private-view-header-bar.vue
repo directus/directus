@@ -102,7 +102,9 @@ const showSidebarToggle = computed(() => {
 	</header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .header-bar {
 	position: sticky;
 	inset-block-start: 0;
@@ -122,20 +124,20 @@ const showSidebarToggle = computed(() => {
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	@media (width > 400px) {
+	@media (width > 22.5rem) {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 0.6875rem;
 	}
 }
 
 .primary {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding-block: 12px;
+	gap: 0.6875rem;
+	padding-block: 0.6875rem;
 
-	@media (width > 400px) {
+	@media (width > 22.5rem) {
 		display: contents;
 	}
 }
@@ -143,7 +145,7 @@ const showSidebarToggle = computed(() => {
 .icon {
 	display: none;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		display: flex;
 	}
 }
@@ -161,7 +163,7 @@ const showSidebarToggle = computed(() => {
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.2em;
+		line-height: 1.2;
 		max-inline-size: 100%;
 
 		.render-template img,
@@ -176,8 +178,8 @@ const showSidebarToggle = computed(() => {
 	--v-breadcrumb-color: var(--theme--header--headline--foreground);
 
 	font-weight: 600;
-	font-size: 12px;
-	line-height: 12px;
+	font-size: 0.6875rem;
+	line-height: 1;
 	white-space: nowrap;
 	font-family: var(--theme--header--headline--font-family);
 }

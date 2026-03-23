@@ -26,6 +26,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	FILE_METADATA_ALLOW_LIST: 'array',
 
+	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 
@@ -59,6 +60,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	'AUTH_.+_USER_DN': 'string',
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
+	'AUTH_.+_COOKIE_SECURE': 'boolean',
 } as const;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [

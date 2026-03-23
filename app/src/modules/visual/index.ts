@@ -3,7 +3,6 @@ import { stringifyQuery } from 'vue-router';
 import { useVisualEditorUrls } from './composables/use-visual-editor-urls';
 import VisualEditor from './routes/visual-editor.vue';
 import { getUrlRoute } from './utils/get-url-route';
-import { normalizeUrl } from './utils/normalize-url';
 import { analyzeTemplate, matchesTemplate } from './utils/version-url';
 
 export default defineModule({
@@ -28,7 +27,7 @@ export default defineModule({
 				const queryString = stringifyQuery(route.query);
 
 				return {
-					dynamicUrl: normalizeUrl(`${route.params.url}${queryString ? `?${queryString}` : ''}${route.hash}`),
+					dynamicUrl: `${route.params.url}${queryString ? `?${queryString}` : ''}${route.hash}`,
 				};
 			},
 			beforeEnter(to) {

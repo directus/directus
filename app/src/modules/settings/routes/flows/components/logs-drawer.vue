@@ -134,8 +134,8 @@ const steps = computed(() => {
 	background-color: var(--theme--background-subdued);
 	font-family: var(--theme--fonts--monospace--font-family);
 	border-radius: var(--theme--border-radius);
-	padding: 20px;
-	margin-block-start: 20px;
+	padding: 1.125rem;
+	margin-block-start: 1.125rem;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 }
@@ -150,26 +150,26 @@ const steps = computed(() => {
 			content: '';
 			position: absolute;
 			inline-size: var(--theme--border-width);
-			inset-inline-start: -11px;
+			inset-inline-start: -0.625rem;
 			inset-block-start: 0;
 			background-color: var(--theme--border-color-subdued);
 			block-size: 100%;
 		}
 
 		&:first-child::after {
-			inset-block-start: 8px;
-			block-size: calc(100% - 8px);
+			inset-block-start: 0.4375rem;
+			block-size: calc(100% - 0.4375rem);
 		}
 
 		&:last-child::after {
-			block-size: 12px;
+			block-size: 0.6875rem;
 		}
 
 		.inset {
-			padding-block: 12px 32px;
+			padding-block: 0.6875rem 1.8125rem;
 
 			.v-detail + .v-detail {
-				margin-block-start: 12px;
+				margin-block-start: 0.6875rem;
 			}
 		}
 
@@ -185,14 +185,14 @@ const steps = computed(() => {
 
 	.dot {
 		position: absolute;
-		inset-block-start: 6px;
-		inset-inline-start: -16px;
+		inset-block-start: 0.3125rem;
+		inset-inline-start: -0.875rem;
 		z-index: 2;
-		inline-size: 12px;
-		block-size: 12px;
+		inline-size: 0.6875rem;
+		block-size: 0.6875rem;
 		background-color: var(--theme--primary);
 		border: var(--theme--border-width) solid var(--theme--background);
-		border-radius: 8px;
+		border-radius: 0.4375rem;
 
 		&.resolve {
 			background-color: var(--theme--primary);

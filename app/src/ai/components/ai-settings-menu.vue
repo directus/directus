@@ -187,9 +187,9 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 }
 
 .settings-container {
-	min-inline-size: 320px;
-	max-inline-size: 400px;
-	max-block-size: 400px;
+	min-inline-size: 18rem;
+	max-inline-size: 22.5rem;
+	max-block-size: 22.5rem;
 	overflow-y: auto;
 }
 
@@ -197,13 +197,13 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 1;
-	padding: 8px;
+	padding: 0.4375rem;
 	background-color: var(--theme--popover--menu--background);
 }
 
 .section-title {
 	font-weight: 600;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	color: var(--theme--foreground);
 }
 
@@ -211,18 +211,18 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 8px;
+	gap: 0.4375rem;
 	inline-size: 100%;
 }
 
 .tool-name {
-	font-size: 14px;
+	font-size: 0.8125rem;
 	color: var(--theme--foreground);
 }
 
 .tool-item :deep(.v-select) {
 	--v-select-font-family: var(--theme--fonts--sans--font-family);
-	min-inline-size: 100px;
+	min-inline-size: 5.625rem;
 }
 
 .tool-item :deep(.inline-display > .v-icon) {
@@ -232,6 +232,6 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 .approval-preview {
 	display: inline-flex;
 	align-items: center;
-	gap: 4px;
+	gap: 0.25rem;
 }
 </style>

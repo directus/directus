@@ -354,7 +354,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	inline-size: 100%;
 	display: flex;
 	gap: calc(var(--theme--form--column-gap) / 2);
-	padding-block-end: 8px;
+	padding-block-end: 0.4375rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	color: var(--header-color, var(--theme--foreground));
 	align-items: baseline;
@@ -373,34 +373,34 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			display: flex;
 			color: var(--theme--foreground-accent);
 			overflow: hidden;
-			gap: 8px;
+			gap: 0.4375rem;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			font-size: 24px;
+			font-size: 1.375rem;
 			font-weight: 600;
 			align-items: center;
 
 			.v-icon {
 				--v-icon-color: var(--header-color);
-				margin-block-start: 2px;
+				margin-block-start: 0.125rem;
 				flex-shrink: 0;
 			}
 		}
 
 		.text-subtitle {
-			margin-block-start: 4px;
-			font-size: 14px;
+			margin-block-start: 0.25rem;
+			font-size: 0.8125rem;
 			color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			display: flex;
-			gap: 8px;
+			gap: 0.4375rem;
 			align-items: center;
 
 			.v-icon {
 				--v-icon-color: var(--header-color);
-				margin-block-start: 2px;
+				margin-block-start: 0.125rem;
 				flex-shrink: 0;
 			}
 
@@ -415,7 +415,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 		.actions-container {
 			display: flex;
-			gap: 12px;
+			gap: 0.6875rem;
 			align-items: center;
 
 			.v-button {
@@ -435,7 +435,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 				position: relative;
 			}
 
-			@container (max-width: 600px) {
+			@container (max-width: 33.75rem) {
 				align-items: stretch;
 				inline-size: 100%;
 
@@ -454,14 +454,14 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 }
 
 .helper-text-outer {
-	padding-block: 40px;
-	padding-inline: 32px;
+	padding-block: 2.25rem;
+	padding-inline: 1.8125rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 	background-color: var(--theme--background-subdued);
 	overflow-y: scroll;
 
 	:deep(.helper-text) {
-		padding: var(--v-card-padding, 16px);
+		padding: var(--v-card-padding, 0.875rem);
 		padding-block-start: 0;
 		max-inline-size: 100%;
 		overflow-x: auto;
@@ -470,18 +470,18 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	.collapse-button-container {
 		display: flex;
 		justify-content: flex-end;
-		margin-block-start: 16px;
+		margin-block-start: 0.875rem;
 	}
 }
 
 .help-modal {
 	position: relative;
-	padding-block-start: var(--v-card-padding, 16px);
+	padding-block-start: var(--v-card-padding, 0.875rem);
 
 	.close-button {
 		position: absolute;
-		inset-block-start: 16px;
-		inset-inline-end: 16px;
+		inset-block-start: 0.875rem;
+		inset-inline-end: 0.875rem;
 
 		:deep(.button) {
 			border-radius: 100%;

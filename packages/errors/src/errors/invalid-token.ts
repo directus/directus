@@ -1,3 +1,7 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
-export const InvalidTokenError = createError(ErrorCode.InvalidToken, 'Invalid token.', 403);
+export const InvalidTokenError: DirectusErrorConstructor<void> = createError(
+	ErrorCode.InvalidToken,
+	'Invalid token.',
+	403,
+);

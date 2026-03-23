@@ -1,3 +1,4 @@
+import { GENERATE_SPECIAL } from '@directus/constants';
 import type { GQLScope } from '@directus/types';
 import type { GraphQLNullableType } from 'graphql';
 import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLScalarType, GraphQLUnionType } from 'graphql';
@@ -8,7 +9,6 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, ObjectTypeComposer } from 'graphql-compose';
 import { mapKeys, pick } from 'lodash-es';
-import { GENERATE_SPECIAL } from '../../../constants.js';
 import { getGraphQLType } from '../../../utils/get-graphql-type.js';
 import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 

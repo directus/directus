@@ -181,7 +181,7 @@ function useValidationScrollToField() {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 52px 0;
+	margin: 2.9375rem 0;
 }
 
 .overlay-item-content {
