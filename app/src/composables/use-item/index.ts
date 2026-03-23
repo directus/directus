@@ -4,7 +4,7 @@ import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { cloneDeep, mergeWith } from 'lodash';
-import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
@@ -15,6 +15,7 @@ import sdk, { requestEndpoint } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
@@ -51,7 +52,7 @@ type UsableItem<T extends Item> = {
 export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
-	query: MaybeRef<Query> = {},
+	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -76,7 +77,13 @@ export function useItem<T extends Item>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const isVersion = computed(() => !!unref(query).version);
+	const query = computed<Query>(() => {
+		const version = unref(currentVersion);
+		if (!version || version.id === '+') return {};
+		return { version: version.key, versionRaw: true };
+	});
+
+	const isVersion = computed(() => unref(currentVersion) !== null);
 	const permissions = usePermissions(collection, primaryKey, isNew, isVersion);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
 
@@ -92,7 +99,7 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
+	watch([collection, primaryKey, query], refresh);
 
 	refreshItem();
 
