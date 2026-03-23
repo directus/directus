@@ -300,16 +300,16 @@ export function getTriggers() {
 				},
 				{
 					field: 'cacheQueryParams',
-					name: '$t:operations.trigger.cache_query_params',
+					name: 'Cache Query Parameters',
 					type: 'json',
 					meta: {
 						width: 'full',
 						hidden: cacheEnabled === false || (method && method !== 'GET'),
 						interface: 'tags',
 						options: {
-							placeholder: '$t:operations.trigger.cache_query_params_placeholder',
+							placeholder: 'Add query parameter names...',
 						},
-						note: '$t:operations.trigger.cache_query_params_note',
+						note: 'Only these query parameters will affect the cache key. Leave empty to include all.',
 					},
 					schema: {
 						default_value: null,
