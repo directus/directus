@@ -6,6 +6,5 @@ import { aiObjectPostHandler } from './controllers/object.post.js';
 import { loadSettings } from './middleware/load-settings.js';
 
 export const aiRouter = Router()
-	.use(asyncHandler(loadSettings))
-	.post('/chat', asyncHandler(aiChatPostHandler))
-	.post('/object', asyncHandler(aiObjectPostHandler), respond);
+	.post('/chat', asyncHandler(loadSettings), asyncHandler(aiChatPostHandler))
+	.post('/object', asyncHandler(loadSettings), asyncHandler(aiObjectPostHandler), respond);

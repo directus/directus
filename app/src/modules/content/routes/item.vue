@@ -92,7 +92,6 @@ const {
 	currentVersion,
 	versions,
 	loading: versionsLoading,
-	query,
 	addVersion,
 	updateVersion,
 	deleteVersion,
@@ -120,7 +119,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(collection, primaryKey, currentVersion);
 
 const toolsStore = useAiToolsStore();
 

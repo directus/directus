@@ -47,5 +47,12 @@ function visit(schema: JSONSchema7): JSONSchema7 {
 		}
 	}
 
+	if ((schema as any)['$defs']) {
+		for (const key of Object.keys((schema as any)['$defs'])) {
+			const val = (schema as any)['$defs'][key];
+			if (typeof val === 'object' && val !== null) (schema as any)['$defs'][key] = visit(val as JSONSchema7);
+		}
+	}
+
 	return schema;
 }

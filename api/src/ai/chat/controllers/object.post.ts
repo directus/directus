@@ -1,14 +1,16 @@
 import type { StandardProviderType } from '@directus/ai';
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { generateText, jsonSchema, Output } from 'ai';
+import { generateText, jsonSchema, Output, wrapLanguageModel } from 'ai';
 import type { RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
+import { getDevToolsMiddleware } from '../../devtools/index.js';
 import {
 	type AISettings,
 	buildProviderConfigs,
 	createAIProviderRegistry,
 	getProviderOptions,
 } from '../../providers/index.js';
+import { getAITelemetryConfig } from '../../telemetry/index.js';
 import { ObjectRequest } from '../models/object-request.js';
 import { addAdditionalPropertiesToJsonSchema } from '../utils/add-additional-properties-to-json-schema.js';
 
@@ -51,12 +53,25 @@ export const aiObjectPostHandler: RequestHandler = async (req, res, next) => {
 	const registry = createAIProviderRegistry(configs, aiSettings);
 	const providerOptions = getProviderOptions(provider, model, aiSettings);
 
+	let languageModel = registry.languageModel(`${provider}:${model}`);
+	const devToolsMiddleware = getDevToolsMiddleware();
+
+	if (devToolsMiddleware) {
+		languageModel = wrapLanguageModel({ model: languageModel, middleware: devToolsMiddleware });
+	}
+
+	const telemetryConfig = getAITelemetryConfig(
+		{ provider, model, userId: req.accountability?.user, role: req.accountability?.role },
+		'directus-ai-object',
+	);
+
 	const result = await generateText({
-		model: registry.languageModel(`${provider}:${model}`),
+		model: languageModel,
 		prompt,
 		output: Output.object({ schema: jsonSchema(addAdditionalPropertiesToJsonSchema(outputSchema)) }),
 		providerOptions,
 		...(typeof maxOutputTokens === 'number' ? { maxOutputTokens } : {}),
+		...(telemetryConfig ? { experimental_telemetry: telemetryConfig } : {}),
 	});
 
 	if (result.output == null) {
