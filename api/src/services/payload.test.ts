@@ -475,7 +475,7 @@ describe('Integration Tests', () => {
 
 				service.processAggregates(payload, { count: ['*'] });
 
-				expect(payload).toMatchObject([{ count: { '*': '1' } }]);
+				expect(payload).toMatchObject([{ count: '1' }]);
 			});
 		});
 

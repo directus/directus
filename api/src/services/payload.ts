@@ -304,7 +304,10 @@ export class PayloadService {
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				for (const key of aggregateKeys) {
-					const [operation, fieldName] = key.split('->');
+					if (key in item === false) continue;
+
+					const [operation, fieldName] = key.split('->') as [string, string];
+
 					const aggregateResult = { [fieldName]: item[key] };
 
 					if (fieldEntries[fieldName]?.special?.length > 0) {
@@ -318,7 +321,8 @@ export class PayloadService {
 						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
 					}
 
-					if (!item[operation]) item[operation] = {};
+					if (!isPlainObject(item[operation])) item[operation] = {};
+
 					item[operation][fieldName] = aggregateResult[fieldName];
 					delete item[key];
 				}
