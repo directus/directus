@@ -281,10 +281,7 @@ export class PayloadService {
 		return processedPayload[0]!;
 	}
 
-	async processAggregates(
-		payload: Partial<Item>[],
-		aggregate: Aggregate = {},
-	) {
+	async processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
 		/**
 		 * Build access path with -> delimiter
 		 *
@@ -295,7 +292,6 @@ export class PayloadService {
 			acc.push(...values.map((value) => `${key}->${value}`));
 			return acc;
 		}, []);
-
 
 		const fieldEntries = this.schema.collections[this.collection]!.fields;
 
