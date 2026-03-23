@@ -133,7 +133,7 @@ const comparableVersion = computed(() => {
 
 const fieldsStore = useFieldsStore();
 
-async function onVersionPromote() {
+function onVersionPublishCompare() {
 	const assembledItem = item.value ?? {};
 	const fields = fieldsStore.getFieldsForCollection(collection.value);
 	const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
@@ -158,11 +158,11 @@ async function onVersionPromote() {
 	comparisonModalActive.value = true;
 }
 
-async function onVersionPublish(opts: {
+async function onVersionPublishConfirm(opts: {
 	versionId: string;
 	mainHash: string;
 	fields: string[];
-	deleteOnPromote: boolean;
+	deleteOnPublish: boolean;
 }) {
 	const clientErrors = validateItem(
 		item.value ?? {},
@@ -178,12 +178,10 @@ async function onVersionPublish(opts: {
 		return;
 	}
 
-	comparisonModalActive.value = false;
-
 	try {
 		await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
 
-		if (opts.deleteOnPromote) {
+		if (opts.deleteOnPublish) {
 			await removeVersion(opts.versionId);
 		} else {
 			currentVersion.value = null;
@@ -193,6 +191,8 @@ async function onVersionPublish(opts: {
 		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// publishVersion / removeVersion handle unexpected errors
+	} finally {
+		comparisonModalActive.value = false;
 	}
 }
 
@@ -714,7 +714,7 @@ const shouldShowVersioning = computed(() => {
 	if (versionsLoading.value) return false;
 	if (props.primaryKey === '+') return currentVersion.value !== null;
 
-	return !isNew.value && internalPrimaryKey.value !== '+';
+	return internalPrimaryKey.value !== '+';
 });
 
 function useItemNavigation() {
@@ -794,7 +794,7 @@ function useItemNavigation() {
 					@update="updateVersion"
 					@delete="deleteVersion"
 					@switch="currentVersion = $event"
-					@promote="onVersionPromote"
+					@publish="onVersionPublishCompare"
 				/>
 			</div>
 		</template>
@@ -1039,7 +1039,7 @@ function useItemNavigation() {
 			mode="version"
 			:current-version="comparableVersion"
 			:publish-version-loading="publishVersionLoading"
-			@publish="onVersionPublish"
+			@publish="onVersionPublishConfirm"
 			@cancel="comparisonModalActive = false"
 		/>
 
