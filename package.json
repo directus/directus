@@ -41,7 +41,8 @@
 			"minimatch@10": "10.2.4",
 			"minimatch@9": "9.0.7",
 			"basic-ftp": "5.2.0",
-			"underscore": "1.13.8"
+			"underscore": "1.13.8",
+			"flatted": "3.4.2"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

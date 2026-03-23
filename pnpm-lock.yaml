@@ -877,8 +877,8 @@ catalogs:
       specifier: 8.46.4
       version: 8.46.4
     undici:
-      specifier: 7.18.2
-      version: 7.18.2
+      specifier: 7.24.5
+      version: 7.24.5
     universal-cookie:
       specifier: 8.0.1
       version: 8.0.1
@@ -943,6 +943,7 @@ overrides:
   minimatch@9: 9.0.7
   basic-ftp: 5.2.0
   underscore: 1.13.8
+  flatted: 3.4.2
 
 importers:
 
@@ -2605,7 +2606,7 @@ importers:
         version: 8.1.0
       undici:
         specifier: 'catalog:'
-        version: 7.18.2
+        version: 7.24.5
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2768,7 +2769,7 @@ importers:
         version: 4.3.1
       undici:
         specifier: 'catalog:'
-        version: 7.18.2
+        version: 7.24.5
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -9822,8 +9823,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  flatted@3.3.3:
-    resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
+  flatted@3.4.2:
+    resolution: {integrity: sha512-PjDse7RzhcPkIJwy5t7KPWQSZ9cAbzQXcafsetQoD7sOJRQlGikNbx7yZp2OotDnJyrDcbyRq3Ttb18iYOqkxA==}
 
   flexsearch@0.7.21:
     resolution: {integrity: sha512-W7cHV7Hrwjid6lWmy0IhsWDFQboWSng25U3VVywpHOTJnnAZNPScog67G+cVpeX9f7yDD21ih0WDrMMT+JoaYg==}
@@ -14329,8 +14330,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@7.18.2:
-    resolution: {integrity: sha512-y+8YjDFzWdQlSE9N5nzKMT3g4a5UBX1HKowfdXh0uvAnTaqqwqB92Jt4UXBAeKekDs5IaDKyJFR4X1gYVCgXcw==}
+  undici@7.24.5:
+    resolution: {integrity: sha512-3IWdCpjgxp15CbJnsi/Y9TCDE7HWVN19j1hmzVhoAkY/+CJx449tVxT5wZc1Gwg8J+P0LWvzlBzxYRnHJ+1i7Q==}
     engines: {node: '>=20.18.1'}
 
   unhead@1.11.20:
@@ -20439,7 +20440,7 @@ snapshots:
     dependencies:
       '@vitest/utils': 3.2.4
       fflate: 0.8.2
-      flatted: 3.3.3
+      flatted: 3.4.2
       pathe: 2.0.3
       sirv: 3.0.2
       tinyglobby: 0.2.15
@@ -22961,18 +22962,18 @@ snapshots:
 
   flat-cache@4.0.1:
     dependencies:
-      flatted: 3.3.3
+      flatted: 3.4.2
       keyv: 4.5.4
 
   flat-cache@6.1.18:
     dependencies:
       cacheable: 2.1.1
-      flatted: 3.3.3
+      flatted: 3.4.2
       hookified: 1.12.2
 
   flat@6.0.1: {}
 
-  flatted@3.3.3: {}
+  flatted@3.4.2: {}
 
   flexsearch@0.7.21: {}
 
@@ -28102,7 +28103,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@7.18.2: {}
+  undici@7.24.5: {}
 
   unhead@1.11.20:
     dependencies:
