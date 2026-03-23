@@ -95,12 +95,7 @@ const showNavToggle = computed(() => {
 @use '@/styles/mixins';
 
 .header-bar {
-	position: sticky;
-	inset-block-start: 0;
-	inset-inline-start: 0;
-	z-index: 5;
 	background-color: var(--theme--header--background);
-	inline-size: 100%;
 	padding-inline: var(--content-padding);
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 	block-size: var(--header-bar-height);
