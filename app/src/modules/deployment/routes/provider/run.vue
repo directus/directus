@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
+import { useProviderConfigs } from '../../config/providers';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -34,7 +35,9 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { currentProject } = useDeploymentNavigation();
+const { currentProject, providers } = useDeploymentNavigation();
+const { providerConfigs } = useProviderConfigs();
+
 const canCancel = usePermissionsStore().hasPermission('directus_deployment_runs', 'update');
 
 const loading = ref(true);
@@ -119,6 +122,18 @@ const displayLogs = computed<SystemLog[]>(() =>
 		};
 	}),
 );
+
+const providerUrl = computed<string | null>(() => {
+	if (!run.value || !currentProject.value) return null;
+
+	const getDeploymentUrl = providerConfigs.value[props.provider]?.getDeploymentUrl;
+	if (!getDeploymentUrl) return null;
+
+	const deploymentConfig = providers.value.find((p) => p.provider === props.provider);
+	const options = deploymentConfig?.options ?? {};
+
+	return getDeploymentUrl(options, currentProject.value.name, run.value.external_id);
+});
 
 const duration = computed(() => {
 	if (!run.value?.started_at) return '—';
@@ -300,7 +315,24 @@ onUnmounted(() => {
 
 		<div v-else-if="run" class="content">
 			<div class="stats-bar">
-				<div class="stat-card deployment-id">
+				<a
+					v-if="providerUrl"
+					:href="providerUrl"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="stat-card deployment-id provider-link"
+					:title="
+						$t('deployment.provider.run.open_in_provider', { provider: $t(`deployment.provider.${provider}.name`) })
+					"
+				>
+					<VIcon name="assignment" class="stat-icon" />
+					<span class="stat-label">{{ $t('deployment.provider.run.id') }}</span>
+					<div class="stat-value monospace">
+						<span class="provider-link-text">{{ run.external_id }}</span>
+						<VIcon name="open_in_new" x-small />
+					</div>
+				</a>
+				<div v-else class="stat-card deployment-id">
 					<VIcon name="assignment" class="stat-icon" />
 					<span class="stat-label">{{ $t('deployment.provider.run.id') }}</span>
 					<div class="stat-value monospace">
@@ -509,5 +541,36 @@ onUnmounted(() => {
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 	margin-inline-end: 0.25rem;
+}
+
+.stat-card.provider-link {
+	display: flex;
+	color: inherit;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color var(--fast) var(--transition);
+
+	&:hover {
+		background-color: var(--theme--background-normal);
+	}
+
+	.stat-value {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		min-inline-size: 0;
+	}
+
+	.provider-link-text {
+		flex: 1;
+		min-inline-size: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.stat-value .v-icon {
+		flex-shrink: 0;
+	}
 }
 </style>
