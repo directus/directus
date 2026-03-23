@@ -196,6 +196,7 @@ export const DEFAULTS: Env = {
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
 	METRICS_NAME_PREFIX: 'directus_',
+	METRICS_HEALTH_CHECK_PREFIX: 'directus-metric-',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
