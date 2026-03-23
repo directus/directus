@@ -714,7 +714,7 @@ const shouldShowVersioning = computed(() => {
 	if (versionsLoading.value) return false;
 	if (props.primaryKey === '+') return currentVersion.value !== null;
 
-	return !isNew.value && internalPrimaryKey.value !== '+';
+	return internalPrimaryKey.value !== '+';
 });
 
 function useItemNavigation() {
