@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
@@ -7,7 +6,6 @@ import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { BREAKPOINTS } from '@/constants';
 
 const props = defineProps<{
 	title?: string;
@@ -22,19 +20,12 @@ const props = defineProps<{
 const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
 
-const breakpoints = useBreakpoints(BREAKPOINTS);
-const isMobile = breakpoints.smallerOrEqual('sm');
-
 const showNavToggle = computed(() => {
 	if (props.inlineNav) {
 		return navBarStore.collapsed;
 	}
 
 	return true;
-});
-
-const showSidebarToggle = computed(() => {
-	return !sidebarStore.collapsed || isMobile.value;
 });
 </script>
 
@@ -84,7 +75,6 @@ const showSidebarToggle = computed(() => {
 			<div class="spacer" />
 
 			<VIcon
-				v-if="showSidebarToggle"
 				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
 				small
