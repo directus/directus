@@ -12,36 +12,37 @@ vi.mock('../../../../utils/get-root-path', () => ({
 describe('webhook trigger options', () => {
 	const { triggers } = getTriggers();
 	const webhook = triggers.find((t) => t.id === 'webhook')!;
+	const getOptions = webhook.options as (opts: Record<string, any>) => Record<string, any>[];
 
 	test('cacheQueryParams field should be visible when cacheEnabled is true (default)', () => {
-		const options = (webhook.options as Function)({ method: 'GET', cacheEnabled: true });
-		const cacheQueryParams = options.find((o: any) => o.field === 'cacheQueryParams');
+		const options = getOptions({ method: 'GET', cacheEnabled: true });
+		const cacheQueryParams = options.find((o) => o['field'] === 'cacheQueryParams');
 
 		expect(cacheQueryParams).toBeDefined();
-		expect(cacheQueryParams.meta.hidden).toBe(false);
+		expect(cacheQueryParams!['meta']['hidden']).toBe(false);
 	});
 
 	test('cacheQueryParams field should be visible when cacheEnabled is undefined (default)', () => {
-		const options = (webhook.options as Function)({ method: 'GET', cacheEnabled: undefined });
-		const cacheQueryParams = options.find((o: any) => o.field === 'cacheQueryParams');
+		const options = getOptions({ method: 'GET', cacheEnabled: undefined });
+		const cacheQueryParams = options.find((o) => o['field'] === 'cacheQueryParams');
 
 		expect(cacheQueryParams).toBeDefined();
-		expect(cacheQueryParams.meta.hidden).toBe(false);
+		expect(cacheQueryParams!['meta']['hidden']).toBe(false);
 	});
 
 	test('cacheQueryParams field should be hidden when cacheEnabled is false', () => {
-		const options = (webhook.options as Function)({ method: 'GET', cacheEnabled: false });
-		const cacheQueryParams = options.find((o: any) => o.field === 'cacheQueryParams');
+		const options = getOptions({ method: 'GET', cacheEnabled: false });
+		const cacheQueryParams = options.find((o) => o['field'] === 'cacheQueryParams');
 
 		expect(cacheQueryParams).toBeDefined();
-		expect(cacheQueryParams.meta.hidden).toBe(true);
+		expect(cacheQueryParams!['meta']['hidden']).toBe(true);
 	});
 
 	test('cacheQueryParams field should be hidden for non-GET methods', () => {
-		const options = (webhook.options as Function)({ method: 'POST', cacheEnabled: true });
-		const cacheQueryParams = options.find((o: any) => o.field === 'cacheQueryParams');
+		const options = getOptions({ method: 'POST', cacheEnabled: true });
+		const cacheQueryParams = options.find((o) => o['field'] === 'cacheQueryParams');
 
 		expect(cacheQueryParams).toBeDefined();
-		expect(cacheQueryParams.meta.hidden).toBe(true);
+		expect(cacheQueryParams!['meta']['hidden']).toBe(true);
 	});
 });
