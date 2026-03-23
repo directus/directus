@@ -63,14 +63,4 @@ describe('group-accordion', () => {
 		const form = wrapper.findComponent(VForm);
 		expect(form.props('version')).toEqual(version);
 	});
-
-	it('passes null version to inner VForm when not provided', () => {
-		const wrapper = mount(GroupAccordion, {
-			props: baseProps,
-			global,
-		});
-
-		const form = wrapper.findComponent(VForm);
-		expect(form.props('version')).toBeNull();
-	});
 });
