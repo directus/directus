@@ -297,7 +297,7 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
+	<div class="input-code" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
 		<VButton
@@ -319,6 +319,10 @@ function isInterpolation(value: any) {
 	position: relative;
 	inline-size: 100%;
 	font-size: 0.8125rem;
+
+	:deep(.CodeMirror.CodeMirror-focused) {
+		outline-offset: max(-1 * var(--focus-ring-width), -1 * var(--theme--border-width));
+	}
 }
 
 .small {
