@@ -21,7 +21,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	name: '$t:layouts.cards.cards',
 	icon: 'grid_view',
 	component: CardsLayout,
-	headerShadow: false,
 	slots: {
 		options: CardsOptions,
 		sidebar: () => undefined,

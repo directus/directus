@@ -58,7 +58,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -66,36 +65,11 @@ describe('PrivateViewHeaderBar', () => {
 		expect(wrapper.find('.header-bar').exists()).toBe(true);
 	});
 
-	test('applies shadow class when shadow prop is true', () => {
-		const wrapper = mount(PrivateViewHeaderBar, {
-			...mountOptions,
-			props: {
-				shadow: true,
-				inlineNav: false,
-			},
-		});
-
-		expect(wrapper.find('.header-bar.shadow').exists()).toBe(true);
-	});
-
-	test('does not apply shadow class when shadow prop is false', () => {
-		const wrapper = mount(PrivateViewHeaderBar, {
-			...mountOptions,
-			props: {
-				shadow: false,
-				inlineNav: false,
-			},
-		});
-
-		expect(wrapper.find('.header-bar.shadow').exists()).toBe(false);
-	});
-
 	test('renders title when provided', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
 				title: 'Test Title',
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -107,7 +81,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -120,7 +93,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: true,
 			},
 		});
@@ -136,7 +108,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -152,7 +123,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -165,7 +135,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -181,7 +150,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
 			},
@@ -196,7 +164,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				icon: 'edit',
 				iconColor: 'blue',
@@ -213,7 +180,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -229,7 +195,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -245,7 +210,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -260,7 +224,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -275,7 +238,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -290,7 +252,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				title: 'Test Title',
 			},
@@ -306,7 +267,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				title: 'Test Title',
 			},
@@ -322,7 +282,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
 				icon: 'edit',
@@ -339,7 +298,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
 			},
@@ -358,7 +316,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				icon: 'edit',
 			},
@@ -377,7 +334,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
 				icon: 'edit',

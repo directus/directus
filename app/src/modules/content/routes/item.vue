@@ -3,7 +3,7 @@ import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
+import { useBreakpoints, useEventListener, useLocalStorage } from '@vueuse/core';
 import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -76,10 +76,6 @@ const userStore = useUserStore();
 
 const form = ref<ComponentPublicInstance>();
 
-const scrollParent = computed(() => form.value?.$el?.parentElement);
-const { y: formScrollY } = useScroll(scrollParent);
-const showHeaderShadow = computed(() => formScrollY.value > 0);
-
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
@@ -92,7 +88,6 @@ const {
 	currentVersion,
 	versions,
 	loading: versionsLoading,
-	query,
 	addVersion,
 	updateVersion,
 	deleteVersion,
@@ -120,7 +115,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(collection, primaryKey, currentVersion);
 
 const toolsStore = useAiToolsStore();
 
@@ -652,7 +647,6 @@ function useItemNavigation() {
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
 		:back-to="backRoute"
-		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>

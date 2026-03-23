@@ -152,10 +152,8 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 	&:focus-within,
 	&:focus-visible {
-		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
-		--v-list-item-border-color-hover: var(--v-list-item-border-color);
-
-		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
 	}
 }
 

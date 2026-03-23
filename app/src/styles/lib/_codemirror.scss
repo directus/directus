@@ -14,7 +14,10 @@
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: all var(--fast) var(--transition);
-	box-shadow: var(--theme--form--field--input--box-shadow);
+}
+
+.codemirror-no-bg-color .CodeMirror {
+	background-color: transparent;
 }
 
 .disabled:not(.non-editable) .CodeMirror {
@@ -28,7 +31,6 @@
 
 .CodeMirror:hover {
 	border-color: var(--theme--form--field--input--border-color-hover);
-	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
 .disabled .CodeMirror:hover {
@@ -36,8 +38,8 @@
 }
 
 .CodeMirror.CodeMirror-focused {
-	border-color: var(--theme--form--field--input--border-color-focus);
-	box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+	outline-offset: var(--focus-ring-offset-invert);
 }
 
 /* PADDING */

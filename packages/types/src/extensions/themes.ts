@@ -37,11 +37,10 @@ const FormRules = Type.Optional(
 
 						borderColor: Type.Optional(Type.Ref(Color)),
 						borderColorHover: Type.Optional(Type.Ref(Color)),
-						borderColorFocus: Type.Optional(Type.Ref(Color)),
+
+						focusRingColor: Type.Optional(Type.Ref(Color)),
 
 						boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-						boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
-						boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
 
 						height: Type.Optional(Type.Ref(Size)),
 						padding: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
@@ -104,6 +103,12 @@ const Rules = Type.Object({
 	fonts: Type.Optional(
 		Type.Object({
 			display: Type.Optional(
+				Type.Object({
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				}),
+			),
+			title: Type.Optional(
 				Type.Object({
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
 					fontWeight: Type.Optional(Type.Ref(FontWeight)),
@@ -204,7 +209,6 @@ const Rules = Type.Object({
 			background: Type.Optional(Type.Ref(Color)),
 			borderWidth: Type.Optional(Type.Ref(LineWidth)),
 			borderColor: Type.Optional(Type.Ref(Color)),
-			boxShadow: Type.Optional(Type.Ref(BoxShadow)),
 			headline: Type.Optional(
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),

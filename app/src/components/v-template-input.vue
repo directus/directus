@@ -333,7 +333,8 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:focus-within {
-		border-color: var(--theme--form--field--input--border-color-focus);
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
 	}
 
 	:deep(.preview) {

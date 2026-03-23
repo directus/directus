@@ -14,12 +14,6 @@ export interface PrivateViewProps {
 
 	/** Where to navigate to on back button click. Defaults to last page in the browser history */
 	backTo?: string;
-
-	/** Whether to always show sidebar shadows regardless of scroll state (true) or only when horizontally scrolled (false). */
-	sidebarShadow?: boolean;
-
-	/** Override header shadow state. When provided, bypasses internal scroll-based calculation. */
-	showHeaderShadow?: boolean;
 }
 </script>
 

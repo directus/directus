@@ -9,7 +9,6 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 
 const props = defineProps<{
 	title?: string;
-	shadow: boolean;
 	inlineNav: boolean;
 	icon?: string;
 	iconColor?: string;
@@ -30,7 +29,7 @@ const showNavToggle = computed(() => {
 </script>
 
 <template>
-	<header class="header-bar" :class="{ shadow }">
+	<header class="header-bar">
 		<div class="primary">
 			<VIcon
 				v-if="showNavToggle"
@@ -103,16 +102,9 @@ const showNavToggle = computed(() => {
 	background-color: var(--theme--header--background);
 	inline-size: 100%;
 	padding-inline: var(--content-padding);
-	box-shadow: none;
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 	block-size: var(--header-bar-height);
 	grid-template-rows: repeat(2, 1fr);
-
-	&.shadow {
-		z-index: 7;
-		box-shadow: var(--theme--header--box-shadow);
-		transition: box-shadow var(--fast) var(--transition);
-	}
 
 	@media (width > 22.5rem) {
 		display: flex;
@@ -153,7 +145,9 @@ const showNavToggle = computed(() => {
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.2;
+		font-family: var(--theme--header--title--font-family);
+		font-weight: var(--theme--header--title--font-weight);
+		color: var(--theme--header--title--foreground);
 		max-inline-size: 100%;
 
 		.render-template img,

@@ -227,7 +227,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			:style="{ '--header-color': color }"
 		>
 			<div class="text-content">
-				<p v-if="title" class="text-title">
+				<p v-if="title" class="text-title type-display">
 					<VIcon v-if="icon" :name="icon" />
 					<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
 				</p>
@@ -371,13 +371,10 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 		.text-title {
 			display: flex;
-			color: var(--theme--foreground-accent);
 			overflow: hidden;
 			gap: 0.4375rem;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			font-size: 1.375rem;
-			font-weight: 600;
 			align-items: center;
 
 			.v-icon {

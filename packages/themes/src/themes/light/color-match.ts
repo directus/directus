@@ -54,7 +54,6 @@ export default defineTheme({
 			background: '#FFFFFF',
 			borderWidth: '1px',
 			borderColor: 'var(--theme--border-color-subdued)',
-			boxShadow: '0 4px 7px -4px rgba(0,102,102, 0.2)',
 		},
 		sidebar: {
 			background: '#FFFFFF',

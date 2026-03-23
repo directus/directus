@@ -23,7 +23,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	name: '$t:layouts.map.map',
 	icon: 'map',
 	smallHeader: true,
-	sidebarShadow: true,
 	component: MapLayout,
 	slots: {
 		options: MapOptions,

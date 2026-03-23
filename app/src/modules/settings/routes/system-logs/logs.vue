@@ -580,7 +580,7 @@ onUnmounted(() => {
 	background-color: var(--theme--background-subdued);
 	border-block-start: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	box-shadow: var(--sidebar-shadow);
+	box-shadow: -4px 0 7px -4px var(--shadow-color);
 	z-index: 1;
 }
 

@@ -26,8 +26,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	name: '$t:layouts.kanban.name',
 	icon: 'view_week',
 	component: KanbanLayout,
-	headerShadow: false,
-	sidebarShadow: false,
 	slots: {
 		options: KanbanOptions,
 		sidebar: () => undefined,
