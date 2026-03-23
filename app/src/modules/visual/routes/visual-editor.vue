@@ -51,6 +51,8 @@ const showEditableElements = ref(false);
 
 const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering } = useAiSidebar(isMobile);
 
+const teleportTarget = computed(() => (isMobile.value ? '#ve-sidebar-mobile-outlet' : '#ve-sidebar-desktop-outlet'));
+
 const { dynamicDisplay, onNavigation } = usePageInfo();
 
 const { urlTemplates, resolveUrls } = useVisualEditorUrls();
@@ -264,10 +266,8 @@ function useVersionSelection() {
 				</VButton>
 			</template>
 
-			<template v-if="serverStore.info.ai_enabled && !isMobile" #sidebar>
-				<aside class="ai-sidebar">
-					<AiConversation />
-				</aside>
+			<template v-if="serverStore.info.ai_enabled" #sidebar>
+				<div id="ve-sidebar-desktop-outlet" class="sidebar-outlet" />
 			</template>
 
 			<template #overlay="{ frameEl, frameSrc }">
@@ -287,15 +287,20 @@ function useVersionSelection() {
 		</LivePreview>
 
 		<PrivateViewDrawer
-			v-if="serverStore.info.ai_enabled && isMobile"
+			v-if="serverStore.info.ai_enabled"
 			:collapsed="!mobileDrawerOpen"
 			placement="right"
+			keep-mounted
 			@update:collapsed="mobileDrawerOpen = !$event"
 		>
+			<div id="ve-sidebar-mobile-outlet" class="sidebar-outlet" />
+		</PrivateViewDrawer>
+
+		<Teleport v-if="serverStore.info.ai_enabled" defer :to="teleportTarget">
 			<aside class="ai-sidebar">
 				<AiConversation />
 			</aside>
-		</PrivateViewDrawer>
+		</Teleport>
 	</div>
 </template>
 
@@ -306,6 +311,11 @@ function useVersionSelection() {
 	block-size: 100%;
 	inline-size: 100%;
 	overflow: hidden;
+}
+
+.sidebar-outlet {
+	block-size: 100%;
+	inline-size: 100%;
 }
 
 .ai-sidebar {
