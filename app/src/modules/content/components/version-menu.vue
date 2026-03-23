@@ -21,7 +21,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import type { ContentVersionMaybeNew } from '@/types/versions';
+import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -77,8 +77,14 @@ const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renam
 const { deleting, deleteVersion } = useDelete();
 const { deleteDialogActive, onDeleteVersion } = useDeleteDialog();
 
-const { isCurrentVersionGlobal, isCurrentVersionNew, canAccessGlobalVersion, isVersionKeyGlobal, isVersionNew } =
-	useGlobalVersions();
+const {
+	isCurrentVersionGlobal,
+	isCurrentVersionNew,
+	isItemLessDraft,
+	canAccessGlobalVersion,
+	isVersionKeyGlobal,
+	isVersionNew,
+} = useGlobalVersions();
 
 const newVersionKeyReservedTooltip = computed(() =>
 	isVersionKeyGlobal(newVersionKey.value) ? t('reserved_version_key', { key: newVersionKey.value }) : undefined,
@@ -281,9 +287,19 @@ function useGlobalVersions() {
 	const isCurrentVersionGlobal = computed(() => currentVersion.value?.type === 'global');
 	const isCurrentVersionNew = computed(() => isVersionNew(currentVersion.value));
 
+	// Item-less draft: a global version with no linked item.
+	// Covers both unsaved virtual drafts (id === '+') and saved drafts (item === null).
+	// The "Create Version" action is unavailable in this state.
+	const isItemLessDraft = computed(() => {
+		if (!currentVersion.value) return false;
+		if (currentVersion.value.id === '+') return currentVersion.value.type === 'global';
+		return (currentVersion.value as ContentVersionWithType).item === null;
+	});
+
 	return {
 		isCurrentVersionGlobal,
 		isCurrentVersionNew,
+		isItemLessDraft,
 		canAccessGlobalVersion,
 		isVersionKeyGlobal,
 		isVersionNew,
@@ -367,7 +383,12 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 				<template v-if="createVersionsAllowed">
 					<VDivider />
 
-					<VListItem clickable @click="createDialogActive = true">
+					<VListItem
+						v-tooltip="isItemLessDraft ? $t('version_create_item_less') : undefined"
+						:disabled="isItemLessDraft"
+						clickable
+						@click="createDialogActive = true"
+					>
 						<VListItemIcon>
 							<VIcon name="add" />
 						</VListItemIcon>
@@ -389,7 +410,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 							<VIcon name="arrow_upload_progress" />
 						</VListItemIcon>
 
-						<VListItemContent>{{ $t('promote_version') }}</VListItemContent>
+						<VListItemContent>{{ $t('publish_version') }}</VListItemContent>
 					</VListItem>
 
 					<VListItem v-if="updateVersionsAllowed && !isCurrentVersionGlobal" clickable @click="openRenameDialog">

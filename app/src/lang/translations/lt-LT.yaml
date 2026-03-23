@@ -163,7 +163,6 @@ create_version: Sukurti versiją
 rename_version: Pervadinti versiją
 compare_version: Palyginti versijas
 save_version: Išsaugoti versiją
-promote_version: Pakelti versiją
 delete_version: Pašalinti versiją
 delete_version_copy: >-
   Ar tikrai norite pašalinti "{version}" versiją? Šio veiksmo nebus galima atšaukti.

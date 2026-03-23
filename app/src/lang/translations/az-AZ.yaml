@@ -161,7 +161,6 @@ create_version: Versiya yarat
 rename_version: Versiyanın adını dəyiş
 compare_version: Versiyaları müqayisə et
 save_version: Versiyanı yadda saxla
-promote_version: Versiyanı promote et
 delete_version: Versiyanı sil
 delete_version_copy: >-
   "{version}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.

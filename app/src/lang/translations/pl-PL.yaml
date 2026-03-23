@@ -163,7 +163,6 @@ create_version: Utwórz wersję
 rename_version: Zmień nazwę wersji
 compare_version: Porównaj wersję
 save_version: Zapisz wersję
-promote_version: Promuj wersję
 delete_version: Usuń wersję
 delete_version_copy: >-
   Czy na pewno chcesz usunąć wersję "{version}"? Tej akcji nie można cofnąć.

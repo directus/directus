@@ -182,7 +182,6 @@ create_version: Créer une version
 rename_version: Renommer la version
 compare_version: Comparer la version
 save_version: Enregistrer la version
-promote_version: Promouvoir la version
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.

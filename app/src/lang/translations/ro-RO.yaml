@@ -151,7 +151,6 @@ create_version: Creați versiune
 rename_version: Redenumiți versiunea
 compare_version: Comparați versiunile
 save_version: Salvează versiunea
-promote_version: Promovați versiunea
 delete_version: Ștergeți versiunea
 delete_version_copy: >-
   Ești sigur că vrei să ștergi versiunea "{version}"? Această acțiune nu poate fi anulată.

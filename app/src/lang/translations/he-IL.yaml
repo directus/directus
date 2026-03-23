@@ -158,7 +158,6 @@ create_version: צור גרסה
 rename_version: לשנות שם גרסה
 compare_version: השווה גירסאות
 save_version: לשמור גרסה
-promote_version: לקדם גרסה
 delete_version: מחיקת גרסא
 delete_version_copy: >-
   האם ברצונך למחוק את גרסה {version}? הפעולה אינה ניתנת לביטול.

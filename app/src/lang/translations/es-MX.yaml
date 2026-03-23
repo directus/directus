@@ -169,7 +169,6 @@ create_version: Crear versión
 rename_version: Renombrar versión
 compare_version: Comparar versión
 save_version: Guardar versión
-promote_version: Promover versión
 delete_version: Eleminar versión
 delete_version_copy: >-
   ¿Está seguro que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.

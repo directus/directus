@@ -167,7 +167,6 @@ create_version: ვერსიის შექმნა
 rename_version: ვერსიის სახელის გადარქმევა
 compare_version: ვერსიების შეადარება
 save_version: ვერსიის შენახვა
-promote_version: ვერსიის დაწინაურება
 delete_version: ვერსიის წაშლა
 delete_version_copy: >-
   დარწმუნებული ხართ, რომ გსურთ წაშალოთ "{version}" ვერსია? ამ მოქმედების გაუქმება შეუძლებელი იქნება.

@@ -207,7 +207,6 @@ create_version: Criar Versão
 rename_version: Renomear Versão
 compare_version: Comparar Versão
 save_version: Salvar Versão
-promote_version: Promover Versão
 apply: Aplicar
 select_all_differences: Selecionar Todas as Diferenças
 delete_version: Deletar Versão

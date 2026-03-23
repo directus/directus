@@ -175,7 +175,6 @@ create_version: 버전 생성
 rename_version: 버전 이름 변경
 compare_version: 버전 비교
 save_version: 버전 저장
-promote_version: 버전 승격
 delete_version: 버전 삭제
 delete_version_copy: >-
   "{version}" 버전을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.

@@ -212,7 +212,6 @@ create_version: Создать Версию
 rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
-promote_version: Повысить версию
 apply: Применить
 select_all_differences: Выбрать все различия
 delete_version: Удалить версию

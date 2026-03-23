@@ -207,7 +207,6 @@ create_version: バージョンを作成
 rename_version: バージョン名を変更
 compare_version: バージョンを比較
 save_version: バージョンを保存
-promote_version: バージョンを反映
 apply: 適用
 select_all_differences: すべての差異を選択
 delete_version: バージョンを削除

@@ -163,7 +163,6 @@ create_version: Krijo Version
 rename_version: Riemërto Versionin
 compare_version: Krahaso Versionin
 save_version: Ruaj Versionin
-promote_version: Promovo Versionin
 delete_version: Fshi Versionin
 delete_version_copy: >-
   A jeni i sigurt që doni të fshini versionin "{version}"? Kjo veprim nuk mund të zhbëhet.

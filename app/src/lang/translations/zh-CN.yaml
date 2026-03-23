@@ -204,7 +204,6 @@ create_version: 创建新版本
 rename_version: 重命名版本
 compare_version: 对比版本
 save_version: 保存版本
-promote_version: 推广版本
 apply: 应用
 select_all_differences: 选择所有差异
 delete_version: 删除版本
