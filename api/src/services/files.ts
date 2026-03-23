@@ -5,8 +5,8 @@ import path from 'path';
 import url from 'url';
 import { useEnv } from '@directus/env';
 import {
-	ForbiddenError,
 	ContentTooLargeError,
+	ForbiddenError,
 	InternalServerError,
 	InvalidPayloadError,
 	ServiceUnavailableError,

@@ -1,8 +1,8 @@
 import { PassThrough, Readable } from 'node:stream';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InternalServerError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InternalServerError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
-import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, test, vi } from 'vitest';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { resetEnvMock } from '../test-utils/env.js';
@@ -19,7 +19,6 @@ const mockEnvOverrides = vi.hoisted(
 	() =>
 		({
 			FILES_MIME_TYPE_ALLOW_LIST: '*/*',
-			STORAGE_LOCATIONS: 'local',
 		}) as Record<string, unknown>,
 );
 
@@ -69,7 +68,7 @@ describe('Service / Files', () => {
 			});
 		});
 
-		it('throws InvalidPayloadError when "type" is not provided', async () => {
+		test('throws InvalidPayloadError when "type" is not provided', async () => {
 			try {
 				await service.createOne({
 					title: 'Test File',
@@ -84,7 +83,7 @@ describe('Service / Files', () => {
 			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
 		});
 
-		it('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
+		test('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
 			tracker.on
 				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
 				.response([{ filename_disk: 'existing-file.jpg' }]);
@@ -103,7 +102,7 @@ describe('Service / Files', () => {
 			);
 		});
 
-		it('creates a file entry when "type" is provided', async () => {
+		test('creates a file entry when "type" is provided', async () => {
 			await service.createOne({
 				title: 'Test File',
 				storage: 'local',
@@ -114,7 +113,7 @@ describe('Service / Files', () => {
 			expect(ItemsService.prototype.createOne).toHaveBeenCalled();
 		});
 
-		it('should normalize filename_disk path', async () => {
+		test('should normalize filename_disk path', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			await service.createOne({
@@ -132,6 +131,8 @@ describe('Service / Files', () => {
 	describe('uploadOne', () => {
 		let service: FilesService;
 		let superUpdateOne: MockInstance;
+		let mockDriver: Driver;
+		let mockStorage: StorageManager;
 
 		let sample: {
 			id: string;
@@ -149,8 +150,8 @@ describe('Service / Files', () => {
 				filesize: 500,
 			};
 
-			const mockDriver = createMockDriver();
-			const mockStorage = createMockStorage(mockDriver);
+			mockDriver = createMockDriver();
+			mockStorage = createMockStorage(mockDriver);
 			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 
 			tracker.on.select('select "storage_default_folder" from "directus_settings"').response([]);
@@ -159,7 +160,35 @@ describe('Service / Files', () => {
 			superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(sample.id);
 		});
 
-		it('should set the `uploaded_on` field to the current date', async () => {
+		test.each(['EROFS', 'EACCES', 'EPERM'])('returns 500 for %s filesystem error', async (code: any) => {
+			const stream = Readable.from(Buffer.from('test content'));
+
+			vi.mocked(mockDriver.write).mockRejectedValue(Object.assign(new Error('fs error'), { code }));
+
+			await expect(
+				service.uploadOne(stream, {
+					storage: 'local',
+					filename_download: 'test.txt',
+					type: 'text/plain',
+				} as any),
+			).rejects.toBeInstanceOf(InternalServerError);
+		});
+
+		test('returns service unavailable for unknown error', async () => {
+			const stream = Readable.from(Buffer.from('test content'));
+
+			vi.mocked(mockDriver.write).mockRejectedValue(Object.assign(new Error('Error')));
+
+			await expect(
+				service.uploadOne(stream, {
+					storage: 'local',
+					filename_download: 'test.txt',
+					type: 'text/plain',
+				} as any),
+			).rejects.toBeInstanceOf(ServiceUnavailableError);
+		});
+
+		test('should set the `uploaded_on` field to the current date', async () => {
 			tracker.on
 				.select(
 					'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
@@ -190,7 +219,7 @@ describe('Service / Files', () => {
 			);
 		});
 
-		it('should update the `filename_disk` extension to the correct mimetype', async () => {
+		test('should update the `filename_disk` extension to the correct mimetype', async () => {
 			tracker.on
 				.select(
 					'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
@@ -382,7 +411,7 @@ describe('Service / Files', () => {
 			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 		});
 
-		it('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
+		test('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
 			tracker.on
 				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
 				.response([{ filename_disk: 'existing-file.jpg' }]);
@@ -402,7 +431,7 @@ describe('Service / Files', () => {
 			);
 		});
 
-		it('should throw deferred InvalidPayloadError when filename_disk is present in bulk update', async () => {
+		test('should throw deferred InvalidPayloadError when filename_disk is present in bulk update', async () => {
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
 				{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
 				{ id: 2, storage: 'local', filename_disk: 'old-file-2.jpg' },
@@ -419,7 +448,7 @@ describe('Service / Files', () => {
 			);
 		});
 
-		it('should normalize filename_disk path', async () => {
+		test('should normalize filename_disk path', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
@@ -439,7 +468,7 @@ describe('Service / Files', () => {
 			expect(superUpdateMany).toHaveBeenCalledWith([1], { filename_disk: 'new-file.jpg' }, {});
 		});
 
-		it('should move file when filename_disk changes', async () => {
+		test('should move file when filename_disk changes', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
@@ -465,7 +494,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
 
-		it('should not move file when filename_disk has not changed', async () => {
+		test('should not move file when filename_disk has not changed', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
@@ -487,7 +516,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
 
-		it('should delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is true', async () => {
+		test('should delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is true', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
 			});
@@ -521,7 +550,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).toHaveBeenCalledWith('old-file.jpg');
 		});
 
-		it('should not delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is false', async () => {
+		test('should not delete original file when remote file exists and FILES_DELETE_ORIGINAL_ON_MOVE is false', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				FILES_DELETE_ORIGINAL_ON_MOVE: 'false',
 			});
@@ -555,7 +584,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
 
-		it('should delete generated assets (thumbnails) when moving file', async () => {
+		test('should delete generated assets (thumbnails) when moving file', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
@@ -579,7 +608,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).toHaveBeenCalledWith('old-file-thumbnail-large.jpg');
 		});
 
-		it('should handle files in subdirectories', async () => {
+		test('should handle files in subdirectories', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
@@ -601,7 +630,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).toHaveBeenCalledWith('old-file-thumbnail.jpg');
 		});
 
-		it('should update without file operations when filename_disk is not in data', async () => {
+		test('should update without file operations when filename_disk is not in data', async () => {
 			await service.updateMany([1], {
 				title: 'Updated Title',
 			});
@@ -611,7 +640,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
 
-		it('should skip file operations when file record has no filename_disk', async () => {
+		test('should skip file operations when file record has no filename_disk', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
@@ -626,7 +655,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).not.toHaveBeenCalled();
 		});
 
-		it('should skip file operations when file record is not found in updatedFiles map', async () => {
+		test('should skip file operations when file record is not found in updatedFiles map', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
 			await service.updateMany([1], {
@@ -653,7 +682,7 @@ describe('Service / Files', () => {
 			vi.mocked(getStorage).mockResolvedValue(mockStorage);
 		});
 
-		it('should delete file and generated assets from storage', async () => {
+		test('should delete file and generated assets from storage', async () => {
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
 				{ id: 1, storage: 'local', filename_disk: 'test-file.jpg' },
 			]);
@@ -672,7 +701,7 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).toHaveBeenCalledWith('test-file-thumbnail-large.jpg');
 		});
 
-		it('should delete multiple files from storage', async () => {
+		test('should delete multiple files from storage', async () => {
 			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
 				{ id: 1, storage: 'local', filename_disk: 'file1.jpg' },
 				{ id: 2, storage: 'local', filename_disk: 'file2.png' },
@@ -695,132 +724,135 @@ describe('Service / Files', () => {
 			expect(mockDriver.delete).toHaveBeenCalledWith('file1.jpg');
 			expect(mockDriver.delete).toHaveBeenCalledWith('file2.png');
 		});
+	});
 
-		describe('importOne', () => {
-			let service: FilesService;
-			let uploadOneSpy: MockInstance;
-			let mockAxiosGet: ReturnType<typeof vi.fn>;
+	describe('importOne', () => {
+		let service: FilesService;
+		let uploadOneSpy: MockInstance;
+		let mockAxiosGet: ReturnType<typeof vi.fn>;
 
-			beforeEach(() => {
-				mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = '*/*';
-				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local';
+		beforeEach(() => {
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = '*/*';
+			mockEnvOverrides['STORAGE_LOCATIONS'] = 'local';
 
-				service = new FilesService({
-					knex: db,
-					schema: { collections: {}, relations: [] },
-				});
-
-				uploadOneSpy = vi.spyOn(FilesService.prototype, 'uploadOne').mockResolvedValue('imported-file-id');
-
-				mockAxiosGet = vi.fn().mockResolvedValue({
-					headers: { 'content-type': 'image/jpeg' },
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
-				});
-
-				vi.mocked(getAxios).mockResolvedValue({ get: mockAxiosGet } as any);
+			service = new FilesService({
+				knex: db,
+				schema: { collections: {}, relations: [] },
 			});
 
-			it('throws InvalidPayloadError when MIME type is blocked by the global allow list', async () => {
-				mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+			uploadOneSpy = vi.spyOn(FilesService.prototype, 'uploadOne').mockResolvedValue('imported-file-id');
 
-				mockAxiosGet.mockResolvedValue({
-					headers: { 'content-type': 'application/pdf' },
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/file.pdf' } },
-				});
-
-				await expect(service.importOne('https://example.com/file.pdf', {})).rejects.toBeInstanceOf(InvalidPayloadError);
-				expect(uploadOneSpy).not.toHaveBeenCalled();
+			mockAxiosGet = vi.fn().mockResolvedValue({
+				headers: { 'content-type': 'image/jpeg' },
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
 			});
 
-			it('succeeds when MIME type is permitted by the global allow list', async () => {
-				mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+			vi.mocked(getAxios).mockResolvedValue({ get: mockAxiosGet } as any);
+		});
 
-				mockAxiosGet.mockResolvedValue({
-					headers: { 'content-type': 'image/jpeg' },
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
-				});
+		test('throws InvalidPayloadError when MIME type is blocked by the global allow list', async () => {
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
 
-				await expect(service.importOne('https://example.com/photo.jpg', {})).resolves.toBe('imported-file-id');
-				expect(uploadOneSpy).toHaveBeenCalled();
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'application/pdf' },
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/file.pdf' } },
 			});
 
-			it('throws InvalidPayloadError when MIME type is not in allowedMimeTypes', async () => {
-				mockAxiosGet.mockResolvedValue({
-					headers: { 'content-type': 'image/png' },
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/image.png' } },
-				});
+			await expect(service.importOne('https://example.com/file.pdf', {})).rejects.toBeInstanceOf(InvalidPayloadError);
+			expect(uploadOneSpy).not.toHaveBeenCalled();
+		});
 
-				await expect(
-					service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/jpeg'] }),
-				).rejects.toBeInstanceOf(InvalidPayloadError);
+		test('succeeds when MIME type is permitted by the global allow list', async () => {
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
 
-				expect(uploadOneSpy).not.toHaveBeenCalled();
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/jpeg' },
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
 			});
 
-			it('succeeds when MIME type matches an allowedMimeTypes glob pattern', async () => {
-				mockAxiosGet.mockResolvedValue({
-					headers: { 'content-type': 'image/png' },
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/image.png' } },
-				});
+			await expect(service.importOne('https://example.com/photo.jpg', {})).resolves.toBe('imported-file-id');
+			expect(uploadOneSpy).toHaveBeenCalled();
+		});
 
-				await expect(
-					service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/*'] }),
-				).resolves.toBe('imported-file-id');
-
-				expect(uploadOneSpy).toHaveBeenCalled();
+		test('throws InvalidPayloadError when MIME type is not in filterMimeType', async () => {
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/png' },
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/image.png' } },
 			});
 
-			it('does not restrict MIME type when allowedMimeTypes is an empty array', async () => {
-				await expect(service.importOne('https://example.com/photo.jpg', {}, [])).resolves.toBe('imported-file-id');
-				expect(uploadOneSpy).toHaveBeenCalled();
+			await expect(
+				service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/jpeg'] }),
+			).rejects.toBeInstanceOf(InvalidPayloadError);
+
+			expect(uploadOneSpy).not.toHaveBeenCalled();
+		});
+
+		test('succeeds when MIME type matches an filterMimeType glob pattern', async () => {
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/png' },
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/image.png' } },
 			});
 
-			it('strips content-type parameters before checking MIME type', async () => {
-				mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+			await expect(
+				service.importOne('https://example.com/image.png', {}, { filterMimeType: ['image/*'] }),
+			).resolves.toBe('imported-file-id');
 
-				mockAxiosGet.mockResolvedValue({
-					headers: { 'content-type': 'image/jpeg; charset=utf-8' },
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
-				});
+			expect(uploadOneSpy).toHaveBeenCalled();
+		});
 
-				await expect(service.importOne('https://example.com/photo.jpg', {})).resolves.toBe('imported-file-id');
-				expect(uploadOneSpy).toHaveBeenCalled();
+		test('does not restrict MIME type when filterMimeType is an empty array', async () => {
+			await expect(service.importOne('https://example.com/photo.jpg', {}, { filterMimeType: [] })).resolves.toBe(
+				'imported-file-id',
+			);
+
+			expect(uploadOneSpy).toHaveBeenCalled();
+		});
+
+		test('strips content-type parameters before checking MIME type', async () => {
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'image/*';
+
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/jpeg; charset=utf-8' },
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
 			});
 
-			it('falls back to application/octet-stream when the content-type header is absent', async () => {
-				mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'application/octet-stream';
+			await expect(service.importOne('https://example.com/photo.jpg', {})).resolves.toBe('imported-file-id');
+			expect(uploadOneSpy).toHaveBeenCalled();
+		});
 
-				mockAxiosGet.mockResolvedValue({
-					headers: {},
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/file' } },
-				});
+		test('falls back to application/octet-stream when the content-type header is absent', async () => {
+			mockEnvOverrides['FILES_MIME_TYPE_ALLOW_LIST'] = 'application/octet-stream';
 
-				await expect(service.importOne('https://example.com/file', {})).resolves.toBe('imported-file-id');
-				expect(uploadOneSpy).toHaveBeenCalled();
+			mockAxiosGet.mockResolvedValue({
+				headers: {},
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/file' } },
 			});
 
-			it('passes the stripped MIME type (without parameters) to uploadOne', async () => {
-				mockAxiosGet.mockResolvedValue({
-					headers: { 'content-type': 'image/jpeg; charset=utf-8' },
-					data: new PassThrough(),
-					request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
-				});
+			await expect(service.importOne('https://example.com/file', {})).resolves.toBe('imported-file-id');
+			expect(uploadOneSpy).toHaveBeenCalled();
+		});
 
-				await service.importOne('https://example.com/photo.jpg', {});
-
-				expect(uploadOneSpy).toHaveBeenCalledWith(
-					expect.anything(),
-					expect.objectContaining({ type: 'image/jpeg' }),
-					undefined,
-				);
+		test('passes the stripped MIME type (without parameters) to uploadOne', async () => {
+			mockAxiosGet.mockResolvedValue({
+				headers: { 'content-type': 'image/jpeg; charset=utf-8' },
+				data: new PassThrough(),
+				request: { res: { responseUrl: 'https://example.com/photo.jpg' } },
 			});
+
+			await service.importOne('https://example.com/photo.jpg', {});
+
+			expect(uploadOneSpy).toHaveBeenCalledWith(
+				expect.anything(),
+				expect.objectContaining({ type: 'image/jpeg' }),
+				undefined,
+			);
 		});
 	});
 });
