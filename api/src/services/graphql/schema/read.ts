@@ -24,7 +24,7 @@ import { GraphQLDate } from '../types/date.js';
 import { GraphQLGeoJSON } from '../types/geojson.js';
 import { GraphQLHash } from '../types/hash.js';
 import { GraphQLStringOrFloat } from '../types/string-or-float.js';
-import { dedupRelationalResolver } from '../utils/dedup-resolvers.js';
+import { dedupeRelationalResolver } from '../utils/dedupe-resolvers.js';
 import { getTypes } from './get-types.js';
 import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 
@@ -617,7 +617,7 @@ export async function getReadableTypes(
 				: new GraphQLNonNull(
 						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
 					),
-			resolve: dedupRelationalResolver(({ info }) => resolveQuery(gql, info)),
+			resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 		};
 
 		if (collection.singleton === false) {
@@ -671,7 +671,7 @@ export async function getReadableTypes(
 					type: new GraphQLList(GraphQLString),
 				},
 			},
-			resolve: dedupRelationalResolver(({ info }) => resolveQuery(gql, info)),
+			resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 		});
 
 		if (collection.singleton === false) {
@@ -682,7 +682,7 @@ export async function getReadableTypes(
 					id: new GraphQLNonNull(GraphQLID),
 					version: GraphQLString,
 				},
-				resolve: dedupRelationalResolver(({ info }) => resolveQuery(gql, info)),
+				resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 			});
 		}
 
@@ -696,7 +696,7 @@ export async function getReadableTypes(
 							version: new GraphQLNonNull(GraphQLString),
 							id: new GraphQLNonNull(GraphQLID),
 						},
-				resolve: dedupRelationalResolver(({ info }) => resolveQuery(gql, info)),
+				resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 			});
 		}
 
