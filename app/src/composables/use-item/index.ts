@@ -16,7 +16,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
 import type { ContentVersionMaybeNew } from '@/types/versions';
-import { applyConditions } from '@/utils/apply-conditions';
 import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
