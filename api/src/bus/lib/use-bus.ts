@@ -17,7 +17,12 @@ export const useBus = () => {
 
 	if (redisConfigAvailable()) {
 		const env = useEnv();
-		_cache.bus = createBus({ type: 'redis', redis: useRedis(), namespace: env['REDIS_BUS_NAMESPACE'] as string });
+
+		_cache.bus = createBus({
+			type: 'redis',
+			redis: useRedis(),
+			namespace: (env['REDIS_BUS_NAMESPACE'] as string) ?? 'directus:bus',
+		});
 	} else {
 		_cache.bus = createBus({ type: 'local' });
 	}

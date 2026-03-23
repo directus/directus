@@ -15,7 +15,7 @@ const config: CacheConfig = localOnly
 	: {
 			type: 'multi',
 			redis: {
-				namespace: env['REDIS_PERMISSIONS_NAMESPACE'] as string,
+				namespace: (env['REDIS_PERMISSIONS_NAMESPACE'] as string) ?? 'permissions',
 				redis: useRedis(),
 				...(ttl !== undefined ? { ttl } : {}),
 			},
