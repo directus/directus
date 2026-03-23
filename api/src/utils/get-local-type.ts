@@ -137,7 +137,10 @@ export default function getLocalType(
 	}
 
 	/** Handle MS SQL varchar(MAX) and nvarchar(MAX) types */
-	if ((column.data_type === 'nvarchar' || column.data_type === 'varchar') && (column.max_length === -1 || column.max_length === null)) {
+	if (
+		(column.data_type === 'nvarchar' || column.data_type === 'varchar') &&
+		(column.max_length === -1 || column.max_length === null)
+	) {
 		return 'text';
 	}
 

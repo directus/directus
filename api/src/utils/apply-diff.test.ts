@@ -846,5 +846,4 @@ describe('applyDiff', () => {
 			},
 		);
 	});
-
 });

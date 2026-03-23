@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { rawColumnToColumn, parseDefaultValue } from './mssql.js';
+import { parseDefaultValue, rawColumnToColumn } from './mssql.js';
 
 describe('MSSQL dialect', () => {
 	describe('rawColumnToColumn', () => {
