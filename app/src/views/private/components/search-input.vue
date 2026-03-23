@@ -244,7 +244,8 @@ function emitValue() {
 
 .search-input {
 	--button-size: 2rem;
-	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
+	--search-input-border-width: var(--focus-ring-width);
+	--search-input-size: calc(var(--button-size) - var(--search-input-border-width) * 2);
 	--search-input-radius: calc(var(--button-size) / 2);
 	--icon-size: 1rem;
 	--icon-search-padding-left: 0.375rem; // visually center in closed filter
@@ -256,9 +257,9 @@ function emitValue() {
 	align-items: center;
 	inline-size: var(--search-input-size);
 	min-block-size: var(--search-input-size);
-	max-inline-size: calc(100% - var(--theme--border-width) * 2);
+	max-inline-size: calc(100% - var(--search-input-border-width) * 2);
 	overflow: hidden;
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border: var(--search-input-border-width) solid transparent;
 	border-radius: var(--search-input-radius);
 	transition:
 		inline-size var(--slow) var(--transition),
@@ -334,15 +335,6 @@ function emitValue() {
 		margin-inline-end: var(--icon-filter-margin-right);
 	}
 
-	&:focus-within {
-		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
-		outline-offset: var(--focus-ring-offset-invert);
-	}
-
-	&:not(.disabled):not(.active):hover {
-		border-color: var(--theme--form--field--input--border-color-hover);
-	}
-
 	&.has-content {
 		inline-size: 11.25rem;
 
@@ -363,6 +355,7 @@ function emitValue() {
 
 	&.active {
 		inline-size: 100%;
+		border-color: var(--theme--form--field--input--focus-ring-color);
 
 		@media (width > 22.5rem) {
 			inline-size: 8.4375rem;
@@ -402,7 +395,7 @@ function emitValue() {
 	}
 
 	&.filter-border {
-		padding-block-end: var(--theme--border-width);
+		padding-block-end: var(--search-input-border-width);
 		border-block-end: none;
 		border-end-end-radius: 0;
 		border-end-start-radius: 0;
@@ -412,10 +405,10 @@ function emitValue() {
 
 		&::after {
 			position: absolute;
-			inset-inline: var(--theme--border-width) var(--theme--border-width);
-			inset-block-end: calc(-1 * var(--theme--border-width));
+			inset-inline: var(--search-input-border-width);
+			inset-block-end: calc(-1 * var(--search-input-border-width));
 			inline-size: auto;
-			block-size: var(--theme--border-width);
+			block-size: var(--search-input-border-width);
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
@@ -431,13 +424,13 @@ function emitValue() {
 	min-inline-size: 100%;
 	padding: 0;
 	background-color: var(--theme--background-subdued);
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border: var(--search-input-border-width) solid var(--theme--form--field--input--border-color);
 	border-start-end-radius: 0;
 	border-end-end-radius: var(--search-input-radius);
 	border-end-start-radius: var(--search-input-radius);
 
 	&.active {
-		border-color: var(--theme--form--field--input--border-color);
+		border-color: var(--theme--form--field--input--focus-ring-color);
 	}
 
 	.filter-input {
