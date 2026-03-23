@@ -200,7 +200,9 @@ export function createErrorTracker() {
 	};
 }
 
-const store = useStore<{ importCount: number }>(String(env['IMPORT_EXPORT_NAMESPACE']));
+const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_EXPORT_NAMESPACE']), {
+	ttl: ms(env['IMPORT_TIMEOUT'] as StringValue),
+});
 
 export class ImportService {
 	knex: Knex;
@@ -271,7 +273,8 @@ export class ImportService {
 		const decrementImportCount = async () => {
 			try {
 				await store(async (store) => {
-					await store.set('importCount', (await store.get('importCount')) - 1);
+					const count = (await store.get('importCount')) ?? 0;
+					await store.set('importCount', count - 1);
 				});
 			} catch (error) {
 				logger.error(error, `Failed to decrement importCount`);

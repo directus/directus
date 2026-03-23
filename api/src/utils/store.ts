@@ -8,10 +8,15 @@ export type RedisStore<T> = {
 	delete(key: keyof T): Promise<void>;
 };
 
+export type StoreOptions<Type> = {
+	defaults?: Partial<Type> | undefined;
+	ttl?: number | undefined;
+};
+
 /**
  * Shared memory between multiple instances. Scoped to a provided namespace in redis.
  */
-export function useStore<Type extends object>(namespace: string, defaults?: Partial<Type>) {
+export function useStore<Type extends object>(namespace: string, options?: StoreOptions<Type>) {
 	const localOnly = redisConfigAvailable() === false;
 
 	const config: CacheConfig = localOnly
@@ -24,6 +29,10 @@ export function useStore<Type extends object>(namespace: string, defaults?: Part
 				redis: useRedis(),
 			};
 
+	if (config.type === 'redis' && options?.ttl) {
+		config.ttl = options?.ttl;
+	}
+
 	const store = createCache(config);
 
 	return <T>(callback: (store: RedisStore<Type>) => Promise<T>) =>
@@ -33,7 +42,7 @@ export function useStore<Type extends object>(namespace: string, defaults?: Part
 					return store.has(String(key));
 				},
 				async get<K extends keyof Type>(key: K): Promise<Type[K]> {
-					return ((await store.get(String(key))) ?? defaults?.[key]) as Promise<Type[K]>;
+					return ((await store.get(String(key))) ?? options?.defaults?.[key]) as Promise<Type[K]>;
 				},
 				set(key, value) {
 					return store.set(String(key), value);
