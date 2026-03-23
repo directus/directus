@@ -115,7 +115,7 @@
 
 .wysiwyg:not(.disabled) .tox-tinymce.focus {
 	outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
-	outline-offset: var(--focus-ring-offset-invert);
+	outline-offset: max(-1 * var(--focus-ring-width), -1 * var(--theme--border-width));
 }
 
 .tox .tox-toolbar,
