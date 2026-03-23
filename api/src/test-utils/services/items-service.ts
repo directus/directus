@@ -25,9 +25,9 @@ import type { ItemsService } from '../../services/index.js';
 export function mockItemsService() {
 	const service = vi.fn(function (this: ItemsService, collection, options) {
 		this.collection = collection;
-		this.knex = options.knex;
-		this.accountability = options.accountability || null;
-		this.schema = options.schema;
+		this.knex = options?.knex;
+		this.accountability = options?.accountability || null;
+		this.schema = options?.schema ?? { collections: {}, relations: [] };
 		return this;
 	});
 
