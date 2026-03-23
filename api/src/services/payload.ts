@@ -304,6 +304,7 @@ export class PayloadService {
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				for (const key of aggregateKeys) {
+					// Ignore keys that do not follow the `A->B` naming like count=*
 					if (key in item === false) continue;
 
 					const [operation, fieldName] = key.split('->') as [string, string];
