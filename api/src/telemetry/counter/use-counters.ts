@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { createKv, type Kv } from '@directus/memory';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 
@@ -14,7 +15,8 @@ export const useCounters = () => {
 	let counter: Kv;
 
 	if (redisConfigAvailable()) {
-		counter = createKv({ type: 'redis', redis: useRedis(), namespace: 'directus:counters' });
+		const env = useEnv();
+		counter = createKv({ type: 'redis', redis: useRedis(), namespace: env['REDIS_COUNTERS_NAMESPACE'] as string });
 	} else {
 		counter = createKv({ type: 'local' });
 	}
