@@ -749,7 +749,6 @@ bookmarks: Favoritos
 unexpected_error: Erro Inesperado
 copy_details: Copiar detalhes
 no_app_access_copy: Este utilizador não está autorizado a utilizar a "app" administrativa 
-password_reset_sent: Se a conta existir, um email terá sido enviado para fazer a reposição da palavra passe.
 back: Voltar
 filter: Filtro
 edit_image: Editar imagem
@@ -919,6 +918,7 @@ deployment:
       cancel_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 visible: Visível
 full_screen: Ecrã completo
+fit_to_screen: Ajustar ao ecrã
 save_image: Guardar imagem
 wysiwyg_options:
   forecolor: Cor principal
@@ -1096,6 +1096,8 @@ ai:
   settings: Configurações
   tool_approval:
     disabled: Desativado
+  ask_user_submit: Enviar
+  ask_user_next: Seguinte
 ai_tools:
   items: Items
   files: Ficheiros

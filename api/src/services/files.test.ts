@@ -1,7 +1,7 @@
 import { PassThrough, Readable } from 'node:stream';
-import { ForbiddenError, InvalidPayloadError, InternalServerError } from '@directus/errors';
-import { Driver, StorageManager } from '@directus/storage';
 import { useEnv } from '@directus/env';
+import { ForbiddenError, InternalServerError, InvalidPayloadError } from '@directus/errors';
+import { Driver, StorageManager } from '@directus/storage';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -238,6 +238,131 @@ describe('Service / Files', () => {
 			);
 
 			vi.useRealTimers();
+		});
+
+				describe('storage default behavior', () => {
+			it('should default to the first STORAGE_LOCATIONS when storage is not provided', async () => {
+				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+				tracker.on
+					.select(
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+					)
+					.response(null);
+
+				await service.uploadOne(new PassThrough(), {
+					type: 'image/jpeg',
+					filename_download: 'test.jpg',
+				});
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						storage: 'local',
+					}),
+					{ emitEvents: false },
+				);
+			});
+
+			it('should use the provided storage when explicitly set', async () => {
+				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+				tracker.on
+					.select(
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+					)
+					.response(null);
+
+				await service.uploadOne(new PassThrough(), {
+					storage: 's3',
+					type: 'image/jpeg',
+					filename_download: 'test.jpg',
+				});
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						storage: 's3',
+					}),
+					{ emitEvents: false },
+				);
+			});
+
+			it('should preserve the existing file storage on re-upload without storage', async () => {
+				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+				tracker.on
+					.select(
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+					)
+					.response({ storage: 's3', filename_disk: 'existing.jpg' });
+
+				await service.uploadOne(
+					new PassThrough(),
+					{
+						type: 'image/jpeg',
+						filename_download: 'test.jpg',
+					},
+					sample.id,
+				);
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						storage: 's3',
+					}),
+					{ emitEvents: false },
+				);
+			});
+
+			it('should override the existing file storage when explicitly provided', async () => {
+				mockEnvOverrides['STORAGE_LOCATIONS'] = 'local,s3';
+
+				tracker.on
+					.select(
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata", "storage" from "directus_files" where "id" = ?',
+					)
+					.response({ storage: 's3', filename_disk: 'existing.jpg' });
+
+				await service.uploadOne(
+					new PassThrough(),
+					{
+						storage: 'local',
+						type: 'image/jpeg',
+						filename_download: 'test.jpg',
+					},
+					sample.id,
+				);
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						storage: 'local',
+					}),
+					{ emitEvents: false },
+				);
+			});
+
+			describe('uploadOne - permanent filesystem errors', () => {
+				const errorCodes = ['EROFS', 'EACCES', 'EPERM'] as const;
+
+				it.each(errorCodes)('returns 500 for %s filesystem error', async (code: any) => {
+					const stream = Readable.from(Buffer.from('test content'));
+
+					const storage = await getStorage();
+					const disk = storage.location('local');
+
+					vi.spyOn(disk, 'write').mockRejectedValue(Object.assign(new Error('fs error'), { code }));
+
+					await expect(
+						service.uploadOne(stream, {
+							storage: 'local',
+							filename_download: 'test.txt',
+							type: 'text/plain',
+						} as any),
+					).rejects.toBeInstanceOf(InternalServerError);
+				});
+			});
 		});
 	});
 
@@ -569,27 +694,6 @@ describe('Service / Files', () => {
 			expect(ItemsService.prototype.deleteMany).toHaveBeenCalledWith([1, 2]);
 			expect(mockDriver.delete).toHaveBeenCalledWith('file1.jpg');
 			expect(mockDriver.delete).toHaveBeenCalledWith('file2.png');
-
-			describe('uploadOne - permanent filesystem errors', () => {
-				const errorCodes = ['EROFS', 'EACCES', 'EPERM'] as const;
-
-				it.each(errorCodes)('returns 500 for %s filesystem error', async (code: any) => {
-					const stream = Readable.from(Buffer.from('test content'));
-
-					const storage = await getStorage();
-					const disk = storage.location('local');
-
-					vi.spyOn(disk, 'write').mockRejectedValue(Object.assign(new Error('fs error'), { code }));
-
-					await expect(
-						service.uploadOne(stream, {
-							storage: 'local',
-							filename_download: 'test.txt',
-							type: 'text/plain',
-						} as any),
-					).rejects.toBeInstanceOf(InternalServerError);
-				});
-			});
 		});
 
 		describe('importOne', () => {

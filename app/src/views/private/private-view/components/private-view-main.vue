@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { cssVar } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useBreakpoints, useResizeObserver, useScroll } from '@vueuse/core';
 import { computed, type ComputedRef, inject, provide, ref, unref, useTemplateRef, watch } from 'vue';
@@ -39,7 +38,12 @@ useResizeObserver(scrollContainerRef, ([entry]) => {
 });
 
 const enforceShadows = computed(() => props.sidebarShadow || false);
-const contentPadding = computed(() => parseInt(cssVar('--content-padding'), 10) || 12);
+
+const contentPadding = computed(() => {
+	const el = contentEl.value;
+	if (!el) return 11;
+	return parseFloat(getComputedStyle(el).paddingInlineStart) || 11;
+});
 
 const showStartShadow = computed(() => {
 	if (enforceShadows.value) return true;
@@ -77,6 +81,8 @@ const splitterCollapsed = computed({
 		sidebarStore.collapsed = val;
 	},
 });
+
+const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet' : '#sidebar-desktop-outlet'));
 </script>
 
 <template>
@@ -87,14 +93,14 @@ const splitterCollapsed = computed({
 			primary="end"
 			size-unit="px"
 			collapsible
-			:collapsed-size="isMobile ? 0 : 60"
+			:collapsed-size="isMobile ? 0 : 54"
 			:collapse-threshold="70"
-			:min-size="280"
-			:max-size="600"
-			:snap-points="[370]"
+			:min-size="252"
+			:max-size="540"
+			:snap-points="[333]"
 			:direction="userStore.textDirection"
 			:snap-threshold="6"
-			divider-hit-area="24px"
+			divider-hit-area="4px"
 			:transition-duration="125"
 			class="main-split"
 			:disabled="isMobile"
@@ -136,21 +142,24 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<template v-if="!isMobile">
-					<SkipMenu section="sidebar" />
-					<PrivateViewSidebar id="sidebar">
-						<template #sidebar><slot name="sidebar" /></template>
-					</PrivateViewSidebar>
-				</template>
-
-				<PrivateViewDrawer v-else v-model:collapsed="sidebarStore.collapsed" placement="right">
-					<SkipMenu section="sidebar" />
-					<PrivateViewSidebar id="sidebar" class="mobile-sidebar">
-						<template #sidebar><slot name="sidebar" /></template>
-					</PrivateViewSidebar>
+				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet" />
+				<PrivateViewDrawer
+					:collapsed="isMobile ? sidebarStore.collapsed : true"
+					placement="right"
+					keep-mounted
+					@update:collapsed="isMobile && (sidebarStore.collapsed = $event ?? false)"
+				>
+					<div id="sidebar-mobile-outlet" class="sidebar-outlet" />
 				</PrivateViewDrawer>
 			</template>
 		</SplitPanel>
+
+		<Teleport defer :to="teleportTarget">
+			<SkipMenu section="sidebar" />
+			<PrivateViewSidebar id="sidebar" :class="{ 'mobile-sidebar': isMobile }">
+				<template #sidebar><slot name="sidebar" /></template>
+			</PrivateViewSidebar>
+		</Teleport>
 	</div>
 </template>
 
@@ -170,7 +179,7 @@ const splitterCollapsed = computed({
 .scroll-shadow {
 	position: absolute;
 	inset-block: 0;
-	inline-size: 7px;
+	inline-size: 0.375rem;
 	pointer-events: none;
 	z-index: 6;
 	opacity: 0;
@@ -222,11 +231,16 @@ const splitterCollapsed = computed({
 }
 
 .mobile-sidebar {
-	max-inline-size: 340px;
+	max-inline-size: 19.125rem;
+}
+
+.sidebar-outlet {
+	block-size: 100%;
+	inline-size: 100%;
 }
 
 .main-content-container {
 	inline-size: 100%;
-	block-size: calc(100% - 60px);
+	block-size: calc(100% - 3.375rem);
 }
 </style>

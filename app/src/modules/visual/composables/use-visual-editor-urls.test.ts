@@ -97,7 +97,19 @@ describe('useVisualEditorUrls', () => {
 		it('filters invalid URLs from mixed list', () => {
 			mockSettings([{ url: 'https://a.com' }, { url: 'bad' }, { url: 'https://b.com' }]);
 			const { resolveUrls } = useVisualEditorUrls();
-			expect(resolveUrls()).toEqual(['https://a.com', 'https://b.com']);
+			expect(resolveUrls()).toEqual(['https://a.com/', 'https://b.com/']);
+		});
+
+		it('preserves trailing slash', () => {
+			mockSettings([{ url: 'https://example.com/de/' }]);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls()).toEqual(['https://example.com/de/']);
+		});
+
+		it('preserves trailing slash with version template', () => {
+			mockSettings([{ url: 'https://example.com/{{$version}}/de/' }]);
+			const { resolveUrls } = useVisualEditorUrls();
+			expect(resolveUrls('draft')).toEqual(['https://example.com/draft/de/']);
 		});
 	});
 
@@ -123,7 +135,7 @@ describe('useVisualEditorUrls', () => {
 		it('skips invalid URLs and returns first valid one', () => {
 			mockSettings([{ url: 'invalid-url' }, { url: 'https://example.com' }]);
 			const { firstResolvedUrl } = useVisualEditorUrls();
-			expect(firstResolvedUrl.value).toBe('https://example.com');
+			expect(firstResolvedUrl.value).toBe('https://example.com/');
 		});
 	});
 });

@@ -279,6 +279,8 @@ describe('aiChatPostHandler', () => {
 				model: 'gpt-5',
 				tools: {},
 				aiSettings: customSettings,
+				userId: 'test-user',
+				role: 'test-role',
 				systemPrompt: undefined,
 				onUsage: expect.any(Function),
 			});
@@ -326,6 +328,8 @@ describe('aiChatPostHandler', () => {
 				model: 'gpt-5',
 				tools: expectedTools,
 				aiSettings: mockRes.locals!['ai'].settings,
+				userId: 'test-user',
+				role: 'test-role',
 				systemPrompt: undefined,
 				onUsage: expect.any(Function),
 			});

@@ -53,7 +53,7 @@ useResizeObserver(contentRef, (entries) => {
 
 	&[data-role='assistant'] {
 		.message-content {
-			padding: 0.4rem 0;
+			padding: 0.3125rem 0;
 		}
 
 		--ai-message-code-background: var(--theme--background-subdued);
@@ -63,7 +63,7 @@ useResizeObserver(contentRef, (entries) => {
 		--ai-message-text-border-color: var(--theme--border-color);
 
 		.message-content {
-			padding: 0.8rem 1rem;
+			padding: 0.625rem 0.8125rem;
 		}
 
 		--ai-message-code-background: var(--theme--background-normal);
@@ -74,7 +74,7 @@ useResizeObserver(contentRef, (entries) => {
 	}
 
 	&[data-role='user'].has-overflow.is-open .message-content {
-		padding-block-end: 0.8rem;
+		padding-block-end: 0.625rem;
 	}
 }
 
@@ -83,6 +83,7 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 .message-text[data-role='user'].has-overflow:not(.is-open) .content-wrapper {
+	/* stylelint-disable-next-line unit-disallowed-list -- v-bind bridge */
 	max-block-size: calc(v-bind(MESSAGE_TEXT_MAX_HEIGHT) * 1px);
 	overflow: hidden;
 
@@ -91,7 +92,7 @@ useResizeObserver(contentRef, (entries) => {
 		position: absolute;
 		inset-block-end: 0;
 		inset-inline: 0;
-		block-size: 80px;
+		block-size: 4.5rem;
 		background: linear-gradient(to bottom, transparent, var(--ai-message-background));
 		pointer-events: none;
 	}
@@ -99,10 +100,10 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Headings */
 :deep(h1) {
-	font-size: 1.5rem;
+	font-size: 1.1875rem;
 	font-weight: 700;
 	line-height: 1.3;
-	margin: 1rem 0 0.5rem;
+	margin: 0.8125rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -110,10 +111,10 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h2) {
-	font-size: 1.25rem;
+	font-size: 1rem;
 	font-weight: 700;
 	line-height: 1.3;
-	margin: 0.875rem 0 0.5rem;
+	margin: 0.6875rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -121,10 +122,10 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h3) {
-	font-size: 1.125rem;
+	font-size: 0.875rem;
 	font-weight: 600;
 	line-height: 1.4;
-	margin: 0.75rem 0 0.5rem;
+	margin: 0.5625rem 0 0.375rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -132,10 +133,10 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h4) {
-	font-size: 1rem;
+	font-size: 0.8125rem;
 	font-weight: 600;
 	line-height: 1.4;
-	margin: 0.75rem 0 0.375rem;
+	margin: 0.5625rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -143,10 +144,10 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h5) {
-	font-size: 0.9375rem;
+	font-size: 0.75rem;
 	font-weight: 600;
 	line-height: 1.5;
-	margin: 0.625rem 0 0.375rem;
+	margin: 0.5rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -154,10 +155,10 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 :deep(h6) {
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-weight: 600;
 	line-height: 1.5;
-	margin: 0.5rem 0 0.375rem;
+	margin: 0.375rem 0 0.3125rem;
 
 	&:first-child {
 		margin-block-start: 0;
@@ -166,7 +167,7 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Paragraphs */
 :deep(p) {
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 	line-height: 1.6;
 
 	&:first-child {
@@ -198,16 +199,16 @@ useResizeObserver(contentRef, (entries) => {
 /* Code */
 :deep(code) {
 	background-color: var(--ai-message-code-background);
-	padding: 0.125rem 0.375rem;
-	border-radius: 0.25rem;
+	padding: 0.125rem 0.3125rem;
+	border-radius: 0.1875rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-size: 0.875em;
 }
 
 :deep(pre) {
 	font-family: var(--theme--fonts--monospace--font-family);
-	margin: 0.75rem 0;
-	padding: 1rem;
+	margin: 0.5625rem 0;
+	padding: 0.8125rem;
 	background-color: var(--ai-message-code-background);
 	border-radius: var(--theme--border-radius);
 	overflow-x: auto;
@@ -221,12 +222,12 @@ useResizeObserver(contentRef, (entries) => {
 /* Lists */
 :deep(ul),
 :deep(ol) {
-	margin: 0.5rem 0;
-	padding-inline-start: 1.5rem;
+	margin: 0.375rem 0;
+	padding-inline-start: 1.1875rem;
 }
 
 :deep(li) {
-	margin: 0.25rem 0;
+	margin: 0.1875rem 0;
 	line-height: 1.6;
 }
 
@@ -234,24 +235,24 @@ useResizeObserver(contentRef, (entries) => {
 :deep(ol ol),
 :deep(ul ol),
 :deep(ol ul) {
-	margin: 0.25rem 0;
+	margin: 0.1875rem 0;
 }
 
 /* Task lists */
 :deep(ul:has(input[type='checkbox'])) {
 	list-style: none;
-	padding-inline-start: 0.25rem;
+	padding-inline-start: 0.1875rem;
 }
 
 :deep(li:has(input[type='checkbox'])) {
-	padding-inline-start: 0.25rem;
+	padding-inline-start: 0.1875rem;
 }
 
 :deep(input[type='checkbox']) {
 	position: relative;
-	inline-size: 20px;
-	block-size: 20px;
-	margin-inline-end: 0.5rem;
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
+	margin-inline-end: 0.375rem;
 	margin-block-start: 0.1em;
 	vertical-align: top;
 	appearance: none;
@@ -272,9 +273,9 @@ useResizeObserver(contentRef, (entries) => {
 		&::after {
 			content: '';
 			position: absolute;
-			inset-inline-start: 5px;
-			inline-size: 5px;
-			block-size: 10px;
+			inset-inline-start: 0.3125rem;
+			inline-size: 0.3125rem;
+			block-size: 0.5625rem;
 			border: solid var(--theme--primary);
 			border-width: 0 2px 2px 0;
 			transform: rotate(45deg);
@@ -310,9 +311,9 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Blockquotes */
 :deep(blockquote) {
-	margin: 1rem 0;
-	padding: 0.75rem 1rem;
-	border-inline-start: 0.25rem solid var(--ai-message-text-blockquote-border-color);
+	margin: 0.8125rem 0;
+	padding: 0.5625rem 0.8125rem;
+	border-inline-start: 0.1875rem solid var(--ai-message-text-blockquote-border-color);
 
 	p:first-child {
 		margin-block-start: 0;
@@ -325,7 +326,7 @@ useResizeObserver(contentRef, (entries) => {
 
 /* Horizontal Rule */
 :deep(hr) {
-	margin: 1.5rem 0;
+	margin: 1.1875rem 0;
 	border: none;
 	border-block-start: var(--theme--border-width) solid var(--ai-message-text-border-color);
 }
@@ -334,7 +335,7 @@ useResizeObserver(contentRef, (entries) => {
 :deep(table) {
 	inline-size: 100%;
 	border-collapse: collapse;
-	margin: 1rem 0;
+	margin: 0.8125rem 0;
 	overflow: auto;
 	display: block;
 }
@@ -345,7 +346,7 @@ useResizeObserver(contentRef, (entries) => {
 
 :deep(th),
 :deep(td) {
-	padding: 0.5rem 0.75rem;
+	padding: 0.375rem 0.5625rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-accent);
 	text-align: start;
 }
@@ -363,7 +364,7 @@ useResizeObserver(contentRef, (entries) => {
 	max-inline-size: 100%;
 	block-size: auto;
 	border-radius: var(--theme--border-radius);
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 }
 
 /* Collapsible */
@@ -371,10 +372,10 @@ useResizeObserver(contentRef, (entries) => {
 	position: relative;
 	display: block;
 	inline-size: 100%;
-	padding: 0.5rem 1rem 0.8rem;
+	padding: 0.375rem 0.8125rem 0.625rem;
 	text-align: start;
 	z-index: 1;
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	color: var(--ai-message-color, var(--theme--foreground));
 	font-weight: 600;
 	cursor: pointer;

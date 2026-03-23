@@ -4,7 +4,7 @@ import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { cloneDeep, mergeWith } from 'lodash';
-import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
@@ -15,15 +15,18 @@ import sdk, { requestEndpoint } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
-import { applyConditions } from '@/utils/apply-conditions';
+import type { ContentVersionMaybeNew } from '@/types/versions';
+import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { notify } from '@/utils/notify';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+
+/** Max URL length before switching to SEARCH method to avoid 414/431 errors */
+const MAX_QUERY_URL_LENGTH = 8192;
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -49,7 +52,7 @@ type UsableItem<T extends Item> = {
 export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
-	query: MaybeRef<Query> = {},
+	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -74,7 +77,14 @@ export function useItem<T extends Item>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const permissions = usePermissions(collection, primaryKey, isNew);
+	const query = computed<Query>(() => {
+		const version = unref(currentVersion);
+		if (!version || version.id === '+') return {};
+		return { version: version.key, versionRaw: true };
+	});
+
+	const isVersion = computed(() => unref(currentVersion) !== null);
+	const permissions = usePermissions(collection, primaryKey, isNew, isVersion);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
 
 	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);
@@ -89,7 +99,7 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
+	watch([collection, primaryKey, query], refresh);
 
 	refreshItem();
 
@@ -129,52 +139,6 @@ export function useItem<T extends Item>(
 		} finally {
 			loadingItem.value = false;
 		}
-	}
-
-	function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
-		if (!field.meta?.conditions) return false;
-
-		const fieldWithConditions = applyConditions(currentValues, field);
-		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
-	}
-
-	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
-		const currentValues = mergeItemData(defaultValues, item, edits);
-
-		const fieldsToClearMap: Map<string, any> = new Map();
-
-		function addFieldToClear(field: Field) {
-			const defaultValue = field.schema?.default_value;
-			fieldsToClearMap.set(field.field, defaultValue !== undefined ? defaultValue : null);
-		}
-
-		for (const field of fields) {
-			if (shouldClearField(field, currentValues)) {
-				// If this is a group field that should be cleared, clear all fields within the group
-				if (field.meta?.special?.includes('group')) {
-					const fieldsInGroup = getFieldsInGroup(field.field, fields);
-
-					for (const groupField of fieldsInGroup) {
-						addFieldToClear(groupField);
-					}
-				} else {
-					// For non-group fields, add the field itself to be cleared
-					addFieldToClear(field);
-				}
-			}
-		}
-
-		if (fieldsToClearMap.size === 0) {
-			return edits;
-		}
-
-		const editsWithClearedValues = cloneDeep(edits);
-
-		for (const [field, defaultValue] of fieldsToClearMap) {
-			editsWithClearedValues[field] = defaultValue;
-		}
-
-		return editsWithClearedValues;
 	}
 
 	async function save() {
@@ -412,16 +376,21 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await sdk.request<Item[]>(
-				requestEndpoint(getEndpoint(relation.collection), {
-					params: {
-						fields: Array.from(fieldsToFetch),
-						[`filter[${relation.field}][_eq]`]: primaryKey.value,
-					},
-				}),
-			);
+			const endpoint = getEndpoint(relation.collection);
+			const requestFields = Array.from(fieldsToFetch);
+			const filter = { [relation.field]: { _eq: primaryKey.value } };
+			const query = { fields: requestFields, filter };
 
-			return response;
+			const queryString = new URLSearchParams({
+				fields: requestFields.join(','),
+				filter: JSON.stringify(filter),
+			}).toString();
+
+			const useSearch = queryString.length + endpoint.length > MAX_QUERY_URL_LENGTH;
+
+			const options = useSearch ? { method: 'SEARCH' as const, body: { query } } : { params: query };
+
+			return await sdk.request<Item[]>(requestEndpoint(endpoint, options));
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {

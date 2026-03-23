@@ -132,9 +132,9 @@ function onClickSelect() {
 	align-items: center;
 	justify-content: space-between;
 	inline-size: 100%;
-	block-size: 52px;
-	margin-block-end: 36px;
-	padding: 0 8px;
+	block-size: 2.9375rem;
+	margin-block-end: 2rem;
+	padding: 0 0.4375rem;
 	background-color: var(--theme--background);
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -144,8 +144,8 @@ function onClickSelect() {
 .start {
 	.label {
 		display: inline-block;
-		margin-inline-start: 4px;
-		transform: translateY(1px);
+		margin-inline-start: 0.25rem;
+		transform: translateY(0.0625rem);
 	}
 
 	.no-selection {
@@ -164,7 +164,7 @@ function onClickSelect() {
 	color: var(--theme--foreground-subdued);
 
 	.size-selector {
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -173,7 +173,7 @@ function onClickSelect() {
 	}
 
 	.sort-selector {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
