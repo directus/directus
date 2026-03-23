@@ -228,7 +228,6 @@ function toggleInterface(id: string) {
 	justify-content: center;
 	inline-size: 9rem;
 	block-size: 5.625rem;
-	margin-inline: auto;
 	margin-block-end: 0.4375rem;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
