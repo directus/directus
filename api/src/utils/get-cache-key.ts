@@ -24,6 +24,7 @@ export async function getCacheKey(req: Request) {
 			const flowId = flowMatch[1]!;
 			const flowOptions = getFlowManager().getWebhookFlowOptions(flowId);
 			const rawParams = flowOptions?.['cacheQueryParams'];
+
 			const cacheQueryParams: string[] | undefined = Array.isArray(rawParams)
 				? rawParams.filter((p): p is string => typeof p === 'string')
 				: undefined;
