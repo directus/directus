@@ -132,7 +132,7 @@ const comparableVersion = computed(() => {
 
 const fieldsStore = useFieldsStore();
 
-function onVersionPublishCompare() {
+async function onVersionPublishCompare() {
 	const assembledItem = item.value ?? {};
 	const fields = fieldsStore.getFieldsForCollection(collection.value);
 	const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
