@@ -36,7 +36,7 @@ export function dedupeResolver<TSource, TArgs extends Record<string, unknown>>(
 		}
 
 		return cache.get(cacheKey);
-	}
+	};
 }
 
 type GCResolverParams<TSource, TArgs> = {
