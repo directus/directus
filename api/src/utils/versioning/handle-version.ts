@@ -198,8 +198,6 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 
 	const defaultItem = Object.fromEntries(requestedFields.map((field) => [field, null]));
 
-	console.log(createdIDs, results);
-
 	results = results.map((result) => {
 		const id = result[primaryKeyField];
 		const meta = itemMeta[id];
