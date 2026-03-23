@@ -42,22 +42,7 @@
 			"minimatch@9": "9.0.7",
 			"basic-ftp": "5.2.0",
 			"underscore": "1.13.8"
-		},
-		"onlyBuiltDependencies": [
-			"@fortawesome/fontawesome-common-types",
-			"@fortawesome/fontawesome-svg-core",
-			"@fortawesome/free-regular-svg-icons",
-			"@fortawesome/free-solid-svg-icons",
-			"@parcel/watcher",
-			"argon2",
-			"esbuild",
-			"isolated-vm",
-			"oracledb",
-			"protobufjs",
-			"sharp",
-			"sqlite3",
-			"vue-demi"
-		]
+		}
 	},
 	"packageManager": "pnpm@10.27.0",
 	"engines": {
