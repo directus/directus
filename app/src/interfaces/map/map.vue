@@ -523,7 +523,7 @@ function handleKeyDown(event: any) {
 	&:not(.disabled):focus-within {
 		outline: var(--focus-ring-width) solid
 			var(--v-input-focus-ring-color, var(--theme--form--field--input--focus-ring-color));
-		outline-offset: var(--focus-ring-offset-invert);
+		outline-offset: max(-1 * var(--focus-ring-width), -1 * var(--theme--border-width));
 	}
 
 	:deep(button) {
