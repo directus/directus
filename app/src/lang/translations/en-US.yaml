@@ -1140,10 +1140,19 @@ deployment:
       settings_warning:
         Changing credentials or team ID may affect your selected projects if they are no longer accessible with the new
         configuration.
+      account_type:
+        label: Account Type
+        hint: Choose Team to use a Team ID, or Personal account to use your Vercel username for deployment links.
+        team: Team
+        personal: Personal account
       team_id:
         label: Team ID
-        hint: Required for team accounts, leave empty for personal accounts.
+        hint: Required for team accounts. Find it in your Vercel team settings.
         placeholder: team_xxxxxxxxxxxxx
+      username:
+        label: Username
+        hint: Your Vercel username for personal accounts. Find it in your Vercel account URL (vercel.com/username).
+        placeholder: your-username
     netlify:
       name: Netlify
       settings_warning:
@@ -1179,6 +1188,7 @@ deployment:
       no_logs: No logs available
       download_logs: Download logs
       open_deployment: Visit
+      open_in_provider: Open in {provider}
   no_providers: No Deployment Providers
   no_providers_copy: Configure a deployment provider in the settings to get started.
   no_providers_copy_nonadmin: No deployment providers are available for your account. Contact an administrator.
