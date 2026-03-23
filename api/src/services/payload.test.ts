@@ -722,8 +722,6 @@ describe('Integration Tests', () => {
 				})
 				.build();
 
-			const specialFields = schema.collections['test']!.fields;
-
 			beforeEach(() => {
 				service = new PayloadService('test', {
 					knex: db,
@@ -732,50 +730,50 @@ describe('Integration Tests', () => {
 			});
 
 			test('redacts concealed fields in aggregate results', async () => {
-				const payload = [{ 'min->secret': 'actual-secret' }];
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret' }];
 
-				await service.processAggregates(payload, { min: ['secret'] }, specialFields);
+				await service.processAggregates(payload, { min: ['secret'] });
 
 				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
 			});
 
 			test('redacts concealed fields with a null value', async () => {
-				const payload = [{ 'max->secret': null }];
+				const payload: Record<string, unknown>[] = [{ 'max->secret': null }];
 
-				await service.processAggregates(payload, { max: ['secret'] }, specialFields);
+				await service.processAggregates(payload, { max: ['secret'] });
 
 				expect(payload[0]!['max']).toMatchObject({ secret: null });
 			});
 
 			test('does not modify non-special fields', async () => {
-				const payload = [{ 'count->name': 42 }];
+				const payload: Record<string, unknown>[] = [{ 'count->name': 42 }];
 
-				await service.processAggregates(payload, { count: ['name'] }, specialFields);
+				await service.processAggregates(payload, { count: ['name'] });
 
 				expect(payload[0]!['count']).toMatchObject({ name: 42 });
 			});
 
 			test('removes the flat arrow-delimited keys from the payload', async () => {
-				const payload = [{ 'min->secret': 'actual-secret' }];
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret' }];
 
-				await service.processAggregates(payload, { min: ['secret'] }, specialFields);
+				await service.processAggregates(payload, { min: ['secret'] });
 
 				expect(payload[0]).not.toHaveProperty('min->secret');
 			});
 
 			test('handles multiple aggregate operations on the same concealed field', async () => {
-				const payload = [{ 'min->secret': 'min-value', 'max->secret': 'max-value' }];
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'min-value', 'max->secret': 'max-value' }];
 
-				await service.processAggregates(payload, { min: ['secret'], max: ['secret'] }, specialFields);
+				await service.processAggregates(payload, { min: ['secret'], max: ['secret'] });
 
 				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
 				expect(payload[0]!['max']).toMatchObject({ secret: REDACT_STR });
 			});
 
 			test('preserves all fields when multiple fields share the same aggregate operation', async () => {
-				const payload = [{ 'min->secret': 'actual-secret', 'min->name': 'Alice' }];
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret', 'min->name': 'Alice' }];
 
-				await service.processAggregates(payload, { min: ['secret', 'name'] }, specialFields);
+				await service.processAggregates(payload, { min: ['secret', 'name'] });
 
 				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR, name: 'Alice' });
 			});
