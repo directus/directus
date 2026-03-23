@@ -30,7 +30,7 @@ type RawColumn = {
 	UPDATE_RULE: string | null;
 	DELETE_RULE: string | null;
 	COLUMN_KEY: 'PRI' | 'UNI' | null;
-	EXTRA: 'auto_increment' | 'STORED GENERATED' | 'VIRTUAL GENERATED' | null;
+	EXTRA: string | null;
 	CONSTRAINT_NAME: 'PRIMARY' | null;
 	GENERATION_EXPRESSION: string;
 	INDEX_NAME: string | null;
@@ -38,6 +38,7 @@ type RawColumn = {
 
 export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	let dataType = rawColumn.COLUMN_TYPE.replace(/\(.*?\)/, '');
+	const extra = rawColumn.EXTRA?.toLowerCase() ?? '';
 
 	if (rawColumn.COLUMN_TYPE.startsWith('tinyint(1)')) {
 		dataType = 'boolean';
@@ -52,12 +53,12 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		max_length: rawColumn.CHARACTER_MAXIMUM_LENGTH,
 		numeric_precision: rawColumn.NUMERIC_PRECISION,
 		numeric_scale: rawColumn.NUMERIC_SCALE,
-		is_generated: !!rawColumn.EXTRA?.endsWith('GENERATED'),
+		is_generated: extra.endsWith('generated'),
 		is_nullable: rawColumn.IS_NULLABLE === 'YES',
 		is_unique: rawColumn.COLUMN_KEY === 'UNI',
 		is_indexed: !!rawColumn.INDEX_NAME && rawColumn.INDEX_NAME.length > 0,
 		is_primary_key: rawColumn.CONSTRAINT_NAME === 'PRIMARY' || rawColumn.COLUMN_KEY === 'PRI',
-		has_auto_increment: rawColumn.EXTRA === 'auto_increment',
+		has_auto_increment: extra.includes('auto_increment'),
 		foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,
 		foreign_key_table: rawColumn.REFERENCED_TABLE_NAME,
 		comment: rawColumn.COLUMN_COMMENT,
@@ -124,11 +125,13 @@ export default class MySQL implements SchemaInspector {
 				dataType = 'boolean';
 			}
 
+			const extra = column.extra?.toLowerCase() ?? '';
+
 			overview[column.table_name]!.columns[column.column_name] = {
 				...column,
-				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
+				default_value: extra.includes('auto_increment') ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
-				is_generated: column.extra?.endsWith('GENERATED') ?? false,
+				is_generated: extra.endsWith('generated'),
 				data_type: dataType,
 			};
 		}
