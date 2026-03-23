@@ -40,9 +40,9 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
 	add: [version: ContentVersion];
 	update: [updates: { key: string; name?: string | null }];
-	delete: [deleteOnPromote: boolean];
+	delete: [deleteOnPublish: boolean];
 	switch: [version: ContentVersionMaybeNew | null];
-	promote: [];
+	publish: [];
 }>();
 
 const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
@@ -244,7 +244,7 @@ function useDelete() {
 		deleteVersion,
 	};
 
-	async function deleteVersion(deleteOnPromote = false) {
+	async function deleteVersion(deleteOnPublish = false) {
 		if (!currentVersion.value) return;
 
 		deleting.value = true;
@@ -252,7 +252,7 @@ function useDelete() {
 		try {
 			await api.delete(`/versions/${currentVersion.value.id}`);
 
-			emit('delete', deleteOnPromote);
+			emit('delete', deleteOnPublish);
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -383,7 +383,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 						v-if="primaryKey === '+' ? createAllowed : updateAllowed"
 						:disabled="isCurrentVersionNew"
 						clickable
-						@click="$emit('promote')"
+						@click="$emit('publish')"
 					>
 						<VListItemIcon>
 							<VIcon name="arrow_upload_progress" />
