@@ -13,7 +13,7 @@ import type { PrivateViewProps } from './private-view.vue';
 import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 
-const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
+defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
 
