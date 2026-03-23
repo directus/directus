@@ -58,9 +58,7 @@ export async function getQuery(
 				if (selection.typeCondition!.name.value.startsWith('__')) continue;
 
 				const isM2A =
-					parentFieldName && currentCollection
-						? getRelationInfo(schema.relations, currentCollection, parentFieldName).relationType === 'a2o'
-						: false;
+					getRelationInfo(schema.relations, currentCollection ?? '', parentFieldName ?? '').relationType === 'a2o';
 
 				if (isM2A) {
 					current = `${parent}:${selection.typeCondition!.name.value}`;
