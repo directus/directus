@@ -92,6 +92,11 @@ export const DEFAULTS: Env = {
 	CACHE_VALUE_MAX_SIZE: false,
 	CACHE_SKIP_ALLOWED: false,
 
+	REDIS_BUS_NAMESPACE: 'directus:bus',
+	REDIS_LOCK_NAMESPACE: 'directus:lock',
+	REDIS_COUNTERS_NAMESPACE: 'directus:counters',
+	REDIS_PERMISSIONS_NAMESPACE: 'permissions',
+
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
 
@@ -196,6 +201,7 @@ export const DEFAULTS: Env = {
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
 	METRICS_NAME_PREFIX: 'directus_',
+	METRICS_HEALTH_CHECK_PREFIX: 'directus-metric-',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
