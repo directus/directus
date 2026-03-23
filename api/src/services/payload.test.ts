@@ -468,6 +468,15 @@ describe('Integration Tests', () => {
 					},
 				]);
 			});
+
+			test('payload should handle count(*) aggregate', () => {
+				// When count(*) is used, the DB returns { count: '1' } not { 'count->*': '1' }
+				const payload = [{ count: '1' }];
+
+				service.processAggregates(payload, { count: ['*'] });
+
+				expect(payload).toMatchObject([{ count: { '*': '1' } }]);
+			});
 		});
 
 		describe('processValues', () => {
