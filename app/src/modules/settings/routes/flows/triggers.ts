@@ -214,7 +214,7 @@ export function getTriggers() {
 					copyable: true,
 				},
 			],
-			options: ({ async, method }) => [
+			options: ({ async, method, cacheEnabled }) => [
 				{
 					field: 'method',
 					name: t('triggers.webhook.method'),
@@ -296,6 +296,23 @@ export function getTriggers() {
 					},
 					schema: {
 						default_value: true,
+					},
+				},
+				{
+					field: 'cacheQueryParams',
+					name: '$t:operations.trigger.cache_query_params',
+					type: 'json',
+					meta: {
+						width: 'full',
+						hidden: !cacheEnabled || (method && method !== 'GET'),
+						interface: 'tags',
+						options: {
+							placeholder: '$t:operations.trigger.cache_query_params_placeholder',
+						},
+						note: '$t:operations.trigger.cache_query_params_note',
+					},
+					schema: {
+						default_value: null,
 					},
 				},
 			],

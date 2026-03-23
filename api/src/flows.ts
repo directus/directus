@@ -68,6 +68,7 @@ class FlowManager {
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
+	private webhookFlowOptions: Record<string, Record<string, any>> = {};
 
 	private reloadQueue: JobQueue;
 	private envs: Record<string, any>;
@@ -143,6 +144,10 @@ class FlowManager {
 		const handler = this.webhookFlowHandlers[id];
 
 		return handler(data, context);
+	}
+
+	public getWebhookFlowOptions(flowId: string): Record<string, any> | undefined {
+		return this.webhookFlowOptions[flowId];
 	}
 
 	private async load(): Promise<void> {
@@ -256,6 +261,7 @@ class FlowManager {
 				flow.options['return'] = flow.options['return'] ?? '$last';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
+				this.webhookFlowOptions[flow.id] = flow.options ?? {};
 			} else if (flow.trigger === 'manual') {
 				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
@@ -375,6 +381,7 @@ class FlowManager {
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
+		this.webhookFlowOptions = {};
 
 		this.isLoaded = false;
 	}

@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import type { Knex } from 'knex';
 import { afterEach, beforeAll, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { getDatabase } from '../database/index.js';
+import { getFlowManager } from '../flows.js';
 import { fetchPoliciesIpAccess } from '../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js';
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
@@ -10,6 +11,12 @@ import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 vi.mock('../database/index.js');
 
 vi.mock('../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-access.js');
+
+vi.mock('../flows.js', () => ({
+	getFlowManager: vi.fn().mockReturnValue({
+		getWebhookFlowOptions: vi.fn().mockReturnValue(undefined),
+	}),
+}));
 
 vi.mock('directus/version', () => ({ version: '1.2.3' }));
 
@@ -189,6 +196,48 @@ describe('get cache key', async () => {
 		};
 
 		expect(await getCacheKey(reqWithEmptyQuery)).toEqual(await getCacheKey(reqWithoutQuery));
+	});
+
+	test('should only include allowed query params when cacheQueryParams is configured', async () => {
+		const flowId = '00000000-0000-0000-0000-000000000001';
+
+		vi.mocked(getFlowManager).mockReturnValue({
+			getWebhookFlowOptions: vi.fn().mockReturnValue({
+				cacheQueryParams: ['region'],
+			}),
+		} as any);
+
+		const reqWithAllowed: any = {
+			method,
+			originalUrl: `${baseUrl}/flows/trigger/${flowId}?region=us&noise=123`,
+			query: { region: 'us', noise: '123' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithDifferentAllowed: any = {
+			method,
+			originalUrl: `${baseUrl}/flows/trigger/${flowId}?region=eu&noise=456`,
+			query: { region: 'eu', noise: '456' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithSameAllowedDifferentNoise: any = {
+			method,
+			originalUrl: `${baseUrl}/flows/trigger/${flowId}?region=us&noise=789`,
+			query: { region: 'us', noise: '789' },
+			sanitizedQuery: {},
+		};
+
+		// Different allowed param values should produce different keys
+		expect(await getCacheKey(reqWithAllowed)).not.toEqual(await getCacheKey(reqWithDifferentAllowed));
+
+		// Same allowed param, different noise should produce the SAME key (noise is filtered out)
+		expect(await getCacheKey(reqWithAllowed)).toEqual(await getCacheKey(reqWithSameAllowedDifferentNoise));
+
+		// Reset mock to default (no allowlist)
+		vi.mocked(getFlowManager).mockReturnValue({
+			getWebhookFlowOptions: vi.fn().mockReturnValue(undefined),
+		} as any);
 	});
 
 	test('should not include raw query params for GraphQL requests', async () => {
