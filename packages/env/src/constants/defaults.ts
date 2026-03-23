@@ -201,7 +201,7 @@ export const DEFAULTS: Env = {
 
 	CROSS_ORIGIN_OPENER_POLICY_ENABLED: true,
 	CROSS_ORIGIN_OPENER_POLICY: 'same-origin-allow-popups',
-	
+
 	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
 
 	ACCEPT_TERMS: false,
