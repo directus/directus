@@ -25,6 +25,7 @@ beforeEach(() => {
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;
+const flowTriggerUrl = `${baseUrl}/flows/trigger/00000000-0000-0000-0000-000000000001`;
 const graphQlUrl = `${baseUrl}/graphql`;
 const accountability = { user: '00000000-0000-0000-0000-000000000000' };
 const method = 'GET';
@@ -131,18 +132,36 @@ describe('get cache key', async () => {
 		expect(await getCacheKey(req2)).toEqual(await getCacheKey(postReq2));
 	});
 
-	test('should create a unique key for requests with different custom query params', async () => {
+	test('should create a unique key for flow trigger requests with different custom query params', async () => {
 		const reqWithCustomQuery1: any = {
 			method,
-			originalUrl: `${restUrl}?custom=foo`,
-			query: { custom: 'foo' },
+			originalUrl: `${flowTriggerUrl}?region=us`,
+			query: { region: 'us' },
 			sanitizedQuery: {},
 		};
 
 		const reqWithCustomQuery2: any = {
 			method,
-			originalUrl: `${restUrl}?custom=bar`,
-			query: { custom: 'bar' },
+			originalUrl: `${flowTriggerUrl}?region=eu`,
+			query: { region: 'eu' },
+			sanitizedQuery: {},
+		};
+
+		const reqWithoutCustomQuery: any = {
+			method,
+			originalUrl: flowTriggerUrl,
+			sanitizedQuery: {},
+		};
+
+		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithCustomQuery2));
+		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithoutCustomQuery));
+	});
+
+	test('should not include raw query params for standard REST endpoints', async () => {
+		const reqWithCustomQuery: any = {
+			method,
+			originalUrl: `${restUrl}?custom=foo`,
+			query: { custom: 'foo' },
 			sanitizedQuery: {},
 		};
 
@@ -152,21 +171,20 @@ describe('get cache key', async () => {
 			sanitizedQuery: {},
 		};
 
-		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithCustomQuery2));
-		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithoutCustomQuery));
+		expect(await getCacheKey(reqWithCustomQuery)).toEqual(await getCacheKey(reqWithoutCustomQuery));
 	});
 
-	test('should not change cache key when req.query is empty', async () => {
+	test('should not change cache key when req.query is empty on flow trigger', async () => {
 		const reqWithEmptyQuery: any = {
 			method,
-			originalUrl: restUrl,
+			originalUrl: flowTriggerUrl,
 			query: {},
 			sanitizedQuery: {},
 		};
 
 		const reqWithoutQuery: any = {
 			method,
-			originalUrl: restUrl,
+			originalUrl: flowTriggerUrl,
 			sanitizedQuery: {},
 		};
 

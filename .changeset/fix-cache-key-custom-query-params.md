@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Include custom query parameters in cache key to prevent stale responses on Flow and custom endpoints.
+Include custom query parameters in cache key for Flow trigger endpoints to prevent stale responses.

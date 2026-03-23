@@ -10,6 +10,7 @@ import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.j
 export async function getCacheKey(req: Request) {
 	const path = url.parse(req.originalUrl).pathname;
 	const isGraphQl = path?.startsWith('/graphql');
+	const isFlowTrigger = path?.startsWith('/flows/trigger');
 
 	let includeIp = false;
 
@@ -25,7 +26,9 @@ export async function getCacheKey(req: Request) {
 		user: req.accountability?.user || null,
 		path,
 		query: isGraphQl ? getGraphqlQueryAndVariables(req) : req.sanitizedQuery,
-		...(req.query && Object.keys(req.query).length > 0 && !isGraphQl && { rawQuery: req.query }),
+		// Flow trigger endpoints accept arbitrary query params that affect their response,
+		// but these are not captured in sanitizedQuery. Include raw query to prevent cache collisions.
+		...(isFlowTrigger && req.query && Object.keys(req.query).length > 0 && { rawQuery: req.query }),
 		...(includeIp && { ip: req.accountability!.ip }),
 	};
 
