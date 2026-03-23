@@ -15,9 +15,8 @@ import sdk, { requestEndpoint } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
-import { applyConditions } from '@/utils/apply-conditions';
+import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { notify } from '@/utils/notify';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -133,52 +132,6 @@ export function useItem<T extends Item>(
 		} finally {
 			loadingItem.value = false;
 		}
-	}
-
-	function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
-		if (!field.meta?.conditions) return false;
-
-		const fieldWithConditions = applyConditions(currentValues, field);
-		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
-	}
-
-	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
-		const currentValues = mergeItemData(defaultValues, item, edits);
-
-		const fieldsToClearMap: Map<string, any> = new Map();
-
-		function addFieldToClear(field: Field) {
-			const defaultValue = field.schema?.default_value;
-			fieldsToClearMap.set(field.field, defaultValue !== undefined ? defaultValue : null);
-		}
-
-		for (const field of fields) {
-			if (shouldClearField(field, currentValues)) {
-				// If this is a group field that should be cleared, clear all fields within the group
-				if (field.meta?.special?.includes('group')) {
-					const fieldsInGroup = getFieldsInGroup(field.field, fields);
-
-					for (const groupField of fieldsInGroup) {
-						addFieldToClear(groupField);
-					}
-				} else {
-					// For non-group fields, add the field itself to be cleared
-					addFieldToClear(field);
-				}
-			}
-		}
-
-		if (fieldsToClearMap.size === 0) {
-			return edits;
-		}
-
-		const editsWithClearedValues = cloneDeep(edits);
-
-		for (const [field, defaultValue] of fieldsToClearMap) {
-			editsWithClearedValues[field] = defaultValue;
-		}
-
-		return editsWithClearedValues;
 	}
 
 	async function save() {
