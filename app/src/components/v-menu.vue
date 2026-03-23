@@ -499,7 +499,6 @@ function usePopper(
 						tabindex="-1"
 						class="v-menu-content"
 						:class="{ seamless }"
-						tabindex="-1"
 						v-on="{
 							...(closeOnContentClick ? { click: onContentClick } : {}),
 							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),

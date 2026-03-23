@@ -1136,7 +1136,7 @@ function isActiveStatus(status: string | undefined) {
 	inline-size: 100%;
 }
 
-@media (width <= 640px) {
+@media (width <= 40rem) {
 	.field-grid.has-two-columns {
 		grid-template-columns: minmax(0, 1fr);
 	}
