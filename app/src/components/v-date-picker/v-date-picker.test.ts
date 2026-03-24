@@ -402,6 +402,120 @@ describe('v-date-picker', () => {
 		});
 	});
 
+	describe('dynamic variable handling', () => {
+		it('does not throw when modelValue is $NOW for any picker type', () => {
+			for (const type of ['date', 'dateTime', 'timestamp', 'time'] as const) {
+				expect(() => {
+					createWrapper({ type, modelValue: '$NOW' });
+				}).not.toThrow();
+			}
+		});
+
+		it('resolves $NOW to current date for type: date', async () => {
+			let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				if (options.calendarValue && 'year' in options.calendarValue) {
+					capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+				}
+
+				return '2024-01-15';
+			});
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '$NOW',
+			});
+
+			await nextTick();
+
+			// Trigger emission via calendar change (not setToNow) to capture watcher-resolved state
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			await calendarRoot.vm.$emit('update:modelValue', calendarRoot.props('modelValue'));
+			await nextTick();
+
+			expect(capturedCalendarValue).toBeDefined();
+			expect(capturedCalendarValue?.year).toBeGreaterThan(0);
+			expect(capturedCalendarValue?.month).toBeGreaterThanOrEqual(1);
+			expect(capturedCalendarValue?.month).toBeLessThanOrEqual(12);
+		});
+
+		it('resolves $NOW to current date and time for type: dateTime', async () => {
+			let capturedTimeValue: { hour?: number; minute?: number } | undefined;
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				if (options.timeValue && 'hour' in options.timeValue) {
+					capturedTimeValue = options.timeValue as { hour: number; minute: number };
+				}
+
+				return '2024-01-15T14:30:00';
+			});
+
+			const wrapper = createWrapper({
+				type: 'dateTime',
+				modelValue: '$NOW',
+			});
+
+			await nextTick();
+
+			// Trigger emission via time field change to capture watcher-resolved time
+			const timeField = wrapper.findComponent(TimeFieldRoot);
+			await timeField.vm.$emit('update:modelValue', timeField.props('modelValue'));
+			await nextTick();
+
+			expect(capturedTimeValue).toBeDefined();
+			expect(capturedTimeValue?.hour).toBeGreaterThanOrEqual(0);
+			expect(capturedTimeValue?.hour).toBeLessThanOrEqual(23);
+		});
+
+		it('does not throw when modelValue is $NOW with adjustment', () => {
+			expect(() => {
+				createWrapper({
+					type: 'date',
+					modelValue: '$NOW(-7 days)',
+				});
+			}).not.toThrow();
+		});
+
+		it('handles transition from valid date to $NOW without throwing', async () => {
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '2024-06-15',
+			});
+
+			await nextTick();
+
+			await wrapper.setProps({ modelValue: '$NOW' });
+			await nextTick();
+
+			expect(wrapper.exists()).toBe(true);
+		});
+
+		it('leaves picker empty for non-date dynamic variables', async () => {
+			let capturedCalendarValue: unknown = 'not-cleared';
+
+			vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+				capturedCalendarValue = options.calendarValue;
+				return null;
+			});
+
+			const wrapper = createWrapper({
+				type: 'date',
+				modelValue: '$CURRENT_USER',
+			});
+
+			await nextTick();
+
+			// Trigger emission to capture state
+			const calendarRoot = wrapper.findComponent(CalendarRoot);
+			await calendarRoot.vm.$emit('update:modelValue', calendarRoot.props('modelValue'));
+			await nextTick();
+
+			// calendarValue should be undefined — not resolved to today's date
+			expect(capturedCalendarValue).toBeUndefined();
+		});
+	});
+
 	describe('value emission', () => {
 		it('emits update:modelValue when date changes', async () => {
 			vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-01-20');

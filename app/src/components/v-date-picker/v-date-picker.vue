@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isDynamicVariable } from '@directus/utils';
 import {
 	CalendarDate,
 	CalendarDateTime,
@@ -128,6 +129,29 @@ watch(
 
 			// Reset time to a sensible default when the picker supports time.
 			internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
+
+			return;
+		}
+
+		if (isDynamicVariable(newValue)) {
+			if (newValue.startsWith('$NOW')) {
+				// $NOW can't be parsed by @internationalized/date.
+				// Resolve to current date/time so the picker renders without crashing.
+				const now = new Date();
+
+				if (showCalendar.value) {
+					calendarValue.value = new CalendarDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
+				}
+
+				if (hasTime.value) {
+					internalTimeValue.value = new Time(now.getHours(), now.getMinutes(), now.getSeconds());
+				}
+			} else {
+				// Non-date dynamic variables ($CURRENT_USER, etc.) — leave the picker
+				// in an empty state rather than showing an unrelated date.
+				calendarValue.value = undefined;
+				internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
+			}
 
 			return;
 		}
