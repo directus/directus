@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed Read Only on presentation link and header interfaces not disabling actions for read-only users.
+Fixed button-links Read Only checkbox not disabling URL buttons when the viewing user has read-only permissions.
