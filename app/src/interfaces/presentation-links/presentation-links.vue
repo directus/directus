@@ -6,6 +6,7 @@ import { pickBy } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import VButton from '@/components/v-button.vue';
+import type { FormField } from '@/components/v-form/types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
 import { requestEndpoint } from '@/sdk';
@@ -33,6 +34,7 @@ const props = withDefaults(
 		primaryKey?: PrimaryKey;
 		disabled?: boolean;
 		nonEditable?: boolean;
+		fieldData?: FormField;
 	}>(),
 	{
 		links: () => [],
@@ -110,7 +112,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 		};
 
 		function isDisabled() {
-			if (props.disabled && !props.nonEditable) return true;
+			if (props.disabled && (!props.nonEditable || props.fieldData?.meta?.readonly === true)) return true;
 
 			return link.actionType === 'flow' && (props.nonEditable || props.primaryKey === '+');
 		}
