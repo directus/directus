@@ -57,8 +57,7 @@ export async function getQuery(
 			if (selection.kind === 'InlineFragment') {
 				if (selection.typeCondition!.name.value.startsWith('__')) continue;
 
-				const isM2A =
-					getRelationInfo(schema.relations, currentCollection ?? '', parentFieldName ?? '').relationType === 'a2o';
+				const isM2A = getRelationInfo(schema.relations, currentCollection, parentFieldName).relationType === 'a2o';
 
 				if (isM2A) {
 					current = `${parent}:${selection.typeCondition!.name.value}`;
