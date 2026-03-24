@@ -563,7 +563,7 @@ async function downloadFiles() {
 			</template>
 
 			<template #navigation>
-				<FilesNavigation :subfolders="subfolders" :current-special="special" />
+				<FilesNavigation :current-folder="folder" :current-special="special" />
 			</template>
 
 			<component
