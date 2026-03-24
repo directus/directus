@@ -119,30 +119,16 @@ const isSaveDisabled = computed(() => {
 });
 
 function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
-	return value
-		.filter((part) => {
-			if (part.type === 'link') return true;
-			return !!allModules.value.find((module) => module.id === part.id);
-		})
-		.map((part) => {
-			if (part.type === 'link') {
-				return {
-					...part,
-					to: part.url,
-					icon: part.icon,
-					name: translate(part.name),
-				};
-			}
+	return value.flatMap((part): PreviewValue[] => {
+		if (part.type === 'link') {
+			return [{ ...part, to: part.url, icon: part.icon, name: translate(part.name) }];
+		}
 
-			const module = allModules.value.find((module) => module.id === part.id)!;
+		const module = allModules.value.find((module) => module.id === part.id);
+		if (!module) return [];
 
-			return {
-				...part,
-				to: `/${module.id}`,
-				name: module.name,
-				icon: module.icon,
-			};
-		});
+		return [{ ...part, to: `/${module.id}`, name: module.name, icon: module.icon }];
+	});
 }
 
 function previewToValue(preview: PreviewValue[]): Settings['module_bar'] {
