@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { FieldFilter } from '@directus/types';
+import { isDynamicVariable } from '@directus/utils';
 import { clone, get } from 'lodash';
-import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
+import { computed, nextTick, ref, toRef, watch } from 'vue';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -87,9 +88,12 @@ const fieldValue = computed(() => {
 	return get(props.field, `${fieldPath.value}.${comparator.value}`);
 });
 
+const hasDynamicVariableValue = computed(() => isDynamicVariableValue(fieldValue.value));
+
 const {
 	isVariableInputActive,
 	isVariableInputComparator,
+	usesVariableInput,
 	variableInputDisplay,
 	onToggleVariableInput,
 	onVariableInput,
@@ -97,8 +101,9 @@ const {
 
 const value = computed<unknown | unknown[]>({
 	get() {
-		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			return [...(fieldValue.value as (string | number | null)[]).filter((val) => val !== null && val !== ''), null];
+		if (!usesVariableInput.value && ['_in', '_nin'].includes(comparator.value)) {
+			const arrayValue = Array.isArray(fieldValue.value) ? fieldValue.value : [];
+			return [...arrayValue.filter((val) => val !== null && val !== ''), null];
 		}
 
 		return fieldValue.value;
@@ -106,7 +111,7 @@ const value = computed<unknown | unknown[]>({
 	set(newVal) {
 		let value;
 
-		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
+		if (!usesVariableInput.value && ['_in', '_nin'].includes(comparator.value)) {
 			value = (newVal as (string | number | null)[])
 				.filter((val) => val !== null && val !== '')
 				.map((val) => (typeof val === 'string' ? val.trim() : val));
@@ -157,23 +162,40 @@ function useVariableInput() {
 	const isVariableInputActive = ref(false);
 	const variableInputDisplay = computed(inputDisplay);
 	const isArrayComparator = computed(() => props.variableInputEnabled && arrayComparators.includes(comparator.value));
+	const usesVariableInput = computed(() => isVariableInputActive.value || shouldUseImplicitVariableInput.value);
 
 	const isVariableInputComparator = computed(
 		() => props.variableInputEnabled && variableInputComparators.includes(comparator.value),
 	);
 
-	onBeforeMount(determineVariableInput);
+	const shouldUseImplicitVariableInput = computed(
+		() => variableInputComparators.includes(comparator.value) && hasDynamicVariableValue.value,
+	);
+
+	watch([comparator, fieldValue, isVariableInputComparator, shouldUseImplicitVariableInput], determineVariableInput, {
+		immediate: true,
+	});
 
 	return {
 		isVariableInputActive,
 		isVariableInputComparator,
 		onToggleVariableInput,
 		onVariableInput,
+		usesVariableInput,
 		variableInputDisplay,
 	};
 
 	function determineVariableInput() {
-		if (!isVariableInputComparator.value) return;
+		if (shouldUseImplicitVariableInput.value) {
+			isVariableInputActive.value = true;
+			return;
+		}
+
+		if (!isVariableInputComparator.value) {
+			isVariableInputActive.value = false;
+			return;
+		}
+
 		isVariableInputActive.value = !Array.isArray(fieldValue.value);
 	}
 
@@ -212,7 +234,11 @@ function useVariableInput() {
 		}
 
 		newValue = String(newValue).replace(/{{/g, '').replace(/}}/g, '');
-		value.value = `{{${newValue}}}`;
+
+		value.value =
+			shouldUseImplicitVariableInput.value && typeof fieldValue.value === 'string' && !fieldValue.value.includes('{{')
+				? newValue
+				: `{{${newValue}}}`;
 	}
 
 	function inputDisplay() {
@@ -222,6 +248,10 @@ function useVariableInput() {
 
 		return '';
 	}
+}
+
+function isDynamicVariableValue(value: unknown) {
+	return typeof value === 'string' && (isDynamicVariable(value) || /^{{\s*?\S+?\s*?}}$/.test(value));
 }
 </script>
 
@@ -237,7 +267,7 @@ function useVariableInput() {
 		@click="onToggleVariableInput"
 	/>
 
-	<template v-if="isVariableInputActive">
+	<template v-if="usesVariableInput">
 		<span class="variable-input-braces">{{ '\{\{' }}</span>
 
 		<!-- TODO: eslint trips up here as we're using `is` as the prop name. Refactoring `is` away is the proper solve here -->
