@@ -74,7 +74,7 @@ watch(
 
 function useComputedGroup() {
 	const groupFields = ref<Field[]>(limitFields());
-	const groupValues = ref<Record<string, any>>(props.values);
+	const groupValues = ref(props.values);
 
 	watch(
 		() => props.fields,
