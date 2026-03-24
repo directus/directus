@@ -40,6 +40,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	REDIS_ENABLED: 'boolean',
 	REDIS_PASSWORD: 'string',
+	REDIS_BUS_NAMESPACE: 'string',
+	REDIS_LOCK_NAMESPACE: 'string',
+	REDIS_COUNTERS_NAMESPACE: 'string',
+	REDIS_PERMISSIONS_NAMESPACE: 'string',
+	METRICS_HEALTH_CHECK_PREFIX: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
