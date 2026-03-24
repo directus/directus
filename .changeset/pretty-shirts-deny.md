@@ -5,5 +5,4 @@
 '@directus/api': patch
 ---
 
-Added POST /utils/assets/clear endpoint to purge cached asset variants from storage. Introduced bulkDelete support in
-storage drivers (S3, Supabase) with fallback for others
+Added asset variant purge endpoint and bulkDelete support for S3 and Supabase storage drivers
