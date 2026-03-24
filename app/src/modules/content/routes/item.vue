@@ -40,10 +40,12 @@ import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
-import { useFieldsStore } from '@/stores/fields';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { mergeItemData } from '@/utils/merge-item-data';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { validateItem } from '@/utils/validate-item';
@@ -107,58 +109,6 @@ const {
 	publishVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
-const { comparisonModalActive, comparableVersion } = usePublishComparison();
-
-const fieldsStore = useFieldsStore();
-
-function onVersionPublishCompare() {
-	const assembledItem = item.value ?? {};
-	const fields = fieldsStore.getFieldsForCollection(collection.value);
-
-	const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
-
-	versionValidationErrors.value = errors;
-	comparisonModalActive.value = true;
-}
-
-async function onVersionPublishConfirm(opts: {
-	versionId: string;
-	mainHash: string;
-	fields: string[];
-	deleteOnPublish: boolean;
-}) {
-	const clientErrors = validateItem(
-		item.value ?? {},
-		fieldsStore.getFieldsForCollection(collection.value),
-		false,
-		false,
-		currentVersion.value,
-	);
-
-	if (clientErrors.length > 0) {
-		versionValidationErrors.value = clientErrors;
-		comparisonModalActive.value = false;
-		return;
-	}
-
-	try {
-		await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
-
-		if (opts.deleteOnPublish) {
-			await deleteVersion(opts.versionId);
-		} else {
-			currentVersion.value = null;
-		}
-
-		refresh();
-		revisionsSidebarDetailRef.value?.refresh?.();
-	} catch {
-		// publishVersion / removeVersion handle unexpected errors
-	} finally {
-		comparisonModalActive.value = false;
-	}
-}
-
 const {
 	isNew,
 	edits,
@@ -210,6 +160,9 @@ const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
 	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
 } = permissions;
+
+const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
+	usePublishComparison();
 
 const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
@@ -708,7 +661,50 @@ function usePublishComparison() {
 		return currentVersion.value as ContentVersionWithType;
 	});
 
-	return { comparisonModalActive, comparableVersion };
+	const defaultValues = getDefaultValuesFromFields(fields);
+
+	function onVersionPublishCompare() {
+		comparisonModalActive.value = true;
+	}
+
+	async function onVersionPublishConfirm(opts: {
+		versionId: string;
+		mainHash: string;
+		fields: string[];
+		deleteOnPublish: boolean;
+	}) {
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+		const fieldsToValidate = pushGroupOptionsDown(fields.value);
+
+		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+		// Set client errors first so versionErrorHandler can merge server errors on top
+		versionValidationErrors.value = clientErrors;
+
+		try {
+			await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
+
+			if (versionValidationErrors.value.length > 0) {
+				comparisonModalActive.value = false;
+				return;
+			}
+
+			if (opts.deleteOnPublish) {
+				await deleteVersion(opts.versionId);
+			} else {
+				currentVersion.value = null;
+			}
+
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
+		} catch {
+			// publishVersion / deleteVersion handle unexpected errors
+		} finally {
+			comparisonModalActive.value = false;
+		}
+	}
+
+	return { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm };
 }
 </script>
 
