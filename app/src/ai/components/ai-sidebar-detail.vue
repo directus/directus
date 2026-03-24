@@ -37,11 +37,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 	</CollapsibleRoot>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .collapsible-root {
 	--ai-sidebar-open-height: calc(100vh - 3.375rem);
 
-	@media (width > 36rem) {
+	@include mixins.breakpoint-up('sm') {
 		--ai-sidebar-open-height: calc(100vh - 3.375rem - var(--header-bar-height));
 	}
 
