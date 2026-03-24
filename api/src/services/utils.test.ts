@@ -118,37 +118,7 @@ describe('UtilsService', () => {
 			expect(disk.delete).toHaveBeenCalledWith('abc123__hash2.webp');
 		});
 
-		test('skips files that exist in DB (cross-check safety)', async () => {
-			const files = [
-				{ id: '1', filename_disk: 'abc.jpg', storage: 'local' },
-				{ id: '2', filename_disk: 'abc__special.jpg', storage: 'local' },
-			];
-
-			const storageFiles = new Map([['abc', ['abc.jpg', 'abc__special.jpg', 'abc__hash1.jpg']]]);
-
-			const { disk } = createMockDisk({ files: storageFiles });
-
-			vi.mocked(getStorage).mockResolvedValue({
-				location: () => disk,
-			} as any);
-
-			const knex = createMockKnex(files);
-
-			const service = new UtilsService({
-				knex,
-				accountability: { admin: true, role: null, user: null, roles: [], ip: '', app: false },
-				schema: mockSchema,
-			});
-
-			const result = await service.clearAssetVariants();
-
-			// abc__special.jpg is in DB so it should NOT be deleted
-			// Only abc__hash1.jpg should be deleted
-			expect(result.deleted).toBe(1);
-			expect(disk.delete).toHaveBeenCalledWith('abc__hash1.jpg');
-		});
-
-		test('skips files without __ in basename', async () => {
+		test('skips files without __ variant pattern', async () => {
 			const files = [{ id: '1', filename_disk: 'abc.jpg', storage: 'local' }];
 
 			const storageFiles = new Map([['abc', ['abc.jpg', 'abcdef.jpg']]]);

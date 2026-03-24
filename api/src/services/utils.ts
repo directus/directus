@@ -1,5 +1,6 @@
 import path from 'path';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { supportsBulkDelete } from '@directus/storage';
 import { systemCollectionRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
@@ -172,23 +173,22 @@ export class UtilsService {
 		return cache?.clear();
 	}
 
-	async clearAssetVariants(options?: { file?: string }): Promise<{ deleted: number }> {
+	async clearAssetVariants(fileId?: string): Promise<{ deleted: number }> {
 		if (this.accountability?.admin !== true) {
 			throw new ForbiddenError();
 		}
 
 		const storage = await getStorage();
 
-		const query = this.knex.select('filename_disk', 'storage').from('directus_files');
+		const query = this.knex
+			.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
+			.from('directus_files');
 
-		if (options?.file) {
-			query.where('id', options.file);
+		if (fileId) {
+			query.where('id', fileId);
 		}
 
-		const files: { filename_disk: string; storage: string }[] = await query;
-
-		// Build a Set of all filename_disk values for cross-check safety
-		const allFilenameDisks = new Set(files.map((f) => f.filename_disk));
+		const files = await query;
 
 		// Group files by storage location
 		const filesByStorage = new Map<string, typeof files>();
@@ -210,8 +210,7 @@ export class UtilsService {
 
 				for await (const filepath of disk.list(filePrefix)) {
 					if (filepath === file.filename_disk) continue;
-					if (allFilenameDisks.has(filepath)) continue;
-					if (!path.parse(filepath).name.includes('__')) continue;
+					if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
 
 					toDelete.push(filepath);
 				}
@@ -219,7 +218,7 @@ export class UtilsService {
 
 			if (toDelete.length === 0) continue;
 
-			if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {
+			if (supportsBulkDelete(disk)) {
 				await disk.bulkDelete(toDelete);
 			} else {
 				await Promise.all(toDelete.map((fp) => disk.delete(fp)));

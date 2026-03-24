@@ -226,7 +226,7 @@ router.post(
 
 		const file = req.query['file'] as string | undefined;
 
-		const result = await service.clearAssetVariants(file ? { file } : undefined);
+		const result = await service.clearAssetVariants(file);
 
 		res.status(200).json({ data: result });
 	}),

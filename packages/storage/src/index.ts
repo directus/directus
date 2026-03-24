@@ -38,7 +38,6 @@ export declare class Driver {
 	read(filepath: string, options?: ReadOptions): Promise<Readable>;
 	write(filepath: string, content: Readable, type?: string): Promise<void>;
 	delete(filepath: string): Promise<void>;
-	bulkDelete?(filepaths: string[]): Promise<void>;
 	stat(filepath: string): Promise<Stat>;
 	exists(filepath: string): Promise<boolean>;
 	move(src: string, dest: string): Promise<void>;
@@ -57,6 +56,14 @@ export interface TusDriver extends Driver {
 
 export function supportsTus(driver: Driver): driver is TusDriver {
 	return 'tusExtensions' in driver;
+}
+
+export interface BulkDeleteDriver extends Driver {
+	bulkDelete(filepaths: string[]): Promise<void>;
+}
+
+export function supportsBulkDelete(driver: Driver): driver is BulkDeleteDriver {
+	return 'bulkDelete' in driver;
 }
 
 export type DriverConfig = {
