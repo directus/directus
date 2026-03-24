@@ -63,12 +63,12 @@ interface FlowMessage {
 class FlowManager {
 	private isLoaded = false;
 
+	private flows: Record<string, Flow> = {};
 	private operations: Map<string, OperationHandler> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
-	private webhookFlowOptions: Record<string, Record<string, any>> = {};
 
 	private reloadQueue: JobQueue;
 	private envs: Record<string, any>;
@@ -146,8 +146,8 @@ class FlowManager {
 		return handler(data, context);
 	}
 
-	public getWebhookFlowOptions(flowId: string): Record<string, any> | undefined {
-		return this.webhookFlowOptions[flowId];
+	public getFlow(id: string): Flow | undefined {
+		return this.flows[id];
 	}
 
 	private async load(): Promise<void> {
@@ -164,6 +164,8 @@ class FlowManager {
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
 		for (const flow of flowTrees) {
+			this.flows[flow.id] = flow;
+
 			if (flow.trigger === 'event') {
 				let events: string[] = [];
 
@@ -261,7 +263,6 @@ class FlowManager {
 				flow.options['return'] = flow.options['return'] ?? '$last';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
-				this.webhookFlowOptions[flow.id] = flow.options ?? {};
 			} else if (flow.trigger === 'manual') {
 				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
@@ -378,10 +379,10 @@ class FlowManager {
 			}
 		}
 
+		this.flows = {};
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
-		this.webhookFlowOptions = {};
 
 		this.isLoaded = false;
 	}

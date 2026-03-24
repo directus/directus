@@ -2946,6 +2946,9 @@ operations:
     batch: Batch
     batch_size: Batch Size
     cache: Cache
+    cache_query: Cache Query Parameters
+    cache_query_placeholder: Allowed query parameters...
+    cache_query_description: Only these query parameters will affect the cache key.
 unit: Unit
 standard: Standard
 scientific: Scientific

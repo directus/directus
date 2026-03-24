@@ -1,7 +1,9 @@
 import url from 'url';
+import { toArray } from '@directus/utils';
 import { ipInNetworks } from '@directus/utils/node';
 import { version } from 'directus/version';
 import type { Request } from 'express';
+import { isEmpty, pick } from 'lodash-es';
 import hash from 'object-hash';
 import getDatabase from '../database/index.js';
 import { getFlowManager } from '../flows.js';
@@ -15,39 +17,20 @@ export async function getCacheKey(req: Request) {
 	const path = url.parse(req.originalUrl).pathname;
 	const isGraphQl = path?.startsWith('/graphql');
 
-	let flowTriggerQuery: Record<string, any> | undefined;
+	let flowTriggerQuery: Record<string, any> | undefined = undefined;
 
 	if (path) {
 		const flowMatch = path.match(FLOW_TRIGGER_PATTERN);
 
+		// Flow trigger endpoints accept arbitrary query params that affect their response,
+		// but these are not captured in sanitizedQuery.
+
 		if (flowMatch) {
-			const flowId = flowMatch[1]!;
-			const flowOptions = getFlowManager().getWebhookFlowOptions(flowId);
-			const rawParams = flowOptions?.['cacheQueryParams'];
+			const flow = getFlowManager().getFlow(flowMatch[1]!);
+			const cacheQueryParams: string[] = toArray(flow?.options?.['cacheQueryParams'] ?? []);
+			const picked = pick(req.query, cacheQueryParams);
 
-			const cacheQueryParams: string[] | undefined = Array.isArray(rawParams)
-				? rawParams.filter((p): p is string => typeof p === 'string')
-				: undefined;
-
-			if (req.query && Object.keys(req.query).length > 0) {
-				if (cacheQueryParams && cacheQueryParams.length > 0) {
-					// Only include the admin-configured query params in the cache key
-					const filtered: Record<string, any> = {};
-
-					for (const param of cacheQueryParams) {
-						if (param in req.query) {
-							filtered[param] = req.query[param];
-						}
-					}
-
-					if (Object.keys(filtered).length > 0) {
-						flowTriggerQuery = filtered;
-					}
-				} else {
-					// No allowlist configured — include all query params (default behavior)
-					flowTriggerQuery = req.query as Record<string, any>;
-				}
-			}
+			if (!isEmpty(picked)) flowTriggerQuery = picked;
 		}
 	}
 
@@ -65,9 +48,6 @@ export async function getCacheKey(req: Request) {
 		user: req.accountability?.user || null,
 		path,
 		query: isGraphQl ? getGraphqlQueryAndVariables(req) : req.sanitizedQuery,
-		// Flow trigger endpoints accept arbitrary query params that affect their response,
-		// but these are not captured in sanitizedQuery. When cacheQueryParams is configured,
-		// only the specified params are included; otherwise all query params are included.
 		...(flowTriggerQuery && { rawQuery: flowTriggerQuery }),
 		...(includeIp && { ip: req.accountability!.ip }),
 	};
