@@ -466,6 +466,8 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
+translations_preview_collections: Kollektioner
+translations_preview_fields: Fält
 import_data_input_placeholder: CSV eller JSON...
 import_data_button: Starta import
 import_data_indeterminate: Importerar data...
