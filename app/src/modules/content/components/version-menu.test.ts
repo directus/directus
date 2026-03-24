@@ -325,6 +325,21 @@ describe('VersionMenu', () => {
 			expect(publishItem?.classes()).toContain('disabled');
 			expect(deleteItem?.classes()).toContain('disabled');
 		});
+
+		it('should disable create version for new (virtual) global draft', () => {
+			const newVersion = createNewVersion({ key: 'draft', type: 'global' });
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: { ...baseProps, versions: [newVersion], currentVersion: newVersion },
+			});
+
+			const listItems = wrapper.findAll('.v-list-item');
+			const createItem = listItems.find((item) => item.text().includes(i18n.global.t('create_version')));
+
+			expect(createItem).toBeDefined();
+			expect(createItem?.classes()).toContain('disabled');
+		});
 	});
 
 	describe('item-less draft publish', () => {
