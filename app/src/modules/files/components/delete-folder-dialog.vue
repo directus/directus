@@ -35,8 +35,8 @@ watch(modelValue, (val) => {
 });
 
 const radioOptions = [
-	{ value: 'move', label: t('delete_folder_move_content') },
-	{ value: 'delete', label: t('delete_folder_delete_content') },
+	{ value: 'move', label: t('delete_folder_dialog.move_content') },
+	{ value: 'delete', label: t('delete_folder_dialog.delete_content') },
 ];
 
 async function save() {
@@ -66,7 +66,7 @@ async function save() {
 			<VCardTitle>{{ $t('delete_folder') }}</VCardTitle>
 
 			<VCardText>
-				<p>{{ $t('delete_folder_content_behavior') }}</p>
+				<p>{{ $t('delete_folder_dialog.content_behavior') }}</p>
 				<div class="radio-options">
 					<VRadio
 						v-for="option in radioOptions"
