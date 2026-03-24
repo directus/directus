@@ -107,12 +107,7 @@ const {
 	publishVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
-const comparisonModalActive = ref(false);
-
-const comparableVersion = computed(() => {
-	if (currentVersion.value === null || currentVersion.value.id === '+') return null;
-	return currentVersion.value as ContentVersionWithType;
-});
+const { comparisonModalActive, comparableVersion } = usePublishComparison();
 
 const fieldsStore = useFieldsStore();
 
@@ -703,6 +698,17 @@ function useItemNavigation() {
 	});
 
 	return { collectionRoute, backRoute };
+}
+
+function usePublishComparison() {
+	const comparisonModalActive = ref(false);
+
+	const comparableVersion = computed(() => {
+		if (currentVersion.value === null || currentVersion.value.id === '+') return null;
+		return currentVersion.value as ContentVersionWithType;
+	});
+
+	return { comparisonModalActive, comparableVersion };
 }
 </script>
 
