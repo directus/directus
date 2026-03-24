@@ -3,7 +3,7 @@ import { Folder } from '@/composables/use-folders';
 import { collectAllFolderIds } from '@/utils/collect-folder-ids';
 
 export async function moveSingleFolder(folder: Folder): Promise<void> {
-	const newParent = folder.parent ?? null;
+	const newParent = folder.parent;
 
 	const [foldersRes, filesRes] = await Promise.all([
 		api.get('/folders', {
