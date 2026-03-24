@@ -1,5 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { getStorage } from '../storage/index.js';
+import { UtilsService } from './utils.js';
 
 vi.mock('../storage/index.js', () => ({
 	getStorage: vi.fn(),
@@ -13,9 +15,6 @@ vi.mock('../cache.js', () => ({
 vi.mock('../database/index.js', () => ({
 	default: vi.fn(),
 }));
-
-import { getStorage } from '../storage/index.js';
-import { UtilsService } from './utils.js';
 
 const mockSchema = {} as SchemaOverview;
 
