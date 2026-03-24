@@ -99,12 +99,12 @@ const {
 	addVersion,
 	updateVersion,
 	deleteVersion,
+	deleteVersionLoading,
 	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
-	removeVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
 const comparisonModalActive = ref(false);
@@ -150,7 +150,7 @@ async function onVersionPublishConfirm(opts: {
 		await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
 
 		if (opts.deleteOnPublish) {
-			await removeVersion(opts.versionId);
+			await deleteVersion(opts.versionId);
 		} else {
 			currentVersion.value = null;
 		}
@@ -755,6 +755,7 @@ function useItemNavigation() {
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"
+					:delete-version-loading="deleteVersionLoading"
 					@add="addVersion"
 					@update="updateVersion"
 					@delete="deleteVersion"

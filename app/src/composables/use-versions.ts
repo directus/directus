@@ -135,17 +135,24 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	function deleteVersion(deleteOnPublish = true) {
-		if (!currentVersion.value || !rawVersions.value) return;
 
-		const isLocalVersion = currentVersion.value?.type === 'local';
-		const currentVersionId = currentVersion.value.id;
+	// Delete version
+	const deleteVersionLoading = ref(false);
 
-		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
+	async function deleteVersion(versionId: PrimaryKey) {
+		deleteVersionLoading.value = true;
 
-		if (index !== -1) {
-			if (isLocalVersion || deleteOnPublish) currentVersion.value = null;
-			rawVersions.value.splice(index, 1);
+		try {
+			await api.delete(`/versions/${versionId}`);
+
+			const index = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
+			if (index !== -1) rawVersions.value?.splice(index, 1);
+			if (currentVersion.value?.id === versionId) currentVersion.value = null;
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		} finally {
+			deleteVersionLoading.value = false;
 		}
 	}
 
@@ -239,23 +246,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function removeVersion(versionId: PrimaryKey) {
-		loading.value = true;
-
-		try {
-			await api.delete(`/versions/${versionId}`);
-
-			const index = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
-			if (index !== -1) rawVersions.value?.splice(index, 1);
-			if (currentVersion.value?.id === versionId) currentVersion.value = null;
-		} catch (error) {
-			unexpectedError(error);
-			throw error;
-		} finally {
-			loading.value = false;
-		}
-	}
-
 	function isVersionSelectable(version: ContentVersionMaybeNew) {
 		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
@@ -269,11 +259,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		addVersion,
 		updateVersion,
 		deleteVersion,
+		deleteVersionLoading,
 		saveVersionLoading,
 		saveVersion,
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
-		removeVersion,
 	};
 }
