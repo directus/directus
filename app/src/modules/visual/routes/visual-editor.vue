@@ -102,10 +102,8 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 		},
 	});
 
-	watch(isMobile, (mobile) => {
-		if (mobile) {
-			mobileDrawerOpen.value = false;
-		}
+	watch(isMobile, () => {
+		mobileDrawerOpen.value = false;
 	});
 
 	aiStore.onFocusInput(() => {
