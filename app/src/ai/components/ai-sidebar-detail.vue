@@ -96,12 +96,12 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 .collapsible-content[data-state='open'] {
 	animation: slide-down var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem);
+	block-size: calc(100vh - 3.375rem - var(--header-bar-height));
 }
 
 .collapsible-content[data-state='closed'] {
 	animation: slide-up var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem);
+	block-size: calc(100vh - 3.375rem - var(--header-bar-height));
 }
 
 .ai-sidebar-content {
@@ -116,13 +116,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		block-size: 0;
 	}
 	to {
-		block-size: calc(100vh - 3.375rem);
+		block-size: calc(100vh - 3.375rem - var(--header-bar-height));
 	}
 }
 
 @keyframes slide-up {
 	from {
-		block-size: calc(100vh - 3.375rem);
+		block-size: calc(100vh - 3.375rem - var(--header-bar-height));
 	}
 	to {
 		block-size: 0;
