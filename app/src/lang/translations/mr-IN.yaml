@@ -465,6 +465,8 @@ related_collection: संबंधित कलेक्शन
 related_collections: संबंधीत कलेक्शन्स
 translations_collection: भाषांतर कलेक्शन
 languages_collection: भाषा कलेक्शन
+translations_preview_collections: कलेक्शन्स
+translations_preview_fields: फील्ड
 import_data_input_placeholder: CSV किंवा JSON...
 import_data_button: आयात सुरू करा
 import_data_indeterminate: डेटा इंपोर्ट करत आहे...

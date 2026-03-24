@@ -465,6 +465,8 @@ related_collection: Powiązana kolekcja
 related_collections: Powiązane kolekcje
 translations_collection: Kolekcja tłumaczeń
 languages_collection: Kolekcja języków
+translations_preview_collections: Kolekcje
+translations_preview_fields: Pola
 import_data_input_placeholder: CSV lub JSON...
 import_data_button: Rozpocznij import
 import_data_indeterminate: Importowanie danych...

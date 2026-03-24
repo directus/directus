@@ -290,6 +290,7 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
+translations_preview_collections: Collections
 label_import: Import
 format: Format
 last_page: Last Page
