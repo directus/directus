@@ -14,7 +14,7 @@ vi.mock('../permissions/modules/fetch-policies-ip-access/fetch-policies-ip-acces
 
 vi.mock('../flows.js', () => ({
 	getFlowManager: vi.fn().mockReturnValue({
-		getWebhookFlowOptions: vi.fn().mockReturnValue(undefined),
+		getFlow: vi.fn().mockReturnValue(undefined),
 	}),
 }));
 
@@ -139,7 +139,7 @@ describe('get cache key', async () => {
 		expect(await getCacheKey(req2)).toEqual(await getCacheKey(postReq2));
 	});
 
-	test('should create a unique key for flow trigger requests with different custom query params', async () => {
+	test('should not create a unique key for flow trigger requests with different custom query params', async () => {
 		const reqWithCustomQuery1: any = {
 			method,
 			originalUrl: `${flowTriggerUrl}?region=us`,
@@ -160,8 +160,8 @@ describe('get cache key', async () => {
 			sanitizedQuery: {},
 		};
 
-		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithCustomQuery2));
-		expect(await getCacheKey(reqWithCustomQuery1)).not.toEqual(await getCacheKey(reqWithoutCustomQuery));
+		expect(await getCacheKey(reqWithCustomQuery1)).toEqual(await getCacheKey(reqWithCustomQuery2));
+		expect(await getCacheKey(reqWithCustomQuery1)).toEqual(await getCacheKey(reqWithoutCustomQuery));
 	});
 
 	test('should not include raw query params for standard REST endpoints', async () => {
@@ -202,8 +202,10 @@ describe('get cache key', async () => {
 		const flowId = '00000000-0000-0000-0000-000000000001';
 
 		vi.mocked(getFlowManager).mockReturnValue({
-			getWebhookFlowOptions: vi.fn().mockReturnValue({
-				cacheQueryParams: ['region'],
+			getFlow: vi.fn().mockReturnValue({
+				options: {
+					cacheQueryParams: ['region'],
+				},
 			}),
 		} as any);
 
@@ -236,7 +238,7 @@ describe('get cache key', async () => {
 
 		// Reset mock to default (no allowlist)
 		vi.mocked(getFlowManager).mockReturnValue({
-			getWebhookFlowOptions: vi.fn().mockReturnValue(undefined),
+			getFlow: vi.fn().mockReturnValue(undefined),
 		} as any);
 	});
 
