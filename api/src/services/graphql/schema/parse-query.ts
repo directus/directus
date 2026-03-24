@@ -110,6 +110,9 @@ export async function getQuery(
 
 				// Resolve child collection for recursive calls
 				if (currentCollection && selection.selectionSet) {
+					// For A2O, getRelatedCollection returns null. Fallback to currentCollection
+					// keeps the junction in context so the next level can detect M2A via isM2AField.
+					// The actual target collection is then set from the InlineFragment typeCondition.
 					childCollection = getRelatedCollection(schema, currentCollection, selection.name.value) ?? currentCollection;
 				}
 			}
