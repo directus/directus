@@ -196,6 +196,7 @@ export const DEFAULTS: Env = {
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
 	METRICS_NAME_PREFIX: 'directus_',
+	METRICS_HEALTH_CHECK_PREFIX: 'directus-metric-',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
@@ -205,4 +206,14 @@ export const DEFAULTS: Env = {
 	MCP_ENABLED: true,
 
 	AI_ENABLED: true,
+	AI_DEVTOOLS_ENABLED: false,
+	AI_TELEMETRY_ENABLED: false,
+	AI_TELEMETRY_PROVIDER: 'langfuse',
+	AI_TELEMETRY_RECORD_IO: false,
+	LANGFUSE_SECRET_KEY: '',
+	LANGFUSE_PUBLIC_KEY: '',
+	LANGFUSE_BASE_URL: 'https://cloud.langfuse.com',
+	BRAINTRUST_API_KEY: '',
+	BRAINTRUST_PROJECT_NAME: '',
+	BRAINTRUST_API_URL: '',
 } as const;

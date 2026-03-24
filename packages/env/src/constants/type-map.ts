@@ -39,6 +39,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	REDIS_ENABLED: 'boolean',
 	REDIS_PASSWORD: 'string',
+	REDIS_BUS_NAMESPACE: 'string',
+	REDIS_LOCK_NAMESPACE: 'string',
+	REDIS_COUNTERS_NAMESPACE: 'string',
+	REDIS_PERMISSIONS_NAMESPACE: 'string',
+	METRICS_HEALTH_CHECK_PREFIX: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
@@ -60,6 +65,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	'AUTH_.+_USER_DN': 'string',
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
+	'AUTH_.+_COOKIE_SECURE': 'boolean',
 } as const;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [

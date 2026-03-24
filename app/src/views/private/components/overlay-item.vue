@@ -33,6 +33,7 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useRelationsStore } from '@/stores/relations';
+import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -558,6 +559,26 @@ function useActions() {
 
 		if (props.primaryKey && props.primaryKey !== '+' && primaryKeyField.value) {
 			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
+		}
+
+		const mainDefaults = unref(getDefaultValuesFromFields(fieldsWithoutCircular.value));
+
+		internalEdits.value = clearHiddenFieldsByCondition(
+			internalEdits.value,
+			fieldsWithoutCircular.value,
+			mainDefaults,
+			initialValues.value,
+		);
+
+		if (props.junctionField && internalEdits.value[props.junctionField]) {
+			const junctionDefaults = unref(getDefaultValuesFromFields(relatedCollectionFields.value));
+
+			internalEdits.value[props.junctionField] = clearHiddenFieldsByCondition(
+				internalEdits.value[props.junctionField],
+				relatedCollectionFields.value,
+				junctionDefaults,
+				initialValues.value?.[props.junctionField],
+			);
 		}
 
 		emit('input', internalEdits.value);
