@@ -172,7 +172,6 @@ watch(
 					parseable = date;
 					break;
 			}
-
 		}
 
 		// Parse based on type
