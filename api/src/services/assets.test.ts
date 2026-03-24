@@ -24,9 +24,9 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('./files.js', async () => {
-	const { mockFilesService } = await import('../test-utils/services/files-service.js');
-	return mockFilesService();
+vi.mock('./items.js', async () => {
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return mockItemsService();
 });
 
 vi.mock('./folders.js', async () => {
@@ -67,14 +67,6 @@ describe('AssetsService', () => {
 		height: 1080,
 		filesize: 9156,
 		modified_on: '2025-09-23T19:31:49.000Z',
-	};
-
-	const createAssetsService = (accountability: Accountability) => {
-		return new AssetsService({
-			knex: db,
-			schema: { collections: {}, relations: [] },
-			accountability,
-		});
 	};
 
 	beforeAll(() => {
@@ -126,7 +118,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -152,7 +148,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -178,7 +178,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -203,7 +207,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				tracker.reset();
 				tracker.on.select(/directus_settings/).response([{ project_logo: logoFileId }]);
@@ -230,7 +238,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -266,7 +278,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(validateItemAccess).mockResolvedValue({
 					accessAllowed: false,
@@ -285,7 +301,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 				vi.mocked(mockDriver.exists as any).mockResolvedValue(false);
@@ -305,7 +325,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -335,7 +359,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 

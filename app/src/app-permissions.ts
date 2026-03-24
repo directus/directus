@@ -22,13 +22,22 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 	{
 		collection: 'directus_files',
 		action: 'update',
-		permissions: {},
-		fields: ['*'],
+		permissions: { uploaded_by: { _eq: '$CURRENT_USER' } },
+		fields: [
+			'title',
+			'description',
+			'tags',
+			'location',
+			'folder',
+			'focal_point_x',
+			'focal_point_y',
+			'filename_download',
+		],
 	},
 	{
 		collection: 'directus_files',
 		action: 'delete',
-		permissions: {},
+		permissions: { uploaded_by: { _eq: '$CURRENT_USER' } },
 		fields: ['*'],
 	},
 	{

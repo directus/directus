@@ -25,6 +25,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	IMPORT_IP_DENY_LIST: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
+	FILES_DELETE_ORIGINAL_ON_MOVE: 'boolean',
 
 	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',

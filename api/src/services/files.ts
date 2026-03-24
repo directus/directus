@@ -6,6 +6,7 @@ import url from 'url';
 import { useEnv } from '@directus/env';
 import {
 	ContentTooLargeError,
+	ForbiddenError,
 	InternalServerError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
@@ -20,7 +21,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { normalizePath, toArray, toBoolean } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
@@ -32,6 +33,7 @@ import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
+import { transaction } from '../utils/transaction.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { ItemsService } from './items.js';
 
@@ -41,6 +43,33 @@ const logger = useLogger();
 export class FilesService extends ItemsService<File> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
+	}
+
+	/**
+	 * Generates the relative path for the filename_disk
+	 *
+	 * @param filenameDisk - The filepath
+	 */
+	private generateFilenamePath(filepath: string) {
+		return normalizePath(path.relative(path.sep, path.resolve(path.sep, filepath)));
+	}
+
+	/**
+	 * Check whether a filename is unique.
+	 *
+	 * @param filename - The filename
+	 * @throws ForbiddenError if a match is found
+	 */
+	private async checkUniqueFilename(filename: string) {
+		const existingFile = await this.knex
+			.select('filename_disk')
+			.from('directus_files')
+			.where({ filename_disk: filename })
+			.first();
+
+		if (existingFile) {
+			throw new ForbiddenError();
+		}
 	}
 
 	/**
@@ -303,16 +332,132 @@ export class FilesService extends ItemsService<File> {
 	}
 
 	/**
-	 * Create a file (only applicable when it is not a multipart/data POST request)
-	 * Useful for associating metadata with existing file in storage
+	 * Create a file
 	 */
-	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<File>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		if (!data.type) {
 			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
+		if (data.filename_disk) {
+			try {
+				await this.checkUniqueFilename(data.filename_disk);
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
+
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+		}
+
 		const key = await super.createOne(data, opts);
 		return key;
+	}
+
+	/**
+	 * Update many files
+	 */
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<File>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
+		if (keys.length === 1 && data.filename_disk) {
+			try {
+				await this.checkUniqueFilename(data.filename_disk);
+			} catch (err: any) {
+				// Defer the error to be thrown until after permission checks
+				opts.preMutationError = err;
+			}
+
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+
+			// Fetch existing records to have data prior to change, dont require read permissions.
+			const sudoFilesItemsService = new FilesService({
+				knex: this.knex,
+				schema: this.schema,
+			});
+
+			const updatedFiles: Map<PrimaryKey, File> = new Map();
+
+			const changedFiles = await sudoFilesItemsService.readMany(keys, {
+				fields: ['id', 'storage', 'filename_disk'],
+			});
+
+			for (const file of changedFiles) {
+				updatedFiles.set(file.id, file);
+			}
+
+			for (const key of keys) {
+				// Transaction per file to ensure we only rollback changes related to that file on error
+				await transaction(this.knex, async (trx) => {
+					const filesItemService = new ItemsService(this.collection, {
+						knex: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					});
+
+					await filesItemService.updateMany([key], data, opts);
+
+					// if filename is present and was updated rename files it was changed
+					if (data.filename_disk) {
+						const storage = await getStorage();
+						const file = updatedFiles.get(key);
+
+						if (!file || !file.filename_disk) return;
+
+						// For backwards compatibility it must be resolved first to ensure consistent path
+						const existingFilePath = this.generateFilenamePath(file.filename_disk);
+
+						if (existingFilePath === data.filename_disk) return;
+
+						const disk = storage.location(file['storage']);
+
+						const { name: filePrefix, dir: fileDir } = path.parse(existingFilePath);
+						const updatedFilePath = this.generateFilenamePath(data.filename_disk);
+
+						const remoteFileExists = await disk.exists(data.filename_disk);
+
+						const filePrefixPath = fileDir ? normalizePath(path.join(fileDir, filePrefix)) : filePrefix;
+
+						for await (const filePath of disk.list(filePrefixPath)) {
+							/**
+							 * If the remote file exists, repoint the primary asset to it (i.e. db update only).
+							 * If the remote file does not exist, move the primary asset to location.
+							 *
+							 * NOTE
+							 * - On repoint the original asset will be deleted if `FILES_DELETE_ORIGINAL_ON_MOVE` is true.
+							 * - Any associated generated assets are deleted.
+							 */
+							if (filePath === existingFilePath) {
+								if (!remoteFileExists) {
+									await disk.move(filePath, updatedFilePath);
+									continue;
+								} else if (toBoolean(env['FILES_DELETE_ORIGINAL_ON_MOVE']) === false) {
+									continue;
+								}
+							}
+
+							// always delete generated assets
+							await disk.delete(filePath);
+						}
+					}
+				});
+			}
+
+			return keys;
+		}
+
+		if (keys.length > 1 && data.filename_disk) {
+			// Defer the error to be thrown until after permission checks
+			opts.preMutationError = new InvalidPayloadError({
+				reason: '"filename_disk" cannot be modified in bulk operations',
+			});
+		}
+
+		await super.updateMany(keys, data, opts);
+
+		return keys;
 	}
 
 	/**
