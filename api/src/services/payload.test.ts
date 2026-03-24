@@ -468,6 +468,15 @@ describe('Integration Tests', () => {
 					},
 				]);
 			});
+
+			test('payload should handle count(*) aggregate', () => {
+				// When count(*) is used, the DB returns { count: '1' } not { 'count->*': '1' }
+				const payload = [{ count: '1' }];
+
+				service.processAggregates(payload, { count: ['*'] });
+
+				expect(payload).toMatchObject([{ count: '1' }]);
+			});
 		});
 
 		describe('processValues', () => {
@@ -703,6 +712,79 @@ describe('Integration Tests', () => {
 
 				// Numeric strings should remain as strings since parseJSON returns primitives
 				expect(payload[0]!.metadata_value_json).toBe('123');
+			});
+		});
+
+		describe('processAggregates', () => {
+			let service: PayloadService;
+
+			const REDACT_STR = '**********';
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('name').string();
+
+					c.field('secret')
+						.string()
+						.options({ special: ['conceal'] });
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test('redacts concealed fields in aggregate results', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret' }];
+
+				await service.processAggregates(payload, { min: ['secret'] });
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
+			});
+
+			test('redacts concealed fields with a null value', async () => {
+				const payload: Record<string, unknown>[] = [{ 'max->secret': null }];
+
+				await service.processAggregates(payload, { max: ['secret'] });
+
+				expect(payload[0]!['max']).toMatchObject({ secret: null });
+			});
+
+			test('does not modify non-special fields', async () => {
+				const payload: Record<string, unknown>[] = [{ 'count->name': 42 }];
+
+				await service.processAggregates(payload, { count: ['name'] });
+
+				expect(payload[0]!['count']).toMatchObject({ name: 42 });
+			});
+
+			test('removes the flat arrow-delimited keys from the payload', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret' }];
+
+				await service.processAggregates(payload, { min: ['secret'] });
+
+				expect(payload[0]).not.toHaveProperty('min->secret');
+			});
+
+			test('handles multiple aggregate operations on the same concealed field', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'min-value', 'max->secret': 'max-value' }];
+
+				await service.processAggregates(payload, { min: ['secret'], max: ['secret'] });
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR });
+				expect(payload[0]!['max']).toMatchObject({ secret: REDACT_STR });
+			});
+
+			test('preserves all fields when multiple fields share the same aggregate operation', async () => {
+				const payload: Record<string, unknown>[] = [{ 'min->secret': 'actual-secret', 'min->name': 'Alice' }];
+
+				await service.processAggregates(payload, { min: ['secret', 'name'] });
+
+				expect(payload[0]!['min']).toMatchObject({ secret: REDACT_STR, name: 'Alice' });
 			});
 		});
 	});

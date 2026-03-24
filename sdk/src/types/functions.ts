@@ -6,10 +6,14 @@ import type { Merge } from './utils.js';
  * Available query functions
  */
 export type DateTimeFunctions = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
+export type DateFunctions = 'year' | 'month' | 'week' | 'day' | 'weekday';
+export type TimeFunctions = 'hour' | 'minute' | 'second';
 export type ArrayFunctions = 'count';
 
 export type QueryFunctions = {
 	datetime: DateTimeFunctions;
+	date: DateFunctions;
+	time: TimeFunctions;
 	json: ArrayFunctions;
 	csv: ArrayFunctions;
 };
@@ -60,6 +64,8 @@ export type TypeFunctionFields<Item, Type extends keyof QueryFunctions> = keyof 
 export type MappedFunctionFields<Schema, Item> = Merge<
 	TranslateFunctionFields<RelationalFunctions<Schema, Item>, ArrayFunctions>,
 	TranslateFunctionFields<LiteralFields<Item, 'datetime'>, DateTimeFunctions> &
+		TranslateFunctionFields<LiteralFields<Item, 'date'>, DateFunctions> &
+		TranslateFunctionFields<LiteralFields<Item, 'time'>, TimeFunctions> &
 		TranslateFunctionFields<LiteralFields<Item, 'json' | 'csv'>, ArrayFunctions>
 >;
 
@@ -76,5 +82,7 @@ type FunctionFieldNames<Fields, Funcs> = {
 export type MappedFieldNames<Schema, Item> = Merge<
 	FunctionFieldNames<RelationalFunctions<Schema, Item>, ArrayFunctions>,
 	FunctionFieldNames<LiteralFields<Item, 'datetime'>, DateTimeFunctions> &
+		FunctionFieldNames<LiteralFields<Item, 'date'>, DateFunctions> &
+		FunctionFieldNames<LiteralFields<Item, 'time'>, TimeFunctions> &
 		FunctionFieldNames<LiteralFields<Item, 'json' | 'csv'>, ArrayFunctions>
 >;
