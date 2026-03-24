@@ -16,9 +16,10 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
+import { getRelationsForCollection } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
+import { assign, clone, cloneDeep, difference, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
@@ -348,14 +349,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
+					const relationalFields = getRelationsForCollection(this.schema, this.collection);
+
+					const revisionPayload = await payloadService.prepareDelta(omit(payloadWithPresets, relationalFields));
 
 					const revision = await revisionsService.createOne({
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: revisionDelta,
-						delta: revisionDelta,
+						data: revisionPayload,
+						delta: revisionPayload,
 					});
 
 					// Make sure to set the parent field of the child-revision rows
@@ -880,7 +883,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						schema: this.schema,
 					});
 
-					const snapshots = await itemsService.readMany(keys);
+					const relationalFields = getRelationsForCollection(this.schema, this.collection);
+					const snapshotFields = difference(fields, relationalFields);
+
+					const snapshots = await itemsService.readMany(keys, {
+						fields: snapshotFields.length > 0 ? snapshotFields : ['*'],
+					});
 
 					const revisionsService = new RevisionsService({
 						knex: trx,
@@ -894,7 +902,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								collection: this.collection,
 								item: keys[index],
 								data:
-									snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots[index]) : JSON.stringify(snapshots),
+									Array.isArray(snapshots) && snapshots[index]
+										? await payloadService.prepareDelta(snapshots[index])
+										: null,
 								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
 							})),
 						)

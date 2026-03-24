@@ -261,7 +261,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			delta: revisionDelta,
 		});
 
-		revisionDelta = revisionDelta ? JSON.parse(revisionDelta) : null;
+		revisionDelta = revisionDelta ? revisionDelta : null;
 
 		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 
