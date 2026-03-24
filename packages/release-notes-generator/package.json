@@ -12,10 +12,10 @@
 	"license": "MIT",
 	"author": "Pascal Jufer <pascal-jufer@bluewin.ch>",
 	"exports": {
-		".": "./dist/index.js",
+		".": "./dist/index.mjs",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/index.mjs",
 	"files": [
 		"dist"
 	],
