@@ -164,21 +164,6 @@ describe('Interface', () => {
 		expect(wrapper.find('.actions-container v-button-stub.action').attributes('disabled')).toBe('false');
 	});
 
-	it('should disable link buttons when nonEditable is true but field is readonly', async () => {
-		const wrapper = mount(Header, {
-			...mountOptions,
-			props: {
-				...mountOptions.props,
-				links: [urlLink],
-				disabled: true,
-				nonEditable: true,
-				fieldData: { field: 'test', name: 'test', meta: { readonly: true } },
-			},
-		});
-
-		expect(wrapper.find('.actions-container v-button-stub.action').attributes('disabled')).toBe('true');
-	});
-
 	it('renders without error when subtitle only (no title)', () => {
 		const wrapper = mount(Header, {
 			...mountOptions,

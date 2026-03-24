@@ -10,7 +10,6 @@ import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
-import type { FormField } from '@/components/v-form/types';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
@@ -54,7 +53,6 @@ const props = withDefaults(
 		primaryKey?: string | number | null;
 		disabled?: boolean;
 		nonEditable?: boolean;
-		fieldData?: FormField;
 	}>(),
 	{
 		links: () => [],
@@ -111,7 +109,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 		};
 
 		function isDisabled() {
-			if (props.disabled && (!props.nonEditable || props.fieldData?.meta?.readonly === true)) return true;
+			if (props.disabled && !props.nonEditable) return true;
 
 			return link.actionType === 'flow' && (props.nonEditable || props.primaryKey === '+');
 		}
