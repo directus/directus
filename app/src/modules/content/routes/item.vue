@@ -92,7 +92,6 @@ const {
 	currentVersion,
 	versions,
 	loading: versionsLoading,
-	query,
 	addVersion,
 	updateVersion,
 	deleteVersion,
@@ -120,7 +119,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(collection, primaryKey, currentVersion);
 
 const toolsStore = useAiToolsStore();
 
@@ -477,7 +476,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, ref(item.value ?? {}));
+		await saveVersion(edits, ref(item.value ?? {}), actualPrimaryKey.value);
 		edits.value = {};
 
 		if (action === 'main') {

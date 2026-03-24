@@ -91,7 +91,7 @@ export type MutationOptions = {
 	/*
 	 * The validation error to throw right before the mutation takes place
 	 */
-	preMutationError?: DirectusError | undefined;
+	preMutationError?: DirectusError<unknown> | undefined;
 
 	bypassAutoIncrementSequenceReset?: boolean;
 

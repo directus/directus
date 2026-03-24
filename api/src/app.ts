@@ -71,6 +71,7 @@ import { errorHandler } from './middleware/error-handler.js';
 import extractToken from './middleware/extract-token.js';
 import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
+import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import metricsSchedule from './schedules/metrics.js';
@@ -194,6 +195,17 @@ export default async function createApp(): Promise<express.Application> {
 		),
 	);
 
+	if (env['CROSS_ORIGIN_OPENER_POLICY_ENABLED']) {
+		app.use(
+			helmet.crossOriginOpenerPolicy({
+				policy: (env['CROSS_ORIGIN_OPENER_POLICY'] ?? 'same-origin-allow-popups') as
+					| 'same-origin'
+					| 'same-origin-allow-popups'
+					| 'unsafe-none',
+			}),
+		);
+	}
+
 	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', { omitPrefix: 'HSTS_ENABLED' })));
 	}
@@ -297,6 +309,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(schema);
 
 	app.use(sanitizeQuery);
+
+	app.use(requestCounter);
 
 	app.use(cache);
 

@@ -200,9 +200,14 @@ export const DEFAULTS: Env = {
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
 	METRICS_NAME_PREFIX: 'directus_',
+	METRICS_HEALTH_CHECK_PREFIX: 'directus-metric-',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
-	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
+	FILES_DELETE_ORIGINAL_ON_MOVE: false,
+ 	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
+
+	CROSS_ORIGIN_OPENER_POLICY_ENABLED: true,
+	CROSS_ORIGIN_OPENER_POLICY: 'same-origin-allow-popups',
 
 	ACCEPT_TERMS: false,
 
