@@ -201,7 +201,7 @@ export function createErrorTracker() {
 }
 
 const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_EXPORT_NAMESPACE']), {
-	ttl: ms(env['IMPORT_TIMEOUT'] as StringValue),
+	ttl: ms((env['IMPORT_TIMEOUT'] as StringValue) ?? '1h'),
 });
 
 export class ImportService {
