@@ -465,6 +465,8 @@ related_collection: Koleksiyona Têkildar
 related_collections: Koleksiyonên Têkildar
 translations_collection: Koleksiyona Wergerandinê
 languages_collection: Koleksiyona Zimanan
+translations_preview_collections: Koleksiyon
+translations_preview_fields: Qad
 import_data_input_placeholder: CSV an JSON...
 import_data_button: Împortkirinê Destpê Bike
 import_data_indeterminate: Daneyê Tê Împortkirin...

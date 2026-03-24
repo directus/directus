@@ -472,6 +472,8 @@ related_collection: Související kategorie
 related_collections: Související kolekce
 translations_collection: Kolekce překladů
 languages_collection: Kolekce jazyků
+translations_preview_collections: Kategorie
+translations_preview_fields: Pole
 import_data_input_placeholder: CSV nebo JSON...
 import_data_button: Zahájit import
 import_data_indeterminate: Importuji data...

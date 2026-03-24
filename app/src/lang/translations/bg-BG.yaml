@@ -451,6 +451,8 @@ related_collection: Релативна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
+translations_preview_collections: Колекции
+translations_preview_fields: Полета
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Започване на импортирането
 import_data_indeterminate: Импортиране на данните...

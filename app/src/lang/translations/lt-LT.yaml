@@ -465,6 +465,8 @@ related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 translations_collection: Vertimų kolekcija
 languages_collection: Kalbų kolekcija
+translations_preview_collections: Kolekcijos
+translations_preview_fields: Laukai
 import_data_input_placeholder: CSV arba JSON...
 import_data_button: Pradėti importavimą
 import_data_indeterminate: Importuojami duomenys...

@@ -520,6 +520,9 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
+translations_preview_collections: Collecties
+translations_preview_fields: Velden
+translations_preview_relations: Relaties
 import_data_input_placeholder: CSV of JSON...
 import_data_button: Importeren starten
 import_data_indeterminate: Gegevens importeren...

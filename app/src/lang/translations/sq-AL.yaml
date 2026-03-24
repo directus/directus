@@ -465,6 +465,8 @@ related_collection: Koleksion i Lidhur
 related_collections: Koleksione të Lidhura
 translations_collection: Koleksion i Përkthimeve
 languages_collection: Koleksion i Gjuhëve
+translations_preview_collections: Koleksione
+translations_preview_fields: Fusha
 import_data_input_placeholder: CSV ose JSON...
 import_data_button: Filloni Importimin
 import_data_indeterminate: Importimi i të Dhënave...

@@ -461,6 +461,8 @@ related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
+translations_preview_collections: مجموعات
+translations_preview_fields: حقول
 import_data_input_placeholder: CSV أو JSON...
 import_data_button: بدء الاستيراد
 import_data_indeterminate: استيراد البيانات...

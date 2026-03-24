@@ -519,6 +519,8 @@ related_collection: Пов'язана колекція
 related_collections: Схожі колекції
 translations_collection: Колекція перекладів
 languages_collection: Колекція мов
+translations_preview_collections: Колекції
+translations_preview_fields: Поля
 import_data_input_placeholder: CSV або JSON...
 import_data_button: Розпочати імпорт
 import_data_indeterminate: Імпорт даних...

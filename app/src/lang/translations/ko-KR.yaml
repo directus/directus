@@ -482,6 +482,8 @@ related_collection: 관계 컬렉션
 related_collections: 관계 컬렉션
 translations_collection: 번역 컬렉션
 languages_collection: 언어 컬렉션
+translations_preview_collections: 컬렉션
+translations_preview_fields: 필드
 import_data_input_placeholder: CSV 또는 JSON...
 import_data_button: 가져오기 시작
 import_data_indeterminate: 데이터를 가져오는 중...

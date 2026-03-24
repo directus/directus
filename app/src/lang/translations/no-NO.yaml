@@ -387,6 +387,7 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
+translations_preview_collections: Kolleksjoner
 import_data_button: Start import
 import_data_indeterminate: Importerer data...
 import_data_success: Importeringen fra {filename} var vellykket

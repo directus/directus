@@ -383,6 +383,7 @@ related_collection: Danh mục liên quan
 related_collections: Những Danh mục liên quan
 translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
+translations_preview_collections: Danh mục
 import_data_input_placeholder: CSV hoặc JSON...
 import_data_button: Bắt đầu nhập
 import_data_indeterminate: Đang nhập dữ liệu...

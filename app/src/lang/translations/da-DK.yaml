@@ -405,6 +405,8 @@ related_collection: Relateret samling
 related_collections: Relaterede samlinger
 translations_collection: Oversættelse samling
 languages_collection: Sprog samling
+translations_preview_collections: Samlinger
+translations_preview_fields: Felter
 import_data_input_placeholder: CSV eller JSON...
 import_data_button: Begynd import
 import_data_indeterminate: Importerer data...

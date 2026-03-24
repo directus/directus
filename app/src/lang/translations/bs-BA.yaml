@@ -330,6 +330,8 @@ related_collection: Povezana kolekcija
 related_collections: Povezane kolekcije
 translations_collection: Kolekcija prijevoda
 languages_collection: Kolekcija jezika
+translations_preview_collections: Kolekcije
+translations_preview_fields: Polja
 import_data_input_placeholder: CSV ili JSON...
 import_data_button: Pokreni uvoz
 import_data_indeterminate: Uvozim podatke...
