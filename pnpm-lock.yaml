@@ -55,8 +55,8 @@ catalogs:
       specifier: 4.0.0
       version: 4.0.0
     '@directus/vue-split-panel':
-      specifier: 0.8.6
-      version: 0.8.6
+      specifier: 0.8.9
+      version: 0.8.9
     '@editorjs/attaches':
       specifier: 1.3.2
       version: 1.3.2
@@ -1598,7 +1598,7 @@ importers:
         version: link:../packages/validation
       '@directus/vue-split-panel':
         specifier: 'catalog:'
-        version: 0.8.6(vue@3.5.24(typescript@5.9.3))
+        version: 0.8.9(vue@3.5.24(typescript@5.9.3))
       '@editorjs/attaches':
         specifier: 'catalog:'
         version: 1.3.2
@@ -3898,8 +3898,8 @@ packages:
     resolution: {integrity: sha512-NceIipnlqY/ByHKwsWKva7Ompio3wv8SGfByaSkieopwxa9jn2VjxaOrC+uZnKgbDJBexkdgVLeYiNEVdayf2A==}
     engines: {pnpm: '10'}
 
-  '@directus/vue-split-panel@0.8.6':
-    resolution: {integrity: sha512-ofgDIgawEIySBgW0mJ92YbPfzFFp2tfu5rwnqcKenfYkQOhcZJ2N7GzrkbBL9P668t8bFJV1a2JhoouemGKI6Q==}
+  '@directus/vue-split-panel@0.8.9':
+    resolution: {integrity: sha512-8SrKpfge08bHoTHvX5/h2KcDXXgxBSSqudlRUPGrP1MuvL4gHnW26QtL+lmI7m1FYS6HML+rPkrTjoIE4ZgUEg==}
     peerDependencies:
       vue: ^3.5.0
 
@@ -13599,10 +13599,6 @@ packages:
     resolution: {integrity: sha512-Kxl3KJGb/gxkaUMOjRsQ8IrXiGW75O4E3RPjFIINOVH8AMl2SQ/yWdTzWwF3FevIX9LcMAjJW+GRwAlAbTSXdg==}
     engines: {node: '>=20'}
 
-  string.prototype.replaceall@1.0.11:
-    resolution: {integrity: sha512-MtmYTo9i6i3Jpc0xuGVYd5GraPTml7vlZh4030YXRiBktXwYKYU7IDGJeMi008Dk8QKlgJUi/Q+oNnGKB++/fQ==}
-    engines: {node: '>= 0.4'}
-
   string.prototype.trim@1.2.10:
     resolution: {integrity: sha512-Rs66F0P/1kedk5lyYyH9uBzuiI/kNRmwJAR9quK6VOtIpZ2G+hMZd+HQbbv25MgCA6gEffoMZYxlTod4WcdrKA==}
     engines: {node: '>= 0.4'}
@@ -13926,10 +13922,6 @@ packages:
   test-exclude@7.0.1:
     resolution: {integrity: sha512-pFYqmTw68LXVjeWJMST4+borgQP2AyMNbg1BpZh9LbyhUeNkeaPF9gzfPGUAnSMV3qPYdWUwDIjjCLiSDOl7vg==}
     engines: {node: '>=18'}
-
-  test@3.3.0:
-    resolution: {integrity: sha512-JKlEohxDIJRjwBH/+BrTcAPHljBALrAHw3Zs99RqZlaC605f6BggqXhxkdqZThbSHgaYPwpNJlf9bTSWkb/1rA==}
-    hasBin: true
 
   text-decoder@1.2.3:
     resolution: {integrity: sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA==}
@@ -16277,10 +16269,9 @@ snapshots:
 
   '@directus/tsconfig@4.0.0': {}
 
-  '@directus/vue-split-panel@0.8.6(vue@3.5.24(typescript@5.9.3))':
+  '@directus/vue-split-panel@0.8.9(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 14.2.1(vue@3.5.24(typescript@5.9.3))
-      test: 3.3.0
       vue: 3.5.24(typescript@5.9.3)
 
   '@dual-bundle/import-meta-resolve@4.2.1': {}
@@ -27146,17 +27137,6 @@ snapshots:
       get-east-asian-width: 1.4.0
       strip-ansi: 7.1.2
 
-  string.prototype.replaceall@1.0.11:
-    dependencies:
-      call-bind: 1.0.8
-      define-properties: 1.2.1
-      es-abstract: 1.24.0
-      es-errors: 1.3.0
-      es-object-atoms: 1.1.1
-      get-intrinsic: 1.3.0
-      has-symbols: 1.1.0
-      is-regex: 1.2.1
-
   string.prototype.trim@1.2.10:
     dependencies:
       call-bind: 1.0.8
@@ -27558,12 +27538,6 @@ snapshots:
       '@istanbuljs/schema': 0.1.3
       glob: 10.5.0
       minimatch: 9.0.7
-
-  test@3.3.0:
-    dependencies:
-      minimist: 1.2.8
-      readable-stream: 4.7.0
-      string.prototype.replaceall: 1.0.11
 
   text-decoder@1.2.3:
     dependencies:
