@@ -164,6 +164,15 @@ export class DriverSupabase implements TusDriver {
 		await this.bucket.remove([this.fullPath(filepath)]);
 	}
 
+	async bulkDelete(filepaths: string[]): Promise<void> {
+		const CHUNK_SIZE = 1000;
+
+		for (let i = 0; i < filepaths.length; i += CHUNK_SIZE) {
+			const chunk = filepaths.slice(i, i + CHUNK_SIZE);
+			await this.bucket.remove(chunk.map((filepath) => this.fullPath(filepath)));
+		}
+	}
+
 	list(prefix = ''): AsyncIterable<string> {
 		const fullPrefix = this.fullPath(prefix);
 		return this.listGenerator(fullPrefix);

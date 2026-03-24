@@ -1,3 +1,4 @@
+import path from 'path';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { systemCollectionRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
@@ -7,6 +8,7 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { getStorage } from '../storage/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 
 export class UtilsService {
@@ -168,5 +170,64 @@ export class UtilsService {
 		}
 
 		return cache?.clear();
+	}
+
+	async clearAssetVariants(options?: { file?: string }): Promise<{ deleted: number }> {
+		if (this.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const storage = await getStorage();
+
+		const query = this.knex.select('filename_disk', 'storage').from('directus_files');
+
+		if (options?.file) {
+			query.where('id', options.file);
+		}
+
+		const files: { filename_disk: string; storage: string }[] = await query;
+
+		// Build a Set of all filename_disk values for cross-check safety
+		const allFilenameDisks = new Set(files.map((f) => f.filename_disk));
+
+		// Group files by storage location
+		const filesByStorage = new Map<string, typeof files>();
+
+		for (const file of files) {
+			const group = filesByStorage.get(file.storage) ?? [];
+			group.push(file);
+			filesByStorage.set(file.storage, group);
+		}
+
+		let deleted = 0;
+
+		for (const [storageName, storageFiles] of filesByStorage) {
+			const disk = storage.location(storageName);
+			const toDelete: string[] = [];
+
+			for (const file of storageFiles) {
+				const filePrefix = path.parse(file.filename_disk).name;
+
+				for await (const filepath of disk.list(filePrefix)) {
+					if (filepath === file.filename_disk) continue;
+					if (allFilenameDisks.has(filepath)) continue;
+					if (!path.parse(filepath).name.includes('__')) continue;
+
+					toDelete.push(filepath);
+				}
+			}
+
+			if (toDelete.length === 0) continue;
+
+			if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {
+				await disk.bulkDelete(toDelete);
+			} else {
+				await Promise.all(toDelete.map((fp) => disk.delete(fp)));
+			}
+
+			deleted += toDelete.length;
+		}
+
+		return { deleted };
 	}
 }

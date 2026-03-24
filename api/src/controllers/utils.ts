@@ -217,6 +217,22 @@ router.post(
 );
 
 router.post(
+	'/assets/clear',
+	asyncHandler(async (req, res) => {
+		const service = new UtilsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const file = req.query['file'] as string | undefined;
+
+		const result = await service.clearAssetVariants(file ? { file } : undefined);
+
+		res.status(200).json({ data: result });
+	}),
+);
+
+router.post(
 	'/resolve-redirect',
 	asyncHandler(async (req, res) => {
 		if (!req.body?.redirect) {

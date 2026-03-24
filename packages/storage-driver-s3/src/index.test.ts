@@ -5,6 +5,7 @@ import {
 	CopyObjectCommand,
 	CreateMultipartUploadCommand,
 	DeleteObjectCommand,
+	DeleteObjectsCommand,
 	GetObjectCommand,
 	HeadObjectCommand,
 	ListObjectsV2Command,
@@ -683,6 +684,43 @@ describe('#delete', () => {
 		await driver.delete(sample.path.input);
 
 		expect(driver['client'].send).toHaveBeenCalledWith(mockDeleteObjectCommand);
+	});
+});
+
+describe('#bulkDelete', () => {
+	test('Sends DeleteObjectsCommand with correct keys', async () => {
+		await driver.bulkDelete([sample.path.input]);
+
+		expect(DeleteObjectsCommand).toHaveBeenCalledWith({
+			Bucket: sample.config.bucket,
+			Delete: {
+				Objects: [{ Key: sample.path.inputFull }],
+				Quiet: true,
+			},
+		});
+	});
+
+	test('Executes DeleteObjectsCommand', async () => {
+		const mockCommand = {} as DeleteObjectsCommand;
+		vi.mocked(DeleteObjectsCommand).mockReturnValue(mockCommand);
+
+		await driver.bulkDelete([sample.path.input]);
+
+		expect(driver['client'].send).toHaveBeenCalledWith(mockCommand);
+	});
+
+	test('Chunks at 1000 paths per request', async () => {
+		const paths = Array.from({ length: 2500 }, () => sample.path.input);
+
+		await driver.bulkDelete(paths);
+
+		expect(DeleteObjectsCommand).toHaveBeenCalledTimes(3);
+	});
+
+	test('Does nothing for empty array', async () => {
+		await driver.bulkDelete([]);
+
+		expect(DeleteObjectsCommand).not.toHaveBeenCalled();
 	});
 });
 
