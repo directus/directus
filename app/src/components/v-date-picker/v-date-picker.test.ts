@@ -477,6 +477,131 @@ describe('v-date-picker', () => {
 			}).not.toThrow();
 		});
 
+		it('resolves $NOW(-7 days) to a date 7 days in the past for type: date', async () => {
+			vi.useFakeTimers();
+
+			try {
+				vi.setSystemTime(new Date('2026-03-24T12:00:00Z'));
+
+				const expected = new Date();
+				expected.setDate(expected.getDate() - 7);
+
+				let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+
+				vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+					if (options.calendarValue && 'year' in options.calendarValue) {
+						capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+					}
+
+					return '2026-03-17';
+				});
+
+				const wrapper = createWrapper({
+					type: 'date',
+					modelValue: '$NOW(-7 days)',
+				});
+
+				await nextTick();
+
+				const calendarRoot = wrapper.findComponent(CalendarRoot);
+				await calendarRoot.vm.$emit('update:modelValue', calendarRoot.props('modelValue'));
+				await nextTick();
+
+				expect(capturedCalendarValue).toBeDefined();
+				expect(capturedCalendarValue?.year).toBe(expected.getFullYear());
+				expect(capturedCalendarValue?.month).toBe(expected.getMonth() + 1);
+				expect(capturedCalendarValue?.day).toBe(expected.getDate());
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+
+		it('resolves $NOW(-2 hours) to the correct time for type: dateTime', async () => {
+			vi.useFakeTimers();
+
+			try {
+				vi.setSystemTime(new Date('2026-03-24T14:30:00Z'));
+
+				const expected = new Date();
+				expected.setHours(expected.getHours() - 2);
+
+				let capturedCalendarValue: { year?: number; month?: number; day?: number } | undefined;
+				let capturedTimeValue: { hour?: number; minute?: number } | undefined;
+
+				vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+					if (options.calendarValue && 'year' in options.calendarValue) {
+						capturedCalendarValue = options.calendarValue as { year: number; month: number; day: number };
+					}
+
+					if (options.timeValue && 'hour' in options.timeValue) {
+						capturedTimeValue = options.timeValue as { hour: number; minute: number };
+					}
+
+					return '2026-03-24T12:30:00';
+				});
+
+				const wrapper = createWrapper({
+					type: 'dateTime',
+					modelValue: '$NOW(-2 hours)',
+				});
+
+				await nextTick();
+
+				const timeField = wrapper.findComponent(TimeFieldRoot);
+				await timeField.vm.$emit('update:modelValue', timeField.props('modelValue'));
+				await nextTick();
+
+				expect(capturedCalendarValue).toBeDefined();
+				expect(capturedCalendarValue?.year).toBe(expected.getFullYear());
+				expect(capturedCalendarValue?.month).toBe(expected.getMonth() + 1);
+				expect(capturedCalendarValue?.day).toBe(expected.getDate());
+
+				expect(capturedTimeValue).toBeDefined();
+				expect(capturedTimeValue?.hour).toBe(expected.getHours());
+				expect(capturedTimeValue?.minute).toBe(expected.getMinutes());
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+
+		it('resolves $NOW(-30 minutes) to the correct time for type: time', async () => {
+			vi.useFakeTimers();
+
+			try {
+				vi.setSystemTime(new Date('2026-03-24T14:30:00Z'));
+
+				const expected = new Date();
+				expected.setMinutes(expected.getMinutes() - 30);
+
+				let capturedTimeValue: { hour?: number; minute?: number } | undefined;
+
+				vi.mocked(formatDatePickerModelValue).mockImplementation((_type, options) => {
+					if (options.timeValue && 'hour' in options.timeValue) {
+						capturedTimeValue = options.timeValue as { hour: number; minute: number };
+					}
+
+					return '14:00:00';
+				});
+
+				const wrapper = createWrapper({
+					type: 'time',
+					modelValue: '$NOW(-30 minutes)',
+				});
+
+				await nextTick();
+
+				const timeField = wrapper.findComponent(TimeFieldRoot);
+				await timeField.vm.$emit('update:modelValue', timeField.props('modelValue'));
+				await nextTick();
+
+				expect(capturedTimeValue).toBeDefined();
+				expect(capturedTimeValue?.hour).toBe(expected.getHours());
+				expect(capturedTimeValue?.minute).toBe(expected.getMinutes());
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+
 		it('handles transition from valid date to $NOW without throwing', async () => {
 			const wrapper = createWrapper({
 				type: 'date',
