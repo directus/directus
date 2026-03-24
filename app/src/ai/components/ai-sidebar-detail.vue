@@ -39,6 +39,12 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 <style scoped>
 .collapsible-root {
+	--ai-sidebar-open-height: calc(100vh - 3.375rem);
+
+	@media (width > 36rem) {
+		--ai-sidebar-open-height: calc(100vh - 3.375rem - var(--header-bar-height));
+	}
+
 	inline-size: 100%;
 	background-color: var(--theme--sidebar--background);
 }
@@ -96,12 +102,12 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 .collapsible-content[data-state='open'] {
 	animation: slide-down var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem - var(--header-bar-height));
+	block-size: var(--ai-sidebar-open-height);
 }
 
 .collapsible-content[data-state='closed'] {
 	animation: slide-up var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem - var(--header-bar-height));
+	block-size: var(--ai-sidebar-open-height);
 }
 
 .ai-sidebar-content {
@@ -116,13 +122,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		block-size: 0;
 	}
 	to {
-		block-size: calc(100vh - 3.375rem - var(--header-bar-height));
+		block-size: var(--ai-sidebar-open-height);
 	}
 }
 
 @keyframes slide-up {
 	from {
-		block-size: calc(100vh - 3.375rem - var(--header-bar-height));
+		block-size: var(--ai-sidebar-open-height);
 	}
 	to {
 		block-size: 0;
