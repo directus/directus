@@ -678,23 +678,23 @@ function usePublishComparison() {
 
 		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
 
-		// Set client errors first so versionErrorHandler can merge server errors on top
 		versionValidationErrors.value = clientErrors;
+
+		if (versionValidationErrors.value.length) {
+			comparisonModalActive.value = false;
+			return;
+		}
 
 		try {
 			await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
 
-			if (versionValidationErrors.value.length > 0) {
+			if (versionValidationErrors.value.length) {
 				comparisonModalActive.value = false;
 				return;
 			}
 
-			if (opts.deleteOnPublish) {
-				await deleteVersion(opts.versionId);
-			} else {
-				currentVersion.value = null;
-			}
-
+			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
+			currentVersion.value = null;
 			refresh();
 			revisionsSidebarDetailRef.value?.refresh?.();
 		} catch {

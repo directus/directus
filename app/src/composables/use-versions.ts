@@ -18,6 +18,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
+	const deleteVersionLoading = ref(false);
+	const saveVersionLoading = ref(false);
+	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
@@ -135,19 +138,14 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-
-	// Delete version
-	const deleteVersionLoading = ref(false);
-
 	async function deleteVersion(versionId: PrimaryKey) {
 		deleteVersionLoading.value = true;
 
 		try {
 			await api.delete(`/versions/${versionId}`);
 
-			const index = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
-			if (index !== -1) rawVersions.value?.splice(index, 1);
-			if (currentVersion.value?.id === versionId) currentVersion.value = null;
+			const indexToRemove = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
+			if (indexToRemove !== -1) rawVersions.value?.splice(indexToRemove, 1);
 		} catch (error) {
 			unexpectedError(error);
 			throw error;
@@ -155,10 +153,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			deleteVersionLoading.value = false;
 		}
 	}
-
-	// Save version
-
-	const saveVersionLoading = ref(false);
 
 	function versionErrorHandler(error: any) {
 		if (error?.response?.data?.errors) {
@@ -228,10 +222,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			saveVersionLoading.value = false;
 		}
 	}
-
-	// Publish version
-
-	const publishVersionLoading = ref(false);
 
 	async function publishVersion(versionId: PrimaryKey, options: PublishVersionOptions) {
 		publishVersionLoading.value = true;
