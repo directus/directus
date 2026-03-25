@@ -17,9 +17,9 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import VNotice from '@/components/v-notice.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { Folder, useFolders } from '@/composables/use-folders';
+import DeleteFolderDialog from '@/modules/files/components/delete-folder-dialog.vue';
 import { FolderTarget } from '@/types/folders';
 import { getFolderUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -42,9 +42,10 @@ const router = useRouter();
 
 const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
-const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
 
-const { fetchFolders } = useFolders();
+const deleteActive = ref(false);
+
+const { fetchFolders, folders } = useFolders();
 
 function useRenameFolder() {
 	const renameActive = ref(false);
@@ -98,79 +99,16 @@ function useMoveFolder() {
 	}
 }
 
-function useDeleteFolder() {
-	const deleteActive = ref(false);
-	const deleteSaving = ref(false);
+function onDeleted() {
+	const newParent = props.folder.parent;
 
-	return { deleteActive, deleteSave, deleteSaving };
-
-	async function deleteSave() {
-		if (deleteSaving.value) return;
-
-		deleteSaving.value = true;
-
-		try {
-			const foldersToUpdate = await api.get('/folders', {
-				params: {
-					filter: {
-						parent: {
-							_eq: props.folder.id,
-						},
-					},
-					fields: ['id'],
-				},
-			});
-
-			const filesToUpdate = await api.get('/files', {
-				params: {
-					filter: {
-						folder: {
-							_eq: props.folder.id,
-						},
-					},
-					fields: ['id'],
-				},
-			});
-
-			const newParent = props.folder.parent || null;
-
-			const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
-			const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
-
-			if (folderKeys.length > 0) {
-				await api.patch(`/folders`, {
-					keys: folderKeys,
-					data: {
-						parent: newParent,
-					},
-				});
-			}
-
-			if (fileKeys.length > 0) {
-				await api.patch(`/files`, {
-					keys: fileKeys,
-					data: {
-						folder: newParent,
-					},
-				});
-			}
-
-			await api.delete(`/folders/${props.folder.id}`);
-
-			if (newParent) {
-				router.replace(`/files/folders/${newParent}`);
-			} else {
-				router.replace('/files');
-			}
-
-			deleteActive.value = false;
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			await fetchFolders();
-			deleteSaving.value = false;
-		}
+	if (newParent) {
+		router.replace(`/files/folders/${newParent}`);
+	} else {
+		router.replace('/files');
 	}
+
+	fetchFolders();
 }
 
 async function downloadFolder() {
@@ -306,20 +244,7 @@ async function downloadFolder() {
 			</VCard>
 		</VDialog>
 
-		<VDialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
-			<VCard>
-				<VCardTitle>{{ $t('delete_folder') }}</VCardTitle>
-				<VCardText>
-					<VNotice>
-						{{ $t('nested_files_folders_will_be_moved') }}
-					</VNotice>
-				</VCardText>
-				<VCardActions>
-					<VButton secondary @click="deleteActive = false">{{ $t('cancel') }}</VButton>
-					<VButton kind="danger" :loading="deleteSaving" @click="deleteSave">{{ $t('delete_label') }}</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
+		<DeleteFolderDialog v-model="deleteActive" :folders="[folder]" :all-folders="folders ?? []" @done="onDeleted" />
 	</div>
 </template>
 
