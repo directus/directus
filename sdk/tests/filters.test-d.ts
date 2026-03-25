@@ -99,6 +99,7 @@ describe('Test QueryFilters', () => {
 				readItems('collection_c', {
 					filter: {
 						dt_field: {
+							_eq: '2024-01-01T00:00:00',
 							_gt: '2024-01-01T00:00:00',
 							_between: ['2024-01-01T00:00:00', '2024-12-31T23:59:59'],
 						},
@@ -110,5 +111,36 @@ describe('Test QueryFilters', () => {
 		expectTypeOf(_dateFilters).toBeFunction();
 		expectTypeOf(_timeFilters).toBeFunction();
 		expectTypeOf(_datetimeFilters).toBeFunction();
+	});
+
+	test('nullable and non nullable filters', () => {
+		const client = createDirectus<TestSchema>('https://directus.example.com').with(rest());
+
+		const _nullable = () =>
+			client.request(
+				readItems('collection_c', {
+					filter: {
+						nullable: {
+							_null: true,
+							_nnull: false,
+						},
+					},
+				}),
+			);
+
+		const _non_nullable = () =>
+			client.request(
+				readItems('collection_c', {
+					filter: {
+						non_nullable: {
+							// @ts-expect-error
+							_null: false,
+						},
+					},
+				}),
+			);
+
+		expectTypeOf(_nullable).toBeFunction();
+		expectTypeOf(_non_nullable).toBeFunction();
 	});
 });
