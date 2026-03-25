@@ -7,7 +7,9 @@ import {
 	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
+	LimitExceededError,
 	ServiceUnavailableError,
+	TimeoutError,
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -30,6 +32,7 @@ import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
 import { set } from 'lodash-es';
+import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
@@ -40,6 +43,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { getService } from '../utils/get-service.js';
+import { useStore } from '../utils/store.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
@@ -196,6 +200,10 @@ export function createErrorTracker() {
 	};
 }
 
+const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_EXPORT_NAMESPACE']), {
+	ttl: ms((env['IMPORT_TIMEOUT'] as StringValue) ?? '1h'),
+});
+
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -207,7 +215,12 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
-	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
+	async import(
+		collection: string,
+		mimetype: string,
+		stream: Readable,
+		options?: { background: boolean },
+	): Promise<void> {
 		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
 
 		if (this.accountability) {
@@ -236,14 +249,91 @@ export class ImportService {
 			);
 		}
 
-		switch (mimetype) {
-			case 'application/json':
-				return await this.importJSON(collection, stream);
-			case 'text/csv':
-			case 'application/vnd.ms-excel':
-				return await this.importCSV(collection, stream);
-			default:
-				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
+		if (['application/json', 'text/csv', 'application/vnd.ms-excel'].includes(mimetype) === false) {
+			throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
+		}
+
+		const limitReached = await store(async (store) => {
+			const count = (await store.get('importCount')) ?? 0;
+
+			if (count >= Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
+
+			await store.set('importCount', count + 1);
+			return false;
+		});
+
+		if (limitReached) {
+			throw new LimitExceededError({
+				category: 'Concurrent import',
+			});
+		}
+
+		let promise: Promise<void>;
+
+		const decrementImportCount = async () => {
+			try {
+				await store(async (store) => {
+					const count = (await store.get('importCount')) ?? 0;
+					await store.set('importCount', count - 1);
+				});
+			} catch (error) {
+				logger.error(error, `Failed to decrement importCount`);
+			}
+		};
+
+		if (mimetype === 'application/json') {
+			promise = this.importJSON(collection, stream);
+		} else {
+			promise = this.importCSV(collection, stream);
+		}
+
+		if (options?.background) {
+			const notify = async (subject: string, message: string) => {
+				try {
+					if (!this.accountability?.user) return;
+
+					const notificationsService = new NotificationsService({
+						schema: this.schema,
+					});
+
+					const usersService = new UsersService({
+						schema: this.schema,
+					});
+
+					const user = await usersService.readOne(this.accountability.user, {
+						fields: ['first_name', 'last_name', 'email'],
+					});
+
+					await notificationsService.createOne({
+						recipient: this.accountability.user,
+						sender: this.accountability.user,
+						subject,
+						message: `Hello ${userName(user)},\n\n${message}\n`,
+					});
+				} catch (error) {
+					logger.error(error, `Failed to notify user`);
+				}
+			};
+
+			promise
+				.then(async () => {
+					await notify('Your import has been successful', `Your import in ${collection} has been successful.`);
+				})
+				.catch(async (error) => {
+					logger.error(error, `Background import to ${collection} failed`);
+
+					await notify(
+						'Your import has failed',
+						`Your import in ${collection} has failed.\n\n${(error as any).message ?? ''}`,
+					);
+				})
+				.finally(async () => await decrementImportCount());
+		} else {
+			try {
+				await promise;
+			} finally {
+				await decrementImportCount();
+			}
 		}
 	}
 
@@ -252,6 +342,7 @@ export class ImportService {
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
+		let timeout: NodeJS.Timeout;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -338,6 +429,14 @@ export class ImportService {
 							return resolve();
 						});
 					});
+
+					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+
+					timeout = setTimeout(() => {
+						saveQueue.kill();
+						destroyPipedStream(extractJSON, stream);
+						reject(new TimeoutError({ category: 'Import', duration }));
+					}, duration);
 				});
 			} catch (error) {
 				if (!error && errorTracker.hasErrors()) {
@@ -345,6 +444,8 @@ export class ImportService {
 				}
 
 				throw error;
+			} finally {
+				clearTimeout(timeout);
 			}
 		});
 	}
@@ -356,6 +457,7 @@ export class ImportService {
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
+		let timeout: NodeJS.Timeout;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -504,6 +606,14 @@ export class ImportService {
 
 					streams.push(fileWriteStream);
 
+					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+
+					timeout = setTimeout(() => {
+						saveQueue.kill();
+						destroyPipedStream(fileWriteStream, stream);
+						reject(new TimeoutError({ category: 'Import', duration }));
+					}, duration);
+
 					stream
 						.on('error', (error) => {
 							cleanup();
@@ -517,6 +627,8 @@ export class ImportService {
 				}
 
 				throw error;
+			} finally {
+				clearTimeout(timeout);
 			}
 		});
 	}

@@ -344,7 +344,7 @@ interface PayloadService {
 		parent: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PayloadServiceProcessRelationResult>;
-	prepareDelta(data: Partial<Item>): Promise<string | null>;
+	prepareDelta(data: Partial<Item>): Promise<Partial<Item> | null>;
 }
 
 /**

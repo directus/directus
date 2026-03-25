@@ -372,6 +372,8 @@ related_collection: Col·lecció relacionada
 related_collections: Col·leccions relacionades
 translations_collection: Col·lecció de traduccions
 languages_collection: Col·lecció de idiomes
+translations_preview_collections: Col·leccions
+translations_preview_fields: Camps
 import_data_input_placeholder: CVS o JSON...
 import_data_button: Comença la importació
 import_data_indeterminate: Important dades...

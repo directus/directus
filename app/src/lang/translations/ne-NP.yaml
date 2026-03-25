@@ -320,6 +320,7 @@ related_collection: सम्बन्धित संग्रह
 related_collections: सम्बन्धित संग्रहहरू
 translations_collection: अनुवाद संग्रह
 languages_collection: भाषा संग्रह
+translations_preview_collections: सङ्ग्रहहरू
 import_data_input_placeholder: CSV वा JSON...
 import_data_button: आयात सुरु गर्नुहोस्
 import_data_indeterminate: डाटा आयात गर्दै...
