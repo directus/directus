@@ -1236,3 +1236,22 @@ test('define type twice', () => {
 		});
 	}).toThrowError('Field type was already set');
 });
+
+test('define singleton collection', () => {
+	const singletonSchema = new SchemaBuilder()
+		.collection('blog', (c) => {
+			c.field('id').id();
+		})
+		.options({ singleton: true })
+		.build();
+
+	const nonSingletonSchema = new SchemaBuilder()
+		.collection('blog', (c) => {
+			c.field('id').id();
+		})
+		.options({ singleton: false })
+		.build();
+
+	expect(singletonSchema.collections?.['blog']?.singleton).toBe(true);
+	expect(nonSingletonSchema.collections?.['blog']?.singleton).toBe(false);
+});

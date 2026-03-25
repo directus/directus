@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type CreateIndexOptions, type SortRecord, type Sql } from '../types.js';
+import { type CreateIndexOptions, SchemaHelper, type SortRecord, type Sql } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {

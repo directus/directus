@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
 import { useCollection } from '@directus/composables';
 import { clone } from 'lodash';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 
 const router = useRouter();
 
@@ -17,16 +26,33 @@ const serverStore = useServerStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const EXCLUDED_GROUPS: string[] = ['theming_group', 'ai_group'] as const;
+const EXCLUDED_GROUPS = ['theming_group', 'ai_group', 'mcp_group'] as const;
 
 const fields = computed(() => {
-	return allFields.value.filter((field) => {
-		if (field.meta?.group) {
-			return EXCLUDED_GROUPS.includes(field.meta?.group) === false;
-		}
+	return allFields.value
+		.map((field) => {
+			if (
+				field.field === 'collaborative_editing_enabled' &&
+				(serverStore.info.websocket === false || serverStore.info.websocket?.collaborativeEditing === false)
+			) {
+				return {
+					...field,
+					meta: {
+						...field.meta,
+						readonly: true,
+					},
+				} as any;
+			}
 
-		return EXCLUDED_GROUPS.includes(field.field) === false;
-	});
+			return field;
+		})
+		.filter((field) => {
+			if (field.meta?.group) {
+				return EXCLUDED_GROUPS.includes(field.meta?.group) === false;
+			}
+
+			return EXCLUDED_GROUPS.includes(field.field) === false;
+		});
 });
 
 const initialValues = ref(clone(settingsStore.settings));
@@ -62,45 +88,40 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="$t('settings_project')">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="tune" />
-			</v-button>
-		</template>
+	<PrivateView :title="$t('settings_project')" icon="tune">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
-				<v-icon name="check" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:disabled="!hasEdits"
+				:loading="saving"
+				icon="check"
+				@click="save"
+			/>
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
+			<SettingsNavigation />
 		</template>
 
 		<div class="settings">
-			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
+			<VForm v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
 		</div>
 
-		<template #sidebar>
-			<project-info-sidebar-detail />
-		</template>
-
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
-			<v-card>
-				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">
+		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
+			<VCard>
+				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+				<VCardText>{{ $t('unsaved_changes_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="discardAndLeave">
 						{{ $t('discard_changes') }}
-					</v-button>
-					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-	</private-view>
+					</VButton>
+					<VButton @click="confirmLeave = false">{{ $t('keep_editing') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>

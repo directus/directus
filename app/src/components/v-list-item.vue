@@ -16,6 +16,8 @@ interface Props {
 	href?: string;
 	/** Disables the item */
 	disabled?: boolean;
+	/** Set the non-editable state for the input */
+	nonEditable?: boolean;
 	/** If the item should be clickable */
 	clickable?: boolean;
 	/** If the item should be active or not */
@@ -45,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 	to: '',
 	href: undefined,
 	disabled: false,
+	nonEditable: false,
 	clickable: false,
 	active: undefined,
 	dashed: false,
@@ -137,6 +140,7 @@ function onClick(event: PointerEvent) {
 			dense,
 			link: isLink,
 			disabled,
+			'non-editable': nonEditable,
 			dashed,
 			block,
 			nav,
@@ -155,9 +159,9 @@ function onClick(event: PointerEvent) {
 
 	Available Variables:
 
-		--v-list-item-padding                  [0 8px 0 calc(8px + var(--v-list-item-indent, 0px))]
-		--v-list-item-margin                   [2px 0]
-		--v-list-item-min-height               [32px]
+		--v-list-item-padding                  [0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0rem))]
+		--v-list-item-margin                   [0.125rem 0]
+		--v-list-item-min-height               [1.8125rem]
 		--v-list-item-border-radius            [var(--theme--border-radius)]
 		--v-list-item-border-color             [var(--theme--border-color-subdued)]
 		--v-list-item-border-color-hover       [var(--theme--form--field--input--border-color-hover)]
@@ -182,10 +186,10 @@ function onClick(event: PointerEvent) {
 	inline-size: 100%;
 	min-inline-size: 0;
 	max-inline-size: none;
-	min-block-size: var(--v-list-item-min-height, 32px);
+	min-block-size: var(--v-list-item-min-height, 1.8125rem);
 	max-block-size: none;
-	margin: var(--v-list-item-margin, 2px 0);
-	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
+	margin: var(--v-list-item-margin, 0.125rem 0);
+	padding: var(--v-list-item-padding, 0 0.4375rem 0 calc(0.4375rem + var(--v-list-item-indent, 0rem)));
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
 	text-align: start;
@@ -199,8 +203,8 @@ function onClick(event: PointerEvent) {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-			inline-size: calc(100% - 4px);
-			block-size: calc(100% - 4px);
+			inline-size: calc(100% - 0.25rem);
+			block-size: calc(100% - 0.25rem);
 			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 			content: '';
 			pointer-events: none;
@@ -252,9 +256,11 @@ function onClick(event: PointerEvent) {
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--theme--foreground-subdued) !important;
-
 		cursor: not-allowed;
+
+		&:not(.non-editable) {
+			--v-list-item-color: var(--theme--foreground-subdued) !important;
+		}
 	}
 
 	&.dense {
@@ -291,23 +297,25 @@ function onClick(event: PointerEvent) {
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, border-color;
 
-		:slotted(.drag-handle) {
-			cursor: grab;
+		&:not(.disabled) {
+			:slotted(.drag-handle) {
+				cursor: grab;
 
-			&:hover {
-				color: var(--foreground-color);
+				&:hover {
+					color: var(--foreground-color);
+				}
 			}
-		}
 
-		:slotted(.drag-handle:active) {
-			cursor: grabbing;
+			:slotted(.drag-handle:active) {
+				cursor: grabbing;
+			}
 		}
 
 		:slotted(.spacer) {
 			flex-grow: 1;
 		}
 
-		&.clickable:hover {
+		&.clickable:hover:not(.disabled) {
 			background-color: var(
 				--v-list-item-background-color-hover,
 				var(--v-list-background-color-hover, var(--theme--form--field--input--background))
@@ -325,7 +333,7 @@ function onClick(event: PointerEvent) {
 		}
 
 		& + & {
-			margin-block-start: var(--v-list-item-margin, 8px);
+			margin-block-start: var(--v-list-item-margin, 0.4375rem);
 		}
 
 		&.grow {
@@ -334,11 +342,11 @@ function onClick(event: PointerEvent) {
 		}
 
 		&.dense {
-			--theme--form--field--input--height: 44px;
+			--theme--form--field--input--height: 2.5rem;
 			padding: calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2);
 
 			& + & {
-				margin-block-start: var(--v-list-item-margin, 4px);
+				margin-block-start: var(--v-list-item-margin, 0.25rem);
 			}
 		}
 	}
@@ -346,11 +354,11 @@ function onClick(event: PointerEvent) {
 	@at-root {
 		.v-list.nav {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: 36px;
-				--v-list-item-border-radius: 4px;
+				--v-list-item-min-height: 2rem;
+				--v-list-item-border-radius: 0.25rem;
 
-				margin: 2px 0;
-				padding: 0 8px;
+				margin: 0.125rem 0;
+				padding: 0 0.4375rem;
 
 				&:first-child {
 					margin-block-start: 0;
@@ -368,7 +376,7 @@ function onClick(event: PointerEvent) {
 
 		.v-list.nav.dense {
 			#{$this}:not(.dense) {
-				--v-list-item-min-height: 32px;
+				--v-list-item-min-height: 1.8125rem;
 			}
 		}
 	}

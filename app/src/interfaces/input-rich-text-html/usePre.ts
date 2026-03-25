@@ -1,5 +1,5 @@
-import { i18n } from '@/lang';
 import { Ref } from 'vue';
+import { i18n } from '@/lang';
 
 type PreButton = {
 	text: string;

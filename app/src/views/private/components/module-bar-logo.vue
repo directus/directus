@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useRequestsStore } from '@/stores/requests';
-import { useSettingsStore } from '@/stores/settings';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import { useRequestsStore } from '@/stores/requests';
+import { useSettingsStore } from '@/stores/settings';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
 const { t } = useI18n();
@@ -49,9 +50,9 @@ function stopSpinnerIfQueueIsEmpty() {
 		:class="{ loading: showLoader }"
 	>
 		<template v-if="customLogoPath">
-			<transition name="fade">
-				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
-			</transition>
+			<Transition name="fade">
+				<VProgressLinear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
+			</Transition>
 			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
 		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />
@@ -60,7 +61,7 @@ function stopSpinnerIfQueueIsEmpty() {
 
 <style lang="scss" scoped>
 .module-bar-logo {
-	--v-progress-linear-height: 2px;
+	--v-progress-linear-height: 0.125rem;
 	--v-progress-linear-color: var(--white);
 	--v-progress-linear-background-color: rgb(255 255 255 / 0.5);
 
@@ -68,35 +69,35 @@ function stopSpinnerIfQueueIsEmpty() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 60px;
-	block-size: 60px;
-	padding: 12px;
+	inline-size: 3.375rem;
+	block-size: 3.375rem;
+	padding: 0.6875rem;
 	background-color: var(--project-color);
 
 	.v-progress-linear {
 		position: absolute;
-		inset-inline: 10px;
-		inset-block-end: 5px;
-		inline-size: 40px;
+		inset-inline: 0.5625rem;
+		inset-block-end: 0.3125rem;
+		inline-size: 2.25rem;
 	}
 
 	.custom-logo {
 		display: block;
-		inline-size: 40px;
-		block-size: 40px;
+		inline-size: 2.25rem;
+		block-size: 2.25rem;
 		object-fit: contain;
 	}
 
 	.logo {
 		position: absolute;
-		inset-block-start: 18px;
-		inset-inline-start: 10px;
-		inline-size: 40px;
-		block-size: 32px;
+		inset-block-start: 1rem;
+		inset-inline-start: 0.5625rem;
+		inline-size: 2.25rem;
+		block-size: 1.8125rem;
 		margin: 0 auto;
 		background-image: url('../../../assets/sprite.svg');
 		background-position: 0% 0%;
-		background-size: 600px 32px;
+		background-size: 33.75rem 1.8125rem;
 	}
 
 	.running {

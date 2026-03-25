@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { getUrl } from '@common/config';
 import {
 	ClearCaches,
@@ -12,7 +13,6 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { load as loadYaml } from 'js-yaml';
 import { cloneDeep } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { version as currentDirectusVersion } from '../../../../../../api/package.json';

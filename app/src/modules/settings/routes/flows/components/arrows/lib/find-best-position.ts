@@ -1,9 +1,9 @@
-import { Vector2 } from '@/utils/vector2';
 import { GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from '../../../constants';
 import type { Panel } from '../types';
 import { isPointInPanel } from '../utils/is-point-in-panel';
 import { minMaxPoint } from '../utils/min-max-point';
 import { range } from '../utils/range';
+import { Vector2 } from '@/utils/vector2';
 
 /**
  * Finds the optimal position along a specified axis for drawing connections between two points

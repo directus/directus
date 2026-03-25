@@ -14,15 +14,47 @@ export type SavedData = {
 	key: string;
 	collection: EditConfig['collection'];
 	item: EditConfig['item'];
-	payload: Record<string, any>;
+	payload: Record<string, unknown>;
 };
 
-export type ReceiveAction = 'connect' | 'edit' | 'navigation';
+export type CheckFieldAccessData = {
+	key: string;
+	collection: EditConfig['collection'];
+	item: EditConfig['item'];
+	fields: string[];
+};
 
-export type SendAction = 'confirm' | 'showEditableElements' | 'saved';
+export type AddToContextData = {
+	key: string;
+	editConfig: EditConfig;
+	rect?: DOMRect;
+};
+
+export type HighlightElementData = {
+	key?: string | null;
+	collection?: string;
+	item?: PrimaryKey;
+	fields?: string[];
+};
+
+export type ConfirmData = {
+	aiEnabled: boolean;
+};
+
+export type ReceiveAction = 'connect' | 'checkFieldAccess' | 'edit' | 'navigation' | 'addToContext';
+
+export type SendAction = 'confirm' | 'activateElements' | 'showEditableElements' | 'saved' | 'highlightElement';
 
 /** Not shared with the package */
 
-export type ReceiveData = { action: ReceiveAction | null; data: unknown };
-
 export type NavigationData = { url: string; title: string };
+
+export type EditData = { key: string; editConfig: EditConfig; rect: DOMRect };
+
+export type ReceiveData =
+	| { action: 'connect'; data: null }
+	| { action: 'edit'; data: EditData }
+	| { action: 'navigation'; data: NavigationData }
+	| { action: 'addToContext'; data: AddToContextData }
+	| { action: 'checkFieldAccess'; data: CheckFieldAccessData[] }
+	| { action: null; data: null };

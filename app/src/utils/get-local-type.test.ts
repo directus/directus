@@ -1,8 +1,10 @@
-import { test, expect, vi, beforeEach, Mock } from 'vitest';
-import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-
+import { setActivePinia } from 'pinia';
+import { beforeEach, expect, Mock, test, vi } from 'vitest';
+import { getLocalTypeForField } from './get-local-type';
 import { cryptoStub } from '@/__utils__/crypto';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 vi.stubGlobal('crypto', cryptoStub);
 
@@ -13,10 +15,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { getLocalTypeForField } from './get-local-type';
 
 test('Returns NULL for non-existing relations', () => {
 	const fieldsStore = useFieldsStore();

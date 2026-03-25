@@ -4,6 +4,6 @@ import VChip from './v-chip.vue';
 
 <template>
 	<Story title="VChip">
-		<v-chip>Cake</v-chip>
+		<VChip>Cake</VChip>
 	</Story>
 </template>

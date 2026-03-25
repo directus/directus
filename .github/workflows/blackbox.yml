@@ -25,25 +25,34 @@ env:
 
 jobs:
   common:
-    name: common
+    name: common (${{ matrix.redis-image }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        redis-image:
+          - redis:6-alpine
+          - valkey/valkey:8-alpine
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare
         uses: ./.github/actions/prepare
 
       - name: Start services
+        env:
+          REDIS_IMAGE: ${{ matrix.redis-image }}
         run:
-          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc openldap -d --quiet-pull
+          --wait
 
       - name: Run tests
         run: TEST_DB=sqlite3 pnpm run test:blackbox --project common
 
   db:
-    name: ${{ matrix.vendor }}
+    name: ${{ matrix.vendor }} (${{ matrix.redis-image }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -57,9 +66,12 @@ jobs:
           - mssql
           - oracle
           # - cockroachdb
+        redis-image:
+          - redis:6-alpine
+          - valkey/valkey:8-alpine
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -85,8 +97,9 @@ jobs:
           echo "MSSQL compatibility level set successfully"
 
       - name: Start services
-        run:
-          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
+        env:
+          REDIS_IMAGE: ${{ matrix.redis-image }}
+        run: docker compose -f tests/blackbox/docker-compose.yml up redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox --project db

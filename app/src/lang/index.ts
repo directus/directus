@@ -1,9 +1,9 @@
-import { RequestError } from '@/api';
 import { createI18n, I18nOptions } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
 import datetimeFormats from './date-formats.yaml';
 import numberFormats from './number-formats.yaml';
 import enUSBase from './translations/en-US.yaml';
+import { RequestError } from '@/api';
 
 export const i18n = createI18n({
 	legacy: false,

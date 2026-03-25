@@ -11,6 +11,7 @@ import ExtensionMetadataDownloads from './extension-metadata-downloads.vue';
 import ExtensionMetadataLicense from './extension-metadata-license.vue';
 import ExtensionMetadataSize from './extension-metadata-size.vue';
 import ExtensionMetadataVersion from './extension-metadata-version.vue';
+import VList from '@/components/v-list.vue';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -31,7 +32,7 @@ const maintainers = computed(() => {
 
 <template>
 	<div class="metadata">
-		<v-list class="list">
+		<VList class="list">
 			<div class="grid buttons">
 				<ExtensionInstall :extension-id="extension.id" :version-id="latestVersion.id" />
 				<ExtensionMetadataAuthor
@@ -52,8 +53,8 @@ const maintainers = computed(() => {
 					:github-avatar-url="maintainer.github_avatar_url"
 				/>
 			</div>
-		</v-list>
-		<v-list class="list">
+		</VList>
+		<VList class="list">
 			<div class="grid">
 				<ExtensionMetadataDownloadsSparkline
 					v-if="extension.downloads"
@@ -76,7 +77,7 @@ const maintainers = computed(() => {
 					{{ $t('report_an_issue') }}
 				</MetadataItem>
 			</div>
-		</v-list>
+		</VList>
 	</div>
 </template>
 
@@ -91,36 +92,36 @@ const maintainers = computed(() => {
 }
 
 .grid {
-	@container metadata (width > 580px) {
+	@container metadata (width > 32.625rem) {
 		--v-list-item-margin: 0;
 
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 4px 16px;
+		gap: 0.25rem 0.875rem;
 
 		.sparkline {
 			grid-column: 1 / span 2;
-			margin-block-start: 16px;
+			margin-block-start: 0.875rem;
 		}
 	}
 
 	&.buttons {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 0.4375rem;
 
-		@container metadata (width > 580px) {
+		@container metadata (width > 32.625rem) {
 			display: grid;
-			gap: 8px 16px;
+			gap: 0.4375rem 0.875rem;
 		}
 	}
 }
 
 .divider {
-	margin: 16px 0;
+	margin: 0.875rem 0;
 }
 
 .sparkline {
-	margin-block: 6px 14px;
+	margin-block: 0.3125rem 0.8125rem;
 }
 </style>

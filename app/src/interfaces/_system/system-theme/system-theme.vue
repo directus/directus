@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { translate } from '@/utils/translate-literal';
 import { useThemeStore } from '@directus/themes';
 import { computed } from 'vue';
 import ThemePreview from './theme-preview.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useServerStore } from '@/stores/server';
+import { translate } from '@/utils/translate-literal';
 
 defineEmits<{
 	input: [string | null];
@@ -46,8 +48,8 @@ const valueWithDefault = computed(() => {
 				<ThemePreview :dark-mode="appearance === 'dark'" :theme="systemTheme" />
 
 				<div class="label">
-					<v-icon :name="value === null ? 'radio_button_checked' : 'radio_button_unchecked'" />
-					<v-text-overflow :text="$t('default_sync_with_project')" />
+					<VIcon :name="value === null ? 'radio_button_checked' : 'radio_button_unchecked'" />
+					<VTextOverflow :text="$t('default_sync_with_project')" />
 				</div>
 			</button>
 		</template>
@@ -62,8 +64,8 @@ const valueWithDefault = computed(() => {
 			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme.id" />
 
 			<div class="label">
-				<v-icon :name="theme.id === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
-				<v-text-overflow :text="translate(theme.name)" />
+				<VIcon :name="theme.id === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
+				<VTextOverflow :text="translate(theme.name)" />
 			</div>
 		</button>
 	</div>
@@ -72,13 +74,13 @@ const valueWithDefault = computed(() => {
 <style scoped lang="scss">
 .interface-system-theme {
 	display: grid;
-	gap: 24px;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 1.375rem;
+	grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
 }
 
 .theme {
 	background-color: var(--theme--form--field--input--background);
-	padding: 10px;
+	padding: 0.5625rem;
 	border-width: var(--theme--border-width);
 	border-style: solid;
 	border-color: var(--theme--form--field--input--border-color);
@@ -97,7 +99,7 @@ const valueWithDefault = computed(() => {
 		align-items: center;
 
 		.v-icon {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 

@@ -1,8 +1,9 @@
 {
 	"name": "@directus/release-notes-generator",
-	"version": "2.0.3",
+	"version": "2.0.4",
 	"description": "Directus tailored release notes generator for changesets",
 	"homepage": "https://directus.io",
+	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -20,8 +21,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsdown --tsconfig tsconfig.prod.json",
+		"dev": "tsdown --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -39,6 +40,7 @@
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
+		"tsdown": "catalog:",
 		"vitest": "catalog:"
 	}
 }

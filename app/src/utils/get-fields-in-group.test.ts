@@ -1,5 +1,5 @@
-import { expect, it, describe } from 'vitest';
 import { Field } from '@directus/types';
+import { describe, expect, it } from 'vitest';
 import { getFieldsInGroup } from './get-fields-in-group.js';
 
 describe('getFieldsInGroup', () => {

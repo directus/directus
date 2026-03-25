@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 const fieldDetailStore = useFieldDetailStore();
 const relationsStore = useRelationsStore();
@@ -39,25 +44,25 @@ const unsortableJunctionFields = computed(() => {
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
+				<VInput disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
-				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
+				<RelatedCollectionSelect v-model="relatedCollection" :disabled="isExisting" />
 			</div>
 
-			<v-input disabled :model-value="currentPrimaryKey" />
+			<VInput disabled :model-value="currentPrimaryKey" />
 
-			<related-field-select v-model="relatedField" :collection="relatedCollection" />
+			<RelatedFieldSelect v-model="relatedField" :collection="relatedCollection" />
 
-			<v-icon class="arrow" name="arrow_forward" />
+			<VIcon class="arrow" name="arrow_forward" />
 		</div>
 
 		<div class="sort-field">
-			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+			<VDivider large :inline-title="false">{{ $t('sort_field') }}</VDivider>
 
-			<related-field-select
+			<RelatedFieldSelect
 				v-model="sortField"
 				:collection="relatedCollection"
 				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
@@ -68,7 +73,7 @@ const unsortableJunctionFields = computed(() => {
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+			<VDivider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</VDivider>
 
 			<div class="field">
 				<div class="type-label">
@@ -78,7 +83,7 @@ const unsortableJunctionFields = computed(() => {
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeselect"
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
@@ -105,7 +110,7 @@ const unsortableJunctionFields = computed(() => {
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDelete"
 					:disabled="collection === relatedCollection"
 					:placeholder="$t('choose_action') + '...'"
@@ -134,7 +139,7 @@ const unsortableJunctionFields = computed(() => {
 			</div>
 		</div>
 
-		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
+		<VNotice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
 				{{ $t('new_data_alert') }}
 
@@ -144,7 +149,7 @@ const unsortableJunctionFields = computed(() => {
 					</li>
 				</ul>
 			</span>
-		</v-notice>
+		</VNotice>
 	</div>
 </template>
 
@@ -158,14 +163,13 @@ const unsortableJunctionFields = computed(() => {
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 12px 32px;
-	margin-block-start: 48px;
+	gap: 0.6875rem 1.8125rem;
 
 	.v-icon.arrow {
 		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
-		inset-block-end: 17px;
+		inset-block-end: 0.9375rem;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
 
@@ -184,25 +188,25 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 2.6875rem 0;
 }
 
 .corresponding {
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 12px 32px;
-	margin-block-start: 48px;
+	gap: 0.6875rem 1.8125rem;
+	margin-block-start: 2.6875rem;
 
 	.arrow {
 		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
-		inset-block-end: 17px;
+		inset-block-end: 0.9375rem;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
 
@@ -213,15 +217,15 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .generated-data {
-	margin-block-start: 36px;
+	margin-block-start: 2rem;
 
 	ul {
-		padding-block-start: 4px;
-		padding-inline-start: 24px;
+		padding-block-start: 0.25rem;
+		padding-inline-start: 1.375rem;
 	}
 
 	.field-name {
@@ -233,18 +237,18 @@ const unsortableJunctionFields = computed(() => {
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	.v-divider {
-		margin-block: 48px 24px;
+		margin-block: 2.6875rem 1.375rem;
 	}
 }
 
 .relational-triggers {
-	--theme--form--column-gap: 12px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 0.6875rem;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-block: 48px 0;
+		margin-block: 2.6875rem 0;
 	}
 }
 </style>

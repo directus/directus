@@ -1,8 +1,8 @@
-import type { Server } from 'graphql-ws';
-import { CloseCode, MessageType, makeServer } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
-import type { WebSocket } from 'ws';
 import type { WebSocketMessage } from '@directus/types';
+import type { Server } from 'graphql-ws';
+import { CloseCode, makeServer, MessageType } from 'graphql-ws';
+import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';

@@ -98,7 +98,7 @@
 	background: transparent;
 	box-shadow: unset;
 	border: 1px solid var(--theme--foreground-subdued);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
@@ -123,7 +123,7 @@
 }
 
 .codex-editor .ce-inline-tool {
-	padding: 0 10px !important;
+	padding: 0 0.5625rem !important;
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm {
@@ -148,7 +148,7 @@
 	background-color: var(--background-inverted);
 	color: var(--foreground-inverted);
 	border-radius: var(--theme--border-radius);
-	padding: 8px;
+	padding: 0.4375rem;
 	font-size: inherit;
 }
 
@@ -235,7 +235,7 @@
 .codex-editor .cdx-button {
 	color: var(--foreground-inverted);
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 0.875rem;
 	text-decoration: none;
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -256,14 +256,14 @@
 	line-height: inherit;
 }
 
-.codex-editor .ce-paragraph[data-placeholder]:empty::before {
-	color: var(--theme--form--field--input--foreground-subdued);
+.codex-editor .ce-paragraph[data-placeholder-active]:empty::before {
+	color: var(--theme--foreground-subdued);
 }
 
 /* Quote block */
 
 .codex-editor .cdx-block.cdx-quote {
-	padding-inline-start: 22px;
+	padding-inline-start: 1.25rem;
 }
 
 .codex-editor .ce-block blockquote {
@@ -289,7 +289,7 @@
 	background: transparent;
 	border-color: var(--theme--foreground-subdued);
 	border-width: var(--theme--border-width);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .cdx-checklist__item-checkbox-check:hover {
@@ -317,8 +317,8 @@
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
-	inset-block-start: 4px;
-	inset-inline-start: 3px;
+	inset-block-start: 0.25rem;
+	inset-inline-start: 0.1875rem;
 }
 
 /* Attaches */
@@ -336,9 +336,9 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	block-size: 36px;
-	inline-size: 36px;
-	margin-inline-end: 12px;
+	block-size: 2rem;
+	inline-size: 2rem;
+	margin-inline-end: 0.6875rem;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
@@ -375,12 +375,12 @@
 /* InlineCode */
 
 .codex-editor .ce-block .inline-code {
-	padding: 4px;
+	padding: 0.25rem;
 	color: var(--theme--background-normal);
 	font-family: monospace;
 	font-weight: 400;
 	background-color: var(--theme--foreground);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block .inline-code::selection {
@@ -453,7 +453,7 @@
 .ce-toolbar__content,
 .ce-block__content {
 	max-inline-size: unset;
-	margin-inline: 34px;
+	margin-inline: 1.9375rem;
 }
 
 .codex-editor .ce-align-left {
@@ -497,33 +497,33 @@
 }
 
 .codex-editor .ce-block h1 {
-	font-size: 44px;
-	line-height: 52px;
+	font-size: 2.5rem;
+	line-height: 1.175;
 }
 
 .codex-editor .ce-block h2 {
-	font-size: 34px;
-	line-height: 38px;
+	font-size: 1.9375rem;
+	line-height: 1.0968;
 }
 
 .codex-editor .ce-block h3 {
-	font-size: 26px;
-	line-height: 31px;
+	font-size: 1.4375rem;
+	line-height: 1.2174;
 }
 
 .codex-editor .ce-block h4 {
-	font-size: 22px;
-	line-height: 28px;
+	font-size: 1.25rem;
+	line-height: 1.25;
 }
 
 .codex-editor .ce-block h5 {
-	font-size: 18px;
-	line-height: 26px;
+	font-size: 1rem;
+	line-height: 1.4375;
 }
 
 .codex-editor .ce-block h6 {
-	font-size: 16px;
-	line-height: 24px;
+	font-size: 0.875rem;
+	line-height: 1.5714;
 }
 
 .codex-editor .ce-block a {
@@ -544,9 +544,9 @@
 
 .codex-editor .ce-block ul,
 .codex-editor .ce-block ol {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 	font-size: inherit;
-	line-height: 34px;
+	line-height: 1.9375rem;
 }
 
 .codex-editor .ce-block ul ul,
@@ -563,12 +563,12 @@
 }
 
 .codex-editor .ce-block pre {
-	padding: 20px;
+	padding: 1.125rem;
 	overflow: auto;
-	font-size: 18px;
-	line-height: 24px;
+	font-size: 1rem;
+	line-height: 1.375;
 	background-color: var(--theme--background-accent);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block video,
@@ -576,19 +576,19 @@
 .codex-editor .ce-block img {
 	max-inline-size: 100%;
 	block-size: auto;
-	border-radius: 4px;
+	border-radius: 0.25rem;
 }
 
 .codex-editor .ce-block hr {
-	margin-block: 52px 56px;
+	margin-block: 2.9375rem 3.125rem;
 	text-align: center;
 	border: 0;
 }
 
 .codex-editor .ce-block hr::after {
-	font-size: 28px;
+	font-size: 1.5625rem;
 	line-height: 0;
-	letter-spacing: 16px;
+	letter-spacing: 0.5143em;
 	content: '...';
 }
 
@@ -608,12 +608,12 @@
 
 .codex-editor .ce-block figure {
 	display: table;
-	margin: 1rem auto;
+	margin: 0.8125rem auto;
 }
 
 .codex-editor .ce-block figure figcaption {
 	display: block;
-	margin-block-start: 0.25rem;
+	margin-block-start: 0.1875rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	text-align: center;
 }

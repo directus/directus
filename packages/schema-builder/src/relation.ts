@@ -1,9 +1,9 @@
-import type { DeepPartial, Relation, SchemaOverview } from '@directus/types';
-import { RELATION_DEFAULTS } from './defaults.js';
 import { ok as assert } from 'node:assert/strict';
-import type { SchemaBuilder } from './builder.js';
+import type { DeepPartial, Relation, SchemaOverview } from '@directus/types';
 import { merge } from 'lodash-es';
+import type { SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
+import { RELATION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
 
 export type InitialRelationOverview = Pick<Relation, 'collection' | 'field'> & { _kind: 'initial' };
@@ -28,7 +28,7 @@ export class RelationBuilder {
 		this._schemaBuilder = schema;
 	}
 
-	o2m(related_collection: string, related_field: string) {
+	o2m(related_collection: string, related_field: string): this {
 		assert(this._data._kind === 'initial', 'Relation is already configured');
 
 		merge(this._data, RELATION_DEFAULTS, {
@@ -58,7 +58,7 @@ export class RelationBuilder {
 		return this;
 	}
 
-	m2o(related_collection: string, related_field?: string) {
+	m2o(related_collection: string, related_field?: string): this {
 		assert(this._data._kind === 'initial', 'Relation is already configured');
 
 		merge(this._data, RELATION_DEFAULTS, {
@@ -88,7 +88,7 @@ export class RelationBuilder {
 		return this;
 	}
 
-	a2o(related_collections: string[]) {
+	a2o(related_collections: string[]): this {
 		assert(this._data._kind === 'initial', 'Relation is already configured');
 
 		merge(this._data, RELATION_DEFAULTS, {
@@ -113,7 +113,7 @@ export class RelationBuilder {
 		return this;
 	}
 
-	options(options: RelationOveriewBuilderOptions) {
+	options(options: RelationOveriewBuilderOptions): this {
 		assert(this._data._kind === 'finished', 'Relation is not yet configured');
 
 		merge(this._data, options);

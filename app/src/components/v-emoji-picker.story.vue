@@ -5,6 +5,6 @@ import VEmojiPicker from './v-emoji-picker.vue';
 
 <template>
 	<Story title="VEmojiPicker">
-		<v-emoji-picker @emoji-selected="logEvent('emoji-selected', $event)">My Button</v-emoji-picker>
+		<VEmojiPicker @emoji-selected="logEvent('emoji-selected', $event)">My Button</VEmojiPicker>
 	</Story>
 </template>

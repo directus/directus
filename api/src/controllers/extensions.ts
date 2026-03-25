@@ -1,12 +1,13 @@
+import type { ReadStream } from 'node:fs';
+import { EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { EXTENSION_TYPES } from '@directus/constants';
 import {
 	account,
-	describe,
-	list,
 	type AccountOptions,
+	describe,
 	type DescribeOptions,
+	list,
 	type ListOptions,
 	type ListQuery,
 } from '@directus/extensions-registry';
@@ -22,7 +23,6 @@ import { ExtensionReadError, ExtensionsService } from '../services/extensions.js
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import type { ReadStream } from 'node:fs';
 
 const router = express.Router();
 const env = useEnv();
@@ -115,6 +115,10 @@ router.get(
 router.get(
 	`/registry/account/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
 		}
@@ -136,6 +140,10 @@ router.get(
 router.get(
 	`/registry/extension/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
 		}

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { FlowRaw } from '@directus/types';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { translate } from '@/utils/translate-object-values';
-import { FlowRaw } from '@directus/types';
 
 defineProps<{
 	panel: Record<string, any>;
@@ -23,7 +24,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 		>
 			<dt>{{ label }}</dt>
 			<dd>{{ text }}</dd>
-			<v-icon
+			<VIcon
 				v-if="isCopySupported && copyable"
 				v-tooltip="text"
 				name="content_copy"
@@ -41,12 +42,12 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	> div {
 		flex-wrap: wrap;
 		align-items: center;
-		margin-block-end: 6px;
+		margin-block-end: 0.3125rem;
 	}
 
 	dt {
 		flex-basis: 100%;
-		margin-block-end: -2px;
+		margin-block-end: -0.125rem;
 	}
 
 	dd {
@@ -57,7 +58,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	.clipboard-icon {
 		--v-icon-color: var(--theme--foreground-subdued);
 		--v-icon-color-hover: var(--theme--foreground);
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 	}
 }
 </style>

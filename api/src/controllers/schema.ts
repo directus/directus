@@ -1,6 +1,6 @@
 import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
-import { parseJSON } from '@directus/utils';
 import type { Snapshot, SnapshotDiffWithHash } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';

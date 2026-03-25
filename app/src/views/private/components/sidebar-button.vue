@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { useAppStore } from '@directus/stores';
-import { toRefs } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+
+const sidebarStore = useSidebarStore();
 
 withDefaults(
 	defineProps<{
@@ -16,9 +18,6 @@ withDefaults(
 defineEmits<{
 	(e: 'click', event: MouseEvent): void;
 }>();
-
-const appStore = useAppStore();
-const { sidebarOpen } = toRefs(appStore);
 </script>
 
 <template>
@@ -30,9 +29,9 @@ const { sidebarOpen } = toRefs(appStore);
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
-			<v-icon :name="icon!" />
+			<VIcon :name="icon!" />
 		</div>
-		<div v-if="sidebarOpen" class="title">
+		<div v-if="!sidebarStore.collapsed" class="title">
 			<slot />
 		</div>
 	</component>
@@ -45,7 +44,7 @@ const { sidebarOpen } = toRefs(appStore);
 	position: relative;
 	flex-shrink: 0;
 	inline-size: 100%;
-	block-size: 60px;
+	block-size: 3.375rem;
 	color: var(--theme--foreground-accent);
 	background-color: var(--theme--background-accent);
 
@@ -53,14 +52,14 @@ const { sidebarOpen } = toRefs(appStore);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 60px;
+		inline-size: 3.375rem;
 		block-size: 100%;
 	}
 
 	.title {
 		position: absolute;
 		inset-block-start: 50%;
-		inset-inline-start: 52px;
+		inset-inline-start: 2.9375rem;
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);

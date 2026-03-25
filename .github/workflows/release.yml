@@ -17,9 +17,20 @@ env:
   COSIGN_REPOSITORY: docker.io/${{ github.repository }}-signatures
 
 jobs:
+  check-npm-packages:
+    name: Check NPM Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check if packages exist on NPM
+        uses: directus/npm-package-existence-checker@v1
+
   check-version:
     name: Check Version
     runs-on: ubuntu-latest
+    needs: check-npm-packages
     outputs:
       prerelease: ${{ steps.version.outputs.prerelease && true || false }}
     steps:
@@ -29,23 +40,6 @@ jobs:
         with:
           version: ${{ github.ref_name }}
           lenient: false
-
-  create-release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    needs: check-version
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create \
-            "$GITHUB_REF_NAME" \
-            ${{ needs.check-version.outputs.prerelease == 'true' && '--prerelease' || '' }} \
-            --notes "Directus $GITHUB_REF_NAME"
 
   publish-npm:
     name: Publish to NPM
@@ -68,7 +62,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -77,7 +71,6 @@ jobs:
 
       - name: Publish packages to NPM
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
         run: |
           pnpm --recursive publish \
@@ -87,8 +80,16 @@ jobs:
 
   build-images:
     name: Build Images
-    runs-on: ubuntu-latest
     needs: check-version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
     permissions:
       actions: write
       attestations: write
@@ -105,26 +106,24 @@ jobs:
       security-events: write
       statuses: write
     steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_SLUG=${platform//\//-}" >> $GITHUB_ENV
+
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3
-        if: env.DOCKERHUB_IMAGE
+        uses: actions/checkout@v6
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Cache Docker layers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-buildx-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-${{ env.PLATFORM_SLUG }}-buildx-
 
       - name: Extract metadata for Docker image
         id: meta
@@ -137,11 +136,12 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            type=raw,value=latest,enable=${{ needs.check-version.outputs.prerelease == 'false' }}
             type=raw,value=canary,enable=${{ needs.check-version.outputs.prerelease }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
-        if: env.DOCKERHUB_IMAGE
+        if: env.DOCKERHUB_IMAGE != ''
         with:
           registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -149,35 +149,174 @@ jobs:
 
       - name: Login to GHCR
         uses: docker/login-action@v3
-        if: env.GHCR_IMAGE
+        if: env.GHCR_IMAGE != ''
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push by digest
         uses: docker/build-push-action@v6
-        id: build-and-push
+        id: build
         with:
           context: .
           file: ./Dockerfile
-          tags: ${{ steps.meta.outputs.tags }}
+          platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
-          push: true
+          provenance: true
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          # prettier-ignore
+          outputs: type=image,"name=${{ env.DOCKERHUB_IMAGE }},${{ env.GHCR_IMAGE }}",push-by-digest=true,name-canonical=true,push=true
 
-      - name: Sign Docker Hub image with GitHub OIDC Token
-        if: env.DOCKERHUB_IMAGE
-        env:
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        run: cosign sign --yes --recursive ${DOCKERHUB_IMAGE}@${DIGEST}
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
-      # Temp fix:
+      - name: Upload digest
+        uses: actions/upload-artifact@v6
+        with:
+          name: digests-${{ env.PLATFORM_SLUG }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+      # Temp fix for cache growth:
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  publish-docker-images:
+    name: Publish Docker Images
+    runs-on: ubuntu-latest
+    needs:
+      - check-version
+      - build-images
+    permissions:
+      actions: write
+      attestations: write
+      checks: write
+      contents: write
+      deployments: write
+      discussions: write
+      id-token: write
+      issues: write
+      models: read
+      packages: write
+      pages: write
+      pull-requests: write
+      security-events: write
+      statuses: write
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v6
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+        if: env.DOCKERHUB_IMAGE != ''
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata for Docker image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.DOCKERHUB_IMAGE }}
+            ${{ env.GHCR_IMAGE }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable=${{ needs.check-version.outputs.prerelease == 'false' }}
+            type=raw,value=canary,enable=${{ needs.check-version.outputs.prerelease }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        if: env.DOCKERHUB_IMAGE != ''
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        if: env.GHCR_IMAGE != ''
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create manifest list and push to Docker Hub
+        id: push-dockerhub
+        if: env.DOCKERHUB_IMAGE != ''
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map(select(startswith("docker.io"))) | map("-t " + .) | join(" ")' <<< '${{ steps.meta.outputs.json }}') \
+            $(printf '${{ env.DOCKERHUB_IMAGE }}@sha256:%s ' *)
+
+      - name: Create manifest list and push to GHCR
+        if: env.GHCR_IMAGE != ''
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map(select(startswith("ghcr.io"))) | map("-t " + .) | join(" ")' <<< '${{ steps.meta.outputs.json }}') \
+            $(printf '${{ env.GHCR_IMAGE }}@sha256:%s ' *)
+
+      - name: Get Docker Hub manifest digest
+        id: get-digest
+        if: env.DOCKERHUB_IMAGE != ''
+        run: |
+          set -euo pipefail
+          DIGEST=$(docker buildx imagetools inspect ${{ env.DOCKERHUB_IMAGE }}:${{ steps.meta.outputs.version }} --format '{{json .Manifest.Digest}}' | tr -d '"')
+          if [ -z "$DIGEST" ]; then
+            echo "::error::Failed to get manifest digest for ${{ env.DOCKERHUB_IMAGE }}:${{ steps.meta.outputs.version }}"
+            exit 1
+          fi
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
+
+      - name: Sign Docker Hub image with GitHub OIDC Token
+        if: env.DOCKERHUB_IMAGE != ''
+        run: |
+          cosign sign --yes --recursive ${{ env.DOCKERHUB_IMAGE }}@${{ steps.get-digest.outputs.digest }}
+
+      - name: Inspect Docker Hub image
+        if: env.DOCKERHUB_IMAGE != ''
+        run: |
+          docker buildx imagetools inspect ${{ env.DOCKERHUB_IMAGE }}:${{ steps.meta.outputs.version }}
+
+      - name: Inspect GHCR image
+        if: env.GHCR_IMAGE != ''
+        run: |
+          docker buildx imagetools inspect ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs:
+      - check-version
+      - publish-npm
+      - publish-docker-images
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create \
+            "$GITHUB_REF_NAME" \
+            ${{ needs.check-version.outputs.prerelease == 'true' && '--prerelease' || '' }} \
+            --notes "Directus $GITHUB_REF_NAME"

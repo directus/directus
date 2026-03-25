@@ -1,8 +1,10 @@
-import { test, expect, vi, beforeEach, Mock } from 'vitest';
-import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-
+import { setActivePinia } from 'pinia';
+import { beforeEach, expect, Mock, test, vi } from 'vitest';
 import { cryptoStub } from '@/__utils__/crypto';
+import { useRelationsStore } from '@/stores/relations';
+import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getRelatedCollection } from '@/utils/get-related-collection';
 
 vi.stubGlobal('crypto', cryptoStub);
 
@@ -15,10 +17,6 @@ beforeEach(() => {
 });
 
 vi.mock('@/utils/get-local-type');
-
-import { getRelatedCollection } from '@/utils/get-related-collection';
-import { useRelationsStore } from '@/stores/relations';
-import { getLocalTypeForField } from '@/utils/get-local-type';
 
 test('Returns M2M as related + junction', () => {
 	const relationsStore = useRelationsStore();

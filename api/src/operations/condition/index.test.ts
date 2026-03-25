@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-
 import config from './index.js';
 
 describe('Operations / Condition', () => {

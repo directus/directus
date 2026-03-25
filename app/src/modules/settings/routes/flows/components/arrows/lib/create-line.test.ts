@@ -1,10 +1,10 @@
-import { Vector2 } from '@/utils/vector2';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { createLine } from './create-line';
 import { findBestPosition } from './find-best-position';
 import { generatePath } from './generate-path';
+import { Vector2 } from '@/utils/vector2';
 
 // Mock the dependencies
 vi.mock('./find-best-position', () => ({
@@ -71,13 +71,13 @@ describe('createLine', () => {
 
 	describe('L-shaped route', () => {
 		it('should create L-shaped path when there is sufficient horizontal space', () => {
-			// x + 3 * GRID_SIZE < toX condition: 50 + 3 * 20 = 110 < 200 ✓
+			// x + 3 * GRID_SIZE < toX condition: 50 + 3 * 18 = 104 < 200 ✓
 			createLine(mockPanels, 50, 100, 200, 150);
 
 			expect(mockFindBestPosition).toHaveBeenCalledWith(
 				mockPanels,
-				new Vector2(90, 100), // x + 2 * GRID_SIZE (50 + 40)
-				new Vector2(160, 150), // toX - 2 * GRID_SIZE (200 - 40)
+				new Vector2(86, 100), // x + 2 * GRID_SIZE (50 + 36)
+				new Vector2(164, 150), // toX - 2 * GRID_SIZE (200 - 36)
 				'x',
 			);
 
@@ -99,13 +99,13 @@ describe('createLine', () => {
 
 	describe('complex route', () => {
 		it('should create complex path when horizontal space is insufficient', () => {
-			// x + 3 * GRID_SIZE >= toX condition: 50 + 3 * 20 = 110 >= 100 ✓
+			// x + 3 * GRID_SIZE >= toX condition: 50 + 3 * 18 = 104 >= 100 ✓
 			createLine(mockPanels, 50, 100, 100, 150);
 
 			expect(mockFindBestPosition).toHaveBeenCalledWith(
 				mockPanels,
-				new Vector2(90, 100), // x + 2 * GRID_SIZE
-				new Vector2(60, 150), // toX - 2 * GRID_SIZE
+				new Vector2(86, 100), // x + 2 * GRID_SIZE
+				new Vector2(64, 150), // toX - 2 * GRID_SIZE
 				'y',
 			);
 
@@ -119,10 +119,10 @@ describe('createLine', () => {
 
 			const calledWith = mockGeneratePath.mock.calls[0]![0];
 			expect(calledWith[0]).toEqual(expect.objectContaining({ x: 52, y: 100 })); // Start + offset
-			expect(calledWith[1]).toEqual(expect.objectContaining({ x: 90, y: 100 })); // x + OFFSET_BOX
-			expect(calledWith[2]).toEqual(expect.objectContaining({ x: 90, y: 125 })); // x + OFFSET_BOX, centerY
-			expect(calledWith[3]).toEqual(expect.objectContaining({ x: 60, y: 125 })); // toX - OFFSET_BOX, centerY
-			expect(calledWith[4]).toEqual(expect.objectContaining({ x: 60, y: 150 })); // toX - OFFSET_BOX, toY
+			expect(calledWith[1]).toEqual(expect.objectContaining({ x: 86, y: 100 })); // x + OFFSET_BOX
+			expect(calledWith[2]).toEqual(expect.objectContaining({ x: 86, y: 125 })); // x + OFFSET_BOX, centerY
+			expect(calledWith[3]).toEqual(expect.objectContaining({ x: 64, y: 125 })); // toX - OFFSET_BOX, centerY
+			expect(calledWith[4]).toEqual(expect.objectContaining({ x: 64, y: 150 })); // toX - OFFSET_BOX, toY
 			expect(calledWith[5]).toEqual(expect.objectContaining({ x: 87, y: 150 })); // End - offset
 		});
 	});

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
 
 interface Props {
 	/** Renders the components in each of it styles */
@@ -43,7 +44,7 @@ const iconName = computed(() => {
 <template>
 	<div class="v-notice" :class="[type, { center }, { multiline }]">
 		<div class="v-notice-title">
-			<v-icon v-if="icon !== false" :name="iconName" left></v-icon>
+			<VIcon v-if="icon !== false" :name="iconName" left></VIcon>
 			<slot name="title"></slot>
 		</div>
 		<div v-if="$slots.default" class="v-notice-content" :class="{ indent: indentContent && icon !== false }">
@@ -64,8 +65,8 @@ const iconName = computed(() => {
 */
 
 .v-notice {
-	--icon-padding-inline-end: 16px;
-	--icon-size-default: 24px;
+	--icon-padding-inline-end: 0.875rem;
+	--icon-size-default: 1.375rem;
 
 	position: relative;
 	display: flex;
@@ -73,9 +74,9 @@ const iconName = computed(() => {
 	justify-content: flex-start;
 	inline-size: auto;
 	min-block-size: var(--theme--form--field--input--height);
-	padding: 12px 16px;
+	padding: 0.6875rem 0.875rem;
 	color: var(--v-notice-color, var(--theme--foreground));
-	line-height: 22px;
+	line-height: 1.25rem;
 	background-color: var(--v-notice-background-color, var(--theme--background-normal));
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;
@@ -87,7 +88,7 @@ const iconName = computed(() => {
 	position: absolute;
 	inset-block-start: 0;
 	inset-inline-start: 0;
-	inline-size: 4px;
+	inline-size: 0.25rem;
 	block-size: 100%;
 	background-color: var(--v-notice-border-color, var(--theme--primary));
 }

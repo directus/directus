@@ -1,24 +1,31 @@
+import type { ReadStream } from 'node:fs';
+import { readdir, readFile } from 'node:fs/promises';
+import os from 'node:os';
+import { dirname, join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
+import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { APP_SHARED_DEPS } from '@directus/extensions';
-import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
+import DriverLocal from '@directus/storage-driver-local';
 import type {
 	ActionHandler,
-	EmbedHandler,
-	FilterHandler,
-	InitHandler,
-	PromiseCallback,
-	ScheduleHandler,
 	ApiExtension,
+	BundleConfig,
 	BundleExtension,
+	EmbedHandler,
 	EndpointConfig,
 	Extension,
+	ExtensionManagerOptions,
 	ExtensionSettings,
+	FilterHandler,
 	HookConfig,
 	HybridExtension,
+	InitHandler,
 	OperationApiConfig,
-	BundleConfig,
-	ExtensionManagerOptions,
+	PromiseCallback,
+	ScheduleHandler,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
@@ -29,12 +36,6 @@ import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
-import { readFile, readdir } from 'node:fs/promises';
-import os from 'node:os';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type { ReadStream } from 'node:fs';
-import path from 'path';
 import { rolldown } from 'rolldown';
 import { rollup } from 'rollup';
 import { useBus } from '../bus/index.js';
@@ -57,9 +58,8 @@ import { getInstallationManager } from './lib/installation/index.js';
 import type { InstallationManager } from './lib/installation/manager.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
-import { syncExtensions } from './lib/sync-extensions.js';
+import { type ExtensionSyncOptions, syncExtensions } from './lib/sync/sync.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
-import DriverLocal from '@directus/storage-driver-local';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -138,6 +138,11 @@ export class ExtensionManager {
 	private reloadQueue: JobQueue = new JobQueue();
 
 	/**
+	 * Used to prevent race condition when reading extension data while reloading extensions
+	 */
+	private reloadPromise: Promise<void> = Promise.resolve();
+
+	/**
 	 * Optional file system watcher to auto-reload extensions when the local file system changes
 	 */
 	private watcher: FSWatcher | null = null;
@@ -198,7 +203,7 @@ export class ExtensionManager {
 		}
 
 		if (!this.isLoaded) {
-			await this.load();
+			await this.load({ forceSync: true });
 
 			if (this.extensions.length > 0) {
 				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
@@ -212,7 +217,11 @@ export class ExtensionManager {
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
 			// Ignore requests for reloading that were published by the current process
 			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
-			this.reload();
+			// Reload extensions with event options
+			const options: ExtensionSyncOptions = {};
+			if (typeof payload['forceSync'] === 'boolean') options.forceSync = payload['forceSync'];
+			if (typeof payload['partialSync'] === 'string') options.partialSync = payload['partialSync'];
+			this.reload(options);
 		});
 	}
 
@@ -223,7 +232,12 @@ export class ExtensionManager {
 		const logger = useLogger();
 
 		await this.installationManager.install(versionId);
-		await this.reload({ forceSync: true });
+
+		const resolvedFolder = relative(sep, resolve(sep, versionId));
+		const syncFolder = join('.registry', resolvedFolder);
+
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ skipSync: true });
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
@@ -231,15 +245,18 @@ export class ExtensionManager {
 		});
 
 		logger.info(`Installed extension: ${versionId}`);
-
-		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
 		const logger = useLogger();
 
 		await this.installationManager.uninstall(folder);
-		await this.reload({ forceSync: true });
+
+		const resolvedFolder = relative(sep, resolve(sep, folder));
+		const syncFolder = join('.registry', resolvedFolder);
+
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ skipSync: true });
 
 		emitter.emitAction('extensions.uninstalled', {
 			extensions: this.extensions,
@@ -247,23 +264,21 @@ export class ExtensionManager {
 		});
 
 		logger.info(`Uninstalled extension: ${folder}`);
-
-		await this.broadcastReloadNotification();
 	}
 
-	public async broadcastReloadNotification() {
-		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
+	public async broadcastReloadNotification(options?: ExtensionSyncOptions) {
+		await this.messenger.publish(this.reloadChannel, { ...options, origin: this.processId });
 	}
 
 	/**
 	 * Load all extensions from disk and register them in their respective places
 	 */
-	private async load(options?: { forceSync: boolean }): Promise<void> {
+	private async load(options?: ExtensionSyncOptions): Promise<void> {
 		const logger = useLogger();
 
 		if (env['EXTENSIONS_LOCATION']) {
 			try {
-				await syncExtensions({ force: options?.forceSync ?? false });
+				await syncExtensions(options);
 			} catch (error) {
 				logger.error(`Failed to sync extensions`);
 				logger.error(error);
@@ -320,7 +335,7 @@ export class ExtensionManager {
 	/**
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
-	public reload(options?: { forceSync: boolean }): Promise<unknown> {
+	public reload(options?: ExtensionSyncOptions): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
 			// The pending job in the queue will already handle the additional changes
 			return Promise.resolve();
@@ -328,10 +343,10 @@ export class ExtensionManager {
 
 		const logger = useLogger();
 
-		let resolve: (val?: unknown) => void;
+		let resolve: () => void;
 		let reject: (val?: unknown) => void;
 
-		const promise = new Promise((res, rej) => {
+		this.reloadPromise = new Promise((res, rej) => {
 			resolve = res;
 			reject = rej;
 		});
@@ -379,7 +394,11 @@ export class ExtensionManager {
 			}
 		});
 
-		return promise;
+		return this.reloadPromise;
+	}
+
+	public isReloading(): Promise<void> {
+		return this.reloadPromise;
 	}
 
 	/**

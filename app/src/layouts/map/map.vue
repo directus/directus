@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { usePageSize } from '@/composables/use-page-size';
 import { useSync } from '@directus/composables';
 import { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import MapComponent from './components/map.vue';
+import VInfo from '@/components/v-info.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { usePageSize } from '@/composables/use-page-size';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -59,7 +64,7 @@ limitWritable.value = selectedSize;
 
 <template>
 	<div class="layout-map">
-		<map-component
+		<MapComponent
 			ref="map"
 			class="mapboxgl-map"
 			:class="{ loading, error: error || geojsonError || !geometryOptions }"
@@ -77,19 +82,19 @@ limitWritable.value = selectedSize;
 			@updateitempopup="updateItemPopup"
 		/>
 
-		<transition name="fade">
+		<Transition name="fade">
 			<div
 				v-if="itemPopup!.item"
 				class="popup"
 				:style="{ insetBlockStart: itemPopup!.position!.y + 'px', insetInlineStart: itemPopup!.position!.x + 'px' }"
 			>
-				<render-template :template="template" :item="itemPopup!.item" :collection="collection" />
+				<RenderTemplate :template="template" :item="itemPopup!.item" :collection="collection" />
 			</div>
-		</transition>
+		</Transition>
 
-		<transition name="fade">
+		<Transition name="fade">
 			<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
-			<v-info
+			<VInfo
 				v-else-if="geojsonError"
 				type="warning"
 				icon="wrong_location"
@@ -97,14 +102,14 @@ limitWritable.value = selectedSize;
 				:title="$t('layouts.map.invalid_geometry')"
 			>
 				{{ geojsonError }}
-			</v-info>
-			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
-		</transition>
+			</VInfo>
+			<VProgressCircular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
+		</Transition>
 
 		<template v-if="loading || (totalCount ?? 0) > 0">
 			<div class="footer">
 				<div v-if="totalPages > 1" class="pagination">
-					<v-pagination
+					<VPagination
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -114,7 +119,7 @@ limitWritable.value = selectedSize;
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
 					<span>{{ $t('limit') }}</span>
-					<v-select :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
+					<VSelect :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -123,7 +128,7 @@ limitWritable.value = selectedSize;
 
 <style lang="scss" scoped>
 .v-info {
-	padding: 40px;
+	padding: 2.25rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 	pointer-events: none;
@@ -148,7 +153,7 @@ limitWritable.value = selectedSize;
 .layout-map {
 	position: relative;
 	inline-size: 100%;
-	block-size: calc(100% - 60px);
+	block-size: 100%;
 }
 
 .center {
@@ -162,10 +167,10 @@ limitWritable.value = selectedSize;
 	position: fixed;
 	z-index: 1;
 	max-inline-size: 80%;
-	padding: 6px 10px;
+	padding: 0.3125rem 0.5625rem;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);
@@ -182,8 +187,8 @@ limitWritable.value = selectedSize;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	block-size: 36px;
-	padding: 10px;
+	block-size: 2rem;
+	padding: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);
@@ -192,7 +197,7 @@ limitWritable.value = selectedSize;
 
 	span {
 		inline-size: auto;
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 	}
 
 	.v-select {
@@ -213,15 +218,15 @@ limitWritable.value = selectedSize;
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
-	padding: 10px;
+	padding: 0.5625rem;
 	overflow: hidden;
 	background-color: transparent !important;
 
 	.pagination {
-		--v-button-height: 28px;
+		--v-button-height: 1.5625rem;
 
 		display: inline-block;
-		margin-inline-end: 10px;
+		margin-inline-end: 0.5625rem;
 
 		button {
 			box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);

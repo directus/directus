@@ -23,9 +23,14 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 
 	IMPORT_IP_DENY_LIST: 'array',
+	IMPORT_TIMEOUT: 'string',
+	IMPORT_MAX_CONCURRENCY: 'number',
+	IMPORT_EXPORT_NAMESPACE: 'string',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
+	FILES_DELETE_ORIGINAL_ON_MOVE: 'boolean',
 
+	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 
@@ -37,6 +42,12 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	LOG_HTTP_IGNORE_PATHS: 'array',
 
 	REDIS_ENABLED: 'boolean',
+	REDIS_PASSWORD: 'string',
+	REDIS_BUS_NAMESPACE: 'string',
+	REDIS_LOCK_NAMESPACE: 'string',
+	REDIS_COUNTERS_NAMESPACE: 'string',
+	REDIS_PERMISSIONS_NAMESPACE: 'string',
+	METRICS_HEALTH_CHECK_PREFIX: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
@@ -49,10 +60,16 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	SECRET: 'string',
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
+
 	EMAIL_SMTP_PASSWORD: 'string',
-	REDIS_PASSWORD: 'string',
-	'AUTH_.+_BIND_PASSWORD': 'string',
+
 	'STORAGE_.+_SECRET': 'string',
+
+	'AUTH_.+_BIND_DN': 'string',
+	'AUTH_.+_USER_DN': 'string',
+	'AUTH_.+_GROUP_DN': 'string',
+	'AUTH_.+_BIND_PASSWORD': 'string',
+	'AUTH_.+_COOKIE_SECURE': 'boolean',
 } as const;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [

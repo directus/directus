@@ -1,5 +1,5 @@
-import { isPlainObject } from 'lodash-es';
 import { createRequire } from 'node:module';
+import { isPlainObject } from 'lodash-es';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { readConfigurationFromJavaScript } from './read-configuration-from-javascript.js';
 

@@ -1,4 +1,8 @@
 {
 	"scssFormatter.singleQuote": true,
-	"stylelint.validate": ["css", "scss", "vue"]
+	"stylelint.validate": ["css", "scss", "vue"],
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "never",
+		"source.fixAll.eslint": "explicit"
+	}
 }

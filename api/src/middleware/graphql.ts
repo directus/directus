@@ -1,12 +1,12 @@
+import { useEnv } from '@directus/env';
+import { InvalidPayloadError, InvalidQueryError, MethodNotAllowedError } from '@directus/errors';
+import type { GraphQLParams } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import type { DocumentNode } from 'graphql';
-import type { GraphQLParams } from '@directus/types';
 import { getOperationAST, parse, Source } from 'graphql';
-import { InvalidPayloadError, InvalidQueryError, MethodNotAllowedError } from '@directus/errors';
 import { GraphQLValidationError } from '../services/graphql/errors/validation.js';
 import asyncHandler from '../utils/async-handler.js';
-import { useEnv } from '@directus/env';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (req.method !== 'GET' && req.method !== 'POST') {
@@ -74,7 +74,8 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 		query,
 		variables,
 		operationName,
-		contextValue: { req, res },
+		// context is scoped per request
+		contextValue: { req, res, cache: new Map() },
 	} as GraphQLParams;
 
 	return next();

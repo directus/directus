@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import CodeMirror, { ModeSpec } from 'codemirror';
+import { computed, onMounted, ref, Ref, watch } from 'vue';
+import importCodemirrorMode from './import-codemirror-mode';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
-import CodeMirror, { ModeSpec } from 'codemirror';
-import { Ref, computed, onMounted, ref, watch } from 'vue';
-import importCodemirrorMode from './import-codemirror-mode';
 
 import 'codemirror/mode/meta';
 
@@ -25,6 +27,7 @@ const props = withDefaults(
 	defineProps<{
 		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
 		lineNumber?: boolean;
@@ -97,7 +100,7 @@ onMounted(async () => {
 const stringValue = computed(() => {
 	if (props.value === null || props.value === undefined) return '';
 
-	if (props.type === 'json' && isInterpolation(props.value)) return props.value;
+	if (props.type === 'json' && isInterpolation(props.value)) return props.value as string;
 
 	return getStringifiedValue(props.value, props.type === 'json');
 });
@@ -294,12 +297,20 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<v-button v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
-			<v-icon name="playlist_add" />
-		</v-button>
+		<VButton
+			v-if="!nonEditable && template"
+			v-tooltip.left="!disabled && $t('fill_template')"
+			:disabled
+			small
+			icon
+			secondary
+			@click="fillTemplate"
+		>
+			<VIcon name="playlist_add" />
+		</VButton>
 	</div>
 </template>
 
@@ -307,21 +318,21 @@ function isInterpolation(value: any) {
 .input-code {
 	position: relative;
 	inline-size: 100%;
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .small {
 	position: absolute;
 	inset-inline-end: 0;
-	inset-block-end: -20px;
+	inset-block-end: -1.125rem;
 	font-style: italic;
 	text-align: end;
 }
 
 .v-button {
 	position: absolute;
-	inset-block-start: 10px;
-	inset-inline-end: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 4;
 	color: var(--theme--primary);
 	cursor: pointer;

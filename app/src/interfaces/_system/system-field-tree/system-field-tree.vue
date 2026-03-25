@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { useFieldTree } from '@/composables/use-field-tree';
 import { computed, inject, ref } from 'vue';
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VNotice from '@/components/v-notice.vue';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 const props = defineProps<{
 	collectionField?: string;
@@ -23,14 +25,14 @@ const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 </script>
 
 <template>
-	<v-notice v-if="!collectionField && !collectionName" type="warning">
+	<VNotice v-if="!collectionField && !collectionName" type="warning">
 		{{ $t('collection_field_not_setup') }}
-	</v-notice>
-	<v-notice v-else-if="!chosenCollection" type="warning">
+	</VNotice>
+	<VNotice v-else-if="!chosenCollection" type="warning">
 		{{ $t('select_a_collection') }}
-	</v-notice>
+	</VNotice>
 	<div v-else class="system-field-tree">
-		<v-checkbox-tree
+		<VCheckboxTree
 			:model-value="value"
 			:disabled="disabled"
 			:choices="treeList"

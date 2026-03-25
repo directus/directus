@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
-import { StyleValue, computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, StyleValue } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useUserStore } from '@/stores/user';
 
 export type AppTile = {
@@ -54,6 +61,8 @@ type Props = {
 	showOptions?: boolean;
 	/** Constantly updates position, not only after the dragend */
 	alwaysUpdatePosition?: boolean;
+	/** Grid cell size in px */
+	gridSize?: number;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -70,6 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
 	borderRadius: () => [true, true, true, true],
 	showOptions: true,
 	alwaysUpdatePosition: false,
+	gridSize: 18,
 });
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
@@ -160,8 +170,8 @@ function useDragDrop() {
 		const pointerDeltaX = event.pageX - pointerStartPosX;
 		const pointerDeltaY = event.pageY - pointerStartPosY;
 
-		const gridDeltaX = Math.round(pointerDeltaX / 20);
-		const gridDeltaY = Math.round(pointerDeltaY / 20);
+		const gridDeltaX = Math.round(pointerDeltaX / props.gridSize);
+		const gridDeltaY = Math.round(pointerDeltaY / props.gridSize);
 
 		if (operation === 'move') {
 			editedPosition.position_y = panelStartPosY + gridDeltaY;
@@ -276,45 +286,45 @@ function useDragDrop() {
 		@pointerdown="onPointerDown('move', $event)"
 	>
 		<div v-if="showHeader" class="header">
-			<v-icon class="icon" :style="iconColor" :name="icon" small />
-			<v-text-overflow class="name" :text="name || ''" />
+			<VIcon class="icon" :style="iconColor" :name="icon" small />
+			<VTextOverflow class="name" :text="name || ''" />
 			<div class="spacer" />
-			<v-icon v-if="note" v-tooltip="note" class="note" name="info" />
+			<VIcon v-if="note" v-tooltip="note" class="note" name="info" />
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<v-icon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
+			<VIcon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
 
-			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
+			<VMenu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
-					<v-icon class="more-icon" name="more_vert" clickable @click="toggle" />
+					<VIcon class="more-icon" name="more_vert" clickable @click="toggle" />
 				</template>
 
-				<v-list>
-					<v-list-item clickable :disabled="id.startsWith('_')" @click="$emit('move')">
-						<v-list-item-icon>
-							<v-icon class="move-icon" name="input" />
-						</v-list-item-icon>
-						<v-list-item-content>
+				<VList>
+					<VListItem clickable :disabled="id.startsWith('_')" @click="$emit('move')">
+						<VListItemIcon>
+							<VIcon class="move-icon" name="input" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ $t('copy_to') }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 
-					<v-list-item clickable @click="$emit('duplicate')">
-						<v-list-item-icon>
-							<v-icon name="control_point_duplicate" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('duplicate') }}</v-list-item-content>
-					</v-list-item>
+					<VListItem clickable @click="$emit('duplicate')">
+						<VListItemIcon>
+							<VIcon name="control_point_duplicate" />
+						</VListItemIcon>
+						<VListItemContent>{{ $t('duplicate') }}</VListItemContent>
+					</VListItem>
 
-					<v-list-item class="delete-action" clickable @click="$emit('delete')">
-						<v-list-item-icon>
-							<v-icon name="delete" />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('delete') }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+					<VListItem class="delete-action" clickable @click="$emit('delete')">
+						<VListItemIcon>
+							<VIcon name="delete" />
+						</VListItemIcon>
+						<VListItemContent>{{ $t('delete') }}</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
 		</div>
 
 		<div class="resize-details">
@@ -381,6 +391,8 @@ function useDragDrop() {
 			z-index: 3 !important;
 			border-color: var(--theme--form--field--input--border-color-focus);
 			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
+			-webkit-user-select: none;
+			user-select: none;
 		}
 
 		&.dragging .resize-details {
@@ -398,10 +410,10 @@ function useDragDrop() {
 	inset-block-end: 0;
 	inset-inline-end: 0;
 	z-index: 2;
-	padding: 2px 11.5px 11.5px 2px;
+	padding: 0.125rem 0.625rem 0.625rem 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
@@ -427,33 +439,33 @@ function useDragDrop() {
 }
 
 .tile-content.has-header {
-	block-size: calc(100% - 42px);
+	block-size: calc(100% - 2.375rem);
 }
 
 .header {
 	display: flex;
 	align-items: center;
-	block-size: 42px;
-	padding: 12px;
+	block-size: 2.375rem;
+	padding: 0.6875rem;
 }
 
 .footer {
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 	border-block-start: 2px solid var(--theme--border-color-subdued);
 	margin-block-start: auto;
-	padding-block-start: 8px;
+	padding-block-start: 0.4375rem;
 }
 
 .icon {
 	--v-icon-color: var(--theme--foreground-subdued);
 
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .name {
 	color: var(--theme--foreground-accent);
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 0.875rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
 }
@@ -481,9 +493,9 @@ function useDragDrop() {
 	inset-inline-end: 0;
 	z-index: 2;
 	display: flex;
-	gap: 4px;
+	gap: 0.25rem;
 	align-items: center;
-	padding: 7px;
+	padding: 0.375rem;
 	border-start-end-radius: var(--theme--border-radius);
 	border-end-end-radius: var(--theme--border-radius);
 	border-end-start-radius: var(--theme--border-radius);
@@ -496,40 +508,40 @@ function useDragDrop() {
 }
 
 .resize-handlers .top {
-	inset-block-start: -3px;
+	inset-block-start: -0.1875rem;
 	inline-size: 100%;
-	block-size: 10px;
+	block-size: 0.5625rem;
 	cursor: ns-resize;
 }
 
 .resize-handlers .right {
 	inset-block-start: 0;
-	inset-inline-end: -3px;
-	inline-size: 10px;
+	inset-inline-end: -0.1875rem;
+	inline-size: 0.5625rem;
 	block-size: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .bottom {
-	inset-block-end: -3px;
+	inset-block-end: -0.1875rem;
 	inline-size: 100%;
-	block-size: 10px;
+	block-size: 0.5625rem;
 	cursor: ns-resize;
 }
 
 .resize-handlers .left {
 	inset-block-start: 0;
-	inset-inline-start: -3px;
-	inline-size: 10px;
+	inset-inline-start: -0.1875rem;
+	inline-size: 0.5625rem;
 	block-size: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .top-left {
-	inset-block-start: -3px;
-	inset-inline-start: -3px;
-	inline-size: 14px;
-	block-size: 14px;
+	inset-block-start: -0.1875rem;
+	inset-inline-start: -0.1875rem;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nwse-resize;
 
 	html[dir='rtl'] & {
@@ -538,10 +550,10 @@ function useDragDrop() {
 }
 
 .resize-handlers .top-right {
-	inset-block-start: -3px;
-	inset-inline-end: -3px;
-	inline-size: 14px;
-	block-size: 14px;
+	inset-block-start: -0.1875rem;
+	inset-inline-end: -0.1875rem;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nesw-resize;
 
 	html[dir='rtl'] & {
@@ -550,10 +562,10 @@ function useDragDrop() {
 }
 
 .resize-handlers .bottom-right {
-	inset-inline-end: -3px;
-	inset-block-end: -3px;
-	inline-size: 14px;
-	block-size: 14px;
+	inset-inline-end: -0.1875rem;
+	inset-block-end: -0.1875rem;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nwse-resize;
 
 	html[dir='rtl'] & {
@@ -562,10 +574,10 @@ function useDragDrop() {
 }
 
 .resize-handlers .bottom-left {
-	inset-block-end: -3px;
-	inset-inline-start: -3px;
-	inline-size: 14px;
-	block-size: 14px;
+	inset-block-end: -0.1875rem;
+	inset-inline-start: -0.1875rem;
+	inline-size: 0.8125rem;
+	block-size: 0.8125rem;
 	cursor: nesw-resize;
 
 	html[dir='rtl'] & {

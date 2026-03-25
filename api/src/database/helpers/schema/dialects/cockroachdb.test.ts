@@ -1,11 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Knex } from 'knex';
+import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelperCockroachDb } from './cockroachdb.js';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-import { SchemaHelperCockroachDb } from './cockroachdb.js';
 
 describe('SchemaHelperCockroachDb', () => {
 	function createHelper() {

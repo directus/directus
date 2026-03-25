@@ -1,7 +1,7 @@
 import type { DirectusOperation } from '../../../schema/operation.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateOperationOutput<
 	Schema,

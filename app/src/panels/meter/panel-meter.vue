@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { BaseConditionalFillOperators, PanelFunction } from '@/types/panels';
 import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { BaseConditionalFillOperators, PanelFunction } from '@/types/panels';
 
 type ConditionalFillFormat = {
 	operator: BaseConditionalFillOperators;
@@ -57,7 +57,7 @@ const radius = computed(() => {
 	const widthPx = props.width * 20 - 24 - 4;
 	let heightPx = props.height * 20 - 24 - 4;
 
-	// Adjust for header if enabled, v-workspace-tile header has a fixed height of 42px
+	// Adjust for header if enabled, v-workspace-tile header has a fixed height of 2.375rem
 	if (props.showHeader) heightPx = heightPx - 42;
 
 	const strokeOffset = props.strokeWidth / 2;
@@ -166,7 +166,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 	inline-size: 100%;
 	block-size: 100%;
 	position: relative;
-	padding: 12px;
+	padding: 0.6875rem;
 	display: grid;
 	place-items: center center;
 	justify-content: center;
@@ -185,7 +185,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 	z-index: 1;
 	font-weight: 800;
 	font-size: v-bind(fontSize);
-	line-height: 52px;
+	line-height: 2.9375rem;
 }
 
 .panel-meter.size-half output {

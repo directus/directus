@@ -1,11 +1,21 @@
+import type { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { ref, unref } from 'vue';
-
 import { cryptoStub } from '@/__utils__/crypto';
+import { useFieldTree } from '@/composables/use-field-tree';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 vi.stubGlobal('crypto', cryptoStub);
+
+vi.mock('vue-i18n', () => ({
+	useI18n: () => ({
+		t: vi.fn((key: string) => (key === 'loading' ? 'Loading...' : key)),
+	}),
+	createI18n: vi.fn(() => ({})),
+}));
 
 beforeEach(() => {
 	setActivePinia(
@@ -15,11 +25,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-import { useFieldTree } from '@/composables/use-field-tree';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
-import { Field, Relation } from '@directus/types';
 
 test('Returns tree list of same length', () => {
 	const fieldsStore = useFieldsStore();
@@ -313,6 +318,50 @@ test('Returns tree list with group', () => {
 				},
 			],
 		},
+	]);
+});
+
+test('Returns loading placeholder for relational field inside group', () => {
+	const fieldsStore = useFieldsStore();
+
+	fieldsStore.fields = [
+		{
+			collection: 'a',
+			field: 'my_group',
+			type: 'alias',
+			schema: null,
+			meta: { id: 1, collection: 'a', field: 'my_group', special: ['group'], group: null },
+			name: 'My Group',
+		},
+		{
+			collection: 'a',
+			field: 'm2o_field',
+			type: 'integer',
+			schema: {},
+			meta: { id: 2, collection: 'a', field: 'm2o_field', special: ['m2o'], group: 'my_group' },
+			name: 'M2O Field',
+		},
+	] as Field[];
+
+	const relationsStore = useRelationsStore();
+
+	relationsStore.relations = [
+		{
+			collection: 'a',
+			field: 'm2o_field',
+			related_collection: 'b',
+			schema: {},
+			meta: { id: 1, many_collection: 'a', many_field: 'm2o_field', one_collection: 'b', one_field: null },
+		},
+	] as Relation[];
+
+	const { treeList } = useFieldTree(ref('a'));
+
+	const groupNode = unref(treeList).find((node) => node.field === 'my_group');
+	const relationalChild = groupNode?.children?.find((child) => child.field === 'm2o_field');
+
+	expect(relationalChild?.children).toEqual([
+		{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
 	]);
 });
 

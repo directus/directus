@@ -1,3 +1,6 @@
+import { basename, dirname, join } from 'node:path';
+import { Readable } from 'node:stream';
+import { ReadableStream } from 'node:stream/web';
 import {
 	randAlphaNumeric,
 	randGitBranch as randBucket,
@@ -12,9 +15,7 @@ import {
 	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 import { StorageClient } from '@supabase/storage-js';
-import { Readable } from 'node:stream';
-import { ReadableStream } from 'node:stream/web';
-import { Response, fetch } from 'undici';
+import { fetch, Response } from 'undici';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
@@ -350,9 +351,9 @@ describe('#stat', () => {
 			modified: sample.file.modified,
 		});
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith('', {
+		expect(driver['bucket'].list).toHaveBeenCalledWith(dirname(sample.path.input), {
 			limit: 1,
-			search: sample.path.input,
+			search: basename(sample.path.input),
 		});
 	});
 
@@ -373,9 +374,27 @@ describe('#stat', () => {
 			modified: sample.file.modified,
 		});
 
-		expect(driver['bucket'].list).toHaveBeenCalledWith('root', {
+		expect(driver['bucket'].list).toHaveBeenCalledWith(join('root', dirname(sample.path.input)), {
 			limit: 1,
-			search: sample.path.input,
+			search: basename(sample.path.input),
+		});
+	});
+
+	test('Uses empty string instead of "." when root is the empty string', async () => {
+		const filename = 'test.png';
+
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({
+				data: [{ metadata: { contentLength: sample.file.size, lastModified: sample.file.modified } }],
+				error: null,
+			}),
+		} as any;
+
+		await driver.stat(filename);
+
+		expect(driver['bucket'].list).toHaveBeenCalledWith('', {
+			limit: 1,
+			search: filename,
 		});
 	});
 

@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { SetupForm as Form } from '@directus/types';
+import { computed, ref } from 'vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
 import { useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
-import { SetupForm as Form } from '@directus/types';
-import { computed, ref } from 'vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 const settingsStore = useSettingsStore();
 
@@ -51,33 +55,37 @@ async function reset() {
 
 <template>
 	<div class="system-owner">
-		<v-list-item type="text" block clickable @click="editing = true">
+		<VListItem type="text" block clickable @click="editing = true">
 			{{ form.project_owner ?? initialValues.project_owner }}
 			<div class="spacer" />
 			<div class="item-actions">
-				<v-icon v-tooltip="$t('interfaces.system-owner.edit')" name="edit" clickable />
+				<VIcon v-tooltip="$t('interfaces.system-owner.edit')" name="edit" clickable />
 			</div>
-		</v-list-item>
+		</VListItem>
 	</div>
 
-	<v-drawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
+	<VDrawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!isSaveAllowed" :loading="isSaving" @click="save">
-				<v-icon name="check" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:disabled="!isSaveAllowed"
+				:loading="isSaving"
+				icon="check"
+				@click="save"
+			/>
 		</template>
 
 		<div class="drawer-content">
-			<setup-form
+			<SetupForm
 				v-model="form"
 				:initial-values="initialValues"
 				:errors="errors"
 				:register="false"
 				skip-license
 				utm-location="settings"
-			></setup-form>
+			></SetupForm>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

@@ -1,10 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Mount component 1`] = `
-"<v-notice data-v-4508db34="" type="danger" class="full">
-  <div data-v-4508db34="">
-    <p data-v-4508db34="">The following fields have invalid values:</p>
-    <ul data-v-4508db34="" class="validation-errors-list"></ul>
+"<div data-v-f0538e61="" data-v-4508db34="" class="v-notice danger full">
+  <div data-v-f0538e61="" class="v-notice-title"><span data-v-f0538e61="" class="v-icon" name="error" left=""></span></div>
+  <div data-v-f0538e61="" class="v-notice-content">
+    <div data-v-4508db34="" data-v-f0538e61-s="">
+      <p data-v-4508db34="" data-v-f0538e61-s="">The following fields have invalid values:</p>
+      <ul data-v-4508db34="" data-v-f0538e61-s="" class="validation-errors-list"></ul>
+    </div>
   </div>
-</v-notice>"
+</div>"
 `;

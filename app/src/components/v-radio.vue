@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
 
 interface Props {
 	/** What value to represent when selected */
@@ -10,6 +11,8 @@ interface Props {
 	label?: string | null;
 	/** Disable the radio button */
 	disabled?: boolean;
+	/** Set the non-editable state for the radio */
+	nonEditable?: boolean;
 	/** Change the icon to display when enabled */
 	iconOn?: string;
 	/** Change the icon to display when disabled */
@@ -22,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	label: null,
 	disabled: false,
+	nonEditable: false,
 	iconOn: 'radio_button_checked',
 	iconOff: 'radio_button_unchecked',
 	block: false,
@@ -48,10 +52,10 @@ function emitValue(): void {
 		type="button"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
-		:class="{ checked: isChecked, block }"
+		:class="{ checked: isChecked, block, 'non-editable': nonEditable }"
 		@click="emitValue"
 	>
-		<v-icon :name="icon" />
+		<VIcon :name="icon" />
 		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>
@@ -80,7 +84,7 @@ function emitValue(): void {
 	appearance: none;
 
 	.label:not(:empty) {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 
 		@include mixins.no-wrap;
 	}
@@ -92,12 +96,18 @@ function emitValue(): void {
 	&:disabled {
 		cursor: not-allowed;
 
-		.label {
-			color: var(--theme--foreground-subdued);
-		}
+		&:not(.non-editable) {
+			.label {
+				color: var(--theme--foreground-subdued);
+			}
 
-		.v-icon {
-			--v-icon-color: var(--theme--foreground-subdued);
+			.v-icon {
+				--v-icon-color: var(--theme--foreground-subdued);
+			}
+
+			&.checked {
+				border-color: var(--theme--form--field--input--border-color);
+			}
 		}
 	}
 
@@ -105,7 +115,7 @@ function emitValue(): void {
 		position: relative;
 		inline-size: 100%;
 		block-size: var(--theme--form--field--input--height);
-		padding: calc(14px - 2 * var(--theme--border-width));
+		padding: calc(0.8125rem - 2 * var(--theme--border-width));
 		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 
@@ -131,7 +141,8 @@ function emitValue(): void {
 		}
 	}
 
-	&:not(:disabled).checked {
+	&.checked:not(:disabled),
+	&.checked.non-editable {
 		.v-icon {
 			--v-icon-color: var(--v-radio-color, var(--theme--primary));
 		}

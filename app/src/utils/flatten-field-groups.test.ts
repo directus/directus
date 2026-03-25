@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { FieldNode } from '../../src/composables/use-field-tree';
 import { flattenFieldGroups } from '../../src/utils/flatten-field-groups';
 

@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import { Header as TableHeader } from '@/components/v-table/types';
-import { fetchAll } from '@/utils/fetch-all';
-import { translate } from '@/utils/translate-object-values';
-import { unexpectedError } from '@/utils/unexpected-error';
-import SearchInput from '@/views/private/components/search-input.vue';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import { Header as TableHeader } from '@/components/v-table/types';
+import VTable from '@/components/v-table/v-table.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { fetchAll } from '@/utils/fetch-all';
+import { translate } from '@/utils/translate-object-values';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
+import RenderDisplay from '@/views/private/components/render-display.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const { t } = useI18n();
 
@@ -150,41 +160,28 @@ function navigateToRole({ item }: { item: Role }) {
 </script>
 
 <template>
-	<private-view :title="$t('settings_roles')">
-		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="group" />
-			</v-button>
-		</template>
+	<PrivateView :title="$t('settings_roles')" icon="group">
+		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<search-input
+			<SearchInput
 				v-if="!loading"
 				v-model="search"
 				:autofocus="roles.length > 25"
 				:placeholder="$t('search_role')"
 				:show-filter="false"
+				small
 			/>
 
-			<v-button v-tooltip.bottom="$t('create_role')" rounded icon :to="addNewLink">
-				<v-icon name="add" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('create_role')" :to="addNewLink" icon="add" />
 		</template>
 
 		<template #navigation>
-			<settings-navigation />
-		</template>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_roles_collection')" class="page-description" />
-			</sidebar-detail>
+			<SettingsNavigation />
 		</template>
 
 		<div v-if="!search || filteredRoles.length > 0" class="roles">
-			<v-table
+			<VTable
 				v-model:headers="tableHeaders"
 				show-resize
 				:items="filteredRoles"
@@ -194,24 +191,24 @@ function navigateToRole({ item }: { item: Role }) {
 				@click:row="navigateToRole"
 			>
 				<template #[`item.icon`]="{ item }">
-					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
+					<VIcon class="icon" :name="item.icon" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :highlight="search" :class="{ public: item.public }" />
+					<VTextOverflow :text="item.name" class="name" :highlight="search" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
-					<value-null v-if="item.public" />
+					<ValueNull v-if="item.public" />
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<v-text-overflow :text="item.description" class="description" :highlight="search" />
+					<VTextOverflow :text="item.description" class="description" :highlight="search" />
 				</template>
 
 				<template #[`item.children`]="{ item }">
-					<value-null v-if="item.public || item.children.length === 0" />
-					<render-display
+					<ValueNull v-if="item.public || item.children.length === 0" />
+					<RenderDisplay
 						v-else
 						:value="item.children"
 						:display="tableHeaders[3]!.display"
@@ -220,19 +217,19 @@ function navigateToRole({ item }: { item: Role }) {
 						:collection="tableHeaders[3]!.collection"
 					/>
 				</template>
-			</v-table>
+			</VTable>
 		</div>
 
-		<v-info v-else icon="search" :title="$t('no_results')" center>
+		<VInfo v-else icon="search" :title="$t('no_results')" center>
 			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<v-button @click="search = null">{{ $t('clear_filters') }}</v-button>
+				<VButton @click="search = null">{{ $t('clear_filters') }}</VButton>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<router-view name="add" />
-	</private-view>
+		<RouterView name="add" />
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -245,7 +242,7 @@ function navigateToRole({ item }: { item: Role }) {
 
 .roles {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .system {

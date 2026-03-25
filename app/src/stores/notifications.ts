@@ -1,10 +1,10 @@
-import api from '@/api';
-import { Snackbar, SnackbarRaw } from '@/types/notifications';
 import { Notification } from '@directus/types';
 import { reverse, sortBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { useUserStore } from './user';
+import api from '@/api';
+import { Snackbar, SnackbarRaw } from '@/types/notifications';
 
 export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',
@@ -14,6 +14,7 @@ export const useNotificationsStore = defineStore({
 		previous: [] as Snackbar[],
 		notifications: [] as Notification[],
 		unread: 0,
+		overlayIsActive: false,
 	}),
 	actions: {
 		async hydrate() {
@@ -54,6 +55,9 @@ export const useNotificationsStore = defineStore({
 		},
 		setUnreadCount(count: number) {
 			this.unread = count < 0 ? 0 : count;
+		},
+		setOverlayIsActive(active: boolean) {
+			this.overlayIsActive = active;
 		},
 		add(notification: SnackbarRaw) {
 			const id = nanoid();

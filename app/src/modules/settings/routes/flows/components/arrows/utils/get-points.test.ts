@@ -1,7 +1,7 @@
-import { Vector2 } from '@/utils/vector2';
 import { describe, expect, it } from 'vitest';
 import { ATTACHMENT_OFFSET, GRID_SIZE } from '../../../constants';
 import { getPoints } from './get-points';
+import { Vector2 } from '@/utils/vector2';
 
 describe('getPoints', () => {
 	describe('basic functionality', () => {
@@ -12,8 +12,8 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset);
 
 			expect(result).toEqual({
-				x: 0, // (1 - 1) * 20 + 0
-				y: 0, // (1 - 1) * 20 + 0
+				x: 0, // (1 - 1) * 18 + 0
+				y: 0, // (1 - 1) * 18 + 0
 			});
 		});
 
@@ -24,8 +24,8 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset);
 
 			expect(result).toEqual({
-				x: 40, // (3 - 1) * 20 + 0
-				y: 60, // (4 - 1) * 20 + 0
+				x: 36, // (3 - 1) * 18 + 0
+				y: 54, // (4 - 1) * 18 + 0
 			});
 		});
 
@@ -36,8 +36,8 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset);
 
 			expect(result).toEqual({
-				x: 30, // (2 - 1) * 20 + 10
-				y: 35, // (2 - 1) * 20 + 15
+				x: 28, // (2 - 1) * 18 + 10
+				y: 33, // (2 - 1) * 18 + 15
 			});
 		});
 
@@ -48,8 +48,8 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset);
 
 			expect(result).toEqual({
-				x: 30, // (3 - 1) * 20 - 10
-				y: 35, // (3 - 1) * 20 - 5
+				x: 26, // (3 - 1) * 18 - 10
+				y: 31, // (3 - 1) * 18 - 5
 			});
 		});
 	});
@@ -63,10 +63,10 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset, to);
 
 			expect(result).toEqual({
-				x: 0, // (1 - 1) * 20 + 0
-				y: 0, // (1 - 1) * 20 + 0
-				toX: 40 + ATTACHMENT_OFFSET.x, // (3 - 1) * 20 + ATTACHMENT_OFFSET.x
-				toY: 20 + ATTACHMENT_OFFSET.y, // (2 - 1) * 20 + ATTACHMENT_OFFSET.y
+				x: 0, // (1 - 1) * 18 + 0
+				y: 0, // (1 - 1) * 18 + 0
+				toX: 36 + ATTACHMENT_OFFSET.x, // (3 - 1) * 18 + ATTACHMENT_OFFSET.x
+				toY: 18 + ATTACHMENT_OFFSET.y, // (2 - 1) * 18 + ATTACHMENT_OFFSET.y
 			});
 		});
 
@@ -78,10 +78,10 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset, to);
 
 			expect(result).toEqual({
-				x: 25, // (2 - 1) * 20 + 5
-				y: 30, // (2 - 1) * 20 + 10
-				toX: 60 + ATTACHMENT_OFFSET.x, // (4 - 1) * 20 + ATTACHMENT_OFFSET.x
-				toY: 40 + ATTACHMENT_OFFSET.y, // (3 - 1) * 20 + ATTACHMENT_OFFSET.y
+				x: 23, // (2 - 1) * 18 + 5
+				y: 28, // (2 - 1) * 18 + 10
+				toX: 54 + ATTACHMENT_OFFSET.x, // (4 - 1) * 18 + ATTACHMENT_OFFSET.x
+				toY: 36 + ATTACHMENT_OFFSET.y, // (3 - 1) * 18 + ATTACHMENT_OFFSET.y
 			});
 		});
 
@@ -93,10 +93,10 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset, to);
 
 			expect(result).toEqual({
-				x: 80, // (5 - 1) * 20 + 0
-				y: 80, // (5 - 1) * 20 + 0
-				toX: 0 + ATTACHMENT_OFFSET.x, // (1 - 1) * 20 + ATTACHMENT_OFFSET.x
-				toY: 0 + ATTACHMENT_OFFSET.y, // (1 - 1) * 20 + ATTACHMENT_OFFSET.y
+				x: 72, // (5 - 1) * 18 + 0
+				y: 72, // (5 - 1) * 18 + 0
+				toX: 0 + ATTACHMENT_OFFSET.x, // (1 - 1) * 18 + ATTACHMENT_OFFSET.x
+				toY: 0 + ATTACHMENT_OFFSET.y, // (1 - 1) * 18 + ATTACHMENT_OFFSET.y
 			});
 		});
 
@@ -108,10 +108,10 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset, to);
 
 			expect(result).toEqual({
-				x: 100, // (1 - 1) * 20 + 100
-				y: 200, // (1 - 1) * 20 + 200
-				toX: 20 + ATTACHMENT_OFFSET.x, // (2 - 1) * 20 + ATTACHMENT_OFFSET.x (no offset applied)
-				toY: 20 + ATTACHMENT_OFFSET.y, // (2 - 1) * 20 + ATTACHMENT_OFFSET.y (no offset applied)
+				x: 100, // (1 - 1) * 18 + 100
+				y: 200, // (1 - 1) * 18 + 200
+				toX: 18 + ATTACHMENT_OFFSET.x, // (2 - 1) * 18 + ATTACHMENT_OFFSET.x (no offset applied)
+				toY: 18 + ATTACHMENT_OFFSET.y, // (2 - 1) * 18 + ATTACHMENT_OFFSET.y (no offset applied)
 			});
 		});
 	});
@@ -124,8 +124,8 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset);
 
 			expect(result).toEqual({
-				x: 1980, // (100 - 1) * 20
-				y: 3980, // (200 - 1) * 20
+				x: 1782, // (100 - 1) * 18
+				y: 3582, // (200 - 1) * 18
 			});
 		});
 
@@ -136,8 +136,8 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset);
 
 			expect(result).toEqual({
-				x: 20, // (2 - 1) * 20
-				y: 40, // (3 - 1) * 20
+				x: 18, // (2 - 1) * 18
+				y: 36, // (3 - 1) * 18
 			});
 		});
 
@@ -151,8 +151,8 @@ describe('getPoints', () => {
 			expect(result).toEqual({
 				x: 0,
 				y: 0,
-				toX: 20 + ATTACHMENT_OFFSET.x,
-				toY: 20 + ATTACHMENT_OFFSET.y,
+				toX: 18 + ATTACHMENT_OFFSET.x,
+				toY: 18 + ATTACHMENT_OFFSET.y,
 			});
 		});
 
@@ -163,19 +163,19 @@ describe('getPoints', () => {
 			const result = getPoints(panel, offset);
 
 			expect(result).toEqual({
-				x: 21.5, // (2 - 1) * 20 + 1.5
-				y: 22.7, // (2 - 1) * 20 + 2.7
+				x: 19.5, // (2 - 1) * 18 + 1.5
+				y: 20.7, // (2 - 1) * 18 + 2.7
 			});
 		});
 	});
 
 	describe('constants verification', () => {
 		it('should use correct GRID_SIZE constant', () => {
-			expect(GRID_SIZE).toBe(20);
+			expect(GRID_SIZE).toBe(18);
 		});
 
 		it('should use correct ATTACHMENT_OFFSET constant', () => {
-			expect(ATTACHMENT_OFFSET).toEqual(new Vector2(0, 60));
+			expect(ATTACHMENT_OFFSET).toEqual(new Vector2(0, 54));
 		});
 
 		it('should calculate with expected GRID_SIZE', () => {
@@ -184,9 +184,9 @@ describe('getPoints', () => {
 
 			const result = getPoints(panel, offset);
 
-			// Verify calculation matches expected GRID_SIZE of 20
-			expect(result.x).toBe((panel.x - 1) * 20);
-			expect(result.y).toBe((panel.y - 1) * 20);
+			// Verify calculation matches expected GRID_SIZE of 18
+			expect(result.x).toBe((panel.x - 1) * 18);
+			expect(result.y).toBe((panel.y - 1) * 18);
 		});
 
 		it('should calculate target with expected ATTACHMENT_OFFSET', () => {

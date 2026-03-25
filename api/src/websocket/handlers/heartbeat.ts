@@ -4,7 +4,7 @@ import type { ActionHandler } from '@directus/types';
 import { WebSocketMessage } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import emitter from '../../emitter.js';
-import { WebSocketController, getWebSocketController } from '../controllers/index.js';
+import { getWebSocketController, WebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
 

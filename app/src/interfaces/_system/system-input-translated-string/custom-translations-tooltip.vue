@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { Ref, ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import type { Translation } from '@/stores/translations';
 import { fetchAll } from '@/utils/fetch-all';
-import { Ref, ref } from 'vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 interface Props {
 	translationKey: string;
@@ -43,9 +49,9 @@ const clicked = (toggleTooltip: () => void) => {
 
 <template>
 	<div class="custom-translations-display">
-		<v-menu class="menu" show-arrow>
+		<VMenu class="menu" show-arrow>
 			<template #activator="{ toggle, deactivate, active }">
-				<v-icon
+				<VIcon
 					v-tooltip.bottom="translations && translations.length === 0 && $t('translations')"
 					:small="false"
 					class="icon"
@@ -54,39 +60,39 @@ const clicked = (toggleTooltip: () => void) => {
 					clickable
 					@click.stop="clicked(toggle)"
 					@blur="deactivate"
-				></v-icon>
+				></VIcon>
 			</template>
 
-			<v-list class="translations">
-				<v-list-item v-if="translations.length === 0">
-					<v-list-item-content>
+			<VList class="translations">
+				<VListItem v-if="translations.length === 0">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
 								{{ $t('loading') }}
 							</div>
 						</div>
-					</v-list-item-content>
-				</v-list-item>
-				<v-list-item v-for="item in translations" v-else :key="item.language">
-					<v-list-item-content>
+					</VListItemContent>
+				</VListItem>
+				<VListItem v-for="item in translations" v-else :key="item.language">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
-								<v-icon name="translate" small />
+								<VIcon name="translate" small />
 								{{ item.language }}
 							</div>
 						</div>
 						<ValueNull v-if="!item.value" />
 						<div v-else class="translation-item-text">{{ item.value }}</div>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .v-list {
-	inline-size: 300px;
+	inline-size: 16.875rem;
 }
 
 .custom-translations-display {
@@ -106,12 +112,12 @@ const clicked = (toggleTooltip: () => void) => {
 }
 
 .translation-display-text {
-	margin-inline-end: 4px;
-	padding: 2px 0;
+	margin-inline-end: 0.25rem;
+	padding: 0.125rem 0;
 }
 
 .translation-item-text {
-	padding-block-start: 2px;
+	padding-block-start: 0.125rem;
 }
 
 .translation-display-text,
@@ -123,35 +129,35 @@ const clicked = (toggleTooltip: () => void) => {
 
 .header {
 	display: flex;
-	gap: 20px;
+	gap: 1.125rem;
 	align-items: center;
 	justify-content: space-between;
 	color: var(--theme--form--field--input--foreground-subdued);
-	font-size: 12px;
+	font-size: 0.6875rem;
 
 	.lang {
 		font-weight: 600;
 	}
 
 	.v-icon {
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 	}
 
 	.v-progress-linear {
 		flex: 1;
 		inline-size: unset;
-		max-inline-size: 100px;
-		border-radius: 4px;
+		max-inline-size: 5.625rem;
+		border-radius: 0.25rem;
 	}
 }
 
 .v-list-item-content {
-	padding-block: 4px 2px;
+	padding-block: 0.25rem 0.125rem;
 }
 
 .v-list-item:not(:first-child) {
 	.header {
-		padding-block-start: 8px;
+		padding-block-start: 0.4375rem;
 		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }

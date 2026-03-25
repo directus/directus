@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { MODULE_BAR_DEFAULT } from '@/constants';
-import { useExtensions } from '@/extensions';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import { translate } from '@/utils/translate-object-values';
 import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
 import { assign } from 'lodash';
 import { nanoid } from 'nanoid';
 import { computed, ref } from 'vue';
 import Draggable from 'vuedraggable';
+import VButton from '@/components/v-button.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import { MODULE_BAR_DEFAULT } from '@/constants';
+import { useAllModules } from '@/extensions';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import { translate } from '@/utils/translate-object-values';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 type PreviewExtra = {
 	to: string;
@@ -54,7 +60,7 @@ const linkFields: DeepPartial<Field>[] = [
 
 const props = withDefaults(
 	defineProps<{
-		value: Settings['module_bar'];
+		value?: Settings['module_bar'];
 	}>(),
 	{
 		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
@@ -69,10 +75,10 @@ const editing = ref<string | null>();
 const values = ref<SettingsModuleBarLink | null>();
 const initialValues = ref<SettingsModuleBarLink | null>();
 
-const { modules: registeredModules } = useExtensions();
+const allModules = useAllModules();
 
 const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
-	return registeredModules.value
+	return allModules.value
 		.filter((module) => module.hidden !== true)
 		.map(
 			(module): SettingsModuleBarModule => ({
@@ -113,30 +119,16 @@ const isSaveDisabled = computed(() => {
 });
 
 function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
-	return value
-		.filter((part) => {
-			if (part.type === 'link') return true;
-			return !!registeredModules.value.find((module) => module.id === part.id);
-		})
-		.map((part) => {
-			if (part.type === 'link') {
-				return {
-					...part,
-					to: part.url,
-					icon: part.icon,
-					name: translate(part.name),
-				};
-			}
+	return value.flatMap((part): PreviewValue[] => {
+		if (part.type === 'link') {
+			return [{ ...part, to: part.url, icon: part.icon, name: translate(part.name) }];
+		}
 
-			const module = registeredModules.value.find((module) => module.id === part.id)!;
+		const module = allModules.value.find((module) => module.id === part.id);
+		if (!module) return [];
 
-			return {
-				...part,
-				to: `/${module.id}`,
-				name: module.name,
-				icon: module.icon,
-			};
-		});
+		return [{ ...part, to: `/${module.id}`, name: module.name, icon: module.icon }];
+	});
 }
 
 function previewToValue(preview: PreviewValue[]): Settings['module_bar'] {
@@ -209,7 +201,7 @@ function remove(id: string) {
 
 <template>
 	<div class="system-modules">
-		<draggable
+		<Draggable
 			v-model="valuesWithData"
 			tag="v-list"
 			class="list"
@@ -220,34 +212,34 @@ function remove(id: string) {
 			v-bind="{ 'force-fallback': true }"
 		>
 			<template #item="{ element }">
-				<v-list-item
+				<VListItem
 					block
 					:class="{ enabled: element.enabled }"
 					:clickable="element.type === 'link'"
 					@click="element.type === 'link' ? edit(element.id) : undefined"
 				>
-					<v-icon class="drag-handle" name="drag_handle" />
-					<v-icon class="icon" :name="element.icon" />
+					<VIcon class="drag-handle" name="drag_handle" />
+					<VIcon class="icon" :name="element.icon" />
 					<div class="info">
 						<div class="name">{{ element.name }}</div>
 						<div class="to">{{ element.to }}</div>
 					</div>
 					<div class="spacer" />
-					<v-icon v-if="element.locked === true" name="lock" />
-					<v-icon v-else-if="element.type === 'link'" name="clear" clickable @click.stop="remove(element.id)" />
-					<v-icon
+					<VIcon v-if="element.locked === true" name="lock" />
+					<VIcon v-else-if="element.type === 'link'" name="clear" clickable @click.stop="remove(element.id)" />
+					<VIcon
 						v-else
 						:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"
 						clickable
 						@click.stop="updateItem(element, { enabled: !element.enabled })"
 					/>
-				</v-list-item>
+				</VListItem>
 			</template>
-		</draggable>
+		</Draggable>
 
-		<v-button @click="edit('+')">{{ $t('add_link') }}</v-button>
+		<VButton @click="edit('+')">{{ $t('add_link') }}</VButton>
 
-		<v-drawer
+		<VDrawer
 			:title="$t('custom_link')"
 			:model-value="!!editing"
 			icon="link"
@@ -256,21 +248,24 @@ function remove(id: string) {
 			@apply="save"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('save')"
+					:disabled="isSaveDisabled"
+					icon="check"
+					@click="save"
+				/>
 			</template>
 
 			<div class="drawer-content">
-				<v-form v-model="values" :initial-values="initialValues" :fields="linkFields" />
+				<VForm v-model="values" :initial-values="initialValues" :fields="linkFields" />
 			</div>
-		</v-drawer>
+		</VDrawer>
 	</div>
 </template>
 
 <style scoped lang="scss">
 .icon {
-	margin: 0 12px;
+	margin: 0 0.6875rem;
 }
 
 .system-modules {
@@ -295,7 +290,7 @@ function remove(id: string) {
 }
 
 .list {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	padding: 0;
 }
 </style>

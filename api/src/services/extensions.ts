@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
-import type { ApiOutput, BundleExtension, ExtensionSettings, ExtensionManager } from '@directus/types';
 import { describe, type DescribeOptions } from '@directus/extensions-registry';
+import type { ApiOutput, BundleExtension, ExtensionManager, ExtensionSettings } from '@directus/types';
 import type { AbstractServiceOptions, Accountability, DeepPartial, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -143,6 +143,9 @@ export class ExtensionsService {
 	}
 
 	async readAll() {
+		// wait for extensions to be reloaded
+		await this.extensionsManager.isReloading();
+
 		const settings = await this.extensionsItemService.readByQuery({ limit: -1 });
 
 		const regular = settings.filter(({ bundle }) => bundle === null);
@@ -182,6 +185,8 @@ export class ExtensionsService {
 	}
 
 	async readOne(id: string): Promise<ApiOutput> {
+		// wait for extensions to be reloaded
+		await this.extensionsManager.isReloading();
 		const meta = await this.extensionsItemService.readOne(id);
 		const schema = this.extensionsManager.getExtension(meta.source, meta.folder) ?? null;
 

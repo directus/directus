@@ -12,23 +12,28 @@ This directory contains mock implementations for commonly used modules in servic
 - **[cache.ts](#cachets)** - Cache system mocks
 - **[schema.ts](#schemats)** - Schema inspector mocks
 - **[emitter.ts](#emitterts)** - Event emitter mocks
+- **[env.ts](#envts)** - env mocks
+- **[storage.ts](#storagets)** - Storage driver and manager mocks
 - **[items-service.ts](#items-servicets)** - ItemsService mocks
 - **[fields-service.ts](#fields-servicets)** - FieldsService mocks
+- **[files-service.ts](#files-servicets)** - FilesService mocks
+- **[folders-service.ts](#folders-servicets)** - FoldersService mocks
 - **[test-helpers.ts](#test-helpersts)** - Test data factory functions
+- **[controllers.ts](#controllersts)** - Controller/router testing helpers
 
 ## Quick Start
 
 ```typescript
-import { createMockKnex, resetKnexMocks } from '../__mocks__/knex.js';
+import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 
 // Set up mocks
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
 });
 
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
@@ -203,13 +208,13 @@ Creates a standard database module mock for service tests.
 ```typescript
 // Standard PostgreSQL mock
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
 });
 
 // MySQL-specific mock
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase('mysql');
 });
 
@@ -229,7 +234,7 @@ transaction wrapper).
 
 ```typescript
 vi.mock('../utils/transaction.js', async () => {
-	const { mockTransaction } = await import('../__mocks__/database.js');
+	const { mockTransaction } = await import('../test-utils/database.js');
 	return mockTransaction();
 });
 
@@ -269,13 +274,13 @@ mocks for vi.mock() declarations and spies for testing cache behavior.
 ```typescript
 // Standard usage for vi.mock()
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
 // Testing cache clearing with spies
 import { getCache } from '../cache.js';
-import { mockCache } from '../__mocks__/cache.js';
+import { mockCache } from '../test-utils/cache.js';
 
 test('should clear cache after update', async () => {
 	const { spies } = mockCache();
@@ -305,7 +310,7 @@ Creates a standard schema inspector mock with tableInfo, columnInfo, primary, fo
 ```typescript
 // Standard usage
 vi.mock('@directus/schema', async () => {
-	const { mockSchema } = await import('../__mocks__/schema.js');
+	const { mockSchema } = await import('../test-utils/schema.js');
 	return mockSchema();
 });
 
@@ -340,7 +345,7 @@ Creates a standard emitter mock with emitAction, emitFilter, emitInit, and event
 ```typescript
 // Standard usage
 vi.mock('../emitter.js', async () => {
-	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	const { mockEmitter } = await import('../test-utils/emitter.js');
 	return mockEmitter();
 });
 
@@ -357,6 +362,231 @@ expect(emitter.emitAction).toHaveBeenCalledWith(
 	expect.objectContaining({ collection: 'test_collection' }),
 	expect.any(Object),
 );
+```
+
+---
+
+### env.ts
+
+Provides environment variable mocking utilities for the `@directus/env` package.
+
+#### `mockEnv(overrides?)`
+
+Creates a standard environment mock with sensible test defaults for commonly used environment variables.
+
+**Parameters:**
+
+- `overrides` (optional): Object containing environment variable overrides to merge with defaults
+
+**Returns:** Mock module object with `useEnv` function
+
+**Default environment variables:**
+
+```
+EXTENSIONS_PATH: './extensions',
+STORAGE_LOCATIONS: 'local',
+EMAIL_TEMPLATES_PATH: './templates'
+```
+
+**Example:**
+
+```typescript
+// Dynamically changing env values during tests
+import { useEnv } from '@directus/env';
+const { resetEnvMock } = await import('../test-utils/env.js');
+
+// Standard usage with defaults
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv();
+});
+
+// With custom default values
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv({
+		STORAGE_LOCATIONS: 'custom-storage',
+		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
+	});
+});
+
+beforeEach(() => {
+	resetEnvMock();
+});
+
+it('should use custom env value', async () => {
+	// Override the mock return value
+	vi.mocked(useEnv).mockReturnValue({
+		FILES_DELETE_ORIGINAL_ON_MOVE: 'true',
+	});
+
+	// Re-import the module to pick up the new mock
+	// Required if useEnv is called top level
+	const { FilesService } = await import('./files.js');
+
+	// Create new service instance
+	const service = new FilesService({
+		knex: db,
+		schema: { collections: {}, relations: [] },
+	});
+
+	// ... rest of test
+});
+```
+
+**Important Notes:**
+
+- `vi.resetModules()` in `beforeEach` is essential for per-test overrides to work
+- Must re-import modules after changing mock values using dynamic `import()`
+
+---
+
+### storage.ts
+
+Provides storage driver and storage manager mocking utilities for the `@directus/storage` package.
+
+#### `createMockDriver()`
+
+Creates a mock Driver with common storage operations. All methods return sensible defaults and can be customized
+per-test using `vi.mocked()`.
+
+**Returns:** Mock Driver instance with the following methods:
+
+- `read` → PassThrough stream
+- `write` → resolves to undefined
+- `stat` → resolves to `{ size: 0, modified: new Date() }`
+- `exists` → resolves to false
+- `move` → resolves to undefined
+- `delete` → resolves to undefined
+- `copy` → resolves to undefined
+- `list` → async generator (yields no files by default)
+
+**Example:**
+
+```typescript
+import { createMockDriver } from '../test-utils/storage.js';
+
+// Create driver with default behavior
+const mockDriver = createMockDriver();
+
+// Customize specific methods for your test using vi.mocked()
+vi.mocked(mockDriver.stat).mockResolvedValue({ size: 1024, modified: new Date() });
+vi.mocked(mockDriver.exists).mockResolvedValue(true);
+vi.mocked(mockDriver.list).mockImplementation(async function* () {
+	yield 'file1.jpg';
+	yield 'file2.jpg';
+});
+```
+
+#### `createMockStorage(driver?)`
+
+Creates a mock StorageManager with a location method. By default, creates and returns a standard mock driver for any
+location.
+
+**Parameters:**
+
+- `driver` (optional): Driver to return from `location()`. If not provided, creates a default mock driver
+
+**Returns:** Mock StorageManager instance with the following methods:
+
+- `location(name: string)` → returns the provided driver or a default mock driver
+- `registerDriver` → vi.fn()
+- `registerLocation` → vi.fn()
+
+**Example:**
+
+```typescript
+import { createMockDriver, createMockStorage } from '../test-utils/storage.js';
+
+// Basic usage - auto-creates a default driver
+const mockStorage = createMockStorage();
+
+// With explicit driver instance for per-test customization
+const mockDriver = createMockDriver();
+const mockStorage = createMockStorage(mockDriver);
+
+// Now you can modify mockDriver behavior in individual tests using vi.mocked()
+vi.mocked(mockDriver.exists).mockResolvedValue(true);
+```
+
+#### `mockStorage(driver?)`
+
+Creates a complete storage module mock for use with `vi.mock('../storage/index.js')`. Returns both `getStorage` and
+`_cache` exports.
+
+**Parameters:**
+
+- `driver` (optional): Custom driver to use
+
+**Returns:** Mock module object for `vi.mock()`
+
+**Example:**
+
+```typescript
+// Basic setup - all tests use same driver behavior
+import { getStorage } from '../storage/index.js';
+
+vi.mock('../storage/index.js');
+
+beforeEach(() => {
+	const mockStorage = createMockStorage();
+	vi.mocked(getStorage).mockResolvedValue(mockStorage);
+});
+```
+
+#### Per-Test Driver Customization Pattern
+
+The recommended pattern for modifying driver behavior in individual tests:
+
+**Example:**
+
+```typescript
+import { getStorage } from '../storage/index.js';
+import type { Driver, StorageManager } from '@directus/storage';
+import { createMockDriver, createMockStorage } from '../test-utils/storage.js';
+
+vi.mock('../storage/index.js');
+
+describe('updateMany', () => {
+	let service: FilesService;
+	let mockDriver: Driver;
+	let mockStorage: StorageManager;
+
+	beforeEach(() => {
+		service = new FilesService({
+			knex: db,
+			schema: { collections: {}, relations: [] },
+		});
+
+		// Create default mock
+		mockDriver = createMockDriver();
+		mockStorage = createMockStorage(mockDriver);
+		vi.mocked(getStorage).mockResolvedValue(mockStorage);
+	});
+
+	it('should move file when filename changes', async () => {
+		// Customize driver behavior for this specific test using vi.mocked()
+		vi.mocked(mockDriver.list).mockImplementation(async function* () {
+			yield 'old-file.jpg';
+		});
+
+		await service.updateMany([1], { filename_disk: 'new-file.jpg' });
+
+		expect(mockDriver.move).toHaveBeenCalledWith('old-file.jpg', 'new-file.jpg');
+	});
+
+	it('should delete original when remote exists', async () => {
+		// Different behavior for this test using vi.mocked()
+		vi.mocked(mockDriver.exists).mockResolvedValue(true);
+		vi.mocked(mockDriver.list).mockImplementation(async function* () {
+			yield 'old-file.jpg';
+		});
+
+		await service.updateMany([1], { filename_disk: 'new-file.jpg' });
+
+		expect(mockDriver.delete).toHaveBeenCalledWith('old-file.jpg');
+	});
+});
 ```
 
 ---
@@ -390,7 +620,7 @@ Creates a standard ItemsService mock with all CRUD methods pre-configured with s
 ```typescript
 // Standard usage
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
@@ -423,6 +653,8 @@ Creates a standard FieldsService mock with common methods pre-configured.
 
 **Mocked methods:**
 
+In addition to the base `ItemsService` method the following `FieldsService` specific methods are available:
+
 - `addColumnToTable` → no-op function
 - `addColumnIndex` → resolves to undefined
 - `deleteField` → resolves to undefined
@@ -434,7 +666,7 @@ Creates a standard FieldsService mock with common methods pre-configured.
 ```typescript
 // Standard usage in CollectionsService tests
 vi.mock('./fields.js', async () => {
-  const { mockFieldsService } = await import('../__mocks__/fields-service.js');
+  const { mockFieldsService } = await import('../test-utils/services/fields-service.js');
   return mockFieldsService();
 });
 
@@ -450,48 +682,227 @@ expect(addColumnIndexSpy).toHaveBeenCalled();
 
 ---
 
+### files-service.ts
+
+Provides FilesService mocking utilities for testing services that depend on FilesService.
+
+#### `mockFilesService()`
+
+Creates a standard FilesService mock with common methods pre-configured.
+
+**Returns:** Mock module object with `FilesService` class
+
+**Mocked methods:**
+
+In addition to the base `ItemsService` method the following `FilesService` specific methods are available:
+
+- `uploadOne` → `1`
+- `importOne` → `1`
+
+**Example:**
+
+```typescript
+// Standard usage in service tests
+vi.mock('./files.js', async () => {
+	const { mockFilesService } = await import('../test-utils/services/files-service.js');
+	return mockFilesService();
+});
+
+// Override specific methods during tests
+import { FilesService } from './files.js';
+
+const uploadOneSpy = vi.spyOn(FilesService.prototype, 'uploadOne').mockResolvedValue(`1`);
+```
+
+---
+
+### folders-service.ts
+
+Provides FoldersService mocking utilities for testing services that depend on FoldersService.
+
+#### `mockFilesService()`
+
+Creates a standard FoldersService mock with common methods pre-configured.
+
+**Returns:** Mock module object with `FoldersService` class
+
+**Mocked methods:**
+
+In addition to the base `ItemsService` method the following `FoldersService` specific methods are available:
+
+- `buildTree` → return `1` => `root` map
+
+**Example:**
+
+```typescript
+// Standard usage in service tests
+vi.mock('./folders.js', async () => {
+	const { mockFoldersService } = await import('../test-utils/services/folders-service.js');
+	return mockFilesService();
+});
+
+// Override specific methods during tests
+import { FoldersService } from './folders.js';
+
+const buildTreeSpy = vi.spyOn(FoldersService.prototype, 'buildTree').mockResolvedValue(new Map('1', 'root-alt'));
+```
+
+---
+
+### controllers.ts
+
+Provides helpers for extracting route handlers from Express routers and creating mock Express request/response objects
+for controller tests.
+
+#### `getRouteHandler(router, method, path)`
+
+Extracts the middleware/handler stack for a specific route from an Express router.
+
+**Parameters:**
+
+- `router`: The Express `Router` instance
+- `method`: HTTP method (`'GET'`, `'POST'`, `'PATCH'`, `'DELETE'`, etc.)
+- `path`: Route path (e.g. `'/'`, `'/:id'`)
+
+**Returns:** Array of `{ handle: (...args) => any }` layers for the matched route
+
+**Throws:** If no matching route is found
+
+**Example:**
+
+```typescript
+import { default as router } from './tus.js';
+import { getRouteHandler } from '../test-utils/controllers.js';
+
+const [checkAccess, handler] = getRouteHandler(router, 'POST', '/');
+await checkAccess?.handle(req, res, next);
+```
+
+#### `createMockRequest(overrides?)`
+
+Creates a mock Express Request pre-populated with common Directus properties (`accountability`, `schema`,
+`sanitizedQuery`, etc.).
+
+**Parameters:**
+
+- `overrides` (optional): Properties to merge into the mock request
+
+**Returns:** Mock `Request` object
+
+**Example:**
+
+```typescript
+import { createMockRequest } from '../test-utils/controllers.js';
+
+// Minimal request
+const req = createMockRequest({ schema });
+
+// With accountability and custom header
+const req = createMockRequest({
+	method: 'POST',
+	accountability,
+	schema,
+	header: vi.fn().mockReturnValue('some-value'),
+});
+```
+
+#### `createMockResponse(overrides?)`
+
+Creates a mock Express Response with chainable methods (`status`, `json`, `send`, `set`, `end`).
+
+**Parameters:**
+
+- `overrides` (optional): Properties to merge into the mock response
+
+**Returns:** Mock `Response` object
+
+**Example:**
+
+```typescript
+import { createMockResponse } from '../test-utils/controllers.js';
+
+const res = createMockResponse();
+```
+
+#### Full Controller Test Example
+
+```typescript
+import { SchemaBuilder } from '@directus/schema-builder';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
+import { default as router } from './controller.js';
+
+const schema = new SchemaBuilder()
+	.collection('collection', (c) => {
+		c.field('id').integer().primary();
+		c.field('title').string();
+	})
+	.build();
+
+describe('controller', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	test('validates access on POST', async () => {
+		const req = createMockRequest({ method: 'POST', accountability, schema });
+		const res = createMockResponse();
+		const next = vi.fn();
+
+		const [firstHandler] = getRouteHandler(router, 'POST', '/');
+		await firstHandler?.handle(req, res, next);
+
+		expect(next).toHaveBeenCalled();
+	});
+});
+```
+
+---
+
 ## Common Patterns
 
 ### Full Service Test Setup
 
 ```typescript
-import { createMockKnex, resetKnexMocks } from '../__mocks__/knex.js';
+import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { YourService } from './your-service.js';
+import { getStorage } from '../storage/index.js';
+import { createMockStorage } from '../test-utils/storage.js';
 
-// Mock all dependencies (before imports)
+// Mock all dependencies
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../test-utils/database.js');
 	return mockDatabase();
 });
 
 vi.mock('@directus/schema', async () => {
-	const { mockSchema } = await import('../__mocks__/schema.js');
+	const { mockSchema } = await import('../test-utils/schema.js');
 	return mockSchema();
 });
 
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
 vi.mock('../emitter.js', async () => {
-	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	const { mockEmitter } = await import('../test-utils/emitter.js');
 	return mockEmitter();
 });
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
+vi.mock('../storage/index.js');
+
 vi.mock('../utils/transaction.js', async () => {
-	const { mockTransaction } = await import('../__mocks__/database.js');
+	const { mockTransaction } = await import('../test-utils/database.js');
 	return mockTransaction();
 });
-
-// Import after mocks
-import { YourService } from './your-service.js';
 
 // Define test schema
 const schema = new SchemaBuilder()
@@ -503,6 +914,12 @@ const schema = new SchemaBuilder()
 
 describe('Integration Tests', () => {
 	const { db, tracker, mockSchemaBuilder } = createMockKnex();
+
+	beforeEach(() => {
+		// Set up storage mock if service uses storage
+		const mockStorage = createMockStorage();
+		vi.mocked(getStorage).mockResolvedValue(mockStorage);
+	});
 
 	afterEach(() => {
 		resetKnexMocks(tracker, mockSchemaBuilder);
@@ -525,7 +942,7 @@ describe('Integration Tests', () => {
 ### Testing Schema Operations
 
 ```typescript
-import { mockCreateTable, mockAlterTable, createMockTableBuilder } from '../__mocks__/knex.js';
+import { mockCreateTable, mockAlterTable, createMockTableBuilder } from '../test-utils/knex.js';
 
 test('should create table with correct schema', async () => {
 	const { db, mockSchemaBuilder } = createMockKnex();
@@ -552,7 +969,7 @@ test('should alter table to add column', async () => {
 
 ```typescript
 import { getCache } from '../cache.js';
-import { mockCache } from '../__mocks__/cache.js';
+import { mockCache } from '../test-utils/cache.js';
 
 test('should clear cache after update', async () => {
 	const { spies } = mockCache();
@@ -562,6 +979,71 @@ test('should clear cache after update', async () => {
 	await service.updateOne('1', { name: 'Updated' });
 
 	expect(spies.clearSpy).toHaveBeenCalled();
+});
+```
+
+### Testing with Storage Operations
+
+```typescript
+import { getStorage } from '../storage/index.js';
+import type { Driver, StorageManager } from '@directus/storage';
+import { createMockDriver, createMockStorage } from '../test-utils/storage.js';
+
+vi.mock('../storage/index.js');
+
+describe('FilesService', () => {
+	let mockDriver: Driver;
+	let mockStorage: StorageManager;
+
+	beforeEach(() => {
+		mockDriver = createMockDriver();
+		mockStorage = createMockStorage(mockDriver);
+		vi.mocked(getStorage).mockResolvedValue(mockStorage);
+	});
+
+	test('should read file from storage', async () => {
+		const mockStream = new PassThrough();
+		vi.mocked(mockDriver.read).mockResolvedValue(mockStream);
+
+		const service = new FilesService({ knex: db, schema });
+		const stream = await service.getFileStream('test.jpg');
+
+		expect(mockDriver.read).toHaveBeenCalledWith('test.jpg');
+		expect(stream).toBe(mockStream);
+	});
+
+	test('should move file when renaming', async () => {
+		// Customize list to return the file we want to move
+		vi.mocked(mockDriver.list).mockImplementation(async function* () {
+			yield 'old-name.jpg';
+		});
+
+		const service = new FilesService({ knex: db, schema });
+		await service.renameFile('old-name.jpg', 'new-name.jpg');
+
+		expect(mockDriver.move).toHaveBeenCalledWith('old-name.jpg', 'new-name.jpg');
+	});
+
+	test('should check file existence before writing', async () => {
+		vi.mocked(mockDriver.exists).mockResolvedValue(false);
+
+		const service = new FilesService({ knex: db, schema });
+		const canWrite = await service.canWriteFile('new-file.jpg');
+
+		expect(mockDriver.exists).toHaveBeenCalledWith('new-file.jpg');
+		expect(canWrite).toBe(true);
+	});
+
+	test('should get file stats', async () => {
+		const mockStats = { size: 2048, modified: new Date('2024-01-01') };
+		vi.mocked(mockDriver.stat).mockResolvedValue(mockStats);
+
+		const service = new FilesService({ knex: db, schema });
+		const stats = await service.getFileStats('test.jpg');
+
+		expect(mockDriver.stat).toHaveBeenCalledWith('test.jpg');
+		expect(stats.size).toBe(2048);
+	});
 });
 ```
 
@@ -604,7 +1086,7 @@ test('should read column info', async () => {
 ### Testing with System Collection Mocks
 
 ```typescript
-import { setupSystemCollectionMocks } from '../__mocks__/knex.js';
+import { setupSystemCollectionMocks } from '../test-utils/knex.js';
 
 describe('Service Tests', () => {
 	const { db, tracker, mockSchemaBuilder } = createMockKnex();
@@ -629,7 +1111,17 @@ describe('Service Tests', () => {
 ### Mocking Additional Dependencies
 
 ```typescript
-// Mock environment variables
+// Mock environment variables (using utility)
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../test-utils/env.js');
+	return mockEnv({
+		CACHE_SCHEMA: true,
+		DB_CLIENT: 'postgres',
+		STORAGE_LOCATIONS: 'local',
+	});
+});
+
+// Or inline (for quick tests)
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		CACHE_SCHEMA: true,
@@ -666,6 +1158,8 @@ See these files for complete examples:
 
 - [collections.test.ts](../services/collections.test.ts) - Full service test with schema operations
 - [fields.test.ts](../services/fields.test.ts) - Complex service test with field management
+- [files.test.ts](../services/files.test.ts) - Storage driver mocking and per-test customization
+- [tus.test.ts](../controllers/tus.test.ts) - Controller test with route handler extraction and access validation
 
 ---
 
@@ -678,7 +1172,7 @@ Always declare `vi.mock()` calls **before** importing the modules they mock:
 ```typescript
 // ✅ Correct - mocks first
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 
@@ -688,7 +1182,7 @@ import { YourService } from './your-service.js';
 import { YourService } from './your-service.js';
 
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../test-utils/cache.js');
 	return mockCache();
 });
 ```

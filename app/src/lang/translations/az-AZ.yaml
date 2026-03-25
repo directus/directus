@@ -132,7 +132,6 @@ create_role: Rol yarat
 create_user: İstifadəçi yarat
 message: Mesaj
 delete_panel: Panel sil
-create_webhook: Webhook yarat
 create_custom_translation: Tərcümə yarat
 edit_custom_translation: Tərcüməni tənzimlə
 no_custom_translations: Tərcümə olmasın
@@ -223,6 +222,12 @@ fields:
   directus_policies:
     name:
 shares: Paylaşımlar
+ai:
+  unknown: Naməlum
+  items: məlumat
+ai_tools:
+  items: məlumat
+  operations: Əməliyyatlar
 revisions: Dəyişikliklər
 no_revisions: Daha öncə dəyişiklik edilməyib
 table: Cədvəl
@@ -241,10 +246,15 @@ displays:
 layouts:
   tabular:
     tabular: Cədvəl
+triggers:
+  webhook:
+    method: Metod
 operations:
   log:
     message: Mesaj
   notification:
     message: Mesaj
     subject: Mövzü
+  request:
+    method: Metod
 standard: Standart

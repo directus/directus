@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import api from '@/api';
-import { useCollectionPermissions } from '@/composables/use-permissions';
-import { notify } from '@/utils/notify';
-import { readableMimeType } from '@/utils/readable-mime-type';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ImportErrorDialog from './import-error-dialog.vue';
+import SidebarDetail from './sidebar-detail.vue';
+import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import VRemove from '@/components/v-remove.vue';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import type { APIError } from '@/types/error';
+import { notify } from '@/utils/notify';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
 	collection: string;
@@ -103,7 +109,7 @@ function useUpload() {
 </script>
 
 <template>
-	<sidebar-detail icon="publish" :title="$t('label_import')">
+	<SidebarDetail id="import" icon="publish" :title="$t('label_import')">
 		<div class="fields">
 			<template v-if="createAllowed">
 				<div class="field full">
@@ -112,15 +118,15 @@ function useUpload() {
 							<span>{{ importing ? $t('import_data_indeterminate') : $t('upload_file_indeterminate') }}</span>
 							<span v-if="!importing">{{ progress }}%</span>
 						</div>
-						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
+						<VProgressLinear :indeterminate="importing" :value="progress" rounded />
 					</div>
 					<template v-else>
 						<p class="type-label">{{ $t('label_import') }}</p>
-						<v-input clickable>
+						<VInput clickable>
 							<template #prepend>
 								<div class="preview" :class="{ 'has-file': file }">
 									<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
-									<v-icon v-else name="folder_open" />
+									<VIcon v-else name="folder_open" />
 								</div>
 							</template>
 							<template #input>
@@ -139,25 +145,25 @@ function useUpload() {
 							</template>
 							<template #append>
 								<div class="item-actions">
-									<v-remove v-if="file" deselect @action="clearFileInput" />
+									<VRemove v-if="file" deselect @action="clearFileInput" />
 
-									<v-icon v-else name="attach_file" />
+									<VIcon v-else name="attach_file" />
 								</div>
 							</template>
-						</v-input>
+						</VInput>
 					</template>
 				</div>
 
 				<div class="field full">
-					<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
+					<VButton small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
 						{{ $t('import_data_button') }}
-					</v-button>
+					</VButton>
 				</div>
 			</template>
 		</div>
 
-		<import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
-	</sidebar-detail>
+		<ImportErrorDialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>
@@ -177,10 +183,10 @@ function useUpload() {
 }
 
 .fields {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 
@@ -188,13 +194,13 @@ function useUpload() {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 	padding: var(--content-padding);
 }
 
 .v-checkbox {
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -218,12 +224,12 @@ function useUpload() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 	}
 }
 
@@ -233,9 +239,9 @@ function useUpload() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 40px;
-	block-size: 40px;
-	margin-inline-start: -8px;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -248,7 +254,7 @@ function useUpload() {
 .extension {
 	color: var(--theme--primary);
 	font-weight: 600;
-	font-size: 11px;
+	font-size: 0.625rem;
 	text-transform: uppercase;
 }
 
@@ -286,7 +292,7 @@ function useUpload() {
 	text-align: center;
 	display: block;
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

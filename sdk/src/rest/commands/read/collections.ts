@@ -1,7 +1,7 @@
 import type { DirectusCollection } from '../../../schema/collection.js';
 import type { ApplyQueryFields } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type ReadCollectionOutput<Schema, Item extends object = DirectusCollection<Schema>> = ApplyQueryFields<
 	Schema,

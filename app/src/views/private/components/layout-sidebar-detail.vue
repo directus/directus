@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import SidebarDetail from './sidebar-detail.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
-import { computed } from 'vue';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -28,29 +31,29 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 </script>
 
 <template>
-	<sidebar-detail icon="layers" :title="$t('layout_options')">
+	<SidebarDetail id="layout" icon="layers" :title="$t('layout_options')">
 		<div class="layout-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layout') }}</div>
-				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
+				<VSelect v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
 					<template v-if="currentLayout!.icon" #prepend>
-						<v-icon :name="currentLayout!.icon" />
+						<VIcon :name="currentLayout!.icon" />
 					</template>
-				</v-select>
+				</VSelect>
 			</div>
 
 			<slot />
 		</div>
-	</sidebar-detail>
+	</SidebarDetail>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
 :deep(.layout-options) {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 
-	margin-block-end: 4px;
+	margin-block-end: 0.25rem;
 
 	@include mixins.form-grid;
 }

@@ -8,11 +8,11 @@ import type { Context } from '../../types.js';
 import { extractRequiredDynamicVariableContext } from '../../utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
 import { contextHasDynamicVariables } from '../process-ast/utils/context-has-dynamic-variables.js';
-import { isFieldNullable } from './lib/is-field-nullable.js';
 import {
 	createCollectionForbiddenError,
 	createFieldsForbiddenError,
 } from '../process-ast/utils/validate-path/create-error.js';
+import { isFieldNullable } from './lib/is-field-nullable.js';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;

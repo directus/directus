@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
 import { AuthProvider } from '@/types/login';
 import { getRootPath } from '@/utils/get-root-path';
-import formatTitle from '@directus/format-title';
-import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import { useRoute } from 'vue-router';
 
 const props = defineProps<{
 	providers: AuthProvider[];
@@ -163,24 +170,24 @@ watch(selectedProviderName, (val) => {
 <template>
 	<div class="sso-links">
 		<template v-if="ssoProviders.length > 0">
-			<v-divider />
+			<VDivider />
 
-			<v-notice v-if="errorFormatted" type="warning">
+			<VNotice v-if="errorFormatted" type="warning">
 				{{ errorFormatted }}
-			</v-notice>
+			</VNotice>
 
 			<template v-for="provider in ssoProviders" :key="provider.name">
 				<a class="sso-link" @click.prevent="() => handleSSOClick(provider)">
 					<div class="sso-icon">
-						<v-icon :name="provider.icon" />
+						<VIcon :name="provider.icon" />
 					</div>
 					<div class="sso-title">
-						<v-text-overflow :text="$t('log_in_with', { provider: provider.label })" />
+						<VTextOverflow :text="$t('log_in_with', { provider: provider.label })" />
 					</div>
 				</a>
 
-				<transition-expand>
-					<v-input
+				<TransitionExpand>
+					<VInput
 						v-if="requiresTFA && originalProviderName === provider.name"
 						v-model="otp"
 						autofocus
@@ -191,16 +198,16 @@ watch(selectedProviderName, (val) => {
 						@keydown.enter.prevent="onSubmitOTP"
 					>
 						<template #append>
-							<v-progress-circular v-if="submitting" indeterminate />
+							<VProgressCircular v-if="submitting" indeterminate />
 						</template>
-					</v-input>
-				</transition-expand>
+					</VInput>
+				</TransitionExpand>
 
-				<transition-expand>
+				<TransitionExpand>
 					<div v-if="requiresTFA && originalProviderName === provider.name" class="signin-actions">
-						<v-notice v-if="otpInlineError" type="warning">{{ otpInlineError }}</v-notice>
+						<VNotice v-if="otpInlineError" type="warning">{{ otpInlineError }}</VNotice>
 					</div>
-				</transition-expand>
+				</TransitionExpand>
 			</template>
 		</template>
 	</div>
@@ -208,25 +215,25 @@ watch(selectedProviderName, (val) => {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-notice {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .otp-input {
-	margin-block: 12px;
+	margin-block: 0.6875rem;
 }
 
 .signin-actions {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 0.6875rem;
 }
 
 .sso-link {
-	$sso-link-border-width: 2px;
+	$sso-link-border-width: 2px; /* stylelint-disable-line unit-disallowed-list -- SCSS variable for border calc */
 
 	display: flex;
 	inline-size: 100%;
@@ -238,7 +245,7 @@ watch(selectedProviderName, (val) => {
 	cursor: pointer;
 
 	.sso-icon {
-		--v-icon-size: 28px;
+		--v-icon-size: 1.5625rem;
 
 		display: flex;
 		align-items: center;
@@ -252,8 +259,8 @@ watch(selectedProviderName, (val) => {
 	.sso-title {
 		display: flex;
 		align-items: center;
-		padding: 0 16px 0 20px;
-		font-size: 16px;
+		padding: 0 0.875rem 0 1.125rem;
+		font-size: 0.875rem;
 		overflow: hidden;
 	}
 
@@ -262,7 +269,7 @@ watch(selectedProviderName, (val) => {
 	}
 
 	& + & {
-		margin-block-start: 12px;
+		margin-block-start: 0.6875rem;
 	}
 }
 </style>

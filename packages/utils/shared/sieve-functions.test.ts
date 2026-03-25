@@ -57,3 +57,26 @@ test('sieve nested array', () => {
 test('sieve date', () => {
 	expect(sieveFunctions(new Date())).toEqual({});
 });
+
+test('sieve error', () => {
+	const error = new Error('Test error message');
+	const sieved = sieveFunctions(error);
+
+	expect(sieved).toBe(error);
+});
+
+test('sieve nested error in object', () => {
+	const error = new Error('Nested error');
+
+	const obj = {
+		status: 'failed',
+		error: error,
+		fn: () => {},
+	};
+
+	const sieved = sieveFunctions(obj) as any;
+
+	expect(sieved).toHaveProperty('status', obj.status);
+	expect(sieved.error).toBe(error);
+	expect(sieved.fn).toBe(undefined);
+});

@@ -12,7 +12,7 @@ function initState() {
 <template>
 	<Story title="VTextOverflow" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-text-overflow v-bind="state" />
+			<VTextOverflow v-bind="state" />
 		</template>
 	</Story>
 </template>

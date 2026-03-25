@@ -1,8 +1,8 @@
 import type { LOCAL_TYPES } from '@directus/constants';
 import type { Collection } from '../collection.js';
 import type { Field } from '../fields.js';
-import type { Relation } from '../relations.js';
 import type { DeepPartial } from '../misc.js';
+import type { Relation } from '../relations.js';
 
 export type ExtensionOptionsContext = {
 	collection: string | undefined;

@@ -2,6 +2,11 @@
 import { useSync } from '@directus/composables';
 import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -68,17 +73,17 @@ function onClickSelect() {
 		<div class="start">
 			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
 				<template v-if="selectionSync.length">
-					<v-icon name="cancel" outline />
+					<VIcon name="cancel" outline />
 					<span class="label">{{ $t('n_items_selected', selectionSync.length) }}</span>
 				</template>
 				<template v-else>
-					<v-icon name="check_circle" outline />
+					<VIcon name="check_circle" outline />
 					<span class="label">{{ $t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 				</template>
 			</button>
 		</div>
 		<div class="end">
-			<v-icon
+			<VIcon
 				v-tooltip.top="$t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
@@ -86,15 +91,15 @@ function onClickSelect() {
 				@click="toggleSize"
 			/>
 
-			<v-menu show-arrow placement="bottom">
+			<VMenu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
 					<button v-tooltip.top="$t('sort_field')" type="button" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
 					</button>
 				</template>
 
-				<v-list>
-					<v-list-item
+				<VList>
+					<VListItem
 						v-for="field in fieldsWithoutFake"
 						:key="field.field"
 						:disabled="field.disabled"
@@ -102,11 +107,11 @@ function onClickSelect() {
 						clickable
 						@click="sortSync = [field.field]"
 					>
-						<v-list-item-content>{{ field.name }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-			<v-icon
+						<VListItemContent>{{ field.name }}</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
+			<VIcon
 				v-tooltip.top="$t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
@@ -127,9 +132,9 @@ function onClickSelect() {
 	align-items: center;
 	justify-content: space-between;
 	inline-size: 100%;
-	block-size: 52px;
-	margin-block-end: 36px;
-	padding: 0 8px;
+	block-size: 2.9375rem;
+	margin-block-end: 2rem;
+	padding: 0 0.4375rem;
 	background-color: var(--theme--background);
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -139,8 +144,8 @@ function onClickSelect() {
 .start {
 	.label {
 		display: inline-block;
-		margin-inline-start: 4px;
-		transform: translateY(1px);
+		margin-inline-start: 0.25rem;
+		transform: translateY(0.0625rem);
 	}
 
 	.no-selection {
@@ -159,7 +164,7 @@ function onClickSelect() {
 	color: var(--theme--foreground-subdued);
 
 	.size-selector {
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -168,7 +173,7 @@ function onClickSelect() {
 	}
 
 	.sort-selector {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {

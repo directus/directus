@@ -1,11 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Knex } from 'knex';
+import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelper } from './types.js';
 
 vi.mock('../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-import { SchemaHelper } from './types.js';
 
 describe('SchemaHelper', () => {
 	class TestableSchemaHelper extends SchemaHelper {}
@@ -73,5 +72,14 @@ describe('SchemaHelper', () => {
 			'categories',
 			'name',
 		]);
+	});
+
+	describe('parseCollectionName', () => {
+		test('should return exactly the same collection name by default', async () => {
+			const { helper } = createHelper();
+			const result = await helper.parseCollectionName('Original_Name_123');
+
+			expect(result).toBe('Original_Name_123');
+		});
 	});
 });

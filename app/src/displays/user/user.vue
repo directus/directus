@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed } from 'vue';
+import VImage from '@/components/v-image.vue';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import { userName } from '@/utils/user-name';
+import UserPopover from '@/views/private/components/user-popover.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -26,9 +28,9 @@ const src = computed(() => {
 </script>
 
 <template>
-	<user-popover v-if="value" :user="value.id">
+	<UserPopover v-if="value" :user="value.id">
 		<div class="user" :class="display">
-			<v-image
+			<VImage
 				v-if="(display === 'avatar' || display === 'both') && src"
 				:src="src"
 				role="presentation"
@@ -44,7 +46,7 @@ const src = computed(() => {
 			/>
 			<span v-if="display === 'name' || display === 'both'">{{ userName(value) }}</span>
 		</div>
-	</user-popover>
+	</UserPopover>
 </template>
 
 <style lang="scss" scoped>
@@ -59,7 +61,7 @@ const src = computed(() => {
 		inline-size: auto;
 		block-size: 100%;
 		vertical-align: -67%;
-		border-radius: 4px;
+		border-radius: 0.25rem;
 
 		&.circle {
 			border-radius: 100%;
@@ -68,7 +70,7 @@ const src = computed(() => {
 
 	&.both {
 		img {
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 	}
 }

@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
+
 defineProps<{
 	readme: string | null;
 }>();
 </script>
 
 <template>
-	<v-notice v-if="!readme" class="notice">{{ $t('extension_readme_missing') }}</v-notice>
+	<VNotice v-if="!readme" class="notice">{{ $t('extension_readme_missing') }}</VNotice>
 	<div v-else v-md="{ value: readme, target: '_blank' }" class="readme" />
 </template>
 
@@ -18,7 +20,7 @@ defineProps<{
 	}
 
 	:deep(* + *) {
-		margin-block-start: 1rem;
+		margin-block-start: 0.8125rem;
 	}
 
 	:deep(img) {
@@ -28,6 +30,6 @@ defineProps<{
 
 .notice {
 	align-self: flex-start;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 }
 </style>

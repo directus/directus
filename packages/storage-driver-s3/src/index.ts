@@ -1,13 +1,19 @@
+import fs, { promises as fsProm } from 'node:fs';
+import { Agent as HttpAgent } from 'node:http';
+import { Agent as HttpsAgent } from 'node:https';
+import os from 'node:os';
+import { join } from 'node:path';
+import stream, { type Readable, promises as streamProm } from 'node:stream';
 import type {
 	CompletedPart,
 	CopyObjectCommandInput,
+	CreateMultipartUploadCommandInput,
 	GetObjectCommandInput,
 	ListObjectsV2CommandInput,
 	ObjectCannedACL,
 	Part,
 	PutObjectCommandInput,
 	S3ClientConfig,
-	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import {
 	AbortMultipartUploadCommand,
@@ -21,6 +27,7 @@ import {
 	ListObjectsV2Command,
 	ListPartsCommand,
 	S3Client,
+	ServerSideEncryption,
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
@@ -32,12 +39,6 @@ import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
 import ms, { type StringValue } from 'ms';
-import fs, { promises as fsProm } from 'node:fs';
-import { Agent as HttpAgent } from 'node:http';
-import { Agent as HttpsAgent } from 'node:https';
-import os from 'node:os';
-import { join } from 'node:path';
-import stream, { promises as streamProm, type Readable } from 'node:stream';
 
 export type DriverS3Config = {
 	root?: string;
@@ -46,6 +47,7 @@ export type DriverS3Config = {
 	bucket: string;
 	acl?: ObjectCannedACL;
 	serverSideEncryption?: ServerSideEncryption;
+	serverSideEncryptionKmsKeyId?: string;
 	endpoint?: string;
 	region?: string;
 	forcePathStyle?: boolean;
@@ -57,6 +59,11 @@ export type DriverS3Config = {
 	maxSockets?: number;
 	keepAlive?: boolean;
 };
+
+export const kmsKeyIdCheck = [
+	ServerSideEncryption.aws_kms,
+	ServerSideEncryption.aws_kms_dsse,
+] as ServerSideEncryption[];
 
 export class DriverS3 implements TusDriver {
 	private config: DriverS3Config;
@@ -157,7 +164,10 @@ export class DriverS3 implements TusDriver {
 		return stream as Readable;
 	}
 
-	async stat(filepath: string) {
+	async stat(filepath: string): Promise<{
+		size: number;
+		modified: Date;
+	}> {
 		const { ContentLength, LastModified } = await this.client.send(
 			new HeadObjectCommand({
 				Key: this.fullPath(filepath),
@@ -171,7 +181,7 @@ export class DriverS3 implements TusDriver {
 		};
 	}
 
-	async exists(filepath: string) {
+	async exists(filepath: string): Promise<boolean> {
 		try {
 			await this.stat(filepath);
 			return true;
@@ -180,12 +190,12 @@ export class DriverS3 implements TusDriver {
 		}
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		await this.copy(src, dest);
 		await this.delete(src);
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		const params: CopyObjectCommandInput = {
 			Key: this.fullPath(dest),
 			Bucket: this.config.bucket,
@@ -194,6 +204,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		if (this.config.acl) {
@@ -203,7 +217,7 @@ export class DriverS3 implements TusDriver {
 		await this.client.send(new CopyObjectCommand(params));
 	}
 
-	async write(filepath: string, content: Readable, type?: string) {
+	async write(filepath: string, content: Readable, type?: string): Promise<void> {
 		const params: PutObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Body: content,
@@ -220,6 +234,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		const upload = new Upload({
@@ -230,11 +248,11 @@ export class DriverS3 implements TusDriver {
 		await upload.done();
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		await this.client.send(new DeleteObjectCommand({ Key: this.fullPath(filepath), Bucket: this.config.bucket }));
 	}
 
-	async *list(prefix = '') {
+	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
 		let Prefix = this.fullPath(prefix);
 
 		// Current dir (`.`) isn't known to S3, needs to be an empty prefix instead
@@ -273,12 +291,12 @@ export class DriverS3 implements TusDriver {
 
 	// TUS implementation based on https://github.com/tus/tus-node-server
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 
 	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
-		const command = new CreateMultipartUploadCommand({
+		const params: CreateMultipartUploadCommandInput = {
 			Bucket: this.config.bucket,
 			Key: this.fullPath(filepath),
 			Metadata: { 'tus-version': TUS_RESUMABLE },
@@ -292,7 +310,17 @@ export class DriverS3 implements TusDriver {
 						CacheControl: context.metadata['cacheControl'],
 					}
 				: {}),
-		});
+		};
+
+		if (this.config.serverSideEncryption) {
+			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
+		}
+
+		const command = new CreateMultipartUploadCommand(params);
 
 		const res = await this.client.send(command);
 

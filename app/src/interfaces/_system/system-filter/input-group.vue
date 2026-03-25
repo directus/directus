@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { useFakeVersionField } from '@/composables/use-fake-version-field';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { useCollection } from '@directus/composables';
 import { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
 import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import { useFakeVersionField } from '@/composables/use-fake-version-field';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 // Workaround because you cannot cast directly to union types inside
 // the template block without running into eslint/prettier issues
@@ -225,7 +226,7 @@ function useVariableInput() {
 </script>
 
 <template>
-	<v-icon
+	<VIcon
 		v-if="isVariableInputComparator"
 		v-tooltip="$t('toggle_variable_input')"
 		class="variable-input-toggle"
@@ -239,7 +240,9 @@ function useVariableInput() {
 	<template v-if="isVariableInputActive">
 		<span class="variable-input-braces">{{ '\{\{' }}</span>
 
-		<input-component
+		<!-- TODO: eslint trips up here as we're using `is` as the prop name. Refactoring `is` away is the proper solve here -->
+		<!-- eslint-disable vue/no-undef-components -->
+		<InputComponent
 			is="interface-input"
 			class="variable-input"
 			type="unknown"
@@ -252,7 +255,7 @@ function useVariableInput() {
 
 	<template v-else>
 		<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(comparator)">
-			<input-component
+			<InputComponent
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
@@ -278,7 +281,7 @@ function useVariableInput() {
 				].includes(comparator)
 			"
 		>
-			<input-component
+			<InputComponent
 				is="interface-input"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
@@ -289,7 +292,7 @@ function useVariableInput() {
 
 		<div v-else-if="['_in', '_nin'].includes(comparator)" class="list">
 			<div v-for="(val, index) in value" :key="index" class="value">
-				<input-component
+				<InputComponent
 					:is="interfaceType"
 					:ref="(el) => (inputRefs[index] = el)"
 					:type="fieldInfo?.type ?? 'unknown'"
@@ -305,7 +308,7 @@ function useVariableInput() {
 		</div>
 
 		<template v-else-if="['_between', '_nbetween'].includes(comparator)">
-			<input-component
+			<InputComponent
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
@@ -313,7 +316,7 @@ function useVariableInput() {
 				@input="setValueAt(0, $event)"
 			/>
 			<div class="and">{{ $t('interfaces.filter.and') }}</div>
-			<input-component
+			<InputComponent
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
@@ -329,15 +332,15 @@ function useVariableInput() {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 
 	.comparator + & {
-		margin-inline-start: -4px;
+		margin-inline-start: -0.25rem;
 	}
 
 	&.v-icon {
-		inline-size: 24px !important;
-		block-size: 24px !important;
+		inline-size: 1.375rem !important;
+		block-size: 1.375rem !important;
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;
@@ -360,7 +363,7 @@ function useVariableInput() {
 .variable-input-braces {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground-subdued);
-	margin-inline-start: 2px;
+	margin-inline-start: 0.125rem;
 
 	.variable-input + & {
 		margin-inline-start: 0;
@@ -372,7 +375,7 @@ function useVariableInput() {
 	align-items: center;
 
 	.v-icon {
-		margin-inline: 12px 8px;
+		margin-inline: 0.6875rem 0.4375rem;
 		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
@@ -386,12 +389,12 @@ function useVariableInput() {
 	display: flex;
 
 	.value:not(:last-child)::after {
-		margin-inline-end: 6px;
+		margin-inline-end: 0.3125rem;
 		content: ',';
 	}
 }
 
 .and {
-	margin: 0 8px;
+	margin: 0 0.4375rem;
 }
 </style>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import ValidationErrors from '@/components/v-form/validation-errors.vue';
-import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import type { Field, PrimaryKey } from '@directus/types';
-import { cloneDeep } from 'lodash';
-import { computed, useTemplateRef } from 'vue';
+import { cloneDeep, isEqual } from 'lodash';
+import { computed, nextTick, useTemplateRef, watch } from 'vue';
+import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VInfo from '@/components/v-info.vue';
+import type { CollabContext } from '@/composables/use-collab';
+import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 
 const {
 	collection,
@@ -12,6 +15,7 @@ const {
 	relatedCollectionFields,
 	initialValues,
 	fields,
+	validationErrors,
 	junctionFieldLocation = 'bottom',
 	relatedPrimaryKeyField,
 } = defineProps<{
@@ -22,6 +26,7 @@ const {
 	initialValues: Record<string, any> | null;
 	fields: Field[];
 	disabled: boolean;
+	nonEditable: boolean;
 	loading: boolean;
 	validationErrors: any[];
 	junctionFieldLocation?: string;
@@ -29,6 +34,8 @@ const {
 	relatedPrimaryKey: PrimaryKey;
 	relatedPrimaryKeyField: string | null;
 	refresh: () => void;
+	collabContext?: CollabContext;
+	relatedCollabContext?: CollabContext;
 }>();
 
 const internalEdits = defineModel<Record<string, any>>('internal-edits');
@@ -36,6 +43,20 @@ const internalEdits = defineModel<Record<string, any>>('internal-edits');
 const { mainInitialValues, junctionInitialValues } = useInitialValues();
 const { file } = useFile();
 const { scrollToField } = useValidationScrollToField();
+
+const validationErrorsEl = useTemplateRef('validationErrors');
+
+watch(
+	() => validationErrors,
+	async (newVal, oldVal) => {
+		if (isEqual(newVal, oldVal)) return;
+
+		if (newVal?.length > 0) {
+			await nextTick();
+			validationErrorsEl.value?.$el?.scrollIntoView({ behavior: 'smooth' });
+		}
+	},
+);
 
 const swapFormOrder = computed(() => junctionFieldLocation === 'top');
 const hasVisibleFieldsRelated = computed(() => relatedCollectionFields.some((field: Field) => !field.meta?.hidden));
@@ -107,26 +128,28 @@ function useValidationScrollToField() {
 
 <template>
 	<div class="overlay-item-content" :class="{ empty: emptyForm }">
-		<file-preview-replace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
+		<FilePreviewReplace v-if="file" class="preview" :disabled :non-editable :file in-modal @replace="refresh" />
 
-		<v-info v-if="emptyForm" :title="$t('no_visible_fields')" icon="search" center>
+		<VInfo v-if="emptyForm" :title="$t('no_visible_fields')" icon="search" center>
 			{{ $t('no_visible_fields_copy') }}
-		</v-info>
+		</VInfo>
 
 		<div v-else class="overlay-item-order" :class="{ swap: swapFormOrder }">
-			<validation-errors
+			<ValidationErrors
 				v-if="validationErrors?.length"
+				ref="validationErrors"
 				class="validation-errors"
 				:validation-errors
 				:fields="[...fields, ...relatedCollectionFields]"
 				@scroll-to-field="scrollToField"
 			/>
 
-			<v-form
+			<VForm
 				v-if="junctionField"
 				ref="junctionForm"
 				:model-value="internalEdits?.[junctionField]"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:show-no-visible-fields="false"
 				:initial-values="junctionInitialValues"
@@ -134,13 +157,15 @@ function useValidationScrollToField() {
 				:show-divider="!swapFormOrder && hasVisibleFieldsJunction"
 				:primary-key="relatedPrimaryKey"
 				:fields="relatedCollectionFields"
+				:collab-context="relatedCollabContext"
 				@update:model-value="setRelationEdits"
 			/>
 
-			<v-form
+			<VForm
 				ref="mainForm"
 				v-model="internalEdits"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:show-no-visible-fields="false"
 				:initial-values="mainInitialValues"
@@ -148,6 +173,7 @@ function useValidationScrollToField() {
 				:show-divider="swapFormOrder && hasVisibleFieldsRelated"
 				:primary-key="primaryKey"
 				:fields="fields"
+				:collab-context="collabContext"
 			/>
 		</div>
 	</div>
@@ -155,7 +181,7 @@ function useValidationScrollToField() {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 52px 0;
+	margin: 2.9375rem 0;
 }
 
 .overlay-item-content {

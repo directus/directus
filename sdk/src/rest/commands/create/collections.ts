@@ -1,5 +1,5 @@
 import type { DirectusCollection } from '../../../schema/collection.js';
-import type { ApplyQueryFields, NestedPartial, Query, FieldQuery } from '../../../types/index.js';
+import type { ApplyQueryFields, FieldQuery, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateCollectionOutput<

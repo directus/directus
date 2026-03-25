@@ -1,6 +1,6 @@
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { cryptoStub } from '@/__utils__/crypto';
 import { expect, test, vi } from 'vitest';
+import { cryptoStub } from '@/__utils__/crypto';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { getPublicURL } from '@/utils/get-root-path';
 
 vi.stubGlobal('crypto', cryptoStub);
@@ -48,6 +48,7 @@ test('Get asset url with cache buster as true', () => {
 	vi.mocked(getPublicURL).mockReturnValueOnce('https://directus.io/');
 	const output = getAssetUrl('test.jpg', { cacheBuster: true });
 	expect(output).toBe(`https://directus.io/assets/test.jpg?v=1704067200000`);
+	vi.useRealTimers();
 });
 
 test('Get asset url with custom params', () => {

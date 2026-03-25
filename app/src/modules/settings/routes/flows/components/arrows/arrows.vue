@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user';
 import { computed, unref } from 'vue';
 import { GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from '../../constants';
 import { ParentInfo } from '../../flow.vue';
 import { ArrowInfo } from '../operation.vue';
 import { generateArrows } from './lib/generate-arrows';
+import { useUserStore } from '@/stores/user';
 
 const props = withDefaults(
 	defineProps<{
@@ -58,7 +58,7 @@ const arrows = computed(() => {
 <template>
 	<div class="arrow-container">
 		<svg :width="size.width" :height="size.height" class="arrows" :class="{ mirrored: isRTL }">
-			<transition-group name="fade">
+			<TransitionGroup name="fade">
 				<path
 					v-for="arrow in arrows"
 					:key="arrow.id"
@@ -66,7 +66,7 @@ const arrows = computed(() => {
 					:d="arrow.d"
 					stroke-linecap="round"
 				/>
-			</transition-group>
+			</TransitionGroup>
 		</svg>
 	</div>
 </template>
@@ -111,7 +111,7 @@ const arrows = computed(() => {
 			&.fade-leave-to {
 				position: absolute;
 				opacity: 0;
-				transform: translateX(-4px);
+				transform: translateX(-0.25rem);
 			}
 		}
 	}

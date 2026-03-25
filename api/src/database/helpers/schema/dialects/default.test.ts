@@ -1,11 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Knex } from 'knex';
+import { describe, expect, test, vi } from 'vitest';
+import { SchemaHelperDefault } from './default.js';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
 }));
-
-import { SchemaHelperDefault } from './default.js';
 
 describe('SchemaHelperDefault', () => {
 	function createHelper() {

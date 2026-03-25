@@ -1,5 +1,5 @@
+import { describe, expect, test } from 'vitest';
 import { filterItems } from './filter-items.js';
-import { describe, test, expect } from 'vitest';
 
 const items = [
 	{

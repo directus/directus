@@ -1,5 +1,5 @@
-import type { JsonValue } from '@directus/types';
 import type { SplitEntrypoint } from '@directus/extensions';
+import type { JsonValue } from '@directus/types';
 
 function validateNonPrimitive(value: JsonValue | undefined): value is JsonValue[] | { [key: string]: JsonValue } {
 	if (

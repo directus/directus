@@ -1,9 +1,9 @@
-import { test, vi, afterEach, beforeEach, expect } from 'vitest';
-import { getAxios, _cache } from './index.js';
-import axios from 'axios';
-import type { AxiosInstance } from 'axios';
 import { Agent } from 'node:http';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { agentWithIpValidation } from './agent-with-ip-validation.js';
+import { _cache, getAxios } from './index.js';
 
 vi.mock('axios');
 vi.mock('./agent-with-ip-validation.js');

@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { EXTENSION_TYPES } from '@directus/constants';
 import { watchDebounced } from '@vueuse/core';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 
 const type = defineModel<string | null>('type');
 const sort = defineModel<string | null>('sort');
@@ -74,17 +76,17 @@ const sortOptions = [
 <template>
 	<div class="inline-filter">
 		<div class="field">
-			<v-icon class="icon" small name="category" />
-			<v-select v-model="type" menu-full-height class="type" inline :items="typeOptions" />
+			<VIcon class="icon" small name="category" />
+			<VSelect v-model="type" menu-full-height class="type" inline :items="typeOptions" />
 		</div>
 
 		<div class="field">
-			<v-icon class="icon" small name="sort" />
-			<v-select v-model="sort" class="sort" inline :items="sortOptions" />
+			<VIcon class="icon" small name="sort" />
+			<VSelect v-model="sort" class="sort" inline :items="sortOptions" />
 		</div>
 
 		<div class="field">
-			<v-icon class="icon" small name="search" />
+			<VIcon class="icon" small name="search" />
 			<input v-model="searchInputValue" v-focus="true" :placeholder="$t('search_extensions')" class="search-input" />
 		</div>
 
@@ -95,7 +97,7 @@ const sortOptions = [
 <style scoped>
 .inline-filter {
 	display: flex;
-	gap: 4px 32px;
+	gap: 0.25rem 1.8125rem;
 	flex-wrap: wrap;
 	inline-size: 100%;
 }
@@ -105,7 +107,7 @@ const sortOptions = [
 	border: none;
 	border-radius: 0;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
-	inline-size: 180px;
+	inline-size: 10.125rem;
 	background: transparent;
 
 	&::placeholder {
@@ -124,6 +126,6 @@ const sortOptions = [
 }
 
 .icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 </style>

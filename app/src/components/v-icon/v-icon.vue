@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user';
 import { useSizeClass } from '@directus/composables';
 import { isIn } from '@directus/utils';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
 import { computed } from 'vue';
 import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
-
 import { components } from './custom-icons';
-
 import SocialIcon from './social-icon.vue';
 import { socialIcons } from './social-icons';
+import { useUserStore } from '@/stores/user';
 
 const props = withDefaults(
 	defineProps<{
@@ -88,7 +86,7 @@ function emitClick(event: MouseEvent) {
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
 	>
-		<component :is="customIconName" v-if="customIconName" />
+		<component :is="customIconName" v-if="customIconName" class="custom-icon-svg" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }" :data-icon="name"></i>
 	</component>
@@ -101,16 +99,16 @@ function emitClick(event: MouseEvent) {
 
 		--v-icon-color        [currentColor]
 		--v-icon-color-hover  [currentColor]
-		--v-icon-size         [24px]
+		--v-icon-size         [1.375rem]
 
 */
 
 .v-icon {
 	position: relative;
 	display: inline-block;
-	inline-size: var(--v-icon-size, 24px);
-	min-inline-size: var(--v-icon-size, 24px);
-	block-size: var(--v-icon-size, 24px);
+	inline-size: var(--v-icon-size, 1.375rem);
+	min-inline-size: var(--v-icon-size, 1.375rem);
+	block-size: var(--v-icon-size, 1.375rem);
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -119,7 +117,7 @@ function emitClick(event: MouseEvent) {
 		display: block;
 		font-family: 'Material Symbols';
 		font-weight: normal;
-		font-size: var(--v-icon-size, 24px);
+		font-size: var(--v-icon-size, 1.375rem);
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;
@@ -169,46 +167,55 @@ function emitClick(event: MouseEvent) {
 		}
 	}
 
-	&.sup {
-		--v-icon-size: 8px;
+	&[disabled] {
+		cursor: not-allowed;
+	}
 
-		vertical-align: 5px;
+	&.sup {
+		--v-icon-size: 0.4375rem;
+
+		vertical-align: 0.3125rem;
 	}
 
 	&.x-small {
-		--v-icon-size: 12px;
+		--v-icon-size: 0.6875rem;
 	}
 
 	&.small {
-		--v-icon-size: 18px;
+		--v-icon-size: 1rem;
 	}
 
 	&.large {
-		--v-icon-size: 36px;
+		--v-icon-size: 2rem;
 	}
 
 	&.x-large {
-		--v-icon-size: 48px;
+		--v-icon-size: 2.6875rem;
 	}
 
 	&.left {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 
 		&.small {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 
 	&.right {
-		margin-inline-start: 6px;
+		margin-inline-start: 0.3125rem;
 
 		&.small {
-			margin-inline-start: 4px;
+			margin-inline-start: 0.25rem;
 		}
 	}
 
 	&.mirrored {
 		transform: scaleX(-1);
 	}
+}
+
+.custom-icon-svg {
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>

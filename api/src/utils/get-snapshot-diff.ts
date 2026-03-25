@@ -1,6 +1,6 @@
-import deepDiff from 'deep-diff';
 import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '@directus/types';
 import { DiffKind } from '@directus/types';
+import deepDiff from 'deep-diff';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {

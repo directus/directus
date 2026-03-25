@@ -1,12 +1,12 @@
-import { Vector2 } from '@/utils/vector2';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { findBestPosition } from './find-best-position';
 import { generatePath } from './generate-path';
+import { Vector2 } from '@/utils/vector2';
 
 const START_OFFSET = 2;
 const END_OFFSET = 13;
-const OFFSET_BOX = 40;
+const OFFSET_BOX = 2 * GRID_SIZE;
 
 /**
  * Creates an SVG path string for drawing connection lines between flow diagram panels.

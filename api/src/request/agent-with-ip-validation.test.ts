@@ -1,7 +1,7 @@
 import EventEmitter from 'node:events';
 import { type Agent } from 'node:http';
-import { afterEach, beforeEach, expect, test, vi, type Mock } from 'vitest';
-import { agentWithIpValidation, type _Agent } from './agent-with-ip-validation.js';
+import { afterEach, beforeEach, expect, type Mock, test, vi } from 'vitest';
+import { type _Agent, agentWithIpValidation } from './agent-with-ip-validation.js';
 import { isDeniedIp } from './is-denied-ip.js';
 
 vi.mock('./is-denied-ip.js');

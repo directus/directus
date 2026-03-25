@@ -8,8 +8,8 @@ import emitter from '../emitter.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import '../types/express.d.ts';
 import { handler } from './authenticate.js';
+import '../types/express.d.ts';
 
 const reqGetImplementation = (string: any) => {
 	switch (string) {

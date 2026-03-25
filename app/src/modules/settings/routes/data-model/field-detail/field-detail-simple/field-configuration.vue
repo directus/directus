@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { useExtensions } from '@/extensions';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, watch } from 'vue';
@@ -8,6 +6,14 @@ import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import RelationshipConfiguration from './relationship-configuration.vue';
+import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
 
 defineProps<{
 	row?: number;
@@ -91,10 +97,10 @@ const options = computed({
 					<div class="field half-left">
 						<div class="label type-label">
 							{{ $t('key') }}
-							<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
+							<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 						</div>
 
-						<v-input v-model="key" autofocus class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
+						<VInput v-model="key" autofocus class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
 					</div>
 
 					<div class="field half-right">
@@ -102,7 +108,7 @@ const options = computed({
 							{{ $t('type') }}
 						</div>
 
-						<v-select v-model="type" :items="typeOptions" :disabled="typeDisabled" />
+						<VSelect v-model="type" :items="typeOptions" :disabled="typeDisabled" />
 					</div>
 
 					<div class="field half-left">
@@ -110,8 +116,8 @@ const options = computed({
 							{{ $t('default_value') }}
 						</div>
 
-						<v-checkbox v-if="type === 'boolean'" v-model="defaultValue" block :label="$t('enabled')" />
-						<v-input v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
+						<VCheckbox v-if="type === 'boolean'" v-model="defaultValue" block :label="$t('enabled')" />
+						<VInput v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
 					</div>
 
 					<div class="field half-right">
@@ -119,25 +125,25 @@ const options = computed({
 							{{ $t('required') }}
 						</div>
 
-						<v-checkbox v-model="required" block :label="$t('require_value_to_be_set')" />
+						<VCheckbox v-model="required" block :label="$t('require_value_to_be_set')" />
 					</div>
 				</div>
 
-				<relationship-configuration :local-type="localType" />
+				<RelationshipConfiguration :local-type="localType" />
 
-				<v-divider inline />
+				<VDivider inline />
 			</template>
 
-			<extension-options
+			<ExtensionOptions
 				v-model="options"
 				type="interface"
 				:extension="chosenInterface"
 				:options="customOptionsFields"
 			/>
 
-			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
+			<VButton class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
 				{{ $t('save') }}
-			</v-button>
+			</VButton>
 
 			<button class="toggle-advanced" @click="$emit('toggleAdvanced')">
 				{{ $t('continue_in_advanced_field_creation_mode') }}
@@ -158,27 +164,27 @@ const options = computed({
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
 
 .setup {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 
-	margin: 34px;
+	margin: 1.9375rem;
 }
 
 .schema {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 	@include mixins.form-grid;
 }
 
@@ -187,11 +193,11 @@ const options = computed({
 }
 
 .save {
-	margin-block-start: 40px;
+	margin-block-start: 2.25rem;
 }
 
 .v-divider {
-	margin: 28px 0;
+	margin: 1.5625rem 0;
 }
 
 :deep(.v-notice.normal) {
@@ -200,7 +206,7 @@ const options = computed({
 
 .toggle-advanced {
 	inline-size: 100%;
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	transition: color var(--fast) var(--transition);

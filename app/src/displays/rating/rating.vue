@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 type InterfaceOptions = {
 	minValue: number;
@@ -32,15 +33,15 @@ const ratingPercentage = computed(() => ({
 
 <template>
 	<span v-if="simple" class="rating simple">
-		<v-icon small name="star" filled />
+		<VIcon small name="star" filled />
 		{{ value }}
 	</span>
 	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
 		<div class="active" :style="ratingPercentage">
-			<v-icon v-for="index in starCount" :key="index" small name="star" filled />
+			<VIcon v-for="index in starCount" :key="index" small name="star" filled />
 		</div>
 		<div class="inactive">
-			<v-icon v-for="index in starCount" :key="index" small name="star" />
+			<VIcon v-for="index in starCount" :key="index" small name="star" />
 		</div>
 	</div>
 </template>
@@ -50,14 +51,14 @@ const ratingPercentage = computed(() => ({
 	&.simple {
 		display: inline-flex;
 		align-items: center;
-		padding: 2px 6px 2px 4px;
+		padding: 0.125rem 0.3125rem 0.125rem 0.25rem;
 		color: #ffc107;
 		font-weight: 600;
 		background-color: rgb(255 193 7 / 0.15);
 		border-radius: var(--theme--border-radius);
 
 		.v-icon {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 
@@ -65,7 +66,7 @@ const ratingPercentage = computed(() => ({
 		position: relative;
 		inline-size: min-content;
 		display: inline-flex;
-		block-size: var(--v-icon-size, 24px);
+		block-size: var(--v-icon-size, 1.375rem);
 
 		.active {
 			position: relative;

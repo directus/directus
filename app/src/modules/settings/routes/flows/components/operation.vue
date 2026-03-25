@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import { FlowRaw } from '@directus/types';
+import { computed, ref, toRefs, unref } from 'vue';
+import { ATTACHMENT_OFFSET, GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+import { getTriggers } from '../triggers';
+import OptionsOverview from './options-overview.vue';
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VWorkspaceTile from '@/components/v-workspace-tile.vue';
+import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { useUserStore } from '@/stores/user';
 import { Vector2 } from '@/utils/vector2';
-import { FlowRaw } from '@directus/types';
-import { computed, ref, toRefs, unref } from 'vue';
-import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
-import { getTriggers } from '../triggers';
-import OptionsOverview from './options-overview.vue';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {
@@ -23,7 +29,7 @@ const props = withDefaults(
 		parent?: { id: string; type: Target; loner: boolean };
 		flow: FlowRaw;
 		panelsToBeDeleted: string[];
-		isHovered: boolean;
+		isHovered?: boolean;
 		subdued?: boolean;
 	}>(),
 	{
@@ -102,8 +108,8 @@ const pointermove = (event: PointerEvent) => {
 		moving.value = true;
 		if (!down) return;
 
-		let xPos = Math.round((event.pageX - workspaceOffset.x) / 20) * 20;
-		const yPos = Math.round((event.pageY - workspaceOffset.y) / 20) * 20;
+		let xPos = Math.round((event.pageX - workspaceOffset.x) / GRID_SIZE) * GRID_SIZE;
+		const yPos = Math.round((event.pageY - workspaceOffset.y) / GRID_SIZE) * GRID_SIZE;
 
 		if (unref(isRTL)) {
 			xPos = workspaceWidth - xPos;
@@ -170,7 +176,7 @@ function pointerLeave() {
 </script>
 
 <template>
-	<v-workspace-tile
+	<VWorkspaceTile
 		v-bind="panel"
 		:name="panel.panel_name"
 		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
@@ -185,6 +191,7 @@ function pointerLeave() {
 		]"
 		:edit-mode="editMode"
 		:resizable="false"
+		:grid-size="GRID_SIZE"
 		:show-options="type !== 'trigger'"
 		:style="styleVars"
 		always-update-position
@@ -205,18 +212,18 @@ function pointerLeave() {
 				rounded
 				@pointerdown.stop="pointerdown('resolve')"
 			>
-				<v-icon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
+				<VIcon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
 					class="hint resolve-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
-						<v-icon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
+						<VIcon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 			<div
 				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
 				x-small
@@ -225,18 +232,18 @@ function pointerLeave() {
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
+				<VIcon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
 					class="hint reject-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
-						<v-icon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
+						<VIcon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 
 			<div
 				v-if="panel.id !== '$trigger'"
@@ -247,26 +254,26 @@ function pointerLeave() {
 				:class="{ reject: parent?.type === 'reject' }"
 				@pointerdown.stop="pointerdown('parent')"
 			>
-				<v-icon name="adjust" />
+				<VIcon name="adjust" />
 			</div>
 		</template>
-		<v-error-boundary
+		<VErrorBoundary
 			v-if="typeof currentOperation?.overview === 'function'"
 			:name="`operation-overview-${currentOperation.id}`"
 		>
 			<div class="block">
-				<options-overview :panel="panel" :current-operation="currentOperation" :flow="flow" />
+				<OptionsOverview :panel="panel" :current-operation="currentOperation" :flow="flow" />
 			</div>
 
 			<template #fallback="{ error: optionsOverviewError }">
 				<div class="options-overview-error">
-					<v-icon name="warning" />
+					<VIcon name="warning" />
 					{{ $t('unexpected_error') }}
-					<v-error :error="optionsOverviewError" />
+					<VError :error="optionsOverviewError" />
 				</div>
 			</template>
-		</v-error-boundary>
-		<v-error-boundary
+		</VErrorBoundary>
+		<VErrorBoundary
 			v-else-if="currentOperation && 'id' in currentOperation"
 			:name="`operation-overview-${currentOperation.id}`"
 		>
@@ -274,21 +281,21 @@ function pointerLeave() {
 
 			<template #fallback="{ error: operationOverviewError }">
 				<div class="options-overview-error">
-					<v-icon name="warning" />
+					<VIcon name="warning" />
 					{{ $t('unexpected_error') }}
-					<v-error :error="operationOverviewError" />
+					<VError :error="operationOverviewError" />
 				</div>
 			</template>
-		</v-error-boundary>
+		</VErrorBoundary>
 		<template v-if="panel.id === '$trigger'" #footer>
 			<div class="status-footer" :class="flowStatus">
-				<display-color
+				<DisplayColor
 					v-tooltip="flowStatus === 'active' ? $t('active') : $t('inactive')"
 					class="status-dot"
 					:value="flowStatus === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 				/>
 
-				<v-select
+				<VSelect
 					v-if="editMode"
 					class="flow-status-select"
 					inline
@@ -305,14 +312,14 @@ function pointerLeave() {
 				</span>
 			</div>
 		</template>
-	</v-workspace-tile>
+	</VWorkspaceTile>
 </template>
 
 <style lang="scss" scoped>
 .v-workspace-tile.block-container {
 	position: relative;
 	overflow: visible;
-	padding: 4px;
+	padding: 0.25rem;
 
 	:deep(.header .name) {
 		color: var(--theme--primary);
@@ -323,16 +330,16 @@ function pointerLeave() {
 	}
 
 	.block {
-		padding: 0 12px;
+		padding: 0 0.6875rem;
 		block-size: 100%;
 		overflow-y: auto;
 
 		.name {
 			display: inline-block;
-			font-size: 20px;
+			font-size: 1.125rem;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
-			margin-block-end: 8px;
+			margin-block-end: 0.4375rem;
 		}
 	}
 
@@ -348,7 +355,7 @@ function pointerLeave() {
 			content: '';
 			inset-block: 0;
 			inset-inline: 0;
-			border-radius: 4px;
+			border-radius: 0.25rem;
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 10px var(--theme--primary);
@@ -398,9 +405,9 @@ function pointerLeave() {
 	}
 
 	.button-hint {
-		inline-size: 32px;
-		block-size: 32px;
-		padding: 4px;
+		inline-size: 1.8125rem;
+		block-size: 1.8125rem;
+		padding: 0.25rem;
 	}
 
 	.hint {
@@ -408,26 +415,26 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 20px;
-		padding-inline-start: 60px;
-		transform: translate(-1px, calc(-50% - 2.5px));
+		padding: 1.125rem;
+		padding-inline-start: 3.375rem;
+		transform: translate(-0.0625rem, calc(-50% - 0.125rem));
 
 		html[dir='rtl'] & {
-			transform: translate(1px, calc(-50% - 2.5px));
+			transform: translate(0.0625rem, calc(-50% - 0.125rem));
 		}
 	}
 
 	.button {
-		inline-size: 20px;
-		block-size: 20px;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		background-color: var(--theme--background);
-		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
+		transform: translate(calc(-50% - 0.0625rem), calc(-50% - 0.0625rem));
 
 		html[dir='rtl'] & {
-			transform: translate(calc(50% + 1px), calc(-50% - 1px));
+			transform: translate(calc(50% + 0.0625rem), calc(-50% - 0.0625rem));
 		}
 
 		--v-icon-color: var(--theme--primary);
@@ -505,7 +512,7 @@ function pointerLeave() {
 }
 
 .options-overview-error {
-	padding: 20px;
+	padding: 1.125rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -516,14 +523,14 @@ function pointerLeave() {
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 		max-inline-size: 100%;
 	}
 }
 
 .status-footer {
 	display: flex;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .fade-enter-active,

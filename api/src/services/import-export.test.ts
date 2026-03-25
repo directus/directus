@@ -1,20 +1,40 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getHeadingsForCsvExport, createErrorTracker, ImportService } from './import-export.js';
-import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
-import { Readable } from 'node:stream';
-import knex, { type Knex } from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { PassThrough, Readable } from 'node:stream';
+import { setTimeout } from 'node:timers/promises';
 import { ErrorCode, ForbiddenError } from '@directus/errors';
+import { SchemaBuilder } from '@directus/schema-builder';
+import knex, { type Knex } from 'knex';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import { createTmpFile } from '@directus/utils/node';
+import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
 import { getService } from '../utils/get-service.js';
+import { createErrorTracker, getHeadingsForCsvExport, ImportService } from './import-export.js';
+import { NotificationsService } from './notifications.js';
+
+const cache: { importCount?: number } = {};
+
+vi.mock('../utils/store.js', () => ({
+	useStore: () => (callback: (store: any) => void) => {
+		callback({
+			get: (key: 'importCount') => cache[key],
+			set: (key: 'importCount', value: any) => {
+				cache[key] = value;
+			},
+		});
+	},
+}));
+
+vi.mock('../stores/notifications.js');
+vi.mock('./users.js');
 
 vi.mock('@directus/env', () => ({
 	useEnv: () => ({
 		MAX_IMPORT_ERRORS: 1000,
 		EMAIL_TEMPLATES_PATH: './templates',
 		EXTENSIONS_PATH: './extensions',
+		IMPORT_TIMEOUT: '1m',
+		IMPORT_MAX_CONCURRENCY: 10,
 	}),
 }));
 
@@ -30,15 +50,6 @@ vi.mock('../database/index.js', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
-
-vi.mock('@directus/utils/node', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('@directus/utils/node')>();
-
-	return {
-		...actual,
-		createTmpFile: vi.fn(),
-	};
-});
 
 test('Get the headings for CSV export from the field node tree', () => {
 	/**
@@ -691,13 +702,12 @@ describe('ImportService', () => {
 	let tracker: Tracker;
 	let service: ImportService;
 
-	const baseSchema = {
-		collections: {
-			test_collection: {
-				singleton: false,
-			},
-		},
-	} as any;
+	const baseSchema = new SchemaBuilder()
+		.collection('test_collection', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+		})
+		.build();
 
 	beforeEach(() => {
 		db = knex.default({ client: MockClient }) as unknown as Knex;
@@ -738,11 +748,6 @@ describe('ImportService', () => {
 			});
 
 			vi.mocked(validateAccess).mockResolvedValue();
-
-			vi.mocked(createTmpFile).mockResolvedValue({
-				path: '/tmp/test.csv',
-				cleanup: vi.fn().mockResolvedValue(undefined),
-			} as any);
 
 			vi.mocked(getService).mockReturnValue({
 				upsertOne: vi.fn().mockResolvedValue({ id: 1 }),
@@ -804,20 +809,161 @@ describe('ImportService', () => {
 				code: ErrorCode.UnsupportedMediaType,
 			});
 		});
-	});
 
-	describe('importCSV', () => {
-		let mockCleanup: ReturnType<typeof vi.fn>;
+		test('increases the importCount by one while importing', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: createDefaultAccountability(),
+			});
 
-		beforeEach(() => {
-			mockCleanup = vi.fn().mockResolvedValue(undefined);
+			const stream = new PassThrough();
 
-			vi.mocked(createTmpFile).mockResolvedValue({
-				path: '/tmp/test.csv',
-				cleanup: mockCleanup,
+			let resolve: any;
+
+			const importCSVPromise = new Promise((res) => {
+				resolve = res;
+			});
+
+			service.importCSV = async () => {
+				await importCSVPromise;
+			};
+
+			stream.push('test');
+
+			const promise = service.import('test_collection', 'text/csv', stream);
+
+			await setTimeout(1);
+
+			expect(cache.importCount).toEqual(1);
+
+			resolve();
+
+			await promise;
+
+			expect(cache.importCount).toEqual(0);
+		});
+
+		test('resets the counter even if import errors', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: createDefaultAccountability(),
+			});
+
+			const stream = new PassThrough();
+
+			let reject: any;
+
+			const importCSVPromise = new Promise((_res, rej) => {
+				reject = rej;
+			});
+
+			service.importCSV = async () => {
+				await importCSVPromise;
+			};
+
+			stream.push('test');
+
+			const promise = service.import('test_collection', 'text/csv', stream);
+
+			await setTimeout(1);
+
+			expect(cache.importCount).toEqual(1);
+
+			reject();
+
+			await expect(async () => await promise).rejects.toThrowError();
+
+			expect(cache.importCount).toEqual(0);
+		});
+
+		test('importing in background', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: {
+					...createDefaultAccountability(),
+					user: 'fake-user',
+				},
+			});
+
+			let resolve: any;
+
+			const notifyPromise = new Promise((res) => {
+				resolve = res;
+			});
+
+			NotificationsService.prototype.createOne = vi.fn().mockImplementation(() => {
+				resolve();
+			});
+
+			const stream = new PassThrough();
+
+			stream.push('test');
+
+			const promise = service.import('test_collection', 'text/csv', stream, { background: true });
+
+			stream.end('finish');
+
+			await expect(promise).resolves.toBeUndefined();
+
+			await notifyPromise;
+
+			expect(NotificationsService.prototype.createOne).toHaveBeenLastCalledWith({
+				message: `Hello Unknown User,\n\nYour import in test_collection has been successful.\n`,
+				recipient: 'fake-user',
+				sender: 'fake-user',
+				subject: 'Your import has been successful',
 			});
 		});
 
+		test('importing in background failing', async () => {
+			service = new ImportService({
+				knex: db,
+				schema: baseSchema,
+				accountability: {
+					...createDefaultAccountability(),
+					user: 'fake-user',
+				},
+			});
+
+			let resolve: any;
+
+			const notifyPromise = new Promise((res) => {
+				resolve = res;
+			});
+
+			NotificationsService.prototype.createOne = vi.fn().mockImplementation(() => {
+				resolve();
+			});
+
+			service.importCSV = async () => {
+				throw new Error();
+			};
+
+			const stream = new PassThrough();
+
+			stream.push('test');
+
+			const promise = service.import('test_collection', 'text/csv', stream, { background: true });
+
+			stream.end('finish');
+
+			await expect(promise).resolves.toBeUndefined();
+
+			await notifyPromise;
+
+			expect(NotificationsService.prototype.createOne).toHaveBeenLastCalledWith({
+				message: `Hello Unknown User,\n\nYour import in test_collection has failed.\n\n\n`,
+				recipient: 'fake-user',
+				sender: 'fake-user',
+				subject: 'Your import has failed',
+			});
+		});
+	});
+
+	describe('importCSV', () => {
 		test('successfully imports valid CSV data', async () => {
 			const mockUpsertOne = vi.fn().mockResolvedValue({ id: 1 });
 
@@ -841,8 +987,6 @@ describe('ImportService', () => {
 				{ id: '2', name: 'Jane Smith', email: 'jane@example.com' },
 				expect.any(Object),
 			);
-
-			expect(mockCleanup).toHaveBeenCalled();
 		});
 
 		test('handles CSV with nested field notation', async () => {
@@ -901,7 +1045,6 @@ describe('ImportService', () => {
 			);
 
 			expect(callCount).toBe(1000);
-			expect(mockCleanup).toHaveBeenCalled();
 		});
 
 		test('imports single row into singleton collection using upsertSingleton', async () => {
@@ -930,8 +1073,6 @@ describe('ImportService', () => {
 			expect(mockUpsertSingleton).toHaveBeenCalledTimes(1);
 
 			expect(mockUpsertSingleton).toHaveBeenCalledWith({ id: '999', name: 'Test' }, expect.any(Object));
-
-			expect(mockCleanup).toHaveBeenCalled();
 		});
 
 		test('rejects multiple rows for singleton collection', async () => {
@@ -959,8 +1100,6 @@ describe('ImportService', () => {
 				code: 'INVALID_PAYLOAD',
 				message: expect.stringContaining('Cannot import multiple records into singleton collection'),
 			});
-
-			expect(mockCleanup).toHaveBeenCalled();
 		});
 
 		test('stops immediately on error without field', async () => {
@@ -983,7 +1122,6 @@ describe('ImportService', () => {
 			]);
 
 			expect(mockUpsertOne).toHaveBeenCalledTimes(1);
-			expect(mockCleanup).toHaveBeenCalled();
 		});
 
 		test('handles empty CSV file', async () => {
@@ -999,7 +1137,6 @@ describe('ImportService', () => {
 			await service.importCSV('test_collection', stream);
 
 			expect(mockUpsertOne).not.toHaveBeenCalled();
-			expect(mockCleanup).toHaveBeenCalled();
 		});
 
 		test('throws Error on stream read failure', async () => {
@@ -1018,8 +1155,6 @@ describe('ImportService', () => {
 			await expect(service.importCSV('test_collection', errorStream)).rejects.toThrow(
 				'Error while retrieving import data',
 			);
-
-			expect(mockCleanup).toHaveBeenCalled();
 		});
 
 		test('calls buildFinalErrors and throws the result', async () => {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from './v-icon/v-icon.vue';
+
 interface Props {
 	/** The extension type of the file */
 	ext: string;
@@ -9,7 +11,7 @@ defineProps<Props>();
 
 <template>
 	<div class="icon" :class="{ right: ext.length >= 4 }">
-		<v-icon name="insert_drive_file" />
+		<VIcon name="insert_drive_file" />
 		<span class="label">{{ ext }}</span>
 	</div>
 </template>
@@ -25,7 +27,7 @@ defineProps<Props>();
 */
 
 .icon {
-	--v-icon-size: 64px;
+	--v-icon-size: 3.625rem;
 	--v-icon-color: var(--v-icon-file-color, var(--theme--primary));
 	color: var(--v-icon-file-color, var(--theme--primary));
 	position: relative;
@@ -35,10 +37,10 @@ defineProps<Props>();
 		text-transform: uppercase;
 		inset-inline-start: 50%;
 		inset-block-start: 55%;
-		font-size: 12px;
+		font-size: var(--v-icon-file-label-size, 0.6875rem);
 		font-weight: 800;
 		line-height: 1;
-		padding: 2px 0;
+		padding: 0.125rem 0;
 		text-align: center;
 		transform: translateX(-50%);
 
@@ -50,10 +52,10 @@ defineProps<Props>();
 	&.right {
 		.label {
 			background-color: var(--v-icon-file-background-color, var(--theme--background-normal));
-			inset-inline-start: calc(100% - 12px - 3ch);
+			inset-inline-start: calc(100% - var(--v-icon-file-label-size, 0.6875rem) - 3ch);
 			text-align: start;
 			transform: none;
-			padding-inline-end: 8px;
+			padding-inline-end: 0.4375rem;
 		}
 	}
 }

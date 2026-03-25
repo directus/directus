@@ -5,7 +5,7 @@
 
 import { systemCollectionNames } from '@directus/system-data';
 import knex from 'knex';
-import { MockClient, createTracker, type Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { vi } from 'vitest';
 
 /**

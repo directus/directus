@@ -1,12 +1,11 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-
+import type { Accountability } from '@directus/types';
+import { getRelation } from '@directus/utils';
+import knex from 'knex';
 import { expect, test, vi } from 'vitest';
+import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { Client_SQLite3 } from '../../run-ast/lib/apply-query/mock.js';
 import { convertWildcards } from './convert-wildcards.js';
-import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import type { Accountability } from '@directus/types';
-import knex from 'knex';
-import { getRelation } from '@directus/utils';
 
 vi.mock('../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js');
 

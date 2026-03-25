@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { APP_NUMERIC_STRING_TYPES } from '@/constants';
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
 import { isNil } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -38,7 +39,7 @@ const props = withDefaults(
 	},
 );
 
-const { t, n } = useI18n();
+const { t, n, locale } = useI18n();
 
 const matchedConditions = computed(() =>
 	(props.conditionalFormatting || []).filter(({ operator, value }) => {
@@ -46,10 +47,16 @@ const matchedConditions = computed(() =>
 			const left = String(props.value);
 			const right = String(value);
 			return matchString(left, right, operator);
-		} else if (props.type === 'float') {
+		} else if (props.type === 'float' || props.type === 'decimal') {
 			const left = parseFloat(String(props.value));
 			const right = parseFloat(String(value));
 			return matchNumber(left, right, operator);
+		} else if (props.type === 'bigInteger') {
+			try {
+				return matchNumber(BigInt(String(props.value)), BigInt(String(value)), operator);
+			} catch {
+				return false;
+			}
 		} else {
 			const left = parseInt(String(props.value));
 			const right = parseInt(String(value));
@@ -112,10 +119,16 @@ const displayValue = computed(() => {
 	value = decode(value);
 
 	if (props.format) {
-		if (['string', 'text', ...APP_NUMERIC_STRING_TYPES].includes(props.type)) {
-			value = formatTitle(value);
-		} else if (props.type === 'float') {
+		if (props.type === 'bigInteger') {
+			try {
+				value = new Intl.NumberFormat(locale.value).format(BigInt(value));
+			} catch {
+				// leave as-is if not a valid big integer string
+			}
+		} else if (props.type === 'float' || props.type === 'decimal') {
 			value = n(parseFloat(value));
+		} else if (['string', 'text'].includes(props.type)) {
+			value = formatTitle(value);
 		} else {
 			value = n(parseInt(value));
 		}
@@ -144,7 +157,9 @@ function matchString(left: string, right: string, operator: string) {
 	return;
 }
 
-function matchNumber(left: number, right: number, operator: string) {
+function matchNumber(left: number, right: number, operator: string): boolean | undefined;
+function matchNumber(left: bigint, right: bigint, operator: string): boolean | undefined;
+function matchNumber(left: number | bigint, right: number | bigint, operator: string) {
 	switch (operator) {
 		case 'eq':
 			return left === right;
@@ -165,7 +180,7 @@ function matchNumber(left: number, right: number, operator: string) {
 </script>
 
 <template>
-	<value-null v-if="displayValue === null || displayValue === undefined" />
+	<ValueNull v-if="displayValue === null || displayValue === undefined" />
 
 	<div
 		v-else
@@ -177,7 +192,7 @@ function matchNumber(left: number, right: number, operator: string) {
 		]"
 		:style="computedStyle"
 	>
-		<v-icon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
+		<VIcon v-if="computedFormat.icon" :name="computedFormat.icon" :color="computedFormat.color" left small />
 
 		<span class="value">
 			{{ displayValue }}
@@ -193,15 +208,15 @@ function matchNumber(left: number, right: number, operator: string) {
 
 	&.has-background,
 	&.has-border {
-		block-size: 28px;
-		padding: 0 10px;
-		font-size: 14px;
-		line-height: 28px;
-		border-radius: 24px;
+		block-size: 1.5625rem;
+		padding: 0 0.5625rem;
+		font-size: 0.8125rem;
+		line-height: 1.9231;
+		border-radius: 1.375rem;
 	}
 
 	&.has-border {
-		line-height: 26px;
+		line-height: 1.7692;
 	}
 
 	&.bold {
@@ -227,7 +242,7 @@ function matchNumber(left: number, right: number, operator: string) {
 
 	.v-icon {
 		flex-shrink: 0;
-		vertical-align: -3px;
+		vertical-align: -0.1875rem;
 	}
 }
 </style>

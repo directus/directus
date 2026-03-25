@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
+import { useCollection } from './use-collection';
 
 // Create a simplified test to verify our mocking approach works
 
@@ -271,9 +272,6 @@ vi.mock('./use-system', () => ({
 		useFieldsStore: () => mockFieldsStore,
 	}),
 }));
-
-// Import the function after mocking
-import { useCollection } from './use-collection';
 
 describe('useCollection', () => {
 	beforeEach(() => {

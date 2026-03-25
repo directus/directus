@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useCollectionsStore } from '@/stores/collections';
 import { computed } from 'vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import { useCollectionsStore } from '@/stores/collections';
 
 const props = withDefaults(
 	defineProps<{
@@ -44,7 +45,7 @@ const items = computed(() => {
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:disabled="disabled"
 		:show-deselect="allowNone"

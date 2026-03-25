@@ -1,6 +1,6 @@
+import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
 import getDatabase from '../database/index.js';
-import { InvalidPayloadError } from '@directus/errors';
 import { ItemsService } from './items.js';
 
 export class TranslationsService extends ItemsService {

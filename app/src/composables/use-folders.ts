@@ -1,6 +1,6 @@
+import { computed, ref, Ref, watch } from 'vue';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Ref, computed, ref, watch } from 'vue';
 
 export type FolderRaw = {
 	id: string;

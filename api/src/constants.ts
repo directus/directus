@@ -1,9 +1,9 @@
-import type { CookieOptions } from 'express';
-import type { TransformationParams } from '@directus/types';
-import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
+import type { TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
+import type { CookieOptions } from 'express';
+import { getMilliseconds } from './utils/get-milliseconds.js';
 
 const env = useEnv();
 
@@ -61,16 +61,6 @@ export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
-export const GENERATE_SPECIAL = [
-	'uuid',
-	'date-created',
-	'date-updated',
-	'role-created',
-	'role-updated',
-	'user-created',
-	'user-updated',
-] as const;
-
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
@@ -104,11 +94,16 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/avif',
 ];
 
-/** Resumable uploads */
+/** File uploads */
+export const FILE_UPLOADS = {
+	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
+	MAX_CONCURRENCY: Number(env['FILES_MAX_UPLOAD_CONCURRENCY']),
+};
+
+/** Resumable uploads (TUS) */
 export const RESUMABLE_UPLOADS = {
 	ENABLED: toBoolean(env['TUS_ENABLED']),
 	CHUNK_SIZE: bytes.parse(env['TUS_CHUNK_SIZE'] as string),
-	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
 	EXPIRATION_TIME: getMilliseconds(env['TUS_UPLOAD_EXPIRATION'], 600_000 /* 10min */),
 	SCHEDULE: String(env['TUS_CLEANUP_SCHEDULE'] as string),
 };

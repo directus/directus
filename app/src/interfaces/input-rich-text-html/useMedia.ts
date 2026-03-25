@@ -1,6 +1,6 @@
+import { computed, Ref, ref, watch } from 'vue';
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
-import { computed, Ref, ref, watch } from 'vue';
 
 type MediaSelection = {
 	sourceUrl: string;

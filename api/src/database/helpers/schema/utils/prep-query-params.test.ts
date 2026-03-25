@@ -1,4 +1,4 @@
-import { test, expect } from 'vitest';
+import { expect, test } from 'vitest';
 import { prepQueryParams } from './prep-query-params.js';
 
 const format = (index: number) => `$${index + 1}`;

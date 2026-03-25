@@ -1,10 +1,10 @@
-import * as useExtension from '@/composables/use-extension';
 import type { InterfaceConfig } from '@directus/extensions';
 import type { DeepPartial, Field } from '@directus/types';
 import { expect, it, vi } from 'vitest';
 import { ref, type Ref } from 'vue';
 import type { FormField } from '../types';
 import { getFormFields } from './get-form-fields';
+import * as useExtension from '@/composables/use-extension';
 
 vi.mock('@/utils/get-default-interface-for-type', () => ({
 	getDefaultInterfaceForType: () => 'input',

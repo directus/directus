@@ -1,6 +1,6 @@
-import { useUserStore } from '@/stores/user';
 import { Accountability, Role, User } from '@directus/types';
 import { parsePreset as parsePresetShared } from '@directus/utils';
+import { useUserStore } from '@/stores/user';
 
 export function parsePreset(preset: Record<string, any> | null): Record<string, any> {
 	const { currentUser } = useUserStore();

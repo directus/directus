@@ -7,7 +7,7 @@ interface Props {
 	/** What icon to render above the title */
 	icon?: string | false;
 	/** Styling of the info */
-	type?: 'info' | 'success' | 'warning' | 'danger';
+	type?: 'info' | 'success' | 'warning' | 'danger' | 'primary';
 	/** Displays the info centered */
 	center?: boolean;
 }
@@ -22,7 +22,7 @@ withDefaults(defineProps<Props>(), {
 <template>
 	<div class="v-info" :class="[type, { center }]">
 		<div v-if="icon !== false" class="icon">
-			<v-icon large :name="icon" />
+			<VIcon large :name="icon" />
 		</div>
 		<h2 class="title type-title">{{ title }}</h2>
 		<p class="content"><slot /></p>
@@ -42,9 +42,9 @@ withDefaults(defineProps<Props>(), {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 100px;
-	block-size: 100px;
-	margin-block-end: 16px;
+	inline-size: 5.625rem;
+	block-size: 5.625rem;
+	margin-block-end: 0.875rem;
 	border-radius: 50%;
 }
 
@@ -68,17 +68,22 @@ withDefaults(defineProps<Props>(), {
 	background-color: var(--danger-alt);
 }
 
+.primary .icon {
+	color: var(--theme--primary);
+	background-color: var(--primary-alt);
+}
+
 .title {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .content {
-	max-inline-size: 300px;
+	max-inline-size: 16.875rem;
 	color: var(--theme--foreground-subdued);
-	line-height: 22px;
+	line-height: 1.25rem;
 
 	&:not(:last-child) {
-		margin-block-end: 24px;
+		margin-block-end: 1.375rem;
 	}
 }
 

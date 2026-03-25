@@ -2,7 +2,7 @@
 	--v-list-padding: 0;
 
 	@if $deleteable {
-		.v-list-item.deleted {
+		.v-list-item.deleted:not(.disabled) {
 			--v-list-item-border-color: var(--danger-25);
 			--v-list-item-border-color-hover: var(--danger-50);
 			--v-list-item-background-color: var(--danger-10);
@@ -22,7 +22,7 @@
 @mixin list-interface-item-actions($item-link: false) {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 0.25rem;
 
 	::v-deep(.v-icon) {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
@@ -37,21 +37,16 @@
 			&:hover .v-icon {
 				color: var(--theme--form--field--input--foreground);
 			}
-
-			&.disabled {
-				pointer-events: none;
-				visibility: hidden;
-			}
 		}
 	}
 }
 
 @mixin list-interface-actions($pagination: false) {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 
 	@if $pagination {
 		.v-pagination {

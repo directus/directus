@@ -1,10 +1,29 @@
 <script setup lang="ts">
-import { getAssetUrl } from '@/utils/get-asset-url';
 import type { Field, PrimaryKey } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
+import VAvatar from '@/components/v-avatar.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
+import DisplayDatetime from '@/displays/datetime/datetime.vue';
+import DisplayLabels from '@/displays/labels/labels.vue';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import RenderDisplay from '@/views/private/components/render-display.vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -133,12 +152,12 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 		<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 
 		<template v-else>
-			<v-notice v-if="atLimit" type="warning" class="limit">
+			<VNotice v-if="atLimit" type="warning" class="limit">
 				{{ $t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
-			</v-notice>
+			</VNotice>
 
 			<div class="kanban">
-				<draggable
+				<Draggable
 					:model-value="groupedItems"
 					group="groups"
 					item-key="id"
@@ -159,34 +178,30 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
 								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
-									<v-menu show-arrow placement="bottom-end">
+									<VMenu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
-											<v-icon name="more_horiz" clickable @click="toggle" />
+											<VIcon name="more_horiz" clickable @click="toggle" />
 										</template>
 
-										<v-list>
-											<v-list-item
-												:disabled="!canUpdateGroupTitle || selectMode"
-												clickable
-												@click="openEditGroup(group)"
-											>
-												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-												<v-list-item-content>{{ $t('layouts.kanban.edit_group') }}</v-list-item-content>
-											</v-list-item>
-											<v-list-item
+										<VList>
+											<VListItem :disabled="!canUpdateGroupTitle || selectMode" clickable @click="openEditGroup(group)">
+												<VListItemIcon><VIcon name="edit" /></VListItemIcon>
+												<VListItemContent>{{ $t('layouts.kanban.edit_group') }}</VListItemContent>
+											</VListItem>
+											<VListItem
 												:disabled="!canDeleteGroups || selectMode"
 												class="danger"
 												clickable
 												@click="deleteGroup(group.id)"
 											>
-												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-												<v-list-item-content>{{ $t('layouts.kanban.delete_group') }}</v-list-item-content>
-											</v-list-item>
-										</v-list>
-									</v-menu>
+												<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+												<VListItemContent>{{ $t('layouts.kanban.delete_group') }}</VListItemContent>
+											</VListItem>
+										</VList>
+									</VMenu>
 								</div>
 							</div>
-							<draggable
+							<Draggable
 								:model-value="group.items"
 								group="items"
 								draggable=".item"
@@ -204,7 +219,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 										@click="onClick({ item: element, event: $event })"
 									>
 										<div v-if="element.title" class="title">
-											<render-display
+											<RenderDisplay
 												v-if="fieldDisplay.titleField"
 												v-bind="fieldDisplay.titleField"
 												:value="element.title"
@@ -212,19 +227,19 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 										</div>
 										<img v-if="element.image" class="image" :src="element.image" draggable="false" />
 										<div v-if="element.text" class="text">
-											<render-display
+											<RenderDisplay
 												v-if="fieldDisplay.textField"
 												v-bind="fieldDisplay.textField"
 												:value="element.text"
 											/>
 										</div>
-										<display-labels
+										<DisplayLabels
 											v-if="element.tags"
 											:value="element.tags"
 											:type="Array.isArray(element.tags) ? 'csv' : 'json'"
 										/>
 										<div class="bottom">
-											<display-datetime
+											<DisplayDatetime
 												v-if="element.date"
 												v-bind="
 													fieldDisplay.dateField?.display === 'datetime'
@@ -238,38 +253,38 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 												<span v-if="element.users.length > 3" class="avatar-overflow">
 													+{{ element.users.length - 3 }}
 												</span>
-												<v-avatar
+												<VAvatar
 													v-for="user in element.users.slice(0, 3)"
 													:key="user.id"
 													v-tooltip.bottom="`${user.first_name} ${user.last_name}`"
 													class="avatar"
 												>
-													<v-image v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
-													<v-icon v-else name="person" />
-												</v-avatar>
+													<VImage v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
+													<VIcon v-else name="person" />
+												</VAvatar>
 											</div>
 										</div>
 									</div>
 								</template>
-							</draggable>
+							</Draggable>
 						</div>
 					</template>
-				</draggable>
+				</Draggable>
 
-				<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()" @apply="saveChanges">
-					<v-card>
-						<v-card-title>
+				<VDialog :model-value="editDialogOpen !== null" @esc="cancelChanges()" @apply="saveChanges">
+					<VCard>
+						<VCardTitle>
 							{{ editDialogOpen === '+' ? $t('layouts.kanban.add_group') : $t('layouts.kanban.edit_group') }}
-						</v-card-title>
-						<v-card-text>
-							<v-input v-model="editTitle" :placeholder="$t('layouts.kanban.add_group_placeholder')" />
-						</v-card-text>
-						<v-card-actions>
-							<v-button secondary @click="cancelChanges()">{{ $t('cancel') }}</v-button>
-							<v-button @click="saveChanges">{{ editDialogOpen === '+' ? $t('create') : $t('save') }}</v-button>
-						</v-card-actions>
-					</v-card>
-				</v-dialog>
+						</VCardTitle>
+						<VCardText>
+							<VInput v-model="editTitle" :placeholder="$t('layouts.kanban.add_group_placeholder')" />
+						</VCardText>
+						<VCardActions>
+							<VButton secondary @click="cancelChanges()">{{ $t('cancel') }}</VButton>
+							<VButton @click="saveChanges">{{ editDialogOpen === '+' ? $t('create') : $t('save') }}</VButton>
+						</VCardActions>
+					</VCard>
+				</VDialog>
 			</div>
 		</template>
 	</div>
@@ -277,16 +292,15 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 <style lang="scss" scoped>
 .kanban-layout {
-	--limit-notice-height: 0px;
-	--limit-notice-margin-bottom: 24px;
-	--header-bar-margin: 24px;
+	--limit-notice-height: 0;
+	--limit-notice-margin-bottom: 1.375rem;
+	--header-bar-margin: 1.375rem;
 
-	block-size: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
+	block-size: 100%;
 	padding: var(--content-padding);
-	padding-block-start: 0;
 
 	&:has(> .limit) {
-		--limit-notice-height: calc(60px + var(--limit-notice-margin-bottom));
+		--limit-notice-height: calc(3.375rem + var(--limit-notice-margin-bottom));
 	}
 
 	.limit {
@@ -298,7 +312,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	display: flex;
 	block-size: 100%;
 
-	--user-spacing: 16px;
+	--user-spacing: 0.875rem;
 
 	.draggable {
 		display: flex;
@@ -306,12 +320,12 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 		.group {
 			display: flex;
 			flex-direction: column;
-			inline-size: 320px;
-			padding: 8px 0;
+			inline-size: 18rem;
+			padding: 0.4375rem 0;
 			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
-			margin-inline-end: 20px;
+			margin-inline-end: 1.125rem;
 			transition: border-color var(--transition) var(--fast);
 
 			&:not(.disabled).active {
@@ -322,11 +336,11 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			.header {
 				display: flex;
 				justify-content: space-between;
-				margin: 0 16px 8px;
+				margin: 0 0.875rem 0.4375rem;
 				font-weight: 700;
 
 				.title {
-					max-inline-size: calc(100% - 60px);
+					max-inline-size: calc(100% - 3.375rem);
 					display: flex;
 
 					.title-content {
@@ -335,29 +349,29 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						color: var(--theme--foreground-accent);
-						margin-inline-end: 6px;
+						margin-inline-end: 0.3125rem;
 					}
 				}
 
 				.badge {
 					display: inline-flex;
 					justify-content: center;
-					padding: 0 6px;
-					block-size: 20px;
-					min-inline-size: 20px;
-					margin-block-start: 2px;
+					padding: 0 0.3125rem;
+					block-size: 1.125rem;
+					min-inline-size: 1.125rem;
+					margin-block-start: 0.125rem;
 					text-align: center;
-					font-size: 12px;
-					line-height: 20px;
+					font-size: 0.6875rem;
+					line-height: 1.6364;
 					background-color: var(--theme--background-accent);
-					border-radius: 12px; // var(--theme--border-radius);
+					border-radius: 0.6875rem; // var(--theme--border-radius);
 				}
 
 				.actions {
 					color: var(--theme--foreground-subdued);
 
 					.v-icon {
-						margin-inline-start: 4px;
+						margin-inline-start: 0.25rem;
 						transition: color var(--transition) var(--fast);
 					}
 
@@ -373,8 +387,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 				.item {
 					display: block;
-					margin: 2px 16px 6px;
-					padding: 12px 16px;
+					margin: 0.125rem 0.875rem 0.3125rem;
+					padding: 0.6875rem 0.875rem;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
 					cursor: pointer;
@@ -396,13 +410,13 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					margin-block-end: 4px;
+					margin-block-end: 0.25rem;
 				}
 
 				.title,
 				.text {
-					line-height: 24px;
-					block-size: 24px;
+					line-height: 1.375rem;
+					block-size: 1.375rem;
 
 					& * {
 						line-height: inherit;
@@ -422,24 +436,24 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				.image {
 					inline-size: 100%;
 					border-radius: var(--theme--border-radius);
-					margin-block-start: 4px;
-					max-block-size: 300px;
+					margin-block-start: 0.25rem;
+					max-block-size: 16.875rem;
 				}
 
 				.display-labels {
 					display: flex;
 					flex-wrap: wrap;
-					margin-block-start: 6px;
+					margin-block-start: 0.3125rem;
 
 					:deep(.v-chip) {
 						border: none;
 						background-color: var(--theme--background-normal);
-						font-size: 12px;
+						font-size: 0.6875rem;
 						font-weight: 600;
-						margin-block-start: 4px;
-						margin-inline-end: 4px;
-						block-size: 20px;
-						padding: 0 6px;
+						margin-block-start: 0.25rem;
+						margin-inline-end: 0.25rem;
+						block-size: 1.125rem;
+						padding: 0 0.3125rem;
 					}
 					:deep(.v-chip + .v-chip) {
 						margin-inline-start: 0;
@@ -451,14 +465,14 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					margin-block: 8px 2px;
+					margin-block: 0.4375rem 0.125rem;
 
 					.datetime {
 						display: inline-block;
 						color: var(--theme--foreground-subdued);
-						font-size: 13px;
+						font-size: 0.75rem;
 						font-weight: 600;
-						line-height: 24px;
+						line-height: 1.8333;
 					}
 
 					.avatars {
@@ -467,17 +481,17 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						flex-direction: row-reverse;
 						.avatar {
 							margin-inline-start: calc(var(--user-spacing) * -1);
-							border-radius: 24px;
+							border-radius: 1.375rem;
 							border: 4px solid var(--theme--background);
-							block-size: 32px;
-							inline-size: 32px;
-							margin-block: -4px;
+							block-size: 1.8125rem;
+							inline-size: 1.8125rem;
+							margin-block: -0.25rem;
 						}
 
 						.avatar-overflow {
 							align-self: center;
 							color: var(--theme--foreground-subdued);
-							margin-inline-start: 2px;
+							margin-inline-start: 0.125rem;
 						}
 					}
 				}
@@ -487,7 +501,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 	.add-group {
 		cursor: pointer;
-		padding: 8px;
+		padding: 0.4375rem;
 		border: var(--theme--border-width) dashed var(--theme--border-color-subdued);
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);

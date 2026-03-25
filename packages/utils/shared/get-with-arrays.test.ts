@@ -1,5 +1,4 @@
-import { test, expect } from 'vitest';
-
+import { expect, test } from 'vitest';
 import { get } from './get-with-arrays.js';
 
 test('Returns static value', () => {

@@ -1,5 +1,5 @@
-import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import { describe, expect, it } from 'vitest';
+import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 
 describe('getSystemCollectionRoute', () => {
 	it('Returns an empty string when collection is not a system collection', () => {
@@ -79,5 +79,23 @@ describe('getItemRoute', async () => {
 		const primaryKey = 123;
 
 		expect(getItemRoute(collection, primaryKey)).toBe('/settings/project');
+	});
+
+	it('Returns the route with version query param when versionKey is provided', () => {
+		const primaryKey = 123;
+		const versionKey = 'v1';
+
+		expect(getItemRoute(collection, primaryKey)).toBe(`${collectionRoute}/${primaryKey}`);
+
+		expect(getItemRoute(collection, primaryKey, versionKey)).toBe(
+			`${collectionRoute}/${primaryKey}?version=${versionKey}`,
+		);
+	});
+
+	it('Returns the route without version query param when versionKey is null or undefined', () => {
+		const primaryKey = 123;
+
+		expect(getItemRoute(collection, primaryKey, null)).toBe(`${collectionRoute}/${primaryKey}`);
+		expect(getItemRoute(collection, primaryKey, undefined)).toBe(`${collectionRoute}/${primaryKey}`);
 	});
 });

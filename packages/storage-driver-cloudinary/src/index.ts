@@ -1,13 +1,13 @@
-import type { TusDriver } from '@directus/storage';
-import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
-import { normalizePath } from '@directus/utils';
 import { Blob, Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
+import { normalizePath } from '@directus/utils';
 import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
-import { FormData, fetch } from 'undici';
+import { fetch, FormData } from 'undici';
 import { IMAGE_EXTENSIONS, MINIMUM_CHUNK_SIZE, VIDEO_EXTENSIONS } from './constants.js';
 
 export type DriverCloudinaryConfig = {
@@ -129,7 +129,7 @@ export class DriverCloudinary implements TusDriver {
 		return `Basic ${base64}`;
 	}
 
-	async read(filepath: string, options?: ReadOptions) {
+	async read(filepath: string, options?: ReadOptions): Promise<Readable> {
 		const { range, version } = options ?? {};
 
 		const resourceType = this.getResourceType(filepath);
@@ -161,14 +161,17 @@ export class DriverCloudinary implements TusDriver {
 		return Readable.fromWeb(response.body);
 	}
 
-	async stat(filepath: string) {
+	async stat(filepath: string): Promise<{
+		size: number;
+		modified: Date;
+	}> {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
 		const folder = this.getFolderPath(fullPath);
 
 		const parameters = {
-			public_id: join(folder, publicId),
+			public_id: normalizePath(join(folder, publicId), { removeLeading: true }),
 			type: 'upload',
 			api_key: this.apiKey,
 			timestamp: this.getTimestamp(),
@@ -199,7 +202,7 @@ export class DriverCloudinary implements TusDriver {
 		return { size: bytes, modified: new Date(created_at) };
 	}
 
-	async exists(filepath: string) {
+	async exists(filepath: string): Promise<boolean> {
 		try {
 			await this.stat(filepath);
 			return true;
@@ -208,7 +211,7 @@ export class DriverCloudinary implements TusDriver {
 		}
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		const fullSrc = this.fullPath(src);
 		const fullDest = this.fullPath(dest);
 		const srcPublicId = this.getPublicId(fullSrc);
@@ -248,12 +251,12 @@ export class DriverCloudinary implements TusDriver {
 		}
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		const stream = await this.read(src);
 		await this.write(dest, stream);
 	}
 
-	async write(filepath: string, content: Readable) {
+	async write(filepath: string, content: Readable): Promise<void> {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const folderPath = this.getFolderPath(fullPath);
@@ -386,7 +389,7 @@ export class DriverCloudinary implements TusDriver {
 		}
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
@@ -397,7 +400,7 @@ export class DriverCloudinary implements TusDriver {
 			timestamp: this.getTimestamp(),
 			api_key: this.apiKey,
 			resource_type: resourceType,
-			public_id: join(folderPath, publicId),
+			public_id: normalizePath(join(folderPath, publicId), { removeLeading: true }),
 		};
 
 		const signature = this.getFullSignature(parameters);
@@ -414,7 +417,7 @@ export class DriverCloudinary implements TusDriver {
 		});
 	}
 
-	async *list(prefix = '') {
+	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
 		const fullPath = this.fullPath(prefix);
 
 		let nextCursor = '';
@@ -455,17 +458,22 @@ export class DriverCloudinary implements TusDriver {
 		} while (nextCursor);
 	}
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 
-	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext) {
+	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
 		context.metadata!['timestamp'] = this.getTimestamp();
 
 		return context;
 	}
 
-	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		context: ChunkedUploadContext,
+	): Promise<number> {
 		const fullPath = this.fullPath(filepath);
 		const folderPath = this.getFolderPath(fullPath);
 		const resourceType = this.getResourceType(filepath);
@@ -509,9 +517,9 @@ export class DriverCloudinary implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {}
 
-	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
 		await this.delete(filepath);
 	}
 }

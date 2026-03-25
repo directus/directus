@@ -3,8 +3,11 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
-import * as getSchemaModule from '../utils/get-schema.js';
 import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
+import * as getSchemaModule from '../utils/get-schema.js';
+import { CollectionsService } from './collections.js';
+import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -31,7 +34,7 @@ vi.mock('../emitter.js', async () => {
 });
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../test-utils/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
@@ -78,10 +81,6 @@ vi.mock('./fields/get-collection-relation-list.js', () => ({
 vi.mock('./fields/get-collection-meta-updates.js', () => ({
 	getCollectionMetaUpdates: vi.fn().mockReturnValue([]),
 }));
-
-import { CollectionsService } from './collections.js';
-import { FieldsService } from './fields.js';
-import { ItemsService } from './items.js';
 
 const schema = new SchemaBuilder()
 	.collection('directus_collections', (c) => {
@@ -148,6 +147,24 @@ describe('Integration Tests', () => {
 
 				expect(result).toBe('new_collection');
 				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('new_collection', expect.any(Function));
+			});
+
+			test('should parse collection name before creating', async () => {
+				tracker.on.select('directus_collections').response([]);
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+
+				const parseCollectionNameSpy = vi
+					.spyOn(service.helpers.schema, 'parseCollectionName')
+					.mockResolvedValue('parsed_collection_name');
+
+				const result = await service.createOne({
+					collection: 'ORIGINAL_COLLECTION',
+					schema: {},
+				});
+
+				expect(parseCollectionNameSpy).toHaveBeenCalledWith('ORIGINAL_COLLECTION');
+				expect(result).toBe('parsed_collection_name');
+				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('parsed_collection_name', expect.any(Function));
 			});
 
 			test('should create collection with meta only', async () => {

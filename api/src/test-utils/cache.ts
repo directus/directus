@@ -15,13 +15,13 @@ import { vi } from 'vitest';
  * ```typescript
  * // Standard usage for vi.mock()
  * vi.mock('../cache.js', async () => {
- *   const { mockCache } = await import('../__mocks__/cache.js');
+ *   const { mockCache } = await import('../test-utils/cache.js');
  *   return mockCache();
  * });
  *
  * // Testing cache clearing with spies
  * import { getCache } from '../cache.js';
- * import { mockCache } from '../__mocks__/cache.js';
+ * import { mockCache } from '../test-utils/cache.js';
  *
  * test('should clear cache after update', async () => {
  *   const { spies } = mockCache();

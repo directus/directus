@@ -126,7 +126,11 @@ export function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Compo
 		},
 		emits: WRITABLE_PROPS.map((prop) => `update:${prop}` as const),
 		setup(props, { emit }) {
-			const state: Record<string, unknown> = reactive({ ...layout.setup(props, { emit }), ...toRefs(props) });
+			const state: Record<string, unknown> = reactive({
+				...layout.setup(props, { emit }),
+				...toRefs(props),
+				sidebarShadow: layout.sidebarShadow ?? false,
+			});
 
 			for (const key in state) {
 				state[`onUpdate:${key}`] = (value: unknown) => {

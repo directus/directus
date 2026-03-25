@@ -1,9 +1,9 @@
-import { InvalidPayloadError, createError } from '@directus/errors';
+import { createError, InvalidPayloadError } from '@directus/errors';
 import { type Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { ZodError } from 'zod';
 import { useLogger } from '../logger/index.js';
-import { WebSocketError, handleWebSocketError } from './errors.js';
+import { handleWebSocketError, WebSocketError } from './errors.js';
 import type { WebSocketClient } from './types.js';
 
 const TestError = createError('test', '123', 200);

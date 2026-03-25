@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useSync } from '@directus/composables';
 import type { Permission, Policy } from '@directus/types';
-import { ref, computed, useId } from 'vue';
+import { computed, ref, useId } from 'vue';
 import AppMinimal from './app-minimal.vue';
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VNotice from '@/components/v-notice.vue';
+import { type FieldNode, useFieldTree } from '@/composables/use-field-tree';
 
 type TreeChoice = {
 	text: string;
@@ -126,14 +128,14 @@ function useExpandCollapseAll() {
 
 <template>
 	<div>
-		<v-notice>
+		<VNotice>
 			{{
 				$t('fields_for_policy', {
 					policy: policy ? policy.name : $t('public_label'),
 					action: $t(permission.action).toLowerCase(),
 				})
 			}}
-		</v-notice>
+		</VNotice>
 
 		<div class="label-wrapper">
 			<div :id="labelId" class="type-label">{{ $t('field', 0) }}</div>
@@ -146,7 +148,7 @@ function useExpandCollapseAll() {
 			</div>
 		</div>
 
-		<v-checkbox-tree
+		<VCheckboxTree
 			class="permissions-field-tree"
 			:model-value="selectedValues"
 			:aria-labelledby="labelId"
@@ -157,13 +159,13 @@ function useExpandCollapseAll() {
 			@group-toggle="openGroups = null"
 		/>
 
-		<app-minimal :value="appMinimal" />
+		<AppMinimal :value="appMinimal" />
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .label-wrapper {
@@ -173,7 +175,7 @@ function useExpandCollapseAll() {
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .expand-collapse-action {
@@ -191,7 +193,7 @@ function useExpandCollapseAll() {
 }
 
 .permissions-field-tree {
-	--v-list-padding: 20px 4px;
+	--v-list-padding: 1.125rem 0.25rem;
 
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

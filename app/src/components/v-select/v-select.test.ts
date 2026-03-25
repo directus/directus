@@ -1,11 +1,13 @@
-import { Focus } from '@/__utils__/focus';
-import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import VList from '../v-list.vue';
+import SelectListItemGroup from './SelectListItemGroup.vue';
 import VSelect from './v-select.vue';
+import { Focus } from '@/__utils__/focus';
+import { Tooltip } from '@/__utils__/tooltip';
+import type { GlobalMountOptions } from '@/__utils__/types';
 
 vi.mock('lodash', async () => {
 	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
@@ -69,6 +71,7 @@ const global: GlobalMountOptions = {
 	plugins: [i18n],
 	directives: {
 		Focus,
+		Tooltip,
 	},
 };
 
@@ -103,6 +106,132 @@ test('should render with string items', () => {
 	});
 
 	expect(wrapper.html()).toMatchSnapshot();
+});
+
+describe('SelectListItemGroup', () => {
+	const VListGroup = {
+		template: `<div class="v-list-group" @click="$emit('click')"><slot name="activator" /><slot /></div>`,
+	};
+
+	const groupGlobal: GlobalMountOptions = {
+		stubs: {
+			'v-list-group': VListGroup,
+			'v-list-item-icon': true,
+			'v-list-item-content': true,
+			'v-checkbox': true,
+			'v-icon': true,
+			'select-list-item': true,
+		},
+		plugins: [i18n],
+	};
+
+	test('should emit value when item has selectable: true without groupSelectable', async () => {
+		const item = {
+			text: 'Selectable Parent',
+			value: 'parent-1',
+			selectable: true,
+			children: [{ text: 'Child 1', value: 'child-1' }],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['parent-1']);
+	});
+
+	test('should not emit value when item has no selectable and groupSelectable is false', async () => {
+		const item = {
+			text: 'Non-selectable Group',
+			value: 'group-1',
+			children: [{ text: 'Child 1', value: 'child-1' }],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false, groupSelectable: false },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+	});
+
+	test('should emit value when groupSelectable is true', async () => {
+		const item = {
+			text: 'Group',
+			value: 'group-1',
+			children: [{ text: 'Child 1', value: 'child-1' }],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false, groupSelectable: true },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['group-1']);
+	});
+
+	test('should not emit value when nonEditable is true even if selectable', async () => {
+		const item = {
+			text: 'Selectable Parent',
+			value: 'parent-1',
+			selectable: true,
+			children: [{ text: 'Child 1', value: 'child-1' }],
+		};
+
+		const wrapper = mount(SelectListItemGroup, {
+			props: { item, modelValue: null, multiple: false, nonEditable: true },
+			global: groupGlobal,
+		});
+
+		await wrapper.find('.v-list-group').trigger('click');
+		expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+	});
+});
+
+describe('attached and showArrow props', () => {
+	const items = [{ text: 'Item 1', value: 'item1' }];
+
+	test('inline=false (default) → attached=true, showArrow=false', () => {
+		const wrapper = mount(VSelect, { props: { items }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('true');
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('false');
+	});
+
+	test('inline=true → attached=false, showArrow=true', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('false');
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('true');
+	});
+
+	test('explicit attached=true overrides inline=true default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true, attached: true }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('true');
+	});
+
+	test('explicit attached=false overrides inline=false default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: false, attached: false }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('false');
+	});
+
+	test('explicit showArrow=true overrides inline=false default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: false, showArrow: true }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('true');
+	});
+
+	test('explicit showArrow=false overrides inline=true default', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true, showArrow: false }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('false');
+	});
+
+	test('inline=true with attached=true and showArrow=false', () => {
+		const wrapper = mount(VSelect, { props: { items, inline: true, attached: true, showArrow: false }, global });
+		expect(wrapper.find('#v-menu-stub').attributes('attached')).toBe('true');
+		expect(wrapper.find('#v-menu-stub').attributes('show-arrow')).toBe('false');
+	});
 });
 
 describe('should hide items not matching search value', () => {

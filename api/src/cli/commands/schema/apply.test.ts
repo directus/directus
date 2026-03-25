@@ -1,14 +1,19 @@
-import { DiffKind } from '@directus/types';
+import { promises as fs } from 'fs';
+import path from 'path';
 import type { Snapshot, SnapshotDiff, SnapshotField, SnapshotRelation, SnapshotSystemField } from '@directus/types';
 import type { ApiCollection } from '@directus/types';
+import { DiffKind } from '@directus/types';
 import type { Diff } from 'deep-diff';
-import { promises as fs } from 'fs';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import path from 'path';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
+import { useLogger } from '../../../logger/index.js';
+import { applySnapshot } from '../../../utils/apply-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
 import { apply, filterSnapshotDiff, formatPath, formatRelatedCollection } from './apply.js';
 
 vi.mock('inquirer');
@@ -17,12 +22,6 @@ vi.mock('../../../logger/index.js');
 vi.mock('../../../utils/apply-snapshot.js');
 vi.mock('../../../utils/get-snapshot-diff.js');
 vi.mock('../../../utils/get-snapshot.js');
-
-import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
-import { useLogger } from '../../../logger/index.js';
-import { applySnapshot } from '../../../utils/apply-snapshot.js';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 class Client_PG extends MockClient {}
 

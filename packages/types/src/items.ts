@@ -1,7 +1,7 @@
-import type { EventContext } from './events.js';
-import type { UserIntegrityCheckFlag } from './users.js';
-import type { PermissionsAction } from './permissions.js';
 import type { DirectusError } from './error.js';
+import type { EventContext } from './events.js';
+import type { PermissionsAction } from './permissions.js';
+import type { UserIntegrityCheckFlag } from './users.js';
 
 export type Item = Record<string, any>;
 
@@ -91,7 +91,7 @@ export type MutationOptions = {
 	/*
 	 * The validation error to throw right before the mutation takes place
 	 */
-	preMutationError?: DirectusError | undefined;
+	preMutationError?: DirectusError<unknown> | undefined;
 
 	bypassAutoIncrementSequenceReset?: boolean;
 

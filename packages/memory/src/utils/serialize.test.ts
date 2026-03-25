@@ -18,3 +18,8 @@ test.each(cases)('%s', (_description, input) => {
 
 	expect(deserialized).toEqual(input);
 });
+
+test('deserialize handles empty buffer', () => {
+	const result = deserialize(new Uint8Array());
+	expect(result).toBeUndefined();
+});

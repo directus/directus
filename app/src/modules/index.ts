@@ -1,10 +1,10 @@
+import type { ModuleConfig } from '@directus/extensions';
+import { sortBy } from 'lodash';
+import { shallowRef, type ShallowRef } from 'vue';
 import { router } from '@/router';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import RouterPass from '@/utils/router-passthrough';
-import type { ModuleConfig } from '@directus/extensions';
-import { sortBy } from 'lodash';
-import { shallowRef, type ShallowRef } from 'vue';
 
 export function getInternalModules(): ModuleConfig[] {
 	const modules = import.meta.glob<ModuleConfig>('./*/index.ts', { import: 'default', eager: true });

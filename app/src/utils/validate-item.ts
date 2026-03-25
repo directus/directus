@@ -1,20 +1,22 @@
-import { useRelationsStore } from '@/stores/relations';
+import { Field, LogicalFilterAND } from '@directus/types';
+import { validatePayload } from '@directus/utils';
 import {
 	FailedValidationError,
 	FailedValidationErrorExtensions,
 	joiValidationErrorItemToErrorExtensions,
 } from '@directus/validation';
-import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
-import { validatePayload } from '@directus/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
+import { parseFilter } from './parse-filter';
+import { useRelationsStore } from '@/stores/relations';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 
 export function validateItem(
 	item: Record<string, any>,
 	fields: Field[],
 	isNew: boolean,
 	includeCustomValidations = false,
-	currentVersion: ContentVersion | null = null,
+	currentVersion: ContentVersionMaybeNew | null = null,
 ): FailedValidationErrorExtensions[] {
 	const relationsStore = useRelationsStore();
 	const validationRules: LogicalFilterAND = { _and: [] };
@@ -71,7 +73,7 @@ export function validateItem(
 		if (isNil(updatedItem[field.field])) return;
 
 		(field.meta?.validation as LogicalFilterAND)?._and?.forEach((validation: any) => {
-			validationRules._and.push(validation);
+			validationRules._and.push(parseFilter(validation));
 		});
 	}
 }

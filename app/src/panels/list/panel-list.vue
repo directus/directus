@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { getEndpoint } from '@directus/utils';
 import { computed, ref } from 'vue';
 import api from '@/api';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useInsightsStore } from '@/stores/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getEndpoint } from '@directus/utils';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -56,19 +60,19 @@ async function saveEdits(item: Record<string, any>) {
 <template>
 	<div class="list" :class="{ 'has-header': showHeader }">
 		<div>
-			<v-list>
-				<v-list-item
+			<VList>
+				<VListItem
 					v-for="row in data"
 					:key="row[primaryKeyField]"
 					:clickable="linkToItem === true"
 					@click="startEditing(row)"
 				>
-					<render-template :item="row" :collection="collection" :template="displayTemplate" />
+					<RenderTemplate :item="row" :collection="collection" :template="displayTemplate" />
 					<div class="spacer" />
-				</v-list-item>
-			</v-list>
+				</VListItem>
+			</VList>
 		</div>
-		<drawer-item
+		<DrawerItem
 			:active="!!currentlyEditing"
 			:collection="collection"
 			:primary-key="currentlyEditing ?? '+'"
@@ -84,16 +88,16 @@ async function saveEdits(item: Record<string, any>) {
 	--v-list-padding: 0;
 	--v-list-border-radius: 0;
 	--v-list-item-border-radius: 0;
-	--v-list-item-padding: 6px;
+	--v-list-item-padding: 0.3125rem;
 	--v-list-item-margin: 0;
 
 	block-size: 100%;
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 	overflow-y: auto;
 }
 
 .v-list-item {
-	block-size: 48px;
+	block-size: 2.6875rem;
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 

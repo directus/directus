@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import { rulesToCssVars, useTheme } from '@directus/themes';
 import { computed } from 'vue';
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 
 const props = defineProps<{
 	darkMode: boolean;
@@ -202,7 +202,7 @@ const localVars = computed(() => {
 	svg {
 		inline-size: 100%;
 		border: 1px solid var(--theme--border-color-subdued);
-		border-radius: 4px;
+		border-radius: 0.25rem;
 	}
 }
 </style>

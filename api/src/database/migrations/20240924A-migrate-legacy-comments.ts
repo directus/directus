@@ -1,6 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import { Action } from '@directus/constants';
 import type { Knex } from 'knex';
-import { randomUUID } from 'node:crypto';
 
 export async function up(knex: Knex): Promise<void> {
 	// remove foreign key constraint for projects already migrated to retentions-p1

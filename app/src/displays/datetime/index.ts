@@ -1,8 +1,8 @@
-import { formatDate, FormatDateOptions } from '@/utils/format-date';
-import { getTimezoneOptions } from '@/utils/timezones';
 import { defineDisplay } from '@directus/extensions';
 import type { DeepPartial, Field } from '@directus/types';
 import DisplayDateTime from './datetime.vue';
+import { formatDate, FormatDateOptions } from '@/utils/format-date';
+import { getTimezoneOptions } from '@/utils/timezones';
 
 export default defineDisplay({
 	id: 'datetime',

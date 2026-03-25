@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useFolders } from '@/composables/use-folders';
-import api from '@/api';
 import { useRouter } from 'vue-router';
+import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import { useFolders } from '@/composables/use-folders';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
@@ -44,31 +52,32 @@ async function addFolder() {
 </script>
 
 <template>
-	<v-dialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
+	<VDialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
 		<template #activator="{ on }">
-			<v-button
+			<VButton
 				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
 				rounded
 				icon
+				small
 				secondary
 				:disabled="disabled"
 				@click="on"
 			>
-				<v-icon name="create_new_folder" outline />
-			</v-button>
+				<VIcon small name="create_new_folder" outline />
+			</VButton>
 		</template>
 
-		<v-card>
-			<v-card-title>{{ $t('create_folder') }}</v-card-title>
-			<v-card-text>
-				<v-input v-model="newFolderName" autofocus :placeholder="$t('folder_name')" />
-			</v-card-text>
-			<v-card-actions>
-				<v-button secondary @click="dialogActive = false">{{ $t('cancel') }}</v-button>
-				<v-button ref="saveBtn" :disabled="newFolderName === null" :loading="saving" @click="addFolder">
+		<VCard>
+			<VCardTitle>{{ $t('create_folder') }}</VCardTitle>
+			<VCardText>
+				<VInput v-model="newFolderName" autofocus :placeholder="$t('folder_name')" />
+			</VCardText>
+			<VCardActions>
+				<VButton secondary @click="dialogActive = false">{{ $t('cancel') }}</VButton>
+				<VButton ref="saveBtn" :disabled="newFolderName === null" :loading="saving" @click="addFolder">
 					{{ $t('save') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>

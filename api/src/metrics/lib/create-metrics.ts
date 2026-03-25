@@ -1,8 +1,8 @@
-import { useEnv } from '@directus/env';
-import { toArray } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { promisify } from 'node:util';
+import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import pm2 from 'pm2';
 import type { MetricObjectWithValues, MetricValue } from 'prom-client';
 import { AggregatorRegistry, Counter, Histogram, register } from 'prom-client';
@@ -25,6 +25,7 @@ export function createMetrics() {
 
 	const services: MetricService[] = (env['METRICS_SERVICES'] as MetricService[] | undefined) ?? [];
 	const metricNamePrefix = env['METRICS_NAME_PREFIX'] ?? 'directus_';
+	const metricsHealthCheckPrefix = env['METRICS_HEALTH_CHECK_PREFIX'] as string;
 	const aggregates = new Map();
 
 	/**
@@ -239,8 +240,8 @@ export function createMetrics() {
 		}
 
 		try {
-			await cache.set(`directus-metric-${checkId}`, '1', 5);
-			await cache.delete(`directus-metric-${checkId}`);
+			await cache.set(`${metricsHealthCheckPrefix}${checkId}`, '1', 5);
+			await cache.delete(`${metricsHealthCheckPrefix}${checkId}`);
 		} catch {
 			metric.inc();
 		}
@@ -256,8 +257,8 @@ export function createMetrics() {
 		const redis = useRedis();
 
 		try {
-			await redis.set(`directus-metric-${checkId}`, '1');
-			await redis.del(`directus-metric-${checkId}`);
+			await redis.set(`${metricsHealthCheckPrefix}${checkId}`, '1');
+			await redis.del(`${metricsHealthCheckPrefix}${checkId}`);
 		} catch {
 			metric.inc();
 		}
@@ -280,7 +281,7 @@ export function createMetrics() {
 			}
 
 			try {
-				await disk.write('directus-metric-file', Readable.from([checkId]));
+				await disk.write(`${metricsHealthCheckPrefix}file`, Readable.from([checkId]));
 			} catch {
 				metric.inc();
 			}

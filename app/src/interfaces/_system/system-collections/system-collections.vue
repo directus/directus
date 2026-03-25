@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useCollectionsStore } from '@/stores/collections';
 import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
+import VNotice from '@/components/v-notice.vue';
+import InterfaceSelectMultipleCheckbox from '@/interfaces/select-multiple-checkbox/select-multiple-checkbox.vue';
+import { useCollectionsStore } from '@/stores/collections';
 
 const props = withDefaults(
 	defineProps<{
@@ -42,10 +44,10 @@ const items = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="items.length === 0">
+	<VNotice v-if="items.length === 0">
 		{{ $t('no_collections') }}
-	</v-notice>
-	<interface-select-multiple-checkbox
+	</VNotice>
+	<InterfaceSelectMultipleCheckbox
 		v-else
 		:choices="items"
 		:value="value"

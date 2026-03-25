@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { hideDragImage } from '@/utils/hide-drag-image';
 import { Field, LocalType } from '@directus/types';
 import { isNil, orderBy } from 'lodash';
-import { computed, toRefs, onBeforeMount, onBeforeUnmount } from 'vue';
+import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import FieldSelect from './field-select.vue';
+import FieldSelect from './FieldSelect.vue';
+import VButton from '@/components/v-button.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import { useFieldsStore } from '@/stores/fields';
+import { hideDragImage } from '@/utils/hide-drag-image';
 
 const props = defineProps<{
 	collection: string;
@@ -121,10 +129,10 @@ async function setNestedSort(updates?: Field[]) {
 <template>
 	<div class="fields-management">
 		<div v-if="lockedFields.length > 0" class="field-grid">
-			<field-select v-for="field in lockedFields" :key="field.field" disabled :field="field" />
+			<FieldSelect v-for="field in lockedFields" :key="field.field" disabled :field="field" />
 		</div>
 
-		<draggable
+		<Draggable
 			class="field-grid"
 			:model-value="usableFields.filter((field) => isNil(field?.meta?.group))"
 			handle=".drag-handle"
@@ -136,55 +144,51 @@ async function setNestedSort(updates?: Field[]) {
 			@update:model-value="setSort"
 		>
 			<template #item="{ element }">
-				<field-select :field="element" :fields="usableFields" @set-nested-sort="setNestedSort" />
+				<FieldSelect :field="element" :fields="usableFields" @set-nested-sort="setNestedSort" />
 			</template>
-		</draggable>
+		</Draggable>
 
-		<v-button full-width :to="`/settings/data-model/${collection}/+`">
+		<VButton full-width :to="`/settings/data-model/${collection}/+`">
 			{{ $t('create_field') }}
-		</v-button>
+		</VButton>
 
-		<v-menu show-arrow>
+		<VMenu show-arrow>
 			<template #activator="{ toggle, active }">
 				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
 					{{ $t('create_in_advanced_field_creation_mode') }}
 				</button>
 			</template>
-			<v-list>
+			<VList>
 				<template v-for="(option, index) in addOptions" :key="index">
-					<v-divider v-if="option.divider === true" />
-					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
-						<v-list-item-icon>
-							<v-icon :name="option.icon" />
-						</v-list-item-icon>
-						<v-list-item-content>
+					<VDivider v-if="option.divider === true" />
+					<VListItem v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
+						<VListItemIcon>
+							<VIcon :name="option.icon" />
+						</VListItemIcon>
+						<VListItemContent>
 							{{ option.text }}
-						</v-list-item-content>
-					</v-list-item>
+						</VListItemContent>
+					</VListItem>
 				</template>
-			</v-list>
-		</v-menu>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 
 <style lang="scss" scoped>
-.v-divider {
-	margin: 32px 0;
-}
-
 .fields-management {
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 .field-grid {
 	position: relative;
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-	padding-block-end: 24px;
+	padding-block-end: 1.375rem;
 }
 
 .field-select {
-	margin: 4px;
+	margin: 0.25rem;
 }
 
 .field-select:deep(.field-grid) {
@@ -192,26 +196,26 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .field-select:deep(.field-grid.group.full.nested) {
-	margin: 4px 0;
+	margin: 0.25rem 0;
 
 	.field-select {
-		margin: 4px;
+		margin: 0.25rem;
 	}
 }
 
 .add-field {
-	--v-button-font-size: 14px;
+	--v-button-font-size: 0.8125rem;
 	--v-button-background-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-accent);
 
-	margin-block-start: -12px;
+	margin-block-start: -0.6875rem;
 }
 
 .add-field-advanced {
 	display: block;
 	inline-size: max-content;
 	margin: 0 auto;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
@@ -221,7 +225,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .visible {
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 .list-move {

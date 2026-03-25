@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { useEventListener } from '@/composables/use-event-listener';
-import { useUserStore } from '@/stores/user';
-import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
 import { clone, throttle } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
+import { useEventListener } from '@/composables/use-event-listener';
+import { useUserStore } from '@/stores/user';
+import { hideDragImage } from '@/utils/hide-drag-image';
 
 const props = withDefaults(
 	defineProps<{
@@ -15,6 +18,7 @@ const props = withDefaults(
 		sort: Sort;
 		reordering: boolean;
 		allowHeaderReorder: boolean;
+		allowColumnSort: boolean;
 		showSelect?: ShowSelect;
 		showResize?: boolean;
 		showManualSort?: boolean;
@@ -177,7 +181,7 @@ function toggleManualSort() {
 
 <template>
 	<thead class="table-header" :class="{ resizing, reordering }">
-		<draggable
+		<Draggable
 			v-model="headersWritable"
 			:class="{ fixed }"
 			item-key="value"
@@ -199,11 +203,11 @@ function toggleManualSort() {
 					:class="{ 'sorted-manually': sort.by === manualSortKey }"
 					scope="col"
 				>
-					<v-icon v-tooltip="$t('toggle_manual_sorting')" name="sort" small clickable @click="toggleManualSort" />
+					<VIcon v-tooltip="$t('toggle_manual_sorting')" name="sort" small clickable @click="toggleManualSort" />
 				</th>
 
 				<th v-if="showSelect !== 'none'" class="select cell" scope="col">
-					<v-checkbox
+					<VCheckbox
 						v-if="showSelect === 'multiple'"
 						:model-value="allItemsSelected"
 						:indeterminate="someItemsSelected"
@@ -214,7 +218,7 @@ function toggleManualSort() {
 
 			<template #item="{ element: header }">
 				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ inlineSize: header.width + 'px' }">
-					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
+					<VMenu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle">
 								<button class="header-btn" type="button" @click="toggle">
@@ -225,20 +229,21 @@ function toggleManualSort() {
 										</slot>
 									</span>
 
-									<v-icon :name="sort.by === header.value ? 'sort' : 'arrow_drop_down'" class="action-icon" small />
+									<VIcon :name="sort.by === header.value ? 'sort' : 'arrow_drop_down'" class="action-icon" small />
 								</button>
 							</div>
 						</template>
 
 						<slot name="header-context-menu" v-bind="{ header }" />
-					</v-menu>
+					</VMenu>
 
 					<div v-else class="content reorder-handle">
 						<button
-							class="header-btn"
 							type="button"
-							:disabled="!header.sortable"
-							:aria-label="header.sortable ? $t(getTooltipForSortIcon(header)) : undefined"
+							class="header-btn"
+							:class="{ disabled: !allowColumnSort }"
+							:disabled="!allowColumnSort || !header.sortable"
+							:aria-label="allowColumnSort && header.sortable ? $t(getTooltipForSortIcon(header)) : undefined"
 							@click="changeSort(header)"
 						>
 							<span class="name">
@@ -248,11 +253,12 @@ function toggleManualSort() {
 								</slot>
 							</span>
 
-							<v-icon
+							<VIcon
 								v-if="header.sortable"
-								v-tooltip.top="$t(getTooltipForSortIcon(header))"
+								v-tooltip.top="allowColumnSort && $t(getTooltipForSortIcon(header))"
 								name="sort"
 								class="action-icon"
+								:class="{ disabled: !allowColumnSort }"
 								small
 							/>
 						</button>
@@ -274,7 +280,7 @@ function toggleManualSort() {
 				</td>
 				<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
 			</template>
-		</draggable>
+		</Draggable>
 		<!-- </tr> -->
 	</thead>
 </template>
@@ -283,10 +289,10 @@ function toggleManualSort() {
 .table-header {
 	.cell {
 		position: relative;
-		block-size: 50px; /* +2px for bottom border */
-		padding: 0 12px;
+		block-size: 2.8125rem; /* +2px for bottom border */
+		padding: 0 0.6875rem;
 		font-weight: 500;
-		font-size: 14px;
+		font-size: 0.8125rem;
 		background-color: var(--v-table-background-color, var(--theme--background));
 		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
@@ -318,6 +324,11 @@ function toggleManualSort() {
 					overflow: hidden;
 					white-space: nowrap;
 					text-overflow: ellipsis;
+				}
+
+				&.disabled {
+					cursor: not-allowed;
+					color: var(--theme--foreground-subdued);
 				}
 
 				&:focus-visible .action-icon {
@@ -355,14 +366,14 @@ function toggleManualSort() {
 		position: relative;
 
 		.action-icon {
-			margin-inline-start: 4px;
+			margin-inline-start: 0.25rem;
 			color: var(--theme--foreground-subdued);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			transform: scaleY(-1);
 		}
 
-		&:hover .action-icon {
+		&:hover .action-icon:not(.disabled) {
 			opacity: 1;
 		}
 
@@ -401,7 +412,7 @@ function toggleManualSort() {
 
 		.v-icon {
 			position: relative;
-			inset-inline-start: 2px;
+			inset-inline-start: 0.125rem;
 		}
 
 		&.sorted-manually {
@@ -413,7 +424,7 @@ function toggleManualSort() {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		inline-size: 5px;
+		inline-size: 0.3125rem;
 		block-size: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);
@@ -421,7 +432,7 @@ function toggleManualSort() {
 		&::after {
 			position: relative;
 			inset-block-start: 20%;
-			inset-inline-start: 3px;
+			inset-inline-start: 0.1875rem;
 			display: block;
 			inline-size: var(--theme--border-width);
 			block-size: 60%;
@@ -443,7 +454,7 @@ function toggleManualSort() {
 :deep(.header-order-ghost) {
 	&::after,
 	&::before {
-		inline-size: 2px;
+		inline-size: 0.125rem;
 		content: '';
 		display: block;
 		position: absolute;
@@ -463,14 +474,14 @@ function toggleManualSort() {
 }
 
 .description-dot {
-	inline-size: 8px;
-	block-size: 8px;
+	inline-size: 0.4375rem;
+	block-size: 0.4375rem;
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
 	border: var(--theme--background) 6px solid;
 	box-sizing: content-box;
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 	vertical-align: middle;
 }
 </style>

@@ -1,4 +1,4 @@
-import type { Type, FieldFunction } from '@directus/types';
+import type { FieldFunction, Type } from '@directus/types';
 
 export function getFunctionsForType(type: Type): FieldFunction[] {
 	switch (type) {
@@ -10,7 +10,7 @@ export function getFunctionsForType(type: Type): FieldFunction[] {
 		case 'time':
 			return ['hour', 'minute', 'second'];
 		case 'json':
-			return ['count'];
+			return ['count', 'json'];
 		case 'alias': // o2m/m2m/m2a
 			return ['count'];
 		default:

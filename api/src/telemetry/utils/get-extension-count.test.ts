@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { Knex } from 'knex';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ExtensionsService } from '../../services/extensions.js';
-import { getExtensionCount, type ExtensionCount } from './get-extension-count.js';
+import { type ExtensionCount, getExtensionCount } from './get-extension-count.js';
 
 vi.mock('../../utils/get-schema.js');
 vi.mock('../../services/extensions.js');

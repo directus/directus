@@ -1,11 +1,11 @@
-import type { TusDriver } from '@directus/storage';
-import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import fsProm from 'fs/promises';
-import { createReadStream, createWriteStream } from 'node:fs';
+import { createReadStream, createWriteStream, ReadStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import stream, { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions, Stat } from '@directus/types';
 
 export type DriverLocalConfig = {
 	root: string;
@@ -29,7 +29,7 @@ export class DriverLocal implements TusDriver {
 		await mkdir(dirpath, { recursive: true });
 	}
 
-	async read(filepath: string, options?: ReadOptions) {
+	async read(filepath: string, options?: ReadOptions): Promise<ReadStream> {
 		const { range } = options || {};
 
 		const stream_options: Parameters<typeof createReadStream>[1] = {};
@@ -45,7 +45,7 @@ export class DriverLocal implements TusDriver {
 		return createReadStream(this.fullPath(filepath), stream_options);
 	}
 
-	async stat(filepath: string) {
+	async stat(filepath: string): Promise<Stat> {
 		const statRes = await stat(this.fullPath(filepath));
 
 		if (!statRes) {
@@ -58,39 +58,39 @@ export class DriverLocal implements TusDriver {
 		};
 	}
 
-	async exists(filepath: string) {
+	async exists(filepath: string): Promise<boolean> {
 		return access(this.fullPath(filepath))
 			.then(() => true)
 			.catch(() => false);
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		const fullSrc = this.fullPath(src);
 		const fullDest = this.fullPath(dest);
 		await this.ensureDir(dirname(fullDest));
 		await rename(fullSrc, fullDest);
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		const fullSrc = this.fullPath(src);
 		const fullDest = this.fullPath(dest);
 		await this.ensureDir(dirname(fullDest));
 		await copyFile(fullSrc, fullDest);
 	}
 
-	async write(filepath: string, content: Readable) {
+	async write(filepath: string, content: Readable): Promise<void> {
 		const fullPath = this.fullPath(filepath);
 		await this.ensureDir(dirname(fullPath));
 		const writeStream = createWriteStream(fullPath);
 		await pipeline(content, writeStream);
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		const fullPath = this.fullPath(filepath);
 		await unlink(fullPath);
 	}
 
-	list(prefix = '') {
+	list(prefix = ''): AsyncGenerator<string> {
 		const fullPrefix = this.fullPath(prefix);
 		return this.listGenerator(fullPrefix);
 	}
@@ -115,7 +115,7 @@ export class DriverLocal implements TusDriver {
 		}
 	}
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 

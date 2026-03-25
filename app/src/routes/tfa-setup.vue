@@ -1,23 +1,40 @@
 <script setup lang="ts">
-import { useTFASetup } from '@/composables/use-tfa-setup';
-import { router } from '@/router';
-import { useUserStore } from '@/stores/user';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useSafeRedirect } from '@/composables/use-safe-redirect';
+import { useTFASetup } from '@/composables/use-tfa-setup';
 import { DEFAULT_AUTH_DRIVER } from '@/constants';
+import { router } from '@/router';
+import { useUserStore } from '@/stores/user';
+import PublicView from '@/views/public/public-view.vue';
 
 const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
+
+const { redirect, resolveRedirect } = useSafeRedirect();
 
 const inputOTP = ref<any>(null);
 
 onMounted(() => {
 	if (appStore.authenticated === false) {
 		router.push('/login');
+	}
+
+	// Validate redirect in the background
+	if (router.currentRoute.value.query.redirect) {
+		resolveRedirect(
+			router.currentRoute.value.query.redirect as string,
+			router.currentRoute.value.query.provider as string | undefined,
+		);
 	}
 });
 
@@ -96,15 +113,13 @@ async function cancel() {
 }
 
 function navigateAfterTFA() {
-	const redirectQuery = router.currentRoute.value.query.redirect as string;
 	const fallback = (userStore.currentUser as User)?.last_page || '/login';
 
-	// If redirect is an absolute URL, navigate via window.location to avoid double "/admin" prefix
-	// This addresses an issue where the redirect URL is doubled when an SSO user is sent through the tfa setup flow
-	if (typeof redirectQuery === 'string' && /^(https?:)?\/\//.test(redirectQuery)) {
-		window.location.href = redirectQuery;
+	// If the redirect was validated as an absolute URL (public URL will be relative), navigate via window.location
+	if (redirect.value && /^(https?:)?\/\//.test(redirect.value)) {
+		window.location.href = redirect.value;
 	} else {
-		router.push(redirectQuery || fallback);
+		router.push(redirect.value ?? fallback);
 	}
 }
 
@@ -114,7 +129,7 @@ useHead({
 </script>
 
 <template>
-	<public-view>
+	<PublicView>
 		<div class="header">
 			<h1 class="type-title">{{ $t('tfa_setup') }}</h1>
 		</div>
@@ -124,16 +139,16 @@ useHead({
 				{{ canSkipPassword ? $t('tfa_setup_description') : $t('enter_password_to_enable_tfa') }}
 			</div>
 			<div v-if="!canSkipPassword">
-				<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" autofocus />
+				<VInput v-model="password" :nullable="false" type="password" :placeholder="$t('password')" autofocus />
 			</div>
-			<v-error v-if="error" :error="error" />
+			<VError v-if="error" :error="error" />
 			<div class="actions">
 				<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
-				<v-button type="submit" :loading="loading" large>{{ $t('next') }}</v-button>
+				<VButton type="submit" :loading="loading" large>{{ $t('next') }}</VButton>
 			</div>
 		</form>
 
-		<v-progress-circular v-else-if="loading === true" class="loader" indeterminate />
+		<VProgressCircular v-else-if="loading === true" class="loader" indeterminate />
 
 		<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
 			<form @submit.prevent="enable">
@@ -143,36 +158,36 @@ useHead({
 				<div>
 					<canvas :id="canvasID" class="qr" />
 					<output class="secret">{{ secret }}</output>
-					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="$t('otp')" :nullable="false" />
-					<v-error v-if="error" :error="error" />
+					<VInput ref="inputOTP" v-model="otp" type="text" :placeholder="$t('otp')" :nullable="false" />
+					<VError v-if="error" :error="error" />
 				</div>
 				<div class="actions">
 					<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
-					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ $t('done') }}</v-button>
+					<VButton type="submit" :disabled="otp.length !== 6" large @click="enable">{{ $t('done') }}</VButton>
 				</div>
 			</form>
 		</div>
 
 		<template #notice>
-			<v-icon name="lock" left />
+			<VIcon name="lock" left />
 			{{ $t('not_authenticated') }}
 		</template>
-	</public-view>
+	</PublicView>
 </template>
 
 <style lang="scss" scoped>
 h1 {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .v-input,
 .v-notice,
 .v-error {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .title {
-	margin-block-end: 10px;
+	margin-block-end: 0.5625rem;
 	font-weight: 600;
 }
 
@@ -183,10 +198,10 @@ h1 {
 
 .secret {
 	display: block;
-	margin: 0 auto 16px;
+	margin: 0 auto 0.875rem;
 	color: var(--theme--foreground-subdued);
 	font-family: var(--theme--fonts--monospace--font-family);
-	letter-spacing: 2.6px;
+	letter-spacing: 0.1463rem;
 	text-align: center;
 }
 

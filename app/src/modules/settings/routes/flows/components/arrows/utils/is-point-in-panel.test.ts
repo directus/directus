@@ -1,8 +1,8 @@
-import { Vector2 } from '@/utils/vector2';
 import { describe, expect, it } from 'vitest';
 import { GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from '../../../constants';
 import type { Panel } from '../types';
 import { isPointInPanel } from './is-point-in-panel';
+import { Vector2 } from '@/utils/vector2';
 
 describe('isPointInPanel', () => {
 	// Helper function to create a test panel
@@ -196,9 +196,9 @@ describe('isPointInPanel', () => {
 			const panel = createPanel(5, 5);
 
 			// Verify the boundary calculation matches our understanding
-			const expectedLeft = (5 - 2) * GRID_SIZE; // 3 * 20 = 60
-			const expectedRight = (5 - 1 + PANEL_WIDTH) * GRID_SIZE; // (4 + 14) * 20 = 360
-			const expectedTop = (5 - 1) * GRID_SIZE; // 4 * 20 = 80
+			const expectedLeft = (5 - 2) * GRID_SIZE; // 3 * 18 = 54
+			const expectedRight = (5 - 1 + PANEL_WIDTH) * GRID_SIZE; // (4 + 14) * 18 = 324
+			const expectedTop = (5 - 1) * GRID_SIZE; // 4 * 18 = 72
 
 			// Test points just inside and outside these boundaries
 			expect(isPointInPanel([panel], new Vector2(expectedLeft, expectedTop + 10))).toBe(true);

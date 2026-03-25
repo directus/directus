@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -31,7 +33,7 @@ function toggleHidePassword() {
 </script>
 
 <template>
-	<v-input
+	<VInput
 		:model-value="value"
 		:type="hidden ? 'password' : 'text'"
 		:autocomplete="autocomplete"
@@ -41,12 +43,12 @@ function toggleHidePassword() {
 		@update:model-value="emit('input', $event)"
 	>
 		<template #append>
-			<v-icon
+			<VIcon
 				v-tooltip="hidden ? $t('show_password') : $t('hide_password')"
 				:name="hidden ? 'visibility' : 'visibility_off'"
 				clickable
 				@click="toggleHidePassword"
 			/>
 		</template>
-	</v-input>
+	</VInput>
 </template>

@@ -1,10 +1,15 @@
+import { createReadStream, createWriteStream } from 'node:fs';
+import { appendFile } from 'node:fs/promises';
+import type { Readable, Writable } from 'node:stream';
 import { useEnv } from '@directus/env';
 import {
 	createError,
 	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
+	LimitExceededError,
 	ServiceUnavailableError,
+	TimeoutError,
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -18,35 +23,33 @@ import type {
 	Query,
 	SchemaOverview,
 } from '@directus/types';
-import { parseJSON, toArray } from '@directus/utils';
+import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
+import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
-import destroyStream from 'destroy';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { appendFile } from 'node:fs/promises';
-import type { Readable, Stream } from 'node:stream';
+import { set } from 'lodash-es';
+import ms, { type StringValue } from 'ms';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
+import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { FunctionFieldNode, FieldNode, NestedCollectionNode } from '../types/index.js';
-import { getDateFormatted } from '../utils/get-date-formatted.js';
+import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
+import { destroyPipedStream } from '../utils/destroy-piped-stream.js';
 import { getService } from '../utils/get-service.js';
+import { useStore } from '../utils/store.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
-import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
-import { set } from 'lodash-es';
-import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
@@ -197,6 +200,10 @@ export function createErrorTracker() {
 	};
 }
 
+const store = useStore<{ importCount: number | undefined }>(String(env['IMPORT_EXPORT_NAMESPACE']), {
+	ttl: ms((env['IMPORT_TIMEOUT'] as StringValue) ?? '1h'),
+});
+
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -208,7 +215,12 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
-	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
+	async import(
+		collection: string,
+		mimetype: string,
+		stream: Readable,
+		options?: { background: boolean },
+	): Promise<void> {
 		if (this.accountability?.admin !== true && isSystemCollection(collection)) throw new ForbiddenError();
 
 		if (this.accountability) {
@@ -237,14 +249,91 @@ export class ImportService {
 			);
 		}
 
-		switch (mimetype) {
-			case 'application/json':
-				return await this.importJSON(collection, stream);
-			case 'text/csv':
-			case 'application/vnd.ms-excel':
-				return await this.importCSV(collection, stream);
-			default:
-				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
+		if (['application/json', 'text/csv', 'application/vnd.ms-excel'].includes(mimetype) === false) {
+			throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
+		}
+
+		const limitReached = await store(async (store) => {
+			const count = (await store.get('importCount')) ?? 0;
+
+			if (count >= Number(env['IMPORT_MAX_CONCURRENCY'])) return true;
+
+			await store.set('importCount', count + 1);
+			return false;
+		});
+
+		if (limitReached) {
+			throw new LimitExceededError({
+				category: 'Concurrent import',
+			});
+		}
+
+		let promise: Promise<void>;
+
+		const decrementImportCount = async () => {
+			try {
+				await store(async (store) => {
+					const count = (await store.get('importCount')) ?? 0;
+					await store.set('importCount', count - 1);
+				});
+			} catch (error) {
+				logger.error(error, `Failed to decrement importCount`);
+			}
+		};
+
+		if (mimetype === 'application/json') {
+			promise = this.importJSON(collection, stream);
+		} else {
+			promise = this.importCSV(collection, stream);
+		}
+
+		if (options?.background) {
+			const notify = async (subject: string, message: string) => {
+				try {
+					if (!this.accountability?.user) return;
+
+					const notificationsService = new NotificationsService({
+						schema: this.schema,
+					});
+
+					const usersService = new UsersService({
+						schema: this.schema,
+					});
+
+					const user = await usersService.readOne(this.accountability.user, {
+						fields: ['first_name', 'last_name', 'email'],
+					});
+
+					await notificationsService.createOne({
+						recipient: this.accountability.user,
+						sender: this.accountability.user,
+						subject,
+						message: `Hello ${userName(user)},\n\n${message}\n`,
+					});
+				} catch (error) {
+					logger.error(error, `Failed to notify user`);
+				}
+			};
+
+			promise
+				.then(async () => {
+					await notify('Your import has been successful', `Your import in ${collection} has been successful.`);
+				})
+				.catch(async (error) => {
+					logger.error(error, `Background import to ${collection} failed`);
+
+					await notify(
+						'Your import has failed',
+						`Your import in ${collection} has failed.\n\n${(error as any).message ?? ''}`,
+					);
+				})
+				.finally(async () => await decrementImportCount());
+		} else {
+			try {
+				await promise;
+			} finally {
+				await decrementImportCount();
+			}
 		}
 	}
 
@@ -253,6 +342,7 @@ export class ImportService {
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
+		let timeout: NodeJS.Timeout;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -289,8 +379,8 @@ export class ImportService {
 
 							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
-								destroyStream(stream);
-								destroyStream(extractJSON);
+
+								destroyPipedStream(extractJSON, stream);
 								reject();
 							}
 
@@ -303,8 +393,7 @@ export class ImportService {
 					extractJSON.on('data', ({ value }: Record<string, any>) => {
 						if (isSingleton && rowNumber > 1) {
 							saveQueue.kill();
-							destroyStream(stream);
-							destroyStream(extractJSON);
+							destroyPipedStream(extractJSON, stream);
 
 							reject(
 								new InvalidPayloadError({
@@ -319,8 +408,7 @@ export class ImportService {
 					});
 
 					extractJSON.on('error', (err: Error) => {
-						destroyStream(stream);
-						destroyStream(extractJSON);
+						destroyPipedStream(extractJSON, stream);
 
 						reject(new InvalidPayloadError({ reason: err.message }));
 					});
@@ -341,6 +429,14 @@ export class ImportService {
 							return resolve();
 						});
 					});
+
+					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+
+					timeout = setTimeout(() => {
+						saveQueue.kill();
+						destroyPipedStream(extractJSON, stream);
+						reject(new TimeoutError({ category: 'Import', duration }));
+					}, duration);
 				});
 			} catch (error) {
 				if (!error && errorTracker.hasErrors()) {
@@ -348,6 +444,8 @@ export class ImportService {
 				}
 
 				throw error;
+			} finally {
+				clearTimeout(timeout);
 			}
 		});
 	}
@@ -359,6 +457,7 @@ export class ImportService {
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
 		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
+		let timeout: NodeJS.Timeout;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -369,13 +468,13 @@ export class ImportService {
 
 			try {
 				await new Promise<void>((resolve, reject) => {
-					const streams: Stream[] = [stream];
+					const streams: (Readable | Writable)[] = [stream];
 					let rowNumber = 0;
 
 					const cleanup = (destroy = true) => {
 						if (destroy) {
 							for (const stream of streams) {
-								destroyStream(stream);
+								stream.destroy();
 							}
 						}
 
@@ -507,6 +606,14 @@ export class ImportService {
 
 					streams.push(fileWriteStream);
 
+					const duration = ms(env['IMPORT_TIMEOUT'] as StringValue);
+
+					timeout = setTimeout(() => {
+						saveQueue.kill();
+						destroyPipedStream(fileWriteStream, stream);
+						reject(new TimeoutError({ category: 'Import', duration }));
+					}, duration);
+
 					stream
 						.on('error', (error) => {
 							cleanup();
@@ -520,6 +627,8 @@ export class ImportService {
 				}
 
 				throw error;
+			} finally {
+				clearTimeout(timeout);
 			}
 		});
 	}
@@ -557,6 +666,7 @@ export class ExportService {
 
 			const mimeTypes = {
 				csv: 'text/csv',
+				csv_utf8: 'text/csv; charset=utf-8',
 				json: 'application/json',
 				xml: 'text/xml',
 				yaml: 'text/yaml',
@@ -614,7 +724,7 @@ export class ExportService {
 					if (result.length) {
 						let csvHeadings = null;
 
-						if (format === 'csv') {
+						if (format.startsWith('csv')) {
 							if (!query.fields) query.fields = ['*'];
 
 							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
@@ -652,16 +762,13 @@ export class ExportService {
 				schema: this.schema,
 			});
 
-			const storage: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
-
-			const title = `export-${collection}-${getDateFormatted()}`;
+			const title = `export-${collection}-${getDateTimeFormatted()}`;
 			const filename = `${title}.${format}`;
 
-			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {
+			const fileWithDefaults: Partial<File> & { filename_download: string } = {
 				...(options?.file ?? {}),
 				title: options?.file?.title ?? title,
 				filename_download: options?.file?.filename_download ?? filename,
-				storage: options?.file?.storage ?? storage,
 				type: mimeTypes[format],
 			};
 
@@ -757,15 +864,16 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			return string;
 		}
 
-		if (format === 'csv') {
+		if (format.startsWith('csv')) {
 			if (input.length === 0) return '';
 
 			const transforms = [CSVTransforms.flatten({ separator: '.' })];
 			const header = options?.includeHeader !== false;
+			const withBOM = format === 'csv_utf8';
 
 			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields }
-				: { transforms, header };
+				? { transforms, header, fields: options?.fields, withBOM }
+				: { transforms, header, withBOM };
 
 			let string = new CSVParser(transformOptions).parse(input);
 

@@ -1,9 +1,9 @@
+import type { DeepPartial, Theme } from '@directus/types';
+import { ThemeSchema } from '@directus/types';
 import { cssVar } from '@directus/utils/browser';
 import { get } from 'lodash-es';
 import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
-import type { DeepPartial, Theme } from '@directus/types';
-import { ThemeSchema } from '@directus/types';
 
 export const useFonts = (theme: MaybeRef<Theme | DeepPartial<Theme>>) => {
 	const paths = computed(() => {

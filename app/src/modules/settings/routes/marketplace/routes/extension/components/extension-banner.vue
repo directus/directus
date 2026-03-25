@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import VBanner from '@/components/v-banner.vue';
-import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
-import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
 import { formatName } from '../../../utils/format-name';
+import VBanner from '@/components/v-banner.vue';
+import VChip from '@/components/v-chip.vue';
+import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
+import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -17,7 +18,7 @@ const newestVersion = computed(() => props.extension.versions.at(0)!);
 <template>
 	<VBanner :icon="icon">
 		<template #headline>
-			<v-chip outlined x-small>{{ $t(`extension_${extension.type}`) }}</v-chip>
+			<VChip outlined x-small>{{ $t(`extension_${extension.type}`) }}</VChip>
 		</template>
 
 		<h2 class="name">{{ formatName(extension) }}</h2>

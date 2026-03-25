@@ -1,13 +1,3 @@
-import { HeaderRaw, Sort } from '@/components/v-table/types';
-import { useAliasFields } from '@/composables/use-alias-fields';
-import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
-import { useFieldsStore } from '@/stores/fields';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
-import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import { saveAsCSV } from '@/utils/save-as-csv';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
@@ -18,6 +8,17 @@ import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { HeaderRaw, Sort } from '@/components/v-table/types';
+import { useAliasFields } from '@/composables/use-alias-fields';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useFieldsStore } from '@/stores/fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -33,6 +34,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
+
+		const toolsStore = useAiToolsStore();
+
+		toolsStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -252,7 +261,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							description = fieldNames.join(' -> ');
 						}
 
-						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 160;
+						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 144;
 
 						return {
 							text: field.name,
@@ -277,7 +286,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					const widths = {} as { [field: string]: number };
 
 					val.forEach((header) => {
-						widths[header.value] = header.width ?? 160;
+						widths[header.value] = header.width ?? 144;
 					});
 
 					localWidths.value = widths;
@@ -293,12 +302,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableRowHeight = computed<number>(() => {
 				switch (tableSpacing.value) {
 					case 'compact':
-						return 32;
+						return 29;
 					case 'cozy':
 					default:
-						return 48;
+						return 43;
 					case 'comfortable':
-						return 64;
+						return 58;
 				}
 			});
 

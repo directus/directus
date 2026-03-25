@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+
 withDefaults(
 	defineProps<{
 		value: boolean | null;
 		disabled?: false;
+		nonEditable?: boolean;
 		label?: string;
 		iconOn?: string;
 		iconOff?: string;
@@ -23,7 +26,7 @@ defineEmits<{
 </script>
 
 <template>
-	<v-checkbox
+	<VCheckbox
 		block
 		:icon-on="iconOn"
 		:icon-off="iconOff"
@@ -31,6 +34,7 @@ defineEmits<{
 		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:style="{
 			'--v-checkbox-color': colorOn,
 			'--v-checkbox-unchecked-color': colorOff,

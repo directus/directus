@@ -1,6 +1,6 @@
 import type { DirectusDashboard } from '../../../schema/dashboard.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete multiple existing dashboards.

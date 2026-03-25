@@ -1,7 +1,6 @@
-import { test, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
-
+import { mount } from '@vue/test-utils';
+import { expect, test, vi } from 'vitest';
 import VIconFile from './v-icon-file.vue';
 
 test('Mount component', () => {

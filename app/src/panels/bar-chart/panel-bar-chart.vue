@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import type { Filter } from '@directus/types';
 import ApexCharts from 'apexcharts';
 import { isNil, snakeCase } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 
 type ConditionalFillFormat = {
 	axis: 'X' | 'Y';
@@ -18,12 +18,13 @@ const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		height: number;
-		data?: Record<string, any>[];
+		data?: Record<string, any>[] | [Record<string, any>[], Record<string, any>[]];
 		collection: string;
 		horizontal?: boolean;
 		xAxis: string;
 		function?: PanelFunction;
 		yAxis: string;
+		xAxisDisplayField?: string;
 		decimals?: number;
 		color?: string | null;
 		filter?: Filter;
@@ -69,6 +70,7 @@ watch(
 		() => props.color,
 		() => props.showAxisLabels,
 		() => props.conditionalFill,
+		() => props.xAxisDisplayField,
 	],
 	() => {
 		chart.value?.destroy();
@@ -88,11 +90,62 @@ const formatNumericValue = (val: any) => {
 	return val;
 };
 
+const isTwoQueryResult = computed(() => {
+	return (
+		Array.isArray(props.data) && props.data.length === 2 && Array.isArray(props.data[0]) && Array.isArray(props.data[1])
+	);
+});
+
+const aggregatedData = computed(() => {
+	if (isTwoQueryResult.value) {
+		return (props.data as [Record<string, any>[], Record<string, any>[]])[0];
+	}
+
+	return props.data as Record<string, any>[];
+});
+
+const displayValueMap = computed(() => {
+	if (!isTwoQueryResult.value || !props.xAxisDisplayField) return null;
+
+	const displayData = (props.data as [Record<string, any>[], Record<string, any>[]])[1];
+	const map = new Map<string, string>();
+
+	if (!displayData || displayData.length === 0) return null;
+
+	// Infer the primary key field - it's the field that isn't the display field
+	const firstItem = displayData[0];
+	const fields = Object.keys(firstItem ?? {});
+	const pkField = fields.find((f) => f !== props.xAxisDisplayField);
+	if (!pkField) return null;
+
+	for (const item of displayData) {
+		const pk = item[pkField];
+		const displayValue = item[props.xAxisDisplayField];
+
+		if (pk !== null && pk !== undefined && displayValue !== null && displayValue !== undefined) {
+			map.set(String(pk), String(displayValue));
+		}
+	}
+
+	return map;
+});
+
+const getDisplayValue = (rawValue: any) => {
+	if (!displayValueMap.value || rawValue === null || rawValue === undefined) {
+		return rawValue;
+	}
+
+	return displayValueMap.value.get(String(rawValue)) ?? rawValue;
+};
+
 function setUpChart() {
-	const metrics = props.data
+	const metrics = aggregatedData.value
 		.map((metric) => {
-			const x = metric['group']?.[props.xAxis];
-			if (!x) return null;
+			const rawX = metric['group']?.[props.xAxis];
+			if (!rawX) return null;
+
+			// Use display value if available, otherwise fall back to raw value
+			const x = getDisplayValue(rawX);
 
 			const yValue = props.function ? Number(metric?.[props.function]?.[props.yAxis]) : Number(metric?.[props.yAxis]);
 			const y = props.decimals >= 0 ? yValue.toFixed(props.decimals) : yValue;
@@ -198,7 +251,7 @@ function setUpChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 				trim: true,
 				hideOverlappingLabels: true,
@@ -228,7 +281,7 @@ function setUpChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 			},
 		},
@@ -344,9 +397,9 @@ function setUpChart() {
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-block-end: 0;
-	padding: 0 4px;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
@@ -356,7 +409,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-series-group .apexcharts-active {
-	padding: 0 4px 0 0 !important;
+	padding: 0 0.25rem 0 0 !important;
 }
 
 .apexcharts-tooltip-series-group:last-child {

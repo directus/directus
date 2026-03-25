@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { usePageSize } from '@/composables/use-page-size';
-import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { Ref, inject, ref, watch } from 'vue';
+import { computed, inject, type Ref, ref, watch } from 'vue';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { usePageSize } from '@/composables/use-page-size';
+import { Collection } from '@/types/collections';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -62,6 +67,8 @@ const layoutElement = ref<HTMLElement>();
 
 const { width: innerWidth } = useElementSize(layoutElement);
 
+const columnSize = computed(() => `${props.size * 2.25}rem`);
+
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
 	(value) => String(value),
@@ -83,9 +90,9 @@ watch(innerWidth, (value) => {
 </script>
 
 <template>
-	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
+	<div ref="layoutElement" class="layout-cards">
 		<template v-if="loading || (items.length > 0 && !error)">
-			<cards-header
+			<CardsHeader
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
 				v-model:sort="sortWritable"
@@ -94,10 +101,10 @@ watch(innerWidth, (value) => {
 				@select-all="selectAll"
 			/>
 
-			<v-progress-circular v-if="loading" indeterminate rounded />
+			<VProgressCircular v-if="loading" indeterminate rounded />
 
 			<div v-else class="grid" :class="{ 'single-row': isSingleRow }">
-				<card
+				<Card
 					v-for="item in items"
 					:key="item[primaryKeyField!.field]"
 					v-model="selectionWritable"
@@ -111,18 +118,18 @@ watch(innerWidth, (value) => {
 					:readonly="readonly"
 				>
 					<template v-if="title" #title>
-						<render-template :collection="collection" :item="item" :template="title" />
+						<RenderTemplate :collection="collection" :item="item" :template="title" />
 					</template>
 					<template v-if="subtitle" #subtitle>
-						<render-template :collection="collection" :item="item" :template="subtitle" />
+						<RenderTemplate :collection="collection" :item="item" :template="subtitle" />
 					</template>
-				</card>
+				</Card>
 			</div>
 
 			<div class="footer">
 				<div class="pagination">
-					<v-skeleton-loader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
-					<v-pagination
+					<VSkeletonLoader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
+					<VPagination
 						v-else-if="totalPages > 1"
 						:length="totalPages"
 						:total-visible="7"
@@ -134,7 +141,7 @@ watch(innerWidth, (value) => {
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ $t('per_page') }}</span>
-					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
+					<VSelect :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -152,9 +159,11 @@ watch(innerWidth, (value) => {
 }
 
 .grid {
+	--size: v-bind(columnSize);
+
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
-	gap: 32px 24px;
+	gap: 1.8125rem 1.375rem;
 
 	&.single-row {
 		grid-template-columns: repeat(auto-fit, var(--size));
@@ -165,7 +174,7 @@ watch(innerWidth, (value) => {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding-block-start: 40px;
+	padding-block-start: 2.25rem;
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
@@ -175,12 +184,12 @@ watch(innerWidth, (value) => {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		inline-size: 240px;
+		inline-size: 13.5rem;
 		color: var(--theme--foreground-subdued);
 
 		span {
 			inline-size: auto;
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 
 		.v-select {

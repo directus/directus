@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import OverlayItem, { type OverlayItemProps, type OverlayItemEmits } from './overlay-item.vue';
+import OverlayItem, { type OverlayItemEmits, type OverlayItemProps } from './overlay-item.vue';
 
 defineProps<OverlayItemProps>();
 defineEmits<OverlayItemEmits>();
 </script>
 
 <template>
-	<overlay-item
+	<OverlayItem
 		v-bind="$props"
 		overlay="drawer"
 		@update:active="$emit('update:active', $event)"
@@ -15,5 +15,5 @@ defineEmits<OverlayItemEmits>();
 		<template #actions>
 			<slot name="actions" />
 		</template>
-	</overlay-item>
+	</OverlayItem>
 </template>
