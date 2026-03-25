@@ -8,7 +8,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VMenu from '@/components/v-menu.vue';
 import VRemove from '@/components/v-remove.vue';
 import { parseDate } from '@/utils/parse-date';
-import { formatDateToTimezone, getLocalTimezoneOffset } from '@/utils/timezones';
+import { formatDateToTimezone } from '@/utils/timezones';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
@@ -67,9 +67,8 @@ const tzValue = computed({
 		const date = parseISO(value);
 
 		if (isValid(date) && props.type === 'timestamp' && props.tz) {
-			const offset = getLocalTimezoneOffset(date, props.tz);
-			date.setHours(date.getHours() - offset);
-			emit('input', date.toISOString());
+			const offsetMs = formatDateToTimezone(date, props.tz).getTime() - date.getTime();
+			emit('input', new Date(date.getTime() - offsetMs).toISOString());
 			return;
 		}
 

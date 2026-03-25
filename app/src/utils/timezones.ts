@@ -92,20 +92,3 @@ export function formatDateToTimezone(date: Date, tz?: string): Date {
 	// Parse as local time (this will be formatted by date-fns in local timezone)
 	return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
 }
-
-/**
- * Gets the timezone offset for a given date in a specific timezone compared to the local timezone
- *
- * @param atDate - The date to get the local timezone offset for
- * @param tz - IANA timezone identifier (e.g., 'America/New_York', 'Europe/London', 'UTC'). If not provided, uses local timezone.
- * @returns
- */
-export function getLocalTimezoneOffset(atDate: Date, tz: string): number {
-	const zeroTime = new Date(atDate);
-	zeroTime.setHours(0, 0, 0, 0);
-
-	const adjustedDate = formatDateToTimezone(zeroTime, tz);
-	const hours = adjustedDate.getHours();
-	if (hours > 12) return hours - 24;
-	return hours;
-}
