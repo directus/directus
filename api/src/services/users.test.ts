@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, TokenExpiredError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -437,6 +437,41 @@ describe('Integration Tests', () => {
 
 				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([mockUser.id]);
 				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
+			});
+		});
+
+		describe('acceptInvite', () => {
+			it('should throw generic error when user status is not invited', async () => {
+				vi.mock('../utils/jwt.js', () => ({
+					verifyJWT: vi.fn().mockReturnValue({ email: 'user@example.com', scope: 'invite' }),
+				}));
+
+				vi.mock('../utils/get-secret.js', () => ({
+					getSecret: vi.fn().mockReturnValue('test-secret'),
+				}));
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				// mock an active user (not 'invited')
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					status: 'active',
+				});
+
+				const promise = service.acceptInvite('test-token', 'password123');
+
+				await expect(promise).rejects.toThrow(InvalidPayloadError);
+
+				// Verify the error does NOT contain the email address (security)
+				await expect(promise).rejects.toThrow(
+					expect.not.objectContaining({
+						extensions: expect.objectContaining({
+							reason: expect.stringContaining('user@example.com'),
+						}),
+					}),
+				);
 			});
 		});
 	});
