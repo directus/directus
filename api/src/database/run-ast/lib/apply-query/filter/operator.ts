@@ -303,21 +303,32 @@ function applyOperatorToRaw(
 		let value = compareValue;
 		if (typeof value === 'string') value = value.split(',');
 
-		// Use whereRaw with ?? to avoid a Knex binding-order bug: whereIn() evaluates
-		// the value list before the column expression, so when the column is a Raw with
-		// its own bindings (e.g. a JSON path extraction), the bindings end up in the
-		// wrong positions. Using ?? ensures column bindings are resolved first.
-		const placeholders = (value as any[]).map(() => '?').join(', ');
-		dbQuery[logical].whereRaw(`?? in (${placeholders})`, [raw, ...(value as any[])]);
+		if ((value as any[]).length === 0) {
+			// Knex's whereIn(col, []) short-circuits to `1 = 0` before touching the column,
+			// so passing the Raw here is safe and preserves that behaviour.
+			dbQuery[logical].whereIn(raw, []);
+		} else {
+			// Use whereRaw with ?? to avoid a Knex binding-order bug: whereIn() evaluates
+			// the value list before the column expression, so when the column is a Raw with
+			// its own bindings (e.g. a JSON path extraction), the bindings end up in the
+			// wrong positions. Using ?? ensures column bindings are resolved first.
+			const placeholders = (value as any[]).map(() => '?').join(', ');
+			dbQuery[logical].whereRaw(`?? in (${placeholders})`, [raw, ...(value as any[])]);
+		}
 	}
 
 	if (operator === '_nin') {
 		let value = compareValue;
 		if (typeof value === 'string') value = value.split(',');
 
-		// Same Knex binding-order workaround as _in above.
-		const placeholders = (value as any[]).map(() => '?').join(', ');
-		dbQuery[logical].whereRaw(`?? not in (${placeholders})`, [raw, ...(value as any[])]);
+		if ((value as any[]).length === 0) {
+			// Same reasoning as _in above — Knex short-circuits to `1 = 1` for empty NOT IN.
+			dbQuery[logical].whereNotIn(raw, []);
+		} else {
+			// Same Knex binding-order workaround as _in above.
+			const placeholders = (value as any[]).map(() => '?').join(', ');
+			dbQuery[logical].whereRaw(`?? not in (${placeholders})`, [raw, ...(value as any[])]);
+		}
 	}
 
 	if (operator === '_between') {
