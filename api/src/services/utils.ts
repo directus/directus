@@ -174,7 +174,7 @@ export class UtilsService {
 	}
 
 	async clearAssetVariants(fileId?: string | string[]): Promise<{ deleted: number }> {
-		if (this.accountability?.admin !== true) {
+		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
 
