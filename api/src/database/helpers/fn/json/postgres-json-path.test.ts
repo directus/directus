@@ -1,15 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
-import { buildPostgresJsonPath } from './postgres.js';
-
-// Mock dependencies to avoid loading the full FnHelper class
-vi.mock('../types.js', () => ({
-	FnHelper: class FnHelper {},
-	FnHelperOptions: {},
-}));
-
-vi.mock('../json/parse-function.js', () => ({
-	parseJsonFunction: vi.fn(),
-}));
+import { describe, expect, test } from 'vitest';
+import { buildPostgresJsonPath } from './postgres-json-path.js';
 
 const TEST_CASES = [
 	// Simple property access
