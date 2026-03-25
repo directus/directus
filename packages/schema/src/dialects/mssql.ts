@@ -10,6 +10,7 @@ type RawTable = {
 	TABLE_NAME: string;
 	TABLE_SCHEMA: string;
 	TABLE_CATALOG: string;
+	TABLE_TYPE: 'BASE TABLE' | 'VIEW';
 };
 
 type RawColumn = {
@@ -125,7 +126,8 @@ export default class MSSQL implements SchemaInspector {
 				c.CHARACTER_MAXIMUM_LENGTH as max_length,
 				pk.PK_SET as column_key,
 				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') as is_identity,
-				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsComputed') as is_generated
+				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsComputed') as is_generated,
+				t.TABLE_TYPE as table_type
 			FROM
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
 			LEFT JOIN (
@@ -146,7 +148,7 @@ export default class MSSQL implements SchemaInspector {
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.TABLES as t
 			ON [c].[TABLE_NAME] = [t].[TABLE_NAME]
 			AND [c].[TABLE_CATALOG] = [t].[TABLE_CATALOG]
-			AND [t].TABLE_TYPE = 'BASE TABLE'
+			AND [t].TABLE_TYPE IN ('BASE TABLE', 'VIEW')
 			`,
 		);
 
@@ -154,10 +156,23 @@ export default class MSSQL implements SchemaInspector {
 
 		for (const column of columns) {
 			if (column.table_name in overview === false) {
+				const primaryKey = columns.find((nested: { column_key: string; table_name: string }) => {
+					return nested.table_name === column.table_name && nested.column_key === 'PRIMARY';
+				})?.column_name;
+
+				const isView = column.table_type === 'VIEW';
+
+				const fallbackPrimary =
+					isView &&
+					columns.some((nested: { table_name: string; column_name: string }) => {
+						return nested.table_name === column.table_name && nested.column_name === 'id';
+					})
+						? 'id'
+						: undefined;
+
 				overview[column.table_name] = {
-					primary: columns.find((nested: { column_key: string; table_name: string }) => {
-						return nested.table_name === column.table_name && nested.column_key === 'PRIMARY';
-					})?.column_name,
+					primary: primaryKey || fallbackPrimary,
+					type: isView ? 'view' : 'table',
 					columns: {},
 				};
 			}
@@ -183,10 +198,10 @@ export default class MSSQL implements SchemaInspector {
 			.select<{ TABLE_NAME: string }[]>('TABLE_NAME')
 			.from('INFORMATION_SCHEMA.TABLES')
 			.where({
-				TABLE_TYPE: 'BASE TABLE',
 				TABLE_CATALOG: this.knex.client.database(),
 				TABLE_SCHEMA: this.schema,
-			});
+			})
+			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW']);
 
 		return records.map(({ TABLE_NAME }) => TABLE_NAME);
 	}
@@ -203,15 +218,16 @@ export default class MSSQL implements SchemaInspector {
 			.from('INFORMATION_SCHEMA.TABLES')
 			.where({
 				TABLE_CATALOG: this.knex.client.database(),
-				TABLE_TYPE: 'BASE TABLE',
 				TABLE_SCHEMA: this.schema,
-			});
+			})
+			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW']);
 
 		if (table) {
-			const rawTable: RawTable = await query.andWhere({ table_name: table }).first();
+			const rawTable: RawTable = await query.andWhere({ TABLE_NAME: table }).first();
 
 			return {
 				name: rawTable.TABLE_NAME,
+				type: rawTable.TABLE_TYPE === 'VIEW' ? 'view' : 'table',
 				schema: rawTable.TABLE_SCHEMA,
 				catalog: rawTable.TABLE_CATALOG,
 			} as T extends string ? Table : Table[];
@@ -222,6 +238,7 @@ export default class MSSQL implements SchemaInspector {
 		return records.map((rawTable): Table => {
 			return {
 				name: rawTable.TABLE_NAME,
+				type: rawTable.TABLE_TYPE === 'VIEW' ? 'view' : 'table',
 				schema: rawTable.TABLE_SCHEMA,
 				catalog: rawTable.TABLE_CATALOG,
 			};
@@ -240,6 +257,7 @@ export default class MSSQL implements SchemaInspector {
 				table_name: table,
 				TABLE_SCHEMA: this.schema,
 			})
+			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW'])
 			.first();
 
 		return (result && result.count === 1) || false;
@@ -344,7 +362,7 @@ export default class MSSQL implements SchemaInspector {
 				object_definition ([c].[default_object_id]) AS [default_value],
 				[i].[is_primary_key],
 				[i].[is_unique],
-				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
+				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN
 					[i].[index_name]
 				ELSE
 					NULL

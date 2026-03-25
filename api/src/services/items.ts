@@ -62,6 +62,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return this;
 	}
 
+	private assertCollectionWritable(): void {
+		if (this.schema.collections[this.collection]?.readonly) {
+			throw new InvalidPayloadError({ reason: `Collection "${this.collection}" is read-only` });
+		}
+	}
+
 	/**
 	 * Create a fork of the current service, allowing instantiation with different options.
 	 */
@@ -125,6 +131,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		this.assertCollectionWritable();
+
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -431,6 +439,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.createOne` under the hood.
 	 */
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		this.assertCollectionWritable();
+
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
@@ -707,6 +717,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Update many items by primary key, setting all items to the same change.
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		this.assertCollectionWritable();
+
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -1068,6 +1080,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Delete multiple items by primary key.
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		this.assertCollectionWritable();
+
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		if (!opts.bypassLimits) {

@@ -40,7 +40,17 @@ export default class SQLite implements SchemaInspector {
 			await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
 		).map(({ name }) => name);
 
-		const tables = await this.tables();
+		const tableRecords = await this.knex
+			.select('name', 'type')
+			.from('sqlite_master')
+			.whereRaw(`type IN ('table', 'view') AND name NOT LIKE 'sqlite_%'`);
+
+		const tables = tableRecords.map(({ name }) => name) as string[];
+
+		const viewNames = new Set(
+			tableRecords.filter((r: { type: string }) => r.type === 'view').map(({ name }: { name: string }) => name),
+		);
+
 		const overview: SchemaOverview = {};
 
 		for (const table of tables) {
@@ -48,9 +58,13 @@ export default class SQLite implements SchemaInspector {
 
 			if (table in overview === false) {
 				const primaryKeys = columns.filter((column) => column.pk !== 0);
+				const isView = viewNames.has(table);
+
+				const fallbackPrimary = isView && columns.some((column) => column.name === 'id') ? 'id' : (undefined as any);
 
 				overview[table] = {
-					primary: primaryKeys.length !== 1 ? (undefined as any) : primaryKeys[0]!.name!,
+					primary: primaryKeys.length !== 1 ? fallbackPrimary : primaryKeys[0]!.name!,
+					type: isView ? 'view' : 'table',
 					columns: {},
 				};
 			}
@@ -86,7 +100,7 @@ export default class SQLite implements SchemaInspector {
 		const records = await this.knex
 			.select('name')
 			.from('sqlite_master')
-			.whereRaw(`type = 'table' AND name NOT LIKE 'sqlite_%'`);
+			.whereRaw(`type IN ('table', 'view') AND name NOT LIKE 'sqlite_%'`);
 
 		return records.map(({ name }) => name) as string[];
 	}
@@ -99,10 +113,9 @@ export default class SQLite implements SchemaInspector {
 	tableInfo(table: string): Promise<Table>;
 	async tableInfo(table?: string) {
 		const query = this.knex
-			.select('name', 'sql')
+			.select('name', 'type', 'sql')
 			.from('sqlite_master')
-			.where({ type: 'table' })
-			.andWhereRaw(`name NOT LIKE 'sqlite_%'`);
+			.whereRaw(`type IN ('table', 'view') AND name NOT LIKE 'sqlite_%'`);
 
 		if (table) {
 			query.andWhere({ name: table });
@@ -110,8 +123,9 @@ export default class SQLite implements SchemaInspector {
 
 		let records = await query;
 
-		records = records.map((table) => ({
+		records = records.map((table: { name: string; type: string; sql: string }) => ({
 			name: table.name,
+			type: table.type === 'view' ? 'view' : 'table',
 			sql: table.sql,
 		}));
 
@@ -126,7 +140,12 @@ export default class SQLite implements SchemaInspector {
 	 * Check if a table exists in the current schema/database
 	 */
 	async hasTable(table: string): Promise<boolean> {
-		const results = await this.knex.select(1).from('sqlite_master').where({ type: 'table', name: table });
+		const results = await this.knex
+			.select(1)
+			.from('sqlite_master')
+			.whereIn('type', ['table', 'view'])
+			.andWhere({ name: table });
+
 		return results.length > 0;
 	}
 

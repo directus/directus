@@ -241,6 +241,7 @@ export async function generateSchema(
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.create.collections)
 					.filter((collection) => collection.collection in CreateCollectionTypes && collection.singleton === false)
+					.filter((collection) => collection.readonly !== true)
 					.filter(scopeFilter)
 					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce(
@@ -266,6 +267,7 @@ export async function generateSchema(
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.update.collections)
 					.filter((collection) => collection.collection in UpdateCollectionTypes)
+					.filter((collection) => collection.readonly !== true)
 					.filter(scopeFilter)
 					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce(
@@ -301,6 +303,7 @@ export async function generateSchema(
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.delete.collections)
 					.filter((collection) => collection.singleton === false)
+					.filter((collection) => collection.readonly !== true)
 					.filter(scopeFilter)
 					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce(

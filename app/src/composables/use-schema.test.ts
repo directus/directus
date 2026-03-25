@@ -83,6 +83,7 @@ describe('useSchemaOverview', () => {
 		expect(coll.note).toBe('a note');
 		expect(coll.singleton).toBe(false);
 		expect(coll.sortField).toBe('id');
+		expect(coll.readonly).toBe(false);
 
 		expect(coll.fields).toHaveProperty('id');
 
@@ -128,6 +129,25 @@ describe('useSchemaOverview', () => {
 			special: [],
 			validation: null,
 		});
+	});
+
+	test('marks view collections as readonly', () => {
+		const sampleField = { field: 'id', type: 'integer', schema: {}, meta: {} } as any;
+
+		mockCollectionsStore.collections = [
+			{
+				collection: 'order_view',
+				meta: {},
+				type: 'view',
+			},
+		];
+
+		mockFieldsStore.getFieldsForCollection.mockReturnValue([sampleField]);
+		mockFieldsStore.getPrimaryKeyFieldForCollection.mockReturnValue(sampleField);
+
+		const overview = useSchemaOverview();
+
+		expect(overview.value.collections['order_view']?.readonly).toBe(true);
 	});
 
 	test('reactivity: overview updates when stores change', async () => {

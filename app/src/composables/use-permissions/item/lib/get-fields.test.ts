@@ -105,6 +105,24 @@ describe('admin users', () => {
 
 		expect(fields.value.length).toEqual(sample.fields.length);
 	});
+
+	it('should mark all fields as read-only for views', () => {
+		const userStore = mockedStore(useUserStore());
+		userStore.isAdmin = true;
+
+		vi.mocked(useCollection).mockReturnValue({
+			fields: ref(sample.fields),
+			info: ref({ type: 'view' }),
+		} as any);
+
+		const fields = getFields(sample.collection, false, ref({} as ItemPermissions));
+
+		expect(fields.value.length).toEqual(sample.fields.length);
+
+		for (const field of fields.value) {
+			expect(field.meta?.readonly).toBe(true);
+		}
+	});
 });
 
 describe('non-admin users', () => {
@@ -118,6 +136,33 @@ describe('non-admin users', () => {
 	});
 
 	sharedTests();
+
+	it('should only return readable fields on views and mark them as read-only', () => {
+		vi.mocked(useCollection).mockReturnValue({
+			fields: ref(sample.fields),
+			info: ref({ type: 'view' }),
+		} as any);
+
+		const permissionsStore = mockedStore(usePermissionsStore());
+
+		permissionsStore.getPermission.mockImplementation((_, action) => {
+			if (action === 'read') {
+				return {
+					fields: ['id', 'start_date'],
+				} as any;
+			}
+
+			return null;
+		});
+
+		const fields = getFields(sample.collection, false, ref({} as ItemPermissions));
+
+		expect(fields.value.map((field) => field.field)).toEqual(['id', 'start_date']);
+
+		for (const field of fields.value) {
+			expect(field.meta?.readonly).toBe(true);
+		}
+	});
 
 	it('should return all fields with full fields read permission', () => {
 		vi.mocked(useCollection).mockReturnValue({ fields: ref(sample.fields), info: ref({}) } as any);

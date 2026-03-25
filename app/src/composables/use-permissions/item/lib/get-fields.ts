@@ -24,22 +24,36 @@ export function getFields(
 
 		let fields = cloneDeep(rawFields.value);
 
-		if (userStore.isAdmin) return fields;
+		if (!userStore.isAdmin) {
+			const readableFields = getPermission(collectionValue, 'read')?.fields;
 
-		const readableFields = getPermission(collectionValue, 'read')?.fields;
-
-		// remove fields without read permissions so they don't show up in the DOM
-		if (readableFields && !readableFields.includes('*')) {
-			fields = fields.filter((field) => readableFields.includes(field.field));
+			// remove fields without read permissions so they don't show up in the DOM
+			if (readableFields && !readableFields.includes('*')) {
+				fields = fields.filter((field) => readableFields.includes(field.field));
+			}
 		}
 
 		// Version editing bypasses underlying collection write permissions entirely.
 		// Field-level access is enforced by the backend at promote time.
 		if (unref(isVersion)) return fields;
 
+		if (collectionInfo?.value?.type === 'view') {
+			for (const field of fields) {
+				(field as FormField).meta = {
+					...(field.meta || {}),
+					readonly: true,
+					non_editable: true,
+				};
+			}
+
+			return fields;
+		}
+
+		if (userStore.isAdmin) return fields;
+
 		let permission;
 
-		if (collectionInfo.value?.meta?.singleton) {
+		if (collectionInfo?.value?.meta?.singleton) {
 			permission = fetchedItemPermissions.value.update;
 		} else if (unref(isNew)) {
 			permission = getPermission(collectionValue, 'create');

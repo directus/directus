@@ -12,6 +12,7 @@ type RawTable = {
 	TABLE_COMMENT: string | null;
 	ENGINE: string;
 	TABLE_COLLATION: string;
+	TABLE_TYPE: 'BASE TABLE' | 'VIEW';
 };
 
 type RawColumn = {
@@ -91,14 +92,15 @@ export default class MySQL implements SchemaInspector {
 				C.COLUMN_TYPE as data_type,
 				C.COLUMN_KEY as column_key,
 				C.CHARACTER_MAXIMUM_LENGTH as max_length,
-				C.EXTRA as extra
+				C.EXTRA as extra,
+				T.TABLE_TYPE as table_type
 			FROM
 				INFORMATION_SCHEMA.COLUMNS AS C
 			LEFT JOIN
 				INFORMATION_SCHEMA.TABLES AS T ON C.TABLE_NAME = T.TABLE_NAME
 				AND C.TABLE_SCHEMA = T.TABLE_SCHEMA
 			WHERE
-				T.TABLE_TYPE = 'BASE TABLE' AND
+				T.TABLE_TYPE IN ('BASE TABLE', 'VIEW') AND
 				C.TABLE_SCHEMA = ?;
 			`,
 			[this.knex.client.database()],
@@ -112,8 +114,19 @@ export default class MySQL implements SchemaInspector {
 					return nested.table_name === column.table_name && nested.column_key === 'PRI';
 				});
 
+				const isView = column.table_type === 'VIEW';
+
+				const fallbackPrimary =
+					isView &&
+					columns[0].some((nested: { table_name: string; column_name: string }) => {
+						return nested.table_name === column.table_name && nested.column_name === 'id';
+					})
+						? 'id'
+						: undefined;
+
 				overview[column.table_name] = {
-					primary: primaryKeys.length !== 1 ? undefined : primaryKeys[0].column_name,
+					primary: primaryKeys.length !== 1 ? fallbackPrimary : primaryKeys[0].column_name,
+					type: isView ? 'view' : 'table',
 					columns: {},
 				};
 			}
@@ -147,9 +160,9 @@ export default class MySQL implements SchemaInspector {
 			.select<{ TABLE_NAME: string }[]>('TABLE_NAME')
 			.from('INFORMATION_SCHEMA.TABLES')
 			.where({
-				TABLE_TYPE: 'BASE TABLE',
 				TABLE_SCHEMA: this.knex.client.database(),
-			});
+			})
+			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW']);
 
 		return records.map(({ TABLE_NAME }) => TABLE_NAME);
 	}
@@ -162,18 +175,19 @@ export default class MySQL implements SchemaInspector {
 	tableInfo(table: string): Promise<Table>;
 	async tableInfo<T>(table?: string) {
 		const query = this.knex
-			.select('TABLE_NAME', 'ENGINE', 'TABLE_SCHEMA', 'TABLE_COLLATION', 'TABLE_COMMENT')
+			.select('TABLE_NAME', 'ENGINE', 'TABLE_SCHEMA', 'TABLE_COLLATION', 'TABLE_COMMENT', 'TABLE_TYPE')
 			.from('information_schema.tables')
 			.where({
 				table_schema: this.knex.client.database(),
-				table_type: 'BASE TABLE',
-			});
+			})
+			.whereIn('table_type', ['BASE TABLE', 'VIEW']);
 
 		if (table) {
 			const rawTable: RawTable = await query.andWhere({ table_name: table }).first();
 
 			return {
 				name: rawTable.TABLE_NAME,
+				type: rawTable.TABLE_TYPE === 'VIEW' ? 'view' : 'table',
 				schema: rawTable.TABLE_SCHEMA,
 				comment: rawTable.TABLE_COMMENT,
 				collation: rawTable.TABLE_COLLATION,
@@ -186,6 +200,7 @@ export default class MySQL implements SchemaInspector {
 		return records.map((rawTable): Table => {
 			return {
 				name: rawTable.TABLE_NAME,
+				type: rawTable.TABLE_TYPE === 'VIEW' ? 'view' : 'table',
 				schema: rawTable.TABLE_SCHEMA,
 				comment: rawTable.TABLE_COMMENT,
 				collation: rawTable.TABLE_COLLATION,
@@ -205,6 +220,7 @@ export default class MySQL implements SchemaInspector {
 				table_schema: this.knex.client.database(),
 				table_name: table,
 			})
+			.whereIn('TABLE_TYPE', ['BASE TABLE', 'VIEW'])
 			.first();
 
 		return (result && result.count === 1) || false;

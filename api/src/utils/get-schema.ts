@@ -153,6 +153,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 		result.collections[collection] = {
 			collection,
 			primary: info.primary,
+			readonly: info.type === 'view',
 			singleton: toBoolean(collectionMeta?.singleton),
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
