@@ -82,21 +82,7 @@ export function parseJsonFunction(functionString: string): { field: string; path
 		throw new InvalidQueryError({ reason: 'Invalid json() syntax: missing path' });
 	}
 
-	if (pathContent.includes('[]') || /[*?@$]/.test(pathContent)) {
-		throw new InvalidQueryError({ reason: 'Invalid json() syntax: unsupported path expression' });
-	}
-
-	// Normalize path to always start with dot or bracket
-	const path = pathContent.startsWith('[') ? pathContent : '.' + pathContent;
-
-	// Validate JSON path depth
-	const depth = calculateJsonPathDepth(path);
-
-	if (depth > MAX_JSON_QUERY_DEPTH) {
-		throw new InvalidQueryError({
-			reason: `JSON path depth (${depth}) exceeds allowed maximum of ${MAX_JSON_QUERY_DEPTH}`,
-		});
-	}
+	const path = parseJsonPath(pathContent);
 
 	return {
 		field,
