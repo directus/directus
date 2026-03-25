@@ -227,7 +227,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const file = req.query['file'] as string | undefined;
+		const file = req.body?.file as string | string[] | undefined;
 
 		const result = await service.clearAssetVariants(file);
 

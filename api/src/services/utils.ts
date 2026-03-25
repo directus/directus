@@ -173,7 +173,7 @@ export class UtilsService {
 		return cache?.clear();
 	}
 
-	async clearAssetVariants(fileId?: string): Promise<{ deleted: number }> {
+	async clearAssetVariants(fileId?: string | string[]): Promise<{ deleted: number }> {
 		if (this.accountability?.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -185,7 +185,11 @@ export class UtilsService {
 			.from('directus_files');
 
 		if (fileId) {
-			query.where('id', fileId);
+			if (Array.isArray(fileId)) {
+				query.whereIn('id', fileId);
+			} else {
+				query.where('id', fileId);
+			}
 		}
 
 		const files = await query;

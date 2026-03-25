@@ -48,29 +48,24 @@ function createMockDisk(options: { files: Map<string, string[]>; hasBulkDelete?:
 }
 
 function createMockKnex(files: { id: string; filename_disk: string; storage: string }[]) {
-	const knex: any = {
-		select: vi.fn().mockReturnThis(),
-		from: vi.fn().mockReturnThis(),
-		where: vi.fn().mockReturnThis(),
+	const chainable: any = {
+		where: vi.fn().mockImplementation((_col: string, id: string) => {
+			const filtered = files.filter((f) => f.id === id);
+			return { ...chainable, then: (resolve: any) => resolve(filtered), [Symbol.toStringTag]: 'Promise' };
+		}),
+		whereIn: vi.fn().mockImplementation((_col: string, ids: string[]) => {
+			const filtered = files.filter((f) => ids.includes(f.id));
+			return { ...chainable, then: (resolve: any) => resolve(filtered), [Symbol.toStringTag]: 'Promise' };
+		}),
+		then: (resolve: any) => resolve(files),
+		[Symbol.toStringTag]: 'Promise',
 	};
 
-	// Default: return all files
-	knex.from.mockImplementation(() => {
-		return {
-			where: vi.fn().mockResolvedValue(files.filter(() => true)),
-			then: (resolve: any) => resolve(files),
-			[Symbol.toStringTag]: 'Promise',
-		};
-	});
-
-	// Make knex thenable to resolve as files
-	knex.select.mockReturnValue({
-		from: vi.fn().mockReturnValue({
-			where: vi.fn().mockImplementation(() => Promise.resolve(files)),
-			then: (resolve: any) => resolve(files),
-			[Symbol.toStringTag]: 'Promise',
+	const knex: any = {
+		select: vi.fn().mockReturnValue({
+			from: vi.fn().mockReturnValue(chainable),
 		}),
-	});
+	};
 
 	return knex;
 }
@@ -166,6 +161,36 @@ describe('UtilsService', () => {
 			expect(result.deleted).toBe(2);
 			expect(disk.bulkDelete).toHaveBeenCalledWith(['abc__hash1.jpg', 'abc__hash2.jpg']);
 			expect(disk.delete).not.toHaveBeenCalled();
+		});
+
+		test('accepts array of file IDs', async () => {
+			const files = [
+				{ id: '1', filename_disk: 'abc.jpg', storage: 'local' },
+				{ id: '2', filename_disk: 'def.jpg', storage: 'local' },
+			];
+
+			const storageFiles = new Map([
+				['abc', ['abc.jpg', 'abc__hash1.jpg']],
+				['def', ['def.jpg', 'def__hash1.jpg']],
+			]);
+
+			const { disk } = createMockDisk({ files: storageFiles });
+
+			vi.mocked(getStorage).mockResolvedValue({
+				location: () => disk,
+			} as any);
+
+			const knex = createMockKnex(files);
+
+			const service = new UtilsService({
+				knex,
+				accountability: { admin: true, role: null, user: null, roles: [], ip: '', app: false },
+				schema: mockSchema,
+			});
+
+			const result = await service.clearAssetVariants(['1', '2']);
+
+			expect(result.deleted).toBe(2);
 		});
 
 		test('returns zero when no variants exist', async () => {
