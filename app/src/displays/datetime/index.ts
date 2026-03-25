@@ -100,7 +100,7 @@ export default defineDisplay({
 						width: 'half',
 						options: {
 							choices: getTimezoneOptions(),
-							allowOther: true,
+							allowNone: true,
 						},
 						note: '$t:displays.datetime.timezone_note',
 					},

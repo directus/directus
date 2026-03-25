@@ -91,10 +91,10 @@ export default defineInterface({
 					type: 'string',
 					meta: {
 						interface: 'select-dropdown',
-						width: 'full',
+						width: 'half',
 						options: {
 							choices: getTimezoneOptions(),
-							allowOther: true,
+							allowNone: true,
 						},
 						note: '$t:displays.datetime.timezone_note',
 					},

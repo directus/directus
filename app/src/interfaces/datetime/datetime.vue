@@ -150,10 +150,8 @@ const tzValue = computed({
 	}
 }
 
-.timezone-icon:not(.disabled) {
+.timezone-icon {
 	margin-inline-end: 0.257rem;
-
-	--v-icon-color: var(--theme--secondary);
 }
 
 .item-actions {
