@@ -33,6 +33,7 @@ interface Props {
 	hasEdits: boolean;
 	currentVersion: ContentVersionMaybeNew | null;
 	versions: ContentVersionMaybeNew[];
+	deleteVersionLoading?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -40,12 +41,12 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
 	add: [version: ContentVersion];
 	update: [updates: { key: string; name?: string | null }];
-	delete: [deleteOnPublish: boolean];
+	delete: [versionId: PrimaryKey];
 	switch: [version: ContentVersionMaybeNew | null];
 	publish: [];
 }>();
 
-const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
+const { collection, primaryKey, hasEdits, currentVersion, versions, deleteVersionLoading } = toRefs(props);
 
 const { t } = useI18n();
 
@@ -74,7 +75,6 @@ const {
 const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renameVersion, isRenameDisabled } =
 	useRenameDialog();
 
-const { deleting, deleteVersion } = useDelete();
 const { deleteDialogActive, onDeleteVersion } = useDeleteDialog();
 
 const { isCurrentVersionGlobal, isCurrentVersionNew, canAccessGlobalVersion, isVersionKeyGlobal, isVersionNew } =
@@ -236,43 +236,16 @@ function useRenameDialog() {
 	}
 }
 
-function useDelete() {
-	const deleting = ref(false);
-
-	return {
-		deleting,
-		deleteVersion,
-	};
-
-	async function deleteVersion(deleteOnPublish = false) {
-		if (!currentVersion.value) return;
-
-		deleting.value = true;
-
-		try {
-			await api.delete(`/versions/${currentVersion.value.id}`);
-
-			emit('delete', deleteOnPublish);
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			deleting.value = false;
-		}
-	}
-}
-
 function useDeleteDialog() {
 	const deleteDialogActive = ref(false);
 
-	return {
-		deleteDialogActive,
-		onDeleteVersion,
-	};
+	return { deleteDialogActive, onDeleteVersion };
 
 	async function onDeleteVersion() {
-		if (deleting.value) return;
+		const versionId = currentVersion.value?.id;
+		if (!versionId || deleteVersionLoading.value) return;
 
-		await deleteVersion();
+		emit('delete', versionId);
 		deleteDialogActive.value = false;
 	}
 }
@@ -539,7 +512,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 				</VCardTitle>
 				<VCardActions>
 					<VButton secondary @click="deleteDialogActive = false">{{ $t('cancel') }}</VButton>
-					<VButton :loading="deleting" kind="danger" @click="onDeleteVersion">
+					<VButton :loading="deleteVersionLoading" kind="danger" @click="onDeleteVersion">
 						{{ $t(isCurrentVersionGlobal ? 'discard_label' : 'delete_label') }}
 					</VButton>
 				</VCardActions>

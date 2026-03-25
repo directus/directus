@@ -160,12 +160,14 @@ describe('useVersions', () => {
 			expect(versions.value[1]?.key).toBe('my-local-version');
 			expect(versions.value[1]?.type).toBe('local');
 		});
+	});
 
-		it('should set currentVersion to null after promoting a Draft version', async () => {
-			const existingDraftVersion: ContentVersion = {
-				id: 'draft-id',
-				key: 'draft',
-				name: 'My Draft',
+	describe('deleteVersion', () => {
+		it('should call DELETE /versions/{id} and remove from rawVersions', async () => {
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'my-version',
+				name: 'My Version',
 				collection: 'test_collection',
 				item: '1',
 				hash: 'abc123',
@@ -176,57 +178,52 @@ describe('useVersions', () => {
 				delta: {},
 			};
 
-			vi.mocked(api.get).mockResolvedValueOnce({
-				data: { data: [existingDraftVersion] },
-			});
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			vi.mocked(api.delete).mockResolvedValueOnce({});
 
-			const { versions, currentVersion, deleteVersion } = useVersions(ref('test_collection'), ref(true), ref('1'));
-
+			const { versions, deleteVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
 			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
-			// Select the draft version
-			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
-			expect(currentVersion.value).not.toBeNull();
-			expect(currentVersion.value?.type).toBe('global');
+			await deleteVersion('version-123');
 
-			deleteVersion(true);
-
-			expect(currentVersion.value).toBeNull();
+			expect(api.delete).toHaveBeenCalledWith('/versions/version-123');
+			expect(versions.value.find((v) => v.key === 'my-version')).toBeUndefined();
 		});
 
-		it('should keep currentVersion as Draft when discarding edits', async () => {
-			const existingDraftVersion: ContentVersion = {
-				id: 'draft-id',
-				key: 'draft',
-				name: 'My Draft',
-				collection: 'test_collection',
-				item: '1',
-				hash: 'abc123',
-				date_created: '2024-01-01',
-				date_updated: '2024-01-02',
-				user_created: 'user-1',
-				user_updated: 'user-1',
-				delta: {},
-			};
+		it('should toggle deleteVersionLoading during the API call', async () => {
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
 
-			vi.mocked(api.get).mockResolvedValueOnce({
-				data: { data: [existingDraftVersion] },
-			});
+			let resolveDelete!: () => void;
 
-			const { versions, currentVersion, deleteVersion } = useVersions(ref('test_collection'), ref(true), ref('1'));
+			vi.mocked(api.delete).mockReturnValueOnce(
+				new Promise((resolve) => {
+					resolveDelete = () => resolve({} as any);
+				}),
+			);
 
+			const { deleteVersion, deleteVersionLoading } = useVersions(ref('test_collection'), ref(false), ref('1'));
 			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
-			// Select the draft version
-			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
-			expect(currentVersion.value).not.toBeNull();
-			expect(currentVersion.value?.type).toBe('global');
+			const deletePromise = deleteVersion('version-123');
+			expect(deleteVersionLoading.value).toBe(true);
 
-			deleteVersion(false);
+			resolveDelete();
+			await deletePromise;
 
-			// currentVersion should remain non-null (Draft stays selected, re-created as virtual)
-			expect(currentVersion.value).not.toBeNull();
-			expect(currentVersion.value?.key).toBe('draft');
+			expect(deleteVersionLoading.value).toBe(false);
+		});
+
+		it('should handle errors via unexpectedError and re-throw', async () => {
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+			const error = new Error('API error');
+			vi.mocked(api.delete).mockRejectedValueOnce(error);
+
+			const { deleteVersion, deleteVersionLoading } = useVersions(ref('test_collection'), ref(false), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			await expect(deleteVersion('version-123')).rejects.toThrow('API error');
+			expect(deleteVersionLoading.value).toBe(false);
 		});
 	});
 
@@ -529,41 +526,6 @@ describe('useVersions', () => {
 
 			// GET should NOT have been called (getVersions skipped for item-less draft)
 			expect(api.get).not.toHaveBeenCalled();
-		});
-	});
-
-	describe('removeVersion', () => {
-		it('should call DELETE /versions/{id} and remove from rawVersions', async () => {
-			const existingVersion: ContentVersion = {
-				id: 'version-123',
-				key: 'draft',
-				name: null,
-				collection: 'test_collection',
-				item: '1',
-				hash: 'abc',
-				date_created: '2024-01-01',
-				date_updated: '2024-01-01',
-				user_created: 'user-1',
-				user_updated: 'user-1',
-				delta: {},
-			};
-
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
-			vi.mocked(api.delete).mockResolvedValueOnce({});
-
-			const { versions, currentVersion, removeVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
-
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
-
-			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
-			expect(currentVersion.value).not.toBeNull();
-
-			await removeVersion('version-123');
-
-			expect(api.delete).toHaveBeenCalledWith('/versions/version-123');
-			expect(currentVersion.value).toBeNull();
-			// draft should now be virtual (id '+')
-			expect(versions.value.find((v) => v.key === 'draft')?.id).toBe('+');
 		});
 	});
 });

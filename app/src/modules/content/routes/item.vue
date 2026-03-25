@@ -40,10 +40,12 @@ import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
-import { useFieldsStore } from '@/stores/fields';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { mergeItemData } from '@/utils/merge-item-data';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { validateItem } from '@/utils/validate-item';
@@ -99,12 +101,12 @@ const {
 	addVersion,
 	updateVersion,
 	deleteVersion,
+	deleteVersionLoading,
 	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
-	removeVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
 // For new items ('+') in versioned collections, immediately enter draft version context.
@@ -123,77 +125,8 @@ watch(
 	{ immediate: true },
 );
 
-const comparisonModalActive = ref(false);
-
-const comparableVersion = computed(() => {
-	if (currentVersion.value === null || currentVersion.value.id === '+') return null;
-	return currentVersion.value as ContentVersionWithType;
-});
-
-const fieldsStore = useFieldsStore();
-
-async function onVersionPublishCompare() {
-	const assembledItem = item.value ?? {};
-	const fields = fieldsStore.getFieldsForCollection(collection.value);
-	const errors = validateItem(assembledItem, fields, false, false, currentVersion.value);
-
-	versionValidationErrors.value = errors;
-
-	// Item-less draft: no main item exists yet, skip comparison modal and promote directly
-	if (props.primaryKey === '+' && currentVersion.value && currentVersion.value.id !== '+') {
-		try {
-			const newItemKey = await publishVersion(currentVersion.value.id, {});
-
-			if (newItemKey) {
-				router.replace(getItemRoute(props.collection, newItemKey));
-			}
-		} catch {
-			// publishVersion handles unexpected errors
-		}
-
-		return;
-	}
-
-	comparisonModalActive.value = true;
-}
-
-async function onVersionPublishConfirm(opts: {
-	versionId: string;
-	mainHash: string;
-	fields: string[];
-	deleteOnPublish: boolean;
-}) {
-	const clientErrors = validateItem(
-		item.value ?? {},
-		fieldsStore.getFieldsForCollection(collection.value),
-		false,
-		false,
-		currentVersion.value,
-	);
-
-	if (clientErrors.length > 0) {
-		versionValidationErrors.value = clientErrors;
-		comparisonModalActive.value = false;
-		return;
-	}
-
-	try {
-		await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
-
-		if (opts.deleteOnPublish) {
-			await removeVersion(opts.versionId);
-		} else {
-			currentVersion.value = null;
-		}
-
-		refresh();
-		revisionsSidebarDetailRef.value?.refresh?.();
-	} catch {
-		// publishVersion / removeVersion handle unexpected errors
-	} finally {
-		comparisonModalActive.value = false;
-	}
-}
+const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
+	usePublishComparison();
 
 const {
 	isNew,
@@ -737,6 +670,74 @@ function useItemNavigation() {
 
 	return { collectionRoute, backRoute };
 }
+
+function usePublishComparison() {
+	const comparisonModalActive = ref(false);
+
+	const comparableVersion = computed(() => {
+		if (currentVersion.value === null || currentVersion.value.id === '+') return null;
+		return currentVersion.value as ContentVersionWithType;
+	});
+
+	async function onVersionPublishCompare() {
+		// Item-less draft: no main item exists yet, skip comparison modal and promote directly
+		if (props.primaryKey === '+' && currentVersion.value && currentVersion.value.id !== '+') {
+			try {
+				const newItemKey = await publishVersion(currentVersion.value.id, {});
+
+				if (newItemKey) {
+					router.replace(getItemRoute(props.collection, newItemKey));
+				}
+			} catch {
+				// publishVersion handles unexpected errors
+			}
+
+			return;
+		}
+
+		comparisonModalActive.value = true;
+	}
+
+	async function onVersionPublishConfirm(opts: {
+		versionId: string;
+		mainHash: string;
+		fields: string[];
+		deleteOnPublish: boolean;
+	}) {
+		const defaultValues = getDefaultValuesFromFields(fields);
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+		const fieldsToValidate = pushGroupOptionsDown(fields.value);
+
+		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+		versionValidationErrors.value = clientErrors;
+
+		if (versionValidationErrors.value.length) {
+			comparisonModalActive.value = false;
+			return;
+		}
+
+		try {
+			await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
+
+			if (versionValidationErrors.value.length) {
+				comparisonModalActive.value = false;
+				return;
+			}
+
+			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
+			currentVersion.value = null;
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
+		} catch {
+			// publishVersion / deleteVersion handle unexpected errors
+		} finally {
+			comparisonModalActive.value = false;
+		}
+	}
+
+	return { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm };
+}
 </script>
 
 <template>
@@ -789,6 +790,7 @@ function useItemNavigation() {
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"
+					:delete-version-loading="deleteVersionLoading"
 					@add="addVersion"
 					@update="updateVersion"
 					@delete="deleteVersion"

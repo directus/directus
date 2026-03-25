@@ -18,6 +18,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
+	const deleteVersionLoading = ref(false);
+	const saveVersionLoading = ref(false);
+	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
@@ -170,23 +173,21 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	function deleteVersion(deleteOnPublish = true) {
-		if (!currentVersion.value || !rawVersions.value) return;
+	async function deleteVersion(versionId: PrimaryKey) {
+		deleteVersionLoading.value = true;
 
-		const isLocalVersion = currentVersion.value?.type === 'local';
-		const currentVersionId = currentVersion.value.id;
+		try {
+			await api.delete(`/versions/${versionId}`);
 
-		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
-
-		if (index !== -1) {
-			if (isLocalVersion || deleteOnPublish) currentVersion.value = null;
-			rawVersions.value.splice(index, 1);
+			const indexToRemove = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
+			if (indexToRemove !== -1) rawVersions.value?.splice(indexToRemove, 1);
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		} finally {
+			deleteVersionLoading.value = false;
 		}
 	}
-
-	// Save version
-
-	const saveVersionLoading = ref(false);
 
 	function versionErrorHandler(error: any) {
 		if (error?.response?.data?.errors) {
@@ -268,10 +269,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	// Publish version
-
-	const publishVersionLoading = ref(false);
-
 	async function publishVersion(
 		versionId: PrimaryKey,
 		options: PublishVersionOptions = {},
@@ -297,23 +294,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function removeVersion(versionId: PrimaryKey) {
-		loading.value = true;
-
-		try {
-			await api.delete(`/versions/${versionId}`);
-
-			const index = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
-			if (index !== -1) rawVersions.value?.splice(index, 1);
-			if (currentVersion.value?.id === versionId) currentVersion.value = null;
-		} catch (error) {
-			unexpectedError(error);
-			throw error;
-		} finally {
-			loading.value = false;
-		}
-	}
-
 	function isVersionSelectable(version: ContentVersionMaybeNew) {
 		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
@@ -328,11 +308,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		addVersion,
 		updateVersion,
 		deleteVersion,
+		deleteVersionLoading,
 		saveVersionLoading,
 		saveVersion,
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
-		removeVersion,
 	};
 }
