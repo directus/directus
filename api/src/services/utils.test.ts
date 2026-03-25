@@ -100,7 +100,7 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: { admin: true, role: null, user: null, roles: [], ip: '', app: false },
+				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -126,7 +126,7 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: { admin: true, role: null, user: null, roles: [], ip: '', app: false },
+				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -150,7 +150,7 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: { admin: true, role: null, user: null, roles: [], ip: '', app: false },
+				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -181,13 +181,39 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: { admin: true, role: null, user: null, roles: [], ip: '', app: false },
+				accountability: null,
 				schema: mockSchema,
 			});
 
 			await service.clearAssetVariants({ file: ['1', '2'] });
 
 			expect(disk.delete).toHaveBeenCalledTimes(2);
+		});
+
+		test('handles custom filename_disk with subdirectory', async () => {
+			const files = [{ id: '1', filename_disk: 'subfolder/photo.jpg', storage: 'local' }];
+
+			const storageFiles = new Map([['photo', ['subfolder/photo.jpg', 'photo__hash1.jpg', 'photo__hash2.webp']]]);
+
+			const { disk } = createMockDisk({ files: storageFiles });
+
+			vi.mocked(getStorage).mockResolvedValue({
+				location: () => disk,
+			} as any);
+
+			const knex = createMockKnex(files);
+
+			const service = new UtilsService({
+				knex,
+				accountability: null,
+				schema: mockSchema,
+			});
+
+			await service.clearAssetVariants({ file: ['1'] });
+
+			expect(disk.delete).toHaveBeenCalledTimes(2);
+			expect(disk.delete).toHaveBeenCalledWith('photo__hash1.jpg');
+			expect(disk.delete).toHaveBeenCalledWith('photo__hash2.webp');
 		});
 
 		test('does nothing when no variants exist', async () => {
@@ -205,7 +231,7 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: { admin: true, role: null, user: null, roles: [], ip: '', app: false },
+				accountability: null,
 				schema: mockSchema,
 			});
 
