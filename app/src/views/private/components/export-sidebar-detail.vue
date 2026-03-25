@@ -11,6 +11,7 @@ import ImportErrorDialog from './import-error-dialog.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -57,7 +58,7 @@ const { collection } = toRefs(props);
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const file = ref<File | null>(null);
-const { uploading, progress, importing, uploadFile } = useUpload();
+const { uploading, progress, importing, uploadFile, background: backgroundImport } = useUpload();
 
 const exportDialogActive = ref(false);
 
@@ -278,8 +279,9 @@ function useUpload() {
 	const uploading = ref(false);
 	const importing = ref(false);
 	const progress = ref(0);
+	const background = ref(false);
 
-	return { uploading, progress, importing, uploadFile };
+	return { uploading, progress, importing, uploadFile, background };
 
 	async function uploadFile(file: File) {
 		uploading.value = true;
@@ -289,8 +291,15 @@ function useUpload() {
 		const formData = new FormData();
 		formData.append('file', file);
 
+		const params: Record<string, unknown> = {};
+
+		if (background.value) {
+			params.background = background.value;
+		}
+
 		try {
 			await api.post(`/utils/import/${collection.value}`, formData, {
+				params,
 				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
 					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
 					progress.value = percentCompleted;
@@ -300,11 +309,17 @@ function useUpload() {
 
 			clearFileInput();
 
-			emit('refresh');
+			if (!background.value) {
+				emit('refresh');
 
-			notify({
-				title: t('import_data_success', { filename: file.name }),
-			});
+				notify({
+					title: t('import_data_success', { filename: file.name }),
+				});
+			} else {
+				notify({
+					title: t('import_upload_success', { filename: file.name }),
+				});
+			}
 		} catch (error: any) {
 			const errors = error?.response?.data?.errors;
 			const code = errors?.[0]?.extensions?.code;
@@ -436,6 +451,10 @@ async function exportDataFiles() {
 						</VListItem>
 					</template>
 				</div>
+
+				<VCheckbox v-model="backgroundImport" class="background" small full-width :disabled="uploading || importing">
+					{{ $t('import_background') }}
+				</VCheckbox>
 
 				<div class="field full">
 					<VButton small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
@@ -654,24 +673,28 @@ async function exportDataFiles() {
 }
 
 .fields {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
+}
+
+.background {
+	margin: -1rem 0;
 }
 
 .export-fields {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 	padding: var(--content-padding);
 }
 
 .v-checkbox {
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -695,12 +718,12 @@ async function exportDataFiles() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-block-end: 4px;
+		margin-block-end: 0.25rem;
 	}
 }
 
@@ -710,9 +733,9 @@ async function exportDataFiles() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 40px;
-	block-size: 40px;
-	margin-inline-start: -8px;
+	inline-size: 2.25rem;
+	block-size: 2.25rem;
+	margin-inline-start: -0.4375rem;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -725,7 +748,7 @@ async function exportDataFiles() {
 .extension {
 	color: var(--theme--primary);
 	font-weight: 600;
-	font-size: 11px;
+	font-size: 0.625rem;
 	text-transform: uppercase;
 }
 
@@ -750,7 +773,7 @@ async function exportDataFiles() {
 	text-align: center;
 	display: block;
 	inline-size: 100%;
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

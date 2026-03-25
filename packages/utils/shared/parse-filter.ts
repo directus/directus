@@ -102,7 +102,7 @@ export function parsePreset(
 	preset: Record<string, any> | null,
 	accountability: BasicAccountability | null,
 	context: ParseFilterContext,
-) {
+): any {
 	if (!preset) return preset;
 	return deepMap(preset, (value) => {
 		if (value === 'true') return true;

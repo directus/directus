@@ -10,7 +10,7 @@ import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
-import { useExtensions } from '@/extensions';
+import { useAllModules } from '@/extensions';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { translate } from '@/utils/translate-object-values';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -75,10 +75,10 @@ const editing = ref<string | null>();
 const values = ref<SettingsModuleBarLink | null>();
 const initialValues = ref<SettingsModuleBarLink | null>();
 
-const { modules: registeredModules } = useExtensions();
+const allModules = useAllModules();
 
 const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
-	return registeredModules.value
+	return allModules.value
 		.filter((module) => module.hidden !== true)
 		.map(
 			(module): SettingsModuleBarModule => ({
@@ -119,30 +119,16 @@ const isSaveDisabled = computed(() => {
 });
 
 function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
-	return value
-		.filter((part) => {
-			if (part.type === 'link') return true;
-			return !!registeredModules.value.find((module) => module.id === part.id);
-		})
-		.map((part) => {
-			if (part.type === 'link') {
-				return {
-					...part,
-					to: part.url,
-					icon: part.icon,
-					name: translate(part.name),
-				};
-			}
+	return value.flatMap((part): PreviewValue[] => {
+		if (part.type === 'link') {
+			return [{ ...part, to: part.url, icon: part.icon, name: translate(part.name) }];
+		}
 
-			const module = registeredModules.value.find((module) => module.id === part.id)!;
+		const module = allModules.value.find((module) => module.id === part.id);
+		if (!module) return [];
 
-			return {
-				...part,
-				to: `/${module.id}`,
-				name: module.name,
-				icon: module.icon,
-			};
-		});
+		return [{ ...part, to: `/${module.id}`, name: module.name, icon: module.icon }];
+	});
 }
 
 function previewToValue(preview: PreviewValue[]): Settings['module_bar'] {
@@ -279,7 +265,7 @@ function remove(id: string) {
 
 <style scoped lang="scss">
 .icon {
-	margin: 0 12px;
+	margin: 0 0.6875rem;
 }
 
 .system-modules {
@@ -304,7 +290,7 @@ function remove(id: string) {
 }
 
 .list {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 	padding: 0;
 }
 </style>

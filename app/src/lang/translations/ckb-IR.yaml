@@ -465,6 +465,8 @@ related_collection: کۆمەڵەی پەیوەندیدار
 related_collections: کۆمەڵە پەیوەندیدارەکان
 translations_collection: کۆمەڵەی وەرگێران
 languages_collection: کۆمەڵەی زمانەکان
+translations_preview_collections: کۆمەڵەکان
+translations_preview_fields: خانەکان
 import_data_input_placeholder: CSV یان JSON...
 import_data_button: دەستکردن بە هاوردەکردن
 import_data_indeterminate: هاوردەکردنی داتا...

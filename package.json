@@ -34,14 +34,15 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.3.8",
+			"fast-xml-parser": "5.5.9",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
-			"@rollup/plugin-terser>serialize-javascript": "7.0.3",
-			"tar": "7.5.8",
-			"qs": "6.14.2",
-			"minimatch@10": "10.2.3",
+			"tar": "7.5.12",
+			"qs": "6.15.0",
+			"minimatch@10": "10.2.4",
 			"minimatch@9": "9.0.7",
-			"basic-ftp": "5.2.0"
+			"basic-ftp": "5.2.0",
+			"underscore": "1.13.8",
+			"flatted": "3.4.2"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

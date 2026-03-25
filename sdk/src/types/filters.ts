@@ -1,7 +1,7 @@
 import type { MappedFieldNames } from './functions.js';
 import type { FieldOutputMap } from './output.js';
 import type { RelationalFields } from './schema.js';
-import type { IfNever, IsDateTime, IsNumber, IsString, Merge, UnpackList } from './utils.js';
+import type { IfNever, IsDateTime, IsNullable, IsNumber, IsString, Merge, UnpackList } from './utils.js';
 
 /**
  * Filters
@@ -47,39 +47,40 @@ export type NestedRelationalFilter<Schema, Item, Field extends keyof Item> =
  */
 export type FilterOperators<
 	FieldType,
+	Type = Exclude<FieldType, null>,
 	T = FieldType extends keyof FieldOutputMap ? FieldOutputMap[FieldType] : FieldType,
 > = MapFilterOperators<{
 	_eq: T;
 	_neq: T;
-	_gt: IsDateTime<FieldType, string, IsNumber<T, number, never>>;
-	_gte: IsDateTime<FieldType, string, IsNumber<T, number, never>>;
-	_lt: IsDateTime<FieldType, string, IsNumber<T, number, never>>;
-	_lte: IsDateTime<FieldType, string, IsNumber<T, number, never>>;
+	_gt: IsDateTime<Type, string, IsNumber<T, number, never>>;
+	_gte: IsDateTime<Type, string, IsNumber<T, number, never>>;
+	_lt: IsDateTime<Type, string, IsNumber<T, number, never>>;
+	_lte: IsDateTime<Type, string, IsNumber<T, number, never>>;
 	_in: T[];
 	_nin: T[];
-	_between: IsDateTime<FieldType, [T, T], IsNumber<T, [T, T], never>>;
-	_nbetween: IsDateTime<FieldType, [T, T], IsNumber<T, [T, T], never>>;
-	_contains: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_ncontains: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_icontains: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_starts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_istarts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_nstarts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_nistarts_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_ends_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_iends_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_nends_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
-	_niends_with: IsDateTime<FieldType, never, IsString<T, string, never>>;
+	_between: IsDateTime<Type, [T, T], IsNumber<T, [T, T], never>>;
+	_nbetween: IsDateTime<Type, [T, T], IsNumber<T, [T, T], never>>;
+	_contains: IsDateTime<Type, never, IsString<T, string, never>>;
+	_ncontains: IsDateTime<Type, never, IsString<T, string, never>>;
+	_icontains: IsDateTime<Type, never, IsString<T, string, never>>;
+	_starts_with: IsDateTime<Type, never, IsString<T, string, never>>;
+	_istarts_with: IsDateTime<Type, never, IsString<T, string, never>>;
+	_nstarts_with: IsDateTime<Type, never, IsString<T, string, never>>;
+	_nistarts_with: IsDateTime<Type, never, IsString<T, string, never>>;
+	_ends_with: IsDateTime<Type, never, IsString<T, string, never>>;
+	_iends_with: IsDateTime<Type, never, IsString<T, string, never>>;
+	_nends_with: IsDateTime<Type, never, IsString<T, string, never>>;
+	_niends_with: IsDateTime<Type, never, IsString<T, string, never>>;
 	_empty: boolean;
 	_nempty: boolean;
-	_nnull: boolean;
-	_null: boolean;
+	_nnull: IsNullable<FieldType, boolean, never>;
+	_null: IsNullable<FieldType, boolean, never>;
 	_intersects: T;
 	_nintersects: T;
 	_intersects_bbox: T;
 	_nintersects_bbox: T;
 	// regex is not available over the API https://docs.directus.io/reference/filter-rules.html#filter-operators
-	// _regex: IsDateTime<FieldType, never, IsString<T, string, never>>;
+	// _regex: IsDateTime<Type, never, IsString<T, string, never>>;
 }>;
 
 // filter not applicable filters based on "never" types

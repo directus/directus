@@ -465,6 +465,8 @@ related_collection: Хамааралтай бүрдэл
 related_collections: Хамааралтай бүрдлүүд
 translations_collection: Орчуулгын бүрдлүүд
 languages_collection: Хэлний бүрдлүүд
+translations_preview_collections: Бүрдлүүд
+translations_preview_fields: Талбарууд
 import_data_input_placeholder: CSV эсвэл JSON...
 import_data_button: Импортлож эхлэх
 import_data_indeterminate: Өгөгдлийг импортлож байна...

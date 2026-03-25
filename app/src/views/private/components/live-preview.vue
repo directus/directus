@@ -84,6 +84,16 @@ const { visualEditingEnabled, showEditableElements, openInVisualEditor } = useVi
 const width = ref<number>();
 const height = ref<number>();
 const zoom = ref<number>(1);
+
+const zoomOptions = [
+	{ text: '25%', value: 0.25 },
+	{ text: '50%', value: 0.5 },
+	{ text: '75%', value: 0.75 },
+	{ text: '100%', value: 1 },
+	{ text: '150%', value: 1.5 },
+	{ text: '200%', value: 2 },
+];
+
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
@@ -393,7 +403,7 @@ function useUrls() {
 							@click="toggle"
 						>
 							<VTextOverflow :text="urlDisplay" placement="bottom" />
-							<VIcon v-if="multipleUrls" name="expand_more" />
+							<VIcon v-if="multipleUrls" small name="arrow_drop_down" />
 						</component>
 					</template>
 
@@ -431,19 +441,15 @@ function useUrls() {
 					:disabled="fullscreen"
 					@input="height = Number(($event as any).target.value)"
 				/>
-				<VSelect
-					v-model="zoom"
-					inline
-					:items="[
-						{ text: '25%', value: 0.25 },
-						{ text: '50%', value: 0.5 },
-						{ text: '75%', value: 0.75 },
-						{ text: '100%', value: 1 },
-						{ text: '150%', value: 1.5 },
-						{ text: '200%', value: 2 },
-					]"
-					:disabled="fullscreen"
-				/>
+
+				<VSelect v-model="zoom" :items="zoomOptions" :disabled="fullscreen" :attached="false" show-arrow>
+					<template #preview="{ toggle, active }">
+						<button type="button" :disabled="fullscreen" :aria-pressed="active" class="zoom-select" @click="toggle">
+							<span>{{ zoomOptions.find((option) => option.value === zoom)?.text || zoom }}</span>
+							<VIcon small name="arrow_drop_down" :class="{ active }" />
+						</button>
+					</template>
+				</VSelect>
 			</div>
 			<VButton
 				v-tooltip.bottom.start="$t('live_preview.change_size')"
@@ -478,12 +484,12 @@ function useUrls() {
 			collapsible
 			:collapsed-size="0"
 			:collapse-threshold="70"
-			:min-size="280"
-			:max-size="600"
-			:snap-points="[370]"
+			:min-size="252"
+			:max-size="540"
+			:snap-points="[333]"
 			:snap-threshold="6"
 			:transition-duration="125"
-			divider-hit-area="24px"
+			divider-hit-area="4px"
 			class="content-split"
 			@update:size="(size: number) => emit('update:sidebarSize', size)"
 			@update:collapsed="
@@ -588,17 +594,17 @@ function useUrls() {
 	--preview--header--background-color: var(--theme--navigation--modules--background);
 	--preview--header--border-width: var(--theme--navigation--modules--border-width);
 	--preview--header--border-color: var(--theme--navigation--modules--border-color);
-	--preview--header--height: 44px;
+	--preview--header--height: 2.5rem;
 
 	container-type: inline-size;
 	inline-size: 100%;
 	block-size: 100%;
 
 	&.header-expanded {
-		--preview--header--height: 60px;
+		--preview--header--height: 3.375rem;
 
 		.header {
-			padding: 8px 16px;
+			padding: 0.4375rem 0.875rem;
 		}
 	}
 
@@ -613,8 +619,8 @@ function useUrls() {
 		display: flex;
 		align-items: center;
 		z-index: 10;
-		gap: 8px;
-		padding: 0 8px;
+		gap: 0.4375rem;
+		padding: 0 0.4375rem;
 		transition:
 			padding var(--medium) var(--transition),
 			block-size var(--medium) var(--transition);
@@ -668,7 +674,7 @@ function useUrls() {
 				min-inline-size: 0;
 
 				.v-icon {
-					inset-block-start: 1px;
+					inset-block-start: 0.0625rem;
 				}
 			}
 		}
@@ -683,12 +689,20 @@ function useUrls() {
 
 			&.disabled {
 				color: var(--preview--color-disabled);
+
+				.zoom-select {
+					cursor: not-allowed;
+				}
+			}
+
+			.zoom-select {
+				white-space: nowrap;
 			}
 		}
 
 		input {
 			border: none;
-			inline-size: 50px;
+			inline-size: 2.8125rem;
 			background-color: transparent;
 
 			&:first-child {
@@ -696,7 +710,7 @@ function useUrls() {
 			}
 		}
 
-		@container (max-width: 480px) {
+		@container (max-width: 27rem) {
 			.dimensions.disabled {
 				display: none;
 			}
@@ -731,7 +745,7 @@ function useUrls() {
 		block-size: 100%;
 		overflow: auto;
 		display: grid;
-		padding: 48px;
+		padding: 2.6875rem;
 
 		#frame {
 			inline-size: 100%;

@@ -5,6 +5,7 @@
 
 import type { DatabaseClient } from '@directus/types';
 import { vi } from 'vitest';
+import { createMockKnex } from './knex.js';
 
 /**
  * Creates a standard database mock for service tests
@@ -27,8 +28,10 @@ import { vi } from 'vitest';
  * ```
  */
 export function mockDatabase(client: DatabaseClient = 'postgres') {
+	const { db } = createMockKnex();
+
 	return {
-		default: vi.fn(),
+		default: vi.fn(() => db),
 		getDatabaseClient: vi.fn().mockReturnValue(client),
 		getSchemaInspector: vi.fn(),
 	};

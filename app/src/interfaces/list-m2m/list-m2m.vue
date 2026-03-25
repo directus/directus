@@ -240,7 +240,7 @@ const headers = computed({
 				if (!field) return null;
 
 				const defaultWidth =
-					contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160;
+					contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 144;
 
 				return {
 					text: field.name,
@@ -264,9 +264,9 @@ const headers = computed({
 });
 
 const spacings = {
-	compact: 32,
-	cozy: 48,
-	comfortable: 64,
+	compact: 29,
+	cozy: 43,
+	comfortable: 58,
 };
 
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
@@ -807,7 +807,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	padding: var(--v-card-padding, 16px);
+	padding: var(--v-card-padding, 0.875rem);
 }
 
 .v-table .deleted {
@@ -870,14 +870,14 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	inline-size: 120px;
-	padding: 10px 0;
-	margin-inline-end: 2px;
+	inline-size: 6.75rem;
+	padding: 0.5625rem 0;
+	margin-inline-end: 0.125rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		inline-size: auto;
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.v-select {
