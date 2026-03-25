@@ -1,5 +1,5 @@
-import type { RequestError } from '@/api';
 import { describe, expect, it, vi } from 'vitest';
+import type { RequestError } from '@/api';
 import { getErrorReason } from './get-error-reason';
 
 vi.mock('@/lang', () => ({
