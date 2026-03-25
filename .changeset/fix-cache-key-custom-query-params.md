@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Include custom query parameters in cache key for Flow trigger endpoints to prevent stale responses. Adds admin-configurable query param allowlist in Flow trigger options.
+Added customizing of cache keys for flow endpoints.
