@@ -219,6 +219,10 @@ router.post(
 	}),
 );
 
+const clearAssetsSchema = Joi.object<{ file?: string | string[] }>({
+	file: Joi.alternatives(Joi.string().uuid(), Joi.array().items(Joi.string().uuid())).optional(),
+});
+
 router.post(
 	'/assets/clear',
 	asyncHandler(async (req, res) => {
@@ -227,9 +231,11 @@ router.post(
 			schema: req.schema,
 		});
 
-		const file = req.body?.file as string | string[] | undefined;
+		const { error, value } = clearAssetsSchema.validate(req.body, { allowUnknown: true });
 
-		const result = await service.clearAssetVariants(file);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
+		const result = await service.clearAssetVariants(value.file);
 
 		res.status(200).json({ data: result });
 	}),
