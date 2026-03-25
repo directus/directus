@@ -78,8 +78,15 @@ export class FnHelperPostgres extends FnHelper {
 			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
 		}
 
-		const { template, bindings } = buildPostgresJsonPath(options.jsonPath);
+		const { template, bindings } = buildPostgresJsonPath(options.jsonPath, options.forFilter);
 		const cast = fieldSchema.dbType === 'jsonb' ? 'jsonb' : 'json';
+
+		if (options.forNumericFilter) {
+			// ->> returns text; cast to numeric for correct numeric comparisons.
+			// Parentheses are required to bind ::numeric to the whole expression,
+			// not to the last path binding.
+			return this.knex.raw(`(??::${cast}${template})::numeric`, [table + '.' + column, ...bindings]);
+		}
 
 		return this.knex.raw(`??::${cast}${template}`, [table + '.' + column, ...bindings]);
 	}
@@ -90,10 +97,18 @@ export class FnHelperPostgres extends FnHelper {
  * Returns a template string containing only operators and ? placeholders,
  * plus a bindings array with the actual values.
  *
+ * When forFilter is true, the final step uses ->> to return text instead of json,
+ * which is required for WHERE clause comparisons (LIKE, =, etc.).
+ *
  * @example ".color" → { template: "->?", bindings: ["color"] }
+ * @example ".color" (forFilter) → { template: "->>?", bindings: ["color"] }
  * @example ".items[0].name" → { template: "->?->?->?", bindings: ["items", 0, "name"] }
+ * @example ".items[0].name" (forFilter) → { template: "->?->?->>?", bindings: ["items", 0, "name"] }
  */
-export function buildPostgresJsonPath(path: string): { template: string; bindings: (string | number)[] } {
+export function buildPostgresJsonPath(
+	path: string,
+	forFilter?: boolean,
+): { template: string; bindings: (string | number)[] } {
 	const parts = toPath(path.startsWith('.') ? path.slice(1) : path);
 
 	let template = '';
@@ -101,8 +116,9 @@ export function buildPostgresJsonPath(path: string): { template: string; binding
 
 	for (let i = 0; i < parts.length; i++) {
 		const num = Number(parts[i]);
+		const isLast = i === parts.length - 1;
 
-		template += '->?';
+		template += forFilter && isLast ? '->>?' : '->?';
 
 		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
 			bindings.push(num);

@@ -68,18 +68,24 @@ export class FnHelperOracle extends FnHelper {
 		}
 
 		// ".items[0].name" → "$.items[0].name"
+		// Oracle requires JSON path expressions to be string literals, not bind variables.
+		// jsonPath is safe to inline: parseJsonPath validates it contains only
+		// alphanumeric characters, dots, brackets with digits, and underscores.
 		const jsonPath = '$' + options.jsonPath;
+
+		if (options?.forNumericFilter) {
+			// JSON_VALUE with RETURNING NUMBER gives correct numeric comparison semantics.
+			return this.knex.raw(`JSON_VALUE(??.??, '${jsonPath}' RETURNING NUMBER)`, [table, column]);
+		}
 
 		// JSON_VALUE only returns scalar values (returns NULL for objects/arrays)
 		// JSON_QUERY only returns objects/arrays (returns NULL for scalars)
 		// COALESCE handles both cases
-		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, ?), JSON_VALUE(??.??, ?))`, [
+		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, '${jsonPath}'), JSON_VALUE(??.??, '${jsonPath}'))`, [
 			table,
 			column,
-			jsonPath,
 			table,
 			column,
-			jsonPath,
 		]);
 	}
 }
