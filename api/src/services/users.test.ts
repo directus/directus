@@ -464,15 +464,11 @@ describe('Integration Tests', () => {
 					schema,
 				});
 
-				const promise = service.acceptInvite('fake-token', 'Password123!');
+				const err = await service.acceptInvite('fake-token', 'Password123!').catch((e) => e);
 
-				await expect(promise).rejects.toThrow(InvalidPayloadError);
-
-				await expect(promise).rejects.toThrow(
-					expect.not.objectContaining({
-						message: expect.stringContaining('test@example.com'),
-					}),
-				);
+				expect(err).toBeInstanceOf(InvalidPayloadError);
+				expect(err.message).not.toContain('test@example.com');
+				expect(err.extensions?.reason).toBe('This invite is no longer valid');
 			});
 
 			it('should throw ForbiddenError for non-invite scope tokens', async () => {
