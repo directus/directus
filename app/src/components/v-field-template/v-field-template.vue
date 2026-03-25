@@ -312,8 +312,6 @@ function setContent() {
 .content {
 	display: block;
 	flex-grow: 1;
-	block-size: 100%;
-	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--monospace--font-family);

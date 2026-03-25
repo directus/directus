@@ -43,7 +43,6 @@ export default defineTheme({
 			background: '#FFFFFF',
 			borderWidth: '1px',
 			borderColor: 'var(--theme--border-color)',
-			boxShadow: '0 4px 7px -4px rgba(0,102,102, 0.1)',
 		},
 		backgroundAccent: '#E2E8F0',
 		backgroundSubdued: '#F8FAFC',

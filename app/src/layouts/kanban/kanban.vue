@@ -402,7 +402,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					}
 
 					&.selected {
-						outline: 2px solid var(--theme--primary);
+						/* Not a focus ring, so using --theme--border-width for outline width */
+						outline: var(--theme--border-width) solid var(--theme--primary);
 					}
 				}
 

@@ -6,7 +6,7 @@ export default defineTheme({
 	appearance: 'light',
 	rules: {
 		borderRadius: '0.3125rem',
-		borderWidth: '2px',
+		borderWidth: '1px',
 
 		foreground: '#4f5464',
 		foregroundAccent: '#172940',
@@ -50,6 +50,10 @@ export default defineTheme({
 			display: {
 				fontFamily: '"Inter", system-ui',
 				fontWeight: '700',
+			},
+			title: {
+				fontFamily: '"Inter", system-ui',
+				fontWeight: '600',
 			},
 			sans: {
 				fontFamily: '"Inter", system-ui',
@@ -124,15 +128,14 @@ export default defineTheme({
 			background: 'var(--theme--background)',
 			borderColor: 'transparent',
 			borderWidth: '0px',
-			boxShadow: '0 4px 7px -4px rgb(0 0 0 / 0.2)',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
 				fontFamily: 'var(--theme--fonts--sans--font-family)',
 			},
 			title: {
-				foreground: 'var(--theme--foreground-accent)',
-				fontFamily: 'var(--theme--fonts--display--font-family)',
-				fontWeight: 'var(--theme--fonts--display--font-weight)',
+				foreground: 'var(--theme--foreground)',
+				fontFamily: 'var(--theme--fonts--title--font-family)',
+				fontWeight: 'var(--theme--fonts--title--font-weight)',
 			},
 		},
 

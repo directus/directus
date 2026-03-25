@@ -110,7 +110,7 @@ function useComparisonIndicator() {
 			>
 				<button
 					type="button"
-					class="label type-title"
+					class="label type-display"
 					:class="{ active, edited }"
 					@click="handleModifier($event, toggle)"
 				>

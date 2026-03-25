@@ -243,7 +243,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	inset: 0;
 	z-index: 100;
 	background-color: var(--theme--primary-background);
-	border: 2px dashed var(--theme--primary);
+	border: var(--theme--border-width) dashed var(--theme--primary);
 	display: flex;
 	flex-direction: column;
 	align-items: center;

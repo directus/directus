@@ -71,12 +71,12 @@
 		}
 
 		.emoji-picker__emojis {
-			border-block-start: 2px solid var(--theme--form--field--input--border-color);
+			border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		}
 	}
 
 	.emoji-picker__preview {
-		border-block-start: 2px solid var(--theme--form--field--input--border-color);
+		border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 
 	.emoji-picker__emoji {

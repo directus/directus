@@ -433,7 +433,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 	background: var(--theme--background);
 	border-radius: var(--comparison-modal--border-radius);
-	box-shadow: var(--theme--shadow);
 	display: flex;
 	flex-direction: column;
 	block-size: var(--comparison-modal--height);
@@ -460,7 +459,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	}
 
 	.comparison-content-divider {
-		border-block-start: 2px solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.columns {
@@ -522,7 +521,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal--padding-x);
 		padding-block: 1rem;
-		border-block-start: 2px solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		.columns {
 			flex-direction: row;

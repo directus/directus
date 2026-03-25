@@ -42,7 +42,7 @@ const logoURL = computed<string | null>(() => {
 						<div class="title">
 							<p class="subtitle">{{ serverInfo?.project?.project_name }}</p>
 							<slot name="title">
-								<h1 class="type-title">{{ title ?? $t('share_access_page') }}</h1>
+								<h1 class="title-heading">{{ title ?? $t('share_access_page') }}</h1>
 							</slot>
 						</div>
 					</div>
@@ -59,6 +59,8 @@ const logoURL = computed<string | null>(() => {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .shared {
 	inline-size: 100%;
 	block-size: 100%;
@@ -94,11 +96,10 @@ header {
 	.title {
 		margin-inline-start: 0.875rem;
 
-		h1 {
+		.title-heading {
+			@include mixins.type-display;
+
 			color: var(--theme--foreground);
-			font-weight: 700;
-			font-size: 1.375rem;
-			line-height: 1;
 		}
 
 		.subtitle {

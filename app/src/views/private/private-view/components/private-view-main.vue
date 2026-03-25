@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
-import { useBreakpoints, useResizeObserver, useScroll } from '@vueuse/core';
-import { computed, type ComputedRef, inject, provide, ref, unref, useTemplateRef, watch } from 'vue';
+import { useBreakpoints } from '@vueuse/core';
+import { computed, type ComputedRef, inject, provide, useTemplateRef, watch } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
@@ -23,45 +23,9 @@ provide('main-element', contentEl);
 const userStore = useUserStore();
 const sidebarStore = useSidebarStore();
 
-const scrollContainerRef = useTemplateRef('scroll-container');
-
-const { y, x } = useScroll(scrollContainerRef);
-
-const containerWidth = ref(0);
-const scrollableWidth = ref(0);
-
-useResizeObserver(scrollContainerRef, ([entry]) => {
-	const el = entry?.target as HTMLElement | undefined;
-	if (!el) return;
-	containerWidth.value = el.clientWidth;
-	scrollableWidth.value = el.scrollWidth;
-});
-
-const enforceShadows = computed(() => props.sidebarShadow || false);
-
-const contentPadding = computed(() => {
-	const el = contentEl.value;
-	if (!el) return 11;
-	return parseFloat(getComputedStyle(el).paddingInlineStart) || 11;
-});
-
-const showStartShadow = computed(() => {
-	if (enforceShadows.value) return true;
-	return x.value >= contentPadding.value;
-});
-
-const showEndShadow = computed(() => {
-	if (enforceShadows.value) return true;
-	return scrollableWidth.value - containerWidth.value - x.value >= contentPadding.value;
-});
-
 const livePreviewActive = inject<ComputedRef<boolean>>(
 	'live-preview-active',
 	computed(() => false),
-);
-
-const showHeaderShadow = computed(
-	() => enforceShadows.value || props.showHeaderShadow || y.value > 0 || unref(livePreviewActive),
 );
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
@@ -106,18 +70,8 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			:disabled="isMobile"
 		>
 			<template #start>
-				<div class="scroll-shadow start" :class="{ visible: showStartShadow }" />
-				<div class="scroll-shadow end" :class="{ visible: showEndShadow }" />
 				<div ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
-					<PrivateViewHeaderBar
-						:title="props.title"
-						:shadow="showHeaderShadow"
-						:inline-nav
-						:icon
-						:icon-color
-						:show-back
-						:back-to
-					>
+					<PrivateViewHeaderBar :title="props.title" :inline-nav :icon :icon-color :show-back :back-to>
 						<template #actions:append><slot name="actions:append" /></template>
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
@@ -174,38 +128,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 	&:deep(.sp-divider) {
 		z-index: 8;
 	}
-}
-
-.scroll-shadow {
-	position: absolute;
-	inset-block: 0;
-	inline-size: 0.375rem;
-	pointer-events: none;
-	z-index: 6;
-	opacity: 0;
-	transition: opacity var(--medium) var(--transition);
-}
-
-.scroll-shadow.visible {
-	opacity: 1;
-}
-
-.scroll-shadow.start {
-	inset-inline-start: 0;
-	background: linear-gradient(to right, var(--shadow-color, transparent), transparent);
-}
-
-.scroll-shadow.end {
-	inset-inline-end: 0;
-	background: linear-gradient(to left, var(--shadow-color, transparent), transparent);
-}
-
-:dir(rtl) .scroll-shadow.start {
-	background: linear-gradient(to left, var(--shadow-color, transparent), transparent);
-}
-
-:dir(rtl) .scroll-shadow.end {
-	background: linear-gradient(to right, var(--shadow-color, transparent), transparent);
 }
 
 .main-split {
