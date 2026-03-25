@@ -11,7 +11,7 @@ const allFolders = [
 ];
 
 describe('collectAllFolderIds', () => {
-	it('returns root ids when no children', () => {
+	it('collects root and its direct children', () => {
 		const result = collectAllFolderIds(allFolders, ['root-2']);
 		expect(result).toContain('root-2');
 		expect(result).toContain('child-2a');
