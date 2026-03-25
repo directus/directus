@@ -118,11 +118,11 @@ function disable() {
 }
 
 function onFocusOut(event: FocusEvent) {
-	if (filterActive.value) return;
-
 	// Check if focus is moving to another element inside the search component -- prevents race condition on touch vs click events
 	const searchElement = (event.currentTarget as HTMLElement)?.closest('.search-input');
 	const relatedTarget = event.relatedTarget as HTMLElement | null;
+
+	if (relatedTarget?.closest('.v-menu-content')) return;
 
 	if (relatedTarget && searchElement?.contains(relatedTarget)) return;
 
