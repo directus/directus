@@ -57,32 +57,37 @@ export function applyOperator(
 		const entries = Object.entries(compareValue as Record<string, unknown>);
 		if (!entries.length) return;
 
-		const [jsonPath, innerFilter] = entries[0]!;
-		const normalizedPath = parseJsonPath(jsonPath);
+		// Multiple path conditions in one _json object are ANDed together
+		dbQuery[logical].andWhere((group) => {
+			for (const [jsonPath, innerFilter] of entries) {
+				const normalizedPath = parseJsonPath(jsonPath);
 
-		const innerValue = (innerFilter as Record<string, unknown>)[Object.keys(innerFilter as object)[0]!];
-		
-		const castNumeric =
-			typeof innerValue === 'number' ||
-			(Array.isArray(innerValue) && innerValue.length > 0 && typeof innerValue[0] === 'number');
+				const innerValue = (innerFilter as Record<string, unknown>)[Object.keys(innerFilter as object)[0]!];
 
-		const jsonExtractionRaw = getFunctions(knex, schema).json(table!, column!, {
-			type: 'json',
-			jsonPath: normalizedPath,
-			originalCollectionName,
-			relationalCountOptions: undefined,
-			jsonFilter: true,
-			castNumeric,
+				const castNumeric =
+					typeof innerValue === 'number' ||
+					(Array.isArray(innerValue) && innerValue.length > 0 && typeof innerValue[0] === 'number');
+
+				const jsonExtractionRaw = getFunctions(knex, schema).json(table!, column!, {
+					type: 'json',
+					jsonPath: normalizedPath,
+					originalCollectionName,
+					relationalCountOptions: undefined,
+					jsonFilter: true,
+					castNumeric,
+				});
+
+				const innerOp = getOperation(
+					Object.keys(innerFilter as object)[0]!,
+					Object.values(innerFilter as object)[0],
+				);
+
+				if (!innerOp) continue;
+
+				applyOperatorToRaw(group, helpers, jsonExtractionRaw, innerOp.operator, innerOp.value, 'and');
+			}
 		});
 
-		const innerOp = getOperation(
-			Object.keys(innerFilter as object)[0]!,
-			Object.values(innerFilter as object)[0],
-		);
-
-		if (!innerOp) return;
-
-		applyOperatorToRaw(dbQuery, helpers, jsonExtractionRaw, innerOp.operator, innerOp.value, logical);
 		return;
 	}
 
