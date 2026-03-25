@@ -319,21 +319,20 @@ function isInterpolation(value: any) {
 	position: relative;
 	inline-size: 100%;
 	font-size: 0.8125rem;
-	isolation: isolate;
 
-	&::before {
+	&:has(.CodeMirror.CodeMirror-focused)::before {
 		content: '';
 		position: absolute;
 		inset: 0;
-		z-index: 10;
-		border: var(--focus-ring-width) solid transparent;
-		border-radius: var(--theme--border-radius);
+		z-index: 1;
+		outline: var(--focus-ring-width) solid var(--focus-ring-color);
+		outline-offset: max(-1 * var(--focus-ring-width), -1 * var(--theme--border-width));
+		border-radius: var(--focus-ring-radius);
 		pointer-events: none;
-		transition: border-color var(--fast) var(--transition);
 	}
 
-	&:has(.CodeMirror-focused)::before {
-		border-color: var(--theme--form--field--input--focus-ring-color);
+	:deep(.CodeMirror.CodeMirror-focused) {
+		outline: 0;
 	}
 }
 
