@@ -280,6 +280,10 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+delete_folder_dialog:
+  move_content: Move content one level up
+  delete_content: Delete all content
+  content_behavior: What should happen to the folder contents?
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
