@@ -26,6 +26,8 @@ const done = ref(false);
 
 const errorFormatted = computed(() => {
 	if (error.value) {
+		const reason = error.value?.response?.data?.errors?.[0]?.extensions?.reason;
+		if (reason) return reason;
 		return translateAPIError(error.value);
 	}
 

@@ -425,7 +425,7 @@ export class UsersService extends ItemsService {
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
-			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
+			throw new InvalidPayloadError({ reason: `This invite is no longer valid` });
 		}
 
 		// Allow unauthenticated update
