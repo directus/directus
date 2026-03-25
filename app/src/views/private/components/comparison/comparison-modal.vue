@@ -6,7 +6,6 @@ import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import ComparisonToggle from './comparison-toggle.vue';
 import { useComparison } from './use-comparison';
-import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -20,7 +19,6 @@ import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 interface Props {
 	deleteVersionsAllowed: boolean;
@@ -31,6 +29,7 @@ interface Props {
 	currentCollab: { from: Item; to: Item } | undefined;
 	revisions?: Revision[] | null;
 	collabContext?: CollabContext;
+	publishVersionLoading?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -39,7 +38,7 @@ const currentRevision = defineModel<Revision | null>('current-revision');
 
 const emit = defineEmits<{
 	cancel: [];
-	promote: [deleteOnPromote: boolean];
+	publish: [opts: { versionId: string; mainHash: string; fields: string[]; deleteOnPublish: boolean }];
 	confirm: [data: Record<string, any>];
 }>();
 
@@ -113,7 +112,7 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
+const { confirmDeleteOnPublishDialogActive, onPublishClick, publish } = usePublishDialog();
 
 const modalLoading = ref(false);
 
@@ -174,74 +173,59 @@ watch([isFirstRevision], () => {
 	}
 });
 
-function usePromoteDialog() {
-	const confirmDeleteOnPromoteDialogActive = ref(false);
-	const promoting = ref(false);
-
-	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
-
-	function onPromoteClick() {
-		if (selectedComparisonFields.value.length === 0) return;
-
-		if (deleteVersionsAllowed.value) {
-			confirmDeleteOnPromoteDialogActive.value = true;
-		} else {
-			promote(false);
-		}
-	}
-
-	async function promote(deleteOnPromote: boolean) {
-		if (promoting.value) return;
-
-		promoting.value = true;
-
-		try {
-			if (props.mode === 'version') {
-				// Handle version promotion
-				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
-
-				if (versionId) {
-					await api.post(
-						`/versions/${versionId}/promote`,
-						unref(selectedComparisonFields).length > 0
-							? { mainHash: unref(mainHash), fields: unref(selectedComparisonFields) }
-							: { mainHash: unref(mainHash) },
-					);
-				}
-
-				emit('promote', deleteOnPromote);
-			} else {
-				const restoreData: Record<string, any> = {};
-				const selectedFields = unref(selectedComparisonFields);
-
-				// Get the delta from the comparison data
-				const delta = comparisonData.value!.incoming;
-				const base = comparisonData.value!.base;
-
-				for (const [field, newValue] of Object.entries(delta)) {
-					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
-					const previousValue = base[field] ?? null;
-					if (isEqual(newValue, previousValue)) continue;
-					restoreData[field] = newValue;
-				}
-
-				emit('confirm', restoreData);
-				emit('cancel');
-			}
-
-			confirmDeleteOnPromoteDialogActive.value = false;
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			promoting.value = false;
-		}
-	}
-}
-
 function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	if (props.mode !== 'revision') return;
 
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
+}
+
+function usePublishDialog() {
+	const confirmDeleteOnPublishDialogActive = ref(false);
+
+	return { confirmDeleteOnPublishDialogActive, onPublishClick, publish };
+
+	function onPublishClick() {
+		if (selectedComparisonFields.value.length === 0) return;
+
+		if (deleteVersionsAllowed.value) {
+			confirmDeleteOnPublishDialogActive.value = true;
+		} else {
+			publish(false);
+		}
+	}
+
+	function publish(deleteOnPublish: boolean) {
+		if (props.mode === 'version') {
+			const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
+
+			if (versionId) {
+				emit('publish', {
+					versionId,
+					mainHash: unref(mainHash),
+					fields: unref(selectedComparisonFields),
+					deleteOnPublish,
+				});
+			}
+		} else {
+			const restoreData: Record<string, any> = {};
+			const selectedFields = unref(selectedComparisonFields);
+
+			const delta = comparisonData.value!.incoming;
+			const base = comparisonData.value!.base;
+
+			for (const [field, newValue] of Object.entries(delta)) {
+				if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
+				const previousValue = base[field] ?? null;
+				if (isEqual(newValue, previousValue)) continue;
+				restoreData[field] = newValue;
+			}
+
+			emit('confirm', restoreData);
+			emit('cancel');
+		}
+
+		confirmDeleteOnPublishDialogActive.value = false;
+	}
 }
 </script>
 
@@ -252,7 +236,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		keep-behind
 		@update:model-value="$emit('cancel')"
 		@esc="$emit('cancel')"
-		@apply="onPromoteClick"
+		@apply="onPublishClick"
 	>
 		<div class="comparison-modal">
 			<div class="scrollable-container">
@@ -382,8 +366,8 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									:disabled="
 										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
 									"
-									:loading="promoting"
-									@click="onPromoteClick"
+									:loading="publishVersionLoading"
+									@click="onPublishClick"
 								>
 									<VIcon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
@@ -398,17 +382,17 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		</div>
 
 		<VDialog
-			v-model="confirmDeleteOnPromoteDialogActive"
-			@esc="confirmDeleteOnPromoteDialogActive = false"
-			@apply="promote(true)"
+			v-model="confirmDeleteOnPublishDialogActive"
+			@esc="confirmDeleteOnPublishDialogActive = false"
+			@apply="publish(true)"
 		>
 			<VCard>
 				<VCardTitle>
 					{{ $t('delete_on_apply_copy', { version: deltaDisplayName }) }}
 				</VCardTitle>
 				<VCardActions>
-					<VButton secondary @click="promote(false)">{{ $t('keep') }}</VButton>
-					<VButton :loading="promoting" kind="danger" @click="promote(true)">
+					<VButton secondary @click="publish(false)">{{ $t('keep') }}</VButton>
+					<VButton :loading="publishVersionLoading" kind="danger" @click="publish(true)">
 						{{ $t(currentVersion!.type === 'global' ? 'discard_changes' : 'delete_label') }}
 					</VButton>
 				</VCardActions>

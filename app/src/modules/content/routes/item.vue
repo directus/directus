@@ -33,7 +33,7 @@ import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
-import { useItemPermissions } from '@/composables/use-permissions';
+import { useCollectionPermissions, useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
@@ -41,9 +41,14 @@ import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
+import type { ContentVersionWithType } from '@/types/versions';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { mergeItemData } from '@/utils/merge-item-data';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
+import { validateItem } from '@/utils/validate-item';
 import { PrivateView } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -96,9 +101,12 @@ const {
 	addVersion,
 	updateVersion,
 	deleteVersion,
+	deleteVersionLoading,
 	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
+	publishVersionLoading,
+	publishVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
 const {
@@ -152,6 +160,11 @@ const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
 	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
 } = permissions;
+
+const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
+	usePublishComparison();
+
+const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
@@ -639,6 +652,60 @@ function useItemNavigation() {
 
 	return { collectionRoute, backRoute };
 }
+
+function usePublishComparison() {
+	const comparisonModalActive = ref(false);
+
+	const comparableVersion = computed(() => {
+		if (currentVersion.value === null || currentVersion.value.id === '+') return null;
+		return currentVersion.value as ContentVersionWithType;
+	});
+
+	const defaultValues = getDefaultValuesFromFields(fields);
+
+	function onVersionPublishCompare() {
+		comparisonModalActive.value = true;
+	}
+
+	async function onVersionPublishConfirm(opts: {
+		versionId: string;
+		mainHash: string;
+		fields: string[];
+		deleteOnPublish: boolean;
+	}) {
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+		const fieldsToValidate = pushGroupOptionsDown(fields.value);
+
+		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+		versionValidationErrors.value = clientErrors;
+
+		if (versionValidationErrors.value.length) {
+			comparisonModalActive.value = false;
+			return;
+		}
+
+		try {
+			await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
+
+			if (versionValidationErrors.value.length) {
+				comparisonModalActive.value = false;
+				return;
+			}
+
+			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
+			currentVersion.value = null;
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
+		} catch {
+			// publishVersion / deleteVersion handle unexpected errors
+		} finally {
+			comparisonModalActive.value = false;
+		}
+	}
+
+	return { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm };
+}
 </script>
 
 <template>
@@ -690,10 +757,12 @@ function useItemNavigation() {
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"
+					:delete-version-loading="deleteVersionLoading"
 					@add="addVersion"
 					@update="updateVersion"
 					@delete="deleteVersion"
 					@switch="currentVersion = $event"
+					@publish="onVersionPublishCompare"
 				/>
 			</div>
 		</template>
@@ -927,6 +996,19 @@ function useItemNavigation() {
 			mode="collab"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
+		/>
+
+		<ComparisonModal
+			v-if="comparableVersion"
+			v-model="comparisonModalActive"
+			:delete-versions-allowed="deleteVersionsAllowed"
+			:collection="collection"
+			:primary-key="internalPrimaryKey"
+			mode="version"
+			:current-version="comparableVersion"
+			:publish-version-loading="publishVersionLoading"
+			@publish="onVersionPublishConfirm"
+			@cancel="comparisonModalActive = false"
 		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
