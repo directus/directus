@@ -17,6 +17,8 @@ export type FnHelperOptions = {
 		  }
 		| undefined;
 	jsonPath: string | undefined;
+	/** When true, the JSON extraction expression returns text (for use in WHERE clauses). */
+	forFilter?: boolean;
 };
 
 export abstract class FnHelper extends DatabaseHelper {

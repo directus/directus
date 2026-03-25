@@ -80,6 +80,9 @@ function validateFilter(filter: Filter) {
 				case '_nintersects_bbox':
 					validateGeometry(value, key);
 					break;
+				case '_json':
+					validateJsonFilter(value);
+					break;
 				case '_none':
 				case '_some':
 					validateFilter(nested);
@@ -166,6 +169,24 @@ export function validateGeometry(value: any, key: string) {
 	}
 
 	return true;
+}
+
+function validateJsonFilter(value: unknown) {
+	if (!isPlainObject(value)) {
+		throw new InvalidQueryError({ reason: `"_json" filter value must be an object` });
+	}
+
+	for (const [path, innerFilter] of Object.entries(value as Record<string, unknown>)) {
+		if (typeof path !== 'string' || path.length === 0) {
+			throw new InvalidQueryError({ reason: `"_json" path key must be a non-empty string` });
+		}
+
+		if (!isPlainObject(innerFilter)) {
+			throw new InvalidQueryError({ reason: `"_json" inner filter for path "${path}" must be an object` });
+		}
+
+		validateFilter(innerFilter as Filter);
+	}
 }
 
 function validateAlias(alias: any) {
