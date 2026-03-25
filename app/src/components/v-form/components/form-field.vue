@@ -64,9 +64,13 @@ const { t } = useI18n();
 
 const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
 
+const isPresentationField = computed(
+	() => props.field.type === 'alias' && !props.field.meta?.special?.includes('group'),
+);
+
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
-	if (props.field?.meta?.readonly === true) return true;
+	if (props.field?.meta?.readonly === true && !isPresentationField.value) return true;
 	if (props.batchMode && props.batchActive === false) return true;
 	if (focusedBy.value) return true;
 	return false;

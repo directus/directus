@@ -50,6 +50,10 @@ const showHiddenIndicator = computed(
 		props.field.meta?.hidden,
 );
 
+const isPresentationField = computed(
+	() => props.field.type === 'alias' && !props.field.meta?.special?.includes('group'),
+);
+
 const isPromotableField = computed(() => {
 	if (!props.comparison) return false;
 	return props.comparison.onToggleField !== null && props.comparison.fields.has(props.field.field);
@@ -85,7 +89,7 @@ const isPromotableField = computed(() => {
 				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ $t('hidden') }})</span>
 
 				<VIcon
-					v-if="field.meta?.required === true"
+					v-if="field.meta?.required === true && !isPresentationField"
 					class="required"
 					:class="{ 'has-badge': badge }"
 					sup
