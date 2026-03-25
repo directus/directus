@@ -235,7 +235,7 @@ router.post(
 
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		await service.clearAssetVariants(value.file);
+		await service.clearAssetVariants({ file: value.file });
 
 		res.status(200).end();
 	}),

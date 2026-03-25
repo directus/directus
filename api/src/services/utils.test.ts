@@ -188,7 +188,7 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			const result = await service.clearAssetVariants(['1', '2']);
+			const result = await service.clearAssetVariants({ file: ['1', '2'] });
 
 			expect(result.deleted).toBe(2);
 		});

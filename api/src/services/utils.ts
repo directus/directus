@@ -173,7 +173,7 @@ export class UtilsService {
 		return cache?.clear();
 	}
 
-	async clearAssetVariants(fileId?: string | string[]): Promise<{ deleted: number }> {
+	async clearAssetVariants(options?: { file?: string | string[] | undefined }): Promise<{ deleted: number }> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -184,11 +184,11 @@ export class UtilsService {
 			.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
 			.from('directus_files');
 
-		if (fileId) {
-			if (Array.isArray(fileId)) {
-				query.whereIn('id', fileId);
+		if (options?.file) {
+			if (Array.isArray(options.file)) {
+				query.whereIn('id', options.file);
 			} else {
-				query.where('id', fileId);
+				query.where('id', options.file);
 			}
 		}
 

@@ -38,7 +38,7 @@ describe('assets clear command', () => {
 	test('clears all variants when no file specified', async () => {
 		await assetsClear({});
 
-		expect(mockClearAssetVariants).toHaveBeenCalledWith(undefined);
+		expect(mockClearAssetVariants).toHaveBeenCalledWith({ file: undefined });
 		expect(process.stdout.write).toHaveBeenCalledWith('Cleared 3 asset variant(s) successfully\n');
 		expect(process.exit).toHaveBeenCalledWith(0);
 	});
@@ -46,14 +46,14 @@ describe('assets clear command', () => {
 	test('passes file array to service', async () => {
 		await assetsClear({ file: ['abc-123'] });
 
-		expect(mockClearAssetVariants).toHaveBeenCalledWith(['abc-123']);
+		expect(mockClearAssetVariants).toHaveBeenCalledWith({ file: ['abc-123'] });
 		expect(process.exit).toHaveBeenCalledWith(0);
 	});
 
 	test('passes multiple files to service', async () => {
 		await assetsClear({ file: ['abc-123', 'def-456'] });
 
-		expect(mockClearAssetVariants).toHaveBeenCalledWith(['abc-123', 'def-456']);
+		expect(mockClearAssetVariants).toHaveBeenCalledWith({ file: ['abc-123', 'def-456'] });
 		expect(process.exit).toHaveBeenCalledWith(0);
 	});
 

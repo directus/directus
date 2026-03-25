@@ -13,7 +13,7 @@ export default async function assetsClear({ file }: { file?: string[] }): Promis
 			schema,
 		});
 
-		const result = await service.clearAssetVariants(file);
+		const result = await service.clearAssetVariants({ file });
 
 		process.stdout.write(`Cleared ${result.deleted} asset variant(s) successfully\n`);
 		process.exit(0);
