@@ -2,7 +2,7 @@ import { Blob, Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
-import type { TusDriver } from '@directus/storage';
+import type { BulkDeleteDriver, TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import PQueue from 'p-queue';
@@ -22,7 +22,7 @@ export type DriverCloudinaryConfig = {
 	};
 };
 
-export class DriverCloudinary implements TusDriver {
+export class DriverCloudinary implements TusDriver, BulkDeleteDriver {
 	private root: string;
 	private apiKey: string;
 	private apiSecret: string;
@@ -415,6 +415,45 @@ export class DriverCloudinary implements TusDriver {
 				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
 		});
+	}
+
+	async bulkDelete(filepaths: string[]): Promise<void> {
+		const CHUNK_SIZE = 100;
+
+		// Cloudinary's delete_resources endpoint is scoped per resource type, so files must be grouped first
+		const grouped: Record<string, string[]> = {};
+
+		for (const filepath of filepaths) {
+			const fullPath = this.fullPath(filepath);
+			const resourceType = this.getResourceType(fullPath);
+			const publicId = this.getPublicId(fullPath);
+			const folderPath = this.getFolderPath(fullPath);
+			const fullPublicId = normalizePath(join(folderPath, publicId), { removeLeading: true });
+
+			(grouped[resourceType] ??= []).push(fullPublicId);
+		}
+
+		for (const [resourceType, publicIds] of Object.entries(grouped)) {
+			for (let i = 0; i < publicIds.length; i += CHUNK_SIZE) {
+				const chunk = publicIds.slice(i, i + CHUNK_SIZE);
+
+				const params = new URLSearchParams();
+
+				for (const id of chunk) {
+					params.append('public_ids[]', id);
+				}
+
+				await fetch(
+					`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload?${params.toString()}`,
+					{
+						method: 'DELETE',
+						headers: {
+							Authorization: this.getBasicAuth(),
+						},
+					},
+				);
+			}
+		}
 	}
 
 	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
