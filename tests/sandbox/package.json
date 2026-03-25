@@ -32,7 +32,7 @@
 	"dependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
-		"@directus/utils": "catalog:",
+		"@directus/utils": "workspace:*",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"chalk": "catalog:",

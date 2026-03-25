@@ -3324,8 +3324,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/types
       '@directus/utils':
-        specifier: 'catalog:'
-        version: 13.0.9(vue@3.5.18(typescript@5.9.3))
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@types/lodash-es':
         specifier: 'catalog:'
         version: 4.17.12
@@ -16580,19 +16580,6 @@ snapshots:
     optionalDependencies:
       vue: 3.5.18(typescript@5.8.2)
 
-  '@directus/utils@13.0.9(vue@3.5.18(typescript@5.9.3))':
-    dependencies:
-      '@directus/constants': 13.0.2
-      '@directus/system-data': 3.2.1
-      date-fns: 4.1.0
-      fs-extra: 11.3.0
-      joi: 17.13.3
-      js-yaml: 4.1.0
-      lodash-es: 4.17.21
-      micromustache: 8.0.3
-    optionalDependencies:
-      vue: 3.5.18(typescript@5.9.3)
-
   '@directus/vue-split-panel@0.8.9(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 14.2.1(vue@3.5.24(typescript@5.9.3))
@@ -20933,13 +20920,6 @@ snapshots:
       '@vue/compiler-ssr': 3.5.18
       '@vue/shared': 3.5.18
       vue: 3.5.18(typescript@5.8.2)
-    optional: true
-
-  '@vue/server-renderer@3.5.18(vue@3.5.18(typescript@5.9.3))':
-    dependencies:
-      '@vue/compiler-ssr': 3.5.18
-      '@vue/shared': 3.5.18
-      vue: 3.5.18(typescript@5.9.3)
     optional: true
 
   '@vue/server-renderer@3.5.24(vue@3.5.24(typescript@5.9.3))':
@@ -29067,17 +29047,6 @@ snapshots:
       '@vue/shared': 3.5.18
     optionalDependencies:
       typescript: 5.8.2
-    optional: true
-
-  vue@3.5.18(typescript@5.9.3):
-    dependencies:
-      '@vue/compiler-dom': 3.5.18
-      '@vue/compiler-sfc': 3.5.18
-      '@vue/runtime-dom': 3.5.18
-      '@vue/server-renderer': 3.5.18(vue@3.5.18(typescript@5.9.3))
-      '@vue/shared': 3.5.18
-    optionalDependencies:
-      typescript: 5.9.3
     optional: true
 
   vue@3.5.24(typescript@5.9.3):

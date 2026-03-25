@@ -2,11 +2,11 @@ import { spawn } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 import type { Snapshot } from '@directus/types';
+import { getRelationInfo } from '@directus/utils';
 import chalk from 'chalk';
 import { camelCase, upperFirst } from 'lodash-es';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
-import { getRelationInfo } from '../relation.js';
 import { apiFolder } from '../sandbox.js';
 
 export async function loadSchema(schema_file: string, env: Env, logger: Logger) {
@@ -62,13 +62,11 @@ export async function saveSchema(env: Env) {
 	${snapshot.data.fields
 		.filter((field) => field.collection === collection.collection)
 		.map((field) => {
-			const rel = getRelationInfo(snapshot.data.relations, collection.collection, field.field);
+			const { relation, relationType } = getRelationInfo(snapshot.data.relations, collection.collection, field.field);
 			const optional = field.schema?.is_nullable || field.schema?.is_generated || field.schema?.is_primary_key;
 			const fieldName = `${formatField(field.field)}${optional ? '?' : ''}:`;
 
-			if (!rel) return `${fieldName} string | number;`;
-
-			const { relation, relationType } = rel;
+			if (!relation || !relationType) return `${fieldName} string | number;`;
 
 			if (relationType === 'o2m') {
 				return `${fieldName} (string | number | ${formatCollection(relation.collection)})[];`;
