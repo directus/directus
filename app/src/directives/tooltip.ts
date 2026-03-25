@@ -7,11 +7,11 @@ const DELAYS = {
 	tooltipDisabled: 125,
 };
 
-function isDisabled(element: HTMLElement): boolean {
+export function isDisabled(element: HTMLElement): boolean {
 	return (
 		element.hasAttribute('disabled') ||
 		element.getAttribute('aria-disabled') === 'true' ||
-		element.querySelector(':disabled, [aria-disabled="true"]') !== null
+		element.querySelector(':scope > :disabled, :scope > [aria-disabled="true"]') !== null
 	);
 }
 
