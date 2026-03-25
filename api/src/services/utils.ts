@@ -1,6 +1,5 @@
 import path from 'path';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { supportsBulkDelete } from '@directus/storage';
 import { systemCollectionRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
@@ -223,7 +222,7 @@ export class UtilsService {
 
 			if (toDelete.length === 0) continue;
 
-			if (supportsBulkDelete(disk)) {
+			if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {
 				await disk.bulkDelete(toDelete);
 			} else {
 				await Promise.all(toDelete.map((fp) => disk.delete(fp)));

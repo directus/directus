@@ -43,6 +43,7 @@ export declare class Driver {
 	move(src: string, dest: string): Promise<void>;
 	copy(src: string, dest: string): Promise<void>;
 	list(prefix?: string): AsyncIterable<string>;
+	bulkDelete?(filepaths: string[]): Promise<void>;
 }
 
 export interface TusDriver extends Driver {
@@ -56,14 +57,6 @@ export interface TusDriver extends Driver {
 
 export function supportsTus(driver: Driver): driver is TusDriver {
 	return 'tusExtensions' in driver;
-}
-
-export interface BulkDeleteDriver extends Driver {
-	bulkDelete(filepaths: string[]): Promise<void>;
-}
-
-export function supportsBulkDelete(driver: Driver): driver is BulkDeleteDriver {
-	return 'bulkDelete' in driver;
 }
 
 export type DriverConfig = {

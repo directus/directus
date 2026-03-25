@@ -2,7 +2,7 @@ import { Blob, Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
-import type { BulkDeleteDriver, TusDriver } from '@directus/storage';
+import type { TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import PQueue from 'p-queue';
@@ -22,7 +22,7 @@ export type DriverCloudinaryConfig = {
 	};
 };
 
-export class DriverCloudinary implements TusDriver, BulkDeleteDriver {
+export class DriverCloudinary implements TusDriver {
 	private root: string;
 	private apiKey: string;
 	private apiSecret: string;
