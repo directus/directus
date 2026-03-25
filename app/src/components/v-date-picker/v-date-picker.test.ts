@@ -1142,6 +1142,30 @@ describe('v-date-picker', () => {
 	});
 
 	describe('edge cases', () => {
+		it.each(['date', 'time', 'dateTime', 'timestamp'] as const)(
+			'does not throw when modelValue is a dynamic variable for %s',
+			async (type) => {
+				vi.mocked(formatDatePickerModelValue).mockReturnValue('2024-01-15');
+
+				const mountPicker = () =>
+					createWrapper({
+						type,
+						modelValue: '$NOW',
+					});
+
+				expect(mountPicker).not.toThrow();
+
+				const wrapper = mountPicker();
+				await nextTick();
+
+				const nowButton = wrapper.find('.calendar-today-button');
+				await nowButton.trigger('click');
+				await nextTick();
+
+				expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+			},
+		);
+
 		it('handles rapid prop changes without errors', async () => {
 			let lastCapturedValue: unknown;
 
