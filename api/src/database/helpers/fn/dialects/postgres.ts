@@ -117,12 +117,16 @@ export function buildPostgresJsonPath(
 	for (let i = 0; i < parts.length; i++) {
 		const num = Number(parts[i]);
 		const isLast = i === parts.length - 1;
+		const isInt = !isNaN(num) && num >= 0 && Number.isInteger(num);
 
-		template += forFilter && isLast ? '->>?' : '->?';
-
-		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
-			bindings.push(num);
+		if (isInt) {
+			// Integer array indices must be inlined as SQL literals, not passed as bind
+			// parameters. The pg driver sends JS numbers with an ambiguous type, causing
+			// PostgreSQL to pick the jsonb->text overload instead of jsonb->integer,
+			// which returns NULL when applied to an array.
+			template += forFilter && isLast ? `->>${num}` : `->${num}`;
 		} else {
+			template += forFilter && isLast ? '->>?' : '->?';
 			bindings.push(parts[i]!);
 		}
 	}
