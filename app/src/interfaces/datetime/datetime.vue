@@ -4,6 +4,10 @@ import { parseDate } from '@/utils/parse-date';
 import { formatDateToTimezone, getLocalTimezoneOffset } from '@/utils/timezones';
 import { isValid, parseISO } from 'date-fns';
 import { computed, ref } from 'vue';
+import VMenu from '@/components/v-menu.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
@@ -68,32 +72,32 @@ const tzValue = computed({
 </script>
 
 <template>
-	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<VMenu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled :non-editable :active @click="toggle">
+			<VListItem block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
-					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
+					<UseDatetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
-					</use-datetime>
+					</UseDatetime>
 				</template>
 
 				<div class="spacer" />
 
 				<template v-if="!disabled">
-					<v-icon v-if="tz" v-tooltip="tz" small name="schedule" class="timezone-icon" />
+					<VIcon v-if="tz" v-tooltip="tz" small name="schedule" class="timezone-icon" />
 
-					<v-icon
+					<VIcon
 						:name="value ? 'clear' : 'today'"
 						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
 						clickable
 						@click="value ? unsetValue($event) : undefined"
 					/>
 				</template>
-			</v-list-item>
+			</VListItem>
 		</template>
 
-		<v-date-picker v-model="tzValue" :type :disabled :include-seconds :use-24 @close="dateTimeMenu?.deactivate" />
-	</v-menu>
+		<VDatePicker v-model="tzValue" :type :disabled :include-seconds :use-24 @close="dateTimeMenu?.deactivate" />
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
