@@ -64,7 +64,7 @@ export class FnHelperMySQL extends FnHelper {
 		// ".items[0].name" → "$['items'][0]['name']"
 		const jsonPath = convertToMySQLPath(options.jsonPath);
 
-		if (options?.forNumericFilter) {
+		if (options?.castNumeric) {
 			// JSON_EXTRACT preserves the native numeric type from the JSON document.
 			// JSON_UNQUOTE would convert it to a string, breaking numeric comparisons.
 			return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [table, column, jsonPath]);

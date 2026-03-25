@@ -73,7 +73,7 @@ export class FnHelperOracle extends FnHelper {
 		// alphanumeric characters, dots, brackets with digits, and underscores.
 		const jsonPath = '$' + options.jsonPath;
 
-		if (options?.forNumericFilter) {
+		if (options?.castNumeric) {
 			// JSON_VALUE with RETURNING NUMBER gives correct numeric comparison semantics.
 			return this.knex.raw(`JSON_VALUE(??.??, '${jsonPath}' RETURNING NUMBER)`, [table, column]);
 		}

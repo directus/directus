@@ -78,10 +78,10 @@ export class FnHelperPostgres extends FnHelper {
 			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
 		}
 
-		const { template, bindings } = buildPostgresJsonPath(options.jsonPath, options.forFilter);
+		const { template, bindings } = buildPostgresJsonPath(options.jsonPath, options.jsonFilter);
 		const cast = fieldSchema.dbType === 'jsonb' ? 'jsonb' : 'json';
 
-		if (options.forNumericFilter) {
+		if (options.castNumeric) {
 			// ->> returns text; cast to numeric for correct numeric comparisons.
 			// Parentheses are required to bind ::numeric to the whole expression,
 			// not to the last path binding.

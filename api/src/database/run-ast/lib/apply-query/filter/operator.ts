@@ -2,9 +2,9 @@ import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, SchemaOverview } from '@directus/types';
 import { getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
-import { getFunctions, getHelpers } from '../../../../helpers/index.js';
-import type { Helpers } from '../../../../helpers/index.js';
 import { parseJsonPath } from '../../../../helpers/fn/json/parse-function.js';
+import type { Helpers } from '../../../../helpers/index.js';
+import { getFunctions, getHelpers } from '../../../../helpers/index.js';
 import { getColumn } from '../../../utils/get-column.js';
 import { getOperation } from '../get-operation.js';
 
@@ -61,7 +61,8 @@ export function applyOperator(
 		const normalizedPath = parseJsonPath(jsonPath);
 
 		const innerValue = (innerFilter as Record<string, unknown>)[Object.keys(innerFilter as object)[0]!];
-		const forNumericFilter =
+		
+		const castNumeric =
 			typeof innerValue === 'number' ||
 			(Array.isArray(innerValue) && innerValue.length > 0 && typeof innerValue[0] === 'number');
 
@@ -70,8 +71,8 @@ export function applyOperator(
 			jsonPath: normalizedPath,
 			originalCollectionName,
 			relationalCountOptions: undefined,
-			forFilter: true,
-			forNumericFilter,
+			jsonFilter: true,
+			castNumeric,
 		});
 
 		const innerOp = getOperation(
