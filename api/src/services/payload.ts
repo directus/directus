@@ -119,11 +119,11 @@ export class PayloadService {
 			return value;
 		},
 		async 'user-created'({ action, value, accountability, overwriteDefaults }) {
-			if (action === 'create') return (overwriteDefaults ? overwriteDefaults._user : accountability?.user) ?? null;
+			if (action === 'create') return overwriteDefaults?._user ?? accountability?.user ?? null;
 			return value;
 		},
 		async 'user-updated'({ action, value, accountability, overwriteDefaults }) {
-			if (action === 'update') return (overwriteDefaults ? overwriteDefaults._user : accountability?.user) ?? null;
+			if (action === 'update') return overwriteDefaults?._user ?? accountability?.user ?? null;
 			return value;
 		},
 		async 'role-created'({ action, value, accountability }) {
@@ -136,16 +136,12 @@ export class PayloadService {
 		},
 		async 'date-created'({ action, value, helpers, overwriteDefaults }) {
 			if (action === 'create')
-				return new Date(
-					overwriteDefaults ? overwriteDefaults._date : helpers.date.writeTimestamp(new Date().toISOString()),
-				);
+				return new Date(overwriteDefaults?._date ?? helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
 		async 'date-updated'({ action, value, helpers, overwriteDefaults }) {
 			if (action === 'update')
-				return new Date(
-					overwriteDefaults ? overwriteDefaults._date : helpers.date.writeTimestamp(new Date().toISOString()),
-				);
+				return new Date(overwriteDefaults?._date ?? helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
 		async 'cast-csv'({ action, value }) {
