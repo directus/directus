@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+import { join } from 'path';
 import { sandbox } from '@directus/sandbox';
 import {
 	clearCache,
@@ -10,12 +12,10 @@ import {
 	updatePreset,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
-import { randomUUID } from 'crypto';
+import { getUID } from '@utils/getUID.js';
 import getPort from 'get-port';
-import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
-import { getUID } from '@utils/getUID.js';
 
 const all = process.env['ALL'] === 'true';
 

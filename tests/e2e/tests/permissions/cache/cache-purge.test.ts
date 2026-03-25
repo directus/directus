@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { sandbox } from '@directus/sandbox';
 import {
 	clearCache,
@@ -7,22 +8,21 @@ import {
 	createPolicy,
 	deletePermission,
 	deletePermissions,
+	type DirectusClient,
 	readItems,
 	rest,
+	type RestClient,
 	staticToken,
+	type StaticTokenClient,
 	updatePermission,
 	updatePermissions,
 	updatePermissionsBatch,
-	type DirectusClient,
-	type RestClient,
-	type StaticTokenClient,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import getPort from 'get-port';
-import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-import { getUID } from '@utils/getUID.js';
 
 const uid = getUID();
 

@@ -1,3 +1,5 @@
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 import {
 	createItem,
 	type DirectusClient,
@@ -9,9 +11,7 @@ import {
 	type SchemaSnapshotOutput,
 } from '@directus/sdk';
 import type { Snapshot } from '@directus/types';
-import { readFile } from 'fs/promises';
 import { startCase } from 'lodash-es';
-import { join } from 'path';
 import type { Schema as SetupSchema } from '../setup/schema.d.ts';
 import { database } from './constants.js';
 import { deepMap } from './deepMap.js';

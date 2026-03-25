@@ -1,12 +1,12 @@
+import { join } from 'node:path';
 import { sandbox } from '@directus/sandbox';
 import { createDirectus, createItem, readItem, rest, serverHealth, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import getPort from 'get-port';
-import { join } from 'node:path';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-import { getUID } from '@utils/getUID.js';
 
 const all = process.env['ALL'] === 'true';
 const port = await getPort();

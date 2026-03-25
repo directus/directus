@@ -1,6 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import { authentication, createDirectus, createUser, readMe, rest, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
-import { randomUUID } from 'node:crypto';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));

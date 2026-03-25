@@ -1,8 +1,7 @@
-import { createDirectus, createUser, rest, staticToken } from '@directus/sdk';
-import { expect, test } from 'vitest';
-
 import { randomUUID } from 'crypto';
+import { createDirectus, createUser, rest, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
+import { expect, test } from 'vitest';
 
 const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 

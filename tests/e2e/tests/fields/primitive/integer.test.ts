@@ -1,8 +1,8 @@
 import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
+import { database, port } from '@utils/constants.js';
 import { getHelper } from '@utils/helpers/index.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { expect, test } from 'vitest';
-import { database, port } from '@utils/constants.js';
 import type { Schema } from './schema.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));

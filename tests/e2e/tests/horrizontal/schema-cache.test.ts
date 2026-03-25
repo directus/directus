@@ -1,12 +1,12 @@
+import { join } from 'path';
 import { sandbox } from '@directus/sandbox';
 import { clearCache, createDirectus, deleteCollection, readFields, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import getPort from 'get-port';
-import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-import { getUID } from '@utils/getUID.js';
 
 const newCollectionName = 'schema-caching-test';
 

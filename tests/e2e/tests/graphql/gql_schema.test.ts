@@ -1,10 +1,9 @@
-import { generateScopedUser } from '@utils/userScoped.js';
-import { expect, test } from 'vitest';
-import type { Schema } from './schema.d.ts';
-
 import { createDirectus, graphql, rest, staticToken } from '@directus/sdk';
 import { database, port } from '@utils/constants.js';
+import { generateScopedUser } from '@utils/userScoped.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
+import { expect, test } from 'vitest';
+import type { Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(rest()).with(staticToken('admin'));
 

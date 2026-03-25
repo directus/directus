@@ -1,9 +1,9 @@
-import { type Database, type Env, type Options, type Sandbox, sandbox } from '@directus/sandbox';
-import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
-import type { DeepPartial } from '@directus/types';
 import { readFile } from 'fs/promises';
 import util from 'node:util';
 import { join } from 'path';
+import { type Database, type Env, type Options, type Sandbox, sandbox } from '@directus/sandbox';
+import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
+import type { DeepPartial } from '@directus/types';
 import { TestProject } from 'vitest/node';
 import type { Schema } from './schema.d.ts';
 
@@ -23,7 +23,6 @@ export async function setup(project: TestProject) {
 		dev: true,
 		watch: true,
 		prefix: database,
-		killPorts: true,
 		docker: {
 			basePort: String(Number(project.config.env['PORT']) + 10),
 			keep: true,

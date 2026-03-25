@@ -1,8 +1,8 @@
+import fs from 'fs/promises';
+import { join } from 'path';
 import { createDirectus, readAssetArrayBuffer, readAssetRaw, rest, staticToken, uploadFiles } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useEnv } from '@utils/useEnv.js';
-import fs from 'fs/promises';
-import { join } from 'path';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));

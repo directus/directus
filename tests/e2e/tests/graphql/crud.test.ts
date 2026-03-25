@@ -1,10 +1,9 @@
 import { updateItem } from '@directus/sdk';
-import { expect, test } from 'vitest';
-import type { Articles, Schema } from './schema.d.ts';
-
 import { createDirectus, graphql, rest, staticToken } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
+import { expect, test } from 'vitest';
+import type { Articles, Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(rest()).with(staticToken('admin'));
 

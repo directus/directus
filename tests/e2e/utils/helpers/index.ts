@@ -1,9 +1,9 @@
-import { merge } from 'lodash-es';
-import { maria } from './maria.js';
-import { oracle } from './oracle.js';
-import { cockroachdb } from './cockroachdb.js';
 import type { DeepPartial } from '@directus/types';
 import { database } from '@utils/constants.js';
+import { merge } from 'lodash-es';
+import { cockroachdb } from './cockroachdb.js';
+import { maria } from './maria.js';
+import { oracle } from './oracle.js';
 
 const helper = {
 	integer: {

@@ -1,3 +1,6 @@
+import { createHash } from 'crypto';
+import fs from 'fs/promises';
+import { join } from 'path';
 import {
 	createDirectus,
 	deleteFile,
@@ -10,9 +13,6 @@ import {
 import { port } from '@utils/constants.js';
 import { UUID } from '@utils/regex.js';
 import { useOptions } from '@utils/useOptions.js';
-import { createHash } from 'crypto';
-import fs from 'fs/promises';
-import { join } from 'path';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import {
 	createDirectus,
 	createItem,
@@ -16,7 +17,6 @@ import {
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
-import { randomUUID } from 'crypto';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 

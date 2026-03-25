@@ -1,8 +1,8 @@
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 import { type Database, databases, type Env, type Options, sandboxes, type Sandboxes } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import type { DeepPartial } from '@directus/types';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 import type { TestProject } from 'vitest/node';
 import type { Schema } from './schema.d.ts';
 

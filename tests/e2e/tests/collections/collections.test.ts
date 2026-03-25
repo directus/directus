@@ -1,16 +1,15 @@
-import {
-	createDirectus,
-	staticToken,
-	rest,
-	createCollection,
-	readCollection,
-	updateCollection,
-	deleteCollection,
-} from '@directus/sdk';
-
-import { expect, test } from 'vitest';
 import { randomUUID } from 'node:crypto';
+import {
+	createCollection,
+	createDirectus,
+	deleteCollection,
+	readCollection,
+	rest,
+	staticToken,
+	updateCollection,
+} from '@directus/sdk';
 import { port } from '@utils/constants.js';
+import { expect, test } from 'vitest';
 
 const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 

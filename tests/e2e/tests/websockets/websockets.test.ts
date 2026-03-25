@@ -1,10 +1,10 @@
+import { inspect } from 'node:util';
 import { createDirectus, createItem, deleteItem, realtime, rest, sleep, staticToken, updateItem } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useOptions } from '@utils/useOptions.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-import { inspect } from 'node:util';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(realtime()).with(rest()).with(staticToken('admin'));
 await api.connect();
