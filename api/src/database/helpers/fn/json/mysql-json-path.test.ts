@@ -1,15 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
-import { convertToMySQLPath } from './mysql.js';
-
-// Mock dependencies to avoid loading the full FnHelper class
-vi.mock('../types.js', () => ({
-	FnHelper: class FnHelper {},
-	FnHelperOptions: {},
-}));
-
-vi.mock('../json/parse-function.js', () => ({
-	parseJsonFunction: vi.fn(),
-}));
+import { describe, expect, test } from 'vitest';
+import { convertToMySQLPath } from './mysql-json-path.js';
 
 const TEST_CASES = [
 	// Simple property access
