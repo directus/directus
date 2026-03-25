@@ -1,3 +1,6 @@
+// Inline DOM type to avoid requiring "DOM" lib in consumer tsconfig
+type RequestCredentials = "include" | "omit" | "same-origin";
+
 import type { RequestOptions, RequestTransformer, ResponseTransformer } from '../types/request.js';
 
 export interface RestCommand<_Output extends object | unknown, _Schema> {

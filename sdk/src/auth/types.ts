@@ -1,3 +1,6 @@
+// Inline DOM type to avoid requiring "DOM" lib in consumer tsconfig
+type RequestCredentials = "include" | "omit" | "same-origin";
+
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
 export type LocalLoginPayload = { email: string; password: string };
