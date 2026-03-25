@@ -162,6 +162,7 @@ function emitValue() {
 			}"
 			role="search"
 			@click="activate"
+			@focusout="onFocusOut"
 		>
 			<VIcon small name="search" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
 			<input
@@ -179,7 +180,6 @@ function emitValue() {
 				@paste="emitValue"
 				@keydown.esc="disable"
 				@focusin="activate"
-				@focusout="onFocusOut"
 			/>
 			<div class="spacer" />
 			<VIcon

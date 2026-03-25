@@ -76,12 +76,44 @@ describe('Component', () => {
 		const outside = document.createElement('button');
 		document.body.appendChild(outside);
 
-		input.element.dispatchEvent(new FocusEvent('focusout', { relatedTarget: outside }));
+		input.element.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: outside }));
 		await wrapper.vm.$nextTick();
 
 		expect(search.classes()).not.toContain('active');
 		expect(search.classes()).not.toContain('filter-active');
 
+		document.body.removeChild(outside);
+	});
+
+	it('should close when focus leaves a descendant element of search area', async () => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: 'test',
+			},
+			global,
+		});
+
+		const search = wrapper.find('.search-input');
+
+		await search.trigger('click');
+		await wrapper.find('v-icon-stub.icon-filter').trigger('click');
+
+		expect(search.classes()).toContain('active');
+		expect(search.classes()).toContain('filter-active');
+
+		const descendant = document.createElement('button');
+		search.element.appendChild(descendant);
+
+		const outside = document.createElement('button');
+		document.body.appendChild(outside);
+
+		descendant.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: outside }));
+		await wrapper.vm.$nextTick();
+
+		expect(search.classes()).not.toContain('active');
+		expect(search.classes()).not.toContain('filter-active');
+
+		search.element.removeChild(descendant);
 		document.body.removeChild(outside);
 	});
 });
