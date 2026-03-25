@@ -104,9 +104,8 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			const result = await service.clearAssetVariants();
+			await service.clearAssetVariants();
 
-			expect(result.deleted).toBe(2);
 			expect(disk.delete).toHaveBeenCalledTimes(2);
 			expect(disk.delete).toHaveBeenCalledWith('abc123__hash1.jpg');
 			expect(disk.delete).toHaveBeenCalledWith('abc123__hash2.webp');
@@ -131,9 +130,8 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			const result = await service.clearAssetVariants();
+			await service.clearAssetVariants();
 
-			expect(result.deleted).toBe(0);
 			expect(disk.delete).not.toHaveBeenCalled();
 		});
 
@@ -156,9 +154,8 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			const result = await service.clearAssetVariants();
+			await service.clearAssetVariants();
 
-			expect(result.deleted).toBe(2);
 			expect(disk.bulkDelete).toHaveBeenCalledWith(['abc__hash1.jpg', 'abc__hash2.jpg']);
 			expect(disk.delete).not.toHaveBeenCalled();
 		});
@@ -188,12 +185,12 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			const result = await service.clearAssetVariants({ file: ['1', '2'] });
+			await service.clearAssetVariants({ file: ['1', '2'] });
 
-			expect(result.deleted).toBe(2);
+			expect(disk.delete).toHaveBeenCalledTimes(2);
 		});
 
-		test('returns zero when no variants exist', async () => {
+		test('does nothing when no variants exist', async () => {
 			const files = [{ id: '1', filename_disk: 'abc.jpg', storage: 'local' }];
 
 			const storageFiles = new Map([['abc', ['abc.jpg']]]);
@@ -212,9 +209,9 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			const result = await service.clearAssetVariants();
+			await service.clearAssetVariants();
 
-			expect(result.deleted).toBe(0);
+			expect(disk.delete).not.toHaveBeenCalled();
 		});
 	});
 });

@@ -13,9 +13,9 @@ export default async function assetsClear({ file }: { file?: string[] }): Promis
 			schema,
 		});
 
-		const result = await service.clearAssetVariants({ file });
+		await service.clearAssetVariants({ file });
 
-		process.stdout.write(`Cleared ${result.deleted} asset variant(s) successfully\n`);
+		process.stdout.write('Cleared asset variants successfully\n');
 		process.exit(0);
 	} catch (err: any) {
 		logger.error(err);

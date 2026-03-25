@@ -24,7 +24,7 @@ describe('assets clear command', () => {
 		vi.clearAllMocks();
 
 		mockLogger = { error: vi.fn() };
-		mockClearAssetVariants = vi.fn().mockResolvedValue({ deleted: 3 });
+		mockClearAssetVariants = vi.fn().mockResolvedValue(undefined);
 
 		vi.mocked(useLogger).mockReturnValue(mockLogger);
 		vi.mocked(getSchema).mockResolvedValue({} as any);
@@ -39,7 +39,7 @@ describe('assets clear command', () => {
 		await assetsClear({});
 
 		expect(mockClearAssetVariants).toHaveBeenCalledWith({ file: undefined });
-		expect(process.stdout.write).toHaveBeenCalledWith('Cleared 3 asset variant(s) successfully\n');
+		expect(process.stdout.write).toHaveBeenCalledWith('Cleared asset variants successfully\n');
 		expect(process.exit).toHaveBeenCalledWith(0);
 	});
 

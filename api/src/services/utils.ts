@@ -7,6 +7,7 @@ import type { Knex } from 'knex';
 import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { useLogger } from '../logger/index.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getStorage } from '../storage/index.js';
@@ -173,7 +174,7 @@ export class UtilsService {
 		return cache?.clear();
 	}
 
-	async clearAssetVariants(options?: { file?: string | string[] | undefined }): Promise<{ deleted: number }> {
+	async clearAssetVariants(options?: { file?: string | string[] | undefined }): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -231,6 +232,6 @@ export class UtilsService {
 			deleted += toDelete.length;
 		}
 
-		return { deleted };
+		useLogger().info(`Cleared ${deleted} asset variant(s)`);
 	}
 }
