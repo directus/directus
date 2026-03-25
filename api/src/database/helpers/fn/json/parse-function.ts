@@ -24,6 +24,28 @@ export function calculateJsonPathDepth(path: string): number {
 }
 
 /**
+ * Validates and normalizes a bare JSON path string (e.g. "color" or "settings.theme").
+ * Adds a leading dot if absent. Throws on unsupported expressions or depth overflow.
+ */
+export function parseJsonPath(path: string): string {
+	const normalized = path.startsWith('[') ? path : `.${path}`;
+
+	if (normalized.includes('[]') || /[*?@$]/.test(normalized)) {
+		throw new InvalidQueryError({ reason: 'Invalid JSON path: unsupported path expression' });
+	}
+
+	const depth = calculateJsonPathDepth(normalized);
+
+	if (depth > MAX_JSON_QUERY_DEPTH) {
+		throw new InvalidQueryError({
+			reason: `JSON path depth (${depth}) exceeds allowed maximum of ${MAX_JSON_QUERY_DEPTH}`,
+		});
+	}
+
+	return normalized;
+}
+
+/**
  * Parses a json function selection into its field and path components.
  * Expects relational prefixes to have already been extracted by parseFilterFunctionPath,
  * so the field should always be a simple column name.
