@@ -20,6 +20,7 @@ export function getFilterOperatorsForType(
 				'contains',
 				'ncontains',
 				'icontains',
+				'nicontains',
 				'starts_with',
 				'nstarts_with',
 				'istarts_with',
@@ -46,7 +47,7 @@ export function getFilterOperatorsForType(
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
 
 		case 'json':
-			return ['null', 'nnull'];
+			return ['contains', 'ncontains', 'icontains', 'nicontains', 'null', 'nnull'];
 
 		case 'boolean':
 			return ['eq', 'neq', 'null', 'nnull'];

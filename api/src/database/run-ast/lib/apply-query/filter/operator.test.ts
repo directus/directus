@@ -11,6 +11,7 @@ const schema = new SchemaBuilder()
 		c.field('id').id();
 		c.field('title').string();
 		c.field('likes').integer();
+		c.field('content').json();
 		c.field('links').o2m('links', 'article_id');
 	})
 	.build();
@@ -92,6 +93,48 @@ for (const { field, operator, value, sql, bindings } of [
 		value: [undefined],
 		sql: `select * where "articles"."likes" = ?`,
 		bindings: [[]],
+	},
+	{
+		field: 'articles.content',
+		operator: '_contains',
+		value: 'Test',
+		sql: `select * where CAST("articles"."content" AS text) LIKE ?`,
+		bindings: ['%Test%'],
+	},
+	{
+		field: 'articles.content',
+		operator: '_ncontains',
+		value: 'Test',
+		sql: `select * where CAST("articles"."content" AS text) NOT LIKE ?`,
+		bindings: ['%Test%'],
+	},
+	{
+		field: 'articles.content',
+		operator: '_icontains',
+		value: 'Test',
+		sql: `select * where LOWER(CAST("articles"."content" AS text)) LIKE ?`,
+		bindings: ['%test%'],
+	},
+	{
+		field: 'articles.content',
+		operator: '_nicontains',
+		value: 'Test',
+		sql: `select * where LOWER(CAST("articles"."content" AS text)) NOT LIKE ?`,
+		bindings: ['%test%'],
+	},
+	{
+		field: 'articles.title',
+		operator: '_icontains',
+		value: 'Test',
+		sql: `select * where LOWER("articles"."title") LIKE ?`,
+		bindings: ['%test%'],
+	},
+	{
+		field: 'articles.title',
+		operator: '_nicontains',
+		value: 'Test',
+		sql: `select * where LOWER("articles"."title") NOT LIKE ?`,
+		bindings: ['%test%'],
 	},
 ]) {
 	test(`applyOperator on ${field} ${operator} ${value}`, async () => {
