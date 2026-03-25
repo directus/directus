@@ -100,13 +100,24 @@ function handleClick() {
 		router.push(props.to);
 	}
 }
+
+function handleKeydown(event: KeyboardEvent) {
+	if (event.key === 'Enter') {
+		if (props.to) router.push(props.to);
+	} else if (event.key === ' ') {
+		event.preventDefault();
+		if (props.to) router.push(props.to);
+	}
+}
 </script>
 
 <template>
 	<div
 		class="card"
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
+		tabindex="0"
 		@click="handleClick"
+		@keydown="handleKeydown"
 	>
 		<VIcon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
 		<div class="header">
@@ -295,6 +306,22 @@ function handleClick() {
 	}
 
 	&:hover {
+		.selector {
+			opacity: 0.5;
+		}
+
+		.header {
+			.selection-fade {
+				opacity: 1;
+			}
+		}
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--theme--primary);
+		outline-offset: 2px;
+		border-radius: var(--theme--border-radius);
+
 		.selector {
 			opacity: 0.5;
 		}
