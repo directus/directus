@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { RequestError } from '@/api';
 import { getErrorReason } from './get-error-reason';
+import type { RequestError } from '@/api';
 
 vi.mock('@/lang', () => ({
 	translateAPIError: vi.fn().mockReturnValue('Unexpected error'),
