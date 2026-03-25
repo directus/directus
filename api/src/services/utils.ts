@@ -3,6 +3,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { systemCollectionRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import Queue from 'p-queue';
 import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
@@ -222,10 +223,26 @@ export class UtilsService {
 
 			if (toDelete.length === 0) continue;
 
-			if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {
-				await disk.bulkDelete(toDelete);
-			} else {
-				await Promise.all(toDelete.map((fp) => disk.delete(fp)));
+			try {
+				if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {
+					await disk.bulkDelete(toDelete);
+				} else {
+					const queue = new Queue({ concurrency: 100 });
+
+					for (const fp of toDelete) {
+						void queue.add(async () => {
+							try {
+								await disk.delete(fp);
+							} catch (err) {
+								useLogger().warn(`Failed to delete asset variant "${fp}": ${err}`);
+							}
+						});
+					}
+
+					await queue.onIdle();
+				}
+			} catch (err) {
+				useLogger().warn(`Failed to bulk delete variants on "${storageName}": ${err}`);
 			}
 
 			deleted += toDelete.length;
