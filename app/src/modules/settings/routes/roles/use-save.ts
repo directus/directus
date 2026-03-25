@@ -25,7 +25,7 @@ export function useSave({ name }: UseSaveOptions) {
 				name: name.value,
 			});
 
-			router.push(`/settings/roles/${roleResponse.data.data.id}`);
+			router.push({ name: 'settings-roles-item', params: { primaryKey: roleResponse.data.data.id } });
 		} catch (error) {
 			unexpectedError(error);
 		} finally {

@@ -124,10 +124,10 @@ const stageChanges = () => {
 		createPanel.options ??= {};
 
 		insightsStore.stagePanelCreate(unref(createPanel as CreatePanel));
-		router.push(`/insights/${props.dashboardKey}`);
+		router.push({ name: 'insights-dashboard', params: { primaryKey: props.dashboardKey } });
 	} else {
 		insightsStore.stagePanelUpdate({ id: props.panelKey, edits: unref(panel) });
-		router.push(`/insights/${props.dashboardKey}`);
+		router.push({ name: 'insights-dashboard', params: { primaryKey: props.dashboardKey } });
 	}
 };
 </script>
@@ -139,7 +139,7 @@ const stageChanges = () => {
 		:subtitle="$t('panel_options')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
-		@cancel="router.push(`/insights/${dashboardKey}`)"
+		@cancel="router.push({ name: 'insights-dashboard', params: { primaryKey: dashboardKey } })"
 		@apply="stageChanges"
 	>
 		<template #actions>

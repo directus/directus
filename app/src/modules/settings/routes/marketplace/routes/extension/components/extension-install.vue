@@ -44,7 +44,7 @@ const atLimit = computed(() => {
 </script>
 
 <template>
-	<VButton v-if="installed" class="install" align="left" full-width to="/settings/extensions">
+	<VButton v-if="installed" class="install" align="left" full-width :to="{ name: 'settings-extensions' }">
 		<VIcon name="settings" left />
 		{{ $t('manage') }}
 	</VButton>

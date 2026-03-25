@@ -66,7 +66,7 @@ async function save() {
 		} else {
 			const response = await api.post('/dashboards', values, { params: { fields: ['id'] } });
 			await insightsStore.hydrate();
-			router.push(`/insights/${response.data.data.id}`);
+			router.push({ name: 'insights-dashboard', params: { primaryKey: response.data.data.id } });
 		}
 
 		emit('update:modelValue', false);

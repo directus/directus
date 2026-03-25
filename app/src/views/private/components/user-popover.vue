@@ -69,7 +69,7 @@ async function fetchUser() {
 }
 
 function navigateToUser() {
-	if (data.value) router.push(`/users/${data.value.id}`);
+	if (data.value) router.push({ name: 'users-item', params: { primaryKey: data.value.id } });
 }
 </script>
 

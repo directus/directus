@@ -196,7 +196,7 @@ function useMovetoFolder() {
 			selection.value = [];
 
 			if (selectedFolder.value) {
-				router.push(`/files/folders/${selectedFolder.value}`);
+				router.push({ name: 'folders-collection', params: { folder: selectedFolder.value } });
 			}
 
 			await nextTick();
