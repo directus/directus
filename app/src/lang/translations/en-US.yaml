@@ -2948,7 +2948,7 @@ operations:
     cache: Cache
     cache_query: Cache Query Parameters
     cache_query_placeholder: Allowed query parameters...
-    cache_query_description: Only these query parameters will affect the cache key.
+    cache_query_description: These query parameters will additionally be used for the cache key.
 unit: Unit
 standard: Standard
 scientific: Scientific
