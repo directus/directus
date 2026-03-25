@@ -35,7 +35,7 @@ const dateTimeMenu = useTemplateRef('dateTimeMenu');
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
-function unsetValue(e: any) {
+function unsetValue(e: Event) {
 	e.preventDefault();
 	e.stopPropagation();
 	emit('input', null);
@@ -151,7 +151,7 @@ const tzValue = computed({
 }
 
 .timezone-icon {
-	margin-inline-end: 0.257rem;
+	margin-inline-end: 0.25rem;
 }
 
 .item-actions {

@@ -12,10 +12,10 @@ export function getTimezoneOptions(): TimezoneNode[] {
 	// 1. Get the list of time zones from Intl (where supported)
 	let timeZones: string[] = [];
 
-	const hasSupportedValuesOf = typeof (Intl as any).supportedValuesOf === 'function';
+	const hasSupportedValuesOf = typeof Intl.supportedValuesOf === 'function';
 
 	if (hasSupportedValuesOf) {
-		timeZones = (Intl as any).supportedValuesOf('timeZone') as string[];
+		timeZones = Intl.supportedValuesOf('timeZone') as string[];
 	} else {
 		// Fallback: minimal set
 		timeZones = [
