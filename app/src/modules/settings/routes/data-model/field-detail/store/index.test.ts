@@ -112,6 +112,30 @@ describe('Actions', () => {
 });
 
 describe('Alterations', () => {
+	describe('presentation', () => {
+		it('clears readonly and required flags for presentation fields', () => {
+			const fieldDetailStore = useFieldDetailStore();
+
+			fieldDetailStore.startEditing('collection_a', '+', 'presentation');
+			fieldDetailStore.field.meta.readonly = true;
+			fieldDetailStore.field.meta.required = true;
+
+			fieldDetailStore.update({
+				field: {
+					meta: {
+						note: 'Divider note',
+					},
+				},
+			});
+
+			expect(fieldDetailStore.field.meta.readonly).toBe(false);
+			expect(fieldDetailStore.field.meta.required).toBe(false);
+			expect(fieldDetailStore.field.meta.note).toBe('Divider note');
+			expect(fieldDetailStore.fieldUpdates.meta?.readonly).toBe(false);
+			expect(fieldDetailStore.fieldUpdates.meta?.required).toBe(false);
+		});
+	});
+
 	describe('files', () => {
 		it('autoGenerateJunctionRelation has changed', () => {
 			const fieldDetailStore = useFieldDetailStore();

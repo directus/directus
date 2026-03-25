@@ -19,6 +19,7 @@ const translations = syncFieldDetailStoreProperty('field.meta.translations');
 const { loading, field, localType } = storeToRefs(fieldDetailStore);
 const type = computed(() => field.value.type);
 const isGenerated = computed(() => field.value.schema?.is_generated);
+const supportsReadonlyOrRequired = computed(() => !isGenerated.value && localType.value !== 'presentation');
 const userStore = useUserStore();
 const searchable = syncFieldDetailStoreProperty('field.meta.searchable', true);
 
@@ -35,17 +36,17 @@ const isSearchableType = computed(() => {
 
 <template>
 	<div class="form">
-		<div v-if="!isGenerated" class="field half-left">
+		<div v-if="supportsReadonlyOrRequired" class="field half-left">
 			<div class="label type-label">{{ $t('readonly') }}</div>
 			<VCheckbox v-model="readonly" :label="$t('readonly_field_label')" block />
 		</div>
 
-		<div v-if="!isGenerated" class="field half-right">
+		<div v-if="supportsReadonlyOrRequired" class="field half-right">
 			<div class="label type-label">{{ $t('required') }}</div>
 			<VCheckbox v-model="required" :label="$t('require_value_to_be_set')" block />
 		</div>
 
-		<VNotice v-if="readonly && required" type="warning" class="full no-margin">
+		<VNotice v-if="supportsReadonlyOrRequired && readonly && required" type="warning" class="full no-margin">
 			{{ $t('required_readonly_field_warning') }}
 		</VNotice>
 
