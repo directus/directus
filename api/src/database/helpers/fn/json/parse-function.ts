@@ -36,6 +36,17 @@ export function parseJsonPath(path: string): string {
 		throw new InvalidQueryError({ reason: 'Invalid JSON path: unsupported path expression' });
 	}
 
+	// Allowlist: Unicode letters/numbers/emoji, ASCII word characters, dots, and square brackets.
+	// This prevents SQL injection in dialects that must inline the path as a SQL string
+	// literal (Oracle's JSON_VALUE/JSON_QUERY do not accept bind parameters for the path).
+	// The only SQL-dangerous character in a single-quoted Oracle string is a single quote;
+	// Unicode letters, digits, and pictographic emoji cannot break out of a string literal.
+	// \p{Extended_Pictographic} is used instead of \p{Emoji} to avoid false-positives on
+	// digits and punctuation that are technically in the Emoji Unicode category.
+	if (!/^[\p{L}\p{N}\p{Extended_Pictographic}\w.[\]]+$/u.test(normalized)) {
+		throw new InvalidQueryError({ reason: 'Invalid JSON path: unsupported path expression' });
+	}
+
 	const depth = calculateJsonPathDepth(normalized);
 
 	if (depth > MAX_JSON_QUERY_DEPTH) {

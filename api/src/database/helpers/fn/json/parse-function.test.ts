@@ -136,6 +136,11 @@ describe('JsonHelper', () => {
 				{ input: 'items[0].nested[1].value', expected: '.items[0].nested[1].value' },
 				// Exactly at depth limit (10 segments when normalized)
 				{ input: 'a.b.c.d.e.f.g.h.i.j', expected: '.a.b.c.d.e.f.g.h.i.j' },
+				// Unicode: accented characters and emoji keys are valid JSON keys and pose no SQL injection risk
+				{ input: 'café', expected: '.café' },
+				{ input: 'données.prénom', expected: '.données.prénom' },
+				{ input: '🎉', expected: '.🎉' },
+				{ input: 'items.🔑.value', expected: '.items.🔑.value' },
 			])('normalizes "$input" to "$expected"', ({ input, expected }) => {
 				expect(parseJsonPath(input)).toBe(expected);
 			});
@@ -173,6 +178,41 @@ describe('JsonHelper', () => {
 				{ input: 'items[-1]', desc: 'negative array index' },
 				{ input: '[-1]', desc: 'leading negative array index' },
 				{ input: 'a[-10].b', desc: 'negative index mid-path' },
+				// SQL injection attempts — blocked by the allowlist (/^[\w.[\]]+$/)
+				// Oracle: path is inlined as a string literal in JSON_VALUE/JSON_QUERY
+				{ input: "name') OR 1=1--", desc: 'Oracle — closing quote breaks string literal' },
+				{ input: "color' OR '1'='1", desc: 'Oracle — classic quoted tautology' },
+				{ input: 'name) RETURNING NUMBER', desc: 'Oracle — escapes RETURNING clause' },
+				{ input: "data') UNION SELECT password FROM dba_users--", desc: 'Oracle — subquery via UNION' },
+				// MySQL: even though path is parameterized, these must be caught before reaching convertToMySQLPath
+				{ input: "color') AND SLEEP(5)--", desc: 'MySQL — time-based blind via SLEEP' },
+				{
+					input: "data') AND EXTRACTVALUE(1,CONCAT(0x7e,version()))--",
+					desc: 'MySQL — error-based extraction via EXTRACTVALUE',
+				},
+				// MSSQL: path is parameterized but payload tests the validation layer holds
+				{ input: "name'; EXEC xp_cmdshell('whoami')--", desc: 'MSSQL — stacked query with xp_cmdshell' },
+				{ input: 'name; WAITFOR DELAY', desc: 'MSSQL — time-based blind via WAITFOR' },
+				// PostgreSQL: path parts are parameterized; integer indices are inlined but isArrayIndex enforces numeric-only
+				{ input: "data'::text", desc: 'PostgreSQL — type cast injection via double colon' },
+				{ input: "data' || pg_sleep(10)--", desc: 'PostgreSQL — time-based blind via pg_sleep' },
+				// SQLite: path is parameterized
+				{ input: "data' || sqlite_version()--", desc: 'SQLite — version probe via concatenation' },
+				// General — whitespace and comment sequences (common obfuscation)
+				{ input: 'items name', desc: 'space used as injection padding' },
+				{ input: 'items\nOR 1=1', desc: 'newline used as whitespace substitute' },
+				{ input: 'items\tUNION', desc: 'tab used as whitespace substitute' },
+				{ input: 'color--', desc: 'SQL line comment (double-dash)' },
+				{ input: 'color/*', desc: 'SQL block comment open' },
+				{ input: 'color#', desc: 'MySQL hash comment' },
+				// General — stacked queries and semicolons
+				{ input: 'items; DROP TABLE users--', desc: 'stacked query via semicolon' },
+				{ input: "name'; INSERT INTO admin VALUES(1)--", desc: 'stacked INSERT via semicolon and quote' },
+				// General — UNION-based extraction
+				{ input: 'items UNION SELECT password', desc: 'UNION-based extraction' },
+				{ input: 'x UNION ALL SELECT NULL,NULL,NULL--', desc: 'UNION column-count probe' },
+				// General — backslash escape attempts
+				{ input: "data\\'", desc: 'backslash-escaped quote attempt' },
 			])('throws for $desc ("$input")', ({ input }) => {
 				expect(() => parseJsonPath(input)).toThrow('Invalid JSON path: unsupported path expression');
 			});

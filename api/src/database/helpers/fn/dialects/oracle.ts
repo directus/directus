@@ -68,9 +68,12 @@ export class FnHelperOracle extends FnHelper {
 		}
 
 		// ".items[0].name" → "$.items[0].name"
-		// Oracle requires JSON path expressions to be string literals, not bind variables.
-		// jsonPath is safe to inline: parseJsonPath validates it contains only
-		// alphanumeric characters, dots, brackets with digits, and underscores.
+		// Oracle's JSON_VALUE and JSON_QUERY require the path argument to be a string
+		// literal — the OracleDB driver does not support bind parameters in that position.
+		// Inlining is safe because parseJsonPath enforces a strict allowlist: only word
+		// characters ([A-Za-z0-9_]), dots, and square brackets are accepted, blocking all
+		// SQL-dangerous characters (quotes, parentheses, operators, etc.).
+		// See: api/src/database/helpers/fn/json/parse-function.ts
 		const jsonPath = '$' + options.jsonPath;
 
 		if (options?.castNumeric) {

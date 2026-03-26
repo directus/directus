@@ -23,13 +23,15 @@ export function buildPostgresJsonPath(
 	const bindings: (string | number)[] = [];
 
 	for (let i = 0; i < parts.length - 1; i++) {
-        const part = parts[i]!;
+		const part = parts[i]!;
 
 		if (isArrayIndex(part)) {
 			// Integer array indices must be inlined as SQL literals, not passed as bind
-			// parameters. The pg driver sends JS numbers with an ambiguous type, causing
+			// parameters: the pg driver sends JS numbers without a type hint, causing
 			// PostgreSQL to pick the jsonb->text overload instead of jsonb->integer,
-			// which returns NULL when applied to an array.
+			// which returns NULL when applied to an array element.
+			// Injection safety: isArrayIndex (below) guarantees `part` is a non-negative
+			// integer string ("0", "5", "123") — it will never contain SQL-dangerous characters.
 			template += `->${part}`;
 		} else {
 			template += '->?';
@@ -37,16 +39,17 @@ export function buildPostgresJsonPath(
 		}
 	}
 
-    // handle final part here
-    const part = parts[parts.length - 1]!;
-    const operator = forFilter ? '->>' : '->';
+	// handle final part here
+	const part = parts[parts.length - 1]!;
+	const operator = forFilter ? '->>' : '->';
 
-    if (isArrayIndex(part)) {
-        template += operator + part;
-    } else {
-        template += operator + '?';
-        bindings.push(part);
-    }
+	if (isArrayIndex(part)) {
+		// Same as above: isArrayIndex guarantees a non-negative integer literal, safe to inline.
+		template += operator + part;
+	} else {
+		template += operator + '?';
+		bindings.push(part);
+	}
 
 	return { template, bindings };
 }
@@ -55,14 +58,14 @@ export function buildPostgresJsonPath(
  * Checks if a provided value is a valid positive number for array access
  */
 function isArrayIndex(value: unknown): boolean {
-    if (typeof value === 'number') {
-        return value >= 0 && Number.isInteger(value);
-    }
+	if (typeof value === 'number') {
+		return value >= 0 && Number.isInteger(value);
+	}
 
-    if (typeof value === "string") {
-        const num = Number(value);
-        return String(num) === value && num >= 0 && Number.isInteger(num);
-    }
+	if (typeof value === 'string') {
+		const num = Number(value);
+		return String(num) === value && num >= 0 && Number.isInteger(num);
+	}
 
-    return false;
+	return false;
 }
