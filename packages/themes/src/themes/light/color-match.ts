@@ -55,26 +55,6 @@ export default defineTheme({
 			borderWidth: '1px',
 			borderColor: 'var(--theme--border-color-subdued)',
 		},
-		sidebar: {
-			background: '#FFFFFF',
-			borderWidth: '1px',
-			borderColor: 'var(--theme--border-color-subdued)',
-			section: {
-				toggle: {
-					borderColor: 'var(--theme--border-color-subdued)',
-					borderWidth: '1px',
-					background: '#FFFFFF',
-					foreground: 'var(--theme--foreground)',
-					foregroundHover: 'var(--theme--foreground)',
-					foregroundActive: 'var(--theme--foreground-accent)',
-					icon: {
-						foreground: 'var(--theme--foreground)',
-						foregroundHover: 'var(--theme--foreground)',
-						foregroundActive: 'var(--theme--foreground-accent)',
-					},
-				},
-			},
-		},
 		public: {
 			art: {
 				background: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 10%)',
