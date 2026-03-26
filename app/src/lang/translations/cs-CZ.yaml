@@ -170,7 +170,6 @@ create_version: Vytvořit verzi
 rename_version: Přejmenovat verzi
 compare_version: Porovnat verzi
 save_version: Uložit verzi
-promote_version: Povýšit verzi
 delete_version: Smazat verzi
 delete_version_copy: >-
   Opravdu chcete smazat verzi "{version}"? Tuto akci nelze vrátit zpět.

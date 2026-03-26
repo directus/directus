@@ -148,7 +148,6 @@ create_version: Δημιουργία Έκδοσης
 rename_version: Μετονομασία Έκδοσης
 compare_version: Σύγκριση Έκδοσης
 save_version: Αποθήκευση Έκδοσης
-promote_version: Προώθηση Έκδοσης
 reset_bookmark: Επαναφορά Σελιδοδείκτη
 update_bookmark: Ενημέρωση Σελιδοδείκτη
 delete_bookmark: Διαγραφή σελιδοδείκτη

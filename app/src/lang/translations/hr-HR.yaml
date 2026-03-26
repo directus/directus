@@ -163,7 +163,6 @@ create_version: Kreiraj Verziju
 rename_version: Preimenuj Verziju
 compare_version: Usporedi Verziju
 save_version: Spasi Verziju
-promote_version: Promoviraj Verziju
 delete_version: Obriši Verziju
 delete_version_copy: >-
   Jeste li sigurni da želite izbrisati verziju "{version}"? Ova se radnja ne može poništiti.

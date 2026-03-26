@@ -175,7 +175,6 @@ create_version: Skapa Version
 rename_version: Byt namn på version
 compare_version: Jämför versioner
 save_version: Spara version
-promote_version: Promota version
 delete_version: Ta bort version
 delete_version_copy: >-
   Är du säker på att du vill ta bort versionen "{version}"? Denna åtgärd kan inte ångras.

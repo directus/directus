@@ -203,7 +203,6 @@ create_version: Verzió készítés
 rename_version: Verzió átnevezés
 compare_version: Verzió összehasonlítás
 save_version: Verzió mentés
-promote_version: Verzió előléptetés
 apply: Alkalmaz
 select_all_differences: Összes különbség kijelölése
 delete_version: Verzió törlése

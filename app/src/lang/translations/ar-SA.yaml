@@ -164,7 +164,6 @@ create_version: إنشاء إصدار
 rename_version: إعادة تسمية الإصدار
 compare_version: مقارنة الإصدار
 save_version: حفظ الإصدار
-promote_version: تحديث الإصدار
 delete_version: حذف الإصدار
 delete_version_copy: >-
   هل أنت متأكد من أنك تريد حذف الإصدار "{version}"؟ لا يمكن التراجع عن هذا الإجراء.

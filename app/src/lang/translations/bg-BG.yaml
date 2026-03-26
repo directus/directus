@@ -160,7 +160,6 @@ create_version: Създаване на версия
 rename_version: Преименуване на версията
 compare_version: Сравнете версията
 save_version: Запазване на версията
-promote_version: Популяризирайте версията
 delete_version: Изтриване на версията
 delete_version_copy: >-
   Сигурни ли сте, че искате да изтриете версията „{version}“? Това действие не може да бъде отменено.

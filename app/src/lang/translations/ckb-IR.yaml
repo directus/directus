@@ -163,7 +163,6 @@ create_version: دروستکردنی وەشان
 rename_version: ناوی وەشان بگۆڕە
 compare_version: بەراوردکردنی وەشان
 save_version: پاشەکەوتکردنی وەشان
-promote_version: پەرەپێدانی وەشان
 delete_version: سڕینەوەی وەشان
 delete_version_copy: >-
   ئایا دڵنیای دەتەوێت وەشانی "{version}" بسڕیتەوە؟ ئەم کردارە گەڕانەوەی نییە.

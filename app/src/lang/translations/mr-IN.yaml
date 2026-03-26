@@ -163,7 +163,6 @@ create_version: व्हर्जन तयार करा
 rename_version: व्हर्जन नाव बदला
 compare_version: व्हर्जन तुलना करा
 save_version: व्हर्जन जतन करा
-promote_version: व्हर्जन प्रमोट करा
 delete_version: व्हर्जन डिलीट करा
 delete_version_copy: >-
   तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन डिलीट करू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.

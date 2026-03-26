@@ -175,7 +175,6 @@ create_version: Sürüm Oluştur
 rename_version: Sürümü Yeniden Adlandır
 compare_version: Sürümü Karşılaştır
 save_version: Sürümü Kaydet
-promote_version: Sürümü Yükselt
 delete_version: Sürümü Sil
 delete_version_copy: >-
   {version} versiyonu silme kararında emin misiniz? Bu eylem geri alınamaz.

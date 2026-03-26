@@ -203,7 +203,6 @@ create_version: Versie aanmaken
 rename_version: Versie hernoemen
 compare_version: Versies vergelijken
 save_version: Versie opslaan
-promote_version: Versie promoveren
 apply: Toepassen
 select_all_differences: Selecteer Alle Verschillen
 delete_version: Versie verwijderen

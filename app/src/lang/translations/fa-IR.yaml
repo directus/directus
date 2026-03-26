@@ -220,7 +220,6 @@ create_version: ایجاد نسخه
 rename_version: ویرایش نسخه
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
-promote_version: ارتقای نسخه
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها

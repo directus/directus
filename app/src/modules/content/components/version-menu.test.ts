@@ -306,7 +306,7 @@ describe('VersionMenu', () => {
 	});
 
 	describe('new version behavior', () => {
-		it('should disable promote and discard for new (virtual) versions', () => {
+		it('should disable publish and discard for new (virtual) versions', () => {
 			const newVersion = createNewVersion({ key: 'draft', type: 'global' });
 
 			const wrapper = mount(VersionMenu, {
@@ -319,16 +319,31 @@ describe('VersionMenu', () => {
 			});
 
 			const listItems = wrapper.findAll('.v-list-item');
-			const promoteItem = listItems.find((item) => item.text().includes(i18n.global.t('promote_version')));
+			const publishItem = listItems.find((item) => item.text().includes(i18n.global.t('publish_version')));
 			const deleteItem = listItems.find((item) => item.text().includes(i18n.global.t('discard_changes')));
 
-			expect(promoteItem?.classes()).toContain('disabled');
+			expect(publishItem?.classes()).toContain('disabled');
 			expect(deleteItem?.classes()).toContain('disabled');
+		});
+
+		it('should disable create version for new (virtual) global draft', () => {
+			const newVersion = createNewVersion({ key: 'draft', type: 'global' });
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: { ...baseProps, versions: [newVersion], currentVersion: newVersion },
+			});
+
+			const listItems = wrapper.findAll('.v-list-item');
+			const createItem = listItems.find((item) => item.text().includes(i18n.global.t('create_version')));
+
+			expect(createItem).toBeDefined();
+			expect(createItem?.classes()).toContain('disabled');
 		});
 	});
 
-	describe('item-less draft promote', () => {
-		it('should show promote when primaryKey is "+" and createAllowed is true', () => {
+	describe('item-less draft publish', () => {
+		it('should show publish when primaryKey is "+" and createAllowed is true', () => {
 			const savedDraftVersion = createMockVersion({ id: 'draft-uuid', key: 'draft', type: 'global', item: null });
 
 			const wrapper = mount(VersionMenu, {
@@ -344,13 +359,13 @@ describe('VersionMenu', () => {
 			});
 
 			const listItems = wrapper.findAll('.v-list-item');
-			const promoteItem = listItems.find((item) => item.text().includes(i18n.global.t('promote_version')));
+			const publishItem = listItems.find((item) => item.text().includes(i18n.global.t('publish_version')));
 
-			expect(promoteItem).toBeDefined();
-			expect(promoteItem?.classes()).not.toContain('disabled');
+			expect(publishItem).toBeDefined();
+			expect(publishItem?.classes()).not.toContain('disabled');
 		});
 
-		it('should hide promote when primaryKey is "+" and createAllowed is false', () => {
+		it('should hide publish when primaryKey is "+" and createAllowed is false', () => {
 			const savedDraftVersion = createMockVersion({ id: 'draft-uuid', key: 'draft', type: 'global', item: null });
 
 			const wrapper = mount(VersionMenu, {
@@ -366,9 +381,108 @@ describe('VersionMenu', () => {
 			});
 
 			const listItems = wrapper.findAll('.v-list-item');
-			const promoteItem = listItems.find((item) => item.text().includes(i18n.global.t('promote_version')));
+			const publishItem = listItems.find((item) => item.text().includes(i18n.global.t('publish_version')));
 
-			expect(promoteItem).toBeUndefined();
+			expect(publishItem).toBeUndefined();
+		});
+	});
+
+	describe('item-less draft locked state', () => {
+		it('should disable the create version action when viewing an item-less draft', () => {
+			const itemLessDraft = createMockVersion({
+				id: 'draft-uuid',
+				key: 'draft',
+				type: 'global',
+				item: null,
+			});
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: {
+					...baseProps,
+					versions: [itemLessDraft],
+					currentVersion: itemLessDraft,
+				},
+			});
+
+			const listItems = wrapper.findAll('.v-list-item');
+			const createItem = listItems.find((item) => item.text().includes(i18n.global.t('create_version')));
+
+			expect(createItem).toBeDefined();
+			expect(createItem?.classes()).toContain('disabled');
+		});
+
+		it('should NOT disable the create version action when the draft has an item', () => {
+			const draftWithItem = createMockVersion({
+				id: 'draft-uuid',
+				key: 'draft',
+				type: 'global',
+				item: '42',
+			});
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: {
+					...baseProps,
+					versions: [draftWithItem],
+					currentVersion: draftWithItem,
+				},
+			});
+
+			const listItems = wrapper.findAll('.v-list-item');
+			const createItem = listItems.find((item) => item.text().includes(i18n.global.t('create_version')));
+
+			expect(createItem).toBeDefined();
+			expect(createItem?.classes()).not.toContain('disabled');
+		});
+
+		it('should enable the discard action for saved item-less drafts', () => {
+			const itemLessDraft = createMockVersion({
+				id: 'draft-uuid',
+				key: 'draft',
+				type: 'global',
+				item: null,
+				delta: { title: 'My Draft Title' },
+			});
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: {
+					...baseProps,
+					versions: [itemLessDraft],
+					currentVersion: itemLessDraft,
+				},
+			});
+
+			const listItems = wrapper.findAll('.v-list-item');
+			const discardItem = listItems.find((item) => item.text().includes(i18n.global.t('discard_changes')));
+
+			expect(discardItem).toBeDefined();
+			expect(discardItem?.classes()).not.toContain('disabled');
+		});
+
+		it('should show indicator dot for item-less draft with saved content', () => {
+			const itemLessDraftWithDelta = createMockVersion({
+				id: 'draft-uuid',
+				key: 'draft',
+				type: 'global',
+				item: null,
+				delta: { title: 'My Draft Title' },
+			});
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: {
+					...baseProps,
+					versions: [itemLessDraftWithDelta],
+					currentVersion: null,
+				},
+			});
+
+			const versionItems = wrapper.findAll('.v-list-item');
+			const draftItem = versionItems.find((item) => item.text().includes(i18n.global.t('draft')));
+
+			expect(draftItem?.find('.edit-dot').exists()).toBe(true);
 		});
 	});
 });

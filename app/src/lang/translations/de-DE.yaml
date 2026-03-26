@@ -167,7 +167,6 @@ create_version: Version erstellen
 rename_version: Version umbenennen
 compare_version: Version vergleichen
 save_version: Version speichern
-promote_version: Version überführen
 delete_version: Version löschen
 delete_version_copy: >-
   Möchten Sie die "{version}" Version wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
