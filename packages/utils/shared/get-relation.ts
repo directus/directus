@@ -1,3 +1,4 @@
+import type { SchemaOverview } from '@directus/types';
 import type { Relation } from '@directus/types';
 
 export function getRelations(relations: Relation[], collection: string, field: string): Relation[] {
@@ -20,4 +21,26 @@ export function getRelation(relations: Relation[], collection: string, field: st
 	});
 
 	return relation;
+}
+
+export function getRelationsForCollection(schema: SchemaOverview, collection: string): string[] {
+	const fields = schema.collections[collection]?.fields;
+
+	const relationalFields = [];
+
+	if (!fields) return [];
+
+	for (const relation of schema.relations) {
+		if (relation.collection === collection && fields?.[relation.field]) {
+			relationalFields.push(relation.field);
+		} else if (
+			relation.related_collection === collection &&
+			relation.meta?.one_field &&
+			fields?.[relation.meta.one_field]
+		) {
+			relationalFields.push(relation.meta.one_field);
+		}
+	}
+
+	return relationalFields;
 }

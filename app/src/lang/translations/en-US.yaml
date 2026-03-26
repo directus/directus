@@ -280,6 +280,10 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+delete_folder_dialog:
+  move_content: Move content one level up
+  delete_content: Delete all content
+  content_behavior: What should happen to the folder contents?
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -585,8 +589,10 @@ ungrouped: Ungrouped
 translations_enable_helper_description: Translate content into multiple languages.
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
+import_background: Import in background
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
+import_upload_success: '{filename} successfully uploaded. Importing data in background.'
 import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'

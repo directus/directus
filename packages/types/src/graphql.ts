@@ -11,5 +11,7 @@ export interface GraphQLParams {
 	contextValue: {
 		req?: Request;
 		res?: Response;
+		data?: unknown;
+		cache: Map<string, Promise<unknown>>;
 	};
 }

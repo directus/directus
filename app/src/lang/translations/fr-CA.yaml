@@ -485,6 +485,8 @@ related_collection: Collection associée
 related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
+translations_preview_collections: Collections
+translations_preview_fields: Champs
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Commencer l'import
 import_data_indeterminate: Import des données...
