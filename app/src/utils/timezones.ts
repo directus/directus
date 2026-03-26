@@ -37,7 +37,8 @@ export function getTimezoneOptions(): TimezoneNode[] {
 	const options: Record<string, TimezoneNode> = {};
 
 	for (const tz of timeZones) {
-		const [prefix, text] = tz.split('/') as [string, string];
+		const [prefix, ...rest] = tz.split('/');
+		const text = rest.join('/').replaceAll('_', ' ');
 
 		options[prefix] ??= {
 			text: prefix,
