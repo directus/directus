@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Added timezone selector to datetime interface
+added timezone support to datetime display
