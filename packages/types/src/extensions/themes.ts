@@ -237,6 +237,16 @@ const Rules = Type.Object({
 
 			section: Type.Optional(
 				Type.Object({
+					borderWidth: Type.Optional(Type.Ref(LineWidth)),
+					borderColor: Type.Optional(Type.Ref(Color)),
+
+					active: Type.Optional(
+						Type.Object({
+							borderWidth: Type.Optional(Type.Ref(LineWidth)),
+							borderColor: Type.Optional(Type.Ref(Color)),
+						}),
+					),
+
 					toggle: Type.Optional(
 						Type.Object({
 							icon: Type.Optional(
@@ -256,9 +266,6 @@ const Rules = Type.Object({
 							backgroundActive: Type.Optional(Type.Ref(Color)),
 
 							fontFamily: Type.Optional(Type.Ref(FamilyName)),
-
-							borderWidth: Type.Optional(Type.Ref(LineWidth)),
-							borderColor: Type.Optional(Type.Ref(Color)),
 						}),
 					),
 
