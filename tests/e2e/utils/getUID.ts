@@ -15,7 +15,7 @@ export function getUID(offset = 0) {
 
 	const uid = [...parentParts.slice(currentParts.length, -1), parentParts.at(-1)?.slice(0, -8)].join('_');
 
-	return uid;
+	return uid.replaceAll('.sb', '');
 }
 
 /**

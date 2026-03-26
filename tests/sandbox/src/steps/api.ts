@@ -1,9 +1,9 @@
-import { spawn } from 'child_process';
+import { type ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { join } from 'path';
 import chalk from 'chalk';
-import { detect } from 'detect-port';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
+import { getPort } from '../port.js';
 import { apiFolder, type Options } from '../sandbox.js';
 
 export async function buildApi(opts: Options, logger: Logger, onRebuild: () => void) {
@@ -80,47 +80,51 @@ export async function bootstrap(env: Env, logger: Logger) {
 	logger.info(`Completed Bootstraping Database ${time}`);
 }
 
+export type Api = {
+	process: ChildProcessWithoutNullStreams;
+	port: number;
+	inspector: number;
+};
+
 export async function startApi(opts: Options, env: Env, logger: Logger) {
 	const apiCount = Math.max(1, Number(opts.instances));
 
-	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * (opts.inspect ? 2 : 1));
-	const allPorts = apiPorts.flatMap((port) => (opts.inspect ? [port, port + 1] : [port]));
+	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(opts.port) + i * (opts.inspect ? 2 : 1));
 
-	const occupiedPorts = (await Promise.allSettled(allPorts.map((port) => detect(port))))
-		.map((result, i) => (result.status === 'fulfilled' ? [result.value, allPorts[i]] : undefined))
-		.filter((val) => val && val[0] !== val[1]) as [number, number][];
-
-	for (const [port] of occupiedPorts) {
-		logger.warn(`Port ${port} is already occupied`);
-	}
-
-	return await Promise.all(
+	return (await Promise.all(
 		apiPorts.map((port) => {
 			const newLogger = apiCount > 1 ? logger.addGroup(`API ${port}`) : logger;
-			return startApiInstance(opts, { ...env, PORT: String(port) }, newLogger);
+			return startApiInstance({ ...opts, port }, env, newLogger);
 		}),
-	);
+	)) as [Api, ...Api[]];
 }
 
 async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 	const start = performance.now();
 	logger.info('Starting Server');
-	const debuggerPort = Number(env.PORT) + 1;
+	const port = await getPort(opts.port);
+	const inspector = await getPort(port + 1);
 	let api;
 	let timeout: NodeJS.Timeout;
-	const inspect = opts.inspect ? [`--inspect=${debuggerPort}`] : [];
+	const inspect = opts.inspect ? [`--inspect=${inspector}`] : [];
 
 	if (opts.dev) {
 		const watch = opts.watch ? ['watch', '--clear-screen=false'] : [];
 
 		api = spawn('pnpm ', ['tsx', ...watch, ...inspect, join(apiFolder, 'src', 'start.ts')], {
-			env,
+			env: {
+				...env,
+				PORT: String(port),
+			},
 			shell: true,
 			stdio: 'overlapped', // Has to be here, only god knows why.
 		});
 	} else {
 		api = spawn('node', [...inspect, join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
-			env,
+			env: {
+				...env,
+				PORT: String(port),
+			},
 		});
 	}
 
@@ -154,9 +158,9 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		api.stdout.on('data', (data) => {
 			const msg = String(data);
 
-			if (msg.includes(`Server started at http://${env.HOST}:${env.PORT}`)) {
+			if (msg.includes(`Server started at http://${env.HOST}:${port}`)) {
 				resolve(undefined);
-			} else if (msg.includes(`ERROR: Port ${env.PORT} is already in use`)) {
+			} else if (msg.includes(`ERROR: Port ${port} is already in use`)) {
 				reject(new Error(msg));
 			} else {
 				logger.debug(msg);
@@ -172,12 +176,12 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 
 	logger.info(
-		`Server started at http://${env.HOST}:${env.PORT}, Debugger listening on http://${env.HOST}:${debuggerPort} ${time}`,
+		`Server started at http://${env.HOST}:${port}, Debugger listening on http://${env.HOST}:${inspector} ${time}`,
 	);
 
 	logger.info(
 		`User: ${chalk.cyan(env.ADMIN_EMAIL)} Password: ${chalk.cyan(env.ADMIN_PASSWORD)} Token: ${chalk.cyan(env.ADMIN_TOKEN)}`,
 	);
 
-	return api;
+	return { process: api, port, inspector };
 }

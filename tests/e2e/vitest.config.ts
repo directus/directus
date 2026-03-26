@@ -1,7 +1,7 @@
 import { type Database, databases, type Env, type Options } from '@directus/sandbox';
-import { defineConfig } from 'vitest/config';
 import type { DeepPartial } from '@directus/types';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vitest/config';
 
 declare module 'vitest' {
 	interface Matchers {

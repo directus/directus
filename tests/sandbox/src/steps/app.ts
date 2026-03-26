@@ -1,6 +1,7 @@
 import { spawn } from 'child_process';
 import chalk from 'chalk';
 import type { Logger } from '../logger.js';
+import { getPort } from '../port.js';
 import { appFolder, type Env, type Options } from '../sandbox.js';
 
 export async function startApp(opts: Options, env: Env, logger: Logger) {
@@ -8,7 +9,7 @@ export async function startApp(opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting App');
 	let timeout: NodeJS.Timeout;
 
-	const port = typeof opts.app !== 'boolean' ? opts.app : 8080;
+	const port = await getPort(typeof opts.app !== 'boolean' ? opts.app : 8080);
 
 	const app = spawn('pnpm', ['vite', '--host', '--clearScreen false', `--port ${port}`], {
 		cwd: appFolder,

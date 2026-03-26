@@ -13,25 +13,21 @@ import {
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
-import getPort from 'get-port';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
 
 const all = process.env['ALL'] === 'true';
 
 if (!all) {
-	const directusMemPort = await getPort();
 	const uid = getUID();
 
 	const directusMem = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-mem',
-		port: directusMemPort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusMemPort + 1,
 			suffix: `${uid}_mem`,
 		},
 		env: {
@@ -41,17 +37,13 @@ if (!all) {
 		},
 	});
 
-	const directusMemPurgePort = await getPort();
-
 	const directusMemPurge = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-mem-purge',
-		port: directusMemPurgePort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusMemPurgePort + 1,
 			suffix: `${uid}_mem_purge`,
 		},
 		env: {
@@ -61,17 +53,13 @@ if (!all) {
 		},
 	});
 
-	const directusRedisPort = await getPort();
-
 	const directusRedis = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-redis',
-		port: directusRedisPort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusRedisPort + 1,
 			suffix: `${uid}_redis`,
 		},
 		extras: {
@@ -84,17 +72,13 @@ if (!all) {
 		},
 	});
 
-	const directusRedisPurgePort = await getPort();
-
 	const directusRedisPurge = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-redis-purge',
-		port: directusRedisPurgePort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusRedisPurgePort + 1,
 			suffix: `${uid}_redis_purge`,
 		},
 		extras: {
@@ -110,7 +94,9 @@ if (!all) {
 	const instances = [directusMem, directusMemPurge, directusRedis, directusRedisPurge];
 
 	for (const instance of instances) {
-		const api = createDirectus<Schema>(`http://localhost:${instance.env.PORT}`).with(rest()).with(staticToken('admin'));
+		const api = createDirectus<Schema>(`http://localhost:${instance.apis[0].port}`)
+			.with(rest())
+			.with(staticToken('admin'));
 
 		await api.request(
 			createItem('first', {
@@ -129,7 +115,7 @@ if (!all) {
 		for (const instance of instances) {
 			for (const collection of ['first', 'ignored']) {
 				test(`${instance.env.PUBLIC_URL} ${collection}`, async () => {
-					const api = createDirectus<Schema>(`http://localhost:${instance.env.PORT}`)
+					const api = createDirectus<Schema>(`http://localhost:${instance.apis[0].port}`)
 						.with(rest())
 						.with(staticToken('admin'));
 
@@ -137,7 +123,7 @@ if (!all) {
 
 					await api.request(readItems(collection as any));
 
-					await fetch(`http://localhost:${instance.env.PORT}/users/me/track/page`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/users/me/track/page`, {
 						method: 'PATCH',
 						body: JSON.stringify({
 							last_page: `/content/${collection}`,
@@ -157,7 +143,7 @@ if (!all) {
 
 					await api.request(updatePreset(presetId, { collection }));
 
-					const response = await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					const response = await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Authorization: 'Bearer admin',
 						},
@@ -177,21 +163,21 @@ if (!all) {
 				test(`${instance.env.PUBLIC_URL} ${collection}`, async () => {
 					const referer = `${instance.env.PUBLIC_URL}/admin/content/${collection}/`;
 
-					await fetch(`http://localhost:${instance.env.PORT}/utils/cache/clear`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/utils/cache/clear`, {
 						headers: {
 							Referer: referer,
 							Authorization: 'Bearer admin',
 						},
 					});
 
-					await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Referer: referer,
 							Authorization: 'Bearer admin',
 						},
 					});
 
-					await fetch(`http://localhost:${instance.env.PORT}/users/me/track/page`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/users/me/track/page`, {
 						method: 'PATCH',
 						body: JSON.stringify({
 							last_page: `/content/${collection}`,
@@ -202,7 +188,7 @@ if (!all) {
 						},
 					});
 
-					const preset = await fetch(`http://localhost:${instance.env.PORT}/presets`, {
+					const preset = await fetch(`http://localhost:${instance.apis[0].port}/presets`, {
 						method: 'POST',
 						body: JSON.stringify({
 							collection,
@@ -215,7 +201,7 @@ if (!all) {
 
 					const presetId = ((await preset.json()) as any).data.id;
 
-					await fetch(`http://localhost:${instance.env.PORT}/presets/${presetId}`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/presets/${presetId}`, {
 						method: 'PATCH',
 						body: JSON.stringify({
 							collection,
@@ -226,7 +212,7 @@ if (!all) {
 						},
 					});
 
-					const response = await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					const response = await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Referer: referer,
 							Authorization: 'Bearer admin',
@@ -252,7 +238,7 @@ if (!all) {
 		for (const instance of instances) {
 			for (const collection of ['first', 'ignored'] as const) {
 				test(`${instance.env.PUBLIC_URL} ${collection}`, async () => {
-					const api = createDirectus<Schema>(`http://localhost:${instance.env.PORT}`)
+					const api = createDirectus<Schema>(`http://localhost:${instance.apis[0].port}`)
 						.with(rest())
 						.with(staticToken('admin'));
 
@@ -266,7 +252,7 @@ if (!all) {
 						}),
 					);
 
-					const response = await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					const response = await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Authorization: 'Bearer admin',
 						},
@@ -293,20 +279,20 @@ if (!all) {
 				test(`${instance.env.PUBLIC_URL} ${collection}`, async () => {
 					const referer = `${instance.env.PUBLIC_URL}/admin/content/${collection}/`;
 
-					const api = createDirectus<Schema>(`http://localhost:${instance.env.PORT}`)
+					const api = createDirectus<Schema>(`http://localhost:${instance.apis[0].port}`)
 						.with(rest())
 						.with(staticToken('admin'));
 
 					await api.request(clearCache());
 
-					await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Referer: referer,
 							Authorization: 'Bearer admin',
 						},
 					});
 
-					await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						method: 'POST',
 						body: JSON.stringify({
 							text: randomUUID(),
@@ -317,7 +303,7 @@ if (!all) {
 						},
 					});
 
-					const response = await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					const response = await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Referer: referer,
 							Authorization: 'Bearer admin',
@@ -338,20 +324,20 @@ if (!all) {
 				test(`${instance.env.PUBLIC_URL} ${collection}`, async () => {
 					const referer = `http://external.com/admin/content/${collection}`;
 
-					const api = createDirectus<Schema>(`http://localhost:${instance.env.PORT}`)
+					const api = createDirectus<Schema>(`http://localhost:${instance.apis[0].port}`)
 						.with(rest())
 						.with(staticToken('admin'));
 
 					await api.request(clearCache());
 
-					await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Referer: referer,
 							Authorization: 'Bearer admin',
 						},
 					});
 
-					await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						method: 'POST',
 						body: JSON.stringify({
 							text: randomUUID(),
@@ -362,7 +348,7 @@ if (!all) {
 						},
 					});
 
-					const response = await fetch(`http://localhost:${instance.env.PORT}/items/${collection}`, {
+					const response = await fetch(`http://localhost:${instance.apis[0].port}/items/${collection}`, {
 						headers: {
 							Referer: referer,
 							Authorization: 'Bearer admin',

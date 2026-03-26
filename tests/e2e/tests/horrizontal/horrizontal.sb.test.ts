@@ -1,37 +1,35 @@
-import { join } from 'node:path';
 import { sandbox } from '@directus/sandbox';
 import { createDirectus, createItem, readItem, rest, serverHealth, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
-import getPort from 'get-port';
 import { expect, test } from 'vitest';
-import type { Schema } from './schema.d.ts';
+import type { Schema } from './schema.js';
 
 const all = process.env['ALL'] === 'true';
-const port = await getPort();
 
 if (!all)
 	test('running two instances', { timeout: 120_000 }, async () => {
 		const directus = await sandbox(database, {
-			port,
 			instances: '2',
 			inspect: false,
 			silent: true,
+			env: {
+				LOG_LEVEL: 'debug',
+			},
 			extras: {
 				redis: true,
 			},
 			docker: {
-				basePort: port + 1,
 				suffix: getUID(),
 			},
 		});
 
-		const api1 = createDirectus<Schema>(`http://localhost:${directus.env.PORT}`)
+		const api1 = createDirectus<Schema>(`http://localhost:${directus.apis[0].port}`)
 			.with(rest())
 			.with(staticToken('admin'));
 
-		const api2 = createDirectus<Schema>(`http://localhost:${Number(directus.env.PORT) + 2}`)
+		const api2 = createDirectus<Schema>(`http://localhost:${directus.apis[1]!.port}`)
 			.with(rest())
 			.with(staticToken('admin'));
 
@@ -41,7 +39,7 @@ if (!all)
 		expect(result1.status).toBe('ok');
 		expect(result2.status).toBe('ok');
 
-		const { collections } = await useSnapshot<Schema>(api1, join(import.meta.dirname, 'snapshot.json'));
+		const { collections } = await useSnapshot<Schema>(api1);
 
 		const item = await api2.request(
 			createItem(collections.test, {

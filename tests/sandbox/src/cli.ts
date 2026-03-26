@@ -12,7 +12,7 @@ program
 	.option('-v, --version <version>', 'Which version of the database to use')
 	.option('-x, --export', 'Export the schema to a file every 2 seconds')
 	.option('-s, --schema [schema]', 'Load an additional schema snapshot on startup')
-	.option('--docker.basePort <dockerBasePort>', 'Minimum port number to use for docker containers')
+	.option('--docker.port <port>', 'Minimum port number to use for docker containers')
 	.option('--docker.keep', 'Keep containers running when stopping the sandbox')
 	.option('--docker.name <name>', 'Overwrite the name of the docker project')
 	.option('--docker.suffix <suffix>', 'Adds a suffix to the docker project. Can be used to ensure uniqueness')
@@ -26,7 +26,7 @@ const options = program.opts();
 const sb = await sandbox(program.args[0] as Database, {
 	...options,
 	docker: {
-		basePort: options['docker.basePort'],
+		port: options['docker.port'],
 		keep: options['docker.keep'],
 		name: options['docker.name'],
 		suffix: options['docker.suffix'],

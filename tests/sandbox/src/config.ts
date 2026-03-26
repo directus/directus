@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { directusFolder } from './find-directus.js';
+import { getPort } from './port.js';
 import type { Database, Options } from './sandbox.js';
 
 const directusConfig = {
@@ -151,15 +152,9 @@ const baseConfig = {
 
 export async function getEnv(database: Database, opts: Options): Promise<Env> {
 	const portMap: Record<string, string> = {};
-	let portIndex = Number(opts.docker.basePort);
-
-	async function getPort() {
-		return String(typeof opts.docker.basePort === 'function' ? await opts.docker.basePort() : portIndex++);
-	}
 
 	const env = {
 		...baseConfig[database],
-		PORT: String(opts.port),
 		PUBLIC_URL: `http://${baseConfig[database].HOST}:${opts.port}`,
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
@@ -181,10 +176,10 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		const matches = /\$PORT(?:_[A-Z]+)*/gm.exec(value);
 
 		for (const match of matches ?? []) {
-			if (match === '$PORT') value = value.replaceAll(match, await getPort());
+			if (match === '$PORT') value = value.replaceAll(match, String(await getPort(opts.docker.port)));
 
 			if (match in portMap === false) {
-				portMap[match] = await getPort();
+				portMap[match] = String(await getPort(opts.docker.port));
 			}
 
 			value = value.replaceAll(match, portMap[match]!);
@@ -197,7 +192,6 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 }
 
 export type Env = (typeof baseConfig)[Database] & {
-	PORT: string;
 	REDIS_ENABLED: string;
 	CACHE_ENABLED: string;
 	PUBLIC_URL: string;

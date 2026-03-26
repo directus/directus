@@ -20,26 +20,21 @@ import {
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
-import getPort from 'get-port';
 import { describe, expect, test } from 'vitest';
-import type { Schema } from './schema.d.ts';
+import type { Schema } from './schema.js';
 
 const uid = getUID();
 
 const all = process.env['ALL'] === 'true';
 
 if (!all) {
-	const directusMemPort = await getPort();
-
 	const directusMem = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-mem',
-		port: directusMemPort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusMemPort + 1,
 			suffix: `${uid}_mem`,
 		},
 		env: {
@@ -49,17 +44,13 @@ if (!all) {
 		},
 	});
 
-	const directusMemPurgePort = await getPort();
-
 	const directusMemPurge = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-mem-purge',
-		port: directusMemPurgePort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusMemPurgePort + 1,
 			suffix: `${uid}_mem_purge`,
 		},
 		env: {
@@ -69,17 +60,13 @@ if (!all) {
 		},
 	});
 
-	const directusRedisPort = await getPort();
-
 	const directusRedis = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-redis',
-		port: directusRedisPort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusRedisPort + 1,
 			suffix: `${uid}_redis`,
 		},
 		extras: {
@@ -92,17 +79,13 @@ if (!all) {
 		},
 	});
 
-	const directusRedisPurgePort = await getPort();
-
 	const directusRedisPurge = await sandbox(database, {
 		cache: true,
 		prefix: 'cache-redis-purge',
-		port: directusRedisPurgePort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: directusRedisPurgePort + 1,
 			suffix: `${uid}_redis_purge`,
 		},
 		extras: {
@@ -204,8 +187,8 @@ if (!all) {
 				},
 			};
 
-			describe(instance.env.PORT, async () => {
-				const api = createDirectus<Schema>(`http://localhost:${instance.env.PORT}`)
+			describe(String(instance.apis[0].port), async () => {
+				const api = createDirectus<Schema>(`http://localhost:${instance.apis[0].port}`)
 					.with(rest())
 					.with(staticToken('admin'));
 
@@ -223,7 +206,7 @@ if (!all) {
 					// Action
 					await mutations[mutationKey as keyof typeof mutations](api);
 
-					const response = await fetch(`http://localhost:${instance.env.PORT}/items/collection`, {
+					const response = await fetch(`http://localhost:${instance.apis[0].port}/items/collection`, {
 						headers: {
 							Authorization: 'Bearer admin',
 						},

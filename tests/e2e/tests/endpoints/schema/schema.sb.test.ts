@@ -1,3 +1,5 @@
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 import { sandbox } from '@directus/sandbox';
 import {
 	createCollection,
@@ -18,27 +20,22 @@ import {
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
-import { readFile } from 'fs/promises';
-import getPort from 'get-port';
-import { join } from 'path';
-import { afterAll, expect, test } from 'vitest';
-import type { Schema } from './schema.d.ts';
 import { sortBy } from 'lodash-es';
-
-const port = await getPort();
+import { afterAll, expect, test } from 'vitest';
+import type { Schema } from './schema.js';
 
 const all = process.env['ALL'] === 'true';
 
 if (!all) {
-	await sandbox(database, {
-		port,
+	const sb = await sandbox(database, {
 		inspect: false,
 		silent: true,
 		docker: {
-			basePort: port + 2,
 			suffix: getUID(),
 		},
 	});
+
+	const port = sb.apis[0]!.port;
 
 	afterAll(async () => {
 		const diff = await api.request(

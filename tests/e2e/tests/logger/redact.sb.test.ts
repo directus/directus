@@ -2,25 +2,18 @@ import { sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, rest } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { Signal } from '@utils/signal.js';
-import getPort from 'get-port';
 import { expect, test } from 'vitest';
 
 const all = process.env['ALL'] === 'true';
 
-const port = await getPort();
-
 if (!all)
 	test('running two instances', { timeout: 60_000 }, async () => {
 		const directus = await sandbox(database, {
-			port,
 			inspect: false,
 			silent: true,
 			env: {
 				LOG_LEVEL: 'debug',
 				LOG_STYLE: 'raw',
-			},
-			docker: {
-				basePort: port + 2,
 			},
 		});
 
@@ -30,7 +23,7 @@ if (!all)
 			messages.set([...messages.get(), msg]);
 		});
 
-		const api = createDirectus(`http://localhost:${directus.env.PORT}`).with(rest()).with(authentication());
+		const api = createDirectus(`http://localhost:${directus.apis[0].port}`).with(rest()).with(authentication());
 
 		const login = await api.login({
 			email: directus.env.ADMIN_EMAIL,

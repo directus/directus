@@ -2,18 +2,25 @@ import { type ChildProcessWithoutNullStreams } from 'child_process';
 import { join } from 'path';
 import type { DatabaseClient, DeepPartial } from '@directus/types';
 import chalk from 'chalk';
-import getPort from 'get-port';
 import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
 import { createLogger, type Logger } from './logger.js';
+import type { Port, PortRange } from './port.js';
 import { startApp } from './steps/app.js';
-import { bootstrap, buildApi, dockerDown, dockerUp, loadSchema, saveSchema, startApi } from './steps/index.js';
+import {
+	type Api,
+	bootstrap,
+	buildApi,
+	dockerDown,
+	dockerUp,
+	loadSchema,
+	saveSchema,
+	startApi,
+} from './steps/index.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
-
-type Port = string | number;
 
 export type Options = {
 	/** Rebuild directus from source */
@@ -23,9 +30,9 @@ export type Options = {
 	/** Restart the api when changes are made */
 	watch: boolean;
 	/** Port to start the api on */
-	port: Port;
+	port: Port | PortRange;
 	/** Spin up the app in dev mode */
-	app: boolean | number;
+	app: boolean | Port;
 	/** Which version of the database to use */
 	version: string | undefined;
 	/** Configure the behavior of the spun up docker container */
@@ -33,7 +40,7 @@ export type Options = {
 		/** Keep containers running when stopping the sandbox */
 		keep: boolean;
 		/** Minimum port number to use for docker containers */
-		basePort: Port | (() => Port | Promise<Port>);
+		port: Port | PortRange;
 		/** Overwrite the name of the docker project */
 		name: string | undefined;
 		/** Adds a suffix to the docker project. Can be used to ensure uniqueness */
@@ -70,7 +77,7 @@ export type Options = {
 
 export type Sandboxes = {
 	sandboxes: {
-		index: number;
+		apis: [Api, ...Api[]];
 		env: Env;
 		logger: Logger;
 	}[];
@@ -82,24 +89,24 @@ export type Sandbox = {
 	restartApi(): Promise<void>;
 	stop(): Promise<void>;
 	env: Env;
+	apis: [Api, ...Api[]];
 	logger: Logger;
 };
 
 async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	if ((options as any)?.schema === true) options!.schema = 'snapshot.json';
-	const port = await getPort({ port: 8055 });
 
 	return merge(
 		{
 			build: false,
 			dev: false,
 			watch: false,
-			port,
+			port: 8055,
 			app: false,
 			version: undefined,
 			docker: {
 				keep: false,
-				basePort: port + 100,
+				port: { min: 8100, max: 8200 },
 				name: undefined,
 				suffix: '',
 			},
@@ -141,18 +148,18 @@ export type SandboxesOptions = {
 }[];
 
 export async function sandboxes(
-	sandboxes: SandboxesOptions,
+	sandboxOptions: SandboxesOptions,
 	options?: Partial<Pick<Options, 'build' | 'dev' | 'watch'>>,
 ): Promise<Sandboxes> {
-	if (!sandboxes.every((sandbox) => databases.includes(sandbox.database))) throw new Error('Invalid database provided');
+	if (!sandboxOptions.every((sandbox) => databases.includes(sandbox.database)))
+		throw new Error('Invalid database provided');
 
 	const opts = await getOptions(options);
 
 	const logger = createLogger(process.env as Env, opts);
 
-	let apis: {
-		index: number;
-		processes: ChildProcessWithoutNullStreams[];
+	let sandboxes: {
+		apis: [Api, ...Api[]];
 		opts: Options;
 		env: Env;
 		logger: Logger;
@@ -168,7 +175,7 @@ export async function sandboxes(
 		}
 
 		await Promise.all(
-			sandboxes.map(async ({ database, options }, index) => {
+			sandboxOptions.map(async ({ database, options }, index) => {
 				const opts = await getOptions(options);
 				const env = await getEnv(database, opts);
 				const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
@@ -180,7 +187,7 @@ export async function sandboxes(
 					await bootstrap(env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 
-					apis.push({ processes: await startApi(opts, env, logger), index, opts, env, logger });
+					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger };
 				} catch (e) {
 					logger.error(String(e));
 					throw e;
@@ -193,21 +200,21 @@ export async function sandboxes(
 	}
 
 	async function restartApis() {
-		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
+		sandboxes.forEach((api) => api.apis.forEach((api) => api.process.kill()));
 
-		apis = await Promise.all(
-			apis.map(async (api) => ({ ...api, processes: await startApi(api.opts, api.env, api.logger) })),
+		sandboxes = await Promise.all(
+			sandboxes.map(async (api) => ({ ...api, processes: await startApi(api.opts, api.env, api.logger) })),
 		);
 	}
 
 	async function stop() {
 		build?.kill();
-		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
+		sandboxes.forEach((api) => api.apis.forEach((api) => api.process.kill()));
 		if (opts.docker.keep)
 			await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
 	}
 
-	return { sandboxes: apis.map(({ env, index, logger }) => ({ index, env, logger })), stop, restartApis };
+	return { sandboxes, stop, restartApis };
 }
 
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<Sandbox> {
@@ -216,7 +223,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 	const env = await getEnv(database, opts);
 	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
-	let apis: ChildProcessWithoutNullStreams[] = [];
+	let apis: [Api, ...Api[]];
 	let app: ChildProcessWithoutNullStreams | undefined;
 	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
@@ -242,7 +249,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function restartApi() {
-		apis.forEach((api) => api.kill());
+		apis.forEach((api) => api.process.kill());
 		apis = await startApi(opts, env, logger);
 	}
 
@@ -251,12 +258,12 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		logger.info('Stopping sandbox');
 		clearInterval(interval);
 		build?.kill();
-		apis.forEach((api) => api.kill());
+		apis.forEach((api) => api.process.kill());
 		app?.kill();
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);
 	}
 
-	return { stop, restartApi, env, logger };
+	return { stop, restartApi, env, logger, apis };
 }

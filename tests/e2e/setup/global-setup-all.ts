@@ -20,9 +20,9 @@ export async function setup(project: TestProject) {
 			database,
 			options: {
 				prefix: database,
-				port: String(port),
+				port: port,
 				docker: {
-					basePort: String(port + 10),
+					port: port + 10,
 					keep: true,
 				},
 				killPorts: true,
@@ -44,7 +44,7 @@ export async function setup(project: TestProject) {
 
 	project.provide(
 		'envs',
-		Object.fromEntries(sb.sandboxes.map((sandbox) => [dbs[sandbox.index]!.database, sandbox.env])) as Record<
+		Object.fromEntries(sb.sandboxes.map((sandbox, index) => [dbs[index]!.database, sandbox.env])) as Record<
 			Database,
 			Env
 		>,

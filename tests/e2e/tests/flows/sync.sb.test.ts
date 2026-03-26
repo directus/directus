@@ -2,7 +2,6 @@ import { randomUUID } from 'crypto';
 import { sandbox } from '@directus/sandbox';
 import { createDirectus, createFlow, createOperation, rest, staticToken, updateFlow } from '@directus/sdk';
 import { database } from '@utils/constants.js';
-import getPort from 'get-port';
 import { expect, test } from 'vitest';
 
 const all = process.env['ALL'] === 'true';
@@ -12,14 +11,10 @@ if (!all)
 		const scope = randomUUID();
 
 		const directus = await sandbox(database, {
-			port: await getPort(),
 			instances: '2',
 			silent: true,
 			extras: {
 				redis: true,
-			},
-			docker: {
-				basePort: getPort,
 			},
 			env: {
 				SYNCHRONIZATION_STORE: 'redis',
@@ -27,7 +22,7 @@ if (!all)
 			},
 		});
 
-		const api = createDirectus<unknown>(`http://localhost:${directus.env.PORT}`)
+		const api = createDirectus<unknown>(`http://localhost:${directus.apis[0].port}`)
 			.with(rest())
 			.with(staticToken('admin'));
 
