@@ -720,6 +720,11 @@ const ERROR_CASES: ErrorCase[] = [
 		// each entry in the _or array must itself be a plain object
 		filter: { metadata: { _json: { _or: [null] } } },
 	},
+	{
+		description: 'returns 400 when a json path key is nested inside another json path key',
+		// nested paths must be written flat: 'a.b.c[0]', not { 'a.b': { 'c[0]': { _eq: 1 } } }
+		filter: { metadata: { _json: { 'a.b': { 'c[0]': { _eq: 1 } } } } },
+	},
 ];
 
 describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
