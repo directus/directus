@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
+import { VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
@@ -108,22 +108,6 @@ const {
 	publishVersionLoading,
 	publishVersion,
 } = useVersions(collection, isSingleton, primaryKey);
-
-// For new items ('+') in versioned collections, immediately enter draft version context.
-// Run whenever primaryKey, collection meta, or versions list changes.
-watch(
-	[() => props.primaryKey, collectionInfo, versions] as const,
-	([pk, info, _versions]) => {
-		if (pk === '+' && info?.meta?.versioning) {
-			const draftVersion = versions.value.find((v) => v.key === VERSION_KEY_DRAFT);
-
-			if (draftVersion && currentVersion.value === null) {
-				currentVersion.value = draftVersion;
-			}
-		}
-	},
-	{ immediate: true },
-);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
 	usePublishComparison();

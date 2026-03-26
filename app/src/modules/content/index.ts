@@ -1,3 +1,4 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { defineModule } from '@directus/extensions';
 import { Collection } from '@directus/types';
 import { useLocalStorage } from '@vueuse/core';
@@ -13,6 +14,20 @@ import { useCollectionsStore } from '@/stores/collections';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import RouterPass from '@/utils/router-passthrough';
+
+export const enterDraftContext: NavigationGuard = (to) => {
+	if (typeof to.params.primaryKey !== 'string' || to.params.primaryKey !== '+') return;
+	if (to.query.version) return; // already in version context
+
+	const collectionsStore = useCollectionsStore();
+	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collection) return;
+
+	const collectionInfo = collectionsStore.getCollection(collection);
+	if (!collectionInfo?.meta?.versioning) return;
+
+	return { ...to, query: { ...to.query, version: VERSION_KEY_DRAFT } };
+};
 
 const checkForSystem: NavigationGuard = (to, from) => {
 	if (!to.params?.collection) return;
@@ -137,7 +152,7 @@ export default defineModule({
 					path: ':primaryKey',
 					component: Item,
 					props: true,
-					beforeEnter: checkForSystem,
+					beforeEnter: [checkForSystem, enterDraftContext],
 				},
 			],
 		},
