@@ -30,6 +30,7 @@ import {
 	randWord,
 } from '@ngneat/falso';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
+import { ProxyAgent } from 'proxy-agent';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
@@ -39,6 +40,11 @@ vi.mock('@directus/utils');
 vi.mock('@aws-sdk/client-s3');
 vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
+
+vi.mock('proxy-agent', () => {
+	const ProxyAgent = vi.fn();
+	return { ProxyAgent };
+});
 
 let sample: {
 	config: DriverS3Config & Required<Pick<DriverS3Config, 'key' | 'secret' | 'root' | 'region' | 'forcePathStyle'>>;
@@ -290,6 +296,34 @@ describe('#getClient', () => {
 			},
 			requestHandler: expect.any(NodeHttpHandler),
 		});
+	});
+
+	test('Uses ProxyAgent for httpAgent and httpsAgent', () => {
+		vi.mocked(ProxyAgent).mockClear();
+		new DriverS3({ key: sample.config.key, secret: sample.config.secret, bucket: sample.config.bucket });
+		expect(ProxyAgent).toHaveBeenCalledTimes(2);
+	});
+
+	test('Passes maxSockets and keepAlive to ProxyAgent', () => {
+		vi.mocked(ProxyAgent).mockClear();
+		const maxSockets = randNumber({ min: 1, max: 1000 });
+		const keepAlive = randBoolean();
+
+		new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			maxSockets,
+			keepAlive,
+		});
+
+		expect(ProxyAgent).toHaveBeenCalledWith({ maxSockets, keepAlive });
+	});
+
+	test('Uses default maxSockets (500) and keepAlive (true) for ProxyAgent', () => {
+		vi.mocked(ProxyAgent).mockClear();
+		new DriverS3({ key: sample.config.key, secret: sample.config.secret, bucket: sample.config.bucket });
+		expect(ProxyAgent).toHaveBeenCalledWith({ maxSockets: 500, keepAlive: true });
 	});
 });
 
