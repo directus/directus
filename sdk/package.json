@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "21.2.0",
+	"version": "21.2.1",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,8 +25,8 @@
 	"scripts": {
 		"build": "NODE_ENV=production tsdown",
 		"dev": "NODE_ENV=development tsdown",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test": "vitest run --typecheck",
+		"test:coverage": "vitest run --coverage --typecheck"
 	},
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
