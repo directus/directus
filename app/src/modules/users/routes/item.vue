@@ -77,12 +77,9 @@ const {
 	validationErrors,
 	refresh,
 	getItem,
-} = useItem<User>(
-	ref('directus_users'),
-	primaryKey,
-	null,
-	{ fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'] },
-);
+} = useItem<User>(ref('directus_users'), primaryKey, null, {
+	fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
+});
 
 const {
 	users: collabUsers,
