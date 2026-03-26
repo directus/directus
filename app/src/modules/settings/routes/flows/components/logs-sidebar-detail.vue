@@ -78,6 +78,7 @@ function onToggle(open: boolean) {
 <template>
 	<SidebarDetail
 		id="logs"
+		class="logs-detail"
 		:title
 		icon="fact_check"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : undefined"
@@ -100,7 +101,7 @@ function onToggle(open: boolean) {
 				v-for="group in revisionsByDate"
 				:key="group.dateFormatted"
 				:label="group.dateFormatted"
-				class="revisions-date-group"
+				class="logs-group"
 				start-open
 			>
 				<div class="scroll-container">
@@ -138,10 +139,16 @@ function onToggle(open: boolean) {
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin-block-end: 1.375rem;
+	display: flex;
+	align-items: center;
 
 	&.active,
 	&:hover {
 		color: var(--theme--foreground);
+	}
+
+	.v-icon {
+		margin-inline: 0.125rem 0.375rem;
 	}
 }
 
@@ -152,7 +159,8 @@ function onToggle(open: boolean) {
 	button {
 		position: relative;
 		z-index: 2;
-		display: block;
+		display: flex;
+		align-items: center;
 		inline-size: 100%;
 		text-align: start;
 	}
@@ -164,7 +172,7 @@ function onToggle(open: boolean) {
 		z-index: 1;
 		inline-size: calc(100% + 0.4375rem);
 		block-size: calc(100% + 0.4375rem);
-		background-color: var(--theme--background-accent);
+		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -188,6 +196,10 @@ function onToggle(open: boolean) {
 
 	& + & {
 		margin-block-start: 0.4375rem;
+	}
+
+	.v-icon {
+		margin-inline: 0.125rem 0.375rem;
 	}
 }
 
