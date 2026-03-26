@@ -49,16 +49,25 @@ const INVALID_TEST_CASES = [
 	// Missing path
 	{ input: 'json(field,)', expectedError: 'Invalid json() syntax: missing path' },
 	// Unsupported path expressions
-	{ input: 'json(data, items[].name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, [])', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, *)', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, items[*].name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, items.*)', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, items[?(@.price > 10)])', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, ?.name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, @.name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, name$value)', expectedError: 'Invalid json() syntax: unsupported path expression' },
-	{ input: 'json(data, $.name)', expectedError: 'Invalid json() syntax: unsupported path expression' },
+	{
+		input: 'json(data, items[].name)',
+		expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.',
+	},
+	{ input: 'json(data, [])', expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.' },
+	{ input: 'json(data, *)', expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.' },
+	{
+		input: 'json(data, items[*].name)',
+		expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.',
+	},
+	{ input: 'json(data, items.*)', expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.' },
+	{
+		input: 'json(data, items[?(@.price > 10)])',
+		expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.',
+	},
+	{ input: 'json(data, ?.name)', expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.' },
+	{ input: 'json(data, @.name)', expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.' },
+	{ input: 'json(data, name$value)', expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.' },
+	{ input: 'json(data, $.name)', expectedError: 'Invalid query. Invalid JSON path: unsupported path expression.' },
 	// Exceeds maximum depth (default is 10)
 	{
 		input: 'json(data, a.b.c.d.e.f.g.h.i.j.k)',
