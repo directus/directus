@@ -12,10 +12,10 @@ export function getTimezoneOptions(): TimezoneNode[] {
 	// 1. Get the list of time zones from Intl (where supported)
 	let timeZones: string[] = [];
 
-	const hasSupportedValuesOf = typeof Intl.supportedValuesOf === 'function';
+	const hasSupportedValuesOf = 'supportedValuesOf' in Intl;
 
 	if (hasSupportedValuesOf) {
-		timeZones = Intl.supportedValuesOf('timeZone') as string[];
+		timeZones = (Intl as { supportedValuesOf: (key: string) => string[] }).supportedValuesOf('timeZone');
 	} else {
 		// Fallback: minimal set
 		timeZones = [
@@ -51,44 +51,4 @@ export function getTimezoneOptions(): TimezoneNode[] {
 	}
 
 	return Object.values(options);
-}
-
-/**
- * Formats a date to a specific timezone
- *
- * @param date - The date to format
- * @param tz - IANA timezone identifier (e.g., 'America/New_York', 'Europe/London', 'UTC'). If not provided, uses local timezone.
- * @returns
- */
-export function formatDateToTimezone(date: Date, tz?: string): Date {
-	// Get date components in target timezone
-	const targetFormatter = new Intl.DateTimeFormat('en-US', {
-		timeZone: tz,
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		hour12: false,
-	});
-
-	const parts = targetFormatter.formatToParts(date);
-	const partsMap: Record<string, string> = {};
-
-	for (const part of parts) {
-		partsMap[part.type] = part.value;
-	}
-
-	// Create a date string in ISO format and parse it as local time
-	// This creates a date that, when formatted locally, shows the target timezone values
-	const year = partsMap.year!;
-	const month = partsMap.month!.padStart(2, '0');
-	const day = partsMap.day!.padStart(2, '0');
-	const hour = partsMap.hour!.padStart(2, '0');
-	const minute = partsMap.minute!.padStart(2, '0');
-	const second = partsMap.second!.padStart(2, '0');
-
-	// Parse as local time (this will be formatted by date-fns in local timezone)
-	return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
 }

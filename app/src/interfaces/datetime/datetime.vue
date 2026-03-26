@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { isValid, parseISO } from 'date-fns';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { computed, ref, useTemplateRef } from 'vue';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
@@ -8,7 +9,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VMenu from '@/components/v-menu.vue';
 import VRemove from '@/components/v-remove.vue';
 import { parseDate } from '@/utils/parse-date';
-import { formatDateToTimezone } from '@/utils/timezones';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
@@ -48,11 +48,10 @@ function closeDatePicker() {
 // Computed property for date-picker value with timezone conversion
 const tzValue = computed({
 	get() {
-		// Convert UTC value to timezone-adjusted value for date-picker display
 		if (props.type === 'timestamp' && props.tz && props.value) {
 			const date = parseISO(props.value);
 			if (!isValid(date)) return null;
-			return formatDateToTimezone(date, props.tz).toISOString();
+			return toZonedTime(date, props.tz).toISOString();
 		}
 
 		return props.value;
@@ -63,12 +62,10 @@ const tzValue = computed({
 			return;
 		}
 
-		// Convert date-picker value back to UTC considering the selected timezone
 		const date = parseISO(value);
 
 		if (isValid(date) && props.type === 'timestamp' && props.tz) {
-			const offsetMs = formatDateToTimezone(date, props.tz).getTime() - date.getTime();
-			emit('input', new Date(date.getTime() - offsetMs).toISOString());
+			emit('input', fromZonedTime(date, props.tz).toISOString());
 			return;
 		}
 
