@@ -261,6 +261,10 @@ useShortcut(
 
 const isSavable = computed(() => {
 	if (saveAllowed.value === false && currentVersion.value === null) return false;
+
+	// In version/draft context, only allow save when there are actual edits
+	if (currentVersion.value !== null) return hasEdits.value;
+
 	if (hasEdits.value === true) return true;
 
 	if (
