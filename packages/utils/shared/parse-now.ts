@@ -9,16 +9,19 @@ import { adjustDate } from './adjust-date.js';
  * - `"$NOW(-7 days)"` → 7 days ago
  * - `"$NOW(+1 month)"` → 1 month from now
  *
- * Returns `null` if the value is not a `$NOW` variable.
+ * Throws if the value is not a valid `$NOW` variable.
  */
-export function parseNow(value: string): Date | null {
-	if (!value.startsWith('$NOW')) return null;
+export function parseNow(value: string): Date {
+	if (value.startsWith('$NOW') === false) {
+		throw new Error(`"${value}" is not a valid $NOW format`);
+	}
 
 	if (value.includes('(') && value.includes(')')) {
 		const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
-		if (!adjustment) return new Date();
-		// Fall back to current date if the adjustment string is unrecognized
-		return adjustDate(new Date(), adjustment) ?? new Date();
+
+		if (adjustment) {
+			return adjustDate(new Date(), adjustment) ?? new Date();
+		}
 	}
 
 	return new Date();

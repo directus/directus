@@ -143,8 +143,9 @@ function parseDynamicVariable(value: any, accountability: BasicAccountability | 
 		return value;
 	}
 
-	const nowResult = parseNow(value);
-	if (nowResult !== null) return nowResult;
+	if (value.startsWith('$NOW')) {
+		return parseNow(value);
+	}
 
 	if (value.startsWith('$CURRENT_USER')) {
 		if (value === '$CURRENT_USER') return accountability?.user ?? null;

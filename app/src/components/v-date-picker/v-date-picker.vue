@@ -133,25 +133,19 @@ watch(
 			return;
 		}
 
+		// Resolve $NOW variables to a selection.
+		// Other dynamic variable paths (e.g. $CURRENT_USER.date_created) can't be displayed in the picker, so leave it in the default empty state.
 		if (isDynamicVariable(newValue)) {
-			const resolved = parseNow(newValue);
+			if (newValue.startsWith('$NOW')) {
+				const dt = parseNow(newValue);
 
-			if (!resolved) {
-				// Non-date dynamic variables ($CURRENT_USER, etc.) — leave the picker
-				// in an empty state rather than showing an unrelated date.
-				calendarValue.value = undefined;
-				internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
-				return;
-			}
+				if (props.type !== 'time') {
+					calendarValue.value = new CalendarDate(dt.getFullYear(), dt.getMonth() + 1, dt.getDate());
+				}
 
-			// Construct CalendarDate/Time directly from the resolved Date,
-			// avoiding a string round-trip through pad/format/re-parse.
-			if (props.type !== 'time') {
-				calendarValue.value = new CalendarDate(resolved.getFullYear(), resolved.getMonth() + 1, resolved.getDate());
-			}
-
-			if (hasTime.value) {
-				internalTimeValue.value = new Time(resolved.getHours(), resolved.getMinutes(), resolved.getSeconds());
+				if (hasTime.value) {
+					internalTimeValue.value = new Time(dt.getHours(), dt.getMinutes(), dt.getSeconds());
+				}
 			}
 
 			return;
