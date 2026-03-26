@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isDynamicVariable, parseNow } from '@directus/utils';
 import {
 	CalendarDate,
 	CalendarDateTime,
@@ -128,6 +129,24 @@ watch(
 
 			// Reset time to a sensible default when the picker supports time.
 			internalTimeValue.value = hasTime.value ? getDefaultTimeValue() : undefined;
+
+			return;
+		}
+
+		// Resolve $NOW variables to a selection.
+		// Other dynamic variable paths (e.g. $CURRENT_USER.date_created) can't be displayed in the picker, so leave it in the default empty state.
+		if (isDynamicVariable(newValue)) {
+			if (newValue.startsWith('$NOW')) {
+				const dt = parseNow(newValue);
+
+				if (props.type !== 'time') {
+					calendarValue.value = new CalendarDate(dt.getFullYear(), dt.getMonth() + 1, dt.getDate());
+				}
+
+				if (hasTime.value) {
+					internalTimeValue.value = new Time(dt.getHours(), dt.getMinutes(), dt.getSeconds());
+				}
+			}
 
 			return;
 		}
