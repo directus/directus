@@ -30,7 +30,9 @@ export function calculateJsonPathDepth(path: string): number {
 export function parseJsonPath(path: string): string {
 	const normalized = path.startsWith('[') ? path : `.${path}`;
 
-	if (normalized.includes('[]') || /[*?@$]/.test(normalized)) {
+	// Reject: empty brackets ([]), recursive descent (..),
+	// special JSONPath characters (*?@$), and negative array indexes ([-).
+	if (/\[\]|\.\.|[*?@$]|\[-/.test(normalized)) {
 		throw new InvalidQueryError({ reason: 'Invalid JSON path: unsupported path expression' });
 	}
 
