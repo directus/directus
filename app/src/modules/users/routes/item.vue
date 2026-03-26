@@ -80,11 +80,8 @@ const {
 } = useItem<User>(
 	ref('directus_users'),
 	primaryKey,
-	props.primaryKey !== '+'
-		? {
-				fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
-			}
-		: undefined,
+	null,
+	{ fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'] },
 );
 
 const {
