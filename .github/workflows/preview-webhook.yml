@@ -13,7 +13,9 @@ env:
 
 jobs:
   preview-labeled:
-    if: (github.event.action == 'labeled' && github.event.label.name == 'Preview') || (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'Preview'))
+    if:
+      (github.event.action == 'labeled' && github.event.label.name == 'Preview') || (github.event.action ==
+      'synchronize' && contains(github.event.pull_request.labels.*.name, 'Preview'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency:
