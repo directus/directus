@@ -77,10 +77,7 @@ export function applyOperator(
 					castNumeric,
 				});
 
-				const innerOp = getOperation(
-					Object.keys(innerFilter as object)[0]!,
-					Object.values(innerFilter as object)[0],
-				);
+				const innerOp = getOperation(Object.keys(innerFilter as object)[0]!, Object.values(innerFilter as object)[0]);
 
 				if (!innerOp) continue;
 
@@ -120,12 +117,16 @@ export function applyOperator(
 		dbQuery[logical].andWhere((query) => {
 			query.whereNull(selectionRaw).orWhere(selectionRaw, '=', '');
 		});
+
+		return;
 	}
 
 	if ((operator === '_nempty' && compareValue !== false) || (operator === '_empty' && compareValue === false)) {
 		dbQuery[logical].andWhere((query) => {
 			query.whereNotNull(selectionRaw).andWhere(selectionRaw, '!=', '');
 		});
+
+		return;
 	}
 
 	// The following fields however, require a value to be run. If no value is passed, we
