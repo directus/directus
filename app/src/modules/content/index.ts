@@ -161,6 +161,7 @@ export default defineModule({
 			path: ':collection/:primaryKey/preview',
 			component: Preview,
 			props: true,
+			beforeEnter: [enterDraftContext],
 		},
 		{
 			name: 'content-item-not-found',
