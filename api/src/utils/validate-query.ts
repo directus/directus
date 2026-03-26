@@ -197,6 +197,14 @@ function validateJsonFilter(value: unknown) {
 			throw new InvalidQueryError({ reason: `"_json" inner filter for path "${path}" must be an object` });
 		}
 
+		const nestedPathKey = Object.keys(innerFilter as object).find((k) => !k.startsWith('_'));
+
+		if (nestedPathKey) {
+			throw new InvalidQueryError({
+				reason: `"_json" path "${path}" cannot contain a nested path "${nestedPathKey}"; use a single flat path like "${path}.${nestedPathKey}"`,
+			});
+		}
+
 		validateFilter(innerFilter as Filter);
 	}
 }
