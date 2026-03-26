@@ -472,6 +472,8 @@ related_collection: დაკავშირებული კოლექც�
 related_collections: დაკავშირებული კოლექციები
 translations_collection: თარგმანების კოლექცია
 languages_collection: ენების კოლექცია
+translations_preview_collections: კოლექციები
+translations_preview_fields: ველები
 import_data_input_placeholder: CSV ან JSON...
 import_data_button: იმპორტის დაწყება
 import_data_indeterminate: მონაცემების იმპორტი...

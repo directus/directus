@@ -331,6 +331,7 @@ related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
 translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
+translations_preview_collections: Kokoelmat
 import_data_input_placeholder: CSV tai JSON...
 import_data_button: Aloita tuonti
 import_data_indeterminate: Tuodaan tietoja...

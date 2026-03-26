@@ -521,6 +521,8 @@ related_collection: 相关模型
 related_collections: 相关模型
 translations_collection: 翻译模型
 languages_collection: 语言模型
+translations_preview_collections: 数据模型
+translations_preview_fields: 字段
 import_data_input_placeholder: CSV 或 JSON
 import_data_button: 开始导入
 import_data_indeterminate: 导入数据中

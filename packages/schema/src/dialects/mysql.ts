@@ -359,6 +359,7 @@ export default class MySQL implements SchemaInspector {
 		 JOIN information_schema.key_column_usage AS kcu ON
 			rc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
 			AND kcu.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA
+			AND kcu.TABLE_NAME = rc.TABLE_NAME
 		 WHERE
 			rc.CONSTRAINT_SCHEMA = ?;
 	  `,
