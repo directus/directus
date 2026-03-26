@@ -181,6 +181,18 @@ function validateJsonFilter(value: unknown) {
 			throw new InvalidQueryError({ reason: `"_json" path key must be a non-empty string` });
 		}
 
+		if (path === '_or' || path === '_and') {
+			if (!Array.isArray(innerFilter)) {
+				throw new InvalidQueryError({ reason: `"_json" logical operator "${path}" must be an array` });
+			}
+
+			for (const subFilter of innerFilter) {
+				validateJsonFilter(subFilter);
+			}
+
+			continue;
+		}
+
 		if (!isPlainObject(innerFilter)) {
 			throw new InvalidQueryError({ reason: `"_json" inner filter for path "${path}" must be an object` });
 		}

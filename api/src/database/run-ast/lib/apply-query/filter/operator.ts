@@ -57,9 +57,24 @@ export function applyOperator(
 		const entries = Object.entries(compareValue as Record<string, unknown>);
 		if (!entries.length) return;
 
-		// Multiple path conditions in one _json object are ANDed together
-		dbQuery[logical].andWhere((group) => {
-			for (const [jsonPath, innerFilter] of entries) {
+		const applyJsonConditions = (
+			group: Knex.QueryBuilder,
+			filterObj: Record<string, unknown>,
+			innerLogical: 'and' | 'or',
+		) => {
+			for (const [jsonPath, innerFilter] of Object.entries(filterObj)) {
+				if (jsonPath === '_or' || jsonPath === '_and') {
+					const subLogical = jsonPath === '_or' ? 'or' : 'and';
+
+					group[innerLogical].where((subGroup: Knex.QueryBuilder) => {
+						for (const subFilter of innerFilter as Record<string, unknown>[]) {
+							applyJsonConditions(subGroup, subFilter, subLogical);
+						}
+					});
+
+					continue;
+				}
+
 				const normalizedPath = parseJsonPath(jsonPath);
 
 				const innerValue = (innerFilter as Record<string, unknown>)[Object.keys(innerFilter as object)[0]!];
@@ -81,8 +96,12 @@ export function applyOperator(
 
 				if (!innerOp) continue;
 
-				applyOperatorToRaw(group, helpers, jsonExtractionRaw, innerOp.operator, innerOp.value, 'and');
+				applyOperatorToRaw(group, helpers, jsonExtractionRaw, innerOp.operator, innerOp.value, innerLogical);
 			}
+		};
+
+		dbQuery[logical].where((group) => {
+			applyJsonConditions(group, compareValue as Record<string, unknown>, 'and');
 		});
 
 		return;
