@@ -1,47 +1,21 @@
 <script setup lang="ts">
-import { useElementHover, useMouseInElement } from '@vueuse/core';
-import { computed, useTemplateRef } from 'vue';
-
 const { location = 'start' } = defineProps<{ location?: 'start' | 'end' }>();
-
-const draggerEl = useTemplateRef('private-view-resize-handle');
-
-const isHovering = useElementHover(draggerEl);
-const { elementY, elementHeight } = useMouseInElement(draggerEl);
-
-const mousePosPercentage = computed(() =>
-	isHovering.value ? Math.round((elementY.value / elementHeight.value) * 100) : 0,
-);
-
-const fromPosition = computed(() => (isHovering.value ? Math.max(0, mousePosPercentage.value - 25) : 0));
-const toPosition = computed(() => (isHovering.value ? Math.min(100, mousePosPercentage.value + 25) : 0));
 </script>
 
 <template>
-	<div
-		ref="private-view-resize-handle"
-		:style="`
-			--from: ${fromPosition}%;
-			--via: ${mousePosPercentage}%;
-			--to: ${toPosition}%;
-		`"
-		:class="{ start: location === 'start' }"
-	/>
+	<div :class="{ start: location === 'start' }" />
 </template>
 
 <style scoped>
 div {
+	--width: 3px; /* stylelint-disable-line unit-disallowed-list -- line */
+
 	position: absolute;
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition);
-	inline-size: 0.0625rem;
+	inline-size: var(--width);
 	block-size: 100%;
-	background: linear-gradient(
-		to bottom,
-		transparent var(--from),
-		var(--theme--primary) var(--via),
-		transparent var(--to)
-	);
+	background: var(--theme--primary);
 	z-index: 8;
 
 	&:hover {
@@ -50,7 +24,7 @@ div {
 	}
 
 	&.start {
-		inset-inline: -0.0625rem;
+		inset-inline: calc(-1 * var(--width) / 2);
 	}
 }
 </style>

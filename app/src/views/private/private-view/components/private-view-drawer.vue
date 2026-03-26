@@ -19,7 +19,7 @@ defineProps<{ placement: 'left' | 'right'; keepMounted?: boolean }>();
 	position: relative;
 	display: flex;
 	block-size: 100%;
-	inline-size: 15.75rem;
-	max-inline-size: 100%;
+	inline-size: 100%;
+	max-inline-size: var(--sidebar-mobile-width);
 }
 </style>

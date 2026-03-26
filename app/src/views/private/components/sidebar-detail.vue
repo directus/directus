@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
-import { watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 import VBadge from '@/components/v-badge.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -18,6 +18,8 @@ const emit = defineEmits<{
 	toggle: [open: boolean];
 }>();
 
+const active = computed(() => sidebarStore.activeAccordionItem === props.id);
+
 watch(
 	() => sidebarStore.activeAccordionItem,
 	(newActive, oldActive) => {
@@ -31,7 +33,7 @@ watch(
 </script>
 
 <template>
-	<AccordionItem class="accordion-item" :value="id">
+	<AccordionItem class="accordion-item" :class="{ active }" :value="id">
 		<AccordionHeader>
 			<AccordionTrigger
 				v-tooltip.left="sidebarStore.collapsed && title"
@@ -54,12 +56,20 @@ watch(
 </template>
 
 <style lang="scss" scoped>
-.accordion-item {
-	display: contents;
+@use '@/styles/mixins';
 
-	:deep(.type-label) {
-		margin-block-end: 0.25rem;
-		font-size: 0.8125rem;
+.accordion-item {
+	border-block: var(--theme--sidebar--section--border-width) solid var(--theme--sidebar--section--border-color);
+	transition: var(--fast) var(--transition);
+	transition-property: border-width, border-color;
+
+	&:first-child {
+		border-block-start: none;
+	}
+
+	&.active {
+		border-width: var(--theme--sidebar--section--active--border-width);
+		border-color: var(--theme--sidebar--section--active--border-color);
 	}
 }
 
@@ -71,24 +81,28 @@ watch(
 	--v-badge-background-color: var(--theme--primary);
 	--v-badge-color: var(--theme--background-normal);
 
-	display: flex;
-	align-items: center;
-	block-size: 3.375rem;
+	@include mixins.sidebar-section-trigger(
+		$chevron-selector: '.accordion-trigger-chevron',
+		$active-parent-selector: '.accordion-item.active'
+	);
+
+	block-size: var(--sidebar-section-trigger-height);
 	inline-size: 100%;
-	background-color: var(--theme--sidebar--section--toggle--background);
-	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
-		var(--theme--sidebar--section--toggle--border-color);
-	color: var(--theme--sidebar--section--toggle--foreground);
-	padding-inline: 1rem 0.5rem;
+
+	&.collapsed {
+		padding-inline-start: calc(var(--sidebar-collapsed-width) / 2 - var(--sidebar-section-trigger-icon-size) / 2);
+	}
 }
 
 .accordion-trigger-icon {
-	margin-inline-end: 0.6875rem;
+	@include mixins.sidebar-section-trigger-icon;
+
+	--v-icon-size: var(--sidebar-section-trigger-icon-size);
 }
 
 .accordion-trigger-title {
-	flex-grow: 1;
-	text-align: start;
+	@include mixins.sidebar-section-trigger-title;
+
 	transition: opacity var(--fast) var(--transition);
 
 	.collapsed & {
@@ -97,10 +111,9 @@ watch(
 }
 
 .accordion-trigger-chevron {
-	color: var(--theme--foreground-subdued);
-	transform: rotate(0deg);
-	transition: var(--fast) var(--transition);
-	transition-property: transform, opacity;
+	@include mixins.sidebar-section-trigger-chevron;
+
+	transition-property: transform, opacity, color;
 
 	.collapsed & {
 		opacity: 0;
@@ -115,8 +128,11 @@ watch(
 
 .accordion-content {
 	overflow-y: auto;
-	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
-		var(--theme--sidebar--section--toggle--border-color);
+
+	:deep(.type-label) {
+		margin-block-end: 0.25rem;
+		font-size: 0.8125rem;
+	}
 }
 
 .accordion-content[data-state='open'] {
@@ -146,6 +162,6 @@ watch(
 }
 
 .accordion-content-container {
-	padding: 0.875rem;
+	padding: 0.75rem var(--sidebar-section-content-padding) 1.75rem;
 }
 </style>
