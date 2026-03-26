@@ -112,8 +112,35 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			expectedNames: ['Alpha', 'Gamma'],
 		},
 		{
+			description: '_nstarts_with: filters to items not matching prefix',
+			// BrandY(Beta) and BrandZ(Delta) don't start with BrandX; null brand (Epsilon) excluded
+			filter: { metadata: { _json: { brand: { _nstarts_with: 'BrandX' } } } },
+			expectedLength: 2,
+			expectedNames: ['Beta', 'Delta'],
+		},
+		{
+			description: '_istarts_with: case-insensitive prefix match',
+			filter: { metadata: { _json: { brand: { _istarts_with: 'brandx' } } } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
 			description: '_ends_with: filters to items with matching suffix',
 			filter: { metadata: { _json: { brand: { _ends_with: 'Y' } } } },
+			expectedLength: 1,
+			expectedNames: ['Beta'],
+		},
+		{
+			description: '_nends_with: filters to items not matching suffix',
+			// BrandX(Alpha, Gamma) and BrandZ(Delta) don't end with Y; null brand (Epsilon) excluded
+			filter: { metadata: { _json: { brand: { _nends_with: 'Y' } } } },
+			expectedLength: 3,
+			expectedNames: ['Alpha', 'Gamma', 'Delta'],
+		},
+		{
+			description: '_iends_with: case-insensitive suffix match',
+			// BrandY ends with 'y' case-insensitively
+			filter: { metadata: { _json: { brand: { _iends_with: 'y' } } } },
 			expectedLength: 1,
 			expectedNames: ['Beta'],
 		},
@@ -203,6 +230,110 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			expectedLength: 1,
 			expectedNames: ['Beta'],
 		},
+		{
+			// Alpha tags: ['electronics', 'sale'] → tags[1] = 'sale'
+			description: 'filters on second array element tags[1] = sale',
+			filter: { metadata: { _json: { 'tags[1]': { _eq: 'sale' } } } },
+			expectedLength: 1,
+			expectedNames: ['Alpha'],
+		},
+		{
+			// Beta tags: ['home', 'new'] → tags[1] = 'new'
+			description: 'filters on second array element tags[1] = new',
+			filter: { metadata: { _json: { 'tags[1]': { _eq: 'new' } } } },
+			expectedLength: 1,
+			expectedNames: ['Beta'],
+		},
+	],
+	'Inline _or/_and inside _json': [
+		{
+			// color='red': Alpha; color='blue': Beta
+			description: '_or: returns items matching either path condition',
+			filter: { metadata: { _json: { _or: [{ color: { _eq: 'red' } }, { color: { _eq: 'blue' } }] } } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Beta'],
+		},
+		{
+			// color='red': Alpha; level>7: Gamma(8)
+			description: '_or: returns items matching either of two different paths',
+			filter: { metadata: { _json: { _or: [{ color: { _eq: 'red' } }, { level: { _gt: 7 } }] } } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
+			// color='red': Alpha; brand='BrandY': Beta; level>7: Gamma
+			description: '_or: unions three branches across different paths',
+			filter: {
+				metadata: {
+					_json: { _or: [{ color: { _eq: 'red' } }, { brand: { _eq: 'BrandY' } }, { level: { _gt: 7 } }] },
+				},
+			},
+			expectedLength: 3,
+			expectedNames: ['Alpha', 'Beta', 'Gamma'],
+		},
+		{
+			// color='red' AND brand='BrandX': only Alpha satisfies both
+			description: '_and: explicit AND semantics matches both conditions',
+			filter: { metadata: { _json: { _and: [{ color: { _eq: 'red' } }, { brand: { _eq: 'BrandX' } }] } } },
+			expectedLength: 1,
+			expectedNames: ['Alpha'],
+		},
+		{
+			// _and with 3 conditions: brand starts 'Brand' AND level<=5 AND color!='yellow'
+			// brand starts 'Brand': Alpha, Beta, Gamma, Delta; level<=5: Alpha(2), Beta(5), Delta(3)
+			// color != 'yellow': excludes Delta → Alpha, Beta
+			description: '_and: narrows result with three conditions across different paths',
+			filter: {
+				metadata: {
+					_json: {
+						_and: [{ brand: { _starts_with: 'Brand' } }, { level: { _lte: 5 } }, { color: { _neq: 'yellow' } }],
+					},
+				},
+			},
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Beta'],
+		},
+		{
+			// brand='BrandX' (implicit AND) + (color='red' OR color='green')
+			// brand='BrandX': Alpha, Gamma; then (red OR green): Alpha(red), Gamma(green) → both qualify
+			description: '_or sibling to a regular path condition combines as AND',
+			filter: {
+				metadata: {
+					_json: { brand: { _eq: 'BrandX' }, _or: [{ color: { _eq: 'red' } }, { color: { _eq: 'green' } }] },
+				},
+			},
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
+			// (color='red' AND level<5) OR brand='BrandY'
+			// color='red' AND level<5: Alpha(red,2) → Alpha
+			// brand='BrandY': Beta
+			description: '_or containing a nested _and branch',
+			filter: {
+				metadata: {
+					_json: {
+						_or: [{ _and: [{ color: { _eq: 'red' } }, { level: { _lt: 5 } }] }, { brand: { _eq: 'BrandY' } }],
+					},
+				},
+			},
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Beta'],
+		},
+		{
+			// _and containing _or: (color='red' OR color='blue') AND level<=5
+			// (red OR blue): Alpha, Beta; level<=5: Alpha(2), Beta(5), Delta(3) → intersection: Alpha, Beta
+			description: '_and containing a nested _or branch',
+			filter: {
+				metadata: {
+					_json: {
+						_and: [{ _or: [{ color: { _eq: 'red' } }, { color: { _eq: 'blue' } }] }, { level: { _lte: 5 } }],
+					},
+				},
+			},
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Beta'],
+		},
 	],
 	'Multiple operators in single _json': [
 		{
@@ -218,7 +349,9 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			// color ≠ 'black': Epsilon excluded (also lacks brand/level)
 			// Intersection: Alpha, Delta
 			description: 'three path conditions in one _json object narrow result set',
-			filter: { metadata: { _json: { brand: { _starts_with: 'Brand' }, level: { _lte: 3 }, color: { _neq: 'black' } } } },
+			filter: {
+				metadata: { _json: { brand: { _starts_with: 'Brand' }, level: { _lte: 3 }, color: { _neq: 'black' } } },
+			},
 			expectedLength: 2,
 			expectedNames: ['Alpha', 'Delta'],
 		},
@@ -238,10 +371,7 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 		{
 			description: '_or: unions two _json conditions',
 			filter: {
-				_or: [
-					{ metadata: { _json: { color: { _eq: 'red' } } } },
-					{ metadata: { _json: { color: { _eq: 'blue' } } } },
-				],
+				_or: [{ metadata: { _json: { color: { _eq: 'red' } } } }, { metadata: { _json: { color: { _eq: 'blue' } } } }],
 			},
 			expectedLength: 2,
 			expectedNames: ['Alpha', 'Beta'],
@@ -296,10 +426,7 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			// brand starts with 'Brand': Alpha, Beta, Gamma, Delta; name ≠ 'Alpha': Beta, Gamma, Delta
 			description: '_and mixing _json filter with regular field filter',
 			filter: {
-				_and: [
-					{ metadata: { _json: { brand: { _starts_with: 'Brand' } } } },
-					{ name: { _neq: 'Alpha' } },
-				],
+				_and: [{ metadata: { _json: { brand: { _starts_with: 'Brand' } } } }, { name: { _neq: 'Alpha' } }],
 			},
 			expectedLength: 3,
 			expectedNames: ['Beta', 'Gamma', 'Delta'],
@@ -308,10 +435,7 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			// level > 6: Gamma(8); name = 'Delta': Delta
 			description: '_or mixing _json filter with regular field filter',
 			filter: {
-				_or: [
-					{ metadata: { _json: { level: { _gt: 6 } } } },
-					{ name: { _eq: 'Delta' } },
-				],
+				_or: [{ metadata: { _json: { level: { _gt: 6 } } } }, { name: { _eq: 'Delta' } }],
 			},
 			expectedLength: 2,
 			expectedNames: ['Gamma', 'Delta'],
@@ -411,6 +535,41 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			targetCollection: 'categories',
 		},
 	],
+	'Boundary and zero-result filters': [
+		{
+			description: 'filter matching no items returns empty result set',
+			// no product has color = purple
+			filter: { metadata: { _json: { color: { _eq: 'purple' } } } },
+			expectedLength: 0,
+		},
+		{
+			description: '_in with single-element array behaves like _eq',
+			filter: { metadata: { _json: { color: { _in: ['red'] } } } },
+			expectedLength: 1,
+			expectedNames: ['Alpha'],
+		},
+		{
+			description: '_nin with single-element array behaves like _neq',
+			// all items except Alpha(red); Epsilon(black) is included since it has a color
+			filter: { metadata: { _json: { color: { _nin: ['red'] } } } },
+			expectedLength: 4,
+			expectedNames: ['Beta', 'Gamma', 'Delta', 'Epsilon'],
+		},
+		{
+			description: '_between with equal min and max matches only the exact value',
+			// level values: Alpha=2, Beta=5, Gamma=8, Delta=3; only Beta has level=5
+			filter: { metadata: { _json: { level: { _between: [5, 5] } } } },
+			expectedLength: 1,
+			expectedNames: ['Beta'],
+		},
+		{
+			description: '_nbetween with equal min and max excludes only the exact value',
+			// outside [5,5]: Alpha(2), Gamma(8), Delta(3); Epsilon has no level
+			filter: { metadata: { _json: { level: { _nbetween: [5, 5] } } } },
+			expectedLength: 3,
+			expectedNames: ['Alpha', 'Gamma', 'Delta'],
+		},
+	],
 	'Multi-level relational nesting': [
 		{
 			// Tech→Tech Department(sector:'technology'); Alpha and Gamma are in Tech
@@ -440,7 +599,11 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			// Sports: Beta→Supplier A(EU) → Sports included
 			// Home: Delta→no suppliers → Home excluded
 			description: '2-level O2M→M2M nesting: filters categories by products with EU suppliers',
-			filter: { products: { suppliers: { [`${localCollectionSuppliers}_id`]: { metadata: { _json: { region: { _eq: 'EU' } } } } } } },
+			filter: {
+				products: {
+					suppliers: { [`${localCollectionSuppliers}_id`]: { metadata: { _json: { region: { _eq: 'EU' } } } } },
+				},
+			},
 			expectedLength: 2,
 			expectedNames: ['Sports', 'Tech'],
 			targetCollection: 'categories',
@@ -474,6 +637,89 @@ const ERROR_CASES: ErrorCase[] = [
 		// each path key in _json must map to an operator object, not a string
 		filter: { metadata: { _json: { color: 'not-an-object' } } },
 	},
+	{
+		description: 'returns 400 when _or inside _json is not an array',
+		// _or value must be an array, not an object
+		filter: { metadata: { _json: { _or: { color: { _eq: 'red' } } } } },
+	},
+	{
+		description: 'returns 400 when _and inside _json is not an array',
+		// _and value must be an array, not an object
+		filter: { metadata: { _json: { _and: { color: { _eq: 'red' } } } } },
+	},
+
+	// Unsupported path characters
+	{
+		description: 'returns 400 for $ root reference in JSON path',
+		// JSONPath $ root is not a supported expression
+		filter: { metadata: { _json: { '$.color': { _eq: 'val' } } } },
+	},
+	{
+		description: 'returns 400 for @ current-node reference in JSON path',
+		// JSONPath filter @.key is not supported
+		filter: { metadata: { _json: { '@.color': { _eq: 'val' } } } },
+	},
+	{
+		description: 'returns 400 for ? filter expression in JSON path',
+		// JSONPath filter expression ?(…) is not supported
+		filter: { metadata: { _json: { '?(color)': { _eq: 'val' } } } },
+	},
+	{
+		description: 'returns 400 for empty bracket subscript [] in JSON path',
+		// [] with no index is not a valid path segment
+		filter: { metadata: { _json: { 'items[]': { _eq: 'val' } } } },
+	},
+	{
+		description: 'returns 400 for empty string JSON path key',
+		// path keys must be non-empty strings
+		filter: { metadata: { _json: { '': { _eq: 'val' } } } },
+	},
+
+	// Invalid operator usages inside _json
+	{
+		description: 'returns 400 when _in inside _json receives a string instead of an array',
+		filter: { metadata: { _json: { color: { _in: 'red' } } } },
+	},
+	{
+		description: 'returns 400 when _in inside _json receives an empty array',
+		filter: { metadata: { _json: { color: { _in: [] } } } },
+	},
+	{
+		description: 'returns 400 when _nin inside _json receives an empty array',
+		filter: { metadata: { _json: { color: { _nin: [] } } } },
+	},
+	{
+		description: 'returns 400 when _between inside _json receives a non-array value',
+		filter: { metadata: { _json: { level: { _between: 5 } } } },
+	},
+	{
+		description: 'returns 400 when _between inside _json receives an empty array',
+		filter: { metadata: { _json: { level: { _between: [] } } } },
+	},
+	{
+		description: 'returns 400 when _null inside _json receives a non-boolean value',
+		// _null must be a boolean
+		filter: { metadata: { _json: { color: { _null: 'yes' } } } },
+	},
+	{
+		description: 'returns 400 when _nnull inside _json receives a non-boolean value',
+		filter: { metadata: { _json: { color: { _nnull: 'yes' } } } },
+	},
+	{
+		description: 'returns 400 when _eq inside _json receives an empty string',
+		// empty string is not a valid filter primitive; use _empty/_nempty instead
+		filter: { metadata: { _json: { color: { _eq: '' } } } },
+	},
+	{
+		description: 'returns 400 when _json value is null instead of an object',
+		// null is not a plain object
+		filter: { metadata: { _json: null } },
+	},
+	{
+		description: 'returns 400 when _or inside _json contains a null entry',
+		// each entry in the _or array must itself be a plain object
+		filter: { metadata: { _json: { _or: [null] } } },
+	},
 ];
 
 describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
@@ -490,11 +736,12 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						({ filter, expectedLength, minLength, expectedNames, targetCollection }) => {
 							it.each(vendors)('%s', async (vendor) => {
 								const collection =
-									targetCollection === 'categories'
-										? localCollectionCategories
-										: targetCollection === 'suppliers'
-											? localCollectionSuppliers
-											: localCollectionProducts;
+									(
+										{
+											categories: localCollectionCategories,
+											suppliers: localCollectionSuppliers,
+										} as Record<string, string>
+									)[targetCollection!] ?? localCollectionProducts;
 
 								const response = await request(getUrl(vendor))
 									.get(`/items/${collection}`)
