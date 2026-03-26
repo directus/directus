@@ -3,4 +3,4 @@
 '@directus/utils': patch
 ---
 
-Fixed calendar picker crash when value is a dynamic variable like $NOW
+Fixed calendar picker crash when using dynamic variables (e.g. $NOW)
