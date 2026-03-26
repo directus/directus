@@ -697,13 +697,15 @@ function usePublishComparison() {
 			if (versionValidationErrors.value.length) return;
 
 			try {
-				const newItemKey = await publishVersion(currentVersion.value.id, {});
+				const versionId = currentVersion.value.id;
+				const newItemKey = await publishVersion(versionId, {});
 
 				if (newItemKey) {
 					router.replace(getItemRoute(props.collection, newItemKey));
+					deleteVersion(versionId);
 				}
 			} catch {
-				// publishVersion handles unexpected errors
+				// publishVersion / deleteVersion handle unexpected errors
 			}
 
 			return;
