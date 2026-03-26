@@ -9,9 +9,11 @@ import Item from './routes/item.vue';
 import NoCollections from './routes/no-collections.vue';
 import ItemNotFound from './routes/not-found.vue';
 import Preview from './routes/preview.vue';
+import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
+import { removeQueryFromPath } from '@/utils/remove-query-from-path';
 import RouterPass from '@/utils/router-passthrough';
 
 const checkForSystem: NavigationGuard = (to, from) => {
@@ -40,6 +42,67 @@ const checkForSystem: NavigationGuard = (to, from) => {
 	}
 
 	return;
+};
+
+export const stripOrphanedVersionId: NavigationGuard = (to) => {
+	if ((to.query.versionId !== '' && !to.query.versionId) || to.query.version) return;
+
+	const target = removeQueryFromPath(to.fullPath, 'versionId');
+	if (target === to.fullPath) return;
+	return target;
+};
+
+export const stripVersionOnNonVersioned: NavigationGuard = (to) => {
+	if (typeof to.params.collection !== 'string') return;
+	if (!to.query.version && !to.query.versionId) return;
+
+	const collection = useCollectionsStore().getCollection(to.params.collection);
+	if (!collection || collection.meta?.versioning) return;
+
+	const target = removeQueryFromPath(to.fullPath, 'version', 'versionId');
+	if (target === to.fullPath) return;
+	return target;
+};
+
+export const stripVersionIdOnRealItem: NavigationGuard = (to) => {
+	if (to.params.primaryKey === '+' || (to.query.versionId !== '' && !to.query.versionId)) return;
+
+	const target = removeQueryFromPath(to.fullPath, 'versionId');
+	if (target === to.fullPath) return;
+	return target;
+};
+
+export const validateItemlessDraft: NavigationGuard = async (to) => {
+	if (to.params.primaryKey !== '+') return;
+
+	const version = Array.isArray(to.query.version) ? to.query.version[0] : to.query.version;
+	const versionId = Array.isArray(to.query.versionId) ? to.query.versionId[0] : to.query.versionId;
+
+	if (!version || !versionId) return;
+	if (typeof to.params.collection !== 'string') return;
+
+	try {
+		const {
+			data: { data: fetchedVersion },
+		} = await api.get(`/versions/${versionId}`, { params: { fields: ['item', 'key'] } });
+
+		if (fetchedVersion.item !== null) {
+			const target = getItemRoute(to.params.collection, String(fetchedVersion.item), fetchedVersion.key);
+			if (target === to.fullPath) return;
+			return target;
+		}
+
+		if (fetchedVersion.key !== version) {
+			const target = getItemRoute(to.params.collection, '+', fetchedVersion.key, versionId);
+			if (target === to.fullPath) return;
+			return target;
+		}
+
+		return;
+	} catch {
+		// API error — fall through, let the page load
+		return;
+	}
 };
 
 const getArchiveValue = (query: LocationQuery) => {
@@ -137,7 +200,13 @@ export default defineModule({
 					path: ':primaryKey',
 					component: Item,
 					props: true,
-					beforeEnter: checkForSystem,
+					beforeEnter: [
+						checkForSystem,
+						stripOrphanedVersionId,
+						stripVersionOnNonVersioned,
+						stripVersionIdOnRealItem,
+						validateItemlessDraft,
+					],
 				},
 			],
 		},
@@ -146,6 +215,12 @@ export default defineModule({
 			path: ':collection/:primaryKey/preview',
 			component: Preview,
 			props: true,
+			beforeEnter: [
+				stripOrphanedVersionId,
+				stripVersionOnNonVersioned,
+				stripVersionIdOnRealItem,
+				validateItemlessDraft,
+			],
 		},
 		{
 			name: 'content-item-not-found',
