@@ -55,4 +55,99 @@ describe('Component', () => {
 
 		expect(wrapper.find('input').attributes('disabled')).toBe('');
 	});
+
+	it('should close on keyboard focusout even when filter is active', async () => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: 'test',
+			},
+			global,
+		});
+
+		const search = wrapper.find('.search-input');
+		const input = wrapper.find('input');
+
+		await search.trigger('click');
+		await wrapper.find('v-icon-stub.icon-filter').trigger('click');
+
+		expect(search.classes()).toContain('active');
+		expect(search.classes()).toContain('filter-active');
+
+		const outside = document.createElement('button');
+		document.body.appendChild(outside);
+
+		input.element.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: outside }));
+		await wrapper.vm.$nextTick();
+
+		expect(search.classes()).not.toContain('active');
+		expect(search.classes()).not.toContain('filter-active');
+
+		document.body.removeChild(outside);
+	});
+
+	it('should close when focus leaves a descendant element of search area', async () => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: 'test',
+			},
+			global,
+		});
+
+		const search = wrapper.find('.search-input');
+
+		await search.trigger('click');
+		await wrapper.find('v-icon-stub.icon-filter').trigger('click');
+
+		expect(search.classes()).toContain('active');
+		expect(search.classes()).toContain('filter-active');
+
+		const descendant = document.createElement('button');
+		search.element.appendChild(descendant);
+
+		const outside = document.createElement('button');
+		document.body.appendChild(outside);
+
+		descendant.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: outside }));
+		await wrapper.vm.$nextTick();
+
+		expect(search.classes()).not.toContain('active');
+		expect(search.classes()).not.toContain('filter-active');
+
+		search.element.removeChild(descendant);
+		document.body.removeChild(outside);
+	});
+
+	it('should stay open when focus moves into v-menu-content', async () => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: 'test',
+			},
+			global,
+		});
+
+		const search = wrapper.find('.search-input');
+		const input = wrapper.find('input');
+
+		await search.trigger('click');
+		await wrapper.find('v-icon-stub.icon-filter').trigger('click');
+
+		expect(search.classes()).toContain('active');
+		expect(search.classes()).toContain('filter-active');
+
+		const menuContent = document.createElement('div');
+		menuContent.className = 'v-menu-content';
+		document.body.appendChild(menuContent);
+
+		const menuTarget = document.createElement('button');
+		menuContent.appendChild(menuTarget);
+
+		input.element.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: menuTarget }));
+		await wrapper.vm.$nextTick();
+
+		expect(search.classes()).toContain('active');
+		expect(search.classes()).toContain('filter-active');
+
+		menuContent.removeChild(menuTarget);
+		document.body.removeChild(menuContent);
+	});
 });
