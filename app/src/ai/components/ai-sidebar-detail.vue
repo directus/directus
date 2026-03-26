@@ -37,8 +37,16 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 	</CollapsibleRoot>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .collapsible-root {
+	--ai-sidebar-open-height: calc(100vh - 3.375rem);
+
+	@include mixins.breakpoint-up('sm') {
+		--ai-sidebar-open-height: calc(100vh - 3.375rem - var(--header-bar-height));
+	}
+
 	inline-size: 100%;
 	background-color: var(--theme--sidebar--background);
 }
@@ -96,12 +104,12 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 .collapsible-content[data-state='open'] {
 	animation: slide-down var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem);
+	block-size: var(--ai-sidebar-open-height);
 }
 
 .collapsible-content[data-state='closed'] {
 	animation: slide-up var(--fast) var(--transition);
-	block-size: calc(100vh - 3.375rem);
+	block-size: var(--ai-sidebar-open-height);
 }
 
 .ai-sidebar-content {
@@ -116,13 +124,13 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 		block-size: 0;
 	}
 	to {
-		block-size: calc(100vh - 3.375rem);
+		block-size: var(--ai-sidebar-open-height);
 	}
 }
 
 @keyframes slide-up {
 	from {
-		block-size: calc(100vh - 3.375rem);
+		block-size: var(--ai-sidebar-open-height);
 	}
 	to {
 		block-size: 0;

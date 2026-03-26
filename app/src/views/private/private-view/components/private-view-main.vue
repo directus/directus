@@ -13,7 +13,7 @@ import type { PrivateViewProps } from './private-view.vue';
 import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 
-const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
+defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
 
@@ -51,6 +51,18 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 
 <template>
 	<div ref="content-el" v-bind="$attrs" class="content">
+		<PrivateViewHeaderBar :title :inline-nav :icon :icon-color :show-back :back-to>
+			<template #actions:append><slot name="actions:append" /></template>
+			<template #actions:prepend><slot name="actions:prepend" /></template>
+			<template #actions><slot name="actions" /></template>
+			<template #headline><slot name="headline" /></template>
+			<template #title-outer:append><slot name="title-outer:append" /></template>
+			<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
+			<template #title:append><slot name="title:append" /></template>
+			<template #title:prepend><slot name="title:prepend" /></template>
+			<template #title><slot name="title" /></template>
+		</PrivateViewHeaderBar>
+
 		<SplitPanel
 			v-model:size="sidebarStore.size"
 			v-model:collapsed="splitterCollapsed"
@@ -71,18 +83,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 		>
 			<template #start>
 				<div ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
-					<PrivateViewHeaderBar :title="props.title" :inline-nav :icon :icon-color :show-back :back-to>
-						<template #actions:append><slot name="actions:append" /></template>
-						<template #actions:prepend><slot name="actions:prepend" /></template>
-						<template #actions><slot name="actions" /></template>
-						<template #headline><slot name="headline" /></template>
-						<template #title-outer:append><slot name="title-outer:append" /></template>
-						<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
-						<template #title:append><slot name="title:append" /></template>
-						<template #title:prepend><slot name="title:prepend" /></template>
-						<template #title><slot name="title" /></template>
-					</PrivateViewHeaderBar>
-
 					<main ref="mainEl" class="main-content-container">
 						<slot />
 					</main>
@@ -120,6 +120,8 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 <style scoped>
 .content {
 	block-size: 100%;
+	display: flex;
+	flex-direction: column;
 
 	&:deep(.sp-start) {
 		position: relative;
@@ -131,7 +133,8 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 }
 
 .main-split {
-	block-size: 100%;
+	flex: 1;
+	min-block-size: 0;
 	position: relative;
 }
 
@@ -163,6 +166,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 
 .main-content-container {
 	inline-size: 100%;
-	block-size: calc(100% - 3.375rem);
+	block-size: 100%;
 }
 </style>
