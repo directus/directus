@@ -132,11 +132,39 @@ function parseFilterEntry(
 		return {
 			[key]: parseDynamicVariable(typeof value === 'string' ? parseJSON(value) : value, accountability, context),
 		};
+	} else if (String(key) === '_json') {
+		return { [key]: parseJsonFilterValue(value, accountability, context) };
 	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseDynamicVariable(value, accountability, context) };
 	} else {
 		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
 	}
+}
+
+function parseJsonFilterValue(
+	jsonFilter: Record<string, any>,
+	accountability: BasicAccountability | null,
+	context: ParseFilterContext,
+): Record<string, any> {
+	const result: Record<string, any> = {};
+
+	for (const [key, value] of Object.entries(jsonFilter)) {
+		if (key === '_or' || key === '_and') {
+			result[key] = (value as Record<string, any>[]).map((subFilter) =>
+				parseJsonFilterValue(subFilter, accountability, context),
+			);
+		} else if (['_in', '_nin', '_between', '_nbetween'].includes(key)) {
+			const val = isObject(value) ? Object.values(value) : value;
+			result[key] = toArray(val).flatMap((v) => parseDynamicVariable(v, accountability, context));
+		} else if (key.startsWith('_')) {
+			result[key] = parseDynamicVariable(value, accountability, context);
+		} else {
+			// JSON path key — recurse to process the operator+value object beneath it
+			result[key] = parseJsonFilterValue(value as Record<string, any>, accountability, context);
+		}
+	}
+
+	return result;
 }
 
 function parseDynamicVariable(value: any, accountability: BasicAccountability | null, context: ParseFilterContext) {
