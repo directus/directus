@@ -1,0 +1,28 @@
+name: Preview Deployment
+
+on:
+  pull_request_target:
+    types: [labeled, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  EXPIRATION_HOURS: 2
+
+jobs:
+  preview-labeled:
+    if: (github.event.action == 'labeled' && github.event.label.name == 'Preview') || (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'Preview'))
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 5
+    concurrency:
+      group: preview-label-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    steps:
+      - name: Call NF deploy webhook
+        run: |
+          curl -G "https://webhooks.northflank.com/previews/${{ secrets.NORTHFLANK_PREVIEW_TOKEN }}" \
+          --data-urlencode "preview-source.pullRequestId=${{ github.event.pull_request.number }}" \
+          --data-urlencode "preview-source.repoUrl=${{ github.event.pull_request.head.repo.clone_url }}" \
+          --data-urlencode "next.branch=${{ github.event.pull_request.head.ref }}"
