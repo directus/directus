@@ -100,8 +100,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		queryVersion.value = newCurrentVersion?.key ?? null;
 
 		if (newCurrentVersion !== null) {
-			// Sync queryVersionId to the selected version's real ID (null for synthetic '+' versions)
-			queryVersionId.value = newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
+			// Only put versionId in URL for itemless drafts
+			queryVersionId.value =
+				primaryKey.value === '+' && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
 		}
 
 		validationErrors.value = [];
@@ -244,7 +245,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				rawVersions.value = [...(rawVersions.value ?? []), version];
 				// Update URL: posts/+?version=draft&versionId=<id>
 				queryVersion.value = version.key;
-				queryVersionId.value = version.id;
+
+				// Only put versionId in URL for itemless drafts — existing items find versions by key
+				if (actualPrimaryKey === '+') {
+					queryVersionId.value = version.id;
+				}
 			} else {
 				versionId = currentVersion.value.id;
 			}
