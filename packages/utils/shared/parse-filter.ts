@@ -1,11 +1,10 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Filter, Policy, Role, User } from '@directus/types';
 import { isObjectLike } from 'lodash-es';
-import { adjustDate } from './adjust-date.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';
 import { isObject } from './is-object.js';
 import { parseJSON } from './parse-json.js';
+import { parseNow } from './parse-now.js';
 import { toArray } from './to-array.js';
 
 type ParseFilterContext = {
@@ -144,15 +143,8 @@ function parseDynamicVariable(value: any, accountability: BasicAccountability | 
 		return value;
 	}
 
-	if (value.startsWith('$NOW')) {
-		if (value.includes('(') && value.includes(')')) {
-			const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
-			if (!adjustment) return new Date();
-			return adjustDate(new Date(), adjustment);
-		}
-
-		return new Date();
-	}
+	const nowResult = parseNow(value);
+	if (nowResult !== null) return nowResult;
 
 	if (value.startsWith('$CURRENT_USER')) {
 		if (value === '$CURRENT_USER') return accountability?.user ?? null;

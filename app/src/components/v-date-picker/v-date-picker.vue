@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import { adjustDate, isDynamicVariable } from '@directus/utils';
+import { isDynamicVariable, parseNow } from '@directus/utils';
 import {
 	CalendarDate,
 	CalendarDateTime,
@@ -134,10 +133,10 @@ watch(
 			return;
 		}
 
-		let parseable = newValue;
-
 		if (isDynamicVariable(newValue)) {
-			if (!newValue.startsWith('$NOW')) {
+			const resolved = parseNow(newValue);
+
+			if (!resolved) {
 				// Non-date dynamic variables ($CURRENT_USER, etc.) — leave the picker
 				// in an empty state rather than showing an unrelated date.
 				calendarValue.value = undefined;
@@ -145,47 +144,31 @@ watch(
 				return;
 			}
 
-			// Resolve $NOW with optional adjustment (e.g. "$NOW(-7 days)") to a date
-			// string so it can be parsed by the type-based logic below.
-			let resolved = new Date();
-			const adjustment = newValue.match(REGEX_BETWEEN_PARENS)?.[1];
-
-			if (adjustment) {
-				resolved = adjustDate(new Date(), adjustment) ?? resolved;
+			// Construct CalendarDate/Time directly from the resolved Date,
+			// avoiding a string round-trip through pad/format/re-parse.
+			if (props.type !== 'time') {
+				calendarValue.value = new CalendarDate(resolved.getFullYear(), resolved.getMonth() + 1, resolved.getDate());
 			}
 
-			const pad = (n: number) => String(n).padStart(2, '0');
-			const date = `${resolved.getFullYear()}-${pad(resolved.getMonth() + 1)}-${pad(resolved.getDate())}`;
-			const time = `${pad(resolved.getHours())}:${pad(resolved.getMinutes())}:${pad(resolved.getSeconds())}`;
-
-			switch (props.type) {
-				case 'time':
-					parseable = time;
-					break;
-				case 'dateTime':
-					parseable = `${date}T${time}`;
-					break;
-				case 'timestamp':
-					parseable = resolved.toISOString();
-					break;
-				default:
-					parseable = date;
-					break;
+			if (hasTime.value) {
+				internalTimeValue.value = new Time(resolved.getHours(), resolved.getMinutes(), resolved.getSeconds());
 			}
+
+			return;
 		}
 
 		// Parse based on type
 		switch (props.type) {
 			case 'date':
-				calendarValue.value = parseDate(parseable);
+				calendarValue.value = parseDate(newValue);
 				break;
 			case 'time':
-				internalTimeValue.value = parseTime(parseable);
+				internalTimeValue.value = parseTime(newValue);
 				break;
 
 			case 'dateTime': {
 				// Matches legacy Flatpickr format: "yyyy-MM-dd'T'HH:mm:ss"
-				const dt = parseDateTime(parseable);
+				const dt = parseDateTime(newValue);
 				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
 				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
 				break;
@@ -193,7 +176,7 @@ watch(
 
 			case 'timestamp': {
 				// Matches legacy Flatpickr format: Date.toISOString() (absolute timestamp)
-				const dt = parseAbsoluteToLocal(parseable);
+				const dt = parseAbsoluteToLocal(newValue);
 				calendarValue.value = new CalendarDate(dt.year, dt.month, dt.day);
 				internalTimeValue.value = new Time(dt.hour, dt.minute, dt.second);
 				break;
