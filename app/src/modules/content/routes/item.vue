@@ -682,6 +682,16 @@ function usePublishComparison() {
 	async function onVersionPublishCompare() {
 		// Item-less draft: no main item exists yet, skip comparison modal and promote directly
 		if (props.primaryKey === '+' && currentVersion.value && currentVersion.value.id !== '+') {
+			const defaultValues = getDefaultValuesFromFields(fields);
+			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+			const fieldsToValidate = pushGroupOptionsDown(fields.value);
+
+			const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+			versionValidationErrors.value = clientErrors;
+
+			if (versionValidationErrors.value.length) return;
+
 			try {
 				const newItemKey = await publishVersion(currentVersion.value.id, {});
 
