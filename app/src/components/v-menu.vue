@@ -152,6 +152,7 @@ function useActiveState() {
 	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
 		escapeDeactivates: false,
 		initialFocus: false,
+		fallbackFocus: () => menuEl.value!,
 		returnFocusOnDeactivate: !props.noFocusReturn,
 		allowOutsideClick: true,
 		clickOutsideDeactivates: props.closeOnClick,
@@ -495,6 +496,7 @@ function usePopper(
 					</div>
 					<div
 						ref="menuEl"
+						tabindex="-1"
 						class="v-menu-content"
 						:class="{ seamless }"
 						v-on="{

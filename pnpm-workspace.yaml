@@ -8,6 +8,7 @@ packages:
 
 catalog:
   '@ai-sdk/anthropic': 3.0.58
+  '@ai-sdk/devtools': 0.0.13
   '@ai-sdk/google': 3.0.43
   '@ai-sdk/openai': 3.0.41
   '@ai-sdk/openai-compatible': 2.0.35
@@ -23,7 +24,7 @@ catalog:
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*
-  '@directus/vue-split-panel': 0.8.6
+  '@directus/vue-split-panel': 0.8.9
   '@editorjs/attaches': 1.3.2
   '@editorjs/checklist': 1.6.0
   '@editorjs/code': 2.9.3
@@ -54,6 +55,8 @@ catalog:
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 3.0.1
+  '@braintrust/otel': 0.2.0
+  '@langfuse/otel': 4.0.0
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
@@ -61,6 +64,7 @@ catalog:
   '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
+  '@opentelemetry/sdk-trace-node': 2.1.0
   '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
   '@pnpm/workspace.find-packages': 1000.0.43
@@ -292,7 +296,6 @@ catalog:
   stylelint-config-standard-vue: 1.0.0
   stylelint-use-logical: 2.1.2
   swagger-cli: 4.0.4
-  swagger-ui-watcher: 2.1.14
   tar: 7.5.8
   tedious: 18.6.1
   tinymce: 6.8.6
@@ -302,7 +305,7 @@ catalog:
   tus-js-client: 4.3.1
   typescript: 5.9.3
   typescript-eslint: 8.46.4
-  undici: 7.18.2
+  undici: 7.24.5
   universal-cookie: 8.0.1
   unplugin-vue: 7.1.1
   unplugin-yaml: 3.0.7

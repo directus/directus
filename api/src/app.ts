@@ -12,7 +12,9 @@ import express from 'express';
 import { merge } from 'lodash-es';
 import qs from 'qs';
 import { aiChatRouter } from './ai/chat/router.js';
+import { initAIDevTools } from './ai/devtools/index.js';
 import { aiFilesRouter } from './ai/files/router.js';
+import { initAITelemetry } from './ai/telemetry/index.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -69,6 +71,7 @@ import { errorHandler } from './middleware/error-handler.js';
 import extractToken from './middleware/extract-token.js';
 import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
+import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import metricsSchedule from './schedules/metrics.js';
@@ -192,6 +195,17 @@ export default async function createApp(): Promise<express.Application> {
 		),
 	);
 
+	if (env['CROSS_ORIGIN_OPENER_POLICY_ENABLED']) {
+		app.use(
+			helmet.crossOriginOpenerPolicy({
+				policy: (env['CROSS_ORIGIN_OPENER_POLICY'] ?? 'same-origin-allow-popups') as
+					| 'same-origin'
+					| 'same-origin-allow-popups'
+					| 'unsafe-none',
+			}),
+		);
+	}
+
 	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', { omitPrefix: 'HSTS_ENABLED' })));
 	}
@@ -296,6 +310,8 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(sanitizeQuery);
 
+	app.use(requestCounter);
+
 	app.use(cache);
 
 	await emitter.emitInit('middlewares.after', { app });
@@ -330,6 +346,8 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	if (toBoolean(env['AI_ENABLED']) === true) {
+		await initAIDevTools();
+		await initAITelemetry();
 		app.use('/ai/chat', aiChatRouter);
 		app.use('/ai/files', aiFilesRouter);
 	}
