@@ -158,11 +158,10 @@ export default defineTheme({
 
 					borderColor: '#21262e',
 					borderColorHover: '#30363d',
-					borderColorFocus: 'var(--theme--primary)',
+
+					focusRingColor: 'var(--theme--primary)',
 
 					boxShadow: 'none',
-					boxShadowHover: 'none',
-					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 
 					height: '3.375rem',
 					padding: '0.875rem',
@@ -216,11 +215,10 @@ export default defineTheme({
 
 							borderColor: 'var(--theme--form--field--input--border-color)',
 							borderColorHover: 'var(--theme--form--field--input--border-color-hover)',
-							borderColorFocus: 'var(--theme--form--field--input--border-color-focus)',
+
+							focusRingColor: 'var(--theme--form--field--input--focus-ring-color)',
 
 							boxShadow: 'var(--theme--form--field--input--box-shadow)',
-							boxShadowHover: 'var(--theme--form--field--input--box-shadow-hover)',
-							boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
 							height: '2.9375rem',
 							padding: '0.6875rem',
@@ -259,11 +257,10 @@ export default defineTheme({
 
 						borderColor: 'var(--theme--form--field--input--border-color)',
 						borderColorHover: 'var(--theme--form--field--input--border-color-hover)',
-						borderColorFocus: 'var(--theme--form--field--input--border-color-focus)',
+
+						focusRingColor: 'var(--theme--form--field--input--focus-ring-color)',
 
 						boxShadow: 'var(--theme--form--field--input--box-shadow)',
-						boxShadowHover: 'var(--theme--form--field--input--box-shadow-hover)',
-						boxShadowFocus: 'var(--theme--form--field--input--box-shadow-focus)',
 
 						height: 'var(--theme--form--field--input--height)',
 						padding: 'var(--theme--form--field--input--padding)',

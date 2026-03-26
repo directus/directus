@@ -171,6 +171,7 @@ function useDelete() {
 			opacity: 0;
 			transition: all var(--slow) var(--transition);
 
+			&:focus-visible,
 			&:hover {
 				color: var(--theme--foreground);
 			}
