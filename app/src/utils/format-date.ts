@@ -78,3 +78,12 @@ export function formatDate(value: string, options: FormatDateOptions) {
 
 	return localizedFormat(date, format);
 }
+
+/**
+ * Returns a human-readable timezone label with its current offset, e.g. "Asia/Tokyo (GMT+9)"
+ */
+export function formatTimezoneLabel(tz: string, value: string): string {
+	const date = parseDate(value, 'timestamp');
+	const offset = formatInTimeZone(date, tz, 'O');
+	return `${tz} (${offset})`;
+}
