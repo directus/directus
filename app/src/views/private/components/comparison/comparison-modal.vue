@@ -19,7 +19,7 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
-import { translateShortcut } from '@/utils/translate-shortcut';
+import { translateShortcut } from '@directus/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 interface Props {

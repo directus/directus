@@ -6,7 +6,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import { translateShortcut } from '@/utils/translate-shortcut';
+import { translateShortcut } from '@directus/composables';
 
 defineProps<{
 	disabledOptions?: string[];

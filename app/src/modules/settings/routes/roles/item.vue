@@ -14,7 +14,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
+import { useShortcut } from '@directus/composables';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';

@@ -9,7 +9,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VOverlay from '@/components/v-overlay.vue';
-import { translateShortcut } from '@/utils/translate-shortcut';
+import { translateShortcut } from '@directus/composables';
 
 export interface Props {
 	title: string;

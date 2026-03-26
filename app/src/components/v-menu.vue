@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch } from 'vue';
 import TransitionBounce from '@/components/transition/bounce.vue';
-import { useShortcut } from '@/composables/use-shortcut';
+import { useShortcut } from '@directus/composables';
 import { useUserStore } from '@/stores/user';
 
 interface Props {
