@@ -152,9 +152,18 @@ function handleClick() {
 	&:focus-visible {
 		outline: none;
 
-		.header {
+		&::after {
+			position: absolute;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			z-index: 2;
+			inline-size: 100%;
+			aspect-ratio: 1 / 1;
+			border-radius: var(--theme--border-radius);
 			outline: var(--focus-ring-width) solid var(--focus-ring-color);
 			outline-offset: var(--focus-ring-offset);
+			content: '';
+			pointer-events: none;
 		}
 	}
 
