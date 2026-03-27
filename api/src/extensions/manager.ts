@@ -480,7 +480,7 @@ export class ExtensionManager {
 
 		this.watcher = chokidar.watch([path.resolve('package.json'), extensionDirPath], {
 			ignoreInitial: true,
-			depth: 2,
+			depth: 1,
 			ignored: (val: string, stats?: Stats) => {
 				if (val.includes('node_modules')) return true;
 
