@@ -475,6 +475,8 @@ table: Πίνακας
 interfaces:
   filter:
     all: Όλα
+  group-tabs:
+    fill_width: Πλήρες Πλάτος
   presentation-links:
     primary: Κυρίως
   system-collection:
