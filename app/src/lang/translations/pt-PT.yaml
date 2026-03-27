@@ -1139,6 +1139,8 @@ interfaces:
     add_filter: Adicionar filtro
     all: Todos
     any: Qualquer
+  group-tabs:
+    fill_width: Ocupar a largura
   presentation-links:
     primary: Primário
     error: Não é possível executar a ação
