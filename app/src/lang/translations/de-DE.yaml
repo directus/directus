@@ -1693,6 +1693,8 @@ interfaces:
     all_opened: Alle geöffnet
     accordion_mode: Akkordeon-Modus
     max_one_section_open: Max. einen Abschnitt öffnen
+  group-tabs:
+    fill_width: Breite füllen
   presentation-links:
     presentation-links: Buttons
     style: Stil
