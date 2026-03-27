@@ -111,7 +111,15 @@ describe('Interface', () => {
 	describe('tzValue computed', () => {
 		const STORED_UTC = '2024-06-15T16:00:00.000Z';
 		const TZ = 'America/New_York';
-		const EXPECTED_PICKER_MODEL = '2024-06-15T17:00:00.000Z';
+		const EXPECTED_PICKER_MODEL = '2024-06-15T12:00:00.000Z';
+
+		beforeEach(() => {
+			vi.stubEnv('TZ', 'UTC');
+		});
+
+		afterEach(() => {
+			vi.unstubAllEnvs();
+		});
 
 		const tzGlobal: GlobalMountOptions = {
 			...global,
