@@ -1298,6 +1298,8 @@ interfaces:
     start: सुरु
     all_closed: "सबै बन्द छ\n"
     all_opened: सबै खुल्यो
+  group-tabs:
+    fill_width: पूर्ण चौडाइ
   presentation-links:
     presentation-links: बटनहरू
     style: शैली
