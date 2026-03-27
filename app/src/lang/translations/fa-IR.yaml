@@ -729,7 +729,6 @@ no_collections: مجموعه ای وجود ندارد
 create_collection: ساخت مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
 no_collections_copy: شما هنوز هیچ مجموعه‌ای ندارید. لطفا با مدیر کل سیستم خود تماس بگیرید.
-relationship_not_setup: این رابطه به درستی پیکربندی نشده است
 no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
 collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
