@@ -654,7 +654,6 @@ no_collections: Sin colecciones
 create_collection: Crear colección
 no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el botón para empezar.
 no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
-relationship_not_setup: La relación no se ha configurado correctamente
 no_singleton_relations: No se admiten las relaciones con Singletons
 display_template_not_setup: La opción de plantilla de Presentación está mal configurada
 collection_field_not_setup: La opción del campo de colección está mal configurada
