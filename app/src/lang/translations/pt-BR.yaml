@@ -1792,6 +1792,8 @@ interfaces:
     all_opened: Todos abertos
     accordion_mode: Modo do Acordeão
     max_one_section_open: Máximo 1 Seção Aberta
+  group-tabs:
+    fill_width: Preencher Largura
   presentation-links:
     presentation-links: Botões
     style: Estilo
