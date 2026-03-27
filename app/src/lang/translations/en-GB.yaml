@@ -1389,6 +1389,8 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  group-tabs:
+    fill_width: Fill Width
   presentation-links:
     presentation-links: Buttons
     style: Style
