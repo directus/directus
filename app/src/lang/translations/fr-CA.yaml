@@ -667,7 +667,6 @@ no_collections: Aucune collection
 create_collection: Créer une collection
 no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
 no_collections_copy: Vous n'avez pas encore de Collections. Veuillez contacter votre administrateur système.
-relationship_not_setup: La relation n'a pas été configurée correctement
 no_singleton_relations: Les relations avec les Singletons ne sont pas prises en charge
 display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
