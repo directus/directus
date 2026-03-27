@@ -40,7 +40,7 @@ export async function setup(project: TestProject) {
 			saml: true,
 			minio: true,
 		},
-		cache: true,
+		cache: false,
 	};
 
 	sb = await sandbox(database, options);
