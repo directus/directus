@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix: exclude alias fields from export Select All
+Fixed alias fields being included when selecting all fields in export
