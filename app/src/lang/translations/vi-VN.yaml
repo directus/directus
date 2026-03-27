@@ -523,7 +523,6 @@ no_collections: Chưa có Bảng nào
 create_collection: Tạo Danh mục mới
 no_collections_copy_admin: Bạn chưa có Bộ sưu tập nào. Bấm nút bên dưới để bắt đầu.
 no_collections_copy: Bạn chưa có Bộ sưu tập nào. Vui lòng liên hệ với quản trị viên hệ thống.
-relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 select_a_collection: Chọn Bảng
 select_a_field: Chọn một trường
 active: Kích hoạt
