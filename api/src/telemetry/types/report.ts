@@ -39,8 +39,10 @@ export interface ExtensionBreakdown {
 }
 
 export interface TelemetryReport {
+	_version: number;
+	_timestamp: string;
+	_trigger: 'startup' | 'scheduled';
 	project: TelemetryProject;
-	meta: TelemetryMeta;
 	config: TelemetryConfig;
 	features: TelemetryFeatures;
 	metrics: TelemetryMetrics;
@@ -52,13 +54,6 @@ export interface TelemetryProject {
 	version: string;
 	templates_applied: string[];
 }
-
-export interface TelemetryMeta {
-	version: number;
-	timestamp: string;
-	trigger: 'startup' | 'scheduled';
-}
-
 export interface TelemetryConfig {
 	auth: {
 		providers: string[];

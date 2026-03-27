@@ -4,7 +4,7 @@ import { collectConfig } from '../collectors/config.js';
 import { collectFeatures } from '../collectors/features.js';
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
-import type { TelemetryMeta, TelemetryReport } from '../types/report.js';
+import type { TelemetryReport } from '../types/report.js';
 
 /**
  * Create a telemetry report about the anonymous usage of the current installation
@@ -12,7 +12,7 @@ import type { TelemetryMeta, TelemetryReport } from '../types/report.js';
  * @param trigger What triggered this report ("startup" or "scheduled").
  */
 export const getReport = async (
-	trigger: TelemetryMeta['trigger'] = 'scheduled',
+	trigger: TelemetryReport['_trigger'] = 'scheduled',
 ): Promise<TelemetryReport> => {
 	const db = getDatabase();
 	const schema = await getSchema({ database: db });
@@ -25,12 +25,10 @@ export const getReport = async (
 	]);
 
 	return {
+		_version: 1,
+		_timestamp: new Date().toISOString(),
+		_trigger: trigger,
 		project,
-		meta: {
-			version: 1,
-			timestamp: new Date().toISOString(),
-			trigger,
-		},
 		config,
 		features,
 		metrics,

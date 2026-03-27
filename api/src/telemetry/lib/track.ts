@@ -1,10 +1,10 @@
 import { setTimeout } from 'timers/promises';
 import { getNodeEnv } from '@directus/utils/node';
 import { useLogger } from '../../logger/index.js';
-import type { TelemetryMeta } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
 import { getReport } from './get-report.js';
 import { sendReport } from './send-report.js';
+import type { TelemetryReport } from '../types/report.js';
 
 /**
  * Generate and send a report. Will log on error, but not throw. No need to be awaited
@@ -14,7 +14,7 @@ import { sendReport } from './send-report.js';
  * @param opts.trigger What triggered the report generation
  * @returns whether or not the tracking was successful
  */
-export const track = async (opts: { wait?: boolean; trigger?: TelemetryMeta['trigger'] } = { wait: true }) => {
+export const track = async (opts: { wait?: boolean; trigger?: TelemetryReport['_trigger'] } = { wait: true }) => {
 	const logger = useLogger();
 
 	if (opts.wait !== false) {

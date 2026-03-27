@@ -1,103 +1,105 @@
 import { useEnv } from '@directus/env';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { type TelemetryReport } from '../types/report.js';
 import { sendReport } from './send-report.js';
 
 vi.mock('@directus/env');
 
-beforeEach(() => {
-	vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: vi.fn() }));
-});
-
-afterEach(() => {
-	vi.clearAllMocks();
-	vi.unstubAllGlobals();
-});
-
-test('Posts stringified report to configured ingress URL', async () => {
-	const mockIngress = 'https://example.com';
-
-	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: mockIngress,
+describe('sendReport', () => {
+	beforeEach(() => {
+		vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, text: vi.fn() }));
 	});
 
-	const url = new URL('/v2/metrics', mockIngress);
-
-	const mockReport = {} as unknown as TelemetryReport;
-	const reportStringified = JSON.stringify(mockReport);
-
-	await sendReport(mockReport);
-
-	expect(global.fetch).toHaveBeenCalledWith(url, {
-		method: 'POST',
-		body: reportStringified,
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	});
-});
-
-test('Sets optional authorization header based on configured auth var', async () => {
-	const mockIngress = 'https://example.com';
-
-	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: mockIngress,
-		TELEMETRY_AUTHORIZATION: 'test-auth',
+	afterEach(() => {
+		vi.clearAllMocks();
+		vi.unstubAllGlobals();
 	});
 
-	const url = new URL('/v2/metrics', mockIngress);
+	test('Posts stringified report to configured ingress URL', async () => {
+		const mockIngress = 'https://example.com';
 
-	const mockReport = {} as unknown as TelemetryReport;
-	const reportStringified = JSON.stringify(mockReport);
+		vi.mocked(useEnv).mockReturnValue({
+			TELEMETRY_URL: mockIngress,
+		});
 
-	await sendReport(mockReport);
+		const url = new URL('/v3/events', mockIngress);
 
-	expect(global.fetch).toHaveBeenCalledWith(url, {
-		method: 'POST',
-		body: reportStringified,
-		headers: {
-			Authorization: 'test-auth',
-			'Content-Type': 'application/json',
-		},
-	});
-});
+		const mockReport = {} as unknown as TelemetryReport;
+		const reportStringified = JSON.stringify(mockReport);
 
-test('Throws error if post was not successful', async () => {
-	vi.mocked(global.fetch).mockResolvedValue({
-		ok: false,
-		text: vi.fn().mockResolvedValue('test-error'),
-		status: 503,
-	} as unknown as Response);
+		await sendReport(mockReport);
 
-	const mockIngress = 'https://example.com';
-
-	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: mockIngress,
-		TELEMETRY_AUTHORIZATION: 'test-auth',
+		expect(global.fetch).toHaveBeenCalledWith(url, {
+			method: 'POST',
+			body: reportStringified,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
 	});
 
-	const mockReport = {} as unknown as TelemetryReport;
+	test('Sets optional authorization header based on configured auth var', async () => {
+		const mockIngress = 'https://example.com';
 
-	await expect(sendReport(mockReport)).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: [503] test-error]`);
-});
+		vi.mocked(useEnv).mockReturnValue({
+			TELEMETRY_URL: mockIngress,
+			TELEMETRY_AUTHORIZATION: 'test-auth',
+		});
 
-test('Sends to /v1/owner on owner payload', async () => {
-	const mockIngress = 'https://example.com';
+		const url = new URL('/v3/events', mockIngress);
 
-	vi.mocked(useEnv).mockReturnValue({
-		COMPLIANCE_URL: mockIngress,
-		TELEMETRY_AUTHORIZATION: 'test-auth',
+		const mockReport = {} as unknown as TelemetryReport;
+		const reportStringified = JSON.stringify(mockReport);
+
+		await sendReport(mockReport);
+
+		expect(global.fetch).toHaveBeenCalledWith(url, {
+			method: 'POST',
+			body: reportStringified,
+			headers: {
+				Authorization: 'test-auth',
+				'Content-Type': 'application/json',
+			},
+		});
 	});
 
-	await sendReport({
-		project_owner: '',
-		version: '',
-		org_name: '',
-		product_updates: false,
-		project_id: '',
-		project_usage: 'personal',
+	test('Throws error if post was not successful', async () => {
+		vi.mocked(global.fetch).mockResolvedValue({
+			ok: false,
+			text: vi.fn().mockResolvedValue('test-error'),
+			status: 503,
+		} as unknown as Response);
+
+		const mockIngress = 'https://example.com';
+
+		vi.mocked(useEnv).mockReturnValue({
+			TELEMETRY_URL: mockIngress,
+			TELEMETRY_AUTHORIZATION: 'test-auth',
+		});
+
+		const mockReport = {} as unknown as TelemetryReport;
+
+		await expect(sendReport(mockReport)).rejects.toThrowError('[503] test-error');
 	});
 
-	expect(vi.mocked(global.fetch)).toHaveBeenCalled();
-	expect(vi.mocked(global.fetch).mock.calls[0]![0].toString()).toEqual('https://example.com/v1/owner');
+	test('Sends to /v1/owner on owner payload', async () => {
+		const mockIngress = 'https://example.com';
+
+		vi.mocked(useEnv).mockReturnValue({
+			COMPLIANCE_URL: mockIngress,
+			TELEMETRY_AUTHORIZATION: 'test-auth',
+		});
+
+		await sendReport({
+			project_owner: '',
+			version: '',
+			org_name: '',
+			product_updates: false,
+			project_id: '',
+			project_usage: 'personal',
+		});
+
+		expect(vi.mocked(global.fetch)).toHaveBeenCalled();
+		expect(vi.mocked(global.fetch).mock.calls[0]![0].toString()).toEqual('https://example.com/v1/owner');
+	});
 });

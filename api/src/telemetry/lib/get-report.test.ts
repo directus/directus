@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
 import { type Knex } from 'knex';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getDatabase } from '../../database/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { collectConfig } from '../collectors/config.js';
@@ -8,6 +8,7 @@ import { collectFeatures } from '../collectors/features.js';
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
 import { getReport } from './get-report.js';
+import type { TelemetryConfig, TelemetryFeatures, TelemetryMetrics, TelemetryProject } from '../types/report.js';
 
 vi.mock('../../database/index.js');
 vi.mock('../../utils/get-schema.js');
@@ -27,34 +28,32 @@ vi.mock('@directus/env', () => ({
 let mockDb: Knex;
 let mockSchema: SchemaOverview;
 
-const mockProject = {
+const mockProject: TelemetryProject = {
 	id: 'test-project-id',
 	created_at: '2024-01-01T00:00:00.000Z',
 	version: '11.0.0',
 	templates_applied: [],
-	deployed_on: 'unknown',
-	replicas: 1,
 };
 
-const mockConfig = {
+const mockConfig: TelemetryConfig = {
 	auth: { providers: ['local'], issuers: [] },
 	ai: false,
 	mcp: false,
-	cache: { enabled: false, store: null },
+	cache: { enabled: false, store: "redis" },
 	database: { driver: 'postgres', version: '16.0' },
 	email: { transport: 'smtp' },
 	marketplace: { trust: 'sandbox' as const, registry: 'default' as const },
-	extensions: { must_load: false, auto_reload: false, cache_ttl: null, limit: null, rolldown: false },
+	extensions: { must_load: false, auto_reload: false, cache_ttl: false, limit: false, rolldown: false },
 	storage: { drivers: ['local'] },
-	retention: { enabled: false, activity: null, revisions: null, flow_logs: null },
+	retention: { enabled: false, activity: false, revisions: false, flow_logs: false },
 	websockets: { enabled: false, rest: false, graphql: false, logs: false },
 	prometheus: { enabled: false },
 	rate_limiting: { enabled: false, pressure: false, email: false, email_flows: false },
-	synchronization: { store: null },
+	synchronization: { store: 'memory' },
 	pm2: { instances: 0 },
 };
 
-const mockFeatures = {
+const mockFeatures: TelemetryFeatures = {
 	mcp: { enabled: false, allow_deletes: false, system_prompt: false },
 	ai: {
 		enabled: false,
@@ -86,7 +85,7 @@ const mockFeatures = {
 	},
 };
 
-const mockMetrics = {
+const mockMetrics: TelemetryMetrics = {
 	api_requests: { count: 0, cached: { count: 0 }, method: { get: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } } },
 	fields: { count: 0 },
 	collections: {
@@ -109,7 +108,6 @@ const mockMetrics = {
 		const s = { count: 0, source: { registry: { count: 0 }, local: { count: 0 }, module: { count: 0 } } };
 
 		const breakdown = {
-			...s,
 			bundles: { ...s },
 			individual: { ...s },
 			type: {
@@ -123,77 +121,79 @@ const mockMetrics = {
 	})(),
 };
 
-beforeEach(() => {
-	mockDb = {} as unknown as Knex;
-	mockSchema = {} as unknown as SchemaOverview;
-	vi.mocked(getDatabase).mockReturnValue(mockDb);
-	vi.mocked(getSchema).mockResolvedValue(mockSchema);
-	vi.mocked(collectProject).mockResolvedValue(mockProject);
-	vi.mocked(collectConfig).mockResolvedValue(mockConfig);
-	vi.mocked(collectFeatures).mockResolvedValue(mockFeatures);
-	vi.mocked(collectMetrics).mockResolvedValue(mockMetrics);
-});
-
-afterEach(() => {
-	vi.clearAllMocks();
-});
-
-test('Returns structured report with all five top-level sections', async () => {
-	const report = await getReport();
-
-	expect(report).toHaveProperty('project');
-	expect(report).toHaveProperty('meta');
-	expect(report).toHaveProperty('config');
-	expect(report).toHaveProperty('features');
-	expect(report).toHaveProperty('metrics');
-});
-
-test('Calls all collectors with the database instance and schema', async () => {
-	await getReport();
-
-	expect(getSchema).toHaveBeenCalledWith({ database: mockDb });
-	expect(collectProject).toHaveBeenCalledWith(mockDb, mockSchema);
-	expect(collectConfig).toHaveBeenCalledWith(mockDb);
-	expect(collectFeatures).toHaveBeenCalledWith(mockDb, mockSchema);
-	expect(collectMetrics).toHaveBeenCalledWith(mockDb, mockSchema);
-});
-
-test('Defaults trigger to scheduled in meta', async () => {
-	const report = await getReport();
-	expect(report.meta.trigger).toBe('scheduled');
-});
-
-test('Forwards custom trigger to meta', async () => {
-	const report = await getReport('startup');
-	expect(report.meta.trigger).toBe('startup');
-});
-
-test('Returns project section from collectProject', async () => {
-	const report = await getReport();
-	expect(report.project).toEqual(mockProject);
-});
-
-test('Returns meta section with correct structure', async () => {
-	const report = await getReport();
-
-	expect(report.meta).toEqual({
-		version: 1,
-		timestamp: expect.any(String),
-		trigger: 'scheduled',
+describe('getReport', () => {
+	beforeEach(() => {
+		mockDb = {} as unknown as Knex;
+		mockSchema = {} as unknown as SchemaOverview;
+		vi.mocked(getDatabase).mockReturnValue(mockDb);
+		vi.mocked(getSchema).mockResolvedValue(mockSchema);
+		vi.mocked(collectProject).mockResolvedValue(mockProject);
+		vi.mocked(collectConfig).mockResolvedValue(mockConfig);
+		vi.mocked(collectFeatures).mockResolvedValue(mockFeatures);
+		vi.mocked(collectMetrics).mockResolvedValue(mockMetrics);
 	});
-});
 
-test('Returns config section from collectConfig', async () => {
-	const report = await getReport();
-	expect(report.config).toEqual(mockConfig);
-});
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
 
-test('Returns features section from collectFeatures', async () => {
-	const report = await getReport();
-	expect(report.features).toEqual(mockFeatures);
-});
+	test('Returns structured report with all top-level sections', async () => {
+		const report = await getReport();
 
-test('Returns metrics section from collectMetrics', async () => {
-	const report = await getReport();
-	expect(report.metrics).toEqual(mockMetrics);
+		expect(report).toHaveProperty('_version');
+		expect(report).toHaveProperty('_timestamp');
+		expect(report).toHaveProperty('_trigger');
+		expect(report).toHaveProperty('project');
+		expect(report).toHaveProperty('config');
+		expect(report).toHaveProperty('features');
+		expect(report).toHaveProperty('metrics');
+	});
+
+	test('Calls all collectors with the database instance and schema', async () => {
+		await getReport();
+
+		expect(getSchema).toHaveBeenCalledWith({ database: mockDb });
+		expect(collectProject).toHaveBeenCalledWith(mockDb, mockSchema);
+		expect(collectConfig).toHaveBeenCalledWith(mockDb);
+		expect(collectFeatures).toHaveBeenCalledWith(mockDb, mockSchema);
+		expect(collectMetrics).toHaveBeenCalledWith(mockDb, mockSchema);
+	});
+
+	test('Defaults _trigger to scheduled', async () => {
+		const report = await getReport();
+		expect(report._trigger).toBe('scheduled');
+	});
+
+	test('Forwards custom trigger', async () => {
+		const report = await getReport('startup');
+		expect(report._trigger).toBe('startup');
+	});
+
+	test('Returns project section from collectProject', async () => {
+		const report = await getReport();
+		expect(report.project).toEqual(mockProject);
+	});
+
+	test('Returns meta keys with correct structure', async () => {
+		const report = await getReport();
+
+		expect(report._version).toBe(1);
+		expect(report._timestamp).toEqual(expect.any(String));
+		expect(report._trigger).toBe('scheduled');
+	});
+
+	test('Returns config section from collectConfig', async () => {
+		const report = await getReport();
+		expect(report.config).toEqual(mockConfig);
+	});
+
+	test('Returns features section from collectFeatures', async () => {
+		const report = await getReport();
+		expect(report.features).toEqual(mockFeatures);
+	});
+
+	test('Returns metrics section from collectMetrics', async () => {
+		const report = await getReport();
+		expect(report.metrics).toEqual(mockMetrics);
+	});
 });
