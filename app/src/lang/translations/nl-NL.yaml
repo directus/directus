@@ -1854,6 +1854,8 @@ interfaces:
     all_opened: Alle geopende
     accordion_mode: Accordeonmodus
     max_one_section_open: Max 1 sectie open
+  group-tabs:
+    fill_width: Vul Breedte
   presentation-links:
     presentation-links: Knoppen
     description: Configureerbare linkknoppen om dynamische URLs te openen of Flows te activeren
