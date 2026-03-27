@@ -1250,6 +1250,8 @@ interfaces:
     first_opened: Ensimmäinen avattuna
     all_opened: Kaikki avattuna
     accordion_mode: Haitarin tila
+  group-tabs:
+    fill_width: Täysleveä
   presentation-links:
     presentation-links: Painikkeet
     style: Tyyli
