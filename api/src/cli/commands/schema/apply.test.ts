@@ -506,6 +506,71 @@ relations: []
 			);
 		});
 
+		test('should pass attemptConcurrentIndex to applySnapshot when --concurrent-index-creation is set', async () => {
+			const mockSnapshot: Snapshot = {
+				version: 1,
+				directus: '10.0.0',
+				collections: [],
+				fields: [],
+				relations: [],
+				systemFields: [],
+			};
+
+			const mockDiff: SnapshotDiff = {
+				collections: [
+					{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] },
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			vi.mocked(fs.readFile).mockResolvedValue(JSON.stringify(mockSnapshot));
+			vi.mocked(getSnapshot).mockResolvedValue(mockSnapshot);
+			vi.mocked(getSnapshotDiff).mockReturnValue(mockDiff);
+
+			await apply('snapshot.json', { yes: true, dryRun: false, ignoreRules: '', concurrentIndexCreation: true });
+
+			expect(applySnapshot).toHaveBeenCalledWith(mockSnapshot, {
+				current: mockSnapshot,
+				diff: mockDiff,
+				database: mockDatabase,
+				attemptConcurrentIndex: true,
+			});
+		});
+
+		test('should not pass attemptConcurrentIndex when --concurrent-index-creation is not set', async () => {
+			const mockSnapshot: Snapshot = {
+				version: 1,
+				directus: '10.0.0',
+				collections: [],
+				fields: [],
+				relations: [],
+				systemFields: [],
+			};
+
+			const mockDiff: SnapshotDiff = {
+				collections: [
+					{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] },
+				],
+				fields: [],
+				systemFields: [],
+				relations: [],
+			};
+
+			vi.mocked(fs.readFile).mockResolvedValue(JSON.stringify(mockSnapshot));
+			vi.mocked(getSnapshot).mockResolvedValue(mockSnapshot);
+			vi.mocked(getSnapshotDiff).mockReturnValue(mockDiff);
+
+			await apply('snapshot.json', { yes: true, dryRun: false, ignoreRules: '', concurrentIndexCreation: false });
+
+			expect(applySnapshot).toHaveBeenCalledWith(mockSnapshot, {
+				current: mockSnapshot,
+				diff: mockDiff,
+				database: mockDatabase,
+			});
+		});
+
 		test('should handle errors and log them', async () => {
 			const error = new Error('File not found');
 			vi.mocked(fs.readFile).mockRejectedValue(error);

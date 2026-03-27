@@ -34,7 +34,7 @@ export function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): S
 
 export async function apply(
 	snapshotPath: string,
-	options?: { yes: boolean; dryRun: boolean; ignoreRules: string },
+	options?: { yes: boolean; dryRun: boolean; ignoreRules: string; concurrentIndexCreation: boolean },
 ): Promise<void> {
 	const logger = useLogger();
 
@@ -212,7 +212,12 @@ export async function apply(
 			}
 		}
 
-		await applySnapshot(snapshot, { current: currentSnapshot, diff: snapshotDiff, database });
+		await applySnapshot(snapshot, {
+			current: currentSnapshot,
+			diff: snapshotDiff,
+			database,
+			...(options?.concurrentIndexCreation && { attemptConcurrentIndex: true }),
+		});
 
 		logger.info(`Snapshot applied successfully`);
 
