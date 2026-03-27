@@ -132,6 +132,8 @@ field_options:
 ai:
   unknown: অজানা
 interfaces:
+  group-tabs:
+    fill_width: প্রস্থ পূরণ করুন
   presentation-links:
     primary: প্রাথমিক
   input-hash:

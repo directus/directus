@@ -642,7 +642,6 @@ no_collections: هیچ کۆمەڵەیەک نییە
 create_collection: دروستکردنی کۆمەڵە
 no_collections_copy_admin: هیچ کۆمەڵەیەکت نییە هێشتا. کرتە لەو دوگمەیەی خوارەوە بکە بۆ دەستپێکردن.
 no_collections_copy: هیچ کۆمەڵەیەکت نییە هێشتا. تکایە پەیوەندی بکە بە بەڕێوبەری سیستەم.
-relationship_not_setup: پەیوەندی بە شێوەیەکی دروست ڕێکنەخراوە
 no_singleton_relations: پەیوەندیەکان لەگەڵ سینگڵتۆنەکان پشتگیری نەکراون
 display_template_not_setup: بژاردەی نیشاندانی قاڵب هەڵەڕێکخراوە
 collection_field_not_setup: بژاردەی خانەی کۆمەڵە هەڵەڕێکخراوە
@@ -1692,6 +1691,8 @@ interfaces:
     all_opened: هەموویان کراوەن
     accordion_mode: دۆخی ئەکۆردیۆن
     max_one_section_open: ئەوپەڕی یەک بەشی کراوە
+  group-tabs:
+    fill_width: پڕکردنی پانی
   presentation-links:
     presentation-links: دوگمەکان
     style: شێواز

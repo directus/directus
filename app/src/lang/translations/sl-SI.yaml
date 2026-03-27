@@ -424,7 +424,6 @@ no_collections: Ni zbirk
 create_collection: Ustvari zbirko
 no_collections_copy_admin: Ni zbirk. Pritisnite gumb spodaj, da usvarite prvo.
 no_collections_copy: Ni zbirk. Kontaktirajte administratorja.
-relationship_not_setup: Povezava ni pravilno nastavljenja
 display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
@@ -1034,6 +1033,8 @@ interfaces:
     all_opened: Vse odprto
     accordion_mode: Način harmonike
     max_one_section_open: Največ ena odprta sekcija
+  group-tabs:
+    fill_width: Zapolni širino
   presentation-links:
     presentation-links: Gumbi
     style: Slog

@@ -714,7 +714,6 @@ no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
 no_collections_copy: コレクションはまだありません。システム管理者にお問い合わせ下さい。
-relationship_not_setup: リレーションシップが正しく設定されていません
 no_singleton_relations: シングルトンへのリレーションシップはサポートされていません
 display_template_not_setup: 表示テンプレートのオプションが間違っています
 collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
@@ -1829,6 +1828,8 @@ interfaces:
     no_rules: 設定済みのルールはありません
   group-accordion:
     start: 開始
+  group-tabs:
+    fill_width: 幅埋め
   presentation-links:
     primary: プライマリー
   input-code:

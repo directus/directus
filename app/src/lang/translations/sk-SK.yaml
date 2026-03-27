@@ -638,7 +638,6 @@ no_collections: Žiadna zbierka
 create_collection: Vytvoriť zbierku
 no_collections_copy_admin: Zatiaľ nemáte žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
 no_collections_copy: Zatiaľ nemáte žiadne zbierky. Prosím kontaktujte svojho správu.
-relationship_not_setup: Tento vzťah nebol správne nastavený
 no_singleton_relations: Vzťahy so singletonmi nie sú podporované
 display_template_not_setup: Šablóna zobrazenia je zle nakonfigurovaná
 collection_field_not_setup: Voľby poľa zbierky sú zle nastavené
@@ -1678,6 +1677,8 @@ interfaces:
     all_opened: Všetko otvorené
     accordion_mode: Režim akordeónu
     max_one_section_open: Max 1 sekcia otvorená
+  group-tabs:
+    fill_width: Vyplniť šírku
   presentation-links:
     presentation-links: Tlačidlá
     style: Štýl

@@ -467,7 +467,6 @@ no_collections: कुनै सङ्ग्रहहरू छैनन्
 create_collection: ' सङ्ग्रह बनाउनुहोस्'
 no_collections_copy_admin: तपाईंसँग अहिलेसम्म कुनै पनि सङ्ग्रहहरू छैनन्। सुरु गर्न तलको बटन क्लिक गर्नुहोस्।
 no_collections_copy: तपाईंसँग अहिलेसम्म कुनै पनि सङ्ग्रहहरू छैनन्। कृपया आफ्नो प्रणाली प्रशासकलाई सम्पर्क गर्नुहोस्।
-relationship_not_setup: सम्बन्ध सही तरिकाले कन्फिगर गरिएको छैन
 display_template_not_setup: डिस्प्ले टेम्प्लेट विकल्प गलत कन्फिगर गरिएको छ
 collection_field_not_setup: संग्रह फिल्ड विकल्प गलत कन्फिगर गरिएको छ
 select_a_collection: एउटा सङ्ग्रह चयन गर्नुहोस्
@@ -1298,6 +1297,8 @@ interfaces:
     start: सुरु
     all_closed: "सबै बन्द छ\n"
     all_opened: सबै खुल्यो
+  group-tabs:
+    fill_width: पूर्ण चौडाइ
   presentation-links:
     presentation-links: बटनहरू
     style: शैली

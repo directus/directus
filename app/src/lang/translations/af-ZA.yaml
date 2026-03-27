@@ -192,6 +192,8 @@ table: Tafel
 interfaces:
   filter:
     all: Alle
+  group-tabs:
+    fill_width: Vulbreedte
   presentation-links:
     primary: Primêre
   input-code:

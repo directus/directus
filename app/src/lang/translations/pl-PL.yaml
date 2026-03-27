@@ -639,7 +639,6 @@ no_collections: Brak kolekcji
 create_collection: Stwórz kolekcję
 no_collections_copy_admin: Nie masz jeszcze żadnych kolekcji. Kliknij poniższy przycisk, aby rozpocząć.
 no_collections_copy: Nie masz jeszcze żadnych kolekcji. Skontaktuj się z administratorem systemu.
-relationship_not_setup: Relacja nie została prawidłowo skonfigurowana
 no_singleton_relations: Relacje z Singletonami nie są obsługiwane
 display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo skonfigurowana
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
@@ -1656,6 +1655,8 @@ interfaces:
     all_opened: Wszystkie otwarte
     accordion_mode: Tryb Accordion
     max_one_section_open: Otwórz maksymalnie 1 sekcję
+  group-tabs:
+    fill_width: Szerokość wypełnienia
   presentation-links:
     presentation-links: Przyciski
     style: Style

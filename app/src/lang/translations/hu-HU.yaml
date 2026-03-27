@@ -659,7 +659,6 @@ no_collections: Nincsenek gyűjtemények
 create_collection: Gyűjtemény létrehozása
 no_collections_copy_admin: Még nem hoztál létre gyűjteményt. Kattints az alábbi gombra a kezdéshez.
 no_collections_copy: Ön még nem rendelkezik Gyűjteményekkel. Lépjen kapcsolatba a rendszeradminisztrátorral!
-relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
 display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
@@ -1552,6 +1551,8 @@ interfaces:
     all_opened: Mind nyitva
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
+  group-tabs:
+    fill_width: Teret kitöltő
   presentation-links:
     presentation-links: Gombok
     style: Stílus

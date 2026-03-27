@@ -652,7 +652,6 @@ no_collections: კოლექციები არ არის
 create_collection: შექმენით კოლექცია
 no_collections_copy_admin: თქვენ ჯერ არ გაქვთ კოლექციები. დასაწყებად დააკლიკეთ ქვემოთ მოცემულ ღილაკს.
 no_collections_copy: თქვენ ჯერ არ გაქვთ კოლექციები. გთხოვთ, დაუკავშირდეთ თქვენს სისტემის ადმინისტრატორს.
-relationship_not_setup: დამოკიდებულება სწორად არ არის დაკონფიგურირებული
 no_singleton_relations: სინგლტონებთან დამოკიდებულებები არ არის მხარდაჭერილი
 display_template_not_setup: ჩვენების შაბლონის ოფცია არასწორად არის დაკონფიგურირებული
 collection_field_not_setup: კოლექციის ველის ოფცია არასწორად არის დაკონფიგურირებული
@@ -1707,6 +1706,8 @@ interfaces:
     all_opened: ყველა გახსნილია
     accordion_mode: აკორდეონის რეჟიმი
     max_one_section_open: მაქს. 1 სექცია ღია
+  group-tabs:
+    fill_width: სიგანის შევსება
   presentation-links:
     presentation-links: ღილაკები
     style: სტილი

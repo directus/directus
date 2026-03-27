@@ -520,7 +520,6 @@ no_collections: Ingen kolleksjoner
 create_collection: Opprett kolleksjon
 no_collections_copy_admin: Du har ingen kolleksjoner enda. Klikk knappen nedenfor for å starte.
 no_collections_copy: Du har ingen kolleksjoner enda. Vennligst kontakt din systemadministrator.
-relationship_not_setup: Relasjonen er ikke konfigurert riktig
 display_template_not_setup: Visningsmalen alternativet er feilkonfigurert
 collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
 select_a_collection: Velg en Kolleksjon
@@ -840,6 +839,8 @@ interfaces:
     add_filter: Legg til filter
     all: Alle
     any: Noen
+  group-tabs:
+    fill_width: Fyll vidde
   presentation-links:
     primary: Primær
   select-multiple-checkbox-tree:

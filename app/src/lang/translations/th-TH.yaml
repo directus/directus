@@ -427,7 +427,6 @@ no_collections: ไม่มีคอลเลกชัน
 create_collection: สร้างคอลเลกชัน
 no_collections_copy_admin: ยังไม่มีคอลเลกชันใดๆ คลิ๊กที่ปุ่มด้านล่างเพื่อสร้าง
 no_collections_copy: ยังไม่มีคอลเลกชันใดๆ กรุณาติดต่อผู้ดูแลระบบ
-relationship_not_setup: ความสัมพันธ์ยังไม่ถูกตั้งค่าให้ถูกต้อง
 display_template_not_setup: การตั้งค่าของการแสดงผลไม่ถูกต้อง
 collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
 select_a_collection: เลือกคอลเลกชัน
@@ -1039,6 +1038,8 @@ interfaces:
     and: และ
   group-accordion:
     start: เริ่มต้น
+  group-tabs:
+    fill_width: กว้างเติมเต็ม
   presentation-links:
     presentation-links: ปุ่ม
     style: สไตล์

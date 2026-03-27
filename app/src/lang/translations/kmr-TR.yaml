@@ -642,7 +642,6 @@ no_collections: Ti Koleksiyon Tune
 create_collection: Koleksiyonê Biafirîne
 no_collections_copy_admin: Te hîn ti koleksiyon tune ne. Li bişkoka jêrîn bitikîne da ku dest pê bikî.
 no_collections_copy: Te hîn ti koleksiyon tune ne. Ji kerema xwe bi rêveberê pergala xwe re têkilî dayne.
-relationship_not_setup: Têkilî bi rastî nehatiye mîhengkirin
 no_singleton_relations: Têkiliyên li Yektayan nayê piştgirîkirin
 display_template_not_setup: Vebijêrka şablona nîşanê şaş hatiye mîhengkirin
 collection_field_not_setup: Vebijêrka qada koleksiyonê şaş hatiye mîhengkirin
@@ -1691,6 +1690,8 @@ interfaces:
     all_opened: Hemû Vekirî
     accordion_mode: Moda Akordionê
     max_one_section_open: Herî Zêde 1 Beş Vekirî
+  group-tabs:
+    fill_width: Firehî Dagire
   presentation-links:
     presentation-links: Bişkok
     style: Şêwaz

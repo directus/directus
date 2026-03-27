@@ -553,7 +553,6 @@ no_collections: Nicio colecție
 create_collection: Creează Colecție
 no_collections_copy_admin: Încă nu aveți nicio colecție. Click pe butonul de mai jos pentru a începe.
 no_collections_copy: Încă nu aveți nicio colecție. Vă rugăm să contactați administratorul de sistem.
-relationship_not_setup: Relația nu a fost configurată corect
 display_template_not_setup: Opțiunea de afișare a șablonului este configurată greșit
 collection_field_not_setup: Opțiunea câmpului de colecții este configurată greșit
 select_a_collection: Selectează o colecție
@@ -1349,6 +1348,8 @@ interfaces:
     all_opened: Toate deschise
     accordion_mode: Mod acordeon
     max_one_section_open: Cel mult o secțiune deschisă
+  group-tabs:
+    fill_width: Umple lățimea
   presentation-links:
     presentation-links: Butoane
     style: Stil

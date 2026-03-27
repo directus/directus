@@ -1610,6 +1610,8 @@ interfaces:
     all_opened: تم فتح الكل
     accordion_mode: قائمة منسدلة
     max_one_section_open: قسم واحد مفتوح كحد أقصى
+  group-tabs:
+    fill_width: العرض الكامل
   presentation-links:
     presentation-links: أزرار
     style: النمط

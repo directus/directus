@@ -478,7 +478,6 @@ no_collections: Ei kokoelmia
 create_collection: Luo kokoelma
 no_collections_copy_admin: Sinulla ei ole vielä kokoelmia. Aloita painamalla alla olevaa painiketta.
 no_collections_copy: Sinulla ei ole vielä kokoelmia. Ota yhteyttä järjestelmänvalvojaan.
-relationship_not_setup: Suhdetta ei ole määritetty oikein
 display_template_not_setup: Näyttöpohjan asetus on konfiguroitu väärin
 collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
 select_a_collection: Valitse kokoelma
@@ -1250,6 +1249,8 @@ interfaces:
     first_opened: Ensimmäinen avattuna
     all_opened: Kaikki avattuna
     accordion_mode: Haitarin tila
+  group-tabs:
+    fill_width: Täysleveä
   presentation-links:
     presentation-links: Painikkeet
     style: Tyyli

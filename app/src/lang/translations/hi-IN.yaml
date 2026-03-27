@@ -439,6 +439,8 @@ ai:
 mcp_prompts_collection_schema:
   messages_role_user: यूज़र
 interfaces:
+  group-tabs:
+    fill_width: संपूर्ण चौड़ाई
   presentation-links:
     primary: प्राइमरी
   select-color:

@@ -641,7 +641,6 @@ no_collections: Nėra kolekcijų
 create_collection: Kurti rinkinį
 no_collections_copy_admin: Kol kas nėra sukurtų kolekcijų. Paspauskite mygtuką, norėdami pradėti.
 no_collections_copy: Kol kas nėra sukurtų kolekcijų. Susisiekite su savo administratoriumi.
-relationship_not_setup: Sąryšis sukonfigūruotas neteisingai
 no_singleton_relations: Negalima sukurti ryšio su "Singleton" objektais
 display_template_not_setup: Blogai sukonfigūruota atvaizdavimo šablono parinktis
 collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
@@ -1684,6 +1683,8 @@ interfaces:
     all_opened: Viskas išskleista
     accordion_mode: Suskleidžiamų kortelių rėžimas
     max_one_section_open: Vienu metu išskleista tik viena
+  group-tabs:
+    fill_width: Užpildyti visą plotį
   presentation-links:
     presentation-links: Mygtukai
     style: Stilius

@@ -647,7 +647,6 @@ no_collections: Hiç Koleksiyon Yok
 create_collection: Koleksiyon Oluştur
 no_collections_copy_admin: Henüz bir koleksiyonunuz yok. Başlamak için aşağıdaki butona tıklayın.
 no_collections_copy: Henüz bir koleksiyonunuz yok. Lütfen sistem yöneticinizle görüşün.
-relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
 no_singleton_relations: Singletons ile ilişkiler desteklenmiyor
 display_template_not_setup: Görüntüleme şablonu seçeneği yanlış yapılandırılmış
 collection_field_not_setup: Koleksiyon alan seçenekleri yanlış yapılandırılmış
@@ -1648,6 +1647,8 @@ interfaces:
     all_opened: Hepsi Açık
     accordion_mode: Körüklü Liste Modu
     max_one_section_open: En Fazla 1 Bölüm Açık
+  group-tabs:
+    fill_width: Genişliği Doldur
   presentation-links:
     presentation-links: Butonlar
     style: Stil

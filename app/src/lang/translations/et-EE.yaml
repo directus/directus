@@ -528,7 +528,6 @@ no_collections: Andmekogusid pole
 create_collection: Loo kogu
 no_collections_copy_admin: Sa pole lisanud veel ühtegi andmekogu. Alustamiseks kliki nupul.
 no_collections_copy: Andmekogusid ei leitud. Palun võta ühendust süsteemi administraatoriga.
-relationship_not_setup: Seos pole korrektselt seadistatud
 display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
@@ -1112,6 +1111,8 @@ interfaces:
     add_filter: Lisa filter
     all: Kõik
     any: Ükskõik milline
+  group-tabs:
+    fill_width: Täislaius
   presentation-links:
     presentation-links: Nupud
     style: Stiil
