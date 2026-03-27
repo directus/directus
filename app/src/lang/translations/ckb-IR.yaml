@@ -1692,6 +1692,8 @@ interfaces:
     all_opened: هەموویان کراوەن
     accordion_mode: دۆخی ئەکۆردیۆن
     max_one_section_open: ئەوپەڕی یەک بەشی کراوە
+  group-tabs:
+    fill_width: پڕکردنی پانی
   presentation-links:
     presentation-links: دوگمەکان
     style: شێواز
