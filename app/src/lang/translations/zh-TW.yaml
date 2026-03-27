@@ -1480,6 +1480,8 @@ interfaces:
     all_opened: 全部展開
     accordion_mode: 收合模式
     max_one_section_open: 最多開啟一個區塊
+  group-tabs:
+    fill_width: 填滿寬度
   presentation-links:
     presentation-links: 按鈕
     style: 樣式
