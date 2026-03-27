@@ -30,7 +30,7 @@ export type Options = {
 	/** Restart the api when changes are made */
 	watch: boolean;
 	/** Port to start the api on */
-	port: Port | PortRange;
+	port: Port | PortRange | undefined;
 	/** Spin up the app in dev mode */
 	app: boolean | Port;
 	/** Which version of the database to use */
@@ -40,7 +40,7 @@ export type Options = {
 		/** Keep containers running when stopping the sandbox */
 		keep: boolean;
 		/** Minimum port number to use for docker containers */
-		port: Port | PortRange;
+		port: Port | PortRange | undefined;
 		/** Overwrite the name of the docker project */
 		name: string | undefined;
 		/** Adds a suffix to the docker project. Can be used to ensure uniqueness */
@@ -101,12 +101,12 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			build: false,
 			dev: false,
 			watch: false,
-			port: 8055,
+			port: undefined,
 			app: false,
 			version: undefined,
 			docker: {
 				keep: false,
-				port: { min: 8100, max: 8200 },
+				port: undefined,
 				name: undefined,
 				suffix: '',
 			},

@@ -62,9 +62,14 @@ export async function buildApi(opts: Options, logger: Logger, onRebuild: () => v
 export async function bootstrap(env: Env, logger: Logger) {
 	const start = performance.now();
 	logger.info('Bootstraping Database');
+	const port = '8055';
 
 	const bootstrap = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'bootstrap'], {
-		env,
+		env: {
+			...env,
+			PUBLIC_URL: `http://${env.HOST}:${port}`,
+			PORT: port,
+		},
 	});
 
 	bootstrap.on('error', (err) => {
@@ -114,6 +119,7 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		api = spawn('pnpm ', ['tsx', ...watch, ...inspect, join(apiFolder, 'src', 'start.ts')], {
 			env: {
 				...env,
+				PUBLIC_URL: `http://${env.HOST}:${port}`,
 				PORT: String(port),
 			},
 			shell: true,
@@ -123,6 +129,7 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		api = spawn('node', [...inspect, join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
 			env: {
 				...env,
+				PUBLIC_URL: `http://${env.HOST}:${port}`,
 				PORT: String(port),
 			},
 		});

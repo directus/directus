@@ -25,8 +25,9 @@ const options = program.opts();
 
 const sb = await sandbox(program.args[0] as Database, {
 	...options,
+	port: options['port'] ?? 8055,
 	docker: {
-		port: options['docker.port'],
+		port: options['docker.port'] ?? { min: 8100, max: 8200 },
 		keep: options['docker.keep'],
 		name: options['docker.name'],
 		suffix: options['docker.suffix'],

@@ -10,6 +10,7 @@ declare module 'vitest' {
 
 	export interface ProvidedContext {
 		envs: Record<Database, Env>;
+		port: Record<Database, number>;
 		options: Record<Database, DeepPartial<Options>>;
 	}
 }

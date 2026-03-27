@@ -3,17 +3,22 @@ import {
 	createCollection,
 	createDirectus,
 	createItem,
+	deleteCollection,
 	readSingleton,
 	rest,
 	staticToken,
 	updateSingleton,
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
-import { expect, test } from 'vitest';
+import { afterAll, expect, test } from 'vitest';
 
 const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const collectionName = `singleton_${randomUUID()}`;
+
+afterAll(async () => {
+	await api.request(deleteCollection(collectionName));
+});
 
 test('singleton', async () => {
 	const createCol = await api.request(

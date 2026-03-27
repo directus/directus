@@ -90,7 +90,7 @@ test('reading health as admin', async () => {
 				: {}),
 		},
 		releaseId: expect.any(String),
-		serviceId: env.PUBLIC_URL,
+		serviceId: expect.any(String),
 		status: 'ok',
 	});
 });

@@ -5,7 +5,7 @@ import { join } from 'path';
 import { type Database, type Env, type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import type { DeepPartial } from '@directus/types';
-import { TestProject } from 'vitest/node';
+import { parseCLI, TestProject } from 'vitest/node';
 import type { Schema } from './schema.d.ts';
 
 let sb: Sandbox | undefined;
@@ -16,7 +16,9 @@ export async function setup(project: TestProject) {
 
 	if (process.env['ALL'] === 'true') return;
 
-	const filesToTest = await project.globTestFiles(argv.slice(4));
+	const args = parseCLI(['vitest', ...argv.slice(2)]);
+
+	const filesToTest = await project.globTestFiles(args.filter);
 
 	if (filesToTest.testFiles.every((file) => file.endsWith('.sb.test.ts'))) return;
 
@@ -50,6 +52,7 @@ export async function setup(project: TestProject) {
 	if (diff) await api.request(schemaApply(diff));
 
 	project.provide('envs', { [database]: sb.env } as Record<Database, Env>);
+	project.provide('port', { [database]: sb.apis[0].port } as Record<Database, number>);
 	project.provide('options', { [database]: options } as Record<Database, DeepPartial<Options>>);
 
 	return;

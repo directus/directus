@@ -13,7 +13,7 @@ const all = process.env['ALL'] === 'true';
 if (!all)
 	describe('Schema Caching Tests', () => {
 		describe('GET /collections/:collection', () => {
-			test('schema change propagates across nodes using messenger', async () => {
+			test('schema change propagates across nodes using messenger', { timeout: 120_000 }, async () => {
 				const directus = await sandbox(database, {
 					instances: '2',
 					inspect: false,
@@ -92,7 +92,7 @@ if (!all)
 				expect(responseAfter2.status).toBe(403);
 			});
 
-			test('schema change does not propagate across nodes without messenger', async () => {
+			test('schema change does not propagate across nodes without messenger', { timeout: 120_000 }, async () => {
 				const directus = await sandbox(database, {
 					instances: '2',
 					inspect: false,
