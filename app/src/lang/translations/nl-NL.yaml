@@ -709,7 +709,6 @@ no_collections: Geen collecties
 create_collection: Maak collectie
 no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
 no_collections_copy: Je hebt nog geen collecties. Neem contact op met je systeembeheerder.
-relationship_not_setup: De relatie is niet correct geconfigureerd
 no_singleton_relations: Relaties met Singletons worden niet ondersteund
 display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
