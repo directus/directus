@@ -1698,6 +1698,8 @@ interfaces:
     all_opened: Tutto aperto
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
+  group-tabs:
+    fill_width: Riempi larghezza
   presentation-links:
     presentation-links: Pulsanti
     style: Stile
