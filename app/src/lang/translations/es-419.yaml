@@ -1809,6 +1809,8 @@ interfaces:
     all_opened: Todo Abierto
     accordion_mode: Modo Accordion
     max_one_section_open: Máximo de una sección abierta
+  group-tabs:
+    fill_width: Llenar ancho
   presentation-links:
     presentation-links: Botones
     description: Botones de enlace configurables para abrir URL dinámicas o activar Flows
