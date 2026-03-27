@@ -1707,6 +1707,8 @@ interfaces:
     all_opened: ყველა გახსნილია
     accordion_mode: აკორდეონის რეჟიმი
     max_one_section_open: მაქს. 1 სექცია ღია
+  group-tabs:
+    fill_width: სიგანის შევსება
   presentation-links:
     presentation-links: ღილაკები
     style: სტილი
