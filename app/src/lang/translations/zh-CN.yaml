@@ -708,7 +708,6 @@ no_collections: 没有任何模型
 create_collection: 新建模型
 no_collections_copy_admin: 您还没有任何模型。点击下面的按钮开始新建。
 no_collections_copy: 您还没有任何可用的模型。请联系您的系统管理员。
-relationship_not_setup: 关系配置不正确
 no_singleton_relations: 不支持与单例的关系"
 display_template_not_setup: 显示的模板选项配置错误
 collection_field_not_setup: 该模型的字段配置错误
