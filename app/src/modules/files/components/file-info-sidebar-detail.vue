@@ -67,7 +67,7 @@ const imageMetadata = computed(() => {
 
 	const { ifd0, exif } = metadata;
 
-	return {
+	const result = {
 		Make: ifd0?.Make,
 		Model: ifd0?.Model,
 		FNumber: exif?.FNumber,
@@ -75,6 +75,10 @@ const imageMetadata = computed(() => {
 		FocalLength: exif?.FocalLength,
 		ISO: exif?.ISO ?? exif?.ISOSpeedRatings,
 	};
+
+	if (Object.values(result).every((v) => v === undefined)) return;
+
+	return result;
 });
 
 function useUser() {
