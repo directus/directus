@@ -1,7 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { useLock } from '../lock/lib/use-lock.js';
 import { getStorage } from '../storage/index.js';
+import { useStore } from '../utils/store.js';
 import { UtilsService } from './utils.js';
 
 vi.mock('../storage/index.js', () => ({
@@ -17,12 +17,13 @@ vi.mock('../database/index.js', () => ({
 	default: vi.fn(),
 }));
 
-vi.mock('../lock/lib/use-lock.js', () => ({
-	useLock: vi.fn().mockReturnValue({
-		get: vi.fn().mockResolvedValue(null),
-		set: vi.fn().mockResolvedValue(undefined),
-		delete: vi.fn().mockResolvedValue(undefined),
-	}),
+vi.mock('../utils/store.js', () => ({
+	useStore: vi.fn().mockReturnValue((callback: any) =>
+		callback({
+			get: vi.fn().mockResolvedValue(false),
+			set: vi.fn().mockResolvedValue(undefined),
+		}),
+	),
 }));
 
 const mockSchema = {} as SchemaOverview;
@@ -95,11 +96,11 @@ describe('UtilsService', () => {
 		});
 
 		test('throws when clearing is already in progress', async () => {
-			vi.mocked(useLock).mockReturnValueOnce({
-				get: vi.fn().mockResolvedValue(Date.now()),
-				set: vi.fn(),
-				delete: vi.fn(),
-			} as any);
+			vi.mocked(useStore).mockReturnValueOnce(((callback: any) =>
+				callback({
+					get: vi.fn().mockResolvedValue(true),
+					set: vi.fn(),
+				})) as any);
 
 			const service = new UtilsService({
 				accountability: null,

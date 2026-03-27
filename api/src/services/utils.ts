@@ -7,12 +7,12 @@ import Queue from 'p-queue';
 import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { useLock } from '../lock/lib/use-lock.js';
 import { useLogger } from '../logger/index.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getStorage } from '../storage/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { useStore } from '../utils/store.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -180,16 +180,15 @@ export class UtilsService {
 			throw new ForbiddenError();
 		}
 
-		const lock = useLock();
-		const lockKey = 'directus:clear-asset-variants';
-		const lockTimeout = 5 * 60 * 1000; // 5 minutes
-		const lockTime = await lock.get(lockKey);
+		const store = useStore<{ clearing: boolean }>('directus:clear-asset-variants');
 
-		if (lockTime && Number(lockTime) > Date.now() - lockTimeout) {
-			throw new InvalidPayloadError({ reason: 'Asset variant clearing is already in progress' });
-		}
+		await store(async (state) => {
+			if (await state.get('clearing')) {
+				throw new InvalidPayloadError({ reason: 'Asset variant clearing is already in progress' });
+			}
 
-		await lock.set(lockKey, Date.now());
+			await state.set('clearing', true);
+		});
 
 		try {
 			const storage = await getStorage();
@@ -263,7 +262,9 @@ export class UtilsService {
 
 			useLogger().info(`Cleared ${deleted} asset variant(s)`);
 		} finally {
-			await lock.delete(lockKey);
+			await store(async (state) => {
+				await state.set('clearing', false);
+			});
 		}
 	}
 }
