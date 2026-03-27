@@ -1682,6 +1682,8 @@ interfaces:
     all_opened: Të Gjitha të Hapura
     accordion_mode: Modaliteti i Akordionit
     max_one_section_open: Maksimum 1 Seksion i Hapur
+  group-tabs:
+    fill_width: Plotëso Gjerësinë
   presentation-links:
     presentation-links: Butonat
     style: Stil
