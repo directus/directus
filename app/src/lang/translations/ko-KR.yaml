@@ -1763,6 +1763,8 @@ interfaces:
     all_opened: 모두 열림
     accordion_mode: 아코디언 모드
     max_one_section_open: 최대 1개 섹션 열기
+  group-tabs:
+    fill_width: 전체 폭
   presentation-links:
     presentation-links: 버튼
     style: 스타일
