@@ -1551,6 +1551,8 @@ interfaces:
     all_opened: Alla öppnade
     accordion_mode: Läge för dragspel
     max_one_section_open: Max 1 sektion öppen
+  group-tabs:
+    fill_width: Full bredd
   presentation-links:
     presentation-links: Knappar
     style: Stil
