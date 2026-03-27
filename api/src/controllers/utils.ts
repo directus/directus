@@ -215,7 +215,7 @@ router.post(
 
 		await service.clearCache({ system: clearSystemCache });
 
-		res.status(200).end();
+		res.status(204).end();
 	}),
 );
 
@@ -237,7 +237,7 @@ router.post(
 
 		await service.clearAssetVariants({ file: value.file });
 
-		res.status(200).end();
+		res.status(204).end();
 	}),
 );
 
