@@ -489,6 +489,9 @@ catalogs:
     date-fns:
       specifier: 4.1.0
       version: 4.1.0
+    date-fns-tz:
+      specifier: 3.2.0
+      version: 3.2.0
     decamelize:
       specifier: 6.0.1
       version: 6.0.1
@@ -1809,6 +1812,9 @@ importers:
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
+      date-fns-tz:
+        specifier: 'catalog:'
+        version: 3.2.0(date-fns@4.1.0)
       diacritics:
         specifier: 'catalog:'
         version: 1.3.0
@@ -9003,6 +9009,11 @@ packages:
 
   dataloader@1.4.0:
     resolution: {integrity: sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==}
+
+  date-fns-tz@3.2.0:
+    resolution: {integrity: sha512-sg8HqoTEulcbbbVXeg84u5UnlsQa8GS5QXMqjjYIhS4abEVVKIUwe0/l/UhrZdKaL/W5eWZNlbTeEIiOXTcsBQ==}
+    peerDependencies:
+      date-fns: ^3.0.0 || ^4.0.0
 
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
@@ -21835,6 +21846,10 @@ snapshots:
       is-data-view: 1.0.2
 
   dataloader@1.4.0: {}
+
+  date-fns-tz@3.2.0(date-fns@4.1.0):
+    dependencies:
+      date-fns: 4.1.0
 
   date-fns@4.1.0: {}
 
