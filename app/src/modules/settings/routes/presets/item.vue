@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useLayout } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
 import { isEqual } from 'lodash';
@@ -18,7 +19,6 @@ import VForm from '@/components/v-form/v-form.vue';
 import VInfo from '@/components/v-info.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@directus/composables';
 import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
