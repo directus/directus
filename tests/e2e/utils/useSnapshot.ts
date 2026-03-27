@@ -62,10 +62,9 @@ export async function useSnapshot<Schema>(
 			do {
 				try {
 					await api.request(readCollection(orders[Number(orderIndex) - 1]!['group']!));
+					inFrontExists = true;
 				} catch {
 					await new Promise((r) => setTimeout(r, 1000));
-				} finally {
-					inFrontExists = true;
 				}
 			} while (!inFrontExists);
 		}
