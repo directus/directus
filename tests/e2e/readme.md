@@ -9,7 +9,9 @@ Run `pnpm test:all` to locally test against all databases
 Run `pnpm vitest --project sqlite` to test against a specific database. The project option can be used multiple times to
 test against multiple different databases at the same time.
 
-Run `pnpm test:dev --exclude "**/*.sb.test.ts"` to only run tests that use the main sandbox.
+Run `pnpm test:dev --exclude "**/*.sb.test.ts` to only run tests that use the main sandbox.
+
+Run `pnpm test:dev my-test` to only test tests that match the `my-test` name.
 
 ## Writing tests
 
