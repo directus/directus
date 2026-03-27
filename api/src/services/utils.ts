@@ -7,6 +7,7 @@ import Queue from 'p-queue';
 import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { useLock } from '../lock/lib/use-lock.js';
 import { useLogger } from '../logger/index.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
@@ -179,75 +180,90 @@ export class UtilsService {
 			throw new ForbiddenError();
 		}
 
-		const storage = await getStorage();
+		const lock = useLock();
+		const lockKey = 'directus:clear-asset-variants';
+		const lockTimeout = 5 * 60 * 1000; // 5 minutes
+		const lockTime = await lock.get(lockKey);
 
-		const query = this.knex
-			.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
-			.from('directus_files');
-
-		if (options?.file) {
-			if (Array.isArray(options.file)) {
-				query.whereIn('id', options.file);
-			} else {
-				query.where('id', options.file);
-			}
+		if (lockTime && Number(lockTime) > Date.now() - lockTimeout) {
+			throw new InvalidPayloadError({ reason: 'Asset variant clearing is already in progress' });
 		}
 
-		const files = await query;
+		await lock.set(lockKey, Date.now());
 
-		// Group files by storage location
-		const filesByStorage = new Map<string, typeof files>();
+		try {
+			const storage = await getStorage();
 
-		for (const file of files) {
-			const group = filesByStorage.get(file.storage) ?? [];
-			group.push(file);
-			filesByStorage.set(file.storage, group);
-		}
+			const query = this.knex
+				.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
+				.from('directus_files');
 
-		let deleted = 0;
-
-		for (const [storageName, storageFiles] of filesByStorage) {
-			const disk = storage.location(storageName);
-			const toDelete: string[] = [];
-
-			for (const file of storageFiles) {
-				const filePrefix = path.parse(file.filename_disk).name;
-
-				for await (const filepath of disk.list(filePrefix)) {
-					if (filepath === file.filename_disk) continue;
-					if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
-
-					toDelete.push(filepath);
-				}
-			}
-
-			if (toDelete.length === 0) continue;
-
-			try {
-				if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {
-					await disk.bulkDelete(toDelete);
+			if (options?.file) {
+				if (Array.isArray(options.file)) {
+					query.whereIn('id', options.file);
 				} else {
-					const queue = new Queue({ concurrency: 100 });
-
-					for (const fp of toDelete) {
-						void queue.add(async () => {
-							try {
-								await disk.delete(fp);
-							} catch (err) {
-								useLogger().warn(`Failed to delete asset variant "${fp}": ${err}`);
-							}
-						});
-					}
-
-					await queue.onIdle();
+					query.where('id', options.file);
 				}
-			} catch (err) {
-				useLogger().warn(`Failed to bulk delete variants on "${storageName}": ${err}`);
 			}
 
-			deleted += toDelete.length;
-		}
+			const files = await query;
 
-		useLogger().info(`Cleared ${deleted} asset variant(s)`);
+			// Group files by storage location
+			const filesByStorage = new Map<string, typeof files>();
+
+			for (const file of files) {
+				const group = filesByStorage.get(file.storage) ?? [];
+				group.push(file);
+				filesByStorage.set(file.storage, group);
+			}
+
+			let deleted = 0;
+
+			for (const [storageName, storageFiles] of filesByStorage) {
+				const disk = storage.location(storageName);
+				const toDelete: string[] = [];
+
+				for (const file of storageFiles) {
+					const filePrefix = path.parse(file.filename_disk).name;
+
+					for await (const filepath of disk.list(filePrefix)) {
+						if (filepath === file.filename_disk) continue;
+						if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
+
+						toDelete.push(filepath);
+					}
+				}
+
+				if (toDelete.length === 0) continue;
+
+				try {
+					if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {
+						await disk.bulkDelete(toDelete);
+					} else {
+						const queue = new Queue({ concurrency: 100 });
+
+						for (const fp of toDelete) {
+							void queue.add(async () => {
+								try {
+									await disk.delete(fp);
+								} catch (err) {
+									useLogger().warn(`Failed to delete asset variant "${fp}": ${err}`);
+								}
+							});
+						}
+
+						await queue.onIdle();
+					}
+				} catch (err) {
+					useLogger().warn(`Failed to bulk delete variants on "${storageName}": ${err}`);
+				}
+
+				deleted += toDelete.length;
+			}
+
+			useLogger().info(`Cleared ${deleted} asset variant(s)`);
+		} finally {
+			await lock.delete(lockKey);
+		}
 	}
 }

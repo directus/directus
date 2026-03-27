@@ -1,5 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { useLock } from '../lock/lib/use-lock.js';
 import { getStorage } from '../storage/index.js';
 import { UtilsService } from './utils.js';
 
@@ -14,6 +15,14 @@ vi.mock('../cache.js', () => ({
 
 vi.mock('../database/index.js', () => ({
 	default: vi.fn(),
+}));
+
+vi.mock('../lock/lib/use-lock.js', () => ({
+	useLock: vi.fn().mockReturnValue({
+		get: vi.fn().mockResolvedValue(null),
+		set: vi.fn().mockResolvedValue(undefined),
+		delete: vi.fn().mockResolvedValue(undefined),
+	}),
 }));
 
 const mockSchema = {} as SchemaOverview;
@@ -83,6 +92,21 @@ describe('UtilsService', () => {
 			});
 
 			await expect(service.clearAssetVariants()).rejects.toThrow("You don't have permission to access this.");
+		});
+
+		test('throws when clearing is already in progress', async () => {
+			vi.mocked(useLock).mockReturnValueOnce({
+				get: vi.fn().mockResolvedValue(Date.now()),
+				set: vi.fn(),
+				delete: vi.fn(),
+			} as any);
+
+			const service = new UtilsService({
+				accountability: null,
+				schema: mockSchema,
+			});
+
+			await expect(service.clearAssetVariants()).rejects.toThrow('Asset variant clearing is already in progress');
 		});
 
 		test('deletes variants and preserves originals', async () => {
