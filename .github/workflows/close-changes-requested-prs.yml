@@ -2,7 +2,7 @@ name: Close PRs with Changes Requested
 
 on:
   schedule:
-    - cron: "30 1 * * *"
+    - cron: '30 1 * * *'
 
 permissions:
   pull-requests: write
@@ -47,6 +47,31 @@ jobs:
 
               const labeledAt = new Date(labelEvents[0].created_at);
               if (now - labeledAt < TWO_WEEKS_MS) continue;
+
+              // Check if the PR author pushed new commits after the label was applied
+              const commits = await github.paginate(github.rest.pulls.listCommits, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                per_page: 100,
+              });
+
+              const pushedAfterLabel = commits.some(c => {
+                const committedAt = new Date(c.commit.committer?.date ?? c.commit.author?.date);
+                return c.author?.login === pr.user.login && committedAt > labeledAt;
+              });
+
+              if (pushedAfterLabel) {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  name: LABEL_NAME,
+                });
+
+                core.info(`Removed label from PR #${pr.number} — author pushed changes after review: ${pr.title}`);
+                continue;
+              }
 
               await github.rest.pulls.update({
                 owner: context.repo.owner,
