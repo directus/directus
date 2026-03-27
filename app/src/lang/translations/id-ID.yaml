@@ -353,6 +353,7 @@ related_collection: Pengumpulan Terkait
 related_collections: Koleksi Terkait
 translations_collection: Koleksi Terjemahan
 languages_collection: Koleksi Bahasa
+translations_preview_collections: Pengumpulan
 import_data_input_placeholder: CSV atau JSON...
 import_data_button: Mulai Impor
 import_data_indeterminate: Mengimpor Data...
@@ -606,7 +607,6 @@ unexpected_error: Kesalahan Tidak Terduga
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
-password_reset_sent: Jika Anda memiliki akun, kami telah mengirimkan tautan yang aman untuk mengatur ulang kata sandi Anda
 password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring
@@ -1194,6 +1194,8 @@ ai:
   settings: Pengaturan
   tool_approval:
     disabled: Dinonaktifkan
+  ask_user_submit: Kirim
+  ask_user_next: Lanjut
 ai_tools:
   items: Barang-barang
   files: Berkas

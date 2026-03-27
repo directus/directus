@@ -15,7 +15,13 @@ function checkImplicitRelation(field: string) {
 	return null;
 }
 
-export function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
+export function getRelationInfo(
+	relations: Relation[],
+	collection: string | undefined,
+	field: string | undefined,
+): RelationInfo {
+	if (!collection || !field) return { relation: null, relationType: null };
+
 	if (field.startsWith('$FOLLOW') && field.length > 500) {
 		throw new Error(`Implicit $FOLLOW statement is too big to parse. Got: "${field.substring(500)}..."`);
 	}

@@ -409,6 +409,8 @@ related_collection: Colecție conexă
 related_collections: Colecții conexe
 translations_collection: Colecție de traduceri
 languages_collection: Colecție de limbi
+translations_preview_collections: Colecții
+translations_preview_fields: Câmpuri
 import_data_input_placeholder: CSV sau JSON...
 import_data_button: Începe importul
 import_data_indeterminate: Se importă datele...
@@ -1208,6 +1210,8 @@ ai:
   settings: Setări
   tool_approval:
     disabled: Dezactivat
+  ask_user_submit: Trimite
+  ask_user_next: Urmatorul
 ai_tools:
   items: Elemente
   files: Fişiere

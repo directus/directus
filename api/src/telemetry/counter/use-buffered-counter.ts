@@ -1,3 +1,4 @@
+import { useLogger } from '../../logger/index.js';
 import { useCounters } from './use-counters.js';
 
 interface FlusherOptions {
@@ -33,6 +34,8 @@ export const _bufferedCounterCache: Record<string, FlusherEntry | null> = {};
  * @param options - Optional bucket size and interval configuration.
  */
 export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
+	const logger = useLogger();
+
 	if (!_bufferedCounterCache[key]) {
 		const opts = { ...DEFAULT_OPTIONS, ...options };
 
@@ -84,7 +87,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 			await counter.increment(`${key}:${subKey}`, amount);
 		} catch (err) {
 			state.count += amount;
-			throw err;
+			logger.error(`Failed to flush buffered counter for ${key}:${subKey}`, err);
 		} finally {
 			state.flushing = false;
 		}
@@ -94,7 +97,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 		await Promise.all(Object.keys(flusher.counters).map((subKey) => flush(subKey)));
 	};
 
-	const destroy = async (): Promise<void> => {
+	const terminate = async (): Promise<void> => {
 		if (flusher.timer) {
 			clearInterval(flusher.timer);
 			flusher.timer = null;
@@ -157,7 +160,7 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 			state.count += amount;
 
 			if (state.count >= flusher.options.maxBucketSize) {
-				void flush(subKey);
+				flush(subKey);
 			}
 		},
 
@@ -180,6 +183,22 @@ export const useBufferedCounter = (key: string, options?: FlusherOptions) => {
 		/**
 		 * Stop all timers and flush remaining counts. Call on shutdown.
 		 */
-		destroy,
+		terminate,
 	};
+};
+
+/**
+ * Terminate all buffered counters by flushing their counts and clearing their timers.
+ * Call this on application shutdown to ensure all buffered counts are flushed.
+ */
+export const terminateAllBufferedCounters = async (): Promise<void> => {
+	await Promise.all(
+		Object.keys(_bufferedCounterCache).map((key) => {
+			if (_bufferedCounterCache[key]) {
+				return useBufferedCounter(key).terminate();
+			}
+
+			return undefined;
+		}),
+	);
 };

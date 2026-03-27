@@ -307,6 +307,7 @@ related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
+translations_preview_collections: Zbirke
 label_import: Uvoz
 format: Oblika
 last_page: Zadnja stran
@@ -938,6 +939,8 @@ ai:
   settings: Nastavitve
   tool_approval:
     disabled: Onemogočeno
+  ask_user_submit: Pošlji
+  ask_user_next: Naslednje
 ai_tools:
   items: Zapisi
   files: Datoteke

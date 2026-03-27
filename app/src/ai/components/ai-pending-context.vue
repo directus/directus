@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
+import type { File } from '@directus/types';
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { useVisualElementHighlight } from '../composables/use-visual-element-highlight';
 import { useAiContextStore } from '../stores/use-ai-context';
-import type { PendingContextItem } from '../types';
+import { isFileContext, isLocalFileContext, type PendingContextItem } from '../types';
 import AiContextCard from './ai-context-card.vue';
+import { getImageUrl, isImageFile } from './parts/file-ui-part-utils';
+import FileLightbox from '@/views/private/components/file-lightbox.vue';
 
 const contextStore = useAiContextStore();
 const { highlight, clearHighlight } = useVisualElementHighlight();
+
+const lightboxActive = ref(false);
+const activeItem = ref<PendingContextItem | null>(null);
 
 const scrollContainerRef = useTemplateRef<HTMLElement>('scroll-container');
 const showLeftFade = ref(false);
@@ -48,6 +54,48 @@ function handleRemove(item: PendingContextItem) {
 	clearHighlight();
 	contextStore.removePendingContext(item.id);
 }
+
+function handleCardClick(item: PendingContextItem) {
+	if (isImageFile(item)) {
+		activeItem.value = item;
+		lightboxActive.value = true;
+	}
+}
+
+const activeFile = computed<Pick<File, 'id' | 'title' | 'type' | 'modified_on' | 'width' | 'height'> | null>(() => {
+	if (!activeItem.value) return null;
+
+	const item = activeItem.value;
+
+	if (isLocalFileContext(item)) {
+		return {
+			id: '',
+			title: item.display,
+			type: item.data.file.type,
+			modified_on: new Date().toISOString(),
+			width: 0,
+			height: 0,
+		};
+	}
+
+	if (isFileContext(item)) {
+		return {
+			id: item.data.id,
+			title: item.data.title || item.display,
+			type: item.data.type,
+			modified_on: new Date().toISOString(),
+			width: 0,
+			height: 0,
+		};
+	}
+
+	return null;
+});
+
+const activeSrc = computed(() => {
+	if (!activeItem.value) return undefined;
+	return getImageUrl(activeItem.value);
+});
 </script>
 
 <template>
@@ -64,18 +112,22 @@ function handleRemove(item: PendingContextItem) {
 				v-for="item in contextStore.pendingContext"
 				:key="item.id"
 				:item="item"
+				:image-url="getImageUrl(item)"
 				removable
+				@click="handleCardClick(item)"
 				@remove="handleRemove(item)"
 				@mouseenter="highlight(item)"
 				@mouseleave="clearHighlight()"
 			/>
 		</div>
+
+		<FileLightbox v-if="activeFile" v-model="lightboxActive" :file="activeFile" :src="activeSrc" />
 	</div>
 </template>
 
 <style scoped>
 .ai-pending-context-wrapper {
-	--fade-size: 24px;
+	--fade-size: 1.375rem;
 	--fade-color: var(--theme--form--field--input--background);
 
 	position: relative;
@@ -118,11 +170,11 @@ function handleRemove(item: PendingContextItem) {
 .ai-pending-context {
 	display: flex;
 	flex-wrap: nowrap;
-	gap: 8px;
+	gap: 0.4375rem;
 	inline-size: 100%;
 	min-inline-size: 0;
 	overflow: auto hidden;
-	padding-block-end: 4px;
+	padding-block-end: 0.25rem;
 
 	/* Styled scrollbar for Firefox */
 	scrollbar-width: thin;
@@ -130,17 +182,17 @@ function handleRemove(item: PendingContextItem) {
 
 	/* Styled scrollbar for WebKit browsers */
 	&::-webkit-scrollbar {
-		block-size: 6px;
+		block-size: 0.3125rem;
 	}
 
 	&::-webkit-scrollbar-track {
 		background: transparent;
-		border-radius: 3px;
+		border-radius: 0.1875rem;
 	}
 
 	&::-webkit-scrollbar-thumb {
 		background: var(--theme--border-color);
-		border-radius: 3px;
+		border-radius: 0.1875rem;
 		transition: background var(--fast) var(--transition);
 
 		&:hover {

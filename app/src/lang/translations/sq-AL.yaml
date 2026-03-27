@@ -465,6 +465,8 @@ related_collection: Koleksion i Lidhur
 related_collections: Koleksione të Lidhura
 translations_collection: Koleksion i Përkthimeve
 languages_collection: Koleksion i Gjuhëve
+translations_preview_collections: Koleksione
+translations_preview_fields: Fusha
 import_data_input_placeholder: CSV ose JSON...
 import_data_button: Filloni Importimin
 import_data_indeterminate: Importimi i të Dhënave...
@@ -756,7 +758,6 @@ unexpected_error_copy: Ndodhi një gabim i papritur. Ju lutem provoni përsëri.
 copy_details: Kopjo Detajet
 no_app_access: S'ka Akses në Aplikacion
 no_app_access_copy: Ky përdorues nuk ka leje për të përdorur aplikacionin e administrimit.
-password_reset_sent: Nëse keni një llogari, kemi dërguar një lidhje të sigurt për të rivendosur fjalëkalimin tuaj
 password_reset_successful: Fjalëkalimi u rivendos me sukses
 back: Mbrapa
 filter: Filtri
@@ -1503,6 +1504,8 @@ ai:
   settings: Parametra
   tool_approval:
     disabled: I Çaktivizuar
+  ask_user_submit: Dorëzo
+  ask_user_next: Vazhdo
 ai_tools:
   items: Artikuj
   files: Skedarë

@@ -228,6 +228,7 @@ related_collection: Dastumad liammet
 related_collections: Dastumadoù liammet
 translations_collection: Dastumad troidigezhioù
 languages_collection: Dastumad yezhoù
+translations_preview_collections: Dastumadoù
 format: Furmad
 last_page: Pajenn ziwezhañ
 last_access: Mont diwezhañ
@@ -763,6 +764,8 @@ ai:
   settings: Arventennoù
   tool_approval:
     disabled: Diaktivet
+  ask_user_submit: Kas
+  ask_user_next: Da-heul
 ai_tools:
   items: Elfennoù
   files: Restroù

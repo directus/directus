@@ -94,7 +94,7 @@ function toggleSelection() {
 }
 
 function handleClick() {
-	if (props.selectMode === true) {
+	if (props.selectMode === true || props.modelValue.length > 0) {
 		toggleSelection();
 	} else {
 		router.push(props.to);
@@ -106,7 +106,10 @@ function handleClick() {
 	<div
 		class="card"
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
+		:tabindex="readonly || loading || modelValue.length > 0 ? -1 : 0"
 		@click="handleClick"
+		@keydown.self.enter.prevent="handleClick"
+		@keydown.self.space.prevent="handleClick"
 	>
 		<VIcon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
 		<div class="header">
@@ -138,13 +141,31 @@ function handleClick() {
 <style lang="scss" scoped>
 .loading {
 	.header {
-		margin-block-end: 8px;
+		margin-block-end: 0.4375rem;
 	}
 }
 
 .card {
 	position: relative;
 	cursor: pointer;
+
+	&:focus-visible {
+		outline: none;
+
+		&::after {
+			position: absolute;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			z-index: 2;
+			inline-size: 100%;
+			aspect-ratio: 1 / 1;
+			border-radius: var(--theme--border-radius);
+			outline: var(--focus-ring-width) solid var(--focus-ring-color);
+			outline-offset: var(--focus-ring-offset);
+			content: '';
+			pointer-events: none;
+		}
+	}
 
 	.header {
 		position: relative;
@@ -206,7 +227,7 @@ function handleClick() {
 			inset-inline-start: 0;
 			z-index: 1;
 			inline-size: 100%;
-			block-size: 48px;
+			block-size: 2.6875rem;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
@@ -224,13 +245,13 @@ function handleClick() {
 
 	&::before {
 		position: absolute;
-		inset-block-start: 7px;
-		inset-inline-start: 7px;
+		inset-block-start: 0.375rem;
+		inset-inline-start: 0.375rem;
 		z-index: 2;
-		inline-size: 18px;
-		block-size: 18px;
+		inline-size: 1rem;
+		block-size: 1rem;
 		background-color: var(--theme--background);
-		border-radius: 24px;
+		border-radius: 1.375rem;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 		content: '';
@@ -245,7 +266,7 @@ function handleClick() {
 		inset-block-start: 0;
 		inset-inline-start: 0;
 		z-index: 3;
-		margin: 4px;
+		margin: 0.25rem;
 		opacity: 0;
 		transition:
 			opacity var(--fast) var(--transition),
@@ -317,10 +338,10 @@ function handleClick() {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	block-size: 26px;
-	margin-block-start: 2px;
+	block-size: 1.4375rem;
+	margin-block-start: 0.125rem;
 	overflow: hidden;
-	line-height: 1.3em;
+	line-height: 1.3;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 

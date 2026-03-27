@@ -269,6 +269,7 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
+translations_preview_collections: Kolekcije
 format: Format
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
@@ -815,6 +816,8 @@ ai:
   settings: Podešavanja
   tool_approval:
     disabled: Isključeno
+  ask_user_submit: Pošalji
+  ask_user_next: Sljedeća
 ai_tools:
   items: Stavke
   files: Fajlovi

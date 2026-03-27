@@ -1,8 +1,13 @@
-import { InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '@directus/errors';
+import { toBoolean } from '@directus/utils';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
+import { resolveLoginRedirect } from '../auth/utils/resolve-login-redirect.js';
+import { clearSystemCache } from '../cache.js';
+import { getDatabase } from '../database/index.js';
+import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
@@ -10,6 +15,7 @@ import { RevisionsService } from '../services/revisions.js';
 import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
+import { generateTranslations } from '../utils/generate-translations.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
@@ -129,7 +135,9 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			try {
-				await service.import(req.params['collection']!, mimeType, fileStream);
+				await service.import(req.params['collection']!, mimeType, fileStream, {
+					background: toBoolean(req.query['background']),
+				});
 			} catch (err: any) {
 				return next(err);
 			}
@@ -173,6 +181,29 @@ router.post(
 );
 
 router.post(
+	'/translations/generate',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.admin) throw new ForbiddenError();
+
+		const result = await generateTranslations(req.body, {
+			knex: getDatabase(),
+			schema: req.schema,
+			accountability: req.accountability,
+		});
+
+		try {
+			await clearSystemCache({ forced: true });
+		} catch (error) {
+			useLogger().error(error, 'Failed to clear system cache after translation changes');
+		}
+
+		res.locals['payload'] = { data: result };
+		return next();
+	}),
+	respond,
+);
+
+router.post(
 	'/cache/clear',
 	asyncHandler(async (req, res) => {
 		const service = new UtilsService({
@@ -185,6 +216,29 @@ router.post(
 		await service.clearCache({ system: clearSystemCache });
 
 		res.status(200).end();
+	}),
+);
+
+router.post(
+	'/resolve-redirect',
+	asyncHandler(async (req, res) => {
+		if (!req.body?.redirect) {
+			throw new InvalidPayloadError({ reason: `"redirect" is required` });
+		}
+
+		if (req.body?.provider && typeof req.body.provider !== 'string') {
+			throw new InvalidPayloadError({ reason: `"provider" must be a string` });
+		}
+
+		try {
+			const resolved = resolveLoginRedirect(req.body.redirect, {
+				provider: req.body.provider,
+			});
+
+			return res.json({ data: resolved });
+		} catch {
+			throw new InvalidPayloadError({ reason: `Invalid "redirect" provided` });
+		}
 	}),
 );
 

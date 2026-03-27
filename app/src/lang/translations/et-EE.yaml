@@ -380,6 +380,7 @@ related_collection: Seotud kogu
 related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
+translations_preview_collections: Kogud
 import_data_input_placeholder: CSV või JSON...
 import_data_button: Alusta importi
 import_data_indeterminate: Laeb Andmeid...
@@ -1018,6 +1019,8 @@ ai:
   settings: Seaded
   tool_approval:
     disabled: keelatud
+  ask_user_submit: Saada
+  ask_user_next: Järgmine
 ai_tools:
   items: kirjet
   files: Failid

@@ -18,6 +18,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
+import type { ContentVersionWithType } from '@/types/versions';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -26,7 +27,7 @@ interface Props {
 	collection: string;
 	primaryKey: PrimaryKey;
 	mode: 'version' | 'revision' | 'collab';
-	currentVersion: ContentVersion | null | undefined;
+	currentVersion: ContentVersionWithType | null | undefined;
 	currentCollab: { from: Item; to: Item } | undefined;
 	revisions?: Revision[] | null;
 	collabContext?: CollabContext;
@@ -408,7 +409,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				<VCardActions>
 					<VButton secondary @click="promote(false)">{{ $t('keep') }}</VButton>
 					<VButton :loading="promoting" kind="danger" @click="promote(true)">
-						{{ $t('delete_label') }}
+						{{ $t(currentVersion!.type === 'global' ? 'discard_changes' : 'delete_label') }}
 					</VButton>
 				</VCardActions>
 			</VCard>
@@ -418,13 +419,14 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 <style lang="scss" scoped>
 .comparison-modal {
-	--header-bar-height: 60px;
+	--header-bar-height: 3.375rem;
 	--comparison-modal--width: max(100% - 8vw, 100% - var(--header-bar-height) * 2);
 	--comparison-modal--height: var(--comparison-modal--width);
-	--comparison-modal--padding-x: 28px;
-	--comparison-modal--padding-y: 20px;
+	--comparison-modal--padding-x: 1.5625rem;
+	--comparison-modal--padding-y: 1.125rem;
 	--comparison-modal--border-radius: var(--theme--border-radius);
-	--comparison-modal--peek-width: calc(5px);
+	--comparison-modal--peek-width: calc(0.3125rem);
+	/* stylelint-disable-next-line unit-disallowed-list -- fallback value */
 	--comparison-modal--divider-width: var(--theme--border-width, 2px);
 	--comparison-modal--divider-color: var(--theme--border-color-accent);
 	--comparison-modal--divider-dash: calc(var(--comparison-modal--divider-width) * 2);
@@ -438,7 +440,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	inline-size: var(--comparison-modal--width);
 	overflow: hidden;
 
-	@media (min-width: 706px) {
+	@media (width >= 39.6875rem) {
 		--comparison-modal--peek-width: 0;
 	}
 
@@ -451,7 +453,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		scroll-snap-type: x proximity;
 		scroll-behavior: smooth;
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			overflow: hidden auto;
 			scroll-snap-type: none;
 		}
@@ -468,7 +470,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		min-block-size: 100%;
 		position: relative;
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			min-inline-size: 100%;
 		}
 	}
@@ -480,12 +482,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		scroll-snap-stop: always;
 		inline-size: calc(var(--comparison-modal--width) - var(--comparison-modal--peek-width));
 
-		@media (min-width: 544px) {
+		@media (width >= 30.625rem) {
 			flex: 0 0 66%;
 			inline-size: auto;
 		}
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			flex: 0 0 50%;
 			inline-size: auto;
 			scroll-snap-align: none;
@@ -519,7 +521,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		flex: 0 0 auto;
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal--padding-x);
-		padding-block: 18px;
+		padding-block: 1rem;
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 
 		.columns {
@@ -534,13 +536,13 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				display: flex;
 				align-items: center;
 				justify-content: flex-start;
-				gap: 6px;
+				gap: 0.3125rem;
 				font-weight: 600;
 			}
 
 			.compare-to-label {
-				font-size: 14px;
-				line-height: 20px;
+				font-size: 0.8125rem;
+				line-height: 1.3846;
 				color: var(--theme--foreground);
 				white-space: nowrap;
 			}
@@ -548,14 +550,14 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			&.left {
 				display: none;
 
-				@media (min-width: 960px) {
+				@media (width >= 54rem) {
 					display: flex;
 					align-items: center;
-					gap: 24px;
+					gap: 1.375rem;
 
 					.fields-changed {
-						font-size: 14px;
-						line-height: 20px;
+						font-size: 0.8125rem;
+						line-height: 1.3846;
 						font-weight: 600;
 						color: var(--theme--foreground-subdued);
 					}
@@ -566,9 +568,9 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				display: flex;
 				justify-content: center;
 				flex-direction: column;
-				gap: 16px;
+				gap: 0.875rem;
 
-				@media (min-width: 960px) {
+				@media (width >= 54rem) {
 					flex-direction: row;
 					justify-content: flex-end;
 				}
@@ -577,7 +579,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					margin-block-end: 0;
 					justify-content: start;
 
-					@media (min-width: 960px) {
+					@media (width >= 54rem) {
 						display: none;
 					}
 				}
@@ -587,37 +589,37 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					min-inline-size: auto;
 					flex: 1 1 100%;
 					text-align: center;
-					margin-block-end: 12px;
+					margin-block-end: 0.6875rem;
 					justify-content: start;
 
-					@media (min-width: 706px) {
+					@media (width >= 39.6875rem) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
 					}
 
-					@media (min-width: 960px) {
+					@media (width >= 54rem) {
 						justify-content: flex-start;
 					}
 				}
 
 				.footer-actions {
-					@media (min-width: 706px) {
+					@media (width >= 39.6875rem) {
 						display: flex;
 						align-items: center;
-						gap: 24px;
+						gap: 1.375rem;
 					}
 				}
 
 				.buttons-container {
 					flex: 1 1 100%;
 					display: flex;
-					gap: 12px;
+					gap: 0.6875rem;
 
 					.button-text {
 						display: none;
 
-						@media (min-width: 544px) {
+						@media (width >= 30.625rem) {
 							display: inline;
 						}
 					}
@@ -639,19 +641,19 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					.v-icon {
 						margin: 0;
 
-						@media (min-width: 544px) {
-							margin-inline-end: 8px;
+						@media (width >= 30.625rem) {
+							margin-inline-end: 0.4375rem;
 						}
 					}
 
-					@media (min-width: 544px) {
-						--v-button-min-width: 140px;
+					@media (width >= 30.625rem) {
+						--v-button-min-width: 7.875rem;
 					}
 				}
 			}
 		}
 
-		@media (min-width: 706px) {
+		@media (width >= 39.6875rem) {
 			.columns {
 				gap: 0;
 			}
@@ -667,7 +669,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			grid-column: start / full;
 		}
 
-		@media (max-width: 1330px) {
+		@media (width < 74.8125rem) {
 			.fill,
 			.full,
 			.half,

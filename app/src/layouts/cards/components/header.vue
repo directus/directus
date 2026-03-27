@@ -15,18 +15,23 @@ const props = withDefaults(
 		sort: string[];
 		showSelect?: ShowSelect;
 		selection?: (number | string)[];
+		extraSelection?: (number | string)[];
 	}>(),
 	{
 		showSelect: 'multiple',
 		selection: () => [],
+		extraSelection: () => [],
 	},
 );
 
-const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
+const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection', 'update:extraSelection']);
 
 const sizeSync = useSync(props, 'size', emit);
 const sortSync = useSync(props, 'sort', emit);
 const selectionSync = useSync(props, 'selection', emit);
+const extraSelectionSync = useSync(props, 'extraSelection', emit);
+
+const totalSelectionCount = computed(() => selectionSync.value.length + extraSelectionSync.value.length);
 
 const descending = computed(() => props.sort[0]?.startsWith('-'));
 
@@ -63,18 +68,22 @@ function toggleDescending() {
 }
 
 function onClickSelect() {
-	if (selectionSync.value.length) selectionSync.value = [];
-	else if (props.showSelect === 'multiple') emit('select-all');
+	if (totalSelectionCount.value) {
+		selectionSync.value = [];
+		extraSelectionSync.value = [];
+	} else if (props.showSelect === 'multiple') {
+		emit('select-all');
+	}
 }
 </script>
 
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
-				<template v-if="selectionSync.length">
+			<button type="button" :class="{ 'no-selection': !totalSelectionCount }" @click="onClickSelect">
+				<template v-if="totalSelectionCount">
 					<VIcon name="cancel" outline />
-					<span class="label">{{ $t('n_items_selected', selectionSync.length) }}</span>
+					<span class="label">{{ $t('n_items_selected', totalSelectionCount) }}</span>
 				</template>
 				<template v-else>
 					<VIcon name="check_circle" outline />
@@ -132,9 +141,9 @@ function onClickSelect() {
 	align-items: center;
 	justify-content: space-between;
 	inline-size: 100%;
-	block-size: 52px;
-	margin-block-end: 36px;
-	padding: 0 8px;
+	block-size: 2.9375rem;
+	margin-block-end: 2rem;
+	padding: 0 0.4375rem;
 	background-color: var(--theme--background);
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -144,8 +153,8 @@ function onClickSelect() {
 .start {
 	.label {
 		display: inline-block;
-		margin-inline-start: 4px;
-		transform: translateY(1px);
+		margin-inline-start: 0.25rem;
+		transform: translateY(0.0625rem);
 	}
 
 	.no-selection {
@@ -164,7 +173,7 @@ function onClickSelect() {
 	color: var(--theme--foreground-subdued);
 
 	.size-selector {
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -173,7 +182,7 @@ function onClickSelect() {
 	}
 
 	.sort-selector {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {

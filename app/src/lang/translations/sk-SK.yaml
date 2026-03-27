@@ -463,6 +463,8 @@ related_collection: Súvisiaca zbierka
 related_collections: Súvisiace zbierky
 translations_collection: Zbierka prekladov
 languages_collection: Zbierka jazykov
+translations_preview_collections: Zbierky
+translations_preview_fields: Polia
 import_data_input_placeholder: CSV alebo JSON...
 import_data_button: Spustiť import
 import_data_indeterminate: Prebieha import dát...
@@ -754,7 +756,6 @@ unexpected_error_copy: Vyskytla sa neočakávaná chyba. Prosím skúste znova.
 copy_details: Kopírovať podrobnosti
 no_app_access: Žiadny prístup applikácie
 no_app_access_copy: Tento používateľ nemôže používať admin.
-password_reset_sent: Ak máte účet, poslali sme vám bezpečný odkaz na obnoveni vášho hesla
 password_reset_successful: Heslo úspešne obnovené
 back: Späť
 filter: Filter
@@ -1499,6 +1500,8 @@ ai:
   settings: Nastavenia
   tool_approval:
     disabled: Vypnuté
+  ask_user_submit: Odoslať
+  ask_user_next: Ďalej
 ai_tools:
   items: Položky
   files: Súbory

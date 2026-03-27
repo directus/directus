@@ -226,6 +226,7 @@ switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
 rename_version: Rename Version
+reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
@@ -238,6 +239,7 @@ delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
   You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
+content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -278,6 +280,10 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+delete_folder_dialog:
+  move_content: Move content one level up
+  delete_content: Delete all content
+  content_behavior: What should happen to the folder contents?
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -556,10 +562,37 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
+enable_translations: Enable Translations
+manage_translation_fields: Add Translation Fields
+fields_to_translate: Fields to Translate
+fields_to_add_to_translations: Fields to Add to Translations
+translations_collection_name: Translations collection name
+translations_already_enabled: Translations enabled
+translations_manage_helper_description: You can add more fields to translate from this collection.
+translations_copy_data_note: Fields are copied to the translations collection. Existing data is not migrated.
+add_fields: Add Fields
+show_advanced_options: Show Relationship Details
+hide_advanced_options: Hide Relationship Details
+translations_field_name_required: All translation field names are required.
+translations_foreign_key_name_conflict: Parent and language foreign key names must be different.
+translations_duplicate_field_names: Translation field names must be unique.
+translation_configuration: Translation Configuration
+translations_invalid_config_warning:
+  '{count} translation config could not be resolved and will remain read-only | {count} translation configs could not be
+  resolved and will remain read-only'
+translations_collection_already_exists: This translations collection already exists and will be reused
+translations_fields_up_to_date: All eligible fields are already present in the translations collection.
+translations_preview_collections: Collections
+translations_preview_fields: Fields
+translations_preview_relations: Relations
+ungrouped: Ungrouped
+translations_enable_helper_description: Translate content into multiple languages.
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
+import_background: Import in background
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
+import_upload_success: '{filename} successfully uploaded. Importing data in background.'
 import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
@@ -1113,10 +1146,19 @@ deployment:
       settings_warning:
         Changing credentials or team ID may affect your selected projects if they are no longer accessible with the new
         configuration.
+      account_type:
+        label: Account Type
+        hint: Choose Team to use a Team ID, or Personal account to use your Vercel username for deployment links.
+        team: Team
+        personal: Personal account
       team_id:
         label: Team ID
-        hint: Required for team accounts, leave empty for personal accounts.
+        hint: Required for team accounts. Find it in your Vercel team settings.
         placeholder: team_xxxxxxxxxxxxx
+      username:
+        label: Username
+        hint: Your Vercel username for personal accounts. Find it in your Vercel account URL (vercel.com/username).
+        placeholder: your-username
     netlify:
       name: Netlify
       settings_warning:
@@ -1136,13 +1178,11 @@ deployment:
       id: Deployment ID
       started: Started
       author: Author
-      notice:
-        Only deployments triggered from Directus are shown here. Deployments made directly on {provider} will not
-        appear.
       refresh: Refresh
       deploy_preview: Deploy Preview
       empty: No Deployment Runs
       empty_copy: This project has no deployment history yet.
+      external_user: External User
     run:
       title: '{project}: Deployment Details'
       id: Deployment ID
@@ -1154,8 +1194,10 @@ deployment:
       no_logs: No logs available
       download_logs: Download logs
       open_deployment: Visit
+      open_in_provider: Open in {provider}
   no_providers: No Deployment Providers
   no_providers_copy: Configure a deployment provider in the settings to get started.
+  no_providers_copy_nonadmin: No deployment providers are available for your account. Contact an administrator.
   select_provider: Select a Provider
   select_provider_copy: Choose a deployment provider from the sidebar to view your projects.
   no_projects: No Projects
@@ -1175,6 +1217,17 @@ deployment:
   dashboard:
     projects: Projects ({count})
     deployed: Deployed
+    total_projects: 'Total Project: {count} | Total Projects: {count}'
+    active_deployments: 'Active Deployment: {count} | Active Deployments: {count}'
+    failed_builds: 'Failed Build: {count} | Failed Builds: {count}'
+    successful_builds: 'Successful Build: {count} | Successful Builds: {count}'
+    total_deployments: 'Deployment: {count} | Deployments: {count}'
+    average_build_time: 'Avg Build Time: {value}'
+    success_rate: 'Success Rate: {value}%'
+  range:
+    1d: Last 24 Hours
+    7d: Last 7 Days
+    30d: Last 30 Days
 dashboard: Dashboard
 panel: Panel
 panel_options: Panel Options
@@ -1535,6 +1588,7 @@ fields:
     project_color: Project Color
     project_logo: Project Logo
     default_language: Default Language
+    project_owner: Project Owner
     branding: Branding
     public_foreground: Public Foreground
     public_background: Public Background
@@ -1570,7 +1624,11 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    report_feature_url: Report Feature URL
+    report_bug_url: Report Bug URL
+    report_error_url: Report Error URL
     collaborative_editing: Collaborative Editing
+    collaborative_editing_enabled: Enable Collaborative Editing
     collaborative_editing_note: WebSockets are required for collaborative editing to work.
     ai_notice:
       'AI Assistant provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the
@@ -1649,6 +1707,7 @@ fields:
     users: Users in Role
     parent: Parent Role
     children: Child Roles
+    policies: Policies
   directus_policies:
     name: Policy Name
     description: Description
@@ -1699,6 +1758,8 @@ field_options:
     only_track_activity: Only Track Activity
     do_not_track_anything: Do Not Track Anything
     collection_setup: Collection Setup
+    collection_naming_translations_note:
+      "Override the collection's display name in the app based on the user's language."
     note_placeholder: A description of this collection...
     hidden_label: Hide within the App
     singleton: Treat as single object
@@ -1718,6 +1779,7 @@ field_options:
     accountability_divider: Accountability
     duplication_divider: Duplication
     preview_divider: Preview
+    content_translations_divider: Content Translations
     content_versioning_divider: Content Versioning
     enable_versioning: Enable Versioning
   directus_files:
@@ -1828,6 +1890,14 @@ ai:
   prompt_staged: Prompt staged
   items_staged: Items staged
   some_items_staged: '{count} item(s) staged (limit reached)'
+  files_staged: Files staged
+  some_files_staged: '{count} file(s) staged (limit reached)'
+  attach_file_subtitle: Attach existing files
+  upload_file_subtitle: Upload local files
+  file_upload_failed: 'Failed to upload {name}'
+  file_upload_not_supported: File uploads are not supported for this provider
+  unsupported_file_type: Unsupported file type
+  provider_locked_tooltip: Cannot change providers after uploading files. Clear the existing conversation to switch.
   image_preview: Image preview
   item_staged: Item staged
   invalid_collection: Invalid collection
@@ -1947,6 +2017,7 @@ no_permissions: No Permissions
 permission_add_collection: Add Collection
 default_label: Default
 delete_label: Delete
+discard_label: Discard
 delete_are_you_sure: >-
   This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
@@ -2078,6 +2149,12 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  group-tabs:
+    name: Tabs
+    description: Display fields or groups as tabs
+    overwrite_group_width: Overwrite Group Width
+    fill_width: Fill Width
+    fill_width_note: Allow this group to fill the full width of the page.
   presentation-links:
     presentation-links: Buttons
     description: Configurable link buttons for launching dynamic URLs or triggering Flows
@@ -2913,6 +2990,7 @@ series_grouping: Series Grouping
 date_precision: Date Precision
 export_dashboard: Export Dashboard
 duplicate_dashboard: Duplicate Dashboard
+duplicate_policy: Duplicate Policy
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent

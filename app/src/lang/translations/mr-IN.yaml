@@ -465,6 +465,8 @@ related_collection: संबंधित कलेक्शन
 related_collections: संबंधीत कलेक्शन्स
 translations_collection: भाषांतर कलेक्शन
 languages_collection: भाषा कलेक्शन
+translations_preview_collections: कलेक्शन्स
+translations_preview_fields: फील्ड
 import_data_input_placeholder: CSV किंवा JSON...
 import_data_button: आयात सुरू करा
 import_data_indeterminate: डेटा इंपोर्ट करत आहे...
@@ -756,7 +758,6 @@ unexpected_error_copy: एक अनपेक्षित त्रुटी आ
 copy_details: तपशील कॉपी करा
 no_app_access: तपशील कॉपी करा
 no_app_access_copy: या वापरकर्त्याला प्रशासक ॲप वापरण्याची परवानगी नाही.
-password_reset_sent: तुमचे खाते असल्यास, तुमचा पासवर्ड रीसेट करण्यासाठी आम्ही तुम्हाला एक सुरक्षित लिंक पाठवली आहे
 password_reset_successful: पासवर्ड यशस्वीरित्या रीसेट केला
 back: मागे
 filter: फिल्टर
@@ -1503,6 +1504,8 @@ ai:
   settings: सेटिंग्स
   tool_approval:
     disabled: बंद करा
+  ask_user_submit: सादर करा
+  ask_user_next: पुढे
 ai_tools:
   items: आयटम्स
   files: फाईल्स

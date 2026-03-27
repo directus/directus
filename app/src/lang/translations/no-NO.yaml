@@ -387,6 +387,7 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
+translations_preview_collections: Kolleksjoner
 import_data_button: Start import
 import_data_indeterminate: Importerer data...
 import_data_success: Importeringen fra {filename} var vellykket
@@ -622,7 +623,6 @@ unexpected_error: Uventet feil
 copy_details: Kopier detaljer
 no_app_access: Ingen app-tilgang
 no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
-password_reset_sent: Hvis du har en konto, har vi sent deg en sikker lenke for å tilbakestille passordet ditt
 password_reset_successful: Passord tilbakestilt
 back: Tilbake
 filter: Filter
@@ -789,6 +789,8 @@ ai:
   settings: Innstillinger
   tool_approval:
     disabled: Deaktivert
+  ask_user_submit: Send inn
+  ask_user_next: Neste
 ai_tools:
   items: Elementer
   files: Filer

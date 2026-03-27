@@ -318,21 +318,21 @@ function isInterpolation(value: any) {
 .input-code {
 	position: relative;
 	inline-size: 100%;
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .small {
 	position: absolute;
 	inset-inline-end: 0;
-	inset-block-end: -20px;
+	inset-block-end: -1.125rem;
 	font-style: italic;
 	text-align: end;
 }
 
 .v-button {
 	position: absolute;
-	inset-block-start: 10px;
-	inset-inline-end: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 4;
 	color: var(--theme--primary);
 	cursor: pointer;

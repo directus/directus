@@ -1,8 +1,8 @@
-import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 import { buildProviderConfigs, createAIProviderRegistry } from './registry.js';
 import type { AISettings, ProviderConfig } from './types.js';
 
@@ -10,8 +10,8 @@ vi.mock('@ai-sdk/openai', () => ({
 	createOpenAI: vi.fn(() => ({ languageModel: vi.fn() })),
 }));
 
-vi.mock('@ai-sdk/anthropic', () => ({
-	createAnthropic: vi.fn(() => ({ languageModel: vi.fn() })),
+vi.mock('./anthropic-file-support.js', () => ({
+	createAnthropicWithFileSupport: vi.fn(() => ({ languageModel: vi.fn() })),
 }));
 
 vi.mock('@ai-sdk/google', () => ({
@@ -146,7 +146,7 @@ describe('createAIProviderRegistry', () => {
 	it('creates registry with Anthropic provider', () => {
 		const configs: ProviderConfig[] = [{ type: 'anthropic', apiKey: 'sk-anthropic' }];
 		createAIProviderRegistry(configs);
-		expect(createAnthropic).toHaveBeenCalledWith({ apiKey: 'sk-anthropic' });
+		expect(createAnthropicWithFileSupport).toHaveBeenCalledWith('sk-anthropic');
 	});
 
 	it('creates registry with Google provider', () => {
@@ -228,7 +228,7 @@ describe('createAIProviderRegistry', () => {
 
 		createAIProviderRegistry(configs);
 		expect(createOpenAI).toHaveBeenCalledWith({ apiKey: 'sk-openai' });
-		expect(createAnthropic).toHaveBeenCalledWith({ apiKey: 'sk-anthropic' });
+		expect(createAnthropicWithFileSupport).toHaveBeenCalledWith('sk-anthropic');
 		expect(createGoogleGenerativeAI).toHaveBeenCalledWith({ apiKey: 'google-key' });
 	});
 });

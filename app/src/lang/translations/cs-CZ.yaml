@@ -472,6 +472,8 @@ related_collection: Související kategorie
 related_collections: Související kolekce
 translations_collection: Kolekce překladů
 languages_collection: Kolekce jazyků
+translations_preview_collections: Kategorie
+translations_preview_fields: Pole
 import_data_input_placeholder: CSV nebo JSON...
 import_data_button: Zahájit import
 import_data_indeterminate: Importuji data...
@@ -763,7 +765,6 @@ unexpected_error_copy: Došlo k neočekávané chybě, zkuste to prosím znovu.
 copy_details: Kopírovat podrobnosti
 no_app_access: Žádný přístup k aplikaci
 no_app_access_copy: Tento uživatel nemá oprávnění používat aplikaci pro správu.
-password_reset_sent: Pokud máte účet, zaslali jsme Vám bezpečný odkaz pro obnovení hesla
 password_reset_successful: Heslo bylo úspěšně obnoveno
 back: Zpět
 filter: Filtr
@@ -1509,6 +1510,8 @@ ai:
   settings: Nastavení
   tool_approval:
     disabled: Zakázáno
+  ask_user_submit: Potvrdit
+  ask_user_next: Další
 ai_tools:
   items: Položky
   files: Soubory

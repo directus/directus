@@ -465,6 +465,8 @@ related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 translations_collection: Vertimų kolekcija
 languages_collection: Kalbų kolekcija
+translations_preview_collections: Kolekcijos
+translations_preview_fields: Laukai
 import_data_input_placeholder: CSV arba JSON...
 import_data_button: Pradėti importavimą
 import_data_indeterminate: Importuojami duomenys...
@@ -757,7 +759,6 @@ unexpected_error_copy: Įvyko nenumatyta klaida. Bandykite dar kartą.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
 no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
-password_reset_sent: Jeigu Jūs turite paskyrą, tai Jums bus išsiųsta nuorodą su slaptažodžio atstatymo instrukcija
 password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
 filter: Filtras
@@ -1505,6 +1506,8 @@ ai:
   settings: Nustatymai
   tool_approval:
     disabled: Išjungta
+  ask_user_submit: Išsaugoti
+  ask_user_next: Tęsti
 ai_tools:
   items: Įrašai
   files: Failai

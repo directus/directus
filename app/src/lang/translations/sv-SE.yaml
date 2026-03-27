@@ -466,6 +466,8 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
+translations_preview_collections: Kollektioner
+translations_preview_fields: Fält
 import_data_input_placeholder: CSV eller JSON...
 import_data_button: Starta import
 import_data_indeterminate: Importerar data...
@@ -734,7 +736,6 @@ unexpected_error_copy: Ett oväntat fel har uppstått. Försök igen.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
 no_app_access_copy: Den här användaren får inte använda administratörs-appen.
-password_reset_sent: Om du har ett konto har vi skickat en säker länk till dig för att återställa ditt lösenord
 password_reset_successful: Lösenordet har återställts
 back: Tillbaka
 filter: Filtrera
@@ -1390,6 +1391,8 @@ ai:
   settings: Inställningar
   tool_approval:
     disabled: Inaktiverad
+  ask_user_submit: Skicka
+  ask_user_next: Nästa
 ai_tools:
   items: Objekt
   files: Filer

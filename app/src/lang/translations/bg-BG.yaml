@@ -451,6 +451,8 @@ related_collection: Релативна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
+translations_preview_collections: Колекции
+translations_preview_fields: Полета
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Започване на импортирането
 import_data_indeterminate: Импортиране на данните...
@@ -731,7 +733,6 @@ unexpected_error: Неочаквана грешка
 copy_details: Копиране на детайли
 no_app_access: Без достъп до приложението
 no_app_access_copy: Не е позволено използването на администраторското приложение от потребителя.
-password_reset_sent: Ако профилът съществува, ще бъде изпратен имейл с подсигурена връзка за нулиране на паролата
 password_reset_successful: Паролата е нулирана успешно
 back: Назад
 filter: Филтриране
@@ -1423,6 +1424,8 @@ ai:
   settings: Настройки
   tool_approval:
     disabled: Изключване
+  ask_user_submit: Изпращане
+  ask_user_next: Напред
 ai_tools:
   items: Записи
   files: Файлове

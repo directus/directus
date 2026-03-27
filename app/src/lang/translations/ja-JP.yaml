@@ -525,6 +525,8 @@ related_collection: 関連するコレクション
 related_collections: 関連するコレクション
 translations_collection: 翻訳コレクション
 languages_collection: 言語コレクション
+translations_preview_collections: コレクション
+translations_preview_relations: リレーション
 import_data_input_placeholder: CSV または JSON
 import_data_button: インポートを開始
 import_data_indeterminate: データをインポート中...
@@ -833,7 +835,6 @@ unexpected_error_copy: 予期しないエラーが発生しました。もう一
 copy_details: 詳細をコピー
 no_app_access: アプリにアクセスできません
 no_app_access_copy: このユーザーは管理者用アプリを使用できません
-password_reset_sent: アカウントをお持ちの場合は、パスワードをリセットするための安全なリンクを送信しました。
 password_reset_successful: パスワードをリセットしました
 back: 戻る
 filter: 絞り込み
@@ -1671,6 +1672,8 @@ ai:
     disabled: 無効
   enabled_tools: 有効なツール
   disabled_tools: 無効なツール
+  ask_user_submit: 送信
+  ask_user_next: 次
   tool_descriptions:
     items: コンテンツの作成、閲覧、編集、削除
     files: ファイルの検索と管理

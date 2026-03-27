@@ -19,14 +19,14 @@ import type {
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
-import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, isObject, isPlainObject, pick } from 'lodash-es';
+import { clone, cloneDeep, isNil, isObject, isPlainObject } from 'lodash-es';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
+import { getFunctions, getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
+import { useLogger } from '../logger/index.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { getSecret } from '../utils/get-secret.js';
@@ -172,7 +172,13 @@ export class PayloadService {
 				// In-system calls can still get the decrypted value
 				if (accountability === null) {
 					const key = getSecret();
-					return await decrypt(value, key);
+
+					try {
+						return await decrypt(value, key);
+					} catch (err) {
+						useLogger().warn(`Failed to decrypt field value: ${(err as Error).message}`);
+						return null;
+					}
 				}
 
 				// Requests from the API entrypoints have accountability and shouldn't get the raw value
@@ -248,6 +254,10 @@ export class PayloadService {
 		this.processGeometries(fieldEntries, processedPayload, action);
 		this.processDates(fieldEntries, processedPayload, action, aliasMap, aggregate);
 
+		if (action === 'read') {
+			this.processJsonFunctionResults(processedPayload, aliasMap);
+		}
+
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
@@ -261,7 +271,7 @@ export class PayloadService {
 		}
 
 		if (action === 'read') {
-			this.processAggregates(processedPayload, aggregate);
+			await this.processAggregates(processedPayload, aggregate);
 		}
 
 		if (Array.isArray(payload)) {
@@ -271,7 +281,7 @@ export class PayloadService {
 		return processedPayload[0]!;
 	}
 
-	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
+	async processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
 		/**
 		 * Build access path with -> delimiter
 		 *
@@ -283,6 +293,8 @@ export class PayloadService {
 			return acc;
 		}, []);
 
+		const fieldEntries = this.schema.collections[this.collection]!.fields;
+
 		/**
 		 * Expand -> delimited keys in the payload to the equivalent expanded object
 		 *
@@ -291,8 +303,30 @@ export class PayloadService {
 		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
-				aggregateKeys.forEach((key) => delete item[key]);
+				for (const key of aggregateKeys) {
+					// Ignore keys that do not follow the `A->B` naming like count=*
+					if (key in item === false) continue;
+
+					const [operation, fieldName] = key.split('->') as [string, string];
+
+					const aggregateResult = { [fieldName]: item[key] };
+
+					if (fieldEntries[fieldName]?.special?.length > 0) {
+						const newValue = await this.processField(
+							fieldEntries[fieldName],
+							aggregateResult,
+							'read',
+							this.accountability,
+						);
+
+						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
+					}
+
+					if (!isPlainObject(item[operation])) item[operation] = {};
+
+					item[operation][fieldName] = aggregateResult[fieldName];
+					delete item[key];
+				}
 			}
 		}
 	}
@@ -352,6 +386,26 @@ export class PayloadService {
 		}
 
 		return payloads;
+	}
+
+	/**
+	 * When accessing JSON paths that contain objects or arrays, certain databases return stringified
+	 * JSON (MySQL, SQLite, MSSQL, Oracle). The fn helper's parseJsonResult handles this per-dialect —
+	 * vendors whose drivers already deserialize the result (e.g. pg for PostgreSQL) use a no-op.
+	 */
+	processJsonFunctionResults<T extends Partial<Record<string, any>>[]>(
+		payloads: T,
+		aliasMap: Record<string, string> = {},
+	) {
+		const fn = getFunctions(this.knex, this.schema);
+
+		for (const [aliasField, originalField] of Object.entries(aliasMap)) {
+			if (!originalField.startsWith('json(') || !originalField.endsWith(')')) continue;
+
+			for (const payload of payloads) {
+				payload[aliasField] = fn.parseJsonResult(payload[aliasField]);
+			}
+		}
 	}
 
 	/**
@@ -1024,7 +1078,7 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(delta: Partial<Item>): Promise<string | null> {
+	async prepareDelta(delta: Partial<Item>): Promise<Partial<Item> | null> {
 		let payload = cloneDeep(delta);
 
 		for (const key in payload) {
@@ -1037,6 +1091,6 @@ export class PayloadService {
 
 		if (Object.keys(payload).length === 0) return null;
 
-		return JSON.stringify(payload);
+		return payload;
 	}
 }

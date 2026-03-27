@@ -270,6 +270,8 @@ related_collection: Rilata kolekto
 related_collections: Rilataj kolektoj
 translations_collection: Kolekto de tradukoj
 languages_collection: Kolekto de lingvoj
+translations_preview_collections: Kolektoj
+translations_preview_fields: Kampoj
 import_data_input_placeholder: CSV aŭ JSON...
 import_data_button: Komenci importi
 import_data_success: Datumoj sukcese importitaj de {filename}
@@ -814,6 +816,7 @@ ai:
   settings: Agordoj
   tool_approval:
     disabled: Malŝaltita
+  ask_user_next: Sekva
 ai_tools:
   items: Eroj
   files: Dosieroj

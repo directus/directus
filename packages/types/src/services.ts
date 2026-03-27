@@ -217,7 +217,7 @@ interface FileService<T = File> {
 	 */
 	uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<T> & { storage: string },
+		data: Partial<T>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey>;
@@ -344,7 +344,7 @@ interface PayloadService {
 		parent: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PayloadServiceProcessRelationResult>;
-	prepareDelta(data: Partial<Item>): Promise<string | null>;
+	prepareDelta(data: Partial<Item>): Promise<Partial<Item> | null>;
 }
 
 /**
@@ -468,7 +468,7 @@ interface DeploymentService {
  */
 interface DeploymentProjectsService {
 	updateSelection(
-		deploymentId: string,
+		provider: ProviderType,
 		create: { external_id: string; name: string }[],
 		deleteIds: PrimaryKey[],
 	): Promise<StoredProject[]>;

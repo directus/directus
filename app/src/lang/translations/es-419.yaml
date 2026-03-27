@@ -519,6 +519,8 @@ related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
 translations_collection: Traducción de la Colección
 languages_collection: Coleccion de Idiomas
+translations_preview_collections: Colecciones
+translations_preview_fields: Campos
 import_data_input_placeholder: CSV o JSON...
 import_data_button: Empezar Importación
 import_data_indeterminate: Importando Datos...
@@ -825,7 +827,6 @@ unexpected_error_copy: Ocurrió un error inesperado. Por favor, intente nuevamen
 copy_details: Copiar Detalles
 no_app_access: Sin acceso a la aplicación
 no_app_access_copy: Este usuario no tiene permiso para usar la aplicación de administración.
-password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Restablecimiento de contraseña con éxito
 back: Regresar
 filter: Filtro
@@ -1605,6 +1606,8 @@ ai:
   settings: Ajustes
   tool_approval:
     disabled: Deshabilitado
+  ask_user_submit: Enviar
+  ask_user_next: Siguiente
 ai_tools:
   items: Ítems
   files: Archivos

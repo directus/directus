@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface UnprocessableContentErrorExtensions {
 	reason: string;
@@ -7,8 +7,5 @@ export interface UnprocessableContentErrorExtensions {
 const messageConstructor = (extensions: UnprocessableContentErrorExtensions) =>
 	`Can't process content. ${extensions.reason}.`;
 
-export const UnprocessableContentError = createError<UnprocessableContentErrorExtensions>(
-	ErrorCode.UnprocessableContent,
-	messageConstructor,
-	422,
-);
+export const UnprocessableContentError: DirectusErrorConstructor<UnprocessableContentErrorExtensions> =
+	createError<UnprocessableContentErrorExtensions>(ErrorCode.UnprocessableContent, messageConstructor, 422);

@@ -1,8 +1,9 @@
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import type { Env } from '../types/env.js';
 
-export const DEFAULTS = {
+export const DEFAULTS: Env = {
 	CONFIG_PATH: resolve(cwd(), '.env'),
 
 	HOST: '0.0.0.0',
@@ -127,7 +128,10 @@ export const DEFAULTS = {
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
+	IMPORT_EXPORT_NAMESPACE: 'directus:import-export',
 	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
+	IMPORT_TIMEOUT: '1h',
+	IMPORT_MAX_CONCURRENCY: 20,
 
 	SERVE_APP: true,
 
@@ -138,6 +142,8 @@ export const DEFAULTS = {
 	USERS_ADMIN_ACCESS_LIMIT: Infinity,
 	USERS_APP_ACCESS_LIMIT: Infinity,
 	USERS_API_ACCESS_LIMIT: Infinity,
+
+	MAX_JSON_QUERY_DEPTH: 10,
 
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
@@ -153,6 +159,7 @@ export const DEFAULTS = {
 	REVISIONS_RETENTION: '90d',
 	FLOW_LOGS_RETENTION: '90d',
 
+	OPENAPI_ENABLED: true,
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 5,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,
@@ -175,6 +182,7 @@ export const DEFAULTS = {
 	WEBSOCKETS_COLLAB_PERMISSIONS_CACHE_CAPACITY: 2000,
 	WEBSOCKETS_COLLAB_CLUSTER_CLEANUP_CRON: '*/1 * * * *',
 	WEBSOCKETS_COLLAB_LOCAL_CLEANUP_INTERVAL: 60000,
+	WEBSOCKETS_COLLAB_STORE_NAMESPACE: 'collab',
 
 	FLOWS_ENV_ALLOW_LIST: false,
 	FLOWS_RUN_SCRIPT_MAX_MEMORY: 32,
@@ -192,13 +200,28 @@ export const DEFAULTS = {
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
 	METRICS_NAME_PREFIX: 'directus_',
+	METRICS_HEALTH_CHECK_PREFIX: 'directus-metric-',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+	FILES_DELETE_ORIGINAL_ON_MOVE: false,
 	FILES_MAX_UPLOAD_CONCURRENCY: Infinity,
+
+	CROSS_ORIGIN_OPENER_POLICY_ENABLED: true,
+	CROSS_ORIGIN_OPENER_POLICY: 'same-origin-allow-popups',
 
 	ACCEPT_TERMS: false,
 
 	MCP_ENABLED: true,
 
 	AI_ENABLED: true,
+	AI_DEVTOOLS_ENABLED: false,
+	AI_TELEMETRY_ENABLED: false,
+	AI_TELEMETRY_PROVIDER: 'langfuse',
+	AI_TELEMETRY_RECORD_IO: false,
+	LANGFUSE_SECRET_KEY: '',
+	LANGFUSE_PUBLIC_KEY: '',
+	LANGFUSE_BASE_URL: 'https://cloud.langfuse.com',
+	BRAINTRUST_API_KEY: '',
+	BRAINTRUST_PROJECT_NAME: '',
+	BRAINTRUST_API_URL: '',
 } as const;

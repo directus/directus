@@ -185,7 +185,7 @@ async function onClick(event: MouseEvent) {
 	Available Variables:
 
 		--v-button-width                      [auto]
-		--v-button-height                     [44px]
+		--v-button-height                     [2.5rem]
 		--v-button-color                      [var(--foreground-inverted)]
 		--v-button-color-hover                [var(--foreground-inverted)]
 		--v-button-color-active               [var(--foreground-inverted)]
@@ -194,11 +194,11 @@ async function onClick(event: MouseEvent) {
 		--v-button-background-color-hover     [var(--theme--primary-accent)]
 		--v-button-background-color-active    [var(--theme--primary)]
 		--v-button-background-color-disabled  [var(--theme--background-normal)]
-		--v-button-font-size                  [16px]
+		--v-button-font-size                  [0.875rem]
 		--v-button-font-weight                [600]
-		--v-button-line-height                [22px]
-		--v-button-min-width                  [140px]
-		--v-button-padding                    [0 19px]
+		--v-button-line-height                [1.4286]
+		--v-button-min-width                  [7.875rem]
+		--v-button-padding                    [0 1.0625rem]
 
 */
 
@@ -278,13 +278,13 @@ async function onClick(event: MouseEvent) {
 	display: flex;
 	align-items: center;
 	inline-size: var(--v-button-width, auto);
-	min-inline-size: var(--v-button-min-width, 140px);
-	block-size: var(--v-button-height, 44px);
-	padding: var(--v-button-padding, 0 19px);
+	min-inline-size: var(--v-button-min-width, 7.875rem);
+	block-size: var(--v-button-height, 2.5rem);
+	padding: var(--v-button-padding, 0 1.0625rem);
 	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);
-	font-size: var(--v-button-font-size, 16px);
-	line-height: var(--v-button-line-height, 22px);
+	font-size: var(--v-button-font-size, 0.875rem);
+	line-height: var(--v-button-line-height, 1.4286);
 	text-decoration: none;
 	background-color: var(--v-button-background-color, var(--theme--primary));
 	border: var(--theme--border-width) solid var(--v-button-background-color, var(--theme--primary));
@@ -349,38 +349,38 @@ async function onClick(event: MouseEvent) {
 }
 
 .button.x-small {
-	--v-button-height: 28px;
-	--v-button-font-size: 12px;
-	--v-button-min-width: 60px;
+	--v-button-height: 1.5625rem;
+	--v-button-font-size: 0.6875rem;
+	--v-button-min-width: 3.375rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.small {
-	--v-button-height: 36px;
-	--v-button-font-size: 14px;
-	--v-button-min-width: 120px;
+	--v-button-height: 2rem;
+	--v-button-font-size: 0.8125rem;
+	--v-button-min-width: 6.75rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.large {
-	--v-button-height: 52px;
-	--v-button-min-width: 154px;
+	--v-button-height: 2.9375rem;
+	--v-button-min-width: 8.6875rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.x-large {
-	--v-button-height: 60px;
-	--v-button-font-size: 18px;
-	--v-button-min-width: 180px;
+	--v-button-height: 3.375rem;
+	--v-button-font-size: 1rem;
+	--v-button-min-width: 10.125rem;
 
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 
 .button.icon {
-	inline-size: var(--v-button-height, 44px);
+	inline-size: var(--v-button-height, 2.5rem);
 	min-inline-size: 0;
 	padding: 0;
 }

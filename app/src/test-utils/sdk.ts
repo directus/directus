@@ -3,7 +3,7 @@
  * Provides simplified mocks for @/sdk module used in testing
  */
 
-import { RequestOptions } from '@directus/sdk';
+import type { RequestOptions } from '@directus/sdk';
 import { vi } from 'vitest';
 
 /**

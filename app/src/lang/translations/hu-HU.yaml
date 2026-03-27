@@ -511,6 +511,8 @@ related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
+translations_preview_collections: Gyűjtemények
+translations_preview_fields: Mezők
 import_data_input_placeholder: CSV vagy JSON...
 import_data_button: Importálás indítása
 import_data_indeterminate: Adatok importálása...
@@ -763,7 +765,6 @@ unexpected_error: Váratlan hiba történt
 copy_details: Részletek másolása
 no_app_access: Nincs alkalmazás hozzáférés
 no_app_access_copy: Ez a felhasználó nem jogosult az admin alkalmazás használatára.
-password_reset_sent: A jelszó visszaállításához szükséges linket elküldtük Önnek
 password_reset_successful: Sikeres jelszó-visszaállítás
 back: Vissza
 filter: Szűrő
@@ -1394,6 +1395,8 @@ ai:
   settings: Beállítások
   tool_approval:
     disabled: Letiltva
+  ask_user_submit: Beküldés
+  ask_user_next: Következő
 ai_tools:
   items: Elemek
   files: Fájlok

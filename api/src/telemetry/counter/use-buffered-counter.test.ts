@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { _bufferedCounterCache, useBufferedCounter } from './use-buffered-counter.js';
+import { _bufferedCounterCache, terminateAllBufferedCounters, useBufferedCounter } from './use-buffered-counter.js';
 import { useCounters } from './use-counters.js';
 
 vi.mock('./use-counters.js');
@@ -36,7 +36,7 @@ describe('useBufferedCounter', () => {
 			expect(flusher).toHaveProperty('increment');
 			expect(flusher).toHaveProperty('flush');
 			expect(flusher).toHaveProperty('flushAll');
-			expect(flusher).toHaveProperty('destroy');
+			expect(flusher).toHaveProperty('terminate');
 		});
 
 		test('Returns the same flusher entry for the same key', () => {
@@ -189,7 +189,7 @@ describe('useBufferedCounter', () => {
 
 			flusher.increment('get', 25);
 
-			await expect(flusher.flush('get')).rejects.toThrow('Redis connection lost');
+			await expect(flusher.flush('get')).resolves.toBeUndefined();
 
 			expect(_bufferedCounterCache['requests']!.counters['get']!.count).toBe(25);
 		});
@@ -205,7 +205,7 @@ describe('useBufferedCounter', () => {
 
 			flusher.increment('get', 5);
 
-			await expect(flushPromise).rejects.toThrow('Redis connection lost');
+			await expect(flushPromise).resolves.toBeUndefined();
 
 			expect(_bufferedCounterCache['requests']!.counters['get']!.count).toBe(15);
 		});
@@ -352,24 +352,24 @@ describe('useBufferedCounter', () => {
 		});
 	});
 
-	describe('destroy', () => {
+	describe('terminate', () => {
 		test('Clears the interval timer', async () => {
 			const flusher = useBufferedCounter('requests');
 
 			expect(_bufferedCounterCache['requests']!.timer).not.toBeNull();
 
-			await flusher.destroy();
+			await flusher.terminate();
 
 			expect(_bufferedCounterCache['requests']).toBeNull();
 		});
 
-		test('Flushes all remaining counts before destroying', async () => {
+		test('Flushes all remaining counts before terminateing', async () => {
 			const flusher = useBufferedCounter('requests');
 
 			flusher.increment('get', 10);
 			flusher.increment('post', 20);
 
-			await flusher.destroy();
+			await flusher.terminate();
 
 			expect(mockCounter.increment).toHaveBeenCalledWith('requests:get', 10);
 			expect(mockCounter.increment).toHaveBeenCalledWith('requests:post', 20);
@@ -380,17 +380,17 @@ describe('useBufferedCounter', () => {
 
 			flusher.increment('get', 10);
 
-			await flusher.destroy();
+			await flusher.terminate();
 
 			expect(_bufferedCounterCache['requests']).toBeNull();
 		});
 
-		test('No more timer flushes occur after destroy', async () => {
+		test('No more timer flushes occur after terminate', async () => {
 			const flusher = useBufferedCounter('requests', { flushIntervalMs: 1000 });
 
 			flusher.increment('get', 5);
 
-			await flusher.destroy();
+			await flusher.terminate();
 
 			mockCounter.increment.mockClear();
 
@@ -399,20 +399,20 @@ describe('useBufferedCounter', () => {
 			expect(mockCounter.increment).not.toHaveBeenCalled();
 		});
 
-		test('Ensures cleanup happens even if flushAll throws during destroy', async () => {
+		test('Ensures cleanup happens even if flushAll throws during terminate', async () => {
 			mockCounter.increment.mockRejectedValueOnce(new Error('Network error'));
 
 			const flusher = useBufferedCounter('requests');
 			flusher.increment('get', 10);
 
-			await flusher.destroy();
+			await flusher.terminate();
 
 			expect(_bufferedCounterCache['requests']).toBeNull();
 		});
 
-		test('Allows re-creation of flusher after destroy', async () => {
+		test('Allows re-creation of flusher after terminate', async () => {
 			const flusher1 = useBufferedCounter('requests');
-			await flusher1.destroy();
+			await flusher1.terminate();
 
 			const flusher2 = useBufferedCounter('requests');
 			flusher2.increment('get', 1);
@@ -420,7 +420,7 @@ describe('useBufferedCounter', () => {
 			expect(_bufferedCounterCache['requests']).not.toBeNull();
 			expect(_bufferedCounterCache['requests']!.counters['get']!.count).toBe(1);
 
-			await flusher2.destroy();
+			await flusher2.terminate();
 		});
 	});
 
@@ -591,5 +591,69 @@ describe('useBufferedCounter', () => {
 				cached: 0,
 			});
 		});
+	});
+});
+
+describe('terminateAllBufferedCounters', () => {
+	test('Terminates all active buffered counters', async () => {
+		const flusher1 = useBufferedCounter('counterA');
+		const flusher2 = useBufferedCounter('counterB');
+
+		flusher1.increment('get', 5);
+		flusher2.increment('sent', 3);
+
+		await terminateAllBufferedCounters();
+
+		expect(_bufferedCounterCache['counterA']).toBeNull();
+		expect(_bufferedCounterCache['counterB']).toBeNull();
+	});
+
+	test('Flushes all remaining counts before terminating', async () => {
+		const flusher1 = useBufferedCounter('counterA');
+		const flusher2 = useBufferedCounter('counterB');
+
+		flusher1.increment('get', 10);
+		flusher1.increment('post', 20);
+		flusher2.increment('sent', 5);
+
+		await terminateAllBufferedCounters();
+
+		expect(mockCounter.increment).toHaveBeenCalledWith('counterA:get', 10);
+		expect(mockCounter.increment).toHaveBeenCalledWith('counterA:post', 20);
+		expect(mockCounter.increment).toHaveBeenCalledWith('counterB:sent', 5);
+	});
+
+	test('Does nothing when cache is empty', async () => {
+		await terminateAllBufferedCounters();
+
+		expect(mockCounter.increment).not.toHaveBeenCalled();
+	});
+
+	test('Skips null entries in the cache', async () => {
+		const flusher = useBufferedCounter('counterA');
+		flusher.increment('get', 5);
+		await flusher.terminate();
+
+		mockCounter.increment.mockClear();
+
+		// 'counterA' is now null in the cache
+		await terminateAllBufferedCounters();
+
+		expect(mockCounter.increment).not.toHaveBeenCalled();
+	});
+
+	test('Allows re-creation of counters after terminating all', async () => {
+		const flusher1 = useBufferedCounter('counterA');
+		flusher1.increment('get', 5);
+
+		await terminateAllBufferedCounters();
+
+		const flusher2 = useBufferedCounter('counterA');
+		flusher2.increment('get', 1);
+
+		expect(_bufferedCounterCache['counterA']).not.toBeNull();
+		expect(_bufferedCounterCache['counterA']!.counters['get']!.count).toBe(1);
+
+		await flusher2.terminate();
 	});
 });

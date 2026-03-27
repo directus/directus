@@ -261,7 +261,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							description = fieldNames.join(' -> ');
 						}
 
-						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 160;
+						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 144;
 
 						return {
 							text: field.name,
@@ -286,7 +286,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					const widths = {} as { [field: string]: number };
 
 					val.forEach((header) => {
-						widths[header.value] = header.width ?? 160;
+						widths[header.value] = header.width ?? 144;
 					});
 
 					localWidths.value = widths;
@@ -302,12 +302,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableRowHeight = computed<number>(() => {
 				switch (tableSpacing.value) {
 					case 'compact':
-						return 32;
+						return 29;
 					case 'cozy':
 					default:
-						return 48;
+						return 43;
 					case 'comfortable':
-						return 64;
+						return 58;
 				}
 			});
 

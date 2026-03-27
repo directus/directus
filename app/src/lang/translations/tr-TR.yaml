@@ -473,6 +473,8 @@ related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
 translations_collection: Çeviri Koleksiyonu
 languages_collection: Dil Koleksiyonu
+translations_preview_collections: Koleksiyonlar
+translations_preview_fields: Alanlar
 import_data_input_placeholder: CSV ya da JSON...
 import_data_button: İçe Aktarmayı Başlat
 import_data_indeterminate: Veri İçe Aktarılıyor...
@@ -763,7 +765,6 @@ unexpected_error_copy: Beklenmedik bir problem oluştu. Lütfen yineden deneyin.
 copy_details: Detayları Kopyala
 no_app_access: Uygulama Erişimi Yok
 no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
-password_reset_sent: Bir hesabınız varsa, şifrenizi sıfırlamanız için size güvenli bir bağlantı gönderdik
 password_reset_successful: Parola başarıyla sıfırlandı
 back: Geri
 filter: Filtrele
@@ -1477,6 +1478,8 @@ ai:
   settings: Ayarlar
   tool_approval:
     disabled: Devre Dışı
+  ask_user_submit: Gönder
+  ask_user_next: Sonraki
 ai_tools:
   items: Öğeler
   files: Dosyalar
