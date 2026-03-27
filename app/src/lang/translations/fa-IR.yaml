@@ -2012,6 +2012,8 @@ interfaces:
     all_opened: همه باز باشند
     accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
+  group-tabs:
+    fill_width: عرض کامل
   presentation-links:
     presentation-links: دکمه‌‌ها
     description: دکمه های لینک قابل تنظیم برای راه‌اندازی نشانی‌های پویا یا راه‌اندازی جریان‌ها
