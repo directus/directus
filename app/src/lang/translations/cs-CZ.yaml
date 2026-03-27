@@ -1688,6 +1688,8 @@ interfaces:
     all_opened: Všechny otevřené
     accordion_mode: Režim harmoniky
     max_one_section_open: Max. 1 otevřená sekce
+  group-tabs:
+    fill_width: Celá šířka
   presentation-links:
     presentation-links: Tlačítka
     style: Styl
