@@ -1809,6 +1809,8 @@ interfaces:
     all_opened: Всі відкриті
     accordion_mode: Режим акордеон
     max_one_section_open: Максимальна кількість відкритих секцій – 1
+  group-tabs:
+    fill_width: Ширина заповнення
   presentation-links:
     presentation-links: Кнопки
     description: Налаштовувані кнопки-посилання для відкриття динамічних URL або запуску Flow
