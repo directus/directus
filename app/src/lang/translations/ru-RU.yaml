@@ -705,7 +705,6 @@ no_collections: Нет коллекций
 create_collection: Создать коллекцию
 no_collections_copy_admin: У вас пока нет коллекций. Нажмите кнопку ниже, чтобы начать.
 no_collections_copy: У вас пока нет коллекций. Пожалуйста, обратитесь к системному администратору.
-relationship_not_setup: Отношение не было настроено правильно
 no_singleton_relations: Связи с одиночными объектами не поддерживаются
 display_template_not_setup: Опция шаблона отображения настроена неправильно
 collection_field_not_setup: Опция поля коллекции настроена неправильно
