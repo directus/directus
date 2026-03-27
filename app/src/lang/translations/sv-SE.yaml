@@ -625,7 +625,6 @@ no_collections: Inga kollektioner
 create_collection: Skapa samling
 no_collections_copy_admin: Du har inga kollektioner än. Klicka på knappen nedan för att komma igång.
 no_collections_copy: Du har inga kollektioner än. Kontakta din systemadministratör.
-relationship_not_setup: Relationen har inte konfigurerats korrekt
 display_template_not_setup: Visningsmallens alternativ är felaktigt konfigurerad
 collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
 select_a_collection: Välj en kollektion
