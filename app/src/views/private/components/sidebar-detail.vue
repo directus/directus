@@ -61,7 +61,7 @@ watch(
 .accordion-item {
 	border-block: var(--theme--sidebar--section--border-width) solid var(--theme--sidebar--section--border-color);
 	transition: var(--fast) var(--transition);
-	transition-property: border-width, border-color;
+	transition-property: border-color;
 
 	&:first-child {
 		border-block-start: none;
