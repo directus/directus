@@ -10,6 +10,7 @@ import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VItem from '@/components/v-item.vue';
 import { CollabContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 
 const props = withDefaults(
@@ -31,6 +32,7 @@ const props = withDefaults(
 		group: string;
 		multiple?: boolean;
 		direction?: string;
+		version?: ContentVersionMaybeNew | null;
 	}>(),
 	{
 		batchActiveFields: () => [],
@@ -139,6 +141,7 @@ function useComparisonIndicator() {
 							:comparison="comparison"
 							:collab-context="collabContext"
 							:direction="direction"
+							:version="version"
 							:show-no-visible-fields="false"
 							:show-validation-errors="false"
 							@update:model-value="$emit('apply', $event)"
