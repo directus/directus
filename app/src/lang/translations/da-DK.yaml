@@ -1427,6 +1427,8 @@ interfaces:
     all_opened: Alle åbnede
     accordion_mode: Harmonika tilstand
     max_one_section_open: Maks en sektion åben
+  group-tabs:
+    fill_width: Fuld bredde
   presentation-links:
     presentation-links: Knapper
     style: Stil
