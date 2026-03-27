@@ -843,6 +843,8 @@ interfaces:
   filter:
     add_filter: Ouzhpenn ur sil
     all: Holl
+  group-tabs:
+    fill_width: Ledander leun
   presentation-links:
     presentation-links: Boutonoù
     style: Stil
