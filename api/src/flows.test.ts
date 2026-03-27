@@ -128,7 +128,7 @@ describe('FlowManager', () => {
 			status: 'active',
 			trigger: 'manual',
 			operations: [],
-		options: {},
+			options: {},
 		} as unknown as Flow;
 
 		const { FlowsService } = await import('./services/flows.js');
@@ -146,5 +146,4 @@ describe('FlowManager', () => {
 
 		expect(manager.getFlow('test-flow-id')).toEqual(mockFlow);
 	});
-
 });
