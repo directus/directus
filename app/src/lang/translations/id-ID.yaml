@@ -500,7 +500,6 @@ no_collections: Tidak ada koleksi
 create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 no_collections_copy: Kamu belum memiliki Koleksi. Silakan hubungi administrator sistem.
-relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 no_singleton_relations: Hubungan dengan Singletons tidak didukung
 display_template_not_setup: Opsi templat tampilan disalahkonfigurasikan
 collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
