@@ -1,3 +1,4 @@
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { collectConfig } from './config.js';
 
@@ -58,8 +59,6 @@ vi.mock('./config/sync.js', () => ({
 vi.mock('./config/websocket.js', () => ({
 	collectWebsocket: vi.fn().mockReturnValue({ enabled: false, rest: false, graphql: false, logs: false }),
 }));
-
-import type { Knex } from 'knex';
 
 afterEach(() => {
 	vi.clearAllMocks();

@@ -1,4 +1,7 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { SettingsService } from '../../services/settings.js';
 import { collectFeatures } from './features.js';
 
 vi.mock('@directus/ai', () => ({
@@ -30,10 +33,6 @@ vi.mock('../utils/count-custom-models.js', () => ({
 vi.mock('../utils/filter-known-array-items.js', () => ({
 	filterKnownArrayItems: vi.fn().mockReturnValue([]),
 }));
-
-import type { SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import { SettingsService } from '../../services/settings.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

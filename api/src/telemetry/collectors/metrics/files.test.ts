@@ -1,4 +1,7 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { FilesService } from '../../../services/files.js';
 import { collectFileMetrics } from './files.js';
 
 vi.mock('../../../services/files.js', () => ({
@@ -10,10 +13,6 @@ vi.mock('../../../services/files.js', () => ({
 vi.mock('../../utils/stats.js', () => ({
 	emptyDistribution: vi.fn().mockReturnValue({ min: 0, max: 0, median: 0, mean: 0 }),
 }));
-
-import type { Knex } from 'knex';
-import type { SchemaOverview } from '@directus/types';
-import { FilesService } from '../../../services/files.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

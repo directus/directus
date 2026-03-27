@@ -1,3 +1,5 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { collectCollectionMetrics } from './collections.js';
 
@@ -9,9 +11,6 @@ vi.mock('../../utils/stats.js', () => ({
 	distributionFromCounts: vi.fn().mockReturnValue({ min: 0, max: 0, median: 0, mean: 0 }),
 	emptyDistribution: vi.fn().mockReturnValue({ min: 0, max: 0, median: 0, mean: 0 }),
 }));
-
-import type { Knex } from 'knex';
-import type { SchemaOverview } from '@directus/types';
 
 afterEach(() => {
 	vi.clearAllMocks();

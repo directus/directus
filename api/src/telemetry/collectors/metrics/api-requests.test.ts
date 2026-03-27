@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { useBufferedCounter } from '../../counter/use-buffered-counter.js';
 import { collectApiRequestMetrics } from './api-requests.js';
 
 vi.mock('../../counter/use-buffered-counter.js', () => ({
@@ -6,8 +7,6 @@ vi.mock('../../counter/use-buffered-counter.js', () => ({
 		getAndResetAll: vi.fn().mockResolvedValue({}),
 	}),
 }));
-
-import { useBufferedCounter } from '../../counter/use-buffered-counter.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

@@ -1,3 +1,4 @@
+import type { Knex } from 'knex';
 import { describe, expect, test, vi } from 'vitest';
 import { collectDatabase } from './database.js';
 
@@ -8,8 +9,6 @@ vi.mock('../../../database/index.js', () => ({
 vi.mock('../../utils/get-database-version.js', () => ({
 	getDatabaseVersion: vi.fn().mockResolvedValue('PostgreSQL 16.0'),
 }));
-
-import type { Knex } from 'knex';
 
 describe('collectDatabase', () => {
 	test('returns driver and version', async () => {

@@ -1,4 +1,7 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { ItemsService } from '../../services/items.js';
 import { serviceCount } from './service-count.js';
 
 vi.mock('../../services/items.js', () => ({
@@ -6,10 +9,6 @@ vi.mock('../../services/items.js', () => ({
 		readByQuery: vi.fn().mockResolvedValue([{ count: 42 }]),
 	})),
 }));
-
-import { ItemsService } from '../../services/items.js';
-import type { Knex } from 'knex';
-import type { SchemaOverview } from '@directus/types';
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -25,8 +24,8 @@ describe('serviceCount', () => {
 		expect(ItemsService).toHaveBeenCalledWith('directus_shares', { knex: mockDb, schema: mockSchema });
 	});
 
-	test('accepts a promise for schema', async () => {
-		const result = await serviceCount(mockDb, Promise.resolve(mockSchema), 'directus_fields');
+	test('accepts a schema', async () => {
+		const result = await serviceCount(mockDb, mockSchema, 'directus_fields');
 		expect(result).toBe(42);
 	});
 

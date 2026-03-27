@@ -1,4 +1,7 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { RolesService } from '../../../services/roles.js';
 import { collectRoleMetrics } from './roles.js';
 
 vi.mock('../../../services/roles.js', () => ({
@@ -11,10 +14,6 @@ vi.mock('../../utils/stats.js', () => ({
 	distributionFromCounts: vi.fn().mockReturnValue({ min: 1, max: 5, median: 3, mean: 3 }),
 	emptyDistribution: vi.fn().mockReturnValue({ min: 0, max: 0, median: 0, mean: 0 }),
 }));
-
-import type { Knex } from 'knex';
-import type { SchemaOverview } from '@directus/types';
-import { RolesService } from '../../../services/roles.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

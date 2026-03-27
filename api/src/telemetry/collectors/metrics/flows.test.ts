@@ -1,4 +1,7 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { FlowsService } from '../../../services/flows.js';
 import { collectFlowMetrics } from './flows.js';
 
 vi.mock('../../../services/flows.js', () => ({
@@ -6,10 +9,6 @@ vi.mock('../../../services/flows.js', () => ({
 		readByQuery: vi.fn().mockResolvedValue([]),
 	})),
 }));
-
-import type { Knex } from 'knex';
-import type { SchemaOverview } from '@directus/types';
-import { FlowsService } from '../../../services/flows.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

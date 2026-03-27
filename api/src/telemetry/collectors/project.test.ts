@@ -1,3 +1,5 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { collectProject } from './project.js';
 
@@ -26,9 +28,6 @@ vi.mock('./meta.js', () => ({
 vi.mock('../utils/get-templates-applied.js', () => ({
 	getTemplatesApplied: vi.fn().mockReturnValue([]),
 }));
-
-import type { SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
 
 afterEach(() => {
 	vi.clearAllMocks();

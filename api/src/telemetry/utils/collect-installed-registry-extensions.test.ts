@@ -1,4 +1,7 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { ExtensionsService } from '../../services/extensions.js';
 import { collectInstalledRegistryExtensions } from './collect-installed-registry-extensions.js';
 
 vi.mock('@directus/extensions-registry', () => ({
@@ -10,10 +13,6 @@ vi.mock('../../services/extensions.js', () => ({
 		readAll: vi.fn().mockResolvedValue([]),
 	})),
 }));
-
-import type { SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import { ExtensionsService } from '../../services/extensions.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

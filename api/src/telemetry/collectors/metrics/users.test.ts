@@ -1,12 +1,11 @@
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import { fetchUserCount } from '../../../utils/fetch-user-count/fetch-user-count.js';
 import { collectUserMetrics } from './users.js';
 
 vi.mock('../../../utils/fetch-user-count/fetch-user-count.js', () => ({
 	fetchUserCount: vi.fn().mockResolvedValue({ admin: 0, app: 0, api: 0 }),
 }));
-
-import type { Knex } from 'knex';
-import { fetchUserCount } from '../../../utils/fetch-user-count/fetch-user-count.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

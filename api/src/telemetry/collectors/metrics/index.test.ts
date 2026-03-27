@@ -1,3 +1,5 @@
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { collectMetrics } from './index.js';
 
@@ -78,9 +80,6 @@ vi.mock('./extensions.js', () => ({
 vi.mock('../../utils/service-count.js', () => ({
 	serviceCount: vi.fn().mockResolvedValue(0),
 }));
-
-import type { SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
 
 afterEach(() => {
 	vi.clearAllMocks();

@@ -1,11 +1,10 @@
 import { describe, expect, test, vi } from 'vitest';
+import { getAuthProviders } from '../../../utils/get-auth-providers.js';
 import { collectAuthProviders } from './auth.js';
 
 vi.mock('../../../utils/get-auth-providers.js', () => ({
 	getAuthProviders: vi.fn().mockReturnValue([]),
 }));
-
-import { getAuthProviders } from '../../../utils/get-auth-providers.js';
 
 describe('collectAuthProviders', () => {
 	test('returns local driver when default auth is not disabled', () => {
