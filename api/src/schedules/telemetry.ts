@@ -8,7 +8,7 @@ import { scheduleSynchronizedJob } from '../utils/schedule.js';
  * Exported to be able to test the anonymous callback function
  */
 export const jobCallback = () => {
-	track();
+	track({ trigger: 'scheduled' });
 };
 
 /**
@@ -29,7 +29,7 @@ export default async function schedule(): Promise<boolean> {
 	if (!(await lockCache.get('telemetry-lock'))) {
 		await lockCache.set('telemetry-lock', true, 30000);
 
-		track({ wait: false });
+		track({ wait: false, trigger: 'startup' });
 
 		// Don't flush the lock. We want to debounce these calls across containers on startup
 	}

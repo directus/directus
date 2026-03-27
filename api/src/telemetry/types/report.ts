@@ -1,166 +1,300 @@
+export interface DistributionSummary {
+	min: number;
+	max: number;
+	median: number;
+	mean: number;
+}
+
+export interface CountMetric {
+	count: number;
+}
+
+export interface FileSizeByType extends CountMetric {
+	size: DistributionSummary;
+}
+
+export interface ExtensionCountBySource extends CountMetric {
+	source: {
+		registry: CountMetric;
+		local: CountMetric;
+		module: CountMetric;
+	};
+}
+
+export interface ExtensionBreakdown {
+	bundles: ExtensionCountBySource;
+	individual: ExtensionCountBySource;
+	type: {
+		display: ExtensionCountBySource;
+		interface: ExtensionCountBySource;
+		module: ExtensionCountBySource;
+		layout: ExtensionCountBySource;
+		panel: ExtensionCountBySource;
+		theme: ExtensionCountBySource;
+		endpoint: ExtensionCountBySource;
+		hook: ExtensionCountBySource;
+		operation: ExtensionCountBySource;
+		bundle: ExtensionCountBySource;
+	};
+}
+
 export interface TelemetryReport {
-	/**
-	 * The project's web-facing public URL
-	 */
-	url: string;
+	_version: number;
+	_timestamp: string;
+	_trigger: 'startup' | 'scheduled';
+	project: TelemetryProject;
+	config: TelemetryConfig;
+	features: TelemetryFeatures;
+	metrics: TelemetryMetrics;
+}
 
-	/**
-	 * Current Directus version in use
-	 */
+export interface TelemetryProject {
+	id: string;
+	created_at: string;
 	version: string;
+	templates_applied: string[];
+}
+export interface TelemetryConfig {
+	auth: {
+		providers: string[];
+		issuers: string[];
+	};
+	ai: boolean;
+	mcp: boolean;
+	cache: {
+		enabled: boolean;
+		store: string;
+	};
+	database: {
+		driver: string;
+		version: string | null;
+	};
+	email: {
+		transport: string;
+	};
+	marketplace: {
+		trust: 'sandbox' | 'all';
+		registry: 'default' | 'custom';
+	};
+	extensions: {
+		must_load: boolean;
+		auto_reload: boolean;
+		cache_ttl: string | false;
+		limit: number | false;
+		rolldown: boolean;
+	};
+	storage: {
+		drivers: string[];
+	};
+	retention: {
+		enabled: boolean;
+		activity: string | false;
+		revisions: string | false;
+		flow_logs: string | false;
+	};
+	websockets: {
+		enabled: boolean;
+		rest: boolean;
+		graphql: boolean;
+		logs: boolean;
+	};
+	prometheus: {
+		enabled: boolean;
+	};
+	rate_limiting: {
+		enabled: boolean;
+		pressure: boolean;
+		email: boolean;
+		email_flows: boolean;
+	};
+	synchronization: {
+		store: string;
+	};
+	pm2: {
+		instances: number;
+	};
+}
 
-	/**
-	 * Database client in use
-	 */
-	database: string;
+export interface TelemetryFeatures {
+	mcp: {
+		enabled: boolean;
+		allow_deletes: boolean;
+		system_prompt: boolean;
+	};
+	ai: {
+		enabled: boolean;
+		system_prompt: boolean;
+		providers: {
+			openai: {
+				api_key: boolean;
+				models: {
+					allowed: string[];
+					custom: CountMetric;
+				};
+			};
+			anthropic: {
+				api_key: boolean;
+				models: {
+					allowed: string[];
+					custom: CountMetric;
+				};
+			};
+			google: {
+				api_key: boolean;
+				models: {
+					allowed: string[];
+					custom: CountMetric;
+				};
+			};
+			openai_compatible: {
+				api_key: boolean;
+				base_url: boolean;
+				name: boolean;
+				headers: boolean;
+				models: CountMetric;
+			};
+		};
+	};
+	modules: {
+		content: boolean;
+		files: boolean;
+		users: boolean;
+		visual_editor: boolean;
+		insights: boolean;
+		settings: boolean;
+		deployments: boolean;
+	};
+	visual_editor: {
+		urls: CountMetric;
+	};
+	files: {
+		transformations: string;
+		presets: CountMetric;
+	};
+	collaborative_editing: {
+		enabled: boolean;
+	};
+	mapping: {
+		mapbox_api_key: boolean;
+		basemaps: CountMetric;
+	};
+	image_editor: {
+		custom_aspect_ratios: CountMetric;
+	};
+	extensions: {
+		installed: {
+			registry: Array<{ id: string; version: string }>;
+		};
+	};
+	appearance: {
+		project_color: boolean;
+		project_logo: boolean;
+		public_foreground: boolean;
+		public_background: boolean;
+		public_favicon: boolean;
+		public_note: boolean;
+		report_feature_url: boolean;
+		report_bug_url: boolean;
+		report_error_url: boolean;
+		theme: {
+			default_appearance: string;
+			default_light_theme: string;
+			default_dark_theme: string;
+			light_theme_customization: boolean;
+			dark_theme_customization: boolean;
+			custom_css: boolean;
+		};
+	};
+}
 
-	/**
-	 * Number of users in the system that have admin access to the system
-	 */
-	admin_users: number;
+export interface TelemetryMetrics {
+	api_requests: {
+		count: number;
+		cached: CountMetric;
+		method: {
+			get: CountMetric;
+			post: CountMetric;
+			put: CountMetric;
+			patch: CountMetric;
+			delete: CountMetric;
+		};
+	};
 
-	/**
-	 * Number of users that can access the app, but don't have admin access
-	 */
-	app_users: number;
+	fields: CountMetric;
 
-	/**
-	 * Number of users that can only access the API
-	 */
-	api_users: number;
+	collections: {
+		count: number;
+		shares: DistributionSummary;
+		fields: DistributionSummary;
+		items: DistributionSummary;
+		versioned: {
+			count: number;
+			items: DistributionSummary;
+		};
+		archive_app_filter: {
+			count: number;
+			items: DistributionSummary;
+		};
+		activity: {
+			all: { count: number; items: DistributionSummary };
+			activity: { count: number; items: DistributionSummary };
+			none: { count: number; items: DistributionSummary };
+		};
+	};
 
-	/**
-	 * Number of unique roles in the system
-	 */
-	roles: number;
+	shares: CountMetric;
 
-	/**
-	 * Number of unique flows in the system
-	 */
-	flows: number;
+	items: CountMetric;
 
-	/**
-	 * Number of unique dashboards in the system
-	 */
-	dashboards: number;
+	files: {
+		count: number;
+		size: {
+			sum: number;
+			min: number;
+			max: number;
+			median: number;
+			mean: number;
+		};
+		types: Record<string, FileSizeByType>;
+	};
 
-	/**
-	 * Number of installed extensions in the system. Does not differentiate between enabled/disabled
-	 */
-	extensions: number;
+	users: {
+		admin: CountMetric;
+		app: CountMetric;
+		api: CountMetric;
+	};
 
-	/**
-	 * Number of Directus-managed collections
-	 */
-	collections: number;
+	roles: {
+		count: number;
+		users: DistributionSummary;
+		policies: DistributionSummary;
+		roles: DistributionSummary;
+	};
 
-	/**
-	 * Total number of items in the non-system tables
-	 */
-	items: number;
+	policies: CountMetric;
 
-	/**
-	 * Number of files in the system
-	 */
-	files: number;
+	flows: {
+		active: CountMetric;
+		inactive: CountMetric;
+	};
 
-	/**
-	 * Number of shares in the system
-	 */
-	shares: number;
+	translations: {
+		count: number;
+		language: {
+			count: number;
+			translations: DistributionSummary;
+		};
+	};
 
-	/**
-	 * Maximum number of fields in a collection
-	 */
-	fields_max: number;
+	dashboards: {
+		count: number;
+		panels: DistributionSummary;
+	};
 
-	/**
-	 * Number of fields in the system
-	 */
-	fields_total: number;
+	panels: CountMetric;
 
-	/**
-	 * Size of the database in bytes
-	 */
-	database_size: number;
-
-	/**
-	 * Total size of the files in bytes
-	 */
-	files_size_total: number;
-
-	/**
-	 * Unique project identifier
-	 */
-	project_id: string;
-
-	/**
-	 * Whether the project has enabled MCP
-	 */
-	mcp_enabled: boolean;
-
-	/**
-	 * Whether the project allows deletes in MCP
-	 */
-	mcp_allow_deletes: boolean;
-
-	/**
-	 * Whether the project has enabled MCP system prompt
-	 */
-	mcp_system_prompt_enabled: boolean;
-
-	/**
-	 * Number of Visual Editor URLs configured in the system
-	 */
-	visual_editor_urls: number;
-
-	/**
-	 * Whether collaborative editing is enabled
-	 */
-	collaborative_editing_enabled: boolean;
-
-	/**
-	 * Whether WebSockets are enabled
-	 */
-	websockets_enabled: boolean;
-
-	/**
-	 * Count of GET Api Requests
-	 */
-	api_requests_get: number;
-
-	/**
-	 * Count of SEARCH Api Requests
-	 */
-	api_requests_search: number;
-
-	/**
-	 * Count of POST Api Requests
-	 */
-	api_requests_post: number;
-
-	/**
-	 * Count of PATCH Api Requests
-	 */
-	api_requests_patch: number;
-
-	/**
-	 * Count of DELETE Api Requests
-	 */
-	api_requests_delete: number;
-
-	/**
-	 * Count of PUT Api Requests
-	 */
-	api_requests_put: number;
-
-	/**
-	 * Total count of Api Requests
-	 */
-	api_requests: number;
-
-	/**
-	 * Count of cached Api Requests
-	 */
-	api_requests_cached: number;
+	extensions: {
+		active: ExtensionBreakdown;
+		inactive: ExtensionBreakdown;
+	};
 }
