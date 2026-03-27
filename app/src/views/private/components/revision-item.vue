@@ -99,7 +99,7 @@ const user = computed(() => {
 		.dot {
 			position: absolute;
 			inset-block-start: 0.3125rem;
-			inset-inline-start: calc(-1 * var(--padding-left) + var(--v-icon-size) / 2);
+			inset-inline-start: calc(-1 * var(--padding-left) + var(--icon-size-default) / 2);
 			transform: translate(-50%, 0);
 			z-index: 2;
 			inline-size: 0.625rem;
@@ -129,7 +129,7 @@ const user = computed(() => {
 	&::before {
 		position: absolute;
 		inset-block-start: -0.25rem;
-		inset-inline: calc(var(--v-icon-size) - 0.125rem) 0;
+		inset-inline: calc(var(--icon-size-default) - 0.125rem) 0;
 		z-index: 1;
 		block-size: calc(100% + 0.5625rem);
 		background-color: var(--theme--background-subdued);
@@ -143,7 +143,7 @@ const user = computed(() => {
 	&:not(.last)::after {
 		position: absolute;
 		inset-block-start: 0.6875rem;
-		inset-inline-start: calc(var(--v-icon-size) / 2);
+		inset-inline-start: calc(var(--icon-size-default) / 2);
 		transform: translate(-50%, 0);
 		z-index: 1;
 		inline-size: 1px; /* stylelint-disable-line unit-disallowed-list -- hairline */

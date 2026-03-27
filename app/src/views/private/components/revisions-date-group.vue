@@ -27,9 +27,3 @@ const expand = ref(true);
 		</div>
 	</VDetail>
 </template>
-
-<style scoped>
-.revisions-date-group {
-	--v-icon-size: 1.25rem;
-}
-</style>
