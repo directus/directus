@@ -286,7 +286,7 @@ async function copyFileId() {
 			<div v-if="file?.id" class="copy-id">
 				<dt>{{ $t('copy_id') }}</dt>
 				<dd>
-					<VIcon small name="content_copy" outline clickable class="copy-id-icon" @click="copyFileId" />
+					<VIcon small name="content_copy" clickable class="copy-id-icon" @click="copyFileId" />
 				</dd>
 			</div>
 
