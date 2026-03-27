@@ -456,16 +456,16 @@ export class ExtensionManager {
 
 		if (!extension) return false;
 
-		// Uses `includes` for comparison because chokidar emits watched change events as relative paths,
-		// while paths added via updateWatchedExtensions are emitted as absolute paths.
+		const resolvedPath = path.resolve(filePath);
+
 		if (isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle') {
 			return (
-				path.resolve(extension.path, extension.entrypoint.app).includes(filePath) ||
-				path.resolve(extension.path, extension.entrypoint.api).includes(filePath)
+				path.resolve(extension.path, extension.entrypoint.app) === resolvedPath ||
+				path.resolve(extension.path, extension.entrypoint.api) === resolvedPath
 			);
 		}
 
-		return path.resolve(extension.path, extension.entrypoint).includes(filePath);
+		return path.resolve(extension.path, extension.entrypoint) === resolvedPath;
 	}
 
 	/**
@@ -478,19 +478,30 @@ export class ExtensionManager {
 
 		const extensionDirPath = pathToRelativeUrl(getExtensionsPath());
 
+		const resolvedExtDir = path.resolve(extensionDirPath);
+
 		this.watcher = chokidar.watch([path.resolve('package.json'), extensionDirPath], {
 			ignoreInitial: true,
+			// Only top level watch inside extensions folder is necessary, "dist" paths are added via updateWatchedExtensions
 			depth: 1,
 			ignored: (val: string, stats?: Stats) => {
 				if (val.includes('node_modules')) return true;
 
-				// allow directory traversal so chokidar can reach extensions package.json
+				// allow directory traversal so chokidar can reach nested package.json files
 				if (!stats || stats.isDirectory()) return false;
 
-				// with depth:2, this only matches the extensions dir package.json
-				if (val.endsWith('package.json')) return false;
+				// allow root package.json and package.json in direct extension dirs (extensionsDir/*/package.json)
+				if (val.endsWith('package.json')) {
+					const resolvedVal = path.resolve(val);
 
-				// "dist" entrypoints are added via updateWatchedExtensions, not the watch paths above
+					// root package.json
+					if (!resolvedVal.startsWith(resolvedExtDir + path.sep)) return false;
+
+					// allow if within an extension folder dir
+					return path.dirname(resolvedVal) === resolvedExtDir;
+				}
+
+				// allow "dist" entrypoints added via updateWatchedExtensions
 				if (this.isWatchedExtensionPath(val)) return false;
 
 				return true;
