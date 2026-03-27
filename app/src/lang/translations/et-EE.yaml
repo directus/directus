@@ -1112,6 +1112,8 @@ interfaces:
     add_filter: Lisa filter
     all: Kõik
     any: Ükskõik milline
+  group-tabs:
+    fill_width: Täislaius
   presentation-links:
     presentation-links: Nupud
     style: Stiil
