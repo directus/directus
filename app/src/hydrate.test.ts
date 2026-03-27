@@ -1,7 +1,7 @@
 import { useAppStore } from '@directus/stores';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { hydrate } from './hydrate';
 import { defaultBasemap } from './utils/geometry/basemap';
 import { setLanguage } from '@/lang/set-language';

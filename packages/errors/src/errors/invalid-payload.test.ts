@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import type { InvalidPayloadErrorExtensions } from './invalid-payload.js';
 import { messageConstructor } from './invalid-payload.js';
 

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { joinFilterWithCases } from './join-filter-with-cases.js';
 
 test('No filter and no cases', () => {

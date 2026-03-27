@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterAll, beforeAll, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vite-plus/test';
 import { nextTick } from 'vue';
 import UseDatetime from './use-datetime.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';

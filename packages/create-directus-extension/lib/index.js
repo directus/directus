@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 export async function run() {
-	// eslint-disable-next-line no-console
+	// oxlint-disable-next-line no-console
 	console.log('This utility will walk you through creating a Directus extension.\n');
 
 	const { type, name, language, install } = await inquirer.prompt([

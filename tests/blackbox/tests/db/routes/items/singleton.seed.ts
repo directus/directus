@@ -9,7 +9,7 @@ import {
 import vendors from '@common/get-dbs-to-test';
 import { SeedFunctions } from '@common/seed-functions';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export const collectionSingleton = 'test_items_singleton';
 export const collectionSingletonO2M = 'test_items_singleton_o2m';

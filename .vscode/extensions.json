@@ -4,6 +4,7 @@
 		"stylelint.vscode-stylelint",
 		"editorconfig.editorconfig",
 		"esbenp.prettier-vscode",
-		"vue.volar"
+		"vue.volar",
+		"VoidZero.vite-plus-extension-pack"
 	]
 }

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { nextTick, ref, type Ref } from 'vue';
 import { useCustomSelection, useCustomSelectionMultiple } from './use-custom-selection';
 

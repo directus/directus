@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { isCompressed } from './is-compressed.js';
 
 test('Returns false if byte length is less than 19', () => {

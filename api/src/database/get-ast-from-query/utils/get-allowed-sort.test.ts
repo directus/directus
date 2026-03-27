@@ -1,7 +1,7 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Query } from '@directus/types';
 import type { Knex } from 'knex';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { getAllowedSort } from './get-allowed-sort.js';
 

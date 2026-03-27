@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import type { InvalidForeignKeyErrorExtensions } from './invalid-foreign-key.js';
 import { messageConstructor } from './invalid-foreign-key.js';
 

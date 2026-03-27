@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import Tags from './tags.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import VChip from '@/components/v-chip.vue';

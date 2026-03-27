@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { beforeAll, expect, test, vi } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vite-plus/test';
 import { getSharpInstance } from './get-sharp-instance.js';
 
 vi.mock('@directus/env');

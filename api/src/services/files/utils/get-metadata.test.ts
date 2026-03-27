@@ -1,6 +1,6 @@
 import { Readable, Transform } from 'node:stream';
 import type { Sharp } from 'sharp';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { getSharpInstance } from '../lib/get-sharp-instance.js';
 import { getMetadata } from './get-metadata.js';
 

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { Point, pointOnLine } from '@/utils/point-on-line';
 
 const cases: [boolean, Point, Point, Point][] = [

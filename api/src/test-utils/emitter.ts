@@ -3,7 +3,7 @@
  * Provides simplified mocks for src/emitter module used in service testing
  */
 
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 
 /**
  * Creates a standard emitter mock for service tests

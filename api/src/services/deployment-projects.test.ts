@@ -1,6 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { DeploymentProjectsService } from './deployment-projects.js';
 import { ItemsService } from './items.js';

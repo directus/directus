@@ -1,5 +1,5 @@
 import ky, { type ResponsePromise } from 'ky';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
 import { account } from './account.js';
 import { constructUrl } from './lib/construct-url.js';

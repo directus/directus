@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vite-plus/test';
 import { DefineComponent, defineComponent, h, onMounted, onUnmounted } from 'vue';
 import { Events } from './events';
 import { time as timeoutDuration } from './idle';

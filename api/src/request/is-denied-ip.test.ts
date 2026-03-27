@@ -1,7 +1,7 @@
 import os from 'node:os';
 import { useEnv } from '@directus/env';
 import type { Logger } from 'pino';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { useLogger } from '../logger/index.js';
 import { isDeniedIp } from './is-denied-ip.js';
 

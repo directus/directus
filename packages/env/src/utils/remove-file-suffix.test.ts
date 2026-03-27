@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { removeFileSuffix } from './remove-file-suffix.js';
 
 test('Removes the last 5 characters from the given string', () => {

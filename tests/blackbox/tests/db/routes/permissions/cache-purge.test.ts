@@ -7,7 +7,7 @@ import { awaitDirectusConnection } from '@utils/await-connection';
 import getPort from 'get-port';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vite-plus/test';
 import { collection, type Collection } from './cache-purge.seed';
 
 describe('Permissions Cache Purging Tests', () => {

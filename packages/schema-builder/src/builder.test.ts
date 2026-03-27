@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { SchemaBuilder } from './builder.js';
 import { CollectionBuilder } from './collection.js';
 import { FieldBuilder } from './field.js';

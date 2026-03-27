@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Driver, StorageManager } from '@directus/storage';
 import { randWord } from '@ngneat/falso';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { getStorageDriver } from './get-storage-driver.js';
 import { registerDrivers } from './register-drivers.js';
 

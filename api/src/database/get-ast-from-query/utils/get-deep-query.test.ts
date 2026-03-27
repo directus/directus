@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getDeepQuery } from './get-deep-query.js';
 
 test('empty object', () => {

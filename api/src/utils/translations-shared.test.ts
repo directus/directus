@@ -1,6 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Field } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { cloneFields, validateFieldsEligibility } from './translations-shared.js';
 
 describe('translations-shared', () => {

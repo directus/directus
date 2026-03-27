@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { defineComponent, h } from 'vue';
 import { useEventListener } from '@/composables/use-event-listener';
 

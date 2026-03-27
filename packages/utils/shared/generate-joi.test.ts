@@ -1,6 +1,6 @@
 import type { FieldFilter } from '@directus/types';
 import { escapeRegExp } from 'lodash-es';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import type { JoiOptions, StringSchema } from './generate-joi.js';
 import { generateJoi, Joi } from './generate-joi.js';
 
@@ -258,14 +258,14 @@ describe(`generateJoi`, () => {
 	it(`returns an error if the substring is included in the value`, () => {
 		expect(() => {
 			Joi.assert('field', (Joi.string() as StringSchema).ncontains('field'));
-			// eslint-disable-next-line no-useless-escape
+			// oxlint-disable-next-line no-useless-escape
 		}).toThrowError(`\"value\" can't contain [field]`);
 	});
 
 	it(`returns an error if the substring is not contained in the value`, () => {
 		expect(() => {
 			Joi.assert('test', (Joi.string() as StringSchema).contains('field'));
-			// eslint-disable-next-line no-useless-escape
+			// oxlint-disable-next-line no-useless-escape
 		}).toThrowError(`\"value\" must contain [field`);
 	});
 

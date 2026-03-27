@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { consume } from '../utils/consume.js';
 import { LimiterRedis } from './redis.js';
 

@@ -2,7 +2,7 @@ import { InvalidCredentialsError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';

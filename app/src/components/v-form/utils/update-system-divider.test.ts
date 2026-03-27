@@ -1,6 +1,6 @@
 import type { DeepPartial, Field } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { updateSystemDivider } from './update-system-divider';
 
 const mockFields: DeepPartial<Field>[] = [

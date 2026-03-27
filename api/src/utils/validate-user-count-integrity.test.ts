@@ -1,3 +1,3 @@
-import { test } from 'vitest';
+import { test } from 'vite-plus/test';
 
 test.todo('unimplemented test');

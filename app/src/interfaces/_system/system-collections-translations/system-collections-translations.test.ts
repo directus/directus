@@ -2,7 +2,7 @@ import type { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import SystemCollectionsTranslationsDialog from './system-collections-translations-dialog.vue';

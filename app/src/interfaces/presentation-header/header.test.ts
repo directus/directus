@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { computed, ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import Header from './header.vue';

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { getFieldsFromTemplate } from './get-fields-from-template.js';
 
 describe('getFieldsFromTemplate', () => {

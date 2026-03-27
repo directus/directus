@@ -1,5 +1,5 @@
 import { Field } from '@directus/types';
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect, it, test } from 'vite-plus/test';
 import { pushGroupOptionsDown } from './push-group-options-down.js';
 
 describe('basic', () => {

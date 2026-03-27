@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { shouldCheckUserLimits } from './should-check-user-limits.js';
 
 vi.mock('@directus/env');

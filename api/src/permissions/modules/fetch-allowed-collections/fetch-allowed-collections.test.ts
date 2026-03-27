@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Permission } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { PermissionsService } from '../../../services/permissions.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';

@@ -1,5 +1,5 @@
 import type { Query } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { extractPathsFromQuery } from './extract-paths-from-query.js';
 
 test('Returns empty lists when query does not contain filter sort or aggregate', () => {

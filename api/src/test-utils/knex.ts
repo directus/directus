@@ -6,7 +6,7 @@
 import { systemCollectionNames } from '@directus/system-data';
 import knex from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 
 /**
  * Creates a mocked knex instance with tracker and schema builder support

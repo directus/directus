@@ -194,7 +194,7 @@ export async function apply(
 			const message = 'The following changes will be applied:\n\n' + sections.join('\n\n');
 
 			if (dryRun) {
-				// eslint-disable-next-line no-console
+				// oxlint-disable-next-line no-console
 				console.log(message);
 				process.exit(0);
 			}

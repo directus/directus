@@ -1,5 +1,5 @@
 import type { Accountability, File, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { getSchema } from '../../utils/get-schema.js';

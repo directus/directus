@@ -1,6 +1,6 @@
 import type { IncomingMessage } from 'http';
 import { useEnv } from '@directus/env';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { getIPFromReq } from './get-ip-from-req.js';
 
 vi.mock('@directus/env');

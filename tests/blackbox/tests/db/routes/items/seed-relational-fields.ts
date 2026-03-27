@@ -5,7 +5,7 @@ import { SeedFunctions } from '@common/seed-functions';
 import type { PrimaryKeyType } from '@common/types';
 import { USER } from '@common/variables';
 import request from 'supertest';
-import { expect } from 'vitest';
+import { expect } from 'vite-plus/test';
 import type { TestsFieldSchema } from '../../query/filter';
 
 export const seedRelationalFields = async (

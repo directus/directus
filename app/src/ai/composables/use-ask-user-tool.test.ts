@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { defineComponent, nextTick, reactive } from 'vue';
 import { cancelPending, pendingAskUser, submitAnswers, useAskUserTool } from './use-ask-user-tool';
 

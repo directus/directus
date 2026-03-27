@@ -1,5 +1,5 @@
 import type { Permission } from '@directus/types';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { filterHasNow, permissionsCacheable } from './permissions-cacheable.js';

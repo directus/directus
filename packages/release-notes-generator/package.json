@@ -13,18 +13,18 @@
 	"license": "MIT",
 	"author": "Pascal Jufer <pascal-jufer@bluewin.ch>",
 	"exports": {
-		".": "./dist/index.js",
+		".": "./dist/index.mjs",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/index.mjs",
 	"files": [
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown --tsconfig tsconfig.prod.json",
-		"dev": "tsdown --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"build": "vp pack --tsconfig tsconfig.prod.json",
+		"dev": "vp pack --watch",
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage"
 	},
 	"dependencies": {
 		"@changesets/get-github-info": "catalog:",
@@ -40,7 +40,7 @@
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
-		"tsdown": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

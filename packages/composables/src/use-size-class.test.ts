@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { reactive, ref } from 'vue';
 import { sizeProps, useSizeClass } from './use-size-class.js';
 

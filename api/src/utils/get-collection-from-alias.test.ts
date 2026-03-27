@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { getCollectionFromAlias } from './get-collection-from-alias.js';
 import type { AliasMap } from './get-column-path.js';
 

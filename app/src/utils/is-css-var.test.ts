@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { isCssVar } from '@/utils/is-css-var.js';
 
 test('Returns true for valid var() with custom property', () => {

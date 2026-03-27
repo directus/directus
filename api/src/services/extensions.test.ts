@@ -1,6 +1,6 @@
 import { ServiceUnavailableError } from '@directus/errors';
 import { describe as registryDescribe } from '@directus/extensions-registry';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getExtensionManager } from '../extensions/index.js';
 import { ExtensionsService } from './extensions.js';
 import { ItemsService } from './items.js';

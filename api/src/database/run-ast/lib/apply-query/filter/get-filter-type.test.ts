@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getFilterType } from './get-filter-type.js';
 
 test(`filter type for string field`, async () => {

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, describe, expect, it, test, vi } from 'vite-plus/test';
 import VInput from './v-input.vue';
 import { Focus } from '@/__utils__/focus';
 import { Tooltip } from '@/__utils__/tooltip';

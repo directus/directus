@@ -2,7 +2,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions } from '@directus/types';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import emitter from '../../emitter.js';
 import getMailer from '../../mailer.js';
 import { MailService } from './index.js';

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import type { M2AAliasMap } from './get-graphql-query-fields.js';
 import { transformM2AAliases } from './transform-m2a-aliases.js';
 

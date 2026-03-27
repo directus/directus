@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { type BusLocal, type BusRedis, createBus } from '@directus/memory';
 import type { Redis } from 'ioredis';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { _cache, useBus } from './use-bus.js';
 

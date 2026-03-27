@@ -1,7 +1,7 @@
 import type { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { nextTick, ref } from 'vue';
 import { useCollectionValidation } from './use-collection-validation';
 import { useCollectionsStore } from '@/stores/collections';

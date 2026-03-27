@@ -1,6 +1,6 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { AccessService } from '../../../services/access.js';
 import { PermissionsService } from '../../../services/index.js';
 import type { Context } from '../../types.js';

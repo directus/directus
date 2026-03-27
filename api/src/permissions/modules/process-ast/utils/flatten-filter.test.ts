@@ -1,5 +1,5 @@
 import type { Filter, Query } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import type { FieldKey } from '../types.js';
 import { flattenFilter } from './flatten-filter.js';
 

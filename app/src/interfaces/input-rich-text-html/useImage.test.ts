@@ -1,5 +1,5 @@
 import { File, SettingsStorageAssetPreset } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { ref } from 'vue';
 import useImage from './useImage';
 

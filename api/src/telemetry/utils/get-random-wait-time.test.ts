@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getRandomWaitTime } from './get-random-wait-time.js';
 
 test('Returns a random number between 0 and 1.8e+6', () => {

@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { redisConfigAvailable } from './redis-config-available.js';
 
 vi.mock('@directus/env');

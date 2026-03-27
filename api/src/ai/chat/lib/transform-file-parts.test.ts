@@ -1,5 +1,5 @@
 import type { UIMessage } from 'ai';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { transformFilePartsForProvider } from './transform-file-parts.js';
 
 describe('transformFilePartsForProvider', () => {

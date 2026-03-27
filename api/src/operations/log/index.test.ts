@@ -1,5 +1,5 @@
 import type { Logger } from 'pino';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { useLogger } from '../../logger/index.js';
 import config from './index.js';
 

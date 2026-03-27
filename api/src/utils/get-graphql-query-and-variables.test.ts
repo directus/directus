@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.js';
 
 const query = `

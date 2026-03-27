@@ -1,5 +1,5 @@
 import type { DeepPartial, Permission } from '@directus/types';
-import { beforeAll, expect, test, vi } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vite-plus/test';
 import type { AST } from '../../../../types/ast.js';
 import { getUnaliasedFieldKey } from '../../../utils/get-unaliased-field-key.js';
 import { injectCases } from './inject-cases.js';

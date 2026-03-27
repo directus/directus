@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import VFancySelect, { FancySelectItem } from './v-fancy-select.vue';
 import { GlobalMountOptions } from '@/__utils__/types';
 

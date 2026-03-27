@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import type { NotNullViolationErrorExtensions } from './not-null-violation.js';
 import { messageConstructor } from './not-null-violation.js';
 

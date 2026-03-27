@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { minMaxPoint } from './min-max-point';
 import { Vector2 } from '@/utils/vector2';
 

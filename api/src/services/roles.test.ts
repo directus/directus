@@ -3,7 +3,7 @@ import type { MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { AccessService, ItemsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({

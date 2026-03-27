@@ -1,4 +1,4 @@
-import { expectTypeOf, test } from 'vitest';
+import { expectTypeOf, test } from 'vite-plus/test';
 import { ErrorCode } from './codes.js';
 import type { DirectusError } from './create-error.js';
 import { ContainsNullValuesError, type ContainsNullValuesErrorExtensions } from './errors/contains-null-values.js';

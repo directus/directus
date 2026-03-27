@@ -4,7 +4,7 @@ import { ErrorCode, ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';

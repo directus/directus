@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Item } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import type { NestedCollectionNode } from '../../../types/ast.js';
 import { mergeWithParentItems } from './merge-with-parent-items.js';
 

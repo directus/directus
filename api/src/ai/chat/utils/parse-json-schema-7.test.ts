@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { parseJsonSchema7 } from './parse-json-schema-7.js';
 
 describe('parseJsonSchema7', () => {

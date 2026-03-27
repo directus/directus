@@ -1,5 +1,5 @@
 import { createCache } from '@directus/memory';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { redisConfigAvailable, useRedis } from '../redis/index.js';
 import { useStore } from './store.js';
 

@@ -1,5 +1,5 @@
 import type { FilterOperator } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { messageConstructor } from './failed-validation.js';
 
 /** Can't be randomized, as we're using snapshot tests */

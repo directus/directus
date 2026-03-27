@@ -1,5 +1,5 @@
 import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vite-plus/test';
 import { FlowsService } from '../../../services/flows.js';
 import { flows } from './index.js';
 

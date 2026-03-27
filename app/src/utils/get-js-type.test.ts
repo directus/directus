@@ -1,5 +1,5 @@
 import { Field } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getJSType } from './get-js-type';
 import { APP_NUMERIC_STRING_TYPES, APP_NUMERIC_TYPES } from '@/constants';
 

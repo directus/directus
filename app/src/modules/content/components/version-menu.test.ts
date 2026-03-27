@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import VersionMenu from './version-menu.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import { i18n } from '@/lang';

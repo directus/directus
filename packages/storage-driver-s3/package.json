@@ -21,10 +21,10 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown src/index.ts --dts",
-		"dev": "tsdown src/index.ts --dts --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"build": "vp pack src/index.ts --dts",
+		"dev": "vp pack src/index.ts --dts --watch",
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "catalog:",
@@ -42,8 +42,8 @@
 		"@ngneat/falso": "catalog:",
 		"@types/ms": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

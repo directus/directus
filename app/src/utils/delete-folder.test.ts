@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { moveAndDelete, moveSingleFolder, recursiveDelete } from './delete-folder';
 
 const apiGet = vi.hoisted(() => vi.fn());

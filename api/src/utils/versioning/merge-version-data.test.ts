@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { mergeVersionsRaw } from './merge-version-data.js';
 
 describe('content versioning mergeVersionsRaw', () => {

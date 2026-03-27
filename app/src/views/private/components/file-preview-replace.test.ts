@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import FilePreviewReplace from './file-preview-replace.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';

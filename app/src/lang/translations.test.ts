@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { merge } from 'lodash';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import { createI18n } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
 import { importDateLocale } from '@/utils/get-date-fns-locale';

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { extractPath, extractRoot, getPublicURL, getRootPath } from '@/utils/get-root-path';
 
 Object.defineProperty(window, 'location', {

@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
-import { beforeAll, describe, expect, test, vi } from 'vitest';
+import { beforeAll, describe, expect, test, vi } from 'vite-plus/test';
 import type { Context } from '../types.js';
 import { getPermissionsForShare } from './get-permissions-for-share.js';
 

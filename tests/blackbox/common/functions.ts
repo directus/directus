@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { Permission, PrimaryKey, Query } from '@directus/types';
 import { omit } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it } from 'vite-plus/test';
 import { type Env, getUrl } from './config';
 import vendors, { type Vendor } from './get-dbs-to-test';
 import type { PrimaryKeyType } from './types';

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { ATTACHMENT_OFFSET, GRID_SIZE } from '../../../constants';
 import { getPoints } from './get-points';
 import { Vector2 } from '@/utils/vector2';

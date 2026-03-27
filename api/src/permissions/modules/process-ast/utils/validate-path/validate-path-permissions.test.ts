@@ -1,6 +1,6 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Permission } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { validatePathPermissions } from './validate-path-permissions.js';
 
 test('Throws if no permissions given for given collection', () => {

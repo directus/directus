@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
+import { beforeEach, describe, expect, type Mock, test, vi } from 'vite-plus/test';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';

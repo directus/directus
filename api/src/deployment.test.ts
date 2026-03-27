@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vite-plus/test';
 import { NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
 import { getDeploymentDriver, getSupportedProviderTypes, registerDeploymentDrivers } from './deployment.js';
 

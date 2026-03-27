@@ -5,9 +5,9 @@ import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensi
 import yaml from '@rollup/plugin-yaml';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
-import { searchForWorkspaceRoot } from 'vite';
+import { searchForWorkspaceRoot } from 'vite-plus';
 import vueDevtools from 'vite-plugin-vue-devtools';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite-plus';
 
 const API_PATH = path.join('..', 'api');
 

@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import type { LimiterConfig } from '../types/index.js';
 import { createLimiter } from './create.js';
 import { LimiterLocal } from './local.js';

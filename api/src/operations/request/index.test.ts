@@ -1,4 +1,4 @@
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import config from './index.js';
 
 const axiosDefault = vi.fn();

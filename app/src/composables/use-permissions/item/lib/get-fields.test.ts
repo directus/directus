@@ -2,7 +2,7 @@ import { useCollection } from '@directus/composables';
 import { Field, ItemPermissions, PermissionsAction } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { computed, ref, Ref } from 'vue';
 import { getFields } from './get-fields';
 import { mockedStore } from '@/__utils__/store';

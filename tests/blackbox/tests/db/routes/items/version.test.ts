@@ -3,7 +3,7 @@ import { CreateItem, CreateVersion, SaveVersion } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { c } from './version.seed';
 
 const item = {

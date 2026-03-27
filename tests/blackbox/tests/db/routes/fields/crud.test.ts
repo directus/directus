@@ -9,7 +9,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { sortedUniq } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vite-plus/test';
 import { collection } from './crud.seed';
 
 describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {

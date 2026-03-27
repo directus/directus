@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { injectFunctionResults } from './inject-function-results.js';
 
 describe('injectFunctionResults', () => {

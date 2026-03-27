@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { queryToParams } from './query-to-params.js';
 
 describe('queryToParams', () => {

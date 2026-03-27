@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { formatUserAvatar, getFocusId } from './utils';
 import type { CollabUser } from '@/composables/use-collab';
 

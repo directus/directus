@@ -1,7 +1,7 @@
 import { useAppStore } from '@directus/stores';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { defineComponent, h } from 'vue';
 import { createMemoryHistory, createRouter, Router } from 'vue-router';
 import { _resetState, defaultRoutes, onAfterEach, onBeforeEach } from './router';

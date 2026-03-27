@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import type { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo } from '../../operation.vue';

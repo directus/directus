@@ -1,6 +1,6 @@
 import { mount, VueWrapper } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import GroupDetail from './group-detail.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
 import { Md } from '@/__utils__/md';

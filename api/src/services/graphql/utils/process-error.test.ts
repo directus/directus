@@ -1,7 +1,7 @@
 import { createError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { GraphQLError } from 'graphql';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import processError from './process-error.js';
 
 describe('GraphQL processError util', () => {

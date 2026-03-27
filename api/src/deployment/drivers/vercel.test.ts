@@ -1,7 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { HitRateLimitError, InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
 import type { AxiosResponse } from 'axios';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { VercelDriver } from './vercel.js';
 
 const mockAxiosRequest = vi.hoisted(() => vi.fn());

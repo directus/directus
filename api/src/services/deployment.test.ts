@@ -1,6 +1,6 @@
 import { InvalidPayloadError, InvalidProviderConfigError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vite-plus/test';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
 import { DeploymentProjectsService } from './deployment-projects.js';
 import { DeploymentRunsService } from './deployment-runs.js';

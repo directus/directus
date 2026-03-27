@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { CreateCollection, CreateField, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export const collectionFirst = 'test_app_cache_first';
 export const collectionIgnored = 'test_app_cache_ignored';

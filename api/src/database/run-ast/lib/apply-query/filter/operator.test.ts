@@ -1,7 +1,7 @@
 import { InvalidQueryError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { Client_SQLite3 } from '../mock.js';
 
 const { applyOperator } = await import('./operator.js');

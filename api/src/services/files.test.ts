@@ -2,7 +2,7 @@ import { PassThrough, Readable } from 'node:stream';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InternalServerError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
-import { afterEach, beforeEach, describe, expect, it, type MockInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, type MockInstance, test, vi } from 'vite-plus/test';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { resetEnvMock } from '../test-utils/env.js';

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vite-plus/test';
 import { defineComponent, h, unref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { useClipboard } from './use-clipboard';

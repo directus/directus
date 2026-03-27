@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { translateShortcut } from '@/utils/translate-shortcut';
 
 Object.defineProperty(window, 'navigator', {

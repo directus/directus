@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 test.each([

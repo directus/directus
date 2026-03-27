@@ -1,5 +1,5 @@
 import type { Snapshot } from '@directus/types';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { getSnapshotDiff } from './get-snapshot-diff.js';
 import { sanitizeField } from './sanitize-schema.js';
 

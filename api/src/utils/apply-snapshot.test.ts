@@ -2,8 +2,8 @@ import type { Snapshot, SnapshotField } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { MockedFunction } from 'vitest';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { MockedFunction } from 'vite-plus/test';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
 import {
 	snapshotBeforeCreateCollection,

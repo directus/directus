@@ -2,7 +2,7 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('/server', () => {
 	describe('GET /ping', () => {

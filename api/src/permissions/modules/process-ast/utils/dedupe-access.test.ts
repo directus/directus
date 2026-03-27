@@ -1,5 +1,5 @@
 import type { DeepPartial, Permission } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { dedupeAccess } from './dedupe-access.js';
 
 test('Merges field sets where access rules are identical', () => {

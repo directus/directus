@@ -1,5 +1,5 @@
 import { Redis } from 'ioredis';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { type BusLocal, createBus } from '../../index.js';
 import { CacheLocal } from './local.js';
 import { CacheMulti } from './multi.js';

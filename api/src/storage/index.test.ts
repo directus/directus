@@ -1,5 +1,5 @@
 import { StorageManager } from '@directus/storage';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { validateEnv } from '../utils/validate-env.js';
 import { registerDrivers } from './register-drivers.js';
 import { registerLocations } from './register-locations.js';

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 
 test('Returns original field if no function is given', () => {

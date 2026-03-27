@@ -1,5 +1,5 @@
 import { REDACTED_TEXT } from '@directus/utils';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { redactQuery } from './redact-query.js';
 
 test('Redacts `access_token` query param', () => {

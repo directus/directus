@@ -14,8 +14,8 @@ import {
 	randGitShortSha as randUnique,
 	randUrl,
 } from '@ngneat/falso';
-import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { Mock } from 'vite-plus/test';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { DriverGCSConfig } from './index.js';
 import { DriverGCS } from './index.js';
 

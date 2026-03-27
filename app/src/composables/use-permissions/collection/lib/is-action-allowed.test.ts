@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { isActionAllowed } from './is-action-allowed';
 import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';

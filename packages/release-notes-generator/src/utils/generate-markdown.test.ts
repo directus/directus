@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import config from '../config.js';
 import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types.js';
 import { generateMarkdown } from './generate-markdown.js';

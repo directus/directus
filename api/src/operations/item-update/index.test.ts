@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import { ItemsService } from '../../services/items.js';
 import config from './index.js';
 

@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount, type VueWrapper } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { defineComponent, onBeforeUnmount, ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';

@@ -1,6 +1,6 @@
 import { CreateCollection, CreateField, CreateFieldM2O, CreateFieldO2M, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export const collectionCollabPrivate = 'test_collab_editing_private';
 export const collectionCollab = 'test_collab_editing';

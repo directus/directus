@@ -1,4 +1,4 @@
-import { afterEach, expect, test } from 'vitest';
+import { afterEach, expect, test } from 'vite-plus/test';
 import getPackageManagerAgent from './get-package-manager-agent.js';
 
 const envCopy = { ...process.env };

@@ -1,7 +1,7 @@
 import { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { clearHiddenFieldsByCondition, shouldClearField } from './clear-hidden-fields-by-condition.js';
 
 function makeField(fieldName: string, overrides: Partial<Field> = {}): Field {

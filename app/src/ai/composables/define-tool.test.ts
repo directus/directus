@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { computed, defineComponent, nextTick, ref } from 'vue';
 import { z } from 'zod';
 import { defineTool, type ToolDefinition, toStatic } from './define-tool';

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getCollectionRelationList } from './get-collection-relation-list.js';
 
 test('get empty list for no tree', () => {

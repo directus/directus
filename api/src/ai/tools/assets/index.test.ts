@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vite-plus/test';
 import { AssetsService } from '../../../services/assets.js';
 import { FilesService } from '../../../services/files.js';
 import { assets } from './index.js';

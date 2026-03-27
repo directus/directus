@@ -6,7 +6,7 @@ import { pipeline } from 'node:stream/promises';
 import { useEnv } from '@directus/env';
 import type { Driver } from '@directus/storage';
 import mid from 'node-machine-id';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { useBus } from '../../../bus/index.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
@@ -319,7 +319,7 @@ describe('syncExtensions', () => {
 		test('should release lock and publish message even on error', async () => {
 			mockLock.increment.mockResolvedValue(1);
 
-			// eslint-disable-next-line require-yield
+			// oxlint-disable-next-line require-yield
 			vi.mocked(mockDisk.list).mockImplementation(async function* () {
 				throw new Error('Storage error');
 			});

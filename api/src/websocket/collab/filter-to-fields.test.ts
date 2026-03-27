@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { filterToFields } from './filter-to-fields.js';
 
 const schema = new SchemaBuilder()

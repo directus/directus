@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { computed } from 'vue';
 import TranslationForm from './translation-form.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';

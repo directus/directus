@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { freezeSchema, unfreezeSchema } from './freeze-schema.js';
 
 test('freeze empty schema', () => {

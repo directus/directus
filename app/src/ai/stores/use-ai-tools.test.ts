@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { z } from 'zod';
 import type { StaticToolDefinition } from '../composables/define-tool';
 import { useAiToolsStore } from './use-ai-tools';

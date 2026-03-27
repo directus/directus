@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { Changesets, Config } from '../types.js';
 import { getInfo } from './get-info.js';
 

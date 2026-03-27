@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import isDirectusJWT from './is-directus-jwt.js';
 
 test('Returns false for non JWT string', () => {

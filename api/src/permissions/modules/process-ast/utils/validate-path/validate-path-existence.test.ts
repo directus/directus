@@ -1,6 +1,6 @@
 import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { validatePathExistence } from './validate-path-existence.js';
 
 test('Throws if collection does not exist in the schema', () => {

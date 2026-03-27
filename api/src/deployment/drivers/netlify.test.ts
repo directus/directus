@@ -1,5 +1,5 @@
 import { InvalidCredentialsError, ServiceUnavailableError } from '@directus/errors';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { NetlifyDriver } from './netlify.js';
 
 const mockNetlifyAPI = vi.hoisted(() => ({

@@ -33,8 +33,8 @@
 		"lib/index.js"
 	],
 	"scripts": {
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage"
 	},
 	"dependencies": {
 		"@directus/extensions": "workspace:*",
@@ -43,6 +43,7 @@
 	},
 	"devDependencies": {
 		"@vitest/coverage-v8": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

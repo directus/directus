@@ -1,5 +1,5 @@
 import { ErrorCode } from '@directus/errors';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import emitter from '../../emitter.js';
 import { getAllowedLogLevels } from '../../utils/get-allowed-log-levels.js';
 import { WebSocketError } from '../errors.js';

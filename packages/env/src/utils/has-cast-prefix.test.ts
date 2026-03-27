@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { getCastFlag } from './has-cast-prefix.js';
 
 vi.mock('../constants/env-types.js', () => ({

@@ -1,7 +1,7 @@
 import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 import type { Query } from '@directus/types';
 import type { FieldNode, SelectionNode } from 'graphql';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import * as sanitizeQueryMod from '../../../utils/sanitize-query.js';
 import * as validateQueryMod from '../../../utils/validate-query.js';
 import { getAggregateQuery } from './aggregate-query.js';

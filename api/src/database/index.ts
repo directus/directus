@@ -189,7 +189,7 @@ export function getDatabase(): Knex {
 				metrics?.getDatabaseResponseMetric()?.observe(delta);
 			}
 
-			// eslint-disable-next-line no-nested-ternary
+			// oxlint-disable-next-line no-nested-ternary
 			const bindings = queryInfo.bindings
 				? isArray(queryInfo.bindings)
 					? queryInfo.bindings

@@ -6,7 +6,7 @@ import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 const assetsDirectory = [paths.cwd, 'assets'];
 const storages = ['local', 'minio'];

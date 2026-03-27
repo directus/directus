@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 

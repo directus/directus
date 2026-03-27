@@ -1,7 +1,7 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Permission } from '@directus/types';
 import knex from 'knex';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { DEFUAULT_PERMISSION } from '../../../../../permissions/utils/default-permission.js';
 import { Client_SQLite3 } from '../mock.js';
 

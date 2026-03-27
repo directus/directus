@@ -1,7 +1,7 @@
 import type { Panel } from '@directus/extensions';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { useInsightsStore } from './insights';
 import { fetchAll } from '@/utils/fetch-all';

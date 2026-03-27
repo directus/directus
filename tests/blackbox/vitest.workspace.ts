@@ -1,4 +1,4 @@
-import { defineWorkspace } from 'vitest/config';
+import { defineWorkspace } from 'vite-plus';
 
 export default defineWorkspace([
 	{

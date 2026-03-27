@@ -105,7 +105,7 @@ async function cancel() {
 		await cancelTFASetup();
 	} catch (error) {
 		// If cancel fails, still redirect to avoid getting stuck
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.error('Failed to cancel 2FA setup:', error);
 	}
 

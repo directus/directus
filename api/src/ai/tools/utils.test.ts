@@ -1,5 +1,5 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { buildSanitizedQueryFromArgs } from './utils.js';
 

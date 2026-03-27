@@ -1,7 +1,7 @@
 import type { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { ref, unref } from 'vue';
 import { cryptoStub } from '@/__utils__/crypto';
 import { useFieldTree } from '@/composables/use-field-tree';

@@ -3,7 +3,7 @@ import { DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import request from 'supertest';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export type Result = {
 	isSeeded: boolean;

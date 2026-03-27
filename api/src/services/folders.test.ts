@@ -1,6 +1,6 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { FoldersService } from './folders.js';
 import { ItemsService } from './items.js';

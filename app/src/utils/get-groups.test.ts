@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getGroups } from '@/utils/get-groups';
 
 test('Returns correct groupings for given precision', () => {

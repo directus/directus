@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { isDisabled } from './tooltip';
 
 function createElement(html: string): HTMLElement {

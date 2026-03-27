@@ -1,7 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { safeValidateUIMessages } from 'ai';
 import type { NextFunction, Request, Response } from 'express';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { aiChatPostHandler } from './chat.post.js';

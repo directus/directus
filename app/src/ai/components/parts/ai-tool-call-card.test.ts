@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import AiToolCallCard from './ai-tool-call-card.vue';
 
 vi.mock('vue-i18n', async (importOriginal) => {

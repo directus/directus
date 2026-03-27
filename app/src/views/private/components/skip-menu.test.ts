@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { h } from 'vue';
 import SkipMenu from './skip-menu.vue';
 import { generateRouter } from '@/__utils__/router';

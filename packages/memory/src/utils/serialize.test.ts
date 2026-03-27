@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { deserialize, serialize } from './serialize.js';
 
 const cases: [string, unknown][] = [

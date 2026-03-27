@@ -34,9 +34,9 @@ export async function loadExtensions(): Promise<void> {
 			? await import(/* @vite-ignore */ '@directus-extensions')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/sources/index.js`);
 	} catch (err: any) {
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.warn(`Couldn't load extensions`);
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.warn(err);
 	}
 }

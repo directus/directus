@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { h } from 'vue';
 import VCheckbox from './v-checkbox.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';

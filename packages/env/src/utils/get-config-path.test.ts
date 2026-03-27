@@ -1,5 +1,5 @@
 import { resolve } from 'node:path';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { DEFAULTS } from '../constants/defaults.js';
 import { getConfigPath } from './get-config-path.js';
 

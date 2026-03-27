@@ -1,5 +1,5 @@
 import { globby } from 'globby';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { paths } from '../../common/config';
 import { ClearCaches, DisableTestCachingSetup } from '../../common/functions';
 import { sequentialTestsList } from '../../setup/sequential-tests';

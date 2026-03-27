@@ -4,7 +4,7 @@ import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { ItemsService, MailService, UsersService } from './index.js';
 

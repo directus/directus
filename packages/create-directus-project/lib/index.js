@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

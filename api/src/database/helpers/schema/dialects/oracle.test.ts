@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { SchemaHelperOracle } from './oracle.js';
 
 vi.mock('../../index.js', () => ({

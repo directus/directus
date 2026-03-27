@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { hideDragImage } from '@/utils/hide-drag-image';
 
 test('Sets drag image to empty image', () => {

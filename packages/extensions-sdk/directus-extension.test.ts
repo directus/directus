@@ -3,7 +3,7 @@ import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { EXTENSION_LANGUAGES } from '@directus/extensions';
 import { execa } from 'execa';
 import fse from 'fs-extra';
-import { afterAll, describe, expect, test } from 'vitest';
+import { afterAll, describe, expect, test } from 'vite-plus/test';
 import { create } from './src/cli/index.js';
 import { languageToShort } from './src/cli/utils/languages.js';
 

@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { cryptoStub } from '@/__utils__/crypto';
 import { useUserStore } from '@/stores/user';
 import { getAppearance } from '@/utils/get-appearance';

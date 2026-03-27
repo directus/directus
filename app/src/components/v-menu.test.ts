@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import TransitionBounce from './transition/bounce.vue';
 import VMenu from './v-menu.vue';
 import { directive } from '@/directives/click-outside';

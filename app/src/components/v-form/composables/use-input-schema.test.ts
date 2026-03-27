@@ -1,5 +1,5 @@
 import type { DeepPartial, Field } from '@directus/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { ref } from 'vue';
 import { useInputSchema } from './use-input-schema';
 

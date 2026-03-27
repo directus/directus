@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 
 test('No special characters', () => {

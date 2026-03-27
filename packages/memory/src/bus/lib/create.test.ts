@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import type { BusConfig } from '../index.js';
 import { createBus } from './create.js';
 import { BusLocal } from './local.js';

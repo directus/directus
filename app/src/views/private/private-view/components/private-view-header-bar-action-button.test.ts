@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { createRouter, createWebHistory } from 'vue-router';
 import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
 

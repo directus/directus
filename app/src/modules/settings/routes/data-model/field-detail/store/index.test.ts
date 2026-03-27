@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vite-plus/test';
 import { setLocalTypeForInterface } from './alterations/global';
 import type { StateUpdates } from './types';
 import { useFieldDetailStore } from './index';

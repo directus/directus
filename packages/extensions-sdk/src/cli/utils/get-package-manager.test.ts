@@ -1,4 +1,4 @@
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import getPackageManagerAgent from './get-package-manager-agent.js';
 import getPackageManager from './get-package-manager.js';
 

@@ -1,6 +1,6 @@
 import type { EventContext } from '@directus/types';
-import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { Mock } from 'vite-plus/test';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import emitter from '../../emitter.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';

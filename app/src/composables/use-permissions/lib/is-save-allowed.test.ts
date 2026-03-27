@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vite-plus/test';
 import { computed, ComputedRef, ref } from 'vue';
 import { isSaveAllowed } from './is-save-allowed';
 

@@ -185,7 +185,7 @@ function addNew() {
 		emitValue([...internalValue.value, newDefaults]);
 	} else {
 		if (internalValue.value != null) {
-			// eslint-disable-next-line no-console
+			// oxlint-disable-next-line no-console
 			console.warn(
 				'The repeater interface expects an array as value, but the given value is no array. Overriding given value.',
 			);

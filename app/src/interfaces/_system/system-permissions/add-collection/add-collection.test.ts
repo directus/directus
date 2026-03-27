@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { createI18n } from 'vue-i18n';
 import { createRouter, createWebHistory } from 'vue-router';
 import AddCollection from './add-collection.vue';

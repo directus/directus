@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { loadSettings } from './load-settings.js';
 
 // Mock dependencies

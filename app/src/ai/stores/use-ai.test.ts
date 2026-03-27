@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { useAiStore } from './use-ai';
 import { useAiContextStore } from './use-ai-context';

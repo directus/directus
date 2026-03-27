@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import VTextOverflow from './v-text-overflow.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';

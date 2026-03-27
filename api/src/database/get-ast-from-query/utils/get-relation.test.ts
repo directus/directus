@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import { getRelation } from '@directus/utils';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 
 test('relation on m2o field', () => {
 	const schema = new SchemaBuilder()

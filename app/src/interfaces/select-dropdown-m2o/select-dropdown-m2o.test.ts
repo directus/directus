@@ -1,7 +1,7 @@
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { computed, type Ref } from 'vue';
 import SelectDropdownM2O from './select-dropdown-m2o.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';

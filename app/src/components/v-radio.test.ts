@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import VRadio from './v-radio.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 

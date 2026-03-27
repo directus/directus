@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { createLine } from './create-line';

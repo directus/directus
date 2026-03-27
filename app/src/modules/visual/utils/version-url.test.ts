@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion, type VersionPlacement } from './version-url';
 
 describe('analyzeTemplate', () => {

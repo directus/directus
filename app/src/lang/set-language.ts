@@ -11,7 +11,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	const translationsStore = useTranslationsStore();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.warn(`"${lang}" is not an available language in the Directus app.`);
 	} else {
 		if (loadedLanguages.includes(lang) === false) {
@@ -20,7 +20,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 				i18n.global.mergeLocaleMessage(lang, translations);
 				loadedLanguages.push(lang);
 			} catch (err: any) {
-				// eslint-disable-next-line no-console
+				// oxlint-disable-next-line no-console
 				console.warn(err);
 			}
 		}
@@ -38,7 +38,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 
 		await loadDateFNSLocale(lang);
 	} catch {
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.error('Failed loading translations');
 	}
 

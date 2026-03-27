@@ -6,7 +6,7 @@ import { createWebSocketConn, waitForMatchingMessage } from '@common/transport';
 import type { WebSocketCollabResponse } from '@common/types';
 import { USER } from '@common/variables';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { collectionCollabSingleton } from './singleton.seed';
 
 const ROLE_NAME = 'Test Collab Singleton Role';

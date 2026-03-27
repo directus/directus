@@ -1,5 +1,5 @@
 import type { Accountability } from '@directus/types';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getWebSocketController, WebSocketController } from '../websocket/controllers/index.js';
 import type { WebSocketClient } from '../websocket/types.js';
 import { WebSocketService } from './websocket.js';

@@ -1,7 +1,7 @@
 import { useCollection } from '@directus/composables';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { isFieldAllowed } from '../../utils/is-field-allowed';
 import { isSortAllowed } from './is-sort-allowed';

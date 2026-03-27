@@ -1,5 +1,5 @@
 import { CalendarDate, Time } from '@internationalized/date';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { formatDatePickerModelValue } from './format-date-picker-model-value';
 
 describe('format-date-picker-model-value', () => {

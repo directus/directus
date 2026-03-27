@@ -1,6 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Request, Response } from 'express';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { validateBatch } from './validate-batch.js';
 import '../types/express.d.ts';
 

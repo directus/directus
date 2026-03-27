@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { sanitizeQuery } from './sanitize-query.js';
 

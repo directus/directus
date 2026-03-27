@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import { createError } from './create-error.js';
 import { isDirectusError } from './is-directus-error.js';
 

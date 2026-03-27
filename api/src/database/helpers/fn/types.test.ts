@@ -1,7 +1,7 @@
 import type { Relation, SchemaOverview } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, type MockedFunction, test, vi } from 'vite-plus/test';
 import type { FnHelperOptions } from './types.js';
 import { FnHelper } from './types.js';
 

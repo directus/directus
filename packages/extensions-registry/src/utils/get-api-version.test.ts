@@ -1,5 +1,5 @@
 import ky, { type ResponsePromise } from 'ky';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { RegistryVersionResponse } from '../schemas/registry-version-response.js';
 import { _cache, getApiVersion } from './get-api-version.js';
 

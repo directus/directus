@@ -1,4 +1,4 @@
-import { assertType, describe, test } from 'vitest';
+import { assertType, describe, test } from 'vite-plus/test';
 import type { ApplyQueryFields, MergeCoreCollection, Query, RegularCollections } from '../src/index.js';
 
 describe('Test Schema Fallback', () => {

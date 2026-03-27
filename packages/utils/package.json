@@ -14,23 +14,23 @@
 	"sideEffects": false,
 	"type": "module",
 	"exports": {
-		".": "./dist/shared/index.js",
-		"./node": "./dist/node/index.js",
-		"./browser": "./dist/browser/index.js",
+		".": "./dist/shared/index.mjs",
+		"./node": "./dist/node/index.mjs",
+		"./browser": "./dist/browser/index.mjs",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/shared/index.js",
+	"main": "dist/shared/index.mjs",
 	"files": [
 		"dist"
 	],
 	"scripts": {
 		"build": "pnpm run '/^build:.*/'",
-		"build:browser": "tsdown browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --dts",
-		"build:node": "tsdown node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --dts",
-		"build:shared": "tsdown shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --dts",
+		"build:browser": "vp pack browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --dts",
+		"build:node": "vp pack node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --dts",
+		"build:shared": "vp pack shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
@@ -57,10 +57,10 @@
 		"@vitest/coverage-v8": "catalog:",
 		"knex": "catalog:",
 		"tmp": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
-		"vue": "catalog:"
+		"vue": "catalog:",
+		"vite-plus": "catalog:"
 	},
 	"peerDependencies": {
 		"vue": "catalog:"

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, describe, expect, it, test, vi } from 'vite-plus/test';
 import { request } from './request.js';
 
 const fetchMock = vi.fn(async () => ({}));

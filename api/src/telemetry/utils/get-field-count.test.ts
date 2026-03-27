@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getFieldCount } from './get-field-count.js';
 
 let mockResult: { max: number | null; total: number | null };

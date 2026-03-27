@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { computed, ref } from 'vue';
 import OverlayItem from './overlay-item.vue';
 import { ClickOutside } from '@/__utils__/click-outside';

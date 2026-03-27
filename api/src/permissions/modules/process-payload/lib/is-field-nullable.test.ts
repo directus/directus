@@ -1,5 +1,5 @@
 import type { FieldOverview } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { isFieldNullable } from './is-field-nullable.js';
 
 test('Returns true if "nullable" is set on the field', () => {

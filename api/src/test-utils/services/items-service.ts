@@ -3,7 +3,7 @@
  * Provides simplified mocks for src/services/items module used in service testing
  */
 
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 import type { ItemsService } from '../../services/index.js';
 
 /**

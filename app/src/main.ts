@@ -1,4 +1,4 @@
-/* eslint-disable no-console  */
+/* oxlint-disable no-console  */
 
 // Note: the import order is important. Vue has to come first. (Unhead will break if that's first)
 // eslint-disable-next-line import/order

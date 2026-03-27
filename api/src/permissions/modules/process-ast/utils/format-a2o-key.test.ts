@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { formatA2oKey } from './format-a2o-key.js';
 
 test('Joins strings with `:` character', () => {

@@ -1,7 +1,7 @@
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('/auth/login/github redirect validation', () => {
 	describe('blocks unlisted redirect URLs', () => {

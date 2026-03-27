@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { getAccountabilityForRole } from './get-accountability-for-role.js';

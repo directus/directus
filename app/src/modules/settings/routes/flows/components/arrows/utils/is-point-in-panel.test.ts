@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from '../../../constants';
 import type { Panel } from '../types';
 import { isPointInPanel } from './is-point-in-panel';

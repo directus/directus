@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { userName } from '@/utils/user-name';
 
 test(`Returns unknown when user isn't passed`, () => {

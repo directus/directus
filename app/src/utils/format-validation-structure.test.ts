@@ -1,4 +1,4 @@
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { createI18n } from 'vue-i18n';
 import {
 	formatValidationRule,

@@ -1,5 +1,5 @@
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { consume } from '../utils/consume.js';
 import { LimiterLocal } from './local.js';
 

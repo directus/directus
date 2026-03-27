@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { SchemaBuilder } from '@directus/schema-builder';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { validateKeys } from './validate-keys.js';
 
 const schema = new SchemaBuilder()

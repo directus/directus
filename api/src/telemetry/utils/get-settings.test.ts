@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { SettingsService } from '../../services/settings.js';
 import { type DatabaseSettings, getSettings, type TelemetrySettings } from './get-settings.js';
 

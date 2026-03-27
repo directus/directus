@@ -4,7 +4,7 @@ import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 const assetsDirectory = [paths.cwd, 'assets'];
 const storages = ['local', 'minio'];

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import { Router } from 'vue-router';
 import VCheckbox from '../v-checkbox.vue';
 import VListGroup from '../v-list-group.vue';

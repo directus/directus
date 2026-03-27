@@ -4,7 +4,7 @@ import { requestGraphQL } from '@common/transport';
 import { TEST_USERS, USER } from '@common/variables';
 import { SMTPServer } from 'smtp-server';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vite-plus/test';
 
 describe('/server', () => {
 	describe('GET /health', () => {

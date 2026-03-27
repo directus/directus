@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { messageConstructor } from './email-limit-exceeded.js';
 
 test('Constructs message without options', () => {

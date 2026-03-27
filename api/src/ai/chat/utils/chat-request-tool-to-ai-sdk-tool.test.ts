@@ -1,6 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { jsonSchema as aiJsonSchema, tool as aiTool } from 'ai';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { ALL_TOOLS } from '../../tools/index.js';
 import { chatRequestToolToAiSdkTool } from './chat-request-tool-to-ai-sdk-tool.js';
 

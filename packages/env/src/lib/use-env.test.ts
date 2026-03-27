@@ -1,4 +1,4 @@
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { createEnv } from './create-env.js';
 import { _cache, useEnv } from './use-env.js';
 

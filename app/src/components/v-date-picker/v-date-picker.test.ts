@@ -1,6 +1,6 @@
 import { CalendarDate, Time } from '@internationalized/date';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { nextTick } from 'vue';
 import VDatePicker from './v-date-picker.vue';
 import { formatDatePickerModelValue } from '@/utils/format-date-picker-model-value';

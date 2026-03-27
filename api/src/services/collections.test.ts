@@ -1,7 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import * as cacheModule from '../cache.js';
 import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
 import * as getSchemaModule from '../utils/get-schema.js';

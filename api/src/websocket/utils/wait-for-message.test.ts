@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { RawData, WebSocket } from 'ws';
 import { waitForAnyMessage, waitForMessageType } from './wait-for-message.js';
 

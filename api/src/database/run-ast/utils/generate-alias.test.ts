@@ -1,5 +1,5 @@
 import type { Query } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import type { FnHelperOptions } from '../../helpers/fn/types.js';
 import {
 	generateAlias,

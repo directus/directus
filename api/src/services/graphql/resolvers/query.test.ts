@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
 import { getAggregateQuery } from '../utils/aggregate-query.js';

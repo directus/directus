@@ -1,6 +1,6 @@
 import EditorJS from '@editorjs/editorjs';
 import { flushPromises, mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import InputBlockEditor from './input-block-editor.vue';
 
 vi.mock('@editorjs/editorjs', () => ({ default: vi.fn() }));

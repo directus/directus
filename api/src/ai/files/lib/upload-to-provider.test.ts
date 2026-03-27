@@ -1,5 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import type { AISettings } from '../../providers/types.js';
 import { uploadToAnthropic, uploadToGoogle, uploadToOpenAI } from '../adapters/index.js';
 import type { UploadedFile } from '../types.js';

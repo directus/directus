@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { cryptoStub } from '@/__utils__/crypto';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { getPublicURL } from '@/utils/get-root-path';

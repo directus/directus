@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { defineComponent, h, toRefs } from 'vue';
 import { FolderRaw, useFolders } from './use-folders';
 

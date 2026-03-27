@@ -2,7 +2,7 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vite-plus/test';
 import type { CachedTestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 import { collectionArticles, collectionShapes, getTestsSchema, seedDBValues } from './relational-json.seed';
 

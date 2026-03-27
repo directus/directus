@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getConfigPath } from '../utils/get-config-path.js';
 import { getDefaultType } from '../utils/get-default-type.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';

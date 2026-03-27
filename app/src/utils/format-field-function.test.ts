@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, expect, Mock, test, vi } from 'vitest';
+import { beforeEach, expect, Mock, test, vi } from 'vite-plus/test';
 import { cryptoStub } from '@/__utils__/crypto';
 import { useFieldsStore } from '@/stores/fields';
 import { formatFieldFunction } from '@/utils/format-field-function';

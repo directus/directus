@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { PendingContextItem } from '../types';
 import { MAX_PENDING_CONTEXT, useAiContextStore } from './use-ai-context';
 import api from '@/api';

@@ -8,7 +8,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { findIndex } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vite-plus/test';
 
 describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 	DisableTestCachingSetup();

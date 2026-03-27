@@ -1,5 +1,5 @@
 import type { Field, Relation } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { detectTranslationConfigs, isFieldEligibleForTranslations } from './utils';
 
 function makeField(input: Partial<Field>): Field {

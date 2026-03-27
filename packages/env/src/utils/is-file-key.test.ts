@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { isFileKey } from './is-file-key.js';
 
 test('Returns false if key is less than or equal to 5 in length', () => {

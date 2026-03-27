@@ -1,5 +1,5 @@
 import { Redis } from 'ioredis';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { createKv, KvRedis } from '../../kv/index.js';
 import { CacheRedis } from './redis.js';
 

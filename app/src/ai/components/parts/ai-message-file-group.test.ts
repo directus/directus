@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import type { FileUIPart } from 'ai';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import AiMessageFileGroup from './ai-message-file-group.vue';
 
 function makeFilePart(overrides: Partial<FileUIPart> = {}): FileUIPart {

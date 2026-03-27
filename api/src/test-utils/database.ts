@@ -4,7 +4,7 @@
  */
 
 import type { DatabaseClient } from '@directus/types';
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 import { createMockKnex } from './knex.js';
 
 /**

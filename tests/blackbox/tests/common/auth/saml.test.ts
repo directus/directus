@@ -1,7 +1,7 @@
 import { getUrl } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('/auth/login/saml', () => {
 	const authCookies = {} as Record<Vendor, string>;

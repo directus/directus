@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { getAuthProviders } from './get-auth-providers.js';
 
 vi.mock('@directus/env');

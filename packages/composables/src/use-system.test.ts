@@ -1,5 +1,5 @@
 import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { inject } from 'vue';
 import { useApi, useExtensions, useSdk, useStores } from './use-system.js';
 

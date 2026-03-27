@@ -1,6 +1,6 @@
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { fetchGlobalAccessForQuery } from './fetch-global-access-for-query.js';
 
 let qb: Knex.QueryBuilder;

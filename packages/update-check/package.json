@@ -22,9 +22,9 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^bundle|typecheck$/'",
-		"bundle": "tsdown src/index.ts --dts",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
+		"bundle": "vp pack src/index.ts --dts",
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -42,8 +42,8 @@
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"strip-ansi": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

@@ -1,4 +1,4 @@
-import { beforeEach, expect, it } from 'vitest';
+import { beforeEach, expect, it } from 'vite-plus/test';
 import { isFieldAllowed } from './is-field-allowed';
 import { ActionPermission } from '@/types/permissions';
 

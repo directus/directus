@@ -1,7 +1,7 @@
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { getGraphqlQueryFields } from './get-graphql-query-fields.js';
 import { transformM2AAliases } from './transform-m2a-aliases.js';
 import { mockedStore } from '@/__utils__/store.js';

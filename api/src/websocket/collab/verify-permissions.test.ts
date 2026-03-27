@@ -1,5 +1,5 @@
 import { merge } from 'lodash-es';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { useBus } from '../../bus/index.js';
 import getDatabase from '../../database/index.js';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';

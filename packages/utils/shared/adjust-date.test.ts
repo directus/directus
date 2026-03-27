@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { adjustDate } from './adjust-date.js';
 
 describe('Adjust a given date by a given change in duration.', () => {

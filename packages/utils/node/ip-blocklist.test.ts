@@ -1,5 +1,5 @@
 import os from 'node:os';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { IpBlocklist } from './ip-blocklist.js';
 
 vi.mock('node:os');

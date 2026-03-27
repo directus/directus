@@ -4,7 +4,7 @@ import { requestGraphQL } from '@common/transport';
 import { TEST_USERS, USER } from '@common/variables';
 import { EnumType } from 'json-to-graphql-query';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('Authentication Refresh Tests', () => {
 	describe('POST /refresh', () => {

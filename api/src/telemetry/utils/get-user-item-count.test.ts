@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import { type Knex } from 'knex';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getSchema } from '../../utils/get-schema.js';
 import { getItemCount } from './get-item-count.js';
 import { getUserItemCount, sum } from './get-user-item-count.js';

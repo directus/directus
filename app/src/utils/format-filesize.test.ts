@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { formatFilesize } from '@/utils/format-filesize';
 
 test('Returns -- for 0 bytes', () => {

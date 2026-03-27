@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 
 describe('getSystemCollectionRoute', () => {

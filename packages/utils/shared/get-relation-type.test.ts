@@ -1,5 +1,5 @@
 import type { Relation } from '@directus/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { getRelationType } from './get-relation-type.js';
 
 describe('getRelationType', () => {

@@ -1,6 +1,6 @@
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { fetchGlobalAccess } from './fetch-global-access.js';
 import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.js';
 import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';

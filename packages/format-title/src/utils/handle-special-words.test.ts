@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { handleSpecialWords } from './handle-special-words.js';
 
 test('Returns special formatting when matches', () => {

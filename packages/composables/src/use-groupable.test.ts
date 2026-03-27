@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { defineComponent, nextTick, ref } from 'vue';
 import { type GroupableInstance, useGroupable, useGroupableParent } from './use-groupable';
 

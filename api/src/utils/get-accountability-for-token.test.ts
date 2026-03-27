@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import getDatabase from '../database/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';

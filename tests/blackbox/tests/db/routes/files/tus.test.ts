@@ -5,7 +5,7 @@ import { USER } from '@common/variables';
 import type { Query } from '@directus/types';
 import request, { type Response } from 'supertest';
 import { Upload } from 'tus-js-client';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vite-plus/test';
 
 const file = {
 	name: 'tus.text',

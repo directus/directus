@@ -10,7 +10,7 @@ import getPort from 'get-port';
 import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vite-plus/test';
 
 describe('WebSocket Auth Tests', () => {
 	const authMethods: WebSocketAuthMethod[] = ['public', 'handshake', 'strict'];

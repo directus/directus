@@ -1,6 +1,6 @@
 import { CreateCollection, CreateField, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export const collectionCollabCore = 'test_collab_core';
 

@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { version } from 'directus/version';
 import { type Knex } from 'knex';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount, type UserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { useBufferedCounter } from '../counter/use-buffered-counter.js';

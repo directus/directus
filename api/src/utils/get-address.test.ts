@@ -2,7 +2,7 @@ import * as http from 'http';
 import type { ListenOptions } from 'net';
 import { useEnv } from '@directus/env';
 import getPort from 'get-port';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getAddress } from './get-address.js';
 
 vi.mock('@directus/env');

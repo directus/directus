@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { constructUrl } from './construct-url.js';
 
 vi.mock('../../../constants.js', () => ({

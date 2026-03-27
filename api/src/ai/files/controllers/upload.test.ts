@@ -1,7 +1,7 @@
 import { Readable } from 'node:stream';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { NextFunction, Request, Response } from 'express';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { uploadToProvider } from '../lib/upload-to-provider.js';
 import { aiFileUploadHandler } from './upload.js';
 

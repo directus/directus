@@ -5,7 +5,7 @@ import { sleep } from '@utils/sleep';
 import { type ParsedMail, simpleParser } from 'mailparser';
 import { SMTPServer } from 'smtp-server';
 import request from 'supertest';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vite-plus/test';
 
 describe('Mail', async () => {
 	let fakeSMTPServer: SMTPServer;

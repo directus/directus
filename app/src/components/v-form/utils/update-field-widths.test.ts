@@ -1,5 +1,5 @@
 import type { DeepPartial, Field } from '@directus/types';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { updateFieldWidths } from './update-field-widths';
 
 it('should detect and update right aligned fields', () => {

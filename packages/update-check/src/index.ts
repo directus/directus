@@ -67,6 +67,6 @@ export async function updateCheck(currentVersion: string): Promise<void> {
 		borderStyle: 'round',
 	};
 
-	// eslint-disable-next-line no-console
+	// oxlint-disable-next-line no-console
 	console.warn(boxen(message.join('\n'), boxenOptions));
 }

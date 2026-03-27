@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import { findIndex } from 'lodash-es';
-import { BaseSequencer, type WorkspaceSpec } from 'vitest/node';
+import { BaseSequencer, type WorkspaceSpec } from 'vite-plus/test/node';
 import { sequentialTestsList } from './sequential-tests';
 
 export default class CustomSequencer extends BaseSequencer {

@@ -1,6 +1,6 @@
 import type { Column } from '@directus/schema';
 import type { Field, Relation, SnapshotSystemField } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import type { Collection } from '../types/index.js';
 import {
 	sanitizeCollection,

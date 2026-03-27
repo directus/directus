@@ -2,7 +2,7 @@ import { CreateField, CreateItem, ReadItem } from '@common/functions';
 import type { Vendor } from '@common/get-dbs-to-test';
 import { SeedFunctions } from '@common/seed-functions';
 import type { PrimaryKeyType } from '@common/types';
-import { expect } from 'vitest';
+import { expect } from 'vite-plus/test';
 import type { TestsFieldSchema } from '../../query/filter';
 
 const valuesQuantity = 2;

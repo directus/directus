@@ -2,7 +2,7 @@ import { useCollection } from '@directus/composables';
 import { Permission } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { computed, ref } from 'vue';
 import { isFieldAllowed } from '../utils/is-field-allowed';
 import { isArchiveAllowed } from './is-archive-allowed';

@@ -21,15 +21,15 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "vite build",
-		"dev": "vite --host",
+		"build": "vp build",
+		"dev": "vp dev --host",
 		"story:build": "histoire build && echo \"/*  /index.html  200\" >> .histoire/dist/_redirects",
 		"story:dev": "histoire dev",
 		"story:preview": "histoire preview",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage",
-		"test:ui": "vitest --ui",
+		"test": "vp test run",
+		"test:watch": "vp test",
+		"test:coverage": "vp test run --coverage",
+		"test:ui": "vp test --ui",
 		"typecheck": "vue-tsc --noEmit"
 	},
 	"devDependencies": {
@@ -164,6 +164,7 @@
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
-		"zod": "catalog:"
+		"zod": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

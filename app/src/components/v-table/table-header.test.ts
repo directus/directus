@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { Router } from 'vue-router';
 import TableHeader from './table-header.vue';
 import type { Header, Sort } from './types';

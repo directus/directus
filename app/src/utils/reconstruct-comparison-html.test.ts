@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { reconstructComparisonHtml } from './reconstruct-comparison-html';
 import type { Change } from '@/composables/use-comparison-diff';
 

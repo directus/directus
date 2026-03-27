@@ -4,7 +4,7 @@ import { SeedFunctions } from '@common/seed-functions';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
 import { set } from 'lodash-es';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 import {
 	getTestsAllTypesSchema,

@@ -23,18 +23,18 @@
 	"author": "Nils Twelker <nils@directus.io>",
 	"type": "module",
 	"exports": {
-		".": "./dist/index.js",
+		".": "./dist/index.mjs",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/index.mjs",
 	"files": [
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown src/index.ts --dts",
-		"dev": "tsdown src/index.ts --dts --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"build": "vp pack src/index.ts --dts",
+		"dev": "vp pack src/index.ts --dts --watch",
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage"
 	},
 	"dependencies": {
 		"@directus/types": "workspace:*",
@@ -44,8 +44,8 @@
 		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

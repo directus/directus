@@ -1,5 +1,5 @@
 import { LRUCache } from 'lru-cache';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { deserialize, serialize } from '../../utils/index.js';
 import { KvLocal } from './local.js';
 

@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { fetchRolesTree } from './fetch-roles-tree.js';
 
 describe('fetchRolesTree', () => {

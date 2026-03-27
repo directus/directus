@@ -14,7 +14,7 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { DriverLocalConfig } from './index.js';
 import { DriverLocal } from './index.js';
 

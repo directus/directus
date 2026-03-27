@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import AiMessage from './ai-message.vue';
 
 vi.mock('../composables/use-visual-element-highlight', () => ({

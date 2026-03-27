@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import DisplayRating from './rating.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 

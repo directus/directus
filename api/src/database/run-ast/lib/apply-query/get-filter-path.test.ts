@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getFilterPath } from './get-filter-path.js';
 
 test('path with empty object', () => {

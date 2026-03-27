@@ -1,5 +1,5 @@
 import { type WebSocketClient } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import emitter from '../../emitter.js';
 import { validateItemAccess } from '../../permissions/modules/validate-access/lib/validate-item-access.js';
 import { SettingsService } from '../../services/settings.js';

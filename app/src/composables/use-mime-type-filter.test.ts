@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { parseGlobalMimeTypeAllowList, useMimeTypeFilter } from './use-mime-type-filter';
 import { useServerStore } from '@/stores/server';

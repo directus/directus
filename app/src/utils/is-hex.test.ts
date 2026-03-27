@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { isHex } from '@/utils/is-hex';
 
 test('Returns true for valid hex', () => {

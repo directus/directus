@@ -1,5 +1,5 @@
 import ky from 'ky';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
 import { download } from './download.js';
 import { constructUrl } from './lib/construct-url.js';

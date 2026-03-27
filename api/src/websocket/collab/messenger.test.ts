@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { type BroadcastMessage, COLLAB_BUS } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { Messenger } from './messenger.js';
 
 vi.mock('@directus/env', () => ({

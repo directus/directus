@@ -1,5 +1,5 @@
 import type { File, Transformation, TransformationParams } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { maybeExtractFormat, resolvePreset } from './transformations.js';
 
 const inputFile = {

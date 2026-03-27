@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import config from './index.js';
 
 test('Rejects when Isolate uses more than allowed memory', async () => {

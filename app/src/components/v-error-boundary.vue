@@ -22,9 +22,9 @@ const hasError = computed(() => !!error.value);
 onErrorCaptured((err, vm, info) => {
 	error.value = err;
 	const source = props.name ? kebabCase(props.name) : getVueComponentName(vm);
-	// eslint-disable-next-line no-console
+	// oxlint-disable-next-line no-console
 	console.warn(`[${source}-error] ${info}`);
-	// eslint-disable-next-line no-console
+	// oxlint-disable-next-line no-console
 	console.warn(err);
 	if (props.stopPropagation) return false;
 

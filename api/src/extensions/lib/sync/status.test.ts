@@ -1,7 +1,7 @@
 import { rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { exists } from 'fs-extra';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { getSyncStatus, isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 

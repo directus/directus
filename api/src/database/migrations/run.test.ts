@@ -1,8 +1,8 @@
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import type { MockedFunction } from 'vitest';
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import type { MockedFunction } from 'vite-plus/test';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vite-plus/test';
 import run from './run.js';
 
 describe('run', () => {

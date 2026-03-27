@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { buildCollectionAndFieldRelations } from './build-collection-and-field-relations.js';
 
 test('get relations for no relations', () => {

@@ -6,7 +6,7 @@ import axios, { AxiosError } from 'axios';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
 import type { Logger } from 'pino';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { useLogger } from '../logger/index.js';
 import * as errorHandlerMod from './error-handler.js';
 

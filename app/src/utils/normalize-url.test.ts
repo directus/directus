@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { normalizeUrl } from '@/utils/normalize-url';
 
 test('Returns null for null input', () => {

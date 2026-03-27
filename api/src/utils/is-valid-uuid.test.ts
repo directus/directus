@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { isValidUuid } from './is-valid-uuid.js';
 
 describe('should pass validation', () => {

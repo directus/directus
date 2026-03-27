@@ -30,7 +30,7 @@ import {
 	randWord,
 } from '@ngneat/falso';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
 

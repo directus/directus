@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getCollectionMetaUpdates } from './get-collection-meta-updates.js';
 
 test('get no updates for empty list', () => {

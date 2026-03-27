@@ -1,7 +1,7 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 import { buildProviderConfigs, createAIProviderRegistry } from './registry.js';
 import type { AISettings, ProviderConfig } from './types.js';

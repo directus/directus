@@ -22,10 +22,10 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown",
-		"dev": "tsdown --watch",
-		"test": "vitest run",
-		"test:watch": "vitest"
+		"build": "vp pack && vue-tsc --declaration --emitDeclarationOnly --outDir dist",
+		"dev": "vp pack --watch",
+		"test": "vp test run",
+		"test:watch": "vp test"
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
@@ -39,12 +39,12 @@
 		"@types/lodash-es": "catalog:",
 		"@unhead/vue": "catalog:",
 		"pinia": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"unplugin-vue": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",
-		"vue-tsc": "catalog:"
+		"vue-tsc": "catalog:",
+		"vite-plus": "catalog:"
 	},
 	"peerDependencies": {
 		"@unhead/vue": "catalog:",

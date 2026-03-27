@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import type { Extension, ExtensionSettings } from '../../shared/types/index.js';
 import { generateExtensionsEntrypoint } from './generate-extensions-entrypoint.js';
 

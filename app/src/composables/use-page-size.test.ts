@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { usePageSize } from './use-page-size';
 import { useServerStore } from '@/stores/server';
 

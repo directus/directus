@@ -9,7 +9,7 @@ export function unexpectedError(error: unknown): void {
 
 	const code = extractErrorCode(error);
 
-	// eslint-disable-next-line no-console
+	// oxlint-disable-next-line no-console
 	console.warn(error);
 
 	store.add({

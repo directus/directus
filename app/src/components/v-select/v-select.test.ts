@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { nextTick } from 'vue';
 import { createI18n } from 'vue-i18n';
 import VList from '../v-list.vue';

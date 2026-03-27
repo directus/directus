@@ -1,5 +1,5 @@
 import type { Range } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { messageConstructor } from './range-not-satisfiable.js';
 
 let range: Range;

@@ -1,5 +1,5 @@
 import { createPinia, setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { type Ref, ref } from 'vue';
 import { useNavBarStore } from './nav-bar';
 

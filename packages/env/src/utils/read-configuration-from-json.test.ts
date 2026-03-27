@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module';
 import { isPlainObject } from 'lodash-es';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { readConfigurationFromJson } from './read-configuration-from-json.js';
 
 vi.mock('lodash-es');

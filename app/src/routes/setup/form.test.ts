@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { ref } from 'vue';
 import { defaultValues, useFormFields, validate } from './form';
 

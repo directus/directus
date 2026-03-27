@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { sanitizePayload, validateChanges } from './payload-permissions.js';
 import { verifyPermissions } from './verify-permissions.js';
 

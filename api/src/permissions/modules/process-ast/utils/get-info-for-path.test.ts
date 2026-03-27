@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import type { FieldMap } from '../types.js';
 import { getInfoForPath } from './get-info-for-path.js';
 

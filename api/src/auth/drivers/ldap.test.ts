@@ -11,7 +11,7 @@ import {
 	InsufficientAccessError,
 	InvalidCredentialsError as LdapInvalidCredentialsError,
 } from 'ldapts';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import emitter from '../../emitter.js';
 import { createLDAPAuthRouter, LDAPAuthDriver } from './ldap.js';
 

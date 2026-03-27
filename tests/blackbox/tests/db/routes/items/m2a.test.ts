@@ -8,7 +8,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { findIndex, without } from 'lodash-es';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it, test } from 'vite-plus/test';
 import { type CachedTestsSchema, CheckQueryFilters, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	type Circle,

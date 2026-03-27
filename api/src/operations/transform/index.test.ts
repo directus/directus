@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import config from './index.js';
 
 test('runs the same object as the input', async () => {

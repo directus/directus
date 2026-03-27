@@ -1,7 +1,7 @@
 import { Agent } from 'node:http';
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { agentWithIpValidation } from './agent-with-ip-validation.js';
 import { _cache, getAxios } from './index.js';
 

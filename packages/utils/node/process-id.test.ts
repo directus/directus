@@ -1,6 +1,6 @@
 import { createHash, type Hash } from 'node:crypto';
 import { hostname } from 'node:os';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { _cache, processId } from './process-id.js';
 
 vi.mock('node:crypto');

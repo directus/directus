@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),

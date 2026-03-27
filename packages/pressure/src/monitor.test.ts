@@ -2,7 +2,7 @@ import type { EventLoopUtilization, IntervalHistogram } from 'node:perf_hooks';
 import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
 import { memoryUsage } from 'node:process';
 import { setTimeout } from 'node:timers';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { PressureMonitorOptions } from './monitor.js';
 import { PressureMonitor } from './monitor.js';
 

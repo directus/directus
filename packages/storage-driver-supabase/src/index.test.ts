@@ -16,7 +16,7 @@ import {
 } from '@ngneat/falso';
 import { StorageClient } from '@supabase/storage-js';
 import { fetch, Response } from 'undici';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
 

@@ -3,7 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { createHead } from '@unhead/vue';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { createI18n } from 'vue-i18n';
 import ContinueAs from './components/continue-as.vue';
 import LdapForm from './components/login-form/ldap-form.vue';

@@ -1,5 +1,5 @@
 import { TYPES } from '@directus/constants';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getSpecialForType } from './get-special-for-type';
 
 const castPrefixedSpecials = ['json', 'csv', 'boolean'];

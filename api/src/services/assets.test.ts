@@ -9,7 +9,7 @@ import contentDisposition from 'content-disposition';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vite-plus/test';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { AssetsService } from './assets.js';

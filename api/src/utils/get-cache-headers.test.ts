@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Accountability } from '@directus/types';
 import type { Request } from 'express';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { getCacheControlHeader } from './get-cache-headers.js';
 
 vi.mock('@directus/env');

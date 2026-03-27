@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { defineComponent } from 'vue';
 import OperationDetail from './operation-detail.vue';
 import { i18n } from '@/lang';

@@ -1,7 +1,7 @@
 import type { Field } from '@directus/types';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { createI18n } from 'vue-i18n';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import Kanban from './kanban.vue';

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getDefaultValuesFromFields } from './get-default-values-from-fields';
 
 test('Ignores PK default value', () => {

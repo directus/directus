@@ -1,7 +1,7 @@
 import type { ContentVersion } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { computed, ref } from 'vue';
 import { useVersions } from './use-versions';
 import api from '@/api';

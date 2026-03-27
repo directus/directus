@@ -12,7 +12,7 @@ import { sleep } from '@utils/sleep';
 import { validateDateDifference } from '@utils/validate-date-difference';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 const collectionName = 'schema_timezone_tests';
 

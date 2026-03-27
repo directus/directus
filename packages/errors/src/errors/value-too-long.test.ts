@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import type { ValueTooLongErrorExtensions } from './value-too-long.js';
 import { messageConstructor } from './value-too-long.js';
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { assert, describe, expect, it } from 'vitest';
+import { assert, describe, expect, it } from 'vite-plus/test';
 
 describe('Test Exported Types', () => {
 	it('should export all schema files', async () => {

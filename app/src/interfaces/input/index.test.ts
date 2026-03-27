@@ -1,5 +1,5 @@
 import type { ExtensionOptionsContext } from '@directus/extensions';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import config from './index';
 
 type OptionsFunction = (context: Partial<ExtensionOptionsContext>) => unknown;

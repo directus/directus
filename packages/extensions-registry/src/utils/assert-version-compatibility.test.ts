@@ -1,5 +1,5 @@
 import { OutOfDateError } from '@directus/errors';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { assertVersionCompatibility } from './assert-version-compatibility.js';
 import { getApiVersion } from './get-api-version.js';
 

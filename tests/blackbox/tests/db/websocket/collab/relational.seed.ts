@@ -8,7 +8,7 @@ import {
 	DeleteCollection,
 } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export const collectionCollabRelational = 'test_collab_relational';
 export const collectionCollabRelationalO2M = 'test_collab_relational_o2m';

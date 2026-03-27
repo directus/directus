@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { useAiStore } from '../stores/use-ai';
 import { useAiContextStore } from '../stores/use-ai-context';
 import { useContextStaging } from './use-context-staging';

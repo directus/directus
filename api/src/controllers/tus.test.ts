@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import { Metadata } from '@tus/utils';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';

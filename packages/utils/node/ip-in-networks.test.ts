@@ -1,5 +1,5 @@
 import { randIp, randIpv6 } from '@ngneat/falso';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { ipInNetworks } from './ip-in-networks.js';
 
 describe('IP address', () => {

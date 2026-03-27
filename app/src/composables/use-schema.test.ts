@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { nextTick, reactive } from 'vue';
 import { useSchemaOverview } from './use-schema';
 

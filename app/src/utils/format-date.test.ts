@@ -1,5 +1,5 @@
 import { format as formatDateFns } from 'date-fns';
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vite-plus/test';
 import { formatDate, FormatDateOptions } from '@/utils/format-date';
 
 beforeAll(() => {

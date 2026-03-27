@@ -1,5 +1,5 @@
 import type { Accountability, Permission, Query } from '@directus/types';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import { filterItems } from '../../utils/filter-items.js';
 import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { unexpectedError } from './unexpected-error';
 import { uploadFiles } from './upload-files';
 import { notify } from '@/utils/notify';

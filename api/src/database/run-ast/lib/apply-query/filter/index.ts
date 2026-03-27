@@ -34,7 +34,7 @@ export function applyFilter(
 	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
-		// eslint-disable-next-line prefer-const
+		// oxlint-disable-next-line prefer-const
 		for (let [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other

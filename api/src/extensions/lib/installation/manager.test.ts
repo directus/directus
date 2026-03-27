@@ -1,6 +1,6 @@
 import { mkdir, readFile, rm } from 'node:fs/promises';
 import { download } from '@directus/extensions-registry';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { useLogger } from '../../../logger/index.js';
 import { InstallationManager } from './manager.js';
 

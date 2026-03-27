@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vite-plus/test';
 import { getFlowManager } from '../../../flows.js';
 import { FlowsService } from '../../../services/flows.js';
 import { triggerFlow } from './index.js';

@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getFilesizeSum } from './get-filesize-sum.js';
 
 let mockResult: { total: number | null };

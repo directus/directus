@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import InputHash from './input-hash.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import VInput from '@/components/v-input.vue';

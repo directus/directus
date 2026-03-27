@@ -1,5 +1,5 @@
 import type { Collection } from '@directus/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { getCollectionType } from './get-collection-type.js';
 
 describe('getCollectionType', () => {

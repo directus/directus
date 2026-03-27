@@ -1,5 +1,5 @@
 import { NewChangesetWithCommit, VersionType } from '@changesets/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { processReleaseLines } from './process-release-lines.js';
 
 test('should process release lines', async () => {

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { sieveFunctions } from './sieve-functions.js';
 
 test('sieve primitive types', () => {

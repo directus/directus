@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import type { AccessRow } from '../lib/fetch-policies.js';
 import { filterPoliciesByIp } from './filter-policies-by-ip.js';
 

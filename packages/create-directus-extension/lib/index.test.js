@@ -1,7 +1,7 @@
 import { BUNDLE_EXTENSION_TYPES, EXTENSION_LANGUAGES, EXTENSION_TYPES } from '@directus/extensions';
 import { create } from '@directus/extensions-sdk/cli';
 import inquirer from 'inquirer';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { run } from './index.js';
 
 // Mock dependencies

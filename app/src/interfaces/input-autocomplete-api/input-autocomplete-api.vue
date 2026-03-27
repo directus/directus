@@ -53,7 +53,7 @@ const fetchResultsRaw = async (value: string | null) => {
 		const resultsArray = props.resultsPath ? get(result.data, props.resultsPath) : result.data;
 
 		if (Array.isArray(resultsArray) === false) {
-			// eslint-disable-next-line no-console
+			// oxlint-disable-next-line no-console
 			console.warn(`Expected results type of array, "${typeof resultsArray}" received`);
 			return;
 		}
@@ -68,7 +68,7 @@ const fetchResultsRaw = async (value: string | null) => {
 			}
 		});
 	} catch (err: any) {
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.warn(err);
 	}
 };

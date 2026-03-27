@@ -13,23 +13,23 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"type": "module",
 	"exports": {
-		".": "./dist/index.js",
-		"./node": "./dist/node.js",
+		".": "./dist/index.mjs",
+		"./node": "./dist/node.mjs",
 		"./package.json": "./package.json",
 		"./api.d.ts": "./api.d.ts"
 	},
-	"main": "dist/index.js",
+	"main": "dist/index.mjs",
 	"files": [
 		"dist",
 		"api.d.ts"
 	],
 	"scripts": {
 		"build": "pnpm run '/^build:.*/'",
-		"build:node": "tsdown src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --dts",
-		"build:shared": "tsdown src/index.ts --tsconfig src/tsconfig.json --out-dir dist --dts",
+		"build:node": "vp pack src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --dts",
+		"build:shared": "vp pack src/index.ts --tsconfig src/tsconfig.json --out-dir dist --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
@@ -48,11 +48,11 @@
 		"@vitest/coverage-v8": "catalog:",
 		"knex": "catalog:",
 		"pino": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",
-		"vue-router": "catalog:"
+		"vue-router": "catalog:",
+		"vite-plus": "catalog:"
 	},
 	"peerDependencies": {
 		"knex": "catalog:",

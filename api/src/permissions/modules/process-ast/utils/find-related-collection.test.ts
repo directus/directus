@@ -1,5 +1,5 @@
 import type { DeepPartial, SchemaOverview } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { findRelatedCollection } from './find-related-collection.js';
 
 test('Returns null if schema overview does not contain relation for given field in given collection', () => {

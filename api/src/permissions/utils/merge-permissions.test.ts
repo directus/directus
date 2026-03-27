@@ -1,5 +1,5 @@
 import type { Permission } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { mergePermissions } from './merge-permissions.js';
 
 test('merge empty permission arrays', () => {

@@ -3,7 +3,7 @@ import type { PrimaryKeyType } from '@common/types';
 import type { ClientFilterOperator } from '@directus/types';
 import { PrepareRequest, type RequestOptions } from '@utils/prepare-request';
 import { get, set } from 'lodash-es';
-import { describe, expect, it, type SuiteCollector } from 'vitest';
+import { describe, expect, it, type SuiteCollector } from 'vite-plus/test';
 import * as testsSchema from '../../schema/index';
 
 export type FilterValidator = (inputValue: any, possibleValues: any) => boolean;

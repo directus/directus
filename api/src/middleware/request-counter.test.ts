@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
 import requestCounterMiddleware from './request-counter.js';
 

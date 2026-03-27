@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import * as schedule from '../utils/schedule.js';
 import { handleRetentionJob, default as retentionSchedule } from './retention.js';
 

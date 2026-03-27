@@ -25,7 +25,7 @@ export const useTheme = (
 
 		if (!theme) {
 			if (themeId && themeId !== defaultTheme.id) {
-				// eslint-disable-next-line no-console
+				// oxlint-disable-next-line no-console
 				console.warn(`Theme "${themeId}" doesn't exist.`);
 			}
 

@@ -2,7 +2,7 @@ import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Permission, PermissionsAction } from '@directus/types';
 import { FailedValidationError } from '@directus/validation';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';

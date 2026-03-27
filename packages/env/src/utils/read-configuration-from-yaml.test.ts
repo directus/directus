@@ -1,6 +1,6 @@
 import { requireYaml } from '@directus/utils/node';
 import { isPlainObject } from 'lodash-es';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { readConfigurationFromYaml } from './read-configuration-from-yaml.js';
 
 vi.mock('@directus/utils/node');

@@ -13,7 +13,7 @@ export async function refreshCurrentLanguage() {
 		// Refetch fields in order to translate
 		await fieldsStore.hydrate();
 	} catch {
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.error('Failed loading translations');
 	}
 }

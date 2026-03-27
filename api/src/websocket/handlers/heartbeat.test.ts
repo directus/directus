@@ -1,6 +1,6 @@
 import type { EventContext } from '@directus/types';
-import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { Mock } from 'vite-plus/test';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import emitter from '../../emitter.js';
 import { getWebSocketController, type WebSocketController } from '../controllers/index.js';
 import type { WebSocketClient } from '../types.js';

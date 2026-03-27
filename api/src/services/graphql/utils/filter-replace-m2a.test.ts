@@ -1,5 +1,5 @@
 import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { filterReplaceM2A, filterReplaceM2ADeep } from './filter-replace-m2a.js';
 
 const schema = new SchemaBuilder()

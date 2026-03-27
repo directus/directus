@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { CronJob } from 'cron';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import * as schedule from '../utils/schedule.js';
 import { handleMetricsJob, default as metricsSchedule } from './metrics.js';
 

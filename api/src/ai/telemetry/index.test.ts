@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 
 const mockEnv: Record<string, unknown> = {};
 const mockLogger = { info: vi.fn(), warn: vi.fn() };

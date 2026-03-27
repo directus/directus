@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import { createI18n } from 'vue-i18n';
 import DrawerBatch from './drawer-batch.vue';
 import { Tooltip } from '@/__utils__/tooltip';

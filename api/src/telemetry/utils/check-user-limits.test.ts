@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { checkUserLimits } from './check-user-limits.js';
 
 vi.mock('@directus/env', () => ({

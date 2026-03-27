@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vite-plus/test';
 import { Auth, Info, useServerStore } from './server';
 import api, * as apiFunctions from '@/api';
 

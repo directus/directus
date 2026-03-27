@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, describe, expect, it, test, vi } from 'vite-plus/test';
 import PresentationLinks from './presentation-links.vue';
 
 vi.mock('@directus/composables');

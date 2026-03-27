@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"test": "vitest --watch=false",
+		"test": "vp test --watch=false",
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
@@ -39,7 +39,8 @@
 		"typescript": "catalog:",
 		"uuid": "catalog:",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "1.6.1",
-		"ws": "catalog:"
+		"vitest": "catalog:",
+		"ws": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

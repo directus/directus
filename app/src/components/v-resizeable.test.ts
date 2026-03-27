@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { Router } from 'vue-router';
 import type { ResizeableOptions } from './v-resizeable.vue';
 import VResizeable from './v-resizeable.vue';

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { nextTick, reactive } from 'vue';
 import { useSync } from './use-sync.js';
 

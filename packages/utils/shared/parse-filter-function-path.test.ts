@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { parseFilterFunctionPath } from './parse-filter-function-path.js';
 
 describe('parseFilterFunctionPath', () => {

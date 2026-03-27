@@ -1,5 +1,5 @@
 import type { Permission } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { hasItemPermissions } from './has-item-permissions.js';
 
 test('Returns false if permissions are null', () => {

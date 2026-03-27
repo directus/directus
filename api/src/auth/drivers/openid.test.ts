@@ -9,7 +9,7 @@ import {
 } from '@directus/errors';
 import { errors as openidErrors } from 'openid-client';
 import type { Logger } from 'pino';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
 import { createOpenIDAuthRouter, OpenIDAuthDriver } from './openid.js';

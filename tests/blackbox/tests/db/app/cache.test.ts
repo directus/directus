@@ -9,7 +9,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, test } from 'vite-plus/test';
 import { collectionFirst, collectionIgnored, seedDBValues } from './cache.seed';
 
 let isSeeded = false;

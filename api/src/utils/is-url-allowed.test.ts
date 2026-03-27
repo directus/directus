@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import isUrlAllowed from './is-url-allowed.js';
 
 test('isUrlAllowed should allow matching domain', () => {

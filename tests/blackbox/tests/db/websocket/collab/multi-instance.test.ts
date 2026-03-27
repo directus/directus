@@ -13,7 +13,7 @@ import { sleep } from '@utils/sleep';
 import getPort from 'get-port';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vite-plus/test';
 import { collectionCollabMultiInstance } from './multi-instance.seed';
 
 describe('Collaborative Editing: Multi-Instance', () => {

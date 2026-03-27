@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, Mock, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, Mock, test, vi } from 'vite-plus/test';
 import { defineComponent, h } from 'vue';
 import { useShortcut } from './use-shortcut';
 

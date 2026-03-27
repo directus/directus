@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getCache } from '../cache.js';
 import { track } from '../telemetry/index.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';

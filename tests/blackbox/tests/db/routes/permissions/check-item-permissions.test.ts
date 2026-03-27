@@ -3,7 +3,7 @@ import { CreatePermission } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it, test } from 'vite-plus/test';
 import {
 	collection,
 	collectionItemName,

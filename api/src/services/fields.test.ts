@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Field, RawField } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import * as cacheModule from '../cache.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import {

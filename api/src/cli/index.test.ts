@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
 import bootstrap from './commands/bootstrap/index.js';

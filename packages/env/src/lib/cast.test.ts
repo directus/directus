@@ -1,6 +1,6 @@
 import { toArray, toBoolean } from '@directus/utils';
 import { toNumber, toString } from 'lodash-es';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import { getDefaultType } from '../utils/get-default-type.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';

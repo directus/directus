@@ -1,4 +1,4 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import type { KvConfig } from '../index.js';
 import { createKv } from './create.js';
 import { KvLocal } from './local.js';

@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Knex } from 'knex';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { ExtensionsService } from '../../services/extensions.js';
 import { type ExtensionCount, getExtensionCount } from './get-extension-count.js';
 

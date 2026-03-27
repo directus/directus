@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import { Router } from 'vue-router';
 import VButton from './v-button.vue';
 import { Focus } from '@/__utils__/focus';

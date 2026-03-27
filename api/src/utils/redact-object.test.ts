@@ -1,6 +1,6 @@
 import { getRedactedString, REDACTED_TEXT } from '@directus/utils';
 import { merge } from 'lodash-es';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { getReplacer, redactObject } from './redact-object.js';
 
 const input = {

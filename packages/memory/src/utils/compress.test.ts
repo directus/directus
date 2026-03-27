@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { compress, decompress } from './compress.js';
 
 const cases: [string, Uint8Array][] = [

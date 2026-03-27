@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import type { CheckFieldAccessData } from '../types';
 import EditingLayer from './editing-layer.vue';
 import { Tooltip } from '@/__utils__/tooltip';

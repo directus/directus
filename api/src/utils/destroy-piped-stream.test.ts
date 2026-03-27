@@ -1,5 +1,5 @@
 import { PassThrough } from 'stream';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { destroyPipedStream } from './destroy-piped-stream.js';
 
 test('destroy target stream without destroying source stream', () => {

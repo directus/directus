@@ -1,7 +1,7 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
 import type { Permission } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import { fetchPermissions } from '../../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../lib/fetch-policies.js';

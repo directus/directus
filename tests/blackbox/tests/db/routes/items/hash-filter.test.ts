@@ -2,7 +2,7 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it, test } from 'vite-plus/test';
 import { collectionFirst, collectionSecond, seedDBValues } from './hash-filter.seed';
 
 let isSeeded = false;

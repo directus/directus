@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import SearchInput from './search-input.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
 import { Tooltip } from '@/__utils__/tooltip';

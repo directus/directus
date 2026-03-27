@@ -1,6 +1,6 @@
 import type { InterfaceConfig } from '@directus/extensions';
 import type { DeepPartial, Field } from '@directus/types';
-import { expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vite-plus/test';
 import { ref, type Ref } from 'vue';
 import type { FormField } from '../types';
 import { getFormFields } from './get-form-fields';

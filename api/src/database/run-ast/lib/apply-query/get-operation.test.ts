@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getOperation } from './get-operation.js';
 
 test('key object without operator', () => {

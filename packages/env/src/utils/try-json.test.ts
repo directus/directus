@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/utils';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { tryJson } from './try-json.js';
 
 vi.mock('@directus/utils');

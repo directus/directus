@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { createKv, type KvLocal, type KvRedis } from '@directus/memory';
 import type { Redis } from 'ioredis';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { _cache, useCounters } from './use-counters.js';
 

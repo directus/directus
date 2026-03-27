@@ -1,8 +1,17 @@
 {
 	"scssFormatter.singleQuote": true,
-	"stylelint.validate": ["css", "scss", "vue"],
+	"stylelint.validate": [
+		"css",
+		"scss",
+		"vue"
+	],
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "never",
-		"source.fixAll.eslint": "explicit"
-	}
+		"source.fixAll.eslint": "explicit",
+		"source.fixAll.oxc": "explicit"
+	},
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"oxc.fmt.configPath": "./vite.config.ts",
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "file"
 }

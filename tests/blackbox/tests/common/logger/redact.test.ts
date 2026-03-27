@@ -11,7 +11,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vite-plus/test';
 
 describe('Logger Redact Tests', () => {
 	const databases = new Map<Vendor, Knex>();

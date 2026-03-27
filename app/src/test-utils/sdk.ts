@@ -4,7 +4,7 @@
  */
 
 import type { RequestOptions } from '@directus/sdk';
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 
 /**
  * Creates a standard SDK mock for app tests

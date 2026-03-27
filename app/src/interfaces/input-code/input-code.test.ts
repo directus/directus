@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import InputCode from './input-code.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';

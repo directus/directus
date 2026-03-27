@@ -2,7 +2,7 @@ import { InvalidPayloadError } from '@directus/errors';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { z } from 'zod';
 import emitter from '../emitter.js';
 import { CollectionsService } from '../services/collections.js';

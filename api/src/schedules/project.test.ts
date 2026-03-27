@@ -1,6 +1,6 @@
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import getDatabase from '../database/index.js';
 import { sendReport } from '../telemetry/index.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';

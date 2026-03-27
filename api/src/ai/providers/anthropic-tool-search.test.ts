@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { applyAnthropicToolSearch } from './anthropic-tool-search.js';
 
 const mockToolSearchResult = { tool_search_bm25: { type: 'provider-defined', id: 'tool_search_bm25' } };

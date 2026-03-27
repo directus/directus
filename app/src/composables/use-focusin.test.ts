@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { nextTick, ref } from 'vue';
 import { useFocusin } from './use-focusin';
 

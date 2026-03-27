@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { stringToUint8Array } from './string-to-uint8array.js';
 
 test('Converts string to uint8array', () => {

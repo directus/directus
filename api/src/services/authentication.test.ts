@@ -2,7 +2,7 @@ import { InvalidCredentialsError, InvalidOtpError, ServiceUnavailableError } fro
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vite-plus/test';
 import { getAuthProvider } from '../auth.js';
 import emitter from '../emitter.js';
 import { ActivityService } from './activity.js';

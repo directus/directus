@@ -1,5 +1,5 @@
 import { _ActionsTree, StateTree, Store } from 'pinia';
-import { MockedFunction } from 'vitest';
+import { MockedFunction } from 'vite-plus/test';
 import { UnwrapRef } from 'vue';
 
 type Mocked<T extends _ActionsTree> = { [P in keyof T]: MockedFunction<T[P]> };

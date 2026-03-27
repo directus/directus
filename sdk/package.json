@@ -23,19 +23,19 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "NODE_ENV=production tsdown",
-		"dev": "NODE_ENV=development tsdown",
-		"test": "vitest run --typecheck",
-		"test:coverage": "vitest run --coverage --typecheck"
+		"build": "NODE_ENV=production vp pack",
+		"dev": "NODE_ENV=development vp pack",
+		"test": "vp test run --typecheck",
+		"test:coverage": "vp test run --coverage --typecheck"
 	},
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"esbuild-plugin-replace": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"vite-plus": "catalog:"
 	},
 	"engines": {
 		"node": ">=22"

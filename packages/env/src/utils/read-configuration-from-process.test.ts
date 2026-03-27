@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, expect, test } from 'vitest';
+import { afterEach, beforeEach, expect, test } from 'vite-plus/test';
 import { readConfigurationFromProcess } from './read-configuration-from-process.js';
 
 const envBackup = { ...process.env };

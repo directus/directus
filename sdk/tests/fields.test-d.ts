@@ -1,4 +1,4 @@
-import { assertType, describe, test } from 'vitest';
+import { assertType, describe, test } from 'vite-plus/test';
 import type { QueryFields } from '../src/types/fields.js';
 import type { CollectionA, CollectionC, TestSchema } from './schema.js';
 

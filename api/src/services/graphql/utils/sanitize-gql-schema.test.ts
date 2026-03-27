@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { sanitizeGraphqlSchema } from './sanitize-gql-schema.js';
 
 describe('Sanitize graphql schema', () => {

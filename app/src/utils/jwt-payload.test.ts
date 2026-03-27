@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { jwtPayload } from '@/utils/jwt-payload';
 
 test('Returns payload as JSON object from JWT', () => {

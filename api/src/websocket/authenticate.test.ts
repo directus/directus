@@ -1,7 +1,7 @@
 import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import type { Mock } from 'vitest';
-import { describe, expect, test, vi } from 'vitest';
+import type { Mock } from 'vite-plus/test';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import emitter from '../emitter.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { authenticateConnection, authenticationSuccess } from './authenticate.js';

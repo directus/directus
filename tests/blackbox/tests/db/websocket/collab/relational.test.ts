@@ -7,7 +7,7 @@ import type { WebSocketCollabResponse } from '@common/types';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import {
 	collectionCollabRelational,
 	collectionCollabRelationalA2O,

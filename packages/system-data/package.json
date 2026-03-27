@@ -14,28 +14,28 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"import": "./dist/index.js",
+			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs"
 		},
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/index.mjs",
 	"files": [
 		"dist"
 	],
 	"scripts": {
-		"build": "NODE_ENV=production tsdown",
-		"dev": "NODE_ENV=development tsdown",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"build": "NODE_ENV=production vp pack",
+		"dev": "NODE_ENV=development vp pack",
+		"test": "vp test run",
+		"test:coverage": "vp test run --coverage"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"unplugin-yaml": "catalog:",
 		"esbuild": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"vite-plus": "catalog:"
 	}
 }

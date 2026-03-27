@@ -1,7 +1,7 @@
 import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import type { AST } from '../../../types/ast.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';

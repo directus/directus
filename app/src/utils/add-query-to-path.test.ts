@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 
 test('Adds query parameters to given path', () => {

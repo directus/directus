@@ -1,7 +1,7 @@
 import type { GraphQLParams } from '@directus/types';
 import type { GraphQLResolveInfo } from 'graphql';
 import { parse } from 'graphql';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { dedupeRelationalResolver, dedupeResolver, resolverCacheKey } from './dedupe-resolvers.js';
 
 /** Builds a minimal GraphQLResolveInfo with a field name and optional selection set. */

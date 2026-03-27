@@ -1,7 +1,7 @@
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { computed, ref } from 'vue';
 import ListM2M from './list-m2m.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';

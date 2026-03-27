@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { sameOrigin } from './same-origin';
 
 test('Returns true for same origin URLs', () => {

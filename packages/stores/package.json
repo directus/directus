@@ -21,8 +21,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown src/index.ts --dts",
-		"dev": "tsdown src/index.ts --dts --watch"
+		"build": "vp pack src/index.ts --dts",
+		"dev": "vp pack src/index.ts --dts --watch"
 	},
 	"dependencies": {
 		"@vueuse/core": "catalog:"
@@ -30,9 +30,9 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"pinia": "catalog:",
-		"tsdown": "catalog:",
 		"typescript": "catalog:",
-		"vue": "catalog:"
+		"vue": "catalog:",
+		"vite-plus": "catalog:"
 	},
 	"peerDependencies": {
 		"pinia": "catalog:",

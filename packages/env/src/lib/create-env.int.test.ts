@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { readConfigurationFromProcess } from '../utils/read-configuration-from-process.js';
 import { createEnv } from './create-env.js';

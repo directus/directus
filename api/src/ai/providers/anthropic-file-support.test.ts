@@ -1,5 +1,5 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { createAnthropicWithFileSupport } from './anthropic-file-support.js';
 
 vi.mock('@ai-sdk/anthropic', () => ({

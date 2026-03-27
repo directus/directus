@@ -1,6 +1,6 @@
 import { CreateCollection, CreateField, CreateItem, DeleteCollection, UpdateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export const collection = 'test_collection_permissions';
 export const collectionItemName = 'Bunny';

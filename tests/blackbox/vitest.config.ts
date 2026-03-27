@@ -1,5 +1,5 @@
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite-plus';
 import Sequencer from './setup/sequencer';
 
 export default defineConfig({

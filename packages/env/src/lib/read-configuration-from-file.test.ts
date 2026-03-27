@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { getFileExtension } from '../utils/get-file-extension.js';
 import { readConfigurationFromDotEnv } from '../utils/read-configuration-from-dotenv.js';
 import { readConfigurationFromJavaScript } from '../utils/read-configuration-from-javascript.js';

@@ -8,7 +8,7 @@ import {
 	DeleteCollection,
 } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
-import { it } from 'vitest';
+import { it } from 'vite-plus/test';
 
 export const c = {
 	articles_tags: 'test_items_version_articles_tags',

@@ -14,7 +14,7 @@ import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { load as loadYaml } from 'js-yaml';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { version as currentDirectusVersion } from '../../../../../../api/package.json';
 import type { Snapshot } from '../../../../../../api/src/types/snapshot.js';
 import {

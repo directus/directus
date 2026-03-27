@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { calculateFieldDepth } from './calculate-field-depth.js';
 
 test('Calculates basic depth', () => {

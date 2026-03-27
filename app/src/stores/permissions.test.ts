@@ -1,7 +1,7 @@
 import { PermissionsAction, User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vite-plus/test';
 import { usePermissionsStore } from './permissions';
 import { useUserStore } from './user';
 import { mockedStore } from '@/__utils__/store';

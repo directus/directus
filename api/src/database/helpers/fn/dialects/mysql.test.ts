@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import { convertToMySQLPath } from './mysql.js';
 
 // Mock dependencies to avoid loading the full FnHelper class

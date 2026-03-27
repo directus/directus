@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { splitFields } from './split-fields.js';
 
 const VALID_TEST_CASES = [

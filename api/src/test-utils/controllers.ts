@@ -5,7 +5,7 @@
 
 import type { SchemaOverview } from '@directus/types';
 import type { Request, Response, Router } from 'express';
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 
 /**
  * Get a route handler stack from an Express router

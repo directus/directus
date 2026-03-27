@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vite-plus/test';
 import type { WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType, safeSend } from './message.js';
 

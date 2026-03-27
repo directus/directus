@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { createKv, KvLocal } from '../../kv/index.js';
 import { CacheLocal } from './local.js';
 

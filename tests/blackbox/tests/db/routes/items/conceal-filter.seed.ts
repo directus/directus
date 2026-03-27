@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { CreateCollection, CreateField, CreateFieldO2M, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 
 export const collectionFirst = 'test_items_conceal_filter_first';
 export const collectionSecond = 'test_items_conceal_filter_second';

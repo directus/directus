@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import type { Field } from '@directus/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { ref } from 'vue';
 import { useFilterFields } from './use-filter-fields.js';
 

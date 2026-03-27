@@ -1,6 +1,6 @@
 import { setTimeout } from 'timers/promises';
 import { getNodeEnv } from '@directus/utils/node';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { useLogger } from '../../logger/index.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';

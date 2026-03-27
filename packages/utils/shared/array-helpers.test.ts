@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { isIn, isTypeIn } from './array-helpers.js';
 
 describe('type helpers for arrays', () => {

@@ -300,7 +300,6 @@ catalog:
   tedious: 18.6.1
   tinymce: 6.8.6
   tmp: 0.2.5
-  tsdown: 0.15.11
   tsx: 4.20.6
   tus-js-client: 4.3.1
   typescript: 5.9.3
@@ -311,10 +310,10 @@ catalog:
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 8.0.0
+  vite: npm:@voidzero-dev/vite-plus-core@latest
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
-  vitest: 3.2.4
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
   vue: 3.5.24
   vue-i18n: 11.1.12
   vue-router: 4.6.3
@@ -325,6 +324,7 @@ catalog:
   ws: 8.18.3
   zod: 4.1.12
   zod-validation-error: 4.0.2
+  vite-plus: latest
 
 catalogMode: strict
 
@@ -341,3 +341,13 @@ onlyBuiltDependencies:
   - sharp
   - sqlite3
   - vue-demi
+overrides:
+  vite: 'catalog:'
+  vitest: 'catalog:'
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: '*'
+    vitest: '*'

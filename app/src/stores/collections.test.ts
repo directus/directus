@@ -2,7 +2,7 @@ import { Collection } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { merge } from 'lodash';
 import { setActivePinia } from 'pinia';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { useCollectionsStore } from './collections';
 import { i18n } from '@/lang';
 

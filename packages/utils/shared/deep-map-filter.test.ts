@@ -1,6 +1,6 @@
 import { SchemaBuilder } from '@directus/schema-builder';
 import { getRelation } from '@directus/utils';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { deepMapFilter } from './deep-map-filter.js';
 
 const schema = new SchemaBuilder()

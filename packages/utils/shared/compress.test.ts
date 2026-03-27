@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { compress, decode, decompress, encode, getValueForToken, mapToSortedArray, to10, to36 } from './compress.js';
 
 const plain = {

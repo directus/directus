@@ -1,5 +1,5 @@
 import type { DeepPartial, Query, SchemaOverview } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { extractFieldsFromQuery } from './extract-fields-from-query.js';
 
 test('Appends paths used in query to FieldMap', () => {

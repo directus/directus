@@ -1,5 +1,5 @@
 import { randWord } from '@ngneat/falso';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import { _aliasMap, getStorageDriver } from './get-storage-driver.js';
 
 test('Returns imported installed driver for each supported driver', async () => {

@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getAllowedLogLevels } from './get-allowed-log-levels.js';
 
 test('should return correct log levels for "info"', () => {

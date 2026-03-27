@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import VDetail from './v-detail.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';

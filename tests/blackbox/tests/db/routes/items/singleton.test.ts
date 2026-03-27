@@ -4,7 +4,7 @@ import { SeedFunctions } from '@common/seed-functions';
 import { requestGraphQL } from '@common/transport';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, it, test } from 'vite-plus/test';
 import { collectionSingleton, collectionSingletonO2M, seedDBValues } from './singleton.seed';
 
 let isSeeded = false;

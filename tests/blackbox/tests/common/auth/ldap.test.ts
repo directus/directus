@@ -15,7 +15,7 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { Client } from 'ldapts';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vite-plus/test';
 
 // LDAP server configuration (matches docker-compose.yml openldap service)
 const LDAP_URL = 'ldap://127.0.0.1:6109';

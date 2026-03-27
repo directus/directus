@@ -22,8 +22,8 @@ import {
 } from '@ngneat/falso';
 import type { Response } from 'undici';
 import { fetch, FormData } from 'undici';
-import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { Mock } from 'vite-plus/test';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';

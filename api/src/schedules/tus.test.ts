@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import * as schedule from '../utils/schedule.js';
 import tusSchedule from './tus.js';
 

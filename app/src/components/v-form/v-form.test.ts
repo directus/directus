@@ -1,7 +1,7 @@
 import type { Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { nextTick } from 'vue';
 import VForm from './v-form.vue';
 import { ClickOutside } from '@/__utils__/click-outside';

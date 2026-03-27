@@ -5,7 +5,7 @@
 
 import { PassThrough } from 'node:stream';
 import type { Driver, StorageManager } from '@directus/storage';
-import { vi } from 'vitest';
+import { vi } from 'vite-plus/test';
 
 /**
  * Creates a mock Driver with common storage operations

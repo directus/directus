@@ -1,5 +1,5 @@
 import { InternalServerError } from '@directus/errors';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import config from './index.js';
 
 const DEFAULT_ERROR = new InternalServerError();

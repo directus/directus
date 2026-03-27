@@ -1,7 +1,7 @@
 import type { Filter } from '@directus/types';
 import { flushPromises } from '@vue/test-utils';
 import type { AxiosInstance } from 'axios';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { type Ref, ref, unref } from 'vue';
 import { useItems } from './use-items.js';
 import { useApi } from './use-system.js';

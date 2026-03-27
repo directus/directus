@@ -1,5 +1,5 @@
 import type { Project } from '@pnpm/workspace.find-packages';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { Config } from '../types.js';
 
 vi.mock('../config.js', () => {

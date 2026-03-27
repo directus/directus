@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* oxlint-disable no-console */
 import { spawn, spawnSync } from 'child_process';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';

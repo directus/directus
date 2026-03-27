@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import DisplayBoolean from './boolean.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 

@@ -48,7 +48,7 @@ const WS_CONNECTIONS = new Map<string, DeploymentConnection>();
 const WS_IDLE_TIMEOUT = 60_000; // 60 seconds
 const WS_CONNECTION_TIMEOUT = 10_000; // 10 seconds
 
-// eslint-disable-next-line no-control-regex
+// oxlint-disable-next-line no-control-regex
 const ANSI_REGEX = /[\x1b]\[[0-9;]*m/g;
 const WS_URL = 'wss://socketeer.services.netlify.com/build/logs';
 

@@ -11,7 +11,7 @@ import {
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { seedAllFieldTypesStructure } from '../items/seed-all-field-types';
 
 export const collectionAll = 'test_schema_all';

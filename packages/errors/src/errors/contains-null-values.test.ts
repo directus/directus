@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import { messageConstructor } from './contains-null-values.js';
 
 let sample: {

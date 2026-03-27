@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import request from 'supertest';
-import { expect, it } from 'vitest';
+import { expect, it } from 'vite-plus/test';
 import { getUrl } from './config';
 import { DeleteCollection } from './functions';
 import vendors from './get-dbs-to-test';

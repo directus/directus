@@ -1,5 +1,5 @@
 import type { RawField } from '@directus/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { addFieldFlag } from './add-field-flag.js';
 
 describe('addFieldFlag', () => {

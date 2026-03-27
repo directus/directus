@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import type { ValueOutOfRangeErrorExtensions } from './value-out-of-range.js';
 import { messageConstructor } from './value-out-of-range.js';
 

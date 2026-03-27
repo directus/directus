@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import InputInterface from './input.vue';
 
 const mountOptions = {

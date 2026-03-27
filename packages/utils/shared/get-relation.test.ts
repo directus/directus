@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { getRelation, getRelations } from './get-relation.js';
 
 test('relations on m2o field', () => {

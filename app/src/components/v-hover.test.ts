@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vite-plus/test';
 import VHover from './v-hover.vue';
 
 afterEach(() => {

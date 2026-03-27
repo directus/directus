@@ -17,7 +17,7 @@ import {
 	randUrl,
 	randWord,
 } from '@ngneat/falso';
-import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from 'vite-plus/test';
 import { DriverAzure, type DriverAzureConfig } from './index.js';
 
 vi.mock('@directus/utils/node');

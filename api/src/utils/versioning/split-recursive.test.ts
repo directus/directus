@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { splitRecursive } from './split-recursive.js';
 
 test('split with no default overwrites', () => {

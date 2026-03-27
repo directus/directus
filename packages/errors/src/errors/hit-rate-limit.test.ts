@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vite-plus/test';
 import { messageConstructor } from './hit-rate-limit.js';
 
 beforeAll(() => {

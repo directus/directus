@@ -18,14 +18,14 @@ async function run() {
 	const { types, untypedPackages, notices } = await getInfo(changesets);
 
 	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
-		// eslint-disable-next-line no-console
+		// oxlint-disable-next-line no-console
 		console.warn('WARN: No processable changesets found');
 	}
 
 	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
 
 	const divider = '==============================================================';
-	// eslint-disable-next-line no-console
+	// oxlint-disable-next-line no-console
 	console.log(`${divider}\nDirectus v${mainVersion}\n${divider}\n${markdown}\n${divider}`);
 
 	const githubOutput = process.env['GITHUB_OUTPUT'];

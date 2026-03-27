@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { combine } from './combine.js';
 
 test('Combines two strings with a space', () => {

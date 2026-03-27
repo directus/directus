@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { findBestPosition } from './find-best-position';

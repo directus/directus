@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import formatTitle from './index.js';
 
 const tests: [string, string][] = [

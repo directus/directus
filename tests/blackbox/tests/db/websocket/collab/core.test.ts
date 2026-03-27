@@ -6,7 +6,7 @@ import type { WebSocketCollabResponse } from '@common/types';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
 import request from 'supertest';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vite-plus/test';
 import { collectionCollabCore, seedDBStructure } from './core.seed';
 
 describe('Collaborative Editing: Core', () => {

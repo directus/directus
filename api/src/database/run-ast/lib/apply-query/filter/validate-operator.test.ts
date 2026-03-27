@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { validateOperator } from './validate-operator.js';
 
 test(`_eq allowed on boolean`, async () => {

@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import axios from 'axios';
-import type { Environment } from 'vitest';
+import type { Environment } from 'vite-plus/test';
 import { USER } from '../common/variables';
 import { sleep } from '../utils/sleep';
 import { getReversedTestIndex } from './sequential-tests';

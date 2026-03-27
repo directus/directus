@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { getVersionDisplayName } from './get-version-display-name';
 import { DRAFT_VERSION_KEY } from '@/constants';
 

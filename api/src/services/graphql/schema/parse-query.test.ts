@@ -1,5 +1,5 @@
 import type { SelectionNode } from 'graphql';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vite-plus/test';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { getQuery } from './parse-query.js';
 

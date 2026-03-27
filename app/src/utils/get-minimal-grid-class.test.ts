@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 
 describe('getMinimalGridClass', () => {

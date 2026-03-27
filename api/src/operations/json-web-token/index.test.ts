@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import config from './index.js';
 
 beforeEach(() => {

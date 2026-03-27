@@ -1,6 +1,6 @@
 import { ErrorCode } from '@directus/errors';
 import { ACTION } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { nextTick, ref, type Ref } from 'vue';
 import { useCollab } from './use-collab';
 

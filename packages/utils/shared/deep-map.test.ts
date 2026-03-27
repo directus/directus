@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import { deepMap } from './deep-map.js';
 
 for (const value of [123, 'abc', null, undefined, true, false, new Date()]) {

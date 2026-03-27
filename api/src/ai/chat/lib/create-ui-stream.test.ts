@@ -1,7 +1,7 @@
 import { ServiceUnavailableError } from '@directus/errors';
 import type { UIMessage } from 'ai';
 import { streamText } from 'ai';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import type { AISettings } from '../../providers/types.js';
 import { createUiStream } from './create-ui-stream.js';
 

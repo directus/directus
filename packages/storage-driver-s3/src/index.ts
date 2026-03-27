@@ -465,7 +465,7 @@ export class DriverS3 implements TusDriver {
 
 				const isFinalPart = size === offset;
 
-				// eslint-disable-next-line no-async-promise-executor
+				// oxlint-disable-next-line no-async-promise-executor
 				const deferred = new Promise<void>(async (resolve, reject) => {
 					try {
 						// Only the first chunk of each PATCH request can prepend

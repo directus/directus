@@ -8,7 +8,7 @@ import type {
 	SnapshotSystemField,
 	SnapshotWithHash,
 } from '@directus/types';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vite-plus/test';
 import type { Collection } from '../types/collection.js';
 import { validateApplyDiff } from './validate-diff.js';
 

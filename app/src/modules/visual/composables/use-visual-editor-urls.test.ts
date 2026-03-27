@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { useVisualEditorUrls } from './use-visual-editor-urls';
 import { useSettingsStore } from '@/stores/settings';
 

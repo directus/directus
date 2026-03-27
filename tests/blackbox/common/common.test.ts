@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { collectionName, collectionNameM2O, collectionNameO2M } from './common.seed';
 import { getUrl } from './config';
 import {

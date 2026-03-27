@@ -1,7 +1,7 @@
 import { dirname } from 'node:path/posix';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { pathToRelativeUrl } from './path-to-relative-url.js';
 
 describe('pathToRelativeUrl', () => {

@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { useLogger } from '../../logger/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { getService } from '../../utils/get-service.js';

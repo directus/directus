@@ -1,4 +1,4 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vite-plus/test';
 import { type LimitExceededErrorExtensions, messageConstructor } from './limit-exceeded.js';
 
 let sample: LimitExceededErrorExtensions;

@@ -7,7 +7,7 @@ import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { without } from 'lodash-es';
 import request from 'supertest';
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect, it, test } from 'vite-plus/test';
 import { collectionArtists } from './no-relation.seed';
 
 type Artist = {

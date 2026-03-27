@@ -1,7 +1,7 @@
 import { DeepPartial, Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { validateItem } from '@/utils/validate-item';
 
 vi.mock('@/utils/parse-filter', () => ({

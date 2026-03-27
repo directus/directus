@@ -1,5 +1,5 @@
 import { type Knex } from 'knex';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vite-plus/test';
 import { fetchAccessRoles } from './fetch-access-roles.js';
 
 let knex: Knex;

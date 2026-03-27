@@ -1,5 +1,5 @@
 import { useApi } from '@directus/composables';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import type { MCPPrompt } from '../types';
 import { usePrompts } from './use-prompts';
 

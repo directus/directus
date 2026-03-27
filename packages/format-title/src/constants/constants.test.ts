@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect, test } from 'vite-plus/test';
 import acronyms from '../constants/acronyms.js';
 import specialCase from '../constants/special-case.js';
 

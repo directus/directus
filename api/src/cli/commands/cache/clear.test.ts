@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { clearSystemCache, getCache } from '../../../cache.js';
 import { useLogger } from '../../../logger/index.js';
 import cacheClear from './clear.js';

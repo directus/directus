@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { flushPromises } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import CollectionItemMultipleDropdown from './collection-item-multiple-dropdown.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import api from '@/api';

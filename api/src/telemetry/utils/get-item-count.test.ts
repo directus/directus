@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import pLimit, { type LimitFunction } from 'p-limit';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test';
 import { countCollection, getItemCount, mergeResults } from './get-item-count.js';
 
 vi.mock('p-limit');

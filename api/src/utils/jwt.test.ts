@@ -1,7 +1,7 @@
 import { InvalidTokenError, TokenExpiredError } from '@directus/errors';
 import { ServiceUnavailableError } from '@directus/errors';
 import jwt from 'jsonwebtoken';
-import { expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vite-plus/test';
 import type { DirectusTokenPayload } from '../types/index.js';
 import { verifyAccessJWT, verifyJWT } from './jwt.js';
 

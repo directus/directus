@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vite-plus/test';
 import { type TelemetryReport } from '../types/report.js';
 import { sendReport } from './send-report.js';
 

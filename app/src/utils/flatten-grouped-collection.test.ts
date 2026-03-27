@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { Collection } from '@/types/collections';
 import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 
