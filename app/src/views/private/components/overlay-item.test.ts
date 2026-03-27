@@ -34,7 +34,8 @@ vi.mock('@/composables/use-collab', () => ({
 	}),
 }));
 
-vi.mock('@directus/composables', () => ({
+vi.mock('@directus/composables', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/composables')>()),
 	useCollection: () => ({
 		info: computed(() => ({ name: 'Articles', collection: 'articles', meta: null })),
 		primaryKeyField: computed(() => ({ field: 'id' })),
@@ -42,6 +43,7 @@ vi.mock('@directus/composables', () => ({
 	}),
 	useGroupable: () => ({ active: ref(false), toggle: vi.fn() }),
 	useSizeClass: () => computed(() => ''),
+	useShortcut: vi.fn(),
 }));
 
 vi.mock('vue-router', async (importOriginal) => ({
