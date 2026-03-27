@@ -1831,6 +1831,8 @@ interfaces:
     all_opened: 全部已打开
     accordion_mode: 折叠模式
     max_one_section_open: 最多展开 1 项
+  group-tabs:
+    fill_width: 全宽
   presentation-links:
     presentation-links: 按钮
     style: 样式
