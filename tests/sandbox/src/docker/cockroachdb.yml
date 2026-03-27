@@ -1,0 +1,14 @@
+services:
+  cockroachdb:
+    # change in the YY.R component denotes a major release
+    image: cockroachdb/cockroach:${DB_VERSION}
+    tmpfs: /cockroach/cockroach-data
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - ${DB_PORT}:26257
+      - ${COCKROACH_UI}:8080
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', 'http://localhost:8080/health']
+      interval: 5s
+      timeout: 5s
+      retries: 10

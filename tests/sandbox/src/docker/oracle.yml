@@ -1,0 +1,16 @@
+services:
+  oracle:
+    image: gvenzl/oracle-xe:${DB_VERSION}
+    ports:
+      - ${DB_PORT}:1521
+    environment:
+      - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
+      - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_RANDOM_PASSWORD=yes
+      - APP_USER=${DB_USER}
+      - APP_USER_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: healthcheck.sh
+      interval: 5s
+      timeout: 5s
+      retries: 10

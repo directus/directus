@@ -1,0 +1,15 @@
+services:
+  mysql:
+    image: mysql:${DB_VERSION}
+    tmpfs: /var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports:
+      - ${DB_PORT}:3306
+    healthcheck:
+      test: ['CMD', 'mysql', '--user=root', '--password=${DB_PASSWORD}', '--execute=SELECT 1;']
+      interval: 5s
+      timeout: 5s
+      retries: 10

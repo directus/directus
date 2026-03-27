@@ -96,6 +96,7 @@ jobs:
         run: pnpm test:coverage --passWithNoTests
 
       - name: Upload coverage to Codecov
+        continue-on-error: true
         run: |
           # Download and install Codecov uploader
           curl -Os https://cli.codecov.io/latest/linux/codecov

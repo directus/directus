@@ -1,0 +1,28 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:${DB_VERSION}
+    tmpfs: /var/opt/mssql/data
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
+      - MSSQL_PID=Express
+    ports:
+      - ${DB_PORT}:1433
+    healthcheck:
+      test:
+        [
+          'CMD',
+          '/opt/mssql-tools18/bin/sqlcmd',
+          '-S',
+          'localhost',
+          '-U',
+          'sa',
+          '-P',
+          '${DB_PASSWORD}',
+          '-Q',
+          'SELECT 1',
+          '-No',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10

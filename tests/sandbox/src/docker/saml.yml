@@ -1,0 +1,10 @@
+services:
+  saml:
+    image: kristophjunge/test-saml-idp
+    ports:
+      - ${SAML_PORT}:8080
+    environment:
+      - SIMPLESAMLPHP_SP_ENTITY_ID=saml-test
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://127.0.0.1:8080/auth/login/saml/acs
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
