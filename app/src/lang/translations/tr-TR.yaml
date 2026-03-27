@@ -1648,6 +1648,8 @@ interfaces:
     all_opened: Hepsi Açık
     accordion_mode: Körüklü Liste Modu
     max_one_section_open: En Fazla 1 Bölüm Açık
+  group-tabs:
+    fill_width: Genişliği Doldur
   presentation-links:
     presentation-links: Butonlar
     style: Stil
