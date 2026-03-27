@@ -5,7 +5,7 @@ import { useSnapshot } from '@utils/useSnapshot.js';
 import { expect, test } from 'vitest';
 import type { Articles, Schema } from './schema.d.ts';
 
-const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(staticToken('admin')).with(rest());
 
 const { collections } = await useSnapshot<Schema>(api);
 
@@ -231,17 +231,15 @@ test('graphql crud', async () => {
 
 	expect(deleted).toMatchObject({ id: create.id });
 
-	const deletedRead: Articles[] = (
-		await api.query(`
+	await expect(() =>
+		api.query(`
 		query {
 			${collections.articles}_by_id (id: "${create.id}") {
 				id
 			}
 		}
-	`)
-	)[`${collections.articles}_by_id`];
-
-	expect(deletedRead).toBeNull();
+	`),
+	).rejects.toThrowError();
 });
 
 function toGQLInput(obj: any) {
