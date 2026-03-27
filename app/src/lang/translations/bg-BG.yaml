@@ -1589,6 +1589,8 @@ interfaces:
     all_opened: Всички са отворени
     accordion_mode: Акордионен режим
     max_one_section_open: До 1 отворена секция
+  group-tabs:
+    fill_width: Изпълване по ширина
   presentation-links:
     presentation-links: Бутони
     style: Стил
