@@ -3,6 +3,7 @@ import { Readable } from 'node:stream';
 import { promisify } from 'node:util';
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
+import { machineId } from 'node-machine-id';
 import pm2 from 'pm2';
 import type { MetricObjectWithValues, MetricValue } from 'prom-client';
 import { AggregatorRegistry, Counter, Histogram, register } from 'prom-client';
@@ -281,7 +282,7 @@ export function createMetrics() {
 			}
 
 			try {
-				await disk.write(`${metricsHealthCheckPrefix}file`, Readable.from([checkId]));
+				await disk.write(`${metricsHealthCheckPrefix}file-${machineId}`, Readable.from([checkId]));
 			} catch {
 				metric.inc();
 			}

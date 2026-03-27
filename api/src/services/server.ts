@@ -6,6 +6,7 @@ import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
+import { machineId } from 'node-machine-id';
 import { getCache } from '../cache.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
@@ -433,7 +434,7 @@ export class ServerService {
 				const startTime = performance.now();
 
 				try {
-					await disk.write('directus-health-file', Readable.from([checkID]));
+					await disk.write(`directus-health-file-${machineId()}`, Readable.from([checkID]));
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`]![0]!.status = 'error';
 					checks[`storage:${location}:responseTime`]![0]!.output = err;
