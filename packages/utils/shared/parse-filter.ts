@@ -159,11 +159,8 @@ function parseJsonFilterValue(
 			} else if (isObject(value)) {
 				// Dynamic variable passed as object (e.g. $CURRENT_USER) — wrap into array
 				result[key] = Object.values(value).flatMap((v) => parseDynamicVariable(v, accountability, context));
-			} else if (typeof value === 'string') {
-				// String value — resolve dynamic variables then convert to array (mirrors non-JSON behavior)
-				result[key] = toArray(value).flatMap((v) => parseDynamicVariable(v, accountability, context));
 			} else {
-				// Invalid primitive (number, etc.) — pass through unchanged so validateQuery can reject it
+				// Invalid value (string, number, etc.) — pass through unchanged so validateQuery can reject it
 				result[key] = value;
 			}
 		} else if (key.startsWith('_')) {
