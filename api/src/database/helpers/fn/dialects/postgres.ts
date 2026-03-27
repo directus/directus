@@ -91,4 +91,3 @@ export class FnHelperPostgres extends FnHelper {
 		return this.knex.raw(`??::${cast}${template}`, [table + '.' + column, ...bindings]);
 	}
 }
-

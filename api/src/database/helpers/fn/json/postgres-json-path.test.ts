@@ -103,11 +103,17 @@ describe('buildPostgresJsonPath (forFilter)', () => {
 	});
 
 	test('nested property uses -> for intermediate and ->> for final', () => {
-		expect(buildPostgresJsonPath('.settings.theme', true)).toEqual({ template: '->?->>?', bindings: ['settings', 'theme'] });
+		expect(buildPostgresJsonPath('.settings.theme', true)).toEqual({
+			template: '->?->>?',
+			bindings: ['settings', 'theme'],
+		});
 	});
 
 	test('array then property uses -> for intermediate and ->> for final', () => {
-		expect(buildPostgresJsonPath('.items[0].name', true)).toEqual({ template: '->?->0->>?', bindings: ['items', 'name'] });
+		expect(buildPostgresJsonPath('.items[0].name', true)).toEqual({
+			template: '->?->0->>?',
+			bindings: ['items', 'name'],
+		});
 	});
 
 	test('array index only uses ->> for filter', () => {
