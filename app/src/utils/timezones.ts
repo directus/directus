@@ -25,6 +25,7 @@ export function getTimezoneOptions(): TimezoneNode[] {
 			'Europe/Paris',
 			'America/New_York',
 			'America/Los_Angeles',
+			'America/Chicago',
 			'Asia/Tokyo',
 			'Asia/Shanghai',
 			'Asia/Kolkata',
