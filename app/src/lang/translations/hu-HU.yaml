@@ -1552,6 +1552,8 @@ interfaces:
     all_opened: Mind nyitva
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
+  group-tabs:
+    fill_width: Teret kitöltő
   presentation-links:
     presentation-links: Gombok
     style: Stílus
