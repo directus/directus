@@ -97,6 +97,14 @@ watch(
 	{ immediate: true },
 );
 
+function filterNonAliasFields(selectedFields: string[]) {
+	const aliasFieldKeys = new Set(
+		fields.value?.filter((field) => field.type === 'alias').map((field) => field.field) ?? [],
+	);
+
+	return selectedFields.filter((key) => !aliasFieldKeys.has(key));
+}
+
 watch(
 	() => props.layoutQuery,
 	() => {
@@ -635,7 +643,7 @@ async function exportDataFiles() {
 						:value="exportSettings.fields"
 						:collection-name="collection"
 						allow-select-all
-						@input="exportSettings.fields = $event"
+						@input="exportSettings.fields = filterNonAliasFields($event)"
 					/>
 				</div>
 			</div>
