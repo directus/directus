@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Updated the `relationship_not_setup` translation to clarify that the warning may also appear when the user lacks permission to access the related collection.
+Updated `relationship_not_setup` wording to clarify it may also result from missing permissions.
