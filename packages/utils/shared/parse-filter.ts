@@ -131,11 +131,47 @@ function parseFilterEntry(
 		return {
 			[key]: parseDynamicVariable(typeof value === 'string' ? parseJSON(value) : value, accountability, context),
 		};
+	} else if (String(key) === '_json') {
+		return { [key]: parseJsonFilterValue(value, accountability, context) };
 	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseDynamicVariable(value, accountability, context) };
 	} else {
 		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
 	}
+}
+
+function parseJsonFilterValue(
+	jsonFilter: Record<string, any>,
+	accountability: BasicAccountability | null,
+	context: ParseFilterContext,
+): Record<string, any> {
+	const result: Record<string, any> = {};
+
+	for (const [key, value] of Object.entries(jsonFilter)) {
+		if (key === '_or' || key === '_and') {
+			result[key] = (value as Record<string, any>[]).map((subFilter) =>
+				parseJsonFilterValue(subFilter, accountability, context),
+			);
+		} else if (['_in', '_nin', '_between', '_nbetween'].includes(key)) {
+			if (Array.isArray(value)) {
+				result[key] = value.flatMap((v) => parseDynamicVariable(v, accountability, context));
+			} else if (isObject(value)) {
+				// Dynamic variable passed as object (e.g. $CURRENT_USER) — wrap into array
+				result[key] = Object.values(value).flatMap((v) => parseDynamicVariable(v, accountability, context));
+			} else {
+				// Resolve dynamic variables (e.g. $CURRENT_ROLES → array); other invalid values pass through
+				// unchanged so validateQuery can reject them
+				result[key] = typeof value === 'string' ? parseDynamicVariable(value, accountability, context) : value;
+			}
+		} else if (key.startsWith('_')) {
+			result[key] = parseDynamicVariable(value, accountability, context);
+		} else {
+			// JSON path key — recurse to process the operator+value object beneath it
+			result[key] = parseJsonFilterValue(value as Record<string, any>, accountability, context);
+		}
+	}
+
+	return result;
 }
 
 function parseDynamicVariable(value: any, accountability: BasicAccountability | null, context: ParseFilterContext) {

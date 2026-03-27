@@ -1,6 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
-import { toPath } from 'lodash-es';
+import { convertToMySQLPath } from '../json/mysql-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -64,27 +64,12 @@ export class FnHelperMySQL extends FnHelper {
 		// ".items[0].name" → "$['items'][0]['name']"
 		const jsonPath = convertToMySQLPath(options.jsonPath);
 
+		if (options?.castNumeric) {
+			// JSON_EXTRACT preserves the native numeric type from the JSON document.
+			// JSON_UNQUOTE would convert it to a string, breaking numeric comparisons.
+			return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [table, column, jsonPath]);
+		}
+
 		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, column, jsonPath]);
 	}
-}
-
-export function convertToMySQLPath(path: string): string {
-	// Use dot notation for object keys (compatible with both MySQL and MariaDB)
-	// ".color" → "$.color"
-	// ".items[0].name" → "$.items[0].name"
-	const parts = toPath(path.startsWith('.') ? path.slice(1) : path);
-
-	let result = '$';
-
-	for (const part of parts) {
-		const num = Number(part);
-
-		if (Number.isInteger(num) && num >= 0 && String(num) === part) {
-			result += `[${part}]`;
-		} else {
-			result += `.${part}`;
-		}
-	}
-
-	return result;
 }

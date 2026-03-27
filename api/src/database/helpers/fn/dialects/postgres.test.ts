@@ -1,107 +1,138 @@
-import { describe, expect, test, vi } from 'vitest';
-import { buildPostgresJsonPath } from './postgres.js';
+import type { SchemaOverview } from '@directus/types';
+import knex from 'knex';
+import { MockClient } from 'knex-mock-client';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
+import { FnHelperPostgres } from './postgres.js';
 
-// Mock dependencies to avoid loading the full FnHelper class
-vi.mock('../types.js', () => ({
-	FnHelper: class FnHelper {},
-	FnHelperOptions: {},
+vi.mock('../../../run-ast/lib/apply-query/filter/index.js', () => ({
+	applyFilter: vi.fn((_knex, _schema, query) => ({ query })),
 }));
 
-vi.mock('../json/parse-function.js', () => ({
-	parseJsonFunction: vi.fn(),
-}));
+function makeSchema(dbType: 'json' | 'jsonb'): SchemaOverview {
+	return {
+		collections: {
+			items: {
+				collection: 'items',
+				primary: 'id',
+				singleton: false,
+				sortField: null,
+				note: null,
+				accountability: null,
+				fields: {
+					data: {
+						field: 'data',
+						type: 'json',
+						dbType,
+						nullable: true,
+						generated: false,
+						defaultValue: null,
+						alias: false,
+						validation: null,
+						special: [],
+						note: null,
+						precision: null,
+						scale: null,
+						searchable: false,
+					},
+				},
+			},
+		},
+		relations: [],
+	};
+}
 
-const TEST_CASES = [
-	// Simple property access
-	{ input: '.color', template: '->?', bindings: ['color'], description: 'simple property access' },
-	{ input: '.name', template: '->?', bindings: ['name'], description: 'simple property access' },
+describe('FnHelperPostgres', () => {
+	let db: ReturnType<typeof knex>;
 
-	// Nested property access
-	{ input: '.user.name', template: '->?->?', bindings: ['user', 'name'], description: 'nested property access' },
-	{
-		input: '.data.settings.theme',
-		template: '->?->?->?',
-		bindings: ['data', 'settings', 'theme'],
-		description: 'deeply nested property access',
-	},
-	{
-		input: '.a.b.c.d',
-		template: '->?->?->?->?',
-		bindings: ['a', 'b', 'c', 'd'],
-		description: 'multiple nested levels',
-	},
+	beforeAll(() => {
+		db = vi.mocked(knex.default({ client: MockClient }));
+	});
 
-	// Array index access
-	{ input: '.items[0]', template: '->?->?', bindings: ['items', 0], description: 'array index access' },
-	{ input: '.items[5]', template: '->?->?', bindings: ['items', 5], description: 'array index with higher number' },
-	{
-		input: '.items[123]',
-		template: '->?->?',
-		bindings: ['items', 123],
-		description: 'array index with multi-digit number',
-	},
+	describe('json()', () => {
+		test('uses ::json cast for json dbType', () => {
+			const helper = new FnHelperPostgres(db, makeSchema('json'));
 
-	// Mixed property and array access
-	{
-		input: '.items[0].name',
-		template: '->?->?->?',
-		bindings: ['items', 0, 'name'],
-		description: 'array index followed by property',
-	},
-	{
-		input: '.data.items[0].name',
-		template: '->?->?->?->?',
-		bindings: ['data', 'items', 0, 'name'],
-		description: 'nested property, array, then property',
-	},
-	{
-		input: '.users[0].profile.email',
-		template: '->?->?->?->?',
-		bindings: ['users', 0, 'profile', 'email'],
-		description: 'complex nested path',
-	},
+			const result = helper.json('items', 'data', {
+				type: 'json',
+				jsonPath: '.color',
+				originalCollectionName: undefined,
+				relationalCountOptions: undefined,
+			});
 
-	// Multiple array indices
-	{ input: '.matrix[0][1]', template: '->?->?->?', bindings: ['matrix', 0, 1], description: 'multiple array indices' },
-	{
-		input: '.data[0][1][2]',
-		template: '->?->?->?->?',
-		bindings: ['data', 0, 1, 2],
-		description: 'three array indices',
-	},
+			const { sql } = result.toSQL();
+			expect(sql).toContain('::json');
+			expect(sql).not.toContain('::jsonb');
+		});
 
-	// Complex real-world scenarios
-	{
-		input: '.metadata.tags[0].value',
-		template: '->?->?->?->?',
-		bindings: ['metadata', 'tags', 0, 'value'],
-		description: 'metadata with array and property',
-	},
-	{
-		input: '.response.data.items[3].attributes.name',
-		template: '->?->?->?->?->?->?',
-		bindings: ['response', 'data', 'items', 3, 'attributes', 'name'],
-		description: 'deeply nested with array in middle',
-	},
-	{
-		input: '.config.servers[0].host',
-		template: '->?->?->?->?',
-		bindings: ['config', 'servers', 0, 'host'],
-		description: 'config with array access',
-	},
+		test('uses ::jsonb cast for jsonb dbType', () => {
+			const helper = new FnHelperPostgres(db, makeSchema('jsonb'));
 
-	// Edge cases with underscore and special characters
-	{ input: '.user_data', template: '->?', bindings: ['user_data'], description: 'property with underscore' },
-	{
-		input: '.first_name.last_name',
-		template: '->?->?',
-		bindings: ['first_name', 'last_name'],
-		description: 'nested properties with underscores',
-	},
-];
+			const result = helper.json('items', 'data', {
+				type: 'json',
+				jsonPath: '.color',
+				originalCollectionName: undefined,
+				relationalCountOptions: undefined,
+			});
 
-describe('buildPostgresJsonPath', () => {
-	test.each(TEST_CASES)('converts "$input" ($description)', ({ input, template, bindings }) => {
-		expect(buildPostgresJsonPath(input)).toEqual({ template, bindings });
+			const { sql } = result.toSQL();
+			expect(sql).toContain('::jsonb');
+		});
+
+		test('castNumeric wraps expression with ::numeric', () => {
+			const helper = new FnHelperPostgres(db, makeSchema('jsonb'));
+
+			const result = helper.json('items', 'data', {
+				type: 'json',
+				jsonPath: '.price',
+				castNumeric: true,
+				originalCollectionName: undefined,
+				relationalCountOptions: undefined,
+			});
+
+			const { sql } = result.toSQL();
+			expect(sql).toContain('::numeric');
+			expect(sql).toContain('::jsonb');
+		});
+
+		test('uses originalCollectionName for schema lookup when provided', () => {
+			const helper = new FnHelperPostgres(db, makeSchema('jsonb'));
+
+			// 'aliased' is not in the schema, but 'items' is — without originalCollectionName this would throw
+			const result = helper.json('aliased', 'data', {
+				type: 'json',
+				jsonPath: '.color',
+				originalCollectionName: 'items',
+				relationalCountOptions: undefined,
+			});
+
+			const { sql } = result.toSQL();
+			expect(sql).toContain('::jsonb');
+		});
+
+		test('throws when the field is not a JSON field', () => {
+			const helper = new FnHelperPostgres(db, makeSchema('jsonb'));
+
+			expect(() =>
+				helper.json('items', 'nonexistent', {
+					type: 'json',
+					jsonPath: '.color',
+					originalCollectionName: undefined,
+					relationalCountOptions: undefined,
+				}),
+			).toThrow('is not a JSON field');
+		});
+
+		test('throws when jsonPath is absent', () => {
+			const helper = new FnHelperPostgres(db, makeSchema('jsonb'));
+
+			expect(() =>
+				helper.json('items', 'data', {
+					type: 'json',
+					jsonPath: undefined,
+					originalCollectionName: undefined,
+					relationalCountOptions: undefined,
+				}),
+			).toThrow('is not a JSON field');
+		});
 	});
 });

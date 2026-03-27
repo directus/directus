@@ -1,6 +1,6 @@
 import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
-import { toPath } from 'lodash-es';
+import { buildPostgresJsonPath } from '../json/postgres-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -78,38 +78,16 @@ export class FnHelperPostgres extends FnHelper {
 			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
 		}
 
-		const { template, bindings } = buildPostgresJsonPath(options.jsonPath);
+		const { template, bindings } = buildPostgresJsonPath(options.jsonPath, options.jsonFilter);
 		const cast = fieldSchema.dbType === 'jsonb' ? 'jsonb' : 'json';
+
+		if (options.castNumeric) {
+			// ->> returns text; cast to numeric for correct numeric comparisons.
+			// Parentheses are required to bind ::numeric to the whole expression,
+			// not to the last path binding.
+			return this.knex.raw(`(??::${cast}${template})::numeric`, [table + '.' + column, ...bindings]);
+		}
 
 		return this.knex.raw(`??::${cast}${template}`, [table + '.' + column, ...bindings]);
 	}
-}
-
-/**
- * Build a parameterized PostgreSQL JSON path using -> operators.
- * Returns a template string containing only operators and ? placeholders,
- * plus a bindings array with the actual values.
- *
- * @example ".color" → { template: "->?", bindings: ["color"] }
- * @example ".items[0].name" → { template: "->?->?->?", bindings: ["items", 0, "name"] }
- */
-export function buildPostgresJsonPath(path: string): { template: string; bindings: (string | number)[] } {
-	const parts = toPath(path.startsWith('.') ? path.slice(1) : path);
-
-	let template = '';
-	const bindings: (string | number)[] = [];
-
-	for (let i = 0; i < parts.length; i++) {
-		const num = Number(parts[i]);
-
-		template += '->?';
-
-		if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
-			bindings.push(num);
-		} else {
-			bindings.push(parts[i]!);
-		}
-	}
-
-	return { template, bindings };
 }

@@ -68,18 +68,27 @@ export class FnHelperOracle extends FnHelper {
 		}
 
 		// ".items[0].name" → "$.items[0].name"
+		// Oracle's JSON_VALUE and JSON_QUERY require the path argument to be a string
+		// literal — the OracleDB driver does not support bind parameters in that position.
+		// Inlining is safe because parseJsonPath enforces a strict allowlist: only word
+		// characters ([A-Za-z0-9_]), dots, and square brackets are accepted, blocking all
+		// SQL-dangerous characters (quotes, parentheses, operators, etc.).
+		// See: api/src/database/helpers/fn/json/parse-function.ts
 		const jsonPath = '$' + options.jsonPath;
+
+		if (options?.castNumeric) {
+			// JSON_VALUE with RETURNING NUMBER gives correct numeric comparison semantics.
+			return this.knex.raw(`JSON_VALUE(??.??, '${jsonPath}' RETURNING NUMBER)`, [table, column]);
+		}
 
 		// JSON_VALUE only returns scalar values (returns NULL for objects/arrays)
 		// JSON_QUERY only returns objects/arrays (returns NULL for scalars)
 		// COALESCE handles both cases
-		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, ?), JSON_VALUE(??.??, ?))`, [
+		return this.knex.raw(`COALESCE(JSON_QUERY(??.??, '${jsonPath}'), JSON_VALUE(??.??, '${jsonPath}'))`, [
 			table,
 			column,
-			jsonPath,
 			table,
 			column,
-			jsonPath,
 		]);
 	}
 }
