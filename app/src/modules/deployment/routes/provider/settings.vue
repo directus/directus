@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import {
 	deleteDeployment,
 	type DeploymentProjectListOutput,
@@ -27,7 +28,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@directus/composables';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
 import { sdk } from '@/sdk';
 import { usePermissionsStore } from '@/stores/permissions';

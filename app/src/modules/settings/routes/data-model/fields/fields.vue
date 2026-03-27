@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import formatTitle from '@directus/format-title';
 import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, toRefs } from 'vue';
@@ -15,7 +16,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@directus/composables';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';

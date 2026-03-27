@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { translateShortcut } from '@directus/composables';
 import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -19,7 +20,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
-import { translateShortcut } from '@directus/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 interface Props {
