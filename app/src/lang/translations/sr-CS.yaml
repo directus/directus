@@ -894,6 +894,8 @@ interfaces:
   filter:
     add_filter: Dodaj Filter
     all: Svi
+  group-tabs:
+    fill_width: Popunjeno
   presentation-links:
     presentation-links: Dugmad
     style: Stil
