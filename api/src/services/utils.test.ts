@@ -103,7 +103,6 @@ describe('UtilsService', () => {
 				})) as any);
 
 			const service = new UtilsService({
-				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -125,7 +124,6 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -151,7 +149,6 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -175,7 +172,6 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -206,7 +202,6 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -230,7 +225,6 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: null,
 				schema: mockSchema,
 			});
 
@@ -256,7 +250,6 @@ describe('UtilsService', () => {
 
 			const service = new UtilsService({
 				knex,
-				accountability: null,
 				schema: mockSchema,
 			});
 

@@ -9,7 +9,6 @@ export default async function assetsClear({ file }: { file?: string[] }): Promis
 		const schema = await getSchema();
 
 		const service = new UtilsService({
-			accountability: null,
 			schema,
 		});
 
