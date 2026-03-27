@@ -640,7 +640,6 @@ no_collections: Asnjë Koleksion
 create_collection: Krijo Koleksion
 no_collections_copy_admin: Ju nuk keni asnjë Koleksion ende. Klikoni butonin më poshtë për të filluar.
 no_collections_copy: Ju nuk keni asnjë Koleksion ende. Ju lutemi kontaktoni administratorin e sistemit.
-relationship_not_setup: Marrëdhënia nuk është konfiguruar siç duhet
 no_singleton_relations: Marrëdhëniet me Singleton nuk mbështeten
 display_template_not_setup: Opsioni i shabllonit të shfaqjes është konfiguruar gabim
 collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
