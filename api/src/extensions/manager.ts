@@ -1,4 +1,4 @@
-import type { ReadStream } from 'node:fs';
+import type { ReadStream, Stats } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
@@ -442,6 +442,33 @@ export class ExtensionManager {
 	}
 
 	/**
+	 * Check if a file path matches a watched extension's dist entrypoint
+	 * by looking up the folder name in the existing extension maps
+	 */
+	private isWatchedExtensionPath(filePath: string): boolean {
+		const extensionDir = path.resolve(getExtensionsPath());
+
+		const folderName = path.relative(extensionDir, filePath).split(path.sep).shift();
+
+		if (!folderName) return false;
+
+		const extension = this.localExtensions.get(folderName);
+
+		if (!extension) return false;
+
+		// Uses `includes` for comparison because chokidar emits watched change events as relative paths,
+		// while paths added via updateWatchedExtensions are emitted as absolute paths.
+		if (isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle') {
+			return (
+				path.resolve(extension.path, extension.entrypoint.app).includes(filePath) ||
+				path.resolve(extension.path, extension.entrypoint.api).includes(filePath)
+			);
+		}
+
+		return path.resolve(extension.path, extension.entrypoint).includes(filePath);
+	}
+
+	/**
 	 * Start the chokidar watcher for extensions on the local filesystem
 	 */
 	private initializeWatcher(): void {
@@ -449,18 +476,28 @@ export class ExtensionManager {
 
 		logger.info('Watching extensions for changes...');
 
-		const extensionDirUrl = pathToRelativeUrl(getExtensionsPath());
+		const extensionDirPath = pathToRelativeUrl(getExtensionsPath());
 
-		this.watcher = chokidar.watch(
-			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
-			{
-				ignoreInitial: true,
-				// dotdirs are watched by default and frequently found in 'node_modules'
-				ignored: `${extensionDirUrl}/**/node_modules/**`,
-				// on macOS dotdirs in linked extensions are watched too
-				followSymlinks: os.platform() === 'darwin' ? false : true,
+		this.watcher = chokidar.watch([path.resolve('package.json'), extensionDirPath], {
+			ignoreInitial: true,
+			depth: 2,
+			ignored: (val: string, stats?: Stats) => {
+				if (val.includes('node_modules')) return true;
+
+				// allow directory traversal so chokidar can reach extensions package.json
+				if (!stats || stats.isDirectory()) return false;
+
+				// with depth:2, this only matches the extensions dir package.json
+				if (val.endsWith('package.json')) return false;
+
+				// "dist" entrypoints are added via updateWatchedExtensions, not the watch paths above
+				if (this.isWatchedExtensionPath(val)) return false;
+
+				return true;
 			},
-		);
+			// on macOS dotdirs in linked extensions are watched too
+			followSymlinks: os.platform() === 'darwin' ? false : true,
+		});
 
 		this.watcher
 			.on(
