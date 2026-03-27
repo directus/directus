@@ -1656,6 +1656,8 @@ interfaces:
     all_opened: Wszystkie otwarte
     accordion_mode: Tryb Accordion
     max_one_section_open: Otwórz maksymalnie 1 sekcję
+  group-tabs:
+    fill_width: Szerokość wypełnienia
   presentation-links:
     presentation-links: Przyciski
     style: Style
