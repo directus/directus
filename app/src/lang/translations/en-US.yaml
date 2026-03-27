@@ -280,6 +280,10 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+delete_folder_dialog:
+  move_content: Move content one level up
+  delete_content: Delete all content
+  content_behavior: What should happen to the folder contents?
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -2145,6 +2149,12 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  group-tabs:
+    name: Tabs
+    description: Display fields or groups as tabs
+    overwrite_group_width: Overwrite Group Width
+    fill_width: Fill Width
+    fill_width_note: Allow this group to fill the full width of the page.
   presentation-links:
     presentation-links: Buttons
     description: Configurable link buttons for launching dynamic URLs or triggering Flows

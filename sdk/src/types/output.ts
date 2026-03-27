@@ -128,6 +128,8 @@ export type FieldOutputMap = {
 	json: JsonValue;
 	csv: string[];
 	datetime: string;
+	date: string;
+	time: string;
 };
 
 // all functions return a numeric type
