@@ -1684,6 +1684,8 @@ interfaces:
     all_opened: Viskas išskleista
     accordion_mode: Suskleidžiamų kortelių rėžimas
     max_one_section_open: Vienu metu išskleista tik viena
+  group-tabs:
+    fill_width: Užpildyti visą plotį
   presentation-links:
     presentation-links: Mygtukai
     style: Stilius
