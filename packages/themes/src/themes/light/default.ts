@@ -170,32 +170,37 @@ export default defineTheme({
 		},
 
 		sidebar: {
-			background: 'var(--theme--background-normal)',
-			foreground: 'var(--theme--foreground-subdued)',
+			background: 'var(--theme--background)',
+			foreground: 'var(--theme--foreground)',
 			fontFamily: 'var(--theme--fonts--sans--font-family)',
-			borderColor: 'transparent',
-			borderWidth: '0px',
+			borderColor: 'var(--theme--border-color)',
+			borderWidth: '1px',
 
 			section: {
+				borderWidth: 'var(--theme--sidebar--border-width)',
+				borderColor: 'transparent',
+
+				active: {
+					borderWidth: 'var(--theme--sidebar--section--border-width)',
+					borderColor: 'var(--theme--sidebar--border-color)',
+				},
+
 				toggle: {
 					icon: {
-						foreground: 'var(--theme--foreground-accent)',
-						foregroundHover: 'var(--theme--sidebar--section--toggle--icon--foreground)',
-						foregroundActive: 'var(--theme--sidebar--section--toggle--icon--foreground)',
+						foreground: 'var(--theme--sidebar--foreground)',
+						foregroundHover: 'var(--theme--sidebar--section--toggle--foreground-hover)',
+						foregroundActive: 'var(--theme--sidebar--section--toggle--foreground-active)',
 					},
 
-					foreground: 'var(--theme--foreground-accent)',
-					foregroundHover: 'var(--theme--sidebar--section--toggle--foreground)',
+					foreground: 'var(--theme--sidebar--foreground)',
+					foregroundHover: 'var(--theme--foreground-accent)',
 					foregroundActive: 'var(--theme--sidebar--section--toggle--foreground)',
 
-					background: 'var(--theme--background-accent)',
+					background: 'var(--theme--sidebar--background)',
 					backgroundHover: 'var(--theme--sidebar--section--toggle--background)',
 					backgroundActive: 'var(--theme--sidebar--section--toggle--background)',
 
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
-
-					borderColor: 'transparent',
-					borderWidth: '0px',
 				},
 
 				form: {

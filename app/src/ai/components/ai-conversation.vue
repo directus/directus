@@ -175,7 +175,6 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .messages-container {
 	position: relative;
-	padding-inline: 0.4375rem;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -193,7 +192,6 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .input-container {
 	flex-shrink: 0;
 	position: relative;
-	padding-inline-end: 0.6875rem;
 }
 
 .error-message {

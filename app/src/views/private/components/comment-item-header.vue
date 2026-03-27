@@ -81,9 +81,9 @@ function useDelete() {
 
 <template>
 	<div class="comment-header">
-		<VAvatar x-small>
+		<VAvatar x-small round>
 			<VImage v-if="avatarSource" :src="avatarSource" :alt="userName(comment.user_created)" />
-			<VIcon v-else name="person_outline" />
+			<VIcon v-else name="person_outline" small />
 		</VAvatar>
 
 		<div class="name">

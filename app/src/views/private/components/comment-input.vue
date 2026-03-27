@@ -317,9 +317,9 @@ function pressedEnter() {
 					@click="insertUser(user)"
 				>
 					<VListItemIcon>
-						<VAvatar x-small>
+						<VAvatar x-small round>
 							<VImage v-if="user.avatar" :src="avatarSource(user.avatar)" />
-							<VIcon v-else name="person_outline" />
+							<VIcon v-else name="person_outline" small />
 						</VAvatar>
 					</VListItemIcon>
 
@@ -442,14 +442,6 @@ function pressedEnter() {
 		--v-button-background-color: transparent;
 		--v-button-color: var(--theme--foreground-subdued);
 		--v-button-color-hover: var(--theme--primary);
-	}
-
-	.cancel {
-		--v-button-color: var(--theme--foreground-subdued);
-	}
-
-	.post-comment {
-		--v-button-background-color-disabled: var(--theme--background-accent);
 	}
 }
 
