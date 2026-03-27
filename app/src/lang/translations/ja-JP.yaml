@@ -1829,6 +1829,8 @@ interfaces:
     no_rules: 設定済みのルールはありません
   group-accordion:
     start: 開始
+  group-tabs:
+    fill_width: 幅埋め
   presentation-links:
     primary: プライマリー
   input-code:
