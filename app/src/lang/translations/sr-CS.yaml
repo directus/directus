@@ -383,7 +383,6 @@ no_collections: Nema Kolekcija
 create_collection: Napravi Kolekciju
 no_collections_copy_admin: Trenutno nemate Kolekcija. Kliknite na dugme ispod da započnete dodavanje.
 no_collections_copy: Trenutno nemate Kolekcija. Molimo kontaktirajte Vašeg sistemskog administratora.
-relationship_not_setup: Relacija nije konfigurisana ispravno
 display_template_not_setup: Šablon za grafički prikaz nije ispravno konfigurisan
 collection_field_not_setup: Polje u kolekciji nije ispravno konfigurisano
 select_a_collection: Izaberi Kolekciju
