@@ -1678,6 +1678,8 @@ interfaces:
     all_opened: Všetko otvorené
     accordion_mode: Režim akordeónu
     max_one_section_open: Max 1 sekcia otvorená
+  group-tabs:
+    fill_width: Vyplniť šírku
   presentation-links:
     presentation-links: Tlačidlá
     style: Štýl
