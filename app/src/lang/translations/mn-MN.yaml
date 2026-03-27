@@ -1682,6 +1682,8 @@ interfaces:
     all_opened: Бүгд нээгдсэн
     accordion_mode: Аккордеон горим
     max_one_section_open: Ихдээ 1 нээлттэй хэсэг
+  group-tabs:
+    fill_width: Өргөн дүүрэн
   presentation-links:
     presentation-links: Товчлуур
     style: Хэв маяг
