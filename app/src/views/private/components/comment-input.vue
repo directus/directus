@@ -443,14 +443,6 @@ function pressedEnter() {
 		--v-button-color: var(--theme--foreground-subdued);
 		--v-button-color-hover: var(--theme--primary);
 	}
-
-	.cancel {
-		--v-button-color: var(--theme--foreground-subdued);
-	}
-
-	.post-comment {
-		--v-button-background-color-disabled: var(--theme--background-accent);
-	}
 }
 
 .collapsed:not(:focus) .buttons {
