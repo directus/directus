@@ -154,8 +154,15 @@ function parseJsonFilterValue(
 				parseJsonFilterValue(subFilter, accountability, context),
 			);
 		} else if (['_in', '_nin', '_between', '_nbetween'].includes(key)) {
-			const val = isObject(value) ? Object.values(value) : value;
-			result[key] = toArray(val).flatMap((v) => parseDynamicVariable(v, accountability, context));
+			if (Array.isArray(value)) {
+				result[key] = value.flatMap((v) => parseDynamicVariable(v, accountability, context));
+			} else if (isObject(value)) {
+				// Dynamic variable passed as object (e.g. $CURRENT_USER) — wrap into array
+				result[key] = Object.values(value).flatMap((v) => parseDynamicVariable(v, accountability, context));
+			} else {
+				// Invalid primitive (string, number, etc.) — pass through unchanged so validateQuery can reject it
+				result[key] = value;
+			}
 		} else if (key.startsWith('_')) {
 			result[key] = parseDynamicVariable(value, accountability, context);
 		} else {
