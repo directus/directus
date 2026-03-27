@@ -1039,6 +1039,8 @@ interfaces:
     and: และ
   group-accordion:
     start: เริ่มต้น
+  group-tabs:
+    fill_width: กว้างเติมเต็ม
   presentation-links:
     presentation-links: ปุ่ม
     style: สไตล์
