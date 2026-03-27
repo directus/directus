@@ -41,6 +41,13 @@ router.post(
 		const folderName = `folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip`;
 		res.setHeader('Content-Disposition', contentDisposition(folderName, { type: 'attachment' }));
 
+		// Clean up the archive stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				archive.destroy();
+			}
+		});
+
 		archive.pipe(res);
 
 		await complete();
@@ -75,6 +82,13 @@ router.post(
 
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
+
+		// Clean up the archive stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				archive.destroy();
+			}
+		});
 
 		archive.pipe(res);
 
@@ -296,9 +310,19 @@ router.get(
 			return res.end();
 		}
 
-		(await stream())
+		const sourceStream = await stream();
+
+		// Clean up the source stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				sourceStream.destroy();
+			}
+		});
+
+		sourceStream
 			.on('error', (error) => {
 				logger.error(error, `Couldn't stream file ${file.id} to the client`);
+				sourceStream.destroy();
 
 				if (!res.headersSent) {
 					res.removeHeader('Content-Type');
