@@ -160,8 +160,9 @@ function parseJsonFilterValue(
 				// Dynamic variable passed as object (e.g. $CURRENT_USER) — wrap into array
 				result[key] = Object.values(value).flatMap((v) => parseDynamicVariable(v, accountability, context));
 			} else {
-				// Invalid value (string, number, etc.) — pass through unchanged so validateQuery can reject it
-				result[key] = value;
+				// Resolve dynamic variables (e.g. $CURRENT_ROLES → array); other invalid values pass through
+				// unchanged so validateQuery can reject them
+				result[key] = typeof value === 'string' ? parseDynamicVariable(value, accountability, context) : value;
 			}
 		} else if (key.startsWith('_')) {
 			result[key] = parseDynamicVariable(value, accountability, context);

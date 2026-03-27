@@ -202,6 +202,12 @@ describe('validateJsonFilter (via validateQuery)', async () => {
 			);
 		});
 
+		test('throws when _in inside _json receives a string instead of an array', () => {
+			expect(() => validateQuery(withJson({ color: { _in: 'red' } }) as any)).toThrowError(
+				'"_in" has to be an array of values',
+			);
+		});
+
 		test('throws when _in inside _json receives an empty array', () => {
 			expect(() => validateQuery(withJson({ color: { _in: [] } }) as any)).toThrowError(
 				'"_in" has to be an array of values',

@@ -1133,26 +1133,6 @@ describe('#parseFilter', () => {
 			expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
 		});
 
-		it('converts comma-separated string to array for _between inside _json', () => {
-			const mockFilter = {
-				data: {
-					_json: {
-						price: { _between: '10,100' },
-					},
-				},
-			} as unknown as Filter;
-
-			const mockAccountability = { role: 'admin', user: null, roles: [] };
-
-			expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual({
-				data: {
-					_json: {
-						price: { _between: ['10', '100'] },
-					},
-				},
-			});
-		});
-
 		it('handles qs-style object (indices > 20) for _in inside _json by converting to array', () => {
 			const mockFilter = {
 				data: {
