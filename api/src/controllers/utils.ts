@@ -219,8 +219,8 @@ router.post(
 	}),
 );
 
-const clearAssetsSchema = Joi.object<{ file?: string | string[] }>({
-	file: Joi.alternatives(Joi.string().uuid(), Joi.array().items(Joi.string().uuid())).optional(),
+const clearAssetsSchema = Joi.object<{ files?: string | string[] }>({
+	files: Joi.alternatives(Joi.string().uuid(), Joi.array().items(Joi.string().uuid())).optional(),
 });
 
 router.post(
@@ -235,7 +235,7 @@ router.post(
 
 		if (error) throw new InvalidPayloadError({ reason: error.message });
 
-		await service.clearAssetVariants({ file: value.file });
+		await service.clearAssetVariants({ files: value.files });
 
 		res.status(204).end();
 	}),

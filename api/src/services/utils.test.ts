@@ -205,7 +205,7 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			await service.clearAssetVariants({ file: ['1', '2'] });
+			await service.clearAssetVariants({ files: ['1', '2'] });
 
 			expect(disk.delete).toHaveBeenCalledTimes(2);
 		});
@@ -228,7 +228,7 @@ describe('UtilsService', () => {
 				schema: mockSchema,
 			});
 
-			await service.clearAssetVariants({ file: ['1'] });
+			await service.clearAssetVariants({ files: ['1'] });
 
 			expect(disk.delete).toHaveBeenCalledTimes(2);
 			expect(disk.delete).toHaveBeenCalledWith('photo__hash1.jpg');

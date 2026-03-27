@@ -175,7 +175,7 @@ export class UtilsService {
 		return cache?.clear();
 	}
 
-	async clearAssetVariants(options?: { file?: string | string[] | undefined }): Promise<void> {
+	async clearAssetVariants(options?: { files?: string | string[] | undefined }): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -197,43 +197,37 @@ export class UtilsService {
 				.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
 				.from('directus_files');
 
-			if (options?.file) {
-				if (Array.isArray(options.file)) {
-					query.whereIn('id', options.file);
+			if (options?.files) {
+				if (Array.isArray(options.files)) {
+					query.whereIn('id', options.files);
 				} else {
-					query.where('id', options.file);
+					query.where('id', options.files);
 				}
 			}
 
 			const files = await query;
 
-			// Group files by storage location
-			const filesByStorage = new Map<string, typeof files>();
+			// Collect variants to delete, grouped by storage location
+			const toDeleteByStorage = new Map<string, string[]>();
 
 			for (const file of files) {
-				const group = filesByStorage.get(file.storage) ?? [];
-				group.push(file);
-				filesByStorage.set(file.storage, group);
+				const disk = storage.location(file.storage);
+				const filePrefix = path.parse(file.filename_disk).name;
+
+				for await (const filepath of disk.list(filePrefix)) {
+					if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
+
+					const group = toDeleteByStorage.get(file.storage) ?? [];
+					group.push(filepath);
+					toDeleteByStorage.set(file.storage, group);
+				}
 			}
 
+			// Delete collected variants per storage location
 			let deleted = 0;
 
-			for (const [storageName, storageFiles] of filesByStorage) {
+			for (const [storageName, toDelete] of toDeleteByStorage) {
 				const disk = storage.location(storageName);
-				const toDelete: string[] = [];
-
-				for (const file of storageFiles) {
-					const filePrefix = path.parse(file.filename_disk).name;
-
-					for await (const filepath of disk.list(filePrefix)) {
-						if (filepath === file.filename_disk) continue;
-						if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
-
-						toDelete.push(filepath);
-					}
-				}
-
-				if (toDelete.length === 0) continue;
 
 				try {
 					if ('bulkDelete' in disk && typeof disk.bulkDelete === 'function') {

@@ -38,30 +38,29 @@ describe('assets clear command', () => {
 	test('clears all variants when no file specified', async () => {
 		await assetsClear({});
 
-		expect(mockClearAssetVariants).toHaveBeenCalledWith({ file: undefined });
+		expect(mockClearAssetVariants).toHaveBeenCalledWith({ files: undefined });
 		expect(process.stdout.write).toHaveBeenCalledWith('Cleared asset variants successfully\n');
 		expect(process.exit).toHaveBeenCalledWith(0);
 	});
 
 	test('passes file array to service', async () => {
-		await assetsClear({ file: ['abc-123'] });
+		await assetsClear({ files: ['abc-123'] });
 
-		expect(mockClearAssetVariants).toHaveBeenCalledWith({ file: ['abc-123'] });
+		expect(mockClearAssetVariants).toHaveBeenCalledWith({ files: ['abc-123'] });
 		expect(process.exit).toHaveBeenCalledWith(0);
 	});
 
 	test('passes multiple files to service', async () => {
-		await assetsClear({ file: ['abc-123', 'def-456'] });
+		await assetsClear({ files: ['abc-123', 'def-456'] });
 
-		expect(mockClearAssetVariants).toHaveBeenCalledWith({ file: ['abc-123', 'def-456'] });
+		expect(mockClearAssetVariants).toHaveBeenCalledWith({ files: ['abc-123', 'def-456'] });
 		expect(process.exit).toHaveBeenCalledWith(0);
 	});
 
-	test('creates service with null accountability', async () => {
+	test('creates service without accountability', async () => {
 		await assetsClear({});
 
 		expect(UtilsService).toHaveBeenCalledWith({
-			accountability: null,
 			schema: expect.anything(),
 		});
 	});
