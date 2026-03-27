@@ -1072,6 +1072,8 @@ interfaces:
     all: Tất cả
     any: Bất kỳ
     no_rules: Không có quy tắc nào được thiết lập
+  group-tabs:
+    fill_width: Rộng toàn bộ
   presentation-links:
     primary: Khóa chính
   select-multiple-checkbox:
