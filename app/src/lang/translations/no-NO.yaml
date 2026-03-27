@@ -840,6 +840,8 @@ interfaces:
     add_filter: Legg til filter
     all: Alle
     any: Noen
+  group-tabs:
+    fill_width: Fyll vidde
   presentation-links:
     primary: Primær
   select-multiple-checkbox-tree:
