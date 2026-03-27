@@ -1682,6 +1682,8 @@ interfaces:
     all_opened: सर्व उघडले
     accordion_mode: एकॉर्डियन मोड
     max_one_section_open: कमाल 1 विभाग उघडा
+  group-tabs:
+    fill_width: पूर्ण रुंदी
   presentation-links:
     presentation-links: बटन्स
     style: स्टाईल
