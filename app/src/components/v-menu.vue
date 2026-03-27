@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { detectOverflow, Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
@@ -13,7 +14,6 @@ import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch } from 'vue';
 import TransitionBounce from '@/components/transition/bounce.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 
 interface Props {

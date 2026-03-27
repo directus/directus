@@ -1,4 +1,5 @@
-import { ComponentPublicInstance, onMounted, onUnmounted, Ref, ref } from 'vue';
+import type { ComponentPublicInstance, Ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
 

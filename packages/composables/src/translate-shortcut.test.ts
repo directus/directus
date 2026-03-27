@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { translateShortcut } from '@/utils/translate-shortcut';
+import { translateShortcut } from './translate-shortcut.js';
 
 Object.defineProperty(window, 'navigator', {
 	value: { ...window.navigator },

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
+import { translateShortcut } from '@directus/composables';
 import CodeMirror from 'codemirror';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { Alteration, applyEdit, CustomSyntax } from './edits';
@@ -19,12 +21,10 @@ import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import VUpload from '@/components/v-upload.vue';
 import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
-import { translateShortcut } from '@/utils/translate-shortcut';
 
 import 'codemirror/addon/display/placeholder.js';
 import 'codemirror/mode/markdown/markdown';

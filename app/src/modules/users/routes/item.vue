@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
 import type { User } from '@directus/types';
 import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -22,7 +23,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
