@@ -31,12 +31,15 @@ describe('collectTranslationMetrics', () => {
 	});
 
 	test('sums translations and counts languages', async () => {
-		vi.mocked(TranslationsService).mockImplementation(() => ({
-			readByQuery: vi.fn().mockResolvedValue([
-				{ language: 'en', count: 10 },
-				{ language: 'de', count: 5 },
-			]),
-		}) as any);
+		vi.mocked(TranslationsService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([
+						{ language: 'en', count: 10 },
+						{ language: 'de', count: 5 },
+					]),
+				}) as any,
+		);
 
 		const result = await collectTranslationMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(15);
@@ -44,9 +47,12 @@ describe('collectTranslationMetrics', () => {
 	});
 
 	test('gracefully returns zeroes on error', async () => {
-		vi.mocked(TranslationsService).mockImplementation(() => ({
-			readByQuery: vi.fn().mockRejectedValue(new Error('DB error')),
-		}) as any);
+		vi.mocked(TranslationsService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi.fn().mockRejectedValue(new Error('DB error')),
+				}) as any,
+		);
 
 		const result = await collectTranslationMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(0);

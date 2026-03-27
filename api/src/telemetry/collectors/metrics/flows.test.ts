@@ -26,12 +26,15 @@ describe('collectFlowMetrics', () => {
 	});
 
 	test('separates active and inactive counts', async () => {
-		vi.mocked(FlowsService).mockImplementation(() => ({
-			readByQuery: vi.fn().mockResolvedValue([
-				{ status: 'active', countDistinct: { id: 5 } },
-				{ status: 'inactive', countDistinct: { id: 3 } },
-			]),
-		}) as any);
+		vi.mocked(FlowsService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([
+						{ status: 'active', countDistinct: { id: 5 } },
+						{ status: 'inactive', countDistinct: { id: 3 } },
+					]),
+				}) as any,
+		);
 
 		const result = await collectFlowMetrics(mockDb, mockSchema);
 		expect(result.active.count).toBe(5);

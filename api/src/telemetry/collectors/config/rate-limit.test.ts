@@ -12,12 +12,14 @@ describe('collectRateLimit', () => {
 	});
 
 	test('returns configured values', () => {
-		expect(collectRateLimit({
-			RATE_LIMITER_ENABLED: true,
-			PRESSURE_LIMITER_ENABLED: true,
-			RATE_LIMITER_EMAIL_ENABLED: true,
-			RATE_LIMITER_EMAIL_FLOWS_ENABLED: false,
-		})).toEqual({
+		expect(
+			collectRateLimit({
+				RATE_LIMITER_ENABLED: true,
+				PRESSURE_LIMITER_ENABLED: true,
+				RATE_LIMITER_EMAIL_ENABLED: true,
+				RATE_LIMITER_EMAIL_FLOWS_ENABLED: false,
+			}),
+		).toEqual({
 			enabled: true,
 			pressure: true,
 			email: true,

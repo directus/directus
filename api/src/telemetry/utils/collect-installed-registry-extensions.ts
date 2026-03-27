@@ -8,7 +8,11 @@ export async function collectInstalledRegistryExtensions(
 	schema: SchemaOverview,
 	env: Record<string, unknown>,
 ): Promise<Array<{ id: string; version: string }>> {
-	if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string' && env['MARKETPLACE_REGISTRY'] !== DEFAULT_REGISTRY) {
+	if (
+		env['MARKETPLACE_REGISTRY'] &&
+		typeof env['MARKETPLACE_REGISTRY'] === 'string' &&
+		env['MARKETPLACE_REGISTRY'] !== DEFAULT_REGISTRY
+	) {
 		return [];
 	}
 

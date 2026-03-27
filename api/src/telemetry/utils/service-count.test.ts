@@ -31,18 +31,24 @@ describe('serviceCount', () => {
 	});
 
 	test('defaults to 0 when no count returned', async () => {
-		vi.mocked(ItemsService).mockImplementationOnce(() => ({
-			readByQuery: vi.fn().mockResolvedValue([{}]),
-		}) as any);
+		vi.mocked(ItemsService).mockImplementationOnce(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([{}]),
+				}) as any,
+		);
 
 		const result = await serviceCount(mockDb, mockSchema, 'directus_shares');
 		expect(result).toBe(0);
 	});
 
 	test('defaults to 0 when empty array returned', async () => {
-		vi.mocked(ItemsService).mockImplementationOnce(() => ({
-			readByQuery: vi.fn().mockResolvedValue([]),
-		}) as any);
+		vi.mocked(ItemsService).mockImplementationOnce(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([]),
+				}) as any,
+		);
 
 		const result = await serviceCount(mockDb, mockSchema, 'directus_shares');
 		expect(result).toBe(0);

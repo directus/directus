@@ -8,10 +8,10 @@ type FlowMetrics = TelemetryReport['metrics']['flows'];
 export async function collectFlowMetrics(db: Knex, schema: SchemaOverview): Promise<FlowMetrics> {
 	const flowsService = new FlowsService({ knex: db, schema });
 
-	const results = await flowsService.readByQuery({
+	const results = (await flowsService.readByQuery({
 		aggregate: { countDistinct: ['id'] },
 		group: ['status'],
-	}) as unknown as { status: string; countDistinct: { id: string } }[];
+	})) as unknown as { status: string; countDistinct: { id: string } }[];
 
 	let active = 0;
 	let inactive = 0;

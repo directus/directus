@@ -19,18 +19,14 @@ describe('collectAuthProviders', () => {
 	});
 
 	test('includes configured provider drivers', () => {
-		vi.mocked(getAuthProviders).mockReturnValue([
-			{ name: 'google', driver: 'openid', icon: 'google' },
-		] as any);
+		vi.mocked(getAuthProviders).mockReturnValue([{ name: 'google', driver: 'openid', icon: 'google' }] as any);
 
 		const result = collectAuthProviders({ AUTH_PROVIDERS: 'google' });
 		expect(result.providers).toContain('openid');
 	});
 
 	test('detects issuers from provider URLs', () => {
-		vi.mocked(getAuthProviders).mockReturnValue([
-			{ name: 'myoidc', driver: 'openid', icon: 'key' },
-		] as any);
+		vi.mocked(getAuthProviders).mockReturnValue([{ name: 'myoidc', driver: 'openid', icon: 'key' }] as any);
 
 		const result = collectAuthProviders({
 			AUTH_PROVIDERS: 'myoidc',

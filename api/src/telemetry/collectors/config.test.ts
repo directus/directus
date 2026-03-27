@@ -22,7 +22,9 @@ vi.mock('./config/email.js', () => ({
 }));
 
 vi.mock('./config/extensions.js', () => ({
-	collectExtensionsConfig: vi.fn().mockReturnValue({ must_load: false, auto_reload: false, cache_ttl: null, limit: null, rolldown: false }),
+	collectExtensionsConfig: vi
+		.fn()
+		.mockReturnValue({ must_load: false, auto_reload: false, cache_ttl: null, limit: null, rolldown: false }),
 }));
 
 vi.mock('./config/marketplace.js', () => ({

@@ -19,7 +19,11 @@ describe('filterKnownArrayItems', () => {
 	});
 
 	test('returns all items when all are known', () => {
-		expect(filterKnownArrayItems(['gpt-5', 'gpt-5-mini', 'gpt-5-nano'], known)).toEqual(['gpt-5', 'gpt-5-mini', 'gpt-5-nano']);
+		expect(filterKnownArrayItems(['gpt-5', 'gpt-5-mini', 'gpt-5-nano'], known)).toEqual([
+			'gpt-5',
+			'gpt-5-mini',
+			'gpt-5-nano',
+		]);
 	});
 
 	test('returns empty array for empty array', () => {

@@ -33,12 +33,15 @@ describe('collectRoleMetrics', () => {
 	});
 
 	test('returns distributions when roles exist', async () => {
-		vi.mocked(RolesService).mockImplementation(() => ({
-			readByQuery: vi.fn().mockResolvedValue([
-				{ users: 3, children: 0, policies: 2 },
-				{ users: 5, children: 1, policies: 1 },
-			]),
-		}) as any);
+		vi.mocked(RolesService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([
+						{ users: 3, children: 0, policies: 2 },
+						{ users: 5, children: 1, policies: 1 },
+					]),
+				}) as any,
+		);
 
 		const result = await collectRoleMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(2);

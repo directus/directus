@@ -69,15 +69,18 @@ describe('collectFeatures', () => {
 	});
 
 	test('detects enabled modules from module_bar', async () => {
-		vi.mocked(SettingsService).mockImplementation(() => ({
-			readSingleton: vi.fn().mockResolvedValue({
-				module_bar: [
-					{ type: 'module', id: 'content', enabled: true },
-					{ type: 'module', id: 'visual', enabled: true },
-					{ type: 'module', id: 'files', enabled: false },
-				],
-			}),
-		}) as any);
+		vi.mocked(SettingsService).mockImplementation(
+			() =>
+				({
+					readSingleton: vi.fn().mockResolvedValue({
+						module_bar: [
+							{ type: 'module', id: 'content', enabled: true },
+							{ type: 'module', id: 'visual', enabled: true },
+							{ type: 'module', id: 'files', enabled: false },
+						],
+					}),
+				}) as any,
+		);
 
 		const result = await collectFeatures(mockDb, mockSchema);
 		expect(result.modules.content).toBe(true);
@@ -86,9 +89,12 @@ describe('collectFeatures', () => {
 	});
 
 	test('defaults content/files/users/insights/settings to true when module_bar is empty', async () => {
-		vi.mocked(SettingsService).mockImplementation(() => ({
-			readSingleton: vi.fn().mockResolvedValue({}),
-		}) as any);
+		vi.mocked(SettingsService).mockImplementation(
+			() =>
+				({
+					readSingleton: vi.fn().mockResolvedValue({}),
+				}) as any,
+		);
 
 		const result = await collectFeatures(mockDb, mockSchema);
 		expect(result.modules.content).toBe(true);
@@ -109,11 +115,14 @@ describe('collectFeatures', () => {
 	});
 
 	test('counts openai_compatible models from settings array', async () => {
-		vi.mocked(SettingsService).mockImplementation(() => ({
-			readSingleton: vi.fn().mockResolvedValue({
-				ai_openai_compatible_models: [{ id: 'model-1' }, { id: 'model-2' }],
-			}),
-		}) as any);
+		vi.mocked(SettingsService).mockImplementation(
+			() =>
+				({
+					readSingleton: vi.fn().mockResolvedValue({
+						ai_openai_compatible_models: [{ id: 'model-1' }, { id: 'model-2' }],
+					}),
+				}) as any,
+		);
 
 		const result = await collectFeatures(mockDb, mockSchema);
 		expect(result.ai.providers.openai_compatible.models.count).toBe(2);
@@ -123,6 +132,4 @@ describe('collectFeatures', () => {
 		const result = await collectFeatures(mockDb, mockSchema);
 		expect(result.files.transformations).toBe('all');
 	});
-
-
 });

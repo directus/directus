@@ -12,12 +12,14 @@ describe('collectRetention', () => {
 	});
 
 	test('returns configured values', () => {
-		expect(collectRetention({
-			RETENTION_ENABLED: true,
-			ACTIVITY_RETENTION: '15d',
-			REVISIONS_RETENTION: '30d',
-			FLOW_LOGS_RETENTION: '7d',
-		})).toEqual({
+		expect(
+			collectRetention({
+				RETENTION_ENABLED: true,
+				ACTIVITY_RETENTION: '15d',
+				REVISIONS_RETENTION: '30d',
+				FLOW_LOGS_RETENTION: '7d',
+			}),
+		).toEqual({
 			enabled: true,
 			activity: '15d',
 			revisions: '30d',

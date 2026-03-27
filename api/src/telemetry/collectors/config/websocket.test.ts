@@ -12,12 +12,14 @@ describe('collectWebsocket', () => {
 	});
 
 	test('returns configured values', () => {
-		expect(collectWebsocket({
-			WEBSOCKETS_ENABLED: true,
-			WEBSOCKETS_REST_ENABLED: true,
-			WEBSOCKETS_GRAPHQL_ENABLED: false,
-			WEBSOCKETS_LOGS_ENABLED: true,
-		})).toEqual({
+		expect(
+			collectWebsocket({
+				WEBSOCKETS_ENABLED: true,
+				WEBSOCKETS_REST_ENABLED: true,
+				WEBSOCKETS_GRAPHQL_ENABLED: false,
+				WEBSOCKETS_LOGS_ENABLED: true,
+			}),
+		).toEqual({
 			enabled: true,
 			rest: true,
 			graphql: false,

@@ -1,10 +1,10 @@
 import { setTimeout } from 'timers/promises';
 import { getNodeEnv } from '@directus/utils/node';
 import { useLogger } from '../../logger/index.js';
+import type { TelemetryReport } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
 import { getReport } from './get-report.js';
 import { sendReport } from './send-report.js';
-import type { TelemetryReport } from '../types/report.js';
 
 /**
  * Generate and send a report. Will log on error, but not throw. No need to be awaited

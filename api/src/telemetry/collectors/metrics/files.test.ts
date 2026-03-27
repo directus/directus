@@ -40,23 +40,52 @@ describe('collectFileMetrics', () => {
 	});
 
 	test('groups unknown MIME prefixes under other', async () => {
-		vi.mocked(FilesService).mockImplementation(() => ({
-			readByQuery: vi.fn().mockResolvedValue([
-				{ type: 'weird/format', countDistinct: { id: 5 }, sum: { filesize: 1500 }, min: { filesize: 100 }, max: { filesize: 500 }, avg: { filesize: 300 } },
-			]),
-		}) as any);
+		vi.mocked(FilesService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi
+						.fn()
+						.mockResolvedValue([
+							{
+								type: 'weird/format',
+								countDistinct: { id: 5 },
+								sum: { filesize: 1500 },
+								min: { filesize: 100 },
+								max: { filesize: 500 },
+								avg: { filesize: 300 },
+							},
+						]),
+				}) as any,
+		);
 
 		const result = await collectFileMetrics(mockDb, mockSchema);
 		expect(result.types['other']!.count).toBe(5);
 	});
 
 	test('computes overall totals from grouped results', async () => {
-		vi.mocked(FilesService).mockImplementation(() => ({
-			readByQuery: vi.fn().mockResolvedValue([
-				{ type: 'image/png', countDistinct: { id: 3 }, sum: { filesize: 900 }, min: { filesize: 100 }, max: { filesize: 500 }, avg: { filesize: 300 } },
-				{ type: 'text/plain', countDistinct: { id: 2 }, sum: { filesize: 200 }, min: { filesize: 50 }, max: { filesize: 150 }, avg: { filesize: 100 } },
-			]),
-		}) as any);
+		vi.mocked(FilesService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([
+						{
+							type: 'image/png',
+							countDistinct: { id: 3 },
+							sum: { filesize: 900 },
+							min: { filesize: 100 },
+							max: { filesize: 500 },
+							avg: { filesize: 300 },
+						},
+						{
+							type: 'text/plain',
+							countDistinct: { id: 2 },
+							sum: { filesize: 200 },
+							min: { filesize: 50 },
+							max: { filesize: 150 },
+							avg: { filesize: 100 },
+						},
+					]),
+				}) as any,
+		);
 
 		const result = await collectFileMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(5);

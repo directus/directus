@@ -11,9 +11,7 @@ import type { TelemetryReport } from '../types/report.js';
  *
  * @param trigger What triggered this report ("startup" or "scheduled").
  */
-export const getReport = async (
-	trigger: TelemetryReport['_trigger'] = 'scheduled',
-): Promise<TelemetryReport> => {
+export const getReport = async (trigger: TelemetryReport['_trigger'] = 'scheduled'): Promise<TelemetryReport> => {
 	const db = getDatabase();
 	const schema = await getSchema({ database: db });
 

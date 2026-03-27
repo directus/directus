@@ -18,14 +18,10 @@ export async function collectRoleMetrics(db: Knex, schema: SchemaOverview): Prom
 
 	return {
 		count: roleCount,
-		users: roleCount > 0
-			? distributionFromCounts(roles.map((r) => Number(r.users_count ?? 0)))
-			: emptyDistribution(),
-		policies: roleCount > 0
-			? distributionFromCounts(roles.map((r) => Number(r.policies_count ?? 0)))
-			: emptyDistribution(),
-		roles: roleCount > 0
-			? distributionFromCounts(roles.map((r) => Number(r.children_count ?? 0)))
-			: emptyDistribution(),
+		users: roleCount > 0 ? distributionFromCounts(roles.map((r) => Number(r.users_count ?? 0))) : emptyDistribution(),
+		policies:
+			roleCount > 0 ? distributionFromCounts(roles.map((r) => Number(r.policies_count ?? 0))) : emptyDistribution(),
+		roles:
+			roleCount > 0 ? distributionFromCounts(roles.map((r) => Number(r.children_count ?? 0))) : emptyDistribution(),
 	};
 }

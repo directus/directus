@@ -31,13 +31,12 @@ describe('collectDashboardMetrics', () => {
 	});
 
 	test('calculates panel distribution for dashboards', async () => {
-		vi.mocked(DashboardsService).mockImplementation(() => ({
-			readByQuery: vi.fn().mockResolvedValue([
-				{ panels: 3 },
-				{ panels: 5 },
-				{ panels: 1 },
-			]),
-		}) as any);
+		vi.mocked(DashboardsService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([{ panels: 3 }, { panels: 5 }, { panels: 1 }]),
+				}) as any,
+		);
 
 		const result = await collectDashboardMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(3);

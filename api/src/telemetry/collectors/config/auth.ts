@@ -5,7 +5,10 @@ import type { TelemetryReport } from '../../types/report.js';
 import { detectIssuer } from '../../utils/detect-issuer.js';
 
 export function collectAuthProviders(env: Record<string, unknown>): TelemetryReport['config']['auth'] {
-	const configured = toArray(env['AUTH_PROVIDERS'] as string).map((name) => name.trim()).filter(Boolean);
+	const configured = toArray(env['AUTH_PROVIDERS'] as string)
+		.map((name) => name.trim())
+		.filter(Boolean);
+
 	const resolvedProviders = getAuthProviders();
 	const providerDrivers = new Map(resolvedProviders.map((provider) => [provider.name.toLowerCase(), provider.driver]));
 

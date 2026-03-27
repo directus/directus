@@ -15,7 +15,6 @@ import { collectUserMetrics } from './users.js';
 type Metrics = TelemetryReport['metrics'];
 
 export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<Metrics> {
-
 	const [
 		apiRequests,
 		collectionMetrics,

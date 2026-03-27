@@ -56,7 +56,7 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 	const env = useEnv();
 	const settingsService = new SettingsService({ knex: db, schema });
 
-	const settings = await settingsService.readSingleton({
+	const settings = (await settingsService.readSingleton({
 		fields: [
 			'mcp_enabled',
 			'mcp_allow_deletes',
@@ -97,7 +97,7 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 			'ai_google_allowed_models',
 			'module_bar',
 		],
-	}) as FeatureSettingsResponse;
+	})) as FeatureSettingsResponse;
 
 	const knownModels: Record<string, Set<string>> = { openai: new Set(), anthropic: new Set(), google: new Set() };
 
@@ -107,8 +107,14 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 		}
 	}
 
-	const visualEditorUrls = Array.isArray(settings?.['visual_editor_urls']) ? (settings['visual_editor_urls'] as unknown[]).length : 0;
-	const assetPresets = Array.isArray(settings?.['storage_asset_presets']) ? (settings['storage_asset_presets'] as unknown[]).length : 0;
+	const visualEditorUrls = Array.isArray(settings?.['visual_editor_urls'])
+		? (settings['visual_editor_urls'] as unknown[]).length
+		: 0;
+
+	const assetPresets = Array.isArray(settings?.['storage_asset_presets'])
+		? (settings['storage_asset_presets'] as unknown[]).length
+		: 0;
+
 	const assetTransform = (settings?.['storage_asset_transform'] as string) ?? 'all';
 	const basemapsCount = Array.isArray(settings?.['basemaps']) ? (settings['basemaps'] as unknown[]).length : 0;
 
@@ -119,9 +125,7 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 	const moduleBar = settings?.['module_bar'] ?? [];
 
 	const enabledModuleIds = new Set(
-		moduleBar
-			.filter((m) => m.type === 'module' && m.enabled !== false)
-			.map((m) => m.id),
+		moduleBar.filter((m) => m.type === 'module' && m.enabled !== false).map((m) => m.id),
 	);
 
 	return {
@@ -220,5 +224,3 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 		},
 	};
 }
-
-

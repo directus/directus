@@ -18,8 +18,9 @@ export async function collectDashboardMetrics(db: Knex, schema: SchemaOverview):
 
 	return {
 		count: dashboardCount,
-		panels: dashboardCount > 0
-			? distributionFromCounts(dashboards.map((d) => Number(d.panels_count ?? 0)))
-			: emptyDistribution(),
+		panels:
+			dashboardCount > 0
+				? distributionFromCounts(dashboards.map((d) => Number(d.panels_count ?? 0)))
+				: emptyDistribution(),
 	};
 }

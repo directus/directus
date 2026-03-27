@@ -7,8 +7,8 @@ import { collectConfig } from '../collectors/config.js';
 import { collectFeatures } from '../collectors/features.js';
 import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
-import { getReport } from './get-report.js';
 import type { TelemetryConfig, TelemetryFeatures, TelemetryMetrics, TelemetryProject } from '../types/report.js';
+import { getReport } from './get-report.js';
 
 vi.mock('../../database/index.js');
 vi.mock('../../utils/get-schema.js');
@@ -39,7 +39,7 @@ const mockConfig: TelemetryConfig = {
 	auth: { providers: ['local'], issuers: [] },
 	ai: false,
 	mcp: false,
-	cache: { enabled: false, store: "redis" },
+	cache: { enabled: false, store: 'redis' },
 	database: { driver: 'postgres', version: '16.0' },
 	email: { transport: 'smtp' },
 	marketplace: { trust: 'sandbox' as const, registry: 'default' as const },
@@ -65,18 +65,38 @@ const mockFeatures: TelemetryFeatures = {
 			openai_compatible: { api_key: false, base_url: false, name: false, headers: false, models: { count: 0 } },
 		},
 	},
-	modules: { content: true, files: true, users: true, visual_editor: false, insights: true, settings: true, deployments: false },
+	modules: {
+		content: true,
+		files: true,
+		users: true,
+		visual_editor: false,
+		insights: true,
+		settings: true,
+		deployments: false,
+	},
 	visual_editor: { urls: { count: 0 } },
 	files: { transformations: 'none', presets: { count: 0 } },
 	collaborative_editing: { enabled: false },
 	mapping: { mapbox_api_key: false, basemaps: { count: 0 } },
 	image_editor: { custom_aspect_ratios: { count: 0 } },
 	appearance: {
-		project_color: false, project_logo: false, public_foreground: false,
-		public_background: false, public_favicon: false, public_note: false,
-		report_feature_url: false, report_bug_url: false, report_error_url: false,
-		theme: { default_appearance: 'auto', default_light_theme: 'default', default_dark_theme: 'default',
-			light_theme_customization: false, dark_theme_customization: false, custom_css: false },
+		project_color: false,
+		project_logo: false,
+		public_foreground: false,
+		public_background: false,
+		public_favicon: false,
+		public_note: false,
+		report_feature_url: false,
+		report_bug_url: false,
+		report_error_url: false,
+		theme: {
+			default_appearance: 'auto',
+			default_light_theme: 'default',
+			default_dark_theme: 'default',
+			light_theme_customization: false,
+			dark_theme_customization: false,
+			custom_css: false,
+		},
 	},
 	extensions: {
 		installed: {
@@ -86,19 +106,35 @@ const mockFeatures: TelemetryFeatures = {
 };
 
 const mockMetrics: TelemetryMetrics = {
-	api_requests: { count: 0, cached: { count: 0 }, method: { get: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } } },
+	api_requests: {
+		count: 0,
+		cached: { count: 0 },
+		method: { get: { count: 0 }, post: { count: 0 }, put: { count: 0 }, patch: { count: 0 }, delete: { count: 0 } },
+	},
 	fields: { count: 0 },
 	collections: {
-		count: 0, shares: { min: 0, max: 0, median: 0, mean: 0 }, fields: { min: 0, max: 0, median: 0, mean: 0 }, items: { min: 0, max: 0, median: 0, mean: 0 },
+		count: 0,
+		shares: { min: 0, max: 0, median: 0, mean: 0 },
+		fields: { min: 0, max: 0, median: 0, mean: 0 },
+		items: { min: 0, max: 0, median: 0, mean: 0 },
 		versioned: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
 		archive_app_filter: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
-		activity: { all: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } }, activity: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } }, none: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } } },
+		activity: {
+			all: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
+			activity: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
+			none: { count: 0, items: { min: 0, max: 0, median: 0, mean: 0 } },
+		},
 	},
 	shares: { count: 0 },
 	items: { count: 0 },
 	files: { count: 0, size: { sum: 0, min: 0, max: 0, median: 0, mean: 0 }, types: {} },
 	users: { admin: { count: 0 }, app: { count: 0 }, api: { count: 0 } },
-	roles: { count: 0, users: { min: 0, max: 0, median: 0, mean: 0 }, policies: { min: 0, max: 0, median: 0, mean: 0 }, roles: { min: 0, max: 0, median: 0, mean: 0 } },
+	roles: {
+		count: 0,
+		users: { min: 0, max: 0, median: 0, mean: 0 },
+		policies: { min: 0, max: 0, median: 0, mean: 0 },
+		roles: { min: 0, max: 0, median: 0, mean: 0 },
+	},
 	policies: { count: 0 },
 	flows: { active: { count: 0 }, inactive: { count: 0 } },
 	translations: { count: 0, language: { count: 0, translations: { min: 0, max: 0, median: 0, mean: 0 } } },
@@ -111,9 +147,16 @@ const mockMetrics: TelemetryMetrics = {
 			bundles: { ...s },
 			individual: { ...s },
 			type: {
-				display: { ...s }, interface: { ...s }, module: { ...s }, layout: { ...s },
-				panel: { ...s }, theme: { ...s }, endpoint: { ...s }, hook: { ...s },
-				operation: { ...s }, bundle: { ...s },
+				display: { ...s },
+				interface: { ...s },
+				module: { ...s },
+				layout: { ...s },
+				panel: { ...s },
+				theme: { ...s },
+				endpoint: { ...s },
+				hook: { ...s },
+				operation: { ...s },
+				bundle: { ...s },
 			},
 		};
 

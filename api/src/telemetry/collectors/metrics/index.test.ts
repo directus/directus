@@ -28,7 +28,9 @@ vi.mock('./collections.js', () => ({
 }));
 
 vi.mock('./files.js', () => ({
-	collectFileMetrics: vi.fn().mockResolvedValue({ count: 0, size: { sum: 0, min: 0, max: 0, median: 0, mean: 0 }, types: {} }),
+	collectFileMetrics: vi
+		.fn()
+		.mockResolvedValue({ count: 0, size: { sum: 0, min: 0, max: 0, median: 0, mean: 0 }, types: {} }),
 }));
 
 vi.mock('./flows.js', () => ({

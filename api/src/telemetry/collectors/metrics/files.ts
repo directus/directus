@@ -38,10 +38,10 @@ export async function collectFileMetrics(db: Knex, schema: SchemaOverview): Prom
 		types[group] = { count: 0, size: emptyDistribution() };
 	}
 
-	const grouped = await filesService.readByQuery({
+	const grouped = (await filesService.readByQuery({
 		aggregate: { countDistinct: ['id'], sum: ['filesize'], min: ['filesize'], max: ['filesize'], avg: ['filesize'] },
 		group: ['type'],
-	}) as unknown as GroupedFileRow[];
+	})) as unknown as GroupedFileRow[];
 
 	let totalCount = 0;
 	let totalSum = 0;
@@ -74,7 +74,7 @@ export async function collectFileMetrics(db: Knex, schema: SchemaOverview): Prom
 			existing.count += count;
 			existing.size.min = Math.min(existing.size.min, min);
 			existing.size.max = Math.max(existing.size.max, max);
-			existing.size.mean = Math.round(((existing.size.mean * prevCount) + (mean * count)) / existing.count);
+			existing.size.mean = Math.round((existing.size.mean * prevCount + mean * count) / existing.count);
 		}
 	}
 

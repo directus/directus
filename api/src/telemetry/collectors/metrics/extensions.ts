@@ -6,7 +6,16 @@ import type { ExtensionBreakdown, ExtensionCountBySource, TelemetryReport } from
 type ExtensionMetrics = TelemetryReport['metrics']['extensions'];
 
 const EXTENSION_TYPES = new Set<string>([
-	'display', 'interface', 'module', 'layout', 'panel', 'theme', 'endpoint', 'hook', 'operation', 'bundle',
+	'display',
+	'interface',
+	'module',
+	'layout',
+	'panel',
+	'theme',
+	'endpoint',
+	'hook',
+	'operation',
+	'bundle',
 ]);
 
 export async function collectExtensionMetrics(db: Knex, schema: SchemaOverview): Promise<ExtensionMetrics> {
