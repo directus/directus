@@ -9,6 +9,7 @@ import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
 import { LayoutOptions, LayoutQuery } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
@@ -44,6 +45,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
 		const { collection, filter, search, filterSystem, filterUser } = toRefs(props);
+
+		const versionKey = useVersionQuery();
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -228,8 +231,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-
-			return getItemRoute(props.collection, item[primaryKeyField.value.field]);
+			return getItemRoute(props.collection, item[primaryKeyField.value.field], versionKey.value ?? undefined);
 		}
 
 		function selectAll() {

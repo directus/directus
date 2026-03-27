@@ -13,6 +13,7 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { useCollectionsStore } from '@/stores/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getItemRoute } from '@/utils/get-route';
@@ -69,6 +70,8 @@ const customFilter = computed(() => {
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
+
+const versionKey = useVersionQuery();
 
 const value = computed({
 	get: () => props.value ?? null,
@@ -171,7 +174,15 @@ function onSelection(selection: (number | string)[] | null) {
 
 function getLinkForItem() {
 	if (!collection.value || !currentPrimaryKey.value || !relationInfo.value) return '';
-	return getItemRoute(relationInfo.value.relatedCollection.collection, currentPrimaryKey.value);
+
+	const relatedCollection = relationInfo.value.relatedCollection.collection;
+	const isSelfReferential = relatedCollection === props.collection;
+
+	return getItemRoute(
+		relatedCollection,
+		currentPrimaryKey.value,
+		isSelfReferential ? (versionKey.value ?? undefined) : undefined,
+	);
 }
 
 const menuActive = computed(() => editModalActive.value || selectModalActive.value);

@@ -12,6 +12,7 @@ import MapOptions from './options.vue';
 import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { getItemRoute } from '@/utils/get-route';
@@ -47,6 +48,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
 		const { collection, filterSystem, search } = toRefs(props);
+
+		const versionKey = useVersionQuery();
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -236,7 +239,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (props.selectMode) {
 				handleSelect({ ids: [id], replace });
 			} else {
-				router.push(getItemRoute(unref(collection), id));
+				router.push(getItemRoute(unref(collection), id, versionKey.value ?? undefined));
 			}
 		}
 

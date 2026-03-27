@@ -423,8 +423,14 @@ const customFilter = computed(() => {
 function getLinkForItem(item: DisplayItem) {
 	if (relationInfo.value) {
 		const primaryKey = get(item, relationInfo.value.relatedPrimaryKeyField.field);
+		const relatedCollection = relationInfo.value.relatedCollection.collection;
+		const isSelfReferential = relatedCollection === props.collection;
 
-		return getItemRoute(relationInfo.value.relatedCollection.collection, primaryKey);
+		return getItemRoute(
+			relatedCollection,
+			primaryKey,
+			isSelfReferential ? (props.version?.key ?? undefined) : undefined,
+		);
 	}
 
 	return null;
