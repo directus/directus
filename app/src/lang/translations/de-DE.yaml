@@ -648,7 +648,6 @@ no_collections: Keine Sammlungen
 create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
-relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
 no_singleton_relations: Relationen zu Singletons werden nicht unterstützt
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
