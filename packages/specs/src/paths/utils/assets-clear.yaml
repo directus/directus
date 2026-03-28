@@ -10,7 +10,7 @@ post:
         schema:
           type: object
           properties:
-            file:
+            files:
               oneOf:
                 - type: string
                   format: uuid
