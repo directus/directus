@@ -23,6 +23,7 @@ import { ExtensionReadError, ExtensionsService } from '../services/extensions.js
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { handleRegistryError } from './utils/handle-registry-error.js';
 
 const router = express.Router();
 const env = useEnv();
@@ -104,7 +105,13 @@ router.get(
 			options.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const payload = await list(query, options);
+		let payload;
+
+		try {
+			payload = await list(query, options);
+		} catch (error) {
+			handleRegistryError(error);
+		}
 
 		res.locals['payload'] = payload;
 		return next();
@@ -129,7 +136,13 @@ router.get(
 			options.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const payload = await account(req.params['pk'], options);
+		let payload;
+
+		try {
+			payload = await account(req.params['pk'], options);
+		} catch (error) {
+			handleRegistryError(error);
+		}
 
 		res.locals['payload'] = payload;
 		return next();
@@ -154,7 +167,13 @@ router.get(
 			options.registry = env['MARKETPLACE_REGISTRY'];
 		}
 
-		const payload = await describe(req.params['pk'], options);
+		let payload;
+
+		try {
+			payload = await describe(req.params['pk'], options);
+		} catch (error) {
+			handleRegistryError(error);
+		}
 
 		res.locals['payload'] = payload;
 		return next();
