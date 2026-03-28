@@ -1,0 +1,6 @@
+# Extensions
+
+> Part of **Directus**
+
+---
+
