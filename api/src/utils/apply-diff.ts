@@ -217,7 +217,9 @@ export async function applyDiff(
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0]?.kind === DiffKind.NEW && !isNestedMetaUpdate(diff?.[0])) {
 				try {
-					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs, undefined, mutationOptions);
+					const rhs = (diff[0] as DiffNew<Field>).rhs;
+
+					await fieldsService.createField(collection, rhs, undefined, mutationOptions);
 
 					// Refresh the schema
 					fieldsService = new FieldsService({
