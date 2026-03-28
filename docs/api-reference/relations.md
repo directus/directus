@@ -1,0 +1,6 @@
+# Relations
+
+> Part of **Directus**
+
+---
+
