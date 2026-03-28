@@ -1,0 +1,6 @@
+# Collections
+
+> Part of **Directus**
+
+---
+
