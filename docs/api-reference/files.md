@@ -1,0 +1,6 @@
+# Files
+
+> Part of **Directus**
+
+---
+

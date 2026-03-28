@@ -1,0 +1,6 @@
+# Activity
+
+> Part of **Directus**
+
+---
+

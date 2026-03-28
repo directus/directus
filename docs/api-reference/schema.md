@@ -1,0 +1,6 @@
+# Schema
+
+> Part of **Directus**
+
+---
+

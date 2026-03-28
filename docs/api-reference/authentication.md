@@ -1,0 +1,6 @@
+# Authentication
+
+> Part of **Directus**
+
+---
+

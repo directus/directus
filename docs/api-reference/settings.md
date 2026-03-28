@@ -1,0 +1,6 @@
+# Settings
+
+> Part of **Directus**
+
+---
+

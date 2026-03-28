@@ -1,0 +1,6 @@
+# Assets
+
+> Part of **Directus**
+
+---
+
