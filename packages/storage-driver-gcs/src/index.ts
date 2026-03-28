@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
-import type { TusDriver } from '@directus/storage';
+import { bulkDeleteFallback, type TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import type { Bucket, CreateReadStreamOptions, GetFilesOptions } from '@google-cloud/storage';
@@ -73,6 +73,10 @@ export class DriverGCS implements TusDriver {
 
 	async delete(filepath: string): Promise<void> {
 		await this.file(this.fullPath(filepath)).delete();
+	}
+
+	async bulkDelete(filepaths: string[]): Promise<void> {
+		await bulkDeleteFallback(this, filepaths);
 	}
 
 	async stat(filepath: string): Promise<{

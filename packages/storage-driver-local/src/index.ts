@@ -4,7 +4,7 @@ import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import stream, { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import type { TusDriver } from '@directus/storage';
+import { bulkDeleteFallback, type TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions, Stat } from '@directus/types';
 
 export type DriverLocalConfig = {
@@ -88,6 +88,10 @@ export class DriverLocal implements TusDriver {
 	async delete(filepath: string): Promise<void> {
 		const fullPath = this.fullPath(filepath);
 		await unlink(fullPath);
+	}
+
+	async bulkDelete(filepaths: string[]): Promise<void> {
+		await bulkDeleteFallback(this, filepaths);
 	}
 
 	list(prefix = ''): AsyncGenerator<string> {

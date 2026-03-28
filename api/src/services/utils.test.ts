@@ -28,7 +28,7 @@ vi.mock('../utils/store.js', () => ({
 
 const mockSchema = {} as SchemaOverview;
 
-function createMockDisk(options: { files: Map<string, string[]>; hasBulkDelete?: boolean }) {
+function createMockDisk(options: { files: Map<string, string[]> }) {
 	const deleted: string[] = [];
 
 	const disk: any = {
@@ -46,13 +46,10 @@ function createMockDisk(options: { files: Map<string, string[]>; hasBulkDelete?:
 		delete: vi.fn(async (fp: string) => {
 			deleted.push(fp);
 		}),
-	};
-
-	if (options.hasBulkDelete) {
-		disk.bulkDelete = vi.fn(async (fps: string[]) => {
+		bulkDelete: vi.fn(async (fps: string[]) => {
 			deleted.push(...fps);
-		});
-	}
+		}),
+	};
 
 	return { disk, deleted };
 }
@@ -129,9 +126,7 @@ describe('UtilsService', () => {
 
 			await service.clearAssetVariants();
 
-			expect(disk.delete).toHaveBeenCalledTimes(2);
-			expect(disk.delete).toHaveBeenCalledWith('abc123__hash1.jpg');
-			expect(disk.delete).toHaveBeenCalledWith('abc123__hash2.webp');
+			expect(disk.bulkDelete).toHaveBeenCalledWith(['abc123__hash1.jpg', 'abc123__hash2.webp']);
 		});
 
 		test('skips files without __ variant pattern', async () => {
@@ -154,15 +149,15 @@ describe('UtilsService', () => {
 
 			await service.clearAssetVariants();
 
-			expect(disk.delete).not.toHaveBeenCalled();
+			expect(disk.bulkDelete).not.toHaveBeenCalled();
 		});
 
-		test('uses bulkDelete when available', async () => {
+		test('calls bulkDelete with correct paths', async () => {
 			const files = [{ id: '1', filename_disk: 'abc.jpg', storage: 'local' }];
 
 			const storageFiles = new Map([['abc', ['abc.jpg', 'abc__hash1.jpg', 'abc__hash2.jpg']]]);
 
-			const { disk } = createMockDisk({ files: storageFiles, hasBulkDelete: true });
+			const { disk } = createMockDisk({ files: storageFiles });
 
 			vi.mocked(getStorage).mockResolvedValue({
 				location: () => disk,
@@ -178,7 +173,6 @@ describe('UtilsService', () => {
 			await service.clearAssetVariants();
 
 			expect(disk.bulkDelete).toHaveBeenCalledWith(['abc__hash1.jpg', 'abc__hash2.jpg']);
-			expect(disk.delete).not.toHaveBeenCalled();
 		});
 
 		test('accepts array of file IDs', async () => {
@@ -207,7 +201,7 @@ describe('UtilsService', () => {
 
 			await service.clearAssetVariants({ files: ['1', '2'] });
 
-			expect(disk.delete).toHaveBeenCalledTimes(2);
+			expect(disk.bulkDelete).toHaveBeenCalledWith(['abc__hash1.jpg', 'def__hash1.jpg']);
 		});
 
 		test('handles custom filename_disk with subdirectory', async () => {
@@ -230,9 +224,7 @@ describe('UtilsService', () => {
 
 			await service.clearAssetVariants({ files: ['1'] });
 
-			expect(disk.delete).toHaveBeenCalledTimes(2);
-			expect(disk.delete).toHaveBeenCalledWith('photo__hash1.jpg');
-			expect(disk.delete).toHaveBeenCalledWith('photo__hash2.webp');
+			expect(disk.bulkDelete).toHaveBeenCalledWith(['photo__hash1.jpg', 'photo__hash2.webp']);
 		});
 
 		test('does nothing when no variants exist', async () => {
@@ -255,7 +247,7 @@ describe('UtilsService', () => {
 
 			await service.clearAssetVariants();
 
-			expect(disk.delete).not.toHaveBeenCalled();
+			expect(disk.bulkDelete).not.toHaveBeenCalled();
 		});
 	});
 });

@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import type { Readable } from 'node:stream';
 import { finished } from 'node:stream/promises';
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
-import type { TusDriver } from '@directus/storage';
+import { bulkDeleteFallback, type TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 
@@ -70,6 +70,10 @@ export class DriverAzure implements TusDriver {
 
 	async delete(filepath: string): Promise<void> {
 		await this.containerClient.getBlockBlobClient(this.fullPath(filepath)).deleteIfExists();
+	}
+
+	async bulkDelete(filepaths: string[]): Promise<void> {
+		await bulkDeleteFallback(this, filepaths);
 	}
 
 	async stat(filepath: string): Promise<{
