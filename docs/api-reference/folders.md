@@ -1,0 +1,6 @@
+# Folders
+
+> Part of **Directus**
+
+---
+
