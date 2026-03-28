@@ -1,0 +1,6 @@
+# Permissions
+
+> Part of **Directus**
+
+---
+
