@@ -1,0 +1,30 @@
+post:
+  summary: Clear Asset Variants
+  description:
+    Purges cached asset variants (thumbnails, resizes, format conversions) from storage. Optionally filter by one or
+    more file IDs.
+  operationId: clear-asset-variants
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            files:
+              oneOf:
+                - type: string
+                  format: uuid
+                - type: array
+                  items:
+                    type: string
+                    format: uuid
+              description: UUID(s) of specific files to purge variants for. If omitted, all variants are purged.
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '403':
+      description: Forbidden - admin access required
+  tags:
+    - Utilities

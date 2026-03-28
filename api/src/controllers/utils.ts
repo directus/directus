@@ -215,7 +215,29 @@ router.post(
 
 		await service.clearCache({ system: clearSystemCache });
 
-		res.status(200).end();
+		res.status(204).end();
+	}),
+);
+
+const clearAssetsSchema = Joi.object<{ files?: string | string[] }>({
+	files: Joi.alternatives(Joi.string().uuid(), Joi.array().items(Joi.string().uuid())).optional(),
+});
+
+router.post(
+	'/assets/clear',
+	asyncHandler(async (req, res) => {
+		const service = new UtilsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { error, value } = clearAssetsSchema.validate(req.body, { allowUnknown: true });
+
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
+		await service.clearAssetVariants({ files: value.files });
+
+		res.status(204).end();
 	}),
 );
 

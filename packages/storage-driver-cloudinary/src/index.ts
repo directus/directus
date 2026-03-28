@@ -417,6 +417,45 @@ export class DriverCloudinary implements TusDriver {
 		});
 	}
 
+	async bulkDelete(filepaths: string[]): Promise<void> {
+		const CHUNK_SIZE = 100;
+
+		// Cloudinary's delete_resources endpoint is scoped per resource type, so files must be grouped first
+		const grouped: Record<string, string[]> = {};
+
+		for (const filepath of filepaths) {
+			const fullPath = this.fullPath(filepath);
+			const resourceType = this.getResourceType(fullPath);
+			const publicId = this.getPublicId(fullPath);
+			const folderPath = this.getFolderPath(fullPath);
+			const fullPublicId = normalizePath(join(folderPath, publicId), { removeLeading: true });
+
+			(grouped[resourceType] ??= []).push(fullPublicId);
+		}
+
+		for (const [resourceType, publicIds] of Object.entries(grouped)) {
+			for (let i = 0; i < publicIds.length; i += CHUNK_SIZE) {
+				const chunk = publicIds.slice(i, i + CHUNK_SIZE);
+
+				const params = new URLSearchParams();
+
+				for (const id of chunk) {
+					params.append('public_ids[]', id);
+				}
+
+				await fetch(
+					`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload?${params.toString()}`,
+					{
+						method: 'DELETE',
+						headers: {
+							Authorization: this.getBasicAuth(),
+						},
+					},
+				);
+			}
+		}
+	}
+
 	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
 		const fullPath = this.fullPath(prefix);
 

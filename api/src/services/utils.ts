@@ -1,3 +1,4 @@
+import path from 'path';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { systemCollectionRows } from '@directus/system-data';
 import type { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
@@ -5,9 +6,12 @@ import type { Knex } from 'knex';
 import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { useLogger } from '../logger/index.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { getStorage } from '../storage/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { useStore } from '../utils/store.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -168,5 +172,76 @@ export class UtilsService {
 		}
 
 		return cache?.clear();
+	}
+
+	async clearAssetVariants(options?: { files?: string | string[] | undefined }): Promise<void> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const store = useStore<{ clearing: boolean }>('directus:clear-asset-variants');
+
+		await store(async (state) => {
+			if (await state.get('clearing')) {
+				throw new InvalidPayloadError({ reason: 'Asset variant clearing is already in progress' });
+			}
+
+			await state.set('clearing', true);
+		});
+
+		try {
+			const storage = await getStorage();
+
+			const query = this.knex
+				.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
+				.from('directus_files');
+
+			if (options?.files) {
+				if (Array.isArray(options.files)) {
+					query.whereIn('id', options.files);
+				} else {
+					query.where('id', options.files);
+				}
+			}
+
+			const files = await query;
+
+			// Collect variants to delete, grouped by storage location
+			const toDeleteByStorage = new Map<string, string[]>();
+
+			for (const file of files) {
+				const disk = storage.location(file.storage);
+				const filePrefix = path.parse(file.filename_disk).name;
+
+				for await (const filepath of disk.list(filePrefix)) {
+					if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
+
+					const group = toDeleteByStorage.get(file.storage) ?? [];
+					group.push(filepath);
+					toDeleteByStorage.set(file.storage, group);
+				}
+			}
+
+			// Delete collected variants per storage location
+			let deleted = 0;
+
+			for (const [storageName, toDelete] of toDeleteByStorage) {
+				const disk = storage.location(storageName);
+
+				try {
+					await disk.bulkDelete(toDelete);
+				} catch (err) {
+					useLogger().warn(`Failed to bulk delete variants on "${storageName}": ${err}`);
+				}
+
+				deleted += toDelete.length;
+			}
+
+			useLogger().info(`Cleared ${deleted} asset variant(s)`);
+		} finally {
+			await store(async (state) => {
+				await state.set('clearing', false);
+			});
+		}
 	}
 }

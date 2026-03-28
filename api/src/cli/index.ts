@@ -2,6 +2,7 @@ import { Command, Option } from 'commander';
 import { version } from 'directus/version';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
+import assetsClear from './commands/assets/clear.js';
 import bootstrap from './commands/bootstrap/index.js';
 import cacheClear from './commands/cache/clear.js';
 import count from './commands/count/index.js';
@@ -80,6 +81,13 @@ export async function createCli(): Promise<Command> {
 		.option('--admin', `whether or not the role has admin access`)
 		.option('--app', `whether or not the role has app access`)
 		.action(rolesCreate);
+
+	program
+		.command('assets')
+		.command('clear')
+		.description('Clear generated asset variants (thumbnails, transformations)')
+		.option('--files <value...>', 'Clear variants for specific files by UUID (repeatable)')
+		.action(assetsClear);
 
 	program
 		.command('cache')

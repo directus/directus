@@ -252,6 +252,24 @@ export class DriverS3 implements TusDriver {
 		await this.client.send(new DeleteObjectCommand({ Key: this.fullPath(filepath), Bucket: this.config.bucket }));
 	}
 
+	async bulkDelete(filepaths: string[]): Promise<void> {
+		const CHUNK_SIZE = 1000;
+
+		for (let i = 0; i < filepaths.length; i += CHUNK_SIZE) {
+			const chunk = filepaths.slice(i, i + CHUNK_SIZE);
+
+			await this.client.send(
+				new DeleteObjectsCommand({
+					Bucket: this.config.bucket,
+					Delete: {
+						Objects: chunk.map((filepath) => ({ Key: this.fullPath(filepath) })),
+						Quiet: true,
+					},
+				}),
+			);
+		}
+	}
+
 	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
 		let Prefix = this.fullPath(prefix);
 

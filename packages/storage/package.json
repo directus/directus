@@ -26,6 +26,9 @@
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
+	"dependencies": {
+		"p-queue": "catalog:"
+	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",

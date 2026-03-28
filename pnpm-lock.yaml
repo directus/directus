@@ -2530,6 +2530,10 @@ importers:
         version: 4.0.4(openapi-types@12.1.3)
 
   packages/storage:
+    dependencies:
+      p-queue:
+        specifier: 'catalog:'
+        version: 8.1.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'

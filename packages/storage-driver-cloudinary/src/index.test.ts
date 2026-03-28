@@ -35,7 +35,7 @@ vi.mock('node:buffer');
 vi.mock('node:crypto');
 vi.mock('undici');
 
-const { join: joinActual } = await vi.importActual<typeof import('node:path')>('node:path');
+const { join: joinActual, parse: parseActual } = await vi.importActual<typeof import('node:path')>('node:path');
 
 let sample: {
 	config: Required<DriverCloudinaryConfig>;
@@ -1237,5 +1237,79 @@ describe('#list', () => {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`Can't list for prefix "${sample.path.input}": ${mockResponseBody.error.message}`);
 		}
+	});
+});
+
+describe('#bulkDelete', () => {
+	beforeEach(() => {
+		vi.mocked(join).mockImplementation(joinActual);
+		vi.mocked(normalizePath).mockImplementation((input) => input as string);
+	});
+
+	test('Calls Admin API delete_resources with correct public_ids', async () => {
+		await driver.bulkDelete([sample.path.input]);
+
+		expect(fetch).toHaveBeenCalledTimes(1);
+
+		const [url, options] = vi.mocked(fetch).mock.calls[0]!;
+
+		expect(options).toStrictEqual({
+			method: 'DELETE',
+			headers: {
+				Authorization: sample.basicAuth,
+			},
+		});
+
+		const parsedUrl = new URL(url as string);
+
+		expect(parsedUrl.origin + parsedUrl.pathname).toBe(
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/${sample.resourceType}/upload`,
+		);
+
+		const publicIds = parsedUrl.searchParams.getAll('public_ids[]');
+
+		expect(publicIds).toStrictEqual([joinActual(sample.path.inputFolder, sample.publicId.input)]);
+	});
+
+	test('Groups files by resource type', async () => {
+		const imageFile = 'folder/photo.jpg';
+		const videoFile = 'folder/clip.mp4';
+		const rawFile = 'folder/data.csv';
+
+		driver['fullPath'] = vi.fn().mockImplementation((input: string) => input);
+
+		driver['getResourceType'] = vi.fn().mockImplementation((input: string) => {
+			if (input === imageFile) return 'image';
+			if (input === videoFile) return 'video';
+			return 'raw';
+		});
+
+		driver['getPublicId'] = vi.fn().mockImplementation((input: string) => parseActual(input).name);
+		driver['getFolderPath'] = vi.fn().mockImplementation((input: string) => parseActual(input).dir);
+
+		await driver.bulkDelete([imageFile, videoFile, rawFile]);
+
+		expect(fetch).toHaveBeenCalledTimes(3);
+
+		const calls = vi.mocked(fetch).mock.calls;
+		const urls = calls.map(([url]) => (url as string).split('?')[0]);
+
+		expect(urls).toContain(`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/image/upload`);
+		expect(urls).toContain(`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/video/upload`);
+		expect(urls).toContain(`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/raw/upload`);
+	});
+
+	test('Chunks at 100 public_ids per request', async () => {
+		const paths = Array.from({ length: 250 }, () => sample.path.input);
+
+		await driver.bulkDelete(paths);
+
+		expect(fetch).toHaveBeenCalledTimes(3);
+	});
+
+	test('Does nothing for empty array', async () => {
+		await driver.bulkDelete([]);
+
+		expect(fetch).not.toHaveBeenCalled();
 	});
 });

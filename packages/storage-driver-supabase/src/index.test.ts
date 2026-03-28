@@ -527,6 +527,47 @@ describe('#delete', () => {
 	});
 });
 
+describe('#bulkDelete', () => {
+	test('Passes all paths through fullPath to bucket.remove', async () => {
+		driver['bucket'] = {
+			remove: vi.fn(),
+		} as any;
+
+		const fullPathSpy = vi.fn((fp: string) => `root/${fp}`);
+		driver['fullPath'] = fullPathSpy;
+
+		const paths = ['file1.jpg', 'file2.jpg'];
+
+		await driver.bulkDelete(paths);
+
+		expect(driver['bucket'].remove).toHaveBeenCalledWith(['root/file1.jpg', 'root/file2.jpg']);
+	});
+
+	test('Chunks at 1000 paths per request', async () => {
+		driver['bucket'] = {
+			remove: vi.fn(),
+		} as any;
+
+		driver['fullPath'] = vi.fn((fp: string) => fp);
+
+		const paths = Array.from({ length: 2500 }, (_, i) => `file${i}.jpg`);
+
+		await driver.bulkDelete(paths);
+
+		expect(driver['bucket'].remove).toHaveBeenCalledTimes(3);
+	});
+
+	test('Handles empty array', async () => {
+		driver['bucket'] = {
+			remove: vi.fn(),
+		} as any;
+
+		await driver.bulkDelete([]);
+
+		expect(driver['bucket'].remove).not.toHaveBeenCalled();
+	});
+});
+
 describe('#list', () => {
 	test('Constructs list objects params based on input prefix', async () => {
 		const sampleFile = randFileName();

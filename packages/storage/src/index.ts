@@ -1,5 +1,6 @@
 import type { Readable } from 'node:stream';
 import type { ChunkedUploadContext, Range, ReadOptions, Stat } from '@directus/types';
+import Queue from 'p-queue';
 
 export class StorageManager {
 	private drivers = new Map<string, typeof Driver>();
@@ -43,6 +44,7 @@ export declare class Driver {
 	move(src: string, dest: string): Promise<void>;
 	copy(src: string, dest: string): Promise<void>;
 	list(prefix?: string): AsyncIterable<string>;
+	bulkDelete(filepaths: string[]): Promise<void>;
 }
 
 export interface TusDriver extends Driver {
@@ -56,6 +58,23 @@ export interface TusDriver extends Driver {
 
 export function supportsTus(driver: Driver): driver is TusDriver {
 	return 'tusExtensions' in driver;
+}
+
+/**
+ * Fallback for drivers without native bulk delete. Deletes files concurrently with a queue.
+ */
+export async function bulkDeleteFallback(
+	driver: Pick<Driver, 'delete'>,
+	filepaths: string[],
+	concurrency = 100,
+): Promise<void> {
+	const queue = new Queue({ concurrency });
+
+	for (const fp of filepaths) {
+		void queue.add(() => driver.delete(fp));
+	}
+
+	await queue.onIdle();
 }
 
 export type DriverConfig = {
