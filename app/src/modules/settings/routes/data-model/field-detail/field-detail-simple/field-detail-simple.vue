@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Collection } from '@directus/types';
 import { orderBy } from 'lodash';
-import { computed, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import FieldConfiguration from './field-configuration.vue';
@@ -91,6 +91,8 @@ const groups = computed(() => {
 
 const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
 
+const selectedGroupKey = ref<string | null>(null);
+
 const configRow = computed(() => {
 	if (!chosenInterface.value) return null;
 
@@ -126,11 +128,27 @@ function isSVG(path: string) {
 	return path.startsWith('<svg');
 }
 
+function shouldShowConfig(group: { key: string; interfaces: { id: string }[] }) {
+	if (!chosenInterface.value) return false;
+
+	if (group.interfaces.some((inter) => inter.id === chosenInterface.value)) return true;
+
+	return selectedGroupKey.value === group.key;
+}
+
 function toggleInterface(id: string) {
 	if (chosenInterface.value === id) {
 		chosenInterface.value = null;
+		selectedGroupKey.value = null;
 	} else {
 		chosenInterface.value = id;
+
+		for (const group of groups.value) {
+			if (group.interfaces.some((inter) => inter.id === id)) {
+				selectedGroupKey.value = group.key;
+				break;
+			}
+		}
 	}
 }
 </script>
@@ -164,7 +182,7 @@ function toggleInterface(id: string) {
 
 				<TransitionExpand>
 					<FieldConfiguration
-						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
+						v-if="shouldShowConfig(group)"
 						:row="configRow"
 						@save="$emit('save')"
 						@toggle-advanced="$emit('toggleAdvanced')"
