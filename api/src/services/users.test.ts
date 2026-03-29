@@ -6,6 +6,7 @@ import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { verifyJWT } from '../utils/jwt.js';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -30,6 +31,14 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
+
+vi.mock('../utils/jwt.js', () => ({
+	verifyJWT: vi.fn(),
+}));
+
+vi.mock('../utils/get-secret.js', () => ({
+	getSecret: vi.fn().mockReturnValue('test-secret'),
+}));
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 
@@ -437,6 +446,40 @@ describe('Integration Tests', () => {
 
 				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([mockUser.id]);
 				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
+			});
+		});
+
+		describe('acceptInvite', () => {
+			it('should throw generic error without email when user is not in invited status', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'invite' });
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id',
+					status: 'active',
+					email: 'test@example.com',
+				});
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				const err = await service.acceptInvite('fake-token', 'Password123!').catch((e) => e);
+
+				expect(err).toBeInstanceOf(InvalidPayloadError);
+				expect(err.message).not.toContain('test@example.com');
+				expect(err.extensions?.reason).toBe('This invite is no longer valid');
+			});
+
+			it('should throw ForbiddenError for non-invite scope tokens', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'password-reset' });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
 			});
 		});
 	});
