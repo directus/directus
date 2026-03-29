@@ -1,5 +1,6 @@
 ---
-'@directus/api': patch
+'@directus/api': minor
+'@directus/env': minor
 ---
 
-Fixed storage health checks erroring on multi instance
+Allow disabling the health check endpoint via HEALTHCHECK_ENABLED or selectively disabled checked services via HEALTHCHECK_SERVICES
