@@ -1,25 +1,31 @@
 import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
+import { createKv } from '@directus/memory';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
-import { getCache } from '../cache.js';
+import ms, { type StringValue } from 'ms';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
-import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
-import { rateLimiter } from '../middleware/rate-limiter-ip.js';
+import { redisConfigAvailable, useRedis } from '../redis/index.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
+import { useStore } from '../utils/store.js';
 import { SettingsService } from './settings.js';
 
 const env = useEnv();
 const logger = useLogger();
+
+const store = useStore<{ health: Record<string, any> | undefined }>(
+	(env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
+	{ ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m') },
+);
 
 export class ServerService {
 	knex: Knex;
@@ -158,6 +164,20 @@ export class ServerService {
 	}
 
 	async health(): Promise<Record<string, any>> {
+		const healthResult = await store(async (store) => {
+			try {
+				return await store.get('health');
+			} catch (err) {
+				logger.warn(err, 'Failed to read health check cache');
+			}
+
+			return;
+		});
+
+		if (healthResult) {
+			return this.accountability?.admin === true ? healthResult : { status: healthResult['status'] };
+		}
+
 		const { nanoid } = await import('nanoid');
 
 		const checkID = nanoid(5);
@@ -181,20 +201,13 @@ export class ServerService {
 			threshold?: number;
 		};
 
+		const enabledServices = toArray(env['HEALTHCHECK_SERVICES'] as string[]);
+
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
 			serviceId: env['PUBLIC_URL'] as string,
-			checks: merge(
-				...(await Promise.all([
-					testDatabase(),
-					testCache(),
-					testRateLimiter(),
-					testRateLimiterGlobal(),
-					testStorage(),
-					testEmail(),
-				])),
-			),
+			checks: merge(...(await Promise.all([testDatabase(), testRedis(), testStorage(), testEmail()]))),
 		};
 
 		if (SERVER_ONLINE === false) {
@@ -223,13 +236,17 @@ export class ServerService {
 			if (data.status === 'error') break;
 		}
 
-		if (this.accountability?.admin !== true) {
-			return { status: data.status };
-		} else {
-			return data;
-		}
+		await store(async (store) => {
+			await store.set('health', data).catch((err) => {
+				logger.warn(err, 'Failed to write health check cache');
+			});
+		});
+
+		return this.accountability?.admin === true ? data : { status: data.status };
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
+			if (enabledServices.includes('database') === false) return {};
+
 			const database = getDatabase();
 			const client = env['DB_CLIENT'];
 
@@ -286,12 +303,18 @@ export class ServerService {
 			return checks;
 		}
 
-		async function testCache(): Promise<Record<string, HealthCheck[]>> {
-			if (env['CACHE_ENABLED'] !== true) {
+		async function testRedis(): Promise<Record<string, HealthCheck[]>> {
+			if (enabledServices.includes('redis') === false || redisConfigAvailable() !== true) {
 				return {};
 			}
 
-			const { cache } = getCache();
+			// Use createKV as redis check to avoid using redlock specific commands
+			const redis = createKv({
+				type: 'redis',
+				redis: useRedis(),
+				namespace: (env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
+				ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m'),
+			});
 
 			const checks: Record<string, HealthCheck[]> = {
 				'cache:responseTime': [
@@ -308,8 +331,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await cache!.set(`directus-health-${checkID}`, true, 5);
-				await cache!.delete(`directus-health-${checkID}`);
+				await redis.set(`directus-health-${checkID}`, 1);
+				await redis.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
 				checks['cache:responseTime']![0]!.status = 'error';
 				checks['cache:responseTime']![0]!.output = err;
@@ -328,90 +351,11 @@ export class ServerService {
 			return checks;
 		}
 
-		async function testRateLimiter(): Promise<Record<string, HealthCheck[]>> {
-			if (env['RATE_LIMITER_ENABLED'] !== true) {
-				return {};
-			}
-
-			const checks: Record<string, HealthCheck[]> = {
-				'rateLimiter:responseTime': [
-					{
-						status: 'ok',
-						componentType: 'ratelimiter',
-						observedValue: 0,
-						observedUnit: 'ms',
-						threshold: env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] ? +env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] : 150,
-					},
-				],
-			};
-
-			const startTime = performance.now();
-
-			try {
-				await rateLimiter.consume(`directus-health-${checkID}`, 1);
-				await rateLimiter.delete(`directus-health-${checkID}`);
-			} catch (err: any) {
-				checks['rateLimiter:responseTime']![0]!.status = 'error';
-				checks['rateLimiter:responseTime']![0]!.output = err;
-			} finally {
-				const endTime = performance.now();
-				checks['rateLimiter:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
-
-				if (
-					checks['rateLimiter:responseTime']![0]!.observedValue > checks['rateLimiter:responseTime']![0]!.threshold! &&
-					checks['rateLimiter:responseTime']![0]!.status !== 'error'
-				) {
-					checks['rateLimiter:responseTime']![0]!.status = 'warn';
-				}
-			}
-
-			return checks;
-		}
-
-		async function testRateLimiterGlobal(): Promise<Record<string, HealthCheck[]>> {
-			if (env['RATE_LIMITER_GLOBAL_ENABLED'] !== true) {
-				return {};
-			}
-
-			const checks: Record<string, HealthCheck[]> = {
-				'rateLimiterGlobal:responseTime': [
-					{
-						status: 'ok',
-						componentType: 'ratelimiter',
-						observedValue: 0,
-						observedUnit: 'ms',
-						threshold: env['RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD']
-							? +env['RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD']
-							: 150,
-					},
-				],
-			};
-
-			const startTime = performance.now();
-
-			try {
-				await rateLimiterGlobal.consume(`directus-health-${checkID}`, 1);
-				await rateLimiterGlobal.delete(`directus-health-${checkID}`);
-			} catch (err: any) {
-				checks['rateLimiterGlobal:responseTime']![0]!.status = 'error';
-				checks['rateLimiterGlobal:responseTime']![0]!.output = err;
-			} finally {
-				const endTime = performance.now();
-				checks['rateLimiterGlobal:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
-
-				if (
-					checks['rateLimiterGlobal:responseTime']![0]!.observedValue >
-						checks['rateLimiterGlobal:responseTime']![0]!.threshold! &&
-					checks['rateLimiterGlobal:responseTime']![0]!.status !== 'error'
-				) {
-					checks['rateLimiterGlobal:responseTime']![0]!.status = 'warn';
-				}
-			}
-
-			return checks;
-		}
-
 		async function testStorage(): Promise<Record<string, HealthCheck[]>> {
+			if (enabledServices.includes('storage') === false) {
+				return {};
+			}
+
 			const storage = await getStorage();
 
 			const checks: Record<string, HealthCheck[]> = {};
@@ -455,6 +399,10 @@ export class ServerService {
 		}
 
 		async function testEmail(): Promise<Record<string, HealthCheck[]>> {
+			if (enabledServices.includes('email') === false) {
+				return {};
+			}
+
 			const checks: Record<string, HealthCheck[]> = {
 				'email:connection': [
 					{

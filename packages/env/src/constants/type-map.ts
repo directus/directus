@@ -47,10 +47,15 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	REDIS_LOCK_NAMESPACE: 'string',
 	REDIS_COUNTERS_NAMESPACE: 'string',
 	REDIS_PERMISSIONS_NAMESPACE: 'string',
-	METRICS_HEALTH_CHECK_PREFIX: 'string',
+
+	HEALTHCHECK_ENABLED: 'boolean',
+	HEALTHCHECK_NAMESPACE: 'string',
+	HEALTHCHECK_SERVICES: 'array',
+	HEALTHCHECK_CACHE_TTL: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
+	METRICS_HEALTH_CHECK_PREFIX: 'string',
 
 	DB_SSL__CA_FILE: 'string',
 
