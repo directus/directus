@@ -38,7 +38,7 @@ const availableCollections = computed(() => {
 
 <template>
 	<div class="relationship">
-		<div v-if="localType === 'm2o'" class="field full">
+		<div v-if="localType === 'm2o' || localType === 'file'" class="field full">
 			<div class="label type-label">
 				{{ $t('related_collection') }}
 				<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
@@ -67,7 +67,7 @@ const availableCollections = computed(() => {
 			</div>
 		</template>
 
-		<div v-if="localType === 'm2m'" class="field full">
+		<div v-if="localType === 'm2m' || localType === 'files'" class="field full">
 			<div class="label type-label">
 				{{ $t('related_collection') }}
 				<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
