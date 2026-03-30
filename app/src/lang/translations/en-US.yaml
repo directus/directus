@@ -233,7 +233,7 @@ promote_version: Promote Version
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
-view_only_modified_fields: View Only Modified Fields
+show_differences_only: Show Differences Only
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-

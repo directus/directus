@@ -362,7 +362,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<div class="footer-actions">
 							<div v-if="availableFieldsCount > 0" class="view-only-modified-container">
 								<VCheckbox v-model="viewOnlyModifiedFields">
-									{{ $t('view_only_modified_fields') }}
+									{{ $t('show_differences_only') }}
 								</VCheckbox>
 							</div>
 							<div v-if="mode !== 'revision' || compareToOption !== 'Previous'" class="select-all-container">
