@@ -109,6 +109,9 @@ const {
 	publishVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
+const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
+	usePublishComparison();
+
 const {
 	isNew,
 	edits,
@@ -161,14 +164,11 @@ const {
 	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
 } = permissions;
 
-const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
-	usePublishComparison();
-
 const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version', 'versionId'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 const confirmDiscard = ref(false);
@@ -255,7 +255,7 @@ const isSavable = computed(() => {
 		return !!edits.value?.[primaryKeyField.value.field];
 	}
 
-	if (isNew.value === true) {
+	if (isNew.value && currentVersion.value === null) {
 		return Object.keys(defaults.value).length > 0 || hasEdits.value;
 	}
 
@@ -490,15 +490,17 @@ async function saveVersionAction(action: typeof VERSION_KEY_PUBLISHED | 'stay' |
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, ref(item.value ?? {}), actualPrimaryKey.value);
+		await saveVersion(edits, item, actualPrimaryKey.value);
 		edits.value = {};
 
 		if (action === VERSION_KEY_PUBLISHED) {
 			currentVersion.value = null;
 			refresh();
 		} else if (action === 'stay') {
-			refresh();
-			revisionsSidebarDetailRef.value?.refresh?.();
+			if (!isNew.value) {
+				refresh();
+				revisionsSidebarDetailRef.value?.refresh?.();
+			}
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
 		}
@@ -622,14 +624,14 @@ function revert(values: Record<string, any>) {
 	};
 }
 
-const shouldShowVersioning = computed(
-	() =>
-		collectionInfo.value?.meta?.versioning &&
-		!isNew.value &&
-		internalPrimaryKey.value !== '+' &&
-		readVersionsAllowed.value &&
-		!versionsLoading.value,
-);
+const shouldShowVersioning = computed(() => {
+	if (!collectionInfo.value?.meta?.versioning) return false;
+	if (!readVersionsAllowed.value) return false;
+	if (versionsLoading.value) return false;
+	if (props.primaryKey === '+') return currentVersion.value !== null;
+
+	return internalPrimaryKey.value !== '+';
+});
 
 function useItemNavigation() {
 	const route = useRoute();
@@ -661,9 +663,33 @@ function usePublishComparison() {
 		return currentVersion.value as ContentVersionWithType;
 	});
 
-	const defaultValues = getDefaultValuesFromFields(fields);
+	async function onVersionPublishCompare() {
+		if (isNew.value && currentVersion.value !== null && currentVersion.value.id !== '+') {
+			const defaultValues = getDefaultValuesFromFields(fields);
+			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+			const fieldsToValidate = pushGroupOptionsDown(fields.value);
 
-	function onVersionPublishCompare() {
+			const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+			versionValidationErrors.value = clientErrors;
+
+			if (versionValidationErrors.value.length) return;
+
+			try {
+				const versionId = currentVersion.value.id;
+				const newItemKey = await publishVersion(versionId, {});
+
+				if (newItemKey) {
+					router.replace(getItemRoute(props.collection, newItemKey));
+					deleteVersion(versionId);
+				}
+			} catch {
+				// publishVersion / deleteVersion handle unexpected errors
+			}
+
+			return;
+		}
+
 		comparisonModalActive.value = true;
 	}
 
@@ -673,6 +699,7 @@ function usePublishComparison() {
 		fields: string[];
 		deleteOnPublish: boolean;
 	}) {
+		const defaultValues = getDefaultValuesFromFields(fields);
 		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
 		const fieldsToValidate = pushGroupOptionsDown(fields.value);
 
@@ -754,6 +781,7 @@ function usePublishComparison() {
 					:collection="collection"
 					:primary-key="internalPrimaryKey!"
 					:update-allowed="updateAllowed"
+					:create-allowed="createAllowed"
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"

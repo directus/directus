@@ -64,6 +64,7 @@ const baseProps = {
 	collection: 'test_collection',
 	primaryKey: '1',
 	updateAllowed: true,
+	createAllowed: true,
 	hasEdits: false,
 	currentVersion: null as ContentVersionMaybeNew | null,
 	versions: [] as ContentVersionMaybeNew[],
@@ -323,6 +324,51 @@ describe('VersionMenu', () => {
 
 			expect(promoteItem?.classes()).toContain('disabled');
 			expect(deleteItem?.classes()).toContain('disabled');
+		});
+	});
+
+	describe('item-less draft promote', () => {
+		it('should show promote when primaryKey is "+" and createAllowed is true', () => {
+			const savedDraftVersion = createMockVersion({ id: 'draft-uuid', key: 'draft', type: 'global', item: null });
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: {
+					...baseProps,
+					primaryKey: '+',
+					createAllowed: true,
+					updateAllowed: false,
+					versions: [savedDraftVersion],
+					currentVersion: savedDraftVersion,
+				},
+			});
+
+			const listItems = wrapper.findAll('.v-list-item');
+			const promoteItem = listItems.find((item) => item.text().includes(i18n.global.t('promote_version')));
+
+			expect(promoteItem).toBeDefined();
+			expect(promoteItem?.classes()).not.toContain('disabled');
+		});
+
+		it('should hide promote when primaryKey is "+" and createAllowed is false', () => {
+			const savedDraftVersion = createMockVersion({ id: 'draft-uuid', key: 'draft', type: 'global', item: null });
+
+			const wrapper = mount(VersionMenu, {
+				...mountOptions,
+				props: {
+					...baseProps,
+					primaryKey: '+',
+					createAllowed: false,
+					updateAllowed: false,
+					versions: [savedDraftVersion],
+					currentVersion: savedDraftVersion,
+				},
+			});
+
+			const listItems = wrapper.findAll('.v-list-item');
+			const promoteItem = listItems.find((item) => item.text().includes(i18n.global.t('promote_version')));
+
+			expect(promoteItem).toBeUndefined();
 		});
 	});
 });

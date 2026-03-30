@@ -29,6 +29,7 @@ interface Props {
 	collection: string;
 	primaryKey: PrimaryKey;
 	updateAllowed: boolean;
+	createAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersionMaybeNew | null;
 	versions: ContentVersionMaybeNew[];
@@ -73,7 +74,6 @@ const {
 
 const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renameVersion, isRenameDisabled } =
 	useRenameDialog();
-
 
 const { deleteDialogActive, onDeleteVersion } = useDeleteDialog();
 
@@ -237,19 +237,18 @@ function useRenameDialog() {
 }
 
 function useDeleteDialog() {
-    const deleteDialogActive = ref(false);
+	const deleteDialogActive = ref(false);
 
-    return { deleteDialogActive, onDeleteVersion };
+	return { deleteDialogActive, onDeleteVersion };
 
-    async function onDeleteVersion() {
-        const versionId = currentVersion.value?.id;
-        if (!versionId || deleteVersionLoading.value) return;
+	async function onDeleteVersion() {
+		const versionId = currentVersion.value?.id;
+		if (!versionId || deleteVersionLoading.value) return;
 
-        emit('delete', versionId);
-        deleteDialogActive.value = false;
-    }
+		emit('delete', versionId);
+		deleteDialogActive.value = false;
+	}
 }
-
 
 function useGlobalVersions() {
 	const isCurrentVersionGlobal = computed(() => currentVersion.value?.type === 'global');
@@ -354,7 +353,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 					<VDivider />
 
 					<VListItem
-						v-if="updateAllowed"
+						v-if="primaryKey === '+' ? createAllowed : updateAllowed"
 						:disabled="isCurrentVersionNew"
 						clickable
 						@click="$emit('publish')"

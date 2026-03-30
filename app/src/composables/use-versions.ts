@@ -10,7 +10,7 @@ import type { ContentVersionMaybeNew, ContentVersionWithType, NewContentVersion 
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export interface PublishVersionOptions {
-	mainHash: string;
+	mainHash?: string;
 	fields?: string[];
 }
 
@@ -26,10 +26,18 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
 		useCollectionPermissions('directus_versions');
 
+	const queryVersionId = useRouteQuery<string | null>('versionId', null, {
+		transform: (value) => (Array.isArray(value) ? value[0] : value),
+		mode: 'push',
+	});
+
 	const queryVersion = useRouteQuery<string | null>('version', null, {
 		transform: (value) => (Array.isArray(value) ? value[0] : value),
 		mode: 'push',
 	});
+
+	const isNewItem = computed(() => primaryKey.value === '+');
+	const isItemLessVersion = computed(() => isNewItem.value && currentVersion.value?.id !== '+');
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
 		const draftVersion = getGlobalVersion(VERSION_KEY_DRAFT);
@@ -77,6 +85,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	watch(currentVersion, (newCurrentVersion) => {
 		queryVersion.value = newCurrentVersion?.key ?? null;
+
+		if (newCurrentVersion !== null) {
+			queryVersionId.value = isItemLessVersion.value ? newCurrentVersion.id : null;
+		}
+
 		validationErrors.value = [];
 	});
 
@@ -92,17 +105,22 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	async function getVersions() {
 		if (!readVersionsAllowed.value) return;
 
-		if ((!isSingleton.value && !primaryKey.value) || primaryKey.value === '+') return;
+		if (!isSingleton.value && !primaryKey.value) return;
+
+		if (isNewItem.value && !queryVersionId.value) return;
 
 		loading.value = true;
 
 		try {
-			const filter: Filter = {
-				_and: [
-					{ collection: { _eq: collection.value } },
-					...(primaryKey.value ? [{ item: { _eq: primaryKey.value } }] : []),
-				],
-			};
+			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
+
+			if (!isNewItem.value) {
+				filterConditions.push({ item: { _eq: primaryKey.value } });
+			} else if (queryVersionId.value) {
+				filterConditions.push({ item: { _null: true } }, { id: { _eq: queryVersionId.value } });
+			}
+
+			const filter: Filter = { _and: filterConditions };
 
 			const { data: response } = await api.get(`/versions`, {
 				params: {
@@ -182,7 +200,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	}
 
 	/** @param actualPrimaryKey Resolved PK of the item — needed because for singletons the route PK is null */
-	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item>, actualPrimaryKey: PrimaryKey | null) {
+	async function saveVersion(
+		edits: Ref<Record<string, any>>,
+		item: Ref<Item | null>,
+		actualPrimaryKey: PrimaryKey | null,
+	) {
 		if (!currentVersion.value || !actualPrimaryKey) return;
 
 		saveVersionLoading.value = true;
@@ -197,10 +219,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				} = await api.post(`/versions`, {
 					key: currentVersion.value.key,
 					collection: collection.value,
-					item: String(actualPrimaryKey),
+					item: actualPrimaryKey === '+' ? null : String(actualPrimaryKey),
 				});
 
 				versionId = version.id;
+
+				rawVersions.value = [...(rawVersions.value ?? []), version];
 			} else {
 				versionId = currentVersion.value.id;
 			}
@@ -210,10 +234,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			} = await api.post(`/versions/${versionId}/save`, edits.value);
 
 			// Update local item with the saved changes
-			Object.assign(item.value, savedData);
+			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
-			await getVersions();
+			if (actualPrimaryKey !== '+') {
+				await getVersions();
+			}
 
 			return savedData;
 		} catch (error) {
@@ -223,14 +249,26 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function publishVersion(versionId: PrimaryKey, options: PublishVersionOptions) {
+	async function publishVersion(
+		versionId: PrimaryKey,
+		options: PublishVersionOptions = {},
+	): Promise<PrimaryKey | null> {
 		publishVersionLoading.value = true;
 		const { mainHash, fields } = options;
 
 		try {
-			await api.post(`/versions/${versionId}/promote`, fields ? { mainHash, fields } : { mainHash });
+			const body: Record<string, any> = {};
+			if (mainHash !== undefined) body['mainHash'] = mainHash;
+			if (fields !== undefined) body['fields'] = fields;
+
+			const {
+				data: { data: itemKey },
+			} = await api.post(`/versions/${versionId}/promote`, body);
+
+			return itemKey ?? null;
 		} catch (error) {
 			versionErrorHandler(error);
+			return null;
 		} finally {
 			publishVersionLoading.value = false;
 		}
