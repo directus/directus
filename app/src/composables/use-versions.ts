@@ -212,6 +212,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		try {
 			let versionId: PrimaryKey;
+			let newVersion: ContentVersion | null = null;
 
 			if (currentVersion.value.id === '+') {
 				const {
@@ -223,8 +224,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				});
 
 				versionId = version.id;
-
-				rawVersions.value = [...(rawVersions.value ?? []), version];
+				newVersion = version;
 			} else {
 				versionId = currentVersion.value.id;
 			}
@@ -236,6 +236,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			// Update local item with the saved changes
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
+
+			if (newVersion) {
+				rawVersions.value = [...(rawVersions.value ?? []), newVersion];
+			}
 
 			if (actualPrimaryKey !== '+') {
 				await getVersions();
