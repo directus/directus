@@ -448,6 +448,31 @@ describe('Service / Files', () => {
 			);
 		});
 
+		test('should exclude updated file from uniqueness check', async () => {
+			const recordUpdatePayload = {
+				id: 1,
+				filename_disk: 'existing-file.jpg',
+			};
+
+			tracker.on
+				.select(`select "filename_disk" from "directus_files" where "filename_disk" = ? and not "id" = ?`)
+				.response([]);
+
+			vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+				{ id: 1, storage: 'local', filename_disk: 'old-file.jpg' },
+			]);
+
+			await service.updateMany([recordUpdatePayload.id], {
+				filename_disk: recordUpdatePayload.filename_disk,
+			});
+
+			expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(
+				[1],
+				{ filename_disk: recordUpdatePayload.filename_disk },
+				{},
+			);
+		});
+
 		test('should normalize filename_disk path', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 

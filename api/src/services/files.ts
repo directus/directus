@@ -58,14 +58,17 @@ export class FilesService extends ItemsService<File> {
 	 * Check whether a filename is unique.
 	 *
 	 * @param filename - The filename
+	 * @param excludeId - The id of the existing file to exclude from the check
 	 * @throws ForbiddenError if a match is found
 	 */
-	private async checkUniqueFilename(filename: string) {
-		const existingFile = await this.knex
-			.select('filename_disk')
-			.from('directus_files')
-			.where({ filename_disk: filename })
-			.first();
+	private async checkUniqueFilename(filename: string, excludeId?: PrimaryKey) {
+		const query = this.knex.select('filename_disk').from('directus_files').where({ filename_disk: filename });
+
+		if (excludeId) {
+			query.whereNot('id', excludeId);
+		}
+
+		const existingFile = await query.first();
 
 		if (existingFile) {
 			throw new ForbiddenError();
@@ -340,14 +343,14 @@ export class FilesService extends ItemsService<File> {
 		}
 
 		if (data.filename_disk) {
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+
 			try {
 				await this.checkUniqueFilename(data.filename_disk);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
 				opts.preMutationError = err;
 			}
-
-			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 		}
 
 		const key = await super.createOne(data, opts);
@@ -363,14 +366,14 @@ export class FilesService extends ItemsService<File> {
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
 		if (keys.length === 1 && data.filename_disk) {
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+
 			try {
-				await this.checkUniqueFilename(data.filename_disk);
+				await this.checkUniqueFilename(data.filename_disk, keys[0]);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
 				opts.preMutationError = err;
 			}
-
-			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
 			// Fetch existing records to have data prior to change, dont require read permissions.
 			const sudoFilesItemsService = new FilesService({
