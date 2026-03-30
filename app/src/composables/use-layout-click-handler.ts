@@ -10,9 +10,16 @@ export type UseLayoutClickHandlerOptions = {
 	selection: Ref<PrimaryKey[]>;
 	primaryKeyField: Readonly<Ref<Field | null>>;
 	versionKey?: Readonly<Ref<string | null | undefined>>;
+	versionId?: Readonly<Ref<string | undefined>>;
 };
 
-export function useLayoutClickHandler({ props, selection, primaryKeyField, versionKey }: UseLayoutClickHandlerOptions) {
+export function useLayoutClickHandler({
+	props,
+	selection,
+	primaryKeyField,
+	versionKey,
+	versionId,
+}: UseLayoutClickHandlerOptions) {
 	const router = useRouter();
 
 	return {
@@ -31,7 +38,7 @@ export function useLayoutClickHandler({ props, selection, primaryKeyField, versi
 				selection.value = selection.value.filter((item) => item !== primaryKey);
 			}
 		} else {
-			const route = getItemRoute(props.collection, primaryKey, versionKey?.value ?? undefined);
+			const route = getItemRoute(props.collection, primaryKey, versionKey?.value, versionId?.value);
 
 			if (event.ctrlKey || event.metaKey) window.open(router.resolve(route).href, '_blank');
 			else router.push(route);

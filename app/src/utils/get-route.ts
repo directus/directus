@@ -56,7 +56,7 @@ export function getItemRoute(
 	collection: string | null,
 	primaryKey: string | number,
 	versionKey?: string | null | undefined,
-	versionId?: string | null | undefined,
+	versionId?: string | undefined,
 ) {
 	if (collection === null) return '';
 

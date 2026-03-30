@@ -476,14 +476,7 @@ function getLinkForItem(item: DisplayItem) {
 			relationInfo.value.relatedPrimaryKeyField.field,
 		]);
 
-		const relatedCollection = relationInfo.value.relatedCollection.collection;
-		const isSelfReferential = relatedCollection === props.collection;
-
-		return getItemRoute(
-			relatedCollection,
-			primaryKey,
-			isSelfReferential ? (props.version?.key ?? undefined) : undefined,
-		);
+		return getItemRoute(relationInfo.value.relatedCollection.collection, primaryKey);
 	}
 
 	return null;
