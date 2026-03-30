@@ -3,6 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
+import FormField from './components/form-field.vue';
 import VForm from './v-form.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
 import { Md } from '@/__utils__/md';
@@ -95,6 +96,58 @@ function createField(overrides: Partial<Field> = {}): Field {
 }
 
 describe('VForm', () => {
+	describe('comparison mode with viewOnlyModifiedFields', () => {
+		it('shows only fields that are in comparison.fields when viewOnlyModifiedFields is true', async () => {
+			const modifiedField = createField({ field: 'modified_field', name: 'Modified Field' });
+			const unmodifiedField = createField({ field: 'unmodified_field', name: 'Unmodified Field' });
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [modifiedField, unmodifiedField],
+					primaryKey: '+',
+					comparison: {
+						side: 'incoming',
+						fields: new Set(['modified_field']),
+						selectedFields: [],
+						onToggleField: null,
+						viewOnlyModifiedFields: true,
+					},
+				},
+				global,
+			});
+
+			const renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+
+			expect(renderedFields).toContain('modified_field');
+			expect(renderedFields).not.toContain('unmodified_field');
+		});
+
+		it('shows all fields when viewOnlyModifiedFields is false', async () => {
+			const modifiedField = createField({ field: 'modified_field', name: 'Modified Field' });
+			const unmodifiedField = createField({ field: 'unmodified_field', name: 'Unmodified Field' });
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [modifiedField, unmodifiedField],
+					primaryKey: '+',
+					comparison: {
+						side: 'incoming',
+						fields: new Set(['modified_field']),
+						selectedFields: [],
+						onToggleField: null,
+						viewOnlyModifiedFields: false,
+					},
+				},
+				global,
+			});
+
+			const renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+
+			expect(renderedFields).toContain('modified_field');
+			expect(renderedFields).toContain('unmodified_field');
+		});
+	});
+
 	describe('apply function', () => {
 		it('preserves grouped readonly field values during nested form updates', async () => {
 			const checkboxField = createField({
