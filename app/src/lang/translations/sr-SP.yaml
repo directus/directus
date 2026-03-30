@@ -255,6 +255,8 @@ table: Табела
 interfaces:
   filter:
     all: Sve
+  group-tabs:
+    fill_width: Попуни ширину
   input-code:
     code: Код
   system-collection:

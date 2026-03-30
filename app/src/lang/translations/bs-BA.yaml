@@ -466,7 +466,6 @@ no_collections: Nema kolekcija
 create_collection: Nova kolekcija
 no_collections_copy_admin: Još nemate niti jednu kolekciju. Kliknite dugme u nastavku da biste započeli.
 no_collections_copy: Još nemate nijednu kolekciju. Obratite se administratoru.
-relationship_not_setup: Odnos nije ispravno konfigurisan
 display_template_not_setup: Opcija predloška prikaza je pogrešno konfigurisana
 collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurisana
 select_a_collection: Odaberite kolekciju
@@ -1311,6 +1310,8 @@ interfaces:
     all_opened: Sve otvoreno
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
+  group-tabs:
+    fill_width: Širina ispune
   presentation-links:
     presentation-links: Dugmeta
     style: Stil

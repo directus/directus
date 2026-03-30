@@ -424,6 +424,8 @@ interfaces:
     name: Sía
     add_filter: Bæta við Síu
     all: Allt
+  group-tabs:
+    fill_width: Fylla Breidd
   presentation-links:
     primary: Aðal
   select-multiple-checkbox:
