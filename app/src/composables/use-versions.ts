@@ -26,7 +26,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
 		useCollectionPermissions('directus_versions');
 
-	const queryVersionId = useRouteQuery<string | null>('versionId', null, {
+	const queryVersionId = useRouteQuery<PrimaryKey | null>('versionId', null, {
 		transform: (value) => (Array.isArray(value) ? value[0] : value),
 		mode: 'push',
 	});
@@ -212,7 +212,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		try {
 			let versionId: PrimaryKey;
-			let newVersion: ContentVersion | null = null;
 
 			if (currentVersion.value.id === '+') {
 				const {
@@ -224,7 +223,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				});
 
 				versionId = version.id;
-				newVersion = version;
 			} else {
 				versionId = currentVersion.value.id;
 			}
@@ -237,13 +235,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
-			if (newVersion) {
-				rawVersions.value = [...(rawVersions.value ?? []), newVersion];
-			}
-
-			if (actualPrimaryKey !== '+') {
-				await getVersions();
-			}
+			queryVersionId.value = versionId;
+			await getVersions();
 
 			return savedData;
 		} catch (error) {
