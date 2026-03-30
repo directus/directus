@@ -1,8 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import api from '@/api';
 
-// --- Mocks (hoisted before imports by Vitest) ---
-
 const mockGetCollection = vi.fn();
 
 vi.mock('@/stores/collections', () => ({
@@ -11,11 +9,8 @@ vi.mock('@/stores/collections', () => ({
 
 vi.mock('@/api', () => ({ default: { get: vi.fn() } }));
 
-// Single top-level import of all guards
 const { stripOrphanedVersionId, stripVersionOnNonVersioned, stripVersionIdOnRealItem, validateItemlessDraft } =
 	await import('./index');
-
-// --- Helper ---
 
 function makeRoute(overrides: {
 	collection?: string | string[];
@@ -34,8 +29,6 @@ function makeRoute(overrides: {
 
 	return { params, query, fullPath: computedFullPath };
 }
-
-// --- Tests ---
 
 describe('stripOrphanedVersionId', () => {
 	it('strips versionId when version is absent', () => {
@@ -57,9 +50,9 @@ describe('stripOrphanedVersionId', () => {
 		expect(stripOrphanedVersionId(to, {} as any, vi.fn())).toBeUndefined();
 	});
 
-	it('passes through when versionId is empty string (treated as absent)', () => {
+	it('strips versionId when it is an empty string', () => {
 		const to = makeRoute({ query: { versionId: '' }, fullPath: '/content/posts/3?versionId=' });
-		expect(stripOrphanedVersionId(to, {} as any, vi.fn())).toBeUndefined();
+		expect(stripOrphanedVersionId(to, {} as any, vi.fn())).toBe('/content/posts/3');
 	});
 });
 

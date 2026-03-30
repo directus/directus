@@ -18,12 +18,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
+	const deleteVersionLoading = ref(false);
+	const saveVersionLoading = ref(false);
+	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
 		useCollectionPermissions('directus_versions');
 
-	const queryVersionId = useRouteQuery<string | null>('versionId', null, {
+	const queryVersionId = useRouteQuery<PrimaryKey | null>('versionId', null, {
 		transform: (value) => (Array.isArray(value) ? value[0] : value),
 		mode: 'push',
 	});
@@ -32,6 +35,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		transform: (value) => (Array.isArray(value) ? value[0] : value),
 		mode: 'push',
 	});
+
+	const isNewItem = computed(() => primaryKey.value === '+');
+	const isItemLessVersion = computed(() => isNewItem.value && currentVersion.value?.id !== '+');
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
 		const draftVersion = getGlobalVersion(VERSION_KEY_DRAFT);
@@ -60,31 +66,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	});
 
 	watch(
-		[queryVersion, queryVersionId, versions],
-		([newQueryVersion, newQueryVersionId, newVersions]) => {
+		[queryVersion, versions],
+		([newQueryVersion, newVersions]) => {
 			if (!newVersions) return;
 
 			const previouslySelectedKey = currentVersion.value?.key;
 
-			if (newQueryVersion) {
-				let found: ContentVersionMaybeNew | null = null;
-
-				if (newQueryVersionId) {
-					// Item-less draft: find by ID first (version may not be loaded yet on first render)
-					found =
-						newVersions.find((version) => version.id === newQueryVersionId && isVersionSelectable(version)) ?? null;
-				}
-
-				if (!found) {
-					// Fall back to key-based lookup (normal versions, or before rawVersions loads)
-					found =
-						newVersions.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null;
-				}
-
-				currentVersion.value = found;
-			} else {
-				currentVersion.value = null;
-			}
+			currentVersion.value = newQueryVersion
+				? (newVersions.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null)
+				: null;
 
 			if (currentVersion.value?.key !== previouslySelectedKey) {
 				validationErrors.value = [];
@@ -97,8 +87,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		queryVersion.value = newCurrentVersion?.key ?? null;
 
 		if (newCurrentVersion !== null) {
-			// Sync queryVersionId to the selected version's real ID (null for synthetic '+' versions)
-			queryVersionId.value = newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
+			queryVersionId.value = isItemLessVersion.value ? newCurrentVersion.id : null;
 		}
 
 		validationErrors.value = [];
@@ -116,21 +105,18 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	async function getVersions() {
 		if (!readVersionsAllowed.value) return;
 
-		// No collection context
 		if (!isSingleton.value && !primaryKey.value) return;
 
-		// For new items ('+'): only fetch if there's a versionId in URL (returning to a previously
-		// saved item-less draft). Fresh new items have no versions yet — skip the API call.
-		if (primaryKey.value === '+' && !queryVersionId.value) return;
+		if (isNewItem.value && !queryVersionId.value) return;
 
 		loading.value = true;
 
 		try {
 			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
 
-			if (primaryKey.value && primaryKey.value !== '+') {
+			if (!isNewItem.value) {
 				filterConditions.push({ item: { _eq: primaryKey.value } });
-			} else if (primaryKey.value === '+' && queryVersionId.value) {
+			} else if (queryVersionId.value) {
 				filterConditions.push({ item: { _null: true } }, { id: { _eq: queryVersionId.value } });
 			}
 
@@ -170,23 +156,21 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	function deleteVersion(deleteOnPublish = true) {
-		if (!currentVersion.value || !rawVersions.value) return;
+	async function deleteVersion(versionId: PrimaryKey) {
+		deleteVersionLoading.value = true;
 
-		const isLocalVersion = currentVersion.value?.type === 'local';
-		const currentVersionId = currentVersion.value.id;
+		try {
+			await api.delete(`/versions/${versionId}`);
 
-		const index = rawVersions.value.findIndex((version) => version.id === currentVersionId);
-
-		if (index !== -1) {
-			if (isLocalVersion || deleteOnPublish) currentVersion.value = null;
-			rawVersions.value.splice(index, 1);
+			const indexToRemove = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
+			if (indexToRemove !== -1) rawVersions.value?.splice(indexToRemove, 1);
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		} finally {
+			deleteVersionLoading.value = false;
 		}
 	}
-
-	// Save version
-
-	const saveVersionLoading = ref(false);
 
 	function versionErrorHandler(error: any) {
 		if (error?.response?.data?.errors) {
@@ -239,11 +223,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				});
 
 				versionId = version.id;
-				// Sync rawVersions so the [queryVersion, queryVersionId, versions] watcher can find the version
-				rawVersions.value = [...(rawVersions.value ?? []), version];
-				// Update URL: posts/+?version=draft&versionId=<id>
-				queryVersion.value = version.key;
-				queryVersionId.value = version.id;
 			} else {
 				versionId = currentVersion.value.id;
 			}
@@ -256,9 +235,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
-			if (primaryKey.value !== '+') {
-				await getVersions();
-			}
+			if (actualPrimaryKey === '+') queryVersionId.value = versionId;
+
+			await getVersions();
 
 			return savedData;
 		} catch (error) {
@@ -267,10 +246,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			saveVersionLoading.value = false;
 		}
 	}
-
-	// Publish version
-
-	const publishVersionLoading = ref(false);
 
 	async function publishVersion(
 		versionId: PrimaryKey,
@@ -297,23 +272,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function removeVersion(versionId: PrimaryKey) {
-		loading.value = true;
-
-		try {
-			await api.delete(`/versions/${versionId}`);
-
-			const index = rawVersions.value?.findIndex((v) => v.id === versionId) ?? -1;
-			if (index !== -1) rawVersions.value?.splice(index, 1);
-			if (currentVersion.value?.id === versionId) currentVersion.value = null;
-		} catch (error) {
-			unexpectedError(error);
-			throw error;
-		} finally {
-			loading.value = false;
-		}
-	}
-
 	function isVersionSelectable(version: ContentVersionMaybeNew) {
 		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
@@ -323,17 +281,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		currentVersion,
 		versions,
 		loading,
-		queryVersion,
-		queryVersionId,
 		getVersions,
 		addVersion,
 		updateVersion,
 		deleteVersion,
+		deleteVersionLoading,
 		saveVersionLoading,
 		saveVersion,
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
-		removeVersion,
 	};
 }

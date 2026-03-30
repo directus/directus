@@ -19,7 +19,6 @@ import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 interface Props {
 	deleteVersionsAllowed: boolean;
@@ -113,7 +112,7 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-const { confirmDeleteOnPublishDialogActive, onPublishClick, publishing, publish } = usePublishDialog();
+const { confirmDeleteOnPublishDialogActive, onPublishClick, publish } = usePublishDialog();
 
 const modalLoading = ref(false);
 
@@ -182,9 +181,8 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 function usePublishDialog() {
 	const confirmDeleteOnPublishDialogActive = ref(false);
-	const publishing = ref(false);
 
-	return { confirmDeleteOnPublishDialogActive, onPublishClick, publishing, publish };
+	return { confirmDeleteOnPublishDialogActive, onPublishClick, publish };
 
 	function onPublishClick() {
 		if (selectedComparisonFields.value.length === 0) return;
@@ -196,49 +194,37 @@ function usePublishDialog() {
 		}
 	}
 
-	async function publish(deleteOnPublish: boolean) {
-		if (publishing.value) return;
+	function publish(deleteOnPublish: boolean) {
+		if (props.mode === 'version') {
+			const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
 
-		publishing.value = true;
+			if (versionId) {
+				emit('publish', {
+					versionId,
+					mainHash: unref(mainHash),
+					fields: unref(selectedComparisonFields),
+					deleteOnPublish,
+				});
+			}
+		} else {
+			const restoreData: Record<string, any> = {};
+			const selectedFields = unref(selectedComparisonFields);
 
-		try {
-			if (props.mode === 'version') {
-				// Handle version publish
-				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
+			const delta = comparisonData.value!.incoming;
+			const base = comparisonData.value!.base;
 
-				if (versionId) {
-					emit('publish', {
-						versionId,
-						mainHash: unref(mainHash),
-						fields: unref(selectedComparisonFields),
-						deleteOnPublish,
-					});
-				}
-			} else {
-				const restoreData: Record<string, any> = {};
-				const selectedFields = unref(selectedComparisonFields);
-
-				// Get the delta from the comparison data
-				const delta = comparisonData.value!.incoming;
-				const base = comparisonData.value!.base;
-
-				for (const [field, newValue] of Object.entries(delta)) {
-					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
-					const previousValue = base[field] ?? null;
-					if (isEqual(newValue, previousValue)) continue;
-					restoreData[field] = newValue;
-				}
-
-				emit('confirm', restoreData);
-				emit('cancel');
+			for (const [field, newValue] of Object.entries(delta)) {
+				if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
+				const previousValue = base[field] ?? null;
+				if (isEqual(newValue, previousValue)) continue;
+				restoreData[field] = newValue;
 			}
 
-			confirmDeleteOnPublishDialogActive.value = false;
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			publishing.value = false;
+			emit('confirm', restoreData);
+			emit('cancel');
 		}
+
+		confirmDeleteOnPublishDialogActive.value = false;
 	}
 }
 </script>
@@ -380,7 +366,7 @@ function usePublishDialog() {
 									:disabled="
 										selectedComparisonFields.length === 0 || (mode === 'revision' && compareToOption === 'Previous')
 									"
-									:loading="publishing || publishVersionLoading"
+									:loading="publishVersionLoading"
 									@click="onPublishClick"
 								>
 									<VIcon :name="'arrow_upload_progress'" left />
@@ -406,7 +392,7 @@ function usePublishDialog() {
 				</VCardTitle>
 				<VCardActions>
 					<VButton secondary @click="publish(false)">{{ $t('keep') }}</VButton>
-					<VButton :loading="publishing" kind="danger" @click="publish(true)">
+					<VButton :loading="publishVersionLoading" kind="danger" @click="publish(true)">
 						{{ $t(currentVersion!.type === 'global' ? 'discard_changes' : 'delete_label') }}
 					</VButton>
 				</VCardActions>

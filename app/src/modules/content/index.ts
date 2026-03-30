@@ -45,7 +45,7 @@ const checkForSystem: NavigationGuard = (to, from) => {
 };
 
 export const stripOrphanedVersionId: NavigationGuard = (to) => {
-	if (!to.query.versionId || to.query.version) return;
+	if ((to.query.versionId !== '' && !to.query.versionId) || to.query.version) return;
 
 	const target = removeQueryFromPath(to.fullPath, 'versionId');
 	if (target === to.fullPath) return;
@@ -65,7 +65,7 @@ export const stripVersionOnNonVersioned: NavigationGuard = (to) => {
 };
 
 export const stripVersionIdOnRealItem: NavigationGuard = (to) => {
-	if (to.params.primaryKey === '+' || !to.query.versionId) return;
+	if (to.params.primaryKey === '+' || (to.query.versionId !== '' && !to.query.versionId)) return;
 
 	const target = removeQueryFromPath(to.fullPath, 'versionId');
 	if (target === to.fullPath) return;
@@ -215,6 +215,12 @@ export default defineModule({
 			path: ':collection/:primaryKey/preview',
 			component: Preview,
 			props: true,
+			beforeEnter: [
+				stripOrphanedVersionId,
+				stripVersionOnNonVersioned,
+				stripVersionIdOnRealItem,
+				validateItemlessDraft,
+			],
 		},
 		{
 			name: 'content-item-not-found',

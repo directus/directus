@@ -1,11 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { Ref } from 'vue';
 import { ref } from 'vue';
 import { useVersionQuery } from './use-version-query';
 
-const mockUseRouteQuery = vi.fn(() => ref(null));
+const mockUseRouteQuery = vi.fn(
+	(_key: string, _defaultValue: null, _options: { transform: (value: string | string[]) => string | null }) =>
+		ref(null) as Ref<string | null>,
+);
 
 vi.mock('@vueuse/router', () => ({
-	useRouteQuery: (...args: any[]) => mockUseRouteQuery(...args),
+	useRouteQuery: (...args: Parameters<typeof mockUseRouteQuery>) => mockUseRouteQuery(...args),
 }));
 
 afterEach(() => {
@@ -36,7 +40,7 @@ describe('useVersionQuery', () => {
 		function getTransform() {
 			useVersionQuery();
 			const [, , options] = mockUseRouteQuery.mock.calls[0]!;
-			return options.transform as (value: string | string[]) => string | null;
+			return options.transform;
 		}
 
 		it('returns scalar string as-is', () => {
