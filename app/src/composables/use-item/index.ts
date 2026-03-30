@@ -72,6 +72,7 @@ export function useItem<T extends Item>(
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
+	const isItemLessVersion = computed(() => isNew.value && currentVersion?.value && currentVersion?.value.id !== '+');
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
@@ -135,8 +136,13 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
+			if (isItemLessVersion.value) {
+				const { delta } = await sdk.request<T>(() => ({ path: `versions/${currentVersion!.value!.id}` }));
+				setItemValueToResponse(delta);
+				return;
+			}
 
+			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
 			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
@@ -519,7 +525,7 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value) {
+		if (isNew.value && !isItemLessVersion.value) {
 			item.value = null;
 		} else {
 			getItem();
