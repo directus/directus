@@ -117,8 +117,25 @@ const hasHiddenCollections = computed(
 
 .content-navigation {
 	--v-list-min-height: calc(100% - 3.625rem);
+	--v-list-padding: 0.6875rem 0.75rem;
 
 	flex-grow: 1;
+
+	&.nav:deep(.v-list-item:not(.dense)) {
+		padding: 0 0.5rem;
+	}
+
+	:deep(.v-list-item-icon) {
+		margin-block: 0;
+	}
+
+	:deep(.v-list-item-icon:not(:only-child):first-child) {
+		margin-inline-end: 0.5rem;
+	}
+
+	:deep(.v-list-item-content) {
+		padding: 0;
+	}
 
 	.v-detail {
 		:deep(.v-divider) {
