@@ -47,8 +47,10 @@ const hasHiddenCollections = computed(
 
 <template>
 	<div class="content-navigation-wrapper">
-		<div v-if="showSearch" class="search-input">
-			<VInput v-model="search" type="search" :placeholder="$t('search_collection')" />
+		<div v-if="showSearch || true" class="search-input">
+			<VInput v-model="search" type="search" :placeholder="$t('search_collection')">
+				<template #prepend><VIcon name="search" /></template>
+			</VInput>
 		</div>
 
 		<VList
@@ -157,7 +159,9 @@ const hasHiddenCollections = computed(
 }
 
 .search-input {
-	--theme--form--field--input--height: 2.25rem;
+	--theme--form--field--input--height: 2rem;
+	--theme--form--field--input--padding: 0.5rem;
+	--theme--border-radius: 0.375rem;
 
 	position: sticky;
 	inset-block-start: 0;
