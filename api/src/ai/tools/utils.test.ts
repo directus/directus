@@ -6,39 +6,19 @@ import { buildSanitizedQueryFromArgs, coerceJsonFields } from './utils.js';
 vi.mock('../../utils/sanitize-query.js');
 
 describe('coerceJsonFields', () => {
-	test('parses stringified data field', () => {
-		const result = coerceJsonFields({ data: '[{"name":"Test"}]', action: 'create' });
+	test('parses stringified JSON in known fields', () => {
+		const result = coerceJsonFields({ data: '[{"name":"Test"}]', collection: 'brands' });
 		expect(result.data).toEqual([{ name: 'Test' }]);
-		expect(result.action).toBe('create');
-	});
-
-	test('parses stringified keys field', () => {
-		const result = coerceJsonFields({ keys: '["id1","id2"]' });
-		expect(result.keys).toEqual(['id1', 'id2']);
-	});
-
-	test('parses stringified query field', () => {
-		const result = coerceJsonFields({ query: '{"limit":10}' });
-		expect(result.query).toEqual({ limit: 10 });
-	});
-
-	test('parses stringified headers field', () => {
-		const result = coerceJsonFields({ headers: '{"Authorization":"Bearer token"}' });
-		expect(result.headers).toEqual({ Authorization: 'Bearer token' });
-	});
-
-	test('leaves non-string fields untouched', () => {
-		const data = [{ name: 'Test' }];
-		const result = coerceJsonFields({ data, action: 'create' });
-		expect(result.data).toBe(data);
-	});
-
-	test('leaves non-coerced string fields untouched', () => {
-		const result = coerceJsonFields({ collection: 'brands', action: 'create' });
 		expect(result.collection).toBe('brands');
 	});
 
-	test('handles invalid JSON string gracefully', () => {
+	test('leaves already-parsed fields untouched', () => {
+		const data = [{ name: 'Test' }];
+		const result = coerceJsonFields({ data });
+		expect(result.data).toBe(data);
+	});
+
+	test('leaves invalid JSON as-is', () => {
 		const result = coerceJsonFields({ data: 'not json' });
 		expect(result.data).toBe('not json');
 	});

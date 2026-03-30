@@ -176,8 +176,6 @@ describe('chatRequestToolToAiSdkTool', () => {
 		const { execute } = result.config;
 		await execute({ data: '[{"name":"Test"}]' });
 
-		expect(mockValidate.safeParse).toHaveBeenCalledWith(
-			expect.objectContaining({ data: [{ name: 'Test' }] }),
-		);
+		expect(mockValidate.safeParse).toHaveBeenCalledWith(expect.objectContaining({ data: [{ name: 'Test' }] }));
 	});
 });
