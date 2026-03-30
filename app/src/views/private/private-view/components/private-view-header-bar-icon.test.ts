@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { createPinia } from 'pinia';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { createRouter, createWebHistory } from 'vue-router';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
 
@@ -89,6 +89,23 @@ describe('PrivateViewHeaderBarIcon', () => {
 
 		const backButton = wrapper.findComponent({ name: 'VButton' });
 		expect(backButton.props('to')).toBe('/back');
+	});
+
+	test('back button never calls router.back when clicked', async () => {
+		const routerBackSpy = vi.spyOn(router, 'back');
+
+		const wrapper = mount(PrivateViewHeaderBarIcon, {
+			...mountOptions,
+			props: {
+				showBack: true,
+				backTo: '/back',
+			},
+		});
+
+		const backButton = wrapper.findComponent({ name: 'VButton' });
+		await backButton.trigger('click');
+
+		expect(routerBackSpy).not.toHaveBeenCalled();
 	});
 
 	test('renders icon div when icon prop is provided', () => {
