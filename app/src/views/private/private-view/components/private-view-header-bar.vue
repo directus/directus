@@ -34,7 +34,6 @@ const showNavToggle = computed(() => {
 			<VIcon
 				v-if="showNavToggle"
 				v-tooltip.bottom="$t('toggle_navigation')"
-				small
 				class="nav-toggle"
 				name="left_panel_open"
 				clickable

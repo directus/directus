@@ -79,7 +79,7 @@ export default defineTheme({
 			project: {
 				borderColor: 'transparent',
 				borderWidth: '0px',
-				background: '#30363d',
+				background: 'var(--theme--navigation--background)',
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--fonts--sans--font-family)',
 			},

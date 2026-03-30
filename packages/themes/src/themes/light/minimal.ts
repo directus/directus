@@ -24,7 +24,7 @@ export default defineTheme({
 			},
 			project: {
 				borderWidth: '1px',
-				background: '#FFFFFF',
+				background: 'var(--theme--navigation--background)',
 				borderColor: 'var(--theme--border-color)',
 			},
 			list: {

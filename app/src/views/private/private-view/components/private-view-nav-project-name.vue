@@ -21,7 +21,6 @@ const navBarStore = useNavBarStore();
 
 		<VIcon
 			v-tooltip.bottom="$t('toggle_navigation')"
-			small
 			name="left_panel_close"
 			clickable
 			class="nav-toggle"
@@ -37,7 +36,7 @@ const navBarStore = useNavBarStore();
 	align-items: center;
 	inline-size: 100%;
 	block-size: 3.375rem;
-	padding-inline: 1.125rem 0.875rem; // optically match contents of navigation bar
+	padding: 0.75rem 0.75rem 0.75rem 1.25rem;
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
 	background: var(--theme--navigation--project--background);
@@ -48,7 +47,8 @@ const navBarStore = useNavBarStore();
 	.name-container {
 		flex-grow: 1;
 		inline-size: 5.625rem;
-		line-height: 1.3;
+		line-height: 1.1875rem;
+		padding-inline-end: 0.5rem;
 	}
 
 	.name {
