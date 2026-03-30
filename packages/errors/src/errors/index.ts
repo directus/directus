@@ -7,6 +7,7 @@ export { IllegalAssetTransformationError } from './illegal-asset-transformation.
 export { InternalServerError } from './internal.js';
 export { InvalidCredentialsError } from './invalid-credentials.js';
 export { InvalidForeignKeyError } from './invalid-foreign-key.js';
+export { InvalidInviteError } from './invalid-invite.js';
 export { InvalidIpError } from './invalid-ip.js';
 export { InvalidOtpError } from './invalid-otp.js';
 export { InvalidPayloadError } from './invalid-payload.js';

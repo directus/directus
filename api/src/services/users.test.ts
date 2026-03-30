@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -450,7 +450,7 @@ describe('Integration Tests', () => {
 		});
 
 		describe('acceptInvite', () => {
-			it('should throw generic error without email when user is not in invited status', async () => {
+			it('should throw InvalidInviteError when user is not in invited status', async () => {
 				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'invite' });
 
 				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
@@ -466,9 +466,8 @@ describe('Integration Tests', () => {
 
 				const err = await service.acceptInvite('fake-token', 'Password123!').catch((e) => e);
 
-				expect(err).toBeInstanceOf(InvalidPayloadError);
+				expect(err).toBeInstanceOf(InvalidInviteError);
 				expect(err.message).not.toContain('test@example.com');
-				expect(err.extensions?.reason).toBe('This invite is no longer valid');
 			});
 
 			it('should throw ForbiddenError for non-invite scope tokens', async () => {
