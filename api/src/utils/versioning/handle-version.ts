@@ -19,6 +19,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	const { ItemsService } = await import('../../services/items.js');
 
 	if (key && query.versionRaw) {
+		const version = query.version;
 		delete query.version;
 		delete query.versionRaw;
 
@@ -34,7 +35,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			knex: self.knex,
 		});
 
-		const versions = await versionsService.getVersionSaves(query.version!, self.collection, key);
+		const versions = await versionsService.getVersionSaves(version!, self.collection, key);
 
 		return [Object.assign(originalData[0]!, versions?.[0]?.delta)];
 	}
