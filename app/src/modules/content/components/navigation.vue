@@ -47,7 +47,7 @@ const hasHiddenCollections = computed(
 
 <template>
 	<div class="content-navigation-wrapper">
-		<div v-if="showSearch || true" class="search-input">
+		<div v-if="showSearch" class="search-input">
 			<VInput v-model="search" type="search" :placeholder="$t('search_collection')">
 				<template #prepend><VIcon name="search" /></template>
 			</VInput>
