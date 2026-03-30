@@ -3,4 +3,4 @@
 "@directus/app": patch
 ---
 
-Fixed invite acceptance to show the actual error reason on the frontend instead of a generic "Invalid payload" message. Also prevents email address leakage in the error response.
+Fixed invite acceptance error to display correctly on the frontend and remove email leakage
