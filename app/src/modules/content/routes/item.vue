@@ -245,10 +245,6 @@ useShortcut(
 
 const isSavable = computed(() => {
 	if (saveAllowed.value === false && currentVersion.value === null) return false;
-
-	// In version/draft context, only allow save when there are actual edits
-	if (currentVersion.value !== null) return hasEdits.value;
-
 	if (hasEdits.value === true) return true;
 
 	if (
@@ -259,7 +255,7 @@ const isSavable = computed(() => {
 		return !!edits.value?.[primaryKeyField.value.field];
 	}
 
-	if (isNew.value === true) {
+	if (isNew.value && currentVersion.value === null) {
 		return Object.keys(defaults.value).length > 0 || hasEdits.value;
 	}
 
@@ -501,7 +497,7 @@ async function saveVersionAction(action: typeof VERSION_KEY_PUBLISHED | 'stay' |
 			currentVersion.value = null;
 			refresh();
 		} else if (action === 'stay') {
-			if (props.primaryKey !== '+') {
+			if (!isNew.value) {
 				refresh();
 				revisionsSidebarDetailRef.value?.refresh?.();
 			}
@@ -668,8 +664,7 @@ function usePublishComparison() {
 	});
 
 	async function onVersionPublishCompare() {
-		// Item-less draft: no main item exists yet, skip comparison modal and promote directly
-		if (props.primaryKey === '+' && currentVersion.value && currentVersion.value.id !== '+') {
+		if (isNew.value && currentVersion.value !== null && currentVersion.value.id !== '+') {
 			const defaultValues = getDefaultValuesFromFields(fields);
 			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
 			const fieldsToValidate = pushGroupOptionsDown(fields.value);
