@@ -343,14 +343,14 @@ export class FilesService extends ItemsService<File> {
 		}
 
 		if (data.filename_disk) {
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+
 			try {
 				await this.checkUniqueFilename(data.filename_disk);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
 				opts.preMutationError = err;
 			}
-
-			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 		}
 
 		const key = await super.createOne(data, opts);
@@ -366,14 +366,14 @@ export class FilesService extends ItemsService<File> {
 		opts: MutationOptions = {},
 	): Promise<PrimaryKey[]> {
 		if (keys.length === 1 && data.filename_disk) {
+			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+
 			try {
 				await this.checkUniqueFilename(data.filename_disk, keys[0]);
 			} catch (err: any) {
 				// Defer the error to be thrown until after permission checks
 				opts.preMutationError = err;
 			}
-
-			data.filename_disk = this.generateFilenamePath(data.filename_disk);
 
 			// Fetch existing records to have data prior to change, dont require read permissions.
 			const sudoFilesItemsService = new FilesService({
