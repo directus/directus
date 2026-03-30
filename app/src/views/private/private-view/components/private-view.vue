@@ -9,10 +9,10 @@ export interface PrivateViewProps {
 	/** What color to render the icon in */
 	iconColor?: string;
 
-	/** Render a history back button in place of the title prepend icon */
+	/** Render a back button in place of the title prepend icon */
 	showBack?: boolean;
 
-	/** Where to navigate to on back button click. Defaults to last page in the browser history */
+	/** Where to navigate to on back button click. Required when `showBack` is true */
 	backTo?: string;
 }
 </script>
