@@ -2,7 +2,7 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 
-const JSON_COERCE_FIELDS = ['data', 'keys', 'query'];
+const JSON_COERCE_FIELDS = ['data', 'keys', 'query', 'headers'];
 
 /**
  * LLMs sometimes return object/array arguments as stringified JSON.

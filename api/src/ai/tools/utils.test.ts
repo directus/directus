@@ -22,6 +22,11 @@ describe('coerceJsonFields', () => {
 		expect(result.query).toEqual({ limit: 10 });
 	});
 
+	test('parses stringified headers field', () => {
+		const result = coerceJsonFields({ headers: '{"Authorization":"Bearer token"}' });
+		expect(result.headers).toEqual({ Authorization: 'Bearer token' });
+	});
+
 	test('leaves non-string fields untouched', () => {
 		const data = [{ name: 'Test' }];
 		const result = coerceJsonFields({ data, action: 'create' });

@@ -286,6 +286,41 @@ describe('mcp server', () => {
 			);
 		});
 
+		test('should coerce stringified JSON arguments before validation', async () => {
+			const safeParseSpy = vi.fn(() => ({ data: { data: [{ name: 'Test' }] } }));
+
+			vi.mocked(findMcpTool).mockReturnValueOnce({
+				name: 'test-tool',
+				description: 'A test tool',
+				validateSchema: { safeParse: safeParseSpy },
+				admin: false,
+				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'created' })),
+			} as unknown as ToolConfig<unknown>);
+
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'test-tool',
+						arguments: { data: '[{"name":"Test"}]', collection: 'brands' },
+					},
+				},
+				accountability: { user: 'user', admin: false },
+				schema: {},
+			} as unknown as Request;
+
+			directusMCP.handleRequest(mockReq, mockRes as Response);
+
+			await awaitJsonResponse(directusMCP);
+
+			expect(safeParseSpy).toHaveBeenCalledWith(
+				expect.objectContaining({ data: [{ name: 'Test' }], collection: 'brands' }),
+			);
+		});
+
 		test('should return error for non-existent tool', async () => {
 			vi.mocked(findMcpTool).mockReturnValueOnce(undefined);
 
