@@ -235,7 +235,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
-			queryVersionId.value = versionId;
+			if (actualPrimaryKey === '+') queryVersionId.value = versionId;
+
 			await getVersions();
 
 			return savedData;
