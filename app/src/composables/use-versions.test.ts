@@ -190,6 +190,35 @@ describe('useVersions', () => {
 			expect(versions.value.find((v) => v.key === 'my-version')).toBeUndefined();
 		});
 
+		it('should clear currentVersion when it matches the deleted version', async () => {
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc123',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-02',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			vi.mocked(api.delete).mockResolvedValueOnce({});
+
+			const { versions, currentVersion, deleteVersion } = useVersions(ref('test_collection'), ref(true), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			expect(currentVersion.value).not.toBeNull();
+
+			await deleteVersion('version-123');
+
+			expect(currentVersion.value).toBeNull();
+		});
+
 		it('should toggle deleteVersionLoading during the API call', async () => {
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
 
