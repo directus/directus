@@ -62,7 +62,7 @@ describe('/files', () => {
 					.get('/files')
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.query({
-						filter: { filename_download: { _eq: imageFile.name } },
+						filter: { filename_download: { _eq: imageFile.name }, storage: { _eq: storage } },
 						fields: ['id'],
 						limit: 1,
 					});
@@ -78,12 +78,12 @@ describe('/files', () => {
 				expect(response.statusCode).toBe(200);
 
 				// Normalize filesize to string as bigint returns as a string
-				response.body.data[0].filesize = String(response.body.data[0].filesize);
+				response.body.data.filesize = String(response.body.data.filesize);
 
 				// Assert
 				expect(response.statusCode).toBe(200);
 
-				expect(response.body.data[0]).toEqual(
+				expect(response.body.data).toEqual(
 					expect.objectContaining({
 						filesize: imageFile.filesize,
 						type: imageFile.type,
