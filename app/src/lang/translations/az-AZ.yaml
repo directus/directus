@@ -232,6 +232,8 @@ revisions: Dəyişikliklər
 no_revisions: Daha öncə dəyişiklik edilməyib
 table: Cədvəl
 interfaces:
+  group-tabs:
+    fill_width: Tam en
   presentation-links:
     primary: Əsas
   input-block-editor:
