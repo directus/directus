@@ -281,6 +281,10 @@ recommended_defaults: Recommended Defaults
 unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+delete_folder_dialog:
+  move_content: Move content one level up
+  delete_content: Delete all content
+  content_behavior: What should happen to the folder contents?
 validation_errors_notice: 'The following fields have invalid values:'
 validation_value_is_invalid: Value is invalid
 validationError:
@@ -586,8 +590,10 @@ ungrouped: Ungrouped
 translations_enable_helper_description: Translate content into multiple languages.
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
+import_background: Import in background
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
+import_upload_success: '{filename} successfully uploaded. Importing data in background.'
 import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
 import_data_validation_errors_notice: 'The following rows have invalid values:'
@@ -772,7 +778,7 @@ no_collections: No Collections
 create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
-relationship_not_setup: The relationship hasn't been configured correctly
+relationship_not_setup: The relationship is not configured properly or you don't have permission to access it
 no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
@@ -2144,6 +2150,12 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  group-tabs:
+    name: Tabs
+    description: Display fields or groups as tabs
+    overwrite_group_width: Overwrite Group Width
+    fill_width: Fill Width
+    fill_width_note: Allow this group to fill the full width of the page.
   presentation-links:
     presentation-links: Buttons
     description: Configurable link buttons for launching dynamic URLs or triggering Flows

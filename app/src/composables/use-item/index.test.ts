@@ -218,11 +218,20 @@ describe('Save As Copy', () => {
 	});
 });
 
+<<<<<<< HEAD
 describe('isArchived', () => {
+=======
+describe('Query merging', () => {
+	const mockCollection = {
+		collection: 'test',
+	} as AppCollection;
+
+>>>>>>> ed6d4cc00e (Fix Role not showing on user details page (#26985))
 	const mockPrimaryKeyField = {
 		field: 'id',
 	} as Field;
 
+<<<<<<< HEAD
 	test('should return null when no archive_field is configured', () => {
 		const mockCollection = {
 			collection: 'test',
@@ -328,6 +337,60 @@ describe('isArchived', () => {
 		item.value = { status: 'active' } as any;
 
 		expect(isArchived.value).toBe(false);
+=======
+	const mockFields = [mockPrimaryKeyField] as Field[];
+
+	beforeEach(() => {
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => mockFields),
+		} as any);
+	});
+
+	test('should include extra query params when no content version is provided', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+
+		useItem(ref('test'), ref(1), null, { fields: ['*', 'role.*'] });
+
+		await Promise.resolve();
+
+		const request = sdkSpy.mock.calls[0]?.[0]();
+
+		expect(request).toEqual(
+			expect.objectContaining({
+				path: '/items/test/1',
+				params: expect.objectContaining({
+					fields: ['*', 'role.*'],
+				}),
+			}),
+		);
+
+		expect(request?.params).not.toHaveProperty('version');
+		expect(request?.params).not.toHaveProperty('versionRaw');
+	});
+
+	test('should merge extra query params with content version params', async () => {
+		const sdkSpy = vi.spyOn(sdk, 'request');
+		const currentVersion = ref({ id: 'version-id', key: 'v1' } as any);
+
+		useItem(ref('test'), ref(1), currentVersion, { deep: { users: { _limit: 0 } } });
+
+		await Promise.resolve();
+
+		const request = sdkSpy.mock.calls[0]?.[0]();
+
+		expect(request).toEqual(
+			expect.objectContaining({
+				path: '/items/test/1',
+				params: expect.objectContaining({
+					deep: { users: { _limit: 0 } },
+					version: 'v1',
+					versionRaw: true,
+				}),
+			}),
+		);
+>>>>>>> ed6d4cc00e (Fix Role not showing on user details page (#26985))
 	});
 });
 

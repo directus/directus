@@ -315,7 +315,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		revisionDelta = revisionDelta ? JSON.parse(revisionDelta) : null;
+		revisionDelta = revisionDelta ? revisionDelta : null;
 
 		const helpers = getHelpers(this.knex);
 		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
