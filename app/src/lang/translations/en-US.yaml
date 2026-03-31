@@ -230,7 +230,7 @@ reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'
 compare_version: Compare Version
 save_version: Save Version
 publish_version: Publish Version
-version_create_item_less: Versions can only be created once the draft is published as an item
+version_create_item_less: Versions can only be created once the draft version is published
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
