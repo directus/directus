@@ -97,57 +97,50 @@ function createField(overrides: Partial<Field> = {}): Field {
 
 describe('VForm', () => {
 	describe('comparison mode with viewOnlyModifiedFields', () => {
-		it('shows only fields that are in comparison.fields when viewOnlyModifiedFields is true', async () => {
+		it('updates visible fields when viewOnlyModifiedFields toggles', async () => {
 			const modifiedField = createField({ field: 'modified_field', name: 'Modified Field' });
 			const unmodifiedField = createField({ field: 'unmodified_field', name: 'Unmodified Field' });
+			const comparisonFields = new Set(['modified_field']);
+
+			const comparison = {
+				side: 'incoming' as const,
+				fields: comparisonFields,
+				selectedFields: [],
+				onToggleField: null,
+				viewOnlyModifiedFields: false,
+			};
 
 			const wrapper = mount(VForm, {
 				props: {
 					fields: [modifiedField, unmodifiedField],
 					primaryKey: '+',
-					comparison: {
-						side: 'incoming',
-						fields: new Set(['modified_field']),
-						selectedFields: [],
-						onToggleField: null,
-						viewOnlyModifiedFields: true,
-					},
+					comparison,
 				},
 				global,
 			});
 
-			const renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			let renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('modified_field');
+			expect(renderedFields).toContain('unmodified_field');
 
+			await wrapper.setProps({
+				comparison: { ...comparison, viewOnlyModifiedFields: true },
+			});
+
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
 			expect(renderedFields).toContain('modified_field');
 			expect(renderedFields).not.toContain('unmodified_field');
-		});
 
-		it('shows all fields when viewOnlyModifiedFields is false', async () => {
-			const modifiedField = createField({ field: 'modified_field', name: 'Modified Field' });
-			const unmodifiedField = createField({ field: 'unmodified_field', name: 'Unmodified Field' });
-
-			const wrapper = mount(VForm, {
-				props: {
-					fields: [modifiedField, unmodifiedField],
-					primaryKey: '+',
-					comparison: {
-						side: 'incoming',
-						fields: new Set(['modified_field']),
-						selectedFields: [],
-						onToggleField: null,
-						viewOnlyModifiedFields: false,
-					},
-				},
-				global,
+			await wrapper.setProps({
+				comparison: { ...comparison, viewOnlyModifiedFields: false },
 			});
 
-			const renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
-
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
 			expect(renderedFields).toContain('modified_field');
 			expect(renderedFields).toContain('unmodified_field');
 		});
 
-		it('shows only modified fields for fields inside a group (nested group form)', async () => {
+		it('updates visible fields inside a group when viewOnlyModifiedFields toggles', async () => {
 			const modifiedInGroup = createField({
 				field: 'inner_modified',
 				name: 'Inner Modified',
@@ -168,28 +161,45 @@ describe('VForm', () => {
 				},
 			});
 
+			const comparisonFields = new Set(['inner_modified']);
+
+			const comparison = {
+				side: 'incoming' as const,
+				fields: comparisonFields,
+				selectedFields: [],
+				onToggleField: null,
+				viewOnlyModifiedFields: false,
+			};
+
 			const wrapper = mount(VForm, {
 				props: {
 					fields: [modifiedInGroup, unmodifiedInGroup],
 					primaryKey: '+',
 					group: 'my_group',
-					comparison: {
-						side: 'incoming',
-						fields: new Set(['inner_modified']),
-						selectedFields: [],
-						onToggleField: null,
-						viewOnlyModifiedFields: true,
-					},
+					comparison,
 				},
 				global,
 			});
 
-			await nextTick();
+			let renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('inner_modified');
+			expect(renderedFields).toContain('inner_unmodified');
 
-			const renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			await wrapper.setProps({
+				comparison: { ...comparison, viewOnlyModifiedFields: true },
+			});
 
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
 			expect(renderedFields).toContain('inner_modified');
 			expect(renderedFields).not.toContain('inner_unmodified');
+
+			await wrapper.setProps({
+				comparison: { ...comparison, viewOnlyModifiedFields: false },
+			});
+
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('inner_modified');
+			expect(renderedFields).toContain('inner_unmodified');
 		});
 	});
 
