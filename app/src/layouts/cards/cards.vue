@@ -153,10 +153,7 @@ watch(innerWidth, (value) => {
 </template>
 
 <style lang="scss" scoped>
-.layout-cards {
-	padding: var(--content-padding);
-	padding-block-start: 0;
-}
+@use '@/styles/mixins';
 
 .grid {
 	--size: v-bind(columnSize);
@@ -164,6 +161,13 @@ watch(innerWidth, (value) => {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
 	gap: 1.8125rem 1.375rem;
+	padding-inline: 3rem;
+	padding-block-start: 2.375rem;
+
+	@include mixins.breakpoint-down('sm') {
+		padding-inline: 0.625rem 0;
+		padding-block-start: 0.25rem;
+	}
 
 	&.single-row {
 		grid-template-columns: repeat(auto-fit, var(--size));
@@ -175,6 +179,11 @@ watch(innerWidth, (value) => {
 	align-items: center;
 	justify-content: space-between;
 	padding-block-start: 2.25rem;
+	padding-inline: 3rem;
+
+	@include mixins.breakpoint-down('sm') {
+		padding-inline: 0.625rem 0;
+	}
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;

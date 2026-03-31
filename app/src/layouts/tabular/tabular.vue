@@ -285,17 +285,27 @@ function removeField(fieldKey: string) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
+.layout-tabular {
+	padding: 2.375rem 3rem 0;
+
+	@include mixins.breakpoint-down('sm') {
+		padding: 0.25rem 0 0 0.625rem;
+	}
+}
+
 .v-table {
 	--v-table-sticky-offset-top: var(--layout-offset-top);
 
 	display: contents;
 
 	& > :deep(table) {
-		min-inline-size: calc(100% - var(--content-padding)) !important;
-		margin-inline-start: var(--content-padding);
+		min-inline-size: 100% !important;
+		margin-inline-start: 0;
 
 		tr {
-			margin-inline-end: var(--content-padding);
+			margin-inline-end: 0;
 		}
 	}
 }
@@ -307,7 +317,7 @@ function removeField(fieldKey: string) {
 	align-items: center;
 	justify-content: space-between;
 	inline-size: 100%;
-	padding: 1.8125rem var(--content-padding);
+	padding-block: 1.8125rem;
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;

@@ -117,7 +117,9 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .content {
 	block-size: 100%;
 	display: flex;
