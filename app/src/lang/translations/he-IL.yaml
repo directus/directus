@@ -451,6 +451,8 @@ password: סיסמה
 interfaces:
   filter:
     any: כל
+  group-tabs:
+    fill_width: עמוד מלא
   presentation-links:
     primary: ראשי
   system-collection:

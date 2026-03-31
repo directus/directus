@@ -471,6 +471,8 @@ related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
 translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
+translations_preview_collections: Sammlungen
+translations_preview_fields: Felder
 import_data_input_placeholder: CSV oder JSON...
 import_data_button: Import starten
 import_data_indeterminate: Importiere Daten...
@@ -646,7 +648,6 @@ no_collections: Keine Sammlungen
 create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
-relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
 no_singleton_relations: Relationen zu Singletons werden nicht unterstützt
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
@@ -1691,6 +1692,8 @@ interfaces:
     all_opened: Alle geöffnet
     accordion_mode: Akkordeon-Modus
     max_one_section_open: Max. einen Abschnitt öffnen
+  group-tabs:
+    fill_width: Breite füllen
   presentation-links:
     presentation-links: Buttons
     style: Stil

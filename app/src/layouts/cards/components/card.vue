@@ -94,7 +94,7 @@ function toggleSelection() {
 }
 
 function handleClick() {
-	if (props.selectMode === true) {
+	if (props.selectMode === true || props.modelValue.length > 0) {
 		toggleSelection();
 	} else {
 		router.push(props.to);
@@ -106,7 +106,10 @@ function handleClick() {
 	<div
 		class="card"
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
+		:tabindex="readonly || loading || modelValue.length > 0 ? -1 : 0"
 		@click="handleClick"
+		@keydown.self.enter.prevent="handleClick"
+		@keydown.self.space.prevent="handleClick"
 	>
 		<VIcon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
 		<div class="header">
@@ -145,6 +148,24 @@ function handleClick() {
 .card {
 	position: relative;
 	cursor: pointer;
+
+	&:focus-visible {
+		outline: none;
+
+		&::after {
+			position: absolute;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			z-index: 2;
+			inline-size: 100%;
+			aspect-ratio: 1 / 1;
+			border-radius: var(--theme--border-radius);
+			outline: var(--focus-ring-width) solid var(--focus-ring-color);
+			outline-offset: var(--focus-ring-offset);
+			content: '';
+			pointer-events: none;
+		}
+	}
 
 	.header {
 		position: relative;

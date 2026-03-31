@@ -95,6 +95,7 @@ title: Tajuk
 leave_comment: Tinggalkan komen...
 this_collection: Koleksi Ini
 related_collection: Koleksi Berkaitan
+translations_preview_collections: Koleksi-koleksi
 name: Nama
 save_and_stay: Simpan dan Tetap Disini
 save_as_copy: Simpan sebagai Salinan
@@ -243,6 +244,8 @@ value: Nilai
 interfaces:
   filter:
     all: Semua
+  group-tabs:
+    fill_width: Isi lebar
   presentation-links:
     primary: Utama
   system-collection:
