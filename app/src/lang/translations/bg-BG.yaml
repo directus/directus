@@ -616,7 +616,6 @@ no_collections: Няма колекции
 create_collection: Създаване на колекция
 no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
 no_collections_copy: Все още нямате никакви колекции. Свържете се със системния администратор.
-relationship_not_setup: Релацията не е конфигурирана правилно
 no_singleton_relations: Връзките към Singletons не се поддържат
 display_template_not_setup: Настройките за показване не са конфигурирани правилно
 collection_field_not_setup: Настройките на полето от колекцията, не са конфигурирани правилно
@@ -1589,6 +1588,8 @@ interfaces:
     all_opened: Всички са отворени
     accordion_mode: Акордионен режим
     max_one_section_open: До 1 отворена секция
+  group-tabs:
+    fill_width: Изпълване по ширина
   presentation-links:
     presentation-links: Бутони
     style: Стил
