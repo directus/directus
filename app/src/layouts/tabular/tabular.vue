@@ -288,7 +288,7 @@ function removeField(fieldKey: string) {
 @use '@/styles/mixins';
 
 .layout-tabular {
-	padding: 2.375rem 3rem 0;
+	padding: 2.375rem var(--content-section-padding) 0;
 
 	@include mixins.breakpoint-down('sm') {
 		padding: 0.25rem 0 0 0.625rem;

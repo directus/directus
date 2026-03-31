@@ -187,10 +187,10 @@ function useValidationScrollToField() {
 }
 
 .overlay-item-content {
-	padding: 3rem;
+	padding: var(--content-section-padding);
 
 	@include mixins.breakpoint-down('sm') {
-		padding: 0.25rem 0 0 0.625rem;
+		padding: 0.625rem;
 	}
 
 	.preview {

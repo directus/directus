@@ -161,11 +161,11 @@ watch(innerWidth, (value) => {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
 	gap: 1.8125rem 1.375rem;
-	padding-inline: 3rem;
+	padding-inline: var(--content-section-padding);
 	padding-block-start: 2.375rem;
 
 	@include mixins.breakpoint-down('sm') {
-		padding-inline: 0.625rem 0;
+		padding-inline: 0.625rem;
 		padding-block-start: 0.25rem;
 	}
 
@@ -179,10 +179,10 @@ watch(innerWidth, (value) => {
 	align-items: center;
 	justify-content: space-between;
 	padding-block-start: 2.25rem;
-	padding-inline: 3rem;
+	padding-inline: var(--content-section-padding);
 
 	@include mixins.breakpoint-down('sm') {
-		padding-inline: 0.625rem 0;
+		padding-inline: 0.625rem;
 	}
 
 	.pagination:not(.v-skeleton-loader) {
