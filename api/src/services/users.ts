@@ -103,16 +103,9 @@ export class UsersService extends ItemsService {
 
 		for (const password of passwords) {
 			if (!regex.test(password)) {
-				throw new FailedValidationError(
-					joiValidationErrorItemToErrorExtensions({
-						message: `Provided password doesn't match password policy`,
-						path: ['password'],
-						type: 'custom.pattern.base',
-						context: {
-							value: password,
-						},
-					}),
-				);
+				throw new InvalidPayloadError({
+					reason: `Provided password doesn't match the password policy`,
+				});
 			}
 		}
 	}

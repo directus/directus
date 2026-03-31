@@ -8,8 +8,8 @@ import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
-import { translateAPIError } from '@/lang';
 import { jwtPayload } from '@/utils/jwt-payload';
+import { getErrorReason } from '@/utils/get-error-reason';
 import PublicView from '@/views/public';
 
 const { t } = useI18n();
@@ -26,7 +26,7 @@ const done = ref(false);
 
 const errorFormatted = computed(() => {
 	if (error.value) {
-		return translateAPIError(error.value);
+		return getErrorReason(error.value);
 	}
 
 	return null;
