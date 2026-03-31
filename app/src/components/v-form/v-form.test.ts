@@ -96,8 +96,8 @@ function createField(overrides: Partial<Field> = {}): Field {
 }
 
 describe('VForm', () => {
-	describe('comparison mode with viewOnlyModifiedFields', () => {
-		it('updates visible fields when viewOnlyModifiedFields toggles', async () => {
+	describe('comparison mode with showDifferencesOnly', () => {
+		it('updates visible fields when showDifferencesOnly toggles', async () => {
 			const modifiedField = createField({ field: 'modified_field', name: 'Modified Field' });
 			const unmodifiedField = createField({ field: 'unmodified_field', name: 'Unmodified Field' });
 			const comparisonFields = new Set(['modified_field']);
@@ -107,7 +107,7 @@ describe('VForm', () => {
 				fields: comparisonFields,
 				selectedFields: [],
 				onToggleField: null,
-				viewOnlyModifiedFields: false,
+				showDifferencesOnly: false,
 			};
 
 			const wrapper = mount(VForm, {
@@ -124,7 +124,7 @@ describe('VForm', () => {
 			expect(renderedFields).toContain('unmodified_field');
 
 			await wrapper.setProps({
-				comparison: { ...comparison, viewOnlyModifiedFields: true },
+				comparison: { ...comparison, showDifferencesOnly: true },
 			});
 
 			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
@@ -132,7 +132,7 @@ describe('VForm', () => {
 			expect(renderedFields).not.toContain('unmodified_field');
 
 			await wrapper.setProps({
-				comparison: { ...comparison, viewOnlyModifiedFields: false },
+				comparison: { ...comparison, showDifferencesOnly: false },
 			});
 
 			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
@@ -140,7 +140,7 @@ describe('VForm', () => {
 			expect(renderedFields).toContain('unmodified_field');
 		});
 
-		it('updates visible fields inside a group when viewOnlyModifiedFields toggles', async () => {
+		it('updates visible fields inside a group when showDifferencesOnly toggles', async () => {
 			const modifiedInGroup = createField({
 				field: 'inner_modified',
 				name: 'Inner Modified',
@@ -168,7 +168,7 @@ describe('VForm', () => {
 				fields: comparisonFields,
 				selectedFields: [],
 				onToggleField: null,
-				viewOnlyModifiedFields: false,
+				showDifferencesOnly: false,
 			};
 
 			const wrapper = mount(VForm, {
@@ -186,7 +186,7 @@ describe('VForm', () => {
 			expect(renderedFields).toContain('inner_unmodified');
 
 			await wrapper.setProps({
-				comparison: { ...comparison, viewOnlyModifiedFields: true },
+				comparison: { ...comparison, showDifferencesOnly: true },
 			});
 
 			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
@@ -194,7 +194,7 @@ describe('VForm', () => {
 			expect(renderedFields).not.toContain('inner_unmodified');
 
 			await wrapper.setProps({
-				comparison: { ...comparison, viewOnlyModifiedFields: false },
+				comparison: { ...comparison, showDifferencesOnly: false },
 			});
 
 			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);

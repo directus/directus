@@ -48,7 +48,7 @@ const { t } = useI18n();
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions, currentCollab } = toRefs(props);
 
 const compareToOption = ref<'Previous' | 'Latest'>('Previous');
-const viewOnlyModifiedFields = ref(false);
+const showDifferencesOnly = ref(false);
 
 const {
 	comparisonData,
@@ -137,7 +137,7 @@ watch(
 
 		if (wasActive === undefined || wasActive === false) {
 			compareToOption.value = isFirstRevision.value ? 'Latest' : 'Previous';
-			viewOnlyModifiedFields.value = false;
+			showDifferencesOnly.value = false;
 		}
 
 		await loadComparisonData();
@@ -291,7 +291,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: null,
-										viewOnlyModifiedFields,
+										showDifferencesOnly,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -334,7 +334,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: mode !== 'revision' || compareToOption !== 'Previous' ? toggleComparisonField : null,
-										viewOnlyModifiedFields,
+										showDifferencesOnly,
 									}"
 									non-editable
 									class="comparison-form--incoming"
@@ -362,7 +362,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						</div>
 						<div class="footer-actions">
 							<div v-if="availableFieldsCount > 0" class="view-only-modified-container">
-								<VCheckbox v-model="viewOnlyModifiedFields">
+								<VCheckbox v-model="showDifferencesOnly">
 									{{ $t('show_differences_only') }}
 								</VCheckbox>
 							</div>

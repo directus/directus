@@ -280,7 +280,7 @@ function useForm() {
 	}
 
 	function isFieldVisible(field: Field | TFormField): boolean {
-		if (props.comparison?.viewOnlyModifiedFields) {
+		if (props.comparison?.showDifferencesOnly) {
 			return !!props.comparison.fields.has(field.field);
 		}
 
@@ -419,7 +419,7 @@ function getFirstVisibleFieldClass(index: number) {
 }
 
 function isGroupFieldVisible(field: TFormField, groupFields: Field[]): boolean {
-	if (props.comparison?.viewOnlyModifiedFields) {
+	if (props.comparison?.showDifferencesOnly) {
 		return groupFields.some((f) => props.comparison!.fields.has(f.field));
 	}
 
