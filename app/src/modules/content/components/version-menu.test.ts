@@ -305,8 +305,8 @@ describe('VersionMenu', () => {
 		});
 	});
 
-	describe('new version behavior', () => {
-		it('should disable publish and discard for new (virtual) versions', () => {
+	describe('new unsaved versions', () => {
+		it('should disable publish and discard', () => {
 			const newVersion = createNewVersion({ key: 'draft', type: 'global' });
 
 			const wrapper = mount(VersionMenu, {
@@ -326,12 +326,12 @@ describe('VersionMenu', () => {
 			expect(deleteItem?.classes()).toContain('disabled');
 		});
 
-		it('should disable create version for new (virtual) global draft', () => {
+		it('should disable create version', () => {
 			const newVersion = createNewVersion({ key: 'draft', type: 'global' });
 
 			const wrapper = mount(VersionMenu, {
 				...mountOptions,
-				props: { ...baseProps, versions: [newVersion], currentVersion: newVersion },
+				props: { ...baseProps, primaryKey: '+', versions: [newVersion], currentVersion: newVersion },
 			});
 
 			const listItems = wrapper.findAll('.v-list-item');
@@ -342,7 +342,7 @@ describe('VersionMenu', () => {
 		});
 	});
 
-	describe('item-less draft publish', () => {
+	describe('item-less version publish', () => {
 		it('should show publish when primaryKey is "+" and createAllowed is true', () => {
 			const savedDraftVersion = createMockVersion({ id: 'draft-uuid', key: 'draft', type: 'global', item: null });
 
@@ -387,8 +387,8 @@ describe('VersionMenu', () => {
 		});
 	});
 
-	describe('item-less draft locked state', () => {
-		it('should disable the create version action when viewing an item-less draft', () => {
+	describe('item-less version locked state', () => {
+		it('should disable the create version action when viewing an item-less version', () => {
 			const itemLessDraft = createMockVersion({
 				id: 'draft-uuid',
 				key: 'draft',
@@ -400,6 +400,7 @@ describe('VersionMenu', () => {
 				...mountOptions,
 				props: {
 					...baseProps,
+					primaryKey: '+',
 					versions: [itemLessDraft],
 					currentVersion: itemLessDraft,
 				},
@@ -436,7 +437,7 @@ describe('VersionMenu', () => {
 			expect(createItem?.classes()).not.toContain('disabled');
 		});
 
-		it('should enable the discard action for saved item-less drafts', () => {
+		it('should enable the discard action for saved item-less versions', () => {
 			const itemLessDraft = createMockVersion({
 				id: 'draft-uuid',
 				key: 'draft',
@@ -461,7 +462,7 @@ describe('VersionMenu', () => {
 			expect(discardItem?.classes()).not.toContain('disabled');
 		});
 
-		it('should show indicator dot for item-less draft with saved content', () => {
+		it('should show indicator dot for item-less version with saved content', () => {
 			const itemLessDraftWithDelta = createMockVersion({
 				id: 'draft-uuid',
 				key: 'draft',
