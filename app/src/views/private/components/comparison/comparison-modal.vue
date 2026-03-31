@@ -137,6 +137,7 @@ watch(
 
 		if (wasActive === undefined || wasActive === false) {
 			compareToOption.value = isFirstRevision.value ? 'Latest' : 'Previous';
+			viewOnlyModifiedFields.value = false;
 		}
 
 		await loadComparisonData();

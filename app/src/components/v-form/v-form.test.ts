@@ -146,6 +146,51 @@ describe('VForm', () => {
 			expect(renderedFields).toContain('modified_field');
 			expect(renderedFields).toContain('unmodified_field');
 		});
+
+		it('shows only modified fields for fields inside a group (nested group form)', async () => {
+			const modifiedInGroup = createField({
+				field: 'inner_modified',
+				name: 'Inner Modified',
+				meta: {
+					...createField().meta!,
+					field: 'inner_modified',
+					group: 'my_group',
+				},
+			});
+
+			const unmodifiedInGroup = createField({
+				field: 'inner_unmodified',
+				name: 'Inner Unmodified',
+				meta: {
+					...createField().meta!,
+					field: 'inner_unmodified',
+					group: 'my_group',
+				},
+			});
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [modifiedInGroup, unmodifiedInGroup],
+					primaryKey: '+',
+					group: 'my_group',
+					comparison: {
+						side: 'incoming',
+						fields: new Set(['inner_modified']),
+						selectedFields: [],
+						onToggleField: null,
+						viewOnlyModifiedFields: true,
+					},
+				},
+				global,
+			});
+
+			await nextTick();
+
+			const renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+
+			expect(renderedFields).toContain('inner_modified');
+			expect(renderedFields).not.toContain('inner_unmodified');
+		});
 	});
 
 	describe('apply function', () => {
