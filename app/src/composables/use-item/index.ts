@@ -4,7 +4,7 @@ import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { cloneDeep, mergeWith } from 'lodash';
-import { computed, ComputedRef, ref, Ref, unref, watch } from 'vue';
+import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
@@ -53,6 +53,7 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
+	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -79,8 +80,9 @@ export function useItem<T extends Item>(
 
 	const query = computed<Query>(() => {
 		const version = unref(currentVersion);
-		if (!version || version.id === '+') return {};
-		return { version: version.key, versionRaw: true };
+		const extra = unref(extraQuery);
+		if (!version || version.id === '+') return { ...extra };
+		return { ...extra, version: version.key, versionRaw: true };
 	});
 
 	const isVersion = computed(() => unref(currentVersion) !== null);

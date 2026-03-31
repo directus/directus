@@ -23,8 +23,12 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 
 	IMPORT_IP_DENY_LIST: 'array',
+	IMPORT_TIMEOUT: 'string',
+	IMPORT_MAX_CONCURRENCY: 'number',
+	IMPORT_EXPORT_NAMESPACE: 'string',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
+	FILES_DELETE_ORIGINAL_ON_MOVE: 'boolean',
 
 	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
@@ -39,6 +43,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	REDIS_ENABLED: 'boolean',
 	REDIS_PASSWORD: 'string',
+	REDIS_BUS_NAMESPACE: 'string',
+	REDIS_LOCK_NAMESPACE: 'string',
+	REDIS_COUNTERS_NAMESPACE: 'string',
+	REDIS_PERMISSIONS_NAMESPACE: 'string',
+	METRICS_HEALTH_CHECK_PREFIX: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
