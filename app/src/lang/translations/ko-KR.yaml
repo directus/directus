@@ -666,7 +666,6 @@ no_collections: 컬렉션 없음
 create_collection: 목록 생성
 no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
 no_collections_copy: 아직 컬렉션이 없습니다. 시스템 관리자에게 문의하십시오.
-relationship_not_setup: 관계형이 올바르게 구성되지 않았습니다.
 no_singleton_relations: 싱글톤과의 관계는 지원되지 않습니다
 display_template_not_setup: 표시 템플릿 옵션이 잘못 구성됨
 collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
@@ -1763,6 +1762,8 @@ interfaces:
     all_opened: 모두 열림
     accordion_mode: 아코디언 모드
     max_one_section_open: 최대 1개 섹션 열기
+  group-tabs:
+    fill_width: 전체 폭
   presentation-links:
     presentation-links: 버튼
     style: 스타일

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "15.6.0",
+	"version": "15.7.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -121,6 +121,7 @@
 		"color": "catalog:",
 		"cropperjs": "catalog:",
 		"date-fns": "catalog:",
+		"date-fns-tz": "catalog:",
 		"diacritics": "catalog:",
 		"diff": "catalog:",
 		"dompurify": "catalog:",
