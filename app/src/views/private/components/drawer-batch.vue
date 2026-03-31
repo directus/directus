@@ -261,12 +261,17 @@ function useTranslationsFields() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-divider {
 	margin: 2.9375rem 0;
 }
 
 .drawer-batch-content {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding: 3rem;
+
+	@include mixins.breakpoint-down('sm') {
+		padding: 0.25rem 0 0 0.625rem;
+	}
 }
 </style>

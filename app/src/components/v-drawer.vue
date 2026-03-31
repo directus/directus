@@ -167,8 +167,6 @@ const internalActive = computed({
 	}
 
 	.content {
-		--theme--form--row-gap: 2.9375rem;
-
 		container-type: size;
 		position: relative;
 		display: flex;
