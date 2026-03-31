@@ -281,7 +281,7 @@ function useForm() {
 
 	function isFieldVisible(field: Field | TFormField): boolean {
 		if (props.comparison?.viewOnlyModifiedFields) {
-			return !!props.comparison.fields?.has(field.field);
+			return !!props.comparison.fields.has(field.field);
 		}
 
 		return (
