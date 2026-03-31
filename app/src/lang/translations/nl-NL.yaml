@@ -520,6 +520,9 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
+translations_preview_collections: Collecties
+translations_preview_fields: Velden
+translations_preview_relations: Relaties
 import_data_input_placeholder: CSV of JSON...
 import_data_button: Importeren starten
 import_data_indeterminate: Gegevens importeren...
@@ -706,7 +709,6 @@ no_collections: Geen collecties
 create_collection: Maak collectie
 no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
 no_collections_copy: Je hebt nog geen collecties. Neem contact op met je systeembeheerder.
-relationship_not_setup: De relatie is niet correct geconfigureerd
 no_singleton_relations: Relaties met Singletons worden niet ondersteund
 display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
@@ -1851,6 +1853,8 @@ interfaces:
     all_opened: Alle geopende
     accordion_mode: Accordeonmodus
     max_one_section_open: Max 1 sectie open
+  group-tabs:
+    fill_width: Vul Breedte
   presentation-links:
     presentation-links: Knoppen
     description: Configureerbare linkknoppen om dynamische URLs te openen of Flows te activeren

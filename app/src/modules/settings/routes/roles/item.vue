@@ -40,9 +40,8 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Role>(
 	ref('directus_roles'),
 	primaryKey,
-	{
-		deep: { users: { _limit: 0 } },
-	},
+	null,
+	{ deep: { users: { _limit: 0 } } },
 );
 
 const canInviteUsers = computed(() => !serverStore.auth.disableDefault);
