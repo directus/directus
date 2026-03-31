@@ -48,6 +48,7 @@ const { t } = useI18n();
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions, currentCollab } = toRefs(props);
 
 const compareToOption = ref<'Previous' | 'Latest'>('Previous');
+const showDifferencesOnly = ref(false);
 
 const {
 	comparisonData,
@@ -136,6 +137,7 @@ watch(
 
 		if (wasActive === undefined || wasActive === false) {
 			compareToOption.value = isFirstRevision.value ? 'Latest' : 'Previous';
+			showDifferencesOnly.value = false;
 		}
 
 		await loadComparisonData();
@@ -289,6 +291,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: null,
+										showDifferencesOnly,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -331,6 +334,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: mode !== 'revision' || compareToOption !== 'Previous' ? toggleComparisonField : null,
+										showDifferencesOnly,
 									}"
 									non-editable
 									class="comparison-form--incoming"
@@ -357,6 +361,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
 						</div>
 						<div class="footer-actions">
+							<div v-if="availableFieldsCount > 0" class="view-only-modified-container">
+								<VCheckbox v-model="showDifferencesOnly">
+									{{ $t('show_differences_only') }}
+								</VCheckbox>
+							</div>
 							<div v-if="mode !== 'revision' || compareToOption !== 'Previous'" class="select-all-container">
 								<VCheckbox
 									v-if="availableFieldsCount > 0"
@@ -584,6 +593,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					}
 				}
 
+				.view-only-modified-container,
 				.select-all-container {
 					display: flex;
 					min-inline-size: auto;
@@ -683,6 +693,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	}
 }
 
+.view-only-modified-container,
 .select-all-container {
 	:deep(.v-checkbox .type-text) {
 		font-weight: 600;

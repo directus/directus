@@ -280,6 +280,10 @@ function useForm() {
 	}
 
 	function isFieldVisible(field: Field | TFormField): boolean {
+		if (props.comparison?.showDifferencesOnly) {
+			return !!props.comparison.fields.has(field.field);
+		}
+
 		return (
 			field.meta?.hidden !== true ||
 			!!props.comparison?.fields?.has(field.field) ||
@@ -414,6 +418,14 @@ function getFirstVisibleFieldClass(index: number) {
 	return index === firstVisibleFieldIndex.value ? 'first-visible-field' : '';
 }
 
+function isGroupFieldVisible(field: TFormField, groupFields: Field[]): boolean {
+	if (props.comparison?.showDifferencesOnly) {
+		return groupFields.some((f) => props.comparison!.fields.has(f.field));
+	}
+
+	return isFieldVisible(field);
+}
+
 function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	if (isComparisonDiff()) {
 		if (field.indicatorStyle === 'active') return 'indicator-active';
@@ -456,7 +468,10 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 			<template v-if="fieldsMap[fieldName]">
 				<component
 					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && isFieldVisible(fieldsMap[fieldName])"
+					v-if="
+						fieldsMap[fieldName]!.meta?.special?.includes('group') &&
+						isGroupFieldVisible(fieldsMap[fieldName]!, fieldsForGroup[index] || [])
+					"
 					:ref="
 						(el: Element) => {
 							formFieldEls[fieldName] = el;

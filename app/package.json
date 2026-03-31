@@ -121,6 +121,7 @@
 		"color": "catalog:",
 		"cropperjs": "catalog:",
 		"date-fns": "catalog:",
+		"date-fns-tz": "catalog:",
 		"diacritics": "catalog:",
 		"diff": "catalog:",
 		"dompurify": "catalog:",
