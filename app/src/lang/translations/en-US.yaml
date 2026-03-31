@@ -233,6 +233,7 @@ promote_version: Promote Version
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
+show_differences_only: Show Differences Only
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
@@ -777,7 +778,7 @@ no_collections: No Collections
 create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
-relationship_not_setup: The relationship hasn't been configured correctly
+relationship_not_setup: The relationship is not configured properly or you don't have permission to access it
 no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
@@ -2149,6 +2150,12 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  group-tabs:
+    name: Tabs
+    description: Display fields or groups as tabs
+    overwrite_group_width: Overwrite Group Width
+    fill_width: Fill Width
+    fill_width_note: Allow this group to fill the full width of the page.
   presentation-links:
     presentation-links: Buttons
     description: Configurable link buttons for launching dynamic URLs or triggering Flows
@@ -2569,6 +2576,9 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
+    timezone: Timezone
+    timezone_local: Local Timezone
+    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files

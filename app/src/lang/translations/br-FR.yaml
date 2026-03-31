@@ -333,7 +333,6 @@ no_collections: Dastumad ebet
 create_collection: Krouiñ un dastumad
 no_collections_copy_admin: N'ho peus ket a zastumad evit poent. Klikit war ar bouton dindan evit kregiñ ganti.
 no_collections_copy: N'ho peus ket a zastumad evit poent. Kit e darempred gant ar merour sistem.
-relationship_not_setup: An darempred n'eo ket bet reoliet mat
 display_template_not_setup: Dibarzh diskwell ar patrom a zo reoliet fall
 collection_field_not_setup: Dibarzh maezienn an dastumad a zo reoliet fall
 select_a_collection: Dibab un dastumad
@@ -843,6 +842,8 @@ interfaces:
   filter:
     add_filter: Ouzhpenn ur sil
     all: Holl
+  group-tabs:
+    fill_width: Ledander leun
   presentation-links:
     presentation-links: Boutonoù
     style: Stil

@@ -522,7 +522,6 @@ no_collections: No hi ha col·leccions
 create_collection: Crea una col·lecció
 no_collections_copy_admin: Encara no hi ha cap col·lecció. Fes clic al botó següent per començar.
 no_collections_copy: Encara no hi ha cap col·lecció. Posa't en contacte amb l'administrador del sistema.
-relationship_not_setup: La relació no s'ha configurat correctament
 display_template_not_setup: L'opció de plantilla de disposió no està configurada
 collection_field_not_setup: L'opció de camp de col·lecció no està configurada
 select_a_collection: Selecciona una col·lecció
@@ -1314,6 +1313,8 @@ interfaces:
     all_opened: Tots oberts
     accordion_mode: Mode d'acordió
     max_one_section_open: Màxim 1 secció oberta
+  group-tabs:
+    fill_width: Amplada de l'emplenat
   presentation-links:
     presentation-links: Botons
     style: Estil

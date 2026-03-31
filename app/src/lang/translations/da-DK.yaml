@@ -554,7 +554,6 @@ no_collections: Ingen samlinger
 create_collection: Opret samling
 no_collections_copy_admin: Du har endnu ikke nogen samlinger. Klik på knappen nedenfor for at komme i gang.
 no_collections_copy: Du har endnu ikke nogen samlinger. Kontakt venligst din systemadministrator.
-relationship_not_setup: Forholdet er ikke konfigureret korrekt
 display_template_not_setup: Visningsskabelonen er forkert konfigureret
 collection_field_not_setup: Indstillingen for samlingsfelt er forkert konfigureret
 select_a_collection: Vælg en samling
@@ -1427,6 +1426,8 @@ interfaces:
     all_opened: Alle åbnede
     accordion_mode: Harmonika tilstand
     max_one_section_open: Maks en sektion åben
+  group-tabs:
+    fill_width: Fuld bredde
   presentation-links:
     presentation-links: Knapper
     style: Stil
