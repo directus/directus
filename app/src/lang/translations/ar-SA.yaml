@@ -461,6 +461,8 @@ related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
+translations_preview_collections: مجموعات
+translations_preview_fields: حقول
 import_data_input_placeholder: CSV أو JSON...
 import_data_button: بدء الاستيراد
 import_data_indeterminate: استيراد البيانات...
@@ -1608,6 +1610,8 @@ interfaces:
     all_opened: تم فتح الكل
     accordion_mode: قائمة منسدلة
     max_one_section_open: قسم واحد مفتوح كحد أقصى
+  group-tabs:
+    fill_width: العرض الكامل
   presentation-links:
     presentation-links: أزرار
     style: النمط

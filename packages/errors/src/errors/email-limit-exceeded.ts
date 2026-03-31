@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface EmailLimitExceededErrorExtensions {
 	points?: number | undefined;
@@ -7,7 +7,7 @@ export interface EmailLimitExceededErrorExtensions {
 	message?: string | undefined;
 }
 
-export const messageConstructor = (extensions: EmailLimitExceededErrorExtensions) => {
+export const messageConstructor = (extensions: EmailLimitExceededErrorExtensions): string => {
 	const message = ['Email sending limit exceeded.'];
 
 	if (typeof extensions.points === 'number' && typeof extensions.duration === 'number') {
@@ -23,8 +23,5 @@ export const messageConstructor = (extensions: EmailLimitExceededErrorExtensions
 	return message.join(' ');
 };
 
-export const EmailLimitExceededError = createError<EmailLimitExceededErrorExtensions>(
-	ErrorCode.EmailLimitExceeded,
-	messageConstructor,
-	429,
-);
+export const EmailLimitExceededError: DirectusErrorConstructor<EmailLimitExceededErrorExtensions> =
+	createError<EmailLimitExceededErrorExtensions>(ErrorCode.EmailLimitExceeded, messageConstructor, 429);

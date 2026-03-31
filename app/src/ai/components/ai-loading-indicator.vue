@@ -9,17 +9,17 @@
 <style scoped>
 .loading-indicator {
 	display: flex;
-	gap: 0.375rem;
-	padding-inline: 3px;
+	gap: 0.3125rem;
+	padding-inline: 0.1875rem;
 	align-items: center;
-	block-size: 32px;
+	block-size: 1.8125rem;
 
 	span {
 		--delay: 0;
 		--duration: 800ms;
 
-		inline-size: 0.5rem;
-		block-size: 0.5rem;
+		inline-size: 0.375rem;
+		block-size: 0.375rem;
 		background-color: var(--theme--foreground);
 		border-radius: 50%;
 		animation: loading-bounce;

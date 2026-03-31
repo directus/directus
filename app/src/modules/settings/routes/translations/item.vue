@@ -318,6 +318,8 @@ async function revert(values: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
@@ -333,13 +335,13 @@ async function revert(values: Record<string, any>) {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		padding: var(--content-padding);
 		padding-block-end: var(--content-padding-bottom);
 	}
 }
 
 .title-loader {
-	inline-size: 260px;
+	inline-size: 14.625rem;
 }
 </style>

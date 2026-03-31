@@ -157,6 +157,36 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		attachment: true,
 		reasoning: true,
 	},
+	{
+		provider: 'openai',
+		model: 'gpt-5.4',
+		name: 'GPT-5.4',
+		limit: {
+			context: 1_050_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 2.5,
+			output: 15.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'openai',
+		model: 'gpt-5.4-pro',
+		name: 'GPT-5.4 Pro',
+		limit: {
+			context: 1_050_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 30.0,
+			output: 180.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
 	// Anthropic Claude
 	{
 		provider: 'anthropic',
@@ -203,13 +233,73 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		attachment: true,
 		reasoning: true,
 	},
+	{
+		provider: 'anthropic',
+		model: 'claude-sonnet-4-6',
+		name: 'Claude Sonnet 4.6',
+		limit: {
+			context: 200_000,
+			output: 64_000,
+		},
+		cost: {
+			input: 3.0,
+			output: 15.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'anthropic',
+		model: 'claude-opus-4-6',
+		name: 'Claude Opus 4.6',
+		limit: {
+			context: 200_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 5.0,
+			output: 25.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
 	// Google Gemini
+	{
+		provider: 'google',
+		model: 'gemini-3.1-pro-preview',
+		name: 'Gemini 3.1 Pro Preview',
+		limit: {
+			context: 1_048_576,
+			output: 65_536,
+		},
+		cost: {
+			input: 2.0,
+			output: 12.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'google',
+		model: 'gemini-3.1-flash-lite-preview',
+		name: 'Gemini 3.1 Flash Lite Preview',
+		limit: {
+			context: 1_048_576,
+			output: 65_536,
+		},
+		cost: {
+			input: 0.5,
+			output: 3.0,
+		},
+		attachment: true,
+		reasoning: true,
+	},
 	{
 		provider: 'google',
 		model: 'gemini-3-pro-preview',
 		name: 'Gemini 3 Pro Preview',
 		limit: {
-			context: 1_000_000,
+			context: 1_048_576,
 			output: 65_536,
 		},
 		cost: {
@@ -224,7 +314,7 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		model: 'gemini-3-flash-preview',
 		name: 'Gemini 3 Flash Preview',
 		limit: {
-			context: 1_000_000,
+			context: 1_048_576,
 			output: 65_536,
 		},
 		cost: {
@@ -239,12 +329,12 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		model: 'gemini-2.5-pro',
 		name: 'Gemini 2.5 Pro',
 		limit: {
-			context: 1_000_000,
+			context: 1_048_576,
 			output: 65_536,
 		},
 		cost: {
 			input: 1.25,
-			output: 5.0,
+			output: 10.0,
 		},
 		attachment: true,
 		reasoning: true,
@@ -254,12 +344,27 @@ export const DEFAULT_AI_MODELS: ModelDefinition[] = [
 		model: 'gemini-2.5-flash',
 		name: 'Gemini 2.5 Flash',
 		limit: {
-			context: 1_000_000,
+			context: 1_048_576,
 			output: 65_536,
 		},
 		cost: {
-			input: 0.15,
-			output: 0.6,
+			input: 0.3,
+			output: 2.5,
+		},
+		attachment: true,
+		reasoning: true,
+	},
+	{
+		provider: 'google',
+		model: 'gemini-2.5-flash-lite',
+		name: 'Gemini 2.5 Flash Lite',
+		limit: {
+			context: 1_048_576,
+			output: 65_536,
+		},
+		cost: {
+			input: 0.1,
+			output: 0.4,
 		},
 		attachment: true,
 		reasoning: true,

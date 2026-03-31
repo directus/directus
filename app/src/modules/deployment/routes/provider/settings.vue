@@ -406,7 +406,7 @@ watch(
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .credentials-saved :deep([data-field='access_token']) {
@@ -415,7 +415,7 @@ watch(
 
 .checkboxes {
 	display: grid;
-	gap: 8px;
-	padding-block: 2px;
+	gap: 0.4375rem;
+	padding-block: 0.125rem;
 }
 </style>

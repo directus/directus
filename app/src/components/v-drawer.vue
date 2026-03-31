@@ -43,9 +43,9 @@ const scrollContainer = useTemplateRef('scroll-container');
 
 provide('main-element', scrollContainer);
 
-const sidebarWidth = 220;
-// Half of the space of the drawer (856 / 2 = 428)
-const sidebarMaxWidth = 428;
+const sidebarWidth = 198;
+// Half of the space of the drawer (770 / 2 = 385)
+const sidebarMaxWidth = 385;
 
 const internalActive = computed({
 	get() {
@@ -143,7 +143,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	display: flex;
 	flex-direction: column;
 	inline-size: 100%;
-	max-inline-size: 856px;
+	max-inline-size: 48.125rem;
 	block-size: 100%;
 	background-color: var(--theme--background);
 
@@ -152,10 +152,10 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 		display: none;
 		position: absolute;
-		inset-block-start: 12px;
-		inset-inline-start: -56px;
+		inset-block-start: 0.6875rem;
+		inset-inline-start: -3.125rem;
 
-		@media (min-width: 960px) {
+		@media (width >= 54rem) {
 			display: inline-flex;
 		}
 	}
@@ -172,7 +172,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	}
 
 	.content {
-		--theme--form--row-gap: 52px;
+		--theme--form--row-gap: 2.9375rem;
 
 		container-type: size;
 		position: relative;
@@ -181,8 +181,8 @@ const showHeaderShadow = computed(() => y.value > 0);
 		overflow: hidden;
 
 		/* Page Content Spacing (Could be converted to Project Setting toggle) */
-		font-size: 15px;
-		line-height: 24px;
+		font-size: 0.875rem;
+		line-height: 1.5714;
 
 		.sidebar {
 			--v-list-item-background-color-hover: var(--theme--background-accent);
@@ -190,11 +190,11 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 			display: none;
 
-			@media (min-width: 960px) {
+			@media (width >= 54rem) {
 				position: relative;
 				display: block;
 				flex-shrink: 0;
-				inline-size: 220px;
+				inline-size: 12.375rem;
 				block-size: 100%;
 				background: var(--theme--navigation--background);
 				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
@@ -221,7 +221,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		.v-overlay {
 			--v-overlay-z-index: 1;
 
-			@media (min-width: 960px) {
+			@media (width >= 54rem) {
 				--v-overlay-z-index: none;
 
 				display: none;
@@ -232,16 +232,16 @@ const showHeaderShadow = computed(() => y.value > 0);
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
-			scroll-padding-block-start: 100px;
+			scroll-padding-block-start: 5.625rem;
 		}
 
 		.main.small-search-input:deep(.search-input.filter-active) {
-			inline-size: 300px !important;
+			inline-size: 16.875rem !important;
 		}
 	}
 
-	@media (min-width: 960px) {
-		inline-size: calc(100% - 64px);
+	@media (width >= 54rem) {
+		inline-size: calc(100% - 3.625rem);
 	}
 }
 
@@ -255,7 +255,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		border-radius: var(--theme--border-radius);
 	}
 
-	@media (min-width: 960px) {
+	@media (width >= 54rem) {
 		display: none;
 	}
 }

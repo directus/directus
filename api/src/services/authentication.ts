@@ -24,6 +24,7 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
+import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 import { SettingsService } from './settings.js';
 import { TFAService } from './tfa.js';
@@ -146,7 +147,6 @@ export class AuthenticationService {
 			} catch (error) {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-					user.status = 'suspended';
 
 					if (this.accountability) {
 						const activity = await this.activityService.createOne({
@@ -161,14 +161,22 @@ export class AuthenticationService {
 
 						const revisionsService = new RevisionsService({ knex: this.knex, schema: this.schema });
 
+						const payloadService = new PayloadService('directus_users', {
+							accountability: this.accountability,
+							knex: this.knex,
+							schema: this.schema,
+						});
+
 						await revisionsService.createOne({
 							activity: activity,
 							collection: 'directus_users',
 							item: user.id,
-							data: user,
+							data: await payloadService.prepareDelta(user),
 							delta: { status: 'suspended' },
 						});
 					}
+
+					user.status = 'suspended';
 
 					// This means that new attempts after the user has been re-activated will be accepted
 					await loginAttemptsLimiter.set(user.id, 0, 0);

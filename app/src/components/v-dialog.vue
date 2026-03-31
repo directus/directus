@@ -129,6 +129,8 @@ function useOverlayFocusTrap() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-dialog {
 	--v-dialog-z-index: 100;
 
@@ -199,13 +201,13 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-card) {
-	--v-card-min-width: calc(100vw - 40px);
-	--v-card-padding: 28px;
+	--v-card-min-width: calc(100vw - 2.25rem);
+	--v-card-padding: 1.5625rem;
 	--v-card-background-color: var(--theme--background);
 }
 
 .container :slotted(.v-card) .v-card-title {
-	padding-block-end: 8px;
+	padding-block-end: 0.4375rem;
 }
 
 .container :slotted(.v-card) .v-card-actions {
@@ -221,22 +223,22 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 	margin-inline-start: 0;
 }
 
 .container :slotted(.v-sheet) {
-	--v-sheet-padding: 24px;
-	--v-sheet-max-width: 560px;
+	--v-sheet-padding: 1.375rem;
+	--v-sheet-max-width: 31.5rem;
 }
 
 .container .v-overlay {
 	--v-overlay-z-index: 1;
 }
 
-@media (width > 640px) {
+@include mixins.breakpoint-up('sm') {
 	.container :slotted(.v-card) {
-		--v-card-min-width: 540px;
+		--v-card-min-width: 30.375rem;
 	}
 
 	.container :slotted(.v-card) .v-card-actions {
@@ -254,7 +256,7 @@ function useOverlayFocusTrap() {
 
 	.container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
 		margin-block-end: 0;
-		margin-inline-start: 12px;
+		margin-inline-start: 0.6875rem;
 	}
 }
 

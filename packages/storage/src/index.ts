@@ -5,11 +5,11 @@ export class StorageManager {
 	private drivers = new Map<string, typeof Driver>();
 	private locations = new Map<string, Driver>();
 
-	registerDriver(name: string, driver: typeof Driver) {
+	registerDriver(name: string, driver: typeof Driver): void {
 		this.drivers.set(name, driver);
 	}
 
-	registerLocation(name: string, config: DriverConfig) {
+	registerLocation(name: string, config: DriverConfig): void {
 		const driverName = config.driver;
 
 		const Driver = this.drivers.get(driverName);
@@ -21,7 +21,7 @@ export class StorageManager {
 		this.locations.set(name, new Driver(config.options));
 	}
 
-	location(name: string) {
+	location(name: string): Driver {
 		const driver = this.locations.get(name);
 
 		if (!driver) {

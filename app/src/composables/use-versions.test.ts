@@ -34,6 +34,18 @@ vi.mock('@/utils/get-default-values-from-fields', () => ({
 	getDefaultValuesFromFields: vi.fn(() => ref({})),
 }));
 
+vi.mock('@/utils/validate-item', () => ({
+	validateItem: vi.fn(() => []),
+}));
+
+vi.mock('@/utils/merge-item-data', () => ({
+	mergeItemData: vi.fn((_defaults: any, _item: any, edits: any) => edits),
+}));
+
+vi.mock('@/utils/push-group-options-down', () => ({
+	pushGroupOptionsDown: vi.fn(() => []),
+}));
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
@@ -230,6 +242,41 @@ describe('useVersions', () => {
 			// currentVersion should remain non-null (Draft stays selected, re-created as virtual)
 			expect(currentVersion.value).not.toBeNull();
 			expect(currentVersion.value?.key).toBe('draft');
+		});
+	});
+
+	describe('saveVersion', () => {
+		it('should use actualPrimaryKey for new version creation on singletons', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({ data: { data: { id: 'new-version-id' } } })
+				.mockResolvedValueOnce({ data: { data: { title: 'saved' } } });
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+			const actualPrimaryKey = 1;
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }), actualPrimaryKey);
+
+			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
+				'/versions',
+				{ key: 'draft', collection: 'singleton_collection', item: '1' },
+			]);
+		});
+
+		it('should return early when actualPrimaryKey is null', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			const actualPrimaryKey = null;
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }), actualPrimaryKey);
+
+			expect(api.post).not.toHaveBeenCalled();
 		});
 	});
 });

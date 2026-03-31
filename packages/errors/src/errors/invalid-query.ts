@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface InvalidQueryErrorExtensions {
 	reason: string;
@@ -6,8 +6,5 @@ export interface InvalidQueryErrorExtensions {
 
 export const messageConstructor = ({ reason }: InvalidQueryErrorExtensions) => `Invalid query. ${reason}.`;
 
-export const InvalidQueryError = createError<InvalidQueryErrorExtensions>(
-	ErrorCode.InvalidQuery,
-	messageConstructor,
-	400,
-);
+export const InvalidQueryError: DirectusErrorConstructor<InvalidQueryErrorExtensions> =
+	createError<InvalidQueryErrorExtensions>(ErrorCode.InvalidQuery, messageConstructor, 400);

@@ -691,7 +691,7 @@ const menuActive = computed(
 @use '@/styles/mixins';
 
 .body {
-	padding: 20px;
+	padding: 1.125rem;
 }
 
 .grid {
@@ -700,8 +700,8 @@ const menuActive = computed(
 
 .remaining {
 	position: absolute;
-	inset-inline-end: 10px;
-	inset-block-end: 5px;
+	inset-inline-end: 0.5625rem;
+	inset-block-end: 0.3125rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: end;
@@ -721,7 +721,7 @@ const menuActive = computed(
 .media-preview {
 	inline-size: 100%;
 	block-size: var(--input-height-md);
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 }

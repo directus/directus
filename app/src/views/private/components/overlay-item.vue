@@ -33,6 +33,7 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useRelationsStore } from '@/stores/relations';
+import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -263,7 +264,7 @@ const templatePrimaryKey = computed(() =>
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 
 const isSavable = computed(() => {
-	if (props.disabled || !hasEdits.value) return false;
+	if (props.disabled || (!hasEdits.value && !isNew.value)) return false;
 	if (!relatedCollection.value) return saveAllowed.value;
 	return saveAllowed.value || saveRelatedCollectionAllowed.value;
 });
@@ -560,6 +561,26 @@ function useActions() {
 			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
 		}
 
+		const mainDefaults = unref(getDefaultValuesFromFields(fieldsWithoutCircular.value));
+
+		internalEdits.value = clearHiddenFieldsByCondition(
+			internalEdits.value,
+			fieldsWithoutCircular.value,
+			mainDefaults,
+			initialValues.value,
+		);
+
+		if (props.junctionField && internalEdits.value[props.junctionField]) {
+			const junctionDefaults = unref(getDefaultValuesFromFields(relatedCollectionFields.value));
+
+			internalEdits.value[props.junctionField] = clearHiddenFieldsByCondition(
+				internalEdits.value[props.junctionField],
+				relatedCollectionFields.value,
+				junctionDefaults,
+				initialValues.value?.[props.junctionField],
+			);
+		}
+
 		emit('input', internalEdits.value);
 
 		internalActive.value = false;
@@ -812,8 +833,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 .modal-card,
 .modal-item-content,
 .popover-item-content {
-	--theme--form--column-gap: 16px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 0.875rem;
+	--theme--form--row-gap: 1.375rem;
 }
 
 .modal-card {
@@ -822,11 +843,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 	) !important;
 	max-inline-size: 90vw !important;
 
-	@media (min-height: 375px) {
-		--button-height: var(--v-button-height, 44px);
-		--button-gap: 12px;
-		--shadow-height: 7px;
-		--shadow-cover-height: 10px;
+	@media (min-height: 21.125rem) {
+		--button-height: var(--v-button-height, 2.5rem);
+		--button-gap: 0.6875rem;
+		--shadow-height: 0.375rem;
+		--shadow-cover-height: 0.5625rem;
 
 		.v-card-actions {
 			z-index: 100;
@@ -862,7 +883,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-title-icon {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .modal-item-content {
@@ -882,13 +903,13 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 	:deep(.v-form:first-child .first-visible-field .field-label),
 	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
-		--popover-action-width: 100px; // 3 * 28 (button) + 2 * 8 (gap)
+		--popover-action-width: 5.625rem; // 3 * 28 (button) + 2 * 8 (gap)
 
 		max-inline-size: calc(100% - var(--popover-action-width));
 	}
 
 	&.empty {
-		min-block-size: 232px;
+		min-block-size: 13.0625rem;
 	}
 }
 
@@ -903,9 +924,9 @@ function popoverClickOutsideMiddleware(e: Event) {
 	position: relative;
 	display: flex;
 	justify-content: end;
-	gap: 8px;
-	inset-block-start: 12px;
-	inset-inline-end: 16px;
+	gap: 0.4375rem;
+	inset-block-start: 0.6875rem;
+	inset-inline-end: 0.875rem;
 }
 
 // Puts the action buttons closer to the field

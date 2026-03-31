@@ -24,17 +24,17 @@
 }
 
 html {
-	font-size: 14px;
+	/* font-size: left at browser default (typically 16px) for WCAG compliance — do not set a px value */
 	-webkit-tap-highlight-color: rgb(0 0 0 / 0);
 }
 
 body {
 	color: var(--theme--foreground);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
-	line-height: 22px;
+	line-height: 1.5385;
 	background-color: var(--theme--background);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
@@ -88,14 +88,14 @@ label {
 }
 
 fieldset {
-	padding: 10px 0 20px;
+	padding: 0.5625rem 0 1.125rem;
 	border: 0;
 
 	&.centered {
 		border-block-start: 1px solid var(--blue-grey-200);
 
 		legend {
-			padding: 10px 20px;
+			padding: 0.5625rem 1.125rem;
 			color: var(--blue-grey-400);
 			text-align: center;
 		}
@@ -120,7 +120,7 @@ code {
 
 dl > div {
 	display: flex;
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 dt,
@@ -130,7 +130,7 @@ dd {
 
 dt {
 	flex-shrink: 0;
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 	font-weight: 600;
 }
 

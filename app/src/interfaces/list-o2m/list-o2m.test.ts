@@ -322,8 +322,8 @@ describe('list-o2m', () => {
 
 			it('only calls updateWidths for columns whose width changed', async () => {
 				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
-				// getWidth returns 160 (default), so any other value counts as a resize
-				mockGetWidth.mockReturnValue(160);
+				// getWidth returns 144 (default), so any other value counts as a resize
+				mockGetWidth.mockReturnValue(144);
 
 				const wrapper = mount(ListO2M, {
 					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
@@ -332,14 +332,14 @@ describe('list-o2m', () => {
 
 				const vTable = wrapper.findComponent({ name: 'VTable' });
 
-				// Emit a resize: 'name' changes to 250, different from stored 160
+				// Emit a resize: 'name' changes to 250, different from stored 144
 				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 250 }]);
 				expect(mockUpdateWidths).toHaveBeenCalledWith([{ text: 'Name', value: 'name', width: 250 }]);
 			});
 
 			it('does not call updateWidths when no width changed', async () => {
 				mockGetField.mockReturnValue({ name: 'Name', type: 'string', field: 'name' } as any);
-				mockGetWidth.mockReturnValue(160);
+				mockGetWidth.mockReturnValue(144);
 
 				const wrapper = mount(ListO2M, {
 					props: { ...listProps, layout: LAYOUTS.TABLE, fields: ['name'] },
@@ -349,7 +349,7 @@ describe('list-o2m', () => {
 				const vTable = wrapper.findComponent({ name: 'VTable' });
 
 				// Emit same width as currently rendered — no actual resize
-				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 160 }]);
+				await vTable.vm.$emit('update:headers', [{ text: 'Name', value: 'name', width: 144 }]);
 				expect(mockUpdateWidths).not.toHaveBeenCalled();
 			});
 

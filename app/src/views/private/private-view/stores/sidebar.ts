@@ -5,7 +5,7 @@ import { computed, ref, watch } from 'vue';
 export const useSidebarStore = defineStore('sidebar-store', () => {
 	const collapsed = useLocalStorage('sidebar-collapsed', false);
 
-	const DEFAULT_SIZE = 370;
+	const DEFAULT_SIZE = 333;
 	const storedSize = useLocalStorage('sidebar-size', DEFAULT_SIZE);
 
 	const size = computed({

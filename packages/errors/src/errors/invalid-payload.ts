@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface InvalidPayloadErrorExtensions {
 	reason: string;
@@ -6,8 +6,5 @@ export interface InvalidPayloadErrorExtensions {
 
 export const messageConstructor = ({ reason }: InvalidPayloadErrorExtensions) => `Invalid payload. ${reason}.`;
 
-export const InvalidPayloadError = createError<InvalidPayloadErrorExtensions>(
-	ErrorCode.InvalidPayload,
-	messageConstructor,
-	400,
-);
+export const InvalidPayloadError: DirectusErrorConstructor<InvalidPayloadErrorExtensions> =
+	createError<InvalidPayloadErrorExtensions>(ErrorCode.InvalidPayload, messageConstructor, 400);

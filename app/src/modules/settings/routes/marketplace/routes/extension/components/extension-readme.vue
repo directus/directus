@@ -20,7 +20,7 @@ defineProps<{
 	}
 
 	:deep(* + *) {
-		margin-block-start: 1rem;
+		margin-block-start: 0.8125rem;
 	}
 
 	:deep(img) {
@@ -30,6 +30,6 @@ defineProps<{
 
 .notice {
 	align-self: flex-start;
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 }
 </style>

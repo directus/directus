@@ -1,7 +1,7 @@
 import type { Accountability, Field, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { FieldsService } from '../../../services/fields.js';
-import { fields } from './index.js';
+import { fields, FieldsInputSchema, FieldsValidateSchema } from './index.js';
 
 vi.mock('../../../services/fields.js');
 
@@ -241,6 +241,203 @@ describe('fields tool', () => {
 						field: fieldName,
 					},
 				});
+			});
+		});
+	});
+
+	describe('validate schema', () => {
+		test('should accept update payload without type', () => {
+			const result = FieldsValidateSchema.safeParse({
+				action: 'update',
+				collection: 'authors',
+				data: [{ field: 'optional', schema: { default_value: 'value100' } }],
+			});
+
+			expect(result.success).toBe(true);
+		});
+
+		test('should require type for create payload', () => {
+			const result = FieldsValidateSchema.safeParse({
+				action: 'create',
+				collection: 'authors',
+				data: { field: 'optional', schema: { default_value: 'value100' } },
+			});
+
+			expect(result.success).toBe(false);
+		});
+
+		test('should accept update payload with type', () => {
+			const result = FieldsValidateSchema.safeParse({
+				action: 'update',
+				collection: 'authors',
+				data: [{ field: 'optional', type: 'string', schema: { default_value: 'value100' } }],
+			});
+
+			expect(result.success).toBe(true);
+		});
+	});
+
+	describe('input schema', () => {
+		describe('action', () => {
+			test('should accept valid actions', () => {
+				for (const action of ['read', 'create', 'update', 'delete']) {
+					const result = FieldsInputSchema.safeParse({ action });
+					expect(result.success).toBe(true);
+				}
+			});
+
+			test('should reject invalid action', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'invalid' });
+				expect(result.success).toBe(false);
+			});
+
+			test('should require action', () => {
+				const result = FieldsInputSchema.safeParse({});
+				expect(result.success).toBe(false);
+			});
+		});
+
+		describe('collection', () => {
+			test('should accept collection as string', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'read', collection: 'articles' });
+				expect(result.success).toBe(true);
+			});
+
+			test('should allow omitting collection', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'read' });
+				expect(result.success).toBe(true);
+			});
+
+			test('should reject non-string collection', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'read', collection: 123 });
+				expect(result.success).toBe(false);
+			});
+		});
+
+		describe('field', () => {
+			test('should accept field as string', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'read', field: 'title' });
+				expect(result.success).toBe(true);
+			});
+
+			test('should allow omitting field', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'read' });
+				expect(result.success).toBe(true);
+			});
+
+			test('should reject non-string field', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'read', field: 123 });
+				expect(result.success).toBe(false);
+			});
+		});
+
+		describe('data', () => {
+			test('should allow omitting data', () => {
+				const result = FieldsInputSchema.safeParse({ action: 'read' });
+				expect(result.success).toBe(true);
+			});
+
+			test('should accept data array with only required field property', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: [{ field: 'title' }],
+				});
+
+				expect(result.success).toBe(true);
+			});
+
+			test('should accept data array with all properties', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'create',
+					data: [
+						{
+							field: 'title',
+							type: 'string',
+							name: 'Title',
+							collection: 'articles',
+							schema: { default_value: 'untitled' },
+							meta: { required: true },
+							children: [{ field: 'child', type: 'string' }],
+						},
+					],
+				});
+
+				expect(result.success).toBe(true);
+			});
+
+			test('should accept data item with null type', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'create',
+					data: [{ field: 'alias_field', type: null }],
+				});
+
+				expect(result.success).toBe(true);
+			});
+
+			test('should accept data item with null schema', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: [{ field: 'title', schema: null }],
+				});
+
+				expect(result.success).toBe(true);
+			});
+
+			test('should accept data item with null meta', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: [{ field: 'title', meta: null }],
+				});
+
+				expect(result.success).toBe(true);
+			});
+
+			test('should accept data item with null children', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: [{ field: 'title', children: null }],
+				});
+
+				expect(result.success).toBe(true);
+			});
+
+			test('should reject data item missing field property', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: [{ type: 'string' }],
+				});
+
+				expect(result.success).toBe(false);
+			});
+
+			test('should reject data as non-array', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: { field: 'title' },
+				});
+
+				expect(result.success).toBe(false);
+			});
+
+			test('should accept multiple items in data array', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: [
+						{ field: 'title', meta: { required: true } },
+						{ field: 'content', type: 'text' },
+					],
+				});
+
+				expect(result.success).toBe(true);
+			});
+
+			test('should accept empty data array', () => {
+				const result = FieldsInputSchema.safeParse({
+					action: 'update',
+					data: [],
+				});
+
+				expect(result.success).toBe(true);
 			});
 		});
 	});

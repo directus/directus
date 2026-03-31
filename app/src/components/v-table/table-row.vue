@@ -100,7 +100,7 @@ function onKeydown(e: KeyboardEvent) {
 	.cell {
 		display: flex;
 		align-items: center;
-		padding: 8px 12px;
+		padding: 0.4375rem 0.6875rem;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
@@ -108,7 +108,7 @@ function onKeydown(e: KeyboardEvent) {
 		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&:last-child {
-			padding: 0 12px;
+			padding: 0 0.6875rem;
 		}
 
 		&.select {

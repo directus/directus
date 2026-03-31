@@ -604,33 +604,33 @@ function discardAndLeave() {
 }
 
 .layout {
-	--content-padding: 0px;
-	--content-padding-bottom: 0px;
+	--content-padding: 0;
+	--content-padding-bottom: 0;
 	--layout-offset-top: 0;
 
 	position: relative;
 	inline-size: 100%;
-	margin-block-start: 32px;
+	margin-block-start: 1.8125rem;
 
 	:deep(#map-container) {
-		min-block-size: 360px;
+		min-block-size: 20.25rem;
 	}
 }
 
 .layout-sidebar {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	display: contents;
 }
 
 :deep(.layout-options) {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 }
 
 :deep(.layout-options .type-label) {
-	font-size: 1rem;
+	font-size: 0.8125rem;
 }
 
 .subdued {

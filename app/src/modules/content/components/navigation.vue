@@ -97,7 +97,7 @@ const hasHiddenCollections = computed(
 
 <style lang="scss" scoped>
 .group-name {
-	padding-inline-start: 8px;
+	padding-inline-start: 0.4375rem;
 	font-weight: 600;
 }
 
@@ -116,7 +116,7 @@ const hasHiddenCollections = computed(
 }
 
 .content-navigation {
-	--v-list-min-height: calc(100% - 64px);
+	--v-list-min-height: calc(100% - 3.625rem);
 
 	flex-grow: 1;
 
@@ -126,11 +126,11 @@ const hasHiddenCollections = computed(
 		}
 
 		&:not(:first-child) :deep(.v-divider) {
-			margin-block-start: 8px;
+			margin-block-start: 0.4375rem;
 		}
 
 		&.empty :deep(.v-divider) {
-			margin-block-end: 8px;
+			margin-block-end: 0.4375rem;
 		}
 	}
 }
@@ -140,12 +140,12 @@ const hasHiddenCollections = computed(
 }
 
 .search-input {
-	--theme--form--field--input--height: 40px;
+	--theme--form--field--input--height: 2.25rem;
 
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 1;
-	padding: 12px;
+	padding: 0.6875rem;
 	padding-block-end: 0;
 	background-color: var(--theme--navigation--background);
 }

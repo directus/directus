@@ -72,13 +72,13 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 4px;
+	gap: 0.25rem;
 	background: transparent;
 	border: var(--theme--border-width) solid transparent;
 	border-radius: var(--theme--border-radius);
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
-	font-size: 12px;
+	font-size: 0.6875rem;
 	cursor: pointer;
 	transition: all var(--fast) var(--transition);
 
@@ -89,19 +89,19 @@ const isSelectorDisabled = computed(() => aiStore.isProviderLocked && availableM
 }
 
 .model-icon {
-	inline-size: 16px;
-	block-size: 16px;
+	inline-size: 0.875rem;
+	block-size: 0.875rem;
 
 	&.small {
-		inline-size: 12px;
-		block-size: 12px;
+		inline-size: 0.6875rem;
+		block-size: 0.6875rem;
 	}
 }
 
 .model-list-item-content {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .select-icon {

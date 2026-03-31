@@ -34,7 +34,7 @@ div {
 	position: absolute;
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition);
-	inline-size: 1px;
+	inline-size: 0.0625rem;
 	block-size: 100%;
 	background: linear-gradient(
 		to bottom,
@@ -50,7 +50,7 @@ div {
 	}
 
 	&.start {
-		inset-inline: -1px;
+		inset-inline: -0.0625rem;
 	}
 }
 </style>

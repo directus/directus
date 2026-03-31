@@ -466,16 +466,16 @@ function useOnUpdate() {
 @use '@/styles/mixins';
 
 .form {
-	--theme--form--row-gap: 32px;
-	--theme--form--column-gap: 32px;
+	--theme--form--row-gap: 1.8125rem;
+	--theme--form--column-gap: 1.8125rem;
 	@include mixins.form-grid;
 }
 
 .type-note {
 	position: relative;
 	display: block;
-	max-inline-size: 520px;
-	margin-block-start: 4px;
+	max-inline-size: 29.25rem;
+	margin-block-start: 0.25rem;
 }
 
 .monospace {
@@ -489,11 +489,11 @@ function useOnUpdate() {
 
 .precision-scale {
 	display: grid;
-	gap: 12px;
+	gap: 0.6875rem;
 	grid-template-columns: 1fr 1fr;
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 </style>

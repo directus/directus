@@ -355,7 +355,7 @@ onUnmounted(() => {
 <style scoped>
 .ai-ask-user {
 	inline-size: 100%;
-	padding: 12px;
+	padding: 0.6875rem;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--form--field--input--background);
@@ -379,11 +379,11 @@ onUnmounted(() => {
 }
 
 .question-tabs-wrapper {
-	--fade-size: 24px;
+	--fade-size: 1.375rem;
 	--fade-color: var(--theme--form--field--input--background);
 
 	position: relative;
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 
 	&::before,
 	&::after {
@@ -418,8 +418,8 @@ onUnmounted(() => {
 
 .question-tabs {
 	display: flex;
-	gap: 0.375rem;
-	padding-block: 4px;
+	gap: 0.3125rem;
+	padding-block: 0.25rem;
 	overflow-x: auto;
 	scrollbar-width: none;
 
@@ -431,10 +431,10 @@ onUnmounted(() => {
 .question-tab {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.25rem;
-	padding: 0.125rem 0.5rem;
+	gap: 0.1875rem;
+	padding: 0.125rem 0.375rem;
 	border-radius: var(--theme--border-radius);
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	font-weight: 500;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--background-normal);
@@ -467,18 +467,18 @@ onUnmounted(() => {
 }
 
 .question-text {
-	font-size: 0.9375rem;
+	font-size: 0.75rem;
 	font-weight: 600;
 	color: var(--theme--foreground);
-	margin-block-end: 0.75rem;
+	margin-block-end: 0.5625rem;
 	line-height: 1.4;
 }
 
 .options {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
-	max-block-size: 340px;
+	gap: 0.375rem;
+	max-block-size: 19.125rem;
 	overflow-y: auto;
 	padding: calc(var(--focus-ring-width) + var(--focus-ring-offset));
 	margin: calc(-1 * (var(--focus-ring-width) + var(--focus-ring-offset)));
@@ -487,8 +487,8 @@ onUnmounted(() => {
 .option-card {
 	display: flex;
 	align-items: center;
-	gap: 0.625rem;
-	padding: 0.625rem 0.75rem;
+	gap: 0.5rem;
+	padding: 0.5rem 0.5625rem;
 	border-radius: var(--theme--border-radius);
 	border: var(--theme--border-width) solid var(--theme--border-color-accent);
 	background-color: var(--theme--background);
@@ -521,11 +521,11 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
-	inline-size: 1.5rem;
-	block-size: 1.5rem;
+	inline-size: 1.1875rem;
+	block-size: 1.1875rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-normal);
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	font-weight: 600;
 	color: var(--theme--foreground-subdued);
 }
@@ -544,7 +544,7 @@ onUnmounted(() => {
 
 .option-label {
 	display: block;
-	font-size: 0.875rem;
+	font-size: 0.6875rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 	line-height: 1.3;
@@ -556,7 +556,7 @@ onUnmounted(() => {
 
 .option-description {
 	display: block;
-	font-size: 0.75rem;
+	font-size: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	margin-block-start: 0.125rem;
 	line-height: 1.3;
@@ -566,16 +566,16 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-block-start: 0.75rem;
+	margin-block-start: 0.5625rem;
 }
 
 .action-buttons {
 	display: flex;
-	gap: 0.375rem;
+	gap: 0.3125rem;
 }
 
 .chat-about-this {
-	font-size: 0.8125rem;
+	font-size: 0.625rem;
 	color: var(--theme--foreground-subdued);
 	background: none;
 	border: none;
@@ -599,21 +599,21 @@ onUnmounted(() => {
 
 .slide-forward-enter-from {
 	opacity: 0;
-	translate: 16px 0;
+	translate: 0.875rem 0;
 }
 
 .slide-forward-leave-to {
 	opacity: 0;
-	translate: -16px 0;
+	translate: -0.875rem 0;
 }
 
 .slide-backward-enter-from {
 	opacity: 0;
-	translate: -16px 0;
+	translate: -0.875rem 0;
 }
 
 .slide-backward-leave-to {
 	opacity: 0;
-	translate: 16px 0;
+	translate: 0.875rem 0;
 }
 </style>

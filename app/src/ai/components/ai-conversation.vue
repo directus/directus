@@ -159,7 +159,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 <style scoped>
 .error-notice {
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 	max-inline-size: 100%;
 	overflow: hidden;
 }
@@ -175,7 +175,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .messages-container {
 	position: relative;
-	padding-inline: 8px;
+	padding-inline: 0.4375rem;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -187,18 +187,18 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 #scroll-anchor {
 	overflow-anchor: auto;
-	block-size: 1px;
+	block-size: 0.0625rem;
 }
 
 .input-container {
 	flex-shrink: 0;
 	position: relative;
-	padding-inline-end: 12px;
+	padding-inline-end: 0.6875rem;
 }
 
 .error-message {
-	margin-block-end: 1rem;
-	font-size: 0.875rem;
+	margin-block-end: 0.8125rem;
+	font-size: 0.6875rem;
 	inline-size: 100%;
 	max-inline-size: 100%;
 	overflow-wrap: break-word;
@@ -207,13 +207,13 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .error-buttons-container {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
+	gap: 0.8125rem;
 
-	margin-block-start: 1rem;
+	margin-block-start: 0.8125rem;
 	align-items: center;
 
 	.v-icon {
-		margin-inline-end: 0.25rem;
+		margin-inline-end: 0.1875rem;
 	}
 }
 
@@ -223,7 +223,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .scroll-to-bottom-container {
 	position: absolute;
-	inset-block-start: -36px;
+	inset-block-start: -2rem;
 	inset-inline-start: 50%;
 	translate: -50% 0;
 	z-index: 4;
@@ -252,7 +252,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	pointer-events: none;
 
 	.upload-icon {
-		margin-block-end: 12px;
+		margin-block-end: 0.6875rem;
 	}
 }
 </style>

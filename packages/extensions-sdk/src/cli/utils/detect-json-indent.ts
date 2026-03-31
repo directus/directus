@@ -1,4 +1,4 @@
-export default function detectJsonIndent(json: string) {
+export default function detectJsonIndent(json: string): string | null {
 	const lines = json.split(/\r?\n/);
 
 	const braceLine = lines.findIndex((line) => /^(?:\{|\[)/.test(line));

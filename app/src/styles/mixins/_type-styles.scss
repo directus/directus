@@ -1,35 +1,35 @@
 @mixin type-title {
 	color: var(--theme--foreground-accent);
-	font-size: 18px;
+	font-size: 1rem;
 	font-weight: var(--theme--fonts--display--font-weight);
 	font-family: var(--theme--fonts--display--font-family);
 	font-style: normal;
-	line-height: 24px;
+	line-height: 1.375;
 }
 
 @mixin type-label {
 	color: var(--theme--foreground-accent);
-	font-size: 16px;
+	font-size: 0.875rem;
 	font-weight: var(--theme--form--field--label--font-weight);
 	font-family: var(--theme--form--field--label--font-family);
 	font-style: normal;
-	line-height: 19px;
+	line-height: 1.2143;
 }
 
 @mixin type-text {
 	color: var(--theme--foreground);
 	font-weight: var(--theme--fonts--sans--font-weight);
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: normal;
-	line-height: 22px;
+	line-height: 1.5385;
 }
 
 @mixin type-note {
 	color: var(--theme--foreground-subdued);
 	font-weight: var(--theme--fonts--sans--font-weight);
-	font-size: 13px;
+	font-size: 0.75rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	font-style: italic;
-	line-height: 18px;
+	line-height: 1.3333;
 }

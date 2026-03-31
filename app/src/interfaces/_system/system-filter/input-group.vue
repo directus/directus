@@ -362,15 +362,15 @@ function isDynamicVariableValue(value: unknown) {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 
 	.comparator + & {
-		margin-inline-start: -4px;
+		margin-inline-start: -0.25rem;
 	}
 
 	&.v-icon {
-		inline-size: 24px !important;
-		block-size: 24px !important;
+		inline-size: 1.375rem !important;
+		block-size: 1.375rem !important;
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;
@@ -393,7 +393,7 @@ function isDynamicVariableValue(value: unknown) {
 .variable-input-braces {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground-subdued);
-	margin-inline-start: 2px;
+	margin-inline-start: 0.125rem;
 
 	.variable-input + & {
 		margin-inline-start: 0;
@@ -405,7 +405,7 @@ function isDynamicVariableValue(value: unknown) {
 	align-items: center;
 
 	.v-icon {
-		margin-inline: 12px 8px;
+		margin-inline: 0.6875rem 0.4375rem;
 		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
@@ -419,12 +419,12 @@ function isDynamicVariableValue(value: unknown) {
 	display: flex;
 
 	.value:not(:last-child)::after {
-		margin-inline-end: 6px;
+		margin-inline-end: 0.3125rem;
 		content: ',';
 	}
 }
 
 .and {
-	margin: 0 8px;
+	margin: 0 0.4375rem;
 }
 </style>

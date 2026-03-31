@@ -39,14 +39,14 @@ const file = computed(() => toLightboxFile(props.part));
 
 <style scoped>
 .message-file {
-	margin: 0.5rem 0;
+	margin: 0.375rem 0;
 	display: grid;
 	justify-items: end;
 
 	.image-preview {
 		cursor: zoom-in;
 		inline-size: 100%;
-		max-inline-size: 128px;
+		max-inline-size: 7.1875rem;
 		border-radius: var(--theme--border-radius);
 		overflow: hidden;
 		padding: 0;
@@ -66,8 +66,8 @@ const file = computed(() => toLightboxFile(props.part));
 	.file-attachment {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem;
+		gap: 0.375rem;
+		padding: 0.5625rem;
 		border-radius: var(--theme--border-radius);
 		background-color: var(--theme--background-subdued);
 		border: 1px solid var(--theme--border-color-subdued);
@@ -76,8 +76,8 @@ const file = computed(() => toLightboxFile(props.part));
 	.file-icon {
 		flex-shrink: 0;
 
-		--v-icon-size: 34px;
-		--v-icon-file-label-size: 7px;
+		--v-icon-size: 1.9375rem;
+		--v-icon-file-label-size: 0.375rem;
 	}
 }
 </style>

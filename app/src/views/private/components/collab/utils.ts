@@ -1,4 +1,4 @@
-import { ClientID } from '@directus/types/collab';
+import { ClientID } from '@directus/types';
 import { CollabUser } from '@/composables/use-collab';
 import { getAssetUrl } from '@/utils/get-asset-url';
 

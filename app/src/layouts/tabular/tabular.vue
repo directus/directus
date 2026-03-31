@@ -307,7 +307,7 @@ function removeField(fieldKey: string) {
 	align-items: center;
 	justify-content: space-between;
 	inline-size: 100%;
-	padding: 32px var(--content-padding);
+	padding: 1.8125rem var(--content-padding);
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
@@ -317,12 +317,12 @@ function removeField(fieldKey: string) {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		inline-size: 240px;
+		inline-size: 13.5rem;
 		color: var(--theme--foreground-subdued);
 
 		span {
 			inline-size: auto;
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 
 		.v-select {

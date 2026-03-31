@@ -74,6 +74,6 @@ const atLimit = computed(() => {
 }
 
 .v-notice {
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 </style>

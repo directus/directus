@@ -11,7 +11,7 @@
 	position: relative;
 	display: flex;
 	flex-shrink: 0;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .actions .v-button.secondary {

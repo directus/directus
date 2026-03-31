@@ -1,5 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
-import type { UIMessage } from 'ai';
+import { lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
@@ -74,7 +74,7 @@ vi.mock('@ai-sdk/vue', () => {
 				regenerate: vi.fn(),
 				stop: vi.fn(),
 				addToolResult: vi.fn(),
-				addToolApprovalResponse: vi.fn(),
+				addToolApprovalResponse: vi.fn(() => Promise.resolve()),
 			};
 		}),
 	};
@@ -85,7 +85,6 @@ vi.mock('ai', () => ({
 		lastTransportConfig = config;
 		return config;
 	}),
-	lastAssistantMessageIsCompleteWithApprovalResponses: vi.fn(),
 	lastAssistantMessageIsCompleteWithToolCalls: vi.fn(),
 }));
 
@@ -164,6 +163,114 @@ describe('useAiStore', () => {
 			expect(aiStore.isAwaitingToolExecution).toBe(false);
 			expect(aiStore.isUiLoading).toBe(false);
 			expect(aiStore.showAssistantLoadingIndicator).toBe(false);
+		});
+
+		test('treats pending approvals as approval-requested when state is input-available', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [
+					{
+						type: 'tool-schema',
+						toolCallId: 'call-1',
+						state: 'input-available',
+						input: {},
+						approval: { id: 'approval-1' },
+					},
+				],
+			} as any);
+
+			expect(aiStore.hasPendingToolCall).toBe(true);
+			expect(aiStore.isAwaitingToolExecution).toBe(false);
+			expect(aiStore.isUiLoading).toBe(false);
+		});
+	});
+
+	describe('tool approval auto-send', () => {
+		test('normalizes pending approval state before approving', () => {
+			const aiStore = useAiStore();
+
+			aiStore.chat.messages.push({
+				id: '1',
+				role: 'assistant',
+				parts: [
+					{
+						type: 'tool-schema',
+						toolCallId: 'call-1',
+						state: 'input-available',
+						input: {},
+						approval: { id: 'approval-1' },
+					},
+				],
+			} as any);
+
+			aiStore.approveToolCall('approval-1');
+
+			expect((aiStore.chat.messages[0]!.parts[0] as any).state).toBe('approval-requested');
+			expect(aiStore.chat.addToolApprovalResponse).toHaveBeenCalledWith({ id: 'approval-1', approved: true });
+		});
+
+		test('auto-sends when a provider-executed tool approval is responded', () => {
+			useAiStore();
+
+			vi.mocked(lastAssistantMessageIsCompleteWithToolCalls).mockReturnValue(false);
+
+			const shouldSend = lastChatConfig.sendAutomaticallyWhen({
+				messages: [
+					{
+						id: '1',
+						role: 'assistant',
+						parts: [
+							{
+								type: 'tool-schema',
+								toolCallId: 'call-1',
+								state: 'approval-responded',
+								input: {},
+								providerExecuted: true,
+								approval: { id: 'approval-1', approved: true },
+							},
+						],
+					},
+				],
+			});
+
+			expect(shouldSend).toBe(true);
+		});
+
+		test('does not auto-send if a tool in the same step is still pending', () => {
+			useAiStore();
+
+			vi.mocked(lastAssistantMessageIsCompleteWithToolCalls).mockReturnValue(false);
+
+			const shouldSend = lastChatConfig.sendAutomaticallyWhen({
+				messages: [
+					{
+						id: '1',
+						role: 'assistant',
+						parts: [
+							{
+								type: 'tool-schema',
+								toolCallId: 'call-1',
+								state: 'approval-responded',
+								input: {},
+								providerExecuted: true,
+								approval: { id: 'approval-1', approved: true },
+							},
+							{
+								type: 'tool-items',
+								toolCallId: 'call-2',
+								state: 'input-available',
+								input: {},
+								providerExecuted: false,
+							},
+						],
+					},
+				],
+			});
+
+			expect(shouldSend).toBe(false);
 		});
 	});
 

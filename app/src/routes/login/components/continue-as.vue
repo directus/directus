@@ -74,7 +74,7 @@ async function hydrateAndLogin() {
 
 <style scoped>
 .continue-as p {
-	margin-block-end: 32px;
+	margin-block-end: 1.8125rem;
 }
 
 .continue-as :deep(b) {
