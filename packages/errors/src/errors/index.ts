@@ -9,6 +9,7 @@ export { InvalidCredentialsError } from './invalid-credentials.js';
 export { InvalidForeignKeyError } from './invalid-foreign-key.js';
 export { InvalidInviteError } from './invalid-invite.js';
 export { InvalidIpError } from './invalid-ip.js';
+export { InvalidPasswordError } from './invalid-password.js';
 export { InvalidOtpError } from './invalid-otp.js';
 export { InvalidPayloadError } from './invalid-payload.js';
 export { InvalidPathParameterError } from './invalid-path-parameter.js';
