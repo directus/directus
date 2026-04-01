@@ -5,7 +5,7 @@ export default defineTheme({
 	name: '$t:theme_directus_default',
 	appearance: 'dark',
 	rules: {
-		borderRadius: '0.3125rem',
+		borderRadius: '0.375rem',
 		borderWidth: '1px',
 
 		foreground: '#c9d1d9',
@@ -77,9 +77,6 @@ export default defineTheme({
 			borderWidth: '0px',
 
 			project: {
-				borderColor: 'transparent',
-				borderWidth: '0px',
-				background: 'var(--theme--navigation--background)',
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--fonts--sans--font-family)',
 			},

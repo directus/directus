@@ -119,7 +119,7 @@ const hasHiddenCollections = computed(
 
 .content-navigation {
 	--v-list-min-height: calc(100% - 3.625rem);
-	--v-list-padding: 0.6875rem 0.75rem;
+	--v-list-padding: 0.75rem;
 
 	flex-grow: 1;
 
@@ -161,7 +161,6 @@ const hasHiddenCollections = computed(
 .search-input {
 	--theme--form--field--input--height: 2rem;
 	--theme--form--field--input--padding: 0.5rem;
-	--theme--border-radius: 0.375rem;
 
 	position: sticky;
 	inset-block-start: 0;

@@ -36,19 +36,15 @@ const navBarStore = useNavBarStore();
 	align-items: center;
 	inline-size: 100%;
 	block-size: 3.375rem;
-	padding: 0.75rem 0.75rem 0.75rem 1.25rem;
+	padding-inline: 1.25rem 0.75rem;
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
-	background: var(--theme--navigation--project--background);
-	border-block-end: var(--theme--navigation--project--border-width) solid
-		var(--theme--navigation--project--border-color);
-	border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+	background: var(--theme--navigation--background);
 
 	.name-container {
 		flex-grow: 1;
 		inline-size: 5.625rem;
-		line-height: 1.1875rem;
-		padding-inline-end: 0.5rem;
+		padding-inline-end: 0.75rem;
 	}
 
 	.name {

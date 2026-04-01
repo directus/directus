@@ -472,6 +472,8 @@ related_collection: Související kategorie
 related_collections: Související kolekce
 translations_collection: Kolekce překladů
 languages_collection: Kolekce jazyků
+translations_preview_collections: Kategorie
+translations_preview_fields: Pole
 import_data_input_placeholder: CSV nebo JSON...
 import_data_button: Zahájit import
 import_data_indeterminate: Importuji data...
@@ -645,7 +647,6 @@ no_collections: Žádné kolekce
 create_collection: Vytvořit kategorii
 no_collections_copy_admin: Zatím nemáte žádné kolekce. Začněte kliknutím na tlačítko níže.
 no_collections_copy: Zatím nemáte žádné kolekce. Obraťte se na správce systému.
-relationship_not_setup: Vztah nebyl správně nakonfigurován
 no_singleton_relations: Vztahy se singletony nejsou podporovány
 display_template_not_setup: Šablona zobrazení je špatně nakonfigurována
 collection_field_not_setup: Volba pole kolekce je špatně nastavena
@@ -1686,6 +1687,8 @@ interfaces:
     all_opened: Všechny otevřené
     accordion_mode: Režim harmoniky
     max_one_section_open: Max. 1 otevřená sekce
+  group-tabs:
+    fill_width: Celá šířka
   presentation-links:
     presentation-links: Tlačítka
     style: Styl

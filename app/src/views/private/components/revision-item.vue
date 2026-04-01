@@ -152,9 +152,7 @@ const user = computed(() => {
 		content: '';
 	}
 
-	&:hover {
-		cursor: pointer;
-
+	&:hover:not(:focus-visible) {
 		.header {
 			.dot {
 				border-color: var(--theme--background-accent);

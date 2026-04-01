@@ -48,15 +48,27 @@ const props = withDefaults(
 		info?: Collection;
 		filterUser?: Filter;
 		search?: string;
+		hasPrependContent?: boolean;
+		extraSelection?: (number | string)[];
 	}>(),
 	{
 		showSelect: 'multiple',
+		extraSelection: () => [],
 	},
 );
 
-const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
+const emit = defineEmits([
+	'update:selection',
+	'update:extraSelection',
+	'update:limit',
+	'update:size',
+	'update:sort',
+	'update:width',
+	'select-all',
+]);
 
 const selectionWritable = useSync(props, 'selection', emit);
+const extraSelectionWritable = useSync(props, 'extraSelection', emit);
 const limitWritable = useSync(props, 'limit', emit);
 const sizeWritable = useSync(props, 'size', emit);
 const sortWritable = useSync(props, 'sort', emit);
@@ -87,23 +99,30 @@ watch(
 watch(innerWidth, (value) => {
 	emit('update:width', value);
 });
+
+function onSelectAll() {
+	props.selectAll();
+	emit('select-all');
+}
 </script>
 
 <template>
 	<div ref="layoutElement" class="layout-cards">
-		<template v-if="loading || (items.length > 0 && !error)">
+		<template v-if="loading || (items.length > 0 && !error) || hasPrependContent">
 			<CardsHeader
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
+				v-model:extra-selection="extraSelectionWritable"
 				v-model:sort="sortWritable"
 				:fields="fieldsInCollection"
 				:show-select="showSelect"
-				@select-all="selectAll"
+				@select-all="onSelectAll"
 			/>
 
-			<VProgressCircular v-if="loading" indeterminate rounded />
+			<VProgressCircular v-if="loading && !hasPrependContent" indeterminate rounded />
 
-			<div v-else class="grid" :class="{ 'single-row': isSingleRow }">
+			<div v-if="!loading || hasPrependContent" class="grid" :class="{ 'single-row': isSingleRow }">
+				<slot name="prepend" />
 				<Card
 					v-for="item in items"
 					:key="item[primaryKeyField!.field]"

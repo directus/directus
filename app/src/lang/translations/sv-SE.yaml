@@ -466,6 +466,8 @@ related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
 translations_collection: Kollektion för översättningar
 languages_collection: Kollektion med språk
+translations_preview_collections: Kollektioner
+translations_preview_fields: Fält
 import_data_input_placeholder: CSV eller JSON...
 import_data_button: Starta import
 import_data_indeterminate: Importerar data...
@@ -623,7 +625,6 @@ no_collections: Inga kollektioner
 create_collection: Skapa samling
 no_collections_copy_admin: Du har inga kollektioner än. Klicka på knappen nedan för att komma igång.
 no_collections_copy: Du har inga kollektioner än. Kontakta din systemadministratör.
-relationship_not_setup: Relationen har inte konfigurerats korrekt
 display_template_not_setup: Visningsmallens alternativ är felaktigt konfigurerad
 collection_field_not_setup: Kollektionsfältets alternativ är felaktigt konfigurerad
 select_a_collection: Välj en kollektion
@@ -1549,6 +1550,8 @@ interfaces:
     all_opened: Alla öppnade
     accordion_mode: Läge för dragspel
     max_one_section_open: Max 1 sektion öppen
+  group-tabs:
+    fill_width: Full bredd
   presentation-links:
     presentation-links: Knappar
     style: Stil
