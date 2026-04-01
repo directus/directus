@@ -105,7 +105,7 @@ const treeList = computed(() => {
 
 const addAll = () => {
 	const allFields = unref(treeList)
-		.filter((field) => !field.disabled && field.type !== 'alias')
+		.filter((field) => field.type !== 'alias')
 		.map((field) => field.field);
 
 	emit('add', unref(allFields));
