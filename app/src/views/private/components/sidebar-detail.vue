@@ -127,7 +127,7 @@ watch(
 }
 
 .accordion-content {
-	overflow-y: auto;
+	overflow: hidden;
 
 	:deep(.type-label) {
 		margin-block-end: 0.25rem;
