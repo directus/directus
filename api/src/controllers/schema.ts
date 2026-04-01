@@ -111,9 +111,7 @@ router.post(
 		if (!snapshotDiff) return next();
 
 		// The hash must match what service.apply() will compute (also with includeUntracked)
-		const currentSnapshotHash = service.getHashedSnapshot(
-			await getSnapshot({ includeUntracked: true }),
-		).hash;
+		const currentSnapshotHash = service.getHashedSnapshot(await getSnapshot({ includeUntracked: true })).hash;
 
 		res.locals['payload'] = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
 		return next();
