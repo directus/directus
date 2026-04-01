@@ -135,12 +135,12 @@ const renderBlocks = computed<RenderBlock[]>(() => {
   --ai-message-background       [role-based]
   --ai-message-color            [role-based]
   --ai-message-border-radius    [var(--theme--border-radius)]
-  --ai-message-parts-gap        [0.75rem]
+  --ai-message-parts-gap        [0.5625rem]
 */
 
 .ai-message {
 	display: flex;
-	gap: var(--ai-message-parts-gap, 0.75rem);
+	gap: var(--ai-message-parts-gap, 0.5625rem);
 	align-items: flex-start;
 	max-inline-size: 100%;
 
@@ -155,7 +155,7 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 		--ai-message-color: var(--theme--foreground);
 
 		justify-content: flex-end;
-		margin-inline-start: 24px;
+		margin-inline-start: 1.375rem;
 		flex-direction: row-reverse;
 
 		.message-content {
@@ -167,25 +167,25 @@ const renderBlocks = computed<RenderBlock[]>(() => {
 .message-content {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	flex: 1;
 	min-inline-size: 0;
 }
 
 .message-content :deep(.message-reasoning + .message-reasoning) {
-	margin-block-start: -0.5rem;
+	margin-block-start: -0.375rem;
 }
 
 .message-actions {
 	display: flex;
-	gap: 0.25rem;
+	gap: 0.1875rem;
 	align-items: center;
-	margin-block-start: 0.25rem;
+	margin-block-start: 0.1875rem;
 }
 
 .context-attachments {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: 0.375rem;
 }
 </style>

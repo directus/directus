@@ -10,7 +10,7 @@ import { readConfigurationFromYaml } from '../utils/read-configuration-from-yaml
 /**
  * Read configuration variables from config file
  */
-export const readConfigurationFromFile = (path: string) => {
+export const readConfigurationFromFile = (path: string): Record<string, unknown> | null => {
 	if (existsSync(path) === false) {
 		return null;
 	}

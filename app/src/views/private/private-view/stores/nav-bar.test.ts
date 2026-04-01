@@ -40,7 +40,7 @@ afterEach(() => {
 describe('nav-bar store size guard', () => {
 	it('returns default size on init', () => {
 		const store = useNavBarStore();
-		expect(store.size).toBe(250);
+		expect(store.size).toBe(225);
 	});
 
 	it('accepts finite values', () => {
@@ -52,19 +52,19 @@ describe('nav-bar store size guard', () => {
 	it('rejects NaN and returns default', () => {
 		const store = useNavBarStore();
 		store.size = NaN;
-		expect(store.size).toBe(250);
+		expect(store.size).toBe(225);
 	});
 
 	it('rejects Infinity and returns default', () => {
 		const store = useNavBarStore();
 		store.size = Infinity;
-		expect(store.size).toBe(250);
+		expect(store.size).toBe(225);
 	});
 
 	it('rejects -Infinity and returns default', () => {
 		const store = useNavBarStore();
 		store.size = -Infinity;
-		expect(store.size).toBe(250);
+		expect(store.size).toBe(225);
 	});
 
 	it('preserves last valid value after rejected write', () => {
@@ -79,7 +79,7 @@ describe('nav-bar store size guard', () => {
 		const storedSize = storageRefs.get('nav-bar-size')!;
 
 		storedSize.value = NaN;
-		expect(store.size).toBe(250);
-		expect(storedSize.value).toBe(250);
+		expect(store.size).toBe(225);
+		expect(storedSize.value).toBe(225);
 	});
 });

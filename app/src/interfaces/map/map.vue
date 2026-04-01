@@ -533,7 +533,7 @@ function handleKeyDown(event: any) {
 	.map {
 		position: relative;
 		inline-size: 100%;
-		block-size: 500px;
+		block-size: 28.125rem;
 
 		&.error,
 		&.loading {
@@ -551,20 +551,20 @@ function handleKeyDown(event: any) {
 	}
 
 	.v-info {
-		padding: 20px;
+		padding: 1.125rem;
 		background-color: var(--theme--form--field--input--background);
 		border-radius: var(--theme--border-radius);
 	}
 
 	.basemap-select {
 		position: absolute;
-		inset-inline-end: 10px;
-		inset-block-end: 10px;
+		inset-inline-end: 0.5625rem;
+		inset-block-end: 0.5625rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		block-size: 36px;
-		padding: 10px;
+		block-size: 2rem;
+		padding: 0.5625rem;
 		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);
 		border: var(--theme--border-width) solid var(--theme--background);
@@ -572,7 +572,7 @@ function handleKeyDown(event: any) {
 
 		span {
 			inline-size: auto;
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 
 		.v-select {

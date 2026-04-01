@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
+import { useProviderConfigs } from '../../config/providers';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -34,7 +35,9 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const { currentProject } = useDeploymentNavigation();
+const { currentProject, providers } = useDeploymentNavigation();
+const { providerConfigs } = useProviderConfigs();
+
 const canCancel = usePermissionsStore().hasPermission('directus_deployment_runs', 'update');
 
 const loading = ref(true);
@@ -119,6 +122,18 @@ const displayLogs = computed<SystemLog[]>(() =>
 		};
 	}),
 );
+
+const providerUrl = computed<string | null>(() => {
+	if (!run.value || !currentProject.value) return null;
+
+	const getDeploymentUrl = providerConfigs.value[props.provider]?.getDeploymentUrl;
+	if (!getDeploymentUrl) return null;
+
+	const deploymentConfig = providers.value.find((p) => p.provider === props.provider);
+	const options = deploymentConfig?.options ?? {};
+
+	return getDeploymentUrl(options, currentProject.value.name, run.value.external_id);
+});
 
 const duration = computed(() => {
 	if (!run.value?.started_at) return '—';
@@ -300,7 +315,24 @@ onUnmounted(() => {
 
 		<div v-else-if="run" class="content">
 			<div class="stats-bar">
-				<div class="stat-card deployment-id">
+				<a
+					v-if="providerUrl"
+					:href="providerUrl"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="stat-card deployment-id provider-link"
+					:title="
+						$t('deployment.provider.run.open_in_provider', { provider: $t(`deployment.provider.${provider}.name`) })
+					"
+				>
+					<VIcon name="assignment" class="stat-icon" />
+					<span class="stat-label">{{ $t('deployment.provider.run.id') }}</span>
+					<div class="stat-value monospace">
+						<span class="provider-link-text">{{ run.external_id }}</span>
+						<VIcon name="open_in_new" x-small />
+					</div>
+				</a>
+				<div v-else class="stat-card deployment-id">
 					<VIcon name="assignment" class="stat-icon" />
 					<span class="stat-label">{{ $t('deployment.provider.run.id') }}</span>
 					<div class="stat-value monospace">
@@ -383,7 +415,7 @@ onUnmounted(() => {
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .content {
@@ -394,16 +426,16 @@ onUnmounted(() => {
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
-	margin-block-end: 24px;
+	gap: 0.875rem;
+	margin-block-end: 1.375rem;
 
 	// 2 columns
-	@media (max-width: 1512px) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
 	// 1 column
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -411,8 +443,8 @@ onUnmounted(() => {
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 12px 16px;
+	gap: 0.4375rem;
+	padding: 0.6875rem 0.875rem;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	min-inline-size: 0;
@@ -446,9 +478,9 @@ onUnmounted(() => {
 
 .log-filters {
 	display: flex;
-	gap: 32px;
+	gap: 1.8125rem;
 	flex-wrap: wrap;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .filter-field {
@@ -457,7 +489,7 @@ onUnmounted(() => {
 }
 
 .filter-icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 
 .search-input {
@@ -465,7 +497,7 @@ onUnmounted(() => {
 	border: none;
 	border-radius: 0;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
-	inline-size: 200px;
+	inline-size: 11.25rem;
 	background: transparent;
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
@@ -485,9 +517,9 @@ onUnmounted(() => {
 	flex-direction: column;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
-	padding: 16px;
-	min-block-size: 400px;
-	max-block-size: calc(100vh - 400px);
+	padding: 0.875rem;
+	min-block-size: 22.5rem;
+	max-block-size: calc(100vh - 22.5rem);
 	overflow: hidden;
 }
 
@@ -502,12 +534,43 @@ onUnmounted(() => {
 .actions-wrapper {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .currently-deploying {
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
+}
+
+.stat-card.provider-link {
+	display: flex;
+	color: inherit;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color var(--fast) var(--transition);
+
+	&:hover {
+		background-color: var(--theme--background-normal);
+	}
+
+	.stat-value {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		min-inline-size: 0;
+	}
+
+	.provider-link-text {
+		flex: 1;
+		min-inline-size: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.stat-value .v-icon {
+		flex-shrink: 0;
+	}
 }
 </style>

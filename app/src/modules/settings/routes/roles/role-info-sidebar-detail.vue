@@ -32,7 +32,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 20px 0;
+	margin: 1.125rem 0;
 }
 
 .description-list {
@@ -43,7 +43,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 		--v-icon-color: var(--theme--foreground-subdued);
 		--v-icon-color-hover: var(--theme--foreground);
 
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 	}
 }
 </style>

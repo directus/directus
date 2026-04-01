@@ -196,9 +196,9 @@ describe('isPointInPanel', () => {
 			const panel = createPanel(5, 5);
 
 			// Verify the boundary calculation matches our understanding
-			const expectedLeft = (5 - 2) * GRID_SIZE; // 3 * 20 = 60
-			const expectedRight = (5 - 1 + PANEL_WIDTH) * GRID_SIZE; // (4 + 14) * 20 = 360
-			const expectedTop = (5 - 1) * GRID_SIZE; // 4 * 20 = 80
+			const expectedLeft = (5 - 2) * GRID_SIZE; // 3 * 18 = 54
+			const expectedRight = (5 - 1 + PANEL_WIDTH) * GRID_SIZE; // (4 + 14) * 18 = 324
+			const expectedTop = (5 - 1) * GRID_SIZE; // 4 * 18 = 72
 
 			// Test points just inside and outside these boundaries
 			expect(isPointInPanel([panel], new Vector2(expectedLeft, expectedTop + 10))).toBe(true);

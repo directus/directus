@@ -40,31 +40,31 @@ defineEmits<{
 .item-content {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .item-header {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 	font-weight: 500;
 	color: var(--theme--foreground);
 }
 
 .item-badge {
 	display: inline-flex;
-	padding: 2px 6px;
-	font-size: 10px;
+	padding: 0.125rem 0.3125rem;
+	font-size: 0.5625rem;
 	font-weight: 500;
 	text-transform: uppercase;
 	background-color: var(--theme--primary-background);
 	color: var(--theme--primary);
 	border-radius: var(--theme--border-radius);
-	letter-spacing: 0.5px;
+	letter-spacing: 0.05em;
 }
 
 .item-subtitle {
-	font-size: 12px;
+	font-size: 0.6875rem;
 	color: var(--theme--foreground-subdued);
 	overflow: hidden;
 	text-overflow: ellipsis;

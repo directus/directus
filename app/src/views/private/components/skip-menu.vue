@@ -84,13 +84,13 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 
 <style lang="scss" scoped>
 .skip-menu.v-list {
-	--v-list-min-width: 210px;
+	--v-list-min-width: 11.8125rem;
 
 	position: absolute;
-	inline-size: 1px;
-	block-size: 1px;
+	inline-size: 0.0625rem;
+	block-size: 0.0625rem;
 	padding: 0;
-	margin: -1px;
+	margin: -0.0625rem;
 	overflow: hidden;
 	clip-path: rect(0, 0, 0, 0);
 	white-space: nowrap;
@@ -107,15 +107,15 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		background-color: var(--theme--popover--menu--background);
 		border-radius: var(--theme--popover--menu--border-radius);
 		box-shadow: var(--theme--popover--menu--box-shadow);
-		padding: 8px;
-		font-size: 14px;
+		padding: 0.4375rem;
+		font-size: 0.8125rem;
 
-		inset-block-start: 4px;
-		inset-inline-start: 4px;
+		inset-block-start: 0.25rem;
+		inset-inline-start: 0.25rem;
 		z-index: 999999;
 
 		&.right {
-			inset-inline: auto 4px;
+			inset-inline: auto 0.25rem;
 		}
 
 		&.center {

@@ -314,7 +314,7 @@ img {
 }
 
 .is-letterbox {
-	padding: 32px;
+	padding: 1.8125rem;
 }
 
 .image-error {
@@ -325,15 +325,15 @@ img {
 	block-size: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--theme--background-normal);
-	padding: 32px;
+	padding: 1.8125rem;
 
 	.v-icon {
-		margin-block-end: 6px;
+		margin-block-end: 0.3125rem;
 	}
 
 	.message {
-		max-inline-size: 300px;
-		padding: 0 16px;
+		max-inline-size: 16.875rem;
+		padding: 0 0.875rem;
 		text-align: center;
 	}
 }
@@ -353,7 +353,7 @@ img {
 		inset-inline-start: 0;
 		z-index: 2;
 		inline-size: 100%;
-		block-size: 40px;
+		block-size: 2.25rem;
 		overflow: hidden;
 		line-height: 1;
 		white-space: nowrap;
@@ -369,16 +369,16 @@ img {
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
-		inset-block-start: calc(50% - 32px);
+		inset-block-start: calc(50% - 1.8125rem);
 		inset-inline-start: 0;
 		z-index: 3;
 		display: flex;
 		justify-content: center;
 		inline-size: 100%;
-		gap: 12px;
+		gap: 0.6875rem;
 
 		::v-deep(.v-button) {
-			transform: translateY(10px);
+			transform: translateY(0.5625rem);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
 			transition-property: opacity, transform;
@@ -397,7 +397,7 @@ img {
 		inset-inline-start: 0;
 		z-index: 3;
 		inline-size: 100%;
-		padding: 8px 12px;
+		padding: 0.4375rem 0.6875rem;
 		line-height: 1.2;
 	}
 
@@ -406,7 +406,7 @@ img {
 	}
 
 	.meta {
-		block-size: 17px;
+		block-size: 0.9375rem;
 		max-block-size: 0;
 		overflow: hidden;
 		color: rgb(255 255 255 / 0.75);
@@ -428,7 +428,7 @@ img {
 			}
 
 			.meta {
-				max-block-size: 17px;
+				max-block-size: 0.9375rem;
 			}
 		}
 	}
@@ -443,7 +443,7 @@ img {
 	&.fill {
 		.image-preview {
 			block-size: auto;
-			max-block-size: 400px;
+			max-block-size: 22.5rem;
 		}
 	}
 

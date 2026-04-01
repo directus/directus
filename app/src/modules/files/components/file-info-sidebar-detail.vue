@@ -327,7 +327,7 @@ button {
 }
 
 .v-divider {
-	margin: 20px 0;
+	margin: 1.125rem 0;
 }
 
 .copy-id {

@@ -157,7 +157,7 @@ const menuActive = computed(() => addNewOpen.value || selectOpen.value);
 }
 
 :deep(ul) {
-	margin-inline-start: 24px;
+	margin-inline-start: 1.375rem;
 	padding-inline-start: 0;
 }
 </style>

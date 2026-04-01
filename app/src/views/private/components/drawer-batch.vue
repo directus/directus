@@ -262,7 +262,7 @@ function useTranslationsFields() {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 52px 0;
+	margin: 2.9375rem 0;
 }
 
 .drawer-batch-content {

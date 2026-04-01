@@ -59,11 +59,11 @@ useGroupableParent(
 
 	Available Variables:
 
-		--v-list-padding                  [4px 0]
+		--v-list-padding                  [0.25rem 0]
 		--v-list-border-radius            [var(--theme--border-radius)]
 		--v-list-max-height               [none]
 		--v-list-max-width                [none]
-		--v-list-min-width                [220px]
+		--v-list-min-width                [12.375rem]
 		--v-list-min-height               [none]
 		--v-list-color                    [var(--theme--foreground-accent)]
 		--v-list-color-hover              [var(--theme--foreground-accent)]
@@ -77,24 +77,24 @@ useGroupableParent(
 .v-list {
 	position: static;
 	display: block;
-	min-inline-size: var(--v-list-min-width, 220px);
+	min-inline-size: var(--v-list-min-width, 12.375rem);
 	max-inline-size: var(--v-list-max-width, none);
 	min-block-size: var(--v-list-min-height, none);
 	max-block-size: var(--v-list-max-height, none);
-	padding: var(--v-list-padding, 4px 0);
+	padding: var(--v-list-padding, 0.25rem 0);
 	overflow: auto;
 	color: var(--v-list-color, var(--theme--foreground-accent));
-	line-height: 22px;
+	line-height: 1.25rem;
 	list-style: none;
 	border-radius: var(--v-list-border-radius, var(--theme--border-radius));
 }
 
 .nav {
-	--v-list-padding: 12px;
+	--v-list-padding: 0.6875rem;
 }
 
 :slotted(.v-divider) {
-	max-inline-size: calc(100% - 16px);
-	margin: 8px;
+	max-inline-size: calc(100% - 0.875rem);
+	margin: 0.4375rem;
 }
 </style>

@@ -114,12 +114,12 @@ const isSearchableType = computed(() => {
 @use '@/styles/mixins';
 
 .type-title {
-	margin-block-end: 32px;
+	margin-block-end: 1.8125rem;
 }
 
 .form {
-	--theme--form--row-gap: 32px;
-	--theme--form--column-gap: 32px;
+	--theme--form--row-gap: 1.8125rem;
+	--theme--form--column-gap: 1.8125rem;
 
 	@include mixins.form-grid;
 }
@@ -133,6 +133,6 @@ const isSearchableType = computed(() => {
 }
 
 .v-notice:not(.no-margin) {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 </style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
-import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+import { ATTACHMENT_OFFSET, GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
 import OptionsOverview from './options-overview.vue';
 import VErrorBoundary from '@/components/v-error-boundary.vue';
@@ -108,8 +108,8 @@ const pointermove = (event: PointerEvent) => {
 		moving.value = true;
 		if (!down) return;
 
-		let xPos = Math.round((event.pageX - workspaceOffset.x) / 20) * 20;
-		const yPos = Math.round((event.pageY - workspaceOffset.y) / 20) * 20;
+		let xPos = Math.round((event.pageX - workspaceOffset.x) / GRID_SIZE) * GRID_SIZE;
+		const yPos = Math.round((event.pageY - workspaceOffset.y) / GRID_SIZE) * GRID_SIZE;
 
 		if (unref(isRTL)) {
 			xPos = workspaceWidth - xPos;
@@ -191,6 +191,7 @@ function pointerLeave() {
 		]"
 		:edit-mode="editMode"
 		:resizable="false"
+		:grid-size="GRID_SIZE"
 		:show-options="type !== 'trigger'"
 		:style="styleVars"
 		always-update-position
@@ -318,7 +319,7 @@ function pointerLeave() {
 .v-workspace-tile.block-container {
 	position: relative;
 	overflow: visible;
-	padding: 4px;
+	padding: 0.25rem;
 
 	:deep(.header .name) {
 		color: var(--theme--primary);
@@ -329,16 +330,16 @@ function pointerLeave() {
 	}
 
 	.block {
-		padding: 0 12px;
+		padding: 0 0.6875rem;
 		block-size: 100%;
 		overflow-y: auto;
 
 		.name {
 			display: inline-block;
-			font-size: 20px;
+			font-size: 1.125rem;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
-			margin-block-end: 8px;
+			margin-block-end: 0.4375rem;
 		}
 	}
 
@@ -354,7 +355,7 @@ function pointerLeave() {
 			content: '';
 			inset-block: 0;
 			inset-inline: 0;
-			border-radius: 4px;
+			border-radius: 0.25rem;
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 10px var(--theme--primary);
@@ -404,9 +405,9 @@ function pointerLeave() {
 	}
 
 	.button-hint {
-		inline-size: 32px;
-		block-size: 32px;
-		padding: 4px;
+		inline-size: 1.8125rem;
+		block-size: 1.8125rem;
+		padding: 0.25rem;
 	}
 
 	.hint {
@@ -414,26 +415,26 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 20px;
-		padding-inline-start: 60px;
-		transform: translate(-1px, calc(-50% - 2.5px));
+		padding: 1.125rem;
+		padding-inline-start: 3.375rem;
+		transform: translate(-0.0625rem, calc(-50% - 0.125rem));
 
 		html[dir='rtl'] & {
-			transform: translate(1px, calc(-50% - 2.5px));
+			transform: translate(0.0625rem, calc(-50% - 0.125rem));
 		}
 	}
 
 	.button {
-		inline-size: 20px;
-		block-size: 20px;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		background-color: var(--theme--background);
-		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
+		transform: translate(calc(-50% - 0.0625rem), calc(-50% - 0.0625rem));
 
 		html[dir='rtl'] & {
-			transform: translate(calc(50% + 1px), calc(-50% - 1px));
+			transform: translate(calc(50% + 0.0625rem), calc(-50% - 0.0625rem));
 		}
 
 		--v-icon-color: var(--theme--primary);
@@ -511,7 +512,7 @@ function pointerLeave() {
 }
 
 .options-overview-error {
-	padding: 20px;
+	padding: 1.125rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -522,14 +523,14 @@ function pointerLeave() {
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 		max-inline-size: 100%;
 	}
 }
 
 .status-footer {
 	display: flex;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .fade-enter-active,

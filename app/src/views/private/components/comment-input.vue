@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { Comment, User } from '@directus/types';
 import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
@@ -16,7 +17,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTemplateInput from '@/components/v-template-input.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
@@ -376,8 +376,8 @@ function pressedEnter() {
 	inline-size: 100%;
 	block-size: 100%;
 	block-size: var(--theme--form--field--input--height);
-	min-block-size: 100px;
-	padding: 5px;
+	min-block-size: 5.625rem;
+	padding: 0.3125rem;
 	overflow: scroll;
 	white-space: pre;
 	background-color: var(--theme--form--field--input--background);
@@ -396,22 +396,22 @@ function pressedEnter() {
 .new-comment :deep(.expand-on-focus:focus textarea),
 .new-comment :deep(.expand-on-focus:focus-within textarea),
 .new-comment :deep(.expand-on-focus.has-content textarea) {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
 	inset-inline: 0;
-	inset-block-end: 36px;
-	block-size: 8px;
+	inset-block-end: 2rem;
+	block-size: 0.4375rem;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
 }
 
 .new-comment .add-mention {
 	position: absolute;
-	inset-block-end: 8px;
-	inset-inline-start: 8px;
+	inset-block-end: 0.4375rem;
+	inset-inline-start: 0.4375rem;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
@@ -419,8 +419,8 @@ function pressedEnter() {
 
 .new-comment .add-emoji {
 	position: absolute;
-	inset-block-end: 8px;
-	inset-inline-start: 36px;
+	inset-block-end: 0.4375rem;
+	inset-inline-start: 2rem;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
@@ -432,9 +432,9 @@ function pressedEnter() {
 }
 
 .buttons {
-	margin-block-start: 4px;
+	margin-block-start: 0.25rem;
 	display: flex;
-	gap: 4px;
+	gap: 0.25rem;
 
 	.mention,
 	.emoji-button {

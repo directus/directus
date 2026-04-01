@@ -1,0 +1,50 @@
+@use 'sass:map';
+@use 'sass:list';
+
+/// Keep in sync with BREAKPOINTS in app/src/constants.ts
+$breakpoints: (
+	'sm': 36rem,
+	'lg': 57.625rem,
+	'xl': 72rem,
+) !default;
+
+@function breakpoint-value($name) {
+	@if not map.has-key($breakpoints, $name) {
+		@error 'Unknown breakpoint `#{$name}`. Expected one of: #{map.keys($breakpoints)}.';
+	}
+	@return map.get($breakpoints, $name);
+}
+
+@mixin breakpoint-up($name) {
+	@media (width >= #{breakpoint-value($name)}) {
+		@content;
+	}
+}
+
+@mixin breakpoint-down($name) {
+	@media (width < #{breakpoint-value($name)}) {
+		@content;
+	}
+}
+
+@mixin breakpoint-between($lower, $upper) {
+	@media (width >= #{breakpoint-value($lower)}) and (width < #{breakpoint-value($upper)}) {
+		@content;
+	}
+}
+
+@mixin breakpoint-only($name) {
+	$keys: map.keys($breakpoints);
+	$i: list.index($keys, $name);
+
+	@if $i == list.length($keys) {
+		@include breakpoint-up($name) {
+			@content;
+		}
+	} @else {
+		$next: list.nth($keys, $i + 1);
+		@include breakpoint-between($name, $next) {
+			@content;
+		}
+	}
+}

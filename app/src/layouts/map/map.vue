@@ -128,7 +128,7 @@ limitWritable.value = selectedSize;
 
 <style lang="scss" scoped>
 .v-info {
-	padding: 40px;
+	padding: 2.25rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 	pointer-events: none;
@@ -167,10 +167,10 @@ limitWritable.value = selectedSize;
 	position: fixed;
 	z-index: 1;
 	max-inline-size: 80%;
-	padding: 6px 10px;
+	padding: 0.3125rem 0.5625rem;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--sans--font-family);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);
@@ -187,8 +187,8 @@ limitWritable.value = selectedSize;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	block-size: 36px;
-	padding: 10px;
+	block-size: 2rem;
+	padding: 0.5625rem;
 	color: var(--theme--foreground-subdued);
 	background: var(--theme--popover--menu--background);
 	border-radius: var(--theme--popover--menu--border-radius);
@@ -197,7 +197,7 @@ limitWritable.value = selectedSize;
 
 	span {
 		inline-size: auto;
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 	}
 
 	.v-select {
@@ -218,15 +218,15 @@ limitWritable.value = selectedSize;
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
-	padding: 10px;
+	padding: 0.5625rem;
 	overflow: hidden;
 	background-color: transparent !important;
 
 	.pagination {
-		--v-button-height: 28px;
+		--v-button-height: 1.5625rem;
 
 		display: inline-block;
-		margin-inline-end: 10px;
+		margin-inline-end: 0.5625rem;
 
 		button {
 			box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);

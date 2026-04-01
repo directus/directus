@@ -127,7 +127,7 @@ const activeSrc = computed(() => {
 
 <style scoped>
 .ai-pending-context-wrapper {
-	--fade-size: 24px;
+	--fade-size: 1.375rem;
 	--fade-color: var(--theme--form--field--input--background);
 
 	position: relative;
@@ -170,11 +170,11 @@ const activeSrc = computed(() => {
 .ai-pending-context {
 	display: flex;
 	flex-wrap: nowrap;
-	gap: 8px;
+	gap: 0.4375rem;
 	inline-size: 100%;
 	min-inline-size: 0;
 	overflow: auto hidden;
-	padding-block-end: 4px;
+	padding-block-end: 0.25rem;
 
 	/* Styled scrollbar for Firefox */
 	scrollbar-width: thin;
@@ -182,17 +182,17 @@ const activeSrc = computed(() => {
 
 	/* Styled scrollbar for WebKit browsers */
 	&::-webkit-scrollbar {
-		block-size: 6px;
+		block-size: 0.3125rem;
 	}
 
 	&::-webkit-scrollbar-track {
 		background: transparent;
-		border-radius: 3px;
+		border-radius: 0.1875rem;
 	}
 
 	&::-webkit-scrollbar-thumb {
 		background: var(--theme--border-color);
-		border-radius: 3px;
+		border-radius: 0.1875rem;
 		transition: background var(--fast) var(--transition);
 
 		&:hover {

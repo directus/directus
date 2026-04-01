@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -22,7 +23,6 @@ import { AppTile } from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItemPermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
@@ -279,7 +279,7 @@ const refreshInterval = computed({
 			@delete="insightsStore.stagePanelDelete"
 			@move="copyPanelID = $event"
 		>
-			<template #default="{ tile }">
+			<template #default="{ tile, gridSize }">
 				<VProgressCircular
 					v-if="loading.includes(tile.id) && !data[tile.id]"
 					:class="{ 'header-offset': tile.showHeader }"
@@ -310,6 +310,7 @@ const refreshInterval = computed({
 							:width="tile.width"
 							:now="now"
 							:data="data[tile.id]"
+							:grid-size="gridSize"
 						/>
 
 						<template #fallback="{ error }">
@@ -419,12 +420,12 @@ const refreshInterval = computed({
 	}
 
 	&.header-offset {
-		inset-block-start: calc(50% - 12px);
+		inset-block-start: calc(50% - 0.6875rem);
 	}
 }
 
 .panel-error {
-	padding: 20px;
+	padding: 1.125rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -435,7 +436,7 @@ const refreshInterval = computed({
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
 		max-inline-size: 100%;
 	}
 }
@@ -448,7 +449,7 @@ const refreshInterval = computed({
 	block-size: 100%;
 
 	&.header-offset {
-		block-size: calc(100% - 24px);
+		block-size: calc(100% - 1.375rem);
 	}
 }
 </style>

@@ -40,7 +40,7 @@ export class PressureMonitor {
 		this.timeout.unref();
 	}
 
-	get overloaded() {
+	get overloaded(): boolean {
 		if (this.options.maxMemoryHeapUsed && this.memoryHeapUsed > this.options.maxMemoryHeapUsed) {
 			return true;
 		}

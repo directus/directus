@@ -64,8 +64,8 @@ const circleStyle = computed(() => ({
 		--v-progress-circular-background-color  [var(--theme--form--field--input--border-color)]
 		--v-progress-circular-transition        [400ms]
 		--v-progress-circular-speed             [2s]
-		--v-progress-circular-size              [28px]
-		--v-progress-circular-line-size         [3px]
+		--v-progress-circular-size              [1.5625rem]
+		--v-progress-circular-line-size         [0.1875rem]
 
 */
 
@@ -74,43 +74,43 @@ const circleStyle = computed(() => ({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: var(--v-progress-circular-size, 28px);
-	block-size: var(--v-progress-circular-size, 28px);
+	inline-size: var(--v-progress-circular-size, 1.5625rem);
+	block-size: var(--v-progress-circular-size, 1.5625rem);
 
 	&.x-small {
-		--v-progress-circular-size: 12px;
-		--v-progress-circular-line-size: 4px;
+		--v-progress-circular-size: 0.6875rem;
+		--v-progress-circular-line-size: 0.25rem;
 	}
 
 	&.small {
-		--v-progress-circular-size: 20px;
-		--v-progress-circular-line-size: 3px;
+		--v-progress-circular-size: 1.125rem;
+		--v-progress-circular-line-size: 0.1875rem;
 
-		margin: 2px;
+		margin: 0.125rem;
 	}
 
 	&.large {
-		--v-progress-circular-size: 48px;
-		--v-progress-circular-line-size: 2.5px;
+		--v-progress-circular-size: 2.6875rem;
+		--v-progress-circular-line-size: 2.5px; /* stylelint-disable-line unit-disallowed-list -- SVG stroke sub-pixel */
 	}
 
 	&.x-large {
-		--v-progress-circular-size: 64px;
-		--v-progress-circular-line-size: 2px;
+		--v-progress-circular-size: 3.625rem;
+		--v-progress-circular-line-size: 0.125rem;
 	}
 
 	.circle {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;
-		inline-size: var(--v-progress-circular-size, 28px);
-		block-size: var(--v-progress-circular-size, 28px);
+		inline-size: var(--v-progress-circular-size, 1.5625rem);
+		block-size: var(--v-progress-circular-size, 1.5625rem);
 
 		&-path {
 			transition: stroke-dasharray var(--v-progress-circular-transition, 400ms) ease-in-out;
 			fill: transparent;
 			stroke: var(--v-progress-circular-color, var(--theme--foreground));
-			stroke-width: var(--v-progress-circular-line-size, 3px);
+			stroke-width: var(--v-progress-circular-line-size, 0.1875rem);
 		}
 
 		&.indeterminate {
@@ -124,7 +124,7 @@ const circleStyle = computed(() => ({
 		&-background {
 			fill: transparent;
 			stroke: var(--v-progress-circular-background-color, var(--theme--form--field--input--border-color));
-			stroke-width: var(--v-progress-circular-line-size, 3px);
+			stroke-width: var(--v-progress-circular-line-size, 0.1875rem);
 		}
 	}
 }
@@ -143,6 +143,7 @@ const circleStyle = computed(() => ({
 	}
 }
 
+/* stylelint-disable unit-disallowed-list -- SVG stroke-dasharray requires px */
 @keyframes stroke {
 	0% {
 		stroke-dasharray: 0, 78.5px;
@@ -156,4 +157,6 @@ const circleStyle = computed(() => ({
 		stroke-dasharray: 0, 78.5px;
 	}
 }
+
+/* stylelint-enable unit-disallowed-list */
 </style>

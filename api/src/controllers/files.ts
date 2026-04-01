@@ -56,7 +56,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	 * the row in directus_files async during the upload of the actual file.
 	 */
 
-	let disk: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 	let payload: any = {};
 	let fileCount = 0;
 
@@ -66,10 +65,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'null') fieldValue = null;
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'false') fieldValue = false;
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'true') fieldValue = true;
-
-		if (fieldname === 'storage') {
-			disk = val;
-		}
 
 		payload[fieldname] = fieldValue;
 	});
@@ -99,7 +94,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		const payloadWithRequiredFields = {
 			...payload,
 			type: mimeType,
-			storage: payload.storage || disk,
 		};
 
 		// Clear the payload for the next to-be-uploaded file

@@ -120,8 +120,8 @@ function getLinkForItem(item: any) {
 .toggle {
 	position: relative;
 
-	--toggle-px: 6px;
-	--toggle-py: 4px;
+	--toggle-px: 0.3125rem;
+	--toggle-py: 0.25rem;
 
 	&::before {
 		position: absolute;
@@ -166,7 +166,7 @@ function getLinkForItem(item: any) {
 
 .links {
 	.v-list-item-content {
-		block-size: var(--v-list-item-min-height, 32px);
+		block-size: var(--v-list-item-min-height, 1.8125rem);
 	}
 }
 </style>

@@ -21,6 +21,6 @@ defineProps<{
 .no-results {
 	text-align: center;
 	color: var(--theme--foreground-subdued);
-	padding: 12px;
+	padding: 0.6875rem;
 }
 </style>

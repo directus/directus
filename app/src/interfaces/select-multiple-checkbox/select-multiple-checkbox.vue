@@ -141,28 +141,30 @@ function onBlurCustomInput(otherVal: OtherValue) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .checkboxes {
 	--columns: 1;
 
 	display: grid;
-	gap: 12px 32px;
+	gap: 0.6875rem 1.8125rem;
 	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 
 .grid-2 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 4;
 	}
 }
@@ -203,16 +205,16 @@ function onBlurCustomInput(otherVal: OtherValue) {
 	align-items: center;
 	inline-size: 100%;
 	block-size: var(--theme--form--field--input--height);
-	padding: 10px;
+	padding: 0.5625rem;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	input {
 		display: block;
 		flex-grow: 1;
-		inline-size: 20px; /* this will auto grow with flex above */
+		inline-size: 1.125rem; /* this will auto grow with flex above */
 		margin: 0;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 		padding: 0;
 		background-color: transparent;
 		border: none;

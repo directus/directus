@@ -164,7 +164,10 @@ export class DriverS3 implements TusDriver {
 		return stream as Readable;
 	}
 
-	async stat(filepath: string) {
+	async stat(filepath: string): Promise<{
+		size: number;
+		modified: Date;
+	}> {
 		const { ContentLength, LastModified } = await this.client.send(
 			new HeadObjectCommand({
 				Key: this.fullPath(filepath),
@@ -178,7 +181,7 @@ export class DriverS3 implements TusDriver {
 		};
 	}
 
-	async exists(filepath: string) {
+	async exists(filepath: string): Promise<boolean> {
 		try {
 			await this.stat(filepath);
 			return true;
@@ -187,12 +190,12 @@ export class DriverS3 implements TusDriver {
 		}
 	}
 
-	async move(src: string, dest: string) {
+	async move(src: string, dest: string): Promise<void> {
 		await this.copy(src, dest);
 		await this.delete(src);
 	}
 
-	async copy(src: string, dest: string) {
+	async copy(src: string, dest: string): Promise<void> {
 		const params: CopyObjectCommandInput = {
 			Key: this.fullPath(dest),
 			Bucket: this.config.bucket,
@@ -214,7 +217,7 @@ export class DriverS3 implements TusDriver {
 		await this.client.send(new CopyObjectCommand(params));
 	}
 
-	async write(filepath: string, content: Readable, type?: string) {
+	async write(filepath: string, content: Readable, type?: string): Promise<void> {
 		const params: PutObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Body: content,
@@ -245,11 +248,11 @@ export class DriverS3 implements TusDriver {
 		await upload.done();
 	}
 
-	async delete(filepath: string) {
+	async delete(filepath: string): Promise<void> {
 		await this.client.send(new DeleteObjectCommand({ Key: this.fullPath(filepath), Bucket: this.config.bucket }));
 	}
 
-	async *list(prefix = '') {
+	async *list(prefix = ''): AsyncGenerator<string, void, unknown> {
 		let Prefix = this.fullPath(prefix);
 
 		// Current dir (`.`) isn't known to S3, needs to be an empty prefix instead
@@ -288,7 +291,7 @@ export class DriverS3 implements TusDriver {
 
 	// TUS implementation based on https://github.com/tus/tus-node-server
 
-	get tusExtensions() {
+	get tusExtensions(): string[] {
 		return ['creation', 'termination', 'expiration'];
 	}
 

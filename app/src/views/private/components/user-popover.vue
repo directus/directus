@@ -114,16 +114,16 @@ function navigateToUser() {
 
 .user-box {
 	display: flex;
-	min-inline-size: 300px;
-	padding: 8px 4px;
+	min-inline-size: 16.875rem;
+	padding: 0.4375rem 0.25rem;
 	cursor: pointer;
 
 	.v-avatar {
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 	}
 
 	.status {
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 
 		&.active {
 			--v-chip-color: var(--theme--success);
@@ -169,20 +169,20 @@ function navigateToUser() {
 
 	display: flex;
 	align-items: center;
-	block-size: 80px;
-	margin: 8px 4px;
+	block-size: 4.5rem;
+	margin: 0.4375rem 0.25rem;
 
 	.avatar {
-		inline-size: 80px;
-		block-size: 80px;
-		margin-inline-end: 16px;
+		inline-size: 4.5rem;
+		block-size: 4.5rem;
+		margin-inline-end: 0.875rem;
 	}
 
 	div {
-		inline-size: 140px;
+		inline-size: 7.875rem;
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-block-end: 12px;
+			margin-block-end: 0.6875rem;
 		}
 	}
 }

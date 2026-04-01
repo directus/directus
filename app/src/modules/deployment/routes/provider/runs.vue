@@ -358,6 +358,8 @@ watch(statsRange, loadStats);
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .container {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -365,24 +367,24 @@ watch(statsRange, loadStats);
 
 .range-select {
 	display: block;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
-	margin-block-end: 16px;
+	gap: 0.875rem;
+	margin-block-end: 0.875rem;
 
-	@media (max-width: 1512px) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
-	@media (max-width: 1024px) {
+	@include mixins.breakpoint-down('lg') {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -390,8 +392,8 @@ watch(statsRange, loadStats);
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 6px 10px;
+	gap: 0.4375rem;
+	padding: 0.3125rem 0.5625rem;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;
@@ -421,12 +423,12 @@ watch(statsRange, loadStats);
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .run-name {
 	font-family: var(--theme--fonts--monospace--font-family);
-	font-size: 13px;
+	font-size: 0.75rem;
 }
 
 :deep(.v-table .table-row) {
@@ -436,7 +438,7 @@ watch(statsRange, loadStats);
 .pagination {
 	display: flex;
 	justify-content: center;
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .more-options.v-icon {

@@ -66,6 +66,10 @@ const props = withDefaults(
 		closeOnContentClick?: boolean;
 		/** Renders the element inline, good for seamless selections */
 		inline?: boolean;
+		/** Attach the menu to an input */
+		attached?: boolean;
+		/** Show an arrow pointer */
+		showArrow?: boolean;
 		label?: boolean;
 		/** Translation strings to replace items naming */
 		allItemsTranslation?: string;
@@ -88,6 +92,8 @@ const props = withDefaults(
 		placeholder: null,
 		fullWidth: true,
 		closeOnContentClick: true,
+		attached: undefined,
+		showArrow: undefined,
 		multiplePreviewThreshold: 3,
 		placement: 'bottom',
 	},
@@ -277,8 +283,8 @@ function useDisplayValue() {
 		v-model="menuActive"
 		class="v-select"
 		:disabled="isDisabled"
-		:attached="inline === false"
-		:show-arrow="inline === true"
+		:attached="attached ?? !inline"
+		:show-arrow="showArrow ?? inline"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
 		:full-height="menuFullHeight"
@@ -449,7 +455,7 @@ function useDisplayValue() {
 */
 
 .list {
-	--v-list-min-width: 180px;
+	--v-list-min-width: 10.125rem;
 }
 
 .v-input {
@@ -482,7 +488,7 @@ function useDisplayValue() {
 
 .inline-display {
 	inline-size: max-content;
-	padding-inline-end: 18px;
+	padding-inline-end: 1rem;
 
 	&.disabled {
 		cursor: not-allowed;
@@ -490,8 +496,8 @@ function useDisplayValue() {
 }
 
 .inline-display.label {
-	padding: 4px 8px;
-	padding-inline-end: 26px;
+	padding: 0.25rem 0.4375rem;
+	padding-inline-end: 1.4375rem;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-radius: var(--theme--border-radius);
@@ -512,6 +518,6 @@ function useDisplayValue() {
 }
 
 .color-dot {
-	margin-inline: 7px;
+	margin-inline: 0.375rem;
 }
 </style>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { FlowRaw, OperationRaw } from '@directus/types';
 import { cloneDeep, isEmpty, merge, omit } from 'lodash';
 import { customAlphabet, nanoid } from 'nanoid/non-secure';
@@ -10,7 +11,7 @@ import SettingsNotFound from '../not-found.vue';
 import Arrows from './components/arrows/arrows.vue';
 import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 import Operation, { ArrowInfo, Target } from './components/operation.vue';
-import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
+import { ATTACHMENT_OFFSET, GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
@@ -26,7 +27,6 @@ import VSelect from '@/components/v-select/v-select.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
 import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
@@ -562,8 +562,8 @@ function isLoop(currentId: string, attachTo: string) {
 function getNearAttachment(pos: Vector2) {
 	for (const panel of panels.value) {
 		const attachmentPos = new Vector2(
-			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
-			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y,
+			(panel.x - 1) * GRID_SIZE + ATTACHMENT_OFFSET.x,
+			(panel.y - 1) * GRID_SIZE + ATTACHMENT_OFFSET.y,
 		);
 
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
@@ -677,7 +677,7 @@ function discardAndLeave() {
 				:hovered-panel="hoveredPanelID"
 				:subdued="flow.status === 'inactive'"
 			/>
-			<VWorkspace :tiles="panels" :edit-mode="editMode">
+			<VWorkspace :tiles="panels" :edit-mode="editMode" :grid-size="GRID_SIZE">
 				<template #tile="{ tile }">
 					<Operation
 						v-if="flow"
@@ -793,18 +793,18 @@ function discardAndLeave() {
 }
 
 .status-dot {
-	margin-inline-start: 6px;
+	margin-inline-start: 0.3125rem;
 }
 
 .container {
-	--column-size: 200px;
-	--row-size: 100px;
-	--gap-size: 40px;
+	--column-size: 11.25rem;
+	--row-size: 5.625rem;
+	--gap-size: 2.25rem;
 
 	padding-block-start: calc(var(--content-padding) / 2);
 
 	&.center {
-		block-size: calc(100% - 48px - var(--header-bar-height));
+		block-size: calc(100% - 2.6875rem - var(--header-bar-height));
 		display: grid;
 		place-items: center;
 	}
