@@ -31,14 +31,13 @@ const sidebarStore = useSidebarStore();
 	overflow: hidden;
 	background-color: var(--theme--sidebar--background);
 	font-family: var(--theme--sidebar--font-family);
-	min-inline-size: 15.75rem;
 
 	/* Border set by parent; hidden on mobile */
 }
 
 .accordion-root {
 	block-size: calc(100% - var(--sidebar-section-trigger-height));
-	overflow-y: auto;
+	overflow: hidden auto;
 	display: block;
 }
 
