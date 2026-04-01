@@ -857,6 +857,7 @@ errors:
   INVALID_CONFIG: Invalid config
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_FOREIGN_KEY: Invalid foreign key
+  INVALID_INVITE: This invite is no longer valid
   INVALID_IP: IP Address not allowed
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
