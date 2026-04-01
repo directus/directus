@@ -1,4 +1,10 @@
-import { ForbiddenError, InvalidInviteError, InvalidPasswordError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import {
+	ForbiddenError,
+	InvalidInviteError,
+	InvalidPasswordError,
+	InvalidPayloadError,
+	RecordNotUniqueError,
+} from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -493,9 +499,7 @@ describe('Integration Tests', () => {
 					schema,
 				});
 
-				await expect(
-					(service as any).checkPasswordPolicy(['weak']),
-				).rejects.toThrow(InvalidPasswordError);
+				await expect((service as any).checkPasswordPolicy(['weak'])).rejects.toThrow(InvalidPasswordError);
 
 				settingsReadSpy.mockRestore();
 			});
@@ -510,9 +514,7 @@ describe('Integration Tests', () => {
 					schema,
 				});
 
-				await expect(
-					(service as any).checkPasswordPolicy(['StrongPass1']),
-				).resolves.not.toThrow();
+				await expect((service as any).checkPasswordPolicy(['StrongPass1'])).resolves.not.toThrow();
 
 				settingsReadSpy.mockRestore();
 			});
@@ -527,9 +529,7 @@ describe('Integration Tests', () => {
 					schema,
 				});
 
-				await expect(
-					(service as any).checkPasswordPolicy(['anything']),
-				).resolves.not.toThrow();
+				await expect((service as any).checkPasswordPolicy(['anything'])).resolves.not.toThrow();
 
 				settingsReadSpy.mockRestore();
 			});
