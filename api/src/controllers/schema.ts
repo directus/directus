@@ -9,7 +9,7 @@ import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
 import asyncHandler from '../utils/async-handler.js';
-import { getVersionedHash } from '../utils/get-versioned-hash.js';
+import { getSnapshot } from '../utils/get-snapshot.js';
 
 const router = express.Router();
 
@@ -105,11 +105,16 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 		const snapshot: Snapshot = res.locals['upload'];
-		const currentSnapshot = await service.snapshot();
-		const snapshotDiff = await service.diff(snapshot, { currentSnapshot, force: 'force' in req.query });
+		// service.diff() internally fetches the current snapshot with includeUntracked: true
+		// so db-only tables produce "edit" diffs instead of "new" diffs.
+		const snapshotDiff = await service.diff(snapshot, { force: 'force' in req.query });
 		if (!snapshotDiff) return next();
 
-		const currentSnapshotHash = getVersionedHash(currentSnapshot);
+		// The hash must match what service.apply() will compute (also with includeUntracked)
+		const currentSnapshotHash = service.getHashedSnapshot(
+			await getSnapshot({ includeUntracked: true }),
+		).hash;
+
 		res.locals['payload'] = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
 		return next();
 	}),

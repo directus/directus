@@ -61,7 +61,9 @@ export async function apply(
 			snapshot = parseJSON(fileContents) as Snapshot;
 		}
 
-		const currentSnapshot = await getSnapshot({ database });
+		// Include untracked (db-only) tables so the diff produces "edit" instead of "new"
+		// for tables that already exist in the database but lack Directus metadata.
+		const currentSnapshot = await getSnapshot({ database, includeUntracked: true });
 		let snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
 
 		if (options?.ignoreRules) {

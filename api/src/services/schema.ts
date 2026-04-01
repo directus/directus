@@ -36,7 +36,9 @@ export class SchemaService {
 	async apply(payload: SnapshotDiffWithHash): Promise<void> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
-		const currentSnapshot = await this.snapshot();
+		// Include untracked (db-only) tables so the hash matches the diff that was computed
+		// with includeUntracked: true, and so applyDiff sees the full current state.
+		const currentSnapshot = await getSnapshot({ database: this.knex, includeUntracked: true });
 		const snapshotWithHash = this.getHashedSnapshot(currentSnapshot);
 
 		if (!validateApplyDiff(payload, snapshotWithHash)) return;
@@ -52,7 +54,11 @@ export class SchemaService {
 
 		validateSnapshot(snapshot, options?.force);
 
-		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
+		// Include untracked (db-only) tables in the current snapshot so the diff produces
+		// "edit" instead of "new" for tables that already exist in the database.
+		const currentSnapshot =
+			options?.currentSnapshot ?? (await getSnapshot({ database: this.knex, includeUntracked: true }));
+
 		const diff = getSnapshotDiff(currentSnapshot, snapshot);
 
 		if (

@@ -13,7 +13,7 @@ export async function applySnapshot(
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
-	const current = options?.current ?? (await getSnapshot({ database, schema }));
+	const current = options?.current ?? (await getSnapshot({ database, schema, includeUntracked: true }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
 
 	await applyDiff(current, snapshotDiff, { database, schema });

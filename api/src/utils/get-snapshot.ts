@@ -9,7 +9,20 @@ import { RelationsService } from '../services/relations.js';
 import { getSchema } from './get-schema.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
-export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
+export async function getSnapshot(options?: {
+	database?: Knex;
+	schema?: SchemaOverview;
+	/**
+	 * Include "untracked" (db-only) items in the snapshot. These are tables/fields/relations
+	 * that exist in the database but have no Directus metadata (meta === null).
+	 *
+	 * When true, db-only items are included so that /schema/diff can produce an "edit" diff
+	 * instead of a "new" diff for tables that already exist. This prevents the "Collection
+	 * already exists" error during /schema/apply when tables were created by external
+	 * migrations (e.g. Supabase, Prisma, Flyway).
+	 */
+	includeUntracked?: boolean;
+}): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
 	const vendor = getDatabaseClient(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
@@ -24,9 +37,11 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		relationsService.readAll(),
 	]);
 
-	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
-	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
-	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
+	const untrackedFilter = options?.includeUntracked ? () => true : excludeUntracked;
+
+	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item) && untrackedFilter(item));
+	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item) && untrackedFilter(item));
+	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item) && untrackedFilter(item));
 	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']).map((collection) =>

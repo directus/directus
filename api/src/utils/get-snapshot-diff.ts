@@ -6,18 +6,32 @@ import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemFiel
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
 	const diffedSnapshot: SnapshotDiff = {
 		collections: [
-			...current.collections.map((currentCollection) => {
-				const afterCollection = after.collections.find(
-					(afterCollection) => afterCollection.collection === currentCollection.collection,
-				);
+			...current.collections
+				.filter((currentCollection) => {
+					// Skip db-only collections (meta === null) that are not in the target snapshot.
+					// These are untracked tables that should not be deleted.
+					if (currentCollection.meta === null) {
+						const inTarget = after.collections.some(
+							(afterCollection) => afterCollection.collection === currentCollection.collection,
+						);
 
-				const afterCollectionSanitized = afterCollection ? sanitizeCollection(afterCollection) : undefined;
+						return inTarget;
+					}
 
-				return {
-					collection: currentCollection.collection,
-					diff: deepDiff.diff(sanitizeCollection(currentCollection), afterCollectionSanitized),
-				};
-			}),
+					return true;
+				})
+				.map((currentCollection) => {
+					const afterCollection = after.collections.find(
+						(afterCollection) => afterCollection.collection === currentCollection.collection,
+					);
+
+					const afterCollectionSanitized = afterCollection ? sanitizeCollection(afterCollection) : undefined;
+
+					return {
+						collection: currentCollection.collection,
+						diff: deepDiff.diff(sanitizeCollection(currentCollection), afterCollectionSanitized),
+					};
+				}),
 			...after.collections
 				.filter((afterCollection) => {
 					const currentCollection = current.collections.find(
@@ -32,7 +46,18 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 				})),
 		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['collections'],
 		fields: [
-			...current.fields.map((currentField) => {
+			...current.fields
+				.filter((currentField) => {
+					// Skip db-only fields (meta === null) not in the target — don't delete untracked fields
+					if (currentField.meta === null) {
+						return after.fields.some(
+							(af) => af.collection === currentField.collection && af.field === currentField.field,
+						);
+					}
+
+					return true;
+				})
+				.map((currentField) => {
 				const afterField = after.fields.find(
 					(afterField) => afterField.collection === currentField.collection && afterField.field === currentField.field,
 				);
@@ -134,7 +159,18 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 				}),
 		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['systemFields'],
 		relations: [
-			...current.relations.map((currentRelation) => {
+			...current.relations
+				.filter((currentRelation) => {
+					// Skip db-only relations (meta === null) not in the target
+					if (currentRelation.meta === null) {
+						return after.relations.some(
+							(ar) => ar.collection === currentRelation.collection && ar.field === currentRelation.field,
+						);
+					}
+
+					return true;
+				})
+				.map((currentRelation) => {
 				const afterRelation = after.relations.find(
 					(afterRelation) =>
 						afterRelation.collection === currentRelation.collection && afterRelation.field === currentRelation.field,
