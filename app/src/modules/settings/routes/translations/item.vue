@@ -332,13 +332,8 @@ async function revert(values: Record<string, any>) {
 }
 
 .v-form {
-	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
-
-	@include mixins.breakpoint-up('sm') {
-		padding: var(--content-padding);
-		padding-block-end: var(--content-padding-bottom);
-	}
+	padding-inline: var(--content-section-padding);
+	padding-block: var(--content-section-padding) var(--content-padding-bottom);
 }
 
 .title-loader {

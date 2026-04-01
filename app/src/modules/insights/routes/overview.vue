@@ -417,7 +417,8 @@ async function batchDelete() {
 }
 
 .v-table {
-	padding: var(--content-padding);
+	padding-inline: var(--content-section-padding);
+	padding-block: var(--content-section-padding) var(--content-padding-bottom);
 }
 
 .ctx-toggle {

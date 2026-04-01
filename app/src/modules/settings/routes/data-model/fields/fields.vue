@@ -171,8 +171,8 @@ function discardAndLeave() {
 }
 
 .collections-item {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-inline: var(--content-section-padding);
+	padding-block: var(--content-section-padding) var(--content-padding-bottom);
 }
 
 .fields {

@@ -278,8 +278,8 @@ function openDuplicateDialog(item: PolicyItem) {
 }
 
 .policies {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-inline: var(--content-section-padding);
+	padding-block: 2.375rem var(--content-padding-bottom);
 }
 
 .system {

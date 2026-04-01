@@ -268,8 +268,8 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 }
 
 .content {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-inline: var(--content-section-padding);
+	padding-block: var(--content-section-padding) var(--content-padding-bottom);
 	display: flex;
 	flex-direction: column;
 	gap: var(--theme--form--row-gap);
