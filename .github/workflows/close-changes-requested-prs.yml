@@ -84,7 +84,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                body: "Hey, sorry! 👋 This PR has been open for two weeks with changes requested but hasn't been updated, so we're going to go ahead and close it out. No worries though — feel free to re-open it or submit a new PR once the requested changes have been addressed. Thanks for contributing!",
+                body: "Hi there! 👋 This PR has requested changes but hasn't been updated in two weeks, so we're going to close it out. Our smal team has limited resources so we need to remove noise periodically to keep our work focused. If you would like to continue to work on this then feel free to re-open this PR or submit a new one once the requested changes have been addressed. Thank you for contributing to Directus!🐰",
               });
 
               core.info(`Closed PR #${pr.number}: ${pr.title}`);
