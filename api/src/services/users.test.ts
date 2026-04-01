@@ -1,4 +1,4 @@
-import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidInviteError, InvalidPasswordError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -7,7 +7,7 @@ import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { verifyJWT } from '../utils/jwt.js';
-import { ItemsService, MailService, UsersService } from './index.js';
+import { ItemsService, MailService, SettingsService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -479,6 +479,59 @@ describe('Integration Tests', () => {
 				});
 
 				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
+			});
+		});
+
+		describe('checkPasswordPolicy', () => {
+			it('should throw InvalidPasswordError when password does not match policy', async () => {
+				const settingsReadSpy = vi
+					.spyOn(SettingsService.prototype, 'readSingleton')
+					.mockResolvedValueOnce({ auth_password_policy: '/^(?=.*[A-Z])(?=.*[0-9]).{8,}$/' });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(
+					(service as any).checkPasswordPolicy(['weak']),
+				).rejects.toThrow(InvalidPasswordError);
+
+				settingsReadSpy.mockRestore();
+			});
+
+			it('should not throw when password matches policy', async () => {
+				const settingsReadSpy = vi
+					.spyOn(SettingsService.prototype, 'readSingleton')
+					.mockResolvedValueOnce({ auth_password_policy: '/^(?=.*[A-Z])(?=.*[0-9]).{8,}$/' });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(
+					(service as any).checkPasswordPolicy(['StrongPass1']),
+				).resolves.not.toThrow();
+
+				settingsReadSpy.mockRestore();
+			});
+
+			it('should not throw when no password policy is set', async () => {
+				const settingsReadSpy = vi
+					.spyOn(SettingsService.prototype, 'readSingleton')
+					.mockResolvedValueOnce({ auth_password_policy: null });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(
+					(service as any).checkPasswordPolicy(['anything']),
+				).resolves.not.toThrow();
+
+				settingsReadSpy.mockRestore();
 			});
 		});
 	});

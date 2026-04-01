@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidInviteError, InvalidPasswordError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	Item,
@@ -11,7 +11,7 @@ import type {
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import { FailedValidationError } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
@@ -103,16 +103,7 @@ export class UsersService extends ItemsService {
 
 		for (const password of passwords) {
 			if (!regex.test(password)) {
-				throw new FailedValidationError(
-					joiValidationErrorItemToErrorExtensions({
-						message: `Provided password doesn't match password policy`,
-						path: ['password'],
-						type: 'custom.pattern.base',
-						context: {
-							value: password,
-						},
-					}),
-				);
+				throw new InvalidPasswordError();
 			}
 		}
 	}

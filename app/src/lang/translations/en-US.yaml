@@ -859,6 +859,7 @@ errors:
   INVALID_FOREIGN_KEY: Invalid foreign key
   INVALID_INVITE: This invite is no longer valid
   INVALID_IP: IP Address not allowed
+  INVALID_PASSWORD: The provided password does not meet the password policy requirements
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
