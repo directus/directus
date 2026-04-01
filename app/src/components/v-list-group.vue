@@ -141,7 +141,7 @@ function onClick(event: MouseEvent) {
 	}
 
 	.items {
-		padding-inline-start: 1rem;
+		padding-inline-start: var(--icon-size-default);
 		list-style: none;
 	}
 }

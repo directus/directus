@@ -260,12 +260,12 @@ function useVersionSelection() {
 					:active="isMobile ? mobileDrawerOpen : !sidebarCollapsed"
 					@click="isMobile ? (mobileDrawerOpen = !mobileDrawerOpen) : (sidebarCollapsed = !sidebarCollapsed)"
 				>
-					<AiMagicButton :animate="aiButtonHovering" />
+					<AiMagicButton class="ai-magic-button" :animate="aiButtonHovering" />
 				</VButton>
 			</template>
 
 			<template v-if="serverStore.info.ai_enabled" #sidebar>
-				<div id="ve-sidebar-desktop-outlet" class="sidebar-outlet" />
+				<div id="ve-sidebar-desktop-outlet" class="sidebar-outlet sidebar-border" />
 			</template>
 
 			<template #overlay="{ frameEl, frameSrc }">
@@ -316,14 +316,25 @@ function useVersionSelection() {
 	inline-size: 100%;
 }
 
+.sidebar-border {
+	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+}
+
+.ai-magic-button {
+	block-size: 1.25rem;
+	inline-size: 1.25rem;
+}
+
 .ai-sidebar {
 	block-size: 100%;
 	inline-size: 100%;
-	padding: 0.6875rem;
+	padding: var(--sidebar-section-content-padding);
 	background-color: var(--theme--sidebar--background);
-	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+	font-family: var(--theme--sidebar--font-family);
 	display: flex;
 	flex-direction: column;
+
+	/* Border set by parent element; hidden on mobile */
 }
 
 .spacer {

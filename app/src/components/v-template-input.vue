@@ -311,7 +311,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
 	white-space: nowrap;
-	background-color: var(--theme--background);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);

@@ -65,22 +65,11 @@ export default defineTheme({
 			},
 		},
 		sidebar: {
-			background: '#FFFFFF',
-			borderWidth: '1px',
-			borderColor: 'var(--theme--border-color)',
 			section: {
 				toggle: {
-					borderColor: 'var(--theme--border-color)',
-					borderWidth: '1px',
-					background: '#FFFFFF',
 					foreground: 'var(--theme--foreground-subdued)',
-					foregroundHover: 'var(--theme--foreground)',
-					foregroundActive: 'var(--theme--foreground-accent)',
-					icon: {
-						foreground: 'var(--theme--foreground)',
-						foregroundHover: 'var(--theme--foreground)',
-						foregroundActive: 'var(--theme--foreground-accent)',
-					},
+					foregroundHover: 'var(--theme--foreground-accent)',
+					foregroundActive: 'var(--theme--foreground)',
 				},
 				form: {
 					field: {
