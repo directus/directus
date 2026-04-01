@@ -622,15 +622,7 @@ function useItemNavigation() {
 		return collectionPath;
 	});
 
-	// If there's in-app navigation history, use browser back
-	// Otherwise fall back to collection route
-	const backRoute = computed(() => {
-		if (history.state?.back) {
-			return undefined;
-		}
-
-		return collectionRoute.value;
-	});
+	const backRoute = computed(() => collectionRoute.value);
 
 	return { collectionRoute, backRoute };
 }

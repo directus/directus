@@ -91,24 +91,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(backButton.props('to')).toBe('/back');
 	});
 
-	test('back button calls router.back when backTo is not provided', async () => {
-		const routerBackSpy = vi.spyOn(router, 'back');
-
-		const wrapper = mount(PrivateViewHeaderBarIcon, {
-			...mountOptions,
-			props: {
-				showBack: true,
-			},
-		});
-
-		const backButton = wrapper.findComponent({ name: 'VButton' });
-
-		await backButton.find('.button').trigger('click');
-
-		expect(routerBackSpy).toHaveBeenCalled();
-	});
-
-	test('back button does not call router.back when backTo is provided', async () => {
+	test('back button never calls router.back when clicked', async () => {
 		const routerBackSpy = vi.spyOn(router, 'back');
 
 		const wrapper = mount(PrivateViewHeaderBarIcon, {

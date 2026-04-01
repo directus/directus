@@ -11,17 +11,7 @@ defineProps<{
 </script>
 
 <template>
-	<VButton
-		v-if="showBack"
-		class="back-button"
-		rounded
-		icon
-		secondary
-		exact
-		small
-		:to="backTo"
-		@click="!backTo ? $router.back() : undefined"
-	>
+	<VButton v-if="showBack" class="back-button" rounded icon secondary exact small :to="backTo">
 		<VIcon name="arrow_back" small />
 	</VButton>
 
