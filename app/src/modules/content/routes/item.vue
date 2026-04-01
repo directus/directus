@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useCollection } from '@directus/composables';
-import { useShortcut } from '@directus/composables';
-import { translateShortcut } from '@directus/composables';
+import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';

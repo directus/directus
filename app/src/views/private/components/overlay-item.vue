@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useCollection } from '@directus/composables';
-import { useShortcut } from '@directus/composables';
-import { translateShortcut } from '@directus/composables';
+import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { ContentVersion, Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
