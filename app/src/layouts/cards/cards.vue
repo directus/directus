@@ -197,7 +197,7 @@ function onSelectAll() {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding-block-start: 2.25rem;
+	padding-block: 2.25rem var(--content-padding-bottom);
 	padding-inline: var(--content-section-padding);
 
 	@include mixins.breakpoint-down('sm') {

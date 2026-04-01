@@ -116,10 +116,6 @@
 		}
 	}
 
-	.fc-view-harness {
-		padding-block-start: 2.375rem;
-	}
-
 	.fc-toolbar {
 		&.fc-header-toolbar {
 			position: sticky;
@@ -127,7 +123,7 @@
 			z-index: 4;
 			inline-size: calc(100% + 2 * var(--content-section-padding));
 			block-size: 2.9375rem;
-			margin-block-end: 2rem;
+			margin-block-end: var(--content-section-padding);
 			margin-inline: calc(-1 * var(--content-section-padding));
 			padding: 0 var(--content-padding);
 			font-weight: inherit !important;

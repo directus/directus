@@ -292,7 +292,7 @@ function removeField(fieldKey: string) {
 
 	@include mixins.breakpoint-down('sm') {
 		padding-block: 0.25rem 0;
-		padding-inline: 0.625rem 0;
+		padding-inline: 0.625rem;
 	}
 }
 
@@ -303,17 +303,15 @@ function removeField(fieldKey: string) {
 
 	& > :deep(table) {
 		min-inline-size: 100% !important;
-		margin-inline-start: 0;
 
-		tr {
-			margin-inline-end: 0;
-		}
+		// padding-inline-end is ignored by browsers in scrollWidth calculations.
+		// A transparent border is the only way to extend the scroll area.
+		border-inline-end: var(--content-section-padding) solid transparent;
 	}
 }
 
 .footer {
 	position: sticky;
-	inset-inline-start: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
