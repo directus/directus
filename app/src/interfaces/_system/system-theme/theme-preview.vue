@@ -30,7 +30,7 @@ const localVars = computed(() => {
 			<rect x="16" y="16" width="40" height="124" fill="var(--theme--navigation--background)" />
 
 			<!-- Project Info Background -->
-			<rect x="16" width="40" height="16" fill="var(--theme--navigation--project--background)" />
+			<rect x="16" width="40" height="16" fill="var(--theme--navigation--background)" />
 
 			<!-- Module Bar Background -->
 			<rect width="16" height="140" fill="var(--theme--navigation--modules--background)" />

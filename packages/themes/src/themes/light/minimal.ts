@@ -22,11 +22,7 @@ export default defineTheme({
 				borderWidth: '1px',
 				borderColor: 'var(--theme--border-color)',
 			},
-			project: {
-				borderWidth: '1px',
-				background: '#FFFFFF',
-				borderColor: 'var(--theme--border-color)',
-			},
+			project: {},
 			list: {
 				icon: {
 					foreground: '#0F172A',
