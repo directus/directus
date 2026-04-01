@@ -41,11 +41,7 @@ export default defineTheme({
 					foregroundActive: 'var(--theme--primary)',
 				},
 			},
-			project: {
-				borderWidth: '1px',
-				background: 'var(--theme--navigation--background)',
-				borderColor: 'var(--theme--border-color-subdued)',
-			},
+			project: {},
 			list: {
 				divider: { borderColor: 'var(--theme--border-color-subdued)' },
 				icon: { foreground: 'var(--theme--foreground)' },

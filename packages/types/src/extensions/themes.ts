@@ -147,11 +147,8 @@ const Rules = Type.Object({
 
 			project: Type.Optional(
 				Type.Object({
-					background: Type.Optional(Type.Ref(Color)),
 					foreground: Type.Optional(Type.Ref(Color)),
 					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					borderWidth: Type.Optional(Type.Ref(LineWidth)),
-					borderColor: Type.Optional(Type.Ref(Color)),
 				}),
 			),
 
