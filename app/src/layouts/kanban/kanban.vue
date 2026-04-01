@@ -299,10 +299,12 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	--header-bar-margin: 1.375rem;
 
 	block-size: 100%;
-	padding: 2.375rem var(--content-section-padding) var(--content-padding-bottom);
+	padding-block: 2.375rem var(--content-padding-bottom);
+	padding-inline: var(--content-section-padding);
 
 	@include mixins.breakpoint-down('sm') {
-		padding: 0.25rem 0 0 0.625rem;
+		padding-block: 0.25rem 0;
+		padding-inline: 0.625rem 0;
 	}
 
 	&:has(> .limit) {

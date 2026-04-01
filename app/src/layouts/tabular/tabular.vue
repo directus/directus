@@ -291,7 +291,8 @@ function removeField(fieldKey: string) {
 	padding: 2.375rem var(--content-section-padding) 0;
 
 	@include mixins.breakpoint-down('sm') {
-		padding: 0.25rem 0 0 0.625rem;
+		padding-block: 0.25rem 0;
+		padding-inline: 0.625rem 0;
 	}
 }
 
@@ -316,7 +317,6 @@ function removeField(fieldKey: string) {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	inline-size: 100%;
 	padding-block: 1.8125rem;
 
 	.pagination:not(.v-skeleton-loader) {
