@@ -304,7 +304,12 @@ function clearFilters() {
 				</template>
 
 				<template #no-items>
-					<VInfo :title="status ? $t(`no_${status}_users`) : $t('user_count', 0)" icon="people_alt" center>
+					<VInfo
+						v-if="!layoutState.loadingItemCount"
+						:title="status ? $t(`no_${status}_users`) : $t('user_count', 0)"
+						icon="people_alt"
+						center
+					>
 						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
