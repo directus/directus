@@ -288,8 +288,8 @@ onUnmounted(() => {
 					v-if="isBuilding && canCancel"
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
 					icon="dangerous"
+					kind="danger"
 					secondary
-					class="action-cancel"
 					:loading="canceling"
 					@click="confirmCancel = true"
 				/>
@@ -409,11 +409,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-.action-cancel {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .spinner {
 	margin: 6.75rem auto;
 }
