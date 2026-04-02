@@ -2,7 +2,7 @@
 
 ---
 
-> [!NOTE]
+> [!NOTE]\
 > We’re planning an update to the Directus source code license and would love your feedback.\
 > Take a look at our community post and share your thoughts!\
 > [🔗 Directus License Revision: Community Feedback Requested](https://community.directus.io/t/directus-license-revision-community-feedback-requested/2125)
