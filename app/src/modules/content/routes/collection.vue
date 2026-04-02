@@ -336,61 +336,48 @@ function clearFilters() {
 					<BookmarkAdd
 						v-if="!bookmark"
 						v-model="bookmarkDialogActive"
-						class="add"
 						:saving="creatingBookmark"
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<VIcon
+							<PrivateViewHeaderBarActionButton
 								v-tooltip.right="$t('create_bookmark')"
-								small
-								class="toggle"
-								clickable
-								name="bookmark"
+								icon="bookmark"
+								secondary
 								@click="on"
 							/>
 						</template>
 					</BookmarkAdd>
 
-					<VIcon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled small />
+					<div v-else-if="bookmarkSaved" class="saved-bookmark">
+						<VIcon name="bookmark" filled />
+					</div>
 
-					<template v-else-if="bookmarkIsMine">
-						<VIcon
-							v-tooltip.bottom="$t('update_bookmark')"
-							class="save"
-							clickable
-							name="bookmark_save"
-							small
-							@click="savePreset()"
-						/>
-					</template>
+					<PrivateViewHeaderBarActionButton
+						v-else-if="bookmarkIsMine"
+						v-tooltip.bottom="$t('update_bookmark')"
+						icon="bookmark_save"
+						secondary
+						@click="savePreset()"
+					/>
 
-					<BookmarkAdd
-						v-else
-						v-model="bookmarkDialogActive"
-						class="add"
-						:saving="creatingBookmark"
-						@save="createBookmark"
-					>
+					<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
 						<template #activator="{ on }">
-							<VIcon
+							<PrivateViewHeaderBarActionButton
 								v-tooltip.bottom="$t('create_bookmark')"
-								small
-								class="toggle"
-								name="bookmark"
-								clickable
+								icon="bookmark"
+								secondary
 								@click="on"
 							/>
 						</template>
 					</BookmarkAdd>
 
-					<VIcon
+					<PrivateViewHeaderBarActionButton
 						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
 						v-tooltip.bottom="$t('reset_bookmark')"
-						name="settings_backup_restore"
-						clickable
-						class="clear"
-						small
+						icon="settings_backup_restore"
+						secondary
+						kind="danger"
 						@click="clearLocalSave"
 					/>
 				</div>
@@ -588,48 +575,11 @@ function clearFilters() {
 	margin-block-start: 1.375rem;
 }
 
-.bookmark-controls {
-	.add,
-	.save,
-	.saved,
-	.clear {
-		display: inline-block;
-	}
-
-	.add,
-	.save,
-	.clear {
-		cursor: pointer;
-		transition: color var(--fast) var(--transition);
-	}
-
-	.add {
-		color: var(--theme--foreground-subdued);
-
-		&:hover {
-			color: var(--theme--foreground);
-		}
-	}
-
-	.save {
-		color: var(--theme--warning);
-
-		&:hover {
-			color: var(--warning-125);
-		}
-	}
-
-	.clear {
-		margin-inline-start: 0.25rem;
-		color: var(--theme--foreground-subdued);
-
-		&:hover {
-			color: var(--theme--warning);
-		}
-	}
-
-	.saved {
-		color: var(--theme--primary);
-	}
+.saved-bookmark {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 2rem;
+	block-size: 2rem;
 }
 </style>
