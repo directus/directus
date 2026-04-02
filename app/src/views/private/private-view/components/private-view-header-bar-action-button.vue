@@ -23,8 +23,8 @@ defineEmits<{
 <template>
 	<VButton
 		class="header-button"
-		:class="[secondary ? kind : undefined, secondary]"
-		:kind="!secondary ? kind : undefined"
+		:class="[secondary ? kind : undefined]"
+		:kind="secondary ? undefined : kind"
 		:disabled
 		:active
 		:loading
