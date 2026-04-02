@@ -29,9 +29,17 @@ function handleClick({ role }: { role: string }) {
 
 <template>
 	<VList nav>
-		<VListItem to="/users" exact :active="!currentRole">
+		<VListItem to="/users/active" exact>
 			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
-			<VListItemContent>{{ $t('all_users') }}</VListItemContent>
+			<VListItemContent>{{ $t('active_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem to="/users/suspended" exact>
+			<VListItemIcon><VIcon name="pause_circle" /></VListItemIcon>
+			<VListItemContent>{{ $t('suspended_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem to="/users/invited" exact>
+			<VListItemIcon><VIcon name="person_add" /></VListItemIcon>
+			<VListItemContent>{{ $t('invited_users') }}</VListItemContent>
 		</VListItem>
 
 		<VDivider v-if="(roles && roles.length > 0) || loading" />
