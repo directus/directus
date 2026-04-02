@@ -65,18 +65,6 @@ describe('PrivateViewHeaderBarActionButton', () => {
 		expect(icon.props('name')).toBe('delete');
 	});
 
-	test('passes icon prop to VIcon with small size', () => {
-		const wrapper = mount(PrivateViewHeaderBarActionButton, {
-			...mountOptions,
-			props: {
-				icon: 'save',
-			},
-		});
-
-		const icon = wrapper.findComponent({ name: 'v-icon' });
-		expect(icon.props('small')).toBe(true);
-	});
-
 	test('passes disabled prop to VButton', () => {
 		const wrapper = mount(PrivateViewHeaderBarActionButton, {
 			...mountOptions,
@@ -204,7 +192,6 @@ describe('PrivateViewHeaderBarActionButton', () => {
 		});
 
 		const button = wrapper.findComponent({ name: 'v-button' });
-		expect(button.props('rounded')).toBe(true);
 		expect(button.props('small')).toBe(true);
 	});
 

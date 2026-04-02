@@ -7,7 +7,7 @@ import VProgressCircular from './v-progress-circular.vue';
 import vFocus from '@/directives/focus';
 import vTooltip from '@/directives/tooltip';
 
-interface Props {
+export interface Props {
 	/** Automatically focuses on the button */
 	autofocus?: boolean;
 	/** Styling of the button */
