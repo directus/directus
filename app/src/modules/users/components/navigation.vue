@@ -30,11 +30,11 @@ function handleClick({ role }: { role: string }) {
 <template>
 	<VList nav>
 		<VListItem to="/users/active" exact>
-			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
+			<VListItemIcon><VIcon name="group" /></VListItemIcon>
 			<VListItemContent>{{ $t('active_users') }}</VListItemContent>
 		</VListItem>
 		<VListItem to="/users/suspended" exact>
-			<VListItemIcon><VIcon name="pause_circle" /></VListItemIcon>
+			<VListItemIcon><VIcon name="group_off" /></VListItemIcon>
 			<VListItemContent>{{ $t('suspended_users') }}</VListItemContent>
 		</VListItem>
 		<VListItem to="/users/invited" exact>
