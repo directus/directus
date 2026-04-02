@@ -113,7 +113,7 @@ describe('PrivateViewHeaderBar', () => {
 		});
 
 		const navBarStore = useNavBarStore();
-		const navToggle = wrapper.find('.nav-toggle');
+		const navToggle = wrapper.find('.nav-toggle .button');
 		await navToggle.trigger('click');
 
 		expect(navBarStore.expand).toHaveBeenCalled();
@@ -140,7 +140,7 @@ describe('PrivateViewHeaderBar', () => {
 		});
 
 		const sidebarStore = useSidebarStore();
-		const sidebarToggle = wrapper.find('.sidebar-toggle');
+		const sidebarToggle = wrapper.find('.sidebar-toggle .button');
 		await sidebarToggle.trigger('click');
 
 		expect(sidebarStore.toggle).toHaveBeenCalled();

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { translateShortcut } from '@/utils/translate-shortcut';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import PrivateViewHeaderBarActions from '@/views/private/private-view/components/private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
@@ -20,17 +19,13 @@ defineEmits<{
 <template>
 	<header class="header-bar">
 		<div class="primary">
-			<VButton
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel-button"
-				icon
+				icon="close"
 				secondary
-				exact
-				small
 				@click="$emit('cancel')"
-			>
-				<VIcon name="close" small />
-			</VButton>
+			/>
 
 			<PrivateViewHeaderBarIcon v-if="icon" class="header-icon" :icon :icon-color />
 

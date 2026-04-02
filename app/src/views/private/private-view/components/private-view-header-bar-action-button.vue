@@ -35,6 +35,7 @@ defineEmits<{
 		:download
 		icon
 		small
+		exact
 		@click="$emit('click')"
 	>
 		<VIcon :name="icon" />

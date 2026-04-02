@@ -504,7 +504,7 @@ async function downloadFiles() {
 							: $t('not_allowed')
 					"
 					:disabled="batchDeleteAllowed !== true || (folderSelection.length > 0 && folderDeleteAllowed !== true)"
-					class="action-delete"
+					kind="danger"
 					secondary
 					icon="delete"
 					@click="confirmDelete = true"
@@ -654,11 +654,6 @@ async function downloadFiles() {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
 }

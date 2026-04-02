@@ -135,7 +135,7 @@ function discardAndStay() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
+						kind="danger"
 						secondary
 						:disabled="item === null"
 						icon="delete"
@@ -227,11 +227,6 @@ function discardAndStay() {
 	--v-button-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-subdued);
 	--v-button-color-hover: var(--theme--primary);
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .content {

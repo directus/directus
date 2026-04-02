@@ -129,7 +129,7 @@ function clearFilters() {
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							class="action-delete"
+							kind="danger"
 							secondary
 							icon="delete"
 							@click="on"
@@ -231,10 +231,5 @@ function clearFilters() {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
 	--v-button-color-hover-disabled: var(--theme--primary);
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 </style>

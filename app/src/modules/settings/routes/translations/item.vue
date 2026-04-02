@@ -231,7 +231,7 @@ async function revert(values: Record<string, any>) {
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
+						kind="danger"
 						secondary
 						:disabled="item === null"
 						icon="delete"
@@ -319,11 +319,6 @@ async function revert(values: Record<string, any>) {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);

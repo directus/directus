@@ -183,7 +183,7 @@ describe('PrivateViewHeaderBarActionButton', () => {
 		expect(button.props('icon')).toBe(true);
 	});
 
-	test('passes small prop to VButton', () => {
+	test('passes small and exact props to VButton', () => {
 		const wrapper = mount(PrivateViewHeaderBarActionButton, {
 			...mountOptions,
 			props: {
@@ -193,6 +193,7 @@ describe('PrivateViewHeaderBarActionButton', () => {
 
 		const button = wrapper.findComponent({ name: 'v-button' });
 		expect(button.props('small')).toBe(true);
+		expect(button.props('exact')).toBe(true);
 	});
 
 	test('emits click event when VButton is clicked', async () => {

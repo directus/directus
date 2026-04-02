@@ -324,7 +324,7 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						class="action-delete"
+						kind="danger"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
 						icon="delete"
@@ -516,11 +516,6 @@ function revert(values: Record<string, any>) {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);

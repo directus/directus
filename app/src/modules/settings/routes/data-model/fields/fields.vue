@@ -89,7 +89,7 @@ function discardAndLeave() {
 					<PrivateViewHeaderBarActionButton
 						v-if="isSystemCollection(collection) === false"
 						v-tooltip.bottom="$t('delete_collection')"
-						class="action-delete"
+						kind="danger"
 						secondary
 						:disabled="!item"
 						icon="delete"
@@ -178,10 +178,5 @@ function discardAndLeave() {
 .fields {
 	max-inline-size: 45rem;
 	margin-block-end: 2.6875rem;
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 </style>

@@ -250,7 +250,7 @@ function clearFilters() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
+						kind="danger"
 						secondary
 						:disabled="selection.length === 0"
 						icon="delete"
@@ -486,11 +486,6 @@ function clearFilters() {
 	&.dense {
 		margin: 0.25rem 0;
 	}
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .fade-enter-active,
