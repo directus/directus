@@ -18,9 +18,9 @@ runs:
         node-version-file: package.json
         registry-url: ${{ inputs.registry }}
 
-    - name: Log npm version
+    - name: Update npm
       shell: bash
-      run: npm -v
+      run: npm install -g npm@11.5.1
 
     - uses: pnpm/action-setup@v4
       name: Install pnpm
