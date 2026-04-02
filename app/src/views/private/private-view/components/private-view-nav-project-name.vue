@@ -57,6 +57,6 @@ const navBarStore = useNavBarStore();
 }
 
 .nav-toggle {
-	margin-inline-end: 0.5rem;
+	margin-inline-end: 0.125rem;
 }
 </style>
