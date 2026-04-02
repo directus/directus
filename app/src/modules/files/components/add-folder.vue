@@ -56,7 +56,6 @@ async function addFolder() {
 		<template #activator="{ on }">
 			<VButton
 				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
-				rounded
 				icon
 				small
 				secondary

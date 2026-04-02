@@ -76,7 +76,6 @@ const internalActive = computed({
 				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel"
 				icon
-				rounded
 				secondary
 				small
 				@click="$emit('cancel')"

@@ -141,7 +141,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 		<div v-if="hasProviders" class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
-				<VButton icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
+				<VButton icon secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
 					<VIcon small name="arrow_downward" />
 				</VButton>
 			</div>
@@ -231,7 +231,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	pointer-events: none;
 }
 
-.scroll-to-bottom-btn {
+.scroll-to-bottom-btn :deep(.button) {
 	box-shadow: 0 0 8px rgb(0 0 0 / 0.15);
 	pointer-events: all;
 }

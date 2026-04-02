@@ -312,7 +312,6 @@ function useUrls() {
 					v-if="isFullWidth"
 					v-tooltip.bottom.end="t('live_preview.exit_full_width')"
 					x-small
-					rounded
 					icon
 					@click="emit('exit-full-width')"
 				>
@@ -323,7 +322,6 @@ function useUrls() {
 					v-else-if="inPopup"
 					v-tooltip.bottom.end="$t('live_preview.close_window')"
 					x-small
-					rounded
 					icon
 					secondary
 					@click="emit('new-window')"
@@ -333,14 +331,7 @@ function useUrls() {
 
 				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
-						<VButton
-							v-tooltip.bottom.end="t('live_preview.display_options')"
-							x-small
-							rounded
-							icon
-							secondary
-							@click="toggle"
-						>
+						<VButton v-tooltip.bottom.end="t('live_preview.display_options')" x-small icon secondary @click="toggle">
 							<VIcon small name="display_settings" />
 						</VButton>
 					</template>
@@ -362,7 +353,6 @@ function useUrls() {
 					v-if="visualEditingEnabled"
 					v-tooltip.bottom.end="$t('toggle_editable_elements')"
 					x-small
-					rounded
 					icon
 					:active="showEditableElements"
 					secondary
@@ -376,7 +366,6 @@ function useUrls() {
 					v-tooltip.bottom.end="$t('live_preview.refresh')"
 					x-small
 					icon
-					rounded
 					secondary
 					:disabled="isRefreshing || !frameSrc || invalidUrl"
 					@click="refresh(null)"
@@ -455,7 +444,6 @@ function useUrls() {
 				v-tooltip.bottom.start="$t('live_preview.change_size')"
 				x-small
 				icon
-				rounded
 				secondary
 				:active="!fullscreen"
 				:disabled="!frameSrc || invalidUrl"

@@ -183,7 +183,7 @@ describe('PrivateViewHeaderBarActionButton', () => {
 		expect(button.props('icon')).toBe(true);
 	});
 
-	test('passes rounded and small props to VButton', () => {
+	test('passes small prop to VButton', () => {
 		const wrapper = mount(PrivateViewHeaderBarActionButton, {
 			...mountOptions,
 			props: {

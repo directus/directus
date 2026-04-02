@@ -23,7 +23,6 @@ defineEmits<{
 			<VButton
 				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel-button"
-				rounded
 				icon
 				secondary
 				exact

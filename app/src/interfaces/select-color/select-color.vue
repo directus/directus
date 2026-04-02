@@ -485,7 +485,6 @@ function useColor() {
 				:key="preset.color"
 				v-tooltip="preset.name"
 				class="preset"
-				rounded
 				icon
 				:class="{ 'low-contrast': getPresetContrast(preset.color) }"
 				:style="{ '--v-button-background-color': preset.color }"
@@ -540,9 +539,7 @@ function useColor() {
 
 	margin: 0 0.25rem;
 
-	&.low-contrast {
-		--v-button-height: 1rem;
-		--v-button-width: 1rem;
+	&.low-contrast :deep(.button) {
 		border: 1px solid var(--theme--form--field--input--border-color-hover);
 	}
 }

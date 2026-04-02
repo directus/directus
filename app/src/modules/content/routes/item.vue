@@ -695,7 +695,6 @@ function useItemNavigation() {
 			<VButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
-				rounded
 				icon
 				class="action-preview"
 				:secondary="livePreviewMode === null"
@@ -716,7 +715,6 @@ function useItemNavigation() {
 					<VButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
 						icon
 						class="action-delete"
 						secondary
@@ -753,7 +751,6 @@ function useItemNavigation() {
 					<VButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						rounded
 						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
@@ -780,7 +777,6 @@ function useItemNavigation() {
 
 			<VButton
 				v-if="currentVersion === null"
-				rounded
 				icon
 				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
@@ -803,7 +799,6 @@ function useItemNavigation() {
 			</VButton>
 			<VButton
 				v-else
-				rounded
 				icon
 				:tooltip="$t('save_version')"
 				:loading="saveVersionLoading"
