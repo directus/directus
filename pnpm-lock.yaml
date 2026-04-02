@@ -654,12 +654,9 @@ catalogs:
     liquidjs:
       specifier: 10.25.0
       version: 10.25.0
-    lodash:
-      specifier: 4.17.23
-      version: 4.17.23
     lodash-es:
-      specifier: 4.17.23
-      version: 4.17.23
+      specifier: 4.18.0
+      version: 4.18.0
     log-symbols:
       specifier: 7.0.1
       version: 7.0.1
@@ -799,8 +796,8 @@ catalogs:
       specifier: 2.0.0
       version: 2.0.0
     samlify:
-      specifier: 2.11.0
-      version: 2.11.0
+      specifier: 2.12.0
+      version: 2.12.0
     sanitize-filename:
       specifier: 1.6.3
       version: 1.6.3
@@ -946,6 +943,8 @@ overrides:
   anymatch>picomatch: 2.3.2
   picomatch: 4.0.4
   minimatch: 10.2.4
+  lodash: 4.18.0
+  '@xmldom/xmldom': 0.8.12
 
 importers:
 
@@ -1025,7 +1024,7 @@ importers:
         version: 2.0.35(zod@4.1.12)
       '@authenio/samlify-node-xmllint':
         specifier: 'catalog:'
-        version: 2.0.0(samlify@2.11.0)
+        version: 2.0.0(samlify@2.12.0)
       '@aws-sdk/client-sesv2':
         specifier: 'catalog:'
         version: 3.928.0
@@ -1277,7 +1276,7 @@ importers:
         version: 10.25.0
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
       marked:
         specifier: 'catalog:'
         version: 16.4.1
@@ -1364,7 +1363,7 @@ importers:
         version: 4.59.0
       samlify:
         specifier: 'catalog:'
-        version: 2.11.0
+        version: 2.12.0
       sanitize-filename:
         specifier: 'catalog:'
         version: 1.6.3
@@ -1534,7 +1533,7 @@ importers:
         version: 3.15.3
       nodemailer-mailgun-transport:
         specifier: 'catalog:'
-        version: 2.1.5(lodash@4.17.23)(underscore@1.13.8)
+        version: 2.1.5(lodash@4.18.0)(underscore@1.13.8)
       oracledb:
         specifier: 'catalog:'
         version: 6.10.0
@@ -1857,8 +1856,8 @@ importers:
         specifier: 'catalog:'
         version: 1.7.6
       lodash:
-        specifier: 'catalog:'
-        version: 4.17.23
+        specifier: 4.18.0
+        version: 4.18.0
       mapbox-gl:
         specifier: 'catalog:'
         version: 1.13.3
@@ -1984,7 +1983,7 @@ importers:
         version: 1.13.5
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
       nanoid:
         specifier: 'catalog:'
         version: 5.1.6
@@ -2098,7 +2097,7 @@ importers:
         version: 17.2.3
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2172,7 +2171,7 @@ importers:
         version: 11.3.2
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
       zod:
         specifier: 'catalog:'
         version: 4.1.12
@@ -2503,7 +2502,7 @@ importers:
         version: link:../types
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2854,7 +2853,7 @@ importers:
         version: 6.0.1
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -3040,7 +3039,7 @@ importers:
         version: 4.1.1
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
       micromustache:
         specifier: 'catalog:'
         version: 8.0.3
@@ -3225,7 +3224,7 @@ importers:
         version: 9.0.5
       lodash-es:
         specifier: 'catalog:'
-        version: 4.17.23
+        version: 4.18.0
       mailparser:
         specifier: 3.9.3
         version: 3.9.3
@@ -7734,10 +7733,9 @@ packages:
     resolution: {integrity: sha512-CJDxIgE5I0FH+ttq/Fxy6nRpxP70+e2O048EPe85J2use3XKdatVM7dDVvFNjQudd9B49NPoZ+8PG49zj4Er8Q==}
     engines: {node: '>= 16'}
 
-  '@xmldom/xmldom@0.8.11':
-    resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
+  '@xmldom/xmldom@0.8.12':
+    resolution: {integrity: sha512-9k/gHF6n/pAi/9tqr3m3aqkuiNosYTurLLUtc7xQ9sxB/wm7WPygCv8GYa6mS0fLJEHhqMC1ATYhz++U/lRHqg==}
     engines: {node: '>=10.0.0'}
-    deprecated: this version has critical issues, please update to the latest version
 
   '@yarnpkg/fslib@3.1.3':
     resolution: {integrity: sha512-LqfyD3r/8SJm8rPPfmGVHfp4Ag2xTKscDwihOJt+QNrtOeaLykikqKWoBVRBw1cCIbtU7kjT7l1JcWW26hAKtA==}
@@ -8325,10 +8323,6 @@ packages:
     resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
     engines: {node: '>=16'}
 
-  camelcase@9.0.0:
-    resolution: {integrity: sha512-TO9xmyXTZ9HUHI8M1OnvExxYB0eYVS/1e5s7IDMTAoIcwUd+aNcFODs6Xk83mobk0velyHFQgA1yIrvYc6wclw==}
-    engines: {node: '>=20'}
-
   can-link@2.0.0:
     resolution: {integrity: sha512-2W2yAdkQQrrL0WM6BrGqkrLkWlVon8riZch0EBNklid2CZsOzZnqR5HE7W3Q3BrMWUop+9I2dpjyZqhSOYh6Yg==}
     engines: {node: '>=10'}
@@ -8646,7 +8640,7 @@ packages:
       just: ^0.1.8
       liquid-node: ^3.0.1
       liquor: ^0.0.5
-      lodash: ^4.17.20
+      lodash: 4.18.0
       marko: ^3.14.4
       mote: ^0.2.0
       mustache: ^3.0.0
@@ -11076,8 +11070,9 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lodash-es@4.17.23:
-    resolution: {integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==}
+  lodash-es@4.18.0:
+    resolution: {integrity: sha512-koAgswPPA+UTaPN64Etp+PGP+WT6oqOS2NMi5yDkMaiGw9qY4VxQbQF0mtKMyr4BlTznWyzePV5UpECTJQmSUA==}
+    deprecated: Bad release. Please use lodash-es@4.17.23 instead.
 
   lodash._baseiteratee@4.7.0:
     resolution: {integrity: sha512-nqB9M+wITz0BX/Q2xg6fQ8mLkyfF7MU7eE+MNBNjTHFKeKaZAPEzEg+E8LWxKWf1DQVflNEn9N49yAuqKh2mWQ==}
@@ -11164,8 +11159,9 @@ packages:
   lodash.uniqby@4.5.0:
     resolution: {integrity: sha512-IRt7cfTtHy6f1aRVA5n7kT8rgN3N1nH6MOWLcHfpWG2SH19E3JksLK38MktLxZDhlAjCP9jpIXkOnRXlu6oByQ==}
 
-  lodash@4.17.23:
-    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+  lodash@4.18.0:
+    resolution: {integrity: sha512-l1mfj2atMqndAHI3ls7XqPxEjV2J9ZkcNyHpoZA3r2T1LLwDB69jgkMWh71YKwhBbK0G2f4WSn05ahmQXVxupA==}
+    deprecated: Bad release. Please use lodash@4.17.21 instead.
 
   log-symbols@6.0.0:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
@@ -13066,8 +13062,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  samlify@2.11.0:
-    resolution: {integrity: sha512-1C9ukjlf0rRsuyqdzztqikdItqa33j9NCCDZgeBiWk0etU6vxNB+SWJKW4Flk07ZlhXeev/twALEKrPhIAyfDg==}
+  samlify@2.12.0:
+    resolution: {integrity: sha512-ewGsHyY4kInDH0BfprlAZ1rHpH1jBmbqYiXDbuI3t1Y8h71gqEt4Z7jdCFyPHFR8jItJkbdckTijUZGg14CDlg==}
 
   sanitize-filename@1.6.3:
     resolution: {integrity: sha512-y/52Mcy7aw3gRm7IrcGDFx/bCk4AhRh2eI9luHOQM86nZsqwiRkkq2GekHXBBD+SmPidc8i2PqtYZl+pWJ8Oeg==}
@@ -15093,14 +15089,14 @@ snapshots:
 
   '@assemblyscript/loader@0.19.23': {}
 
-  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.11.0)':
+  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.12.0)':
     dependencies:
       node-xmllint: 1.0.0
-      samlify: 2.11.0
+      samlify: 2.12.0
 
   '@authenio/xml-encryption@2.0.2':
     dependencies:
-      '@xmldom/xmldom': 0.8.11
+      '@xmldom/xmldom': 0.8.12
       escape-html: 1.0.3
       xpath: 0.0.32
 
@@ -20547,7 +20543,7 @@ snapshots:
 
   '@xmldom/is-dom-node@1.0.1': {}
 
-  '@xmldom/xmldom@0.8.11': {}
+  '@xmldom/xmldom@0.8.12': {}
 
   '@yarnpkg/fslib@3.1.3':
     dependencies:
@@ -20768,7 +20764,7 @@ snapshots:
       graceful-fs: 4.2.11
       is-stream: 2.0.1
       lazystream: 1.0.1
-      lodash: 4.17.23
+      lodash: 4.18.0
       normalize-path: 3.0.0
       readable-stream: 4.7.0
 
@@ -20923,7 +20919,7 @@ snapshots:
 
   async@2.6.4:
     dependencies:
-      lodash: 4.17.23
+      lodash: 4.18.0
 
   async@3.2.6: {}
 
@@ -21287,8 +21283,6 @@ snapshots:
 
   camelcase@8.0.0: {}
 
-  camelcase@9.0.0: {}
-
   can-link@2.0.0: {}
 
   can-write-to-dir@1.1.1:
@@ -21582,11 +21576,11 @@ snapshots:
   console-control-strings@1.1.0:
     optional: true
 
-  consolidate@0.15.1(lodash@4.17.23)(underscore@1.13.8):
+  consolidate@0.15.1(lodash@4.18.0)(underscore@1.13.8):
     dependencies:
       bluebird: 3.7.2
     optionalDependencies:
-      lodash: 4.17.23
+      lodash: 4.18.0
       underscore: 1.13.8
     optional: true
 
@@ -24032,7 +24026,7 @@ snapshots:
       get-package-type: 0.1.0
       getopts: 2.3.0
       interpret: 2.2.0
-      lodash: 4.17.23
+      lodash: 4.18.0
       pg-connection-string: 2.6.2
       rechoir: 0.8.0
       resolve-from: 5.0.0
@@ -24189,7 +24183,7 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lodash-es@4.17.23: {}
+  lodash-es@4.18.0: {}
 
   lodash._baseiteratee@4.7.0:
     dependencies:
@@ -24257,7 +24251,7 @@ snapshots:
       lodash._baseiteratee: 4.7.0
       lodash._baseuniq: 4.6.0
 
-  lodash@4.17.23: {}
+  lodash@4.18.0: {}
 
   log-symbols@6.0.0:
     dependencies:
@@ -24820,9 +24814,9 @@ snapshots:
 
   node-xmllint@1.0.0: {}
 
-  nodemailer-mailgun-transport@2.1.5(lodash@4.17.23)(underscore@1.13.8):
+  nodemailer-mailgun-transport@2.1.5(lodash@4.18.0)(underscore@1.13.8):
     dependencies:
-      consolidate: 0.15.1(lodash@4.17.23)(underscore@1.13.8)
+      consolidate: 0.15.1(lodash@4.18.0)(underscore@1.13.8)
       form-data: 4.0.5
       mailgun.js: 8.2.2
     transitivePeerDependencies:
@@ -26494,11 +26488,10 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  samlify@2.11.0:
+  samlify@2.12.0:
     dependencies:
       '@authenio/xml-encryption': 2.0.2
-      '@xmldom/xmldom': 0.8.11
-      camelcase: 9.0.0
+      '@xmldom/xmldom': 0.8.12
       node-rsa: 1.1.1
       xml: 1.0.1
       xml-crypto: 6.1.2
@@ -28604,7 +28597,7 @@ snapshots:
   xml-crypto@6.1.2:
     dependencies:
       '@xmldom/is-dom-node': 1.0.1
-      '@xmldom/xmldom': 0.8.11
+      '@xmldom/xmldom': 0.8.12
       xpath: 0.0.33
 
   xml-escape@1.1.0: {}

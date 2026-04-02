@@ -47,7 +47,9 @@
 			"micromatch>picomatch": "2.3.2",
 			"anymatch>picomatch": "2.3.2",
 			"picomatch": "4.0.4",
-			"minimatch": "10.2.4"
+			"minimatch": "10.2.4",
+			"lodash": "4.18.0",
+			"@xmldom/xmldom": "0.8.12"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
