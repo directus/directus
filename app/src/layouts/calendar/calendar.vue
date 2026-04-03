@@ -67,16 +67,10 @@ const atLimit = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .calendar-layout {
 	block-size: 100%;
-	padding-inline: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
-
-	@include mixins.breakpoint-down('sm') {
-		padding-inline: 0.625rem 0;
-	}
+	padding: var(--content-padding);
+	padding-block-start: 0;
 }
 
 .v-notice {

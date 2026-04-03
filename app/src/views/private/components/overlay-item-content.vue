@@ -180,18 +180,13 @@ function useValidationScrollToField() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .v-divider {
 	margin: 2.9375rem 0;
 }
 
 .overlay-item-content {
 	padding: var(--content-padding);
-
-	@include mixins.breakpoint-down('sm') {
-		padding: 0.625rem;
-	}
+	padding-block-end: var(--content-padding-bottom);
 
 	.preview {
 		margin-block-end: var(--theme--form--row-gap);

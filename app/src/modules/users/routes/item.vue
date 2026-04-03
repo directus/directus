@@ -527,8 +527,8 @@ function revert(values: Record<string, any>) {
 }
 
 .user-item {
-	padding-inline: var(--content-padding);
-	padding-block: var(--content-padding) var(--content-padding-bottom);
+	padding: var(--content-padding);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .user-box {

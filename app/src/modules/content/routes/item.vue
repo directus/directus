@@ -996,11 +996,6 @@ function useItemNavigation() {
 .v-form {
 	padding-inline: var(--content-padding);
 	padding-block: var(--content-padding) var(--content-padding-bottom);
-
-	@include mixins.breakpoint-down('sm') {
-		padding-block: 1rem 0;
-		padding-inline: 1.125rem;
-	}
 }
 
 .title-loader {

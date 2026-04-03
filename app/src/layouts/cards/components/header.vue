@@ -133,6 +133,8 @@ function onClickSelect() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .cards-header {
 	position: sticky;
 	inset-block-start: var(--layout-offset-top);
@@ -142,8 +144,12 @@ function onClickSelect() {
 	justify-content: space-between;
 	inline-size: 100%;
 	block-size: 2.9375rem;
-	margin-block-end: 2rem;
-	padding: 0 var(--content-padding);
+	margin-block-end: 3rem;
+
+	@include mixins.breakpoint-down('sm') {
+		margin-block-end: var(--content-padding);
+	}
+	padding: 0 0.4375rem;
 	background-color: var(--theme--background);
 	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);

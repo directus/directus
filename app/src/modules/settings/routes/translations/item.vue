@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -14,7 +15,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
 import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -332,8 +332,13 @@ async function revert(values: Record<string, any>) {
 }
 
 .v-form {
-	padding-inline: var(--content-padding);
-	padding-block: var(--content-padding) var(--content-padding-bottom);
+	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
+	padding-block-end: var(--content-padding-bottom);
+
+	@include mixins.breakpoint-up('sm') {
+		padding: var(--content-padding);
+		padding-block-end: var(--content-padding-bottom);
+	}
 }
 
 .title-loader {

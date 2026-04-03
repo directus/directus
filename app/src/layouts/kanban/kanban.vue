@@ -291,21 +291,13 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .kanban-layout {
 	--limit-notice-height: 0;
 	--limit-notice-margin-bottom: 1.375rem;
 	--header-bar-margin: 1.375rem;
 
 	block-size: 100%;
-	padding-block: var(--content-padding) var(--content-padding-bottom);
-	padding-inline-start: var(--content-padding);
-
-	@include mixins.breakpoint-down('sm') {
-		padding-block: 0.25rem 0;
-		padding-inline: 0.625rem 0;
-	}
+	padding: var(--content-padding);
 
 	&:has(> .limit) {
 		--limit-notice-height: calc(3.375rem + var(--limit-notice-margin-bottom));
@@ -319,12 +311,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 .kanban {
 	display: flex;
 	block-size: 100%;
-
-	&::after {
-		content: '';
-		flex-shrink: 0;
-		inline-size: var(--content-padding);
-	}
 
 	--user-spacing: 0.875rem;
 

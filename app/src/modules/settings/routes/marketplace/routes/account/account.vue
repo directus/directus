@@ -95,8 +95,8 @@ watchEffect(async () => {
 
 <style scoped lang="scss">
 .account-content {
-	padding-inline: var(--content-padding);
-	padding-block: var(--content-padding) var(--content-padding-bottom);
+	padding: var(--content-padding);
+	padding-block-end: var(--content-padding-bottom);
 	max-inline-size: 67.5rem;
 	inline-size: 100%;
 }

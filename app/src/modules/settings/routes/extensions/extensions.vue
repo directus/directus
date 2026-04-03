@@ -76,8 +76,7 @@ const extensionsByType = computed(() => {
 }
 
 .page-container {
-	padding-inline: var(--content-padding);
-	padding-block: var(--content-padding) var(--content-padding-bottom);
+	padding: var(--content-padding);
 	max-inline-size: 67.5rem;
 }
 

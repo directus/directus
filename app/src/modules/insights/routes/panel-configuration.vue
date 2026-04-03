@@ -252,8 +252,8 @@ const stageChanges = () => {
 @use '@/styles/mixins';
 
 .content {
-	padding-inline: var(--content-padding);
-	padding-block: var(--content-padding) var(--content-padding-bottom);
+	padding: var(--content-padding);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .v-divider {
