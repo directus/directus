@@ -280,7 +280,7 @@ function clearFilters() {
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<VInfo v-if="!filter && !search" :title="$t('user_count', 0)" icon="people_alt" center>
-						{{ status ? $t('no_status_users_copy') : $t('no_users_copy') }}
+						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
 							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
@@ -300,7 +300,7 @@ function clearFilters() {
 
 				<template #no-items>
 					<VInfo v-if="!layoutState.loadingItemCount" :title="$t('user_count', 0)" icon="people_alt" center>
-						{{ status ? $t('no_status_users_copy') : $t('no_users_copy') }}
+						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
 							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">

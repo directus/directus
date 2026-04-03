@@ -770,7 +770,7 @@ no_users_copy: There are no users in this role yet.
 no_active_users: No Active Users
 no_suspended_users: No Suspended Users
 no_invited_users: No Invited Users
-no_status_users_copy: There are no users with this status.
+no_status_users_copy: 'There are no users with {status} status.'
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
 activity_log: Activity Log
