@@ -600,6 +600,8 @@ function discardAndLeave() {
 }
 
 .preset-item {
+	--content-padding: 1.375rem;
+
 	padding: var(--content-padding);
 }
 

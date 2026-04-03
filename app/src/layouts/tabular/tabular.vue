@@ -288,7 +288,7 @@ function removeField(fieldKey: string) {
 @use '@/styles/mixins';
 
 .layout-tabular {
-	padding: 2.375rem var(--content-section-padding) 0;
+	padding: 2.375rem var(--content-padding) 0;
 
 	@include mixins.breakpoint-down('sm') {
 		padding-block: 0.25rem 0;
@@ -306,7 +306,7 @@ function removeField(fieldKey: string) {
 
 		// padding-inline-end is ignored by browsers in scrollWidth calculations.
 		// A transparent border is the only way to extend the scroll area.
-		border-inline-end: var(--content-section-padding) solid transparent;
+		border-inline-end: var(--content-padding) solid transparent;
 	}
 }
 

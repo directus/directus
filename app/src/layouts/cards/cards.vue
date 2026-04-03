@@ -180,7 +180,7 @@ function onSelectAll() {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
 	gap: 1.8125rem 1.375rem;
-	padding-inline: var(--content-section-padding);
+	padding-inline: var(--content-padding);
 	padding-block-start: 2.375rem;
 
 	@include mixins.breakpoint-down('sm') {
@@ -198,7 +198,7 @@ function onSelectAll() {
 	align-items: center;
 	justify-content: space-between;
 	padding-block: 2.25rem var(--content-padding-bottom);
-	padding-inline: var(--content-section-padding);
+	padding-inline: var(--content-padding);
 
 	@include mixins.breakpoint-down('sm') {
 		padding-inline: 0.625rem;

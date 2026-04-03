@@ -291,12 +291,12 @@ async function downloadSnapshot() {
 
 <style scoped lang="scss">
 .padding-box {
-	padding-inline: var(--content-section-padding);
-	padding-block: var(--content-section-padding) var(--content-padding-bottom);
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .v-info {
-	padding-inline: var(--content-section-padding);
+	padding-inline: var(--content-padding);
 }
 
 .root-drag-container {

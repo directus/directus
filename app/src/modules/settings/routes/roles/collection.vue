@@ -241,7 +241,7 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .roles {
-	padding-inline: var(--content-section-padding);
+	padding-inline: var(--content-padding);
 	padding-block: 2.375rem var(--content-padding-bottom);
 }
 

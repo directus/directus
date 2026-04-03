@@ -684,6 +684,7 @@ async function exportDataFiles() {
 .export-fields {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
+	--content-padding: 1.375rem;
 
 	margin-block-start: 1.375rem;
 	padding: var(--content-padding);

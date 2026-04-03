@@ -129,6 +129,8 @@ function onCancel() {
 
 <style lang="scss" scoped>
 .content {
+	--content-padding: 1.375rem;
+
 	display: flex;
 	flex-direction: column;
 	gap: var(--theme--form--row-gap);

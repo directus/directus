@@ -71,7 +71,7 @@ const atLimit = computed(() => {
 
 .calendar-layout {
 	block-size: 100%;
-	padding-inline: var(--content-section-padding);
+	padding-inline: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 
 	@include mixins.breakpoint-down('sm') {

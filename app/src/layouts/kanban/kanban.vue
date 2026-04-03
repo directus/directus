@@ -299,8 +299,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	--header-bar-margin: 1.375rem;
 
 	block-size: 100%;
-	padding-block: var(--content-section-padding) var(--content-padding-bottom);
-	padding-inline-start: var(--content-section-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
+	padding-inline-start: var(--content-padding);
 
 	@include mixins.breakpoint-down('sm') {
 		padding-block: 0.25rem 0;
@@ -323,7 +323,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	&::after {
 		content: '';
 		flex-shrink: 0;
-		inline-size: var(--content-section-padding);
+		inline-size: var(--content-padding);
 	}
 
 	--user-spacing: 0.875rem;

@@ -304,6 +304,8 @@ function onApply() {
 }
 
 .content {
+	--content-padding: 1.375rem;
+
 	padding: var(--content-padding);
 }
 

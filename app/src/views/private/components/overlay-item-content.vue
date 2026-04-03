@@ -187,7 +187,7 @@ function useValidationScrollToField() {
 }
 
 .overlay-item-content {
-	padding: var(--content-section-padding);
+	padding: var(--content-padding);
 
 	@include mixins.breakpoint-down('sm') {
 		padding: 0.625rem;

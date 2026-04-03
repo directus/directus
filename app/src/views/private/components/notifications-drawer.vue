@@ -415,6 +415,8 @@ function clearFilters() {
 }
 
 .content {
+	--content-padding: 1.375rem;
+
 	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
 

@@ -239,6 +239,8 @@ const internalActive = computed({
 }
 
 .mobile-sidebar {
+	--content-padding: 1.375rem;
+
 	position: relative;
 	z-index: 2;
 	margin: var(--content-padding);
