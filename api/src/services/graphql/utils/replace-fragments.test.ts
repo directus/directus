@@ -115,6 +115,48 @@ describe('replaceFragmentsInSelections', () => {
 		expect(innerSelections[1].arguments).toHaveLength(1);
 	});
 
+	test('preserves field aliases inside fragment when wrapping in InlineFragment', () => {
+		const selections = [{ kind: 'FragmentSpread', name: { value: 'BlogPostSummary' } }] as unknown as SelectionNode[];
+
+		const fragments = {
+			BlogPostSummary: {
+				kind: 'FragmentDefinition',
+				name: { value: 'BlogPostSummary' },
+				typeCondition: { kind: 'NamedType', name: { value: 'blog_post' } },
+				selectionSet: {
+					kind: 'SelectionSet',
+					selections: [
+						{
+							kind: 'Field',
+							name: { value: 'author' },
+							selectionSet: { selections: [{ kind: 'Field', name: { value: 'id' } }] },
+						},
+						{
+							kind: 'Field',
+							name: { value: 'author' },
+							alias: { value: 'authorAlias' },
+							selectionSet: { selections: [{ kind: 'Field', name: { value: 'id' } }] },
+						},
+					] as unknown as SelectionNode[],
+				},
+			},
+		} as unknown as Record<string, FragmentDefinitionNode>;
+
+		const result = replaceFragmentsInSelections(selections, fragments);
+
+		expect(result).toHaveLength(1);
+		expect((result![0] as any).kind).toBe('InlineFragment');
+
+		const innerSelections = (result![0] as any).selectionSet.selections;
+		expect(innerSelections).toHaveLength(2);
+
+		expect(innerSelections[0].name.value).toBe('author');
+		expect(innerSelections[0].alias).toBeUndefined();
+
+		expect(innerSelections[1].name.value).toBe('author');
+		expect(innerSelections[1].alias.value).toBe('authorAlias');
+	});
+
 	test('handles nested fragments (fragment referencing another fragment)', () => {
 		const selections = [{ kind: 'FragmentSpread', name: { value: 'Outer' } }] as unknown as SelectionNode[];
 

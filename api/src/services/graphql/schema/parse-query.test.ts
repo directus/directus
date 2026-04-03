@@ -256,4 +256,83 @@ describe('parseFields', () => {
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['parent.child.grandchild']);
 	});
+
+	test('should parse aliased relational field inside non-M2A InlineFragment', async () => {
+		// fragment BlogPostSummary on blog_post { author { id }, authorAlias: author { id } }
+		const o2mSchema = {
+			relations: [
+				{
+					collection: 'blog_post',
+					field: 'author',
+					related_collection: 'author',
+					meta: { one_field: null, one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [
+			inlineFragment('blog_post', [
+				field('author', { children: [field('id')] }),
+				field('author', { alias: 'authorAlias', children: [field('id')] }),
+			]),
+		];
+
+		const query = await getQuery({}, o2mSchema, selections, mockVariableValues, mockAccountability, 'blog_post');
+
+		expect(query.fields).toContain('author.id');
+		expect(query.fields).toContain('authorAlias.id');
+	});
+
+	test('should parse aliased relational field at top level', async () => {
+		const o2mSchema = {
+			relations: [
+				{
+					collection: 'blog_post',
+					field: 'author',
+					related_collection: 'author',
+					meta: { one_field: null, one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [
+			field('author', { children: [field('id')] }),
+			field('author', { alias: 'authorAlias', children: [field('id')] }),
+		];
+
+		const query = await getQuery({}, o2mSchema, selections, mockVariableValues, mockAccountability, 'blog_post');
+
+		expect(query.fields).toContain('author.id');
+		expect(query.fields).toContain('authorAlias.id');
+		expect(query.alias).toEqual({ authorAlias: 'author' });
+	});
+
+	test('should parse aliased O2M relational field inside non-M2A InlineFragment', async () => {
+		const o2mSchema = {
+			relations: [
+				{
+					collection: 'blog_post',
+					field: 'author_id',
+					related_collection: 'author',
+					meta: { one_field: 'posts', one_collection_field: null, one_allowed_collections: null },
+				},
+			],
+		} as any;
+
+		const selections = [
+			field('author', {
+				children: [
+					inlineFragment('author', [
+						field('posts', { children: [field('id')] }),
+						field('posts', { alias: 'recentPosts', children: [field('id')] }),
+					]),
+				],
+			}),
+		];
+
+		const query = await getQuery({}, o2mSchema, selections, mockVariableValues, mockAccountability, 'blog_post');
+
+		expect(query.fields).toContain('author.posts.id');
+		expect(query.fields).toContain('author.recentPosts.id');
+	});
 });
