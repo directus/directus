@@ -292,6 +292,7 @@ async function downloadSnapshot() {
 <style scoped lang="scss">
 .padding-box {
 	padding: var(--content-padding);
+	padding-block-start: var(--content-padding-top-table);
 }
 
 .v-info {

@@ -298,6 +298,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 	block-size: 100%;
 	padding: var(--content-padding);
+	padding-inline-end: 0;
 
 	&:has(> .limit) {
 		--limit-notice-height: calc(3.375rem + var(--limit-notice-margin-bottom));
@@ -313,6 +314,17 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	block-size: 100%;
 
 	--user-spacing: 0.875rem;
+
+	// Flex spacer ensuring --content-padding gap after the last column when scrolled to the end.
+	// Uses calc() to subtract the 1.125rem margin-inline-end already applied to each .group,
+	// so the total right spacing equals exactly --content-padding.
+	// margin-inline-end on the last flex item is not reliably included in scroll width across browsers,
+	// so a ::after pseudo-element is used instead.
+	&::after {
+		display: block;
+		min-inline-size: calc(var(--content-padding) - 1.125rem);
+		content: '';
+	}
 
 	.draggable {
 		display: flex;

@@ -77,6 +77,7 @@ const roleFilter = ref<Filter | null>(null);
 <style lang="scss" scoped>
 .content {
 	padding: var(--content-padding);
+	padding-block-start: var(--content-padding-top-table);
 }
 
 .header-icon {
