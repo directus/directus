@@ -50,7 +50,6 @@ import VProgressCircular from './v-progress-circular.vue';
 import VProgressLinear from './v-progress-linear.vue';
 import VRadio from './v-radio.vue';
 import VRemove from './v-remove.vue';
-import VResizeable from './v-resizeable.vue';
 import VSelect from './v-select/v-select.vue';
 import VSheet from './v-sheet.vue';
 import VSkeletonLoader from './v-skeleton-loader.vue';
@@ -123,7 +122,6 @@ export function registerComponents(app: App): void {
 	app.component('VProgressCircular', VProgressCircular);
 	app.component('VProgressLinear', VProgressLinear);
 	app.component('VRadio', VRadio);
-	app.component('VResizeable', VResizeable);
 	app.component('VSelect', VSelect);
 	app.component('VSheet', VSheet);
 	app.component('VSkeletonLoader', VSkeletonLoader);
