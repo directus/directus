@@ -69,16 +69,13 @@ defineEmits<{
 @use '@/styles/mixins';
 
 .header-bar {
-	position: sticky;
-	inset-block-start: 0;
-	inset-inline-start: 0;
-	z-index: 5;
-	background-color: var(--theme--header--background);
+	position: relative;
 	inline-size: 100%;
 	padding-inline: var(--content-padding);
-	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 	block-size: var(--header-bar-height);
 	grid-template-rows: repeat(2, 1fr);
+
+	/* background is set on .v-drawer, border is set on .main */
 
 	@media (width > 22.5rem) {
 		display: flex;
@@ -145,7 +142,7 @@ defineEmits<{
 .cancel-button {
 	display: block;
 
-	@media (width >= 54rem) {
+	@include mixins.breakpoint-up('lg') {
 		display: none;
 	}
 }
@@ -153,7 +150,7 @@ defineEmits<{
 .header-icon {
 	display: none;
 
-	@media (width >= 54rem) {
+	@include mixins.breakpoint-up('lg') {
 		display: flex;
 	}
 }
