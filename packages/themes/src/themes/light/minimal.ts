@@ -7,8 +7,10 @@ export default defineTheme({
 	rules: {
 		borderWidth: '1px',
 		backgroundPage: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',
-		navigation: {
+		shell: {
 			background: '#FFFFFF',
+		},
+		navigation: {
 			modules: {
 				background: '#FFFFFF',
 				button: {
@@ -33,11 +35,6 @@ export default defineTheme({
 			},
 			borderWidth: '1px',
 			backgroundAccent: '#F1F5F9',
-			borderColor: 'var(--theme--border-color)',
-		},
-		header: {
-			background: '#FFFFFF',
-			borderWidth: '1px',
 			borderColor: 'var(--theme--border-color)',
 		},
 		backgroundAccent: '#E2E8F0',

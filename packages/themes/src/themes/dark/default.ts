@@ -69,13 +69,14 @@ export default defineTheme({
 			},
 		},
 
-		navigation: {
-			background: '#21262e',
+		shell: {
+			background: 'var(--theme--background-subdued)',
 			backgroundAccent: '#30363d',
+			borderColor: 'var(--theme--border-color)',
+			borderWidth: 'var(--theme--border-width)',
+		},
 
-			borderColor: 'transparent',
-			borderWidth: '0px',
-
+		navigation: {
 			project: {
 				foreground: 'var(--theme--foreground-accent)',
 				fontFamily: 'var(--theme--fonts--sans--font-family)',
@@ -122,9 +123,6 @@ export default defineTheme({
 		},
 
 		header: {
-			background: 'var(--theme--background)',
-			borderColor: 'transparent',
-			borderWidth: '0px',
 			headline: {
 				foreground: 'var(--theme--foreground-subdued)',
 				fontFamily: 'var(--theme--fonts--sans--font-family)',
