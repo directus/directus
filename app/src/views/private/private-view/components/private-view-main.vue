@@ -4,6 +4,7 @@ import { useBreakpoints } from '@vueuse/core';
 import { computed, type ComputedRef, inject, provide, useTemplateRef, watch } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
+import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewHeaderBar from './private-view-header-bar.vue';
@@ -21,6 +22,7 @@ const contentEl = useTemplateRef('content-el');
 provide('main-element', contentEl);
 
 const userStore = useUserStore();
+const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
 
 const livePreviewActive = inject<ComputedRef<boolean>>(
@@ -79,6 +81,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			divider-hit-area="4px"
 			:transition-duration="125"
 			class="main-split"
+			:class="{ 'nav-collapsed': navBarStore.collapsed }"
 			:disabled="isMobile"
 		>
 			<template #start>
@@ -136,6 +139,16 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 	flex: 1;
 	min-block-size: 0;
 	position: relative;
+	border-block-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+	border-inline-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+	border-start-start-radius: var(--theme--border-radius);
+	overflow: hidden;
+	background: var(--theme--background);
+
+	&.nav-collapsed {
+		border-inline-start: none;
+		border-start-start-radius: 0;
+	}
 }
 
 .scrolling-container {

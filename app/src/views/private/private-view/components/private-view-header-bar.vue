@@ -29,7 +29,7 @@ const showNavToggle = computed(() => {
 </script>
 
 <template>
-	<header class="header-bar">
+	<header class="header-bar" :class="{ 'nav-expanded': !navBarStore.collapsed }">
 		<div class="primary">
 			<PrivateViewHeaderBarActionButton
 				v-if="showNavToggle"
@@ -93,11 +93,22 @@ const showNavToggle = computed(() => {
 @use '@/styles/mixins';
 
 .header-bar {
-	background-color: var(--theme--header--background);
+	position: relative;
 	padding-inline: var(--content-padding);
-	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 	block-size: var(--header-bar-height);
 	grid-template-rows: repeat(2, 1fr);
+
+	/* background is set in .root-split, border is set on .main-split */
+
+	&.nav-expanded::before {
+		content: '';
+		position: absolute;
+		block-size: 1.5rem;
+		transform: translate(0, -50%);
+		inset-block-start: 50%;
+		inset-inline-start: 0;
+		border-inline-end: var(--theme--border-width) solid var(--theme--border-color-accent);
+	}
 
 	@media (width > 22.5rem) {
 		display: flex;
