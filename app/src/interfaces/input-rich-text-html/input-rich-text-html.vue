@@ -3,7 +3,7 @@ import type { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
 import tinymce from 'tinymce/tinymce';
-import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import toolbarDefault from './toolbar-default';
@@ -203,6 +203,16 @@ watch(
 		comparisonEditorKey.value++;
 	},
 );
+
+onUnmounted(() => {
+	if (editorRef.value) {
+		tinymce.remove(editorRef.value);
+	}
+
+	if (comparisonEditorRef.value) {
+		tinymce.remove(comparisonEditorRef.value);
+	}
+});
 
 function getBaseEditorOptions() {
 	return {
