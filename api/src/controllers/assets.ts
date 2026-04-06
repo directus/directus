@@ -44,13 +44,37 @@ router.post(
 		// Clean up the archive stream if the client disconnects
 		res.on('close', () => {
 			if (!res.writableEnded) {
-				archive.destroy();
+				archive.abort();
 			}
 		});
 
 		archive.pipe(res);
 
-		await complete();
+		try {
+			await complete();
+		} catch (error) {
+			useLogger().error(error, `Couldn't archive folder ${req.params['pk']} to the client`);
+			archive.destroy();
+
+			if (!res.headersSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			} else {
+				res.end();
+			}
+		}
 	}),
 );
 
@@ -86,13 +110,37 @@ router.post(
 		// Clean up the archive stream if the client disconnects
 		res.on('close', () => {
 			if (!res.writableEnded) {
-				archive.destroy();
+				archive.abort();
 			}
 		});
 
 		archive.pipe(res);
 
-		await complete();
+		try {
+			await complete();
+		} catch (error) {
+			useLogger().error(error, `Couldn't archive files to the client`);
+			archive.destroy();
+
+			if (!res.headersSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			} else {
+				res.end();
+			}
+		}
 	}),
 );
 
