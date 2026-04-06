@@ -46,7 +46,8 @@
 			"express@4>path-to-regexp": "0.1.13",
 			"micromatch>picomatch": "2.3.2",
 			"anymatch>picomatch": "2.3.2",
-			"picomatch": "4.0.4"
+			"picomatch": "4.0.4",
+			"defu": "6.1.5"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
