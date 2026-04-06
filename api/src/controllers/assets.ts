@@ -46,6 +46,7 @@ router.post(
 		// Clean up the archive stream if the client disconnects
 		res.on('close', () => {
 			if (!res.writableEnded) {
+				archive.destroy();
 				archive.abort();
 			}
 		});
@@ -114,6 +115,7 @@ router.post(
 		// Clean up the archive stream if the client disconnects
 		res.on('close', () => {
 			if (!res.writableEnded) {
+				archive.destroy();
 				archive.abort();
 			}
 		});

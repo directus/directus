@@ -85,6 +85,8 @@ export class AssetsService {
 			const storage = await getStorage();
 
 			for (const { id, folder, filename_download } of options.files) {
+				if (archive.destroyed) break;
+
 				const file = await this.sudoFilesService.readOne(id, {
 					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
 				});
@@ -109,6 +111,8 @@ export class AssetsService {
 			// add any empty folders, does not override already filled folder
 			if (options.folders) {
 				for (const [, folder] of options.folders) {
+					if (archive.destroyed) break;
+
 					archive.append('', { name: folder + '/' });
 				}
 			}
