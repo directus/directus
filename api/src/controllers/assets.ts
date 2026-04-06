@@ -29,6 +29,8 @@ router.use(useCollection('directus_files'));
 router.post(
 	'/folder/:pk',
 	asyncHandler(async (req, res) => {
+		const logger = useLogger();
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -53,7 +55,7 @@ router.post(
 		try {
 			await complete();
 		} catch (error) {
-			useLogger().error(error, `Couldn't archive folder ${req.params['pk']} to the client`);
+			logger.error(error, `Couldn't archive folder ${req.params['pk']} to the client`);
 			archive.destroy();
 
 			if (!res.headersSent) {
@@ -81,6 +83,8 @@ router.post(
 router.post(
 	'/files/',
 	asyncHandler(async (req, res) => {
+		const logger = useLogger();
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -119,7 +123,7 @@ router.post(
 		try {
 			await complete();
 		} catch (error) {
-			useLogger().error(error, `Couldn't archive files to the client`);
+			logger.error(error, `Couldn't archive files to the client`);
 			archive.destroy();
 
 			if (!res.headersSent) {
