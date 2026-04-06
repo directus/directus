@@ -163,4 +163,19 @@ describe('chatRequestToolToAiSdkTool', () => {
 		const config = result.config;
 		expect(config.needsApproval).toBe(true);
 	});
+
+	it('coerces stringified JSON fields before validation', async () => {
+		(mockValidate.safeParse as any).mockReturnValue({ data: { data: [{ name: 'Test' }] }, error: undefined });
+
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: 'directus.test',
+			accountability,
+			schema,
+		});
+
+		const { execute } = result.config;
+		await execute({ data: '[{"name":"Test"}]' });
+
+		expect(mockValidate.safeParse).toHaveBeenCalledWith(expect.objectContaining({ data: [{ name: 'Test' }] }));
+	});
 });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCollection } from '@directus/composables';
+import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { ContentVersion, Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -28,14 +28,13 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { usePermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useRelationsStore } from '@/stores/relations';
+import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { mergeItemData } from '@/utils/merge-item-data';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
@@ -558,6 +557,26 @@ function useActions() {
 
 		if (props.primaryKey && props.primaryKey !== '+' && primaryKeyField.value) {
 			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
+		}
+
+		const mainDefaults = unref(getDefaultValuesFromFields(fieldsWithoutCircular.value));
+
+		internalEdits.value = clearHiddenFieldsByCondition(
+			internalEdits.value,
+			fieldsWithoutCircular.value,
+			mainDefaults,
+			initialValues.value,
+		);
+
+		if (props.junctionField && internalEdits.value[props.junctionField]) {
+			const junctionDefaults = unref(getDefaultValuesFromFields(relatedCollectionFields.value));
+
+			internalEdits.value[props.junctionField] = clearHiddenFieldsByCondition(
+				internalEdits.value[props.junctionField],
+				relatedCollectionFields.value,
+				junctionDefaults,
+				initialValues.value?.[props.junctionField],
+			);
 		}
 
 		emit('input', internalEdits.value);

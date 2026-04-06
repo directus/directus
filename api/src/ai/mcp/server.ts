@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import { isObject, parseJSON, toArray } from '@directus/utils';
+import { isObject, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
 	type CallToolRequest,
@@ -25,6 +25,7 @@ import { ItemsService } from '../../services/index.js';
 import { Url } from '../../utils/url.js';
 import { findMcpTool, getAllMcpTools } from '../tools/index.js';
 import type { ToolConfig, ToolResult } from '../tools/types.js';
+import { coerceJsonFields } from '../tools/utils.js';
 import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
 
@@ -227,19 +228,12 @@ export class DirectusMCP {
 					request.params.arguments = { promptOverride: this.systemPrompt };
 				}
 
-				// ensure json expected fields are not stringified
-				if (request.params.arguments) {
-					for (const field of ['data', 'keys', 'query']) {
-						const arg = request.params.arguments[field];
+				const coercedArgs = request.params.arguments
+					? coerceJsonFields(request.params.arguments as Record<string, unknown>)
+					: request.params.arguments;
 
-						if (typeof arg === 'string') {
-							request.params.arguments[field] = parseJSON(arg);
-						}
-					}
-				}
-
-				const { error, data: args } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
-					data: request.params.arguments,
+				const { error, data: args } = tool.validateSchema?.safeParse(coercedArgs) ?? {
+					data: coercedArgs,
 				};
 
 				if (error) {
