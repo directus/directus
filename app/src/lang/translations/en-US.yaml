@@ -233,6 +233,7 @@ promote_version: Promote Version
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
+show_differences_only: Show Differences Only
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
@@ -856,6 +857,7 @@ errors:
   INVALID_CONFIG: Invalid config
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_FOREIGN_KEY: Invalid foreign key
+  INVALID_INVITE: This invite is no longer valid
   INVALID_IP: IP Address not allowed
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
@@ -2575,6 +2577,9 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
+    timezone: Timezone
+    timezone_local: Local Timezone
+    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files
