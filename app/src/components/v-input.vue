@@ -90,7 +90,7 @@ const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus', 'key
 
 const attrs = useAttrs();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const input = ref<HTMLInputElement | null>(null);
 
@@ -108,6 +108,20 @@ const listeners = computed(() => ({
 }));
 
 const attributes = computed(() => omit(attrs, ['class']));
+
+const inputLanguage = computed(() => {
+	const explicitLang = attrs.lang;
+
+	if (typeof explicitLang === 'string' && explicitLang.length > 0) {
+		return explicitLang;
+	}
+
+	if (props.type === 'number') {
+		return locale.value;
+	}
+
+	return undefined;
+});
 
 const classes = computed(() => [
 	{
@@ -342,6 +356,7 @@ function useInlineWarning() {
 					ref="input"
 					v-focus="autofocus"
 					v-bind="attributes"
+					:lang="inputLanguage"
 					:placeholder="placeholder ? String(placeholder) : undefined"
 					:autocomplete="autocomplete"
 					:type="type"

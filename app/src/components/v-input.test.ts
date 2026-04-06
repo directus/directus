@@ -254,6 +254,49 @@ describe('emitValue', () => {
 	});
 });
 
+describe('locale handling', () => {
+	test('uses the current app locale for number inputs', () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 300.44,
+				float: true,
+			},
+			global,
+		});
+
+		expect(wrapper.get('input').attributes('lang')).toBe('en-US');
+	});
+
+	test('does not force a locale on text inputs', () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+				modelValue: '300.44',
+				float: true,
+			},
+			global,
+		});
+
+		expect(wrapper.get('input').attributes('lang')).toBeUndefined();
+	});
+
+	test('prefers an explicitly provided lang attribute', () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 300.44,
+			},
+			attrs: {
+				lang: 'fr-FR',
+			},
+			global,
+		});
+
+		expect(wrapper.get('input').attributes('lang')).toBe('fr-FR');
+	});
+});
+
 describe('inline warning', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
