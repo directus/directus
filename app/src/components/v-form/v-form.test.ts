@@ -3,6 +3,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
+import FormField from './components/form-field.vue';
 import VForm from './v-form.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
 import { Md } from '@/__utils__/md';
@@ -95,6 +96,113 @@ function createField(overrides: Partial<Field> = {}): Field {
 }
 
 describe('VForm', () => {
+	describe('comparison mode with showDifferencesOnly', () => {
+		it('updates visible fields when showDifferencesOnly toggles', async () => {
+			const modifiedField = createField({ field: 'modified_field', name: 'Modified Field' });
+			const unmodifiedField = createField({ field: 'unmodified_field', name: 'Unmodified Field' });
+			const comparisonFields = new Set(['modified_field']);
+
+			const comparison = {
+				side: 'incoming' as const,
+				fields: comparisonFields,
+				selectedFields: [],
+				onToggleField: null,
+				showDifferencesOnly: false,
+			};
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [modifiedField, unmodifiedField],
+					primaryKey: '+',
+					comparison,
+				},
+				global,
+			});
+
+			let renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('modified_field');
+			expect(renderedFields).toContain('unmodified_field');
+
+			await wrapper.setProps({
+				comparison: { ...comparison, showDifferencesOnly: true },
+			});
+
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('modified_field');
+			expect(renderedFields).not.toContain('unmodified_field');
+
+			await wrapper.setProps({
+				comparison: { ...comparison, showDifferencesOnly: false },
+			});
+
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('modified_field');
+			expect(renderedFields).toContain('unmodified_field');
+		});
+
+		it('updates visible fields inside a group when showDifferencesOnly toggles', async () => {
+			const modifiedInGroup = createField({
+				field: 'inner_modified',
+				name: 'Inner Modified',
+				meta: {
+					...createField().meta!,
+					field: 'inner_modified',
+					group: 'my_group',
+				},
+			});
+
+			const unmodifiedInGroup = createField({
+				field: 'inner_unmodified',
+				name: 'Inner Unmodified',
+				meta: {
+					...createField().meta!,
+					field: 'inner_unmodified',
+					group: 'my_group',
+				},
+			});
+
+			const comparisonFields = new Set(['inner_modified']);
+
+			const comparison = {
+				side: 'incoming' as const,
+				fields: comparisonFields,
+				selectedFields: [],
+				onToggleField: null,
+				showDifferencesOnly: false,
+			};
+
+			const wrapper = mount(VForm, {
+				props: {
+					fields: [modifiedInGroup, unmodifiedInGroup],
+					primaryKey: '+',
+					group: 'my_group',
+					comparison,
+				},
+				global,
+			});
+
+			let renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('inner_modified');
+			expect(renderedFields).toContain('inner_unmodified');
+
+			await wrapper.setProps({
+				comparison: { ...comparison, showDifferencesOnly: true },
+			});
+
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('inner_modified');
+			expect(renderedFields).not.toContain('inner_unmodified');
+
+			await wrapper.setProps({
+				comparison: { ...comparison, showDifferencesOnly: false },
+			});
+
+			renderedFields = wrapper.findAllComponents(FormField).map((c) => c.props('field').field);
+			expect(renderedFields).toContain('inner_modified');
+			expect(renderedFields).toContain('inner_unmodified');
+		});
+	});
+
 	describe('apply function', () => {
 		it('preserves grouped readonly field values during nested form updates', async () => {
 			const checkboxField = createField({

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { realtime } from '@directus/sdk';
 import { useLocalStorage } from '@vueuse/core';
 import CodeMirror from 'codemirror';
@@ -14,7 +15,6 @@ import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useClipboard } from '@/composables/use-clipboard';
-import { useShortcut } from '@/composables/use-shortcut';
 import InterfaceInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
