@@ -182,7 +182,7 @@ export class ServerService {
 
 		const checkID = nanoid(5);
 
-		// Based on https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#name-componenttype
+		// Based on https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check#name-componenttype
 		type HealthData = {
 			status: 'ok' | 'warn' | 'error';
 			releaseId: string;
@@ -193,7 +193,7 @@ export class ServerService {
 		};
 
 		type HealthCheck = {
-			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache' | 'ratelimiter';
+			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache';
 			observedValue?: number | string | boolean;
 			observedUnit?: string;
 			status: 'ok' | 'warn' | 'error';
@@ -317,7 +317,7 @@ export class ServerService {
 			});
 
 			const checks: Record<string, HealthCheck[]> = {
-				'cache:responseTime': [
+				'redis:responseTime': [
 					{
 						status: 'ok',
 						componentType: 'cache',
@@ -334,17 +334,17 @@ export class ServerService {
 				await redis.set(`directus-health-${checkID}`, 1);
 				await redis.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
-				checks['cache:responseTime']![0]!.status = 'error';
-				checks['cache:responseTime']![0]!.output = err;
+				checks['redis:responseTime']![0]!.status = 'error';
+				checks['redis:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['cache:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
+				checks['redis:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['cache:responseTime']![0]!.observedValue > checks['cache:responseTime']![0]!.threshold! &&
-					checks['cache:responseTime']![0]!.status !== 'error'
+					checks['redis:responseTime']![0]!.observedValue > checks['redis:responseTime']![0]!.threshold! &&
+					checks['redis:responseTime']![0]!.status !== 'error'
 				) {
-					checks['cache:responseTime']![0]!.status = 'warn';
+					checks['redis:responseTime']![0]!.status = 'warn';
 				}
 			}
 
