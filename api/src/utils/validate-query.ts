@@ -187,6 +187,12 @@ function validateAlias(alias: any) {
 	}
 }
 
+function assertMaxRelationalDepth(depth: number, maxRelationalDepth: number) {
+	if (depth > maxRelationalDepth) {
+		throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
+	}
+}
+
 function validateRelationalDepth(query: Query) {
 	const maxRelationalDepth = Number(env['MAX_RELATIONAL_DEPTH']) > 2 ? Number(env['MAX_RELATIONAL_DEPTH']) : 2;
 
@@ -216,32 +222,24 @@ function validateRelationalDepth(query: Query) {
 	fields = uniq(fields);
 
 	for (const field of fields) {
-		if (field.split('.').length > maxRelationalDepth) {
-			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
-		}
+		assertMaxRelationalDepth(field.split('.').length, maxRelationalDepth);
 	}
 
 	if (query.filter) {
 		const filterRelationalDepth = calculateFieldDepth(query.filter);
 
-		if (filterRelationalDepth > maxRelationalDepth) {
-			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
-		}
+		assertMaxRelationalDepth(filterRelationalDepth, maxRelationalDepth);
 	}
 
 	if (query.sort) {
 		for (const sort of query.sort) {
-			if (sort.split('.').length > maxRelationalDepth) {
-				throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
-			}
+			assertMaxRelationalDepth(sort.split('.').length, maxRelationalDepth);
 		}
 	}
 
 	if (query.deep) {
 		const deepRelationalDepth = calculateFieldDepth(query.deep, ['_sort']);
 
-		if (deepRelationalDepth > maxRelationalDepth) {
-			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
-		}
+		assertMaxRelationalDepth(deepRelationalDepth, maxRelationalDepth);
 	}
 }

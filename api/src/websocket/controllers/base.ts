@@ -141,15 +141,8 @@ export default abstract class SocketController {
 		const context: UpgradeContext = { request, socket, head, accountabilityOverrides };
 
 		if (this.authentication.mode === 'strict' || query['access_token'] || cookies[sessionCookieName]) {
-			let token: string | null = null;
-
-			if (typeof query['access_token'] === 'string') {
-				token = query['access_token'];
-			} else if (typeof cookies[sessionCookieName] === 'string') {
-				token = cookies[sessionCookieName] ?? null;
-			}
-
-			await this.handleTokenUpgrade(context, token);
+			const tokenInfo = this.getTokenFromUpgradeRequest(query, cookies, sessionCookieName);
+			await this.handleTokenUpgrade(context, tokenInfo.token);
 			return;
 		}
 
@@ -168,6 +161,24 @@ export default abstract class SocketController {
 
 			this.server.emit('connection', ws, state);
 		});
+	}
+
+	private getTokenFromUpgradeRequest(
+		query: Record<string, unknown>,
+		cookies: Record<string, unknown>,
+		sessionCookieName: string,
+	): { hasTokenFromRequest: boolean; token: string | null } {
+		let token: string | null = null;
+
+		if (typeof query['access_token'] === 'string') {
+			token = query['access_token'];
+		} else if (typeof cookies[sessionCookieName] === 'string') {
+			token = cookies[sessionCookieName] ?? null;
+		}
+
+		// Mirrors the existing truthy checks in handleUpgrade to keep decision semantics stable.
+		const hasTokenFromRequest = Boolean(query['access_token'] || cookies[sessionCookieName]);
+		return { hasTokenFromRequest, token };
 	}
 
 	protected async handleTokenUpgrade(
@@ -189,18 +200,14 @@ export default abstract class SocketController {
 		}
 
 		if (!token || !accountability || !accountability.user) {
-			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
-			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-			socket.destroy();
+			this.denyUpgrade401(socket, accountability);
 			return;
 		}
 
 		try {
 			this.checkUserRequirements(accountability);
 		} catch {
-			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
-			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-			socket.destroy();
+			this.denyUpgrade401(socket, accountability);
 			return;
 		}
 
@@ -209,6 +216,12 @@ export default abstract class SocketController {
 			const state = { accountability, expires_at } as AuthenticationState;
 			this.server.emit('connection', ws, state);
 		});
+	}
+
+	private denyUpgrade401(socket: internal.Duplex, accountability: Accountability | null) {
+		logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
+		socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+		socket.destroy();
 	}
 
 	protected async handleHandshakeUpgrade({ request, socket, head, accountabilityOverrides }: UpgradeContext) {
