@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Add cleanup handlers to destroy streams when clients disconnect during file downloads
+Add cleanup handlers for disconnected file streams
