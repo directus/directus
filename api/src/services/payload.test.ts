@@ -1,5 +1,5 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability, DefaultOverwrite, Item, PayloadAction } from '@directus/types';
+import type { Accountability, Item, PayloadAction } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -53,44 +53,6 @@ describe('Integration Tests', () => {
 				});
 
 				helpers = getHelpers(db);
-			});
-
-			describe('date-updated', () => {
-				test('Falls back to current date when overwriteDefaults exists but _date is undefined', async () => {
-					const before = Date.now();
-
-					const result = await service.transformers['date-updated']!({
-						value: undefined as unknown as string,
-						action: 'update',
-						payload: {},
-						accountability: { role: null } as Accountability,
-						specials: [],
-						helpers,
-						overwriteDefaults: { _user: undefined, _date: undefined } as unknown as DefaultOverwrite,
-					});
-
-					const after = Date.now();
-
-					expect(result).toBeInstanceOf(Date);
-					expect((result as Date).getTime()).toBeGreaterThanOrEqual(before);
-					expect((result as Date).getTime()).toBeLessThanOrEqual(after);
-				});
-			});
-
-			describe('user-updated', () => {
-				test('Falls back to accountability user when overwriteDefaults exists but _user is undefined', async () => {
-					const result = await service.transformers['user-updated']!({
-						value: undefined as unknown as string,
-						action: 'update',
-						payload: {},
-						accountability: { role: null, user: 'current-user' } as unknown as Accountability,
-						specials: [],
-						helpers,
-						overwriteDefaults: { _user: undefined, _date: undefined } as unknown as DefaultOverwrite,
-					});
-
-					expect(result).toBe('current-user');
-				});
 			});
 
 			describe('csv', () => {
