@@ -9,7 +9,6 @@ import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
 import asyncHandler from '../utils/async-handler.js';
 import { createAdmin } from '../utils/create-admin.js';
-import { isUnauthenticated } from '../utils/is-unauthenticated.js';
 
 const router = Router();
 const env = useEnv();
@@ -76,7 +75,7 @@ router.get(
 router.get(
 	'/health',
 	asyncHandler(async (req, res, next) => {
-		if (toBoolean(env['HEALTHCHECK_ENABLED']) === false || isUnauthenticated(req.accountability)) {
+		if (toBoolean(env['HEALTHCHECK_ENABLED']) === false) {
 			throw new RouteNotFoundError({ path: req.path });
 		}
 

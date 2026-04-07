@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
+import { ForbiddenError } from '@directus/errors';
 import { createKv } from '@directus/memory';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
@@ -16,6 +17,7 @@ import { redisConfigAvailable, useRedis } from '../redis/index.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
+import { isUnauthenticated } from '../utils/is-unauthenticated.js';
 import { useStore } from '../utils/store.js';
 import { SettingsService } from './settings.js';
 
@@ -164,6 +166,10 @@ export class ServerService {
 	}
 
 	async health(): Promise<Record<string, any>> {
+		if (isUnauthenticated(this.accountability)) {
+			throw new ForbiddenError();
+		}
+
 		const healthResult = await store(async (store) => {
 			try {
 				return await store.get('health');
