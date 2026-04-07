@@ -133,8 +133,10 @@ const internalActive = computed({
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-drawer {
-	@media (width >= 36rem) {
+	@include mixins.breakpoint-up('sm') {
 		--content-padding: 1.375rem;
 	}
 
