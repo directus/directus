@@ -245,7 +245,9 @@ export class ServerService {
 		return this.accountability?.admin === true ? data : { status: data.status };
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
-			if (enabledServices.includes('database') === false) return {};
+			if (enabledServices.includes('database') === false) {
+				return {};
+			}
 
 			const database = getDatabase();
 			const client = env['DB_CLIENT'];
