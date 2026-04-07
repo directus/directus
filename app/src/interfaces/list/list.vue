@@ -349,8 +349,6 @@ const menuActive = computed(() => drawerOpen.value || confirmDiscard.value);
 }
 
 .drawer-item-content {
-	--content-padding: 1.375rem;
-
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 }

@@ -127,8 +127,6 @@ const steps = computed(() => {
 
 <style lang="scss" scoped>
 .content {
-	--content-padding: 1.375rem;
-
 	padding: var(--content-padding);
 }
 

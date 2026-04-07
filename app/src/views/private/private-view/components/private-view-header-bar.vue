@@ -94,7 +94,7 @@ const showNavToggle = computed(() => {
 
 .header-bar {
 	background-color: var(--theme--header--background);
-	padding-inline: var(--content-padding);
+	padding-inline: 1.5rem 0.75rem;
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 	block-size: var(--header-bar-height);
 	grid-template-rows: repeat(2, 1fr);

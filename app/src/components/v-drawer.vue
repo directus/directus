@@ -134,6 +134,10 @@ const internalActive = computed({
 
 <style lang="scss" scoped>
 .v-drawer {
+	@media (width >= 36rem) {
+		--content-padding: 1.375rem;
+	}
+
 	position: relative;
 	display: flex;
 	flex-direction: column;

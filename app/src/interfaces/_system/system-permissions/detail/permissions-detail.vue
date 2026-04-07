@@ -234,8 +234,6 @@ function save() {
 
 <style lang="scss" scoped>
 .content {
-	--content-padding: 1.375rem;
-
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding);
 }

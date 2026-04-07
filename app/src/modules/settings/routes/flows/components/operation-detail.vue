@@ -218,8 +218,6 @@ function saveOperation() {
 @use '@/styles/mixins';
 
 .content {
-	--content-padding: 1.375rem;
-
 	padding: var(--content-padding);
 
 	.grid {
