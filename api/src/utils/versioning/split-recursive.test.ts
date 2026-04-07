@@ -111,3 +111,40 @@ test('split with arrays and nested objects', () => {
 		],
 	});
 });
+
+test('split with relational delete returns undefined defaultOverwrites for primitive arrays', () => {
+	const input = {
+		_user: 'user-id',
+		_date: '2026-04-03T16:06:09.298Z',
+		relation: {
+			create: [],
+			update: [],
+			delete: [3],
+			_user: 'user-id',
+			_date: '2026-04-03T16:06:09.298Z',
+		},
+	};
+
+	const { rawDelta, defaultOverwrites } = splitRecursive(input);
+
+	expect(rawDelta).toEqual({
+		relation: {
+			create: [],
+			update: [],
+			delete: [3],
+		},
+	});
+
+	expect(defaultOverwrites).toEqual({
+		_user: 'user-id',
+		_date: '2026-04-03T16:06:09.298Z',
+		relation: {
+			_user: 'user-id',
+			_date: '2026-04-03T16:06:09.298Z',
+		},
+	});
+
+	expect(defaultOverwrites?.['relation']?.['delete']).toBeUndefined();
+	expect(defaultOverwrites?.['relation']?.['create']).toBeUndefined();
+	expect(defaultOverwrites?.['relation']?.['update']).toBeUndefined();
+});
