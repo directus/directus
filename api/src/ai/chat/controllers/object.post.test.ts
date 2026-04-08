@@ -32,6 +32,7 @@ vi.mock('../../telemetry/index.js', () => ({
 describe('aiObjectPostHandler', () => {
 	let mockReq: Partial<Request>;
 	let mockRes: Partial<Response>;
+
 	const validBody = {
 		provider: 'openai',
 		model: 'gpt-5',
