@@ -41,7 +41,7 @@ const showNavToggle = computed(() => {
 			/>
 
 			<div class="title-outer-prepend">
-				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" show-back :back-to />
+				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" :back-to />
 
 				<PrivateViewHeaderBarIcon v-else-if="icon" class="icon" :icon :icon-color />
 

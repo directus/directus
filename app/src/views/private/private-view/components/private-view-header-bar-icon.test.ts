@@ -35,15 +35,15 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(wrapper.exists()).toBe(true);
 	});
 
-	test('renders back button when showBack prop is true', () => {
+	test('renders back button when backTo is provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
-				showBack: true,
+				backTo: '/back',
 			},
 		});
 
-		const backButton = wrapper.findComponent({ name: 'VButton' });
+		const backButton = wrapper.findComponent({ name: 'PrivateViewHeaderBarActionButton' });
 		expect(backButton.exists()).toBe(true);
 		expect(backButton.classes()).toContain('back-button');
 	});
@@ -52,7 +52,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
-				showBack: true,
+				backTo: '/back',
 			},
 		});
 
@@ -65,7 +65,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
-				showBack: true,
+				backTo: '/back',
 			},
 		});
 
@@ -74,11 +74,10 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(actionButton.props('icon')).toBe('arrow_back');
 	});
 
-	test('back button navigates to backTo route when provided', () => {
+	test('back button navigates to backTo route', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
-				showBack: true,
 				backTo: '/back',
 			},
 		});
@@ -93,7 +92,6 @@ describe('PrivateViewHeaderBarIcon', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
-				showBack: true,
 				backTo: '/back',
 			},
 		});
@@ -132,7 +130,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(icon.props('color')).toBe('blue');
 	});
 
-	test('does not render back button when showBack is false', () => {
+	test('does not render back button when backTo is not provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
@@ -144,11 +142,11 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(backButton.exists()).toBe(false);
 	});
 
-	test('does not render icon when icon is not provided', () => {
+	test('does not render icon when backTo is provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
-				showBack: true,
+				backTo: '/back',
 			},
 		});
 
@@ -156,7 +154,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(icon.exists()).toBe(false);
 	});
 
-	test('renders nothing when neither showBack nor icon are provided', () => {
+	test('renders nothing when neither backTo nor icon are provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, mountOptions);
 
 		const backButton = wrapper.find('.back-button');
@@ -166,11 +164,11 @@ describe('PrivateViewHeaderBarIcon', () => {
 		expect(icon.exists()).toBe(false);
 	});
 
-	test('prioritizes showBack over icon when both are provided', () => {
+	test('prioritizes backTo over icon when both are provided', () => {
 		const wrapper = mount(PrivateViewHeaderBarIcon, {
 			...mountOptions,
 			props: {
-				showBack: true,
+				backTo: '/back',
 				icon: 'edit',
 			},
 		});
