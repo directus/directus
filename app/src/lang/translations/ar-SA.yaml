@@ -635,7 +635,6 @@ no_collections: مجموعات
 create_collection: إنشاء مجموعة
 no_collections_copy_admin: ليس لديك أي مجموعات حتى الآن. انقر على الزر أدناه للبدء.
 no_collections_copy: ليس لديك أي مجموعات حتى الآن. الرجاء الاتصال بمدير النظام الخاص بك.
-relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
 no_singleton_relations: العلاقات مع القراشيع غير مدعومة
 display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين

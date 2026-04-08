@@ -559,7 +559,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			&.left {
 				display: none;
 
-				@media (width >= 54rem) {
+				@media (width >= 67.5rem) {
 					display: flex;
 					align-items: center;
 					gap: 1.375rem;
@@ -579,7 +579,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				flex-direction: column;
 				gap: 0.875rem;
 
-				@media (width >= 54rem) {
+				@media (width >= 67.5rem) {
 					flex-direction: row;
 					justify-content: flex-end;
 				}
@@ -588,7 +588,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					margin-block-end: 0;
 					justify-content: start;
 
-					@media (width >= 54rem) {
+					@media (width >= 67.5rem) {
 						display: none;
 					}
 				}
@@ -602,19 +602,16 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					margin-block-end: 0.6875rem;
 					justify-content: start;
 
-					@media (width >= 39.6875rem) {
+					@media (width >= 67.5rem) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
-					}
-
-					@media (width >= 54rem) {
 						justify-content: flex-start;
 					}
 				}
 
 				.footer-actions {
-					@media (width >= 39.6875rem) {
+					@media (width >= 67.5rem) {
 						display: flex;
 						align-items: center;
 						gap: 1.375rem;
@@ -663,7 +660,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			}
 		}
 
-		@media (width >= 39.6875rem) {
+		@media (width >= 67.5rem) {
 			.columns {
 				gap: 0;
 			}
