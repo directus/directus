@@ -1,3 +1,4 @@
+import type { JSONSchema7 } from 'ai';
 import { describe, expect, it } from 'vitest';
 import { addAdditionalPropertiesToJsonSchema } from './add-additional-properties-to-json-schema.js';
 
@@ -91,9 +92,9 @@ describe('addAdditionalPropertiesToJsonSchema', () => {
 	});
 
 	it('does not mutate the original input', () => {
-		const input = {
-			type: 'object' as const,
-			properties: { name: { type: 'string' as const } },
+		const input: JSONSchema7 = {
+			type: 'object',
+			properties: { name: { type: 'string' } },
 		};
 
 		addAdditionalPropertiesToJsonSchema(input);
