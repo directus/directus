@@ -58,7 +58,7 @@ describe('PrivateViewHeaderBarIcon', () => {
 
 		const actionButton = wrapper.findComponent({ name: 'PrivateViewHeaderBarActionButton' });
 		expect(actionButton.props('icon')).toBe('arrow_back');
-		expect(actionButton.props('secondary')).toBe(true);
+		expect(actionButton.props('variant')).toBe('ghost');
 	});
 
 	test('back button renders arrow_back icon', () => {
