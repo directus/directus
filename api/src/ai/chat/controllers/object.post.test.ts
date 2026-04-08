@@ -92,17 +92,13 @@ describe('aiObjectPostHandler', () => {
 		it('should throw ForbiddenError when accountability is missing', async () => {
 			delete (mockReq as any).accountability;
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				ForbiddenError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});
 
 		it('should throw ForbiddenError when app is false', async () => {
 			mockReq.accountability = { user: 'test', role: 'test', app: false } as any;
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				ForbiddenError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});
 	});
 
@@ -110,33 +106,25 @@ describe('aiObjectPostHandler', () => {
 		it('should throw InvalidPayloadError when provider is missing', async () => {
 			mockReq.body = { model: 'gpt-5', prompt: 'test', outputSchema: validBody.outputSchema };
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				InvalidPayloadError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(InvalidPayloadError);
 		});
 
 		it('should throw InvalidPayloadError when prompt is missing', async () => {
 			mockReq.body = { provider: 'openai', model: 'gpt-5', outputSchema: validBody.outputSchema };
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				InvalidPayloadError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(InvalidPayloadError);
 		});
 
 		it('should throw InvalidPayloadError when outputSchema is missing', async () => {
 			mockReq.body = { provider: 'openai', model: 'gpt-5', prompt: 'test' };
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				InvalidPayloadError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(InvalidPayloadError);
 		});
 
 		it('should throw InvalidPayloadError when provider is invalid', async () => {
 			mockReq.body = { ...validBody, provider: 'invalid-provider' };
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				InvalidPayloadError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(InvalidPayloadError);
 		});
 	});
 
@@ -144,25 +132,19 @@ describe('aiObjectPostHandler', () => {
 		it('should throw ForbiddenError when model is not in allowed list', async () => {
 			mockReq.body = { ...validBody, model: 'not-allowed' };
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				ForbiddenError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});
 
 		it('should throw ForbiddenError when allowedModels is null', async () => {
 			mockRes.locals!['ai'].settings.openaiAllowedModels = null;
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				ForbiddenError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});
 
 		it('should throw ForbiddenError when allowedModels is empty', async () => {
 			mockRes.locals!['ai'].settings.openaiAllowedModels = [];
 
-			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(
-				ForbiddenError,
-			);
+			await expect(aiObjectPostHandler(mockReq as Request, mockRes as Response)).rejects.toThrow(ForbiddenError);
 		});
 
 		it('should not validate openai-compatible models', async () => {
