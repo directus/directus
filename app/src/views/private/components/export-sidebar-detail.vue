@@ -79,23 +79,32 @@ const { info } = useServerStore();
 const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
 const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
 
+const isVirtualField = (fieldName: string) => fieldName.startsWith('$');
+
+const sanitizeExportFields = (fieldNames: string[] | undefined) => {
+	return fieldNames?.filter((fieldName) => isVirtualField(fieldName) === false) ?? [];
+};
+
+const getDefaultExportFields = () => {
+	return (
+		fields.value
+		?.filter((field) => field.type !== 'alias' && isVirtualField(field.field) === false)
+		.map((field) => field.field) ?? []
+	);
+};
+
 const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? defaultLimit,
 	filter: props.filter,
 	search: props.search,
-	fields:
-		props.layoutQuery?.fields ??
-		fields.value?.filter((field) => field.type !== 'alias' && field.field.startsWith('$') === false).map((field) => field.field),
+	fields: sanitizeExportFields(props.layoutQuery?.fields) ?? getDefaultExportFields(),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
 watch(
 	fields,
 	() => {
-		if (props.layoutQuery?.fields) return;
-		exportSettings.fields = fields.value
-			?.filter((field) => field.type !== 'alias' && field.field.startsWith('$') === false)
-			.map((field) => field.field);
+		exportSettings.fields = props.layoutQuery?.fields ? sanitizeExportFields(props.layoutQuery.fields) : getDefaultExportFields();
 	},
 	{ immediate: true },
 );
@@ -106,7 +115,9 @@ watch(
 		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
 
 		if (props.layoutQuery?.fields) {
-			exportSettings.fields = props.layoutQuery?.fields;
+			exportSettings.fields = sanitizeExportFields(props.layoutQuery.fields);
+		} else {
+			exportSettings.fields = getDefaultExportFields();
 		}
 
 		if (props.layoutQuery?.sort) {
@@ -555,7 +566,7 @@ async function exportDataFiles() {
 					<VNotice v-else>{{ $t('not_available_for_local_downloads') }}</VNotice>
 				</div>
 
-				<VNotice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
+				<VNotice class="full" :type="lockedToFiles ? 'warning' : undefined">
 					<div>
 						<p v-if="itemCountLoading">
 							{{ $t('loading') }}
@@ -606,7 +617,7 @@ async function exportDataFiles() {
 						:value="sortField"
 						:collection-name="collection"
 						allow-primary-key
-						@input="sortField = $event"
+						@input="sortField = $event ?? ''"
 					/>
 				</div>
 				<div class="field half-right">
