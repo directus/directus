@@ -381,22 +381,24 @@ describe('AssetsService', () => {
 	});
 
 	describe('zip (private)', () => {
-		const mockArchiver = {
-			append: vi.fn(),
-			finalize: vi.fn().mockResolvedValue(undefined),
-		};
-
 		const mockSchema = {
 			collections: {},
 			relations: [],
 		} as SchemaOverview;
 
 		let mockDriver: Partial<Driver>;
+		let mockArchiver: Partial<Archiver>;
 		let mockStorage: Partial<StorageManager>;
 
 		// Common setup
 		beforeEach(() => {
 			vi.resetAllMocks();
+
+			mockArchiver = {
+				append: vi.fn(),
+				finalize: vi.fn().mockResolvedValue(undefined),
+				destroyed: false,
+			};
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
@@ -595,22 +597,24 @@ describe('AssetsService', () => {
 	});
 
 	describe('zipFiles', () => {
-		const mockArchiver = {
-			append: vi.fn(),
-			finalize: vi.fn().mockResolvedValue(undefined),
-		};
-
 		const mockSchema = {
 			collections: {},
 			relations: [],
 		} as SchemaOverview;
 
 		let mockDriver: Partial<Driver>;
+		let mockArchiver: Partial<Archiver>;
 		let mockStorage: Partial<StorageManager>;
 
 		// Common setup
 		beforeEach(() => {
 			vi.resetAllMocks();
+
+			mockArchiver = {
+				append: vi.fn(),
+				finalize: vi.fn().mockResolvedValue(undefined),
+				destroyed: false,
+			};
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
@@ -657,25 +661,50 @@ describe('AssetsService', () => {
 				limit: -1,
 			});
 		});
+
+		test('should skip appends and call finalize (error) when archive is destroyed (aborted)', async () => {
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt' },
+			] as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockImplementation(
+				async (key) => ({ id: key, folder: null, filename_download: `${key}.txt` }) as File,
+			);
+
+			const service = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await service.zipFiles(['file1']);
+
+			mockArchiver.destroyed = true;
+
+			await result.complete();
+
+			expect(mockArchiver.append).not.toHaveBeenCalled();
+			expect(mockArchiver.finalize).toHaveBeenCalled();
+		});
 	});
 
 	describe('zipFolder', () => {
-		const mockArchiver = {
-			append: vi.fn(),
-			finalize: vi.fn().mockResolvedValue(undefined),
-		};
-
 		const mockSchema = {
 			collections: {},
 			relations: [],
 		} as SchemaOverview;
 
 		let mockDriver: Partial<Driver>;
+		let mockArchiver: Partial<Archiver>;
 		let mockStorage: Partial<StorageManager>;
 
 		// Common setup
 		beforeEach(() => {
 			vi.resetAllMocks();
+
+			mockArchiver = {
+				append: vi.fn(),
+				finalize: vi.fn().mockResolvedValue(undefined),
+				destroyed: false,
+			};
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
