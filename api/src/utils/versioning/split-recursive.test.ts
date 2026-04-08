@@ -112,7 +112,7 @@ test('split with arrays and nested objects', () => {
 	});
 });
 
-test('split with relational delete returns undefined defaultOverwrites for primitive arrays', () => {
+test('split with relational delete inherits parent meta for primitive arrays', () => {
 	const input = {
 		_user: 'user-id',
 		_date: '2026-04-03T16:06:09.298Z',
@@ -141,10 +141,9 @@ test('split with relational delete returns undefined defaultOverwrites for primi
 		relation: {
 			_user: 'user-id',
 			_date: '2026-04-03T16:06:09.298Z',
+			create: { _user: 'user-id', _date: '2026-04-03T16:06:09.298Z' },
+			update: { _user: 'user-id', _date: '2026-04-03T16:06:09.298Z' },
+			delete: { _user: 'user-id', _date: '2026-04-03T16:06:09.298Z' },
 		},
 	});
-
-	expect(defaultOverwrites?.['relation']?.['delete']).toBeUndefined();
-	expect(defaultOverwrites?.['relation']?.['create']).toBeUndefined();
-	expect(defaultOverwrites?.['relation']?.['update']).toBeUndefined();
 });

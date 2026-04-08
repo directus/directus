@@ -11,7 +11,12 @@ export function splitRecursive(object: unknown): {
 		for (const key in rest) {
 			const { rawDelta, defaultOverwrites: innerDefaultOverwrites } = splitRecursive(rest[key]);
 			rest[key] = rawDelta;
-			if (innerDefaultOverwrites) defaultOverwrites[key] = innerDefaultOverwrites;
+
+			if (innerDefaultOverwrites) {
+				defaultOverwrites[key] = innerDefaultOverwrites;
+			} else if (Array.isArray(rest[key]) && _user !== undefined && _date !== undefined) {
+				defaultOverwrites[key] = { _user, _date };
+			}
 		}
 
 		return { rawDelta: rest, defaultOverwrites };
