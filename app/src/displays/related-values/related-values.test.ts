@@ -61,8 +61,9 @@ vi.mock('@/components/v-list-item-content.vue', async () => {
 
 	return {
 		default: defineComponent({
-			setup(_, { slots }) {
-				return () => h('div', slots.default?.());
+			inheritAttrs: false,
+			setup(_, { attrs, slots }) {
+				return () => h('div', { class: ['v-list-item-content', attrs.class] }, slots.default?.());
 			},
 		}),
 	};
@@ -345,6 +346,8 @@ describe('related-values m2a display', () => {
 		expect(wrapper.text()).toContain('collection_one|{{ name }}|Ahmed');
 		expect(wrapper.text()).toContain('Collection Two:');
 		expect(wrapper.text()).toContain('collection_two|{{ title }}|Admin');
+		expect(wrapper.findAll('.v-list-item-content.m2a-item')).toHaveLength(0);
+		expect(wrapper.findAll('.v-list-item-content .m2a-item')).toHaveLength(2);
 
 		expect(wrapper.findAll('a').map((link) => link.attributes('href'))).toEqual([
 			'/content/collection_one/11',

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { get } from 'lodash';
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -10,9 +10,8 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getItemRoute } from '@/utils/get-route';
@@ -28,8 +27,7 @@ const props = defineProps<{
 
 const { t, te } = useI18n();
 const collectionsStore = useCollectionsStore();
-const fieldsStore = useFieldsStore();
-const relationsStore = useRelationsStore();
+const { relationInfo } = useRelationM2A(toRef(props, 'collection'), toRef(props, 'field'));
 
 const relatedCollectionData = computed(() => {
 	return getRelatedCollection(props.collection, props.field);
@@ -50,27 +48,10 @@ const localType = computed(() => {
 const m2aRelationInfo = computed(() => {
 	if (localType.value !== 'm2a') return null;
 
-	const relations = relationsStore.getRelationsForField(props.collection, props.field);
-
-	const junction = relations.find(
-		(relation) =>
-			relation.related_collection === props.collection &&
-			relation.meta?.one_field === props.field &&
-			relation.meta?.junction_field,
-	);
-
-	if (!junction) return null;
-
-	const relation = relations.find(
-		(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field,
-	);
-
-	if (!relation?.meta?.one_collection_field || !junction.meta?.junction_field) return null;
+	if (!relationInfo.value) return null;
 
 	const primaryKeyFields = Object.fromEntries(
-		(relation.meta.one_allowed_collections ?? [])
-			.map((collection) => [collection, fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field ?? null])
-			.filter(([, field]) => field !== null),
+		Object.entries(relationInfo.value.relationPrimaryKeyFields).map(([collection, field]) => [collection, field.field]),
 	) as Record<string, string>;
 
 	const templates = Object.fromEntries(
@@ -81,8 +62,8 @@ const m2aRelationInfo = computed(() => {
 	);
 
 	return {
-		collectionField: relation.meta.one_collection_field,
-		junctionField: junction.meta.junction_field,
+		collectionField: relationInfo.value.collectionField.field,
+		junctionField: relationInfo.value.junctionField.field,
 		primaryKeyFields,
 		templates,
 	};
@@ -124,7 +105,7 @@ const unit = computed(() => {
 	return null;
 });
 
-function getLinkForItem(item: any) {
+function getLinkForItem(item: Record<string, any>) {
 	if (m2aRelationInfo.value) {
 		const itemCollection = item?.[m2aRelationInfo.value.collectionField];
 		const primaryKeyField = itemCollection ? m2aRelationInfo.value.primaryKeyFields[itemCollection] : null;
@@ -143,11 +124,11 @@ function getLinkForItem(item: any) {
 	return getItemRoute(relatedCollection.value, primaryKey);
 }
 
-function getM2ACollection(item: any) {
+function getM2ACollection(item: Record<string, any>) {
 	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.collectionField] ?? null) : null;
 }
 
-function getM2ATemplate(item: any) {
+function getM2ATemplate(item: Record<string, any>) {
 	const itemCollection = getM2ACollection(item);
 
 	if (!itemCollection || !m2aRelationInfo.value) return '';
@@ -155,11 +136,11 @@ function getM2ATemplate(item: any) {
 	return m2aRelationInfo.value.templates[itemCollection] ?? '';
 }
 
-function getM2AValue(item: any) {
+function getM2AValue(item: Record<string, any>) {
 	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.junctionField] ?? null) : null;
 }
 
-function getM2APrefix(item: any) {
+function getM2APrefix(item: Record<string, any>) {
 	const itemCollection = getM2ACollection(item);
 
 	if (!itemCollection) return t('item');
@@ -192,13 +173,15 @@ function getM2APrefix(item: any) {
 		<VList class="links">
 			<template v-if="localType === 'm2a' && !template">
 				<VListItem v-for="item in value" :key="item[primaryKeyFieldPath!]">
-					<VListItemContent class="m2a-item">
-						<span class="collection">{{ getM2APrefix(item) }}:</span>
-						<RenderTemplate
-							:template="getM2ATemplate(item)"
-							:item="getM2AValue(item)"
-							:collection="getM2ACollection(item) || undefined"
-						/>
+					<VListItemContent>
+						<div class="m2a-item">
+							<span class="collection">{{ getM2APrefix(item) }}:</span>
+							<RenderTemplate
+								:template="getM2ATemplate(item)"
+								:item="getM2AValue(item)"
+								:collection="getM2ACollection(item) || undefined"
+							/>
+						</div>
 					</VListItemContent>
 					<VListItemIcon>
 						<RouterLink v-if="getLinkForItem(item)" :to="getLinkForItem(item)!">
