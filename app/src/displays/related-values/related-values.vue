@@ -11,7 +11,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useRelationM2A } from '@/composables/use-relation-m2a';
-import { useCollectionsStore } from '@/stores/collections';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getItemRoute } from '@/utils/get-route';
@@ -26,8 +25,10 @@ const props = defineProps<{
 }>();
 
 const { t, te } = useI18n();
-const collectionsStore = useCollectionsStore();
-const { relationInfo } = useRelationM2A(toRef(props, 'collection'), toRef(props, 'field'));
+const { relationInfo } = useRelationM2A(
+	computed(() => props.collection),
+	computed(() => props.field),
+);
 
 const relatedCollectionData = computed(() => {
 	return getRelatedCollection(props.collection, props.field);
@@ -46,27 +47,7 @@ const localType = computed(() => {
 });
 
 const m2aRelationInfo = computed(() => {
-	if (localType.value !== 'm2a') return null;
-
-	if (!relationInfo.value) return null;
-
-	const primaryKeyFields = Object.fromEntries(
-		Object.entries(relationInfo.value.relationPrimaryKeyFields).map(([collection, field]) => [collection, field.field]),
-	) as Record<string, string>;
-
-	const templates = Object.fromEntries(
-		Object.entries(primaryKeyFields).map(([collection, primaryKeyField]) => [
-			collection,
-			collectionsStore.getCollection(collection)?.meta?.display_template || `{{ ${primaryKeyField} }}`,
-		]),
-	);
-
-	return {
-		collectionField: relationInfo.value.collectionField.field,
-		junctionField: relationInfo.value.junctionField.field,
-		primaryKeyFields,
-		templates,
-	};
+	return localType.value === 'm2a' ? relationInfo.value : null;
 });
 
 const { primaryKeyField } = useCollection(relatedCollection);
@@ -107,11 +88,13 @@ const unit = computed(() => {
 
 function getLinkForItem(item: Record<string, any>) {
 	if (m2aRelationInfo.value) {
-		const itemCollection = item?.[m2aRelationInfo.value.collectionField];
-		const primaryKeyField = itemCollection ? m2aRelationInfo.value.primaryKeyFields[itemCollection] : null;
+		const itemCollection = item?.[m2aRelationInfo.value.collectionField.field];
+		const primaryKeyField = itemCollection ? m2aRelationInfo.value.relationPrimaryKeyFields[itemCollection] : null;
 
 		const primaryKey =
-			itemCollection && primaryKeyField ? item?.[m2aRelationInfo.value.junctionField]?.[primaryKeyField] : null;
+			itemCollection && primaryKeyField
+				? item?.[m2aRelationInfo.value.junctionField.field]?.[primaryKeyField.field]
+				: null;
 
 		if (!itemCollection || primaryKey === null || primaryKey === undefined) return null;
 
@@ -125,7 +108,7 @@ function getLinkForItem(item: Record<string, any>) {
 }
 
 function getM2ACollection(item: Record<string, any>) {
-	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.collectionField] ?? null) : null;
+	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.collectionField.field] ?? null) : null;
 }
 
 function getM2ATemplate(item: Record<string, any>) {
@@ -133,11 +116,17 @@ function getM2ATemplate(item: Record<string, any>) {
 
 	if (!itemCollection || !m2aRelationInfo.value) return '';
 
-	return m2aRelationInfo.value.templates[itemCollection] ?? '';
+	const allowedCollection = m2aRelationInfo.value.allowedCollections.find(
+		(collection) => collection.collection === itemCollection,
+	);
+
+	const primaryKeyField = m2aRelationInfo.value.relationPrimaryKeyFields[itemCollection];
+
+	return allowedCollection?.meta?.display_template || (primaryKeyField ? `{{ ${primaryKeyField.field} }}` : '');
 }
 
 function getM2AValue(item: Record<string, any>) {
-	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.junctionField] ?? null) : null;
+	return m2aRelationInfo.value ? (item?.[m2aRelationInfo.value.junctionField.field] ?? null) : null;
 }
 
 function getM2APrefix(item: Record<string, any>) {
@@ -149,7 +138,10 @@ function getM2APrefix(item: Record<string, any>) {
 		return t(`collection_names_singular.${itemCollection}`);
 	}
 
-	return collectionsStore.getCollection(itemCollection)?.name ?? itemCollection;
+	return (
+		m2aRelationInfo.value?.allowedCollections.find((collection) => collection.collection === itemCollection)?.name ??
+		itemCollection
+	);
 }
 </script>
 
