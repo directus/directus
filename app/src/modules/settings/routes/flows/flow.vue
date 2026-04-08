@@ -643,7 +643,7 @@ function discardAndLeave() {
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('delete_flow')"
 					kind="danger"
-					secondary
+					variant="ghost"
 					icon="delete"
 					@click="confirmDelete = true"
 				/>

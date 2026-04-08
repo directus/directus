@@ -23,7 +23,7 @@ defineEmits<{
 				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel-button"
 				icon="close"
-				secondary
+				variant="ghost"
 				@click="$emit('cancel')"
 			/>
 

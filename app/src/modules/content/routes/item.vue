@@ -696,7 +696,7 @@ function useItemNavigation() {
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				icon="visibility"
-				secondary
+				variant="ghost"
 				:active="!!livePreviewMode"
 				@click="livePreviewCollapsed = !livePreviewCollapsed"
 			/>
@@ -714,7 +714,7 @@ function useItemNavigation() {
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						icon="delete"
 						kind="danger"
-						secondary
+						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
 					/>
@@ -747,7 +747,7 @@ function useItemNavigation() {
 						v-tooltip.bottom="archiveTooltip"
 						:icon="isArchived ? 'unarchive' : 'archive'"
 						kind="warning"
-						secondary
+						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
 						@click="on"
 					/>

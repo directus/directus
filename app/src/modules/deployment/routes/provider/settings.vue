@@ -284,7 +284,7 @@ watch(
 				v-tooltip.bottom="$t('deployment.provider.settings.delete')"
 				icon="delete"
 				kind="danger"
-				secondary
+				variant="ghost"
 				@click="confirmDelete = true"
 			/>
 

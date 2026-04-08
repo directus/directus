@@ -13,7 +13,7 @@ defineProps<{
 	<PrivateViewHeaderBarActionButton
 		v-if="backTo !== undefined"
 		class="back-button"
-		secondary
+		variant="ghost"
 		icon="arrow_back"
 		:to="backTo"
 	/>

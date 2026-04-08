@@ -90,7 +90,7 @@ function discardAndLeave() {
 						v-if="isSystemCollection(collection) === false"
 						v-tooltip.bottom="$t('delete_collection')"
 						kind="danger"
-						secondary
+						variant="ghost"
 						:disabled="!item"
 						icon="delete"
 						@click="on"

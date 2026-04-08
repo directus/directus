@@ -36,7 +36,7 @@ const showNavToggle = computed(() => {
 				v-tooltip.bottom="$t('toggle_navigation')"
 				class="nav-toggle"
 				icon="left_panel_open"
-				secondary
+				variant="ghost"
 				@click="navBarStore.expand"
 			/>
 
@@ -76,7 +76,7 @@ const showNavToggle = computed(() => {
 				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
 				:icon="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
-				secondary
+				variant="ghost"
 				@click="sidebarStore.toggle"
 			/>
 		</div>
