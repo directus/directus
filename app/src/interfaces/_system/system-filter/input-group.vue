@@ -251,7 +251,8 @@ function useVariableInput() {
 }
 
 function isDynamicVariableValue(value: unknown) {
-	return typeof value === 'string' && (isDynamicVariable(value) || /^{{\s*?\S+?\s*?}}$/.test(value));
+	if (typeof value !== 'string') return false;
+	return isDynamicVariable(value.replace(/{{/g, '').replace(/}}/g, '').trim());
 }
 </script>
 
