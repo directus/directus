@@ -176,7 +176,6 @@ watch(range, loadDashboard);
 
 .container {
 	padding: var(--content-padding);
-	padding-block-start: var(--content-padding-top-table);
 	padding-block-end: var(--content-padding-bottom);
 }
 

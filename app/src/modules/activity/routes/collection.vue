@@ -73,14 +73,3 @@ const roleFilter = ref<Filter | null>(null);
 		</PrivateView>
 	</component>
 </template>
-
-<style lang="scss" scoped>
-.content {
-	padding: var(--content-padding);
-	padding-block-start: var(--content-padding-top-table);
-}
-
-.header-icon {
-	--v-button-color-disabled: var(--theme--foreground);
-}
-</style>

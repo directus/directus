@@ -287,10 +287,6 @@ function removeField(fieldKey: string) {
 <style lang="scss" scoped>
 .layout-tabular {
 	padding-block-start: var(--content-padding-top-table);
-
-	@media (width < 36rem) {
-		--content-padding-top-table: 0.25rem;
-	}
 }
 
 .v-table {
@@ -301,18 +297,8 @@ function removeField(fieldKey: string) {
 	& > :deep(table) {
 		min-inline-size: calc(100% - var(--content-padding)) !important;
 		margin-inline-start: var(--content-padding);
-
-		@media (width < 36rem) {
-			min-inline-size: calc(100% - 0.625rem) !important;
-			margin-inline-start: 0.625rem;
-		}
-
 		tr {
 			margin-inline-end: var(--content-padding);
-
-			@media (width < 36rem) {
-				margin-inline-end: 0;
-			}
 		}
 	}
 }

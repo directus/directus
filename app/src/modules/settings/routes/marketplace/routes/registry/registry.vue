@@ -157,7 +157,6 @@ watchEffect(async () => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-block-start: var(--content-padding-top-table);
 	max-inline-size: 67.5rem;
 }
 

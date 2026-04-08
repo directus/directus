@@ -133,13 +133,7 @@ const internalActive = computed({
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .v-drawer {
-	@include mixins.breakpoint-up('sm') {
-		--content-padding: 1.375rem;
-	}
-
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -245,8 +239,6 @@ const internalActive = computed({
 }
 
 .mobile-sidebar {
-	--content-padding: 1.375rem;
-
 	position: relative;
 	z-index: 2;
 	margin: var(--content-padding);
