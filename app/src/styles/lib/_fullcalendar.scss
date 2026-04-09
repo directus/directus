@@ -116,19 +116,15 @@
 		}
 	}
 
-	.fc-view-harness {
-		padding-block-start: 2.375rem;
-	}
-
 	.fc-toolbar {
 		&.fc-header-toolbar {
 			position: sticky;
 			inset-block-start: var(--layout-offset-top);
 			z-index: 4;
-			inline-size: calc(100% + 2 * var(--content-section-padding));
+			inline-size: calc(100% + 2 * var(--content-padding));
 			block-size: 2.9375rem;
-			margin-block-end: 2rem;
-			margin-inline: calc(-1 * var(--content-section-padding));
+			margin-block-end: var(--content-padding);
+			margin-inline: calc(-1 * var(--content-padding));
 			padding: 0 var(--content-padding);
 			font-weight: inherit !important;
 			font-size: inherit !important;

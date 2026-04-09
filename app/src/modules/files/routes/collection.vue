@@ -473,7 +473,7 @@ async function downloadFiles() {
 							class="folder"
 							:disabled="!batchEditAllowed"
 							icon="folder_move"
-							secondary
+							variant="ghost"
 							@click="on"
 						/>
 					</template>
@@ -505,7 +505,7 @@ async function downloadFiles() {
 					"
 					:disabled="batchDeleteAllowed !== true || (folderSelection.length > 0 && folderDeleteAllowed !== true)"
 					kind="danger"
-					secondary
+					variant="ghost"
 					icon="delete"
 					@click="confirmDelete = true"
 				/>
@@ -540,7 +540,7 @@ async function downloadFiles() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"
@@ -549,7 +549,7 @@ async function downloadFiles() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="$t('download')"
-					secondary
+					variant="ghost"
 					icon="download"
 					@click="downloadFiles"
 				/>

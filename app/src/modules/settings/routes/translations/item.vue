@@ -232,7 +232,7 @@ async function revert(values: Record<string, any>) {
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
 						v-tooltip.bottom="$t('delete_label')"
 						kind="danger"
-						secondary
+						variant="ghost"
 						:disabled="item === null"
 						icon="delete"
 						@click="on"

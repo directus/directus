@@ -334,7 +334,7 @@ function useURLImport() {
 					icon="download"
 					:href="getAssetUrl(file.id, { isDownload: true })"
 					:download="file.filename_download"
-					secondary
+					variant="ghost"
 				/>
 			</template>
 		</DrawerItem>

@@ -284,7 +284,7 @@ watch(
 				v-tooltip.bottom="$t('deployment.provider.settings.delete')"
 				icon="delete"
 				kind="danger"
-				secondary
+				variant="ghost"
 				@click="confirmDelete = true"
 			/>
 
@@ -398,6 +398,10 @@ watch(
 
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
+
+	> :first-child.presentation-divider {
+		margin-block-start: 0;
+	}
 }
 
 .spinner {
