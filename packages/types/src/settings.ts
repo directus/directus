@@ -78,6 +78,7 @@ export type Settings = {
 	ai_google_allowed_models: string[] | null;
 	ai_system_prompt: string | null;
 	mcp_enabled: boolean;
+	mcp_oauth_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;
 	mcp_system_prompt_enabled: boolean;

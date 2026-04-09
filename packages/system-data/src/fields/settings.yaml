@@ -1067,6 +1067,22 @@ fields:
     options:
       label: $t:enabled
 
+  - field: mcp_oauth_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note: $t:fields.directus_settings.mcp_oauth_enabled_note
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_enabled
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+
   - field: mcp_allow_deletes
     interface: boolean
     group: mcp_group
