@@ -41,6 +41,22 @@ router.get(
 	respond,
 );
 
+// DELETE / -- bulk revoke (delete) clients, FK cascade handles cleanup
+router.delete(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		const service = new ItemsService('directus_oauth_clients', {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.deleteMany(req.body as string[]);
+		res.locals['payload'] = undefined;
+		return next();
+	}),
+	respond,
+);
+
 // DELETE /:id -- revoke (delete) client, FK cascade handles cleanup
 router.delete(
 	'/:id',
