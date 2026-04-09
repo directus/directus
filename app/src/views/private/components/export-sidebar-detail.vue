@@ -88,8 +88,8 @@ const sanitizeExportFields = (fieldNames: string[] | undefined) => {
 const getDefaultExportFields = () => {
 	return (
 		fields.value
-		?.filter((field) => field.type !== 'alias' && isVirtualField(field.field) === false)
-		.map((field) => field.field) ?? []
+			?.filter((field) => field.type !== 'alias' && isVirtualField(field.field) === false)
+			.map((field) => field.field) ?? []
 	);
 };
 
@@ -104,7 +104,9 @@ const exportSettings = reactive({
 watch(
 	fields,
 	() => {
-		exportSettings.fields = props.layoutQuery?.fields ? sanitizeExportFields(props.layoutQuery.fields) : getDefaultExportFields();
+		exportSettings.fields = props.layoutQuery?.fields
+			? sanitizeExportFields(props.layoutQuery.fields)
+			: getDefaultExportFields();
 	},
 	{ immediate: true },
 );
