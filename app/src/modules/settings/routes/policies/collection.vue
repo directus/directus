@@ -279,7 +279,7 @@ function openDuplicateDialog(item: PolicyItem) {
 
 .policies {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-block: var(--content-padding-top-table) var(--content-padding-bottom);
 }
 
 .system {

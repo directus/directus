@@ -403,6 +403,10 @@ watch(
 
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
+
+	> :first-child.presentation-divider {
+		margin-block-start: 0;
+	}
 }
 
 .spinner {

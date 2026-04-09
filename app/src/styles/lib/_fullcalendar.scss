@@ -121,10 +121,11 @@
 			position: sticky;
 			inset-block-start: var(--layout-offset-top);
 			z-index: 4;
-			inline-size: 100%;
+			inline-size: calc(100% + 2 * var(--content-padding));
 			block-size: 2.9375rem;
-			margin-block-end: 2rem;
-			padding: 0 0.4375rem;
+			margin-block-end: var(--content-padding);
+			margin-inline: calc(-1 * var(--content-padding));
+			padding: 0 var(--content-padding);
 			font-weight: inherit !important;
 			font-size: inherit !important;
 			background-color: var(--theme--background);
