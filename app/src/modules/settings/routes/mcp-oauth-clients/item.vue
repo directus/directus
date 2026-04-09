@@ -13,6 +13,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useItem } from '@/composables/use-item';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 
 const props = defineProps<{
@@ -55,9 +56,32 @@ async function revokeClient() {
 		</template>
 
 		<template #actions>
-			<VButton v-tooltip.bottom="$t('revoke_client')" kind="danger" secondary icon @click="confirmRevoke = true">
-				<VIcon name="delete" />
-			</VButton>
+			<VDialog v-model="confirmRevoke" @esc="confirmRevoke = false" @apply="revokeClient">
+				<template #activator="{ on }">
+					<PrivateViewHeaderBarActionButton
+						v-tooltip.bottom="$t('revoke_client')"
+						class="action-delete"
+						secondary
+						:disabled="item === null"
+						icon="delete"
+						@click="on"
+					/>
+				</template>
+
+				<VCard>
+					<VCardTitle>{{ $t('revoke_client') }}</VCardTitle>
+					<VCardText>{{ $t('revoke_client_confirm') }}</VCardText>
+
+					<VCardActions>
+						<VButton secondary @click="confirmRevoke = false">
+							{{ $t('cancel') }}
+						</VButton>
+						<VButton kind="danger" :loading="revoking" @click="revokeClient">
+							{{ $t('revoke_client') }}
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 		</template>
 
 		<template #navigation>
@@ -74,17 +98,6 @@ async function revokeClient() {
 				disabled
 			/>
 		</div>
-
-		<VDialog v-model="confirmRevoke" @esc="confirmRevoke = false">
-			<VCard>
-				<VCardTitle>{{ $t('revoke_client') }}</VCardTitle>
-				<VCardText>{{ $t('revoke_client_confirm') }}</VCardText>
-				<VCardActions>
-					<VButton secondary @click="confirmRevoke = false">{{ $t('cancel') }}</VButton>
-					<VButton kind="danger" :loading="revoking" @click="revokeClient">{{ $t('revoke_client') }}</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
 	</PrivateView>
 </template>
 
@@ -92,5 +105,10 @@ async function revokeClient() {
 .content {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
+}
+
+.action-delete {
+	--v-button-background-color-hover: var(--theme--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 </style>
