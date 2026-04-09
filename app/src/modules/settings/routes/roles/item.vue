@@ -136,7 +136,7 @@ function discardAndStay() {
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
 						kind="danger"
-						secondary
+						variant="ghost"
 						:disabled="item === null"
 						icon="delete"
 						@click="on"
@@ -160,7 +160,7 @@ function discardAndStay() {
 			<PrivateViewHeaderBarActionButton
 				v-if="canInviteUsers"
 				v-tooltip.bottom="$t('invite_users')"
-				secondary
+				variant="ghost"
 				icon="person_add"
 				@click="userInviteModalActive = true"
 			/>

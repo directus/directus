@@ -643,7 +643,7 @@ function discardAndLeave() {
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('delete_flow')"
 					kind="danger"
-					secondary
+					variant="ghost"
 					icon="delete"
 					@click="confirmDelete = true"
 				/>
@@ -801,7 +801,7 @@ function discardAndLeave() {
 	--row-size: 5.625rem;
 	--gap-size: 2.25rem;
 
-	padding-block-start: calc(var(--content-padding) / 2);
+	padding-block-start: var(--content-padding);
 
 	&.center {
 		block-size: calc(100% - 2.6875rem - var(--header-bar-height));
