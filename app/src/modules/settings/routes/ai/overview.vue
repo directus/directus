@@ -13,6 +13,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useServerStore } from '@/stores/server';
@@ -116,6 +117,20 @@ function discardAndLeave() {
 					:primary-key="1"
 					:disabled="!serverStore.info.mcp_enabled"
 				/>
+				<VButton
+					v-if="
+						serverStore.info?.mcp_enabled &&
+						serverStore.info?.mcp_oauth_enabled &&
+						settingsStore.settings?.mcp_enabled &&
+						settingsStore.settings?.mcp_oauth_enabled
+					"
+					secondary
+					class="manage-clients-link"
+					@click="router.push('/settings/mcp-oauth-clients')"
+				>
+					{{ $t('manage_registered_clients') }}
+					<template #append><VIcon name="chevron_right" /></template>
+				</VButton>
 			</div>
 		</div>
 
@@ -145,6 +160,10 @@ function discardAndLeave() {
 }
 
 .mcp-section {
+	margin-block-start: var(--theme--form--row-gap);
+}
+
+.manage-clients-link {
 	margin-block-start: var(--theme--form--row-gap);
 }
 </style>

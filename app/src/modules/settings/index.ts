@@ -26,6 +26,10 @@ import RolesPublicItem from './routes/roles/public-item.vue';
 import SystemLogs from './routes/system-logs/logs.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
+
+const McpOAuthClientsCollection = () => import('./routes/mcp-oauth-clients/collection.vue');
+const McpOAuthClientsItem = () => import('./routes/mcp-oauth-clients/item.vue');
+
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
@@ -293,6 +297,23 @@ export default defineModule({
 			name: 'settings-system-logs',
 			path: 'system-logs',
 			component: SystemLogs,
+		},
+		{
+			path: 'mcp-oauth-clients',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-mcp-oauth-clients-collection',
+					path: '',
+					component: McpOAuthClientsCollection,
+				},
+				{
+					name: 'settings-mcp-oauth-clients-item',
+					path: ':primaryKey',
+					component: McpOAuthClientsItem,
+					props: true,
+				},
+			],
 		},
 		{
 			name: 'settings-not-found',
