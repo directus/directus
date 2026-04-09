@@ -32,6 +32,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import mcpOAuthClientsRouter from './controllers/mcp-oauth-clients.js';
 import { mcpOAuthProtectedRouter, mcpOAuthPublicRouter } from './controllers/mcp-oauth.js';
 import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
@@ -385,6 +386,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
+	app.use('/mcp-oauth/clients', mcpOAuthClientsRouter);
 	app.use('/schema', schemaRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
