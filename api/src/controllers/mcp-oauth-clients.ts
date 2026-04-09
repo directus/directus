@@ -1,12 +1,16 @@
 import { ForbiddenError } from '@directus/errors';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { ItemsService } from '../services/items.js';
+import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
+
+router.use(useCollection('directus_oauth_clients'));
 
 // Explicit admin guard -- defense in depth on top of ItemsService permissions
 router.use((req, _res, next) => {
@@ -17,21 +21,26 @@ router.use((req, _res, next) => {
 	next();
 });
 
-// GET / -- list all clients
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new ItemsService('directus_oauth_clients', {
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new ItemsService('directus_oauth_clients', {
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const records = await service.readByQuery(req.sanitizedQuery);
-		res.locals['payload'] = { data: records || null };
-		return next();
-	}),
-	respond,
-);
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
+
+	const records = await service.readByQuery(req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_oauth_clients', req.sanitizedQuery);
+
+	res.locals['payload'] = { data: records || null, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 // GET /:id -- single client
 router.get(
@@ -49,7 +58,7 @@ router.get(
 	respond,
 );
 
-// DELETE / -- bulk revoke (delete) clients, FK cascade handles cleanup
+// DELETE / -- bulk revoke, FK cascade handles cleanup
 router.delete(
 	'/',
 	validateBatch('delete'),
@@ -73,17 +82,16 @@ router.delete(
 	respond,
 );
 
-// DELETE /:id -- revoke (delete) client, FK cascade handles cleanup
+// DELETE /:id -- revoke single client, FK cascade handles cleanup
 router.delete(
 	'/:id',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new ItemsService('directus_oauth_clients', {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
 		await service.deleteOne(req.params['id']!);
-		res.locals['payload'] = undefined;
 		return next();
 	}),
 	respond,
