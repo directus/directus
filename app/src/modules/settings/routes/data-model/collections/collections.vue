@@ -187,7 +187,7 @@ async function downloadSnapshot() {
 			<SettingsNavigation />
 		</template>
 
-		<div class="padding-box">
+		<div class="padding-box" :class="{ 'has-action': hasExpandableCollections }">
 			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}
 
@@ -290,8 +290,16 @@ async function downloadSnapshot() {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .padding-box {
 	padding: var(--content-padding);
+
+	&.has-action {
+		@include mixins.breakpoint-up('sm') {
+			padding-block-start: 1.875rem;
+		}
+	}
 }
 
 .v-info {

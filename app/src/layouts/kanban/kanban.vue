@@ -291,21 +291,12 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .kanban-layout {
 	--limit-notice-height: 0;
 	--limit-notice-margin-bottom: 1.375rem;
 	--header-bar-margin: 1.375rem;
 
 	block-size: 100%;
-	padding-block: 2.375rem var(--content-padding-bottom);
-	padding-inline: var(--content-section-padding);
-
-	@include mixins.breakpoint-down('sm') {
-		padding-block: 0.25rem 0;
-		padding-inline: 0.625rem 0;
-	}
 
 	&:has(> .limit) {
 		--limit-notice-height: calc(3.375rem + var(--limit-notice-margin-bottom));
@@ -324,6 +315,8 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 	.draggable {
 		display: flex;
+		gap: 1.125rem;
+		padding: var(--content-padding);
 
 		.group {
 			display: flex;
@@ -333,7 +326,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
-			margin-inline-end: 1.125rem;
 			transition: border-color var(--transition) var(--fast);
 
 			&:not(.disabled).active {
@@ -372,7 +364,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					font-size: 0.6875rem;
 					line-height: 1.6364;
 					background-color: var(--theme--background-accent);
-					border-radius: 0.6875rem; // var(--theme--border-radius);
+					border-radius: 0.6875rem;
 				}
 
 				.actions {
