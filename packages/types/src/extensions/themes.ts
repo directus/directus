@@ -137,7 +137,6 @@ const Rules = z.object({
 		.object({
 			background: Color.optional(),
 			backgroundAccent: Color.optional(),
-
 			borderWidth: LineWidth.optional(),
 			borderColor: Color.optional(),
 		})
