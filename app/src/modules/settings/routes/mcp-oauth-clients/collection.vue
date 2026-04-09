@@ -6,6 +6,7 @@ import api from '@/api';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
@@ -109,7 +110,8 @@ function useBatch() {
 					</template>
 
 					<VCard>
-						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
+						<VCardTitle>{{ $t('revoke_client') }}</VCardTitle>
+						<VCardText>{{ $t('revoke_client_confirm') }}</VCardText>
 
 						<VCardActions>
 							<VButton secondary @click="confirmDelete = false">
