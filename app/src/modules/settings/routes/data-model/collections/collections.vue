@@ -169,7 +169,7 @@ async function downloadSnapshot() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('create_folder')"
-						secondary
+						variant="ghost"
 						icon="create_new_folder"
 						@click="on"
 					/>

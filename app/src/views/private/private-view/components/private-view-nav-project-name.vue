@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
-import VIcon from '@/components/v-icon/v-icon.vue';
+import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
 
@@ -19,10 +19,10 @@ const navBarStore = useNavBarStore();
 			<VTextOverflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
 		</div>
 
-		<VIcon
+		<PrivateViewHeaderBarActionButton
 			v-tooltip.bottom="$t('toggle_navigation')"
-			name="left_panel_close"
-			clickable
+			icon="left_panel_close"
+			variant="ghost"
 			class="nav-toggle"
 			@click="navBarStore.collapse"
 		/>
@@ -57,6 +57,6 @@ const navBarStore = useNavBarStore();
 }
 
 .nav-toggle {
-	margin-inline-end: 0.5rem;
+	margin-inline-end: 0.125rem;
 }
 </style>

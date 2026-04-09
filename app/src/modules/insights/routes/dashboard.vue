@@ -216,7 +216,7 @@ const refreshInterval = computed({
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('clear_changes')"
-					class="clear-changes"
+					kind="danger"
 					outlined
 					icon="clear"
 					@click="cancelChanges"
@@ -384,8 +384,7 @@ const refreshInterval = computed({
 </template>
 
 <style scoped lang="scss">
-.zoom-to-fit,
-.clear-changes {
+.zoom-to-fit {
 	--v-button-color: var(--theme--foreground);
 	--v-button-color-hover: var(--theme--foreground);
 	--v-button-background-color: var(--theme--foreground-subdued);

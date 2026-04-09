@@ -232,7 +232,6 @@ watch(statsRange, loadStats);
 
 			<VButton
 				:tooltip="$t('deployment.deploy')"
-				rounded
 				icon
 				small
 				:loading="deploying"

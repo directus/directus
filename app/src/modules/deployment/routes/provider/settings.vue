@@ -283,8 +283,8 @@ watch(
 				v-if="canDelete"
 				v-tooltip.bottom="$t('deployment.provider.settings.delete')"
 				icon="delete"
-				secondary
-				class="action-delete"
+				kind="danger"
+				variant="ghost"
 				@click="confirmDelete = true"
 			/>
 
@@ -392,11 +392,6 @@ watch(
 
 <style scoped lang="scss">
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .container {
 	@include mixins.form-grid;

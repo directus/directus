@@ -473,7 +473,7 @@ async function downloadFiles() {
 							class="folder"
 							:disabled="!batchEditAllowed"
 							icon="folder_move"
-							secondary
+							variant="ghost"
 							@click="on"
 						/>
 					</template>
@@ -504,8 +504,8 @@ async function downloadFiles() {
 							: $t('not_allowed')
 					"
 					:disabled="batchDeleteAllowed !== true || (folderSelection.length > 0 && folderDeleteAllowed !== true)"
-					class="action-delete"
-					secondary
+					kind="danger"
+					variant="ghost"
 					icon="delete"
 					@click="confirmDelete = true"
 				/>
@@ -540,7 +540,7 @@ async function downloadFiles() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"
@@ -549,7 +549,7 @@ async function downloadFiles() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="$t('download')"
-					secondary
+					variant="ghost"
 					icon="download"
 					@click="downloadFiles"
 				/>
@@ -654,11 +654,6 @@ async function downloadFiles() {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
 }

@@ -480,7 +480,6 @@ function usePopoverWidth() {
 						:small="mode !== 'popover'"
 						secondary
 						icon
-						rounded
 					>
 						<VIcon name="launch" small />
 					</VButton>

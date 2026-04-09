@@ -324,8 +324,8 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
 						icon="delete"
 						@click="on"
@@ -357,7 +357,7 @@ function revert(values: Record<string, any>) {
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						secondary
+						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
 						:icon="isArchived ? 'unarchive' : 'archive'"
 						@click="on"
@@ -516,11 +516,6 @@ function revert(values: Record<string, any>) {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);

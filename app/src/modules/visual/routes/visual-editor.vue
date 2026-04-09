@@ -201,7 +201,6 @@ function useVersionSelection() {
 				<VButton
 					v-tooltip.bottom.end="$t('toggle_navigation')"
 					x-small
-					rounded
 					icon
 					secondary
 					@click="moduleBarOpen = !moduleBarOpen"
@@ -212,7 +211,6 @@ function useVersionSelection() {
 				<VButton
 					v-tooltip.bottom.end="$t('toggle_editable_elements')"
 					x-small
-					rounded
 					icon
 					:active="showEditableElements"
 					secondary
@@ -254,7 +252,6 @@ function useVersionSelection() {
 					ref="ai-button"
 					v-tooltip.bottom.start="$t('ai_assistant')"
 					x-small
-					rounded
 					icon
 					secondary
 					:active="isMobile ? mobileDrawerOpen : !sidebarCollapsed"

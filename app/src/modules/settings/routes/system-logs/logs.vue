@@ -428,7 +428,7 @@ onUnmounted(() => {
 		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
+			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" icon disabled small>
 				<VProgressCircular small indeterminate />
 			</VButton>
 
@@ -449,8 +449,9 @@ onUnmounted(() => {
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('clear_logs')"
 				:disabled="logs.length === 0"
-				class="action-clear"
 				icon="mop"
+				kind="danger"
+				variant="ghost"
 				@click="clearLogs"
 			/>
 		</template>
@@ -523,13 +524,6 @@ onUnmounted(() => {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
 	--v-button-color-hover-disabled: var(--theme--primary);
-}
-
-.action-clear {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-color: var(--theme--foreground);
-	--v-button-background-color-hover: var(--theme--danger);
-	--v-button-color-hover: var(--white);
 }
 
 .logs-container {

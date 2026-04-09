@@ -12,7 +12,6 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -128,8 +127,8 @@ function discardAndStay() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null"
 						icon="delete"
 						@click="on"
@@ -150,9 +149,13 @@ function discardAndStay() {
 				</VCard>
 			</VDialog>
 
-			<VButton rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
-				<VIcon name="check" small />
-
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				icon="check"
+				:loading="saving"
+				:disabled="!hasEdits"
+				@click="saveAndQuit"
+			>
 				<template #append-outer>
 					<SaveOptions
 						v-if="hasEdits"
@@ -162,7 +165,7 @@ function discardAndStay() {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</VButton>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>
@@ -210,11 +213,6 @@ function discardAndStay() {
 	--v-button-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-subdued);
 	--v-button-color-hover: var(--theme--primary);
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .content {

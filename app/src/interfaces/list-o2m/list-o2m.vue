@@ -477,8 +477,8 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 					<VButton
 						v-if="updateAllowed && selectedKeys.length"
 						v-tooltip.bottom="$t('edit')"
-						rounded
 						icon
+						small
 						secondary
 						:disabled
 						@click="batchEditActive = true"
@@ -489,8 +489,8 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 					<VButton
 						v-if="enableSelect && updateAllowed"
 						v-tooltip.bottom="$t('add_existing')"
-						rounded
 						icon
+						small
 						:secondary="enableCreate"
 						:disabled
 						@click="selectModalActive = true"
@@ -501,8 +501,8 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 					<VButton
 						v-if="enableCreate && createAllowed"
 						v-tooltip.bottom="$t('create_item')"
-						rounded
 						icon
+						small
 						:disabled
 						@click="createItem"
 					>

@@ -235,29 +235,29 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<div class="shadow" />
 
 			<div v-if="!internalDisabled" class="actions">
-				<VButton v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
+				<VButton v-tooltip="$t('zoom')" icon small @click="lightboxActive = true">
 					<VIcon name="zoom_in" />
 				</VButton>
 
 				<VButton
 					v-tooltip="$t('download')"
 					icon
-					rounded
+					small
 					:href="getAssetUrl(image.id, { isDownload: true })"
 					:download="image.filename_download"
 				>
 					<VIcon name="download" />
 				</VButton>
 
-				<VButton v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
+				<VButton v-tooltip="$t('edit_item')" icon small @click="editImageDetails = true">
 					<VIcon name="edit" />
 				</VButton>
 
-				<VButton v-if="updateAllowed" v-tooltip="$t('edit_image')" icon rounded @click="editImageEditor = true">
+				<VButton v-if="updateAllowed" v-tooltip="$t('edit_image')" icon small @click="editImageEditor = true">
 					<VIcon name="tune" />
 				</VButton>
 
-				<VRemove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
+				<VRemove button small deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
 			</div>
 
 			<div class="info">
@@ -278,7 +278,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<template #actions>
 					<PrivateViewHeaderBarActionButton
 						icon="download"
-						secondary
+						variant="ghost"
 						:download="image.filename_download"
 						:href="getAssetUrl(image.id, { isDownload: true })"
 					/>
@@ -369,13 +369,14 @@ img {
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
-		inset-block-start: calc(50% - 1.8125rem);
+		inset-block-start: 50%;
 		inset-inline-start: 0;
+		transform: translate(0, -50%);
 		z-index: 3;
 		display: flex;
 		justify-content: center;
 		inline-size: 100%;
-		gap: 0.6875rem;
+		gap: 0.625rem;
 
 		::v-deep(.v-button) {
 			transform: translateY(0.5625rem);

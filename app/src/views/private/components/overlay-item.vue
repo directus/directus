@@ -738,11 +738,11 @@ function popoverClickOutsideMiddleware(e: Event) {
 				<div class="popover-actions-inner">
 					<slot name="actions" />
 
-					<VButton v-tooltip="getTooltip('cancel', $t('cancel'))" x-small rounded icon secondary @click="cancel">
+					<VButton v-tooltip="getTooltip('cancel', $t('cancel'))" x-small icon secondary @click="cancel">
 						<VIcon small name="close" outline />
 					</VButton>
 
-					<VButton v-tooltip="getTooltip('save', $t('save'))" x-small rounded icon :disabled="!isSavable" @click="save">
+					<VButton v-tooltip="getTooltip('save', $t('save'))" x-small icon :disabled="!isSavable" @click="save">
 						<VIcon small name="check" outline />
 					</VButton>
 				</div>

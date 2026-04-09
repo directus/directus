@@ -625,8 +625,8 @@ function discardAndLeave() {
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('clear_changes')"
-					class="clear-changes"
 					icon="clear"
+					kind="danger"
 					outlined
 					@click="attemptCancelChanges"
 				/>
@@ -642,8 +642,8 @@ function discardAndLeave() {
 			<template v-else>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('delete_flow')"
-					class="delete-flow"
-					secondary
+					kind="danger"
+					variant="ghost"
 					icon="delete"
 					@click="confirmDelete = true"
 				/>
@@ -808,16 +808,6 @@ function discardAndLeave() {
 		display: grid;
 		place-items: center;
 	}
-}
-
-.clear-changes {
-	--v-button-background-color: var(--theme--foreground-subdued);
-	--v-button-background-color-hover: var(--theme--foreground);
-}
-
-.delete-flow {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .grid {

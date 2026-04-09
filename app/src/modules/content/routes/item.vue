@@ -43,7 +43,7 @@ import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
@@ -692,18 +692,14 @@ function useItemNavigation() {
 				:current-connection="connectionId"
 			/>
 
-			<VButton
+			<PrivateViewHeaderBarActionButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
-				rounded
-				icon
-				class="action-preview"
-				:secondary="livePreviewMode === null"
-				small
+				icon="visibility"
+				variant="ghost"
+				:active="!!livePreviewMode"
 				@click="livePreviewCollapsed = !livePreviewCollapsed"
-			>
-				<VIcon name="visibility" outline small />
-			</VButton>
+			/>
 
 			<VDialog
 				v-if="!isNew && currentVersion === null"
@@ -713,19 +709,15 @@ function useItemNavigation() {
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<VButton
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
+						icon="delete"
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
-						small
 						@click="on"
-					>
-						<VIcon name="delete" outline small />
-					</VButton>
+					/>
 				</template>
 
 				<VCard>
@@ -750,18 +742,15 @@ function useItemNavigation() {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<VButton
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
-						secondary
+						:icon="isArchived ? 'unarchive' : 'archive'"
+						kind="warning"
+						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
-						small
 						@click="on"
-					>
-						<VIcon :name="isArchived ? 'unarchive' : 'archive'" outline small />
-					</VButton>
+					/>
 				</template>
 
 				<VCard>
@@ -778,18 +767,14 @@ function useItemNavigation() {
 				</VCard>
 			</VDialog>
 
-			<VButton
+			<PrivateViewHeaderBarActionButton
 				v-if="currentVersion === null"
-				rounded
-				icon
-				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				icon="check"
 				:loading="saving"
 				:disabled="!isSavable"
-				small
 				@click="saveAndQuit"
 			>
-				<VIcon name="check" small />
-
 				<template #append-outer>
 					<SaveOptions
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
@@ -800,19 +785,15 @@ function useItemNavigation() {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</VButton>
-			<VButton
+			</PrivateViewHeaderBarActionButton>
+			<PrivateViewHeaderBarActionButton
 				v-else
-				rounded
-				icon
-				:tooltip="$t('save_version')"
+				v-tooltip.bottom="$t('save_version')"
+				icon="beenhere"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
-				small
 				@click="saveVersionAction('stay')"
 			>
-				<VIcon name="beenhere" small />
-
 				<template #append-outer>
 					<VMenu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
 						<template #activator="{ toggle }">
@@ -837,7 +818,7 @@ function useItemNavigation() {
 						</VList>
 					</VMenu>
 				</template>
-			</VButton>
+			</PrivateViewHeaderBarActionButton>
 
 			<FlowDialogs v-bind="flowDialogsContext" />
 		</template>
@@ -981,11 +962,6 @@ function useItemNavigation() {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);

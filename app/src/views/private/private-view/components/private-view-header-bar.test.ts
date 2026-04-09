@@ -113,7 +113,7 @@ describe('PrivateViewHeaderBar', () => {
 		});
 
 		const navBarStore = useNavBarStore();
-		const navToggle = wrapper.find('.nav-toggle');
+		const navToggle = wrapper.find('.nav-toggle .button');
 		await navToggle.trigger('click');
 
 		expect(navBarStore.expand).toHaveBeenCalled();
@@ -140,7 +140,7 @@ describe('PrivateViewHeaderBar', () => {
 		});
 
 		const sidebarStore = useSidebarStore();
-		const sidebarToggle = wrapper.find('.sidebar-toggle');
+		const sidebarToggle = wrapper.find('.sidebar-toggle .button');
 		await sidebarToggle.trigger('click');
 
 		expect(sidebarStore.toggle).toHaveBeenCalled();
@@ -152,12 +152,13 @@ describe('PrivateViewHeaderBar', () => {
 			props: {
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 			},
 		});
 
 		const backIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(backIcon.exists()).toBe(true);
-		expect(backIcon.props('showBack')).toBe(true);
+		expect(backIcon.props('backTo')).toBe('/back');
 	});
 
 	test('renders custom icon when icon prop is provided', () => {
@@ -284,13 +285,14 @@ describe('PrivateViewHeaderBar', () => {
 			props: {
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 				icon: 'edit',
 			},
 		});
 
 		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(headerBarIcon.exists()).toBe(true);
-		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('backTo')).toBe('/back');
 		expect(headerBarIcon.props('icon')).toBeUndefined();
 	});
 
@@ -300,6 +302,7 @@ describe('PrivateViewHeaderBar', () => {
 			props: {
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 			},
 			slots: {
 				'title-outer:prepend': '<div class="custom-prepend">Prepend</div>',
@@ -308,7 +311,7 @@ describe('PrivateViewHeaderBar', () => {
 
 		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(headerBarIcon.exists()).toBe(true);
-		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('backTo')).toBe('/back');
 		expect(wrapper.find('.custom-prepend').exists()).toBe(false);
 	});
 
@@ -336,6 +339,7 @@ describe('PrivateViewHeaderBar', () => {
 			props: {
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 				icon: 'edit',
 			},
 			slots: {
@@ -345,7 +349,7 @@ describe('PrivateViewHeaderBar', () => {
 
 		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(headerBarIcon.exists()).toBe(true);
-		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('backTo')).toBe('/back');
 		expect(headerBarIcon.props('icon')).toBeUndefined();
 		expect(wrapper.find('.custom-prepend').exists()).toBe(false);
 	});

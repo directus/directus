@@ -7,15 +7,13 @@ import VProgressCircular from './v-progress-circular.vue';
 import vFocus from '@/directives/focus';
 import vTooltip from '@/directives/tooltip';
 
-interface Props {
+export interface Props {
 	/** Automatically focuses on the button */
 	autofocus?: boolean;
 	/** Styling of the button */
 	kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
 	/** Stretches the button to it's maximal width */
 	fullWidth?: boolean;
-	/** Enable rounded corners */
-	rounded?: boolean;
 	/** No background */
 	outlined?: boolean;
 	/** Remove padding / min-inline-size. Meant to be used with just an icon as content */
@@ -139,7 +137,7 @@ async function onClick(event: MouseEvent) {
 </script>
 
 <template>
-	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 		<component
 			:is="component"
@@ -243,26 +241,6 @@ async function onClick(event: MouseEvent) {
 	--v-button-background-color-active: var(--theme--background-accent);
 }
 
-.secondary.rounded {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-background-color-active: var(--theme--background-normal);
-	--v-button-background-color-hover: var(--theme--background-accent);
-}
-
-.warning.rounded {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--theme--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--theme--warning);
-}
-
-.danger.rounded {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--theme--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--theme--danger);
-}
-
 .v-button {
 	display: inline-flex;
 	align-items: center;
@@ -317,11 +295,6 @@ async function onClick(event: MouseEvent) {
 	background-color: var(--v-button-background-color-disabled, var(--theme--background-normal));
 	border: var(--theme--border-width) solid var(--v-button-background-color-disabled, var(--theme--background-normal));
 	cursor: not-allowed;
-}
-
-.rounded,
-.rounded .button {
-	border-radius: 50%;
 }
 
 .outlined {

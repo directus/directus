@@ -392,7 +392,6 @@ const menuActive = computed(() => imageDialogOpen.value);
 				:model-value="[view]"
 				class="view"
 				mandatory
-				rounded
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
 				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :class="[{ active: view !== 'preview' }]">

@@ -230,7 +230,7 @@ async function batchDelete() {
 				v-if="selection.length > 0"
 				v-tooltip.bottom="createAllowed ? $t('export_dashboard') : $t('not_allowed')"
 				:disabled="createAllowed !== true"
-				secondary
+				variant="ghost"
 				icon="download"
 				@click="exportDashboard(selection)"
 			/>
@@ -245,8 +245,8 @@ async function batchDelete() {
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						icon="delete"
 						@click="on"
 					/>
@@ -411,11 +411,6 @@ async function batchDelete() {
 </template>
 
 <style scoped lang="scss">
-.action-delete {
-	--v-button-background-color-hover: var(--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .v-table {
 	padding: var(--content-padding);
 	padding-block-start: var(--content-padding-top-table);

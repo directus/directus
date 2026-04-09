@@ -2,9 +2,9 @@
 import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewHeaderBarActionButton from './private-view-header-bar-action-button.vue';
 import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 
 const props = defineProps<{
@@ -31,17 +31,17 @@ const showNavToggle = computed(() => {
 <template>
 	<header class="header-bar">
 		<div class="primary">
-			<VIcon
+			<PrivateViewHeaderBarActionButton
 				v-if="showNavToggle"
 				v-tooltip.bottom="$t('toggle_navigation')"
 				class="nav-toggle"
-				name="left_panel_open"
-				clickable
+				icon="left_panel_open"
+				variant="ghost"
 				@click="navBarStore.expand"
 			/>
 
 			<div class="title-outer-prepend">
-				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" show-back :back-to />
+				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" :back-to />
 
 				<PrivateViewHeaderBarIcon v-else-if="icon" class="icon" :icon :icon-color />
 
@@ -72,11 +72,11 @@ const showNavToggle = computed(() => {
 
 			<div class="spacer" />
 
-			<VIcon
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
-				:name="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
-				clickable
+				:icon="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
+				variant="ghost"
 				@click="sidebarStore.toggle"
 			/>
 		</div>
