@@ -1,8 +1,10 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError } from '@directus/errors';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
+import { validateBatch } from '../middleware/validate-batch.js';
 import { ItemsService } from '../services/items.js';
 import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
 
@@ -50,18 +52,22 @@ router.get(
 // DELETE / -- bulk revoke (delete) clients, FK cascade handles cleanup
 router.delete(
 	'/',
-	asyncHandler(async (req, res, next) => {
-		if (!Array.isArray(req.body)) {
-			throw new InvalidPayloadError({ reason: 'Expected an array of client IDs' });
-		}
-
+	validateBatch('delete'),
+	asyncHandler(async (req, _res, next) => {
 		const service = new ItemsService('directus_oauth_clients', {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteMany(req.body);
-		res.locals['payload'] = undefined;
+		if (Array.isArray(req.body)) {
+			await service.deleteMany(req.body);
+		} else if (req.body.keys) {
+			await service.deleteMany(req.body.keys);
+		} else {
+			const sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability);
+			await service.deleteByQuery(sanitizedQuery);
+		}
+
 		return next();
 	}),
 	respond,
