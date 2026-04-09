@@ -233,6 +233,7 @@ promote_version: Promote Version
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
+show_differences_only: Show Differences Only
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
@@ -766,6 +767,10 @@ file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
+no_active_users: No Active Users
+no_suspended_users: No Suspended Users
+no_invited_users: No Invited Users
+no_status_users_copy: 'There are no users with {status} status.'
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
 activity_log: Activity Log
@@ -856,6 +861,7 @@ errors:
   INVALID_CONFIG: Invalid config
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_FOREIGN_KEY: Invalid foreign key
+  INVALID_INVITE: This invite is no longer valid
   INVALID_IP: IP Address not allowed
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
@@ -912,6 +918,9 @@ flip_vertical: Flip Vertical
 aspect_ratio: Aspect Ratio
 rotate: Rotate
 all_users: All Users
+active_users: Active Users
+suspended_users: Suspended Users
+invited_users: Invited Users
 delete_collection: Delete Collection
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
@@ -2575,6 +2584,9 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
+    timezone: Timezone
+    timezone_local: Local Timezone
+    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files

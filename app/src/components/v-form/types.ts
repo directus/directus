@@ -14,6 +14,7 @@ export interface ComparisonContext {
 	revisionFields?: Set<string>;
 	selectedFields: string[];
 	onToggleField: ((field: string) => void) | null;
+	showDifferencesOnly?: boolean;
 }
 
 export type FieldValues = {

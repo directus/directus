@@ -28,7 +28,7 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 
-const props = defineProps<{ role?: string }>();
+const props = defineProps<{ role?: string; status?: string }>();
 
 const { role } = toRefs(props);
 
@@ -63,6 +63,24 @@ const roleFilter = computed(() => {
 
 	return null;
 });
+
+const statusFilter = computed(() => {
+	if (props.status) {
+		return {
+			_and: [
+				{
+					status: {
+						_eq: props.status,
+					},
+				},
+			],
+		};
+	}
+
+	return null;
+});
+
+const combinedSystemFilter = computed(() => mergeFilters(roleFilter.value, statusFilter.value));
 
 const {
 	createAllowed,
@@ -161,6 +179,7 @@ function useBreadcrumb() {
 	});
 
 	const title = computed(() => {
+		if (props.status) return t(`${props.status}_users`);
 		if (!props.role) return t('user_directory');
 		return roles.value?.find((role) => role.id === props.role)?.name;
 	});
@@ -182,9 +201,9 @@ function clearFilters() {
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="mergeFilters(filter, roleFilter)"
+		:filter="mergeFilters(filter, combinedSystemFilter)"
 		:filter-user="filter"
-		:filter-system="roleFilter"
+		:filter-system="combinedSystemFilter"
 		:search="search"
 		collection="directus_users"
 		:reset-preset="resetPreset"
@@ -261,9 +280,9 @@ function clearFilters() {
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<VInfo v-if="!filter && !search" :title="$t('user_count', 0)" icon="people_alt" center>
-						{{ $t('no_users_copy') }}
+						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
-						<template v-if="canInviteUsers" #append>
+						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
 							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
 								{{ $t('create_user') }}
 							</VButton>
@@ -280,10 +299,10 @@ function clearFilters() {
 				</template>
 
 				<template #no-items>
-					<VInfo :title="$t('user_count', 0)" icon="people_alt" center>
-						{{ $t('no_users_copy') }}
+					<VInfo v-if="!layoutState.loadingItemCount" :title="$t('user_count', 0)" icon="people_alt" center>
+						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
-						<template v-if="canInviteUsers" #append>
+						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
 							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
 								{{ $t('create_user') }}
 							</VButton>
@@ -307,8 +326,8 @@ function clearFilters() {
 				<ExportSidebarDetail
 					collection="directus_users"
 					:layout-query="layoutQuery"
-					:filter="mergeFilters(filter, roleFilter)"
-					:search="search"
+					:filter="mergeFilters(filter, combinedSystemFilter) ?? undefined"
+					:search="search ?? undefined"
 					@refresh="refresh"
 				/>
 			</template>

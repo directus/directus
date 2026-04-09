@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { translateShortcut } from '@directus/composables';
 import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 export interface Props {

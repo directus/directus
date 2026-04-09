@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { translateShortcut } from '@directus/composables';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import PrivateViewHeaderBarActions from '@/views/private/private-view/components/private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
