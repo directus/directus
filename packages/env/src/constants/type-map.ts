@@ -63,6 +63,14 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
 
+	MCP_OAUTH_ENABLED: 'boolean',
+	MCP_OAUTH_AUTH_CODE_TTL: 'string',
+	MCP_OAUTH_MAX_CLIENTS: 'number',
+	MCP_OAUTH_CLIENT_UNUSED_TTL: 'string',
+	MCP_OAUTH_CLIENT_IDLE_TTL: 'string',
+	MCP_OAUTH_REQUIRE_RESOURCE: 'boolean',
+	MCP_OAUTH_CLEANUP_SCHEDULE: 'string',
+
 	EMAIL_SMTP_PASSWORD: 'string',
 
 	'STORAGE_.+_SECRET': 'string',

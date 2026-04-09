@@ -1,0 +1,35 @@
+table: directus_oauth_codes
+
+fields:
+  - field: id
+    special:
+      - uuid
+    width: half
+  - field: code_hash
+    width: half
+  - field: client
+    special:
+      - m2o
+    width: half
+  - field: user
+    special:
+      - m2o
+    width: half
+  - field: redirect_uri
+    width: full
+  - field: resource
+    width: half
+  - field: code_challenge
+    width: half
+  - field: code_challenge_method
+    width: half
+  - field: scope
+    width: half
+  - field: expires_at
+    special:
+      - cast-timestamp
+    width: half
+  - field: used_at
+    special:
+      - cast-timestamp
+    width: half

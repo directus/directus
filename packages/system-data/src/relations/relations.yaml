@@ -276,3 +276,32 @@ data:
   - many_collection: directus_deployment_runs
     many_field: user_created
     one_collection: directus_users
+
+  ### OAuth
+  - many_collection: directus_oauth_codes
+    many_field: client
+    one_collection: directus_oauth_clients
+
+  - many_collection: directus_oauth_codes
+    many_field: user
+    one_collection: directus_users
+
+  - many_collection: directus_oauth_consents
+    many_field: user
+    one_collection: directus_users
+
+  - many_collection: directus_oauth_consents
+    many_field: client
+    one_collection: directus_oauth_clients
+
+  - many_collection: directus_oauth_tokens
+    many_field: client
+    one_collection: directus_oauth_clients
+
+  - many_collection: directus_oauth_tokens
+    many_field: user
+    one_collection: directus_users
+
+  - many_collection: directus_sessions
+    many_field: oauth_client
+    one_collection: directus_oauth_clients

@@ -10,6 +10,7 @@ declare global {
 	namespace Express {
 		export interface Request {
 			token: string | null;
+			tokenSource: 'cookie' | 'header' | 'query' | null;
 			collection: string;
 			sanitizedQuery: Query;
 			schema: SchemaOverview;

@@ -7,6 +7,7 @@ import { createDefaultAccountability } from '../permissions/utils/create-default
 import { getSecret } from './get-secret.js';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
+import { parseOAuthScope } from './parse-oauth-scope.js';
 import { verifySessionJWT } from './verify-session-jwt.js';
 
 export async function getAccountabilityForToken(
@@ -25,8 +26,16 @@ export async function getAccountabilityForToken(
 			const payload = verifyAccessJWT(token, getSecret());
 
 			if ('session' in payload) {
-				await verifySessionJWT(payload);
+				const { oauth_client } = await verifySessionJWT(payload);
 				accountability.session = payload.session;
+
+				if (oauth_client !== null) {
+					accountability.oauth = {
+						client: oauth_client,
+						scopes: parseOAuthScope(payload.scope),
+						aud: Array.isArray(payload.aud) ? payload.aud : payload.aud ? [String(payload.aud)] : [],
+					};
+				}
 			}
 
 			if (payload.share) accountability.share = payload.share;

@@ -15,6 +15,10 @@ import flowFields from './flows.yaml';
 import folderFields from './folders.yaml';
 import migrationFields from './migrations.yaml';
 import notificationFields from './notifications.yaml';
+import oauthClientsFields from './oauth-clients.yaml';
+import oauthCodesFields from './oauth-codes.yaml';
+import oauthConsentsFields from './oauth-consents.yaml';
+import oauthTokensFields from './oauth-tokens.yaml';
 import operationFields from './operations.yaml';
 import panelFields from './panels.yaml';
 import permissionFields from './permissions.yaml';
@@ -72,6 +76,10 @@ processFields(versionFields);
 processFields(deploymentFields);
 processFields(deploymentProjectsFields);
 processFields(deploymentRunsFields);
+processFields(oauthClientsFields);
+processFields(oauthCodesFields);
+processFields(oauthConsentsFields);
+processFields(oauthTokensFields);
 
 function processFields(systemFields: Record<string, any>) {
 	const {
