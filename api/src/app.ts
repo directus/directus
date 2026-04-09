@@ -32,6 +32,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import { mcpOAuthProtectedRouter, mcpOAuthPublicRouter } from './controllers/mcp-oauth.js';
 import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
 import notFoundHandler from './controllers/not-found.js';
@@ -76,6 +77,7 @@ import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 import metricsSchedule from './schedules/metrics.js';
+import scheduleOAuthCleanup from './schedules/oauth-cleanup.js';
 import projectSchedule from './schedules/project.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
@@ -116,6 +118,13 @@ export default async function createApp(): Promise<express.Application> {
 
 	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('"PUBLIC_URL" should be a full URL');
+	}
+
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		if (toBoolean(env['MCP_ENABLED']) !== true) {
+			logger.warn('MCP_OAUTH_ENABLED requires MCP_ENABLED=true. OAuth disabled.');
+			env['MCP_OAUTH_ENABLED'] = false;
+		}
 	}
 
 	await validateDatabaseExtensions();
@@ -305,8 +314,17 @@ export default async function createApp(): Promise<express.Application> {
 	// Public webhook endpoint (signature-verified by the provider)
 	app.use('/deployments/webhooks', deploymentWebhookRouter);
 
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		app.use(mcpOAuthPublicRouter);
+	}
+
 	app.use(authenticate);
 	app.use(mcpOAuthGuard);
+
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		app.use(mcpOAuthGuard);
+		app.use(mcpOAuthProtectedRouter);
+	}
 
 	app.use(schema);
 
@@ -391,6 +409,10 @@ export default async function createApp(): Promise<express.Application> {
 	await tusSchedule();
 	await metricsSchedule();
 	await projectSchedule();
+
+	if (env['MCP_OAUTH_ENABLED'] === true) {
+		await scheduleOAuthCleanup();
+	}
 
 	await emitter.emitInit('app.after', { app });
 
