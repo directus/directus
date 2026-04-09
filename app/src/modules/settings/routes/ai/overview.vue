@@ -13,7 +13,6 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useServerStore } from '@/stores/server';
@@ -33,13 +32,8 @@ const aiFields = computed(() =>
 );
 
 const mcpFields = computed(() =>
-	unref(allFields).filter(
-		(field) =>
-			(field.meta?.group === 'mcp_group' || field.field === 'mcp_group') && field.field !== 'mcp_oauth_enabled',
-	),
+	unref(allFields).filter((field) => field.meta?.group === 'mcp_group' || field.field === 'mcp_group'),
 );
-
-const mcpOAuthFields = computed(() => unref(allFields).filter((field) => field.field === 'mcp_oauth_enabled'));
 
 const initialValues = ref(clone(settingsStore.settings));
 
@@ -122,28 +116,6 @@ function discardAndLeave() {
 					:primary-key="1"
 					:disabled="!serverStore.info.mcp_enabled"
 				/>
-				<div v-if="serverStore.info?.mcp_oauth_enabled" class="mcp-oauth-row">
-					<VForm
-						v-model="mcpEdits"
-						:initial-values="initialValues"
-						:fields="mcpOAuthFields"
-						:primary-key="1"
-						:disabled="!serverStore.info.mcp_enabled"
-					/>
-					<VButton
-						v-if="
-							serverStore.info?.mcp_enabled &&
-							settingsStore.settings?.mcp_enabled &&
-							settingsStore.settings?.mcp_oauth_enabled
-						"
-						secondary
-						class="manage-clients-link"
-						@click="router.push('/settings/mcp-oauth-clients')"
-					>
-						{{ $t('manage_registered_clients') }}
-						<template #append><VIcon name="chevron_right" /></template>
-					</VButton>
-				</div>
 			</div>
 		</div>
 
@@ -174,16 +146,5 @@ function discardAndLeave() {
 
 .mcp-section {
 	margin-block-start: var(--theme--form--row-gap);
-}
-
-.mcp-oauth-row {
-	margin-block-start: var(--theme--form--row-gap);
-	display: flex;
-	align-items: center;
-	gap: var(--theme--form--row-gap);
-}
-
-.manage-clients-link {
-	flex-shrink: 0;
 }
 </style>
