@@ -4,10 +4,35 @@ import type { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
+import { expectMcpBearerChallenge } from '../../test-utils/mcp-oauth.js';
 import { findMcpTool } from '../tools/index.js';
 import type { ToolConfig } from '../tools/types.js';
 import { DirectusMCP } from './server.js';
 import { DirectusTransport } from './transport.js';
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		PUBLIC_URL: 'https://example.directus.app',
+		MCP_OAUTH_ENABLED: true,
+		SECRET: 'test-secret',
+		// Required by transitive module-level useEnv() calls:
+		EMAIL_TEMPLATES_PATH: './templates',
+		EXTENSIONS_PATH: './extensions',
+		SESSION_COOKIE_NAME: 'directus_session',
+		REFRESH_TOKEN_COOKIE_DOMAIN: '',
+		REFRESH_TOKEN_TTL: '15m',
+		REFRESH_TOKEN_COOKIE_SECURE: false,
+		SESSION_COOKIE_DOMAIN: '',
+		SESSION_COOKIE_TTL: '1d',
+		SESSION_COOKIE_SECURE: false,
+		IP_TRUST_PROXY: true,
+		CACHE_ENABLED: false,
+		RATE_LIMITER_ENABLED: false,
+		ACCESS_TOKEN_TTL: '15m',
+		EMAIL_FROM: 'no-reply@example.com',
+		EMAIL_TRANSPORT: 'sendmail',
+	}),
+}));
 
 vi.mock('../../services/items.js');
 
@@ -88,6 +113,7 @@ describe('mcp server', () => {
 			mockRes = {
 				json: vi.fn(),
 				status: vi.fn().mockReturnThis(),
+				set: vi.fn().mockReturnThis(),
 				send: vi.fn(),
 			} as unknown as Response;
 
@@ -102,6 +128,8 @@ describe('mcp server', () => {
 				},
 				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
+				token: null,
+				tokenSource: null,
 			};
 		});
 
@@ -114,10 +142,14 @@ describe('mcp server', () => {
 			expect(mockRes.send).toHaveBeenCalled();
 		});
 
-		test('should reject public request', async () => {
-			mockReq.accountability!.user = null;
+		test('unauthenticated /mcp request returns 401 with WWW-Authenticate', () => {
+			mockReq.accountability = { user: null, role: null, roles: [], admin: false, app: false, ip: null };
+			mockReq.token = null;
+			mockReq.tokenSource = null;
 
-			expect(() => directusMCP.handleRequest(mockReq as Request, mockRes as Response)).toThrow();
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+
+			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
 		});
 
 		test('should accept JSON requests', async () => {
@@ -1349,6 +1381,155 @@ describe('mcp server', () => {
 
 				expect(messageHandler).toHaveBeenCalledWith(message, extraInfo);
 			});
+		});
+	});
+
+	describe('auth guard', () => {
+		const MCP_RESOURCE_URL = 'https://example.directus.app/mcp';
+
+		const regularAccountability = {
+			user: 'user-id',
+			role: 'role-id',
+			roles: ['role-id'],
+			admin: false,
+			app: false,
+			ip: null,
+		};
+
+		const oauthAccountability = {
+			...regularAccountability,
+			oauth: { client: 'client-id', scopes: ['mcp:access'], aud: [MCP_RESOURCE_URL] },
+		};
+
+		let mockRes: Response;
+
+		beforeEach(() => {
+			mockRes = {
+				json: vi.fn(),
+				status: vi.fn().mockReturnThis(),
+				set: vi.fn().mockReturnThis(),
+				send: vi.fn(),
+			} as unknown as Response;
+		});
+
+		function makeAuthReq(overrides: Partial<Request> = {}): Request {
+			return {
+				accepts: vi.fn((type: string) =>
+					type === 'application/json' ? 'application/json' : false,
+				) as unknown as Request['accepts'],
+				body: { jsonrpc: '2.0', id: 1, method: 'tools/list' },
+				accountability: regularAccountability,
+				schema: {} as SchemaOverview,
+				token: null,
+				tokenSource: null,
+				...overrides,
+			} as unknown as Request;
+		}
+
+		test('unauthenticated request returns 401 with WWW-Authenticate', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: { user: null, role: null, roles: [], admin: false, app: false, ip: null },
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
+		});
+
+		test('regular session passes through without OAuth checks', () => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ tokenSource: 'cookie' });
+
+			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
+			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+		});
+
+		test('valid OAuth session with correct scope and aud via header returns 200', () => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ accountability: oauthAccountability, tokenSource: 'header' });
+
+			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
+			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+		});
+
+		test('OAuth session with wrong aud returns 401', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: {
+					...regularAccountability,
+					oauth: { client: 'client-id', scopes: ['mcp:access'], aud: ['https://other.example.com/mcp'] },
+				},
+				tokenSource: 'header',
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 401, error: 'invalid_token' });
+		});
+
+		test.each([
+			['query', 'via query-string'],
+			['cookie', 'via cookie'],
+		] as const)('%s: OAuth session %s returns 401 invalid_request', (tokenSource) => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ accountability: oauthAccountability, tokenSource });
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 401, error: 'invalid_request' });
+		});
+
+		test.each([
+			['query (legacy compat)', 'static-or-jwt-token', 'query' as const],
+			['cookie', undefined, 'cookie' as const],
+			['query (static token)', 'static-token', 'query' as const],
+		])('regular session via %s passes through', (_label, token, tokenSource) => {
+			const directusMCP = new DirectusMCP();
+			const req = makeAuthReq({ token, tokenSource });
+
+			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
+			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+		});
+
+		test('OAuth session without mcp:access scope returns 403 insufficient_scope', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: {
+					...regularAccountability,
+					oauth: { client: 'client-id', scopes: ['other:scope'], aud: [MCP_RESOURCE_URL] },
+				},
+				tokenSource: 'header',
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 403, error: 'insufficient_scope' });
+		});
+
+		test('401 responses include Access-Control-Expose-Headers: WWW-Authenticate', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: { user: null, role: null, roles: [], admin: false, app: false, ip: null },
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
+		});
+
+		test('403 insufficient_scope includes Access-Control-Expose-Headers: WWW-Authenticate', () => {
+			const directusMCP = new DirectusMCP();
+
+			const req = makeAuthReq({
+				accountability: {
+					...regularAccountability,
+					oauth: { client: 'client-id', scopes: ['other:scope'], aud: [MCP_RESOURCE_URL] },
+				},
+				tokenSource: 'header',
+			});
+
+			directusMCP.handleRequest(req, mockRes);
+			expectMcpBearerChallenge(mockRes, { status: 403, error: 'insufficient_scope' });
 		});
 	});
 });

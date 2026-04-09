@@ -28,6 +28,7 @@ import type { ToolConfig, ToolResult } from '../tools/types.js';
 import { coerceJsonFields } from '../tools/utils.js';
 import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt } from './types.js';
+import { buildMcpWWWAuthenticateHeader, getMcpUrls, MCP_ACCESS_SCOPE } from './utils.js';
 
 export class DirectusMCP {
 	promptsCollection?: string | null;
@@ -57,12 +58,67 @@ export class DirectusMCP {
 	}
 
 	/**
-	 * This handleRequest function is not awaiting lower level logic resulting in the actual
-	 * response being an asynchronous side effect happening after the function has returned
+	 * Send a 401 with WWW-Authenticate per RFC 6750 / RFC 9728.
+	 * Includes `resource_metadata` pointing to `/.well-known/oauth-protected-resource/mcp`
+	 * so clients can discover the authorization server from a 401 response.
+	 */
+	private sendUnauthorized(res: Response, error?: string): void {
+		const { metadataUrl } = getMcpUrls();
+
+		res
+			.set('WWW-Authenticate', buildMcpWWWAuthenticateHeader(metadataUrl, error))
+			.set('Access-Control-Expose-Headers', 'WWW-Authenticate')
+			.status(401)
+			.send();
+	}
+
+	/**
+	 * Handle an incoming MCP JSON-RPC request.
+	 *
+	 * OAuth-specific checks (when `accountability.oauth` is set):
+	 * - Transport restriction: token must be in Authorization header (RFC 6750), not cookie/query
+	 * - Scope check: must include mcp:access
+	 * - Audience check: must match the canonical MCP resource URL (PUBLIC_URL/mcp)
+	 *
+	 * Note: this function does not await lower-level logic; the actual response is an
+	 * asynchronous side effect happening after the function returns.
+	 *
+	 * @see sendUnauthorized for WWW-Authenticate format (RFC 9728 `resource_metadata` attribute)
 	 */
 	handleRequest(req: Request, res: Response) {
+		const oauth = req.accountability?.oauth;
+
+		// Unauthenticated: no user, no role, not admin
 		if (!req.accountability?.user && !req.accountability?.role && req.accountability?.admin !== true) {
-			throw new ForbiddenError();
+			this.sendUnauthorized(res);
+			return;
+		}
+
+		// OAuth-specific restrictions (scope, audience, transport already resolved onto accountability)
+		if (oauth) {
+			if (req.tokenSource !== 'header') {
+				this.sendUnauthorized(res, 'invalid_request');
+				return;
+			}
+
+			if (!oauth.scopes.includes(MCP_ACCESS_SCOPE)) {
+				const { metadataUrl } = getMcpUrls();
+
+				res
+					.set('WWW-Authenticate', buildMcpWWWAuthenticateHeader(metadataUrl, 'insufficient_scope'))
+					.set('Access-Control-Expose-Headers', 'WWW-Authenticate')
+					.status(403)
+					.send();
+
+				return;
+			}
+
+			const { resourceUrl } = getMcpUrls();
+
+			if (!oauth.aud.includes(resourceUrl)) {
+				this.sendUnauthorized(res, 'invalid_token');
+				return;
+			}
 		}
 
 		if (!req.accepts('application/json')) {

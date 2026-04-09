@@ -1,6 +1,13 @@
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { createError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import {
+	createError,
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidTokenError,
+	TokenExpiredError,
+} from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import axios, { AxiosError } from 'axios';
 import type { Request, RequestHandler, Response } from 'express';
@@ -8,10 +15,15 @@ import express from 'express';
 import type { Logger } from 'pino';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger/index.js';
+import { expectMcpBearerChallenge } from '../test-utils/mcp-oauth.js';
 import * as errorHandlerMod from './error-handler.js';
 
 vi.mock('../database/index');
 vi.mock('../logger/index');
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({}),
+}));
 
 let mockRequest: Request;
 let mockResponse: Response;
@@ -230,4 +242,49 @@ test('Catch error within the handler and respond with fallback error', async () 
 
 	expect(mockResponse.status).toHaveBeenCalledWith(FALLBACK_STATUS);
 	expect(mockResponse.json).toHaveBeenCalledWith({ errors: [FALLBACK_ERROR] });
+});
+
+describe('MCP OAuth RFC 6750 WWW-Authenticate', () => {
+	function setupMcpMocks(path: string) {
+		mockRequest.path = path;
+
+		vi.mocked(useEnv).mockReturnValue({
+			MCP_OAUTH_ENABLED: true,
+			PUBLIC_URL: 'http://localhost:8055',
+		} as any);
+
+		// Chain-friendly mock response for the MCP path
+		mockResponse = {
+			status: vi.fn().mockReturnThis(),
+			set: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as unknown as Response;
+	}
+
+	test.each([
+		['InvalidCredentialsError', () => new InvalidCredentialsError()],
+		['InvalidTokenError', () => new InvalidTokenError()],
+		['TokenExpiredError', () => new TokenExpiredError()],
+	])('%s on /mcp returns 401 with WWW-Authenticate', async (_name, createError) => {
+		setupMcpMocks('/mcp');
+		await errorHandlerMod.errorHandler(createError(), mockRequest, mockResponse, nextFunction);
+		expectMcpBearerChallenge(mockResponse, { status: 401, resourceMetadata: true });
+	});
+
+	test('TokenExpiredError on /mcp sub-path returns 401 with WWW-Authenticate', async () => {
+		setupMcpMocks('/mcp/sub-path');
+
+		await errorHandlerMod.errorHandler(new TokenExpiredError(), mockRequest, mockResponse, nextFunction);
+
+		expectMcpBearerChallenge(mockResponse, { status: 401, resourceMetadata: true });
+	});
+
+	test('auth failure on /mcp-oauth path does NOT get WWW-Authenticate treatment', async () => {
+		setupMcpMocks('/mcp-oauth/authorize/decision');
+
+		await errorHandlerMod.errorHandler(new InvalidCredentialsError(), mockRequest, mockResponse, nextFunction);
+
+		// Should fall through to normal error handling, not the MCP 401 path
+		expect(mockResponse.set).not.toHaveBeenCalledWith('WWW-Authenticate', expect.anything());
+	});
 });

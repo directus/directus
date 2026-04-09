@@ -1,4 +1,9 @@
-import { InvalidCredentialsError, InvalidOtpError, ServiceUnavailableError } from '@directus/errors';
+import {
+	InvalidCredentialsError,
+	InvalidOtpError,
+	ServiceUnavailableError,
+	UserSuspendedError,
+} from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
@@ -360,6 +365,195 @@ describe('Integration Tests', () => {
 					refreshToken: 'test-refresh-token',
 					id: mockUser.id,
 				});
+			});
+		});
+
+		describe('refresh', () => {
+			const mockSessionRecord = {
+				session_expires: new Date(Date.now() + 86400000),
+				session_next_token: null,
+				user_id: mockUser.id,
+				user_first_name: mockUser.first_name,
+				user_last_name: mockUser.last_name,
+				user_email: mockUser.email,
+				user_password: mockUser.password,
+				user_status: 'active',
+				user_provider: 'default',
+				user_external_identifier: null,
+				user_auth_data: null,
+				user_role: mockUser.role,
+				share_id: null,
+				share_start: null,
+				share_end: null,
+			};
+
+			let mockRefreshProvider: {
+				getUserID: ReturnType<typeof vi.fn>;
+				login: ReturnType<typeof vi.fn>;
+				refresh: ReturnType<typeof vi.fn>;
+			};
+
+			beforeEach(() => {
+				mockRefreshProvider = {
+					getUserID: vi.fn().mockResolvedValue(mockUser.id),
+					login: vi.fn().mockResolvedValue(undefined),
+					refresh: vi.fn().mockResolvedValue(undefined),
+				};
+
+				vi.mocked(getAuthProvider).mockReturnValue(mockRefreshProvider as any);
+			});
+
+			it('should succeed with a regular session token (oauth_client is null)', async () => {
+				tracker.on.select('directus_sessions').responseOnce([{ ...mockSessionRecord, oauth_client: null }]);
+				tracker.on.update('directus_sessions').responseOnce([1]);
+				tracker.on.update('directus_users').responseOnce([1]);
+				tracker.on.delete('directus_sessions').responseOnce(1);
+
+				const result = await service.refresh('regular-token');
+
+				expect(result).toMatchObject({
+					accessToken: 'test-access-token',
+					refreshToken: expect.any(String),
+					id: mockUser.id,
+				});
+			});
+
+			it('should throw InvalidCredentialsError when refreshing an OAuth session token', async () => {
+				tracker.on.select('directus_sessions').responseOnce([]);
+
+				await expect(service.refresh('oauth-session-token')).rejects.toBeInstanceOf(InvalidCredentialsError);
+
+				const selectQuery = tracker.history.select.find((q) => q.sql.includes('directus_sessions'));
+				expect(selectQuery?.sql).toContain('oauth_client');
+			});
+		});
+
+		describe('logout', () => {
+			const mockSessionUser = {
+				id: mockUser.id,
+				first_name: mockUser.first_name,
+				last_name: mockUser.last_name,
+				email: mockUser.email,
+				password: mockUser.password,
+				status: 'active',
+				role: mockUser.role,
+				provider: 'default',
+				external_identifier: null,
+				auth_data: null,
+			};
+
+			let mockLogoutProvider: {
+				getUserID: ReturnType<typeof vi.fn>;
+				login: ReturnType<typeof vi.fn>;
+				logout: ReturnType<typeof vi.fn>;
+			};
+
+			beforeEach(() => {
+				mockLogoutProvider = {
+					getUserID: vi.fn().mockResolvedValue(mockUser.id),
+					login: vi.fn().mockResolvedValue(undefined),
+					logout: vi.fn().mockResolvedValue(undefined),
+				};
+
+				vi.mocked(getAuthProvider).mockReturnValue(mockLogoutProvider as any);
+			});
+
+			it('should logout successfully with a regular session', async () => {
+				tracker.on.select('directus_sessions').responseOnce([{ ...mockSessionUser, oauth_client: null }]);
+				tracker.on.delete('directus_sessions').responseOnce(1);
+
+				await service.logout('regular-token');
+
+				expect(mockLogoutProvider.logout).toHaveBeenCalledOnce();
+			});
+
+			it('should return early without deleting session or calling provider.logout for OAuth sessions', async () => {
+				tracker.on.select('directus_sessions').responseOnce([]);
+
+				await service.logout('oauth-session-token');
+
+				expect(mockLogoutProvider.logout).not.toHaveBeenCalled();
+
+				const selectQuery = tracker.history.select.find((q) => q.sql.includes('directus_sessions'));
+				expect(selectQuery?.sql).toContain('oauth_client');
+			});
+		});
+
+		describe('updateStatefulSession', () => {
+			const mockSessionRecordWithOAuthClient = {
+				session_expires: new Date(Date.now() + 86400000),
+				session_next_token: null,
+				user_id: mockUser.id,
+				user_first_name: mockUser.first_name,
+				user_last_name: mockUser.last_name,
+				user_email: mockUser.email,
+				user_password: mockUser.password,
+				user_status: 'active',
+				user_provider: 'default',
+				user_external_identifier: null,
+				user_auth_data: null,
+				user_role: mockUser.role,
+				share_id: null,
+				share_start: null,
+				share_end: null,
+				oauth_client: 'my-oauth-client',
+			};
+
+			let mockRefreshProvider: {
+				getUserID: ReturnType<typeof vi.fn>;
+				login: ReturnType<typeof vi.fn>;
+				refresh: ReturnType<typeof vi.fn>;
+			};
+
+			beforeEach(() => {
+				mockRefreshProvider = {
+					getUserID: vi.fn().mockResolvedValue(mockUser.id),
+					login: vi.fn().mockResolvedValue(undefined),
+					refresh: vi.fn().mockResolvedValue(undefined),
+				};
+
+				vi.mocked(getAuthProvider).mockReturnValue(mockRefreshProvider as any);
+			});
+
+			it('should preserve non-null oauth_client when rotated (verified via insert bindings)', async () => {
+				// We test updateStatefulSession directly by accessing private method via any cast
+				const svc = service as any;
+
+				const sessionRecord = {
+					user_id: mockUser.id,
+					share_id: null,
+					oauth_client: 'my-oauth-client',
+				};
+
+				tracker.on.update('directus_sessions').responseOnce([{ next_token: null }]);
+				tracker.on.insert('directus_sessions').responseOnce([1]);
+
+				await svc.updateStatefulSession(sessionRecord, 'old-token', 'new-token', new Date(Date.now() + 86400000));
+
+				const inserts = tracker.history.insert;
+				const sessionInsert = inserts.find((q) => q.sql.includes('directus_sessions'));
+				expect(sessionInsert).toBeDefined();
+				expect(sessionInsert!.bindings).toContain('my-oauth-client');
+			});
+
+			it('should preserve null oauth_client for regular sessions', async () => {
+				const svc = service as any;
+
+				const sessionRecord = {
+					user_id: mockUser.id,
+					share_id: null,
+					oauth_client: null,
+				};
+
+				tracker.on.update('directus_sessions').responseOnce([{ next_token: null }]);
+				tracker.on.insert('directus_sessions').responseOnce([1]);
+
+				await svc.updateStatefulSession(sessionRecord, 'old-token', 'new-token', new Date(Date.now() + 86400000));
+
+				const inserts = tracker.history.insert;
+				const sessionInsert = inserts.find((q) => q.sql.includes('directus_sessions'));
+				expect(sessionInsert).toBeDefined();
+				expect(sessionInsert!.sql).toContain('oauth_client');
 			});
 		});
 	});
