@@ -124,6 +124,7 @@ const splitterCollapsed = computed({
 	flex-grow: 1;
 	block-size: 100%;
 	position: relative;
+	background: var(--theme--shell--background);
 }
 
 :deep(.root-split > :is(.sp-start, .sp-end)) {

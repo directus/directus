@@ -28,11 +28,12 @@ export default defineTheme({
 				input: { background: '#FFFFFF', backgroundSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 13%)' },
 			},
 		},
-		navigation: {
+		shell: {
 			background: '#FFFFFF',
 			backgroundAccent: 'var(--theme--background)',
-			borderWidth: 'var(--theme--border-width)',
 			borderColor: 'var(--theme--border-color-subdued)',
+		},
+		navigation: {
 			modules: {
 				background: 'color-mix(in srgb, #000000, var(--theme--primary) 90%)',
 				button: {
@@ -49,11 +50,6 @@ export default defineTheme({
 				foregroundHover: 'var(--theme--foreground)',
 				foregroundActive: 'var(--theme--foreground)',
 			},
-		},
-		header: {
-			background: '#FFFFFF',
-			borderWidth: '1px',
-			borderColor: 'var(--theme--border-color-subdued)',
 		},
 		public: {
 			art: {

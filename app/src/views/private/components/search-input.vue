@@ -233,7 +233,7 @@ function emitValue() {
 			position: absolute;
 			inset-inline: 0;
 			z-index: 1;
-			background-color: var(--theme--header--background);
+			background-color: var(--theme--shell--background);
 		}
 	}
 
@@ -425,9 +425,17 @@ function emitValue() {
 	padding: 0;
 	background-color: var(--theme--background-subdued);
 	border: var(--search-input-border-width) solid var(--theme--form--field--input--border-color);
+	border-block-start: none;
 	border-start-end-radius: 0;
 	border-end-end-radius: var(--search-input-radius);
 	border-end-start-radius: var(--search-input-radius);
+	z-index: 5;
+
+	&:before {
+		content: '';
+		display: block;
+		border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	}
 
 	&.active {
 		border-color: var(--theme--form--field--input--focus-ring-color);

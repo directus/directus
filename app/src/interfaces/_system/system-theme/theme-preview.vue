@@ -24,13 +24,13 @@ const localVars = computed(() => {
 			<rect width="208" height="140" rx="4" fill="var(--theme--background)" />
 
 			<!-- Header Bar -->
-			<rect x="56" width="136" height="16" fill="var(--theme--header--background)" />
+			<rect x="56" width="136" height="16" fill="var(--theme--shell--background)" />
 
 			<!-- Navigation Background -->
-			<rect x="16" y="16" width="40" height="124" fill="var(--theme--navigation--background)" />
+			<rect x="16" y="16" width="40" height="124" fill="var(--theme--shell--background)" />
 
 			<!-- Project Info Background -->
-			<rect x="16" width="40" height="16" fill="var(--theme--navigation--background)" />
+			<rect x="16" width="40" height="16" fill="var(--theme--shell--background)" />
 
 			<!-- Module Bar Background -->
 			<rect width="16" height="140" fill="var(--theme--navigation--modules--background)" />
@@ -192,7 +192,7 @@ const localVars = computed(() => {
 			/>
 
 			<!-- Header Border -->
-			<rect x="56" y="16" width="128" height="1" fill="var(--theme--header--border-color)" />
+			<rect x="56" y="16" width="128" height="1" fill="var(--theme--shell--border-color)" />
 		</svg>
 	</div>
 </template>

@@ -137,14 +137,17 @@ const Rules = Type.Object({
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
-	navigation: Type.Optional(
+	shell: Type.Optional(
 		Type.Object({
 			background: Type.Optional(Type.Ref(Color)),
 			backgroundAccent: Type.Optional(Type.Ref(Color)),
-
 			borderWidth: Type.Optional(Type.Ref(LineWidth)),
 			borderColor: Type.Optional(Type.Ref(Color)),
+		}),
+	),
 
+	navigation: Type.Optional(
+		Type.Object({
 			project: Type.Optional(
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),
@@ -203,9 +206,6 @@ const Rules = Type.Object({
 
 	header: Type.Optional(
 		Type.Object({
-			background: Type.Optional(Type.Ref(Color)),
-			borderWidth: Type.Optional(Type.Ref(LineWidth)),
-			borderColor: Type.Optional(Type.Ref(Color)),
 			headline: Type.Optional(
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),

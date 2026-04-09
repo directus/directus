@@ -5,7 +5,6 @@ import VResizeable from './v-resizeable.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
-import VOverlay from '@/components/v-overlay.vue';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
@@ -79,9 +78,25 @@ const internalActive = computed({
 				@click="$emit('cancel')"
 			/>
 
-			<div class="content">
-				<VOverlay v-if="$slots.sidebar" absolute />
+			<VDrawerHeader :title :icon :icon-color @cancel="$emit('cancel')">
+				<template #title><slot name="title" /></template>
+				<template #headline>
+					<slot name="subtitle">
+						<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
+					</slot>
+				</template>
 
+				<template #title-outer:prepend>
+					<slot name="title-outer:prepend" />
+				</template>
+
+				<template #actions:prepend><slot name="actions:prepend" /></template>
+				<template #actions><slot name="actions" /></template>
+				<template #actions:append><slot name="actions:append" /></template>
+				<template #title:append><slot name="header:append" /></template>
+			</VDrawerHeader>
+
+			<div class="content">
 				<VResizeable
 					v-if="$slots.sidebar"
 					:disabled="!sidebarResizeable"
@@ -95,25 +110,7 @@ const internalActive = computed({
 					</nav>
 				</VResizeable>
 
-				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<VDrawerHeader :title :icon :icon-color @cancel="$emit('cancel')">
-						<template #title><slot name="title" /></template>
-						<template #headline>
-							<slot name="subtitle">
-								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-							</slot>
-						</template>
-
-						<template #title-outer:prepend>
-							<slot name="title-outer:prepend" />
-						</template>
-
-						<template #actions:prepend><slot name="actions:prepend" /></template>
-						<template #actions><slot name="actions" /></template>
-						<template #actions:append><slot name="actions:append" /></template>
-						<template #title:append><slot name="header:append" /></template>
-					</VDrawerHeader>
-
+				<main ref="scroll-container" class="main" :class="{ 'has-sidebar': $slots.sidebar }">
 					<VDetail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
 						<nav>
 							<slot name="sidebar" />
@@ -128,6 +125,8 @@ const internalActive = computed({
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-drawer {
 	position: relative;
 	display: flex;
@@ -135,7 +134,7 @@ const internalActive = computed({
 	inline-size: 100%;
 	max-inline-size: 48.125rem;
 	block-size: 100%;
-	background-color: var(--theme--background);
+	background-color: var(--theme--shell--background);
 
 	.cancel {
 		--focus-ring-color: var(--theme--primary-subdued);
@@ -145,7 +144,7 @@ const internalActive = computed({
 		inset-block-start: 0.6875rem;
 		inset-inline-start: -3.125rem;
 
-		@media (width >= 54rem) {
+		@include mixins.breakpoint-up('lg') {
 			display: inline-flex;
 		}
 	}
@@ -178,14 +177,14 @@ const internalActive = computed({
 
 			display: none;
 
-			@media (width >= 54rem) {
+			@include mixins.breakpoint-up('lg') {
 				position: relative;
 				display: block;
 				flex-shrink: 0;
 				inline-size: 12.375rem;
 				block-size: 100%;
-				background: var(--theme--navigation--background);
-				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+
+				/* background is set on .v-drawer, border is set on .main */
 			}
 
 			.sidebar-content {
@@ -206,29 +205,28 @@ const internalActive = computed({
 			}
 		}
 
-		.v-overlay {
-			--v-overlay-z-index: 1;
-
-			@media (width >= 54rem) {
-				--v-overlay-z-index: none;
-
-				display: none;
-			}
-		}
-
 		.main {
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
 			scroll-padding-block-start: 5.625rem;
+			background-color: var(--theme--background);
+			border-block-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+
+			&.has-sidebar {
+				@include mixins.breakpoint-up('lg') {
+					border-inline-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+					border-start-start-radius: var(--theme--border-radius);
+				}
+			}
 		}
 
-		.main.small-search-input:deep(.search-input.filter-active) {
+		.main.has-sidebar:deep(.search-input.filter-active) {
 			inline-size: 16.875rem !important;
 		}
 	}
 
-	@media (width >= 54rem) {
+	@include mixins.breakpoint-up('lg') {
 		inline-size: calc(100% - 3.625rem);
 	}
 }
@@ -243,7 +241,7 @@ const internalActive = computed({
 		border-radius: var(--theme--border-radius);
 	}
 
-	@media (width >= 54rem) {
+	@include mixins.breakpoint-up('lg') {
 		display: none;
 	}
 }

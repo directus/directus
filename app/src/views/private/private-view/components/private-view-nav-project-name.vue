@@ -39,7 +39,7 @@ const navBarStore = useNavBarStore();
 	padding-inline: 1.25rem 0.75rem;
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
-	background: var(--theme--navigation--background);
+	background: transparent;
 
 	.name-container {
 		flex-grow: 1;
