@@ -74,7 +74,10 @@ const {
 	refreshInterval,
 	busy: bookmarkSaving,
 	clearLocalSave,
+	localPreset,
 } = usePreset(collection, bookmarkID);
+
+const { headerTitle, headerIcon, headerIconColor } = useCollectionHeader();
 
 const { layoutWrapper } = useLayout(layout);
 
@@ -175,6 +178,26 @@ function useBreadcrumb() {
 	]);
 
 	return { breadcrumb };
+}
+
+function useCollectionHeader() {
+	const headerTitle = computed(() => {
+		if (props.bookmark) return bookmarkTitle.value ?? undefined;
+		return currentCollection.value?.name;
+	});
+
+	const headerIcon = computed(() => {
+		if (props.archive) return 'archive';
+		if (props.bookmark) return localPreset.value.icon ?? undefined;
+		return currentCollection.value?.icon;
+	});
+
+	const headerIconColor = computed(() => {
+		if (props.bookmark) return localPreset.value.color ?? undefined;
+		return currentCollection.value?.color ?? undefined;
+	});
+
+	return { headerTitle, headerIcon, headerIconColor };
 }
 
 function useSelection() {
@@ -320,12 +343,7 @@ function clearFilters() {
 	>
 		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
 
-		<PrivateView
-			v-else
-			:title="bookmark ? bookmarkTitle : currentCollection.name"
-			:icon="archive ? 'archive' : currentCollection.icon"
-			:icon-color="currentCollection.color"
-		>
+		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
 			<template #headline>
 				<VBreadcrumb v-if="bookmark" :items="breadcrumb" />
 				<VBreadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
