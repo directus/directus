@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
-import VResizeable from './v-resizeable.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
@@ -18,7 +17,6 @@ export interface Props {
 	 * Color of the icon displayed in the drawer header.
 	 */
 	iconColor?: string;
-	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
 	applyShortcut?: ApplyShortcut;
@@ -39,10 +37,6 @@ const localActive = ref(false);
 const scrollContainer = useTemplateRef('scroll-container');
 
 provide('main-element', scrollContainer);
-
-const sidebarWidth = 198;
-// Half of the space of the drawer (770 / 2 = 385)
-const sidebarMaxWidth = 385;
 
 const internalActive = computed({
 	get() {
@@ -97,18 +91,11 @@ const internalActive = computed({
 			</VDrawerHeader>
 
 			<div class="content">
-				<VResizeable
-					v-if="$slots.sidebar"
-					:disabled="!sidebarResizeable"
-					:width="sidebarWidth"
-					:max-width="sidebarMaxWidth"
-				>
-					<nav class="sidebar">
-						<div class="sidebar-content">
-							<slot name="sidebar" />
-						</div>
-					</nav>
-				</VResizeable>
+				<nav v-if="$slots.sidebar" class="sidebar">
+					<div class="sidebar-content">
+						<slot name="sidebar" />
+					</div>
+				</nav>
 
 				<main ref="scroll-container" class="main" :class="{ 'has-sidebar': $slots.sidebar }">
 					<VDetail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
