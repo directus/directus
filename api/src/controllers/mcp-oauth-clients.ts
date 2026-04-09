@@ -1,3 +1,4 @@
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
 import { ItemsService } from '../services/items.js';
@@ -5,9 +6,14 @@ import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 
-// Permissions handled by ItemsService via req.accountability.
-// Admin users: validateAccess returns immediately (admin === true).
-// Non-admin users: no access policies exist for directus_oauth_clients, so they get 403.
+// Explicit admin guard -- defense in depth on top of ItemsService permissions
+router.use((req, _res, next) => {
+	if (!req.accountability?.admin) {
+		throw new ForbiddenError();
+	}
+
+	next();
+});
 
 // GET / -- list all clients
 router.get(
@@ -45,12 +51,16 @@ router.get(
 router.delete(
 	'/',
 	asyncHandler(async (req, res, next) => {
+		if (!Array.isArray(req.body)) {
+			throw new InvalidPayloadError({ reason: 'Expected an array of client IDs' });
+		}
+
 		const service = new ItemsService('directus_oauth_clients', {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteMany(req.body as string[]);
+		await service.deleteMany(req.body);
 		res.locals['payload'] = undefined;
 		return next();
 	}),

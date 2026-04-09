@@ -386,7 +386,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
-	app.use('/mcp-oauth/clients', mcpOAuthClientsRouter);
+
+	if (toBoolean(env['MCP_OAUTH_ENABLED']) === true) {
+		app.use('/mcp-oauth/clients', mcpOAuthClientsRouter);
+	}
+
 	app.use('/schema', schemaRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
