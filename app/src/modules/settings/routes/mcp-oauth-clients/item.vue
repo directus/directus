@@ -43,7 +43,7 @@ async function revokeClient() {
 </script>
 
 <template>
-	<PrivateView :title="item?.client_name ?? '...'" icon="key">
+	<PrivateView :title="item?.client_name ?? '...'" icon="key" show-back back-to="/settings/mcp-oauth-clients">
 		<template #headline>
 			<VBreadcrumb
 				:items="[
