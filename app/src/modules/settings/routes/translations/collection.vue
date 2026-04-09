@@ -135,7 +135,7 @@ function clearFilters() {
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="$t('delete_label')"
 							kind="danger"
-							secondary
+							variant="ghost"
 							icon="delete"
 							@click="on"
 						/>
@@ -159,7 +159,7 @@ function clearFilters() {
 					v-if="selection.length > 0"
 					v-tooltip.bottom="$t('edit')"
 					icon="edit"
-					secondary
+					variant="ghost"
 					@click="batchEditActive = true"
 				/>
 

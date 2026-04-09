@@ -289,7 +289,7 @@ onUnmounted(() => {
 					v-tooltip.bottom="$t('deployment.provider.run.stop')"
 					icon="dangerous"
 					kind="danger"
-					secondary
+					variant="ghost"
 					:loading="canceling"
 					@click="confirmCancel = true"
 				/>
@@ -297,7 +297,7 @@ onUnmounted(() => {
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('deployment.provider.run.download_logs')"
 					icon="download"
-					secondary
+					variant="ghost"
 					@click="downloadLogs"
 				/>
 
@@ -305,7 +305,7 @@ onUnmounted(() => {
 					v-if="run?.url"
 					v-tooltip.bottom="$t('deployment.provider.run.open_deployment')"
 					icon="open_in_new"
-					secondary
+					variant="ghost"
 					@click="openDeployment"
 				/>
 			</div>

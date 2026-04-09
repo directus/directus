@@ -5,13 +5,18 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 defineProps<{
 	icon?: string;
 	iconColor?: string;
-	showBack?: boolean;
 	backTo?: string;
 }>();
 </script>
 
 <template>
-	<PrivateViewHeaderBarActionButton v-if="showBack" class="back-button" secondary icon="arrow_back" :to="backTo" />
+	<PrivateViewHeaderBarActionButton
+		v-if="backTo !== undefined"
+		class="back-button"
+		variant="ghost"
+		icon="arrow_back"
+		:to="backTo"
+	/>
 
 	<VIcon v-else-if="icon" :name="icon" :color="iconColor" class="icon-only" />
 </template>

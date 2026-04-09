@@ -128,7 +128,7 @@ function discardAndStay() {
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
 						kind="danger"
-						secondary
+						variant="ghost"
 						:disabled="item === null"
 						icon="delete"
 						@click="on"

@@ -172,7 +172,10 @@ function onSelectAll() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
+.layout-cards {
+	padding: var(--content-padding);
+	padding-block-start: 0;
+}
 
 .grid {
 	--size: v-bind(columnSize);
@@ -180,13 +183,6 @@ function onSelectAll() {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
 	gap: 1.8125rem 1.375rem;
-	padding-inline: var(--content-section-padding);
-	padding-block-start: 2.375rem;
-
-	@include mixins.breakpoint-down('sm') {
-		padding-inline: 0.625rem;
-		padding-block-start: 0.25rem;
-	}
 
 	&.single-row {
 		grid-template-columns: repeat(auto-fit, var(--size));
@@ -198,11 +194,6 @@ function onSelectAll() {
 	align-items: center;
 	justify-content: space-between;
 	padding-block-start: 2.25rem;
-	padding-inline: var(--content-section-padding);
-
-	@include mixins.breakpoint-down('sm') {
-		padding-inline: 0.625rem;
-	}
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;

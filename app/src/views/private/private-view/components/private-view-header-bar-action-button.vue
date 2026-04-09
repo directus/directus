@@ -2,12 +2,12 @@
 import VButton, { Props as VButtonProps } from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
-const { kind = 'normal' } = defineProps<{
+const { kind = 'normal', variant = 'solid' } = defineProps<{
 	icon: string;
 	disabled?: VButtonProps['disabled'];
 	loading?: VButtonProps['loading'];
 	kind?: VButtonProps['kind'];
-	secondary?: VButtonProps['secondary'];
+	variant?: 'solid' | 'ghost';
 	outlined?: VButtonProps['outlined'];
 	to?: VButtonProps['to'];
 	href?: VButtonProps['href'];
@@ -23,12 +23,11 @@ defineEmits<{
 <template>
 	<VButton
 		class="header-button"
-		:class="[secondary ? kind : undefined]"
-		:kind="secondary ? undefined : kind"
+		:class="[variant === 'ghost' ? kind : undefined, variant]"
+		:kind="variant === 'ghost' ? undefined : kind"
 		:disabled
 		:active
 		:loading
-		:secondary
 		:outlined
 		:to
 		:href
@@ -44,7 +43,8 @@ defineEmits<{
 </template>
 
 <style scoped lang="scss">
-.header-button.secondary {
+.header-button.ghost {
+	--v-button-color: var(--theme--foreground);
 	--v-button-background-color: transparent;
 	--v-button-background-color-active: var(--v-button-background-color-hover);
 	--v-button-color-active: var(--v-button-color-hover);
