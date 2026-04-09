@@ -1129,19 +1129,15 @@ fields:
         readonly: true
 
   - field: mcp_oauth_clients_link
-    interface: presentation-links
+    interface: presentation-notice
     group: mcp_group
     width: half
     special:
       - alias
       - no-data
     options:
-      links:
-        - label: $t:manage_registered_clients
-          icon: key
-          type: normal
-          actionType: url
-          url: /settings/mcp-oauth-clients
+      icon: key
+      text: $t:fields.directus_settings.mcp_oauth_clients_link_text
     conditions:
       - name: mcp_oauth_disabled
         rule:
