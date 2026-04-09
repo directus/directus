@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"{{ themeAttr | raw }}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authorize - {{ projectName }}</title>
+<style>{{ styles | raw }}</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-row">
+    <div class="{{ logoClass }}">
+      {% if logoUrl %}
+        <img src="{{ logoUrl }}" alt="{{ logoAlt }}">
+      {% elsif logoDataUri %}
+        <img src="{{ logoDataUri | raw }}" alt="Directus">
+      {% endif %}
+    </div>
+  </div>
+  <h1><strong>{{ clientName }}</strong> is requesting access</h1>
+  <div class="details">
+    <div class="details-label">Details</div>
+    <div class="detail-row">
+      <span class="detail-key">Name</span>
+      <span class="detail-value name">{{ clientName }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">Redirect URI</span>
+      <span class="detail-value">{{ redirectUri }}</span>
+    </div>
+  </div>
+  <p class="note">This MCP client is requesting to be authorized. If you approve, it will be able to access data on <strong>{{ projectName }}</strong> on your behalf.</p>
+  <form action="{{ decisionUrl }}" method="POST" class="actions">
+    <input type="hidden" name="signed_params" value="{{ signedParams }}">
+    <button type="submit" name="approved" value="false" class="btn-cancel">Cancel</button>
+    <button type="submit" name="approved" value="true" class="btn-approve">Approve</button>
+  </form>
+</div>
+</body>
+</html>
