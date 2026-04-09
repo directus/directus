@@ -36,12 +36,12 @@ const showNavToggle = computed(() => {
 				v-tooltip.bottom="$t('toggle_navigation')"
 				class="nav-toggle"
 				icon="left_panel_open"
-				secondary
+				variant="ghost"
 				@click="navBarStore.expand"
 			/>
 
 			<div class="title-outer-prepend">
-				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" show-back :back-to />
+				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" :back-to />
 
 				<PrivateViewHeaderBarIcon v-else-if="icon" class="icon" :icon :icon-color />
 
@@ -76,7 +76,7 @@ const showNavToggle = computed(() => {
 				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
 				:icon="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
-				secondary
+				variant="ghost"
 				@click="sidebarStore.toggle"
 			/>
 		</div>

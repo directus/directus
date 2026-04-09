@@ -361,7 +361,7 @@ function clearFilters() {
 							<PrivateViewHeaderBarActionButton
 								v-tooltip.right="$t('create_bookmark')"
 								icon="bookmark"
-								secondary
+								variant="ghost"
 								@click="on"
 							/>
 						</template>
@@ -375,7 +375,7 @@ function clearFilters() {
 						v-else-if="bookmarkIsMine"
 						v-tooltip.bottom="$t('update_bookmark')"
 						icon="bookmark_save"
-						secondary
+						variant="ghost"
 						@click="savePreset()"
 					/>
 
@@ -384,7 +384,7 @@ function clearFilters() {
 							<PrivateViewHeaderBarActionButton
 								v-tooltip.bottom="$t('create_bookmark')"
 								icon="bookmark"
-								secondary
+								variant="ghost"
 								@click="on"
 							/>
 						</template>
@@ -394,7 +394,7 @@ function clearFilters() {
 						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
 						v-tooltip.bottom="$t('reset_bookmark')"
 						icon="settings_backup_restore"
-						secondary
+						variant="ghost"
 						kind="danger"
 						@click="clearLocalSave"
 					/>
@@ -415,7 +415,7 @@ function clearFilters() {
 							:disabled="batchDeleteAllowed !== true"
 							icon="delete"
 							kind="danger"
-							secondary
+							variant="ghost"
 							@click="on"
 						/>
 					</template>
@@ -450,7 +450,7 @@ function clearFilters() {
 							v-tooltip.bottom="batchArchiveAllowed ? $t('archive') : $t('not_allowed')"
 							:disabled="batchArchiveAllowed !== true"
 							icon="archive"
-							secondary
+							variant="ghost"
 							@click="on"
 						/>
 					</template>
@@ -472,7 +472,7 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"

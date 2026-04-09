@@ -278,7 +278,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<template #actions>
 					<PrivateViewHeaderBarActionButton
 						icon="download"
-						secondary
+						variant="ghost"
 						:download="image.filename_download"
 						:href="getAssetUrl(image.id, { isDownload: true })"
 					/>

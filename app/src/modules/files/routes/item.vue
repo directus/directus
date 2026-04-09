@@ -273,7 +273,7 @@ function revert(values: Record<string, any>) {
 						:disabled="item === null || deleteAllowed === false"
 						icon="delete"
 						kind="danger"
-						secondary
+						variant="ghost"
 						@click="on"
 					/>
 				</template>
@@ -301,7 +301,7 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="item === null || !updateAllowed ? $t('not_allowed') : $t('move_to_folder')"
-						secondary
+						variant="ghost"
 						:disabled="item === null || !updateAllowed"
 						icon="folder_move"
 						@click="on"
@@ -328,7 +328,7 @@ function revert(values: Record<string, any>) {
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('download')"
-				secondary
+				variant="ghost"
 				:download="item?.filename_download"
 				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
 				icon="download"
@@ -337,7 +337,7 @@ function revert(values: Record<string, any>) {
 			<PrivateViewHeaderBarActionButton
 				v-if="item?.type?.includes('image') && updateAllowed"
 				v-tooltip.bottom="$t('edit')"
-				secondary
+				variant="ghost"
 				icon="tune"
 				@click="editActive = true"
 			/>

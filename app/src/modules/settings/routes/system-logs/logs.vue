@@ -451,7 +451,7 @@ onUnmounted(() => {
 				:disabled="logs.length === 0"
 				icon="mop"
 				kind="danger"
-				secondary
+				variant="ghost"
 				@click="clearLogs"
 			/>
 		</template>

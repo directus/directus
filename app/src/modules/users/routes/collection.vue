@@ -207,7 +207,7 @@ function clearFilters() {
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
 							kind="danger"
-							secondary
+							variant="ghost"
 							icon="delete"
 							@click="on"
 						/>
@@ -230,7 +230,7 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"
@@ -239,7 +239,7 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					v-if="canInviteUsers"
 					v-tooltip.bottom="$t('invite_users')"
-					secondary
+					variant="ghost"
 					icon="person_add"
 					@click="userInviteModalActive = true"
 				/>

@@ -90,7 +90,7 @@ function discardAndLeave() {
 						v-if="isSystemCollection(collection) === false"
 						v-tooltip.bottom="$t('delete_collection')"
 						kind="danger"
-						secondary
+						variant="ghost"
 						:disabled="!item"
 						icon="delete"
 						@click="on"
@@ -171,8 +171,8 @@ function discardAndLeave() {
 }
 
 .collections-item {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .fields {

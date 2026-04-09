@@ -251,7 +251,7 @@ function clearFilters() {
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
 						kind="danger"
-						secondary
+						variant="ghost"
 						:disabled="selection.length === 0"
 						icon="delete"
 						@click="on"
@@ -275,7 +275,7 @@ function clearFilters() {
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="tab[0] === 'inbox' ? $t('archive') : $t('unarchive')"
 				:disabled="selection.length === 0"
-				secondary
+				variant="ghost"
 				:icon="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'"
 				@click="toggleArchive"
 			/>
