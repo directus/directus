@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Passed MARKETPLACE_REGISTRY env to registry list call
+Fixed MARKETPLACE_REGISTRY env not being passed to registry list call when generating extension settings
