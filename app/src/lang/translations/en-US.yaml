@@ -1393,6 +1393,16 @@ model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
+mcp_oauth_clients: 'MCP OAuth Clients'
+manage_registered_clients: 'Manage registered clients'
+no_oauth_clients: 'No OAuth clients have been registered yet.'
+revoke_client: 'Revoke Client'
+revoke_client_confirm:
+  'Are you sure you want to revoke this client? All associated tokens and sessions will be deleted.'
+client_name: 'Client Name'
+client_id: 'Client ID'
+redirect_uris: 'Redirect URIs'
+active_tokens: 'Active Tokens'
 settings_flows: Flows
 settings_system_logs: System Logs
 settings_presets: Bookmarks
@@ -1670,6 +1680,8 @@ fields:
     mcp_system_prompt: Custom System Prompt
     mcp_system_prompt_note:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
+    mcp_oauth_enabled: 'OAuth Enabled'
+    mcp_oauth_enabled_note: 'Allow MCP clients to authenticate via OAuth 2.1'
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
