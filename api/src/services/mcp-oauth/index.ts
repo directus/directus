@@ -1514,6 +1514,94 @@ export class McpOAuthService {
 		return { clientId, basicAuth };
 	}
 
+	private static readonly WWW_AUTH_BASIC = { 'WWW-Authenticate': 'Basic realm="directus"' };
+
+	/**
+	 * Enforce that the request matches the client's registered auth method exactly.
+	 * Accepts pre-parsed Basic auth from resolveClientId to avoid double decoding.
+	 * If preParsedBasicAuth is not provided, parses from params.authorization_header.
+	 */
+	authenticateClient(
+		clientRecord: Record<string, unknown>,
+		params: AuthParams,
+		preParsedBasicAuth?: { clientId: string; clientSecret: string } | null,
+	): void {
+		const authMethod = clientRecord['token_endpoint_auth_method'] as string;
+
+		const basicAuth =
+			preParsedBasicAuth !== undefined ? preParsedBasicAuth : this.parseBasicAuth(params.authorization_header);
+
+		const hasBasicHeader = basicAuth !== null;
+		const hasBodySecret = typeof params.client_secret === 'string' && params.client_secret.length > 0;
+
+		if (authMethod === 'none') {
+			if (hasBasicHeader) {
+				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for public clients');
+			}
+
+			if (hasBodySecret) {
+				throw new OAuthError(400, 'invalid_request', 'client_secret not allowed for public clients');
+			}
+
+			return;
+		}
+
+		if (authMethod === 'client_secret_basic') {
+			if (hasBodySecret) {
+				throw new OAuthError(400, 'invalid_request', 'client_secret in body not allowed for client_secret_basic');
+			}
+
+			if (!hasBasicHeader) {
+				throw new OAuthError(
+					401,
+					'invalid_client',
+					'Authorization header required for client_secret_basic',
+					false,
+					McpOAuthService.WWW_AUTH_BASIC,
+				);
+			}
+
+			this.verifySecret(basicAuth!.clientSecret, clientRecord, McpOAuthService.WWW_AUTH_BASIC);
+			return;
+		}
+
+		if (authMethod === 'client_secret_post') {
+			if (hasBasicHeader) {
+				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for client_secret_post');
+			}
+
+			if (!hasBodySecret) {
+				throw new OAuthError(401, 'invalid_client', 'client_secret required for client_secret_post');
+			}
+
+			this.verifySecret(params.client_secret as string, clientRecord);
+			return;
+		}
+
+		throw new OAuthError(401, 'invalid_client', 'Unsupported authentication method');
+	}
+
+	/** Timing-safe secret verification with hex format guard and length pre-check. */
+	private verifySecret(
+		providedSecret: string,
+		clientRecord: Record<string, unknown>,
+		errorHeaders: Record<string, string> = {},
+	): void {
+		const storedHash = clientRecord['client_secret_hash'] as string | null;
+
+		if (!storedHash || !/^[0-9a-f]{64}$/.test(storedHash)) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed', false, errorHeaders);
+		}
+
+		const computedHash = this.hashToken(providedSecret);
+		const hashA = Buffer.from(computedHash, 'hex');
+		const hashB = Buffer.from(storedHash, 'hex');
+
+		if (hashA.length !== hashB.length || !crypto.timingSafeEqual(hashA, hashB)) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed', false, errorHeaders);
+		}
+	}
+
 	/**
 	 * First contact: fetch CIMD metadata, INSERT new client row.
 	 * Handles concurrent inserts via unique constraint catch + SELECT fallback.

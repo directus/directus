@@ -3471,4 +3471,193 @@ describe('McpOAuthService', () => {
 			expect(() => service.resolveClientId({})).toThrow(OAuthError);
 		});
 	});
+
+	describe('authenticateClient', () => {
+		let service: McpOAuthService;
+
+		const secret = 'test-secret-value-long-enough-for-testing';
+		const secretHash = crypto.createHash('sha256').update(secret).digest('hex');
+
+		function basicHeader(user: string, pass: string): string {
+			return `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
+		}
+
+		beforeEach(() => {
+			service = new McpOAuthService({ knex: db, schema });
+		});
+
+		// --- none method ---
+
+		it('none: passes with no credentials', () => {
+			const client = { token_endpoint_auth_method: 'none' };
+			expect(() => service.authenticateClient(client, {})).not.toThrow();
+		});
+
+		it('none: rejects Basic header', () => {
+			const client = { token_endpoint_auth_method: 'none' };
+
+			try {
+				service.authenticateClient(client, { authorization_header: basicHeader('id', 'secret') });
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
+
+		it('none: rejects client_secret in body', () => {
+			const client = { token_endpoint_auth_method: 'none' };
+
+			try {
+				service.authenticateClient(client, { client_secret: 'some-secret' });
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
+
+		// --- client_secret_basic method ---
+
+		it('client_secret_basic: valid secret passes', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
+			const params = { authorization_header: basicHeader('my-client', secret) };
+			expect(() => service.authenticateClient(client, params)).not.toThrow();
+		});
+
+		it('client_secret_basic: wrong secret rejects with 401 + WWW-Authenticate', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
+			const params = { authorization_header: basicHeader('my-client', 'wrong-secret') };
+
+			try {
+				service.authenticateClient(client, params);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+				expect((err as OAuthError).code).toBe('invalid_client');
+				expect((err as OAuthError).headers).toEqual({ 'WWW-Authenticate': 'Basic realm="directus"' });
+			}
+		});
+
+		it('client_secret_basic: missing header rejects with 401 + WWW-Authenticate', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
+
+			try {
+				service.authenticateClient(client, {});
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+				expect((err as OAuthError).code).toBe('invalid_client');
+				expect((err as OAuthError).headers).toEqual({ 'WWW-Authenticate': 'Basic realm="directus"' });
+			}
+		});
+
+		it('client_secret_basic: rejects client_secret in body', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
+			const params = { authorization_header: basicHeader('my-client', secret), client_secret: secret };
+
+			try {
+				service.authenticateClient(client, params);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
+
+		// --- client_secret_post method ---
+
+		it('client_secret_post: valid secret passes', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
+			const params = { client_secret: secret };
+			expect(() => service.authenticateClient(client, params)).not.toThrow();
+		});
+
+		it('client_secret_post: wrong secret rejects with 401', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
+			const params = { client_secret: 'wrong-secret' };
+
+			try {
+				service.authenticateClient(client, params);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+				expect((err as OAuthError).code).toBe('invalid_client');
+				expect((err as OAuthError).headers).toEqual({});
+			}
+		});
+
+		it('client_secret_post: missing secret rejects', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
+
+			try {
+				service.authenticateClient(client, {});
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+				expect((err as OAuthError).code).toBe('invalid_client');
+			}
+		});
+
+		it('client_secret_post: rejects Basic header', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
+			const params = { authorization_header: basicHeader('my-client', secret) };
+
+			try {
+				service.authenticateClient(client, params);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
+
+		// --- Edge cases ---
+
+		it('rejects when stored hash is corrupt (length mismatch)', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: 'short' };
+			const params = { client_secret: secret };
+
+			try {
+				service.authenticateClient(client, params);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+			}
+		});
+
+		it('rejects when stored hash is null for confidential client', () => {
+			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: null };
+			const params = { client_secret: secret };
+
+			try {
+				service.authenticateClient(client, params);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+			}
+		});
+
+		it('rejects unknown auth method stored in DB', () => {
+			const client = { token_endpoint_auth_method: 'private_key_jwt' };
+
+			try {
+				service.authenticateClient(client, {});
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(401);
+			}
+		});
+	});
 });
