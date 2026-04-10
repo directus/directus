@@ -3,7 +3,13 @@ import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import { createKv } from '@directus/memory';
-import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	SchemaOverview,
+	ServerHealth,
+	ServerHealthCheck,
+} from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
@@ -24,10 +30,9 @@ import { SettingsService } from './settings.js';
 const env = useEnv();
 const logger = useLogger();
 
-const store = useStore<{ health: Record<string, any> | undefined }>(
-	(env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
-	{ ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m') },
-);
+const store = useStore<{ health: ServerHealth }>((env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck', {
+	ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m'),
+});
 
 export class ServerService {
 	knex: Knex;
@@ -165,7 +170,7 @@ export class ServerService {
 		return info;
 	}
 
-	async health(): Promise<Record<string, any>> {
+	async health(): Promise<ServerHealth | Pick<ServerHealth, 'status'>> {
 		if (isUnauthenticated(this.accountability)) {
 			throw new ForbiddenError();
 		}
@@ -188,28 +193,9 @@ export class ServerService {
 
 		const checkID = nanoid(5);
 
-		// Based on https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check#name-componenttype
-		type HealthData = {
-			status: 'ok' | 'warn' | 'error';
-			releaseId: string;
-			serviceId: string;
-			checks: {
-				[service: string]: HealthCheck[];
-			};
-		};
-
-		type HealthCheck = {
-			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache';
-			observedValue?: number | string | boolean;
-			observedUnit?: string;
-			status: 'ok' | 'warn' | 'error';
-			output?: any;
-			threshold?: number;
-		};
-
 		const enabledServices = toArray(env['HEALTHCHECK_SERVICES'] as string[]);
 
-		const data: HealthData = {
+		const data: ServerHealth = {
 			status: 'ok',
 			releaseId: version,
 			serviceId: env['PUBLIC_URL'] as string,
@@ -250,7 +236,7 @@ export class ServerService {
 
 		return this.accountability?.admin === true ? data : { status: data.status };
 
-		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
+		async function testDatabase(): Promise<Record<string, ServerHealthCheck[]>> {
 			if (enabledServices.includes('database') === false) {
 				return {};
 			}
@@ -258,7 +244,7 @@ export class ServerService {
 			const database = getDatabase();
 			const client = env['DB_CLIENT'];
 
-			const checks: Record<string, HealthCheck[]> = {};
+			const checks: Record<string, ServerHealthCheck[]> = {};
 
 			// Response time
 			// ----------------------------------------------------------------------------------------
@@ -311,7 +297,7 @@ export class ServerService {
 			return checks;
 		}
 
-		async function testRedis(): Promise<Record<string, HealthCheck[]>> {
+		async function testRedis(): Promise<Record<string, ServerHealthCheck[]>> {
 			if (enabledServices.includes('redis') === false || redisConfigAvailable() !== true) {
 				return {};
 			}
@@ -324,7 +310,7 @@ export class ServerService {
 				ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m'),
 			});
 
-			const checks: Record<string, HealthCheck[]> = {
+			const checks: Record<string, ServerHealthCheck[]> = {
 				'redis:responseTime': [
 					{
 						status: 'ok',
@@ -359,14 +345,14 @@ export class ServerService {
 			return checks;
 		}
 
-		async function testStorage(): Promise<Record<string, HealthCheck[]>> {
+		async function testStorage(): Promise<Record<string, ServerHealthCheck[]>> {
 			if (enabledServices.includes('storage') === false) {
 				return {};
 			}
 
 			const storage = await getStorage();
 
-			const checks: Record<string, HealthCheck[]> = {};
+			const checks: Record<string, ServerHealthCheck[]> = {};
 
 			for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
 				const disk = storage.location(location);
@@ -406,12 +392,12 @@ export class ServerService {
 			return checks;
 		}
 
-		async function testEmail(): Promise<Record<string, HealthCheck[]>> {
+		async function testEmail(): Promise<Record<string, ServerHealthCheck[]>> {
 			if (enabledServices.includes('email') === false) {
 				return {};
 			}
 
-			const checks: Record<string, HealthCheck[]> = {
+			const checks: Record<string, ServerHealthCheck[]> = {
 				'email:connection': [
 					{
 						status: 'ok',
