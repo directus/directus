@@ -74,8 +74,9 @@ export async function sanitizeQuery(
 	}
 
 	if (rawQuery['search'] && typeof rawQuery['search'] === 'string') {
-		const trimmed = rawQuery['search'].trim();
-		if (trimmed) query.search = trimmed;
+		const trimmed = rawQuery['search'].trim();  
+		if (trimmed) query.search = trimmed;  
+		else query.search = rawQuery['search'];
 	}
 
 	if (rawQuery['version']) {
