@@ -329,16 +329,21 @@ describe('McpOAuthService', () => {
 			expect(meta.grant_types_supported).toEqual(['authorization_code', 'refresh_token']);
 		});
 
-		it('includes token_endpoint_auth_methods_supported: ["none"]', async () => {
+		it('includes token_endpoint_auth_methods_supported: ["none", "client_secret_basic", "client_secret_post"]', async () => {
 			mockSettings();
 			const meta = await service.getAuthorizationServerMetadata();
-			expect(meta.token_endpoint_auth_methods_supported).toEqual(['none']);
+			expect(meta.token_endpoint_auth_methods_supported).toEqual(['none', 'client_secret_basic', 'client_secret_post']);
 		});
 
-		it('includes revocation_endpoint_auth_methods_supported: ["none"]', async () => {
+		it('includes revocation_endpoint_auth_methods_supported: ["none", "client_secret_basic", "client_secret_post"]', async () => {
 			mockSettings();
 			const meta = await service.getAuthorizationServerMetadata();
-			expect(meta.revocation_endpoint_auth_methods_supported).toEqual(['none']);
+
+			expect(meta.revocation_endpoint_auth_methods_supported).toEqual([
+				'none',
+				'client_secret_basic',
+				'client_secret_post',
+			]);
 		});
 
 		it('includes code_challenge_methods_supported: ["S256"]', async () => {
