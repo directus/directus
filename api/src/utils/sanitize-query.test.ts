@@ -348,11 +348,11 @@ describe('search', () => {
 		expect(sanitizedQuery.search).toBe('glaglagla !');
 	});
 
-  test('should still allow for a whitespace-only search', async () => {
-    const sanitizedQuery = await sanitizeQuery({ search: '   ' }, null as any);
+	test('should still allow for a whitespace-only search', async () => {
+		const sanitizedQuery = await sanitizeQuery({ search: '   ' }, null as any);
 
-    expect(sanitizedQuery.search).toBe('   ');
-  });
+		expect(sanitizedQuery.search).toBe('   ');
+	});
 });
 
 describe('export', () => {
