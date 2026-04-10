@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Trimmed trailing spaces and punctuation from search queries 
+Trimmed leading and trailing spaces from search queries

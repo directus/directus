@@ -74,11 +74,7 @@ export async function sanitizeQuery(
 	}
 
 	if (rawQuery['search'] && typeof rawQuery['search'] === 'string') {
-		// Strip trailing punctuation and whitespace (e.g. "foo !" → "foo")
-		query.search = rawQuery['search']
-			.trimEnd()
-			.replace(/\p{P}+$/u, '')
-			.trimEnd();
+		query.search = rawQuery['search'].trim();
 	}
 
 	if (rawQuery['version']) {
