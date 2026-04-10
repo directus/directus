@@ -228,7 +228,7 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<FilesNotFound v-if="!loading && !item" />
-	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
+	<PrivateView v-else :title="loading || !item ? $t('loading') : (item.title ?? undefined)" show-back back-to="/files">
 		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
