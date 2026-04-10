@@ -1,5 +1,6 @@
 ---
 '@directus/api': major
+'@directus/types': minor
 ---
 
 Fixed health check results not being shared in multi-instance settings. Restricted `/server/health` to authenticated users
