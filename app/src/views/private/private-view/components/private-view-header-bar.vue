@@ -29,7 +29,7 @@ const showNavToggle = computed(() => {
 </script>
 
 <template>
-	<header class="header-bar" :class="{ 'has-nav-toggle': showNavToggle }">
+	<header class="header-bar">
 		<div class="cell start">
 			<PrivateViewHeaderBarActionButton
 				v-if="showNavToggle"
