@@ -1,11 +1,13 @@
 import crypto from 'node:crypto';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
+import { RecordNotUniqueError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
-import { isObject, parseJSON } from '@directus/utils';
+import { isObject, parseJSON, toBoolean } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { getMcpUrls, MCP_ACCESS_SCOPE } from '../../ai/mcp/utils.js';
+import { translateDatabaseError } from '../../database/errors/translate.js';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
@@ -16,10 +18,18 @@ import { parseOAuthScope } from '../../utils/parse-oauth-scope.js';
 import { transaction } from '../../utils/transaction.js';
 import { Url } from '../../utils/url.js';
 import { ActivityService } from '../activity.js';
+import {
+	type CimdMetadata,
+	detectClientIdType,
+	fetchCimdMetadata,
+	getAllowedDomains,
+	isDomainAllowed,
+} from '../mcp-oauth-cimd.js';
 import { isLoopbackHost } from './utils/loopback.js';
 import { matchRedirectUri } from './utils/redirect.js';
 
 const DEFAULT_UNUSED_CLIENT_TTL_MS = 3 * 24 * 60 * 60 * 1000; // 3d -- matches env default
+const DEFAULT_CIMD_TTL_MS = 3_600_000; // 1 hour
 const MAX_REDIRECT_URIS = 10;
 const MAX_REDIRECT_URI_LENGTH = 255;
 const MAX_CLIENT_NAME_LENGTH = 200;
@@ -103,6 +113,8 @@ export interface ValidateResponse {
 	already_consented: boolean;
 	redirect_uri: string;
 	scope: string;
+	registration_type: 'dcr' | 'cimd';
+	client_domain?: string;
 }
 
 /** POST body for the consent decision endpoint. `approved` is string "true"/"false" from form POST. */
@@ -291,22 +303,30 @@ export class McpOAuthService {
 	 * Called by `GET /.well-known/oauth-authorization-server*`. The client fetches this after
 	 * discovering the AS from the protected resource metadata, then uses the endpoint URLs
 	 * to register (DCR) and start the authorization flow.
+	 *
+	 * Queries settings to conditionally include `registration_endpoint` (DCR) and
+	 * `client_id_metadata_document_supported` (CIMD).
 	 */
-	getAuthorizationServerMetadata(): Record<string, unknown> {
+	async getAuthorizationServerMetadata(): Promise<Record<string, unknown>> {
 		const { issuerUrl } = getMcpUrls();
 		const env = useEnv();
 		const baseUrl = env['PUBLIC_URL'] as string;
 
+		const settings = await this.knex('directus_settings')
+			.select('mcp_oauth_dcr_enabled', 'mcp_oauth_cimd_enabled')
+			.first();
+
+		const dcrEnabled = toBoolean(env['MCP_OAUTH_DCR_ENABLED']) && toBoolean(settings?.mcp_oauth_dcr_enabled);
+		const cimdEnabled = toBoolean(env['MCP_OAUTH_CIMD_ENABLED']) && toBoolean(settings?.mcp_oauth_cimd_enabled);
+
 		const authorizationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'authorize');
 		const tokenEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'token');
-		const registrationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'register');
 		const revocationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'revoke');
 
-		return {
+		const metadata: Record<string, unknown> = {
 			issuer: issuerUrl,
 			authorization_endpoint: authorizationEndpoint.toString(),
 			token_endpoint: tokenEndpoint.toString(),
-			registration_endpoint: registrationEndpoint.toString(),
 			revocation_endpoint: revocationEndpoint.toString(),
 			response_types_supported: ['code'],
 			grant_types_supported: ['authorization_code', 'refresh_token'],
@@ -317,6 +337,17 @@ export class McpOAuthService {
 			response_modes_supported: ['query'],
 			authorization_response_iss_parameter_supported: true,
 		};
+
+		if (dcrEnabled) {
+			const registrationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'register');
+			metadata['registration_endpoint'] = registrationEndpoint.toString();
+		}
+
+		if (cimdEnabled) {
+			metadata['client_id_metadata_document_supported'] = true;
+		}
+
+		return metadata;
 	}
 
 	/**
@@ -336,6 +367,17 @@ export class McpOAuthService {
 	async registerClient(body: unknown): Promise<DCRResponse> {
 		const env = useEnv();
 		const logger = useLogger();
+
+		// DCR enabled gate: env AND setting must both be true
+		if (!toBoolean(env['MCP_OAUTH_DCR_ENABLED'])) {
+			throw new OAuthError(404, 'not_found', 'Dynamic client registration is not available');
+		}
+
+		const settings = await this.knex('directus_settings').select('mcp_oauth_dcr_enabled').first();
+
+		if (!toBoolean(settings?.mcp_oauth_dcr_enabled)) {
+			throw new OAuthError(404, 'not_found', 'Dynamic client registration is not available');
+		}
 
 		function rejectRegistration(code: string, description: string): never {
 			logger.debug({ code, description, input }, 'DCR validation failed');
@@ -416,6 +458,35 @@ export class McpOAuthService {
 			}
 		}
 
+		// Optional URI fields: validate as HTTPS URLs if present
+		const optionalUriFields = ['client_uri', 'logo_uri', 'tos_uri', 'policy_uri'] as const;
+		const optionalUris: Record<string, string | null> = {};
+
+		for (const field of optionalUriFields) {
+			const value = input[field];
+
+			if (value !== undefined && value !== null) {
+				if (typeof value !== 'string') {
+					rejectRegistration('invalid_client_metadata', `${field} must be a string`);
+				}
+
+				try {
+					const parsed = new URL(value);
+
+					if (parsed.protocol !== 'https:') {
+						rejectRegistration('invalid_client_metadata', `${field} must use HTTPS`);
+					}
+				} catch (err) {
+					if (err instanceof OAuthError) throw err;
+					rejectRegistration('invalid_client_metadata', `${field} is not a valid URL`);
+				}
+
+				optionalUris[field] = value;
+			} else {
+				optionalUris[field] = null;
+			}
+		}
+
 		// Policy: global client cap to bound table growth from unauthenticated DCR (0 disables)
 		const parsed = Number(env['MCP_OAUTH_MAX_CLIENTS']);
 		const maxClients = Number.isNaN(parsed) ? 10_000 : parsed;
@@ -440,6 +511,11 @@ export class McpOAuthService {
 			redirect_uris: JSON.stringify(redirectUris),
 			grant_types: JSON.stringify(grantTypes),
 			token_endpoint_auth_method: 'none',
+			registration_type: 'dcr',
+			client_uri: optionalUris['client_uri'],
+			logo_uri: optionalUris['logo_uri'],
+			tos_uri: optionalUris['tos_uri'],
+			policy_uri: optionalUris['policy_uri'],
 		});
 
 		return {
@@ -490,17 +566,12 @@ export class McpOAuthService {
 		const clientId = getStringParam(params, 'client_id', false);
 		const redirectUri = getStringParam(params, 'redirect_uri', false);
 
-		// Validate client_id exists in DB - errors before redirect validation must not redirect
+		// Validate client_id exists -- resolveClientWithFetch handles DCR DB lookup and CIMD fetch/cache
 		if (!clientId) {
 			throw new OAuthError(400, 'invalid_request', 'client_id is required');
 		}
 
-		const client = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
-
-		// Collapse client + redirect_uri errors to the same message to prevent enumeration
-		if (!client) {
-			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
-		}
+		const client = await this.resolveClientWithFetch(clientId);
 
 		// Validate redirect_uri matches registered URIs.
 		// RFC 6749 Section 3.1.2: exact string match for non-loopback.
@@ -602,12 +673,25 @@ export class McpOAuthService {
 			{ expiresIn: '5m', algorithm: 'HS256' },
 		);
 
+		const registrationType = (client['registration_type'] as 'dcr' | 'cimd') ?? 'dcr';
+		let clientDomain: string | undefined;
+
+		if (registrationType === 'cimd') {
+			try {
+				clientDomain = new URL(clientId).hostname;
+			} catch {
+				// Should not happen since clientId was already validated
+			}
+		}
+
 		return {
 			signed_params: signedParams,
 			client_name: client['client_name'] as string,
 			already_consented: false,
 			redirect_uri: redirectUri,
 			scope: normalizedScope,
+			registration_type: registrationType,
+			client_domain: clientDomain,
 		};
 	}
 
@@ -875,8 +959,8 @@ export class McpOAuthService {
 				rejectCode({}, 'PKCE verification failed');
 			}
 
-			// 4d. Client lookup via trx
-			const client = await trx('directus_oauth_clients').where('client_id', params.client_id).first();
+			// 4d. Client lookup via trx (drain-naturally: no CIMD gating)
+			const client = await this.resolveClientFromDb(params.client_id!, trx);
 
 			if (!client) {
 				rejectCode({ client_id: params.client_id }, 'Unknown client during code exchange');
@@ -1023,8 +1107,8 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_target', 'resource is required');
 		}
 
-		// 2. Verify client exists and supports refresh_token grant
-		const client = await this.knex('directus_oauth_clients').where('client_id', params.client_id).first();
+		// 2. Verify client exists and supports refresh_token grant (drain-naturally: no CIMD gating)
+		const client = await this.resolveClientFromDb(params.client_id!);
 
 		// Collapse client existence + grant type errors to prevent enumeration
 		if (!client) {
@@ -1208,7 +1292,8 @@ export class McpOAuthService {
 			return;
 		}
 
-		const client = await this.knex('directus_oauth_clients').where('client_id', params.client_id).first();
+		// Drain-naturally: no CIMD gating on revoke
+		const client = await this.resolveClientFromDb(params.client_id!);
 
 		if (!client) {
 			return;
@@ -1350,6 +1435,248 @@ export class McpOAuthService {
 					.delete();
 			}
 		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Client resolution methods
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Resolve a client by ID, handling both DCR (UUID) and CIMD (URL) client IDs.
+	 * Used ONLY by `validateAuthorization` -- the authorization entry point where
+	 * CIMD clients are fetched/cached on first contact.
+	 */
+	async resolveClientWithFetch(clientId: string): Promise<Record<string, unknown>> {
+		const logger = useLogger();
+		const type = detectClientIdType(clientId);
+
+		if (type === null) {
+			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
+		}
+
+		if (type === 'dcr') {
+			const row = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
+
+			if (!row) throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
+
+			return row;
+		}
+
+		// --- CIMD path ---
+		const env = useEnv();
+
+		// Gate 1: CIMD enabled (env AND setting)
+		if (!toBoolean(env['MCP_OAUTH_CIMD_ENABLED'])) {
+			throw new OAuthError(400, 'invalid_client', 'CIMD client registration is disabled');
+		}
+
+		const settings = await this.knex('directus_settings').select('mcp_oauth_cimd_enabled').first();
+
+		if (!toBoolean(settings?.mcp_oauth_cimd_enabled)) {
+			throw new OAuthError(400, 'invalid_client', 'CIMD client registration is disabled');
+		}
+
+		// Gate 2: Domain allowlist
+		const allowedDomains = getAllowedDomains();
+
+		if (allowedDomains.length > 0) {
+			const hostname = new URL(clientId).hostname;
+
+			if (!isDomainAllowed(hostname, allowedDomains)) {
+				logger.debug({ client_id: clientId }, 'CIMD client_id domain not in allowlist');
+				throw new OAuthError(400, 'invalid_client', 'Client not allowed');
+			}
+		}
+
+		// DB lookup
+		const existing = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
+
+		if (existing) {
+			const expiresAt = existing['metadata_expires_at'] ? new Date(existing['metadata_expires_at']).getTime() : 0;
+
+			if (expiresAt > Date.now()) {
+				return existing; // Fresh cache
+			}
+
+			return await this.refreshCimdClient(existing); // Stale cache
+		}
+
+		return await this.insertCimdClient(clientId); // First contact
+	}
+
+	/**
+	 * Simple DB lookup for a client. Used by `exchangeCode` (with trx!), `refreshToken`,
+	 * and `revokeToken`. Does NOT gate on CIMD disabled (drain-naturally pattern).
+	 */
+	async resolveClientFromDb(
+		clientId: string,
+		db: Knex | Knex.Transaction = this.knex,
+	): Promise<Record<string, unknown> | undefined> {
+		return db('directus_oauth_clients').where('client_id', clientId).first();
+	}
+
+	/**
+	 * First contact: fetch CIMD metadata, INSERT new client row.
+	 * Handles concurrent inserts via unique constraint catch + SELECT fallback.
+	 */
+	private async insertCimdClient(clientId: string): Promise<Record<string, unknown>> {
+		const env = useEnv();
+		const logger = useLogger();
+
+		// Gate: Max clients cap (shared with DCR)
+		const parsed = Number(env['MCP_OAUTH_MAX_CLIENTS']);
+		const maxClients = Number.isNaN(parsed) ? 10_000 : parsed;
+
+		if (maxClients > 0) {
+			const [{ count }] = (await this.knex('directus_oauth_clients').count('* as count')) as [
+				{ count: number | string },
+			];
+
+			if (Number(count) >= maxClients) {
+				throw new OAuthError(400, 'invalid_client', 'Maximum number of registered clients reached');
+			}
+		}
+
+		const result = await fetchCimdMetadata(clientId);
+
+		if (result.notModified || !result.metadata) {
+			throw new OAuthError(400, 'invalid_client_metadata', 'Unexpected 304 on first contact');
+		}
+
+		const metadata = result.metadata;
+		const now = new Date();
+		const ttlMs = result.ttlMs ?? DEFAULT_CIMD_TTL_MS;
+		const expiresAt = ttlMs > 0 ? new Date(now.getTime() + ttlMs) : now;
+
+		const row: Record<string, unknown> = {
+			client_id: metadata.client_id,
+			client_name: metadata.client_name,
+			redirect_uris: JSON.stringify(metadata.redirect_uris),
+			grant_types: JSON.stringify(metadata.grant_types),
+			token_endpoint_auth_method: metadata.token_endpoint_auth_method,
+			registration_type: 'cimd',
+			client_uri: metadata.client_uri ?? null,
+			logo_uri: metadata.logo_uri ?? null,
+			tos_uri: metadata.tos_uri ?? null,
+			policy_uri: metadata.policy_uri ?? null,
+			metadata_fetched_at: now,
+			metadata_expires_at: expiresAt,
+			metadata_etag: result.etag ?? null,
+		};
+
+		try {
+			await this.knex('directus_oauth_clients').insert(row);
+			logger.info({ client_id: clientId }, 'CIMD client registered');
+			return row;
+		} catch (err: unknown) {
+			// Concurrent INSERT: catch unique constraint violation, SELECT existing
+			const translated = await translateDatabaseError(err, row);
+
+			if (translated instanceof RecordNotUniqueError) {
+				logger.debug({ client_id: clientId }, 'CIMD concurrent insert, selecting existing');
+				const existing = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
+
+				if (!existing) throw new OAuthError(400, 'invalid_client', 'Failed to register CIMD client');
+
+				return existing;
+			}
+
+			throw err;
+		}
+	}
+
+	/**
+	 * Stale cache: re-fetch CIMD metadata with conditional request support.
+	 * On 304: recompute TTL and update timestamps.
+	 * On 200: validate and update full row.
+	 * On failure: block request (don't serve stale).
+	 */
+	private async refreshCimdClient(existing: Record<string, unknown>): Promise<Record<string, unknown>> {
+		const logger = useLogger();
+		const clientId = existing['client_id'] as string;
+		const storedEtag = existing['metadata_etag'] as string | null;
+
+		try {
+			const result = await fetchCimdMetadata(clientId, storedEtag ?? undefined);
+
+			if (result.notModified) {
+				// 304 Not Modified
+				const now = new Date();
+				let newTtlMs: number;
+
+				if (result.ttlMs !== null) {
+					newTtlMs = result.ttlMs; // 304 had Cache-Control
+				} else {
+					// Reuse previous TTL
+					const prevTtl =
+						existing['metadata_expires_at'] && existing['metadata_fetched_at']
+							? new Date(existing['metadata_expires_at'] as string).getTime() -
+								new Date(existing['metadata_fetched_at'] as string).getTime()
+							: null;
+
+					newTtlMs = prevTtl && prevTtl > 0 ? prevTtl : DEFAULT_CIMD_TTL_MS;
+				}
+
+				const expiresAt = newTtlMs > 0 ? new Date(now.getTime() + newTtlMs) : now;
+
+				await this.knex('directus_oauth_clients').where('client_id', clientId).update({
+					metadata_fetched_at: now,
+					metadata_expires_at: expiresAt,
+				});
+
+				logger.debug({ client_id: clientId }, 'CIMD metadata revalidated (304)');
+
+				return { ...existing, metadata_fetched_at: now, metadata_expires_at: expiresAt };
+			}
+
+			// 200 with new content
+			return await this.updateCimdClient(
+				existing,
+				result.metadata!,
+				result.etag ?? null,
+				result.ttlMs ?? DEFAULT_CIMD_TTL_MS,
+			);
+		} catch (err) {
+			// Fetch failed: block request (don't serve stale)
+			logger.warn({ client_id: clientId, err: err instanceof Error ? err.message : err }, 'CIMD re-fetch failed');
+
+			if (err instanceof OAuthError) throw err;
+
+			throw new OAuthError(400, 'invalid_client', 'Failed to revalidate client metadata');
+		}
+	}
+
+	/**
+	 * UPDATE all metadata columns + cache timestamps for a CIMD client.
+	 */
+	private async updateCimdClient(
+		existing: Record<string, unknown>,
+		metadata: CimdMetadata,
+		etag: string | null,
+		ttlMs: number,
+	): Promise<Record<string, unknown>> {
+		const logger = useLogger();
+		const now = new Date();
+		const expiresAt = ttlMs > 0 ? new Date(now.getTime() + ttlMs) : now;
+
+		const updates: Record<string, unknown> = {
+			client_name: metadata.client_name,
+			redirect_uris: JSON.stringify(metadata.redirect_uris),
+			grant_types: JSON.stringify(metadata.grant_types),
+			token_endpoint_auth_method: metadata.token_endpoint_auth_method,
+			client_uri: metadata.client_uri ?? null,
+			logo_uri: metadata.logo_uri ?? null,
+			tos_uri: metadata.tos_uri ?? null,
+			policy_uri: metadata.policy_uri ?? null,
+			metadata_fetched_at: now,
+			metadata_expires_at: expiresAt,
+			metadata_etag: etag,
+		};
+
+		await this.knex('directus_oauth_clients').where('client_id', existing['client_id']).update(updates);
+		logger.info({ client_id: existing['client_id'] }, 'CIMD metadata refreshed');
+
+		return { ...existing, ...updates };
 	}
 
 	private buildRedirectUrl(

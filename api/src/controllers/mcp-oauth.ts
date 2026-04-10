@@ -241,7 +241,7 @@ mcpOAuthPublicRouter.get(
 	setCorsWildcard,
 	asyncHandler(async (_req: Request, res: Response) => {
 		const service = new McpOAuthService({ schema: await getSchema() });
-		res.json(service.getAuthorizationServerMetadata());
+		res.json(await service.getAuthorizationServerMetadata());
 	}),
 );
 

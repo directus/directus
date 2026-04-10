@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { RecordNotUniqueError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import jwt from 'jsonwebtoken';
 import knex, { type Knex } from 'knex';
@@ -19,6 +20,8 @@ vi.mock('@directus/env', () => ({
 		MCP_OAUTH_MAX_CLIENTS: 10000,
 		MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
 		MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+		MCP_OAUTH_DCR_ENABLED: true,
+		MCP_OAUTH_CIMD_ENABLED: true,
 	}),
 }));
 
@@ -61,6 +64,24 @@ vi.mock('../../logger/index.js', () => ({
 		warn: vi.fn(),
 		error: vi.fn(),
 	}),
+}));
+
+const mockDetectClientIdType = vi.fn().mockReturnValue('dcr');
+const mockFetchCimdMetadata = vi.fn();
+const mockGetAllowedDomains = vi.fn().mockReturnValue([]);
+const mockIsDomainAllowed = vi.fn().mockReturnValue(true);
+
+vi.mock('./mcp-oauth-cimd.js', () => ({
+	detectClientIdType: (...args: unknown[]) => mockDetectClientIdType(...args),
+	fetchCimdMetadata: (...args: unknown[]) => mockFetchCimdMetadata(...args),
+	getAllowedDomains: (...args: unknown[]) => mockGetAllowedDomains(...args),
+	isDomainAllowed: (...args: unknown[]) => mockIsDomainAllowed(...args),
+}));
+
+const mockTranslateDatabaseError = vi.fn().mockResolvedValue(new Error('unknown'));
+
+vi.mock('../database/errors/translate.js', () => ({
+	translateDatabaseError: (...args: unknown[]) => mockTranslateDatabaseError(...args),
 }));
 
 const consentKey = crypto.createHmac('sha256', TEST_SECRET).update('mcp-oauth-consent-v1').digest();
@@ -184,12 +205,19 @@ describe('McpOAuthService', () => {
 			MCP_OAUTH_MAX_CLIENTS: 10000,
 			MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
 			MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+			MCP_OAUTH_DCR_ENABLED: true,
+			MCP_OAUTH_CIMD_ENABLED: true,
 		} as any);
 
 		mockNanoid.mockReturnValue('a'.repeat(64));
 		mockFetchRolesTree.mockResolvedValue(['role-1']);
 		mockFetchGlobalAccess.mockResolvedValue({ app: true, admin: false });
 		mockActivityCreateOne.mockResolvedValue('activity-id');
+		mockDetectClientIdType.mockReturnValue('dcr');
+		mockFetchCimdMetadata.mockReset();
+		mockGetAllowedDomains.mockReturnValue([]);
+		mockIsDomainAllowed.mockReturnValue(true);
+		mockTranslateDatabaseError.mockResolvedValue(new Error('unknown'));
 		vi.clearAllMocks();
 	});
 
@@ -262,26 +290,45 @@ describe('McpOAuthService', () => {
 			service = new McpOAuthService({ knex: db, schema });
 		});
 
-		it('issuer matches PUBLIC_URL', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		function mockSettings(overrides: Record<string, unknown> = {}) {
+			tracker.on
+				.select('directus_settings')
+				.response([{ mcp_oauth_dcr_enabled: true, mcp_oauth_cimd_enabled: false, ...overrides }]);
+		}
+
+		it('issuer matches PUBLIC_URL', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.issuer).toBe(TEST_PUBLIC_URL);
 		});
 
 		it('issuer includes subpath', async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
-			useEnv.mockReturnValue({ PUBLIC_URL: 'https://example.com/directus' } as any);
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: 'https://example.com/directus',
+				MCP_OAUTH_DCR_ENABLED: true,
+				MCP_OAUTH_CIMD_ENABLED: false,
+			} as any);
 
 			const svc = new McpOAuthService({ knex: db, schema });
-			const meta = svc.getAuthorizationServerMetadata();
+			mockSettings();
+			const meta = await svc.getAuthorizationServerMetadata();
 			expect(meta.issuer).toBe('https://example.com/directus');
 		});
 
 		it('all endpoint URLs include subpath', async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
-			useEnv.mockReturnValue({ PUBLIC_URL: 'https://example.com/directus' } as any);
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: 'https://example.com/directus',
+				MCP_OAUTH_DCR_ENABLED: true,
+				MCP_OAUTH_CIMD_ENABLED: false,
+			} as any);
 
 			const svc = new McpOAuthService({ knex: db, schema });
-			const meta = svc.getAuthorizationServerMetadata();
+			mockSettings();
+			const meta = await svc.getAuthorizationServerMetadata();
 
 			expect(meta.authorization_endpoint).toContain('/directus/');
 			expect(meta.token_endpoint).toContain('/directus/');
@@ -289,57 +336,104 @@ describe('McpOAuthService', () => {
 			expect(meta.revocation_endpoint).toContain('/directus/');
 		});
 
-		it('includes response_modes_supported: ["query"]', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes response_modes_supported: ["query"]', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.response_modes_supported).toEqual(['query']);
 		});
 
-		it('includes authorization_response_iss_parameter_supported: true', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes authorization_response_iss_parameter_supported: true', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.authorization_response_iss_parameter_supported).toBe(true);
 		});
 
-		it('includes response_types_supported: ["code"]', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes response_types_supported: ["code"]', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.response_types_supported).toEqual(['code']);
 		});
 
-		it('includes grant_types_supported: ["authorization_code", "refresh_token"]', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes grant_types_supported: ["authorization_code", "refresh_token"]', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.grant_types_supported).toEqual(['authorization_code', 'refresh_token']);
 		});
 
-		it('includes token_endpoint_auth_methods_supported: ["none"]', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes token_endpoint_auth_methods_supported: ["none"]', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.token_endpoint_auth_methods_supported).toEqual(['none']);
 		});
 
-		it('includes revocation_endpoint_auth_methods_supported: ["none"]', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes revocation_endpoint_auth_methods_supported: ["none"]', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.revocation_endpoint_auth_methods_supported).toEqual(['none']);
 		});
 
-		it('includes code_challenge_methods_supported: ["S256"]', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes code_challenge_methods_supported: ["S256"]', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.code_challenge_methods_supported).toEqual(['S256']);
 		});
 
-		it('includes scopes_supported: ["mcp:access"]', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes scopes_supported: ["mcp:access"]', async () => {
+			mockSettings();
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.scopes_supported).toEqual(['mcp:access']);
 		});
 
-		it('includes registration_endpoint', () => {
-			const meta = service.getAuthorizationServerMetadata();
+		it('includes registration_endpoint when DCR enabled', async () => {
+			mockSettings({ mcp_oauth_dcr_enabled: true });
+			const meta = await service.getAuthorizationServerMetadata();
 			expect(meta.registration_endpoint).toBe(`${TEST_PUBLIC_URL}/mcp-oauth/register`);
+		});
+
+		it('omits registration_endpoint when DCR disabled in settings', async () => {
+			mockSettings({ mcp_oauth_dcr_enabled: false });
+			const meta = await service.getAuthorizationServerMetadata();
+			expect(meta).not.toHaveProperty('registration_endpoint');
+		});
+
+		it('omits registration_endpoint when DCR disabled in env', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: TEST_PUBLIC_URL,
+				MCP_OAUTH_DCR_ENABLED: false,
+				MCP_OAUTH_CIMD_ENABLED: false,
+			} as any);
+
+			mockSettings({ mcp_oauth_dcr_enabled: true });
+			const meta = await service.getAuthorizationServerMetadata();
+			expect(meta).not.toHaveProperty('registration_endpoint');
+		});
+
+		it('includes client_id_metadata_document_supported when CIMD enabled', async () => {
+			mockSettings({ mcp_oauth_cimd_enabled: true });
+			const meta = await service.getAuthorizationServerMetadata();
+			expect(meta.client_id_metadata_document_supported).toBe(true);
+		});
+
+		it('omits client_id_metadata_document_supported when CIMD disabled', async () => {
+			mockSettings({ mcp_oauth_cimd_enabled: false });
+			const meta = await service.getAuthorizationServerMetadata();
+			expect(meta).not.toHaveProperty('client_id_metadata_document_supported');
 		});
 
 		it('subpath: PUBLIC_URL=https://example.com/directus produces correct URLs', async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
-			useEnv.mockReturnValue({ PUBLIC_URL: 'https://example.com/directus' } as any);
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: 'https://example.com/directus',
+				MCP_OAUTH_DCR_ENABLED: true,
+				MCP_OAUTH_CIMD_ENABLED: false,
+			} as any);
 
 			const svc = new McpOAuthService({ knex: db, schema });
-			const meta = svc.getAuthorizationServerMetadata();
+			mockSettings();
+			const meta = await svc.getAuthorizationServerMetadata();
 
 			expect(meta.issuer).toBe('https://example.com/directus');
 			expect(meta.authorization_endpoint).toBe('https://example.com/directus/mcp-oauth/authorize');
@@ -352,8 +446,14 @@ describe('McpOAuthService', () => {
 	describe('registerClient', () => {
 		let service: McpOAuthService;
 
+		function mockDcrSettings(overrides: Record<string, unknown> = {}) {
+			tracker.on.select('directus_settings').response([{ mcp_oauth_dcr_enabled: true, ...overrides }]);
+		}
+
 		beforeEach(() => {
 			service = new McpOAuthService({ knex: db, schema });
+			// DCR gate queries settings before any validation
+			mockDcrSettings();
 		});
 
 		it('valid registration returns client_id and metadata', async () => {
@@ -595,6 +695,7 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: 'https://example.com',
 				MCP_OAUTH_MAX_CLIENTS: 10001,
+				MCP_OAUTH_DCR_ENABLED: true,
 			} as any);
 
 			tracker.on.select('directus_oauth_clients').response([{ count: 10000 }]);
@@ -611,6 +712,7 @@ describe('McpOAuthService', () => {
 			useEnv.mockReturnValue({
 				PUBLIC_URL: 'https://example.com',
 				MCP_OAUTH_MAX_CLIENTS: 0,
+				MCP_OAUTH_DCR_ENABLED: true,
 			} as any);
 
 			tracker.on.select('directus_oauth_clients').response([{ count: 50000 }]);
@@ -636,6 +738,67 @@ describe('McpOAuthService', () => {
 		it('missing client_name rejected', async () => {
 			await assertOAuthError(() => service.registerClient(createTestClient({ client_name: undefined })), {
 				error: 'invalid_client_metadata',
+			});
+		});
+
+		it('sets registration_type to dcr', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			await service.registerClient(createTestClient());
+
+			const insertHistory = queryHistory('insert', 'directus_oauth_clients');
+			expect(insertHistory.length).toBe(1);
+			expect(insertHistory[0]!.bindings).toContain('dcr');
+		});
+
+		it('accepts optional client_uri, logo_uri, tos_uri, policy_uri', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			await service.registerClient(
+				createTestClient({
+					client_uri: 'https://example.com',
+					logo_uri: 'https://example.com/logo.png',
+					tos_uri: 'https://example.com/tos',
+					policy_uri: 'https://example.com/policy',
+				}),
+			);
+
+			const insertHistory = queryHistory('insert', 'directus_oauth_clients');
+			expect(insertHistory.length).toBe(1);
+			expect(insertHistory[0]!.bindings).toContain('https://example.com');
+			expect(insertHistory[0]!.bindings).toContain('https://example.com/logo.png');
+		});
+
+		it('rejects non-HTTPS client_uri', async () => {
+			await assertOAuthError(() => service.registerClient(createTestClient({ client_uri: 'http://example.com' })), {
+				error: 'invalid_client_metadata',
+			});
+		});
+
+		it('DCR disabled in env returns 404', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: TEST_PUBLIC_URL,
+				MCP_OAUTH_DCR_ENABLED: false,
+			} as any);
+
+			await assertOAuthError(() => service.registerClient(createTestClient()), {
+				error: 'not_found',
+				statusCode: 404,
+			});
+		});
+
+		it('DCR disabled in settings returns 404', async () => {
+			// Override the beforeEach settings mock
+			tracker.reset();
+			tracker.on.select('directus_settings').response([{ mcp_oauth_dcr_enabled: false }]);
+
+			await assertOAuthError(() => service.registerClient(createTestClient()), {
+				error: 'not_found',
+				statusCode: 404,
 			});
 		});
 	});
@@ -2599,6 +2762,321 @@ describe('McpOAuthService', () => {
 			const clientSelects = queryHistory('select', 'directus_oauth_clients');
 			expect(clientSelects[0]!.sql).toContain('directus_sessions');
 			expect(clientSelects[0]!.sql).toContain('directus_oauth_tokens');
+		});
+	});
+
+	describe('resolveClientWithFetch', () => {
+		let service: McpOAuthService;
+		const cimdClientId = 'https://tools.example.com/oauth/metadata.json';
+		const dcrClientId = crypto.randomUUID();
+
+		beforeEach(() => {
+			service = new McpOAuthService({ knex: db, schema });
+		});
+
+		it('DCR UUID lookup returns client row', async () => {
+			mockDetectClientIdType.mockReturnValue('dcr');
+
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: dcrClientId,
+					client_name: 'Test DCR Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					grant_types: JSON.stringify(['authorization_code']),
+				},
+			]);
+
+			const result = await service.resolveClientWithFetch(dcrClientId);
+			expect(result['client_id']).toBe(dcrClientId);
+			expect(result['client_name']).toBe('Test DCR Client');
+		});
+
+		it('DCR UUID not found throws error', async () => {
+			mockDetectClientIdType.mockReturnValue('dcr');
+			tracker.on.select('directus_oauth_clients').response([]);
+
+			await assertOAuthError(() => service.resolveClientWithFetch(dcrClientId), {
+				error: 'invalid_request',
+			});
+		});
+
+		it('null client_id type throws error', async () => {
+			mockDetectClientIdType.mockReturnValue(null);
+
+			await assertOAuthError(() => service.resolveClientWithFetch('https://example.com/'), {
+				error: 'invalid_request',
+			});
+		});
+
+		it('CIMD fresh cache hit returns existing row (no fetch)', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// Existing client with future expiry
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'Cached CIMD Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					metadata_expires_at: new Date(Date.now() + 3600_000),
+					metadata_fetched_at: new Date(),
+					registration_type: 'cimd',
+				},
+			]);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+			expect(result['client_name']).toBe('Cached CIMD Client');
+			// fetchCimdMetadata should NOT have been called
+			expect(mockFetchCimdMetadata).not.toHaveBeenCalled();
+		});
+
+		it('CIMD first contact inserts new client', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// No existing client, then max clients cap
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([{ count: 0 }]);
+
+			// fetchCimdMetadata returns valid metadata
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: false,
+				metadata: {
+					client_id: cimdClientId,
+					client_name: 'New CIMD Client',
+					redirect_uris: [TEST_REDIRECT_URI],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'none',
+				},
+				etag: '"abc123"',
+				ttlMs: 3600_000,
+			});
+
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+			expect(result['client_id']).toBe(cimdClientId);
+			expect(result['client_name']).toBe('New CIMD Client');
+			expect(result['registration_type']).toBe('cimd');
+			expect(mockFetchCimdMetadata).toHaveBeenCalledWith(cimdClientId);
+		});
+
+		it('CIMD stale cache triggers re-fetch (200)', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// Existing client with past expiry (stale)
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'Stale Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					metadata_expires_at: new Date(Date.now() - 1000),
+					metadata_fetched_at: new Date(Date.now() - 3600_000),
+					metadata_etag: '"old-etag"',
+					registration_type: 'cimd',
+				},
+			]);
+
+			// Re-fetch returns 200 with updated metadata
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: false,
+				metadata: {
+					client_id: cimdClientId,
+					client_name: 'Updated Client',
+					redirect_uris: [TEST_REDIRECT_URI],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'none',
+				},
+				etag: '"new-etag"',
+				ttlMs: 3600_000,
+			});
+
+			tracker.on.update('directus_oauth_clients').response(1);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+			expect(result['client_name']).toBe('Updated Client');
+			expect(mockFetchCimdMetadata).toHaveBeenCalledWith(cimdClientId, '"old-etag"');
+		});
+
+		it('CIMD stale cache with 304 updates timestamps only', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// Existing client with past expiry (stale)
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'Existing Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					metadata_expires_at: new Date(Date.now() - 1000),
+					metadata_fetched_at: new Date(Date.now() - 3600_000),
+					metadata_etag: '"etag-1"',
+					registration_type: 'cimd',
+				},
+			]);
+
+			// Re-fetch returns 304
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: true,
+				ttlMs: 7200_000,
+			});
+
+			tracker.on.update('directus_oauth_clients').response(1);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+			// Name stays the same (304 = no content change)
+			expect(result['client_name']).toBe('Existing Client');
+			expect(mockFetchCimdMetadata).toHaveBeenCalledWith(cimdClientId, '"etag-1"');
+		});
+
+		it('CIMD disabled in env throws error', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: TEST_PUBLIC_URL,
+				MCP_OAUTH_CIMD_ENABLED: false,
+			} as any);
+
+			await assertOAuthError(() => service.resolveClientWithFetch(cimdClientId), {
+				error: 'invalid_client',
+			});
+		});
+
+		it('CIMD disabled in settings throws error', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: false }]);
+
+			await assertOAuthError(() => service.resolveClientWithFetch(cimdClientId), {
+				error: 'invalid_client',
+			});
+		});
+
+		it('CIMD domain not in allowlist throws error', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+			mockGetAllowedDomains.mockReturnValue(['allowed.com']);
+			mockIsDomainAllowed.mockReturnValue(false);
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			await assertOAuthError(() => service.resolveClientWithFetch(cimdClientId), {
+				error: 'invalid_client',
+			});
+		});
+
+		it('CIMD max clients exceeded throws error', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// No existing client, then max clients reached
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([{ count: 10000 }]);
+
+			await assertOAuthError(() => service.resolveClientWithFetch(cimdClientId), {
+				error: 'invalid_client',
+			});
+		});
+
+		it('CIMD concurrent insert falls back to SELECT', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// No existing client, then max clients cap, then fallback SELECT after concurrent insert
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([{ count: 0 }]);
+
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: false,
+				metadata: {
+					client_id: cimdClientId,
+					client_name: 'CIMD Client',
+					redirect_uris: [TEST_REDIRECT_URI],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'none',
+				},
+				etag: '"abc"',
+				ttlMs: 3600_000,
+			});
+
+			// INSERT throws unique constraint violation
+			const dbError = new Error('duplicate key value violates unique constraint');
+			tracker.on.insert('directus_oauth_clients').simulateError(dbError);
+
+			// translateDatabaseError returns RecordNotUniqueError
+			mockTranslateDatabaseError.mockResolvedValue(
+				new RecordNotUniqueError({ collection: 'directus_oauth_clients', field: 'client_id' }),
+			);
+
+			// Fallback SELECT after concurrent insert
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'CIMD Client',
+					registration_type: 'cimd',
+				},
+			]);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+			expect(result['client_id']).toBe(cimdClientId);
+		});
+	});
+
+	describe('resolveClientFromDb', () => {
+		let service: McpOAuthService;
+
+		beforeEach(() => {
+			service = new McpOAuthService({ knex: db, schema });
+		});
+
+		it('returns client row when found', async () => {
+			const clientId = crypto.randomUUID();
+
+			tracker.on
+				.select('directus_oauth_clients')
+				.response([{ client_id: clientId, client_name: 'Test', registration_type: 'dcr' }]);
+
+			const result = await service.resolveClientFromDb(clientId);
+			expect(result).toBeDefined();
+			expect(result!['client_id']).toBe(clientId);
+		});
+
+		it('returns undefined when not found', async () => {
+			tracker.on.select('directus_oauth_clients').response([]);
+
+			const result = await service.resolveClientFromDb('nonexistent');
+			expect(result).toBeUndefined();
+		});
+
+		it('does NOT gate on CIMD enabled (drain-naturally)', async () => {
+			const cimdClientId = 'https://tools.example.com/metadata';
+
+			tracker.on.select('directus_oauth_clients').response([{ client_id: cimdClientId, registration_type: 'cimd' }]);
+
+			// Even with CIMD disabled, resolveClientFromDb should still work
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: TEST_PUBLIC_URL,
+				MCP_OAUTH_CIMD_ENABLED: false,
+			} as any);
+
+			const result = await service.resolveClientFromDb(cimdClientId);
+			expect(result).toBeDefined();
+			expect(result!['registration_type']).toBe('cimd');
 		});
 	});
 });
