@@ -732,6 +732,7 @@ save_and_stay: Save and Stay
 save_and_quit: Save and Quit
 save_and_return_to_main: Save and Return to Main
 save_as_copy: Save as Copy
+save_as_new_file: Save as New File
 add_existing: Add Existing
 creating_items: Creating Items
 enable_create_button: Enable Create Button
