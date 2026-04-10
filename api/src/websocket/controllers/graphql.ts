@@ -1,5 +1,6 @@
 import type { Server as httpServer } from 'http';
 import type { WebSocketMessage } from '@directus/types';
+import { getOperationAST, GraphQLError, OperationTypeNode, parse } from 'graphql';
 import type { Server } from 'graphql-ws';
 import { CloseCode, makeServer, MessageType } from 'graphql-ws';
 import type { WebSocket } from 'ws';
@@ -41,6 +42,21 @@ export class GraphQLSubscriptionController extends SocketController {
 				});
 
 				return service.getSchema();
+			},
+			onSubscribe: (_ctx, message) => {
+				let document;
+
+				try {
+					document = parse(message.payload.query);
+				} catch {
+					return [new GraphQLError('Failed to parse GraphQL document.')];
+				}
+
+				const operation = getOperationAST(document, message.payload.operationName);
+
+				if (operation?.operation !== OperationTypeNode.SUBSCRIPTION) {
+					return [new GraphQLError('Only subscription operations are supported over WebSocket.')];
+				}
 			},
 		});
 
