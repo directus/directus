@@ -349,7 +349,13 @@ function clearFilters() {
 				<VBreadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
 			</template>
 
-			<template #title-outer:append>
+			<template #actions:prepend>
+				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
+			</template>
+
+			<template #actions>
+				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
+
 				<div class="bookmark-controls">
 					<BookmarkAdd
 						v-if="!bookmark"
@@ -399,14 +405,6 @@ function clearFilters() {
 						@click="clearLocalSave"
 					/>
 				</div>
-			</template>
-
-			<template #actions:prepend>
-				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
-			</template>
-
-			<template #actions>
-				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
 
 				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
