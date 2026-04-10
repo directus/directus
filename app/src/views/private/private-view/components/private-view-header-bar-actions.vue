@@ -1,14 +1,16 @@
 <template>
-	<div class="prepend">
-		<slot name="prepend" />
-	</div>
-
 	<div class="actions">
-		<slot />
-	</div>
+		<div class="prepend">
+			<slot name="prepend" />
+		</div>
 
-	<div class="primary">
-		<slot name="primary" />
+		<div class="default">
+			<slot />
+		</div>
+
+		<div class="primary">
+			<slot name="primary" />
+		</div>
 	</div>
 </template>
 
@@ -16,19 +18,25 @@
 .actions {
 	position: relative;
 	display: flex;
-	flex-shrink: 0;
+	align-items: center;
+	gap: 0.625rem;
+}
+
+.default {
+	position: relative;
+	display: flex;
+	align-items: center;
 	gap: 0.125rem;
 }
 
-.prepend {
-	margin-inline-end: 0.625rem;
-}
-
 .primary {
-	margin-inline-start: 0.625rem;
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
 }
 
 .prepend,
+.default,
 .primary {
 	&:empty {
 		display: contents;
