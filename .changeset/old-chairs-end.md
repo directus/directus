@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-add save as new file option to image editor
+Added `Save as New File` option to image editor
