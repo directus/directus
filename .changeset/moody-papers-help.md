@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-returned undefined defaultOverwrites for primitive arrays in splitRecursive
+Fixed promotion of deleted relation returning invalid date time value error
