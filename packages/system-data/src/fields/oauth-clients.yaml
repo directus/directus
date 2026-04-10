@@ -2,8 +2,6 @@ table: directus_oauth_clients
 
 fields:
   - field: client_id
-    special:
-      - uuid
     width: half
   - field: client_name
     width: half

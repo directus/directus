@@ -10,7 +10,7 @@ import type { Knex } from 'knex';
  */
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_oauth_clients', (table) => {
-		table.uuid('client_id').primary().notNullable();
+		table.string('client_id', 255).primary().notNullable();
 		table.string('client_name', 200).notNullable();
 		table.json('redirect_uris').notNullable();
 		table.json('grant_types').notNullable();
@@ -21,7 +21,14 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_oauth_consents', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.uuid('user').notNullable().references('id').inTable('directus_users').onDelete('CASCADE');
-		table.uuid('client').notNullable().references('client_id').inTable('directus_oauth_clients').onDelete('CASCADE');
+
+		table
+			.string('client', 255)
+			.notNullable()
+			.references('client_id')
+			.inTable('directus_oauth_clients')
+			.onDelete('CASCADE');
+
 		table.string('redirect_uri', 255).notNullable();
 		table.string('scope').nullable();
 		table.timestamp('date_created').notNullable();
@@ -32,7 +39,14 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_oauth_codes', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.string('code_hash', 64).notNullable().unique();
-		table.uuid('client').notNullable().references('client_id').inTable('directus_oauth_clients').onDelete('CASCADE');
+
+		table
+			.string('client', 255)
+			.notNullable()
+			.references('client_id')
+			.inTable('directus_oauth_clients')
+			.onDelete('CASCADE');
+
 		table.uuid('user').notNullable().references('id').inTable('directus_users').onDelete('CASCADE');
 		table.string('redirect_uri', 255).notNullable();
 		table.string('resource').notNullable();
@@ -45,7 +59,14 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.createTable('directus_oauth_tokens', (table) => {
 		table.uuid('id').primary().notNullable();
-		table.uuid('client').notNullable().references('client_id').inTable('directus_oauth_clients').onDelete('CASCADE');
+
+		table
+			.string('client', 255)
+			.notNullable()
+			.references('client_id')
+			.inTable('directus_oauth_clients')
+			.onDelete('CASCADE');
+
 		table.uuid('user').notNullable().references('id').inTable('directus_users').onDelete('CASCADE');
 		table.string('session', 64).notNullable().index();
 		table.string('previous_session', 64).nullable().index();
@@ -59,7 +80,7 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex.schema.alterTable('directus_sessions', (table) => {
 		table
-			.uuid('oauth_client')
+			.string('oauth_client', 255)
 			.nullable()
 			.references('client_id')
 			.inTable('directus_oauth_clients')
