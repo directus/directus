@@ -1678,6 +1678,8 @@ fields:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
     mcp_oauth_enabled: 'OAuth Enabled'
     mcp_oauth_enabled_note: 'Allow MCP clients to authenticate via OAuth 2.1'
+    mcp_oauth_dcr_enabled: 'Dynamic Client Registration'
+    mcp_oauth_cimd_enabled: 'Client ID Metadata Document'
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
@@ -1771,6 +1773,9 @@ field_options:
     create: Create
     update: Update
     delete: Delete
+  directus_oauth_clients:
+    registration_type_dcr: DCR
+    registration_type_cimd: CIMD
   directus_collections:
     track_activity_revisions: Track Activity & Revisions
     only_track_activity: Only Track Activity
