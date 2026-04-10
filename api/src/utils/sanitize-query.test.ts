@@ -341,6 +341,18 @@ describe('search', () => {
 
 		expect(sanitizedQuery.search).toBeUndefined();
 	});
+
+	test('should trim trailing punctuation and spaces', async () => {
+		const sanitizedQuery = await sanitizeQuery({ search: 'glaglagla !' }, null as any);
+
+		expect(sanitizedQuery.search).toBe('glaglagla');
+	});
+
+	test('should preserve internal punctuation', async () => {
+		const sanitizedQuery = await sanitizeQuery({ search: "l'heure" }, null as any);
+
+		expect(sanitizedQuery.search).toBe("l'heure");
+	});
 });
 
 describe('export', () => {
