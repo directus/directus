@@ -8,7 +8,6 @@ import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -56,7 +55,6 @@ const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 const { selection } = useSelection();
 const { info: currentCollection } = useCollection(collection);
 const { addNewLink, currentCollectionLink } = useLinks();
-const { breadcrumb } = useBreadcrumb();
 
 const {
 	layout,
@@ -167,17 +165,6 @@ const downloadHandler = computed(() => layoutRef.value?.state?.download);
 async function batchRefresh() {
 	selection.value = [];
 	await refresh();
-}
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: currentCollection.value?.name,
-			to: getCollectionRoute(props.collection),
-		},
-	]);
-
-	return { breadcrumb };
 }
 
 function useCollectionHeader() {
@@ -344,11 +331,6 @@ function clearFilters() {
 		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
 
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
-			<template #headline>
-				<VBreadcrumb v-if="bookmark" :items="breadcrumb" />
-				<VBreadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
 			</template>
