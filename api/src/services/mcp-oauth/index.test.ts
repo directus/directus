@@ -465,13 +465,16 @@ describe('McpOAuthService', () => {
 			});
 		});
 
-		it('omitted token_endpoint_auth_method defaults to none', async () => {
+		it('omitted token_endpoint_auth_method defaults to client_secret_basic per RFC 7591', async () => {
 			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
 			tracker.on.insert('directus_oauth_clients').response([]);
 
 			const result = await service.registerClient(createTestClient({ token_endpoint_auth_method: undefined }));
 
-			expect(result.token_endpoint_auth_method).toBe('none');
+			expect(result.token_endpoint_auth_method).toBe('client_secret_basic');
+			expect(result.client_secret).toBeDefined();
+			expect(result.client_secret!.length).toBeGreaterThanOrEqual(32);
+			expect(result.client_secret_expires_at).toBe(0);
 		});
 
 		it('explicit token_endpoint_auth_method=none accepted', async () => {
@@ -483,11 +486,68 @@ describe('McpOAuthService', () => {
 			expect(result.token_endpoint_auth_method).toBe('none');
 		});
 
-		it('token_endpoint_auth_method=client_secret_basic rejected', async () => {
+		it('client_secret_basic accepted and returns client_secret', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.registerClient(
+				createTestClient({ token_endpoint_auth_method: 'client_secret_basic' }),
+			);
+
+			expect(result.client_secret).toBeDefined();
+			expect(result.client_secret!.length).toBeGreaterThanOrEqual(32);
+			expect(result.client_secret_expires_at).toBe(0);
+			expect(result.token_endpoint_auth_method).toBe('client_secret_basic');
+		});
+
+		it('client_secret_post accepted and returns client_secret', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.registerClient(
+				createTestClient({ token_endpoint_auth_method: 'client_secret_post' }),
+			);
+
+			expect(result.client_secret).toBeDefined();
+			expect(result.client_secret!.length).toBeGreaterThanOrEqual(32);
+			expect(result.client_secret_expires_at).toBe(0);
+			expect(result.token_endpoint_auth_method).toBe('client_secret_post');
+		});
+
+		it('auth_method=none does NOT return client_secret', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.registerClient(createTestClient({ token_endpoint_auth_method: 'none' }));
+
+			expect(result.client_secret).toBeUndefined();
+			expect(result.client_secret_expires_at).toBeUndefined();
+		});
+
+		it('unsupported auth method (e.g. private_key_jwt) rejected', async () => {
 			await assertOAuthError(
-				() => service.registerClient(createTestClient({ token_endpoint_auth_method: 'client_secret_basic' })),
+				() => service.registerClient(createTestClient({ token_endpoint_auth_method: 'private_key_jwt' })),
 				{ error: 'invalid_client_metadata' },
 			);
+		});
+
+		it('stores SHA-256 hash of secret, not the raw secret', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.registerClient(
+				createTestClient({ token_endpoint_auth_method: 'client_secret_basic' }),
+			);
+
+			const insertHistory = queryHistory('insert', 'directus_oauth_clients');
+			expect(insertHistory.length).toBe(1);
+
+			const bindings = insertHistory[0]!.bindings;
+			// Raw secret must NOT appear in stored bindings
+			expect(bindings).not.toContain(result.client_secret);
+			// SHA-256 hash of the secret MUST appear
+			const expectedHash = crypto.createHash('sha256').update(result.client_secret!).digest('hex');
+			expect(bindings).toContain(expectedHash);
 		});
 
 		it('grant_types must contain authorization_code', async () => {

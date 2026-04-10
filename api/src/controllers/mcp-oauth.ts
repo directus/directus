@@ -430,6 +430,7 @@ mcpOAuthPublicRouter.post(
 		const schema = await getSchema();
 		const service = new McpOAuthService({ schema });
 		const result = await service.registerClient(req.body);
+		res.set('Cache-Control', 'no-store');
 		res.status(201).json(result);
 	}),
 );

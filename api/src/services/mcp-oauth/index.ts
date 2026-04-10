@@ -61,6 +61,8 @@ export interface DCRResponse {
 	response_types: string[];
 	token_endpoint_auth_method: string;
 	client_id_issued_at: number;
+	client_secret?: string;
+	client_secret_expires_at?: number;
 }
 
 /** Authorization validation result. `signed_params` is an HMAC-SHA256 consent JWT. */
@@ -350,15 +352,12 @@ export class McpOAuthService {
 			rejectRegistration('invalid_client_metadata', 'Unsupported grant type');
 		}
 
-		// RFC 7591 Section 2: spec defaults to client_secret_basic if omitted, but Section 3.1
-		// allows the server to override requested metadata. We default to none because:
-		// 1. We never issue client_secrets, so client_secret_basic is impossible to fulfill
-		// 2. AS metadata advertises token_endpoint_auth_methods_supported: ['none']
-		// 3. A client expecting client_secret_basic would fail at token exchange (no secret), which is correct
-		const authMethod = input['token_endpoint_auth_method'] ?? 'none';
+		// RFC 7591 Section 2: defaults to client_secret_basic if omitted
+		const SUPPORTED_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'];
+		const authMethod = input['token_endpoint_auth_method'] ?? 'client_secret_basic';
 
-		if (authMethod !== 'none') {
-			rejectRegistration('invalid_client_metadata', 'Only token_endpoint_auth_method "none" is supported');
+		if (!SUPPORTED_AUTH_METHODS.includes(authMethod as string)) {
+			rejectRegistration('invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
 		}
 
 		// RFC 7591 Section 2: response_types derived from grant_types if omitted
@@ -413,6 +412,16 @@ export class McpOAuthService {
 			}
 		}
 
+		// Generate client secret for confidential clients
+		const isConfidential = authMethod !== 'none';
+		let clientSecret: string | undefined;
+		let clientSecretHash: string | null = null;
+
+		if (isConfidential) {
+			clientSecret = crypto.randomBytes(32).toString('base64url');
+			clientSecretHash = this.hashToken(clientSecret);
+		}
+
 		// Create client
 		const clientId = crypto.randomUUID();
 		const now = Math.floor(Date.now() / 1000);
@@ -422,7 +431,8 @@ export class McpOAuthService {
 			client_name: clientName,
 			redirect_uris: JSON.stringify(redirectUris),
 			grant_types: JSON.stringify(grantTypes),
-			token_endpoint_auth_method: 'none',
+			token_endpoint_auth_method: authMethod,
+			client_secret_hash: clientSecretHash,
 			registration_type: 'dcr',
 			client_uri: optionalUris['client_uri'],
 			logo_uri: optionalUris['logo_uri'],
@@ -436,8 +446,9 @@ export class McpOAuthService {
 			redirect_uris: redirectUris as string[],
 			grant_types: grantTypes as string[],
 			response_types: ['code'],
-			token_endpoint_auth_method: 'none',
+			token_endpoint_auth_method: authMethod as string,
 			client_id_issued_at: now,
+			...(isConfidential ? { client_secret: clientSecret, client_secret_expires_at: 0 } : {}),
 		};
 	}
 
