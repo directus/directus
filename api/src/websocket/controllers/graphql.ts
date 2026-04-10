@@ -1,7 +1,8 @@
 import type { Server as httpServer } from 'http';
+import { useEnv } from '@directus/env';
 import type { WebSocketMessage } from '@directus/types';
-import { getOperationAST, GraphQLError, OperationTypeNode, parse } from 'graphql';
-import type { Server } from 'graphql-ws';
+import { getOperationAST, GraphQLError, NoSchemaIntrospectionCustomRule, OperationTypeNode, parse, specifiedRules, validate } from 'graphql';
+import type { Context, Server, SubscribeMessage } from 'graphql-ws';
 import { CloseCode, makeServer, MessageType } from 'graphql-ws';
 import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
@@ -31,23 +32,13 @@ export class GraphQLSubscriptionController extends SocketController {
 		});
 
 		this.gql = makeServer<ConnectionParams, GraphQLSocket>({
-			schema: async (ctx) => {
-				const accountability = ctx.extra.client.accountability;
+			onSubscribe: async (ctx: Context<ConnectionParams, GraphQLSocket>, message: SubscribeMessage) => {
+				const env = useEnv();
 
-				// for now only the items will be watched, system events tbd
-				const service = new GraphQLService({
-					schema: await getSchema(),
-					scope: 'items',
-					accountability,
-				});
-
-				return service.getSchema();
-			},
-			onSubscribe: (_ctx, message) => {
 				let document;
 
 				try {
-					document = parse(message.payload.query);
+					document = parse(message.payload.query, { maxTokens: Number(env['GRAPHQL_QUERY_TOKEN_LIMIT']) });
 				} catch {
 					return [new GraphQLError('Failed to parse GraphQL document.')];
 				}
@@ -57,6 +48,36 @@ export class GraphQLSubscriptionController extends SocketController {
 				if (operation?.operation !== OperationTypeNode.SUBSCRIPTION) {
 					return [new GraphQLError('Only subscription operations are supported over WebSocket.')];
 				}
+
+				const accountability = ctx.extra.client.accountability;
+
+				// for now only the items will be watched, system events tbd
+				const service = new GraphQLService({
+					schema: await getSchema(),
+					scope: 'items',
+					accountability,
+				});
+
+				const schema = await service.getSchema();
+
+				const rules = Array.from(specifiedRules);
+
+				if (env['GRAPHQL_INTROSPECTION'] === false) {
+					rules.push(NoSchemaIntrospectionCustomRule);
+				}
+
+				const errors = validate(schema, document, rules);
+
+				if (errors.length > 0) {
+					return errors;
+				}
+
+				return {
+					schema,
+					document,
+					variableValues: message.payload.variables ?? undefined,
+					operationName: message.payload.operationName ?? undefined,
+				};
 			},
 		});
 
