@@ -181,8 +181,10 @@ describe('/server', () => {
 
 				expect(checkKeys.length).toBeGreaterThan(0);
 
+				const dbClient = envs[vendor][vendor]['DB_CLIENT'];
+
 				for (const key of checkKeys) {
-					expect(key).toMatch(/^database:/);
+					expect(key).toMatch(new RegExp(`^${dbClient}:`));
 				}
 			});
 		});
