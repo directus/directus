@@ -225,7 +225,11 @@ export function resolveCacheTtl(headers: Record<string, string>): number {
 }
 
 /** Validate a URI is HTTPS. Used for optional metadata fields (client_uri, logo_uri, etc.). */
-function validateOptionalHttpsUri(value: string, field: string): void {
+function validateOptionalHttpsUri(value: unknown, field: string): void {
+	if (typeof value !== 'string') {
+		throw new OAuthError(400, 'invalid_client_metadata', `${field} must be a string`);
+	}
+
 	try {
 		const parsed = new URL(value);
 
@@ -334,6 +338,10 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 	}
 
 	// grant_types: default to authorization_code, must include it
+	if (doc.grant_types !== undefined && !Array.isArray(doc.grant_types)) {
+		throw new OAuthError(400, 'invalid_client_metadata', 'grant_types must be an array');
+	}
+
 	const grantTypes: string[] = doc.grant_types ?? ['authorization_code'];
 
 	if (!grantTypes.includes('authorization_code')) {
@@ -348,6 +356,10 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 	}
 
 	// token_endpoint_auth_method: default to "none", only "none" accepted
+	if (doc.token_endpoint_auth_method !== undefined && typeof doc.token_endpoint_auth_method !== 'string') {
+		throw new OAuthError(400, 'invalid_client_metadata', 'token_endpoint_auth_method must be a string');
+	}
+
 	const authMethod = doc.token_endpoint_auth_method ?? 'none';
 
 	if (FORBIDDEN_AUTH_METHODS.has(authMethod)) {
