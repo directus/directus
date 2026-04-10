@@ -29,8 +29,8 @@ const showNavToggle = computed(() => {
 </script>
 
 <template>
-	<header class="header-bar" :class="{ 'nav-expanded': !navBarStore.collapsed }">
-		<div class="primary">
+	<header class="header-bar" :class="{ 'has-nav-toggle': showNavToggle }">
+		<div class="cell start">
 			<PrivateViewHeaderBarActionButton
 				v-if="showNavToggle"
 				v-tooltip.bottom="$t('toggle_navigation')"
@@ -40,10 +40,12 @@ const showNavToggle = computed(() => {
 				@click="navBarStore.expand"
 			/>
 
-			<div class="title-outer-prepend">
-				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" class="icon" :back-to />
+			<div v-if="showNavToggle" class="nav-toggle-separator" />
 
-				<PrivateViewHeaderBarIcon v-else-if="icon" class="icon" :icon :icon-color />
+			<div class="title-outer-prepend">
+				<PrivateViewHeaderBarIcon v-if="showBack" v-tooltip.bottom="$t('back')" :back-to />
+
+				<PrivateViewHeaderBarIcon v-else-if="icon" class="title-icon" :icon :icon-color />
 
 				<slot v-else name="title-outer:prepend" />
 			</div>
@@ -69,8 +71,14 @@ const showNavToggle = computed(() => {
 			<div class="title-outer-append">
 				<slot name="title-outer:append" />
 			</div>
+		</div>
 
-			<div class="spacer" />
+		<div class="cell end">
+			<PrivateViewHeaderBarActions>
+				<template #prepend><slot name="actions:prepend" /></template>
+				<slot name="actions" />
+				<template #append><slot name="actions:append" /></template>
+			</PrivateViewHeaderBarActions>
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('toggle_sidebar')"
@@ -80,12 +88,6 @@ const showNavToggle = computed(() => {
 				@click="sidebarStore.toggle"
 			/>
 		</div>
-
-		<PrivateViewHeaderBarActions>
-			<template #prepend><slot name="actions:prepend" /></template>
-			<slot name="actions" />
-			<template #append><slot name="actions:append" /></template>
-		</PrivateViewHeaderBarActions>
 	</header>
 </template>
 
@@ -93,51 +95,100 @@ const showNavToggle = computed(() => {
 @use '@/styles/mixins';
 
 .header-bar {
+	--separator-size: 1.5rem;
+	--separator-border: var(--theme--border-width) solid var(--theme--border-color-accent);
+
 	position: relative;
-	padding-inline: var(--content-padding);
-	block-size: var(--header-bar-height);
-	grid-template-rows: repeat(2, 1fr);
+	block-size: calc(var(--header-bar-height) * 2 + var(--theme--shell--border-width));
 
 	/* background is set in .root-split, border is set on .main-split */
 
-	&.nav-expanded::before {
+	&:not(:has(.nav-toggle))::before {
 		content: '';
 		position: absolute;
-		block-size: 1.5rem;
 		transform: translate(0, -50%);
 		inset-block-start: 50%;
 		inset-inline-start: 0;
-		border-inline-end: var(--theme--border-width) solid var(--theme--border-color-accent);
+		block-size: var(--separator-size);
+		border-inline-end: var(--separator-border);
 	}
-
-	@media (width > 22.5rem) {
-		display: flex;
-		align-items: center;
-		gap: 0.6875rem;
-	}
-}
-
-.primary {
-	display: flex;
-	align-items: center;
-	gap: 0.6875rem;
-	padding-block: 0.6875rem;
-
-	@media (width > 22.5rem) {
-		display: contents;
-	}
-}
-
-.icon {
-	display: none;
 
 	@include mixins.breakpoint-up('sm') {
 		display: flex;
+		block-size: var(--header-bar-height);
+		align-items: center;
+		gap: 1.5rem;
+		padding-inline: var(--content-padding) var(--sidebar-collapsed-width);
+	}
+}
+
+.cell {
+	position: relative;
+	display: flex;
+	align-items: center;
+	block-size: var(--header-bar-height);
+	padding-inline: 0.75rem;
+
+	@include mixins.breakpoint-up('sm') {
+		padding-inline: 0;
+		block-size: 100%;
+	}
+
+	&.start {
+		flex-grow: 1;
+		min-inline-size: 0;
+		block-size: calc(var(--header-bar-height) + var(--theme--shell--border-width));
+		border-block-end: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+
+		@include mixins.breakpoint-up('sm') {
+			border-block-end: none;
+		}
+	}
+
+	&.end {
+		justify-content: flex-end;
+		flex-shrink: 0;
+	}
+}
+
+.nav-toggle-separator {
+	block-size: var(--separator-size);
+	border-inline-end: var(--separator-border);
+	margin-inline-end: 0.25rem;
+
+	+ .title-outer-prepend:has(.title-icon) {
+		margin-inline-start: 0.375rem;
 	}
 }
 
 :is(.title-outer-prepend, .title-outer-append):empty {
 	display: contents;
+}
+
+.nav-toggle,
+.header-bar:not(:has(.nav-toggle)) .title-outer-prepend {
+	@include mixins.breakpoint-up('sm') {
+		position: absolute;
+		inset-inline-end: 100%;
+	}
+}
+
+.nav-toggle,
+.title-outer-prepend {
+	margin-inline-end: 0.25rem;
+}
+
+.title-outer-append {
+	margin-inline-start: 0.5rem;
+}
+
+.sidebar-toggle {
+	margin-inline-start: 0.6875rem;
+
+	@include mixins.breakpoint-up('sm') {
+		position: absolute;
+		inset-inline-start: 100%;
+	}
 }
 
 .title-container {
@@ -170,14 +221,5 @@ const showNavToggle = computed(() => {
 	line-height: 1;
 	white-space: nowrap;
 	font-family: var(--theme--header--headline--font-family);
-}
-
-.spacer {
-	flex-basis: 0;
-	flex-grow: 1;
-}
-
-.sidebar-toggle {
-	order: 1;
 }
 </style>

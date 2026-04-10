@@ -11,10 +11,6 @@
 	position: relative;
 	display: flex;
 	flex-shrink: 0;
-	gap: 0.4375rem;
-}
-
-.actions .v-button.secondary {
-	--v-icon-color: var(--theme--foreground);
+	gap: 0.125rem;
 }
 </style>
