@@ -80,10 +80,16 @@ export interface DecisionParams {
 	approved: boolean;
 }
 
-/** RFC 6749 Section 4.1.3 token request (authorization_code grant). */
-export interface TokenParams {
-	grant_type?: string;
+/** Shared auth fields used by resolveClientId and authenticateClient. */
+export interface AuthParams {
 	client_id?: string;
+	client_secret?: string;
+	authorization_header?: string;
+}
+
+/** RFC 6749 Section 4.1.3 token request (authorization_code grant). */
+export interface TokenParams extends AuthParams {
+	grant_type?: string;
 	code?: string;
 	redirect_uri?: string;
 	code_verifier?: string;
@@ -106,18 +112,16 @@ export interface TokenContext {
 }
 
 /** RFC 6749 Section 6 refresh token request. */
-export interface RefreshParams {
+export interface RefreshParams extends AuthParams {
 	grant_type?: string;
-	client_id?: string;
 	refresh_token?: string;
 	resource?: string;
 	scope?: string;
 }
 
 /** RFC 7009 token revocation request. Always returns 200 (idempotent). */
-export interface RevokeParams {
+export interface RevokeParams extends AuthParams {
 	token?: string;
-	client_id?: string;
 	token_type_hint?: string;
 }
 

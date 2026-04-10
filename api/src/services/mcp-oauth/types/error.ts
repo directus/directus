@@ -11,6 +11,7 @@ export class OAuthError extends Error {
 		public code: string,
 		public description: string,
 		public redirectable: boolean = false,
+		public headers: Record<string, string> = {},
 	) {
 		super(description);
 		this.name = 'OAuthError';
