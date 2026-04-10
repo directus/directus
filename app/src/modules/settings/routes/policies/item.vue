@@ -5,7 +5,6 @@ import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -118,10 +117,6 @@ function discardAndStay() {
 		show-back
 		back-to="/settings/policies"
 	>
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
-		</template>
-
 		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">

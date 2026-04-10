@@ -7,7 +7,6 @@ import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -152,10 +151,6 @@ function onFlowDrawerCompletion(id: string) {
 
 <template>
 	<PrivateView :title="$t('flows')" icon="bolt">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>

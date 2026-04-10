@@ -14,7 +14,6 @@ import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { ATTACHMENT_OFFSET, GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -609,10 +608,6 @@ function discardAndLeave() {
 <template>
 	<SettingsNotFound v-if="!flow && !loading" />
 	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back back-to="/settings/flows">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
-		</template>
-
 		<template #title:append>
 			<DisplayColor
 				v-tooltip="flow?.status === 'active' ? $t('active') : $t('inactive')"
