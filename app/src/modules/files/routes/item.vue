@@ -229,14 +229,16 @@ function revert(values: Record<string, any>) {
 <template>
 	<FilesNotFound v-if="!loading && !item" />
 	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton

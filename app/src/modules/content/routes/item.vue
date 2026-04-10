@@ -657,14 +657,16 @@ function useItemNavigation() {
 			/>
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<PrivateViewHeaderBarActionButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
