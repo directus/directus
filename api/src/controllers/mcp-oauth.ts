@@ -30,7 +30,7 @@ export function getRedirectIndicator(
 		const host = redirectUrl.hostname;
 
 		// Localhost check
-		if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+		if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]') {
 			return 'localhost';
 		}
 

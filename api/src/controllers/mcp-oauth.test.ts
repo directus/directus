@@ -682,6 +682,10 @@ describe('getRedirectIndicator', () => {
 		expect(getRedirectIndicator('http://127.0.0.1:3000/cb', 'some-client', 'dcr')).toBe('localhost');
 	});
 
+	test('IPv6 loopback [::1] redirect returns "localhost"', () => {
+		expect(getRedirectIndicator('http://[::1]:3000/cb', 'some-client', 'dcr')).toBe('localhost');
+	});
+
 	test('bare IP redirect returns "ip-address"', () => {
 		expect(getRedirectIndicator('http://192.168.1.1:3000/cb', 'some-client', 'dcr')).toBe('ip-address');
 	});
