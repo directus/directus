@@ -14,23 +14,11 @@ test(`_intersects_bbox allowed on geometry.Point`, async () => {
 	}).not.toThrowError();
 });
 
-// test(`_nintersects_bbox allowed on geometry.Point`, async () => {
-// 	expect(() => {
-// 		validateOperator('geometry.Point', '_nintersects_bbox');
-// 	}).not.toThrowError();
-// });
-
 test(`_intersects_bbox allowed on geography.Point`, async () => {
 	expect(() => {
 		validateOperator('geography.Point' as unknown as Type, '_intersects_bbox');
 	}).not.toThrowError();
 });
-
-// test(`_nintersects_bbox allowed on geography.Point`, async () => {
-// 	expect(() => {
-// 		validateOperator('geography.Point' as unknown as Type, '_nintersects_bbox');
-// 	}).not.toThrowError();
-// });
 
 test(`_contains allowed on integer`, async () => {
 	expect(() => {
