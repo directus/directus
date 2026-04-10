@@ -41,11 +41,11 @@ export interface FetchResult {
  * or null if it looks like a CIMD URL but fails validation.
  */
 export function detectClientIdType(clientId: string): 'dcr' | 'cimd' | null {
-	if (!clientId.startsWith('https://')) {
-		return 'dcr';
+	if (clientId.startsWith('https://') || (useEnv()['MCP_OAUTH_CIMD_ALLOW_HTTP'] && clientId.startsWith('http://'))) {
+		return isValidCimdClientId(clientId) ? 'cimd' : null;
 	}
 
-	return isValidCimdClientId(clientId) ? 'cimd' : null;
+	return 'dcr';
 }
 
 /**
@@ -272,7 +272,9 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 
 	// 304 Not Modified
 	if (response.status === 304) {
-		return { notModified: true, ttlMs: null };
+		const respHeaders = response.headers as Record<string, string>;
+		const hasCacheControl = !!respHeaders['cache-control'];
+		return { notModified: true, ttlMs: hasCacheControl ? resolveCacheTtl(respHeaders) : null };
 	}
 
 	// Content-Type validation

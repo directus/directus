@@ -59,6 +59,22 @@ describe('detectClientIdType', () => {
 	it('returns dcr for http URL (not https)', () => {
 		expect(detectClientIdType('http://example.com/client')).toBe('dcr');
 	});
+
+	it('returns cimd for http URL when ALLOW_HTTP is true', () => {
+		vi.mocked(useEnv).mockReturnValue({
+			MCP_OAUTH_CIMD_ALLOW_HTTP: true,
+			MCP_OAUTH_CIMD_BLOCKED_TLDS: [],
+			MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
+		} as any);
+
+		expect(detectClientIdType('http://myapp.dev/client')).toBe('cimd');
+
+		vi.mocked(useEnv).mockReturnValue({
+			MCP_OAUTH_CIMD_ALLOW_HTTP: false,
+			MCP_OAUTH_CIMD_BLOCKED_TLDS: ['test', 'localhost', 'invalid', 'example', 'local', 'onion'],
+			MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
+		} as any);
+	});
 });
 
 describe('isValidCimdClientId', () => {
@@ -399,6 +415,20 @@ describe('fetchCimdMetadata', () => {
 		expect(result.notModified).toBe(true);
 		expect(result.metadata).toBeUndefined();
 		expect(result.ttlMs).toBeNull();
+	});
+
+	it('304 with Cache-Control max-age returns parsed TTL', async () => {
+		mockAxiosGet.mockResolvedValue({
+			status: 304,
+			headers: { 'cache-control': 'max-age=3600' },
+			data: null,
+		});
+
+		const result = await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client', '"abc123"');
+
+		expect(result.notModified).toBe(true);
+		expect(result.metadata).toBeUndefined();
+		expect(result.ttlMs).toBe(3_600_000);
 	});
 
 	it('rejects non-200/304 status (e.g. redirect)', async () => {
