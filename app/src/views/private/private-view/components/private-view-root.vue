@@ -96,7 +96,6 @@ const splitterCollapsed = computed({
 					<template #actions:append><slot name="actions:append" /></template>
 					<template #actions:prepend><slot name="actions:prepend" /></template>
 					<template #actions><slot name="actions" /></template>
-					<template #headline><slot name="headline" /></template>
 					<template #title-outer:append><slot name="title-outer:append" /></template>
 					<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
 					<template #title:append><slot name="title:append" /></template>

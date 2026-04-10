@@ -51,10 +51,6 @@ const showNavToggle = computed(() => {
 			</div>
 
 			<div class="title-container">
-				<div class="headline">
-					<slot name="headline" />
-				</div>
-
 				<div class="title">
 					<slot name="title">
 						<slot name="title:prepend" />
@@ -211,15 +207,5 @@ const showNavToggle = computed(() => {
 			vertical-align: middle;
 		}
 	}
-}
-
-.headline {
-	--v-breadcrumb-color: var(--theme--header--headline--foreground);
-
-	font-weight: 600;
-	font-size: 0.6875rem;
-	line-height: 1;
-	white-space: nowrap;
-	font-family: var(--theme--header--headline--font-family);
 }
 </style>
