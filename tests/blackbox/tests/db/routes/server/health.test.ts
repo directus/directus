@@ -1,6 +1,6 @@
 import { ChildProcess, spawn } from 'child_process';
 import config, { type Env, getUrl, paths } from '@common/config';
-import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
@@ -38,8 +38,8 @@ describe('/server', () => {
 			);
 		});
 
-		describe('forbidden for public', () => {
-			it.each(vendors)('%s', async (vendor) => {
+		describe.each(vendors)('%s', (vendor) => {
+			it('forbidden for public', async () => {
 				// Action
 				const response = await request(getUrl(vendor)).get('/server/health');
 
@@ -55,11 +55,9 @@ describe('/server', () => {
 				expect(gqlResponse.body.errors).toBeDefined();
 				expect(gqlResponse.body.errors[0].extensions.code).toBe('FORBIDDEN');
 			});
-		});
 
-		(['ADMIN', 'APP_ACCESS'] as (keyof typeof USER)[]).forEach((userKey) => {
-			describe(`differring format for ${USER[userKey]}`, () => {
-				it.each(vendors)('%s', async (vendor) => {
+			(['ADMIN', 'APP_ACCESS'] as (keyof typeof USER)[]).forEach((userKey) => {
+				it(`differring format for ${USER[userKey].NAME}`, async () => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.get('/server/health')
@@ -96,96 +94,80 @@ describe('/server', () => {
 		});
 
 		describe('HEALTHCHECK_ENABLED=false', () => {
-			const directusInstances = {} as Record<string, ChildProcess>;
-			const envs = {} as Record<Vendor, Env>;
+			describe.each(vendors)('%s', (vendor) => {
+				let directusInstance: ChildProcess;
+				let env: Env;
 
-			beforeAll(async () => {
-				const promises = [];
-
-				for (const vendor of vendors) {
-					const env = cloneDeep(config.envs);
+				beforeAll(async () => {
+					env = cloneDeep(config.envs);
 					env[vendor]['HEALTHCHECK_ENABLED'] = 'false';
+					env[vendor]['HEALTHCHECK_NAMESPACE'] = `directus:healthcheck:disabled:${vendor}`;
 
 					const newPort = await getPort();
 					env[vendor].PORT = String(newPort);
 
-					const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
+					directusInstance = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 
-					directusInstances[vendor] = server;
-					envs[vendor] = env;
+					await awaitDirectusConnection(newPort);
+				}, 180_000);
 
-					promises.push(awaitDirectusConnection(newPort));
-				}
+				afterAll(async () => {
+					directusInstance!.kill();
+				});
 
-				await Promise.all(promises);
-			}, 180_000);
+				it('returns 404', async () => {
+					// Action
+					const response = await request(getUrl(vendor, env))
+						.get('/server/health')
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-			afterAll(async () => {
-				for (const vendor of vendors) {
-					directusInstances[vendor]!.kill();
-				}
-			});
-
-			it.each(vendors)('%s', async (vendor) => {
-				// Action
-				const response = await request(getUrl(vendor, envs[vendor]))
-					.get('/server/health')
-					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-				// Assert
-				expect(response.statusCode).toBe(404);
+					// Assert
+					expect(response.statusCode).toBe(404);
+				});
 			});
 		});
 
 		describe('HEALTHCHECK_SERVICES=database', () => {
-			const directusInstances = {} as Record<string, ChildProcess>;
-			const envs = {} as Record<Vendor, Env>;
+			describe.each(vendors)('%s', (vendor) => {
+				let directusInstance: ChildProcess;
+				let env: Env;
 
-			beforeAll(async () => {
-				const promises = [];
-
-				for (const vendor of vendors) {
-					const env = cloneDeep(config.envs);
+				beforeAll(async () => {
+					env = cloneDeep(config.envs);
 					env[vendor]['HEALTHCHECK_SERVICES'] = 'database';
+					env[vendor]['HEALTHCHECK_NAMESPACE'] = `directus:healthcheck:db-only:${vendor}`;
 
 					const newPort = await getPort();
 					env[vendor].PORT = String(newPort);
 
-					const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
+					directusInstance = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 
-					directusInstances[vendor] = server;
-					envs[vendor] = env;
+					await awaitDirectusConnection(newPort);
+				}, 180_000);
 
-					promises.push(awaitDirectusConnection(newPort));
-				}
+				afterAll(async () => {
+					directusInstance!.kill();
+				});
 
-				await Promise.all(promises);
-			}, 180_000);
+				it('only contains db checks', async () => {
+					// Action
+					const response = await request(getUrl(vendor, env))
+						.get('/server/health')
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-			afterAll(async () => {
-				for (const vendor of vendors) {
-					directusInstances[vendor]!.kill();
-				}
-			});
+					// Assert
+					expect(response.statusCode).toBe(200);
 
-			it.each(vendors)('%s', async (vendor) => {
-				// Action
-				const response = await request(getUrl(vendor, envs[vendor]))
-					.get('/server/health')
-					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+					const checkKeys = Object.keys(response.body.checks);
 
-				// Assert
-				expect(response.statusCode).toBe(200);
+					expect(checkKeys.length).toBeGreaterThan(0);
 
-				const checkKeys = Object.keys(response.body.checks);
+					const dbClient = env[vendor]['DB_CLIENT'];
 
-				expect(checkKeys.length).toBeGreaterThan(0);
-
-				const dbClient = envs[vendor][vendor]['DB_CLIENT'];
-
-				for (const key of checkKeys) {
-					expect(key).toMatch(new RegExp(`^${dbClient}:`));
-				}
+					for (const key of checkKeys) {
+						expect(key).toMatch(new RegExp(`^${dbClient}:`));
+					}
+				});
 			});
 		});
 	});
