@@ -294,7 +294,13 @@ button:hover { opacity: 0.85; }
 button:active { opacity: 0.7; }
 
 .btn-approve { background: var(--theme--primary); color: #fff; }
-.btn-cancel { background: var(--theme--background); color: var(--theme--foreground); border-color: var(--theme--border-color-accent); }`;
+.btn-cancel { background: var(--theme--background); color: var(--theme--foreground); border-color: var(--theme--border-color-accent); }
+
+.redirect-warn {
+  font-size: 0.75rem;
+  color: var(--theme--danger);
+  font-family: var(--theme--fonts--sans--font-family);
+}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -316,6 +322,9 @@ export interface ConsentPageData {
 	scope: string;
 	signedParams: string;
 	decisionUrl: string;
+	clientDomain?: string;
+	registrationType: 'dcr' | 'cimd';
+	redirectIndicator?: string;
 }
 
 const DEFAULT_PROJECT_COLOR = '#6644ff';

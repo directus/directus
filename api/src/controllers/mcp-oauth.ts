@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { isIP } from 'node:net';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { NextFunction, Request, Response } from 'express';
@@ -14,6 +15,44 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import { getSchema } from '../utils/get-schema.js';
 import { Url } from '../utils/url.js';
 import { type ConsentPageData, type PageOpts, renderConsentPage, renderErrorPage } from './mcp-oauth-consent-page.js';
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function getRedirectIndicator(redirectUri: string, clientId: string, registrationType: string): string | undefined {
+	try {
+		const redirectUrl = new URL(redirectUri);
+		const host = redirectUrl.hostname;
+
+		// Localhost check
+		if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+			return 'localhost';
+		}
+
+		// Bare IP (non-loopback)
+		if (isIP(host) !== 0) {
+			return 'ip-address';
+		}
+
+		// Cross-origin check (CIMD only)
+		if (registrationType === 'cimd') {
+			try {
+				const clientUrl = new URL(clientId);
+
+				if (redirectUrl.hostname !== clientUrl.hostname) {
+					return 'cross-origin';
+				}
+			} catch {
+				/* not a URL client_id, skip */
+			}
+		}
+	} catch {
+		/* invalid redirect URI, skip */
+	}
+
+	return undefined;
+}
 
 // ---------------------------------------------------------------------------
 // Shared middleware
@@ -328,12 +367,18 @@ mcpOAuthPublicRouter.get(
 			noCache(res);
 			relaxFormAction(res);
 
+			const clientId = req.query['client_id'] as string;
+			const registrationType = result.registration_type ?? 'dcr';
+
 			const consentData: ConsentPageData = {
 				clientName: result.client_name,
 				redirectUri: result.redirect_uri,
 				scope: result.scope,
 				signedParams: result.signed_params,
 				decisionUrl,
+				clientDomain: result.client_domain,
+				registrationType,
+				redirectIndicator: getRedirectIndicator(result.redirect_uri, clientId, registrationType),
 			};
 
 			res.send(await renderConsentPage(consentData, pageOpts));
