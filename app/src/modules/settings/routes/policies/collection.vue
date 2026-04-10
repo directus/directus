@@ -192,7 +192,9 @@ function openDuplicateDialog(item: PolicyItem) {
 				:show-filter="false"
 				small
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('create_policy')" :to="addNewLink" icon="add" />
 		</template>
 

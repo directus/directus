@@ -625,13 +625,6 @@ function discardAndLeave() {
 					outlined
 					@click="attemptCancelChanges"
 				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
-					:loading="saving"
-					icon="check"
-					@click="saveChanges"
-				/>
 			</template>
 
 			<template v-else>
@@ -642,14 +635,25 @@ function discardAndLeave() {
 					icon="delete"
 					@click="confirmDelete = true"
 				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('edit_flow')"
-					outlined
-					icon="edit"
-					@click="editMode = !editMode"
-				/>
 			</template>
+		</template>
+
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton
+				v-if="editMode"
+				v-tooltip.bottom="$t('save')"
+				:loading="saving"
+				icon="check"
+				@click="saveChanges"
+			/>
+
+			<PrivateViewHeaderBarActionButton
+				v-else
+				v-tooltip.bottom="$t('edit_flow')"
+				outlined
+				icon="edit"
+				@click="editMode = !editMode"
+			/>
 		</template>
 
 		<template #sidebar>

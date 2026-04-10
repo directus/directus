@@ -246,7 +246,9 @@ function clearFilters() {
 					icon="person_add"
 					@click="userInviteModalActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
 					:to="addNewLink"

@@ -207,7 +207,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 
 <template>
 	<PrivateView :title="$t('public_label')" show-back back-to="/settings/roles">
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"

@@ -224,7 +224,9 @@ watch(statsRange, loadStats);
 
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
+		</template>
 
+		<template #actions:primary>
 			<VButton
 				:tooltip="$t('deployment.deploy')"
 				icon

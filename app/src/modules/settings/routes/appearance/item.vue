@@ -63,7 +63,7 @@ function discardAndLeave() {
 
 <template>
 	<PrivateView :title="$t('settings_appearance')" icon="palette">
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:disabled="!hasEdits"

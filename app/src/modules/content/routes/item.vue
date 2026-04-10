@@ -741,7 +741,9 @@ function useItemNavigation() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentVersion === null"
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"

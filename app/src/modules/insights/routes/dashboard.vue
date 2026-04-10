@@ -216,21 +216,6 @@ const refreshInterval = computed({
 					icon="clear"
 					@click="cancelChanges"
 				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('create_panel')"
-					outlined
-					:to="`/insights/${currentDashboard.id}/+`"
-					icon="add"
-				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
-					:disabled="!hasEdits"
-					:loading="saving"
-					icon="check"
-					@click="saveChanges"
-				/>
 			</template>
 
 			<template v-else>
@@ -242,16 +227,36 @@ const refreshInterval = computed({
 					icon="aspect_ratio"
 					@click="toggleZoomToFit"
 				/>
+			</template>
+		</template>
+
+		<template #actions:primary>
+			<template v-if="editMode">
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('save')"
+					:disabled="!hasEdits"
+					:loading="saving"
+					icon="check"
+					@click="saveChanges"
+				/>
 
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('edit_panels')"
-					class="edit"
+					v-tooltip.bottom="$t('create_panel')"
 					outlined
-					:disabled="!updateAllowed"
-					icon="edit"
-					@click="editMode = !editMode"
+					:to="`/insights/${currentDashboard.id}/+`"
+					icon="add"
 				/>
 			</template>
+
+			<PrivateViewHeaderBarActionButton
+				v-else
+				v-tooltip.bottom="$t('edit_panels')"
+				class="edit"
+				outlined
+				:disabled="!updateAllowed"
+				icon="edit"
+				@click="editMode = !editMode"
+			/>
 		</template>
 
 		<template #sidebar>

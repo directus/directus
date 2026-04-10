@@ -159,7 +159,9 @@ function discardAndStay() {
 				icon="person_add"
 				@click="userInviteModalActive = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"

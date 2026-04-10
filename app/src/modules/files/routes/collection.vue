@@ -535,7 +535,9 @@ async function downloadFiles() {
 					icon="download"
 					@click="downloadFiles"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('upload_file') : $t('not_allowed')"
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"

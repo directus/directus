@@ -76,7 +76,7 @@ function discardAndLeave() {
 
 <template>
 	<PrivateView :title="$t('settings_ai')" icon="smart_toy">
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:disabled="!hasEdits"

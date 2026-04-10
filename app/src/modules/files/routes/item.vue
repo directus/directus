@@ -314,7 +314,9 @@ function revert(values: Record<string, any>) {
 				icon="tune"
 				@click="editActive = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
