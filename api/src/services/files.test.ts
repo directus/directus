@@ -126,6 +126,20 @@ describe('Service / Files', () => {
 				{},
 			);
 		});
+
+		test('should strip path traversal from filename_disk to prevent placing files in sensitive subdirectories', async () => {
+			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
+
+			await service.createOne({
+				type: 'text/plain',
+				filename_disk: '../extensions/pwn.liquid',
+			});
+
+			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
+				{ filename_disk: 'pwn.liquid', type: 'text/plain' },
+				{},
+			);
+		});
 	});
 
 	describe('uploadOne', () => {

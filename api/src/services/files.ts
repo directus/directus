@@ -46,12 +46,13 @@ export class FilesService extends ItemsService<File> {
 	}
 
 	/**
-	 * Generates the relative path for the filename_disk
+	 * Generates the sanitized filename for filename_disk.
+	 * Strips all directory components to prevent path traversal into sensitive subdirectories.
 	 *
 	 * @param filenameDisk - The filepath
 	 */
 	private generateFilenamePath(filepath: string) {
-		return normalizePath(path.relative(path.sep, path.resolve(path.sep, filepath)));
+		return path.basename(normalizePath(filepath));
 	}
 
 	/**
