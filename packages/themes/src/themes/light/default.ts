@@ -169,7 +169,7 @@ export default defineTheme({
 			foreground: 'var(--theme--foreground)',
 			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			borderColor: 'var(--theme--border-color)',
-			borderWidth: '1px',
+			borderWidth: 'var(--theme--border-width)',
 
 			section: {
 				borderWidth: 'var(--theme--sidebar--border-width)',
