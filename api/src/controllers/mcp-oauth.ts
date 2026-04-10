@@ -480,7 +480,7 @@ mcpOAuthPublicRouter.post(
 	asyncHandler(async (req: Request, res: Response) => {
 		const schema = await getSchema();
 		const service = new McpOAuthService({ schema });
-		await service.revokeToken(req.body);
+		await service.revokeToken({ ...req.body, authorization_header: req.headers.authorization });
 		res.status(200).json({});
 	}),
 );

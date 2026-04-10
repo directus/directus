@@ -1189,45 +1189,46 @@ export class McpOAuthService {
 	}
 
 	/**
-	 * Revoke a refresh token (RFC 7009 Section 2). Idempotent.
+	 * Revoke a refresh token (RFC 7009 Section 2). Idempotent for unknown tokens.
 	 *
 	 * Called by `POST /mcp-oauth/revoke`. The client sends its refresh_token to end the session.
 	 *
-	 * Per RFC 7009 Section 2.2, returns 200 for all cases -- successful revocation, unknown
-	 * tokens, and unknown client_ids. This prevents client_id enumeration on the public endpoint.
-	 * Only throws for missing required params (token, client_id).
+	 * Client authentication is enforced first (resolveClientId + authenticateClient).
+	 * Unknown client_id or failed secret verification rejects with 401 invalid_client.
+	 * Per RFC 7009 Section 2.2, unknown/mismatched tokens return silent 200.
 	 *
-	 * @param params - Token and client_id
-	 * @throws {OAuthError} `invalid_request` if token or client_id is missing
+	 * @param params - Token, client_id, and optional authorization_header
+	 * @throws {OAuthError} `invalid_client` if client unknown or auth fails
+	 * @throws {OAuthError} `invalid_request` if token is missing
 	 */
 	async revokeToken(params: RevokeParams): Promise<void> {
 		const logger = useLogger();
+
+		// Resolve client_id from header or body
+		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
+		params.client_id = resolvedClientId;
+
+		// Look up client and authenticate
+		const client = await this.resolveClientFromDb(resolvedClientId);
+
+		if (!client) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		this.authenticateClient(client, params, basicAuth);
 
 		// RFC 7009 Section 2.1: token REQUIRED
 		if (!params.token) {
 			throw new OAuthError(400, 'invalid_request', 'token is required');
 		}
 
-		if (!params.client_id) {
-			throw new OAuthError(400, 'invalid_request', 'client_id is required');
-		}
-
 		// Look up grant by token hash and verify client binding.
-		// RFC 7009 Section 2.2: return 200 for all failure cases (no information leak).
-		// For public clients, we don't distinguish unknown client_id from unknown token --
-		// both silently succeed to prevent client_id enumeration.
+		// RFC 7009 Section 2.2: return 200 for unknown/mismatched tokens (no information leak).
 		const tokenHash = this.hashToken(params.token);
 
 		const grant = await this.knex('directus_oauth_tokens').where('session', tokenHash).first();
 
 		if (!grant || grant['client'] !== params.client_id) {
-			return;
-		}
-
-		// Drain-naturally: no CIMD gating on revoke
-		const client = await this.resolveClientFromDb(params.client_id!);
-
-		if (!client) {
 			return;
 		}
 

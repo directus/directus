@@ -2724,12 +2724,13 @@ describe('McpOAuthService', () => {
 			expect(tokenDeletes.length).toBe(0);
 		});
 
-		it('unknown client_id returns 200 silently (no enumeration leak)', async () => {
-			mockGrantLookup();
+		it('unknown client_id returns 401 invalid_client', async () => {
 			tracker.on.select('directus_oauth_clients').response([]);
 
-			await expect(service.revokeToken(validParams())).resolves.toBeUndefined();
-			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
+			await assertOAuthError(() => service.revokeToken(validParams()), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
 		});
 
 		it('unknown token returns 200', async () => {
@@ -2755,6 +2756,8 @@ describe('McpOAuthService', () => {
 		);
 
 		it('missing token parameter returns invalid_request', async () => {
+			mockClientLookup(clientId);
+
 			await assertOAuthError(() => service.revokeToken(validParams({ token: undefined })), {
 				error: 'invalid_request',
 			});
@@ -2809,6 +2812,107 @@ describe('McpOAuthService', () => {
 			const sessionDeletes = queryHistory('delete', 'directus_sessions');
 			expect(tokenDeletes.length).toBe(1);
 			expect(sessionDeletes.length).toBe(1);
+		});
+	});
+
+	describe('revokeToken with confidential client', () => {
+		let service: McpOAuthService;
+		const userId = crypto.randomUUID();
+		const clientId = crypto.randomUUID();
+		const grantId = crypto.randomUUID();
+		const rawSessionToken = 'd'.repeat(64);
+		const sessionHash = crypto.createHash('sha256').update(rawSessionToken).digest('hex');
+		const clientSecret = 'revoke-secret-value';
+		const clientSecretHash = crypto.createHash('sha256').update(clientSecret).digest('hex');
+
+		function validParams(overrides: Record<string, unknown> = {}) {
+			return {
+				token: rawSessionToken,
+				client_id: clientId,
+				...overrides,
+			};
+		}
+
+		function basicAuthHeader(user: string, pass: string) {
+			return 'Basic ' + Buffer.from(`${user}:${pass}`).toString('base64');
+		}
+
+		function mockGrantLookup(overrides: Record<string, unknown> = {}) {
+			tracker.on
+				.select('directus_oauth_tokens')
+				.response([
+					createGrantRow({ id: grantId, client: clientId, user: userId, session: sessionHash, ...overrides }),
+				]);
+		}
+
+		beforeEach(() => {
+			service = new McpOAuthService({ knex: db, schema });
+		});
+
+		it('client_secret_basic: valid auth revokes successfully', async () => {
+			mockClientLookup(clientId, {
+				token_endpoint_auth_method: 'client_secret_basic',
+				client_secret_hash: clientSecretHash,
+			});
+
+			mockGrantLookup();
+			tracker.on.delete('directus_oauth_tokens').response(1);
+			tracker.on.delete('directus_sessions').response(1);
+			tracker.on.select('directus_users').response([createUserRow()]);
+
+			await service.revokeToken(validParams({ authorization_header: basicAuthHeader(clientId, clientSecret) }));
+
+			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');
+			expect(tokenDeletes.length).toBe(1);
+			const sessionDeletes = queryHistory('delete', 'directus_sessions');
+			expect(sessionDeletes.length).toBe(1);
+		});
+
+		it('client_secret_basic: wrong secret returns 401', async () => {
+			mockClientLookup(clientId, {
+				token_endpoint_auth_method: 'client_secret_basic',
+				client_secret_hash: clientSecretHash,
+			});
+
+			await assertOAuthError(
+				() => service.revokeToken(validParams({ authorization_header: basicAuthHeader(clientId, 'wrong-secret') })),
+				{ error: 'invalid_client', statusCode: 401 },
+			);
+
+			// Grant should NOT have been revoked
+			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');
+			expect(tokenDeletes.length).toBe(0);
+		});
+
+		it('client_secret_basic: auth succeeds but token unknown returns 200', async () => {
+			mockClientLookup(clientId, {
+				token_endpoint_auth_method: 'client_secret_basic',
+				client_secret_hash: clientSecretHash,
+			});
+
+			// No grant found
+			tracker.on.select('directus_oauth_tokens').response([]);
+
+			// Should NOT throw -- silent 200 per RFC 7009
+			await service.revokeToken(validParams({ authorization_header: basicAuthHeader(clientId, clientSecret) }));
+		});
+
+		it('unknown client_id returns 401', async () => {
+			tracker.on.select('directus_oauth_clients').response([]);
+
+			await assertOAuthError(() => service.revokeToken(validParams()), { error: 'invalid_client', statusCode: 401 });
+		});
+
+		it('none: still returns 200 for unknown tokens', async () => {
+			mockClientLookup(clientId, {
+				token_endpoint_auth_method: 'none',
+				client_secret_hash: null,
+			});
+
+			tracker.on.select('directus_oauth_tokens').response([]);
+
+			// Should NOT throw -- silent 200
+			await service.revokeToken(validParams());
 		});
 	});
 
