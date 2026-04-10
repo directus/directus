@@ -381,6 +381,23 @@ describe('fetchCimdMetadata', () => {
 		await expect(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client')).rejects.toThrow(OAuthError);
 	});
 
+	it('rejects null response body', async () => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: null,
+		});
+
+		await expect(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client')).rejects.toThrow(OAuthError);
+
+		try {
+			await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client');
+		} catch (err) {
+			expect((err as any).code).toBe('invalid_client_metadata');
+			expect((err as any).description).toBe('Client metadata document must be a JSON object');
+		}
+	});
+
 	it('rejects non-JSON content type', async () => {
 		mockAxiosGet.mockResolvedValue({
 			status: 200,

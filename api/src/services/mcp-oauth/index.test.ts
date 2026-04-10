@@ -441,6 +441,20 @@ describe('McpOAuthService', () => {
 			expect(meta.registration_endpoint).toBe('https://example.com/directus/mcp-oauth/register');
 			expect(meta.revocation_endpoint).toBe('https://example.com/directus/mcp-oauth/revoke');
 		});
+
+		it('env CIMD=false overrides settings CIMD=true (AND logic)', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: TEST_PUBLIC_URL,
+				MCP_OAUTH_DCR_ENABLED: true,
+				MCP_OAUTH_CIMD_ENABLED: false,
+			} as any);
+
+			mockSettings({ mcp_oauth_cimd_enabled: true });
+			const meta = await service.getAuthorizationServerMetadata();
+			expect(meta).not.toHaveProperty('client_id_metadata_document_supported');
+		});
 	});
 
 	describe('registerClient', () => {
@@ -1171,6 +1185,53 @@ describe('McpOAuthService', () => {
 			);
 
 			expect(result.scope).toBe('mcp:access');
+		});
+
+		it('CIMD client returns registration_type cimd and client_domain', async () => {
+			const cimdId = 'https://tools.example.com/meta';
+
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: TEST_PUBLIC_URL,
+				MCP_OAUTH_CIMD_ENABLED: true,
+			} as any);
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// Existing CIMD client with fresh cache
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdId,
+					client_name: 'CIMD Tool',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					grant_types: JSON.stringify(['authorization_code']),
+					token_endpoint_auth_method: 'none',
+					metadata_expires_at: new Date(Date.now() + 3600_000),
+					metadata_fetched_at: new Date(),
+					registration_type: 'cimd',
+				},
+			]);
+
+			const result = await service.validateAuthorization(
+				{
+					client_id: cimdId,
+					redirect_uri: TEST_REDIRECT_URI,
+					response_type: 'code',
+					code_challenge: codeChallenge,
+					code_challenge_method: 'S256',
+					scope: 'mcp:access',
+					resource: TEST_RESOURCE_URL,
+				},
+				userId,
+				sessionHash,
+			);
+
+			expect(result.registration_type).toBe('cimd');
+			expect(result.client_domain).toBe('tools.example.com');
 		});
 	});
 
@@ -2987,6 +3048,105 @@ describe('McpOAuthService', () => {
 			await assertOAuthError(() => service.resolveClientWithFetch(cimdClientId), {
 				error: 'invalid_client',
 			});
+		});
+
+		it('CIMD stale cache fetch failure (non-OAuthError) throws invalid_client', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// Existing client with past expiry (stale)
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'Stale Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					metadata_expires_at: new Date(Date.now() - 1000),
+					metadata_fetched_at: new Date(Date.now() - 3600_000),
+					metadata_etag: '"old-etag"',
+					registration_type: 'cimd',
+				},
+			]);
+
+			// fetchCimdMetadata rejects with a generic (non-OAuthError) error
+			mockFetchCimdMetadata.mockRejectedValue(new Error('Network error'));
+
+			try {
+				await service.resolveClientWithFetch(cimdClientId);
+				expect.fail('Expected OAuthError to be thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).code).toBe('invalid_client');
+				expect((err as OAuthError).description).toBe('Failed to revalidate client metadata');
+			}
+		});
+
+		it('CIMD stale 304 with null TTL reuses previous TTL', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			const fetchedAt = new Date(Date.now() - 3600_000);
+			const expiresAt = new Date(fetchedAt.getTime() + 3600_000); // 1h TTL
+			const prevTtl = expiresAt.getTime() - fetchedAt.getTime(); // 3600000
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// Existing client with past expiry (stale) and known previous TTL
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'Existing Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					metadata_expires_at: expiresAt,
+					metadata_fetched_at: fetchedAt,
+					metadata_etag: '"etag-1"',
+					registration_type: 'cimd',
+				},
+			]);
+
+			// 304 with null TTL (no Cache-Control on response)
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: true,
+				ttlMs: null,
+			});
+
+			tracker.on.update('directus_oauth_clients').response(1);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+
+			// The new metadata_expires_at should be ~1h from now (reused previous TTL)
+			const resultExpiresAt = new Date(result['metadata_expires_at'] as string).getTime();
+			const resultFetchedAt = new Date(result['metadata_fetched_at'] as string).getTime();
+			const actualTtl = resultExpiresAt - resultFetchedAt;
+
+			expect(actualTtl).toBe(prevTtl);
+		});
+
+		it('CIMD 304 on first contact (no existing row) throws invalid_client_metadata', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			// Settings gate
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			// No existing client, then max clients cap
+			tracker.on.select('directus_oauth_clients').responseOnce([]);
+			tracker.on.select('directus_oauth_clients').responseOnce([{ count: 0 }]);
+
+			// fetchCimdMetadata returns 304 (unexpected on first contact)
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: true,
+				ttlMs: null,
+			});
+
+			try {
+				await service.resolveClientWithFetch(cimdClientId);
+				expect.fail('Expected OAuthError to be thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).code).toBe('invalid_client_metadata');
+				expect((err as OAuthError).description).toContain('Unexpected 304');
+			}
 		});
 
 		it('CIMD concurrent insert falls back to SELECT', async () => {

@@ -667,3 +667,38 @@ describe('error-handler MCP 401', () => {
 		);
 	});
 });
+describe('getRedirectIndicator', () => {
+	let getRedirectIndicator: typeof import('./mcp-oauth.js').getRedirectIndicator;
+
+	beforeEach(async () => {
+		({ getRedirectIndicator } = await import('./mcp-oauth.js'));
+	});
+
+	test('localhost redirect returns "localhost"', () => {
+		expect(getRedirectIndicator('http://localhost:3000/cb', 'some-client', 'dcr')).toBe('localhost');
+	});
+
+	test('127.0.0.1 redirect returns "localhost"', () => {
+		expect(getRedirectIndicator('http://127.0.0.1:3000/cb', 'some-client', 'dcr')).toBe('localhost');
+	});
+
+	test('bare IP redirect returns "ip-address"', () => {
+		expect(getRedirectIndicator('http://192.168.1.1:3000/cb', 'some-client', 'dcr')).toBe('ip-address');
+	});
+
+	test('CIMD cross-origin redirect returns "cross-origin"', () => {
+		expect(getRedirectIndicator('https://other.example.com/cb', 'https://tools.example.com/meta', 'cimd')).toBe(
+			'cross-origin',
+		);
+	});
+
+	test('CIMD same-origin redirect returns undefined', () => {
+		expect(
+			getRedirectIndicator('https://tools.example.com/cb', 'https://tools.example.com/meta', 'cimd'),
+		).toBeUndefined();
+	});
+
+	test('DCR normal HTTPS redirect returns undefined', () => {
+		expect(getRedirectIndicator('https://example.com/cb', 'some-uuid', 'dcr')).toBeUndefined();
+	});
+});

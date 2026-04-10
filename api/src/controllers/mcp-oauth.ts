@@ -20,7 +20,11 @@ import { type ConsentPageData, type PageOpts, renderConsentPage, renderErrorPage
 // Helpers
 // ---------------------------------------------------------------------------
 
-function getRedirectIndicator(redirectUri: string, clientId: string, registrationType: string): string | undefined {
+export function getRedirectIndicator(
+	redirectUri: string,
+	clientId: string,
+	registrationType: string,
+): string | undefined {
 	try {
 		const redirectUrl = new URL(redirectUri);
 		const host = redirectUrl.hostname;
