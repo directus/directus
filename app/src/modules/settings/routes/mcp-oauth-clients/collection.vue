@@ -12,7 +12,6 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
 import VInfo from '@/components/v-info.vue';
-import VNotice from '@/components/v-notice.vue';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -141,9 +140,7 @@ function useBatch() {
 				</template>
 
 				<template #no-items>
-					<VInfo :title="$t('mcp_oauth_clients')" icon="key" center>
-						<VNotice>{{ $t('no_oauth_clients') }}</VNotice>
-					</VInfo>
+					<VInfo :title="$t('no_oauth_clients')" icon="key" center />
 				</template>
 			</component>
 
