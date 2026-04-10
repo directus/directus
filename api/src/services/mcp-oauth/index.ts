@@ -286,6 +286,12 @@ export class McpOAuthService {
 	 */
 	async registerClient(body: unknown): Promise<DCRResponse> {
 		const env = useEnv();
+		const logger = useLogger();
+
+		function rejectRegistration(code: string, description: string): never {
+			logger.debug({ code, description, input }, 'DCR validation failed');
+			throw new OAuthError(400, code, description);
+		}
 
 		if (!isObject(body)) {
 			throw new OAuthError(400, 'invalid_client_metadata', 'Registration metadata must be an object');
@@ -297,28 +303,24 @@ export class McpOAuthService {
 		const clientName = input['client_name'];
 
 		if (typeof clientName !== 'string' || clientName.length === 0) {
-			throw new OAuthError(400, 'invalid_client_metadata', 'client_name is required');
+			rejectRegistration('invalid_client_metadata', 'client_name is required');
 		}
 
 		// Policy: length cap to prevent abuse via unauthenticated DCR
 		if (clientName.length > MAX_CLIENT_NAME_LENGTH) {
-			throw new OAuthError(
-				400,
-				'invalid_client_metadata',
-				`client_name must not exceed ${MAX_CLIENT_NAME_LENGTH} characters`,
-			);
+			rejectRegistration('invalid_client_metadata', `client_name must not exceed ${MAX_CLIENT_NAME_LENGTH} characters`);
 		}
 
 		// RFC 7591 Section 2: redirect_uris REQUIRED for authorization_code grant
 		const redirectUris = input['redirect_uris'];
 
 		if (!Array.isArray(redirectUris) || redirectUris.length === 0) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'At least one redirect_uri is required');
+			rejectRegistration('invalid_redirect_uri', 'At least one redirect_uri is required');
 		}
 
 		// Policy: cap count to prevent abuse via unauthenticated DCR
 		if (redirectUris.length > MAX_REDIRECT_URIS) {
-			throw new OAuthError(400, 'invalid_redirect_uri', `Maximum ${MAX_REDIRECT_URIS} redirect URIs allowed`);
+			rejectRegistration('invalid_redirect_uri', `Maximum ${MAX_REDIRECT_URIS} redirect URIs allowed`);
 		}
 
 		// RFC 6749 Section 3.1.2: redirect URIs must be absolute, no fragment
@@ -331,22 +333,18 @@ export class McpOAuthService {
 		const grantTypes = input['grant_types'];
 
 		if (!Array.isArray(grantTypes) || grantTypes.length === 0) {
-			throw new OAuthError(
-				400,
-				'invalid_client_metadata',
-				'grant_types is required and must include authorization_code',
-			);
+			rejectRegistration('invalid_client_metadata', 'grant_types is required and must include authorization_code');
 		}
 
 		if (!grantTypes.includes('authorization_code')) {
-			throw new OAuthError(400, 'invalid_client_metadata', 'grant_types must include authorization_code');
+			rejectRegistration('invalid_client_metadata', 'grant_types must include authorization_code');
 		}
 
 		// Policy: only authorization_code and refresh_token supported
 		const allowedGrantTypes = ['authorization_code', 'refresh_token'];
 
 		if (grantTypes.some((gt: string) => !allowedGrantTypes.includes(gt))) {
-			throw new OAuthError(400, 'invalid_client_metadata', 'Unsupported grant type');
+			rejectRegistration('invalid_client_metadata', 'Unsupported grant type');
 		}
 
 		// RFC 7591 Section 2: spec defaults to client_secret_basic if omitted, but Section 3.1
@@ -357,7 +355,7 @@ export class McpOAuthService {
 		const authMethod = input['token_endpoint_auth_method'] ?? 'none';
 
 		if (authMethod !== 'none') {
-			throw new OAuthError(400, 'invalid_client_metadata', 'Only token_endpoint_auth_method "none" is supported');
+			rejectRegistration('invalid_client_metadata', 'Only token_endpoint_auth_method "none" is supported');
 		}
 
 		// RFC 7591 Section 2: response_types derived from grant_types if omitted
@@ -365,7 +363,7 @@ export class McpOAuthService {
 
 		if (responseTypes !== undefined) {
 			if (!Array.isArray(responseTypes) || responseTypes.length !== 1 || responseTypes[0] !== 'code') {
-				throw new OAuthError(400, 'invalid_client_metadata', 'Only response_types ["code"] is supported');
+				rejectRegistration('invalid_client_metadata', 'Only response_types ["code"] is supported');
 			}
 		}
 
@@ -379,7 +377,7 @@ export class McpOAuthService {
 			];
 
 			if (Number(count) >= maxClients) {
-				throw new OAuthError(400, 'invalid_client_metadata', 'Maximum number of registered clients reached');
+				rejectRegistration('invalid_client_metadata', 'Maximum number of registered clients reached');
 			}
 		}
 

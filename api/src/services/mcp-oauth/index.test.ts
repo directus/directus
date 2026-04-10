@@ -56,6 +56,7 @@ vi.mock('../activity.js', () => ({
 
 vi.mock('../../logger/index.js', () => ({
 	useLogger: () => ({
+		debug: vi.fn(),
 		info: vi.fn(),
 		warn: vi.fn(),
 		error: vi.fn(),
