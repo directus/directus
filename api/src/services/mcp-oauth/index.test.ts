@@ -1595,19 +1595,19 @@ describe('McpOAuthService', () => {
 
 		/** Set up all DB mocks for a successful exchange */
 		function mockSuccessfulExchange(clientOverrides: Record<string, unknown> = {}) {
+			// 0. Client lookup (pre-txn auth + in-txn re-read, persistent handler serves both)
+			mockClientLookup(clientId, clientOverrides);
 			// 1. Code lookup (read-only, outside transaction)
 			mockCodeLookup();
 			// 2. Atomic burn (inside transaction)
 			tracker.on.update('directus_oauth_codes').response(1);
-			// 3. Client lookup (inside transaction)
-			mockClientLookup(clientId, clientOverrides);
-			// 4. User lookup for email + status (inside transaction)
+			// 3. User lookup for email + status (inside transaction)
 			mockUserLookup();
-			// 5. Existing grant lookup (none found)
+			// 4. Existing grant lookup (none found)
 			tracker.on.select('directus_oauth_tokens').response([]);
-			// 6. Insert session
+			// 5. Insert session
 			tracker.on.insert('directus_sessions').response([]);
-			// 7. Insert grant
+			// 6. Insert grant
 			tracker.on.insert('directus_oauth_tokens').response([]);
 		}
 
@@ -1616,12 +1616,16 @@ describe('McpOAuthService', () => {
 		});
 
 		it('missing grant_type returns invalid_request', async () => {
+			mockClientLookup(clientId);
+
 			await assertOAuthError(() => service.exchangeCode(validParams({ grant_type: undefined }), context), {
 				error: 'invalid_request',
 			});
 		});
 
 		it('unsupported grant_type returns unsupported_grant_type', async () => {
+			mockClientLookup(clientId);
+
 			await assertOAuthError(() => service.exchangeCode(validParams({ grant_type: 'client_credentials' }), context), {
 				error: 'unsupported_grant_type',
 			});
@@ -1634,59 +1638,77 @@ describe('McpOAuthService', () => {
 		});
 
 		it('missing code returns invalid_request', async () => {
+			mockClientLookup(clientId);
+
 			await assertOAuthError(() => service.exchangeCode(validParams({ code: undefined }), context), {
 				error: 'invalid_request',
 			});
 		});
 
 		it('missing redirect_uri returns invalid_request', async () => {
+			mockClientLookup(clientId);
+
 			await assertOAuthError(() => service.exchangeCode(validParams({ redirect_uri: undefined }), context), {
 				error: 'invalid_request',
 			});
 		});
 
 		it('missing code_verifier returns invalid_request', async () => {
+			mockClientLookup(clientId);
+
 			await assertOAuthError(() => service.exchangeCode(validParams({ code_verifier: undefined }), context), {
 				error: 'invalid_request',
 			});
 		});
 
-		it('malformed code_verifier (too short) returns invalid_request before code lookup', async () => {
+		it('malformed code_verifier (too short) returns invalid_request after client auth', async () => {
+			mockClientLookup(clientId);
+
 			// 42 chars - below minimum of 43
 			await assertOAuthError(() => service.exchangeCode(validParams({ code_verifier: 'a'.repeat(42) }), context), {
 				error: 'invalid_request',
 			});
 
-			// No DB queries should have been made
-			expect(tracker.history.select).toHaveLength(0);
+			// Only client lookup query should have been made (pre-txn auth)
+			expect(queryHistory('select', 'directus_oauth_clients').length).toBe(1);
+			expect(queryHistory('select', 'directus_oauth_codes').length).toBe(0);
 		});
 
-		it('malformed code_verifier (too long) returns invalid_request before code lookup', async () => {
+		it('malformed code_verifier (too long) returns invalid_request after client auth', async () => {
+			mockClientLookup(clientId);
+
 			// 129 chars - above maximum of 128
 			await assertOAuthError(() => service.exchangeCode(validParams({ code_verifier: 'a'.repeat(129) }), context), {
 				error: 'invalid_request',
 			});
 
-			expect(tracker.history.select).toHaveLength(0);
+			expect(queryHistory('select', 'directus_oauth_clients').length).toBe(1);
+			expect(queryHistory('select', 'directus_oauth_codes').length).toBe(0);
 		});
 
-		it('malformed code_verifier (invalid charset) returns invalid_request before code lookup', async () => {
+		it('malformed code_verifier (invalid charset) returns invalid_request after client auth', async () => {
+			mockClientLookup(clientId);
+
 			// 43 chars but contains space (not unreserved per RFC 7636)
 			await assertOAuthError(
 				() => service.exchangeCode(validParams({ code_verifier: 'a'.repeat(42) + ' ' }), context),
 				{ error: 'invalid_request' },
 			);
 
-			expect(tracker.history.select).toHaveLength(0);
+			expect(queryHistory('select', 'directus_oauth_clients').length).toBe(1);
+			expect(queryHistory('select', 'directus_oauth_codes').length).toBe(0);
 		});
 
 		it('malformed code_verifier returns invalid_request even when code is valid (format check runs first)', async () => {
-			// Set up valid code in DB but provide bad verifier - should not touch DB
+			mockClientLookup(clientId);
+
+			// Set up valid code in DB but provide bad verifier - should not touch DB for code
 			await assertOAuthError(() => service.exchangeCode(validParams({ code_verifier: 'a!b'.repeat(15) }), context), {
 				error: 'invalid_request',
 			});
 
-			expect(tracker.history.select).toHaveLength(0);
+			expect(queryHistory('select', 'directus_oauth_clients').length).toBe(1);
+			expect(queryHistory('select', 'directus_oauth_codes').length).toBe(0);
 		});
 
 		it('valid code exchange returns access_token, token_type=Bearer, refresh_token, scope, expires_in', async () => {
@@ -1747,9 +1769,9 @@ describe('McpOAuthService', () => {
 		});
 
 		it('wrong code_verifier returns invalid_grant', async () => {
+			mockClientLookup(clientId);
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(1);
-			mockClientLookup(clientId);
 
 			// Valid format but wrong verifier
 			const wrongVerifier = 'x'.repeat(43);
@@ -1760,6 +1782,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('expired code returns invalid_grant', async () => {
+			mockClientLookup(clientId);
 			mockCodeLookup({ expires_at: new Date(Date.now() - 1000) }); // expired 1s ago
 			tracker.on.update('directus_oauth_codes').response(1);
 
@@ -1767,6 +1790,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('wrong client_id returns invalid_grant', async () => {
+			mockClientLookup(clientId);
 			const wrongClientId = crypto.randomUUID();
 			mockCodeLookup({ client: wrongClientId });
 			tracker.on.update('directus_oauth_codes').response(1);
@@ -1775,6 +1799,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('wrong redirect_uri returns invalid_grant', async () => {
+			mockClientLookup(clientId);
 			mockCodeLookup({ redirect_uri: 'https://other.example.com/callback' });
 			tracker.on.update('directus_oauth_codes').response(1);
 
@@ -1782,6 +1807,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('wrong resource returns invalid_target', async () => {
+			mockClientLookup(clientId);
 			mockCodeLookup({ resource: 'https://evil.com/mcp' });
 			tracker.on.update('directus_oauth_codes').response(1);
 
@@ -1796,6 +1822,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('code already used returns invalid_grant without revoking public-client grant', async () => {
+			mockClientLookup(clientId);
 			mockCodeLookup();
 			// Atomic update returns 0 = already used
 			tracker.on.update('directus_oauth_codes').response(0);
@@ -1819,6 +1846,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('concurrent code exchange - only one wins (atomic UPDATE)', async () => {
+			mockClientLookup(clientId);
 			// First call: code found in SELECT, but UPDATE returns 0 (someone else used it first)
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(0);
@@ -1939,6 +1967,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('nonexistent code returns invalid_grant', async () => {
+			mockClientLookup(clientId);
 			// No code found
 			tracker.on.select('directus_oauth_codes').response([]);
 
@@ -2018,11 +2047,30 @@ describe('McpOAuthService', () => {
 			expect(tokenInserts.length).toBe(1);
 		});
 
-		it('client deleted between code lookup and transaction rejects with invalid_grant', async () => {
+		it('client deleted between pre-txn auth and in-txn re-read rejects with invalid_grant', async () => {
+			let clientSelectCount = 0;
+
+			tracker.on.select('directus_oauth_clients').response(() => {
+				clientSelectCount++;
+
+				if (clientSelectCount === 1) {
+					// Pre-txn auth: client exists
+					return [
+						{
+							client_id: clientId,
+							client_name: 'Test MCP Client',
+							redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+							grant_types: JSON.stringify(['authorization_code', 'refresh_token']),
+							token_endpoint_auth_method: 'none',
+						},
+					];
+				}
+
+				return []; // In-txn re-read: client deleted
+			});
+
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(1);
-			// Client lookup inside transaction returns empty (deleted)
-			tracker.on.select('directus_oauth_clients').response([]);
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), {
 				error: 'invalid_grant',
@@ -2030,14 +2078,92 @@ describe('McpOAuthService', () => {
 		});
 
 		it('inactive user returns invalid_grant', async () => {
+			mockClientLookup(clientId);
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(1);
-			mockClientLookup(clientId);
 			// User exists but is suspended
 			mockUserLookup({ status: 'suspended' });
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), {
 				error: 'invalid_grant',
+			});
+		});
+
+		describe('client authentication', () => {
+			const clientSecret = 'super-secret-value';
+			const clientSecretHash = crypto.createHash('sha256').update(clientSecret).digest('hex');
+
+			function basicAuthHeader(user: string, pass: string) {
+				return 'Basic ' + Buffer.from(`${user}:${pass}`).toString('base64');
+			}
+
+			it('client_secret_basic: valid Basic header succeeds', async () => {
+				mockSuccessfulExchange({
+					token_endpoint_auth_method: 'client_secret_basic',
+					client_secret_hash: clientSecretHash,
+				});
+
+				const result = await service.exchangeCode(
+					validParams({ authorization_header: basicAuthHeader(clientId, clientSecret) }),
+					context,
+				);
+
+				expect(result.access_token).toBeDefined();
+				expect(result.token_type).toBe('Bearer');
+			});
+
+			it('client_secret_basic: missing header rejects before code burn', async () => {
+				// Only mock client lookup -- no code mocks. If code ops are reached, test fails.
+				mockClientLookup(clientId, {
+					token_endpoint_auth_method: 'client_secret_basic',
+					client_secret_hash: clientSecretHash,
+				});
+
+				await assertOAuthError(() => service.exchangeCode(validParams(), context), {
+					error: 'invalid_client',
+					statusCode: 401,
+				});
+
+				// No code operations should have been attempted
+				expect(queryHistory('select', 'directus_oauth_codes').length).toBe(0);
+				expect(queryHistory('update', 'directus_oauth_codes').length).toBe(0);
+			});
+
+			it('client_secret_basic: wrong secret rejects before code burn', async () => {
+				mockClientLookup(clientId, {
+					token_endpoint_auth_method: 'client_secret_basic',
+					client_secret_hash: clientSecretHash,
+				});
+
+				await assertOAuthError(
+					() =>
+						service.exchangeCode(
+							validParams({ authorization_header: basicAuthHeader(clientId, 'wrong-secret') }),
+							context,
+						),
+					{ error: 'invalid_client', statusCode: 401 },
+				);
+
+				expect(queryHistory('select', 'directus_oauth_codes').length).toBe(0);
+			});
+
+			it('client_secret_post: valid secret in body succeeds', async () => {
+				mockSuccessfulExchange({
+					token_endpoint_auth_method: 'client_secret_post',
+					client_secret_hash: clientSecretHash,
+				});
+
+				const result = await service.exchangeCode(validParams({ client_secret: clientSecret }), context);
+
+				expect(result.access_token).toBeDefined();
+				expect(result.token_type).toBe('Bearer');
+			});
+
+			it('none: still works unchanged', async () => {
+				mockSuccessfulExchange({ token_endpoint_auth_method: 'none' });
+
+				const result = await service.exchangeCode(validParams(), context);
+				expect(result.access_token).toBeDefined();
 			});
 		});
 	});
@@ -2462,6 +2588,7 @@ describe('McpOAuthService', () => {
 					client_name: 'Other Client',
 					redirect_uris: JSON.stringify(['https://other.example.com/callback']),
 					grant_types: JSON.stringify(['authorization_code', 'refresh_token']),
+					token_endpoint_auth_method: 'none',
 				},
 			]);
 
@@ -2471,6 +2598,69 @@ describe('McpOAuthService', () => {
 			await assertOAuthError(() => service.refreshToken(validParams({ client_id: otherClientId }), context), {
 				error: 'invalid_grant',
 				statusCode: 400,
+			});
+		});
+
+		describe('client authentication', () => {
+			const clientSecret = 'super-secret-value';
+			const clientSecretHash = crypto.createHash('sha256').update(clientSecret).digest('hex');
+
+			function basicAuthHeader(user: string, pass: string) {
+				return 'Basic ' + Buffer.from(`${user}:${pass}`).toString('base64');
+			}
+
+			it('client_secret_basic: valid auth refreshes successfully', async () => {
+				// 1. Client lookup (persistent: serves resolveClientFromDb)
+				mockClientLookup(clientId, {
+					token_endpoint_auth_method: 'client_secret_basic',
+					client_secret_hash: clientSecretHash,
+				});
+
+				// 2. Grant lookup by session
+				mockGrantLookup();
+				// 3. User status + email lookup
+				tracker.on.select('directus_users').response([createUserRow()]);
+				// 4. Atomic update (session rotation)
+				tracker.on.update('directus_oauth_tokens').response(1);
+				// 5. Delete old session
+				tracker.on.delete('directus_sessions').response(1);
+				// 6. Insert new session
+				tracker.on.insert('directus_sessions').response([]);
+
+				const result = await service.refreshToken(
+					validParams({ authorization_header: basicAuthHeader(clientId, clientSecret) }),
+					context,
+				);
+
+				expect(result.access_token).toBeDefined();
+				expect(result.token_type).toBe('Bearer');
+				expect(result.refresh_token).toBeDefined();
+			});
+
+			it('client_secret_basic: wrong secret rejects with 401', async () => {
+				mockClientLookup(clientId, {
+					token_endpoint_auth_method: 'client_secret_basic',
+					client_secret_hash: clientSecretHash,
+				});
+
+				await assertOAuthError(
+					() =>
+						service.refreshToken(
+							validParams({ authorization_header: basicAuthHeader(clientId, 'wrong-secret') }),
+							context,
+						),
+					{ error: 'invalid_client', statusCode: 401 },
+				);
+
+				// No grant operations should have been attempted
+				expect(queryHistory('select', 'directus_oauth_tokens').length).toBe(0);
+			});
+
+			it('none: still works unchanged', async () => {
+				mockSuccessfulRefresh();
+
+				const result = await service.refreshToken(validParams(), context);
+				expect(result.access_token).toBeDefined();
 			});
 		});
 	});
