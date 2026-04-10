@@ -347,7 +347,7 @@ function clearFilters() {
 					>
 						<template #activator="{ on }">
 							<PrivateViewHeaderBarActionButton
-								v-tooltip.right="$t('create_bookmark')"
+								v-tooltip.bottom="$t('create_bookmark')"
 								icon="bookmark"
 								variant="ghost"
 								@click="on"
