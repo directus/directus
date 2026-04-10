@@ -194,6 +194,55 @@ function getStringParam(params: Record<string, unknown>, key: string, redirectab
 	return value;
 }
 
+/** Validate a redirect URI per RFC 6749 Section 3.1.2 + OAuth 2.1 policy (HTTPS, no fragment, no userinfo). */
+export function validateRedirectUri(uri: unknown): void {
+	if (typeof uri !== 'string') {
+		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must be a string');
+	}
+
+	if (uri.length > MAX_REDIRECT_URI_LENGTH) {
+		throw new OAuthError(
+			400,
+			'invalid_redirect_uri',
+			`redirect_uri must not exceed ${MAX_REDIRECT_URI_LENGTH} characters`,
+		);
+	}
+
+	let parsed: URL;
+
+	try {
+		parsed = new URL(uri);
+	} catch {
+		throw new OAuthError(400, 'invalid_redirect_uri', `Invalid redirect URI: ${uri}`);
+	}
+
+	// No fragment
+	if (parsed.hash) {
+		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain a fragment');
+	}
+
+	// No userinfo
+	if (parsed.username || parsed.password) {
+		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain userinfo');
+	}
+
+	// Must be HTTPS, except loopback (RFC 8252 Section 7.3)
+	if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLoopbackHost(parsed.hostname))) {
+		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)');
+	}
+
+	// Optional operator-defined domain allowlist. Loopback bypasses to keep native OAuth clients working.
+	const allowedDomains = (useEnv()['MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS'] as string[]) ?? [];
+
+	if (
+		allowedDomains.length > 0 &&
+		!isLoopbackHost(parsed.hostname) &&
+		!isDomainAllowed(parsed.hostname, allowedDomains)
+	) {
+		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri domain is not in the allowlist');
+	}
+}
+
 /**
  * OAuth 2.1 authorization server for MCP (Model Context Protocol) access.
  *
@@ -1417,50 +1466,6 @@ export class McpOAuthService {
 	}
 
 	private validateRedirectUri(uri: unknown): void {
-		if (typeof uri !== 'string') {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must be a string');
-		}
-
-		if (uri.length > MAX_REDIRECT_URI_LENGTH) {
-			throw new OAuthError(
-				400,
-				'invalid_redirect_uri',
-				`redirect_uri must not exceed ${MAX_REDIRECT_URI_LENGTH} characters`,
-			);
-		}
-
-		let parsed: URL;
-
-		try {
-			parsed = new URL(uri);
-		} catch {
-			throw new OAuthError(400, 'invalid_redirect_uri', `Invalid redirect URI: ${uri}`);
-		}
-
-		// No fragment
-		if (parsed.hash) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain a fragment');
-		}
-
-		// No userinfo
-		if (parsed.username || parsed.password) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain userinfo');
-		}
-
-		// Must be HTTPS, except localhost
-		if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLoopbackHost(parsed.hostname))) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)');
-		}
-
-		// Optional operator-defined domain allowlist. Loopback bypasses to keep native OAuth clients working.
-		const allowedDomains = (useEnv()['MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS'] as string[]) ?? [];
-
-		if (
-			allowedDomains.length > 0 &&
-			!isLoopbackHost(parsed.hostname) &&
-			!isDomainAllowed(parsed.hostname, allowedDomains)
-		) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri domain is not in the allowlist');
-		}
+		validateRedirectUri(uri);
 	}
 }
