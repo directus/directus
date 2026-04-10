@@ -221,11 +221,12 @@ function useImage() {
 					}
 
 					const formData = new FormData();
-					formData.append('file', blob, imageData.value?.filename_download);
 
 					if (imageData.value?.folder) {
 						formData.append('folder', imageData.value.folder as string);
 					}
+
+					formData.append('file', blob, imageData.value?.filename_download);
 
 					api.post('/files', formData).then(
 						(response) => resolve(response.data.data.id),
