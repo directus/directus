@@ -464,8 +464,6 @@ function clearFilters() {
 					:to="addNewLink"
 					:disabled="createAllowed === false"
 				/>
-
-				<FlowDialogs v-bind="flowDialogsContext" />
 			</template>
 
 			<template #navigation>
@@ -560,6 +558,8 @@ function clearFilters() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+
+			<FlowDialogs v-bind="flowDialogsContext" />
 		</PrivateView>
 	</component>
 </template>

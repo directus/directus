@@ -792,8 +792,6 @@ function useItemNavigation() {
 					</VMenu>
 				</template>
 			</PrivateViewHeaderBarActionButton>
-
-			<FlowDialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
@@ -930,6 +928,8 @@ function useItemNavigation() {
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
+
+		<FlowDialogs v-bind="flowDialogsContext" />
 	</PrivateView>
 </template>
 
