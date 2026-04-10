@@ -1438,6 +1438,82 @@ export class McpOAuthService {
 		return db('directus_oauth_clients').where('client_id', clientId).first();
 	}
 
+	/** Base64 character set: A-Z, a-z, 0-9, +, /, = (padding) */
+	private static readonly BASE64_RE = /^[A-Za-z0-9+/]*={0,2}$/;
+
+	/**
+	 * Parse an Authorization: Basic header. Returns { clientId, clientSecret }
+	 * or null if the header is absent or not Basic scheme.
+	 * Throws OAuthError on malformed Basic header.
+	 */
+	parseBasicAuth(header: string | undefined): { clientId: string; clientSecret: string } | null {
+		if (!header) return null;
+
+		// RFC 7617: scheme comparison is case-insensitive
+		if (header.length < 6 || header.slice(0, 6).toLowerCase() !== 'basic ') {
+			return null;
+		}
+
+		const encoded = header.slice(6).trim();
+
+		if (!McpOAuthService.BASE64_RE.test(encoded)) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: invalid base64');
+		}
+
+		const decoded = Buffer.from(encoded, 'base64').toString('utf-8');
+
+		if (decoded.includes('\0')) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: contains null bytes');
+		}
+
+		const colonIndex = decoded.indexOf(':');
+
+		if (colonIndex === -1) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: missing colon separator');
+		}
+
+		// RFC 6749 Section 2.3.1: application/x-www-form-urlencoded decoding
+		// Replace + with space before decodeURIComponent (form-urlencoded allows + for spaces)
+		try {
+			return {
+				clientId: decodeURIComponent(decoded.slice(0, colonIndex).replace(/\+/g, ' ')),
+				clientSecret: decodeURIComponent(decoded.slice(colonIndex + 1).replace(/\+/g, ' ')),
+			};
+		} catch (err) {
+			if (err instanceof URIError) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: invalid percent-encoding');
+			}
+
+			throw err;
+		}
+	}
+
+	/**
+	 * Extract client_id from the request. Method-agnostic -- runs before the client
+	 * record is loaded. Only the Basic scheme is recognized; other Authorization
+	 * header schemes are ignored (client_id comes from body only).
+	 */
+	resolveClientId(params: AuthParams): {
+		clientId: string;
+		basicAuth: { clientId: string; clientSecret: string } | null;
+	} {
+		const basicAuth = this.parseBasicAuth(params.authorization_header);
+		const headerClientId = basicAuth?.clientId;
+		const bodyClientId = params.client_id;
+
+		if (headerClientId && bodyClientId && headerClientId !== bodyClientId) {
+			throw new OAuthError(400, 'invalid_request', 'client_id mismatch between Authorization header and request body');
+		}
+
+		const clientId = headerClientId ?? bodyClientId;
+
+		if (!clientId) {
+			throw new OAuthError(400, 'invalid_request', 'client_id is required');
+		}
+
+		return { clientId, basicAuth };
+	}
+
 	/**
 	 * First contact: fetch CIMD metadata, INSERT new client row.
 	 * Handles concurrent inserts via unique constraint catch + SELECT fallback.

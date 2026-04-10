@@ -3309,4 +3309,166 @@ describe('McpOAuthService', () => {
 			expect(result!['registration_type']).toBe('cimd');
 		});
 	});
+
+	describe('parseBasicAuth', () => {
+		let service: McpOAuthService;
+
+		beforeEach(() => {
+			service = new McpOAuthService({ knex: db, schema });
+		});
+
+		it('parses valid Basic header', () => {
+			const encoded = Buffer.from('my-client:my-secret').toString('base64');
+			const result = service.parseBasicAuth(`Basic ${encoded}`);
+			expect(result).toEqual({ clientId: 'my-client', clientSecret: 'my-secret' });
+		});
+
+		it('URL-decodes client_id and secret', () => {
+			const encoded = Buffer.from('my%20client:my%20secret').toString('base64');
+			const result = service.parseBasicAuth(`Basic ${encoded}`);
+			expect(result).toEqual({ clientId: 'my client', clientSecret: 'my secret' });
+		});
+
+		it('handles secrets containing colons', () => {
+			const encoded = Buffer.from('client:secret:with:colons').toString('base64');
+			const result = service.parseBasicAuth(`Basic ${encoded}`);
+			expect(result).toEqual({ clientId: 'client', clientSecret: 'secret:with:colons' });
+		});
+
+		it('returns null for non-Basic scheme', () => {
+			expect(service.parseBasicAuth('Bearer token')).toBeNull();
+		});
+
+		it('returns null for undefined', () => {
+			expect(service.parseBasicAuth(undefined)).toBeNull();
+		});
+
+		it('rejects invalid base64 with 400', () => {
+			try {
+				service.parseBasicAuth('Basic !!!not-base64!!!');
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
+		});
+
+		it('rejects missing colon separator with 400', () => {
+			const encoded = Buffer.from('no-colon-here').toString('base64');
+
+			try {
+				service.parseBasicAuth(`Basic ${encoded}`);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+			}
+		});
+
+		it('rejects null bytes in decoded value with 400', () => {
+			const encoded = Buffer.from('client\x00:secret').toString('base64');
+
+			try {
+				service.parseBasicAuth(`Basic ${encoded}`);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+			}
+		});
+
+		it('rejects empty payload after Basic prefix', () => {
+			expect(() => service.parseBasicAuth('Basic ')).toThrow(OAuthError);
+		});
+
+		it('handles case-insensitive Basic scheme', () => {
+			const encoded = Buffer.from('my-client:my-secret').toString('base64');
+			expect(service.parseBasicAuth(`basic ${encoded}`)).toEqual({ clientId: 'my-client', clientSecret: 'my-secret' });
+			expect(service.parseBasicAuth(`BASIC ${encoded}`)).toEqual({ clientId: 'my-client', clientSecret: 'my-secret' });
+		});
+
+		it('decodes + as space (form-urlencoded)', () => {
+			const encoded = Buffer.from('my+client:my+secret').toString('base64');
+			const result = service.parseBasicAuth(`Basic ${encoded}`);
+			expect(result).toEqual({ clientId: 'my client', clientSecret: 'my secret' });
+		});
+
+		it('rejects invalid percent-encoding with 400', () => {
+			const encoded = Buffer.from('client%ZZ:secret').toString('base64');
+
+			try {
+				service.parseBasicAuth(`Basic ${encoded}`);
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+			}
+		});
+
+		it('handles URL-based CIMD client_id in Basic header', () => {
+			const clientId = 'https://tools.example.com/oauth/metadata.json';
+			const encoded = Buffer.from(`${encodeURIComponent(clientId)}:secret`).toString('base64');
+			const result = service.parseBasicAuth(`Basic ${encoded}`);
+			expect(result!.clientId).toBe(clientId);
+			expect(result!.clientSecret).toBe('secret');
+		});
+	});
+
+	describe('resolveClientId', () => {
+		let service: McpOAuthService;
+
+		beforeEach(() => {
+			service = new McpOAuthService({ knex: db, schema });
+		});
+
+		it('extracts client_id from body when no Authorization header', () => {
+			const result = service.resolveClientId({ client_id: 'my-client' });
+			expect(result.clientId).toBe('my-client');
+			expect(result.basicAuth).toBeNull();
+		});
+
+		it('extracts client_id and secret from Basic auth header', () => {
+			const encoded = Buffer.from('my-client:my-secret').toString('base64');
+			const result = service.resolveClientId({ authorization_header: `Basic ${encoded}` });
+			expect(result.clientId).toBe('my-client');
+			expect(result.basicAuth).toEqual({ clientId: 'my-client', clientSecret: 'my-secret' });
+		});
+
+		it('ignores non-Basic Authorization headers', () => {
+			const result = service.resolveClientId({
+				client_id: 'my-client',
+				authorization_header: 'Bearer some-token',
+			});
+
+			expect(result.clientId).toBe('my-client');
+			expect(result.basicAuth).toBeNull();
+		});
+
+		it('rejects mismatched client_id between header and body', () => {
+			const encoded = Buffer.from('client-a:secret').toString('base64');
+
+			expect(() =>
+				service.resolveClientId({
+					client_id: 'client-b',
+					authorization_header: `Basic ${encoded}`,
+				}),
+			).toThrow(OAuthError);
+		});
+
+		it('accepts matching client_id in header and body', () => {
+			const encoded = Buffer.from('my-client:secret').toString('base64');
+
+			const result = service.resolveClientId({
+				client_id: 'my-client',
+				authorization_header: `Basic ${encoded}`,
+			});
+
+			expect(result.clientId).toBe('my-client');
+		});
+
+		it('throws when no client_id available from any source', () => {
+			expect(() => service.resolveClientId({})).toThrow(OAuthError);
+		});
+	});
 });
