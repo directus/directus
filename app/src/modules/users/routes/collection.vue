@@ -45,7 +45,7 @@ const { addNewLink } = useLinks();
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
-const { title } = useBreadcrumb();
+const { title } = useTitle();
 
 const roleFilter = computed(() => {
 	if (props.role) {
@@ -165,7 +165,7 @@ function useLinks() {
 	return { addNewLink };
 }
 
-function useBreadcrumb() {
+function useTitle() {
 	const title = computed(() => {
 		if (props.status) return t(`${props.status}_users`);
 		if (!props.role) return t('user_directory');

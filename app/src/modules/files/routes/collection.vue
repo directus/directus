@@ -63,7 +63,7 @@ const confirmDelete = ref(false);
 const batchEditActive = ref(false);
 const isTransitioning = ref(false);
 
-const { title } = useBreadcrumb();
+const { title } = useTitle();
 
 const folderFilter = computed(() => {
 	return getFolderFilter(props.folder, props.special, userStore?.currentUser?.id);
@@ -166,7 +166,7 @@ async function batchDeleteFiles() {
 	}
 }
 
-function useBreadcrumb() {
+function useTitle() {
 	const title = computed(() => {
 		if (props.special === 'all') {
 			return t('all_files');
