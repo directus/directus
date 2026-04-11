@@ -8,12 +8,8 @@ export default defineModule({
 	icon: 'people_alt',
 	routes: [
 		{
-			path: '',
-			redirect: '/users/active',
-		},
-		{
 			name: 'users-active',
-			path: 'active',
+			path: '',
 			component: Collection,
 			props: () => ({ status: 'active' }),
 		},
@@ -28,6 +24,12 @@ export default defineModule({
 			path: 'invited',
 			component: Collection,
 			props: () => ({ status: 'invited' }),
+		},
+		{
+			name: 'users-all',
+			path: 'all',
+			component: Collection,
+			props: () => ({}),
 		},
 		{
 			name: 'users-item',

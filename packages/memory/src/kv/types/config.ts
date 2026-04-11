@@ -22,6 +22,11 @@ export interface KvConfigLocal extends KvConfigAbstract {
 	 * Maximum number of keys in the store
 	 */
 	maxKeys?: number;
+
+	/**
+	 * Time-to-Live expires keys after duration in milliseconds
+	 */
+	ttl?: number;
 }
 
 export interface KvConfigRedis extends KvConfigAbstract {
@@ -58,6 +63,11 @@ export interface KvConfigRedis extends KvConfigAbstract {
 	 * Existing or new Redis connection to use with this memory class
 	 */
 	redis: Redis | ExtendedRedis;
+
+	/**
+	 * Time-to-Live expires keys after duration in milliseconds
+	 */
+	ttl?: number;
 }
 
 export type KvConfig = KvConfigLocal | KvConfigRedis;

@@ -29,7 +29,7 @@ export function useStore<Type extends object>(namespace: string, options?: Store
 				redis: useRedis(),
 			};
 
-	if (config.type === 'redis' && options?.ttl) {
+	if (options?.ttl) {
 		config.ttl = options?.ttl;
 	}
 

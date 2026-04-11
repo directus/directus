@@ -11,13 +11,18 @@ export function splitRecursive(object: unknown): {
 		for (const key in rest) {
 			const { rawDelta, defaultOverwrites: innerDefaultOverwrites } = splitRecursive(rest[key]);
 			rest[key] = rawDelta;
-			if (innerDefaultOverwrites) defaultOverwrites[key] = innerDefaultOverwrites;
+
+			if (innerDefaultOverwrites) {
+				defaultOverwrites[key] = innerDefaultOverwrites;
+			} else if (Array.isArray(rest[key]) && _user !== undefined && _date !== undefined) {
+				defaultOverwrites[key] = { _user, _date };
+			}
 		}
 
 		return { rawDelta: rest, defaultOverwrites };
 	} else if (Array.isArray(object)) {
 		const rest: Record<string, any> = [];
-		const defaultOverwrites: Record<string, any> = [];
+		const defaultOverwrites: any[] = [];
 
 		for (const key in object) {
 			const { rawDelta, defaultOverwrites: innerDefaultOverwrites } = splitRecursive(object[key]);
@@ -25,9 +30,7 @@ export function splitRecursive(object: unknown): {
 			if (innerDefaultOverwrites) defaultOverwrites[key] = innerDefaultOverwrites;
 		}
 
-		object.map((value) => splitRecursive(value));
-
-		return { rawDelta: rest, defaultOverwrites };
+		return { rawDelta: rest, defaultOverwrites: defaultOverwrites.length > 0 ? defaultOverwrites : undefined };
 	}
 
 	return { rawDelta: object as any, defaultOverwrites: undefined };
