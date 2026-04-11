@@ -426,7 +426,7 @@ export class McpOAuthService {
 		let clientSecretHash: string | null = null;
 
 		if (isConfidential) {
-			clientSecret = crypto.randomBytes(32).toString('base64url');
+			clientSecret = crypto.randomBytes(CLIENT_SECRET_BYTES).toString('base64url');
 			clientSecretHash = this.hashToken(clientSecret);
 		}
 
@@ -708,7 +708,7 @@ export class McpOAuthService {
 		}
 
 		// RFC 6749 Section 4.1.2: generate authorization code (opaque to client)
-		const rawCode = crypto.randomBytes(32).toString('hex');
+		const rawCode = crypto.randomBytes(CLIENT_SECRET_BYTES).toString('hex');
 		const codeHash = this.hashToken(rawCode);
 
 		// Store code (never store raw code)
@@ -1607,7 +1607,7 @@ export class McpOAuthService {
 	): void {
 		const storedHash = clientRecord['client_secret_hash'] as string | null;
 
-		if (!storedHash || !/^[0-9a-f]{64}$/.test(storedHash)) {
+		if (!storedHash || !SHA256_HEX_RE.test(storedHash)) {
 			throw new OAuthError(401, 'invalid_client', 'Client authentication failed', false, errorHeaders);
 		}
 
