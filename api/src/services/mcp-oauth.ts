@@ -1480,7 +1480,9 @@ export class McpOAuthService {
 		}
 
 		// Must be HTTPS, except localhost
-		const isLocalhost = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname === '::1';
+		// URL.hostname returns '[::1]' with brackets for IPv6 on Node 22+
+		const isLocalhost =
+			parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname === '[::1]';
 
 		if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLocalhost)) {
 			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)');

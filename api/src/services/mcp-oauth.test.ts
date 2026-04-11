@@ -443,6 +443,17 @@ describe('McpOAuthService', () => {
 				expect(result.redirect_uris).toEqual(['http://localhost:3000/callback']);
 			});
 
+			it('http://[::1]:3000/callback accepted (IPv6 loopback)', async () => {
+				tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+				tracker.on.insert('directus_oauth_clients').response([]);
+
+				const result = await service.registerClient(
+					createTestClient({ redirect_uris: ['http://[::1]:3000/callback'] }),
+				);
+
+				expect(result.redirect_uris).toEqual(['http://[::1]:3000/callback']);
+			});
+
 			it('max 10 redirect URIs', async () => {
 				const uris = Array.from({ length: 11 }, (_, i) => `https://example.com/cb${i}`);
 
