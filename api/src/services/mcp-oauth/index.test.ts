@@ -71,7 +71,7 @@ const mockFetchCimdMetadata = vi.fn();
 const mockGetAllowedDomains = vi.fn().mockReturnValue([]);
 const mockIsDomainAllowed = vi.fn().mockReturnValue(true);
 
-vi.mock('./mcp-oauth-cimd.js', () => ({
+vi.mock('../mcp-oauth-cimd.js', () => ({
 	detectClientIdType: (...args: unknown[]) => mockDetectClientIdType(...args),
 	fetchCimdMetadata: (...args: unknown[]) => mockFetchCimdMetadata(...args),
 	getAllowedDomains: (...args: unknown[]) => mockGetAllowedDomains(...args),
@@ -80,7 +80,7 @@ vi.mock('./mcp-oauth-cimd.js', () => ({
 
 const mockTranslateDatabaseError = vi.fn().mockResolvedValue(new Error('unknown'));
 
-vi.mock('../database/errors/translate.js', () => ({
+vi.mock('../../database/errors/translate.js', () => ({
 	translateDatabaseError: (...args: unknown[]) => mockTranslateDatabaseError(...args),
 }));
 
