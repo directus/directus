@@ -696,6 +696,39 @@ describe('McpOAuthService', () => {
 			);
 		});
 
+		it.each([
+			{ host: 'localhost', registered: 'http://localhost/callback', requested: 'http://localhost:54771/callback' },
+			{ host: '127.0.0.1', registered: 'http://127.0.0.1/callback', requested: 'http://127.0.0.1:8080/callback' },
+			{ host: '[::1]', registered: 'http://[::1]/callback', requested: 'http://[::1]:9999/callback' },
+		])(
+			'RFC 8252 Section 7.3: $host redirect_uri with different port matches registered portless URI',
+			async ({ registered, requested }) => {
+				mockClientLookup(clientId, { redirect_uris: JSON.stringify([registered]) });
+
+				const result = await service.validateAuthorization(
+					validParams({ redirect_uri: requested }),
+					userId,
+					sessionHash,
+				);
+
+				expect(result.signed_params).toBeDefined();
+			},
+		);
+
+		it('loopback port flexibility does NOT apply to non-loopback hosts', async () => {
+			mockClientLookup(clientId, { redirect_uris: JSON.stringify(['https://example.com/callback']) });
+
+			await assertOAuthError(
+				() =>
+					service.validateAuthorization(
+						validParams({ redirect_uri: 'https://example.com:8443/callback' }),
+						userId,
+						sessionHash,
+					),
+				{ error: 'invalid_request', redirectable: false },
+			);
+		});
+
 		it('missing code_challenge returns invalid_request (redirectable)', async () => {
 			mockClientLookup(clientId);
 
@@ -1028,6 +1061,27 @@ describe('McpOAuthService', () => {
 
 			expect(parsed.searchParams.get('code')).toBeDefined();
 		});
+
+		it.each([
+			{ host: 'localhost', registered: 'http://localhost/callback', requested: 'http://localhost:54771/callback' },
+			{ host: '127.0.0.1', registered: 'http://127.0.0.1/callback', requested: 'http://127.0.0.1:8080/callback' },
+			{ host: '[::1]', registered: 'http://[::1]/callback', requested: 'http://[::1]:9999/callback' },
+		])(
+			'RFC 8252 Section 7.3: processDecision accepts $host redirect_uri with different port',
+			async ({ registered, requested }) => {
+				mockClientLookup(clientId, { redirect_uris: JSON.stringify([registered]) });
+				tracker.on.insert('directus_oauth_codes').response([]);
+				tracker.on.select('directus_oauth_consents').response([]);
+				tracker.on.insert('directus_oauth_consents').response([]);
+
+				const signed = signConsent({ redirect_uri: requested });
+
+				const url = await service.processDecision({ signed_params: signed, approved: true }, userId, sessionToken);
+				const parsed = new URL(url);
+
+				expect(parsed.searchParams.get('code')).toBeDefined();
+			},
+		);
 
 		it('denial returns redirect URL with error=access_denied, state, iss', async () => {
 			const signed = signConsent();

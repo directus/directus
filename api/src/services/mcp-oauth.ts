@@ -193,6 +193,36 @@ function getStringParam(params: Record<string, unknown>, key: string, redirectab
 }
 
 /**
+ * Check if a requested redirect_uri matches any registered URI.
+ * RFC 6749 Section 3.1.2: exact string match for non-loopback.
+ * RFC 8252 Section 7.3: loopback redirect URIs (localhost, 127.0.0.1, [::1]) MUST allow any port
+ * at request time, since native apps bind to ephemeral ports.
+ */
+function matchRedirectUri(requested: string, registered: string[]): boolean {
+	return registered.some((reg) => {
+		if (reg === requested) return true;
+
+		try {
+			const regUrl = new URL(reg);
+			const reqUrl = new URL(requested);
+			const host = regUrl.hostname;
+
+			if (host === 'localhost' || host === '127.0.0.1' || host === '[::1]') {
+				return (
+					regUrl.protocol === reqUrl.protocol &&
+					regUrl.hostname === reqUrl.hostname &&
+					regUrl.pathname === reqUrl.pathname
+				);
+			}
+		} catch {
+			// invalid URL, fall through
+		}
+
+		return false;
+	});
+}
+
+/**
  * OAuth 2.1 authorization server for MCP (Model Context Protocol) access.
  *
  * Implements public-client profile with mandatory PKCE:
@@ -453,14 +483,16 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
 		}
 
-		// Validate redirect_uri matches registered URIs (exact string match per RFC 6749 Section 3.1.2)
+		// Validate redirect_uri matches registered URIs.
+		// RFC 6749 Section 3.1.2: exact string match for non-loopback.
+		// RFC 8252 Section 7.3: loopback redirect URIs MUST allow any port at request time.
 		if (!redirectUri) {
 			throw new OAuthError(400, 'invalid_request', 'redirect_uri is required');
 		}
 
 		const registeredUris = parseStringArrayField(client['redirect_uris'], 'redirect_uris');
 
-		if (!registeredUris.includes(redirectUri)) {
+		if (!matchRedirectUri(redirectUri, registeredUris)) {
 			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
 		}
 
@@ -637,7 +669,7 @@ export class McpOAuthService {
 
 		const registeredUris = parseStringArrayField(client['redirect_uris'], 'redirect_uris');
 
-		if (!registeredUris.includes(redirectUri)) {
+		if (!matchRedirectUri(redirectUri, registeredUris)) {
 			throw new OAuthError(400, 'invalid_request', 'redirect_uri no longer registered for this client');
 		}
 
