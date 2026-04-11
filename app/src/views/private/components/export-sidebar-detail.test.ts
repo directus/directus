@@ -61,6 +61,11 @@ const InterfaceSystemFieldsStub = defineComponent({
 			required: false,
 			default: () => [],
 		},
+		fieldFilter: {
+			type: Function,
+			required: false,
+			default: undefined,
+		},
 	},
 	template: '<div class="interface-system-fields-stub" />',
 });
@@ -124,5 +129,20 @@ describe('export-sidebar-detail default export fields', () => {
 		const selectedFields = wrapper.findComponent(InterfaceSystemFieldsStub).props('value');
 
 		expect(selectedFields).toEqual(['id']);
+	});
+
+	test('passes picker filter that excludes synthetic fields', async () => {
+		const wrapper = mountComponent();
+
+		await wrapper.vm.$nextTick();
+
+		const fieldFilter = wrapper.findComponent(InterfaceSystemFieldsStub).props('fieldFilter') as
+			| ((field: { field: string }) => boolean)
+			| undefined;
+
+		expect(typeof fieldFilter).toBe('function');
+		expect(fieldFilter?.({ field: '$thumbnail' })).toBe(false);
+		expect(fieldFilter?.({ field: 'thumbnail' })).toBe(true);
+		expect(fieldFilter?.({ field: 'id' })).toBe(true);
 	});
 });

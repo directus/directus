@@ -81,6 +81,8 @@ const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax)
 
 const isVirtualField = (fieldName: string) => fieldName.startsWith('$');
 
+const isExportableField = (field: { field: string }) => isVirtualField(field.field) === false;
+
 const sanitizeExportFields = (fieldNames: string[] | undefined) => {
 	return fieldNames?.filter((fieldName) => isVirtualField(fieldName) === false) ?? [];
 };
@@ -650,6 +652,7 @@ async function exportDataFiles() {
 					<InterfaceSystemFields
 						:value="exportSettings.fields"
 						:collection-name="collection"
+						:field-filter="isExportableField"
 						allow-select-all
 						@input="exportSettings.fields = $event"
 					/>
