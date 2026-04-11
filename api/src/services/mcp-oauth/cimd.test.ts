@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { OAuthError } from './mcp-oauth/index.js';
+import { OAuthError } from './index.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
@@ -10,7 +10,7 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
-vi.mock('../logger/index.js', () => ({
+vi.mock('../../logger/index.js', () => ({
 	useLogger: vi.fn().mockReturnValue({
 		debug: vi.fn(),
 		warn: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock('../logger/index.js', () => ({
 
 const mockAxiosGet = vi.fn();
 
-vi.mock('../request/index.js', () => ({
+vi.mock('../../request/index.js', () => ({
 	getAxios: vi.fn().mockResolvedValue({
 		get: (...args: unknown[]) => mockAxiosGet(...args),
 	} as unknown as AxiosInstance),
@@ -34,7 +34,7 @@ const {
 	getAllowedDomains,
 	resolveCacheTtl,
 	fetchCimdMetadata,
-} = await import('./mcp-oauth-cimd.js');
+} = await import('./cimd.js');
 
 const { useEnv } = await import('@directus/env');
 

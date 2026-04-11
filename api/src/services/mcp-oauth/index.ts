@@ -24,7 +24,7 @@ import {
 	fetchCimdMetadata,
 	getAllowedDomains,
 	isDomainAllowed,
-} from '../mcp-oauth-cimd.js';
+} from './cimd.js';
 import { isLoopbackHost } from './utils/loopback.js';
 import { matchRedirectUri } from './utils/redirect.js';
 

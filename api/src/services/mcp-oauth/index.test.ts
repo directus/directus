@@ -71,7 +71,7 @@ const mockFetchCimdMetadata = vi.fn();
 const mockGetAllowedDomains = vi.fn().mockReturnValue([]);
 const mockIsDomainAllowed = vi.fn().mockReturnValue(true);
 
-vi.mock('../mcp-oauth-cimd.js', () => ({
+vi.mock('./cimd.js', () => ({
 	detectClientIdType: (...args: unknown[]) => mockDetectClientIdType(...args),
 	fetchCimdMetadata: (...args: unknown[]) => mockFetchCimdMetadata(...args),
 	getAllowedDomains: (...args: unknown[]) => mockGetAllowedDomains(...args),
