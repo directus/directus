@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { OAuthError } from './index.js';
+import { OAuthError } from './types/error.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({

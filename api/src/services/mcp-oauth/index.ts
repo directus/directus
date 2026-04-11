@@ -23,40 +23,25 @@ import {
 	detectClientIdType,
 	fetchCimdMetadata,
 	getAllowedDomains,
-	isDomainAllowed,
 } from './cimd.js';
-import { isLoopbackHost } from './utils/loopback.js';
-import { matchRedirectUri } from './utils/redirect.js';
+import { OAuthError } from './types/error.js';
+import { isDomainAllowed } from './utils/domain.js';
+import { matchRedirectUri, validateRedirectUri } from './utils/redirect.js';
+
+export { OAuthError } from './types/error.js';
+export { isDomainAllowed } from './utils/domain.js';
+export { isLoopbackHost } from './utils/loopback.js';
+export { validateRedirectUri } from './utils/redirect.js';
 
 const DEFAULT_UNUSED_CLIENT_TTL_MS = 3 * 24 * 60 * 60 * 1000; // 3d -- matches env default
 const DEFAULT_CIMD_TTL_MS = 3_600_000; // 1 hour
 const MAX_REDIRECT_URIS = 10;
-const MAX_REDIRECT_URI_LENGTH = 255;
 const MAX_CLIENT_NAME_LENGTH = 200;
 
 /** Consent JWT typ claim -- prevents token confusion with regular Directus JWTs */
 const CONSENT_JWT_TYP = 'directus-mcp-consent+jwt';
 /** Consent JWT audience -- binds the token to the decision endpoint */
 const CONSENT_JWT_AUD = 'mcp-oauth-authorize-decision';
-
-/**
- * RFC 6749/7591 error with structured code for JSON serialization.
- *
- * `code` maps to the OAuth `error` field. `redirectable` controls whether
- * the controller can redirect the error back to the client's redirect_uri
- * (only safe after redirect_uri is validated against registered URIs).
- */
-export class OAuthError extends Error {
-	constructor(
-		public status: number,
-		public code: string,
-		public description: string,
-		public redirectable: boolean = false,
-	) {
-		super(description);
-		this.name = 'OAuthError';
-	}
-}
 
 function parseStringArrayField(value: unknown, field: string): string[] {
 	let parsed = value;
@@ -70,29 +55,6 @@ function parseStringArrayField(value: unknown, field: string): string[] {
 	}
 
 	return parsed;
-}
-
-/**
- * Check if a hostname matches any of the provided domain patterns.
- * Supports exact match and `*.example.com` wildcard prefix (matches subdomains, not base).
- * Case-insensitive. Whitespace in patterns is trimmed.
- */
-export function isDomainAllowed(hostname: string, patterns: string[]): boolean {
-	const lower = hostname.toLowerCase();
-
-	for (const pattern of patterns) {
-		const p = pattern.toLowerCase().trim();
-		if (!p) continue;
-
-		if (p.startsWith('*.')) {
-			const suffix = p.slice(1); // ".example.com"
-			if (lower.endsWith(suffix) && lower.length > suffix.length) return true;
-		} else if (lower === p) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 /** RFC 7591 Dynamic Client Registration response. */
@@ -204,55 +166,6 @@ function getStringParam(params: Record<string, unknown>, key: string, redirectab
 	}
 
 	return value;
-}
-
-/** Validate a redirect URI per RFC 6749 Section 3.1.2 + OAuth 2.1 policy (HTTPS, no fragment, no userinfo). */
-export function validateRedirectUri(uri: unknown): void {
-	if (typeof uri !== 'string') {
-		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must be a string');
-	}
-
-	if (uri.length > MAX_REDIRECT_URI_LENGTH) {
-		throw new OAuthError(
-			400,
-			'invalid_redirect_uri',
-			`redirect_uri must not exceed ${MAX_REDIRECT_URI_LENGTH} characters`,
-		);
-	}
-
-	let parsed: URL;
-
-	try {
-		parsed = new URL(uri);
-	} catch {
-		throw new OAuthError(400, 'invalid_redirect_uri', `Invalid redirect URI: ${uri}`);
-	}
-
-	// No fragment
-	if (parsed.hash) {
-		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain a fragment');
-	}
-
-	// No userinfo
-	if (parsed.username || parsed.password) {
-		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain userinfo');
-	}
-
-	// Must be HTTPS, except loopback (RFC 8252 Section 7.3)
-	if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLoopbackHost(parsed.hostname))) {
-		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)');
-	}
-
-	// Optional operator-defined domain allowlist. Loopback bypasses to keep native OAuth clients working.
-	const allowedDomains = (useEnv()['MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS'] as string[]) ?? [];
-
-	if (
-		allowedDomains.length > 0 &&
-		!isLoopbackHost(parsed.hostname) &&
-		!isDomainAllowed(parsed.hostname, allowedDomains)
-	) {
-		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri domain is not in the allowlist');
-	}
 }
 
 /**

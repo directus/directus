@@ -2,7 +2,8 @@ import { isIP } from 'node:net';
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
 import { getAxios } from '../../request/index.js';
-import { OAuthError, validateRedirectUri } from './index.js';
+import { OAuthError } from './types/error.js';
+import { validateRedirectUri } from './utils/redirect.js';
 
 const MIN_TTL_MS = 300_000; // 5 minutes
 const MAX_TTL_MS = 86_400_000; // 24 hours
