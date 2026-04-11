@@ -138,4 +138,88 @@ describe('parseField action', () => {
 		expect(fieldsStore.fields[0].name).toEqual('Name');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(false);
 	});
+
+	test('should normalize required and readonly to false for presentation fields', () => {
+		const fieldsStore = useFieldsStore();
+
+		const presentationField = {
+			collection: 'a',
+			field: 'divider',
+			type: 'alias',
+			schema: null,
+			meta: {
+				collection: 'a',
+				field: 'divider',
+				interface: 'presentation-divider',
+				special: ['alias', 'no-data'],
+				options: null,
+				display_options: null,
+				note: null,
+				validation_message: null,
+				required: true,
+				readonly: true,
+			},
+		} as unknown as Field;
+
+		const parsed = fieldsStore.parseField(presentationField);
+
+		expect(parsed.meta?.required).toBe(false);
+		expect(parsed.meta?.readonly).toBe(false);
+	});
+
+	test('should not touch required or readonly on group (alias + no-data + group) fields', () => {
+		const fieldsStore = useFieldsStore();
+
+		const groupField = {
+			collection: 'a',
+			field: 'my_group',
+			type: 'alias',
+			schema: null,
+			meta: {
+				collection: 'a',
+				field: 'my_group',
+				interface: 'group-raw',
+				special: ['alias', 'no-data', 'group'],
+				options: null,
+				display_options: null,
+				note: null,
+				validation_message: null,
+				required: true,
+				readonly: true,
+			},
+		} as unknown as Field;
+
+		const parsed = fieldsStore.parseField(groupField);
+
+		expect(parsed.meta?.required).toBe(true);
+		expect(parsed.meta?.readonly).toBe(true);
+	});
+
+	test('should not touch required or readonly on relational alias fields', () => {
+		const fieldsStore = useFieldsStore();
+
+		const o2mField = {
+			collection: 'a',
+			field: 'children',
+			type: 'alias',
+			schema: null,
+			meta: {
+				collection: 'a',
+				field: 'children',
+				interface: 'list-o2m',
+				special: ['o2m'],
+				options: null,
+				display_options: null,
+				note: null,
+				validation_message: null,
+				required: true,
+				readonly: false,
+			},
+		} as unknown as Field;
+
+		const parsed = fieldsStore.parseField(o2mField);
+
+		expect(parsed.meta?.required).toBe(true);
+		expect(parsed.meta?.readonly).toBe(false);
+	});
 });

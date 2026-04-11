@@ -9,6 +9,7 @@ import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
+import { isPresentationField } from '@/utils/field-utils';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { translate as translateLiteral } from '@/utils/translate-literal';
 import { translate } from '@/utils/translate-object-values';
@@ -112,6 +113,15 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 
 	function parseField(field: FieldRaw): Field {
 		let name = formatTitle(field.field);
+
+		// Presentation fields (divider, header, notice, links) have no underlying data so marking
+		// them as required or readonly is meaningless and causes item validation to fail. Normalize
+		// the stored values to `false` at read time so legacy fields that already have these set
+		// don't break item creation or editing. See issue #26961.
+		if (isPresentationField(field) && field.meta) {
+			if (field.meta.required) field.meta.required = false;
+			if (field.meta.readonly) field.meta.readonly = false;
+		}
 
 		const localesToKeep =
 			field.meta && !isNil(field.meta.translations) && Array.isArray(field.meta.translations)

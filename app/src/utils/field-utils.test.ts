@@ -4,6 +4,7 @@ import {
 	isDateCreated,
 	isDateUpdated,
 	isHidden,
+	isPresentationField,
 	isPrimaryKey,
 	isRelational,
 	isUserCreated,
@@ -70,6 +71,21 @@ test('isUserCreated', () => {
 
 	expect(isUserCreated(field!)).toBe(true);
 	expect(isUserCreated(wrongField!)).toBe(false);
+});
+
+test('isPresentationField', () => {
+	const dividerField = fields.find((f) => f.field === 'divider');
+	const groupField = fields.find((f) => f.field === 'group');
+	const o2mField = fields.find((f) => f.field === 'o2m');
+	const standardField = fields.find((f) => f.field === 'title');
+
+	expect(isPresentationField(dividerField!)).toBe(true);
+	// groups are alias fields but are containers with data, not presentation-only
+	expect(isPresentationField(groupField!)).toBe(false);
+	// relational alias fields are not presentation fields
+	expect(isPresentationField(o2mField!)).toBe(false);
+	// standard non-alias fields are not presentation fields
+	expect(isPresentationField(standardField!)).toBe(false);
 });
 
 const fields: Field[] = [
@@ -636,5 +652,63 @@ const fields: Field[] = [
 			validation_message: null,
 		},
 		name: 'M2A',
+	},
+	{
+		collection: 'test_collection',
+		field: 'divider',
+		type: 'alias',
+		schema: null,
+		meta: {
+			id: 208,
+			collection: 'test_collection',
+			field: 'divider',
+			special: ['alias', 'no-data'],
+			interface: 'presentation-divider',
+			options: null,
+			display: null,
+			display_options: null,
+			readonly: false,
+			hidden: false,
+			searchable: false,
+			sort: 14,
+			width: 'full',
+			translations: null,
+			note: null,
+			conditions: null,
+			required: false,
+			group: null,
+			validation: null,
+			validation_message: null,
+		},
+		name: 'Divider',
+	},
+	{
+		collection: 'test_collection',
+		field: 'group',
+		type: 'alias',
+		schema: null,
+		meta: {
+			id: 209,
+			collection: 'test_collection',
+			field: 'group',
+			special: ['alias', 'no-data', 'group'],
+			interface: 'group-raw',
+			options: null,
+			display: null,
+			display_options: null,
+			readonly: false,
+			hidden: false,
+			searchable: false,
+			sort: 15,
+			width: 'full',
+			translations: null,
+			note: null,
+			conditions: null,
+			required: false,
+			group: null,
+			validation: null,
+			validation_message: null,
+		},
+		name: 'Group',
 	},
 ];
