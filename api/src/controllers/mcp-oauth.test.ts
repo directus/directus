@@ -18,7 +18,7 @@ vi.mock('../database/index.js', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
-vi.mock('../services/mcp-oauth.js', () => {
+vi.mock('../services/mcp-oauth/index.js', () => {
 	const McpOAuthService = vi.fn();
 
 	McpOAuthService.prototype.getProtectedResourceMetadata = vi
@@ -419,7 +419,7 @@ describe('mcp-oauth controller', () => {
 		}
 
 		test('pre-trust error (invalid client_id) renders local error page', async () => {
-			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth.js');
+			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth/index.js');
 
 			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockRejectedValueOnce(
 				new OAuthError(400, 'invalid_request', 'Unknown client_id'),
@@ -443,7 +443,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('post-trust error redirects to redirect_uri with error params', async () => {
-			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth.js');
+			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth/index.js');
 
 			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockRejectedValueOnce(
 				new OAuthError(400, 'invalid_scope', 'Only scope mcp:access is supported', true),
@@ -472,7 +472,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('post-trust error without state omits state param', async () => {
-			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth.js');
+			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth/index.js');
 
 			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockRejectedValueOnce(
 				new OAuthError(400, 'invalid_request', 'code_challenge is required', true),

@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
-import { isDomainAllowed, McpOAuthService, OAuthError } from './mcp-oauth.js';
+import { isDomainAllowed, McpOAuthService, OAuthError } from './index.js';
 
-vi.mock('../../src/database/index', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
@@ -24,7 +24,7 @@ vi.mock('@directus/env', () => ({
 
 const TEST_SECRET = 'test-secret-key-for-mcp-oauth';
 
-vi.mock('../utils/get-secret.js', () => ({
+vi.mock('../../utils/get-secret.js', () => ({
 	getSecret: () => TEST_SECRET,
 }));
 
@@ -36,25 +36,25 @@ vi.mock('nanoid', () => ({
 
 const mockFetchRolesTree = vi.fn().mockResolvedValue(['role-1']);
 
-vi.mock('../permissions/lib/fetch-roles-tree.js', () => ({
+vi.mock('../../permissions/lib/fetch-roles-tree.js', () => ({
 	fetchRolesTree: (...args: unknown[]) => mockFetchRolesTree(...args),
 }));
 
 const mockFetchGlobalAccess = vi.fn().mockResolvedValue({ app: true, admin: false });
 
-vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js', () => ({
+vi.mock('../../permissions/modules/fetch-global-access/fetch-global-access.js', () => ({
 	fetchGlobalAccess: (...args: unknown[]) => mockFetchGlobalAccess(...args),
 }));
 
 const mockActivityCreateOne = vi.fn().mockResolvedValue('activity-id');
 
-vi.mock('./activity.js', () => ({
+vi.mock('../activity.js', () => ({
 	ActivityService: vi.fn().mockImplementation(() => ({
 		createOne: mockActivityCreateOne,
 	})),
 }));
 
-vi.mock('../logger/index.js', () => ({
+vi.mock('../../logger/index.js', () => ({
 	useLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),

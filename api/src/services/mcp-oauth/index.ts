@@ -5,17 +5,19 @@ import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@di
 import { isObject, parseJSON } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
-import { getMcpUrls, MCP_ACCESS_SCOPE } from '../ai/mcp/utils.js';
-import getDatabase from '../database/index.js';
-import { useLogger } from '../logger/index.js';
-import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
-import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { getSecret } from '../utils/get-secret.js';
-import { parseOAuthScope } from '../utils/parse-oauth-scope.js';
-import { transaction } from '../utils/transaction.js';
-import { Url } from '../utils/url.js';
-import { ActivityService } from './activity.js';
+import { getMcpUrls, MCP_ACCESS_SCOPE } from '../../ai/mcp/utils.js';
+import getDatabase from '../../database/index.js';
+import { useLogger } from '../../logger/index.js';
+import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../../permissions/modules/fetch-global-access/fetch-global-access.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { getSecret } from '../../utils/get-secret.js';
+import { parseOAuthScope } from '../../utils/parse-oauth-scope.js';
+import { transaction } from '../../utils/transaction.js';
+import { Url } from '../../utils/url.js';
+import { ActivityService } from '../activity.js';
+import { isLoopbackHost } from './utils/loopback.js';
+import { matchRedirectUri } from './utils/redirect.js';
 
 const DEFAULT_UNUSED_CLIENT_TTL_MS = 3 * 24 * 60 * 60 * 1000; // 3d -- matches env default
 const MAX_REDIRECT_URIS = 10;
@@ -191,36 +193,6 @@ function getStringParam(params: Record<string, unknown>, key: string, redirectab
 	}
 
 	return value;
-}
-
-/**
- * Check if a requested redirect_uri matches any registered URI.
- * RFC 6749 Section 3.1.2: exact string match for non-loopback.
- * RFC 8252 Section 7.3: loopback redirect URIs (localhost, 127.0.0.1, [::1]) MUST allow any port
- * at request time, since native apps bind to ephemeral ports.
- */
-function matchRedirectUri(requested: string, registered: string[]): boolean {
-	return registered.some((reg) => {
-		if (reg === requested) return true;
-
-		try {
-			const regUrl = new URL(reg);
-			const reqUrl = new URL(requested);
-			const host = regUrl.hostname;
-
-			if (host === 'localhost' || host === '127.0.0.1' || host === '[::1]') {
-				return (
-					regUrl.protocol === reqUrl.protocol &&
-					regUrl.hostname === reqUrl.hostname &&
-					regUrl.pathname === reqUrl.pathname
-				);
-			}
-		} catch {
-			// invalid URL, fall through
-		}
-
-		return false;
-	});
 }
 
 /**
@@ -1480,18 +1452,18 @@ export class McpOAuthService {
 		}
 
 		// Must be HTTPS, except localhost
-		// URL.hostname returns '[::1]' with brackets for IPv6 on Node 22+
-		const isLocalhost =
-			parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname === '[::1]';
-
-		if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLocalhost)) {
+		if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLoopbackHost(parsed.hostname))) {
 			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)');
 		}
 
 		// Optional operator-defined domain allowlist. Loopback bypasses to keep native OAuth clients working.
 		const allowedDomains = (useEnv()['MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS'] as string[]) ?? [];
 
-		if (allowedDomains.length > 0 && !isLocalhost && !isDomainAllowed(parsed.hostname, allowedDomains)) {
+		if (
+			allowedDomains.length > 0 &&
+			!isLoopbackHost(parsed.hostname) &&
+			!isDomainAllowed(parsed.hostname, allowedDomains)
+		) {
 			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri domain is not in the allowlist');
 		}
 	}
