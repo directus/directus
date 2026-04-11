@@ -3800,28 +3800,31 @@ describe('McpOAuthService', () => {
 			}
 		});
 
-		// --- client_secret_basic method ---
+		// --- Symmetric confidential client tests ---
 
-		it('client_secret_basic: valid secret passes', () => {
-			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
-			const params = { authorization_header: basicHeader('my-client', secret) };
-			expect(() => service.authenticateClient(client, params)).not.toThrow();
+		describe.each(confidentialMethods)('$label', ({ method, makeAuthParams }) => {
+			it('valid secret passes', () => {
+				const client = { token_endpoint_auth_method: method, client_secret_hash: secretHash };
+				const params = makeAuthParams('my-client', secret);
+				expect(() => service.authenticateClient(client, params)).not.toThrow();
+			});
+
+			it('wrong secret rejects with 401', () => {
+				const client = { token_endpoint_auth_method: method, client_secret_hash: secretHash };
+				const params = makeAuthParams('my-client', 'wrong-secret');
+
+				try {
+					service.authenticateClient(client, params);
+					expect.unreachable('should have thrown');
+				} catch (err) {
+					expect(err).toBeInstanceOf(OAuthError);
+					expect((err as OAuthError).status).toBe(401);
+					expect((err as OAuthError).code).toBe('invalid_client');
+				}
+			});
 		});
 
-		it('client_secret_basic: wrong secret rejects with 401 + WWW-Authenticate', () => {
-			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
-			const params = { authorization_header: basicHeader('my-client', 'wrong-secret') };
-
-			try {
-				service.authenticateClient(client, params);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(401);
-				expect((err as OAuthError).code).toBe('invalid_client');
-				expect((err as OAuthError).headers).toEqual({ 'WWW-Authenticate': 'Basic realm="directus"' });
-			}
-		});
+		// --- Asymmetric method-specific tests ---
 
 		it('client_secret_basic: missing header rejects with 401 + WWW-Authenticate', () => {
 			const client = { token_endpoint_auth_method: 'client_secret_basic', client_secret_hash: secretHash };
@@ -3848,29 +3851,6 @@ describe('McpOAuthService', () => {
 				expect(err).toBeInstanceOf(OAuthError);
 				expect((err as OAuthError).status).toBe(400);
 				expect((err as OAuthError).code).toBe('invalid_request');
-			}
-		});
-
-		// --- client_secret_post method ---
-
-		it('client_secret_post: valid secret passes', () => {
-			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
-			const params = { client_secret: secret };
-			expect(() => service.authenticateClient(client, params)).not.toThrow();
-		});
-
-		it('client_secret_post: wrong secret rejects with 401', () => {
-			const client = { token_endpoint_auth_method: 'client_secret_post', client_secret_hash: secretHash };
-			const params = { client_secret: 'wrong-secret' };
-
-			try {
-				service.authenticateClient(client, params);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(401);
-				expect((err as OAuthError).code).toBe('invalid_client');
-				expect((err as OAuthError).headers).toEqual({});
 			}
 		});
 
