@@ -92,6 +92,7 @@ export interface DCRResponse {
 	response_types: string[];
 	token_endpoint_auth_method: string;
 	client_id_issued_at: number;
+	client_secret_expires_at: 0;
 }
 
 /** Authorization validation result. `signed_params` is an HMAC-SHA256 consent JWT. */
@@ -431,6 +432,7 @@ export class McpOAuthService {
 			response_types: ['code'],
 			token_endpoint_auth_method: 'none',
 			client_id_issued_at: now,
+			client_secret_expires_at: 0,
 		};
 	}
 

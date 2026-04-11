@@ -568,6 +568,7 @@ describe('McpOAuthService', () => {
 			expect(result).toHaveProperty('token_endpoint_auth_method');
 			expect(result).toHaveProperty('client_id_issued_at');
 			expect(typeof result.client_id_issued_at).toBe('number');
+			expect(result.client_secret_expires_at).toBe(0);
 		});
 
 		it('global cap (10000 clients) enforced by default', async () => {
