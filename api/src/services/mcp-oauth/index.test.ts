@@ -2656,6 +2656,46 @@ describe('McpOAuthService', () => {
 				expect(queryHistory('select', 'directus_oauth_tokens').length).toBe(0);
 			});
 
+			it('client_secret_post: valid secret refreshes successfully', async () => {
+				// 1. Client lookup (persistent: serves resolveClientFromDb)
+				mockClientLookup(clientId, {
+					token_endpoint_auth_method: 'client_secret_post',
+					client_secret_hash: clientSecretHash,
+				});
+
+				// 2. Grant lookup by session
+				mockGrantLookup();
+				// 3. User status + email lookup
+				tracker.on.select('directus_users').response([createUserRow()]);
+				// 4. Atomic update (session rotation)
+				tracker.on.update('directus_oauth_tokens').response(1);
+				// 5. Delete old session
+				tracker.on.delete('directus_sessions').response(1);
+				// 6. Insert new session
+				tracker.on.insert('directus_sessions').response([]);
+
+				const result = await service.refreshToken(validParams({ client_secret: clientSecret }), context);
+
+				expect(result.access_token).toBeDefined();
+				expect(result.token_type).toBe('Bearer');
+				expect(result.refresh_token).toBeDefined();
+			});
+
+			it('client_secret_post: wrong secret rejects with 401', async () => {
+				mockClientLookup(clientId, {
+					token_endpoint_auth_method: 'client_secret_post',
+					client_secret_hash: clientSecretHash,
+				});
+
+				await assertOAuthError(() => service.refreshToken(validParams({ client_secret: 'wrong-secret' }), context), {
+					error: 'invalid_client',
+					statusCode: 401,
+				});
+
+				// No grant operations should have been attempted
+				expect(queryHistory('select', 'directus_oauth_tokens').length).toBe(0);
+			});
+
 			it('none: still works unchanged', async () => {
 				mockSuccessfulRefresh();
 
@@ -2878,6 +2918,41 @@ describe('McpOAuthService', () => {
 				() => service.revokeToken(validParams({ authorization_header: basicAuthHeader(clientId, 'wrong-secret') })),
 				{ error: 'invalid_client', statusCode: 401 },
 			);
+
+			// Grant should NOT have been revoked
+			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');
+			expect(tokenDeletes.length).toBe(0);
+		});
+
+		it('client_secret_post: valid auth revokes successfully', async () => {
+			mockClientLookup(clientId, {
+				token_endpoint_auth_method: 'client_secret_post',
+				client_secret_hash: clientSecretHash,
+			});
+
+			mockGrantLookup();
+			tracker.on.delete('directus_oauth_tokens').response(1);
+			tracker.on.delete('directus_sessions').response(1);
+			tracker.on.select('directus_users').response([createUserRow()]);
+
+			await service.revokeToken(validParams({ client_secret: clientSecret }));
+
+			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');
+			expect(tokenDeletes.length).toBe(1);
+			const sessionDeletes = queryHistory('delete', 'directus_sessions');
+			expect(sessionDeletes.length).toBe(1);
+		});
+
+		it('client_secret_post: wrong secret returns 401', async () => {
+			mockClientLookup(clientId, {
+				token_endpoint_auth_method: 'client_secret_post',
+				client_secret_hash: clientSecretHash,
+			});
+
+			await assertOAuthError(() => service.revokeToken(validParams({ client_secret: 'wrong-secret' })), {
+				error: 'invalid_client',
+				statusCode: 401,
+			});
 
 			// Grant should NOT have been revoked
 			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');

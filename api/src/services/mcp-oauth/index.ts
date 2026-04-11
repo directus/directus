@@ -133,6 +133,15 @@ const CODE_VERIFIER_RE = /^[A-Za-z0-9\-._~]{43,128}$/;
 /** RFC 7636 Section 4.2: S256 code_challenge is base64url-encoded SHA-256 (always 43 chars) */
 const CODE_CHALLENGE_S256_RE = /^[A-Za-z0-9_-]{43}$/;
 
+/** RFC 6749 Section 9 token endpoint auth methods supported by this server */
+const SUPPORTED_TOKEN_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'] as const;
+
+/** SHA-256 hash hex format guard (64 hex chars = 256 bits) */
+const SHA256_HEX_RE = /^[0-9a-f]{64}$/;
+
+/** Client secret byte length for confidential clients (32 bytes = 256 bits) */
+const CLIENT_SECRET_BYTES = 32;
+
 /** Params checked for duplicates before redirect_uri validation (non-redirectable errors) */
 const PRE_TRUST_DUPLICATE_PARAMS = ['client_id', 'redirect_uri'] as const;
 
@@ -244,8 +253,8 @@ export class McpOAuthService {
 			revocation_endpoint: revocationEndpoint.toString(),
 			response_types_supported: ['code'],
 			grant_types_supported: ['authorization_code', 'refresh_token'],
-			token_endpoint_auth_methods_supported: ['none', 'client_secret_basic', 'client_secret_post'],
-			revocation_endpoint_auth_methods_supported: ['none', 'client_secret_basic', 'client_secret_post'],
+			token_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
+			revocation_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
 			code_challenge_methods_supported: ['S256'],
 			scopes_supported: [MCP_ACCESS_SCOPE],
 			response_modes_supported: ['query'],
@@ -353,10 +362,9 @@ export class McpOAuthService {
 		}
 
 		// RFC 7591 Section 2: defaults to client_secret_basic if omitted
-		const SUPPORTED_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'];
 		const authMethod = input['token_endpoint_auth_method'] ?? 'client_secret_basic';
 
-		if (!SUPPORTED_AUTH_METHODS.includes(authMethod as string)) {
+		if (!SUPPORTED_TOKEN_AUTH_METHODS.includes(authMethod as string)) {
 			rejectRegistration('invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
 		}
 
