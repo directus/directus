@@ -238,28 +238,43 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const { item, collection, delta: existingDelta } = version;
 
-		const activity = await activityService.createOne({
-			action: Action.VERSION_SAVE,
-			user: this.accountability?.user ?? null,
-			collection,
-			ip: this.accountability?.ip ?? null,
-			user_agent: this.accountability?.userAgent ?? null,
-			origin: this.accountability?.origin ?? null,
-			item,
-		});
+		// Respect the accountability configuration of the underlying collection. When the
+		// collection is configured to not track anything (accountability === null), no activity
+		// or revision records should be written for version saves. When the collection is
+		// configured to only track activity (accountability === 'activity'), skip the revision
+		// record but still create the activity entry.
+		const collectionAccountability = this.schema.collections[collection]?.accountability ?? null;
+		const trackActivity = collectionAccountability !== null;
+		const trackRevisions = collectionAccountability === 'all';
+
+		let activity: PrimaryKey | null = null;
+
+		if (trackActivity) {
+			activity = await activityService.createOne({
+				action: Action.VERSION_SAVE,
+				user: this.accountability?.user ?? null,
+				collection,
+				ip: this.accountability?.ip ?? null,
+				user_agent: this.accountability?.userAgent ?? null,
+				origin: this.accountability?.origin ?? null,
+				item,
+			});
+		}
 
 		const helpers = getHelpers(this.knex);
 
 		let revisionDelta = await payloadService.prepareDelta(delta);
 
-		await revisionsService.createOne({
-			activity,
-			version: key,
-			collection,
-			item,
-			data: revisionDelta,
-			delta: revisionDelta,
-		});
+		if (trackRevisions && activity !== null) {
+			await revisionsService.createOne({
+				activity,
+				version: key,
+				collection,
+				item,
+				data: revisionDelta,
+				delta: revisionDelta,
+			});
+		}
 
 		revisionDelta = revisionDelta ? revisionDelta : null;
 
