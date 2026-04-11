@@ -973,54 +973,23 @@ describe('McpOAuthService', () => {
 			);
 		});
 
-		it('missing code_challenge returns invalid_request (redirectable)', async () => {
+		it.each([
+			[{ code_challenge: undefined }, 'missing code_challenge', { redirectable: true }],
+			[{ code_challenge_method: 'plain' }, 'code_challenge_method != S256', { redirectable: true }],
+			[{ code_challenge: 'abc' }, 'code_challenge too short', { statusCode: 400 }],
+			[{ code_challenge: 'A'.repeat(44) }, 'code_challenge too long', { statusCode: 400 }],
+			[
+				{ code_challenge: 'dBjftJeZ4CVP+mB92K27uhbUJU1p1r/wW1gFWFOEjXk' },
+				'code_challenge with invalid characters',
+				{ statusCode: 400 },
+			],
+		])('code_challenge validation: %s', async (override, _label, errorOptions) => {
 			mockClientLookup(clientId);
 
-			await assertOAuthError(
-				() => service.validateAuthorization(validParams({ code_challenge: undefined }), userId, sessionHash),
-				{ error: 'invalid_request', redirectable: true },
-			);
-		});
-
-		it('code_challenge_method != S256 rejected (redirectable)', async () => {
-			mockClientLookup(clientId);
-
-			await assertOAuthError(
-				() => service.validateAuthorization(validParams({ code_challenge_method: 'plain' }), userId, sessionHash),
-				{ error: 'invalid_request', redirectable: true },
-			);
-		});
-
-		it('code_challenge too short rejected', async () => {
-			mockClientLookup(clientId);
-
-			await assertOAuthError(
-				() => service.validateAuthorization(validParams({ code_challenge: 'abc' }), userId, sessionHash),
-				{ error: 'invalid_request', statusCode: 400 },
-			);
-		});
-
-		it('code_challenge too long rejected', async () => {
-			mockClientLookup(clientId);
-
-			await assertOAuthError(
-				() => service.validateAuthorization(validParams({ code_challenge: 'A'.repeat(44) }), userId, sessionHash),
-				{ error: 'invalid_request', statusCode: 400 },
-			);
-		});
-
-		it('code_challenge with invalid characters rejected', async () => {
-			mockClientLookup(clientId);
-
-			await assertOAuthError(
-				() =>
-					service.validateAuthorization(
-						validParams({ code_challenge: 'dBjftJeZ4CVP+mB92K27uhbUJU1p1r/wW1gFWFOEjXk' }),
-						userId,
-						sessionHash,
-					),
-				{ error: 'invalid_request', statusCode: 400 },
-			);
+			await assertOAuthError(() => service.validateAuthorization(validParams(override), userId, sessionHash), {
+				error: 'invalid_request',
+				...errorOptions,
+			});
 		});
 
 		it('invalid scope rejected (redirectable)', async () => {
@@ -1634,10 +1603,18 @@ describe('McpOAuthService', () => {
 			service = new McpOAuthService({ knex: db, schema });
 		});
 
-		it('missing grant_type returns invalid_request', async () => {
-			mockClientLookup(clientId);
+		it.each([
+			[{ grant_type: undefined }, 'grant_type', true],
+			[{ code: undefined }, 'code', true],
+			[{ redirect_uri: undefined }, 'redirect_uri', true],
+			[{ code_verifier: undefined }, 'code_verifier', true],
+			[{ client_id: undefined }, 'client_id', false],
+		])('missing %s returns invalid_request', async (override, _param, needsMock) => {
+			if (needsMock) {
+				mockClientLookup(clientId);
+			}
 
-			await assertOAuthError(() => service.exchangeCode(validParams({ grant_type: undefined }), context), {
+			await assertOAuthError(() => service.exchangeCode(validParams(override), context), {
 				error: 'invalid_request',
 			});
 		});
@@ -1647,36 +1624,6 @@ describe('McpOAuthService', () => {
 
 			await assertOAuthError(() => service.exchangeCode(validParams({ grant_type: 'client_credentials' }), context), {
 				error: 'unsupported_grant_type',
-			});
-		});
-
-		it('missing client_id returns invalid_request', async () => {
-			await assertOAuthError(() => service.exchangeCode(validParams({ client_id: undefined }), context), {
-				error: 'invalid_request',
-			});
-		});
-
-		it('missing code returns invalid_request', async () => {
-			mockClientLookup(clientId);
-
-			await assertOAuthError(() => service.exchangeCode(validParams({ code: undefined }), context), {
-				error: 'invalid_request',
-			});
-		});
-
-		it('missing redirect_uri returns invalid_request', async () => {
-			mockClientLookup(clientId);
-
-			await assertOAuthError(() => service.exchangeCode(validParams({ redirect_uri: undefined }), context), {
-				error: 'invalid_request',
-			});
-		});
-
-		it('missing code_verifier returns invalid_request', async () => {
-			mockClientLookup(clientId);
-
-			await assertOAuthError(() => service.exchangeCode(validParams({ code_verifier: undefined }), context), {
-				error: 'invalid_request',
 			});
 		});
 
@@ -3624,38 +3571,19 @@ describe('McpOAuthService', () => {
 			expect(service.parseBasicAuth(undefined)).toBeNull();
 		});
 
-		it('rejects invalid base64 with 400', () => {
+		it.each([
+			['Basic !!!not-base64!!!', 'invalid base64'],
+			[`Basic ${Buffer.from('no-colon-here').toString('base64')}`, 'missing colon separator'],
+			[`Basic ${Buffer.from('client\x00:secret').toString('base64')}`, 'null bytes'],
+			[`Basic ${Buffer.from('client%ZZ:secret').toString('base64')}`, 'invalid percent-encoding'],
+		])('rejects malformed header: %s', (header) => {
 			try {
-				service.parseBasicAuth('Basic !!!not-base64!!!');
+				service.parseBasicAuth(header);
 				expect.unreachable('should have thrown');
 			} catch (err) {
 				expect(err).toBeInstanceOf(OAuthError);
 				expect((err as OAuthError).status).toBe(400);
 				expect((err as OAuthError).code).toBe('invalid_request');
-			}
-		});
-
-		it('rejects missing colon separator with 400', () => {
-			const encoded = Buffer.from('no-colon-here').toString('base64');
-
-			try {
-				service.parseBasicAuth(`Basic ${encoded}`);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
-			}
-		});
-
-		it('rejects null bytes in decoded value with 400', () => {
-			const encoded = Buffer.from('client\x00:secret').toString('base64');
-
-			try {
-				service.parseBasicAuth(`Basic ${encoded}`);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
 			}
 		});
 
@@ -3673,18 +3601,6 @@ describe('McpOAuthService', () => {
 			const encoded = Buffer.from('my+client:my+secret').toString('base64');
 			const result = service.parseBasicAuth(`Basic ${encoded}`);
 			expect(result).toEqual({ clientId: 'my client', clientSecret: 'my secret' });
-		});
-
-		it('rejects invalid percent-encoding with 400', () => {
-			const encoded = Buffer.from('client%ZZ:secret').toString('base64');
-
-			try {
-				service.parseBasicAuth(`Basic ${encoded}`);
-				expect.unreachable('should have thrown');
-			} catch (err) {
-				expect(err).toBeInstanceOf(OAuthError);
-				expect((err as OAuthError).status).toBe(400);
-			}
 		});
 
 		it('handles URL-based CIMD client_id in Basic header', () => {
