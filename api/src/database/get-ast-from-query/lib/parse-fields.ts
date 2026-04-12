@@ -49,6 +49,22 @@ export async function parseFields(
 
 	if (!fields || !Array.isArray(fields)) return [];
 
+	// Filter out $-prefixed virtual fields (like $thumbnail) that don't exist in the schema.
+	// These are display-only tokens used by the app and should not be queried from the database.
+	const collectionFields = context.schema.collections[options.parentCollection]?.fields;
+
+	if (collectionFields) {
+		fields = fields.filter((field) => {
+			const rootField = field.split('.')[0]!;
+
+			if (rootField.startsWith('$') && !(rootField in collectionFields)) {
+				return false;
+			}
+
+			return true;
+		});
+	}
+
 	const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [];
 
 	const policies =

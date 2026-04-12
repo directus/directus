@@ -669,3 +669,62 @@ test('parse fields distinguishes json function from relational fields', async ()
 
 	expect(result[2]?.type).toBe('m2o');
 });
+
+test('filters out $-prefixed virtual fields that do not exist in schema', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await parseFields(
+		{ accountability, fields: ['id', '$thumbnail', 'title'], parentCollection: 'articles', query: {} },
+		{ knex: db, schema },
+	);
+
+	expect(result).toEqual([
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'title',
+			name: 'title',
+			type: 'field',
+			whenCase: [],
+		},
+	]);
+});
+
+test('keeps $-prefixed fields that exist in schema', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const schemaWithDollarField = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('$thumbnail').string();
+		})
+		.build();
+
+	const result = await parseFields(
+		{ accountability, fields: ['id', '$thumbnail'], parentCollection: 'articles', query: {} },
+		{ knex: db, schema: schemaWithDollarField },
+	);
+
+	expect(result).toEqual([
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: '$thumbnail',
+			name: '$thumbnail',
+			type: 'field',
+			whenCase: [],
+		},
+	]);
+});
