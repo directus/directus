@@ -12,6 +12,7 @@ import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fe
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { parseOAuthScope } from '../utils/parse-oauth-scope.js';
+import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { ActivityService } from './activity.js';
 
@@ -613,7 +614,7 @@ export class McpOAuthService {
 		const env = useEnv();
 		const codeExpiry = new Date(Date.now() + getMilliseconds(env['MCP_OAUTH_AUTH_CODE_TTL'], 0));
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			await trx('directus_oauth_codes').insert({
 				id: crypto.randomUUID(),
 				code_hash: codeHash,
@@ -740,7 +741,8 @@ export class McpOAuthService {
 		const sessionExpiry = new Date(Date.now() + refreshTtl);
 		const grantId = crypto.randomUUID();
 
-		const { clientGrantTypes, clientName, userEmail, userRole, userId, scope, resource } = await this.knex.transaction(
+		const { clientGrantTypes, clientName, userEmail, userRole, userId, scope, resource } = await transaction(
+			this.knex,
 			async (trx) => {
 				// 4a. RFC 6749 Section 4.1.2: codes are single-use. Atomic burn via UPDATE WHERE used_at IS NULL
 				const burned = await trx('directus_oauth_codes')
@@ -955,7 +957,7 @@ export class McpOAuthService {
 
 		if (!grant) {
 			// 4. Reuse detection: check previous_session
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				await this.detectReuse(trx, oldSessionHash, params.client_id!, logger);
 			});
 
@@ -996,7 +998,7 @@ export class McpOAuthService {
 		const clientName = client['client_name'] as string;
 
 		// Session rotation in a single transaction
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			// Atomic UPDATE WHERE session = old_hash (concurrency protection)
 			const updated = await trx('directus_oauth_tokens').where('session', oldSessionHash).update({
 				session: newSessionHash,
@@ -1111,7 +1113,7 @@ export class McpOAuthService {
 		const clientName = client['client_name'] as string;
 
 		// 5. Delete grant + session atomically
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			await trx('directus_oauth_tokens').where('id', grantId).delete();
 			await trx('directus_sessions').where('token', tokenHash).delete();
 		});
