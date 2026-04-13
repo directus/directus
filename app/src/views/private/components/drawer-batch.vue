@@ -244,7 +244,7 @@ function useTranslationsFields() {
 		@cancel="cancel"
 		@apply="save"
 	>
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" :loading="saving" icon="check" @click="save" />
 		</template>
 

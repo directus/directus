@@ -12,7 +12,6 @@ import ComparisonModal from './comparison/comparison-modal.vue';
 import OverlayItemContent from './overlay-item-content.vue';
 import RenderTemplate from './render-template.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -648,19 +647,20 @@ function popoverClickOutsideMiddleware(e: Event) {
 			</h1>
 		</template>
 
-		<template #subtitle>
-			<VBreadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
-		</template>
-
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
 				:focuses="{ ...collab?.focused.value, ...relatedCollab?.focused.value }"
 				:current-connection="collab?.connectionId.value"
 			/>
-			<slot name="actions" />
+		</template>
 
+		<template #actions>
+			<slot name="actions" />
+		</template>
+
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="getTooltip('save', $t('save'))"
 				:disabled="!isSavable"
