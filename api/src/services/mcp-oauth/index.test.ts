@@ -571,15 +571,15 @@ describe('McpOAuthService', () => {
 
 			const result = await service.registerClient(createTestClient());
 
-			expect(result).toHaveProperty('client_id');
-			expect(result).toHaveProperty('client_name');
-			expect(result).toHaveProperty('redirect_uris');
-			expect(result).toHaveProperty('grant_types');
-			expect(result).toHaveProperty('response_types');
-			expect(result).toHaveProperty('token_endpoint_auth_method');
-			expect(result).toHaveProperty('client_id_issued_at');
-			expect(typeof result.client_id_issued_at).toBe('number');
-			expect(result.client_secret_expires_at).toBe(0);
+			expect(result).toEqual({
+				client_id: expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
+				client_name: 'Test MCP Client',
+				redirect_uris: [TEST_REDIRECT_URI],
+				grant_types: ['authorization_code'],
+				response_types: ['code'],
+				token_endpoint_auth_method: 'none',
+				client_id_issued_at: expect.any(Number),
+			});
 		});
 
 		it('global cap (10000 clients) enforced by default', async () => {
