@@ -271,7 +271,7 @@ export interface TelemetryMetrics {
 
 	database: {
 		size: number | null;
-	}
+	};
 
 	roles: {
 		count: number;

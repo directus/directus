@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
-import type { TelemetryReport } from '../../types/report.js';
 import { getHelpers } from '../../../database/helpers/index.js';
+import type { TelemetryReport } from '../../types/report.js';
 
 type DatabaseMetrics = TelemetryReport['metrics']['database'];
 

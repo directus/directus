@@ -1,7 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { getTemplatesApplied } from './get-templates-applied.js';
 import { templates } from '../types/templates.js';
+import { getTemplatesApplied } from './get-templates-applied.js';
 
 afterEach(() => {
 	for (const key of Object.keys(templates)) {

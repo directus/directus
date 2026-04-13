@@ -5,13 +5,13 @@ import { serviceCount } from '../../utils/service-count.js';
 import { collectApiRequestMetrics } from './api-requests.js';
 import { collectCollectionMetrics } from './collections.js';
 import { collectDashboardMetrics } from './dashboards.js';
+import { collectDatabaseMetrics } from './database.js';
 import { collectExtensionMetrics } from './extensions.js';
 import { collectFileMetrics } from './files.js';
 import { collectFlowMetrics } from './flows.js';
 import { collectRoleMetrics } from './roles.js';
 import { collectTranslationMetrics } from './translations.js';
 import { collectUserMetrics } from './users.js';
-import { collectDatabaseMetrics } from './database.js';
 
 type Metrics = TelemetryReport['metrics'];
 
@@ -30,7 +30,7 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		fieldsCount,
 		panelsCount,
 		policiesCount,
-		databaseMetrics
+		databaseMetrics,
 	] = await Promise.all([
 		collectApiRequestMetrics(),
 		collectCollectionMetrics(db, schema),
