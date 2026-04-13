@@ -135,7 +135,12 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 			system_prompt: toBoolean(settings?.['mcp_system_prompt_enabled'] ?? false),
 		},
 		ai: {
-			enabled: toBoolean(env['AI_ENABLED'] ?? false),
+			enabled:
+				toBoolean(env['AI_ENABLED'] ?? false) &&
+				(Boolean(settings?.['ai_openai_api_key']) ||
+					Boolean(settings?.['ai_anthropic_api_key']) ||
+					Boolean(settings?.['ai_google_api_key']) ||
+					Boolean(settings?.['ai_openai_compatible_api_key'])),
 			system_prompt: Boolean(settings?.['ai_system_prompt']),
 			providers: {
 				openai: {
@@ -163,7 +168,13 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 					api_key: Boolean(settings?.['ai_openai_compatible_api_key']),
 					base_url: Boolean(settings?.['ai_openai_compatible_base_url']),
 					name: Boolean(settings?.['ai_openai_compatible_name']),
-					headers: Boolean(settings?.['ai_openai_compatible_headers']),
+					headers: {
+						count:
+							settings?.['ai_openai_compatible_headers'] &&
+							typeof settings['ai_openai_compatible_headers'] === 'object'
+								? Object.keys(settings['ai_openai_compatible_headers'] as Record<string, unknown>).length
+								: 0,
+					},
 					models: {
 						count: Array.isArray(settings?.['ai_openai_compatible_models'])
 							? (settings['ai_openai_compatible_models'] as unknown[]).length

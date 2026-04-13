@@ -131,4 +131,34 @@ describe('collectFeatures', () => {
 		const result = await collectFeatures(mockDb, mockSchema);
 		expect(result.files.transformations).toBe('all');
 	});
+
+	test('ai.enabled is false when AI_ENABLED is false', async () => {
+		const result = await collectFeatures(mockDb, mockSchema);
+		expect(result.ai.enabled).toBe(false);
+	});
+
+	test('ai.enabled is false when AI_ENABLED is true but no api keys configured', async () => {
+		const { useEnv } = await import('@directus/env');
+		vi.mocked(useEnv).mockReturnValue({ AI_ENABLED: true } as any);
+
+		const result = await collectFeatures(mockDb, mockSchema);
+		expect(result.ai.enabled).toBe(false);
+	});
+
+	test('ai.enabled is true when AI_ENABLED is true and an api key is configured', async () => {
+		const { useEnv } = await import('@directus/env');
+		vi.mocked(useEnv).mockReturnValue({ AI_ENABLED: true } as any);
+
+		vi.mocked(SettingsService).mockImplementation(
+			() =>
+				({
+					readSingleton: vi.fn().mockResolvedValue({
+						ai_openai_api_key: 'sk-test',
+					}),
+				}) as any,
+		);
+
+		const result = await collectFeatures(mockDb, mockSchema);
+		expect(result.ai.enabled).toBe(true);
+	});
 });
