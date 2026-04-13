@@ -10,6 +10,7 @@ export interface CountMetric {
 }
 
 export interface FileSizeByType extends CountMetric {
+	sum: number;
 	size: DistributionSummary;
 }
 
@@ -40,6 +41,7 @@ export interface ExtensionBreakdown {
 
 export interface TelemetryReport {
 	event: string;
+	revision: number;
 	timestamp: string;
 	trigger: 'startup' | 'scheduled';
 	project: TelemetryProject;
@@ -154,7 +156,7 @@ export interface TelemetryFeatures {
 				api_key: boolean;
 				base_url: boolean;
 				name: boolean;
-				headers: boolean;
+				headers: CountMetric;
 				models: CountMetric;
 			};
 		};
