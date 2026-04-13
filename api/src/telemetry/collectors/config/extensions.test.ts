@@ -12,8 +12,8 @@ describe('collectExtensionsConfig', () => {
 		expect(collectExtensionsConfig({ ...defaults })).toEqual({
 			must_load: false,
 			auto_reload: false,
-			cache_ttl: false,
-			limit: false,
+			cache_ttl: null,
+			limit: null,
 			rolldown: false,
 		});
 	});

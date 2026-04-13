@@ -89,7 +89,11 @@ describe('collectConfig', () => {
 
 	test('defaults ai and mcp to false', async () => {
 		const result = await collectConfig(mockDb);
-		expect(result.ai).toBe(false);
-		expect(result.mcp).toBe(false);
+		expect(result.ai).toStrictEqual({
+			enabled: false,
+		});
+		expect(result.mcp).toStrictEqual({
+			enabled: false,
+		});
 	});
 });
