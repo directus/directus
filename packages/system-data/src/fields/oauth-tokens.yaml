@@ -14,12 +14,18 @@ fields:
       - m2o
     width: half
   - field: session
+    special:
+      - conceal
     width: half
   - field: previous_session
+    special:
+      - conceal
     width: half
   - field: resource
     width: half
   - field: code_hash
+    special:
+      - conceal
     width: half
   - field: scope
     width: half

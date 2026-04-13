@@ -6,6 +6,8 @@ fields:
       - uuid
     width: half
   - field: code_hash
+    special:
+      - conceal
     width: half
   - field: client
     special:
