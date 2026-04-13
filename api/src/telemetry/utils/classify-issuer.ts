@@ -25,7 +25,7 @@ export function classifyIssuer(value?: string): string | null {
 	if (host.includes('workos')) return 'workos';
 	if (host.includes('linkedin')) return 'linkedin';
 	if (host.includes('discord')) return 'discord';
-	if (host.includes('twitter') || host.includes('x.com')) return 'x';
+	if (host.includes('twitter') || host === 'x.com' || host.endsWith('.x.com')) return 'x';
 
 	return 'other';
 }
