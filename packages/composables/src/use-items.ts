@@ -79,15 +79,12 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	}, 500);
 
 	watch(
-		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep), toRef(version)],
+		[collection, limit, sort, search, filter,  toRef(version), fields, page, toRef(alias), toRef(deep),],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
-			const [newCollection, newLimit, newSort, newSearch, newFilter] = after;
-			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter] = before;
-
-			const newVersion = after[9];
-			const oldVersion = before[9];
+			const [newCollection, newLimit, newSort, newSearch, newFilter, newVersion] = after;
+			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, oldVersion] = before;
 
 			if (!newCollection || !query) return;
 
