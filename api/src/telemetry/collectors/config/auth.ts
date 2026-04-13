@@ -2,7 +2,7 @@ import { toArray } from '@directus/utils';
 import { getAuthProviders } from '../../../utils/get-auth-providers.js';
 import { getConfigFromEnv } from '../../../utils/get-config-from-env.js';
 import type { TelemetryReport } from '../../types/report.js';
-import { detectIssuer } from '../../utils/detect-issuer.js';
+import { classifyIssuer } from '../../utils/classify-issuer.js';
 
 export function collectAuthProviders(env: Record<string, unknown>): TelemetryReport['config']['auth'] {
 	const configured = toArray(env['AUTH_PROVIDERS'] as string)
@@ -24,7 +24,13 @@ export function collectAuthProviders(env: Record<string, unknown>): TelemetryRep
 		const driver = providerDrivers.get(key) ?? getConfigFromEnv(`AUTH_${name.toUpperCase()}_`)['driver'];
 		if (driver) drivers.add(String(driver));
 
-		const issuer = detectIssuer(env, name, String(driver ?? ''));
+		const prefix = `AUTH_${name.toUpperCase()}_`;
+
+		const url = (env[`${prefix}AUTHORIZE_URL`] ?? env[`${prefix}ISSUER_URL`] ?? env[`${prefix}CLIENT_URL`]) as
+			| string
+			| undefined;
+
+		const issuer = classifyIssuer(url);
 		if (issuer) issuers.add(issuer);
 	}
 
