@@ -62,7 +62,7 @@ const mockFeatures: TelemetryFeatures = {
 			openai: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
 			anthropic: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
 			google: { api_key: false, models: { allowed: [], custom: { count: 0 } } },
-			openai_compatible: { api_key: false, base_url: false, name: false, headers: false, models: { count: 0 } },
+			openai_compatible: { api_key: false, base_url: false, name: false, headers: { count: 0 }, models: { count: 0 } },
 		},
 	},
 	modules: {
