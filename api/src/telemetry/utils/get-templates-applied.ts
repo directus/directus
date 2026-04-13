@@ -1,8 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
-
-export const templates: Record<string, string[]> = {
-	cms: ['posts', 'pages'],
-};
+import { templates } from '../types/templates.js';
 
 export function getTemplatesApplied(schema: SchemaOverview): string[] {
 	const collectionNames = new Set(Object.keys(schema.collections));
