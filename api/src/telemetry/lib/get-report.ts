@@ -23,7 +23,8 @@ export const getReport = async (trigger: TelemetryReport['trigger'] = 'scheduled
 	]);
 
 	return {
-		event: 'directus.telemetry.ping.v1',
+		event: 'directus.telemetry.ping.v2',
+		revision: 1,
 		timestamp: new Date().toISOString(),
 		trigger: trigger,
 		project,
