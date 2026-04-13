@@ -1,5 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { matchRedirectUri } from './redirect.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { OAuthError } from '../types/error.js';
+import { matchRedirectUri, validateRedirectUri } from './redirect.js';
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({}),
+}));
 
 describe('matchRedirectUri', () => {
 	it('exact string match', () => {
@@ -44,5 +49,72 @@ describe('matchRedirectUri', () => {
 
 	it('returns false for invalid URLs without throwing', () => {
 		expect(matchRedirectUri('not-a-url', ['https://example.com/cb'])).toBe(false);
+	});
+});
+
+describe('validateRedirectUri', () => {
+	beforeEach(async () => {
+		const { useEnv } = vi.mocked(await import('@directus/env'));
+		useEnv.mockReturnValue({} as any);
+	});
+
+	it('accepts a valid HTTPS URL', () => {
+		expect(() => validateRedirectUri('https://example.com/callback')).not.toThrow();
+	});
+
+	it.each(['http://localhost/callback', 'http://127.0.0.1:3000/callback', 'http://[::1]:8080/callback'])(
+		'accepts loopback HTTP %s',
+		(uri) => {
+			expect(() => validateRedirectUri(uri)).not.toThrow();
+		},
+	);
+
+	it('rejects non-HTTPS non-loopback URI', () => {
+		expect(() => validateRedirectUri('http://example.com/callback')).toThrow(OAuthError);
+	});
+
+	it('rejects non-string input', () => {
+		expect(() => validateRedirectUri(42)).toThrow(OAuthError);
+		expect(() => validateRedirectUri(null)).toThrow(OAuthError);
+		expect(() => validateRedirectUri(undefined)).toThrow(OAuthError);
+	});
+
+	it('rejects URI longer than 255 chars', () => {
+		expect(() => validateRedirectUri(`https://example.com/${'a'.repeat(250)}`)).toThrow(OAuthError);
+	});
+
+	it('rejects unparseable URI', () => {
+		expect(() => validateRedirectUri('not a url')).toThrow(OAuthError);
+	});
+
+	it('rejects URI with fragment', () => {
+		expect(() => validateRedirectUri('https://example.com/cb#section')).toThrow(OAuthError);
+	});
+
+	it('rejects URI with userinfo', () => {
+		expect(() => validateRedirectUri('https://user:pass@example.com/cb')).toThrow(OAuthError);
+	});
+
+	describe('MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS', () => {
+		beforeEach(async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'] } as any);
+		});
+
+		it('accepts redirect on allowed exact domain', () => {
+			expect(() => validateRedirectUri('https://cursor.com/cb')).not.toThrow();
+		});
+
+		it('accepts redirect on wildcard subdomain', () => {
+			expect(() => validateRedirectUri('https://tools.anthropic.com/cb')).not.toThrow();
+		});
+
+		it('rejects redirect on disallowed domain', () => {
+			expect(() => validateRedirectUri('https://evil.com/cb')).toThrow(OAuthError);
+		});
+
+		it('still allows loopback redirects when allowlist is set', () => {
+			expect(() => validateRedirectUri('http://localhost:3000/cb')).not.toThrow();
+		});
 	});
 });
