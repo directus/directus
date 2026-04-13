@@ -44,6 +44,29 @@ export class OAuthError extends Error {
 	}
 }
 
+/**
+ * Check if a hostname matches any of the provided domain patterns.
+ * Supports exact match and `*.example.com` wildcard prefix (matches subdomains, not base).
+ * Case-insensitive. Whitespace in patterns is trimmed.
+ */
+export function isDomainAllowed(hostname: string, patterns: string[]): boolean {
+	const lower = hostname.toLowerCase();
+
+	for (const pattern of patterns) {
+		const p = pattern.toLowerCase().trim();
+		if (!p) continue;
+
+		if (p.startsWith('*.')) {
+			const suffix = p.slice(1); // ".example.com"
+			if (lower.endsWith(suffix) && lower.length > suffix.length) return true;
+		} else if (lower === p) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /** RFC 7591 Dynamic Client Registration response. */
 export interface DCRResponse {
 	client_id: string;
@@ -1368,6 +1391,13 @@ export class McpOAuthService {
 
 		if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLocalhost)) {
 			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)');
+		}
+
+		// Optional operator-defined domain allowlist. Loopback bypasses to keep native OAuth clients working.
+		const allowedDomains = (useEnv()['MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS'] as string[]) ?? [];
+
+		if (allowedDomains.length > 0 && !isLocalhost && !isDomainAllowed(parsed.hostname, allowedDomains)) {
+			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri domain is not in the allowlist');
 		}
 	}
 }

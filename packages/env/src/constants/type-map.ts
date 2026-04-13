@@ -70,6 +70,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	MCP_OAUTH_CLIENT_IDLE_TTL: 'string',
 	MCP_OAUTH_REQUIRE_RESOURCE: 'boolean',
 	MCP_OAUTH_CLEANUP_SCHEDULE: 'string',
+	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: 'array',
 
 	EMAIL_SMTP_PASSWORD: 'string',
 

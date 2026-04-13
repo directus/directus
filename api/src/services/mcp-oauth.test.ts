@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
-import { McpOAuthService, OAuthError } from './mcp-oauth.js';
+import { isDomainAllowed, McpOAuthService, OAuthError } from './mcp-oauth.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -131,6 +131,37 @@ async function assertOAuthError(
 		}
 	}
 }
+
+describe('isDomainAllowed', () => {
+	it('exact match', () => {
+		expect(isDomainAllowed('cursor.com', ['cursor.com'])).toBe(true);
+	});
+
+	it('exact match is case-insensitive', () => {
+		expect(isDomainAllowed('Cursor.COM', ['cursor.com'])).toBe(true);
+	});
+
+	it('wildcard matches subdomains', () => {
+		expect(isDomainAllowed('tools.anthropic.com', ['*.anthropic.com'])).toBe(true);
+		expect(isDomainAllowed('deep.tools.anthropic.com', ['*.anthropic.com'])).toBe(true);
+	});
+
+	it('wildcard does NOT match base domain', () => {
+		expect(isDomainAllowed('anthropic.com', ['*.anthropic.com'])).toBe(false);
+	});
+
+	it('no match returns false', () => {
+		expect(isDomainAllowed('evil.com', ['cursor.com', '*.anthropic.com'])).toBe(false);
+	});
+
+	it('empty patterns returns false', () => {
+		expect(isDomainAllowed('cursor.com', [])).toBe(false);
+	});
+
+	it('trims whitespace in patterns', () => {
+		expect(isDomainAllowed('cursor.com', [' cursor.com '])).toBe(true);
+	});
+});
 
 describe('McpOAuthService', () => {
 	let db: MockedFunction<Knex>;
@@ -424,6 +455,60 @@ describe('McpOAuthService', () => {
 
 				await assertOAuthError(() => service.registerClient(createTestClient({ redirect_uris: [longUri] })), {
 					error: 'invalid_redirect_uri',
+				});
+			});
+
+			describe('MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS', () => {
+				beforeEach(async () => {
+					const { useEnv } = vi.mocked(await import('@directus/env'));
+
+					useEnv.mockReturnValue({
+						PUBLIC_URL: 'https://example.com',
+						MCP_OAUTH_MAX_CLIENTS: 10000,
+						MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
+						MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+						MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'],
+					} as any);
+				});
+
+				it('accepts exact domain match', async () => {
+					tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+					tracker.on.insert('directus_oauth_clients').response([]);
+
+					const result = await service.registerClient(
+						createTestClient({ redirect_uris: ['https://cursor.com/callback'] }),
+					);
+
+					expect(result.redirect_uris).toEqual(['https://cursor.com/callback']);
+				});
+
+				it('accepts wildcard domain match', async () => {
+					tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+					tracker.on.insert('directus_oauth_clients').response([]);
+
+					const result = await service.registerClient(
+						createTestClient({ redirect_uris: ['https://tools.anthropic.com/callback'] }),
+					);
+
+					expect(result.redirect_uris).toEqual(['https://tools.anthropic.com/callback']);
+				});
+
+				it('rejects disallowed domain', async () => {
+					await assertOAuthError(
+						() => service.registerClient(createTestClient({ redirect_uris: ['https://evil.com/callback'] })),
+						{ error: 'invalid_redirect_uri' },
+					);
+				});
+
+				it('accepts localhost redirect even when allowlist is set (native OAuth clients)', async () => {
+					tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+					tracker.on.insert('directus_oauth_clients').response([]);
+
+					const result = await service.registerClient(
+						createTestClient({ redirect_uris: ['http://localhost:3000/callback'] }),
+					);
+
+					expect(result.redirect_uris).toEqual(['http://localhost:3000/callback']);
 				});
 			});
 		});
