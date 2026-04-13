@@ -61,7 +61,6 @@ export class FnHelperMySQL extends FnHelper {
 		}
 
 		// Convert dot notation to MySQL JSON path
-		// ".items[0].name" → "$['items'][0]['name']"
 		const jsonPath = convertToMySQLPath(options.jsonPath);
 
 		if (options?.castNumeric) {

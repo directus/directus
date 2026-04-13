@@ -39,7 +39,6 @@ export function buildPostgresJsonPath(
 		}
 	}
 
-	// handle final part here
 	const part = parts[parts.length - 1]!;
 	const operator = options?.forFilter ? '->>' : '->';
 
