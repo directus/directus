@@ -1,11 +1,10 @@
 import { readFile } from 'fs/promises';
-import { argv } from 'node:process';
 import util from 'node:util';
 import { join } from 'path';
 import { type Database, type Env, type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import type { DeepPartial } from '@directus/types';
-import { parseCLI, TestProject } from 'vitest/node';
+import { TestProject } from 'vitest/node';
 import type { Schema } from './schema.d.ts';
 
 let sb: Sandbox | undefined;
@@ -15,12 +14,6 @@ export async function setup(project: TestProject) {
 	util.inspect.defaultOptions.depth = null;
 
 	if (process.env['ALL'] === 'true') return;
-
-	const args = parseCLI(['vitest', ...argv.slice(2)]);
-
-	const filesToTest = await project.globTestFiles(args.filter);
-
-	if (filesToTest.testFiles.every((file) => file.endsWith('.sb.test.ts'))) return;
 
 	const database = project.config.env['DATABASE'] as Database;
 	const port = project.config.env['PORT']!;

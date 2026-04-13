@@ -109,7 +109,7 @@ export async function useSnapshot<Schema>(
 			}
 		} catch (e: any) {
 			tries--;
-			if (tries === 0) process.stderr.write(e.toString());
+			if (tries === 0) console.error(e.errors);
 		}
 	}
 

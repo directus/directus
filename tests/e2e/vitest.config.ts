@@ -1,7 +1,7 @@
 import { type Database, databases, type Env, type Options } from '@directus/sandbox';
 import type { DeepPartial } from '@directus/types';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 declare module 'vitest' {
 	interface Matchers {
@@ -25,24 +25,54 @@ export default defineConfig({
 		include: [],
 		globalSetup: './setup/global-setup-all.ts',
 		passWithNoTests: true,
+		exclude: [...configDefaults.exclude, '**/*.sb.test.ts'],
 		projects: [
 			'./vitest.config.ts',
-			...databases.map((database, index) => ({
-				plugins: [tsconfigPaths() as any],
-				test: {
-					setupFiles: './setup/setup-files.ts',
-					globalSetup: './setup/global-setup-one.ts',
-					name: database,
-					passWithNoTests: true,
-					testTimeout: 10_000,
-					reporters: ['verbose'],
-					env: {
-						DATABASE: database,
-						PORT: String(8000 + index * 100),
-						...process.env,
+			...databases.flatMap((database, index) => {
+				return [
+					{
+						plugins: [tsconfigPaths() as any],
+						test: {
+							setupFiles: './setup/setup-files.ts',
+							globalSetup: './setup/global-setup-one.ts',
+							name: database,
+							passWithNoTests: true,
+							exclude: [...configDefaults.exclude, '**/*.sb.test.ts'],
+							testTimeout: 10_000,
+							reporters: ['verbose'],
+							env: {
+								DATABASE: database,
+								PORT: String(8000 + index * 100),
+								...process.env,
+							},
+							sequence: {
+								groupOrder: 0,
+							},
+						},
 					},
-				},
-			})),
+					{
+						plugins: [tsconfigPaths() as any],
+						test: {
+							setupFiles: './setup/setup-files.ts',
+							name: `${database}-sb`,
+							passWithNoTests: true,
+							include: ['**/*.sb.test.ts'],
+							testTimeout: 60_000,
+							hookTimeout: 60_000,
+							reporters: ['verbose'],
+							fileParallelism: false,
+							env: {
+								DATABASE: database,
+								PORT: String(8050 + index * 100),
+								...process.env,
+							},
+							sequence: {
+								groupOrder: 1 + index,
+							},
+						},
+					},
+				];
+			}),
 		],
 	},
 });

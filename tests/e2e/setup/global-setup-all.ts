@@ -1,22 +1,19 @@
 import { readFile } from 'fs/promises';
+import util from 'node:util';
 import { join } from 'path';
-import { argv } from 'process';
 import { type Database, databases, type Env, type Options, sandboxes, type Sandboxes } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import type { DeepPartial } from '@directus/types';
-import { parseCLI, type TestProject } from 'vitest/node';
+import { type TestProject } from 'vitest/node';
 import type { Schema } from './schema.d.ts';
 
 let sb: Sandboxes | undefined;
 
 export async function setup(project: TestProject) {
+	// Enable full depth logging for better error visibility
+	util.inspect.defaultOptions.depth = null;
+
 	if (process.env['ALL'] !== 'true') return;
-
-	const args = parseCLI(['vitest', ...argv.slice(2)]);
-
-	const filesToTest = await project.globTestFiles(args.filter);
-
-	if (filesToTest.testFiles.every((file) => file.endsWith('.sb.test.ts'))) return;
 
 	const ports: number[] = [];
 
