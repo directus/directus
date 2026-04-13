@@ -27,14 +27,9 @@ vi.mock('../../request/index.js', () => ({
 }));
 
 // Must import after mocks
-const {
-	detectClientIdType,
-	isValidCimdClientId,
-	isDomainAllowed,
-	getAllowedDomains,
-	resolveCacheTtl,
-	fetchCimdMetadata,
-} = await import('./cimd.js');
+const { detectClientIdType, isValidCimdClientId, getAllowedDomains, resolveCacheTtl, fetchCimdMetadata } = await import(
+	'./cimd.js'
+);
 
 const { useEnv } = await import('@directus/env');
 
@@ -152,37 +147,6 @@ describe('isValidCimdClientId', () => {
 
 		// .test is in the defaults
 		expect(isValidCimdClientId('https://myapp.test/client')).toBe(false);
-	});
-});
-
-describe('isDomainAllowed', () => {
-	it('matches exact domain', () => {
-		expect(isDomainAllowed('example.com', ['example.com'])).toBe(true);
-	});
-
-	it('matches wildcard subdomain', () => {
-		expect(isDomainAllowed('sub.example.com', ['*.example.com'])).toBe(true);
-	});
-
-	it('does not match base domain for wildcard', () => {
-		expect(isDomainAllowed('example.com', ['*.example.com'])).toBe(false);
-	});
-
-	it('matches deep subdomain with wildcard', () => {
-		expect(isDomainAllowed('deep.sub.example.com', ['*.example.com'])).toBe(true);
-	});
-
-	it('matches case-insensitively', () => {
-		expect(isDomainAllowed('Example.COM', ['example.com'])).toBe(true);
-		expect(isDomainAllowed('Sub.Example.COM', ['*.example.com'])).toBe(true);
-	});
-
-	it('returns false when no patterns match', () => {
-		expect(isDomainAllowed('other.com', ['example.com', '*.foo.com'])).toBe(false);
-	});
-
-	it('returns false for empty patterns', () => {
-		expect(isDomainAllowed('example.com', [])).toBe(false);
 	});
 });
 

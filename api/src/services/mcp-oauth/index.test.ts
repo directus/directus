@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
-import { isDomainAllowed, McpOAuthService, OAuthError } from './index.js';
+import { McpOAuthService, OAuthError } from './index.js';
 
 vi.mock('../../database/index.js', () => ({
 	default: vi.fn(),
@@ -153,37 +153,6 @@ async function assertOAuthError(
 		}
 	}
 }
-
-describe('isDomainAllowed', () => {
-	it('exact match', () => {
-		expect(isDomainAllowed('cursor.com', ['cursor.com'])).toBe(true);
-	});
-
-	it('exact match is case-insensitive', () => {
-		expect(isDomainAllowed('Cursor.COM', ['cursor.com'])).toBe(true);
-	});
-
-	it('wildcard matches subdomains', () => {
-		expect(isDomainAllowed('tools.anthropic.com', ['*.anthropic.com'])).toBe(true);
-		expect(isDomainAllowed('deep.tools.anthropic.com', ['*.anthropic.com'])).toBe(true);
-	});
-
-	it('wildcard does NOT match base domain', () => {
-		expect(isDomainAllowed('anthropic.com', ['*.anthropic.com'])).toBe(false);
-	});
-
-	it('no match returns false', () => {
-		expect(isDomainAllowed('evil.com', ['cursor.com', '*.anthropic.com'])).toBe(false);
-	});
-
-	it('empty patterns returns false', () => {
-		expect(isDomainAllowed('cursor.com', [])).toBe(false);
-	});
-
-	it('trims whitespace in patterns', () => {
-		expect(isDomainAllowed('cursor.com', [' cursor.com '])).toBe(true);
-	});
-});
 
 describe('McpOAuthService', () => {
 	let db: MockedFunction<Knex>;
@@ -594,6 +563,7 @@ describe('McpOAuthService', () => {
 						MCP_OAUTH_MAX_CLIENTS: 10000,
 						MCP_OAUTH_CLIENT_UNUSED_TTL: '3d',
 						MCP_OAUTH_CLIENT_IDLE_TTL: '0',
+						MCP_OAUTH_DCR_ENABLED: true,
 						MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'],
 					} as any);
 				});

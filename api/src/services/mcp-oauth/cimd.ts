@@ -3,6 +3,7 @@ import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
 import { getAxios } from '../../request/index.js';
 import { OAuthError } from './types/error.js';
+import { isDomainAllowed } from './utils/domain.js';
 import { validateRedirectUri } from './utils/redirect.js';
 
 const MIN_TTL_MS = 300_000; // 5 minutes
@@ -141,30 +142,6 @@ export function isValidCimdClientId(input: string): boolean {
 	}
 
 	return true;
-}
-
-/**
- * Simple domain matching: exact or wildcard prefix (*.example.com matches subdomains, not base domain).
- * Case-insensitive.
- */
-export function isDomainAllowed(hostname: string, patterns: string[]): boolean {
-	const lower = hostname.toLowerCase();
-
-	for (const pattern of patterns) {
-		const p = pattern.toLowerCase();
-
-		if (p.startsWith('*.')) {
-			const suffix = p.slice(1); // .example.com
-
-			if (lower.endsWith(suffix) && lower.length > suffix.length) {
-				return true;
-			}
-		} else if (lower === p) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 /** Read allowed domains from env, filtering empty strings. */
