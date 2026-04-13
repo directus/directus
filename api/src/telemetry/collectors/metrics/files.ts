@@ -35,7 +35,7 @@ export async function collectFileMetrics(db: Knex, schema: SchemaOverview): Prom
 	const types: Record<string, FileSizeByType> = {};
 
 	for (const group of MIME_GROUPS) {
-		types[group] = { count: 0, sum: 0, size: emptyDistribution() };
+		types[group] = { count: 0, size: { sum: 0, ...emptyDistribution() } };
 	}
 
 	const grouped = (await filesService.readByQuery({
@@ -67,13 +67,12 @@ export async function collectFileMetrics(db: Knex, schema: SchemaOverview): Prom
 		if (existing.count === 0) {
 			types[key] = {
 				count,
-				sum,
-				size: { min, max, median: 0, mean: Math.round(mean) },
+				size: { sum, min, max, median: 0, mean: Math.round(mean) },
 			};
 		} else {
 			const prevCount = existing.count;
 			existing.count += count;
-			existing.sum += sum;
+			existing.size.sum += sum;
 			existing.size.min = Math.min(existing.size.min, min);
 			existing.size.max = Math.max(existing.size.max, max);
 			existing.size.mean = Math.round((existing.size.mean * prevCount + mean * count) / existing.count);

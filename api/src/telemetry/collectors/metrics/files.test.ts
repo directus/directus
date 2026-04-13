@@ -57,7 +57,7 @@ describe('collectFileMetrics', () => {
 
 		const result = await collectFileMetrics(mockDb, mockSchema);
 		expect(result.types['other']!.count).toBe(5);
-		expect(result.types['other']!.sum).toBe(1500);
+		expect(result.types['other']!.size.sum).toBe(1500);
 	});
 
 	test('computes overall totals from grouped results', async () => {
@@ -91,7 +91,7 @@ describe('collectFileMetrics', () => {
 		expect(result.size.min).toBe(50);
 		expect(result.size.max).toBe(500);
 		expect(result.size.mean).toBe(220);
-		expect(result.types['image']!.sum).toBe(900);
-		expect(result.types['text']!.sum).toBe(200);
+		expect(result.types['image']!.size.sum).toBe(900);
+		expect(result.types['text']!.size.sum).toBe(200);
 	});
 });

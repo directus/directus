@@ -10,8 +10,7 @@ export interface CountMetric {
 }
 
 export interface FileSizeByType extends CountMetric {
-	sum: number;
-	size: DistributionSummary;
+	size: { sum: number } & DistributionSummary;
 }
 
 export interface ExtensionCountBySource extends CountMetric {
