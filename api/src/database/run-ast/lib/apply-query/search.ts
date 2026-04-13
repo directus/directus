@@ -1,5 +1,5 @@
 import { NUMERIC_TYPES } from '@directus/constants';
-import type { FieldOverview, NumericType, Permission, SchemaOverview } from '@directus/types';
+import type { FieldOverview, NumericType, Permission, Relation, SchemaOverview } from '@directus/types';
 import { isIn } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../permissions/modules/process-ast/lib/get-cases.js';
@@ -8,6 +8,73 @@ import { isValidUuid } from '../../../../utils/is-valid-uuid.js';
 import { parseNumericString } from '../../../../utils/parse-numeric-string.js';
 import { getHelpers } from '../../../helpers/index.js';
 import { applyFilter } from './filter/index.js';
+
+interface TranslationSearchInfo {
+	junctionCollection: string;
+	parentFkField: string;
+	parentPkField: string;
+	fields: [string, FieldOverview][];
+}
+
+/**
+ * Detect translation relations on a collection and return the junction collection info
+ * needed to build an EXISTS subquery for searching translated content.
+ */
+function getTranslationSearchInfo(
+	schema: SchemaOverview,
+	relations: Relation[],
+	collection: string,
+): TranslationSearchInfo[] {
+	const collectionSchema = schema.collections[collection];
+	if (!collectionSchema) return [];
+
+	// Find all alias fields with the 'translations' special marker
+	const translationFields = Object.entries(collectionSchema.fields).filter(([_name, field]) =>
+		field.special.includes('translations'),
+	);
+
+	if (translationFields.length === 0) return [];
+
+	const results: TranslationSearchInfo[] = [];
+
+	for (const [fieldName] of translationFields) {
+		// Find the o2m relation from the parent to the junction table
+		const relation = relations.find(
+			(r) => r.related_collection === collection && r.meta?.one_field === fieldName,
+		);
+
+		if (!relation) continue;
+
+		const junctionCollection = relation.collection;
+		const junctionSchema = schema.collections[junctionCollection];
+
+		if (!junctionSchema) continue;
+
+		const parentFkField = relation.field;
+		const languageFkField = relation.meta?.junction_field;
+		const parentPkField = collectionSchema.primary;
+
+		// Identify system fields to exclude from search (PKs and FKs)
+		const systemFields = new Set(
+			[junctionSchema.primary, parentFkField, languageFkField].filter((f): f is string => f != null),
+		);
+
+		// Get searchable string/text fields from the junction collection
+		const fields = Object.entries(junctionSchema.fields).filter(
+			([name, field]) =>
+				!systemFields.has(name) &&
+				field.searchable !== false &&
+				!field.special.includes('conceal') &&
+				['text', 'string'].includes(field.type),
+		);
+
+		if (fields.length === 0) continue;
+
+		results.push({ junctionCollection, parentFkField, parentPkField, fields });
+	}
+
+	return results;
+}
 
 export function applySearch(
 	knex: Knex,
@@ -59,6 +126,67 @@ export function applySearch(
 				addSearchCondition(queryBuilder, name, fieldType, 'or');
 			}
 		});
+
+		// Search through translation junction tables via EXISTS subquery
+		const translationInfos = getTranslationSearchInfo(schema, schema.relations, collection);
+
+		for (const translationInfo of translationInfos) {
+			const junctionAllowedFields = new Set(
+				permissions
+					.filter((p) => p.collection === translationInfo.junctionCollection)
+					.flatMap((p) => p.fields ?? []),
+			);
+
+			const { cases: junctionCases } = getCases(translationInfo.junctionCollection, permissions, []);
+
+			let junctionFields = translationInfo.fields;
+
+			// Apply permission restrictions on junction collection fields
+			if (junctionCases.length !== 0 && !junctionAllowedFields.has('*')) {
+				junctionFields = junctionFields.filter(([name]) => junctionAllowedFields.has(name));
+			}
+
+			// Skip if non-admin user has no access to the junction collection
+			if (permissions.length > 0 && junctionFields.length === 0) {
+				continue;
+			}
+
+			if (junctionFields.length > 0) {
+				needsFallbackCondition = false;
+
+				queryBuilder.orWhereExists(function (subQuery) {
+					subQuery
+						.select(knex.raw('1'))
+						.from(translationInfo.junctionCollection)
+						.where(
+							`${translationInfo.junctionCollection}.${translationInfo.parentFkField}`,
+							knex.ref(`${collection}.${translationInfo.parentPkField}`),
+						)
+						.andWhere(function (innerWhere) {
+							for (const [fieldName] of junctionFields) {
+								innerWhere.orWhereRaw(`LOWER(??) LIKE ?`, [
+									`${translationInfo.junctionCollection}.${fieldName}`,
+									`%${searchQuery.toLowerCase()}%`,
+								]);
+							}
+						});
+
+					// Apply junction collection permission filters inside the subquery
+					if (junctionCases.length > 0) {
+						applyFilter(
+							knex,
+							schema,
+							subQuery,
+							{ _or: junctionCases },
+							translationInfo.junctionCollection,
+							aliasMap,
+							junctionCases,
+							permissions,
+						);
+					}
+				});
+			}
+		}
 
 		if (needsFallbackCondition) {
 			queryBuilder.orWhereRaw('1 = 0');

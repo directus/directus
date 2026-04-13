@@ -255,3 +255,178 @@ test(`Return falsy query when all searchable fields are excluded`, async () => {
 	expect(rawQuery.sql).toEqual(`select * where (1 = 0)`);
 	expect(rawQuery.bindings).toEqual([]);
 });
+
+// --- Translation-aware search tests ---
+
+const translationSchema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('status').string();
+		c.field('translations').translations();
+	})
+	.collection('articles_translations', (c) => {
+		c.field('title').string();
+		c.field('body').text();
+	})
+	.build();
+
+test(`Searches translation fields via EXISTS subquery for admin`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles"."status") LIKE ?`);
+	expect(rawQuery.sql).toContain(`exists`);
+	expect(rawQuery.sql).toContain(`"articles_translations"`);
+	expect(rawQuery.sql).toContain(`LOWER("articles_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).toContain(`LOWER("articles_translations"."body") LIKE ?`);
+	expect(rawQuery.bindings).toContain('%hello%');
+});
+
+test(`Translation EXISTS subquery correlates on parent FK and PK`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, translationSchema, queryBuilder, 'test', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`"articles_translations"."articles_id" = "articles"."id"`);
+});
+
+test(`Restricts translation fields based on junction collection permissions`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const restrictedPermissions = [
+		{
+			collection: 'articles',
+			action: 'read',
+			fields: ['*'],
+			permissions: null,
+		},
+		{
+			collection: 'articles_translations',
+			action: 'read',
+			fields: ['title'],
+			permissions: {
+				title: {},
+			},
+		},
+	] as unknown as Permission[];
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, restrictedPermissions);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`"articles_translations"."body"`);
+});
+
+test(`Omits translation subquery when user has no junction collection permissions`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const noJunctionPermissions = [
+		{
+			collection: 'articles',
+			action: 'read',
+			fields: ['*'],
+			permissions: null,
+		},
+	] as unknown as Permission[];
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, noJunctionPermissions);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles"."status") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`articles_translations`);
+	expect(rawQuery.sql).not.toContain(`exists`);
+});
+
+test(`Excludes non-searchable translation fields`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaWithNonSearchable = new SchemaBuilder()
+		.collection('pages', (c) => {
+			c.field('id').id();
+			c.field('slug').string();
+			c.field('translations').translations();
+		})
+		.collection('pages_translations', (c) => {
+			c.field('title').string();
+			c.field('internal_notes').string().options({ searchable: false });
+		})
+		.build();
+
+	applySearch(db as any, schemaWithNonSearchable, queryBuilder, 'test', 'pages', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("pages_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`"pages_translations"."internal_notes"`);
+});
+
+test(`Excludes concealed translation fields`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaWithConcealed = new SchemaBuilder()
+		.collection('pages', (c) => {
+			c.field('id').id();
+			c.field('translations').translations();
+		})
+		.collection('pages_translations', (c) => {
+			c.field('title').string();
+			c.field('secret').string().options({ special: ['conceal'] });
+		})
+		.build();
+
+	applySearch(db as any, schemaWithConcealed, queryBuilder, 'test', 'pages', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("pages_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`"pages_translations"."secret"`);
+});
+
+test(`Avoids fallback 1=0 when root has no searchable fields but translations do`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaRootUnsearchable = new SchemaBuilder()
+		.collection('items', (c) => {
+			c.field('id').id();
+			c.field('translations').translations();
+		})
+		.collection('items_translations', (c) => {
+			c.field('title').string();
+		})
+		.build();
+
+	applySearch(db as any, schemaRootUnsearchable, queryBuilder, 'test', 'items', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).not.toContain(`1 = 0`);
+	expect(rawQuery.sql).toContain(`exists`);
+	expect(rawQuery.sql).toContain(`LOWER("items_translations"."title") LIKE ?`);
+});
+
+test(`Excludes junction FK and PK fields from translation search`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// FK fields (articles_id, languages_code) should not appear in LIKE conditions
+	expect(rawQuery.sql).not.toContain(`LOWER("articles_translations"."articles_id") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`LOWER("articles_translations"."languages_code") LIKE ?`);
+});
