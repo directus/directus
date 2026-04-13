@@ -77,6 +77,12 @@ vi.mock('./extensions.js', () => ({
 	}),
 }));
 
+vi.mock('./database.js', () => ({
+	collectDatabaseMetrics: vi.fn().mockResolvedValue({
+		size: null,
+	}),
+}));
+
 vi.mock('../../utils/service-count.js', () => ({
 	serviceCount: vi.fn().mockResolvedValue(0),
 }));
@@ -106,6 +112,7 @@ describe('collectMetrics', () => {
 		expect(result).toHaveProperty('dashboards');
 		expect(result).toHaveProperty('panels');
 		expect(result).toHaveProperty('extensions');
+		expect(result).toHaveProperty('database');
 	});
 
 	test('strips internal properties from collections', async () => {
