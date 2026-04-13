@@ -344,10 +344,6 @@ export const ThemeSchema = z.object({
 	name: z.string(),
 	appearance: z.union([z.literal('light'), z.literal('dark')]),
 	rules: Rules,
-	font: z.object({
-		family: z.string(),
-		weights: z.array(z.string()),
-	}),
 });
 
 export type Theme = z.infer<typeof ThemeSchema>;

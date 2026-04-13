@@ -31,7 +31,8 @@
 		"@directus/utils": "workspace:*",
 		"decamelize": "catalog:",
 		"flat": "catalog:",
-		"lodash-es": "catalog:"
+		"lodash-es": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
@@ -44,8 +45,7 @@
 		"unplugin-vue": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",
-		"vue-tsc": "catalog:",
-		"zod": "catalog:"
+		"vue-tsc": "catalog:"
 	},
 	"peerDependencies": {
 		"@unhead/vue": "catalog:",
