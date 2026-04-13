@@ -200,12 +200,7 @@ const showNavToggle = computed(() => {
 		font-weight: var(--theme--header--title--font-weight);
 		color: var(--theme--header--title--foreground);
 		max-inline-size: 100%;
-
-		.render-template img,
-		.render-template .preview {
-			block-size: 1.2em;
-			vertical-align: middle;
-		}
+		block-size: 1.375rem;
 	}
 }
 </style>
