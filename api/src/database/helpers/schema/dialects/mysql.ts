@@ -3,6 +3,7 @@ import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
+
 let lowerCaseTableNames: number | undefined;
 
 export class SchemaHelperMySQL extends SchemaHelper {

@@ -111,7 +111,12 @@ describe('SchemaHelperMSSQL', () => {
 			await helper.createIndex('products', 'sku', { unique: false });
 
 			expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
-			expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
+
+			expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', [
+				'products_sku_index',
+				'products',
+				'sku',
+			]);
 		});
 
 		test('creates a blocking index when attemptConcurrentIndex is true but edition is not Enterprise', async () => {

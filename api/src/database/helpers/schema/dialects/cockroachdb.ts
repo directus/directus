@@ -55,7 +55,11 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 	// https://www.cockroachlabs.com/docs/stable/crdb-internal#node_build_info
 	override async getVersion(): Promise<string | null> {
 		try {
-			const [row] = await this.knex.select('value as version').from('crdb_internal.node_build_info').where('field', 'Version');
+			const [row] = await this.knex
+				.select('value as version')
+				.from('crdb_internal.node_build_info')
+				.where('field', 'Version');
+
 			return row?.version?.replace(/^v/, '') ?? null;
 		} catch {
 			return null;

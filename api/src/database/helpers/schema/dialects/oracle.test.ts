@@ -105,7 +105,11 @@ describe('SchemaHelperOracle', () => {
 			const { helper, mockKnex } = createHelper();
 			await helper.createIndex('products', 'sku', { unique: false });
 
-			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'products_sku_index',
+				'products',
+				'sku',
+			]);
 		});
 
 		test('creates an online index when attemptConcurrentIndex is true', async () => {

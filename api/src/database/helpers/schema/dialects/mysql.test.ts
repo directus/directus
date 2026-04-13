@@ -102,7 +102,11 @@ describe('SchemaHelperMySQL', () => {
 			const { helper, mockRaw } = createHelper();
 			await helper.createIndex('users', 'email', { unique: true });
 
-			expect(mockRaw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', ['users_email_unique', 'users', 'email']);
+			expect(mockRaw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', [
+				'users_email_unique',
+				'users',
+				'email',
+			]);
 		});
 
 		test('creates a standard index when unique option is false', async () => {
@@ -176,7 +180,11 @@ describe('SchemaHelperMySQL', () => {
 			const { helper, mockRaw } = createHelper();
 			await helper.createIndex('categories', 'name', {});
 
-			expect(mockRaw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['categories_name_index', 'categories', 'name']);
+			expect(mockRaw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'categories_name_index',
+				'categories',
+				'name',
+			]);
 		});
 
 		test('works with different collection and field names', async () => {

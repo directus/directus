@@ -66,19 +66,12 @@ describe('SchemaHelperCockroachDb', () => {
 	describe('getDatabaseSize', () => {
 		test('returns database size in bytes', async () => {
 			const mockFrom = vi.fn().mockResolvedValue([{ size: 104857600 }]);
-			const mockSelectChain = vi.fn().mockReturnValue({ from: mockFrom });
+
 			const mockSelect = vi.fn()
-				.mockReturnValueOnce([{ current_database: 'testdb' }])
-				.mockReturnValueOnce({ from: mockFrom });
-
-			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
-
-			// Need to mock the first select (current_database) as resolved
-			mockSelect.mockReset();
-			mockSelect
 				.mockResolvedValueOnce([{ current_database: 'testdb' }])
 				.mockReturnValueOnce({ from: mockFrom });
 
+			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
 			const helper = new SchemaHelperCockroachDb(mockKnex);
 
 			const result = await helper.getDatabaseSize();
@@ -120,7 +113,11 @@ describe('SchemaHelperCockroachDb', () => {
 			const { helper, mockKnex } = createHelper();
 			await helper.createIndex('products', 'sku', { unique: false });
 
-			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'products_sku_index',
+				'products',
+				'sku',
+			]);
 		});
 
 		test('creates a concurrent index when attemptConcurrentIndex is true', async () => {
