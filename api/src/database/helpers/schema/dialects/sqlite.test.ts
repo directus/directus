@@ -15,13 +15,17 @@ describe('SchemaHelperSQLite', () => {
 
 	describe('getVersion', () => {
 		test('returns version string', async () => {
+			const rawResult = Symbol('raw');
+			const mockRaw = vi.fn().mockReturnValue(rawResult);
 			const mockSelect = vi.fn().mockResolvedValue([{ version: '3.42.0' }]);
-			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const mockKnex = { raw: mockRaw, select: mockSelect } as unknown as Knex;
 			const helper = new SchemaHelperSQLite(mockKnex);
 
 			const result = await helper.getVersion();
 
 			expect(result).toBe('3.42.0');
+			expect(mockRaw).toHaveBeenCalledWith('sqlite_version() as version');
+			expect(mockSelect).toHaveBeenCalledWith(rawResult);
 		});
 
 		test('returns null when query returns no rows', async () => {
@@ -54,6 +58,10 @@ describe('SchemaHelperSQLite', () => {
 			const result = await helper.getDatabaseSize();
 
 			expect(result).toBe(4096000);
+
+			expect(mockRaw).toHaveBeenCalledWith(
+				'SELECT page_count * page_size as "size" FROM pragma_page_count(), pragma_page_size();',
+			);
 		});
 
 		test('returns null when size is falsy', async () => {

@@ -19,13 +19,17 @@ describe('SchemaHelperMySQL', () => {
 
 	describe('getVersion', () => {
 		test('returns version string for MySQL', async () => {
+			const rawResult = Symbol('raw');
+			const mockRaw = vi.fn().mockReturnValue(rawResult);
 			const mockSelect = vi.fn().mockResolvedValue([{ version: '8.0.33' }]);
-			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const mockKnex = { raw: mockRaw, select: mockSelect } as unknown as Knex;
 			const helper = new SchemaHelperMySQL(mockKnex);
 
 			const result = await helper.getVersion();
 
 			expect(result).toBe('8.0.33');
+			expect(mockRaw).toHaveBeenCalledWith('version() as version');
+			expect(mockSelect).toHaveBeenCalledWith(rawResult);
 		});
 
 		test('strips MariaDB suffix from version', async () => {
@@ -61,6 +65,9 @@ describe('SchemaHelperMySQL', () => {
 
 	describe('getDatabaseSize', () => {
 		test('returns database size in bytes', async () => {
+			const rawExpression = Symbol('raw-expression');
+			const rawDatabase = Symbol('raw-database');
+			const mockRaw = vi.fn().mockReturnValueOnce(rawExpression).mockReturnValueOnce(rawDatabase);
 			const mockAs = vi.fn().mockReturnThis();
 			const mockWhere = vi.fn().mockReturnValue({ as: mockAs });
 			const mockFrom = vi.fn().mockReturnValue({ where: mockWhere });
@@ -68,12 +75,34 @@ describe('SchemaHelperMySQL', () => {
 			const mockSumFrom = vi.fn().mockResolvedValue([{ size: 2097152 }]);
 			const mockSum = vi.fn().mockReturnValue({ from: mockSumFrom });
 
-			const mockKnex = Object.assign(vi.fn(), { raw: vi.fn(), select: mockSelect, sum: mockSum }) as unknown as Knex;
+			const mockKnex = Object.assign(vi.fn(), { raw: mockRaw, select: mockSelect, sum: mockSum }) as unknown as Knex;
 			const helper = new SchemaHelperMySQL(mockKnex);
 
 			const result = await helper.getDatabaseSize();
 
 			expect(result).toBe(2097152);
+			expect(mockRaw).toHaveBeenNthCalledWith(1, 'data_length + index_length AS size');
+			expect(mockRaw).toHaveBeenNthCalledWith(2, 'DATABASE()');
+			expect(mockSum).toHaveBeenCalledWith('size AS size');
+			expect(mockSelect).toHaveBeenCalledWith(rawExpression);
+			expect(mockFrom).toHaveBeenCalledWith('information_schema.TABLES');
+			expect(mockWhere).toHaveBeenCalledWith('table_schema', '=', rawDatabase);
+		});
+
+		test('returns null when size is falsy', async () => {
+			const mockAs = vi.fn().mockReturnThis();
+			const mockWhere = vi.fn().mockReturnValue({ as: mockAs });
+			const mockInnerFrom = vi.fn().mockReturnValue({ where: mockWhere });
+			const mockSelect = vi.fn().mockReturnValue({ from: mockInnerFrom });
+			const mockSumFrom = vi.fn().mockResolvedValue([{ size: null }]);
+			const mockSum = vi.fn().mockReturnValue({ from: mockSumFrom });
+
+			const mockKnex = Object.assign(vi.fn(), { raw: vi.fn(), select: mockSelect, sum: mockSum }) as unknown as Knex;
+			const helper = new SchemaHelperMySQL(mockKnex);
+
+			const result = await helper.getDatabaseSize();
+
+			expect(result).toBeNull();
 		});
 
 		test('returns null on query error', async () => {

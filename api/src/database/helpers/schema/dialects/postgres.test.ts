@@ -15,13 +15,17 @@ describe('SchemaHelperPostgres', () => {
 
 	describe('getVersion', () => {
 		test('returns version string from current_setting', async () => {
+			const rawResult = Symbol('raw');
+			const mockRaw = vi.fn().mockReturnValue(rawResult);
 			const mockSelect = vi.fn().mockResolvedValue([{ version: '16.4' }]);
-			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const mockKnex = { raw: mockRaw, select: mockSelect } as unknown as Knex;
 			const helper = new SchemaHelperPostgres(mockKnex);
 
 			const result = await helper.getVersion();
 
 			expect(result).toBe('16.4');
+			expect(mockRaw).toHaveBeenCalledWith("current_setting('server_version') as version");
+			expect(mockSelect).toHaveBeenCalledWith(rawResult);
 		});
 
 		test('returns null when query returns no rows', async () => {
@@ -47,13 +51,17 @@ describe('SchemaHelperPostgres', () => {
 
 	describe('getDatabaseSize', () => {
 		test('returns database size in bytes', async () => {
+			const rawResult = Symbol('raw');
+			const mockRaw = vi.fn().mockReturnValue(rawResult);
 			const mockSelect = vi.fn().mockResolvedValue([{ size: 1048576 }]);
-			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const mockKnex = { raw: mockRaw, select: mockSelect } as unknown as Knex;
 			const helper = new SchemaHelperPostgres(mockKnex);
 
 			const result = await helper.getDatabaseSize();
 
 			expect(result).toBe(1048576);
+			expect(mockRaw).toHaveBeenCalledWith('pg_database_size(current_database()) as size');
+			expect(mockSelect).toHaveBeenCalledWith(rawResult);
 		});
 
 		test('returns null when size is falsy', async () => {

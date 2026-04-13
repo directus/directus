@@ -16,13 +16,17 @@ describe('SchemaHelperMSSQL', () => {
 
 	describe('getVersion', () => {
 		test('returns product version string', async () => {
+			const rawResult = Symbol('raw');
+			const mockRaw = vi.fn().mockReturnValue(rawResult);
 			const mockSelect = vi.fn().mockResolvedValue([{ version: '16.0.1000.6' }]);
-			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const mockKnex = { raw: mockRaw, select: mockSelect } as unknown as Knex;
 			const helper = new SchemaHelperMSSQL(mockKnex);
 
 			const result = await helper.getVersion();
 
 			expect(result).toBe('16.0.1000.6');
+			expect(mockRaw).toHaveBeenCalledWith("SERVERPROPERTY('productversion') as version");
+			expect(mockSelect).toHaveBeenCalledWith(rawResult);
 		});
 
 		test('returns null when query returns no rows', async () => {
@@ -55,6 +59,7 @@ describe('SchemaHelperMSSQL', () => {
 			const result = await helper.getDatabaseSize();
 
 			expect(result).toBe(8388608);
+			expect(mockRaw).toHaveBeenCalledWith('SELECT SUM(size) * 8192 AS size FROM sys.database_files;');
 		});
 
 		test('returns null when size is falsy', async () => {

@@ -24,6 +24,9 @@ describe('SchemaHelperCockroachDb', () => {
 			const result = await helper.getVersion();
 
 			expect(result).toBe('23.1.0');
+			expect(mockSelect).toHaveBeenCalledWith('value as version');
+			expect(mockFrom).toHaveBeenCalledWith('crdb_internal.node_build_info');
+			expect(mockWhere).toHaveBeenCalledWith('field', 'Version');
 		});
 
 		test('returns version as-is when no v prefix', async () => {
@@ -65,9 +68,42 @@ describe('SchemaHelperCockroachDb', () => {
 
 	describe('getDatabaseSize', () => {
 		test('returns database size in bytes', async () => {
+			const rawCurrentDb = Symbol('raw-current-db');
+			const rawSizeExpr = Symbol('raw-size-expr');
+			const rawShowRanges = Symbol('raw-show-ranges');
+
+			const mockRaw = vi
+				.fn()
+				.mockReturnValueOnce(rawCurrentDb)
+				.mockReturnValueOnce(rawSizeExpr)
+				.mockReturnValueOnce(rawShowRanges);
+
 			const mockFrom = vi.fn().mockResolvedValue([{ size: 104857600 }]);
 
-			const mockSelect = vi.fn()
+			const mockSelect = vi
+				.fn()
+				.mockResolvedValueOnce([{ current_database: 'testdb' }])
+				.mockReturnValueOnce({ from: mockFrom });
+
+			const mockKnex = { raw: mockRaw, select: mockSelect } as unknown as Knex;
+			const helper = new SchemaHelperCockroachDb(mockKnex);
+
+			const result = await helper.getDatabaseSize();
+
+			expect(result).toBe(104857600);
+			expect(mockRaw).toHaveBeenNthCalledWith(1, 'current_database()');
+			expect(mockSelect).toHaveBeenNthCalledWith(1, rawCurrentDb);
+			expect(mockRaw).toHaveBeenNthCalledWith(2, 'round(SUM(range_size_mb) * 1024 * 1024, 0) AS size');
+			expect(mockSelect).toHaveBeenNthCalledWith(2, rawSizeExpr);
+			expect(mockRaw).toHaveBeenNthCalledWith(3, '[SHOW RANGES FROM database ??]', ['testdb']);
+			expect(mockFrom).toHaveBeenCalledWith(rawShowRanges);
+		});
+
+		test('returns null when size is falsy', async () => {
+			const mockFrom = vi.fn().mockResolvedValue([{ size: null }]);
+
+			const mockSelect = vi
+				.fn()
 				.mockResolvedValueOnce([{ current_database: 'testdb' }])
 				.mockReturnValueOnce({ from: mockFrom });
 
@@ -76,7 +112,7 @@ describe('SchemaHelperCockroachDb', () => {
 
 			const result = await helper.getDatabaseSize();
 
-			expect(result).toBe(104857600);
+			expect(result).toBeNull();
 		});
 
 		test('returns null on query error', async () => {

@@ -59,6 +59,7 @@ describe('SchemaHelperOracle', () => {
 			const result = await helper.getDatabaseSize();
 
 			expect(result).toBe(536870912);
+			expect(mockRaw).toHaveBeenCalledWith('select SUM(bytes) from dba_segments');
 		});
 
 		test('returns null when result is falsy', async () => {
