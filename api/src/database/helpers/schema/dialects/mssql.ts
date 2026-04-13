@@ -31,6 +31,16 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		return uuid.toUpperCase();
 	}
 
+	// https://learn.microsoft.com/en-us/sql/t-sql/functions/serverproperty-transact-sql
+	override async getVersion(): Promise<string | null> {
+		try {
+			const [row] = await this.knex.select(this.knex.raw("SERVERPROPERTY('productversion') as version"));
+			return row?.version ?? null;
+		} catch {
+			return null;
+		}
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw('SELECT SUM(size) * 8192 AS size FROM sys.database_files;');

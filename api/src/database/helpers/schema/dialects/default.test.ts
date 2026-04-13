@@ -13,56 +13,73 @@ describe('SchemaHelperDefault', () => {
 		return { helper, mockKnex };
 	}
 
-	test('createIndex creates a standard index without options', async () => {
-		const { helper, mockKnex } = createHelper();
-
-		await helper.createIndex('users', 'email');
-
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['users_email_index', 'users', 'email']);
+	describe('getVersion', () => {
+		test('returns null', async () => {
+			const { helper } = createHelper();
+			const result = await helper.getVersion();
+			expect(result).toBeNull();
+		});
 	});
 
-	test('createIndex creates a unique index when unique option is true', async () => {
-		const { helper, mockKnex } = createHelper();
-
-		await helper.createIndex('users', 'email', { unique: true });
-
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', [
-			'users_email_unique',
-			'users',
-			'email',
-		]);
+	describe('getDatabaseSize', () => {
+		test('returns null', async () => {
+			const { helper } = createHelper();
+			const result = await helper.getDatabaseSize();
+			expect(result).toBeNull();
+		});
 	});
 
-	test('createIndex creates a standard index when unique option is false', async () => {
-		const { helper, mockKnex } = createHelper();
+	describe('createIndex', () => {
+		test('creates a standard index without options', async () => {
+			const { helper, mockKnex } = createHelper();
 
-		await helper.createIndex('products', 'sku', { unique: false });
+			await helper.createIndex('users', 'email');
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['users_email_index', 'users', 'email']);
+		});
 
-	test('createIndex ignores attemptConcurrentIndex option', async () => {
-		const { helper, mockKnex } = createHelper();
+		test('creates a unique index when unique option is true', async () => {
+			const { helper, mockKnex } = createHelper();
 
-		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
+			await helper.createIndex('users', 'email', { unique: true });
 
-		// Default implementation inherits from base SchemaHelper which doesn't support CONCURRENTLY
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
-			'orders_status_index',
-			'orders',
-			'status',
-		]);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', [
+				'users_email_unique',
+				'users',
+				'email',
+			]);
+		});
 
-	test('createIndex handles empty options object', async () => {
-		const { helper, mockKnex } = createHelper();
+		test('creates a standard index when unique option is false', async () => {
+			const { helper, mockKnex } = createHelper();
 
-		await helper.createIndex('categories', 'name', {});
+			await helper.createIndex('products', 'sku', { unique: false });
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
-			'categories_name_index',
-			'categories',
-			'name',
-		]);
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
+		});
+
+		test('ignores attemptConcurrentIndex option', async () => {
+			const { helper, mockKnex } = createHelper();
+
+			await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
+
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'orders_status_index',
+				'orders',
+				'status',
+			]);
+		});
+
+		test('handles empty options object', async () => {
+			const { helper, mockKnex } = createHelper();
+
+			await helper.createIndex('categories', 'name', {});
+
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'categories_name_index',
+				'categories',
+				'name',
+			]);
+		});
 	});
 });

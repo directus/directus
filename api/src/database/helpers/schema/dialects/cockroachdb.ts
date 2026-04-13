@@ -1,12 +1,9 @@
 import assert from 'node:assert';
 import type { KNEX_TYPES } from '@directus/constants';
-import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { type Knex } from 'knex';
 import type { CreateIndexOptions, Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
-
-const env = useEnv();
 
 export class SchemaHelperCockroachDb extends SchemaHelper {
 	override async changeToType(
@@ -55,11 +52,23 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		]);
 	}
 
+	// https://www.cockroachlabs.com/docs/stable/crdb-internal#node_build_info
+	override async getVersion(): Promise<string | null> {
+		try {
+			const [row] = await this.knex.select('value as version').from('crdb_internal.node_build_info').where('field', 'Version');
+			return row?.version?.replace(/^v/, '') ?? null;
+		} catch {
+			return null;
+		}
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
+			const [{ current_database: dbName }] = await this.knex.select(this.knex.raw('current_database()'));
+
 			const result = await this.knex
 				.select(this.knex.raw('round(SUM(range_size_mb) * 1024 * 1024, 0) AS size'))
-				.from(this.knex.raw('[SHOW RANGES FROM database ??]', [env['DB_DATABASE']]));
+				.from(this.knex.raw('[SHOW RANGES FROM database ??]', [dbName]));
 
 			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {

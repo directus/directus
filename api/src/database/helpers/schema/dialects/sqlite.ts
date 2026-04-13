@@ -24,6 +24,16 @@ export class SchemaHelperSQLite extends SchemaHelper {
 		await this.knex.raw('PRAGMA foreign_keys = ON');
 	}
 
+	// https://www.sqlite.org/lang_corefunc.html#sqlite_version
+	override async getVersion(): Promise<string | null> {
+		try {
+			const [row] = await this.knex.select(this.knex.raw('sqlite_version() as version'));
+			return row?.version ?? null;
+		} catch {
+			return null;
+		}
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.raw(

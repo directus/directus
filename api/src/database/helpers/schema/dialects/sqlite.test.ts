@@ -13,56 +13,121 @@ describe('SchemaHelperSQLite', () => {
 		return { helper, mockKnex };
 	}
 
-	test('createIndex creates a standard index without options', async () => {
-		const { helper, mockKnex } = createHelper();
+	describe('getVersion', () => {
+		test('returns version string', async () => {
+			const mockSelect = vi.fn().mockResolvedValue([{ version: '3.42.0' }]);
+			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const helper = new SchemaHelperSQLite(mockKnex);
 
-		await helper.createIndex('users', 'email');
+			const result = await helper.getVersion();
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['users_email_index', 'users', 'email']);
+			expect(result).toBe('3.42.0');
+		});
+
+		test('returns null when query returns no rows', async () => {
+			const mockSelect = vi.fn().mockResolvedValue([]);
+			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const helper = new SchemaHelperSQLite(mockKnex);
+
+			const result = await helper.getVersion();
+
+			expect(result).toBeNull();
+		});
+
+		test('returns null on query error', async () => {
+			const mockSelect = vi.fn().mockRejectedValue(new Error('Failed'));
+			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const helper = new SchemaHelperSQLite(mockKnex);
+
+			const result = await helper.getVersion();
+
+			expect(result).toBeNull();
+		});
 	});
 
-	test('createIndex creates a unique index when unique option is true', async () => {
-		const { helper, mockKnex } = createHelper();
+	describe('getDatabaseSize', () => {
+		test('returns database size in bytes', async () => {
+			const mockRaw = vi.fn().mockResolvedValue([{ size: 4096000 }]);
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperSQLite(mockKnex);
 
-		await helper.createIndex('users', 'email', { unique: true });
+			const result = await helper.getDatabaseSize();
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', [
-			'users_email_unique',
-			'users',
-			'email',
-		]);
+			expect(result).toBe(4096000);
+		});
+
+		test('returns null when size is falsy', async () => {
+			const mockRaw = vi.fn().mockResolvedValue([{ size: null }]);
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperSQLite(mockKnex);
+
+			const result = await helper.getDatabaseSize();
+
+			expect(result).toBeNull();
+		});
+
+		test('returns null on query error', async () => {
+			const mockRaw = vi.fn().mockRejectedValue(new Error('Failed'));
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperSQLite(mockKnex);
+
+			const result = await helper.getDatabaseSize();
+
+			expect(result).toBeNull();
+		});
 	});
 
-	test('createIndex creates a standard index when unique option is false', async () => {
-		const { helper, mockKnex } = createHelper();
+	describe('createIndex', () => {
+		test('creates a standard index without options', async () => {
+			const { helper, mockKnex } = createHelper();
 
-		await helper.createIndex('products', 'sku', { unique: false });
+			await helper.createIndex('users', 'email');
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['users_email_index', 'users', 'email']);
+		});
 
-	test('createIndex ignores attemptConcurrentIndex option', async () => {
-		const { helper, mockKnex } = createHelper();
+		test('creates a unique index when unique option is true', async () => {
+			const { helper, mockKnex } = createHelper();
 
-		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
+			await helper.createIndex('users', 'email', { unique: true });
 
-		// SQLite doesn't override createIndex, so it uses base implementation which doesn't support CONCURRENTLY
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
-			'orders_status_index',
-			'orders',
-			'status',
-		]);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', [
+				'users_email_unique',
+				'users',
+				'email',
+			]);
+		});
 
-	test('createIndex handles empty options object', async () => {
-		const { helper, mockKnex } = createHelper();
+		test('creates a standard index when unique option is false', async () => {
+			const { helper, mockKnex } = createHelper();
 
-		await helper.createIndex('categories', 'name', {});
+			await helper.createIndex('products', 'sku', { unique: false });
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
-			'categories_name_index',
-			'categories',
-			'name',
-		]);
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
+		});
+
+		test('ignores attemptConcurrentIndex option', async () => {
+			const { helper, mockKnex } = createHelper();
+
+			await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
+
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'orders_status_index',
+				'orders',
+				'status',
+			]);
+		});
+
+		test('handles empty options object', async () => {
+			const { helper, mockKnex } = createHelper();
+
+			await helper.createIndex('categories', 'name', {});
+
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'categories_name_index',
+				'categories',
+				'name',
+			]);
+		});
 	});
 });

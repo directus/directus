@@ -13,84 +13,154 @@ describe('SchemaHelperOracle', () => {
 		return { helper, mockKnex };
 	}
 
-	test('createIndex creates a standard index without options', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('users', 'email');
+	describe('getVersion', () => {
+		test('returns version string from v$instance', async () => {
+			const mockFrom = vi.fn().mockResolvedValue([{ version: '19.0.0.0.0' }]);
+			const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const helper = new SchemaHelperOracle(mockKnex);
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['users_email_index', 'users', 'email']);
+			const result = await helper.getVersion();
+
+			expect(result).toBe('19.0.0.0.0');
+			expect(mockSelect).toHaveBeenCalledWith('version');
+			expect(mockFrom).toHaveBeenCalledWith('v$instance');
+		});
+
+		test('returns null when query returns no rows', async () => {
+			const mockFrom = vi.fn().mockResolvedValue([]);
+			const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const helper = new SchemaHelperOracle(mockKnex);
+
+			const result = await helper.getVersion();
+
+			expect(result).toBeNull();
+		});
+
+		test('returns null on query error', async () => {
+			const mockFrom = vi.fn().mockRejectedValue(new Error('insufficient privileges'));
+			const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
+			const mockKnex = { raw: vi.fn(), select: mockSelect } as unknown as Knex;
+			const helper = new SchemaHelperOracle(mockKnex);
+
+			const result = await helper.getVersion();
+
+			expect(result).toBeNull();
+		});
 	});
 
-	test('createIndex creates a unique index when unique option is true', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('users', 'email', { unique: true });
+	describe('getDatabaseSize', () => {
+		test('returns database size in bytes', async () => {
+			const mockRaw = vi.fn().mockResolvedValue([{ 'SUM(BYTES)': 536870912 }]);
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperOracle(mockKnex);
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', [
-			'users_email_unique',
-			'users',
-			'email',
-		]);
+			const result = await helper.getDatabaseSize();
+
+			expect(result).toBe(536870912);
+		});
+
+		test('returns null when result is falsy', async () => {
+			const mockRaw = vi.fn().mockResolvedValue([{ 'SUM(BYTES)': null }]);
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperOracle(mockKnex);
+
+			const result = await helper.getDatabaseSize();
+
+			expect(result).toBeNull();
+		});
+
+		test('returns null on query error', async () => {
+			const mockRaw = vi.fn().mockRejectedValue(new Error('insufficient privileges'));
+			const mockKnex = { raw: mockRaw } as unknown as Knex;
+			const helper = new SchemaHelperOracle(mockKnex);
+
+			const result = await helper.getDatabaseSize();
+
+			expect(result).toBeNull();
+		});
 	});
 
-	test('createIndex creates a standard index when unique option is false', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('products', 'sku', { unique: false });
+	describe('createIndex', () => {
+		test('creates a standard index without options', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('users', 'email');
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['users_email_index', 'users', 'email']);
+		});
 
-	test('createIndex creates an online index when attemptConcurrentIndex is true', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
+		test('creates a unique index when unique option is true', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('users', 'email', { unique: true });
 
-		// Oracle uses ONLINE instead of CONCURRENTLY
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??) ONLINE', [
-			'orders_status_index',
-			'orders',
-			'status',
-		]);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??)', [
+				'users_email_unique',
+				'users',
+				'email',
+			]);
+		});
 
-	test('createIndex creates an online unique index when both options are true', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('users', 'username', { attemptConcurrentIndex: true, unique: true });
+		test('creates a standard index when unique option is false', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('products', 'sku', { unique: false });
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??) ONLINE', [
-			'users_username_unique',
-			'users',
-			'username',
-		]);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['products_sku_index', 'products', 'sku']);
+		});
 
-	test('createIndex creates an online standard index when attemptConcurrentIndex is true and unique is false', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('posts', 'author_id', { attemptConcurrentIndex: true, unique: false });
+		test('creates an online index when attemptConcurrentIndex is true', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??) ONLINE', [
-			'posts_author_id_index',
-			'posts',
-			'author_id',
-		]);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??) ONLINE', [
+				'orders_status_index',
+				'orders',
+				'status',
+			]);
+		});
 
-	test('createIndex handles empty options object', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('categories', 'name', {});
+		test('creates an online unique index when both options are true', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('users', 'username', { attemptConcurrentIndex: true, unique: true });
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
-			'categories_name_index',
-			'categories',
-			'name',
-		]);
-	});
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??) ONLINE', [
+				'users_username_unique',
+				'users',
+				'username',
+			]);
+		});
 
-	test('createIndex works with different collection and field names', async () => {
-		const { helper, mockKnex } = createHelper();
-		await helper.createIndex('my_custom_table', 'my_custom_column');
+		test('creates an online standard index when attemptConcurrentIndex is true and unique is false', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('posts', 'author_id', { attemptConcurrentIndex: true, unique: false });
 
-		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
-			'my_custom_table_my_custom_column_index',
-			'my_custom_table',
-			'my_custom_column',
-		]);
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??) ONLINE', [
+				'posts_author_id_index',
+				'posts',
+				'author_id',
+			]);
+		});
+
+		test('handles empty options object', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('categories', 'name', {});
+
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'categories_name_index',
+				'categories',
+				'name',
+			]);
+		});
+
+		test('works with different collection and field names', async () => {
+			const { helper, mockKnex } = createHelper();
+			await helper.createIndex('my_custom_table', 'my_custom_column');
+
+			expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', [
+				'my_custom_table_my_custom_column_index',
+				'my_custom_table',
+				'my_custom_column',
+			]);
+		});
 	});
 });
