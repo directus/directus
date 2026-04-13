@@ -272,7 +272,8 @@ export interface TelemetryMetrics {
 		count: number;
 		users: DistributionSummary;
 		policies: DistributionSummary;
-		roles: DistributionSummary;
+		children: DistributionSummary;
+		depth: DistributionSummary;
 	};
 
 	policies: CountMetric;

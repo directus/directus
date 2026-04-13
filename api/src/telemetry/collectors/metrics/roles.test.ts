@@ -28,7 +28,8 @@ describe('collectRoleMetrics', () => {
 		expect(result.count).toBe(0);
 		expect(result.users).toEqual({ min: 0, max: 0, median: 0, mean: 0 });
 		expect(result.policies).toEqual({ min: 0, max: 0, median: 0, mean: 0 });
-		expect(result.roles).toEqual({ min: 0, max: 0, median: 0, mean: 0 });
+		expect(result.children).toEqual({ min: 0, max: 0, median: 0, mean: 0 });
+		expect(result.depth).toEqual({ min: 0, max: 0, median: 0, mean: 0 });
 	});
 
 	test('returns distributions when roles exist', async () => {
@@ -36,8 +37,8 @@ describe('collectRoleMetrics', () => {
 			() =>
 				({
 					readByQuery: vi.fn().mockResolvedValue([
-						{ users: 3, children: 0, policies: 2 },
-						{ users: 5, children: 1, policies: 1 },
+						{ id: 'a', parent: null, users_count: '3', children_count: '1', policies_count: '2' },
+						{ id: 'b', parent: 'a', users_count: '5', children_count: '0', policies_count: '1' },
 					]),
 				}) as any,
 		);
@@ -45,5 +46,25 @@ describe('collectRoleMetrics', () => {
 		const result = await collectRoleMetrics(mockDb, mockSchema);
 		expect(result.count).toBe(2);
 		expect(result.users).toEqual({ min: 1, max: 5, median: 3, mean: 3 });
+		expect(result.children).toEqual({ min: 1, max: 5, median: 3, mean: 3 });
+		expect(result.depth).toEqual({ min: 1, max: 5, median: 3, mean: 3 });
+	});
+
+	test('queries with id, parent, and count fields', async () => {
+		const mockReadByQuery = vi.fn().mockResolvedValue([]);
+
+		vi.mocked(RolesService).mockImplementation(
+			() =>
+				({
+					readByQuery: mockReadByQuery,
+				}) as any,
+		);
+
+		await collectRoleMetrics(mockDb, mockSchema);
+
+		expect(mockReadByQuery).toHaveBeenCalledWith({
+			fields: ['id', 'parent', 'count(users)', 'count(children)', 'count(policies)'],
+			limit: -1,
+		});
 	});
 });
