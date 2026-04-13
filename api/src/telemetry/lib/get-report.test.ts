@@ -1,6 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import { type Knex } from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { getSystemCache, setSystemCache } from '../../cache.js';
 import { getDatabase } from '../../database/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { collectConfig } from '../collectors/config.js';
@@ -9,6 +10,11 @@ import { collectMetrics } from '../collectors/metrics/index.js';
 import { collectProject } from '../collectors/project.js';
 import type { TelemetryConfig, TelemetryFeatures, TelemetryMetrics, TelemetryProject } from '../types/report.js';
 import { getReport } from './get-report.js';
+
+vi.mock('../../cache.js', () => ({
+	getSystemCache: vi.fn().mockResolvedValue(undefined),
+	setSystemCache: vi.fn().mockResolvedValue(undefined),
+}));
 
 vi.mock('../../database/index.js');
 vi.mock('../../utils/get-schema.js');
@@ -169,6 +175,7 @@ describe('getReport', () => {
 	beforeEach(() => {
 		mockDb = {} as unknown as Knex;
 		mockSchema = {} as unknown as SchemaOverview;
+		vi.mocked(getSystemCache).mockResolvedValue(undefined as any);
 		vi.mocked(getDatabase).mockReturnValue(mockDb);
 		vi.mocked(getSchema).mockResolvedValue(mockSchema);
 		vi.mocked(collectProject).mockResolvedValue(mockProject);
@@ -221,7 +228,7 @@ describe('getReport', () => {
 	test('Returns meta keys with correct structure', async () => {
 		const report = await getReport();
 
-		expect(report.event).toBe('directus.telemetry.ping.v1');
+		expect(report.event).toBe('directus.telemetry.ping.v2');
 		expect(report.timestamp).toEqual(expect.any(String));
 		expect(report.trigger).toBe('scheduled');
 	});
@@ -239,5 +246,39 @@ describe('getReport', () => {
 	test('Returns metrics section from collectMetrics', async () => {
 		const report = await getReport();
 		expect(report.metrics).toEqual(mockMetrics);
+	});
+
+	test('Returns cached data when system cache has a report', async () => {
+		const cachedReport = {
+			event: 'directus.telemetry.ping.v2',
+			revision: 1,
+			timestamp: '2024-01-01T00:00:00.000Z',
+			trigger: 'startup',
+			project: mockProject,
+			config: mockConfig,
+			features: mockFeatures,
+			metrics: mockMetrics,
+		};
+
+		vi.mocked(getSystemCache).mockResolvedValue(cachedReport as any);
+
+		const report = await getReport('scheduled');
+
+		expect(collectProject).not.toHaveBeenCalled();
+		expect(collectConfig).not.toHaveBeenCalled();
+		expect(collectFeatures).not.toHaveBeenCalled();
+		expect(collectMetrics).not.toHaveBeenCalled();
+		expect(report.trigger).toBe('scheduled');
+		expect(report.timestamp).toBe('2024-01-01T00:00:00.000Z');
+	});
+
+	test('Stores report in system cache after generating', async () => {
+		await getReport();
+
+		expect(setSystemCache).toHaveBeenCalledWith(
+			'telemetry-report',
+			expect.objectContaining({ event: 'directus.telemetry.ping.v2' }),
+			15 * 60 * 1000,
+		);
 	});
 });
