@@ -101,10 +101,8 @@ for (const header of formatHeaders) {
 }
 
 test('asset transformation limits', async () => {
-	const count = Number(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
-
 	const results = await Promise.all(
-		[...Array(count).keys()].map(async (i) => {
+		[...Array(25).keys()].map(async () => {
 			const result = await fetch(`http://localhost:${port}/assets/${upload.id}?format=webp&access_token=admin`);
 
 			return result.status;
@@ -114,9 +112,9 @@ test('asset transformation limits', async () => {
 	expect(results.every((status) => status === 200)).toBe(true);
 
 	const results2 = await Promise.all(
-		[...Array(count + 200).keys()].map(async (i) => {
+		[...Array(50).keys()].map(async (i) => {
 			const result = await fetch(
-				`http://localhost:${port}/assets/${upload.id}?width=2000&height=2000&access_token=admin`,
+				`http://localhost:${port}/assets/${upload.id}?width=${100 * i}&height=2000&access_token=admin`,
 			);
 
 			return result.status;
@@ -124,5 +122,5 @@ test('asset transformation limits', async () => {
 	);
 
 	// TODO figure out why this is failing
-	// expect(results2.some((status) => status === 503)).toBe(true);
+	expect(results2.some((status) => status === 503)).toBe(true);
 });
