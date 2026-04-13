@@ -11,6 +11,7 @@ import { collectFlowMetrics } from './flows.js';
 import { collectRoleMetrics } from './roles.js';
 import { collectTranslationMetrics } from './translations.js';
 import { collectUserMetrics } from './users.js';
+import { collectDatabaseMetrics } from './database.js';
 
 type Metrics = TelemetryReport['metrics'];
 
@@ -29,6 +30,7 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		fieldsCount,
 		panelsCount,
 		policiesCount,
+		databaseMetrics
 	] = await Promise.all([
 		collectApiRequestMetrics(),
 		collectCollectionMetrics(db, schema),
@@ -43,6 +45,7 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		serviceCount(db, schema, 'directus_fields'),
 		serviceCount(db, schema, 'directus_panels'),
 		serviceCount(db, schema, 'directus_policies'),
+		collectDatabaseMetrics(db),
 	]);
 
 	const { _totalItems, _totalFields, ...collections } = collectionMetrics;
@@ -62,5 +65,6 @@ export async function collectMetrics(db: Knex, schema: SchemaOverview): Promise<
 		dashboards: dashboardMetrics,
 		panels: { count: panelsCount },
 		extensions: extensionMetrics,
+		database: databaseMetrics,
 	};
 }

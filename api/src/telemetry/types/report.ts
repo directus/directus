@@ -269,6 +269,10 @@ export interface TelemetryMetrics {
 		api: CountMetric;
 	};
 
+	database: {
+		size: number | null;
+	}
+
 	roles: {
 		count: number;
 		users: DistributionSummary;
