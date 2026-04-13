@@ -196,6 +196,11 @@ export const DEFAULTS: Env = {
 	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: false,
 	PRESSURE_LIMITER_RETRY_AFTER: false,
 
+	HEALTHCHECK_ENABLED: true,
+	HEALTHCHECK_NAMESPACE: 'directus:healthcheck',
+	HEALTHCHECK_SERVICES: 'database,redis,storage,email',
+	HEALTHCHECK_CACHE_TTL: '5m',
+
 	METRICS_ENABLED: false,
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
