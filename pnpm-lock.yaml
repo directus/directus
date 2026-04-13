@@ -941,7 +941,7 @@ overrides:
   qs: 6.15.1
   minimatch@10: 10.2.5
   minimatch@9: 9.0.9
-  basic-ftp: 5.2.1
+  basic-ftp: 5.2.2
   underscore: 1.13.8
   flatted: 3.4.2
   express@4>path-to-regexp: 0.1.13
@@ -8154,8 +8154,8 @@ packages:
     resolution: {integrity: sha512-JMWsdF+O8Orq3EMukbUN1QfbLK9mX2CkUmQBcW2T0s8OmdAUL5LLM/6wFwSrqXzlXB13yhyK9gTKS1rIizOduQ==}
     hasBin: true
 
-  basic-ftp@5.2.1:
-    resolution: {integrity: sha512-0yaL8JdxTknKDILitVpfYfV2Ob6yb3udX/hK97M7I3jOeznBNxQPtVvTUtnhUkyHlxFWyr5Lvknmgzoc7jf+1Q==}
+  basic-ftp@5.2.2:
+    resolution: {integrity: sha512-1tDrzKsdCg70WGvbFss/ulVAxupNauGnOlgpyjKzeQxzyllBLS0CGLV7tjIXTK3ZQA9/FBEm9qyFFN1bciA6pw==}
     engines: {node: '>=10.0.0'}
 
   better-path-resolve@1.0.0:
@@ -20269,7 +20269,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@20.0.3)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@20.0.3)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -20348,7 +20348,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@20.0.3)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)
+      vitest: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@20.0.3)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -21022,7 +21022,7 @@ snapshots:
 
   baseline-browser-mapping@2.8.20: {}
 
-  basic-ftp@5.2.1: {}
+  basic-ftp@5.2.2: {}
 
   better-path-resolve@1.0.0:
     dependencies:
@@ -23108,7 +23108,7 @@ snapshots:
 
   get-uri@6.0.5:
     dependencies:
-      basic-ftp: 5.2.1
+      basic-ftp: 5.2.2
       data-uri-to-buffer: 6.0.2
       debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:

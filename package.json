@@ -40,7 +40,7 @@
 			"qs": "6.15.1",
 			"minimatch@10": "10.2.5",
 			"minimatch@9": "9.0.9",
-			"basic-ftp": "5.2.1",
+			"basic-ftp": "5.2.2",
 			"underscore": "1.13.8",
 			"flatted": "3.4.2",
 			"express@4>path-to-regexp": "0.1.13",
