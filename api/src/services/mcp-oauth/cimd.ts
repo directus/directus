@@ -13,7 +13,11 @@ const MAX_URL_LENGTH = 255;
 
 const DEFAULT_BLOCKED_TLDS = ['test', 'localhost', 'invalid', 'example', 'local', 'onion'];
 
-/** Forbidden shared-secret auth methods per CIMD draft */
+/**
+ * Forbidden shared-secret auth methods per draft-ietf-oauth-client-id-metadata-document-01 Section 4.1:
+ * "the token_endpoint_auth_method property MUST NOT include client_secret_post, client_secret_basic,
+ * client_secret_jwt, or any other method based around a shared symmetric secret."
+ */
 const FORBIDDEN_AUTH_METHODS = new Set(['client_secret_basic', 'client_secret_post', 'client_secret_jwt']);
 
 export interface CimdMetadata {
