@@ -39,9 +39,7 @@ function getTranslationSearchInfo(
 
 	for (const [fieldName] of translationFields) {
 		// Find the o2m relation from the parent to the junction table
-		const relation = relations.find(
-			(r) => r.related_collection === collection && r.meta?.one_field === fieldName,
-		);
+		const relation = relations.find((r) => r.related_collection === collection && r.meta?.one_field === fieldName);
 
 		if (!relation) continue;
 
@@ -132,10 +130,13 @@ export function applySearch(
 
 		for (const translationInfo of translationInfos) {
 			const junctionAllowedFields = new Set(
-				permissions
-					.filter((p) => p.collection === translationInfo.junctionCollection)
-					.flatMap((p) => p.fields ?? []),
+				permissions.filter((p) => p.collection === translationInfo.junctionCollection).flatMap((p) => p.fields ?? []),
 			);
+
+			// Skip if non-admin user has no permissions for the junction collection
+			if (permissions.length > 0 && junctionAllowedFields.size === 0) {
+				continue;
+			}
 
 			const { cases: junctionCases } = getCases(translationInfo.junctionCollection, permissions, []);
 
@@ -146,8 +147,8 @@ export function applySearch(
 				junctionFields = junctionFields.filter(([name]) => junctionAllowedFields.has(name));
 			}
 
-			// Skip if non-admin user has no access to the junction collection
-			if (permissions.length > 0 && junctionFields.length === 0) {
+			// Skip if all junction fields are filtered out by permissions
+			if (junctionFields.length === 0) {
 				continue;
 			}
 

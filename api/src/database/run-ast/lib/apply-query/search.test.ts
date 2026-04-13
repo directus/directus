@@ -265,6 +265,7 @@ const translationSchema = new SchemaBuilder()
 		c.field('translations').translations();
 	})
 	.collection('articles_translations', (c) => {
+		c.field('id').id();
 		c.field('title').string();
 		c.field('body').text();
 	})
@@ -359,6 +360,7 @@ test(`Excludes non-searchable translation fields`, async () => {
 			c.field('translations').translations();
 		})
 		.collection('pages_translations', (c) => {
+			c.field('id').id();
 			c.field('title').string();
 			c.field('internal_notes').string().options({ searchable: false });
 		})
@@ -382,8 +384,12 @@ test(`Excludes concealed translation fields`, async () => {
 			c.field('translations').translations();
 		})
 		.collection('pages_translations', (c) => {
+			c.field('id').id();
 			c.field('title').string();
-			c.field('secret').string().options({ special: ['conceal'] });
+
+			c.field('secret')
+				.string()
+				.options({ special: ['conceal'] });
 		})
 		.build();
 
@@ -405,6 +411,7 @@ test(`Avoids fallback 1=0 when root has no searchable fields but translations do
 			c.field('translations').translations();
 		})
 		.collection('items_translations', (c) => {
+			c.field('id').id();
 			c.field('title').string();
 		})
 		.build();
