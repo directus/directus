@@ -21,11 +21,11 @@ export async function getDatabaseVersion(db: Knex, driver: DatabaseClient): Prom
 				[row] = await db.select(db.raw('banner as version')).from('v$version').whereRaw("banner like 'Oracle%'");
 				break;
 			default:
-				return db.client?.version ?? null;
+				return null;
 		}
 
 		return row?.version ?? null;
 	} catch {
-		return db.client?.version ?? null;
+		return null;
 	}
 }

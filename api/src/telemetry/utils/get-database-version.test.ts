@@ -58,43 +58,13 @@ describe('getDatabaseVersion', () => {
 		expect(result).toBeNull();
 	});
 
-	test('returns db.client.version for unknown driver', async () => {
-		const dbWithVersion = Object.create(db);
-		dbWithVersion.client = { version: '1.2.3' };
-
-		const result = await getDatabaseVersion(dbWithVersion, 'redshift');
-		expect(result).toBe('1.2.3');
-	});
-
-	test('returns null for unknown driver when db.client.version is undefined', async () => {
-		const dbWithoutVersion = Object.create(db);
-		dbWithoutVersion.client = { version: undefined };
-
-		const result = await getDatabaseVersion(dbWithoutVersion, 'redshift');
+	test('returns null for unknown driver', async () => {
+		const result = await getDatabaseVersion(db, 'redshift');
 		expect(result).toBeNull();
 	});
 
-	test('falls back to db.client.version on query error', async () => {
+	test('returns null on query error', async () => {
 		tracker.on.select(/version\(\)/).simulateError(new Error('Connection failed'));
-
-		Object.defineProperty(db, 'client', {
-			value: { version: '15.0' },
-			configurable: true,
-			writable: true,
-		});
-
-		const result = await getDatabaseVersion(db, 'postgres');
-		expect(result).toBe('15.0');
-	});
-
-	test('returns null on query error when db.client.version is undefined', async () => {
-		tracker.on.select(/version\(\)/).simulateError(new Error('Connection failed'));
-
-		Object.defineProperty(db, 'client', {
-			value: { version: undefined },
-			configurable: true,
-			writable: true,
-		});
 
 		const result = await getDatabaseVersion(db, 'postgres');
 		expect(result).toBeNull();
