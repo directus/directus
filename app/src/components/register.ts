@@ -4,7 +4,6 @@ import TransitionDialog from './transition/dialog.vue';
 import TransitionExpand from './transition/expand.vue';
 import VAvatar from './v-avatar.vue';
 import VBadge from './v-badge.vue';
-import VBreadcrumb from './v-breadcrumb.vue';
 import VButton from './v-button.vue';
 import VCardActions from './v-card-actions.vue';
 import VCardSubtitle from './v-card-subtitle.vue';
@@ -79,7 +78,6 @@ import ValueNull from '@/views/private/components/value-null.vue';
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
 	app.component('VBadge', VBadge);
-	app.component('VBreadcrumb', VBreadcrumb);
 	app.component('VButton', VButton);
 	app.component('VCardActions', VCardActions);
 	app.component('VCardSubtitle', VCardSubtitle);

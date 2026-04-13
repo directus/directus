@@ -123,10 +123,6 @@ export default defineTheme({
 		},
 
 		header: {
-			headline: {
-				foreground: 'var(--theme--foreground-subdued)',
-				fontFamily: 'var(--theme--fonts--sans--font-family)',
-			},
 			title: {
 				foreground: 'var(--theme--foreground)',
 				fontFamily: 'var(--theme--fonts--title--font-family)',
