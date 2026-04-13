@@ -291,5 +291,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
+		isItemLessVersion,
 	};
 }

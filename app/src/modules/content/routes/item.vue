@@ -112,10 +112,20 @@ const {
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
+	isItemLessVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
 	usePublishComparison();
+
+async function onVersionDelete(versionId: PrimaryKey) {
+	const wasItemLess = isItemLessVersion.value;
+	await deleteVersion(versionId);
+
+	if (wasItemLess) {
+		router.push(collectionRoute.value);
+	}
+}
 
 const {
 	isNew,
@@ -834,7 +844,7 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 					:delete-version-loading="deleteVersionLoading"
 					@add="addVersion"
 					@update="updateVersion"
-					@delete="deleteVersion"
+					@delete="onVersionDelete"
 					@switch="currentVersion = $event"
 				/>
 			</div>
