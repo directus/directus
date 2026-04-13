@@ -18,6 +18,11 @@ export interface CacheConfigLocal extends CacheConfigAbstract {
 	 * Maximum number of keys to store in the cache
 	 */
 	maxKeys?: number;
+
+	/**
+	 * Time-to-Live expires keys after duration in milliseconds
+	 */
+	ttl?: number;
 }
 
 export interface CacheConfigRedis extends CacheConfigAbstract {
