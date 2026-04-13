@@ -59,8 +59,12 @@ export interface TelemetryConfig {
 		providers: string[];
 		issuers: string[];
 	};
-	ai: boolean;
-	mcp: boolean;
+	ai: {
+		enabled: boolean;
+	};
+	mcp: {
+		enabled: boolean;
+	};
 	cache: {
 		enabled: boolean;
 		store: string;
@@ -79,8 +83,8 @@ export interface TelemetryConfig {
 	extensions: {
 		must_load: boolean;
 		auto_reload: boolean;
-		cache_ttl: string | false;
-		limit: number | false;
+		cache_ttl: string | null;
+		limit: number | null;
 		rolldown: boolean;
 	};
 	storage: {
@@ -88,9 +92,9 @@ export interface TelemetryConfig {
 	};
 	retention: {
 		enabled: boolean;
-		activity: string | false;
-		revisions: string | false;
-		flow_logs: string | false;
+		activity: string;
+		revisions: string;
+		flow_logs: string;
 	};
 	websockets: {
 		enabled: boolean;
@@ -168,7 +172,7 @@ export interface TelemetryFeatures {
 		urls: CountMetric;
 	};
 	files: {
-		transformations: string;
+		transformations: 'all' | 'none' | 'presets';
 		presets: CountMetric;
 	};
 	collaborative_editing: {

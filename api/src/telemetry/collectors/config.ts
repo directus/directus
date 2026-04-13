@@ -21,8 +21,12 @@ export async function collectConfig(db: Knex): Promise<TelemetryReport['config']
 
 	return {
 		auth: collectAuthProviders(env),
-		ai: toBoolean(env['AI_ENABLED']),
-		mcp: toBoolean(env['MCP_ENABLED']),
+		ai: {
+			enabled:  toBoolean(env['AI_ENABLED'])
+		},
+		mcp: {
+			enabled: toBoolean(env['MCP_ENABLED'])
+		},
 		cache: collectCache(env),
 		database: await collectDatabase(db),
 		email: collectEmail(env),

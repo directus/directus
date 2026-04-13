@@ -115,7 +115,7 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 		? (settings['storage_asset_presets'] as unknown[]).length
 		: 0;
 
-	const assetTransform = (settings?.['storage_asset_transform'] as string) ?? 'all';
+	const assetTransform = (settings?.['storage_asset_transform'] as 'all' | 'none' | 'presets') ?? 'all';
 	const basemapsCount = Array.isArray(settings?.['basemaps']) ? (settings['basemaps'] as unknown[]).length : 0;
 
 	const aspectRatios = Array.isArray(settings?.['custom_aspect_ratios'])
