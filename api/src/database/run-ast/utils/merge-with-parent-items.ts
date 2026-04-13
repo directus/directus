@@ -170,7 +170,7 @@ export function mergeWithParentItems(
 			}
 
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection]!.find((nestedItem) => {
-				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == parentItem[nestedNode.fieldKey];
+				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == parentItem[nestedNode.relation.field];
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;

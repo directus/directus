@@ -267,3 +267,94 @@ describe('o2m', () => {
 		]);
 	});
 });
+
+describe('a2o', () => {
+	const schema = new SchemaBuilder()
+		.collection('collection_a', (c) => {
+			c.field('id').id();
+			c.field('item').a2o(['collection_b', 'collection_c']);
+		})
+		.build();
+
+	const baseNode = {
+		type: 'a2o' as const,
+		names: ['collection_b', 'collection_c'],
+		children: {},
+		query: {},
+		relation: schema.relations[0]!,
+		parentKey: 'id',
+		relatedKey: { collection_b: 'id', collection_c: 'id' },
+		whenCase: [],
+		cases: {},
+	};
+
+	test('should merge a2o item into parent', () => {
+		const nestedNode = { ...baseNode, fieldKey: 'item' } as NestedCollectionNode;
+
+		const nestedItem = {
+			collection_b: [{ id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }],
+			collection_c: [{ id: 'nestedPK2', first_name: 'Dolor', last_name: 'Sat' }],
+		};
+
+		const parentItem: Item[] = [
+			{ id: 1, item: 'nestedPK1', collection: 'collection_b' },
+			{ id: 2, item: 'nestedPK2', collection: 'collection_c' },
+		];
+
+		const items = mergeWithParentItems(schema, nestedItem, parentItem, nestedNode, true);
+
+		expect(items).toEqual([
+			{ id: 1, item: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }, collection: 'collection_b' },
+			{ id: 2, item: { id: 'nestedPK2', first_name: 'Dolor', last_name: 'Sat' }, collection: 'collection_c' },
+		]);
+	});
+
+	test('should merge a2o item into parent using field alias', () => {
+		const nestedNode = { ...baseNode, fieldKey: 'c' } as NestedCollectionNode;
+
+		const nestedItem = {
+			collection_b: [{ id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }],
+		};
+
+		const parentItem: Item[] = [{ id: 1, item: 'nestedPK1', collection: 'collection_b' }];
+
+		const items = mergeWithParentItems(schema, nestedItem, parentItem, nestedNode, true);
+
+		expect(items).toEqual([
+			{
+				id: 1,
+				item: 'nestedPK1',
+				collection: 'collection_b',
+				c: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+			},
+		]);
+	});
+
+	test('should return null when no matching nested item is found', () => {
+		const nestedNode = { ...baseNode, fieldKey: 'item' } as NestedCollectionNode;
+
+		const nestedItem = {
+			collection_b: [{ id: 'nestedPK2', first_name: 'Dolor', last_name: 'Sat' }],
+		};
+
+		const parentItem: Item[] = [{ id: 1, item: 'nestedPK1', collection: 'collection_b' }];
+
+		const items = mergeWithParentItems(schema, nestedItem, parentItem, nestedNode, true);
+
+		expect(items).toEqual([{ id: 1, item: null, collection: 'collection_b' }]);
+	});
+
+	test('should return null when collection is not present in nestedItem', () => {
+		const nestedNode = { ...baseNode, fieldKey: 'item' } as NestedCollectionNode;
+
+		const nestedItem = {
+			collection_b: [{ id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }],
+		};
+
+		const parentItem: Item[] = [{ id: 1, item: 'nestedPK2', collection: 'collection_c' }];
+
+		const items = mergeWithParentItems(schema, nestedItem, parentItem, nestedNode, true);
+
+		expect(items).toEqual([{ id: 1, item: null, collection: 'collection_c' }]);
+	});
+});
