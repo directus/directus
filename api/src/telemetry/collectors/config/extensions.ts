@@ -5,8 +5,8 @@ export function collectExtensionsConfig(env: Record<string, unknown>): Telemetry
 	return {
 		must_load: toBoolean(env['EXTENSIONS_MUST_LOAD']),
 		auto_reload: toBoolean(env['EXTENSIONS_AUTO_RELOAD']),
-		cache_ttl: typeof env['EXTENSIONS_CACHE_TTL'] === 'string' ? env['EXTENSIONS_CACHE_TTL'] : false,
-		limit: env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : false,
+		cache_ttl: typeof env['EXTENSIONS_CACHE_TTL'] === 'string' ? env['EXTENSIONS_CACHE_TTL'] : null,
+		limit: env['EXTENSIONS_LIMIT'] ? Number(env['EXTENSIONS_LIMIT']) : null,
 		rolldown: toBoolean(env['EXTENSIONS_ROLLDOWN']),
 	};
 }
