@@ -17,6 +17,15 @@ export function classifyIssuer(value?: string): string | null {
 	if (host.includes('apple')) return 'apple';
 	if (host.includes('facebook')) return 'facebook';
 	if (host.includes('keycloak')) return 'keycloak';
+	if (host.includes('authentik')) return 'authentik';
+	if (host.includes('zitadel')) return 'zitadel';
+	if (host.includes('fusionauth')) return 'fusionauth';
+	if (host.includes('awsapps')) return 'aws-sso';
+	if (host.includes('cloudflareaccess')) return 'cloudflare';
+	if (host.includes('workos')) return 'workos';
+	if (host.includes('linkedin')) return 'linkedin';
+	if (host.includes('discord')) return 'discord';
+	if (host.includes('twitter') || host.includes('x.com')) return 'x';
 
 	return 'other';
 }

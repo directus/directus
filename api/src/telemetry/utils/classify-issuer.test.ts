@@ -78,6 +78,46 @@ describe('classifyIssuer', () => {
 		expect(classifyIssuer('https://custom-idp.example.com')).toBe('other');
 	});
 
+	test('classifies Authentik URLs', () => {
+		expect(classifyIssuer('https://auth.authentik.example.com')).toBe('authentik');
+	});
+
+	test('classifies Zitadel URLs', () => {
+		expect(classifyIssuer('https://my-org.zitadel.cloud')).toBe('zitadel');
+	});
+
+	test('classifies FusionAuth URLs', () => {
+		expect(classifyIssuer('https://my-app.fusionauth.io')).toBe('fusionauth');
+	});
+
+	test('classifies AWS SSO URLs', () => {
+		expect(classifyIssuer('https://my-org.awsapps.com/start')).toBe('aws-sso');
+	});
+
+	test('classifies Cloudflare Access URLs', () => {
+		expect(classifyIssuer('https://my-team.cloudflareaccess.com')).toBe('cloudflare');
+	});
+
+	test('classifies WorkOS URLs', () => {
+		expect(classifyIssuer('https://api.workos.com/sso')).toBe('workos');
+	});
+
+	test('classifies LinkedIn URLs', () => {
+		expect(classifyIssuer('https://www.linkedin.com/oauth')).toBe('linkedin');
+	});
+
+	test('classifies Discord URLs', () => {
+		expect(classifyIssuer('https://discord.com/api/oauth2')).toBe('discord');
+	});
+
+	test('classifies Twitter URLs as x', () => {
+		expect(classifyIssuer('https://api.twitter.com/oauth')).toBe('x');
+	});
+
+	test('classifies X.com URLs as x', () => {
+		expect(classifyIssuer('https://api.x.com/oauth')).toBe('x');
+	});
+
 	test('is case-insensitive', () => {
 		expect(classifyIssuer('https://LOGIN.MICROSOFTONLINE.COM/tenant')).toBe('azuread');
 	});
