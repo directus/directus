@@ -107,6 +107,7 @@ const directusConfig = {
 	MAX_PAYLOAD_SIZE: '10mb',
 	EXTENSIONS_PATH: './extensions',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: '2',
+	ASSETS_CACHE_REVALIDATE: 'true',
 	MAX_BATCH_MUTATION: '100', // Must be in multiples of 10 for tests
 	QUERY_LIMIT_DEFAULT: '90', // Must be less than MAX_BATCH_MUTATION by at least 3
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
