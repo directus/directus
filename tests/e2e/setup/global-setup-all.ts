@@ -1,11 +1,7 @@
-import { readFile } from 'fs/promises';
 import util from 'node:util';
-import { join } from 'path';
 import { type Database, databases, type Env, type Options, sandboxes, type Sandboxes } from '@directus/sandbox';
-import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import type { DeepPartial } from '@directus/types';
 import { type TestProject } from 'vitest/node';
-import type { Schema } from './schema.d.ts';
 
 let sb: Sandboxes | undefined;
 
@@ -38,16 +34,6 @@ export async function setup(project: TestProject) {
 	});
 
 	sb = await sandboxes(dbs);
-
-	const snapshot = JSON.parse(await readFile(join(import.meta.dirname, 'schema.json'), { encoding: 'utf8' }));
-
-	await Promise.all(
-		ports.map(async (port) => {
-			const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-			const diff = await api.request(schemaDiff(snapshot, true));
-			if (diff) await api.request(schemaApply(diff));
-		}),
-	);
 
 	project.provide(
 		'envs',
