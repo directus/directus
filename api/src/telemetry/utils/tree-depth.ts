@@ -5,9 +5,7 @@ import { distributionFromCounts, emptyDistribution } from './stats.js';
  * Computes a distribution of max tree depths for each top-level node.
  * Expects items with `id` and `parent` (null for root nodes).
  */
-export function computeDepthDistribution(
-	items: Array<{ id: string; parent: string | null }>,
-): DistributionSummary {
+export function computeDepthDistribution(items: Array<{ id: string; parent: string | null }>): DistributionSummary {
 	if (items.length === 0) return emptyDistribution();
 
 	const childrenMap = new Map<string | null, string[]>();

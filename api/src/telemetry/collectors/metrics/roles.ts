@@ -13,7 +13,13 @@ export async function collectRoleMetrics(db: Knex, schema: SchemaOverview): Prom
 	const roles = (await rolesService.readByQuery({
 		fields: ['id', 'parent', 'count(users)', 'count(children)', 'count(policies)'],
 		limit: -1,
-	})) as Array<{ id: string; parent: string | null; users_count: string; children_count: string; policies_count: string }>;
+	})) as Array<{
+		id: string;
+		parent: string | null;
+		users_count: string;
+		children_count: string;
+		policies_count: string;
+	}>;
 
 	const roleCount = roles.length;
 

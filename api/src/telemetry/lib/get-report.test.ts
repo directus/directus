@@ -43,15 +43,15 @@ const mockProject: TelemetryProject = {
 
 const mockConfig: TelemetryConfig = {
 	auth: { providers: ['local'], issuers: [] },
-	ai: {enabled: false},
-	mcp: {enabled: false},
+	ai: { enabled: false },
+	mcp: { enabled: false },
 	cache: { enabled: false, store: 'redis' },
 	database: { driver: 'postgres', version: '16.0' },
 	email: { transport: 'smtp' },
 	marketplace: { trust: 'sandbox' as const, registry: 'default' as const },
 	extensions: { must_load: false, auto_reload: false, cache_ttl: null, limit: null, rolldown: false },
 	storage: { drivers: ['local'] },
-	retention: { enabled: false, activity: "90d", revisions: "90d", flow_logs: "90d" },
+	retention: { enabled: false, activity: '90d', revisions: '90d', flow_logs: '90d' },
 	websockets: { enabled: false, rest: false, graphql: false, logs: false },
 	prometheus: { enabled: false },
 	rate_limiting: { enabled: false, pressure: false, email: false, email_flows: false },

@@ -170,8 +170,7 @@ export async function collectFeatures(db: Knex, schema: SchemaOverview): Promise
 					name: Boolean(settings?.['ai_openai_compatible_name']),
 					headers: {
 						count:
-							settings?.['ai_openai_compatible_headers'] &&
-							typeof settings['ai_openai_compatible_headers'] === 'object'
+							settings?.['ai_openai_compatible_headers'] && typeof settings['ai_openai_compatible_headers'] === 'object'
 								? Object.keys(settings['ai_openai_compatible_headers'] as Record<string, unknown>).length
 								: 0,
 					},
