@@ -42,18 +42,16 @@ describe('collectFileMetrics', () => {
 		vi.mocked(FilesService).mockImplementation(
 			() =>
 				({
-					readByQuery: vi
-						.fn()
-						.mockResolvedValue([
-							{
-								type: 'weird/format',
-								countDistinct: { id: 5 },
-								sum: { filesize: 1500 },
-								min: { filesize: 100 },
-								max: { filesize: 500 },
-								avg: { filesize: 300 },
-							},
-						]),
+					readByQuery: vi.fn().mockResolvedValue([
+						{
+							type: 'weird/format',
+							countDistinct: { id: 5 },
+							sum: { filesize: 1500 },
+							min: { filesize: 100 },
+							max: { filesize: 500 },
+							avg: { filesize: 300 },
+						},
+					]),
 				}) as any,
 		);
 

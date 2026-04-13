@@ -220,7 +220,7 @@ describe('getReport', () => {
 	test('Returns meta keys with correct structure', async () => {
 		const report = await getReport();
 
-		expect(report.event).toBe("directus.telemetry.ping.v1");
+		expect(report.event).toBe('directus.telemetry.ping.v1');
 		expect(report.timestamp).toEqual(expect.any(String));
 		expect(report.trigger).toBe('scheduled');
 	});
