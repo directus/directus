@@ -1,16 +1,16 @@
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { collectEmail } from './email.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
+const defaults = {
+	EMAIL_TRANSPORT: 'sendmail',
+};
 
 describe('collectEmail', () => {
-	test('returns null transport by default', () => {
-		expect(collectEmail({})).toEqual({ transport: null });
+	test('returns sendmail transport by default', () => {
+		expect(collectEmail({ ...defaults })).toEqual({ transport: 'sendmail' });
 	});
 
 	test('returns configured transport', () => {
-		expect(collectEmail({ EMAIL_TRANSPORT: 'smtp' })).toEqual({ transport: 'smtp' });
+		expect(collectEmail({ ...defaults, EMAIL_TRANSPORT: 'smtp' })).toEqual({ transport: 'smtp' });
 	});
 });

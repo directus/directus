@@ -1,19 +1,27 @@
 import { describe, expect, test } from 'vitest';
 import { collectRetention } from './retention.js';
 
+const defaults = {
+	RETENTION_ENABLED: false,
+	ACTIVITY_RETENTION: '90d',
+	REVISIONS_RETENTION: '90d',
+	FLOW_LOGS_RETENTION: '90d',
+};
+
 describe('collectRetention', () => {
 	test('returns defaults when no env is set', () => {
-		expect(collectRetention({})).toEqual({
+		expect(collectRetention({ ...defaults })).toEqual({
 			enabled: false,
-			activity: null,
-			revisions: null,
-			flow_logs: null,
+			activity: '90d',
+			revisions: '90d',
+			flow_logs: '90d',
 		});
 	});
 
 	test('returns configured values', () => {
 		expect(
 			collectRetention({
+				...defaults,
 				RETENTION_ENABLED: true,
 				ACTIVITY_RETENTION: '15d',
 				REVISIONS_RETENTION: '30d',

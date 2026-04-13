@@ -22,7 +22,7 @@ describe('sendReport', () => {
 			TELEMETRY_URL: mockIngress,
 		});
 
-		const url = new URL('/v3/events', mockIngress);
+		const url = new URL('/v2/events', mockIngress);
 
 		const mockReport = {} as unknown as TelemetryReport;
 		const reportStringified = JSON.stringify(mockReport);
@@ -46,7 +46,7 @@ describe('sendReport', () => {
 			TELEMETRY_AUTHORIZATION: 'test-auth',
 		});
 
-		const url = new URL('/v3/events', mockIngress);
+		const url = new URL('/v2/events', mockIngress);
 
 		const mockReport = {} as unknown as TelemetryReport;
 		const reportStringified = JSON.stringify(mockReport);

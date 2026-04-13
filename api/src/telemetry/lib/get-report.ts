@@ -11,7 +11,7 @@ import type { TelemetryReport } from '../types/report.js';
  *
  * @param trigger What triggered this report ("startup" or "scheduled").
  */
-export const getReport = async (trigger: TelemetryReport['_trigger'] = 'scheduled'): Promise<TelemetryReport> => {
+export const getReport = async (trigger: TelemetryReport['trigger'] = 'scheduled'): Promise<TelemetryReport> => {
 	const db = getDatabase();
 	const schema = await getSchema({ database: db });
 
@@ -23,9 +23,9 @@ export const getReport = async (trigger: TelemetryReport['_trigger'] = 'schedule
 	]);
 
 	return {
-		_version: 1,
-		_timestamp: new Date().toISOString(),
-		_trigger: trigger,
+		event: 'directus.telemetry.ping.v1',
+		timestamp: new Date().toISOString(),
+		trigger: trigger,
 		project,
 		config,
 		features,

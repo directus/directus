@@ -39,9 +39,9 @@ export interface ExtensionBreakdown {
 }
 
 export interface TelemetryReport {
-	_version: number;
-	_timestamp: string;
-	_trigger: 'startup' | 'scheduled';
+	event: string;
+	timestamp: string;
+	trigger: 'startup' | 'scheduled';
 	project: TelemetryProject;
 	config: TelemetryConfig;
 	features: TelemetryFeatures;

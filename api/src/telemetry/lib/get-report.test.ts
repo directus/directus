@@ -183,9 +183,9 @@ describe('getReport', () => {
 	test('Returns structured report with all top-level sections', async () => {
 		const report = await getReport();
 
-		expect(report).toHaveProperty('_version');
-		expect(report).toHaveProperty('_timestamp');
-		expect(report).toHaveProperty('_trigger');
+		expect(report).toHaveProperty('event');
+		expect(report).toHaveProperty('timestamp');
+		expect(report).toHaveProperty('trigger');
 		expect(report).toHaveProperty('project');
 		expect(report).toHaveProperty('config');
 		expect(report).toHaveProperty('features');
@@ -202,14 +202,14 @@ describe('getReport', () => {
 		expect(collectMetrics).toHaveBeenCalledWith(mockDb, mockSchema);
 	});
 
-	test('Defaults _trigger to scheduled', async () => {
+	test('Defaults trigger to scheduled', async () => {
 		const report = await getReport();
-		expect(report._trigger).toBe('scheduled');
+		expect(report.trigger).toBe('scheduled');
 	});
 
 	test('Forwards custom trigger', async () => {
 		const report = await getReport('startup');
-		expect(report._trigger).toBe('startup');
+		expect(report.trigger).toBe('startup');
 	});
 
 	test('Returns project section from collectProject', async () => {
@@ -220,9 +220,9 @@ describe('getReport', () => {
 	test('Returns meta keys with correct structure', async () => {
 		const report = await getReport();
 
-		expect(report._version).toBe(1);
-		expect(report._timestamp).toEqual(expect.any(String));
-		expect(report._trigger).toBe('scheduled');
+		expect(report.event).toBe("directus.telemetry.ping.v1");
+		expect(report.timestamp).toEqual(expect.any(String));
+		expect(report.trigger).toBe('scheduled');
 	});
 
 	test('Returns config section from collectConfig', async () => {

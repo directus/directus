@@ -2,8 +2,8 @@ import { describe, expect, test } from 'vitest';
 import { collectSyncStore } from './sync.js';
 
 describe('collectSyncStore', () => {
-	test('defaults to null when not configured', () => {
-		expect(collectSyncStore({})).toEqual({ store: null });
+	test('defaults to memory when not configured', () => {
+		expect(collectSyncStore({})).toEqual({ store: 'memory' });
 	});
 
 	test('returns configured store', () => {

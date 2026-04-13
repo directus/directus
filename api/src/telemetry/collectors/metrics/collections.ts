@@ -41,15 +41,13 @@ export async function collectCollectionMetrics(db: Knex, schema: SchemaOverview)
 			.groupBy('collection')
 			.whereIn('collection', collectionNames),
 		db('directus_collections')
-			.select('collection', 'versioning', 'archive_app_filter', 'accountability')
-			.whereIn('collection', collectionNames) as Promise<
-			Array<{
+			.select<Array<{
 				collection: string;
 				versioning: boolean | number;
 				archive_app_filter: boolean | number;
 				accountability: 'all' | 'activity' | null;
-			}>
-		>,
+			}>>('collection', 'versioning', 'archive_app_filter', 'accountability')
+			.whereIn('collection', collectionNames),
 		db('directus_shares')
 			.select('collection')
 			.count<{ collection: string; count: string }[]>({ count: '*' })

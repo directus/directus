@@ -14,7 +14,7 @@ import { sendReport } from './send-report.js';
  * @param opts.trigger What triggered the report generation
  * @returns whether or not the tracking was successful
  */
-export const track = async (opts: { wait?: boolean; trigger?: TelemetryReport['_trigger'] } = { wait: true }) => {
+export const track = async (opts: { wait?: boolean; trigger?: TelemetryReport['trigger'] } = { wait: true }) => {
 	const logger = useLogger();
 
 	if (opts.wait !== false) {
