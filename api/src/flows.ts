@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
@@ -58,9 +59,11 @@ const ENV_KEY = '$env';
 
 interface FlowMessage {
 	type: 'reload';
+	id: string;
 }
 
 class FlowManager {
+	private uid = randomUUID();
 	private isLoaded = false;
 
 	private operations: Map<string, OperationHandler> = new Map();
@@ -74,7 +77,6 @@ class FlowManager {
 
 	constructor() {
 		const env = useEnv();
-		const logger = useLogger();
 
 		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'] as string)) : {};
@@ -82,15 +84,8 @@ class FlowManager {
 		const messenger = useBus();
 
 		messenger.subscribe<FlowMessage>('flows', (event) => {
-			if (event['type'] === 'reload') {
-				this.reloadQueue.enqueue(async () => {
-					if (this.isLoaded) {
-						await this.unload();
-						await this.load();
-					} else {
-						logger.warn('Flows have to be loaded before they can be reloaded');
-					}
-				});
+			if (event['type'] === 'reload' && event['id'] !== this.uid) {
+				this.queueReload();
 			}
 		});
 	}
@@ -104,7 +99,34 @@ class FlowManager {
 	public async reload(): Promise<void> {
 		const messenger = useBus();
 
-		messenger.publish<FlowMessage>('flows', { type: 'reload' });
+		await this.queueReload();
+
+		messenger.publish<FlowMessage>('flows', { type: 'reload', id: this.uid });
+	}
+
+	private async queueReload() {
+		const logger = useLogger();
+
+		let resolve: (value: void | PromiseLike<void>) => void;
+
+		const promise = new Promise<void>((r) => {
+			resolve = r;
+		});
+
+		this.reloadQueue.enqueue(async () => {
+			try {
+				if (this.isLoaded) {
+					await this.unload();
+					await this.load();
+				} else {
+					logger.warn('Flows have to be loaded before they can be reloaded');
+				}
+			} finally {
+				resolve();
+			}
+		});
+
+		return promise;
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
