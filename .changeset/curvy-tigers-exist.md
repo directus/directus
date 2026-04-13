@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Excluded virtual fields like `$thumbnail` from export defaults and the Add field picker in the export sidebar so JSON exports no longer failed from synthetic field selection.
+Fixed export failing on collections with virtual fields like $thumbnail by excluding them from export defaults and the field picker
