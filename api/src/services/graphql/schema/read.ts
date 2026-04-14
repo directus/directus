@@ -23,6 +23,7 @@ import { GraphQLBigInt } from '../types/bigint.js';
 import { GraphQLDate } from '../types/date.js';
 import { GraphQLGeoJSON } from '../types/geojson.js';
 import { GraphQLHash } from '../types/hash.js';
+import { GraphQLJsonFilter } from '../types/json-filter.js';
 import { GraphQLStringOrFloat } from '../types/string-or-float.js';
 import { dedupeRelationalResolver } from '../utils/dedupe-resolvers.js';
 import { getTypes } from './get-types.js';
@@ -374,7 +375,7 @@ export async function getReadableTypes(
 	const JsonFilterOperators = schemaComposer.createInputTC({
 		name: 'json_filter_operators',
 		fields: {
-			_json: { type: GraphQLJSON },
+			_json: { type: GraphQLJsonFilter },
 			_null: { type: GraphQLBoolean },
 			_nnull: { type: GraphQLBoolean },
 		},
