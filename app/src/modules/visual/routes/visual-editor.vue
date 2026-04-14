@@ -32,6 +32,7 @@ import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
 import NotificationsGroup from '@/views/private/components/notifications-group.vue';
 import PrivateViewDrawer from '@/views/private/private-view/components/private-view-drawer.vue';
+import { SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	dynamicUrl?: string;
@@ -86,9 +87,32 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 	}
 }
 
+const AI_SIDEBAR_DEFAULT_SIZE = 370;
+
 function useAiSidebar(isMobile: ComputedRef<boolean>) {
 	const aiStore = useAiStore();
-	const sidebarSize = ref(370);
+	const storedSize = ref(AI_SIDEBAR_DEFAULT_SIZE);
+	const enforceDefault = ref(false);
+
+	const sidebarSize = computed({
+		get() {
+			// Enforce default size when the AI sidebar is below the minimum size
+			if (enforceDefault.value && storedSize.value <= SIDEBAR_MIN_SIZE) {
+				return AI_SIDEBAR_DEFAULT_SIZE;
+			}
+
+			return storedSize.value;
+		},
+		set(val: number) {
+			// Remove default size enforcement once the sidebar is larger than the minimum size
+			if (enforceDefault.value && val > SIDEBAR_MIN_SIZE) {
+				enforceDefault.value = false;
+			}
+
+			storedSize.value = val;
+		},
+	});
+
 	const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
 	const mobileDrawerOpen = ref(false);
 
@@ -100,6 +124,10 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 			if (isMobile.value) return;
 			sidebarCollapsed.value = val;
 		},
+	});
+
+	watch(sidebarCollapsed, (isCollapsed) => {
+		if (!isCollapsed) enforceDefault.value = true;
 	});
 
 	watch(isMobile, () => {
