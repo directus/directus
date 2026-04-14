@@ -119,7 +119,7 @@ watch(
 
 		// Note: EditorJS must be ready before readOnly is toggled; otherwise, the content won’t render, which could result in data loss!
 		await nextTick();
-		editorjsRef.value?.readOnly.toggle(isDisabled);
+		await editorjsRef.value?.readOnly.toggle(isDisabled);
 	},
 	{ immediate: true },
 );
@@ -142,11 +142,23 @@ watch(
 
 		try {
 			const sanitizedValue = sanitizeValue(newVal);
+			const wasReadOnly = editorjsRef.value.readOnly.isEnabled;
+
+			// Temporarily unlock so render() can update content regardless of disabled state.
+			if (wasReadOnly) {
+				await editorjsRef.value.readOnly.toggle(false);
+			}
 
 			if (sanitizedValue) {
 				await editorjsRef.value.render(sanitizedValue);
 			} else {
 				editorjsRef.value.clear();
+			}
+
+			// Restore readOnly state to match current disabled prop.
+			// props.disabled may have changed during the async render.
+			if (props.disabled) {
+				await editorjsRef.value.readOnly.toggle(true);
 			}
 		} catch (error) {
 			unexpectedError(error);

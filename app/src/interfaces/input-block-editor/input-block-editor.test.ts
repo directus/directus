@@ -70,6 +70,67 @@ describe('InputBlockEditor', () => {
 		wrapper.unmount();
 	});
 
+	it('should temporarily unlock readOnly when a value update arrives while editor is already disabled (translation case)', async () => {
+		const callOrder: string[] = [];
+
+		vi.mocked(EditorJS).mockImplementation(() => {
+			let readOnlyEnabled = false;
+
+			return {
+				isReady: Promise.resolve(),
+				render: vi.fn(() => {
+					callOrder.push('render');
+					return Promise.resolve();
+				}),
+				clear: vi.fn(),
+				destroy: vi.fn(),
+				focus: vi.fn(),
+				on: vi.fn(),
+				saver: { save: vi.fn().mockResolvedValue({ blocks: [] }) },
+				readOnly: {
+					get isEnabled() {
+						return readOnlyEnabled;
+					},
+					toggle: vi.fn((val: boolean) => {
+						readOnlyEnabled = val;
+						callOrder.push(`toggle:${val}`);
+						return Promise.resolve(val);
+					}),
+				},
+			} as any;
+		});
+
+		const wrapper = mount(InputBlockEditor, {
+			props: {
+				disabled: false,
+				value: { blocks: [{ type: 'paragraph', data: { text: 'initial' } }] },
+			},
+			global: {
+				directives: { 'prevent-focusout': {} },
+				stubs: { VDrawer: true, VUpload: true },
+			},
+		});
+
+		await flushPromises();
+		callOrder.length = 0;
+
+		// Step 1: disabled becomes true — editor enters readOnly (separate tick from value change)
+		await wrapper.setProps({ disabled: true });
+		await flushPromises();
+
+		callOrder.length = 0;
+
+		// Step 2: value changes while still disabled
+		await wrapper.setProps({ value: { blocks: [{ type: 'paragraph', data: { text: 'updated' } }] } });
+		await flushPromises();
+
+		// toggle(false) unlocks, render() updates content, toggle(true) re-locks
+		const relevant = callOrder.filter((e) => ['toggle:false', 'render', 'toggle:true'].includes(e));
+		expect(relevant).toEqual(['toggle:false', 'render', 'toggle:true']);
+
+		wrapper.unmount();
+	});
+
 	it('should not clear content when value becomes null while disabled', async () => {
 		// This test should prevent a regression that results in data loss when the value is temporarily null and the field is disabled
 		const clear = vi.fn();
