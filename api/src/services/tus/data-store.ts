@@ -86,15 +86,8 @@ export class TusDataStore extends DataStore {
 			}
 		}
 
-		// Is this file a replacement? if the file data already exists and we have a primary key
-		const isReplacement = existingFile !== null && !!upload.metadata['id'];
-
-		if (isReplacement === true && upload.metadata['id']) {
-			upload.metadata['replace_id'] = upload.metadata['id'];
-		}
-
 		const fileData: Partial<File> = {
-			...omit(upload.metadata, ['id', 'replace_id']),
+			...omit(upload.metadata, ['id']),
 			tus_id: upload.id,
 			tus_data: upload,
 			filesize: upload.size,
@@ -110,10 +103,10 @@ export class TusDataStore extends DataStore {
 			}
 		}
 
-		// If this is a new file upload, we need to generate a new primary key and DB record
+		// Generate a placeholder record for the upload (to be upgrade/deleted on complete depending on new/replacement)
 		const primaryKey = await filesItemsService.createOne(fileData, { emitEvents: false });
 
-		// Set the file id, so it is available to be sent as a header on upload creation / resume
+		// Set the file id if not a replacement ensuring it is always available as a header on upload creation / resume
 		if (!upload.metadata['id']) {
 			upload.metadata['id'] = primaryKey as string;
 		}
@@ -127,7 +120,7 @@ export class TusDataStore extends DataStore {
 		fileData.filename_disk ||= primaryKey + (fileExtension || '');
 
 		try {
-			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
+			// Write the file to a temp location first to avoid possibly overwriting an existing file if something goes wrong
 			upload = (await this.storageDriver.createChunkedUpload(fileData.filename_disk, upload)) as Upload;
 
 			fileData.tus_data = upload;
@@ -139,11 +132,8 @@ export class TusDataStore extends DataStore {
 			logger.warn(`Couldn't create chunked upload for ${fileData.filename_disk}`);
 			logger.warn(err);
 
-			if (isReplacement) {
-				await filesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
-			} else {
-				await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
-			}
+			// Remove the temporary created file
+			await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
 
 			throw ERRORS.UNKNOWN_ERROR;
 		}
@@ -181,15 +171,15 @@ export class TusDataStore extends DataStore {
 					throw err;
 				}
 
-				const isReplacement = Boolean(fileData.tus_data?.['metadata']?.['replace_id']);
+				const targetId = fileData.tus_data?.['metadata']?.['id'] as string | undefined;
+				const isReplacement = targetId && targetId !== fileData.id;
 
-				// If the file is a replacement, delete the old files, and upgrade the temp file
-				if (isReplacement === true) {
-					const replaceId = fileData.tus_data!['metadata']!['replace_id'] as string;
-					const replaceData = await sudoFilesItemsService.readOne(replaceId, { fields: ['filename_disk'] });
+				// If the file is a replacement, delete the old files, and upgrade the temp file. DB record will be cleanup on in onUploadFinish handler
+				if (isReplacement) {
+					const replaceData = await sudoFilesItemsService.readOne(targetId, { fields: ['filename_disk'] });
 
 					// delete the previously saved file and thumbnails to ensure they're generated fresh
-					for await (const partPath of this.storageDriver.list(replaceId)) {
+					for await (const partPath of this.storageDriver.list(targetId)) {
 						await this.storageDriver.delete(partPath);
 					}
 

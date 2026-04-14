@@ -69,47 +69,32 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 
 			if (!file) return {};
 
-			let fileData;
+			const targetId = upload.metadata!['id']!;
+			const isReplacement = targetId !== file.id;
 
-			// update metadata when file is replaced
-			if (file.tus_data?.['metadata']?.['replace_id']) {
-				const newFile = await service.readOne(file.tus_data['metadata']['replace_id']);
-				const updateFields = pick(file, ['filename_download', 'filesize', 'type']);
+			let targetFile: File;
+			let uploadFields: Partial<File>;
 
-				const metadata = await extractMetadata(newFile.storage, {
-					...newFile,
-					...updateFields,
-				});
-
-				await service.updateOne(file.tus_data['metadata']['replace_id'], {
-					...updateFields,
-					...metadata,
-				});
-
-				fileData = {
-					...newFile,
-					...updateFields,
-					...metadata,
-					id: file.tus_data['metadata']['replace_id'],
-				};
-
-				await service.deleteOne(file.id);
+			if (isReplacement) {
+				targetFile = await service.readOne(targetId);
+				uploadFields = pick(file, ['filename_download', 'filesize', 'type']);
 			} else {
-				const metadata = await extractMetadata(file.storage, file);
-
-				await service.updateOne(file.id, {
-					...metadata,
-					tus_id: null,
-					tus_data: null,
-				});
-
-				fileData = {
-					...file,
-					...metadata,
-					tus_id: null,
-					tus_data: null,
-				};
+				targetFile = file;
+				// on create, clear tus tracking fields to avoid cleanup
+				uploadFields = { tus_id: null, tus_data: null };
 			}
+
+			const metadata = await extractMetadata(targetFile.storage, { ...targetFile, ...uploadFields });
+
+			await service.updateOne(targetId, { ...uploadFields, ...metadata });
+
+			// Remove the tmp db record created for replacement
+			if (isReplacement) {
+				await service.deleteOne(file.id);
+			}
+
+			// Reconstruct full data for event payload
+			const fileData = { ...targetFile, ...uploadFields, ...metadata, id: targetId };
 
 			emitter.emitAction(
 				'files.upload',
