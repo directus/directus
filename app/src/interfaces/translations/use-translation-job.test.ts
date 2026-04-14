@@ -333,7 +333,12 @@ describe('useTranslationJob', () => {
 
 		expect(job.jobState.value).toBe('idle');
 		expect(Object.keys(job.langStatuses.value)).toHaveLength(0);
-		expect(job.pendingFields.value.size).toBe(0);
+		expect(job.getFieldProgress('fr')).toEqual({
+			fieldOrder: [],
+			activeField: null,
+			queuedFields: [],
+			completedFields: [],
+		});
 	});
 
 	test('initializes field progress with the first selected field active', () => {

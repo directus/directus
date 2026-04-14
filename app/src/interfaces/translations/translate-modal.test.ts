@@ -89,7 +89,6 @@ function createMockTranslationJob(): TranslationJob {
 						.map(([langCode]) => langCode),
 				),
 		),
-		pendingFields: computed(() => new Set<string>()),
 		getFieldProgress: vi.fn(() => ({ fieldOrder: [], activeField: null, queuedFields: [], completedFields: [] })),
 		getActiveField: vi.fn(() => null),
 		getQueuedFields: vi.fn(() => []),

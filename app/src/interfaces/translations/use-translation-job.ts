@@ -94,11 +94,6 @@ export function useTranslationJob(options: {
 		return pending;
 	});
 
-	const pendingFields = computed(() => {
-		if (!jobConfig || jobState.value === 'idle') return new Set<string>();
-		return new Set(jobConfig.selectedFields);
-	});
-
 	useEventListener(window, 'beforeunload', (event: BeforeUnloadEvent) => {
 		if (isTranslating.value) {
 			event.preventDefault();
@@ -487,7 +482,6 @@ export function useTranslationJob(options: {
 		progressPercent,
 		progressLabel,
 		pendingLanguages,
-		pendingFields,
 		fieldProgressByLang,
 		getFieldProgress,
 		getActiveField,
