@@ -14,7 +14,7 @@ import { i18n } from '@/lang';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { analyzeTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useSettingsStore } from '@/stores/settings';
-import { SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
 vi.mock('@unhead/vue', () => ({ useHead: vi.fn() }));
 vi.mock('@directus/format-title', () => ({ default: (str: string) => str ?? '' }));
@@ -175,8 +175,6 @@ describe('Version selector', () => {
 	});
 });
 
-const AI_SIDEBAR_DEFAULT_SIZE = 370;
-
 describe('AI sidebar enforce-default on expand', () => {
 	function mountEditor() {
 		mockSettingsUrls([]);
@@ -191,7 +189,7 @@ describe('AI sidebar enforce-default on expand', () => {
 
 	it('initializes with the AI sidebar default size', () => {
 		const { lp } = mountEditor();
-		expect(lp.props('sidebarSize')).toBe(AI_SIDEBAR_DEFAULT_SIZE);
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE);
 	});
 
 	it('returns default size when expanding after size drops below min', async () => {
@@ -204,7 +202,7 @@ describe('AI sidebar enforce-default on expand', () => {
 		lp.vm.$emit('update:sidebarCollapsed', false);
 		await nextTick();
 
-		expect(lp.props('sidebarSize')).toBe(AI_SIDEBAR_DEFAULT_SIZE);
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE);
 	});
 
 	it('returns default size when expanding after size equals min', async () => {
@@ -217,7 +215,7 @@ describe('AI sidebar enforce-default on expand', () => {
 		lp.vm.$emit('update:sidebarCollapsed', false);
 		await nextTick();
 
-		expect(lp.props('sidebarSize')).toBe(AI_SIDEBAR_DEFAULT_SIZE);
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE);
 	});
 
 	it('preserves stored size when expanding if size is above min', async () => {
@@ -242,7 +240,7 @@ describe('AI sidebar enforce-default on expand', () => {
 		await nextTick();
 		lp.vm.$emit('update:sidebarCollapsed', false);
 		await nextTick();
-		expect(lp.props('sidebarSize')).toBe(AI_SIDEBAR_DEFAULT_SIZE); // enforce-default active
+		expect(lp.props('sidebarSize')).toBe(SIDEBAR_DEFAULT_SIZE); // enforce-default active
 
 		lp.vm.$emit('update:sidebarSize', 300); // user drags above SIDEBAR_MIN_SIZE
 		await nextTick();

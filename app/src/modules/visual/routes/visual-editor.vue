@@ -32,7 +32,7 @@ import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
 import NotificationsGroup from '@/views/private/components/notifications-group.vue';
 import PrivateViewDrawer from '@/views/private/private-view/components/private-view-drawer.vue';
-import { SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	dynamicUrl?: string;
@@ -87,18 +87,16 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 	}
 }
 
-const AI_SIDEBAR_DEFAULT_SIZE = 370;
-
 function useAiSidebar(isMobile: ComputedRef<boolean>) {
 	const aiStore = useAiStore();
-	const storedSize = ref(AI_SIDEBAR_DEFAULT_SIZE);
+	const storedSize = ref(SIDEBAR_DEFAULT_SIZE);
 	const enforceDefault = ref(false);
 
 	const sidebarSize = computed({
 		get() {
 			// Enforce default size when the AI sidebar is below the minimum size
 			if (enforceDefault.value && storedSize.value <= SIDEBAR_MIN_SIZE) {
-				return AI_SIDEBAR_DEFAULT_SIZE;
+				return SIDEBAR_DEFAULT_SIZE;
 			}
 
 			return storedSize.value;
