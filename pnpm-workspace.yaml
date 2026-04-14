@@ -80,7 +80,6 @@ catalog:
   '@rollup/plugin-yaml': 4.1.2
   '@sesamecare-oss/redlock': 1.4.0
   '@shopify/semaphore': 3.1.0
-  '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0

@@ -219,9 +219,6 @@ catalogs:
     '@shopify/semaphore':
       specifier: 3.1.0
       version: 3.1.0
-    '@sinclair/typebox':
-      specifier: 0.34.41
-      version: 0.34.41
     '@sindresorhus/slugify':
       specifier: 2.2.1
       version: 2.2.1
@@ -2859,6 +2856,9 @@ importers:
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2905,9 +2905,6 @@ importers:
       '@directus/schema':
         specifier: workspace:*
         version: link:../schema
-      '@sinclair/typebox':
-        specifier: 'catalog:'
-        version: 0.34.41
       '@types/archiver':
         specifier: 'catalog:'
         version: 7.0.0
@@ -6806,9 +6803,6 @@ packages:
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
-
-  '@sinclair/typebox@0.34.41':
-    resolution: {integrity: sha512-6gS8pZzSXdyRHTIqoqSVknxolr1kzfy4/CeDnrzsVz8TTIWUbOBr6gnzOmTYJ3eXQNh4IYHIGi5aIL7sOZ2G/g==}
 
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
@@ -19326,8 +19320,6 @@ snapshots:
   '@shopify/semaphore@3.1.0': {}
 
   '@sinclair/typebox@0.27.8': {}
-
-  '@sinclair/typebox@0.34.41': {}
 
   '@sindresorhus/is@4.6.0': {}
 
