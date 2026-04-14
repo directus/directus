@@ -50,6 +50,7 @@ export type Product = {
 			theme?: string;
 		};
 	};
+	data?: Array<{ test?: string }> | null;
 	category_id?: number | string | null;
 };
 
@@ -178,6 +179,14 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 					},
 				],
 			},
+			data: {
+				field: 'data',
+				type: 'json',
+				filters: false,
+				// Alpha: [0].test = 'foo'  Beta: [0].test = 'bar'  Gamma: [0].test = 'foo'
+				// Delta: [0] exists but no 'test' key  Epsilon: null column
+				possibleValues: [[{ test: 'foo' }], [{ test: 'bar' }], [{ test: 'foo' }], [{}], null],
+			},
 		},
 		[`${collectionSuppliers}_${pkType}`]: {
 			id: {
@@ -291,6 +300,12 @@ export const seedDBStructure = () => {
 					await CreateField(vendor, {
 						collection: localCollectionProducts,
 						field: 'metadata',
+						type: 'json',
+					});
+
+					await CreateField(vendor, {
+						collection: localCollectionProducts,
+						field: 'data',
 						type: 'json',
 					});
 
@@ -425,6 +440,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					const product: Product = {
 						name: schema[localCollectionProducts]!['name']!.possibleValues[i],
 						metadata: schema[localCollectionProducts]!['metadata']!.possibleValues[i],
+						data: schema[localCollectionProducts]!['data']!.possibleValues[i],
 						category_id: categoryIndex !== null ? categoriesIDs[categoryIndex] : null,
 					};
 

@@ -693,6 +693,39 @@ const ARRAY_INDEX_CASES: VarCase[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Root array index path cases — path starts with [ (variable required)
+// ---------------------------------------------------------------------------
+
+const ROOT_ARRAY_INDEX_CASES: VarCase[] = [
+	{
+		// data column is an array; [0].test navigates into the first element's 'test' property
+		description: 'filters on root array element [0].test = foo',
+		jsonFilter: { '[0].test': { _eq: 'foo' } },
+		expectedLength: 2,
+		expectedNames: ['Alpha', 'Gamma'],
+	},
+	{
+		description: 'filters on root array element [0].test = bar',
+		jsonFilter: { '[0].test': { _eq: 'bar' } },
+		expectedLength: 1,
+		expectedNames: ['Beta'],
+	},
+	{
+		description: '_null: false matches items where [0].test is present',
+		jsonFilter: { '[0].test': { _null: false } },
+		expectedLength: 3,
+		expectedNames: ['Alpha', 'Beta', 'Gamma'],
+	},
+	{
+		// Delta has data=[{}] so [0] exists but the test key is absent
+		description: '_null: true matches items where [0].test is absent',
+		jsonFilter: { '[0].test': { _null: true } },
+		minLength: 1,
+		expectedNames: ['Delta'],
+	},
+];
+
+// ---------------------------------------------------------------------------
 // Error cases — inline (keys are valid GraphQL identifiers)
 // ---------------------------------------------------------------------------
 
@@ -944,7 +977,54 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 
 			// ------------------------------------------------------------------
-			// 4. JSON column _null / _nnull — new in Phase 1
+			// 4. Root array index path (VariableType — path starts with [)
+			//    The data field stores a top-level JSON array; [0].test accesses
+			//    the first element's 'test' property.
+			// ------------------------------------------------------------------
+			describe('Root array index path', () => {
+				describe.each(ROOT_ARRAY_INDEX_CASES)(
+					'$description',
+					({ jsonFilter, expectedLength, minLength, expectedNames }) => {
+						it.each(vendors)('%s', async (vendor) => {
+							const gqlResponse = await requestGraphQL(
+								getUrl(vendor),
+								false,
+								USER.ADMIN.TOKEN,
+								{
+									query: {
+										__variables: { jsonFilter: 'JSON' },
+										[localCollectionProducts]: {
+											__args: {
+												filter: { data: { _json: new VariableType('jsonFilter') } },
+												sort: ['name'],
+											},
+											name: true,
+										},
+									},
+								},
+								{ variables: { jsonFilter } },
+							);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.errors).toBeUndefined();
+
+							const data: Array<{ name: string }> = gqlResponse.body.data[localCollectionProducts];
+
+							if (minLength !== undefined) {
+								expect(data.length).toBeGreaterThanOrEqual(minLength);
+							} else if (expectedLength !== undefined) {
+								expect(data).toHaveLength(expectedLength);
+							}
+
+							for (const name of expectedNames ?? []) {
+								expect(data.map((i) => i.name)).toContain(name);
+							}
+						});
+					},
+				);
+			});
+			// ------------------------------------------------------------------
+			// 5. JSON column _null / _nnull — new in Phase 1
 			//    These use the _null / _nnull fields on json_filter_operators
 			//    to check whether the JSON column itself is NULL (not a path key).
 			//    Zeta is the only product with a NULL metadata column.
@@ -995,7 +1075,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 
 			// ------------------------------------------------------------------
-			// 5. Error cases — inline
+			// 6. Error cases — inline
 			// ------------------------------------------------------------------
 			describe('Error cases', () => {
 				describe.each(ERROR_CASES)('$description', ({ filter }) => {
@@ -1014,7 +1094,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 
 				// ------------------------------------------------------------------
-				// 6. Error cases — variable-based (non-identifier path keys)
+				// 7. Error cases — variable-based (non-identifier path keys)
 				// ------------------------------------------------------------------
 				describe.each(VAR_ERROR_CASES)('$description', ({ jsonFilter }) => {
 					it.each(vendors)('%s', async (vendor) => {

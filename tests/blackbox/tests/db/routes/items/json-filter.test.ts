@@ -245,6 +245,34 @@ const getSuccessGroups = (localCollectionSuppliers: string): Record<string, Succ
 			expectedNames: ['Beta'],
 		},
 	],
+	'Root array index path': [
+		{
+			// data column is an array; [0].test navigates into the first element's 'test' property
+			description: 'filters on root array element [0].test = foo',
+			filter: { data: { _json: { '[0].test': { _eq: 'foo' } } } },
+			expectedLength: 2,
+			expectedNames: ['Alpha', 'Gamma'],
+		},
+		{
+			description: 'filters on root array element [0].test = bar',
+			filter: { data: { _json: { '[0].test': { _eq: 'bar' } } } },
+			expectedLength: 1,
+			expectedNames: ['Beta'],
+		},
+		{
+			description: '_null: false matches items where [0].test is present',
+			filter: { data: { _json: { '[0].test': { _null: false } } } },
+			expectedLength: 3,
+			expectedNames: ['Alpha', 'Beta', 'Gamma'],
+		},
+		{
+			// Delta has data=[{}] so [0] exists but 'test' key is absent
+			description: '_null: true matches items where [0].test is absent',
+			filter: { data: { _json: { '[0].test': { _null: true } } } },
+			minLength: 1,
+			expectedNames: ['Delta'],
+		},
+	],
 	'Inline _or/_and inside _json': [
 		{
 			// color='red': Alpha; color='blue': Beta

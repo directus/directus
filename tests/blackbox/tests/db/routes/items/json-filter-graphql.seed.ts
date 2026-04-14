@@ -50,6 +50,7 @@ export type Product = {
 			theme?: string;
 		};
 	} | null;
+	data?: Array<{ test?: string }> | null;
 	category_id?: number | string | null;
 };
 
@@ -180,6 +181,14 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 					null, // Zeta: NULL metadata column — tests _null/_nnull on the JSON column itself
 				],
 			},
+			data: {
+				field: 'data',
+				type: 'json',
+				filters: false,
+				// Alpha: [0].test = 'foo'  Beta: [0].test = 'bar'  Gamma: [0].test = 'foo'
+				// Delta: [0] exists but no 'test' key  Epsilon: null column  Zeta: null column
+				possibleValues: [[{ test: 'foo' }], [{ test: 'bar' }], [{ test: 'foo' }], [{}], null, null],
+			},
 		},
 		[`${collectionSuppliers}_${pkType}`]: {
 			id: {
@@ -293,6 +302,12 @@ export const seedDBStructure = (): void => {
 					await CreateField(vendor, {
 						collection: localCollectionProducts,
 						field: 'metadata',
+						type: 'json',
+					});
+
+					await CreateField(vendor, {
+						collection: localCollectionProducts,
+						field: 'data',
 						type: 'json',
 					});
 
@@ -430,6 +445,7 @@ export const seedDBValues = async (
 					const product: Product = {
 						name: schema[localCollectionProducts]!['name']!.possibleValues[i],
 						metadata: schema[localCollectionProducts]!['metadata']!.possibleValues[i],
+						data: schema[localCollectionProducts]!['data']!.possibleValues[i],
 						category_id: categoryIndex != null ? categoriesIDs[categoryIndex] : null,
 					};
 
