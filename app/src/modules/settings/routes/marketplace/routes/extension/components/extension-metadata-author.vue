@@ -22,19 +22,19 @@ defineProps<{
 
 <style scoped>
 .author {
-	--v-button-padding: 0 10px;
+	--v-button-padding: 0 0.5625rem;
 }
 
 .avatar {
-	inline-size: 20px;
-	block-size: 20px;
-	border-radius: 10px;
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
+	border-radius: 0.5625rem;
 	object-fit: cover;
 	object-position: center center;
-	margin-inline: 2px 9px;
+	margin-inline: 0.125rem 0.5rem;
 }
 
 .verified {
-	margin-inline-start: 4px;
+	margin-inline-start: 0.25rem;
 }
 </style>

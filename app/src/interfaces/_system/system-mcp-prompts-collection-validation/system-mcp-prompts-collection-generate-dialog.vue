@@ -210,29 +210,29 @@ async function generateCollection() {
 @use '@/styles/mixins';
 
 .grid {
-	padding-block-start: 20px;
+	padding-block-start: 1.125rem;
 
 	@include mixins.form-grid;
 }
 
 .hints {
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: 0.25rem;
 }
 
 .title {
-	font-size: 16px;
+	font-size: 0.875rem;
 }
 
 .field-label {
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .loader {
-	margin-block-start: 24px;
-	min-block-size: 150px;
+	margin-block-start: 1.375rem;
+	min-block-size: 8.4375rem;
 }
 
 .required {
@@ -252,11 +252,11 @@ async function generateCollection() {
 }
 
 .generated-data {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 
 	ul {
-		padding-block-start: 4px;
-		padding-inline-start: 24px;
+		padding-block-start: 0.25rem;
+		padding-inline-start: 1.375rem;
 	}
 
 	.field-name {
@@ -267,7 +267,7 @@ async function generateCollection() {
 .type-note {
 	position: relative;
 	display: block;
-	max-inline-size: 520px;
-	margin-block-start: 4px;
+	max-inline-size: 29.25rem;
+	margin-block-start: 0.25rem;
 }
 </style>

@@ -1,0 +1,91 @@
+name: Close PRs with Changes Requested
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  close-stale-prs:
+    if: github.repository == 'directus/directus'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
+            const LABEL_NAME = 'Changes Requested';
+            const now = new Date();
+
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            for (const pr of prs) {
+              const hasLabel = pr.labels.some(l => l.name === LABEL_NAME);
+              if (!hasLabel) continue;
+
+              const events = await github.paginate(github.rest.issues.listEventsForTimeline, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                per_page: 100,
+              });
+
+              // Find the most recent time this label was applied
+              const labelEvents = events
+                .filter(e => e.event === 'labeled' && e.label?.name === LABEL_NAME)
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+              if (labelEvents.length === 0) continue;
+
+              const labeledAt = new Date(labelEvents[0].created_at);
+              if (now - labeledAt < TWO_WEEKS_MS) continue;
+
+              // Check if the PR author pushed new commits after the label was applied
+              const commits = await github.paginate(github.rest.pulls.listCommits, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                per_page: 100,
+              });
+
+              const pushedAfterLabel = commits.some(c => {
+                const committedAt = new Date(c.commit.committer?.date ?? c.commit.author?.date);
+                return c.author?.login === pr.user.login && committedAt > labeledAt;
+              });
+
+              if (pushedAfterLabel) {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  name: LABEL_NAME,
+                });
+
+                core.info(`Removed label from PR #${pr.number} — author pushed changes after review: ${pr.title}`);
+                continue;
+              }
+
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                state: 'closed',
+              });
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: "Hi there! 👋 This PR has requested changes but hasn't been updated in two weeks, so we're going to close it out. Our small team has limited resources so we need to remove noise periodically to keep our work focused. If you would like to continue to work on this, feel free to re-open this PR or submit a new one once the requested changes have been addressed. Thank you for contributing to Directus!🐰",
+              });
+
+              core.info(`Closed PR #${pr.number}: ${pr.title}`);
+            }

@@ -1,9 +1,14 @@
-import { ContentVersion, Field } from '@directus/types';
+import { Field } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { isArray, mergeWith } from 'lodash';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { parseFilter } from '@/utils/parse-filter';
 
-export function applyConditions(item: Record<string, any>, field: Field, version: ContentVersion | null = null) {
+export function applyConditions(
+	item: Record<string, any>,
+	field: Field,
+	version: ContentVersionMaybeNew | null = null,
+) {
 	if (field.meta && Array.isArray(field.meta?.conditions)) {
 		const conditions = [...field.meta.conditions].reverse();
 

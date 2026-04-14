@@ -261,7 +261,7 @@ export default class SQLite implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string) {
+	async primary(table: string): Promise<string | null> {
 		const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
 		const pkColumn = columns.find((col) => col.pk !== 0);
 		return pkColumn?.name || null;

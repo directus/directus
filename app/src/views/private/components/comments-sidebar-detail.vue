@@ -267,15 +267,15 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 <style lang="scss" scoped>
 .v-progress-linear {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-divider {
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 2;
-	margin-block: 12px 2px;
-	padding-block: 4px;
+	margin-block: 0.6875rem 0.125rem;
+	padding-block: 0.25rem;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 
@@ -283,8 +283,8 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 }
 
 .empty {
-	margin-block: 16px 8px;
-	margin-inline-start: 2px;
+	margin-block: 0.875rem 0.4375rem;
+	margin-inline-start: 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

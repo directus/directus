@@ -47,7 +47,10 @@ export type DirectusDeploymentRun<Schema = any> = MergeCoreCollection<
 		status: 'building' | 'ready' | 'error' | 'canceled';
 		target: string;
 		url: string | null;
+		started_at: 'datetime' | null;
+		completed_at: 'datetime' | null;
 		date_created: 'datetime' | null;
 		user_created: DirectusUser<Schema> | string | null;
+		logs?: { timestamp: Date | string; type: 'stdout' | 'stderr' | 'info'; message: string }[];
 	}
 >;

@@ -1,4 +1,6 @@
+import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { toBoolean } from '@directus/utils';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
@@ -9,46 +11,51 @@ import asyncHandler from '../utils/async-handler.js';
 import { createAdmin } from '../utils/create-admin.js';
 
 const router = Router();
+const env = useEnv();
 
-router.get(
-	'/specs/oas',
-	asyncHandler(async (req, res, next) => {
-		const service = new SpecificationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+if (env['OPENAPI_ENABLED'] !== false) {
+	router.get(
+		'/specs/oas',
+		asyncHandler(async (req, res, next) => {
+			const service = new SpecificationService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		res.locals['payload'] = await service.oas.generate(req.headers.host);
-		return next();
-	}),
-	respond,
-);
+			res.locals['payload'] = await service.oas.generate(req.headers.host);
+			return next();
+		}),
+		respond,
+	);
+}
 
-router.get(
-	'/specs/graphql/:scope?',
-	asyncHandler(async (req, res) => {
-		const service = new SpecificationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+if (env['GRAPHQL_INTROSPECTION'] !== false) {
+	router.get(
+		'/specs/graphql/:scope?',
+		asyncHandler(async (req, res) => {
+			const service = new SpecificationService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		const serverService = new ServerService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+			const serverService = new ServerService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		const scope = req.params['scope'] || 'items';
+			const scope = req.params['scope'] || 'items';
 
-		if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundError({ path: req.path });
+			if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundError({ path: req.path });
 
-		const info = await serverService.serverInfo();
-		const result = await service.graphql.generate(scope as 'items' | 'system');
-		const filename = info['project'].project_name + '_' + format(new Date(), 'yyyy-MM-dd') + '.graphql';
+			const info = await serverService.serverInfo();
+			const result = await service.graphql.generate(scope as 'items' | 'system');
+			const filename = info['project'].project_name + '_' + format(new Date(), 'yyyy-MM-dd') + '.graphql';
 
-		res.attachment(filename);
-		res.send(result);
-	}),
-);
+			res.attachment(filename);
+			res.send(result);
+		}),
+	);
+}
 
 router.get(
 	'/info',
@@ -68,6 +75,10 @@ router.get(
 router.get(
 	'/health',
 	asyncHandler(async (req, res, next) => {
+		if (toBoolean(env['HEALTHCHECK_ENABLED']) === false) {
+			throw new RouteNotFoundError({ path: req.path });
+		}
+
 		const service = new ServerService({
 			accountability: req.accountability,
 			schema: req.schema,

@@ -42,9 +42,9 @@ defineProps<{
 }
 
 .icon {
-	inline-size: 36px;
-	block-size: 36px;
-	border-radius: 36px;
+	inline-size: 2rem;
+	block-size: 2rem;
+	border-radius: 2rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;

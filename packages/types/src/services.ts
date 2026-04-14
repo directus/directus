@@ -27,6 +27,7 @@ import type { Policy } from './policies.js';
 import type { Aggregate, Query } from './query.js';
 import type { Relation } from './relations.js';
 import type { FieldOverview, SchemaOverview } from './schema.js';
+import type { ServerHealth } from './server.js';
 import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from './snapshot.js';
 import type { Range, Stat } from './storage.js';
 import type { RegisterUserInput } from './users.js';
@@ -217,7 +218,7 @@ interface FileService<T = File> {
 	 */
 	uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<T> & { storage: string },
+		data: Partial<T>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey>;
@@ -344,7 +345,7 @@ interface PayloadService {
 		parent: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PayloadServiceProcessRelationResult>;
-	prepareDelta(data: Partial<Item>): Promise<string | null>;
+	prepareDelta(data: Partial<Item>): Promise<Partial<Item> | null>;
 }
 
 /**
@@ -398,7 +399,7 @@ interface SchemaService {
  */
 interface ServerService {
 	serverInfo(): Promise<Record<string, any>>;
-	health(): Promise<Record<string, any>>;
+	health(): Promise<ServerHealth | Pick<ServerHealth, 'status'>>;
 }
 
 /**
@@ -468,7 +469,7 @@ interface DeploymentService {
  */
 interface DeploymentProjectsService {
 	updateSelection(
-		deploymentId: string,
+		provider: ProviderType,
 		create: { external_id: string; name: string }[],
 		deleteIds: PrimaryKey[],
 	): Promise<StoredProject[]>;

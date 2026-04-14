@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, inject, ref, Ref, toRefs, watch } from 'vue';
 import VDivider from '@/components/v-divider.vue';
@@ -18,7 +19,6 @@ import VTable from '@/components/v-table/v-table.vue';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 import { usePageSize } from '@/composables/use-page-size';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import RenderDisplay from '@/views/private/components/render-display.vue';
 
@@ -307,7 +307,7 @@ function removeField(fieldKey: string) {
 	align-items: center;
 	justify-content: space-between;
 	inline-size: 100%;
-	padding: 32px var(--content-padding);
+	padding: 1.8125rem var(--content-padding);
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
@@ -317,12 +317,12 @@ function removeField(fieldKey: string) {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		inline-size: 240px;
+		inline-size: 13.5rem;
 		color: var(--theme--foreground-subdued);
 
 		span {
 			inline-size: auto;
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 
 		.v-select {

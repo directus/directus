@@ -7,7 +7,7 @@ import type { DescribeOptions } from './types/describe-options.js';
 export type { RegistryDescribeResponse } from './schemas/registry-describe-response.js';
 export type { DescribeOptions } from './types/describe-options.js';
 
-export const describe = async (id: string, options?: DescribeOptions) => {
+export const describe = async (id: string, options?: DescribeOptions): Promise<RegistryDescribeResponse> => {
 	await assertVersionCompatibility(options);
 	const url = constructUrl(id, options);
 	const response = await ky.get(url).json();

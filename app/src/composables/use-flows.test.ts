@@ -399,6 +399,43 @@ describe('runManualFlow', () => {
 		expect(mockOnRefresh).toHaveBeenCalledOnce();
 	});
 
+	test('resets confirm state after flow API error, showing dialog again on next trigger', async () => {
+		const flowWithConfirm = {
+			id: 'flow-confirm',
+			name: 'Flow Confirm',
+			trigger: 'manual',
+			status: 'active',
+			options: {
+				collections: ['test_collection'],
+				location: 'collection',
+				requireConfirmation: true,
+				confirmationDescription: 'Are you sure?',
+				fields: [],
+			},
+		};
+
+		const mockFlowsStore = {
+			getManualFlowsForCollection: vi.fn().mockReturnValue([flowWithConfirm]),
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+		vi.mocked(api.post).mockRejectedValue(new Error('Flow step error'));
+
+		const testOptions = { ...useFlowsOptions, hasEdits: ref(false) };
+		const { runManualFlow, flowDialogsContext } = useFlows(testOptions);
+
+		await runManualFlow(flowWithConfirm.id);
+		expect(flowDialogsContext.value.displayCustomConfirmDialog).toBe(true);
+
+		flowDialogsContext.value.confirmCustomDialog(flowWithConfirm.id);
+		await nextTick();
+
+		expect(flowDialogsContext.value.currentFlowId).toBeNull();
+
+		await runManualFlow(flowWithConfirm.id);
+		expect(flowDialogsContext.value.displayCustomConfirmDialog).toBe(true);
+	});
+
 	test('calls runFlow with reactive primaryKey', async () => {
 		const mockFlowsStore = {
 			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),

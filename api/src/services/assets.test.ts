@@ -24,9 +24,9 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('./files.js', async () => {
-	const { mockFilesService } = await import('../test-utils/services/files-service.js');
-	return mockFilesService();
+vi.mock('./items.js', async () => {
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return mockItemsService();
 });
 
 vi.mock('./folders.js', async () => {
@@ -67,14 +67,6 @@ describe('AssetsService', () => {
 		height: 1080,
 		filesize: 9156,
 		modified_on: '2025-09-23T19:31:49.000Z',
-	};
-
-	const createAssetsService = (accountability: Accountability) => {
-		return new AssetsService({
-			knex: db,
-			schema: { collections: {}, relations: [] },
-			accountability,
-		});
 	};
 
 	beforeAll(() => {
@@ -126,7 +118,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -152,7 +148,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -178,7 +178,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -203,7 +207,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				tracker.reset();
 				tracker.on.select(/directus_settings/).response([{ project_logo: logoFileId }]);
@@ -230,7 +238,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -266,7 +278,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(validateItemAccess).mockResolvedValue({
 					accessAllowed: false,
@@ -285,7 +301,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 				vi.mocked(mockDriver.exists as any).mockResolvedValue(false);
@@ -305,7 +325,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -335,7 +359,11 @@ describe('AssetsService', () => {
 					ip: '127.0.0.1',
 				};
 
-				service = createAssetsService(accountability);
+				service = new AssetsService({
+					knex: db,
+					schema: { collections: {}, relations: [] },
+					accountability,
+				});
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
@@ -353,22 +381,24 @@ describe('AssetsService', () => {
 	});
 
 	describe('zip (private)', () => {
-		const mockArchiver = {
-			append: vi.fn(),
-			finalize: vi.fn().mockResolvedValue(undefined),
-		};
-
 		const mockSchema = {
 			collections: {},
 			relations: [],
 		} as SchemaOverview;
 
 		let mockDriver: Partial<Driver>;
+		let mockArchiver: Partial<Archiver>;
 		let mockStorage: Partial<StorageManager>;
 
 		// Common setup
 		beforeEach(() => {
 			vi.resetAllMocks();
+
+			mockArchiver = {
+				append: vi.fn(),
+				finalize: vi.fn().mockResolvedValue(undefined),
+				destroyed: false,
+			};
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
@@ -567,22 +597,24 @@ describe('AssetsService', () => {
 	});
 
 	describe('zipFiles', () => {
-		const mockArchiver = {
-			append: vi.fn(),
-			finalize: vi.fn().mockResolvedValue(undefined),
-		};
-
 		const mockSchema = {
 			collections: {},
 			relations: [],
 		} as SchemaOverview;
 
 		let mockDriver: Partial<Driver>;
+		let mockArchiver: Partial<Archiver>;
 		let mockStorage: Partial<StorageManager>;
 
 		// Common setup
 		beforeEach(() => {
 			vi.resetAllMocks();
+
+			mockArchiver = {
+				append: vi.fn(),
+				finalize: vi.fn().mockResolvedValue(undefined),
+				destroyed: false,
+			};
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
@@ -629,25 +661,50 @@ describe('AssetsService', () => {
 				limit: -1,
 			});
 		});
+
+		test('should skip appends and call finalize (error) when archive is destroyed (aborted)', async () => {
+			vi.spyOn(FilesService.prototype, 'readByQuery').mockResolvedValue([
+				{ id: 'file1', folder: null, filename_download: 'file1.txt' },
+			] as File[]);
+
+			vi.spyOn(FilesService.prototype, 'readOne').mockImplementation(
+				async (key) => ({ id: key, folder: null, filename_download: `${key}.txt` }) as File,
+			);
+
+			const service = new AssetsService({
+				schema: mockSchema,
+			});
+
+			const result = await service.zipFiles(['file1']);
+
+			mockArchiver.destroyed = true;
+
+			await result.complete();
+
+			expect(mockArchiver.append).not.toHaveBeenCalled();
+			expect(mockArchiver.finalize).toHaveBeenCalled();
+		});
 	});
 
 	describe('zipFolder', () => {
-		const mockArchiver = {
-			append: vi.fn(),
-			finalize: vi.fn().mockResolvedValue(undefined),
-		};
-
 		const mockSchema = {
 			collections: {},
 			relations: [],
 		} as SchemaOverview;
 
 		let mockDriver: Partial<Driver>;
+		let mockArchiver: Partial<Archiver>;
 		let mockStorage: Partial<StorageManager>;
 
 		// Common setup
 		beforeEach(() => {
 			vi.resetAllMocks();
+
+			mockArchiver = {
+				append: vi.fn(),
+				finalize: vi.fn().mockResolvedValue(undefined),
+				destroyed: false,
+			};
 
 			mockDriver = {
 				read: vi.fn().mockResolvedValue(Readable.from(['stream'])),

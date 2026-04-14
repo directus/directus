@@ -89,11 +89,11 @@ const displayValue = computed(() => {
 
 	.display-value {
 		flex-grow: 1;
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 
 	.controls > * + * {
-		margin-inline-start: 8px;
+		margin-inline-start: 0.4375rem;
 	}
 
 	.secondary & {
@@ -137,13 +137,13 @@ const displayValue = computed(() => {
 }
 
 .v-icon {
-	margin-inline-start: 6px;
+	margin-inline-start: 0.3125rem;
 }
 
 .v-list {
 	.v-list-item {
 		display: flex;
-		gap: 10px;
+		gap: 0.5625rem;
 		align-items: center;
 		justify-content: space-between;
 		white-space: nowrap;
@@ -158,7 +158,7 @@ const displayValue = computed(() => {
 		.end {
 			display: flex;
 			flex-grow: 1;
-			gap: 10px;
+			gap: 0.5625rem;
 			align-items: center;
 			justify-content: flex-end;
 			color: var(--theme--form--field--input--foreground-subdued);
@@ -169,13 +169,13 @@ const displayValue = computed(() => {
 		}
 
 		.dot {
-			inline-size: 8px;
+			inline-size: 0.4375rem;
 			block-size: 100%;
 
 			&.show::before {
 				display: block;
-				inline-size: 4px;
-				block-size: 4px;
+				inline-size: 0.25rem;
+				block-size: 0.25rem;
 				background-color: var(--theme--form--field--input--foreground-subdued);
 				border-radius: 2px;
 				content: '';
@@ -183,7 +183,7 @@ const displayValue = computed(() => {
 		}
 
 		.v-progress-linear {
-			max-inline-size: 100px;
+			max-inline-size: 5.625rem;
 		}
 	}
 }

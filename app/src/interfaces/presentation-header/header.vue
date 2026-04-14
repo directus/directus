@@ -25,7 +25,7 @@ import RenderTemplate from '@/views/private/components/render-template.vue';
 type Link = {
 	icon: string;
 	label: string;
-	type: string;
+	type: 'normal' | 'primary' | 'info' | 'success' | 'warning' | 'danger';
 	actionType: string;
 	url?: string;
 	flow?: string;
@@ -221,11 +221,19 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 <template>
 	<div class="page-header">
-		<div class="header-content" :style="{ '--header-color': color }">
+		<div
+			class="header-content"
+			:class="{ 'header-content--centered': title && subtitle }"
+			:style="{ '--header-color': color }"
+		>
 			<div class="text-content">
 				<p v-if="title" class="text-title">
 					<VIcon v-if="icon" :name="icon" />
 					<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
+				</p>
+				<p v-if="subtitle" class="text-subtitle" :class="{ standalone: !title }">
+					<VIcon v-if="icon && !title" :name="icon" />
+					<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
 				</p>
 			</div>
 			<div class="actions-wrapper">
@@ -241,11 +249,11 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 							v-if="primaryLink!.href || primaryLink!.flow"
 							v-bind="primaryLinkProps"
 							small
-							:kind="primaryLink!.type"
+							:kind="primaryLink!.type === 'primary' ? 'normal' : primaryLink!.type"
 						>
 							<VIcon v-if="!primaryLink.icon && !primaryLink.label" name="smart_button" />
 
-							<VIcon v-if="primaryLink!.icon" :left="primaryLink.label" :name="primaryLink!.icon" />
+							<VIcon v-if="primaryLink!.icon" :left="!!primaryLink!.label" :name="primaryLink!.icon" />
 
 							<span v-if="primaryLink!.label">{{ primaryLink!.label }}</span>
 						</VButton>
@@ -303,9 +311,6 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 				</div>
 			</div>
 		</div>
-		<p v-if="subtitle" class="text-subtitle">
-			<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
-		</p>
 		<TransitionExpand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="helper-text-outer">
 				<HelperText :content="helpText" />
@@ -349,12 +354,16 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	inline-size: 100%;
 	display: flex;
 	gap: calc(var(--theme--form--column-gap) / 2);
-	padding-block-end: 8px;
+	padding-block-end: 0.4375rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	color: var(--header-color, var(--theme--foreground));
 	align-items: baseline;
 	justify-content: space-between;
 	min-inline-size: 0;
+
+	&--centered {
+		align-items: center;
+	}
 
 	.text-content {
 		min-inline-size: 0;
@@ -364,17 +373,39 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			display: flex;
 			color: var(--theme--foreground-accent);
 			overflow: hidden;
-			gap: 8px;
+			gap: 0.4375rem;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			font-size: 24px;
+			font-size: 1.375rem;
 			font-weight: 600;
 			align-items: center;
 
 			.v-icon {
 				--v-icon-color: var(--header-color);
-				margin-block-start: 2px;
+				margin-block-start: 0.125rem;
 				flex-shrink: 0;
+			}
+		}
+
+		.text-subtitle {
+			margin-block-start: 0.25rem;
+			font-size: 0.8125rem;
+			color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			display: flex;
+			gap: 0.4375rem;
+			align-items: center;
+
+			.v-icon {
+				--v-icon-color: var(--header-color);
+				margin-block-start: 0.125rem;
+				flex-shrink: 0;
+			}
+
+			&.standalone {
+				margin-block-start: 0;
 			}
 		}
 	}
@@ -384,7 +415,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 		.actions-container {
 			display: flex;
-			gap: 12px;
+			gap: 0.6875rem;
 			align-items: center;
 
 			.v-button {
@@ -404,7 +435,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 				position: relative;
 			}
 
-			@container (max-width: 600px) {
+			@container (max-width: 33.75rem) {
 				align-items: stretch;
 				inline-size: 100%;
 
@@ -422,24 +453,15 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	}
 }
 
-.text-subtitle {
-	margin-block-start: 4px;
-	font-size: 14px;
-	color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
 .helper-text-outer {
-	padding-block: 40px;
-	padding-inline: 32px;
+	padding-block: 2.25rem;
+	padding-inline: 1.8125rem;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 	background-color: var(--theme--background-subdued);
 	overflow-y: scroll;
 
 	:deep(.helper-text) {
-		padding: var(--v-card-padding, 16px);
+		padding: var(--v-card-padding, 0.875rem);
 		padding-block-start: 0;
 		max-inline-size: 100%;
 		overflow-x: auto;
@@ -448,18 +470,18 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	.collapse-button-container {
 		display: flex;
 		justify-content: flex-end;
-		margin-block-start: 16px;
+		margin-block-start: 0.875rem;
 	}
 }
 
 .help-modal {
 	position: relative;
-	padding-block-start: var(--v-card-padding, 16px);
+	padding-block-start: var(--v-card-padding, 0.875rem);
 
 	.close-button {
 		position: absolute;
-		inset-block-start: 16px;
-		inset-inline-end: 16px;
+		inset-block-start: 0.875rem;
+		inset-inline-end: 0.875rem;
 
 		:deep(.button) {
 			border-radius: 100%;

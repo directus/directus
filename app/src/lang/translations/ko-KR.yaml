@@ -482,6 +482,8 @@ related_collection: 관계 컬렉션
 related_collections: 관계 컬렉션
 translations_collection: 번역 컬렉션
 languages_collection: 언어 컬렉션
+translations_preview_collections: 컬렉션
+translations_preview_fields: 필드
 import_data_input_placeholder: CSV 또는 JSON...
 import_data_button: 가져오기 시작
 import_data_indeterminate: 데이터를 가져오는 중...
@@ -664,7 +666,6 @@ no_collections: 컬렉션 없음
 create_collection: 목록 생성
 no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
 no_collections_copy: 아직 컬렉션이 없습니다. 시스템 관리자에게 문의하십시오.
-relationship_not_setup: 관계형이 올바르게 구성되지 않았습니다.
 no_singleton_relations: 싱글톤과의 관계는 지원되지 않습니다
 display_template_not_setup: 표시 템플릿 옵션이 잘못 구성됨
 collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
@@ -784,7 +785,6 @@ unexpected_error_copy: 예기치 않은 오류가 발생했습니다. 다시 시
 copy_details: 세부정보 복사
 no_app_access: 앱 액세스 없음
 no_app_access_copy: 이 사용자는 관리 앱을 사용할 수 없습니다.
-password_reset_sent: 계정이 있는 경우 비밀번호를 재설정할 수 있는 보안 링크를 보내드립니다.
 password_reset_successful: 비밀번호가 성공적으로 재설정되었습니다.
 back: 뒤로
 filter: 필터
@@ -1559,6 +1559,8 @@ ai:
   settings: 설정
   tool_approval:
     disabled: 비활성화 됨
+  ask_user_submit: 확인
+  ask_user_next: 다음
 ai_tools:
   items: 항목
   files: 파일
@@ -1760,6 +1762,8 @@ interfaces:
     all_opened: 모두 열림
     accordion_mode: 아코디언 모드
     max_one_section_open: 최대 1개 섹션 열기
+  group-tabs:
+    fill_width: 전체 폭
   presentation-links:
     presentation-links: 버튼
     style: 스타일

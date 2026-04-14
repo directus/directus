@@ -55,6 +55,11 @@ vi.mock('./auth', () => ({
 	registerAuthProviders: vi.fn(),
 }));
 
+vi.mock('./deployment.js', () => ({
+	registerDeploymentDrivers: vi.fn(),
+	ensureDeploymentWebhooks: vi.fn(),
+}));
+
 vi.mock('./utils/validate-env.js');
 
 beforeEach(() => {

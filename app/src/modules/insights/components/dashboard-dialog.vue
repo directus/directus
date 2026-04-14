@@ -119,7 +119,7 @@ async function save() {
 .fields {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 12px;
+	gap: 0.6875rem;
 }
 
 .full {

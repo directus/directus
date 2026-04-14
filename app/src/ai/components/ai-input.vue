@@ -21,11 +21,17 @@ onUnmounted(() => {
 	unsubscribeFocus.off();
 });
 
+const isProcessing = computed(
+	() => aiStore.isPreparingSubmission || aiStore.isAwaitingToolExecution || aiStore.hasPendingToolCall,
+);
+
+const canStop = computed(() => aiStore.status === 'streaming' || aiStore.status === 'submitted');
+
 const canSubmit = computed(
 	() =>
 		aiStore.input.trim().length > 0 &&
 		aiStore.status !== 'streaming' &&
-		aiStore.status !== 'submitted' &&
+		!aiStore.isUiLoading &&
 		!aiStore.hasPendingToolCall,
 );
 
@@ -65,6 +71,8 @@ function handleSubmit() {
 				<AiInputSubmit
 					:status="aiStore.status"
 					:can-submit="canSubmit"
+					:is-processing="isProcessing"
+					:can-stop="canStop"
 					@stop="aiStore.stop"
 					@reload="aiStore.retry"
 					@submit="handleSubmit"
@@ -85,8 +93,8 @@ function handleSubmit() {
 	flex-direction: column;
 	align-items: flex-end;
 	cursor: text;
-	gap: 12px;
-	padding: 12px;
+	gap: 0.6875rem;
+	padding: 0.6875rem;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--form--field--input--background);
@@ -122,7 +130,7 @@ function handleSubmit() {
 .input-controls {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 	flex-shrink: 0;
 	inline-size: 100%;
 

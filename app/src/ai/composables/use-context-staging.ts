@@ -1,12 +1,12 @@
 import type { VisualElementContextData } from '@directus/ai';
 import formatTitle from '@directus/format-title';
-import { Item } from '@directus/types';
+import type { Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
 import { useAiStore } from '../stores/use-ai';
 import { useAiContextStore } from '../stores/use-ai-context';
-import type { MCPPrompt } from '../types';
+import type { FileContextData, MCPPrompt } from '../types';
 import { usePrompts } from './use-prompts';
 import sdk, { requestEndpoint } from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
@@ -22,6 +22,16 @@ export function useContextStaging() {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 	const { convertToUIMessages } = usePrompts();
+
+	function notifyStagingResult(stagedCount: number, totalCount: number, showSuccess = false) {
+		if (stagedCount === 0) {
+			notify({ title: t('ai.max_elements_reached') });
+		} else if (stagedCount < totalCount) {
+			notify({ title: t('ai.some_files_staged', { count: stagedCount }) });
+		} else if (showSuccess) {
+			notify({ title: t('ai.files_staged'), type: 'success' });
+		}
+	}
 
 	function normalizeFields(fields: string[] | undefined): string[] {
 		if (!fields?.length) return [];
@@ -215,9 +225,90 @@ export function useContextStaging() {
 		}
 	}
 
+	async function stageFiles(ids: string[]) {
+		if (ids.length === 0) return;
+
+		try {
+			const response = await sdk.request<FileContextData[]>(
+				requestEndpoint(getEndpoint('directus_files'), {
+					params: {
+						filter: { id: { _in: ids } },
+						fields: ['id', 'filename_download', 'type', 'title'],
+					},
+				}),
+			);
+
+			if (!Array.isArray(response)) {
+				throw new Error('Invalid files response');
+			}
+
+			const files: FileContextData[] = response;
+			let stagedCount = 0;
+
+			for (const file of files) {
+				const added = contextStore.addPendingContext({
+					id: nanoid(),
+					type: 'file',
+					data: file,
+					display: file.title || file.filename_download,
+				});
+
+				if (!added) break;
+				stagedCount++;
+			}
+
+			notifyStagingResult(stagedCount, files.length, true);
+		} catch (error) {
+			unexpectedError(error);
+		}
+	}
+
+	async function stageLocalFiles(files: FileList | File[] | null) {
+		if (!files) return;
+
+		const fileArray = Array.from(files);
+		if (fileArray.length === 0) return;
+		let stagedCount = 0;
+
+		for (const file of fileArray) {
+			let thumbnailUrl: string | undefined;
+
+			if (file.type.startsWith('image/')) {
+				try {
+					thumbnailUrl = await readAsDataUrl(file);
+				} catch {
+					thumbnailUrl = undefined;
+				}
+			}
+
+			const added = contextStore.addPendingContext({
+				id: nanoid(),
+				type: 'local-file',
+				data: { file, thumbnailUrl },
+				display: file.name,
+			});
+
+			if (!added) break;
+			stagedCount++;
+		}
+
+		notifyStagingResult(stagedCount, fileArray.length);
+	}
+
+	function readAsDataUrl(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = () => reject(reader.error);
+			reader.readAsDataURL(file);
+		});
+	}
+
 	return {
 		stagePrompt,
 		stageItems,
 		stageVisualElement,
+		stageFiles,
+		stageLocalFiles,
 	};
 }

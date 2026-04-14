@@ -19,6 +19,7 @@ const props = withDefaults(
 		presets?: string[];
 		allowCustom?: boolean;
 		direction?: string;
+		rawEditorEnabled?: boolean;
 	}>(),
 	{
 		iconRight: 'local_offer',
@@ -32,6 +33,11 @@ const presetVals = computed<string[]>(() => {
 	if (props.presets !== undefined) return processArray(props.presets);
 	return [];
 });
+
+// Variable mode: when `rawEditorEnabled` is true and the value is a string rather than an array.
+// This happens in contexts like Flows and Insights where the field value can be a dynamic
+// variable expression (e.g. "{{$trigger.body.tags}}") instead of an array of tags.
+const isVariableMode = computed(() => props.rawEditorEnabled === true && typeof props.value === 'string');
 
 const selectedValsLocal = ref<string[]>(Array.isArray(props.value) ? processArray(props.value) : []);
 
@@ -85,6 +91,8 @@ function processArray(array: string[]): string[] {
 }
 
 function onInput(event: KeyboardEvent) {
+	if (isVariableMode.value) return;
+
 	if (event.target && (event.key === 'Enter' || event.key === ',' || (event.type === 'blur' && document.hasFocus()))) {
 		event.preventDefault();
 		addTag((event.target as HTMLInputElement).value);
@@ -117,21 +125,37 @@ function removeTag(tag: string) {
 function emitValue() {
 	emit('input', selectedVals.value);
 }
+
+function clearVariable() {
+	emit('input', null);
+}
 </script>
 
 <template>
 	<div class="interface-tags">
 		<VInput
-			v-if="allowCustom"
+			v-if="isVariableMode || allowCustom"
+			:model-value="isVariableMode ? (value as string) : undefined"
 			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
-			:disabled
-			:non-editable
+			:disabled="isVariableMode || disabled"
+			:non-editable="isVariableMode || nonEditable"
 			:dir="direction"
 			@keydown="onInput"
 			@blur="onInput"
 		>
 			<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
-			<template #append><VIcon :name="iconRight" /></template>
+			<template #append>
+				<VIcon
+					v-if="isVariableMode"
+					v-tooltip="$t('clear_value')"
+					class="remove-variable"
+					name="close"
+					clickable
+					:disabled
+					@click.stop="clearVariable"
+				/>
+				<VIcon v-else :name="iconRight" />
+			</template>
 		</VInput>
 		<div v-if="presetVals.length > 0 || customVals.length > 0" class="tags">
 			<span v-if="presetVals.length > 0" class="presets tag-container">
@@ -176,12 +200,16 @@ function emitValue() {
 </template>
 
 <style lang="scss" scoped>
+.remove-variable {
+	--v-icon-color-hover: var(--v-remove-color, var(--theme--danger));
+}
+
 .tags {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0 0;
+	padding: 0.25rem 0 0;
 
 	span.tag-container {
 		display: contents;
@@ -189,8 +217,8 @@ function emitValue() {
 
 	.custom-tags-delimiter,
 	.tag {
-		margin-block-start: 8px;
-		margin-inline-end: 8px;
+		margin-block-start: 0.4375rem;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.custom-tags-delimiter.disabled {

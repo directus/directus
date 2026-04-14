@@ -1,4 +1,4 @@
-import { InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -6,6 +6,7 @@ import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { verifyJWT } from '../utils/jwt.js';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -30,6 +31,14 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
+
+vi.mock('../utils/jwt.js', () => ({
+	verifyJWT: vi.fn(),
+}));
+
+vi.mock('../utils/get-secret.js', () => ({
+	getSecret: vi.fn().mockReturnValue('test-secret'),
+}));
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 
@@ -299,6 +308,52 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('requestPasswordReset', () => {
+			it('should throw ForbiddenError for external provider users', async () => {
+				tracker.on.select('directus_users').response({
+					id: 'user-id-ext',
+					role: 'role-id',
+					status: 'active',
+					password: 'hashed',
+					email: 'ext@example.com',
+					provider: 'google',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(service.requestPasswordReset('ext@example.com', null)).rejects.toThrow(ForbiddenError);
+
+				expect(mailService.send).not.toHaveBeenCalled();
+			});
+
+			it('should send reset email for default provider users', async () => {
+				tracker.on.select('directus_users').response({
+					id: 'user-id-def',
+					role: 'role-id',
+					status: 'active',
+					password: 'hashed',
+					email: 'def@example.com',
+					provider: 'default',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.requestPasswordReset('def@example.com', null);
+
+				expect(mailService.send).toHaveBeenCalledTimes(1);
+			});
+		});
+
 		describe('invite', () => {
 			const mailService = new MailService({
 				schema,
@@ -391,6 +446,39 @@ describe('Integration Tests', () => {
 
 				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([mockUser.id]);
 				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
+			});
+		});
+
+		describe('acceptInvite', () => {
+			it('should throw InvalidInviteError when user is not in invited status', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'invite' });
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id',
+					status: 'active',
+					email: 'test@example.com',
+				});
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				const err = await service.acceptInvite('fake-token', 'Password123!').catch((e) => e);
+
+				expect(err).toBeInstanceOf(InvalidInviteError);
+				expect(err.message).not.toContain('test@example.com');
+			});
+
+			it('should throw ForbiddenError for non-invite scope tokens', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'password-reset' });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
 			});
 		});
 	});

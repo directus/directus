@@ -21,10 +21,10 @@ export default {
 
 <style scoped>
 .text {
-	padding: 12px;
+	padding: 0.6875rem;
 }
 
 .text.has-header {
-	padding: 0 12px;
+	padding: 0 0.6875rem;
 }
 </style>

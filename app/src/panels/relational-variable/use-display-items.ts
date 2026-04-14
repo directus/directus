@@ -1,5 +1,5 @@
 import { useSdk } from '@directus/composables';
-import { Item } from '@directus/types';
+import type { Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, Ref, ref, watch } from 'vue';
 import { requestEndpoint } from '@/sdk';

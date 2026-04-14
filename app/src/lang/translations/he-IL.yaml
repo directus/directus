@@ -440,6 +440,7 @@ ai:
   unknown: לא ידוע
   tool_approval:
     disabled: מושבת
+  ask_user_next: המשך
 ai_tools:
   files: קבצים
   folders: תיקיות
@@ -450,6 +451,8 @@ password: סיסמה
 interfaces:
   filter:
     any: כל
+  group-tabs:
+    fill_width: עמוד מלא
   presentation-links:
     primary: ראשי
   system-collection:

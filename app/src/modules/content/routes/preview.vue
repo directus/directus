@@ -30,7 +30,7 @@ const previewUrl = computed(() => {
 	return displayValue.value || null;
 });
 
-const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl, currentVersion });
+const { visualEditingEnabled } = useVisualEditing({ previewUrl });
 
 function closePopup() {
 	window.close();
@@ -45,9 +45,9 @@ function onSaved() {
 	<LivePreview
 		v-if="previewUrl"
 		:url="previewUrl"
+		:version="currentVersion"
 		in-popup
 		:can-enable-visual-editing="visualEditingEnabled"
-		:visual-editor-urls="visualEditorUrls"
 		@new-window="closePopup"
 		@saved="onSaved"
 	/>

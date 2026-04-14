@@ -37,6 +37,7 @@ emitter.on(Events.tabIdle, onIdle);
 emitter.on(Events.tabActive, onActive);
 
 onUnmounted(() => {
+	clearInterval(interval.value);
 	emitter.off(Events.tabIdle, onIdle);
 	emitter.off(Events.tabActive, onActive);
 });
@@ -82,16 +83,16 @@ const items = computed(() => {
 @use '@/styles/mixins';
 
 .fields {
-	--theme--form--row-gap: 24px;
+	--theme--form--row-gap: 1.375rem;
 
 	@include mixins.form-grid;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 
 .v-checkbox {
-	margin-block-start: 8px;
+	margin-block-start: 0.4375rem;
 }
 </style>

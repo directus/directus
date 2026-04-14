@@ -1,4 +1,4 @@
-import { createError } from '@directus/errors';
+import { createError, type DirectusErrorConstructor } from '@directus/errors';
 import type { ClientFilterOperator } from '@directus/types';
 import { toArray } from '@directus/utils';
 
@@ -106,8 +106,5 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 	return message;
 };
 
-export const FailedValidationError = createError<FailedValidationErrorExtensions>(
-	'FAILED_VALIDATION',
-	messageConstructor,
-	400,
-);
+export const FailedValidationError: DirectusErrorConstructor<FailedValidationErrorExtensions> =
+	createError<FailedValidationErrorExtensions>('FAILED_VALIDATION', messageConstructor, 400);

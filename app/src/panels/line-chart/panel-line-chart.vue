@@ -262,7 +262,7 @@ function setUpChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 			},
 			crosshairs: {
@@ -297,7 +297,7 @@ function setUpChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 			},
 		},
@@ -312,7 +312,7 @@ function setUpChart() {
 			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
-			fontSize: '10px',
+			fontSize: '0.5625rem',
 		},
 	});
 
@@ -342,16 +342,16 @@ function setUpChart() {
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
 	margin-block-end: 0;
-	padding: 0 4px;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
 	padding: 0;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 }
 
 .apexcharts-tooltip-series-group {
@@ -361,7 +361,7 @@ function setUpChart() {
 
 .apexcharts-tooltip-series-group.apexcharts-active,
 .apexcharts-tooltip-series-group:last-child {
-	padding: 0 4px !important;
+	padding: 0 0.25rem !important;
 	padding-block-end: 0 !important;
 }
 
@@ -371,9 +371,9 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-marker {
-	block-size: 8px !important;
-	inline-size: 8px !important;
-	padding: 4px !important;
+	block-size: 0.4375rem !important;
+	inline-size: 0.4375rem !important;
+	padding: 0.25rem !important;
 }
 
 .apexcharts-yaxistooltip {

@@ -15,7 +15,13 @@ export function applyFunctionToColumnName(column: string): string {
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0];
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
-		return `${columnName}_${functionName}`;
+
+		if (functionName === 'json') {
+			const slug = columnName?.replace(/[.[\],\s]+/g, '_');
+			return `${slug}${slug?.endsWith('_') ? '' : '_'}${functionName}`;
+		} else {
+			return `${columnName}_${functionName}`;
+		}
 	} else {
 		return column;
 	}

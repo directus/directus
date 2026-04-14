@@ -355,6 +355,8 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
+translations_preview_collections: Collections
+translations_preview_fields: Fields
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
@@ -501,7 +503,6 @@ no_collections: No Collections
 create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
-relationship_not_setup: The relationship hasn't been configured correctly
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
@@ -607,7 +608,6 @@ unexpected_error: Unexpected Error
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
-password_reset_sent: If you have an account, we've sent you a secure link to reset your password
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
@@ -1232,6 +1232,8 @@ ai:
   settings: Settings
   tool_approval:
     disabled: Disabled
+  ask_user_submit: Submit
+  ask_user_next: Next
 ai_tools:
   items: Items
   files: Files
@@ -1386,6 +1388,8 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  group-tabs:
+    fill_width: Fill Width
   presentation-links:
     presentation-links: Buttons
     style: Style

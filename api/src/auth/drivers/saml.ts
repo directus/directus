@@ -20,7 +20,7 @@ import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
+import { resolveLoginRedirect } from '../utils/resolve-login-redirect.js';
 import { LocalAuthDriver } from './local.js';
 
 // Register the samlify schema validator
@@ -134,9 +134,12 @@ export function createSAMLAuthRouter(providerName: string) {
 			const parsedUrl = new URL(url);
 
 			if (req.query['redirect']) {
-				const redirect = req.query['redirect'] as string;
+				let redirect = req.query['redirect'] as string;
 
-				if (!isLoginRedirectAllowed(providerName, redirect)) {
+				try {
+					redirect = resolveLoginRedirect(redirect, { provider: providerName });
+				} catch (e) {
+					useLogger().error(e);
 					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 				}
 
@@ -171,12 +174,17 @@ export function createSAMLAuthRouter(providerName: string) {
 		asyncHandler(async (req, res, next) => {
 			const logger = useLogger();
 
-			const relayState: string | undefined = req.body?.RelayState;
+			let redirect: string | undefined = req.body?.RelayState;
 
 			const authMode = (env[`AUTH_${providerName.toUpperCase()}_MODE`] ?? 'session') as string;
 
-			if (relayState && isLoginRedirectAllowed(providerName, relayState) === false) {
-				throw new InvalidPayloadError({ reason: `URL "${relayState}" can't be used to redirect after login` });
+			if (redirect) {
+				try {
+					redirect = resolveLoginRedirect(redirect, { provider: providerName });
+				} catch (e) {
+					useLogger().error(e);
+					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
+				}
 			}
 
 			try {
@@ -197,19 +205,19 @@ export function createSAMLAuthRouter(providerName: string) {
 					},
 				};
 
-				if (relayState) {
+				if (redirect) {
 					if (authMode === 'session') {
 						res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
 					} else {
 						res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
 					}
 
-					return res.redirect(relayState);
+					return res.redirect(redirect);
 				}
 
 				return next();
 			} catch (error) {
-				if (relayState) {
+				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
 					if (isDirectusError(error)) {
@@ -218,7 +226,7 @@ export function createSAMLAuthRouter(providerName: string) {
 						logger.warn(error, `[SAML] Unexpected error during SAML login`);
 					}
 
-					return res.redirect(`${relayState.split('?')[0]}?reason=${reason}`);
+					return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 				}
 
 				logger.warn(error, `[SAML] Unexpected error during SAML login`);

@@ -6,10 +6,6 @@ const mockModuleBar = vi.hoisted(() => ({
 	value: [] as Array<{ type: string; id: string; enabled: boolean }>,
 }));
 
-const mockVisualEditorUrls = vi.hoisted(() => ({
-	value: [] as Array<{ url: string }>,
-}));
-
 vi.mock('@/utils/normalize-url', () => ({
 	normalizeUrl: (url: string | null) => url,
 }));
@@ -20,9 +16,6 @@ vi.mock('@/stores/settings', () => ({
 			get module_bar() {
 				return mockModuleBar.value;
 			},
-			get visual_editor_urls() {
-				return mockVisualEditorUrls.value;
-			},
 		},
 	}),
 }));
@@ -32,8 +25,6 @@ beforeEach(() => {
 		{ type: 'module', id: 'content', enabled: true },
 		{ type: 'module', id: 'visual', enabled: true },
 	];
-
-	mockVisualEditorUrls.value = [{ url: 'https://example.com' }];
 });
 
 afterEach(() => {
@@ -118,17 +109,6 @@ describe('useVisualEditing', () => {
 		expect(visualModuleEnabled.value).toBe(true);
 	});
 
-	test('visualEditingEnabled is false when visual_editor_urls is empty', () => {
-		mockVisualEditorUrls.value = [];
-
-		const { visualEditingEnabled } = useVisualEditing({
-			previewUrl: 'https://example.com/preview',
-			isNew: false,
-		});
-
-		expect(visualEditingEnabled.value).toBe(false);
-	});
-
 	test('visualEditingEnabled is true when all prerequisites are met', () => {
 		const { visualEditingEnabled } = useVisualEditing({
 			previewUrl: 'https://example.com/preview',
@@ -136,16 +116,6 @@ describe('useVisualEditing', () => {
 		});
 
 		expect(visualEditingEnabled.value).toBe(true);
-	});
-
-	test('visualEditorUrls extracts URLs correctly from settings', () => {
-		mockVisualEditorUrls.value = [{ url: 'https://example.com' }, { url: 'https://another.com' }, { url: '' }];
-
-		const { visualEditorUrls } = useVisualEditing({
-			previewUrl: 'https://example.com/preview',
-		});
-
-		expect(visualEditorUrls.value).toEqual(['https://example.com', 'https://another.com']);
 	});
 
 	test('visualEditingEnabled reacts to isNew ref changes', () => {

@@ -1,6 +1,7 @@
 import type { Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
+import { parseJsonFunction } from '../../helpers/fn/json/parse-function.js';
 
 export async function parseCurrentLevel(
 	schema: SchemaOverview,
@@ -16,7 +17,13 @@ export async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field' || child.type === 'functionField') {
-			const { fieldName } = parseFilterKey(child.name);
+			let fieldName;
+
+			if (child.type == 'functionField' && child.name.startsWith('json')) {
+				fieldName = parseJsonFunction(child.name).field;
+			} else {
+				fieldName = parseFilterKey(child.name).fieldName;
+			}
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);

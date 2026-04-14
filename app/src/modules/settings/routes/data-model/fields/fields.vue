@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import formatTitle from '@directus/format-title';
 import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, toRefs } from 'vue';
@@ -15,7 +16,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -162,10 +162,10 @@ function discardAndLeave() {
 
 <style lang="scss" scoped>
 .title {
-	margin-block-end: 12px;
+	margin-block-end: 0.6875rem;
 
 	.instant-save {
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25rem;
 		color: var(--theme--warning);
 	}
 }
@@ -176,8 +176,8 @@ function discardAndLeave() {
 }
 
 .fields {
-	max-inline-size: 800px;
-	margin-block-end: 48px;
+	max-inline-size: 45rem;
+	margin-block-end: 2.6875rem;
 }
 
 .action-delete {

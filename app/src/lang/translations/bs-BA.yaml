@@ -330,6 +330,8 @@ related_collection: Povezana kolekcija
 related_collections: Povezane kolekcije
 translations_collection: Kolekcija prijevoda
 languages_collection: Kolekcija jezika
+translations_preview_collections: Kolekcije
+translations_preview_fields: Polja
 import_data_input_placeholder: CSV ili JSON...
 import_data_button: Pokreni uvoz
 import_data_indeterminate: Uvozim podatke...
@@ -464,7 +466,6 @@ no_collections: Nema kolekcija
 create_collection: Nova kolekcija
 no_collections_copy_admin: Još nemate niti jednu kolekciju. Kliknite dugme u nastavku da biste započeli.
 no_collections_copy: Još nemate nijednu kolekciju. Obratite se administratoru.
-relationship_not_setup: Odnos nije ispravno konfigurisan
 display_template_not_setup: Opcija predloška prikaza je pogrešno konfigurisana
 collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurisana
 select_a_collection: Odaberite kolekciju
@@ -566,7 +567,6 @@ unexpected_error: Neočekivana greška
 copy_details: Kopiraj detalje
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
-password_reset_sent: Ako imate korisnički račun, poslali smo vam sigurni link za ponovno zadavanje lozinke
 password_reset_successful: Lozinka je uspješno resetovana
 back: Povratak
 edit_image: Uredi sliku
@@ -1154,6 +1154,8 @@ ai:
   settings: Postavke
   tool_approval:
     disabled: Onemogućeno
+  ask_user_submit: Pošalji
+  ask_user_next: Nastavi
 ai_tools:
   items: Stavke
   files: Fajlovi
@@ -1308,6 +1310,8 @@ interfaces:
     all_opened: Sve otvoreno
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
+  group-tabs:
+    fill_width: Širina ispune
   presentation-links:
     presentation-links: Dugmeta
     style: Stil

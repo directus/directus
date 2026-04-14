@@ -7,6 +7,7 @@ vi.mock('@editorjs/editorjs', () => ({ default: vi.fn() }));
 vi.mock('./tools', () => ({ default: vi.fn(() => ({})) }));
 vi.mock('@/api', () => ({ default: { defaults: { baseURL: '' } } }));
 vi.mock('@/stores/collections', () => ({ useCollectionsStore: () => ({ getCollection: () => null }) }));
+vi.mock('@/stores/server', () => ({ useServerStore: () => ({ info: { files: { mimeTypeAllowList: null } } }) }));
 vi.mock('vue-router', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 vi.mock('@/utils/unexpected-error', () => ({ unexpectedError: vi.fn() }));
 
@@ -66,6 +67,50 @@ describe('InputBlockEditor', () => {
 
 		resolveRender();
 		await flushPromises();
+		wrapper.unmount();
+	});
+
+	it('should not clear content when value becomes null while disabled', async () => {
+		// This test should prevent a regression that results in data loss when the value is temporarily null and the field is disabled
+		const clear = vi.fn();
+
+		vi.mocked(EditorJS).mockImplementation(
+			() =>
+				({
+					isReady: Promise.resolve(),
+					render: vi.fn().mockResolvedValue(undefined),
+					clear,
+					destroy: vi.fn(),
+					focus: vi.fn(),
+					on: vi.fn(),
+					saver: { save: vi.fn().mockResolvedValue({ blocks: [] }) },
+					readOnly: {
+						toggle: vi.fn(),
+					},
+				}) as any,
+		);
+
+		const wrapper = mount(InputBlockEditor, {
+			props: {
+				disabled: false,
+				value: { blocks: [{ type: 'paragraph', data: { text: 'initial' } }] },
+			},
+			global: {
+				directives: { 'prevent-focusout': {} },
+				stubs: { VDrawer: true, VUpload: true },
+			},
+		});
+
+		await flushPromises();
+
+		await wrapper.setProps({ disabled: true });
+		await flushPromises();
+
+		await wrapper.setProps({ value: null });
+		await flushPromises();
+
+		expect(clear).not.toHaveBeenCalled();
+
 		wrapper.unmount();
 	});
 });

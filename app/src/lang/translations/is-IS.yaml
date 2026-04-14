@@ -401,6 +401,8 @@ ai:
   settings: Stillingar
   tool_approval:
     disabled: Óvirkt
+  ask_user_submit: Senda inn
+  ask_user_next: Næst
 ai_tools:
   files: Skrár
   flows: Flæðir
@@ -422,6 +424,8 @@ interfaces:
     name: Sía
     add_filter: Bæta við Síu
     all: Allt
+  group-tabs:
+    fill_width: Fylla Breidd
   presentation-links:
     primary: Aðal
   select-multiple-checkbox:

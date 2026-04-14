@@ -306,7 +306,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	position: relative;
 	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-block-end: 32px;
+	padding-block-end: 1.8125rem;
 	overflow: hidden;
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
@@ -339,17 +339,17 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	:deep(.preview) {
 		display: inline-block;
 		margin: 0;
-		padding: 2px 4px;
+		padding: 0.125rem 0.25rem;
 		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
-		vertical-align: -2px;
+		vertical-align: -0.125rem;
 		background: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
 
 		&::before {
 			display: block;
-			font-size: 1rem;
+			font-size: 0.8125rem;
 			content: attr(data-preview);
 		}
 	}

@@ -1,6 +1,6 @@
 .tooltip,
 #tooltip {
-	$arrow-alignment: 5px;
+	$arrow-alignment: 0.3125rem;
 
 	--tooltip-foreground-color: var(--foreground-inverted);
 	--tooltip-background-color: var(--background-inverted);
@@ -10,12 +10,12 @@
 	inset-inline-start: 0;
 	z-index: 850;
 	display: none;
-	max-inline-size: 260px;
-	padding: 4px 8px;
+	max-inline-size: 14.625rem;
+	padding: 0.25rem 0.4375rem;
 	color: var(--tooltip-foreground-color);
 	overflow-wrap: break-word;
 	background-color: var(--tooltip-background-color);
-	border-radius: 4px;
+	border-radius: 0.25rem;
 	transition: opacity 200ms;
 
 	&.inverted {
@@ -43,8 +43,8 @@
 
 	&::after {
 		position: absolute;
-		inset-block-start: -5px;
-		inset-inline-start: calc(50% - 6px);
+		inset-block-start: -0.3125rem;
+		inset-inline-start: calc(50% - 0.3125rem);
 		inline-size: 0;
 		block-size: 0;
 		border-inline-end: 6px solid transparent;
@@ -64,8 +64,8 @@
 
 	&.top::after {
 		inset-block-start: unset;
-		inset-block-end: -5px;
-		inset-inline-start: calc(50% - 6px);
+		inset-block-end: -0.3125rem;
+		inset-inline-start: calc(50% - 0.3125rem);
 		border-block-start: 6px solid var(--tooltip-background-color);
 		border-inline-end: 6px solid transparent;
 		border-block-end: unset;
@@ -82,8 +82,8 @@
 	}
 
 	&.left::after {
-		inset-block-start: calc(50% - 6px);
-		inset-inline-end: -5px;
+		inset-block-start: calc(50% - 0.3125rem);
+		inset-inline-end: -0.3125rem;
 		inset-inline-start: unset;
 		border-block-start: 6px solid transparent;
 		border-inline-end: unset;
@@ -101,8 +101,8 @@
 	}
 
 	&.right::after {
-		inset-block-start: calc(50% - 6px);
-		inset-inline-start: -5px;
+		inset-block-start: calc(50% - 0.3125rem);
+		inset-inline-start: -0.3125rem;
 		border-block-start: 6px solid transparent;
 		border-inline-end: 6px solid var(--tooltip-background-color);
 		border-block-end: 6px solid transparent;

@@ -43,8 +43,8 @@ const internalCurrentTab = computed({
 }
 
 .dot {
-	inline-size: 12px;
-	block-size: 12px;
+	inline-size: 0.6875rem;
+	block-size: 0.6875rem;
 	background-color: var(--theme--foreground-subdued);
 	border-radius: 50%;
 

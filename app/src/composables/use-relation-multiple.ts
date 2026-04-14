@@ -385,7 +385,9 @@ export function useRelationMultiple(
 			if (itemId.value !== '+') {
 				const currentItemId = itemId.value;
 
-				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+				const filter: Filter = {
+					_and: [{ [reverseJunctionField]: itemId.value === null ? { _null: true } : itemId.value } as Filter],
+				};
 
 				if (previewQuery.value.filter) {
 					filter._and.push(previewQuery.value.filter);

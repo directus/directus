@@ -424,7 +424,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		try {
 			const requests: Promise<AxiosResponse<any, any>>[] = [];
 
-			if (edits.create) {
+			if (edits.create.length > 0) {
 				// Created edits might come with a temporary ID for editing. Make sure to submit to API without temp ID
 				requests.push(
 					api.post(
@@ -434,11 +434,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				);
 			}
 
-			if (edits.update) {
+			if (edits.update.length > 0) {
 				requests.push(api.patch(`/panels`, edits.update));
 			}
 
-			if (edits.delete) {
+			if (edits.delete.length > 0) {
 				requests.push(api.delete(`/panels`, { data: edits.delete }));
 			}
 

@@ -202,6 +202,6 @@ function useActions() {
 .layout {
 	display: contents;
 
-	--layout-offset-top: calc(var(--header-bar-height) - 1px);
+	--layout-offset-top: calc(var(--header-bar-height) - 0.0625rem);
 }
 </style>

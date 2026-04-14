@@ -59,4 +59,88 @@ describe('Test QueryFilters', () => {
 		expectTypeOf(resultA).toEqualTypeOf<TypeWithoutConditional>();
 		expectTypeOf(resultB).toEqualTypeOf<TypeWithConditional>();
 	});
+
+	test('date and time fields support temporal filter operators', () => {
+		const client = createDirectus<TestSchema>('https://directus.example.com').with(rest());
+
+		// date fields should accept comparison and range operators
+		const _dateFilters = () =>
+			client.request(
+				readItems('collection_c', {
+					filter: {
+						date_field: {
+							_gt: '2024-01-01',
+							_lt: '2024-12-31',
+							_between: ['2024-01-01', '2024-12-31'],
+							_eq: '2024-06-15',
+						},
+					},
+				}),
+			);
+
+		// time fields should accept comparison and range operators
+		const _timeFilters = () =>
+			client.request(
+				readItems('collection_c', {
+					filter: {
+						time_field: {
+							_gte: '09:00:00',
+							_lte: '17:00:00',
+							_nbetween: ['00:00:00', '06:00:00'],
+							_eq: '12:00:00',
+						},
+					},
+				}),
+			);
+
+		// datetime fields should still work
+		const _datetimeFilters = () =>
+			client.request(
+				readItems('collection_c', {
+					filter: {
+						dt_field: {
+							_eq: '2024-01-01T00:00:00',
+							_gt: '2024-01-01T00:00:00',
+							_between: ['2024-01-01T00:00:00', '2024-12-31T23:59:59'],
+						},
+					},
+				}),
+			);
+
+		// ensure no type errors (the test passes if it compiles)
+		expectTypeOf(_dateFilters).toBeFunction();
+		expectTypeOf(_timeFilters).toBeFunction();
+		expectTypeOf(_datetimeFilters).toBeFunction();
+	});
+
+	test('nullable and non nullable filters', () => {
+		const client = createDirectus<TestSchema>('https://directus.example.com').with(rest());
+
+		const _nullable = () =>
+			client.request(
+				readItems('collection_c', {
+					filter: {
+						nullable: {
+							_null: true,
+							_nnull: false,
+						},
+					},
+				}),
+			);
+
+		const _non_nullable = () =>
+			client.request(
+				readItems('collection_c', {
+					filter: {
+						non_nullable: {
+							// @ts-expect-error
+							_null: false,
+						},
+					},
+				}),
+			);
+
+		expectTypeOf(_nullable).toBeFunction();
+		expectTypeOf(_non_nullable).toBeFunction();
+	});
 });

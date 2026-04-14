@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -14,7 +15,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
 import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -318,6 +318,8 @@ async function revert(values: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
@@ -333,13 +335,13 @@ async function revert(values: Record<string, any>) {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		padding: var(--content-padding);
 		padding-block-end: var(--content-padding-bottom);
 	}
 }
 
 .title-loader {
-	inline-size: 260px;
+	inline-size: 14.625rem;
 }
 </style>

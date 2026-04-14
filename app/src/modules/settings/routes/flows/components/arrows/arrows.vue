@@ -111,7 +111,7 @@ const arrows = computed(() => {
 			&.fade-leave-to {
 				position: absolute;
 				opacity: 0;
-				transform: translateX(-4px);
+				transform: translateX(-0.25rem);
 			}
 		}
 	}

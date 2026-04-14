@@ -465,6 +465,8 @@ related_collection: Хамааралтай бүрдэл
 related_collections: Хамааралтай бүрдлүүд
 translations_collection: Орчуулгын бүрдлүүд
 languages_collection: Хэлний бүрдлүүд
+translations_preview_collections: Бүрдлүүд
+translations_preview_fields: Талбарууд
 import_data_input_placeholder: CSV эсвэл JSON...
 import_data_button: Импортлож эхлэх
 import_data_indeterminate: Өгөгдлийг импортлож байна...
@@ -638,7 +640,6 @@ no_collections: Бүрдэл байхгүй байна
 create_collection: Бүрдэл үүсгэх
 no_collections_copy_admin: Бүрдэл одоогоор үүсгэгдээгүй байна. Доорх товчлуурыг дарж үүсгэнэ үү.
 no_collections_copy: Бүрдэл одоогоор үүсгэгдээгүй байна. Тухайн системийн админтай холбогдоно уу.
-relationship_not_setup: Харилцаа нь зөв тохируулагдаагүй байна
 no_singleton_relations: Синглтонтой харгалзах харилцаа дэмжигддэггүй
 display_template_not_setup: Харагдах байдлын загвар буруу тохируулагдсан байна
 collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
@@ -756,7 +757,6 @@ unexpected_error_copy: Гэнэтийн алдаа гарсан байна. Да
 copy_details: Дэлгэрэнгүй мэдээллийг хуулах
 no_app_access: Апп хандалт байхгүй
 no_app_access_copy: Энэ хэрэглэгч админ апп хэрэглэх зөвшөөрөлгүй байна.
-password_reset_sent: Та бүртгэлтэй бол бид тань руу нууц үг сэргээх аюулгүй холбоос илгээлээ
 password_reset_successful: Нууц үгийг амжилттай сэргээгдлээ
 back: Буцах
 filter: Шүүлтүүр
@@ -1503,6 +1503,8 @@ ai:
   settings: Тохиргоо
   tool_approval:
     disabled: Идэвхгүй
+  ask_user_submit: Батлах
+  ask_user_next: Дараагийн
 ai_tools:
   items: Оруулгууд
   files: Файлууд
@@ -1679,6 +1681,8 @@ interfaces:
     all_opened: Бүгд нээгдсэн
     accordion_mode: Аккордеон горим
     max_one_section_open: Ихдээ 1 нээлттэй хэсэг
+  group-tabs:
+    fill_width: Өргөн дүүрэн
   presentation-links:
     presentation-links: Товчлуур
     style: Хэв маяг

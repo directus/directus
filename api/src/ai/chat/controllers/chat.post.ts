@@ -70,6 +70,8 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		model,
 		tools,
 		aiSettings,
+		userId: req.accountability?.user,
+		role: req.accountability?.role,
 		systemPrompt: res.locals['ai'].systemPrompt,
 		...(context && { context }),
 		onUsage: (usage) => {

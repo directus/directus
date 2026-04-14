@@ -134,49 +134,52 @@ const fields = useFormFields(props.register, value, initialValues);
 <style scoped>
 .setup-form {
 	display: grid;
+	grid-template-columns: minmax(0, 1fr);
 
 	&.skipLicense {
 		.v-notice {
 			grid-row: 1;
-			margin-block: 0 20px;
+			margin-block: 0 1.125rem;
 		}
 
 		.v-checkbox {
 			grid-row: 2;
-			margin-block-end: 32px;
+			margin-block-end: 1.8125rem;
 		}
 	}
 }
 
 .v-form {
-	--theme--form--row-gap: 32px;
+	--theme--form--row-gap: 1.8125rem;
 }
 
 h1 {
 	color: var(--theme--foreground-accent);
-	font-size: 40px;
+	font-size: 2.25rem;
 	font-weight: 600;
-	line-height: 48px;
+	line-height: 1.1944;
 
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
 }
 
 p {
-	font-size: 14px;
+	font-size: 0.8125rem;
 	font-weight: 500;
-	line-height: 20px;
-	margin-block-end: 32px;
+	line-height: 1.3846;
+	margin-block-end: 1.8125rem;
 }
 
 .v-notice {
-	margin-block: 32px;
+	margin-block: 1.8125rem;
 }
 
 .v-checkbox {
-	block-size: 32px;
+	block-size: auto;
+	align-items: flex-start;
 
 	span {
 		font-weight: 600;
+		white-space: normal;
 	}
 }
 

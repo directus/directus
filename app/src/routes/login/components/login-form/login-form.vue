@@ -136,7 +136,7 @@ async function onSubmit() {
 <style lang="scss" scoped>
 .v-input,
 .v-notice {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .buttons {

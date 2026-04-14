@@ -107,7 +107,7 @@ async function save() {
 	saving.value = true;
 
 	try {
-		await api.post(`/collections`, {
+		const response = await api.post(`/collections`, {
 			collection: collectionName.value,
 			fields: [getPrimaryKeyField(), ...getSystemFields()],
 			schema: {},
@@ -119,6 +119,8 @@ async function save() {
 				singleton: singleton.value,
 			},
 		});
+
+		const createdCollectionName = response.data.data.collection;
 
 		const storeHydrations: Promise<void>[] = [];
 
@@ -137,7 +139,7 @@ async function save() {
 			title: t('collection_created'),
 		});
 
-		router.replace(`/settings/data-model/${collectionName.value}`);
+		router.replace(`/settings/data-model/${createdCollectionName}`);
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -523,7 +525,7 @@ function onApply() {
 @use '@/styles/mixins';
 
 .type-title {
-	margin-block-end: 48px;
+	margin-block-end: 2.6875rem;
 }
 
 .grid {
@@ -560,13 +562,13 @@ function onApply() {
 }
 
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .type-note {
 	position: relative;
 	display: block;
-	max-inline-size: 520px;
-	margin-block-start: 4px;
+	max-inline-size: 29.25rem;
+	margin-block-start: 0.25rem;
 }
 </style>

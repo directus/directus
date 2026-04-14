@@ -73,10 +73,10 @@ defineExpose({
 	background: none;
 	color: var(--theme--form--field--input--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
-	font-size: 14px;
+	font-size: 0.8125rem;
 	line-height: 1.5;
 	resize: none;
-	max-block-size: 120px;
+	max-block-size: 6.75rem;
 	overflow-y: auto;
 
 	&:focus {

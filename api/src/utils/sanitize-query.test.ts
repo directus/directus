@@ -9,6 +9,7 @@ import { sanitizeQuery } from './sanitize-query.js';
 vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
 vi.mock('../database/index.js');
+vi.mock('../database/helpers/index.js');
 vi.mock('../permissions/lib/fetch-policies.js');
 vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
 
@@ -339,6 +340,18 @@ describe('search', () => {
 		const sanitizedQuery = await sanitizeQuery({ search }, null as any);
 
 		expect(sanitizedQuery.search).toBeUndefined();
+	});
+
+	test('should trim leading and trailing spaces', async () => {
+		const sanitizedQuery = await sanitizeQuery({ search: '  glaglagla !  ' }, null as any);
+
+		expect(sanitizedQuery.search).toBe('glaglagla !');
+	});
+
+	test('should still allow for a whitespace-only search', async () => {
+		const sanitizedQuery = await sanitizeQuery({ search: '   ' }, null as any);
+
+		expect(sanitizedQuery.search).toBe('   ');
 	});
 });
 

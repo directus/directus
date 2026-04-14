@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -7,9 +7,15 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VUpload from '@/components/v-upload.vue';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import { useServerStore } from '@/stores/server';
 import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
 
 defineProps<FilePreviewProps>();
+
+const { info } = useServerStore();
+
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const emit = defineEmits<{
 	click: [];
@@ -40,7 +46,7 @@ function close() {
 			<VCard>
 				<VCardTitle>{{ $t('replace_file') }}</VCardTitle>
 				<VCardText>
-					<VUpload :file-id="file.id" from-url @input="onInput" />
+					<VUpload :file-id="file.id" from-url :accept="allowedMimeTypes" @input="onInput" />
 				</VCardText>
 				<VCardActions>
 					<VButton secondary @click="close">{{ $t('done') }}</VButton>
@@ -55,7 +61,7 @@ function close() {
 	color: var(--theme--primary);
 	cursor: pointer;
 	font-weight: 600;
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 
 	&[disabled] {
 		cursor: not-allowed;

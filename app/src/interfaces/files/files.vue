@@ -454,6 +454,7 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
 			:folder="folder"
+			:field="field"
 			:filter="customFilter"
 			multiple
 			@input="onSelect"

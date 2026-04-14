@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	Item,
@@ -17,6 +17,7 @@ import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash-es';
 import type { StringValue } from 'ms';
 import { clearSystemCache } from '../cache.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
@@ -136,9 +137,11 @@ export class UsersService extends ItemsService {
 	 */
 	private async getUserByEmail(
 		email: string,
-	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
+	): Promise<
+		{ id: string; role: string; status: string; password: string; email: string; provider: string } | undefined
+	> {
 		return this.knex
-			.select('id', 'role', 'status', 'password', 'email')
+			.select('id', 'role', 'status', 'password', 'email', 'provider')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
 			.first();
@@ -422,7 +425,7 @@ export class UsersService extends ItemsService {
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
-			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
+			throw new InvalidInviteError();
 		}
 
 		// Allow unauthenticated update
@@ -565,6 +568,11 @@ export class UsersService extends ItemsService {
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active') {
+			await stall(STALL_TIME, timeStart);
+			throw new ForbiddenError();
+		}
+
+		if (user.provider !== DEFAULT_AUTH_PROVIDER) {
 			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenError();
 		}

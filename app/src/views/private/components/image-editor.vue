@@ -26,6 +26,7 @@ const imageFields = [
 	'type',
 	'filesize',
 	'filename_download',
+	'folder',
 	'width',
 	'height',
 	'focal_point_x',
@@ -37,11 +38,13 @@ type Image = Pick<File, (typeof imageFields)[number]>;
 const props = defineProps<{
 	id: string;
 	modelValue?: boolean;
+	createAllowed?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
 	(e: 'refresh'): void;
+	(e: 'new-file', id: string): void;
 }>();
 
 const { n } = useI18n();
@@ -60,7 +63,8 @@ const internalActive = computed({
 	},
 });
 
-const { loading, error, imageData, imageElement, hasEdits, save, saving, fetchImage, onImageLoad } = useImage();
+const { loading, error, imageData, imageElement, hasEdits, save, saveAsNew, saving, fetchImage, onImageLoad } =
+	useImage();
 
 const {
 	cropperInstance,
@@ -149,6 +153,7 @@ function useImage() {
 		imageElement,
 		hasEdits,
 		save,
+		saveAsNew,
 		saving,
 		onImageLoad,
 	};
@@ -198,6 +203,48 @@ function useImage() {
 					);
 				}, imageData.value?.type ?? undefined);
 		});
+	}
+
+	async function saveAsNew() {
+		if (!hasEdits.value || saving.value) return;
+
+		saving.value = true;
+
+		const postRequest = new Promise<string>((resolve, reject) => {
+			cropperInstance.value
+				?.getCroppedCanvas({
+					imageSmoothingQuality: 'high',
+				})
+				.toBlob(async (blob) => {
+					if (blob === null) {
+						return reject(`Couldn't process and save edited image`);
+					}
+
+					const formData = new FormData();
+
+					if (imageData.value?.folder) {
+						formData.append('folder', imageData.value.folder as string);
+					}
+
+					formData.append('file', blob, imageData.value?.filename_download);
+
+					api.post('/files', formData).then(
+						(response) => resolve(response.data.data.id),
+						(err) => reject(err),
+					);
+				}, imageData.value?.type ?? undefined);
+		});
+
+		try {
+			const newId = await postRequest;
+			emit('new-file', newId);
+			localDragMode.value = 'move';
+			internalActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			saving.value = false;
+		}
 	}
 
 	async function save() {
@@ -594,7 +641,22 @@ function setAspectRatio() {
 				:disabled="!hasEdits"
 				icon="check"
 				@click="save"
-			/>
+			>
+				<template v-if="props.createAllowed" #append-outer>
+					<VMenu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<VIcon name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<VList>
+							<VListItem :disabled="!hasEdits" clickable @click="saveAsNew">
+								<VListItemIcon><VIcon name="add_photo_alternate" /></VListItemIcon>
+								<VListItemContent>{{ $t('save_as_new_file') }}</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
+				</template>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 	</VDrawer>
 </template>
@@ -617,20 +679,20 @@ function setAspectRatio() {
 }
 
 .modal {
-	--v-drawer-content-padding-small: 0px;
-	--v-drawer-content-padding: 0px;
+	--v-drawer-content-padding-small: 0;
+	--v-drawer-content-padding: 0;
 }
 
 .editor-container {
 	inline-size: 100%;
-	block-size: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
+	block-size: calc(100% - (3.6875rem + 1.375rem + 1.375rem)); /* header height + 2x margin */
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
 	.editor {
 		flex-grow: 1;
 		inline-size: 100%;
-		block-size: calc(100% - 60px);
+		block-size: calc(100% - 3.375rem);
 	}
 
 	img {
@@ -651,14 +713,14 @@ function setAspectRatio() {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	block-size: 60px;
-	padding: 0 24px;
+	block-size: 3.375rem;
+	padding: 0 1.375rem;
 	color: var(--white);
 	background-color: #263238;
 
 	.v-icon {
 		display: inline-block;
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 	}
 }
 
@@ -667,7 +729,7 @@ function setAspectRatio() {
 }
 
 .dimensions {
-	margin-inline-end: 12px;
+	margin-inline-end: 0.6875rem;
 	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }
@@ -677,7 +739,7 @@ function setAspectRatio() {
 }
 
 .toolbar-button {
-	padding: 8px;
+	padding: 0.4375rem;
 	background-color: rgb(255 255 255 / 0.2);
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
@@ -689,12 +751,12 @@ function setAspectRatio() {
 }
 
 .drag-mode {
-	margin-inline: -8px 16px;
+	margin-inline: -0.4375rem 0.875rem;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	gap: 8px;
+	gap: 0.4375rem;
 
 	.v-icon {
 		margin-inline-end: 0;
@@ -707,6 +769,6 @@ function setAspectRatio() {
 }
 
 .cancel {
-	padding-inline: 16px;
+	padding-inline: 0.875rem;
 }
 </style>

@@ -9,7 +9,7 @@ vi.mock('@/stores/server', () => {
 	};
 });
 
-function mockServerStore(mimeTypeAllowList?: string | string[]) {
+function mockServerStore(mimeTypeAllowList?: string[]) {
 	vi.mocked(useServerStore).mockReturnValue({
 		info: {
 			files: {
@@ -24,20 +24,16 @@ describe('parseGlobalMimeTypeAllowList', () => {
 		expect(parseGlobalMimeTypeAllowList(undefined)).toBeUndefined();
 	});
 
-	it('should return undefined for */* wildcard', () => {
-		expect(parseGlobalMimeTypeAllowList('*/*')).toBeUndefined();
+	it('should return undefined for empty array', () => {
+		expect(parseGlobalMimeTypeAllowList([])).toBeUndefined();
+	});
+
+	it('should return undefined for ["*/*"] wildcard array', () => {
+		expect(parseGlobalMimeTypeAllowList(['*/*'])).toBeUndefined();
 	});
 
 	it('should return array as-is', () => {
 		expect(parseGlobalMimeTypeAllowList(['image/jpeg', 'image/png'])).toEqual(['image/jpeg', 'image/png']);
-	});
-
-	it('should parse comma-separated string', () => {
-		expect(parseGlobalMimeTypeAllowList('image/jpeg, image/png')).toEqual(['image/jpeg', 'image/png']);
-	});
-
-	it('should trim whitespace from parsed types', () => {
-		expect(parseGlobalMimeTypeAllowList('  image/jpeg  ,  image/png  ')).toEqual(['image/jpeg', 'image/png']);
 	});
 });
 
@@ -163,6 +159,12 @@ describe('useMimeTypeFilter', () => {
 			expect(combinedAcceptString.value).toBeUndefined();
 		});
 
+		it('should return interface types when global allows all types', () => {
+			mockServerStore(['*/*']);
+			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'video/mp4']);
+			expect(combinedAcceptString.value).toBe('image/jpeg,video/mp4');
+		});
+
 		it('should return intersection of specific types', () => {
 			mockServerStore(['image/jpeg', 'image/gif']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'image/png', 'application/pdf']);
@@ -190,20 +192,14 @@ describe('useMimeTypeFilter', () => {
 	});
 
 	describe('global types from server store', () => {
-		it('should fetch global types from server store', () => {
-			mockServerStore('image/jpeg,image/png');
-			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'video/mp4']);
-			expect(combinedAcceptString.value).toBe('image/jpeg');
-		});
-
-		it('should use array format from server store', () => {
+		it('should use global types from server store', () => {
 			mockServerStore(['image/jpeg', 'image/png']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'video/mp4']);
 			expect(combinedAcceptString.value).toBe('image/jpeg');
 		});
 
-		it('should ignore wildcard from server store', () => {
-			mockServerStore('*/*');
+		it('should ignore ["*/*"] wildcard from server store', () => {
+			mockServerStore(['*/*']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'video/mp4']);
 			expect(combinedAcceptString.value).toBe('image/jpeg,video/mp4');
 		});
@@ -217,25 +213,25 @@ describe('useMimeTypeFilter', () => {
 
 	describe('mimeTypeMatches (tested through combinedAcceptString)', () => {
 		it('should match any type with wildcard pattern', () => {
-			mockServerStore('*/*');
+			mockServerStore(['*/*']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'video/mp4']);
 			expect(combinedAcceptString.value).toBe('image/jpeg,video/mp4');
 		});
 
 		it('should match specific types against wildcard pattern', () => {
-			mockServerStore('image/*');
+			mockServerStore(['image/*']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'image/png', 'video/mp4']);
 			expect(combinedAcceptString.value).toBe('image/jpeg,image/png');
 		});
 
 		it('should match exact MIME types', () => {
-			mockServerStore('image/jpeg');
+			mockServerStore(['image/jpeg']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg', 'image/png']);
 			expect(combinedAcceptString.value).toBe('image/jpeg');
 		});
 
 		it('should not match unrelated types', () => {
-			mockServerStore('video/mp4');
+			mockServerStore(['video/mp4']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/jpeg']);
 			// No overlap, so global takes precedence
 			expect(combinedAcceptString.value).toBe('video/mp4');
@@ -263,7 +259,7 @@ describe('useMimeTypeFilter', () => {
 		});
 
 		it('should allow interface wildcard when global has broader wildcard', () => {
-			mockServerStore('*/*');
+			mockServerStore(['*/*']);
 			const { combinedAcceptString } = useMimeTypeFilter(['image/*']);
 			// When global allows all types, the interface types are returned as-is
 			expect(combinedAcceptString.value).toBe('image/*');
@@ -284,7 +280,7 @@ describe('useMimeTypeFilter', () => {
 		});
 
 		it('should return global types when intersection is empty', () => {
-			mockServerStore('video/*');
+			mockServerStore(['video/*']);
 			const { combinedAcceptString } = useMimeTypeFilter(['audio/*']);
 			expect(combinedAcceptString.value).toBe('video/*');
 		});

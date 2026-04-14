@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCollection } from '@directus/composables';
+import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
@@ -33,7 +33,6 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
 import { useItemPermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
@@ -42,7 +41,6 @@ import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -92,7 +90,6 @@ const {
 	currentVersion,
 	versions,
 	loading: versionsLoading,
-	query,
 	addVersion,
 	updateVersion,
 	deleteVersion,
@@ -120,7 +117,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(collection, primaryKey, currentVersion);
 
 const toolsStore = useAiToolsStore();
 
@@ -371,10 +368,9 @@ const livePreviewSize = computed({
 
 provide('live-preview-active', livePreviewActive);
 
-const { visualEditingEnabled, visualEditorUrls, visualModuleEnabled } = useVisualEditing({
+const { visualEditingEnabled, visualModuleEnabled } = useVisualEditing({
 	previewUrl,
 	isNew,
-	currentVersion,
 });
 
 watch(previewUrl, (url) => {
@@ -478,7 +474,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, ref(item.value ?? {}));
+		await saveVersion(edits, ref(item.value ?? {}), actualPrimaryKey.value);
 		edits.value = {};
 
 		if (action === 'main') {
@@ -901,8 +897,8 @@ function useItemNavigation() {
 				<LivePreview
 					v-if="livePreviewActive && previewUrl"
 					:url="previewUrl"
+					:version="currentVersion"
 					:can-enable-visual-editing="visualEditingEnabled"
-					:visual-editor-urls="visualEditorUrls"
 					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"
 					@new-window="livePreviewMode = 'popup'"
@@ -995,6 +991,8 @@ function useItemNavigation() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .action-delete {
 	--v-button-background-color-hover: var(--theme--danger) !important;
 	--v-button-color-hover: var(--white) !important;
@@ -1012,7 +1010,7 @@ function useItemNavigation() {
 }
 
 .title-loader {
-	inline-size: 260px;
+	inline-size: 14.625rem;
 }
 
 :deep(.type-title) {
@@ -1022,7 +1020,7 @@ function useItemNavigation() {
 .headline-wrapper {
 	display: flex;
 	align-items: center;
-	gap: 0.25rem;
+	gap: 0.1875rem;
 }
 
 .version-more-options.v-icon {
@@ -1044,21 +1042,21 @@ function useItemNavigation() {
 
 		.headline {
 			opacity: 1;
-			inset-block-start: 3px;
+			inset-block-start: 0.1875rem;
 		}
 
 		.title {
-			inset-block-start: 4px;
+			inset-block-start: 0.25rem;
 		}
 
-		@media (width > 640px) {
+		@include mixins.breakpoint-up('sm') {
 			opacity: 1;
 		}
 	}
 }
 
 .headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (max-width: 600px) {
+	@media (width < 33.75rem) {
 		display: none;
 	}
 }
@@ -1077,7 +1075,7 @@ function useItemNavigation() {
 	background-color: var(--theme--background-subdued);
 	overflow-y: auto;
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 }

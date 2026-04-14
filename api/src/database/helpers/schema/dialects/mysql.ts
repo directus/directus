@@ -6,6 +6,7 @@ import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js
 import { type CreateIndexOptions, SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
+let lowerCaseTableNames: number | undefined;
 
 export class SchemaHelperMySQL extends SchemaHelper {
 	override generateIndexName(
@@ -118,5 +119,18 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		}
 
 		return blockingQuery;
+	}
+
+	override async parseCollectionName(collection: string): Promise<string> {
+		if (lowerCaseTableNames === undefined) {
+			const result = await this.knex.raw('SELECT @@lower_case_table_names AS lctn');
+			lowerCaseTableNames = Number(result[0]?.[0]?.lctn ?? 0);
+		}
+
+		if (lowerCaseTableNames === 1) {
+			return collection.toLowerCase();
+		}
+
+		return collection;
 	}
 }

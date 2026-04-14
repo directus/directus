@@ -1,4 +1,15 @@
-import type { Credentials, Deployment, Details, Log, Options, Project, TriggerResult } from '@directus/types';
+import type {
+	Credentials,
+	Deployment,
+	DeploymentWebhookEvent,
+	Details,
+	Log,
+	Options,
+	Project,
+	Status,
+	TriggerResult,
+	WebhookRegistrationResult,
+} from '@directus/types';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { getAxios } from '../request/index.js';
 
@@ -123,7 +134,7 @@ export abstract class DeploymentDriver<
 	 * @throws {HitRateLimitError} When rate limit is exceeded
 	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
-	abstract cancelDeployment(deploymentId: string): Promise<void>;
+	abstract cancelDeployment(deploymentId: string): Promise<Status>;
 
 	/**
 	 * Get deployment build logs
@@ -136,4 +147,34 @@ export abstract class DeploymentDriver<
 	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
 	abstract getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]>;
+
+	/**
+	 * Register a webhook with the provider
+	 *
+	 * @param webhookUrl The public URL that will receive webhook events
+	 * @param projectIds External project IDs to scope the webhook
+	 * @returns Webhook ID and secret for signature verification
+	 */
+	abstract registerWebhook(webhookUrl: string, projectIds: string[]): Promise<WebhookRegistrationResult>;
+
+	/**
+	 * Unregister webhooks from the provider
+	 *
+	 * @param webhookIds The webhook IDs returned from registerWebhook
+	 */
+	abstract unregisterWebhook(webhookIds: string[]): Promise<void>;
+
+	/**
+	 * Verify webhook signature and parse the event payload
+	 *
+	 * @param rawBody Raw request body buffer (before JSON parsing)
+	 * @param headers Request headers
+	 * @param webhookSecret Secret used for signature verification
+	 * @returns Parsed event or null if signature is invalid
+	 */
+	abstract verifyAndParseWebhook(
+		rawBody: Buffer,
+		headers: Record<string, string | string[] | undefined>,
+		webhookSecret: string,
+	): DeploymentWebhookEvent | null;
 }
