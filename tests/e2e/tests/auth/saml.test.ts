@@ -1,12 +1,8 @@
-import { useEnv } from '@utils/useEnv.js';
-import { useOptions } from '@utils/useOptions.js';
-import { usePort } from '@utils/usePort.js';
+import { env, options, port } from '@utils/constants.js';
 import { describe, expect, test } from 'vitest';
 
-const env = useEnv();
 const samlUrl = `http://localhost:${env.SAML_PORT}`;
-const apiUrl = `http://localhost:${usePort()}`;
-const options = useOptions();
+const apiUrl = `http://localhost:${port}`;
 
 let authCookie: string;
 

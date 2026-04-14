@@ -13,18 +13,19 @@ export async function setup(project: TestProject) {
 
 	const database = project.config.env['DATABASE'] as Database;
 	const port = project.config.env['PORT']!;
+	const devMode = project.config.env['DEV'] === 'true';
 
 	const options: DeepPartial<Options> = {
 		port,
-		dev: true,
-		watch: true,
+		dev: devMode,
+		watch: devMode,
 		prefix: database,
 		env: {
 			CACHE_SCHEMA: 'false',
 		},
 		docker: {
 			port: String(Number(project.config.env['PORT']) + 10),
-			keep: true,
+			keep: devMode,
 		},
 		extras: {
 			maildev: true,

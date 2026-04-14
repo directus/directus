@@ -8,13 +8,10 @@ import {
 	rest,
 	staticToken,
 } from '@directus/sdk';
-import { port } from '@utils/constants.js';
-import { useEnv } from '@utils/useEnv.js';
-import { useOptions } from '@utils/useOptions.js';
+import { env, options, port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const options = useOptions();
 
 type Email = {
 	html: string;
@@ -31,7 +28,6 @@ type Email = {
 
 if (options.extras?.maildev) {
 	test('resetting passwort via email', async () => {
-		const env = useEnv();
 		const email = `${randomUUID()}@test.com`;
 
 		await api.request(

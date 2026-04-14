@@ -1,7 +1,6 @@
 import { inspect } from 'node:util';
 import { createDirectus, createItem, deleteItem, realtime, rest, sleep, staticToken, updateItem } from '@directus/sdk';
-import { port } from '@utils/constants.js';
-import { useOptions } from '@utils/useOptions.js';
+import { options, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
@@ -10,7 +9,6 @@ const api = createDirectus<Schema>(`http://localhost:${port}`).with(realtime()).
 await api.connect();
 
 const { collections } = await useSnapshot<Schema>(api);
-const options = useOptions();
 
 if (options.extras?.redis) {
 	test('subscribing to websockets', async () => {

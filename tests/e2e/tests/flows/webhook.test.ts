@@ -1,10 +1,8 @@
 import { createDirectus, createFlow, createOperation, rest, staticToken, triggerFlow, updateFlow } from '@directus/sdk';
-import { port } from '@utils/constants.js';
-import { useOptions } from '@utils/useOptions.js';
+import { options, port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const options = useOptions();
 
 const baseOperation = {
 	position_x: 19,

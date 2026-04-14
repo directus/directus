@@ -9,7 +9,6 @@ import {
 } from '@directus/sdk';
 import type { Snapshot } from '@directus/types';
 import { startCase } from 'lodash-es';
-import type { Schema as SetupSchema } from '../setup/schema.d.ts';
 import { database } from './constants.js';
 import { deepMap } from './deepMap.js';
 import { getCallerFolder, getUID } from './getUID.js';
@@ -24,7 +23,7 @@ const groups: string[] = [];
  * @returns the names of the created collections and the parsed snapshot file that was used.
  */
 export async function useSnapshot<Schema>(
-	api: DirectusClient<SetupSchema> & RestClient<SetupSchema>,
+	api: DirectusClient<unknown> & RestClient<unknown>,
 	file = 'snapshot.json',
 ): Promise<{ collections: Collections<Schema>; snapshot: Snapshot }> {
 	const collectionMap: Record<string, string> = {};

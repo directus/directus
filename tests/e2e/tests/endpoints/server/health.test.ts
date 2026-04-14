@@ -1,13 +1,9 @@
 import { randomUUID } from 'crypto';
 import { createDirectus, createUser, rest, serverHealth, staticToken } from '@directus/sdk';
-import { database, port } from '@utils/constants.js';
-import { useEnv } from '@utils/useEnv.js';
-import { useOptions } from '@utils/useOptions.js';
+import { database, options, port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const options = useOptions();
-const env = useEnv();
 
 const dbMapped = {
 	sqlite: 'sqlite3',

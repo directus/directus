@@ -4,8 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "vitest --project postgres",
-		"test:dev": "DEV=true WATCH=true vitest --project sqlite",
+		"test": "vitest --project sqlite",
+		"test:dev": "DEV=true vitest --project sqlite",
 		"test:all": "ALL=true vitest"
 	},
 	"keywords": [],

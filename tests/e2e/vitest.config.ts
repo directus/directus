@@ -55,6 +55,7 @@ export default defineConfig({
 						test: {
 							setupFiles: './setup/setup-files.ts',
 							name: `${database}-sb`,
+							silent: false,
 							passWithNoTests: true,
 							include: ['**/*.sb.test.ts'],
 							testTimeout: 60_000,

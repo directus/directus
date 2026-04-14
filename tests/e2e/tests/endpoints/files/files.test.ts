@@ -10,13 +10,11 @@ import {
 	staticToken,
 	uploadFiles,
 } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { options, port } from '@utils/constants.js';
 import { UUID } from '@utils/regex.js';
-import { useOptions } from '@utils/useOptions.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const options = useOptions();
 
 test('upload a file', async () => {
 	const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
