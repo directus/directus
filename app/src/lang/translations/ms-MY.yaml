@@ -244,6 +244,8 @@ value: Nilai
 interfaces:
   filter:
     all: Semua
+  group-tabs:
+    fill_width: Isi lebar
   presentation-links:
     primary: Utama
   system-collection:

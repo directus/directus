@@ -29,6 +29,8 @@ router.use(useCollection('directus_files'));
 router.post(
 	'/folder/:pk',
 	asyncHandler(async (req, res) => {
+		const logger = useLogger();
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -41,15 +43,49 @@ router.post(
 		const folderName = `folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip`;
 		res.setHeader('Content-Disposition', contentDisposition(folderName, { type: 'attachment' }));
 
+		// Clean up the archive stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				archive.destroy();
+				archive.abort();
+			}
+		});
+
 		archive.pipe(res);
 
-		await complete();
+		try {
+			await complete();
+		} catch (error) {
+			logger.error(error, `Couldn't archive folder ${req.params['pk']} to the client`);
+			archive.destroy();
+
+			if (!res.headersSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			} else {
+				res.end();
+			}
+		}
 	}),
 );
 
 router.post(
 	'/files/',
 	asyncHandler(async (req, res) => {
+		const logger = useLogger();
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -76,9 +112,41 @@ router.post(
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
 
+		// Clean up the archive stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				archive.destroy();
+				archive.abort();
+			}
+		});
+
 		archive.pipe(res);
 
-		await complete();
+		try {
+			await complete();
+		} catch (error) {
+			logger.error(error, `Couldn't archive files to the client`);
+			archive.destroy();
+
+			if (!res.headersSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			} else {
+				res.end();
+			}
+		}
 	}),
 );
 
@@ -296,9 +364,19 @@ router.get(
 			return res.end();
 		}
 
-		(await stream())
+		const sourceStream = await stream();
+
+		// Clean up the source stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				sourceStream.destroy();
+			}
+		});
+
+		sourceStream
 			.on('error', (error) => {
 				logger.error(error, `Couldn't stream file ${file.id} to the client`);
+				sourceStream.destroy();
 
 				if (!res.headersSent) {
 					res.removeHeader('Content-Type');

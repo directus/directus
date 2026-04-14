@@ -10,6 +10,7 @@ import type { ComparisonContext } from '@/components/v-form/types';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { CollabContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 
 const props = withDefaults(
 	defineProps<{
@@ -31,6 +32,7 @@ const props = withDefaults(
 		headerIcon?: string;
 		headerColor?: string;
 		direction?: string;
+		version?: ContentVersionMaybeNew | null;
 	}>(),
 	{
 		batchActiveFields: () => [],
@@ -169,6 +171,7 @@ function useComparisonIndicator() {
 			:show-validation-errors="false"
 			:comparison="comparison"
 			:collab-context="collabContext"
+			:version="version"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</VDetail>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { translateShortcut } from '@directus/composables';
 import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -19,7 +20,6 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { CollabContext } from '@/composables/use-collab';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 interface Props {
@@ -48,6 +48,7 @@ const { t } = useI18n();
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions, currentCollab } = toRefs(props);
 
 const compareToOption = ref<'Previous' | 'Latest'>('Previous');
+const showDifferencesOnly = ref(false);
 
 const {
 	comparisonData,
@@ -136,6 +137,7 @@ watch(
 
 		if (wasActive === undefined || wasActive === false) {
 			compareToOption.value = isFirstRevision.value ? 'Latest' : 'Previous';
+			showDifferencesOnly.value = false;
 		}
 
 		await loadComparisonData();
@@ -289,6 +291,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: null,
+										showDifferencesOnly,
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -331,6 +334,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: mode !== 'revision' || compareToOption !== 'Previous' ? toggleComparisonField : null,
+										showDifferencesOnly,
 									}"
 									non-editable
 									class="comparison-form--incoming"
@@ -357,6 +361,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							<ComparisonToggle v-model="compareToOption" :disable-previous="isFirstRevision" />
 						</div>
 						<div class="footer-actions">
+							<div v-if="availableFieldsCount > 0" class="view-only-modified-container">
+								<VCheckbox v-model="showDifferencesOnly">
+									{{ $t('show_differences_only') }}
+								</VCheckbox>
+							</div>
 							<div v-if="mode !== 'revision' || compareToOption !== 'Previous'" class="select-all-container">
 								<VCheckbox
 									v-if="availableFieldsCount > 0"
@@ -550,7 +559,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			&.left {
 				display: none;
 
-				@media (width >= 54rem) {
+				@media (width >= 67.5rem) {
 					display: flex;
 					align-items: center;
 					gap: 1.375rem;
@@ -570,7 +579,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				flex-direction: column;
 				gap: 0.875rem;
 
-				@media (width >= 54rem) {
+				@media (width >= 67.5rem) {
 					flex-direction: row;
 					justify-content: flex-end;
 				}
@@ -579,11 +588,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					margin-block-end: 0;
 					justify-content: start;
 
-					@media (width >= 54rem) {
+					@media (width >= 67.5rem) {
 						display: none;
 					}
 				}
 
+				.view-only-modified-container,
 				.select-all-container {
 					display: flex;
 					min-inline-size: auto;
@@ -592,19 +602,16 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 					margin-block-end: 0.6875rem;
 					justify-content: start;
 
-					@media (width >= 39.6875rem) {
+					@media (width >= 67.5rem) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
-					}
-
-					@media (width >= 54rem) {
 						justify-content: flex-start;
 					}
 				}
 
 				.footer-actions {
-					@media (width >= 39.6875rem) {
+					@media (width >= 67.5rem) {
 						display: flex;
 						align-items: center;
 						gap: 1.375rem;
@@ -653,7 +660,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 			}
 		}
 
-		@media (width >= 39.6875rem) {
+		@media (width >= 67.5rem) {
 			.columns {
 				gap: 0;
 			}
@@ -683,6 +690,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	}
 }
 
+.view-only-modified-container,
 .select-all-container {
 	:deep(.v-checkbox .type-text) {
 		font-weight: 600;

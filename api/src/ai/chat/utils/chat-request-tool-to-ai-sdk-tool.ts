@@ -4,6 +4,7 @@ import type { Tool } from 'ai';
 import { jsonSchema, tool, zodSchema } from 'ai';
 import { fromZodError } from 'zod-validation-error';
 import { ALL_TOOLS } from '../../tools/index.js';
+import { coerceJsonFields } from '../../tools/utils.js';
 import type { ChatRequestTool, ToolApprovalMode } from '../models/chat-request.js';
 
 export const chatRequestToolToAiSdkTool = ({
@@ -36,8 +37,10 @@ export const chatRequestToolToAiSdkTool = ({
 			inputSchema,
 			needsApproval,
 			execute: async (rawArgs) => {
-				const { error, data: args } = directusTool.validateSchema?.safeParse(rawArgs) ?? {
-					data: rawArgs,
+				const coercedArgs = coerceJsonFields(rawArgs as Record<string, unknown>);
+
+				const { error, data: args } = directusTool.validateSchema?.safeParse(coercedArgs) ?? {
+					data: coercedArgs,
 				};
 
 				if (error) {

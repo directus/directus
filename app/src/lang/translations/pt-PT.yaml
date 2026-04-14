@@ -647,7 +647,6 @@ no_collections: Nenhuma coleção
 create_collection: Criar coleção
 no_collections_copy_admin: Ainda não existem coleções. Clique no botão abaixo para começar.
 no_collections_copy: Ainda não existem coleções. Por favor, entre em contacto com o administrador.
-relationship_not_setup: A relação não foi configurada corretamente
 display_template_not_setup: A opção do modelo de visualização não está configurada corretamente
 collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
 select_a_collection: Selecione uma coleção
@@ -1139,6 +1138,8 @@ interfaces:
     add_filter: Adicionar filtro
     all: Todos
     any: Qualquer
+  group-tabs:
+    fill_width: Ocupar a largura
   presentation-links:
     primary: Primário
     error: Não é possível executar a ação

@@ -641,7 +641,6 @@ no_collections: Nema zbirki
 create_collection: Nova zbirka
 no_collections_copy_admin: Još nemate niti jednu zbirku. Kliknite gumb u nastavku da biste započeli.
 no_collections_copy: Još nemate nijednu zbirku. Obratite se administratoru.
-relationship_not_setup: Odnos nije ispravno konfiguriran
 no_singleton_relations: Veze s Pojedinačnim Objektima "singletons" nisu podržane
 display_template_not_setup: Opcija predloška prikaza je pogrešno konfigurirana
 collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
@@ -1647,6 +1646,8 @@ interfaces:
     all_opened: Sve otvoreno
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
+  group-tabs:
+    fill_width: Širina ispune
   presentation-links:
     presentation-links: Gumbi
     style: Stil

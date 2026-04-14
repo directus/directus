@@ -865,12 +865,7 @@ describe('v-date-picker', () => {
 			await monthSelect.setValue('2');
 			await nextTick();
 
-			// Trigger emission to capture the clamped value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
-			// Day should be clamped to 29 (max for Feb 2024)
+			// setCalendarMonth now calls emitValue() directly, so the clamped value is captured
 			expect(capturedDay).toBeDefined();
 			expect(capturedDay).toBeLessThanOrEqual(29);
 		});
@@ -899,12 +894,7 @@ describe('v-date-picker', () => {
 			await yearInput.setValue('2023');
 			await nextTick();
 
-			// Trigger emission to capture the clamped value
-			const nowButton = wrapper.find('.calendar-today-button');
-			await nowButton.trigger('click');
-			await nextTick();
-
-			// Day should be clamped to 28 (max for Feb 2023)
+			// setCalendarYear now calls emitValue() directly, so the clamped value is captured
 			expect(capturedDay).toBeDefined();
 			expect(capturedDay).toBeLessThanOrEqual(28);
 		});

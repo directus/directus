@@ -729,7 +729,6 @@ no_collections: مجموعه ای وجود ندارد
 create_collection: ساخت مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
 no_collections_copy: شما هنوز هیچ مجموعه‌ای ندارید. لطفا با مدیر کل سیستم خود تماس بگیرید.
-relationship_not_setup: این رابطه به درستی پیکربندی نشده است
 no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
 collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
@@ -2012,6 +2011,8 @@ interfaces:
     all_opened: همه باز باشند
     accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
+  group-tabs:
+    fill_width: عرض کامل
   presentation-links:
     presentation-links: دکمه‌‌ها
     description: دکمه های لینک قابل تنظیم برای راه‌اندازی نشانی‌های پویا یا راه‌اندازی جریان‌ها
