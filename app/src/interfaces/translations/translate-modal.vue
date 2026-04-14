@@ -382,9 +382,6 @@ async function translate() {
 	const job = props.translationJob;
 	const allowedTargets = permittedTargetLanguages.value;
 
-	if (allowedTargets.length === 0) {
-		return;
-	}
 
 	const fieldsWithContent = Object.keys(sourceContent.value);
 
