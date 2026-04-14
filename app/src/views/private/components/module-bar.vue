@@ -71,13 +71,13 @@ const modules = computed(() => {
 
 <style lang="scss" scoped>
 .module-bar {
+	--module-bar-width: 3.375rem;
+	--module-bar-gap: 1.375rem;
 	--focus-ring-color: var(--theme--navigation--modules--button--foreground);
-	--focus-ring-offset: var(--focus-ring-offset-inset);
-	--focus-ring-radius: 0;
 
 	display: flex;
 	flex-direction: column;
-	inline-size: 3.375rem;
+	inline-size: var(--module-bar-width);
 	block-size: 100%;
 	background-color: var(--theme--navigation--modules--background);
 	border-inline-end: var(--theme--navigation--modules--border-width) solid
@@ -91,22 +91,18 @@ const modules = computed(() => {
 		flex-direction: column;
 		align-items: center;
 		flex-grow: 1;
+		padding-block: calc(var(--module-bar-gap) / 2);
+		gap: var(--module-bar-gap);
 		overflow: hidden auto;
 	}
 
 	.v-button {
-		padding: 0.6875rem;
-
 		--v-button-color: var(--theme--navigation--modules--button--foreground);
 		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
 		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
 		--v-button-background-color: var(--theme--navigation--modules--button--background);
 		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
 		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
-
-		:deep(.active) {
-			--focus-ring-color: var(--v-button-color-active);
-		}
 	}
 }
 
