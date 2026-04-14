@@ -39,13 +39,13 @@ const nonTranslatableInterfaces = new Set([
 	'boolean',
 	'datetime',
 	'slider',
-	'toggle',
 	'file',
 	'file-image',
 	'files',
-	'collection',
+	'collection-item-dropdown',
+	'collection-item-multiple-dropdown',
 	'map',
-	'color',
+	'select-color',
 ]);
 
 const props = defineProps<{

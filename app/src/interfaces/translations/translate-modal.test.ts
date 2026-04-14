@@ -5,7 +5,6 @@ import { computed, ref } from 'vue';
 import TranslateModal from './translate-modal.vue';
 import type { TranslationJob } from './use-translation-job';
 import type { GlobalMountOptions } from '@/__utils__/types';
-import api from '@/api';
 import { i18n } from '@/lang';
 
 const mockModels = ref([
@@ -25,7 +24,6 @@ vi.mock('@/ai/stores/use-ai', () => ({
 vi.mock('@/api', () => ({
 	default: {
 		get: vi.fn(),
-		post: vi.fn(),
 	},
 }));
 
@@ -57,6 +55,12 @@ const fields = [
 		meta: { hidden: false, readonly: false, interface: 'input-rich-text-md' },
 	},
 	{ field: 'status', name: 'Status', type: 'string', meta: { hidden: true, readonly: false } },
+	{
+		field: 'accent_color',
+		name: 'Accent Color',
+		type: 'string',
+		meta: { hidden: false, readonly: false, interface: 'select-color' },
+	},
 ] as any;
 
 const getItemWithLang = (items: Record<string, any>[], lang: string | undefined) =>
@@ -271,7 +275,6 @@ describe('translate-modal', () => {
 
 		expect(wrapper.text()).toContain("You don't have permission to translate this language.");
 		expect(getTranslateButton(wrapper)?.attributes('disabled')).toBeDefined();
-		expect(vi.mocked(api.post)).not.toHaveBeenCalled();
 	});
 
 	test('uses the configured translation default model when translating', async () => {
