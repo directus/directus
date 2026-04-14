@@ -11,16 +11,21 @@ export class SettingsService extends ItemsService {
 	async setOwner(data: OwnerInformation) {
 		const { project_id } = await this.knex.select('project_id').from('directus_settings').first();
 
-		sendReport({ ...data, project_id, version }).catch(async () => {
-			await this.knex.update('project_status', 'pending').from('directus_settings');
-		});
-
-		return await this.upsertSingleton({
+		const primaryKey = await this.upsertSingleton({
 			project_owner: data.project_owner,
 			project_usage: data.project_usage,
 			org_name: data.org_name,
 			product_updates: data.product_updates,
 			project_status: null,
 		});
+
+		sendReport({ ...data, project_id, version }).catch(async () => {
+			await this.knex
+				.update('project_status', 'pending')
+				.from('directus_settings')
+				.catch(() => {});
+		});
+
+		return primaryKey;
 	}
 }

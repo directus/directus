@@ -1,5 +1,6 @@
 import type { AbstractServiceOptions, FlowRaw, Item, MutationOptions, PrimaryKey } from '@directus/types';
 import { getFlowManager } from '../flows.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { ItemsService } from './items.js';
 
 export class FlowsService extends ItemsService<FlowRaw> {
@@ -26,6 +27,18 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (this.accountability) {
+			await validateAccess(
+				{
+					collection: 'directus_flows',
+					action: 'delete',
+					accountability: this.accountability,
+					primaryKeys: keys,
+				},
+				{ knex: this.knex, schema: this.schema },
+			);
+		}
+
 		// this is to prevent foreign key constraint error on directus_operations resolve/reject during cascade deletion
 		await this.knex('directus_operations').update({ resolve: null, reject: null }).whereIn('flow', keys);
 

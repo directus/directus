@@ -20,6 +20,7 @@ import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { getSecret } from '../utils/get-secret.js';
@@ -339,6 +340,18 @@ export class UsersService extends ItemsService {
 	 * Delete multiple users by primary key
 	 */
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (this.accountability) {
+			await validateAccess(
+				{
+					collection: 'directus_users',
+					action: 'delete',
+					accountability: this.accountability,
+					primaryKeys: keys,
+				},
+				{ knex: this.knex, schema: this.schema },
+			);
+		}
+
 		if (opts?.onRequireUserIntegrityCheck) {
 			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None);
 		} else {
