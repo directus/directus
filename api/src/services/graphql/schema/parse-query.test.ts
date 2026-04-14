@@ -210,43 +210,59 @@ describe('parseFields', () => {
 		expect(query.fields).toEqual([]);
 	});
 
-	test('should transform _json field with path arg into json() function string', async () => {
+	test('should transform json sub-field of _func with path arg into json() function string', async () => {
 		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
-		const selections = [field('metadata_json', { args: [pathArg] })];
+		const selections = [field('metadata_func', { children: [field('json', { args: [pathArg] })] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['json(metadata, color)']);
 	});
 
-	test('should transform _json field with nested dot-path', async () => {
+	test('should transform json sub-field of _func with nested dot-path', async () => {
 		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'dimensions.width' } };
-		const selections = [field('metadata_json', { args: [pathArg] })];
+		const selections = [field('metadata_func', { children: [field('json', { args: [pathArg] })] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['json(metadata, dimensions.width)']);
 	});
 
-	test('should not transform _json field when path arg is absent', async () => {
-		const selections = [field('metadata_json')];
+	test('should fall back to count(field) when json sub-field has no path arg', async () => {
+		const selections = [field('metadata_func', { children: [field('json'), field('count')] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
-		expect(query.fields).toEqual(['metadata_json']);
+		expect(query.fields).toEqual(['json(metadata)', 'count(metadata)']);
 	});
 
-	test('should not include metadata_json literal in fields when path arg is present', async () => {
-		// Verifies the _json path fires the continue branch and emits json(…)
-		// rather than the raw 'metadata_json' field name.
+	test('should not include json(field) literal when path arg is present', async () => {
 		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
-		const selections = [field('metadata_json', { args: [pathArg] })];
+		const selections = [field('metadata_func', { children: [field('json', { args: [pathArg] })] })];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
-		expect(query.fields).not.toContain('metadata_json');
+		expect(query.fields).not.toContain('json(metadata)');
 		expect(query.fields).toContain('json(metadata, color)');
 	});
 
-	test('should transform nested relational _json field', async () => {
+	test('should handle multiple json paths inside the same _func selection', async () => {
+		const colorArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
+		const brandArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'brand' } };
+
+		const selections = [
+			field('metadata_func', {
+				children: [field('json', { args: [colorArg] }), field('json', { args: [brandArg] })],
+			}),
+		];
+
+		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+		expect(query.fields).toContain('json(metadata, color)');
+		expect(query.fields).toContain('json(metadata, brand)');
+	});
+
+	test('should transform nested relational _func json sub-field', async () => {
 		const pathArg = { name: { value: 'path' }, value: { kind: 'StringValue', value: 'color' } };
-		const selections = [field('category', { children: [field('metadata_json', { args: [pathArg] })] })];
+
+		const selections = [
+			field('category', { children: [field('metadata_func', { children: [field('json', { args: [pathArg] })] })] }),
+		];
 
 		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
 		expect(query.fields).toEqual(['json(category.metadata, color)']);

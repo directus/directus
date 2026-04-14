@@ -1,18 +1,17 @@
 /**
  * Blackbox tests for Phase 3: json() field function exposed in GraphQL.
  *
- * The `metadata_json` output field accepts a required `path` argument and
- * returns the extracted JSON value. The resolver maps:
+ * The `json` sub-field inside `{field}_func` accepts a required `path`
+ * argument and returns the extracted JSON value. The resolver maps:
  *
- *   metadata_json(path: "color")  →  fields: ["json(metadata, color)"]
- *                                 →  result key: metadata_color_json
+ *   metadata_func { json(path: "color") }  →  fields: ["json(metadata, color)"]
+ *                                           →  result key: metadata_color_json
  *
  * Path values are plain GraphQL string arguments so dots, brackets, etc. are
  * all valid — they only appear inside a string literal, not as an identifier.
  *
- * Field aliases are required when requesting multiple paths from the same json
- * field in a single selection (GraphQL forbids duplicate field names with
- * different arguments unless aliased).
+ * Multiple paths from the same json field can be requested in a single
+ * `{field}_func` selection using field aliases on the `json` sub-field.
  *
  * These tests reuse the seed data from json-function.seed.ts:
  *   Alpha – metadata.color:'red',   dimensions.width:10, tags[0]:'electronics'
@@ -61,8 +60,8 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'] },
 							name: true,
-							metadata_json: {
-								__args: { path: 'color' },
+							metadata_func: {
+								json: { __args: { path: 'color' } },
 							},
 						},
 					},
@@ -71,16 +70,17 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; metadata_json: unknown }> = gqlResponse.body.data[localCollectionProducts];
+				const data: Array<{ name: string; metadata_func: { json: unknown } }> =
+					gqlResponse.body.data[localCollectionProducts];
 
 				expect(data.length).toBeGreaterThan(0);
 
 				// Sorted by name: Alpha first
 				expect(data[0]!.name).toBe('Alpha');
-				expect(data[0]!.metadata_json).toBe('red');
+				expect(data[0]!.metadata_func.json).toBe('red');
 
 				expect(data[1]!.name).toBe('Beta');
-				expect(data[1]!.metadata_json).toBe('blue');
+				expect(data[1]!.metadata_func.json).toBe('blue');
 			});
 		});
 
@@ -95,13 +95,9 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'], limit: 2 },
 							name: true,
-							width: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'dimensions.width' },
-							},
-							height: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'dimensions.height' },
+							metadata_func: {
+								width: { __aliasFor: 'json', __args: { path: 'dimensions.width' } },
+								height: { __aliasFor: 'json', __args: { path: 'dimensions.height' } },
 							},
 						},
 					},
@@ -110,13 +106,13 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; width: unknown; height: unknown }> =
+				const data: Array<{ name: string; metadata_func: { width: unknown; height: unknown } }> =
 					gqlResponse.body.data[localCollectionProducts];
 
 				// Alpha: dimensions.width=10, dimensions.height=20
 				expect(data[0]!.name).toBe('Alpha');
-				expect(Number(data[0]!.width)).toBe(10);
-				expect(Number(data[0]!.height)).toBe(20);
+				expect(Number(data[0]!.metadata_func.width)).toBe(10);
+				expect(Number(data[0]!.metadata_func.height)).toBe(20);
 			});
 		});
 
@@ -131,9 +127,8 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'], limit: 1 },
 							name: true,
-							firstTag: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'tags[0]' },
+							metadata_func: {
+								firstTag: { __aliasFor: 'json', __args: { path: 'tags[0]' } },
 							},
 						},
 					},
@@ -142,11 +137,12 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; firstTag: unknown }> = gqlResponse.body.data[localCollectionProducts];
+				const data: Array<{ name: string; metadata_func: { firstTag: unknown } }> =
+					gqlResponse.body.data[localCollectionProducts];
 
 				// Alpha tags[0] = 'electronics'
 				expect(data[0]!.name).toBe('Alpha');
-				expect(data[0]!.firstTag).toBe('electronics');
+				expect(data[0]!.metadata_func.firstTag).toBe('electronics');
 			});
 		});
 
@@ -161,13 +157,9 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'], limit: 1 },
 							name: true,
-							color: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'color' },
-							},
-							brand: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'brand' },
+							metadata_func: {
+								color: { __aliasFor: 'json', __args: { path: 'color' } },
+								brand: { __aliasFor: 'json', __args: { path: 'brand' } },
 							},
 						},
 					},
@@ -176,13 +168,13 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; color: unknown; brand: unknown }> =
+				const data: Array<{ name: string; metadata_func: { color: unknown; brand: unknown } }> =
 					gqlResponse.body.data[localCollectionProducts];
 
 				// Alpha: color='red', brand='BrandX'
 				expect(data[0]!.name).toBe('Alpha');
-				expect(data[0]!.color).toBe('red');
-				expect(data[0]!.brand).toBe('BrandX');
+				expect(data[0]!.metadata_func.color).toBe('red');
+				expect(data[0]!.metadata_func.brand).toBe('BrandX');
 			});
 		});
 
@@ -197,9 +189,8 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'], limit: 1 },
 							name: true,
-							dimensions: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'dimensions' },
+							metadata_func: {
+								dimensions: { __aliasFor: 'json', __args: { path: 'dimensions' } },
 							},
 						},
 					},
@@ -208,11 +199,12 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; dimensions: unknown }> = gqlResponse.body.data[localCollectionProducts];
+				const data: Array<{ name: string; metadata_func: { dimensions: unknown } }> =
+					gqlResponse.body.data[localCollectionProducts];
 
 				// Alpha dimensions = { width: 10, height: 20, depth: 5 }
 				expect(data[0]!.name).toBe('Alpha');
-				expect(data[0]!.dimensions).toEqual({ width: 10, height: 20, depth: 5 });
+				expect(data[0]!.metadata_func.dimensions).toEqual({ width: 10, height: 20, depth: 5 });
 			});
 
 			it.each(vendors)('%s: returns top-level array as parsed JSON', async (vendor) => {
@@ -221,9 +213,8 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'], limit: 1 },
 							name: true,
-							tags: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'tags' },
+							metadata_func: {
+								tags: { __aliasFor: 'json', __args: { path: 'tags' } },
 							},
 						},
 					},
@@ -232,12 +223,13 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; tags: unknown }> = gqlResponse.body.data[localCollectionProducts];
+				const data: Array<{ name: string; metadata_func: { tags: unknown } }> =
+					gqlResponse.body.data[localCollectionProducts];
 
 				// Alpha tags = ['electronics', 'premium', 'new']
 				expect(data[0]!.name).toBe('Alpha');
-				expect(Array.isArray(data[0]!.tags)).toBe(true);
-				expect(data[0]!.tags).toEqual(['electronics', 'premium', 'new']);
+				expect(Array.isArray(data[0]!.metadata_func.tags)).toBe(true);
+				expect(data[0]!.metadata_func.tags).toEqual(['electronics', 'premium', 'new']);
 			});
 		});
 
@@ -252,13 +244,11 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'], limit: 1 },
 							name: true,
-							color: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'color' },
+							metadata_func: {
+								json: { __args: { path: 'color' } },
 							},
-							theme: {
-								__aliasFor: 'settings_json',
-								__args: { path: 'theme' },
+							settings_func: {
+								json: { __args: { path: 'theme' } },
 							},
 						},
 					},
@@ -267,13 +257,13 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; color: unknown; theme: unknown }> =
+				const data: Array<{ name: string; metadata_func: { json: unknown }; settings_func: { json: unknown } }> =
 					gqlResponse.body.data[localCollectionProducts];
 
 				// Alpha: metadata.color='red', settings.theme='dark'
 				expect(data[0]!.name).toBe('Alpha');
-				expect(data[0]!.color).toBe('red');
-				expect(data[0]!.theme).toBe('dark');
+				expect(data[0]!.metadata_func.json).toBe('red');
+				expect(data[0]!.settings_func.json).toBe('dark');
 			});
 		});
 
@@ -288,9 +278,8 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 						[localCollectionProducts]: {
 							__args: { sort: ['name'] },
 							name: true,
-							width: {
-								__aliasFor: 'metadata_json',
-								__args: { path: 'dimensions.width' },
+							metadata_func: {
+								width: { __aliasFor: 'json', __args: { path: 'dimensions.width' } },
 							},
 						},
 					},
@@ -299,12 +288,13 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				expect(gqlResponse.statusCode).toEqual(200);
 				expect(gqlResponse.body.errors).toBeUndefined();
 
-				const data: Array<{ name: string; width: unknown }> = gqlResponse.body.data[localCollectionProducts];
+				const data: Array<{ name: string; metadata_func: { width: unknown } }> =
+					gqlResponse.body.data[localCollectionProducts];
 
 				// Zeta has no dimensions — last alphabetically
 				const zeta = data.find((item) => item.name === 'Zeta');
 				expect(zeta).toBeDefined();
-				expect(zeta!.width).toBeNull();
+				expect(zeta!.metadata_func.width).toBeNull();
 			});
 		});
 
@@ -319,7 +309,7 @@ describe.each(PRIMARY_KEY_TYPES)('/graphql json() field function', (pkType) => {
 				const gqlResponse = await request(getUrl(vendor))
 					.post('/graphql')
 					.send({
-						query: `{ ${localCollectionProducts} { metadata_json } }`,
+						query: `{ ${localCollectionProducts} { metadata_func { json } } }`,
 					})
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 

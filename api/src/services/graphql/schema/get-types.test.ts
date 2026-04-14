@@ -82,7 +82,7 @@ const mockInconsistentFields = { read: {}, create: {}, update: {}, delete: {} } 
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('getTypes – {field}_json output field (Phase 3)', () => {
+describe('getTypes – json() inside {field}_func (Phase 3)', () => {
 	let sc: ReturnType<typeof makeSchemaComposer>;
 
 	beforeEach(() => {
@@ -91,7 +91,7 @@ describe('getTypes – {field}_json output field (Phase 3)', () => {
 		sc = makeSchemaComposer();
 	});
 
-	test('json field gets a {field}_json entry in the read CollectionType', () => {
+	test('json field gets a {field}_func entry in the read CollectionType', () => {
 		const schema = makeSchema('read', {
 			articles: makeCollection('articles', {
 				id: makeField('id', 'integer'),
@@ -101,10 +101,10 @@ describe('getTypes – {field}_json output field (Phase 3)', () => {
 
 		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
 
-		expect(CollectionTypes['articles']!.getFields()).toHaveProperty('metadata_json');
+		expect(CollectionTypes['articles']!.getFields()).toHaveProperty('metadata_func');
 	});
 
-	test('{field}_json entry has a path arg', () => {
+	test('{field}_func for a json field has a json sub-field with a path arg', () => {
 		const schema = makeSchema('read', {
 			articles: makeCollection('articles', {
 				metadata: makeField('metadata', 'json'),
@@ -113,11 +113,14 @@ describe('getTypes – {field}_json output field (Phase 3)', () => {
 
 		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
 
-		const jsonField = CollectionTypes['articles']!.getFields()['metadata_json'] as any;
-		expect(jsonField!.args).toHaveProperty('path');
+		const funcField = CollectionTypes['articles']!.getFields()['metadata_func'] as any;
+		const funcType = sc.tcs.get('articles_metadata_func');
+		expect(funcType).toBeDefined();
+		expect(funcType!.getFields()).toHaveProperty('json');
+		expect(funcType!.getFields()['json'].args).toHaveProperty('path');
 	});
 
-	test('{field}_json resolver calls applyFunctionToColumnName and returns the right value', () => {
+	test('{field}_func json resolver calls applyFunctionToColumnName and returns the right value', () => {
 		mockApplyFunctionToColumnName.mockReturnValue('metadata_color_json');
 
 		const schema = makeSchema('read', {
@@ -126,30 +129,75 @@ describe('getTypes – {field}_json output field (Phase 3)', () => {
 			}),
 		});
 
-		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
+		getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
 
-		const jsonField = CollectionTypes['articles']!.getFields()['metadata_json'] as any;
+		const funcType = sc.tcs.get('articles_metadata_func');
+		const jsonSubField = funcType!.getFields()['json'] as any;
 		const obj = { metadata_color_json: '#ff0000' };
 
-		const result = jsonField!.resolve(obj, { path: 'color' }, undefined, undefined);
+		const result = jsonSubField!.resolve(obj, { path: 'color' }, undefined, undefined);
 
 		expect(mockApplyFunctionToColumnName).toHaveBeenCalledWith('json(metadata, color)');
 		expect(result).toBe('#ff0000');
 	});
 
-	test('alias field does NOT get a {field}_json entry', () => {
+	test('{field}_func for a json field also has a count sub-field', () => {
+		const schema = makeSchema('read', {
+			articles: makeCollection('articles', {
+				metadata: makeField('metadata', 'json'),
+			}),
+		});
+
+		getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
+
+		const funcType = sc.tcs.get('articles_metadata_func');
+		expect(funcType!.getFields()).toHaveProperty('count');
+	});
+
+	test('{field}_func count resolver reads the {field}_count key from obj', () => {
+		const schema = makeSchema('read', {
+			articles: makeCollection('articles', {
+				metadata: makeField('metadata', 'json'),
+			}),
+		});
+
+		getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
+
+		const funcType = sc.tcs.get('articles_metadata_func');
+		const countSubField = funcType!.getFields()['count'] as any;
+		const obj = { metadata_count: 42 };
+
+		expect(countSubField.resolve(obj)).toBe(42);
+	});
+
+	test('{field}_func resolver passes obj through for json fields', () => {
+		const schema = makeSchema('read', {
+			articles: makeCollection('articles', {
+				metadata: makeField('metadata', 'json'),
+			}),
+		});
+
+		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
+
+		const funcField = CollectionTypes['articles']!.getFields()['metadata_func'] as any;
+		const obj = { metadata_count: 3, some_other: 'x' };
+
+		expect(funcField.resolve(obj)).toBe(obj);
+	});
+
+	test('alias field does NOT get a per-field json func type', () => {
 		const schema = makeSchema('read', {
 			articles: makeCollection('articles', {
 				tags: makeField('tags', 'alias'),
 			}),
 		});
 
-		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
+		getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
 
-		expect(CollectionTypes['articles']!.getFields()).not.toHaveProperty('tags_json');
+		expect(sc.tcs.has('articles_tags_func')).toBe(false);
 	});
 
-	test('create action does NOT add {field}_json to CollectionType', () => {
+	test('create action does NOT add {field}_func for json fields', () => {
 		const schema = makeSchema('create', {
 			articles: makeCollection('articles', {
 				metadata: makeField('metadata', 'json'),
@@ -158,20 +206,6 @@ describe('getTypes – {field}_json output field (Phase 3)', () => {
 
 		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'create');
 
-		expect(CollectionTypes['articles']!.getFields()).not.toHaveProperty('metadata_json');
-	});
-
-	test('json field retains its _func count entry alongside _json', () => {
-		const schema = makeSchema('read', {
-			articles: makeCollection('articles', {
-				metadata: makeField('metadata', 'json'),
-			}),
-		});
-
-		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
-
-		const fields = CollectionTypes['articles']!.getFields();
-		expect(fields).toHaveProperty('metadata_func');
-		expect(fields).toHaveProperty('metadata_json');
+		expect(CollectionTypes['articles']!.getFields()).not.toHaveProperty('metadata_func');
 	});
 });

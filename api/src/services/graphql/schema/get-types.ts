@@ -152,28 +152,42 @@ export function getTypes(
 								type: DateTimeFunctions,
 								resolve: (obj: Record<string, any>) => {
 									const funcFields = Object.keys(DateTimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
-
 									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 								},
 							};
 						}
 
-						if (field.type === 'json' || field.type === 'alias') {
-							acc[`${field.field}_func`] = {
-								type: CountFunctions,
-								resolve: (obj: Record<string, any>) => {
-									const funcFields = Object.keys(CountFunctions.getFields()).map((key) => `${field.field}_${key}`);
-									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
-								},
-							};
+						if (field.type === 'alias') {
+								acc[`${field.field}_func`] = {
+									type: CountFunctions,
+									resolve: (obj: Record<string, any>) => {
+										const funcFields = Object.keys(CountFunctions.getFields()).map((key) => `${field.field}_${key}`);
+										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+									},
+								};
+							
 						}
 
 						if (field.type === 'json') {
-							acc[`${field.field}_json`] = {
-								type: GraphQLJSON,
-								args: { path: { type: new GraphQLNonNull(GraphQLString) } },
-								resolve: (obj: Record<string, any>, { path }: { path: string }) =>
-									obj[applyFunctionToColumnName(`json(${field.field}, ${path})`)],
+							const JsonFieldFunctions = schemaComposer.createObjectTC({
+								name: `${collection.collection}_${field.field}_func`,
+								fields: {
+									count: {
+										type: GraphQLInt,
+										resolve: (obj: Record<string, any>) => obj[`${field.field}_count`],
+									},
+									json: {
+										type: GraphQLJSON,
+										args: { path: { type: new GraphQLNonNull(GraphQLString) } },
+										resolve: (obj: Record<string, any>, { path }: { path: string }) =>
+											obj[applyFunctionToColumnName(`json(${field.field}, ${path})`)],
+									},
+								},
+							});
+
+							acc[`${field.field}_func`] = {
+								type: JsonFieldFunctions,
+								resolve: (obj: Record<string, any>) => obj,
 							};
 						}
 					}
