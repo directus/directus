@@ -121,7 +121,7 @@
 			position: sticky;
 			inset-block-start: 0;
 			z-index: 4;
-			block-size: var(--sub-header-height);
+			block-size: calc(var(--sub-header-height) + var(--theme--border-width));
 			margin-block-end: var(--content-padding);
 			font-weight: inherit !important;
 			font-size: inherit !important;

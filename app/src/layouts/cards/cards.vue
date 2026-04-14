@@ -179,7 +179,7 @@ function onSelectAll() {
 }
 
 .header {
-	margin-block-end: 1.5rem;
+	margin-block-end: var(--content-padding);
 }
 
 .grid {
