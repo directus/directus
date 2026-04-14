@@ -114,7 +114,7 @@ export function buildAiTranslationPrompt({
 	}
 
 	prompt += `## Source Content (${sourceLangName})\n`;
-	prompt += JSON.stringify(sourceContent, null, 2);
+	prompt += JSON.stringify(sourceContent);
 	prompt += '\n\nReturn one translated string for each requested field. Do not translate JSON keys.';
 
 	return prompt;
