@@ -354,7 +354,6 @@ router.get(
 				}
 
 				const filesService = new FilesService({
-					accountability: null,
 					schema: req.schema,
 				});
 
