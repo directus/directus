@@ -1,14 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import {
-	type AIModelSettings,
-	getAvailableAiProviders,
-	getAvailableModels,
-	getModelKey,
-	getProviderLabel,
-	resolveModelByKey,
-} from './available-models';
+import { getAvailableAiProviders, getAvailableModels, getModelKey, resolveModelByKey } from './available-models';
 
-function createSettings(overrides: Partial<AIModelSettings> = {}): AIModelSettings {
+type AIModelSettings = NonNullable<Parameters<typeof getAvailableModels>[0]>;
+
+function createSettings(overrides: Record<string, unknown> = {}): AIModelSettings {
 	return {
 		ai_openai_api_key: null,
 		ai_anthropic_api_key: null,
@@ -20,7 +15,7 @@ function createSettings(overrides: Partial<AIModelSettings> = {}): AIModelSettin
 		ai_anthropic_allowed_models: null,
 		ai_google_allowed_models: null,
 		...overrides,
-	};
+	} as AIModelSettings;
 }
 
 describe('available-models', () => {
@@ -92,12 +87,5 @@ describe('available-models', () => {
 		expect(resolveModelByKey('openai:gpt-5', models)).toEqual(models[0]);
 		expect(resolveModelByKey('openai-compatible:gpt-oss:20b', models)).toEqual(models[1]);
 		expect(resolveModelByKey('invalid', models)).toBeNull();
-	});
-
-	test('returns provider labels for settings dropdowns', () => {
-		expect(getProviderLabel('openai')).toBe('OpenAI');
-		expect(getProviderLabel('anthropic')).toBe('Anthropic');
-		expect(getProviderLabel('google')).toBe('Google');
-		expect(getProviderLabel('openai-compatible')).toBe('Custom');
 	});
 });

@@ -54,11 +54,14 @@ describe('buildAiTranslationDraft', () => {
 			languages_code: { code: 'fr' },
 		} as any;
 
-		const getItemEdits = vi.fn(() => ({
-			$type: 'updated',
-			$index: 0,
-			slug: 'custom-slug',
-		}));
+		const getItemEdits = vi.fn(
+			() =>
+				({
+					$type: 'updated',
+					$index: 0,
+					slug: 'custom-slug',
+				}) as any,
+		);
 
 		expect(buildAiTranslationDraft(existingItem, getItemEdits, { title: 'Bonjour' })).toEqual({
 			$type: 'updated',

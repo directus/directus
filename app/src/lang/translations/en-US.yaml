@@ -1676,7 +1676,9 @@ fields:
     ai_translation_default_model_note:
       'Choose the default model used for AI translations. Only models enabled in the settings above are available here.'
     ai_glossary_term: Term
+    ai_glossary_term_placeholder: Directus Flows
     ai_glossary_note: Translation Note
+    ai_glossary_note_placeholder: Never translate, keep as-is
     ai_translation_glossary: Translation Glossary
     ai_translation_glossary_note:
       'Define key terms and their approved translations across your languages. Keep product names, UI labels, and other
@@ -2450,8 +2452,6 @@ interfaces:
     source_language: Source Language
     target_languages: Target Languages
     translate_n_languages: 'Translate {count} language | Translate {count} languages'
-    translating_n_languages: 'Translating {count} language... | Translating {count} languages...'
-    n_fields: '{count} field | {count} fields'
     no_source_content: The selected source fields have no content to translate.
     no_additional_languages: No additional languages configured.
     no_translation_models: No translation models are currently available.
@@ -2459,8 +2459,6 @@ interfaces:
     translation_not_allowed: You don't have permission to translate this language.
     translation_pending_delete: This language has pending deletion and can't be translated.
     permission_check_failed: Could not verify permissions for this language. Please try again.
-    pending: Pending
-    retrying: Retrying
     empty: (empty)
     field_empty_tooltip: This field has no source content to translate
     ai_translating: Translating...

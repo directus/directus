@@ -917,7 +917,7 @@ fields:
             required: true
             width: half
             options:
-              placeholder: 'Directus'
+              placeholder: $t:fields.directus_settings.ai_glossary_term_placeholder
         - field: translation_note
           name: $t:fields.directus_settings.ai_glossary_note
           type: string
@@ -928,7 +928,7 @@ fields:
             required: false
             width: half
             options:
-              placeholder: 'Never translate, keep as-is'
+              placeholder: $t:fields.directus_settings.ai_glossary_note_placeholder
     width: full
     group: ai_group
 

@@ -31,6 +31,12 @@ const updateSpy = vi.fn();
 const createSpy = vi.fn();
 const getItemEdits = vi.fn();
 
+const translationJobCallbacks = vi.hoisted(() => ({
+	applyTranslatedFields: undefined as
+		| ((translatedFields: Record<string, string>, lang: string | undefined) => void)
+		| undefined,
+}));
+
 vi.mock('@/ai/stores/use-ai', () => ({
 	useAiStore: () => aiState,
 }));
@@ -80,6 +86,14 @@ vi.mock('@/utils/fetch-all', () => ({
 	]),
 }));
 
+vi.mock('./use-translation-job', () => ({
+	useTranslationJob: vi.fn((options) => {
+		translationJobCallbacks.applyTranslatedFields = options.applyTranslatedFields;
+
+		return {};
+	}),
+}));
+
 vi.mock('./translation-form.vue', () => ({
 	default: defineComponent({
 		name: 'TranslationFormStub',
@@ -125,7 +139,7 @@ vi.mock('./translate-modal.vue', () => ({
 							{
 								'data-testid': 'apply-translation',
 								onClick: () => {
-									(props.translationJob as any).applyTranslatedFields({ title: 'Bonjour' }, 'fr');
+									translationJobCallbacks.applyTranslatedFields?.({ title: 'Bonjour' }, 'fr');
 								},
 							},
 							'apply',
@@ -195,6 +209,7 @@ beforeEach(() => {
 	updateSpy.mockReset();
 	createSpy.mockReset();
 	getItemEdits.mockReset();
+	translationJobCallbacks.applyTranslatedFields = undefined;
 });
 
 describe('translations', () => {

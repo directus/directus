@@ -2,7 +2,7 @@ import type { Field } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import type { DisplayItem } from '@/composables/use-relation-multiple';
 
-export type AiTranslateAvailabilityOptions = {
+type AiTranslateAvailabilityOptions = {
 	aiEnabled: boolean;
 	availableProviderCount: number;
 	availableModelCount: number;
@@ -12,13 +12,13 @@ export type AiTranslateAvailabilityOptions = {
 
 export type TranslationTargetPermissionReason = 'not-allowed' | 'pending-delete' | 'error';
 
-export type TranslationTargetPermissionResult =
+type TranslationTargetPermissionResult =
 	| { allowed: true }
 	| { allowed: false; reason: TranslationTargetPermissionReason };
 
-export type AiTranslationFieldBehavior = 'plain-text' | 'slug-safe' | 'markdown' | 'html';
+type AiTranslationFieldBehavior = 'plain-text' | 'slug-safe' | 'markdown' | 'html';
 
-export type AiTranslationPromptOptions = {
+type AiTranslationPromptOptions = {
 	sourceLangName: string;
 	targetLangNames: string[];
 	sourceContent: Record<string, string>;

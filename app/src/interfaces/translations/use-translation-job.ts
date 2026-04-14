@@ -13,25 +13,23 @@ import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export type LangStatus = 'pending' | 'translating' | 'retrying' | 'done' | 'error';
+type LangStatus = 'pending' | 'translating' | 'retrying' | 'done' | 'error';
 
-export type LangStatusEntry = {
+type LangStatusEntry = {
 	status: LangStatus;
-	fieldCount?: number;
 	error?: string;
 	warning?: string;
 };
 
-export type TranslationJobConfig = {
+type TranslationJobConfig = {
 	sourceLanguage: string;
-	selectedFields: string[];
 	targetLanguages: string[];
 	model: AppModelDefinition;
 	sourceContent: Record<string, string>;
 	fieldDefinitions: Field[];
 };
 
-export type LangFieldProgress = {
+type LangFieldProgress = {
 	fieldOrder: string[];
 	activeField: string | null;
 	queuedFields: string[];
@@ -72,15 +70,7 @@ export function useTranslationJob(options: {
 		() => Object.values(langStatuses.value).filter((s) => s.status === 'done' || s.status === 'error').length,
 	);
 
-	const translatedCount = computed(() => Object.values(langStatuses.value).filter((s) => s.status === 'done').length);
-
 	const totalCount = computed(() => Object.keys(langStatuses.value).length);
-
-	const progressPercent = computed(() =>
-		totalCount.value > 0 ? Math.round((completedCount.value / totalCount.value) * 100) : 0,
-	);
-
-	const progressLabel = computed(() => `${completedCount.value}/${totalCount.value}`);
 
 	const pendingLanguages = computed(() => {
 		const pending = new Set<string>();
@@ -190,8 +180,7 @@ export function useTranslationJob(options: {
 	async function retry(langCode: string) {
 		if (!jobConfig || !jobShared) return;
 
-		const fieldOrder =
-			jobShared?.selectedFieldDefinitions.map((field) => field.field) ?? jobConfig?.selectedFields ?? [];
+		const fieldOrder = jobShared.selectedFieldDefinitions.map((field) => field.field);
 
 		fieldProgressByLang.value[langCode] = createFieldProgress(fieldOrder);
 		fieldProgressByLang.value = { ...fieldProgressByLang.value };
@@ -380,7 +369,6 @@ export function useTranslationJob(options: {
 
 			langStatuses.value[langCode] = {
 				status: 'done',
-				fieldCount: appliedFields.size,
 				...(appliedFields.size < expectedFieldCount
 					? {
 							warning: t('interfaces.translations.partial_translation', {
@@ -477,17 +465,11 @@ export function useTranslationJob(options: {
 		isTranslating,
 		hasErrors,
 		completedCount,
-		translatedCount,
 		totalCount,
-		progressPercent,
-		progressLabel,
 		pendingLanguages,
-		fieldProgressByLang,
-		getFieldProgress,
 		getActiveField,
 		getQueuedFields,
 		getCompletedFields,
-		applyTranslatedFields: options.applyTranslatedFields,
 		start,
 		cancel,
 		retry,

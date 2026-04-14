@@ -263,8 +263,8 @@ function getTranslationSurface(fieldEl: HTMLElement): HTMLElement {
 
 				<Transition
 					v-else
-					:name="transition ? (item ? 'rotate-in' : 'rotate-out') : null"
-					:duration="transition ? null : 0"
+					:name="transition ? (item ? 'rotate-in' : 'rotate-out') : undefined"
+					:duration="transition ? undefined : 0"
 					mode="out-in"
 					@after-leave="onTransitionEnd"
 					@leave-cancelled="onTransitionEnd"

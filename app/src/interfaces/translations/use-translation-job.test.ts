@@ -1,7 +1,9 @@
 import { flushPromises } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed } from 'vue';
-import { type TranslationJobConfig, useTranslationJob } from './use-translation-job';
+import { useTranslationJob } from './use-translation-job';
+
+type TranslationJobConfig = Parameters<ReturnType<typeof useTranslationJob>['start']>[0];
 
 vi.mock('@/stores/settings', () => ({
 	useSettingsStore: () => ({
@@ -42,7 +44,6 @@ function createJob() {
 
 const baseConfig: TranslationJobConfig = {
 	sourceLanguage: 'en',
-	selectedFields: ['title'],
 	targetLanguages: ['fr', 'es'],
 	model: { provider: 'anthropic', model: 'claude-sonnet-4-5' } as any,
 	sourceContent: { title: 'Hello' },
@@ -51,7 +52,6 @@ const baseConfig: TranslationJobConfig = {
 
 const multiFieldConfig: TranslationJobConfig = {
 	sourceLanguage: 'en',
-	selectedFields: ['title', 'slug', 'description'],
 	targetLanguages: ['fr'],
 	model: { provider: 'anthropic', model: 'claude-sonnet-4-5' } as any,
 	sourceContent: {
@@ -132,8 +132,8 @@ describe('useTranslationJob', () => {
 		expect(globalThis.fetch).toHaveBeenCalledTimes(2);
 
 		expect(job.jobState.value).toBe('complete');
-		expect(job.langStatuses.value['fr']).toEqual({ status: 'done', fieldCount: 1 });
-		expect(job.langStatuses.value['es']).toEqual({ status: 'done', fieldCount: 1 });
+		expect(job.langStatuses.value['fr']).toEqual({ status: 'done' });
+		expect(job.langStatuses.value['es']).toEqual({ status: 'done' });
 
 		expect(applyTranslatedFields).toHaveBeenCalledTimes(2);
 		expect(applyTranslatedFields).toHaveBeenCalledWith({ title: 'Bonjour' }, 'fr');
@@ -214,7 +214,7 @@ describe('useTranslationJob', () => {
 		await vi.advanceTimersByTimeAsync(1000);
 		await flushPromises();
 
-		expect(job.langStatuses.value['fr']).toEqual({ status: 'done', fieldCount: 1 });
+		expect(job.langStatuses.value['fr']).toEqual({ status: 'done' });
 		expect(applyTranslatedFields).toHaveBeenCalledWith({ title: 'Bonjour' }, 'fr');
 
 		vi.useRealTimers();
@@ -270,7 +270,7 @@ describe('useTranslationJob', () => {
 
 		await job.retry('es');
 
-		expect(job.langStatuses.value['es']).toEqual({ status: 'done', fieldCount: 1 });
+		expect(job.langStatuses.value['es']).toEqual({ status: 'done' });
 		expect(applyTranslatedFields).toHaveBeenCalledWith({ title: 'Traducido' }, 'es');
 		expect(job.jobState.value).toBe('complete');
 	});
@@ -333,12 +333,10 @@ describe('useTranslationJob', () => {
 
 		expect(job.jobState.value).toBe('idle');
 		expect(Object.keys(job.langStatuses.value)).toHaveLength(0);
-		expect(job.getFieldProgress('fr')).toEqual({
-			fieldOrder: [],
-			activeField: null,
-			queuedFields: [],
-			completedFields: [],
-		});
+
+		expect(job.getActiveField('fr')).toBeNull();
+		expect(job.getQueuedFields('fr')).toEqual([]);
+		expect(job.getCompletedFields('fr')).toEqual([]);
 	});
 
 	test('initializes field progress with the first selected field active', () => {
@@ -414,7 +412,6 @@ describe('useTranslationJob', () => {
 
 		job.start({
 			sourceLanguage: 'en',
-			selectedFields: ['title', 'content'],
 			targetLanguages: ['fr'],
 			model: { provider: 'anthropic', model: 'claude-sonnet-4-5' } as any,
 			sourceContent: {

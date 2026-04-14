@@ -110,19 +110,6 @@ export function resolveModelByKey<T extends { provider: string; model: string }>
 	);
 }
 
-export function getProviderLabel(provider: ProviderType): string {
-	switch (provider) {
-		case 'openai':
-			return 'OpenAI';
-		case 'anthropic':
-			return 'Anthropic';
-		case 'google':
-			return 'Google';
-		case 'openai-compatible':
-			return 'Custom';
-	}
-}
-
 export function getProviderIcon(provider: ProviderType): string {
 	switch (provider) {
 		case 'openai':

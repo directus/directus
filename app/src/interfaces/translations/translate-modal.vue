@@ -382,7 +382,6 @@ async function translate() {
 	const job = props.translationJob;
 	const allowedTargets = permittedTargetLanguages.value;
 
-
 	const fieldsWithContent = Object.keys(sourceContent.value);
 
 	const fieldDefinitions = fieldsWithContent
@@ -391,7 +390,6 @@ async function translate() {
 
 	job.start({
 		sourceLanguage: sourceLanguage.value,
-		selectedFields: [...selectedFields.value],
 		targetLanguages: allowedTargets,
 		model: selectedModel.value,
 		sourceContent: { ...sourceContent.value },

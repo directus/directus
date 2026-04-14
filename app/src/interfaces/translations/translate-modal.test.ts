@@ -75,12 +75,7 @@ function createMockTranslationJob(): TranslationJob {
 			() =>
 				Object.values(langStatuses.value).filter((entry) => entry.status === 'done' || entry.status === 'error').length,
 		),
-		translatedCount: computed(
-			() => Object.values(langStatuses.value).filter((entry) => entry.status === 'done').length,
-		),
 		totalCount: computed(() => Object.keys(langStatuses.value).length),
-		progressPercent: computed(() => 0),
-		progressLabel: computed(() => '0/0'),
 		pendingLanguages: computed(
 			() =>
 				new Set(
@@ -89,7 +84,6 @@ function createMockTranslationJob(): TranslationJob {
 						.map(([langCode]) => langCode),
 				),
 		),
-		getFieldProgress: vi.fn(() => ({ fieldOrder: [], activeField: null, queuedFields: [], completedFields: [] })),
 		getActiveField: vi.fn(() => null),
 		getQueuedFields: vi.fn(() => []),
 		getCompletedFields: vi.fn(() => []),
