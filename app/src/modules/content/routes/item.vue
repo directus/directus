@@ -5,7 +5,17 @@ import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
-import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
+import {
+	type ComponentPublicInstance,
+	computed,
+	nextTick,
+	onBeforeUnmount,
+	provide,
+	ref,
+	toRefs,
+	unref,
+	watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -39,6 +49,7 @@ import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -113,6 +124,7 @@ const {
 	publishVersionLoading,
 	publishVersion,
 	isItemLessVersion,
+	versionPromotedItem,
 } = useVersions(collection, isSingleton, primaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
@@ -123,9 +135,48 @@ async function onVersionDelete(versionId: PrimaryKey) {
 	await deleteVersion(versionId);
 
 	if (wasItemLess) {
+		edits.value = {};
+		// Wait for Vue's watcher cascade to flush: deleting the version causes useVersions'
+		// watchers to update queryVersionId via useRouteQuery (mode:'push'), which triggers
+		// its own router.push. Without nextTick, that push fires after ours and cancels it.
+		await nextTick();
 		router.push(collectionRoute.value);
 	}
 }
+
+function handleVersionGone(error: unknown) {
+	if (error && typeof error === 'object' && 'versionGone' in error) {
+		useNotificationsStore().add({
+			title: t('version_no_longer_exists'),
+			type: 'warning',
+		});
+
+		edits.value = {};
+
+		if (isItemLessVersion.value) {
+			router.push(collectionRoute.value);
+		} else {
+			currentVersion.value = null;
+			refresh();
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+watch(versionPromotedItem, (newItemKey) => {
+	if (!newItemKey) return;
+
+	useNotificationsStore().add({
+		title: t('version_no_longer_exists'),
+		type: 'warning',
+	});
+
+	edits.value = {};
+	router.replace(getItemRoute(props.collection, newItemKey));
+});
 
 const {
 	isNew,
@@ -528,8 +579,10 @@ async function saveVersionAction(action: 'stay' | 'quit') {
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
 		}
-	} catch {
-		// Save shows unexpected error dialog
+	} catch (error) {
+		if (!handleVersionGone(error)) {
+			// versionErrorHandler already showed unexpected error dialog
+		}
 	}
 }
 
@@ -714,8 +767,8 @@ function usePublishComparison() {
 						deleteVersion(versionId);
 					}
 				}
-			} catch {
-				// publishVersion / deleteVersion handle unexpected errors
+			} catch (error) {
+				handleVersionGone(error);
 			} finally {
 				quitAfterPublish.value = false;
 			}
@@ -762,8 +815,8 @@ function usePublishComparison() {
 				refresh();
 				revisionsSidebarDetailRef.value?.refresh?.();
 			}
-		} catch {
-			// publishVersion / deleteVersion handle unexpected errors
+		} catch (error) {
+			handleVersionGone(error);
 		} finally {
 			comparisonModalActive.value = false;
 			quitAfterPublish.value = false;

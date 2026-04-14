@@ -22,6 +22,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const saveVersionLoading = ref(false);
 	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
+	const versionPromotedItem = ref<PrimaryKey | null>(null);
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
 		useCollectionPermissions('directus_versions');
@@ -131,6 +132,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			});
 
 			rawVersions.value = response.data;
+
+			// Detect if item-less version was promoted by another user
+			if (isNewItem.value && queryVersionId.value) {
+				const fetchedVersion = response.data.find((v: ContentVersion) => v.id === queryVersionId.value);
+
+				if (fetchedVersion?.item) {
+					versionPromotedItem.value = fetchedVersion.item;
+				}
+			}
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -172,7 +182,29 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	function versionErrorHandler(error: any) {
+	async function confirmVersionExists(versionId: PrimaryKey): Promise<boolean> {
+		try {
+			await api.get(`/versions/${versionId}`, { params: { fields: ['id'] } });
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	async function versionErrorHandler(error: any) {
+		// Check if the version was deleted/promoted by another user
+		if (
+			currentVersion.value &&
+			currentVersion.value.id !== '+' &&
+			(error?.response?.status === 403 || error?.response?.status === 404)
+		) {
+			const exists = await confirmVersionExists(currentVersion.value.id);
+
+			if (!exists) {
+				throw Object.assign(new Error('Version no longer exists'), { versionGone: true });
+			}
+		}
+
 		if (error?.response?.data?.errors) {
 			const serverValidationErrors = error.response.data.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
@@ -241,7 +273,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return savedData;
 		} catch (error) {
-			versionErrorHandler(error);
+			await versionErrorHandler(error);
 		} finally {
 			saveVersionLoading.value = false;
 		}
@@ -265,7 +297,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return itemKey ?? null;
 		} catch (error) {
-			versionErrorHandler(error);
+			await versionErrorHandler(error);
 			return null;
 		} finally {
 			publishVersionLoading.value = false;
@@ -292,5 +324,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		publishVersionLoading,
 		publishVersion,
 		isItemLessVersion,
+		versionPromotedItem,
 	};
 }

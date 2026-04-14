@@ -231,6 +231,7 @@ compare_version: Compare Version
 save_version: Save Version
 publish: Publish
 version_create_item_less: Versions can only be created once the draft version is published
+version_no_longer_exists: This version is no longer accessible. It may have been deleted or promoted by another user.
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
