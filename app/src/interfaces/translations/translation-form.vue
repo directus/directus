@@ -491,7 +491,7 @@ function getTranslationSurface(fieldEl: HTMLElement): HTMLElement {
 
 	&:focus-visible {
 		outline: var(--focus-ring-width) solid var(--theme--primary);
-		outline-offset: 2px;
+		outline-offset: var(--focus-ring-offset);
 		border-radius: var(--theme--border-radius);
 	}
 }
