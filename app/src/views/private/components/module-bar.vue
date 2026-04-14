@@ -57,10 +57,9 @@ const modules = computed(() => {
 				:key="modulePart.id"
 				v-tooltip.right="modulePart.name"
 				icon
-				x-large
+				small
 				:to="modulePart.to"
 				:href="modulePart.href"
-				tile
 			>
 				<VIcon :name="modulePart.icon" />
 			</VButton>
@@ -88,17 +87,24 @@ const modules = computed(() => {
 	box-sizing: content-box;
 
 	.modules {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		flex-grow: 1;
 		overflow: hidden auto;
 	}
 
 	.v-button {
+		padding: 0.6875rem;
+
 		--v-button-color: var(--theme--navigation--modules--button--foreground);
 		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
 		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
 		--v-button-background-color: var(--theme--navigation--modules--button--background);
 		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
-		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
+		--v-button-height: 2rem;
+		--v-button-padding: 0px;
+		--v-button-background-color-active: var(--theme--background-accent);
 
 		:deep(.active) {
 			--focus-ring-color: var(--v-button-color-active);

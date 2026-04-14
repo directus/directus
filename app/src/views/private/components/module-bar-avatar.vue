@@ -115,10 +115,12 @@ const userFullName = userStore.fullName ?? undefined;
 		position: relative;
 		z-index: 3;
 		overflow: visible;
+		padding: 0.6875rem;
 
 		.avatar-image {
 			opacity: 0.8;
 			transition: opacity var(--fast) var(--transition);
+			border-radius: var(--theme--border-radius);
 		}
 
 		&.no-avatar {
