@@ -141,30 +141,36 @@ watch(
 		if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
 
 		try {
-			const sanitizedValue = sanitizeValue(newVal);
-			const wasReadOnly = editorjsRef.value.readOnly.isEnabled;
-
-			// Temporarily unlock so render() can update content regardless of disabled state.
-			if (wasReadOnly) {
-				await editorjsRef.value.readOnly.toggle(false);
-			}
-
-			if (sanitizedValue) {
-				await editorjsRef.value.render(sanitizedValue);
-			} else {
-				editorjsRef.value.clear();
-			}
-
-			// Restore readOnly state to match current disabled prop.
-			// props.disabled may have changed during the async render.
-			if (props.disabled) {
-				await editorjsRef.value.readOnly.toggle(true);
-			}
+			await renderValue(newVal);
 		} catch (error) {
 			unexpectedError(error);
 		}
 	},
 );
+
+async function renderValue(value: Record<string, any> | null | undefined) {
+	if (!editorjsRef.value) return;
+
+	const sanitizedValue = sanitizeValue(value);
+	const wasReadOnly = editorjsRef.value.readOnly.isEnabled;
+
+	// Temporarily unlock so render() can update content regardless of disabled state.
+	if (wasReadOnly) {
+		await editorjsRef.value.readOnly.toggle(false);
+	}
+
+	if (sanitizedValue) {
+		await editorjsRef.value.render(sanitizedValue);
+	} else {
+		editorjsRef.value.clear();
+	}
+
+	// Restore readOnly state to match current disabled prop.
+	// props.disabled may have changed during the async render.
+	if (props.disabled) {
+		await editorjsRef.value.readOnly.toggle(true);
+	}
+}
 
 async function emitValue(context: EditorJS.API | EditorJS) {
 	if (props.disabled || !context || !context.saver) return;
