@@ -12,19 +12,13 @@
 <style lang="scss" scoped>
 .sub-header {
 	position: sticky;
-	inset-block-start: var(--layout-offset-top);
+	inset-block-start: 0;
 	z-index: 4;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	inline-size: calc(100% + 2 * var(--content-padding));
-	block-size: 2.9375rem;
-	margin-inline: calc(-1 * var(--content-padding));
-	margin-block-end: 1.5rem;
-	padding-block: 0.625rem;
-	padding-inline: var(--content-padding);
+	block-size: calc(var(--sub-header-height) + var(--theme--border-width));
 	background-color: var(--theme--background);
-	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	box-shadow: 0 0 0 2px var(--theme--background);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 }
 </style>
