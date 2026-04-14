@@ -102,9 +102,7 @@ const modules = computed(() => {
 		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
 		--v-button-background-color: var(--theme--navigation--modules--button--background);
 		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
-		--v-button-height: 2rem;
-		--v-button-padding: 0px;
-		--v-button-background-color-active: var(--theme--background-accent);
+		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 
 		:deep(.active) {
 			--focus-ring-color: var(--v-button-color-active);
