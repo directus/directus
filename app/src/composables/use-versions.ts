@@ -304,6 +304,47 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
+	/** PATCHes the version delta — no new activity/revision record. */
+	async function patchVersionDelta(
+		edits: Ref<Record<string, any>>,
+		item: Ref<Item | null>,
+		actualPrimaryKey: PrimaryKey | null,
+	) {
+		if (!currentVersion.value || !actualPrimaryKey) return;
+
+		// If version record doesn't exist yet, fall back to a full save
+		if (currentVersion.value.id === '+') {
+		return saveVersion(edits, item, actualPrimaryKey);
+		}
+
+		saveVersionLoading.value = true;
+
+		try {
+		const mergedDelta = Object.assign({}, currentVersion.value.delta ?? {}, edits.value);
+
+		const {
+			data: { data: updatedVersion },
+		} = await api.patch<{ data: ContentVersion }>(`/versions/${currentVersion.value.id}`, {
+			delta: mergedDelta,
+		});
+
+		// Update local item with the new edits
+		item.value = item.value ? Object.assign(item.value, edits.value) : { ...edits.value };
+		edits.value = {};
+
+		// Refresh rawVersions so currentVersion.date_updated reflects the new value
+		const idx = rawVersions.value?.findIndex((v) => v.id === currentVersion.value!.id) ?? -1;
+
+		if (idx !== -1 && rawVersions.value) {
+			rawVersions.value[idx] = updatedVersion;
+		}
+		} catch (error) {
+		await versionErrorHandler(error);
+		} finally {
+		saveVersionLoading.value = false;
+		}
+	}
+
 	function isVersionSelectable(version: ContentVersionMaybeNew) {
 		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
@@ -325,5 +366,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		publishVersion,
 		isItemLessVersion,
 		versionPromotedItem,
+		patchVersionDelta,
 	};
 }

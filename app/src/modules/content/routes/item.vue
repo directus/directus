@@ -29,6 +29,7 @@ import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
+import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -39,6 +40,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import { useAutoSave } from '@/composables/use-auto-save';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
@@ -120,6 +122,7 @@ const {
 	deleteVersionLoading,
 	saveVersionLoading,
 	saveVersion,
+	patchVersionDelta,
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
@@ -344,6 +347,11 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
+const { autoSaveError, isSaving, resetSession } = useAutoSave(edits, autoSaveRevision, {
+	enabled: computed(() => currentVersion.value !== null && updateVersionsAllowed.value),
+	currentVersionDateUpdated: computed(() => currentVersion.value?.date_updated ?? null),
+});
+
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
@@ -383,6 +391,7 @@ const disabledOptions = computed(() => {
 });
 
 watch(currentVersion, async () => {
+	resetSession();          // ← add this line
 	edits.value = {};
 	await refreshLivePreview();
 });
@@ -584,6 +593,28 @@ async function saveVersionAction(action: 'stay' | 'quit') {
 			// versionErrorHandler already showed unexpected error dialog
 		}
 	}
+}
+
+async function autoSaveRevision(forceNew: boolean) {
+  try {
+    if (forceNew) {
+      await saveVersion(edits, item, actualPrimaryKey.value);
+
+      // Refresh revisions sidebar to reflect new revision
+      if (!isNew.value) {
+        revisionsSidebarDetailRef.value?.refresh?.();
+      }
+    } else {
+      await patchVersionDelta(edits, item, actualPrimaryKey.value);
+    }
+  } catch (error) {
+    // Version-gone errors (deleted/promoted by another user) are handled silently here:
+    // handleVersionGone shows a notification and navigates away, so we do NOT re-throw
+    // and autoSaveError is NOT set. All other errors are re-thrown so useAutoSave
+    // captures them in autoSaveError and shows the persistent warning indicator.
+    if (handleVersionGone(error)) return;
+    throw error;
+  }
 }
 
 async function saveAndStay() {
@@ -1006,13 +1037,23 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 						icon
 						secondary
 						:tooltip="$t('save_version')"
-						:loading="saveVersionLoading"
+						:loading="saveVersionLoading || isSaving"
 						:disabled="!isSavable"
 						small
 						@click="saveVersionAction('stay')"
 					>
 						<VIcon name="beenhere" small />
 					</VButton>
+
+					<VChip
+						v-if="autoSaveError"
+						class="auto-save-error"
+						color="warning"
+						small
+						>
+						<VIcon name="warning" small />
+						{{ t('auto_save_failed') }}
+					</VChip>
 
 					<VButton
 						rounded
