@@ -13,6 +13,14 @@ export type ArrayFunctions = 'count';
 /** First arg is constrained to json fields on Item; path is a runtime string so the response alias cannot be statically resolved. */
 export type JsonFunctionField<Item> = `json(${Extract<LiteralFields<Item, 'json'>, string>}, ${string})`;
 
+/**
+ * Concrete prefix strings used to drive IDE completions. Each json-typed field contributes
+ * `json(fieldName, ` as a specific (non-template) literal so the completer enumerates it and
+ * positions the cursor ready for the path argument. These are a subset of JsonFunctionField
+ * (${string} matches the empty suffix) so validation is unaffected.
+ */
+type JsonFunctionFieldPartial<Item> = `json(${Extract<LiteralFields<Item, 'json'>, string>}, `;
+
 /** Replace all occurrences of `From` with `To` in string `S` */
 type ReplaceChar<S extends string, From extends string, To extends string> = S extends `${infer B}${From}${infer A}`
 	? `${B}${To}${ReplaceChar<A, From, To>}`
@@ -81,6 +89,7 @@ export type FunctionFields<Schema, Item> =
 			[Type in keyof QueryFunctions]: TypeFunctionFields<Item, Type>;
 	  }[keyof QueryFunctions]
 	| keyof TranslateFunctionFields<RelationalFunctions<Schema, Item>, ArrayFunctions>
+	| JsonFunctionFieldPartial<Item>
 	| JsonFunctionField<Item>;
 
 /**
