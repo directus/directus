@@ -46,7 +46,7 @@ export const fetchItemPermissions = (collection: Collection, primaryKey: Primary
 				}
 
 				latestPermissions.value = response.data.data;
-				return response.data.data;
+				return latestPermissions.value;
 			} catch (error) {
 				if (currentRequest !== requestKey.value) {
 					return latestPermissions.value;
