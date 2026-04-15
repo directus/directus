@@ -22,11 +22,6 @@ defineProps<{
 </template>
 
 <style scoped>
-.back-button,
-.icon-only {
-	flex-shrink: 0;
-}
-
 .icon-only {
 	--v-icon-color: var(--theme--primary);
 }

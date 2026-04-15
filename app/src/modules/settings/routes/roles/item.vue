@@ -5,7 +5,6 @@ import { computed, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -126,10 +125,6 @@ function discardAndStay() {
 		show-back
 		back-to="/settings/roles"
 	>
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
-		</template>
-
 		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
@@ -164,7 +159,9 @@ function discardAndStay() {
 				icon="person_add"
 				@click="userInviteModalActive = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"

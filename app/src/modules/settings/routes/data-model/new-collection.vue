@@ -509,7 +509,9 @@ function onApply() {
 				icon="arrow_forward"
 				@click="currentTab = ['optional_system_fields']"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'optional_system_fields'"
 				v-tooltip.bottom="$t('finish_setup')"

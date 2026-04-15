@@ -291,7 +291,7 @@ const menuActive = computed(() => drawerOpen.value || confirmDiscard.value);
 				</h1>
 			</template>
 
-			<template #actions>
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
 					icon="check"

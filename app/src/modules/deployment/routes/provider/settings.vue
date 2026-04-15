@@ -15,7 +15,6 @@ import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import { useProviderConfigs } from '../../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -270,10 +269,6 @@ watch(
 		show-back
 		:back-to="initialProjectIds.length > 0 ? `/deployments/${provider}` : '/deployments'"
 	>
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
@@ -287,7 +282,9 @@ watch(
 				variant="ghost"
 				@click="confirmDelete = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="canUpdate || canManageProjects"
 				v-tooltip.bottom="$t('save')"
