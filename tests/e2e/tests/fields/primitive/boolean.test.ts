@@ -1,6 +1,6 @@
 import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { database, port } from '@utils/constants.js';
-import { useSnapshot } from '@utils/useSnapshot.js';
+import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.js';
 

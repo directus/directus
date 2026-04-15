@@ -1,6 +1,6 @@
 import { createDirectus, createItem, readItems, rest, staticToken } from '@directus/sdk';
 import { database, port } from '@utils/constants.js';
-import { useSnapshot } from '@utils/useSnapshot.js';
+import { useSnapshot } from '@utils/use-snapshot.js';
 import { range } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';

@@ -10,10 +10,18 @@ import {
 import type { Snapshot } from '@directus/types';
 import { startCase } from 'lodash-es';
 import { database } from './constants.js';
-import { deepMap } from './deepMap.js';
+import { deepMap } from './deep-map.js';
 import { getCallerFolder, getUID } from './getUID.js';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
+
+class RetryError extends Error {
+	constructor(error: any) {
+		super(`Too many retries applying snapshot: ${error.message}`);
+		this.name = 'RetryError';
+		this.stack = error.stack;
+	}
+}
 
 const groups: string[] = [];
 
@@ -76,7 +84,8 @@ export async function useSnapshot<Schema>(
 		groups.push(uid);
 	}
 
-	let tries = 3;
+	let tries = 1;
+	let lastError: any = null;
 
 	while (tries > 0) {
 		try {
@@ -103,18 +112,20 @@ export async function useSnapshot<Schema>(
 					});
 				}
 
+				diff.diff['systemFields'] = [];
+
 				await api.request(schemaApply(diff, true));
+
 				break;
 			}
 		} catch (e: any) {
 			tries--;
-			// eslint-disable-next-line no-console
-			if (tries === 0) console.error(e.errors);
+			lastError = e;
 		}
 	}
 
 	if (tries === 0) {
-		throw new Error('Too many retries applying snapshot');
+		throw new RetryError(lastError);
 	}
 
 	return { collections: collectionMap as any, snapshot: schemaSnapshot as Snapshot };

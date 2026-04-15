@@ -8,8 +8,8 @@ import {
 	updateSingleton,
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
-import { generateScopedUser } from '@utils/userScoped.js';
-import { useSnapshot } from '@utils/useSnapshot.js';
+import { useSnapshot } from '@utils/use-snapshot.js';
+import { generateScopedUser } from '@utils/user-scoped.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 

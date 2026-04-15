@@ -2,7 +2,7 @@ import { sandbox } from '@directus/sandbox';
 import { clearCache, createDirectus, deleteCollection, readFields, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
-import { useSnapshot } from '@utils/useSnapshot.js';
+import { useSnapshot } from '@utils/use-snapshot.js';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
 

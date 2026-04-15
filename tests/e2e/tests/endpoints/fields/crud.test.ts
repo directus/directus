@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { createDirectus, createField, deleteField, readField, rest, staticToken, updateField } from '@directus/sdk';
 import { database, port } from '@utils/constants.js';
-import { useSnapshot } from '@utils/useSnapshot.js';
+import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 

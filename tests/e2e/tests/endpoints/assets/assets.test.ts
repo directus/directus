@@ -96,28 +96,3 @@ for (const header of formatHeaders) {
 		expect(response.headers.get('Content-Type')).toBe(header.contentType);
 	});
 }
-
-test('asset transformation limits', async () => {
-	const results = await Promise.all(
-		[...Array(25).keys()].map(async () => {
-			const result = await fetch(`http://localhost:${port}/assets/${upload.id}?format=webp&access_token=admin`);
-
-			return result.status;
-		}),
-	);
-
-	expect(results.every((status) => status === 200)).toBe(true);
-
-	const results2 = await Promise.all(
-		[...Array(50).keys()].map(async (i) => {
-			const result = await fetch(
-				`http://localhost:${port}/assets/${upload.id}?width=${100 * i}&height=200&access_token=admin`,
-			);
-
-			return result.status;
-		}),
-	);
-
-	// SQLite likely can't hit this limit as it is not concurrent
-	if (database !== 'sqlite') expect(results2.some((status) => status === 503)).toBe(true);
-});

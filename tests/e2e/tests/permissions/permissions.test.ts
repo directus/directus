@@ -16,7 +16,7 @@ import {
 	updatePolicy,
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
-import { useSnapshot } from '@utils/useSnapshot.js';
+import { useSnapshot } from '@utils/use-snapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
