@@ -103,6 +103,8 @@ field_options:
   directus_users:
     dropdown_auto: Sjálvvirkin (Grunda á Kervi)
 interfaces:
+  group-tabs:
+    fill_width: Fyll Breiddina
   presentation-links:
     primary: Primer
   system-collection:

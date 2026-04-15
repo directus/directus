@@ -7,6 +7,7 @@ export enum ErrorCode {
 	Internal = 'INTERNAL_SERVER_ERROR',
 	InvalidCredentials = 'INVALID_CREDENTIALS',
 	InvalidForeignKey = 'INVALID_FOREIGN_KEY',
+	InvalidInvite = 'INVALID_INVITE',
 	InvalidIp = 'INVALID_IP',
 	InvalidOtp = 'INVALID_OTP',
 	InvalidPayload = 'INVALID_PAYLOAD',

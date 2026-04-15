@@ -54,6 +54,31 @@ describe('useStore', () => {
 		});
 	});
 
+	test('should pass ttl to local cache config', () => {
+		mockRedisConfigAvailable.mockReturnValue(false);
+
+		useStore('test-namespace', { ttl: 5000 });
+
+		expect(mockCreateCache).toHaveBeenCalledWith({
+			type: 'local',
+			ttl: 5000,
+		});
+	});
+
+	test('should pass ttl to redis cache config', () => {
+		const mockRedis = {};
+		mockUseRedis.mockReturnValue(mockRedis as any);
+
+		useStore('test-namespace', { ttl: 5000 });
+
+		expect(mockCreateCache).toHaveBeenCalledWith({
+			type: 'redis',
+			namespace: 'test-namespace',
+			redis: mockRedis,
+			ttl: 5000,
+		});
+	});
+
 	test('should return a function that executes callback with store interface', async () => {
 		const storeFunction = useStore('test-namespace');
 		const callback = vi.fn().mockResolvedValue('result');
