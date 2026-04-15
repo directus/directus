@@ -745,8 +745,8 @@ function useItemNavigation() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentVersion === null"
-				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				:label="$t('save')"
+				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				icon="check"
 				:loading="saving"
 				:disabled="!isSavable"
@@ -767,6 +767,7 @@ function useItemNavigation() {
 			</PrivateViewHeaderBarActionButton>
 			<PrivateViewHeaderBarActionButton
 				v-else
+				:label="$t('save_version')"
 				:tooltip="$t('save_version')"
 				icon="beenhere"
 				:loading="saveVersionLoading"
