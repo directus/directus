@@ -179,7 +179,7 @@ async function saveAndQuit() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
-		router.push({ name: 'users-collection' });
+		router.push({ name: 'users-active' });
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -238,7 +238,7 @@ async function deleteAndQuit() {
 
 		await remove();
 		edits.value = {};
-		router.replace({ name: 'users-collection' });
+		router.replace({ name: 'users-active' });
 	} catch {
 		// `remove` will show the unexpected error dialog
 	}
@@ -287,7 +287,7 @@ async function toggleArchive() {
 	await archive();
 
 	if (isArchived.value === true) {
-		router.push({ name: 'users-collection' });
+		router.push({ name: 'users-active' });
 	} else {
 		confirmArchive.value = false;
 	}
