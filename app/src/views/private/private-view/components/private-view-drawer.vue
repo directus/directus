@@ -20,6 +20,6 @@ defineProps<{ placement: 'left' | 'right'; keepMounted?: boolean }>();
 	display: flex;
 	block-size: 100%;
 	inline-size: 100%;
-	max-inline-size: var(--sidebar-mobile-width);
+	max-inline-size: min(var(--sidebar-mobile-width), calc(100% - var(--sidebar-collapsed-width)));
 }
 </style>
