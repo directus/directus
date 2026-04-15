@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getEndpoint } from '@directus/utils';
 import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api from '@/api';
@@ -19,6 +20,7 @@ const props = withDefaults(
 		value?: string | null;
 		disabled?: boolean;
 		primaryKey?: string | number;
+		collection?: string;
 	}>(),
 	{
 		value: null,
@@ -52,28 +54,18 @@ const placeholder = computed(() => {
 watch(
 	() => props.value,
 	(newValue) => {
-		if (!newValue) {
-			localValue.value = null;
-			tokenSavedInline.value = false;
-			generateError.value = null;
-			regenerateError.value = null;
-			removeError.value = null;
-			return;
-		}
-
-		if (regexp.test(newValue)) {
-			localValue.value = null;
-			tokenSavedInline.value = false;
-			generateError.value = null;
-			regenerateError.value = null;
-			removeError.value = null;
-		}
+		if (newValue && !regexp.test(newValue)) return;
+		localValue.value = null;
+		tokenSavedInline.value = false;
+		generateError.value = null;
+		regenerateError.value = null;
+		removeError.value = null;
 	},
 	{ immediate: true },
 );
 
 async function persistToken(token: string | null) {
-	await api.patch(`/users/${props.primaryKey}`, { token });
+	await api.patch(`${getEndpoint(props.collection!)}/${props.primaryKey}`, { token });
 }
 
 function onGenerateOrRegenerate() {
@@ -107,7 +99,7 @@ async function confirmRegenerateToken() {
 }
 
 async function generateAndPersistToken(action: 'generate' | 'regenerate') {
-	if (!props.primaryKey) return;
+	if (!props.primaryKey || !props.collection) return;
 
 	loading.value = true;
 
@@ -147,7 +139,7 @@ function closeRemoveConfirm() {
 }
 
 async function confirmRemoveToken() {
-	if (!props.primaryKey) return;
+	if (!props.primaryKey || !props.collection) return;
 
 	loading.value = true;
 	removeError.value = null;
@@ -155,7 +147,6 @@ async function confirmRemoveToken() {
 	try {
 		await persistToken(null);
 		confirmRemove.value = false;
-		removeError.value = null;
 		localValue.value = null;
 		tokenSavedInline.value = false;
 		refresh?.();

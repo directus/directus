@@ -51,6 +51,7 @@ function mountComponent(props: Record<string, unknown> = {}, provide: Record<str
 		},
 		props: {
 			value: null,
+			collection: 'directus_users',
 			...props,
 		},
 	});
@@ -340,5 +341,18 @@ describe('props.value watcher', () => {
 		expect(vm.localValue).toBeNull();
 		expect(vm.tokenSavedInline).toBe(false);
 		expect(vm.generateError).toBeNull();
+	});
+
+	test('does not reset state when value changes to a non-masked plain string', async () => {
+		const wrapper = mountComponent({ primaryKey: 'abc-123', value: null });
+		const vm = wrapper.vm as any;
+
+		vm.localValue = 'freshly-generated-token';
+		vm.tokenSavedInline = true;
+
+		await wrapper.setProps({ value: 'plain-text-not-masked' });
+
+		expect(vm.localValue).toBe('freshly-generated-token');
+		expect(vm.tokenSavedInline).toBe(true);
 	});
 });
