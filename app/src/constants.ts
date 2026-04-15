@@ -88,6 +88,7 @@ export const MODULE_BAR_DEFAULT = [
 
 // Keep in sync with $breakpoints in app/src/styles/mixins/_breakpoints.scss
 export const BREAKPOINTS = {
+	xs: '25rem',
 	sm: '36rem',
 	lg: '57.625rem',
 	xl: '72rem',
