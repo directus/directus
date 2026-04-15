@@ -101,9 +101,6 @@ test('denies non-admin users', async () => {
 		),
 	);
 
-	// Don't change system fields
-	diff.diff['systemFields'] = [];
-
 	await expect(() => publicApi.request(schemaApply(diff))).rejects.toThrowError();
 });
 
