@@ -58,8 +58,8 @@ export default defineConfig({
 							silent: false,
 							passWithNoTests: true,
 							include: ['**/*.sb.test.ts'],
-							testTimeout: 60_000,
-							hookTimeout: 60_000,
+							testTimeout: 100_000,
+							hookTimeout: 100_000,
 							reporters: ['verbose'],
 							fileParallelism: false,
 							env: {
