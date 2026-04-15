@@ -5,7 +5,7 @@ import { computed, type ComputedRef, inject, provide, useTemplateRef, watch } fr
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useNavBarStore } from '../stores/nav-bar';
-import { SIDEBAR_MIN_SIZE, useSidebarStore } from '../stores/sidebar';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE, useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
@@ -74,7 +74,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			:collapse-threshold="70"
 			:min-size="SIDEBAR_MIN_SIZE"
 			:max-size="540"
-			:snap-points="[333]"
+			:snap-points="[SIDEBAR_DEFAULT_SIZE]"
 			:direction="userStore.textDirection"
 			:snap-threshold="6"
 			divider-hit-area="4px"
