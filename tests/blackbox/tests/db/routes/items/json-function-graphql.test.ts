@@ -26,7 +26,7 @@ import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { CachedTestsSchema, TestsSchemaVendorValues } from '../../query/filter';
-import { collectionProducts, getTestsSchema, seedDBValues } from './json-function.seed';
+import { collectionProducts, getTestsSchema, seedDBValues } from './json-function-graphql.seed';
 
 const cachedSchema = PRIMARY_KEY_TYPES.reduce((acc, pkType) => {
 	acc[pkType] = getTestsSchema(pkType);
