@@ -114,6 +114,7 @@ function onSelectAll() {
 				v-model:selection="selectionWritable"
 				v-model:extra-selection="extraSelectionWritable"
 				v-model:sort="sortWritable"
+				class="header"
 				:fields="fieldsInCollection"
 				:show-select="showSelect"
 				@select-all="onSelectAll"
@@ -175,6 +176,10 @@ function onSelectAll() {
 .layout-cards {
 	padding: var(--content-padding);
 	padding-block-start: 0;
+}
+
+.header {
+	margin-block-end: var(--content-padding);
 }
 
 .grid {
