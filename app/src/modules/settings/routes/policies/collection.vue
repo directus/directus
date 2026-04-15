@@ -172,7 +172,7 @@ async function fetchPolicies() {
 }
 
 function navigateToPolicy({ item }: { item: Policy }) {
-	router.push(`/settings/policies/${item.id}`);
+	router.push({ name: 'settings-policies-item', params: { primaryKey: item.id } });
 }
 
 function openDuplicateDialog(item: PolicyItem) {

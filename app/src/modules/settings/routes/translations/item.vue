@@ -122,7 +122,7 @@ async function saveAndQuit() {
 	try {
 		await save();
 		await refreshCurrentLanguage();
-		router.push(`/settings/translations`);
+		router.push({ name: 'settings-translations-collection' });
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -139,7 +139,7 @@ async function saveAndStay() {
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-			router.replace(`/settings/translations/${encodeURIComponent(newPrimaryKey)}`);
+			router.replace({ name: 'settings-translations-item', params: { primaryKey: encodeURIComponent(newPrimaryKey) } });
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -156,7 +156,7 @@ async function saveAndAddNew() {
 		if (isNew.value === true) {
 			refresh();
 		} else {
-			router.push(`/settings/translations/+`);
+			router.push({ name: 'settings-translations-item', params: { primaryKey: '+' } });
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -166,7 +166,8 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.replace(`/settings/translations/${encodeURIComponent(newPrimaryKey)}`);
+		if (newPrimaryKey)
+			router.replace({ name: 'settings-translations-item', params: { primaryKey: encodeURIComponent(newPrimaryKey) } });
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -180,7 +181,7 @@ async function deleteAndQuit() {
 		await refreshCurrentLanguage();
 
 		edits.value = {};
-		router.replace(`/settings/translations`);
+		router.replace({ name: 'settings-translations-collection' });
 	} catch {
 		// `remove` will show the unexpected error dialog
 	}
