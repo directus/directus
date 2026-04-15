@@ -64,81 +64,81 @@ describe('files tool', () => {
 		});
 
 		describe('UPDATE action', () => {
-		test('should update files using keys with object data', async () => {
-			const keys = ['file-1'];
-			const updateData = { filename_download: 'updated.jpg' };
-			const expectedResult = [{ id: 'file-1', filename_download: 'updated.jpg' }];
+			test('should update files using keys with object data', async () => {
+				const keys = ['file-1'];
+				const updateData = { filename_download: 'updated.jpg' };
+				const expectedResult = [{ id: 'file-1', filename_download: 'updated.jpg' }];
 
-			mockFilesService.updateMany.mockResolvedValue(keys);
-			mockFilesService.readMany.mockResolvedValue(expectedResult);
+				mockFilesService.updateMany.mockResolvedValue(keys);
+				mockFilesService.readMany.mockResolvedValue(expectedResult);
 
-			const result = await files.handler({
-				args: {
+				const result = await files.handler({
+					args: {
+						action: 'update',
+						data: updateData,
+						keys,
+					},
+					schema: mockSchema,
+					accountability: mockAccountability,
+				});
+
+				expect(mockFilesService.updateMany).toHaveBeenCalledWith(keys, updateData);
+
+				expect(result).toEqual({
+					type: 'text',
+					data: expectedResult,
+				});
+			});
+
+			test('should update files using batch array data', async () => {
+				const batchData = [
+					{ id: 'file-1', title: 'Updated 1' },
+					{ id: 'file-2', title: 'Updated 2' },
+				];
+
+				const expectedResult = [
+					{ id: 'file-1', title: 'Updated 1' },
+					{ id: 'file-2', title: 'Updated 2' },
+				];
+
+				mockFilesService.updateBatch.mockResolvedValue(['file-1', 'file-2']);
+				mockFilesService.readMany.mockResolvedValue(expectedResult);
+
+				const result = await files.handler({
+					args: {
+						action: 'update',
+						data: batchData,
+					},
+					schema: mockSchema,
+					accountability: mockAccountability,
+				});
+
+				expect(mockFilesService.updateBatch).toHaveBeenCalledWith(batchData);
+
+				expect(result).toEqual({
+					type: 'text',
+					data: expectedResult,
+				});
+			});
+
+			test('validation schema should accept object data for update', () => {
+				const result = FilesValidateSchema.safeParse({
 					action: 'update',
-					data: updateData,
-					keys,
-				},
-				schema: mockSchema,
-				accountability: mockAccountability,
+					data: { title: 'New Title', description: 'Some description' },
+					keys: ['file-uuid'],
+				});
+
+				expect(result.success).toBe(true);
 			});
 
-			expect(mockFilesService.updateMany).toHaveBeenCalledWith(keys, updateData);
-
-			expect(result).toEqual({
-				type: 'text',
-				data: expectedResult,
-			});
-		});
-
-		test('should update files using batch array data', async () => {
-			const batchData = [
-				{ id: 'file-1', title: 'Updated 1' },
-				{ id: 'file-2', title: 'Updated 2' },
-			];
-
-			const expectedResult = [
-				{ id: 'file-1', title: 'Updated 1' },
-				{ id: 'file-2', title: 'Updated 2' },
-			];
-
-			mockFilesService.updateBatch.mockResolvedValue(['file-1', 'file-2']);
-			mockFilesService.readMany.mockResolvedValue(expectedResult);
-
-			const result = await files.handler({
-				args: {
+			test('validation schema should accept array data for update', () => {
+				const result = FilesValidateSchema.safeParse({
 					action: 'update',
-					data: batchData,
-				},
-				schema: mockSchema,
-				accountability: mockAccountability,
+					data: [{ id: 'file-1', title: 'Updated' }],
+				});
+
+				expect(result.success).toBe(true);
 			});
-
-			expect(mockFilesService.updateBatch).toHaveBeenCalledWith(batchData);
-
-			expect(result).toEqual({
-				type: 'text',
-				data: expectedResult,
-			});
-		});
-
-		test('validation schema should accept object data for update', () => {
-			const result = FilesValidateSchema.safeParse({
-				action: 'update',
-				data: { title: 'New Title', description: 'Some description' },
-				keys: ['file-uuid'],
-			});
-
-			expect(result.success).toBe(true);
-		});
-
-		test('validation schema should accept array data for update', () => {
-			const result = FilesValidateSchema.safeParse({
-				action: 'update',
-				data: [{ id: 'file-1', title: 'Updated' }],
-			});
-
-			expect(result.success).toBe(true);
-		});
 		});
 
 		describe('DELETE action', () => {
