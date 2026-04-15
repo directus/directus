@@ -101,6 +101,9 @@ test('denies non-admin users', async () => {
 		),
 	);
 
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
+
 	await expect(() => publicApi.request(schemaApply(diff))).rejects.toThrowError();
 });
 
@@ -127,7 +130,11 @@ test('applies a snapshot', async () => {
 	const snapshot = JSON.parse(await readFile(join(import.meta.dirname, 'snapshot.json'), { encoding: 'utf8' }));
 
 	const diff = await api.request(schemaDiff(snapshot, true));
-	if (diff) await api.request(schemaApply(diff));
+
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
+
+	await api.request(schemaApply(diff));
 
 	const result = await api.request(schemaSnapshot());
 
@@ -157,6 +164,9 @@ test('reapplies the same snaphot in yaml', async () => {
 		),
 	);
 
+	// Don't change system fields
+	emptyDiff.diff['systemFields'] = [];
+
 	await api.request(schemaApply(emptyDiff));
 	const yaml = await snapshot.text();
 
@@ -173,6 +183,8 @@ test('reapplies the same snaphot in yaml', async () => {
 
 	const diff = ((await diffResponse.json()) as any)['data'];
 	const form2 = new FormData();
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
 	form2.set('file', new Blob([JSON.stringify(diff)]), 'diff.json');
 
 	await fetch(`http://localhost:${sb.apis[0].port}/schema/apply`, {
@@ -196,7 +208,9 @@ test('applies lhs that is not an object', async () => {
 	const snapshot = JSON.parse(await readFile(join(import.meta.dirname, 'snapshot.json'), { encoding: 'utf8' }));
 
 	const diff = await api.request(schemaDiff(snapshot, true));
-	if (diff) await api.request(schemaApply(diff));
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
+	await api.request(schemaApply(diff));
 
 	const collection = await api.request(readCollection('articles'));
 
@@ -231,7 +245,9 @@ test('applies Array type diffs', async () => {
 	);
 
 	const diff = await api.request(schemaDiff(snapshot, true));
-	if (diff) await api.request(schemaApply(diff));
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
+	await api.request(schemaApply(diff));
 
 	const collection = await api.request(readField('articles', 'id'));
 
@@ -275,7 +291,9 @@ test('applies with field meta changes', async () => {
 	}
 
 	const diff = await api.request(schemaDiff(snapshot, true));
-	if (diff) await api.request(schemaApply(diff));
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
+	await api.request(schemaApply(diff));
 
 	const result = await api.request(readFieldsByCollection('articles'));
 
@@ -361,6 +379,8 @@ test('getSchema bypasses cache when fetching foreign keys', async () => {
 	);
 
 	const diff = await api.request(schemaDiff(snapshot, true));
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
 
 	await expect(api.request(schemaApply(diff))).resolves.toBe(null);
 });
@@ -387,6 +407,8 @@ test('Hash Tests with deleted fields', async () => {
 	const snapshot = JSON.parse(await readFile(join(import.meta.dirname, 'snapshot.json'), { encoding: 'utf8' }));
 
 	const diff = await api.request(schemaDiff(snapshot, true));
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
 
 	await api.request(deleteCollection('a'));
 
@@ -397,6 +419,8 @@ test('Hash Tests with new collection', async () => {
 	const snapshot = JSON.parse(await readFile(join(import.meta.dirname, 'snapshot.json'), { encoding: 'utf8' }));
 
 	const diff = await api.request(schemaDiff(snapshot, true));
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
 
 	await api.request(
 		createCollection({
@@ -433,6 +457,9 @@ test('applies an empty snapshot on a seeded db', async () => {
 			true,
 		),
 	);
+
+	// Don't change system fields
+	diff.diff['systemFields'] = [];
 
 	await api.request(schemaApply(diff));
 
