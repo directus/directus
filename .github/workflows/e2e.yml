@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - api/**
-      - tests/blackbox/**
+      - tests/**
       - packages/**
       - package.json
       - pnpm-lock.yaml
@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: blackbox-${{ github.ref }}
+  group: e2e-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -40,29 +40,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        shell: bash
-        run: pnpm install
-
-      - name: Build
-        shell: bash
-        env:
-          npm_config_workspace_concurrency: 1
-          NODE_OPTIONS: --max_old_space_size=6144
-        run: pnpm run build
+      - name: Prepare
+        uses: ./.github/actions/prepare
 
       - name: Run tests
         run: |
           cd tests/e2e/
-          LOG_LEVEL=debug ALL=true pnpm vitest --project ${{ matrix.vendor }} --no-file-parallelism
+          LOG_LEVEL=debug pnpm vitest --project ${{ matrix.vendor }}

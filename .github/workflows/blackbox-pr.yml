@@ -16,5 +16,5 @@ jobs:
     uses: ./.github/workflows/blackbox.yml
   e2e-tests:
     name: End to End Tests
-    if: contains(github.event.pull_request.labels.*.name, 'e2e')
+    if: contains(github.event.pull_request.labels.*.name, 'Run E2E')
     uses: ./.github/workflows/e2e.yml
