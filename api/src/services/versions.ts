@@ -270,7 +270,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async save(key: PrimaryKey, delta: Partial<Item>): Promise<Partial<Item>> {
+	async save(key: PrimaryKey, delta: Partial<Item>, opts?: { createRevision?: boolean }): Promise<Partial<Item>> {
 		const version = await super.readOne(key);
 
 		const payloadService = new PayloadService(this.collection, {
@@ -293,8 +293,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		let revisionDelta = await payloadService.prepareDelta(delta);
 
-		// Only store activity and revisions for versions associated with an item.
-		if (item) {
+		// Only store activity and revisions for versions associated with an item,
+		// and only when createRevision is not explicitly set to false.
+		if (item && opts?.createRevision !== false) {
 			const activity = await activityService.createOne({
 				action: Action.VERSION_SAVE,
 				user: this.accountability?.user ?? null,
@@ -316,6 +317,11 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		}
 
 		revisionDelta = revisionDelta ? revisionDelta : null;
+
+		// Capture a clean (metadata-free) copy before deepMapObjects mutates revisionDelta
+		// in-place with _user/_date. Revision records are stored without this metadata,
+		// so we need the pre-mutation state to correctly accumulate the revision data.
+		const cleanRevisionDelta = revisionDelta ? JSON.parse(JSON.stringify(revisionDelta)) : null;
 
 		const helpers = getHelpers(this.knex);
 		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
@@ -341,6 +347,27 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		});
 
 		await sudoService.updateOne(key, { delta: finalVersionDelta });
+
+		// When skipping revision creation (e.g. auto-save patches), update the latest
+		// existing revision so the sidebar reflects all accumulated changes, not just
+		// those from the first save.
+		if (item && opts?.createRevision === false && cleanRevisionDelta) {
+			const latestRevisions = await revisionsService.readByQuery({
+				filter: { version: { _eq: key } },
+				sort: ['-id'],
+				limit: 1,
+			});
+
+			if (latestRevisions.length > 0) {
+				const latestRevision = latestRevisions[0]!;
+				const accumulatedDelta = assign({}, latestRevision['data'] ?? {}, cleanRevisionDelta);
+
+				await revisionsService.updateOne(latestRevision['id'], {
+					data: accumulatedDelta,
+					delta: accumulatedDelta,
+				});
+			}
+		}
 
 		const { cache } = getCache();
 

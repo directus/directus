@@ -122,7 +122,6 @@ const {
 	deleteVersionLoading,
 	saveVersionLoading,
 	saveVersion,
-	patchVersionDelta,
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
@@ -283,8 +282,6 @@ useShortcut(
 	() => {
 		if (currentVersion.value === null) {
 			saveAndStay();
-		} else {
-			saveVersionAction('stay');
 		}
 	},
 	form,
@@ -295,8 +292,6 @@ useShortcut(
 	() => {
 		if (currentVersion.value === null) {
 			saveAndAddNew();
-		} else {
-			saveVersionAction('quit');
 		}
 	},
 	form,
@@ -347,9 +342,11 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
-const { autoSaveError, isSaving, resetSession } = useAutoSave(edits, autoSaveRevision, {
+const { autoSaveError, resetSession } = useAutoSave(edits, autoSaveRevision, {
 	enabled: computed(() => currentVersion.value !== null && updateVersionsAllowed.value),
-	currentVersionDateUpdated: computed(() => currentVersion.value?.date_updated ?? null),
+	currentVersionDateUpdated: computed(() =>
+		currentVersion.value?.id !== '+' ? (currentVersion.value as ContentVersionWithType).date_updated : null,
+	),
 });
 
 const isFormDisabled = computed(() => {
@@ -391,7 +388,7 @@ const disabledOptions = computed(() => {
 });
 
 watch(currentVersion, async () => {
-	resetSession();          // ← add this line
+	resetSession(); // ← add this line
 	edits.value = {};
 	await refreshLivePreview();
 });
@@ -573,48 +570,26 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function saveVersionAction(action: 'stay' | 'quit') {
-	if (isSavable.value === false) return;
-
+async function autoSaveRevision(forceNew: boolean) {
 	try {
-		await saveVersion(edits, item, actualPrimaryKey.value);
-		edits.value = {};
+		if (forceNew) {
+			await saveVersion(edits, item, actualPrimaryKey.value);
 
-		if (action === 'stay') {
+			// Refresh revisions sidebar to reflect new revision
 			if (!isNew.value) {
-				refresh();
 				revisionsSidebarDetailRef.value?.refresh?.();
 			}
-		} else if (action === 'quit') {
-			if (!props.singleton) router.push(`/content/${props.collection}`);
+		} else {
+			await saveVersion(edits, item, actualPrimaryKey.value, { createRevision: false });
 		}
 	} catch (error) {
-		if (!handleVersionGone(error)) {
-			// versionErrorHandler already showed unexpected error dialog
-		}
+		// Version-gone errors (deleted/promoted by another user) are handled silently here:
+		// handleVersionGone shows a notification and navigates away, so we do NOT re-throw
+		// and autoSaveError is NOT set. All other errors are re-thrown so useAutoSave
+		// captures them in autoSaveError and shows the persistent warning indicator.
+		if (handleVersionGone(error)) return;
+		throw error;
 	}
-}
-
-async function autoSaveRevision(forceNew: boolean) {
-  try {
-    if (forceNew) {
-      await saveVersion(edits, item, actualPrimaryKey.value);
-
-      // Refresh revisions sidebar to reflect new revision
-      if (!isNew.value) {
-        revisionsSidebarDetailRef.value?.refresh?.();
-      }
-    } else {
-      await patchVersionDelta(edits, item, actualPrimaryKey.value);
-    }
-  } catch (error) {
-    // Version-gone errors (deleted/promoted by another user) are handled silently here:
-    // handleVersionGone shows a notification and navigates away, so we do NOT re-throw
-    // and autoSaveError is NOT set. All other errors are re-thrown so useAutoSave
-    // captures them in autoSaveError and shows the persistent warning indicator.
-    if (handleVersionGone(error)) return;
-    throw error;
-  }
 }
 
 async function saveAndStay() {
@@ -1032,25 +1007,7 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 					<VIcon name="edit" small />
 				</VButton>
 				<template v-else>
-					<VButton
-						rounded
-						icon
-						secondary
-						:tooltip="$t('save_version')"
-						:loading="saveVersionLoading || isSaving"
-						:disabled="!isSavable"
-						small
-						@click="saveVersionAction('stay')"
-					>
-						<VIcon name="beenhere" small />
-					</VButton>
-
-					<VChip
-						v-if="autoSaveError"
-						class="auto-save-error"
-						color="warning"
-						small
-						>
+					<VChip v-if="autoSaveError" class="auto-save-error" color="warning" small>
 						<VIcon name="warning" small />
 						{{ t('auto_save_failed') }}
 					</VChip>
