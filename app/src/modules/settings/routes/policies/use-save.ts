@@ -40,7 +40,7 @@ export function useSave({ name, adminAccess, appAccess }: UseSaveOptions) {
 				);
 			}
 
-			router.push(`/settings/policies/${policyResponse.data.data.id}`);
+			router.push({ name: 'settings-policies-item', params: { primaryKey: policyResponse.data.data.id } });
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
