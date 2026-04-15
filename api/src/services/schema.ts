@@ -33,13 +33,16 @@ export class SchemaService {
 		return currentSnapshot;
 	}
 
-	async apply(payload: SnapshotDiffWithHash): Promise<void> {
+	async apply(payload: SnapshotDiffWithHash, options?: { force?: boolean }): Promise<void> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
 		const currentSnapshot = await this.snapshot();
-		const snapshotWithHash = this.getHashedSnapshot(currentSnapshot);
 
-		if (!validateApplyDiff(payload, snapshotWithHash)) return;
+		if (!options?.force) {
+			const snapshotWithHash = this.getHashedSnapshot(currentSnapshot);
+
+			if (!validateApplyDiff(payload, snapshotWithHash)) return;
+		}
 
 		await applyDiff(currentSnapshot, payload.diff, { database: this.knex });
 	}
