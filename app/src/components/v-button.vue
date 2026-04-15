@@ -399,8 +399,7 @@ async function onClick(event: MouseEvent) {
 	&.button {
 		--v-button-font-size: 0.6875rem;
 		--v-button-min-width: 3.375rem;
-
-		padding: 0 0.625rem;
+		--v-button-padding: 0 0.625rem;
 	}
 }
 
@@ -413,8 +412,7 @@ async function onClick(event: MouseEvent) {
 	&.button {
 		--v-button-font-size: 0.8125rem;
 		--v-button-min-width: 5rem;
-
-		padding: 0 1rem;
+		--v-button-padding: 0 1rem;
 	}
 }
 
@@ -426,8 +424,7 @@ async function onClick(event: MouseEvent) {
 
 	&.button {
 		--v-button-min-width: 8.6875rem;
-
-		padding: 0 1.25rem;
+		--v-button-padding: 0 1.25rem;
 	}
 }
 
@@ -440,8 +437,7 @@ async function onClick(event: MouseEvent) {
 	&.button {
 		--v-button-font-size: 1rem;
 		--v-button-min-width: 10.125rem;
-
-		padding: 0 1.5rem;
+		--v-button-padding: 0 1.5rem;
 	}
 }
 
