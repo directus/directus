@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import { join } from 'path';
 import { createDirectus, readAssetArrayBuffer, readAssetRaw, rest, staticToken, uploadFiles } from '@directus/sdk';
-import { port } from '@utils/constants.js';
+import { database, port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
@@ -118,6 +118,6 @@ test('asset transformation limits', async () => {
 		}),
 	);
 
-	// TODO figure out why this is failing
-	expect(results2.some((status) => status === 503)).toBe(false); // Should be true, maybe caching is making it return 200?
+	// SQLite likely can't hit this limit as it is not concurrent
+	if (database !== 'sqlite') expect(results2.some((status) => status === 503)).toBe(true);
 });
