@@ -413,11 +413,7 @@ function pointerLeave() {
 		align-items: center;
 		padding: 1.125rem;
 		padding-inline-start: 3.375rem;
-		transform: translate(-0.0625rem, calc(-50% - 0.125rem));
-
-		html[dir='rtl'] & {
-			transform: translate(0.0625rem, calc(-50% - 0.125rem));
-		}
+		transform: translateY(-50%);
 	}
 
 	.button {
@@ -427,10 +423,10 @@ function pointerLeave() {
 		justify-content: center;
 		align-items: center;
 		background-color: var(--theme--background);
-		transform: translate(calc(-50% - 0.0625rem), calc(-50% - 0.0625rem));
+		transform: translate(-50%, -50%);
 
 		html[dir='rtl'] & {
-			transform: translate(calc(50% + 0.0625rem), calc(-50% - 0.0625rem));
+			transform: translate(50%, -50%);
 		}
 
 		--v-icon-color: var(--theme--primary);
