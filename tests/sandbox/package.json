@@ -8,8 +8,7 @@
 		"build": "tsdown --dts --unbundle && copyfiles src/docker/*.yml dist -u 1",
 		"dev": "tsdown -w",
 		"build:tests": "tsdown src/index.ts  --format=esm",
-		"docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs",
-		"postinstall": "pnpm link"
+		"docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs"
 	},
 	"exports": {
 		".": "./dist/index.js",
