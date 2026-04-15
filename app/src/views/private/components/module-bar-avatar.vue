@@ -3,7 +3,6 @@ import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
-import { RouterLink } from 'vue-router';
 import VAvatar from '@/components/v-avatar.vue';
 import VBadge from '@/components/v-badge.vue';
 import VButton from '@/components/v-button.vue';
@@ -56,9 +55,8 @@ const userFullName = userStore.fullName ?? undefined;
 		<VBadge :value="unread" :disabled="unread == 0" class="notifications-badge">
 			<VButton
 				v-tooltip.right="$t('notifications')"
-				tile
 				icon
-				x-large
+				small
 				class="notifications"
 				@click="notificationsDrawerOpen = true"
 			>
@@ -69,11 +67,11 @@ const userFullName = userStore.fullName ?? undefined;
 		<div class="space-bar">
 			<VDialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
-					<Transition name="sign-out">
-						<VButton v-tooltip.right="$t('sign_out')" tile icon x-large class="sign-out" @click="on">
+					<div class="sign-out-wrapper">
+						<VButton v-tooltip.right="$t('sign_out')" icon small class="sign-out" @click="on">
 							<VIcon name="logout" />
 						</VButton>
-					</Transition>
+					</div>
 				</template>
 
 				<VCard>
@@ -87,8 +85,8 @@ const userFullName = userStore.fullName ?? undefined;
 				</VCard>
 			</VDialog>
 
-			<RouterLink :to="userProfileLink" class="avatar-btn">
-				<VAvatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
+			<VButton v-tooltip.right="userFullName" icon small :to="userProfileLink" :active="false" class="avatar-btn">
+				<VAvatar small>
 					<img
 						v-if="avatarURL && !avatarError"
 						:src="avatarURL"
@@ -98,7 +96,7 @@ const userFullName = userStore.fullName ?? undefined;
 					/>
 					<VIcon v-else name="account_circle" />
 				</VAvatar>
-			</RouterLink>
+			</VButton>
 		</div>
 	</div>
 </template>
@@ -106,81 +104,68 @@ const userFullName = userStore.fullName ?? undefined;
 <style lang="scss" scoped>
 .module-bar-avatar {
 	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-block-start: calc(var(--module-bar-gap) / 2);
+	gap: calc(var(--module-bar-gap) / 2);
 
 	.v-avatar {
-		--v-button-color: var(--theme--navigation--modules--button--foreground);
-		--v-button-color-hover: var(--white);
 		--v-avatar-color: var(--theme--navigation--modules--background);
-
-		position: relative;
 		z-index: 3;
-		overflow: visible;
+		color: inherit;
 
 		.avatar-image {
 			opacity: 0.8;
 			transition: opacity var(--fast) var(--transition);
 		}
 
-		&.no-avatar {
-			&::after {
-				position: absolute;
-				inset-block-start: -0.0625rem;
-				inset-inline: 0.4375rem;
-				block-size: var(--theme--border-width);
-				background-color: var(--theme--navigation--modules--button--foreground);
-				opacity: 0.25;
-				content: '';
-			}
-		}
-
-		.v-icon {
-			--v-icon-color: var(--theme--navigation--modules--button--foreground);
-		}
-
-		&:hover {
-			.avatar-image {
-				opacity: 1;
-			}
-
-			.v-icon {
-				--v-icon-color: var(--theme--navigation--modules--button--foreground-hover);
-			}
-		}
-	}
-
-	.avatar-btn:focus-visible {
-		.v-avatar {
-			outline: var(--focus-ring-width) solid var(--focus-ring-color);
-			outline-offset: var(--focus-ring-offset);
-
-			.avatar-image {
-				opacity: 1;
-
-				/* This adds a second focus ring to the image so we can see the focus better */
-				outline: var(--focus-ring-width) solid var(--theme--navigation--modules--background);
-				outline-offset: var(--focus-ring-offset-invert);
-			}
+		&:hover .avatar-image {
+			opacity: 1;
 		}
 	}
 
 	.notifications-badge {
-		--v-badge-offset-x: 0.875rem;
-		--v-badge-offset-y: 0.875rem;
+		--v-badge-offset-x: 0.1875rem;
+		--v-badge-offset-y: var(--v-badge-offset-x);
 	}
 
-	.notifications {
-		--v-button-color: var(--theme--navigation--modules--button--foreground);
-		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
-		--v-button-background-color: var(--theme--navigation--modules--background);
-		--v-button-background-color-hover: var(--theme--navigation--modules--background);
+	.avatar-btn {
+		:deep(a) {
+			border: none;
+		}
+
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			inset-block-start: calc(-1 * var(--module-bar-gap) / 2);
+			inset-inline: 0;
+			block-size: var(--theme--border-width);
+			background-color: var(--theme--navigation--modules--button--foreground);
+			opacity: 0.5;
+			z-index: 3;
+		}
 	}
 
-	.sign-out {
+	.notifications,
+	.sign-out,
+	.avatar-btn {
 		--v-button-color: var(--theme--navigation--modules--button--foreground);
 		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
-		--v-button-background-color: var(--theme--navigation--modules--background);
-		--v-button-background-color-hover: var(--theme--navigation--modules--background);
+		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
+		--v-button-background-color: var(--theme--navigation--modules--button--background);
+		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
+		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
+	}
 
+	.sign-out-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		block-size: var(--module-bar-width);
+		inline-size: var(--module-bar-width);
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;
@@ -188,12 +173,19 @@ const userFullName = userStore.fullName ?? undefined;
 		transition: transform var(--fast) var(--transition);
 		opacity: 0;
 		transform: translateY(100%);
+		background-color: var(--theme--navigation--modules--background);
 	}
 
 	.space-bar {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		block-size: var(--module-bar-width);
+		inline-size: var(--module-bar-width);
+
 		&:focus-within,
 		&:hover {
-			.sign-out {
+			.sign-out-wrapper {
 				opacity: 1;
 				transform: translateY(0%);
 			}
