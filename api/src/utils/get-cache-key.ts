@@ -49,6 +49,7 @@ export async function getCacheKey(req: Request) {
 		path,
 		query: isGraphQl ? getGraphqlQueryAndVariables(req) : req.sanitizedQuery,
 		...(flowTriggerQuery && { rawQuery: flowTriggerQuery }),
+		...(req.accountability?.share && { share: req.accountability.share }),
 		...(includeIp && { ip: req.accountability!.ip }),
 	};
 
