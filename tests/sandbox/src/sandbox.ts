@@ -34,7 +34,7 @@ export type Options = {
 	/** Spin up the app in dev mode */
 	app: boolean | Port;
 	/** Which version of the database to use */
-	version: string | undefined;
+	dbVersion: string | undefined;
 	/** Configure the behavior of the spun up docker container */
 	docker: {
 		/** Keep containers running when stopping the sandbox */
@@ -103,7 +103,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			watch: false,
 			port: undefined,
 			app: false,
-			version: undefined,
+			dbVersion: undefined,
 			docker: {
 				keep: false,
 				port: undefined,

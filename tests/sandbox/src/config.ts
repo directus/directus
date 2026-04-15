@@ -160,8 +160,8 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		...(process.env as Record<string, any>),
 	} satisfies Env;
 
-	if (opts.version && 'DB_VERSION' in env) {
-		env.DB_VERSION = opts.version;
+	if (opts.dbVersion && 'DB_VERSION' in env) {
+		env.DB_VERSION = opts.dbVersion;
 	}
 
 	// eslint-disable-next-line prefer-const
