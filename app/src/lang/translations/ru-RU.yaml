@@ -522,6 +522,8 @@ related_collection: Связанная коллекция
 related_collections: Связанные коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция языков
+translations_preview_collections: Коллекции
+translations_preview_fields: Поля
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Начать импорт
 import_data_indeterminate: Импорт данных...
@@ -703,7 +705,6 @@ no_collections: Нет коллекций
 create_collection: Создать коллекцию
 no_collections_copy_admin: У вас пока нет коллекций. Нажмите кнопку ниже, чтобы начать.
 no_collections_copy: У вас пока нет коллекций. Пожалуйста, обратитесь к системному администратору.
-relationship_not_setup: Отношение не было настроено правильно
 no_singleton_relations: Связи с одиночными объектами не поддерживаются
 display_template_not_setup: Опция шаблона отображения настроена неправильно
 collection_field_not_setup: Опция поля коллекции настроена неправильно
@@ -1049,7 +1050,6 @@ deployment:
       name: Верцель
       team_id:
         label: ID команды
-        hint: Требуется для командных учетных записей, оставьте пустым для личных учетных записей.
     projects: Проекты
     select_projects: Выбрать Проекты
     runs:
@@ -1800,6 +1800,8 @@ interfaces:
     all_opened: Все открыты
     accordion_mode: Вид аккордеона
     max_one_section_open: 1 открытая секция
+  group-tabs:
+    fill_width: В ширину
   presentation-links:
     presentation-links: Кнопки
     style: Стиль

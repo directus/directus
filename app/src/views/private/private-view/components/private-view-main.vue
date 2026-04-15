@@ -100,7 +100,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			:snap-points="[333]"
 			:direction="userStore.textDirection"
 			:snap-threshold="6"
-			divider-hit-area="1.375rem"
+			divider-hit-area="4px"
 			:transition-duration="125"
 			class="main-split"
 			:disabled="isMobile"

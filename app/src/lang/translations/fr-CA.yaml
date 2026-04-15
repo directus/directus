@@ -485,6 +485,8 @@ related_collection: Collection associée
 related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
+translations_preview_collections: Collections
+translations_preview_fields: Champs
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Commencer l'import
 import_data_indeterminate: Import des données...
@@ -665,7 +667,6 @@ no_collections: Aucune collection
 create_collection: Créer une collection
 no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
 no_collections_copy: Vous n'avez pas encore de Collections. Veuillez contacter votre administrateur système.
-relationship_not_setup: La relation n'a pas été configurée correctement
 no_singleton_relations: Les relations avec les Singletons ne sont pas prises en charge
 display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
@@ -1718,6 +1719,8 @@ interfaces:
     all_opened: Tous ouverts
     accordion_mode: Mode Accordion
     max_one_section_open: Max 1 section ouverte
+  group-tabs:
+    fill_width: Remplir l'espace
   presentation-links:
     presentation-links: Boutons
     style: Style
