@@ -4,7 +4,7 @@ import { useBreakpoints } from '@vueuse/core';
 import { computed, watch } from 'vue';
 import ModuleBar from '../../components/module-bar.vue';
 import SkipMenu from '../../components/skip-menu.vue';
-import { useNavBarStore } from '../stores/nav-bar';
+import { NAV_BAR_DEFAULT_SIZE, NAV_BAR_MIN_SIZE, useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewMain from './private-view-main.vue';
@@ -56,9 +56,9 @@ const splitterCollapsed = computed({
 			size-unit="px"
 			collapsible
 			:collapse-threshold="70"
-			:min-size="198"
+			:min-size="NAV_BAR_MIN_SIZE"
 			:max-size="306"
-			:snap-points="[225]"
+			:snap-points="[NAV_BAR_DEFAULT_SIZE]"
 			:snap-threshold="6"
 			:direction="userStore.textDirection"
 			divider-hit-area="4px"
@@ -93,10 +93,9 @@ const splitterCollapsed = computed({
 			<template #end>
 				<SkipMenu section="main-content" />
 				<PrivateViewMain id="main-content" v-bind="$props" :inline-nav>
-					<template #actions:append><slot name="actions:append" /></template>
 					<template #actions:prepend><slot name="actions:prepend" /></template>
 					<template #actions><slot name="actions" /></template>
-					<template #headline><slot name="headline" /></template>
+					<template #actions:primary><slot name="actions:primary" /></template>
 					<template #title-outer:append><slot name="title-outer:append" /></template>
 					<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
 					<template #title:append><slot name="title:append" /></template>

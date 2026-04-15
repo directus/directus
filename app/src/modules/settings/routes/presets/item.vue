@@ -8,7 +8,6 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -480,10 +479,6 @@ function discardAndLeave() {
 		readonly
 	>
 		<PrivateView :title="$t('editing_preset')" show-back back-to="/settings/presets">
-			<template #headline>
-				<VBreadcrumb :items="[{ name: $t('settings_presets'), to: '/settings/presets' }]" />
-			</template>
-
 			<template #navigation>
 				<SettingsNavigation />
 			</template>
@@ -514,7 +509,9 @@ function discardAndLeave() {
 						</VCardActions>
 					</VCard>
 				</VDialog>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
 					:disabled="hasEdits === false"
@@ -601,7 +598,6 @@ function discardAndLeave() {
 .layout {
 	--content-padding: 0;
 	--content-padding-bottom: 0;
-	--layout-offset-top: 0;
 
 	position: relative;
 	inline-size: 100%;

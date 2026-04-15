@@ -4,7 +4,6 @@ import TransitionDialog from '@/components/transition/dialog.vue';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VAvatar from '@/components/v-avatar.vue';
 import VBadge from '@/components/v-badge.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardSubtitle from '@/components/v-card-subtitle.vue';
@@ -67,7 +66,6 @@ export function register(app: App): void {
 	app.component('TransitionExpand', TransitionExpand);
 	app.component('VAvatar', VAvatar);
 	app.component('VBadge', VBadge);
-	app.component('VBreadcrumb', VBreadcrumb);
 	app.component('VButton', VButton);
 	app.component('VCard', VCard);
 	app.component('VCardActions', VCardActions);

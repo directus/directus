@@ -337,255 +337,234 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 </script>
 
 <template>
-	<div class="version-menu-wrapper">
-		<VMenu class="version-menu" placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
-				<button class="version-button" type="button" @click="toggle">
-					<VIcon name="published_with_changes" />
-					<VTextOverflow class="version-name" :text="getVersionDisplayName(currentVersion)" placement="bottom" />
-					<VIcon small name="arrow_drop_down" />
-				</button>
+	<VMenu class="version-menu" placement="bottom-start" show-arrow>
+		<template #activator="{ toggle }">
+			<button class="version-button" type="button" @click="toggle">
+				<VIcon name="published_with_changes" />
+				<VTextOverflow class="version-name" :text="getVersionDisplayName(currentVersion)" placement="bottom" />
+				<VIcon small name="arrow_drop_down" />
+			</button>
+		</template>
+
+		<VList class="version-list">
+			<VListItem class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
+				<VListItemIcon class="version-item-icon">
+					<span v-tooltip="$t('content_edited')" class="edit-dot" />
+				</VListItemIcon>
+
+				<VListItemContent>
+					{{ $t('main_version') }}
+				</VListItemContent>
+			</VListItem>
+
+			<VListItem
+				v-if="draftVersion"
+				class="version-item"
+				clickable
+				:active="draftVersion?.key === currentVersion?.key"
+				:disabled="!canAccessGlobalVersion(draftVersion)"
+				@click="switchVersion(draftVersion)"
+			>
+				<VListItemIcon class="version-item-icon">
+					<span v-if="hasVersionEdits(draftVersion)" v-tooltip="$t('content_edited')" class="edit-dot" />
+				</VListItemIcon>
+
+				<VListItemContent>
+					<VTextOverflow :text="getVersionDisplayName(draftVersion)" />
+				</VListItemContent>
+			</VListItem>
+
+			<VListItem
+				v-for="versionItem of localVersions"
+				:key="versionItem.id"
+				class="version-item"
+				clickable
+				:active="versionItem.id === currentVersion?.id"
+				@click="switchVersion(versionItem)"
+			>
+				<VListItemIcon class="version-item-icon">
+					<span v-if="hasVersionEdits(versionItem)" v-tooltip="$t('content_edited')" class="edit-dot" />
+				</VListItemIcon>
+
+				<VListItemContent>
+					<VTextOverflow :text="getVersionDisplayName(versionItem)" />
+				</VListItemContent>
+			</VListItem>
+
+			<template v-if="createVersionsAllowed">
+				<VDivider />
+
+				<VListItem clickable @click="createDialogActive = true">
+					<VListItemIcon>
+						<VIcon name="add" />
+					</VListItemIcon>
+
+					<VListItemContent>{{ $t('create_version') }}</VListItemContent>
+				</VListItem>
 			</template>
 
-			<VList class="version-list">
-				<VListItem class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
-					<VListItemIcon class="version-item-icon">
-						<span v-tooltip="$t('content_edited')" class="edit-dot" />
+			<template v-if="currentVersion !== null">
+				<VDivider />
+
+				<VListItem v-if="updateAllowed" :disabled="isCurrentVersionNew" clickable @click="comparisonModalActive = true">
+					<VListItemIcon>
+						<VIcon name="arrow_upload_progress" />
 					</VListItemIcon>
 
-					<VListItemContent>
-						{{ $t('main_version') }}
-					</VListItemContent>
+					<VListItemContent>{{ $t('promote_version') }}</VListItemContent>
+				</VListItem>
+
+				<VListItem v-if="updateVersionsAllowed && !isCurrentVersionGlobal" clickable @click="openRenameDialog">
+					<VListItemIcon>
+						<VIcon name="edit" />
+					</VListItemIcon>
+
+					<VListItemContent>{{ $t('rename_version') }}</VListItemContent>
 				</VListItem>
 
 				<VListItem
-					v-if="draftVersion"
-					class="version-item"
+					v-if="deleteVersionsAllowed"
+					:disabled="isCurrentVersionNew"
+					class="version-delete"
 					clickable
-					:active="draftVersion?.key === currentVersion?.key"
-					:disabled="!canAccessGlobalVersion(draftVersion)"
-					@click="switchVersion(draftVersion)"
+					@click="deleteDialogActive = true"
 				>
-					<VListItemIcon class="version-item-icon">
-						<span v-if="hasVersionEdits(draftVersion)" v-tooltip="$t('content_edited')" class="edit-dot" />
+					<VListItemIcon>
+						<VIcon :name="isCurrentVersionGlobal ? 'undo' : 'delete'" />
 					</VListItemIcon>
 
-					<VListItemContent>
-						<VTextOverflow :text="getVersionDisplayName(draftVersion)" />
-					</VListItemContent>
+					<VListItemContent>{{ $t(isCurrentVersionGlobal ? 'discard_changes' : 'delete_version') }}</VListItemContent>
 				</VListItem>
+			</template>
+		</VList>
+	</VMenu>
 
-				<VListItem
-					v-for="versionItem of localVersions"
-					:key="versionItem.id"
-					class="version-item"
-					clickable
-					:active="versionItem.id === currentVersion?.id"
-					@click="switchVersion(versionItem)"
+	<ComparisonModal
+		v-if="comparableVersion"
+		v-model="comparisonModalActive"
+		:delete-versions-allowed
+		:collection
+		:primary-key
+		mode="version"
+		:current-version="comparableVersion"
+		@cancel="comparisonModalActive = false"
+		@promote="onPromoteComplete"
+	/>
+
+	<VDialog v-model="switchDialogActive" @esc="switchDialogActive = false" @apply="switchVersion">
+		<VCard>
+			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+			<VCardText>
+				{{
+					$t('switch_version_copy', {
+						version: switchTarget ? switchTarget.name || switchTarget.key : $t('main_version'),
+					})
+				}}
+			</VCardText>
+			<VCardActions>
+				<VButton secondary @click="switchVersion()">
+					{{ $t('switch_version') }}
+				</VButton>
+				<VButton @click="switchDialogActive = false">{{ $t('keep_editing') }}</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
+
+	<VDialog :model-value="createDialogActive" persistent @esc="closeCreateDialog" @apply="createVersion">
+		<VCard>
+			<VCardTitle>{{ $t('create_version') }}</VCardTitle>
+
+			<VCardText>
+				<div class="grid">
+					<div class="field">
+						<VInput
+							v-model="newVersionName"
+							class="full"
+							:placeholder="$t('version_name')"
+							autofocus
+							trim
+							:max-length="255"
+						/>
+					</div>
+
+					<div class="field">
+						<VInput v-model="newVersionKey" class="full" :placeholder="$t('version_key')" slug trim :max-length="64" />
+					</div>
+				</div>
+			</VCardText>
+
+			<VCardActions>
+				<VButton secondary @click="closeCreateDialog">{{ $t('cancel') }}</VButton>
+				<VButton
+					v-tooltip.top="newVersionKeyReservedTooltip"
+					:disabled="isCreateDisabled"
+					:loading="creating"
+					@click="createVersion"
 				>
-					<VListItemIcon class="version-item-icon">
-						<span v-if="hasVersionEdits(versionItem)" v-tooltip="$t('content_edited')" class="edit-dot" />
-					</VListItemIcon>
+					{{ $t('save') }}
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 
-					<VListItemContent>
-						<VTextOverflow :text="getVersionDisplayName(versionItem)" />
-					</VListItemContent>
-				</VListItem>
+	<VDialog :model-value="renameDialogActive" persistent @esc="closeRenameDialog" @apply="renameVersion">
+		<VCard>
+			<VCardTitle>{{ $t('rename_version') }}</VCardTitle>
 
-				<template v-if="createVersionsAllowed">
-					<VDivider />
-
-					<VListItem clickable @click="createDialogActive = true">
-						<VListItemIcon>
-							<VIcon name="add" />
-						</VListItemIcon>
-
-						<VListItemContent>{{ $t('create_version') }}</VListItemContent>
-					</VListItem>
-				</template>
-
-				<template v-if="currentVersion !== null">
-					<VDivider />
-
-					<VListItem
-						v-if="updateAllowed"
-						:disabled="isCurrentVersionNew"
-						clickable
-						@click="comparisonModalActive = true"
-					>
-						<VListItemIcon>
-							<VIcon name="arrow_upload_progress" />
-						</VListItemIcon>
-
-						<VListItemContent>{{ $t('promote_version') }}</VListItemContent>
-					</VListItem>
-
-					<VListItem v-if="updateVersionsAllowed && !isCurrentVersionGlobal" clickable @click="openRenameDialog">
-						<VListItemIcon>
-							<VIcon name="edit" />
-						</VListItemIcon>
-
-						<VListItemContent>{{ $t('rename_version') }}</VListItemContent>
-					</VListItem>
-
-					<VListItem
-						v-if="deleteVersionsAllowed"
-						:disabled="isCurrentVersionNew"
-						class="version-delete"
-						clickable
-						@click="deleteDialogActive = true"
-					>
-						<VListItemIcon>
-							<VIcon :name="isCurrentVersionGlobal ? 'undo' : 'delete'" />
-						</VListItemIcon>
-
-						<VListItemContent>{{ $t(isCurrentVersionGlobal ? 'discard_changes' : 'delete_version') }}</VListItemContent>
-					</VListItem>
-				</template>
-			</VList>
-		</VMenu>
-
-		<ComparisonModal
-			v-if="comparableVersion"
-			v-model="comparisonModalActive"
-			:delete-versions-allowed
-			:collection
-			:primary-key
-			mode="version"
-			:current-version="comparableVersion"
-			@cancel="comparisonModalActive = false"
-			@promote="onPromoteComplete"
-		/>
-
-		<VDialog v-model="switchDialogActive" @esc="switchDialogActive = false" @apply="switchVersion">
-			<VCard>
-				<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
-				<VCardText>
-					{{
-						$t('switch_version_copy', {
-							version: switchTarget ? switchTarget.name || switchTarget.key : $t('main_version'),
-						})
-					}}
-				</VCardText>
-				<VCardActions>
-					<VButton secondary @click="switchVersion()">
-						{{ $t('switch_version') }}
-					</VButton>
-					<VButton @click="switchDialogActive = false">{{ $t('keep_editing') }}</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
-
-		<VDialog :model-value="createDialogActive" persistent @esc="closeCreateDialog" @apply="createVersion">
-			<VCard>
-				<VCardTitle>{{ $t('create_version') }}</VCardTitle>
-
-				<VCardText>
-					<div class="grid">
-						<div class="field">
-							<VInput
-								v-model="newVersionName"
-								class="full"
-								:placeholder="$t('version_name')"
-								autofocus
-								trim
-								:max-length="255"
-							/>
-						</div>
-
-						<div class="field">
-							<VInput
-								v-model="newVersionKey"
-								class="full"
-								:placeholder="$t('version_key')"
-								slug
-								trim
-								:max-length="64"
-							/>
-						</div>
+			<VCardText>
+				<div class="grid">
+					<div class="field">
+						<VInput
+							v-model="newVersionName"
+							autofocus
+							class="full"
+							:placeholder="$t('version_name')"
+							trim
+							:max-length="255"
+						/>
 					</div>
-				</VCardText>
-
-				<VCardActions>
-					<VButton secondary @click="closeCreateDialog">{{ $t('cancel') }}</VButton>
-					<VButton
-						v-tooltip.top="newVersionKeyReservedTooltip"
-						:disabled="isCreateDisabled"
-						:loading="creating"
-						@click="createVersion"
-					>
-						{{ $t('save') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
-
-		<VDialog :model-value="renameDialogActive" persistent @esc="closeRenameDialog" @apply="renameVersion">
-			<VCard>
-				<VCardTitle>{{ $t('rename_version') }}</VCardTitle>
-
-				<VCardText>
-					<div class="grid">
-						<div class="field">
-							<VInput
-								v-model="newVersionName"
-								autofocus
-								class="full"
-								:placeholder="$t('version_name')"
-								trim
-								:max-length="255"
-							/>
-						</div>
-						<div class="field">
-							<VInput
-								v-model="newVersionKey"
-								class="full"
-								:placeholder="$t('version_key')"
-								slug
-								trim
-								:max-length="64"
-							/>
-						</div>
+					<div class="field">
+						<VInput v-model="newVersionKey" class="full" :placeholder="$t('version_key')" slug trim :max-length="64" />
 					</div>
-				</VCardText>
+				</div>
+			</VCardText>
 
-				<VCardActions>
-					<VButton secondary @click="closeRenameDialog">{{ $t('cancel') }}</VButton>
-					<VButton
-						v-tooltip.top="newVersionKeyReservedTooltip"
-						:disabled="isRenameDisabled"
-						:loading="updating"
-						@click="renameVersion"
-					>
-						{{ $t('save') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
+			<VCardActions>
+				<VButton secondary @click="closeRenameDialog">{{ $t('cancel') }}</VButton>
+				<VButton
+					v-tooltip.top="newVersionKeyReservedTooltip"
+					:disabled="isRenameDisabled"
+					:loading="updating"
+					@click="renameVersion"
+				>
+					{{ $t('save') }}
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 
-		<VDialog
-			v-if="currentVersion !== null"
-			v-model="deleteDialogActive"
-			@esc="deleteDialogActive = false"
-			@apply="onDeleteVersion"
-		>
-			<VCard>
-				<VCardTitle>
-					{{
-						isCurrentVersionGlobal
-							? $t('discard_changes_copy')
-							: $t('delete_version_copy', { version: getVersionDisplayName(currentVersion) })
-					}}
-				</VCardTitle>
-				<VCardActions>
-					<VButton secondary @click="deleteDialogActive = false">{{ $t('cancel') }}</VButton>
-					<VButton :loading="deleting" kind="danger" @click="onDeleteVersion">
-						{{ $t(isCurrentVersionGlobal ? 'discard_label' : 'delete_label') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
-	</div>
+	<VDialog
+		v-if="currentVersion !== null"
+		v-model="deleteDialogActive"
+		@esc="deleteDialogActive = false"
+		@apply="onDeleteVersion"
+	>
+		<VCard>
+			<VCardTitle>
+				{{
+					isCurrentVersionGlobal
+						? $t('discard_changes_copy')
+						: $t('delete_version_copy', { version: getVersionDisplayName(currentVersion) })
+				}}
+			</VCardTitle>
+			<VCardActions>
+				<VButton secondary @click="deleteDialogActive = false">{{ $t('cancel') }}</VButton>
+				<VButton :loading="deleting" kind="danger" @click="onDeleteVersion">
+					{{ $t(isCurrentVersionGlobal ? 'discard_label' : 'delete_label') }}
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style scoped lang="scss">
@@ -595,20 +574,6 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	--theme--form--row-gap: 0.4375rem;
 
 	@include mixins.form-grid;
-}
-
-.version-menu-wrapper {
-	overflow: hidden;
-	display: flex;
-	align-items: center;
-
-	@media (width >= 33.75rem) {
-		&::before {
-			content: '•';
-			padding-inline-end: 0.1875rem;
-			color: var(--theme--foreground-subdued);
-		}
-	}
 }
 
 .version-menu {

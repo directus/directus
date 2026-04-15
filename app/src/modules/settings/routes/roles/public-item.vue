@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -208,11 +207,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 
 <template>
 	<PrivateView :title="$t('public_label')" show-back back-to="/settings/roles">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
-		</template>
-
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"

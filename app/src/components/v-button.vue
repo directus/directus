@@ -7,7 +7,7 @@ import VProgressCircular from './v-progress-circular.vue';
 import vFocus from '@/directives/focus';
 import vTooltip from '@/directives/tooltip';
 
-export interface Props {
+export interface VButtonProps {
 	/** Automatically focuses on the button */
 	autofocus?: boolean;
 	/** Styling of the button */
@@ -64,7 +64,11 @@ export interface Props {
 	tooltip?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+export interface VButtonEmits {
+	click: [value?: MouseEvent];
+}
+
+const props = withDefaults(defineProps<VButtonProps>(), {
 	kind: 'normal',
 	type: 'button',
 	to: '',
@@ -74,7 +78,7 @@ const props = withDefaults(defineProps<Props>(), {
 	active: undefined,
 });
 
-const emit = defineEmits(['click']);
+const emit = defineEmits<VButtonEmits>();
 
 const route = useRoute();
 

@@ -8,7 +8,6 @@ import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
 import api from '@/api';
 import { logout } from '@/auth';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -46,7 +45,7 @@ const { addNewLink } = useLinks();
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
-const { breadcrumb, title } = useBreadcrumb();
+const { title } = useTitle();
 
 const roleFilter = computed(() => {
 	if (props.role) {
@@ -166,25 +165,14 @@ function useLinks() {
 	return { addNewLink };
 }
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		if (!props.role) return null;
-
-		return [
-			{
-				name: t('user_directory'),
-				to: `/users`,
-			},
-		];
-	});
-
+function useTitle() {
 	const title = computed(() => {
 		if (props.status) return t(`${props.status}_users`);
 		if (!props.role) return t('user_directory');
 		return roles.value?.find((role) => role.id === props.role)?.name;
 	});
 
-	return { breadcrumb, title };
+	return { title };
 }
 
 function clearFilters() {
@@ -209,10 +197,6 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 	>
 		<PrivateView :title="title" icon="people_alt">
-			<template v-if="breadcrumb" #headline>
-				<VBreadcrumb :items="breadcrumb" />
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
@@ -262,7 +246,9 @@ function clearFilters() {
 					icon="person_add"
 					@click="userInviteModalActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
 					:to="addNewLink"

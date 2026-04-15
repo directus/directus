@@ -3,7 +3,6 @@ import { useCollection, useLayout } from '@directus/composables';
 import { ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -113,10 +112,6 @@ function clearFilters() {
 		:clear-filters="clearFilters"
 	>
 		<PrivateView :title="$t('settings_presets')" icon="bookmark">
-			<template #headline>
-				<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
 			</template>

@@ -12,7 +12,6 @@ import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -75,8 +74,6 @@ const userStore = useUserStore();
 const form = ref<ComponentPublicInstance>();
 
 const { collection, primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
@@ -455,17 +452,6 @@ onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: collectionInfo.value?.name,
-			to: collectionRoute.value,
-		},
-	]);
-
-	return { breadcrumb };
-}
-
 async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
@@ -633,7 +619,6 @@ function useItemNavigation() {
 
 	<PrivateView
 		v-else
-		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
 		:back-to="backRoute"
@@ -657,39 +642,31 @@ function useItemNavigation() {
 			</h1>
 		</template>
 
-		<template #headline>
-			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
-				<VBreadcrumb
-					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-					:items="[{ name: $t('content'), to: '/content' }]"
-					class="headline-breadcrumb"
-				/>
-				<VBreadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
-
-				<VersionMenu
-					v-if="shouldShowVersioning"
-					:collection="collection"
-					:primary-key="internalPrimaryKey!"
-					:update-allowed="updateAllowed"
-					:has-edits="hasEdits"
-					:current-version="currentVersion"
-					:versions="versions"
-					@add="addVersion"
-					@update="updateVersion"
-					@delete="deleteVersion"
-					@switch="currentVersion = $event"
-				/>
-			</div>
+		<template v-if="shouldShowVersioning" #title-outer:append>
+			<VersionMenu
+				:collection="collection"
+				:primary-key="internalPrimaryKey!"
+				:update-allowed="updateAllowed"
+				:has-edits="hasEdits"
+				:current-version="currentVersion"
+				:versions="versions"
+				@add="addVersion"
+				@update="updateVersion"
+				@delete="deleteVersion"
+				@switch="currentVersion = $event"
+			/>
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<PrivateViewHeaderBarActionButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -764,7 +741,9 @@ function useItemNavigation() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentVersion === null"
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
@@ -817,8 +796,6 @@ function useItemNavigation() {
 					</VMenu>
 				</template>
 			</PrivateViewHeaderBarActionButton>
-
-			<FlowDialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
@@ -955,6 +932,8 @@ function useItemNavigation() {
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
+
+		<FlowDialogs v-bind="flowDialogsContext" />
 	</PrivateView>
 </template>
 
@@ -980,12 +959,6 @@ function useItemNavigation() {
 	min-inline-size: 0;
 }
 
-.headline-wrapper {
-	display: flex;
-	align-items: center;
-	gap: 0.1875rem;
-}
-
 .version-more-options.v-icon {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
@@ -993,34 +966,6 @@ function useItemNavigation() {
 
 	&:hover {
 		color: var(--theme--foreground);
-	}
-}
-
-.has-content-versioning {
-	:deep(.header-bar .title-container) {
-		flex-direction: column;
-		justify-content: center;
-		gap: 0;
-		align-items: start;
-
-		.headline {
-			opacity: 1;
-			inset-block-start: 0.1875rem;
-		}
-
-		.title {
-			inset-block-start: 0.25rem;
-		}
-
-		@include mixins.breakpoint-up('sm') {
-			opacity: 1;
-		}
-	}
-}
-
-.headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (width < 33.75rem) {
-		display: none;
 	}
 }
 

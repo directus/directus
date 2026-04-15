@@ -14,7 +14,6 @@ import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { ATTACHMENT_OFFSET, GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -609,10 +608,6 @@ function discardAndLeave() {
 <template>
 	<SettingsNotFound v-if="!flow && !loading" />
 	<PrivateView v-else :title="flow?.name ?? $t('loading')" show-back back-to="/settings/flows">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
-		</template>
-
 		<template #title:append>
 			<DisplayColor
 				v-tooltip="flow?.status === 'active' ? $t('active') : $t('inactive')"
@@ -630,13 +625,6 @@ function discardAndLeave() {
 					outlined
 					@click="attemptCancelChanges"
 				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
-					:loading="saving"
-					icon="check"
-					@click="saveChanges"
-				/>
 			</template>
 
 			<template v-else>
@@ -647,14 +635,25 @@ function discardAndLeave() {
 					icon="delete"
 					@click="confirmDelete = true"
 				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('edit_flow')"
-					outlined
-					icon="edit"
-					@click="editMode = !editMode"
-				/>
 			</template>
+		</template>
+
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton
+				v-if="editMode"
+				v-tooltip.bottom="$t('save')"
+				:loading="saving"
+				icon="check"
+				@click="saveChanges"
+			/>
+
+			<PrivateViewHeaderBarActionButton
+				v-else
+				v-tooltip.bottom="$t('edit_flow')"
+				outlined
+				icon="edit"
+				@click="editMode = !editMode"
+			/>
 		</template>
 
 		<template #sidebar>

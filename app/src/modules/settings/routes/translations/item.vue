@@ -5,7 +5,6 @@ import { computed, ref, toRefs, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import ContentNotFound from '../not-found.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -35,8 +34,6 @@ const router = useRouter();
 const form = ref<HTMLElement>();
 
 const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
@@ -104,17 +101,6 @@ const disabledOptions = computed(() => {
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: collectionInfo.value?.name,
-			to: `/settings/translations`,
-		},
-	]);
-
-	return { breadcrumb };
-}
 
 async function saveAndQuit() {
 	if (isSavable.value === false) return;
@@ -217,14 +203,6 @@ async function revert(values: Record<string, any>) {
 		show-back
 		back-to="/settings/translations"
 	>
-		<template #headline>
-			<VBreadcrumb
-				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: $t('content'), to: '/content' }]"
-			/>
-			<VBreadcrumb v-else :items="breadcrumb" />
-		</template>
-
 		<template #actions>
 			<VDialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
@@ -252,7 +230,9 @@ async function revert(values: Record<string, any>) {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"
