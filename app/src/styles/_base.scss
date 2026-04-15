@@ -31,6 +31,7 @@ html {
 body {
 	@include mixins.type-text;
 
+	overflow: hidden;
 	background-color: var(--theme--background);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
