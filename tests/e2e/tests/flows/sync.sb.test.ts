@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { sandbox } from '@directus/sandbox';
 import { createDirectus, createFlow, createOperation, rest, staticToken, updateFlow } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { expect, test } from 'vitest';
 
 test('syncronized flow logging', { timeout: 120_000 }, async () => {
@@ -9,13 +10,13 @@ test('syncronized flow logging', { timeout: 120_000 }, async () => {
 
 	const directus = await sandbox(database, {
 		instances: '2',
-		silent: true,
 		extras: {
 			redis: true,
 		},
 		env: {
 			SYNCHRONIZATION_STORE: 'redis',
 			SYNCHRONIZATION_NAMESPACE: `directus-${database}`,
+			DB_FILENAME: `directus_test_${getUID()}.db`,
 		},
 	});
 
@@ -57,4 +58,6 @@ test('syncronized flow logging', { timeout: 120_000 }, async () => {
 	await new Promise((r) => setTimeout(r, 5_000));
 
 	expect(Object.values(msgs).reduce((v, a) => a + v, 0)).toBe(5);
+
+	await directus.stop();
 });

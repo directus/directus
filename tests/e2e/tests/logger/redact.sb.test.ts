@@ -1,6 +1,7 @@
 import { sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, rest } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { Signal } from '@utils/signal.js';
 import { expect, test } from 'vitest';
 
@@ -10,6 +11,7 @@ test('redact sensitive data', { timeout: 60_000 }, async () => {
 		env: {
 			LOG_LEVEL: 'debug',
 			LOG_STYLE: 'raw',
+			DB_FILENAME: `directus_test_${getUID()}.db`,
 		},
 	});
 
@@ -39,5 +41,5 @@ test('redact sensitive data', { timeout: 60_000 }, async () => {
 
 	// expect(refreshData.res.headers['set-cookie']).toBe('--redacted--');
 
-	// await directus.stop();
+	await directus.stop();
 });

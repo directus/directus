@@ -1,8 +1,9 @@
 import { type ChildProcessWithoutNullStreams } from 'child_process';
+import { unlink } from 'fs/promises';
 import { join } from 'path';
 import type { DatabaseClient, DeepPartial } from '@directus/types';
 import chalk from 'chalk';
-import { merge } from 'lodash-es';
+import { merge, set } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
 import { createLogger, type Logger } from './logger.js';
@@ -261,6 +262,12 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		apis.forEach((api) => api.process.kill());
 		app?.kill();
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
+
+		if (!opts.docker.keep && 'DB_FILENAME' in env) {
+			setTimeout(() => unlink(env.DB_FILENAME).catch(() => {}), 1);
+			logger.info(`Removed database file at ${env.DB_FILENAME}`);
+		}
+
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);
 	}

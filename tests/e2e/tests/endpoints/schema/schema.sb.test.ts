@@ -34,9 +34,11 @@ let publicApi: DirectusClient<any> & RestClient<any>;
 beforeAll(async () => {
 	sb = await sandbox(database, {
 		inspect: false,
-		silent: true,
 		docker: {
 			suffix: getUID(),
+		},
+		env: {
+			DB_FILENAME: `directus_test_${getUID()}.db`,
 		},
 	});
 
