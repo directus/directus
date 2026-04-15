@@ -70,7 +70,7 @@ async function saveAndAddNew() {
 	try {
 		await save();
 		await userStore.hydrate();
-		router.push(`/settings/policies/+`);
+		router.push({ name: 'settings-add-new-policy' });
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -80,7 +80,7 @@ async function saveAndQuit() {
 	try {
 		await save();
 		await userStore.hydrate();
-		router.push(`/settings/policies`);
+		router.push({ name: 'settings-policies-collection' });
 	} catch {
 		// 'save' shows unexpected error dialog
 	}
@@ -92,7 +92,7 @@ async function deleteAndQuit() {
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(`/settings/policies`);
+		router.replace({ name: 'settings-policies-collection' });
 	} catch {
 		// 'remove' shows unexpected error dialog
 	}
