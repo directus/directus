@@ -153,7 +153,9 @@ function clearFilters() {
 					icon="edit"
 					@click="batchEditActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_preset') : $t('not_allowed')"
 					to="/settings/presets/+"

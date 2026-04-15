@@ -157,7 +157,9 @@ function clearFilters() {
 					variant="ghost"
 					@click="batchEditActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('create_custom_translation')"
 					:to="addNewLink"
