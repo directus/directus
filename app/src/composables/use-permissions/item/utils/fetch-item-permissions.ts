@@ -20,12 +20,19 @@ const defaultPermissions: ItemPermissions = {
 export const fetchItemPermissions = (collection: Collection, primaryKey: PrimaryKey) => {
 	const loading = ref(false);
 	const refreshKey = ref(0);
+	const requestKey = ref(0);
+	const latestPermissions = ref<ItemPermissions>(defaultPermissions);
 
 	const fetchedItemPermissions = computedAsync(
 		async () => {
 			void refreshKey.value;
 
 			const primaryKeyValue = unref(primaryKey);
+			const currentRequest = ++requestKey.value;
+
+			if (primaryKeyValue === undefined) {
+				return latestPermissions.value;
+			}
 
 			try {
 				const response = await api.get<{ data: ItemPermissions }>(
@@ -34,12 +41,21 @@ export const fetchItemPermissions = (collection: Collection, primaryKey: Primary
 					}`,
 				);
 
+				if (currentRequest !== requestKey.value) {
+					return latestPermissions.value;
+				}
+
+				latestPermissions.value = response.data.data;
 				return response.data.data;
 			} catch (error) {
+				if (currentRequest !== requestKey.value) {
+					return latestPermissions.value;
+				}
+
 				unexpectedError(error);
 
 				// Optimistic in case of errors to not block UI
-				return {
+				const optimisticPermissions = {
 					update: {
 						access: true,
 					},
@@ -50,6 +66,9 @@ export const fetchItemPermissions = (collection: Collection, primaryKey: Primary
 						access: true,
 					},
 				};
+
+				latestPermissions.value = optimisticPermissions;
+				return optimisticPermissions;
 			}
 		},
 		defaultPermissions,
