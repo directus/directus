@@ -29,14 +29,18 @@ defineEmits<VButtonEmits>();
 const { showIcon } = useIcon();
 
 function useIcon() {
-	const breakpoints = useBreakpoints(BREAKPOINTS);
-	const lteXSmall = breakpoints.smallerOrEqual('xs');
+	const breakpoints = useBreakpoints({
+		...BREAKPOINTS,
+		labelMin: '25rem',
+	});
+
+	const belowLabelMin = breakpoints.smallerOrEqual('labelMin');
 	const lteSmall = breakpoints.smallerOrEqual('sm');
 	const lteLarge = breakpoints.smallerOrEqual('lg');
 
 	const showIcon = computed(() => {
 		if (!label) return true;
-		return lteXSmall.value || (!lteSmall.value && lteLarge.value);
+		return belowLabelMin.value || (!lteSmall.value && lteLarge.value);
 	});
 
 	return { showIcon };
