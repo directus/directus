@@ -1,5 +1,4 @@
 import { spawn, spawnSync } from 'child_process';
-import { unlink } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';

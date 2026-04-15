@@ -3,7 +3,7 @@ import { unlink } from 'fs/promises';
 import { join } from 'path';
 import type { DatabaseClient, DeepPartial } from '@directus/types';
 import chalk from 'chalk';
-import { merge, set } from 'lodash-es';
+import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
 import { createLogger, type Logger } from './logger.js';
