@@ -171,6 +171,8 @@ export class ServerService {
 	}
 
 	async health(): Promise<ServerHealth | Pick<ServerHealth, 'status'>> {
+		console.log('Performing health check...', this.accountability);
+
 		if (isUnauthenticated(this.accountability)) {
 			throw new ForbiddenError();
 		}
@@ -184,6 +186,8 @@ export class ServerService {
 
 			return;
 		});
+
+		console.log('Health check cache result:', healthResult);
 
 		if (healthResult) {
 			return this.accountability?.admin === true ? healthResult : { status: healthResult['status'] };
@@ -298,6 +302,8 @@ export class ServerService {
 		}
 
 		async function testRedis(): Promise<Record<string, ServerHealthCheck[]>> {
+			console.log('Testing Redis health...', enabledServices.includes('redis'), redisConfigAvailable());
+
 			if (enabledServices.includes('redis') === false || redisConfigAvailable() !== true) {
 				return {};
 			}
