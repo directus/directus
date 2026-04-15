@@ -31,7 +31,8 @@
 		"@directus/utils": "workspace:*",
 		"decamelize": "catalog:",
 		"flat": "catalog:",
-		"lodash-es": "catalog:"
+		"lodash-es": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",

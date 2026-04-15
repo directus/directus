@@ -180,7 +180,7 @@ function useBreadcrumb() {
 
 	const title = computed(() => {
 		if (props.status) return t(`${props.status}_users`);
-		if (!props.role) return t('user_directory');
+		if (!props.role) return t('all_users');
 		return roles.value?.find((role) => role.id === props.role)?.name;
 	});
 

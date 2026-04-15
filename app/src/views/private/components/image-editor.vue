@@ -26,6 +26,7 @@ const imageFields = [
 	'type',
 	'filesize',
 	'filename_download',
+	'folder',
 	'width',
 	'height',
 	'focal_point_x',
@@ -37,11 +38,13 @@ type Image = Pick<File, (typeof imageFields)[number]>;
 const props = defineProps<{
 	id: string;
 	modelValue?: boolean;
+	createAllowed?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
 	(e: 'refresh'): void;
+	(e: 'new-file', id: string): void;
 }>();
 
 const { n } = useI18n();
@@ -60,7 +63,8 @@ const internalActive = computed({
 	},
 });
 
-const { loading, error, imageData, imageElement, hasEdits, save, saving, fetchImage, onImageLoad } = useImage();
+const { loading, error, imageData, imageElement, hasEdits, save, saveAsNew, saving, fetchImage, onImageLoad } =
+	useImage();
 
 const {
 	cropperInstance,
@@ -149,6 +153,7 @@ function useImage() {
 		imageElement,
 		hasEdits,
 		save,
+		saveAsNew,
 		saving,
 		onImageLoad,
 	};
@@ -198,6 +203,48 @@ function useImage() {
 					);
 				}, imageData.value?.type ?? undefined);
 		});
+	}
+
+	async function saveAsNew() {
+		if (!hasEdits.value || saving.value) return;
+
+		saving.value = true;
+
+		const postRequest = new Promise<string>((resolve, reject) => {
+			cropperInstance.value
+				?.getCroppedCanvas({
+					imageSmoothingQuality: 'high',
+				})
+				.toBlob(async (blob) => {
+					if (blob === null) {
+						return reject(`Couldn't process and save edited image`);
+					}
+
+					const formData = new FormData();
+
+					if (imageData.value?.folder) {
+						formData.append('folder', imageData.value.folder as string);
+					}
+
+					formData.append('file', blob, imageData.value?.filename_download);
+
+					api.post('/files', formData).then(
+						(response) => resolve(response.data.data.id),
+						(err) => reject(err),
+					);
+				}, imageData.value?.type ?? undefined);
+		});
+
+		try {
+			const newId = await postRequest;
+			emit('new-file', newId);
+			localDragMode.value = 'move';
+			internalActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			saving.value = false;
+		}
 	}
 
 	async function save() {
@@ -594,7 +641,22 @@ function setAspectRatio() {
 				:disabled="!hasEdits"
 				icon="check"
 				@click="save"
-			/>
+			>
+				<template v-if="props.createAllowed" #append-outer>
+					<VMenu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<VIcon name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<VList>
+							<VListItem :disabled="!hasEdits" clickable @click="saveAsNew">
+								<VListItemIcon><VIcon name="add_photo_alternate" /></VListItemIcon>
+								<VListItemContent>{{ $t('save_as_new_file') }}</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
+				</template>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 	</VDrawer>
 </template>
