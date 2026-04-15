@@ -500,7 +500,7 @@ async function exportDataFiles() {
 			@cancel="exportDialogActive = false"
 			@apply="startExport"
 		>
-			<template #actions>
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="location === 'download' ? $t('download_file') : $t('start_export')"
 					:loading="exporting"
@@ -508,6 +508,7 @@ async function exportDataFiles() {
 					@click="startExport"
 				/>
 			</template>
+
 			<div class="export-fields">
 				<div class="field half-left">
 					<p class="type-label">{{ $t('format') }}</p>
