@@ -58,9 +58,9 @@ test('reading health as admin', async () => {
 					threshold: 750,
 				},
 			],
-			...(env.CACHE_ENABLED === 'true' && env.REDIS_ENABLED === 'true'
+			...(env.REDIS_ENABLED === 'true'
 				? {
-						'cache:responseTime': [
+						'redis:responseTime': [
 							{
 								componentType: 'cache',
 								observedUnit: 'ms',
@@ -116,9 +116,5 @@ test('reading health as user', async () => {
 test('reading health public', async () => {
 	const userApi = createDirectus(`http://localhost:${port}`).with(rest());
 
-	const result = await userApi.request(serverHealth());
-
-	expect(result).toEqual({
-		status: 'ok',
-	});
+	await expect(async () => await userApi.request(serverHealth())).rejects.toThrowError("You don't have permission to access this.");
 });
