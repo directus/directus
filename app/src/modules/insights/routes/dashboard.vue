@@ -6,7 +6,6 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -208,10 +207,6 @@ const refreshInterval = computed({
 <template>
 	<InsightsNotFound v-if="!currentDashboard" />
 	<PrivateView v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
-		</template>
-
 		<template #actions>
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton

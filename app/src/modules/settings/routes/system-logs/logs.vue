@@ -9,7 +9,6 @@ import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
 import LogsDisplay from './components/logs-display.vue';
 import { Log } from './types';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -425,8 +424,6 @@ onUnmounted(() => {
 
 <template>
 	<PrivateView :title="$t('settings_system_logs')" icon="terminal">
-		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
 		<template #actions>
 			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" icon disabled small>
 				<VProgressCircular small indeterminate />

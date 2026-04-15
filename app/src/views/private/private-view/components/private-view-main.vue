@@ -57,7 +57,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			<template #actions:append><slot name="actions:append" /></template>
 			<template #actions:prepend><slot name="actions:prepend" /></template>
 			<template #actions><slot name="actions" /></template>
-			<template #headline><slot name="headline" /></template>
 			<template #title-outer:append><slot name="title-outer:append" /></template>
 			<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
 			<template #title:append><slot name="title:append" /></template>
@@ -99,7 +98,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			</template>
 
 			<template #end>
-				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet sidebar-border" />
+				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet" />
 				<PrivateViewDrawer
 					:collapsed="isMobile ? sidebarStore.collapsed : true"
 					placement="right"
@@ -121,6 +120,8 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .content {
 	block-size: 100%;
 	display: flex;
@@ -149,6 +150,12 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 		border-inline-start: none;
 		border-start-start-radius: 0;
 	}
+
+	&:deep(> .sp-start) {
+		@include mixins.breakpoint-up('sm') {
+			border-inline-end: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+		}
+	}
 }
 
 .scrolling-container {
@@ -175,10 +182,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 .sidebar-outlet {
 	block-size: 100%;
 	inline-size: 100%;
-}
-
-.sidebar-border {
-	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 }
 
 .main-content-container {

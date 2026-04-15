@@ -8,7 +8,6 @@ import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -56,7 +55,6 @@ const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 const { selection } = useSelection();
 const { info: currentCollection } = useCollection(collection);
 const { addNewLink, currentCollectionLink } = useLinks();
-const { breadcrumb } = useBreadcrumb();
 
 const {
 	layout,
@@ -167,17 +165,6 @@ const downloadHandler = computed(() => layoutRef.value?.state?.download);
 async function batchRefresh() {
 	selection.value = [];
 	await refresh();
-}
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: currentCollection.value?.name,
-			to: getCollectionRoute(props.collection),
-		},
-	]);
-
-	return { breadcrumb };
 }
 
 function useCollectionHeader() {
@@ -344,12 +331,13 @@ function clearFilters() {
 		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
 
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
-			<template #headline>
-				<VBreadcrumb v-if="bookmark" :items="breadcrumb" />
-				<VBreadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
+			<template #actions:prepend>
+				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
 			</template>
 
-			<template #title-outer:append>
+			<template #actions>
+				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
+
 				<div class="bookmark-controls">
 					<BookmarkAdd
 						v-if="!bookmark"
@@ -359,7 +347,7 @@ function clearFilters() {
 					>
 						<template #activator="{ on }">
 							<PrivateViewHeaderBarActionButton
-								v-tooltip.right="$t('create_bookmark')"
+								v-tooltip.bottom="$t('create_bookmark')"
 								icon="bookmark"
 								variant="ghost"
 								@click="on"
@@ -399,14 +387,6 @@ function clearFilters() {
 						@click="clearLocalSave"
 					/>
 				</div>
-			</template>
-
-			<template #actions:prepend>
-				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
-			</template>
-
-			<template #actions>
-				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
 
 				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">

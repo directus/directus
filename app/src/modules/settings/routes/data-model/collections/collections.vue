@@ -11,7 +11,6 @@ import CollectionItem from './components/CollectionItem.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
 import api from '@/api';
 import TransitionExpand from '@/components/transition/expand.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VDetail from '@/components/v-detail.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -152,10 +151,6 @@ async function downloadSnapshot() {
 
 <template>
 	<PrivateView :title="$t('settings_data_model')" icon="database">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #actions>
 			<SearchInput
 				v-model="search"

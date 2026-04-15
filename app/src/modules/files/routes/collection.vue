@@ -8,7 +8,6 @@ import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from '
 import AddFolder from '../components/add-folder.vue';
 import FolderSection from '../components/folder-section.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -64,7 +63,7 @@ const confirmDelete = ref(false);
 const batchEditActive = ref(false);
 const isTransitioning = ref(false);
 
-const { breadcrumb, title } = useBreadcrumb();
+const { title } = useTitle();
 
 const folderFilter = computed(() => {
 	return getFolderFilter(props.folder, props.special, userStore?.currentUser?.id);
@@ -167,7 +166,7 @@ async function batchDeleteFiles() {
 	}
 }
 
-function useBreadcrumb() {
+function useTitle() {
 	const title = computed(() => {
 		if (props.special === 'all') {
 			return t('all_files');
@@ -192,20 +191,7 @@ function useBreadcrumb() {
 		return t('file_library');
 	});
 
-	const breadcrumb = computed(() => {
-		if (title.value !== t('file_library')) {
-			return [
-				{
-					name: t('file_library'),
-					to: `/files`,
-				},
-			];
-		}
-
-		return null;
-	});
-
-	return { breadcrumb, title };
+	return { title };
 }
 
 function useMovetoFolder() {
@@ -448,10 +434,6 @@ async function downloadFiles() {
 		:reset-preset="resetPreset"
 	>
 		<PrivateView :title="title" icon="folder" :class="{ dragging }">
-			<template v-if="breadcrumb" #headline>
-				<VBreadcrumb :items="breadcrumb" />
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>

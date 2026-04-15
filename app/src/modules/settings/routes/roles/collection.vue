@@ -4,7 +4,6 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -161,8 +160,6 @@ function navigateToRole({ item }: { item: Role }) {
 
 <template>
 	<PrivateView :title="$t('settings_roles')" icon="group">
-		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
 		<template #actions>
 			<SearchInput
 				v-if="!loading"

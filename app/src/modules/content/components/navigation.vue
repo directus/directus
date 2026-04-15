@@ -37,7 +37,6 @@ const rootItems = computed(() => {
 	);
 });
 
-const dense = computed(() => collectionsStore.visibleCollections.length > 5);
 const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
 
 const hasHiddenCollections = computed(
@@ -61,7 +60,7 @@ const hasHiddenCollections = computed(
 			tabindex="-1"
 			nav
 			:mandatory="false"
-			:dense="dense"
+			dense
 		>
 			<VButton
 				v-if="userStore.isAdmin && collectionsStore.allCollections.length === 0"

@@ -9,7 +9,6 @@ import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import { useProviderConfigs } from '../../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -270,10 +269,6 @@ onUnmounted(() => {
 
 <template>
 	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}/${projectId}/runs`">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>

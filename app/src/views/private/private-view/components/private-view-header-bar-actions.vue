@@ -1,20 +1,28 @@
 <template>
-	<slot name="prepend" />
+	<div class="prepend">
+		<slot name="prepend" />
+	</div>
+
 	<div class="actions">
 		<slot />
 	</div>
+
 	<slot name="append" />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.prepend {
+	margin-inline-end: 0.625rem;
+
+	&:empty {
+		display: contents;
+	}
+}
+
 .actions {
 	position: relative;
 	display: flex;
 	flex-shrink: 0;
-	gap: 0.4375rem;
-}
-
-.actions .v-button.secondary {
-	--v-icon-color: var(--theme--foreground);
+	gap: 0.125rem;
 }
 </style>

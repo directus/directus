@@ -9,7 +9,7 @@
 	--fast: 125ms;
 	--medium: 200ms;
 	--slow: 300ms;
-	--header-bar-height: 6.75rem;
+	--header-bar-height: 3.375rem;
 	--sub-header-height: 3rem;
 	--content-padding: 1.125rem;
 	--content-padding-bottom: 1.2656rem;
@@ -32,11 +32,6 @@
 	--focus-ring-offset-inset: calc(-1 * (var(--focus-ring-width) + var(--focus-ring-offset)));
 	--focus-ring-radius: var(--theme--border-radius);
 	--focus-ring-color: var(--theme--primary);
-
-	@media (width > 22.5rem) {
-		/* ~360px, not in breakpoints map */
-		--header-bar-height: 3.375rem;
-	}
 
 	@include mixins.breakpoint-up('sm') {
 		--content-padding: 3rem;

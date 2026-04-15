@@ -7,7 +7,6 @@ import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import FilesNotFound from './not-found.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -42,8 +41,6 @@ const router = useRouter();
 
 const form = ref<HTMLElement>();
 const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
@@ -117,28 +114,6 @@ useShortcut('meta+s', saveAndStay, form);
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		if (!item?.value?.folder) {
-			return [
-				{
-					name: t('file_library'),
-					to: '/files',
-				},
-			];
-		}
-
-		return [
-			{
-				name: t('file_library'),
-				to: { path: `/files/folders/${item.value.folder}` },
-			},
-		];
-	});
-
-	return { breadcrumb };
-}
 
 async function saveAndQuit() {
 	try {
@@ -254,10 +229,6 @@ function revert(values: Record<string, any>) {
 <template>
 	<FilesNotFound v-if="!loading && !item" />
 	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
-		<template #headline>
-			<VBreadcrumb :items="breadcrumb" />
-		</template>
-
 		<template #actions>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
