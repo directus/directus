@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { type Bus, createBus } from '@directus/memory';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 
@@ -15,7 +16,13 @@ export const useBus = () => {
 	}
 
 	if (redisConfigAvailable()) {
-		_cache.bus = createBus({ type: 'redis', redis: useRedis(), namespace: 'directus:bus' });
+		const env = useEnv();
+
+		_cache.bus = createBus({
+			type: 'redis',
+			redis: useRedis(),
+			namespace: (env['REDIS_BUS_NAMESPACE'] as string) ?? 'directus:bus',
+		});
 	} else {
 		_cache.bus = createBus({ type: 'local' });
 	}

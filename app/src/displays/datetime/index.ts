@@ -2,6 +2,7 @@ import { defineDisplay } from '@directus/extensions';
 import type { DeepPartial, Field } from '@directus/types';
 import DisplayDateTime from './datetime.vue';
 import { formatDate, FormatDateOptions } from '@/utils/format-date';
+import { getTimezoneOptions } from '@/utils/timezones';
 
 export default defineDisplay({
 	id: 'datetime',
@@ -87,6 +88,23 @@ export default defineDisplay({
 						},
 					},
 				);
+			}
+
+			if (field.type === 'timestamp') {
+				fields.push({
+					field: 'tz',
+					name: '$t:displays.datetime.timezone',
+					type: 'string',
+					meta: {
+						interface: 'select-dropdown',
+						width: 'half',
+						options: {
+							choices: getTimezoneOptions(),
+							allowNone: true,
+						},
+						note: '$t:displays.datetime.timezone_note',
+					},
+				});
 			}
 		} else {
 			fields.push(

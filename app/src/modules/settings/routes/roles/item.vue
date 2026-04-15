@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
@@ -14,7 +15,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -40,9 +40,8 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Role>(
 	ref('directus_roles'),
 	primaryKey,
-	{
-		deep: { users: { _limit: 0 } },
-	},
+	null,
+	{ deep: { users: { _limit: 0 } } },
 );
 
 const canInviteUsers = computed(() => !serverStore.auth.disableDefault);

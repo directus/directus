@@ -29,7 +29,19 @@ function handleClick({ role }: { role: string }) {
 
 <template>
 	<VList nav>
-		<VListItem :to="{ name: 'users-collection' }" exact :active="!currentRole">
+		<VListItem to="{ name: 'users-active' }" exact>
+			<VListItemIcon><VIcon name="group" /></VListItemIcon>
+			<VListItemContent>{{ $t('active_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem to="{ name: 'users-suspended' }" exact>
+			<VListItemIcon><VIcon name="group_off" /></VListItemIcon>
+			<VListItemContent>{{ $t('suspended_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem to="{ name: 'users-invited' }" exact>
+			<VListItemIcon><VIcon name="person_add" /></VListItemIcon>
+			<VListItemContent>{{ $t('invited_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem to="{ name: 'users-all' }" exact>
 			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
 			<VListItemContent>{{ $t('all_users') }}</VListItemContent>
 		</VListItem>

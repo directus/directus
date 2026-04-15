@@ -7,6 +7,7 @@ export { IllegalAssetTransformationError } from './illegal-asset-transformation.
 export { InternalServerError } from './internal.js';
 export { InvalidCredentialsError } from './invalid-credentials.js';
 export { InvalidForeignKeyError } from './invalid-foreign-key.js';
+export { InvalidInviteError } from './invalid-invite.js';
 export { InvalidIpError } from './invalid-ip.js';
 export { InvalidOtpError } from './invalid-otp.js';
 export { InvalidPayloadError } from './invalid-payload.js';
@@ -30,3 +31,4 @@ export { UnsupportedMediaTypeError } from './unsupported-media-type.js';
 export { UserSuspendedError } from './user-suspended.js';
 export { ValueOutOfRangeError } from './value-out-of-range.js';
 export { ValueTooLongError } from './value-too-long.js';
+export { TimeoutError } from './timeout.js';

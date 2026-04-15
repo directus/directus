@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { detectOverflow, Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
@@ -13,7 +14,6 @@ import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch } from 'vue';
 import TransitionBounce from '@/components/transition/bounce.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 
 interface Props {
@@ -152,6 +152,7 @@ function useActiveState() {
 	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
 		escapeDeactivates: false,
 		initialFocus: false,
+		fallbackFocus: () => menuEl.value!,
 		returnFocusOnDeactivate: !props.noFocusReturn,
 		allowOutsideClick: true,
 		clickOutsideDeactivates: props.closeOnClick,
@@ -495,6 +496,7 @@ function usePopper(
 					</div>
 					<div
 						ref="menuEl"
+						tabindex="-1"
 						class="v-menu-content"
 						:class="{ seamless }"
 						v-on="{

@@ -20,7 +20,7 @@ export function useDeploymentNavigation() {
 		try {
 			const data = await sdk.request<DeploymentConfig[]>(
 				readDeployments({
-					fields: ['provider', { projects: ['id', 'name'] }],
+					fields: ['provider', 'options', { projects: ['id', 'name'] }],
 				}),
 			);
 

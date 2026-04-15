@@ -84,6 +84,22 @@ export const LOCAL_TYPES = [
 
 export const RELATIONAL_TYPES = ['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'] as const;
 
+export const GENERATE_SPECIAL = [
+	'uuid',
+	'date-created',
+	'date-updated',
+	'role-created',
+	'role-updated',
+	'user-created',
+	'user-updated',
+] as const;
+
+export const TRANSLATIONS_STRIPPED_ON_CLONE_SPECIALS: [...typeof GENERATE_SPECIAL, 'no-data', 'cast-timestamp'] = [
+	...GENERATE_SPECIAL,
+	'no-data',
+	'cast-timestamp',
+] as const;
+
 export const FUNCTIONS = [
 	'year',
 	'month',
