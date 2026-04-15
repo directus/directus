@@ -230,7 +230,9 @@ async function revert(values: Record<string, any>) {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"

@@ -509,7 +509,9 @@ function discardAndLeave() {
 						</VCardActions>
 					</VCard>
 				</VDialog>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
 					:disabled="hasEdits === false"

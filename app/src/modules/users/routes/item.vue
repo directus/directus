@@ -289,14 +289,16 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<PrivateView :title="title" show-back back-to="/users">
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<VDialog
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
@@ -359,7 +361,9 @@ function revert(values: Record<string, any>) {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"

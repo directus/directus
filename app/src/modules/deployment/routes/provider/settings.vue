@@ -282,7 +282,9 @@ watch(
 				variant="ghost"
 				@click="confirmDelete = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="canUpdate || canManageProjects"
 				v-tooltip.bottom="$t('save')"

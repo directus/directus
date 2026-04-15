@@ -457,15 +457,15 @@ function clearFilters() {
 					icon="edit"
 					@click="batchEditActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
 					icon="add"
 					:to="addNewLink"
 					:disabled="createAllowed === false"
 				/>
-
-				<FlowDialogs v-bind="flowDialogsContext" />
 			</template>
 
 			<template #navigation>
@@ -560,6 +560,8 @@ function clearFilters() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+
+			<FlowDialogs v-bind="flowDialogsContext" />
 		</PrivateView>
 	</component>
 </template>

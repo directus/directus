@@ -228,15 +228,17 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<FilesNotFound v-if="!loading && !item" />
-	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
-		<template #actions>
+	<PrivateView v-else :title="loading || !item ? $t('loading') : (item.title ?? undefined)" show-back back-to="/files">
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
@@ -312,7 +314,9 @@ function revert(values: Record<string, any>) {
 				icon="tune"
 				@click="editActive = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"

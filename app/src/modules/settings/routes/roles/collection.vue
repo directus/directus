@@ -169,7 +169,9 @@ function navigateToRole({ item }: { item: Role }) {
 				:show-filter="false"
 				small
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('create_role')" :to="addNewLink" icon="add" />
 		</template>
 

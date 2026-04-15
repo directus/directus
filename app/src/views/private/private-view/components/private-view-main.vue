@@ -54,9 +54,9 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 <template>
 	<div ref="content-el" v-bind="$attrs" class="content">
 		<PrivateViewHeaderBar :title :inline-nav :icon :icon-color :show-back :back-to>
-			<template #actions:append><slot name="actions:append" /></template>
 			<template #actions:prepend><slot name="actions:prepend" /></template>
 			<template #actions><slot name="actions" /></template>
+			<template #actions:primary><slot name="actions:primary" /></template>
 			<template #title-outer:append><slot name="title-outer:append" /></template>
 			<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
 			<template #title:append><slot name="title:append" /></template>

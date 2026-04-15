@@ -657,14 +657,16 @@ function useItemNavigation() {
 			/>
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<PrivateViewHeaderBarActionButton
 				v-if="previewUrl"
 				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -739,7 +741,9 @@ function useItemNavigation() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentVersion === null"
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
@@ -792,8 +796,6 @@ function useItemNavigation() {
 					</VMenu>
 				</template>
 			</PrivateViewHeaderBarActionButton>
-
-			<FlowDialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
@@ -930,6 +932,8 @@ function useItemNavigation() {
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
+
+		<FlowDialogs v-bind="flowDialogsContext" />
 	</PrivateView>
 </template>
 

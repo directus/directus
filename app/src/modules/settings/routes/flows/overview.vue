@@ -155,7 +155,7 @@ function onFlowDrawerCompletion(id: string) {
 			<SettingsNavigation />
 		</template>
 
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
 				:disabled="createAllowed === false"

@@ -1,28 +1,45 @@
 <template>
-	<div class="prepend">
-		<slot name="prepend" />
-	</div>
-
 	<div class="actions">
-		<slot />
-	</div>
+		<div class="prepend">
+			<slot name="prepend" />
+		</div>
 
-	<slot name="append" />
+		<div class="default">
+			<slot />
+		</div>
+
+		<div class="primary">
+			<slot name="primary" />
+		</div>
+	</div>
 </template>
 
 <style scoped lang="scss">
-.prepend {
-	margin-inline-end: 0.625rem;
-
-	&:empty {
-		display: contents;
-	}
-}
-
 .actions {
 	position: relative;
 	display: flex;
-	flex-shrink: 0;
+	align-items: center;
+	gap: 0.625rem;
+}
+
+.default {
+	position: relative;
+	display: flex;
+	align-items: center;
 	gap: 0.125rem;
+}
+
+.primary {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+}
+
+.prepend,
+.default,
+.primary {
+	&:empty {
+		display: contents;
+	}
 }
 </style>

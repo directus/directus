@@ -73,7 +73,7 @@ const showNavToggle = computed(() => {
 			<PrivateViewHeaderBarActions>
 				<template #prepend><slot name="actions:prepend" /></template>
 				<slot name="actions" />
-				<template #append><slot name="actions:append" /></template>
+				<template #primary><slot name="actions:primary" /></template>
 			</PrivateViewHeaderBarActions>
 
 			<PrivateViewHeaderBarActionButton
