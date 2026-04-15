@@ -183,14 +183,14 @@ async function onClick(event: MouseEvent) {
 		</component>
 
 		<VMenu v-if="$slots['split-menu']" show-arrow>
-			<template #activator="{ toggle: toggleSplitMenu }">
+			<template #activator="{ toggle: toggleSplitMenu, active: splitMenuActive }">
 				<button
 					type="button"
 					class="split-menu-button"
 					:class="[
 						sizeClass,
 						{
-							active: isActiveRoute,
+							active: splitMenuActive,
 							outlined,
 							dashed,
 						},
@@ -223,7 +223,7 @@ async function onClick(event: MouseEvent) {
 		--v-button-color-disabled             [var(--theme--foreground-subdued)]
 		--v-button-background-color           [var(--theme--primary)]
 		--v-button-background-color-hover     [var(--theme--primary-accent)]
-		--v-button-background-color-active    [var(--theme--primary)]
+		--v-button-background-color-active    [var(--theme--primary-accent)]
 		--v-button-background-color-disabled  [var(--theme--background-normal)]
 		--v-button-font-size                  [0.875rem]
 		--v-button-font-weight                [600]
@@ -236,33 +236,37 @@ async function onClick(event: MouseEvent) {
 .info {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--blue);
 	--v-button-background-color-hover: var(--blue-125);
-	--v-button-background-color-active: var(--blue);
+	--v-button-background-color-active: var(--blue-125);
 }
 
 .success {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--theme--success);
 	--v-button-background-color-hover: var(--success-125);
-	--v-button-background-color-active: var(--theme--success);
+	--v-button-background-color-active: var(--success-125);
 }
 
 .warning {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--theme--warning);
 	--v-button-background-color-hover: var(--warning-125);
-	--v-button-background-color-active: var(--theme--warning);
+	--v-button-background-color-active: var(--warning-125);
 }
 
 .danger {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-125);
-	--v-button-background-color-active: var(--theme--danger);
+	--v-button-background-color-active: var(--danger-125);
 }
 
 .secondary {
@@ -487,10 +491,13 @@ async function onClick(event: MouseEvent) {
 }
 
 .active {
-	--v-button-color: var(--v-button-color-active, var(--foreground-inverted)) !important;
-	--v-button-color-hover: var(--v-button-color-active, var(--foreground-inverted)) !important;
-	--v-button-background-color: var(--v-button-background-color-active, var(--theme--primary)) !important;
-	--v-button-background-color-hover: var(--v-button-background-color-active, var(--theme--primary)) !important;
+	&.button,
+	&.split-menu-button {
+		--v-button-color: var(--v-button-color-active, var(--foreground-inverted));
+		--v-button-color-hover: var(--v-button-color-active, var(--foreground-inverted));
+		--v-button-background-color: var(--v-button-background-color-active, var(--theme--primary-accent));
+		--v-button-background-color-hover: var(--v-button-background-color-active, var(--v-button-background-color));
+	}
 }
 
 .tile {
