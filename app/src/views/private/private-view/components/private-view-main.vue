@@ -98,7 +98,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			</template>
 
 			<template #end>
-				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet sidebar-border" />
+				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet" />
 				<PrivateViewDrawer
 					:collapsed="isMobile ? sidebarStore.collapsed : true"
 					placement="right"
@@ -182,10 +182,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 .sidebar-outlet {
 	block-size: 100%;
 	inline-size: 100%;
-}
-
-.sidebar-border {
-	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 }
 
 .main-content-container {
