@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Extracted Card subheader into LayoutSubheader component
+Extracted the card subheader into a reusable subheader component

@@ -337,7 +337,7 @@ function clearFilters() {
 			</VList>
 
 			<div v-else class="notifications-block">
-				<SubHeader>
+				<SubHeader class="sub-header">
 					<template #start>
 						<VCheckbox
 							:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
@@ -415,6 +415,10 @@ function clearFilters() {
 
 .content {
 	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
+}
+
+.sub-header {
+	margin-block-end: var(--content-padding);
 }
 
 .notifications {
