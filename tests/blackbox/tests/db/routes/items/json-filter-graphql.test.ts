@@ -901,7 +901,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							USER.ADMIN.TOKEN,
 							{
 								query: {
-									__variables: { jsonFilter: 'JSON' },
+									__variables: { jsonFilter: 'GraphQLJsonFilter' },
 									[localCollectionProducts]: {
 										__args: {
 											filter: { metadata: { _json: new VariableType('jsonFilter') } },
@@ -945,7 +945,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							USER.ADMIN.TOKEN,
 							{
 								query: {
-									__variables: { jsonFilter: 'JSON' },
+									__variables: { jsonFilter: 'GraphQLJsonFilter' },
 									[localCollectionProducts]: {
 										__args: {
 											filter: { metadata: { _json: new VariableType('jsonFilter') } },
@@ -992,7 +992,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								USER.ADMIN.TOKEN,
 								{
 									query: {
-										__variables: { jsonFilter: 'JSON' },
+										__variables: { jsonFilter: 'GraphQLJsonFilter' },
 										[localCollectionProducts]: {
 											__args: {
 												filter: { data: { _json: new VariableType('jsonFilter') } },
@@ -1023,6 +1023,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					},
 				);
 			});
+
 			// ------------------------------------------------------------------
 			// 5. JSON column _null / _nnull — new in Phase 1
 			//    These use the _null / _nnull fields on json_filter_operators
@@ -1104,7 +1105,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							USER.ADMIN.TOKEN,
 							{
 								query: {
-									__variables: { jsonFilter: 'JSON' },
+									__variables: { jsonFilter: 'GraphQLJsonFilter' },
 									[localCollectionProducts]: {
 										__args: {
 											filter: { metadata: { _json: new VariableType('jsonFilter') } },
