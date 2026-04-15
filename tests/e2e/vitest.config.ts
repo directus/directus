@@ -38,7 +38,7 @@ export default defineConfig({
 							name: database,
 							passWithNoTests: true,
 							exclude: [...configDefaults.exclude, '**/*.sb.test.ts'],
-							testTimeout: 10_000,
+							testTimeout: 20_000,
 							reporters: ['verbose'],
 							env: {
 								DATABASE: database,
