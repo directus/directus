@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { toBoolean } from '@directus/utils';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
@@ -75,10 +74,6 @@ router.get(
 router.get(
 	'/health',
 	asyncHandler(async (req, res, next) => {
-		if (toBoolean(env['HEALTHCHECK_ENABLED']) === false) {
-			throw new RouteNotFoundError({ path: req.path });
-		}
-
 		const service = new ServerService({
 			accountability: req.accountability,
 			schema: req.schema,
