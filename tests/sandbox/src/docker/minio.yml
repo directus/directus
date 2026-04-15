@@ -2,6 +2,7 @@ services:
   minio:
     # should stay compatible via S3 driver
     image: minio/minio
+    platform: linux/amd64
     command: server /data/minio/ --console-address :9001
     ports:
       - ${MINIO_PORT}:9000

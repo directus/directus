@@ -1,6 +1,7 @@
 services:
   oracle:
     image: gvenzl/oracle-xe:${DB_VERSION}
+    platform: linux/amd64
     ports:
       - ${DB_PORT}:1521
     environment:

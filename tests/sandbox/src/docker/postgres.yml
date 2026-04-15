@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgis/postgis:${DB_VERSION}
+    platform: linux/amd64
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USER}

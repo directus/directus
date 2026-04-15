@@ -2,6 +2,7 @@ services:
   cockroachdb:
     # change in the YY.R component denotes a major release
     image: cockroachdb/cockroach:${DB_VERSION}
+    platform: linux/amd64
     tmpfs: /cockroach/cockroach-data
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:

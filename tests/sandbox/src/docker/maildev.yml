@@ -1,6 +1,7 @@
 services:
   maildev:
     image: maildev/maildev:latest
+    platform: linux/amd64
     ports:
       - '${MAILDEV_WEBUI}:1080' # Web interface
       - '${EMAIL_SMTP_PORT}:1025' # SMTP server
