@@ -2,8 +2,8 @@
 import { omit } from 'lodash';
 import { computed } from 'vue';
 import ModuleBarAvatar from './module-bar-avatar.vue';
+import ModuleBarButton from './module-bar-button.vue';
 import ModuleBarLogo from './module-bar-logo.vue';
-import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
@@ -52,17 +52,15 @@ const modules = computed(() => {
 		<ModuleBarLogo />
 
 		<div class="modules">
-			<VButton
+			<ModuleBarButton
 				v-for="modulePart in modules"
 				:key="modulePart.id"
 				v-tooltip.right="modulePart.name"
-				icon
-				small
 				:to="modulePart.to"
 				:href="modulePart.href"
 			>
 				<VIcon :name="modulePart.icon" />
-			</VButton>
+			</ModuleBarButton>
 		</div>
 
 		<ModuleBarAvatar />
@@ -94,15 +92,6 @@ const modules = computed(() => {
 		padding-block: calc(var(--module-bar-gap) / 2);
 		gap: var(--module-bar-gap);
 		overflow: hidden auto;
-	}
-
-	.v-button {
-		--v-button-color: var(--theme--navigation--modules--button--foreground);
-		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
-		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
-		--v-button-background-color: var(--theme--navigation--modules--button--background);
-		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
-		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 	}
 }
 

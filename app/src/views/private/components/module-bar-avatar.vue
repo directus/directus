@@ -3,6 +3,7 @@ import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
+import ModuleBarButton from './module-bar-button.vue';
 import VAvatar from '@/components/v-avatar.vue';
 import VBadge from '@/components/v-badge.vue';
 import VButton from '@/components/v-button.vue';
@@ -53,24 +54,18 @@ const userFullName = userStore.fullName ?? undefined;
 <template>
 	<div class="module-bar-avatar">
 		<VBadge :value="unread" :disabled="unread == 0" class="notifications-badge">
-			<VButton
-				v-tooltip.right="$t('notifications')"
-				icon
-				small
-				class="notifications"
-				@click="notificationsDrawerOpen = true"
-			>
+			<ModuleBarButton v-tooltip.right="$t('notifications')" @click="notificationsDrawerOpen = true">
 				<VIcon name="notifications" />
-			</VButton>
+			</ModuleBarButton>
 		</VBadge>
 
 		<div class="space-bar">
 			<VDialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
 					<div class="sign-out-wrapper">
-						<VButton v-tooltip.right="$t('sign_out')" icon small class="sign-out" @click="on">
+						<ModuleBarButton v-tooltip.right="$t('sign_out')" @click="on">
 							<VIcon name="logout" />
-						</VButton>
+						</ModuleBarButton>
 					</div>
 				</template>
 
@@ -85,7 +80,7 @@ const userFullName = userStore.fullName ?? undefined;
 				</VCard>
 			</VDialog>
 
-			<VButton v-tooltip.right="userFullName" icon small :to="userProfileLink" :active="false" class="avatar-btn">
+			<ModuleBarButton v-tooltip.right="userFullName" :to="userProfileLink" :active="false" class="avatar-btn">
 				<VAvatar small>
 					<img
 						v-if="avatarURL && !avatarError"
@@ -96,7 +91,7 @@ const userFullName = userStore.fullName ?? undefined;
 					/>
 					<VIcon v-else name="account_circle" />
 				</VAvatar>
-			</VButton>
+			</ModuleBarButton>
 		</div>
 	</div>
 </template>
@@ -147,17 +142,6 @@ const userFullName = userStore.fullName ?? undefined;
 			opacity: 0.5;
 			z-index: 3;
 		}
-	}
-
-	.notifications,
-	.sign-out,
-	.avatar-btn {
-		--v-button-color: var(--theme--navigation--modules--button--foreground);
-		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
-		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
-		--v-button-background-color: var(--theme--navigation--modules--button--background);
-		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
-		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 	}
 
 	.sign-out-wrapper {
