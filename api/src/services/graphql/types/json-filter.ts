@@ -7,12 +7,14 @@ function validateJsonFilterValue(value: unknown): Record<string, Record<string, 
 	}
 
 	for (const [key, operatorObj] of Object.entries(value as Record<string, unknown>)) {
-		if (key === '_or' || key === '_and') {
+		if (key.trim().length === 0) {
+			throw new Error('json filter: keys must not be empty');
+		} else if (key === '_or' || key === '_and') {
 			if (!Array.isArray(operatorObj)) {
-				throw new Error(`json filter value: "${key}" must be an array of filter objects`);
+				throw new Error(`json filter: "${key}" must be an array of filter objects`);
 			}
 		} else if (typeof operatorObj !== 'object' || operatorObj === null || Array.isArray(operatorObj)) {
-			throw new Error(`json filter value: "${key}" must be a filter operator object (e.g. { "_eq": "value" })`);
+			throw new Error(`json filter: "${key}" must be a filter operator object (e.g. { "_eq": "value" })`);
 		}
 	}
 
