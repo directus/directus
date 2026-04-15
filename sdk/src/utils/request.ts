@@ -1,6 +1,19 @@
 import type { FetchInterface } from '../index.js';
 import { extractData } from './extract-data.js';
 
+export class RequestError extends Error {
+	response: unknown;
+	errors: any;
+	data?: any;
+
+	constructor(message: string, response: unknown, errors: any, data?: any) {
+		super(message);
+		this.response = response;
+		this.errors = errors;
+		if (data) this.data = data;
+	}
+}
+
 /**
  * Request helper providing default settings
  *
@@ -33,7 +46,7 @@ export const request = async <Output = any>(
 				result.message = result.errors[0].message;
 			}
 
-			return Promise.reject(result);
+			return Promise.reject(new RequestError(result.message, result.response, result.errors, result.data));
 		});
 	});
 };
