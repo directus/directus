@@ -14,12 +14,12 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"import": "./dist/index.js",
+			"import": "./dist/index.mjs",
 			"require": "./dist/index.cjs"
 		},
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/index.cjs",
 	"files": [
 		"dist"
 	],
