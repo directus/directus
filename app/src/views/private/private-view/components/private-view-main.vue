@@ -5,7 +5,7 @@ import { computed, type ComputedRef, inject, provide, useTemplateRef, watch } fr
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useNavBarStore } from '../stores/nav-bar';
-import { useSidebarStore } from '../stores/sidebar';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE, useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
@@ -54,10 +54,9 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 <template>
 	<div ref="content-el" v-bind="$attrs" class="content">
 		<PrivateViewHeaderBar :title :inline-nav :icon :icon-color :show-back :back-to>
-			<template #actions:append><slot name="actions:append" /></template>
 			<template #actions:prepend><slot name="actions:prepend" /></template>
 			<template #actions><slot name="actions" /></template>
-			<template #headline><slot name="headline" /></template>
+			<template #actions:primary><slot name="actions:primary" /></template>
 			<template #title-outer:append><slot name="title-outer:append" /></template>
 			<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
 			<template #title:append><slot name="title:append" /></template>
@@ -73,9 +72,9 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			collapsible
 			:collapsed-size="isMobile ? 0 : 54"
 			:collapse-threshold="70"
-			:min-size="252"
+			:min-size="SIDEBAR_MIN_SIZE"
 			:max-size="540"
-			:snap-points="[333]"
+			:snap-points="[SIDEBAR_DEFAULT_SIZE]"
 			:direction="userStore.textDirection"
 			:snap-threshold="6"
 			divider-hit-area="4px"
@@ -99,7 +98,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			</template>
 
 			<template #end>
-				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet sidebar-border" />
+				<div v-show="!isMobile" id="sidebar-desktop-outlet" class="sidebar-outlet" />
 				<PrivateViewDrawer
 					:collapsed="isMobile ? sidebarStore.collapsed : true"
 					placement="right"
@@ -121,6 +120,8 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .content {
 	block-size: 100%;
 	display: flex;
@@ -149,6 +150,12 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 		border-inline-start: none;
 		border-start-start-radius: 0;
 	}
+
+	&:deep(> .sp-start) {
+		@include mixins.breakpoint-up('sm') {
+			border-inline-end: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+		}
+	}
 }
 
 .scrolling-container {
@@ -175,10 +182,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 .sidebar-outlet {
 	block-size: 100%;
 	inline-size: 100%;
-}
-
-.sidebar-border {
-	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 }
 
 .main-content-container {

@@ -206,12 +206,6 @@ const Rules = Type.Object({
 
 	header: Type.Optional(
 		Type.Object({
-			headline: Type.Optional(
-				Type.Object({
-					foreground: Type.Optional(Type.Ref(Color)),
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-				}),
-			),
 			title: Type.Optional(
 				Type.Object({
 					foreground: Type.Optional(Type.Ref(Color)),

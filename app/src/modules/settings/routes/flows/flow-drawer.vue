@@ -270,7 +270,7 @@ function onApply() {
 			</VTabItem>
 		</VTabsItems>
 
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'flow_setup'"
 				v-tooltip.bottom="isNew ? $t('next') : $t('save')"

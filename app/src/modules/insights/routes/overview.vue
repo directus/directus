@@ -265,7 +265,9 @@ async function batchDelete() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<DashboardDialog v-model="createDialogActive">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton

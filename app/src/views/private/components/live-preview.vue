@@ -22,6 +22,7 @@ import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { parseUrl } from '@/utils/parse-url';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
 declare global {
 	interface Window {
@@ -472,9 +473,9 @@ function useUrls() {
 			collapsible
 			:collapsed-size="0"
 			:collapse-threshold="70"
-			:min-size="252"
+			:min-size="SIDEBAR_MIN_SIZE"
 			:max-size="540"
-			:snap-points="[333]"
+			:snap-points="[SIDEBAR_DEFAULT_SIZE]"
 			:snap-threshold="6"
 			:transition-duration="125"
 			divider-hit-area="4px"

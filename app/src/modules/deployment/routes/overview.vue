@@ -5,7 +5,6 @@ import DeploymentNavigation from '../components/navigation.vue';
 import ProviderSetupDrawer from '../components/provider-setup-drawer.vue';
 import { useDeploymentNavigation } from '../composables/use-deployment-navigation';
 import { availableProviders } from '../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -79,10 +78,6 @@ function onSetupComplete() {
 
 <template>
 	<PrivateView :title="$t('deployment.overview.overview')" icon="rocket_launch">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>

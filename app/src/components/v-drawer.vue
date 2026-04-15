@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { translateShortcut } from '@directus/composables';
 import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
-import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 export interface Props {
 	title: string;
-	subtitle?: string | null;
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
@@ -23,7 +20,6 @@ export interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	subtitle: null,
 	modelValue: undefined,
 	persistent: false,
 	icon: 'box',
@@ -63,31 +59,18 @@ const internalActive = computed({
 		</template>
 
 		<article class="v-drawer">
-			<PrivateViewHeaderBarActionButton
-				v-if="cancelable"
-				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
-				class="cancel"
-				icon="close"
-				variant="ghost"
-				@click="$emit('cancel')"
-			/>
-
-			<VDrawerHeader :title :icon :icon-color @cancel="$emit('cancel')">
-				<template #title><slot name="title" /></template>
-				<template #headline>
-					<slot name="subtitle">
-						<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-					</slot>
-				</template>
-
+			<VDrawerHeader :title :icon :icon-color :has-sidebar="!!$slots.sidebar" :cancelable @cancel="$emit('cancel')">
 				<template #title-outer:prepend>
 					<slot name="title-outer:prepend" />
+				</template>
+				<template #title><slot name="title" /></template>
+				<template #title-outer:append>
+					<slot name="title-outer:append" />
 				</template>
 
 				<template #actions:prepend><slot name="actions:prepend" /></template>
 				<template #actions><slot name="actions" /></template>
-				<template #actions:append><slot name="actions:append" /></template>
-				<template #title:append><slot name="header:append" /></template>
+				<template #actions:primary><slot name="actions:primary" /></template>
 			</VDrawerHeader>
 
 			<div class="content">
@@ -122,23 +105,6 @@ const internalActive = computed({
 	max-inline-size: 48.125rem;
 	block-size: 100%;
 	background-color: var(--theme--shell--background);
-
-	.cancel {
-		--focus-ring-color: var(--theme--primary-subdued);
-
-		display: none;
-		position: absolute;
-		inset-block-start: 0.6875rem;
-		inset-inline-start: -3.125rem;
-
-		@include mixins.breakpoint-up('lg') {
-			display: inline-flex;
-		}
-	}
-
-	.spacer {
-		flex-grow: 1;
-	}
 
 	.header-icon {
 		--v-button-background-color: var(--theme--background-normal);

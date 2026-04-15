@@ -463,8 +463,8 @@ function setAspectRatio() {
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<template #subtitle>
-			<span class="warning">{{ $t('changes_are_permanent') }}</span>
+		<template #title-outer:append>
+			<VIcon v-tooltip.bottom="$t('changes_are_permanent')" name="error" class="warning-icon" />
 		</template>
 
 		<div v-if="loading" class="loader">
@@ -587,7 +587,7 @@ function setAspectRatio() {
 			</div>
 		</div>
 
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"
@@ -623,7 +623,7 @@ function setAspectRatio() {
 
 .editor-container {
 	inline-size: 100%;
-	block-size: calc(100% - (3.6875rem + 1.375rem + 1.375rem)); /* header height + 2x margin */
+	block-size: 100%;
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
@@ -672,8 +672,12 @@ function setAspectRatio() {
 	font-feature-settings: 'tnum';
 }
 
-.warning {
-	color: var(--theme--warning);
+.warning-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	&:hover {
+		--v-icon-color: var(--theme--warning);
+	}
 }
 
 .toolbar-button {

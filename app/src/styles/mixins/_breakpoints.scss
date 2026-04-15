@@ -16,19 +16,19 @@ $breakpoints: (
 }
 
 @mixin breakpoint-up($name) {
-	@media (width >= #{breakpoint-value($name)}) {
+	@media (width > #{breakpoint-value($name)}) {
 		@content;
 	}
 }
 
 @mixin breakpoint-down($name) {
-	@media (width < #{breakpoint-value($name)}) {
+	@media (width <= #{breakpoint-value($name)}) {
 		@content;
 	}
 }
 
 @mixin breakpoint-between($lower, $upper) {
-	@media (width >= #{breakpoint-value($lower)}) and (width < #{breakpoint-value($upper)}) {
+	@media (width > #{breakpoint-value($lower)}) and (width <= #{breakpoint-value($upper)}) {
 		@content;
 	}
 }

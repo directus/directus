@@ -5,7 +5,6 @@ import { mergeFilters } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VInfo from '@/components/v-info.vue';
@@ -166,15 +165,13 @@ function useActions() {
 				<slot :name="slot" v-bind="scope" />
 			</template>
 
-			<template #subtitle>
-				<VBreadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
-			</template>
-
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="presetFilter" :collection="collection" />
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
 					:disabled="!hasSelectionChanged"
@@ -201,7 +198,5 @@ function useActions() {
 <style lang="scss" scoped>
 .layout {
 	display: contents;
-
-	--layout-offset-top: calc(var(--header-bar-height) - 0.0625rem);
 }
 </style>

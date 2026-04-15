@@ -77,7 +77,6 @@ const globalStubs: GlobalMountOptions = {
 		VCardActions: { template: '<div><slot /></div>' },
 		VButton: { template: '<button><slot /></button>' },
 		VIcon: true,
-		VBreadcrumb: true,
 		VSkeletonLoader: true,
 		OverlayItemContent: true,
 		CollabIndicatorHeader: true,

@@ -88,7 +88,6 @@ beforeEach(async () => {
 			'private-view',
 			'v-button',
 			'v-icon',
-			'v-breadcrumb',
 			'settings-navigation',
 			'sidebar-detail',
 			'v-info',
