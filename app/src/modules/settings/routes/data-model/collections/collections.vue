@@ -170,7 +170,9 @@ async function downloadSnapshot() {
 					/>
 				</template>
 			</CollectionDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('create_collection')"
 				to="/settings/data-model/+"
