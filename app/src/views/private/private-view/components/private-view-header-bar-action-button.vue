@@ -66,7 +66,7 @@ function useIcon() {
 		@click="$emit('click', $event)"
 	>
 		<VIcon v-if="showIcon" :name="icon" />
-		<span v-else class="label">{{ label }}</span>
+		<span v-else>{{ label }}</span>
 		<template v-if="$slots['split-menu']" #split-menu><slot name="split-menu" /></template>
 		<template #append-outer><slot name="append-outer" /></template>
 	</VButton>
