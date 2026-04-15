@@ -161,8 +161,8 @@ function toPage(page: number) {
 }
 
 .v-button :deep(.small) {
-	--v-button-min-width: 2rem;
-	padding-inline: 0;
+	--v-button-min-width: var(--v-button-height);
+	--v-button-padding: 0 0.375rem;
 }
 
 .v-button:first-child {
