@@ -112,6 +112,8 @@ const userFullName = userStore.fullName ?? undefined;
 
 	.v-avatar {
 		--v-avatar-color: var(--theme--navigation--modules--background);
+		z-index: 3;
+		color: inherit;
 
 		.avatar-image {
 			opacity: 0.8;
