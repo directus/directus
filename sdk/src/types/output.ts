@@ -130,7 +130,7 @@ export type JsonValue = JsonPrimitive | JsonPrimitive[] | { [key: string]: JsonV
  * Fields contains literal (non-widened) string types.
  */
 type ExtractJsonFieldOutput<Fields> = {
-	[K in Extract<Fields, `json(${string}, ${string})`> as JsonFieldAlias<K>]: JsonValue | null;
+	[K in Extract<Fields, `json(${string}, ${string})`> as JsonFieldAlias<K>]: JsonValue;
 };
 
 /**
