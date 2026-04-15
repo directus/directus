@@ -186,8 +186,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		try {
 			await api.get(`/versions/${versionId}`, { params: { fields: ['id'] } });
 			return true;
-		} catch {
-			return false;
+		} catch (confirmError: any) {
+			if (confirmError?.response?.status === 404) {
+				return false;
+			}
+
+			throw confirmError;
 		}
 	}
 
