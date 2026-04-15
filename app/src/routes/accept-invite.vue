@@ -18,14 +18,41 @@ const route = useRoute();
 
 const acceptToken = computed(() => route.query.token as string);
 
-const password = ref(null);
+const password = ref<string | null>(null);
 
 const creating = ref(false);
 const error = ref<RequestError | null>(null);
+const clientError = ref<string | null>(null);
 const done = ref(false);
 
+function isWeakPassword(value: string): boolean {
+	return value.length < 8;
+}
+
+function isPasswordPolicyValidationError(error: RequestError): boolean {
+	const firstError = error.response?.data?.errors?.[0];
+	const code = firstError?.extensions?.code ?? firstError?.code;
+	const field = firstError?.extensions?.field;
+	const type = firstError?.extensions?.type;
+	const message = String(firstError?.message ?? '').toLowerCase();
+
+	return (
+		(code === 'FAILED_VALIDATION' && field === 'password' && type === 'regex') ||
+		(code === 'FAILED_VALIDATION' && message.includes('password policy')) ||
+		(code === 'FAILED_VALIDATION' && message.includes('field "password"'))
+	);
+}
+
 const errorFormatted = computed(() => {
+	if (clientError.value) {
+		return clientError.value;
+	}
+
 	if (error.value) {
+		if (isPasswordPolicyValidationError(error.value)) {
+			return 'Password is too weak. Please use a stronger password that matches the project password policy.';
+		}
+
 		return translateAPIError(error.value);
 	}
 
@@ -39,6 +66,13 @@ const email = computed(() => jwtPayload(acceptToken.value).email);
 async function onSubmit() {
 	creating.value = true;
 	error.value = null;
+	clientError.value = null;
+
+	if (!password.value || isWeakPassword(password.value)) {
+		clientError.value = 'Password is too weak. Use at least 8 characters.';
+		creating.value = false;
+		return;
+	}
 
 	try {
 		await api.post(`/users/invite/accept`, {
@@ -77,7 +111,7 @@ useHead({
 
 			<VNotice v-if="done" type="success">{{ $t('account_created_successfully') }}</VNotice>
 
-			<VNotice v-if="error" type="danger">
+			<VNotice v-if="error || clientError" type="danger">
 				{{ errorFormatted }}
 			</VNotice>
 
