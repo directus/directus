@@ -36,6 +36,9 @@ jobs:
           - mssql
           - oracle
           - cockroachdb
+        sandbox:
+          - true
+          - false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -46,4 +49,4 @@ jobs:
       - name: Run tests
         run: |
           cd tests/e2e/
-          LOG_LEVEL=debug pnpm vitest --project ${{ matrix.vendor }} --no-file-parallelism
+          LOG_LEVEL=debug pnpm vitest --project ${{ matrix.vendor }}${{ matrix.sandbox && '-sb' || '' }} --no-file-parallelism

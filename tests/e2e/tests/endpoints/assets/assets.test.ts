@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import { join } from 'path';
 import { createDirectus, readAssetArrayBuffer, readAssetRaw, rest, staticToken, uploadFiles } from '@directus/sdk';
-import { database, port } from '@utils/constants.js';
+import { port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
