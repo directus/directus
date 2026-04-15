@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import VButton, { Props as VButtonProps } from '@/components/v-button.vue';
+import VButton, { type VButtonEmits, type VButtonProps } from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
 const { kind = 'normal', variant = 'solid' } = defineProps<{
@@ -15,9 +15,7 @@ const { kind = 'normal', variant = 'solid' } = defineProps<{
 	active?: VButtonProps['active'];
 }>();
 
-defineEmits<{
-	click: [];
-}>();
+defineEmits<VButtonEmits>();
 </script>
 
 <template>
@@ -35,7 +33,7 @@ defineEmits<{
 		icon
 		small
 		exact
-		@click="$emit('click')"
+		@click="$emit('click', $event)"
 	>
 		<VIcon :name="icon" />
 		<template #append-outer><slot name="append-outer" /></template>
