@@ -66,6 +66,7 @@ class FlowManager {
 	private uid = randomUUID();
 	private isLoaded = false;
 
+	private flows: Record<string, Flow> = {};
 	private operations: Map<string, OperationHandler> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
@@ -167,6 +168,10 @@ class FlowManager {
 		return handler(data, context);
 	}
 
+	public getFlow(id: string): Flow | undefined {
+		return this.flows[id];
+	}
+
 	private async load(): Promise<void> {
 		const logger = useLogger();
 
@@ -181,6 +186,8 @@ class FlowManager {
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
 		for (const flow of flowTrees) {
+			this.flows[flow.id] = flow;
+
 			if (flow.trigger === 'event') {
 				let events: string[] = [];
 
@@ -394,6 +401,7 @@ class FlowManager {
 			}
 		}
 
+		this.flows = {};
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
