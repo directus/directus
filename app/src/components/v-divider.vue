@@ -54,11 +54,11 @@ withDefaults(defineProps<Props>(), {
 
 	span.wrapper {
 		display: flex;
+		align-items: center;
 		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 
 		:slotted(.v-icon) {
 			margin-inline-end: 0.25rem;
-			transform: translateY(-0.0625rem);
 		}
 	}
 
