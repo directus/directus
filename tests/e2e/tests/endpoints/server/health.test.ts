@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { createDirectus, createUser, rest, serverHealth, staticToken } from '@directus/sdk';
-import { database, options, port } from '@utils/constants.js';
+import { database, env, options, port } from '@utils/constants.js';
 import { expect, test } from 'vitest';
 
 const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
@@ -58,7 +58,7 @@ test('reading health as admin', async () => {
 					threshold: 750,
 				},
 			],
-			...(options.cache
+			...(env.CACHE_ENABLED === 'true' && env.REDIS_ENABLED === 'true'
 				? {
 						'cache:responseTime': [
 							{
