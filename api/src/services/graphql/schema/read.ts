@@ -468,6 +468,9 @@ export async function getReadableTypes(
 					case GraphQLDate:
 						filterOperatorType = DateFilterOperators;
 						break;
+					case GraphQLJSON:
+						filterOperatorType = JsonFilterOperators;
+						break;
 					case GraphQLGeoJSON:
 						filterOperatorType = GeometryFilterOperators;
 						break;
@@ -505,10 +508,6 @@ export async function getReadableTypes(
 					acc[`${field.field}_func`] = {
 						type: CountFunctionFilterOperators,
 					};
-				}
-
-				if (field.type === 'json') {
-					acc[field.field] = { type: JsonFilterOperators };
 				}
 
 				return acc;
