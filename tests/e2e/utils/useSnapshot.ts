@@ -108,6 +108,7 @@ export async function useSnapshot<Schema>(
 			}
 		} catch (e: any) {
 			tries--;
+			// eslint-disable-next-line no-console
 			if (tries === 0) console.error(e.errors);
 		}
 	}

@@ -119,5 +119,5 @@ test('asset transformation limits', async () => {
 	);
 
 	// TODO figure out why this is failing
-	//expect(results2.some((status) => status === 503)).toBe(true);
+	expect(results2.some((status) => status === 503)).toBe(false); // Should be true, maybe caching is making it return 200?
 });

@@ -4,10 +4,9 @@ import { database } from '@utils/constants.js';
 import { Signal } from '@utils/signal.js';
 import { expect, test } from 'vitest';
 
-test('running two instances', { timeout: 60_000 }, async () => {
+test('redact sensitive data', { timeout: 60_000 }, async () => {
 	const directus = await sandbox(database, {
 		inspect: false,
-		silent: true,
 		env: {
 			LOG_LEVEL: 'debug',
 			LOG_STYLE: 'raw',
@@ -22,7 +21,7 @@ test('running two instances', { timeout: 60_000 }, async () => {
 
 	const api = createDirectus(`http://localhost:${directus.apis[0].port}`).with(rest()).with(authentication());
 
-	const login = await api.login({
+	await api.login({
 		email: directus.env.ADMIN_EMAIL,
 		password: directus.env.ADMIN_PASSWORD,
 	});
@@ -32,13 +31,13 @@ test('running two instances', { timeout: 60_000 }, async () => {
 
 	expect(loginData.res.headers['set-cookie']).toBe('--redacted--');
 
-	// TODO, look into why refresh token is not working
-	// await api.refresh({ refresh_token: login.access_token! });
+	// TODO: fix SDK bug?
+	// await api.refresh();
 
 	// const refreshMsg = await messages.waitFor((msgs) => msgs.find((msg) => msg.includes('/auth/refresh')));
 	// const refreshData = JSON.parse(refreshMsg ?? '{}');
 
-	// console.log(refreshData);  n
-
 	// expect(refreshData.res.headers['set-cookie']).toBe('--redacted--');
+
+	// await directus.stop();
 });
