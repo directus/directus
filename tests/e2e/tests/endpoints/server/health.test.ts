@@ -116,5 +116,7 @@ test('reading health as user', async () => {
 test('reading health public', async () => {
 	const userApi = createDirectus(`http://localhost:${port}`).with(rest());
 
-	await expect(async () => await userApi.request(serverHealth())).rejects.toThrowError("You don't have permission to access this.");
+	await expect(async () => await userApi.request(serverHealth())).rejects.toThrowError(
+		"You don't have permission to access this.",
+	);
 });
