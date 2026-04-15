@@ -8,9 +8,7 @@ export const SIDEBAR_MIN_SIZE = 252;
 export const useSidebarStore = defineStore('sidebar-store', () => {
 	const collapsed = useLocalStorage('sidebar-collapsed', false);
 
-	const DEFAULT_SIZE = SIDEBAR_DEFAULT_SIZE;
-	const MIN_SIZE = SIDEBAR_MIN_SIZE;
-	const storedSize = useLocalStorage('sidebar-size', DEFAULT_SIZE);
+	const storedSize = useLocalStorage('sidebar-size', SIDEBAR_DEFAULT_SIZE);
 	const enforceDefault = ref(false);
 
 	const size = computed({
@@ -18,13 +16,13 @@ export const useSidebarStore = defineStore('sidebar-store', () => {
 			const val = storedSize.value;
 
 			if (!Number.isFinite(val)) {
-				storedSize.value = DEFAULT_SIZE;
-				return DEFAULT_SIZE;
+				storedSize.value = SIDEBAR_DEFAULT_SIZE;
+				return SIDEBAR_DEFAULT_SIZE;
 			}
 
 			// Enforce default size when the sidebar is below the minimum size
-			if (enforceDefault.value && val <= MIN_SIZE) {
-				return DEFAULT_SIZE;
+			if (enforceDefault.value && val <= SIDEBAR_MIN_SIZE) {
+				return SIDEBAR_DEFAULT_SIZE;
 			}
 
 			return val;
@@ -32,7 +30,7 @@ export const useSidebarStore = defineStore('sidebar-store', () => {
 		set(val: number) {
 			if (Number.isFinite(val)) {
 				// Remove default size enforcement once the sidebar is larger than the minimum size
-				if (enforceDefault.value && val > MIN_SIZE) {
+				if (enforceDefault.value && val > SIDEBAR_MIN_SIZE) {
 					enforceDefault.value = false;
 				}
 

@@ -154,10 +154,10 @@ function onClickSelect() {
 .end {
 	display: flex;
 	align-items: center;
-	color: var(--theme--foreground-subdued);
 
 	.size-selector {
 		margin-inline-end: 0.875rem;
+		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -167,6 +167,7 @@ function onClickSelect() {
 
 	.sort-selector {
 		margin-inline-end: 0.4375rem;
+		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -175,6 +176,7 @@ function onClickSelect() {
 	}
 
 	.sort-direction {
+		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&.descending {
