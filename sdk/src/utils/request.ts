@@ -1,7 +1,7 @@
 import type { FetchInterface } from '../index.js';
 import { extractData } from './extract-data.js';
 
-class RequestError extends Error {
+export class RequestError extends Error {
 	response: unknown;
 	errors: any;
 	data?: any;
