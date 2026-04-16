@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "15.0.1",
+	"version": "15.0.2",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,7 +28,6 @@
 		"@directus/ai": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@sinclair/typebox": "catalog:",
 		"@types/express": "catalog:",
 		"@types/geojson": "catalog:",
 		"@types/nodemailer": "catalog:",

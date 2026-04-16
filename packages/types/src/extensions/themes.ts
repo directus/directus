@@ -1,365 +1,349 @@
-import type { Static } from '@sinclair/typebox';
-import { Type } from '@sinclair/typebox';
+import { z } from 'zod';
 
-const Color = Type.String({ $id: 'Color' });
-const FamilyName = Type.String({ $id: 'FamilyName' });
-const FontWeight = Type.String({ $id: 'FontWeight' });
-const Length = Type.String({ $id: 'Length' });
-const Percentage = Type.String({ $id: 'Percentage' });
-const BoxShadow = Type.String({ $id: 'BoxShadow' });
-const Number = Type.String({ $id: 'Number' });
-const Size = Type.String({ $id: 'Size' });
+const Color = z.string();
+const FamilyName = z.string().meta({ $ref: 'FamilyName' });
+const FontWeight = z.string().meta({ $ref: 'FontWeight' });
+const Length = z.string();
+const Percentage = z.string();
+const BoxShadow = z.string();
+const Number = z.string();
+const Size = z.string();
 
-const LineWidth = Type.Union([Type.String(), Type.Literal('thin'), Type.Literal('medium'), Type.Literal('thick')], {
-	$id: 'LineWidth',
-});
+const LineWidth = z.union([z.string(), z.literal('thin'), z.literal('medium'), z.literal('thick')]);
 
-const FormRules = Type.Optional(
-	Type.Object({
-		columnGap: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
-		rowGap: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
-		field: Type.Optional(
-			Type.Object({
-				label: Type.Optional(
-					Type.Object({
-						foreground: Type.Optional(Type.Ref(Color)),
-						fontFamily: Type.Optional(Type.Ref(FamilyName)),
-						fontWeight: Type.Optional(Type.Ref(FontWeight)),
-					}),
-				),
-				input: Type.Optional(
-					Type.Object({
-						background: Type.Optional(Type.Ref(Color)),
-						backgroundSubdued: Type.Optional(Type.Ref(Color)),
+const FormRules = z
+	.object({
+		columnGap: z.union([Length, Percentage]).optional(),
+		rowGap: z.union([Length, Percentage]).optional(),
+		field: z
+			.object({
+				label: z
+					.object({
+						foreground: Color.optional(),
+						fontFamily: FamilyName.optional(),
+						fontWeight: FontWeight.optional(),
+					})
+					.optional(),
+				input: z
+					.object({
+						background: Color.optional(),
+						backgroundSubdued: Color.optional(),
 
-						foreground: Type.Optional(Type.Ref(Color)),
-						foregroundSubdued: Type.Optional(Type.Ref(Color)),
+						foreground: Color.optional(),
+						foregroundSubdued: Color.optional(),
 
-						borderColor: Type.Optional(Type.Ref(Color)),
-						borderColorHover: Type.Optional(Type.Ref(Color)),
-						borderColorFocus: Type.Optional(Type.Ref(Color)),
+						borderColor: Color.optional(),
+						borderColorHover: Color.optional(),
+						borderColorFocus: Color.optional(),
 
-						boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-						boxShadowHover: Type.Optional(Type.Ref(BoxShadow)),
-						boxShadowFocus: Type.Optional(Type.Ref(BoxShadow)),
+						boxShadow: BoxShadow.optional(),
+						boxShadowHover: BoxShadow.optional(),
+						boxShadowFocus: BoxShadow.optional(),
 
-						height: Type.Optional(Type.Ref(Size)),
-						padding: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
-					}),
-				),
-			}),
-		),
-	}),
-);
+						height: Size.optional(),
+						padding: z.union([Length, Percentage]).optional(),
+					})
+					.optional(),
+			})
+			.optional(),
+	})
+	.optional();
 
-const Rules = Type.Object({
+const Rules = z.object({
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base border styles
-	borderRadius: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
-	borderWidth: Type.Optional(Type.Ref(LineWidth)),
+	borderRadius: z.union([Length, Percentage]).optional(),
+	borderWidth: LineWidth.optional(),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base color palette
-	foreground: Type.Optional(Type.Ref(Color)),
-	foregroundSubdued: Type.Optional(Type.Ref(Color)),
-	foregroundAccent: Type.Optional(Type.Ref(Color)),
+	foreground: Color.optional(),
+	foregroundSubdued: Color.optional(),
+	foregroundAccent: Color.optional(),
 
-	background: Type.Optional(Type.Ref(Color)),
+	background: Color.optional(),
 
-	backgroundNormal: Type.Optional(Type.Ref(Color)),
-	backgroundAccent: Type.Optional(Type.Ref(Color)),
-	backgroundSubdued: Type.Optional(Type.Ref(Color)),
+	backgroundNormal: Color.optional(),
+	backgroundAccent: Color.optional(),
+	backgroundSubdued: Color.optional(),
 
-	borderColor: Type.Optional(Type.Ref(Color)),
-	borderColorAccent: Type.Optional(Type.Ref(Color)),
-	borderColorSubdued: Type.Optional(Type.Ref(Color)),
+	borderColor: Color.optional(),
+	borderColorAccent: Color.optional(),
+	borderColorSubdued: Color.optional(),
 
-	primary: Type.Optional(Type.Ref(Color)),
-	primaryBackground: Type.Optional(Type.Ref(Color)),
-	primarySubdued: Type.Optional(Type.Ref(Color)),
-	primaryAccent: Type.Optional(Type.Ref(Color)),
+	primary: Color.optional(),
+	primaryBackground: Color.optional(),
+	primarySubdued: Color.optional(),
+	primaryAccent: Color.optional(),
 
-	secondary: Type.Optional(Type.Ref(Color)),
-	secondaryBackground: Type.Optional(Type.Ref(Color)),
-	secondarySubdued: Type.Optional(Type.Ref(Color)),
-	secondaryAccent: Type.Optional(Type.Ref(Color)),
+	secondary: Color.optional(),
+	secondaryBackground: Color.optional(),
+	secondarySubdued: Color.optional(),
+	secondaryAccent: Color.optional(),
 
-	success: Type.Optional(Type.Ref(Color)),
-	successBackground: Type.Optional(Type.Ref(Color)),
-	successSubdued: Type.Optional(Type.Ref(Color)),
-	successAccent: Type.Optional(Type.Ref(Color)),
+	success: Color.optional(),
+	successBackground: Color.optional(),
+	successSubdued: Color.optional(),
+	successAccent: Color.optional(),
 
-	warning: Type.Optional(Type.Ref(Color)),
-	warningBackground: Type.Optional(Type.Ref(Color)),
-	warningSubdued: Type.Optional(Type.Ref(Color)),
-	warningAccent: Type.Optional(Type.Ref(Color)),
+	warning: Color.optional(),
+	warningBackground: Color.optional(),
+	warningSubdued: Color.optional(),
+	warningAccent: Color.optional(),
 
-	danger: Type.Optional(Type.Ref(Color)),
-	dangerBackground: Type.Optional(Type.Ref(Color)),
-	dangerSubdued: Type.Optional(Type.Ref(Color)),
-	dangerAccent: Type.Optional(Type.Ref(Color)),
+	danger: Color.optional(),
+	dangerBackground: Color.optional(),
+	dangerSubdued: Color.optional(),
+	dangerAccent: Color.optional(),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Base fonts
-	fonts: Type.Optional(
-		Type.Object({
-			display: Type.Optional(
-				Type.Object({
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
-			sans: Type.Optional(
-				Type.Object({
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
-			serif: Type.Optional(
-				Type.Object({
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
-			monospace: Type.Optional(
-				Type.Object({
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
-		}),
-	),
+	fonts: z
+		.object({
+			display: z
+				.object({
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
+			sans: z
+				.object({
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
+			serif: z
+				.object({
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
+			monospace: z
+				.object({
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
+		})
+		.optional(),
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
-	navigation: Type.Optional(
-		Type.Object({
-			background: Type.Optional(Type.Ref(Color)),
-			backgroundAccent: Type.Optional(Type.Ref(Color)),
+	navigation: z
+		.object({
+			background: Color.optional(),
+			backgroundAccent: Color.optional(),
 
-			borderWidth: Type.Optional(Type.Ref(LineWidth)),
-			borderColor: Type.Optional(Type.Ref(Color)),
+			borderWidth: LineWidth.optional(),
+			borderColor: Color.optional(),
 
-			project: Type.Optional(
-				Type.Object({
-					background: Type.Optional(Type.Ref(Color)),
-					foreground: Type.Optional(Type.Ref(Color)),
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					borderWidth: Type.Optional(Type.Ref(LineWidth)),
-					borderColor: Type.Optional(Type.Ref(Color)),
-				}),
-			),
+			project: z
+				.object({
+					background: Color.optional(),
+					foreground: Color.optional(),
+					fontFamily: FamilyName.optional(),
+					borderWidth: LineWidth.optional(),
+					borderColor: Color.optional(),
+				})
+				.optional(),
 
-			modules: Type.Optional(
-				Type.Object({
-					background: Type.Optional(Type.Ref(Color)),
-					borderWidth: Type.Optional(Type.Ref(LineWidth)),
-					borderColor: Type.Optional(Type.Ref(Color)),
+			modules: z
+				.object({
+					background: Color.optional(),
+					borderWidth: LineWidth.optional(),
+					borderColor: Color.optional(),
 
-					button: Type.Optional(
-						Type.Object({
-							foreground: Type.Optional(Type.Ref(Color)),
-							foregroundHover: Type.Optional(Type.Ref(Color)),
-							foregroundActive: Type.Optional(Type.Ref(Color)),
+					button: z
+						.object({
+							foreground: Color.optional(),
+							foregroundHover: Color.optional(),
+							foregroundActive: Color.optional(),
 
-							background: Type.Optional(Type.Ref(Color)),
-							backgroundHover: Type.Optional(Type.Ref(Color)),
-							backgroundActive: Type.Optional(Type.Ref(Color)),
-						}),
-					),
-				}),
-			),
+							background: Color.optional(),
+							backgroundHover: Color.optional(),
+							backgroundActive: Color.optional(),
+						})
+						.optional(),
+				})
+				.optional(),
 
-			list: Type.Optional(
-				Type.Object({
-					icon: Type.Optional(
-						Type.Object({
-							foreground: Type.Optional(Type.Ref(Color)),
-							foregroundHover: Type.Optional(Type.Ref(Color)),
-							foregroundActive: Type.Optional(Type.Ref(Color)),
-						}),
-					),
+			list: z
+				.object({
+					icon: z
+						.object({
+							foreground: Color.optional(),
+							foregroundHover: Color.optional(),
+							foregroundActive: Color.optional(),
+						})
+						.optional(),
 
-					foreground: Type.Optional(Type.Ref(Color)),
-					foregroundHover: Type.Optional(Type.Ref(Color)),
-					foregroundActive: Type.Optional(Type.Ref(Color)),
+					foreground: Color.optional(),
+					foregroundHover: Color.optional(),
+					foregroundActive: Color.optional(),
 
-					background: Type.Optional(Type.Ref(Color)),
-					backgroundHover: Type.Optional(Type.Ref(Color)),
-					backgroundActive: Type.Optional(Type.Ref(Color)),
+					background: Color.optional(),
+					backgroundHover: Color.optional(),
+					backgroundActive: Color.optional(),
 
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontFamily: FamilyName.optional(),
 
-					divider: Type.Object({
-						borderColor: Type.Optional(Type.Ref(Color)),
-						borderWidth: Type.Optional(Type.Ref(LineWidth)),
+					divider: z.object({
+						borderColor: Color.optional(),
+						borderWidth: LineWidth.optional(),
 					}),
-				}),
-			),
-		}),
-	),
+				})
+				.optional(),
+		})
+		.optional(),
 
-	header: Type.Optional(
-		Type.Object({
-			background: Type.Optional(Type.Ref(Color)),
-			borderWidth: Type.Optional(Type.Ref(LineWidth)),
-			borderColor: Type.Optional(Type.Ref(Color)),
-			boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-			headline: Type.Optional(
-				Type.Object({
-					foreground: Type.Optional(Type.Ref(Color)),
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-				}),
-			),
-			title: Type.Optional(
-				Type.Object({
-					foreground: Type.Optional(Type.Ref(Color)),
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
-		}),
-	),
+	header: z
+		.object({
+			background: Color.optional(),
+			borderWidth: LineWidth.optional(),
+			borderColor: Color.optional(),
+			boxShadow: BoxShadow.optional(),
+			headline: z
+				.object({
+					foreground: Color.optional(),
+					fontFamily: FamilyName.optional(),
+				})
+				.optional(),
+			title: z
+				.object({
+					foreground: Color.optional(),
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
+		})
+		.optional(),
 
 	form: FormRules,
 
-	sidebar: Type.Optional(
-		Type.Object({
-			background: Type.Optional(Type.Ref(Color)),
-			foreground: Type.Optional(Type.Ref(Color)),
-			fontFamily: Type.Optional(Type.Ref(FamilyName)),
-			borderWidth: Type.Optional(Type.Ref(LineWidth)),
-			borderColor: Type.Optional(Type.Ref(Color)),
+	sidebar: z
+		.object({
+			background: Color.optional(),
+			foreground: Color.optional(),
+			fontFamily: FamilyName.optional(),
+			borderWidth: LineWidth.optional(),
+			borderColor: Color.optional(),
 
-			section: Type.Optional(
-				Type.Object({
-					toggle: Type.Optional(
-						Type.Object({
-							icon: Type.Optional(
-								Type.Object({
-									foreground: Type.Optional(Type.Ref(Color)),
-									foregroundHover: Type.Optional(Type.Ref(Color)),
-									foregroundActive: Type.Optional(Type.Ref(Color)),
-								}),
-							),
+			section: z
+				.object({
+					toggle: z
+						.object({
+							icon: z
+								.object({
+									foreground: Color.optional(),
+									foregroundHover: Color.optional(),
+									foregroundActive: Color.optional(),
+								})
+								.optional(),
 
-							foreground: Type.Optional(Type.Ref(Color)),
-							foregroundHover: Type.Optional(Type.Ref(Color)),
-							foregroundActive: Type.Optional(Type.Ref(Color)),
+							foreground: Color.optional(),
+							foregroundHover: Color.optional(),
+							foregroundActive: Color.optional(),
 
-							background: Type.Optional(Type.Ref(Color)),
-							backgroundHover: Type.Optional(Type.Ref(Color)),
-							backgroundActive: Type.Optional(Type.Ref(Color)),
+							background: Color.optional(),
+							backgroundHover: Color.optional(),
+							backgroundActive: Color.optional(),
 
-							fontFamily: Type.Optional(Type.Ref(FamilyName)),
+							fontFamily: FamilyName.optional(),
 
-							borderWidth: Type.Optional(Type.Ref(LineWidth)),
-							borderColor: Type.Optional(Type.Ref(Color)),
-						}),
-					),
+							borderWidth: LineWidth.optional(),
+							borderColor: Color.optional(),
+						})
+						.optional(),
 
 					form: FormRules,
-				}),
-			),
-		}),
-	),
+				})
+				.optional(),
+		})
+		.optional(),
 
-	public: Type.Optional(
-		Type.Object({
-			background: Type.Optional(Type.Ref(Color)),
-			foreground: Type.Optional(Type.Ref(Color)),
-			foregroundAccent: Type.Optional(Type.Ref(Color)),
+	public: z
+		.object({
+			background: Color.optional(),
+			foreground: Color.optional(),
+			foregroundAccent: Color.optional(),
 
-			art: Type.Optional(
-				Type.Object({
-					background: Type.Optional(Type.Ref(Color)),
-					primary: Type.Optional(Type.Ref(Color)),
-					secondary: Type.Optional(Type.Ref(Color)),
-					speed: Type.Optional(Type.Ref(Number)),
-				}),
-			),
+			art: z
+				.object({
+					background: Color.optional(),
+					primary: Color.optional(),
+					secondary: Color.optional(),
+					speed: Number.optional(),
+				})
+				.optional(),
 
 			form: FormRules,
-		}),
-	),
+		})
+		.optional(),
 
-	popover: Type.Optional(
-		Type.Object({
-			menu: Type.Optional(
-				Type.Object({
-					background: Type.Optional(Type.Ref(Color)),
-					borderRadius: Type.Optional(Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)]))),
-					boxShadow: Type.Optional(Type.Ref(BoxShadow)),
-				}),
-			),
-		}),
-	),
+	popover: z
+		.object({
+			menu: z
+				.object({
+					background: Color.optional(),
+					borderRadius: z.union([Length, Percentage]).optional(),
+					boxShadow: BoxShadow.optional(),
+				})
+				.optional(),
+		})
+		.optional(),
 
-	banner: Type.Optional(
-		Type.Object({
-			background: Type.Optional(Type.Ref(Color)),
-			padding: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
-			borderRadius: Type.Optional(Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)]))),
+	banner: z
+		.object({
+			background: Color.optional(),
+			padding: z.union([Length, Percentage]).optional(),
+			borderRadius: z.union([Length, Percentage]).optional(),
 
-			avatar: Type.Optional(
-				Type.Object({
-					background: Type.Optional(Type.Ref(Color)),
-					foreground: Type.Optional(Type.Ref(Color)),
-					borderRadius: Type.Optional(Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)]))),
-				}),
-			),
+			avatar: z
+				.object({
+					background: Color.optional(),
+					foreground: Color.optional(),
+					borderRadius: z.union([Length, Percentage]).optional(),
+				})
+				.optional(),
 
-			headline: Type.Optional(
-				Type.Object({
-					foreground: Type.Optional(Type.Ref(Color)),
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
+			headline: z
+				.object({
+					foreground: Color.optional(),
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
 
-			title: Type.Optional(
-				Type.Object({
-					foreground: Type.Optional(Type.Ref(Color)),
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
+			title: z
+				.object({
+					foreground: Color.optional(),
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
 
-			subtitle: Type.Optional(
-				Type.Object({
-					foreground: Type.Optional(Type.Ref(Color)),
-					fontFamily: Type.Optional(Type.Ref(FamilyName)),
-					fontWeight: Type.Optional(Type.Ref(FontWeight)),
-				}),
-			),
+			subtitle: z
+				.object({
+					foreground: Color.optional(),
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
 
-			art: Type.Optional(
-				Type.Object({
-					foreground: Type.Optional(Type.Ref(Color)),
-				}),
-			),
-		}),
-	),
+			art: z
+				.object({
+					foreground: Color.optional(),
+				})
+				.optional(),
+		})
+		.optional(),
 });
 
-export const ThemeSchema = Type.Object({
-	id: Type.String(),
-	name: Type.String(),
-	appearance: Type.Union([Type.Literal('light'), Type.Literal('dark')]),
+export const ThemeSchema = z.object({
+	id: z.string(),
+	name: z.string(),
+	appearance: z.union([z.literal('light'), z.literal('dark')]),
 	rules: Rules,
 });
 
-export const Definitions = {
-	$defs: {
-		Color,
-		FamilyName,
-		Length,
-		Percentage,
-		LineWidth,
-		BoxShadow,
-		Size,
-		Number,
-	},
-};
-
-export type Theme = Static<typeof ThemeSchema>;
+export type Theme = z.infer<typeof ThemeSchema>;
