@@ -2342,8 +2342,9 @@ interfaces:
     value_securely_saved: Value Securely Saved
     generate: Generate Token
     regenerate: بازسازی توکن
-    generate_success_copy: مطمئن شوید که توکن بالا را پشتیبان‌گیری و رونوشت کرده‌اید. به دلایل امنیتی، بعد از ذخیره‌سازی و بستن این صفحه امکان مشاهده مجدد توکن را نخواهید داشت.
+    regenerate_confirm_title: بازسازی توکن
     remove_token: حذف توکن
+    remove_confirm_title: حذف توکن
   system-raw-editor:
     system-raw-editor: ویرایشگر خام
     description: Allow entering of raw or mustache templating values
