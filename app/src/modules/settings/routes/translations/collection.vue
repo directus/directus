@@ -162,7 +162,7 @@ function clearFilters() {
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('create_custom_translation')"
-					:label="$t('create_custom_translation')"
+					:label="$t('create')"
 					:to="addNewLink"
 					icon="add"
 				/>
