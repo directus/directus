@@ -63,6 +63,10 @@ const applyJoiSchema = Joi.object({
 /**
  * Validates the diff against the current schema snapshot.
  *
+ * @param applyDiff The diff to validate with the expected hash
+ * @param currentSnapshotWithHash The current snapshot with hash to validate against
+ * @param force When true bypass hash validation. Use with caution as this can lead to unintended consequences, only use when the diff can be applied irrespective of the current schema.
+ *
  * @returns True if the diff can be applied (valid & not empty).
  */
 export function validateApplyDiff(
