@@ -1825,7 +1825,9 @@ interfaces:
     description: Hantera statisk åtkomsttoken
     generate: Generera token
     regenerate: Regenerera token
+    regenerate_confirm_title: Regenerera token
     remove_token: Ta bort token
+    remove_confirm_title: Ta bort token
   system-raw-editor:
     system-raw-editor: Råredigerare
   input-password:
