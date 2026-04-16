@@ -1,6 +1,6 @@
+import { DirectusFrame } from './directus-frame.ts';
 import { EditableStore } from './editable-store.ts';
 import { OverlayManager } from './overlay-manager.ts';
-import { DirectusFrame } from './directus-frame.ts';
 
 export class OverlayElement {
 	private hasNoDimensions: boolean = false;
@@ -21,7 +21,11 @@ export class OverlayElement {
 
 		if (EditableStore.highlightOverlayElements) this.toggleHighlight(true);
 
-		this.element.addEventListener('click', () => this.editButton.click());
+		this.element.addEventListener('click', (event) => {
+			const target = event.target as Node | null;
+			if (target && (this.editButton.contains(target) || this.aiButton?.contains(target))) return;
+			this.editButton.click();
+		});
 	}
 
 	private createContainer() {

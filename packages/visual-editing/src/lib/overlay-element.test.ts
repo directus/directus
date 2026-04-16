@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { EditableStore } from './editable-store.ts';
 import { OverlayElement } from './overlay-element.ts';
 import { OverlayManager } from './overlay-manager.ts';
-import { EditableStore } from './editable-store.ts';
 
 const mockIsAiEnabled = vi.fn().mockReturnValue(false);
 
@@ -162,6 +162,49 @@ describe('OverlayElement', () => {
 
 		overlay.toggleHighlight(false);
 		expect(getRect().classList.contains(OverlayManager.RECT_HIGHLIGHT_CLASS_NAME)).toBe(false);
+	});
+
+	describe('rect click forwarding', () => {
+		it('forwards clicks on rect to editButton', () => {
+			const overlay = new OverlayElement();
+			const spy = vi.spyOn(overlay.editButton, 'click');
+
+			getRect().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+			expect(spy).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not re-fire when clicking edit button directly', () => {
+			const overlay = new OverlayElement();
+			const spy = vi.spyOn(overlay.editButton, 'click');
+
+			overlay.editButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+			expect(spy).not.toHaveBeenCalled();
+		});
+
+		it('does not re-fire when clicking a nested child inside edit button', () => {
+			const overlay = new OverlayElement();
+			const child = document.createElement('span');
+			overlay.editButton.appendChild(child);
+			const spy = vi.spyOn(overlay.editButton, 'click');
+
+			child.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+			expect(spy).not.toHaveBeenCalled();
+		});
+
+		it('does not re-fire when clicking a nested child inside ai button', () => {
+			mockIsAiEnabled.mockReturnValue(true);
+			const overlay = new OverlayElement();
+			const child = document.createElement('span');
+			overlay.aiButton!.appendChild(child);
+			const spy = vi.spyOn(overlay.editButton, 'click');
+
+			child.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+			expect(spy).not.toHaveBeenCalled();
+		});
 	});
 
 	it('toggles highlight active class when toggleHighlightActive() is called', () => {
