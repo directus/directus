@@ -65,7 +65,11 @@ const applyJoiSchema = Joi.object({
  *
  * @returns True if the diff can be applied (valid & not empty).
  */
-export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapshotWithHash: SnapshotWithHash) {
+export function validateApplyDiff(
+	applyDiff: SnapshotDiffWithHash,
+	currentSnapshotWithHash: SnapshotWithHash,
+	force: boolean,
+) {
 	const { error } = applyJoiSchema.validate(applyDiff);
 	if (error) throw new InvalidPayloadError({ reason: error.message });
 
@@ -80,7 +84,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	}
 
 	// Diff can be applied due to matching hash
-	if (applyDiff.hash === currentSnapshotWithHash.hash) return true;
+	if (applyDiff.hash === currentSnapshotWithHash.hash || force) return true;
 
 	for (const diffCollection of applyDiff.diff.collections) {
 		const collection = diffCollection.collection;
