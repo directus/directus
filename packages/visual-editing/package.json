@@ -45,6 +45,16 @@
 			},
 			"default": "./dist/visual-editing.js"
 		},
+		"./types": {
+			"import": {
+				"types": "./dist/types.d.ts",
+				"default": "./dist/types.js"
+			},
+			"require": {
+				"types": "./dist/types.d.cts",
+				"default": "./dist/types.cjs"
+			}
+		},
 		"./package.json": "./package.json"
 	},
 	"main": "./dist/index.js",
@@ -61,6 +71,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:",
 		"happy-dom": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

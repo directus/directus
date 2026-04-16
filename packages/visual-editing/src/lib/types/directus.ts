@@ -1,8 +1,4 @@
-/** These types are shared with Directus */
-/** Keep in sync with Directus */
-
-// import { PrimaryKey } from '@directus/types';
-type PrimaryKey = string | number;
+import type { PrimaryKey } from '@directus/types';
 
 export type EditConfig = {
 	collection: string;

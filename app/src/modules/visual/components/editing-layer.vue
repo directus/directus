@@ -2,19 +2,18 @@
 import { useCollection } from '@directus/composables';
 import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { useEventListener } from '@vueuse/core';
-import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type {
 	AddToContextData,
 	CheckFieldAccessData,
 	EditConfig,
 	HighlightElementData,
-	NavigationData,
-	ReceiveData,
 	SavedData,
 	SendAction,
-} from '../types';
+} from '@directus/visual-editing/types';
+import { useEventListener } from '@vueuse/core';
+import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { NavigationData, ReceiveData } from '../types';
 import { sameOrigin } from '../utils/same-origin';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiStore } from '@/ai/stores/use-ai';
