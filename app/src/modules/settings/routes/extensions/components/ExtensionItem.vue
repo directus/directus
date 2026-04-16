@@ -111,7 +111,7 @@ function isAppExtension(type?: ExtensionType) {
 					v-if="extension.meta.source === 'registry' && !extension.bundle"
 					v-tooltip="$t('open_in_marketplace')"
 					class="marketplace-link"
-					:to="`/settings/marketplace/extension/${extension.id}`"
+					:to="{ name: 'marketplace-extension', params: { extensionId: extension.id } }"
 				>
 					{{ name }}
 				</RouterLink>
