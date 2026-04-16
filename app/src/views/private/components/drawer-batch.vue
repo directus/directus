@@ -245,7 +245,13 @@ function useTranslationsFields() {
 		@apply="save"
 	>
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" :loading="saving" icon="check" @click="save" />
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
+				:loading="saving"
+				icon="check"
+				@click="save"
+			/>
 		</template>
 
 		<div class="drawer-batch-content">

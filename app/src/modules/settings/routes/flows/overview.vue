@@ -158,6 +158,7 @@ function onFlowDrawerCompletion(id: string) {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
+				:label="$t('create_flow')"
 				:disabled="createAllowed === false"
 				icon="add"
 				@click="editFlow = '+'"

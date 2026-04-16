@@ -272,6 +272,7 @@ async function batchDelete() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')"
+						:label="$t('create_dashboard')"
 						:disabled="createAllowed === false"
 						icon="add"
 						@click="on"

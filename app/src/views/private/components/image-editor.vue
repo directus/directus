@@ -590,6 +590,7 @@ function setAspectRatio() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
 				icon="check"

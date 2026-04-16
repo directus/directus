@@ -195,7 +195,12 @@ function openDuplicateDialog(item: PolicyItem) {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('create_policy')" :to="addNewLink" icon="add" />
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('create_policy')"
+				:label="$t('create_policy')"
+				:to="addNewLink"
+				icon="add"
+			/>
 		</template>
 
 		<template #navigation>

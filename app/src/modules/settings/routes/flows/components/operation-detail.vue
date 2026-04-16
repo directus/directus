@@ -154,6 +154,7 @@ function saveOperation() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('done')"
+				:label="$t('done')"
 				:disabled="saveDisabled"
 				icon="check"
 				@click="saveOperation"

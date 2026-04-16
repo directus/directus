@@ -172,7 +172,12 @@ function navigateToRole({ item }: { item: Role }) {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('create_role')" :to="addNewLink" icon="add" />
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('create_role')"
+				:label="$t('create_role')"
+				:to="addNewLink"
+				icon="add"
+			/>
 		</template>
 
 		<template #navigation>

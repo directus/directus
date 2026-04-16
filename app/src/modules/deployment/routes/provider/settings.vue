@@ -288,6 +288,7 @@ watch(
 			<PrivateViewHeaderBarActionButton
 				v-if="canUpdate || canManageProjects"
 				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:disabled="!hasEdits"
 				:loading="saving"
 				icon="check"

@@ -68,6 +68,7 @@ async function reset() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:disabled="!isSaveAllowed"
 				:loading="isSaving"
 				icon="check"

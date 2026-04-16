@@ -174,6 +174,7 @@ function useActions() {
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
+					:label="$t('save')"
 					:disabled="!hasSelectionChanged"
 					icon="check"
 					@click="save"
