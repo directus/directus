@@ -364,6 +364,7 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
+		<!-- Wait for items to load before mounting: async re-render crashes WYSIWYG (TinyMCE manipulates the DOM outside Vue) -->
 		<TranslationForm
 			v-if="!itemsLoading"
 			v-model:lang="firstLang"
