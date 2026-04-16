@@ -2009,8 +2009,9 @@ interfaces:
     value_securely_saved: Wert sicher gespeichert
     generate: Token generieren
     regenerate: Token neu generieren
-    generate_success_copy: Stellen Sie sicher, dass Sie den obige Token sichern und kopieren. Aus Sicherheitsgründen können Sie den Token nach dem Speichern und Navigieren von dieser Seite nicht mehr anzeigen.
+    regenerate_confirm_title: Token neu generieren
     remove_token: Token löschen
+    remove_confirm_title: Token löschen
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
     description: Eingabe von Rohwerten oder Mustache-Templates erlauben
