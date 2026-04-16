@@ -9,6 +9,11 @@ export type GetAllowedSortFieldOptions = {
 	relation?: Relation;
 };
 
+// Field types that cannot be used as a sort column at the database level.
+// Picking one of these as a fallback sort causes the database to throw
+// (e.g. PostgreSQL "could not identify an ordering operator for type json").
+const NON_SORTABLE_TYPES = ['json', 'alias'];
+
 export async function getAllowedSort(options: GetAllowedSortFieldOptions, context: Context) {
 	// We'll default to the primary key for the standard sort output
 	let sortField: string | null = context.schema.collections[options.collection]!.primary;
@@ -25,8 +30,7 @@ export async function getAllowedSort(options: GetAllowedSortFieldOptions, contex
 
 	if (options.accountability && options.accountability.admin === false) {
 		// Verify that the user has access to the sort field
-
-		const allowedFields = await fetchAllowedFields(
+		const permissionBasedAllowedFields = await fetchAllowedFields(
 			{
 				collection: options.collection,
 				action: 'read',
@@ -34,6 +38,17 @@ export async function getAllowedSort(options: GetAllowedSortFieldOptions, contex
 			},
 			context,
 		);
+
+		// Exclude non-sortable field types from fallback candidates so we don't
+		// pick e.g. a JSON field and cause the database to error on sort.
+		const collectionFields = context.schema.collections[options.collection]?.fields ?? {};
+
+		const allowedFields = permissionBasedAllowedFields.filter((field) => {
+			if (field === '*') return true;
+			const fieldInfo = collectionFields[field];
+			if (!fieldInfo) return true;
+			return !NON_SORTABLE_TYPES.includes(fieldInfo.type);
+		});
 
 		if (allowedFields.length === 0) {
 			sortField = null;

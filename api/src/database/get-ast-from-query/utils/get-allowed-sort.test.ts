@@ -157,3 +157,43 @@ test('Returns the first allowed field if the user has no access to the sort fiel
 
 	expect(result).toEqual(['allowed-field']);
 });
+
+test('Skips non-sortable fallback fields (json) and picks the next allowed field', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('sort').string().sort();
+			c.field('tags').json();
+			c.field('title').string();
+		})
+		.build();
+
+	const accountability = { admin: false } as Accountability;
+
+	// User can read `tags` (json) and `title`, but not the sort field `sort`.
+	// Without filtering, the fallback would pick `tags` and the database would
+	// fail with "could not identify an ordering operator for type json".
+	vi.mocked(fetchAllowedFields).mockResolvedValue(['tags', 'title']);
+
+	const result = await getAllowedSort({ collection: 'collection', accountability }, { schema, knex: {} as Knex });
+
+	expect(result).toEqual(['title']);
+});
+
+test('Returns null if the only allowed fallback fields are non-sortable types', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('sort').string().sort();
+			c.field('tags').json();
+		})
+		.build();
+
+	const accountability = { admin: false } as Accountability;
+
+	vi.mocked(fetchAllowedFields).mockResolvedValue(['tags']);
+
+	const result = await getAllowedSort({ collection: 'collection', accountability }, { schema, knex: {} as Knex });
+
+	expect(result).toBeNull();
+});
