@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"lib": ["ES2023", "DOM"],
 		"allowImportingTsExtensions": true,
+		"isolatedDeclarations": false,
 		"noEmit": true
 	},
 	"include": ["src", "tests"],
