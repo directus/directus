@@ -70,21 +70,20 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	function valueLimitViolation() {
 		/**
 		 * NOTE:
-		 * Postgres doesn't return the offending column
+		 * Postgres doesn't return the offending column for 22001 errors. Prior implementations
+		 * attempted to derive a field name by parsing quoted identifiers out of the raw SQL
+		 * (e.g. `insert into "article" ("subtitle", "title") ...`), but that would surface the
+		 * first column listed in the INSERT rather than the column that actually violated the
+		 * limit. That produces misleading "field 'X' is too long" errors when X is unrelated
+		 * to the failure. Report the error without a field so callers can't act on a wrong one.
 		 */
 
-		const regex = /"(.*?)"/g;
-		const matches = error.message.match(regex);
-
-		if (!matches) return error;
-
-		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+		const collection = error.table ?? null;
 
 		return new ValueTooLongError({
 			collection,
-			field,
-			value: field ? data[field] : null,
+			field: null,
+			value: null,
 		});
 	}
 
