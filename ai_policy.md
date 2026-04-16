@@ -1,4 +1,4 @@
-# AI Usage Policy for Contributors
+# AI Usage Policy
 
 ## Overview
 
