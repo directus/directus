@@ -194,6 +194,6 @@ export function validateApplyDiff(
 	}
 
 	throw new InvalidPayloadError({
-		reason: `Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again`,
+		reason: `Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again or use the "force" query parameter to bypass this check`,
 	});
 }
