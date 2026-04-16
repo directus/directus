@@ -2007,7 +2007,6 @@ interfaces:
     value_securely_saved: Nirx bi Ewlehî Tê Tomarkirin
     generate: Tokena Biafirîne
     regenerate: Tokena Dîsa Biafirîne
-    generate_success_copy: Piştrast be ku tu tokena jorîn kopî dikî û rezerv dikî. Ji ber sedemên ewlehiyê, piştî tomarkirinê û dûrketina ji vê rûpelê, tu nikarî tokenê cardin bibînî.
     remove_token: Tokenê Rake
   system-raw-editor:
     system-raw-editor: Edîtora Xav

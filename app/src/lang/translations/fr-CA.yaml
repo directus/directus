@@ -2036,7 +2036,6 @@ interfaces:
     value_securely_saved: Valeur enregistrée en toute sécurité
     generate: Générer un jeton
     regenerate: Régénérer le jeton
-    generate_success_copy: Assurez-vous de sauvegarder et de copier le jeton ci-dessus. Pour des raisons de sécurité, vous ne pourrez plus voir le jeton après avoir enregistré et quitté cette page.
     remove_token: Supprimer le jeton
   system-raw-editor:
     system-raw-editor: Éditeur brut
