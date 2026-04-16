@@ -1,0 +1,7 @@
+.nuxt
+*.d.ts
+*.json
+dist
+coverage
+node_modules
+pnpm-lock.yaml
