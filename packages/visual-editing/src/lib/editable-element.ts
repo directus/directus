@@ -2,7 +2,7 @@ import observeRect from '@reach/observe-rect';
 import { DirectusFrame } from './directus-frame.ts';
 import { EditableStore } from './editable-store.ts';
 import { OverlayElement } from './overlay-element.ts';
-import type { EditConfig, EditConfigStrict, EditableElementOptions } from './types/index.ts';
+import type { EditableElementOptions, EditConfig, EditConfigStrict } from './types/index.ts';
 
 export class EditableElement {
 	private static readonly DATASET = 'directus';

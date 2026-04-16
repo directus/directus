@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { EditableStore } from './editable-store.ts';
-import { EditableElement } from './editable-element.ts';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setAttr } from '../index.ts';
+import { EditableElement } from './editable-element.ts';
+import { EditableStore } from './editable-store.ts';
 import type { EditConfig } from './types/index.ts';
 
 vi.mock('@reach/observe-rect', () => ({

@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { setAttr } from '../index.ts';
 import { EditableElement } from './editable-element.ts';
 import { EditableStore } from './editable-store.ts';
-import { setAttr } from '../index.ts';
 import type { EditConfig } from './types/index.ts';
 
 const mockObserve = vi.fn();

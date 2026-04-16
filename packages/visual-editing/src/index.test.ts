@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { apply, remove, disable, setAttr } from './index.ts';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { apply, disable, remove, setAttr } from './index.ts';
 import { DirectusFrame } from './lib/directus-frame.ts';
 import { EditableStore } from './lib/editable-store.ts';
 import type { EditConfig } from './lib/types/index.ts';
@@ -36,6 +36,8 @@ function setupFrame(overrides?: { connect?: boolean; confirm?: boolean; permitte
 			}),
 			isAiEnabled: vi.fn().mockReturnValue(false),
 		});
+
+		return this;
 	});
 }
 

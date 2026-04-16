@@ -1,5 +1,5 @@
-import { EditableStore } from './editable-store.ts';
 import type { EditableElement } from './editable-element.ts';
+import { EditableStore } from './editable-store.ts';
 import type { ConfirmData, HighlightElementData, ReceiveData, SavedData, SendAction } from './types/index.ts';
 
 /**

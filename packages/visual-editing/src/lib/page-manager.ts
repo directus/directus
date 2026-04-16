@@ -6,7 +6,7 @@ export class PageManager {
 
 		let lastUrl = '';
 		let lastTitle = '';
-		let debounceId: number;
+		let debounceId: ReturnType<typeof setTimeout>;
 
 		const debounce = (debounceFunction: () => void) => {
 			clearTimeout(debounceId);

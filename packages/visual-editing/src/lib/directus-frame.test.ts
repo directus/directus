@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DirectusFrame } from './directus-frame.ts';
 import { EditableStore } from './editable-store.ts';
 
