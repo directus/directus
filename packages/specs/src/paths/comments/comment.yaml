@@ -76,3 +76,6 @@ delete:
       description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'
