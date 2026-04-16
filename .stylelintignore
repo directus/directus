@@ -3,4 +3,3 @@
 !*.css
 !*.vue
 Dockerfile
-packages/visual-editing/test-website/**
