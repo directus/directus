@@ -26,11 +26,14 @@
 html {
 	/* font-size: left at browser default (typically 16px) for WCAG compliance — do not set a px value */
 	-webkit-tap-highlight-color: rgb(0 0 0 / 0);
+	overflow: hidden;
 }
 
 body {
 	@include mixins.type-text;
 
+	position: relative;
+	overflow: hidden;
 	background-color: var(--theme--background);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
