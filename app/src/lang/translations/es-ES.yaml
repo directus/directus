@@ -2028,8 +2028,9 @@ interfaces:
     value_securely_saved: Valor guardado de forma segura
     generate: Generar token
     regenerate: Regenerar token
-    generate_success_copy: Asegúrese de hacer una copia de seguridad y copiar el token de arriba. Por razones de seguridad, no podrá volver a ver el token después de guardar y navegar fuera de esta página.
+    regenerate_confirm_title: Regenerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor bruto
     description: Permitir la introducción de valores de plantillas en crudo o en mostacho
