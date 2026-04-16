@@ -3,7 +3,7 @@ import { EditableElement } from './lib/editable-element.ts';
 import { EditableStore } from './lib/editable-store.ts';
 import { OverlayManager } from './lib/overlay-manager.ts';
 import { PageManager } from './lib/page-manager.ts';
-import type { CheckFieldAccessData, EditConfig, EditableElementOptions } from './lib/types/index.ts';
+import type { CheckFieldAccessData, EditableElementOptions, EditConfig } from './lib/types/index.ts';
 
 export async function apply({
 	directusUrl,
@@ -13,7 +13,7 @@ export async function apply({
 }: {
 	directusUrl: string;
 	elements?: HTMLElement | HTMLElement[] | null;
-} & EditableElementOptions) {
+} & EditableElementOptions): Promise<{ remove(): void; enable(): void; disable(): void } | undefined> {
 	const directusFrame = new DirectusFrame();
 	const connected = directusFrame.connect(directusUrl);
 	if (!connected) return;
@@ -62,11 +62,11 @@ export async function apply({
 	};
 }
 
-export function remove() {
+export function remove(): void {
 	EditableStore.removeItems();
 }
 
-export function disable() {
+export function disable(): { enable(): void } {
 	const items = EditableStore.disableItems();
 	return {
 		enable() {
@@ -75,6 +75,6 @@ export function disable() {
 	};
 }
 
-export function setAttr(editConfig: EditConfig) {
+export function setAttr(editConfig: EditConfig): string {
 	return EditableElement.objectToEditAttr(editConfig);
 }

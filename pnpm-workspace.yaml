@@ -70,6 +70,7 @@ catalog:
   '@pnpm/workspace.find-packages': 1000.0.43
   '@pnpm/workspace.pkgs-graph': 1000.0.25
   '@popperjs/core': 2.11.8
+  '@reach/observe-rect': 1.2.0
   '@rollup/plugin-alias': 5.1.1
   '@rollup/plugin-commonjs': 28.0.9
   '@rollup/plugin-json': 6.1.0

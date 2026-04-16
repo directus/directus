@@ -18,7 +18,7 @@ A test website pre-configured to work with the Directus Visual Editor module is 
 This can be used for example purposes and to make it easy to set up an environment for testing or contributing.
 
 For detailed instructions on setting up the test environment see the
-[test website's readme.md](https://github.com/directus/visual-editing/blob/main/test-website/readme.md).
+[test website's readme.md](./test-website/readme.md).
 
 ## License
 

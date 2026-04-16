@@ -5,7 +5,8 @@
 	"homepage": "https://directus.io/docs/guides/content/visual-editor",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/directus/visual-editing.git"
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/visual-editing"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
@@ -34,8 +35,14 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs",
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			},
 			"default": "./dist/visual-editing.js"
 		},
 		"./package.json": "./package.json"
@@ -50,29 +57,13 @@
 		"test": "vitest --typecheck --watch=false"
 	},
 	"dependencies": {
-		"@reach/observe-rect": "1.2.0"
+		"@reach/observe-rect": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"@eslint/js": "9.39.2",
-		"eslint": "9.39.2",
-		"eslint-config-prettier": "10.1.8",
-		"eslint-plugin-vue": "10.7.0",
-		"globals": "17.3.0",
-		"prettier": "3.8.1",
-		"tsdown": "0.20.1",
-		"typescript": "5.9.3",
-		"typescript-eslint": "8.54.0",
-		"vitest": "4.0.18",
-		"vue-eslint-parser": "10.2.0"
-	},
-	"engines": {
-		"node": ">=22.12.0"
-	},
-	"packageManager": "pnpm@10.8.1",
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild"
-		]
+		"@directus/tsconfig": "catalog:",
+		"happy-dom": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
