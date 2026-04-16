@@ -42,6 +42,36 @@ vi.mock('./payload.js', () => {
 	return { PayloadService };
 });
 
+vi.mock('./items.js', async () => {
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
+	return mockItemsService();
+});
+
+const schema = new SchemaBuilder()
+	.collection('articles_track_all', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.options({ accountability: 'all' })
+	.collection('articles_track_activity', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.options({ accountability: 'activity' })
+	.collection('articles_track_none', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.options({ accountability: null })
+	.collection('directus_versions', (c) => {
+		c.field('id').id();
+		c.field('key').string();
+		c.field('item').string();
+		c.field('collection').string();
+		c.field('delta').json();
+	})
+	.build();
+
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
 
@@ -56,39 +86,21 @@ describe('Integration Tests', () => {
 
 	describe('Services / Versions', () => {
 		describe('save respects collection accountability tracking', () => {
-			const buildSchema = (accountability: 'all' | 'activity' | null) =>
-				new SchemaBuilder()
-					.collection('articles', (c) => {
-						c.field('id').id();
-						c.field('title').string();
-					})
-					.options({ accountability })
-					.collection('directus_versions', (c) => {
-						c.field('id').id();
-						c.field('key').string();
-						c.field('item').string();
-						c.field('collection').string();
-						c.field('delta').json();
-					})
-					.build();
-
-			const setupSpies = () => {
-				const readOneSpy = vi
-					.spyOn(ItemsService.prototype, 'readOne')
-					.mockResolvedValue({ item: '1', collection: 'articles', delta: {} });
-
-				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('1');
+			const setupVersion = (collection: string) => {
+				vi.mocked(ItemsService.prototype.readOne).mockResolvedValue({
+					item: '1',
+					collection,
+					delta: {},
+				});
 
 				const activityCreateSpy = vi.spyOn(ActivityService.prototype, 'createOne').mockResolvedValue(42);
-
 				const revisionsCreateSpy = vi.spyOn(RevisionsService.prototype, 'createOne').mockResolvedValue(99);
 
-				return { readOneSpy, updateOneSpy, activityCreateSpy, revisionsCreateSpy };
+				return { activityCreateSpy, revisionsCreateSpy };
 			};
 
 			test('creates both activity and revision when collection accountability is "all"', async () => {
-				const schema = buildSchema('all');
-				const { activityCreateSpy, revisionsCreateSpy } = setupSpies();
+				const { activityCreateSpy, revisionsCreateSpy } = setupVersion('articles_track_all');
 
 				const service = new VersionsService({ knex: db, schema });
 
@@ -98,17 +110,16 @@ describe('Integration Tests', () => {
 				expect(revisionsCreateSpy).toHaveBeenCalledTimes(1);
 
 				expect(activityCreateSpy).toHaveBeenCalledWith(
-					expect.objectContaining({ action: 'version_save', collection: 'articles', item: '1' }),
+					expect.objectContaining({ action: 'version_save', collection: 'articles_track_all', item: '1' }),
 				);
 
 				expect(revisionsCreateSpy).toHaveBeenCalledWith(
-					expect.objectContaining({ collection: 'articles', item: '1', version: 1, activity: 42 }),
+					expect.objectContaining({ collection: 'articles_track_all', item: '1', version: 1, activity: 42 }),
 				);
 			});
 
 			test('creates only activity when collection accountability is "activity"', async () => {
-				const schema = buildSchema('activity');
-				const { activityCreateSpy, revisionsCreateSpy } = setupSpies();
+				const { activityCreateSpy, revisionsCreateSpy } = setupVersion('articles_track_activity');
 
 				const service = new VersionsService({ knex: db, schema });
 
@@ -119,8 +130,7 @@ describe('Integration Tests', () => {
 			});
 
 			test('skips both activity and revision when collection accountability is null', async () => {
-				const schema = buildSchema(null);
-				const { activityCreateSpy, revisionsCreateSpy } = setupSpies();
+				const { activityCreateSpy, revisionsCreateSpy } = setupVersion('articles_track_none');
 
 				const service = new VersionsService({ knex: db, schema });
 
@@ -131,14 +141,17 @@ describe('Integration Tests', () => {
 			});
 
 			test('still updates the version delta when accountability tracking is disabled', async () => {
-				const schema = buildSchema(null);
-				const { updateOneSpy } = setupSpies();
+				setupVersion('articles_track_none');
 
 				const service = new VersionsService({ knex: db, schema });
 
 				const result = await service.save(1, { title: 'Updated' });
 
-				expect(updateOneSpy).toHaveBeenCalledWith(1, expect.objectContaining({ delta: expect.any(Object) }));
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(
+					1,
+					expect.objectContaining({ delta: expect.any(Object) }),
+				);
+
 				expect(result).toEqual(expect.objectContaining({ title: 'Updated' }));
 			});
 		});
