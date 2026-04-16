@@ -122,7 +122,7 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 		const diff: SnapshotDiffWithHash = res.locals['upload'];
-		await service.apply(diff, { force: 'force' in req.query });
+   	await service.apply(diff, { force: toBoolean(req.query.force) });
 		return next();
 	}),
 	respond,
