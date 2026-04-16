@@ -1711,8 +1711,9 @@ interfaces:
     value_securely_saved: Værdi sikkert gemt
     generate: Generer nøgle
     regenerate: Regenerer nøgle
-    generate_success_copy: Sørg for at sikkerhedskopiere og kopiere nøglen ovenfor. Af sikkerhedsmæssige årsager vil du ikke være i stand til at se nøglen igen efter at have gemt og navigeret væk fra denne side.
+    regenerate_confirm_title: Regenerer nøgle
     remove_token: Fjern nøgle
+    remove_confirm_title: Fjern nøgle
   system-raw-editor:
     system-raw-editor: Rå redigering
     description: Tillad indtastning af rå- eller overskægsskabelonværdier
