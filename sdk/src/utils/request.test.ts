@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, test, vi } from 'vitest';
-import { request, RequestError } from './request.js';
+import { RequestError } from './error.js';
+import { request } from './request.js';
 
 const fetchMock = vi.fn(async () => ({}));
 
@@ -40,13 +41,10 @@ describe('Request', () => {
 			});
 
 			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
-				new RequestError(
-					'',
-					expect.objectContaining({
-						ok: false,
-					}),
-					'Error',
-				),
+				new RequestError('', {
+					response: expect.objectContaining({ ok: false }) as unknown as Response,
+					errors: 'Error' as any,
+				}),
 			);
 		});
 
@@ -54,7 +52,10 @@ describe('Request', () => {
 			vi.mocked(fetchMock).mockResolvedValue({ errors: [] });
 
 			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
-				new RequestError('', expect.objectContaining({ errors: [] }), []),
+				new RequestError('', {
+					response: expect.objectContaining({ errors: [] }) as unknown as Response,
+					errors: [],
+				}),
 			);
 		});
 
@@ -65,7 +66,11 @@ describe('Request', () => {
 				vi.mocked(fetchMock).mockResolvedValue({ errors: [], data: type });
 
 				await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
-					new RequestError('', expect.objectContaining({ errors: [], data: type }), [], type),
+					new RequestError('', {
+						response: expect.objectContaining({ errors: [], data: type }) as unknown as Response,
+						errors: [],
+						data: type,
+					}),
 				);
 			});
 		});
@@ -74,7 +79,10 @@ describe('Request', () => {
 			vi.mocked(fetchMock).mockResolvedValue({ errors: 'Error' });
 
 			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
-				new RequestError('', expect.objectContaining({ errors: 'Error' }), 'Error'),
+				new RequestError('', {
+					response: expect.objectContaining({ errors: 'Error' }) as unknown as Response,
+					errors: 'Error' as any,
+				}),
 			);
 		});
 
@@ -82,7 +90,10 @@ describe('Request', () => {
 			vi.mocked(fetchMock).mockResolvedValue({ errors: [{ message: 'Error' }] });
 
 			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toThrowError(
-				new RequestError('Error', expect.objectContaining({ errors: [{ message: 'Error' }] }), [{ message: 'Error' }]),
+				new RequestError('Error', {
+					response: expect.objectContaining({ errors: [{ message: 'Error' }] }) as unknown as Response,
+					errors: [{ message: 'Error' }] as any,
+				}),
 			);
 		});
 	});
