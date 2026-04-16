@@ -2137,8 +2137,9 @@ interfaces:
     value_securely_saved: Значення надійно збережено
     generate: Генерувати токен
     regenerate: Оновити токен
-    generate_success_copy: Обов'язково створіть резервну копію та скопіюйте токен вище. З міркувань безпеки ви не зможете переглянути токен знову після збереження і перейти з цієї сторінки.
+    regenerate_confirm_title: Оновити токен
     remove_token: Видалити токен
+    remove_confirm_title: Видалити токен
   system-raw-editor:
     system-raw-editor: Редактор Raw
     description: Дозволити введення необроблених або шаблонізованих даних
