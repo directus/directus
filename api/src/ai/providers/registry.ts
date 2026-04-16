@@ -7,6 +7,19 @@ import type { AISettings, ProviderConfig } from './types.js';
 
 type ProviderRegistry = ReturnType<typeof createProviderRegistry>;
 
+/**
+ * The OpenAI-compatible SDK appends `/chat/completions` (and similar paths)
+ * itself. Users frequently paste the full OpenRouter/OpenAI completions URL,
+ * which results in a double-pathed request that 404s. Strip the suffix and
+ * any trailing slash so both conventions work.
+ */
+function normalizeOpenAICompatibleBaseUrl(baseUrl: string): string {
+	return baseUrl
+		.trim()
+		.replace(/\/+(?:chat\/)?completions\/?$/, '')
+		.replace(/\/+$/, '');
+}
+
 export function buildProviderConfigs(settings: AISettings): ProviderConfig[] {
 	const configs: ProviderConfig[] = [];
 
@@ -65,7 +78,7 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 					providers['openai-compatible'] = createOpenAICompatible({
 						name: settings?.openaiCompatibleName ?? 'openai-compatible',
 						apiKey: config.apiKey,
-						baseURL: config.baseUrl,
+						baseURL: normalizeOpenAICompatibleBaseUrl(config.baseUrl),
 						headers: customHeaders,
 					});
 				}
