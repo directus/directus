@@ -117,6 +117,15 @@ export const joiValidationErrorItemToErrorExtensions = (
 		}
 	}
 
+	// Joi emits several number.* error types (number.unsafe, number.infinity,
+	// number.precision, etc.) that don't map cleanly to any of our filter
+	// operators. Surface them as a generic format validation error rather than
+	// throwing, which previously caused the whole request to fail with a 500.
+	if (!extensions.type && joiType.startsWith('number.')) {
+		extensions.type = 'regex';
+		extensions.invalid = validationErrorItem.context?.value;
+	}
+
 	if (!extensions.type) {
 		throw new Error(`Couldn't extract validation error type from Joi validation error item`);
 	}
