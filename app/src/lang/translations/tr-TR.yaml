@@ -1953,8 +1953,9 @@ interfaces:
     value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
     generate: Erişim Anahtarı Üret
     regenerate: Yeniden Erişim Anahtarı Üret
-    generate_success_copy: Yukarıdaki belirteci yedeklediğinizden ve kopyaladığınızdan emin olun. Güvenlik nedeniyle, bu sayfayı kaydedip çıktıktan sonra jetonu tekrar göremeyeceksiniz.
+    regenerate_confirm_title: Yeniden Erişim Anahtarı Üret
     remove_token: Belirteci kaldır
+    remove_confirm_title: Belirteci kaldır
   system-raw-editor:
     system-raw-editor: Ham Düzenleyici
     description: Ham veya bıyık şablon değerlerinin girilmesine izin ver
