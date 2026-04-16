@@ -18,6 +18,7 @@ const {
 	kind?: VButtonProps['kind'];
 	variant?: 'solid' | 'ghost';
 	outlined?: VButtonProps['outlined'];
+	secondary?: VButtonProps['secondary'];
 	to?: VButtonProps['to'];
 	href?: VButtonProps['href'];
 	download?: VButtonProps['download'];
@@ -56,6 +57,7 @@ function useIcon() {
 		:active
 		:loading
 		:outlined
+		:secondary
 		:to
 		:href
 		:download
