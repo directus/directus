@@ -2110,8 +2110,9 @@ interfaces:
     value_securely_saved: Valor secretamente salvo
     generate: Gerar token
     regenerate: Regerar token
-    generate_success_copy: Certifique-se de fazer backup e copiar o token acima. Por motivos de segurança, você não poderá visualizar o token novamente depois de salvar e sair desta página.
+    regenerate_confirm_title: Regerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor "Raw"
     description: Permitir valores com templates "raw" ou "mustache"
