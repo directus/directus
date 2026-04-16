@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, Mock, test, vi } from 'vitest';
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, ref } from 'vue';
 import { useShortcut } from './use-shortcut.js';
 
 function getTestComponent(shortcut: string, handler: () => void) {
@@ -9,6 +9,19 @@ function getTestComponent(shortcut: string, handler: () => void) {
 			useShortcut(shortcut, handler);
 		},
 		render: () => h('div'),
+	});
+}
+
+function getScopedTestComponent(shortcut: string, handler: () => void) {
+	return defineComponent({
+		setup() {
+			const target = ref<HTMLElement>();
+			useShortcut(shortcut, handler, target);
+			return { target };
+		},
+		render() {
+			return h('div', { ref: 'target' });
+		},
 	});
 }
 
@@ -48,5 +61,26 @@ describe('useShortcut', () => {
 		await wrapper.trigger('keyup', { key: keys[0] });
 
 		expect(shortcutHandler).toHaveBeenCalledOnce();
+	});
+
+	test('should not trigger scoped shortcut when focus is outside the target element', async () => {
+		const keys = ['meta', 'k'];
+
+		// Focus sink outside of the scoped target — dispatch keydown events from here instead.
+		const focusSink = document.createElement('input');
+		document.body.appendChild(focusSink);
+
+		const testComponent = getScopedTestComponent(keys.join('+'), shortcutHandler);
+		mount(testComponent, { attachTo: document.body });
+
+		for (const key of keys) {
+			focusSink.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+		}
+
+		focusSink.dispatchEvent(new KeyboardEvent('keyup', { key: keys[0], bubbles: true }));
+
+		expect(shortcutHandler).not.toHaveBeenCalled();
+
+		focusSink.remove();
 	});
 });

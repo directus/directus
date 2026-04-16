@@ -36,11 +36,15 @@ export function useShortcut(
 		if (!reference.value) return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
 
-		if (
-			document.activeElement === ref ||
-			ref.contains(document.activeElement) ||
-			document.activeElement === document.body
-		) {
+		// Match when the shortcut target is focused or contains focus. When the target is the document
+		// body (the default for unscoped shortcuts) also match when nothing is focused, so that global
+		// shortcuts still fire on an "empty" page. Scoped shortcuts (those passed a specific element)
+		// must not fire on an unfocused page, otherwise they hijack global key presses like Cmd+K
+		// while the user is nowhere near the targeted element.
+		const isFocused = document.activeElement === ref || ref.contains(document.activeElement);
+		const isUnscopedGlobal = ref === document.body && document.activeElement === document.body;
+
+		if (isFocused || isUnscopedGlobal) {
 			event.preventDefault();
 			return handler(event, cancelNext);
 		}
