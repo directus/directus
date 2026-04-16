@@ -130,13 +130,13 @@ function toPage(page: number) {
 
 .v-pagination {
 	display: flex;
+	align-items: center;
 }
 
 .gap {
 	display: none;
 	margin: 0 0.25rem;
 	color: var(--theme--foreground-subdued);
-	line-height: 2;
 }
 
 @include mixins.breakpoint-up('sm') {
@@ -161,7 +161,8 @@ function toPage(page: number) {
 }
 
 .v-button :deep(.small) {
-	--v-button-min-width: 1.8125rem;
+	--v-button-min-width: var(--v-button-height);
+	--v-button-padding: 0 0.375rem;
 }
 
 .v-button:first-child {
