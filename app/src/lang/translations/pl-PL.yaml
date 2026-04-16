@@ -1971,8 +1971,9 @@ interfaces:
     value_securely_saved: Wartość bezpiecznie zapisana
     generate: Generuj token
     regenerate: Wygeneruj ponownie token
-    generate_success_copy: Wykonaj kopię zapasową i skopiuj token powyżej. Ze względów bezpieczeństwa nie będziesz w stanie wyświetlić tokenu ponownie po zapisaniu i opuszczeniu tej strony.
+    regenerate_confirm_title: Wygeneruj ponownie token
     remove_token: Usuń token
+    remove_confirm_title: Usuń token
   system-raw-editor:
     system-raw-editor: Edycja bezpośrednia
     description: Zezwalaj na wprowadzanie wartości szablonów surowych lub muszlowych
