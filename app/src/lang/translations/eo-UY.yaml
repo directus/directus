@@ -1050,7 +1050,9 @@ interfaces:
     system-token: Ĵetono
     generate: Generi ĵetonon
     regenerate: Regeneri ĵetonon
+    regenerate_confirm_title: Regeneri ĵetonon
     remove_token: Forigi la ĵetonon
+    remove_confirm_title: Forigi la ĵetonon
   system-raw-editor:
     system-raw-editor: Kruda redaktilo
   header:
