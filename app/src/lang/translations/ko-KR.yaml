@@ -2083,7 +2083,6 @@ interfaces:
     value_securely_saved: 값이 안전하기 저장 됨
     generate: 토큰 생성
     regenerate: 토큰 재생성
-    generate_success_copy: 위의 토큰을 백업하고 복사하십시오. 보안상의 이유로 이 페이지를 저장하고 탐색한 후에는 토큰을 다시 볼 수 없습니다.
     remove_token: 토큰 제거
   system-raw-editor:
     system-raw-editor: RAW 편집기

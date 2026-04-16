@@ -2002,7 +2002,6 @@ interfaces:
     value_securely_saved: Hodnota bezpečně uložena
     generate: Generovat token
     regenerate: Obnovit token
-    generate_success_copy: Ujistěte se, že si zálohujete a zkopírujete token uvedený výše. Z bezpečnostních důvodů nebudete moci znovu zobrazit token po uložení a opuštění této stránky.
     remove_token: Odstranit token
   system-raw-editor:
     system-raw-editor: Editor surových hodnot
