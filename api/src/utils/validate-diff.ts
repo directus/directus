@@ -68,7 +68,7 @@ const applyJoiSchema = Joi.object({
 export function validateApplyDiff(
 	applyDiff: SnapshotDiffWithHash,
 	currentSnapshotWithHash: SnapshotWithHash,
-	force: boolean,
+	force: boolean = false,
 ) {
 	const { error } = applyJoiSchema.validate(applyDiff);
 	if (error) throw new InvalidPayloadError({ reason: error.message });

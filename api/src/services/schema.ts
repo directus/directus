@@ -40,7 +40,7 @@ export class SchemaService {
 
 		const snapshotWithHash = this.getHashedSnapshot(currentSnapshot);
 
-		if (!validateApplyDiff(payload, snapshotWithHash, options?.force ?? false)) return;
+		if (!validateApplyDiff(payload, snapshotWithHash, options?.force)) return;
 
 		await applyDiff(currentSnapshot, payload.diff, { database: this.knex });
 	}
