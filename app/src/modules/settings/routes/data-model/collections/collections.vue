@@ -173,12 +173,7 @@ async function downloadSnapshot() {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('create_collection')"
-				:label="$t('create_collection')"
-				to="/settings/data-model/+"
-				icon="add"
-			/>
+			<PrivateViewHeaderBarActionButton :label="$t('create_collection')" to="/settings/data-model/+" icon="add" />
 		</template>
 
 		<template #navigation>

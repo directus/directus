@@ -641,20 +641,13 @@ function discardAndLeave() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="editMode"
-				v-tooltip.bottom="$t('save')"
 				:label="$t('save')"
 				:loading="saving"
 				icon="check"
 				@click="saveChanges"
 			/>
 
-			<PrivateViewHeaderBarActionButton
-				v-else
-				v-tooltip.bottom="$t('edit_flow')"
-				:label="$t('edit_flow')"
-				icon="edit"
-				@click="editMode = !editMode"
-			/>
+			<PrivateViewHeaderBarActionButton v-else :label="$t('edit_flow')" icon="edit" @click="editMode = !editMode" />
 		</template>
 
 		<template #sidebar>

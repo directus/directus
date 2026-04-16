@@ -143,7 +143,6 @@ const stageChanges = () => {
 	>
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('done')"
 				:label="$t('done')"
 				:disabled="!panel.type"
 				icon="check"

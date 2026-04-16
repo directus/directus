@@ -233,7 +233,6 @@ const refreshInterval = computed({
 		<template #actions:primary>
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('create_panel')"
 					:label="$t('create_panel')"
 					secondary
 					:to="`/insights/${currentDashboard.id}/+`"
@@ -241,7 +240,6 @@ const refreshInterval = computed({
 				/>
 
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
 					:label="$t('save')"
 					:disabled="!hasEdits"
 					:loading="saving"
@@ -252,7 +250,6 @@ const refreshInterval = computed({
 
 			<PrivateViewHeaderBarActionButton
 				v-else
-				v-tooltip.bottom="$t('edit_panels')"
 				:label="$t('edit_panels')"
 				class="edit"
 				:disabled="!updateAllowed"

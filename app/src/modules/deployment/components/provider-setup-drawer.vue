@@ -112,7 +112,6 @@ function onCancel() {
 
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
 				:label="$t('save')"
 				:disabled="!isValid"
 				:loading="saving"

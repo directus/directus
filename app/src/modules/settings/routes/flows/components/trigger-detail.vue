@@ -61,7 +61,6 @@ const currentTriggerOptionFields = computed(() => {
 	>
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('done')"
 				:label="$t('done')"
 				:disabled="!currentTrigger"
 				icon="check"

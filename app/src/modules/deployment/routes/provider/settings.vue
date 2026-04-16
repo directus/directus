@@ -287,7 +287,6 @@ watch(
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="canUpdate || canManageProjects"
-				v-tooltip.bottom="$t('save')"
 				:label="$t('save')"
 				:disabled="!hasEdits"
 				:loading="saving"

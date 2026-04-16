@@ -504,7 +504,6 @@ function onApply() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'collection_setup'"
-				v-tooltip.bottom="$t('next')"
 				:label="$t('next')"
 				:disabled="!collectionName || collectionName.length === 0"
 				icon="arrow_forward"
@@ -513,7 +512,6 @@ function onApply() {
 
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'optional_system_fields'"
-				v-tooltip.bottom="$t('finish_setup')"
 				:label="$t('finish_setup')"
 				:loading="saving"
 				icon="check"

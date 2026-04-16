@@ -235,7 +235,6 @@ async function revert(values: Record<string, any>) {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:label="$t('save')"
-				:tooltip="$t('save')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"
