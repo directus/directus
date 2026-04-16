@@ -232,9 +232,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		let revisionDelta = await payloadService.prepareDelta(delta);
 
-		const accountability = this.schema.collections[collection]?.accountability ?? null;
+		const trackingAccountability = this.schema.collections[collection]?.accountability ?? null;
 
-		if (accountability !== null) {
+		if (trackingAccountability !== null) {
 			const activityService = new ActivityService({
 				knex: this.knex,
 				schema: this.schema,
@@ -250,7 +250,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				item,
 			});
 
-			if (accountability === 'all') {
+			if (trackingAccountability === 'all') {
 				const revisionsService = new RevisionsService({
 					knex: this.knex,
 					schema: this.schema,
