@@ -52,18 +52,21 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	}
 
 	function numericValueOutOfRange() {
-		const regex = /"(.*?)"/g;
-		const matches = error.message.match(regex);
+		/**
+		 * NOTE:
+		 * Postgres doesn't return the offending column for numeric overflow. The table
+		 * is available on the error object, but the field name has to be omitted to
+		 * avoid reporting a misleading column parsed from the query text.
+		 */
 
-		if (!matches) return error;
+		const { table } = error;
 
-		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+		if (!table) return error;
 
 		return new ValueOutOfRangeError({
-			collection,
-			field,
-			value: field ? data[field] : null,
+			collection: table,
+			field: null,
+			value: null,
 		});
 	}
 
