@@ -15,3 +15,4 @@ directus/data
 directus/uploads
 directus/dbs
 directus/extensions/.registry
+pnpm-lock.yaml

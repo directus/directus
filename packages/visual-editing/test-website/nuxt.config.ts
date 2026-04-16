@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export default defineNuxtConfig({
+	ignore: ['**/.DS_Store'],
+
 	components: [
 		{ path: '~/components', pathPrefix: false },
 		{ path: '~/components/block', pathPrefix: false },
