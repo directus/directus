@@ -7,6 +7,7 @@ import { BREAKPOINTS } from '@/constants';
 
 const {
 	label,
+	tooltip,
 	kind = 'normal',
 	variant = 'solid',
 } = defineProps<{
@@ -27,7 +28,7 @@ const {
 
 defineEmits<VButtonEmits>();
 
-const { showIcon } = useIcon();
+const { showIcon, activeTooltip } = useIcon();
 
 function useIcon() {
 	const breakpoints = useBreakpoints({
@@ -44,7 +45,13 @@ function useIcon() {
 		return belowLabelMin.value || (!lteSmall.value && lteLarge.value);
 	});
 
-	return { showIcon };
+	const activeTooltip = computed(() => {
+		if (tooltip) return tooltip;
+		if (showIcon.value) return label;
+		return undefined;
+	});
+
+	return { showIcon, activeTooltip };
 }
 </script>
 
@@ -61,7 +68,7 @@ function useIcon() {
 		:to
 		:href
 		:download
-		:tooltip
+		:tooltip="activeTooltip"
 		:icon="showIcon"
 		small
 		exact
