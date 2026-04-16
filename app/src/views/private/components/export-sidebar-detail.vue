@@ -452,17 +452,26 @@ async function exportDataFiles() {
 					</template>
 				</div>
 
-				<VCheckbox v-model="backgroundImport" class="background" small full-width :disabled="uploading || importing">
-					{{ $t('import_background') }}
-				</VCheckbox>
-
-				<div class="field full">
+				<div class="field full import-actions">
 					<VButton small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
 						{{ $t('import_data_button') }}
 					</VButton>
+
+					<VCheckbox
+						v-if="file"
+						v-model="backgroundImport"
+						class="background"
+						small
+						full-width
+						:disabled="uploading || importing"
+					>
+						{{ $t('import_background') }}
+					</VCheckbox>
 				</div>
 
-				<VDivider />
+				<div class="field full">
+					<VDivider />
+				</div>
 			</template>
 
 			<div class="field full">
@@ -678,8 +687,10 @@ async function exportDataFiles() {
 	}
 }
 
-.background {
-	margin: -1rem 0;
+.import-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
 }
 
 .export-fields {
