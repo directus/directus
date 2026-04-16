@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
+import { useInjectHeaderBarInline } from '../composables/use-header-bar';
 import VButton, { type VButtonEmits, type VButtonProps } from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { BREAKPOINTS } from '@/constants';
@@ -28,6 +29,7 @@ const {
 
 defineEmits<VButtonEmits>();
 
+const headerBarInline = useInjectHeaderBarInline();
 const { showIcon, activeTooltip } = useIcon();
 
 function useIcon() {
@@ -42,6 +44,7 @@ function useIcon() {
 
 	const showIcon = computed(() => {
 		if (!label) return true;
+		if (headerBarInline.value) return lteLarge.value;
 		return belowLabelMin.value || (!lteSmall.value && lteLarge.value);
 	});
 
