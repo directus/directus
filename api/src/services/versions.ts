@@ -232,7 +232,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		let revisionDelta = await payloadService.prepareDelta(delta);
 
-		const accountability = this.schema.collections[collection]?.accountability;
+		const accountability = this.schema.collections[collection]?.accountability ?? null;
 
 		if (accountability !== null) {
 			const activityService = new ActivityService({
