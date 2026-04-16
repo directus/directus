@@ -105,8 +105,6 @@ class FlowManager {
 		const messenger = useBus();
 
 		messenger.publish<FlowMessage>('flows', { type: 'reload' });
-
-		await this.reloadQueue.onIdle();
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
