@@ -209,15 +209,15 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 	<PrivateView :title="$t('public_label')" show-back back-to="/settings/roles">
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
+				:tooltip="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template v-if="hasEdits" #split-menu>
 					<SaveOptions
-						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"

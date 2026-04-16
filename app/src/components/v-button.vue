@@ -4,6 +4,8 @@ import { isEqual, isNil } from 'lodash';
 import { computed } from 'vue';
 import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
 import VProgressCircular from './v-progress-circular.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
 import vFocus from '@/directives/focus';
 import vTooltip from '@/directives/tooltip';
 
@@ -143,6 +145,7 @@ async function onClick(event: MouseEvent) {
 <template>
 	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
+
 		<component
 			:is="component"
 			v-focus="autofocus"
@@ -160,6 +163,7 @@ async function onClick(event: MouseEvent) {
 					dashed,
 					tile,
 					'full-width': fullWidth,
+					'has-split-menu': $slots['split-menu'],
 				},
 				kind,
 			]"
@@ -177,11 +181,36 @@ async function onClick(event: MouseEvent) {
 				</slot>
 			</div>
 		</component>
+
+		<VMenu v-if="$slots['split-menu']" show-arrow>
+			<template #activator="{ toggle: toggleSplitMenu, active: splitMenuActive }">
+				<button
+					type="button"
+					class="split-menu-button"
+					:class="[
+						sizeClass,
+						{
+							active: splitMenuActive,
+							outlined,
+							dashed,
+						},
+						kind,
+					]"
+					:aria-label="$t('aria.more_options')"
+					@click.stop="toggleSplitMenu"
+				>
+					<VIcon name="keyboard_arrow_down" />
+				</button>
+			</template>
+
+			<slot name="split-menu" />
+		</VMenu>
+
 		<slot name="append-outer" />
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 /*
 
 	Available Variables:
@@ -194,7 +223,7 @@ async function onClick(event: MouseEvent) {
 		--v-button-color-disabled             [var(--theme--foreground-subdued)]
 		--v-button-background-color           [var(--theme--primary)]
 		--v-button-background-color-hover     [var(--theme--primary-accent)]
-		--v-button-background-color-active    [var(--theme--primary)]
+		--v-button-background-color-active    [var(--theme--primary-accent)]
 		--v-button-background-color-disabled  [var(--theme--background-normal)]
 		--v-button-font-size                  [0.875rem]
 		--v-button-font-weight                [600]
@@ -207,33 +236,37 @@ async function onClick(event: MouseEvent) {
 .info {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--blue);
 	--v-button-background-color-hover: var(--blue-125);
-	--v-button-background-color-active: var(--blue);
+	--v-button-background-color-active: var(--blue-125);
 }
 
 .success {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--theme--success);
 	--v-button-background-color-hover: var(--success-125);
-	--v-button-background-color-active: var(--theme--success);
+	--v-button-background-color-active: var(--success-125);
 }
 
 .warning {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--theme--warning);
 	--v-button-background-color-hover: var(--warning-125);
-	--v-button-background-color-active: var(--theme--warning);
+	--v-button-background-color-active: var(--warning-125);
 }
 
 .danger {
 	--v-button-color: var(--white);
 	--v-button-color-hover: var(--white);
+	--v-button-color-active: var(--white);
 	--v-button-background-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-125);
-	--v-button-background-color-active: var(--theme--danger);
+	--v-button-background-color-active: var(--danger-125);
 }
 
 .secondary {
@@ -255,31 +288,63 @@ async function onClick(event: MouseEvent) {
 	min-inline-size: 100%;
 }
 
+.button,
+.split-menu-button {
+	--button-height-default: 2.5rem;
+
+	block-size: var(--v-button-height, var(--button-height-default));
+	color: var(--v-button-color, var(--foreground-inverted));
+	background-color: var(--v-button-background-color, var(--theme--primary));
+	border: var(--theme--border-width) solid var(--v-button-background-color, var(--theme--primary));
+	border-radius: var(--theme--border-radius);
+
+	&:hover {
+		color: var(--v-button-color-hover, var(--foreground-inverted));
+		background-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
+		border-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
+	}
+}
+
 .button {
 	position: relative;
 	display: flex;
 	align-items: center;
 	inline-size: var(--v-button-width, auto);
 	min-inline-size: var(--v-button-min-width, 6.25rem);
-	block-size: var(--v-button-height, 2.5rem);
 	padding: var(--v-button-padding, 0 1rem);
-	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);
 	font-size: var(--v-button-font-size, 0.875rem);
 	line-height: var(--v-button-line-height, 1.4286);
 	text-decoration: none;
-	background-color: var(--v-button-background-color, var(--theme--primary));
-	border: var(--theme--border-width) solid var(--v-button-background-color, var(--theme--primary));
-	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border;
+
+	&.has-split-menu {
+		border-start-end-radius: 0;
+		border-end-end-radius: 0;
+	}
 }
 
-.button:hover {
-	color: var(--v-button-color-hover, var(--foreground-inverted));
-	background-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
-	border-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
+.split-menu-button {
+	inline-size: var(--v-button-height, var(--button-height-default));
+	margin-inline-start: 1px; /* stylelint-disable-line unit-disallowed-list -- hairline */
+
+	&,
+	&:focus-visible {
+		border-start-start-radius: 0;
+		border-end-start-radius: 0;
+	}
+
+	&:hover,
+	&:focus-visible {
+		z-index: 1;
+	}
+
+	&.outlined,
+	&.dashed {
+		margin-inline-start: calc(-1 * var(--theme--border-width));
+	}
 }
 
 .align-left {
@@ -325,35 +390,59 @@ async function onClick(event: MouseEvent) {
 	border-style: dashed;
 }
 
-.button.x-small {
-	--v-button-height: 1.5rem;
-	--v-button-font-size: 0.6875rem;
-	--v-button-min-width: 3.375rem;
-	--v-button-padding: 0 0.625rem;
+.x-small {
+	&.button,
+	&.split-menu-button {
+		--v-button-height: 1.5rem;
+	}
+
+	&.button {
+		--v-button-font-size: 0.6875rem;
+		--v-button-min-width: 3.375rem;
+		--v-button-padding: 0 0.625rem;
+	}
 }
 
-.button.small {
-	--v-button-height: 2rem;
-	--v-button-font-size: 0.8125rem;
-	--v-button-min-width: 5rem;
-	--v-button-padding: 0 1rem;
+.small {
+	&.button,
+	&.split-menu-button {
+		--v-button-height: 2rem;
+	}
+
+	&.button {
+		--v-button-font-size: 0.8125rem;
+		--v-button-min-width: 5rem;
+		--v-button-padding: 0 1rem;
+	}
 }
 
-.button.large {
-	--v-button-height: 3rem;
-	--v-button-min-width: 8.6875rem;
-	--v-button-padding: 0 1.25rem;
+.large {
+	&.button,
+	&.split-menu-button {
+		--v-button-height: 3rem;
+	}
+
+	&.button {
+		--v-button-min-width: 8.6875rem;
+		--v-button-padding: 0 1.25rem;
+	}
 }
 
-.button.x-large {
-	--v-button-height: 3.375rem;
-	--v-button-font-size: 1rem;
-	--v-button-min-width: 10.125rem;
-	--v-button-padding: 0 1.5rem;
+.x-large {
+	&.button,
+	&.split-menu-button {
+		--v-button-height: 3.375rem;
+	}
+
+	&.button {
+		--v-button-font-size: 1rem;
+		--v-button-min-width: 10.125rem;
+		--v-button-padding: 0 1.5rem;
+	}
 }
 
 .button.icon {
-	inline-size: var(--v-button-height, 2.5rem);
+	inline-size: var(--v-button-height, var(--button-height-default));
 	min-inline-size: 0;
 	padding: 0;
 }
@@ -398,10 +487,13 @@ async function onClick(event: MouseEvent) {
 }
 
 .active {
-	--v-button-color: var(--v-button-color-active, var(--foreground-inverted)) !important;
-	--v-button-color-hover: var(--v-button-color-active, var(--foreground-inverted)) !important;
-	--v-button-background-color: var(--v-button-background-color-active, var(--theme--primary)) !important;
-	--v-button-background-color-hover: var(--v-button-background-color-active, var(--theme--primary)) !important;
+	&.button,
+	&.split-menu-button {
+		--v-button-color: var(--v-button-color-active, var(--foreground-inverted));
+		--v-button-color-hover: var(--v-button-color-active, var(--foreground-inverted));
+		--v-button-background-color: var(--v-button-background-color-active, var(--theme--primary-accent));
+		--v-button-background-color-hover: var(--v-button-background-color-active, var(--v-button-background-color));
+	}
 }
 
 .tile {

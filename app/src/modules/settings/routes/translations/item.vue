@@ -234,15 +234,15 @@ async function revert(values: Record<string, any>) {
 
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
+				:tooltip="$t('save')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template v-if="hasEdits" #split-menu>
 					<SaveOptions
-						v-if="hasEdits"
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"

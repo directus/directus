@@ -365,15 +365,15 @@ function revert(values: Record<string, any>) {
 
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				:label="$t('save')"
+				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template v-if="isSavable" #split-menu>
 					<SaveOptions
-						v-if="isSavable"
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"

@@ -19,7 +19,6 @@ import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
@@ -31,7 +30,7 @@ import { formatDurationMs } from '@/utils/format-duration-ms';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
 
 type Run = DeploymentRunsOutput;
@@ -227,35 +226,27 @@ watch(statsRange, loadStats);
 		</template>
 
 		<template #actions:primary>
-			<VButton
+			<PrivateViewHeaderBarActionButton
+				:label="$t('deployment.deploy')"
 				:tooltip="$t('deployment.deploy')"
-				icon
-				small
+				icon="rocket_launch"
 				:loading="deploying"
 				:disabled="!canDeploy"
 				@click="deploy()"
 			>
-				<VIcon name="rocket_launch" small />
-
-				<template #append-outer>
-					<VMenu show-arrow>
-						<template #activator="{ toggle }">
-							<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
-						</template>
-
-						<VList>
-							<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
-								<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
-							</VListItem>
-							<VListItem clickable @click="refresh">
-								<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
+				<template #split-menu>
+					<VList>
+						<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
+							<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
+							<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
+						</VListItem>
+						<VListItem clickable @click="refresh">
+							<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
+							<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
+						</VListItem>
+					</VList>
 				</template>
-			</VButton>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<VProgressCircular v-if="loading" class="spinner" indeterminate />
@@ -435,15 +426,5 @@ watch(statsRange, loadStats);
 	display: flex;
 	justify-content: center;
 	margin-block-start: 1.375rem;
-}
-
-.more-options.v-icon {
-	--focus-ring-offset: var(--focus-ring-offset-invert);
-
-	color: var(--theme--foreground-subdued);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
 }
 </style>

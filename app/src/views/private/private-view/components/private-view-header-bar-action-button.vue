@@ -1,9 +1,18 @@
 <script lang="ts" setup>
+import { useBreakpoints } from '@vueuse/core';
+import { computed } from 'vue';
 import VButton, { type VButtonEmits, type VButtonProps } from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { BREAKPOINTS } from '@/constants';
 
-const { kind = 'normal', variant = 'solid' } = defineProps<{
+const {
+	label,
+	kind = 'normal',
+	variant = 'solid',
+} = defineProps<{
 	icon: string;
+	label?: string;
+	tooltip?: VButtonProps['tooltip'];
 	disabled?: VButtonProps['disabled'];
 	loading?: VButtonProps['loading'];
 	kind?: VButtonProps['kind'];
@@ -16,6 +25,26 @@ const { kind = 'normal', variant = 'solid' } = defineProps<{
 }>();
 
 defineEmits<VButtonEmits>();
+
+const { showIcon } = useIcon();
+
+function useIcon() {
+	const breakpoints = useBreakpoints({
+		...BREAKPOINTS,
+		labelMin: '25rem',
+	});
+
+	const belowLabelMin = breakpoints.smallerOrEqual('labelMin');
+	const lteSmall = breakpoints.smallerOrEqual('sm');
+	const lteLarge = breakpoints.smallerOrEqual('lg');
+
+	const showIcon = computed(() => {
+		if (!label) return true;
+		return belowLabelMin.value || (!lteSmall.value && lteLarge.value);
+	});
+
+	return { showIcon };
+}
 </script>
 
 <template>
@@ -30,12 +59,15 @@ defineEmits<VButtonEmits>();
 		:to
 		:href
 		:download
-		icon
+		:tooltip
+		:icon="showIcon"
 		small
 		exact
 		@click="$emit('click', $event)"
 	>
-		<VIcon :name="icon" />
+		<VIcon v-if="showIcon" :name="icon" />
+		<span v-else>{{ label }}</span>
+		<template v-if="$slots['split-menu']" #split-menu><slot name="split-menu" /></template>
 		<template #append-outer><slot name="append-outer" /></template>
 	</VButton>
 </template>

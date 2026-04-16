@@ -147,15 +147,15 @@ function discardAndStay() {
 
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
+				:tooltip="$t('save')"
 				icon="check"
 				:loading="saving"
 				:disabled="!hasEdits"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template v-if="hasEdits" #split-menu>
 					<SaveOptions
-						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"

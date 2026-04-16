@@ -25,7 +25,6 @@ import VListItemHint from '@/components/v-list-item-hint.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -746,15 +745,18 @@ function useItemNavigation() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentVersion === null"
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				:label="$t('save')"
+				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				icon="check"
 				:loading="saving"
 				:disabled="!isSavable"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template
+					v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
+					#split-menu
+				>
 					<SaveOptions
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -765,35 +767,33 @@ function useItemNavigation() {
 			</PrivateViewHeaderBarActionButton>
 			<PrivateViewHeaderBarActionButton
 				v-else
-				v-tooltip.bottom="$t('save_version')"
+				:label="$t('save_version')"
+				:tooltip="$t('save_version')"
 				icon="beenhere"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
 				@click="saveVersionAction('stay')"
 			>
-				<template #append-outer>
-					<VMenu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
-						<template #activator="{ toggle }">
-							<VIcon class="version-more-options" name="more_vert" clickable @click="toggle" />
-						</template>
-
-						<VList>
-							<VListItem clickable @click="saveVersionAction('main')">
-								<VListItemIcon><VIcon name="check" /></VListItemIcon>
-								<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
-								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
-							</VListItem>
-							<VListItem clickable @click="saveVersionAction('quit')">
-								<VListItemIcon><VIcon name="done_all" /></VListItemIcon>
-								<VListItemContent>{{ $t('save_and_quit') }}</VListItemContent>
-								<VListItemHint>{{ translateShortcut(['meta', 'shift', 's']) }}</VListItemHint>
-							</VListItem>
-							<VListItem clickable @click="discardAndStay">
-								<VListItemIcon><VIcon name="undo" /></VListItemIcon>
-								<VListItemContent>{{ $t('discard_all_changes') }}</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
+				<template
+					v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
+					#split-menu
+				>
+					<VList>
+						<VListItem clickable @click="saveVersionAction('main')">
+							<VListItemIcon><VIcon name="check" /></VListItemIcon>
+							<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
+							<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
+						</VListItem>
+						<VListItem clickable @click="saveVersionAction('quit')">
+							<VListItemIcon><VIcon name="done_all" /></VListItemIcon>
+							<VListItemContent>{{ $t('save_and_quit') }}</VListItemContent>
+							<VListItemHint>{{ translateShortcut(['meta', 'shift', 's']) }}</VListItemHint>
+						</VListItem>
+						<VListItem clickable @click="discardAndStay">
+							<VListItemIcon><VIcon name="undo" /></VListItemIcon>
+							<VListItemContent>{{ $t('discard_all_changes') }}</VListItemContent>
+						</VListItem>
+					</VList>
 				</template>
 			</PrivateViewHeaderBarActionButton>
 		</template>
@@ -957,16 +957,6 @@ function useItemNavigation() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
-}
-
-.version-more-options.v-icon {
-	--focus-ring-offset: var(--focus-ring-offset-invert);
-
-	color: var(--theme--foreground-subdued);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
 }
 
 .content-split {
