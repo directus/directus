@@ -2002,8 +2002,9 @@ interfaces:
     value_securely_saved: Hodnota bezpečně uložena
     generate: Generovat token
     regenerate: Obnovit token
-    generate_success_copy: Ujistěte se, že si zálohujete a zkopírujete token uvedený výše. Z bezpečnostních důvodů nebudete moci znovu zobrazit token po uložení a opuštění této stránky.
+    regenerate_confirm_title: Obnovit token
     remove_token: Odstranit token
+    remove_confirm_title: Odstranit token
   system-raw-editor:
     system-raw-editor: Editor surových hodnot
     description: Povolit zadávání syrových hodnot nebo mustache šablon
