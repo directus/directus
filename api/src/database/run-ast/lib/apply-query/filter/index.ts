@@ -10,6 +10,7 @@ import { addJoin } from '../add-join.js';
 import { getFilterPath } from '../get-filter-path.js';
 import { getOperation } from '../get-operation.js';
 import applyQuery from '../index.js';
+import { normalizeFilter } from '../normalize-filter.js';
 import { getFilterType } from './get-filter-type.js';
 import { applyOperator } from './operator.js';
 import { validateOperator } from './validate-operator.js';
@@ -28,8 +29,10 @@ export function applyFilter(
 	let hasJoins = false;
 	let hasMultiRelationalFilter = false;
 
-	addJoins(rootQuery, rootFilter, collection);
-	addWhereClauses(knex, rootQuery, rootFilter, collection);
+	const normalizedFilter = normalizeFilter(rootFilter);
+
+	addJoins(rootQuery, normalizedFilter, collection);
+	addWhereClauses(knex, rootQuery, normalizedFilter, collection);
 
 	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 

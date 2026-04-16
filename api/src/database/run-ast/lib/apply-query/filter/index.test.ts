@@ -193,6 +193,77 @@ test(`filtering m2o relation`, async () => {
 	expect(rawQuery.bindings).toEqual(['username']);
 });
 
+test(`filtering nested m2o with sibling relational keys`, async () => {
+	const schema = new SchemaBuilder()
+		.collection('time_slot', (c) => {
+			c.field('id').id();
+			c.field('course_part').m2o('course_part');
+		})
+		.collection('course_part', (c) => {
+			c.field('id').id();
+			c.field('course').m2o('course');
+		})
+		.collection('course', (c) => {
+			c.field('id').id();
+			c.field('status').string();
+			c.field('teaching_unit').m2o('teaching_unit');
+		})
+		.collection('teaching_unit', (c) => {
+			c.field('id').id();
+			c.field('status').string();
+			c.field('discipline').m2o('discipline');
+		})
+		.collection('discipline', (c) => {
+			c.field('id').id();
+			c.field('status').string();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	// Aliases for the joins: course_part, course, teaching_unit, discipline
+	// Subsequent paths reuse existing aliases via aliasMap
+	aliasFn.mockReturnValueOnce('cp');
+	aliasFn.mockReturnValueOnce('co');
+	aliasFn.mockReturnValueOnce('tu');
+	aliasFn.mockReturnValueOnce('di');
+
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			course_part: {
+				course: {
+					teaching_unit: {
+						status: { _eq: 'active' },
+						discipline: {
+							status: { _eq: 'active' },
+						},
+					},
+					status: { _eq: 'active' },
+				},
+			},
+		},
+		'time_slot',
+		{},
+		[],
+		[],
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// All three conditions should appear in the WHERE clause
+	expect(rawQuery.sql).toContain('where');
+	// teaching_unit.status = 'active'
+	expect(rawQuery.bindings).toContain('active');
+
+	// Count the number of 'active' bindings - should be 3 (teaching_unit, discipline, course)
+	const activeBindings = rawQuery.bindings.filter((b: unknown) => b === 'active');
+	expect(activeBindings).toHaveLength(3);
+});
+
 const o2m_schema = new SchemaBuilder()
 	.collection('article', (c) => {
 		c.field('id').id();
