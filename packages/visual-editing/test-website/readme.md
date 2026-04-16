@@ -1,6 +1,6 @@
 > [!NOTE]
 >
-> The following test website and guide are intended to be used or testing and development purposes, not for production
+> The following test website and guide are intended to be used for testing and development purposes, not for production
 > use!
 
 # Test Website
@@ -15,7 +15,7 @@ setting up a development environment using the official Directus repository.
 
 ### Set up your Directus Dev Instance
 
-1.  Clone the official [Directus GitHub repository](https://github.com/directus/directus) and make sure you have the
+1.  Clone the official [Directus GitHub repository](https://github.com/directus/directus), make sure you have the
     dependencies installed (`pnpm i`) and build everything (`pnpm build`)!
 2.  Create a new database (sqlite is recommended for development) and add the env config in `api/.env`
 
@@ -52,10 +52,10 @@ setting up a development environment using the official Directus repository.
 
 ### Set up the test website
 
-1. Clone the separate [Visual Editing library repository](https://github.com/directus/visual-editing), open it in a new
-   window in your code editor on the `main` branch
-2. Add the env vars to `test-website/simple-cms/nuxt/.env` and make sure to provide `<your-token>` and the correct.
-   `DIRECTUS_URL`
+The test website lives at `packages/visual-editing/test-website` inside this repository.
+
+1. Add the env vars to `packages/visual-editing/test-website/.env` and make sure to provide `<your-token>` and the
+   correct `DIRECTUS_URL`
 
    ```sh
    DIRECTUS_URL=http://localhost:8080
@@ -64,27 +64,25 @@ setting up a development environment using the official Directus repository.
    NUXT_PUBLIC_SITE_URL=http://localhost:3000
    ```
 
-3. Now, install the Directus template
+2. Apply the Directus template to populate your instance with the required schema and content. Make sure to replace
+   `<directus-url>` with your Directus URL and `<your-token>` with the token you generated earlier.
 
    ```sh
-   cd test-website/template && npm run setup-directus
+   npx directus-template-cli@latest apply -p --templateLocation='https://github.com/directus/visual-editing/tree/main/test-website/template' --templateType='github' --directusUrl=<directus-url> --directusToken=<your-token>
    ```
 
-   On Windows, use the following command and make sure to replace `<directus-url>` with your Directus URL and
-   `<your-token>` with the token you generated earlier.
+### Build and run the library + test website
 
-   ```sh
-   cd test-website/template && npx directus-template-cli@latest apply -p --directusUrl=<directus-url> --templateLocation=. --templateType=local --directusToken=<your-token>
-   ```
+The `@directus/visual-editing` package and the test website are both part of this monorepo, so a single install from the
+repository root covers both.
 
-### Set up the library
+1. From the repository root, install dependencies: `pnpm i`
+2. Build all packages: `pnpm build` (or only the visual editing package: `pnpm --filter @directus/visual-editing build`)
+3. From `packages/visual-editing/test-website`, run one of the [test modes](#test-modes), e.g.
+   `pnpm visual-editing:ssr--refresh` (recommended)
 
-1. Install the package: `pnpm i` from the root of the Visual Editing library repository
-2. Build the package: `pnpm build`
-3. Then install the test-website dependencies: `cd test-website/simple-cms/nuxt/ && pnpm i`
-4. And from that folder (test-website/simple-cms/nuxt) run it with `pnpm visual-editing:ssr--refresh`
-
-> [!NOTE]  
+> [!NOTE]
+>
 > See the description of the different “Test Modes” below
 
 ### Set up Directus Visual Editor module
@@ -92,12 +90,10 @@ setting up a development environment using the official Directus repository.
 1. Switch to Directus Studio
 2. Enable the Visual Editor module in settings
 3. Add the following URLs to the Visual Editor settings (on the settings page)
+   - `http://localhost:3000?version={{$version}}`
 
-   - `http://localhost:3000`
-   - `http://localhost:3000/blog`
-   - `http://localhost:3000/blog/why-steampunk-rabbits-are-the-future-of-work`
-
-     > [!NOTE]  
+     > [!NOTE]
+     >
      > The last two URLs are for testing purposes only. You do not need to add every page URL of your website to access
      > them with the Visual Editor.
 
@@ -105,10 +101,12 @@ setting up a development environment using the official Directus repository.
 
 ## Test Modes
 
-Use the following commands to run predefined test environments. Find the corresponding code by searching for
-`useVisualEditingTest` or `testCase` in the test-website directory to see how it is set up.
+Use the following commands (from `packages/visual-editing/test-website`) to run predefined test environments. Find the
+corresponding code by searching for `useVisualEditingTest` or `testCase` in the test-website directory to see how it is
+set up.
 
-> [!NOTE]  
+> [!NOTE]
+>
 > Be sure to stop other servers running on localhost:3000
 
 ```sh
