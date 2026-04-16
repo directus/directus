@@ -94,6 +94,15 @@ emitter.on(Events.tabIdle, () => {
 // Restart the auto-refresh process when the app is used again
 emitter.on(Events.tabActive, () => {
 	if (idle === true) {
+		// Skip the refresh when the user is on a public route (e.g. /accept-invite, /reset-password).
+		// These pages intentionally operate without an authenticated session, so attempting to
+		// refresh here would fail and redirect the user to /login with a "session expired"
+		// message — losing the invite/reset token they came in with. See #25812.
+		if (router.currentRoute.value.meta.public === true) {
+			idle = false;
+			return;
+		}
+
 		refresh();
 		idle = false;
 	}
