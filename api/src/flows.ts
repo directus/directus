@@ -116,7 +116,7 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
-		await this.reloadQueue.onIdle();
+		if (this.reloadQueue.pending > 0) await this.reloadQueue.onIdle();
 
 		const logger = useLogger();
 
@@ -135,7 +135,7 @@ class FlowManager {
 		data: unknown,
 		context: { schema: SchemaOverview; accountability: Accountability | undefined } & Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
-		await this.reloadQueue.onIdle();
+		if (this.reloadQueue.pending > 0) await this.reloadQueue.onIdle();
 
 		const logger = useLogger();
 
