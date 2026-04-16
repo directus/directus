@@ -2008,8 +2008,9 @@ interfaces:
     value_securely_saved: بەها بە پارێزراوی پاشەکەوتکرا
     generate: تۆکن دروست بکە
     regenerate: تۆکن دروست بکەوە
-    generate_success_copy: دڵنیابە لە پاشەکەوتکردن و لەبەرگرتنەوەی تۆکنەکەی سەرەوە. لەبەر هۆکاری پاراستن، ناتوانیت دووبارە تۆکنەکە ببینی دوای پاشەکەوت کردن و گواستنەوەی ئەم پەڕەیە.
+    regenerate_confirm_title: تۆکن دروست بکەوە
     remove_token: لابردنی تۆکن
+    remove_confirm_title: لابردنی تۆکن
   system-raw-editor:
     system-raw-editor: دەستکاریکەری خام
     description: ڕێگە بدە بە دانانی بەهای خام یان قاڵبی Mustache
