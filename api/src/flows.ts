@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
@@ -17,6 +16,7 @@ import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, t
 import type { Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
+import PQueue from 'p-queue';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
@@ -31,7 +31,6 @@ import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { getService } from './utils/get-service.js';
-import { JobQueue } from './utils/job-queue.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -59,11 +58,9 @@ const ENV_KEY = '$env';
 
 interface FlowMessage {
 	type: 'reload';
-	id: string;
 }
 
 class FlowManager {
-	private uid = randomUUID();
 	private isLoaded = false;
 
 	private flows: Record<string, Flow> = {};
@@ -73,20 +70,27 @@ class FlowManager {
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
-	private reloadQueue: JobQueue;
+	private reloadQueue = new PQueue({ concurrency: 1 });
 	private envs: Record<string, any>;
 
 	constructor() {
 		const env = useEnv();
 
-		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'] as string)) : {};
 
 		const messenger = useBus();
+		const logger = useLogger();
 
 		messenger.subscribe<FlowMessage>('flows', (event) => {
-			if (event['type'] === 'reload' && event['id'] !== this.uid) {
-				this.queueReload();
+			if (event.type === 'reload') {
+				this.reloadQueue.add(async () => {
+					if (this.isLoaded) {
+						await this.unload();
+						await this.load();
+					} else {
+						logger.warn('Flows have to be loaded before they can be reloaded');
+					}
+				});
 			}
 		});
 	}
@@ -100,34 +104,9 @@ class FlowManager {
 	public async reload(): Promise<void> {
 		const messenger = useBus();
 
-		await this.queueReload();
+		messenger.publish<FlowMessage>('flows', { type: 'reload' });
 
-		messenger.publish<FlowMessage>('flows', { type: 'reload', id: this.uid });
-	}
-
-	private async queueReload() {
-		const logger = useLogger();
-
-		let resolve: (value: void | PromiseLike<void>) => void;
-
-		const promise = new Promise<void>((r) => {
-			resolve = r;
-		});
-
-		this.reloadQueue.enqueue(async () => {
-			try {
-				if (this.isLoaded) {
-					await this.unload();
-					await this.load();
-				} else {
-					logger.warn('Flows have to be loaded before they can be reloaded');
-				}
-			} finally {
-				resolve();
-			}
-		});
-
-		return promise;
+		await this.reloadQueue.onIdle();
 	}
 
 	public addOperation(id: string, operation: OperationHandler): void {
@@ -139,6 +118,8 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		await this.reloadQueue.onIdle();
+
 		const logger = useLogger();
 
 		if (!(id in this.operationFlowHandlers)) {
@@ -156,6 +137,8 @@ class FlowManager {
 		data: unknown,
 		context: { schema: SchemaOverview; accountability: Accountability | undefined } & Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
+		await this.reloadQueue.onIdle();
+
 		const logger = useLogger();
 
 		if (!(id in this.webhookFlowHandlers)) {
