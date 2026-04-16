@@ -1998,8 +1998,9 @@ interfaces:
     value_securely_saved: मूल्य सुरक्षितपणे जतन केले
     generate: टोकन जनरेट करा
     regenerate: टोकन पुन्हा जनरेट करा
-    generate_success_copy: वरील टोकन बॅकअप आणि कॉपी केल्याची खात्री करा. सुरक्षिततेच्या कारणास्तव, हे पृष्ठ जतन केल्यानंतर आणि नेव्हिगेट केल्यानंतर तुम्ही टोकन पुन्हा पाहू शकणार नाही.
+    regenerate_confirm_title: टोकन पुन्हा जनरेट करा
     remove_token: टोकन काढा
+    remove_confirm_title: टोकन काढा
   system-raw-editor:
     system-raw-editor: raw एडिटर
     description: कच्च्या किंवा मिश्या टेम्प्लेटिंग मूल्ये प्रविष्ट करण्यास अनुमती द्या
