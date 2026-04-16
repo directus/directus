@@ -13,17 +13,19 @@ export const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab',
 const keysDown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 
-document.body.addEventListener('keydown', (event: KeyboardEvent) => {
-	if (event.repeat || !event.key) return;
+if (typeof document !== 'undefined') {
+	document.body.addEventListener('keydown', (event: KeyboardEvent) => {
+		if (event.repeat || !event.key) return;
 
-	keysDown.add(mapKeys(event));
-	callHandlers(event);
-});
+		keysDown.add(mapKeys(event));
+		callHandlers(event);
+	});
 
-document.body.addEventListener('keyup', (event: KeyboardEvent) => {
-	if (event.repeat || !event.key) return;
-	keysDown.clear();
-});
+	document.body.addEventListener('keyup', (event: KeyboardEvent) => {
+		if (event.repeat || !event.key) return;
+		keysDown.clear();
+	});
+}
 
 export function useShortcut(
 	shortcuts: string | string[],
