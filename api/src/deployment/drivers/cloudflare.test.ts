@@ -215,7 +215,12 @@ describe('CloudflareDriver', () => {
 				createAxiosResponse(200, {
 					success: true,
 					result: [
-						{ trigger_uuid: 'non-prod', trigger_name: 'Deploy non-production branches', branch_includes: ['*'], branch_excludes: ['main'] },
+						{
+							trigger_uuid: 'non-prod',
+							trigger_name: 'Deploy non-production branches',
+							branch_includes: ['*'],
+							branch_excludes: ['main'],
+						},
 						{ trigger_uuid: 'prod', trigger_name: 'Deploy default branch', branch_includes: ['main'] },
 					],
 				}),
@@ -262,7 +267,12 @@ describe('CloudflareDriver', () => {
 			createAxiosResponse(200, {
 				success: true,
 				result: [
-					{ trigger_uuid: 'trigger-nondefault', trigger_name: 'Deploy non-production branches', branch_includes: ['*'], branch_excludes: ['main'] },
+					{
+						trigger_uuid: 'trigger-nondefault',
+						trigger_name: 'Deploy non-production branches',
+						branch_includes: ['*'],
+						branch_excludes: ['main'],
+					},
 					{ trigger_uuid: 'trigger-default', trigger_name: 'Deploy default branch', branch_includes: ['main'] },
 				],
 			}),
@@ -406,7 +416,9 @@ describe('CloudflareDriver', () => {
 		});
 
 		it('should reject deploy_hook_url that is not among hooks saved for this worker', async () => {
-			const hookDriver = driverWithSavedHook('https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/allowed-only');
+			const hookDriver = driverWithSavedHook(
+				'https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/allowed-only',
+			);
 
 			await expect(
 				hookDriver.triggerDeployment('worker-tag-1', {

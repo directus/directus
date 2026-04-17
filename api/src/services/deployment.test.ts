@@ -589,14 +589,13 @@ describe('DeploymentService', () => {
 				needsRunStatusPolling: true,
 			};
 
-			mockGetDeploymentLogs.mockResolvedValueOnce([{ type: 'info', message: 'Build started', timestamp: new Date() }]);
-
 			mockGetDeployment.mockResolvedValueOnce({
 				id: 'build-1',
 				project_id: 'worker-1',
 				status: 'ready',
 				url: 'https://example.com',
 				created_at: new Date(),
+				logs: [{ type: 'info', message: 'Build started', timestamp: new Date() }],
 			});
 
 			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
