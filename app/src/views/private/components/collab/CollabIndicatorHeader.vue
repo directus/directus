@@ -147,10 +147,11 @@ function focusIntoView(cid: ClientID) {
 
 	:deep(.v-avatar) {
 		font-size: 0.6875rem;
-	}
 
-	:deep(.v-avatar + .v-avatar) {
-		margin-inline-start: -0.25rem;
+		+ .v-avatar,
+		+ .v-menu .v-avatar {
+			margin-inline-start: -0.25rem;
+		}
 	}
 }
 
