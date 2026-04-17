@@ -1,8 +1,7 @@
 {
 	"name": "e2e",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
+	"version": "0.1.0",
+	"private": true,
 	"scripts": {
 		"test": "vitest --project sqlite",
 		"test:dev": "DEV=true vitest --project sqlite",
@@ -11,7 +10,7 @@
 	"keywords": [],
 	"author": "Nils Twelker (nils@directus.io)",
 	"type": "module",
-	"license": "ISC",
+	"license": "MIT",
 	"packageManager": "pnpm@10.14.0",
 	"devDependencies": {
 		"@directus/sandbox": "workspace:*",
@@ -32,6 +31,7 @@
 		"vitest": "catalog:"
 	},
 	"engines": {
-		"node": ">=12.20.0"
+		"node": ">=22",
+		"pnpm": ">=10"
 	}
 }
