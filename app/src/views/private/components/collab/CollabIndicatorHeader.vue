@@ -4,7 +4,8 @@ import type { ClientID } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar, getFocusId } from './utils';
+import { useCollabIndicator } from './use-collab-indicator';
+import { formatUserAvatar, getFocusId } from './utils';
 import VAvatar from '@/components/v-avatar.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -44,6 +45,8 @@ const users = computed(() => {
 		.reverse();
 });
 
+const { indicatorLimit } = useCollabIndicator(users);
+
 function focusIntoView(cid: ClientID) {
 	const element = document.getElementById(getFocusId(cid));
 
@@ -55,12 +58,12 @@ function focusIntoView(cid: ClientID) {
 
 <template>
 	<div class="collab-header">
-		<template v-for="(user, index) in users.slice(0, COLLAB_USERS_DISPLAY_LIMIT)" :key="user.id">
+		<template v-for="(user, index) in users.slice(0, indicatorLimit)" :key="user.id">
 			<VMenu trigger="hover" show-arrow invert>
 				<template #activator>
 					<VAvatar
 						:border="`var(--${user.color})`"
-						:style="{ zIndex: COLLAB_USERS_DISPLAY_LIMIT - index }"
+						:style="{ zIndex: indicatorLimit - index }"
 						x-small
 						round
 						:clickable="!!user.focusedField"
@@ -88,16 +91,16 @@ function focusIntoView(cid: ClientID) {
 			</VMenu>
 		</template>
 
-		<VMenu v-if="users.length > COLLAB_USERS_DISPLAY_LIMIT" show-arrow>
+		<VMenu v-if="users.length > indicatorLimit" show-arrow>
 			<template #activator="{ toggle }">
-				<VAvatar v-tooltip.bottom="t('more_users')" class="more-users" x-small round clickable @click="toggle">
-					+{{ users.length - COLLAB_USERS_DISPLAY_LIMIT }}
+				<VAvatar v-tooltip.bottom="t('more_users')" x-small round clickable @click="toggle">
+					+{{ users.length - indicatorLimit }}
 				</VAvatar>
 			</template>
 
 			<VList>
 				<VListItem
-					v-for="user in users.slice(COLLAB_USERS_DISPLAY_LIMIT)"
+					v-for="user in users.slice(indicatorLimit)"
 					:key="user.connection"
 					class="collab-header-more-popover-item"
 					:clickable="!!user.focusedField"

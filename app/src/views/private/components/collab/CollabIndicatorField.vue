@@ -2,7 +2,8 @@
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { COLLAB_USERS_DISPLAY_LIMIT, formatUserAvatar, getFocusId } from './utils';
+import { useCollabIndicator } from './use-collab-indicator';
+import { formatUserAvatar, getFocusId } from './utils';
 import VAvatar from '@/components/v-avatar.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import type { CollabUser } from '@/composables/use-collab';
@@ -20,16 +21,18 @@ const { t } = useI18n();
 const users = computed(() => {
 	return toArray(props.modelValue).map(formatUserAvatar).reverse();
 });
+
+const { indicatorLimit } = useCollabIndicator(users);
 </script>
 
 <template>
 	<div class="collab-field">
-		<template v-for="(user, index) in users.slice(0, COLLAB_USERS_DISPLAY_LIMIT)" :key="user.id">
+		<template v-for="(user, index) in users.slice(0, indicatorLimit)" :key="user.id">
 			<VAvatar
 				:id="getFocusId(user.connection)"
 				v-tooltip="user.name ?? t('unknown_user')"
 				:border="`var(--${user.color})`"
-				:style="{ zIndex: COLLAB_USERS_DISPLAY_LIMIT - index }"
+				:style="{ zIndex: indicatorLimit - index }"
 				x-small
 				round
 			>
