@@ -14,7 +14,6 @@ import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
-import ms, { type StringValue } from 'ms';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -23,6 +22,7 @@ import { redisConfigAvailable, useRedis } from '../redis/index.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isUnauthenticated } from '../utils/is-unauthenticated.js';
 import { useStore } from '../utils/store.js';
 import { SettingsService } from './settings.js';
@@ -31,7 +31,7 @@ const env = useEnv();
 const logger = useLogger();
 
 const store = useStore<{ health: ServerHealth }>((env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck', {
-	ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m'),
+	ttl: getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], '5m'),
 });
 
 export class ServerService {
@@ -307,7 +307,7 @@ export class ServerService {
 				type: 'redis',
 				redis: useRedis(),
 				namespace: (env['HEALTHCHECK_NAMESPACE'] as string) ?? 'directus:healthcheck',
-				ttl: ms((env['HEALTHCHECK_CACHE_TTL'] as StringValue) ?? '5m'),
+				ttl: getMilliseconds(env['HEALTHCHECK_CACHE_TTL'], '5m'),
 			});
 
 			const checks: Record<string, ServerHealthCheck[]> = {
