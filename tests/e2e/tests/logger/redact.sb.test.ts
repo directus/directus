@@ -5,7 +5,7 @@ import { getUID } from '@utils/getUID.js';
 import { Signal } from '@utils/signal.js';
 import { expect, test } from 'vitest';
 
-test('redact sensitive data', { timeout: 60_000 }, async () => {
+test('redact sensitive data', async () => {
 	const directus = await sandbox(database, {
 		inspect: false,
 		env: {
