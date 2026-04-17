@@ -734,12 +734,13 @@ function usePublishComparison() {
 				return;
 			}
 
-			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
-
 			if (quitAfterPublish.value) {
 				router.push(collectionRoute.value);
+				if (opts.deleteOnPublish) deleteVersion(opts.versionId);
 				return;
 			}
+
+			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
 
 			currentVersion.value = null;
 			refresh();
