@@ -5,7 +5,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
@@ -22,6 +22,7 @@ import VInfo from '@/components/v-info.vue';
 import { useFlows } from '@/composables/use-flows';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -47,8 +48,8 @@ const props = defineProps<{
 	archive?: string;
 }>();
 
-const route = useRoute();
 const router = useRouter();
+const collectionsStore = useCollectionsStore();
 
 const layoutRef = ref();
 
@@ -58,15 +59,16 @@ const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 const { selection } = useSelection();
 const { info: currentCollection } = useCollection(collection);
 
-watch(
-	currentCollection,
-	(info) => {
-		if (info?.meta?.singleton) {
-			router.replace({ name: 'content-singleton', params: route.params, query: route.query });
-		}
-	},
-	{ immediate: true },
-);
+onBeforeRouteUpdate((to) => {
+	const collectionParam = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collectionParam) return true;
+
+	if (collectionsStore.getCollection(collectionParam)?.meta?.singleton) {
+		return { name: 'content-singleton', params: to.params, query: to.query };
+	}
+
+	return true;
+});
 
 const { addNewLink, currentCollectionLink } = useLinks();
 const { breadcrumb } = useBreadcrumb();
