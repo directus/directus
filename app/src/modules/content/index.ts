@@ -20,16 +20,19 @@ import RouterPass from '@/utils/router-passthrough';
 export const enterDraftContext: NavigationGuard = (to) => {
 	if (to.query.version) return; // already in version context
 
-	const collectionsStore = useCollectionsStore();
 	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
 	if (!collection) return;
 
+	const hasPrimaryKey = typeof to.params.primaryKey === 'string';
+	const isNewItem = hasPrimaryKey && to.params.primaryKey === '+';
+
+	if (hasPrimaryKey && !isNewItem) return;
+
+	const collectionsStore = useCollectionsStore();
 	const collectionInfo = collectionsStore.getCollection(collection);
 	if (!collectionInfo?.meta?.versioning) return;
 
 	const isSingleton = !!collectionInfo.meta?.singleton;
-	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
-
 	if (!isSingleton && !isNewItem) return;
 
 	return { ...to, query: { ...to.query, version: VERSION_KEY_DRAFT } };
