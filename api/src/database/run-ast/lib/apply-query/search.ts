@@ -28,9 +28,9 @@ function getTranslationSearchInfo(
 	const collectionSchema = schema.collections[collection];
 	if (!collectionSchema) return [];
 
-	// Find all alias fields with the 'translations' special marker
-	const translationFields = Object.entries(collectionSchema.fields).filter(([_name, field]) =>
-		field.special.includes('translations'),
+	// Find all alias fields with the 'translations' special marker that have opted in to search
+	const translationFields = Object.entries(collectionSchema.fields).filter(
+		([_name, field]) => field.special.includes('translations') && field.searchTranslations === true,
 	);
 
 	if (translationFields.length === 0) return [];

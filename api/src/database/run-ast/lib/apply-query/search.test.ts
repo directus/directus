@@ -262,7 +262,7 @@ const translationSchema = new SchemaBuilder()
 	.collection('articles', (c) => {
 		c.field('id').id();
 		c.field('status').string();
-		c.field('translations').translations();
+		c.field('translations').translations().options({ searchTranslations: true });
 	})
 	.collection('articles_translations', (c) => {
 		c.field('id').id();
@@ -270,6 +270,30 @@ const translationSchema = new SchemaBuilder()
 		c.field('body').text();
 	})
 	.build();
+
+test(`Omits translation subquery by default (opt-in)`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaDefaultOff = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('status').string();
+			c.field('translations').translations();
+		})
+		.collection('articles_translations', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+		})
+		.build();
+
+	applySearch(db as any, schemaDefaultOff, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).not.toContain(`exists`);
+	expect(rawQuery.sql).not.toContain(`articles_translations`);
+});
 
 test(`Searches translation fields via EXISTS subquery for admin`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
@@ -357,7 +381,7 @@ test(`Excludes non-searchable translation fields`, async () => {
 		.collection('pages', (c) => {
 			c.field('id').id();
 			c.field('slug').string();
-			c.field('translations').translations();
+			c.field('translations').translations().options({ searchTranslations: true });
 		})
 		.collection('pages_translations', (c) => {
 			c.field('id').id();
@@ -381,7 +405,7 @@ test(`Excludes concealed translation fields`, async () => {
 	const schemaWithConcealed = new SchemaBuilder()
 		.collection('pages', (c) => {
 			c.field('id').id();
-			c.field('translations').translations();
+			c.field('translations').translations().options({ searchTranslations: true });
 		})
 		.collection('pages_translations', (c) => {
 			c.field('id').id();
@@ -408,7 +432,7 @@ test(`Avoids fallback 1=0 when root has no searchable fields but translations do
 	const schemaRootUnsearchable = new SchemaBuilder()
 		.collection('items', (c) => {
 			c.field('id').id();
-			c.field('translations').translations();
+			c.field('translations').translations().options({ searchTranslations: true });
 		})
 		.collection('items_translations', (c) => {
 			c.field('id').id();

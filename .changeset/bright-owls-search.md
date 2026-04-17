@@ -1,5 +1,6 @@
 ---
 '@directus/api': minor
+'@directus/app': minor
 ---
 
-Added translation-aware search that includes translated content from junction tables via EXISTS subqueries
+Added optional translation-aware search. When enabled via the new "Searchable" toggle on the translations interface, searches include translated content from junction tables via EXISTS subqueries.

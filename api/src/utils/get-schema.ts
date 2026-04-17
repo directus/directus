@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows } from '@directus/system-data';
-import type { Filter, SchemaOverview } from '@directus/types';
+import type { FieldOverview, Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
@@ -188,8 +188,9 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 					note: string | null;
 					validation: string | Record<string, any> | null;
 					searchable: boolean;
+					options: string | Record<string, any> | null;
 				}[]
-			>('id', 'collection', 'field', 'special', 'note', 'validation', 'searchable')
+			>('id', 'collection', 'field', 'special', 'note', 'validation', 'searchable', 'options')
 			.from('directus_fields')),
 		...systemFieldRows,
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
@@ -208,7 +209,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 		if (validation && typeof validation === 'string') validation = parseJSON(validation);
 
-		result.collections[field.collection]!.fields[field.field] = {
+		const fieldOverview: FieldOverview = {
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
@@ -223,6 +224,14 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			validation: (validation as Filter) ?? null,
 			searchable: toBoolean(field.searchable) ?? true,
 		};
+
+		if (special.includes('translations')) {
+			let options = field.options ?? null;
+			if (options && typeof options === 'string') options = parseJSON(options);
+			fieldOverview.searchTranslations = (options as Record<string, any> | null)?.['searchable'] === true;
+		}
+
+		result.collections[field.collection]!.fields[field.field] = fieldOverview;
 	}
 
 	const relationsService = new RelationsService({ knex: database, schema: result });
