@@ -364,13 +364,7 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<!-- Wait for items to load before mounting: async re-render crashes WYSIWYG (TinyMCE manipulates the DOM outside Vue) -->
-		<TranslationForm
-			v-if="!itemsLoading"
-			v-model:lang="firstLang"
-			v-bind="translationProps"
-			:class="splitViewEnabled ? 'half' : 'full'"
-		>
+		<TranslationForm v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
 			<template #split-view="{ active, toggle }">
 				<VIcon
 					v-if="splitViewAvailable && !splitViewEnabled"
@@ -386,13 +380,7 @@ function useNestedValidation() {
 			</template>
 		</TranslationForm>
 
-		<TranslationForm
-			v-if="splitViewEnabled && !itemsLoading"
-			v-model:lang="secondLang"
-			v-bind="translationProps"
-			secondary
-			class="half"
-		>
+		<TranslationForm v-if="splitViewEnabled" v-model:lang="secondLang" v-bind="translationProps" secondary class="half">
 			<template #split-view>
 				<VIcon
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
