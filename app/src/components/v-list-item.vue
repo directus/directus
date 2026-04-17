@@ -2,7 +2,7 @@
 import { useGroupable } from '@directus/composables';
 import { isMatch } from 'lodash';
 import { computed } from 'vue';
-import { RouteLocation, useLink, useRoute } from 'vue-router';
+import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
 
 interface Props {
 	block?: boolean;
@@ -11,7 +11,7 @@ interface Props {
 	/** Makes the item smaller */
 	dense?: boolean;
 	/** Where the item should link to */
-	to?: string | RouteLocation;
+	to?: string | RouteLocationRaw;
 	/** Same as to except that it takes an external link */
 	href?: string;
 	/** Disables the item */
