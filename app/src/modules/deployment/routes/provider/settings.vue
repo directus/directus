@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import {
 	deleteDeployment,
 	type DeploymentProjectListOutput,
@@ -27,7 +28,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
 import InterfacePresentationDivider from '@/interfaces/presentation-divider/presentation-divider.vue';
 import { sdk } from '@/sdk';
 import { usePermissionsStore } from '@/stores/permissions';
@@ -226,7 +226,7 @@ async function save() {
 
 		// Navigate to dashboard if we have projects
 		if (selectedProjectIds.value.length > 0) {
-			router.push(`/deployments/${props.provider}`);
+			router.push({ name: 'deployments-provider-dashboard', params: { provider: props.provider } });
 		}
 	} catch (error) {
 		unexpectedError(error);
@@ -242,7 +242,7 @@ async function deleteConfig() {
 		await sdk.request(deleteDeployment(props.provider));
 		await refreshNavigation();
 		confirmDelete.value = false;
-		router.push('/deployments');
+		router.push({ name: 'deployments-overview' });
 	} catch (error) {
 		unexpectedError(error);
 	} finally {

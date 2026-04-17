@@ -12,7 +12,9 @@ import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constant
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import useCollection from '../middleware/use-collection.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { AssetsService } from '../services/assets.js';
+import { FilesService } from '../services/files.js';
 import { PayloadService } from '../services/payload.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
@@ -29,6 +31,8 @@ router.use(useCollection('directus_files'));
 router.post(
 	'/folder/:pk',
 	asyncHandler(async (req, res) => {
+		const logger = useLogger();
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -41,15 +45,49 @@ router.post(
 		const folderName = `folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip`;
 		res.setHeader('Content-Disposition', contentDisposition(folderName, { type: 'attachment' }));
 
+		// Clean up the archive stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				archive.destroy();
+				archive.abort();
+			}
+		});
+
 		archive.pipe(res);
 
-		await complete();
+		try {
+			await complete();
+		} catch (error) {
+			logger.error(error, `Couldn't archive folder ${req.params['pk']} to the client`);
+			archive.destroy();
+
+			if (!res.headersSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			} else {
+				res.end();
+			}
+		}
 	}),
 );
 
 router.post(
 	'/files/',
 	asyncHandler(async (req, res) => {
+		const logger = useLogger();
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -76,9 +114,41 @@ router.post(
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
 
+		// Clean up the archive stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				archive.destroy();
+				archive.abort();
+			}
+		});
+
 		archive.pipe(res);
 
-		await complete();
+		try {
+			await complete();
+		} catch (error) {
+			logger.error(error, `Couldn't archive files to the client`);
+			archive.destroy();
+
+			if (!res.headersSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			} else {
+				res.end();
+			}
+		}
 	}),
 );
 
@@ -260,13 +330,75 @@ router.get(
 			}
 		}
 
+		const revalidate = env['ASSETS_CACHE_REVALIDATE'] === true;
+
+		// Check conditional headers before loading the full asset from storage
+		if (revalidate) {
+			const ifNoneMatch = req.headers['if-none-match'];
+			const ifModifiedSince = req.headers['if-modified-since'];
+
+			if (ifNoneMatch || ifModifiedSince) {
+				if (req.accountability) {
+					await validateAccess(
+						{
+							accountability: req.accountability,
+							action: 'read',
+							collection: 'directus_files',
+							primaryKeys: [id],
+						},
+						{
+							knex: getDatabase(),
+							schema: req.schema,
+						},
+					);
+				}
+
+				const filesService = new FilesService({
+					schema: req.schema,
+				});
+
+				const fileRecord = await filesService.readOne(id, { fields: ['modified_on'] });
+
+				if (fileRecord?.modified_on) {
+					const modifiedOnTime = new Date(fileRecord.modified_on).getTime();
+					const etag = `"${Math.floor(modifiedOnTime / 1000)}"`;
+
+					if (ifNoneMatch === etag) {
+						res.setHeader('Cache-Control', 'max-age=0, must-revalidate');
+						res.setHeader('ETag', etag);
+						res.setHeader('Last-Modified', new Date(modifiedOnTime).toUTCString());
+						res.status(304);
+						return res.end();
+					}
+
+					if (ifModifiedSince) {
+						const ifModifiedSinceTime = new Date(ifModifiedSince).getTime();
+
+						if (Math.floor(modifiedOnTime / 1000) <= Math.floor(ifModifiedSinceTime / 1000)) {
+							res.setHeader('Cache-Control', 'max-age=0, must-revalidate');
+							res.setHeader('ETag', etag);
+							res.setHeader('Last-Modified', new Date(modifiedOnTime).toUTCString());
+							res.status(304);
+							return res.end();
+						}
+					}
+				}
+			}
+		}
+
 		const { stream, file, stat } = await service.getAsset(id, { transformationParams, acceptFormat }, range, true);
 
 		const filename = req.params['filename'] ?? file.filename_download ?? file.id;
 		res.attachment(filename);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
+
+		if (revalidate) {
+			res.setHeader('Cache-Control', 'max-age=0, must-revalidate');
+		} else {
+			res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
+		}
+
 		res.setHeader('Vary', vary.join(', '));
 
 		const unixTime = Date.parse(file.modified_on);
@@ -274,6 +406,7 @@ router.get(
 		if (!Number.isNaN(unixTime)) {
 			const lastModifiedDate = new Date(unixTime);
 			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
+			res.setHeader('ETag', `"${Math.floor(unixTime / 1000)}"`);
 		}
 
 		if (range) {
@@ -296,9 +429,19 @@ router.get(
 			return res.end();
 		}
 
-		(await stream())
+		const sourceStream = await stream();
+
+		// Clean up the source stream if the client disconnects
+		res.on('close', () => {
+			if (!res.writableEnded) {
+				sourceStream.destroy();
+			}
+		});
+
+		sourceStream
 			.on('error', (error) => {
 				logger.error(error, `Couldn't stream file ${file.id} to the client`);
+				sourceStream.destroy();
 
 				if (!res.headersSent) {
 					res.removeHeader('Content-Type');

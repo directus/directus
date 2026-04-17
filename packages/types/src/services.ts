@@ -344,7 +344,7 @@ interface PayloadService {
 		parent: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PayloadServiceProcessRelationResult>;
-	prepareDelta(data: Partial<Item>): Promise<string | null>;
+	prepareDelta(data: Partial<Item>): Promise<Partial<Item> | null>;
 }
 
 /**
@@ -388,7 +388,7 @@ interface RevisionsService {
  */
 interface SchemaService {
 	snapshot(): Promise<Snapshot>;
-	apply(payload: SnapshotDiffWithHash): Promise<void>;
+	apply(payload: SnapshotDiffWithHash, options?: { force?: boolean }): Promise<void>;
 	diff(snapshot: Snapshot, options?: { currentSnapshot?: Snapshot; force?: boolean }): Promise<SnapshotDiff | null>;
 	getHashedSnapshot(snapshot: Snapshot): SnapshotWithHash;
 }

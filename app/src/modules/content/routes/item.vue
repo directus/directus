@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCollection } from '@directus/composables';
+import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
@@ -33,7 +33,6 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
 import { useItemPermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
@@ -42,7 +41,6 @@ import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { PrivateView } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -92,7 +90,6 @@ const {
 	currentVersion,
 	versions,
 	loading: versionsLoading,
-	query,
 	addVersion,
 	updateVersion,
 	deleteVersion,
@@ -120,7 +117,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(collection, primaryKey, currentVersion);
 
 const toolsStore = useAiToolsStore();
 
@@ -487,7 +484,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 			refresh();
 			revisionsSidebarDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
-			if (!props.singleton) router.push(`/content/${props.collection}`);
+			if (!props.singleton) router.push({ name: 'content-collection', params: { collection: props.collection } });
 		}
 	} catch {
 		// Save shows unexpected error dialog

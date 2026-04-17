@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useApi } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
 import { Alterations, Item, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
 import { computed, onMounted, ref } from 'vue';
@@ -16,7 +17,6 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -174,7 +174,7 @@ async function saveAndStay() {
 async function saveAndAddNew() {
 	try {
 		await save();
-		router.push(`/settings/roles/+`);
+		router.push({ name: 'settings-add-new-role' });
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -183,7 +183,7 @@ async function saveAndAddNew() {
 async function saveAndQuit() {
 	try {
 		await save();
-		router.push(`/settings/roles`);
+		router.push({ name: 'settings-roles-collection' });
 	} catch {
 		// `save` shows unexpected error dialog
 	}

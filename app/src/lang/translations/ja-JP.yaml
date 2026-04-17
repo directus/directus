@@ -525,6 +525,8 @@ related_collection: 関連するコレクション
 related_collections: 関連するコレクション
 translations_collection: 翻訳コレクション
 languages_collection: 言語コレクション
+translations_preview_collections: コレクション
+translations_preview_relations: リレーション
 import_data_input_placeholder: CSV または JSON
 import_data_button: インポートを開始
 import_data_indeterminate: データをインポート中...
@@ -712,7 +714,6 @@ no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
 no_collections_copy: コレクションはまだありません。システム管理者にお問い合わせ下さい。
-relationship_not_setup: リレーションシップが正しく設定されていません
 no_singleton_relations: シングルトンへのリレーションシップはサポートされていません
 display_template_not_setup: 表示テンプレートのオプションが間違っています
 collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
@@ -1827,6 +1828,8 @@ interfaces:
     no_rules: 設定済みのルールはありません
   group-accordion:
     start: 開始
+  group-tabs:
+    fill_width: 幅埋め
   presentation-links:
     primary: プライマリー
   input-code:

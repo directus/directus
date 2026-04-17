@@ -11,7 +11,7 @@ import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
 import { merge } from 'lodash-es';
 import qs from 'qs';
-import { aiChatRouter } from './ai/chat/router.js';
+import { aiRouter } from './ai/chat/router.js';
 import { initAIDevTools } from './ai/devtools/index.js';
 import { aiFilesRouter } from './ai/files/router.js';
 import { initAITelemetry } from './ai/telemetry/index.js';
@@ -195,6 +195,17 @@ export default async function createApp(): Promise<express.Application> {
 		),
 	);
 
+	if (env['CROSS_ORIGIN_OPENER_POLICY_ENABLED']) {
+		app.use(
+			helmet.crossOriginOpenerPolicy({
+				policy: (env['CROSS_ORIGIN_OPENER_POLICY'] ?? 'same-origin-allow-popups') as
+					| 'same-origin'
+					| 'same-origin-allow-popups'
+					| 'unsafe-none',
+			}),
+		);
+	}
+
 	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', { omitPrefix: 'HSTS_ENABLED' })));
 	}
@@ -337,7 +348,7 @@ export default async function createApp(): Promise<express.Application> {
 	if (toBoolean(env['AI_ENABLED']) === true) {
 		await initAIDevTools();
 		await initAITelemetry();
-		app.use('/ai/chat', aiChatRouter);
+		app.use('/ai', aiRouter);
 		app.use('/ai/files', aiFilesRouter);
 	}
 

@@ -19,10 +19,9 @@ import type {
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
-import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, isObject, isPlainObject, pick } from 'lodash-es';
+import { clone, cloneDeep, isNil, isObject, isPlainObject } from 'lodash-es';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getFunctions, getHelpers } from '../database/helpers/index.js';
@@ -272,7 +271,7 @@ export class PayloadService {
 		}
 
 		if (action === 'read') {
-			this.processAggregates(processedPayload, aggregate);
+			await this.processAggregates(processedPayload, aggregate);
 		}
 
 		if (Array.isArray(payload)) {
@@ -282,7 +281,7 @@ export class PayloadService {
 		return processedPayload[0]!;
 	}
 
-	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
+	async processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
 		/**
 		 * Build access path with -> delimiter
 		 *
@@ -294,6 +293,8 @@ export class PayloadService {
 			return acc;
 		}, []);
 
+		const fieldEntries = this.schema.collections[this.collection]!.fields;
+
 		/**
 		 * Expand -> delimited keys in the payload to the equivalent expanded object
 		 *
@@ -302,8 +303,30 @@ export class PayloadService {
 		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
-				aggregateKeys.forEach((key) => delete item[key]);
+				for (const key of aggregateKeys) {
+					// Ignore keys that do not follow the `A->B` naming like count=*
+					if (key in item === false) continue;
+
+					const [operation, fieldName] = key.split('->') as [string, string];
+
+					const aggregateResult = { [fieldName]: item[key] };
+
+					if (fieldEntries[fieldName]?.special?.length > 0) {
+						const newValue = await this.processField(
+							fieldEntries[fieldName],
+							aggregateResult,
+							'read',
+							this.accountability,
+						);
+
+						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
+					}
+
+					if (!isPlainObject(item[operation])) item[operation] = {};
+
+					item[operation][fieldName] = aggregateResult[fieldName];
+					delete item[key];
+				}
 			}
 		}
 	}
@@ -1055,7 +1078,7 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(delta: Partial<Item>): Promise<string | null> {
+	async prepareDelta(delta: Partial<Item>): Promise<Partial<Item> | null> {
 		let payload = cloneDeep(delta);
 
 		for (const key in payload) {
@@ -1068,6 +1091,6 @@ export class PayloadService {
 
 		if (Object.keys(payload).length === 0) return null;
 
-		return JSON.stringify(payload);
+		return payload;
 	}
 }

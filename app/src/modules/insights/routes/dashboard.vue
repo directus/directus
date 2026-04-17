@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -22,7 +23,6 @@ import { AppTile } from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItemPermissions } from '@/composables/use-permissions';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
@@ -225,7 +225,7 @@ const refreshInterval = computed({
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('create_panel')"
 					outlined
-					:to="`/insights/${currentDashboard.id}/+`"
+					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
 					icon="add"
 				/>
 
@@ -274,7 +274,7 @@ const refreshInterval = computed({
 			:tiles="tiles"
 			:zoom-to-fit="zoomToFit"
 			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
-			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
+			@edit="(tile) => router.push({ name: 'panel-detail', params: { primaryKey, panelKey: tile.id } })"
 			@update="insightsStore.stagePanelUpdate"
 			@delete="insightsStore.stagePanelDelete"
 			@move="copyPanelID = $event"

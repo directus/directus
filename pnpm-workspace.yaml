@@ -8,7 +8,7 @@ packages:
 
 catalog:
   '@ai-sdk/anthropic': 3.0.58
-  '@ai-sdk/devtools': 0.0.13
+  '@ai-sdk/devtools': 0.0.15
   '@ai-sdk/google': 3.0.43
   '@ai-sdk/openai': 3.0.41
   '@ai-sdk/openai-compatible': 2.0.35
@@ -24,7 +24,7 @@ catalog:
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*
-  '@directus/vue-split-panel': 0.8.6
+  '@directus/vue-split-panel': 0.8.9
   '@editorjs/attaches': 1.3.2
   '@editorjs/checklist': 1.6.0
   '@editorjs/code': 2.9.3
@@ -60,7 +60,7 @@ catalog:
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
-  '@modelcontextprotocol/sdk': 1.26.0
+  '@modelcontextprotocol/sdk': 1.29.0
   '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
@@ -80,7 +80,6 @@ catalog:
   '@rollup/plugin-yaml': 4.1.2
   '@sesamecare-oss/redlock': 1.4.0
   '@shopify/semaphore': 3.1.0
-  '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
@@ -150,7 +149,7 @@ catalog:
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.13.5
+  axios: 1.15.0
   axios-cache-interceptor: 1.11.1
   base-64: 1.0.0
   boxen: 8.0.1
@@ -159,7 +158,7 @@ catalog:
   camelcase: 8.0.0
   caret-pos: 2.0.0
   chalk: 5.6.2
-  chokidar: 4.0.3
+  chokidar: 5.0.0
   chroma-js: 3.1.2
   codemirror: 5.65.18
   color: 5.0.2
@@ -172,6 +171,7 @@ catalog:
   cron: 4.3.4
   cropperjs: 1.6.2
   date-fns: 4.1.0
+  date-fns-tz: 3.2.0
   decamelize: 6.0.1
   deep-diff: 1.0.2
   diacritics: 1.3.0
@@ -204,7 +204,7 @@ catalog:
   graphql: 16.12.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 20.0.10
+  happy-dom: 20.8.9
   helmet: 8.1.0
   histoire: 0.17.17
   html-entities: 2.6.0
@@ -226,9 +226,9 @@ catalog:
   knex-mock-client: 3.0.2
   ky: 1.14.0
   ldapts: 8.1.3
-  liquidjs: 10.25.0
-  lodash: 4.17.23
-  lodash-es: 4.17.23
+  liquidjs: 10.25.5
+  lodash: 4.18.1
+  lodash-es: 4.18.1
   log-symbols: 7.0.1
   lru-cache: 11.2.2
   mapbox-gl: 1.13.3
@@ -237,14 +237,14 @@ catalog:
   micromustache: 8.0.3
   mime: 4.1.0
   mime-types: 3.0.1
-  minimatch: 10.2.3
+  minimatch: 10.2.5
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
-  nodemailer: 7.0.11
+  nodemailer: 8.0.5
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
@@ -279,7 +279,7 @@ catalog:
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
-  samlify: 2.10.2
+  samlify: 2.12.0
   sanitize-filename: 1.6.3
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3
@@ -296,7 +296,6 @@ catalog:
   stylelint-config-standard-vue: 1.0.0
   stylelint-use-logical: 2.1.2
   swagger-cli: 4.0.4
-  swagger-ui-watcher: 2.1.14
   tar: 7.5.8
   tedious: 18.6.1
   tinymce: 6.8.6
@@ -306,13 +305,13 @@ catalog:
   tus-js-client: 4.3.1
   typescript: 5.9.3
   typescript-eslint: 8.46.4
-  undici: 7.18.2
+  undici: 7.24.5
   universal-cookie: 8.0.1
   unplugin-vue: 7.1.1
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 8.0.0
+  vite: 8.0.8
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4

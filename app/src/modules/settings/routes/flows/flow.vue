@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { FlowRaw, OperationRaw } from '@directus/types';
 import { cloneDeep, isEmpty, merge, omit } from 'lodash';
 import { customAlphabet, nanoid } from 'nanoid/non-secure';
@@ -26,7 +27,6 @@ import VSelect from '@/components/v-select/v-select.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import VWorkspace from '@/components/v-workspace.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useShortcut } from '@/composables/use-shortcut';
 import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
@@ -100,7 +100,7 @@ async function deleteFlow() {
 		unexpectedError(error);
 	} finally {
 		deleting.value = false;
-		router.push('/settings/flows');
+		router.push({ name: 'settings-flows-collection' });
 	}
 }
 
@@ -298,13 +298,13 @@ function stageOperation(edits: Partial<OperationRaw>) {
 	stageOperationEdits({ edits });
 	parentId = undefined;
 	attachType = undefined;
-	router.replace(`/settings/flows/${props.primaryKey}`);
+	router.replace({ name: 'settings-flows-item', params: { primaryKey: props.primaryKey } });
 }
 
 function cancelOperation() {
 	parentId = undefined;
 	attachType = undefined;
-	router.replace(`/settings/flows/${props.primaryKey}`);
+	router.replace({ name: 'settings-flows-item', params: { primaryKey: props.primaryKey } });
 }
 
 async function saveChanges() {
@@ -449,7 +449,7 @@ async function deletePanel(id: string) {
 function createPanel(parent: string, type: 'resolve' | 'reject') {
 	parentId = parent;
 	attachType = type;
-	router.push(`/settings/flows/${props.primaryKey}/+`);
+	router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: '+' } });
 }
 
 function duplicatePanel(panel: OperationRaw) {
@@ -463,7 +463,8 @@ function duplicatePanel(panel: OperationRaw) {
 
 function editPanel(panel: AppTile) {
 	if (panel.id === '$trigger') triggerDetailOpen.value = true;
-	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
+	else
+		router.push({ name: 'settings-flows-operation', params: { primaryKey: props.primaryKey, operationId: panel.id } });
 }
 
 // ------------- Copy Panel To ------------- //

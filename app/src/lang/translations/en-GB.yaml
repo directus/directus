@@ -355,6 +355,8 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 languages_collection: Languages Collection
+translations_preview_collections: Collections
+translations_preview_fields: Fields
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
@@ -501,7 +503,6 @@ no_collections: No Collections
 create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
-relationship_not_setup: The relationship hasn't been configured correctly
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
@@ -1387,6 +1388,8 @@ interfaces:
     all_opened: All Opened
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
+  group-tabs:
+    fill_width: Fill Width
   presentation-links:
     presentation-links: Buttons
     style: Style
@@ -1673,8 +1676,14 @@ interfaces:
     value_securely_saved: Value Securely Saved
     generate: Generate Token
     regenerate: Regenerate Token
-    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
+    regenerate_confirm_title: Regenerate Token
+    regenerate_confirm_body: The current token will be immediately invalidated. This cannot be undone.
     remove_token: Remove Token
+    remove_confirm_title: Remove Token
+    remove_confirm_body: Any API access using this token will stop working immediately.
+    new_user_disabled_notice: Save this user before generating a token.
+    token_saved_notice: Token was saved successfully.
+    token_saved_copy: Make sure to copy this token now. For security reasons, it will not be visible again.
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values

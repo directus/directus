@@ -63,6 +63,7 @@ interface FlowMessage {
 class FlowManager {
 	private isLoaded = false;
 
+	private flows: Record<string, Flow> = {};
 	private operations: Map<string, OperationHandler> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
@@ -145,6 +146,10 @@ class FlowManager {
 		return handler(data, context);
 	}
 
+	public getFlow(id: string): Flow | undefined {
+		return this.flows[id];
+	}
+
 	private async load(): Promise<void> {
 		const logger = useLogger();
 
@@ -159,6 +164,8 @@ class FlowManager {
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
 		for (const flow of flowTrees) {
+			this.flows[flow.id] = flow;
+
 			if (flow.trigger === 'event') {
 				let events: string[] = [];
 
@@ -372,6 +379,7 @@ class FlowManager {
 			}
 		}
 
+		this.flows = {};
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
@@ -451,6 +459,15 @@ class FlowManager {
 									['**', 'headers', 'cookie'],
 									['**', 'query', 'access_token'],
 									['**', 'payload', 'password'],
+									['**', 'payload', 'token'],
+									['**', 'payload', 'tfa_secret'],
+									['**', 'payload', 'external_identifier'],
+									['**', 'payload', 'auth_data'],
+									['**', 'payload', 'credentials'],
+									['**', 'payload', 'ai_openai_api_key'],
+									['**', 'payload', 'ai_anthropic_api_key'],
+									['**', 'payload', 'ai_google_api_key'],
+									['**', 'payload', 'ai_openai_compatible_api_key'],
 								],
 								values: this.envs,
 							},
@@ -518,6 +535,11 @@ class FlowManager {
 						['**', 'payload', 'tfa_secret'],
 						['**', 'payload', 'external_identifier'],
 						['**', 'payload', 'auth_data'],
+						['**', 'payload', 'credentials'],
+						['**', 'payload', 'ai_openai_api_key'],
+						['**', 'payload', 'ai_anthropic_api_key'],
+						['**', 'payload', 'ai_google_api_key'],
+						['**', 'payload', 'ai_openai_compatible_api_key'],
 					],
 				},
 				getRedactedString,

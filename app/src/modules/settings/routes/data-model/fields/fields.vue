@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import formatTitle from '@directus/format-title';
 import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, toRefs } from 'vue';
@@ -15,7 +16,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -55,7 +55,7 @@ async function deleteAndQuit() {
 	await remove();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 	edits.value = {};
-	router.replace(`/settings/data-model`);
+	router.replace({ name: 'settings-collections' });
 }
 
 async function saveAndStay() {
@@ -66,7 +66,7 @@ async function saveAndStay() {
 async function saveAndQuit() {
 	await save();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-	router.push(`/settings/data-model`);
+	router.push({ name: 'settings-collections' });
 }
 
 function discardAndLeave() {
