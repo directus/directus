@@ -21,7 +21,10 @@ const AUTHENTICATED_CASES = [
 	},
 ];
 
-const NO_ACCOUNTABILITY_CASES = [{ input: undefined, expected: false, name: 'undefined' }];
+const NO_ACCOUNTABILITY_CASES = [
+	{ input: null, expected: false, name: 'null' },
+	{ input: undefined, expected: true, name: 'undefined' },
+];
 
 describe('isUnauthenticated', () => {
 	test.each(UNAUTHENTICATED_CASES)('returns $expected when $name', ({ input, expected }) => {
