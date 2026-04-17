@@ -455,6 +455,10 @@ export class ServerService {
 		}
 
 		async function testEmail(): Promise<Record<string, HealthCheck[]>> {
+			if (toBoolean(env['EMAIL_VERIFY_SETUP']) === false) {
+				return {};
+			}
+
 			const checks: Record<string, HealthCheck[]> = {
 				'email:connection': [
 					{
