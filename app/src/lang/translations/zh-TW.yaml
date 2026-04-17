@@ -1766,7 +1766,6 @@ interfaces:
     value_securely_saved: 值已安全加密
     generate: 產生 Token
     regenerate: 重新產生 token
-    generate_success_copy: 請記得備份下方的 token ，由於安全問題，在離開此頁之後您將無法再看到這個 token 。
     remove_token: 移除 Token
   system-raw-editor:
     system-raw-editor: 原始資料編輯器

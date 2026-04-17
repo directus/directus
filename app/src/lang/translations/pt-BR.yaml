@@ -155,7 +155,7 @@ keep_setup: Manter Configuração
 cancel_setup: Cancelar Configuração
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política 
+policy_name: Nome da política
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
@@ -2110,7 +2110,6 @@ interfaces:
     value_securely_saved: Valor secretamente salvo
     generate: Gerar token
     regenerate: Regerar token
-    generate_success_copy: Certifique-se de fazer backup e copiar o token acima. Por motivos de segurança, você não poderá visualizar o token novamente depois de salvar e sair desta página.
     remove_token: Remover token
   system-raw-editor:
     system-raw-editor: Editor "Raw"

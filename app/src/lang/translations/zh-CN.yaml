@@ -2153,7 +2153,6 @@ interfaces:
     value_securely_saved: 值已安全保存
     generate: 生成令牌
     regenerate: 重新生成令牌
-    generate_success_copy: 确保备份并复制上述令牌。 出于安全原因，保存并导航此页面后，您将无法再次查看令牌。
     remove_token: 删除令牌
   system-raw-editor:
     system-raw-editor: 原始编辑器
