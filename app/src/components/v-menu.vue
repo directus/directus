@@ -51,8 +51,6 @@ interface Props {
 	keepBehind?: boolean;
 	/** Do not focus activator when deactivating focus trap */
 	noFocusReturn?: boolean;
-	/** Invert the menu colors */
-	invert?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
