@@ -170,5 +170,43 @@ describe('/server', () => {
 				});
 			});
 		});
+
+		describe('EMAIL_VERIFY_SETUP=false', () => {
+			describe.each(vendors)('%s', (vendor) => {
+				let directusInstance: ChildProcess;
+				let env: Env;
+
+				beforeAll(async () => {
+					env = cloneDeep(config.envs);
+					env[vendor]['EMAIL_VERIFY_SETUP'] = 'false';
+					env[vendor]['HEALTHCHECK_NAMESPACE'] = `directus:healthcheck:no-email-verify:${vendor}`;
+
+					const newPort = await getPort();
+					env[vendor].PORT = String(newPort);
+
+					directusInstance = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
+
+					await awaitDirectusConnection(newPort);
+				}, 180_000);
+
+				afterAll(async () => {
+					directusInstance!.kill();
+				});
+
+				it('excludes email checks when verification is off', async () => {
+					// Action
+					const response = await request(getUrl(vendor, env))
+						.get('/server/health')
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+
+					const checkKeys = Object.keys(response.body.checks);
+
+					expect(checkKeys.some((key) => key.startsWith('email:'))).toBe(false);
+				});
+			});
+		});
 	});
 });

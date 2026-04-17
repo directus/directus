@@ -394,7 +394,7 @@ export class ServerService {
 		}
 
 		async function testEmail(): Promise<Record<string, ServerHealthCheck[]>> {
-			if (enabledServices.includes('email') === false) {
+			if (enabledServices.includes('email') === false || toBoolean(env['EMAIL_VERIFY_SETUP']) === false) {
 				return {};
 			}
 
