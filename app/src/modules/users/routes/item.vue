@@ -117,6 +117,7 @@ const confirmDiscard = ref(false);
 
 // Provide the discard functionality to field interfaces
 provide('discardAllChanges', discardAndStay);
+provide('refresh', refresh);
 
 const avatarSrc = computed(() => {
 	if (!item.value?.avatar) return null;
