@@ -32,6 +32,15 @@ describe('VercelDriver', () => {
 		vi.restoreAllMocks();
 	});
 
+	it('should declare webhook transport, preview deploy, and no polling', () => {
+		expect(driver.capabilities).toEqual({
+			eventsTransport: 'webhook',
+			supportsPreviewDeploy: true,
+			supportsDeployHookUrl: false,
+			needsRunStatusPolling: false,
+		});
+	});
+
 	describe('authentication', () => {
 		it('should send Bearer token in Authorization header', async () => {
 			mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, undefined));

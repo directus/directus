@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
+import { CloudflareDriver, NetlifyDriver, VercelDriver } from './deployment/drivers/index.js';
 import { getDeploymentDriver, getSupportedProviderTypes, registerDeploymentDrivers } from './deployment.js';
 
 describe('Deployment Driver Registry', () => {
@@ -35,16 +35,28 @@ describe('Deployment Driver Registry', () => {
 				'Deployment driver "unsupported" is not supported',
 			);
 		});
+
+		it('should return CloudflareDriver instance with credentials and options', () => {
+			const credentials = { api_token: 'my-token' };
+			const options = { account_id: 'account-123' };
+
+			const driver = getDeploymentDriver('cloudflare', credentials, options);
+
+			expect(driver).toBeInstanceOf(CloudflareDriver);
+			expect(driver.credentials).toEqual(credentials);
+			expect(driver.options).toEqual(options);
+		});
 	});
 
 	describe('getSupportedProviderTypes', () => {
-		it('should return array containing vercel and netlify', () => {
+		it('should return array containing vercel, netlify, and cloudflare', () => {
 			const types = getSupportedProviderTypes();
 
 			expect(Array.isArray(types)).toBe(true);
 			expect(types).toContain('vercel');
 			expect(types).toContain('netlify');
-			expect(types.length).toBe(2);
+			expect(types).toContain('cloudflare');
+			expect(types.length).toBe(3);
 		});
 	});
 });

@@ -1,7 +1,7 @@
 /**
  * Supported deployment provider types
  */
-export const DEPLOYMENT_PROVIDER_TYPES = ['vercel', 'netlify'] as const;
+export const DEPLOYMENT_PROVIDER_TYPES = ['vercel', 'netlify', 'cloudflare'] as const;
 export type ProviderType = (typeof DEPLOYMENT_PROVIDER_TYPES)[number];
 
 /**
@@ -16,6 +16,25 @@ export type Credentials = Record<string, any>;
 export type Options = Record<string, any>;
 
 export type Status = 'building' | 'ready' | 'error' | 'canceled';
+
+/**
+ * How the provider delivers deployment status updates to Directus
+ */
+export type DeploymentEventsTransport = 'webhook' | 'poll';
+
+/**
+ * Declared features for a deployment provider driver (API + app)
+ */
+export interface DeploymentProviderCapabilities {
+	eventsTransport: DeploymentEventsTransport;
+	supportsPreviewDeploy: boolean;
+	supportsDeployHookUrl: boolean;
+	/**
+	 * When true, non-terminal runs should be refreshed from the provider API
+	 * (no deployment-completed webhooks).
+	 */
+	needsRunStatusPolling: boolean;
+}
 
 /**
  * Latest deployment summary for project overview
@@ -95,6 +114,8 @@ export interface DeploymentConfig {
 	last_synced_at: string | null;
 	date_created: string;
 	projects?: StoredProject[];
+	/** Present on API responses; not stored in the database */
+	capabilities?: DeploymentProviderCapabilities;
 }
 
 /**

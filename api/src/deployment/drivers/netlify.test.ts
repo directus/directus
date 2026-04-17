@@ -31,6 +31,15 @@ describe('NetlifyDriver', () => {
 		vi.restoreAllMocks();
 	});
 
+	it('should declare webhook transport without preview or deploy-hook triggers', () => {
+		expect(driver.capabilities).toEqual({
+			eventsTransport: 'webhook',
+			supportsPreviewDeploy: false,
+			supportsDeployHookUrl: false,
+			needsRunStatusPolling: false,
+		});
+	});
+
 	describe('authentication', () => {
 		it('should instantiate NetlifyAPI with access token', async () => {
 			mockNetlifyAPI.listSites.mockResolvedValueOnce([]);

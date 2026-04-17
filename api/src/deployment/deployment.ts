@@ -1,6 +1,7 @@
 import type {
 	Credentials,
 	Deployment,
+	DeploymentProviderCapabilities,
 	DeploymentWebhookEvent,
 	Details,
 	Log,
@@ -18,16 +19,29 @@ export type DeploymentRequestOptions = Pick<AxiosRequestConfig<string>, 'method'
 	params?: Record<string, string>;
 };
 
+const defaultCapabilities: DeploymentProviderCapabilities = {
+	eventsTransport: 'webhook',
+	supportsPreviewDeploy: true,
+	supportsDeployHookUrl: false,
+	needsRunStatusPolling: false,
+};
+
 export abstract class DeploymentDriver<
 	TCredentials extends Credentials = Credentials,
 	TOptions extends Options = Options,
 > {
 	credentials: TCredentials;
 	options: TOptions;
+	readonly capabilities: DeploymentProviderCapabilities;
 
-	constructor(credentials: TCredentials, options: TOptions = {} as TOptions) {
+	constructor(
+		credentials: TCredentials,
+		options: TOptions = {} as TOptions,
+		capabilities: Partial<DeploymentProviderCapabilities> = {},
+	) {
 		this.credentials = credentials;
 		this.options = options;
+		this.capabilities = { ...defaultCapabilities, ...capabilities };
 	}
 
 	protected async axiosRequest<T>(
@@ -123,7 +137,7 @@ export abstract class DeploymentDriver<
 	 */
 	abstract triggerDeployment(
 		projectId: string,
-		options?: { preview?: boolean; clearCache?: boolean },
+		options?: { preview?: boolean; clearCache?: boolean; deployHookUrl?: string },
 	): Promise<TriggerResult>;
 
 	/**

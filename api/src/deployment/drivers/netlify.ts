@@ -65,7 +65,7 @@ export class NetlifyDriver extends DeploymentDriver<NetlifyCredentials, NetlifyO
 	private api: NetlifyAPI;
 
 	constructor(credentials: NetlifyCredentials, options: NetlifyOptions = {}) {
-		super(credentials, options);
+		super(credentials, options, { supportsPreviewDeploy: false });
 		this.api = new NetlifyAPI(this.credentials.access_token);
 	}
 

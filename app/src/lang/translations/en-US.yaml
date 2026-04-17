@@ -1219,11 +1219,38 @@ deployment:
         label: Account Slug
         hint: Optional. Filter sites to a specific account. Leave empty to show all accessible sites.
         placeholder: your-account-slug
+    cloudflare:
+      name: Cloudflare Workers
+      settings_warning:
+        Changing credentials or account ID may affect your selected projects if they are no longer accessible with the
+        new configuration.
+      setup_requirements:
+        To deploy from Directus, each Worker must have Workers Builds enabled and a connected Git repository with a
+        build trigger. Deploy Hooks are optional and provide an additional manual trigger option.
+      api_token:
+        hint:
+          Must be a user-scoped API token (not an account token) with Workers Builds Configuration: Edit and Workers
+          Scripts: Read permissions.
+      account_id:
+        label: Account ID
+        hint: Your Cloudflare account ID used for Workers Builds API requests.
+        placeholder: 023e105f4ecef8ad9ca31a8372d0c353
+      deploy_hooks:
+        title: Deploy Hooks
+        hint: Create Deploy Hooks in Cloudflare (Worker Settings > Builds > Deploy Hooks), then paste the URL here.
+        add: Add Deploy Hook
+        name_placeholder: e.g. Production - main
+        url_placeholder: https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/...
+        deploy_via: 'Deploy via {name}'
     projects: Projects
     select_projects: Select Projects
     select_projects_hint: Choose which projects you want to manage from Directus
     project:
       not_deployable: Project not deployable by Directus. Please see documentation for more info.
+      not_deployable_cloudflare:
+        This Worker has no Cloudflare Builds trigger yet. In Cloudflare, open Worker Settings > Builds and finish Builds
+        setup.
+      missing_build_trigger: Missing Cloudflare Build Trigger
     runs:
       runs: Deployment Runs
       id: Deployment ID
