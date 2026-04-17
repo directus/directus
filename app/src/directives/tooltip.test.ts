@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { DirectiveBinding } from 'vue';
-import { isDisabled, resolveAlign, resolveSide } from './tooltip';
+import { isDisabled, resolveAlign, resolveSide, resolveTooltipValue } from './tooltip';
 
 function createElement(html: string): HTMLElement {
 	const div = document.createElement('div');
@@ -100,5 +100,22 @@ describe('resolveAlign', () => {
 
 	it('returns end for .end modifier', () => {
 		expect(resolveAlign(makeBinding({ modifiers: { end: true } }))).toBe('end');
+	});
+});
+
+describe('resolveTooltipValue', () => {
+	it('normalizes a string value to { content, kbd: undefined }', () => {
+		expect(resolveTooltipValue('hello')).toEqual({ content: 'hello', kbd: undefined });
+	});
+
+	it('normalizes an object value with text and kbd', () => {
+		expect(resolveTooltipValue({ text: 'Save', kbd: ['meta', 's'] })).toEqual({
+			content: 'Save',
+			kbd: ['meta', 's'],
+		});
+	});
+
+	it('normalizes an object value with no kbd', () => {
+		expect(resolveTooltipValue({ text: 'Save' })).toEqual({ content: 'Save', kbd: undefined });
 	});
 });

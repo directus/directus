@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
+import { useCollection, useShortcut } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
@@ -21,6 +21,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VKbdShortcut from '@/components/v-kbd-shortcut.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemHint from '@/components/v-list-item-hint.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
@@ -834,12 +835,12 @@ function useItemNavigation() {
 							<VListItem clickable @click="saveVersionAction('main')">
 								<VListItemIcon><VIcon name="check" /></VListItemIcon>
 								<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
-								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
+								<VListItemHint><VKbdShortcut :value="['meta', 'alt', 's']" /></VListItemHint>
 							</VListItem>
 							<VListItem clickable @click="saveVersionAction('quit')">
 								<VListItemIcon><VIcon name="done_all" /></VListItemIcon>
 								<VListItemContent>{{ $t('save_and_quit') }}</VListItemContent>
-								<VListItemHint>{{ translateShortcut(['meta', 'shift', 's']) }}</VListItemHint>
+								<VListItemHint><VKbdShortcut :value="['meta', 'shift', 's']" /></VListItemHint>
 							</VListItem>
 							<VListItem clickable @click="discardAndStay">
 								<VListItemIcon><VIcon name="undo" /></VListItemIcon>

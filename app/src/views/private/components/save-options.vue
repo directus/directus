@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { translateShortcut } from '@directus/composables';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VKbdShortcut from '@/components/v-kbd-shortcut.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemHint from '@/components/v-list-item-hint.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
@@ -30,12 +30,12 @@ defineEmits<{
 			<VListItem v-if="!disabledOptions?.includes('save-and-stay')" clickable @click="$emit('save-and-stay')">
 				<VListItemIcon><VIcon name="check" /></VListItemIcon>
 				<VListItemContent>{{ $t('save_and_stay') }}</VListItemContent>
-				<VListItemHint>{{ translateShortcut(['meta', 's']) }}</VListItemHint>
+				<VListItemHint><VKbdShortcut :value="['meta', 's']" /></VListItemHint>
 			</VListItem>
 			<VListItem v-if="!disabledOptions?.includes('save-and-add-new')" clickable @click="$emit('save-and-add-new')">
 				<VListItemIcon><VIcon name="add" /></VListItemIcon>
 				<VListItemContent>{{ $t('save_and_create_new') }}</VListItemContent>
-				<VListItemHint>{{ translateShortcut(['meta', 'shift', 's']) }}</VListItemHint>
+				<VListItemHint><VKbdShortcut :value="['meta', 'shift', 's']" /></VListItemHint>
 			</VListItem>
 			<VListItem v-if="!disabledOptions?.includes('save-as-copy')" clickable @click="$emit('save-as-copy')">
 				<VListItemIcon><VIcon name="done_all" /></VListItemIcon>

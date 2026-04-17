@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { TooltipArrow, TooltipContent, TooltipPortal, TooltipRoot, TooltipTrigger } from 'reka-ui';
+import VKbd from '@/components/v-kbd.vue';
 import { TOOLTIP_CONTENT_ID, useGlobalTooltip } from '@/composables/use-global-tooltip';
 
 const { state, closeTooltip } = useGlobalTooltip();
@@ -19,6 +20,9 @@ const { state, closeTooltip } = useGlobalTooltip();
 				:class="{ inverted: state.inverted, monospace: state.monospace }"
 			>
 				{{ state.content }}
+				<span v-if="state.kbd" class="tooltip-kbd">
+					<VKbd v-for="key in state.kbd" :key="key" :value="key" size="small" variant="inverted" />
+				</span>
 				<TooltipArrow />
 			</TooltipContent>
 		</TooltipPortal>

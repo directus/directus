@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { translateShortcut } from '@directus/composables';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
@@ -27,7 +26,7 @@ defineEmits<{
 	<header class="header-bar" :class="{ shadow }">
 		<div class="primary">
 			<VButton
-				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
+				v-tooltip.bottom="{ text: $t('cancel'), kbd: ['esc'] }"
 				class="cancel-button"
 				rounded
 				icon

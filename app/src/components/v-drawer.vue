@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { translateShortcut } from '@directus/composables';
 import { useScroll } from '@vueuse/core';
 import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
@@ -78,7 +77,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		<article class="v-drawer">
 			<VButton
 				v-if="cancelable"
-				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
+				v-tooltip.bottom="{ text: $t('cancel'), kbd: ['esc'] }"
 				class="cancel"
 				icon
 				rounded

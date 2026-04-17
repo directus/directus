@@ -8,6 +8,7 @@ export type TooltipAlign = 'start' | 'center' | 'end';
 
 export interface TooltipPayload {
 	content: string;
+	kbd?: string[];
 	side: TooltipSide;
 	align: TooltipAlign;
 	inverted: boolean;
@@ -23,6 +24,7 @@ interface TooltipState extends Omit<TooltipPayload, 'delayDuration'> {
 const state = reactive<TooltipState>({
 	open: false,
 	content: '',
+	kbd: undefined,
 	side: 'top',
 	align: 'center',
 	inverted: false,
@@ -38,8 +40,9 @@ function openTooltip(payload: TooltipPayload, immediateContent = false): void {
 	if (immediateContent) state.content = payload.content;
 
 	timer = setTimeout(() => {
-		const { delayDuration: _, ...rest } = payload;
+		const { delayDuration: _, kbd, ...rest } = payload;
 		Object.assign(state, rest);
+		state.kbd = kbd;
 		state.open = true;
 	}, payload.delayDuration);
 }

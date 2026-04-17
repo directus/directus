@@ -94,6 +94,41 @@ describe('useGlobalTooltip', () => {
 		expect(state.open).toBe(false);
 	});
 
+	it('stores kbd keys in state', () => {
+		const { state, openTooltip } = useGlobalTooltip();
+
+		openTooltip({
+			content: 'Save',
+			kbd: ['meta', 's'],
+			side: 'top',
+			align: 'center',
+			inverted: false,
+			monospace: false,
+			delayDuration: 0,
+			virtualRef: null,
+		});
+
+		vi.advanceTimersByTime(0);
+		expect(state.kbd).toEqual(['meta', 's']);
+	});
+
+	it('kbd defaults to undefined when not provided', () => {
+		const { state, openTooltip } = useGlobalTooltip();
+
+		openTooltip({
+			content: 'hello',
+			side: 'top',
+			align: 'center',
+			inverted: false,
+			monospace: false,
+			delayDuration: 0,
+			virtualRef: null,
+		});
+
+		vi.advanceTimersByTime(0);
+		expect(state.kbd).toBeUndefined();
+	});
+
 	it('cancels pending open when closed before delay', () => {
 		const { state, openTooltip, closeTooltip } = useGlobalTooltip();
 

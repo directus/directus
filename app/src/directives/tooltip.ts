@@ -33,6 +33,16 @@ interface TooltipHandlers {
 	blur: () => void;
 }
 
+export interface TooltipValue {
+	text: string;
+	kbd?: string[];
+}
+
+export function resolveTooltipValue(value: string | TooltipValue): { content: string; kbd: string[] | undefined } {
+	if (typeof value === 'string') return { content: value, kbd: undefined };
+	return { content: value.text, kbd: value.kbd };
+}
+
 const handlerMap = new WeakMap<HTMLElement, TooltipHandlers>();
 const { openTooltip, closeTooltip } = useGlobalTooltip();
 
@@ -40,9 +50,11 @@ function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
 	if (!binding.value) return;
 
 	const virtualRef = { getBoundingClientRect: () => element.getBoundingClientRect() };
+	const { content, kbd } = resolveTooltipValue(binding.value);
 
 	const buildPayload = (delayDuration: number) => ({
-		content: binding.value,
+		content,
+		kbd,
 		side: resolveSide(binding),
 		align: resolveAlign(binding),
 		inverted: !!binding.modifiers['inverted'],
