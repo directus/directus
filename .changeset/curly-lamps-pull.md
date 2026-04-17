@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Ensured new draft flow works for singleton collections
+Updated content route middleware to handle singleton collections and draft flow via route guards

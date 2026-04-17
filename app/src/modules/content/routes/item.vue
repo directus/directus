@@ -7,9 +7,10 @@ import { useHead } from '@unhead/vue';
 import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
 import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
+import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
@@ -74,15 +75,25 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+
+onBeforeRouteUpdate((to, from) => {
+	if (to.name !== 'content-singleton') return;
+	if (to.params.collection === from.params.collection) return;
+
+	trackLastAccessedCollection(to, from, () => {});
+});
+
 const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
 const isCurrentVersionNew = computed(() => isVersionNew(currentVersion.value));
 
+const isItemlessDraft = computed(() => props.primaryKey === '+' || (props.singleton && !actualPrimaryKey.value));
+
 const isPublishAllowed = computed(() => {
 	if (isCurrentVersionNew.value) return false;
-	return props.primaryKey === '+' ? createAllowed.value : updateAllowed.value;
+	return isItemlessDraft.value ? createAllowed.value : updateAllowed.value;
 });
 
 const form = ref<ComponentPublicInstance>();
@@ -98,6 +109,10 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
+// Resolved singleton PK — stays null for pristine singletons and until the item loads.
+// Kept here (not computed from `item`) so it can be passed into useVersions before useItem runs.
+const singletonPrimaryKey = ref<PrimaryKey | null>(null);
+
 const {
 	readVersionsAllowed,
 	currentVersion,
@@ -112,7 +127,7 @@ const {
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
-} = useVersions(collection, isSingleton, primaryKey);
+} = useVersions(collection, isSingleton, primaryKey, singletonPrimaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
 	usePublishComparison();
@@ -137,6 +152,24 @@ const {
 	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, currentVersion);
+
+watch(
+	item,
+	(newItem) => {
+		if (!isSingleton.value) {
+			singletonPrimaryKey.value = null;
+			return;
+		}
+
+		// During refresh, item is transiently null — keep the last known PK so useVersions'
+		// filter doesn't flip to the item-less branch and trigger a refetch/refresh loop.
+		if (!newItem) return;
+
+		const pkField = primaryKeyField.value?.field;
+		singletonPrimaryKey.value = pkField ? ((newItem[pkField] ?? null) as PrimaryKey | null) : null;
+	},
+	{ immediate: true },
+);
 
 const toolsStore = useAiToolsStore();
 
@@ -642,7 +675,10 @@ const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
 	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
-	if (props.primaryKey === '+') return currentVersion.value !== null;
+
+	if (props.primaryKey === '+' || (props.singleton && internalPrimaryKey.value === '+')) {
+		return currentVersion.value !== null;
+	}
 
 	return internalPrimaryKey.value !== '+';
 });
@@ -681,7 +717,7 @@ function usePublishComparison() {
 	async function onVersionPublishCompare(quit = false) {
 		quitAfterPublish.value = quit;
 
-		if (isNew.value && currentVersion.value !== null && currentVersion.value.id !== '+') {
+		if (isItemlessDraft.value && currentVersion.value !== null && currentVersion.value.id !== '+') {
 			const defaultValues = getDefaultValuesFromFields(fields);
 			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
 			const fieldsToValidate = pushGroupOptionsDown(fields.value);
@@ -697,7 +733,11 @@ function usePublishComparison() {
 				const newItemKey = await publishVersion(versionId, {});
 
 				if (newItemKey) {
-					if (quit) {
+					if (props.singleton) {
+						// Singletons live on a single route; remove the now-promoted draft and reload without the version query
+						await deleteVersion(versionId);
+						router.push(collectionRoute.value);
+					} else if (quit) {
 						router.push(collectionRoute.value);
 					} else {
 						router.replace(getItemRoute(props.collection, newItemKey));
