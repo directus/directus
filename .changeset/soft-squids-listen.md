@@ -1,4 +1,6 @@
 ---
+'@directus/api': patch
 ---
 
-Add a no-op changeset so test-only updates satisfy the required workflow.
+Add a changeset entry for the API package so the required workflow accepts the
+test updates in this PR.
