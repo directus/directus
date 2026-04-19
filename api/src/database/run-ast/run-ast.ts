@@ -138,7 +138,7 @@ export async function runAst(
 
 		const originalForeignKeys = new Map<Item, Record<string, unknown>>();
 
-		if (sharedForeignKeyFields.size > 0 && items) {
+		if (sharedForeignKeyFields.size > 0) {
 			const itemsArray = Array.isArray(items) ? items : [items];
 
 			for (const item of itemsArray) {
