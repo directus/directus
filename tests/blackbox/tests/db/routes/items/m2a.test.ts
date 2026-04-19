@@ -329,6 +329,46 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					}
 				});
 			});
+
+			describe(`retrieves a2o item under a field alias`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const shape = createShape(pkType);
+
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: {
+							...shape,
+							children: {
+								create: [{ collection: localCollectionCircles, item: createCircle(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
+						.query({
+							'fields[]': [
+								`children.item:${localCollectionCircles}.radius`,
+								`children.aliased:${localCollectionCircles}.radius`,
+							],
+							'deep[children][_alias][aliased]': 'item',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.children).toHaveLength(1);
+
+					const child = response.body.data.children[0];
+					expect(child.item).toEqual(expect.objectContaining({ radius: expect.any(Number) }));
+					expect(child.aliased).toEqual(expect.objectContaining({ radius: expect.any(Number) }));
+					expect(child.aliased.radius).toBe(child.item.radius);
+				});
+			});
 		});
 
 		describe('GET /:collection', () => {

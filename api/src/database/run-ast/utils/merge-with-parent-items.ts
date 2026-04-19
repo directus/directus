@@ -10,17 +10,26 @@ export function mergeWithParentItems(
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
 	fieldAllowed: boolean | boolean[],
+	originalForeignKeys?: Map<Item, Record<string, unknown>>,
 ) {
 	const env = useEnv();
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
+	const sourceParentItems = toArray(parentItem);
+
+	const getForeignKey = (parentIndex: number, parentItem: Item, field: string) => {
+		const source = sourceParentItems[parentIndex];
+		const snapshot = source ? originalForeignKeys?.get(source) : undefined;
+		return snapshot && field in snapshot ? snapshot[field] : parentItem[field];
+	};
 
 	if (nestedNode.type === 'm2o') {
 		const parentsByForeignKey = new Map<PrimaryKey, Item[]>();
 
 		// default all nested nodes to null
-		for (const parentItem of parentItems) {
-			const relationKey = parentItem[nestedNode.relation.field];
+		for (let parentIndex = 0; parentIndex < parentItems.length; parentIndex++) {
+			const parentItem = parentItems[parentIndex]!;
+			const relationKey = getForeignKey(parentIndex, parentItem, nestedNode.relation.field) as PrimaryKey;
 
 			if (!parentsByForeignKey.has(relationKey)) {
 				parentsByForeignKey.set(relationKey, []);
@@ -156,21 +165,29 @@ export function mergeWithParentItems(
 			});
 		}
 	} else if (nestedNode.type === 'a2o') {
-		for (const parentItem of parentItems) {
+		for (let parentIndex = 0; parentIndex < parentItems.length; parentIndex++) {
+			const parentItem = parentItems[parentIndex]!;
+
 			if (!nestedNode.relation.meta?.one_collection_field) {
 				parentItem[nestedNode.fieldKey] = null;
 				continue;
 			}
 
-			const relatedCollection = parentItem[nestedNode.relation.meta.one_collection_field];
+			const relatedCollection = getForeignKey(
+				parentIndex,
+				parentItem,
+				nestedNode.relation.meta.one_collection_field,
+			) as string;
 
 			if (!(nestedItem as Record<string, any[]>)[relatedCollection]) {
 				parentItem[nestedNode.fieldKey] = null;
 				continue;
 			}
 
+			const foreignKey = getForeignKey(parentIndex, parentItem, nestedNode.relation.field);
+
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection]!.find((nestedItem) => {
-				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == parentItem[nestedNode.relation.field];
+				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == foreignKey;
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;
