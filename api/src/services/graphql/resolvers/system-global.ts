@@ -7,6 +7,7 @@ import {
 	GraphQLEnumType,
 	GraphQLID,
 	GraphQLInt,
+	GraphQLList,
 	GraphQLNonNull,
 	GraphQLObjectType,
 	GraphQLString,
@@ -22,6 +23,7 @@ import { getIPFromReq } from '../../../utils/get-ip-from-req.js';
 import { getSecret } from '../../../utils/get-secret.js';
 import isDirectusJWT from '../../../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../../../utils/jwt.js';
+import { AssetsService } from '../../assets.js';
 import { AuthenticationService } from '../../authentication.js';
 import { RevisionsService } from '../../revisions.js';
 import { TFAService } from '../../tfa.js';
@@ -431,6 +433,20 @@ export function globalResolvers(gql: GraphQLService, schemaComposer: SchemaCompo
 				await clearSystemCache();
 
 				return;
+			},
+		},
+		utils_assets_transformations_clear: {
+			type: GraphQLVoid,
+			args: {
+				files: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+			},
+			resolve: async (_, args) => {
+				const service = new AssetsService({
+					accountability: gql.accountability,
+					schema: gql.schema,
+				});
+
+				await service.clearTransformations({ files: args.files });
 			},
 		},
 		users_invite_accept: {
