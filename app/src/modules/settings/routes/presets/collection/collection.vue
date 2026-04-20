@@ -159,7 +159,7 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					:tooltip="createAllowed ? undefined : $t('not_allowed')"
 					:label="$t('create_preset')"
-					to="/settings/presets/+"
+					:to="{ name: 'settings-presets-item', params: { id: '+' } }"
 					:disabled="createAllowed === false"
 					icon="add"
 				/>
@@ -185,7 +185,7 @@ function clearFilters() {
 						{{ $t('no_presets_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<VButton :to="`/settings/presets/+`">{{ $t('create_preset') }}</VButton>
+							<VButton :to="{ name: 'settings-presets-item', params: { id: '+' } }">{{ $t('create_preset') }}</VButton>
 						</template>
 					</VInfo>
 				</template>
