@@ -86,6 +86,7 @@
 		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@directus/specs": "workspace:*",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/storage-driver-azure": "workspace:*",
 		"@directus/storage-driver-cloudinary": "workspace:*",
