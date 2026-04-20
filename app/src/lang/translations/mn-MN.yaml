@@ -1998,7 +1998,6 @@ interfaces:
     value_securely_saved: Утгыг аюулгүй хадгалсан
     generate: Токен үүсгэх
     regenerate: Токен дахин үүсгэх
-    generate_success_copy: Дээрх токеныг хуулж авч, нөөцлөнө үү. Аюулгүй байдлын үүднээс та энэ хуудсыг орхисны дараагаар токеныг дахин харах боломжгүй болно.
     remove_token: Токен устгах
   system-raw-editor:
     system-raw-editor: Raw засварлагч

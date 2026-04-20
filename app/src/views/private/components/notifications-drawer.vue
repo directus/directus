@@ -300,7 +300,12 @@ function clearFilters() {
 			<VDivider class="nav-divider" />
 
 			<VList nav>
-				<VListItem clickable to="/activity" :active="!notificationsDrawerOpen" @click="notificationsDrawerOpen = false">
+				<VListItem
+					clickable
+					:to="{ name: 'activity-collection' }"
+					:active="!notificationsDrawerOpen"
+					@click="notificationsDrawerOpen = false"
+				>
 					<VListItemIcon>
 						<VIcon name="manage_search" />
 					</VListItemIcon>

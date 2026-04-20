@@ -2028,7 +2028,6 @@ interfaces:
     value_securely_saved: Valor guardado de forma segura
     generate: Generar token
     regenerate: Regenerar token
-    generate_success_copy: Asegúrese de hacer una copia de seguridad y copiar el token de arriba. Por razones de seguridad, no podrá volver a ver el token después de guardar y navegar fuera de esta página.
     remove_token: Remover token
   system-raw-editor:
     system-raw-editor: Editor bruto

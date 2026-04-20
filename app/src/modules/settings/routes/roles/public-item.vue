@@ -174,7 +174,7 @@ async function saveAndStay() {
 async function saveAndAddNew() {
 	try {
 		await save();
-		router.push(`/settings/roles/+`);
+		router.push({ name: 'settings-add-new-role' });
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -183,7 +183,7 @@ async function saveAndAddNew() {
 async function saveAndQuit() {
 	try {
 		await save();
-		router.push(`/settings/roles`);
+		router.push({ name: 'settings-roles-collection' });
 	} catch {
 		// `save` shows unexpected error dialog
 	}

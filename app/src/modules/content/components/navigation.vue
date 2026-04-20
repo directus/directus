@@ -66,7 +66,7 @@ const hasHiddenCollections = computed(
 				full-width
 				outlined
 				dashed
-				to="/settings/data-model/+"
+				:to="{ name: 'settings-add-new' }"
 			>
 				{{ $t('create_collection') }}
 			</VButton>
