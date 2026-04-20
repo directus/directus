@@ -457,7 +457,7 @@ export class AssetsService {
 						await disk.bulkDelete(toDelete);
 						deleted += toDelete.length;
 					} catch (err) {
-						logger.warn(`Failed to bulk delete transformations on "${storageName}": ${err}`);
+						logger.warn(err);
 					}
 				}
 
