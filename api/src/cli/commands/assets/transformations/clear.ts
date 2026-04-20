@@ -12,7 +12,7 @@ export default async function transformationsClear({ files }: { files?: string[]
 			schema,
 		});
 
-		await service.clearTransformations(files ? { files } : undefined);
+		await service.clearTransformations({ files });
 
 		process.stdout.write('Cleared asset transformations successfully\n');
 		process.exit(0);
