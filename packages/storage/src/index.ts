@@ -61,17 +61,22 @@ export function supportsTus(driver: Driver): driver is TusDriver {
 }
 
 /**
- * Fallback for drivers without native bulk delete. Deletes files concurrently with a queue.
+ * Fallback helper for drivers without native bulk delete. Runs the given delete callback
+ * concurrently with a queue
+ *
+ * @param deleteFn - Callback invoked for each filepath
+ * @param filepaths - List of filepaths to process
+ * @param concurrency - Max number of concurrent deletes (default: 100)
  */
 export async function bulkDeleteFallback(
-	driver: Pick<Driver, 'delete'>,
+	deleteFn: (filepath: string) => Promise<void>,
 	filepaths: string[],
 	concurrency = 100,
 ): Promise<void> {
 	const queue = new Queue({ concurrency });
 
 	for (const fp of filepaths) {
-		void queue.add(() => driver.delete(fp));
+		void queue.add(() => deleteFn(fp));
 	}
 
 	await queue.onIdle();

@@ -73,7 +73,7 @@ export class DriverAzure implements TusDriver {
 	}
 
 	async bulkDelete(filepaths: string[]): Promise<void> {
-		await bulkDeleteFallback(this, filepaths);
+		await bulkDeleteFallback((fp) => this.delete(fp), filepaths);
 	}
 
 	async stat(filepath: string): Promise<{
