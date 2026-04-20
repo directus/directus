@@ -20,12 +20,6 @@ if (options.extras?.redis) {
 			}),
 		);
 
-		api.request(
-			updateItem(collections.plants, created.id!, {
-				name: 'Monstera Adansonii',
-			}),
-		);
-
 		const initialResult = await subscription.next();
 
 		expect(initialResult).toMatchObject({
@@ -41,6 +35,12 @@ if (options.extras?.redis) {
 				],
 			},
 		});
+
+		await api.request(
+			updateItem(collections.plants, created.id!, {
+				name: 'Monstera Adansonii',
+			}),
+		);
 
 		const secondResult = await subscription.next();
 
@@ -58,7 +58,7 @@ if (options.extras?.redis) {
 			},
 		});
 
-		api.request(deleteItem(collections.plants, created.id!));
+		await api.request(deleteItem(collections.plants, created.id!));
 
 		const thirdResult = await subscription.next();
 
