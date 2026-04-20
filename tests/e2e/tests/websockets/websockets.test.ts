@@ -2,6 +2,7 @@ import { inspect } from 'node:util';
 import { createDirectus, createItem, deleteItem, realtime, rest, sleep, staticToken, updateItem } from '@directus/sdk';
 import { options, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
+import { reject } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
@@ -125,19 +126,15 @@ if (options.extras?.redis) {
 			}),
 		);
 
-		const firstResult = subscription.next();
-
-		await sleep(1000);
-
-		expect(inspect(firstResult)).includes('pending');
-
 		await api.request(
 			updateItem(collections.plants, created.id!, {
 				name: 'item_abc_123',
 			}),
 		);
 
-		expect(await firstResult).toMatchObject({
+		const firstResult = await subscription.next();
+
+		expect(firstResult).toMatchObject({
 			done: false,
 			value: {
 				data: [
@@ -149,17 +146,24 @@ if (options.extras?.redis) {
 			},
 		});
 
+		const secondResult = new Promise((resolve, reject) => {
+			const timeout = setTimeout(() => {
+				resolve(true);
+			}, 1000);
+
+			subscription.next().then(() => {
+				clearTimeout(timeout);
+				reject();
+			});
+		});
+
 		await api.request(
 			updateItem(collections.plants, created.id!, {
 				name: 'item_123',
 			}),
 		);
 
-		const secondResult = subscription.next();
-
-		await sleep(1000);
-
-		expect(inspect(secondResult)).includes('pending');
+		await expect(secondResult, 'subscription should not return another item').resolves.toBeTruthy();
 
 		unsubscribe();
 
