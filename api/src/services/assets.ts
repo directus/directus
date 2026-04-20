@@ -55,13 +55,10 @@ export class AssetsService {
 	}
 
 	private sanitizeFields(file: File, allowedFields: string[]): Partial<File> {
-		if (allowedFields.includes('*')) {
-			return file;
-		}
+		if (allowedFields.includes('*')) return file;
 
 		const bypassFields: (keyof File)[] = ['type', 'filesize'];
 		const fieldsToKeep = new Set<string>([...allowedFields, ...bypassFields]);
-
 		const filteredFile: Partial<File> = {};
 
 		for (const field of fieldsToKeep) {
@@ -73,6 +70,30 @@ export class AssetsService {
 		return filteredFile;
 	}
 
+	private async appendFileToArchive(
+		archive: archiver.Archiver,
+		file: Pick<File, 'id' | 'folder' | 'filename_download'>,
+		deduper: NameDeduper,
+		folders: Map<string, string> | undefined,
+	) {
+		const storage = await getStorage();
+
+		const fullFile = await this.sudoFilesService.readOne(file.id, {
+			fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
+		});
+
+		const exists = await storage.location(fullFile.storage).exists(fullFile.filename_disk);
+		if (!exists) throw new ForbiddenError();
+
+		const version = fullFile.modified_on ? (new Date(fullFile.modified_on).getTime() / 1000).toFixed() : undefined;
+		const assetStream = await storage.location(fullFile.storage).read(fullFile.filename_disk, { version });
+		const fileExtension = path.extname(fullFile.filename_download) || (fullFile.type && '.' + extension(fullFile.type)) || '';
+		const dedupedFileName = deduper.add(file.filename_download, { group: file.folder, fallback: fullFile.id + fileExtension });
+		const folderName = file.folder ? folders?.get(file.folder) : undefined;
+
+		archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
+	}
+
 	private zip(options: { folders?: Map<string, string>; files: Pick<File, 'id' | 'folder' | 'filename_download'>[] }) {
 		if (options.files.length === 0) {
 			throw new InvalidPayloadError({ reason: 'No files found in the selected folders tree' });
@@ -82,35 +103,13 @@ export class AssetsService {
 
 		const complete = async () => {
 			const deduper = new NameDeduper();
-			const storage = await getStorage();
 
-			for (const { id, folder, filename_download } of options.files) {
-				const file = await this.sudoFilesService.readOne(id, {
-					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
-				});
-
-				const exists = await storage.location(file.storage).exists(file.filename_disk);
-
-				if (!exists) throw new ForbiddenError();
-
-				const version = file.modified_on ? (new Date(file.modified_on).getTime() / 1000).toFixed() : undefined;
-
-				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
-
-				const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
-
-				const dedupedFileName = deduper.add(filename_download, { group: folder, fallback: file.id + fileExtension });
-
-				const folderName = folder ? options.folders?.get(folder) : undefined;
-
-				archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
+			for (const file of options.files) {
+				await this.appendFileToArchive(archive, file, deduper, options.folders);
 			}
 
-			// add any empty folders, does not override already filled folder
-			if (options.folders) {
-				for (const [, folder] of options.folders) {
-					archive.append('', { name: folder + '/' });
-				}
+			for (const [, folder] of options.folders ?? []) {
+				archive.append('', { name: folder + '/' });
 			}
 
 			await archive.finalize();
@@ -127,11 +126,7 @@ export class AssetsService {
 		});
 
 		const filesToZip = await filesService.readByQuery({
-			filter: {
-				id: {
-					_in: files,
-				},
-			},
+			filter: { id: { _in: files } },
 			limit: -1,
 		});
 
@@ -160,11 +155,7 @@ export class AssetsService {
 		});
 
 		const filesToZip = await filesService.readByQuery({
-			filter: {
-				folder: {
-					_in: Array.from(folderTree.keys()),
-				},
-			},
+			filter: { folder: { _in: Array.from(folderTree.keys()) } },
 			limit: -1,
 		});
 
@@ -177,13 +168,134 @@ export class AssetsService {
 			})),
 		});
 
-		return {
-			archive,
-			complete,
-			metadata: {
-				name: folderTree.get(root),
+		return { archive, complete, metadata: { name: folderTree.get(root) } };
+	}
+
+	private async resolveAllowedFields(id: string, systemPublicKeys: string[]): Promise<string[]> {
+		if (systemPublicKeys.includes(id) || !this.accountability || this.accountability.admin === true) {
+			return ['*'];
+		}
+
+		const { allowedRootFields, accessAllowed } = await validateItemAccess(
+			{
+				accountability: this.accountability,
+				action: 'read',
+				collection: 'directus_files',
+				primaryKeys: [id],
+				returnAllowedRootFields: true,
 			},
-		};
+			{ knex: this.knex, schema: this.schema },
+		);
+
+		if (!accessAllowed) {
+			throw new ForbiddenError({
+				reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
+			});
+		}
+
+		return allowedRootFields;
+	}
+
+	private normalizeRange(range: Range, filesize: number): void {
+		const lastByte = filesize - 1;
+
+		if (range.end) {
+			if (range.start === undefined) {
+				range.start = filesize - range.end;
+				range.end = lastByte;
+			}
+
+			if (range.end >= filesize) {
+				range.end = lastByte;
+			}
+		}
+
+		if (range.start) {
+			if (range.end === undefined) range.end = lastByte;
+			if (range.start < 0) range.start = 0;
+		}
+	}
+
+	private validateRange(range: Range, filesize: number): void {
+		const missingRangeLimits = range.start === undefined && range.end === undefined;
+		const endBeforeStart = range.start !== undefined && range.end !== undefined && range.end <= range.start;
+		const startOverflow = range.start !== undefined && range.start >= filesize;
+		const endUnderflow = range.end !== undefined && range.end <= 0;
+
+		if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
+			throw new RangeNotSatisfiableError({ range });
+		}
+	}
+
+	private async transformAndCacheAsset(
+		file: File,
+		assetFilename: string,
+		transforms: Transformation[],
+		type: string,
+		range: Range | undefined,
+		version: string | undefined,
+	): Promise<void> {
+		const storage = await getStorage();
+		const { width, height } = file;
+
+		if (
+			!width ||
+			!height ||
+			width > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number) ||
+			height > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number)
+		) {
+			logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
+			throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
+		}
+
+		const { queue, process } = sharp.counters();
+
+		if (queue + process > (env['ASSETS_TRANSFORM_MAX_CONCURRENT'] as number)) {
+			throw new ServiceUnavailableError({ service: 'files', reason: 'Server too busy' });
+		}
+
+		const transformer = getSharpInstance();
+
+		transformer.timeout({
+			seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
+		});
+
+		if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
+
+		try {
+			for (const [method, ...args] of transforms) {
+				(transformer[method] as any).apply(transformer, args);
+			}
+		} catch (error) {
+			if (error instanceof Error && error.message.startsWith('Expected')) {
+				throw new InvalidQueryError({ reason: error.message });
+			}
+
+			throw error;
+		}
+
+		const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
+
+		readStream.on('error', (e: Error) => {
+			logger.error(e, `Couldn't transform file ${file.id}`);
+			readStream.unpipe(transformer);
+		});
+
+		try {
+			await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+		} catch (error) {
+			try {
+				await storage.location(file.storage).delete(assetFilename);
+			} catch {
+				// Ignored to prevent original error from being overwritten
+			}
+
+			if ((error as Error)?.message?.includes('timeout')) {
+				throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
+			}
+
+			throw error;
+		}
 	}
 
 	async getAsset(
@@ -215,186 +327,27 @@ export class AssetsService {
 
 		const systemPublicKeys: string[] = Object.values(publicSettings || {});
 
-		/**
-		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
-		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
-		 * validity of the uuid ahead of time.
-		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
-		let allowedFields: string[] = ['*'];
-
-		if (!systemPublicKeys.includes(id) && this.accountability && this.accountability.admin !== true) {
-			// Use validateItemAccess to check access and get allowed fields
-			const { allowedRootFields, accessAllowed } = await validateItemAccess(
-				{
-					accountability: this.accountability,
-					action: 'read',
-					collection: 'directus_files',
-					primaryKeys: [id],
-					returnAllowedRootFields: true,
-				},
-				{ knex: this.knex, schema: this.schema },
-			);
-
-			if (!accessAllowed) {
-				throw new ForbiddenError({
-					reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
-				});
-			}
-
-			allowedFields = allowedRootFields;
-		}
-
+		const allowedFields = await this.resolveAllowedFields(id, systemPublicKeys);
 		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
-
 		if (!exists) throw new ForbiddenError();
 
 		if (range) {
-			const missingRangeLimits = range.start === undefined && range.end === undefined;
-			const endBeforeStart = range.start !== undefined && range.end !== undefined && range.end <= range.start;
-			const startOverflow = range.start !== undefined && range.start >= file.filesize;
-			const endUnderflow = range.end !== undefined && range.end <= 0;
-
-			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
-				throw new RangeNotSatisfiableError({ range });
-			}
-
-			const lastByte = file.filesize - 1;
-
-			if (range.end) {
-				if (range.start === undefined) {
-					// fetch chunk from tail
-					range.start = file.filesize - range.end;
-					range.end = lastByte;
-				}
-
-				if (range.end >= file.filesize) {
-					// fetch entire file
-					range.end = lastByte;
-				}
-			}
-
-			if (range.start) {
-				if (range.end === undefined) {
-					// fetch entire file
-					range.end = lastByte;
-				}
-
-				if (range.start < 0) {
-					// fetch file from head
-					range.start = 0;
-				}
-			}
+			this.validateRange(range, file.filesize);
+			this.normalizeRange(range, file.filesize);
 		}
 
 		const type = file.type;
 		const transforms = transformation ? TransformationUtils.resolvePreset(transformation, file) : [];
-
 		const modifiedOn = file.modified_on ? new Date(file.modified_on) : undefined;
 		const version = modifiedOn ? (modifiedOn.getTime() / 1000).toFixed() : undefined;
 
-		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
-			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
+		const shouldTransform = type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type);
 
-			const assetFilename =
-				path.basename(file.filename_disk, path.extname(file.filename_disk)) +
-				getAssetSuffix(transforms) +
-				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
-
-			const exists = await storage.location(file.storage).exists(assetFilename);
-
-			if (maybeNewFormat) {
-				file.type = contentType(assetFilename) || null;
-			}
-
-			if (exists) {
-				const assetStream = () => storage.location(file.storage).read(assetFilename, { range });
-
-				return {
-					stream: deferStream ? assetStream : await assetStream(),
-					file: this.sanitizeFields(file, allowedFields),
-					stat: await storage.location(file.storage).stat(assetFilename),
-				};
-			}
-
-			// Check image size before transforming. Processing an image that's too large for the
-			// system memory will kill the API. Sharp technically checks for this too in it's
-			// limitInputPixels, but we should have that check applied before starting the read streams
-			const { width, height } = file;
-
-			if (
-				!width ||
-				!height ||
-				width > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number) ||
-				height > (env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number)
-			) {
-				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
-				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
-			}
-
-			const { queue, process } = sharp.counters();
-
-			if (queue + process > (env['ASSETS_TRANSFORM_MAX_CONCURRENT'] as number)) {
-				throw new ServiceUnavailableError({
-					service: 'files',
-					reason: 'Server too busy',
-				});
-			}
-
-			const transformer = getSharpInstance();
-
-			transformer.timeout({
-				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
-			});
-
-			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
-
-			try {
-				for (const [method, ...args] of transforms) {
-					(transformer[method] as any).apply(transformer, args);
-				}
-			} catch (error) {
-				if (error instanceof Error && error.message.startsWith('Expected')) {
-					throw new InvalidQueryError({ reason: error.message });
-				}
-
-				throw error;
-			}
-
-			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
-
-			readStream.on('error', (e: Error) => {
-				logger.error(e, `Couldn't transform file ${file.id}`);
-				readStream.unpipe(transformer);
-			});
-
-			try {
-				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
-			} catch (error) {
-				try {
-					await storage.location(file.storage).delete(assetFilename);
-				} catch {
-					// Ignored to prevent original error from being overwritten
-				}
-
-				if ((error as Error)?.message?.includes('timeout')) {
-					throw new ServiceUnavailableError({ service: 'assets', reason: `Transformation timed out` });
-				} else {
-					throw error;
-				}
-			}
-
-			const assetStream = () => storage.location(file.storage).read(assetFilename, { range, version });
-
-			return {
-				stream: deferStream ? assetStream : await assetStream(),
-				stat: await storage.location(file.storage).stat(assetFilename),
-				file: this.sanitizeFields(file, allowedFields),
-			};
-		} else {
+		if (!shouldTransform) {
 			const assetStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return {
@@ -403,10 +356,42 @@ export class AssetsService {
 				stat,
 			};
 		}
+
+		const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
+
+		const assetFilename =
+			path.basename(file.filename_disk, path.extname(file.filename_disk)) +
+			getAssetSuffix(transforms) +
+			(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
+
+		if (maybeNewFormat) {
+			file.type = contentType(assetFilename) || null;
+		}
+
+		const assetExists = await storage.location(file.storage).exists(assetFilename);
+
+		if (assetExists) {
+			const assetStream = () => storage.location(file.storage).read(assetFilename, { range });
+			return {
+				stream: deferStream ? assetStream : await assetStream(),
+				file: this.sanitizeFields(file, allowedFields),
+				stat: await storage.location(file.storage).stat(assetFilename),
+			};
+		}
+
+		await this.transformAndCacheAsset(file, assetFilename, transforms, type, range, version);
+
+		const assetStream = () => storage.location(file.storage).read(assetFilename, { range, version });
+
+		return {
+			stream: deferStream ? assetStream : await assetStream(),
+			stat: await storage.location(file.storage).stat(assetFilename),
+			file: this.sanitizeFields(file, allowedFields),
+		};
 	}
 }
 
 const getAssetSuffix = (transforms: Transformation[]) => {
 	if (Object.keys(transforms).length === 0) return '';
 	return `__${hash(transforms)}`;
-};
+};;
