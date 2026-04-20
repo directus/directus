@@ -285,7 +285,14 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</template>
 			</DrawerItem>
 
-			<ImageEditor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<ImageEditor
+				v-if="!internalDisabled"
+				:id="image.id"
+				v-model="editImageEditor"
+				:create-allowed="createAllowed"
+				@refresh="refresh"
+				@new-file="update"
+			/>
 
 			<FileLightbox v-model="lightboxActive" :file="image" />
 		</component>

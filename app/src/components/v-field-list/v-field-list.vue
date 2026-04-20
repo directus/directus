@@ -28,6 +28,7 @@ const props = withDefaults(
 		relationalFieldSelectable?: boolean;
 		allowSelectAll?: boolean;
 		rawFieldNames?: boolean;
+		fieldFilter?: (field: Field) => boolean;
 	}>(),
 	{
 		field: undefined,
@@ -38,6 +39,7 @@ const props = withDefaults(
 		relationalFieldSelectable: true,
 		allowSelectAll: false,
 		rawFieldNames: false,
+		fieldFilter: undefined,
 	},
 );
 
@@ -112,6 +114,10 @@ const addAll = () => {
 };
 
 function filter(field: Field, parent?: FieldNode): boolean {
+	if (props.fieldFilter && props.fieldFilter(field) === false) {
+		return false;
+	}
+
 	if (
 		!includeRelations.value &&
 		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))

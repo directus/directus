@@ -1994,7 +1994,6 @@ interfaces:
     value_securely_saved: Hodnota bezpečne uložená
     generate: Vygenerovať Token
     regenerate: Pregenerovať Token
-    generate_success_copy: Uistite sa o zálohovaní kópie vyššie uvedeného tokenu. Z bezpečnostných dôvodov, nebudete môcť druhý krát zobraziť token po uložení odchode z tejto stránky.
     remove_token: Odstrániť token
   system-raw-editor:
     system-raw-editor: Surový editor

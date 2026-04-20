@@ -54,7 +54,7 @@ async function deleteAndQuit() {
 	await remove();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 	edits.value = {};
-	router.replace(`/settings/data-model`);
+	router.replace({ name: 'settings-collections' });
 }
 
 async function saveAndStay() {
@@ -65,7 +65,7 @@ async function saveAndStay() {
 async function saveAndQuit() {
 	await save();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-	router.push(`/settings/data-model`);
+	router.push({ name: 'settings-collections' });
 }
 
 function discardAndLeave() {

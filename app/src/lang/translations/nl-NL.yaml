@@ -2182,7 +2182,6 @@ interfaces:
     value_securely_saved: Waarde veilig opgeslagen
     generate: Genereer Token
     regenerate: Token opnieuw genereren
-    generate_success_copy: Zorg ervoor dat je de token hierboven back-upt en kopieert. Om veiligheidsredenen kun je de token niet meer bekijken na het opslaan en verlaten van deze pagina.
     remove_token: Verwijder Token
   system-raw-editor:
     system-raw-editor: Ruwe Editor

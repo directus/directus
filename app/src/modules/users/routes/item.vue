@@ -114,6 +114,7 @@ const confirmDiscard = ref(false);
 
 // Provide the discard functionality to field interfaces
 provide('discardAllChanges', discardAndStay);
+provide('refresh', refresh);
 
 const avatarSrc = computed(() => {
 	if (!item.value?.avatar) return null;
@@ -165,7 +166,7 @@ async function saveAndQuit() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
-		router.push(`/users`);
+		router.push({ name: 'users-active' });
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -179,7 +180,7 @@ async function saveAndStay() {
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem.id;
-			router.replace(`/users/${newPrimaryKey}`);
+			router.replace({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
 		} else {
 			revisionsSidebarDetail.value?.refresh?.();
 			refresh();
@@ -194,7 +195,7 @@ async function saveAndAddNew() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
-		router.push(`/users/+`);
+		router.push({ name: 'users-item', params: { primaryKey: '+' } });
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -203,7 +204,7 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.push(`/users/${newPrimaryKey}`);
+		if (newPrimaryKey) router.push({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -224,7 +225,7 @@ async function deleteAndQuit() {
 
 		await remove();
 		edits.value = {};
-		router.replace(`/users`);
+		router.replace({ name: 'users-active' });
 	} catch {
 		// `remove` will show the unexpected error dialog
 	}
@@ -273,7 +274,7 @@ async function toggleArchive() {
 	await archive();
 
 	if (isArchived.value === true) {
-		router.push('/users');
+		router.push({ name: 'users-active' });
 	} else {
 		confirmArchive.value = false;
 	}

@@ -235,7 +235,7 @@ const refreshInterval = computed({
 				<PrivateViewHeaderBarActionButton
 					:label="$t('create_panel')"
 					secondary
-					:to="`/insights/${currentDashboard.id}/+`"
+					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
 					icon="add"
 				/>
 
@@ -273,7 +273,7 @@ const refreshInterval = computed({
 			:tiles="tiles"
 			:zoom-to-fit="zoomToFit"
 			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
-			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
+			@edit="(tile) => router.push({ name: 'panel-detail', params: { primaryKey, panelKey: tile.id } })"
 			@update="insightsStore.stagePanelUpdate"
 			@delete="insightsStore.stagePanelDelete"
 			@move="copyPanelID = $event"
