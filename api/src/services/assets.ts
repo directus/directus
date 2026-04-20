@@ -433,11 +433,7 @@ export class AssetsService {
 				.from('directus_files');
 
 			if (options?.files) {
-				if (Array.isArray(options.files)) {
-					query.whereIn('id', options.files);
-				} else {
-					query.where('id', options.files);
-				}
+				query.whereIn('id', options.files);
 			}
 
 			const files = await query;
