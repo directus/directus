@@ -1854,7 +1854,6 @@ interfaces:
     value_securely_saved: Érték biztonságosan mentve
     generate: Token generálása
     regenerate: Token újragenerálása
-    generate_success_copy: Készítsen biztonsági másolatot a fenti tokenről. Biztonsági okokból nem tudja újra megnézni a tokent az oldal elhagyása után.
     remove_token: Token eltávolítása
   system-raw-editor:
     system-raw-editor: Nyers szerkesztő

@@ -2014,7 +2014,6 @@ interfaces:
     value_securely_saved: Valore salvato in sicurezza
     generate: Genera token
     regenerate: Rigenera Token
-    generate_success_copy: Assicurati di copiare e salvare il token qui sopra. Per motivi di sicurezza, non sarà possibile visualizzare nuovamente il token dopo aver salvato e navigato fuori da questa pagina.
     remove_token: Cancellare il token
   system-raw-editor:
     system-raw-editor: Editor Grezzo

@@ -161,7 +161,7 @@ async function saveAndStay() {
 
 async function saveAsCopyAndNavigate() {
 	const newPrimaryKey = await saveAsCopy();
-	if (newPrimaryKey) router.push(`/files/${newPrimaryKey}`);
+	if (newPrimaryKey) router.push({ name: 'files-item', params: { primaryKey: newPrimaryKey } });
 }
 
 async function deleteAndQuit() {
@@ -374,7 +374,14 @@ function revert(values: Record<string, any>) {
 				@replace="refresh"
 			/>
 
-			<ImageEditor v-if="item?.type?.startsWith('image')" :id="item.id" v-model="editActive" @refresh="refresh" />
+			<ImageEditor
+				v-if="item?.type?.startsWith('image')"
+				:id="item.id"
+				v-model="editActive"
+				:create-allowed="createAllowed"
+				@refresh="refresh"
+				@new-file="(id) => router.push(`/files/${id}`)"
+			/>
 
 			<VForm
 				ref="form"

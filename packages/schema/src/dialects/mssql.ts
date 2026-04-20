@@ -65,10 +65,10 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		// In order to get the actual max_length value, we'll divide the value by 2
 		// Unless the value is -1, which is the case for n(var)char(MAX)
 		if (['nvarchar', 'nchar', 'ntext'].includes(rawColumn.data_type)) {
-			return max_length === -1 ? max_length : max_length / 2;
+			return max_length === -1 ? null : max_length / 2;
 		}
 
-		return max_length;
+		return max_length === -1 ? null : max_length;
 	}
 }
 
@@ -166,6 +166,7 @@ export default class MSSQL implements SchemaInspector {
 				...column,
 				default_value: column.is_identity ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
+				max_length: column.max_length === -1 ? null : column.max_length,
 			};
 		}
 
