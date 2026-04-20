@@ -82,6 +82,38 @@ export function setSpecialForLocalType(updates: StateUpdates) {
 	}
 }
 
+/**
+ * Set the default `searchable` value when creating or converting a field.
+ *
+ * Relational localTypes opt-out by default because enabling search on them introduces
+ * EXISTS subqueries (for o2m/translations) or additional JOINs (future m2o/m2m/m2a)
+ * that have non-trivial query-plan impact. Admins opt in per-relation.
+ *
+ * Standard fields reset to `true` so that toggling `standard → translations → standard`
+ * during field creation doesn't leave a plain field stuck at `searchable=false`.
+ *
+ * Presentation / group / other non-search-bearing localTypes are left alone — the
+ * column has no meaning for them.
+ */
+export function setSearchableForLocalType(updates: StateUpdates) {
+	const localType = updates?.localType;
+
+	switch (localType) {
+		case 'o2m':
+		case 'm2m':
+		case 'm2a':
+		case 'm2o':
+		case 'translations':
+		case 'file':
+		case 'files':
+			set(updates, 'field.meta.searchable', false);
+			break;
+		case 'standard':
+			set(updates, 'field.meta.searchable', true);
+			break;
+	}
+}
+
 export function resetRelations(updates: StateUpdates) {
 	if (!updates.relations) updates.relations = {};
 	updates.relations.m2o = undefined;

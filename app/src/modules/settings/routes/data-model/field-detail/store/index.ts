@@ -157,6 +157,7 @@ export const useFieldDetailStore = defineStore({
 					alterations.global.resetSchema(updates, state);
 					alterations.global.resetRelations(updates);
 					alterations.global.setSpecialForLocalType(updates);
+					alterations.global.setSearchableForLocalType(updates);
 				}
 
 				const localType = getCurrent('localType') as LocalType | undefined;

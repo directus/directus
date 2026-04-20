@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SEARCHABLE_TYPES } from '@directus/constants';
+import { SEARCHABLE_RELATIONAL_LOCAL_TYPES, SEARCHABLE_TYPES } from '@directus/constants';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
@@ -23,6 +23,13 @@ const userStore = useUserStore();
 const searchable = syncFieldDetailStoreProperty('field.meta.searchable', true);
 
 const isSearchableType = computed(() => {
+	// Relational localTypes that support search via an EXISTS subquery over the related collection.
+	// Surfaces the toggle for `translations` and vanilla `o2m` aliases; m2o/m2m/m2a remain hidden
+	// until their query generators land.
+	if (localType.value && (SEARCHABLE_RELATIONAL_LOCAL_TYPES as readonly string[]).includes(localType.value)) {
+		return true;
+	}
+
 	// exclude alias fields (o2m, m2m, m2a) as they don't store searchable data
 	if (type.value === 'alias') return false;
 
@@ -31,6 +38,10 @@ const isSearchableType = computed(() => {
 
 	return SEARCHABLE_TYPES.includes(type.value);
 });
+
+const isRelationalSearchable = computed(
+	() => !!localType.value && (SEARCHABLE_RELATIONAL_LOCAL_TYPES as readonly string[]).includes(localType.value),
+);
 </script>
 
 <template>
@@ -57,6 +68,9 @@ const isSearchableType = computed(() => {
 		<div v-if="isSearchableType" class="field half-right">
 			<div class="label type-label">{{ $t('searchable') }}</div>
 			<VCheckbox v-model="searchable" :label="$t('field_searchable')" block />
+			<small v-if="isRelationalSearchable" class="relational-searchable-hint">
+				{{ $t('field_searchable_relational_hint') }}
+			</small>
 		</div>
 
 		<div v-if="type !== 'group'" class="field full">
@@ -134,5 +148,13 @@ const isSearchableType = computed(() => {
 
 .v-notice:not(.no-margin) {
 	margin-block-end: 2rem;
+}
+
+.relational-searchable-hint {
+	display: block;
+	margin-block-start: 0.5rem;
+	color: var(--theme--foreground-subdued);
+	font-size: 0.75rem;
+	line-height: 1.4;
 }
 </style>

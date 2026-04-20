@@ -255,3 +255,320 @@ test(`Return falsy query when all searchable fields are excluded`, async () => {
 	expect(rawQuery.sql).toEqual(`select * where (1 = 0)`);
 	expect(rawQuery.bindings).toEqual([]);
 });
+
+// --- o2m / translation EXISTS-subquery tests ---
+
+// Translation alias defaults to `searchable: true` via SchemaBuilder's FIELD_DEFAULTS,
+// which models a project whose admin has explicitly opted the translations alias in.
+const translationSchema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('status').string();
+		c.field('translations').translations();
+	})
+	.collection('articles_translations', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('body').text();
+	})
+	.build();
+
+test(`Emits EXISTS subquery against translation junction for admin (opted-in alias)`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles"."status") LIKE ?`);
+	expect(rawQuery.sql).toContain(`exists`);
+	expect(rawQuery.sql).toContain(`"articles_translations"`);
+	expect(rawQuery.sql).toContain(`LOWER("articles_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).toContain(`LOWER("articles_translations"."body") LIKE ?`);
+	expect(rawQuery.bindings).toContain('%hello%');
+});
+
+test(`EXISTS subquery correlates on parent FK and PK for translations`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, translationSchema, queryBuilder, 'test', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`"articles_translations"."articles_id" = "articles"."id"`);
+});
+
+test(`Omits translation subquery when alias field has searchable=false (master switch)`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaTranslationsOptOut = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('status').string();
+			c.field('translations').translations().options({ searchable: false });
+		})
+		.collection('articles_translations', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('body').text();
+		})
+		.build();
+
+	applySearch(db as any, schemaTranslationsOptOut, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles"."status") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`exists`);
+	expect(rawQuery.sql).not.toContain(`articles_translations`);
+});
+
+test(`Restricts translation fields based on junction collection permissions`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const restrictedPermissions = [
+		{
+			collection: 'articles',
+			action: 'read',
+			fields: ['*'],
+			permissions: null,
+		},
+		{
+			collection: 'articles_translations',
+			action: 'read',
+			fields: ['title'],
+			permissions: {
+				title: {},
+			},
+		},
+	] as unknown as Permission[];
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, restrictedPermissions);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`"articles_translations"."body"`);
+});
+
+test(`Omits translation subquery when user has no junction collection permissions`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const noJunctionPermissions = [
+		{
+			collection: 'articles',
+			action: 'read',
+			fields: ['*'],
+			permissions: null,
+		},
+	] as unknown as Permission[];
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, noJunctionPermissions);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles"."status") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`articles_translations`);
+	expect(rawQuery.sql).not.toContain(`exists`);
+});
+
+test(`Excludes non-searchable translation fields from subquery`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaWithNonSearchable = new SchemaBuilder()
+		.collection('pages', (c) => {
+			c.field('id').id();
+			c.field('slug').string();
+			c.field('translations').translations();
+		})
+		.collection('pages_translations', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('internal_notes').string().options({ searchable: false });
+		})
+		.build();
+
+	applySearch(db as any, schemaWithNonSearchable, queryBuilder, 'test', 'pages', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("pages_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`"pages_translations"."internal_notes"`);
+});
+
+test(`Excludes concealed translation fields from subquery`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaWithConcealed = new SchemaBuilder()
+		.collection('pages', (c) => {
+			c.field('id').id();
+			c.field('translations').translations();
+		})
+		.collection('pages_translations', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+
+			c.field('secret')
+				.string()
+				.options({ special: ['conceal'] });
+		})
+		.build();
+
+	applySearch(db as any, schemaWithConcealed, queryBuilder, 'test', 'pages', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("pages_translations"."title") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`"pages_translations"."secret"`);
+});
+
+test(`Avoids fallback 1=0 when root has no searchable fields but translations do`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaRootUnsearchable = new SchemaBuilder()
+		.collection('items', (c) => {
+			c.field('id').id();
+			c.field('translations').translations();
+		})
+		.collection('items_translations', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+		})
+		.build();
+
+	applySearch(db as any, schemaRootUnsearchable, queryBuilder, 'test', 'items', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).not.toContain(`1 = 0`);
+	expect(rawQuery.sql).toContain(`exists`);
+	expect(rawQuery.sql).toContain(`LOWER("items_translations"."title") LIKE ?`);
+});
+
+test(`Excludes structural (FK / junction_field) columns from translation subquery`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, translationSchema, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// FK to parent and the junction_field (language FK) must not appear in LIKE conditions
+	expect(rawQuery.sql).not.toContain(`LOWER("articles_translations"."articles_id") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`LOWER("articles_translations"."languages_code") LIKE ?`);
+});
+
+// --- vanilla o2m tests (generalization beyond translations) ---
+
+// A non-translations o2m alias. SchemaBuilder's default `searchable: true` on the alias
+// means the master switch is on, matching a project whose admin has opted the relation in.
+const vanillaO2MSchema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('status').string();
+		c.field('comments').o2m('comments', 'article_id');
+	})
+	.collection('comments', (c) => {
+		c.field('id').id();
+		c.field('article_id').integer();
+		c.field('text').text();
+		c.field('internal_notes').string();
+	})
+	.build();
+
+test(`Emits EXISTS subquery for searchable vanilla o2m alias`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, vanillaO2MSchema, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles"."status") LIKE ?`);
+	expect(rawQuery.sql).toContain(`exists`);
+	expect(rawQuery.sql).toContain(`LOWER("comments"."text") LIKE ?`);
+	expect(rawQuery.sql).toContain(`LOWER("comments"."internal_notes") LIKE ?`);
+	expect(rawQuery.bindings).toContain('%hello%');
+});
+
+test(`EXISTS subquery correlates on parent PK and related-collection FK for vanilla o2m`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, vanillaO2MSchema, queryBuilder, 'test', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`"comments"."article_id" = "articles"."id"`);
+});
+
+test(`Omits vanilla o2m subquery when alias has searchable=false`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaO2MOptOut = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('status').string();
+			c.field('comments').o2m('comments', 'article_id').options({ searchable: false });
+		})
+		.collection('comments', (c) => {
+			c.field('id').id();
+			c.field('article_id').integer();
+			c.field('text').text();
+		})
+		.build();
+
+	applySearch(db as any, schemaO2MOptOut, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("articles"."status") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`exists`);
+	expect(rawQuery.sql).not.toContain(`"comments"`);
+});
+
+test(`Excludes non-searchable related-collection fields from vanilla o2m subquery`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaPerFieldOptOut = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('comments').o2m('comments', 'article_id');
+		})
+		.collection('comments', (c) => {
+			c.field('id').id();
+			c.field('article_id').integer();
+			c.field('text').text();
+			c.field('internal_notes').string().options({ searchable: false });
+		})
+		.build();
+
+	applySearch(db as any, schemaPerFieldOptOut, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toContain(`LOWER("comments"."text") LIKE ?`);
+	expect(rawQuery.sql).not.toContain(`LOWER("comments"."internal_notes")`);
+});
+
+test(`Excludes structural FK back to parent from vanilla o2m subquery`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, vanillaO2MSchema, queryBuilder, 'hello', 'articles', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// The FK back to the parent (article_id) is used in correlation, not in LIKE conditions.
+	expect(rawQuery.sql).not.toContain(`LOWER("comments"."article_id") LIKE ?`);
+});

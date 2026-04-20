@@ -114,3 +114,10 @@ export const FUNCTIONS = [
 ] as const;
 
 export const SEARCHABLE_TYPES = ['text', 'string', 'integer', 'bigInteger', 'float', 'decimal', 'uuid'] as const;
+
+/**
+ * Relational localTypes for which the "searchable" toggle is surfaced in the Studio field-detail UI
+ * and honored by the API's o2m search generator. New strategies (m2o join, m2m two-hop) can extend
+ * this list as their SQL generators land.
+ */
+export const SEARCHABLE_RELATIONAL_LOCAL_TYPES = ['translations', 'o2m'] as const;

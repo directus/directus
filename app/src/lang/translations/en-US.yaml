@@ -500,6 +500,8 @@ unique: Unique
 index: Index
 searchable: Searchable
 field_searchable: Include field in search queries
+field_searchable_relational_hint:
+  When enabled, Studio search also checks fields marked Searchable on the related collection.
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
