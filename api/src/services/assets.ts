@@ -427,7 +427,7 @@ export class AssetsService {
 					.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
 					.from('directus_files');
 
-				if (options?.files) {
+				if (options?.files?.length) {
 					query.whereIn('id', options.files);
 				}
 
