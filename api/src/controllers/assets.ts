@@ -420,13 +420,13 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const parseResult = clearTransformationsSchema.safeParse(req.query);
+		const parseResult = clearTransformationsSchema.safeParse(req.body);
 
 		if (!parseResult.success) {
 			throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
 		}
 
-		await service.clearTransformations(parseResult.data.files ? { files: parseResult.data.files } : undefined);
+		await service.clearTransformations({ files: parseResult.data.files });
 
 		res.status(204).end();
 	}),
