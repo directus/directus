@@ -85,6 +85,170 @@ describe('validateGeometry', async () => {
 	});
 });
 
+describe('alias validation', async () => {
+	const { validateQuery } = await import('./validate-query.js');
+
+	test('accepts plain field alias', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'some_field' } })).not.toThrow();
+	});
+
+	test('accepts valid json() function in alias value', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'json(metadata, color)' } })).not.toThrow();
+	});
+
+	test('accepts json() with dot path in alias value', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'json(metadata, settings.theme)' } })).not.toThrow();
+	});
+
+	test('accepts json() with relational path in alias value', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'json(category_id.metadata, color)' } })).not.toThrow();
+	});
+
+	test('rejects alias value with dot (non-json)', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'relation.field' } })).toThrow(
+			`"alias" value can't contain a period`,
+		);
+	});
+
+	test('rejects alias key with dot', () => {
+		expect(() => validateQuery({ alias: { 'my.alias': 'field' } })).toThrow(`"alias" key can't contain a period`);
+	});
+
+	test('rejects malformed json() syntax in alias value — missing comma', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'json(metadata)' } })).toThrow('Invalid json() syntax');
+	});
+
+	test('rejects malformed json() syntax in alias value — missing field', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'json(, color)' } })).toThrow('Invalid json() syntax');
+	});
+
+	test('rejects malformed json() syntax in alias value — missing path', () => {
+		expect(() => validateQuery({ alias: { myAlias: 'json(metadata,)' } })).toThrow('Invalid json() syntax');
+	});
+});
+
+describe('alias relational depth', async () => {
+	vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 2 });
+	const { validateQuery } = await import('./validate-query.js');
+
+	test('checks depth against resolved alias value, not key', () => {
+		// alias key "myAlias" has depth 1, but the value resolves to depth 2 (category_id + metadata)
+		expect(() =>
+			validateQuery({
+				fields: ['myAlias'],
+				alias: { myAlias: 'json(category_id.metadata, color)' },
+			}),
+		).not.toThrow();
+	});
+
+	test('rejects alias that resolves beyond max relational depth', () => {
+		// depth 3: a.b.c
+		expect(() =>
+			validateQuery({
+				fields: ['myAlias'],
+				alias: { myAlias: 'json(a.b.field, path)' },
+			}),
+		).toThrow('Max relational depth exceeded');
+	});
+});
+
+describe('sort validation', async () => {
+	const { validateQuery } = await import('./validate-query.js');
+
+	test('accepts plain field in sort', () => {
+		expect(() => validateQuery({ sort: ['title'] })).not.toThrow();
+	});
+
+	test('accepts plain field with leading dash in sort', () => {
+		expect(() => validateQuery({ sort: ['-title'] })).not.toThrow();
+	});
+
+	test('accepts valid json() in sort', () => {
+		expect(() => validateQuery({ sort: ['json(metadata, color)'] })).not.toThrow();
+	});
+
+	test('accepts valid json() with leading dash in sort', () => {
+		expect(() => validateQuery({ sort: ['-json(metadata, color)'] })).not.toThrow();
+	});
+
+	test('accepts json() with dotted path in sort', () => {
+		expect(() => validateQuery({ sort: ['json(metadata, settings.theme)'] })).not.toThrow();
+	});
+
+	test('accepts multiple sort fields including json()', () => {
+		expect(() => validateQuery({ sort: ['title', 'json(metadata, color)', '-date_created'] })).not.toThrow();
+	});
+
+	test('accepts multiple json() sort fields', () => {
+		expect(() => validateQuery({ sort: ['json(metadata, color)', '-json(metadata, priority)'] })).not.toThrow();
+	});
+
+	test('rejects malformed json() among otherwise valid sort fields', () => {
+		expect(() => validateQuery({ sort: ['title', 'json(metadata)', '-date_created'] })).toThrow(
+			'Invalid json() syntax',
+		);
+	});
+
+	test('rejects malformed json() in sort — missing comma', () => {
+		expect(() => validateQuery({ sort: ['json(metadata)'] })).toThrow('Invalid json() syntax');
+	});
+
+	test('rejects malformed json() in sort — missing field', () => {
+		expect(() => validateQuery({ sort: ['json(, color)'] })).toThrow('Invalid json() syntax');
+	});
+
+	test('rejects malformed json() in sort — missing path', () => {
+		expect(() => validateQuery({ sort: ['json(metadata,)'] })).toThrow('Invalid json() syntax');
+	});
+
+	test('rejects malformed json() with leading dash in sort', () => {
+		expect(() => validateQuery({ sort: ['-json(metadata)'] })).toThrow('Invalid json() syntax');
+	});
+});
+
+describe('sort relational depth', async () => {
+	vi.mocked(useEnv).mockReturnValue({ MAX_RELATIONAL_DEPTH: 2 });
+	const { validateQuery } = await import('./validate-query.js');
+
+	test('dotted json path in sort does not inflate relational depth', () => {
+		// json(metadata, path.with.dots) has relational depth 1 — dots inside json path are not relational segments
+		expect(() =>
+			validateQuery({
+				sort: ['json(metadata, path.with.dots)'],
+			}),
+		).not.toThrow();
+	});
+
+	test('sort field exceeding max relational depth throws', () => {
+		// a.b.c has relational depth 3 > 2
+		expect(() =>
+			validateQuery({
+				sort: ['a.b.c'],
+			}),
+		).toThrow('Max relational depth exceeded');
+	});
+
+	test('sort resolves through alias before checking depth', () => {
+		// alias key has depth 1, resolved value has depth 3 → should throw
+		expect(() =>
+			validateQuery({
+				sort: ['mySort'],
+				alias: { mySort: 'json(a.b.field, path)' },
+			}),
+		).toThrow('Max relational depth exceeded');
+	});
+
+	test('sort with leading dash strips prefix before alias lookup', () => {
+		// -mySort resolves via alias to depth 1 → should not throw
+		expect(() =>
+			validateQuery({
+				sort: ['-mySort'],
+				alias: { mySort: 'json(metadata, color)' },
+			}),
+		).not.toThrow();
+	});
+});
+
 describe('validateJsonFilter (via validateQuery)', async () => {
 	const { validateQuery } = await import('./validate-query.js');
 

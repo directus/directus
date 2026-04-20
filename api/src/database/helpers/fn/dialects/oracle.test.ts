@@ -47,13 +47,13 @@ describe('FnHelperOracle', () => {
 	});
 
 	describe('json()', () => {
-		test('castNumeric path uses RETURNING NUMBER clause', () => {
+		test('jsonReturnType numeric uses RETURNING NUMBER clause', () => {
 			const helper = new FnHelperOracle(db, schema);
 
 			const result = helper.json('items', 'data', {
 				type: 'json',
 				jsonPath: '.price',
-				castNumeric: true,
+				jsonReturnType: 'numeric' as const,
 				originalCollectionName: undefined,
 				relationalCountOptions: undefined,
 			});
@@ -62,7 +62,7 @@ describe('FnHelperOracle', () => {
 			expect(sql).toContain("'$.price' RETURNING NUMBER");
 		});
 
-		test('non-castNumeric path uses COALESCE(JSON_QUERY, JSON_VALUE)', () => {
+		test('default (no jsonReturnType) uses COALESCE(JSON_QUERY, JSON_VALUE)', () => {
 			const helper = new FnHelperOracle(db, schema);
 
 			const result = helper.json('items', 'data', {

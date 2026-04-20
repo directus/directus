@@ -78,13 +78,13 @@ describe('FnHelperPostgres', () => {
 			expect(sql).toContain('::jsonb');
 		});
 
-		test('castNumeric wraps expression with ::numeric', () => {
+		test('jsonReturnType numeric wraps expression with ::numeric', () => {
 			const helper = new FnHelperPostgres(db, makeSchema('jsonb'));
 
 			const result = helper.json('items', 'data', {
 				type: 'json',
 				jsonPath: '.price',
-				castNumeric: true,
+				jsonReturnType: 'numeric' as const,
 				originalCollectionName: undefined,
 				relationalCountOptions: undefined,
 			});

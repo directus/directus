@@ -47,7 +47,7 @@ describe('FnHelperMySQL', () => {
 	});
 
 	describe('json()', () => {
-		test('castNumeric uses JSON_EXTRACT without JSON_UNQUOTE', () => {
+		test('jsonReturnType numeric uses JSON_EXTRACT without JSON_UNQUOTE', () => {
 			// JSON_EXTRACT preserves the native numeric type from the JSON document.
 			// JSON_UNQUOTE would coerce it to a string, breaking numeric comparisons.
 			const helper = new FnHelperMySQL(db, schema);
@@ -55,7 +55,7 @@ describe('FnHelperMySQL', () => {
 			const result = helper.json('items', 'data', {
 				type: 'json',
 				jsonPath: '.price',
-				castNumeric: true,
+				jsonReturnType: 'numeric' as const,
 				originalCollectionName: undefined,
 				relationalCountOptions: undefined,
 			});
@@ -65,7 +65,7 @@ describe('FnHelperMySQL', () => {
 			expect(sql).not.toMatch(/JSON_UNQUOTE/i);
 		});
 
-		test('non-castNumeric wraps with JSON_UNQUOTE(JSON_EXTRACT(...))', () => {
+		test('default (no jsonReturnType) wraps with JSON_UNQUOTE(JSON_EXTRACT(...))', () => {
 			const helper = new FnHelperMySQL(db, schema);
 
 			const result = helper.json('items', 'data', {

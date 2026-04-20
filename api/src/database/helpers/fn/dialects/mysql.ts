@@ -63,7 +63,7 @@ export class FnHelperMySQL extends FnHelper {
 		// Convert dot notation to MySQL JSON path
 		const jsonPath = convertToMySQLPath(options.jsonPath);
 
-		if (options?.castNumeric) {
+		if (options?.jsonReturnType === 'numeric') {
 			// JSON_EXTRACT preserves the native numeric type from the JSON document.
 			// JSON_UNQUOTE would convert it to a string, breaking numeric comparisons.
 			return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [table, column, jsonPath]);

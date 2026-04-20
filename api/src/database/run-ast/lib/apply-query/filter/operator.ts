@@ -88,8 +88,7 @@ export function applyOperator(
 					jsonPath: normalizedPath,
 					originalCollectionName,
 					relationalCountOptions: undefined,
-					jsonFilter: true,
-					castNumeric,
+					jsonReturnType: castNumeric ? 'numeric' : 'text',
 				});
 
 				const innerOp = getOperation(Object.keys(innerFilter as object)[0]!, Object.values(innerFilter as object)[0]);

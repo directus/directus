@@ -76,7 +76,7 @@ export class FnHelperOracle extends FnHelper {
 		// See: api/src/database/helpers/fn/json/parse-function.ts
 		const jsonPath = '$' + options.jsonPath;
 
-		if (options?.castNumeric) {
+		if (options?.jsonReturnType === 'numeric') {
 			// JSON_VALUE with RETURNING NUMBER gives correct numeric comparison semantics.
 			return this.knex.raw(`JSON_VALUE(??.??, '${jsonPath}' RETURNING NUMBER)`, [table, column]);
 		}

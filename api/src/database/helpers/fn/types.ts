@@ -17,10 +17,8 @@ export type FnHelperOptions = {
 		  }
 		| undefined;
 	jsonPath: string | undefined;
-	/** When true, the JSON extraction expression returns text (for use in WHERE clauses). */
-	jsonFilter?: boolean;
-	/** When true, the JSON extraction expression is cast to a numeric type for numeric comparisons. */
-	castNumeric?: boolean;
+	/** Controls the return type of the JSON extraction expression. 'text' for WHERE/ORDER BY clauses, 'numeric' for numeric comparisons. Omit (or pass undefined) for native JSON output. */
+	jsonReturnType?: 'text' | 'numeric' | undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {

@@ -783,5 +783,96 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+
+		describe('deep query parameter + JSON', () => {
+			describe('_json filter in deep on O2M relation', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Querying categories with a deep _json filter on the O2M products relation.
+					// Tech has Alpha(color:red) and Gamma(color:green); deep filter keeps only red.
+					// Sports has Beta(color:blue) and Home has Delta(color:yellow): both filtered out.
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCategories}`)
+						.query({
+							fields: 'id,name,products.name',
+							deep: JSON.stringify({
+								products: { _filter: { metadata: { _json: { color: { _eq: 'red' } } } } },
+							}),
+							sort: 'name',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+
+					const tech = response.body.data.find((c: any) => c.name === 'Tech');
+					const sports = response.body.data.find((c: any) => c.name === 'Sports');
+					const home = response.body.data.find((c: any) => c.name === 'Home');
+
+					// Tech: Alpha(red) passes, Gamma(green) filtered out
+					expect(tech.products).toHaveLength(1);
+					expect(tech.products[0].name).toBe('Alpha');
+
+					// Sports: Beta(blue) filtered out
+					expect(sports.products).toHaveLength(0);
+
+					// Home: Delta(yellow) filtered out
+					expect(home.products).toHaveLength(0);
+				});
+			});
+
+			describe('json() sort in deep on O2M relation', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Querying the Tech category with products sorted by json(metadata, color) asc.
+					// Alpha(color:red) and Gamma(color:green) → sorted: green < red → [Gamma, Alpha].
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCategories}`)
+						.query({
+							fields: 'id,name,products.name',
+							filter: JSON.stringify({ name: { _eq: 'Tech' } }),
+							deep: JSON.stringify({
+								products: { _sort: ['json(metadata, color)'] },
+							}),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toHaveLength(1);
+
+					const tech = response.body.data[0];
+					expect(tech.products).toHaveLength(2);
+					// Sorted by color ascending: green(Gamma) < red(Alpha)
+					expect(tech.products[0].name).toBe('Gamma');
+					expect(tech.products[1].name).toBe('Alpha');
+				});
+			});
+
+			describe('_json filter + json() sort combined in deep on O2M relation', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Querying Tech category with deep: filter products by level>1 and sort by json(metadata, level) asc.
+					// Alpha(level:2) and Gamma(level:8) both pass; sorted by level → [Alpha(2), Gamma(8)].
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCategories}`)
+						.query({
+							fields: 'id,name,products.name',
+							filter: JSON.stringify({ name: { _eq: 'Tech' } }),
+							deep: JSON.stringify({
+								products: {
+									_filter: { metadata: { _json: { level: { _gt: 1 } } } },
+									_sort: ['json(metadata, level)'],
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toHaveLength(1);
+
+					const tech = response.body.data[0];
+					expect(tech.products).toHaveLength(2);
+					// Sorted by level ascending: Alpha(2) < Gamma(8)
+					expect(tech.products[0].name).toBe('Alpha');
+					expect(tech.products[1].name).toBe('Gamma');
+				});
+			});
+		});
 	});
 });

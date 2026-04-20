@@ -5,17 +5,17 @@ import { toPath } from 'lodash-es';
  * Returns a template string containing only operators and ? placeholders,
  * plus a bindings array with the actual values.
  *
- * When forFilter is true, the final step uses ->> to return text instead of json,
- * which is required for WHERE clause comparisons (LIKE, =, etc.).
+ * When asText is true, the final step uses ->> to return text instead of json,
+ * which is required for WHERE clause comparisons (LIKE, =, etc.) and ORDER BY.
  *
  * @example ".color" → { template: "->?", bindings: ["color"] }
- * @example ".color" (forFilter) → { template: "->>?", bindings: ["color"] }
+ * @example ".color" (asText) → { template: "->>?", bindings: ["color"] }
  * @example ".items[0].name" → { template: "->?->?->?", bindings: ["items", 0, "name"] }
- * @example ".items[0].name" (forFilter) → { template: "->?->?->>?", bindings: ["items", 0, "name"] }
+ * @example ".items[0].name" (asText) → { template: "->?->?->>?", bindings: ["items", 0, "name"] }
  */
 export function buildPostgresJsonPath(
 	path: string,
-	options?: { forFilter?: boolean },
+	options?: { asText?: boolean },
 ): { template: string; bindings: (string | number)[] } {
 	const parts = toPath(path.startsWith('.') ? path.slice(1) : path);
 
@@ -40,7 +40,7 @@ export function buildPostgresJsonPath(
 	}
 
 	const part = parts[parts.length - 1]!;
-	const operator = options?.forFilter ? '->>' : '->';
+	const operator = options?.asText ? '->>' : '->';
 
 	if (isArrayIndex(part)) {
 		// Same as above: isArrayIndex guarantees a non-negative integer literal, safe to inline.

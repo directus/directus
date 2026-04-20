@@ -97,27 +97,27 @@ describe('buildPostgresJsonPath', () => {
 	});
 });
 
-describe('buildPostgresJsonPath (forFilter)', () => {
+describe('buildPostgresJsonPath with asText', () => {
 	test('single property uses ->> for filter', () => {
-		expect(buildPostgresJsonPath('.color', { forFilter: true })).toEqual({ template: '->>?', bindings: ['color'] });
+		expect(buildPostgresJsonPath('.color', { asText: true })).toEqual({ template: '->>?', bindings: ['color'] });
 	});
 
 	test('nested property uses -> for intermediate and ->> for final', () => {
-		expect(buildPostgresJsonPath('.settings.theme', { forFilter: true })).toEqual({
+		expect(buildPostgresJsonPath('.settings.theme', { asText: true })).toEqual({
 			template: '->?->>?',
 			bindings: ['settings', 'theme'],
 		});
 	});
 
 	test('array then property uses -> for intermediate and ->> for final', () => {
-		expect(buildPostgresJsonPath('.items[0].name', { forFilter: true })).toEqual({
+		expect(buildPostgresJsonPath('.items[0].name', { asText: true })).toEqual({
 			template: '->?->0->>?',
 			bindings: ['items', 'name'],
 		});
 	});
 
 	test('array index only uses ->> for filter', () => {
-		expect(buildPostgresJsonPath('.items[0]', { forFilter: true })).toEqual({
+		expect(buildPostgresJsonPath('.items[0]', { asText: true })).toEqual({
 			template: '->?->>0',
 			bindings: ['items'],
 		});
