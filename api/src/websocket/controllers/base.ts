@@ -131,6 +131,8 @@ export default abstract class SocketController {
 
 		const accountabilityOverrides: UpgradeContext['accountabilityOverrides'] = {
 			ip: getIPFromReq(request) ?? null,
+			userAgent: null,
+			origin: null,
 		};
 
 		const userAgent = request.headers['user-agent']?.substring(0, 1024);
@@ -159,7 +161,7 @@ export default abstract class SocketController {
 				expires_at: null,
 			} as AuthenticationState;
 
-			this.server.emit('connection', ws, state);
+			this.emitConnection(ws, state);
 		});
 	}
 
@@ -193,7 +195,8 @@ export default abstract class SocketController {
 				const state = await authenticateConnection({ access_token: token }, accountabilityOverrides);
 				accountability = state.accountability;
 				expires_at = state.expires_at;
-			} catch {
+			} catch (error) {
+				void error;
 				accountability = null;
 				expires_at = null;
 			}
@@ -206,7 +209,8 @@ export default abstract class SocketController {
 
 		try {
 			this.checkUserRequirements(accountability);
-		} catch {
+		} catch (error) {
+			void error;
 			this.denyUpgrade401(socket, accountability);
 			return;
 		}
@@ -214,7 +218,7 @@ export default abstract class SocketController {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
-			this.server.emit('connection', ws, state);
+			this.emitConnection(ws, state);
 		});
 	}
 
@@ -222,6 +226,10 @@ export default abstract class SocketController {
 		logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
 		socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 		socket.destroy();
+	}
+
+	private emitConnection(ws: WebSocket, state: AuthenticationState) {
+		this.server.emit('connection', ws, state);
 	}
 
 	protected async handleHandshakeUpgrade({ request, socket, head, accountabilityOverrides }: UpgradeContext) {
@@ -238,11 +246,12 @@ export default abstract class SocketController {
 
 				ws.send(authenticationSuccess(payload['uid'], state.refresh_token));
 
-				this.server.emit('connection', ws, state);
-			} catch {
+				this.emitConnection(ws, state);
+			} catch (err) {
+				void err;
 				logger.debug('WebSocket authentication handshake failed');
-				const error = new WebSocketError('auth', 'AUTH_FAILED', 'Authentication handshake failed.');
-				handleWebSocketError(ws, error, 'auth');
+				const wsError = new WebSocketError('auth', 'AUTH_FAILED', 'Authentication handshake failed.');
+				handleWebSocketError(ws, wsError, 'auth');
 				ws.close();
 			}
 		});

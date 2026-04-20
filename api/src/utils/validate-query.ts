@@ -54,54 +54,50 @@ export function validateQuery(query: Query): Query {
 }
 
 function validateFilter(filter: Filter) {
-	for (const [key, nested] of Object.entries(filter)) {
+	const operatorValidators: Record<string, (value: any, key: string) => void> = {
+		_in: validateList,
+		_nin: validateList,
+		_between: validateList,
+		_nbetween: validateList,
+		_null: validateBoolean,
+		_nnull: validateBoolean,
+		_empty: validateBoolean,
+		_nempty: validateBoolean,
+		_intersects: validateGeometry,
+		_nintersects: validateGeometry,
+		_intersects_bbox: validateGeometry,
+		_nintersects_bbox: validateGeometry,
+		_none: (value) => validateFilter(value as Filter),
+		_some: (value) => validateFilter(value as Filter),
+		_eq: validateFilterPrimitive,
+		_neq: validateFilterPrimitive,
+		_contains: validateFilterPrimitive,
+		_ncontains: validateFilterPrimitive,
+		_starts_with: validateFilterPrimitive,
+		_nstarts_with: validateFilterPrimitive,
+		_istarts_with: validateFilterPrimitive,
+		_nistarts_with: validateFilterPrimitive,
+		_ends_with: validateFilterPrimitive,
+		_nends_with: validateFilterPrimitive,
+		_iends_with: validateFilterPrimitive,
+		_niends_with: validateFilterPrimitive,
+		_gt: validateFilterPrimitive,
+		_gte: validateFilterPrimitive,
+		_lt: validateFilterPrimitive,
+		_lte: validateFilterPrimitive,
+	};
+
+	for (const [key, nested] of Object.entries(filter) as Array<[string, any]>) {
 		if (key === '_and' || key === '_or') {
-			nested.forEach(validateFilter);
+			(nested as any[]).forEach(validateFilter);
 		} else if (key.startsWith('_')) {
 			const value = nested;
+			const validator = operatorValidators[key];
 
-			switch (key) {
-				case '_in':
-				case '_nin':
-				case '_between':
-				case '_nbetween':
-					validateList(value, key);
-					break;
-				case '_null':
-				case '_nnull':
-				case '_empty':
-				case '_nempty':
-					validateBoolean(value, key);
-					break;
-				case '_intersects':
-				case '_nintersects':
-				case '_intersects_bbox':
-				case '_nintersects_bbox':
-					validateGeometry(value, key);
-					break;
-				case '_none':
-				case '_some':
-					validateFilter(nested);
-					break;
-				case '_eq':
-				case '_neq':
-				case '_contains':
-				case '_ncontains':
-				case '_starts_with':
-				case '_nstarts_with':
-				case '_istarts_with':
-				case '_nistarts_with':
-				case '_ends_with':
-				case '_nends_with':
-				case '_iends_with':
-				case '_niends_with':
-				case '_gt':
-				case '_gte':
-				case '_lt':
-				case '_lte':
-				default:
-					validateFilterPrimitive(value, key);
-					break;
+			if (validator) {
+				validator(value, key);
+			} else {
+				validateFilterPrimitive(value, key);
 			}
 		} else if (isPlainObject(nested)) {
 			validateFilter(nested);

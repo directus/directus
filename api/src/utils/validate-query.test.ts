@@ -84,3 +84,16 @@ describe('validateGeometry', async () => {
 		expect(() => validateGeometry(value, 'test')).toThrowError('"test" has to be a valid GeoJSON object');
 	});
 });
+
+describe('validateFilter operators', async () => {
+	const { validateQuery } = await import('./validate-query.js');
+
+	test.each([
+		{ filter: { _in: 'wrong' }, reason: '"_in" has to be an array of values' },
+		{ filter: { _empty: 'wrong' }, reason: '"_empty" has to be a boolean' },
+		{ filter: { _intersects: {} }, reason: '"_intersects" has to be a valid GeoJSON object' },
+		{ filter: { _eq: '' }, reason: 'You can\'t filter for an empty string in "_eq"' },
+	])('should validate filter operator %o', ({ filter, reason }) => {
+		expect(() => validateQuery({ filter } as any)).toThrowError(reason);
+	});
+});
