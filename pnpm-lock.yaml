@@ -1069,9 +1069,6 @@ importers:
       '@directus/schema':
         specifier: workspace:*
         version: link:../packages/schema
-      '@directus/schema-builder':
-        specifier: workspace:*
-        version: link:../packages/schema-builder
       '@directus/specs':
         specifier: workspace:*
         version: link:../packages/specs
@@ -1406,6 +1403,9 @@ importers:
         specifier: 'catalog:'
         version: 4.0.2(zod@4.1.12)
     devDependencies:
+      '@directus/schema-builder':
+        specifier: workspace:*
+        version: link:../packages/schema-builder
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 4.0.0
