@@ -404,12 +404,7 @@ router.get(
 );
 
 const clearTransformationsSchema = z.object({
-	files: z
-		.union([
-			z.string().refine(isValidUuid, '"files" must be a valid UUID'),
-			z.array(z.string().refine(isValidUuid, 'Each file ID must be a valid UUID')),
-		])
-		.optional(),
+	files: z.array(z.string().refine(isValidUuid, 'Each file ID must be a valid UUID')).optional(),
 });
 
 router.delete(

@@ -410,7 +410,7 @@ export class AssetsService {
 		}
 	}
 
-	async clearTransformations(options?: { files?: string | string[] | undefined }): Promise<void> {
+	async clearTransformations(options?: { files?: string[] | undefined }): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
