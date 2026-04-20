@@ -32,7 +32,7 @@ import { validateItemAccess } from '../permissions/modules/validate-access/lib/v
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
-import { useStore } from '../utils/store.js';
+import { StoreLockedError, useStore } from '../utils/store.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { NameDeduper } from './assets/name-deduper.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
@@ -41,6 +41,10 @@ import { FoldersService } from './folders.js';
 
 const env = useEnv();
 const logger = useLogger();
+
+const clearTransformationsStore = useStore<{ clearing: boolean }>('directus:clear-asset-transformations', {
+	ttl: 10 * 60 * 1000, // 10 minutes
+});
 
 export class AssetsService {
 	knex: Knex;
@@ -415,63 +419,57 @@ export class AssetsService {
 			throw new ForbiddenError();
 		}
 
-		const store = useStore<{ clearing: boolean }>('directus:clear-asset-transformations');
+		try {
+			await clearTransformationsStore.withLock({ clearing: true }, async () => {
+				const storage = await getStorage();
 
-		await store(async (state) => {
-			if (await state.get('clearing')) {
+				const query = this.knex
+					.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
+					.from('directus_files');
+
+				if (options?.files) {
+					query.whereIn('id', options.files);
+				}
+
+				const files = await query;
+
+				const toDeleteByStorage = new Map<string, string[]>();
+
+				for (const file of files) {
+					const disk = storage.location(file.storage);
+					const filePrefix = path.parse(file.filename_disk).name;
+
+					for await (const filepath of disk.list(filePrefix)) {
+						if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
+
+						const group = toDeleteByStorage.get(file.storage) ?? [];
+						group.push(filepath);
+						toDeleteByStorage.set(file.storage, group);
+					}
+				}
+
+				let deleted = 0;
+
+				for (const [storageName, toDelete] of toDeleteByStorage) {
+					const disk = storage.location(storageName);
+
+					try {
+						await disk.bulkDelete(toDelete);
+					} catch (err) {
+						logger.warn(`Failed to bulk delete transformations on "${storageName}": ${err}`);
+					}
+
+					deleted += toDelete.length;
+				}
+
+				logger.info(`Cleared ${deleted} asset transformation(s)`);
+			});
+		} catch (err) {
+			if (err instanceof StoreLockedError) {
 				throw new InvalidPayloadError({ reason: 'Asset transformation clearing is already in progress' });
 			}
 
-			await state.set('clearing', true);
-		});
-
-		try {
-			const storage = await getStorage();
-
-			const query = this.knex
-				.select<{ filename_disk: string; storage: string }[]>('filename_disk', 'storage')
-				.from('directus_files');
-
-			if (options?.files) {
-				query.whereIn('id', options.files);
-			}
-
-			const files = await query;
-
-			const toDeleteByStorage = new Map<string, string[]>();
-
-			for (const file of files) {
-				const disk = storage.location(file.storage);
-				const filePrefix = path.parse(file.filename_disk).name;
-
-				for await (const filepath of disk.list(filePrefix)) {
-					if (!path.parse(filepath).name.startsWith(`${filePrefix}__`)) continue;
-
-					const group = toDeleteByStorage.get(file.storage) ?? [];
-					group.push(filepath);
-					toDeleteByStorage.set(file.storage, group);
-				}
-			}
-
-			let deleted = 0;
-
-			for (const [storageName, toDelete] of toDeleteByStorage) {
-				const disk = storage.location(storageName);
-
-				try {
-					await disk.bulkDelete(toDelete);
-				} catch (err) {
-					logger.warn(`Failed to bulk delete transformations on "${storageName}": ${err}`);
-				}
-
-				deleted += toDelete.length;
-			}
-
-			logger.info(`Cleared ${deleted} asset transformation(s)`);
-		} finally {
-			await store(async (state) => {
-				await state.set('clearing', false);
-			});
+			throw err;
 		}
 	}
 }

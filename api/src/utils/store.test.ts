@@ -206,4 +206,72 @@ describe('useStore', () => {
 
 		expect(typeof storeFunction).toBe('function');
 	});
+
+	describe('withLock', () => {
+		beforeEach(() => {
+			mockStore.usingLock.mockImplementation(async (_lockName: any, fn: any) => fn());
+		});
+
+		test('acquires, runs the callback, then releases the keys', async () => {
+			mockStore.get.mockResolvedValue(null);
+			const storeFunction = useStore<{ running: boolean }>('test');
+			const callback = vi.fn().mockResolvedValue('done');
+
+			const result = await storeFunction.withLock({ running: true }, callback);
+
+			expect(result).toBe('done');
+			expect(mockStore.set).toHaveBeenCalledWith('running', true);
+			expect(callback).toHaveBeenCalled();
+			expect(mockStore.delete).toHaveBeenCalledWith('running');
+		});
+
+		test('throws StoreLockedError when a key is already set', async () => {
+			const { StoreLockedError } = await import('./store.js');
+
+			mockStore.get.mockResolvedValue(true);
+			const storeFunction = useStore<{ running: boolean }>('test');
+			const callback = vi.fn();
+
+			await expect(storeFunction.withLock({ running: true }, callback)).rejects.toBeInstanceOf(StoreLockedError);
+			expect(callback).not.toHaveBeenCalled();
+			expect(mockStore.set).not.toHaveBeenCalled();
+		});
+
+		test('releases the keys even if the callback throws', async () => {
+			mockStore.get.mockResolvedValue(null);
+			const storeFunction = useStore<{ running: boolean }>('test');
+			const boom = new Error('boom');
+
+			await expect(
+				storeFunction.withLock({ running: true }, async () => {
+					throw boom;
+				}),
+			).rejects.toBe(boom);
+
+			expect(mockStore.delete).toHaveBeenCalledWith('running');
+		});
+
+		test('refreshes the keys periodically via heartbeat', async () => {
+			vi.useFakeTimers();
+
+			try {
+				mockStore.get.mockResolvedValue(null);
+				const storeFunction = useStore<{ running: boolean }>('test');
+
+				const runPromise = storeFunction.withLock(
+					{ running: true },
+					() => new Promise<void>((resolve) => setTimeout(resolve, 250)),
+					{ heartbeatMs: 100 },
+				);
+
+				await vi.advanceTimersByTimeAsync(250);
+				await runPromise;
+
+				const setCalls = mockStore.set.mock.calls.filter(([k]: any) => k === 'running');
+				expect(setCalls.length).toBeGreaterThanOrEqual(3);
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+	});
 });

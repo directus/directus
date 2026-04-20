@@ -50,14 +50,27 @@ vi.mock('../utils/get-schema.js', () => ({
 
 vi.mock('../storage/index.js');
 
-vi.mock('../utils/store.js', () => ({
-	useStore: vi.fn().mockReturnValue((callback: any) =>
+const { mockStoreFn } = vi.hoisted(() => {
+	const fn: any = (callback: any) =>
 		callback({
 			get: vi.fn().mockResolvedValue(false),
 			set: vi.fn().mockResolvedValue(undefined),
-		}),
-	),
-}));
+			delete: vi.fn().mockResolvedValue(undefined),
+		});
+
+	fn.withLock = vi.fn((_state: any, callback: any) => callback());
+
+	return { mockStoreFn: fn };
+});
+
+vi.mock('../utils/store.js', async () => {
+	const actual = await vi.importActual<typeof import('../utils/store.js')>('../utils/store.js');
+
+	return {
+		...actual,
+		useStore: vi.fn(() => mockStoreFn),
+	};
+});
 
 describe('AssetsService', () => {
 	let db: MockedFunction<Knex>;
@@ -804,11 +817,7 @@ describe('AssetsService', () => {
 		const mockSchema = { collections: {}, relations: [] } as SchemaOverview;
 
 		beforeEach(() => {
-			vi.mocked(useStore).mockReturnValue(((callback: any) =>
-				callback({
-					get: vi.fn().mockResolvedValue(false),
-					set: vi.fn().mockResolvedValue(undefined),
-				})) as any);
+			mockStoreFn.withLock = vi.fn((_state: any, callback: any) => callback());
 		});
 
 		function createMockDisk(files: Map<string, string[]>) {
@@ -862,11 +871,11 @@ describe('AssetsService', () => {
 		});
 
 		test('throws when clearing is already in progress', async () => {
-			vi.mocked(useStore).mockReturnValueOnce(((callback: any) =>
-				callback({
-					get: vi.fn().mockResolvedValue(true),
-					set: vi.fn(),
-				})) as any);
+			const { StoreLockedError } = await import('../utils/store.js');
+
+			mockStoreFn.withLock = vi.fn(() => {
+				throw new StoreLockedError('test');
+			});
 
 			const service = new AssetsService({
 				schema: mockSchema,
