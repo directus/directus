@@ -1,8 +1,6 @@
-import { inspect } from 'node:util';
-import { createDirectus, createItem, deleteItem, realtime, rest, sleep, staticToken, updateItem } from '@directus/sdk';
+import { createDirectus, createItem, deleteItem, realtime, rest, staticToken, updateItem } from '@directus/sdk';
 import { options, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/use-snapshot.js';
-import { reject } from 'lodash-es';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
