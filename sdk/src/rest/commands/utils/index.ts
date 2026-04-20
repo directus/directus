@@ -1,3 +1,4 @@
+export * from './assets.js';
 export * from './cache.js';
 export * from './deployment.js';
 export * from './export.js';
