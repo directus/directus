@@ -15,10 +15,10 @@ import { set } from 'lodash-es';
 import { expect, it } from 'vitest';
 import type { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '../../query/filter';
 
-export const collectionDepartments = 'test_json_filter_departments';
-export const collectionCategories = 'test_json_filter_categories';
-export const collectionProducts = 'test_json_filter_products';
-export const collectionSuppliers = 'test_json_filter_suppliers';
+export const collectionDepartments = 'test_json_filter_gql_departments';
+export const collectionCategories = 'test_json_filter_gql_categories';
+export const collectionProducts = 'test_json_filter_gql_products';
+export const collectionSuppliers = 'test_json_filter_gql_suppliers';
 
 export type Department = {
 	id?: number | string;
@@ -49,7 +49,7 @@ export type Product = {
 		settings?: {
 			theme?: string;
 		};
-	};
+	} | null;
 	data?: Array<{ test?: string }> | null;
 	category_id?: number | string | null;
 };
@@ -73,7 +73,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				filters: true,
 				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
 					quantity: 2,
-					seed: `collectionJsonFilterDepartments${seed}`,
+					seed: `collectionJsonFilterGqlDepartments${seed}`,
 					incremental: true,
 				}),
 			},
@@ -103,7 +103,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				filters: true,
 				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
 					quantity: 3,
-					seed: `collectionJsonFilterCategories${seed}`,
+					seed: `collectionJsonFilterGqlCategories${seed}`,
 					incremental: true,
 				}),
 			},
@@ -128,8 +128,8 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				isPrimaryKey: true,
 				filters: true,
 				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
-					quantity: 5,
-					seed: `collectionJsonFilterProducts${seed}`,
+					quantity: 6,
+					seed: `collectionJsonFilterGqlProducts${seed}`,
 					incremental: true,
 				}),
 			},
@@ -138,7 +138,8 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				type: 'string',
 				filters: true,
 				// Alpha→Tech, Beta→Sports, Gamma→Tech, Delta→Home, Epsilon→null (no category)
-				possibleValues: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon'],
+				// Zeta→null (no category, null metadata column — used for _null/_nnull column tests)
+				possibleValues: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta'],
 			},
 			metadata: {
 				field: 'metadata',
@@ -177,6 +178,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 						color: 'black',
 						tags: [],
 					},
+					null, // Zeta: NULL metadata column — tests _null/_nnull on the JSON column itself
 				],
 			},
 			data: {
@@ -184,8 +186,8 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				type: 'json',
 				filters: false,
 				// Alpha: [0].test = 'foo'  Beta: [0].test = 'bar'  Gamma: [0].test = 'foo'
-				// Delta: [0] exists but no 'test' key  Epsilon: null column
-				possibleValues: [[{ test: 'foo' }], [{ test: 'bar' }], [{ test: 'foo' }], [{}], null],
+				// Delta: [0] exists but no 'test' key  Epsilon: null column  Zeta: null column
+				possibleValues: [[{ test: 'foo' }], [{ test: 'bar' }], [{ test: 'foo' }], [{}], null, null],
 			},
 		},
 		[`${collectionSuppliers}_${pkType}`]: {
@@ -196,7 +198,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 				filters: false,
 				possibleValues: SeedFunctions.generatePrimaryKeys(pkType, {
 					quantity: 2,
-					seed: `collectionJsonFilterSuppliers${seed}`,
+					seed: `collectionJsonFilterGqlSuppliers${seed}`,
 					incremental: true,
 				}),
 			},
@@ -223,7 +225,7 @@ export function getTestsSchema(pkType: PrimaryKeyType, seed?: string): TestsSche
 	return schema;
 }
 
-export const seedDBStructure = () => {
+export const seedDBStructure = (): void => {
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
@@ -233,7 +235,7 @@ export const seedDBStructure = () => {
 					const localCollectionCategories = `${collectionCategories}_${pkType}`;
 					const localCollectionProducts = `${collectionProducts}_${pkType}`;
 					const localCollectionSuppliers = `${collectionSuppliers}_${pkType}`;
-					const junctionCollection = `${collectionProducts}_suppliers_${pkType}`;
+					const junctionCollection = `${collectionProducts}_suppliers_gql_${pkType}`;
 
 					// Delete in FK order: junction first, then products, suppliers, categories, departments
 					await DeleteCollection(vendor, { collection: junctionCollection });
@@ -356,7 +358,10 @@ export const seedDBStructure = () => {
 	);
 };
 
-export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchemaValues: TestsSchemaVendorValues) => {
+export const seedDBValues = async (
+	cachedSchema: CachedTestsSchema,
+	vendorSchemaValues: TestsSchemaVendorValues,
+): Promise<void> => {
 	await Promise.all(
 		vendors.map(async (vendor) => {
 			for (const pkType of PRIMARY_KEY_TYPES) {
@@ -368,7 +373,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				const localCollectionSuppliers = `${collectionSuppliers}_${pkType}`;
 
 				// Seed departments first
-				const itemDepartments = [];
+				const itemDepartments: Department[] = [];
 
 				for (let i = 0; i < schema[localCollectionDepartments]!['id']!.possibleValues.length; i++) {
 					const department: Department = {
@@ -400,7 +405,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				// Home (2) → Consumer Department (dept index 1)
 				const categoryDepartmentIndices = [0, 1, 1];
 
-				const itemCategories = [];
+				const itemCategories: Category[] = [];
 
 				for (let i = 0; i < schema[localCollectionCategories]!['id']!.possibleValues.length; i++) {
 					const category: Category = {
@@ -421,7 +426,6 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					item: itemCategories,
 				});
 
-				// Build name→id map for DB-ordering safety
 				const categoryIdByName = Object.fromEntries(categories.map((c: Category) => [c.name as string, c.id]));
 
 				const categoriesIDs = (schema[localCollectionCategories]!['name']!.possibleValues as string[]).map(
@@ -429,10 +433,11 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				);
 
 				// category name order: ['Tech', 'Sports', 'Home'] → indices 0, 1, 2
-				// Alpha → Tech (0), Beta → Sports (1), Gamma → Tech (0), Delta → Home (2), Epsilon → null
-				const productCategoryIndices = [0, 1, 0, 2, null];
+				// Alpha → Tech (0), Beta → Sports (1), Gamma → Tech (0), Delta → Home (2),
+				// Epsilon → null, Zeta → null
+				const productCategoryIndices: (number | null)[] = [0, 1, 0, 2, null, null];
 
-				const itemProducts = [];
+				const itemProducts: Product[] = [];
 
 				for (let i = 0; i < schema[localCollectionProducts]!['id']!.possibleValues.length; i++) {
 					const categoryIndex = productCategoryIndices[i];
@@ -441,7 +446,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 						name: schema[localCollectionProducts]!['name']!.possibleValues[i],
 						metadata: schema[localCollectionProducts]!['metadata']!.possibleValues[i],
 						data: schema[localCollectionProducts]!['data']!.possibleValues[i],
-						category_id: categoryIndex !== null ? categoriesIDs[categoryIndex] : null,
+						category_id: categoryIndex != null ? categoriesIDs[categoryIndex] : null,
 					};
 
 					if (pkType === 'string') {
@@ -456,12 +461,10 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 					item: itemProducts,
 				});
 
-				// Build name→id map for M2M junction seeding
 				const productIdByName = Object.fromEntries(products.map((p: Product) => [p.name as string, p.id]));
-				const productsIDs = products.map((p: Product) => p.id);
 
 				// Seed suppliers
-				const itemSuppliers = [];
+				const itemSuppliers: Supplier[] = [];
 
 				for (let i = 0; i < schema[localCollectionSuppliers]!['id']!.possibleValues.length; i++) {
 					const supplier: Supplier = {
@@ -487,8 +490,8 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				// Alpha → Supplier A (EU)
 				// Beta  → Supplier A (EU) + Supplier B (US)
 				// Gamma → Supplier B (US)
-				// Delta, Epsilon → no suppliers
-				const junctionCollection = `${collectionProducts}_suppliers_${pkType}`;
+				// Delta, Epsilon, Zeta → no suppliers
+				const junctionCollection = `${collectionProducts}_suppliers_gql_${pkType}`;
 				const junctionProductField = `${localCollectionProducts}_id`;
 				const junctionSupplierField = `${localCollectionSuppliers}_id`;
 
@@ -516,7 +519,12 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 
 				set(vendorSchemaValues, `${vendor}.${localCollectionDepartments}.id`, departmentsIDs);
 				set(vendorSchemaValues, `${vendor}.${localCollectionCategories}.id`, categoriesIDs);
-				set(vendorSchemaValues, `${vendor}.${localCollectionProducts}.id`, productsIDs);
+
+				set(
+					vendorSchemaValues,
+					`${vendor}.${localCollectionProducts}.id`,
+					products.map((p: Product) => p.id),
+				);
 			}
 		}),
 	);

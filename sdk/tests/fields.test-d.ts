@@ -1,9 +1,10 @@
 import { assertType, describe, test } from 'vitest';
 import type { QueryFields } from '../src/types/fields.js';
-import type { CollectionA, CollectionC, TestSchema } from './schema.js';
+import type { CollectionA, CollectionB, CollectionC, TestSchema } from './schema.js';
 
 describe('Test QueryFields', () => {
 	type CollectionAFields = QueryFields<TestSchema, CollectionA>;
+	type CollectionBFields = QueryFields<TestSchema, CollectionB>;
 	type CollectionCFields = QueryFields<TestSchema, CollectionC>;
 
 	test('error situations', () => {
@@ -44,6 +45,31 @@ describe('Test QueryFields', () => {
 			'month(dt_field)',
 			'year(dt_field)',
 		]);
+	});
+
+	test('json function fields', () => {
+		// valid: json field with a simple path
+		assertType<CollectionBFields>(['json(json_field, color)']);
+
+		// valid: json field with a nested dot-notation path
+		assertType<CollectionBFields>(['json(json_field, address.city)']);
+
+		// valid: multiple json() selections alongside regular fields
+		assertType<CollectionBFields>(['id', 'json(json_field, color)', 'json(json_field, size)']);
+
+		// valid: json() alongside count() on the same field
+		assertType<CollectionBFields>(['count(json_field)', 'json(json_field, color)']);
+
+		// valid: json() via a relational field on collection_a
+		assertType<CollectionAFields>(['id', { m2o: ['json(json_field, color)'] }]);
+
+		// invalid: non-json field as first argument
+		// @ts-expect-error
+		assertType<CollectionBFields>(['json(id, color)']);
+
+		// invalid: csv field is not a json field
+		// @ts-expect-error
+		assertType<CollectionBFields>(['json(csv_field, color)']);
 	});
 
 	test('nested fields', () => {
