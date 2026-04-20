@@ -455,11 +455,10 @@ export class AssetsService {
 
 					try {
 						await disk.bulkDelete(toDelete);
+						deleted += toDelete.length;
 					} catch (err) {
 						logger.warn(`Failed to bulk delete transformations on "${storageName}": ${err}`);
 					}
-
-					deleted += toDelete.length;
 				}
 
 				logger.info(`Cleared ${deleted} asset transformation(s)`);
