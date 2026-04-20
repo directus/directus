@@ -1,22 +1,21 @@
 delete:
   summary: Clear Asset Transformations
-  description:
-    Purges cached asset transformations (thumbnails, resizes, format conversions) from storage. Optionally filter by one
-    or more file IDs.
+  description: Purges cached asset transformations (e.g. thumbnails, resizes etc) from storage.
   operationId: clear-asset-transformations
-  parameters:
-    - name: files
-      in: query
-      description: UUID(s) of specific files to purge transformations for. If omitted, all transformations are purged.
-      required: false
-      schema:
-        oneOf:
-          - type: string
-            format: uuid
-          - type: array
-            items:
-              type: string
-              format: uuid
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            files:
+              type: array
+              items:
+                type: string
+                format: uuid
+              description:
+                UUIDs of specific files to purge transformations for. If omitted, all transformations are purged.
   responses:
     '204':
       description: Successful request
