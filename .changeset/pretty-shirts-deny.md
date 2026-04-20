@@ -10,4 +10,4 @@
 '@directus/api': minor
 ---
 
-Added asset transformation purge endpoint, CLI command, and bulkDelete to storage drivers with native support for S3 and Supabase
+Added support for asset transformation purge
