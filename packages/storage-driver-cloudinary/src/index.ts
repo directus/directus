@@ -443,15 +443,14 @@ export class DriverCloudinary implements TusDriver {
 					params.append('public_ids[]', id);
 				}
 
-				await fetch(
-					`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload?${params.toString()}`,
-					{
-						method: 'DELETE',
-						headers: {
-							Authorization: this.getBasicAuth(),
-						},
+				await fetch(`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload`, {
+					method: 'DELETE',
+					headers: {
+						Authorization: this.getBasicAuth(),
+						'Content-Type': 'application/x-www-form-urlencoded',
 					},
-				);
+					body: params.toString(),
+				});
 			}
 		}
 	}
