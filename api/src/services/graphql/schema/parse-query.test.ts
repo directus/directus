@@ -358,7 +358,7 @@ describe('parseFields', () => {
 	test('should parse aliased M2A relational field at top level', async () => {
 		const selections = [
 			field('parent', {
-				children: [inlineFragment('child', [field('id')])]
+				children: [inlineFragment('child', [field('id')])],
 			}),
 			field('parent', {
 				alias: 'parentAlias',
