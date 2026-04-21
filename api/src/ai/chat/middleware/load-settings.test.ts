@@ -214,6 +214,45 @@ describe('loadSettings', () => {
 		expect(nextFunction).toHaveBeenCalledTimes(1);
 	});
 
+	test('should preserve redacted custom provider values from SettingsService', async () => {
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-openai-key',
+			ai_anthropic_api_key: 'test-anthropic-key',
+			ai_google_api_key: 'test-google-key',
+			ai_openai_compatible_api_key: null,
+			ai_openai_compatible_base_url: null,
+			ai_openai_compatible_name: null,
+			ai_openai_compatible_models: null,
+			ai_openai_compatible_headers: null,
+			ai_openai_allowed_models: ['gpt-5'],
+			ai_anthropic_allowed_models: ['claude-sonnet-4-5'],
+			ai_google_allowed_models: ['gemini-2.5-pro'],
+			ai_system_prompt: 'You are Directus.',
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				settings: {
+					openaiApiKey: 'test-openai-key',
+					anthropicApiKey: 'test-anthropic-key',
+					googleApiKey: 'test-google-key',
+					openaiCompatibleApiKey: null,
+					openaiCompatibleBaseUrl: null,
+					openaiCompatibleName: null,
+					openaiCompatibleModels: null,
+					openaiCompatibleHeaders: null,
+					openaiAllowedModels: ['gpt-5'],
+					anthropicAllowedModels: ['claude-sonnet-4-5'],
+					googleAllowedModels: ['gemini-2.5-pro'],
+					systemPrompt: 'You are Directus.',
+				},
+				systemPrompt: 'You are Directus.',
+			},
+		});
+	});
+
 	test('should throw error if database fails', async () => {
 		const error = new Error('Database error');
 		mockReadSingleton.mockRejectedValue(error);

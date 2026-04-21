@@ -24,12 +24,49 @@ const router = useRouter();
 
 const settingsStore = useSettingsStore();
 const serverStore = useServerStore();
+const customLLMEnabled = computed(() => serverStore.info.license?.custom_llm_enabled === true);
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const aiFields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group'),
-);
+const customLLMFields = new Set([
+	'ai_openai_compatible_name',
+	'ai_openai_compatible_base_url',
+	'ai_openai_compatible_api_key',
+	'ai_openai_compatible_headers',
+	'ai_openai_compatible_models',
+	'ai_openai_compatible_divider',
+]);
+
+const aiFields = computed(() => {
+	return unref(allFields)
+		.filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group')
+		.map((field) => {
+			if (customLLMEnabled.value === true || customLLMFields.has(field.field) === false) {
+				return field;
+			}
+
+			if (field.field === 'ai_openai_compatible_divider') {
+				return {
+					...field,
+					meta: {
+						...field.meta,
+						options: {
+							...(field.meta?.options ?? {}),
+							icon: 'diamond',
+						},
+					},
+				};
+			}
+
+			return {
+				...field,
+				meta: {
+					...field.meta,
+					readonly: true,
+				},
+			};
+		});
+});
 
 const mcpFields = computed(() =>
 	unref(allFields).filter((field) => field.meta?.group === 'mcp_group' || field.field === 'mcp_group'),
