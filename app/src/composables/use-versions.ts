@@ -42,8 +42,7 @@ export function useVersions(
 		mode: 'push',
 	});
 
-	const isNewItem = computed(() => primaryKey.value === '+');
-	const isItemLessVersion = computed(() => isNewItem.value && currentVersion.value?.id !== '+');
+	const isItemless = computed(() => primaryKey.value === '+' || (isSingleton.value && !singletonPrimaryKey.value));
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
 		const draftVersion = getGlobalVersion(VERSION_KEY_DRAFT);
@@ -93,7 +92,7 @@ export function useVersions(
 		queryVersion.value = newCurrentVersion?.key ?? null;
 
 		if (newCurrentVersion !== null) {
-			queryVersionId.value = isItemLessVersion.value ? newCurrentVersion.id : null;
+			queryVersionId.value = isItemless.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
 		}
 
 		validationErrors.value = [];
@@ -113,7 +112,7 @@ export function useVersions(
 
 		if (!isSingleton.value && !primaryKey.value) return;
 
-		if (isNewItem.value && !queryVersionId.value) return;
+		if (primaryKey.value === '+' && !queryVersionId.value) return;
 
 		loading.value = true;
 
@@ -122,17 +121,14 @@ export function useVersions(
 
 			// Singletons: route has no PK; use the resolved singleton PK (null for pristine)
 			const resolvedSingletonPK = isSingleton.value ? singletonPrimaryKey.value : null;
-			const isPristineSingleton = isSingleton.value && !resolvedSingletonPK;
 
-			if (isNewItem.value && queryVersionId.value) {
-				filterConditions.push({ item: { _null: true } }, { id: { _eq: queryVersionId.value } });
-			} else if (isPristineSingleton) {
-				// No singleton row yet — match item-less drafts; scope to a specific version if known
+			if (isItemless.value) {
+				// No parent item yet — match item-less drafts; scope to a specific version if known
 				filterConditions.push({ item: { _null: true } });
 				if (queryVersionId.value) filterConditions.push({ id: { _eq: queryVersionId.value } });
 			} else if (isSingleton.value) {
 				filterConditions.push({ item: { _eq: String(resolvedSingletonPK) } });
-			} else if (!isNewItem.value) {
+			} else {
 				filterConditions.push({ item: { _eq: primaryKey.value } });
 			}
 

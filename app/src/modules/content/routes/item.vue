@@ -10,7 +10,7 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
-import { trackLastAccessedCollection } from '../index';
+import { enterDraftContext, trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
@@ -81,6 +81,12 @@ onBeforeRouteUpdate((to, from) => {
 	if (to.params.collection === from.params.collection) return;
 
 	trackLastAccessedCollection(to, from, () => {});
+
+	// beforeEnter doesn't re-fire when the matched record is unchanged (sibling/param-only
+	// navigation), so enterDraftContext must be invoked manually here. Otherwise pristine
+	// singletons reached via in-app nav never receive ?version=draft and the version menu
+	// stays hidden until a hard refresh.
+	return enterDraftContext(to, from, () => {});
 });
 
 const { collectionRoute, backRoute } = useItemNavigation();

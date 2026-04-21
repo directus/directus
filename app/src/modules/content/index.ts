@@ -23,14 +23,16 @@ export const enterDraftContext: NavigationGuard = (to) => {
 	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
 	if (!collection) return;
 
-	// Only auto-enter draft for new items (/+). Existing items and singletons default to the
-	// published view; users opt into draft by clicking the Edit button.
-	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
-	if (!isNewItem) return;
-
 	const collectionsStore = useCollectionsStore();
 	const collectionInfo = collectionsStore.getCollection(collection);
 	if (!collectionInfo?.meta?.versioning) return;
+
+	// Auto-enter draft for new items (/+) and for singletons (which may or may not have an item
+	// yet — the draft context is the single authoritative editing surface).
+	// Existing non-singleton items default to the published view; users opt into draft via Edit.
+	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
+	const isSingleton = collectionInfo.meta.singleton === true;
+	if (!isNewItem && !isSingleton) return;
 
 	return { ...to, query: { ...to.query, version: VERSION_KEY_DRAFT } };
 };
@@ -43,17 +45,6 @@ export const redirectSingleton: NavigationGuard = (to) => {
 	if (!collectionInfo?.meta?.singleton) return;
 
 	return { name: 'content-singleton', params: to.params, query: to.query };
-};
-
-export const ensureSingleton: NavigationGuard = (to) => {
-	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
-
-	if (collection) {
-		const collectionInfo = useCollectionsStore().getCollection(collection);
-		if (collectionInfo?.meta?.singleton) return;
-	}
-
-	return { name: 'content-collection', params: to.params, query: to.query };
 };
 
 export const trackLastAccessedCollection: NavigationGuard = (to) => {
@@ -254,13 +245,7 @@ export default defineModule({
 						collection: route.params.collection,
 						singleton: true,
 					}),
-					beforeEnter: [
-						checkForSystem,
-						ensureSingleton,
-						trackLastAccessedCollection,
-						enterDraftContext,
-						stripVersionOnNonVersioned,
-					],
+					beforeEnter: [checkForSystem, trackLastAccessedCollection, enterDraftContext, stripVersionOnNonVersioned],
 				},
 				{
 					name: 'content-item',
