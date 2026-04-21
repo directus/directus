@@ -1244,6 +1244,7 @@ describe('#bulkDelete', () => {
 	beforeEach(() => {
 		vi.mocked(join).mockImplementation(joinActual);
 		vi.mocked(normalizePath).mockImplementation((input) => input as string);
+		vi.mocked(fetch).mockResolvedValue({ ok: true, status: 200 } as Response);
 	});
 
 	test('Calls Admin API delete_resources with correct public_ids', async () => {
@@ -1257,16 +1258,17 @@ describe('#bulkDelete', () => {
 			method: 'DELETE',
 			headers: {
 				Authorization: sample.basicAuth,
+				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			body: expect.any(String),
 		});
 
-		const parsedUrl = new URL(url as string);
-
-		expect(parsedUrl.origin + parsedUrl.pathname).toBe(
+		expect(url).toBe(
 			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/${sample.resourceType}/upload`,
 		);
 
-		const publicIds = parsedUrl.searchParams.getAll('public_ids[]');
+		const body = new URLSearchParams(options!.body as string);
+		const publicIds = body.getAll('public_ids[]');
 
 		expect(publicIds).toStrictEqual([joinActual(sample.path.inputFolder, sample.publicId.input)]);
 	});
