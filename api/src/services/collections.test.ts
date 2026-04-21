@@ -1,8 +1,9 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, LimitExceededError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
+import * as licenseSummaryModule from '../license/summary.js';
 import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../test-utils/knex.js';
 import * as getSchemaModule from '../utils/get-schema.js';
 import { CollectionsService } from './collections.js';
@@ -55,6 +56,11 @@ vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
 	validateAccess: vi.fn(),
 }));
 
+vi.mock('../license/summary.js', () => ({
+	getLicenseEntitlements: vi.fn(),
+	countActiveCollections: vi.fn(),
+}));
+
 vi.mock('../utils/should-clear-cache.js', () => ({
 	shouldClearCache: vi.fn().mockReturnValue(true),
 }));
@@ -100,6 +106,20 @@ describe('Integration Tests', () => {
 	// Common setup
 	beforeEach(() => {
 		vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
+
+		vi.mocked(licenseSummaryModule.getLicenseEntitlements).mockResolvedValue({
+			collections: { limit: 50, hard_limit: 50, is_overage_allowed: false },
+			seats: { limit: 3, hard_limit: 3, is_overage_allowed: false },
+			activity_log_retention_days: { limit: 30 },
+			revisions_retention_days: { limit: 30 },
+			sso_enabled: false,
+			custom_policy_rules_enabled: false,
+			scheduled_publishing_enabled: false,
+			custom_llm_enabled: false,
+			analytics_opt_out_enabled: false,
+		});
+
+		vi.mocked(licenseSummaryModule.countActiveCollections).mockResolvedValue(0);
 	});
 
 	afterEach(() => {
@@ -147,6 +167,43 @@ describe('Integration Tests', () => {
 
 				expect(result).toBe('new_collection');
 				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('new_collection', expect.any(Function));
+			});
+
+			test('should throw LimitExceededError when collection limit is reached', async () => {
+				tracker.on.select('directus_collections').response([]);
+				vi.mocked(licenseSummaryModule.countActiveCollections).mockResolvedValue(50);
+
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+
+				await expect(service.createOne({ collection: 'over_limit', schema: {} })).rejects.toMatchObject({
+					code: 'LIMIT_EXCEEDED',
+					message: 'Collections limit exceeded.',
+					extensions: {
+						category: 'Collections',
+						limit_type: 'license',
+					},
+				});
+			});
+
+			test('should allow collection creation past limit when overage is allowed without a hard limit', async () => {
+				tracker.on.select('directus_collections').response([]);
+				vi.mocked(licenseSummaryModule.countActiveCollections).mockResolvedValue(50);
+
+				vi.mocked(licenseSummaryModule.getLicenseEntitlements).mockResolvedValue({
+					collections: { limit: 50, hard_limit: null, is_overage_allowed: true },
+					seats: { limit: 3, hard_limit: 3, is_overage_allowed: false },
+					activity_log_retention_days: { limit: 30 },
+					revisions_retention_days: { limit: 30 },
+					sso_enabled: false,
+					custom_policy_rules_enabled: false,
+					scheduled_publishing_enabled: false,
+					custom_llm_enabled: false,
+					analytics_opt_out_enabled: false,
+				});
+
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+
+				await expect(service.createOne({ collection: 'allowed_overage', schema: {} })).resolves.toBe('allowed_overage');
 			});
 
 			test('should parse collection name before creating', async () => {
@@ -299,7 +356,7 @@ describe('Integration Tests', () => {
 			});
 
 			test('should create multiple collections', async () => {
-				const createOneSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+				tracker.on.select('directus_collections').response([]);
 
 				const service = new CollectionsService({
 					knex: db,
@@ -309,8 +366,21 @@ describe('Integration Tests', () => {
 
 				const result = await service.createMany([{ collection: 'collection1' }, { collection: 'collection2' }]);
 
-				expect(result).toEqual(['test', 'test']);
-				expect(createOneSpy).toHaveBeenCalledTimes(2);
+				expect(result).toEqual(['collection1', 'collection2']);
+			});
+
+			test('should throw LimitExceededError when batch exceeds collection limit', async () => {
+				vi.mocked(licenseSummaryModule.countActiveCollections).mockResolvedValue(49);
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await expect(service.createMany([{ collection: 'one' }, { collection: 'two' }])).rejects.toThrow(
+					LimitExceededError,
+				);
 			});
 		});
 
@@ -453,8 +523,10 @@ describe('Integration Tests', () => {
 				await expect(service.updateOne('test_collection', {})).rejects.toThrow(ForbiddenError);
 			});
 
-			test('should update existing collection meta', async () => {
-				tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
+			test('should update an existing collection metadata row', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
+					{ collection: 'test_collection', excluded: false },
+				]);
 
 				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('test_collection');
 
@@ -471,9 +543,8 @@ describe('Integration Tests', () => {
 				expect(updateOneSpy).toHaveBeenCalled();
 			});
 
-			test('should create collection meta if not exists', async () => {
-				tracker.on.select('directus_collections').response([]);
-
+			test('should create a collection metadata row when one does not exist', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
 				const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('test_collection');
 
 				const service = new CollectionsService({
@@ -487,6 +558,47 @@ describe('Integration Tests', () => {
 				} as Partial<Collection>);
 
 				expect(createOneSpy).toHaveBeenCalled();
+			});
+
+			test('should throw LimitExceededError when configuring a db-only collection over the limit', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
+				vi.mocked(licenseSummaryModule.countActiveCollections).mockResolvedValue(50);
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await expect(
+					service.updateOne('test_collection', {
+						meta: { collection: 'test_collection', hidden: true },
+					} as Partial<Collection>),
+				).rejects.toThrow(LimitExceededError);
+			});
+
+			test('should ignore excluded updates for system collections', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
+					{ collection: 'directus_collections', excluded: false },
+				]);
+
+				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('directus_collections');
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await service.updateOne('directus_collections', {
+					meta: { excluded: true, note: 'System collection note' },
+				} as Partial<Collection>);
+
+				expect(updateOneSpy).toHaveBeenCalledWith(
+					'directus_collections',
+					expect.not.objectContaining({ excluded: true }),
+					expect.anything(),
+				);
 			});
 		});
 
@@ -525,8 +637,28 @@ describe('Integration Tests', () => {
 				await expect(service.updateBatch([{ meta: {} } as any])).rejects.toThrow(InvalidPayloadError);
 			});
 
-			test('should update multiple collections', async () => {
-				const updateOneSpy = vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test');
+			test('should throw InvalidPayloadError when duplicate collection keys are provided', async () => {
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await expect(
+					service.updateBatch([
+						{ collection: 'collection1', meta: { hidden: true } } as Partial<Collection>,
+						{ collection: 'collection1', meta: { hidden: false } } as Partial<Collection>,
+					]),
+				).rejects.toThrow(InvalidPayloadError);
+			});
+
+			test('should update metadata for multiple collections', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
+					{ collection: 'collection1', excluded: false },
+					{ collection: 'collection2', excluded: false },
+				]);
+
+				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('test');
 
 				const service = new CollectionsService({
 					knex: db,
@@ -541,6 +673,28 @@ describe('Integration Tests', () => {
 
 				expect(result).toEqual(['collection1', 'collection2']);
 				expect(updateOneSpy).toHaveBeenCalledTimes(2);
+			});
+
+			test('should ignore system excluded updates during collection limit validation', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
+					{ collection: 'directus_collections', excluded: false },
+					{ collection: 'regular_collection', excluded: true },
+				]);
+
+				vi.mocked(licenseSummaryModule.countActiveCollections).mockResolvedValue(50);
+
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await expect(
+					service.updateBatch([
+						{ collection: 'directus_collections', meta: { excluded: true } } as Partial<Collection>,
+						{ collection: 'regular_collection', meta: { excluded: false } } as Partial<Collection>,
+					]),
+				).rejects.toThrow(LimitExceededError);
 			});
 		});
 
@@ -559,8 +713,13 @@ describe('Integration Tests', () => {
 				await expect(service.updateMany([], {})).rejects.toThrow(ForbiddenError);
 			});
 
-			test('should update multiple collections with same data', async () => {
-				const updateOneSpy = vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test');
+			test('should update shared metadata for multiple collections', async () => {
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
+					{ collection: 'collection1', excluded: false },
+					{ collection: 'collection2', excluded: false },
+				]);
+
+				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('test');
 
 				const service = new CollectionsService({
 					knex: db,
@@ -574,6 +733,20 @@ describe('Integration Tests', () => {
 
 				expect(result).toEqual(['collection1', 'collection2']);
 				expect(updateOneSpy).toHaveBeenCalledTimes(2);
+			});
+
+			test('should throw InvalidPayloadError when duplicate collection keys are provided', async () => {
+				const service = new CollectionsService({
+					knex: db,
+					schema,
+					accountability: null,
+				});
+
+				await expect(
+					service.updateMany(['collection1', 'collection1'], {
+						meta: { hidden: true },
+					} as Partial<Collection>),
+				).rejects.toThrow(InvalidPayloadError);
 			});
 		});
 

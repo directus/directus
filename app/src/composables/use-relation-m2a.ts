@@ -1,9 +1,11 @@
+import { isSystemCollection } from '@directus/system-data';
 import { Field, Relation } from '@directus/types';
 import { computed, Ref } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 
 export type RelationM2A = {
 	allowedCollections: Collection[];
@@ -57,32 +59,53 @@ export function useRelationM2A(collection: Ref<string>, field: Ref<string>) {
 		);
 
 		if (!relation) return undefined;
+		const relationPrimaryKeyFields = {} as Record<string, Field>;
+		const allowedCollections = [] as Collection[];
 
-		const allowedCollections = (relation.meta?.one_allowed_collections ?? []).reduce((acc, collection) => {
+		for (const collection of relation.meta?.one_allowed_collections ?? []) {
 			const collectionInfo = collectionsStore.getCollection(collection);
-			if (collectionInfo) acc.push(collectionInfo);
-			return acc;
-		}, [] as Collection[]);
 
-		const relationPrimaryKeyFields = allowedCollections.reduce(
-			(acc, collection) => {
-				const pkField = fieldsStore.getPrimaryKeyFieldForCollection(collection?.collection);
-				if (pkField) acc[collection.collection] = pkField;
-				return acc;
-			},
-			{} as Record<string, Field>,
-		);
+			if (
+				!collectionInfo ||
+				(!isSystemCollection(collectionInfo.collection) &&
+					(!collectionInfo.meta || isExcludedCollection(collectionInfo)))
+			) {
+				return undefined;
+			}
+
+			const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collectionInfo.collection);
+			if (!primaryKeyField) return undefined;
+
+			relationPrimaryKeyFields[collectionInfo.collection] = primaryKeyField;
+			allowedCollections.push(collectionInfo);
+		}
+
+		const collectionField = fieldsStore.getField(junction.collection, relation.meta?.one_collection_field as string);
+		const junctionCollection = collectionsStore.getCollection(junction.collection);
+		const junctionPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(junction.collection);
+		const junctionField = fieldsStore.getField(junction.collection, junction.meta?.junction_field as string);
+		const reverseJunctionField = fieldsStore.getField(junction.collection, relation.meta?.junction_field as string);
+
+		if (
+			!collectionField ||
+			!junctionCollection ||
+			!junctionPrimaryKeyField ||
+			!junctionField ||
+			!reverseJunctionField
+		) {
+			return undefined;
+		}
 
 		return {
 			allowedCollections,
 			relationPrimaryKeyFields,
-			collectionField: fieldsStore.getField(junction.collection, relation.meta?.one_collection_field as string),
-			junctionCollection: collectionsStore.getCollection(junction.collection),
-			junctionPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(junction.collection),
-			junctionField: fieldsStore.getField(junction.collection, junction.meta?.junction_field as string),
-			reverseJunctionField: fieldsStore.getField(junction.collection, relation.meta?.junction_field as string),
-			junction: junction,
-			relation: relation,
+			collectionField,
+			junctionCollection,
+			junctionPrimaryKeyField,
+			junctionField,
+			reverseJunctionField,
+			junction,
+			relation,
 			sortField: junction.meta?.sort_field ?? undefined,
 			type: 'm2a',
 		} as RelationM2A;

@@ -18,6 +18,7 @@ import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { getCollectionRoute } from '@/utils/get-route';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 
 const props = defineProps<{
 	collection: Collection;
@@ -80,7 +81,8 @@ const hasContextMenu = computed(() => isAdmin && props.collection.type === 'tabl
 
 function getChildCollections(collection: Collection) {
 	let collections = collectionsStore.sortedCollections.filter(
-		(childCollection) => childCollection.meta?.group === collection.collection,
+		(childCollection) =>
+			childCollection.meta?.group === collection.collection && !isExcludedCollection(childCollection),
 	);
 
 	if (props.showHidden === false) {

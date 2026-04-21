@@ -655,6 +655,130 @@ describe('Integration Tests', () => {
 			});
 		});
 
+		describe('processM2O', () => {
+			test('rejects nested writes that target excluded collections', async () => {
+				const schema = new SchemaBuilder()
+					.collection('articles', (c) => {
+						c.field('id').id();
+						c.field('author').m2o('users');
+					})
+					.collection('users', (c) => {
+						c.field('id').id();
+						c.field('name').string();
+					})
+					.build();
+
+				const schemaWithExcludedRelation = {
+					...schema,
+					collections: {
+						articles: schema.collections['articles']!,
+					},
+				};
+
+				const service = new PayloadService('articles', {
+					knex: db,
+					schema: schemaWithExcludedRelation as typeof schema,
+				});
+
+				await expect(
+					service.processM2O({
+						author: {
+							id: 1,
+							name: 'Excluded User',
+						},
+					}),
+				).rejects.toThrow(/don't have permission|does not exist/i);
+			});
+		});
+
+		describe('processA2O', () => {
+			test('rejects nested writes that target excluded collections', async () => {
+				const schemaWithExcludedRelation = {
+					collections: {
+						articles: {
+							collection: 'articles',
+							primary: 'id',
+							fields: {},
+						},
+					},
+					relations: [
+						{
+							collection: 'articles',
+							field: 'blocks',
+							related_collection: null,
+							meta: {
+								one_collection_field: 'collection',
+								one_allowed_collections: ['users'],
+							},
+						},
+					],
+				} as any;
+
+				const service = new PayloadService('articles', {
+					knex: db,
+					schema: schemaWithExcludedRelation,
+				});
+
+				await expect(
+					service.processA2O({
+						collection: 'users',
+						blocks: {
+							id: 1,
+							name: 'Excluded User',
+						},
+					}),
+				).rejects.toThrow(/don't have permission|does not exist/i);
+			});
+		});
+
+		describe('processO2M', () => {
+			test('rejects nested writes that target excluded collections', async () => {
+				const schema = new SchemaBuilder()
+					.collection('authors', (c) => {
+						c.field('id').id();
+						c.field('articles').o2m('articles', 'author');
+					})
+					.collection('articles', (c) => {
+						c.field('id').id();
+						c.field('title').string();
+						c.field('author').m2o('authors');
+					})
+					.build();
+
+				const articlesRelation = schema.relations.find(
+					(relation) => relation.collection === 'articles' && relation.related_collection === 'authors',
+				);
+
+				const oneField = articlesRelation?.meta?.one_field;
+
+				const schemaWithExcludedRelation = {
+					...schema,
+					collections: {
+						authors: schema.collections['authors']!,
+					},
+				};
+
+				const service = new PayloadService('authors', {
+					knex: db,
+					schema: schemaWithExcludedRelation as typeof schema,
+				});
+
+				await expect(
+					service.processO2M(
+						{
+							[oneField!]: [
+								{
+									id: 1,
+									title: 'Excluded Article',
+								},
+							],
+						},
+						1,
+					),
+				).rejects.toThrow(/don't have permission|does not exist/i);
+			});
+		});
+
 		describe('processJsonFunctionResults', () => {
 			let service: PayloadService;
 

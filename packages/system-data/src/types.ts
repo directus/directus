@@ -24,6 +24,7 @@ export type CollectionMeta = {
 	collection: string;
 	note: string | null;
 	hidden: boolean;
+	excluded: boolean;
 	singleton: boolean;
 	icon: string | null;
 	color: string | null;
@@ -49,6 +50,7 @@ export type BaseCollectionMeta = Pick<
 	| 'collection'
 	| 'note'
 	| 'hidden'
+	| 'excluded'
 	| 'singleton'
 	| 'icon'
 	| 'translations'

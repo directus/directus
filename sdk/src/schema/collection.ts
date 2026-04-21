@@ -10,6 +10,7 @@ export type DirectusCollection<Schema = any> = {
 			icon: string | null;
 			note: string | null;
 			display_template: string | null;
+			excluded: boolean;
 			hidden: boolean;
 			singleton: boolean;
 			translations: CollectionMetaTranslationType[] | null;

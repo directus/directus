@@ -18,6 +18,7 @@ const checkForSystem: NavigationGuard = (to, from) => {
 	if (!to.params?.collection) return;
 
 	if (typeof to.params.collection === 'string') {
+		const collectionsStore = useCollectionsStore();
 		const route = getSystemCollectionRoute(to.params.collection);
 
 		if (route) {
@@ -26,6 +27,13 @@ const checkForSystem: NavigationGuard = (to, from) => {
 			} else {
 				return route;
 			}
+		}
+
+		if (!collectionsStore.activeCollections.find((collection) => collection.collection === to.params.collection)) {
+			return {
+				name: 'content-item-not-found',
+				params: { _: to.path.split('/').slice(1) },
+			};
 		}
 	}
 

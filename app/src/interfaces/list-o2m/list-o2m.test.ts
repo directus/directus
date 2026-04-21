@@ -9,23 +9,11 @@ import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
 import { LAYOUTS } from '@/types/interfaces';
 
+const relationInfo = vi.hoisted(() => ({ value: null as any }));
+
 vi.mock('@/composables/use-relation-o2m', () => ({
 	useRelationO2M: () => ({
-		relationInfo: computed(() => ({
-			relation: {
-				collection: 'related-collection',
-				field: 'parent_id',
-				related_collection: 'test-collection',
-				schema: null,
-				meta: null,
-			} as Relation,
-			relatedCollection: {
-				collection: 'related-collection',
-			} as Collection,
-			relatedPrimaryKeyField: { field: 'id' } as Field,
-			reverseJunctionField: { field: 'parent_id' } as Field,
-			type: 'o2m',
-		})),
+		relationInfo: computed(() => relationInfo.value),
 	}),
 }));
 
@@ -83,13 +71,36 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
+beforeEach(() => {
+	relationInfo.value = {
+		relation: {
+			collection: 'related-collection',
+			field: 'parent_id',
+			related_collection: 'test-collection',
+			schema: null,
+			meta: null,
+		} as Relation,
+		relatedCollection: {
+			collection: 'related-collection',
+			meta: {
+				excluded: false,
+			},
+		} as Collection,
+		relatedPrimaryKeyField: { field: 'id' } as Field,
+		reverseJunctionField: { field: 'parent_id' } as Field,
+		type: 'o2m',
+	};
+});
+
 const global: GlobalMountOptions = {
 	stubs: {
 		VIcon: true,
 		VListItem: {
 			template: '<div class="v-list-item"><slot /></div>',
 		},
-		VNotice: true,
+		VNotice: {
+			template: '<div class="v-notice"><slot /></div>',
+		},
 		VRemove: true,
 		VSkeletonLoader: true,
 		VButton: true,
@@ -173,6 +184,23 @@ describe('list-o2m', () => {
 		});
 
 		expect(wrapper.exists()).toBe(true);
+	});
+
+	it('should show inactive related collection warning when related collection is unavailable at runtime', () => {
+		relationInfo.value = {
+			...relationInfo.value,
+			relatedCollection: {
+				collection: 'related-collection',
+				meta: null,
+			} as Collection,
+		};
+
+		const wrapper = mount(ListO2M, {
+			props: listProps,
+			global,
+		});
+
+		expect(wrapper.text()).toContain('No active related collection is available.');
 	});
 
 	describe('list layout', () => {

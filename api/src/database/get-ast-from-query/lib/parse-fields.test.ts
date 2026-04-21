@@ -116,6 +116,50 @@ test('parse fields with m2o relation', async () => {
 	]);
 });
 
+test('rejects relational fields that target excluded collections', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const schemaWithExcludedRelation = {
+		...schemaRelational,
+		collections: {
+			articles: schemaRelational.collections['articles']!,
+		},
+	};
+
+	await expect(
+		parseFields(
+			{ accountability, fields: ['author.name'], parentCollection: 'articles', query: {} },
+			{ knex: db, schema: schemaWithExcludedRelation as typeof schemaRelational },
+		),
+	).rejects.toThrow(/don't have permission|does not exist/i);
+});
+
+test('allows scalar m2o field reads when the related collection is excluded', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const schemaWithExcludedRelation = {
+		...schemaRelational,
+		collections: {
+			articles: schemaRelational.collections['articles']!,
+		},
+	};
+
+	const result = await parseFields(
+		{ accountability, fields: ['author'], parentCollection: 'articles', query: {} },
+		{ knex: db, schema: schemaWithExcludedRelation as typeof schemaRelational },
+	);
+
+	expect(result).toEqual([
+		{
+			alias: false,
+			fieldKey: 'author',
+			name: 'author',
+			type: 'field',
+			whenCase: [],
+		},
+	]);
+});
+
 test('parse fields with o2m relation', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 

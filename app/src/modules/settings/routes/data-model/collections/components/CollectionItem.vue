@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { orderBy } from 'lodash';
 import { computed } from 'vue';
 import Draggable from 'vuedraggable';
 import { CollectionTree } from '../collections.vue';
@@ -9,6 +10,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import { Collection } from '@/types/collections';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 
 const props = defineProps<{
 	collection: Collection;
@@ -18,15 +20,25 @@ const props = defineProps<{
 	disableDrag?: boolean;
 }>();
 
-const emit = defineEmits(['setNestedSort', 'editCollection', 'toggleCollapse']);
+const emit = defineEmits([
+	'setNestedSort',
+	'editCollection',
+	'toggleCollapse',
+	'excludeCollection',
+	'includeCollection',
+]);
+
+const isExcluded = computed(() => isExcludedCollection(props.collection));
 
 const toggleCollapse = () => {
 	emit('toggleCollapse', props.collection.collection);
 };
 
-const nestedCollections = computed(() =>
-	props.collections.filter((collection) => collection.meta?.group === props.collection.collection),
-);
+const nestedCollections = computed(() => {
+	const nested = props.collections.filter((collection) => collection.meta?.group === props.collection.collection);
+
+	return orderBy(nested, [(collection) => (isExcludedCollection(collection) ? 1 : 0), 'meta.sort', 'collection']);
+});
 
 function onGroupSortChange(collections: Collection[]) {
 	const updates = collections.map((collection) => ({
@@ -38,28 +50,43 @@ function onGroupSortChange(collections: Collection[]) {
 
 	emit('setNestedSort', updates);
 }
+
+function onListItemClick() {
+	if (isExcluded.value) {
+		emit('includeCollection', props.collection.collection);
+		return;
+	}
+
+	if (!props.collection.schema) {
+		emit('editCollection', props.collection);
+	}
+}
 </script>
 
 <template>
 	<div v-show="visibilityTree.visible" class="collection-item">
 		<VListItem
+			v-tooltip="isExcluded ? $t('excluded_click_to_include') : undefined"
 			block
 			dense
 			clickable
-			:class="{ hidden: collection.meta?.hidden }"
-			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
-			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
+			:class="{ hidden: collection.meta?.hidden, excluded: isExcluded }"
+			:to="collection.schema && !isExcluded ? `/settings/data-model/${collection.collection}` : undefined"
+			@click="onListItemClick"
 		>
 			<VListItemIcon>
-				<VIcon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
+				<VIcon v-if="isExcluded" name="add" />
+				<VIcon v-else-if="!disableDrag" class="drag-handle" name="drag_handle" />
 			</VListItemIcon>
 			<div class="collection-item-detail">
 				<VIcon
 					:color="
-						collection.meta?.hidden ? 'var(--theme--foreground-subdued)' : (collection.color ?? 'var(--theme--primary)')
+						collection.meta?.hidden || isExcluded
+							? 'var(--theme--foreground-subdued)'
+							: (collection.color ?? 'var(--theme--primary)')
 					"
 					class="collection-icon"
-					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
+					:name="isExcluded ? 'diamond' : collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
 				<VHighlight
 					ref="collectionName"
@@ -82,6 +109,8 @@ function onGroupSortChange(collections: Collection[]) {
 				:has-nested-collections="nestedCollections.length > 0"
 				:collection="collection"
 				@collection-toggle="toggleCollapse"
+				@exclude-collection="$emit('excludeCollection', $event)"
+				@include-collection="$emit('includeCollection', $event)"
 			/>
 		</VListItem>
 
@@ -106,6 +135,8 @@ function onGroupSortChange(collections: Collection[]) {
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
 						@toggle-collapse="$emit('toggleCollapse', $event)"
+						@exclude-collection="$emit('excludeCollection', $event)"
+						@include-collection="$emit('includeCollection', $event)"
 					/>
 				</template>
 			</Draggable>
@@ -123,6 +154,11 @@ function onGroupSortChange(collections: Collection[]) {
 	margin-block-end: 0.4375rem;
 }
 
+.hidden,
+.excluded {
+	--v-list-item-color: var(--theme--foreground-subdued);
+}
+
 .collection-item-detail {
 	display: flex;
 	flex-grow: 1;
@@ -137,7 +173,8 @@ function onGroupSortChange(collections: Collection[]) {
 	flex-shrink: 0;
 }
 
-.hidden .collection-name {
+.hidden .collection-name,
+.excluded .collection-name {
 	color: var(--theme--foreground-subdued);
 }
 

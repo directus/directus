@@ -27,8 +27,10 @@ const search = ref('');
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 
+const navigableCollections = computed(() => collectionsStore.activeCollections);
+
 const rootItems = computed(() => {
-	const shownCollections = showHidden.value ? collectionsStore.allCollections : collectionsStore.visibleCollections;
+	const shownCollections = showHidden.value ? navigableCollections.value : collectionsStore.visibleCollections;
 	return orderBy(
 		shownCollections.filter((collection) => {
 			return isNil(collection?.meta?.group);
@@ -41,7 +43,7 @@ const dense = computed(() => collectionsStore.visibleCollections.length > 5);
 const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
 
 const hasHiddenCollections = computed(
-	() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length,
+	() => navigableCollections.value.length > collectionsStore.visibleCollections.length,
 );
 </script>
 
@@ -62,7 +64,7 @@ const hasHiddenCollections = computed(
 			:dense="dense"
 		>
 			<VButton
-				v-if="userStore.isAdmin && collectionsStore.allCollections.length === 0"
+				v-if="userStore.isAdmin && navigableCollections.length === 0"
 				full-width
 				outlined
 				dashed

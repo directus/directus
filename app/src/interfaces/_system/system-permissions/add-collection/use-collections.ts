@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 
 export interface UseCollectionsOptions {
 	excludeCollections: MaybeRefOrGetter<string[]>;
@@ -14,7 +15,9 @@ export const useCollections = (options: UseCollectionsOptions) => {
 
 	const availableCollections = computed(() => {
 		return orderBy(
-			collectionsStore.databaseCollections.filter((collection) => collection.meta).map(disableSelectedCollection),
+			collectionsStore.databaseCollections
+				.filter((collection) => collection.meta && !isExcludedCollection(collection))
+				.map(disableSelectedCollection),
 			['collection'],
 		);
 	});

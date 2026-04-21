@@ -1,3 +1,4 @@
+import { isSystemCollection } from '@directus/system-data';
 import { getEndpoint } from '@directus/utils';
 import { merge } from 'lodash';
 import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
@@ -27,6 +28,18 @@ export function useRelationSingle<T extends Record<string, any>>(
 	watch(
 		[value, previewQuery, relation, enabled],
 		() => {
+			const relationCollection = relation.value?.relatedCollection;
+
+			const isInactiveRelationCollection =
+				relationCollection &&
+				!isSystemCollection(relationCollection.collection) &&
+				(!relationCollection.meta || relationCollection.meta.excluded === true);
+
+			if (isInactiveRelationCollection) {
+				displayItem.value = null;
+				return;
+			}
+
 			if (enabled.value) getDisplayItem();
 		},
 		{ immediate: true },

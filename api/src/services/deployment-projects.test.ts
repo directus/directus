@@ -61,6 +61,7 @@ describe('DeploymentProjectsService', () => {
 			});
 
 			tracker.on.select('directus_deployments').response([vercelConfig]);
+			tracker.on.select('directus_collections').response([]);
 		});
 
 		it('should skip validation when projectsToCreate is empty', async () => {

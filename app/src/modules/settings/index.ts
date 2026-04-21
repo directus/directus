@@ -31,6 +31,7 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
+import { useRelationsStore } from '@/stores/relations';
 import RouterPass from '@/utils/router-passthrough';
 
 export default defineModule({
@@ -89,6 +90,8 @@ export default defineModule({
 					component: Fields,
 					async beforeEnter(to) {
 						const collectionsStore = useCollectionsStore();
+						const fieldsStore = useFieldsStore();
+						const relationsStore = useRelationsStore();
 						const info = collectionsStore.getCollection(to.params.collection as string);
 
 						if (!info) {
@@ -100,10 +103,10 @@ export default defineModule({
 
 						if (!info?.meta) {
 							await api.patch(`/collections/${to.params.collection}`, { meta: {} });
+							await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), relationsStore.hydrate()]);
+						} else {
+							await Promise.all([fieldsStore.hydrate(), relationsStore.hydrate()]);
 						}
-
-						const fieldsStore = useFieldsStore();
-						fieldsStore.hydrate();
 					},
 					props: (route) => ({
 						collection: route.params.collection,

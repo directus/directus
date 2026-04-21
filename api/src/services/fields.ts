@@ -222,10 +222,10 @@ export class FieldsService {
 			return data;
 		}) as Field[];
 
-		const knownCollections = Object.keys(this.schema.collections);
+		const knownCollections = new Set(columns.map((column) => column.table));
 
 		let result = [...columnsWithSystem, ...aliasFieldsAsField].filter((field) =>
-			knownCollections.includes(field.collection),
+			knownCollections.has(field.collection),
 		);
 
 		// Filter the result so we only return the fields you have read access to

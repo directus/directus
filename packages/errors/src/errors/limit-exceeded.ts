@@ -2,6 +2,7 @@ import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.
 
 export interface LimitExceededErrorExtensions {
 	category: string;
+	limit_type?: 'license';
 }
 
 export const messageConstructor = ({ category }: LimitExceededErrorExtensions) => {

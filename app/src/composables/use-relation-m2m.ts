@@ -50,16 +50,33 @@ export function useRelationM2M(collection: Ref<string>, field: Ref<string>) {
 		);
 
 		if (!relation) return undefined;
+		const relatedCollection = collectionsStore.getCollection(relation.related_collection as string);
+		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection as string);
+		const junctionCollection = collectionsStore.getCollection(junction.collection);
+		const junctionPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(junction.collection);
+		const junctionField = fieldsStore.getField(junction.collection, junction.meta?.junction_field as string);
+		const reverseJunctionField = fieldsStore.getField(junction.collection, relation.meta?.junction_field as string);
+
+		if (
+			!relatedCollection ||
+			!relatedPrimaryKeyField ||
+			!junctionCollection ||
+			!junctionPrimaryKeyField ||
+			!junctionField ||
+			!reverseJunctionField
+		) {
+			return undefined;
+		}
 
 		return {
 			relation: relation,
-			relatedCollection: collectionsStore.getCollection(relation.related_collection as string),
-			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection as string),
+			relatedCollection,
+			relatedPrimaryKeyField,
 			sortField: junction.meta?.sort_field ?? undefined,
-			junctionCollection: collectionsStore.getCollection(junction.collection),
-			junctionPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(junction.collection),
-			junctionField: fieldsStore.getField(junction.collection, junction.meta?.junction_field as string),
-			reverseJunctionField: fieldsStore.getField(junction.collection, relation.meta?.junction_field as string),
+			junctionCollection,
+			junctionPrimaryKeyField,
+			junctionField,
+			reverseJunctionField,
 			junction: junction,
 			type: 'm2m',
 		} as RelationM2M;

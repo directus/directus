@@ -27,6 +27,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getFunctions, getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+import { createCollectionForbiddenError } from '../permissions/modules/process-ast/utils/validate-path/create-error.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { getSecret } from '../utils/get-secret.js';
@@ -600,7 +601,13 @@ export class PayloadService {
 				nested: [...this.nested, relation.field],
 			});
 
-			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
+			const relatedCollectionSchema = this.schema.collections[relatedCollection];
+
+			if (!relatedCollectionSchema) {
+				throw createCollectionForbiddenError(relation.field, relatedCollection);
+			}
+
+			const relatedPrimaryKeyField = relatedCollectionSchema.primary;
 			const relatedRecord: Partial<Item> = payload[relation.field];
 
 			if (['string', 'number'].includes(typeof relatedRecord)) continue;
@@ -690,7 +697,14 @@ export class PayloadService {
 		for (const relation of relationsToProcess) {
 			// If no "one collection" exists, this is a A2O, not a M2O
 			if (!relation.related_collection) continue;
-			const relatedPrimaryKeyField = this.schema.collections[relation.related_collection]!.primary;
+
+			const relatedCollectionSchema = this.schema.collections[relation.related_collection];
+
+			if (!relatedCollectionSchema) {
+				throw createCollectionForbiddenError(relation.field, relation.related_collection);
+			}
+
+			const relatedPrimaryKeyField = relatedCollectionSchema.primary;
 
 			const { getService } = await import('../utils/get-service.js');
 
@@ -793,7 +807,13 @@ export class PayloadService {
 			if (!relation.meta) continue;
 
 			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!]!.primary;
-			const relatedPrimaryKeyField = this.schema.collections[relation.collection]!.primary;
+			const relatedCollectionSchema = this.schema.collections[relation.collection];
+
+			if (!relatedCollectionSchema) {
+				throw createCollectionForbiddenError(relation.meta.one_field ?? relation.field, relation.collection);
+			}
+
+			const relatedPrimaryKeyField = relatedCollectionSchema.primary;
 
 			const { getService } = await import('../utils/get-service.js');
 

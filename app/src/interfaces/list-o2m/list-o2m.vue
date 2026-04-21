@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isSystemCollection } from '@directus/system-data';
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil } from 'lodash';
@@ -27,6 +28,7 @@ import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -79,6 +81,21 @@ const { t, n } = useI18n();
 const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
+
+const hasInactiveRelatedCollection = computed(() => {
+	const relatedCollection = relationInfo.value?.relatedCollection;
+
+	return (
+		!!relatedCollection &&
+		!isSystemCollection(relatedCollection.collection) &&
+		(!relatedCollection.meta || isExcludedCollection(relatedCollection))
+	);
+});
+
+const activeRelationInfo = computed(() => {
+	if (hasInactiveRelatedCollection.value) return undefined;
+	return relationInfo.value;
+});
 
 const { getWidth, updateWidths } = useColumnWidths(
 	() => `directus-o2m-column-widths-${collection.value}-${field.value}`,
@@ -167,9 +184,9 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
+} = useRelationMultiple(value, query, activeRelationInfo, primaryKey, version);
 
-const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
+const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(activeRelationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -451,6 +468,9 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 <template>
 	<VNotice v-if="!relationInfo" type="warning">
 		{{ $t('relationship_not_setup') }}
+	</VNotice>
+	<VNotice v-else-if="hasInactiveRelatedCollection" type="warning">
+		{{ $t('no_active_related_collection') }}
 	</VNotice>
 	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}

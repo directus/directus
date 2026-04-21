@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isSystemCollection } from '@directus/system-data';
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
@@ -9,6 +10,7 @@ import { ChangesItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 import { parseFilter } from '@/utils/parse-filter';
 
 const props = withDefaults(
@@ -95,6 +97,16 @@ function map<T>(item: ChangesItem | undefined, fn: (v: Record<string, any> | str
 
 const { relationInfo } = useRelationO2M(collection, field);
 
+const hasInactiveRelatedCollection = computed(() => {
+	const relatedCollection = relationInfo.value?.relatedCollection;
+
+	return (
+		!!relatedCollection &&
+		!isSystemCollection(relatedCollection.collection) &&
+		(!relatedCollection.meta || isExcludedCollection(relatedCollection))
+	);
+});
+
 const template = computed(() => {
 	return (
 		props.displayTemplate ||
@@ -123,6 +135,9 @@ const menuActive = computed(() => addNewOpen.value || selectOpen.value);
 <template>
 	<VNotice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
 		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
+	</VNotice>
+	<VNotice v-else-if="hasInactiveRelatedCollection" type="warning">
+		{{ $t('no_active_related_collection') }}
 	</VNotice>
 	<VNotice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}

@@ -23,7 +23,7 @@ const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.o
 
 const availableCollections = computed(() => {
 	return [
-		...collectionsStore.databaseCollections.filter((collection) => collection.meta),
+		...collectionsStore.configuredDatabaseCollections,
 		{
 			divider: true,
 		},

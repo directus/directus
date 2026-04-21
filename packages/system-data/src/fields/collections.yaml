@@ -49,6 +49,14 @@ fields:
       label: $t:field_options.directus_collections.hidden_label
     width: half
 
+  - field: excluded
+    special:
+      - cast-boolean
+    interface: boolean
+    options:
+      label: $t:field_options.directus_collections.excluded_label
+    width: half
+
   - field: singleton
     special:
       - cast-boolean

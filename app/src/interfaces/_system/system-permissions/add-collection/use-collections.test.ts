@@ -69,6 +69,19 @@ describe('useCollections', () => {
 			expect(products?.disabled).toBe(true);
 			expect(categories?.disabled).toBe(false);
 		});
+
+		it('omits collections that are license-excluded', () => {
+			const collectionsStore = useCollectionsStore();
+
+			collectionsStore.collections = [
+				makeCollection('articles'),
+				{ ...makeCollection('products'), meta: { excluded: true } },
+			];
+
+			const { availableCollections } = useCollections({ excludeCollections: [] });
+
+			expect(availableCollections.value.map((c) => c.collection)).toEqual(['articles']);
+		});
 	});
 
 	describe('systemCollections', () => {

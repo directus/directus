@@ -31,11 +31,15 @@ export function useRelationM2O(collection: Ref<string>, field: Ref<string>) {
 		if (relations.length === 0) return undefined;
 
 		const relation = relations[0] as Relation;
+		const relatedCollection = collectionsStore.getCollection(relation.related_collection);
+		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
+
+		if (!relatedCollection || !relatedPrimaryKeyField) return undefined;
 
 		return {
 			relation,
-			relatedCollection: collectionsStore.getCollection(relation.related_collection),
-			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection),
+			relatedCollection,
+			relatedPrimaryKeyField,
 			type: 'm2o',
 		} as RelationM2O;
 	});

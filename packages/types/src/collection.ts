@@ -11,6 +11,7 @@ type Translations = {
 export type CollectionMeta = {
 	collection: string;
 	note: string | null;
+	excluded: boolean;
 	hidden: boolean;
 	singleton: boolean;
 	icon: string | null;
@@ -51,6 +52,7 @@ export type BaseCollectionMeta = Pick<
 	CollectionMeta,
 	| 'collection'
 	| 'note'
+	| 'excluded'
 	| 'hidden'
 	| 'singleton'
 	| 'icon'

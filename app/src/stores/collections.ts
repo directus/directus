@@ -13,6 +13,7 @@ import { i18n } from '@/lang';
 import { Collection } from '@/types/collections';
 import { flattenGroupedCollections } from '@/utils/flatten-grouped-collections';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -49,16 +50,30 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	const configuredCollections = computed(() => allCollections.value.filter((collection) => collection.meta));
 
 	/**
-	 * All non-system collections that are configured and visible (not hidden)
+	 * All non-system collections that are configured and included in Directus
+	 */
+	const activeCollections = computed(() =>
+		configuredCollections.value.filter((collection) => !isExcludedCollection(collection)),
+	);
+
+	/**
+	 * All non-system collections that are configured, included, and visible (not hidden)
 	 */
 	const visibleCollections = computed(() =>
-		configuredCollections.value.filter((collection) => collection.meta?.hidden !== true),
+		activeCollections.value.filter((collection) => collection.meta?.hidden !== true),
 	);
 
 	/**
 	 * All non-system collections that are configured and have a corresponding database table
 	 */
 	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
+
+	/**
+	 * All non-system collections that are configured and have a corresponding database table
+	 */
+	const configuredDatabaseCollections = computed(() =>
+		databaseCollections.value.filter((collection) => collection.meta),
+	);
 
 	/**
 	 * All system collections that are safe to CRUD
@@ -71,9 +86,11 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		collections,
 		sortedCollections,
 		allCollections,
+		activeCollections,
 		visibleCollections,
 		configuredCollections,
 		databaseCollections,
+		configuredDatabaseCollections,
 		systemCollections,
 		crudSafeSystemCollections,
 		hydrate,

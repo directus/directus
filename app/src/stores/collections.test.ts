@@ -83,3 +83,37 @@ test('parseField action should translate field name when all translations are re
 	expect(collectionsStore.collections[0].name).toEqual('A');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(false);
 });
+
+test('configuredDatabaseCollections includes excluded configured database collections, but excludes db-only and folder entries', () => {
+	const collectionsStore = useCollectionsStore();
+
+	collectionsStore.collections = [
+		{
+			collection: 'active_collection',
+			meta: {},
+			schema: {},
+		},
+		{
+			collection: 'excluded_collection',
+			meta: {
+				excluded: true,
+			},
+			schema: {},
+		},
+		{
+			collection: 'db_only_collection',
+			meta: null,
+			schema: {},
+		},
+		{
+			collection: 'folder_collection',
+			meta: {},
+			schema: null,
+		},
+	] as Collection[];
+
+	expect(collectionsStore.configuredDatabaseCollections.map((collection) => collection.collection)).toEqual([
+		'active_collection',
+		'excluded_collection',
+	]);
+});

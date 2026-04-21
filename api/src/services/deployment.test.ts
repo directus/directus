@@ -12,6 +12,8 @@ const {
 	mockListProjects,
 	mockGetProject,
 	mockGetCacheValueWithTTL,
+	mockLocalSchemaCacheGet,
+	mockLocalSchemaCacheSet,
 	mockSetCacheValueWithExpiry,
 	mockLoggerDebug,
 	mockLoggerError,
@@ -20,6 +22,8 @@ const {
 	mockListProjects: vi.fn(),
 	mockGetProject: vi.fn(),
 	mockGetCacheValueWithTTL: vi.fn(),
+	mockLocalSchemaCacheGet: vi.fn(),
+	mockLocalSchemaCacheSet: vi.fn(),
 	mockSetCacheValueWithExpiry: vi.fn(),
 	mockLoggerDebug: vi.fn(),
 	mockLoggerError: vi.fn(),
@@ -34,7 +38,13 @@ vi.mock('../deployment.js', () => ({
 }));
 
 vi.mock('../cache.js', () => ({
-	getCache: vi.fn(() => ({ deploymentCache: {} })),
+	getCache: vi.fn(() => ({
+		deploymentCache: {},
+		localSchemaCache: {
+			get: mockLocalSchemaCacheGet,
+			set: mockLocalSchemaCacheSet,
+		},
+	})),
 	getCacheValueWithTTL: mockGetCacheValueWithTTL,
 	setCacheValueWithExpiry: mockSetCacheValueWithExpiry,
 }));
@@ -210,6 +220,8 @@ describe('DeploymentService', () => {
 			superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(1);
 			vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue(existingConfig);
 			mockTestConnection.mockResolvedValue(undefined);
+			mockLocalSchemaCacheGet.mockResolvedValue([]);
+			mockLocalSchemaCacheSet.mockResolvedValue(undefined);
 
 			// Mock DB query for readConfig (internal readByQuery)
 			tracker.on.select('directus_deployments').response([existingConfig]);

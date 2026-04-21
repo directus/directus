@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
+import { createCollectionForbiddenError } from '../../../permissions/modules/process-ast/utils/validate-path/create-error.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
@@ -244,6 +245,12 @@ export async function parseFields(
 			};
 
 			for (const relatedCollection of allowedCollections) {
+				const relatedCollectionSchema = context.schema.collections[relatedCollection];
+
+				if (!relatedCollectionSchema) {
+					throw createCollectionForbiddenError(fieldKey, relatedCollection);
+				}
+
 				child.children[relatedCollection] = await parseFields(
 					{
 						parentCollection: relatedCollection,
@@ -262,6 +269,12 @@ export async function parseFields(
 				child.relatedKey[relatedCollection] = context.schema.collections[relatedCollection]!.primary;
 			}
 		} else if (relatedCollection) {
+			const relatedCollectionSchema = context.schema.collections[relatedCollection];
+
+			if (!relatedCollectionSchema) {
+				throw createCollectionForbiddenError(fieldKey, relatedCollection);
+			}
+
 			if (options.accountability && options.accountability.admin === false && policies) {
 				const permissions = await fetchPermissions(
 					{
@@ -292,7 +305,7 @@ export async function parseFields(
 				name: relatedCollection,
 				fieldKey: fieldKey,
 				parentKey: context.schema.collections[options.parentCollection]!.primary,
-				relatedKey: context.schema.collections[relatedCollection]!.primary,
+				relatedKey: relatedCollectionSchema.primary,
 				relation: relation,
 				query: getDeepQuery(options.deep?.[fieldKey] || {}),
 				children: await parseFields(

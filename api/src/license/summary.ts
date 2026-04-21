@@ -1,4 +1,5 @@
 import { isSystemCollection } from '@directus/system-data';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { fetchUserCount, getUserSeatsCount } from '../utils/fetch-user-count/fetch-user-count.js';
@@ -150,7 +151,11 @@ function getSeatLimit(entitlements: LicenseEntitlements): number | null {
 	return entitlements.seats.limit;
 }
 
-async function countActiveCollections(knex: Knex): Promise<number> {
-	const collections = await knex('directus_collections').select('collection');
-	return collections.filter(({ collection }) => !isSystemCollection(collection)).length;
+export async function countActiveCollections(knex: Knex): Promise<number> {
+	const collections = (await knex('directus_collections').select('collection', 'excluded')) as {
+		collection: string;
+		excluded?: boolean | null;
+	}[];
+
+	return collections.filter(({ collection, excluded }) => !isSystemCollection(collection) && !toBoolean(excluded)).length;
 }

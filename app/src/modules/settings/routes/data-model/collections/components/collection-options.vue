@@ -21,6 +21,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
 import { getCollectionRoute } from '@/utils/get-route';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 
 type Props = {
 	collection: Collection;
@@ -28,6 +29,11 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {});
+
+const emit = defineEmits<{
+	excludeCollection: [collectionKey: string];
+	includeCollection: [collectionKey: string];
+}>();
 
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
@@ -80,13 +86,44 @@ async function update(updates: DeepPartial<Collection>) {
 </script>
 
 <template>
-	<div v-if="isSystemCollection(collection.collection) === false">
+	<div v-if="isSystemCollection(collection.collection) === false || isExcludedCollection(collection)">
 		<VMenu placement="left-start" show-arrow>
 			<template #activator="{ toggle }">
-				<VIcon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
+				<VIcon name="more_vert" clickable class="ctx-toggle" @click.stop.prevent="toggle" />
 			</template>
 			<VList>
-				<VListItem v-if="collection.schema" clickable :to="getCollectionRoute(collection.collection)">
+				<VListItem
+					v-if="collection.schema && !isExcludedCollection(collection) && !isSystemCollection(collection.collection)"
+					clickable
+					class="warning"
+					@click="emit('excludeCollection', collection.collection)"
+				>
+					<VListItemIcon>
+						<VIcon name="remove_circle_outline" />
+					</VListItemIcon>
+					<VListItemContent>
+						{{ $t('exclude_collection') }}
+					</VListItemContent>
+				</VListItem>
+
+				<VListItem
+					v-if="isExcludedCollection(collection)"
+					clickable
+					@click="emit('includeCollection', collection.collection)"
+				>
+					<VListItemIcon>
+						<VIcon name="add" />
+					</VListItemIcon>
+					<VListItemContent>
+						{{ $t('include_collection') }}
+					</VListItemContent>
+				</VListItem>
+
+				<VListItem
+					v-if="collection.meta && !isExcludedCollection(collection)"
+					clickable
+					:to="getCollectionRoute(collection.collection)"
+				>
 					<VListItemIcon>
 						<VIcon name="box" />
 					</VListItemIcon>
@@ -218,7 +255,10 @@ async function update(updates: DeepPartial<Collection>) {
 .v-list-item.warning {
 	--v-list-item-color: var(--theme--warning);
 	--v-list-item-color-hover: var(--theme--warning);
+	--v-list-item-color-active: var(--theme--warning);
+	--v-list-item-color-active-hover: var(--theme--warning);
 	--v-list-item-icon-color: var(--theme--warning);
+	--v-list-item-icon-color-active: var(--theme--warning);
 }
 
 .delete-dependencies {

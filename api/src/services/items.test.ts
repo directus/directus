@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
@@ -71,11 +72,14 @@ describe('Integration Tests', () => {
 			test('on readSingleton', async () => {
 				vi.mocked(handleVersion).mockReturnValueOnce(new Promise((resolve) => resolve([{ id: 1 }])));
 
-				vi.spyOn(db, 'select').mockReturnValueOnce({
-					from: () => ({
-						first: async () => ({ id: 1 }),
-					}),
-				} as any);
+				vi.spyOn(db, 'select').mockImplementationOnce(
+					() =>
+						({
+							from: () => ({
+								first: async () => ({ id: 1 }),
+							}),
+						}) as any,
+				);
 
 				await service.readSingleton({ version: 'test' });
 
@@ -102,6 +106,15 @@ describe('Integration Tests', () => {
 		});
 
 		describe('createOne', () => {
+			it('should throw ForbiddenError for collections that are not in the runtime schema', async () => {
+				const dbOnlyService = new ItemsService('db_only', {
+					knex: db,
+					schema,
+				});
+
+				await expect(dbOnlyService.createOne({})).rejects.toThrow(ForbiddenError);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.createOne({}, { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -156,6 +169,15 @@ describe('Integration Tests', () => {
 		});
 
 		describe('createMany', () => {
+			it('should throw ForbiddenError for collections that are not in the runtime schema', async () => {
+				const dbOnlyService = new ItemsService('db_only', {
+					knex: db,
+					schema,
+				});
+
+				await expect(dbOnlyService.createMany([{}])).rejects.toThrow(ForbiddenError);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.createMany([{}], { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -164,6 +186,15 @@ describe('Integration Tests', () => {
 		});
 
 		describe('updateBatch', () => {
+			it('should throw ForbiddenError for collections that are not in the runtime schema', async () => {
+				const dbOnlyService = new ItemsService('db_only', {
+					knex: db,
+					schema,
+				});
+
+				await expect(dbOnlyService.updateBatch([{ id: 1 }])).rejects.toThrow(ForbiddenError);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.updateBatch([{ id: 1 }], { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -172,6 +203,15 @@ describe('Integration Tests', () => {
 		});
 
 		describe('updateMany', () => {
+			it('should throw ForbiddenError for collections that are not in the runtime schema', async () => {
+				const dbOnlyService = new ItemsService('db_only', {
+					knex: db,
+					schema,
+				});
+
+				await expect(dbOnlyService.updateMany([1], {})).rejects.toThrow(ForbiddenError);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.updateMany([1], {}, { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -180,6 +220,15 @@ describe('Integration Tests', () => {
 		});
 
 		describe('deleteMany', () => {
+			it('should throw ForbiddenError for collections that are not in the runtime schema', async () => {
+				const dbOnlyService = new ItemsService('db_only', {
+					knex: db,
+					schema,
+				});
+
+				await expect(dbOnlyService.deleteMany([1])).rejects.toThrow(ForbiddenError);
+			});
+
 			it('should validate user count if requested', async () => {
 				await service.deleteMany([1], { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 

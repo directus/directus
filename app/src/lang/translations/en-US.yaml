@@ -791,6 +791,7 @@ no_collections_copy_admin: You don’t have any Collections yet. Click the butto
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
 relationship_not_setup: The relationship is not configured properly or you don't have permission to access it
 no_singleton_relations: Relationships to Singletons are not supported
+no_active_related_collection: No active related collection is available.
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
@@ -928,6 +929,9 @@ all_users: All Users
 delete_collection: Delete Collection
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
+exclude_collection: Exclude Collection
+excluded_click_to_include: 'Excluded: Click to Include'
+include_collection: Include Collection
 make_collection_visible: Make Collection Visible
 make_collection_hidden: Make Collection Hidden
 make_folder_visible: Make Folder Visible
@@ -1406,6 +1410,9 @@ license:
   manage_addon: Manage
   purchase: Purchase
   addon_packages: Add-on Packages
+  limit_dialog:
+    title: You have reached the max limit allowed for your plan.
+    text: Update your plan to increase your limits.
   addon_dialog:
     title: Manage Add-on
     confirm_purchase: Confirm Purchase
@@ -1827,6 +1834,7 @@ field_options:
       "Override the collection's display name in the app based on the user's language."
     note_placeholder: A description of this collection...
     hidden_label: Hide within the App
+    excluded_label: Exclude from usage
     singleton: Treat as single object
     language: Language
     translation: Translation

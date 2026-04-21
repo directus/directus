@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import type { DirectusError } from '@directus/sdk';
 import { render } from 'micromustache';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import type { RequestError } from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -14,11 +17,14 @@ import { DEFAULT_REPORT_BUG_URL } from '@/constants';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
+import type { APIError } from '@/types/error';
 import { Snackbar } from '@/types/notifications';
 
 const notificationsStore = useNotificationsStore();
 const { isAdmin, currentUser } = useUserStore();
 const { settings } = storeToRefs(useSettingsStore());
+const { t } = useI18n();
+const router = useRouter();
 
 const notifications = computed(() => notificationsStore.dialogs);
 
@@ -76,20 +82,59 @@ const done = async (notification: Snackbar) => {
 
 	notificationsStore.remove(notification.id);
 };
+
+function isLicenseLimitNotification(notification: Snackbar) {
+	if (isAdmin !== true) return false;
+	if (notification.code !== 'LIMIT_EXCEEDED') return false;
+
+	const extensions =
+		(notification.error as RequestError | undefined)?.response?.data?.errors?.[0]?.extensions ||
+		(notification.error as DirectusError | undefined)?.errors?.[0]?.extensions ||
+		(notification.error as APIError | undefined)?.extensions;
+
+	return extensions?.limit_type === 'license';
+}
+
+function getNotificationTitle(notification: Snackbar) {
+	if (isLicenseLimitNotification(notification)) {
+		return t('license.limit_dialog.title');
+	}
+
+	return notification.title;
+}
+
+function getNotificationText(notification: Snackbar) {
+	if (isLicenseLimitNotification(notification)) {
+		return t('license.limit_dialog.text');
+	}
+
+	return notification.text;
+}
+
+async function managePlan(notification: Snackbar) {
+	notificationsStore.remove(notification.id);
+	await router.push('/settings/license');
+}
 </script>
 
 <template>
 	<div class="notification-dialogs">
 		<VDialog v-for="notification in notifications" :key="notification.id" model-value persist>
 			<VCard :class="[notification.type]">
-				<VCardTitle>{{ notification.title }}</VCardTitle>
-				<VCardText v-if="notification.text || notification.error" class="notification-text">
-					{{ notification.text }}
+				<VCardTitle>{{ getNotificationTitle(notification) }}</VCardTitle>
+				<VCardText
+					v-if="getNotificationText(notification) || (notification.error && !isLicenseLimitNotification(notification))"
+					class="notification-text"
+				>
+					{{ getNotificationText(notification) }}
 
-					<VError v-if="notification.error" :error="notification.error" />
+					<VError v-if="notification.error && !isLicenseLimitNotification(notification)" :error="notification.error" />
 				</VCardText>
 				<VCardActions>
-					<VButton v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
+					<VButton v-if="isLicenseLimitNotification(notification)" secondary @click="managePlan(notification)">
+						{{ $t('license.manage_plan') }}
+					</VButton>
+					<VButton v-else-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
 						<a target="_blank" :href="getErrorUrl(notification.error)">
 							{{ $t('report_error') }}
 						</a>

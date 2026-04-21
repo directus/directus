@@ -2,11 +2,12 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { type BaseCollectionMeta, systemCollectionRows } from '@directus/system-data';
+import { isSystemCollection, systemCollectionRows } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	BaseCollectionMeta,
 	FieldMeta,
 	FieldMutationOptions,
 	MutationOptions,
@@ -14,7 +15,7 @@ import type {
 	RawField,
 	SchemaOverview,
 } from '@directus/types';
-import { addFieldFlag } from '@directus/utils';
+import { addFieldFlag, toBoolean } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { chunk, groupBy, merge, omit } from 'lodash-es';
@@ -24,6 +25,8 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { validateNumericEntitlementLimit } from '../license/numeric-gate.js';
+import { countActiveCollections, getLicenseEntitlements } from '../license/summary.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { Collection } from '../types/index.js';
@@ -61,6 +64,14 @@ export class CollectionsService {
 	 * Create a single new collection
 	 */
 	async createOne(payload: RawCollection, opts?: FieldMutationOptions): Promise<string> {
+		return this._createOne(payload, opts);
+	}
+
+	private async _createOne(
+		payload: RawCollection,
+		opts?: FieldMutationOptions,
+		skipCollectionLimitCheck = false,
+	): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -88,6 +99,10 @@ export class CollectionsService {
 
 			if (existingCollections.includes(payload.collection)) {
 				throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
+			}
+
+			if (skipCollectionLimitCheck === false && !toBoolean(payload.meta?.excluded)) {
+				await this.validateCollectionLimit(1);
 			}
 
 			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
@@ -262,6 +277,15 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
+			const collectionsToAdd = payloads.reduce(
+				(count, payload) => count + (toBoolean(payload.meta?.excluded) ? 0 : 1),
+				0,
+			);
+
+			if (collectionsToAdd > 0) {
+				await this.validateCollectionLimit(collectionsToAdd);
+			}
+
 			const collections = await transaction(this.knex, async (trx) => {
 				const service = new CollectionsService({
 					schema: this.schema,
@@ -272,12 +296,16 @@ export class CollectionsService {
 				const collectionNames: string[] = [];
 
 				for (const payload of payloads) {
-					const name = await service.createOne(payload, {
-						autoPurgeCache: false,
-						autoPurgeSystemCache: false,
-						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
-					});
+					const name = await service._createOne(
+						payload,
+						{
+							autoPurgeCache: false,
+							autoPurgeSystemCache: false,
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+						},
+						true,
+					);
 
 					collectionNames.push(name);
 				}
@@ -438,6 +466,15 @@ export class CollectionsService {
 	 * Update a single collection by name
 	 */
 	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
+		return this._updateOne(collectionKey, data, opts);
+	}
+
+	private async _updateOne(
+		collectionKey: string,
+		data: Partial<Collection>,
+		opts?: MutationOptions,
+		skipCollectionLimitCheck = false,
+	): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -451,27 +488,39 @@ export class CollectionsService {
 				schema: this.schema,
 			});
 
+			const collectionExclusions = await this.fetchCollectionExclusions(collectionsItemsService, [collectionKey]);
+
 			const payload = data as Partial<Collection>;
 
 			if (!payload.meta) {
 				return collectionKey;
 			}
 
-			const exists = !!(await this.knex
-				.select('collection')
-				.from('directus_collections')
-				.where({ collection: collectionKey })
-				.first());
+			const meta = this.sanitizeCollectionMeta(collectionKey, payload.meta);
+
+			if (!meta) {
+				return collectionKey;
+			}
+
+			if (skipCollectionLimitCheck === false) {
+				const collectionCountChange = this.calculateCollectionCountChange(collectionExclusions, collectionKey, meta);
+
+				if (collectionCountChange > 0) {
+					await this.validateCollectionLimit(collectionCountChange);
+				}
+			}
+
+			const exists = collectionExclusions.has(collectionKey);
 
 			if (exists) {
-				await collectionsItemsService.updateOne(collectionKey, payload.meta, {
+				await collectionsItemsService.updateOne(collectionKey, meta, {
 					...opts,
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 				});
 			} else {
 				await collectionsItemsService.createOne(
-					{ ...payload.meta, collection: collectionKey },
+					{ ...meta, collection: collectionKey },
 					{
 						...opts,
 						bypassEmitAction: (params) =>
@@ -517,6 +566,36 @@ export class CollectionsService {
 		const collectionKeys: string[] = [];
 		const nestedActionEvents: ActionEventParams[] = [];
 
+		for (const payload of data) {
+			if (!payload[collectionKey]) {
+				throw new InvalidPayloadError({ reason: `Collection in update misses collection key` });
+			}
+
+			collectionKeys.push(payload[collectionKey] as string);
+		}
+
+		this.validateCollectionKeysAreUnique(collectionKeys);
+
+		const collectionsItemsService = new ItemsService('directus_collections', {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const excludedCollections = await this.fetchCollectionExclusions(collectionsItemsService, collectionKeys);
+
+		let collectionCountChange = 0;
+
+		for (const payload of data) {
+			const collectionName = payload[collectionKey] as string;
+			const meta = this.sanitizeCollectionMeta(collectionName, payload.meta);
+			collectionCountChange += this.calculateCollectionCountChange(excludedCollections, collectionName, meta);
+		}
+
+		if (collectionCountChange > 0) {
+			await this.validateCollectionLimit(collectionCountChange);
+		}
+
 		try {
 			await transaction(this.knex, async (trx) => {
 				const collectionItemsService = new CollectionsService({
@@ -526,18 +605,19 @@ export class CollectionsService {
 				});
 
 				for (const payload of data) {
-					if (!payload[collectionKey]) {
-						throw new InvalidPayloadError({ reason: `Collection in update misses collection key` });
-					}
+					const collectionName = payload[collectionKey] as string;
 
-					await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
-						autoPurgeCache: false,
-						autoPurgeSystemCache: false,
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					});
-
-					collectionKeys.push(payload[collectionKey]);
+					await collectionItemsService._updateOne(
+						collectionName,
+						omit(payload, collectionKey),
+						{
+							autoPurgeCache: false,
+							autoPurgeSystemCache: false,
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						},
+						true,
+					);
 				}
 			});
 		} finally {
@@ -570,7 +650,28 @@ export class CollectionsService {
 			throw new ForbiddenError();
 		}
 
+		this.validateCollectionKeysAreUnique(collectionKeys);
+
 		const nestedActionEvents: ActionEventParams[] = [];
+
+		const collectionsItemsService = new ItemsService('directus_collections', {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const excludedCollections = await this.fetchCollectionExclusions(collectionsItemsService, collectionKeys);
+
+		let collectionCountChange = 0;
+
+		for (const collectionKey of collectionKeys) {
+			const meta = this.sanitizeCollectionMeta(collectionKey, data.meta);
+			collectionCountChange += this.calculateCollectionCountChange(excludedCollections, collectionKey, meta);
+		}
+
+		if (collectionCountChange > 0) {
+			await this.validateCollectionLimit(collectionCountChange);
+		}
 
 		try {
 			await transaction(this.knex, async (trx) => {
@@ -581,11 +682,16 @@ export class CollectionsService {
 				});
 
 				for (const collectionKey of collectionKeys) {
-					await service.updateOne(collectionKey, data, {
-						autoPurgeCache: false,
-						autoPurgeSystemCache: false,
-						bypassEmitAction: (params) => nestedActionEvents.push(params),
-					});
+					await service._updateOne(
+						collectionKey,
+						data,
+						{
+							autoPurgeCache: false,
+							autoPurgeSystemCache: false,
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+						},
+						true,
+					);
 				}
 			});
 
@@ -839,6 +945,91 @@ export class CollectionsService {
 					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
+		}
+	}
+
+	private async validateCollectionLimit(count: number): Promise<void> {
+		const entitlements = await getLicenseEntitlements();
+		const currentCollections = await countActiveCollections(this.knex);
+
+		validateNumericEntitlementLimit({
+			entitlement: entitlements.collections,
+			current: currentCollections,
+			delta: count,
+			category: 'Collections',
+			limit_type: 'license',
+		});
+	}
+
+	private calculateCollectionCountChange(
+		collectionExclusions: Map<string, boolean>,
+		collectionKey: string,
+		meta: Partial<Collection['meta']> | null | undefined,
+	): number {
+		if (!meta) return 0;
+		const hasMeta = collectionExclusions.has(collectionKey);
+		const excludedValue = meta.excluded;
+
+		if (hasMeta === false) {
+			return toBoolean(excludedValue) ? 0 : 1;
+		}
+
+		if (excludedValue === undefined) {
+			return 0;
+		}
+
+		const isExcluded = collectionExclusions.get(collectionKey) === true;
+
+		if (isExcluded && !toBoolean(excludedValue)) {
+			return 1;
+		}
+
+		if (isExcluded === false && toBoolean(excludedValue)) {
+			return -1;
+		}
+
+		return 0;
+	}
+
+	private sanitizeCollectionMeta(
+		collectionKey: string,
+		meta: Partial<Collection['meta']> | null | undefined,
+	): Partial<Collection['meta']> | null {
+		if (!meta) return null;
+
+		if (!isSystemCollection(collectionKey)) {
+			return meta;
+		}
+
+		const { excluded: _excluded, ...sanitizedMeta } = meta;
+		return Object.keys(sanitizedMeta).length > 0 ? sanitizedMeta : null;
+	}
+
+	private async fetchCollectionExclusions(
+		collectionsItemsService: ItemsService,
+		collectionKeys?: string[],
+	): Promise<Map<string, boolean>> {
+		if (collectionKeys?.length === 0) {
+			return new Map();
+		}
+
+		const query = {
+			fields: ['collection', 'excluded'],
+			limit: -1,
+			...(collectionKeys ? { filter: { collection: { _in: collectionKeys } } } : {}),
+		};
+
+		const metaRows = (await collectionsItemsService.readByQuery(query)) as Pick<
+			BaseCollectionMeta,
+			'collection' | 'excluded'
+		>[];
+
+		return new Map(metaRows.map(({ collection, excluded }) => [collection, toBoolean(excluded)]));
+	}
+
+	private validateCollectionKeysAreUnique(collectionKeys: string[]): void {
+		if (new Set(collectionKeys).size !== collectionKeys.length) {
+			throw new InvalidPayloadError({ reason: 'Collection updates must not contain duplicate collection keys' });
 		}
 	}
 }

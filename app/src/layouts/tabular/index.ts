@@ -16,6 +16,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
@@ -169,6 +170,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
 
+			const isAvailableDefaultField = (field: Field) => {
+				const fieldCollection = collection.value;
+
+				if (!fieldCollection) return false;
+
+				const localType = getLocalTypeForField(fieldCollection, field.field);
+
+				if (!localType || localType === 'standard' || localType === 'group' || localType === 'presentation') {
+					return true;
+				}
+
+				if (localType === 'm2o' || localType === 'file') {
+					return true;
+				}
+
+				return false;
+			};
+
 			const defaultSort = computed(() => {
 				const field = sortField.value ?? primaryKeyField.value?.field;
 				return field ? [field] : [];
@@ -178,7 +197,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fieldsDefaultValue = computed(() => {
 				return fieldsInCollection.value
-					.filter((field) => !field.meta?.hidden && !field.meta?.special?.includes('no-data'))
+					.filter(
+						(field) =>
+							!field.meta?.hidden && !field.meta?.special?.includes('no-data') && isAvailableDefaultField(field),
+					)
 					.slice(0, 4)
 					.map(({ field }) => field)
 					.sort();

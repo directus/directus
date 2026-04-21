@@ -34,12 +34,17 @@ export function useRelationO2M(collection: Ref<string>, field: Ref<string>) {
 		if (relations.length !== 1) return undefined;
 
 		const relation = relations[0] as Relation;
+		const relatedCollection = collectionsStore.getCollection(relation.collection);
+		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
+		const reverseJunctionField = fieldsStore.getField(relation.collection, relation.meta?.many_field);
+
+		if (!relatedCollection || !relatedPrimaryKeyField || !reverseJunctionField) return undefined;
 
 		return {
 			relation,
-			relatedCollection: collectionsStore.getCollection(relation.collection),
-			relatedPrimaryKeyField: fieldsStore.getPrimaryKeyFieldForCollection(relation.collection),
-			reverseJunctionField: fieldsStore.getField(relation.collection, relation.meta?.many_field),
+			relatedCollection,
+			relatedPrimaryKeyField,
+			reverseJunctionField,
 			sortField: relation.meta?.sort_field ?? undefined,
 			type: 'o2m',
 		} as RelationO2M;

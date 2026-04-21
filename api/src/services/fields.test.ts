@@ -237,6 +237,40 @@ describe('Integration Tests', () => {
 				expect(result.every((field) => field.collection === 'test_collection')).toBe(true);
 			});
 
+			test('should include fields for collections outside the runtime schema', async () => {
+				const mockColumns = [
+					{
+						table: 'excluded_collection',
+						name: 'id',
+						data_type: 'integer',
+						default_value: null,
+						is_nullable: false,
+					},
+					{
+						table: 'excluded_collection',
+						name: 'name',
+						data_type: 'varchar',
+						default_value: null,
+						is_nullable: true,
+					},
+				];
+
+				const service = new FieldsService({
+					knex: db,
+					schema,
+					accountability: { role: 'admin', admin: true } as Accountability,
+				});
+
+				service.schemaInspector.columnInfo = vi.fn().mockResolvedValue(mockColumns);
+
+				tracker.on.select('directus_fields').response([]);
+
+				const result = await service.readAll();
+
+				expect(result.some((field) => field.collection === 'excluded_collection' && field.field === 'id')).toBe(true);
+				expect(result.some((field) => field.collection === 'excluded_collection' && field.field === 'name')).toBe(true);
+			});
+
 			test('should throw ForbiddenError for non-admin users without access', async () => {
 				vi.mocked(fetchPermissions).mockResolvedValueOnce([]);
 

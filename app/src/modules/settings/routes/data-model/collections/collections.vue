@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { saveAs } from 'file-saver';
-import { merge } from 'lodash';
+import { merge, orderBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';
@@ -20,7 +20,10 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
+import { isExcludedCollection } from '@/utils/is-excluded-collection';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -33,10 +36,18 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
+function sortConfiguredCollections(collections: Collection[]) {
+	return orderBy(collections, [(collection) => (isExcludedCollection(collection) ? 1 : 0), 'meta.sort', 'collection']);
+}
+
 const collections = computed(() => {
-	return translate(collectionsStore.allCollections.filter((collection) => collection.meta)).map((collection) => ({
+	return sortConfiguredCollections(
+		translate(collectionsStore.allCollections.filter((collection) => collection.meta)),
+	).map((collection) => ({
 		...collection,
 		isCollapsed: collapsedIds.value?.includes(collection.collection),
 	}));
@@ -140,6 +151,16 @@ async function onSort(updates: Collection[], removeGroup = false) {
 	}
 }
 
+async function onExcludeCollection(collectionKey: string) {
+	await collectionsStore.updateCollection(collectionKey, { meta: { excluded: true } });
+	await Promise.all([fieldsStore.hydrate(), relationsStore.hydrate()]);
+}
+
+async function onIncludeCollection(collectionKey: string) {
+	await collectionsStore.updateCollection(collectionKey, { meta: { excluded: false } });
+	await Promise.all([fieldsStore.hydrate(), relationsStore.hydrate()]);
+}
+
 async function downloadSnapshot() {
 	const snapshot = await api.get(`/schema/snapshot`);
 
@@ -223,6 +244,8 @@ async function downloadSnapshot() {
 							:is-collapsed="element.isCollapsed"
 							:visibility-tree="findVisibilityChild(element.collection)!"
 							@edit-collection="editCollection = $event"
+							@exclude-collection="onExcludeCollection"
+							@include-collection="onIncludeCollection"
 							@set-nested-sort="onSort"
 							@toggle-collapse="toggleCollapse"
 						/>
@@ -250,7 +273,12 @@ async function downloadSnapshot() {
 						<span class="collection-name">{{ collection.name }}</span>
 					</RouterLink>
 
-					<CollectionOptions :collection="collection" :has-nested-collections="false" />
+					<CollectionOptions
+						:collection="collection"
+						:has-nested-collections="false"
+						@exclude-collection="onExcludeCollection"
+						@include-collection="onIncludeCollection"
+					/>
 				</VListItem>
 			</VList>
 
