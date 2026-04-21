@@ -1,8 +1,17 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import { createHistoryQueryResolver } from '../utils/get-history-filter-query.js';
 import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
+	private readonly resolveHistoryQuery = createHistoryQueryResolver('revisions_history_days', (sinceDate) => ({
+		activity: {
+			timestamp: {
+				_gte: sinceDate.toISOString(),
+			},
+		},
+	}));
+
 	constructor(options: AbstractServiceOptions) {
 		super('directus_revisions', options);
 	}
@@ -53,5 +62,15 @@ export class RevisionsService extends ItemsService {
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		return super.updateMany(keys, data, this.setDefaultOptions(opts));
+	}
+
+	async getHistoryQuery(query: Query): Promise<Query> {
+		return this.resolveHistoryQuery(query, this.knex);
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions) {
+		const historyQuery = await this.getHistoryQuery(query);
+
+		return super.readByQuery(historyQuery, opts);
 	}
 }

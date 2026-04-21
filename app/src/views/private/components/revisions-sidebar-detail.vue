@@ -9,9 +9,11 @@ import { useSidebarStore } from '../private-view/stores/sidebar';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import SidebarDetail from './sidebar-detail.vue';
 import VDivider from '@/components/v-divider.vue';
+import VNotice from '@/components/v-notice.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
+import { useServerStore } from '@/stores/server';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
@@ -36,11 +38,22 @@ const { active: open } = useGroupable({
 const { collection, primaryKey, version } = toRefs(props);
 
 const sidebarStore = useSidebarStore();
+const serverStore = useServerStore();
 const route = useRoute();
 
 const comparisonModalActive = ref(false);
 const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
+
+const revisionsHistoryDays = computed(() => serverStore.info.license?.revisions_history_days?.limit);
+
+const showRevisionsHistoryNotice = computed(
+	() => revisionsHistoryDays.value !== null && Number(revisionsHistoryDays.value) > 0,
+);
+
+const formattedRevisionsHistoryDays = computed(() =>
+	revisionsHistoryDays.value === null ? t('unlimited') : revisionsHistoryDays.value,
+);
 
 const comparableVersion = computed(() => {
 	if (version.value === undefined || version.value === null) return version.value;
@@ -123,7 +136,16 @@ defineExpose({
 					{{ $t('revision_delta_created_externally') }}
 				</div>
 			</template>
+
 			<VPagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
+
+			<div v-if="showRevisionsHistoryNotice" class="notice-wrapper">
+				<VNotice type="info" icon="diamond">
+					<template #title>
+						{{ $t('revisions_history_notice', { limit: formattedRevisionsHistoryDays }) }}
+					</template>
+				</VNotice>
+			</div>
 		</template>
 
 		<ComparisonModal
@@ -134,6 +156,7 @@ defineExpose({
 			:primary-key
 			mode="revision"
 			:current-version="comparableVersion"
+			:current-collab="undefined"
 			:revisions="revisions as Revision[]"
 			@confirm="$emit('revert', $event)"
 			@cancel="closeModal"
@@ -161,6 +184,14 @@ defineExpose({
 	margin-inline-start: 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
+}
+
+.notice-wrapper {
+	margin-block-start: 1.375rem;
+
+	.v-notice {
+		background-color: var(--theme--background-accent);
+	}
 }
 
 .external {

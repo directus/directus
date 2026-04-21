@@ -21,6 +21,8 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		schema: req.schema,
 	});
 
+	const historyQuery = await service.getHistoryQuery(req.sanitizedQuery);
+
 	let result;
 
 	if (req.singleton) {
@@ -31,7 +33,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_activity', req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_activity', historyQuery);
 
 	res.locals['payload'] = {
 		data: result,

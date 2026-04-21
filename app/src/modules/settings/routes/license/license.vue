@@ -268,6 +268,12 @@ function formatLicenseLimit(limit: number | null): string {
 	return limit === null ? t('unlimited') : String(limit);
 }
 
+function formatHistoryLimit(limit: number | null): string {
+	if (limit === null) return t('unlimited');
+	if (limit === 0) return t('license.not_included');
+	return t('license.days_count', { count: limit });
+}
+
 const usageRows = computed<LicenseUsageRow[]>(() => {
 	if (!license.value) return [];
 
@@ -294,12 +300,30 @@ const usageRows = computed<LicenseUsageRow[]>(() => {
 			},
 		},
 		{
+			key: 'activity-history',
+			icon: 'access_time',
+			label: t('license.feature.activity_history'),
+			value: {
+				type: 'text',
+				text: formatHistoryLimit(license.value.entitlements.activity_history_days.limit),
+			},
+		},
+		{
 			key: 'seats',
 			icon: 'group',
 			label: t('license.feature.seats'),
 			value: {
 				type: 'text',
 				text: `${license.value.usage.seats.current} / ${formatLicenseLimit(license.value.entitlements.seats.limit)}`,
+			},
+		},
+		{
+			key: 'revisions-history',
+			icon: 'change_history',
+			label: t('license.feature.revisions_history'),
+			value: {
+				type: 'text',
+				text: formatHistoryLimit(license.value.entitlements.revisions_history_days.limit),
 			},
 		},
 		{

@@ -1439,6 +1439,7 @@ license:
   included: Included
   optional: Optional
   not_included: Not Included
+  days_count: '{count} days'
   deactivate: Deactivate License
   save_success: License key was saved successfully.
   deactivate_success: License was deactivated successfully.
@@ -1447,6 +1448,8 @@ license:
   locked_notice: This project is currently locked because its license grace period has been exhausted.
   feature:
     seats: Seats
+    activity_history: Activity History
+    revisions_history: Revision History
     sso: Single Sign-On
     policy_rules: Custom Policy Rules
     custom_llm: Custom LLM
@@ -1492,6 +1495,7 @@ show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing
 activity_feed: Activity Feed
+activity_history_notice: '{limit} days of Activity History is included in your current plan.'
 add_new: Add New
 create_new: Create New
 all: All
@@ -2141,6 +2145,7 @@ reset: Reset
 reset_password: Reset Password
 revisions: Revisions
 no_revisions: No Revisions Yet
+revisions_history_notice: '{limit} days of Revision History is included in your current plan.'
 no_logs: No Logs Yet
 show_failed_only: Show Failed Only
 no_logs_on_page: No logs on this page
