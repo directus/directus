@@ -12,7 +12,6 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
 import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
-import { useStore } from '../utils/store.js';
 import { AssetsService } from './assets.js';
 import { FilesService } from './files.js';
 import { FoldersService } from './folders.js';
