@@ -1,6 +1,7 @@
 import { InvalidLicenseConfigError, InvalidLicenseTokenError, InvalidPayloadError } from '@directus/errors';
 import type { Knex } from 'knex';
 import { clearSystemCache } from '../cache.js';
+import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { getReport } from '../telemetry/lib/get-report.js';
 import type { TelemetryReport } from '../telemetry/types/report.js';
@@ -13,12 +14,21 @@ import { getProjectId } from '../utils/get-project-id.js';
 import { setProjectId } from '../utils/set-project-id.js';
 import { verify } from '../utils/verify-token.js';
 import { clearLicenseState, getCurrentLicenseBinding } from './binding.js';
+import {
+	clearLicenseFallbackCompliance,
+	refreshLicenseFallbackCompliance,
+} from './cache-license-fallback-compliance.js';
+import { refreshLicenseGateSnapshot } from './cache-license-gate-snapshot.js';
 import { getEnvOfflinePayload, isEnvOffline, toEnvOfflineConfigError } from './env.js';
-import { LicenseCanceledError, LicenseExpiredError } from './errors.js';
+import { BindingMismatchError, LicenseCanceledError, LicenseExpiredError } from './errors.js';
 import { hashLicenseKey, resolvePublicUrl } from './license-context.js';
+import { isOnboardingGraceActive } from './license-status.js';
+import { isSnapshotPayloadUsable } from './payload-artifact.js';
+import { initializeLicenseRefreshSchedule, recomputeLicenseRefreshSchedule } from './refresh-scheduler.js';
+import { getTerminalMode } from './runtime.js';
 import { activateLicense, deactivateLicense, validateLicense } from './service.js';
 import { getLicenseToken, saveLicenseKey, saveLicenseToken, updateLicenseState } from './storage.js';
-import type { LicenseStatus, LicenseTokenPayload } from './types.js';
+import type { LicenseGateSnapshot, LicenseStatus, LicenseTokenPayload } from './types.js';
 
 const logger = useLogger();
 
@@ -41,9 +51,16 @@ export type LicenseResult = {
 	projectId?: string;
 };
 
+export async function syncLicenseRuntime(payload?: LicenseTokenPayload | null): Promise<void> {
+	const snapshot = await warmLicenseGateSnapshot();
+	await syncLicenseFallbackCompliance(snapshot);
+	await recomputeLicenseRefreshSchedule({ payload: payload ?? null });
+}
+
 export async function applyLicense(licenseKey: string, options?: ApplyLicenseOptions): Promise<LicenseResult> {
 	const binding = await getCurrentLicenseBinding(options?.knex);
 	const projectId = options?.projectId ?? binding.storedProjectId ?? undefined;
+	const isSettingsAdoption = options?.source === 'settings' && binding.source !== 'settings';
 
 	const requestedKeyHashMatches =
 		typeof binding.storedKeyHash === 'string' && binding.storedKeyHash === hashLicenseKey(licenseKey);
@@ -60,9 +77,27 @@ export async function applyLicense(licenseKey: string, options?: ApplyLicenseOpt
 	}
 
 	if (binding.durableStatus === 'active') {
-		return requestedKeyHashMatches
-			? validateExistingLicense(licenseKey, { ...options, ...(projectId ? { projectId } : {}) })
-			: rotateLicense(licenseKey, binding, { ...options, ...(projectId ? { projectId } : {}) });
+		if (requestedKeyHashMatches) {
+			const resolvedOptions = { ...options, ...(projectId ? { projectId } : {}) };
+
+			try {
+				const result = await validateExistingLicense(licenseKey, resolvedOptions);
+
+				if (isSettingsAdoption) {
+					await saveLicenseKey(licenseKey, options?.knex);
+				}
+
+				return result;
+			} catch (error) {
+				if (isSettingsAdoption && error instanceof BindingMismatchError) {
+					return activateNewLicense(licenseKey, resolvedOptions);
+				}
+
+				throw error;
+			}
+		}
+
+		return rotateLicense(licenseKey, binding, { ...options, ...(projectId ? { projectId } : {}) });
 	}
 
 	return activateNewLicense(licenseKey, { ...options, ...(projectId ? { projectId } : {}) });
@@ -118,6 +153,33 @@ export async function deactivateCurrentLicense(options?: {
 	await clearLocalLicenseState(options);
 
 	return result;
+}
+
+export async function canEnterLocalFallbackMode(options?: { knex?: Knex }): Promise<boolean> {
+	const binding = await getCurrentLicenseBinding(options?.knex);
+	return binding.source !== 'env' && binding.terminal !== null;
+}
+
+export async function enterLocalFallbackMode(options?: { knex?: Knex }): Promise<boolean> {
+	if (!(await canEnterLocalFallbackMode(options))) {
+		return false;
+	}
+
+	await updateLicenseState(
+		{
+			license_status: 'deactivated',
+			license_grace_on: null,
+		},
+		options?.knex,
+	);
+
+	await clearSystemCache();
+
+	if (!options?.knex) {
+		await syncLicenseRuntime(null);
+	}
+
+	return true;
 }
 
 export async function refreshLicense(options?: { mode?: RefreshLicenseMode }): Promise<boolean> {
@@ -210,6 +272,7 @@ export async function restoreStoredLicense(options?: {
 
 export async function initializeLicenseRuntime(options?: { mode?: RefreshLicenseMode }): Promise<void> {
 	let restoredPayload: LicenseTokenPayload | null = null;
+	let lifecycleSynchronized = false;
 	const mode = options?.mode ?? 'startup';
 
 	try {
@@ -226,8 +289,17 @@ export async function initializeLicenseRuntime(options?: { mode?: RefreshLicense
 		restoredPayload = null;
 	}
 
-	if (restoredPayload?.metadata.refresh_interval !== 0) {
-		await refreshLicense({ mode });
+	try {
+		if (restoredPayload?.metadata.refresh_interval !== 0) {
+			lifecycleSynchronized = await refreshLicense({ mode });
+		}
+	} finally {
+		await initializeLicenseRefreshSchedule();
+		const snapshot = await warmLicenseGateSnapshot();
+
+		if (!lifecycleSynchronized) {
+			await warmLicenseFallbackCompliance(snapshot);
+		}
 	}
 }
 
@@ -261,6 +333,10 @@ export async function syncLicenseTokenFromService(
 	}
 
 	await clearSystemCache();
+
+	if (!options?.knex) {
+		await syncLicenseRuntime(payload);
+	}
 
 	return payload;
 }
@@ -314,6 +390,10 @@ async function activateNewLicense(licenseKey: string, options?: ApplyLicenseOpti
 	}
 
 	await clearSystemCache();
+
+	if (!options?.knex) {
+		await syncLicenseRuntime(payload);
+	}
 
 	return {
 		action: 'activate',
@@ -440,6 +520,12 @@ async function validateExistingLicense(licenseKey: string, options?: ApplyLicens
 				},
 				options?.knex,
 			);
+
+			await clearSystemCache();
+
+			if (!options?.knex) {
+				await syncLicenseRuntime(null);
+			}
 		}
 
 		throw error;
@@ -467,6 +553,10 @@ async function validateExistingLicense(licenseKey: string, options?: ApplyLicens
 	}
 
 	await clearSystemCache();
+
+	if (!options?.knex) {
+		await syncLicenseRuntime(payload);
+	}
 
 	return {
 		action: 'validate',
@@ -528,4 +618,50 @@ async function clearLocalLicenseState(options?: { knex?: Knex; licenseStatus?: L
 	await clearCacheTokenPayload();
 	await clearLicenseState({ licenseStatus: options?.licenseStatus ?? 'deactivated' }, options?.knex);
 	await clearSystemCache();
+
+	if (!options?.knex) {
+		await syncLicenseRuntime(null);
+	}
+}
+
+async function warmLicenseGateSnapshot(): Promise<LicenseGateSnapshot | undefined> {
+	try {
+		return await refreshLicenseGateSnapshot();
+	} catch (error) {
+		logger.warn(error, '[license] Failed to refresh cached license gate snapshot');
+		return undefined;
+	}
+}
+
+async function warmLicenseFallbackCompliance(snapshot?: LicenseGateSnapshot) {
+	const terminalMode = getTerminalMode({
+		terminal: snapshot?.terminal,
+		durableStatus: snapshot?.durableStatus,
+	});
+
+	if (
+		!snapshot ||
+		(terminalMode !== 'recovered' && isSnapshotPayloadUsable(snapshot)) ||
+		terminalMode === 'hard' ||
+		(snapshot.durableStatus !== 'active' && snapshot.durableStatus !== 'deactivated') ||
+		isOnboardingGraceActive(snapshot.graceOn)
+	) {
+		return;
+	}
+
+	try {
+		await refreshLicenseFallbackCompliance(getDatabase());
+	} catch (error) {
+		logger.warn(error, '[license] Failed to refresh cached fallback compliance');
+	}
+}
+
+async function syncLicenseFallbackCompliance(snapshot?: LicenseGateSnapshot) {
+	try {
+		await clearLicenseFallbackCompliance();
+	} catch {
+		// Ignore cache invalidation failures and continue with best-effort refresh.
+	}
+
+	await warmLicenseFallbackCompliance(snapshot);
 }

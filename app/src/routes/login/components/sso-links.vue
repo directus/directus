@@ -17,6 +17,7 @@ import { getRootPath } from '@/utils/get-root-path';
 
 const props = defineProps<{
 	providers: AuthProvider[];
+	showProjectLockedNotice?: boolean;
 }>();
 
 const route = useRoute();
@@ -132,12 +133,17 @@ const errorFormatted = computed(() => {
 	const customReasons = {
 		SSO_DISABLED: t('errors.SSO_DISABLED'),
 		SSO_NON_ADMIN: t('errors.SSO_NON_ADMIN'),
+		...(props.showProjectLockedNotice === true ? { PROJECT_LOCKED: t('logoutReason.PROJECT_LOCKED') } : {}),
 	} as const;
 
 	const reason = Array.isArray(route.query.reason) ? route.query.reason[0] : route.query.reason;
 
 	// When requiring TFA, don't show the error banner; render the OTP input instead
 	if (requiresTFA.value) return null;
+
+	if (reason === 'PROJECT_LOCKED' && props.showProjectLockedNotice !== true) {
+		return null;
+	}
 
 	if (reason && Object.hasOwn(customReasons, reason)) {
 		return customReasons[reason as keyof typeof customReasons];

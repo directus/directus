@@ -5,6 +5,8 @@ import type { Knex } from 'knex';
 import { afterEach, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { ProjectLockedError } from '../license/errors.js';
+import { ensureSuspensionAllowsRequest } from '../license/lock.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
@@ -42,6 +44,10 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
+vi.mock('../license/lock.js', () => ({
+	ensureSuspensionAllowsRequest: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('../permissions/lib/fetch-roles-tree.js');
 vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js');
 
@@ -67,7 +73,30 @@ test('Short-circuits when authenticate filter is used', async () => {
 	await handler(req, res, next);
 
 	expect(req.accountability).toEqual(customAccountability);
+	expect(ensureSuspensionAllowsRequest).toHaveBeenCalledWith(undefined, customAccountability, req);
 	expect(next).toHaveBeenCalledTimes(1);
+});
+
+test('Throws PROJECT_LOCKED when a custom authenticate filter returns a locked non-admin accountability', async () => {
+	const req = {
+		socket: { remoteAddress: '127.0.0.1' },
+		headers: {},
+		cookies: {},
+		get: vi.fn(reqGetImplementation),
+		method: 'GET',
+		baseUrl: '/items',
+		path: '/posts',
+	} as unknown as Request;
+
+	const res = {} as Response;
+	const next = vi.fn();
+	const customAccountability = { admin: false, user: 'custom-user' };
+
+	vi.spyOn(emitter, 'emitFilter').mockResolvedValue(customAccountability as any);
+	vi.mocked(ensureSuspensionAllowsRequest).mockRejectedValueOnce(new ProjectLockedError());
+
+	await expect(handler(req, res, next)).rejects.toBeInstanceOf(ProjectLockedError);
+	expect(next).not.toHaveBeenCalled();
 });
 
 test('Uses default public accountability when no token is given', async () => {
@@ -121,6 +150,9 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		headers: {},
 		cookies: {},
 		get: vi.fn(reqGetImplementation),
+		method: 'GET',
+		baseUrl: '/items',
+		path: '/posts',
 		token,
 	} as unknown as Request;
 
@@ -178,6 +210,43 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	expect(next).toHaveBeenCalledTimes(1);
 });
 
+test('Throws PROJECT_LOCKED when a locked non-admin request is authenticated', async () => {
+	const userID = '3fac3c02-607f-4438-8d6e-6b8b25109b52';
+	const roleID = '38269fc6-6eb6-475a-93cb-479d97f73039';
+
+	const token = jwt.sign(
+		{
+			id: userID,
+			role: roleID,
+			app_access: true,
+			admin_access: false,
+		},
+		'test',
+		{ issuer: 'directus' },
+	);
+
+	const req = {
+		socket: { remoteAddress: '127.0.0.1' },
+		headers: {},
+		cookies: {},
+		get: vi.fn(reqGetImplementation),
+		method: 'GET',
+		baseUrl: '/items',
+		path: '/posts',
+		token,
+	} as unknown as Request;
+
+	const res = {} as Response;
+	const next = vi.fn();
+
+	vi.mocked(fetchRolesTree).mockResolvedValue([roleID]);
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: true, admin: false });
+	vi.mocked(ensureSuspensionAllowsRequest).mockRejectedValueOnce(new ProjectLockedError());
+
+	await expect(handler(req, res, next)).rejects.toBeInstanceOf(ProjectLockedError);
+	expect(next).not.toHaveBeenCalled();
+});
+
 test('Throws InvalidCredentialsError when static token is used, but user does not exist', async () => {
 	vi.mocked(getDatabase).mockReturnValue({
 		select: vi.fn().mockReturnThis(),
@@ -192,6 +261,9 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 		headers: {},
 		cookies: {},
 		get: vi.fn(reqGetImplementation),
+		method: 'GET',
+		baseUrl: '/items',
+		path: '/posts',
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -208,6 +280,9 @@ test('Sets accountability to user information when static token is used', async 
 		headers: {},
 		cookies: {},
 		get: vi.fn(reqGetImplementation),
+		method: 'GET',
+		baseUrl: '/items',
+		path: '/posts',
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -273,6 +348,9 @@ test('Invalid session token responds with error and clears the cookie', async ()
 			directus_session: 'session-token',
 		},
 		get: vi.fn(reqGetImplementation),
+		method: 'GET',
+		baseUrl: '/items',
+		path: '/posts',
 		token: 'session-token',
 	} as unknown as Request;
 
@@ -303,6 +381,9 @@ test('Invalid query token responds with error but does not clear the session coo
 			directus_session: 'session-token',
 		},
 		get: vi.fn(reqGetImplementation),
+		method: 'GET',
+		baseUrl: '/items',
+		path: '/posts',
 		token: 'static-token',
 	} as unknown as Request;
 

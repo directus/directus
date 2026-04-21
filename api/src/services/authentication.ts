@@ -12,12 +12,13 @@ import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
 import type { StringValue } from 'ms';
-import { isSSODriver, SsoNonAdminError } from '../auth/constants/sso.js';
+import { isExternalAuthDriver, SsoNonAdminError } from '../auth/constants/sso.js';
 import { getSSOState } from '../auth/utils/get-sso-state.js';
 import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { ensureSuspensionAllowsAdminAccess } from '../license/lock.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
@@ -141,7 +142,7 @@ export class AuthenticationService {
 		const authProvider = getAuthProviders().find((provider) => provider.name === providerName);
 		let globalAccess: Awaited<ReturnType<typeof fetchGlobalAccess>> | null = null;
 
-		if (authProvider && isSSODriver(authProvider.driver)) {
+		if (authProvider && isExternalAuthDriver(authProvider.driver)) {
 			const ssoState = await getSSOState(this.knex);
 
 			if (ssoState.transitional) {
@@ -153,6 +154,14 @@ export class AuthenticationService {
 				);
 
 				if (globalAccess.admin !== true) {
+					try {
+						await ensureSuspensionAllowsAdminAccess(this.knex, false);
+					} catch (err) {
+						emitStatus('fail', updatedPayload, user, err);
+						await stall(STALL_TIME, timeStart);
+						throw err;
+					}
+
 					const loginError = new SsoNonAdminError();
 
 					emitStatus('fail', updatedPayload, user, loginError);
@@ -166,59 +175,10 @@ export class AuthenticationService {
 			fields: ['auth_login_attempts'],
 		});
 
-		if (allowedAttempts !== null) {
-			loginAttemptsLimiter.points = allowedAttempts;
-
-			try {
-				await loginAttemptsLimiter.consume(user.id);
-			} catch (error) {
-				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
-					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-
-					if (this.accountability) {
-						const activity = await this.activityService.createOne({
-							action: Action.UPDATE,
-							user: user.id,
-							ip: this.accountability.ip,
-							user_agent: this.accountability.userAgent,
-							origin: this.accountability.origin,
-							collection: 'directus_users',
-							item: user.id,
-						});
-
-						const revisionsService = new RevisionsService({ knex: this.knex, schema: this.schema });
-
-						const payloadService = new PayloadService('directus_users', {
-							accountability: this.accountability,
-							knex: this.knex,
-							schema: this.schema,
-						});
-
-						await revisionsService.createOne({
-							activity: activity,
-							collection: 'directus_users',
-							item: user.id,
-							data: await payloadService.prepareDelta(user),
-							delta: { status: 'suspended' },
-						});
-					}
-
-					user.status = 'suspended';
-
-					// This means that new attempts after the user has been re-activated will be accepted
-					await loginAttemptsLimiter.set(user.id, 0, 0);
-				} else {
-					throw new ServiceUnavailableError({
-						service: 'authentication',
-						reason: 'Rate limiter unreachable',
-					});
-				}
-			}
-		}
-
 		try {
 			await provider.login(clone(user), cloneDeep(updatedPayload));
 		} catch (err) {
+			await this.consumeFailedLoginAttempt(user, allowedAttempts);
 			emitStatus('fail', updatedPayload, user, err);
 			await stall(STALL_TIME, timeStart);
 			throw err;
@@ -226,6 +186,7 @@ export class AuthenticationService {
 
 		if (user.tfa_secret && !options?.otp) {
 			const loginError = new InvalidOtpError();
+			await this.consumeFailedLoginAttempt(user, allowedAttempts);
 			emitStatus('fail', updatedPayload, user, loginError);
 			await stall(STALL_TIME, timeStart);
 			throw loginError;
@@ -237,6 +198,7 @@ export class AuthenticationService {
 
 			if (otpValid === false) {
 				const loginError = new InvalidOtpError();
+				await this.consumeFailedLoginAttempt(user, allowedAttempts);
 				emitStatus('fail', updatedPayload, user, loginError);
 				await stall(STALL_TIME, timeStart);
 				throw loginError;
@@ -250,6 +212,14 @@ export class AuthenticationService {
 				{ roles, user: user.id, ip: this.accountability?.ip ?? null },
 				{ knex: this.knex },
 			);
+		}
+
+		try {
+			await ensureSuspensionAllowsAdminAccess(this.knex, globalAccess.admin === true);
+		} catch (err) {
+			emitStatus('fail', updatedPayload, user, err);
+			await stall(STALL_TIME, timeStart);
+			throw err;
 		}
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -348,6 +318,61 @@ export class AuthenticationService {
 		};
 	}
 
+	private async consumeFailedLoginAttempt(user: User, allowedAttempts: number | null) {
+		if (allowedAttempts === null) {
+			return;
+		}
+
+		loginAttemptsLimiter.points = allowedAttempts;
+
+		try {
+			await loginAttemptsLimiter.consume(user.id);
+		} catch (error) {
+			if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
+				await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+
+				if (this.accountability) {
+					const activity = await this.activityService.createOne({
+						action: Action.UPDATE,
+						user: user.id,
+						ip: this.accountability.ip,
+						user_agent: this.accountability.userAgent,
+						origin: this.accountability.origin,
+						collection: 'directus_users',
+						item: user.id,
+					});
+
+					const revisionsService = new RevisionsService({ knex: this.knex, schema: this.schema });
+
+					const payloadService = new PayloadService('directus_users', {
+						accountability: this.accountability,
+						knex: this.knex,
+						schema: this.schema,
+					});
+
+					await revisionsService.createOne({
+						activity: activity,
+						collection: 'directus_users',
+						item: user.id,
+						data: await payloadService.prepareDelta(user),
+						delta: { status: 'suspended' },
+					});
+				}
+
+				user.status = 'suspended';
+
+				// This means that new attempts after the user has been re-activated will be accepted
+				await loginAttemptsLimiter.set(user.id, 0, 0);
+				return;
+			}
+
+			throw new ServiceUnavailableError({
+				service: 'authentication',
+				reason: 'Rate limiter unreachable',
+			});
+		}
+	}
+
 	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
@@ -410,6 +435,10 @@ export class AuthenticationService {
 			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },
 			{ knex: this.knex },
 		);
+
+		if (record.user_id) {
+			await ensureSuspensionAllowsAdminAccess(this.knex, globalAccess.admin === true);
+		}
 
 		if (record.user_id) {
 			const provider = getAuthProvider(record.user_provider);

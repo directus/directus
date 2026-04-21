@@ -10,13 +10,14 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { LICENSING_SESSION_COOKIES, setLicenseBannerDismissed } from '@/modules/licensing/cookies';
 import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
 
 const settingsStore = useSettingsStore();
-const cookies = useCookies(['license-banner-dismissed']);
+const cookies = useCookies(LICENSING_SESSION_COOKIES);
 const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([]);
@@ -43,7 +44,7 @@ async function setOwner() {
 
 async function remindLater() {
 	// 30 days, will be deleted on logout / session end
-	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
+	setLicenseBannerDismissed(cookies, new Date(Date.now() + 1000 * 60 * 60 * 24 * 30));
 	notify({ title: t('bsl_banner.remind_next_login'), type: 'info' });
 }
 

@@ -7,13 +7,13 @@ import {
 	RestCommand,
 } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
-import { useCookies } from '@vueuse/integrations/useCookies';
 import { RouteLocationRaw } from 'vue-router';
 import { emitter, Events } from './events';
 import { useServerStore } from './stores/server';
 import { resumeQueue } from '@/api';
 import { DEFAULT_AUTH_PROVIDER, SDK_AUTH_REFRESH_BEFORE_EXPIRES } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
+import { clearLicensingSessionCookies } from '@/modules/licensing/cookies';
 import { router } from '@/router';
 import { sdk } from '@/sdk';
 
@@ -30,8 +30,6 @@ type LoginParams = {
 	provider?: string;
 	share?: boolean;
 };
-
-const cookies = useCookies(['license-banner-dismissed']);
 
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
@@ -73,7 +71,7 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	}
 
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
-	cookies.remove('license-banner-dismissed');
+	clearLicensingSessionCookies();
 	appStore.authenticated = true;
 
 	// Reload server store to get authenticated data
@@ -117,8 +115,13 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 		appStore.authenticated = true;
 		firstRefresh = false;
-	} catch {
-		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
+	} catch (error: any) {
+		const reason =
+			error?.errors?.[0]?.extensions?.code === LogoutReason.PROJECT_LOCKED
+				? LogoutReason.PROJECT_LOCKED
+				: LogoutReason.SESSION_EXPIRED;
+
+		await logout({ navigate, reason });
 	} finally {
 		resumeQueue();
 	}
@@ -127,6 +130,7 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 export enum LogoutReason {
 	SIGN_OUT = 'SIGN_OUT',
 	SESSION_EXPIRED = 'SESSION_EXPIRED',
+	PROJECT_LOCKED = 'PROJECT_LOCKED',
 }
 
 export type LogoutOptions = {
@@ -149,8 +153,8 @@ export async function logout(options: LogoutOptions = {}): Promise<void> {
 
 	sdk.stopRefreshing();
 
-	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
-	if (logoutOptions.reason === LogoutReason.SIGN_OUT) {
+	// Explicit sign-out and project-lock redirects should both clear the current server-side session
+	if ([LogoutReason.SIGN_OUT, LogoutReason.PROJECT_LOCKED].includes(logoutOptions.reason)) {
 		try {
 			await sdk.logout();
 		} catch {
@@ -159,6 +163,7 @@ export async function logout(options: LogoutOptions = {}): Promise<void> {
 	}
 
 	appStore.authenticated = false;
+	clearLicensingSessionCookies();
 
 	await dehydrate();
 

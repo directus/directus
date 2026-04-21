@@ -43,6 +43,7 @@ describe('SsoLinks', () => {
 		return mount(SsoLinks, {
 			props: {
 				providers,
+				showProjectLockedNotice: false,
 			},
 			global: {
 				plugins: [i18n],
@@ -89,5 +90,38 @@ describe('SsoLinks', () => {
 		const wrapper = mountWithProviders([]);
 
 		expect(wrapper.text()).not.toContain(i18n.global.t('errors.INVALID_CREDENTIALS'));
+	});
+
+	test('does not show a standalone warning when the login page reason is PROJECT_LOCKED', () => {
+		mockRoute.query = { reason: 'PROJECT_LOCKED' };
+
+		const wrapper = mountComponent();
+
+		expect(wrapper.text()).not.toContain(i18n.global.t('logoutReason.PROJECT_LOCKED'));
+	});
+
+	test('shows project locked when explicitly asked to own the locked notice', () => {
+		mockRoute.query = { reason: 'PROJECT_LOCKED' };
+
+		const wrapper = mount(SsoLinks, {
+			props: {
+				providers: [{ name: 'okta', driver: 'openid', label: 'Okta', icon: 'lock' }],
+				showProjectLockedNotice: true,
+			},
+			global: {
+				plugins: [i18n],
+				stubs: {
+					TransitionExpand: defineComponent({ template: '<div><slot /></div>' }),
+					VDivider: true,
+					VIcon: true,
+					VInput: true,
+					VNotice: defineComponent({ template: '<div><slot /></div>' }),
+					VProgressCircular: true,
+					VTextOverflow: VTextOverflowStub,
+				},
+			},
+		});
+
+		expect(wrapper.text()).toContain(i18n.global.t('logoutReason.PROJECT_LOCKED'));
 	});
 });

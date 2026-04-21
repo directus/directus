@@ -6,6 +6,7 @@ import { isEqual } from 'lodash-es';
 import { SESSION_COOKIE_OPTIONS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { ensureSuspensionAllowsRequest } from '../license/lock.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
@@ -42,6 +43,9 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 
 	if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {
 		req.accountability = customAccountability;
+
+		await ensureSuspensionAllowsRequest(database, req.accountability, req);
+
 		return next();
 	}
 
@@ -57,6 +61,8 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 
 		throw err;
 	}
+
+	await ensureSuspensionAllowsRequest(database, req.accountability, req);
 
 	return next();
 };

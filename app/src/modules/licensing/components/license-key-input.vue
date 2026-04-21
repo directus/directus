@@ -25,6 +25,10 @@ const props = withDefaults(
 	},
 );
 
+const emit = defineEmits<{
+	'can-submit-change': [value: boolean];
+}>();
+
 const modelValue = defineModel<string | null>({ default: null });
 const inputValue = ref<string | undefined>(modelValue.value ?? undefined);
 const hasEditedStoredValue = ref(false);
@@ -73,6 +77,21 @@ const invalidMessage = computed(() => {
 	if (previewPayload.value && previewPayload.value.valid === false) return t('license_invalid');
 	return null;
 });
+
+const canSubmit = computed(() => {
+	if (!modelValue.value?.trim()) return false;
+	if (validating.value) return false;
+	if (validationError.value) return false;
+	return previewPayload.value?.valid === true;
+});
+
+watch(
+	canSubmit,
+	(value) => {
+		emit('can-submit-change', value);
+	},
+	{ immediate: true },
+);
 
 function updateInputValue(value: string | number | null) {
 	if (typeof value === 'string') {

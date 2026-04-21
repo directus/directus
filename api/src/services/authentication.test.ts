@@ -3,8 +3,12 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, vi } from 'vitest';
+import { SsoNonAdminError } from '../auth/constants/sso.js';
 import { getAuthProvider } from '../auth.js';
 import emitter from '../emitter.js';
+import { ProjectLockedError } from '../license/errors.js';
+import { ensureSuspensionAllowsAdminAccess } from '../license/lock.js';
+import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { ActivityService } from './activity.js';
 import { AuthenticationService } from './authentication.js';
 import { SettingsService } from './settings.js';
@@ -16,6 +20,12 @@ const mockRateLimiter = vi.hoisted(() => ({
 	points: 0,
 }));
 
+const ssoState = vi.hoisted(() => ({
+	enabled: true,
+	disabled: false,
+	transitional: false,
+}));
+
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -23,6 +33,10 @@ vi.mock('../../src/database/index', () => ({
 
 vi.mock('../auth.js', () => ({
 	getAuthProvider: vi.fn(),
+}));
+
+vi.mock('../auth/utils/get-sso-state.js', () => ({
+	getSSOState: vi.fn().mockImplementation(() => Promise.resolve(ssoState)),
 }));
 
 vi.mock('../emitter.js', () => ({
@@ -62,8 +76,16 @@ vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js', () 
 	fetchGlobalAccess: vi.fn().mockResolvedValue({ app: false, admin: false }),
 }));
 
+vi.mock('../license/lock.js', () => ({
+	ensureSuspensionAllowsAdminAccess: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('../utils/get-secret.js', () => ({
 	getSecret: vi.fn().mockReturnValue('test-secret'),
+}));
+
+vi.mock('../utils/get-auth-providers.js', () => ({
+	getAuthProviders: vi.fn().mockReturnValue([]),
 }));
 
 vi.mock('../utils/get-milliseconds.js', () => ({
@@ -130,6 +152,9 @@ describe('Integration Tests', () => {
 
 		beforeEach(() => {
 			service = new AuthenticationService({ knex: db, schema });
+			ssoState.enabled = true;
+			ssoState.disabled = false;
+			ssoState.transitional = false;
 
 			mockProvider = {
 				getUserID: vi.fn().mockResolvedValue(mockUser.id),
@@ -247,6 +272,7 @@ describe('Integration Tests', () => {
 					auth_login_attempts: 5,
 				} as any);
 
+				mockProvider.login.mockRejectedValueOnce(new InvalidCredentialsError());
 				mockRateLimiter.consume.mockRejectedValueOnce(new Error('Rate limiter unreachable'));
 
 				await expect(
@@ -264,12 +290,15 @@ describe('Integration Tests', () => {
 
 				const { RateLimiterRes: MockRateLimiterRes } = await import('../rate-limiter.js');
 				const rateLimitError = new MockRateLimiterRes();
+				rateLimitError.remainingPoints = 0;
 				mockRateLimiter.consume.mockRejectedValueOnce(rateLimitError);
 
 				// Make provider.login throw to stop the flow after suspension
 				mockProvider.login.mockRejectedValueOnce(new InvalidCredentialsError());
 
-				await expect(service.login('default', { email: 'john@example.com', password: 'password' })).rejects.toThrow();
+				await expect(
+					service.login('default', { email: 'john@example.com', password: 'password' }),
+				).rejects.toBeInstanceOf(InvalidCredentialsError);
 
 				expect(mockRateLimiter.set).toHaveBeenCalledWith(mockUser.id, 0, 0);
 
@@ -360,6 +389,74 @@ describe('Integration Tests', () => {
 					refreshToken: 'test-refresh-token',
 					id: mockUser.id,
 				});
+			});
+
+			it('should throw PROJECT_LOCKED before durable session issuance for locked non-admin users', async () => {
+				setupHappyPathTracker();
+				vi.mocked(ensureSuspensionAllowsAdminAccess).mockRejectedValueOnce(new ProjectLockedError());
+
+				await expect(
+					service.login('default', { email: 'john@example.com', password: 'password' }),
+				).rejects.toBeInstanceOf(ProjectLockedError);
+			});
+
+			it('should block non-admin sso login in transitional mode and emit a failed auth.login action', async () => {
+				tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'sso' }]);
+				vi.mocked(getAuthProviders).mockReturnValueOnce([{ name: 'sso', driver: 'oauth2' }] as any);
+				ssoState.enabled = false;
+				ssoState.disabled = false;
+				ssoState.transitional = true;
+
+				await expect(service.login('sso', { email: 'john@example.com', password: 'password' })).rejects.toBeInstanceOf(
+					SsoNonAdminError,
+				);
+
+				expect(vi.mocked(emitter.emitAction)).toHaveBeenCalledWith(
+					'auth.login',
+					expect.objectContaining({ status: 'fail', provider: 'sso' }),
+					expect.any(Object),
+				);
+			});
+
+			it('should prefer PROJECT_LOCKED over SSO_NON_ADMIN for locked non-admin sso logins', async () => {
+				tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'sso' }]);
+				vi.mocked(getAuthProviders).mockReturnValueOnce([{ name: 'sso', driver: 'oauth2' }] as any);
+				ssoState.enabled = false;
+				ssoState.disabled = false;
+				ssoState.transitional = true;
+				vi.mocked(ensureSuspensionAllowsAdminAccess).mockRejectedValueOnce(new ProjectLockedError());
+
+				await expect(service.login('sso', { email: 'john@example.com', password: 'password' })).rejects.toBeInstanceOf(
+					ProjectLockedError,
+				);
+			});
+
+			it('should not apply transitional sso blocking to local logins', async () => {
+				setupHappyPathTracker();
+				vi.mocked(getAuthProviders).mockReturnValueOnce([{ name: 'default', driver: 'local' }] as any);
+				ssoState.enabled = false;
+				ssoState.disabled = false;
+				ssoState.transitional = true;
+
+				await expect(
+					service.login('default', { email: 'john@example.com', password: 'password' }),
+				).resolves.toMatchObject({
+					accessToken: 'test-access-token',
+					refreshToken: 'test-refresh-token',
+					id: mockUser.id,
+				});
+			});
+
+			it('should apply transitional sso blocking to ldap logins', async () => {
+				tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'ldap' }]);
+				vi.mocked(getAuthProviders).mockReturnValueOnce([{ name: 'ldap', driver: 'ldap' }] as any);
+				ssoState.enabled = false;
+				ssoState.disabled = false;
+				ssoState.transitional = true;
+
+				await expect(service.login('ldap', { email: 'john@example.com', password: 'password' })).rejects.toBeInstanceOf(
+					SsoNonAdminError,
+				);
 			});
 		});
 	});

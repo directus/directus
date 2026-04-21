@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 import { RequestError } from '@/api';
 import { login } from '@/auth';
 import TransitionExpand from '@/components/transition/expand.vue';
@@ -21,7 +22,9 @@ const props = defineProps<{
 	provider: string;
 }>();
 
+const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 
 const { provider } = toRefs(props);
 const loggingIn = ref(false);
@@ -45,6 +48,12 @@ watch(provider, () => {
 });
 
 const errorFormatted = computed(() => {
+	const reason = Array.isArray(route.query.reason) ? route.query.reason[0] : route.query.reason;
+
+	if (reason === 'PROJECT_LOCKED' && !error.value) {
+		return t('logoutReason.PROJECT_LOCKED');
+	}
+
 	if (error.value === 'INVALID_PAYLOAD') {
 		return translateAPIError('INVALID_CREDENTIALS');
 	}
@@ -83,10 +92,20 @@ async function onSubmit() {
 
 		router.push(redirectQuery || lastPage || '/content');
 	} catch (err: any) {
-		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
+		const errorCode = err.errors?.[0]?.extensions?.code;
+
+		if (errorCode === 'PROJECT_LOCKED') {
+			error.value = null;
+			otp.value = null;
+			requiresTFA.value = false;
+			router.replace({ path: '/login', query: { reason: 'PROJECT_LOCKED' } });
+			return;
+		}
+
+		if (errorCode === 'INVALID_OTP' && requiresTFA.value === false) {
 			requiresTFA.value = true;
 		} else {
-			error.value = err.errors?.[0]?.extensions?.code || err;
+			error.value = errorCode || err;
 		}
 	} finally {
 		loggingIn.value = false;
@@ -110,7 +129,7 @@ async function onSubmit() {
 			/>
 		</TransitionExpand>
 
-		<VNotice v-if="error" type="warning">
+		<VNotice v-if="errorFormatted" type="warning">
 			{{ errorFormatted }}
 		</VNotice>
 		<VButton class="sign-in" type="submit" :loading="loggingIn" large>

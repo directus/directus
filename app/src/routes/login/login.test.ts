@@ -29,6 +29,7 @@ const global: GlobalMountOptions = {
 
 // silences locale message not found warnings
 vi.spyOn(i18n.global, 't').mockImplementation((key: any) => key);
+vi.spyOn(i18n.global, 'te').mockImplementation(() => false);
 
 beforeEach(() => {
 	setActivePinia(

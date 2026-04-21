@@ -8,6 +8,7 @@ type RuntimeState = {
 	status: DerivedLicenseStatus;
 	locked: boolean;
 	graceType: LicenseGraceType;
+	canSchedule: boolean;
 	canUsePayloadEntitlements: boolean;
 };
 
@@ -40,6 +41,7 @@ export function getRuntimeState(options: {
 			status: 'canceled',
 			locked: true,
 			graceType: null,
+			canSchedule: false,
 			canUsePayloadEntitlements: false,
 		};
 	}
@@ -50,6 +52,7 @@ export function getRuntimeState(options: {
 			status: 'locked',
 			locked: true,
 			graceType: null,
+			canSchedule: false,
 			canUsePayloadEntitlements: false,
 		};
 	}
@@ -60,6 +63,7 @@ export function getRuntimeState(options: {
 			status: 'inactive',
 			locked: false,
 			graceType: null,
+			canSchedule: terminalMode === null,
 			canUsePayloadEntitlements: terminalMode === null,
 		};
 	}
@@ -77,6 +81,7 @@ export function getRuntimeState(options: {
 	return {
 		terminalMode,
 		...state,
+		canSchedule: terminalMode === null,
 		canUsePayloadEntitlements: terminalMode === null,
 	};
 }

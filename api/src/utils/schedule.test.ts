@@ -1,12 +1,21 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { scheduleSynchronizedJob, validateCron } from './schedule.js';
+import { scheduleSynchronizedJob, scheduleSynchronizedJobAt, validateCron } from './schedule.js';
+
+const clockInstances = vi.hoisted(
+	() => [] as Array<{ set: ReturnType<typeof vi.fn>; reset: ReturnType<typeof vi.fn> }>,
+);
 
 // Mock SynchronizedClock to isolate scheduling logic
 vi.mock('../synchronization.js', () => ({
-	SynchronizedClock: vi.fn().mockImplementation(() => ({
-		set: vi.fn().mockResolvedValue(true),
-		reset: vi.fn().mockResolvedValue(undefined),
-	})),
+	SynchronizedClock: vi.fn().mockImplementation(() => {
+		const instance = {
+			set: vi.fn().mockResolvedValue(true),
+			reset: vi.fn().mockResolvedValue(undefined),
+		};
+
+		clockInstances.push(instance);
+		return instance;
+	}),
 }));
 
 describe('validateCron', () => {
@@ -158,5 +167,77 @@ describe('scheduleSynchronizedJob', () => {
 
 			vi.useRealTimers();
 		});
+	});
+});
+
+describe('scheduleSynchronizedJobAt', () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+		clockInstances.length = 0;
+	});
+
+	afterEach(() => {
+		vi.clearAllTimers();
+		vi.useRealTimers();
+	});
+
+	test('fires once at the scheduled time using a stable synchronization key', async () => {
+		const callback = vi.fn().mockResolvedValue(undefined);
+		const startTime = new Date('2025-01-01T00:00:00.000Z');
+		const fireAt = new Date('2025-01-01T00:05:00.000Z');
+
+		vi.setSystemTime(startTime);
+
+		const job = scheduleSynchronizedJobAt('test-once', fireAt, callback);
+		const clock = clockInstances.at(-1);
+
+		expect(clock).toBeDefined();
+		expect(callback).not.toHaveBeenCalled();
+
+		await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+		expect(clock?.set).toHaveBeenCalledWith(fireAt.getTime());
+		expect(callback).toHaveBeenCalledTimes(1);
+		expect(callback).toHaveBeenCalledWith(fireAt);
+
+		await job.stop();
+		expect(clock?.reset).toHaveBeenCalledTimes(1);
+	});
+
+	test('fires immediately when the scheduled time is already in the past', async () => {
+		const callback = vi.fn().mockResolvedValue(undefined);
+		const startTime = new Date('2025-01-01T00:10:00.000Z');
+		const fireAt = new Date('2025-01-01T00:05:00.000Z');
+
+		vi.setSystemTime(startTime);
+
+		const job = scheduleSynchronizedJobAt('test-past', fireAt, callback);
+		const clock = clockInstances.at(-1);
+
+		await vi.runOnlyPendingTimersAsync();
+
+		expect(clock?.set).toHaveBeenCalledWith(fireAt.getTime());
+		expect(callback).toHaveBeenCalledTimes(1);
+		expect(callback).toHaveBeenCalledWith(fireAt);
+
+		await job.stop();
+	});
+
+	test('does not fire after stop() is called', async () => {
+		const callback = vi.fn().mockResolvedValue(undefined);
+		const startTime = new Date('2025-01-01T00:00:00.000Z');
+		const fireAt = new Date('2025-01-01T00:05:00.000Z');
+
+		vi.setSystemTime(startTime);
+
+		const job = scheduleSynchronizedJobAt('test-stop-once', fireAt, callback);
+		const clock = clockInstances.at(-1);
+
+		await job.stop();
+		await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+		expect(callback).not.toHaveBeenCalled();
+		expect(clock?.set).not.toHaveBeenCalled();
+		expect(clock?.reset).toHaveBeenCalledTimes(1);
 	});
 });

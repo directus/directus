@@ -40,3 +40,43 @@ export function scheduleSynchronizedJob(
 
 	return { stop };
 }
+
+export function scheduleSynchronizedJobAt(
+	id: string,
+	fireAt: Date,
+	cb: (fireDate: Date) => void | Promise<void>,
+): ScheduledJob {
+	const targetTimestamp = fireAt.getTime();
+	const clock = new SynchronizedClock(`${id}:at:${targetTimestamp}`);
+	let timeout: NodeJS.Timeout | null = null;
+	let stopped = false;
+
+	const schedule = () => {
+		const delay = Math.max(targetTimestamp - Date.now(), 0);
+
+		timeout = setTimeout(async () => {
+			if (stopped) return;
+
+			const wasSet = await clock.set(targetTimestamp);
+
+			if (wasSet) {
+				await cb(fireAt);
+			}
+		}, delay);
+	};
+
+	schedule();
+
+	const stop = async () => {
+		stopped = true;
+
+		if (timeout) {
+			clearTimeout(timeout);
+			timeout = null;
+		}
+
+		await clock.reset();
+	};
+
+	return { stop };
+}

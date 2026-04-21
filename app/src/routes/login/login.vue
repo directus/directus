@@ -65,7 +65,11 @@ useHead({
 
 		<LoginForm v-else-if="driver === DEFAULT_AUTH_DRIVER || driver === 'local'" :provider="provider" />
 
-		<SsoLinks v-if="!authenticated" :providers="auth.providers" />
+		<SsoLinks
+			v-if="!authenticated"
+			:providers="auth.providers"
+			:show-project-locked-notice="driver !== 'ldap' && driver !== DEFAULT_AUTH_DRIVER && driver !== 'local'"
+		/>
 
 		<div v-if="!authenticated && serverStore.info.project?.public_registration" class="registration-wrapper">
 			{{ $t('dont_have_an_account') }}
@@ -79,7 +83,7 @@ useHead({
 				<VIcon name="lock_open" left />
 				{{ $t('authenticated') }}
 			</template>
-			<template v-else-if="logoutReason && te(`logoutReason.${logoutReason}`)">
+			<template v-else-if="logoutReason && logoutReason !== 'PROJECT_LOCKED' && te(`logoutReason.${logoutReason}`)">
 				{{ $t(`logoutReason.${logoutReason}`) }}
 			</template>
 			<template v-else>

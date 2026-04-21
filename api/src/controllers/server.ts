@@ -20,17 +20,21 @@ import {
 } from '../license/addons.js';
 import { getCurrentLicenseBinding } from '../license/binding.js';
 import { isEnvOffline } from '../license/env.js';
+import { applyProposedLicenseRemediation, assessProposedLicenseChange } from '../license/license-change.js';
 import { normalizeOptionalLicenseKey } from '../license/license-context.js';
 import {
 	applyLicense,
+	canEnterLocalFallbackMode,
 	deactivateCurrentLicense,
+	enterLocalFallbackMode,
 	type LicenseResult,
+	syncLicenseRuntime,
 	syncLicenseTokenFromService,
 } from '../license/lifecycle.js';
 import { checkLicense, deactivateLicense } from '../license/service.js';
 import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
-import { SettingsService } from '../services/index.js';
+import { LicenseDeactivationService, SettingsService } from '../services/index.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
 import { getReport } from '../telemetry/lib/get-report.js';
@@ -338,6 +342,145 @@ router.post(
 );
 
 router.post(
+	'/license/change-assessment',
+	asyncHandler(async (req, res, next) => {
+		const service = new ServerService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		if (!(await service.isSetupCompleted()) || req.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		assertEnvOnline();
+
+		const licenseKey = normalizeOptionalLicenseKey(req.body.license_key);
+
+		if (!licenseKey) {
+			throw new InvalidPayloadError({ reason: 'license_key is required' });
+		}
+
+		res.locals['payload'] = {
+			data: await assessProposedLicenseChange({
+				accountability: req.accountability,
+				licenseKey,
+				schema: req.schema,
+			}),
+		};
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/license/change-remediation',
+	asyncHandler(async (req, res, next) => {
+		const service = new ServerService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		if (!(await service.isSetupCompleted()) || req.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		assertEnvOnline();
+
+		const licenseKey = normalizeOptionalLicenseKey(req.body.license_key);
+
+		if (!licenseKey) {
+			throw new InvalidPayloadError({ reason: 'license_key is required' });
+		}
+
+		res.locals['payload'] = {
+			data: await applyProposedLicenseRemediation({
+				accountability: req.accountability,
+				licenseKey,
+				payload: req.body ?? {},
+				schema: req.schema,
+			}),
+		};
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/license/deactivation',
+	asyncHandler(async (req, res, next) => {
+		const service = new ServerService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		if (!(await service.isSetupCompleted()) || req.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const applyPayload = req.body ?? {};
+
+		const continueInFallbackMode =
+			(applyPayload.collections?.length ?? 0) === 0 &&
+			(applyPayload.seats?.admin_seats?.length ?? 0) === 0 &&
+			(applyPayload.seats?.user_seats?.length ?? 0) === 0 &&
+			applyPayload.sso == null;
+
+		if (continueInFallbackMode && !(await canEnterLocalFallbackMode())) {
+			throw new InvalidPayloadError({
+				reason: 'Local fallback mode is unavailable for env-managed or non-terminal license state.',
+			});
+		}
+
+		const deactivationService = new LicenseDeactivationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const result = await deactivationService.apply(applyPayload);
+
+		if (continueInFallbackMode && result.target_mode === 'fallback' && result.compliant === true) {
+			await enterLocalFallbackMode();
+		}
+
+		res.locals['payload'] = {
+			data: result,
+		};
+
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/license/deactivation',
+	asyncHandler(async (req, res, next) => {
+		const service = new ServerService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		if (!(await service.isSetupCompleted()) || req.accountability?.admin !== true) {
+			throw new ForbiddenError();
+		}
+
+		const deactivationService = new LicenseDeactivationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		res.locals['payload'] = {
+			data: await deactivationService.assess(),
+		};
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
 	'/license/deactivate',
 	asyncHandler(async (req, res, next) => {
 		const service = new ServerService({
@@ -428,6 +571,8 @@ router.post(
 					activationState.result.payload,
 					getLicensePayloadCacheTtl(activationState.result.payload),
 				);
+
+				await syncLicenseRuntime(activationState.result.payload);
 			}
 		} catch (error: any) {
 			const activationResult = activationState.result;

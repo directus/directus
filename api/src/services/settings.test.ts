@@ -3,6 +3,7 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { clearLicenseFallbackCompliance } from '../license/cache-license-fallback-compliance.js';
 import { getLicenseEntitlements } from '../license/summary.js';
 import { ItemsService } from './items.js';
 import { SettingsService } from './settings.js';
@@ -18,6 +19,10 @@ vi.mock('../license/summary.js', async () => {
 		getLicenseEntitlements: vi.fn(),
 	};
 });
+
+vi.mock('../license/cache-license-fallback-compliance.js', () => ({
+	clearLicenseFallbackCompliance: vi.fn(),
+}));
 
 const schema = new SchemaBuilder()
 	.collection('directus_settings', (collection) => {
@@ -147,5 +152,23 @@ describe('SettingsService', () => {
 
 		await expect(service.upsertSingleton({ sso_disabled: false })).rejects.toBeInstanceOf(ForbiddenError);
 		expect(upsertSingletonSpy).not.toHaveBeenCalled();
+	});
+
+	it('clears fallback compliance cache after updating sso_disabled', async () => {
+		vi.mocked(getLicenseEntitlements).mockResolvedValue({
+			sso_enabled: true,
+		} as any);
+
+		const upsertSingletonSpy = vi.spyOn(ItemsService.prototype, 'upsertSingleton').mockResolvedValue(1 as any);
+
+		const service = new SettingsService({
+			knex: db,
+			schema,
+		});
+
+		await service.upsertSingleton({ sso_disabled: true });
+
+		expect(upsertSingletonSpy).toHaveBeenCalledWith({ sso_disabled: true }, undefined);
+		expect(clearLicenseFallbackCompliance).toHaveBeenCalledTimes(1);
 	});
 });

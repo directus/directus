@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import LicenseAddonsSection from './components/license-addons-section.vue';
 import LicenseBanners from './components/license-banners.vue';
 import LicenseDangerZone from './components/license-danger-zone.vue';
+import LicenseDeactivationWorkflow from './components/license-deactivation-workflow.vue';
 import LicensePlanSection from './components/license-plan-section.vue';
 import LicenseUsageGrid from './components/license-usage-grid.vue';
 import type { AddonRow, LicenseBannerState, LicenseUsageRow } from './components/types';
@@ -18,11 +20,13 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useProposedLicenseChange } from '@/composables/use-proposed-license-change';
 import { translateAPIError } from '@/lang';
 import LicenseKeyInput from '@/modules/licensing/components/license-key-input.vue';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
-import { ServerLicenseInfo } from '@/types/license';
+import { useUserStore } from '@/stores/user';
+import { LicenseDeactivationAssessment, ServerLicenseInfo } from '@/types/license';
 import { notify } from '@/utils/notify';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -63,8 +67,11 @@ type AddonDialogError = {
 };
 
 const { t } = useI18n();
+const router = useRouter();
 const serverStore = useServerStore();
 const settingsStore = useSettingsStore();
+const userStore = useUserStore();
+const { applyProposedKey: applyCheckedProposedKey, checkProposedKey } = useProposedLicenseChange();
 
 const license = ref<ServerLicenseInfo | null>(null);
 const addons = ref<AddonOptionsResponse | null>(null);
@@ -73,9 +80,18 @@ const editableLicenseKey = ref<string | null>(null);
 const loading = ref(false);
 const saving = ref(false);
 const deactivating = ref(false);
+const applyingProposedLicense = ref(false);
 const drawerOpen = ref(false);
+const licenseDrawerCanSubmit = ref(false);
+const deactivationDialogOpen = ref(false);
+const deactivateConfirmationOpen = ref(false);
+const licenseChangeDialogOpen = ref(false);
 const error = ref<unknown>(null);
 const addonsError = ref<string | null>(null);
+const deactivateConfirmationMode = ref<'direct' | 'anyway'>('direct');
+const deactivationAssessment = ref<LicenseDeactivationAssessment | null>(null);
+const proposedKey = ref<string | null>(null);
+const changeAssessment = ref<LicenseDeactivationAssessment | null>(null);
 const addonOpen = ref(false);
 const addonItem = ref<AddonRow | null>(null);
 const addonQty = ref('1');
@@ -202,7 +218,7 @@ const canDeactivate = computed(() => {
 });
 
 const canSaveLicenseKey = computed(() => {
-	return Boolean(editableLicenseKey.value?.trim()) && !saving.value;
+	return licenseDrawerCanSubmit.value && !saving.value;
 });
 
 const selectedAddon = computed(() => addonItem.value);
@@ -429,11 +445,50 @@ async function refreshLicenseState() {
 	await Promise.all([serverStore.hydrateInfo(), settingsStore.hydrate(), loadLicenseData()]);
 }
 
+async function handleManualDeactivationApplied(updatedAssessment: LicenseDeactivationAssessment) {
+	await refreshLicenseState();
+	deactivationAssessment.value = updatedAssessment;
+
+	if (updatedAssessment?.compliant === true) {
+		deactivationDialogOpen.value = false;
+		openDeactivateConfirmation('direct');
+		return;
+	}
+
+	deactivationDialogOpen.value = true;
+}
+
+function clearPendingLicenseChange() {
+	proposedKey.value = null;
+	changeAssessment.value = null;
+}
+
+function closeLicenseChangeDialog() {
+	licenseChangeDialogOpen.value = false;
+	clearPendingLicenseChange();
+}
+
+function handleLicenseChangeDialogUpdate(active: boolean) {
+	licenseChangeDialogOpen.value = active;
+
+	if (!active) {
+		clearPendingLicenseChange();
+	}
+}
+
 function openLicenseDrawer() {
 	if (!canManageLicense.value) return;
 	editableLicenseKey.value = null;
+	licenseDrawerCanSubmit.value = false;
 	error.value = null;
 	drawerOpen.value = true;
+}
+
+function closeLicenseDrawer() {
+	drawerOpen.value = false;
+	editableLicenseKey.value = null;
+	licenseDrawerCanSubmit.value = false;
+	error.value = null;
 }
 
 function openAddonDialog(addon: AddonRow) {
@@ -586,15 +641,55 @@ async function saveLicenseKey() {
 	error.value = null;
 
 	try {
-		await api.patch('/settings', { license_key: nextLicenseKey });
-		drawerOpen.value = false;
-		editableLicenseKey.value = null;
-		await refreshLicenseState();
-		notify({ title: t('license.save_success') });
+		const assessment = await checkProposedKey(nextLicenseKey);
+
+		if (!assessment.compliant) {
+			proposedKey.value = nextLicenseKey;
+			changeAssessment.value = assessment;
+			closeLicenseDrawer();
+			licenseChangeDialogOpen.value = true;
+			return;
+		}
+
+		await persistProposedLicenseKey(nextLicenseKey);
 	} catch (err) {
 		error.value = err;
+		clearPendingLicenseChange();
 	} finally {
 		saving.value = false;
+	}
+}
+
+async function persistProposedLicenseKey(licenseKey: string) {
+	const result = await applyCheckedProposedKey(licenseKey);
+
+	if (result.status === 'blocked') {
+		proposedKey.value = licenseKey;
+		changeAssessment.value = result.assessment;
+		closeLicenseDrawer();
+		licenseChangeDialogOpen.value = true;
+		return;
+	}
+
+	closeLicenseDrawer();
+	closeLicenseChangeDialog();
+	await refreshLicenseState();
+	notify({ title: t('license.save_success') });
+}
+
+async function applyProposedKey() {
+	if (!proposedKey.value) return;
+
+	applyingProposedLicense.value = true;
+	error.value = null;
+
+	try {
+		await persistProposedLicenseKey(proposedKey.value);
+	} catch (err) {
+		error.value = err;
+		closeLicenseChangeDialog();
+	} finally {
+		applyingProposedLicense.value = false;
 	}
 }
 
@@ -605,7 +700,14 @@ async function deactivate() {
 	try {
 		await api.post('/server/license/deactivate');
 		editableLicenseKey.value = null;
+		deactivateConfirmationOpen.value = false;
+		deactivationDialogOpen.value = false;
 		await refreshLicenseState();
+
+		if (serverStore.info.license_locked === true) {
+			await router.push('/license-recovery');
+		}
+
 		notify({ title: t('license.deactivate_success') });
 	} catch (err) {
 		error.value = err;
@@ -613,6 +715,56 @@ async function deactivate() {
 		deactivating.value = false;
 	}
 }
+
+async function openDeactivationDialog() {
+	if (!canDeactivate.value) return;
+	error.value = null;
+	deactivationAssessment.value = null;
+
+	try {
+		const { data } = await api.get('/server/license/deactivation');
+		const assessment = data.data as LicenseDeactivationAssessment | null;
+
+		if (assessment?.compliant === true) {
+			openDeactivateConfirmation('direct');
+			return;
+		}
+
+		deactivationAssessment.value = assessment;
+	} catch (err) {
+		error.value = err;
+		return;
+	}
+
+	deactivationDialogOpen.value = true;
+}
+
+function handleDeactivationDialogUpdate(active: boolean) {
+	deactivationDialogOpen.value = active;
+
+	if (!active) {
+		deactivationAssessment.value = null;
+	}
+}
+
+function openDeactivateConfirmation(mode: 'direct' | 'anyway') {
+	if (!canDeactivate.value) return;
+	deactivateConfirmationMode.value = mode;
+	error.value = null;
+	deactivateConfirmationOpen.value = true;
+}
+
+const deactivateConfirmationTitle = computed(() => {
+	return deactivateConfirmationMode.value === 'anyway'
+		? t('license.deactivation.deactivate_anyway_title')
+		: t('license.deactivation.confirm_title');
+});
+
+const deactivateConfirmationCopy = computed(() => {
+	return deactivateConfirmationMode.value === 'anyway'
+		? t('license.deactivation.deactivate_anyway_copy')
+		: t('license.deactivation.confirm_copy');
+});
 
 onMounted(() => {
 	void loadLicenseData();
@@ -668,7 +820,7 @@ onMounted(() => {
 						:can-deactivate="canDeactivate"
 						:deactivating="deactivating"
 						:env-notice="showEnvNotice ? t('license.env_notice') : null"
-						@deactivate="deactivate"
+						@deactivate="openDeactivationDialog"
 					/>
 				</div>
 			</template>
@@ -678,7 +830,7 @@ onMounted(() => {
 			v-model="drawerOpen"
 			:title="$t('license.manage_license_title')"
 			icon="vpn_key"
-			@cancel="drawerOpen = false"
+			@cancel="closeLicenseDrawer"
 			@apply="saveLicenseKey"
 		>
 			<template #actions>
@@ -704,9 +856,35 @@ onMounted(() => {
 					:has-stored-value="hasStoredLicenseValue && editableLicenseKey === null"
 					:utm-term="serverStore.info.version"
 					utm-content="settings_drawer"
+					@can-submit-change="licenseDrawerCanSubmit = $event"
 				/>
 			</div>
 		</VDrawer>
+
+		<VDialog
+			v-model="deactivationDialogOpen"
+			keep-behind
+			@update:model-value="handleDeactivationDialogUpdate"
+			@esc="handleDeactivationDialogUpdate(false)"
+		>
+			<div class="recovery-dialog">
+				<LicenseDeactivationWorkflow
+					mode="manual_deactivation"
+					:title="$t('license.deactivation.title')"
+					:license="license"
+					:initial-assessment="deactivationAssessment"
+					:current-user-email="
+						userStore.currentUser && !('share' in userStore.currentUser) ? userStore.currentUser.email : null
+					"
+					:can-manage-license="false"
+					:can-deactivate-license="canDeactivate"
+					:deactivating-license="deactivating"
+					@deactivate-license="openDeactivateConfirmation('direct')"
+					@deactivate-anyway="openDeactivateConfirmation('anyway')"
+					@remediation-applied="handleManualDeactivationApplied"
+				/>
+			</div>
+		</VDialog>
 
 		<VDialog :model-value="addonOpen" @update:model-value="onAddonDialog" @esc="closeAddonDialog">
 			<div class="addon-dialog">
@@ -757,6 +935,50 @@ onMounted(() => {
 				</div>
 			</div>
 		</VDialog>
+
+		<VDialog
+			:model-value="licenseChangeDialogOpen"
+			keep-behind
+			@update:model-value="handleLicenseChangeDialogUpdate"
+			@esc="closeLicenseChangeDialog"
+		>
+			<div class="recovery-dialog">
+				<LicenseDeactivationWorkflow
+					mode="license_change"
+					:title="$t('license.change_license_title')"
+					:license="license"
+					:initial-assessment="changeAssessment"
+					:license-key="proposedKey"
+					:current-user-email="
+						userStore.currentUser && !('share' in userStore.currentUser) ? userStore.currentUser.email : null
+					"
+					:deactivating-license="applyingProposedLicense"
+					@apply-license-change="applyProposedKey"
+					@remediation-applied="refreshLicenseState"
+				/>
+			</div>
+		</VDialog>
+
+		<VDialog v-model="deactivateConfirmationOpen" @esc="deactivateConfirmationOpen = false">
+			<div class="confirm-dialog">
+				<h2>{{ deactivateConfirmationTitle }}</h2>
+				<p>{{ deactivateConfirmationCopy }}</p>
+
+				<VNotice v-if="error && deactivateConfirmationOpen" type="danger">
+					<p v-if="errorCode" class="error-code">{{ errorCode }}</p>
+					<p>{{ errorMessage }}</p>
+				</VNotice>
+
+				<div class="confirm-actions">
+					<VButton secondary class="confirm-cancel" @click="deactivateConfirmationOpen = false">
+						{{ $t('cancel') }}
+					</VButton>
+					<VButton class="confirm-deactivate" kind="danger" :disabled="deactivating" @click="deactivate">
+						{{ $t('license.deactivate') }}
+					</VButton>
+				</div>
+			</div>
+		</VDialog>
 	</PrivateView>
 </template>
 
@@ -791,6 +1013,35 @@ onMounted(() => {
 .error-code {
 	margin: 0 0 0.25rem;
 	font-weight: 600;
+}
+
+.recovery-dialog {
+	inline-size: min(72rem, calc(100vw - 2rem));
+	max-block-size: calc(100vh - 2rem);
+	padding: 1.5rem;
+	overflow: auto;
+	background: var(--theme--background);
+	border-radius: var(--theme--border-radius);
+}
+
+.confirm-dialog {
+	display: grid;
+	gap: 1rem;
+	inline-size: min(32rem, calc(100vw - 2rem));
+	padding: 1.5rem;
+	background: var(--theme--background);
+	border-radius: var(--theme--border-radius);
+}
+
+.confirm-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+}
+
+.confirm-deactivate:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 .addon-dialog {

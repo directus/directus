@@ -10,6 +10,7 @@ import type {
 } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
+import { clearLicenseFallbackCompliance } from '../license/cache-license-fallback-compliance.js';
 import { getLicenseEntitlements } from '../license/summary.js';
 import { sendReport } from '../telemetry/index.js';
 import { ItemsService } from './items.js';
@@ -52,7 +53,9 @@ export class SettingsService extends ItemsService {
 	}
 
 	override async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (Object.hasOwn(data, 'sso_disabled')) {
+		const includesSsoDisabled = Object.hasOwn(data, 'sso_disabled');
+
+		if (includesSsoDisabled) {
 			const entitlements = await getLicenseEntitlements(this.knex);
 
 			if (entitlements.sso_enabled !== true) {
@@ -66,7 +69,17 @@ export class SettingsService extends ItemsService {
 			}
 		}
 
-		return await super.upsertSingleton(data, opts);
+		const result = await super.upsertSingleton(data, opts);
+
+		if (includesSsoDisabled) {
+			try {
+				await clearLicenseFallbackCompliance();
+			} catch {
+				// Ignore cache invalidation failures and preserve the successful settings write.
+			}
+		}
+
+		return result;
 	}
 
 	async setOwner(data: OwnerInformation) {

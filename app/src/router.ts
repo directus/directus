@@ -1,9 +1,10 @@
 import { useAppStore } from '@directus/stores';
 import { useLocalStorage } from '@vueuse/core';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
-import { refresh } from '@/auth';
+import { logout, LogoutReason, refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
+import LicenseRecoveryRoute from '@/routes/license-recovery.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
@@ -45,6 +46,11 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		meta: {
 			public: true,
 		},
+	},
+	{
+		name: 'license-recovery',
+		path: '/license-recovery',
+		component: LicenseRecoveryRoute,
 	},
 	{
 		name: 'login',
@@ -186,6 +192,17 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 
 		if (userStore.currentUser && !('share' in userStore.currentUser)) {
+			if (serverStore.info.license_locked === true) {
+				if (userStore.isAdmin) {
+					if (to.path !== '/license-recovery') {
+						return '/license-recovery';
+					}
+				} else {
+					await logout({ navigate: false, reason: LogoutReason.PROJECT_LOCKED });
+					return '/login?reason=PROJECT_LOCKED';
+				}
+			}
+
 			if (to.path !== '/tfa-setup') {
 				// Check for role-based enforcement
 				if (userStore.currentUser.enforce_tfa && userStore.currentUser.tfa_secret === null) {
@@ -208,6 +225,10 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 				return userStore.currentUser.last_page || '/login';
 			}
 		}
+	}
+
+	if (to.path === '/license-recovery' && serverStore.info.license_locked !== true) {
+		return '/settings/license';
 	}
 
 	return;

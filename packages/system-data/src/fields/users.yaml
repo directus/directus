@@ -179,6 +179,8 @@ fields:
           value: unverified
         - text: $t:fields.directus_users.status_active
           value: active
+        - text: $t:fields.directus_users.status_deactivated
+          value: deactivated
         - text: $t:fields.directus_users.status_suspended
           value: suspended
         - text: $t:fields.directus_users.status_archived

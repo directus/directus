@@ -112,6 +112,7 @@ recent: Recent
 previous: Previous
 latest: Latest
 updated: Updated
+skip: Skip
 export_items: Export Items
 and: And
 or: Or
@@ -263,6 +264,9 @@ delete_global_bookmark: Delete Global Bookmark
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
+  PROJECT_LOCKED: Project has been locked due to license suspension. Contact your admin to resolve the issue.
+brand_directus_label: Powered by Directus
+brand_oig_label: Open Innovation Grant
 public_label: Public
 public_description: Controls what API data is available without authenticating.
 public_role_info: >-
@@ -876,6 +880,7 @@ errors:
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_PROVIDER_CONFIG: Invalid provider configuration
   INVALID_QUERY: Invalid query
+  LICENSE_CHANGE_BLOCKED: This project must be remediated before the new license key can be applied
   SSO_DISABLED: SSO has been disabled for this project
   SSO_NON_ADMIN: SSO is only available for administrators
   INVALID_TOKEN: Invalid token
@@ -1406,7 +1411,11 @@ license:
   manage_license_notice: >
     If you have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue
     may be eligible for our {openInnovationGrant}.
+  recovery:
+    title: License Recovery
+    headline: Resolve the current license overage or update the license to unlock this project.
   open_innovation_grant: Open Innovation Grant
+  get_license_key: Get a License Key
   manage_plan: Manage Plan
   upgrade_plan: Upgrade Plan
   manage_addon: Manage
@@ -1436,18 +1445,76 @@ license:
   renews_on: Renews on {date}
   expires_on: Expires on {date}
   expiring_soon_notice: You have {days} days remaining before your Directus license key expires.
-  expired_notice: Your Directus license key has expired. Refresh or update it to avoid your project being locked.
+  expired_notice:
+    Your Directus license key has expired. You have {days} days to resolve your license issue or your Directus project
+    will be locked.
   invalid_notice: This project license is invalid. Update or replace it to restore the correct licensed state.
   included: Included
   optional: Optional
   not_included: Not Included
   days_count: '{count} days'
   deactivate: Deactivate License
+  apply_license: Apply License
   save_success: License key was saved successfully.
   deactivate_success: License was deactivated successfully.
   env_notice: This project license is managed by ENV and can’t be edited here.
   value_securely_stored: Value Securely Stored
   locked_notice: This project is currently locked because its license grace period has been exhausted.
+  change_license_title: Apply License Key
+  apply_license_key: Apply License Key
+  grace_popup:
+    title: Have a license key?
+    copy:
+      Enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be eligible for our
+      {openInnovationGrant}.
+  deactivation:
+    title: License Suspension
+    apply_success_title: Remediation applied
+    apply_success_text: The project now complies with the fallback limits that apply after license deactivation.
+    apply_success_text_license_change: The project now complies with the limits of the proposed license.
+    required: Required
+    all_set: All Set
+    select_items: Select {count} items
+    show_more: Show {count} more
+    apply: Deactivate Selected Items
+    apply_remediation: Apply Remediation
+    continue_fallback_mode: Continue in Fallback Mode
+    deactivate_anyway: Deactivate anyway
+    confirm_title: Deactivate License
+    confirm_copy:
+      This will remove the current license and return the project to the fallback limits shown in this workflow.
+    deactivate_anyway_title: Deactivate License Anyway
+    deactivate_anyway_copy: >
+      This will remove the current license and return the project to the fallback limits shown in this workflow. If the
+      project is still out of compliance afterward, it may remain or become locked.
+    notice:
+      locked_recovery:
+        compliant: This project already complies with the fallback limits required to unlock it.
+        general: To unlock this project, bring it back within the fallback limits shown below.
+      manual_deactivation:
+        compliant: This project already complies with the fallback limits that will apply after deactivation.
+        general: After deactivation, this project will fall back to the limits shown below.
+      license_change:
+        compliant: This project already complies with the limits of the proposed license.
+        general: To apply this license key, bring the project within the limits shown below.
+    collections:
+      title: Data Collections
+      copy: Select collection(s) to deactivate
+    seats:
+      title: User Seats
+      admin_title: Select admin seat(s) to deactivate
+      user_title: Select user seat(s) to deactivate
+    sso:
+      title: SSO Deactivation
+      confirm: Confirm SSO Deactivation
+      hint: >
+        Anyone who was accessing via SSO will need an email and password configured. To retain access, they will use the
+        password reset flow.
+      dialog_title: Confirm SSO Admin Information
+      dialog_copy: >
+        Please confirm your email and password are ready. Once SSO has been disabled, you will need both to log back in.
+      email_status: Email
+      password_status: Password
   feature:
     seats: Seats
     activity_history: Activity History
@@ -1507,6 +1574,9 @@ batch_delete_confirm: >-
   No items have been selected | Are you sure you want to delete this item? This action can not be undone. | Are you sure
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
+confirm: Confirm
+set: Set
+not_set: Not Set
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
@@ -1627,6 +1697,7 @@ fields:
     status_invited: Invited
     status_unverified: Unverified
     status_active: Active
+    status_deactivated: Deactivated
     status_suspended: Suspended
     status_archived: Archived
     role: Role
@@ -1899,12 +1970,14 @@ field_options:
     status_dropdown_draft: Draft
     status_dropdown_invited: Invited
     status_dropdown_active: Active
+    status_dropdown_deactivated: Deactivated
     status_dropdown_suspended: Suspended
     status_dropdown_archived: Archived
     token: Enter a secure access token...
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: No value
 do_nothing: Do Nothing
+canceled: Canceled
 generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
 save_current_user_role: Save Current User Role

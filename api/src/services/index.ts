@@ -16,6 +16,7 @@ export * from './deployment-runs.js';
 export * from './graphql/index.js';
 export * from './import-export.js';
 export * from './items.js';
+export * from './license-deactivation.js';
 export * from './mail/index.js';
 export * from './meta.js';
 export * from './notifications.js';

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import PoweredByDirectus from '@/components/powered-by-directus.vue';
 import VImage from '@/components/v-image.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
@@ -17,6 +18,7 @@ withDefaults(defineProps<Props>(), {
 const serverStore = useServerStore();
 
 const { info } = storeToRefs(serverStore);
+const brandingLabelKey = computed(() => info.value?.branding_label_key ?? null);
 
 const hasCustomBackground = computed(() => {
 	return !!info.value?.project?.public_background;
@@ -95,6 +97,9 @@ const logoURL = computed<string | null>(() => {
 			</Transition>
 			<div class="note-container">
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />
+			</div>
+			<div v-if="brandingLabelKey" class="powered-by-container">
+				<PoweredByDirectus :label-key="brandingLabelKey" type="normal" />
 			</div>
 		</div>
 	</div>
@@ -373,6 +378,18 @@ const logoURL = computed<string | null>(() => {
 				border-radius: 0.3125rem;
 				backdrop-filter: blur(0.125rem);
 				overflow-wrap: break-word;
+			}
+		}
+
+		.powered-by-container {
+			position: absolute;
+			inset-inline-end: 1.75rem;
+			inset-block-end: 1.75rem;
+			display: flex;
+			pointer-events: none;
+
+			:deep(.powered-by-directus) {
+				pointer-events: auto;
 			}
 		}
 

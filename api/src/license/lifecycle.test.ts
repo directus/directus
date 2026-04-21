@@ -4,6 +4,7 @@ import { clearSystemCache } from '../cache.js';
 import { verify } from '../utils/verify-token.js';
 import { getCurrentLicenseBinding } from './binding.js';
 import { getEnvOfflinePayload, isEnvOffline, toEnvOfflineConfigError } from './env.js';
+import { BindingMismatchError } from './errors.js';
 import { hashLicenseKey } from './license-context.js';
 import {
 	applyLicense,
@@ -51,6 +52,15 @@ vi.mock('./binding.js', () => ({
 	getCurrentLicenseBinding: vi.fn(),
 }));
 
+vi.mock('./cache-license-fallback-compliance.js', () => ({
+	clearLicenseFallbackCompliance: vi.fn().mockResolvedValue(undefined),
+	refreshLicenseFallbackCompliance: vi.fn().mockResolvedValue(true),
+}));
+
+vi.mock('./cache-license-gate-snapshot.js', () => ({
+	refreshLicenseGateSnapshot: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock('./env.js', () => ({
 	getEnvOfflinePayload: vi.fn(),
 	isEnvOffline: vi.fn(),
@@ -67,6 +77,11 @@ vi.mock('./service.js', () => ({
 	activateLicense: vi.fn(),
 	deactivateLicense: vi.fn(),
 	validateLicense: vi.fn(),
+}));
+
+vi.mock('./refresh-scheduler.js', () => ({
+	initializeLicenseRefreshSchedule: vi.fn().mockResolvedValue(undefined),
+	recomputeLicenseRefreshSchedule: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('./storage.js', () => ({
@@ -184,6 +199,73 @@ describe('applyLicense', () => {
 		});
 
 		expect(mockedVerify).toHaveBeenNthCalledWith(2, 'validated-token');
+	});
+
+	test('adopted a retained same-key binding into settings after successful validation', async () => {
+		mockedGetCurrentLicenseBinding.mockResolvedValue({
+			licenseKey: undefined,
+			source: null,
+			durableStatus: 'active',
+			terminal: null,
+			storedKeyHash: hashLicenseKey('same-key'),
+			storedProjectId: 'project_1',
+			graceOn: null,
+		});
+
+		const result = await applyLicense('same-key', {
+			publicUrl: 'https://example.com',
+			source: 'settings',
+		});
+
+		expect(result.action).toBe('validate');
+
+		expect(mockedValidateLicense).toHaveBeenCalledWith({
+			licenseKey: 'same-key',
+			projectId: 'project_1',
+			publicUrl: 'https://example.com',
+			usageMetrics: {},
+		});
+
+		expect(mockedSaveLicenseKey).toHaveBeenCalledWith('same-key', undefined);
+		expect(mockedActivateLicense).not.toHaveBeenCalled();
+		expect(mockedDeactivateLicense).not.toHaveBeenCalled();
+	});
+
+	test('activated the submitted key directly when same-key settings adoption hit a binding mismatch', async () => {
+		mockedGetCurrentLicenseBinding.mockResolvedValue({
+			licenseKey: undefined,
+			source: null,
+			durableStatus: 'active',
+			terminal: null,
+			storedKeyHash: hashLicenseKey('same-key'),
+			storedProjectId: 'project_1',
+			graceOn: null,
+		});
+
+		mockedValidateLicense.mockRejectedValueOnce(new BindingMismatchError());
+
+		const result = await applyLicense('same-key', {
+			publicUrl: 'https://example.com',
+			source: 'settings',
+		});
+
+		expect(result.action).toBe('activate');
+
+		expect(mockedValidateLicense).toHaveBeenCalledWith({
+			licenseKey: 'same-key',
+			projectId: 'project_1',
+			publicUrl: 'https://example.com',
+			usageMetrics: {},
+		});
+
+		expect(mockedActivateLicense).toHaveBeenCalledWith({
+			licenseKey: 'same-key',
+			projectId: 'project_1',
+			publicUrl: 'https://example.com',
+		});
+
+		expect(mockedSaveLicenseKey).toHaveBeenCalledWith('same-key', undefined);
+		expect(mockedDeactivateLicense).not.toHaveBeenCalled();
 	});
 
 	test('deactivated the previous binding before activating a different key', async () => {

@@ -190,6 +190,15 @@ describe('Integration Tests', () => {
 				expect(clearUserSessionsSpy).toBeCalled();
 			});
 
+			it('should clear sessions when status is changed to "deactivated"', async () => {
+				const opts: MutationOptions = {};
+
+				await service.updateMany(['user-id-5b'], { status: 'deactivated' }, opts);
+
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
+				expect(clearUserSessionsSpy).toBeCalled();
+			});
+
 			it('should request user limit checks if status is changed to "active"', async () => {
 				const opts: MutationOptions = {};
 
