@@ -3,6 +3,7 @@ import type { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VersionChip from './version-chip.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -337,13 +338,9 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 </script>
 
 <template>
-	<VMenu class="version-menu" placement="bottom-start" show-arrow>
-		<template #activator="{ toggle }">
-			<button class="version-button" type="button" @click="toggle">
-				<VIcon name="published_with_changes" />
-				<VTextOverflow class="version-name" :text="getVersionDisplayName(currentVersion)" placement="bottom" />
-				<VIcon small name="arrow_drop_down" />
-			</button>
+	<VMenu class="version-menu" placement="bottom" show-arrow>
+		<template #activator="{ toggle, active }">
+			<VersionChip :version="currentVersion" :active @click="toggle()" />
 		</template>
 
 		<VList class="version-list">
@@ -622,29 +619,5 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 	--v-list-item-color: var(--theme--danger);
 	--v-list-item-color-hover: var(--v-list-item-color);
 	--v-list-item-icon-color: var(--v-list-item-color);
-}
-
-.version-name {
-	margin-inline-start: 0.15em;
-}
-
-.version-button {
-	--v-icon-size: 0.8125rem;
-
-	color: var(--theme--foreground-subdued);
-	display: flex;
-	align-items: center;
-	pointer-events: all;
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
-
-	&:focus-visible {
-		--focus-ring-offset: var(--focus-ring-offset-invert);
-
-		padding-inline-start: var(--focus-ring-width);
-		margin-inline-end: var(--focus-ring-width);
-	}
 }
 </style>
