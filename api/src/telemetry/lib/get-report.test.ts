@@ -92,7 +92,7 @@ beforeEach(() => {
 		flush: vi.fn(),
 		flushAll: vi.fn(),
 		getAndResetAll: vi.fn().mockResolvedValue(mockRequestCounts),
-		destroy: vi.fn(),
+		terminate: vi.fn(),
 	});
 
 	vi.mocked(formatApiRequestCounts).mockReturnValue({

@@ -33,6 +33,13 @@ const mockServerInfo: Info = {
 		public_registration: null,
 		public_registration_verify_email: null,
 	},
+	show_license_key_field: true,
+	license_source: null,
+	branding_label_key: null,
+	license: null,
+	license_locked: false,
+	license_status: 'inactive',
+	license_grace_type: null,
 };
 
 const mockAuthProviders: Auth['providers'] = [
@@ -56,6 +63,27 @@ afterEach(() => {
 });
 
 describe('hydrate action', async () => {
+	test('should hydrate only info without requesting auth providers', async () => {
+		apiGetSpy.mockImplementation((path: string) => {
+			if (path === '/server/info') {
+				return Promise.resolve({
+					data: {
+						data: mockServerInfo,
+					},
+				});
+			}
+
+			throw new Error(`Unexpected path: ${path}`);
+		});
+
+		const serverStore = useServerStore();
+		await serverStore.hydrateInfo();
+
+		expect(serverStore.info).toEqual(mockServerInfo);
+		expect(serverStore.auth.providers).toEqual([]);
+		expect(serverStore.auth.disableDefault).toEqual(false);
+	});
+
 	test('should hydrate info', async () => {
 		apiGetSpy.mockImplementation((path: string) => {
 			if (path === '/server/info') {

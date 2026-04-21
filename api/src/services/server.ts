@@ -9,6 +9,7 @@ import { merge } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
+import { getLicenseEntitlements, getLicenseStateSummary, getLicenseUsageSummary } from '../license/summary.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
@@ -38,9 +39,40 @@ export class ServerService {
 		return Boolean(await this.knex('directus_users').first());
 	}
 
+	async licenseData(): Promise<Record<string, any>> {
+		const [licenseState, entitlements] = await Promise.all([
+			getLicenseStateSummary(this.knex),
+			getLicenseEntitlements(this.knex),
+		]);
+
+		const usage = await getLicenseUsageSummary(this.knex, entitlements);
+
+		const metadata = licenseState.displayMetadata;
+
+		return {
+			source: licenseState.source,
+			show_license_key_field: licenseState.showLicenseKeyField,
+			license_status: licenseState.status,
+			license_locked: licenseState.locked,
+			license_grace_type: licenseState.graceType,
+			status: licenseState.displayStatus,
+			plan: metadata?.plan ?? null,
+			project_id: metadata?.project_id ?? null,
+			public_url: metadata?.public_url ?? null,
+			refresh_interval: metadata?.refresh_interval ?? null,
+			grace_period: metadata?.grace_period ?? null,
+			expires_at: metadata?.expires_at ?? null,
+			renews_at: metadata?.renews_at ?? null,
+			addons: metadata?.addons ?? [],
+			entitlements,
+			usage,
+		};
+	}
+
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
 		const setupComplete = await this.isSetupCompleted();
+		const licenseState = await getLicenseStateSummary(this.knex);
 
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
@@ -69,7 +101,29 @@ export class ServerService {
 
 		info['setupCompleted'] = setupComplete;
 
+		if (!setupComplete || this.accountability?.user) {
+			info['show_license_key_field'] = licenseState.showLicenseKeyField;
+		}
+
+		const entitlements = await getLicenseEntitlements(this.knex);
+		let brandingLabelKey: 'brand_directus_label' | 'brand_oig_label' | null = null;
+
+		if (!entitlements.hide_directus_branding_enabled) {
+			brandingLabelKey = licenseState.displayMetadata?.is_oig === true ? 'brand_oig_label' : 'brand_directus_label';
+		}
+
+		info['branding_label_key'] = brandingLabelKey;
+
 		if (this.accountability?.user) {
+			info['license_status'] = licenseState.status;
+			info['license_locked'] = licenseState.locked;
+			info['license_grace_type'] = licenseState.graceType;
+
+			if (this.accountability.admin === true) {
+				info['license_source'] = licenseState.source;
+			}
+
+			info['license'] = entitlements;
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 

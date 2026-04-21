@@ -3,6 +3,9 @@ import type { ContainsNullValuesErrorExtensions } from './errors/contains-null-v
 import type { HitRateLimitErrorExtensions } from './errors/hit-rate-limit.js';
 import type { IllegalAssetTransformationErrorExtensions } from './errors/illegal-asset-transformation.js';
 import type { InvalidForeignKeyErrorExtensions } from './errors/invalid-foreign-key.js';
+import type { InvalidLicenseConfigErrorExtensions } from './errors/invalid-license-config.js';
+import type { InvalidLicenseKeyErrorExtensions } from './errors/invalid-license-key.js';
+import type { InvalidLicenseTokenErrorExtensions } from './errors/invalid-license-token.js';
 import type { InvalidPayloadErrorExtensions } from './errors/invalid-payload.js';
 import type { InvalidProviderConfigErrorExtensions } from './errors/invalid-provider-config.js';
 import type { InvalidQueryErrorExtensions } from './errors/invalid-query.js';
@@ -21,6 +24,9 @@ type Map = {
 	[ErrorCode.ContainsNullValues]: ContainsNullValuesErrorExtensions;
 	[ErrorCode.IllegalAssetTransformation]: IllegalAssetTransformationErrorExtensions;
 	[ErrorCode.InvalidForeignKey]: InvalidForeignKeyErrorExtensions;
+	[ErrorCode.InvalidLicenseConfig]: InvalidLicenseConfigErrorExtensions;
+	[ErrorCode.InvalidLicenseKey]: InvalidLicenseKeyErrorExtensions;
+	[ErrorCode.InvalidLicenseToken]: InvalidLicenseTokenErrorExtensions;
 	[ErrorCode.InvalidPayload]: InvalidPayloadErrorExtensions;
 	[ErrorCode.InvalidProviderConfig]: InvalidProviderConfigErrorExtensions;
 	[ErrorCode.InvalidQuery]: InvalidQueryErrorExtensions;

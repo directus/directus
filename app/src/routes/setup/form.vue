@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { SetupForm } from '@directus/types';
+import type { ValidationError as FormValidationError, SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
+import type { ValidationError as SetupValidationError } from './form';
 import { defaultValues, useFormFields } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -16,7 +17,7 @@ const props = withDefaults(
 		register?: boolean;
 		skipLicense?: boolean;
 		modelValue?: Partial<SetupForm>;
-		errors?: Record<string, any>[];
+		errors?: SetupValidationError[];
 		initialValues?: SetupForm;
 		utmLocation?: string;
 	}>(),
@@ -30,6 +31,7 @@ const props = withDefaults(
 );
 
 const initialValues = toRef(props, 'initialValues');
+const validationErrors = computed(() => props.errors as FormValidationError[] | undefined);
 
 const value = defineModel<SetupForm>();
 
@@ -63,7 +65,7 @@ const fields = useFormFields(props.register, value, initialValues);
 		<VForm
 			v-model="value"
 			:initial-values="initialValues"
-			:validation-errors="errors"
+			:validation-errors="validationErrors"
 			:show-validation-errors="false"
 			:fields="fields"
 			disabled-menu

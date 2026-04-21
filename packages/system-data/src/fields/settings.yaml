@@ -50,6 +50,28 @@ fields:
   - field: project_status
     hidden: true
 
+  - field: license_token
+    hidden: true
+    special:
+      - encrypt
+
+  - field: license_key
+    hidden: true
+    special:
+      - encrypt
+
+  - field: license_key_hash
+    hidden: true
+
+  - field: license_status
+    hidden: true
+
+  - field: license_terminal_status
+    hidden: true
+
+  - field: license_grace_on
+    hidden: true
+
   - field: modules_divider
     interface: presentation-divider
     options:

@@ -4,6 +4,7 @@ import { computed, reactive } from 'vue';
 import api, { replaceQueue } from '@/api';
 import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { i18n } from '@/lang';
+import { BrandingLabelKey, LicenseGraceType, LicenseSource, LicenseStatus, ServerInfoLicense } from '@/types/license';
 import { AuthProvider } from '@/types/login';
 
 export type Info = {
@@ -72,6 +73,13 @@ export type Info = {
 				collaborativeEditing?: boolean;
 		  };
 	version?: string;
+	show_license_key_field?: boolean;
+	license_source?: LicenseSource;
+	branding_label_key?: BrandingLabelKey | null;
+	license?: ServerInfoLicense | null;
+	license_locked?: boolean;
+	license_status?: LicenseStatus;
+	license_grace_type?: LicenseGraceType;
 	extensions?: {
 		limit: number | null;
 	};
@@ -94,6 +102,13 @@ export const useServerStore = defineStore('serverStore', () => {
 		ai_enabled: true,
 		files: undefined,
 		setupCompleted: false,
+		show_license_key_field: true,
+		license_source: null,
+		branding_label_key: null,
+		license: null,
+		license_locked: false,
+		license_status: 'inactive',
+		license_grace_type: null,
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
@@ -122,25 +137,26 @@ export const useServerStore = defineStore('serverStore', () => {
 		return options;
 	});
 
-	const hydrate = async () => {
-		const [serverInfoResponse, authResponse] = await Promise.all([
-			api.get(`/server/info`),
-			api.get('/auth?sessionOnly'),
-		]);
+	const hydrateInfo = async () => {
+		const serverInfoResponse = await api.get(`/server/info`);
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
 		info.files = serverInfoResponse.data.data?.files;
 		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
+		info.show_license_key_field = serverInfoResponse.data.data?.show_license_key_field ?? true;
+		info.license_source = serverInfoResponse.data.data?.license_source ?? null;
+		info.branding_label_key = serverInfoResponse.data.data?.branding_label_key ?? null;
+		info.license = serverInfoResponse.data.data?.license ?? null;
+		info.license_locked = serverInfoResponse.data.data?.license_locked ?? false;
+		info.license_status = serverInfoResponse.data.data?.license_status ?? 'inactive';
+		info.license_grace_type = serverInfoResponse.data.data?.license_grace_type ?? null;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.websocket = serverInfoResponse.data.data?.websocket;
 		info.version = serverInfoResponse.data.data?.version;
 		info.uploads = serverInfoResponse.data.data?.uploads;
-
-		auth.providers = authResponse.data.data;
-		auth.disableDefault = authResponse.data.disableDefault;
 
 		if (serverInfoResponse.data.data?.rateLimit !== undefined) {
 			if (serverInfoResponse.data.data?.rateLimit === false) {
@@ -155,14 +171,32 @@ export const useServerStore = defineStore('serverStore', () => {
 		}
 	};
 
+	const hydrateAuth = async () => {
+		const authResponse = await api.get('/auth?sessionOnly');
+
+		auth.providers = authResponse.data.data;
+		auth.disableDefault = authResponse.data.disableDefault;
+	};
+
+	const hydrate = async () => {
+		await Promise.all([hydrateInfo(), hydrateAuth()]);
+	};
+
 	const dehydrate = () => {
 		info.project = null;
+		info.show_license_key_field = true;
+		info.license = null;
+		info.license_source = null;
+		info.branding_label_key = null;
+		info.license_locked = false;
+		info.license_status = 'inactive';
+		info.license_grace_type = null;
 
 		auth.providers = [];
 		auth.disableDefault = false;
 	};
 
-	return { info, auth, providerOptions, hydrate, dehydrate };
+	return { info, auth, providerOptions, hydrate, hydrateInfo, hydrateAuth, dehydrate };
 });
 
 if (import.meta.hot) {

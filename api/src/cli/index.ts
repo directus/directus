@@ -8,6 +8,8 @@ import count from './commands/count/index.js';
 import dbInstall from './commands/database/install.js';
 import dbMigrate from './commands/database/migrate.js';
 import init from './commands/init/index.js';
+import applyLicenseCommand from './commands/license/apply.js';
+import deactivateLicenseCommand from './commands/license/deactivate.js';
 import rolesCreate from './commands/roles/create.js';
 import { apply } from './commands/schema/apply.js';
 import { snapshot } from './commands/schema/snapshot.js';
@@ -80,6 +82,19 @@ export async function createCli(): Promise<Command> {
 		.option('--admin', `whether or not the role has admin access`)
 		.option('--app', `whether or not the role has app access`)
 		.action(rolesCreate);
+
+	const licenseCommand = program.command('license');
+
+	licenseCommand
+		.command('apply')
+		.description('Apply and persist the configured license')
+		.option('--key <value>', 'license key to apply')
+		.action(applyLicenseCommand);
+
+	licenseCommand
+		.command('deactivate')
+		.description('Deactivate the configured license')
+		.action(deactivateLicenseCommand);
 
 	program
 		.command('cache')

@@ -1,10 +1,12 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
+import type { Knex } from 'knex';
 import { getHelpers } from '../../database/helpers/index.js';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { fetchUserCount } from '../../utils/fetch-user-count/fetch-user-count.js';
 import { useBufferedCounter } from '../counter/use-buffered-counter.js';
+import { useCounters } from '../counter/use-counters.js';
 import type { TelemetryReport } from '../types/report.js';
 import { formatApiRequestCounts, TRACKED_KEYS } from '../utils/format-api-request-counts.js';
 import { getExtensionCount } from '../utils/get-extension-count.js';
@@ -25,13 +27,33 @@ const basicCountTasks = [
 	{ collection: 'directus_shares' },
 ] as const;
 
+async function getApiRequestCounts(preserveCounts = false) {
+	const requestCounter = useBufferedCounter('api-requests');
+
+	if (preserveCounts) {
+		const counters = useCounters();
+
+		await requestCounter.flushAll();
+
+		const counts = await Promise.all(
+			TRACKED_KEYS.map(async (key) => {
+				const value = await counters.get<number>(`api-requests:${key}`);
+				return [key, value ?? 0] as const;
+			}),
+		);
+
+		return Object.fromEntries(counts);
+	}
+
+	return requestCounter.getAndResetAll([...TRACKED_KEYS]);
+}
+
 /**
  * Create a telemetry report about the anonymous usage of the current installation
  */
-export const getReport = async (): Promise<TelemetryReport> => {
-	const db = getDatabase();
+export const getReport = async (options?: { knex?: Knex; preserveCounts?: boolean }): Promise<TelemetryReport> => {
+	const db = options?.knex ?? getDatabase();
 	const env = useEnv();
-	const requestCounter = useBufferedCounter('api-requests');
 	const helpers = getHelpers(db);
 
 	const [
@@ -53,7 +75,7 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		helpers.schema.getDatabaseSize(),
 		getFilesizeSum(db),
 		getSettings(db),
-		requestCounter.getAndResetAll([...TRACKED_KEYS]),
+		getApiRequestCounts(options?.preserveCounts ?? false),
 	]);
 
 	return {

@@ -1,5 +1,8 @@
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
+import { getCurrentLicenseBinding } from '../license/binding.js';
+import { normalizeOptionalLicenseKey } from '../license/license-context.js';
+import { applyLicense, deactivateCurrentLicense } from '../license/lifecycle.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { SettingsService } from '../services/settings.js';
@@ -47,7 +50,35 @@ router.patch(
 			schema: req.schema,
 		});
 
-		await service.upsertSingleton(req.body);
+		const payload = { ...req.body };
+		const hasLicenseKeyUpdate = Object.hasOwn(payload, 'license_key');
+		const nextLicenseKey = normalizeOptionalLicenseKey(payload.license_key);
+
+		delete payload.license_token;
+		delete payload.license_key_hash;
+		delete payload.license_status;
+		delete payload.license_terminal_status;
+		delete payload.license_grace_on;
+
+		if (hasLicenseKeyUpdate) {
+			delete payload.license_key;
+			const binding = await getCurrentLicenseBinding();
+			const source = binding.source;
+
+			if (source === 'env' && nextLicenseKey) {
+				throw new InvalidPayloadError({ reason: 'License key is managed in ENV' });
+			}
+
+			if (nextLicenseKey) {
+				await applyLicense(nextLicenseKey, { source: 'settings', replaceTerminalLicense: true });
+			} else if (source !== 'env') {
+				await deactivateCurrentLicense({ required: false });
+			}
+		}
+
+		if (Object.keys(payload).length > 0) {
+			await service.upsertSingleton(payload);
+		}
 
 		try {
 			const record = await service.readSingleton(req.sanitizedQuery);

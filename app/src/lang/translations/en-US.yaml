@@ -31,6 +31,13 @@ setup_license_notice: >
 setup_license_follow_up: >
   Entities above this threshold require a paid license. You can continue evaluating Directus now and {contactOurTeam}
   when you're ready to discuss production use.
+setup_license_key_notice: >
+  If you already have a Directus license key, you can enter it now to preview the plan that will be activated.
+  {learnMore}
+setup_license_key_info: Add your license key now or skip this step and continue evaluating during onboarding grace.
+setup_learn_more: Learn more
+setup_continue: Continue
+setup_optional: Optional
 setup_save_accept_license: >
   By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
 setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
@@ -41,6 +48,10 @@ first_name: First Name
 last_name: Last Name
 admin_email: Admin Email
 owner_email: Owner Email
+license_key: License Key
+license_key_placeholder: Enter your Directus license key
+license_invalid: License key is invalid
+license_valid: License key is valid
 email_address: Email Address
 organization_name: Organization Name
 how_do_you_use_directus: What are you using Directus for?
@@ -1379,8 +1390,60 @@ settings_data_model: Data Model
 settings_roles: User Roles
 settings_permissions: Access Policies
 settings_project: Settings
+settings_license: License
 settings_appearance: Appearance
 settings_ai: AI
+license:
+  plan_usage: Your Plan Usage
+  manage_license: Manage License
+  manage_license_title: License Key Management
+  manage_license_notice: >
+    If you have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue
+    may be eligible for our {openInnovationGrant}.
+  open_innovation_grant: Open Innovation Grant
+  manage_plan: Manage Plan
+  upgrade_plan: Upgrade Plan
+  manage_addon: Manage
+  purchase: Purchase
+  addon_packages: Add-on Packages
+  addon_dialog:
+    title: Manage Add-on
+    confirm_purchase: Confirm Purchase
+    confirm_feature_purchase: Are you sure you want to purchase {addon} feature?
+    remove: Remove Add-on
+    save_success: Add-on updated successfully.
+    invalid_quantity: Enter a valid quantity to continue.
+    quantity_out_of_range: Enter a quantity between {min} and {max}.
+    open_portal: Open Billing Portal
+    setup_payment: Set Up Payment
+    setup_url_expires_at: Payment setup link expires on {date}
+    payment_setup_required: A payment method is required before this add-on change can be completed.
+    subscription_past_due: Billing is past due. Update payment information to continue.
+    billing_linkage_missing: Billing linkage is missing for this license. Contact support.
+  danger_zone: Danger Zone
+  current_plan: Current Plan
+  no_plan: No Plan
+  no_expiry: No expiry information
+  renews_on: Renews on {date}
+  expires_on: Expires on {date}
+  expiring_soon_notice: You have {days} days remaining before your Directus license key expires.
+  expired_notice: Your Directus license key has expired. Refresh or update it to avoid your project being locked.
+  invalid_notice: This project license is invalid. Update or replace it to restore the correct licensed state.
+  included: Included
+  optional: Optional
+  not_included: Not Included
+  deactivate: Deactivate License
+  save_success: License key was saved successfully.
+  deactivate_success: License was deactivated successfully.
+  env_notice: This project license is managed by ENV and can’t be edited here.
+  value_securely_stored: Value Securely Stored
+  locked_notice: This project is currently locked because its license grace period has been exhausted.
+  feature:
+    seats: Seats
+    sso: Single Sign-On
+    policy_rules: Custom Policy Rules
+    custom_llm: Custom LLM
+    analytics_opt_out: Analytics Opt-Out
 model_context_protocol: Model Context Protocol
 ai_assistant: AI Assistant
 ai_disabled_by_env: AI Assistant features have been disabled via environment variable.

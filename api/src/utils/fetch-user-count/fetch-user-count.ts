@@ -11,6 +11,10 @@ export interface UserCount {
 	api: number;
 }
 
+export function getUserSeatsCount(userCounts: Pick<UserCount, 'admin' | 'app'>): number {
+	return userCounts.admin + userCounts.app;
+}
+
 /**
  * Returns counts of all active users in the system grouped by admin, app, and api access
  */

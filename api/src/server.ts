@@ -3,6 +3,7 @@ import * as https from 'https';
 import type { ListenOptions } from 'net';
 import url from 'url';
 import { useEnv } from '@directus/env';
+import { InvalidLicenseConfigError } from '@directus/errors';
 import { toBoolean } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { TerminusOptions } from '@godaddy/terminus';
@@ -14,6 +15,7 @@ import { shutdownAITelemetry } from './ai/telemetry/index.js';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
+import { initializeLicenseRuntime } from './license/lifecycle.js';
 import { useLogger } from './logger/index.js';
 import { terminateAllBufferedCounters } from './telemetry/counter/use-buffered-counter.js';
 import { getAddress } from './utils/get-address.js';
@@ -165,6 +167,16 @@ export async function createServer(): Promise<http.Server> {
 
 export async function startServer(): Promise<void> {
 	const server = await createServer();
+
+	try {
+		await initializeLicenseRuntime({ mode: 'startup' });
+	} catch (error) {
+		if (error instanceof InvalidLicenseConfigError) {
+			throw error;
+		}
+
+		logger.warn(error, '[license] Failed to initialize license state during startup');
+	}
 
 	const host = env['HOST'] as string;
 	const path = env['UNIX_SOCKET_PATH'] as string | undefined;

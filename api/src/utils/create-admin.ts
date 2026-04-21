@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import type { Policy, Role, User } from '@directus/types';
+import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { AccessService } from '../services/access.js';
 import { UsersService } from '../services/index.js';
@@ -30,21 +31,22 @@ export const defaultAdminPolicy: Partial<Policy> = {
 export async function createAdmin(
 	schema: SchemaOverview,
 	admin?: { email?: string; password?: string; first_name?: string; last_name?: string },
+	knex?: Knex,
 ): Promise<void> {
 	const logger = useLogger();
 	const env = useEnv();
 
 	logger.info('Setting up first admin role...');
-	const accessService = new AccessService({ schema });
-	const policiesService = new PoliciesService({ schema });
-	const rolesService = new RolesService({ schema });
+	const accessService = new AccessService({ schema, knex });
+	const policiesService = new PoliciesService({ schema, knex });
+	const rolesService = new RolesService({ schema, knex });
 
 	const role = await rolesService.createOne(defaultAdminRole);
 	const policy = await policiesService.createOne(defaultAdminPolicy);
 
 	await accessService.createOne({ policy, role });
 
-	const usersService = new UsersService({ schema });
+	const usersService = new UsersService({ schema, knex });
 
 	const adminEmail = admin?.email ?? env['ADMIN_EMAIL'];
 	const adminPassword = admin?.password ?? env['ADMIN_PASSWORD'];
