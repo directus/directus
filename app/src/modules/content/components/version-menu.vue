@@ -28,8 +28,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 interface Props {
 	collection: string;
 	primaryKey: PrimaryKey;
-	updateAllowed: boolean;
-	createAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersionMaybeNew | null;
 	versions: ContentVersionMaybeNew[];
