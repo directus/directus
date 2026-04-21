@@ -87,7 +87,7 @@ const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
-const isCurrentVersionNew = computed(() => isVersionNew(currentVersion.value));
+const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
 const isItemlessDraft = computed(() => props.primaryKey === '+' || (props.singleton && !actualPrimaryKey.value));
 
