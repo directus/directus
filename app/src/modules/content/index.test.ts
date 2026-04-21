@@ -76,7 +76,7 @@ describe('enterDraftContext', () => {
 		expect(enterDraftContext(to, {} as any, vi.fn())).toBeUndefined();
 	});
 
-	it('adds version=draft for singleton collections with versioning', () => {
+	it('passes through for singleton collections (auto-draft is decided post-load)', () => {
 		mockGetCollection.mockReturnValue({ meta: { versioning: true, singleton: true } });
 
 		const to = {
@@ -85,8 +85,7 @@ describe('enterDraftContext', () => {
 			fullPath: '/content/settings',
 		};
 
-		const result = enterDraftContext(to as any, {} as any, vi.fn());
-		expect(result).toMatchObject({ query: { version: 'draft' } });
+		expect(enterDraftContext(to as any, {} as any, vi.fn())).toBeUndefined();
 	});
 
 	it('passes through for singleton without versioning', () => {

@@ -10,7 +10,7 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
-import { enterDraftContext, trackLastAccessedCollection } from '../index';
+import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
@@ -75,18 +75,17 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+const route = useRoute();
 
 onBeforeRouteUpdate((to, from) => {
 	if (to.name !== 'content-singleton') return;
 	if (to.params.collection === from.params.collection) return;
 
+	// beforeEnter doesn't re-fire on sibling/param-only navigation, so trigger the
+	// last-accessed bookkeeping manually. Auto-draft for pristine singletons is handled by
+	// the post-load watcher below — sync route guards can't tell whether the singleton has
+	// a record yet.
 	trackLastAccessedCollection(to, from, () => {});
-
-	// beforeEnter doesn't re-fire when the matched record is unchanged (sibling/param-only
-	// navigation), so enterDraftContext must be invoked manually here. Otherwise pristine
-	// singletons reached via in-app nav never receive ?version=draft and the version menu
-	// stays hidden until a hard refresh.
-	return enterDraftContext(to, from, () => {});
 });
 
 const { collectionRoute, backRoute } = useItemNavigation();
@@ -95,11 +94,9 @@ const userStore = useUserStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
-const isItemlessDraft = computed(() => !primaryKey.value || primaryKey.value === '+');
-
 const isPublishAllowed = computed(() => {
 	if (isCurrentVersionNew.value) return false;
-	return isItemlessDraft.value ? createAllowed.value : updateAllowed.value;
+	return isItemLessVersion.value ? createAllowed.value : updateAllowed.value;
 });
 
 const form = ref<ComponentPublicInstance>();
@@ -142,6 +139,7 @@ const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVer
 
 const {
 	isNew,
+	isItemLessVersion,
 	edits,
 	hasEdits,
 	item,
@@ -159,7 +157,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKeyParam, currentVersion);
+} = useItem(collection, primaryKey, currentVersion);
 
 watch(
 	[primaryKeyParam, isSingleton, item, primaryKeyField],
@@ -178,6 +176,20 @@ watch(
 	},
 	{ immediate: true },
 );
+
+// Auto-enter draft for pristine singletons after the fetch settles. Existing singletons
+// stay on the published view by default (the user opts into draft via the Edit button).
+// Done here rather than in the route guard because we can only tell pristine vs existing
+// after `useItem` resolves.
+watch([loading, isSingleton, primaryKey, collectionInfo], ([newLoading, newIsSingleton, newPK, newInfo]) => {
+	if (newLoading) return;
+	if (!newIsSingleton) return;
+	if (!newInfo?.meta?.versioning) return;
+	if (route.query.version) return;
+	if (newPK) return;
+
+	router.replace({ ...route, query: { ...route.query, version: VERSION_KEY_DRAFT } });
+});
 
 const toolsStore = useAiToolsStore();
 
@@ -695,7 +707,7 @@ function usePublishComparison() {
 	async function onVersionPublishCompare(quit = false) {
 		quitAfterPublish.value = quit;
 
-		if (isItemlessDraft.value && currentVersion.value !== null && currentVersion.value.id !== '+') {
+		if (isItemLessVersion.value) {
 			const defaultValues = getDefaultValuesFromFields(fields);
 			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
 			const fieldsToValidate = pushGroupOptionsDown(fields.value);

@@ -27,12 +27,11 @@ export const enterDraftContext: NavigationGuard = (to) => {
 	const collectionInfo = collectionsStore.getCollection(collection);
 	if (!collectionInfo?.meta?.versioning) return;
 
-	// Auto-enter draft for new items (/+) and for singletons (which may or may not have an item
-	// yet — the draft context is the single authoritative editing surface).
-	// Existing non-singleton items default to the published view; users opt into draft via Edit.
+	// Auto-enter draft for new items (/+). Singletons are handled post-load in item.vue —
+	// existing singletons default to the published view; only pristine (no record yet) ones
+	// auto-enter draft, which we can only determine after fetching.
 	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
-	const isSingleton = collectionInfo.meta.singleton === true;
-	if (!isNewItem && !isSingleton) return;
+	if (!isNewItem) return;
 
 	return { ...to, query: { ...to.query, version: VERSION_KEY_DRAFT } };
 };

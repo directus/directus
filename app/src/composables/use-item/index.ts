@@ -39,6 +39,7 @@ type UsableItem<T extends Item> = {
 	refresh: () => void;
 	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
+	isItemLessVersion: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
 	archive: () => Promise<void>;
@@ -77,10 +78,9 @@ export function useItem<T extends Item>(
 	const isItemLessVersion = computed(() => {
 		const version = currentVersion?.value;
 		if (!version || version.id === '+') return false;
-		if (isNew.value) return true;
-		// Pristine singleton: route has no PK and the draft version itself tracks no item yet
-		if (isSingle.value && 'item' in version && version.item === null) return true;
-		return false;
+		// `primaryKey` is the resolved item PK: null for pristine singletons, '+' for new
+		// regular items, or the actual PK once the item exists.
+		return !primaryKey.value || primaryKey.value === '+';
 	});
 
 	const isArchived = computed(() => {
@@ -114,7 +114,13 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, query], refresh);
+	watch([collection, query], refresh);
+
+	// For singletons the endpoint doesn't depend on the PK — skip refetch when the resolved
+	// PK transitions null → real after the item loads (would cause a refetch loop).
+	watch(primaryKey, () => {
+		if (!isSingle.value) refresh();
+	});
 
 	refreshItem();
 
@@ -131,6 +137,7 @@ export function useItem<T extends Item>(
 		refresh,
 		save,
 		isNew,
+		isItemLessVersion,
 		remove,
 		deleting,
 		archive,
