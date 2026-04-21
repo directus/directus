@@ -39,7 +39,6 @@ export default defineConfig({
 							passWithNoTests: true,
 							exclude: [...configDefaults.exclude, '**/*.sb.test.ts'],
 							testTimeout: 20_000,
-							reporters: ['verbose'],
 							env: {
 								DATABASE: database,
 								PORT: String(8000 + index * 100),
@@ -60,7 +59,6 @@ export default defineConfig({
 							include: ['**/*.sb.test.ts'],
 							testTimeout: 100_000,
 							hookTimeout: 100_000,
-							reporters: ['verbose'],
 							fileParallelism: false,
 							env: {
 								DATABASE: database,

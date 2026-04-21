@@ -10,7 +10,7 @@ import { getCallSites } from 'util';
 export function getUID(offset = 0) {
 	const parent = getCallSites()[1 + offset]!.scriptName;
 
-	const parentParts = parent.split(/[/\\]/g);
+	const parentParts = parent.replaceAll('-', '_').split(/[/\\]/g);
 	const currentParts = [...import.meta.dirname.split(/[/\\]/g).slice(0, -1), 'tests'];
 
 	const uid = [...parentParts.slice(currentParts.length, -1), parentParts.at(-1)?.slice(0, -8)].join('_');
