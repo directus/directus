@@ -278,17 +278,17 @@ describe('useVersions', () => {
 			]);
 		});
 
-		it('should load existing versions for an existing singleton via the resolved singleton PK', async () => {
+		it('should load existing versions for an existing singleton via the resolved primary key', async () => {
 			vi.mocked(api.get).mockResolvedValue({ data: { data: [] } });
 
-			const singletonPK = ref<string | number | null>(null);
+			const primaryKey = ref<string | number | null>(null);
 
-			useVersions(ref('singleton_collection'), ref(true), ref(null), singletonPK);
+			useVersions(ref('singleton_collection'), ref(true), primaryKey);
 
 			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
 			// Simulate the singleton item loading and reporting PK=1
-			singletonPK.value = 1;
+			primaryKey.value = 1;
 
 			await vi.waitFor(() =>
 				expect(api.get).toHaveBeenLastCalledWith(

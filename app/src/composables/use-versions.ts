@@ -17,9 +17,11 @@ export interface PublishVersionOptions {
 export function useVersions(
 	collection: Ref<string>,
 	isSingleton: Ref<boolean>,
-	primaryKey: Ref<string | null>,
-	/** Resolved singleton PK from the loaded item — null while pristine or before load */
-	singletonPrimaryKey: Ref<PrimaryKey | null> = ref(null),
+	/**
+	 * Resolved item PK: null for pristine singletons (item-less), '+' for new items
+	 * before their first save, or the actual PK for existing items.
+	 */
+	primaryKey: Ref<PrimaryKey | null>,
 ) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
@@ -42,7 +44,7 @@ export function useVersions(
 		mode: 'push',
 	});
 
-	const isItemless = computed(() => primaryKey.value === '+' || (isSingleton.value && !singletonPrimaryKey.value));
+	const isItemless = computed(() => !primaryKey.value || primaryKey.value === '+');
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
 		const draftVersion = getGlobalVersion(VERSION_KEY_DRAFT);
@@ -99,7 +101,7 @@ export function useVersions(
 	});
 
 	watch(
-		[collection, isSingleton, primaryKey, singletonPrimaryKey],
+		[collection, isSingleton, primaryKey],
 		([newCollection], [oldCollection]) => {
 			if (oldCollection && newCollection !== oldCollection) currentVersion.value = null;
 			getVersions();
@@ -119,17 +121,12 @@ export function useVersions(
 		try {
 			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
 
-			// Singletons: route has no PK; use the resolved singleton PK (null for pristine)
-			const resolvedSingletonPK = isSingleton.value ? singletonPrimaryKey.value : null;
-
 			if (isItemless.value) {
 				// No parent item yet — match item-less drafts; scope to a specific version if known
 				filterConditions.push({ item: { _null: true } });
 				if (queryVersionId.value) filterConditions.push({ id: { _eq: queryVersionId.value } });
-			} else if (isSingleton.value) {
-				filterConditions.push({ item: { _eq: String(resolvedSingletonPK) } });
 			} else {
-				filterConditions.push({ item: { _eq: primaryKey.value } });
+				filterConditions.push({ item: { _eq: String(primaryKey.value) } });
 			}
 
 			const filter: Filter = { _and: filterConditions };

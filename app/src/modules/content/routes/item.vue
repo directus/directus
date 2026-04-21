@@ -95,7 +95,7 @@ const userStore = useUserStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
-const isItemlessDraft = computed(() => props.primaryKey === '+' || (props.singleton && !actualPrimaryKey.value));
+const isItemlessDraft = computed(() => !primaryKey.value || primaryKey.value === '+');
 
 const isPublishAllowed = computed(() => {
 	if (isCurrentVersionNew.value) return false;
@@ -108,16 +108,18 @@ const scrollParent = computed(() => form.value?.$el?.parentElement);
 const { y: formScrollY } = useScroll(scrollParent);
 const showHeaderShadow = computed(() => formScrollY.value > 0);
 
-const { collection, primaryKey } = toRefs(props);
+const { collection, primaryKey: primaryKeyParam } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
-// Resolved singleton PK — stays null for pristine singletons and until the item loads.
-// Kept here (not computed from `item`) so it can be passed into useVersions before useItem runs.
-const singletonPrimaryKey = ref<PrimaryKey | null>(null);
+// Resolved item PK: mirrors the route param for regular collections; for singletons, tracks
+// the PK of the loaded item (null while pristine). Maintained as a ref — not a computed off
+// `item` — so transient nulls during refresh don't flip downstream consumers to the item-less
+// branch and trigger refetch loops.
+const primaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
 
 const {
 	readVersionsAllowed,
@@ -133,7 +135,7 @@ const {
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
-} = useVersions(collection, isSingleton, primaryKey, singletonPrimaryKey);
+} = useVersions(collection, isSingleton, primaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
 	usePublishComparison();
@@ -157,22 +159,22 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, currentVersion);
+} = useItem(collection, primaryKeyParam, currentVersion);
 
 watch(
-	item,
-	(newItem) => {
-		if (!isSingleton.value) {
-			singletonPrimaryKey.value = null;
+	[primaryKeyParam, isSingleton, item, primaryKeyField],
+	([newParam, newIsSingleton, newItem, newPkField]) => {
+		if (!newIsSingleton) {
+			primaryKey.value = newParam;
 			return;
 		}
 
-		// During refresh, item is transiently null — keep the last known PK so useVersions'
-		// filter doesn't flip to the item-less branch and trigger a refetch/refresh loop.
+		// Pristine singleton before first load: stay null. During refresh, item is transiently
+		// null — keep the last known PK so downstream filters don't flip to the item-less branch.
 		if (!newItem) return;
 
-		const pkField = primaryKeyField.value?.field;
-		singletonPrimaryKey.value = pkField ? ((newItem[pkField] ?? null) as PrimaryKey | null) : null;
+		const field = newPkField?.field;
+		primaryKey.value = field ? ((newItem[field] ?? null) as PrimaryKey | null) : null;
 	},
 	{ immediate: true },
 );
@@ -196,7 +198,7 @@ const {
 	discard: discardCollab,
 	focused,
 	connectionId,
-} = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
+} = useCollab(collection, primaryKeyParam, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -210,7 +212,7 @@ const {
 
 const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
-const { templateData } = useTemplateData(collectionInfo, primaryKey);
+const { templateData } = useTemplateData(collectionInfo, primaryKeyParam);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version', 'versionId'] });
 const confirmDelete = ref(false);
@@ -328,29 +330,6 @@ const isFormDisabled = computed(() => {
 
 const isFormNonEditable = computed(() => shouldShowVersioning.value && currentVersion.value === null);
 
-const actualPrimaryKey = computed(() => {
-	if (unref(isSingleton)) {
-		const singleton = unref(item);
-		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? (singleton[pkField] ?? null) : null) as PrimaryKey | null;
-	}
-
-	return props.primaryKey;
-});
-
-const internalPrimaryKey = computed(() => {
-	if (unref(loading)) return '+';
-	if (unref(isNew)) return '+';
-
-	if (unref(isSingleton)) {
-		const singleton = unref(item);
-		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? (singleton[pkField] ?? '+') : '+') as PrimaryKey;
-	}
-
-	return props.primaryKey;
-});
-
 const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
@@ -364,7 +343,7 @@ watch(currentVersion, async () => {
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, {
+const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKeyParam, {
 	template: previewTemplate,
 	injectData: computed(() => ({ $version: currentVersion.value?.key ?? VERSION_KEY_PUBLISHED })),
 });
@@ -481,7 +460,7 @@ watch(
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 	collection,
-	primaryKey: actualPrimaryKey,
+	primaryKey,
 	location: 'item',
 	hasEdits,
 	onRefreshCallback: refresh,
@@ -543,7 +522,7 @@ async function saveVersionAction() {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, item, actualPrimaryKey.value);
+		await saveVersion(edits, item, primaryKey.value);
 		edits.value = {};
 
 		if (!isNew.value) {
@@ -561,7 +540,7 @@ async function saveAndStay() {
 	try {
 		const savedItem: Record<string, any> = await save();
 
-		if (props.primaryKey === '+') {
+		if (primaryKeyParam.value === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 
 			router.replace(getItemRoute(props.collection, newPrimaryKey));
@@ -675,11 +654,11 @@ const shouldShowVersioning = computed(() => {
 	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
 
-	if (props.primaryKey === '+' || (props.singleton && internalPrimaryKey.value === '+')) {
+	if (!primaryKey.value || primaryKey.value === '+') {
 		return currentVersion.value !== null;
 	}
 
-	return internalPrimaryKey.value !== '+';
+	return true;
 });
 
 function useItemNavigation() {
@@ -821,7 +800,7 @@ function editDraftVersion() {
 
 <template>
 	<ContentNotFound
-		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
+		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKeyParam !== null)"
 	/>
 
 	<PrivateView
@@ -863,7 +842,7 @@ function editDraftVersion() {
 				<VersionMenu
 					v-if="shouldShowVersioning"
 					:collection="collection"
-					:primary-key="internalPrimaryKey!"
+					:primary-key="primaryKey ?? '+'"
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"
@@ -1076,7 +1055,7 @@ function editDraftVersion() {
 					:initial-values="item"
 					:fields="fields"
 					:non-editable="isFormNonEditable"
-					:primary-key="internalPrimaryKey"
+					:primary-key="primaryKey ?? '+'"
 					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
@@ -1113,7 +1092,7 @@ function editDraftVersion() {
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
 			:collection="collection"
-			:primary-key="internalPrimaryKey"
+			:primary-key="primaryKey ?? '+'"
 			:current-collab="collabCollision"
 			:collab-context="collabContext"
 			mode="collab"
@@ -1126,7 +1105,7 @@ function editDraftVersion() {
 			v-model="comparisonModalActive"
 			:delete-versions-allowed="deleteVersionsAllowed"
 			:collection="collection"
-			:primary-key="internalPrimaryKey"
+			:primary-key="primaryKey ?? '+'"
 			mode="version"
 			:current-version="comparableVersion"
 			:publish-version-loading="publishVersionLoading"
@@ -1171,25 +1150,21 @@ function editDraftVersion() {
 		</VDialog>
 
 		<template #sidebar>
-			<template v-if="isNew === false && actualPrimaryKey">
+			<template v-if="isNew === false && primaryKey && primaryKey !== '+'">
 				<RevisionsSidebarDetail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsSidebarDetailRef"
 					:collection="collection"
-					:primary-key="actualPrimaryKey"
+					:primary-key="primaryKey"
 					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
-				<CommentsSidebarDetail
-					v-if="currentVersion === null"
-					:collection="collection"
-					:primary-key="actualPrimaryKey"
-				/>
+				<CommentsSidebarDetail v-if="currentVersion === null" :collection="collection" :primary-key="primaryKey" />
 				<SharesSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="actualPrimaryKey"
+					:primary-key="primaryKey"
 					:allowed="shareAllowed"
 				/>
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
