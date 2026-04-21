@@ -5,7 +5,7 @@
 '@directus/storage-driver-azure': patch
 '@directus/storage-driver-local': patch
 '@directus/storage-driver-gcs': patch
-'@directus/storage': patch
+'@directus/storage': major
 '@directus/specs': patch
 '@directus/api': minor
 ---
