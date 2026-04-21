@@ -10,6 +10,7 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useServerStore } from '@/stores/server';
 
 const props = defineProps<{
 	collection: Collection;
@@ -26,15 +27,14 @@ const emit = defineEmits<{
 }>();
 
 const { permission } = toRefs(props);
+const serverStore = useServerStore();
+
+const customPolicyRulesEnabled = computed(() => serverStore.info.license?.custom_policy_rules_enabled === true);
 
 const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 	if (permission.value === undefined) return 'none';
 
-	if (
-		permission.value.fields?.includes('*') &&
-		Object.keys(permission.value.permissions || {}).length === 0 &&
-		Object.keys(permission.value.validation || {}).length === 0
-	) {
+	if (isFullAccessPermission(permission.value)) {
 		return 'all';
 	}
 
@@ -46,15 +46,19 @@ const saving = ref(false);
 const appMinimalLevel = computed(() => {
 	if (!props.appMinimal) return null;
 
-	if (
-		props.appMinimal.fields?.includes('*') &&
-		Object.keys(props.appMinimal.permissions || {}).length === 0 &&
-		Object.keys(props.appMinimal.validation || {}).length === 0
-	)
-		return 'full';
+	if (isFullAccessPermission(props.appMinimal)) return 'full';
 
 	return 'partial';
 });
+
+function isFullAccessPermission(permission: Partial<Permission>): boolean {
+	return (
+		permission.fields?.includes('*') === true &&
+		Object.keys(permission.permissions || {}).length === 0 &&
+		Object.keys(permission.validation || {}).length === 0 &&
+		Object.keys(permission.presets || {}).length === 0
+	);
+}
 </script>
 
 <template>
@@ -100,7 +104,7 @@ const appMinimalLevel = computed(() => {
 
 				<VDivider />
 
-				<VListItem clickable @click="emit('edit')">
+				<VListItem :disabled="!customPolicyRulesEnabled" :clickable="customPolicyRulesEnabled" @click="emit('edit')">
 					<VListItemIcon>
 						<VIcon name="rule" />
 					</VListItemIcon>
@@ -108,7 +112,7 @@ const appMinimalLevel = computed(() => {
 						{{ $t('use_custom') }}
 					</VListItemContent>
 					<VListItemIcon>
-						<VIcon name="launch" />
+						<VIcon :name="customPolicyRulesEnabled ? 'launch' : 'diamond'" />
 					</VListItemIcon>
 				</VListItem>
 			</VList>

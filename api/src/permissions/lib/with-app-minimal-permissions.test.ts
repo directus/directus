@@ -35,3 +35,13 @@ it('should merge with filtered app minimal permissions if role has app access', 
 	expect(filterItems).toHaveBeenCalledWith(mocks.appAccessMinimalPermissions, filter);
 	expect(result).toEqual(filteredPermissions);
 });
+
+it('should accept projected permission rows', () => {
+	const accountability = { app: false } as Accountability;
+	const permissions: Partial<Permission>[] = [{ id: 1 }];
+	const filter: Query['filter'] = null;
+
+	const result = withAppMinimalPermissions(accountability, permissions, filter);
+
+	expect(result).toBe(permissions);
+});

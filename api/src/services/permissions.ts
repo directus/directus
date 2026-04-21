@@ -9,8 +9,9 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { uniq } from 'lodash-es';
+import { omit, uniq } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
+import { getLicenseEntitlements } from '../license/summary.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { withAppMinimalPermissions } from '../permissions/lib/with-app-minimal-permissions.js';
@@ -31,10 +32,50 @@ export class PermissionsService extends ItemsService {
 		}
 	}
 
-	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
-		const result = (await super.readByQuery(query, opts)) as Permission[];
+	private isCustomPermission(permission: Partial<Permission>): boolean {
+		if (permission.system === true) return false;
 
-		return withAppMinimalPermissions(this.accountability, result, query.filter);
+		return (
+			permission.fields?.includes('*') !== true ||
+			Object.keys(permission.permissions ?? {}).length > 0 ||
+			Object.keys(permission.validation ?? {}).length > 0 ||
+			Object.keys(permission.presets ?? {}).length > 0
+		);
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
+		const entitlements = await getLicenseEntitlements(this.knex);
+
+		if (entitlements.custom_policy_rules_enabled === true) {
+			const result = (await super.readByQuery(query, opts)) as Permission[];
+			return withAppMinimalPermissions(this.accountability, result, query.filter);
+		}
+
+		const requestedFields = query.fields;
+		const gatingFields = ['fields', 'permissions', 'validation', 'presets'];
+
+		const gatedQuery =
+			requestedFields && requestedFields.includes('*') === false
+				? {
+						...query,
+						fields: uniq([...requestedFields, ...gatingFields]),
+					}
+				: query;
+
+		const result = (await super.readByQuery(gatedQuery, opts)) as Permission[];
+
+		const extraGatingFields = requestedFields
+			? gatingFields.filter((field) => requestedFields.includes(field) === false)
+			: [];
+
+		const permissions =
+			gatedQuery === query || !requestedFields
+				? result.filter((permission) => !this.isCustomPermission(permission))
+				: result
+						.filter((permission) => !this.isCustomPermission(permission))
+						.map((permission) => omit(permission, extraGatingFields));
+
+		return withAppMinimalPermissions(this.accountability, permissions, query.filter);
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
