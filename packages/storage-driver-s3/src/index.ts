@@ -258,7 +258,7 @@ export class DriverS3 implements TusDriver {
 		for (let i = 0; i < filepaths.length; i += CHUNK_SIZE) {
 			const chunk = filepaths.slice(i, i + CHUNK_SIZE);
 
-			await this.client.send(
+			const response = await this.client.send(
 				new DeleteObjectsCommand({
 					Bucket: this.config.bucket,
 					Delete: {
@@ -267,6 +267,10 @@ export class DriverS3 implements TusDriver {
 					},
 				}),
 			);
+
+			if (response.Errors?.length) {
+				throw new Error(`S3 bulk delete failed for ${response.Errors.length} object(s)`);
+			}
 		}
 	}
 

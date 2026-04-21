@@ -688,6 +688,10 @@ describe('#delete', () => {
 });
 
 describe('#bulkDelete', () => {
+	beforeEach(() => {
+		vi.mocked(driver['client'].send).mockResolvedValue({ Errors: [] } as never);
+	});
+
 	test('Sends DeleteObjectsCommand with correct keys', async () => {
 		await driver.bulkDelete([sample.path.input]);
 
