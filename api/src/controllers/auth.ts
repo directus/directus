@@ -3,6 +3,7 @@ import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/error
 import type { Accountability } from '@directus/types';
 import type { Request } from 'express';
 import { Router } from 'express';
+import { isExternalAuthDriver } from '../auth/constants/sso.js';
 import {
 	createLDAPAuthRouter,
 	createLocalAuthRouter,
@@ -10,6 +11,7 @@ import {
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
+import { getSSOState } from '../auth/utils/get-sso-state.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
@@ -255,8 +257,11 @@ router.get(
 		const sessionOnly =
 			'sessionOnly' in req.query && (req.query['sessionOnly'] === '' || Boolean(req.query['sessionOnly']));
 
+		const providers = getAuthProviders({ sessionOnly });
+		const ssoState = await getSSOState();
+
 		res.locals['payload'] = {
-			data: getAuthProviders({ sessionOnly }),
+			data: ssoState.disabled ? providers.filter((provider) => !isExternalAuthDriver(provider.driver)) : providers,
 			disableDefault: env['AUTH_DISABLE_DEFAULT'],
 		};
 

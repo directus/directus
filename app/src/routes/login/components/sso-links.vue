@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VDivider from '@/components/v-divider.vue';
@@ -19,6 +20,7 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
+const { t } = useI18n();
 
 const { providers } = toRefs(props);
 const ssoProviders = ref<{ name: string; label: string; link: string; icon: string }[]>([]);
@@ -127,16 +129,35 @@ watch(
 const errorFormatted = computed(() => {
 	const validReasons = ['SIGN_OUT', 'SESSION_EXPIRED'];
 
+	const customReasons = {
+		SSO_DISABLED: t('errors.SSO_DISABLED'),
+		SSO_NON_ADMIN: t('errors.SSO_NON_ADMIN'),
+	} as const;
+
 	const reason = Array.isArray(route.query.reason) ? route.query.reason[0] : route.query.reason;
 
 	// When requiring TFA, don't show the error banner; render the OTP input instead
 	if (requiresTFA.value) return null;
+
+	if (reason && Object.hasOwn(customReasons, reason)) {
+		return customReasons[reason as keyof typeof customReasons];
+	}
 
 	if (reason && !validReasons.includes(reason)) {
 		return translateAPIError(reason);
 	}
 
 	return null;
+});
+
+const showStandaloneSSONotice = computed(() => {
+	const reason = Array.isArray(route.query.reason) ? route.query.reason[0] : route.query.reason;
+
+	return reason === 'SSO_DISABLED' || reason === 'SSO_NON_ADMIN';
+});
+
+const showErrorNotice = computed(() => {
+	return !!errorFormatted.value && (ssoProviders.value.length > 0 || showStandaloneSSONotice.value);
 });
 
 function handleSSOClick(provider: { name: string; link: string }) {
@@ -169,12 +190,12 @@ watch(selectedProviderName, (val) => {
 
 <template>
 	<div class="sso-links">
+		<VNotice v-if="showErrorNotice" type="warning">
+			{{ errorFormatted }}
+		</VNotice>
+
 		<template v-if="ssoProviders.length > 0">
 			<VDivider />
-
-			<VNotice v-if="errorFormatted" type="warning">
-				{{ errorFormatted }}
-			</VNotice>
 
 			<template v-for="provider in ssoProviders" :key="provider.name">
 				<a class="sso-link" @click.prevent="() => handleSSOClick(provider)">
@@ -219,7 +240,7 @@ watch(selectedProviderName, (val) => {
 }
 
 .v-notice {
-	margin-block-end: 1.125rem;
+	margin-block: 1.125rem;
 }
 
 .otp-input {

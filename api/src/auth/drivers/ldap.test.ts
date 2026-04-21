@@ -1,4 +1,5 @@
 import {
+	ForbiddenError,
 	InvalidCredentialsError,
 	InvalidProviderConfigError,
 	InvalidProviderError,
@@ -13,6 +14,7 @@ import {
 } from 'ldapts';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import emitter from '../../emitter.js';
+import { getSSOState } from '../utils/get-sso-state.js';
 import { createLDAPAuthRouter, LDAPAuthDriver } from './ldap.js';
 
 const mockAuthenticationService = {
@@ -109,6 +111,14 @@ vi.mock('../../utils/get-schema.js', () => ({
 	getSchema: vi.fn().mockResolvedValue({}),
 }));
 
+vi.mock('../utils/get-sso-state.js', () => ({
+	getSSOState: vi.fn().mockResolvedValue({
+		enabled: true,
+		disabled: false,
+		transitional: false,
+	}),
+}));
+
 // Create mock functions for UsersService
 const mockCreateOne = vi.fn().mockResolvedValue('new-user-id');
 const mockUpdateOne = vi.fn().mockResolvedValue(undefined);
@@ -177,6 +187,12 @@ describe('LDAP Auth Driver', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockKnexInstance = createMockKnex();
+
+		vi.mocked(getSSOState).mockResolvedValue({
+			enabled: true,
+			disabled: false,
+			transitional: false,
+		});
 	});
 
 	afterEach(() => {
@@ -1094,6 +1110,37 @@ describe('LDAP Auth Driver', () => {
 			});
 
 			expect(mockNext).toHaveBeenCalled();
+		});
+
+		it('should reject direct ldap login when external auth is disabled', async () => {
+			vi.mocked(getSSOState).mockResolvedValue({
+				enabled: false,
+				disabled: true,
+				transitional: false,
+			});
+
+			const router = createLDAPAuthRouter('ldap');
+			const postLayer = router.stack.find((layer: any) => layer.route?.methods?.post);
+			const handler = postLayer.route.stack[0].handle;
+
+			const mockReq = {
+				body: {
+					identifier: 'testuser',
+					password: 'testpass',
+					mode: 'json',
+				},
+				schema: {},
+				get: vi.fn(),
+			};
+
+			const mockRes = {
+				cookie: vi.fn(),
+				json: vi.fn(),
+				locals: {},
+			};
+
+			await expect(handler(mockReq, mockRes, vi.fn())).rejects.toBeInstanceOf(ForbiddenError);
+			expect(mockAuthenticationService.login).not.toHaveBeenCalled();
 		});
 
 		it('should set cookie in cookie mode', async () => {

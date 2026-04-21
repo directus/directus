@@ -1,4 +1,14 @@
-import type { AbstractServiceOptions, Item, OwnerInformation, Query, QueryOptions } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
+import type {
+	AbstractServiceOptions,
+	Item,
+	MutationOptions,
+	OwnerInformation,
+	PrimaryKey,
+	Query,
+	QueryOptions,
+} from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import { getLicenseEntitlements } from '../license/summary.js';
 import { sendReport } from '../telemetry/index.js';
@@ -39,6 +49,24 @@ export class SettingsService extends ItemsService {
 		}
 
 		return redactedSettings;
+	}
+
+	override async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (Object.hasOwn(data, 'sso_disabled')) {
+			const entitlements = await getLicenseEntitlements(this.knex);
+
+			if (entitlements.sso_enabled !== true) {
+				const currentSettings = await this.knex.select('sso_disabled').from('directus_settings').first();
+				const currentDisabled = toBoolean(currentSettings?.['sso_disabled']);
+				const nextDisabled = toBoolean(data['sso_disabled']);
+
+				if (currentDisabled === true && nextDisabled === false) {
+					throw new ForbiddenError();
+				}
+			}
+		}
+
+		return await super.upsertSingleton(data, opts);
 	}
 
 	async setOwner(data: OwnerInformation) {

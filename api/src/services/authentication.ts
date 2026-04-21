@@ -12,6 +12,8 @@ import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
 import type { StringValue } from 'ms';
+import { isSSODriver, SsoNonAdminError } from '../auth/constants/sso.js';
+import { getSSOState } from '../auth/utils/get-sso-state.js';
 import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
@@ -20,6 +22,7 @@ import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
 import type { DirectusTokenPayload, Session, User } from '../types/index.js';
+import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { stall } from '../utils/stall.js';
@@ -135,6 +138,30 @@ export class AuthenticationService {
 			schema: this.schema,
 		});
 
+		const authProvider = getAuthProviders().find((provider) => provider.name === providerName);
+		let globalAccess: Awaited<ReturnType<typeof fetchGlobalAccess>> | null = null;
+
+		if (authProvider && isSSODriver(authProvider.driver)) {
+			const ssoState = await getSSOState(this.knex);
+
+			if (ssoState.transitional) {
+				const roles = await fetchRolesTree(user.role, { knex: this.knex });
+
+				globalAccess = await fetchGlobalAccess(
+					{ roles, user: user.id, ip: this.accountability?.ip ?? null },
+					{ knex: this.knex },
+				);
+
+				if (globalAccess.admin !== true) {
+					const loginError = new SsoNonAdminError();
+
+					emitStatus('fail', updatedPayload, user, loginError);
+					await stall(STALL_TIME, timeStart);
+					throw loginError;
+				}
+			}
+		}
+
 		const { auth_login_attempts: allowedAttempts } = await settingsService.readSingleton({
 			fields: ['auth_login_attempts'],
 		});
@@ -216,12 +243,14 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(user.role, { knex: this.knex });
+		if (!globalAccess) {
+			const roles = await fetchRolesTree(user.role, { knex: this.knex });
 
-		const globalAccess = await fetchGlobalAccess(
-			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
-			{ knex: this.knex },
-		);
+			globalAccess = await fetchGlobalAccess(
+				{ roles, user: user.id, ip: this.accountability?.ip ?? null },
+				{ knex: this.knex },
+			);
+		}
 
 		const tokenPayload: DirectusTokenPayload = {
 			id: user.id,

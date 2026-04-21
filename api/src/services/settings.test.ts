@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
@@ -27,6 +28,7 @@ const schema = new SchemaBuilder()
 		collection.field('ai_openai_compatible_name').text();
 		collection.field('ai_openai_compatible_models').json();
 		collection.field('ai_openai_compatible_headers').json();
+		collection.field('sso_disabled').boolean();
 	})
 	.build();
 
@@ -123,5 +125,27 @@ describe('SettingsService', () => {
 		expect(result).toStrictEqual({
 			ai_openai_api_key: 'openai-key',
 		});
+	});
+
+	it('rejects re-enabling sso when the entitlement is disabled and the project is already sso-disabled', async () => {
+		vi.mocked(getLicenseEntitlements).mockResolvedValue({
+			sso_enabled: false,
+		} as any);
+
+		const upsertSingletonSpy = vi.spyOn(ItemsService.prototype, 'upsertSingleton');
+
+		const service = new SettingsService({
+			knex: {
+				select: vi.fn(() => ({
+					from: vi.fn(() => ({
+						first: vi.fn().mockResolvedValue({ sso_disabled: true }),
+					})),
+				})),
+			} as any,
+			schema,
+		});
+
+		await expect(service.upsertSingleton({ sso_disabled: false })).rejects.toBeInstanceOf(ForbiddenError);
+		expect(upsertSingletonSpy).not.toHaveBeenCalled();
 	});
 });

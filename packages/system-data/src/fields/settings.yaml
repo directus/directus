@@ -151,6 +151,15 @@ fields:
       placeholder: $t:unlimited
     width: half
 
+  - field: sso_disabled
+    interface: boolean
+    note: $t:fields.directus_settings.sso_disabled_note
+    width: half
+    options:
+      label: $t:disabled
+    special:
+      - cast-boolean
+
   - field: public_registration_divider
     interface: presentation-divider
     options:

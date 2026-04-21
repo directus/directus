@@ -876,6 +876,8 @@ errors:
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_PROVIDER_CONFIG: Invalid provider configuration
   INVALID_QUERY: Invalid query
+  SSO_DISABLED: SSO has been disabled for this project
+  SSO_NON_ADMIN: SSO is only available for administrators
   INVALID_TOKEN: Invalid token
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
@@ -1699,6 +1701,8 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
+    sso_disabled: SSO Disabled
+    sso_disabled_note: Hides and blocks SSO for this project.
     visual_editor_urls: Visual Editor URLs
     report_feature_url: Report Feature URL
     report_bug_url: Report Bug URL

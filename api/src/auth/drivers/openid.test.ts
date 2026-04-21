@@ -12,6 +12,11 @@ import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
+import { getSSOState } from '../utils/get-sso-state.js';
+import {
+	resolveBlockedSSORedirect,
+	resolveBlockedSSORedirectFromStateCookie,
+} from '../utils/resolve-blocked-sso-redirect.js';
 import { createOpenIDAuthRouter, OpenIDAuthDriver } from './openid.js';
 
 vi.mock('@directus/env', () => ({
@@ -30,6 +35,19 @@ vi.mock('../../utils/get-secret.js', () => ({
 
 vi.mock('../utils/generate-callback-url.js', () => ({
 	generateCallbackUrl: vi.fn(() => 'http://localhost:8055/auth/login/test/callback'),
+}));
+
+vi.mock('../utils/get-sso-state.js', () => ({
+	getSSOState: vi.fn().mockResolvedValue({
+		enabled: true,
+		disabled: false,
+		transitional: false,
+	}),
+}));
+
+vi.mock('../utils/resolve-blocked-sso-redirect.js', () => ({
+	resolveBlockedSSORedirect: vi.fn(),
+	resolveBlockedSSORedirectFromStateCookie: vi.fn(),
 }));
 
 vi.mock('../utils/is-login-redirect-allowed.js', () => ({
@@ -128,6 +146,15 @@ beforeEach(() => {
 	} as unknown as Logger;
 
 	vi.mocked(useLogger).mockReturnValue(mockLogger);
+
+	vi.mocked(getSSOState).mockResolvedValue({
+		enabled: true,
+		disabled: false,
+		transitional: false,
+	});
+
+	vi.mocked(resolveBlockedSSORedirect).mockReturnValue(undefined);
+	vi.mocked(resolveBlockedSSORedirectFromStateCookie).mockReturnValue(undefined);
 });
 
 afterEach(() => {
@@ -589,7 +616,7 @@ describe('OpenIDAuthDriver', () => {
 
 				await driver.getUserID(payload);
 
-				expect(fetchUserIdSpy).toHaveBeenCalledWith('user_id_test');
+				expect(fetchUserIdSpy).toHaveBeenCalledWith('user_id_test', provider);
 			});
 
 			test('throws InvalidCredentialsError when no identifier found', async () => {
@@ -1243,6 +1270,7 @@ describe('createOpenIDAuthRouter', () => {
 	function createMockReqRes() {
 		const req: any = {
 			query: {},
+			cookies: {},
 			protocol: 'http',
 			get: vi.fn((header: string) => {
 				if (header === 'host') return 'localhost:8055';
@@ -1252,6 +1280,7 @@ describe('createOpenIDAuthRouter', () => {
 
 		const res: any = {
 			cookie: vi.fn(),
+			clearCookie: vi.fn(),
 			redirect: vi.fn(),
 		};
 
@@ -1310,5 +1339,26 @@ describe('createOpenIDAuthRouter', () => {
 			expect.any(String),
 			expect.objectContaining({ secure: false }),
 		);
+	});
+
+	test('clears the openid state cookie and redirects when sso is disabled during callback', async () => {
+		vi.mocked(getSSOState).mockResolvedValue({
+			enabled: false,
+			disabled: true,
+			transitional: false,
+		});
+
+		vi.mocked(resolveBlockedSSORedirectFromStateCookie).mockReturnValue('/admin/login');
+
+		const router = createOpenIDAuthRouter('test');
+		const handler = getRouteHandler(router, 'get', '/callback');
+
+		const { req, res } = createMockReqRes();
+		req.cookies['openid.test'] = 'cookie';
+
+		await handler(req, res, vi.fn());
+
+		expect(res.clearCookie).toHaveBeenCalledWith('openid.test');
+		expect(res.redirect).toHaveBeenCalledWith('/admin/login?reason=SSO_DISABLED');
 	});
 });

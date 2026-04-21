@@ -2,6 +2,7 @@ import * as validator from '@authenio/samlify-node-xmllint';
 import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
+	ForbiddenError,
 	InvalidCredentialsError,
 	InvalidPayloadError,
 	InvalidProviderError,
@@ -20,6 +21,9 @@ import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getSchema } from '../../utils/get-schema.js';
+import { SSO_DISABLED_REASON } from '../constants/sso.js';
+import { getSSOState } from '../utils/get-sso-state.js';
+import { resolveBlockedSSORedirect } from '../utils/resolve-blocked-sso-redirect.js';
 import { resolveLoginRedirect } from '../utils/resolve-login-redirect.js';
 import { LocalAuthDriver } from './local.js';
 
@@ -40,10 +44,11 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_IDP`));
 	}
 
-	async fetchUserID(identifier: string) {
+	async fetchUserID(identifier: string, provider: string) {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
+			.where({ provider })
 			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
@@ -63,7 +68,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
-		const userID = await this.fetchUserID(identifier);
+		const userID = await this.fetchUserID(identifier, provider);
 
 		if (userID) return userID;
 
@@ -129,6 +134,18 @@ export function createSAMLAuthRouter(providerName: string) {
 	router.get(
 		'/',
 		asyncHandler(async (req, res) => {
+			const ssoState = await getSSOState();
+
+			if (ssoState.disabled) {
+				const redirect = resolveBlockedSSORedirect(req.query['redirect'], providerName);
+
+				if (redirect) {
+					return res.redirect(`${redirect.split('?')[0]}?reason=${SSO_DISABLED_REASON}`);
+				}
+
+				throw new ForbiddenError();
+			}
+
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 			const { context: url } = sp.createLoginRequest(idp, 'redirect');
 			const parsedUrl = new URL(url);
@@ -173,8 +190,19 @@ export function createSAMLAuthRouter(providerName: string) {
 		express.urlencoded({ extended: false }),
 		asyncHandler(async (req, res, next) => {
 			const logger = useLogger();
+			const ssoState = await getSSOState();
 
 			let redirect: string | undefined = req.body?.RelayState;
+
+			if (ssoState.disabled) {
+				redirect = resolveBlockedSSORedirect(redirect, providerName);
+
+				if (redirect) {
+					return res.redirect(`${redirect.split('?')[0]}?reason=${SSO_DISABLED_REASON}`);
+				}
+
+				throw new ForbiddenError();
+			}
 
 			const authMode = (env[`AUTH_${providerName.toUpperCase()}_MODE`] ?? 'session') as string;
 

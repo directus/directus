@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
+	ForbiddenError,
 	InvalidCredentialsError,
 	InvalidPayloadError,
 	InvalidProviderConfigError,
@@ -33,7 +34,13 @@ import { getSchema } from '../../utils/get-schema.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
+import { SSO_DISABLED_REASON } from '../constants/sso.js';
 import { generateCallbackUrl } from '../utils/generate-callback-url.js';
+import { getSSOState } from '../utils/get-sso-state.js';
+import {
+	resolveBlockedSSORedirect,
+	resolveBlockedSSORedirectFromStateCookie,
+} from '../utils/resolve-blocked-sso-redirect.js';
 import { resolveLoginRedirect } from '../utils/resolve-login-redirect.js';
 import { LocalAuthDriver } from './local.js';
 
@@ -125,10 +132,11 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 	}
 
-	private async fetchUserId(identifier: string): Promise<string | undefined> {
+	private async fetchUserId(identifier: string, provider: string): Promise<string | undefined> {
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
+			.where({ provider })
 			.whereRaw('LOWER(??) = ?', ['external_identifier', identifier.toLowerCase()])
 			.first();
 
@@ -204,7 +212,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		};
 
-		const userId = await this.fetchUserId(identifier);
+		const userId = await this.fetchUserId(identifier, provider);
 
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
@@ -282,7 +290,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw e;
 		}
 
-		return (await this.fetchUserId(identifier)) as string;
+		return (await this.fetchUserId(identifier, provider)) as string;
 	}
 
 	override async login(user: User): Promise<void> {
@@ -353,7 +361,19 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 	router.get(
 		'/',
-		(req, res) => {
+		asyncHandler(async (req, res) => {
+			const ssoState = await getSSOState();
+
+			if (ssoState.disabled) {
+				const redirect = resolveBlockedSSORedirect(req.query['redirect'], providerName);
+
+				if (redirect) {
+					return res.redirect(`${redirect.split('?')[0]}?reason=${SSO_DISABLED_REASON}`);
+				}
+
+				throw new ForbiddenError();
+			}
+
 			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
@@ -391,16 +411,30 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			});
 
 			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
-		},
+		}),
 		respond,
 	);
 
 	router.post(
 		'/callback',
 		express.urlencoded({ extended: false }),
-		(req, res) => {
+		asyncHandler(async (req, res) => {
+			const ssoState = await getSSOState();
+
+			if (ssoState.disabled) {
+				const redirect = resolveBlockedSSORedirectFromStateCookie(req.cookies[`oauth2.${providerName}`], providerName);
+
+				res.clearCookie(`oauth2.${providerName}`);
+
+				if (redirect) {
+					return res.redirect(`${redirect.split('?')[0]}?reason=${SSO_DISABLED_REASON}`);
+				}
+
+				throw new ForbiddenError();
+			}
+
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
-		},
+		}),
 		respond,
 	);
 
@@ -408,6 +442,19 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		'/callback',
 		asyncHandler(async (req, res, next) => {
 			const logger = useLogger();
+			const ssoState = await getSSOState();
+
+			if (ssoState.disabled) {
+				const redirect = resolveBlockedSSORedirectFromStateCookie(req.cookies[`oauth2.${providerName}`], providerName);
+
+				res.clearCookie(`oauth2.${providerName}`);
+
+				if (redirect) {
+					return res.redirect(`${redirect.split('?')[0]}?reason=${SSO_DISABLED_REASON}`);
+				}
+
+				throw new ForbiddenError();
+			}
 
 			let tokenData;
 

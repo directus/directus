@@ -28,6 +28,14 @@ const { fields: allFields } = useCollection('directus_settings');
 
 const EXCLUDED_GROUPS = ['theming_group', 'ai_group', 'mcp_group'] as const;
 
+const canEditSSODisabled = computed(() => {
+	if (serverStore.info.license?.sso_enabled === true) {
+		return true;
+	}
+
+	return settingsStore.settings?.sso_disabled !== true;
+});
+
 const fields = computed(() => {
 	return allFields.value
 		.map((field) => {
@@ -35,6 +43,16 @@ const fields = computed(() => {
 				field.field === 'collaborative_editing_enabled' &&
 				(serverStore.info.websocket === false || serverStore.info.websocket?.collaborativeEditing === false)
 			) {
+				return {
+					...field,
+					meta: {
+						...field.meta,
+						readonly: true,
+					},
+				} as any;
+			}
+
+			if (field.field === 'sso_disabled' && canEditSSODisabled.value === false) {
 				return {
 					...field,
 					meta: {

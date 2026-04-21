@@ -12,6 +12,11 @@ import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getAuthProvider } from '../../auth.js';
 import { useLogger } from '../../logger/index.js';
+import { getSSOState } from '../utils/get-sso-state.js';
+import {
+	resolveBlockedSSORedirect,
+	resolveBlockedSSORedirectFromStateCookie,
+} from '../utils/resolve-blocked-sso-redirect.js';
 import { createOAuth2AuthRouter, OAuth2AuthDriver } from './oauth2.js';
 
 vi.mock('@directus/env', () => ({
@@ -30,6 +35,19 @@ vi.mock('../../utils/get-secret.js', () => ({
 
 vi.mock('../utils/generate-callback-url.js', () => ({
 	generateCallbackUrl: vi.fn(() => 'http://localhost:8055/auth/login/test/callback'),
+}));
+
+vi.mock('../utils/get-sso-state.js', () => ({
+	getSSOState: vi.fn().mockResolvedValue({
+		enabled: true,
+		disabled: false,
+		transitional: false,
+	}),
+}));
+
+vi.mock('../utils/resolve-blocked-sso-redirect.js', () => ({
+	resolveBlockedSSORedirect: vi.fn(),
+	resolveBlockedSSORedirectFromStateCookie: vi.fn(),
 }));
 
 vi.mock('../utils/is-login-redirect-allowed.js', () => ({
@@ -124,6 +142,15 @@ beforeEach(() => {
 	mockAuthorizationUrl.mockClear();
 
 	codeChallengelengeSpy = vi.spyOn(generators, 'codeChallenge');
+
+	vi.mocked(getSSOState).mockResolvedValue({
+		enabled: true,
+		disabled: false,
+		transitional: false,
+	});
+
+	vi.mocked(resolveBlockedSSORedirect).mockReturnValue(undefined);
+	vi.mocked(resolveBlockedSSORedirectFromStateCookie).mockReturnValue(undefined);
 });
 
 afterEach(() => {
@@ -662,7 +689,7 @@ describe('OAuth2AuthDriver', () => {
 
 				await driver.getUserID(payload);
 
-				expect(fetchUserIdSpy).toHaveBeenCalledWith('user_id_test');
+				expect(fetchUserIdSpy).toHaveBeenCalledWith('user_id_test', provider);
 			});
 
 			test('falls back to email when identifierKey not found', async () => {
@@ -688,7 +715,7 @@ describe('OAuth2AuthDriver', () => {
 
 				await driver.getUserID(payload);
 
-				expect(fetchUserIdSpy).toHaveBeenCalledWith('fallback@test.com');
+				expect(fetchUserIdSpy).toHaveBeenCalledWith('fallback@test.com', provider);
 			});
 
 			test('throws InvalidCredentialsError when no identifier found', async () => {
@@ -735,7 +762,7 @@ describe('OAuth2AuthDriver', () => {
 
 				await driver.getUserID(payload);
 
-				expect(fetchUserIdSpy).toHaveBeenCalledWith('custom-email@test.com');
+				expect(fetchUserIdSpy).toHaveBeenCalledWith('custom-email@test.com', provider);
 			});
 		});
 
@@ -1307,6 +1334,7 @@ describe('createOAuth2AuthRouter', () => {
 	function createMockReqRes() {
 		const req: any = {
 			query: {},
+			cookies: {},
 			protocol: 'http',
 			get: vi.fn((header: string) => {
 				if (header === 'host') return 'localhost:8055';
@@ -1316,13 +1344,14 @@ describe('createOAuth2AuthRouter', () => {
 
 		const res: any = {
 			cookie: vi.fn(),
+			clearCookie: vi.fn(),
 			redirect: vi.fn(),
 		};
 
 		return { req, res };
 	}
 
-	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', () => {
+	test('sets secure cookie option to true when AUTH_TEST_COOKIE_SECURE is true', async () => {
 		vi.mocked(useEnv).mockReturnValue({
 			EMAIL_TEMPLATES_PATH: './templates',
 			AUTH_TEST_COOKIE_SECURE: true,
@@ -1340,7 +1369,7 @@ describe('createOAuth2AuthRouter', () => {
 
 		const { req, res } = createMockReqRes();
 
-		handler(req, res);
+		await handler(req, res);
 
 		expect(res.cookie).toHaveBeenCalledWith(
 			'oauth2.test',
@@ -1349,7 +1378,7 @@ describe('createOAuth2AuthRouter', () => {
 		);
 	});
 
-	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', () => {
+	test('sets secure cookie option to false when AUTH_TEST_COOKIE_SECURE is false', async () => {
 		vi.mocked(useEnv).mockReturnValue({
 			EMAIL_TEMPLATES_PATH: './templates',
 			AUTH_TEST_COOKIE_SECURE: false,
@@ -1367,12 +1396,33 @@ describe('createOAuth2AuthRouter', () => {
 
 		const { req, res } = createMockReqRes();
 
-		handler(req, res);
+		await handler(req, res);
 
 		expect(res.cookie).toHaveBeenCalledWith(
 			'oauth2.test',
 			expect.any(String),
 			expect.objectContaining({ secure: false }),
 		);
+	});
+
+	test('clears the oauth state cookie and redirects when sso is disabled during callback', async () => {
+		vi.mocked(getSSOState).mockResolvedValue({
+			enabled: false,
+			disabled: true,
+			transitional: false,
+		});
+
+		vi.mocked(resolveBlockedSSORedirectFromStateCookie).mockReturnValue('/admin/login');
+
+		const router = createOAuth2AuthRouter('test');
+		const handler = getRouteHandler(router, 'get', '/callback');
+
+		const { req, res } = createMockReqRes();
+		req.cookies['oauth2.test'] = 'cookie';
+
+		await handler(req, res, vi.fn());
+
+		expect(res.clearCookie).toHaveBeenCalledWith('oauth2.test');
+		expect(res.redirect).toHaveBeenCalledWith('/admin/login?reason=SSO_DISABLED');
 	});
 });

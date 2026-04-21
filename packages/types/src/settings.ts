@@ -50,6 +50,7 @@ export type Settings = {
 	public_note: string | null;
 	visual_editor_urls: Array<{ url: string }> | null;
 	auth_login_attempts: number;
+	sso_disabled: boolean;
 	auth_password_policy: string | null;
 	storage_asset_transform: string;
 	storage_asset_presets: SettingsStorageAssetPreset[] | null;

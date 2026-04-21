@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
+	ForbiddenError,
 	InvalidCredentialsError,
 	InvalidPayloadError,
 	InvalidProviderConfigError,
@@ -31,6 +32,7 @@ import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { AuthDriver } from '../auth.js';
+import { getSSOState } from '../utils/get-sso-state.js';
 
 interface UserInfo {
 	dn: string;
@@ -437,6 +439,11 @@ export function createLDAPAuthRouter(provider: string): Router {
 		'/',
 		asyncHandler(async (req, res, next) => {
 			const env = useEnv();
+			const ssoState = await getSSOState();
+
+			if (ssoState.disabled) {
+				throw new ForbiddenError();
+			}
 
 			const accountability: Accountability = createDefaultAccountability({
 				ip: getIPFromReq(req),
