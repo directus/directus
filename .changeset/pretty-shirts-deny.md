@@ -8,6 +8,7 @@
 '@directus/storage': major
 '@directus/specs': patch
 '@directus/api': minor
+'@directus/sdk': minor
 ---
 
 Added support for asset transformation purge
