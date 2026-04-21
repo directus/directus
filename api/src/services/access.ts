@@ -1,6 +1,7 @@
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
+import { ensureUserCountBaseline } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 
 export class AccessService extends ItemsService {
@@ -22,7 +23,17 @@ export class AccessService extends ItemsService {
 		opts.userIntegrityCheckFlags =
 			(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
-		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		const userCountBaseline = await ensureUserCountBaseline({
+			flags: opts.userIntegrityCheckFlags,
+			knex: this.knex,
+			...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+		});
+
+		if (userCountBaseline) {
+			opts.userCountBaseline = userCountBaseline;
+		}
+
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 
 		const result = await super.createOne(data, opts);
 
@@ -39,7 +50,18 @@ export class AccessService extends ItemsService {
 	): Promise<PrimaryKey[]> {
 		// Updating policy attachments might affect the number of admin/app/api users
 		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
+		const userCountBaseline = await ensureUserCountBaseline({
+			flags: opts.userIntegrityCheckFlags,
+			knex: this.knex,
+			...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+		});
+
+		if (userCountBaseline) {
+			opts.userCountBaseline = userCountBaseline;
+		}
+
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 
 		const result = await super.updateMany(keys, data, { ...opts, userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
@@ -52,7 +74,18 @@ export class AccessService extends ItemsService {
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		// Changes here can affect the number of admin/app/api users
 		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
+		const userCountBaseline = await ensureUserCountBaseline({
+			flags: opts.userIntegrityCheckFlags,
+			knex: this.knex,
+			...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+		});
+
+		if (userCountBaseline) {
+			opts.userCountBaseline = userCountBaseline;
+		}
+
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 
 		const result = await super.deleteMany(keys, opts);
 

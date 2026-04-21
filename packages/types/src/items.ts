@@ -1,7 +1,7 @@
 import type { DirectusError } from './error.js';
 import type { EventContext } from './events.js';
 import type { PermissionsAction } from './permissions.js';
-import type { UserIntegrityCheckFlag } from './users.js';
+import type { UserCountBaseline, UserIntegrityCheckFlag } from './users.js';
 
 export type Item = Record<string, any>;
 
@@ -103,9 +103,16 @@ export type MutationOptions = {
 	userIntegrityCheckFlags?: UserIntegrityCheckFlag;
 
 	/**
+	 * Baseline user counts captured before a top-level mutation so nested mutations can enforce increase-only seat rules.
+	 */
+	userCountBaseline?: UserCountBaseline;
+
+	/**
 	 * Callback function that is called whenever a mutation requires a user integrity check to be made
 	 */
-	onRequireUserIntegrityCheck?: ((flags: UserIntegrityCheckFlag) => void) | undefined;
+	onRequireUserIntegrityCheck?:
+		| ((flags: UserIntegrityCheckFlag, userCountBaseline?: UserCountBaseline) => void)
+		| undefined;
 };
 
 export type FieldMutationOptions = MutationOptions & {

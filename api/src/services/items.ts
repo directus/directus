@@ -328,9 +328,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			if (userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
-					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags, opts.userCountBaseline);
 				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex: trx,
+						...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+					});
 				}
 			}
 
@@ -455,6 +459,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const service = this.fork({ knex });
 
 			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+			let userCountBaseline = opts.userCountBaseline;
 
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
@@ -473,7 +478,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const primaryKey = await service.createOne(payload, {
 					...(opts || {}),
 					autoPurgeCache: false,
-					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+					...(userCountBaseline ? { userCountBaseline } : {}),
+					onRequireUserIntegrityCheck: (flags, nextUserCountBaseline) => {
+						userIntegrityCheckFlags |= flags;
+
+						if (nextUserCountBaseline) {
+							userCountBaseline ??= nextUserCountBaseline;
+							opts.userCountBaseline ??= nextUserCountBaseline;
+						}
+					},
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
 					overwriteDefaults: opts.overwriteDefaults?.[index],
@@ -485,9 +498,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			if (userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
-					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags, userCountBaseline);
 				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex,
+						...(userCountBaseline ? { userCountBaseline } : {}),
+					});
 				}
 			}
 
@@ -700,6 +717,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const service = this.fork({ knex });
 
 				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+				let userCountBaseline = opts.userCountBaseline;
 
 				for (const index in data) {
 					const item = data[index]!;
@@ -709,8 +727,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const combinedOpts: MutationOptions = {
 						autoPurgeCache: false,
 						...opts,
+						...(userCountBaseline ? { userCountBaseline } : {}),
 						overwriteDefaults: opts.overwriteDefaults?.[index],
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+						onRequireUserIntegrityCheck: (flags, nextUserCountBaseline) => {
+							userIntegrityCheckFlags |= flags;
+
+							if (nextUserCountBaseline) {
+								userCountBaseline ??= nextUserCountBaseline;
+								opts.userCountBaseline ??= nextUserCountBaseline;
+							}
+						},
 					};
 
 					keys.push(await service.updateOne(primaryKey, omit(item, primaryKeyField), combinedOpts));
@@ -718,9 +744,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 				if (userIntegrityCheckFlags) {
 					if (opts.onRequireUserIntegrityCheck) {
-						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags, userCountBaseline);
 					} else {
-						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+						await validateUserCountIntegrity({
+							flags: userIntegrityCheckFlags,
+							knex,
+							...(userCountBaseline ? { userCountBaseline } : {}),
+						});
 					}
 				}
 			});
@@ -874,11 +904,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			if (userIntegrityCheckFlags) {
 				if (opts?.onRequireUserIntegrityCheck) {
-					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags, opts.userCountBaseline);
 				} else {
 					// Having no onRequireUserIntegrityCheck callback indicates that
 					// this is the top level invocation of the nested updates, so perform the user integrity check
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex: trx,
+						...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+					});
 				}
 			}
 
@@ -1161,9 +1195,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			if (opts.userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
-					opts.onRequireUserIntegrityCheck(opts.userIntegrityCheckFlags);
+					opts.onRequireUserIntegrityCheck(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 				} else {
-					await validateUserCountIntegrity({ flags: opts.userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: opts.userIntegrityCheckFlags,
+						knex: trx,
+						...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+					});
 				}
 			}
 

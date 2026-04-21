@@ -53,6 +53,12 @@ export type RegisterUserInput = {
 	last_name?: User['last_name'];
 };
 
+export type UserCountBaseline = {
+	admin: number;
+	app: number;
+	api: number;
+};
+
 export enum UserIntegrityCheckFlag {
 	None = 0,
 	/** Check if the number of remaining admin users is greater than 0 */

@@ -4,6 +4,7 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
+import { ensureUserCountBaseline } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 
 export class PoliciesService extends ItemsService<Policy> {
@@ -84,7 +85,19 @@ export class PoliciesService extends ItemsService<Policy> {
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
-		if (opts.userIntegrityCheckFlags) opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		if (opts.userIntegrityCheckFlags) {
+			const userCountBaseline = await ensureUserCountBaseline({
+				flags: opts.userIntegrityCheckFlags,
+				knex: this.knex,
+				...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+			});
+
+			if (userCountBaseline) {
+				opts.userCountBaseline = userCountBaseline;
+			}
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
+		}
 
 		const result = await super.updateMany(keys, data, opts);
 
@@ -98,7 +111,18 @@ export class PoliciesService extends ItemsService<Policy> {
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
+		const userCountBaseline = await ensureUserCountBaseline({
+			flags: opts.userIntegrityCheckFlags,
+			knex: this.knex,
+			...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+		});
+
+		if (userCountBaseline) {
+			opts.userCountBaseline = userCountBaseline;
+		}
+
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 
 		const result = await super.deleteMany(keys, opts);
 

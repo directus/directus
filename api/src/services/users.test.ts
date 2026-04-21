@@ -2,12 +2,14 @@ import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqu
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
+import * as directusUtils from '@directus/utils';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { verifyJWT } from '../utils/jwt.js';
-import { ItemsService, MailService, UsersService } from './index.js';
+import { ensureUserCountBaseline } from '../utils/validate-user-count-integrity.js';
+import { ItemsService, MailService, SettingsService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -34,6 +36,10 @@ vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admi
 
 vi.mock('../utils/jwt.js', () => ({
 	verifyJWT: vi.fn(),
+}));
+
+vi.mock('../utils/validate-user-count-integrity.js', () => ({
+	ensureUserCountBaseline: vi.fn().mockResolvedValue({ admin: 1, app: 1, api: 2 }),
 }));
 
 vi.mock('../utils/get-secret.js', () => ({
@@ -114,6 +120,8 @@ describe('Integration Tests', () => {
 				await service.createOne({}, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+				expect(opts.userCountBaseline).toEqual({ admin: 1, app: 1, api: 2 });
+				expect(ensureUserCountBaseline).toHaveBeenCalled();
 			});
 		});
 
@@ -150,6 +158,8 @@ describe('Integration Tests', () => {
 				await service.createMany([{}], opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+				expect(opts.userCountBaseline).toEqual({ admin: 1, app: 1, api: 2 });
+				expect(ensureUserCountBaseline).toHaveBeenCalled();
 			});
 		});
 
@@ -186,6 +196,7 @@ describe('Integration Tests', () => {
 				await service.updateMany(['user-id-6'], { status: 'active' }, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+				expect(opts.userCountBaseline).toEqual({ admin: 1, app: 1, api: 2 });
 				expect(clearUserSessionsSpy).not.toBeCalled();
 			});
 
@@ -479,6 +490,119 @@ describe('Integration Tests', () => {
 				});
 
 				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
+			});
+
+			it('should activate invited users through updateOne', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'invite' });
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id-invite',
+					status: 'invited',
+					email: 'test@example.com',
+				});
+
+				const updateOneSpy = vi.spyOn(UsersService.prototype, 'updateOne').mockResolvedValue('user-id-invite');
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.acceptInvite('fake-token', 'Password123!');
+
+				expect(updateOneSpy).toHaveBeenCalledWith('user-id-invite', { password: 'Password123!', status: 'active' });
+			});
+		});
+
+		describe('verifyRegistration', () => {
+			it('should activate unverified users through updateOne', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'verify@example.com', scope: 'pending-registration' });
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id-verify',
+					status: 'unverified',
+					email: 'verify@example.com',
+				});
+
+				const updateOneSpy = vi.spyOn(UsersService.prototype, 'updateOne').mockResolvedValue('user-id-verify');
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.verifyRegistration('fake-token');
+
+				expect(updateOneSpy).toHaveBeenCalledWith('user-id-verify', { status: 'active' });
+			});
+		});
+
+		describe('registerUser', () => {
+			it('should create active users when email verification is disabled', async () => {
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(undefined);
+				const createOneSpy = vi.spyOn(UsersService.prototype, 'createOne').mockResolvedValue('user-id-register');
+
+				vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+					public_registration: true,
+					public_registration_verify_email: false,
+					public_registration_role: 'public-role',
+					public_registration_email_filter: null,
+				} as any);
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.registerUser({
+					email: 'register@example.com',
+					password: 'Password123!',
+				});
+
+				expect(createOneSpy).toHaveBeenCalledWith(
+					expect.objectContaining({
+						email: 'register@example.com',
+						status: 'active',
+						role: 'public-role',
+					}),
+				);
+			});
+		});
+
+		describe('resetPassword', () => {
+			it('should reset active users without changing the target status', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({
+					email: 'reset@example.com',
+					scope: 'password-reset',
+					hash: 'hash',
+				});
+
+				vi.spyOn(UsersService.prototype as any, 'checkPasswordPolicy').mockResolvedValueOnce(undefined);
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id-reset',
+					status: 'active',
+					email: 'reset@example.com',
+					password: 'hashed-password',
+				});
+
+				const updateOneSpy = vi.spyOn(UsersService.prototype, 'updateOne').mockResolvedValue('user-id-reset');
+				const hashSpy = vi.spyOn(directusUtils, 'getSimpleHash').mockReturnValue('hash');
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.resetPassword('fake-token', 'Password123!');
+
+				expect(updateOneSpy).toHaveBeenCalledWith(
+					'user-id-reset',
+					{ password: 'Password123!', status: 'active' },
+					expect.any(Object),
+				);
+
+				hashSpy.mockRestore();
 			});
 		});
 	});

@@ -4,11 +4,16 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ensureUserCountBaseline } from '../utils/validate-user-count-integrity.js';
 import { AccessService, ItemsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
+
+vi.mock('../utils/validate-user-count-integrity.js', () => ({
+	ensureUserCountBaseline: vi.fn().mockResolvedValue({ admin: 2, app: 3, api: 5 }),
 }));
 
 const schema = new SchemaBuilder()
@@ -52,6 +57,8 @@ describe('Integration Tests', () => {
 				await service.updateMany(['role-id-3'], { parent: 'parent-role-id-1' }, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
+				expect(opts.userCountBaseline).toEqual({ admin: 2, app: 3, api: 5 });
+				expect(ensureUserCountBaseline).toHaveBeenCalled();
 			});
 
 			it('should validate role nesting if parent is changed', async () => {
@@ -91,7 +98,13 @@ describe('Integration Tests', () => {
 
 				await service.deleteMany(keys);
 
-				const opts: MutationOptions = { userIntegrityCheckFlags: UserIntegrityCheckFlag.All, bypassLimits: true };
+				const opts: MutationOptions = {
+					userIntegrityCheckFlags: UserIntegrityCheckFlag.All,
+					userCountBaseline: { admin: 2, app: 3, api: 5 },
+					bypassLimits: true,
+				};
+
+				expect(ensureUserCountBaseline).toHaveBeenCalled();
 
 				expect(accessDeleteByQuerySpy).toHaveBeenCalledWith(
 					{
@@ -132,7 +145,10 @@ describe('Integration Tests', () => {
 					{ parent: null },
 				);
 
-				expect(itemsDeleteManySpy).toHaveBeenCalledWith(keys, { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
+				expect(itemsDeleteManySpy).toHaveBeenCalledWith(keys, {
+					userIntegrityCheckFlags: UserIntegrityCheckFlag.All,
+					userCountBaseline: { admin: 2, app: 3, api: 5 },
+				});
 			});
 
 			it('should clear caches', async () => {

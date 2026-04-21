@@ -4,6 +4,7 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { transaction } from '../utils/transaction.js';
+import { ensureUserCountBaseline } from '../utils/validate-user-count-integrity.js';
 import { AccessService } from './access.js';
 import { ItemsService } from './items.js';
 import { PresetsService } from './presets.js';
@@ -27,7 +28,18 @@ export class RolesService extends ItemsService {
 			// If the parent of a role changed we need to make a full integrity check.
 			// Anything related to policies will be checked in the AccessService, where the policies are attached to roles
 			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
+			const userCountBaseline = await ensureUserCountBaseline({
+				flags: opts.userIntegrityCheckFlags,
+				knex: this.knex,
+				...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+			});
+
+			if (userCountBaseline) {
+				opts.userCountBaseline = userCountBaseline;
+			}
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 
 			await this.validateRoleNesting(keys as string[], data['parent']);
 		}
@@ -45,7 +57,18 @@ export class RolesService extends ItemsService {
 
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
-		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+
+		const userCountBaseline = await ensureUserCountBaseline({
+			flags: opts.userIntegrityCheckFlags,
+			knex: this.knex,
+			...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+		});
+
+		if (userCountBaseline) {
+			opts.userCountBaseline = userCountBaseline;
+		}
+
+		opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 
 		await transaction(this.knex, async (trx) => {
 			const options: AbstractServiceOptions = {

@@ -15,6 +15,7 @@ import type {
 	PrimaryKey,
 	Query,
 	SchemaOverview,
+	UserCountBaseline,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
@@ -70,6 +71,35 @@ export class PayloadService {
 		this.overwriteDefaults = options.overwriteDefaults;
 
 		return this;
+	}
+
+	private getNestedMutationOptions(
+		opts: MutationOptions | undefined,
+		overwriteDefaults: DefaultOverwrite | undefined,
+		revisions: PrimaryKey[],
+		nestedActionEvents: ActionEventParams[],
+		onRequireUserIntegrityCheck: (flags: UserIntegrityCheckFlag, userCountBaseline?: UserCountBaseline) => void,
+	): MutationOptions {
+		return {
+			onRevisionCreate: (pk) => revisions.push(pk),
+			onRequireUserIntegrityCheck: (flags, userCountBaseline) => {
+				onRequireUserIntegrityCheck(flags, userCountBaseline);
+
+				if (opts && userCountBaseline) {
+					opts.userCountBaseline ??= userCountBaseline;
+				}
+			},
+			bypassEmitAction: (params) =>
+				opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+			emitEvents: opts?.emitEvents,
+			autoPurgeCache: opts?.autoPurgeCache,
+			autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+			skipTracking: opts?.skipTracking,
+			overwriteDefaults,
+			onItemCreate: opts?.onItemCreate,
+			mutationTracker: opts?.mutationTracker,
+			...(opts?.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+		};
 	}
 
 	public transformers: Transformers = {
@@ -309,16 +339,12 @@ export class PayloadService {
 					if (key in item === false) continue;
 
 					const [operation, fieldName] = key.split('->') as [string, string];
+					const fieldEntry = fieldEntries[fieldName];
 
 					const aggregateResult = { [fieldName]: item[key] };
 
-					if (fieldEntries[fieldName]?.special?.length > 0) {
-						const newValue = await this.processField(
-							fieldEntries[fieldName],
-							aggregateResult,
-							'read',
-							this.accountability,
-						);
+					if (fieldEntry && fieldEntry.special?.length > 0) {
+						const newValue = await this.processField(fieldEntry, aggregateResult, 'read', this.accountability);
 
 						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
 					}
@@ -629,32 +655,24 @@ export class PayloadService {
 
 				if (Object.keys(record).length > 0) {
 					await service.updateOne(relatedPrimaryKey, record, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
+						...this.getNestedMutationOptions(
+							opts,
+							opts?.overwriteDefaults?.[relation.field],
+							revisions,
+							nestedActionEvents,
+							(flags) => (userIntegrityCheckFlags |= flags),
+						),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await service.createOne(relatedRecord, {
-					onRevisionCreate: (pk) => revisions.push(pk),
-					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					emitEvents: opts?.emitEvents,
-					autoPurgeCache: opts?.autoPurgeCache,
-					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-					skipTracking: opts?.skipTracking,
-					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
-					onItemCreate: opts?.onItemCreate,
-					mutationTracker: opts?.mutationTracker,
+					...this.getNestedMutationOptions(
+						opts,
+						opts?.overwriteDefaults?.[relation.field],
+						revisions,
+						nestedActionEvents,
+						(flags) => (userIntegrityCheckFlags |= flags),
+					),
 				});
 			}
 
@@ -736,32 +754,24 @@ export class PayloadService {
 
 				if (Object.keys(record).length > 0) {
 					await service.updateOne(relatedPrimaryKey, record, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
+						...this.getNestedMutationOptions(
+							opts,
+							opts?.overwriteDefaults?.[relation.field],
+							revisions,
+							nestedActionEvents,
+							(flags) => (userIntegrityCheckFlags |= flags),
+						),
 					});
 				}
 			} else {
 				relatedPrimaryKey = await service.createOne(relatedRecord, {
-					onRevisionCreate: (pk) => revisions.push(pk),
-					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					emitEvents: opts?.emitEvents,
-					autoPurgeCache: opts?.autoPurgeCache,
-					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-					skipTracking: opts?.skipTracking,
-					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
-					onItemCreate: opts?.onItemCreate,
-					mutationTracker: opts?.mutationTracker,
+					...this.getNestedMutationOptions(
+						opts,
+						opts?.overwriteDefaults?.[relation.field],
+						revisions,
+						nestedActionEvents,
+						(flags) => (userIntegrityCheckFlags |= flags),
+					),
 				});
 			}
 
@@ -885,17 +895,13 @@ export class PayloadService {
 
 				savedPrimaryKeys.push(
 					...(await service.upsertMany(recordsToUpsert, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
+						...this.getNestedMutationOptions(
+							opts,
+							opts?.overwriteDefaults?.[relation.meta!.one_field!],
+							revisions,
+							nestedActionEvents,
+							(flags) => (userIntegrityCheckFlags |= flags),
+						),
 					})),
 				);
 
@@ -921,33 +927,26 @@ export class PayloadService {
 				if (relation.meta.one_deselect_action === 'delete') {
 					// There's no revision for a deletion
 					await service.deleteByQuery(query, {
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
+						...this.getNestedMutationOptions(
+							opts,
+							opts?.overwriteDefaults?.[relation.meta!.one_field!],
+							revisions,
+							nestedActionEvents,
+							(flags) => (userIntegrityCheckFlags |= flags),
+						),
 					});
 				} else {
 					await service.updateByQuery(
 						query,
 						{ [relation.field]: null },
 						{
-							onRevisionCreate: (pk) => revisions.push(pk),
-							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
-							autoPurgeCache: opts?.autoPurgeCache,
-							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-							skipTracking: opts?.skipTracking,
-							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
-							onItemCreate: opts?.onItemCreate,
-							mutationTracker: opts?.mutationTracker,
+							...this.getNestedMutationOptions(
+								opts,
+								opts?.overwriteDefaults?.[relation.meta!.one_field!],
+								revisions,
+								nestedActionEvents,
+								(flags) => (userIntegrityCheckFlags |= flags),
+							),
 						},
 					);
 				}
@@ -992,17 +991,13 @@ export class PayloadService {
 					}
 
 					await service.createMany(createPayload, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						autoPurgeCache: opts?.autoPurgeCache,
-						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						skipTracking: opts?.skipTracking,
-						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['create'],
-						onItemCreate: opts?.onItemCreate,
-						mutationTracker: opts?.mutationTracker,
+						...this.getNestedMutationOptions(
+							opts,
+							opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['create'],
+							revisions,
+							nestedActionEvents,
+							(flags) => (userIntegrityCheckFlags |= flags),
+						),
 					});
 				}
 
@@ -1021,17 +1016,13 @@ export class PayloadService {
 						}
 
 						await service.updateOne(key, record, {
-							onRevisionCreate: (pk) => revisions.push(pk),
-							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
-							autoPurgeCache: opts?.autoPurgeCache,
-							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-							skipTracking: opts?.skipTracking,
-							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['update'][index],
-							onItemCreate: opts?.onItemCreate,
-							mutationTracker: opts?.mutationTracker,
+							...this.getNestedMutationOptions(
+								opts,
+								opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['update'][index],
+								revisions,
+								nestedActionEvents,
+								(flags) => (userIntegrityCheckFlags |= flags),
+							),
 						});
 					}
 				}
@@ -1057,33 +1048,26 @@ export class PayloadService {
 
 					if (relation.meta.one_deselect_action === 'delete') {
 						await service.deleteByQuery(query, {
-							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
-							autoPurgeCache: opts?.autoPurgeCache,
-							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-							skipTracking: opts?.skipTracking,
-							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
-							onItemCreate: opts?.onItemCreate,
-							mutationTracker: opts?.mutationTracker,
+							...this.getNestedMutationOptions(
+								opts,
+								opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
+								revisions,
+								nestedActionEvents,
+								(flags) => (userIntegrityCheckFlags |= flags),
+							),
 						});
 					} else {
 						await service.updateByQuery(
 							query,
 							{ [relation.field]: null },
 							{
-								onRevisionCreate: (pk) => revisions.push(pk),
-								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-								emitEvents: opts?.emitEvents,
-								autoPurgeCache: opts?.autoPurgeCache,
-								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-								skipTracking: opts?.skipTracking,
-								overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
-								onItemCreate: opts?.onItemCreate,
-								mutationTracker: opts?.mutationTracker,
+								...this.getNestedMutationOptions(
+									opts,
+									opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
+									revisions,
+									nestedActionEvents,
+									(flags) => (userIntegrityCheckFlags |= flags),
+								),
 							},
 						);
 					}

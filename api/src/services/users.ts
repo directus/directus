@@ -27,6 +27,7 @@ import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
 import { Url } from '../utils/url.js';
+import { ensureUserCountBaseline } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
@@ -206,7 +207,17 @@ export class UsersService extends ItemsService {
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
-			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+			const userCountBaseline = await ensureUserCountBaseline({
+				flags: opts.userIntegrityCheckFlags,
+				knex: this.knex,
+				...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+			});
+
+			if (userCountBaseline) {
+				opts.userCountBaseline = userCountBaseline;
+			}
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 		}
 
 		return await super.createOne(data, opts);
@@ -238,7 +249,17 @@ export class UsersService extends ItemsService {
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
-			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+			const userCountBaseline = await ensureUserCountBaseline({
+				flags: opts.userIntegrityCheckFlags,
+				knex: this.knex,
+				...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+			});
+
+			if (userCountBaseline) {
+				opts.userCountBaseline = userCountBaseline;
+			}
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 		}
 
 		// Use generic ItemsService to avoid calling `UserService.createOne` to avoid additional work of validating emails,
@@ -316,7 +337,17 @@ export class UsersService extends ItemsService {
 		}
 
 		if (opts.userIntegrityCheckFlags) {
-			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+			const userCountBaseline = await ensureUserCountBaseline({
+				flags: opts.userIntegrityCheckFlags,
+				knex: this.knex,
+				...(opts.userCountBaseline ? { userCountBaseline: opts.userCountBaseline } : {}),
+			});
+
+			if (userCountBaseline) {
+				opts.userCountBaseline = userCountBaseline;
+			}
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags, opts.userCountBaseline);
 		}
 
 		const result = await super.updateMany(keys, data, opts);
@@ -340,7 +371,10 @@ export class UsersService extends ItemsService {
 	 */
 	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (opts?.onRequireUserIntegrityCheck) {
-			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None);
+			opts.onRequireUserIntegrityCheck(
+				opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None,
+				opts?.userCountBaseline,
+			);
 		} else {
 			try {
 				await validateRemainingAdminUsers({ excludeUsers: keys }, { knex: this.knex, schema: this.schema });
