@@ -14,6 +14,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useServerStore } from '@/stores/server';
 import { generateFavicon } from '@/utils/generate-favicon';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { getRootPath } from '@/utils/get-root-path';
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
@@ -60,7 +61,7 @@ useHead({
 		} else if (serverStore.info?.project?.project_color) {
 			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
 		} else {
-			href = '/favicon.ico';
+			href = `${getRootPath()}favicon.ico`;
 		}
 
 		return [
