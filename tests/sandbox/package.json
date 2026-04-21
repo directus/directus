@@ -1,0 +1,59 @@
+{
+	"name": "@directus/sandbox",
+	"version": "1.0.0",
+	"description": "Toolkit for spinning up directus test environments",
+	"homepage": "https://directus.io",
+	"scripts": {
+		"cli": "tsx src/cli.ts",
+		"build": "tsdown src/index.ts src/cli.ts --dts --unbundle && copyfiles src/docker/*.yml dist -u 1",
+		"dev": "tsdown -w",
+		"build:tests": "tsdown src/index.ts  --format=esm",
+		"docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"bin": {
+		"sandbox": "dist/cli.js"
+	},
+	"files": [
+		"dist",
+		"docker"
+	],
+	"keywords": [],
+	"type": "module",
+	"author": "Nils Twelker (nils@directus.io)",
+	"license": "MIT",
+	"private": true,
+	"packageManager": "pnpm@10.14.0",
+	"dependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
+		"chalk": "catalog:",
+		"commander": "catalog:",
+		"copyfiles": "catalog:",
+		"detect-port": "catalog:",
+		"get-port": "catalog:",
+		"lodash-es": "catalog:",
+		"tsdown": "catalog:",
+		"tsx": "catalog:",
+		"typedoc": "catalog:",
+		"typedoc-plugin-markdown": "catalog:",
+		"typescript": "catalog:"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"optionalDependencies": {
+		"mysql2": "catalog:",
+		"oracledb": "catalog:",
+		"pg": "catalog:",
+		"sqlite3": "catalog:",
+		"tedious": "catalog:"
+	}
+}
