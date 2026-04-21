@@ -73,7 +73,15 @@ export function useItem<T extends Item>(
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
-	const isItemLessVersion = computed(() => isNew.value && currentVersion?.value && currentVersion?.value.id !== '+');
+
+	const isItemLessVersion = computed(() => {
+		const version = currentVersion?.value;
+		if (!version || version.id === '+') return false;
+		if (isNew.value) return true;
+		// Pristine singleton: route has no PK and the draft version itself tracks no item yet
+		if (isSingle.value && 'item' in version && version.item === null) return true;
+		return false;
+	});
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;

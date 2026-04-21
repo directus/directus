@@ -17,9 +17,10 @@ import {
 	watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
+import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
@@ -51,7 +52,7 @@ import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
+import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
@@ -85,15 +86,25 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+
+onBeforeRouteUpdate((to, from) => {
+	if (to.name !== 'content-singleton') return;
+	if (to.params.collection === from.params.collection) return;
+
+	trackLastAccessedCollection(to, from, () => {});
+});
+
 const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
 const isCurrentVersionNew = computed(() => isVersionNew(currentVersion.value));
 
+const isItemlessDraft = computed(() => props.primaryKey === '+' || (props.singleton && !actualPrimaryKey.value));
+
 const isPublishAllowed = computed(() => {
 	if (isCurrentVersionNew.value) return false;
-	return props.primaryKey === '+' ? createAllowed.value : updateAllowed.value;
+	return isItemlessDraft.value ? createAllowed.value : updateAllowed.value;
 });
 
 const form = ref<ComponentPublicInstance>();
@@ -108,6 +119,10 @@ const { breadcrumb } = useBreadcrumb();
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
+
+// Resolved singleton PK — stays null for pristine singletons and until the item loads.
+// Kept here (not computed from `item`) so it can be passed into useVersions before useItem runs.
+const singletonPrimaryKey = ref<PrimaryKey | null>(null);
 
 const {
 	readVersionsAllowed,
@@ -125,7 +140,7 @@ const {
 	publishVersion,
 	isItemLessVersion,
 	versionPromotedItem,
-} = useVersions(collection, isSingleton, primaryKey);
+} = useVersions(collection, isSingleton, primaryKey, singletonPrimaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
 	usePublishComparison();
@@ -198,6 +213,24 @@ const {
 	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, currentVersion);
+
+watch(
+	item,
+	(newItem) => {
+		if (!isSingleton.value) {
+			singletonPrimaryKey.value = null;
+			return;
+		}
+
+		// During refresh, item is transiently null — keep the last known PK so useVersions'
+		// filter doesn't flip to the item-less branch and trigger a refetch/refresh loop.
+		if (!newItem) return;
+
+		const pkField = primaryKeyField.value?.field;
+		singletonPrimaryKey.value = pkField ? ((newItem[pkField] ?? null) as PrimaryKey | null) : null;
+	},
+	{ immediate: true },
+);
 
 const toolsStore = useAiToolsStore();
 
@@ -281,7 +314,7 @@ useShortcut(
 		if (currentVersion.value === null) {
 			saveAndStay();
 		} else {
-			saveVersionAction('stay');
+			saveVersionAction();
 		}
 	},
 	form,
@@ -290,11 +323,8 @@ useShortcut(
 useShortcut(
 	'meta+shift+s',
 	() => {
-		if (currentVersion.value === null) {
-			saveAndAddNew();
-		} else {
-			saveVersionAction('quit');
-		}
+		if (currentVersion.value !== null) return;
+		saveAndAddNew();
 	},
 	form,
 );
@@ -564,20 +594,16 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function saveVersionAction(action: 'stay' | 'quit') {
+async function saveVersionAction() {
 	if (isSavable.value === false) return;
 
 	try {
 		await saveVersion(edits, item, actualPrimaryKey.value);
 		edits.value = {};
 
-		if (action === 'stay') {
-			if (!isNew.value) {
-				refresh();
-				revisionsSidebarDetailRef.value?.refresh?.();
-			}
-		} else if (action === 'quit') {
-			if (!props.singleton) router.push(`/content/${props.collection}`);
+		if (!isNew.value) {
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
 		}
 	} catch (error) {
 		if (!handleVersionGone(error)) {
@@ -705,7 +731,10 @@ const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
 	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
-	if (props.primaryKey === '+') return currentVersion.value !== null;
+
+	if (props.primaryKey === '+' || (props.singleton && internalPrimaryKey.value === '+')) {
+		return currentVersion.value !== null;
+	}
 
 	return internalPrimaryKey.value !== '+';
 });
@@ -744,7 +773,7 @@ function usePublishComparison() {
 	async function onVersionPublishCompare(quit = false) {
 		quitAfterPublish.value = quit;
 
-		if (isNew.value && currentVersion.value !== null && currentVersion.value.id !== '+') {
+		if (isItemlessDraft.value && currentVersion.value !== null && currentVersion.value.id !== '+') {
 			const defaultValues = getDefaultValuesFromFields(fields);
 			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
 			const fieldsToValidate = pushGroupOptionsDown(fields.value);
@@ -759,14 +788,19 @@ function usePublishComparison() {
 				const versionId = currentVersion.value.id;
 				const newItemKey = await publishVersion(versionId, {});
 
-				if (newItemKey) {
-					if (quit) {
-						router.push(collectionRoute.value);
-					} else {
-						router.replace(getItemRoute(props.collection, newItemKey));
-						deleteVersion(versionId);
-					}
+				if (!newItemKey) return;
+
+				if (props.singleton) {
+					// Singletons live on a single route; remove the now-promoted draft and reload without the version query
+					await deleteVersion(versionId);
+					router.push(collectionRoute.value);
+					return;
 				}
+
+				if (quit) router.push(collectionRoute.value);
+				else router.replace(getItemRoute(props.collection, newItemKey));
+
+				deleteVersion(versionId);
 			} catch (error) {
 				handleVersionGone(error);
 			} finally {
@@ -806,15 +840,17 @@ function usePublishComparison() {
 				return;
 			}
 
-			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
-
 			if (quitAfterPublish.value) {
 				router.push(collectionRoute.value);
-			} else {
-				currentVersion.value = null;
-				refresh();
-				revisionsSidebarDetailRef.value?.refresh?.();
+				if (opts.deleteOnPublish) deleteVersion(opts.versionId);
+				return;
 			}
+
+			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
+
+			currentVersion.value = null;
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
 		} catch (error) {
 			handleVersionGone(error);
 		} finally {
@@ -837,10 +873,6 @@ function editDraftVersion() {
 	if (draftVersion) {
 		currentVersion.value = draftVersion;
 	}
-}
-
-function isVersionNew(version: ContentVersionMaybeNew | null) {
-	return version?.id === '+';
 }
 </script>
 
@@ -889,8 +921,6 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 					v-if="shouldShowVersioning"
 					:collection="collection"
 					:primary-key="internalPrimaryKey!"
-					:update-allowed="updateAllowed"
-					:create-allowed="createAllowed"
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"
@@ -1009,7 +1039,7 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 						:loading="saveVersionLoading"
 						:disabled="!isSavable"
 						small
-						@click="saveVersionAction('stay')"
+						@click="saveVersionAction()"
 					>
 						<VIcon name="beenhere" small />
 					</VButton>
@@ -1020,7 +1050,7 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 						small
 						:disabled="!isPublishAllowed"
 						:tooltip="`${$t('publish')} (${translateShortcut(['meta', 'alt', 'p'])})`"
-						@click="onVersionPublishCompare"
+						@click="onVersionPublishCompare()"
 					>
 						<VIcon name="public" small />
 

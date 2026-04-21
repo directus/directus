@@ -20,17 +20,17 @@ import RouterPass from '@/utils/router-passthrough';
 export const enterDraftContext: NavigationGuard = (to) => {
 	if (to.query.version) return; // already in version context
 
-	const collectionsStore = useCollectionsStore();
 	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
 	if (!collection) return;
 
+	// Only auto-enter draft for new items (/+). Existing items and singletons default to the
+	// published view; users opt into draft by clicking the Edit button.
+	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
+	if (!isNewItem) return;
+
+	const collectionsStore = useCollectionsStore();
 	const collectionInfo = collectionsStore.getCollection(collection);
 	if (!collectionInfo?.meta?.versioning) return;
-
-	const isSingleton = !!collectionInfo.meta?.singleton;
-	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
-
-	if (!isSingleton && !isNewItem) return;
 
 	return { ...to, query: { ...to.query, version: VERSION_KEY_DRAFT } };
 };
@@ -56,7 +56,7 @@ export const ensureSingleton: NavigationGuard = (to) => {
 	return { name: 'content-collection', params: to.params, query: to.query };
 };
 
-const trackLastAccessedCollection: NavigationGuard = (to) => {
+export const trackLastAccessedCollection: NavigationGuard = (to) => {
 	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
 	if (!collection) return;
 
