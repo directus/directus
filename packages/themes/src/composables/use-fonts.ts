@@ -4,38 +4,44 @@ import { cssVar } from '@directus/utils/browser';
 import { get } from 'lodash-es';
 import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
+import { ZodObject, ZodOptional, ZodString, ZodUnion } from 'zod';
 
 export const useFonts = (theme: MaybeRef<Theme | DeepPartial<Theme>>) => {
 	const paths = computed(() => {
-		const paths: Map<string[], { family: string | null; weight: string | null }> = new Map();
+		const paths: Map<string, { family: string | null; weight: string | null }> = new Map();
 
-		const find = (schema: Record<string, unknown>, path: string[] = []) => {
-			for (const [key, value] of Object.entries(schema)) {
-				if (typeof value === 'object' && value !== null) {
-					if ('type' in value && value.type === 'object' && 'properties' in value) {
-						find(value.properties as Record<string, unknown>, [...path, key]);
+		const find = (schema: unknown, path: string[] = []) => {
+			if (schema instanceof ZodObject) {
+				for (const [key, value] of Object.entries(schema.shape)) {
+					find(value, [...path, key]);
+				}
+			} else if (schema instanceof ZodOptional) {
+				find(schema.def.innerType, path);
+			} else if (schema instanceof ZodUnion) {
+				for (const option of schema.options) {
+					find(option, path);
+				}
+			} else if (schema instanceof ZodString) {
+				const parentPath = path.slice(0, -1).join('.');
+				const key = path.at(-1)!;
+
+				if (schema.meta()?.['$ref'] === 'FamilyName') {
+					if (paths.has(parentPath)) {
+						paths.set(parentPath, { family: key, weight: paths.get(parentPath)!.weight });
+					} else {
+						paths.set(parentPath, { family: key, weight: null });
 					}
-
-					if ('$ref' in value && value.$ref === 'FamilyName') {
-						if (paths.has(path)) {
-							paths.set(path, { family: key, weight: paths.get(path)!.weight });
-						} else {
-							paths.set(path, { family: key, weight: null });
-						}
-					}
-
-					if ('$ref' in value && value.$ref === 'FontWeight') {
-						if (paths.has(path)) {
-							paths.set(path, { family: paths.get(path)!.family, weight: key });
-						} else {
-							paths.set(path, { family: null, weight: key });
-						}
+				} else if (schema.meta()?.['$ref'] === 'FontWeight') {
+					if (paths.has(parentPath)) {
+						paths.set(parentPath, { family: paths.get(parentPath)!.family, weight: key });
+					} else {
+						paths.set(parentPath, { family: null, weight: key });
 					}
 				}
 			}
 		};
 
-		find(ThemeSchema.properties.rules.properties);
+		find(ThemeSchema.shape.rules);
 
 		return paths;
 	});
@@ -45,15 +51,16 @@ export const useFonts = (theme: MaybeRef<Theme | DeepPartial<Theme>>) => {
 		const defs: Map<string, Set<string>> = new Map();
 
 		for (const [path, { family, weight }] of paths.value.entries()) {
-			let familyDefinition = null;
-			let weightDefinition = null;
+			let familyDefinition: string | null = null;
+			let weightDefinition: string | null = null;
+			const pathParts = path.split('.');
 
 			if (family) {
-				familyDefinition = get(unref(theme).rules, [...path, family]) as string;
+				familyDefinition = get(unref(theme).rules, [...pathParts, family]);
 			}
 
 			if (weight) {
-				weightDefinition = get(unref(theme).rules, [...path, weight]) as string;
+				weightDefinition = get(unref(theme).rules, [...pathParts, weight]);
 			}
 
 			if (familyDefinition) {
