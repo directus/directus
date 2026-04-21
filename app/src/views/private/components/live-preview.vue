@@ -5,7 +5,7 @@ import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import VButton from '@/components/v-button.vue';
+import LivePreviewHeaderButton from './live-preview-header-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
@@ -304,37 +304,37 @@ function useUrls() {
 </script>
 
 <template>
-	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen, 'header-expanded': headerExpanded }">
+	<div
+		ref="livePreviewEl"
+		class="live-preview"
+		:class="{ fullscreen, 'full-width': isFullWidth, 'header-expanded': headerExpanded }"
+	>
 		<div class="header">
 			<div class="group">
 				<slot name="prepend-header" />
 
-				<VButton
+				<LivePreviewHeaderButton
 					v-if="isFullWidth"
 					v-tooltip.bottom.end="t('live_preview.exit_full_width')"
-					x-small
-					icon
+					active
 					@click="emit('exit-full-width')"
 				>
-					<VIcon small name="width_full" />
-				</VButton>
+					<VIcon name="width_full" />
+				</LivePreviewHeaderButton>
 
-				<VButton
+				<LivePreviewHeaderButton
 					v-else-if="inPopup"
 					v-tooltip.bottom.end="$t('live_preview.close_window')"
-					x-small
-					icon
-					secondary
 					@click="emit('new-window')"
 				>
-					<VIcon small name="exit_to_app" outline />
-				</VButton>
+					<VIcon name="exit_to_app" outline />
+				</LivePreviewHeaderButton>
 
 				<VMenu v-else-if="hasDisplayOptions" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
-						<VButton v-tooltip.bottom.end="t('live_preview.display_options')" x-small icon secondary @click="toggle">
-							<VIcon small name="display_settings" />
-						</VButton>
+						<LivePreviewHeaderButton v-tooltip.bottom.end="t('live_preview.display_options')" @click="toggle">
+							<VIcon name="display_settings" />
+						</LivePreviewHeaderButton>
 					</template>
 
 					<VList>
@@ -350,30 +350,24 @@ function useUrls() {
 					</VList>
 				</VMenu>
 
-				<VButton
+				<LivePreviewHeaderButton
 					v-if="visualEditingEnabled"
 					v-tooltip.bottom.end="$t('toggle_editable_elements')"
-					x-small
-					icon
 					:active="showEditableElements"
-					secondary
 					@click="showEditableElements = !showEditableElements"
 				>
-					<VIcon small name="edit" outline />
-				</VButton>
+					<VIcon name="edit" outline />
+				</LivePreviewHeaderButton>
 
-				<VButton
+				<LivePreviewHeaderButton
 					v-if="!hideRefreshButton"
 					v-tooltip.bottom.end="$t('live_preview.refresh')"
-					x-small
-					icon
-					secondary
 					:disabled="isRefreshing || !frameSrc || invalidUrl"
 					@click="refresh(null)"
 				>
 					<VProgressCircular v-if="isRefreshing" indeterminate x-small />
-					<VIcon v-else small name="refresh" />
-				</VButton>
+					<VIcon v-else name="refresh" />
+				</LivePreviewHeaderButton>
 
 				<div v-if="centered" class="spacer" />
 
@@ -441,17 +435,14 @@ function useUrls() {
 					</template>
 				</VSelect>
 			</div>
-			<VButton
+			<LivePreviewHeaderButton
 				v-tooltip.bottom.start="$t('live_preview.change_size')"
-				x-small
-				icon
-				secondary
 				:active="!fullscreen"
 				:disabled="!frameSrc || invalidUrl"
 				@click="toggleFullscreen"
 			>
-				<VIcon small name="devices" />
-			</VButton>
+				<VIcon name="devices" />
+			</LivePreviewHeaderButton>
 			<slot name="append-header" />
 		</div>
 
@@ -573,6 +564,8 @@ function useUrls() {
 </style>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .live-preview {
 	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #fff);
 	--preview--color-disabled: color-mix(
@@ -583,22 +576,32 @@ function useUrls() {
 	--preview--header--background-color: var(--theme--navigation--modules--background);
 	--preview--header--border-width: var(--theme--navigation--modules--border-width);
 	--preview--header--border-color: var(--theme--navigation--modules--border-color);
-	--preview--header--height: 2.5rem;
+	--preview--header--height: 2.75rem;
 
 	container-type: inline-size;
 	inline-size: 100%;
 	block-size: 100%;
 
 	&.header-expanded {
-		--preview--header--height: 3.375rem;
+		--preview--header--height: var(--header-bar-height);
 
 		.header {
-			padding: 0.4375rem 0.875rem;
+			padding-inline: 1rem;
+		}
+	}
+
+	&.full-width .header {
+		@include mixins.breakpoint-up('sm') {
+			padding-inline: 1rem;
+		}
+
+		@include mixins.breakpoint-up('lg') {
+			padding-inline: calc(1rem - var(--theme--border-width));
 		}
 	}
 
 	.header {
-		--focus-ring-color: var(--theme--navigation--modules--button--background-active);
+		--focus-ring-color: var(--theme--navigation--modules--button--foreground);
 
 		inline-size: 100%;
 		color: var(--preview--color);
@@ -608,35 +611,12 @@ function useUrls() {
 		display: flex;
 		align-items: center;
 		z-index: 10;
-		gap: 0.4375rem;
-		padding: 0 0.4375rem;
-		transition:
-			padding var(--medium) var(--transition),
-			block-size var(--medium) var(--transition);
+		gap: 0.375rem;
+		padding-inline: 1rem;
+		transition: block-size var(--medium) var(--transition);
 
-		:deep(.v-button.secondary) {
-			--v-button-color: var(--theme--navigation--modules--button--foreground-active);
-			--v-button-color-hover: var(--v-button-color);
-			--v-button-color-active: var(--foreground-inverted);
-			--v-button-background-color: var(--theme--navigation--modules--button--background-active);
-			--v-button-background-color-hover: color-mix(
-				in srgb,
-				var(--theme--navigation--modules--background),
-				var(--v-button-background-color) 87.5%
-			);
-			--v-button-background-color-active: var(--theme--primary);
-
-			.button {
-				&.active {
-					box-shadow: 0 0 8px 0 rgb(0 0 0 / 0.15);
-				}
-
-				&:focus:not(:hover) {
-					color: var(--v-button-color);
-					background-color: var(--v-button-background-color);
-					border-color: var(--v-button-background-color);
-				}
-			}
+		@include mixins.breakpoint-up('sm') {
+			padding-inline: 0.75rem;
 		}
 
 		.group {
@@ -661,6 +641,7 @@ function useUrls() {
 				display: flex;
 				align-items: center;
 				min-inline-size: 0;
+				padding-inline: 0.25rem;
 
 				.v-icon {
 					inset-block-start: 0.0625rem;

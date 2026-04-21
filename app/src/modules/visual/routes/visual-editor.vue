@@ -10,7 +10,6 @@ import AiConversation from '@/ai/components/ai-conversation.vue';
 import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import TransitionExpand from '@/components/transition/expand.vue';
-import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -27,6 +26,7 @@ import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useServerStore } from '@/stores/server';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
+import LivePreviewHeaderButton from '@/views/private/components/live-preview-header-button.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
@@ -212,7 +212,7 @@ function useVersionSelection() {
 			:dynamic-url
 			:dynamic-display
 			:single-url-subdued="false"
-			:header-expanded="moduleBarOpen"
+			header-expanded
 			:sidebar-size="sidebarSize"
 			:sidebar-collapsed="splitterCollapsed"
 			:sidebar-disabled="isMobile"
@@ -224,26 +224,17 @@ function useVersionSelection() {
 			@update:sidebar-collapsed="splitterCollapsed = $event"
 		>
 			<template #prepend-header>
-				<VButton
-					v-tooltip.bottom.end="$t('toggle_navigation')"
-					x-small
-					icon
-					secondary
-					@click="moduleBarOpen = !moduleBarOpen"
-				>
-					<VIcon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
-				</VButton>
+				<LivePreviewHeaderButton v-tooltip.bottom.end="$t('toggle_navigation')" @click="moduleBarOpen = !moduleBarOpen">
+					<VIcon :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
+				</LivePreviewHeaderButton>
 
-				<VButton
+				<LivePreviewHeaderButton
 					v-tooltip.bottom.end="$t('toggle_editable_elements')"
-					x-small
-					icon
 					:active="showEditableElements"
-					secondary
 					@click="showEditableElements = !showEditableElements"
 				>
-					<VIcon small name="edit" outline />
-				</VButton>
+					<VIcon name="edit" outline />
+				</LivePreviewHeaderButton>
 			</template>
 
 			<template #append-url>
@@ -270,18 +261,15 @@ function useVersionSelection() {
 			</template>
 
 			<template #append-header>
-				<VButton
+				<LivePreviewHeaderButton
 					v-if="serverStore.info.ai_enabled"
 					ref="ai-button"
 					v-tooltip.bottom.start="$t('ai_assistant')"
-					x-small
-					icon
-					secondary
 					:active="isMobile ? mobileDrawerOpen : !sidebarCollapsed"
 					@click="isMobile ? (mobileDrawerOpen = !mobileDrawerOpen) : (sidebarCollapsed = !sidebarCollapsed)"
 				>
 					<AiMagicButton class="ai-magic-button" :animate="aiButtonHovering" />
-				</VButton>
+				</LivePreviewHeaderButton>
 			</template>
 
 			<template v-if="serverStore.info.ai_enabled" #sidebar>
