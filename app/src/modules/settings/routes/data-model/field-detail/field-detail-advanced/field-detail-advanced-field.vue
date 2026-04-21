@@ -22,6 +22,8 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 const userStore = useUserStore();
 const searchable = syncFieldDetailStoreProperty('field.meta.searchable', true);
 
+const isPresentation = computed(() => localType.value === 'presentation');
+
 const isSearchableType = computed(() => {
 	// exclude alias fields (o2m, m2m, m2a) as they don't store searchable data
 	if (type.value === 'alias') return false;
@@ -35,17 +37,17 @@ const isSearchableType = computed(() => {
 
 <template>
 	<div class="form">
-		<div v-if="!isGenerated" class="field half-left">
+		<div v-if="!isGenerated && !isPresentation" class="field half-left">
 			<div class="label type-label">{{ $t('readonly') }}</div>
 			<VCheckbox v-model="readonly" :label="$t('readonly_field_label')" block />
 		</div>
 
-		<div v-if="!isGenerated" class="field half-right">
+		<div v-if="!isGenerated && !isPresentation" class="field half-right">
 			<div class="label type-label">{{ $t('required') }}</div>
 			<VCheckbox v-model="required" :label="$t('require_value_to_be_set')" block />
 		</div>
 
-		<VNotice v-if="readonly && required" type="warning" class="full no-margin">
+		<VNotice v-if="readonly && required && !isPresentation" type="warning" class="full no-margin">
 			{{ $t('required_readonly_field_warning') }}
 		</VNotice>
 
