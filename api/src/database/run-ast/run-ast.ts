@@ -114,44 +114,6 @@ export async function runAst(
 		// Apply the `_in` filters to the nested collection batches
 		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
 
-		// Snapshot raw FKs shared across nodes (e.g. wildcard + alias on the same relation)
-		// so later merges still read the original value after the first one resolved it.
-		const sharedForeignKeyFields = new Set<string>();
-		const fieldUsageByRelation = new Map<string, number>();
-
-		for (const node of nestedNodes) {
-			if (node.type !== 'm2o' && node.type !== 'a2o') continue;
-			const fields = [node.relation.field];
-
-			if (node.type === 'a2o' && node.relation.meta?.one_collection_field) {
-				fields.push(node.relation.meta.one_collection_field);
-			}
-
-			for (const field of fields) {
-				fieldUsageByRelation.set(field, (fieldUsageByRelation.get(field) ?? 0) + 1);
-			}
-		}
-
-		for (const [field, count] of fieldUsageByRelation) {
-			if (count > 1) sharedForeignKeyFields.add(field);
-		}
-
-		const originalForeignKeys = new Map<Item, Record<string, unknown>>();
-
-		if (sharedForeignKeyFields.size > 0) {
-			const itemsArray = Array.isArray(items) ? items : [items];
-
-			for (const item of itemsArray) {
-				const snapshot: Record<string, unknown> = {};
-
-				for (const field of sharedForeignKeyFields) {
-					snapshot[field] = item[field];
-				}
-
-				originalForeignKeys.set(item, snapshot);
-			}
-		}
-
 		for (const nestedNode of nestedNodes) {
 			let nestedItems: Item[] | null = [];
 
@@ -193,7 +155,7 @@ export async function runAst(
 					nestedItems = (await runAst(node, schema, accountability, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
-						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, fieldAllowed, originalForeignKeys)!;
+						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, fieldAllowed)!;
 					}
 
 					if (!nestedItems || nestedItems.length < (env['RELATIONAL_BATCH_SIZE'] as number)) {
@@ -211,7 +173,7 @@ export async function runAst(
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items
-					items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, true, originalForeignKeys)!;
+					items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, true)!;
 				}
 			}
 		}
