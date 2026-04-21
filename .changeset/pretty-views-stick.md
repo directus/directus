@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Moved Publish button to header actions
+Moved Promote/Publish button to header actions

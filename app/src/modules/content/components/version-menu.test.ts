@@ -63,8 +63,6 @@ function createNewVersion(overrides: Partial<NewContentVersion> = {}): NewConten
 const baseProps = {
 	collection: 'test_collection',
 	primaryKey: '1',
-	updateAllowed: true,
-	createAllowed: true,
 	hasEdits: false,
 	currentVersion: null as ContentVersionMaybeNew | null,
 	versions: [] as ContentVersionMaybeNew[],

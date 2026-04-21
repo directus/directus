@@ -41,7 +41,7 @@ import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
-import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
+import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
@@ -253,7 +253,7 @@ useShortcut(
 		if (currentVersion.value === null) {
 			saveAndStay();
 		} else {
-			saveVersionAction('stay');
+			saveVersionAction();
 		}
 	},
 	form,
@@ -262,11 +262,8 @@ useShortcut(
 useShortcut(
 	'meta+shift+s',
 	() => {
-		if (currentVersion.value === null) {
-			saveAndAddNew();
-		} else {
-			saveVersionAction('quit');
-		}
+		if (currentVersion.value !== null) return;
+		saveAndAddNew();
 	},
 	form,
 );
@@ -536,20 +533,16 @@ function useBreadcrumb() {
 	return { breadcrumb };
 }
 
-async function saveVersionAction(action: 'stay' | 'quit') {
+async function saveVersionAction() {
 	if (isSavable.value === false) return;
 
 	try {
 		await saveVersion(edits, item, actualPrimaryKey.value);
 		edits.value = {};
 
-		if (action === 'stay') {
-			if (!isNew.value) {
-				refresh();
-				revisionsSidebarDetailRef.value?.refresh?.();
-			}
-		} else if (action === 'quit') {
-			if (!props.singleton) router.push(`/content/${props.collection}`);
+		if (!isNew.value) {
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -732,18 +725,19 @@ function usePublishComparison() {
 				const versionId = currentVersion.value.id;
 				const newItemKey = await publishVersion(versionId, {});
 
-				if (newItemKey) {
-					if (props.singleton) {
-						// Singletons live on a single route; remove the now-promoted draft and reload without the version query
-						await deleteVersion(versionId);
-						router.push(collectionRoute.value);
-					} else if (quit) {
-						router.push(collectionRoute.value);
-					} else {
-						router.replace(getItemRoute(props.collection, newItemKey));
-						deleteVersion(versionId);
-					}
+				if (!newItemKey) return;
+
+				if (props.singleton) {
+					// Singletons live on a single route; remove the now-promoted draft and reload without the version query
+					await deleteVersion(versionId);
+					router.push(collectionRoute.value);
+					return;
 				}
+
+				if (quit) router.push(collectionRoute.value);
+				else router.replace(getItemRoute(props.collection, newItemKey));
+
+				deleteVersion(versionId);
 			} catch {
 				// publishVersion / deleteVersion handle unexpected errors
 			} finally {
@@ -783,15 +777,17 @@ function usePublishComparison() {
 				return;
 			}
 
-			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
-
 			if (quitAfterPublish.value) {
 				router.push(collectionRoute.value);
-			} else {
-				currentVersion.value = null;
-				refresh();
-				revisionsSidebarDetailRef.value?.refresh?.();
+				if (opts.deleteOnPublish) deleteVersion(opts.versionId);
+				return;
 			}
+
+			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
+
+			currentVersion.value = null;
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
 		} catch {
 			// publishVersion / deleteVersion handle unexpected errors
 		} finally {
@@ -814,10 +810,6 @@ function editDraftVersion() {
 	if (draftVersion) {
 		currentVersion.value = draftVersion;
 	}
-}
-
-function isVersionNew(version: ContentVersionMaybeNew | null) {
-	return version?.id === '+';
 }
 </script>
 
@@ -866,8 +858,6 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 					v-if="shouldShowVersioning"
 					:collection="collection"
 					:primary-key="internalPrimaryKey!"
-					:update-allowed="updateAllowed"
-					:create-allowed="createAllowed"
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"
@@ -986,7 +976,7 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 						:loading="saveVersionLoading"
 						:disabled="!isSavable"
 						small
-						@click="saveVersionAction('stay')"
+						@click="saveVersionAction()"
 					>
 						<VIcon name="beenhere" small />
 					</VButton>
@@ -997,7 +987,7 @@ function isVersionNew(version: ContentVersionMaybeNew | null) {
 						small
 						:disabled="!isPublishAllowed"
 						:tooltip="`${$t('publish')} (${translateShortcut(['meta', 'alt', 'p'])})`"
-						@click="onVersionPublishCompare"
+						@click="onVersionPublishCompare()"
 					>
 						<VIcon name="public" small />
 
