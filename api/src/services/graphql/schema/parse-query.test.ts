@@ -354,4 +354,21 @@ describe('parseFields', () => {
 		expect(query.fields).toContain('author.posts.id');
 		expect(query.fields).toContain('author.recentPosts.id');
 	});
+
+	test('should parse aliased M2A relational field at top level', async () => {
+		const selections = [
+			field('parent', {
+				children: [inlineFragment('child', [field('id')])]
+			}),
+			field('parent', {
+				alias: 'parentAlias',
+				children: [inlineFragment('child', [field('id')])],
+			}),
+		];
+
+		const query = await getQuery({}, m2aSchema, selections, mockVariableValues, mockAccountability, 'test_collection');
+
+		expect(query.fields).toContain('parent:child.id');
+		expect(query.fields).toContain('parentAlias:child.id');
+	});
 });

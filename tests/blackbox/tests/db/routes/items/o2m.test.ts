@@ -126,6 +126,34 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 				});
 			});
+
+			describe(`retrieves o2m under a field alias`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const insertedCountry = await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: createCountry(pkType),
+					});
+
+					const state = createState(pkType);
+					state.country_id = insertedCountry.id;
+					const insertedState = await CreateItem(vendor, { collection: localCollectionStates, item: state });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCountries}/${insertedCountry.id}`)
+						.query({
+							'fields[]': ['states.id', 'aliased.id'],
+							'alias[aliased]': 'states',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.states).toEqual([{ id: insertedState.id }]);
+					expect(response.body.data.aliased).toEqual([{ id: insertedState.id }]);
+				});
+			});
 		});
 
 		describe('GET /:collection', () => {

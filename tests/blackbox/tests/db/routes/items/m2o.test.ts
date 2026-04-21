@@ -154,6 +154,34 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data.aliased).toEqual({ id: insertedCountry.id });
 				});
 			});
+
+			describe(`retrieves m2o with wildcard and a field alias`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const insertedCountry = await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: createCountry(pkType),
+					});
+
+					const state = createState(pkType);
+					state.country_id = insertedCountry.id;
+					const insertedState = await CreateItem(vendor, { collection: localCollectionStates, item: state });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionStates}/${insertedState.id}`)
+						.query({
+							'fields[]': ['*', 'aliased.id'],
+							'alias[aliased]': 'country_id',
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.country_id).toBe(insertedCountry.id);
+					expect(response.body.data.aliased).toEqual({ id: insertedCountry.id });
+				});
+			});
 		});
 
 		describe('GET /:collection', () => {

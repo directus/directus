@@ -126,25 +126,63 @@ describe('m2o', () => {
 		});
 	});
 
+	test('should resolve aliased m2o when relation.field holds raw foreign key', () => {
+		const nestedItem: Item[] = [{ id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }];
+
+		const parentItem: Item[] = [{ id: 1, node: 'nestedPK1' }];
+
+		const aliasNode = { ...nestedNode, fieldKey: 'aliased' } as NestedCollectionNode;
+		const items = mergeWithParentItems(schema, nestedItem, parentItem, aliasNode, true) as Item[];
+
+		expect(items).toEqual([
+			{
+				id: 1,
+				node: 'nestedPK1',
+				aliased: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+			},
+		]);
+	});
+
 	test('should resolve both original and aliased m2o fields sharing relation.field', () => {
 		const nestedItem: Item[] = [{ id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }];
 
 		const parentItem: Item[] = [{ id: 1, node: 'nestedPK1' }];
 
-		const originalForeignKeys = new Map<Item, Record<string, unknown>>();
-		originalForeignKeys.set(parentItem[0]!, { node: 'nestedPK1' });
-
 		const originalNode = { ...nestedNode, fieldKey: 'node' } as NestedCollectionNode;
-		let items = mergeWithParentItems(schema, nestedItem, parentItem, originalNode, true, originalForeignKeys) as Item[];
+		let items = mergeWithParentItems(schema, nestedItem, parentItem, originalNode, true) as Item[];
 
 		const aliasNode = { ...nestedNode, fieldKey: 'aliased' } as NestedCollectionNode;
-		items = mergeWithParentItems(schema, nestedItem, items, aliasNode, true, originalForeignKeys) as Item[];
+		items = mergeWithParentItems(schema, nestedItem, items, aliasNode, true) as Item[];
 
 		expect(items).toEqual([
 			{
 				id: 1,
 				node: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
 				aliased: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+			},
+		]);
+	});
+
+	test('should resolve multiple m2o aliases sharing relation.field', () => {
+		const nestedItem: Item[] = [{ id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }];
+
+		const parentItem: Item[] = [{ id: 1, node: 'nestedPK1' }];
+
+		const originalNode = { ...nestedNode, fieldKey: 'node' } as NestedCollectionNode;
+		let items = mergeWithParentItems(schema, nestedItem, parentItem, originalNode, true) as Item[];
+
+		const firstAlias = { ...nestedNode, fieldKey: 'a' } as NestedCollectionNode;
+		items = mergeWithParentItems(schema, nestedItem, items, firstAlias, true) as Item[];
+
+		const secondAlias = { ...nestedNode, fieldKey: 'b' } as NestedCollectionNode;
+		items = mergeWithParentItems(schema, nestedItem, items, secondAlias, true) as Item[];
+
+		expect(items).toEqual([
+			{
+				id: 1,
+				node: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+				a: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+				b: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
 			},
 		]);
 	});
@@ -388,14 +426,11 @@ describe('a2o', () => {
 
 		const parentItem: Item[] = [{ id: 1, item: 'nestedPK1', collection: 'collection_b' }];
 
-		const originalForeignKeys = new Map<Item, Record<string, unknown>>();
-		originalForeignKeys.set(parentItem[0]!, { item: 'nestedPK1', collection: 'collection_b' });
-
 		const firstNode = { ...baseNode, fieldKey: 'item' } as NestedCollectionNode;
-		let items = mergeWithParentItems(schema, nestedItem, parentItem, firstNode, true, originalForeignKeys) as Item[];
+		let items = mergeWithParentItems(schema, nestedItem, parentItem, firstNode, true) as Item[];
 
 		const secondNode = { ...baseNode, fieldKey: 'any' } as NestedCollectionNode;
-		items = mergeWithParentItems(schema, nestedItem, items, secondNode, true, originalForeignKeys) as Item[];
+		items = mergeWithParentItems(schema, nestedItem, items, secondNode, true) as Item[];
 
 		expect(items).toEqual([
 			{
@@ -403,6 +438,33 @@ describe('a2o', () => {
 				collection: 'collection_b',
 				item: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
 				any: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+			},
+		]);
+	});
+
+	test('should resolve multiple a2o aliases sharing relation.field', () => {
+		const nestedItem = {
+			collection_b: [{ id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' }],
+		};
+
+		const parentItem: Item[] = [{ id: 1, item: 'nestedPK1', collection: 'collection_b' }];
+
+		const originalNode = { ...baseNode, fieldKey: 'item' } as NestedCollectionNode;
+		let items = mergeWithParentItems(schema, nestedItem, parentItem, originalNode, true) as Item[];
+
+		const firstAlias = { ...baseNode, fieldKey: 'a' } as NestedCollectionNode;
+		items = mergeWithParentItems(schema, nestedItem, items, firstAlias, true) as Item[];
+
+		const secondAlias = { ...baseNode, fieldKey: 'b' } as NestedCollectionNode;
+		items = mergeWithParentItems(schema, nestedItem, items, secondAlias, true) as Item[];
+
+		expect(items).toEqual([
+			{
+				id: 1,
+				collection: 'collection_b',
+				item: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+				a: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
+				b: { id: 'nestedPK1', first_name: 'Lorem', last_name: 'Ipsum' },
 			},
 		]);
 	});
