@@ -28,8 +28,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 interface Props {
 	collection: string;
 	primaryKey: PrimaryKey;
-	updateAllowed: boolean;
-	createAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersionMaybeNew | null;
 	versions: ContentVersionMaybeNew[];
@@ -43,7 +41,6 @@ const emit = defineEmits<{
 	update: [updates: { key: string; name?: string | null }];
 	delete: [versionId: PrimaryKey];
 	switch: [version: ContentVersionMaybeNew | null];
-	publish: [];
 }>();
 
 const { collection, primaryKey, hasEdits, currentVersion, versions, deleteVersionLoading } = toRefs(props);
@@ -364,19 +361,6 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 				<template v-if="currentVersion !== null">
 					<VDivider />
-
-					<VListItem
-						v-if="primaryKey === '+' ? createAllowed : updateAllowed"
-						:disabled="isCurrentVersionNew"
-						clickable
-						@click="$emit('publish')"
-					>
-						<VListItemIcon>
-							<VIcon name="arrow_upload_progress" />
-						</VListItemIcon>
-
-						<VListItemContent>{{ $t('publish_version') }}</VListItemContent>
-					</VListItem>
 
 					<VListItem v-if="updateVersionsAllowed && !isCurrentVersionGlobal" clickable @click="openRenameDialog">
 						<VListItemIcon>
