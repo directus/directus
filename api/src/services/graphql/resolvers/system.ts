@@ -210,14 +210,19 @@ export function injectSystemResolvers(
 				return await service.serverInfo();
 			}, 'server_info'),
 		},
-		server_health: {
-			type: GraphQLJSON,
-			resolve: dedupeResolver(async () => {
-				const service = new ServerService({ accountability: gql.accountability, schema: gql.schema });
-				return await service.health();
-			}, 'server_health'),
-		},
 	});
+
+	if (toBoolean(env['HEALTHCHECK_ENABLED']) !== false) {
+		schemaComposer.Query.addFields({
+			server_health: {
+				type: GraphQLJSON,
+				resolve: dedupeResolver(async () => {
+					const service = new ServerService({ accountability: gql.accountability, schema: gql.schema });
+					return await service.health();
+				}, 'server_health'),
+			},
+		});
+	}
 
 	if ('directus_collections' in schema.read.collections) {
 		const Collection = getCollectionType(schemaComposer, schema, 'read');
