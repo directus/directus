@@ -108,7 +108,10 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-	editorjsRef.value?.destroy();
+	if (typeof editorjsRef.value?.destroy === 'function') {
+		editorjsRef.value.destroy();
+	}
+
 	bus.reset();
 });
 
