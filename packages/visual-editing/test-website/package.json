@@ -35,7 +35,7 @@
 		"@tailwindcss/typography": "0.5.19",
 		"@typescript-eslint/eslint-plugin": "8.56.0",
 		"@typescript-eslint/parser": "8.56.0",
-		"defu": "6.1.4",
+		"defu": "6.1.5",
 		"destr": "2.0.5",
 		"directus-sdk-typegen": "0.2.1",
 		"dotenv": "17.3.1",
