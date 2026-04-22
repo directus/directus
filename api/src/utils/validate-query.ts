@@ -54,6 +54,7 @@ export function validateQuery(query: Query): Query {
 }
 
 function validateFilter(filter: Filter) {
+	// Operator -> validator map.
 	const operatorValidators: Record<string, (value: any, key: string) => void> = {
 		_in: validateList,
 		_nin: validateList,
@@ -97,6 +98,7 @@ function validateFilter(filter: Filter) {
 			if (validator) {
 				validator(value, key);
 			} else {
+				// Fallback.
 				validateFilterPrimitive(value, key);
 			}
 		} else if (isPlainObject(nested)) {

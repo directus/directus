@@ -88,6 +88,7 @@ describe('validateGeometry', async () => {
 describe('validateFilter operators', async () => {
 	const { validateQuery } = await import('./validate-query.js');
 
+	// Ensures categories still validate with the same error wording (after the refactor).
 	test.each([
 		{ filter: { _in: 'wrong' }, reason: '"_in" has to be an array of values' },
 		{ filter: { _empty: 'wrong' }, reason: '"_empty" has to be a boolean' },

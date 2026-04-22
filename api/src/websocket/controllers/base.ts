@@ -170,6 +170,7 @@ export default abstract class SocketController {
 		cookies: Record<string, unknown>,
 		sessionCookieName: string,
 	): { hasTokenFromRequest: boolean; token: string | null } {
+		// Pick token from query/cookie.
 		let token: string | null = null;
 
 		if (typeof query['access_token'] === 'string') {
@@ -178,7 +179,7 @@ export default abstract class SocketController {
 			token = cookies[sessionCookieName] ?? null;
 		}
 
-		// Mirrors the existing truthy checks in handleUpgrade to keep decision semantics stable.
+		// Keep existing has-token decision semantics.
 		const hasTokenFromRequest = Boolean(query['access_token'] || cookies[sessionCookieName]);
 		return { hasTokenFromRequest, token };
 	}
@@ -223,12 +224,14 @@ export default abstract class SocketController {
 	}
 
 	private denyUpgrade401(socket: internal.Duplex, accountability: Accountability | null) {
+		// 401 upgrade denial: log + write + destroy.
 		logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
 		socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 		socket.destroy();
 	}
 
 	private emitConnection(ws: WebSocket, state: AuthenticationState) {
+		// Emit connection after auth succeeds.
 		this.server.emit('connection', ws, state);
 	}
 

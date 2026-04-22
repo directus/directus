@@ -14,9 +14,11 @@ export function injectCases(ast: AST, permissions: Permission[]) {
 	ast.cases = processChildren(ast.name, ast.children, permissions);
 }
 
+type ChildNode = NestedCollectionNode | FieldNode | FunctionFieldNode;
+
 function processChildren(
 	collection: string,
-	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
+	children: ChildNode[],
 	permissions: Permission[],
 ) {
 	// Use uniq here, since there might be multiple duplications due to aliases or functions
@@ -29,6 +31,7 @@ function processChildren(
 	// TODO this can be optimized if all cases are the same for all requested keys, as those should be
 	//
 
+	// Handles whenCase and handlers set cases.
 	for (const child of children) {
 		const fieldKey = getUnaliasedFieldKey(child);
 
@@ -49,23 +52,47 @@ function processChildren(
 			child.whenCase = [...(globalWhenCase ?? []), ...(fieldWhenCase ?? [])];
 		}
 
-		if (child.type === 'm2o') {
-			child.cases = processChildren(child.relation.related_collection!, child.children, permissions);
-		}
+		// Dispatch table for node-type-specific recursion.
+		const handlers: Record<string, (node: ChildNode) => void> = {
+			m2o: (node) => {
+				// m2o recursion.
+				const typed = node as Extract<ChildNode, { type: 'm2o' }>;
+				typed.cases = processChildren(typed.relation.related_collection!, typed.children, permissions);
+			},
+			o2m: (node) => {
+				// o2m recursion.
+				const typed = node as Extract<ChildNode, { type: 'o2m' }>;
+				typed.cases = processChildren(typed.relation.collection, typed.children, permissions);
+			},
+			a2o: (node) => {
+				// a2o recursion per name key.
+				const typed = node as Extract<ChildNode, { type: 'a2o' }>;
+				for (const collection of typed.names) {
+					typed.cases[collection] = processChildren(
+						collection,
+						typed.children[collection] ?? [],
+						permissions,
+					);
+				}
+			},
+			functionField: (node) => {
+				// functionField loads cases directly.
+				const typed = node as Extract<ChildNode, { type: 'functionField' }>;
+				const { cases } = getCases(typed.relatedCollection, permissions, []);
+				typed.cases = cases;
+			},
+		};
 
-		if (child.type === 'o2m') {
-			child.cases = processChildren(child.relation.collection, child.children, permissions);
-		}
+		// Fail fast on unknown node types.
+		if (typeof (child as any).type === 'string') {
+			const nodeType = (child as any).type as string;
+			const handler = handlers[nodeType];
 
-		if (child.type === 'a2o') {
-			for (const collection of child.names) {
-				child.cases[collection] = processChildren(collection, child.children[collection] ?? [], permissions);
+			if (handler) {
+				handler(child);
+			} else {
+				throw new Error(`Cannot inject cases: unhandled AST node type "${nodeType}"`);
 			}
-		}
-
-		if (child.type === 'functionField') {
-			const { cases } = getCases(child.relatedCollection, permissions, []);
-			child.cases = cases;
 		}
 	}
 
