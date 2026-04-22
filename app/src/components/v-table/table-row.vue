@@ -85,7 +85,7 @@ function onKeydown(e: KeyboardEvent) {
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$slots['item-append']" class="append cell" @click.stop>
+		<td class="append cell" @click.stop>
 			<slot name="item-append" />
 		</td>
 	</tr>
