@@ -68,7 +68,7 @@ The test website lives at `packages/visual-editing/test-website` inside this rep
    `<directus-url>` with your Directus URL and `<your-token>` with the token you generated earlier.
 
    ```sh
-   npx directus-template-cli@latest apply -p --templateLocation='https://github.com/directus/visual-editing/tree/main/test-website/template' --templateType='github' --directusUrl=<directus-url> --directusToken=<your-token>
+   npx directus-template-cli@latest apply -p --templateLocation='https://github.com/directus/visual-editing-template' --templateType='github' --directusUrl=<directus-url> --directusToken=<your-token>
    ```
 
 ### Build and run the library + test website
