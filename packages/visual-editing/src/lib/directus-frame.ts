@@ -1,3 +1,4 @@
+import { sameOrigin } from '@directus/utils/browser';
 import type { EditableElement } from './editable-element.ts';
 import { EditableStore } from './editable-store.ts';
 import type { ConfirmData, HighlightElementData, ReceiveData, SavedData, SendAction } from './types/index.ts';
@@ -42,7 +43,7 @@ export class DirectusFrame {
 	}
 
 	receive(event: MessageEvent) {
-		if (!this.origin || !this.sameOrigin(event.origin, this.origin)) {
+		if (!this.origin || !sameOrigin(event.origin, this.origin)) {
 			return;
 		}
 
@@ -119,14 +120,6 @@ export class DirectusFrame {
 		} else if (typeof key === 'string') {
 			// Key of type string = UUID from editable-element.ts, looks up via getItemByKey()
 			EditableStore.highlightElement({ key });
-		}
-	}
-
-	private sameOrigin(origin: string, url: string) {
-		try {
-			return origin === new URL(url).origin;
-		} catch {
-			return false;
 		}
 	}
 }

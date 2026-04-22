@@ -9,6 +9,7 @@ const shared = {
 	minify: env === 'production',
 	watch: env === 'development',
 	target: 'es2022',
+	noExternal: ['@directus/utils'], // inline so consumers don't pull the full utils dep tree
 };
 
 export default defineConfig(() => [

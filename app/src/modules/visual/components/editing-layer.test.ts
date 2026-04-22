@@ -46,7 +46,8 @@ vi.mock('@/api', () => ({
 	default: { get: vi.fn(), post: vi.fn(), patch: vi.fn() },
 }));
 
-vi.mock('../utils/same-origin', () => ({
+vi.mock('@directus/utils/browser', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/utils/browser')>()),
 	sameOrigin: () => true,
 }));
 
