@@ -30,6 +30,3 @@ Tokens signed with EdDSA (Ed25519). Three-layer verification in [verify-token.ts
 
 **Watch out:** the fallback JWK is hardcoded in the Directus codebase. If the licensing service rotates its key, a Directus release is required before clients can verify tokens signed with the new key.
 
-## External References
-
-- [Interim Licensing Playbook (Notion)](https://www.notion.so/directus/34a44a408a7580d7af13c07508de8ec3) — service endpoints, Stripe test cards, offline token minting

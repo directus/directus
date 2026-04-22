@@ -45,8 +45,3 @@ plan entitlements → purchased addons → license entitlement overrides
 
 Use `REPLACE` for final values, `ADD` to stack numeric capacity on top of the plan.
 
-## External References
-
-- [v12 Licensing QA Cheat Sheet (Notion)](https://www.notion.so/directus/34844a408a75803c845bff624232ec24) — full plan matrix, grace period flows, resource resolution
-- [Full Pricing Model & Cost Calculator (Google Sheet)](https://docs.google.com/spreadsheets/d/1r-aWTiHhFbxglJGegr3ZLGI7UDw02S_DoS90dxi88_4/edit)
-- [Licensing Options Comparison (Notion)](https://www.notion.so/directus/63da1895b35945418b8da95620022320) — hard vs soft limits discussion

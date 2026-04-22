@@ -59,7 +59,3 @@ pnpm dev
 - Once activated, the triplet is bound. Changing `PUBLIC_URL` or resetting the DB (new `project_id`) requires reactivating.
 - Foundation PR alone does **not** enforce restrictions. To test locked / recovery UX, check out the full stack up to #27180 (`key/deactivation-flow`).
 
-## External References
-
-- [Interim Licensing Playbook (Notion)](https://www.notion.so/directus/34a44a408a7580d7af13c07508de8ec3) — plan IDs, entitlement overrides, offline token generation, Stripe sandbox details
-- [Exhaustive QA Scenarios (Google Sheet)](https://docs.google.com/spreadsheets/d/1UUPAZdFCG2I13cw2evY94t49WvwcP4qSe1Tc0jE10nY/edit) — test cases to run through

@@ -88,20 +88,3 @@ From author's PR notes and architecture analysis:
 
 (Populated as review progresses)
 
-## External References
-
-**Linear (active tracking):**
-- [License Key System & Validation](https://linear.app/directus/project/33b0eb53-fd69-44e0-b423-224e543e2207) — main project for this stack
-- [ART-841 Licensing v12](https://linear.app/directus/issue/9cd35f9f-1302-49f7-a9e0-b989ffc60910) — parent issue (completed 2026-04-09)
-- [CMS-2108 Round 5: Grace Periods UX, ENV vs. In-app keys](https://linear.app/directus/issue/c70af392-e521-4086-bc7c-7c08af1a8574) — directly relevant to #27173 focus areas
-- [Provisioning E2E QA](https://linear.app/directus/issue/8470547c-30c3-405e-bda0-9fc26502594f) — checks "Purchase" → correct v12 license key
-
-**Notion:**
-- [v12 Licensing QA Cheat Sheet](https://www.notion.so/directus/34844a408a75803c845bff624232ec24) — scenarios, grace period flows, resource resolution UX
-- [Interim Licensing Playbook](https://www.notion.so/directus/34a44a408a7580d7af13c07508de8ec3) — operator flows for issuing keys, entitlement overrides
-
-**Google Sheet:**
-- [Exhaustive QA Scenarios](https://docs.google.com/spreadsheets/d/1UUPAZdFCG2I13cw2evY94t49WvwcP4qSe1Tc0jE10nY/edit)
-
-**Figma:**
-- [Licensing UI designs](https://www.figma.com/design/ssrfyo4QB8nceZuT4BoxQj/Licensing?node-id=497-32947) — reference when reviewing app-side changes (grace popup, settings page, recovery flow)
