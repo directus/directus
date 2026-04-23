@@ -1998,7 +1998,6 @@ interfaces:
     value_securely_saved: Vlera U Ruajt në mënyrë të Sigurt
     generate: Gjenero Token
     regenerate: Rrigjenero Token
-    generate_success_copy: Sigurohu që të bësh backup dhe të kopjosh tokenin e mësipërm. Për arsye sigurie, nuk do të jesh në gjendje të shikosh tokenin përsëri pas ruajtjes dhe largimit nga kjo faqe.
     remove_token: Hiq Tokenin
   system-raw-editor:
     system-raw-editor: Redaktor i Papërpunuar

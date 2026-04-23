@@ -200,6 +200,7 @@ export default defineModule({
 			],
 		},
 		{
+			name: 'settings-ai',
 			path: 'ai',
 			component: AiOverview,
 		},
@@ -243,6 +244,7 @@ export default defineModule({
 			],
 		},
 		{
+			name: 'settings-extensions',
 			path: 'extensions',
 			component: Extensions,
 		},

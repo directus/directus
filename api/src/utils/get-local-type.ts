@@ -136,8 +136,11 @@ export default function getLocalType(
 		return 'decimal';
 	}
 
-	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
-	if (column.data_type === 'nvarchar' && column.max_length === -1) {
+	/** Handle MS SQL varchar(MAX) and nvarchar(MAX) types */
+	if (
+		(column.data_type === 'nvarchar' || column.data_type === 'varchar') &&
+		(column.max_length === -1 || column.max_length === null)
+	) {
 		return 'text';
 	}
 

@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--background-color: #ffffff;
+	--foreground-color: #42566e;
+	--background-color-muted: color-mix(in srgb, var(--background-color), var(--foreground-color) 10%);
+	--accent-color: #6644ff;
+	--background-variant-color: #172940;
+	--accent-color-dark: color-mix(in srgb, var(--accent-color), black 40%);
+	--accent-color-soft: color-mix(in srgb, var(--accent-color), white 20%);
+	--accent-color-light: color-mix(in srgb, var(--accent-color), white 90%);
+	--input-color: color-mix(in srgb, var(--background-color), var(--foreground-color) 30%);
+}
+
+.dark {
+	--background-color: #0e1a2b;
+	--foreground-color: #ffffff;
+	--background-color-muted: color-mix(in srgb, var(--background-color), var(--foreground-color) 10%);
+	--background-variant-color: #172940;
+}
+
+@layer base {
+	html {
+		@apply bg-[var(--background-color)] text-[var(--foreground-color)];
+	}
+}
+
+@layer components {
+	input:focus,
+	textarea:focus,
+	select:focus,
+	button:focus,
+	a:focus,
+	[role='button']:focus {
+		@apply outline-none ring-2 ring-[var(--accent-color)] ring-offset-2 ring-offset-background;
+	}
+
+	[data-background='dark'] {
+		@apply bg-gray dark:bg-[var(--background-variant-color)];
+	}
+
+	:root:not(.dark) [data-background='dark'] {
+		.inline-flex[class*='bg-gray'] {
+			@apply bg-[#172940] text-white hover:bg-accent;
+		}
+	}
+}
+
+@layer utilities {
+	a {
+		@apply hover:text-accent transition-colors no-underline;
+	}
+}
