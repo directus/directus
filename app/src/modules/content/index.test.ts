@@ -12,7 +12,6 @@ vi.mock('@/api', () => ({ default: { get: vi.fn() } }));
 const {
 	enterDraftContext,
 	redirectSingleton,
-	ensureSingleton,
 	stripOrphanedVersionId,
 	stripVersionOnNonVersioned,
 	stripVersionIdOnRealItem,
@@ -77,7 +76,7 @@ describe('enterDraftContext', () => {
 		expect(enterDraftContext(to, {} as any, vi.fn())).toBeUndefined();
 	});
 
-	it('adds version=draft for singleton collections with versioning', () => {
+	it('passes through for singleton collections (auto-draft is decided post-load)', () => {
 		mockGetCollection.mockReturnValue({ meta: { versioning: true, singleton: true } });
 
 		const to = {
@@ -86,8 +85,7 @@ describe('enterDraftContext', () => {
 			fullPath: '/content/settings',
 		};
 
-		const result = enterDraftContext(to as any, {} as any, vi.fn());
-		expect(result).toMatchObject({ query: { version: 'draft' } });
+		expect(enterDraftContext(to as any, {} as any, vi.fn())).toBeUndefined();
 	});
 
 	it('passes through for singleton without versioning', () => {
@@ -171,55 +169,6 @@ describe('redirectSingleton', () => {
 			name: 'content-singleton',
 			params: { collection: 'settings' },
 			query: { version: 'draft' },
-		});
-	});
-});
-
-describe('ensureSingleton', () => {
-	beforeEach(() => mockGetCollection.mockReset());
-
-	it('passes through when collection is a singleton', () => {
-		mockGetCollection.mockReturnValue({ meta: { singleton: true } });
-
-		const to = {
-			params: { collection: 'settings' },
-			query: {},
-		};
-
-		expect(ensureSingleton(to as any, {} as any, vi.fn())).toBeUndefined();
-	});
-
-	it('redirects to content-collection when collection is not a singleton', () => {
-		mockGetCollection.mockReturnValue({ meta: { singleton: false } });
-
-		const to = {
-			params: { collection: 'posts' },
-			query: {},
-		};
-
-		const result = ensureSingleton(to as any, {} as any, vi.fn());
-
-		expect(result).toMatchObject({
-			name: 'content-collection',
-			params: { collection: 'posts' },
-			query: {},
-		});
-	});
-
-	it('redirects to content-collection when collection is not found', () => {
-		mockGetCollection.mockReturnValue(null);
-
-		const to = {
-			params: { collection: 'unknown' },
-			query: {},
-		};
-
-		const result = ensureSingleton(to as any, {} as any, vi.fn());
-
-		expect(result).toMatchObject({
-			name: 'content-collection',
-			params: { collection: 'unknown' },
-			query: {},
 		});
 	});
 });

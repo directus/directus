@@ -353,7 +353,7 @@ describe('Query merging', () => {
 	test('should include extra query params when no content version is provided', async () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
 
-		useItem(ref('test'), ref(1), null, { fields: ['*', 'role.*'] });
+		useItem(ref('test'), ref(1), null, undefined, { fields: ['*', 'role.*'] });
 
 		await Promise.resolve();
 
@@ -376,7 +376,7 @@ describe('Query merging', () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
 		const currentVersion = ref({ id: 'version-id', key: 'v1' } as any);
 
-		useItem(ref('test'), ref(1), currentVersion, { deep: { users: { _limit: 0 } } });
+		useItem(ref('test'), ref(1), currentVersion, undefined, { deep: { users: { _limit: 0 } } });
 
 		await Promise.resolve();
 

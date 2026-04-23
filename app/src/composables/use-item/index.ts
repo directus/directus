@@ -39,6 +39,7 @@ type UsableItem<T extends Item> = {
 	refresh: () => void;
 	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
+	isItemlessVersion: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
 	archive: () => Promise<void>;
@@ -59,6 +60,7 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
+	isItemlessVersion: ComputedRef<boolean> = computed(() => false),
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -73,15 +75,6 @@ export function useItem<T extends Item>(
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
-
-	const isItemLessVersion = computed(() => {
-		const version = currentVersion?.value;
-		if (!version || version.id === '+') return false;
-		if (isNew.value) return true;
-		// Pristine singleton: route has no PK and the draft version itself tracks no item yet
-		if (isSingle.value && 'item' in version && version.item === null) return true;
-		return false;
-	});
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
@@ -114,7 +107,13 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, query], refresh);
+	watch([collection, query], refresh);
+
+	// For singletons the endpoint doesn't depend on the PK — skip refetch when the resolved
+	// PK transitions null → real after the item loads (would cause a refetch loop).
+	watch(primaryKey, () => {
+		if (!isSingle.value) refresh();
+	});
 
 	refreshItem();
 
@@ -131,6 +130,7 @@ export function useItem<T extends Item>(
 		refresh,
 		save,
 		isNew,
+		isItemlessVersion,
 		remove,
 		deleting,
 		archive,
@@ -146,7 +146,7 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			if (isItemLessVersion.value) {
+			if (isItemlessVersion.value) {
 				const { delta } = await sdk.request<T>(() => ({ path: `versions/${currentVersion!.value!.id}` }));
 				setItemValueToResponse(delta);
 				return;
@@ -535,11 +535,20 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value && !isItemLessVersion.value) {
+		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
-		} else {
-			getItem();
+			return;
 		}
+
+		// Non-singletons need a resolved PK before fetching. Callers that route the PK through a
+		// watcher (e.g. content/item.vue) may call useItem before the PK settles — the follow-up
+		// watch on `primaryKey` triggers the real fetch once it does.
+		if (!isSingle.value && !primaryKey.value) {
+			item.value = null;
+			return;
+		}
+
+		getItem();
 	}
 
 	function setItemValueToResponse(response: T) {
