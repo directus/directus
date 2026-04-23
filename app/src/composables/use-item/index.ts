@@ -60,7 +60,7 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
-	isItemlessVersionInput: ComputedRef<boolean> | null = null,
+	isItemlessVersion: ComputedRef<boolean> = computed(() => false),
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -75,18 +75,6 @@ export function useItem<T extends Item>(
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
-
-	// `isItemlessVersion` is owned by `useVersions` (which holds the authoritative `currentVersion`
-	// + `primaryKey` state). Callers that also use `useVersions` pass it in; standalone callers
-	// (e.g. `translations/item.vue`, `share-item.vue`) don't — we derive a local fallback so
-	// existing behavior is preserved.
-	const isItemlessVersion =
-		isItemlessVersionInput ??
-		computed(() => {
-			const version = currentVersion?.value;
-			if (!version || version.id === '+') return false;
-			return !primaryKey.value || primaryKey.value === '+';
-		});
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
