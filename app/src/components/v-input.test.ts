@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, test, vi } from 'vitest';
+import { createI18n } from 'vue-i18n';
 import VInput from './v-input.vue';
 import { Focus } from '@/__utils__/focus';
 import { Tooltip } from '@/__utils__/tooltip';
@@ -251,6 +252,42 @@ describe('emitValue', () => {
 		await wrapper.find('input').trigger('input');
 
 		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['a_test_field']);
+	});
+});
+
+describe('locale-aware decimal handling', () => {
+	test('renders value with app locale decimal separator for float text inputs', () => {
+		const i18nWithCommaLocale = createI18n({ legacy: false, locale: 'nl-NL' });
+
+		const wrapper = mount(VInput, {
+			props: { type: 'text', modelValue: '300.44', float: true },
+			global: { ...global, plugins: [i18nWithCommaLocale] },
+		});
+
+		expect(wrapper.get('input').element.value).toBe('300,44');
+	});
+
+	test('leaves value untouched when app locale uses a period separator', () => {
+		const wrapper = mount(VInput, {
+			props: { type: 'text', modelValue: '300.44', float: true },
+			global,
+		});
+
+		expect(wrapper.get('input').element.value).toBe('300.44');
+	});
+
+	test('emits dot-normalized value when user types with a locale separator', async () => {
+		const i18nWithCommaLocale = createI18n({ legacy: false, locale: 'nl-NL' });
+
+		const wrapper = mount(VInput, {
+			props: { type: 'text', modelValue: '300.44', float: true },
+			global: { ...global, plugins: [i18nWithCommaLocale] },
+		});
+
+		await wrapper.find('input').setValue('300,45');
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['300.45']);
 	});
 });
 

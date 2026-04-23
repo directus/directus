@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
-import { APP_NUMERIC_TYPES } from '@/constants';
 
 const props = withDefaults(
 	defineProps<{
@@ -58,9 +57,13 @@ const percentageRemaining = computed(() => {
 	return 100;
 });
 
+// Only integer-typed fields render as native type="number". Float/decimal fields render as
+// type="text" with inputmode="decimal" so the locale's decimal separator (e.g. comma) is
+// accepted across browsers — Chromium ignores `lang` on <input type="number"> and rejects
+// non-period decimal separators regardless of the app locale (see issue #24803).
 const inputType = computed(() => {
 	if (props.masked) return 'password';
-	if (APP_NUMERIC_TYPES.includes(props.type!)) return 'number';
+	if (props.type === 'integer') return 'number';
 	return 'text';
 });
 
@@ -78,6 +81,7 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 		:non-editable="nonEditable"
 		:trim="trim"
 		:type="inputType"
+		:inputmode="isFloat ? 'decimal' : undefined"
 		:class="font"
 		:db-safe="dbSafe"
 		:slug="slug"
