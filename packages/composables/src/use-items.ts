@@ -79,7 +79,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	}, 500);
 
 	watch(
-		[collection, limit, sort, search, filter,  toRef(version), fields, page, toRef(alias), toRef(deep),],
+		[collection, limit, sort, search, filter, toRef(version), fields, page, toRef(alias), toRef(deep)],
 		async (after, before) => {
 			if (isEqual(after, before)) return;
 
