@@ -113,7 +113,7 @@ const filterEmpty = (obj: Record<string, any>) => pickBy(obj, (v) => !isNil(v) &
 
 // Returns i18n keys — Cloudflare has provider-specific copy pointing users to Workers Builds setup
 function getProjectDeployableHint(provider: string): string {
-	if (provider === 'cloudflare') {
+	if (provider === 'cloudflare-workers') {
 		return 'deployment.provider.project.not_deployable_cloudflare';
 	}
 
@@ -121,7 +121,7 @@ function getProjectDeployableHint(provider: string): string {
 }
 
 function getProjectDeployableStatus(provider: string): string | null {
-	if (provider === 'cloudflare') {
+	if (provider === 'cloudflare-workers') {
 		return 'deployment.provider.project.missing_build_trigger';
 	}
 
@@ -428,7 +428,7 @@ watch(
 			</VNotice>
 
 			<VNotice v-if="showDeployHookSetupNotice" type="info" class="field full">
-				<div>{{ $t('deployment.provider.cloudflare.setup_requirements') }}</div>
+				<div>{{ $t('deployment.provider.cloudflare-workers.setup_requirements') }}</div>
 			</VNotice>
 
 			<InterfacePresentationDivider
@@ -482,7 +482,7 @@ watch(
 										small
 									/>
 									<span class="type-label">
-										{{ $t('deployment.provider.cloudflare.deploy_hooks.title') }}
+										{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.title') }}
 										<span v-if="(projectDeployHooks[project.external_id] ?? []).length > 0" class="hook-count">
 											({{ (projectDeployHooks[project.external_id] ?? []).length }})
 										</span>
@@ -491,7 +491,7 @@ watch(
 
 								<div v-if="expandedHookProjects.has(project.external_id)" class="deploy-hooks-content">
 									<small class="type-note">
-										{{ $t('deployment.provider.cloudflare.deploy_hooks.hint') }}
+										{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.hint') }}
 									</small>
 
 									<div
@@ -501,14 +501,14 @@ watch(
 									>
 										<VInput
 											v-model="hook.name"
-											:placeholder="$t('deployment.provider.cloudflare.deploy_hooks.name_placeholder')"
+											:placeholder="$t('deployment.provider.cloudflare-workers.deploy_hooks.name_placeholder')"
 											small
 											class="hook-name-input"
 										/>
 
 										<VInput
 											v-model="hook.url"
-											:placeholder="$t('deployment.provider.cloudflare.deploy_hooks.url_placeholder')"
+											:placeholder="$t('deployment.provider.cloudflare-workers.deploy_hooks.url_placeholder')"
 											small
 											class="hook-url-input"
 										/>
@@ -527,7 +527,7 @@ watch(
 
 									<VButton small secondary @click="addDeployHook(project.external_id)">
 										<VIcon name="add" small />
-										{{ $t('deployment.provider.cloudflare.deploy_hooks.add') }}
+										{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.add') }}
 									</VButton>
 								</div>
 							</div>

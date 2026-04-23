@@ -1,6 +1,5 @@
 import type {
 	Credentials,
-	Deployment,
 	DeploymentProviderCapabilities,
 	DeploymentWebhookEvent,
 	Details,
@@ -103,64 +102,52 @@ export abstract class DeploymentDriver<
 	abstract getProject(projectId: string): Promise<Project>;
 
 	/**
-	 * List deployments for a project
+	 * Get run details including logs
 	 *
-	 * @param projectId External project ID
-	 * @param limit Number of deployments to return
-	 * @returns Array of deployments
+	 * @param runId External run ID
+	 * @returns Run details with logs
 	 * @throws {InvalidCredentialsError} When API credentials are invalid
 	 * @throws {HitRateLimitError} When rate limit is exceeded
 	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
-	abstract listDeployments(projectId: string, limit?: number): Promise<Deployment[]>;
+	abstract getRun(runId: string): Promise<Details>;
 
 	/**
-	 * Get deployment details including logs
-	 *
-	 * @param deploymentId External deployment ID
-	 * @returns Deployment details with logs
-	 * @throws {InvalidCredentialsError} When API credentials are invalid
-	 * @throws {HitRateLimitError} When rate limit is exceeded
-	 * @throws {ServiceUnavailableError} When provider API fails
-	 */
-	abstract getDeployment(deploymentId: string): Promise<Details>;
-
-	/**
-	 * Trigger a new deployment
+	 * Trigger a new run
 	 *
 	 * @param projectId External project ID
 	 * @param options Deployment options
-	 * @returns Deployment result
+	 * @returns Run trigger result
 	 * @throws {InvalidCredentialsError} When API credentials are invalid
 	 * @throws {HitRateLimitError} When rate limit is exceeded
 	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
-	abstract triggerDeployment(
+	abstract triggerRun(
 		projectId: string,
 		options?: { preview?: boolean; clearCache?: boolean; deployHookUrl?: string },
 	): Promise<TriggerResult>;
 
 	/**
-	 * Cancel a running deployment
+	 * Cancel a running run
 	 *
-	 * @param deploymentId External deployment ID
+	 * @param runId External run ID
 	 * @throws {InvalidCredentialsError} When API credentials are invalid
 	 * @throws {HitRateLimitError} When rate limit is exceeded
 	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
-	abstract cancelDeployment(deploymentId: string): Promise<Status>;
+	abstract cancelRun(runId: string): Promise<Status>;
 
 	/**
-	 * Get deployment build logs
+	 * Get run build logs
 	 *
-	 * @param deploymentId External deployment ID
+	 * @param runId External run ID
 	 * @param options.since Only return logs after this timestamp
 	 * @returns Array of log entries
 	 * @throws {InvalidCredentialsError} When API credentials are invalid
 	 * @throws {HitRateLimitError} When rate limit is exceeded
 	 * @throws {ServiceUnavailableError} When provider API fails
 	 */
-	abstract getDeploymentLogs(deploymentId: string, options?: { since?: Date }): Promise<Log[]>;
+	abstract getRunLogs(runId: string, options?: { since?: Date }): Promise<Log[]>;
 
 	/**
 	 * Register a webhook with the provider

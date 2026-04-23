@@ -1,6 +1,7 @@
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
 import CustomIconBox from './custom-icons/box.vue';
 import CustomIconCloudflare from './custom-icons/cloudflare.vue';
+import CustomIconCloudflareWorkers from './custom-icons/cloudflare.vue';
 import CustomIconCommitNode from './custom-icons/commit_node.vue';
 import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconFlipHorizontal from './custom-icons/flip_horizontal.vue';
@@ -30,6 +31,7 @@ export const components: Record<string, any> = {
 	CustomIconBox,
 	CustomIconCommitNode,
 	CustomIconCloudflare,
+	CustomIconCloudflareWorkers,
 	CustomIconGrid1,
 	CustomIconGrid2,
 	CustomIconGrid3,

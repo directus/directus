@@ -381,7 +381,7 @@ onUnmounted(() => {
 				:disabled="!canTriggerDeploy"
 				@click="deploy()"
 			>
-				<template #split-menu>
+			<template #split-menu>
 					<VList>
 						<VListItem
 							v-for="action in deployToolbarActions"
@@ -407,7 +407,7 @@ onUnmounted(() => {
 									{{ $t('deployment.provider.runs.deploy_preview') }}
 								</template>
 								<template v-else-if="action.kind === 'deploy_hook'">
-									{{ $t('deployment.provider.cloudflare.deploy_hooks.deploy_via', { name: action.name }) }}
+									{{ $t('deployment.provider.cloudflare-workers.deploy_hooks.deploy_via', { name: action.name }) }}
 								</template>
 								<template v-else>{{ $t('deployment.provider.runs.refresh') }}</template>
 							</VListItemContent>

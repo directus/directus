@@ -40,7 +40,7 @@ describe('Deployment Driver Registry', () => {
 			const credentials = { api_token: 'my-token' };
 			const options = { account_id: 'account-123' };
 
-			const driver = getDeploymentDriver('cloudflare', credentials, options);
+			const driver = getDeploymentDriver('cloudflare-workers', credentials, options);
 
 			expect(driver).toBeInstanceOf(CloudflareDriver);
 			expect(driver.credentials).toEqual(credentials);
@@ -49,13 +49,13 @@ describe('Deployment Driver Registry', () => {
 	});
 
 	describe('getSupportedProviderTypes', () => {
-		it('should return array containing vercel, netlify, and cloudflare', () => {
+		it('should return array containing vercel, netlify, and cloudflare-workers', () => {
 			const types = getSupportedProviderTypes();
 
 			expect(Array.isArray(types)).toBe(true);
 			expect(types).toContain('vercel');
 			expect(types).toContain('netlify');
-			expect(types).toContain('cloudflare');
+			expect(types).toContain('cloudflare-workers');
 			expect(types.length).toBe(3);
 		});
 	});

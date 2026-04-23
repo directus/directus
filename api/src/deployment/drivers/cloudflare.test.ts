@@ -173,7 +173,7 @@ describe('CloudflareDriver', () => {
 				}),
 			);
 
-		const result = await driver.getDeployment('build-123');
+		const result = await driver.getRun('build-123');
 		expect(result.status).toBe(expected);
 	});
 
@@ -196,7 +196,7 @@ describe('CloudflareDriver', () => {
 				}),
 			);
 
-		const result = await driver.triggerDeployment('worker-tag-1');
+		const result = await driver.triggerRun('worker-tag-1');
 
 		expect(result).toEqual({
 			deployment_id: 'build-123',
@@ -232,7 +232,7 @@ describe('CloudflareDriver', () => {
 				}),
 			);
 
-		const result = await driver.triggerDeployment('worker-tag-1');
+		const result = await driver.triggerRun('worker-tag-1');
 
 		expect(result.deployment_id).toBe('build-456');
 		const calledUrl = mockAxiosRequest.mock.calls[1]![0].url as string;
@@ -248,7 +248,7 @@ describe('CloudflareDriver', () => {
 			}),
 		);
 
-		await expect(driver.triggerDeployment('worker-tag-1')).rejects.toThrow(InvalidProviderConfigError);
+		await expect(driver.triggerRun('worker-tag-1')).rejects.toThrow(InvalidProviderConfigError);
 	});
 
 	it('should throw InvalidProviderConfigError when no trigger is available', async () => {
@@ -259,7 +259,7 @@ describe('CloudflareDriver', () => {
 			}),
 		);
 
-		await expect(driver.triggerDeployment('worker-tag-1')).rejects.toThrow(InvalidProviderConfigError);
+		await expect(driver.triggerRun('worker-tag-1')).rejects.toThrow(InvalidProviderConfigError);
 	});
 
 	it('should resolve main-branch trigger on registerWebhook', async () => {
@@ -311,7 +311,7 @@ describe('CloudflareDriver', () => {
 			}),
 		);
 
-		const logs = await driver.getDeploymentLogs('build-123');
+		const logs = await driver.getRunLogs('build-123');
 
 		expect(logs).toEqual([
 			{ timestamp: new Date(ts1), type: 'stdout', message: 'Build started' },
@@ -336,9 +336,162 @@ describe('CloudflareDriver', () => {
 			}),
 		);
 
-		const logs = await driver.getDeploymentLogs('build-123', { since: new Date(ts2) });
+		const logs = await driver.getRunLogs('build-123', { since: new Date(ts2) });
 
 		expect(logs).toEqual([{ timestamp: new Date(ts2), type: 'stdout', message: 'Build warning' }]);
+	});
+
+	it('should parse queue event into deployment webhook event', () => {
+		const parsed = driver.parseQueueEvent({
+			type: 'cf.workersBuilds.worker.build.succeeded',
+			source: { workerName: 'worker-tag-1' },
+			payload: {
+				buildUuid: 'build-123',
+				status: 'success',
+				buildOutcome: 'success',
+				createdAt: '2026-01-01T00:00:00.000Z',
+				buildTriggerMetadata: { branch: 'main' },
+			},
+			metadata: {
+				eventTimestamp: '2026-01-01T00:01:00.000Z',
+			},
+		});
+
+		expect(parsed).toEqual({
+			type: 'deployment.succeeded',
+			provider: 'cloudflare-workers',
+			project_external_id: 'worker-tag-1',
+			deployment_external_id: 'build-123',
+			status: 'ready',
+			target: 'main',
+			timestamp: new Date('2026-01-01T00:01:00.000Z'),
+			raw: expect.any(Object),
+		});
+	});
+
+	it('should parse Workers Builds event subscription shape (source.type + metadata fields)', () => {
+		const parsed = driver.parseQueueEvent({
+			type: 'cf.workersBuilds.worker.build.started',
+			source: { type: 'workersBuilds.worker', workerName: 'my-worker' },
+			payload: {
+				buildUuid: 'build-12345678-90ab-cdef-1234-567890abcdef',
+				status: 'running',
+				buildOutcome: null,
+				createdAt: '2025-05-01T02:48:57.132Z',
+				buildTriggerMetadata: { branch: 'main', buildTriggerSource: 'push_event' },
+			},
+			metadata: {
+				accountId: 'f9f79265f388666de8122cfb508d7776',
+				eventSubscriptionId: '1830c4bb612e43c3af7f4cada31fbf3f',
+				eventSchemaVersion: 1,
+				eventTimestamp: '2025-05-01T02:48:57.132Z',
+			},
+		});
+
+		expect(parsed?.type).toBe('deployment.created');
+		expect(parsed?.status).toBe('building');
+		expect(parsed?.project_external_id).toBe('my-worker');
+		expect(parsed?.deployment_external_id).toBe('build-12345678-90ab-cdef-1234-567890abcdef');
+		expect(parsed?.target).toBe('main');
+	});
+
+	it('should map build.failed payload with buildOutcome "failure" to error status', () => {
+		const parsed = driver.parseQueueEvent({
+			type: 'cf.workersBuilds.worker.build.failed',
+			source: { type: 'workersBuilds.worker', workerName: 'my-worker' },
+			payload: {
+				buildUuid: 'build-12345678-90ab-cdef-1234-567890abcdef',
+				status: 'failed',
+				buildOutcome: 'failure',
+				buildTriggerMetadata: { branch: 'main' },
+			},
+			metadata: { eventTimestamp: '2025-05-01T02:50:00.132Z' },
+		});
+
+		expect(parsed?.type).toBe('deployment.error');
+		expect(parsed?.status).toBe('error');
+	});
+
+	it('should pull messages from Cloudflare Queues REST API when events_queue_id is set', async () => {
+		const queueDriver = new CloudflareDriver(
+			{ api_token: 'test-token' },
+			{
+				account_id: accountId,
+				events_queue_id: 'queue-id-abc',
+			},
+		);
+
+		mockAxiosRequest.mockResolvedValueOnce(
+			createAxiosResponse(200, {
+				success: true,
+				result: {
+					messages: [{ id: 'm1', lease_id: 'lease-1', body: { hello: 'world' } }],
+				},
+			}),
+		);
+
+		const messages = await queueDriver.pullQueueMessages();
+		expect(messages).toEqual([{ id: 'm1', lease_id: 'lease-1', body: { hello: 'world' } }]);
+
+		expect(mockAxiosRequest).toHaveBeenCalledWith(
+			expect.objectContaining({
+				method: 'POST',
+				headers: expect.objectContaining({
+					Authorization: 'Bearer test-token',
+				}),
+			}),
+		);
+
+		const calledUrl = mockAxiosRequest.mock.calls[0]![0].url as string;
+		expect(calledUrl).toContain(`accounts/${accountId}/queues/queue-id-abc/messages/pull`);
+	});
+
+	it('should use the main api_token for Queues pull', async () => {
+		const queueDriver = new CloudflareDriver(
+			{ api_token: 'test-token' },
+			{
+				account_id: accountId,
+				events_queue_id: 'q1',
+			},
+		);
+
+		mockAxiosRequest.mockResolvedValueOnce(createAxiosResponse(200, { success: true, result: { messages: [] } }));
+
+		await queueDriver.pullQueueMessages();
+
+		expect(mockAxiosRequest).toHaveBeenCalledWith(
+			expect.objectContaining({
+				headers: expect.objectContaining({
+					Authorization: 'Bearer test-token',
+				}),
+			}),
+		);
+	});
+
+	it('should return empty array when events_queue_id is not configured', async () => {
+		const messages = await driver.pullQueueMessages();
+		expect(messages).toEqual([]);
+		expect(mockAxiosRequest).not.toHaveBeenCalled();
+	});
+
+	it('should parse base64 JSON queue body when CF-Content-Type is json', () => {
+		const payload = {
+			type: 'cf.workersbuilds.worker.build.succeeded',
+			source: { workerName: 'w1' },
+			payload: { buildUuid: 'b1', status: 'success', buildOutcome: 'success' },
+		};
+
+		const b64 = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64');
+
+		const parsed = driver.parseQueueMessage({
+			id: '1',
+			lease_id: 'l1',
+			body: b64,
+			metadata: { 'CF-Content-Type': 'json' },
+		});
+
+		expect(parsed?.deployment_external_id).toBe('b1');
+		expect(parsed?.project_external_id).toBe('w1');
 	});
 
 	it('should throw InvalidCredentialsError on 401', async () => {
@@ -388,7 +541,7 @@ describe('CloudflareDriver', () => {
 				}),
 			);
 
-			const result = await hookDriver.triggerDeployment('worker-tag-1', { deployHookUrl: hookUrl });
+			const result = await hookDriver.triggerRun('worker-tag-1', { deployHookUrl: hookUrl });
 
 			expect(result.deployment_id).toBe('hook-build-789');
 			expect(result.status).toBe('building');
@@ -410,7 +563,7 @@ describe('CloudflareDriver', () => {
 				}),
 			);
 
-			await expect(hookDriver.triggerDeployment('worker-tag-1', { deployHookUrl: hookUrl })).rejects.toThrow(
+			await expect(hookDriver.triggerRun('worker-tag-1', { deployHookUrl: hookUrl })).rejects.toThrow(
 				ServiceUnavailableError,
 			);
 		});
@@ -421,7 +574,7 @@ describe('CloudflareDriver', () => {
 			);
 
 			await expect(
-				hookDriver.triggerDeployment('worker-tag-1', {
+				hookDriver.triggerRun('worker-tag-1', {
 					deployHookUrl: 'https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/different',
 				}),
 			).rejects.toThrow(InvalidPayloadError);
@@ -446,7 +599,7 @@ describe('CloudflareDriver', () => {
 					}),
 				);
 
-			const result = await driver.triggerDeployment('worker-tag-1');
+			const result = await driver.triggerRun('worker-tag-1');
 
 			expect(result.deployment_id).toBe('build-123');
 			const calledUrl = mockAxiosRequest.mock.calls[1]![0].url as string;
@@ -469,7 +622,7 @@ describe('CloudflareDriver', () => {
 				}),
 			);
 
-			const result = await hookDriver.triggerDeployment('worker-tag-1', { deployHookUrl: hookUrl });
+			const result = await hookDriver.triggerRun('worker-tag-1', { deployHookUrl: hookUrl });
 
 			expect(result.deployment_id).toBe('existing-build-456');
 		});

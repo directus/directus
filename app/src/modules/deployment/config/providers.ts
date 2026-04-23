@@ -10,7 +10,7 @@ export interface ProviderConfig {
 	getDeploymentUrl?: (options: Record<string, any>, projectName: string, externalId: string) => string | null;
 }
 
-export const availableProviders = ['vercel', 'netlify', 'cloudflare'];
+export const availableProviders = ['vercel', 'netlify', 'cloudflare-workers'];
 
 const capabilitiesLoadingDefault: DeploymentProviderCapabilities = {
 	eventsTransport: 'webhook',
@@ -97,7 +97,7 @@ export function useProviderConfigs(
 		const netlifyTokenUrl = `${netlifyBaseUrl}/user/applications`;
 
 		const cloudflareBaseUrl = 'https://dash.cloudflare.com';
-		const cloudflareProvider = t('deployment.provider.cloudflare.name');
+		const cloudflareProvider = t('deployment.provider.cloudflare-workers.name');
 		const cloudflareTokenUrl = `${cloudflareBaseUrl}/profile/api-tokens`;
 
 		return {
@@ -243,9 +243,9 @@ export function useProviderConfigs(
 					},
 				],
 			},
-			cloudflare: {
+			'cloudflare-workers': {
 				tokenUrl: cloudflareTokenUrl,
-				settingsWarning: t('deployment.provider.cloudflare.settings_warning'),
+				settingsWarning: t('deployment.provider.cloudflare-workers.settings_warning'),
 				getDeploymentUrl: (options, projectName, externalId) => {
 					const accountId = options['account_id'];
 					if (!accountId) return null;
@@ -263,7 +263,7 @@ export function useProviderConfigs(
 							note: [
 								edit &&
 									`${t('deployment.provider.credentials.notice', { provider: cloudflareProvider })} [${t('deployment.provider.credentials.link', { provider: cloudflareProvider })}](${cloudflareTokenUrl}).`,
-								t('deployment.provider.cloudflare.api_token.hint'),
+								t('deployment.provider.cloudflare-workers.api_token.hint'),
 								t('deployment.provider.token.encrypted_notice'),
 							]
 								.filter(Boolean)
@@ -279,15 +279,29 @@ export function useProviderConfigs(
 				optionsFields: [
 					{
 						field: 'account_id',
-						name: t('deployment.provider.cloudflare.account_id.label'),
+						name: t('deployment.provider.cloudflare-workers.account_id.label'),
 						type: 'string',
 						meta: {
 							interface: 'input',
 							width: 'full',
 							required: true,
-							note: t('deployment.provider.cloudflare.account_id.hint'),
+							note: t('deployment.provider.cloudflare-workers.account_id.hint'),
 							options: {
-								placeholder: t('deployment.provider.cloudflare.account_id.placeholder'),
+								placeholder: t('deployment.provider.cloudflare-workers.account_id.placeholder'),
+							},
+						},
+					},
+					{
+						field: 'events_queue_id',
+						name: t('deployment.provider.cloudflare-workers.events_queue_id.label'),
+						type: 'string',
+						meta: {
+							interface: 'input',
+							width: 'full',
+							required: false,
+							note: t('deployment.provider.cloudflare-workers.events_queue_id.hint'),
+							options: {
+								placeholder: t('deployment.provider.cloudflare-workers.events_queue_id.placeholder'),
 							},
 						},
 					},

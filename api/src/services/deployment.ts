@@ -611,7 +611,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		};
 
 		try {
-			result = await driver.triggerDeployment(project.external_id, driverOptions);
+			result = await driver.triggerRun(project.external_id, driverOptions);
 		} catch (error) {
 			const reason =
 				error && typeof error === 'object' && 'extensions' in error
@@ -630,7 +630,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			// Sync trigger metadata on demand for poll-only providers (eg. Cloudflare) and retry once.
 			await this.syncWebhook(provider);
 			driver = await this.getDriver(provider);
-			result = await driver.triggerDeployment(project.external_id, driverOptions);
+			result = await driver.triggerRun(project.external_id, driverOptions);
 		}
 
 		const deploymentRow = await this.readConfig(provider);
@@ -664,7 +664,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 		const run = await runsService.readOne(runId);
 		const driver = await this.getDriver(provider);
 
-		const status = await driver.cancelDeployment(run.external_id);
+		const status = await driver.cancelRun(run.external_id);
 		await runsService.updateOne(runId, { status });
 
 		return runsService.readOne(runId);
@@ -685,8 +685,8 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 
 		if (driver.capabilities.needsRunStatusPolling && !terminalStatuses.has(run.status as Status)) {
 			try {
-				// getDeployment fetches status and logs in one combined call — don't also call getDeploymentLogs.
-				const details = await driver.getDeployment(run.external_id);
+				// getRun fetches status and logs in one combined call — don't also call getRunLogs.
+				const details = await driver.getRun(run.external_id);
 				const nextStatus = details.status;
 				const update: Partial<DeploymentRun> = {};
 
@@ -719,8 +719,18 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 			}
 		}
 
-		const logs = await driver.getDeploymentLogs(run.external_id, since ? { since } : undefined);
-		return { ...run, logs };
+		try {
+			const logs = await driver.getRunLogs(run.external_id, since ? { since } : undefined);
+			return { ...run, logs };
+		} catch (error) {
+			const logger = useLogger();
+
+			logger.warn(
+				`[deployment:${provider}] Failed to fetch logs for run "${run.external_id}", returning run without logs: ${String(error)}`,
+			);
+
+			return { ...run, logs: [] };
+		}
 	}
 
 	/**
@@ -745,7 +755,7 @@ export class DeploymentService extends ItemsService<DeploymentConfig> {
 				if (terminalStatuses.has(run.status as Status)) return;
 
 				try {
-					const details = await driver.getDeployment(run.external_id);
+					const details = await driver.getRun(run.external_id);
 					const nextStatus = details.status;
 					const update: Partial<DeploymentRun> = {};
 

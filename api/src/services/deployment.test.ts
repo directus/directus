@@ -12,8 +12,8 @@ const {
 	mockTestConnection,
 	mockListProjects,
 	mockGetProject,
-	mockGetDeploymentLogs,
-	mockGetDeployment,
+	mockGetRunLogs,
+	mockGetRun,
 	mockGetCacheValueWithTTL,
 	mockSetCacheValueWithExpiry,
 	mockLoggerDebug,
@@ -29,14 +29,14 @@ const {
 		testConnection: vi.fn(),
 		listProjects: vi.fn(),
 		getProject: vi.fn(),
-		getDeploymentLogs: vi.fn(),
-		getDeployment: vi.fn(),
+		getRunLogs: vi.fn(),
+		getRun: vi.fn(),
 	},
 	mockTestConnection: vi.fn(),
 	mockListProjects: vi.fn(),
 	mockGetProject: vi.fn(),
-	mockGetDeploymentLogs: vi.fn(),
-	mockGetDeployment: vi.fn(),
+	mockGetRunLogs: vi.fn(),
+	mockGetRun: vi.fn(),
 	mockGetCacheValueWithTTL: vi.fn(),
 	mockSetCacheValueWithExpiry: vi.fn(),
 	mockLoggerDebug: vi.fn(),
@@ -94,8 +94,8 @@ describe('DeploymentService', () => {
 		mockDriver.testConnection = mockTestConnection;
 		mockDriver.listProjects = mockListProjects;
 		mockDriver.getProject = mockGetProject;
-		mockDriver.getDeploymentLogs = mockGetDeploymentLogs;
-		mockDriver.getDeployment = mockGetDeployment;
+		mockDriver.getRunLogs = mockGetRunLogs;
+		mockDriver.getRun = mockGetRun;
 	});
 
 	afterEach(() => {
@@ -550,7 +550,7 @@ describe('DeploymentService', () => {
 
 		const deployment = {
 			id: 1,
-			provider: 'cloudflare',
+			provider: 'cloudflare-workers',
 			credentials: JSON.stringify({ api_token: 'token' }),
 			options: JSON.stringify({ account_id: 'account-123' }),
 			webhook_ids: ['trigger-123'],
@@ -569,10 +569,10 @@ describe('DeploymentService', () => {
 			const getDeploymentDriverModule = await import('../deployment.js');
 			const getDeploymentDriverSpy = vi.spyOn(getDeploymentDriverModule, 'getDeploymentDriver');
 
-			await service.getDriver('cloudflare');
+			await service.getDriver('cloudflare-workers');
 
 			expect(getDeploymentDriverSpy).toHaveBeenCalledWith(
-				'cloudflare',
+				'cloudflare-workers',
 				{ api_token: 'token' },
 				expect.objectContaining({
 					account_id: 'account-123',
@@ -589,7 +589,7 @@ describe('DeploymentService', () => {
 				needsRunStatusPolling: true,
 			};
 
-			mockGetDeployment.mockResolvedValueOnce({
+			mockGetRun.mockResolvedValueOnce({
 				id: 'build-1',
 				project_id: 'worker-1',
 				status: 'ready',
@@ -612,7 +612,7 @@ describe('DeploymentService', () => {
 
 			const updateSpy = vi.spyOn(DeploymentRunsService.prototype, 'updateOne').mockResolvedValue('run-1');
 
-			const result = await service.getRunWithLogs('cloudflare', 'run-1');
+			const result = await service.getRunWithLogs('cloudflare-workers', 'run-1');
 
 			expect(updateSpy).toHaveBeenCalledWith(
 				'run-1',
@@ -634,7 +634,7 @@ describe('DeploymentService', () => {
 				needsRunStatusPolling: false,
 			};
 
-			mockGetDeploymentLogs.mockResolvedValueOnce([{ type: 'info', message: 'Build started', timestamp: new Date() }]);
+			mockGetRunLogs.mockResolvedValueOnce([{ type: 'info', message: 'Build started', timestamp: new Date() }]);
 
 			vi.spyOn(DeploymentRunsService.prototype, 'readOne').mockResolvedValue({
 				id: 'run-1',
@@ -653,7 +653,7 @@ describe('DeploymentService', () => {
 			await service.getRunWithLogs('vercel', 'run-1');
 
 			expect(updateSpy).not.toHaveBeenCalled();
-			expect(mockGetDeployment).not.toHaveBeenCalled();
+			expect(mockGetRun).not.toHaveBeenCalled();
 		});
 	});
 });

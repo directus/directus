@@ -5,4 +5,4 @@
 '@directus/sdk': minor
 ---
 
-Added Cloudflare Workers Builds as a deployment provider with trigger-based run creation and poll-based run status refresh for non-webhook providers
+Added Cloudflare Workers Builds as a deployment provider with trigger-based and deploy hook run creation, optional queue-based build event ingestion, and poll-based run status refresh

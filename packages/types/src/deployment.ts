@@ -1,7 +1,7 @@
 /**
  * Supported deployment provider types
  */
-export const DEPLOYMENT_PROVIDER_TYPES = ['vercel', 'netlify', 'cloudflare'] as const;
+export const DEPLOYMENT_PROVIDER_TYPES = ['vercel', 'netlify', 'cloudflare-workers'] as const;
 export type ProviderType = (typeof DEPLOYMENT_PROVIDER_TYPES)[number];
 
 /**
@@ -20,7 +20,7 @@ export type Status = 'building' | 'ready' | 'error' | 'canceled';
 /**
  * How the provider delivers deployment status updates to Directus
  */
-export type DeploymentEventsTransport = 'webhook' | 'poll';
+export type DeploymentEventsTransport = 'webhook' | 'poll' | 'queue';
 
 /**
  * Declared features for a deployment provider driver (API + app)
@@ -64,7 +64,7 @@ export interface Project {
 /**
  * Deployment run
  */
-export interface Deployment {
+export interface Run {
 	id: string;
 	project_id: string;
 	status: Status;
@@ -85,9 +85,9 @@ export interface Log {
 }
 
 /**
- * Deployment details with logs
+ * Run details with logs
  */
-export interface Details extends Deployment {
+export interface Details extends Run {
 	logs?: Log[];
 }
 

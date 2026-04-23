@@ -1219,7 +1219,7 @@ deployment:
         label: Account Slug
         hint: Optional. Filter sites to a specific account. Leave empty to show all accessible sites.
         placeholder: your-account-slug
-    cloudflare:
+    cloudflare-workers:
       name: Cloudflare Workers
       settings_warning:
         Changing credentials or account ID may affect your selected projects if they are no longer accessible with the
@@ -1228,13 +1228,21 @@ deployment:
         To deploy from Directus, each Worker must have Workers Builds enabled and a connected Git repository with a
         build trigger. Deploy Hooks are optional and provide an additional manual trigger option.
       api_token:
-        hint:
+        hint: >
           Must be a user-scoped API token (not an account token) with Workers Builds Configuration: Edit and Workers
-          Scripts: Read permissions.
+          Scripts: Read permissions. If you plan to use event subscriptions for build notifications, also add Account →
+          Queues → Edit (read and write).
       account_id:
         label: Account ID
         hint: Your Cloudflare account ID used for Workers Builds API requests.
         placeholder: 023e105f4ecef8ad9ca31a8372d0c353
+      events_queue_id:
+        label: Event Subscription Queue ID
+        hint: >
+          Optional. Without this, Directus only tracks builds triggered from within Directus, builds started outside
+          will not appear. To capture those, create a Cloudflare Queue, add an event subscription per Worker pointing to
+          that queue, enable HTTP pull on the queue, then paste the queue ID here.
+        placeholder: e.g. queue UUID from Workers & Pages → Queues
       deploy_hooks:
         title: Deploy Hooks
         hint: Create Deploy Hooks in Cloudflare (Worker Settings > Builds > Deploy Hooks), then paste the URL here.

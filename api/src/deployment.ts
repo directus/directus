@@ -20,7 +20,7 @@ const drivers: Map<ProviderType, DriverConstructor> = new Map();
 export function registerDeploymentDrivers(): void {
 	drivers.set('vercel', VercelDriver);
 	drivers.set('netlify', NetlifyDriver);
-	drivers.set('cloudflare', CloudflareDriver);
+	drivers.set('cloudflare-workers', CloudflareDriver);
 }
 
 /**
