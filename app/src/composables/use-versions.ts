@@ -44,7 +44,23 @@ export function useVersions(
 		mode: 'push',
 	});
 
-	const isItemless = computed(() => !primaryKey.value || primaryKey.value === '+');
+	/**
+	 * True when the current PK indicates no backing item exists yet — either a pristine singleton
+	 * (`null`) or a new-item route (`'+'`). Distinct from `isItemlessVersion`, which additionally
+	 * requires a saved version row.
+	 */
+	const isItemlessPrimaryKey = computed(() => !primaryKey.value || primaryKey.value === '+');
+
+	/**
+	 * True when a saved version row exists (`currentVersion.id` is a real DB id) AND the backing
+	 * item hasn't been saved yet (`isItemlessPrimaryKey`). Represents the on-disk state
+	 * `directus_versions.item IS NULL`.
+	 */
+	const isItemlessVersion = computed(() => {
+		const version = currentVersion.value;
+		if (!version || version.id === '+') return false;
+		return isItemlessPrimaryKey.value;
+	});
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
 		const draftVersion = getGlobalVersion(VERSION_KEY_DRAFT);
@@ -94,7 +110,7 @@ export function useVersions(
 		queryVersion.value = newCurrentVersion?.key ?? null;
 
 		if (newCurrentVersion !== null) {
-			queryVersionId.value = isItemless.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
+			queryVersionId.value = isItemlessPrimaryKey.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
 		}
 
 		validationErrors.value = [];
@@ -121,7 +137,7 @@ export function useVersions(
 		try {
 			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
 
-			if (isItemless.value) {
+			if (isItemlessPrimaryKey.value) {
 				// No parent item yet — match item-less drafts; scope to a specific version if known
 				filterConditions.push({ item: { _null: true } });
 				if (queryVersionId.value) filterConditions.push({ id: { _eq: queryVersionId.value } });
@@ -208,20 +224,10 @@ export function useVersions(
 		throw error;
 	}
 
-	/**
-	 * @param actualPrimaryKey Resolved PK of the item — null for pristine singletons (item-less draft),
-	 * '+' for new regular items, or the actual PK for existing items.
-	 */
-	async function saveVersion(
-		edits: Ref<Record<string, any>>,
-		item: Ref<Item | null>,
-		actualPrimaryKey: PrimaryKey | null,
-	) {
+	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item | null>) {
 		if (!currentVersion.value) return;
 		// Non-singletons must have a PK (either '+' for new or the real one); null PK is only valid for pristine singletons
-		if (!actualPrimaryKey && !isSingleton.value) return;
-
-		const isItemless = !actualPrimaryKey || actualPrimaryKey === '+';
+		if (!primaryKey.value && !isSingleton.value) return;
 
 		saveVersionLoading.value = true;
 		validationErrors.value = [];
@@ -235,7 +241,7 @@ export function useVersions(
 				} = await api.post(`/versions`, {
 					key: currentVersion.value.key,
 					collection: collection.value,
-					item: isItemless ? null : String(actualPrimaryKey),
+					item: isItemlessPrimaryKey.value ? null : String(primaryKey.value),
 				});
 
 				versionId = version.id;
@@ -251,7 +257,7 @@ export function useVersions(
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
-			if (isItemless) queryVersionId.value = versionId;
+			if (isItemlessPrimaryKey.value) queryVersionId.value = versionId;
 
 			await getVersions();
 
@@ -307,5 +313,7 @@ export function useVersions(
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
+		isItemlessPrimaryKey,
+		isItemlessVersion,
 	};
 }

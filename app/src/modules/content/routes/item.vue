@@ -96,7 +96,7 @@ const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
 const isPublishAllowed = computed(() => {
 	if (isCurrentVersionNew.value) return false;
-	return isItemLessVersion.value ? createAllowed.value : updateAllowed.value;
+	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
 });
 
 const form = ref<ComponentPublicInstance>();
@@ -132,6 +132,8 @@ const {
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
+	isItemlessPrimaryKey,
+	isItemlessVersion,
 } = useVersions(collection, isSingleton, primaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
@@ -139,7 +141,6 @@ const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVer
 
 const {
 	isNew,
-	isItemLessVersion,
 	edits,
 	hasEdits,
 	item,
@@ -157,7 +158,7 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, currentVersion);
+} = useItem(collection, primaryKey, currentVersion, isItemlessVersion);
 
 watch(
 	[primaryKeyParam, isSingleton, item, primaryKeyField],
@@ -534,7 +535,7 @@ async function saveVersionAction() {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, item, primaryKey.value);
+		await saveVersion(edits, item);
 		edits.value = {};
 
 		if (!isNew.value) {
@@ -666,7 +667,7 @@ const shouldShowVersioning = computed(() => {
 	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
 
-	if (!primaryKey.value || primaryKey.value === '+') {
+	if (isItemlessPrimaryKey.value) {
 		return currentVersion.value !== null;
 	}
 
@@ -707,7 +708,7 @@ function usePublishComparison() {
 	async function onVersionPublishCompare(quit = false) {
 		quitAfterPublish.value = quit;
 
-		if (isItemLessVersion.value) {
+		if (isItemlessVersion.value) {
 			const defaultValues = getDefaultValuesFromFields(fields);
 			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
 			const fieldsToValidate = pushGroupOptionsDown(fields.value);

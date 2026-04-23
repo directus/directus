@@ -39,7 +39,7 @@ type UsableItem<T extends Item> = {
 	refresh: () => void;
 	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
-	isItemLessVersion: ComputedRef<boolean>;
+	isItemlessVersion: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
 	archive: () => Promise<void>;
@@ -60,6 +60,7 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
+	isItemlessVersionInput: ComputedRef<boolean> | null = null,
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -75,13 +76,17 @@ export function useItem<T extends Item>(
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
 
-	const isItemLessVersion = computed(() => {
-		const version = currentVersion?.value;
-		if (!version || version.id === '+') return false;
-		// `primaryKey` is the resolved item PK: null for pristine singletons, '+' for new
-		// regular items, or the actual PK once the item exists.
-		return !primaryKey.value || primaryKey.value === '+';
-	});
+	// `isItemlessVersion` is owned by `useVersions` (which holds the authoritative `currentVersion`
+	// + `primaryKey` state). Callers that also use `useVersions` pass it in; standalone callers
+	// (e.g. `translations/item.vue`, `share-item.vue`) don't — we derive a local fallback so
+	// existing behavior is preserved.
+	const isItemlessVersion =
+		isItemlessVersionInput ??
+		computed(() => {
+			const version = currentVersion?.value;
+			if (!version || version.id === '+') return false;
+			return !primaryKey.value || primaryKey.value === '+';
+		});
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
@@ -137,7 +142,7 @@ export function useItem<T extends Item>(
 		refresh,
 		save,
 		isNew,
-		isItemLessVersion,
+		isItemlessVersion,
 		remove,
 		deleting,
 		archive,
@@ -153,7 +158,7 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			if (isItemLessVersion.value) {
+			if (isItemlessVersion.value) {
 				const { delta } = await sdk.request<T>(() => ({ path: `versions/${currentVersion!.value!.id}` }));
 				setItemValueToResponse(delta);
 				return;
@@ -542,7 +547,7 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value && !isItemLessVersion.value) {
+		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
 		} else {
 			getItem();
