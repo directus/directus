@@ -1,4 +1,5 @@
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clone } from 'lodash';
@@ -9,11 +10,11 @@ import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
 import { LayoutOptions, LayoutQuery } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useVersionQuery } from '@/composables/use-version-query';
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
-import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 
@@ -49,6 +50,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const versionKey = useVersionQuery();
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
 		const fileFields = computed(() => {
 			return fieldsInCollection.value.filter((field) => {
@@ -91,10 +94,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			version: versionKey,
 		});
 
-		const isDraftMode = computed(() => !!versionKey.value);
+		const isVersion = computed(() => !!versionKey.value && !isPublishedVersionKey(versionKey.value));
 
-		const draftItems = computed(() => {
-			if (!isDraftMode.value) return items.value;
+		const itemsOrVersions = computed(() => {
+			if (!isVersion.value) return items.value;
 
 			return items.value.map((item: Record<string, any>) => ({
 				...item,
@@ -124,7 +127,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		return {
-			items: draftItems,
+			items: itemsOrVersions,
 			loading,
 			loadingItemCount,
 			error,
@@ -142,7 +145,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			imageSource,
 			title,
 			subtitle,
-			getLinkForItem,
+			onClick,
 			imageFit,
 			sort,
 			info,
@@ -241,22 +244,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return { sort, limit, page, fields };
 		}
 
-		function getLinkForItem(item: Record<string, any>) {
-			if (!primaryKeyField.value) return;
-
-			const primaryKey = item[primaryKeyField.value.field];
-			const isItemless = primaryKey === null && item.$meta?.version_id;
-
-			return getItemRoute(
-				props.collection,
-				isItemless ? '+' : primaryKey,
-				versionKey.value ?? undefined,
-				isItemless ? item.$meta.version_id : undefined,
-			);
-		}
-
 		function selectAll() {
-			if (isDraftMode.value) {
+			if (isVersion.value) {
 				selection.value = items.value.map((item) => item.$meta?.version_id).filter((id): id is string => !!id);
 
 				return;

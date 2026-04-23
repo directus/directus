@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useCollection, useLayout } from '@directus/composables';
-import { VERSION_KEY_DRAFT } from '@directus/constants';
+import { isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -31,6 +32,7 @@ import { useVersionQuery } from '@/composables/use-version-query';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -62,8 +64,9 @@ const layoutRef = ref();
 const { collection } = toRefs(props);
 const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
-const { selection } = useSelection();
 const { info: currentCollection } = useCollection(collection);
+const { isVersioned, isVersion, version, versionName, versionKeyQuery } = useVersion();
+const { selection } = useSelection();
 
 onBeforeRouteUpdate((to) => {
 	const collectionParam = typeof to.params.collection === 'string' ? to.params.collection : undefined;
@@ -111,15 +114,6 @@ const {
 } = useBatch();
 
 const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
-
-const versionKey = useVersionQuery();
-
-const isVersioned = computed(() => !!currentCollection.value?.meta?.versioning);
-const isDraftMode = computed(() => versionKey.value === VERSION_KEY_DRAFT);
-
-watch(versionKey, () => {
-	selection.value = [];
-});
 
 watch(
 	collection,
@@ -210,13 +204,28 @@ function useBreadcrumb() {
 function useSelection() {
 	const selection = ref<Item[]>([]);
 
-	// Whenever the collection we're working on changes, we have to clear the selection
-	watch(
-		() => props.collection,
-		() => (selection.value = []),
-	);
+	// Clear selection when the collection changes or when switching version mode
+	// (stale keys across modes — draft selections are version_ids, published are primary keys)
+	watch([() => props.collection, versionKeyQuery], () => (selection.value = []));
 
 	return { selection };
+}
+
+function useVersion() {
+	const versionKeyQuery = useVersionQuery();
+	const isVersioned = computed(() => !!currentCollection.value?.meta?.versioning);
+	const version = computed(() => getValidVersion());
+	const versionName = computed(() => getVersionDisplayName(version.value ? { key: version.value, name: null } : null));
+	const isVersion = computed(() => !isNil(version.value));
+
+	return { isVersioned, isVersion, version, versionName, versionKeyQuery };
+
+	function getValidVersion() {
+		if (!isVersioned.value) return;
+		if (versionKeyQuery.value === VERSION_KEY_DRAFT) return VERSION_KEY_DRAFT;
+		if (!versionKeyQuery.value || isPublishedVersionKey(versionKeyQuery.value)) return null;
+		return;
+	}
 }
 
 function useBatch() {
@@ -238,7 +247,7 @@ function useBatch() {
 		deleting.value = true;
 
 		try {
-			if (isDraftMode.value) {
+			if (isVersion.value) {
 				await api.delete('/versions', { data: selection.value });
 			} else {
 				await api.delete(`/items/${props.collection}`, { data: selection.value });
@@ -284,11 +293,7 @@ function useBatch() {
 }
 
 function useLinks() {
-	const addNewLink = computed<string>(() => {
-		return currentCollection.value?.meta?.versioning
-			? getItemRoute(props.collection, '+', VERSION_KEY_DRAFT)
-			: getItemRoute(props.collection, '+');
-	});
+	const addNewLink = computed<string>(() => getItemRoute(props.collection, '+', version.value));
 
 	const currentCollectionLink = computed<string>(() => {
 		return getCollectionRoute(props.collection);
@@ -364,27 +369,25 @@ function clearFilters() {
 				<VBreadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
 			</template>
 
-			<template #title:append>
+			<template #title-outer:append>
 				<VMenu v-if="isVersioned" show-arrow placement="bottom">
 					<template #activator="{ toggle, active }">
 						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ isDraftMode ? $t('draft') : $t('published') }}
+							{{ versionName }}
 							<VIcon small name="arrow_drop_down" />
 						</VChip>
 					</template>
 
 					<VList>
-						<VListItem clickable :active="!isDraftMode" @click="versionKey = null">
+						<VListItem clickable :active="!isVersion" @click="versionKeyQuery = null">
 							<VListItemContent>{{ $t('published') }}</VListItemContent>
 						</VListItem>
-						<VListItem clickable :active="isDraftMode" @click="versionKey = VERSION_KEY_DRAFT">
+						<VListItem clickable :active="isVersion" @click="versionKeyQuery = VERSION_KEY_DRAFT">
 							<VListItemContent>{{ $t('draft') }}</VListItemContent>
 						</VListItem>
 					</VList>
 				</VMenu>
-			</template>
 
-			<template #title-outer:append>
 				<div class="bookmark-controls">
 					<BookmarkAdd
 						v-if="!bookmark"
@@ -488,7 +491,7 @@ function clearFilters() {
 						currentCollection.meta &&
 						currentCollection.meta.archive_field &&
 						archive !== 'archived' &&
-						!isDraftMode
+						!isVersion
 					"
 					v-model="confirmArchive"
 					@esc="confirmArchive = false"
@@ -519,7 +522,7 @@ function clearFilters() {
 				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="selection.length > 0 && !isDraftMode"
+					v-if="selection.length > 0 && !isVersion"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 					secondary
 					:disabled="batchEditAllowed === false"
@@ -570,11 +573,11 @@ function clearFilters() {
 
 				<template #no-items>
 					<VInfo
-						:title="isDraftMode ? $t('no_items_draft') : $t('item_count', 0)"
+						:title="isVersion ? $t('no_versions', { version: versionName }) : $t('item_count', 0)"
 						:icon="currentCollection.icon"
 						center
 					>
-						{{ isDraftMode ? $t('no_items_draft_copy') : $t('no_items_copy') }}
+						{{ isVersion ? $t('no_versions_copy', { version: versionName }) : $t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
 							<VButton :to="addNewLink">
@@ -611,10 +614,10 @@ function clearFilters() {
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<ArchiveSidebarDetail v-if="hasArchive && !isDraftMode" :collection="collection" :archive="archive" />
+				<ArchiveSidebarDetail v-if="hasArchive && !isVersion" :collection="collection" :archive="archive" />
 				<RefreshSidebarDetail v-model="refreshInterval" @refresh="refresh" />
 				<ExportSidebarDetail
-					v-if="!isDraftMode"
+					v-if="!isVersion"
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
@@ -622,7 +625,7 @@ function clearFilters() {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<FlowSidebarDetail v-if="!isDraftMode" :manual-flows />
+				<FlowSidebarDetail v-if="!isVersion" :manual-flows />
 			</template>
 
 			<VDialog :model-value="deleteError !== null" @esc="deleteError = null">

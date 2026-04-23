@@ -1,4 +1,5 @@
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
 import { debounce, flatten } from 'lodash';
@@ -105,10 +106,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
-		const isDraftMode = computed(() => !!versionKey.value);
+		const isVersion = computed(() => !!versionKey.value && !isPublishedVersionKey(versionKey.value));
 
-		const draftItems = computed(() => {
-			if (!isDraftMode.value) return items.value;
+		const itemsOrVersions = computed(() => {
+			if (!isVersion.value) return items.value;
 
 			return items.value.map((item: Record<string, any>) => ({
 				...item,
@@ -118,7 +119,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		return {
 			tableHeaders,
-			items: draftItems,
+			items: itemsOrVersions,
 			loading,
 			loadingItemCount,
 			error,
@@ -175,7 +176,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function selectAll() {
-			if (isDraftMode.value) {
+			if (isVersion.value) {
 				selection.value = items.value.map((item) => item.$meta?.version_id).filter((id): id is string => !!id);
 
 				return;

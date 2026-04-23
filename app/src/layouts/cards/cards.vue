@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useElementSize, useSync } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { computed, inject, type Ref, ref, watch } from 'vue';
 import Card from './components/card.vue';
@@ -31,7 +32,7 @@ const props = withDefaults(
 		totalPages: number;
 		page: number;
 		toPage: (newPage: number) => void;
-		getLinkForItem: (item: Record<string, any>) => string | undefined;
+		onClick: (payload: { item: Record<string, any>; event: MouseEvent | KeyboardEvent }) => void;
 		fieldsInCollection: Field[];
 		selectAll: () => void;
 		resetPresetAndRefresh: () => Promise<void>;
@@ -128,16 +129,16 @@ function onSelectAll() {
 				<slot name="prepend" />
 				<Card
 					v-for="item in items"
-					:key="versionKey ? item._versionId : item[primaryKeyField!.field]"
+					:key="versionKey && !isPublishedVersionKey(versionKey) ? item._versionId : item[primaryKeyField!.field]"
 					v-model="selectionWritable"
-					:item-key="versionKey ? '_versionId' : primaryKeyField!.field"
+					:item-key="versionKey && !isPublishedVersionKey(versionKey) ? '_versionId' : primaryKeyField!.field"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
 					:item="item"
 					:select-mode="selectMode || (selection && selection.length > 0)"
-					:to="getLinkForItem(item)"
 					:readonly="readonly"
+					@click="onClick"
 				>
 					<template v-if="title" #title>
 						<RenderTemplate :collection="collection" :item="item" :template="title" />

@@ -3,19 +3,18 @@ import { defineLayout } from '@directus/extensions';
 import { Field, Filter, GeometryOptions } from '@directus/types';
 import { getFieldsFromTemplate, mergeFilters } from '@directus/utils';
 import { cloneDeep, merge } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import MapActions from './actions.vue';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
 import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useVersionQuery } from '@/composables/use-version-query';
 import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
-import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 
@@ -40,7 +39,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		});
 
-		const router = useRouter();
 		const { t, n } = useI18n();
 
 		const selection = useSync(props, 'selection', emit);
@@ -52,6 +50,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const versionKey = useVersionQuery();
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
 		const page = syncRefProperty(layoutQuery, 'page', 1);
 		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
@@ -236,22 +236,16 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			else pushSelection(ids);
 		}
 
-		function handleClick({ id, replace }: { id: string | number; replace: boolean }) {
+		function handleClick({ id, replace, event }: { id: string | number; replace: boolean; event: MouseEvent }) {
 			if (props.selectMode) {
 				handleSelect({ ids: [id], replace });
-			} else {
-				const item = items.value.find((item) => primaryKeyField.value && item[primaryKeyField.value.field] === id);
-				const isItemless = id === null && item?.$meta?.version_id;
-
-				router.push(
-					getItemRoute(
-						unref(collection),
-						isItemless ? '+' : id,
-						versionKey.value ?? undefined,
-						isItemless ? item.$meta.version_id : undefined,
-					),
-				);
+				return;
 			}
+
+			const item = items.value.find((item) => primaryKeyField.value && item[primaryKeyField.value.field] === id);
+			if (!item) return;
+
+			onClick({ item, event });
 		}
 
 		const featureId = computed(() => {

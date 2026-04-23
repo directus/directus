@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, computed, inject, ref, Ref, toRefs, watch } from 'vue';
 import VDivider from '@/components/v-divider.vue';
@@ -140,7 +141,7 @@ function removeField(fieldKey: string) {
 			:items="items"
 			:loading="loading"
 			:row-height="tableRowHeight"
-			:item-key="versionKey ? '_versionId' : primaryKeyField?.field"
+			:item-key="versionKey && !isPublishedVersionKey(versionKey) ? '_versionId' : primaryKeyField?.field"
 			:show-manual-sort="manualSortAllowed"
 			:manual-sort-key="sortField"
 			allow-header-reorder
