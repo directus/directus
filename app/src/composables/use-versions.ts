@@ -49,7 +49,7 @@ export function useVersions(
 	 * (`null`) or a new-item route (`'+'`). Distinct from `isItemlessVersion`, which additionally
 	 * requires a saved version row.
 	 */
-	 const isNewItem = computed(() => !primaryKey.value || primaryKey.value === '+');
+	const isNewItem = computed(() => !primaryKey.value || primaryKey.value === '+');
 
 	/**
 	 * True when a saved version row exists (`currentVersion.id` is a real DB id) AND the backing
@@ -109,9 +109,8 @@ export function useVersions(
 	watch(currentVersion, (newCurrentVersion) => {
 		queryVersion.value = newCurrentVersion?.key ?? null;
 
-		if (newCurrentVersion !== null) {
-			queryVersionId.value = isNewItem.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
-		}
+		queryVersionId.value =
+			newCurrentVersion && isNewItem.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
 
 		validationErrors.value = [];
 	});
