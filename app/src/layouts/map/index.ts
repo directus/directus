@@ -1,4 +1,5 @@
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { Field, Filter, GeometryOptions } from '@directus/types';
 import { getFieldsFromTemplate, mergeFilters } from '@directus/utils';
@@ -170,13 +171,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				version: versionKey,
 			});
 
+		const isVersion = computed(() => !!versionKey.value && !isPublishedVersionKey(versionKey.value));
+
+		const itemsOrVersions = computed(() => {
+			if (!isVersion.value) return items.value;
+
+			return items.value.map((item: Record<string, any>) => ({
+				...item,
+				_versionId: item.$meta?.version_id ?? null,
+			}));
+		});
+
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>(null);
 		const geojsonLoading = ref(false);
 
 		watch([search, collection, limit, sort], onQueryChange);
-		watch(items, updateGeojson);
+		watch(itemsOrVersions, updateGeojson);
 
 		watch(geometryField, () => (shouldUpdateCamera.value = true));
 
@@ -191,7 +203,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
 					geojsonError.value = null;
-					geojson.value = toGeoJSON(items.value, geometryOptions.value);
+					geojson.value = toGeoJSON(itemsOrVersions.value, geometryOptions.value);
 					geojsonLoading.value = false;
 
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
@@ -242,14 +254,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return;
 			}
 
-			const item = items.value.find((item) => primaryKeyField.value && item[primaryKeyField.value.field] === id);
+			const item = isVersion.value
+				? itemsOrVersions.value.find((item) => item._versionId === id)
+				: items.value.find((item) => primaryKeyField.value && item[primaryKeyField.value.field] === id);
+
 			if (!item) return;
 
 			onClick({ item, event });
 		}
 
 		const featureId = computed(() => {
-			return props.readonly ? null : (primaryKeyField.value?.field ?? null);
+			if (props.readonly) return null;
+			if (isVersion.value) return '_versionId';
+			return primaryKeyField.value?.field ?? null;
 		});
 
 		const showingCount = computed(() => {
@@ -281,8 +298,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function updateItemPopup(update: Partial<ItemPopup>) {
 			if ('item' in update) {
-				const field = primaryKeyField.value?.field;
-				update.item = !field ? null : (items.value.find((i) => i[field] === update.item) ?? null);
+				if (isVersion.value) {
+					update.item = itemsOrVersions.value.find((i) => i._versionId === update.item) ?? null;
+				} else {
+					const field = primaryKeyField.value?.field;
+					update.item = !field ? null : (items.value.find((i) => i[field] === update.item) ?? null);
+				}
 			}
 
 			itemPopup.value = merge({}, itemPopup.value, update);
@@ -305,7 +326,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			isGeometryFieldNative,
 			cameraOptions,
 			clusterData,
-			items,
+			items: itemsOrVersions,
 			loading,
 			error,
 			totalPages,
