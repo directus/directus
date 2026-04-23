@@ -726,9 +726,14 @@ function usePublishComparison() {
 				if (!newItemKey) return;
 
 				if (props.singleton) {
-					// Singletons live on a single route; remove the now-promoted draft and reload without the version query
+					// Pristine singleton: the promoted version's item now exists on disk. We stay on
+					// the singleton route (singletons have no list view) — clear the draft context
+					// and refresh to load the newly-created item on the published view.
 					await deleteVersion(versionId);
-					router.push(collectionRoute.value);
+					currentVersion.value = null;
+					const { version: _v, versionId: _vid, ...publishedQuery } = route.query;
+					await router.replace({ query: publishedQuery });
+					refresh();
 					return;
 				}
 
