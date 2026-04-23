@@ -26,13 +26,7 @@
 ## Testing Setup
 
 ### Get a Test License
-Instant OIG issuance via curl:
-```bash
-curl -X POST "https://keys.licit.dev/api/licenses/purchase" \
-  -H "Content-Type: application/json" \
-  -d '{"plan_id": "6d437cc1-7f5d-421f-8a33-0bc8d5ea1f74", "billing_interval": "month", "billing_email": "tester@example.com", "applicant_id": "test-org-id"}'
-```
-Response includes `license_key` (format: `DIR-...`)
+See [testing.md](testing.md). Dev endpoints now require a bearer secret that is distributed internally.
 
 ### Local Environment
 ```bash

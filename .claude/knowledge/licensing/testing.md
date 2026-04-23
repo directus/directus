@@ -2,36 +2,7 @@
 
 ## Get a Test License
 
-**OIG (fastest, unlimited everything except Enterprise-only features):**
-
-```bash
-curl -X POST "https://keys.licit.dev/api/licenses/purchase" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "plan_id": "6d437cc1-7f5d-421f-8a33-0bc8d5ea1f74",
-    "billing_interval": "month",
-    "billing_email": "test@example.com",
-    "applicant_id": "test-org-id"
-  }'
-```
-
-Returns `{ license_id, license_key }` immediately. Key format: `DIR-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX`.
-
-**Team (real Stripe flow):**
-
-```bash
-curl -X POST "https://keys.licit.dev/api/licenses/purchase" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "plan_id": "8f79d4e2-9c7b-4c0e-9b79-3947bd6e5d3f",
-    "billing_interval": "month",
-    "billing_email": "test@example.com"
-  }'
-```
-
-Returns a Stripe checkout URL. Pay with sandbox card `4242 4242 4242 4242`, any future expiry, any CVC. License emailed after `checkout.session.completed` webhook.
-
-**Plan IDs** on apac-dev as of 2026-04-21 (re-check the `plan` collection in other envs).
+Dev purchase and offline token endpoints require a bearer secret that is distributed internally. See the Interim Licensing Playbook for current plan IDs, endpoints, and secrets. Do not paste them here (this file is public).
 
 ## Local Environment Setup
 

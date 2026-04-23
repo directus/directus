@@ -1,18 +1,6 @@
 # Plans, Entitlements & Grace Periods
 
-## Plan Matrix
-
-From v12 QA Cheat Sheet:
-
-| Plan | Seats | Collections | SSO | Offline | Custom LLM | Hide Branding | Analytics Opt-out |
-|---|---|---|---|---|---|---|---|
-| Core | 3 (hard cap) | 50 (hard cap) | No | No | No | No | No |
-| Team | 15 (addons ok) | 100 (max 200 w/ addons) | Yes | No | No | No | No |
-| OIG | Unlimited | Unlimited | Yes | No | Yes | Yes | No |
-| Enterprise | 50 (addons, no cap) | 200 (addons, no cap) | Yes | Yes | Yes | Yes | Yes |
-
-- **OIG** = Open Innovation Grant (<$5M revenue AND <50 headcount), manual-only, instant issuance
-- Entitlements shape defined in [types.ts](api/src/license/types.ts)
+Plan tiers, limits, feature gates, and grace period rules are maintained in the internal v12 Licensing QA Cheat Sheet. Not duplicated here because this file is public.
 
 ## Enforcement Philosophy
 
@@ -21,19 +9,7 @@ From v12 QA Cheat Sheet:
 - User deactivation (account kept, login blocked)
 - Resource lockdown (admin resource-resolution flow in #27180)
 
-## Grace Periods
-
-From v12 QA Cheat Sheet:
-
-| Trigger | Duration | Applies to |
-|---|---|---|
-| v12 upgrade without a key | 30 days | any plan (onboarding) |
-| License expiry | 7 days | Team |
-| License expiry | 30 days | Enterprise |
-
-**After grace expires:**
-- If usage within Core limits → degraded to Core
-- If usage over Core limits → resource lockdown (admin must resolve)
+Entitlements shape defined in [types.ts](api/src/license/types.ts).
 
 ## Entitlement Overrides
 
@@ -44,4 +20,3 @@ plan entitlements → purchased addons → license entitlement overrides
 ```
 
 Use `REPLACE` for final values, `ADD` to stack numeric capacity on top of the plan.
-
