@@ -64,8 +64,6 @@
 	"scripts": {
 		"dev": "NODE_ENV=development tsdown",
 		"build": "NODE_ENV=production tsdown",
-		"link:global": "pnpm link --global",
-		"unlink:global": "pnpm unlink --global",
 		"test": "vitest --typecheck --watch=false"
 	},
 	"dependencies": {
