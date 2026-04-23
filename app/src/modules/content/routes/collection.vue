@@ -221,10 +221,10 @@ function useVersion() {
 	return { isVersioned, isVersion, version, versionName, versionKeyQuery };
 
 	function getValidVersion() {
-		if (!isVersioned.value) return;
+		if (!isVersioned.value) return undefined;
 		if (versionKeyQuery.value === VERSION_KEY_DRAFT) return VERSION_KEY_DRAFT;
-		if (!versionKeyQuery.value || isPublishedVersionKey(versionKeyQuery.value)) return null;
-		return;
+		if (isPublishedVersionKey(versionKeyQuery.value)) return null;
+		return undefined;
 	}
 }
 
