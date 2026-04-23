@@ -537,9 +537,18 @@ export function useItem<T extends Item>(
 	function refreshItem() {
 		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
-		} else {
-			getItem();
+			return;
 		}
+
+		// Non-singletons need a resolved PK before fetching. Callers that route the PK through a
+		// watcher (e.g. content/item.vue) may call useItem before the PK settles — the follow-up
+		// watch on `primaryKey` triggers the real fetch once it does.
+		if (!isSingle.value && !primaryKey.value) {
+			item.value = null;
+			return;
+		}
+
+		getItem();
 	}
 
 	function setItemValueToResponse(response: T) {

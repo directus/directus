@@ -49,17 +49,17 @@ export function useVersions(
 	 * (`null`) or a new-item route (`'+'`). Distinct from `isItemlessVersion`, which additionally
 	 * requires a saved version row.
 	 */
-	const isItemlessPrimaryKey = computed(() => !primaryKey.value || primaryKey.value === '+');
+	 const isNewItem = computed(() => !primaryKey.value || primaryKey.value === '+');
 
 	/**
 	 * True when a saved version row exists (`currentVersion.id` is a real DB id) AND the backing
-	 * item hasn't been saved yet (`isItemlessPrimaryKey`). Represents the on-disk state
+	 * item hasn't been saved yet (`isNewItem`). Represents the on-disk state
 	 * `directus_versions.item IS NULL`.
 	 */
 	const isItemlessVersion = computed(() => {
 		const version = currentVersion.value;
 		if (!version || version.id === '+') return false;
-		return isItemlessPrimaryKey.value;
+		return (version as ContentVersionWithType).item === null;
 	});
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
@@ -110,7 +110,7 @@ export function useVersions(
 		queryVersion.value = newCurrentVersion?.key ?? null;
 
 		if (newCurrentVersion !== null) {
-			queryVersionId.value = isItemlessPrimaryKey.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
+			queryVersionId.value = isNewItem.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
 		}
 
 		validationErrors.value = [];
@@ -137,7 +137,7 @@ export function useVersions(
 		try {
 			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
 
-			if (isItemlessPrimaryKey.value) {
+			if (isNewItem.value) {
 				// No parent item yet — match item-less drafts; scope to a specific version if known
 				filterConditions.push({ item: { _null: true } });
 				if (queryVersionId.value) filterConditions.push({ id: { _eq: queryVersionId.value } });
@@ -241,7 +241,7 @@ export function useVersions(
 				} = await api.post(`/versions`, {
 					key: currentVersion.value.key,
 					collection: collection.value,
-					item: isItemlessPrimaryKey.value ? null : String(primaryKey.value),
+					item: isNewItem.value ? null : String(primaryKey.value),
 				});
 
 				versionId = version.id;
@@ -257,7 +257,7 @@ export function useVersions(
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
-			if (isItemlessPrimaryKey.value) queryVersionId.value = versionId;
+			if (isNewItem.value) queryVersionId.value = versionId;
 
 			await getVersions();
 
@@ -313,7 +313,6 @@ export function useVersions(
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
-		isItemlessPrimaryKey,
 		isItemlessVersion,
 	};
 }

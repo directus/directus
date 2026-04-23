@@ -116,7 +116,8 @@ const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabi
 // the PK of the loaded item (null while pristine). Maintained as a ref — not a computed off
 // `item` — so transient nulls during refresh don't flip downstream consumers to the item-less
 // branch and trigger refetch loops.
-const primaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
+// It includes the id once the singleton get item
+const resolvedPrimaryKey = ref<PrimaryKey | null>(null);
 
 const {
 	readVersionsAllowed,
@@ -132,9 +133,8 @@ const {
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
-	isItemlessPrimaryKey,
 	isItemlessVersion,
-} = useVersions(collection, isSingleton, primaryKey);
+} = useVersions(collection, isSingleton, resolvedPrimaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
 	usePublishComparison();
@@ -158,13 +158,13 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, currentVersion, isItemlessVersion);
+} = useItem(collection, resolvedPrimaryKey, currentVersion, isItemlessVersion);
 
 watch(
 	[primaryKeyParam, isSingleton, item, primaryKeyField],
 	([newParam, newIsSingleton, newItem, newPkField]) => {
 		if (!newIsSingleton) {
-			primaryKey.value = newParam;
+			resolvedPrimaryKey.value = newParam;
 			return;
 		}
 
@@ -173,7 +173,7 @@ watch(
 		if (!newItem) return;
 
 		const field = newPkField?.field;
-		primaryKey.value = field ? ((newItem[field] ?? null) as PrimaryKey | null) : null;
+		resolvedPrimaryKey.value = field ? ((newItem[field] ?? null) as PrimaryKey | null) : null;
 	},
 	{ immediate: true },
 );
@@ -182,7 +182,7 @@ watch(
 // stay on the published view by default (the user opts into draft via the Edit button).
 // Done here rather than in the route guard because we can only tell pristine vs existing
 // after `useItem` resolves.
-watch([loading, isSingleton, primaryKey, collectionInfo], ([newLoading, newIsSingleton, newPK, newInfo]) => {
+watch([loading, isSingleton, resolvedPrimaryKey, collectionInfo], ([newLoading, newIsSingleton, newPK, newInfo]) => {
 	if (newLoading) return;
 	if (!newIsSingleton) return;
 	if (!newInfo?.meta?.versioning) return;
@@ -473,7 +473,7 @@ watch(
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 	collection,
-	primaryKey,
+	resolvedPrimaryKey,
 	location: 'item',
 	hasEdits,
 	onRefreshCallback: refresh,
@@ -666,10 +666,6 @@ const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
 	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
-
-	if (isItemlessPrimaryKey.value) {
-		return currentVersion.value !== null;
-	}
 
 	return true;
 });
@@ -1110,7 +1106,7 @@ function editDraftVersion() {
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
 			:collection="collection"
-			:primary-key="primaryKey ?? '+'"
+			:primary-key="resolvedPrimaryKey ?? '+'"
 			:current-collab="collabCollision"
 			:collab-context="collabContext"
 			mode="collab"
@@ -1123,7 +1119,7 @@ function editDraftVersion() {
 			v-model="comparisonModalActive"
 			:delete-versions-allowed="deleteVersionsAllowed"
 			:collection="collection"
-			:primary-key="primaryKey ?? '+'"
+			:primary-key="resolvedPrimaryKey ?? '+'"
 			mode="version"
 			:current-version="comparableVersion"
 			:publish-version-loading="publishVersionLoading"
