@@ -263,7 +263,7 @@ function onFeatureClick(event: MapLayerMouseEvent) {
 		if (boxSelectControl.active()) {
 			emit('featureselect', { ids: [feature.id], replace });
 		} else {
-			emit('featureclick', { id: feature.id, replace });
+			emit('featureclick', { id: feature.id, replace, event: event.originalEvent });
 		}
 	}
 }

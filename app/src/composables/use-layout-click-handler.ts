@@ -26,7 +26,7 @@ export function useLayoutClickHandler({
 		onClick,
 	};
 
-	function onClick({ item, event }: { item: Item; event: MouseEvent }) {
+	function onClick({ item, event }: { item: Item; event: MouseEvent | KeyboardEvent }) {
 		if (props.readonly === true || !primaryKeyField.value) return;
 
 		const primaryKey = item[primaryKeyField.value.field];

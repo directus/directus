@@ -257,8 +257,8 @@ describe('useVersions', () => {
 	});
 
 	describe('saveVersion', () => {
-		it('should use actualPrimaryKey for new version creation on singletons', async () => {
-			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
+		it('should use the resolved primary key for new version creation on singletons', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(1));
 			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
 			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
@@ -269,8 +269,7 @@ describe('useVersions', () => {
 
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
 
-			const actualPrimaryKey = 1;
-			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }), actualPrimaryKey);
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }));
 
 			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
 				'/versions',
@@ -278,17 +277,17 @@ describe('useVersions', () => {
 			]);
 		});
 
-		it('should load existing versions for an existing singleton via the resolved singleton PK', async () => {
+		it('should load existing versions for an existing singleton via the resolved primary key', async () => {
 			vi.mocked(api.get).mockResolvedValue({ data: { data: [] } });
 
-			const singletonPK = ref<string | number | null>(null);
+			const primaryKey = ref<string | number | null>(null);
 
-			useVersions(ref('singleton_collection'), ref(true), ref(null), singletonPK);
+			useVersions(ref('singleton_collection'), ref(true), primaryKey);
 
 			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
 			// Simulate the singleton item loading and reporting PK=1
-			singletonPK.value = 1;
+			primaryKey.value = 1;
 
 			await vi.waitFor(() =>
 				expect(api.get).toHaveBeenLastCalledWith(
@@ -304,9 +303,8 @@ describe('useVersions', () => {
 			);
 		});
 
-		it('should create an item-less draft when actualPrimaryKey is null on a pristine singleton', async () => {
-			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+		it('should create an item-less draft when primary key is + on a pristine singleton', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref('+'));
 
 			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
 
@@ -316,7 +314,7 @@ describe('useVersions', () => {
 
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
 
-			await saveVersion(ref({ title: 'Updated' }), ref(null), null);
+			await saveVersion(ref({ title: 'Updated' }), ref(null));
 
 			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
 				'/versions',
@@ -324,13 +322,12 @@ describe('useVersions', () => {
 			]);
 		});
 
-		it('should return early for non-singleton collections with null actualPrimaryKey', async () => {
-			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(false), ref('1'));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+		it('should return early for non-singleton collections with null primary key', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(false), ref(null));
 
 			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
 
-			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1 }), null);
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1 }));
 
 			expect(api.post).not.toHaveBeenCalled();
 		});
@@ -369,8 +366,7 @@ describe('useVersions', () => {
 			const item = ref<Record<string, any>>({ id: '1', title: 'existing' });
 
 			// Act: should NOT throw even though 'title' is null
-			const actualPrimaryKey = 1;
-			await expect(saveVersion(edits, item, actualPrimaryKey)).resolves.not.toThrow();
+			await expect(saveVersion(edits, item)).resolves.not.toThrow();
 			expect(validationErrors.value).toHaveLength(0);
 		});
 
@@ -402,8 +398,7 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'new value' });
 			const item = ref<Record<string, any>>({ id: '1', title: 'old value' });
 
-			const actualPrimaryKey = 1;
-			await saveVersion(edits, item, actualPrimaryKey);
+			await saveVersion(edits, item);
 
 			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save', { title: 'new value' });
 		});
@@ -529,8 +524,7 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'My Draft' });
 			const item = ref<Record<string, any> | null>(null);
 
-			const actualPrimaryKey = '+';
-			await saveVersion(edits, item, actualPrimaryKey);
+			await saveVersion(edits, item);
 
 			expect(api.post).toHaveBeenCalledWith('/versions', {
 				key: 'draft',
@@ -564,8 +558,7 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'My Draft' });
 			const item = ref<Record<string, any> | null>(null);
 
-			const actualPrimaryKey = '+';
-			await saveVersion(edits, item, actualPrimaryKey);
+			await saveVersion(edits, item);
 
 			expect(item.value).toEqual({ title: 'My Draft' });
 		});
@@ -596,8 +589,7 @@ describe('useVersions', () => {
 			const edits = ref<Record<string, any>>({ title: 'My Draft' });
 			const item = ref<Record<string, any> | null>(null);
 
-			const actualPrimaryKey = '+';
-			await saveVersion(edits, item, actualPrimaryKey);
+			await saveVersion(edits, item);
 
 			// GET should be called to refresh the versions list scoped to the new versionId
 			expect(api.get).toHaveBeenCalledWith(
