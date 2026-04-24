@@ -1,19 +1,14 @@
 <script setup lang="ts">
 import VButton, { type VButtonEmits, type VButtonProps } from '@/components/v-button.vue';
 
-withDefaults(
-	defineProps<{
-		to?: VButtonProps['to'];
-		href?: VButtonProps['href'];
-		target?: VButtonProps['target'];
-		disabled?: VButtonProps['disabled'];
-		active?: VButtonProps['active'];
-	}>(),
-	{
-		/** Must be explicitly undefined */
-		active: undefined,
-	},
-);
+  withDefaults(
+      defineProps<Pick<VButtonProps, 'to' | 'href' | 'target' | 'disabled' |           
+  'active'>>(),
+      { 
+         /** Must be explicitly undefined */
+         active: undefined 
+      },                                                           
+  ); 
 
 defineEmits<VButtonEmits>();
 </script>
