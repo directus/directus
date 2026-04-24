@@ -303,9 +303,8 @@ describe('useVersions', () => {
 			);
 		});
 
-		it('should create an item-less draft when primary key is null on a pristine singleton', async () => {
-			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(null));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+		it('should create an item-less draft when primary key is + on a pristine singleton', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref('+'));
 
 			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
 

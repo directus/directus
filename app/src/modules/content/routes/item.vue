@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
 import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
-import type { PrimaryKey } from '@directus/types';
+import type { AppCollection, Item, PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
@@ -81,10 +81,7 @@ onBeforeRouteUpdate((to, from) => {
 	if (to.name !== 'content-singleton') return;
 	if (to.params.collection === from.params.collection) return;
 
-	// beforeEnter doesn't re-fire on sibling/param-only navigation, so trigger the
-	// last-accessed bookkeeping manually. Auto-draft for pristine singletons is handled by
-	// the post-load watcher below — sync route guards can't tell whether the singleton has
-	// a record yet.
+	// `beforeEnter` doesn’t re-fire on sibling/param-only navigation. Auto-draft for pristine singletons is handled by the post-load watcher below, since sync route guards can’t detect existing items.
 	trackLastAccessedCollection(to, from, () => {});
 });
 
@@ -105,19 +102,14 @@ const scrollParent = computed(() => form.value?.$el?.parentElement);
 const { y: formScrollY } = useScroll(scrollParent);
 const showHeaderShadow = computed(() => formScrollY.value > 0);
 
-const { collection, primaryKey: primaryKeyParam } = toRefs(props);
+const { collection } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
-// Resolved item PK: mirrors the route param for regular collections; for singletons, tracks
-// the PK of the loaded item (null while pristine). Maintained as a ref — not a computed off
-// `item` — so transient nulls during refresh don't flip downstream consumers to the item-less
-// branch and trigger refetch loops.
-// It includes the id once the singleton get item
-const resolvedPrimaryKey = ref<PrimaryKey | null>(null);
+const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey();
 
 const {
 	readVersionsAllowed,
@@ -158,39 +150,17 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, resolvedPrimaryKey, currentVersion, isItemlessVersion);
+} = useItem(collection, primaryKeyParam, currentVersion, isItemlessVersion);
 
 watch(
-	[primaryKeyParam, isSingleton, item, primaryKeyField],
-	([newParam, newIsSingleton, newItem, newPkField]) => {
-		if (!newIsSingleton) {
-			resolvedPrimaryKey.value = newParam;
-			return;
-		}
-
-		// Pristine singleton before first load: stay null. During refresh, item is transiently
-		// null — keep the last known PK so downstream filters don't flip to the item-less branch.
-		if (!newItem) return;
-
-		const field = newPkField?.field;
-		resolvedPrimaryKey.value = field ? ((newItem[field] ?? null) as PrimaryKey | null) : null;
-	},
+	[item, isSingleton, primaryKeyParam],
+	([newItem, newIsSingleton, newPKParam]) => resolvePrimaryKey(newItem, newIsSingleton, newPKParam),
 	{ immediate: true },
 );
 
-// Auto-enter draft for pristine singletons after the fetch settles. Existing singletons
-// stay on the published view by default (the user opts into draft via the Edit button).
-// Done here rather than in the route guard because we can only tell pristine vs existing
-// after `useItem` resolves.
-watch([loading, isSingleton, resolvedPrimaryKey, collectionInfo], ([newLoading, newIsSingleton, newPK, newInfo]) => {
-	if (newLoading) return;
-	if (!newIsSingleton) return;
-	if (!newInfo?.meta?.versioning) return;
-	if (route.query.version) return;
-	if (newPK) return;
-
-	router.replace({ ...route, query: { ...route.query, version: VERSION_KEY_DRAFT } });
-});
+watch([isSingleton, resolvedPrimaryKey, collectionInfo], ([newIsSingleton, newResolvedPK, newCollectionInfo]) =>
+	enterSingletonDraftContext(newIsSingleton, newResolvedPK, newCollectionInfo),
+);
 
 const toolsStore = useAiToolsStore();
 
@@ -473,7 +443,7 @@ watch(
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 	collection,
-	resolvedPrimaryKey,
+	primaryKey: existingPrimaryKey,
 	location: 'item',
 	hasEdits,
 	onRefreshCallback: refresh,
@@ -666,9 +636,52 @@ const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
 	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
-
 	return true;
 });
+
+function enterSingletonDraftContext(
+	newIsSingleton: boolean,
+	newResolvedPK: PrimaryKey | null,
+	newCollectionInfo: AppCollection | null,
+) {
+	if (!newCollectionInfo?.meta?.versioning) return;
+	if (!newIsSingleton) return;
+	if (route.query.version) return;
+	if (newResolvedPK !== '+') return;
+
+	router.replace({ ...route, query: { ...route.query, version: VERSION_KEY_DRAFT } });
+}
+
+function useResolvePrimaryKey() {
+	const { primaryKey: primaryKeyParam } = toRefs(props);
+
+	/**
+	 * Collection Item PK: ID or '+' (new item).
+	 * Singleton Item PK: ID or '+' (new item) or `null` (not-yet loaded).
+	 */
+	const resolvedPrimaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
+	const existingPrimaryKey = computed(() => (resolvedPrimaryKey.value === '+' ? null : resolvedPrimaryKey.value));
+
+	return {
+		primaryKeyParam,
+		resolvedPrimaryKey,
+		existingPrimaryKey,
+		resolvePrimaryKey,
+	};
+
+	function resolvePrimaryKey(newItem: Item | null, newIsSingleton: boolean, newPrimaryKeyParam: PrimaryKey | null) {
+		if (newIsSingleton) {
+			if (!newItem) return;
+			// Note: After fetching a singleton item, `newItem` will be `{ id: null }` if it hasn’t been created yet.
+
+			const pkField = primaryKeyField.value?.field;
+			resolvedPrimaryKey.value = (pkField ? (newItem[pkField] ?? '+') : '+') as PrimaryKey;
+			return;
+		}
+
+		resolvedPrimaryKey.value = newPrimaryKeyParam;
+	}
+}
 
 function useItemNavigation() {
 	const route = useRoute();
@@ -716,24 +729,12 @@ function usePublishComparison() {
 			if (versionValidationErrors.value.length) return;
 
 			try {
-				const versionId = currentVersion.value.id;
+				const versionId = currentVersion.value!.id;
 				const newItemKey = await publishVersion(versionId, {});
 
 				if (!newItemKey) return;
 
-				if (props.singleton) {
-					// Pristine singleton: the promoted version's item now exists on disk. We stay on
-					// the singleton route (singletons have no list view) — clear the draft context
-					// and refresh to load the newly-created item on the published view.
-					await deleteVersion(versionId);
-					currentVersion.value = null;
-					const { version: _v, versionId: _vid, ...publishedQuery } = route.query;
-					await router.replace({ query: publishedQuery });
-					refresh();
-					return;
-				}
-
-				if (quit) router.push(collectionRoute.value);
+				if (quit || isSingleton.value) router.push(collectionRoute.value);
 				else router.replace(getItemRoute(props.collection, newItemKey));
 
 				deleteVersion(versionId);
@@ -856,7 +857,7 @@ function editDraftVersion() {
 				<VersionMenu
 					v-if="shouldShowVersioning"
 					:collection="collection"
-					:primary-key="primaryKey ?? '+'"
+					:primary-key="resolvedPrimaryKey"
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
 					:versions="versions"
@@ -1069,7 +1070,7 @@ function editDraftVersion() {
 					:initial-values="item"
 					:fields="fields"
 					:non-editable="isFormNonEditable"
-					:primary-key="primaryKey ?? '+'"
+					:primary-key="resolvedPrimaryKey ?? undefined"
 					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
@@ -1164,21 +1165,25 @@ function editDraftVersion() {
 		</VDialog>
 
 		<template #sidebar>
-			<template v-if="isNew === false && primaryKey && primaryKey !== '+'">
+			<template v-if="isNew === false && resolvedPrimaryKey">
 				<RevisionsSidebarDetail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsSidebarDetailRef"
 					:collection="collection"
-					:primary-key="primaryKey"
+					:primary-key="resolvedPrimaryKey"
 					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
 				/>
-				<CommentsSidebarDetail v-if="currentVersion === null" :collection="collection" :primary-key="primaryKey" />
+				<CommentsSidebarDetail
+					v-if="currentVersion === null"
+					:collection="collection"
+					:primary-key="resolvedPrimaryKey"
+				/>
 				<SharesSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="primaryKey"
+					:primary-key="resolvedPrimaryKey"
 					:allowed="shareAllowed"
 				/>
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />

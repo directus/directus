@@ -39,7 +39,6 @@ type UsableItem<T extends Item> = {
 	refresh: () => void;
 	save: () => Promise<T | undefined>;
 	isNew: ComputedRef<boolean>;
-	isItemlessVersion: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
 	archive: () => Promise<void>;
@@ -107,13 +106,7 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, query], refresh);
-
-	// For singletons the endpoint doesn't depend on the PK — skip refetch when the resolved
-	// PK transitions null → real after the item loads (would cause a refetch loop).
-	watch(primaryKey, () => {
-		if (!isSingle.value) refresh();
-	});
+	watch([collection, primaryKey, query], refresh);
 
 	refreshItem();
 
@@ -130,7 +123,6 @@ export function useItem<T extends Item>(
 		refresh,
 		save,
 		isNew,
-		isItemlessVersion,
 		remove,
 		deleting,
 		archive,
@@ -537,18 +529,9 @@ export function useItem<T extends Item>(
 	function refreshItem() {
 		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
-			return;
+		} else {
+			getItem();
 		}
-
-		// Non-singletons need a resolved PK before fetching. Callers that route the PK through a
-		// watcher (e.g. content/item.vue) may call useItem before the PK settles — the follow-up
-		// watch on `primaryKey` triggers the real fetch once it does.
-		if (!isSingle.value && !primaryKey.value) {
-			item.value = null;
-			return;
-		}
-
-		getItem();
 	}
 
 	function setItemValueToResponse(response: T) {

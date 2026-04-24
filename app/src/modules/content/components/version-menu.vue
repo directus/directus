@@ -27,7 +27,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 interface Props {
 	collection: string;
-	primaryKey: PrimaryKey;
+	primaryKey: PrimaryKey | null;
 	hasEdits: boolean;
 	currentVersion: ContentVersionMaybeNew | null;
 	versions: ContentVersionMaybeNew[];
