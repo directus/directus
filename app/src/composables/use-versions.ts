@@ -14,15 +14,7 @@ export interface PublishVersionOptions {
 	fields?: string[];
 }
 
-export function useVersions(
-	collection: Ref<string>,
-	isSingleton: Ref<boolean>,
-	/**
-	 * Resolved item PK: null for pristine singletons (item-less), '+' for new items
-	 * before their first save, or the actual PK for existing items.
-	 */
-	primaryKey: Ref<PrimaryKey | null>,
-) {
+export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<PrimaryKey | null>) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
@@ -44,18 +36,8 @@ export function useVersions(
 		mode: 'push',
 	});
 
-	/**
-	 * True when the current PK indicates no backing item exists yet — either a pristine singleton
-	 * (`null`) or a new-item route (`'+'`). Distinct from `isItemlessVersion`, which additionally
-	 * requires a saved version row.
-	 */
-	const isNewItem = computed(() => !primaryKey.value || primaryKey.value === '+');
+	const isNewItem = computed(() => primaryKey.value === '+');
 
-	/**
-	 * True when a saved version row exists (`currentVersion.id` is a real DB id) AND the backing
-	 * item hasn't been saved yet (`isNewItem`). Represents the on-disk state
-	 * `directus_versions.item IS NULL`.
-	 */
 	const isItemlessVersion = computed(() => {
 		const version = currentVersion.value;
 		if (!version || version.id === '+') return false;
@@ -129,7 +111,7 @@ export function useVersions(
 
 		if (!isSingleton.value && !primaryKey.value) return;
 
-		if (primaryKey.value === '+' && !queryVersionId.value) return;
+		if (isNewItem.value && !queryVersionId.value) return;
 
 		loading.value = true;
 
@@ -139,8 +121,9 @@ export function useVersions(
 			if (isNewItem.value) {
 				// No parent item yet — match item-less drafts; scope to a specific version if known
 				filterConditions.push({ item: { _null: true } });
+
 				if (queryVersionId.value) filterConditions.push({ id: { _eq: queryVersionId.value } });
-			} else {
+			} else if (primaryKey.value) {
 				filterConditions.push({ item: { _eq: String(primaryKey.value) } });
 			}
 
@@ -224,9 +207,7 @@ export function useVersions(
 	}
 
 	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item | null>) {
-		if (!currentVersion.value) return;
-		// Non-singletons must have a PK (either '+' for new or the real one); null PK is only valid for pristine singletons
-		if (!primaryKey.value && !isSingleton.value) return;
+		if (!currentVersion.value || !primaryKey.value) return;
 
 		saveVersionLoading.value = true;
 		validationErrors.value = [];
