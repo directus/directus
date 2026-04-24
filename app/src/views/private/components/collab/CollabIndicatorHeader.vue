@@ -93,8 +93,15 @@ function focusIntoView(cid: ClientID) {
 
 		<VMenu v-if="moreUsers.length" show-arrow>
 			<template #activator="{ toggle }">
-				<VAvatar v-tooltip.bottom="t('more_users')" x-small round clickable @click="toggle">
-					+{{ moreUsers.length }}
+				<VAvatar
+					v-tooltip.bottom="t('more_users')"
+					class="collab-header-more-activator"
+					x-small
+					round
+					clickable
+					@click="toggle"
+				>
+					{{ moreUsers.length }}
 				</VAvatar>
 			</template>
 
@@ -146,7 +153,10 @@ function focusIntoView(cid: ClientID) {
 	:deep(.v-menu + .v-menu .v-avatar) {
 		margin-inline-start: -0.25rem;
 	}
+}
 
+.collab-header,
+.collab-header-more-popover-item {
 	:deep(.v-avatar) {
 		font-size: 0.6875rem;
 	}
@@ -176,5 +186,10 @@ function focusIntoView(cid: ClientID) {
 		flex-direction: column;
 		align-items: flex-start;
 	}
+}
+
+.collab-header-more-activator {
+	background-color: var(--theme--background-accent);
+	color: var(--theme--foreground-subdued);
 }
 </style>
