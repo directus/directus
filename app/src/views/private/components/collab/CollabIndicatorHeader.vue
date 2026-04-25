@@ -4,6 +4,7 @@ import type { ClientID } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { CollabUser, CollabUserHeader } from './types';
 import { useCollabIndicator } from './use-collab-indicator';
 import { formatUserAvatar, getFocusId } from './utils';
 import VAvatar from '@/components/v-avatar.vue';
@@ -11,7 +12,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
-import type { CollabUser } from '@/composables/use-collab';
 
 interface Props {
 	connected?: boolean | undefined;
@@ -35,17 +35,17 @@ const currentUserId = computed(() => {
 	return toArray(props.modelValue).find((u) => u.connection === props.currentConnection)?.id ?? null;
 });
 
-const users = computed(() => {
+const users = computed<CollabUserHeader[]>(() => {
 	return toArray(props.modelValue)
 		.map((user) => ({
 			...formatUserAvatar(user),
-			focusedField: props.focuses?.[user.connection] ?? null,
+			focusedField: props.focuses[user.connection] ?? null,
 			isCurrentUser: user.id === currentUserId.value,
 		}))
 		.reverse();
 });
 
-const { indicatorLimit } = useCollabIndicator(users);
+const { visibleUsers, moreUsers } = useCollabIndicator<CollabUserHeader>(users);
 
 function focusIntoView(cid: ClientID) {
 	const element = document.getElementById(getFocusId(cid));
@@ -58,12 +58,12 @@ function focusIntoView(cid: ClientID) {
 
 <template>
 	<div class="collab-header">
-		<template v-for="(user, index) in users.slice(0, indicatorLimit)" :key="user.id">
+		<template v-for="(user, index) in visibleUsers" :key="user.id">
 			<VMenu trigger="hover" show-arrow invert>
 				<template #activator>
 					<VAvatar
 						:border="`var(--${user.color})`"
-						:style="{ zIndex: indicatorLimit - index }"
+						:style="{ zIndex: visibleUsers.length - index }"
 						x-small
 						round
 						:clickable="!!user.focusedField"
@@ -91,16 +91,23 @@ function focusIntoView(cid: ClientID) {
 			</VMenu>
 		</template>
 
-		<VMenu v-if="users.length > indicatorLimit" show-arrow>
+		<VMenu v-if="moreUsers.length" show-arrow>
 			<template #activator="{ toggle }">
-				<VAvatar v-tooltip.bottom="t('more_users')" x-small round clickable @click="toggle">
-					+{{ users.length - indicatorLimit }}
+				<VAvatar
+					v-tooltip.bottom="t('more_users')"
+					class="collab-header-more-activator"
+					x-small
+					round
+					clickable
+					@click="toggle"
+				>
+					{{ moreUsers.length }}
 				</VAvatar>
 			</template>
 
 			<VList>
 				<VListItem
-					v-for="user in users.slice(indicatorLimit)"
+					v-for="user in moreUsers"
 					:key="user.connection"
 					class="collab-header-more-popover-item"
 					:clickable="!!user.focusedField"
@@ -146,7 +153,10 @@ function focusIntoView(cid: ClientID) {
 	:deep(.v-menu + .v-menu .v-avatar) {
 		margin-inline-start: -0.25rem;
 	}
+}
 
+.collab-header,
+.collab-header-more-popover-item {
 	:deep(.v-avatar) {
 		font-size: 0.6875rem;
 	}
@@ -176,5 +186,10 @@ function focusIntoView(cid: ClientID) {
 		flex-direction: column;
 		align-items: flex-start;
 	}
+}
+
+.collab-header-more-activator {
+	background-color: var(--theme--background-accent);
+	color: var(--theme--foreground-subdued);
 }
 </style>
