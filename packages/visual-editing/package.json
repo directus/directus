@@ -1,0 +1,81 @@
+{
+	"name": "@directus/visual-editing",
+	"version": "2.0.0",
+	"description": "Visual editing library to enable in-place editing of your website’s frontend from within the Visual Editor in Directus",
+	"homepage": "https://directus.io/docs/guides/content/visual-editor",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/visual-editing"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"keywords": [
+		"visual-editing",
+		"visual-editor",
+		"content-editing-experience",
+		"in-place-editing",
+		"in-place-editor",
+		"frontend-editing",
+		"frontend-editor",
+		"content-editing",
+		"content-editor",
+		"live-editing",
+		"live-editor",
+		"directus",
+		"in-place",
+		"frontend",
+		"overlays",
+		"preview",
+		"editing",
+		"editor",
+		"iframe",
+		"cms"
+	],
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			},
+			"default": "./dist/visual-editing.js"
+		},
+		"./types": {
+			"import": {
+				"types": "./dist/types.d.ts",
+				"default": "./dist/types.js"
+			},
+			"require": {
+				"types": "./dist/types.d.cts",
+				"default": "./dist/types.cjs"
+			}
+		},
+		"./package.json": "./package.json"
+	},
+	"main": "./dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"dev": "NODE_ENV=development tsdown",
+		"build": "NODE_ENV=production tsdown",
+		"test": "vitest --typecheck --watch=false"
+	},
+	"dependencies": {
+		"@reach/observe-rect": "catalog:"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:",
+		"@directus/utils": "workspace:",
+		"happy-dom": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	}
+}
