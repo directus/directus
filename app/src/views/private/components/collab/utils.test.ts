@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
+import type { CollabUser } from './types';
 import { formatUserAvatar, getFocusId } from './utils';
-import type { CollabUser } from '@/composables/use-collab';
 
 vi.mock('@/utils/get-asset-url', () => ({
 	getAssetUrl: (id: string, opts: Record<string, unknown>) => `http://assets/${id}?key=${opts.imageKey}`,

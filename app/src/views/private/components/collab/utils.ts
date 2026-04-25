@@ -1,8 +1,8 @@
 import { ClientID } from '@directus/types';
-import { CollabUser } from '@/composables/use-collab';
+import type { CollabUser, CollabUserFormatted } from './types';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
-export const formatUserAvatar = (user: CollabUser) => ({
+export const formatUserAvatar = (user: CollabUser): CollabUserFormatted => ({
 	name: [user.first_name, user.last_name].filter(Boolean).join(' ') || undefined,
 	avatar_url: user.avatar?.id
 		? getAssetUrl(user.avatar.id, {
