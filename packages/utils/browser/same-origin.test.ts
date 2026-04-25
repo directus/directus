@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { sameOrigin } from './same-origin';
+import { sameOrigin } from './same-origin.js';
 
 test('Returns true for same origin URLs', () => {
 	expect(sameOrigin('https://example.com/path1', 'https://example.com/path2')).toBe(true);
