@@ -1,8 +1,8 @@
+import type { CheckFieldAccessData } from '@directus/visual-editing/types';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CheckFieldAccessData } from '../types';
 import EditingLayer from './editing-layer.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
@@ -46,7 +46,8 @@ vi.mock('@/api', () => ({
 	default: { get: vi.fn(), post: vi.fn(), patch: vi.fn() },
 }));
 
-vi.mock('../utils/same-origin', () => ({
+vi.mock('@directus/utils/browser', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/utils/browser')>()),
 	sameOrigin: () => true,
 }));
 
