@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import VersionChip from './version-chip.vue';
+import { DRAFT_VERSION_KEY } from '@/constants';
 
 const mountOptions = {
 	global: {
@@ -20,7 +21,11 @@ describe('VersionChip', () => {
 		});
 
 		it('uses secondary when version key is the draft key', () => {
-			const wrapper = mount(VersionChip, { ...mountOptions, props: { version: { key: 'draft', name: null } } });
+			const wrapper = mount(VersionChip, {
+				...mountOptions,
+				props: { version: { key: DRAFT_VERSION_KEY, name: null } },
+			});
+
 			expect(wrapper.classes()).toContain('secondary');
 		});
 
