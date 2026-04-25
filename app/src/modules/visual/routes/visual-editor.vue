@@ -12,7 +12,6 @@ import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VButton from '@/components/v-button.vue';
-import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -20,6 +19,7 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { BREAKPOINTS, DRAFT_VERSION_KEY } from '@/constants';
+import VersionChip from '@/modules/content/components/version-chip.vue';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import type { NavigationData } from '@/modules/visual/types';
@@ -249,10 +249,7 @@ function useVersionSelection() {
 			<template #append-url>
 				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
 					<template #activator="{ toggle, active }">
-						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ selectedVersion?.name ?? $t('main_version') }}
-							<VIcon small name="arrow_drop_down"></VIcon>
-						</VChip>
+						<VersionChip :version="selectedVersion" :active @click="toggle()" />
 					</template>
 
 					<VList>
@@ -362,26 +359,5 @@ function useVersionSelection() {
 
 .spacer {
 	flex: 1;
-}
-
-.version-select-activator {
-	--v-chip-padding: 0 0.3125rem 0 0.6875rem;
-	--v-chip-color: var(--theme--foreground-accent);
-	--v-chip-color-hover: var(--v-chip-color);
-	--v-chip-background-color-hover: color-mix(
-		in srgb,
-		var(--theme--navigation--modules--background),
-		var(--theme--navigation--modules--button--background-active) 87.5%
-	);
-
-	&.active {
-		--v-chip-color: var(--foreground-inverted);
-		--v-chip-background-color: var(--theme--primary);
-		--v-chip-background-color-hover: var(--v-chip-background-color);
-	}
-
-	&.v-chip {
-		border-width: 0;
-	}
 }
 </style>
