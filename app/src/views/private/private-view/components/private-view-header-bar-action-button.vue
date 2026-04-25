@@ -86,6 +86,8 @@ function useIcon() {
 	--v-button-background-color: transparent;
 	--v-button-background-color-active: var(--v-button-background-color-hover);
 	--v-button-color-active: var(--v-button-color-hover);
+	--v-button-background-color-disabled: transparent;
+	--v-button-color-disabled: var(--theme--foreground-subdued);
 
 	&.normal {
 		--v-button-color: var(--theme--foreground);

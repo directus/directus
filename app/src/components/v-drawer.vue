@@ -102,7 +102,7 @@ const internalActive = computed({
 	display: flex;
 	flex-direction: column;
 	inline-size: 100%;
-	max-inline-size: 48.125rem;
+	max-inline-size: calc(var(--content-padding) * 2 + var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	block-size: 100%;
 	background-color: var(--theme--shell--background);
 

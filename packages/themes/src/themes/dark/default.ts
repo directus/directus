@@ -131,7 +131,7 @@ export default defineTheme({
 		},
 
 		form: {
-			columnGap: '1.8125rem',
+			columnGap: '1.75rem',
 			rowGap: '2.25rem',
 
 			field: {
