@@ -13,7 +13,7 @@ describe('NameDeduper', () => {
 			expect(deduper.add('abc')).toEqual('abc');
 		});
 
-		test('should deduplicate names by appending occurence count (occurence) on subsequent matches', () => {
+		test('should deduplicate names by appending occurrence count (occurrence) on subsequent matches', () => {
 			expect(deduper.add('abc')).toEqual('abc');
 			expect(deduper.add('abc')).toEqual('abc (1)');
 		});
