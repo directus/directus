@@ -52,7 +52,7 @@ defineEmits<{
 		</div>
 
 		<div class="cell end">
-			<PrivateViewHeaderBarActions>
+			<PrivateViewHeaderBarActions header-bar-inline>
 				<template #prepend><slot name="actions:prepend" /></template>
 				<slot name="actions" />
 				<template #primary><slot name="actions:primary" /></template>

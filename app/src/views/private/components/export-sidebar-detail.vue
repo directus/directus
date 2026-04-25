@@ -520,7 +520,7 @@ async function exportDataFiles() {
 		>
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="location === 'download' ? $t('download_file') : $t('start_export')"
+					:label="location === 'download' ? $t('download_file') : $t('start_export')"
 					:loading="exporting"
 					:icon="location === 'download' ? 'download' : 'start'"
 					@click="startExport"

@@ -157,7 +157,8 @@ function clearFilters() {
 
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="createAllowed ? $t('create_preset') : $t('not_allowed')"
+					:tooltip="createAllowed ? undefined : $t('not_allowed')"
+					:label="$t('create_preset')"
 					:to="{ name: 'settings-presets-item', params: { id: '+' } }"
 					:disabled="createAllowed === false"
 					icon="add"

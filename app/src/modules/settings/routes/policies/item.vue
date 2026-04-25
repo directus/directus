@@ -148,7 +148,6 @@ function discardAndStay() {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:label="$t('save')"
-				:tooltip="$t('save')"
 				icon="check"
 				:loading="saving"
 				:disabled="!hasEdits"

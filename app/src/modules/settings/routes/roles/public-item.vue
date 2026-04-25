@@ -210,7 +210,6 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:label="$t('save')"
-				:tooltip="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
 				icon="check"

@@ -661,12 +661,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="getTooltip('save', $t('save'))"
-				:disabled="!isSavable"
-				icon="check"
-				@click="save"
-			/>
+			<PrivateViewHeaderBarActionButton :label="$t('save')" :disabled="!isSavable" icon="check" @click="save" />
 		</template>
 
 		<OverlayItemContent

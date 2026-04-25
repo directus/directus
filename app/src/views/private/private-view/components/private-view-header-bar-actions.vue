@@ -1,3 +1,14 @@
+<script setup lang="ts">
+import { toRef } from 'vue';
+import { useProvideHeaderBarInline } from '../composables/use-header-bar';
+
+const props = defineProps<{
+	headerBarInline?: boolean;
+}>();
+
+useProvideHeaderBarInline(toRef(props, 'headerBarInline'));
+</script>
+
 <template>
 	<div class="actions">
 		<div class="prepend">

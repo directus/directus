@@ -231,7 +231,6 @@ watch(statsRange, loadStats);
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:label="$t('deployment.deploy')"
-				:tooltip="$t('deployment.deploy')"
 				icon="rocket_launch"
 				:loading="deploying"
 				:disabled="!canDeploy"

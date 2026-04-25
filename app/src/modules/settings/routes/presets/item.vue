@@ -513,7 +513,7 @@ function discardAndLeave() {
 
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
+					:label="$t('save')"
 					:disabled="hasEdits === false"
 					:loading="saving"
 					icon="check"

@@ -367,7 +367,7 @@ function revert(values: Record<string, any>) {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:label="$t('save')"
-				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
+				:tooltip="saveAllowed ? undefined : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"

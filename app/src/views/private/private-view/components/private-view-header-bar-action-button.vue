@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
+import { useInjectHeaderBarInline } from '../composables/use-header-bar';
 import VButton, { type VButtonEmits, type VButtonProps } from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { BREAKPOINTS } from '@/constants';
 
 const {
 	label,
+	tooltip,
 	kind = 'normal',
 	variant = 'solid',
 } = defineProps<{
@@ -18,6 +20,7 @@ const {
 	kind?: VButtonProps['kind'];
 	variant?: 'solid' | 'ghost';
 	outlined?: VButtonProps['outlined'];
+	secondary?: VButtonProps['secondary'];
 	to?: VButtonProps['to'];
 	href?: VButtonProps['href'];
 	download?: VButtonProps['download'];
@@ -26,7 +29,8 @@ const {
 
 defineEmits<VButtonEmits>();
 
-const { showIcon } = useIcon();
+const headerBarInline = useInjectHeaderBarInline();
+const { showIcon, activeTooltip } = useIcon();
 
 function useIcon() {
 	const breakpoints = useBreakpoints({
@@ -40,10 +44,17 @@ function useIcon() {
 
 	const showIcon = computed(() => {
 		if (!label) return true;
+		if (headerBarInline.value) return lteLarge.value;
 		return belowLabelMin.value || (!lteSmall.value && lteLarge.value);
 	});
 
-	return { showIcon };
+	const activeTooltip = computed(() => {
+		if (tooltip) return tooltip;
+		if (showIcon.value) return label;
+		return undefined;
+	});
+
+	return { showIcon, activeTooltip };
 }
 </script>
 
@@ -56,10 +67,11 @@ function useIcon() {
 		:active
 		:loading
 		:outlined
+		:secondary
 		:to
 		:href
 		:download
-		:tooltip
+		:tooltip="activeTooltip"
 		:icon="showIcon"
 		small
 		exact
