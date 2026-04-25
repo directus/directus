@@ -33,19 +33,15 @@ const headerBarInline = useInjectHeaderBarInline();
 const { showIcon, activeTooltip } = useIcon();
 
 function useIcon() {
-	const breakpoints = useBreakpoints({
-		...BREAKPOINTS,
-		labelMin: '25rem',
-	});
-
-	const belowLabelMin = breakpoints.smallerOrEqual('labelMin');
+	const breakpoints = useBreakpoints(BREAKPOINTS);
+	const lteXSmall = breakpoints.smallerOrEqual('xs');
 	const lteSmall = breakpoints.smallerOrEqual('sm');
 	const lteLarge = breakpoints.smallerOrEqual('lg');
 
 	const showIcon = computed(() => {
 		if (!label) return true;
 		if (headerBarInline.value) return lteLarge.value;
-		return belowLabelMin.value || (!lteSmall.value && lteLarge.value);
+		return lteXSmall.value || (!lteSmall.value && lteLarge.value);
 	});
 
 	const activeTooltip = computed(() => {

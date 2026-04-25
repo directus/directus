@@ -147,7 +147,7 @@ function useDelete() {
 	.v-avatar {
 		--v-avatar-color: var(--theme--background-accent);
 
-		flex-basis: 1.375rem;
+		flex-shrink: 0;
 		margin-inline-end: 0.4375rem;
 
 		.v-icon {
