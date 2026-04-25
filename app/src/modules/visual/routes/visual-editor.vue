@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ContentVersion } from '@directus/types';
+import { sameOrigin } from '@directus/utils/browser';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useElementHover, useLocalStorage } from '@vueuse/core';
 import { isNil } from 'lodash';
@@ -23,7 +24,6 @@ import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import type { NavigationData } from '@/modules/visual/types';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
-import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useServerStore } from '@/stores/server';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
