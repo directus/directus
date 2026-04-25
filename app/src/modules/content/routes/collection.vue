@@ -223,7 +223,7 @@ function useVersion() {
 	function getValidVersion() {
 		if (!isVersioned.value) return undefined;
 		if (versionKeyQuery.value === VERSION_KEY_DRAFT) return VERSION_KEY_DRAFT;
-		if (isPublishedVersionKey(versionKeyQuery.value)) return null;
+		if (!versionKeyQuery.value || isPublishedVersionKey(versionKeyQuery.value)) return null;
 		return undefined;
 	}
 }
@@ -379,10 +379,10 @@ function clearFilters() {
 					</template>
 
 					<VList>
-						<VListItem clickable :active="!isVersion" @click="versionKeyQuery = null">
+						<VListItem clickable :active="version === null" @click="versionKeyQuery = null">
 							<VListItemContent>{{ $t('published') }}</VListItemContent>
 						</VListItem>
-						<VListItem clickable :active="isVersion" @click="versionKeyQuery = VERSION_KEY_DRAFT">
+						<VListItem clickable :active="version === VERSION_KEY_DRAFT" @click="versionKeyQuery = VERSION_KEY_DRAFT">
 							<VListItemContent>{{ $t('draft') }}</VListItemContent>
 						</VListItem>
 					</VList>
