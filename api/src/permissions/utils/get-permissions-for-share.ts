@@ -39,7 +39,7 @@ export async function getPermissionsForShare(
 				admin: false,
 				app: false,
 				ip: accountability.ip,
-		  }
+			}
 		: null;
 
 	// Fallback to public accountability so merging later on has no issues
@@ -52,38 +52,32 @@ export async function getPermissionsForShare(
 		ip: accountability.ip,
 	};
 
-	const [
-		{ admin: shareIsAdmin },
-		userIsAdmin,
-		userPermissions,
-		sharePermissions,
-		shareFieldMap,
-		userFieldMap,
-	] = await Promise.all([
-		fetchGlobalAccess(shareAccountability, { knex: context.knex }),
-		// No user creator: treat as unrestricted so only the share role limits access
-		userAccountability
-			? fetchGlobalAccess(userAccountability, { knex: context.knex }).then((r) => r.admin)
-			: Promise.resolve(true),
-		userAccountability ? getPermissionsForAccountability(userAccountability, context) : Promise.resolve([]),
-		getPermissionsForAccountability(shareAccountability, context),
-		fetchAllowedFieldMap(
-			{
-				accountability: shareAccountability,
-				action: 'read',
-			},
-			context,
-		),
-		userAccountability
-			? fetchAllowedFieldMap(
-					{
-						accountability: userAccountability,
-						action: 'read',
-					},
-					context,
-			  )
-			: Promise.resolve({}),
-	]);
+	const [{ admin: shareIsAdmin }, userIsAdmin, userPermissions, sharePermissions, shareFieldMap, userFieldMap] =
+		await Promise.all([
+			fetchGlobalAccess(shareAccountability, { knex: context.knex }),
+			// No user creator: treat as unrestricted so only the share role limits access
+			userAccountability
+				? fetchGlobalAccess(userAccountability, { knex: context.knex }).then((r) => r.admin)
+				: Promise.resolve(true),
+			userAccountability ? getPermissionsForAccountability(userAccountability, context) : Promise.resolve([]),
+			getPermissionsForAccountability(shareAccountability, context),
+			fetchAllowedFieldMap(
+				{
+					accountability: shareAccountability,
+					action: 'read',
+				},
+				context,
+			),
+			userAccountability
+				? fetchAllowedFieldMap(
+						{
+							accountability: userAccountability,
+							action: 'read',
+						},
+						context,
+					)
+				: Promise.resolve({}),
+		]);
 
 	const isAdmin = userIsAdmin && shareIsAdmin;
 
