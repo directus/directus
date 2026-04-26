@@ -39,11 +39,18 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	const linkNode: Ref<HTMLLinkElement | null> = ref(null);
 	const currentSelectionNode = ref<HTMLElement | null>(null);
 
+	// Track whether the editor was in fullscreen when the link dialog opened so
+	// we can restore fullscreen after the dialog closes. The link VDialog must
+	// render above TinyMCE's fullscreen overlay (which has a higher z-index),
+	// so we temporarily exit fullscreen, then re-enter it when the dialog closes.
+	const wasFullscreen = ref(false);
+
 	const linkButton = {
 		icon: 'link',
 		tooltip: i18n.global.t('wysiwyg_options.link'),
 		onAction: () => {
 			if (editor.value.plugins.fullscreen.isFullscreen()) {
+				wasFullscreen.value = true;
 				editor.value.execCommand('mceFullScreen');
 			}
 
@@ -112,9 +119,17 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		linkSelection.value = Object.assign({}, defaultLinkSelection, overrideLinkSelection);
 	}
 
+	function restoreFullscreen() {
+		if (wasFullscreen.value) {
+			wasFullscreen.value = false;
+			editor.value.execCommand('mceFullScreen');
+		}
+	}
+
 	function closeLinkDrawer() {
 		setLinkSelection();
 		linkDrawerOpen.value = false;
+		restoreFullscreen();
 	}
 
 	function saveLink() {
@@ -153,6 +168,8 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		}
 
 		editor.value.undoManager.add();
-		closeLinkDrawer();
+		linkDrawerOpen.value = false;
+		setLinkSelection();
+		restoreFullscreen();
 	}
 }
