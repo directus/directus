@@ -848,13 +848,22 @@ export class FieldsService {
 
 				if (permissionRows.length > 0) {
 					for (const permissionRow of permissionRows) {
-						const newFields = permissionRow['fields']
-							.split(',')
-							.filter((v) => v !== field)
-							.join(',');
+						// fields is stored as a JSON array (string[] | null) in v11.
+						// The old .split(',') assumed a CSV string and silently failed
+						// to remove fields when the column contained JSON like '["id","name"]'.
+						let currentFields: string[];
+
+						try {
+							currentFields = JSON.parse(permissionRow['fields']);
+						} catch {
+							// Fallback: legacy CSV value — parse as before
+							currentFields = permissionRow['fields'].split(',');
+						}
+
+						const newFields = currentFields.filter((v) => v !== field);
 
 						await trx('directus_permissions')
-							.update('fields', newFields.length > 0 ? newFields : null)
+							.update('fields', newFields.length > 0 ? JSON.stringify(newFields) : null)
 							.where('id', '=', permissionRow['id']);
 					}
 				}
