@@ -39,9 +39,10 @@ import { PayloadService } from './payload.js';
 
 const env = useEnv();
 
-export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
-	implements AbstractService<Item>
-{
+export class ItemsService<
+	Item extends AnyItem = AnyItem,
+	Collection extends string = string,
+> implements AbstractService<Item> {
 	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;
@@ -894,9 +895,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					// correct item even when readMany returns rows in a different order than
 					// `keys` (e.g. when the collection has a sort field). (#17091, #25720)
 					const snapshotsByKey = new Map(
-						Array.isArray(snapshots)
-							? snapshots.map((snapshot) => [String(snapshot[primaryKeyField]), snapshot])
-							: [],
+						Array.isArray(snapshots) ? snapshots.map((snapshot) => [String(snapshot[primaryKeyField]), snapshot]) : [],
 					);
 
 					const revisionsService = new RevisionsService({
