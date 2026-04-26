@@ -52,6 +52,14 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	};
 
 	function parseMaxLength(rawColumn: RawColumn) {
+		// For decimal/numeric types, sys.columns.max_length is the byte storage size
+		// (e.g. decimal(12, 2) → max_length = 9 bytes), not the number of digits.
+		// Character-length constraints are meaningless for these types; precision and
+		// scale are already captured in numeric_precision / numeric_scale.
+		if (['decimal', 'numeric'].includes(rawColumn.data_type)) {
+			return null;
+		}
+
 		const max_length = Number(rawColumn.max_length);
 
 		if (Number.isNaN(max_length) || rawColumn.max_length === null || rawColumn.max_length === undefined) {

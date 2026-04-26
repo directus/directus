@@ -72,6 +72,34 @@ describe('MSSQL dialect', () => {
 				const result = rawColumnToColumn({ ...baseRawColumn, data_type: 'nvarchar', max_length: null });
 				expect(result.max_length).toBeNull();
 			});
+
+			it('returns null for decimal regardless of max_length (byte storage, not digit count)', () => {
+				// sys.columns.max_length for decimal(12, 2) is 9 bytes, not 12 digits.
+				// Returning the byte size as a character limit would incorrectly constrain input.
+				const result = rawColumnToColumn({
+					...baseRawColumn,
+					data_type: 'decimal',
+					max_length: 9,
+					numeric_precision: 12,
+					numeric_scale: 2,
+				});
+
+				expect(result.max_length).toBeNull();
+				expect(result.numeric_precision).toBe(12);
+				expect(result.numeric_scale).toBe(2);
+			});
+
+			it('returns null for numeric regardless of max_length (byte storage, not digit count)', () => {
+				const result = rawColumnToColumn({
+					...baseRawColumn,
+					data_type: 'numeric',
+					max_length: 5,
+					numeric_precision: 8,
+					numeric_scale: 3,
+				});
+
+				expect(result.max_length).toBeNull();
+			});
 		});
 	});
 
