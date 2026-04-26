@@ -355,6 +355,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				})
 			) {
 				const values = compareValue as [number, number];
+
 				// "not between [lower, upper]" means value < lower OR value > upper.
 				// Chaining .less().greater() on a single schema applies AND logic (impossible
 				// for any real number), so we must use Joi.alternatives() for OR semantics.
@@ -364,6 +365,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				);
 			} else {
 				const values = compareValue as [string, string];
+
 				schema[key] = Joi.alternatives().try(
 					getDateSchema().less(values[0]),
 					getDateSchema().greater(values[1]),
