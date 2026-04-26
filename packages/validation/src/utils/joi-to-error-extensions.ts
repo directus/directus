@@ -117,8 +117,22 @@ export const joiValidationErrorItemToErrorExtensions = (
 		}
 	}
 
+	// number.unsafe — value exceeds Number.MAX_SAFE_INTEGER when unsafe numbers are disallowed
+	if (!extensions.type && joiType.endsWith('unsafe')) {
+		extensions.type = 'lt';
+		extensions.valid = Number.MAX_SAFE_INTEGER;
+	}
+
+	// number.infinity — Infinity is not allowed by default in Joi
+	if (!extensions.type && joiType.endsWith('infinity')) {
+		extensions.type = 'lt';
+		extensions.valid = Number.MAX_VALUE;
+	}
+
+	// Fallback for any unrecognised Joi error types: rather than crashing the server with a 500,
+	// expose a generic 'failed_validation' type so the client can surface a usable error.
 	if (!extensions.type) {
-		throw new Error(`Couldn't extract validation error type from Joi validation error item`);
+		extensions.type = 'failed_validation';
 	}
 
 	return extensions as FailedValidationErrorExtensions;

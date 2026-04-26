@@ -16,7 +16,7 @@ export type ImportRowRange = {
 export interface FailedValidationErrorExtensions {
 	field: string;
 	path: (string | number)[];
-	type: ClientFilterOperator | 'required' | 'email';
+	type: ClientFilterOperator | 'required' | 'email' | 'failed_validation';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
@@ -100,6 +100,9 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 			break;
 		case 'email':
 			message += ` Value has to be a valid email address.`;
+			break;
+		case 'failed_validation':
+			message += ` Value failed validation.`;
 			break;
 	}
 
