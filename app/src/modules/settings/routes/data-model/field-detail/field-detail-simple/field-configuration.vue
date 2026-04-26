@@ -19,11 +19,33 @@ defineProps<{
 	row?: number;
 }>();
 
-defineEmits(['save', 'toggleAdvanced']);
+const emit = defineEmits(['save', 'toggleAdvanced']);
 
 const fieldDetailStore = useFieldDetailStore();
 
 const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
+
+// The basic relationship configuration panel only covers m2o / o2m / m2m / translations / m2a.
+// When the store auto-switches localType to 'file' or 'files' (e.g. user picks directus_files
+// as the related collection in an m2m or m2o field), the relationship section disappears and
+// the panel looks like it closed. Switch to the advanced view so the user can continue
+// configuring the field with the full UI.
+const BASIC_SUPPORTED_RELATION_TYPES = new Set(['m2o', 'o2m', 'm2m', 'translations', 'm2a']);
+
+watch(
+	localType,
+	(newType, oldType) => {
+		if (
+			oldType &&
+			BASIC_SUPPORTED_RELATION_TYPES.has(oldType) &&
+			newType &&
+			!BASIC_SUPPORTED_RELATION_TYPES.has(newType) &&
+			newType !== 'standard'
+		) {
+			emit('toggleAdvanced');
+		}
+	},
+);
 
 const { t } = useI18n();
 
