@@ -52,13 +52,15 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	}
 
 	function numericValueOutOfRange() {
-		const regex = /"(.*?)"/g;
-		const matches = error.message.match(regex);
+		// Use structured fields from the Postgres error object. Regex-based extraction
+		// from error.message is unreliable: when Knex prepends the SQL query to the
+		// message, the regex matches the first column in the INSERT rather than the
+		// column that actually overflowed, producing a misleading error.
+		const collection = error.table;
 
-		if (!matches) return error;
+		if (!collection) return error;
 
-		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+		const field = error.column ?? null;
 
 		return new ValueOutOfRangeError({
 			collection,
@@ -68,18 +70,14 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	}
 
 	function valueLimitViolation() {
-		/**
-		 * NOTE:
-		 * Postgres doesn't return the offending column
-		 */
+		// Use structured fields from the Postgres error object. Postgres includes
+		// the column name in the error for 22001 (value too long) when the column
+		// can be identified; older versions may not, in which case field will be null.
+		const collection = error.table;
 
-		const regex = /"(.*?)"/g;
-		const matches = error.message.match(regex);
+		if (!collection) return error;
 
-		if (!matches) return error;
-
-		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+		const field = error.column ?? null;
 
 		return new ValueTooLongError({
 			collection,
