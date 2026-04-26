@@ -52,13 +52,19 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	}
 
 	function numericValueOutOfRange() {
-		const regex = /"(.*?)"/g;
-		const matches = error.message.match(regex);
-
-		if (!matches) return error;
-
-		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+		/**
+		 * NOTE:
+		 * PostgreSQL error code 22003 does not reliably include the offending column in its
+		 * message — it only contains a generic description like "integer out of range" or
+		 * "numeric field overflow". Parsing quoted strings from `error.message` can return the
+		 * table/first-column from a knex-prepended SQL statement instead of the actual violating
+		 * column, producing a misleading error (see #25867).
+		 *
+		 * Use `error.table` (which PostgreSQL populates) for the collection, and `error.column`
+		 * if the driver provides it, otherwise omit the field.
+		 */
+		const collection = error.table ?? null;
+		const field = error.column ?? null;
 
 		return new ValueOutOfRangeError({
 			collection,
@@ -70,21 +76,24 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	function valueLimitViolation() {
 		/**
 		 * NOTE:
-		 * Postgres doesn't return the offending column
+		 * PostgreSQL error code 22001 does not include the offending column in the structured error
+		 * fields. The `error.message` only contains a generic type description such as
+		 * "value too long for type character varying(255)" — it does NOT name the column.
+		 *
+		 * Previous code tried to extract collection/field by parsing quoted strings from
+		 * `error.message`, but when knex prepends the SQL query to the message the regex
+		 * incorrectly picks up the table name and the first listed column (which may not be the
+		 * violating one), producing a misleading error.
+		 *
+		 * Use `error.table` for the collection (which PostgreSQL does populate) and omit the
+		 * field, since its identity cannot be determined reliably from this error.
 		 */
-
-		const regex = /"(.*?)"/g;
-		const matches = error.message.match(regex);
-
-		if (!matches) return error;
-
-		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+		const collection = error.table ?? null;
 
 		return new ValueTooLongError({
 			collection,
-			field,
-			value: field ? data[field] : null,
+			field: null,
+			value: null,
 		});
 	}
 
