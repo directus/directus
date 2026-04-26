@@ -86,13 +86,6 @@ for (const { field, operator, value, sql, bindings } of [
 		sql: `select * where "articles"."likes" = ?`,
 		bindings: [[123, 546]],
 	},
-	{
-		field: 'articles.likes',
-		operator: '_eq',
-		value: [undefined],
-		sql: `select * where "articles"."likes" = ?`,
-		bindings: [[]],
-	},
 ]) {
 	test(`applyOperator on ${field} ${operator} ${value}`, async () => {
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
@@ -141,6 +134,18 @@ test('applyOperator throws InvalidQueryError for non-numeric array value on inte
 	expect(() => applyOperator(db, queryBuilder, schema, 'articles.likes', '_eq', ['abc', '123'])).toThrow(
 		InvalidQueryError,
 	);
+});
+
+test('applyOperator skips _eq filter on integer field when all values are undefined (unset GraphQL list variable)', async () => {
+	// When a GraphQL [Type] variable is not provided, it arrives as [undefined] after parseFilter.
+	// After removing undefined values the array is empty; the filter should be skipped entirely (#25945)
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyOperator(db, queryBuilder, schema, 'articles.likes', '_eq', [undefined]);
+
+	const rawQuery = queryBuilder.toSQL();
+	expect(rawQuery.sql).not.toContain('where');
 });
 
 test('applyOperator skips _in filter when all values are undefined (unset GraphQL list variable)', async () => {
