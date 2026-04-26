@@ -310,8 +310,7 @@ export class AssetsService {
 			// Preserve any subdirectory prefix from filename_disk so that transform caches are
 			// stored under the same path structure as the original file (important for S3 and
 			// storage drivers that use path-based organisation / bucket policies).
-			const assetFilename =
-				(diskDir !== '.' ? diskDir + '/' : '') + diskBase + getAssetSuffix(transforms) + diskExt;
+			const assetFilename = (diskDir !== '.' ? diskDir + '/' : '') + diskBase + getAssetSuffix(transforms) + diskExt;
 
 			const exists = await storage.location(file.storage).exists(assetFilename);
 
