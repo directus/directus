@@ -1,4 +1,5 @@
 import {
+	Action,
 	DEFAULT_NUMERIC_PRECISION,
 	DEFAULT_NUMERIC_SCALE,
 	KNEX_TYPES,
@@ -582,6 +583,41 @@ export class FieldsService {
 						}
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
+					}
+
+					// When only the column schema changed (no meta update following), the itemsService
+					// path that normally creates activity records is skipped. Log the change explicitly
+					// so schema modifications are audited consistently (#25820).
+					if (
+						opts?.skipTracking !== true &&
+						!hookAdjustedField.meta &&
+						this.accountability &&
+						this.schema.collections['directus_fields']?.accountability !== null
+					) {
+						const fieldRecord = await this.knex
+							.select('id')
+							.from('directus_fields')
+							.where({ collection, field: hookAdjustedField.field })
+							.first();
+
+						if (fieldRecord) {
+							const { ActivityService } = await import('./activity.js');
+
+							const activityService = new ActivityService({
+								knex: this.knex,
+								schema: this.schema,
+							});
+
+							await activityService.createOne({
+								action: Action.UPDATE,
+								user: this.accountability.user,
+								collection: 'directus_fields',
+								ip: this.accountability.ip,
+								user_agent: this.accountability.userAgent,
+								origin: this.accountability.origin,
+								item: fieldRecord.id,
+							});
+						}
 					}
 				}
 			}
