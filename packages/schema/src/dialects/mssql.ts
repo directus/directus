@@ -52,6 +52,30 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	};
 
 	function parseMaxLength(rawColumn: RawColumn) {
+		// For numeric types, sys.columns.max_length is the byte storage size, not the number of
+		// characters or digits. For example, decimal(12,2) uses 9 bytes of storage, so max_length
+		// would be 9 — but the field can store up to 12 digits. Returning this value as max_length
+		// would incorrectly limit UI input to 9 characters instead of the actual precision.
+		// The character capacity for numeric fields must be derived from numeric_precision and
+		// numeric_scale instead. Return null here so consumers fall back to those fields.
+		const numericTypes = [
+			'decimal',
+			'numeric',
+			'float',
+			'real',
+			'int',
+			'bigint',
+			'smallint',
+			'tinyint',
+			'money',
+			'smallmoney',
+			'bit',
+		];
+
+		if (numericTypes.includes(rawColumn.data_type)) {
+			return null;
+		}
+
 		const max_length = Number(rawColumn.max_length);
 
 		if (Number.isNaN(max_length) || rawColumn.max_length === null || rawColumn.max_length === undefined) {
