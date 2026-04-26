@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../index.js';
 import type { Query } from '../types/query.js';
 
