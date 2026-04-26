@@ -351,6 +351,7 @@ function useInlineWarning() {
 					:step="step"
 					:disabled="disabled"
 					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+					:lang="type === 'number' ? 'en' : undefined"
 					v-on="listeners"
 					@keydown.space="$emit('keydown:space', $event)"
 					@keydown.enter="$emit('keydown:enter', $event)"
