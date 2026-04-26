@@ -158,9 +158,7 @@ watch(
 	{ immediate: true },
 );
 
-watch([isSingleton, resolvedPrimaryKey, collectionInfo], ([newIsSingleton, newResolvedPK, newCollectionInfo]) =>
-	enterSingletonDraftContext(newIsSingleton, newResolvedPK, newCollectionInfo),
-);
+watch([isSingleton, resolvedPrimaryKey, collectionInfo], (values) => enterSingletonDraftContext(...values))
 
 const toolsStore = useAiToolsStore();
 
