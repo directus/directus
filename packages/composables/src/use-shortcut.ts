@@ -40,12 +40,13 @@ export function useShortcut(
 ): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;
-		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
+		const el = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
+		const isGlobalTarget = el === document.body;
 
 		if (
-			document.activeElement === ref ||
-			ref.contains(document.activeElement) ||
-			document.activeElement === document.body
+			document.activeElement === el ||
+			el.contains(document.activeElement) ||
+			(isGlobalTarget && document.activeElement === document.body)
 		) {
 			event.preventDefault();
 			return handler(event, cancelNext);
