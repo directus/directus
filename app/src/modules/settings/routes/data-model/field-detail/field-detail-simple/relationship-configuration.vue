@@ -76,6 +76,14 @@ const availableCollections = computed(() => {
 			<RelatedCollectionSelect v-model="relatedCollectionM2O" />
 		</div>
 
+		<div v-if="localType === 'files' || localType === 'file'" class="field full">
+			<div class="label type-label">
+				{{ $t('related_collection') }}
+			</div>
+
+			<RelatedCollectionSelect v-model="relatedCollectionM2O" disabled />
+		</div>
+
 		<div v-if="localType === 'translations'" class="field full">
 			<div class="label type-label">
 				{{ $t('languages_collection') }}
