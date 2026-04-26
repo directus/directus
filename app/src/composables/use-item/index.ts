@@ -246,6 +246,13 @@ export function useItem<T extends Item>(
 
 		clearPrimaryKey(primaryKeyField.value, newItem);
 
+		// filename_disk is unique per database row and physically tied to the uploaded file.
+		// Including it in the copy payload causes a 403 ForbiddenError from the uniqueness
+		// check in FilesService.createOne. Strip it so the server assigns a fresh value.
+		if (collection.value === 'directus_files') {
+			delete newItem['filename_disk'];
+		}
+
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const relations = relationsStore.getRelationsForCollection(collection.value);
