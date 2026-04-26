@@ -306,6 +306,7 @@ export class AssetsService {
 			const diskDir = path.dirname(file.filename_disk);
 			const diskBase = path.basename(file.filename_disk, path.extname(file.filename_disk));
 			const diskExt = maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk);
+
 			// Preserve any subdirectory prefix from filename_disk so that transform caches are
 			// stored under the same path structure as the original file (important for S3 and
 			// storage drivers that use path-based organisation / bucket policies).
