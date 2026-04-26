@@ -84,6 +84,10 @@ export class CommentsService extends ItemsService {
 				app: false,
 				roles: await fetchRolesTree(user['role']?.id ?? null, { knex: this.knex }),
 				ip: null,
+				// Skip IP-based policy filtering for notification permission checks: we are
+				// checking whether the mentioned user conceptually has access to the item (at
+				// the role level), not whether their current network request is allowed. (#26025)
+				bypassIpRestrictions: true,
 			};
 
 			const userGlobalAccess = await fetchGlobalAccess(accountability, { knex: this.knex });

@@ -8,13 +8,17 @@ export interface AccessRow {
 	role: string | null;
 }
 
-export const fetchPolicies = withCache('policies', _fetchPolicies, ({ roles, user, ip }) => ({ roles, user, ip }));
+export const fetchPolicies = withCache(
+	'policies',
+	_fetchPolicies,
+	({ roles, user, ip, bypassIpRestrictions }) => ({ roles, user, ip, bypassIpRestrictions }),
+);
 
 /**
  * Fetch the policies associated with the current user accountability
  */
 export async function _fetchPolicies(
-	{ roles, user, ip }: Pick<Accountability, 'user' | 'roles' | 'ip'>,
+	{ roles, user, ip, bypassIpRestrictions }: Pick<Accountability, 'user' | 'roles' | 'ip' | 'bypassIpRestrictions'>,
 	context: Context,
 ): Promise<string[]> {
 	const { AccessService } = await import('../../services/access.js');
@@ -38,7 +42,9 @@ export async function _fetchPolicies(
 		limit: -1,
 	})) as AccessRow[];
 
-	const filteredAccessRows = filterPoliciesByIp(accessRows, ip);
+	// Skip IP filtering for background operations (e.g. notification permission checks)
+	// where the mentioned user's IP is unknown but access should be evaluated at role level.
+	const filteredAccessRows = bypassIpRestrictions ? accessRows : filterPoliciesByIp(accessRows, ip);
 
 	/*
 	 * Sort rows by priority (goes bottom up):
