@@ -110,7 +110,8 @@ export class TusDataStore extends DataStore {
 			}
 		}
 
-		// If this is a new file upload, we need to generate a new primary key and DB record
+		// If this is a new file upload, we need to generate a new primary key and DB record.
+		// filesItemsService uses the user's accountability to enforce create permission.
 		const primaryKey = await filesItemsService.createOne(fileData, { emitEvents: false });
 
 		// Set the file id, so it is available to be sent as a header on upload creation / resume
@@ -126,13 +127,22 @@ export class TusDataStore extends DataStore {
 		// The filename_disk is the FINAL filename on disk
 		fileData.filename_disk ||= primaryKey + (fileExtension || '');
 
+		// Internal bookkeeping operations (setting tus_data, filename_disk, cleanup on error)
+		// must bypass the user's permissions — the record was already created with the correct
+		// accountability above. Using the user's accountability here would require update
+		// permission even for a pure file-creation flow.
+		const sudoFilesItemsService = new ItemsService<File>('directus_files', {
+			schema: this.schema,
+			knex,
+		});
+
 		try {
 			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
 			upload = (await this.storageDriver.createChunkedUpload(fileData.filename_disk, upload)) as Upload;
 
 			fileData.tus_data = upload;
 
-			await filesItemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
+			await sudoFilesItemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
 
 			return upload;
 		} catch (err) {
@@ -140,9 +150,9 @@ export class TusDataStore extends DataStore {
 			logger.warn(err);
 
 			if (isReplacement) {
-				await filesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
+				await sudoFilesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
 			} else {
-				await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
+				await sudoFilesItemsService.deleteOne(primaryKey!, { emitEvents: false });
 			}
 
 			throw ERRORS.UNKNOWN_ERROR;

@@ -11,8 +11,12 @@ const mapAction = (method: string): PermissionsAction => {
 	switch (method) {
 		case 'POST':
 			return 'create';
+		// TUS protocol uses PATCH exclusively for uploading file chunks, not for
+		// updating an existing file. The upload session was already created (and
+		// update permission validated) during the POST request, so only the
+		// 'create' permission is required here.
 		case 'PATCH':
-			return 'update';
+			return 'create';
 		case 'DELETE':
 			return 'delete';
 		default:
