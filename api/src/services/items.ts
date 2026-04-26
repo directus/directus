@@ -353,13 +353,21 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 					const revisionPayload = await payloadService.prepareDelta(omit(payloadWithPresets, relationalFields));
 
-					const revision = await revisionsService.createOne({
-						activity: activity,
-						collection: this.collection,
-						item: primaryKey,
-						data: revisionPayload,
-						delta: revisionPayload,
-					});
+					const revision = await revisionsService.createOne(
+						{
+							activity: activity,
+							collection: this.collection,
+							item: primaryKey,
+							data: revisionPayload,
+							delta: revisionPayload,
+						},
+						// Defer the revisions.items.create event until after the parent
+						// transaction commits.  Without this, the event fires while the
+						// activity record is still uncommitted, so any hook that queries
+						// for the activity via a new DB connection gets an empty result.
+						// (#26538)
+						{ bypassEmitAction: (params) => nestedActionEvents.push(params) },
+					);
 
 					// Make sure to set the parent field of the child-revision rows
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
@@ -910,7 +918,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						)
 					).filter((revision) => revision.delta);
 
-					const revisionIDs = await revisionsService.createMany(revisions);
+					const revisionIDs = await revisionsService.createMany(revisions, {
+						// Defer revisions.items.create events until after the parent
+						// transaction commits so that the linked activity records are
+						// visible to hook extensions querying a new DB connection. (#26538)
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+					});
 
 					for (let i = 0; i < revisionIDs.length; i++) {
 						const revisionID = revisionIDs[i]!;
