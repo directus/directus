@@ -189,6 +189,44 @@ describe('PrivateViewMain sidebar single-instance', () => {
 		expect(mobileOutlet!.querySelector('aside[id="sidebar"]')).not.toBeNull();
 	});
 
+	it('renders split-view slot when splitView prop is true', async () => {
+		wrapper = mount(PrivateViewMain, {
+			attachTo: document.body,
+			props: { title: 'Test', inlineNav: true, splitView: true },
+			slots: {
+				default: '<div data-testid="main-content">main</div>',
+				'split-view': '<div data-testid="split-view-panel">preview</div>',
+				sidebar: StatefulChild,
+			},
+			global: {
+				plugins: [i18n, createTestingPinia({ createSpy: vi.fn }), router],
+				stubs: { Teleport: false },
+			},
+		});
+		await wrapper.vm.$nextTick();
+		expect(document.body.querySelector('[data-testid="main-content"]')).not.toBeNull();
+		expect(document.body.querySelector('[data-testid="split-view-panel"]')).not.toBeNull();
+	});
+
+	it('does NOT render split-view slot when splitView prop is false', async () => {
+		wrapper = mount(PrivateViewMain, {
+			attachTo: document.body,
+			props: { title: 'Test', inlineNav: true, splitView: false },
+			slots: {
+				default: '<div data-testid="main-content">main</div>',
+				'split-view': '<div data-testid="split-view-panel">preview</div>',
+				sidebar: StatefulChild,
+			},
+			global: {
+				plugins: [i18n, createTestingPinia({ createSpy: vi.fn }), router],
+				stubs: { Teleport: false },
+			},
+		});
+		await wrapper.vm.$nextTick();
+		expect(document.body.querySelector('[data-testid="main-content"]')).not.toBeNull();
+		expect(document.body.querySelector('[data-testid="split-view-panel"]')).toBeNull();
+	});
+
 	it('sidebarStore.collapsed mirrors update:collapsed from drawer on mobile (regression: no double-negation)', async () => {
 		isMobileRef.value = true;
 		wrapper = mountPrivateViewMain();
