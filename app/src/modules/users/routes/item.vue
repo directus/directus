@@ -161,8 +161,20 @@ const archiveTooltip = computed(() => {
 	return t('archive');
 });
 
-useShortcut('meta+s', saveAndStay, form);
-useShortcut('meta+shift+s', saveAndAddNew, form);
+useShortcut(
+	'meta+s',
+	() => {
+		if (isSavable.value) saveAndStay();
+	},
+	form,
+);
+useShortcut(
+	'meta+shift+s',
+	() => {
+		if (saveAllowed.value) saveAndAddNew();
+	},
+	form,
+);
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [

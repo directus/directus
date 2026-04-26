@@ -196,6 +196,8 @@ const archiveTooltip = computed(() => {
 useShortcut(
 	'meta+s',
 	() => {
+		if (error.value || !isSavable.value) return;
+
 		if (unref(currentVersion) === null) {
 			saveAndStay();
 		} else {
@@ -208,6 +210,8 @@ useShortcut(
 useShortcut(
 	'meta+shift+s',
 	() => {
+		if (error.value || !saveAllowed.value) return;
+
 		if (unref(currentVersion) === null) {
 			saveAndAddNew();
 		} else {
@@ -220,6 +224,8 @@ useShortcut(
 useShortcut(
 	'meta+alt+s',
 	() => {
+		if (error.value) return;
+
 		if (unref(currentVersion) !== null) {
 			saveVersionAction('main');
 		}
