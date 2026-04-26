@@ -27,7 +27,8 @@ export function shouldSkipCache(req: Request): boolean {
 		}
 	}
 
-	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;
+	const cacheControl = req.get('cache-control');
+	if (env['CACHE_SKIP_ALLOWED'] && (cacheControl?.includes('no-store') || cacheControl?.includes('no-cache'))) return true;
 
 	return false;
 
