@@ -11,8 +11,13 @@ const mapAction = (method: string): PermissionsAction => {
 	switch (method) {
 		case 'POST':
 			return 'create';
+		// TUS PATCH is used to upload subsequent chunks of a file upload that was initiated
+		// via POST. It is not an update of an existing file; it continues an upload session
+		// already validated during POST (which checks 'update' when metadata['id'] is set for
+		// file replacement). Requiring 'update' here breaks uploads for users with only
+		// 'create' permission.
 		case 'PATCH':
-			return 'update';
+			return 'create';
 		case 'DELETE':
 			return 'delete';
 		default:

@@ -55,6 +55,14 @@ export class TusDataStore extends DataStore {
 			knex,
 		});
 
+		// Internal TUS operations (updating tus_data, error cleanup) must bypass permission
+		// checks because they are implementation details of the upload process and the user
+		// may only have 'create' but not 'update' permission on directus_files.
+		const sudoFilesItemsService = new ItemsService<File>('directus_files', {
+			schema: this.schema,
+			knex,
+		});
+
 		upload.creation_date = new Date().toISOString();
 
 		if (!upload.size || !upload.metadata || !upload.metadata['filename_download']) {
@@ -132,7 +140,9 @@ export class TusDataStore extends DataStore {
 
 			fileData.tus_data = upload;
 
-			await filesItemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
+			// Use sudo service: updating tus_data is an internal implementation detail and
+			// must not require the user to have 'update' permission on directus_files.
+			await sudoFilesItemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
 
 			return upload;
 		} catch (err) {
@@ -140,9 +150,9 @@ export class TusDataStore extends DataStore {
 			logger.warn(err);
 
 			if (isReplacement) {
-				await filesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
+				await sudoFilesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
 			} else {
-				await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
+				await sudoFilesItemsService.deleteOne(primaryKey!, { emitEvents: false });
 			}
 
 			throw ERRORS.UNKNOWN_ERROR;
