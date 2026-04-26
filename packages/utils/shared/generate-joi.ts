@@ -124,7 +124,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 		const getAnySchema = () => schema[key] ?? Joi.any();
 		const getStringSchema = () => (schema[key] ?? Joi.string()) as StringSchema;
-		const getNumberSchema = () => (schema[key] ?? Joi.number()) as NumberSchema;
+		const getNumberSchema = () => (schema[key] ?? Joi.number().unsafe()) as NumberSchema;
 		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
 		if (operator === '_eq') {
