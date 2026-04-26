@@ -126,6 +126,11 @@ function onFocusOut(event: FocusEvent) {
 
 	if (relatedTarget && searchElement?.contains(relatedTarget)) return;
 
+	// When vuedraggable starts a drag, mousedown on the drag handle fires focusout with relatedTarget = null.
+	// The `.sortable-chosen` class is applied by SortableJS to the element being dragged, so we can use it
+	// to detect an in-progress drag and avoid incorrectly closing the filter panel.
+	if (document.querySelector('.sortable-chosen')) return;
+
 	disable();
 }
 
