@@ -1,4 +1,5 @@
 import { performance } from 'perf_hooks';
+import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -490,7 +491,30 @@ export class UsersService extends ItemsService {
 		const user = await this.getUserByEmail(input.email);
 
 		if (isEmpty(user)) {
-			await this.createOne(partialUser);
+			const newUserId = await this.createOne(partialUser);
+
+			// Activity logging is normally gated on `this.accountability` being set,
+			// which is null for unauthenticated self-registrations.  Create the log
+			// entry explicitly so schema changes caused by public registration are
+			// auditable, attributing the action to the newly-created user.
+			if (this.schema.collections['directus_users']?.accountability !== null) {
+				const { ActivityService } = await import('./activity.js');
+
+				const activityService = new ActivityService({
+					knex: this.knex,
+					schema: this.schema,
+				});
+
+				await activityService.createOne({
+					action: Action.CREATE,
+					user: newUserId as string,
+					collection: 'directus_users',
+					ip: this.accountability?.ip ?? null,
+					user_agent: this.accountability?.userAgent ?? null,
+					origin: this.accountability?.origin ?? null,
+					item: String(newUserId),
+				});
+			}
 		}
 		// We want to be able to re-send the verification email
 		else if (user.status !== ('unverified' satisfies User['status'])) {
