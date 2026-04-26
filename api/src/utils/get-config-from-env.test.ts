@@ -19,6 +19,8 @@ beforeEach(() => {
 		OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
 		OMIT_KEY_FIRST_KEY: 'firstKey',
 		OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
+		TRIPLE_APPLICATION___NAME: 'myapp',
+		TRIPLE_CONNECTION__IDLE___IN___TRANSACTION___SESSION___TIMEOUT: '30000',
 	});
 });
 
@@ -67,6 +69,21 @@ describe('get config from env', () => {
 
 		expect(getConfigFromEnv('OMIT_KEY_', { omitKey: ['OMIT_KEY_FIRST_KEY_VALUE'] })).toStrictEqual({
 			firstKey: 'firstKey',
+		});
+	});
+
+	test('Triple underscore (___) preserves a literal underscore in camelCase mode', () => {
+		// DB_APPLICATION___NAME → application_name (not applicationName)
+		expect(getConfigFromEnv('TRIPLE_')).toStrictEqual({
+			application_name: 'myapp',
+			connection: { idle_in_transaction_session_timeout: '30000' },
+		});
+	});
+
+	test('Triple underscore (___) is lowercased in underscore mode', () => {
+		expect(getConfigFromEnv('TRIPLE_', { type: 'underscore' })).toStrictEqual({
+			application_name: 'myapp',
+			connection: { idle_in_transaction_session_timeout: '30000' },
 		});
 	});
 });
