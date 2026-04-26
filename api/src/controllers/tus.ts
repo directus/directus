@@ -7,22 +7,32 @@ import { validateAccess, type ValidateAccessOptions } from '../permissions/modul
 import { createTusServer } from '../services/tus/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
-const mapAction = (method: string): PermissionsAction => {
-	switch (method) {
-		case 'POST':
-			return 'create';
-		case 'PATCH':
-			return 'update';
-		case 'DELETE':
-			return 'delete';
-		default:
-			return 'read';
-	}
-};
-
 const checkFileAccess = asyncHandler(async (req, _res, next) => {
 	if (req.accountability) {
-		const action = mapAction(req.method);
+		let action: PermissionsAction;
+
+		// Determine the required permission action.
+		// PATCH in the TUS protocol is used to upload subsequent chunks, NOT to modify the file
+		// record — so "create" permission is sufficient for new uploads. We only require "update"
+		// when the PATCH is completing a file replacement (an existing file whose tus_id matches
+		// this upload ID). (#26877)
+		if (req.method === 'PATCH' && req.params['id']) {
+			const knex = getDatabase();
+			const file = await knex('directus_files').where({ tus_id: req.params['id'] }).first(['uploaded_on']);
+			// If the file was previously fully uploaded (uploaded_on is set), this is a replacement
+			action = file?.uploaded_on ? 'update' : 'create';
+		} else {
+			switch (req.method) {
+				case 'POST':
+					action = 'create';
+					break;
+				case 'DELETE':
+					action = 'delete';
+					break;
+				default:
+					action = 'read';
+			}
+		}
 
 		const validateAccessOptions: ValidateAccessOptions = {
 			action,
