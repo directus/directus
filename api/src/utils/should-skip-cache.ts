@@ -27,7 +27,9 @@ export function shouldSkipCache(req: Request): boolean {
 		}
 	}
 
-	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;
+	// Respect both no-store and no-cache directives: browsers may send either, and both signal
+	// that the client wants a fresh response rather than a cached one. (#26278)
+	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.match(/\b(no-store|no-cache)\b/)) return true;
 
 	return false;
 
