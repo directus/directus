@@ -79,6 +79,13 @@ export class TusDataStore extends DataStore {
 
 		let existingFile: Record<string, any> | null = null;
 
+		// Sanitise the id field: a TUS client may send the string literal "null" (base64: "bnVsbA==")
+		// when resuming an interrupted upload. Treat that as an absent id to avoid a DB crash on an
+		// invalid UUID lookup.
+		if (upload.metadata['id'] === 'null') {
+			delete upload.metadata['id'];
+		}
+
 		// If the payload contains a primary key, we'll check if the file already exists
 		if (upload.metadata['id']) {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
