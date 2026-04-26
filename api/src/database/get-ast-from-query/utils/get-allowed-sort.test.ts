@@ -117,11 +117,11 @@ test('Return the sort field if the user has access to it', async () => {
 
 	const accountability = { admin: false } as Accountability;
 
-	vi.mocked(fetchAllowedFields).mockResolvedValue(['sort']);
+	vi.mocked(fetchAllowedFields).mockResolvedValue(['collection-sort']);
 
 	const result = await getAllowedSort({ collection: 'collection', accountability }, { schema, knex: {} as Knex });
 
-	expect(result).toEqual(['sort']);
+	expect(result).toEqual(['collection-sort']);
 });
 
 test('Return the sort field if the user has access to all fields', async () => {
@@ -146,6 +146,7 @@ test('Returns the first allowed field if the user has no access to the sort fiel
 		.collection('collection', (c) => {
 			c.field('primary').id();
 			c.field('sort').string().sort();
+			c.field('allowed-field').string();
 		})
 		.build();
 
