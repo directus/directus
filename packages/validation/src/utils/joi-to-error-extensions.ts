@@ -91,6 +91,12 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.type = 'required';
 	}
 
+	// unsafe: value exceeds Number.MAX_SAFE_INTEGER (Joi: number.unsafe / integer.unsafe)
+	if (joiType.endsWith('unsafe')) {
+		extensions.type = 'lte';
+		extensions.valid = Number.MAX_SAFE_INTEGER;
+	}
+
 	if (joiType.endsWith('.pattern.base')) {
 		extensions.type = 'regex';
 		extensions.invalid = validationErrorItem.context?.value;
@@ -118,7 +124,9 @@ export const joiValidationErrorItemToErrorExtensions = (
 	}
 
 	if (!extensions.type) {
-		throw new Error(`Couldn't extract validation error type from Joi validation error item`);
+		throw new Error(
+			`Couldn't extract validation error type from Joi validation error item (joiType: "${joiType}")`,
+		);
 	}
 
 	return extensions as FailedValidationErrorExtensions;
