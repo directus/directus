@@ -8,11 +8,12 @@ export interface AccessRow {
 	role: string | null;
 }
 
-export const fetchPolicies = withCache(
-	'policies',
-	_fetchPolicies,
-	({ roles, user, ip, bypassIpRestrictions }) => ({ roles, user, ip, bypassIpRestrictions }),
-);
+export const fetchPolicies = withCache('policies', _fetchPolicies, ({ roles, user, ip, bypassIpRestrictions }) => ({
+	roles,
+	user,
+	ip,
+	bypassIpRestrictions,
+}));
 
 /**
  * Fetch the policies associated with the current user accountability
