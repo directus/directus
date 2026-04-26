@@ -28,7 +28,7 @@ export const FilesValidateSchema = z.discriminatedUnion('action', [
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: FileItemValidateSchema,
+		data: z.union([z.array(FileItemValidateSchema), FileItemValidateSchema]),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
@@ -46,7 +46,13 @@ const FilesInputSchema = z.object({
 	action: z.enum(['read', 'update', 'delete', 'import']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.array(FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial()).optional(),
+	data: z
+		.union([
+			z.array(FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial()),
+			FileItemInputSchema,
+		])
+		.optional()
+		.describe('Object when updating with keys, array with embedded PKs for batch updates, array of import items for import action'),
 });
 
 export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
