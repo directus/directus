@@ -1096,12 +1096,30 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				: keys;
 
 		if (this.accountability) {
+			// Only validate access for keys that actually exist in the database.
+			// When an item is already deleted (or was never created), validateItemAccess would
+			// return { accessAllowed: false } because it reads the item with permission filters and
+			// gets 0 rows back — indistinguishable from "no row-level permission". This causes a
+			// spurious 403 for users who have collection-level delete access. Filtering to existing
+			// keys makes the delete idempotent (matching admin behavior) while still enforcing
+			// row-level permission rules on items that do exist.
+			const existingRows = await this.knex(this.collection)
+				.select(primaryKeyField)
+				.whereIn(primaryKeyField, keysAfterHooks);
+
+			const existingKeys: PrimaryKey[] = existingRows.map((row: Record<string, unknown>) => row[primaryKeyField] as PrimaryKey);
+
+			if (existingKeys.length === 0) {
+				// Nothing to delete — treat as a no-op (idempotent)
+				return keysAfterHooks;
+			}
+
 			await validateAccess(
 				{
 					accountability: this.accountability,
 					action: 'delete',
 					collection: this.collection,
-					primaryKeys: keysAfterHooks,
+					primaryKeys: existingKeys,
 				},
 				{
 					knex: this.knex,
