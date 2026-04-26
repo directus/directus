@@ -26,14 +26,24 @@ export async function getQuery(
 	const parseAliases = (selections: readonly SelectionNode[]) => {
 		const aliases: Record<string, string> = {};
 
-		for (const selection of selections) {
-			if (selection.kind !== 'Field') continue;
+		const collectAliases = (sels: readonly SelectionNode[]) => {
+			for (const selection of sels) {
+				// Named fragments are converted to InlineFragment nodes by replaceFragmentsInSelections.
+				// Recurse into them so aliases defined inside a fragment are captured.
+				if (selection.kind === 'InlineFragment') {
+					if (selection.selectionSet) collectAliases(selection.selectionSet.selections);
+					continue;
+				}
 
-			if (selection.alias?.value) {
-				aliases[selection.alias.value] = selection.name.value;
+				if (selection.kind !== 'Field') continue;
+
+				if (selection.alias?.value) {
+					aliases[selection.alias.value] = selection.name.value;
+				}
 			}
-		}
+		};
 
+		collectAliases(selections);
 		return aliases;
 	};
 

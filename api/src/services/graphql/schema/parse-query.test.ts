@@ -124,6 +124,17 @@ describe('parseFields', () => {
 		expect(query.alias).toEqual({ writer: 'author' });
 	});
 
+	test('should collect aliases defined inside an InlineFragment (named-fragment aliased relation)', async () => {
+		// Simulates: fragment F on blog_post { authorAlias: author { id } }
+		// After replaceFragmentsInSelections this becomes an InlineFragment wrapping the alias.
+		const fragmentSelections = [field('author', { alias: 'authorAlias', children: [field('id')] })];
+		const selections = [inlineFragment('blog_post', fragmentSelections)];
+		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+
+		// authorAlias → author mapping must be present in query.alias
+		expect(query.alias).toEqual({ authorAlias: 'author' });
+	});
+
 	test('should parse M2A InlineFragment with schema relations', async () => {
 		const selections = [field('parent', { children: [inlineFragment('child', [field('id')])] })];
 
