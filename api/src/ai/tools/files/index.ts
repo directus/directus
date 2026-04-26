@@ -47,12 +47,11 @@ const FilesInputSchema = z.object({
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
 	data: z
-		.union([
-			z.array(FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial()),
-			FileItemInputSchema,
-		])
+		.union([z.array(FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial()), FileItemInputSchema])
 		.optional()
-		.describe('Object when updating with keys, array with embedded PKs for batch updates, array of import items for import action'),
+		.describe(
+			'Object when updating with keys, array with embedded PKs for batch updates, array of import items for import action',
+		),
 });
 
 export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
