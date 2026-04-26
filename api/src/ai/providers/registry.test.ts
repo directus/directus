@@ -219,6 +219,22 @@ describe('createAIProviderRegistry', () => {
 		expect(createOpenAICompatible).not.toHaveBeenCalled();
 	});
 
+	it('strips trailing /chat/completions from baseUrl', () => {
+		const configs: ProviderConfig[] = [
+			{
+				type: 'openai-compatible',
+				apiKey: 'custom-key',
+				baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+			},
+		];
+
+		createAIProviderRegistry(configs);
+
+		expect(createOpenAICompatible).toHaveBeenCalledWith(
+			expect.objectContaining({ baseURL: 'https://openrouter.ai/api/v1' }),
+		);
+	});
+
 	it('creates registry with multiple providers', () => {
 		const configs: ProviderConfig[] = [
 			{ type: 'openai', apiKey: 'sk-openai' },

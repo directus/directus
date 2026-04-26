@@ -62,10 +62,16 @@ export function createAIProviderRegistry(configs: ProviderConfig[], settings?: A
 						settings?.openaiCompatibleHeaders?.map(({ header, value }) => [header, value]) ?? [],
 					);
 
+					// Strip any path suffix that the SDK will append itself. Users commonly paste the
+					// full chat endpoint (e.g. https://openrouter.ai/api/v1/chat/completions) instead
+					// of the base URL (https://openrouter.ai/api/v1). Silently normalize the URL so
+					// the provider works regardless of which form the user supplies.
+					const normalizedBaseUrl = config.baseUrl.replace(/\/chat\/completions\/?$/, '');
+
 					providers['openai-compatible'] = createOpenAICompatible({
 						name: settings?.openaiCompatibleName ?? 'openai-compatible',
 						apiKey: config.apiKey,
-						baseURL: config.baseUrl,
+						baseURL: normalizedBaseUrl,
 						headers: customHeaders,
 					});
 				}
