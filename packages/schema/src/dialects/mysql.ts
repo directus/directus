@@ -30,7 +30,7 @@ type RawColumn = {
 	UPDATE_RULE: string | null;
 	DELETE_RULE: string | null;
 	COLUMN_KEY: 'PRI' | 'UNI' | null;
-	EXTRA: 'auto_increment' | 'STORED GENERATED' | 'VIRTUAL GENERATED' | null;
+	EXTRA: 'auto_increment' | 'STORED GENERATED' | 'VIRTUAL GENERATED' | 'DEFAULT_GENERATED' | null;
 	CONSTRAINT_NAME: 'PRIMARY' | null;
 	GENERATION_EXPRESSION: string;
 	INDEX_NAME: string | null;
@@ -52,7 +52,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		max_length: rawColumn.CHARACTER_MAXIMUM_LENGTH,
 		numeric_precision: rawColumn.NUMERIC_PRECISION,
 		numeric_scale: rawColumn.NUMERIC_SCALE,
-		is_generated: !!rawColumn.EXTRA?.endsWith('GENERATED'),
+		is_generated: rawColumn.EXTRA === 'VIRTUAL GENERATED' || rawColumn.EXTRA === 'STORED GENERATED',
 		is_nullable: rawColumn.IS_NULLABLE === 'YES',
 		is_unique: rawColumn.COLUMN_KEY === 'UNI',
 		is_indexed: !!rawColumn.INDEX_NAME && rawColumn.INDEX_NAME.length > 0,
@@ -128,7 +128,7 @@ export default class MySQL implements SchemaInspector {
 				...column,
 				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
-				is_generated: column.extra?.endsWith('GENERATED') ?? false,
+				is_generated: column.extra === 'VIRTUAL GENERATED' || column.extra === 'STORED GENERATED',
 				data_type: dataType,
 			};
 		}
