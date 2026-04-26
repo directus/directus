@@ -28,7 +28,17 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	// Presentation alias fields (dividers, notices, etc.) have no value and cannot be "required"
+	const RELATIONAL_ALIAS_SPECIALS = ['o2m', 'm2m', 'm2a', 'o2a', 'files', 'translations'];
+
+	const requiredFields = fieldsWithConditions.filter((field) => {
+		if (field.meta?.required !== true) return false;
+		// Skip presentation and group alias fields — they carry no user-submitted value
+		if (field.type === 'alias' && !field.meta?.special?.some((s) => RELATIONAL_ALIAS_SPECIALS.includes(s))) {
+			return false;
+		}
+		return true;
+	});
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
