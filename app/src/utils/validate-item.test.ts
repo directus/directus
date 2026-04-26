@@ -120,11 +120,7 @@ test('Presentation (alias) fields marked required do not cause validation errors
 	];
 
 	// Despite the divider being required, submitting only the real field should pass
-	const result = validateItem(
-		{ name: 'My Post' },
-		fieldsWithPresentationRequired as Field[],
-		true,
-	);
+	const result = validateItem({ name: 'My Post' }, fieldsWithPresentationRequired as Field[], true);
 
 	expect(result.length).toEqual(0);
 });
