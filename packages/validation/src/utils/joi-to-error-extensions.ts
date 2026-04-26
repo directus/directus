@@ -96,6 +96,14 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.invalid = validationErrorItem.context?.value;
 	}
 
+	// number.unsafe / integer.unsafe — value exceeds Number.MAX_SAFE_INTEGER and cannot be
+	// represented accurately as a JS number. Map to an lte constraint so the client receives
+	// a meaningful validation error instead of an internal server error.
+	if (joiType.endsWith('.unsafe')) {
+		extensions.type = 'lte';
+		extensions.valid = Number.MAX_SAFE_INTEGER;
+	}
+
 	// TODO Find a better way of passing the expected value down to the client
 	if (joiType.endsWith('.pattern.name') || joiType.endsWith('.pattern.invert.name')) {
 		extensions.type = validationErrorItem.context?.['name'];
