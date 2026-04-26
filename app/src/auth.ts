@@ -94,7 +94,12 @@ emitter.on(Events.tabIdle, () => {
 // Restart the auto-refresh process when the app is used again
 emitter.on(Events.tabActive, () => {
 	if (idle === true) {
-		refresh();
+		// Skip the refresh attempt on public routes (e.g. accept-invite, register)
+		// to avoid triggering a spurious "session expired" redirect for unauthenticated users.
+		if (!router.currentRoute.value.meta?.['public']) {
+			refresh();
+		}
+
 		idle = false;
 	}
 });
