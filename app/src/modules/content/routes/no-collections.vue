@@ -24,7 +24,7 @@ const userStore = useUserStore();
 			</template>
 
 			<template v-if="userStore.isAdmin" #append>
-				<VButton to="/settings/data-model/+">{{ $t('create_collection') }}</VButton>
+				<VButton :to="{ name: 'settings-add-new' }">{{ $t('create_collection') }}</VButton>
 			</template>
 		</VInfo>
 	</PrivateView>

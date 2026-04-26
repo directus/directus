@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import type { ContentVersion } from '@directus/types';
+import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -19,7 +20,6 @@ import VTextOverflow from '@/components/v-text-overflow.vue';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
-import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { parseUrl } from '@/utils/parse-url';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 

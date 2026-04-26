@@ -14,7 +14,7 @@
 		}
 	],
 
-	"ignoreFiles": ["app/src/__histoire__/**"],
+	"ignoreFiles": ["app/src/__histoire__/**", "packages/visual-editing/test-website/**"],
 
 	"rules": {
 		"alpha-value-notation": "number",
