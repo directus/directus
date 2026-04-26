@@ -51,6 +51,21 @@ export async function parseFields(
 
 	const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [];
 
+	// Track the first position of each field root in the original `fields` array so that
+	// after the two-pass build (direct fields then relational nodes), we can restore the
+	// order the caller specified. Without this, all relational columns appear after all
+	// direct columns regardless of their original position (#25521).
+	const fieldInsertionOrder = new Map<string, number>();
+
+	for (let i = 0; i < fields.length; i++) {
+		const rootPart = fields[i]!.split('.')[0]!;
+		const rootKey = rootPart.includes(':') ? rootPart.split(':')[0]! : rootPart;
+
+		if (!fieldInsertionOrder.has(rootKey)) {
+			fieldInsertionOrder.set(rootKey, i);
+		}
+	}
+
 	const policies =
 		options.accountability && options.accountability.admin === false
 			? await fetchPolicies(options.accountability, context)
@@ -331,7 +346,7 @@ export async function parseFields(
 	// Deduplicate any children fields that are included both as a regular field, and as a nested m2o field
 	const nestedCollectionNodes = children.filter((childNode) => childNode.type !== 'field');
 
-	return children.filter((childNode) => {
+	const deduplicated = children.filter((childNode) => {
 		const existsAsNestedRelational = !!nestedCollectionNodes.find(
 			(nestedCollectionNode) => childNode.fieldKey === nestedCollectionNode.fieldKey,
 		);
@@ -340,6 +355,17 @@ export async function parseFields(
 
 		return true;
 	});
+
+	// Restore the original field order. Direct fields are pushed first (lines above) and
+	// relational nodes are appended in a second pass, so without sorting the caller's
+	// ordering is not respected (all relational columns end up after all direct columns).
+	deduplicated.sort((a, b) => {
+		const aPos = fieldInsertionOrder.get(a.fieldKey) ?? Infinity;
+		const bPos = fieldInsertionOrder.get(b.fieldKey) ?? Infinity;
+		return aPos - bPos;
+	});
+
+	return deduplicated;
 }
 
 export function isO2MNode(node: NestedCollectionNode | null): node is O2MNode {
