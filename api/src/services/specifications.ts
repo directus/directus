@@ -538,9 +538,11 @@ class OASSpecsService implements SpecificationSubService {
 						{
 							type: 'string',
 						},
-						...(relatedTags.map((tag) => ({
-							$ref: `#/components/schemas/${tag.name}`,
-						})) as any),
+						...relatedTags.map(
+							(tag): ReferenceObject => ({
+								$ref: `#/components/schemas/${tag.name}`,
+							}),
+						),
 					],
 				};
 			}
