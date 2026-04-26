@@ -908,7 +908,7 @@ export class ExtensionManager {
 				emitter.onInit(event, handler);
 
 				unregisterFunctions.push(() => {
-					emitter.offInit(name, handler);
+					emitter.offInit(event, handler);
 				});
 			},
 			schedule: (cron: string, handler: ScheduleHandler) => {
