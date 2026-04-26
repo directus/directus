@@ -1317,6 +1317,7 @@ describe('createOAuth2AuthRouter', () => {
 		const res: any = {
 			cookie: vi.fn(),
 			redirect: vi.fn(),
+			set: vi.fn(),
 		};
 
 		return { req, res };
