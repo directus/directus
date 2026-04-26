@@ -841,15 +841,25 @@ export class FieldsService {
 				);
 
 				// cleanup permissions for deleted field
+				// Use tokenized LIKE patterns so that deleting e.g. "name" does not accidentally
+				// match permission rows for "last_name". Also handles first/middle/last positions.
 				const permissionRows: { id: number; collection: string; fields: string }[] = await trx
 					.select('id', 'collection', 'fields')
 					.from('directus_permissions')
-					.whereRaw('?? = ? AND ?? LIKE ?', ['collection', collection, 'fields', '%' + field + '%']);
+					.where('collection', collection)
+					.andWhere((query) => {
+						query
+							.where('fields', '=', field) // only field in list
+							.orWhere('fields', 'like', `${field},%`) // first field
+							.orWhere('fields', 'like', `%,${field},%`) // middle field
+							.orWhere('fields', 'like', `%,${field}`); // last field
+					});
 
 				if (permissionRows.length > 0) {
 					for (const permissionRow of permissionRows) {
 						const newFields = permissionRow['fields']
 							.split(',')
+							.map((v) => v.trim())
 							.filter((v) => v !== field)
 							.join(',');
 
