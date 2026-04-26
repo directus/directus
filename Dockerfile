@@ -38,8 +38,10 @@ RUN <<EOF
 	# Regenerate package.json file with essential fields only
 	# (see https://github.com/directus/directus/issues/20338)
 	node -e '
-		const f = "package.json", {name, version, type, exports, bin} = require(`./${f}`), {packageManager} = require(`../${f}`);
-		fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin, packageManager}, null, 2));
+		const f = "package.json", {name, version, type, exports, bin} = require(`./${f}`), {packageManager, pnpm} = require(`../${f}`);
+		const out = {name, version, type, exports, bin, packageManager};
+		if (pnpm?.onlyBuiltDependencies) out.pnpm = {onlyBuiltDependencies: pnpm.onlyBuiltDependencies};
+		fs.writeFileSync(f, JSON.stringify(out, null, 2));
 	'
 	mkdir -p database extensions uploads
 EOF

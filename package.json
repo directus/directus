@@ -49,7 +49,14 @@
 			"picomatch": "4.0.4",
 			"defu": "6.1.7",
 			"unplugin-vue>vite": "8.0.8"
-		}
+		},
+		"onlyBuiltDependencies": [
+			"argon2",
+			"isolated-vm",
+			"oracledb",
+			"sharp",
+			"sqlite3"
+		]
 	},
 	"packageManager": "pnpm@10.27.0",
 	"engines": {
