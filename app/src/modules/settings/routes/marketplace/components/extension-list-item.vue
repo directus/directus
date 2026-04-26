@@ -26,7 +26,13 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 </script>
 
 <template>
-	<VListItem class="extension-list-item" block grow clickable :to="`/settings/marketplace/extension/${extension.id}`">
+	<VListItem
+		class="extension-list-item"
+		block
+		grow
+		clickable
+		:to="{ name: 'marketplace-extension', params: { extensionId: extension.id } }"
+	>
 		<div class="icon"><VIcon :name="icon" /></div>
 		<VListItemContent>
 			<div class="name">

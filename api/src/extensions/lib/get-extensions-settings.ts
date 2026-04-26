@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { list } from '@directus/extensions-registry';
+import { useEnv } from '@directus/env';
+import { list, type ListOptions } from '@directus/extensions-registry';
 import type { BundleExtension, Extension, ExtensionSettings } from '@directus/types';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';
@@ -75,7 +76,14 @@ export const getExtensionsSettings = async ({
 		let marketplaceId;
 
 		if (source === 'registry') {
-			const marketplace = await list({ search: extension.name });
+			const env = useEnv();
+			const listOptions: ListOptions = {};
+
+			if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+				listOptions.registry = env['MARKETPLACE_REGISTRY'];
+			}
+
+			const marketplace = await list({ search: extension.name }, listOptions);
 			marketplaceId = marketplace.data.find((ext) => ext.name === extension.name)?.id;
 		}
 
