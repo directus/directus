@@ -213,7 +213,12 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				if (config.heartbeat && message['type'] === 'ping') {
-					state.connection.send(pong());
+					// Guard: the connection may have closed while we awaited the ping message.
+					// Calling send() on a closed/undefined connection throws an unhandled rejection.
+					if (state.code === 'open') {
+						state.connection.send(pong());
+					}
+
 					state.firstMessage = false;
 					continue;
 				}
