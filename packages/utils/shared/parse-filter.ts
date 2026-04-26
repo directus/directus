@@ -120,6 +120,11 @@ function parseFilterEntry(
 	if (['_or', '_and'].includes(String(key))) {
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
+		// A null value for _in/_nin means the GraphQL variable was not provided.
+		// Preserve null so downstream validation and query-building can treat it
+		// as "no filter" rather than converting it to [null] (which produces
+		// WHERE field IN (NULL) and returns no results).
+		if (value === null) return { [key]: null } as unknown as Filter;
 		// When array indices are above 20 (default value),
 		// the query parser (qs) parses them as a key-value pair object instead of an array,
 		// so we will need to convert them back to an array

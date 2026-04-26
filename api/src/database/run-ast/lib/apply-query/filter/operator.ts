@@ -192,6 +192,9 @@ export function applyOperator(
 	}
 
 	if (operator === '_in') {
+		// null means the filter was not provided (e.g. an unset GraphQL variable).
+		// Skip the condition so the query returns all items instead of none.
+		if (compareValue === null) return;
 		let value = compareValue;
 		if (typeof value === 'string') value = value.split(',');
 
@@ -199,6 +202,9 @@ export function applyOperator(
 	}
 
 	if (operator === '_nin') {
+		// null means the filter was not provided (e.g. an unset GraphQL variable).
+		// Skip the condition so the query returns all items instead of none.
+		if (compareValue === null) return;
 		let value = compareValue;
 		if (typeof value === 'string') value = value.split(',');
 

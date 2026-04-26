@@ -139,6 +139,9 @@ function validateFilterPrimitive(value: any, key: string) {
 }
 
 function validateList(value: any, key: string) {
+	// null means the filter was not provided (e.g. an unset GraphQL variable).
+	// Treat it as valid so the filter can be silently ignored at query time.
+	if (value === null) return true;
 	if (Array.isArray(value) === false || value.length === 0) {
 		throw new InvalidQueryError({ reason: `"${key}" has to be an array of values` });
 	}
