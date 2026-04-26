@@ -276,6 +276,26 @@ export function useItem<T extends Item>(
 						if (existingItem) {
 							clearPrimaryKey(primaryKeyField.value, existingItem);
 							clearJunctionRelatedKey(relation, existsJunctionRelated, existingItem);
+
+							// Clear PKs of junction entries inside nested O2M / M2M relations.
+							// Example: a M2M field on foo_translations when duplicating a foo item
+							// that has a translations O2M. Without this, the API sees junction
+							// entries with existing PKs and UPDATES (moves) them to point to the
+							// new parent instead of creating fresh entries for the copy.
+							const nestedRelations = relationsStore.getRelationsForCollection(relation.collection);
+
+							for (const nestedRelation of nestedRelations) {
+								const nestedOneField = nestedRelation.meta?.one_field;
+								if (!nestedOneField || !Array.isArray(existingItem[nestedOneField])) continue;
+
+								const junctionPKField = fieldsStore.getPrimaryKeyFieldForCollection(nestedRelation.collection);
+								if (!junctionPKField) continue;
+
+								for (const junctionItem of existingItem[nestedOneField]) {
+									if (isObject(junctionItem)) clearPrimaryKey(junctionPKField, junctionItem);
+								}
+							}
+
 							relatedItem = existingItem;
 						}
 
