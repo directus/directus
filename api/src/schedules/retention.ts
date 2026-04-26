@@ -92,6 +92,24 @@ export async function handleRetentionJob() {
 					}
 				}
 
+				// When deleting directus_activity rows the cascade removes the associated
+				// directus_revisions. Some of those revisions may be referenced as `parent`
+				// by newer revisions that fall outside the retention window.
+				// The FK directus_revisions_parent_foreign has no ON DELETE action so
+				// PostgreSQL (and others) reject the delete with a FK violation.
+				// Pre-emptively NULL out those parent references before the cascade fires.
+				if (task.collection === 'directus_activity') {
+					const revisionsToDeleteSubquery = database('directus_revisions')
+						.select('directus_revisions.id')
+						.join('directus_activity', 'directus_revisions.activity', 'directus_activity.id')
+						.whereIn('directus_activity.id', isMySQL ? records : subquery);
+
+					await database('directus_revisions')
+						.whereNotNull('parent')
+						.whereIn('parent', revisionsToDeleteSubquery)
+						.update({ parent: null });
+				}
+
 				count = await database(task.collection)
 					.whereIn('id', isMySQL ? records : subquery)
 					.delete();
