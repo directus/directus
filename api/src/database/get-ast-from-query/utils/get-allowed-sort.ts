@@ -1,6 +1,12 @@
-import type { Accountability, Query, Relation } from '@directus/types';
+import type { Accountability, Query, Relation, Type } from '@directus/types';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import type { Context } from '../../../permissions/types.js';
+
+/**
+ * Field types that databases cannot reliably ORDER BY. Using these as a fallback sort
+ * field causes database errors (e.g. "could not identify an ordering operator for type json").
+ */
+const UNSORTABLE_TYPES: Type[] = ['json', 'alias', 'unknown'];
 
 export type GetAllowedSortFieldOptions = {
 	collection: string;
@@ -38,8 +44,17 @@ export async function getAllowedSort(options: GetAllowedSortFieldOptions, contex
 		if (allowedFields.length === 0) {
 			sortField = null;
 		} else if (allowedFields.includes('*') === false && allowedFields.includes(sortField) === false) {
-			// If the sort field is not allowed, default to the first allowed field
-			sortField = allowedFields[0]!;
+			// If the sort field is not allowed, default to the first allowed field that the
+			// database can sort. Skip unsortable types (e.g. json) to avoid DB errors like
+			// "could not identify an ordering operator for type json".
+			const collectionFields = context.schema.collections[options.collection]?.fields ?? {};
+
+			const firstSortableField = allowedFields.find((f) => {
+				const fieldType = collectionFields[f]?.type;
+				return fieldType !== undefined && !UNSORTABLE_TYPES.includes(fieldType);
+			});
+
+			sortField = firstSortableField ?? null;
 		}
 	}
 
