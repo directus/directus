@@ -58,6 +58,13 @@ export async function parseFields(
 
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
+	// Track the first-occurrence index of each top-level field key so we can
+	// restore the original field ordering after the two-pass build below.
+	// Relational nodes are accumulated in the second pass and appended at the
+	// end; without this map they would always appear after all non-relational
+	// fields in the output, breaking CSV column ordering.
+	const fieldFirstOccurrence: Map<string, number> = new Map();
+
 	for (const fieldKey of fields) {
 		let alias = false;
 		let name = fieldKey;
@@ -92,6 +99,8 @@ export async function parseFields(
 				);
 
 				if (foundRelation) {
+					if (!fieldFirstOccurrence.has(fieldKey)) fieldFirstOccurrence.set(fieldKey, fieldFirstOccurrence.size);
+
 					children.push({
 						type: 'functionField',
 						name,
@@ -108,6 +117,8 @@ export async function parseFields(
 
 			// Create a FunctionFieldNode for direct (non-relational) json function calls
 			if (functionName === 'json') {
+				if (!fieldFirstOccurrence.has(fieldKey)) fieldFirstOccurrence.set(fieldKey, fieldFirstOccurrence.size);
+
 				children.push({
 					type: 'functionField',
 					name,
@@ -151,6 +162,8 @@ export async function parseFields(
 			}
 
 			if (rootField in relationalStructure === false) {
+				if (!fieldFirstOccurrence.has(rootField)) fieldFirstOccurrence.set(rootField, fieldFirstOccurrence.size);
+
 				if (collectionScope) {
 					relationalStructure[rootField] = { [collectionScope]: [] };
 				} else {
@@ -176,6 +189,7 @@ export async function parseFields(
 				const [key, scope] = name.split(':') as [string, string];
 
 				if (key in relationalStructure === false) {
+					if (!fieldFirstOccurrence.has(key)) fieldFirstOccurrence.set(key, fieldFirstOccurrence.size);
 					relationalStructure[key] = { [scope]: [] };
 				} else if (scope in (relationalStructure[key] as CollectionScope) === false) {
 					(relationalStructure[key] as CollectionScope)[scope] = [];
@@ -184,6 +198,7 @@ export async function parseFields(
 				continue;
 			}
 
+			if (!fieldFirstOccurrence.has(fieldKey)) fieldFirstOccurrence.set(fieldKey, fieldFirstOccurrence.size);
 			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
 		}
 	}
@@ -327,6 +342,16 @@ export async function parseFields(
 			children.push(child);
 		}
 	}
+
+	// Restore the original field ordering: non-relational children were pushed
+	// in order during the first pass, but relational children were all appended
+	// during the second pass.  Sort by first-occurrence index so that the output
+	// matches the order of fields as requested (important for CSV exports).
+	children.sort((a, b) => {
+		const aOrder = fieldFirstOccurrence.get(a.fieldKey) ?? Number.MAX_SAFE_INTEGER;
+		const bOrder = fieldFirstOccurrence.get(b.fieldKey) ?? Number.MAX_SAFE_INTEGER;
+		return aOrder - bOrder;
+	});
 
 	// Deduplicate any children fields that are included both as a regular field, and as a nested m2o field
 	const nestedCollectionNodes = children.filter((childNode) => childNode.type !== 'field');
