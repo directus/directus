@@ -13,6 +13,7 @@ import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { getRootPath } from '@/utils/get-root-path';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 const lastAssistantMessageIsCompleteWithToolApprovalResponses = ({ messages }: { messages: UIMessage[] }) => {
@@ -228,7 +229,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const isPreparingSubmission = ref(false);
 
 	const transport = new DefaultChatTransport({
-		api: '/ai/chat',
+		api: getRootPath() + 'ai/chat',
 		credentials: 'include',
 		body: () => {
 			const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
