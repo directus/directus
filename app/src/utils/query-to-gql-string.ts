@@ -94,7 +94,11 @@ function replaceFuncs(filter?: Filter | null): null | undefined | Filter {
 					result[key] = value;
 				}
 			} else {
-				result[key] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+				// Convert M2A filter keys from internal `field:collection` format to
+				// GraphQL-compatible `field__collection` (double underscore) format
+				const normalizedKey = typeof key === 'string' ? key.replace(/:/g, '__') : key;
+				result[normalizedKey] =
+					value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
 			}
 		});
 	}
