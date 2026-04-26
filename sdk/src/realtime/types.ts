@@ -1,4 +1,5 @@
 import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../index.js';
+import type { CloseEvent } from '../types/globals.js';
 import type { Query } from '../types/query.js';
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';

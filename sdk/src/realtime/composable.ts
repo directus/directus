@@ -1,6 +1,7 @@
 import type { AuthenticationClient } from '../auth/types.js';
 import type { ConsoleInterface, ExtendedQuery, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
+import type { CloseEvent } from '../types/globals.js';
 import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
 import { pong } from './commands/pong.js';
