@@ -303,10 +303,14 @@ export class AssetsService {
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
+			const diskDir = path.dirname(file.filename_disk);
+			const diskBase = path.basename(file.filename_disk, path.extname(file.filename_disk));
+			const diskExt = maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk);
+			// Preserve any subdirectory prefix from filename_disk so that transform caches are
+			// stored under the same path structure as the original file (important for S3 and
+			// storage drivers that use path-based organisation / bucket policies).
 			const assetFilename =
-				path.basename(file.filename_disk, path.extname(file.filename_disk)) +
-				getAssetSuffix(transforms) +
-				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
+				(diskDir !== '.' ? diskDir + '/' : '') + diskBase + getAssetSuffix(transforms) + diskExt;
 
 			const exists = await storage.location(file.storage).exists(assetFilename);
 
