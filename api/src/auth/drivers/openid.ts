@@ -474,6 +474,10 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				secure: Boolean(env[`AUTH_${providerName.toUpperCase()}_COOKIE_SECURE`]),
 			});
 
+			// Prevent browsers from caching this redirect — the cookie set above is
+			// required for the PKCE callback flow and must not be skipped on replay.
+			res.set('Cache-Control', 'no-store');
+
 			try {
 				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
 			} catch {
