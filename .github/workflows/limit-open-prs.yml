@@ -49,7 +49,7 @@ jobs:
 
             const authorOpenPrs = openPrs.filter(pr => pr.user.login === author && pr.number !== prNumber);
 
-            if (authorOpenPrs.length <= MAX_OPEN_PRS) {
+            if (authorOpenPrs.length < MAX_OPEN_PRS) {
               core.info(`${author} has ${authorOpenPrs.length} other open PR(s) — within the limit.`);
               return;
             }
