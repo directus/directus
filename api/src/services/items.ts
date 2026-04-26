@@ -39,9 +39,10 @@ import { PayloadService } from './payload.js';
 
 const env = useEnv();
 
-export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
-	implements AbstractService<Item>
-{
+export class ItemsService<
+	Item extends AnyItem = AnyItem,
+	Collection extends string = string,
+> implements AbstractService<Item> {
 	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;
@@ -1107,7 +1108,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				.select(primaryKeyField)
 				.whereIn(primaryKeyField, keysAfterHooks);
 
-			const existingKeys: PrimaryKey[] = existingRows.map((row: Record<string, unknown>) => row[primaryKeyField] as PrimaryKey);
+			const existingKeys: PrimaryKey[] = existingRows.map(
+				(row: Record<string, unknown>) => row[primaryKeyField] as PrimaryKey,
+			);
 
 			if (existingKeys.length === 0) {
 				// Nothing to delete — treat as a no-op (idempotent)
