@@ -1,7 +1,7 @@
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set, sortBy } from 'lodash';
+import { cloneDeep, get, has, isEmpty, merge, mergeWith, orderBy, set, sortBy } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
@@ -185,21 +185,23 @@ export const useFieldDetailStore = defineStore({
 
 				const { field: fieldUpdates, items: itemUpdates, ...restUpdates } = updates;
 
-				// Handle `field` updates, shallow merge and mirror to `fieldUpdates`
+				// Handle `field` updates, deep merge and mirror to `fieldUpdates`.
+				// Object.assign would shallow-overwrite nested objects (e.g. meta.options loses
+				// existing keys when only a subset is passed). Use lodash merge for deep merging.
 				if (fieldUpdates) {
 					const { schema: schemaUpdates, meta: metaUpdates, ...restFieldUpdates } = fieldUpdates;
 
-					Object.assign(state.field, restFieldUpdates);
-					Object.assign(state.fieldUpdates, restFieldUpdates);
+					merge(state.field, restFieldUpdates);
+					merge(state.fieldUpdates, restFieldUpdates);
 
 					if (schemaUpdates) {
-						Object.assign((state.field.schema ??= {}), schemaUpdates);
-						Object.assign((state.fieldUpdates.schema ??= {}), schemaUpdates);
+						merge((state.field.schema ??= {}), schemaUpdates);
+						merge((state.fieldUpdates.schema ??= {}), schemaUpdates);
 					}
 
 					if (metaUpdates) {
-						Object.assign((state.field.meta ??= {}), metaUpdates);
-						Object.assign((state.fieldUpdates.meta ??= {}), metaUpdates);
+						merge((state.field.meta ??= {}), metaUpdates);
+						merge((state.fieldUpdates.meta ??= {}), metaUpdates);
 					}
 				}
 
