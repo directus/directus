@@ -147,7 +147,15 @@ export function getDBQuery(
 
 		if (needsInnerQuery) {
 			let orderByString = '';
-			const orderByFields: Knex.Raw[] = [];
+			// Raw column expressions used inside window functions (partition by ... order by ...)
+			const windowOrderByFields: Knex.Raw[] = [];
+			// Alias references used in the final ORDER BY. When SELECT DISTINCT is applied
+			// (line above), PostgreSQL requires every ORDER BY expression to appear literally
+			// in the SELECT list. Using the sort alias (which IS in the SELECT list as
+			// "column AS alias") instead of a new raw column expression satisfies this
+			// constraint — the raw expression and the alias may be logically equivalent but
+			// PostgreSQL treats them as different expressions for DISTINCT validation.
+			const outerOrderByFields: Array<Knex.Raw | Knex.Ref> = [];
 
 			sortRecords.map((sortRecord, index) => {
 				if (orderByString.length !== 0) {
@@ -176,14 +184,18 @@ export function getDBQuery(
 					orderByColumn = getColumn(knex, table, sortRecord.column, false, schema);
 				}
 
-				orderByFields.push(orderByColumn);
+				windowOrderByFields.push(orderByColumn);
+				outerOrderByFields.push(knex.ref(sortAlias));
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order, column: orderByColumn });
 			});
 
 			if (hasMultiRelationalSort) {
 				dbQuery.rowNumber(
 					knex.ref('directus_row_number').toQuery(),
-					knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]),
+					knex.raw(`partition by ?? order by ${orderByString}`, [
+						`${table}.${primaryKey}`,
+						...windowOrderByFields,
+					]),
 				);
 
 				// Start order by with directus_row_number. The directus_row_number is derived from a window function that
@@ -193,10 +205,10 @@ export function getDBQuery(
 				// order by here ensures that all rows with a directus_row_number = 1 show up first in the inner query result,
 				// and are correctly truncated by the limit, but not earlier.
 				orderByString = `?? asc, ${orderByString}`;
-				orderByFields.unshift(knex.ref('directus_row_number'));
+				outerOrderByFields.unshift(knex.ref('directus_row_number'));
 			}
 
-			dbQuery.orderByRaw(orderByString, orderByFields);
+			dbQuery.orderByRaw(orderByString, outerOrderByFields as Knex.Raw[]);
 		} else {
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
