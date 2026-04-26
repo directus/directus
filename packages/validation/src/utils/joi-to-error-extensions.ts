@@ -74,15 +74,21 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.valid = validationErrorItem.context?.['limit'];
 	}
 
-	// contains
-	if (joiType.endsWith('contains')) {
-		extensions.type = 'contains';
+	// ncontains (must be checked before contains since ncontains ends with contains)
+	if (joiType.endsWith('ncontains')) {
+		extensions.type = 'ncontains';
 		extensions.substring = validationErrorItem.context?.['substring'];
 	}
 
-	// ncontains
-	if (joiType.endsWith('ncontains')) {
-		extensions.type = 'ncontains';
+	// icontains (must be checked before contains since icontains ends with contains)
+	if (joiType.endsWith('icontains')) {
+		extensions.type = 'icontains';
+		extensions.substring = validationErrorItem.context?.['substring'];
+	}
+
+	// contains (only plain contains, not icontains or ncontains)
+	if (joiType.endsWith('contains') && !joiType.endsWith('icontains') && !joiType.endsWith('ncontains')) {
+		extensions.type = 'contains';
 		extensions.substring = validationErrorItem.context?.['substring'];
 	}
 
@@ -114,6 +120,26 @@ export const joiValidationErrorItemToErrorExtensions = (
 			case 'niends_with':
 				extensions.substring = regex.substring(3, regex.lastIndexOf('/') - 1);
 				break;
+		}
+	}
+
+	// number.unsafe fires when a value exceeds Number.MAX_SAFE_INTEGER. Map it to
+	// a generic invalid type so validation callers receive a structured error instead
+	// of an unhandled crash.
+	if (joiType === 'number.unsafe') {
+		extensions.type = 'neq';
+		extensions.invalid = validationErrorItem.context?.['value'];
+	}
+
+	// alternatives.match fires when Joi.alternatives().try() exhausts every branch
+	// (used by _nbetween, _contains, _icontains, _ncontains). Recursively extract
+	// from the first sub-error so callers get a structured error rather than a crash.
+	if (joiType === 'alternatives.match') {
+		const details: ValidationErrorItem[][] | undefined = validationErrorItem.context?.['details'];
+		const firstSubError = details?.[0]?.[0];
+
+		if (firstSubError) {
+			return joiValidationErrorItemToErrorExtensions(firstSubError, path);
 		}
 	}
 
