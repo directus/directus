@@ -203,6 +203,7 @@ describe('PrivateViewMain sidebar single-instance', () => {
 				stubs: { Teleport: false },
 			},
 		});
+
 		await wrapper.vm.$nextTick();
 		expect(document.body.querySelector('[data-testid="main-content"]')).not.toBeNull();
 		expect(document.body.querySelector('[data-testid="split-view-panel"]')).not.toBeNull();
@@ -222,6 +223,7 @@ describe('PrivateViewMain sidebar single-instance', () => {
 				stubs: { Teleport: false },
 			},
 		});
+
 		await wrapper.vm.$nextTick();
 		expect(document.body.querySelector('[data-testid="main-content"]')).not.toBeNull();
 		expect(document.body.querySelector('[data-testid="split-view-panel"]')).toBeNull();
