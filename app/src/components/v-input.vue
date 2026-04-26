@@ -102,6 +102,7 @@ const listeners = computed(() => ({
 	keydown: processValue,
 	blur: (e: Event) => {
 		trimIfEnabled();
+		finalizeFloat(e as FocusEvent);
 		if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 	},
 	focus: (e: PointerEvent) => emit('focus', e),
@@ -215,6 +216,23 @@ function trimIfEnabled() {
 	}
 }
 
+function finalizeFloat(event: FocusEvent) {
+	if (!props.float || props.type !== 'number') return;
+
+	const target = event.target as HTMLInputElement;
+	const value = target.value;
+
+	if (value === '' || value === null) return;
+
+	const parsedNumber = Number(value);
+
+	if (Number.isNaN(parsedNumber)) return;
+
+	if (props.modelValue !== parsedNumber) {
+		emit('update:modelValue', parsedNumber);
+	}
+}
+
 function emitValue(event: InputEvent) {
 	const target = event.target as HTMLInputElement;
 	let value = target.value;
@@ -231,6 +249,12 @@ function emitValue(event: InputEvent) {
 
 		if (props.integer === true && !Number.isInteger(parsedNumber) && Number.isNaN(parsedNumber) === false) {
 			emit('update:modelValue', Math.floor(parsedNumber));
+			return;
+		}
+
+		// For float fields, skip emitting when the user is still typing a decimal fraction
+		// (e.g. "1." or "1.00") to avoid collapsing trailing zeros while editing.
+		if (props.float === true && /[.,]\d*0$|[.,]$/.test(value)) {
 			return;
 		}
 
