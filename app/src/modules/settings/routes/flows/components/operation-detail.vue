@@ -113,11 +113,24 @@ const displayOperations = computed(() =>
 	})),
 );
 
-const operationOptions = computed(() => {
+const operationOptions = computed<Field[] | undefined>(() => {
 	if (typeof selectedOperation.value?.options === 'function') {
-		return translate(selectedOperation.value.options(options.value));
+		const result = translate(selectedOperation.value.options(options.value));
+
+		// Options functions may return either a flat Field[] or an object with
+		// { standard: Field[], advanced: Field[] }. Normalise to a flat array so
+		// downstream code (getDefaultValuesFromFields, ExtensionOptions) can always
+		// treat operationOptions as Field[].
+		if (Array.isArray(result)) return result as Field[];
+
+		if (result && typeof result === 'object' && !Array.isArray(result)) {
+			const { standard = [], advanced = [] } = result as { standard?: Field[]; advanced?: Field[] };
+			return [...standard, ...advanced];
+		}
+
+		return undefined;
 	} else if (Array.isArray(selectedOperation.value?.options)) {
-		return selectedOperation.value.options;
+		return selectedOperation.value.options as Field[];
 	}
 
 	return undefined;
@@ -129,7 +142,7 @@ function saveOperation() {
 	saving.value = true;
 
 	const defaultValues = operationOptions.value
-		? getDefaultValuesFromFields(operationOptions.value as Field[]).value
+		? getDefaultValuesFromFields(operationOptions.value).value
 		: null;
 
 	emit('save', {
