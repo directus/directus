@@ -28,14 +28,19 @@ export async function getPermissionsForShare(
 
 	const { collection, item, role, user_created } = await fetchShareInfo(accountability.share!, context);
 
-	const userAccountability: Accountability = {
-		user: user_created.id,
-		role: user_created.role,
-		roles: await fetchRolesTree(user_created.role, { knex: context.knex }),
-		admin: false,
-		app: false,
-		ip: accountability.ip,
-	};
+	// When a share is created by a system process (e.g. a Flow), user_created is null because
+	// flows run without user accountability. In that case, skip the user-permission intersection
+	// and treat the share's role as the sole authority (#25774).
+	const userAccountability: Accountability | null = user_created
+		? {
+				user: user_created.id,
+				role: user_created.role,
+				roles: await fetchRolesTree(user_created.role, { knex: context.knex }),
+				admin: false,
+				app: false,
+				ip: accountability.ip,
+		  }
+		: null;
 
 	// Fallback to public accountability so merging later on has no issues
 	const shareAccountability: Accountability = {
@@ -49,15 +54,18 @@ export async function getPermissionsForShare(
 
 	const [
 		{ admin: shareIsAdmin },
-		{ admin: userIsAdmin },
+		userIsAdmin,
 		userPermissions,
 		sharePermissions,
 		shareFieldMap,
 		userFieldMap,
 	] = await Promise.all([
 		fetchGlobalAccess(shareAccountability, { knex: context.knex }),
-		fetchGlobalAccess(userAccountability, { knex: context.knex }),
-		getPermissionsForAccountability(userAccountability, context),
+		// No user creator: treat as unrestricted so only the share role limits access
+		userAccountability
+			? fetchGlobalAccess(userAccountability, { knex: context.knex }).then((r) => r.admin)
+			: Promise.resolve(true),
+		userAccountability ? getPermissionsForAccountability(userAccountability, context) : Promise.resolve([]),
 		getPermissionsForAccountability(shareAccountability, context),
 		fetchAllowedFieldMap(
 			{
@@ -66,13 +74,15 @@ export async function getPermissionsForShare(
 			},
 			context,
 		),
-		fetchAllowedFieldMap(
-			{
-				accountability: userAccountability,
-				action: 'read',
-			},
-			context,
-		),
+		userAccountability
+			? fetchAllowedFieldMap(
+					{
+						accountability: userAccountability,
+						action: 'read',
+					},
+					context,
+			  )
+			: Promise.resolve({}),
 	]);
 
 	const isAdmin = userIsAdmin && shareIsAdmin;
