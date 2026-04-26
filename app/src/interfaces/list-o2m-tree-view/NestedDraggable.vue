@@ -137,10 +137,19 @@ function change(event: ChangeEvent) {
 				const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 				const exists = displayItems.value.find((item) => item[pkField] === event.added.element[pkField]);
 
-				// We have to make sure we remove the reverseJunctionField when we move it back to its initial position as otherwise it will be selected.
+				// When the item is dropped back onto the level it was originally fetched
+				// from, the preceding `removed` event has already spliced it out of the
+				// update array via remove(). Calling update() here again would push a new
+				// entry with reverseJunctionField set to undefined, which later causes
+				// isItemSelected() to return false and the next remove() call to push the
+				// item into the delete array — producing visible duplicates and incorrect
+				// parent IDs on save. Skipping the update lets the item revert cleanly to
+				// its original fetched state.
+				if (exists) break;
+
 				update({
 					...cleanItem(event.added.element),
-					[relationInfo.value.reverseJunctionField.field]: exists ? undefined : primaryKey.value,
+					[relationInfo.value.reverseJunctionField.field]: primaryKey.value,
 				});
 
 				break;
