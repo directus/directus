@@ -213,7 +213,10 @@ export function realtime(config: WebSocketConfig = {}) {
 				}
 
 				if (config.heartbeat && message['type'] === 'ping') {
-					state.connection.send(pong());
+					if (state.code === 'open') {
+						state.connection.send(pong());
+					}
+
 					state.firstMessage = false;
 					continue;
 				}
