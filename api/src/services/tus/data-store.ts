@@ -8,6 +8,7 @@ import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
+import { isValidUuid } from '../../utils/is-valid-uuid.js';
 import { ItemsService } from '../items.js';
 
 export type TusDataStoreConfig = {
@@ -70,6 +71,12 @@ export class TusDataStore extends DataStore {
 		}
 
 		let existingFile: Record<string, any> | null = null;
+
+		// Sanitize the id metadata: clients may send the string "null" (e.g. after a failed/resumed
+		// upload where the fingerprint stored a null id). Treat non-UUID id values as absent.
+		if (upload.metadata['id'] && !isValidUuid(upload.metadata['id'])) {
+			delete upload.metadata['id'];
+		}
 
 		// If the payload contains a primary key, we'll check if the file already exists
 		if (upload.metadata['id']) {
