@@ -184,7 +184,13 @@ export const useAiStore = defineStore('ai-store', () => {
 			return;
 		}
 
-		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+		const newModelId = `${modelDefinition.provider}:${modelDefinition.model}`;
+
+		if (newModelId !== selectedModelId.value) {
+			reset();
+		}
+
+		selectedModelId.value = newModelId;
 	};
 
 	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
@@ -498,6 +504,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	};
 
 	const reset = () => {
+		chat.stop(); // Cancel any in-flight request before clearing conversation
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
