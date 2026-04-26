@@ -28,7 +28,11 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	// Presentation and group fields are display-only (no-data special) — skip required validation
+	const requiredFields = fieldsWithConditions.filter(
+		(field) =>
+			field.meta?.required === true && !field.meta?.special?.includes('no-data'),
+	);
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
