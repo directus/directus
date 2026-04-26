@@ -27,7 +27,14 @@ export function shouldSkipCache(req: Request): boolean {
 		}
 	}
 
-	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;
+	// Both `no-store` and `no-cache` request directives signal that the client
+	// wants a fresh response. `no-store` tells Directus not to cache at all,
+	// while `no-cache` tells it to revalidate. From Directus's server-side
+	// cache perspective, either means: bypass the cache and go to the DB.
+	const cacheControl = req.get('cache-control') ?? '';
+
+	if (env['CACHE_SKIP_ALLOWED'] && (cacheControl.includes('no-store') || cacheControl.includes('no-cache')))
+		return true;
 
 	return false;
 
