@@ -65,7 +65,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              body: `Hi @${author}! 👋 Thank you for contributing to Directus! We limit external contributors to ${MAX_OPEN_PRS} open pull requests at a time so our team can focus on reviewing existing contributions thoroughly. You currently have ${authorOpenPrs.length} other open PR(s), so we're closing this one for now. Please focus on addressing any feedback on your existing PRs — once they're merged or closed, you're welcome to open this one again. We appreciate your enthusiasm! 🐰`,
+              body: `Hi @${author}! 👋 Thank you for contributing to Directus! We limit external contributors to ${MAX_OPEN_PRS} open pull requests at a time so our team can focus on reviewing existing contributions thoroughly. You currently have ${authorOpenPrs.length} other open PRs, so we're closing this one for now. Please focus on addressing any feedback on your existing PRs. Once they're merged or closed, you're welcome to open this one again. 🐰`,
             });
 
             core.info(`Closed PR #${prNumber} from ${author} — exceeded open PR limit (${authorOpenPrs.length} existing open PRs).`);
