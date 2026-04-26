@@ -43,10 +43,6 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		icon: 'link',
 		tooltip: i18n.global.t('wysiwyg_options.link'),
 		onAction: () => {
-			if (editor.value.plugins.fullscreen.isFullscreen()) {
-				editor.value.execCommand('mceFullScreen');
-			}
-
 			linkDrawerOpen.value = true;
 
 			if (linkNode.value) {
