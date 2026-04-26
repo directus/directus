@@ -8,6 +8,7 @@ import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
+import { isValidUuid } from '../../utils/is-valid-uuid.js';
 import { ItemsService } from '../items.js';
 
 export type TusDataStoreConfig = {
@@ -71,8 +72,11 @@ export class TusDataStore extends DataStore {
 
 		let existingFile: Record<string, any> | null = null;
 
-		// If the payload contains a primary key, we'll check if the file already exists
-		if (upload.metadata['id']) {
+		// If the payload contains a primary key, we'll check if the file already exists.
+		// Guard against clients that send the literal string "null" as the id (e.g. when
+		// resuming an upload whose fingerprint stored id=null), which would cause a DB
+		// crash when queried against a UUID column.
+		if (upload.metadata['id'] && isValidUuid(upload.metadata['id'])) {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await knex
