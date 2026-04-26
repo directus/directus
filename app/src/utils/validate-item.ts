@@ -28,7 +28,12 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	// Presentation fields (dividers, notices) are alias-type fields with no backing
+	// database column and no user input.  Even when an admin mistakenly marks them
+	// as required, the validation must not fail — there is nothing the user can submit.
+	const requiredFields = fieldsWithConditions.filter(
+		(field) => field.meta?.required === true && field.type !== 'alias',
+	);
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);

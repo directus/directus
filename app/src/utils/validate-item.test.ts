@@ -98,6 +98,37 @@ test('Required fields', () => {
 	expect(result.length).toEqual(1);
 });
 
+test('Presentation (alias) fields marked required do not cause validation errors', () => {
+	const fieldsWithPresentationRequired: DeepPartial<Field>[] = [
+		{
+			field: 'name',
+			collection: 'posts',
+			type: 'string',
+			name: 'Name',
+			meta: { required: true },
+			schema: null,
+		},
+		{
+			// presentation-divider is an alias field with no user input
+			field: 'section_divider',
+			collection: 'posts',
+			type: 'alias',
+			name: 'Section Divider',
+			meta: { required: true, interface: 'presentation-divider', special: ['no-data'] },
+			schema: null,
+		},
+	];
+
+	// Despite the divider being required, submitting only the real field should pass
+	const result = validateItem(
+		{ name: 'My Post' },
+		fieldsWithPresentationRequired as Field[],
+		true,
+	);
+
+	expect(result.length).toEqual(0);
+});
+
 test('Custom validation with $NOW dynamic variable does not throw', () => {
 	const fieldsWithValidation: DeepPartial<Field>[] = [
 		{
