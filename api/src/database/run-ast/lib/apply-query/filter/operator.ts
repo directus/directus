@@ -78,7 +78,12 @@ export function applyOperator(
 		// Tip: when using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
 		// reported as [undefined].
 		// We need to remove any undefined values, as they are useless
+		const originalLength = compareValue.length;
 		compareValue = compareValue.filter((val) => val !== undefined);
+
+		// If the array only contained undefined values (i.e. an unset GraphQL list variable),
+		// treat it the same as a missing value and skip this filter entirely (#25945)
+		if (originalLength > 0 && compareValue.length === 0) return;
 	}
 
 	// Cast filter value (compareValue) based on function used

@@ -142,3 +142,27 @@ test('applyOperator throws InvalidQueryError for non-numeric array value on inte
 		InvalidQueryError,
 	);
 });
+
+test('applyOperator skips _in filter when all values are undefined (unset GraphQL list variable)', async () => {
+	// When a GraphQL [Type] variable is not provided, it arrives as [undefined] after parseFilter.
+	// After removing undefined values the array is empty; instead of generating `WHERE field IN ()`
+	// (which would return zero rows), the filter should be skipped entirely (#25945)
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyOperator(db, queryBuilder, schema, 'articles.title', '_in', [undefined]);
+
+	const rawQuery = queryBuilder.toSQL();
+	expect(rawQuery.sql).not.toContain('where');
+});
+
+test('applyOperator applies _in filter for explicitly empty array', async () => {
+	// An explicitly empty _in: [] should still generate WHERE field IN () to return zero rows
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyOperator(db, queryBuilder, schema, 'articles.title', '_in', []);
+
+	const rawQuery = queryBuilder.toSQL();
+	expect(rawQuery.sql).toContain('where');
+});
