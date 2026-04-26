@@ -184,7 +184,16 @@ export const useAiStore = defineStore('ai-store', () => {
 			return;
 		}
 
-		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+		const newId = `${modelDefinition.provider}:${modelDefinition.model}`;
+
+		if (newId !== selectedModelId.value) {
+			// Clear conversation history when switching models to avoid sending
+			// messages from one model as context to a different model with
+			// potentially different capabilities or token limits.
+			reset();
+		}
+
+		selectedModelId.value = newId;
 	};
 
 	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
