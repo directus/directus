@@ -184,7 +184,15 @@ export const useAiStore = defineStore('ai-store', () => {
 			return;
 		}
 
-		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+		const newId = `${modelDefinition.provider}:${modelDefinition.model}`;
+
+		if (newId !== selectedModelId.value) {
+			// Clear conversation when switching models — different models have different
+			// context handling, capabilities, and token limits.
+			reset();
+		}
+
+		selectedModelId.value = newId;
 	};
 
 	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
@@ -498,6 +506,9 @@ export const useAiStore = defineStore('ai-store', () => {
 	};
 
 	const reset = () => {
+		// Cancel any in-flight requests before clearing state so they don't
+		// complete after the conversation is gone (wasted API calls / interference).
+		chat.stop();
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
