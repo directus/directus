@@ -28,7 +28,28 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	// Build a lookup for quickly determining whether a group is currently hidden (after
+	// conditions are applied). Used to skip required-validation for fields whose parent
+	// group is not visible.
+	const fieldHiddenState = new Map<string, boolean>(
+		fieldsWithConditions.map((f) => [f.field, f.meta?.hidden === true]),
+	);
+
+	function isInHiddenGroup(groupId: string | null | undefined): boolean {
+		if (!groupId) return false;
+		if (fieldHiddenState.get(groupId) === true) return true;
+		const parentGroup = fieldsWithConditions.find((f) => f.field === groupId)?.meta?.group;
+		return isInHiddenGroup(parentGroup);
+	}
+
+	const requiredFields = fieldsWithConditions.filter((field) => {
+		if (field.meta?.required !== true) return false;
+		// Alias/presentation fields (dividers, notices, groups) store no data — skip them.
+		if (field.type === 'alias') return false;
+		// Fields inside a hidden group are not visible to the user and must not block saving.
+		if (isInHiddenGroup(field.meta?.group)) return false;
+		return true;
+	});
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
@@ -40,7 +61,7 @@ export function validateItem(
 		if (isEmptyArray) updatedItem[field.field] = null;
 	});
 
-	if (includeCustomValidations) fields.forEach(applyValidationRules);
+	if (includeCustomValidations) fieldsWithConditions.forEach(applyValidationRules);
 
 	const errors = validatePayload(validationRules, updatedItem).map((error) =>
 		error.details.map(
@@ -71,6 +92,8 @@ export function validateItem(
 
 	function applyValidationRules(field: Field) {
 		if (isNil(updatedItem[field.field])) return;
+		// Skip custom validations for fields inside a hidden group
+		if (isInHiddenGroup(field.meta?.group)) return;
 
 		(field.meta?.validation as LogicalFilterAND)?._and?.forEach((validation: any) => {
 			validationRules._and.push(parseFilter(validation));
