@@ -164,10 +164,20 @@ export function realtime(config: WebSocketConfig = {}) {
 				debug('warn', 'Authentication token expired!');
 
 				if (hasAuth(currentClient)) {
+					// Refresh the session/token before re-authenticating so that an
+					// expired session does not require a full socket reconnect.
+					try {
+						await currentClient.refresh();
+					} catch {
+						debug('warn', 'Token refresh failed, cannot re-authenticate');
+						return state.connection.close();
+					}
+
 					const access_token = await currentClient.getToken();
 
 					if (!access_token) {
-						throw Error('No token for re-authenticating the websocket');
+						debug('warn', 'No token available after refresh, closing connection');
+						return state.connection.close();
 					}
 
 					state.connection.send(auth({ access_token }));
