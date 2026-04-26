@@ -246,6 +246,14 @@ export function useItem<T extends Item>(
 
 		clearPrimaryKey(primaryKeyField.value, newItem);
 
+		// For directus_files, filename_disk refers to the physical file on disk.
+		// Reusing the same path in a new record causes FilesService.createOne to throw
+		// ForbiddenError via checkUniqueFilename (which manifests as a 403 for all users).
+		// Clear it so the duplicate record is created as metadata-only.
+		if (collection.value === 'directus_files') {
+			delete newItem['filename_disk'];
+		}
+
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const relations = relationsStore.getRelationsForCollection(collection.value);
