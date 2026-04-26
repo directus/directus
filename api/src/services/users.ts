@@ -1,4 +1,5 @@
 import { performance } from 'perf_hooks';
+import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -490,7 +491,29 @@ export class UsersService extends ItemsService {
 		const user = await this.getUserByEmail(input.email);
 
 		if (isEmpty(user)) {
-			await this.createOne(partialUser);
+			const primaryKey = await this.createOne(partialUser);
+
+			// Log the self-registration as a create activity. Because self-registration is an
+			// unauthenticated action, this.accountability is null and ItemsService normally skips
+			// activity tracking. We create the entry explicitly so that the audit log is complete.
+			if (this.schema.collections['directus_users']?.accountability !== null) {
+				const { ActivityService } = await import('./activity.js');
+
+				const activityService = new ActivityService({
+					knex: this.knex,
+					schema: this.schema,
+				});
+
+				await activityService.createOne({
+					action: Action.CREATE,
+					user: null,
+					collection: 'directus_users',
+					ip: this.accountability?.ip ?? null,
+					user_agent: this.accountability?.userAgent,
+					origin: this.accountability?.origin,
+					item: primaryKey,
+				});
+			}
 		}
 		// We want to be able to re-send the verification email
 		else if (user.status !== ('unverified' satisfies User['status'])) {
