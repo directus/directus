@@ -32,10 +32,17 @@ export function buildProviderConfigs(settings: AISettings): ProviderConfig[] {
 	}
 
 	if (settings.openaiCompatibleApiKey && settings.openaiCompatibleBaseUrl) {
+		// Strip any accidentally included endpoint suffix. The AI SDK appends
+		// /chat/completions automatically, so including it in the base URL results
+		// in a double-path like .../chat/completions/chat/completions (404).
+		const sanitizedBaseUrl = settings.openaiCompatibleBaseUrl
+			.replace(/\/chat\/completions\/?$/, '')
+			.replace(/\/$/, '');
+
 		configs.push({
 			type: 'openai-compatible',
 			apiKey: settings.openaiCompatibleApiKey,
-			baseUrl: settings.openaiCompatibleBaseUrl,
+			baseUrl: sanitizedBaseUrl,
 		});
 	}
 
