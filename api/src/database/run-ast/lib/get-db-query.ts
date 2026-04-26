@@ -192,10 +192,7 @@ export function getDBQuery(
 			if (hasMultiRelationalSort) {
 				dbQuery.rowNumber(
 					knex.ref('directus_row_number').toQuery(),
-					knex.raw(`partition by ?? order by ${orderByString}`, [
-						`${table}.${primaryKey}`,
-						...windowOrderByFields,
-					]),
+					knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...windowOrderByFields]),
 				);
 
 				// Start order by with directus_row_number. The directus_row_number is derived from a window function that
