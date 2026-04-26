@@ -32,20 +32,17 @@ const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
 // configuring the field with the full UI.
 const BASIC_SUPPORTED_RELATION_TYPES = new Set(['m2o', 'o2m', 'm2m', 'translations', 'm2a']);
 
-watch(
-	localType,
-	(newType, oldType) => {
-		if (
-			oldType &&
-			BASIC_SUPPORTED_RELATION_TYPES.has(oldType) &&
-			newType &&
-			!BASIC_SUPPORTED_RELATION_TYPES.has(newType) &&
-			newType !== 'standard'
-		) {
-			emit('toggleAdvanced');
-		}
-	},
-);
+watch(localType, (newType, oldType) => {
+	if (
+		oldType &&
+		BASIC_SUPPORTED_RELATION_TYPES.has(oldType) &&
+		newType &&
+		!BASIC_SUPPORTED_RELATION_TYPES.has(newType) &&
+		newType !== 'standard'
+	) {
+		emit('toggleAdvanced');
+	}
+});
 
 const { t } = useI18n();
 
