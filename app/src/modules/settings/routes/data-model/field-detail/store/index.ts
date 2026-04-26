@@ -1,7 +1,7 @@
 import type { DisplayConfig, InterfaceConfig } from '@directus/extensions';
 import type { Collection, DeepPartial, Field, LocalType, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { cloneDeep, get, has, isEmpty, mergeWith, orderBy, set, sortBy } from 'lodash';
+import { cloneDeep, get, has, isEmpty, merge, mergeWith, orderBy, set, sortBy } from 'lodash';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
 import * as alterations from './alterations';
@@ -185,7 +185,7 @@ export const useFieldDetailStore = defineStore({
 
 				const { field: fieldUpdates, items: itemUpdates, ...restUpdates } = updates;
 
-				// Handle `field` updates, shallow merge and mirror to `fieldUpdates`
+				// Handle `field` updates, shallow merge top-level and deep merge nested objects
 				if (fieldUpdates) {
 					const { schema: schemaUpdates, meta: metaUpdates, ...restFieldUpdates } = fieldUpdates;
 
@@ -193,13 +193,16 @@ export const useFieldDetailStore = defineStore({
 					Object.assign(state.fieldUpdates, restFieldUpdates);
 
 					if (schemaUpdates) {
-						Object.assign((state.field.schema ??= {}), schemaUpdates);
-						Object.assign((state.fieldUpdates.schema ??= {}), schemaUpdates);
+						merge((state.field.schema ??= {}), schemaUpdates);
+						merge((state.fieldUpdates.schema ??= {}), schemaUpdates);
 					}
 
 					if (metaUpdates) {
-						Object.assign((state.field.meta ??= {}), metaUpdates);
-						Object.assign((state.fieldUpdates.meta ??= {}), metaUpdates);
+						// Deep merge so nested objects like `options` are patched rather than replaced.
+						// This ensures extension options.update({ field: { meta: { options: { key: val } } } })
+						// only overwrites the targeted key without discarding other options.
+						merge((state.field.meta ??= {}), metaUpdates);
+						merge((state.fieldUpdates.meta ??= {}), metaUpdates);
 					}
 				}
 
