@@ -195,14 +195,53 @@ export function applyOperator(
 		let value = compareValue;
 		if (typeof value === 'string') value = value.split(',');
 
-		dbQuery[logical].whereIn(selectionRaw, value as string[]);
+		// CSV fields store multiple values as comma-separated strings. A SQL `IN` clause would only
+		// match records where the entire stored string equals a filter value. Instead, treat each
+		// filter value as a potential element within the CSV and match via LIKE patterns.
+		const csvFieldType =
+			mappedCollection! in schema.collections && field! in schema.collections[mappedCollection]!.fields
+				? schema.collections[mappedCollection]!.fields[field!]!.type
+				: null;
+
+		if (csvFieldType === 'csv') {
+			dbQuery[logical].andWhere((query) => {
+				for (const val of value as string[]) {
+					query
+						.orWhere(selectionRaw, '=', val)
+						.orWhere(selectionRaw, 'like', `${val},%`)
+						.orWhere(selectionRaw, 'like', `%,${val}`)
+						.orWhere(selectionRaw, 'like', `%,${val},%`);
+				}
+			});
+		} else {
+			dbQuery[logical].whereIn(selectionRaw, value as string[]);
+		}
 	}
 
 	if (operator === '_nin') {
 		let value = compareValue;
 		if (typeof value === 'string') value = value.split(',');
 
-		dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
+		// CSV fields: exclude records where ANY of the filter values appear as an element.
+		const csvFieldType =
+			mappedCollection! in schema.collections && field! in schema.collections[mappedCollection]!.fields
+				? schema.collections[mappedCollection]!.fields[field!]!.type
+				: null;
+
+		if (csvFieldType === 'csv') {
+			// Exclude records where ANY of the filter values appears as a CSV element
+			dbQuery[logical].whereNot((query) => {
+				for (const val of value as string[]) {
+					query
+						.orWhere(selectionRaw, '=', val)
+						.orWhere(selectionRaw, 'like', `${val},%`)
+						.orWhere(selectionRaw, 'like', `%,${val}`)
+						.orWhere(selectionRaw, 'like', `%,${val},%`);
+				}
+			});
+		} else {
+			dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
+		}
 	}
 
 	if (operator === '_between') {
