@@ -234,6 +234,14 @@ function emitValue(event: InputEvent) {
 			return;
 		}
 
+		// For float inputs, avoid stripping trailing zeros or a trailing decimal point while
+		// the user is still editing. When "1.004" → delete "4" → "1.00", Number("1.00") = 1
+		// which would cause the displayed value to jump from "1.00" to "1". Skip emitting if
+		// the rounded string representation would differ from what the user typed.
+		if (props.float === true && String(parsedNumber) !== value && !Number.isNaN(parsedNumber)) {
+			return;
+		}
+
 		// Ignore if numeric value remains unchanged
 		if (props.modelValue !== parsedNumber) {
 			emit('update:modelValue', parsedNumber);
