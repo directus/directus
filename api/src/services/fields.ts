@@ -31,7 +31,7 @@ import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
+import getDatabase, { getDatabaseClient, getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
@@ -988,6 +988,37 @@ export class FieldsService {
 				column.defaultTo(this.knex.fn.now(Number(precision)));
 			} else if (newDefaultIsAFunction) {
 				column.defaultTo(this.knex.raw(defaultValue));
+			} else if (newDefaultValueIsString && defaultValue.includes('?')) {
+				// On PostgreSQL and CockroachDB, knex's `positionBindings()` naively
+				// replaces every unescaped `?` in the generated DDL SQL string with a
+				// positional parameter placeholder (`$1`, `$2`, …).  This regex-based
+				// substitution does not understand SQL string-literal context, so a
+				// default value such as "Why??" ends up stored as "Why$1$2" in the DB.
+				//
+				// Fix: build the SQL literal manually, representing each `?` as `\\?`
+				// in the raw SQL string:
+				//   1. knex's `formatQuery` (called during toQuery()) converts `\\?` → `\?`
+				//   2. `positionBindings()` sees `\?` (odd preceding backslash) and
+				//      treats it as an escaped literal `?`, leaving it unchanged.
+				//   3. PostgreSQL (with standard_conforming_strings=on, the default)
+				//      receives `'Hello\?'` which it stores as `Hello?`.
+				//
+				// Note: this works correctly for plain `?` in the value.  Values that
+				// contain a literal backslash immediately before a `?` (i.e. `\?`) are
+				// handled by falling through to the normal path below, which will still
+				// produce `$N` for that specific `?` — an accepted edge-case limitation.
+				const isPostgresLike =
+					getDatabaseClient(this.knex) === 'postgres' || getDatabaseClient(this.knex) === 'cockroachdb';
+
+				if (isPostgresLike) {
+					// Escape single quotes for SQL, then escape each `?` as `\\?` so that
+					// formatQuery+positionBindings pipeline produces a literal `?`.
+					const sqlLiteral =
+						"'" + defaultValue.replace(/'/g, "''").replace(/\?/g, '\\\\?') + "'";
+					column.defaultTo(this.knex.raw(sqlLiteral));
+				} else {
+					column.defaultTo(defaultValue);
+				}
 			} else {
 				column.defaultTo(defaultValue);
 			}
