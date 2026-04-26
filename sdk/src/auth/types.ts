@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
 export type LocalLoginPayload = { email: string; password: string };
