@@ -12,8 +12,8 @@ import { isVisualElement, type UploadedFileResult } from '../types/context';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { getRootPath } from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 const lastAssistantMessageIsCompleteWithToolApprovalResponses = ({ messages }: { messages: UIMessage[] }) => {
