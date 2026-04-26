@@ -63,6 +63,10 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 	const fieldValidationRules: (Filter | null)[] = [];
 
 	for (const field of fields) {
+		// Presentation / alias fields (dividers, notices, groups) have no database column and are
+		// never submitted in the payload — skip all validation for them. (#26961)
+		if (field.alias) continue;
+
 		if (!isFieldNullable(field)) {
 			const isSubmissionRequired = options.action === 'create' && field.defaultValue === null;
 
