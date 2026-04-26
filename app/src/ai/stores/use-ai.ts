@@ -12,6 +12,7 @@ import { isVisualElement, type UploadedFileResult } from '../types/context';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
@@ -228,7 +229,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const isPreparingSubmission = ref(false);
 
 	const transport = new DefaultChatTransport({
-		api: '/ai/chat',
+		api: getRootPath() + 'ai/chat',
 		credentials: 'include',
 		body: () => {
 			const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
