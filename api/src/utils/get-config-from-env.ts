@@ -75,7 +75,10 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 			// Split on ___, camelCase each segment, then join with _ to produce
 			// a snake_case segment boundary (e.g. application___name → application_name).
 			if (key.includes('___')) {
-				return key.split('___').map((part) => camelcase(part, { locale: false })).join('_');
+				return key
+					.split('___')
+					.map((part) => camelcase(part, { locale: false }))
+					.join('_');
 			}
 
 			return camelcase(key, { locale: false });
