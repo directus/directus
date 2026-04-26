@@ -377,9 +377,7 @@ export class FieldsService {
 			const fieldNameLower = field.field.toLowerCase();
 
 			const exists =
-				Object.keys(this.schema.collections[collection]!.fields).some(
-					(f) => f.toLowerCase() === fieldNameLower,
-				) ||
+				Object.keys(this.schema.collections[collection]!.fields).some((f) => f.toLowerCase() === fieldNameLower) ||
 				isNil(
 					await this.knex
 						.select('id')
