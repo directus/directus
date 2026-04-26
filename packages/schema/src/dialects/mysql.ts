@@ -268,7 +268,14 @@ export default class MySQL implements SchemaInspector {
 			.leftJoin('INFORMATION_SCHEMA.KEY_COLUMN_USAGE as fk', function () {
 				this.on('c.TABLE_NAME', '=', 'fk.TABLE_NAME')
 					.andOn('fk.COLUMN_NAME', '=', 'c.COLUMN_NAME')
-					.andOn('fk.CONSTRAINT_SCHEMA', '=', 'c.TABLE_SCHEMA');
+					.andOn('fk.CONSTRAINT_SCHEMA', '=', 'c.TABLE_SCHEMA')
+					// Only match FK entries. KEY_COLUMN_USAGE also contains rows for UNIQUE
+					// constraints — those have a NULL REFERENCED_TABLE_NAME. Without this
+					// filter a column with both a FK and a UNIQUE constraint produces two
+					// rows from the join, and the UNIQUE row (with no referenced table)
+					// may shadow the FK row after deduplication, returning null for
+					// foreign_key_table and foreign_key_column (#22855).
+					.andOnNotNull('fk.REFERENCED_TABLE_NAME');
 			})
 			.leftJoin('INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS as rc', function () {
 				this.on('rc.TABLE_NAME', '=', 'fk.TABLE_NAME')
