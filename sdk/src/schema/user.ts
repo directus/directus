@@ -1,6 +1,6 @@
 import type { MergeCoreCollection } from '../index.js';
+import type { DirectusAccess } from './access.js';
 import type { DirectusFile } from './file.js';
-import type { DirectusPolicy } from './policy.js';
 import type { DirectusRole } from './role.js';
 
 /**
@@ -37,6 +37,6 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		theme_light: string | null;
 		theme_light_overrides: Record<string, unknown> | null;
 		theme_dark_overrides: Record<string, unknown> | null;
-		policies: string[] | DirectusPolicy<Schema>[];
+		policies: string[] | DirectusAccess<Schema>[];
 	}
 >;

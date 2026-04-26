@@ -16,6 +16,7 @@ import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, t
 import type { Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
+import PQueue from 'p-queue';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
@@ -30,7 +31,6 @@ import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { getService } from './utils/get-service.js';
-import { JobQueue } from './utils/job-queue.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -63,27 +63,27 @@ interface FlowMessage {
 class FlowManager {
 	private isLoaded = false;
 
+	private flows: Record<string, Flow> = {};
 	private operations: Map<string, OperationHandler> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
-	private reloadQueue: JobQueue;
+	private reloadQueue = new PQueue({ concurrency: 1 });
 	private envs: Record<string, any>;
 
 	constructor() {
 		const env = useEnv();
-		const logger = useLogger();
 
-		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'] as string)) : {};
 
 		const messenger = useBus();
+		const logger = useLogger();
 
 		messenger.subscribe<FlowMessage>('flows', (event) => {
-			if (event['type'] === 'reload') {
-				this.reloadQueue.enqueue(async () => {
+			if (event.type === 'reload') {
+				this.reloadQueue.add(async () => {
 					if (this.isLoaded) {
 						await this.unload();
 						await this.load();
@@ -116,6 +116,8 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		if (this.reloadQueue.pending > 0) await this.reloadQueue.onIdle();
+
 		const logger = useLogger();
 
 		if (!(id in this.operationFlowHandlers)) {
@@ -133,6 +135,8 @@ class FlowManager {
 		data: unknown,
 		context: { schema: SchemaOverview; accountability: Accountability | undefined } & Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
+		if (this.reloadQueue.pending > 0) await this.reloadQueue.onIdle();
+
 		const logger = useLogger();
 
 		if (!(id in this.webhookFlowHandlers)) {
@@ -143,6 +147,10 @@ class FlowManager {
 		const handler = this.webhookFlowHandlers[id];
 
 		return handler(data, context);
+	}
+
+	public getFlow(id: string): Flow | undefined {
+		return this.flows[id];
 	}
 
 	private async load(): Promise<void> {
@@ -159,6 +167,8 @@ class FlowManager {
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
 		for (const flow of flowTrees) {
+			this.flows[flow.id] = flow;
+
 			if (flow.trigger === 'event') {
 				let events: string[] = [];
 
@@ -372,6 +382,7 @@ class FlowManager {
 			}
 		}
 
+		this.flows = {};
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};

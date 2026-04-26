@@ -279,40 +279,47 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			schema: this.schema,
 		});
 
-		const activityService = new ActivityService({
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const revisionsService = new RevisionsService({
-			knex: this.knex,
-			schema: this.schema,
-		});
-
 		const { item, collection, delta: existingDelta } = version;
 
 		let revisionDelta = await payloadService.prepareDelta(delta);
 
-		// Only store activity and revisions for versions associated with an item.
+		// Only store activity and revisions for versions associated with an item,
+		// and only when the underlying collection's tracking is enabled.
 		if (item) {
-			const activity = await activityService.createOne({
-				action: Action.VERSION_SAVE,
-				user: this.accountability?.user ?? null,
-				collection,
-				ip: this.accountability?.ip ?? null,
-				user_agent: this.accountability?.userAgent ?? null,
-				origin: this.accountability?.origin ?? null,
-				item,
-			});
+			const trackingAccountability = this.schema.collections[collection]?.accountability ?? null;
 
-			await revisionsService.createOne({
-				activity,
-				version: key,
-				collection,
-				item,
-				data: revisionDelta,
-				delta: revisionDelta,
-			});
+			if (trackingAccountability !== null) {
+				const activityService = new ActivityService({
+					knex: this.knex,
+					schema: this.schema,
+				});
+
+				const activity = await activityService.createOne({
+					action: Action.VERSION_SAVE,
+					user: this.accountability?.user ?? null,
+					collection,
+					ip: this.accountability?.ip ?? null,
+					user_agent: this.accountability?.userAgent ?? null,
+					origin: this.accountability?.origin ?? null,
+					item,
+				});
+
+				if (trackingAccountability === 'all') {
+					const revisionsService = new RevisionsService({
+						knex: this.knex,
+						schema: this.schema,
+					});
+
+					await revisionsService.createOne({
+						activity,
+						version: key,
+						collection,
+						item,
+						data: revisionDelta,
+						delta: revisionDelta,
+					});
+				}
+			}
 		}
 
 		revisionDelta = revisionDelta ? revisionDelta : null;
