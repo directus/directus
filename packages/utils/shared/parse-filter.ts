@@ -118,7 +118,11 @@ function parseFilterEntry(
 	context: ParseFilterContext,
 ): Filter {
 	if (['_or', '_and'].includes(String(key))) {
-		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
+		// When array indices are above the qs arrayLimit (default: 20), the query parser
+		// converts the array to a key-value object ({ 0: {...}, 1: {...}, ... }).
+		// Convert it back to an array before mapping, the same way _in/_nin do below.
+		const val = isObject(value) && !Array.isArray(value) ? Object.values(value) : value;
+		return { [key]: (val as Filter[]).map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		// When array indices are above 20 (default value),
 		// the query parser (qs) parses them as a key-value pair object instead of an array,
