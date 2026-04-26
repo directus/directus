@@ -93,10 +93,16 @@ export function getTypes(
 
 					// GraphQL doesn't differentiate between not-null and has-to-be-submitted. We
 					// can't non-null in update, as that would require every not-nullable field to be
-					// submitted on updates
+					// submitted on updates.
+					//
+					// For CREATE mutations, a field with a default value is optional to submit even
+					// if nullable=false, so we keep it nullable.
+					//
+					// For READ types, a DB-level NOT NULL field always has a value, so it should
+					// always be non-null in GraphQL regardless of default value. (#25888)
 					if (
 						field.nullable === false &&
-						!field.defaultValue &&
+						(action !== 'create' || !field.defaultValue) &&
 						!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
 						fieldIsInconsistent === false &&
 						action !== 'update'
