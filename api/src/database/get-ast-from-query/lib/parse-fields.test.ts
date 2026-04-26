@@ -221,27 +221,6 @@ test('parse fields with *.*.*', async () => {
 
 	expect(result).toEqual([
 		{
-			alias: false,
-			fieldKey: 'id',
-			name: 'id',
-			type: 'field',
-			whenCase: [],
-		},
-		{
-			alias: false,
-			fieldKey: 'title',
-			name: 'title',
-			type: 'field',
-			whenCase: [],
-		},
-		{
-			alias: false,
-			fieldKey: 'date',
-			name: 'date',
-			type: 'field',
-			whenCase: [],
-		},
-		{
 			cases: [],
 			children: [
 				{
@@ -271,13 +250,6 @@ test('parse fields with *.*.*', async () => {
 		{
 			cases: [],
 			children: [
-				{
-					alias: false,
-					fieldKey: 'id',
-					name: 'id',
-					type: 'field',
-					whenCase: [],
-				},
 				{
 					cases: [],
 					children: [
@@ -347,6 +319,13 @@ test('parse fields with *.*.*', async () => {
 					type: 'm2o',
 					whenCase: [],
 				},
+				{
+					alias: false,
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
 			],
 			fieldKey: 'links',
 			name: 'links',
@@ -362,13 +341,6 @@ test('parse fields with *.*.*', async () => {
 		{
 			cases: [],
 			children: [
-				{
-					alias: false,
-					fieldKey: 'id',
-					name: 'id',
-					type: 'field',
-					whenCase: [],
-				},
 				{
 					cases: [],
 					children: [
@@ -458,6 +430,13 @@ test('parse fields with *.*.*', async () => {
 					type: 'm2o',
 					whenCase: [],
 				},
+				{
+					alias: false,
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
 			],
 			fieldKey: 'tags',
 			name: 'articles_tags_junction',
@@ -468,6 +447,27 @@ test('parse fields with *.*.*', async () => {
 			relatedKey: 'id',
 			relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
 			type: 'o2m',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'title',
+			name: 'title',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			alias: false,
+			fieldKey: 'date',
+			name: 'date',
+			type: 'field',
 			whenCase: [],
 		},
 	]);
@@ -656,8 +656,10 @@ test('parse fields distinguishes json function from relational fields', async ()
 		whenCase: [],
 	});
 
-	// json function is processed first since it's detected before relational fields
-	expect(result[1]).toEqual({
+	// relational field (author.name) preserves its request position before the json function field
+	expect(result[1]?.type).toBe('m2o');
+
+	expect(result[2]).toEqual({
 		type: 'functionField',
 		fieldKey: 'json(metadata, color)',
 		name: 'json(metadata, color)',
@@ -666,6 +668,4 @@ test('parse fields distinguishes json function from relational fields', async ()
 		whenCase: [],
 		cases: [],
 	});
-
-	expect(result[2]?.type).toBe('m2o');
 });
