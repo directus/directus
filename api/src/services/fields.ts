@@ -370,10 +370,23 @@ export class FieldsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
+			// Check case-insensitively so that databases which treat identifiers as
+			// case-insensitive (MariaDB, MySQL, MSSQL) don't end up with a schema-level
+			// "detectors" column and a metadata-only "Detectors" alias that then breaks
+			// cross-database migrations.  (#26307)
+			const fieldNameLower = field.field.toLowerCase();
+
 			const exists =
-				field.field in this.schema.collections[collection]!.fields ||
+				Object.keys(this.schema.collections[collection]!.fields).some(
+					(f) => f.toLowerCase() === fieldNameLower,
+				) ||
 				isNil(
-					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first(),
+					await this.knex
+						.select('id')
+						.from('directus_fields')
+						.where({ collection })
+						.whereRaw('LOWER(field) = ?', [fieldNameLower])
+						.first(),
 				) === false;
 
 			// Check if field already exists, either as a column, or as a row in directus_fields
