@@ -55,6 +55,11 @@ export class TusDataStore extends DataStore {
 			knex,
 		});
 
+		const sudoFilesItemsService = new ItemsService<File>('directus_files', {
+			schema: this.schema,
+			knex,
+		});
+
 		upload.creation_date = new Date().toISOString();
 
 		if (!upload.size || !upload.metadata || !upload.metadata['filename_download']) {
@@ -132,7 +137,9 @@ export class TusDataStore extends DataStore {
 
 			fileData.tus_data = upload;
 
-			await filesItemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
+			// Use sudo service for internal updates that are part of the create flow,
+			// so that users with only create permission can upload files without needing update permission.
+			await sudoFilesItemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
 
 			return upload;
 		} catch (err) {
@@ -140,9 +147,9 @@ export class TusDataStore extends DataStore {
 			logger.warn(err);
 
 			if (isReplacement) {
-				await filesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
+				await sudoFilesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
 			} else {
-				await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
+				await sudoFilesItemsService.deleteOne(primaryKey!, { emitEvents: false });
 			}
 
 			throw ERRORS.UNKNOWN_ERROR;

@@ -12,7 +12,7 @@ const mapAction = (method: string): PermissionsAction => {
 		case 'POST':
 			return 'create';
 		case 'PATCH':
-			return 'update';
+			return 'create';
 		case 'DELETE':
 			return 'delete';
 		default:
