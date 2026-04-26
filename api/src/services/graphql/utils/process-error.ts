@@ -11,6 +11,21 @@ const processError = (
 
 	logger.error(error);
 
+	// When there is no originalError the GraphQL runtime itself produced this error
+	// (e.g. query validation failure, syntax error, unknown field). These are safe to
+	// surface to every caller regardless of admin status — they describe the request,
+	// not internal server state. (#21264)
+	if (!error.originalError) {
+		return {
+			message: error.message,
+			extensions: {
+				code: (error.extensions?.['code'] as string | undefined) ?? 'GRAPHQL_VALIDATION_FAILED',
+			},
+			...(error.locations && { locations: error.locations }),
+			...(error.path && { path: error.path }),
+		};
+	}
+
 	let originalError = error.originalError;
 
 	if (originalError && 'originalError' in originalError) {
