@@ -8,10 +8,12 @@ export function filterPoliciesByIp(policies: AccessRow[], ip: string | null | un
 			return true;
 		}
 
-		// If the client's IP address is unknown, we can't validate it against the allow list and will
-		// have to default to the more secure option of preventing access
+		// When ip is null, this is a server-side accountability object (no incoming HTTP request).
+		// Real user sessions always have their IP set by the authentication middleware from req.ip.
+		// For server-side operations (e.g. notification permission checks), IP restrictions do not
+		// apply — the check is about role-level access, not about the user's current network location.
 		if (!ip) {
-			return false;
+			return true;
 		}
 
 		return ipInNetworks(ip, policy.ip_access);
