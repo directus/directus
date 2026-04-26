@@ -103,6 +103,7 @@ const splitterCollapsed = computed({
 					<template #title:prepend><slot name="title:prepend" /></template>
 					<template #title><slot name="title" /></template>
 					<template #sidebar><slot name="sidebar" /></template>
+					<template v-if="$props.splitView" #split-view><slot name="split-view" /></template>
 					<slot />
 				</PrivateViewMain>
 			</template>

@@ -20,6 +20,12 @@ export interface PrivateViewProps {
 
 	/** Override header shadow state. When provided, bypasses internal scroll-based calculation. */
 	showHeaderShadow?: boolean;
+
+	/** Show a split-view panel alongside the main content. Use the #splitView slot to provide the panel content. */
+	splitView?: boolean;
+
+	/** Minimum width (in px) of the split-view panel. Defaults to 310. */
+	splitViewMinWidth?: number;
 }
 </script>
 
@@ -66,6 +72,7 @@ const showLicenseBanner = computed(
 		<template #title:prepend><slot name="title:prepend" /></template>
 		<template #title><slot name="title" /></template>
 		<template #sidebar><slot name="sidebar" /></template>
+		<template v-if="splitView" #split-view><slot name="split-view" /></template>
 
 		<slot />
 	</PrivateViewRoot>

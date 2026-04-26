@@ -15,6 +15,8 @@ import { useUserStore } from '@/stores/user';
 
 const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
+const splitViewMinWidth = computed(() => props.splitViewMinWidth ?? 310);
+
 defineOptions({ inheritAttrs: false });
 
 const contentEl = useTemplateRef('content-el');
@@ -108,7 +110,49 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			<template #start>
 				<div class="scroll-shadow start" :class="{ visible: showStartShadow }" />
 				<div class="scroll-shadow end" :class="{ visible: showEndShadow }" />
-				<div ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
+
+				<SplitPanel
+					v-if="props.splitView"
+					:direction="userStore.textDirection"
+					primary="start"
+					size-unit="px"
+					:min-size="splitViewMinWidth"
+					class="split-view-panel"
+				>
+					<template #start>
+						<div ref="scroll-container" class="scrolling-container flex-layout">
+							<PrivateViewHeaderBar
+								:title="props.title"
+								:shadow="showHeaderShadow"
+								:inline-nav
+								:icon
+								:icon-color
+								:show-back
+								:back-to
+							>
+								<template #actions:append><slot name="actions:append" /></template>
+								<template #actions:prepend><slot name="actions:prepend" /></template>
+								<template #actions><slot name="actions" /></template>
+								<template #headline><slot name="headline" /></template>
+								<template #title-outer:append><slot name="title-outer:append" /></template>
+								<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
+								<template #title:append><slot name="title:append" /></template>
+								<template #title:prepend><slot name="title:prepend" /></template>
+								<template #title><slot name="title" /></template>
+							</PrivateViewHeaderBar>
+							<main class="main-content-container">
+								<slot />
+							</main>
+						</div>
+					</template>
+					<template #end>
+						<div class="split-view-container">
+							<slot name="split-view" />
+						</div>
+					</template>
+				</SplitPanel>
+
+				<div v-else ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
 					<PrivateViewHeaderBar
 						:title="props.title"
 						:shadow="showHeaderShadow"
@@ -242,5 +286,20 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 .main-content-container {
 	inline-size: 100%;
 	block-size: calc(100% - 3.375rem);
+}
+
+.split-view-panel {
+	block-size: 100%;
+
+	&:deep(.sp-start),
+	&:deep(.sp-end) {
+		block-size: 100%;
+		overflow: hidden;
+	}
+}
+
+.split-view-container {
+	block-size: 100%;
+	overflow: auto;
 }
 </style>
