@@ -37,9 +37,14 @@ RUN <<EOF
 	cd dist
 	# Regenerate package.json file with essential fields only
 	# (see https://github.com/directus/directus/issues/20338)
+	# Also include pnpm.onlyBuiltDependencies so that native modules rebuild
+	# correctly when users run "pnpm install" to add extensions in a derived
+	# image.  pnpm v10 blocks all build scripts by default; without this list
+	# isolated-vm (and others) fail to compile their native bindings.
+	# (see https://github.com/directus/directus/issues/26570)
 	node -e '
 		const f = "package.json", {name, version, type, exports, bin} = require(`./${f}`), {packageManager} = require(`../${f}`);
-		fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin, packageManager}, null, 2));
+		fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin, packageManager, pnpm: {onlyBuiltDependencies: ["argon2", "esbuild", "isolated-vm", "oracledb", "sharp", "sqlite3"]}}, null, 2));
 	'
 	mkdir -p database extensions uploads
 EOF
