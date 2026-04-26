@@ -8,6 +8,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		removeSchema(updates);
 		setTypeToAlias(updates);
 		setSpecialToNoData(updates);
+		clearRequiredAndReadonly(updates);
 	}
 }
 
@@ -21,4 +22,9 @@ export function setTypeToAlias(updates: StateUpdates) {
 
 export function setSpecialToNoData(updates: StateUpdates) {
 	set(updates, 'field.meta.special', ['alias', 'no-data']);
+}
+
+export function clearRequiredAndReadonly(updates: StateUpdates) {
+	set(updates, 'field.meta.required', false);
+	set(updates, 'field.meta.readonly', false);
 }

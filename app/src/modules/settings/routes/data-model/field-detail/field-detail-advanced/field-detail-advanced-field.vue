@@ -31,21 +31,23 @@ const isSearchableType = computed(() => {
 
 	return SEARCHABLE_TYPES.includes(type.value);
 });
+
+const isPresentation = computed(() => localType.value === 'presentation');
 </script>
 
 <template>
 	<div class="form">
-		<div v-if="!isGenerated" class="field half-left">
+		<div v-if="!isGenerated && !isPresentation" class="field half-left">
 			<div class="label type-label">{{ $t('readonly') }}</div>
 			<VCheckbox v-model="readonly" :label="$t('readonly_field_label')" block />
 		</div>
 
-		<div v-if="!isGenerated" class="field half-right">
+		<div v-if="!isGenerated && !isPresentation" class="field half-right">
 			<div class="label type-label">{{ $t('required') }}</div>
 			<VCheckbox v-model="required" :label="$t('require_value_to_be_set')" block />
 		</div>
 
-		<VNotice v-if="readonly && required" type="warning" class="full no-margin">
+		<VNotice v-if="!isPresentation && readonly && required" type="warning" class="full no-margin">
 			{{ $t('required_readonly_field_warning') }}
 		</VNotice>
 
