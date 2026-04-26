@@ -28,7 +28,11 @@ export function validateItem(
 		return conditionedField;
 	});
 
-	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
+	// Presentation fields (dividers, notices) are alias-type with no data. They cannot satisfy
+	// required validation, so exclude them regardless of meta.required.
+	const requiredFields = fieldsWithConditions.filter(
+		(field) => field.meta?.required === true && field.type !== 'alias',
+	);
 
 	requiredFields.forEach((field) => {
 		applyRulesForRequiredFields(field.field, field, isNew);
