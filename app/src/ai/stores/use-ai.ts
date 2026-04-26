@@ -185,6 +185,11 @@ export const useAiStore = defineStore('ai-store', () => {
 		}
 
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+
+		// Clear the conversation when switching models to avoid carrying over
+		// context that may be incompatible with the new model's capabilities
+		// or token limits.
+		reset();
 	};
 
 	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
@@ -498,6 +503,12 @@ export const useAiStore = defineStore('ai-store', () => {
 	};
 
 	const reset = () => {
+		// Abort any in-flight streaming request before clearing state so that
+		// background responses don't overwrite the freshly cleared conversation.
+		if (chat.status === 'streaming' || chat.status === 'submitted') {
+			chat.stop();
+		}
+
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
