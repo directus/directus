@@ -39,10 +39,9 @@ import { PayloadService } from './payload.js';
 
 const env = useEnv();
 
-export class ItemsService<
-	Item extends AnyItem = AnyItem,
-	Collection extends string = string,
-> implements AbstractService<Item> {
+export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
+	implements AbstractService<Item>
+{
 	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;
