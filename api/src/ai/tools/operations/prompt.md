@@ -159,7 +159,19 @@ flow entry point.
 
 **Rules:** 14x14 units, spacing every 18 units (example 19/37/55/73). Never (0,0). Start `position_y: 1`.
 
-**Patterns:** Linear (19,1)→(37,1)→(55,1). Branching: success (37,1), error (37,19). </positioning_system>
+**Patterns:** Linear (19,1)→(37,1)→(55,1). Branching: success (37,1), error (37,19).
+
+**Inserting a node before an existing one (CRITICAL — prevents overlap):**
+When you need to insert node B before an existing node C (at position_x=X):
+1. Read all operations for the flow to know current positions.
+2. Update every operation at position_x >= X to shift right by 18: `{"position_x": X + 18}`.
+3. Then create the new node B at position_x=X.
+4. Wire: previous node's `resolve` → B's UUID, B's `resolve` → C's UUID.
+
+Example: Insert between (19,1) and (37,1):
+- Update C: position_x 37 → 55.
+- Create B at position_x=37.
+- Wire A.resolve=B, B.resolve=C. </positioning_system>
 
 <operation_examples> **condition** - Evaluates filter rules
 
