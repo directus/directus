@@ -70,7 +70,13 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 	function valueLimitViolation() {
 		/**
 		 * NOTE:
-		 * Postgres doesn't return the offending column
+		 * Postgres doesn't return the offending column for error code 22001.
+		 * The error message includes the table and column names from the
+		 * surrounding query, but when multiple columns are present the first
+		 * quoted column may not be the one that exceeded the limit.
+		 * Only claim a specific field when exactly one column name appears in
+		 * the quoted tokens (i.e. only one column was in the statement), so we
+		 * can be confident the guess is correct.
 		 */
 
 		const regex = /"(.*?)"/g;
@@ -79,7 +85,10 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		if (!matches) return error;
 
 		const collection = matches[0].slice(1, -1);
-		const field = matches[1]?.slice(1, -1) ?? null;
+		// matches[0] = table, matches[1..] = columns from the INSERT list.
+		// Only set a specific field when there is exactly one column name so we
+		// don't report the wrong field for multi-column statements.
+		const field = matches.length === 2 ? (matches[1]?.slice(1, -1) ?? null) : null;
 
 		return new ValueTooLongError({
 			collection,
