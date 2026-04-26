@@ -886,9 +886,19 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const relationalFields = getRelationsForCollection(this.schema, this.collection);
 					const snapshotFields = difference(fields, relationalFields);
 
-					const snapshots = await itemsService.readMany(keys, {
+					const snapshotArray = await itemsService.readMany(keys, {
 						fields: snapshotFields.length > 0 ? snapshotFields : ['*'],
 					});
+
+					// readMany returns items in database order, which may differ from the `keys` array
+					// order (e.g. when the collection has a sort field). Build a Map so each activity
+					// entry can be matched to the correct snapshot by primary key.
+					const snapshotsByKey = new Map(
+						(Array.isArray(snapshotArray) ? snapshotArray : []).map((snapshot) => [
+							String(snapshot[primaryKeyField]),
+							snapshot,
+						]),
+					);
 
 					const revisionsService = new RevisionsService({
 						knex: trx,
@@ -897,16 +907,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 					const revisions = (
 						await Promise.all(
-							activity.map(async (activity, index) => ({
-								activity: activity,
-								collection: this.collection,
-								item: keys[index],
-								data:
-									Array.isArray(snapshots) && snapshots[index]
-										? await payloadService.prepareDelta(snapshots[index])
-										: null,
-								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
-							})),
+							activity.map(async (activity, index) => {
+								const itemKey = keys[index]!;
+								const snapshot = snapshotsByKey.get(String(itemKey));
+
+								return {
+									activity: activity,
+									collection: this.collection,
+									item: itemKey,
+									data: snapshot ? await payloadService.prepareDelta(snapshot) : null,
+									delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+								};
+							}),
 						)
 					).filter((revision) => revision.delta);
 
