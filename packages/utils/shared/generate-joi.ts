@@ -366,10 +366,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			} else {
 				const values = compareValue as [string, string];
 
-				schema[key] = Joi.alternatives().try(
-					getDateSchema().less(values[0]),
-					getDateSchema().greater(values[1]),
-				);
+				schema[key] = Joi.alternatives().try(getDateSchema().less(values[0]), getDateSchema().greater(values[1]));
 			}
 		}
 
