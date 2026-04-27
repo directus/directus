@@ -609,33 +609,47 @@ describe('useVersions', () => {
 		});
 	});
 
-	describe('isItemLessVersion', () => {
-		it('should be true when primaryKey is "+" and currentVersion has a real id', () => {
+	describe('isItemlessVersion', () => {
+		it('should be true when currentVersion has a real id and item is null', () => {
 			// primaryKey='+' with no queryVersionId means getVersions returns early (no API call)
 			// Just set currentVersion manually to test the computed
-			const { isItemLessVersion, currentVersion } = useVersions(ref('test_collection'), ref(false), ref('+'));
+			const { isItemlessVersion, currentVersion } = useVersions(ref('test_collection'), ref(false), ref('+'));
 
-			currentVersion.value = { id: 'version-abc', key: 'draft', name: null, type: 'global' };
-			expect(isItemLessVersion.value).toBe(true);
+			currentVersion.value = {
+				id: 'version-abc',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: null,
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-02',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+				type: 'global',
+			};
+
+			expect(isItemlessVersion.value).toBe(true);
 		});
 
 		it('should be false when primaryKey is a real id', async () => {
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
 
-			const { isItemLessVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+			const { isItemlessVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
 			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
 
-			expect(isItemLessVersion.value).toBe(false);
+			expect(isItemlessVersion.value).toBe(false);
 		});
 
 		it('should be false when currentVersion has virtual id "+"', () => {
 			// primaryKey='+' with no queryVersionId means getVersions returns early
-			const { isItemLessVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(false), ref('+'));
+			const { isItemlessVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(false), ref('+'));
 
 			// The virtual draft version always has id='+'
 			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
 			expect(currentVersion.value?.id).toBe('+');
-			expect(isItemLessVersion.value).toBe(false);
+			expect(isItemlessVersion.value).toBe(false);
 		});
 	});
 
