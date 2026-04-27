@@ -79,7 +79,7 @@ export const SESSION_COOKIE_OPTIONS: CookieOptions = {
 	sameSite: (env['SESSION_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
-export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
+export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata', 'Error'];
 
 /** Formats from which transformation is supported */
 export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'];
