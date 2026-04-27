@@ -216,7 +216,7 @@ async function onClick(event: MouseEvent) {
 	Available Variables:
 
 		--v-button-width                      [auto]
-		--v-button-height                     [2.5rem]
+		--v-button-height                     [var(--button-height-default)]
 		--v-button-color                      [var(--foreground-inverted)]
 		--v-button-color-hover                [var(--foreground-inverted)]
 		--v-button-color-active               [var(--foreground-inverted)]
@@ -290,8 +290,6 @@ async function onClick(event: MouseEvent) {
 
 .button,
 .split-menu-button {
-	--button-height-default: 2.5rem;
-
 	block-size: var(--v-button-height, var(--button-height-default));
 	color: var(--v-button-color, var(--foreground-inverted));
 	background-color: var(--v-button-background-color, var(--theme--primary));
@@ -393,7 +391,7 @@ async function onClick(event: MouseEvent) {
 .x-small {
 	&.button,
 	&.split-menu-button {
-		--v-button-height: 1.5rem;
+		--v-button-height: var(--button-height-xs);
 	}
 
 	&.button {
@@ -406,7 +404,7 @@ async function onClick(event: MouseEvent) {
 .small {
 	&.button,
 	&.split-menu-button {
-		--v-button-height: 2rem;
+		--v-button-height: var(--button-height-sm);
 	}
 
 	&.button {
@@ -419,7 +417,7 @@ async function onClick(event: MouseEvent) {
 .large {
 	&.button,
 	&.split-menu-button {
-		--v-button-height: 3rem;
+		--v-button-height: var(--button-height-lg);
 	}
 
 	&.button {
@@ -431,7 +429,7 @@ async function onClick(event: MouseEvent) {
 .x-large {
 	&.button,
 	&.split-menu-button {
-		--v-button-height: 3.375rem;
+		--v-button-height: var(--button-height-xl);
 	}
 
 	&.button {
