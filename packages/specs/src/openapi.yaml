@@ -293,6 +293,8 @@ paths:
 
 components:
   schemas:
+    Error:
+      $ref: './components/error.yaml'
     Activity:
       $ref: './components/activity.yaml'
     Presets:
