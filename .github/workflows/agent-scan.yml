@@ -42,11 +42,13 @@ jobs:
         uses: MatteoGabriele/agentscan-action@6b02b7903ab24fbd23da0314b1b04dbaad98151b
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          skip-members: "dependabot[bot],renovate[bot]"
+          skip-members: 'dependabot[bot],renovate[bot]'
           agent-scan-comment: false
           cache-path: .agentscan-cache
       - name: Label flagged PR
-        if: contains(fromJSON('["automation","suspicious"]'), steps.agentscan.outputs.classification) && !contains(steps.agentscan.outputs.community-flagged, 'true')
+        if:
+          contains(fromJSON('["automation","suspicious"]'), steps.agentscan.outputs.classification) &&
+          !contains(steps.agentscan.outputs.community-flagged, 'true')
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
