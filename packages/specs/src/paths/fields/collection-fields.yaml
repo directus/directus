@@ -2,8 +2,6 @@ get:
   summary: List Fields in Collection
   description: Returns a list of the fields available in the given collection.
   operationId: getCollectionFields
-  parameters:
-    - $ref: '../../openapi.yaml#/components/parameters/Sort'
   responses:
     '200':
       description: Successful request
@@ -171,7 +169,7 @@ post:
                   example: null
                   type: string
                   nullable: true
-                  enum: [half, half-left, half-right, full, fill, null]
+                  enum: [half, half-left, half-right, full, fill]
                 group:
                   description: What field group this field is part of.
                   example: null
