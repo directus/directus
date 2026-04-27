@@ -1,6 +1,7 @@
 import type { MergeCoreCollection } from '../index.js';
 
 export type DirectusExtension<Schema = any> = {
+	id: string;
 	name: string;
 	bundle: string | null;
 	schema: ExtensionSchema | null;
