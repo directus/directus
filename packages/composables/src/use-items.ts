@@ -1,7 +1,8 @@
-import type { Item, Query } from '@directus/types';
+import type { Filter, Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
+import { useMemoize } from '@vueuse/core';
 import axios from 'axios';
-import { isEqual, throttle } from 'lodash-es';
+import { isEmpty, isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, toRef, unref, watch } from 'vue';
 import { useCollection } from './use-collection.js';
@@ -64,13 +65,45 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
 	});
 
-	const existingRequests: Record<'items' | 'total' | 'filter', AbortController | null> = {
-		items: null,
-		total: null,
-		filter: null,
-	};
+	let itemsAbort: AbortController | null = null;
+	let totalCountGeneration = 0;
+	let itemCountGeneration = 0;
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
+
+	const fetchAggregate = useMemoize(
+		async (url: string, filter: Query['filter'], search: Query['search']) => {
+			const aggregate = primaryKeyField.value
+				? {
+						countDistinct: primaryKeyField.value.field,
+					}
+				: {
+						count: '*',
+					};
+
+			const response = await api.get<any>(url, {
+				params: {
+					aggregate,
+					...(filter ? { filter } : {}),
+					...(search ? { search } : {}),
+				},
+			});
+
+			return primaryKeyField.value
+				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
+				: Number(response.data.data[0].count);
+		},
+		{
+			getKey(url, filter, search) {
+				const key: { url: string; filter?: Filter; search?: string } = { url };
+
+				if (!isEmpty(filter)) key.filter = filter;
+				if (!isEmpty(search)) key.search = search!;
+
+				return JSON.stringify(key);
+			},
+		},
+	);
 
 	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
 	const fetchItems = throttle((shouldUpdateCount: boolean) => {
@@ -140,8 +173,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 		let isCurrentRequestCanceled = false;
 
-		if (existingRequests.items) existingRequests.items.abort();
-		existingRequests.items = new AbortController();
+		if (itemsAbort) itemsAbort.abort();
+		itemsAbort = new AbortController();
 
 		error.value = null;
 
@@ -180,11 +213,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					filter: unref(filter),
 					deep: unref(deep),
 				},
-				signal: existingRequests.items.signal,
+				signal: itemsAbort.signal,
 			});
 
 			let fetchedItems = response.data.data;
-			existingRequests.items = null;
+			itemsAbort = null;
 
 			/**
 			 * @NOTE
@@ -246,31 +279,14 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
+		const currentGeneration = ++totalCountGeneration;
+
 		try {
-			if (existingRequests.total) existingRequests.total.abort();
-			existingRequests.total = new AbortController();
+			const count = await fetchAggregate(endpoint.value, filterSystem?.value, undefined);
 
-			const aggregate = primaryKeyField.value
-				? {
-						countDistinct: primaryKeyField.value.field,
-					}
-				: {
-						count: '*',
-					};
-
-			const response = await api.get<any>(endpoint.value, {
-				params: {
-					aggregate,
-					filter: unref(filterSystem),
-				},
-				signal: existingRequests.total.signal,
-			});
-
-			const count = primaryKeyField.value
-				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
-				: Number(response.data.data[0].count);
-
-			existingRequests.total = null;
+			// Discard the result if a newer request has been initiated (prevents race conditions
+			// when navigating between collections quickly)
+			if (currentGeneration !== totalCountGeneration) return;
 
 			totalCount.value = count;
 		} catch (err: any) {
@@ -283,34 +299,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
+		const currentGeneration = ++itemCountGeneration;
+
 		loadingItemCount.value = true;
 
 		try {
-			if (existingRequests.filter) existingRequests.filter.abort();
-			existingRequests.filter = new AbortController();
+			const count = await fetchAggregate(endpoint.value, filter.value, search.value);
 
-			const aggregate = primaryKeyField.value
-				? {
-						countDistinct: primaryKeyField.value.field,
-					}
-				: {
-						count: '*',
-					};
-
-			const response = await api.get<any>(endpoint.value, {
-				params: {
-					filter: unref(filter),
-					search: unref(search),
-					aggregate,
-				},
-				signal: existingRequests.filter.signal,
-			});
-
-			const count = primaryKeyField.value
-				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
-				: Number(response.data.data[0].count);
-
-			existingRequests.filter = null;
+			// Discard the result if a newer request has been initiated (prevents race conditions
+			// when rapidly changing filters or search terms)
+			if (currentGeneration !== itemCountGeneration) return;
 
 			itemCount.value = count;
 		} catch (err: any) {
@@ -318,7 +316,9 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 				throw err;
 			}
 		} finally {
-			loadingItemCount.value = false;
+			if (currentGeneration === itemCountGeneration) {
+				loadingItemCount.value = false;
+			}
 		}
 	}
 }

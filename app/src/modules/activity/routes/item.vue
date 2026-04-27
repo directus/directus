@@ -92,7 +92,7 @@ async function loadActivity() {
 }
 
 function close() {
-	router.push('/activity');
+	router.push({ name: 'activity-collection' });
 }
 </script>
 

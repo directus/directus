@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
+import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
@@ -37,7 +38,6 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
-import { sameOrigin } from '@/modules/visual/utils/same-origin';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -484,7 +484,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 			refresh();
 			revisionsSidebarDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
-			if (!props.singleton) router.push(`/content/${props.collection}`);
+			if (!props.singleton) router.push({ name: 'content-collection', params: { collection: props.collection } });
 		}
 	} catch {
 		// Save shows unexpected error dialog

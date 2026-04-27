@@ -122,6 +122,7 @@ describe('Integration Tests', () => {
 				[{}, 'collection name is missing'],
 				[{ collection: '' }, 'collection name is empty'],
 				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
+				[{ collection: 'Folder/Test' }, 'collection name contains "/"'],
 			];
 
 			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {
