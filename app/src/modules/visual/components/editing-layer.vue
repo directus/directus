@@ -21,7 +21,6 @@ import { useAiContextStore } from '@/ai/stores/use-ai-context';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -32,6 +31,7 @@ import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 
 const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
@@ -51,13 +51,9 @@ const { t } = useI18n();
 const { collection, primaryKey, fields, mode, position, isNew, edits, editOverlayActive, itemRoute, onClickEdit } =
 	useItemWithEdits();
 
-const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : null));
-
 const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
 
 useVisualEditingAi({ sendSaved, sendHighlightElement });
-
-const { popoverWidth } = usePopoverWidth();
 
 // Clear highlight when edit overlay closes
 watch(editOverlayActive, (isActive) => {
@@ -421,20 +417,6 @@ function useItemWithEdits() {
 		editingLayerEl.value.removeAttribute('tabindex');
 	}
 }
-
-function usePopoverWidth() {
-	/**
-	 * Hardcode this value, since its parts probably won't change. However, keep it in sync with the `width` of `.popover-item-content` in app/src/views/private/components/overlay-item.vue
-	 *
-	 * Parts:
-	 * const formColumnWidth = 300; // app/src/styles/_variables.scss
-	 * const popoverColumnGap = 16;
-	 * const popoverPadding = 16 * 2;
-	 * const popoverWidth = 2 * formColumnWidth + popoverColumnGap + popoverPadding;
-	 */
-
-	return { popoverWidth: 648 };
-}
 </script>
 
 <template>
@@ -448,7 +430,7 @@ function usePopoverWidth() {
 			:selected-fields="fields"
 			:edits="edits"
 			:version="version?.key"
-			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
+			:popover-props="({ popoverWidth }) => (position.width > popoverWidth ? { arrowPlacement: 'start' } : {})"
 			apply-shortcut="meta+s"
 			prevent-cancel-with-edits
 			@input="(value: any) => (edits = value)"
@@ -466,22 +448,24 @@ function usePopoverWidth() {
 
 			<template #actions>
 				<template v-if="primaryKey">
-					<VButton v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
-						{{ t('navigate_to_item') }}
-					</VButton>
-
 					<VButton
-						v-else
-						v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
+						v-if="mode === 'modal' || mode === 'popover'"
 						:to="itemRoute"
 						:disabled="isNew"
 						:x-small="mode === 'popover'"
-						:small="mode !== 'popover'"
 						secondary
-						icon
 					>
-						<VIcon name="launch" small />
+						{{ t('navigate_to_item') }}
 					</VButton>
+
+					<PrivateViewHeaderBarActionButton
+						v-else
+						v-tooltip.bottom="t('navigate_to_item')"
+						:to="itemRoute"
+						:disabled="isNew"
+						icon="launch"
+						variant="ghost"
+					/>
 				</template>
 			</template>
 		</OverlayItem>
