@@ -1,4 +1,5 @@
 export * from './collections.js';
+export * from './extensions.js';
 export * from './comments.js';
 export * from './dashboards.js';
 export * from './deployment.js';
