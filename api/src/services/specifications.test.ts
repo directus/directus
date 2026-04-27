@@ -376,6 +376,102 @@ describe('Integration Tests', () => {
 					});
 				});
 
+				describe('nullable m2o relation', () => {
+					it('puts nullable inside the oneOf type leg, not at root', async () => {
+						const schemaWithM2O = new SchemaBuilder()
+							.collection('articles', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+								c.field('author').m2o('authors').options({ nullable: true });
+							})
+							.collection('authors', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: schemaWithM2O,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.components?.schemas?.['ItemsArticles']).toMatchInlineSnapshot(`
+							{
+							  "properties": {
+							    "author": {
+							      "oneOf": [
+							        {
+							          "nullable": true,
+							          "type": "integer",
+							        },
+							        {
+							          "$ref": "#/components/schemas/ItemsAuthors",
+							        },
+							      ],
+							    },
+							    "id": {
+							      "nullable": false,
+							      "type": "integer",
+							    },
+							  },
+							  "required": [
+							    "id",
+							  ],
+							  "type": "object",
+							  "x-collection": "articles",
+							}
+						`);
+					});
+
+					it('does not add nullable to the oneOf type leg when field is not nullable', async () => {
+						const schemaWithM2O = new SchemaBuilder()
+							.collection('articles', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+								c.field('author').m2o('authors').options({ nullable: false });
+							})
+							.collection('authors', (c) => {
+								c.field('id').integer().primary().options({ nullable: false });
+							})
+							.build();
+
+						const service = new SpecificationService({
+							knex: db,
+							schema: schemaWithM2O,
+							accountability: { role: 'admin', admin: true } as Accountability,
+						});
+
+						const spec = await service.oas.generate();
+
+						expect(spec.components?.schemas?.['ItemsArticles']).toMatchInlineSnapshot(`
+							{
+							  "properties": {
+							    "author": {
+							      "oneOf": [
+							        {
+							          "type": "integer",
+							        },
+							        {
+							          "$ref": "#/components/schemas/ItemsAuthors",
+							        },
+							      ],
+							    },
+							    "id": {
+							      "nullable": false,
+							      "type": "integer",
+							    },
+							  },
+							  "required": [
+							    "id",
+							    "author",
+							  ],
+							  "type": "object",
+							  "x-collection": "articles",
+							}
+						`);
+					});
+				});
+
 				describe('path', () => {
 					it('requestBody for CreateItems POST path should not have type in schema', async () => {
 						const service = new SpecificationService({

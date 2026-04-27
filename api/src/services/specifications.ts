@@ -496,10 +496,16 @@ class OASSpecsService implements SpecificationSubService {
 				const relatedCollection = schema.collections[relation.related_collection]!;
 				const relatedPrimaryKeyField = relatedCollection.fields[relatedCollection.primary]!;
 
+				const typeSchema = { ...this.fieldTypes[relatedPrimaryKeyField.type] };
+
+				if (propertyObject.nullable) {
+					typeSchema.nullable = true;
+				}
+
+				delete propertyObject.nullable;
+
 				propertyObject.oneOf = [
-					{
-						...this.fieldTypes[relatedPrimaryKeyField.type],
-					},
+					typeSchema,
 					{
 						$ref: `#/components/schemas/${relatedTag.name}`,
 					},
