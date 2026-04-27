@@ -11,18 +11,18 @@ properties:
   user:
     description: The unique identifier of the user to whom this collection preset applies.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
-    nullable: true
     oneOf:
       - type: string
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Users'
   role:
     description:
       The unique identifier of a role in the platform. If `user` is null, this will be used to apply the collection
       preset or bookmark for all users in the role.
     example: 50419801-0f30-8644-2b3c-9bc2d980d0a0
-    nullable: true
     oneOf:
       - type: string
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Roles'
   collection:
     description: What collection this collection preset is used for.

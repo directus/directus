@@ -17,8 +17,8 @@ properties:
     description: The user who performed this action.
     oneOf:
       - type: string
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Users'
-    nullable: true
   timestamp:
     description: When the action happened.
     example: '2019-12-05T22:52:09Z'

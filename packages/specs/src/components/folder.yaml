@@ -13,5 +13,5 @@ properties:
     example: null
     oneOf:
       - type: string
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Folders'
-    nullable: true

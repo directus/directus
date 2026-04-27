@@ -47,8 +47,8 @@ properties:
     example: null
     oneOf:
       - type: string
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Files'
-    nullable: true
   language:
     description: The user's language used in Directus.
     example: en-US

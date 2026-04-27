@@ -31,8 +31,8 @@ properties:
     example: null
     oneOf:
       - type: string
+        nullable: true
       - $ref: '../openapi.yaml#/components/schemas/Folders'
-    nullable: true
   created_on:
     description: When the file was created.
     example: '2019-12-03T00:10:15+00:00'
