@@ -62,7 +62,7 @@ test('variant prop adds correct class', () => {
 	}
 });
 
-test('defaults to soft variant', () => {
+test('defaults to outlined variant', () => {
 	const wrapper = mount(VKbd);
-	expect(wrapper.classes()).toContain('soft');
+	expect(wrapper.classes()).toContain('outlined');
 });
