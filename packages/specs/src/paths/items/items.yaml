@@ -74,22 +74,22 @@ patch:
     - $ref: '../../openapi.yaml#/components/parameters/Sort'
     - $ref: '../../openapi.yaml#/components/parameters/Filter'
     - $ref: '../../openapi.yaml#/components/parameters/Search'
-responses:
-  '200':
-    description: Successful request
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            data:
-              type: array
-              items:
-                type: object
-            meta:
-              $ref: '../../openapi.yaml#/components/schemas/x-metadata'
-  '401':
-    $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
 delete:
   summary: Delete Multiple Items
