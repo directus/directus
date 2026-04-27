@@ -64,6 +64,8 @@ export interface VButtonProps {
 	xLarge?: boolean;
 	/** Tooltip text to show on hover */
 	tooltip?: string;
+	/** Disables the split-menu dropdown button */
+	splitMenuDisabled?: boolean;
 }
 
 export interface VButtonEmits {
@@ -196,6 +198,7 @@ async function onClick(event: MouseEvent) {
 						},
 						kind,
 					]"
+					:disabled="splitMenuDisabled"
 					:aria-label="$t('aria.more_options')"
 					@click.stop="toggleSplitMenu"
 				>
@@ -305,6 +308,12 @@ async function onClick(event: MouseEvent) {
 	}
 }
 
+.button,
+.split-menu-button {
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, border, color;
+}
+
 .button {
 	position: relative;
 	display: flex;
@@ -317,8 +326,6 @@ async function onClick(event: MouseEvent) {
 	line-height: var(--v-button-line-height, 1.4286);
 	text-decoration: none;
 	cursor: pointer;
-	transition: var(--fast) var(--transition);
-	transition-property: background-color, border;
 
 	&.has-split-menu {
 		border-start-end-radius: 0;
@@ -359,7 +366,8 @@ async function onClick(event: MouseEvent) {
 	justify-content: flex-end;
 }
 
-.button:disabled {
+.button:disabled,
+.split-menu-button:disabled {
 	color: var(--v-button-color-disabled, var(--theme--foreground-subdued));
 	background-color: var(--v-button-background-color-disabled, var(--theme--background-normal));
 	border: var(--theme--border-width) solid var(--v-button-background-color-disabled, var(--theme--background-normal));

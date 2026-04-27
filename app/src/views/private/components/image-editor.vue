@@ -639,22 +639,17 @@ function setAspectRatio() {
 				:label="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
+				:split-menu-disabled="!hasEdits"
 				icon="check"
 				@click="save"
 			>
-				<template v-if="props.createAllowed" #append-outer>
-					<VMenu show-arrow placement="bottom-end">
-						<template #activator="{ toggle }">
-							<VIcon name="more_vert" clickable @click="toggle" />
-						</template>
-
-						<VList>
-							<VListItem :disabled="!hasEdits" clickable @click="saveAsNew">
-								<VListItemIcon><VIcon name="add_photo_alternate" /></VListItemIcon>
-								<VListItemContent>{{ $t('save_as_new_file') }}</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
+				<template v-if="props.createAllowed" #split-menu>
+					<VList>
+						<VListItem :disabled="!hasEdits" clickable @click="saveAsNew">
+							<VListItemIcon><VIcon name="add_photo_alternate" /></VListItemIcon>
+							<VListItemContent>{{ $t('save_as_new_file') }}</VListItemContent>
+						</VListItem>
+					</VList>
 				</template>
 			</PrivateViewHeaderBarActionButton>
 		</template>

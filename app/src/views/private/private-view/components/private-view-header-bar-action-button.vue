@@ -25,6 +25,7 @@ const {
 	href?: VButtonProps['href'];
 	download?: VButtonProps['download'];
 	active?: VButtonProps['active'];
+	splitMenuDisabled?: VButtonProps['splitMenuDisabled'];
 }>();
 
 defineEmits<VButtonEmits>();
@@ -69,6 +70,7 @@ function useIcon() {
 		:download
 		:tooltip="activeTooltip"
 		:icon="showIcon"
+		:split-menu-disabled="splitMenuDisabled"
 		small
 		exact
 		@click="$emit('click', $event)"
