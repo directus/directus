@@ -33,28 +33,7 @@ patch:
     content:
       application/json:
         schema:
-          properties:
-            description:
-              description: Description of the role.
-              type: string
-            enforce_tfa:
-              description: Whether or not this role enforces the use of 2FA.
-              type: boolean
-            external_id:
-              description: ID used with external services in SCIM.
-              type: string
-            ip_access:
-              description: Array of IP addresses that are allowed to connect to the API as a user of this role.
-              type: array
-              items:
-                type: string
-            module_listing:
-              description: Custom override for the admin app module bar navigation.
-              type: string
-            name:
-              description: Name of the role.
-              type: string
-          type: object
+          $ref: '../../openapi.yaml#/components/schemas/Roles'
   responses:
     '200':
       description: Successful request
