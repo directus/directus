@@ -1953,7 +1953,6 @@ interfaces:
     value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
     generate: Erişim Anahtarı Üret
     regenerate: Yeniden Erişim Anahtarı Üret
-    generate_success_copy: Yukarıdaki belirteci yedeklediğinizden ve kopyaladığınızdan emin olun. Güvenlik nedeniyle, bu sayfayı kaydedip çıktıktan sonra jetonu tekrar göremeyeceksiniz.
     remove_token: Belirteci kaldır
   system-raw-editor:
     system-raw-editor: Ham Düzenleyici

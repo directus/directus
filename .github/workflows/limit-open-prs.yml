@@ -1,0 +1,71 @@
+name: Limit Open PRs for External Contributors
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  limit-open-prs:
+    if: github.repository == 'directus/directus'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const MAX_OPEN_PRS = 2;
+            const author = context.payload.pull_request.user.login;
+            const prNumber = context.payload.pull_request.number;
+
+            // Check if the author is a member of the directus organization
+            let isMember = false;
+
+            try {
+              const { status } = await github.rest.orgs.checkMembershipForUser({
+                org: 'directus',
+                username: author,
+              });
+
+              isMember = status === 204;
+            } catch {
+              isMember = false;
+            }
+
+            if (isMember) {
+              core.info(`${author} is a Directus org member — skipping check.`);
+              return;
+            }
+
+            // Count open PRs by this author (excluding the current one)
+            const openPrs = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const authorOpenPrs = openPrs.filter(pr => pr.user.login === author && pr.number !== prNumber);
+
+            if (authorOpenPrs.length < MAX_OPEN_PRS) {
+              core.info(`${author} has ${authorOpenPrs.length} other open PR(s) — within the limit.`);
+              return;
+            }
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              state: 'closed',
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: `Hi @${author}! 👋 Thank you for contributing to Directus! We limit external contributors to ${MAX_OPEN_PRS} open pull requests at a time so our team can focus on reviewing existing contributions thoroughly. You currently have ${authorOpenPrs.length} other open PRs, so we're closing this one for now. Please focus on addressing any feedback on your existing PRs. Once they're merged or closed, you're welcome to open this one again. 🐰`,
+            });
+
+            core.info(`Closed PR #${prNumber} from ${author} — exceeded open PR limit (${authorOpenPrs.length} existing open PRs).`);

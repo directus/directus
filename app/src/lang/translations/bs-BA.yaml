@@ -1585,7 +1585,6 @@ interfaces:
     value_securely_saved: Vrijednost sigurno sačuvana
     generate: Generiši token
     regenerate: Ponovno generiši token
-    generate_success_copy: Obavezno napravite sigurnosnu kopiju i kopirajte gornji token. Iz sigurnosnih razloga nećete moći ponovno vidjeti token nakon spašavanja i napuštanja ove stranice.
     remove_token: Ukloni token
   system-raw-editor:
     system-raw-editor: Uređivač sirovog sadržaja
