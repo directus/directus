@@ -126,6 +126,8 @@ function onFocusOut(event: FocusEvent) {
 
 	if (relatedTarget && searchElement?.contains(relatedTarget)) return;
 
+	if (filterActive.value && !relatedTarget) return;
+
 	disable();
 }
 
