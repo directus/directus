@@ -109,7 +109,7 @@ jobs:
                 [{ data: 'Property', header: true }, { data: 'Value', header: true }],
                 ['Pull Request', `#${prNumber}`],
                 ['Classification', classification],
-                ['Action', 'Added `'Suspected Bot'` label and posted policy comment'],
+                ['Action', 'Added \'Suspected Bot\' label and posted policy comment'],
               ])
 
             await core.summary.write()
