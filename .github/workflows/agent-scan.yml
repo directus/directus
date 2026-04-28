@@ -45,10 +45,18 @@ jobs:
           skip-members: 'dependabot[bot],renovate[bot]'
           agent-scan-comment: false
           cache-path: .agentscan-cache
-      - name: Label flagged PR
+      - name: Set AgentScan flag
         if:
-          contains(fromJSON('["automation","suspicious"]'), steps.agentscan.outputs.classification) &&
-          !contains(steps.agentscan.outputs.community-flagged, 'true')
+          ${{ contains(fromJSON('["automation","suspicious"]'), steps.agentscan.outputs.classification) &&
+          !contains(steps.agentscan.outputs.community-flagged, 'true') }}
+        run: echo "AGENT_FLAG=true" >> "$GITHUB_ENV"
+      - name: Set opted-in agent flag
+        if:
+          ${{ endsWith(github.event.pull_request.title, '🤖🤖🤖') || endsWith(github.event.pull_request.title,
+          ':robot::robot::robot:') }}
+        run: echo "AGENT_FLAG=true" >> "$GITHUB_ENV"
+      - name: Label flagged PR
+        if: ${{ env.AGENT_FLAG == 'true' }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -58,12 +66,12 @@ jobs:
             const issue = context.payload.pull_request
             const labels = issue.labels?.map(l => l.name) || []
 
-            if (!labels.includes('Suspected Bot')) {
+            if (!labels.includes('Maybe Slop')) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                labels: ['Suspected Bot'],
+                labels: ['Maybe Slop'],
               })
             }
 
@@ -79,7 +87,7 @@ jobs:
             )
 
             if (alreadyCommented) {
-              core.info('Suspected bot comment already exists. Skipping...')
+              core.info('Maybe Slop comment already exists. Skipping...')
               return
             }
 
@@ -93,9 +101,10 @@ jobs:
                 'All contributors must keep a human in the loop at all times:',
                 '',
                 '- You must fully understand any AI-assisted code you submit.',
-                '- You are responsible for verifying correctness, security, and performance.',
+                '- You are responsible for verifying correctness, security, performance, and project fit.',
+                '- Contributions must meet project standards and show meaningful human involvement.',
                 '- Fully autonomous agents may not create issues, pull requests, or other contributions.',
-                '- Comments, issues, pull requests, and replies must ultimately be your own words.',
+                '- Comments, issues, pull requests, and replies must be your own words, not copy-pasted AI output.',
                 '',
                 'Please review our [AI usage policy](https://github.com/directus/directus/blob/main/ai_policy.md).',
                 '',
@@ -104,12 +113,12 @@ jobs:
             })
 
             core.summary
-              .addHeading('AgentScan: Suspected Bot Flag', 2)
+              .addHeading('AgentScan: Maybe Slop Flag', 2)
               .addTable([
                 [{ data: 'Property', header: true }, { data: 'Value', header: true }],
                 ['Pull Request', `#${prNumber}`],
                 ['Classification', classification],
-                ['Action', 'Added \'Suspected Bot\' label and posted policy comment'],
+                ['Action', 'Added \'Maybe Slop\' label and posted policy comment'],
               ])
 
             await core.summary.write()
