@@ -144,22 +144,23 @@ export function applyOperator(
 	}
 
 	if (operator === '_icontains') {
+		let sql = `LOWER(??) LIKE ?`;
+
 		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
-			dbQuery[logical].whereRaw(`LOWER(CAST(?? AS text)) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
-		} else {
-			dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+			sql = `LOWER(CAST(?? AS text)) LIKE ?`;
 		}
+
+		dbQuery[logical].whereRaw(sql, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
 	}
 
 	if (operator === '_nicontains') {
+		let sql = `LOWER(??) NOT LIKE ?`;
+
 		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
-			dbQuery[logical].whereRaw(`LOWER(CAST(?? AS text)) NOT LIKE ?`, [
-				selectionRaw,
-				`%${compareValue.toLowerCase()}%`,
-			]);
-		} else {
-			dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+			sql = `LOWER(CAST(?? AS text)) NOT LIKE ?`;
 		}
+
+		dbQuery[logical].whereRaw(sql, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
 	}
 
 	if (operator === '_starts_with') {

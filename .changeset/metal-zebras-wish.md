@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-fix: support \_icontains/\_nicontains filter on json fields via text cast
+Added support for contain queries on json fields

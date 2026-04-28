@@ -354,6 +354,64 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
+		describe('filter json fields with contain operators', () => {
+			describe('filters with _icontains (case-insensitive)', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							filter: JSON.stringify({ metadata: { _icontains: 'brandx' } }),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.length).toEqual(2); // Products 1 and 3 have brand BrandX
+				});
+			});
+
+			describe('filters with _nicontains (case-insensitive negative)', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							filter: JSON.stringify({ metadata: { _nicontains: 'brandx' } }),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.length).toEqual(3); // Products 2, 4, 5 don't contain BrandX
+				});
+			});
+
+			describe('filters with _contains (case-sensitive)', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							filter: JSON.stringify({ metadata: { _contains: 'BrandX' } }),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.length).toEqual(2); // Case-sensitive: only exact BrandX matches
+				});
+			});
+
+			describe('filters with _ncontains (case-sensitive negative)', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionProducts}`)
+						.query({
+							filter: JSON.stringify({ metadata: { _ncontains: 'BrandX' } }),
+						})
+						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.length).toEqual(3); // Products without exact BrandX
+				});
+			});
+		});
+
 		describe('Error handling', () => {
 			describe('returns error for non-json field', () => {
 				it.each(vendors)('%s', async (vendor) => {
