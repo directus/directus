@@ -2,8 +2,18 @@ import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, SchemaOverview } from '@directus/types';
 import { getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
+import { getDatabaseClient } from '../../../../index.js';
 import { getHelpers } from '../../../../helpers/index.js';
 import { getColumn } from '../../../utils/get-column.js';
+
+/** Returns the SQL expression to cast a JSON column to a comparable text type for the current database dialect. */
+function jsonToTextCastSql(knex: Knex): string {
+	const client = getDatabaseClient(knex);
+	if (client === 'mysql') return 'CAST(?? AS CHAR)';
+	if (client === 'mssql') return 'CAST(?? AS NVARCHAR(MAX))';
+	if (client === 'oracle') return 'TO_CHAR(??)';
+	return 'CAST(?? AS text)';
+}
 
 function castToNumber(value: any): any {
 	if (Array.isArray(value)) {
@@ -129,7 +139,7 @@ export function applyOperator(
 
 	if (operator === '_contains') {
 		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
-			dbQuery[logical].whereRaw(`CAST(?? AS text) LIKE ?`, [selectionRaw, `%${compareValue}%`]);
+			dbQuery[logical].whereRaw(`${jsonToTextCastSql(knex)} LIKE ?`, [selectionRaw, `%${compareValue}%`]);
 		} else {
 			dbQuery[logical].where(selectionRaw, 'like', `%${compareValue}%`);
 		}
@@ -137,7 +147,7 @@ export function applyOperator(
 
 	if (operator === '_ncontains') {
 		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
-			dbQuery[logical].whereRaw(`CAST(?? AS text) NOT LIKE ?`, [selectionRaw, `%${compareValue}%`]);
+			dbQuery[logical].whereRaw(`${jsonToTextCastSql(knex)} NOT LIKE ?`, [selectionRaw, `%${compareValue}%`]);
 		} else {
 			dbQuery[logical].whereNot(selectionRaw, 'like', `%${compareValue}%`);
 		}
@@ -147,7 +157,7 @@ export function applyOperator(
 		let sql = `LOWER(??) LIKE ?`;
 
 		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
-			sql = `LOWER(CAST(?? AS text)) LIKE ?`;
+			sql = `LOWER(${jsonToTextCastSql(knex)}) LIKE ?`;
 		}
 
 		dbQuery[logical].whereRaw(sql, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
@@ -157,7 +167,7 @@ export function applyOperator(
 		let sql = `LOWER(??) NOT LIKE ?`;
 
 		if (schema.collections[mappedCollection]?.fields[field!]?.type === 'json') {
-			sql = `LOWER(CAST(?? AS text)) NOT LIKE ?`;
+			sql = `LOWER(${jsonToTextCastSql(knex)}) NOT LIKE ?`;
 		}
 
 		dbQuery[logical].whereRaw(sql, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
