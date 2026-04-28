@@ -645,7 +645,7 @@ function setAspectRatio() {
 			>
 				<template v-if="props.createAllowed" #split-menu>
 					<VList>
-						<VListItem :disabled="!hasEdits" clickable @click="saveAsNew">
+						<VListItem clickable @click="saveAsNew">
 							<VListItemIcon><VIcon name="add_photo_alternate" /></VListItemIcon>
 							<VListItemContent>{{ $t('save_as_new_file') }}</VListItemContent>
 						</VListItem>
