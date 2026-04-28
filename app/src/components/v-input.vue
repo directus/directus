@@ -90,7 +90,7 @@ const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus', 'key
 
 const attrs = useAttrs();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const input = ref<HTMLInputElement | null>(null);
 
@@ -108,6 +108,22 @@ const listeners = computed(() => ({
 }));
 
 const attributes = computed(() => omit(attrs, ['class']));
+
+const decimalSeparator = computed(
+	() => new Intl.NumberFormat(locale.value).formatToParts(1.1).find((p) => p.type === 'decimal')?.value ?? '.',
+);
+
+// Float fields are rendered as type="text" (see interfaces/input/input.vue) so we render
+// the stored dot-separated value with the app locale's decimal separator.
+const displayValue = computed(() => {
+	const raw = props.modelValue === undefined || props.modelValue === null ? '' : String(props.modelValue);
+
+	if (props.float && props.type !== 'number' && decimalSeparator.value !== '.') {
+		return raw.replace('.', decimalSeparator.value);
+	}
+
+	return raw;
+});
 
 const classes = computed(() => [
 	{
@@ -350,7 +366,7 @@ function useInlineWarning() {
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+					:value="displayValue"
 					v-on="listeners"
 					@keydown.space="$emit('keydown:space', $event)"
 					@keydown.enter="$emit('keydown:enter', $event)"

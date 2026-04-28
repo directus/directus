@@ -7,7 +7,19 @@ const mountOptions = {
 		stubs: {
 			'v-input': {
 				name: 'v-input',
-				props: ['modelValue', 'type', 'min', 'max', 'step', 'placeholder', 'disabled', 'trim', 'integer', 'float'],
+				props: [
+					'modelValue',
+					'type',
+					'inputmode',
+					'min',
+					'max',
+					'step',
+					'placeholder',
+					'disabled',
+					'trim',
+					'integer',
+					'float',
+				],
 				template: '<input />',
 				emits: ['update:model-value'],
 			},
@@ -53,7 +65,7 @@ describe('input interface', () => {
 			expect(input.props('type')).toBe('number');
 		});
 
-		test('sets inputType to "number" for float type', () => {
+		test('sets inputType to "text" for float type (so locale decimal separators work across browsers, issue #24803)', () => {
 			wrapper = mount(InputInterface, {
 				...mountOptions,
 				props: {
@@ -63,7 +75,36 @@ describe('input interface', () => {
 			});
 
 			const input = wrapper.findComponent({ name: 'v-input' });
+			expect(input.props('type')).toBe('text');
+			expect(input.props('inputmode')).toBe('decimal');
+		});
+
+		test('sets inputType to "text" for decimal type', () => {
+			wrapper = mount(InputInterface, {
+				...mountOptions,
+				props: {
+					value: 19.99,
+					type: 'decimal',
+				},
+			});
+
+			const input = wrapper.findComponent({ name: 'v-input' });
+			expect(input.props('type')).toBe('text');
+			expect(input.props('inputmode')).toBe('decimal');
+		});
+
+		test('does not set inputmode for integer type', () => {
+			wrapper = mount(InputInterface, {
+				...mountOptions,
+				props: {
+					value: 42,
+					type: 'integer',
+				},
+			});
+
+			const input = wrapper.findComponent({ name: 'v-input' });
 			expect(input.props('type')).toBe('number');
+			expect(input.props('inputmode')).toBeUndefined();
 		});
 
 		test('sets inputType to "text" for string type', () => {
