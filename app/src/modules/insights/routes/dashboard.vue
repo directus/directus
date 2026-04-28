@@ -225,7 +225,7 @@ const refreshInterval = computed({
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('create_panel')"
 					outlined
-					:to="`/insights/${currentDashboard.id}/+`"
+					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
 					icon="add"
 				/>
 
@@ -274,7 +274,7 @@ const refreshInterval = computed({
 			:tiles="tiles"
 			:zoom-to-fit="zoomToFit"
 			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
-			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
+			@edit="(tile) => router.push({ name: 'panel-detail', params: { primaryKey, panelKey: tile.id } })"
 			@update="insightsStore.stagePanelUpdate"
 			@delete="insightsStore.stagePanelDelete"
 			@move="copyPanelID = $event"
