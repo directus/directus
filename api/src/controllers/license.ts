@@ -15,6 +15,7 @@ const router = express.Router();
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
+		res.locals['cache'] = false;
 		res.locals['payload'] = { data: pickLicenseScenario(req.query['scenario']) };
 		return next();
 	}),
@@ -25,6 +26,7 @@ router.get(
 router.get(
 	'/preview',
 	asyncHandler(async (req, res, next) => {
+		res.locals['cache'] = false;
 		maybeThrowMockError(req.query['error'], ['LICENSE_INVALID', 'LICENSE_SERVICE_UNAVAILABLE']);
 
 		res.locals['payload'] = { data: MOCK_LICENSE_PREVIEW };
@@ -37,6 +39,7 @@ router.get(
 router.get(
 	'/resolve',
 	asyncHandler(async (_req, res, next) => {
+		res.locals['cache'] = false;
 		res.locals['payload'] = { data: MOCK_LICENSE_RESOLVE };
 		return next();
 	}),
@@ -47,6 +50,7 @@ router.get(
 router.get(
 	'/addons',
 	asyncHandler(async (_req, res, next) => {
+		res.locals['cache'] = false;
 		res.locals['payload'] = { data: MOCK_LICENSE_ADDONS };
 		return next();
 	}),
