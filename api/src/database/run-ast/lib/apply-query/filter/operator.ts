@@ -2,8 +2,8 @@ import { InvalidQueryError } from '@directus/errors';
 import type { FieldFunction, SchemaOverview } from '@directus/types';
 import { getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
-import { getDatabaseClient } from '../../../../index.js';
 import { getHelpers } from '../../../../helpers/index.js';
+import { getDatabaseClient } from '../../../../index.js';
 import { getColumn } from '../../../utils/get-column.js';
 
 /** Returns the SQL expression to cast a JSON column to a comparable text type for the current database dialect. */
