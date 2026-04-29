@@ -48,7 +48,8 @@
 			"anymatch>picomatch": "2.3.2",
 			"picomatch": "4.0.4",
 			"defu": "6.1.7",
-			"unplugin-vue>vite": "8.0.8"
+			"unplugin-vue>vite": "8.0.8",
+			"@xmldom/xmldom": "0.8.13"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
