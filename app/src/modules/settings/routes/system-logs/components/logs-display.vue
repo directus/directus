@@ -321,6 +321,8 @@ function selectLog(index: number) {
 	--v-chip-color: var(--white);
 	--v-chip-background-color: var(--theme--primary);
 	--v-chip-close-color: var(--theme--primary);
+	--v-chip-close-color-hover: var(--theme--primary-accent);
+	--v-chip-close-color-disabled: var(--theme--primary);
 
 	cursor: pointer;
 	box-shadow: -4px 0 7px -4px var(--shadow-color);
