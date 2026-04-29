@@ -53,11 +53,6 @@ export function getLicenseManager(): LicenseManager {
 	return licenseManager;
 }
 
-export type APILicense = {
-	status: 'active' | 'inactive' | 'invalid';
-	source: 'env' | 'settings';
-} & License;
-
 export class LicenseManager {
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
