@@ -2,7 +2,7 @@
 import { useCollection } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
 import type { User } from '@directus/types';
-import { computed, provide, ref, toRefs } from 'vue';
+import { computed, provide, ref, toRefs, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -25,6 +25,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -34,6 +35,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import LicenseSeatsLimitModal from '@/views/private/components/license-seats-limit-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -114,6 +116,18 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 const confirmDiscard = ref(false);
+
+const licenseStore = useLicenseStore();
+const seatsLimitModalOpen = ref(false);
+
+const seatsLimitVariant = computed(() => (licenseStore.info?.plan === 'enterprise' ? 'contact-sales' : 'manage-plan'));
+
+watchEffect(() => {
+	if (!isNew.value) return;
+	const info = licenseStore.info;
+	if (!info) return;
+	seatsLimitModalOpen.value = (info.usage?.seats ?? 0) >= info.entitlements.seats;
+});
 
 // Provide the discard functionality to field interfaces
 provide('discardAllChanges', discardAndStay);
@@ -499,6 +513,13 @@ function revert(values: Record<string, any>) {
 			:current-version="null"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
+		/>
+
+		<LicenseSeatsLimitModal
+			v-if="isNew"
+			v-model="seatsLimitModalOpen"
+			:variant="seatsLimitVariant"
+			@cancel="router.push({ name: 'users-active' })"
 		/>
 
 		<template #sidebar>

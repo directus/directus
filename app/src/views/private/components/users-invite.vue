@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Role } from '@directus/types';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import LicenseSeatsLimitModal from './license-seats-limit-modal.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -11,6 +12,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VNotice from '@/components/v-notice.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextarea from '@/components/v-textarea.vue';
+import { useLicenseStore } from '@/stores/license';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -23,12 +25,23 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
 }>();
 
+const licenseStore = useLicenseStore();
+
 const emails = ref<string>('');
 const roles = ref<Record<string, any>[]>([]);
 const roleSelected = ref<string | undefined>(props.role);
 const loading = ref(false);
+const seatsLimitModalOpen = ref(false);
 
 const uniqueValidationErrors = ref([]);
+
+const isAtSeatsLimit = computed(() => {
+	const info = licenseStore.info;
+	if (!info) return false;
+	return (info.usage?.seats ?? 0) >= info.entitlements.seats;
+});
+
+const seatsLimitVariant = computed(() => (licenseStore.info?.plan === 'enterprise' ? 'contact-sales' : 'manage-plan'));
 
 watch(
 	() => props.modelValue,
@@ -39,6 +52,11 @@ watch(
 
 async function inviteUsers() {
 	if (emails.value.length === 0 || loading.value) return;
+
+	if (isAtSeatsLimit.value) {
+		seatsLimitModalOpen.value = true;
+		return;
+	}
 
 	loading.value = true;
 
@@ -132,6 +150,8 @@ async function loadRoles() {
 			</VCardActions>
 		</VCard>
 	</VDialog>
+
+	<LicenseSeatsLimitModal v-model="seatsLimitModalOpen" :variant="seatsLimitVariant" />
 </template>
 
 <style lang="scss" scoped>
