@@ -239,8 +239,8 @@ function useVersionSelection() {
 
 			<template #append-url>
 				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
-					<template #activator="{ toggle, active }">
-						<VersionChip :version="selectedVersion" :active @click="toggle()" />
+					<template #activator="{ toggle }">
+						<VersionChip :version="selectedVersion" @click="toggle()" />
 					</template>
 
 					<VList>

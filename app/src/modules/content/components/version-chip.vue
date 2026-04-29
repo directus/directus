@@ -9,7 +9,6 @@ import { getVersionDisplayName } from '@/utils/get-version-display-name';
 
 const { version } = defineProps<{
 	version: Pick<ContentVersion, 'key' | 'name'> | null;
-	active?: boolean;
 }>();
 
 const kind = computed(() => {
@@ -20,7 +19,7 @@ const kind = computed(() => {
 </script>
 
 <template>
-	<VChip small clickable :label="false" class="version-chip" :kind :class="[{ active }]">
+	<VChip small clickable :label="false" class="version-chip" :kind>
 		<VTextOverflow class="version-name" :text="getVersionDisplayName(version)" placement="bottom" />
 		<VIcon small name="arrow_drop_down" />
 	</VChip>

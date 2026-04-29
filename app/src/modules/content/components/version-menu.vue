@@ -339,8 +339,8 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 <template>
 	<VMenu class="version-menu" placement="bottom" show-arrow>
-		<template #activator="{ toggle, active }">
-			<VersionChip :version="currentVersion" :active @click="toggle()" />
+		<template #activator="{ toggle }">
+			<VersionChip :version="currentVersion" @click="toggle()" />
 		</template>
 
 		<VList class="version-list">

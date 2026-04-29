@@ -39,18 +39,6 @@ describe('VersionChip', () => {
 		});
 	});
 
-	describe('active prop', () => {
-		it('applies active class when active is true', () => {
-			const wrapper = mount(VersionChip, { ...mountOptions, props: { version: null, active: true } });
-			expect(wrapper.classes()).toContain('active');
-		});
-
-		it('does not apply active class when active is omitted', () => {
-			const wrapper = mount(VersionChip, { ...mountOptions, props: { version: null } });
-			expect(wrapper.classes()).not.toContain('active');
-		});
-	});
-
 	it('reacts to version prop changes', async () => {
 		const wrapper = mount(VersionChip, { ...mountOptions, props: { version: null } });
 		expect(wrapper.classes()).toContain('primary');
