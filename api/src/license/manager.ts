@@ -6,7 +6,6 @@ import {
 	refresh as refreshLicense,
 	verifyLicense,
 } from '@directus/license';
-import type { Knex } from 'knex';
 import { useBus } from '../bus/index.js';
 import { useLogger } from '../logger/index.js';
 import { SettingsService } from '../services/settings.js';
@@ -22,26 +21,18 @@ const RELOAD_CHANNEL = `license.reload`;
 let licenseCache: License | null;
 
 type LicenseStore = {
+	license_key: string | undefined;
+	license_token: string | undefined;
 	initialized: 'active' | 'complete' | undefined;
 	status: LicenseStatus | undefined;
 };
 
 const store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
-export async function getLicense(options: { database?: Knex }): Promise<License> {
+export async function getLicense(): Promise<License> {
 	if (licenseCache) return licenseCache;
 
-	let token: string | null = null;
-
-	if (env['LICENSE_TOKEN']) {
-		token = String(env['LICENSE_TOKEN']);
-	} else {
-		const schema = await getSchema(options);
-		const settingsService = new SettingsService({ schema, ...options });
-
-		const { license_token } = await settingsService.readSingleton({ fields: ['license_token'] });
-		token = license_token ?? null;
-	}
+	const token = await store((store) => store.get('license_token'));
 
 	if (!token) {
 		licenseCache = CORE_LICENSE;
@@ -123,19 +114,23 @@ export class LicenseManager {
 		if (!envKey && !envToken && !dbKey) {
 			// CASE H
 			if (dbToken) {
-				await settingsService.upsertSingleton({ license_token: null });
-
-				this.clearCache();
-
-				await store(async (store) => {
-					await store.set('initialized', 'complete');
-					// Core license is always active
-					await store.set('status', 'active');
-				});
+				await this.clearToken();
 			}
+
+			// Use core license
+			await store(async (store) => {
+				await store.set('initialized', 'complete');
+				await store.delete('license_key');
+				await store.set('status', 'active');
+			});
 
 			return;
 		}
+
+		await store(async (store) => {
+			await store.set('license_key', envKey ?? dbKey ?? undefined);
+			await store.set('license_token', envToken ?? dbToken ?? undefined);
+		});
 
 		// CASE D
 		if (envKey && !dbKey) {
@@ -150,7 +145,7 @@ export class LicenseManager {
 			if (envKey !== dbKey) {
 				await this.update(dbKey, envKey);
 			} else {
-				await this.refresh(envKey, dbToken);
+				await this.refresh();
 			}
 		}
 
@@ -165,7 +160,7 @@ export class LicenseManager {
 
 			// CASE F else G
 			if (dbToken) {
-				await this.refresh(dbKey, dbToken);
+				await this.refresh();
 			} else {
 				await this.activate(dbKey);
 			}
@@ -216,8 +211,14 @@ export class LicenseManager {
 			this.clearCache();
 
 			license = await verifyLicense(token);
+
+			await store(async (store) => {
+				await store.set('license_key', key);
+				await store.set('license_token', token);
+			});
 		} catch (err) {
 			error = err as Error;
+			await this.clearToken();
 		}
 
 		await store(async (store) => {
@@ -245,9 +246,19 @@ export class LicenseManager {
 	/**
 	 * Verifys a current token and refreshes it with a new token
 	 */
-	public async refresh(key: string, token?: string | null): Promise<void> {
+	public async refresh(options?: { key: string; token?: string | null }): Promise<void> {
+		const { key, token } = await store(async (store) => ({
+			key: options?.key ?? (await store.get('license_key')),
+			token: options?.token ?? (await store.get('license_token')),
+		}));
+
+		if (!key) {
+			throw new TypeError('key has to be defined in order to refresh');
+		}
+
 		let license: License | null = null;
 		let error: Error | undefined;
+
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		if (token) {
@@ -268,16 +279,34 @@ export class LicenseManager {
 					license_token: token,
 				});
 
+				await store(async (store) => {
+					await store.set('license_token', token);
+				});
+
 				this.clearCache();
 
 				license = await verifyLicense(token);
 			} catch (err) {
 				error = err as Error;
+				// TODO: Should not clear when license API unavailable
+				await this.clearToken();
 			}
 		}
 
 		await store(async (store) => {
 			await store.set('status', getStatus(license, error));
+		});
+	}
+
+	/** Downgrade to CORE license */
+	private async clearToken() {
+		const settingsService = new SettingsService({ schema: await getSchema() });
+		await settingsService.upsertSingleton({ license_token: null });
+
+		this.clearCache();
+
+		await store(async (store) => {
+			await store.delete('license_token');
 		});
 	}
 }
