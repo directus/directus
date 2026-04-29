@@ -19,7 +19,7 @@ const logger = useLogger();
 const RELOAD_CHANNEL = `license.reload`;
 let licenseCache: License | null;
 
-export async function getLicense(options: { database?: Knex }): Promise<License> {
+export async function getLicense(options?: { database?: Knex }): Promise<License> {
 	if (licenseCache) return licenseCache;
 
 	let token: string | null = null;
@@ -111,7 +111,7 @@ export class LicenseManager {
 		// CASE D
 		if (envKey && !dbKey) {
 			this.source = 'env';
-			this.activate(envKey);
+			await this.activate(envKey);
 		}
 
 		if (envKey && dbKey) {
@@ -119,16 +119,16 @@ export class LicenseManager {
 
 			// CASE B else C
 			if (envKey !== dbKey) {
-				this.update(dbKey, envKey);
+				await this.update(dbKey, envKey);
 			} else {
-				this.refresh(envKey, dbToken);
+				await this.refresh(envKey, dbToken);
 			}
 		}
 
 		// CASE E
 		if (envToken) {
 			this.source = 'env';
-			this.verify(envToken);
+			await this.verify(envToken);
 		}
 
 		if (dbKey) {
@@ -136,9 +136,9 @@ export class LicenseManager {
 
 			// CASE F else G
 			if (dbToken) {
-				this.refresh(dbKey, dbToken);
+				await this.refresh(dbKey, dbToken);
 			} else {
-				this.activate(dbKey);
+				await this.activate(dbKey);
 			}
 		}
 	}
