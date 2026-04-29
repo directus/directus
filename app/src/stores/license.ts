@@ -1,4 +1,10 @@
-import { type LicenseInfo, readLicense } from '@directus/sdk';
+import {
+	type LicenseAddon,
+	type LicenseInfo,
+	type LicenseMockQuery,
+	readLicense,
+	readLicenseAddons,
+} from '@directus/sdk';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import sdk from '@/sdk';
@@ -10,6 +16,7 @@ export type LicenseBoundary = {
 
 export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<LicenseInfo | null>(null);
+	const addons = ref<LicenseAddon[]>([]);
 	const loading = ref(false);
 	const error = ref<unknown>(null);
 
@@ -53,11 +60,15 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		}, delayMs);
 	}
 
-	async function hydrate() {
+	async function hydrate(query?: LicenseMockQuery) {
 		loading.value = true;
 
 		try {
-			info.value = await sdk.request(readLicense());
+			[info.value, addons.value] = await Promise.all([
+				sdk.request(readLicense(query)),
+				sdk.request(readLicenseAddons()),
+			]);
+
 			error.value = null;
 			scheduleNextRefresh();
 		} catch (err) {
@@ -70,12 +81,14 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	async function dehydrate() {
 		clearTimer();
 		info.value = null;
+		addons.value = [];
 		error.value = null;
 		loading.value = false;
 	}
 
 	return {
 		info,
+		addons,
 		loading,
 		error,
 		boundary,
