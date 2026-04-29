@@ -120,13 +120,17 @@ const confirmDiscard = ref(false);
 const licenseStore = useLicenseStore();
 const seatsLimitModalOpen = ref(false);
 
-const seatsLimitVariant = computed(() => (licenseStore.info?.plan === 'enterprise' ? 'contact-sales' : 'manage-plan'));
+function canSaveNewUser() {
+	if (!isNew.value) return true;
+	if (licenseStore.hasRemainingSeats) return true;
+
+	seatsLimitModalOpen.value = true;
+	return false;
+}
 
 watchEffect(() => {
 	if (!isNew.value) return;
-	const info = licenseStore.info;
-	if (!info) return;
-	seatsLimitModalOpen.value = (info.usage?.seats ?? 0) >= info.entitlements.seats;
+	seatsLimitModalOpen.value = !licenseStore.hasRemainingSeats;
 });
 
 // Provide the discard functionality to field interfaces
@@ -190,6 +194,8 @@ function useBreadcrumb() {
 }
 
 async function saveAndQuit() {
+	if (!canSaveNewUser()) return;
+
 	try {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
@@ -201,6 +207,8 @@ async function saveAndQuit() {
 }
 
 async function saveAndStay() {
+	if (!canSaveNewUser()) return;
+
 	try {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
@@ -219,6 +227,8 @@ async function saveAndStay() {
 }
 
 async function saveAndAddNew() {
+	if (!canSaveNewUser()) return;
+
 	try {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
@@ -518,7 +528,7 @@ function revert(values: Record<string, any>) {
 		<LicenseSeatsLimitModal
 			v-if="isNew"
 			v-model="seatsLimitModalOpen"
-			:variant="seatsLimitVariant"
+			persistent
 			@cancel="router.push({ name: 'users-active' })"
 		/>
 

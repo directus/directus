@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Role } from '@directus/types';
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import LicenseSeatsLimitModal from './license-seats-limit-modal.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -35,14 +35,6 @@ const seatsLimitModalOpen = ref(false);
 
 const uniqueValidationErrors = ref([]);
 
-const isAtSeatsLimit = computed(() => {
-	const info = licenseStore.info;
-	if (!info) return false;
-	return (info.usage?.seats ?? 0) >= info.entitlements.seats;
-});
-
-const seatsLimitVariant = computed(() => (licenseStore.info?.plan === 'enterprise' ? 'contact-sales' : 'manage-plan'));
-
 watch(
 	() => props.modelValue,
 	() => {
@@ -53,7 +45,14 @@ watch(
 async function inviteUsers() {
 	if (emails.value.length === 0 || loading.value) return;
 
-	if (isAtSeatsLimit.value) {
+	const emailsParsed = emails.value
+		.split(/,|\n/)
+		.map((email) => email.trim())
+		.filter((email) => email);
+
+	if (emailsParsed.length === 0) return;
+
+	if (licenseStore.seatsRemaining !== null && emailsParsed.length > licenseStore.seatsRemaining) {
 		seatsLimitModalOpen.value = true;
 		return;
 	}
@@ -61,11 +60,6 @@ async function inviteUsers() {
 	loading.value = true;
 
 	try {
-		const emailsParsed = emails.value
-			.split(/,|\n/)
-			.filter((e) => e)
-			.map((email) => email.trim());
-
 		await api.post('/users/invite', {
 			email: emailsParsed,
 			role: roleSelected.value,
@@ -151,7 +145,7 @@ async function loadRoles() {
 		</VCard>
 	</VDialog>
 
-	<LicenseSeatsLimitModal v-model="seatsLimitModalOpen" :variant="seatsLimitVariant" />
+	<LicenseSeatsLimitModal v-model="seatsLimitModalOpen" />
 </template>
 
 <style lang="scss" scoped>
