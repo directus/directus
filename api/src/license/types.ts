@@ -2,7 +2,7 @@ import type { Entitlements } from '@directus/license';
 
 export type LicenseSource = 'env' | 'settings' | null;
 
-export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'inactive';
+export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled';
 
 export type LicensePlan = string;
 
