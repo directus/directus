@@ -26,6 +26,10 @@ export type LicenseInfo = {
 	grace_period: number;
 	resolution_required: boolean;
 	entitlements: Entitlements;
+	usage: {
+		seats: number;
+		collections: number;
+	};
 } & LicenseLifecycle;
 
 export interface LicenseCheck {
