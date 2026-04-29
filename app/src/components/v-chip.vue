@@ -162,11 +162,7 @@ function onCloseClick(event: MouseEvent) {
 		background-color: transparent;
 
 		&:not(.disabled):hover {
-			border-color: var(
-				--v-chip-border-color-hover,
-				var(--v-chip-background-color-hover),
-				var(--v-chip-background-color)
-			);
+			border-color: var(--v-chip-border-color-hover, var(--v-chip-color, var(--neutral-ondimmed)));
 		}
 	}
 
