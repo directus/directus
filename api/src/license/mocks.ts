@@ -8,7 +8,7 @@ import {
 	LicenseResolveIncompleteError,
 	LicenseServiceUnavailableError,
 } from '@directus/errors';
-import type { LicenseAddon, LicenseInfo, LicensePreview, LicenseResolveAssessment } from './types.js';
+import type { LicenseAddon, LicenseCheck, LicenseInfo, LicenseResolveAssessment } from './types.js';
 
 // Temporary error handling
 const LICENSE_ERROR_BY_CODE = {
@@ -33,6 +33,7 @@ const BASE_LICENSE: LicenseInfo = {
 	license_id: '20d90f05-dfd8-4b39-a041-cd748a746028',
 	renews_at: 1776996042,
 	grace_period: 2592000,
+	resolution_required: false,
 	entitlements: {
 		seats: 10,
 		collections: 100,
@@ -73,6 +74,7 @@ const NO_LICENSE: LicenseInfo = {
 	license_id: null,
 	expires_at: 0,
 	grace_period: 0,
+	resolution_required: false,
 	entitlements: CORE_ENTITLEMENTS,
 	usage: {
 		seats: 1,
@@ -95,11 +97,13 @@ export const MOCK_LICENSE_INFO_SCENARIOS: Record<LicenseScenario, LicenseInfo> =
 		status: 'expired',
 		expires_at: 1776996042,
 		renews_at: undefined,
+		resolution_required: true,
 	} as LicenseInfo,
 
 	suspended: {
 		...BASE_LICENSE,
 		status: 'suspended',
+		resolution_required: true,
 	},
 
 	canceled: {
@@ -107,10 +111,12 @@ export const MOCK_LICENSE_INFO_SCENARIOS: Record<LicenseScenario, LicenseInfo> =
 		status: 'canceled',
 		expires_at: 1776996042,
 		renews_at: undefined,
+		resolution_required: true,
 	} as LicenseInfo,
 
 	overage: {
 		...BASE_LICENSE,
+		resolution_required: true,
 		usage: {
 			seats: 8,
 			collections: 75,
@@ -120,7 +126,7 @@ export const MOCK_LICENSE_INFO_SCENARIOS: Record<LicenseScenario, LicenseInfo> =
 	'no-license': NO_LICENSE,
 };
 
-export const MOCK_LICENSE_PREVIEW: LicensePreview = {
+export const MOCK_LICENSE_CHECK: LicenseCheck = {
 	plan: {
 		name: 'Team',
 		code: 'team',
@@ -138,7 +144,7 @@ export const MOCK_LICENSE_RESOLVE: LicenseResolveAssessment = [
 		key: 'seats',
 		limit: 3,
 		candidates: {
-			admin_seats: [
+			admin: [
 				{
 					id: 'a1b2c3d4-5678-90ab-cdef-1234567890ab',
 					email: 'admin@example.com',
@@ -148,12 +154,11 @@ export const MOCK_LICENSE_RESOLVE: LicenseResolveAssessment = [
 					last_access: '2026-04-20T12:34:56Z',
 				},
 			],
-			user_seats: [],
+			users: [],
 		},
 	},
 	{
 		key: 'sso',
-		readiness: { email_set: false, password_set: true },
 		blockers: [{ code: 'MISSING_EMAIL', user_id: 'b2c3d4e5-6789-01ab-cdef-234567890abc' }],
 	},
 ];

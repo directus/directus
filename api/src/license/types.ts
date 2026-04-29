@@ -38,11 +38,12 @@ export type LicenseInfo = {
 	plan: LicensePlan;
 	license_id: string | null;
 	grace_period: number;
+	resolution_required: boolean;
 	entitlements: LicenseEntitlements;
 	usage: LicenseUsage;
 } & LicenseLifecycle;
 
-export interface LicensePreview {
+export interface LicenseCheck {
 	plan: {
 		name: string;
 		code: LicensePlan;
@@ -76,22 +77,18 @@ export interface LicenseResolveSeatsSection {
 	key: 'seats';
 	limit: number;
 	candidates: {
-		admin_seats: LicenseResolveSeatCandidate[];
-		user_seats: LicenseResolveSeatCandidate[];
+		admin: LicenseResolveSeatCandidate[];
+		users: LicenseResolveSeatCandidate[];
 	};
 }
 
 export interface LicenseResolveSsoBlocker {
-	code: 'MISSING_EMAIL' | 'AUTH_DISABLE_DEFAULT';
+	code: 'MISSING_EMAIL' | 'MISSING_PASSWORD' | 'AUTH_DISABLE_DEFAULT';
 	user_id: string | null;
 }
 
 export interface LicenseResolveSsoSection {
 	key: 'sso';
-	readiness: {
-		email_set: boolean;
-		password_set: boolean;
-	};
 	blockers: LicenseResolveSsoBlocker[];
 }
 

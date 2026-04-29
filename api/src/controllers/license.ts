@@ -2,7 +2,7 @@ import express from 'express';
 import {
 	maybeThrowMockError,
 	MOCK_LICENSE_ADDONS,
-	MOCK_LICENSE_PREVIEW,
+	MOCK_LICENSE_CHECK,
 	MOCK_LICENSE_RESOLVE,
 	pickLicenseScenario,
 } from '../license/mocks.js';
@@ -24,12 +24,12 @@ router.get(
 
 // Validate a license key without applying it. Use ?error=<code> to test error states.
 router.get(
-	'/preview',
+	'/check',
 	asyncHandler(async (req, res, next) => {
 		res.locals['cache'] = false;
 		maybeThrowMockError(req.query['error'], ['LICENSE_INVALID', 'LICENSE_SERVICE_UNAVAILABLE']);
 
-		res.locals['payload'] = { data: MOCK_LICENSE_PREVIEW };
+		res.locals['payload'] = { data: MOCK_LICENSE_CHECK };
 		return next();
 	}),
 	respond,
