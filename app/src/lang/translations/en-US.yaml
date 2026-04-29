@@ -1439,6 +1439,12 @@ batch_delete_confirm: >-
   No items have been selected | Are you sure you want to delete this item? This action can not be undone. | Are you sure
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
+license:
+  reached: You have reached the max limit allowed for your plan.
+  manage_plan_body: You will need to purchase additional add-ons or upgrade.
+  contact_sales_body: Contact sales to purchase more feature add-ons.
+  manage_plan: Manage Plan
+  contact_sales: Contact Sales
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
