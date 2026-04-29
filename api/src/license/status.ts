@@ -20,7 +20,7 @@ export function getStatus(license: License | null, error?: Error): LicenseStatus
 
 	const expires = license.meta.expires_at ?? license.meta.renews_at ?? 0;
 
-	if (expires > now) return 'active';
+	if (expires === -1 || expires > now) return 'active';
 
 	if (expires + license.meta.grace_period > now) return 'grace';
 
