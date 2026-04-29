@@ -149,6 +149,10 @@ export class LicenseManager {
 		}
 	}
 
+	public getSource() {
+		return this.source;
+	}
+
 	private clearCache() {
 		licenseCache = null;
 		this.messenger.publish(RELOAD_CHANNEL, undefined);
