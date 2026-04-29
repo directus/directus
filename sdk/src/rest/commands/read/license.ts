@@ -117,25 +117,42 @@ export interface LicenseAddon {
 }
 
 /**
+ * Mock-only query params (temporary). The `scenario` and `error` parameters are
+ * recognized by the mocked `/license` controller during development to switch
+ * the response payload or trigger a specific error. They will be removed once
+ * the real licensing service is wired.
+ */
+export type LicenseScenario = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'overage' | 'no-license';
+
+export type LicenseMockQuery = {
+	scenario?: LicenseScenario;
+	error?: string;
+};
+
+/**
  * Get the current license state, including entitlements and usage.
+ * @param query Optional mock-only query (`scenario`) — see {@link LicenseMockQuery}.
  * @returns The license info payload.
  */
 export const readLicense =
-	<Schema>(): RestCommand<LicenseInfo, Schema> =>
+	<Schema>(query?: LicenseMockQuery): RestCommand<LicenseInfo, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/license',
+		params: query ?? {},
 	});
 
 /**
  * Validate a license key without applying it.
+ * @param query Optional mock-only query (`error`) — see {@link LicenseMockQuery}.
  * @returns A check of the license that would be applied.
  */
 export const readLicenseCheck =
-	<Schema>(): RestCommand<LicenseCheck, Schema> =>
+	<Schema>(query?: LicenseMockQuery): RestCommand<LicenseCheck, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/license/check',
+		params: query ?? {},
 	});
 
 /**
