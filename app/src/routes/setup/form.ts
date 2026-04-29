@@ -1,3 +1,4 @@
+import { KEY } from '@directus/license';
 import { DeepPartial, Field, SetupForm } from '@directus/types';
 import { FailedValidationErrorExtensions } from '@directus/validation';
 import { computed, ComputedRef, MaybeRef, unref } from 'vue';
@@ -12,6 +13,7 @@ export const FormValidator = z.object({
 	password: z.string(),
 	password_confirm: z.string(),
 	license: z.literal(true),
+	license_key: KEY.nullable(),
 	product_updates: z.boolean().optional(),
 });
 
@@ -22,6 +24,7 @@ export const defaultValues: SetupForm = {
 	password: null,
 	password_confirm: null,
 	license: false,
+	license_key: null,
 	product_updates: false,
 };
 
@@ -57,7 +60,7 @@ export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, 
 	return errors;
 }
 
-export function useFormFields(register: MaybeRef<boolean>): ComputedRef<Field[]> {
+export function useSetupFields(register: MaybeRef<boolean>): ComputedRef<Field[]> {
 	const { t } = useI18n();
 
 	return computed(() => {
@@ -128,5 +131,26 @@ export function useFormFields(register: MaybeRef<boolean>): ComputedRef<Field[]>
 		}
 
 		return fields as Field[];
+	});
+}
+
+export function useLicenseFields(): ComputedRef<Field[]> {
+	const { t } = useI18n();
+
+	return computed(() => {
+		return [
+			{
+				field: 'license_key',
+				name: t('license_key'),
+				meta: {
+					interface: 'system-license-key',
+
+					options: {
+						placeholder: t('first_name'),
+					},
+					width: 'full',
+				},
+			},
+		] as unknown as Field[];
 	});
 }

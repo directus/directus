@@ -10,7 +10,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
+import { defaultValues, useSetupFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -49,7 +49,7 @@ async function remindLater() {
 
 const form = ref<Form>(defaultValues);
 
-const fields = useFormFields(false, form);
+const fields = useSetupFields(false, form);
 </script>
 
 <template>

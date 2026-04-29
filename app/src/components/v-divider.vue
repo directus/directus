@@ -6,6 +6,8 @@ interface Props {
 	inlineTitle?: boolean;
 	/** Renders a larger divider text */
 	large?: boolean;
+	/**Displays the title centered */
+	center?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -16,7 +18,8 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-	<div class="v-divider" :class="{ vertical, inlineTitle, large }">
+	<div class="v-divider" :class="{ vertical, inlineTitle, large, center }">
+		<hr v-if="center" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
 		<span v-if="$slots.icon || $slots.default" class="wrapper">
 			<slot name="icon" class="icon" />
 			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
@@ -106,6 +109,16 @@ withDefaults(defineProps<Props>(), {
 		span.wrapper {
 			order: 0;
 			margin: 0 0 0.4375rem;
+		}
+	}
+
+	&.center {
+		hr {
+			order: unset;
+		}
+
+		&.inlineTitle span.wrapper {
+			margin-inline: 0.4375rem;
 		}
 	}
 }

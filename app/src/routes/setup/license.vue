@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { computed, toRef } from 'vue';
-import { I18nT } from 'vue-i18n';
-import { defaultValues, useFormFields } from './form';
-import VCheckbox from '@/components/v-checkbox.vue';
+import { defaultValues, useLicenseFields } from './form';
+import VButton from '@/components/v-button.vue';
+import VCard from '@/components/v-card.vue';
+import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
-import VNotice from '@/components/v-notice.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useServerStore } from '@/stores/server';
 
 const { info } = storeToRefs(useServerStore());
@@ -24,15 +24,13 @@ const props = withDefaults(
 	},
 );
 
-const fields = useFormFields(props.register);
+const value = defineModel<SetupForm>();
+
+const fields = useLicenseFields();
 </script>
 
 <template>
-	<div class="setup-form" :class="{ skipLicense }">
-		<template v-if="register">
-			<h1>{{ $t('setup_welcome') }}</h1>
-			<p>{{ $t('setup_info') }}</p>
-		</template>
+	<div class="license-form">
 		<VForm
 			v-model="value"
 			:initial-values="initialValues"
@@ -40,124 +38,56 @@ const fields = useFormFields(props.register);
 			:fields="fields"
 			disabled-menu
 		></VForm>
-		<VNotice>
-			<span v-md="$t('setup_license_notice')"></span>
-			<br />
-			<I18nT keypath="setup_license_follow_up" tag="span">
-				<template #contactOurTeam>
-					<a
-						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_contact_our_team_link`"
-						target="_blank"
-					>
-						{{ $t('contact_our_team') }}
-					</a>
-				</template>
-			</I18nT>
-			<br />
-			<span v-if="skipLicense">
-				<br />
-				<I18nT v-if="skipLicense" keypath="setup_save_accept_license" tag="span">
-					<template #directusBsl>
-						<a
-							:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_bsl_1.1_link`"
-							target="_blank"
-						>
-							{{ $t('directus_bsl') }}
-						</a>
-					</template>
-					<template #privacyPolicy>
-						<a
-							:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
-							target="_blank"
-						>
-							{{ $t('privacy_policy') }}
-						</a>
-					</template>
-				</I18nT>
-			</span>
-		</VNotice>
 
-		<VCheckbox v-if="!skipLicense" v-model="license">
-			<I18nT keypath="setup_accept_license" tag="span">
-				<template #directusBsl>
-					<a
-						:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=bsl_1.1_link`"
-						target="_blank"
-					>
-						{{ $t('directus_bsl') }}
-					</a>
-				</template>
-				<template #privacyPolicy>
-					<a
-						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=privacy_link`"
-						target="_blank"
-					>
-						{{ $t('privacy_policy') }}
-					</a>
-				</template>
-			</I18nT>
-		</VCheckbox>
-		<VCheckbox v-model="product_updates">
-			<span v-md="$t('setup_marketing_emails')"></span>
-		</VCheckbox>
+		<VDivider center>
+			<span class="license-key-or">{{ $t('or') }}</span>
+		</VDivider>
+
+		<div class="get-license-key">
+			{{ $t('no_license_key') }}
+			<VButton secondary>
+				<VIcon name="key"></VIcon>
+				{{ $t('get_license_key') }}
+			</VButton>
+		</div>
 	</div>
 </template>
 
 <style scoped>
-.setup-form {
+.license-form {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
-
-	&.skipLicense {
-		.v-notice {
-			grid-row: 1;
-			margin-block: 0 1.125rem;
-		}
-
-		.v-checkbox {
-			grid-row: 2;
-			margin-block-end: 1.8125rem;
-		}
-	}
 }
 
 .v-form {
 	--theme--form--row-gap: 1.8125rem;
 }
 
-h1 {
-	color: var(--theme--foreground-accent);
-	font-size: 2.25rem;
-	font-weight: 600;
-	line-height: 1.1944;
-
-	margin-block-end: 1.375rem;
-}
-
-p {
-	font-size: 0.8125rem;
-	font-weight: 500;
-	line-height: 1.3846;
-	margin-block-end: 1.8125rem;
-}
-
-.v-notice {
+.v-divider {
 	margin-block: 1.8125rem;
 }
 
-.v-checkbox {
-	block-size: auto;
-	align-items: flex-start;
-
-	span {
-		font-weight: 600;
-		white-space: normal;
-	}
+.license-key-or {
+	color: var(--theme--foreground-subdued);
+	text-transform: lowercase;
+	font-weight: 500;
 }
 
-:deep(.v-notice a),
-:deep(.v-checkbox a) {
-	color: var(--theme--primary);
-	text-decoration: underline;
+.get-license-key {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1.8125rem;
+	background-color: var(--theme--background-subdued);
+	border-radius: var(--theme--border-radius);
+
+	.v-button {
+		--v-button-background-color: var(--theme--background-accent);
+		--v-button-background-color-hover: var(--theme--background-normal);
+
+		.v-icon {
+			margin-inline-end: 0.6875rem;
+		}
+	}
 }
 </style>

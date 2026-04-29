@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
 import { ref } from 'vue';
-import { defaultValues, useFormFields, validate } from './form';
+import { defaultValues, useSetupFields, validate } from './form';
 
 vi.mock('@/stores/relations', () => ({
 	useRelationsStore: () => ({
@@ -16,7 +16,7 @@ vi.mock('vue-i18n', () => ({
 }));
 
 test('useFormFields for setup', () => {
-	const result = useFormFields(true, ref(defaultValues));
+	const result = useSetupFields(true, ref(defaultValues));
 
 	expect(result.value.map((field) => field.field)).toEqual([
 		'first_name',
@@ -29,26 +29,26 @@ test('useFormFields for setup', () => {
 });
 
 test('useFormFields for modal/edit', () => {
-	const result = useFormFields(false, ref(defaultValues));
+	const result = useSetupFields(false, ref(defaultValues));
 
 	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage']);
 });
 
 test('useFormFields with project_usage = commercial', () => {
-	const result = useFormFields(false, ref({ ...defaultValues, project_usage: 'commercial' }));
+	const result = useSetupFields(false, ref({ ...defaultValues, project_usage: 'commercial' }));
 
 	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage', 'org_name']);
 });
 
 test('validate on invalid setup form', () => {
-	const fields = useFormFields(false, ref(defaultValues));
+	const fields = useSetupFields(false, ref(defaultValues));
 	const result = validate({}, fields);
 
 	expect(result.length).toBeGreaterThan(0);
 });
 
 test('validate on valid setup form', () => {
-	const fields = useFormFields(true, ref(defaultValues));
+	const fields = useSetupFields(true, ref(defaultValues));
 
 	const result = validate(
 		{
@@ -69,7 +69,7 @@ test('validate on valid setup form', () => {
 });
 
 test('validate with unequal password', () => {
-	const fields = useFormFields(true, ref(defaultValues));
+	const fields = useSetupFields(true, ref(defaultValues));
 
 	const result = validate(
 		{

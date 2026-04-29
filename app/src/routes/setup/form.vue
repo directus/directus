@@ -3,7 +3,7 @@ import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
-import { defaultValues, useFormFields } from './form';
+import { defaultValues, useSetupFields } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -51,15 +51,11 @@ const product_updates = computed({
 	},
 });
 
-const fields = useFormFields(props.register);
+const fields = useSetupFields(props.register);
 </script>
 
 <template>
 	<div class="setup-form" :class="{ skipLicense }">
-		<template v-if="register">
-			<h1>{{ $t('setup_welcome') }}</h1>
-			<p>{{ $t('setup_info') }}</p>
-		</template>
 		<VForm
 			v-model="value"
 			:initial-values="initialValues"
@@ -151,22 +147,6 @@ const fields = useFormFields(props.register);
 
 .v-form {
 	--theme--form--row-gap: 1.8125rem;
-}
-
-h1 {
-	color: var(--theme--foreground-accent);
-	font-size: 2.25rem;
-	font-weight: 600;
-	line-height: 1.1944;
-
-	margin-block-end: 1.375rem;
-}
-
-p {
-	font-size: 0.8125rem;
-	font-weight: 500;
-	line-height: 1.3846;
-	margin-block-end: 1.8125rem;
 }
 
 .v-notice {

@@ -24,9 +24,11 @@ about: About
 directus_bsl: Directus BSL 1.1
 privacy_policy: Privacy Policy
 contact_our_team: Contact our Team
-contact_support: Contact Support
+contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
+setup_license_key_notice: >
+  If have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be eligible for our {oig}.
 setup_license_notice: >
   Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
 setup_license_follow_up: >
@@ -39,9 +41,16 @@ setup_license_invalid: >
 setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
+open_innovation_grant: Open Innovation Grant
 setup_project: Setup Project
 enter_license_key: Enter Your License Key
 license_valid: License Valid
+license_key: License Key
+no_license_key: Don't have a license key?
+get_license_key: Get License Key
+expires_on: Expires on
+environment: Environment
+skip: Skip
 continue: Continue
 first_name: First Name
 last_name: Last Name

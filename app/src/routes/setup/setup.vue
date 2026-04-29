@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { storeToRefs } from 'pinia';
+import { computed, ref } from 'vue';
+import { I18nT, useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { defaultValues, FormValidator, useFormFields, validate, ValidationError } from './form';
+import { defaultValues, FormValidator, useSetupFields, validate, ValidationError } from './form';
 import SetupForm from './form.vue';
+import LicenseForm from './license.vue';
 import api from '@/api';
 import { login } from '@/auth';
 import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
+import { useServerStore } from '@/stores/server';
 import PublicView from '@/views/public';
 
 const { t } = useI18n();
@@ -20,13 +22,16 @@ useHead({
 	title: t('setup_project'),
 });
 
+const { info } = storeToRefs(useServerStore());
+
 const form = ref<Form>(defaultValues);
 const router = useRouter();
 
-const fields = useFormFields(true);
+const fields = useSetupFields(true);
 const errors = ref<ValidationError[]>([]);
 const error = ref<any>(null);
 const isSaving = ref(false);
+const page = ref<'setup' | 'license'>('setup');
 
 async function launch() {
 	errors.value = validate(form.value, fields, true);
@@ -57,14 +62,42 @@ const errorMessage = computed(() => {
 });
 
 const formComplete = computed(() => FormValidator.safeParse(form.value).success);
+const licenseComplete = computed(() => formComplete.value && form.value.license_key);
 </script>
 
 <template>
 	<PublicView wide>
-		<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
-		<VButton full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
-			{{ $t('continue') }}
-		</VButton>
+		<h1>{{ $t('setup_welcome') }}</h1>
+
+		<template v-if="page === 'setup'">
+			<p>{{ $t('setup_info') }}</p>
+			<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
+			<VButton full-width secondary :disabled="!formComplete" @click="page = 'license'">
+				{{ $t('continue') }}
+			</VButton>
+		</template>
+		<template v-else>
+			<I18nT keypath="setup_license_key_notice" tag="p">
+				<template #oig>
+					<a
+						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=onboarding_contact_our_team_link`"
+						target="_blank"
+					>
+						{{ $t('open_innovation_grant') }}
+					</a>
+				</template>
+			</I18nT>
+
+			<LicenseForm v-model="form" :errors="errors"></LicenseForm>
+			<div class="actions">
+				<VButton secondary @click="page = 'setup'">
+					{{ $t('back') }}
+				</VButton>
+				<VButton :secondary="!licenseComplete" :loading="isSaving" @click="launch()">
+					{{ licenseComplete ? $t('setup_launch') : $t('skip') }}
+				</VButton>
+			</div>
+		</template>
 
 		<VNotice v-if="error" type="danger">
 			<p class="error-code">
@@ -78,8 +111,20 @@ const formComplete = computed(() => FormValidator.safeParse(form.value).success)
 </template>
 
 <style scoped>
-.setup-form {
-	margin-block-start: 5.625rem;
+h1 {
+	color: var(--theme--foreground-accent);
+	font-size: 2.25rem;
+	font-weight: 600;
+	line-height: 1.1944;
+
+	margin-block: 5.625rem 1.375rem;
+}
+
+p {
+	font-size: 0.8125rem;
+	font-weight: 500;
+	line-height: 1.3846;
+	margin-block-end: 1.8125rem;
 }
 
 .v-button {
@@ -97,5 +142,16 @@ const formComplete = computed(() => FormValidator.safeParse(form.value).success)
 .error-code {
 	font-weight: 700;
 	margin-block-end: 0.25rem;
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 1.8125rem;
+}
+
+:deep(p a) {
+	color: var(--theme--primary);
+	text-decoration: underline;
 }
 </style>
