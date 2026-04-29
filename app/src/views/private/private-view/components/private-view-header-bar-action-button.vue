@@ -90,29 +90,28 @@ function useIcon() {
 	--v-button-color-disabled: var(--theme--foreground-subdued);
 
 	&.normal {
-		--v-button-color: var(--theme--foreground);
-		--v-button-color-hover: var(--theme--foreground);
-		--v-button-background-color-hover: var(--theme--background-accent);
+		--v-button-color-hover: var(--neutral-ondimmed);
+		--v-button-background-color-hover: var(--neutral-dimmed);
 	}
 
 	&.info {
-		--v-button-color-hover: var(--blue);
-		--v-button-background-color-hover: var(--blue-10);
+		--v-button-color-hover: var(--info-ondimmed);
+		--v-button-background-color-hover: var(--info-dimmed);
 	}
 
 	&.success {
-		--v-button-color-hover: var(--theme--success);
-		--v-button-background-color-hover: var(--theme--success-background);
+		--v-button-color-hover: var(--success-ondimmed);
+		--v-button-background-color-hover: var(--success-dimmed);
 	}
 
 	&.danger {
-		--v-button-color-hover: var(--theme--danger);
-		--v-button-background-color-hover: var(--theme--danger-background);
+		--v-button-color-hover: var(--danger-ondimmed);
+		--v-button-background-color-hover: var(--danger-dimmed);
 	}
 
 	&.warning {
-		--v-button-color-hover: var(--theme--warning);
-		--v-button-background-color-hover: var(--theme--warning-background);
+		--v-button-color-hover: var(--warning-ondimmed);
+		--v-button-background-color-hover: var(--warning-dimmed);
 	}
 }
 </style>

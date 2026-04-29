@@ -346,7 +346,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 		<VList class="version-list">
 			<VListItem class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
 				<VListItemIcon class="version-item-icon">
-					<span v-tooltip="$t('content_edited')" class="edit-dot" />
+					<span v-tooltip="$t('content_edited')" class="edit-dot edit-dot-primary" />
 				</VListItemIcon>
 
 				<VListItemContent>
@@ -363,7 +363,11 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 				@click="switchVersion(draftVersion)"
 			>
 				<VListItemIcon class="version-item-icon">
-					<span v-if="hasVersionEdits(draftVersion)" v-tooltip="$t('content_edited')" class="edit-dot" />
+					<span
+						v-if="hasVersionEdits(draftVersion)"
+						v-tooltip="$t('content_edited')"
+						class="edit-dot edit-dot-secondary"
+					/>
 				</VListItemIcon>
 
 				<VListItemContent>
@@ -582,35 +586,31 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 }
 
 .version-item {
-	--v-list-item-color-active: var(--foreground-inverted);
-	--v-list-item-background-color-active: var(--theme--primary);
-	--v-list-item-color-active-hover: var(--white);
-	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
-
 	&.active {
 		--focus-ring-color: var(--v-list-item-color-active);
 		--focus-ring-offset: var(--focus-ring-offset-inset);
 	}
 
 	.version-item-icon {
-		inline-size: var(--v-icon-size, 1.375rem);
+		inline-size: var(--v-icon-size, var(--icon-size-default));
 		display: flex;
 		justify-content: center;
 	}
 
 	.edit-dot {
 		display: block;
-		inline-size: 0.4375rem;
-		block-size: 0.4375rem;
-		border-radius: 0.4375rem;
-		background-color: var(--theme--primary);
+		inline-size: 0.5rem;
+		block-size: 0.5rem;
+		border-radius: 0.5rem;
 		transition: inherit;
-	}
+		background-color: var(--theme--foreground);
 
-	&.active,
-	&:active {
-		.edit-dot {
-			background-color: var(--v-list-item-color-active);
+		&.edit-dot-primary {
+			background-color: var(--theme--primary);
+		}
+
+		&.edit-dot-secondary {
+			background-color: var(--theme--secondary);
 		}
 	}
 }
