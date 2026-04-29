@@ -6,6 +6,7 @@ import {
 	refresh as refreshLicense,
 	verifyLicense,
 } from '@directus/license';
+import type { AbstractServiceOptions } from '@directus/types';
 import type { Knex } from 'knex';
 import { useBus } from '../bus/index.js';
 import { useLogger } from '../logger/index.js';
@@ -42,12 +43,12 @@ export async function getLicense(options: { database?: Knex }): Promise<License>
 	return licenseCache;
 }
 
-export function getLicenseManager(): LicenseManager {
+export async function getLicenseManager(): Promise<LicenseManager> {
 	if (licenseManager) {
 		return licenseManager;
 	}
 
-	licenseManager = new LicenseManager();
+	licenseManager = new LicenseManager({ schema: await getSchema() });
 
 	return licenseManager;
 }
@@ -56,16 +57,21 @@ export type APILicense = {
 	status: 'active' | 'inactive' | 'invalid';
 	source: 'env' | 'settings';
 } & License;
+
 export class LicenseManager {
 	/** Where the key or token comes from */
 	private source: 'env' | 'db' | null = null;
-	private messenger = useBus();
+	private settingsService: SettingsService;
 
-	constructor() {
+	constructor(options: Pick<AbstractServiceOptions, 'schema'>) {
+		this.settingsService = new SettingsService(options);
+
 		this.messenger.subscribe(RELOAD_CHANNEL, () => {
 			licenseCache = null;
 		});
 	}
+
+	private messenger = useBus();
 
 	/**
 	 * Initialize license state based on the following state permutations.
@@ -92,10 +98,7 @@ export class LicenseManager {
 			process.exit(1);
 		}
 
-		const schema = await getSchema();
-		const settingsService = new SettingsService({ schema, accountability: null });
-
-		const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
+		const { license_key: dbKey, license_token: dbToken } = await this.settingsService.readSingleton({
 			fields: ['license_key', 'license_token'],
 		});
 
@@ -105,7 +108,7 @@ export class LicenseManager {
 			if (dbToken) {
 				this.clearCache();
 
-				settingsService.upsertSingleton({ license_token: null });
+				this.settingsService.upsertSingleton({ license_token: null });
 			}
 
 			return;
@@ -155,9 +158,7 @@ export class LicenseManager {
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
-		const schema = await getSchema();
-		const settingsService = new SettingsService({ schema, accountability: null });
-		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+		const { project_id } = await this.settingsService.readSingleton({ fields: ['project_id'] });
 
 		const license = await activateKey({
 			license_key: key,
@@ -165,7 +166,7 @@ export class LicenseManager {
 			public_url: env['PUBLIC_URL'] as string,
 		});
 
-		settingsService.upsertSingleton({
+		await this.settingsService.upsertSingleton({
 			license_key: key,
 			license_token: license.token,
 			project_id: license.new_project_id ?? project_id!,
@@ -195,16 +196,13 @@ export class LicenseManager {
 	 * Verifys a current token and refreshes it with a new token
 	 */
 	public async refresh(key: string, token?: string | null): Promise<void> {
-		const schema = await getSchema();
-		const settingsService = new SettingsService({ schema, accountability: null });
-
 		let license: License | null = null;
 
 		if (token) {
 			license = await this.verify(token);
 		}
 
-		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+		const { project_id } = await this.settingsService.readSingleton({ fields: ['project_id'] });
 
 		if (license?.meta.offline === false) {
 			const refreshedLicense = await refreshLicense({
@@ -213,7 +211,7 @@ export class LicenseManager {
 				public_url: env['PUBLIC_URL'] as string,
 			});
 
-			settingsService.upsertSingleton({
+			await this.settingsService.upsertSingleton({
 				license_token: refreshedLicense.token,
 			});
 
