@@ -1158,3 +1158,16 @@ fields:
           mcp_system_prompt_enabled:
             _neq: true
         readonly: true
+
+  ### Licensing fields ###
+  - field: license_key
+    group: license_group
+    hidden: true
+    special:
+      - encrypt
+
+  - field: license_token
+    group: license_group
+    hidden: true
+    special:
+      - encrypt
