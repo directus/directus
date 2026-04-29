@@ -1,10 +1,46 @@
 import { useEnv } from '@directus/env';
-import { activate as activateKey, License, refresh as refreshLicense, verifyLicense } from '@directus/license';
+import {
+	activate as activateKey,
+	CORE_LICENSE,
+	License,
+	refresh as refreshLicense,
+	verifyLicense,
+} from '@directus/license';
+import type { Knex } from 'knex';
+import { useBus } from '../bus/index.js';
 import { useLogger } from '../logger/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
 
 let licenseManager: LicenseManager | undefined;
+const env = useEnv();
+const logger = useLogger();
+const RELOAD_CHANNEL = `license.reload`;
+let licenseCache: License | null;
+
+export async function getLicense(options: { database?: Knex }): Promise<License> {
+	if (licenseCache) return licenseCache;
+
+	let token: string | null = null;
+
+	if (env['LICENSE_TOKEN']) {
+		token = String(env['LICENSE_TOKEN']);
+	} else {
+		const schema = await getSchema(options);
+		const settingsService = new SettingsService({ schema, ...options });
+
+		const { license_token } = await settingsService.readSingleton({ fields: ['license_token'] });
+		token = license_token ?? null;
+	}
+
+	if (!token) {
+		licenseCache = CORE_LICENSE;
+	} else {
+		licenseCache = await verifyLicense(token);
+	}
+
+	return licenseCache;
+}
 
 export function getLicenseManager(): LicenseManager {
 	if (licenseManager) {
@@ -20,21 +56,16 @@ export type APILicense = {
 	status: 'active' | 'inactive' | 'invalid';
 	source: 'env' | 'settings';
 } & License;
-
-// Activate (license_key): call License API and store key and token in DB (can return new project_id)
-
-// Verify: online mode: check jwt against License API jwk offline mode: just check jwt against local jwk error if not
-// offline
-
-// Refresh (license_key): (if online) returns new jwt and store it to db and cache
-
-// Update (old_lk, new_lk): call to License API to update from old to new. Persist new in db and cache
-
 export class LicenseManager {
-	private logger = useLogger();
-	private env = useEnv();
 	/** Where the key or token comes from */
 	private source: 'env' | 'db' | null = null;
+	private messenger = useBus();
+
+	constructor() {
+		this.messenger.subscribe(RELOAD_CHANNEL, () => {
+			licenseCache = null;
+		});
+	}
 
 	/**
 	 * Initialize license state based on the following state permutations.
@@ -52,12 +83,12 @@ export class LicenseManager {
 	 * |   -    |    -     |   -   |    -    |  -   |  CORE_LICENSE                                |  I   |
 	 */
 	public async initialize(): Promise<void> {
-		const envKey = this.env['LICENSE_KEY'] as string | undefined;
-		const envToken = this.env['LICENSE_TOKEN'] as string | undefined;
+		const envKey = env['LICENSE_KEY'] as string | undefined;
+		const envToken = env['LICENSE_TOKEN'] as string | undefined;
 
 		// CASE A
 		if (envKey && envToken) {
-			this.logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
+			logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
 			process.exit(1);
 		}
 
@@ -72,6 +103,8 @@ export class LicenseManager {
 		if (!envKey && !envToken && !dbKey) {
 			// CASE H
 			if (dbToken) {
+				this.clearCache();
+
 				settingsService.upsertSingleton({ license_token: null });
 			}
 
@@ -113,6 +146,11 @@ export class LicenseManager {
 		}
 	}
 
+	private clearCache() {
+		licenseCache = null;
+		this.messenger.publish(RELOAD_CHANNEL, undefined);
+	}
+
 	/**
 	 * Activates a new license and overwrites an existing one
 	 */
@@ -124,7 +162,7 @@ export class LicenseManager {
 		const license = await activateKey({
 			license_key: key,
 			project_id: project_id!,
-			public_url: this.env['PUBLIC_URL'] as string,
+			public_url: env['PUBLIC_URL'] as string,
 		});
 
 		settingsService.upsertSingleton({
@@ -132,6 +170,8 @@ export class LicenseManager {
 			license_token: license.token,
 			project_id: license.new_project_id ?? project_id!,
 		});
+
+		this.clearCache();
 	}
 
 	/**
@@ -145,7 +185,7 @@ export class LicenseManager {
 		try {
 			return await verifyLicense(token);
 		} catch (e) {
-			this.logger.warn('Failed to verify license token defaulting to "core"', { error: e });
+			logger.warn('Failed to verify license token defaulting to "core"', { error: e });
 		}
 
 		return null;
@@ -170,14 +210,14 @@ export class LicenseManager {
 			const refreshedLicense = await refreshLicense({
 				license_key: key,
 				project_id: project_id!,
-				public_url: this.env['PUBLIC_URL'] as string,
+				public_url: env['PUBLIC_URL'] as string,
 			});
 
 			settingsService.upsertSingleton({
 				license_token: refreshedLicense.token,
 			});
 
-			// TODO - update token cache
+			this.clearCache();
 		}
 	}
 }

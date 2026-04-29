@@ -225,4 +225,6 @@ export const DEFAULTS: Env = {
 	BRAINTRUST_API_KEY: '',
 	BRAINTRUST_PROJECT_NAME: '',
 	BRAINTRUST_API_URL: '',
+
+	LICENSE_STORE_NAMESPACE: 'license',
 } as const;
