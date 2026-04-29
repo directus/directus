@@ -1,4 +1,4 @@
-import type { Entitlements } from '@directus/license';
+import type { Entitlements, Meta } from '@directus/license';
 
 export type LicenseSource = 'env' | 'settings' | null;
 
@@ -6,31 +6,16 @@ export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canc
 
 export type LicensePlan = string;
 
-interface LicenseLifecycleRenewal {
-	renews_at: number;
-	expires_at?: never;
-}
-
-interface LicenseLifecycleExpiration {
-	expires_at: number;
-	renews_at?: never;
-}
-
-export type LicenseLifecycle = LicenseLifecycleRenewal | LicenseLifecycleExpiration;
-
 export type LicenseInfo = {
 	status: LicenseStatus;
 	source: LicenseSource;
 	plan: LicensePlan;
-	license_id: string | null;
-	grace_period: number;
-	resolution_required: boolean;
 	entitlements: Entitlements;
 	usage: {
 		seats: number;
 		collections: number;
 	};
-} & LicenseLifecycle;
+} & Pick<Meta, 'overage_billed' | 'validation_interval' | 'grace_period' | 'offline'>;
 
 export interface LicenseCheck {
 	plan: {
