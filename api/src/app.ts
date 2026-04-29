@@ -126,7 +126,7 @@ export default async function createApp(): Promise<express.Application> {
 	await ensureDeploymentWebhooks();
 
 	const extensionManager = getExtensionManager();
-	const licenseManager = await getLicenseManager();
+	const licenseManager = getLicenseManager();
 	const flowManager = getFlowManager();
 
 	await licenseManager.initialize();

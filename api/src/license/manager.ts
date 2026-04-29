@@ -42,7 +42,7 @@ export async function getLicense(options: { database?: Knex }): Promise<License>
 	return licenseCache;
 }
 
-export async function getLicenseManager(): Promise<LicenseManager> {
+export function getLicenseManager(): LicenseManager {
 	if (licenseManager) {
 		return licenseManager;
 	}
