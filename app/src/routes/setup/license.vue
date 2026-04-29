@@ -14,42 +14,15 @@ const { info } = storeToRefs(useServerStore());
 const props = withDefaults(
 	defineProps<{
 		register?: boolean;
-		skipLicense?: boolean;
 		modelValue?: Partial<SetupForm>;
-		errors?: Record<string, any>[];
 		initialValues?: SetupForm;
-		utmLocation?: string;
 	}>(),
 	{
 		register: true,
-		skipLicense: false,
-		utmLocation: '',
 		initialValues: () => defaultValues,
 		modelValue: () => ({}),
 	},
 );
-
-const initialValues = toRef(props, 'initialValues');
-
-const value = defineModel<SetupForm>();
-
-const license = computed({
-	get: () => value.value?.license ?? initialValues.value.license,
-	set: (val: boolean) => {
-		if (value.value) {
-			value.value.license = val;
-		}
-	},
-});
-
-const product_updates = computed({
-	get: () => value.value?.product_updates ?? initialValues.value.product_updates,
-	set: (val: boolean) => {
-		if (value.value) {
-			value.value.product_updates = val;
-		}
-	},
-});
 
 const fields = useFormFields(props.register);
 </script>
@@ -63,7 +36,6 @@ const fields = useFormFields(props.register);
 		<VForm
 			v-model="value"
 			:initial-values="initialValues"
-			:validation-errors="errors"
 			:show-validation-errors="false"
 			:fields="fields"
 			disabled-menu

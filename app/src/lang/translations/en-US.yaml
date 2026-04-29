@@ -24,6 +24,7 @@ about: About
 directus_bsl: Directus BSL 1.1
 privacy_policy: Privacy Policy
 contact_our_team: Contact our Team
+contact_support: Contact Support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
 setup_license_notice: >
@@ -33,20 +34,20 @@ setup_license_follow_up: >
   when you're ready to discuss production use.
 setup_save_accept_license: >
   By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
+setup_license_invalid: >
+  License invalid. Please {contactSupport} to resolve this issue.
 setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
 setup_project: Setup Project
+enter_license_key: Enter Your License Key
+license_valid: License Valid
+continue: Continue
 first_name: First Name
 last_name: Last Name
 admin_email: Admin Email
 owner_email: Owner Email
 email_address: Email Address
-organization_name: Organization Name
-how_do_you_use_directus: What are you using Directus for?
-usage_personal: Personal / Learning
-usage_commercial: Business / Commercial
-usage_community: Open Source / Community
 identifier: Identifier
 avatar: Avatar
 application: Application

@@ -23,7 +23,7 @@ useHead({
 const form = ref<Form>(defaultValues);
 const router = useRouter();
 
-const fields = useFormFields(true, form);
+const fields = useFormFields(true);
 const errors = ref<ValidationError[]>([]);
 const error = ref<any>(null);
 const isSaving = ref(false);
@@ -57,20 +57,13 @@ const errorMessage = computed(() => {
 });
 
 const formComplete = computed(() => FormValidator.safeParse(form.value).success);
-
-watch(form, () => {
-	if (form.value.project_usage !== 'commercial') {
-		form.value.org_name = null;
-	}
-});
 </script>
 
 <template>
 	<PublicView wide>
 		<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
 		<VButton full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
-			<VIcon name="rocket_launch" />
-			{{ $t('setup_launch') }}
+			{{ $t('continue') }}
 		</VButton>
 
 		<VNotice v-if="error" type="danger">

@@ -1,34 +1,19 @@
 import { DeepPartial, Field, SetupForm } from '@directus/types';
 import { FailedValidationErrorExtensions } from '@directus/validation';
-import { computed, ComputedRef, MaybeRef, ModelRef, Ref, unref } from 'vue';
+import { computed, ComputedRef, MaybeRef, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import z from 'zod';
 import { validateItem } from '@/utils/validate-item';
 
-export const FormValidator = z.discriminatedUnion('project_usage', [
-	z.object({
-		first_name: z.string(),
-		last_name: z.string(),
-		project_owner: z.email(),
-		password: z.string(),
-		password_confirm: z.string(),
-		project_usage: z.enum(['personal', 'community']).nullable().optional(),
-		org_name: z.string().nullable().optional(),
-		license: z.literal(true),
-		product_updates: z.boolean().optional(),
-	}),
-	z.object({
-		first_name: z.string(),
-		last_name: z.string(),
-		project_owner: z.email(),
-		password: z.string(),
-		password_confirm: z.string(),
-		project_usage: z.literal('commercial'),
-		org_name: z.string(),
-		license: z.literal(true),
-		product_updates: z.boolean().optional(),
-	}),
-]);
+export const FormValidator = z.object({
+	first_name: z.string(),
+	last_name: z.string(),
+	project_owner: z.email(),
+	password: z.string(),
+	password_confirm: z.string(),
+	license: z.literal(true),
+	product_updates: z.boolean().optional(),
+});
 
 export const defaultValues: SetupForm = {
 	first_name: null,
@@ -36,8 +21,6 @@ export const defaultValues: SetupForm = {
 	project_owner: null,
 	password: null,
 	password_confirm: null,
-	project_usage: null,
-	org_name: null,
 	license: false,
 	product_updates: false,
 };
@@ -74,11 +57,7 @@ export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, 
 	return errors;
 }
 
-export function useFormFields(
-	register: MaybeRef<boolean>,
-	value: Ref<Partial<SetupForm>> | ModelRef<Partial<SetupForm> | undefined>,
-	initialValues?: Ref<Partial<SetupForm>> | ModelRef<Partial<SetupForm> | undefined>,
-): ComputedRef<Field[]> {
+export function useFormFields(register: MaybeRef<boolean>): ComputedRef<Field[]> {
 	const { t } = useI18n();
 
 	return computed(() => {
@@ -147,35 +126,6 @@ export function useFormFields(
 				},
 			});
 		}
-
-		fields.push({
-			field: 'project_usage',
-			name: t('how_do_you_use_directus'),
-			meta: {
-				required: false,
-				interface: 'select-dropdown',
-				options: {
-					items: [
-						{ icon: 'account_circle', value: 'personal', text: t('usage_personal') },
-						{ icon: 'domain', value: 'commercial', text: t('usage_commercial') },
-						{ icon: 'groups', value: 'community', text: t('usage_community') },
-					],
-				},
-				width: 'full',
-			},
-		});
-
-		if ((value.value?.project_usage ?? initialValues?.value?.project_usage) === 'commercial')
-			fields.push({
-				field: 'org_name',
-				name: t('organization_name'),
-				meta: {
-					required: true,
-					interface: 'input',
-					options: {},
-					width: 'full',
-				},
-			});
 
 		return fields as Field[];
 	});

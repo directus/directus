@@ -74,6 +74,8 @@ export type Options = {
 	};
 	/** Enable or disable caching */
 	cache: boolean;
+	/** Skips setting initial admin and owner */
+	skipSetup: boolean;
 };
 
 export type Sandboxes = {
@@ -125,6 +127,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				saml: false,
 			},
 			cache: false,
+			skipSetup: false,
 		} satisfies Options,
 		options,
 	);
