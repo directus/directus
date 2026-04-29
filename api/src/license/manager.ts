@@ -11,6 +11,7 @@ import { useBus } from '../bus/index.js';
 import { useLogger } from '../logger/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
+import type { LicenseSource } from './types.js';
 
 let licenseManager: LicenseManager | undefined;
 const env = useEnv();
@@ -59,7 +60,7 @@ export type APILicense = {
 
 export class LicenseManager {
 	/** Where the key or token comes from */
-	private source: 'env' | 'db' | null = null;
+	private source: LicenseSource = null;
 
 	constructor() {
 		this.messenger.subscribe(RELOAD_CHANNEL, () => {
@@ -136,7 +137,7 @@ export class LicenseManager {
 		}
 
 		if (dbKey) {
-			this.source = 'db';
+			this.source = 'settings';
 
 			// CASE F else G
 			if (dbToken) {

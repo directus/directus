@@ -1,24 +1,10 @@
+import type { Entitlements } from '@directus/license';
+
 export type LicenseSource = 'env' | 'settings' | null;
 
 export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'inactive';
 
 export type LicensePlan = string;
-
-export interface LicenseEntitlements {
-	seats: number;
-	collections: number;
-	activity_historical_timeframe: number;
-	revisions_historical_timeframe: number;
-	sso_enabled: boolean;
-	offline_enabled: boolean;
-	telemetry_required: boolean;
-	custom_llms_enabled: boolean;
-	custom_policy_rules_enabled: boolean;
-	display_powered_by: boolean;
-	production_enabled: boolean;
-}
-
-export type LicenseUsage = Partial<Record<keyof LicenseEntitlements, number>>;
 
 interface LicenseLifecycleRenewal {
 	renews_at: number;
@@ -39,8 +25,7 @@ export type LicenseInfo = {
 	license_id: string | null;
 	grace_period: number;
 	resolution_required: boolean;
-	entitlements: LicenseEntitlements;
-	usage: LicenseUsage;
+	entitlements: Entitlements;
 } & LicenseLifecycle;
 
 export interface LicenseCheck {
