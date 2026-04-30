@@ -2,10 +2,10 @@ import { describe, expect, test } from 'vitest';
 import { validateCron } from '../../utils/schedule.js';
 import { durationToCron } from './duration-to-cron.js';
 
-const ALLOWED_CADENCE = /^([0-5]?\d) ([0-5]?\d) (\*|\d{1,2})\/(1|2|3|4|6|8|12) \* \* \*$/;
+const ALLOWED_INTERVAL = /^([0-5]?\d) ([0-5]?\d) (\*|\d{1,2})\/(1|2|3|4|6|8|12) \* \* \*$/;
 const DAILY_FALLBACK = /^([0-5]?\d) ([0-5]?\d) ([01]?\d|2[0-3]) \* \* \*$/;
 
-const ALLOWED_CADENCE_DURATIONS = [
+const ALLOWED_INTERVAL_DURATIONS = [
 	[3600, 1],
 	[7200, 2],
 	[10800, 3],
@@ -25,11 +25,11 @@ const DAILY_FALLBACK_DURATIONS = [
 ];
 
 describe('durationToCron', () => {
-	test.each(ALLOWED_CADENCE_DURATIONS)('%i seconds → OFFSET/%i hour cadence', (duration, hours) => {
+	test.each(ALLOWED_INTERVAL_DURATIONS)('%i seconds → OFFSET/%i hour cadence', (duration, hours) => {
 		const cron = durationToCron(duration);
-		const match = cron.match(ALLOWED_CADENCE);
+		const match = cron.match(ALLOWED_INTERVAL);
 
-		expect(match, `expected ${cron} to match ${ALLOWED_CADENCE}`).not.toBeNull();
+		expect(match, `expected ${cron} to match ${ALLOWED_INTERVAL}`).not.toBeNull();
 
 		const offsetStr = match![3]!;
 		const step = Number(match![4]);
@@ -51,7 +51,7 @@ describe('durationToCron', () => {
 		const cron = durationToCron(duration as number);
 
 		expect(cron).toMatch(DAILY_FALLBACK);
-		expect(cron).not.toMatch(ALLOWED_CADENCE);
+		expect(cron).not.toMatch(ALLOWED_INTERVAL);
 		expect(validateCron(cron)).toBe(true);
 	});
 });

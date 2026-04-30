@@ -7,9 +7,9 @@ const ALLOWED_HOURS = new Set([1, 2, 3, 4, 6, 8, 12]);
 /**
  * Convert a duration in seconds into a cron expression
  *
- * - Honored cadences (hours): 1, 2, 3, 4, 6, 8, 12.
+ * - Honored intervals (hours): 1, 2, 3, 4, 6, 8, 12.
  * - Random hour offset within [0, hours) spreads load across phase groups.
- * - Any duration outside cadence falls back to daily.
+ * - Any duration outside interval falls back to daily.
  *
  *   3600 (1h)   → fires every hour at random minute and second
  *   7200 (2h)   → fires every 2h, phase offset 0 or 1
