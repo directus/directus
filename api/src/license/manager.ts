@@ -11,7 +11,7 @@ import { useLogger } from '../logger/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
-import { usePRC } from './rpc.js';
+import { useRPC } from './rpc.js';
 import { getStatus } from './status.js';
 import type { LicenseSource, LicenseStatus } from './types.js';
 
@@ -57,7 +57,7 @@ export class LicenseManager {
 	private licenseToken: string | undefined;
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
-	private rpc = usePRC<Pick<LicenseManager, 'clearCache' | 'refreshKey' | 'refreshToken'>>(this, LICENSE_CHANNEL);
+	private rpc = useRPC<Pick<LicenseManager, 'clearCache' | 'refreshKey' | 'refreshToken'>>(this, LICENSE_CHANNEL);
 
 	/**
 	 * Initialize license state based on the following state permutations.
