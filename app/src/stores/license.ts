@@ -22,6 +22,13 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return null;
 	});
 
+	const seatsRemaining = computed<number | null>(() => {
+		if (!info.value) return null;
+		return info.value.entitlements.seats - (info.value.usage?.seats ?? 0);
+	});
+
+	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
+
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -79,6 +86,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loading,
 		error,
 		boundary,
+		seatsRemaining,
+		hasRemainingSeats,
 		hydrate,
 		dehydrate,
 	};

@@ -2,7 +2,7 @@
 import { useCollection } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
 import type { User } from '@directus/types';
-import { computed, provide, ref, toRefs } from 'vue';
+import { computed, provide, ref, toRefs, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -25,6 +25,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -34,6 +35,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import LicenseSeatsLimitModal from '@/views/private/components/license-seats-limit-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -115,6 +117,19 @@ const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 const confirmDiscard = ref(false);
 
+const licenseStore = useLicenseStore();
+const seatsLimitModalOpen = ref(false);
+
+const canSaveNewUser = computed(() => {
+	if (!isNew.value) return true;
+	return licenseStore.hasRemainingSeats;
+});
+
+watchEffect(() => {
+	if (!isNew.value) return;
+	seatsLimitModalOpen.value = !licenseStore.hasRemainingSeats;
+});
+
 // Provide the discard functionality to field interfaces
 provide('discardAllChanges', discardAndStay);
 provide('refresh', refresh);
@@ -176,6 +191,8 @@ function useBreadcrumb() {
 }
 
 async function saveAndQuit() {
+	if (!canSaveNewUser.value) return;
+
 	try {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
@@ -187,6 +204,8 @@ async function saveAndQuit() {
 }
 
 async function saveAndStay() {
+	if (!canSaveNewUser.value) return;
+
 	try {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
@@ -205,6 +224,8 @@ async function saveAndStay() {
 }
 
 async function saveAndAddNew() {
+	if (!canSaveNewUser.value) return;
+
 	try {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
@@ -499,6 +520,13 @@ function revert(values: Record<string, any>) {
 			:current-version="null"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
+		/>
+
+		<LicenseSeatsLimitModal
+			v-if="isNew"
+			v-model="seatsLimitModalOpen"
+			persistent
+			@cancel="router.push({ name: 'users-active' })"
 		/>
 
 		<template #sidebar>
