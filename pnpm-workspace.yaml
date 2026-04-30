@@ -22,9 +22,6 @@ catalog:
   '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
-  # Temporary: pulled from the private github repo since the package isn't on npm yet.
-  # For local dev, run `pnpm link ../license` in the cms root after cloning.
-  '@directus/license': github:directus/license#main
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*

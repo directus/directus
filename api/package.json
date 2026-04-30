@@ -82,7 +82,7 @@
 		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "workspace:*",
-		"@directus/license": "catalog:",
+		"@directus/license": "link:../../license",
 		"@directus/memory": "workspace:*",
 		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",

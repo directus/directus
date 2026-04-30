@@ -29,7 +29,7 @@
 		"test:coverage": "vitest run --coverage --typecheck"
 	},
 	"dependencies": {
-		"@directus/license": "catalog:"
+		"@directus/license": "link:../../license"
 	},
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
