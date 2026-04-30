@@ -3,9 +3,11 @@ import path from 'node:path';
 import { APP_SHARED_DEPS } from '@directus/extensions';
 import { generateExtensionsEntrypoint, resolveFsExtensions, resolveModuleExtensions } from '@directus/extensions/node';
 import yaml from '@rollup/plugin-yaml';
+import { templateCompilerOptions } from '@tresjs/core';
 import UnheadVite from '@unhead/addons/vite';
 import vue from '@vitejs/plugin-vue';
 import { searchForWorkspaceRoot } from 'vite';
+import glsl from 'vite-plugin-glsl';
 import vueDevtools from 'vite-plugin-vue-devtools';
 import { defineConfig } from 'vitest/config';
 
@@ -31,7 +33,10 @@ export default defineConfig({
 	},
 	plugins: [
 		directusExtensions(),
-		vue(),
+		vue({
+			...templateCompilerOptions,
+		}),
+		glsl(),
 		UnheadVite(),
 		yaml({
 			transform(data) {

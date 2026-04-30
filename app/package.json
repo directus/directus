@@ -112,6 +112,9 @@
 		"@vueuse/core": "catalog:",
 		"@vueuse/integrations": "catalog:",
 		"@vueuse/router": "catalog:",
+		"@tresjs/core": "catalog:",
+		"three": "catalog:",
+		"@types/three": "catalog:",
 		"ai": "catalog:",
 		"apexcharts": "catalog:",
 		"axios": "catalog:",
@@ -157,6 +160,7 @@
 		"typescript": "catalog:",
 		"universal-cookie": "catalog:",
 		"vite": "catalog:",
+		"vite-plugin-glsl": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",
@@ -167,5 +171,8 @@
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
 		"zod": "catalog:"
+	},
+	"dependencies": {
+		"@tresjs/cientos": "catalog:"
 	}
 }

@@ -85,6 +85,8 @@ catalog:
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
   '@tinymce/tinymce-vue': 6.3.0
+  '@tresjs/cientos': ^5.7.0
+  '@tresjs/core': ^5.8.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0
@@ -131,6 +133,7 @@ catalog:
   '@types/sanitize-html': 2.16.0
   '@types/semver': 7.7.1
   '@types/stream-json': 1.7.8
+  '@types/three': ^0.184.0
   '@types/tmp': 0.2.6
   '@types/wellknown': 0.5.8
   '@types/ws': 8.18.1
@@ -306,6 +309,7 @@ catalog:
   swagger-cli: 4.0.4
   tar: 7.5.8
   tedious: 18.6.1
+  three: ^0.184.0
   tinymce: 6.8.6
   tmp: 0.2.5
   tsdown: 0.15.11
@@ -323,6 +327,7 @@ catalog:
   uuid: 11.1.0
   vite: 8.0.8
   vite-plugin-dts: 4.5.4
+  vite-plugin-glsl: 1.6.0
   vite-plugin-vue-devtools: 7.7.2
   vite-tsconfig-paths: 5.1.4
   vitest: 3.2.4

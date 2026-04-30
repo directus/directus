@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import ShaderBackground from './components/shader-background.vue';
 import VImage from '@/components/v-image.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
@@ -82,11 +83,7 @@ const logoURL = computed<string | null>(() => {
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
-			<div v-if="!hasCustomBackground" class="fallback">
-				<div><div></div></div>
-				<div><div></div></div>
-				<div><div></div></div>
-			</div>
+			<ShaderBackground v-if="!hasCustomBackground" />
 
 			<video v-else-if="customBackgroundIsVideo" :src="customBackgroundUrl" autoplay muted loop />
 
@@ -193,160 +190,6 @@ const logoURL = computed<string | null>(() => {
 			z-index: -1;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-		}
-
-		.fallback {
-			position: absolute;
-			background-color: var(--theme--public--art--background);
-			inline-size: 100%;
-			block-size: 100%;
-			inset-inline-start: 0;
-			inset-block-start: 0;
-			z-index: -1;
-			overflow: hidden;
-
-			> div {
-				position: absolute;
-
-				> div {
-					position: absolute;
-					inset-block-start: 0;
-					inset-inline-start: 0;
-					inline-size: 100%;
-					block-size: 100%;
-					border-radius: 50%;
-					animation-iteration-count: infinite;
-					animation-timing-function: ease-in-out;
-					transform-origin: center center;
-				}
-			}
-
-			> div:nth-child(1) {
-				inset-block-end: -25%;
-				inset-inline-start: -25%;
-				block-size: 50%;
-				inline-size: 50%;
-				filter: blur(5.625rem);
-				z-index: 3;
-
-				> div {
-					background-color: var(--theme--public--art--primary);
-					opacity: 0.5;
-					animation-name: floating1;
-					animation-duration: calc(33s / var(--theme--public--art--speed));
-				}
-			}
-
-			> div:nth-child(2) {
-				inset-block-end: -25%;
-				inset-inline-start: 15%;
-				block-size: 40%;
-				inline-size: 60%;
-				filter: blur(8.4375rem);
-				z-index: 2;
-
-				> div {
-					background: linear-gradient(
-						107.7deg,
-						var(--theme--public--art--primary) 0%,
-						var(--theme--public--art--secondary) 50%
-					);
-					opacity: 0.7;
-					animation-name: floating2;
-					animation-duration: calc(19s / var(--theme--public--art--speed));
-				}
-			}
-
-			> div:nth-child(3) {
-				inset-block-end: -20%;
-				inset-inline-start: 75%;
-				block-size: 20%;
-				inline-size: 40%;
-				filter: blur(2.8125rem);
-				z-index: 1;
-
-				> div {
-					background-color: var(--theme--public--art--primary);
-					opacity: 0.6;
-					animation-name: floating3;
-					animation-duration: calc(27s / var(--theme--public--art--speed));
-				}
-			}
-
-			@keyframes floating1 {
-				0% {
-					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
-				}
-				10% {
-					transform: translate(25%, -20%) scale(1.5, 1) rotate(0deg);
-				}
-				20% {
-					transform: translate(10%, -25%) scale(1, 1.5) rotate(0deg);
-				}
-				30% {
-					transform: translate(00%, -20%) scale(1, 1.5) rotate(-45deg);
-				}
-				40% {
-					transform: translate(10%, -30%) scale(1, 2) rotate(0deg);
-				}
-				50% {
-					transform: translate(15%, -35%) scale(2, 0.5) rotate(45deg);
-				}
-				60% {
-					transform: translate(10%, -30%) scale(1, 2) rotate(90deg);
-				}
-				70% {
-					transform: translate(25%, -10%) scale(1, 1.5) rotate(45deg);
-				}
-				80% {
-					transform: translate(40%, 20%) scale(1.5, 0.5) rotate(-45deg);
-				}
-				90% {
-					transform: translate(15%, -20%) scale(2, 1.5) rotate(0deg);
-				}
-				100% {
-					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
-				}
-			}
-
-			@keyframes floating2 {
-				0% {
-					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
-				}
-				20% {
-					transform: translate(-10%, -05%) scale(1.5, 1.5) rotate(15deg);
-				}
-				40% {
-					transform: translate(00%, -15%) scale(2, 0.5) rotate(-45deg);
-				}
-				60% {
-					transform: translate(-15%, -10%) scale(1.5, 1) rotate(45deg);
-				}
-				80% {
-					transform: translate(-25%, -05%) scale(2.5, 0.5) rotate(180deg);
-				}
-				100% {
-					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
-				}
-			}
-
-			@keyframes floating3 {
-				0% {
-					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
-				}
-				25% {
-					transform: translate(-10%, -10%) scale(2, 1) rotate(-15deg);
-				}
-				50% {
-					transform: translate(-20%, -05%) scale(1, 0.5) rotate(45deg);
-				}
-				75% {
-					transform: translate(-15%, -15%) scale(2, 1.5) rotate(180deg);
-				}
-				100% {
-					transform: translate(00%, 00%) scale(1, 1) rotate(0deg);
-				}
-			}
 		}
 
 		.foreground {
