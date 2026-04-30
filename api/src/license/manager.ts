@@ -1,11 +1,5 @@
 import { useEnv } from '@directus/env';
-import {
-	activate as activateKey,
-	CORE_LICENSE,
-	License,
-	refresh as refreshLicense,
-	verifyLicense,
-} from '@directus/license';
+import { activateKey, CORE_LICENSE, License, refreshLicense, verifyLicense } from '@directus/license';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { SettingsService } from '../services/settings.js';
