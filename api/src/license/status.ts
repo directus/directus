@@ -7,6 +7,10 @@ export function getStatus(license: License | null, error?: Error): LicenseStatus
 			return 'canceled';
 		}
 
+		if (error && error.message.includes('expired')) {
+			return 'expired';
+		}
+
 		if (error && error.message.includes('suspended')) {
 			return 'suspended';
 		}
