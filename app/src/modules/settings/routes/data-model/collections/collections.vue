@@ -2,7 +2,7 @@
 import { saveAs } from 'file-saver';
 import { merge } from 'lodash';
 import { computed, ref } from 'vue';
-import { RouterLink, RouterView, useRouter } from 'vue-router';
+import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';
 import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
@@ -19,6 +19,7 @@ import VInfo from '@/components/v-info.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
+import { useLicenseGuard } from '@/composables/use-license-guard';
 import { useCollectionsStore } from '@/stores/collections';
 import { useLicenseStore } from '@/stores/license';
 import { Collection } from '@/types/collections';
@@ -30,23 +31,18 @@ import LicenseCollectionsLimitModal from '@/views/private/components/license-col
 import SearchInput from '@/views/private/components/search-input.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 
-const router = useRouter();
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
-const collectionsLimitModalOpen = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
 const licenseStore = useLicenseStore();
 
-function navigateToNewCollection() {
-	if (!licenseStore.hasRemainingCollections) {
-		collectionsLimitModalOpen.value = true;
-		return;
-	}
+const { limitModalOpen: collectionsLimitModalOpen, navigate } = useLicenseGuard(
+	() => licenseStore.hasRemainingCollections,
+);
 
-	router.push({ name: 'settings-add-new' });
-}
+const navigateToNewCollection = () => navigate({ name: 'settings-add-new' });
 
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 

@@ -3,7 +3,7 @@ import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
 import api from '@/api';
@@ -15,6 +15,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
+import { useLicenseGuard } from '@/composables/use-license-guard';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useLicenseStore } from '@/stores/license';
@@ -35,28 +36,21 @@ const props = defineProps<{ role?: string; status?: string }>();
 const { role } = toRefs(props);
 
 const { t } = useI18n();
-const router = useRouter();
 const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
-const seatsLimitModalOpen = ref(false);
 const serverStore = useServerStore();
 const userStore = useUserStore();
 const licenseStore = useLicenseStore();
 
-function navigateToNewUser() {
-	if (!licenseStore.hasRemainingSeats) {
-		seatsLimitModalOpen.value = true;
-		return;
-	}
-
-	router.push(addNewLink.value);
-}
+const { limitModalOpen: seatsLimitModalOpen, navigate } = useLicenseGuard(() => licenseStore.hasRemainingSeats);
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
+
+const navigateToNewUser = () => navigate(addNewLink.value);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
