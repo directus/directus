@@ -1,4 +1,4 @@
-import type { Entitlements, Meta } from '@directus/license';
+import type { Entitlements, License, Meta } from '@directus/license';
 
 export type LicenseSource = 'env' | 'settings' | null;
 
@@ -15,12 +15,9 @@ export type LicenseInfo = {
 } & Pick<Meta, 'type' | 'expires_at' | 'renews_at' | 'offline' | 'grace_period'>;
 
 export interface LicenseCheck {
-	plan: {
-		name: string;
-		code: LicensePlan;
-	};
-	expires_at?: number;
-	renews_at?: number;
+	type: string;
+	expires_at: number;
+	production_enabled: boolean;
 }
 
 export interface LicenseResolveCollectionCandidate {

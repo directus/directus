@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { activateKey, CORE_LICENSE, License, refreshLicense, verifyLicense } from '@directus/license';
+import { activateKey, checkKey, CORE_LICENSE, License, refreshLicense, verifyLicense } from '@directus/license';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { SettingsService } from '../services/settings.js';
@@ -146,6 +146,15 @@ export class LicenseManager {
 
 	public getSource() {
 		return this.source;
+	}
+
+	/**
+	 *  Check a license meta/info without activating it
+	 */
+	public async check(key: string) {
+		return checkKey({
+			license_key: key,
+		});
 	}
 
 	/**

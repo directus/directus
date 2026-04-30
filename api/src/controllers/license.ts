@@ -1,7 +1,7 @@
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import express, { type RequestHandler } from 'express';
 import { getLicense, getLicenseManager } from '../license/manager.js';
-import type { LicenseInfo } from '../license/types.js';
+import type { LicenseCheck, LicenseInfo } from '../license/types.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { isAdmin } from '../utils/is-admin.js';
@@ -37,6 +37,29 @@ router.get(
 				seats: 1,
 				collections: 15,
 			},
+		};
+
+		res.locals['payload'] = { data: payload };
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		if (req.body.license_key) {
+			throw new InvalidPayloadError({ reason: 'A "license_key" is required' });
+		}
+
+		const licenseManager = getLicenseManager();
+
+		const license = await licenseManager.check(req.body.license_key);
+
+		const payload: LicenseCheck = {
+			type: license.type,
+			expires_at: license.expires_at,
+			production_enabled: license.production_enabled,
 		};
 
 		res.locals['payload'] = { data: payload };
