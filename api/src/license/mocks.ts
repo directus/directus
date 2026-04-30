@@ -8,6 +8,7 @@ import {
 	LicenseResolveIncompleteError,
 	LicenseServiceUnavailableError,
 } from '@directus/errors';
+import { CORE_LICENSE } from '@directus/license';
 import type { LicenseAddon, LicenseCheck, LicenseInfo, LicenseResolveAssessment } from './types.js';
 
 // Temporary error handling
@@ -35,36 +36,22 @@ const BASE_LICENSE: LicenseInfo = {
 	grace_period: 2592000,
 	resolution_required: false,
 	entitlements: {
-		seats: 10,
-		collections: 100,
-		activity_historical_timeframe: 2592000,
-		revisions_historical_timeframe: 2592000,
-		sso_enabled: true,
-		offline_enabled: false,
-		telemetry_required: false,
-		custom_llms_enabled: true,
-		custom_policy_rules_enabled: true,
-		display_powered_by: true,
-		production_enabled: true,
+		seats: { limit: 10 },
+		collections: { limit: 100 },
+		activity_historical_timeframe: { limit: 2592000 },
+		revision_historical_timeframe: { limit: 2592000 },
+		sso_enabled: { default: true },
+		offline_enabled: { default: false },
+		telemetry_required: { default: false },
+		custom_llms_enabled: { default: true },
+		custom_policy_rules_enabled: { default: true },
+		display_powered_by: 'NONE',
+		production_enabled: { default: true },
 	},
 	usage: {
 		seats: 1,
 		collections: 15,
 	},
-};
-
-const CORE_ENTITLEMENTS: LicenseInfo['entitlements'] = {
-	seats: 3,
-	collections: 50,
-	activity_historical_timeframe: 604800,
-	revisions_historical_timeframe: 604800,
-	sso_enabled: false,
-	offline_enabled: false,
-	telemetry_required: true,
-	custom_llms_enabled: false,
-	custom_policy_rules_enabled: false,
-	display_powered_by: true,
-	production_enabled: true,
 };
 
 const NO_LICENSE: LicenseInfo = {
@@ -75,7 +62,7 @@ const NO_LICENSE: LicenseInfo = {
 	expires_at: 0,
 	grace_period: 0,
 	resolution_required: false,
-	entitlements: CORE_ENTITLEMENTS,
+	entitlements: CORE_LICENSE.entitlements,
 	usage: {
 		seats: 1,
 		collections: 5,

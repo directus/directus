@@ -6,6 +6,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
 import { useInsightsStore } from '@/stores/insights';
+import { useLicenseStore } from '@/stores/license';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
 import { usePresetsStore } from '@/stores/presets';
@@ -39,6 +40,7 @@ export function useStores(
 		useFlowsStore,
 		useNotificationsStore,
 		useAiStore,
+		useLicenseStore,
 	],
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
