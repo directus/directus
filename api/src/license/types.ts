@@ -2,7 +2,7 @@ import type { Entitlements, Meta } from '@directus/license';
 
 export type LicenseSource = 'env' | 'settings' | null;
 
-export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'inactive';
+export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled';
 
 export type LicenseInfo = {
 	status: LicenseStatus;
