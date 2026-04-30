@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { defaultValues, FormValidator, useSetupFields, validate, ValidationError } from './form';
+import { defaultValues, FormValidator, SetupValidator, useSetupFields, validate, ValidationError } from './form';
 import SetupForm from './form.vue';
 import LicenseForm from './license.vue';
 import api from '@/api';
@@ -61,6 +61,7 @@ const errorMessage = computed(() => {
 	return error.value?.response?.data?.errors?.[0]?.message || error.value?.message || t('unexpected_error');
 });
 
+const setupComplete = computed(() => SetupValidator.safeParse(form.value).success);
 const formComplete = computed(() => FormValidator.safeParse(form.value).success);
 const licenseComplete = computed(() => formComplete.value && form.value.license_key);
 </script>
@@ -72,7 +73,7 @@ const licenseComplete = computed(() => formComplete.value && form.value.license_
 		<template v-if="page === 'setup'">
 			<p>{{ $t('setup_info') }}</p>
 			<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
-			<VButton full-width secondary :disabled="!formComplete" @click="page = 'license'">
+			<VButton full-width secondary :disabled="!setupComplete" @click="page = 'license'">
 				{{ $t('continue') }}
 			</VButton>
 		</template>

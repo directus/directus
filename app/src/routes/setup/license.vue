@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { SetupForm } from '@directus/types';
-import { storeToRefs } from 'pinia';
 import { defaultValues, useLicenseFields } from './form';
 import VButton from '@/components/v-button.vue';
-import VCard from '@/components/v-card.vue';
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { useServerStore } from '@/stores/server';
 
-const { info } = storeToRefs(useServerStore());
-
-const props = withDefaults(
+withDefaults(
 	defineProps<{
 		register?: boolean;
 		modelValue?: Partial<SetupForm>;
@@ -75,6 +70,7 @@ const fields = useLicenseFields();
 
 .get-license-key {
 	display: flex;
+	font-weight: 600;
 	align-items: center;
 	justify-content: space-between;
 	padding: 1.8125rem;

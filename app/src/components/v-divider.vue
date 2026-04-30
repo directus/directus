@@ -6,7 +6,7 @@ interface Props {
 	inlineTitle?: boolean;
 	/** Renders a larger divider text */
 	large?: boolean;
-	/**Displays the title centered */
+	/** Displays the title centered */
 	center?: boolean;
 }
 
@@ -14,6 +14,7 @@ withDefaults(defineProps<Props>(), {
 	vertical: false,
 	inlineTitle: true,
 	large: false,
+	center: false,
 });
 </script>
 

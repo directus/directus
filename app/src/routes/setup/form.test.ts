@@ -1,6 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { ref } from 'vue';
-import { defaultValues, useSetupFields, validate } from './form';
+import { useSetupFields, validate } from './form';
 
 vi.mock('@/stores/relations', () => ({
 	useRelationsStore: () => ({
@@ -16,7 +15,7 @@ vi.mock('vue-i18n', () => ({
 }));
 
 test('useFormFields for setup', () => {
-	const result = useSetupFields(true, ref(defaultValues));
+	const result = useSetupFields(true);
 
 	expect(result.value.map((field) => field.field)).toEqual([
 		'first_name',
@@ -24,31 +23,24 @@ test('useFormFields for setup', () => {
 		'project_owner',
 		'password',
 		'password_confirm',
-		'project_usage',
 	]);
 });
 
 test('useFormFields for modal/edit', () => {
-	const result = useSetupFields(false, ref(defaultValues));
+	const result = useSetupFields(false);
 
-	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage']);
-});
-
-test('useFormFields with project_usage = commercial', () => {
-	const result = useSetupFields(false, ref({ ...defaultValues, project_usage: 'commercial' }));
-
-	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage', 'org_name']);
+	expect(result.value.map((field) => field.field)).toEqual(['project_owner']);
 });
 
 test('validate on invalid setup form', () => {
-	const fields = useSetupFields(false, ref(defaultValues));
+	const fields = useSetupFields(false);
 	const result = validate({}, fields);
 
 	expect(result.length).toBeGreaterThan(0);
 });
 
 test('validate on valid setup form', () => {
-	const fields = useSetupFields(true, ref(defaultValues));
+	const fields = useSetupFields(true);
 
 	const result = validate(
 		{
@@ -57,7 +49,6 @@ test('validate on valid setup form', () => {
 			project_owner: 'admin@example.com',
 			password: 'pw',
 			password_confirm: 'pw',
-			project_usage: null,
 			license: true,
 			product_updates: false,
 		},
@@ -69,7 +60,7 @@ test('validate on valid setup form', () => {
 });
 
 test('validate with unequal password', () => {
-	const fields = useSetupFields(true, ref(defaultValues));
+	const fields = useSetupFields(true);
 
 	const result = validate(
 		{
@@ -78,7 +69,6 @@ test('validate with unequal password', () => {
 			project_owner: 'admin@example.com',
 			password: 'pw',
 			password_confirm: 'invalid',
-			project_usage: null,
 			license: false,
 			product_updates: false,
 		},

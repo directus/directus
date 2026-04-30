@@ -10,7 +10,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 
 const { t } = useI18n();
 
-const props = withDefaults(
+withDefaults(
 	defineProps<{
 		value: string | null;
 		edit?: boolean;
@@ -103,7 +103,7 @@ function onUpdated(value: string | null) {
 		<VNotice v-else-if="error && !validating" type="warning">
 			<I18nT keypath="setup_license_invalid" tag="span">
 				<template #contactSupport>
-					<a :href="`https://directus.io/license-request`" target="_blank">
+					<a :href="`https://directus.io/license-request`" target="_blank" rel="noopener noreferrer">
 						{{ $t('contact_support') }}
 					</a>
 				</template>

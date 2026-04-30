@@ -6,6 +6,14 @@ import { useI18n } from 'vue-i18n';
 import z from 'zod';
 import { validateItem } from '@/utils/validate-item';
 
+export const SetupValidator = z.object({
+	first_name: z.string().min(1),
+	last_name: z.string().min(1),
+	project_owner: z.email(),
+	password: z.string().min(1),
+	password_confirm: z.string().min(1),
+});
+
 export const FormValidator = z.object({
 	first_name: z.string(),
 	last_name: z.string(),
@@ -31,7 +39,7 @@ export const defaultValues: SetupForm = {
 export type ValidationError = Omit<FailedValidationErrorExtensions, 'type'> & { type: string };
 
 export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, register = false) {
-	let errors: ValidationError[] = validateItem(value, unref(fields), true);
+	const errors: ValidationError[] = validateItem(value, unref(fields), true);
 
 	if (!z.email().safeParse(value.project_owner).success) {
 		errors.push({
@@ -49,14 +57,6 @@ export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, 
 		});
 	}
 
-	errors = errors.map((error) => {
-		if (error.field === 'org_name' && (error.type === 'nnull' || error.type === 'required')) {
-			error.type = 'org_name';
-		}
-
-		return error;
-	});
-
 	return errors;
 }
 
@@ -66,7 +66,7 @@ export function useSetupFields(register: MaybeRef<boolean>): ComputedRef<Field[]
 	return computed(() => {
 		const fields: DeepPartial<Field>[] = [];
 
-		if (register) {
+		if (unref(register)) {
 			fields.push({
 				field: 'first_name',
 				name: t('first_name'),
@@ -96,7 +96,7 @@ export function useSetupFields(register: MaybeRef<boolean>): ComputedRef<Field[]
 
 		fields.push({
 			field: 'project_owner',
-			name: t(register ? 'admin_email' : 'owner_email'),
+			name: t(unref(register) ? 'admin_email' : 'owner_email'),
 			meta: {
 				required: true,
 				interface: 'input',
@@ -107,7 +107,7 @@ export function useSetupFields(register: MaybeRef<boolean>): ComputedRef<Field[]
 			},
 		});
 
-		if (register) {
+		if (unref(register)) {
 			fields.push({
 				field: 'password',
 				name: t('password'),
@@ -144,10 +144,6 @@ export function useLicenseFields(): ComputedRef<Field[]> {
 				name: t('license_key'),
 				meta: {
 					interface: 'system-license-key',
-
-					options: {
-						placeholder: t('first_name'),
-					},
 					width: 'full',
 				},
 			},
