@@ -47,6 +47,22 @@ router.get(
 
 router.post(
 	'/',
+	asyncHandler(async (req, _res, next) => {
+		if (req.body.license_key) {
+			throw new InvalidPayloadError({ reason: 'A "license_key" is required' });
+		}
+
+		const licenseManager = getLicenseManager();
+
+		await licenseManager.activate(req.body.license_key);
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/check',
 	asyncHandler(async (req, res, next) => {
 		if (req.body.license_key) {
 			throw new InvalidPayloadError({ reason: 'A "license_key" is required' });
