@@ -4,18 +4,15 @@ export type LicenseSource = 'env' | 'settings' | null;
 
 export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'inactive';
 
-export type LicensePlan = string;
-
 export type LicenseInfo = {
 	status: LicenseStatus;
 	source: LicenseSource;
-	plan: LicensePlan;
 	entitlements: Entitlements;
 	usage: {
 		seats: number;
 		collections: number;
 	};
-} & Pick<Meta, 'overage_billed' | 'validation_interval' | 'grace_period' | 'offline'>;
+} & Pick<Meta, 'type' | 'expires_at' | 'renews_at' | 'offline'>;
 
 export interface LicenseCheck {
 	plan: {
