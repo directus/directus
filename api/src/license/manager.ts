@@ -271,7 +271,7 @@ export class LicenseManager {
 
 async function getLicenseKey(options?: { database?: Knex }) {
 	if (env['LICENSE_KEY']) {
-		return String(env['LICENSE_TOKEN']);
+		return String(env['LICENSE_KEY']);
 	}
 
 	const schema = await getSchema(options);
