@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Role } from '@directus/types';
 import { ref, watch } from 'vue';
-import LicenseSeatsLimitModal from './license-seats-limit-modal.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -12,7 +11,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VNotice from '@/components/v-notice.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VTextarea from '@/components/v-textarea.vue';
-import { useLicenseStore } from '@/stores/license';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -25,13 +23,10 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
 }>();
 
-const licenseStore = useLicenseStore();
-
 const emails = ref<string>('');
 const roles = ref<Record<string, any>[]>([]);
 const roleSelected = ref<string | undefined>(props.role);
 const loading = ref(false);
-const seatsLimitModalOpen = ref(false);
 
 const uniqueValidationErrors = ref([]);
 
@@ -45,21 +40,14 @@ watch(
 async function inviteUsers() {
 	if (emails.value.length === 0 || loading.value) return;
 
-	const emailsParsed = emails.value
-		.split(/,|\n/)
-		.map((email) => email.trim())
-		.filter((email) => email);
-
-	if (emailsParsed.length === 0) return;
-
-	if (licenseStore.seatsRemaining !== null && emailsParsed.length > licenseStore.seatsRemaining) {
-		seatsLimitModalOpen.value = true;
-		return;
-	}
-
 	loading.value = true;
 
 	try {
+		const emailsParsed = emails.value
+			.split(/,|\n/)
+			.filter((e) => e)
+			.map((email) => email.trim());
+
 		await api.post('/users/invite', {
 			email: emailsParsed,
 			role: roleSelected.value,
@@ -144,8 +132,6 @@ async function loadRoles() {
 			</VCardActions>
 		</VCard>
 	</VDialog>
-
-	<LicenseSeatsLimitModal v-model="seatsLimitModalOpen" />
 </template>
 
 <style lang="scss" scoped>
