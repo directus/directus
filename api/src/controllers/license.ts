@@ -30,6 +30,8 @@ router.get(
 			renews_at: license.meta.renews_at,
 			expires_at: license.meta.expires_at,
 			entitlements: license.entitlements,
+			grace_period: license.meta.grace_period,
+			offline: license.meta.offline,
 			// TODO: Replace with actual stats
 			usage: {
 				seats: 1,

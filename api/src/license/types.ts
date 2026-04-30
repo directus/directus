@@ -12,7 +12,7 @@ export type LicenseInfo = {
 		seats: number;
 		collections: number;
 	};
-} & Pick<Meta, 'type' | 'expires_at' | 'renews_at' | 'offline'>;
+} & Pick<Meta, 'type' | 'expires_at' | 'renews_at' | 'offline' | 'grace_period'>;
 
 export interface LicenseCheck {
 	plan: {
