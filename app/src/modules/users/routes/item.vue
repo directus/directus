@@ -120,13 +120,10 @@ const confirmDiscard = ref(false);
 const licenseStore = useLicenseStore();
 const seatsLimitModalOpen = ref(false);
 
-function canSaveNewUser() {
+const canSaveNewUser = computed(() => {
 	if (!isNew.value) return true;
-	if (licenseStore.hasRemainingSeats) return true;
-
-	seatsLimitModalOpen.value = true;
-	return false;
-}
+	return licenseStore.hasRemainingSeats;
+});
 
 watchEffect(() => {
 	if (!isNew.value) return;
@@ -194,7 +191,7 @@ function useBreadcrumb() {
 }
 
 async function saveAndQuit() {
-	if (!canSaveNewUser()) return;
+	if (!canSaveNewUser.value) return;
 
 	try {
 		const savedItem: Record<string, any> = await save();
@@ -207,7 +204,7 @@ async function saveAndQuit() {
 }
 
 async function saveAndStay() {
-	if (!canSaveNewUser()) return;
+	if (!canSaveNewUser.value) return;
 
 	try {
 		const savedItem: Record<string, any> = await save();
@@ -227,7 +224,7 @@ async function saveAndStay() {
 }
 
 async function saveAndAddNew() {
-	if (!canSaveNewUser()) return;
+	if (!canSaveNewUser.value) return;
 
 	try {
 		const savedItem: Record<string, any> = await save();
