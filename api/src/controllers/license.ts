@@ -61,6 +61,18 @@ router.post(
 	respond,
 );
 
+router.delete(
+	'/',
+	asyncHandler(async (_req, _res, next) => {
+		const licenseManager = getLicenseManager();
+
+		await licenseManager.deactivate();
+
+		return next();
+	}),
+	respond,
+);
+
 router.post(
 	'/check',
 	asyncHandler(async (req, res, next) => {

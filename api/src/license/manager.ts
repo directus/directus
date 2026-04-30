@@ -1,5 +1,13 @@
 import { useEnv } from '@directus/env';
-import { activateKey, checkKey, CORE_LICENSE, License, refreshLicense, verifyLicense } from '@directus/license';
+import {
+	activateKey,
+	checkKey,
+	CORE_LICENSE,
+	deactivateKey,
+	License,
+	refreshLicense,
+	verifyLicense,
+} from '@directus/license';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { SettingsService } from '../services/settings.js';
@@ -193,6 +201,25 @@ export class LicenseManager {
 		}
 	}
 
+	public async deactivate(key?: string) {
+		const currentKey = this.licenseKey ?? key;
+
+		if (!currentKey) {
+			throw new TypeError('"key" has to be defined in order to deactivate');
+		}
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		await deactivateKey({
+			license_key: currentKey,
+			project_id: project_id!,
+		});
+
+		await this.downgrade();
+	}
+
 	/**
 	 * Update from an existing key to a new key
 	 */
@@ -265,8 +292,10 @@ export class LicenseManager {
 		this.licenseToken = await getLicenseToken();
 	}
 
-	/** Downgrade to CORE license */
-	public async downgrade() {
+	/**
+	 * Downgrade internal tracker to core, does NOT unbind existing key
+	 */
+	private async downgrade() {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 		await settingsService.upsertSingleton({ license_token: null });
 
