@@ -1,60 +1,44 @@
-import express from 'express';
-import {
-	maybeThrowMockError,
-	MOCK_LICENSE_ADDONS,
-	MOCK_LICENSE_CHECK,
-	MOCK_LICENSE_RESOLVE,
-	pickLicenseScenario,
-} from '../license/mocks.js';
+import { ForbiddenError } from '@directus/errors';
+import express, { type RequestHandler } from 'express';
+import { getLicense, getLicenseManager } from '../license/manager.js';
+import type { LicenseInfo } from '../license/types.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
+import { isAdmin } from '../utils/is-admin.js';
 
 const router = express.Router();
 
-// Get current license state. Use ?scenario=<name> to switch mocks (active, grace, expired, suspended, canceled, overage, no-license).
+export const multipartHandler: RequestHandler = (req, _res, next) => {
+	if (!isAdmin(req.accountability)) {
+		throw new ForbiddenError();
+	}
+
+	return next();
+};
+
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
-		res.locals['cache'] = false;
-		res.locals['payload'] = { data: pickLicenseScenario(req.query['scenario']) };
-		return next();
-	}),
-	respond,
-);
-
-// Validate a license key without applying it. Use ?error=<code> to test error states.
-router.get(
-	'/check',
-	asyncHandler(async (req, res, next) => {
-		res.locals['cache'] = false;
-		maybeThrowMockError(req.query['error'], ['LICENSE_INVALID', 'LICENSE_SERVICE_UNAVAILABLE']);
-
-		res.locals['payload'] = { data: MOCK_LICENSE_CHECK };
-		return next();
-	}),
-	respond,
-);
-
-// Resource Resolution assessment (or deactivation preview when ?deactivate=true).
-router.get(
-	'/resolve',
 	asyncHandler(async (_req, res, next) => {
-		res.locals['cache'] = false;
-		res.locals['payload'] = { data: MOCK_LICENSE_RESOLVE };
+		const licenseManager = getLicenseManager();
+		const license = await getLicense();
+		const licenseStatus = await licenseManager.getStatus();
+
+		const payload: LicenseInfo = {
+			type: license.meta.type,
+			status: licenseStatus,
+			source: licenseManager.getSource(),
+			renews_at: license.meta.renews_at,
+			expires_at: license.meta.expires_at,
+			entitlements: license.entitlements,
+			// TODO: Replace with actual stats
+			usage: {
+				seats: 1,
+				collections: 15,
+			},
+		};
+
+		res.locals['payload'] = { data: payload };
 		return next();
 	}),
 	respond,
 );
-
-// Catalog of addons available for the current subscription.
-router.get(
-	'/addons',
-	asyncHandler(async (_req, res, next) => {
-		res.locals['cache'] = false;
-		res.locals['payload'] = { data: MOCK_LICENSE_ADDONS };
-		return next();
-	}),
-	respond,
-);
-
-export default router;

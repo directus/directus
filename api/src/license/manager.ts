@@ -28,7 +28,7 @@ type LicenseStore = {
 
 const store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
-export async function getLicense(options: { database?: Knex }): Promise<License> {
+export async function getLicense(options?: { database?: Knex }): Promise<License> {
 	if (licenseCache) return licenseCache;
 
 	const token = await getLicenseToken(options);
@@ -145,7 +145,9 @@ export class LicenseManager {
 	}
 
 	public async getStatus() {
-		return await store(async (store) => store.get('status') ?? 'active');
+		const status = await store(async (store) => store.get('status'));
+
+		return status ?? 'active';
 	}
 
 	public getSource() {
