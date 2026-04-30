@@ -8,8 +8,40 @@ export type LicenseBoundary = {
 	timestamp: number;
 };
 
+const NUMERIC_ENTITLEMENT_KEYS = [
+	'seats',
+	'collections',
+	'activity_historical_timeframe',
+	'revision_historical_timeframe',
+] as const;
+
+type NumericEntitlementKey = (typeof NUMERIC_ENTITLEMENT_KEYS)[number];
+
+type EnrichedNumericEntitlement = LicenseInfo['entitlements'][NumericEntitlementKey] & { effective: number };
+
+export type EnrichedLicenseInfo = Omit<LicenseInfo, 'entitlements'> & {
+	entitlements: Omit<LicenseInfo['entitlements'], NumericEntitlementKey> & {
+		[K in NumericEntitlementKey]: EnrichedNumericEntitlement;
+	};
+};
+
+function enrichLicense(raw: LicenseInfo): EnrichedLicenseInfo {
+	const entitlements = { ...raw.entitlements } as EnrichedLicenseInfo['entitlements'];
+
+	for (const key of NUMERIC_ENTITLEMENT_KEYS) {
+		const entitlement = raw.entitlements[key];
+
+		entitlements[key] = {
+			...entitlement,
+			effective: entitlement.limit + (entitlement.addon ?? 0) + (entitlement.overage ?? 0),
+		};
+	}
+
+	return { ...raw, entitlements };
+}
+
 export const useLicenseStore = defineStore('licenseStore', () => {
-	const info = ref<LicenseInfo | null>(null);
+	const info = ref<EnrichedLicenseInfo | null>(null);
 	const loading = ref(false);
 	const error = ref<unknown>(null);
 
@@ -57,7 +89,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loading.value = true;
 
 		try {
-			info.value = await sdk.request(readLicense());
+			info.value = enrichLicense(await sdk.request(readLicense()));
 			error.value = null;
 			scheduleNextRefresh();
 		} catch (err) {

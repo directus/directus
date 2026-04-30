@@ -32,11 +32,13 @@ const BASE_LICENSE: LicenseInfo = {
 	source: 'settings',
 	plan: 'team',
 	license_id: '20d90f05-dfd8-4b39-a041-cd748a746028',
-	renews_at: 1776996042,
-	grace_period: 2592000,
 	resolution_required: false,
+	type: 'TEAM',
+	grace_period: 2592000,
+	validation_interval: 86400,
+	renews_at: 1776996042,
 	entitlements: {
-		seats: { limit: 10 },
+		seats: { limit: 10, addon: 2, overage: 1 },
 		collections: { limit: 100 },
 		activity_historical_timeframe: { limit: 2592000 },
 		revision_historical_timeframe: { limit: 2592000 },
@@ -59,9 +61,8 @@ const NO_LICENSE: LicenseInfo = {
 	source: null,
 	plan: 'core',
 	license_id: null,
-	expires_at: 0,
-	grace_period: 0,
 	resolution_required: false,
+	...CORE_LICENSE.meta,
 	entitlements: CORE_LICENSE.entitlements,
 	usage: {
 		seats: 1,
@@ -77,15 +78,15 @@ export const MOCK_LICENSE_INFO_SCENARIOS: Record<LicenseScenario, LicenseInfo> =
 		status: 'grace',
 		expires_at: 1776996042,
 		renews_at: undefined,
-	} as LicenseInfo,
+	},
 
 	expired: {
 		...BASE_LICENSE,
 		status: 'expired',
+		resolution_required: true,
 		expires_at: 1776996042,
 		renews_at: undefined,
-		resolution_required: true,
-	} as LicenseInfo,
+	},
 
 	suspended: {
 		...BASE_LICENSE,
@@ -96,10 +97,10 @@ export const MOCK_LICENSE_INFO_SCENARIOS: Record<LicenseScenario, LicenseInfo> =
 	canceled: {
 		...BASE_LICENSE,
 		status: 'canceled',
+		resolution_required: true,
 		expires_at: 1776996042,
 		renews_at: undefined,
-		resolution_required: true,
-	} as LicenseInfo,
+	},
 
 	overage: {
 		...BASE_LICENSE,

@@ -28,6 +28,9 @@
 		"test": "vitest run --typecheck",
 		"test:coverage": "vitest run --coverage --typecheck"
 	},
+	"dependencies": {
+		"@directus/license": "catalog:"
+	},
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "catalog:",

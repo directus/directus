@@ -1,3 +1,4 @@
+import type { Entitlements, Meta } from '@directus/license';
 import type { RestCommand } from '../../types.js';
 
 export type LicenseSource = 'env' | 'settings' | null;
@@ -6,44 +7,22 @@ export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canc
 
 export type LicensePlan = string;
 
-export interface LicenseEntitlements {
+export type LicenseEntitlements = Entitlements;
+
+export type LicenseUsage = Partial<{
 	seats: number;
 	collections: number;
-	activity_historical_timeframe: number;
-	revisions_historical_timeframe: number;
-	sso_enabled: boolean;
-	offline_enabled: boolean;
-	telemetry_required: boolean;
-	custom_llms_enabled: boolean;
-	custom_policy_rules_enabled: boolean;
-	display_powered_by: boolean;
-	production_enabled: boolean;
-}
+}>;
 
-export type LicenseUsage = Partial<Record<keyof LicenseEntitlements, number>>;
-
-interface LicenseLifecycleRenewal {
-	renews_at: number;
-	expires_at?: never;
-}
-
-interface LicenseLifecycleExpiration {
-	expires_at: number;
-	renews_at?: never;
-}
-
-export type LicenseLifecycle = LicenseLifecycleRenewal | LicenseLifecycleExpiration;
-
-export type LicenseInfo = {
+export type LicenseInfo = Meta & {
 	status: LicenseStatus;
 	source: LicenseSource;
 	plan: LicensePlan;
 	license_id: string | null;
-	grace_period: number;
 	resolution_required: boolean;
 	entitlements: LicenseEntitlements;
 	usage: LicenseUsage;
-} & LicenseLifecycle;
+};
 
 export interface LicenseCheck {
 	plan: {

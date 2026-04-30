@@ -6,16 +6,22 @@ export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canc
 
 export type LicensePlan = string;
 
-export type LicenseInfo = {
+export type LicenseEntitlements = Entitlements;
+
+export type LicenseUsage = Partial<{
+	seats: number;
+	collections: number;
+}>;
+
+export type LicenseInfo = Meta & {
 	status: LicenseStatus;
 	source: LicenseSource;
 	plan: LicensePlan;
-	entitlements: Entitlements;
-	usage: {
-		seats: number;
-		collections: number;
-	};
-} & Pick<Meta, 'overage_billed' | 'validation_interval' | 'grace_period' | 'offline'>;
+	license_id: string | null;
+	resolution_required: boolean;
+	entitlements: LicenseEntitlements;
+	usage: LicenseUsage;
+};
 
 export interface LicenseCheck {
 	plan: {
