@@ -75,78 +75,73 @@ export class LicenseManager {
 	 * |   -    |    -     |   -   |    -    |  -   |  CORE_LICENSE                                |  I   |
 	 */
 	public async initialize(): Promise<void> {
-		const initialized = await store(async (store) => {
-			if (await store.get('initialized')) return true;
+		// Lock the whole store for the entirety of initialization
+		await store(async (store) => {
+			if (await store.get('initialized')) return;
 
-			await store.set('initialized', true);
-			return false;
-		});
+			const envKey = env['LICENSE_KEY'] as string | undefined;
+			const envToken = env['LICENSE_TOKEN'] as string | undefined;
 
-		if (initialized) return;
+			const settingsService = new SettingsService({ schema: await getSchema() });
 
-		const envKey = env['LICENSE_KEY'] as string | undefined;
-		const envToken = env['LICENSE_TOKEN'] as string | undefined;
-
-		const settingsService = new SettingsService({ schema: await getSchema() });
-
-		// CASE A
-		if (envKey && envToken) {
-			logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
-			process.exit(1);
-		}
-
-		const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
-			fields: ['license_key', 'license_token'],
-		});
-
-		// CASE I
-		if (!envKey && !envToken && !dbKey) {
-			// CASE H
-			if (dbToken) {
-				await this.downgrade();
+			// CASE A
+			if (envKey && envToken) {
+				logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
+				process.exit(1);
 			}
 
-			// Use core license
-			await store(async (store) => {
-				await store.set('status', 'active');
+			const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
+				fields: ['license_key', 'license_token'],
 			});
 
-			return;
-		}
+			// CASE I
+			if (!envKey && !envToken && !dbKey) {
+				// CASE H
+				if (dbToken) {
+					await this.downgrade();
+				}
 
-		// CASE D
-		if (envKey && !dbKey) {
-			this.source = 'env';
-			await this.activate(envKey);
-		}
-
-		if (envKey && dbKey) {
-			this.source = 'env';
-
-			// CASE B else C
-			if (envKey !== dbKey) {
-				await this.update(dbKey, envKey);
-			} else {
-				await this.refresh({ key: envKey, token: dbToken ?? null });
+				// Use core license
+				await store.set('status', 'active');
+				return;
 			}
-		}
 
-		// CASE E
-		if (envToken) {
-			this.source = 'env';
-			await this.verify(envToken);
-		}
-
-		if (dbKey) {
-			this.source = 'settings';
-
-			// CASE F else G
-			if (dbToken) {
-				await this.refresh({ key: dbKey, token: dbToken });
-			} else {
-				await this.activate(dbKey);
+			// CASE D
+			if (envKey && !dbKey) {
+				this.source = 'env';
+				await this.activate(envKey);
 			}
-		}
+
+			if (envKey && dbKey) {
+				this.source = 'env';
+
+				// CASE B else C
+				if (envKey !== dbKey) {
+					await this.update(dbKey, envKey);
+				} else {
+					await this.refresh({ key: envKey, token: dbToken ?? null });
+				}
+			}
+
+			// CASE E
+			if (envToken) {
+				this.source = 'env';
+				await this.verify(envToken);
+			}
+
+			if (dbKey) {
+				this.source = 'settings';
+
+				// CASE F else G
+				if (dbToken) {
+					await this.refresh({ key: dbKey, token: dbToken });
+				} else {
+					await this.activate(dbKey);
+				}
+			}
+
+			await store.set('initialized', true);
+		});
 	}
 
 	public async getStatus() {
