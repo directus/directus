@@ -1440,10 +1440,9 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 license:
-license:
-  reached: You have reached the max user limit allowed for your plan.
-  manage_plan_body: You will need to purchase additional user seats or upgrade.
-  contact_sales_body: Contact sales to purchase more feature add-ons.
+  seats_reached: You have reached the max user limit allowed for your plan.
+  manage_plan_copy: You will need to purchase additional user seats or upgrade your plan.
+  contact_sales_copy: Contact sales to purchase more feature add-ons.
   manage_plan: Manage Plan
   contact_sales: Contact Sales
 no_upscale: Don't upscale images

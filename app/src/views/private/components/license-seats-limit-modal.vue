@@ -30,10 +30,10 @@ function close() {
 }
 
 function handleAction() {
-	close();
+	emit('update:modelValue', false);
 
 	if (isEnterprisePlan.value) {
-		window.open('https://directus.io/contact', '_blank');
+		window.open('https://directus.io/contact', '_blank', 'noopener,noreferrer');
 	} else {
 		router.push('/settings/license');
 	}
@@ -48,10 +48,10 @@ function handleAction() {
 		@esc="close"
 	>
 		<VCard>
-			<VCardTitle>{{ $t('license.reached') }}</VCardTitle>
+			<VCardTitle>{{ $t('license.seats_reached') }}</VCardTitle>
 
 			<VCardText>
-				{{ isEnterprisePlan ? $t('license.contact_sales_body') : $t('license.manage_plan_body') }}
+				{{ isEnterprisePlan ? $t('license.contact_sales_copy') : $t('license.manage_plan_copy') }}
 			</VCardText>
 
 			<VCardActions>
