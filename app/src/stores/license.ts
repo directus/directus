@@ -24,10 +24,17 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const seatsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
-		return info.value.entitlements.seats - (info.value.usage?.seats ?? 0);
+		return info.value.entitlements.seats.limit - (info.value.usage?.seats ?? 0);
 	});
 
 	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
+
+	const collectionsRemaining = computed<number | null>(() => {
+		if (!info.value) return null;
+		return info.value.entitlements.collections.limit - (info.value.usage?.collections ?? 0);
+	});
+
+	const hasRemainingCollections = computed(() => collectionsRemaining.value === null || collectionsRemaining.value > 0);
 
 	function clearTimer() {
 		if (refreshTimer) {
@@ -88,6 +95,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
+		collectionsRemaining,
+		hasRemainingCollections,
 		hydrate,
 		dehydrate,
 	};

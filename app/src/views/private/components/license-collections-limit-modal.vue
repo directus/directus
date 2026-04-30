@@ -51,7 +51,9 @@ function handleAction() {
 			<VCardTitle>{{ $t('license.limit_reached') }}</VCardTitle>
 
 			<VCardText>
-				{{ isEnterprisePlan ? $t('license.seats_contact_sales_copy') : $t('license.seats_manage_plan_copy') }}
+				{{
+					isEnterprisePlan ? $t('license.collections_contact_sales_copy') : $t('license.collections_manage_plan_copy')
+				}}
 			</VCardText>
 
 			<VCardActions>

@@ -41,9 +41,9 @@ describe('LicenseSeatsLimitModal', () => {
 
 			const wrapper = mount(LicenseSeatsLimitModal, { props: { modelValue: true }, global });
 
-			expect(wrapper.text()).toContain(i18n.global.t('license.manage_plan_copy'));
+			expect(wrapper.text()).toContain(i18n.global.t('license.seats_manage_plan_copy'));
 			expect(wrapper.text()).toContain(i18n.global.t('license.manage_plan'));
-			expect(wrapper.text()).not.toContain(i18n.global.t('license.contact_sales_copy'));
+			expect(wrapper.text()).not.toContain(i18n.global.t('license.seats_contact_sales_copy'));
 		});
 
 		it('shows contact sales text for enterprise plan', () => {
@@ -51,9 +51,9 @@ describe('LicenseSeatsLimitModal', () => {
 
 			const wrapper = mount(LicenseSeatsLimitModal, { props: { modelValue: true }, global });
 
-			expect(wrapper.text()).toContain(i18n.global.t('license.contact_sales_copy'));
+			expect(wrapper.text()).toContain(i18n.global.t('license.seats_contact_sales_copy'));
 			expect(wrapper.text()).toContain(i18n.global.t('license.contact_sales'));
-			expect(wrapper.text()).not.toContain(i18n.global.t('license.manage_plan_copy'));
+			expect(wrapper.text()).not.toContain(i18n.global.t('license.seats_manage_plan_copy'));
 		});
 
 		it('shows manage plan text when license info is null', () => {
@@ -61,7 +61,7 @@ describe('LicenseSeatsLimitModal', () => {
 
 			const wrapper = mount(LicenseSeatsLimitModal, { props: { modelValue: true }, global });
 
-			expect(wrapper.text()).toContain(i18n.global.t('license.manage_plan_copy'));
+			expect(wrapper.text()).toContain(i18n.global.t('license.seats_manage_plan_copy'));
 		});
 	});
 
