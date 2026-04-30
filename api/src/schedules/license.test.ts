@@ -25,11 +25,13 @@ vi.mock('./utils/duration-to-cron.js', () => ({
 }));
 
 const refresh = vi.fn();
+const stop = vi.fn();
 
 beforeEach(() => {
 	vi.mocked(getLicenseManager).mockReturnValue({ refresh } as any);
 	vi.mocked(getLicense).mockResolvedValue({ meta: { validation_interval: 3600 } } as License);
 	vi.mocked(durationToCron).mockReturnValue('0 0 0/1 * * *');
+	vi.mocked(schedule.scheduleSynchronizedJob).mockReturnValue({ stop });
 });
 
 afterEach(() => {
@@ -91,7 +93,7 @@ describe('schedule license-check', () => {
 		expect(res).toBe(false);
 	});
 
-	test('the scheduled tick invokes licenseManager.refresh', async () => {
+	test('the scheduled invokes licenseManager.refresh', async () => {
 		await licenseSchedule();
 
 		// Pull the onTick callback that was handed to scheduleSynchronizedJob and run it.
@@ -99,5 +101,36 @@ describe('schedule license-check', () => {
 		await onTick(new Date());
 
 		expect(refresh).toHaveBeenCalledOnce();
+	});
+
+	test('the schedule stops the existing job and re-schedules when validation_interval has changed', async () => {
+		vi.mocked(getLicense)
+			.mockResolvedValueOnce({ meta: { validation_interval: 3600 } } as License) // initial boot
+			.mockResolvedValueOnce({ meta: { validation_interval: 7200 } } as License) // tick: detect change
+			.mockResolvedValueOnce({ meta: { validation_interval: 7200 } } as License); // recursive schedule()
+
+		await licenseSchedule();
+
+		const [, , onTick] = vi.mocked(schedule.scheduleSynchronizedJob).mock.calls[0]!;
+		await onTick(new Date());
+
+		expect(refresh).not.toHaveBeenCalledOnce();
+		expect(stop).toHaveBeenCalledOnce();
+		expect(schedule.scheduleSynchronizedJob).toHaveBeenCalledTimes(2);
+	});
+
+	test('the scheduled tick stops the existing job and does not re-schedule when validation_interval changed to the -1 sentinel', async () => {
+		vi.mocked(getLicense)
+			.mockResolvedValueOnce({ meta: { validation_interval: 3600 } } as License)
+			.mockResolvedValueOnce({ meta: { validation_interval: -1 } } as License);
+
+		await licenseSchedule();
+
+		const [, , onTick] = vi.mocked(schedule.scheduleSynchronizedJob).mock.calls[0]!;
+		await onTick(new Date());
+
+		expect(stop).toHaveBeenCalledOnce();
+		expect(refresh).not.toHaveBeenCalledOnce();
+		expect(schedule.scheduleSynchronizedJob).toHaveBeenCalledTimes(1);
 	});
 });

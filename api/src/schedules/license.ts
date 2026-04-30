@@ -12,12 +12,23 @@ export default async function schedule(): Promise<boolean> {
 	// -1 = no verification required
 	if (license.meta.validation_interval === -1) return false;
 
-	const schedule = durationToCron(license.meta.validation_interval);
+	const cron = durationToCron(license.meta.validation_interval);
 
-	if (!validateCron(schedule)) return false;
+	if (!validateCron(cron)) return false;
 
-	scheduleSynchronizedJob('license-check', schedule, async () => {
-		await licenseManager.refresh();
+	const { stop } = scheduleSynchronizedJob('license-check', cron, async () => {
+		const jobLicense = await getLicense();
+
+		// If interval has changed from a refresh, reschedule job with new
+		if (jobLicense.meta.validation_interval !== license.meta.validation_interval) {
+			await stop();
+
+			if (jobLicense.meta.validation_interval !== -1) {
+				await schedule();
+			}
+		} else {
+			await licenseManager.refresh();
+		}
 	});
 
 	return true;
