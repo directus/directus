@@ -57,7 +57,7 @@ export class LicenseManager {
 	private licenseToken: string | undefined;
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
-	private rpc = useRPC<Pick<LicenseManager, 'clearCache' | 'refreshKey' | 'refreshToken'>>(this, LICENSE_CHANNEL);
+	private rpc = useRPC<Pick<LicenseManager, 'refreshCache'>>(this, LICENSE_CHANNEL);
 
 	/**
 	 * Initialize license state based on the following state permutations.
@@ -176,9 +176,7 @@ export class LicenseManager {
 				project_id: new_project_id ?? project_id!,
 			});
 
-			this.rpc.clearCache();
-			this.rpc.refreshKey();
-			this.rpc.refreshToken();
+			this.rpc.refreshCache();
 		} catch (err) {
 			error = err as Error;
 			await this.downgrade();
@@ -240,8 +238,7 @@ export class LicenseManager {
 					license_token: token,
 				});
 
-				this.rpc.clearCache();
-				this.rpc.refreshToken();
+				this.rpc.refreshCache();
 
 				license = await verifyLicense(token);
 			} catch (err) {
@@ -256,15 +253,9 @@ export class LicenseManager {
 		});
 	}
 
-	public clearCache() {
+	public async refreshCache() {
 		licenseCache = undefined;
-	}
-
-	public async refreshKey() {
 		this.licenseKey = await getLicenseKey();
-	}
-
-	public async refreshToken() {
 		this.licenseToken = await getLicenseToken();
 	}
 
@@ -273,8 +264,7 @@ export class LicenseManager {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 		await settingsService.upsertSingleton({ license_token: null });
 
-		this.rpc.clearCache();
-		this.rpc.refreshToken();
+		this.rpc.refreshCache();
 	}
 }
 
