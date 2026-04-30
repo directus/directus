@@ -180,11 +180,12 @@ export class LicenseManager {
 		} catch (err) {
 			error = err as Error;
 			await this.downgrade();
+			throw err;
+		} finally {
+			await store(async (store) => {
+				await store.set('status', getStatus(license, error));
+			});
 		}
-
-		await store(async (store) => {
-			await store.set('status', getStatus(license, error));
-		});
 	}
 
 	/**
