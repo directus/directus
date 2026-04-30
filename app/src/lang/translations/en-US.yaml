@@ -886,8 +886,7 @@ errors:
   UNKNOWN: Unexpected Error
   UNPROCESSABLE_CONTENT: Unprocessable Content
   UNSUPPORTED_MEDIA_TYPE: Unsupported media type
-  USER_SEATS_OVERAGE:
-    The project has reached its user seat limit. Please contact your project admin to resolve this issue.
+  PROJECT_LOCKED: The project has reached its user seat limit. Please contact your project admin to resolve this issue.
   USER_SUSPENDED: User Suspended
   VALUE_OUT_OF_RANGE: Value is out of range
   VALUE_TOO_LONG: Value is too long
