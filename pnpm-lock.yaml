@@ -966,6 +966,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      '@directus/license':
+        specifier: link:../license
+        version: link:../license
     devDependencies:
       '@changesets/cli':
         specifier: 'catalog:'

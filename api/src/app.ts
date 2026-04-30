@@ -32,6 +32,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import licenseRouter from './controllers/license.js';
 import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
 import notFoundHandler from './controllers/not-found.js';
@@ -63,6 +64,7 @@ import { ensureDeploymentWebhooks, registerDeploymentDrivers } from './deploymen
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
+import { getLicenseManager } from './license/index.js';
 import { createExpressLogger, useLogger } from './logger/index.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
@@ -125,8 +127,10 @@ export default async function createApp(): Promise<express.Application> {
 	await ensureDeploymentWebhooks();
 
 	const extensionManager = getExtensionManager();
+	const licenseManager = getLicenseManager();
 	const flowManager = getFlowManager();
 
+	await licenseManager.initialize();
 	await extensionManager.initialize();
 	await flowManager.initialize();
 
@@ -340,6 +344,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+	app.use('/license', licenseRouter);
 
 	if (toBoolean(env['MCP_ENABLED']) === true) {
 		app.use('/mcp', mcpRouter);

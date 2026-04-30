@@ -1,9 +1,9 @@
-import type { AbstractServiceOptions, OwnerInformation } from '@directus/types';
+import type { AbstractServiceOptions, OwnerInformation, Settings } from '@directus/types';
 import { version } from 'directus/version';
 import { sendReport } from '../telemetry/index.js';
 import { ItemsService } from './items.js';
 
-export class SettingsService extends ItemsService {
+export class SettingsService extends ItemsService<Settings> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_settings', options);
 	}
@@ -17,10 +17,7 @@ export class SettingsService extends ItemsService {
 
 		return await this.upsertSingleton({
 			project_owner: data.project_owner,
-			project_usage: data.project_usage,
-			org_name: data.org_name,
 			product_updates: data.product_updates,
-			project_status: null,
 		});
 	}
 }

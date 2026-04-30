@@ -1,3 +1,6 @@
+export { AddonNotAvailableError } from './addon-not-available.js';
+export { AddonNotFoundError } from './addon-not-found.js';
+export { AddonQuantityOutOfRangeError } from './addon-quantity-out-of-range.js';
 export { ContainsNullValuesError } from './contains-null-values.js';
 export { ContentTooLargeError } from './content-too-large.js';
 export { EmailLimitExceededError } from './email-limit-exceeded.js';
@@ -16,6 +19,11 @@ export { InvalidProviderConfigError } from './invalid-provider-config.js';
 export { InvalidProviderError } from './invalid-provider.js';
 export { InvalidQueryError } from './invalid-query.js';
 export { InvalidTokenError } from './invalid-token.js';
+export { LicenseInvalidError } from './license-invalid.js';
+export { LicenseManagedByEnvError } from './license-managed-by-env.js';
+export { LicenseOfflineUnsupportedError } from './license-offline-unsupported.js';
+export { LicenseResolveIncompleteError } from './license-resolve-incomplete.js';
+export { LicenseServiceUnavailableError } from './license-service-unavailable.js';
 export { LimitExceededError } from './limit-exceeded.js';
 export { MethodNotAllowedError } from './method-not-allowed.js';
 export { NotNullViolationError } from './not-null-violation.js';
