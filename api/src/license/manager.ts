@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { activateKey, CORE_LICENSE, License, refreshLicense, verifyLicense } from '@directus/license';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
+import licenseCheckSchedule from '../schedules/license.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
@@ -22,10 +23,10 @@ type LicenseStore = {
 
 const store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
-export async function getLicense(options: { database?: Knex }): Promise<License> {
+export async function getLicense(options?: { database?: Knex }): Promise<License> {
 	if (licenseCache) return licenseCache;
 
-	const token = await getLicenseToken(options);
+	const { token } = await getLicenseToken(options);
 
 	if (!token) {
 		licenseCache = CORE_LICENSE;
@@ -47,8 +48,8 @@ export function getLicenseManager(): LicenseManager {
 }
 
 export class LicenseManager {
-	private licenseKey: string | undefined;
-	private licenseToken: string | undefined;
+	private licenseKey: string | null = null;
+	private licenseToken: string | null = null;
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
 	private rpc = useRPC<Pick<LicenseManager, 'refreshCache'>>(this, LICENSE_CHANNEL);
@@ -139,7 +140,9 @@ export class LicenseManager {
 	}
 
 	public async getStatus() {
-		return await store(async (store) => store.get('status') ?? 'active');
+		const status = await store(async (store) => store.get('status'));
+
+		return status ?? 'active';
 	}
 
 	public getSource() {
@@ -250,8 +253,21 @@ export class LicenseManager {
 
 	public async refreshCache() {
 		licenseCache = undefined;
-		this.licenseKey = await getLicenseKey();
-		this.licenseToken = await getLicenseToken();
+		const oldSource = this.source;
+
+		const { source: keySource, key } = await getLicenseKey();
+		const { token } = await getLicenseToken();
+
+		this.licenseKey = key;
+		this.licenseToken = token;
+
+		/**
+		 * Upgrade from core tier requires registering the scheduled check
+		 * De-register on downgrade is handled in the schedule
+		 */
+		if (oldSource === null && keySource === 'settings') {
+			licenseCheckSchedule();
+		}
 	}
 
 	/** Downgrade to CORE license */
@@ -263,26 +279,41 @@ export class LicenseManager {
 	}
 }
 
-async function getLicenseKey(options?: { database?: Knex }) {
+async function getLicenseKey(options?: { database?: Knex }): Promise<{ source: LicenseSource; key: string | null }> {
 	if (env['LICENSE_KEY']) {
-		return String(env['LICENSE_KEY']);
+		return {
+			source: 'env',
+			key: String(env['LICENSE_KEY']),
+		};
 	}
 
 	const schema = await getSchema(options);
 	const settingsService = new SettingsService({ schema, ...options });
 
 	const { license_key } = await settingsService.readSingleton({ fields: ['license_key'] });
-	return license_key ?? undefined;
+
+	return {
+		source: 'settings',
+		key: license_key,
+	};
 }
 
-async function getLicenseToken(options?: { database?: Knex }) {
+async function getLicenseToken(options?: {
+	database?: Knex;
+}): Promise<{ source: LicenseSource; token: string | null }> {
 	if (env['LICENSE_TOKEN']) {
-		return String(env['LICENSE_TOKEN']);
+		return {
+			source: 'env',
+			token: String(env['LICENSE_TOKEN']),
+		};
 	}
 
 	const schema = await getSchema(options);
 	const settingsService = new SettingsService({ schema, ...options });
 
 	const { license_token } = await settingsService.readSingleton({ fields: ['license_token'] });
-	return license_token ?? undefined;
+	return {
+		source: 'settings',
+		token: license_token,
+	};
 }

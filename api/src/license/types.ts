@@ -4,6 +4,8 @@ export type LicenseSource = 'env' | 'settings' | null;
 
 export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled';
 
+export type LicensePlan = string;
+
 export type LicenseInfo = {
 	status: LicenseStatus;
 	source: LicenseSource;
