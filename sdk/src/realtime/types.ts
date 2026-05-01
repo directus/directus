@@ -27,12 +27,14 @@ export interface SubscribeOptions<Schema, Collection extends keyof Schema> {
 	uid?: string;
 }
 
-export type WebSocketEvents = 'open' | 'close' | 'error' | 'message';
+export type WebSocketEvents = 'open' | 'close' | 'error' | 'message' | 'connected' | 'authenticated' | 'ready';
 export type RemoveEventHandler = () => void;
 export type WebSocketEventHandler = (this: WebSocketInterface, ev: Event | CloseEvent | any) => any;
 
 export interface WebSocketClient<Schema> {
 	isConnected(): Promise<boolean>;
+	isAuthenticated(): boolean;
+	isReady(): boolean;
 	connect(): Promise<WebSocketInterface>;
 	disconnect(): void;
 	onWebSocket(event: 'open', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
