@@ -10,9 +10,10 @@ import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { verifyJWT } from '../utils/jwt.js';
+import { SettingsService } from './settings.js';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -496,6 +497,45 @@ describe('Integration Tests', () => {
 
 				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
 			});
+		});
+	});
+
+	describe('Services / Users / password policy', () => {
+		const db = vi.mocked(knex.default({ client: MockClient }));
+
+		// Earlier tests in this file mock `UsersService.checkPasswordPolicy`. These tests want the real implementation.
+		beforeEach(() => {
+			vi.spyOn(UsersService.prototype as any, 'checkPasswordPolicy').mockRestore();
+		});
+
+		afterEach(() => {
+			vi.restoreAllMocks();
+		});
+
+		it('should throw InvalidPasswordError when policy regex fails', async () => {
+			vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+				auth_password_policy: '/^.{8,}$/',
+			} as any);
+
+			const service = new UsersService({
+				knex: db,
+				schema,
+			});
+
+			await expect((service as any).checkPasswordPolicy(['short'])).rejects.toBeInstanceOf(InvalidPasswordError);
+		});
+
+		it('should not throw when no password policy is configured', async () => {
+			vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+				auth_password_policy: null,
+			} as any);
+
+			const service = new UsersService({
+				knex: db,
+				schema,
+			});
+
+			await expect((service as any).checkPasswordPolicy(['anything'])).resolves.toBeUndefined();
 		});
 	});
 });
