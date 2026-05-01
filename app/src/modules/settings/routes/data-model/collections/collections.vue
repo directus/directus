@@ -19,7 +19,6 @@ import VInfo from '@/components/v-info.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import { useLicenseGuard } from '@/composables/use-license-guard';
 import { useCollectionsStore } from '@/stores/collections';
 import { useLicenseStore } from '@/stores/license';
 import { Collection } from '@/types/collections';
@@ -27,7 +26,8 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import LicenseCollectionsLimitModal from '@/views/private/components/license-collections-limit-modal.vue';
+import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
+import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 
@@ -301,7 +301,7 @@ async function downloadSnapshot() {
 			@update:model-value="editCollection = null"
 		/>
 
-		<LicenseCollectionsLimitModal v-model="collectionsLimitModalOpen" />
+		<LicenseLimitModal v-model="collectionsLimitModalOpen" type="collections" />
 	</PrivateView>
 </template>
 

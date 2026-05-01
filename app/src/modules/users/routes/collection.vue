@@ -15,7 +15,6 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
-import { useLicenseGuard } from '@/composables/use-license-guard';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useLicenseStore } from '@/stores/license';
@@ -27,7 +26,8 @@ import { PrivateView } from '@/views/private';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import LicenseSeatsLimitModal from '@/views/private/components/license-seats-limit-modal.vue';
+import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
+import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 
@@ -339,7 +339,7 @@ function clearFilters() {
 					@refresh="refresh"
 				/>
 			</template>
-			<LicenseSeatsLimitModal v-model="seatsLimitModalOpen" />
+			<LicenseLimitModal v-model="seatsLimitModalOpen" type="seats" />
 		</PrivateView>
 	</component>
 </template>

@@ -9,8 +9,9 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import { useLicenseStore } from '@/stores/license';
 
-defineProps<{
+const props = defineProps<{
 	modelValue: boolean;
+	type: 'collections' | 'seats';
 	persistent?: boolean;
 }>();
 
@@ -23,6 +24,10 @@ const router = useRouter();
 const licenseStore = useLicenseStore();
 
 const isEnterprisePlan = computed(() => licenseStore.info?.plan === 'enterprise');
+
+const bodyText = computed(() =>
+	isEnterprisePlan.value ? `license.${props.type}_contact_sales_copy` : `license.${props.type}_manage_plan_copy`,
+);
 
 function close() {
 	emit('update:modelValue', false);
@@ -50,9 +55,7 @@ function handleAction() {
 		<VCard>
 			<VCardTitle>{{ $t('license.limit_reached') }}</VCardTitle>
 
-			<VCardText>
-				{{ isEnterprisePlan ? $t('license.seats_contact_sales_copy') : $t('license.seats_manage_plan_copy') }}
-			</VCardText>
+			<VCardText>{{ $t(bodyText) }}</VCardText>
 
 			<VCardActions>
 				<VButton secondary @click="close">{{ $t('cancel') }}</VButton>
