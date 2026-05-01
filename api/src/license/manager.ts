@@ -415,7 +415,7 @@ export class LicenseManager {
 		const pendingResolution: PendingResolution[] = [];
 		const schema = await getSchema();
 
-		// collection candidates = all collections not marked as disabled or db only
+		// collection candidates = all collections not marked as disabled, db only or system
 		const collectionsService = new CollectionsService({ schema });
 		const collections = await collectionsService.readByQuery();
 
@@ -423,7 +423,10 @@ export class LicenseManager {
 
 		for (const candidateCollection of collections) {
 			// LICENSE-TODO: re-check field for determining disables/excluded
-			if (candidateCollection.schema !== null || candidateCollection.status !== 'disabled') {
+			if (
+				candidateCollection.meta?.system !== true &&
+				(candidateCollection.schema !== null || candidateCollection.status !== 'disabled')
+			) {
 				collectionCandidates.push({
 					id: candidateCollection.collection,
 				});
