@@ -15,6 +15,7 @@ import {
 } from '@directus/license';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { CollectionsService } from '../services/collections.js';
@@ -24,6 +25,7 @@ import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.j
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
 import { useRPC } from './rpc.js';
+import type { ResolveInput } from './schema.js';
 import { getStatus } from './status.js';
 import type { LicenseSource, LicenseStatus, PendingResolution } from './types.js';
 
@@ -648,9 +650,77 @@ export class LicenseManager {
 
 	/**
 	 * Apply a resolution strategy
+	 *
+	 * Allows partial resolution
 	 */
-	public async applyResolution(resolution: unknown) {
-		// TODO: implement and refactor resolution format
+	public async applyResolution(adminId: string, resolution: ResolveInput) {
+		const schema = await getSchema();
+
+		if (resolution.collections) {
+			const collectionsService = new CollectionsService({ schema });
+
+			const promises = resolution.collections.map((collection) =>
+				collectionsService.updateOne(collection, { status: 'disabled' }),
+			);
+
+			try {
+				await Promise.allSettled(promises);
+			} catch {
+				// ignore errors
+			}
+		}
+
+		if (resolution.seats) {
+			const usersService = new UsersService({ schema });
+
+			const promises = resolution.seats.map((user) => usersService.updateOne(user, { status: 'deactivated' }));
+
+			try {
+				await Promise.allSettled(promises);
+			} catch {
+				// ignore errors
+			}
+		}
+
+		/**
+		 * Set all sso users to disabled and optional set the current admin email and password
+		 */
+		if (resolution.sso) {
+			const usersService = new UsersService({ schema });
+
+			try {
+				await usersService.updateByQuery(
+					{
+						filter: {
+							_and: [
+								{ provider: { _neq: DEFAULT_AUTH_PROVIDER } },
+								{ provider: { _nnull: true } },
+								{ id: { _neq: adminId } },
+							],
+						},
+					},
+					{ status: 'deactivated' },
+				);
+
+				if (typeof resolution.sso === 'object' && Object.keys(resolution.sso.admin).length) {
+					const payload: { email?: string | undefined; password?: string; provider: string } = {
+						provider: DEFAULT_AUTH_PROVIDER,
+					};
+
+					if (resolution.sso.admin.email && resolution.sso.admin.email.length) {
+						payload['email'] = resolution.sso.admin.email;
+					}
+
+					if (resolution.sso.admin.password && resolution.sso.admin.password.length) {
+						payload['password'] = resolution.sso.admin.password;
+					}
+
+					await usersService.updateOne(adminId, payload);
+				}
+			} catch {
+				// ignore errors
+			}
+		}
 	}
 
 	public async refreshCache() {

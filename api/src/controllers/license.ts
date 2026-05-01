@@ -1,8 +1,8 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import express, { type RequestHandler } from 'express';
-import z from 'zod';
 import { fromZodError } from 'zod-validation-error';
 import { getLicense, getLicenseManager } from '../license/manager.js';
+import { ResolveInput } from '../license/schema.js';
 import type { LicenseCheck, LicenseInfo } from '../license/types.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -163,33 +163,26 @@ router.get(
 	respond,
 );
 
-const ResolveSchema = z.object({
-	collections: z.array(z.string()),
-	seats: {
-		admin: z.array(z.string()),
-		users: z.array(z.string()),
-	},
-	sso: {
-		enabled: z.boolean(),
-		email: z.string(),
-		password: z.string(),
-	},
-});
-
 router.post(
 	'/resolve',
 	asyncHandler(async (req, _res, next) => {
-		const { error, data } = ResolveSchema.safeParse(req.body);
+		const { error, data } = ResolveInput.safeParse(req.body);
 
 		if (error) {
 			throw new InvalidPayloadError({ reason: fromZodError(error).message });
 		}
 
+		if (Object.keys(data).length) {
+			throw new InvalidPayloadError({ reason: 'At least on entitlement must be resolved' });
+		}
+
 		const licenseManager = getLicenseManager();
 
-		await licenseManager.applyResolution(data);
+		await licenseManager.applyResolution(req.accountability!.user!, data);
 
 		return next();
 	}),
 	respond,
 );
+
+export default router;

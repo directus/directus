@@ -74,18 +74,3 @@ export type PendingResolution =
 	| PendingResolutionFeatureGateSSO
 	| PendingResolutionFeatureGateCustomLLMs
 	| PendingResolutionFeatureGateCustomPolicyRules;
-
-export type AddonAvailability = 'available' | 'upgrade_required';
-
-export interface LicenseAddon {
-	id: string;
-	name: string;
-	description: string;
-	icon: string;
-	availability: AddonAvailability;
-	pricing_summary: string;
-	min_quantity: number;
-	max_quantity: number | null;
-	active_quantity: number;
-	scheduled_quantity: number;
-}
