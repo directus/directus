@@ -18,7 +18,7 @@ import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { CollectionsService } from '../services/collections.js';
-import { AccessService, UsersService } from '../services/index.js';
+import { AccessService, PoliciesService, UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -427,9 +427,7 @@ export class LicenseManager {
 				candidateCollection.meta?.system !== true &&
 				(candidateCollection.schema !== null || candidateCollection.status !== 'disabled')
 			) {
-				collectionCandidates.push({
-					id: candidateCollection.collection,
-				});
+				collectionCandidates.push(candidateCollection.collection);
 			}
 		}
 
@@ -556,6 +554,93 @@ export class LicenseManager {
 				kind: 'feature_gate',
 				blockers: ['ADMIN_MISSING_EMAIL', 'ADMIN_MISSING_PASSWORD'],
 			});
+		}
+
+		// custom llms feature gate - any openai compatible settings are set
+		// LICENSE-TODO: replace with entitlement check
+		const isCustomLLMsEnabled = license.entitlements.custom_llms_enabled.default;
+
+		if (!isCustomLLMsEnabled) {
+			const settingsService = new SettingsService({ schema });
+
+			const customLLMFields = await settingsService.readSingleton({
+				fields: [
+					'ai_openai_compatible_api_key',
+					'ai_openai_compatible_base_url',
+					'ai_openai_compatible_name',
+					'ai_openai_compatible_models',
+					'ai_openai_compatible_headers',
+				],
+			});
+
+			if (Object.keys(customLLMFields).length) {
+				pendingResolution.push({
+					key: 'custom_llms_enabled',
+					kind: 'feature_gate',
+				});
+			}
+		}
+
+		// custom policy rules - any policy with a custom permission set
+		// LICENSE-TODO: replace with entitlement check
+		const isCustomPolicyRulesEnabled = license.entitlements.custom_policy_rules_enabled.default;
+
+		if (!isCustomPolicyRulesEnabled) {
+			const policiesService = new PoliciesService({ schema });
+
+			const customPolicyRules = await policiesService.readByQuery({
+				fields: ['id'],
+				filter: {
+					_or: [
+						{
+							permissions: {
+								permissions: {
+									_nnull: true,
+								},
+							},
+						},
+						{
+							permissions: {
+								validation: {
+									_nnull: true,
+								},
+							},
+						},
+						{
+							permissions: {
+								presets: {
+									_nnull: true,
+								},
+							},
+						},
+						{
+							_and: [
+								{
+									permissions: {
+										fields: {
+											_neq: '*',
+										},
+									},
+								},
+								{
+									permissions: {
+										fields: {
+											_nnull: true,
+										},
+									},
+								},
+							],
+						},
+					],
+				},
+			});
+
+			if (customPolicyRules.length) {
+				pendingResolution.push({
+					key: 'custom_policy_rules_enabled',
+					kind: 'feature_gate',
+				});
+			}
 		}
 
 		return pendingResolution;

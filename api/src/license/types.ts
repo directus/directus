@@ -22,7 +22,7 @@ export interface LicenseCheck {
 
 export type PendingResolutionLimitKey = 'collections' | 'seats';
 
-export type PendingResolutionFeatureGateKey = 'sso';
+export type PendingResolutionFeatureGateKey = 'sso' | 'custom_llms_enabled' | 'custom_policy_rules_enabled';
 
 export type PendingResolutionKey = PendingResolutionLimitKey | PendingResolutionFeatureGateKey;
 
@@ -40,14 +40,14 @@ export interface PendingResolutionLimit<TKey extends PendingResolutionLimitKey, 
 	candidates: TCandidate[];
 }
 
-export interface PendingResolutionFeatureGate<TKey extends PendingResolutionFeatureGateKey, TBlocker extends string>
+export interface PendingResolutionFeatureGate<TKey extends PendingResolutionFeatureGateKey, TBlocker = never>
 	extends PendingResolutionBase {
 	kind: 'feature_gate';
 	key: TKey;
-	blockers: TBlocker[];
+	blockers?: TBlocker;
 }
 
-export type PendingResolutionLimitCollections = PendingResolutionLimit<'collections', { id: string }>;
+export type PendingResolutionLimitCollections = PendingResolutionLimit<'collections', string>;
 
 export type PendingResolutionLimitSeats = PendingResolutionLimit<
 	'seats',
@@ -59,15 +59,21 @@ export type PendingResolutionLimitSeats = PendingResolutionLimit<
 	}
 >;
 
-export type PendingResolutionFeatureGateSso = PendingResolutionFeatureGate<
+export type PendingResolutionFeatureGateSSO = PendingResolutionFeatureGate<
 	'sso',
-	'ADMIN_MISSING_EMAIL' | 'ADMIN_MISSING_PASSWORD'
+	('ADMIN_MISSING_EMAIL' | 'ADMIN_MISSING_PASSWORD')[]
 >;
+
+export type PendingResolutionFeatureGateCustomLLMs = PendingResolutionFeatureGate<'custom_llms_enabled'>;
+
+export type PendingResolutionFeatureGateCustomPolicyRules = PendingResolutionFeatureGate<'custom_policy_rules_enabled'>;
 
 export type PendingResolution =
 	| PendingResolutionLimitCollections
 	| PendingResolutionLimitSeats
-	| PendingResolutionFeatureGateSso;
+	| PendingResolutionFeatureGateSSO
+	| PendingResolutionFeatureGateCustomLLMs
+	| PendingResolutionFeatureGateCustomPolicyRules;
 
 export type AddonAvailability = 'available' | 'upgrade_required';
 
