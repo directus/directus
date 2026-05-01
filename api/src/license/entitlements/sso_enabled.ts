@@ -5,7 +5,7 @@ import { entitlementManager } from './manager.js';
 
 
 /**
- * Counting the current amount of seats
+ * Counting the current amount of users with sso enabled
  */
 async function checkUsersSSO() {
     const usersService = new UsersService({
@@ -19,8 +19,6 @@ async function checkUsersSSO() {
             status: { _eq: 'active' },
         }
     });
-
-    console.log({ sso_users });
 
     return sso_users.length > 0;
 }
