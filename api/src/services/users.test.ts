@@ -123,9 +123,7 @@ describe('Integration Tests', () => {
 			});
 
 			it('should set preMutationError to InvalidPasswordError when password fails policy', async () => {
-				vi.mocked(SettingsService.prototype.readSingleton).mockResolvedValue({
-					auth_password_policy: '^.{8,}$',
-				} as any);
+				checkPasswordPolicySpy.mockRejectedValueOnce(new InvalidPasswordError());
 
 				const opts: MutationOptions = {};
 
