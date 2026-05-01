@@ -482,21 +482,30 @@ export class LicenseManager {
 		const seatCandidates = await usersService.readByQuery({
 			fields: ['id', 'first_name', 'last_name', 'avatar'],
 			filter: {
-				_or: [
+				_and: [
 					{
 						id: {
-							_in: Array.from(adminOrAppUsers),
+							_neq: options.adminId,
 						},
 					},
 					{
-						role: {
-							_in: Array.from(allAdminRoles),
-						},
-					},
-					{
-						role: {
-							_in: Array.from(allAppRoles),
-						},
+						_or: [
+							{
+								id: {
+									_in: Array.from(adminOrAppUsers),
+								},
+							},
+							{
+								role: {
+									_in: Array.from(allAdminRoles),
+								},
+							},
+							{
+								role: {
+									_in: Array.from(allAppRoles),
+								},
+							},
+						],
 					},
 				],
 			},
