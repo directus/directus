@@ -13,14 +13,19 @@ import {
 	updateAddonQuantity,
 	verifyLicense,
 } from '@directus/license';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+import { CollectionsService } from '../services/collections.js';
+import { AccessService, UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
+import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
 import { useRPC } from './rpc.js';
 import { getStatus } from './status.js';
-import type { LicenseSource, LicenseStatus } from './types.js';
+import type { LicenseSource, LicenseStatus, PendingResolution } from './types.js';
 
 let licenseManager: LicenseManager | undefined;
 const env = useEnv();
@@ -403,37 +408,145 @@ export class LicenseManager {
 
 	/**
 	 * Retrieve entitlements that are pending resolution
+	 *
+	 * If no entitlements to resolve, an empty array will be returned
 	 */
-	public async pendingResolution() {
-		// TODO: replace mock and refactor format
-		return [
-			{
+	public async pendingResolution(options: { adminId: string }) {
+		const pendingResolution: PendingResolution[] = [];
+		const schema = await getSchema();
+
+		// collection candidates = all collections not marked as disabled or db only
+		const collectionsService = new CollectionsService({ schema });
+		const collections = await collectionsService.readByQuery();
+
+		const collectionCandidates = [];
+
+		for (const candidateCollection of collections) {
+			// LICENSE-TODO: re-check field for determining disables/excluded
+			if (candidateCollection.schema !== null || candidateCollection.status !== 'disabled') {
+				collectionCandidates.push({
+					id: candidateCollection.collection,
+				});
+			}
+		}
+
+		if (collectionCandidates.length) {
+			pendingResolution.push({
 				key: 'collections',
+				kind: 'limit',
+				// LICENSE-TODO: replace with entitlemount count
 				limit: 50,
-				candidates: [{ id: 'posts', label: 'Posts', icon: 'article' }],
-			},
+				usage: 54,
+				candidates: collectionCandidates,
+			});
+		}
+
+		// seat candidates = all active users who are admin or app users
+		const accessService = new AccessService({ schema });
+
+		const accessRows = await accessService.readByQuery({
+			fields: ['role', 'user', 'policy', 'policy.app_access', 'policy.admin_access', 'role'],
+		});
+
+		const adminRoles = new Set<string>();
+		const appRoles = new Set<string>();
+		const adminOrAppUsers = new Set<string>();
+
+		for (const accessRow of accessRows) {
+			const isAdmin = toBoolean(accessRow['admin_access']);
+			const isApp = !isAdmin && toBoolean(accessRow['app_access']);
+
+			if (!isAdmin && !isApp) continue;
+
+			if (accessRow['user']) {
+				adminOrAppUsers.add(accessRow['user']);
+			} else if (accessRow['role']) {
+				if (isAdmin) {
+					adminRoles.add(accessRow['role']);
+				} else {
+					appRoles.add(accessRow['role']);
+				}
+			}
+		}
+
+		const { adminRoles: allAdminRoles, appRoles: allAppRoles } = await fetchAccessRoles(
 			{
-				key: 'seats',
-				limit: 3,
-				candidates: {
-					admin: [
-						{
-							id: 'a1b2c3d4-5678-90ab-cdef-1234567890ab',
-							email: 'admin@example.com',
-							first_name: 'Alice',
-							last_name: 'Doe',
-							avatar: null,
-							last_access: '2026-04-20T12:34:56Z',
+				adminRoles,
+				appRoles,
+			},
+			{ knex: await getDatabase() },
+		);
+
+		const usersService = new UsersService({ schema });
+
+		const seatCandidates = await usersService.readByQuery({
+			fields: ['id', 'first_name', 'last_name', 'avatar'],
+			filter: {
+				_or: [
+					{
+						id: {
+							_in: Array.from(adminOrAppUsers),
 						},
-					],
-					users: [],
-				},
+					},
+					{
+						role: {
+							_in: Array.from(allAdminRoles),
+						},
+					},
+					{
+						role: {
+							_in: Array.from(allAppRoles),
+						},
+					},
+				],
 			},
-			{
+		});
+
+		if (seatCandidates.length) {
+			pendingResolution.push({
+				key: 'seats',
+				kind: 'limit',
+				// LICENSE-TODO: replace with entitlemount count
+				limit: 5,
+				usage: 10,
+				candidates: seatCandidates as {
+					id: string;
+					first_name: string | null;
+					last_name: string | null;
+					avatar: string | null;
+				}[],
+			});
+		}
+
+		// sso feature gate = at least one user with provider != default if sso disabled for license
+		const license = await getLicense();
+		// LICENSE-TODO: replace with entitlement check
+		const hasSSOUsers = true;
+		// LICENSE-TODO: replace with entitlement check
+		const isSSOEnabled = license.entitlements.sso_enabled.default;
+
+		if (!isSSOEnabled && hasSSOUsers) {
+			const adminUser = await usersService.readOne(options.adminId, { fields: ['email', 'password'] });
+
+			// Build blocklist for any additional requirements
+			const blockers = [];
+
+			if (adminUser['email'] === null) {
+				blockers.push('ADMIN_MISSING_EMAIL');
+			}
+
+			if (adminUser['password'] === null) {
+				blockers.push('ADMIN_MISSING_EMAIL');
+			}
+
+			pendingResolution.push({
 				key: 'sso',
-				blockers: [{ code: 'MISSING_EMAIL', user_id: 'b2c3d4e5-6789-01ab-cdef-234567890abc' }],
-			},
-		];
+				kind: 'feature_gate',
+				blockers: ['ADMIN_MISSING_EMAIL', 'ADMIN_MISSING_PASSWORD'],
+			});
+		}
+
+		return pendingResolution;
 	}
 
 	/**

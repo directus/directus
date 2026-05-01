@@ -20,52 +20,54 @@ export interface LicenseCheck {
 	production_enabled: boolean;
 }
 
-export interface LicenseResolveCollectionCandidate {
-	id: string;
-	label: string;
-	icon: string | null;
+export type PendingResolutionLimitKey = 'collections' | 'seats';
+
+export type PendingResolutionFeatureGateKey = 'sso';
+
+export type PendingResolutionKey = PendingResolutionLimitKey | PendingResolutionFeatureGateKey;
+
+export interface PendingResolutionBase {
+	key: PendingResolutionKey;
+	kind: 'limit' | 'feature_gate';
 }
 
-export interface LicenseResolveSeatCandidate {
-	id: string;
-	email: string | null;
-	first_name: string | null;
-	last_name: string | null;
-	avatar: string | null;
-	last_access: string | null;
-}
-
-export interface LicenseResolveCollectionsSection {
-	key: 'collections';
+export interface PendingResolutionLimit<TKey extends PendingResolutionLimitKey, TCandidate>
+	extends PendingResolutionBase {
+	kind: 'limit';
+	key: TKey;
 	limit: number;
-	candidates: LicenseResolveCollectionCandidate[];
+	usage: number;
+	candidates: TCandidate[];
 }
 
-export interface LicenseResolveSeatsSection {
-	key: 'seats';
-	limit: number;
-	candidates: {
-		admin: LicenseResolveSeatCandidate[];
-		users: LicenseResolveSeatCandidate[];
-	};
+export interface PendingResolutionFeatureGate<TKey extends PendingResolutionFeatureGateKey, TBlocker extends string>
+	extends PendingResolutionBase {
+	kind: 'feature_gate';
+	key: TKey;
+	blockers: TBlocker[];
 }
 
-export interface LicenseResolveSsoBlocker {
-	code: 'MISSING_EMAIL' | 'MISSING_PASSWORD' | 'AUTH_DISABLE_DEFAULT';
-	user_id: string | null;
-}
+export type PendingResolutionLimitCollections = PendingResolutionLimit<'collections', { id: string }>;
 
-export interface LicenseResolveSsoSection {
-	key: 'sso';
-	blockers: LicenseResolveSsoBlocker[];
-}
+export type PendingResolutionLimitSeats = PendingResolutionLimit<
+	'seats',
+	{
+		id: string;
+		first_name: string | null;
+		last_name: string | null;
+		avatar: string | null;
+	}
+>;
 
-export type LicenseResolveSection =
-	| LicenseResolveCollectionsSection
-	| LicenseResolveSeatsSection
-	| LicenseResolveSsoSection;
+export type PendingResolutionFeatureGateSso = PendingResolutionFeatureGate<
+	'sso',
+	'ADMIN_MISSING_EMAIL' | 'ADMIN_MISSING_PASSWORD'
+>;
 
-export type LicenseResolveAssessment = LicenseResolveSection[];
+export type PendingResolution =
+	| PendingResolutionLimitCollections
+	| PendingResolutionLimitSeats
+	| PendingResolutionFeatureGateSso;
 
 export type AddonAvailability = 'available' | 'upgrade_required';
 
