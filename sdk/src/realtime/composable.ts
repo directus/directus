@@ -151,7 +151,11 @@ export function realtime(config: WebSocketConfig = {}) {
 			ready: new Set<WebSocketEventHandler>([]),
 		};
 
-		const emit = (event: WebSocketEvents, ws: WebSocketInterface, payload: Event | CloseEvent | any = new Event(event)) => {
+		const emit = (
+			event: WebSocketEvents,
+			ws: WebSocketInterface,
+			payload: Event | CloseEvent | any = new Event(event),
+		) => {
 			eventHandlers[event].forEach((handler) => handler.call(ws, payload));
 		};
 
@@ -239,21 +243,21 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				if (!message) continue;
 
-					if (
-						'type' in message &&
-						'status' in message &&
-						message['type'] === 'auth' &&
-						message['status'] === 'ok' &&
-						state.firstMessage === false
-					) {
-						markAuthenticated(state.connection);
-					}
+				if (
+					'type' in message &&
+					'status' in message &&
+					message['type'] === 'auth' &&
+					message['status'] === 'ok' &&
+					state.firstMessage === false
+				) {
+					markAuthenticated(state.connection);
+				}
 
 				if (isAuthError(message)) {
-						if (message.error.code === 'TOKEN_EXPIRED') {
-							authenticated = false;
-							readyEmitted = false;
-						}
+					if (message.error.code === 'TOKEN_EXPIRED') {
+						authenticated = false;
+						readyEmitted = false;
+					}
 
 					await handleAuthError(message, currentClient);
 					state.firstMessage = false;

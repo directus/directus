@@ -65,6 +65,7 @@ describe('realtime lifecycle', () => {
 		MockWebSocket.instances = [];
 
 		const lifecycleEvents: string[] = [];
+
 		const baseClient = {
 			url: new URL('https://example.com'),
 			getToken: vi.fn().mockResolvedValue('token'),
@@ -86,9 +87,9 @@ describe('realtime lifecycle', () => {
 
 		const sdk = baseClient.with(
 			realtime({
-			authMode: 'handshake',
-			connect: false,
-			reconnect: false,
+				authMode: 'handshake',
+				connect: false,
+				reconnect: false,
 			}),
 		);
 
@@ -113,6 +114,7 @@ describe('realtime lifecycle', () => {
 		MockWebSocket.instances = [];
 
 		const lifecycleEvents: string[] = [];
+
 		const baseClient = {
 			url: new URL('https://example.com'),
 			getToken: vi.fn().mockResolvedValue('token'),
@@ -134,9 +136,9 @@ describe('realtime lifecycle', () => {
 
 		const sdk = baseClient.with(
 			realtime({
-			authMode: 'handshake',
-			connect: false,
-			reconnect: false,
+				authMode: 'handshake',
+				connect: false,
+				reconnect: false,
 			}),
 		);
 
