@@ -10,6 +10,7 @@ export { InvalidForeignKeyError } from './invalid-foreign-key.js';
 export { InvalidInviteError } from './invalid-invite.js';
 export { InvalidIpError } from './invalid-ip.js';
 export { InvalidOtpError } from './invalid-otp.js';
+export { InvalidPasswordError } from './invalid-password.js';
 export { InvalidPayloadError } from './invalid-payload.js';
 export { InvalidPathParameterError } from './invalid-path-parameter.js';
 export { InvalidProviderConfigError } from './invalid-provider-config.js';
