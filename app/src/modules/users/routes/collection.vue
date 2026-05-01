@@ -3,7 +3,7 @@ import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
 import api from '@/api';
@@ -17,7 +17,6 @@ import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
-import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -26,8 +25,6 @@ import { PrivateView } from '@/views/private';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
-import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 
@@ -40,9 +37,7 @@ const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
 const userStore = useUserStore();
-const licenseStore = useLicenseStore();
-
-const { limitModalOpen: seatsLimitModalOpen, navigate } = useLicenseGuard(() => licenseStore.hasRemainingSeats);
+const router = useRouter();
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
@@ -50,7 +45,7 @@ const selection = ref<string[]>([]);
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
 
-const navigateToNewUser = () => navigate(addNewLink.value);
+const navigateToNewUser = () => router.push(addNewLink.value);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
@@ -339,7 +334,6 @@ function clearFilters() {
 					@refresh="refresh"
 				/>
 			</template>
-			<LicenseLimitModal v-model="seatsLimitModalOpen" type="seats" />
 		</PrivateView>
 	</component>
 </template>

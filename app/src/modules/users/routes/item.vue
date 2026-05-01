@@ -25,6 +25,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -34,6 +35,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -51,6 +53,26 @@ const fieldsStore = useFieldsStore();
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
+const seatsLimitModalOpen = ref(false);
+const pendingSaveAction = ref<(() => Promise<void>) | null>(null);
+
+function guardedSave(action: () => Promise<void>) {
+	if (isNew.value && !licenseStore.hasRemainingSeats) {
+		pendingSaveAction.value = action;
+		seatsLimitModalOpen.value = true;
+		return;
+	}
+
+	action();
+}
+
+async function saveWithDraftStatus() {
+	edits.value = { ...edits.value, status: 'draft' };
+	const action = pendingSaveAction.value;
+	pendingSaveAction.value = null;
+	await action?.();
+}
 
 const { primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -176,43 +198,49 @@ function useBreadcrumb() {
 }
 
 async function saveAndQuit() {
-	try {
-		const savedItem: Record<string, any> = await save();
-		await setLang(savedItem);
-		await refreshCurrentUser();
-		router.push({ name: 'users-active' });
-	} catch {
-		// `save` will show unexpected error dialog
-	}
+	guardedSave(async () => {
+		try {
+			const savedItem: Record<string, any> = await save();
+			await setLang(savedItem);
+			await refreshCurrentUser();
+			router.push({ name: 'users-active' });
+		} catch {
+			// `save` will show unexpected error dialog
+		}
+	});
 }
 
 async function saveAndStay() {
-	try {
-		const savedItem: Record<string, any> = await save();
-		await setLang(savedItem);
-		await refreshCurrentUser();
+	guardedSave(async () => {
+		try {
+			const savedItem: Record<string, any> = await save();
+			await setLang(savedItem);
+			await refreshCurrentUser();
 
-		if (props.primaryKey === '+') {
-			const newPrimaryKey = savedItem.id;
-			router.replace({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
-		} else {
-			revisionsSidebarDetail.value?.refresh?.();
-			refresh();
+			if (props.primaryKey === '+') {
+				const newPrimaryKey = savedItem.id;
+				router.replace({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
+			} else {
+				revisionsSidebarDetail.value?.refresh?.();
+				refresh();
+			}
+		} catch {
+			// `save` will show unexpected error dialog
 		}
-	} catch {
-		// `save` will show unexpected error dialog
-	}
+	});
 }
 
 async function saveAndAddNew() {
-	try {
-		const savedItem: Record<string, any> = await save();
-		await setLang(savedItem);
-		await refreshCurrentUser();
-		router.push({ name: 'users-item', params: { primaryKey: '+' } });
-	} catch {
-		// `save` will show unexpected error dialog
-	}
+	guardedSave(async () => {
+		try {
+			const savedItem: Record<string, any> = await save();
+			await setLang(savedItem);
+			await refreshCurrentUser();
+			router.push({ name: 'users-item', params: { primaryKey: '+' } });
+		} catch {
+			// `save` will show unexpected error dialog
+		}
+	});
 }
 
 async function saveAsCopyAndNavigate() {
@@ -512,6 +540,8 @@ function revert(values: Record<string, any>) {
 			/>
 			<CommentsSidebarDetail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
+
+		<LicenseLimitModal v-model="seatsLimitModalOpen" type="seats" :on-save="saveWithDraftStatus" />
 	</PrivateView>
 </template>
 

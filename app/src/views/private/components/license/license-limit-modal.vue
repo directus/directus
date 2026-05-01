@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -13,6 +12,7 @@ const props = defineProps<{
 	modelValue: boolean;
 	type: 'collections' | 'seats';
 	persistent?: boolean;
+	onSave?: () => void;
 }>();
 
 const emit = defineEmits<{
@@ -20,7 +20,6 @@ const emit = defineEmits<{
 	(e: 'cancel'): void;
 }>();
 
-const router = useRouter();
 const licenseStore = useLicenseStore();
 
 const isEnterprisePlan = computed(() => licenseStore.info?.plan === 'enterprise');
@@ -34,14 +33,19 @@ function close() {
 	emit('cancel');
 }
 
-function handleAction() {
+function handleManagePlan() {
 	emit('update:modelValue', false);
 
 	if (isEnterprisePlan.value) {
 		window.open('https://directus.io/contact', '_blank', 'noopener,noreferrer');
 	} else {
-		router.push('/settings/license');
+		window.open('/settings/license', '_blank', 'noopener,noreferrer');
 	}
+}
+
+function handleSave() {
+	emit('update:modelValue', false);
+	props.onSave?.();
 }
 </script>
 
@@ -59,9 +63,10 @@ function handleAction() {
 
 			<VCardActions>
 				<VButton secondary @click="close">{{ $t('cancel') }}</VButton>
-				<VButton @click="handleAction">
+				<VButton :secondary="!!onSave" @click="handleManagePlan">
 					{{ isEnterprisePlan ? $t('license.contact_sales') : $t('license.manage_plan') }}
 				</VButton>
+				<VButton v-if="onSave" @click="handleSave">{{ $t('save') }}</VButton>
 			</VCardActions>
 		</VCard>
 	</VDialog>

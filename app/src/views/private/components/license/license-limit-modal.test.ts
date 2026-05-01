@@ -6,10 +6,8 @@ import LicenseLimitModal from './license-limit-modal.vue';
 import { i18n } from '@/lang';
 import { useLicenseStore } from '@/stores/license';
 
-const mockPush = vi.fn();
-
 vi.mock('vue-router', () => ({
-	useRouter: () => ({ push: mockPush }),
+	useRouter: () => ({}),
 }));
 
 const global = {
@@ -30,7 +28,6 @@ describe.each([{ type: 'seats' as const }, { type: 'collections' as const }])(
 		let licenseStore: ReturnType<typeof useLicenseStore>;
 
 		beforeEach(() => {
-			mockPush.mockClear();
 			vi.spyOn(window, 'open').mockImplementation(() => null);
 
 			const wrapper = mount(LicenseLimitModal, { props: { modelValue: true, type }, global });
@@ -69,15 +66,15 @@ describe.each([{ type: 'seats' as const }, { type: 'collections' as const }])(
 		});
 
 		describe('primary action button', () => {
-			it('navigates to /settings/license for non-enterprise plans', async () => {
+			it('opens /settings/license in new tab for non-enterprise plans', async () => {
 				licenseStore.info = { plan: 'team' } as LicenseInfo;
 
 				const wrapper = mount(LicenseLimitModal, { props: { modelValue: true, type }, global });
 				const buttons = wrapper.findAll('button');
+				// Cancel is index 0, Manage Plan is index 1 (last when no onSave)
 				await buttons[buttons.length - 1]!.trigger('click');
 
-				expect(mockPush).toHaveBeenCalledWith('/settings/license');
-				expect(window.open).not.toHaveBeenCalled();
+				expect(window.open).toHaveBeenCalledWith('/settings/license', '_blank', 'noopener,noreferrer');
 			});
 
 			it('opens contact URL for enterprise plan', async () => {
@@ -88,10 +85,9 @@ describe.each([{ type: 'seats' as const }, { type: 'collections' as const }])(
 				await buttons[buttons.length - 1]!.trigger('click');
 
 				expect(window.open).toHaveBeenCalledWith('https://directus.io/contact', '_blank', 'noopener,noreferrer');
-				expect(mockPush).not.toHaveBeenCalled();
 			});
 
-			it('emits update:modelValue false when action is taken', async () => {
+			it('emits update:modelValue false when manage plan action is taken', async () => {
 				licenseStore.info = { plan: 'team' } as LicenseInfo;
 
 				const wrapper = mount(LicenseLimitModal, { props: { modelValue: true, type }, global });
@@ -99,6 +95,45 @@ describe.each([{ type: 'seats' as const }, { type: 'collections' as const }])(
 				await buttons[buttons.length - 1]!.trigger('click');
 
 				expect(wrapper.emitted('update:modelValue')).toEqual([[false]]);
+			});
+		});
+
+		describe('with onSave prop', () => {
+			it('renders a Save button as the last button', () => {
+				licenseStore.info = { plan: 'team' } as LicenseInfo;
+				const onSave = vi.fn();
+
+				const wrapper = mount(LicenseLimitModal, { props: { modelValue: true, type, onSave }, global });
+				const buttons = wrapper.findAll('button');
+
+				// Cancel, Manage Plan, Save
+				expect(buttons).toHaveLength(3);
+				expect(buttons[2]!.text()).toBe(i18n.global.t('save'));
+			});
+
+			it('calls onSave and closes modal when Save is clicked', async () => {
+				licenseStore.info = { plan: 'team' } as LicenseInfo;
+				const onSave = vi.fn();
+
+				const wrapper = mount(LicenseLimitModal, { props: { modelValue: true, type, onSave }, global });
+				const buttons = wrapper.findAll('button');
+				await buttons[2]!.trigger('click');
+
+				expect(onSave).toHaveBeenCalledOnce();
+				expect(wrapper.emitted('update:modelValue')).toEqual([[false]]);
+			});
+
+			it('does not call onSave when Manage Plan is clicked', async () => {
+				licenseStore.info = { plan: 'team' } as LicenseInfo;
+				const onSave = vi.fn();
+
+				const wrapper = mount(LicenseLimitModal, { props: { modelValue: true, type, onSave }, global });
+				const buttons = wrapper.findAll('button');
+				// Manage Plan is index 1
+				await buttons[1]!.trigger('click');
+
+				expect(onSave).not.toHaveBeenCalled();
+				expect(window.open).toHaveBeenCalledWith('/settings/license', '_blank', 'noopener,noreferrer');
 			});
 		});
 	},
