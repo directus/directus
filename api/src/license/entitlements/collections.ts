@@ -2,7 +2,6 @@
  * 
  */
 
-import { } from '@directus/license';
 import { isSystemCollection } from '@directus/system-data';
 import { getSchema } from '../../utils/get-schema.js';
 import { entitlementManager } from './manager.js';
