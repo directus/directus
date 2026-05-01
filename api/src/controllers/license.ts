@@ -151,11 +151,11 @@ router.delete(
 );
 
 router.get(
-	'/resolve',
-	asyncHandler(async (_req, res, next) => {
+	'/pending-resolution',
+	asyncHandler(async (req, res, next) => {
 		const licenseManager = getLicenseManager();
 
-		const payload = await licenseManager.pendingResolution();
+		const payload = await licenseManager.pendingResolution({ adminId: req.accountability!.user! });
 
 		res.locals['payload'] = { data: payload || null };
 		return next();
