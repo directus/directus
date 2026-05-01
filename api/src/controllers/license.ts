@@ -1,5 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import express, { type RequestHandler } from 'express';
+import z from 'zod';
+import { fromZodError } from 'zod-validation-error';
 import { getLicense, getLicenseManager } from '../license/manager.js';
 import type { LicenseCheck, LicenseInfo } from '../license/types.js';
 import { respond } from '../middleware/respond.js';
@@ -91,6 +93,102 @@ router.post(
 		};
 
 		res.locals['payload'] = { data: payload };
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/portal',
+	asyncHandler(async (_req, res) => {
+		const licenseManager = getLicenseManager();
+
+		const portal = await licenseManager.billingPortalUrl();
+
+		res.redirect(portal);
+	}),
+);
+
+router.get(
+	'/addons',
+	asyncHandler(async (_req, res, next) => {
+		const licenseManager = getLicenseManager();
+
+		const payload = await licenseManager.availableAddons();
+
+		res.locals['payload'] = { data: payload };
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/addons/:id',
+	asyncHandler(async (req, _res, next) => {
+		if (req.body.quantity) {
+			throw new InvalidPayloadError({ reason: 'A "quantity" is required' });
+		}
+
+		const licenseManager = getLicenseManager();
+
+		await licenseManager.setAddonQuantity({ addonId: req.params['id']!, quantity: req.body.quantity });
+
+		return next();
+	}),
+	respond,
+);
+
+router.delete(
+	'/addon/:id',
+	asyncHandler(async (req, _res, next) => {
+		const licenseManager = getLicenseManager();
+
+		await licenseManager.removeAddon(req.params['id']!);
+
+		return next();
+	}),
+	respond,
+);
+
+router.get(
+	'/resolve',
+	asyncHandler(async (_req, res, next) => {
+		const licenseManager = getLicenseManager();
+
+		const payload = await licenseManager.pendingResolution();
+
+		res.locals['payload'] = { data: payload || null };
+		return next();
+	}),
+	respond,
+);
+
+const ResolveSchema = z.object({
+	collections: z.array(z.string()),
+	seats: {
+		admin: z.array(z.string()),
+		users: z.array(z.string()),
+	},
+	sso: {
+		enabled: z.boolean(),
+		email: z.string(),
+		password: z.string(),
+	},
+});
+
+router.post(
+	'/resolve',
+	asyncHandler(async (req, _res, next) => {
+		const { error, data } = ResolveSchema.safeParse(req.body);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+		}
+
+		const licenseManager = getLicenseManager();
+
+		await licenseManager.applyResolution(data);
+
 		return next();
 	}),
 	respond,
