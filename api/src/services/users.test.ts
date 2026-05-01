@@ -1,4 +1,10 @@
-import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import {
+	ForbiddenError,
+	InvalidInviteError,
+	InvalidPasswordError,
+	InvalidPayloadError,
+	RecordNotUniqueError,
+} from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -114,6 +120,18 @@ describe('Integration Tests', () => {
 				await service.createOne({}, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+			});
+
+			it('should set preMutationError to InvalidPasswordError when password fails policy', async () => {
+				vi.mocked(SettingsService.prototype.readSingleton).mockResolvedValue({
+					auth_password_policy: '^.{8,}$',
+				} as any);
+
+				const opts: MutationOptions = {};
+
+				await service.createOne({ password: 'short' }, opts);
+
+				expect(opts.preMutationError).toBeInstanceOf(InvalidPasswordError);
 			});
 		});
 

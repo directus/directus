@@ -866,6 +866,7 @@ errors:
   INVALID_IP: IP Address not allowed
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PASSWORD: Password doesn't match the configured password policy
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_PROVIDER_CONFIG: Invalid provider configuration
   INVALID_QUERY: Invalid query
