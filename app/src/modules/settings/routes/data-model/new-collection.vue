@@ -139,7 +139,7 @@ async function save() {
 			title: t('collection_created'),
 		});
 
-		router.replace(`/settings/data-model/${createdCollectionName}`);
+		router.replace({ name: 'settings-fields', params: { collection: createdCollectionName } });
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -403,7 +403,7 @@ function onApply() {
 		class="new-collection"
 		persistent
 		:sidebar-label="currentTab[0] && $t(currentTab[0])"
-		@cancel="router.push('/settings/data-model')"
+		@cancel="router.push({ name: 'settings-collections' })"
 		@apply="onApply"
 	>
 		<template #sidebar>

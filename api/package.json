@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "35.0.2",
+	"version": "35.2.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -85,7 +85,6 @@
 		"@directus/memory": "workspace:*",
 		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@directus/schema-builder": "workspace:*",
 		"@directus/specs": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/storage-driver-azure": "workspace:*",

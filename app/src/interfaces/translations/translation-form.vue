@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isEmpty } from 'lodash';
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import LanguageSelect from './language-select.vue';
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -68,6 +68,15 @@ const {
 	itemPrimaryKey,
 	itemNew,
 );
+
+// Unmount the form when fields or lang change to avoid WYSIWYG crashing while Vue manipulates the DOM.
+const formReady = ref(true);
+
+watch([fields, lang], async () => {
+	formReady.value = false;
+	await nextTick();
+	formReady.value = true;
+});
 
 const activatorDisabled = computed(() => {
 	return (
@@ -190,7 +199,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 		</LanguageSelect>
 
 		<VForm
-			v-if="selectedLanguage"
+			v-if="selectedLanguage && formReady"
 			:key="selectedLanguage.value"
 			:primary-key="itemPrimaryKey ?? '+'"
 			:class="{ unselected: !item, disabled }"
