@@ -45,6 +45,9 @@ export function realtime(config: WebSocketConfig = {}) {
 	return <Schema>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
 		let uid = generateUid();
+		let connected = false;
+		let authenticated = false;
+		let readyEmitted = false;
 
 		let state: ConnectionState = {
 			code: 'closed',
@@ -143,6 +146,36 @@ export function realtime(config: WebSocketConfig = {}) {
 			error: new Set<WebSocketEventHandler>([]),
 			close: new Set<WebSocketEventHandler>([]),
 			message: new Set<WebSocketEventHandler>([]),
+			connected: new Set<WebSocketEventHandler>([]),
+			authenticated: new Set<WebSocketEventHandler>([]),
+			ready: new Set<WebSocketEventHandler>([]),
+		};
+
+		const emit = (event: WebSocketEvents, ws: WebSocketInterface, payload: Event | CloseEvent | any = new Event(event)) => {
+			eventHandlers[event].forEach((handler) => handler.call(ws, payload));
+		};
+
+		const resetLifecycleState = () => {
+			connected = false;
+			authenticated = false;
+			readyEmitted = false;
+		};
+
+		const markConnected = (ws: WebSocketInterface, payload?: Event) => {
+			connected = true;
+			emit('connected', ws, payload ?? new Event('connected'));
+		};
+
+		const markAuthenticated = (ws: WebSocketInterface, payload?: Event) => {
+			if (authenticated === false) {
+				authenticated = true;
+				emit('authenticated', ws, payload ?? new Event('authenticated'));
+			}
+
+			if (connected && authenticated && readyEmitted === false) {
+				readyEmitted = true;
+				emit('ready', ws, payload ?? new Event('ready'));
+			}
 		};
 
 		function isAuthError(message: Record<string, any> | MessageEvent<string>): message is WebSocketAuthError {
@@ -206,7 +239,22 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				if (!message) continue;
 
+					if (
+						'type' in message &&
+						'status' in message &&
+						message['type'] === 'auth' &&
+						message['status'] === 'ok' &&
+						state.firstMessage === false
+					) {
+						markAuthenticated(state.connection);
+					}
+
 				if (isAuthError(message)) {
+						if (message.error.code === 'TOKEN_EXPIRED') {
+							authenticated = false;
+							readyEmitted = false;
+						}
+
 					await handleAuthError(message, currentClient);
 					state.firstMessage = false;
 					continue;
@@ -240,7 +288,13 @@ export function realtime(config: WebSocketConfig = {}) {
 					}
 				}
 
-				return state.code === 'open';
+				return connected;
+			},
+			isAuthenticated() {
+				return authenticated;
+			},
+			isReady() {
+				return connected && authenticated;
 			},
 			async connect() {
 				wasManuallyDisconnected = false;
@@ -295,6 +349,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					debug('info', `Connection open.`);
 
 					state = { code: 'open', connection: ws, firstMessage: true };
+					markConnected(ws);
 					reconnectState.attempts = 0;
 					reconnectState.active = false;
 					clearTimeout(connectTimeout);
@@ -324,7 +379,18 @@ export function realtime(config: WebSocketConfig = {}) {
 							return reject('Authentication failed while opening websocket connection');
 						} else {
 							debug('info', 'Authentication successful!');
+							authenticated = true;
+							readyEmitted = false;
+							state.firstMessage = false;
+							emit('authenticated', ws, new Event('authenticated'));
+							emit('ready', ws, new Event('ready'));
+							readyEmitted = true;
 						}
+					} else if (config.authMode === 'strict' && hasAuth(self)) {
+						authenticated = true;
+						emit('authenticated', ws, new Event('authenticated'));
+						emit('ready', ws, new Event('ready'));
+						readyEmitted = true;
 					}
 
 					eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
@@ -343,6 +409,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				ws.addEventListener('close', (evt: CloseEvent) => {
 					debug('info', `Connection closed.`);
+					resetLifecycleState();
 					eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 					uid = generateUid();
 					state = { code: 'closed' };
@@ -354,6 +421,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			},
 			disconnect() {
 				wasManuallyDisconnected = true;
+				resetLifecycleState();
 
 				if (state.code === 'open') {
 					state.connection.close();
