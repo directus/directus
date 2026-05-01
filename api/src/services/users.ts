@@ -19,6 +19,7 @@ import type { StringValue } from 'ms';
 import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
+import { entitlementManager } from '../license/entitlements/manager.js';
 import { useLogger } from '../logger/index.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
@@ -202,6 +203,11 @@ export class UsersService extends ItemsService {
 		}
 
 		if (!('status' in data) || data['status'] === 'active') {
+			await entitlementManager.assert('seats', { adding: 1 });
+		}
+
+		// TODO unify telemetry user counting and entitlements
+		if (!('status' in data) || data['status'] === 'active') {
 			// Creating a user only requires checking user limits if the user is active, no need to care about the role
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
@@ -305,6 +311,11 @@ export class UsersService extends ItemsService {
 			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
+		if ('status' in data && data['status'] === 'active') {
+			await entitlementManager.assert('seats', { adding: keys.length });
+		}
+
+		// TODO unify these checks perhaps
 		if ('status' in data) {
 			if (data['status'] === 'active') {
 				// User are being activated, no need to check if there are enough admins
@@ -434,7 +445,10 @@ export class UsersService extends ItemsService {
 			schema: this.schema,
 		});
 
-		await service.updateOne(user.id, { password, status: 'active' });
+		const { allowed: isWithinLicenseLimits } = await entitlementManager.check('seats');
+		const status = isWithinLicenseLimits ? 'active' : 'inactive';
+
+		await service.updateOne(user.id, { password, status });
 	}
 
 	async registerUser(input: RegisterUserInput) {
