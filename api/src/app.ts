@@ -74,6 +74,7 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import requestCounter from './middleware/request-counter.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
+import { requestIdMiddleware } from './middleware/request-id.js';
 import metricsSchedule from './schedules/metrics.js';
 import projectSchedule from './schedules/project.js';
 import retentionSchedule from './schedules/retention.js';
@@ -213,6 +214,8 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('app.before', { app });
 
 	await emitter.emitInit('middlewares.before', { app });
+
+	app.use(requestIdMiddleware);
 
 	app.use(createExpressLogger());
 

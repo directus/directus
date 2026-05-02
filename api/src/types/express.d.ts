@@ -9,6 +9,7 @@ export {};
 declare global {
 	namespace Express {
 		export interface Request {
+			id?: string;
 			token: string | null;
 			collection: string;
 			sanitizedQuery: Query;

@@ -8,13 +8,14 @@ import { type AutoLoggingOptions, pinoHttp, stdSerializers } from 'pino-http';
 import { httpPrintFactory } from 'pino-http-print';
 import { build as pinoPretty } from 'pino-pretty';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { REQUEST_ID_HEADER, resolveRequestId } from '../utils/request-id.js';
 import { LogsStream } from './logs-stream.js';
 import { redactQuery } from './redact-query.js';
 
 export const _cache: {
-	logger: Logger<never> | undefined;
-	logsStream: LogsStream | undefined;
-	httpLogsStream: LogsStream | undefined;
+  logger: Logger<never> | undefined;
+  logsStream: LogsStream | undefined;
+  httpLogsStream: LogsStream | undefined;
 } = { logger: undefined, logsStream: undefined, httpLogsStream: undefined };
 
 export const useLogger = () => {
@@ -220,6 +221,26 @@ export const createExpressLogger = () => {
 	return pinoHttp({
 		logger: pino(mergedHttpOptions, pino.multistream(streams)),
 		...httpLoggerEnvConfig,
+		genReqId: (req, res) => {
+			const existing = (req as any).id;
+
+			if (typeof existing === 'string' && existing.length > 0) {
+				return existing;
+			}
+
+			const requestId = resolveRequestId(req.headers);
+			(res as any).setHeader?.(REQUEST_ID_HEADER, requestId);
+			(req as any).id = requestId;
+			return requestId;
+		},
+		customProps: (req, res) => {
+			const requestId =
+				(typeof (req as any).id === 'string' && (req as any).id.length > 0
+					? (req as any).id
+					: (res.getHeader(REQUEST_ID_HEADER) as string | undefined) ?? undefined);
+
+			return requestId ? { request_id: requestId } : {};
+		},
 		serializers: {
 			req(request: Request) {
 				const output = stdSerializers.req(request);
