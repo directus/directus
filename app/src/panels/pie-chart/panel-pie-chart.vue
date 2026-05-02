@@ -187,8 +187,13 @@ async function setupChart() {
 					formatter: (seriesName: string) => `${seriesName}: `,
 				},
 				formatter: function (outOfOneHundred: number) {
-					return `${getPercentage((outOfOneHundred / total) * 100)}% (${n(outOfOneHundred / 100)})`;
-				},
+  const rawValue =
+    props.decimals === 0
+      ? outOfOneHundred
+      : outOfOneHundred / 100;
+
+  return `${getPercentage((outOfOneHundred / total) * 100)}% (${n(rawValue)})`;
+},
 			},
 		},
 		dataLabels: {
