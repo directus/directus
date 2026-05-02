@@ -1,0 +1,398 @@
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
+import { useEnv } from '@directus/env';
+import { Router } from 'express';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import createApp from './app.js';
+import { __requestIdTestUtils, __resetRequestIdTestUtils } from './utils/request-id.js';
+
+let seenHttpLogProps: Array<Array<Record<string, any>>> = [];
+
+vi.mock('pino-http', () => {
+	return {
+		pinoHttp: vi.fn((options: any) => {
+			return (req: any, res: any, next: any) => {
+				options?.genReqId?.(req, res);
+
+				const props = options?.customProps?.(req, res) ?? {};
+
+				if (!req.__logBucket) {
+					req.__logBucket = [];
+					seenHttpLogProps.push(req.__logBucket);
+				}
+
+				req.__logBucket.push(props);
+				next();
+			};
+		}),
+		stdSerializers: {
+			req: (request: any) => ({ url: request?.url, method: request?.method, headers: request?.headers }),
+		},
+	};
+});
+
+vi.mock('./database', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	isInstalled: vi.fn().mockResolvedValue(true),
+	validateDatabaseConnection: vi.fn().mockResolvedValue(undefined),
+	validateDatabaseExtensions: vi.fn().mockResolvedValue(undefined),
+	validateMigrations: vi.fn().mockResolvedValue(true),
+}));
+
+vi.mock('./telemetry/index.js');
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+		EMAIL_TEMPLATES_PATH: './templates',
+	}),
+}));
+
+let baseEnv: Record<string, any>;
+
+const endpointRouter = Router();
+
+endpointRouter.get('/__test__/boom', (_req, _res) => {
+	throw new Error('boom');
+});
+
+endpointRouter.get('/__test__/route-check', (_req, res) => {
+	expect(res.getHeader('X-Request-Id')).toBeTruthy();
+	res.status(200).send('ok');
+});
+
+const mockGetEndpointRouter = vi.fn().mockReturnValue(endpointRouter);
+const mockGetEmbeds = vi.fn().mockReturnValue({ head: '', body: '' });
+
+vi.mock('./extensions', () => ({
+	getExtensionManager: vi.fn().mockImplementation(() => {
+		return {
+			initialize: vi.fn(),
+			getEndpointRouter: mockGetEndpointRouter,
+			getEmbeds: mockGetEmbeds,
+		};
+	}),
+}));
+
+vi.mock('./flows', () => ({
+	getFlowManager: vi.fn().mockImplementation(() => {
+		return {
+			initialize: vi.fn(),
+		};
+	}),
+}));
+
+vi.mock('./middleware/schema', () => ({
+	default: Router(),
+}));
+
+vi.mock('./auth', () => ({
+	registerAuthProviders: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('./deployment.js', () => ({
+	registerDeploymentDrivers: vi.fn(),
+	ensureDeploymentWebhooks: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('./utils/validate-env.js');
+
+const mockAuthMiddleware = vi.fn((req: any, res: any, next: any) => next());
+const mockRateLimiterMiddleware = vi.fn((req: any, res: any, next: any) => next());
+
+vi.mock('./middleware/authenticate.js', () => ({
+	default: (req: any, res: any, next: any) => mockAuthMiddleware(req, res, next),
+}));
+
+vi.mock('./middleware/rate-limiter-ip.js', () => ({
+	default: (req: any, res: any, next: any) => mockRateLimiterMiddleware(req, res, next),
+}));
+
+
+
+beforeEach(() => {
+	baseEnv = {
+		SECRET: 'abcdefabcdefabcdefabcdefabcdefabcd',
+		SERVE_APP: false,
+		PUBLIC_URL: 'http://localhost:8055/directus',
+		TELEMETRY: 'false',
+		LOG_STYLE: 'raw',
+		EXTENSIONS_PATH: './extensions',
+		STORAGE_LOCATIONS: ['local'],
+		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
+		ROOT_REDIRECT: './admin',
+		IP_TRUST_PROXY: true,
+	};
+
+	vi.mocked(useEnv).mockReturnValue(baseEnv);
+});
+
+afterEach(() => {
+	vi.clearAllMocks();
+	__resetRequestIdTestUtils();
+	seenHttpLogProps = [];
+});
+
+const makeRequest = async (
+	path: string,
+	options?: {
+		headers?: Record<string, string>;
+		method?: string;
+	},
+) => {
+	const app = await createApp();
+	const server = http.createServer(app);
+
+	await new Promise<void>((resolve) => server.listen(0, resolve));
+	const address = server.address() as AddressInfo;
+	const baseUrl = `http://127.0.0.1:${address.port}`;
+
+	try {
+		return await fetch(`${baseUrl}${path}`, {
+			method: options?.method ?? 'GET',
+			headers: options?.headers,
+			redirect: 'manual',
+		});
+	} finally {
+		server.close();
+	}
+};
+
+const isAsciiSafeRequestId = (value: string) => {
+	if (value.length === 0) return false;
+	if (value.length > 200) return false;
+	return /^[A-Za-z0-9._-]+$/.test(value);
+};
+
+describe('Request correlation ID (X-Request-Id)', () => {
+	test('should not execute request-id resolution or validation at module import time', async () => {
+		vi.resetModules();
+		const mod = await import('./utils/request-id.js');
+		expect(mod.__requestIdTestUtils.resolveCalls).toBe(0);
+		expect(mod.__requestIdTestUtils.getFromHeadersCalls).toBe(0);
+		expect(mod.__requestIdTestUtils.validateCalls).toBe(0);
+	});
+
+	test('should validate and resolve request id at request start (not at import time)', async () => {
+		// Reset after import to remove ambiguity about prior test execution order.
+		__resetRequestIdTestUtils();
+		expect(__requestIdTestUtils.resolveCalls).toBe(0);
+		expect(__requestIdTestUtils.getFromHeadersCalls).toBe(0);
+		expect(__requestIdTestUtils.validateCalls).toBe(0);
+
+		const response1 = await makeRequest('/server/ping');
+		expect(response1.status).toBe(200);
+		expect(__requestIdTestUtils.resolveCalls).toBeGreaterThan(0);
+		expect(__requestIdTestUtils.getFromHeadersCalls).toBeGreaterThan(0);
+		expect(__requestIdTestUtils.validateCalls).toBeGreaterThan(0);
+
+		const afterFirst = {
+			resolveCalls: __requestIdTestUtils.resolveCalls,
+			getFromHeadersCalls: __requestIdTestUtils.getFromHeadersCalls,
+			validateCalls: __requestIdTestUtils.validateCalls,
+		};
+
+		const response2 = await makeRequest('/server/ping');
+		expect(response2.status).toBe(200);
+		expect(__requestIdTestUtils.resolveCalls).toBeGreaterThan(afterFirst.resolveCalls);
+		expect(__requestIdTestUtils.getFromHeadersCalls).toBeGreaterThan(afterFirst.getFromHeadersCalls);
+		expect(__requestIdTestUtils.validateCalls).toBeGreaterThan(afterFirst.validateCalls);
+	});
+	test('should include X-Request-Id on successful responses', async () => {
+		const response = await makeRequest('/server/ping');
+		const body = await response.text();
+
+		expect(response.status).toBe(200);
+		expect(body).toBe('pong');
+
+		const requestId = response.headers.get('x-request-id');
+		expect(requestId).toBeTruthy();
+		expect(isAsciiSafeRequestId(requestId!)).toBe(true);
+
+		const logsForRequest = seenHttpLogProps.at(-1) ?? [];
+		expect(logsForRequest.length).toBeGreaterThan(0);
+
+		for (const log of logsForRequest) {
+			expect(log).toHaveProperty('request_id', requestId);
+		}
+	});
+
+	test('should correlate the same request_id across all logs for a single request', async () => {
+		const response = await makeRequest('/server/ping');
+
+		const requestId = response.headers.get('x-request-id');
+		expect(requestId).toBeTruthy();
+
+		const logsForRequest = seenHttpLogProps.at(-1) ?? [];
+		expect(logsForRequest.length).toBeGreaterThan(0);
+
+		for (const log of logsForRequest) {
+			expect(log).toHaveProperty('request_id', requestId);
+		}
+	});
+
+	test('should accept a client provided X-Request-Id at the max length boundary (200)', async () => {
+		const boundary = 'a'.repeat(200);
+		const response = await makeRequest('/server/ping', {
+			headers: { 'X-Request-Id': boundary },
+		});
+
+		expect(response.status).toBe(200);
+		expect(response.headers.get('x-request-id')).toBe(boundary);
+	});
+
+	test('should include X-Request-Id on not found errors (backward compatible body)', async () => {
+		const response = await makeRequest('/this-route-does-not-exist');
+		const json = await response.json();
+
+		expect(response.status).toBe(404);
+
+		const requestId = response.headers.get('x-request-id');
+		expect(requestId).toBeTruthy();
+		expect(isAsciiSafeRequestId(requestId!)).toBe(true);
+
+		// Backward compatibility: do not change error body shape
+		expect(json).toHaveProperty('errors');
+		expect(Array.isArray(json.errors)).toBe(true);
+		expect(json.errors[0]).toHaveProperty('extensions.code', 'ROUTE_NOT_FOUND');
+	});
+
+	test('should echo a valid client provided X-Request-Id', async () => {
+		const clientRequestId = 'client_abc-123.ZZ';
+		const response = await makeRequest('/server/ping', {
+			headers: { 'X-Request-Id': clientRequestId },
+		});
+
+		expect(response.headers.get('x-request-id')).toBe(clientRequestId);
+	});
+
+	test('should replace an empty client provided X-Request-Id', async () => {
+		const response = await makeRequest('/server/ping', {
+			headers: { 'X-Request-Id': '' },
+		});
+
+		const requestId = response.headers.get('x-request-id');
+		expect(requestId).toBeTruthy();
+		expect(requestId).not.toBe('');
+		expect(isAsciiSafeRequestId(requestId!)).toBe(true);
+	});
+
+	test('should replace a client provided X-Request-Id that exceeds the max length', async () => {
+		const tooLong = 'a'.repeat(201);
+		const response = await makeRequest('/server/ping', {
+			headers: { 'X-Request-Id': tooLong },
+		});
+
+		const requestId = response.headers.get('x-request-id');
+		expect(requestId).toBeTruthy();
+		expect(requestId).not.toBe(tooLong);
+		expect(isAsciiSafeRequestId(requestId!)).toBe(true);
+	});
+
+	test('should replace a client provided X-Request-Id with unsafe characters', async () => {
+		const unsafe = 'abc xyz';
+		const response = await makeRequest('/server/ping', {
+			headers: { 'X-Request-Id': unsafe },
+		});
+
+		const requestId = response.headers.get('x-request-id');
+		expect(requestId).toBeTruthy();
+		expect(requestId).not.toBe(unsafe);
+		expect(isAsciiSafeRequestId(requestId!)).toBe(true);
+	});
+
+	test('should generate unique request IDs for concurrent requests', async () => {
+		const responses = await Promise.all([
+			makeRequest('/server/ping'),
+			makeRequest('/server/ping'),
+			makeRequest('/server/ping'),
+			makeRequest('/server/ping'),
+		]);
+
+		const ids = responses.map((r) => r.headers.get('x-request-id'));
+		for (const id of ids) {
+			expect(id).toBeTruthy();
+			expect(isAsciiSafeRequestId(id!)).toBe(true);
+		}
+
+		const unique = new Set(ids);
+		expect(unique.size).toBe(ids.length);
+	});
+
+	test('should assign request id before request logging middleware runs (ordering)', async () => {
+		const beforeLen = seenHttpLogProps.length;
+		const response = await makeRequest('/server/ping');
+		expect(response.status).toBe(200);
+		expect(seenHttpLogProps.length).toBeGreaterThan(beforeLen);
+
+		const logsForRequest = seenHttpLogProps.at(-1) ?? [];
+		expect(logsForRequest.length).toBeGreaterThan(0);
+		expect(logsForRequest[0].request_id).toBeTruthy();
+	});
+
+	test('should assign request id before route handlers run (routing)', async () => {
+		const response = await makeRequest('/__test__/route-check');
+		const body = await response.text();
+
+		expect(response.status).toBe(200);
+		expect(body).toBe('ok');
+		expect(response.headers.get('x-request-id')).toBeTruthy();
+	});
+
+	test('should assign request id before auth and rate limiting middleware runs (ordering)', async () => {
+		vi.mocked(useEnv).mockReturnValue({
+			...baseEnv,
+			RATE_LIMITER_ENABLED: true,
+		});
+
+		mockAuthMiddleware.mockImplementationOnce((_req: any, res: any, next: any) => {
+			expect(res.getHeader('X-Request-Id')).toBeTruthy();
+			next();
+		});
+
+		mockRateLimiterMiddleware.mockImplementationOnce((_req: any, res: any, next: any) => {
+			expect(res.getHeader('X-Request-Id')).toBeTruthy();
+			next();
+		});
+
+		const response = await makeRequest('/__test__/route-check');
+		expect(response.status).toBe(200);
+		expect(mockRateLimiterMiddleware).toHaveBeenCalledTimes(1);
+		expect(mockAuthMiddleware).toHaveBeenCalledTimes(1);
+	});
+
+	test('should include X-Request-Id on 5xx errors', async () => {
+		const response = await makeRequest('/__test__/boom');
+		const json = await response.json();
+
+		expect(response.status).toBeGreaterThanOrEqual(500);
+		expect(response.status).toBeLessThan(600);
+
+		const requestId = response.headers.get('x-request-id');
+		expect(requestId).toBeTruthy();
+		expect(isAsciiSafeRequestId(requestId!)).toBe(true);
+
+		// Backward compatibility: do not change error body shape
+		expect(json).toHaveProperty('errors');
+		expect(Array.isArray(json.errors)).toBe(true);
+	});
+
+	test('should not mutate request id once response has started (terminal)', async () => {
+		let firstSeen: string | undefined;
+
+		const originalPush = seenHttpLogProps.push.bind(seenHttpLogProps);
+		seenHttpLogProps.push = ((bucket: any) => {
+			firstSeen = String((bucket?.[0] ?? {}).request_id ?? '');
+			return originalPush(bucket);
+		}) as any;
+
+		const response = await makeRequest('/server/ping');
+		const headerId = response.headers.get('x-request-id') ?? '';
+
+		expect(firstSeen).toBeTruthy();
+		expect(headerId).toBeTruthy();
+		expect(headerId).toBe(firstSeen);
+	});
+});

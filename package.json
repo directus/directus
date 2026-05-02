@@ -48,11 +48,19 @@
 			"anymatch>picomatch": "2.3.2",
 			"picomatch": "4.0.4",
 			"defu": "6.1.7",
+<<<<<<< HEAD
 			"unplugin-vue>vite": "8.0.10",
 			"@xmldom/xmldom": "0.8.13",
 			"vitest@3>vite": "7.3.2",
 			"protobufjs": "7.5.6"
 		}
+=======
+			"unplugin-vue>vite": "8.0.8"
+		},
+		"ignoredBuiltDependencies": [
+			"protobufjs"
+		]
+>>>>>>> e28ab4cadc (fix: request id implementation + sync lockfile + docker fixes)
 	},
 	"packageManager": "pnpm@10.27.0",
 	"engines": {

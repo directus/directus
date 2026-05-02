@@ -1,0 +1,286 @@
+﻿diff --git a/Dockerfile b/Dockerfile
+index 753f0a40d6..d1ade63e44 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,74 +1,11 @@
+-# syntax=docker/dockerfile:1.4
++FROM public.ecr.aws/x8v8d7g8/mars-base:latest
+ 
+-ARG NODE_VERSION=22
++WORKDIR /app
+ 
+-####################################################################################################
+-## Build Packages
++COPY package.json pnpm-lock.yaml ./
+ 
+-FROM node:${NODE_VERSION}-alpine AS builder
++RUN pnpm install --no-frozen-lockfile
+ 
+-# Remove again once corepack >= 0.31 made it into base image
+-# (see https://github.com/directus/directus/issues/24514)
+-RUN npm install --global corepack@latest
++COPY . .
+ 
+-RUN apk --no-cache add python3 py3-setuptools build-base
+-
+-WORKDIR /directus
+-
+-COPY package.json .
+-RUN corepack enable && corepack prepare
+-
+-# Deploy as 'node' user to match pnpm setups in production image
+-# (see https://github.com/directus/directus/issues/23822)
+-RUN chown node:node .
+-USER node
+-
+-ENV NODE_OPTIONS=--max-old-space-size=8192
+-
+-COPY pnpm-lock.yaml .
+-RUN pnpm fetch
+-
+-COPY --chown=node:node . .
+-RUN <<EOF
+-	set -ex
+-	pnpm install --recursive --offline --frozen-lockfile
+-	npm_config_workspace_concurrency=2 pnpm run build
+-	pnpm --filter directus deploy --legacy --prod dist
+-	cd dist
+-	# Regenerate package.json file with essential fields only
+-	# (see https://github.com/directus/directus/issues/20338)
+-	node -e '
+-		const f = "package.json", {name, version, type, exports, bin} = require(`./${f}`), {packageManager} = require(`../${f}`);
+-		fs.writeFileSync(f, JSON.stringify({name, version, type, exports, bin, packageManager}, null, 2));
+-	'
+-	mkdir -p database extensions uploads
+-EOF
+-
+-####################################################################################################
+-## Create Production Image
+-
+-FROM node:${NODE_VERSION}-alpine AS runtime
+-
+-RUN npm install --global \
+-	pm2@5 \
+-	corepack@latest # Remove again once corepack >= 0.31 made it into base image
+-
+-USER node
+-
+-WORKDIR /directus
+-
+-ENV \
+-	DB_CLIENT="sqlite3" \
+-	DB_FILENAME="/directus/database/database.sqlite" \
+-	NODE_ENV="production" \
+-	NPM_CONFIG_UPDATE_NOTIFIER="false"
+-
+-COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
+-COPY --from=builder --chown=node:node /directus/dist .
+-
+-EXPOSE 8055
+-
+-CMD : \
+-	&& node cli.js bootstrap \
+-	&& pm2-runtime start ecosystem.config.cjs \
+-	;
++CMD ["bash"]
+diff --git a/api/src/app.ts b/api/src/app.ts
+index 520f364aa4..87d31e6177 100644
+--- a/api/src/app.ts
++++ b/api/src/app.ts
+@@ -74,6 +74,7 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
+ import requestCounter from './middleware/request-counter.js';
+ import sanitizeQuery from './middleware/sanitize-query.js';
+ import schema from './middleware/schema.js';
++import { requestIdMiddleware } from './middleware/request-id.js';
+ import metricsSchedule from './schedules/metrics.js';
+ import projectSchedule from './schedules/project.js';
+ import retentionSchedule from './schedules/retention.js';
+@@ -214,6 +215,8 @@ export default async function createApp(): Promise<express.Application> {
+ 
+ 	await emitter.emitInit('middlewares.before', { app });
+ 
++	app.use(requestIdMiddleware);
++
+ 	app.use(createExpressLogger());
+ 
+ 	app.use((_req, res, next) => {
+diff --git a/api/src/logger/index.ts b/api/src/logger/index.ts
+index 6576154278..d2a8ec9a28 100644
+--- a/api/src/logger/index.ts
++++ b/api/src/logger/index.ts
+@@ -8,13 +8,14 @@ import { type AutoLoggingOptions, pinoHttp, stdSerializers } from 'pino-http';
+ import { httpPrintFactory } from 'pino-http-print';
+ import { build as pinoPretty } from 'pino-pretty';
+ import { getConfigFromEnv } from '../utils/get-config-from-env.js';
++import { REQUEST_ID_HEADER, resolveRequestId } from '../utils/request-id.js';
+ import { LogsStream } from './logs-stream.js';
+ import { redactQuery } from './redact-query.js';
+ 
+ export const _cache: {
+-	logger: Logger<never> | undefined;
+-	logsStream: LogsStream | undefined;
+-	httpLogsStream: LogsStream | undefined;
++  logger: Logger<never> | undefined;
++  logsStream: LogsStream | undefined;
++  httpLogsStream: LogsStream | undefined;
+ } = { logger: undefined, logsStream: undefined, httpLogsStream: undefined };
+ 
+ export const useLogger = () => {
+@@ -220,6 +221,26 @@ export const createExpressLogger = () => {
+ 	return pinoHttp({
+ 		logger: pino(mergedHttpOptions, pino.multistream(streams)),
+ 		...httpLoggerEnvConfig,
++		genReqId: (req, res) => {
++			const existing = (req as any).id;
++
++			if (typeof existing === 'string' && existing.length > 0) {
++				return existing;
++			}
++
++			const requestId = resolveRequestId(req.headers);
++			(res as any).setHeader?.(REQUEST_ID_HEADER, requestId);
++			(req as any).id = requestId;
++			return requestId;
++		},
++		customProps: (req, res) => {
++			const requestId =
++				(typeof (req as any).id === 'string' && (req as any).id.length > 0
++					? (req as any).id
++					: (res.getHeader(REQUEST_ID_HEADER) as string | undefined) ?? undefined);
++
++			return requestId ? { request_id: requestId } : {};
++		},
+ 		serializers: {
+ 			req(request: Request) {
+ 				const output = stdSerializers.req(request);
+diff --git a/api/src/middleware/request-id.ts b/api/src/middleware/request-id.ts
+new file mode 100644
+index 0000000000..321641c7b2
+--- /dev/null
++++ b/api/src/middleware/request-id.ts
+@@ -0,0 +1,17 @@
++import type { RequestHandler } from 'express';
++import { REQUEST_ID_HEADER, resolveRequestId } from '../utils/request-id.js';
++
++export const requestIdMiddleware: RequestHandler = (req, res, next) => {
++	if (res.headersSent) return next();
++
++	const requestId = resolveRequestId(req.headers);
++
++	// Attach to req for downstream usage (logger, error handler, extensions)
++	// Express Request already has an optional `id` used by pino-http; we set it here.
++	(req as any).id = requestId;
++
++	// Always expose for clients to correlate support tickets
++	res.setHeader(REQUEST_ID_HEADER, requestId);
++
++	next();
++};
+diff --git a/api/src/types/express.d.ts b/api/src/types/express.d.ts
+index 50d34fd29c..8ad8e17d4d 100644
+--- a/api/src/types/express.d.ts
++++ b/api/src/types/express.d.ts
+@@ -9,6 +9,7 @@ export {};
+ declare global {
+ 	namespace Express {
+ 		export interface Request {
++			id?: string;
+ 			token: string | null;
+ 			collection: string;
+ 			sanitizedQuery: Query;
+diff --git a/api/src/utils/request-id.ts b/api/src/utils/request-id.ts
+new file mode 100644
+index 0000000000..5d20dd54ce
+--- /dev/null
++++ b/api/src/utils/request-id.ts
+@@ -0,0 +1,56 @@
++import type { IncomingHttpHeaders } from 'node:http';
++import { nanoid } from 'nanoid';
++
++export const REQUEST_ID_HEADER = 'X-Request-Id' as const;
++
++const shouldTrackRequestIdDebug =
++	process.env.NODE_ENV === 'test' || typeof process.env.VITEST !== 'undefined';
++
++export const __requestIdTestUtils = {
++	validateCalls: 0,
++	getFromHeadersCalls: 0,
++	resolveCalls: 0,
++};
++
++export const __resetRequestIdTestUtils = () => {
++	if (shouldTrackRequestIdDebug === false) return;
++	__requestIdTestUtils.validateCalls = 0;
++	__requestIdTestUtils.getFromHeadersCalls = 0;
++	__requestIdTestUtils.resolveCalls = 0;
++};
++
++export type RequestIdValidationResult =
++	| { ok: true; value: string }
++	| { ok: false; reason: 'missing' | 'empty' | 'too_long' | 'unsafe' };
++
++const MAX_REQUEST_ID_LENGTH = 200;
++const SAFE_REQUEST_ID_REGEX = /^[A-Za-z0-9._-]+$/;
++
++export const validateRequestId = (value: unknown): RequestIdValidationResult => {
++	if (shouldTrackRequestIdDebug) __requestIdTestUtils.validateCalls++;
++	if (value == null) return { ok: false, reason: 'missing' };
++	if (typeof value !== 'string') return { ok: false, reason: 'unsafe' };
++	if (value.length === 0) return { ok: false, reason: 'empty' };
++	if (value.length > MAX_REQUEST_ID_LENGTH) return { ok: false, reason: 'too_long' };
++	if (SAFE_REQUEST_ID_REGEX.test(value) === false) return { ok: false, reason: 'unsafe' };
++	return { ok: true, value };
++};
++
++export const generateRequestId = (): string => nanoid();
++
++export const getRequestIdFromHeaders = (headers: IncomingHttpHeaders): RequestIdValidationResult => {
++	if (shouldTrackRequestIdDebug) __requestIdTestUtils.getFromHeadersCalls++;
++	const raw = headers['x-request-id'];
++
++	if (Array.isArray(raw)) {
++		return validateRequestId(raw[0]);
++	}
++
++	return validateRequestId(raw);
++};
++
++export const resolveRequestId = (headers: IncomingHttpHeaders): string => {
++	if (shouldTrackRequestIdDebug) __requestIdTestUtils.resolveCalls++;
++	const validated = getRequestIdFromHeaders(headers);
++	return validated.ok ? validated.value : generateRequestId();
++};
+diff --git a/problem_description.md b/problem_description.md
+new file mode 100644
+index 0000000000..3eab027ea6
+--- /dev/null
++++ b/problem_description.md
+@@ -0,0 +1,28 @@
++# Request ID correlation for API logs and responses
++
++## 1. Problem Brief
++Directus API lacks a first-class request correlation ID, making it difficult to trace a single HTTP request across logs, reverse proxies, and error reports. Add a consistent request ID so every response exposes an identifier and every HTTP log line can be tied to the same request, including failures.
++
++## 2. Requirements
++
++- Accept a client-provided `X-Request-Id` only if it is:
++	- non-empty
++	- length <= 200 characters
++	- matches `^[A-Za-z0-9._-]+$`
++- Otherwise generate a new ID that also matches `^[A-Za-z0-9._-]+$`.
++- The request ID must be assigned and the response `X-Request-Id` header must be set **before** any auth, rate limit, routing, and request logging middleware executes.
++- Always set `X-Request-Id` on the response (including error responses such as 4xx/5xx).
++- Never throw due to an invalid `X-Request-Id`; replace it instead.
++- Terminal state: once response headers are sent, the request ID must not change.
++- Validation timing: header validation must happen at request start (not at import time).
++
++### Logger Integration
++- Every HTTP log entry must include a `request_id` field whose value equals the effective `X-Request-Id` for that request.
++- This must be implemented via `pino-http` `customProps`.
++
++## 3. Test Assumptions
++
++- The request ID utility module is located at `api/src/utils/request-id.ts` (compiled to `.js`).
++- It must export:
++	- `__requestIdTestUtils`: an object with numeric counters `resolveCalls`, `getFromHeadersCalls`, and `validateCalls`.
++	- `__resetRequestIdTestUtils()`: resets the counters.
