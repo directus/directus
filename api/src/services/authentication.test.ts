@@ -419,9 +419,9 @@ describe('Integration Tests', () => {
 
 					tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'default' }]);
 
-					await expect(
-						service.login('google', { token: 'oauth-token' }),
-					).rejects.toBeInstanceOf(InvalidCredentialsError);
+					await expect(service.login('google', { token: 'oauth-token' })).rejects.toBeInstanceOf(
+						InvalidCredentialsError,
+					);
 				});
 			});
 		});
