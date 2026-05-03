@@ -70,14 +70,17 @@ vi.mock('../utils/get-milliseconds.js', () => ({
 	getMilliseconds: vi.fn().mockReturnValue(900000),
 }));
 
+const mockEnv = vi.hoisted(() => ({
+	EMAIL_TEMPLATES_PATH: './templates',
+	LOGIN_STALL_TIME: 0,
+	ACCESS_TOKEN_TTL: '15m',
+	REFRESH_TOKEN_TTL: '7d',
+	SESSION_COOKIE_TTL: '1d',
+	AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS: undefined as string | undefined,
+}));
+
 vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({
-		EMAIL_TEMPLATES_PATH: './templates',
-		LOGIN_STALL_TIME: 0,
-		ACCESS_TOKEN_TTL: '15m',
-		REFRESH_TOKEN_TTL: '7d',
-		SESSION_COOKIE_TTL: '1d',
-	}),
+	useEnv: vi.fn().mockReturnValue(mockEnv),
 }));
 
 vi.mock('jsonwebtoken', () => ({
@@ -122,6 +125,7 @@ describe('Integration Tests', () => {
 	afterEach(() => {
 		tracker.reset();
 		vi.clearAllMocks();
+		mockEnv.AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS = undefined;
 	});
 
 	describe('Services / Authentication', () => {
@@ -359,6 +363,65 @@ describe('Integration Tests', () => {
 					accessToken: 'test-access-token',
 					refreshToken: 'test-refresh-token',
 					id: mockUser.id,
+				});
+			});
+
+			describe('AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS', () => {
+				it('should allow login with default provider when user is registered with external provider and feature flag is enabled', async () => {
+					mockEnv.AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS = 'true';
+
+					const externalUser = { ...mockUser, provider: 'google', password: 'hashed-password' };
+					tracker.on.select('directus_users').responseOnce([externalUser]);
+					tracker.on.select('directus_users').responseOnce([]);
+					tracker.on.insert('directus_sessions').response([1]);
+					tracker.on.delete('directus_sessions').response(1);
+					tracker.on.update('directus_users').response([1]);
+
+					const result = await service.login('default', { email: 'john@example.com', password: 'password' });
+
+					expect(result).toMatchObject({
+						accessToken: 'test-access-token',
+						refreshToken: 'test-refresh-token',
+						id: externalUser.id,
+					});
+				});
+
+				it('should throw InvalidCredentialsError when user has external provider, feature flag is enabled but user has no password', async () => {
+					mockEnv.AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS = 'true';
+
+					tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'google', password: null }]);
+
+					await expect(
+						service.login('default', { email: 'john@example.com', password: 'password' }),
+					).rejects.toBeInstanceOf(InvalidCredentialsError);
+				});
+
+				it('should throw InvalidCredentialsError when user has external provider and feature flag is disabled', async () => {
+					mockEnv.AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS = 'false';
+
+					tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'google' }]);
+
+					await expect(
+						service.login('default', { email: 'john@example.com', password: 'password' }),
+					).rejects.toBeInstanceOf(InvalidCredentialsError);
+				});
+
+				it('should throw InvalidCredentialsError when user has external provider and feature flag is not set', async () => {
+					tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'google' }]);
+
+					await expect(
+						service.login('default', { email: 'john@example.com', password: 'password' }),
+					).rejects.toBeInstanceOf(InvalidCredentialsError);
+				});
+
+				it('should throw InvalidCredentialsError when logging in with non-default provider and user has different provider', async () => {
+					mockEnv.AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS = 'true';
+
+					tracker.on.select('directus_users').responseOnce([{ ...mockUser, provider: 'default' }]);
+
+					await expect(
+						service.login('google', { token: 'oauth-token' }),
+					).rejects.toBeInstanceOf(InvalidCredentialsError);
 				});
 			});
 		});
