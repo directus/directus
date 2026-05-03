@@ -541,7 +541,12 @@ function revert(values: Record<string, any>) {
 			<CommentsSidebarDetail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
 
-		<LicenseLimitModal v-model="seatsLimitModalOpen" type="seats" :on-save="saveWithDraftStatus" />
+		<LicenseLimitModal
+			v-model="seatsLimitModalOpen"
+			type="seats"
+			:is-admin="userStore.isAdmin"
+			:on-save="saveWithDraftStatus"
+		/>
 	</PrivateView>
 </template>
 

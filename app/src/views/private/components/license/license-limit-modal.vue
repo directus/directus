@@ -6,11 +6,12 @@ import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
-import { useLicenseStore } from '@/stores/license';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	modelValue: boolean;
 	type: 'collections' | 'seats';
+	isAdmin?: boolean;
 	persistent?: boolean;
 	onSave?: () => void;
 }>();
@@ -20,13 +21,16 @@ const emit = defineEmits<{
 	(e: 'cancel'): void;
 }>();
 
-const licenseStore = useLicenseStore();
+const titleKey = computed(() => `license.${props.type}_limit_title`);
 
-const isEnterprisePlan = computed(() => licenseStore.info?.plan === 'enterprise');
+const bodyKey = computed(() => {
+	if (props.type === 'seats') {
+		return props.isAdmin ? 'license.seats_limit_body_admin' : 'license.seats_limit_body_member';
+	}
 
-const bodyText = computed(() =>
-	isEnterprisePlan.value ? `license.${props.type}_contact_sales_copy` : `license.${props.type}_manage_plan_copy`,
-);
+	// Collections are always admin-facing; no member variant needed.
+	return 'license.collections_limit_body';
+});
 
 function close() {
 	emit('update:modelValue', false);
@@ -35,12 +39,7 @@ function close() {
 
 function handleManagePlan() {
 	emit('update:modelValue', false);
-
-	if (isEnterprisePlan.value) {
-		window.open('https://directus.io/contact', '_blank', 'noopener,noreferrer');
-	} else {
-		window.open('/settings/license', '_blank', 'noopener,noreferrer');
-	}
+	window.open('/settings/license', '_blank', 'noopener,noreferrer');
 }
 
 function handleSave() {
@@ -57,14 +56,15 @@ function handleSave() {
 		@esc="close"
 	>
 		<VCard>
-			<VCardTitle>{{ $t('license.limit_reached') }}</VCardTitle>
+			<VCardTitle>{{ $t(titleKey) }}</VCardTitle>
 
-			<VCardText>{{ $t(bodyText) }}</VCardText>
+			<VCardText>{{ $t(bodyKey) }}</VCardText>
 
 			<VCardActions>
 				<VButton secondary @click="close">{{ $t('cancel') }}</VButton>
-				<VButton :secondary="!!onSave" @click="handleManagePlan">
-					{{ isEnterprisePlan ? $t('license.contact_sales') : $t('license.manage_plan') }}
+				<VButton v-if="isAdmin" :secondary="!!onSave" @click="handleManagePlan">
+					{{ $t('license.manage_plan') }}
+					<VIcon name="open_in_new" right />
 				</VButton>
 				<VButton v-if="onSave" @click="handleSave">{{ $t('save') }}</VButton>
 			</VCardActions>

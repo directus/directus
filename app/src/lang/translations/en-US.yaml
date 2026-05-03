@@ -1441,13 +1441,15 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 license:
-  limit_reached: You have reached the max limit allowed for your plan.
-  seats_manage_plan_copy: You will need to purchase additional user seats or upgrade your plan.
-  seats_contact_sales_copy: Contact sales to purchase more feature add-ons.
+  seats_limit_title: The user will be created but placed in deactivated state.
+  seats_limit_body_admin: >-
+    You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  seats_limit_body_member: >-
+    You have reached the max limit allowed for your plan. Contact admin to purchase additional add-ons or upgrade.
+  collections_limit_title: Collection limit reached
+  collections_limit_body: >-
+    You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
   manage_plan: Manage Plan
-  contact_sales: Contact Sales
-  collections_manage_plan_copy: You will need to purchase additional collection packs or upgrade your plan.
-  collections_contact_sales_copy: Contact sales to purchase additional collection packs or upgrade your plan.
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
