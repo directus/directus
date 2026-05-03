@@ -15,7 +15,8 @@ export class DriverLocal implements TusDriver {
 	private readonly root: string;
 
 	constructor(config: DriverLocalConfig) {
-		this.root = resolve(config.root);
+		const resolvedRoot = resolve(config.root);
+		this.root = typeof resolvedRoot === 'string' && resolvedRoot.length > 0 ? resolvedRoot : config.root;
 	}
 
 	private fullPath(filepath: string) {
@@ -92,25 +93,33 @@ export class DriverLocal implements TusDriver {
 
 	list(prefix = ''): AsyncGenerator<string> {
 		const fullPrefix = this.fullPath(prefix);
-		return this.listGenerator(fullPrefix);
+		return this.listGenerator(fullPrefix, fullPrefix);
 	}
 
-	private async *listGenerator(prefix: string): AsyncGenerator<string> {
-		const prefixDirectory = prefix.endsWith(sep) ? prefix : dirname(prefix);
+	private normalizePath(value: string | undefined, fallback: string): string {
+		return typeof value === 'string' && value.length > 0 ? value : fallback;
+	}
+
+	private async *listGenerator(prefix?: string, currentPath?: string): AsyncGenerator<string> {
+		const filterPrefix = prefix ?? '';
+		const prefixPath = this.normalizePath(prefix, this.root);
+		const safePath = this.normalizePath(currentPath, prefixPath);
+		const directoryPath = safePath === this.root || safePath.endsWith(sep) ? safePath : dirname(safePath);
+		const prefixDirectory = this.normalizePath(directoryPath, this.root);
 
 		const directory = await opendir(prefixDirectory);
 
 		for await (const file of directory) {
 			const fileName = join(prefixDirectory, file.name);
 
-			if (fileName.toLowerCase().startsWith(prefix.toLowerCase()) === false) continue;
+			if (filterPrefix && fileName.toLowerCase().startsWith(filterPrefix.toLowerCase()) === false) continue;
 
 			if (file.isFile()) {
 				yield relative(this.root, fileName);
 			}
 
 			if (file.isDirectory()) {
-				yield* this.listGenerator(join(fileName, sep));
+				yield* this.listGenerator(filterPrefix, join(fileName, sep));
 			}
 		}
 	}
