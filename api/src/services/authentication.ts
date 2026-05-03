@@ -129,9 +129,9 @@ export class AuthenticationService {
 			String(env['AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS'] ?? '').toLowerCase() === 'true';
 
 		const providerMismatch = user?.provider !== providerName;
-		const providerMismatchAllowed = providerMismatch === true && allowLocalPasswordForExternalUsers === true;
+		const providerMismatchAllowed = providerMismatch && allowLocalPasswordForExternalUsers;
 
-		if (user?.status !== 'active' || (providerMismatch === true && providerMismatchAllowed === false)) {
+		if (user?.status !== 'active' || (providerMismatch && !providerMismatchAllowed)) {
 			const loginError = new InvalidCredentialsError();
 			emitStatus('fail', updatedPayload, user, loginError);
 			await stall(STALL_TIME, timeStart);
