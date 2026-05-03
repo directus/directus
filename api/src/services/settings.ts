@@ -1,11 +1,45 @@
-import type { AbstractServiceOptions, OwnerInformation, Settings } from '@directus/types';
+import type { AbstractServiceOptions, MutationOptions, OwnerInformation, PrimaryKey, Query, QueryOptions, Settings } from '@directus/types';
 import { version } from 'directus/version';
+import { CUSTOM_LLM_FIELDS } from '../constants.js';
+import { entitlementManager } from '../license/entitlements/manager.js';
 import { sendReport } from '../telemetry/index.js';
 import { ItemsService } from './items.js';
 
 export class SettingsService extends ItemsService<Settings> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_settings', options);
+	}
+
+	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
+			await entitlementManager.assert('custom_llms_enabled');
+		}
+
+		return super.createOne(data, opts);
+	}
+
+	override async updateMany(keys: PrimaryKey[], data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
+			await entitlementManager.assert('custom_llms_enabled');
+		}
+
+		return super.updateMany(keys, data, opts);
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Settings[]> {
+		const data = await super.readByQuery(query, opts);
+
+		if (this.accountability !== null) {
+			for (const record of data) {
+				for (const field of CUSTOM_LLM_FIELDS) {
+					if (record[field]) {
+						record[field] = null;
+					}
+				}
+			}
+		}
+		
+		return data;
 	}
 
 	async setOwner(data: OwnerInformation) {

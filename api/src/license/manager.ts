@@ -1,13 +1,34 @@
 import { useEnv } from '@directus/env';
-import { activateKey, CORE_LICENSE, License, refreshLicense, verifyLicense } from '@directus/license';
+import { LicenseImmutableError } from '@directus/errors';
+import {
+	activateKey,
+	billinPortal,
+	checkKey,
+	CORE_LICENSE,
+	deactivateKey,
+	deleteAddon,
+	License,
+	listAddons,
+	refreshLicense,
+	updateAddonQuantity,
+	verifyLicense,
+} from '@directus/license';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+import licenseCheckSchedule from '../schedules/license.js';
+import { CollectionsService } from '../services/collections.js';
+import { AccessService, PoliciesService, UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
+import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
 import { useRPC } from './rpc.js';
+import type { ResolveInput } from './schema.js';
 import { getStatus } from './status.js';
-import type { LicenseSource, LicenseStatus } from './types.js';
+import type { LicenseSource, LicenseStatus, PendingResolution } from './types.js';
 
 let licenseManager: LicenseManager | undefined;
 const env = useEnv();
@@ -22,10 +43,10 @@ type LicenseStore = {
 
 const store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
-export async function getLicense(options: { database?: Knex }): Promise<License> {
+export async function getLicense(options?: { database?: Knex }): Promise<License> {
 	if (licenseCache) return licenseCache;
 
-	const token = await getLicenseToken(options);
+	const { token } = await getLicenseToken(options);
 
 	if (!token) {
 		licenseCache = CORE_LICENSE;
@@ -47,8 +68,8 @@ export function getLicenseManager(): LicenseManager {
 }
 
 export class LicenseManager {
-	private licenseKey: string | undefined;
-	private licenseToken: string | undefined;
+	private licenseKey: string | null = null;
+	private licenseToken: string | null = null;
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
 	private rpc = useRPC<Pick<LicenseManager, 'refreshCache'>>(this, LICENSE_CHANNEL);
@@ -139,17 +160,50 @@ export class LicenseManager {
 	}
 
 	public async getStatus() {
-		return await store(async (store) => store.get('status') ?? 'active');
+		const status = await store(async (store) => store.get('status'));
+
+		return status ?? 'active';
 	}
 
 	public getSource() {
 		return this.source;
 	}
 
+	public async assertMutable(options: { action: string; bypassCore?: boolean }): Promise<void> {
+		const license = await getLicense();
+
+		// offline
+		if (this.licenseKey === null && license.meta.offline) {
+			throw new LicenseImmutableError({ action: options?.action, source: 'Offline' });
+		}
+
+		// env source
+		if (this.source === 'env') {
+			throw new LicenseImmutableError({ action: options?.action, source: 'Env-sourced' });
+		}
+
+		// core tier
+		if (options?.bypassCore !== true && this.source === null) {
+			throw new LicenseImmutableError({ action: options?.action, source: 'Core' });
+		}
+	}
+
+	/**
+	 *  Check a license meta/info without activating it
+	 */
+	public async check(key: string) {
+		return checkKey({
+			license_key: key,
+		});
+	}
+
 	/**
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
+		// bypass core tier for core -> key flow
+		this.assertMutable({ action: 'activation', bypassCore: true });
+
 		const license: License | null = null;
 		let error: Error | undefined;
 
@@ -182,10 +236,32 @@ export class LicenseManager {
 		}
 	}
 
+	public async deactivate(key?: string) {
+		this.assertMutable({ action: 'deactivation' });
+
+		const currentKey = this.licenseKey ?? key;
+
+		if (!currentKey) {
+			throw new TypeError('"key" has to be defined in order to deactivate');
+		}
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		await deactivateKey({
+			license_key: currentKey,
+			project_id: project_id!,
+		});
+
+		await this.downgrade();
+	}
+
 	/**
 	 * Update from an existing key to a new key
 	 */
 	public async update(oldKey: string, newKey: string) {
+		this.assertMutable({ action: 'update' });
 		// TODO: pending update endpoint on license server
 	}
 
@@ -248,14 +324,429 @@ export class LicenseManager {
 		});
 	}
 
-	public async refreshCache() {
-		licenseCache = undefined;
-		this.licenseKey = await getLicenseKey();
-		this.licenseToken = await getLicenseToken();
+	public async billingPortalUrl() {
+		this.assertMutable({ action: 'view portal' });
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		const { url } = await billinPortal({
+			license_key: this.licenseKey!,
+			project_id: project_id!,
+		});
+
+		return url;
 	}
 
-	/** Downgrade to CORE license */
-	public async downgrade() {
+	public async availableAddons() {
+		this.assertMutable({ action: 'list addons' });
+
+		// TODO: replace mock
+		return [
+			{
+				id: 'addon_collections_pack',
+				name: 'Data Model Collections',
+				description: 'Additional +25 collections per pack',
+				icon: 'deployed_code',
+				availability: 'available',
+				pricing_summary: '$100.00 per 25 collections / pack',
+				min_quantity: 1,
+				max_quantity: null,
+				active_quantity: 0,
+				scheduled_quantity: 0,
+			},
+			{
+				id: 'addon_user_seats',
+				name: 'User Seats',
+				description: 'Additional user seats',
+				icon: 'person_add',
+				availability: 'available',
+				pricing_summary: '$15.00 per seat',
+				min_quantity: 1,
+				max_quantity: null,
+				active_quantity: 5,
+				scheduled_quantity: 3,
+			},
+		];
+
+		// const settingsService = new SettingsService({ schema: await getSchema() });
+
+		// const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		// return listAddons({
+		// 	license_key: this.licenseKey!,
+		// 	project_id: project_id!,
+		// });
+	}
+
+	public async setAddonQuantity(options: { addonId: string; quantity: number }) {
+		this.assertMutable({ action: 'set addon quantity' });
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		await updateAddonQuantity({
+			license_key: this.licenseKey!,
+			project_id: project_id!,
+			addon_id: options.addonId,
+			quantity: options.quantity,
+		});
+	}
+
+	public async removeAddon(addonId: string) {
+		this.assertMutable({ action: 'remove addon' });
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		await deleteAddon({
+			license_key: this.licenseKey!,
+			project_id: project_id!,
+			addon_id: addonId,
+		});
+	}
+
+	/**
+	 * Retrieve entitlements that are pending resolution
+	 *
+	 * If no entitlements to resolve, an empty array will be returned
+	 */
+	public async pendingResolution(options: { adminId: string }) {
+		const pendingResolution: PendingResolution[] = [];
+		const schema = await getSchema();
+
+		// collection candidates = all collections not marked as disabled, db only or system
+		const collectionsService = new CollectionsService({ schema });
+		const collections = await collectionsService.readByQuery();
+
+		const collectionCandidates = [];
+
+		for (const candidateCollection of collections) {
+			// LICENSE-TODO: re-check field for determining disables/excluded
+			if (
+				candidateCollection.meta?.system !== true &&
+				(candidateCollection.schema !== null || candidateCollection.status !== 'disabled')
+			) {
+				collectionCandidates.push(candidateCollection.collection);
+			}
+		}
+
+		if (collectionCandidates.length) {
+			pendingResolution.push({
+				key: 'collections',
+				kind: 'limit',
+				// LICENSE-TODO: replace with entitlemount count
+				limit: 50,
+				usage: 54,
+				candidates: collectionCandidates,
+			});
+		}
+
+		// seat candidates = all active users who are admin or app users
+		const accessService = new AccessService({ schema });
+
+		const accessRows = await accessService.readByQuery({
+			fields: ['role', 'user', 'policy', 'policy.app_access', 'policy.admin_access', 'role'],
+		});
+
+		const adminRoles = new Set<string>();
+		const appRoles = new Set<string>();
+		const adminOrAppUsers = new Set<string>();
+
+		for (const accessRow of accessRows) {
+			const isAdmin = toBoolean(accessRow['admin_access']);
+			const isApp = !isAdmin && toBoolean(accessRow['app_access']);
+
+			if (!isAdmin && !isApp) continue;
+
+			if (accessRow['user']) {
+				adminOrAppUsers.add(accessRow['user']);
+			} else if (accessRow['role']) {
+				if (isAdmin) {
+					adminRoles.add(accessRow['role']);
+				} else {
+					appRoles.add(accessRow['role']);
+				}
+			}
+		}
+
+		const { adminRoles: allAdminRoles, appRoles: allAppRoles } = await fetchAccessRoles(
+			{
+				adminRoles,
+				appRoles,
+			},
+			{ knex: await getDatabase() },
+		);
+
+		const usersService = new UsersService({ schema });
+
+		const seatCandidates = await usersService.readByQuery({
+			fields: ['id', 'first_name', 'last_name', 'avatar'],
+			filter: {
+				_and: [
+					{
+						id: {
+							_neq: options.adminId,
+						},
+					},
+					{
+						_or: [
+							{
+								id: {
+									_in: Array.from(adminOrAppUsers),
+								},
+							},
+							{
+								role: {
+									_in: Array.from(allAdminRoles),
+								},
+							},
+							{
+								role: {
+									_in: Array.from(allAppRoles),
+								},
+							},
+						],
+					},
+				],
+			},
+		});
+
+		if (seatCandidates.length) {
+			pendingResolution.push({
+				key: 'seats',
+				kind: 'limit',
+				// LICENSE-TODO: replace with entitlemount count
+				limit: 5,
+				usage: 10,
+				candidates: seatCandidates as {
+					id: string;
+					first_name: string | null;
+					last_name: string | null;
+					avatar: string | null;
+				}[],
+			});
+		}
+
+		// sso feature gate = at least one user with provider != default if sso disabled for license
+		const license = await getLicense();
+		// LICENSE-TODO: replace with entitlement check
+		const hasSSOUsers = true;
+		// LICENSE-TODO: replace with entitlement check
+		const isSSOEnabled = license.entitlements.sso_enabled.default;
+
+		if (!isSSOEnabled && hasSSOUsers) {
+			const adminUser = await usersService.readOne(options.adminId, { fields: ['email', 'password'] });
+
+			// Build blocklist for any additional requirements
+			const blockers = [];
+
+			if (adminUser['email'] === null) {
+				blockers.push('ADMIN_MISSING_EMAIL');
+			}
+
+			if (adminUser['password'] === null) {
+				blockers.push('ADMIN_MISSING_EMAIL');
+			}
+
+			pendingResolution.push({
+				key: 'sso',
+				kind: 'feature_gate',
+				blockers: ['ADMIN_MISSING_EMAIL', 'ADMIN_MISSING_PASSWORD'],
+			});
+		}
+
+		// custom llms feature gate - any openai compatible settings are set
+		// LICENSE-TODO: replace with entitlement check
+		const isCustomLLMsEnabled = license.entitlements.custom_llms_enabled.default;
+
+		if (!isCustomLLMsEnabled) {
+			const settingsService = new SettingsService({ schema });
+
+			const customLLMFields = await settingsService.readSingleton({
+				fields: [
+					'ai_openai_compatible_api_key',
+					'ai_openai_compatible_base_url',
+					'ai_openai_compatible_name',
+					'ai_openai_compatible_models',
+					'ai_openai_compatible_headers',
+				],
+			});
+
+			if (Object.keys(customLLMFields).length) {
+				pendingResolution.push({
+					key: 'custom_llms_enabled',
+					kind: 'feature_gate',
+				});
+			}
+		}
+
+		// custom policy rules - any policy with a custom permission set
+		// LICENSE-TODO: replace with entitlement check
+		const isCustomPolicyRulesEnabled = license.entitlements.custom_policy_rules_enabled.default;
+
+		if (!isCustomPolicyRulesEnabled) {
+			const policiesService = new PoliciesService({ schema });
+
+			const customPolicyRules = await policiesService.readByQuery({
+				fields: ['id'],
+				filter: {
+					_or: [
+						{
+							permissions: {
+								permissions: {
+									_nnull: true,
+								},
+							},
+						},
+						{
+							permissions: {
+								validation: {
+									_nnull: true,
+								},
+							},
+						},
+						{
+							permissions: {
+								presets: {
+									_nnull: true,
+								},
+							},
+						},
+						{
+							_and: [
+								{
+									permissions: {
+										fields: {
+											_neq: '*',
+										},
+									},
+								},
+								{
+									permissions: {
+										fields: {
+											_nnull: true,
+										},
+									},
+								},
+							],
+						},
+					],
+				},
+			});
+
+			if (customPolicyRules.length) {
+				pendingResolution.push({
+					key: 'custom_policy_rules_enabled',
+					kind: 'feature_gate',
+				});
+			}
+		}
+
+		return pendingResolution;
+	}
+
+	/**
+	 * Apply a resolution strategy
+	 *
+	 * Allows partial resolution
+	 */
+	public async applyResolution(adminId: string, resolution: ResolveInput) {
+		const schema = await getSchema();
+
+		if (resolution.collections) {
+			const collectionsService = new CollectionsService({ schema });
+
+			const promises = resolution.collections.map((collection) =>
+				collectionsService.updateOne(collection, { status: 'disabled' }),
+			);
+
+			try {
+				await Promise.allSettled(promises);
+			} catch {
+				// ignore errors
+			}
+		}
+
+		if (resolution.seats) {
+			const usersService = new UsersService({ schema });
+
+			const promises = resolution.seats.map((user) => usersService.updateOne(user, { status: 'deactivated' }));
+
+			try {
+				await Promise.allSettled(promises);
+			} catch {
+				// ignore errors
+			}
+		}
+
+		/**
+		 * Set all sso users to disabled and optional set the current admin email and password
+		 */
+		if (resolution.sso) {
+			const usersService = new UsersService({ schema });
+
+			try {
+				await usersService.updateByQuery(
+					{
+						filter: {
+							_and: [
+								{ provider: { _neq: DEFAULT_AUTH_PROVIDER } },
+								{ provider: { _nnull: true } },
+								{ id: { _neq: adminId } },
+							],
+						},
+					},
+					{ status: 'deactivated' },
+				);
+
+				if (typeof resolution.sso === 'object' && Object.keys(resolution.sso.admin).length) {
+					const payload: { email?: string | undefined; password?: string; provider: string } = {
+						provider: DEFAULT_AUTH_PROVIDER,
+					};
+
+					if (resolution.sso.admin.email && resolution.sso.admin.email.length) {
+						payload['email'] = resolution.sso.admin.email;
+					}
+
+					if (resolution.sso.admin.password && resolution.sso.admin.password.length) {
+						payload['password'] = resolution.sso.admin.password;
+					}
+
+					await usersService.updateOne(adminId, payload);
+				}
+			} catch {
+				// ignore errors
+			}
+		}
+	}
+
+	public async refreshCache() {
+		licenseCache = undefined;
+		const oldSource = this.source;
+
+		const { source: keySource, key } = await getLicenseKey();
+		const { token } = await getLicenseToken();
+
+		this.licenseKey = key;
+		this.licenseToken = token;
+
+		/**
+		 * Upgrade from core tier requires registering the scheduled check
+		 * De-register on downgrade is handled in the schedule
+		 */
+		if (oldSource === null && keySource === 'settings') {
+			licenseCheckSchedule();
+		}
+	}
+
+	/**
+	 * Downgrade internal tracker to core, does NOT unbind existing key
+	 */
+	private async downgrade() {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 		await settingsService.upsertSingleton({ license_token: null });
 
@@ -263,26 +754,41 @@ export class LicenseManager {
 	}
 }
 
-async function getLicenseKey(options?: { database?: Knex }) {
+async function getLicenseKey(options?: { database?: Knex }): Promise<{ source: LicenseSource; key: string | null }> {
 	if (env['LICENSE_KEY']) {
-		return String(env['LICENSE_KEY']);
+		return {
+			source: 'env',
+			key: String(env['LICENSE_KEY']),
+		};
 	}
 
 	const schema = await getSchema(options);
 	const settingsService = new SettingsService({ schema, ...options });
 
 	const { license_key } = await settingsService.readSingleton({ fields: ['license_key'] });
-	return license_key ?? undefined;
+
+	return {
+		source: 'settings',
+		key: license_key,
+	};
 }
 
-async function getLicenseToken(options?: { database?: Knex }) {
+async function getLicenseToken(options?: {
+	database?: Knex;
+}): Promise<{ source: LicenseSource; token: string | null }> {
 	if (env['LICENSE_TOKEN']) {
-		return String(env['LICENSE_TOKEN']);
+		return {
+			source: 'env',
+			token: String(env['LICENSE_TOKEN']),
+		};
 	}
 
 	const schema = await getSchema(options);
 	const settingsService = new SettingsService({ schema, ...options });
 
 	const { license_token } = await settingsService.readSingleton({ fields: ['license_token'] });
-	return license_token ?? undefined;
+	return {
+		source: 'settings',
+		token: license_token,
+	};
 }
