@@ -61,7 +61,7 @@ async function getNonIndexFileNamesIn(dir: string) {
 
 async function getFileLines(file: string) {
 	const contents = await fs.readFile(path.join(packageRoot, file), 'utf8');
-	return contents.split('\n');
+	return contents.split('\n').map((line) => line.replace(/\r$/, ''));
 }
 
 function isExportingAllFrom(file: string, lines: string[]) {
