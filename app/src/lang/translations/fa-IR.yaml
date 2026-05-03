@@ -219,18 +219,21 @@ switch_version: تغییر نسخه
 switch_version_copy: مطمئنید که می‌خواهید به نسخه «{version}» بروید؟ تغییرات ذخیره‌نشده از دست می‌رود.
 create_version: ایجاد نسخه
 rename_version: ویرایش نسخه
+reserved_version_key: 'کلید نسخه «{key}» رزرو شده است و امکان استفاده ندارد.'
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
 promote_version: ارتقای نسخه
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها
+show_differences_only: تنها تفاوت‌ها را نشان بده
 main_updated_notice: مورد اصلی از زمان ایجاد این نسخه به روز شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
 delete_on_apply_copy: >-
   شما در شرف ارتقای "{version}" به اصلی هستید. بعد از ارتقا باید چه اتفاقی برای "{version}" بیافتد؟
+content_edited: محتوا ویرایش شده
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
@@ -263,6 +266,10 @@ recommended_defaults: پیش‌فرض‌های مورد تأیید
 unarchive: خارج کردن از بایگانی
 unarchive_confirm: آیا از خارج کردن این آیتم از بایگانی، اطمینان دارید؟
 nested_files_folders_will_be_moved: فایل‌ها و پوشه‌های زیرمجموعه به یک سطح بالاتر منتقل می‌شوند.
+delete_folder_dialog:
+  move_content: محتوا را یک سطح بالاتر بیاور
+  delete_content: حذف همه محتوا
+  content_behavior: برای محتوای پوشه چه اتفاقی بیافتد؟
 validation_errors_notice: 'فیلدهای زیر مقادیر غیرقابل قبولی دارند:'
 validation_value_is_invalid: مقدار نامعتبر است
 validationError:
@@ -539,13 +546,35 @@ related_collection: مجموعه مرتبط
 related_collections: مجموعه های مرتبط
 translations_collection: مجموعه ترجمه ها
 languages_collection: مجموعه زبانها
+enable_translations: فعال‌سازی ترجمه‌ها
+manage_translation_fields: افزودن فیلدهای ترجمه
+fields_to_translate: فیلدهایی که باید ترجمه شود
+fields_to_add_to_translations: فیلدهایی که باید به ترجمه‌ها اضافه شود
+translations_collection_name: نام مجموعه ترجمه‌ها
+translations_already_enabled: ترجمه‌ها فعال شده
+translations_manage_helper_description: شما می‌توانید فیلدهای بیشتری را از این مجموعه برای ترجمه اضافه کنید.
+translations_copy_data_note: فیلدها به مجموعه ترجمه‌ها کپی می‌شوند. داده‌های موجود منتقل نمی‌شود.
+add_fields: افزودن فیلدها
+show_advanced_options: نمایش جزئیات رابطه
+hide_advanced_options: مخفی کردن جزئیات رابطه
+translations_field_name_required: همه نام‌های فیلد ترجمه الزامی هستند.
+translations_foreign_key_name_conflict: نام‌های کلید خارجی زبان و والد باید متفاوت باشد.
+translations_duplicate_field_names: نام‌های فیلد ترجمه باید یکتا باشد.
+translation_configuration: پیکربندی ترجمه
+translations_invalid_config_warning: '{count} پیکربندی ترجمه قابل حل نبود و فقط-خواندنی باقی خواهد ماند | {count} پیکربندی ترجمه قابل حل نبود و فقط-خواندنی باقی خواهد ماند'
+translations_collection_already_exists: این مجموعه ترجمه‌ها هم اکنون وجود دارد و دوباره استفاده خواهد شد
+translations_fields_up_to_date: تمام فیلدهای واجد شرایط هم اکنون در مجموعه ترجمه‌ها حضور دارند.
 translations_preview_collections: مجموعه‌ها
 translations_preview_fields: کادرها
 translations_preview_relations: رابطه‌ها
+ungrouped: گروه‌بندی نشده
+translations_enable_helper_description: محتوا را به چند زبان ترجمه کنید.
 import_data_input_placeholder: CSV یا JSON...
 import_data_button: شروع وارد سازی
+import_background: وارد کردن در پس‌زمینه
 import_data_indeterminate: وارد سازی داده ها...
 import_data_success: داده ها با موفقیت از {filename} وارد شد
+import_upload_success: '{filename} با موفقیت بارگزاری شد. در حال وارد کردن داده در پس‌زمینه.'
 import_data_errors: خطا در واردسازی
 import_data_error: ساختار داده فایل با مجموعه همخوانی ندارد.
 import_data_validation_errors_notice: 'ردیف‌های زیر، مقادیر غیرقابل قبولی دارند:'
@@ -683,6 +712,7 @@ save_and_stay: ذخیره و ماندن
 save_and_quit: ذخیره و خروج
 save_and_return_to_main: ذخیره و بازگشت به اصلی
 save_as_copy: ذخیره به عنوان کپی
+save_as_new_file: ذخیره به عنوان فایل جدید
 add_existing: اضافه کردن مورد موجود
 creating_items: ساختن موارد
 enable_create_button: فعالسازی ساخت دکمه
@@ -718,6 +748,10 @@ file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
 user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
+no_active_users: بدون کاربر فعال
+no_suspended_users: بدون کاربر معلق
+no_invited_users: بدون کاربر دعوت‌شده
+no_status_users_copy: 'کاربری با وضعیت {status} وجود ندارد.'
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
@@ -729,6 +763,7 @@ no_collections: مجموعه ای وجود ندارد
 create_collection: ساخت مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
 no_collections_copy: شما هنوز هیچ مجموعه‌ای ندارید. لطفا با مدیر کل سیستم خود تماس بگیرید.
+relationship_not_setup: رابطه به درستی پیکربندی نشده است یا شما مجوز دسترسی به آن را ندارید
 no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
 collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
@@ -807,6 +842,7 @@ errors:
   INVALID_CONFIG: پیکربندی نامعتبر است
   INVALID_CREDENTIALS: نام کاربری یا کلمه عبور اشتباه است
   INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
+  INVALID_INVITE: این دعوت دیگر معتبر نیست
   INVALID_IP: آدرس IP مجاز نیست
   INVALID_OTP: رمزعبور یکبار مصرف اشتباه است
   INVALID_PAYLOAD: مجموعه داده نامعتبر
@@ -850,6 +886,7 @@ unexpected_error_copy: خطای غیرمنتظره‌ای رخ داده است. 
 copy_details: کپی کردنِ جزئیات
 no_app_access: عدم دسترسی به برنامه
 no_app_access_copy: کاربر اجازه دسترسی به سامانه مدیریت را ندارد.
+password_reset_sent: اگر حسابی دارید و از بازنشانی رمز عبور پشتیبانی می‌کند، پیوند امنی به ایمیل شما فرستادیم
 password_reset_successful: رمز عبور با موفقیت بازنشانی شد
 back: بازگشت
 filter: فیلتر
@@ -862,6 +899,9 @@ flip_vertical: پشت و رو کردن به صورت عمودی
 aspect_ratio: نسبت ابعاد
 rotate: چرخش
 all_users: همه کاربران
+active_users: کاربران فعال
+suspended_users: کاربران معلق
+invited_users: کاربران دعوت‌شده
 delete_collection: حذف مجموعه
 update_collection_success: مجموعه های بروزرسانی شده
 delete_collection_success: مجموعه‌های حذف شده
@@ -1088,6 +1128,8 @@ deployment:
     vercel:
       name: ورسل
       settings_warning: تغییر اعتبارنامه‌ها یا شناسه تیم در صورتی که دیگر با پیکربندی جدید قابل دسترسی نباشند ممکن است بر پروژه‌های انتخاب شده شما اثر بگذارد.
+      account_type:
+        label: نوع حساب
       team_id:
         label: شناسه تیم
         placeholder: team_xxxxxxxxxxxxx
