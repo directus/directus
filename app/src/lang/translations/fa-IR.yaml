@@ -1130,9 +1130,17 @@ deployment:
       settings_warning: تغییر اعتبارنامه‌ها یا شناسه تیم در صورتی که دیگر با پیکربندی جدید قابل دسترسی نباشند ممکن است بر پروژه‌های انتخاب شده شما اثر بگذارد.
       account_type:
         label: نوع حساب
+        hint: تیم را انتخاب کنید تا از یک آیدی تیم برای پیوندهای استقرار استفاده شود یا حساب شخصی را انتخاب کنید تا از نام کاربری ورسل‌تان استفاده شود.
+        team: تیم
+        personal: حساب شخصی
       team_id:
         label: شناسه تیم
+        hint: الزامی برای حساب‌های تیمی. آن را در تنظیمات تیم ورسل‌تان پیدا کنید.
         placeholder: team_xxxxxxxxxxxxx
+      username:
+        label: نام کاربری
+        hint: نام کاربری ورسل شما برای حساب‌های شخصی. آن را در URL حساب ورسل‌تان پیدا کنید (vercel.com/username).
+        placeholder: your-username
     netlify:
       name: نتلیفای
       settings_warning: تغییر اعتبارنامه‌ها یا نامک حساب در صورتی که دیگر با پیکربندی جدید قابل دسترسی نباشند ممکن است بر پروژه‌های انتخاب شده شما اثر بگذارد.
@@ -1154,6 +1162,7 @@ deployment:
       deploy_preview: پیش‌نمایش استقرار
       empty: اجرای استقرار وجود ندارد
       empty_copy: این پروژه هنوز هیچ تاریخچه استقراری ندارد.
+      external_user: کاربر خارجی
     run:
       title: '{project}: جزئیات استقرار'
       id: شناسه استقرار
@@ -1165,8 +1174,10 @@ deployment:
       no_logs: هیچ رخدادی در دسترس نیست
       download_logs: دانلود رخدادها
       open_deployment: بازدید
+      open_in_provider: باز کردن در {provider}
   no_providers: ارائه‌دهنده استقرار وجود ندارد
   no_providers_copy: برای شروع، یک ارائه‌دهنده استقرار را در تنظیمات پیکربندی کنید.
+  no_providers_copy_nonadmin: هیچ ارائه‌دهنده استقراری برای حساب شما در دسترس نیست. با یک مدیر تماس بگیرید.
   select_provider: یک ارائه‌دهنده انتخاب کنید
   select_provider_copy: برای دیدن پروژه، یک ارائه‌دهنده استقرار را از نوار کناری انتخاب کنید.
   no_projects: پروژه‌ای وجود ندارد
@@ -1186,6 +1197,17 @@ deployment:
   dashboard:
     projects: پروژه‌ها ({count})
     deployed: مستقر شد
+    total_projects: 'همه پروژه‌ها: {count} | همه پروژه‌ها: {count}'
+    active_deployments: 'استقرار فعال: {count} | استقرارهای فعال: {count}'
+    failed_builds: 'ساخت ناموفق: {count} | ساخت‌های ناموفق: {count}'
+    successful_builds: 'ساخت موفق: {count} | ساخت‌های موفق: {count}'
+    total_deployments: 'استقرار: {count} | استقرارها: {count}'
+    average_build_time: 'میانگین زمان ساخت: {value}'
+    success_rate: 'نرخ موفقیت: {value}٪'
+  range:
+    1d: ۲۴ ساعت اخیر
+    7d: ۷ روز اخیر
+    30d: ۳۰ روز اخیر
 dashboard: پیشخوان
 panel: پنل
 panel_options: تنظیمات پنل
@@ -1359,6 +1381,7 @@ editing_preset: ویرایش الگو
 layout_preview: پیش نمایش چیدمان
 layout_setup: تنظیمات چیدمان
 data: داده ها
+theme-overrides: سفارشی‌سازی قالب
 unsaved_changes: تغییرات ذخیره نشده
 unsaved_changes_copy: آيا مطمئن هستيد که می خواهيد این صفحه را ترک کنيد؟
 unsaved_changes_collab: تغییرات مشارکتی ذخیره نشده
@@ -1539,6 +1562,7 @@ fields:
     project_color: رنگ پروژه
     project_logo: نماد پروژه
     default_language: زبان پیش‎فرض
+    project_owner: مالک پروژه
     branding: برندسازی
     public_foreground: رنگ پیش زمینه عمومی
     public_background: رنگ پس زمینه عمومی
@@ -1572,7 +1596,11 @@ fields:
     public_registration_verify_email: تایید ایمیل
     public_registration_verify_email_note: ایمیلی برای کاربر در حال ثبت نام می‌فرستد که از آن‌ها می‌خواهد روی یک لینک تایید کلیک کنند تا به آن‌ها اجازه ثبت نام داده شود.
     visual_editor_urls: URLهای ویرایشگر بصری
+    report_feature_url: نشانی گزارش قابلیت
+    report_bug_url: نشانی گزارش باگ
+    report_error_url: نشانی گزارش خطا
     collaborative_editing: ویرایش مشارکتی
+    collaborative_editing_enabled: فعال‌سازی ویرایش مشارکتی
     collaborative_editing_note: وب‌سوکت‌ها برای کار کردن ویرایش مشارکتی ضروری هستند.
     ai_notice: 'دستیار هوش مصنوعی، نوار کناری داخل برنامه‌ای برای مکالمه با یک مدل زبانی بزرگ ارائه می‌دهد. به محض فعال‌سازی، نوار کناری هوش مصنوعی را برای پرسیدن سوالات، تولید محتوا و کمک گرفتن برای کار با پروژه‌تان از جعبه ابزار باز کنید. <a href="https://directus.io/docs/guides/ai/assistant" target="_blank">درباره پیکربندی و استفاده از دستیار هوش مصنوعی بیشتر یاد بگیرید.</a>'
     mcp_enabled: سرور MCP
@@ -1633,6 +1661,7 @@ fields:
     users: کاربران دارای این نقش
     parent: نقش والد
     children: نقش‌های فرزند
+    policies: سیاست‌ها
   directus_policies:
     name: نام خط مشی
     description: توضیحات
@@ -1682,6 +1711,7 @@ field_options:
     only_track_activity: فقط مشاهده فعالیت ها
     do_not_track_anything: هیچ چیز را پیگیری نکن
     collection_setup: راه اندازی مجموعه
+    collection_naming_translations_note: "جایگزینی نام نمایشی مجموعه در برنامه بر اساس زبان کاربر."
     note_placeholder: توضیحات مربوط به این مجموعه...
     hidden_label: در برنامه پنهان شود
     singleton: به عنوان یک شی واحد رفتار کند
@@ -1701,6 +1731,7 @@ field_options:
     accountability_divider: مسئوليت
     duplication_divider: تکراری
     preview_divider: پيش نمايش
+    content_translations_divider: ترجمه‌های محتوا
     content_versioning_divider: نسخه‌بندی محتوا
     enable_versioning: فعال‌سازی نسخه‌بندی
   directus_files:
