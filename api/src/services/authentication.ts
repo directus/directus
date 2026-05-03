@@ -123,7 +123,15 @@ export class AuthenticationService {
 			},
 		);
 
-		if (user?.status !== 'active' || user?.provider !== providerName) {
+		const allowLocalPasswordForExternalUsers =
+			providerName === DEFAULT_AUTH_PROVIDER &&
+			!!user?.password &&
+			String(env['AUTH_ALLOW_LOCAL_PASSWORD_FOR_EXTERNAL_USERS'] ?? '').toLowerCase() === 'true';
+
+		const providerMismatch = user?.provider !== providerName;
+		const providerMismatchAllowed = providerMismatch === true && allowLocalPasswordForExternalUsers === true;
+
+		if (user?.status !== 'active' || (providerMismatch === true && providerMismatchAllowed === false)) {
 			const loginError = new InvalidCredentialsError();
 			emitStatus('fail', updatedPayload, user, loginError);
 			await stall(STALL_TIME, timeStart);
