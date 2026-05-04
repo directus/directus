@@ -53,19 +53,18 @@ const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
 const seatsLimitModalOpen = ref(false);
-const pendingSaveAction = ref<(() => Promise<void>) | null>(null);
-
-// Stores the action before executing so saveAsDeactivated can replay it if the seats limit modal intercepts the save.
-function queueSave(action: () => Promise<void>) {
-	pendingSaveAction.value = action;
-	action();
-}
 
 async function saveAsDeactivated() {
 	edits.value = { ...edits.value, status: 'deactivated' };
-	const action = pendingSaveAction.value;
-	pendingSaveAction.value = null;
-	await action?.();
+
+	try {
+		const savedItem = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+		router.push({ name: 'users-active' });
+	} catch {
+		// `save` will show unexpected error dialog
+	}
 }
 
 const { primaryKey } = toRefs(props);
@@ -102,7 +101,7 @@ const {
 	},
 	{
 		onSaveError: (err) => {
-			if (err?.extensions?.code === 'LIMIT_EXCEEDED') {
+			if (err?.extensions?.code === 'INTERNAL_SERVER_ERROR') {
 				seatsLimitModalOpen.value = true;
 				return true;
 			}
@@ -207,49 +206,43 @@ function useBreadcrumb() {
 }
 
 async function saveAndQuit() {
-	queueSave(async () => {
-		try {
-			const savedItem: Record<string, any> = await save();
-			await setLang(savedItem);
-			await refreshCurrentUser();
-			router.push({ name: 'users-active' });
-		} catch {
-			// `save` will show unexpected error dialog
-		}
-	});
+	try {
+		const savedItem = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+		router.push({ name: 'users-active' });
+	} catch {
+		// `save` will show unexpected error dialog
+	}
 }
 
 async function saveAndStay() {
-	queueSave(async () => {
-		try {
-			const savedItem: Record<string, any> = await save();
-			await setLang(savedItem);
-			await refreshCurrentUser();
+	try {
+		const savedItem = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
 
-			if (props.primaryKey === '+') {
-				const newPrimaryKey = savedItem.id;
-				router.replace({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
-			} else {
-				revisionsSidebarDetail.value?.refresh?.();
-				refresh();
-			}
-		} catch {
-			// `save` will show unexpected error dialog
+		if (props.primaryKey === '+') {
+			const newPrimaryKey = savedItem?.id;
+			router.replace({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
+		} else {
+			revisionsSidebarDetail.value?.refresh?.();
+			refresh();
 		}
-	});
+	} catch {
+		// `save` will show unexpected error dialog
+	}
 }
 
 async function saveAndAddNew() {
-	queueSave(async () => {
-		try {
-			const savedItem: Record<string, any> = await save();
-			await setLang(savedItem);
-			await refreshCurrentUser();
-			router.push({ name: 'users-item', params: { primaryKey: '+' } });
-		} catch {
-			// `save` will show unexpected error dialog
-		}
-	});
+	try {
+		const savedItem = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+		router.push({ name: 'users-item', params: { primaryKey: '+' } });
+	} catch {
+		// `save` will show unexpected error dialog
+	}
 }
 
 async function saveAsCopyAndNavigate() {
