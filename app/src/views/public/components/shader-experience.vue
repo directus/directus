@@ -1,26 +1,15 @@
 <script setup lang="ts">
-import type { TresPointerEvent } from '@tresjs/core';
 import { useLoop, useTresContext } from '@tresjs/core';
-import { BufferAttribute, CanvasTexture, PlaneGeometry, ShaderMaterial, Uniform, Vector2, Vector3 } from 'three';
+import { BufferAttribute, DataTexture, PlaneGeometry, ShaderMaterial, Uniform, Vector2, Vector3 } from 'three';
 import { computed, watch } from 'vue';
 import fragmentShader from '../shaders/fragment.glsl';
 import vertexShader from '../shaders/vertex.glsl';
 
 const { sizes } = useTresContext();
 
-const CURSOR_RADIUS = 0.5;
-const CURSOR_RECOVERY = 0.01;
-
-// --- Displacement canvas (cursor trails) ---
-const canvas = document.createElement('canvas');
-canvas.width = 128;
-canvas.height = 128;
-const ctx = canvas.getContext('2d')!;
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-const canvasTexture = new CanvasTexture(canvas);
-const canvasCursor = new Vector2(9999, 9999);
-const prevCanvasCursor = new Vector2(9999, 9999);
+// Static black 1x1 texture: keeps the shader's displacement sampler valid while contributing zero displacement.
+const displacementTexture = new DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
+displacementTexture.needsUpdate = true;
 
 // --- Particle geometry: full plane, uniform grid ---
 const aspect = sizes.width.value / sizes.height.value;
@@ -50,7 +39,7 @@ const particlesMaterial = new ShaderMaterial({
 	uniforms: {
 		uResolution: new Uniform(new Vector2(1, 1)),
 		uTime: new Uniform(0),
-		uDisplacementTexture: new Uniform(canvasTexture),
+		uDisplacementTexture: new Uniform(displacementTexture),
 		uColorPrimary: new Uniform(new Vector3(0.4, 0.267, 1.0)),
 		uColorSecondary: new Uniform(new Vector3(0.702, 0.635, 1.0)),
 		uZoom: new Uniform(0.7),
@@ -74,48 +63,13 @@ const resolution = computed(
 
 watch(resolution, (res) => particlesMaterial.uniforms.uResolution!.value.copy(res), { immediate: true });
 
-// --- Pointer: capture UV for cursor displacement ---
-const onMouseMove = (event: TresPointerEvent) => {
-	const uv = event.intersection?.uv;
-	if (uv) canvasCursor.set(uv.x * canvas.width, (1 - uv.y) * canvas.height);
-};
-
-// --- Render loop ---
 const { onBeforeRender } = useLoop();
 
 onBeforeRender(({ elapsed }) => {
 	particlesMaterial.uniforms.uTime!.value = elapsed;
-
-	ctx.globalCompositeOperation = 'source-over';
-	ctx.globalAlpha = CURSOR_RECOVERY;
-	ctx.fillStyle = '#000000';
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-	const dist = canvasCursor.distanceTo(prevCanvasCursor);
-	prevCanvasCursor.copy(canvasCursor);
-	const speedAlpha = Math.min(dist * 0.1, 1);
-
-	if (speedAlpha > 0) {
-		const r = canvas.width * CURSOR_RADIUS;
-		const glow = ctx.createRadialGradient(canvasCursor.x, canvasCursor.y, 0, canvasCursor.x, canvasCursor.y, r);
-		glow.addColorStop(0, 'rgba(255,255,255,1)');
-		glow.addColorStop(1, 'rgba(0,0,0,0)');
-		ctx.globalCompositeOperation = 'lighten';
-		ctx.globalAlpha = speedAlpha;
-		ctx.fillStyle = glow;
-		ctx.beginPath();
-		ctx.arc(canvasCursor.x, canvasCursor.y, r, 0, Math.PI * 2);
-		ctx.fill();
-	}
-
-	canvasTexture.needsUpdate = true;
 });
 </script>
 
 <template>
 	<TresPoints :geometry="particlesGeometry" :material="particlesMaterial" />
-	<TresMesh :visible="false" @pointermove="onMouseMove">
-		<TresPlaneGeometry :args="[15 * aspect, 15]" />
-		<TresMeshBasicMaterial />
-	</TresMesh>
 </template>
