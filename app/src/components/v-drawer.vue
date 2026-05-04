@@ -173,10 +173,6 @@ const internalActive = computed({
 				}
 			}
 		}
-
-		.main.has-sidebar:deep(.search-input.filter-active) {
-			inline-size: 16.875rem !important;
-		}
 	}
 
 	@include mixins.breakpoint-up('lg') {
