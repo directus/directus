@@ -239,6 +239,7 @@ function emitValue() {
 		/* stylelint-enable scss/operator-no-newline-after */
 	}
 
+	/* Show focus ring only when the text input is focused */
 	&:has(.search-input-field:focus-visible) {
 		outline: var(--focus-ring-width) solid var(--theme--primary);
 		outline-offset: var(--focus-ring-offset-invert);
