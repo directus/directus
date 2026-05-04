@@ -58,6 +58,7 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { PrivateView } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
@@ -158,25 +159,22 @@ async function onVersionDelete(versionId: PrimaryKey) {
 }
 
 function handleVersionGone(error: unknown) {
-	if (error && typeof error === 'object' && 'versionGone' in error) {
-		useNotificationsStore().add({
-			title: t('version_no_longer_exists'),
-			type: 'warning',
-		});
+	if (!error || typeof error !== 'object' || !('versionGone' in error)) return false;
 
-		edits.value = {};
+	unexpectedError(error, {
+		dismissAction: () => {
+			edits.value = {};
 
-		if (isItemlessVersion.value) {
-			router.push(collectionRoute.value);
-		} else {
-			currentVersion.value = null;
-			refresh();
-		}
+			if (isItemlessVersion.value) {
+				router.push(collectionRoute.value);
+			} else {
+				currentVersion.value = null;
+				refresh();
+			}
+		},
+	});
 
-		return true;
-	}
-
-	return false;
+	return true;
 }
 
 watch(versionPromotedItem, (newItemKey) => {

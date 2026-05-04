@@ -190,8 +190,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	}
 
 	async function versionErrorHandler(error: any) {
+		// Backend returns 403 for both deleted records and permission denials.
+		// Tag the original error so the caller surfaces the standard Forbidden
+		// dialog with a redirect-on-dismiss; suppress the default notification here.
 		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
-			throw Object.assign(new Error('Version no longer exists'), { versionGone: true });
+			throw Object.assign(error, { versionGone: true });
 		}
 
 		if (error?.response?.data?.errors) {
