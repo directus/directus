@@ -58,7 +58,7 @@ async function saveAsDeactivated() {
 	edits.value = { ...edits.value, status: 'deactivated' };
 
 	try {
-		const savedItem = await save();
+		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
 		router.push({ name: 'users-active' });
@@ -207,7 +207,7 @@ function useBreadcrumb() {
 
 async function saveAndQuit() {
 	try {
-		const savedItem = await save();
+		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
 		router.push({ name: 'users-active' });
@@ -218,12 +218,12 @@ async function saveAndQuit() {
 
 async function saveAndStay() {
 	try {
-		const savedItem = await save();
+		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
 
 		if (props.primaryKey === '+') {
-			const newPrimaryKey = savedItem?.id;
+			const newPrimaryKey = savedItem.id;
 			router.replace({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
 		} else {
 			revisionsSidebarDetail.value?.refresh?.();
@@ -236,7 +236,7 @@ async function saveAndStay() {
 
 async function saveAndAddNew() {
 	try {
-		const savedItem = await save();
+		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
 		router.push({ name: 'users-item', params: { primaryKey: '+' } });
