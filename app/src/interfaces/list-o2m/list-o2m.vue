@@ -457,7 +457,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 	</VNotice>
 	<div v-else v-prevent-focusout="menuActive" class="one-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE, disabled, 'non-editable': nonEditable }]">
-			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
+			<div v-if="layout === LAYOUTS.TABLE" class="actions top">
 				<div class="spacer" />
 
 				<div v-if="totalItemCount" class="item-count">
@@ -471,9 +471,9 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 							v-model:filter="searchFilter"
 							:collection="relationInfo.relatedCollection.collection"
 							:disabled
+							expanded
 						/>
 					</div>
-
 					<VButton
 						v-if="updateAllowed && selectedKeys.length"
 						v-tooltip.bottom="$t('edit')"
@@ -769,6 +769,16 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
+@mixin search-input-breakpoint {
+	@include mixins.form-grid-breakpoint-half {
+		@content;
+	}
+}
+
+.one-to-many {
+	container-type: inline-size;
+}
+
 .layout-table.disabled:not(.non-editable) {
 	background-color: var(--theme--background-subdued);
 }
@@ -800,6 +810,11 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 
 	position: relative;
 	z-index: 1;
+	flex-wrap: wrap;
+
+	@include search-input-breakpoint {
+		flex-wrap: nowrap;
+	}
 
 	&.top {
 		margin-block-start: 0;
@@ -813,35 +828,21 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 		position: relative;
 		z-index: 1;
 		align-self: stretch;
+		inline-size: 100%;
+		max-inline-size: none;
+		order: -1;
 
-		:deep(.search-input) {
-			block-size: 100%;
-			box-sizing: border-box;
-		}
-
-		:deep(.search-badge) {
-			block-size: 100%;
+		@include search-input-breakpoint {
+			max-inline-size: var(--form-column-width);
+			flex-grow: 1;
+			min-inline-size: 0;
+			order: 0;
 		}
 	}
 
 	.item-count {
 		color: var(--theme--form--field--input--foreground-subdued);
 		white-space: nowrap;
-	}
-
-	&.half,
-	&.half-right {
-		flex-wrap: wrap;
-
-		.search {
-			inline-size: 100%;
-			order: -1;
-
-			:deep(.search-input),
-			:deep(.search-badge) {
-				inline-size: 100% !important;
-			}
-		}
 	}
 }
 

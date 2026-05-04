@@ -12,6 +12,7 @@ const props = withDefaults(
 		modelValue: string | null;
 		disabled?: boolean;
 		showFilter?: boolean;
+		expanded?: boolean;
 		collection?: string;
 		filter?: Filter | null;
 		autofocus?: boolean;
@@ -19,6 +20,7 @@ const props = withDefaults(
 	}>(),
 	{
 		showFilter: true,
+		expanded: false,
 	},
 );
 
@@ -119,6 +121,7 @@ function emitValue() {
 			class="search-input"
 			:class="{
 				active,
+				expanded,
 				disabled,
 				'filter-active': filterActive,
 				'has-content': !!modelValue,
@@ -245,8 +248,8 @@ function emitValue() {
 		outline-offset: var(--focus-ring-offset-invert);
 	}
 
-	&.active,
-	&.has-content {
+	&.active:not(.expanded),
+	&.has-content:not(.expanded) {
 		inline-size: var(--form-column-width);
 		max-inline-size: 100%;
 	}
@@ -307,7 +310,7 @@ function emitValue() {
 		margin-inline-end: var(--icon-filter-margin-right);
 	}
 
-	&:not(.disabled):not(.active):not(.has-content):hover {
+	&:not(.disabled):not(.active):not(.expanded):not(.has-content):hover {
 		background-color: var(--theme--background-accent);
 	}
 
@@ -335,12 +338,21 @@ function emitValue() {
 		}
 	}
 
-	&.active {
+	&.active,
+	&.expanded {
 		border-color: var(--theme--form--field--input--focus-ring-color);
 		background-color: var(--theme--form--field--input--background);
 
 		.search-input-field {
 			opacity: 1;
+		}
+	}
+
+	&.expanded {
+		inline-size: 100%;
+
+		&:not(.active) {
+			border-color: var(--theme--border-color);
 		}
 	}
 
