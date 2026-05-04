@@ -2000,7 +2000,6 @@ interfaces:
     value_securely_saved: Reikšmė saugiai išsaugota
     generate: Generuoti prieigos raktą
     regenerate: Generuoti raktą iš naujo
-    generate_success_copy: Išsisaugokite aukščiau esantį prieigos raktą. Saugumo sumetimais išsaugoję ir išėję iš šio puslapio negalėsite dar kartą peržiūrėti prieigos rakto.
     remove_token: Pašalinti prieigos raktą
   system-raw-editor:
     system-raw-editor: Redaguoti neformatuotą

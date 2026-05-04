@@ -144,7 +144,7 @@ function useSave() {
 			unexpectedError(error);
 		} finally {
 			saving.value = false;
-			router.push(`/settings/presets`);
+			router.push({ name: 'settings-presets-collection' });
 		}
 	}
 }
@@ -163,7 +163,7 @@ function useDelete() {
 		try {
 			await presetsStore.delete([Number(props.id)]);
 			edits.value = {};
-			router.replace(`/settings/presets`);
+			router.replace({ name: 'settings-presets-collection' });
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
