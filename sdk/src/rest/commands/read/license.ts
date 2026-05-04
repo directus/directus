@@ -1,105 +1,83 @@
+import type { Entitlements, Meta } from '@directus/license';
 import type { RestCommand } from '../../types.js';
 
 export type LicenseSource = 'env' | 'settings' | null;
 
-export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'inactive';
+export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled';
 
-export type LicensePlan = string;
+export type LicenseEntitlements = Entitlements;
 
-export interface LicenseEntitlements {
+export type LicenseUsage = {
 	seats: number;
 	collections: number;
-	activity_historical_timeframe: number;
-	revisions_historical_timeframe: number;
-	sso_enabled: boolean;
-	offline_enabled: boolean;
-	telemetry_required: boolean;
-	custom_llms_enabled: boolean;
-	custom_policy_rules_enabled: boolean;
-	display_powered_by: boolean;
-	production_enabled: boolean;
-}
-
-export type LicenseUsage = Partial<Record<keyof LicenseEntitlements, number>>;
-
-interface LicenseLifecycleRenewal {
-	renews_at: number;
-	expires_at?: never;
-}
-
-interface LicenseLifecycleExpiration {
-	expires_at: number;
-	renews_at?: never;
-}
-
-export type LicenseLifecycle = LicenseLifecycleRenewal | LicenseLifecycleExpiration;
+};
 
 export type LicenseInfo = {
 	status: LicenseStatus;
 	source: LicenseSource;
-	plan: LicensePlan;
-	license_id: string | null;
-	grace_period: number;
-	resolution_required: boolean;
 	entitlements: LicenseEntitlements;
 	usage: LicenseUsage;
-} & LicenseLifecycle;
+} & Pick<Meta, 'type' | 'expires_at' | 'renews_at' | 'offline' | 'grace_period'>;
 
 export interface LicenseCheck {
-	plan: {
-		name: string;
-		code: LicensePlan;
-	};
-	expires_at?: number;
-	renews_at?: number;
+	type: string;
+	expires_at: number;
+	production_enabled: boolean;
 }
 
-export interface LicenseResolveCollectionCandidate {
-	id: string;
-	label: string;
-	icon: string | null;
+export type PendingResolutionLimitKey = 'collections' | 'seats';
+
+export type PendingResolutionFeatureGateKey = 'sso' | 'custom_llms_enabled' | 'custom_policy_rules_enabled';
+
+export type PendingResolutionKey = PendingResolutionLimitKey | PendingResolutionFeatureGateKey;
+
+export interface PendingResolutionBase {
+	key: PendingResolutionKey;
+	kind: 'limit' | 'feature_gate';
 }
 
-export interface LicenseResolveSeatCandidate {
+export interface PendingResolutionLimit<TKey extends PendingResolutionLimitKey, TCandidate>
+	extends PendingResolutionBase {
+	kind: 'limit';
+	key: TKey;
+	limit: number;
+	usage: number;
+	candidates: TCandidate[];
+}
+
+export interface PendingResolutionFeatureGate<TKey extends PendingResolutionFeatureGateKey, TBlocker = never>
+	extends PendingResolutionBase {
+	kind: 'feature_gate';
+	key: TKey;
+	blockers?: TBlocker;
+}
+
+export type PendingResolutionLimitCollections = PendingResolutionLimit<'collections', string>;
+
+export type PendingResolutionSeatCandidate = {
 	id: string;
-	email: string | null;
 	first_name: string | null;
 	last_name: string | null;
 	avatar: string | null;
-	last_access: string | null;
-}
+};
 
-export interface LicenseResolveCollectionsSection {
-	key: 'collections';
-	limit: number;
-	candidates: LicenseResolveCollectionCandidate[];
-}
+export type PendingResolutionLimitSeats = PendingResolutionLimit<'seats', PendingResolutionSeatCandidate>;
 
-export interface LicenseResolveSeatsSection {
-	key: 'seats';
-	limit: number;
-	candidates: {
-		admin: LicenseResolveSeatCandidate[];
-		users: LicenseResolveSeatCandidate[];
-	};
-}
+export type PendingResolutionFeatureGateSSO = PendingResolutionFeatureGate<
+	'sso',
+	('ADMIN_MISSING_EMAIL' | 'ADMIN_MISSING_PASSWORD')[]
+>;
 
-export interface LicenseResolveSsoBlocker {
-	code: 'MISSING_EMAIL' | 'MISSING_PASSWORD' | 'AUTH_DISABLE_DEFAULT';
-	user_id: string | null;
-}
+export type PendingResolutionFeatureGateCustomLLMs = PendingResolutionFeatureGate<'custom_llms_enabled'>;
 
-export interface LicenseResolveSsoSection {
-	key: 'sso';
-	blockers: LicenseResolveSsoBlocker[];
-}
+export type PendingResolutionFeatureGateCustomPolicyRules = PendingResolutionFeatureGate<'custom_policy_rules_enabled'>;
 
-export type LicenseResolveSection =
-	| LicenseResolveCollectionsSection
-	| LicenseResolveSeatsSection
-	| LicenseResolveSsoSection;
-
-export type LicenseResolveAssessment = LicenseResolveSection[];
+export type PendingResolution =
+	| PendingResolutionLimitCollections
+	| PendingResolutionLimitSeats
+	| PendingResolutionFeatureGateSSO
+	| PendingResolutionFeatureGateCustomLLMs
+	| PendingResolutionFeatureGateCustomPolicyRules;
 
 export type AddonAvailability = 'available' | 'upgrade_required';
 
@@ -117,53 +95,37 @@ export interface LicenseAddon {
 }
 
 /**
- * Mock-only query params (temporary). The `scenario` and `error` parameters are
- * recognized by the mocked `/license` controller during development to switch
- * the response payload or trigger a specific error. They will be removed once
- * the real licensing service is wired.
- */
-export type LicenseScenario = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'overage' | 'no-license';
-
-export type LicenseMockQuery = {
-	scenario?: LicenseScenario;
-	error?: string;
-};
-
-/**
  * Get the current license state, including entitlements and usage.
- * @param query Optional mock-only query (`scenario`) — see {@link LicenseMockQuery}.
  * @returns The license info payload.
  */
 export const readLicense =
-	<Schema>(query?: LicenseMockQuery): RestCommand<LicenseInfo, Schema> =>
+	<Schema>(): RestCommand<LicenseInfo, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/license',
-		params: query ?? {},
 	});
 
 /**
  * Validate a license key without applying it.
- * @param query Optional mock-only query (`error`) — see {@link LicenseMockQuery}.
  * @returns A check of the license that would be applied.
  */
 export const readLicenseCheck =
-	<Schema>(query?: LicenseMockQuery): RestCommand<LicenseCheck, Schema> =>
+	<Schema>(): RestCommand<LicenseCheck, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/license/check',
-		params: query ?? {},
 	});
 
 /**
- * Get the resource resolution assessment when usage exceeds entitlements.
- * @returns Sections describing what needs to be reduced.
+ * Get the pending resolution assessment when usage exceeds entitlements
+ * or feature gates need to be addressed.
+ * @returns Sections describing what needs to be resolved.
  */
-export const readLicenseResolve =
-	<Schema>(): RestCommand<LicenseResolveAssessment, Schema> =>
+export const readLicensePendingResolution =
+	<Schema>(): RestCommand<PendingResolution[], Schema> =>
 	() => ({
 		method: 'GET',
-		path: '/license/resolve',
+		path: '/license/pending-resolution',
 	});
 
 /**
