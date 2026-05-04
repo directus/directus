@@ -113,7 +113,7 @@ const showNavToggle = computed(() => {
 		display: flex;
 		block-size: var(--header-bar-height);
 		align-items: center;
-		gap: 1.5rem;
+		gap: var(--header-bar-gap);
 		padding-inline: var(--content-padding) var(--sidebar-collapsed-width);
 	}
 }
