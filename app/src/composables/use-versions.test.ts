@@ -654,7 +654,7 @@ describe('useVersions', () => {
 	});
 
 	describe('version-gone detection', () => {
-		it('should tag error with versionGone when version re-fetch fails after save 403', async () => {
+		it('should tag error with versionGone when save returns 403 on an existing version', async () => {
 			const existingVersion: ContentVersion = {
 				id: 'version-123',
 				key: 'draft',
@@ -672,9 +672,10 @@ describe('useVersions', () => {
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
 
 			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			await vi.waitFor(() => expect(versions.value.some((v) => v.id === 'version-123')).toBe(true));
 
-			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			currentVersion.value = versions.value.find((v) => v.id === 'version-123') ?? null;
+			expect(currentVersion.value?.id).toBe('version-123');
 
 			const saveError = Object.assign(new Error('Forbidden'), {
 				response: { status: 403, data: { errors: [{ extensions: { code: 'FORBIDDEN' } }] } },
@@ -682,22 +683,15 @@ describe('useVersions', () => {
 
 			vi.mocked(api.post).mockRejectedValueOnce(saveError);
 
-			// Reset api.get mocks and set re-fetch to reject (version is gone)
-			vi.mocked(api.get).mockReset();
-
-			vi.mocked(api.get).mockImplementationOnce(() => {
-				return Promise.reject(Object.assign(new Error('Forbidden'), { response: { status: 403 } }));
-			});
-
 			const edits = ref({ title: 'updated' });
 			const item = ref({ id: '1', title: 'original' });
 
-			await expect(saveVersion(edits, item, '1')).rejects.toMatchObject({
+			await expect(saveVersion(edits, item)).rejects.toMatchObject({
 				versionGone: true,
 			});
 		});
 
-		it('should NOT tag error with versionGone when version re-fetch succeeds (permission error)', async () => {
+		it('should NOT tag error with versionGone for non-403 errors', async () => {
 			const existingVersion: ContentVersion = {
 				id: 'version-123',
 				key: 'draft',
@@ -714,25 +708,41 @@ describe('useVersions', () => {
 
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
 
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+
+			const saveError = Object.assign(new Error('Server Error'), {
+				response: { status: 500, data: { errors: [{ extensions: { code: 'INTERNAL_SERVER_ERROR' } }] } },
+			});
+
+			vi.mocked(api.post).mockRejectedValueOnce(saveError);
+
+			const edits = ref({ title: 'updated' });
+			const item = ref({ id: '1', title: 'original' });
+
+			await expect(saveVersion(edits, item)).rejects.not.toMatchObject({
+				versionGone: true,
+			});
+		});
+
+		it('should NOT tag error with versionGone for new (unsaved) versions', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('+'));
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			expect(currentVersion.value?.id).toBe('+');
+
 			const saveError = Object.assign(new Error('Forbidden'), {
 				response: { status: 403, data: { errors: [{ extensions: { code: 'FORBIDDEN' } }] } },
 			});
 
 			vi.mocked(api.post).mockRejectedValueOnce(saveError);
 
-			// Re-fetch succeeds — version exists, this was a real permission error
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: existingVersion } });
-
-			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
-
-			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
-
 			const edits = ref({ title: 'updated' });
-			const item = ref({ id: '1', title: 'original' });
+			const item = ref(null);
 
-			// Should throw the original error, not a versionGone error
-			await expect(saveVersion(edits, item, '1')).rejects.not.toMatchObject({
+			await expect(saveVersion(edits, item)).rejects.not.toMatchObject({
 				versionGone: true,
 			});
 		});

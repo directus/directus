@@ -189,31 +189,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function confirmVersionExists(versionId: PrimaryKey): Promise<boolean> {
-		try {
-			await api.get(`/versions/${versionId}`, { params: { fields: ['id'] } });
-			return true;
-		} catch (confirmError: any) {
-			if (confirmError?.response?.status === 404) {
-				return false;
-			}
-
-			throw confirmError;
-		}
-	}
-
 	async function versionErrorHandler(error: any) {
-		// Check if the version was deleted/promoted by another user
-		if (
-			currentVersion.value &&
-			currentVersion.value.id !== '+' &&
-			(error?.response?.status === 403 || error?.response?.status === 404)
-		) {
-			const exists = await confirmVersionExists(currentVersion.value.id);
-
-			if (!exists) {
-				throw Object.assign(new Error('Version no longer exists'), { versionGone: true });
-			}
+		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
+			throw Object.assign(new Error('Version no longer exists'), { versionGone: true });
 		}
 
 		if (error?.response?.data?.errors) {
