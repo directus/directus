@@ -25,7 +25,6 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -53,22 +52,17 @@ const fieldsStore = useFieldsStore();
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
-const licenseStore = useLicenseStore();
 const seatsLimitModalOpen = ref(false);
 const pendingSaveAction = ref<(() => Promise<void>) | null>(null);
 
-function guardedSave(action: () => Promise<void>) {
-	if (isNew.value && !licenseStore.hasRemainingSeats) {
-		pendingSaveAction.value = action;
-		seatsLimitModalOpen.value = true;
-		return;
-	}
-
+// Stores the action before executing so saveAsDeactivated can replay it if the seats limit modal intercepts the save.
+function queueSave(action: () => Promise<void>) {
+	pendingSaveAction.value = action;
 	action();
 }
 
-async function saveWithDraftStatus() {
-	edits.value = { ...edits.value, status: 'draft' };
+async function saveAsDeactivated() {
+	edits.value = { ...edits.value, status: 'deactivated' };
 	const action = pendingSaveAction.value;
 	pendingSaveAction.value = null;
 	await action?.();
@@ -99,9 +93,24 @@ const {
 	validationErrors,
 	refresh,
 	getItem,
-} = useItem<User>(ref('directus_users'), primaryKey, null, {
-	fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
-});
+} = useItem<User>(
+	ref('directus_users'),
+	primaryKey,
+	null,
+	{
+		fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
+	},
+	{
+		onSaveError: (err) => {
+			if (err?.extensions?.code === 'LIMIT_EXCEEDED') {
+				seatsLimitModalOpen.value = true;
+				return true;
+			}
+
+			return false;
+		},
+	},
+);
 
 const {
 	users: collabUsers,
@@ -198,7 +207,7 @@ function useBreadcrumb() {
 }
 
 async function saveAndQuit() {
-	guardedSave(async () => {
+	queueSave(async () => {
 		try {
 			const savedItem: Record<string, any> = await save();
 			await setLang(savedItem);
@@ -211,7 +220,7 @@ async function saveAndQuit() {
 }
 
 async function saveAndStay() {
-	guardedSave(async () => {
+	queueSave(async () => {
 		try {
 			const savedItem: Record<string, any> = await save();
 			await setLang(savedItem);
@@ -231,7 +240,7 @@ async function saveAndStay() {
 }
 
 async function saveAndAddNew() {
-	guardedSave(async () => {
+	queueSave(async () => {
 		try {
 			const savedItem: Record<string, any> = await save();
 			await setLang(savedItem);
@@ -545,7 +554,7 @@ function revert(values: Record<string, any>) {
 			v-model="seatsLimitModalOpen"
 			type="seats"
 			:is-admin="userStore.isAdmin"
-			:on-save="saveWithDraftStatus"
+			:on-save="saveAsDeactivated"
 		/>
 	</PrivateView>
 </template>
