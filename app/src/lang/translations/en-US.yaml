@@ -28,7 +28,8 @@ contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
 setup_license_key_notice: >
-  If have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be eligible for our {oig}.
+  If have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be
+  eligible for our {oig}.
 setup_license_notice: >
   Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
 setup_license_follow_up: >
@@ -41,6 +42,20 @@ setup_license_invalid: >
 setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
+setup_license_title: Set up your license
+project_usage: What are you using Directus for?
+project_usage_personal: Personal / Side project
+project_usage_commercial: Business / Commercial
+project_usage_nonprofit: Non-profit / NGO
+project_usage_education: Education / Research
+org_name: Organization Name
+org_name_placeholder: Acme Inc.
+license_key_option: I have a license key
+license_key_option_desc: 'OIG, Team, or Enterprise plan'
+core_option: I'm using Core
+core_option_desc: Free, no key required
+remind_later: Remind Later
+remind_next_login: We'll remind you next time you log in
 open_innovation_grant: Open Innovation Grant
 setup_project: Setup Project
 enter_license_key: Enter Your License Key

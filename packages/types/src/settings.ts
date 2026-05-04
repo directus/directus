@@ -90,6 +90,8 @@ export type Settings = {
 export type OwnerInformation = {
 	project_owner: string | null;
 	product_updates: boolean;
+	project_usage: string | null;
+	org_name: string | null;
 };
 
 export type SetupForm = {

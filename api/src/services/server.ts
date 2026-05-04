@@ -69,6 +69,24 @@ export class ServerService {
 
 		info['setupCompleted'] = setupComplete;
 
+		const licenseInEnv = Boolean(env['LICENSE_KEY']);
+		const adminInEnv = Boolean(env['ADMIN_EMAIL'] && env['ADMIN_PASSWORD']);
+		const projectOwnerInEnv = Boolean(env['PROJECT_OWNER']);
+
+		const settingsRow = await this.knex
+			.select('license_key', 'license_token', 'project_owner', 'project_usage')
+			.from('directus_settings')
+			.first();
+
+		info['onboarding'] = {
+			adminInEnv,
+			licenseInEnv,
+			projectOwnerInEnv,
+			hasLicense: licenseInEnv || Boolean(settingsRow?.license_key || settingsRow?.license_token),
+			hasProjectOwner: projectOwnerInEnv || Boolean(settingsRow?.project_owner),
+			hasCompletedKyc: Boolean(settingsRow?.project_usage),
+		};
+
 		if (this.accountability?.user) {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);

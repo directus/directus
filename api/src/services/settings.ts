@@ -1,4 +1,12 @@
-import type { AbstractServiceOptions, MutationOptions, OwnerInformation, PrimaryKey, Query, QueryOptions, Settings } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	MutationOptions,
+	OwnerInformation,
+	PrimaryKey,
+	Query,
+	QueryOptions,
+	Settings,
+} from '@directus/types';
 import { version } from 'directus/version';
 import { CUSTOM_LLM_FIELDS } from '../constants.js';
 import { entitlementManager } from '../license/entitlements/manager.js';
@@ -18,7 +26,11 @@ export class SettingsService extends ItemsService<Settings> {
 		return super.createOne(data, opts);
 	}
 
-	override async updateMany(keys: PrimaryKey[], data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Settings>,
+		opts?: MutationOptions,
+	): Promise<PrimaryKey[]> {
 		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
 			await entitlementManager.assert('custom_llms_enabled');
 		}
@@ -38,7 +50,7 @@ export class SettingsService extends ItemsService<Settings> {
 				}
 			}
 		}
-		
+
 		return data;
 	}
 
@@ -52,6 +64,8 @@ export class SettingsService extends ItemsService<Settings> {
 		return await this.upsertSingleton({
 			project_owner: data.project_owner,
 			product_updates: data.product_updates,
+			project_usage: data.project_usage,
+			org_name: data.org_name,
 		});
 	}
 }
