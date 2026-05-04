@@ -157,13 +157,15 @@ export const readLicenseCheck =
 
 /**
  * Get the resource resolution assessment when usage exceeds entitlements.
+ * @param query Optional query params. Pass `{ deactivate: true }` to preview the resolution required when deactivating.
  * @returns Sections describing what needs to be reduced.
  */
 export const readLicenseResolve =
-	<Schema>(): RestCommand<LicenseResolveAssessment, Schema> =>
+	<Schema>(query?: { deactivate?: boolean }): RestCommand<LicenseResolveAssessment, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/license/resolve',
+		params: query ?? {},
 	});
 
 /**

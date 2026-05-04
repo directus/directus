@@ -1400,6 +1400,9 @@ licensing:
   addons: Add-on Packages
   addon_purchase: Purchase
   deactivate: Deactivate License
+  deactivate_confirm_title: Deactivate License?
+  deactivate_confirm_body:
+    Are you sure you want to deactivate the license? Your instance will be downgraded to the Core plan.
   env_managed: Your license key is managed via an environment variable and can't be updated here.
   key_management: License Key Management
   key: License Key

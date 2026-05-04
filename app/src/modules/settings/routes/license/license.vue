@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LicenseEntitlements } from '@directus/sdk';
+import { readLicenseResolve } from '@directus/sdk';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -8,7 +9,12 @@ import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
 import VChip from '@/components/v-chip.vue';
+import VDialog from '@/components/v-dialog.vue';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -16,6 +22,7 @@ import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
 import { formatNumber } from '@/utils/format-number';
@@ -89,6 +96,25 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 	{ key: 'display_powered_by', icon: 'info', title: t('licensing.entitlements.display_powered_by') },
 	{ key: 'production_enabled', icon: 'rocket_launch', title: t('licensing.entitlements.production_enabled') },
 ];
+
+const deactivateConfirmOpen = ref(false);
+const deactivateLoading = ref(false);
+
+async function handleDeactivateClick() {
+	deactivateLoading.value = true;
+
+	try {
+		const assessment = await sdk.request(readLicenseResolve({ deactivate: true }));
+
+		if (assessment.length === 0) {
+			deactivateConfirmOpen.value = true;
+		} else {
+			// TODO: show conflict resolution modal
+		}
+	} finally {
+		deactivateLoading.value = false;
+	}
+}
 </script>
 
 <template>
@@ -174,11 +200,29 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 					<VNotice v-if="license.source === 'env'" type="info">
 						{{ t('licensing.env_managed') }}
 					</VNotice>
-					<VButton :disabled="license.source === 'env'" danger>{{ t('licensing.deactivate') }}</VButton>
+					<VButton
+						:disabled="license.source === 'env'"
+						:loading="deactivateLoading"
+						danger
+						@click="handleDeactivateClick"
+					>
+						{{ t('licensing.deactivate') }}
+					</VButton>
 				</div>
 			</template>
 		</div>
 	</PrivateView>
+
+	<VDialog v-model="deactivateConfirmOpen" @esc="deactivateConfirmOpen = false">
+		<VCard>
+			<VCardTitle>{{ t('licensing.deactivate_confirm_title') }}</VCardTitle>
+			<VCardText>{{ t('licensing.deactivate_confirm_body') }}</VCardText>
+			<VCardActions>
+				<VButton secondary @click="deactivateConfirmOpen = false">{{ t('cancel') }}</VButton>
+				<VButton danger>{{ t('licensing.deactivate') }}</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 
 	<VDrawer
 		v-model="addLicenseDrawer"
