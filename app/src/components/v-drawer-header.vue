@@ -104,6 +104,7 @@ defineEmits<{
 
 	&.end {
 		flex-shrink: 0;
+		max-inline-size: calc(100vw - var(--sidebar-collapsed-width) - var(--content-padding) * 2 - var(--header-bar-gap));
 	}
 }
 

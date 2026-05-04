@@ -144,6 +144,10 @@ const showNavToggle = computed(() => {
 	&.end {
 		justify-content: flex-end;
 		flex-shrink: 0;
+
+		@include mixins.breakpoint-up('sm') {
+			max-inline-size: calc(100vw - var(--sidebar-collapsed-width) * 3 - var(--header-bar-gap));
+		}
 	}
 }
 
