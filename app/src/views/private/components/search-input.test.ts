@@ -21,9 +21,6 @@ const global: GlobalMountOptions = {
 		'click-outside': ClickOutside,
 		tooltip: Tooltip,
 	},
-	provide: {
-		'main-element': document.body,
-	},
 };
 
 describe('Component', () => {
