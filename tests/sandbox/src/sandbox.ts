@@ -19,6 +19,7 @@ import {
 	saveSchema,
 	startApi,
 } from './steps/index.js';
+import { startLicenseServer } from './steps/license.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -71,6 +72,8 @@ export type Options = {
 		minio: boolean;
 		/** Email server */
 		maildev: boolean;
+		/** License server */
+		license: boolean;
 	};
 	/** Enable or disable caching */
 	cache: boolean;
@@ -123,6 +126,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				maildev: false,
 				minio: false,
 				saml: false,
+				license: false,
 			},
 			cache: false,
 		} satisfies Options,
@@ -132,6 +136,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 export const apiFolder = join(directusFolder, 'api');
 export const appFolder = join(directusFolder, 'app');
+export const licenseFolder = join(directusFolder, 'tests/license-mock');
 
 export const databases: Database[] = [
 	'maria',
@@ -168,6 +173,12 @@ export async function sandboxes(
 
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env }[] = [];
+
+	let license: ChildProcessWithoutNullStreams | undefined;
+
+	if (opts.extras.license) {
+		license = await startLicenseServer(await getEnv('sqlite', opts), logger);
+	}
 
 	try {
 		// Rebuild directus
@@ -210,7 +221,8 @@ export async function sandboxes(
 
 	async function stop() {
 		build?.kill();
-		sandboxes.forEach((api) => api.apis.forEach((api) => api.process.kill()));
+		sandboxes.forEach((sandbox) => sandbox.apis.forEach((api) => api.process.kill()));
+		license?.kill();
 		if (opts.docker.keep)
 			await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
 	}
@@ -229,11 +241,16 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
+	let license: ChildProcessWithoutNullStreams | undefined;
 
 	try {
 		// Rebuild directus
 		if (opts.build && !opts.dev) {
 			build = await buildApi(opts, logger, restartApi);
+		}
+
+		if (opts.extras.license) {
+			license = await startLicenseServer(env, logger);
 		}
 
 		project = await dockerUp(database, opts, env, logger);
@@ -261,6 +278,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		build?.kill();
 		apis.forEach((api) => api.process.kill());
 		app?.kill();
+		license?.kill();
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 
 		if (!opts.docker.keep && 'DB_FILENAME' in env) {
