@@ -1,12 +1,16 @@
 import { useEnv } from '@directus/env';
 import { LicenseImmutableError } from '@directus/errors';
 import {
-	activate,
-	check as checkLicenseKey,
+	activateKey,
+	billinPortal,
+	checkKey,
 	CORE_LICENSE,
-	deactivate as deactivateLicenseKey,
+	deactivateKey,
+	deleteAddon,
 	License,
-	refresh,
+	listAddons,
+	refreshLicense,
+	updateAddonQuantity,
 	verifyLicense,
 } from '@directus/license';
 import { toBoolean } from '@directus/utils';
@@ -188,7 +192,7 @@ export class LicenseManager {
 	 *  Check a license meta/info without activating it
 	 */
 	public async check(key: string) {
-		return checkLicenseKey({
+		return checkKey({
 			license_key: key,
 		});
 	}
@@ -208,7 +212,7 @@ export class LicenseManager {
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
 		try {
-			const { token, new_project_id } = await activate({
+			const { token, new_project_id } = await activateKey({
 				license_key: key,
 				project_id: project_id!,
 				public_url: env['PUBLIC_URL'] as string,
@@ -245,7 +249,7 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		await deactivateLicenseKey({
+		await deactivateKey({
 			license_key: currentKey,
 			project_id: project_id!,
 		});
@@ -295,7 +299,7 @@ export class LicenseManager {
 
 		if (license?.meta.offline === false) {
 			try {
-				const { token } = await refresh({
+				const { token } = await refreshLicense({
 					license_key: key,
 					project_id: project_id!,
 					public_url: env['PUBLIC_URL'] as string,
@@ -322,8 +326,17 @@ export class LicenseManager {
 
 	public async billingPortalUrl() {
 		this.assertMutable({ action: 'view portal' });
-		// TODO: implement once billingPortal is exported from @directus/license
-		throw new Error('Billing portal is not yet supported');
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		const { url } = await billinPortal({
+			license_key: this.licenseKey!,
+			project_id: project_id!,
+		});
+
+		return url;
 	}
 
 	public async availableAddons() {
@@ -367,16 +380,33 @@ export class LicenseManager {
 		// });
 	}
 
-	public async setAddonQuantity(_options: { addonId: string; quantity: number }) {
+	public async setAddonQuantity(options: { addonId: string; quantity: number }) {
 		this.assertMutable({ action: 'set addon quantity' });
-		// TODO: implement once updateAddonQuantity is exported from @directus/license
-		throw new Error('Addon quantity updates are not yet supported');
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		await updateAddonQuantity({
+			license_key: this.licenseKey!,
+			project_id: project_id!,
+			addon_id: options.addonId,
+			quantity: options.quantity,
+		});
 	}
 
-	public async removeAddon(_addonId: string) {
+	public async removeAddon(addonId: string) {
 		this.assertMutable({ action: 'remove addon' });
-		// TODO: implement once deleteAddon is exported from @directus/license
-		throw new Error('Addon removal is not yet supported');
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		await deleteAddon({
+			license_key: this.licenseKey!,
+			project_id: project_id!,
+			addon_id: addonId,
+		});
 	}
 
 	/**
