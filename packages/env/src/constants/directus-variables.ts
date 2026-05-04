@@ -296,6 +296,7 @@ export const DIRECTUS_VARIABLES = [
 	// Licensing
 	'LICENSE_KEY',
 	'LICENSE_TOKEN',
+	'LICENSE_NAMESPACE',
 ] as const;
 
 /**

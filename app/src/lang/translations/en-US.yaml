@@ -886,6 +886,7 @@ errors:
   UNKNOWN: Unexpected Error
   UNPROCESSABLE_CONTENT: Unprocessable Content
   UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  PROJECT_LOCKED: The project has reached its user seat limit. Please contact your project admin to resolve this issue.
   USER_SUSPENDED: User Suspended
   VALUE_OUT_OF_RANGE: Value is out of range
   VALUE_TOO_LONG: Value is too long
@@ -1474,6 +1475,12 @@ batch_delete_confirm: >-
   No items have been selected | Are you sure you want to delete this item? This action can not be undone. | Are you sure
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
+license:
+  seats_reached: You have reached the max user limit allowed for your plan.
+  manage_plan_copy: You will need to purchase additional user seats or upgrade your plan.
+  contact_sales_copy: Contact sales to purchase more feature add-ons.
+  manage_plan: Manage Plan
+  contact_sales: Contact Sales
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
