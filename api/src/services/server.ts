@@ -21,6 +21,8 @@ import { SettingsService } from './settings.js';
 const env = useEnv();
 const logger = useLogger();
 
+const lastDiskWriteTimestamps = new Map<string, number>();
+
 export class ServerService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -419,6 +421,7 @@ export class ServerService {
 			for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
+				const envWriteIntervalKey = `STORAGE_${location}_HEALTHCHECK_WRITE_INTERVAL`.toUpperCase();
 
 				checks[`storage:${location}:responseTime`] = [
 					{
@@ -430,23 +433,55 @@ export class ServerService {
 					},
 				];
 
-				const startTime = performance.now();
+				const writeInterval = env[envWriteIntervalKey] ? +(env[envWriteIntervalKey] as string) : 0;
+				const lastWrite = lastDiskWriteTimestamps.get(location) || 0;
+				let startTime = performance.now();
+				let shouldWrite = !writeInterval || startTime - lastWrite >= writeInterval;
 
-				try {
-					await disk.write('directus-health-file', Readable.from([checkID]));
-				} catch (err: any) {
-					checks[`storage:${location}:responseTime`]![0]!.status = 'error';
-					checks[`storage:${location}:responseTime`]![0]!.output = err;
-				} finally {
-					const endTime = performance.now();
-					checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
+				if (!shouldWrite) {
+					try {
+						const stream = await disk.read('directus-health-file');
 
-					if (
-						Number(checks[`storage:${location}:responseTime`]![0]!.observedValue!) >
-							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
-						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
-					) {
-						checks[`storage:${location}:responseTime`]![0]!.status = 'warn';
+						// Поглощаем поток, чтобы убедиться в доступности объекта
+						await new Promise<void>((resolve, reject) => {
+							stream.resume();
+							stream.on('end', resolve);
+							stream.on('error', reject);
+						});
+
+						if (
+							+(performance.now() - startTime).toFixed(3) > checks[`storage:${location}:responseTime`]![0]!.threshold!
+						) {
+							shouldWrite = true;
+						}
+					} catch {
+						shouldWrite = true;
+					}
+				}
+
+				if (shouldWrite) {
+					startTime = performance.now();
+
+					try {
+						await disk.write('directus-health-file', Readable.from([checkID]));
+					} catch (err: any) {
+						checks[`storage:${location}:responseTime`]![0]!.status = 'error';
+						checks[`storage:${location}:responseTime`]![0]!.output = err;
+					} finally {
+						const endTime = performance.now();
+						checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
+
+						if (
+							Number(checks[`storage:${location}:responseTime`]![0]!.observedValue!) >
+								checks[`storage:${location}:responseTime`]![0]!.threshold! &&
+							checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
+						) {
+							checks[`storage:${location}:responseTime`]![0]!.status = 'warn';
+						}
+
+						if (checks[`storage:${location}:responseTime`]![0]!.status === 'ok') {
+							lastDiskWriteTimestamps.set(location, endTime);
+						}
 					}
 				}
 			}
