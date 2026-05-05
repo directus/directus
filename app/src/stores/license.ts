@@ -1,7 +1,9 @@
-import { type LicenseInfo, readLicense } from '@directus/sdk';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import sdk from '@/sdk';
+import sdk, { requestEndpoint } from '@/sdk';
+
+// TODO: replace with type from @directus/license once exported
+type LicenseInfo = any;
 
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
@@ -64,7 +66,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loading.value = true;
 
 		try {
-			info.value = await sdk.request(readLicense());
+			info.value = await sdk.request(requestEndpoint<LicenseInfo>('/license', { method: 'GET' }));
 			error.value = null;
 			scheduleNextRefresh();
 		} catch (err) {
