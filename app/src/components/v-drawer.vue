@@ -4,6 +4,7 @@ import { type ApplyShortcut } from './v-dialog.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
+import VOverlay from '@/components/v-overlay.vue';
 
 export interface Props {
 	title: string;
@@ -29,6 +30,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
 const localActive = ref(false);
+
+const mobileSidebarOpen = ref(false);
 
 const scrollContainer = useTemplateRef('scroll-container');
 
@@ -73,6 +76,14 @@ const internalActive = computed({
 				<template #actions:primary><slot name="actions:primary" /></template>
 			</VDrawerHeader>
 
+			<div v-if="$slots.sidebar" class="mobile-sidebar" :class="{ open: mobileSidebarOpen }">
+				<VDetail v-model="mobileSidebarOpen" :label="sidebarLabel || $t('sidebar')">
+					<nav class="sidebar-content" @click="mobileSidebarOpen = false">
+						<slot name="sidebar" />
+					</nav>
+				</VDetail>
+			</div>
+
 			<div class="content">
 				<nav v-if="$slots.sidebar" class="sidebar">
 					<div class="sidebar-content">
@@ -80,15 +91,21 @@ const internalActive = computed({
 					</div>
 				</nav>
 
-				<main ref="scroll-container" class="main" :class="{ 'has-sidebar': $slots.sidebar }">
-					<VDetail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
-						<nav>
-							<slot name="sidebar" />
-						</nav>
-					</VDetail>
-
+				<main
+					ref="scroll-container"
+					class="main"
+					:class="{ 'has-sidebar': $slots.sidebar, 'sidebar-open': mobileSidebarOpen }"
+				>
 					<slot />
 				</main>
+
+				<VOverlay
+					v-if="$slots.sidebar"
+					absolute
+					:active="mobileSidebarOpen"
+					class="mobile-sidebar-overlay"
+					@click="mobileSidebarOpen = false"
+				/>
 			</div>
 		</article>
 	</VDialog>
@@ -96,6 +113,20 @@ const internalActive = computed({
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
+
+$mobile-sidebar-breakpoint: 50.5rem;
+
+@mixin mobile-sidebar-breakpoint-up {
+	@media (width > $mobile-sidebar-breakpoint) {
+		@content;
+	}
+}
+
+@mixin mobile-sidebar-breakpoint-down {
+	@media (width <= $mobile-sidebar-breakpoint) {
+		@content;
+	}
+}
 
 .v-drawer {
 	position: relative;
@@ -105,6 +136,10 @@ const internalActive = computed({
 	max-inline-size: calc(var(--content-padding) * 2 + var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	block-size: 100%;
 	background-color: var(--theme--shell--background);
+
+	@include mixins.breakpoint-up('lg') {
+		inline-size: calc(100% - 3.625rem);
+	}
 
 	.header-icon {
 		--v-button-background-color: var(--theme--background-normal);
@@ -172,23 +207,37 @@ const internalActive = computed({
 					border-start-start-radius: var(--theme--border-radius);
 				}
 			}
-		}
-	}
 
-	@include mixins.breakpoint-up('lg') {
-		inline-size: calc(100% - 3.625rem);
+			&.sidebar-open {
+				@include mixins.breakpoint-down('lg') {
+					border-color: transparent;
+				}
+			}
+		}
 	}
 }
 
 .mobile-sidebar {
-	position: relative;
-	z-index: 2;
-	margin: var(--content-padding);
+	display: none;
+	padding-inline: var(--content-padding);
+	padding-block: 0.625rem;
+	background-color: var(--theme--shell--background);
 
-	nav {
-		background-color: var(--theme--background-subdued);
-		border-radius: var(--theme--border-radius);
+	@include mixins.breakpoint-up('sm') {
+		padding-inline: calc(var(--content-padding) - 1.5rem);
 	}
+
+	@include mixins.breakpoint-down('lg') {
+		display: block;
+	}
+
+	.sidebar-content :deep(.v-list) {
+		--v-list-padding: 0;
+	}
+}
+
+.mobile-sidebar-overlay {
+	--v-overlay-color: color-mix(in srgb, var(--overlay-color) 85%, transparent);
 
 	@include mixins.breakpoint-up('lg') {
 		display: none;
