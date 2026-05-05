@@ -114,7 +114,6 @@ describe('getTypes – json() inside {field}_func (Phase 3)', () => {
 
 		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
 
-		const funcField = CollectionTypes['articles']!.getFields()['metadata_func'] as any;
 		const funcType = sc.tcs.get('articles_metadata_func');
 		expect(funcType).toBeDefined();
 		expect(funcType!.getFields()).toHaveProperty('json');
