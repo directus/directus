@@ -167,7 +167,7 @@ export class EntitlementManager {
 		}
 
 		if (!(await this.isValid(key))) {
-			throw new ResourceRestrictedError({ key });
+			throw new ResourceRestrictedError({ category: key });
 		}
 	}
 
