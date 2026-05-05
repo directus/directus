@@ -1,3 +1,4 @@
+import { LimitExceededError, ResourceRestrictedError } from '@directus/errors';
 import type { AppEntitlements, CountableEntitlementKey, 
 	EntitlementCheckResult,
 	Entitlements,
@@ -7,48 +8,7 @@ import type { AppEntitlements, CountableEntitlementKey,
 	License,
 	NumericEntitlementKey,
 	UsageCounter } from '@directus/license';
-import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FeatureFlagViolatedError, LimitExceededError  } from '@directus/license';
-
-/**
- * Example:
- * 
- * Adding usage counter for "Seats" in the API
- * ```ts
- * import { entitlements } from '@directus/license'
- * 
- * // on startup
- * entitlements.registerCounter('seats', async () => {
- *   const userCounts = await fetchUserCount({
- *     knex: getDatabase()
- *   });
- * 
- *   return userCounts.admin + userCounts.app;
- * });
- * 
- * // in the users service
- * entitlements.assert('seats', { adding: 5 });
- * // throws error if adding 5 would pass the limit
- * // or call .check for non-throwing information
- * ```
- * 
- * Adding validator for "sso_enabled" in the API
- * ```ts
- * import { entitlements } from '@directus/license'
- * 
- * // on startup
- * entitlements.registerValidator('sso_enabled', async () => {
- *   const count_sso = // check the db for sso enabled users
- * 
- *   return count_sso > 0;
- * });
- * 
- * // in the users service when trying to enable sso on a user
- * entitlements.assert('sso_enabled');
- * // throws error if sso is disabled but there are users with it enabled
- * // or call .check for non-throwing information
- * ```
- */
-
+import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS  } from '@directus/license';
 
 export class EntitlementManager {
 	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
@@ -200,14 +160,14 @@ export class EntitlementManager {
 			const adding = opts?.adding ?? 0;
 
 			if (usage + adding > hardLimit) {
-				throw new LimitExceededError({ key, hardLimit, usage, adding });
+				throw new LimitExceededError({ category: key }/*{ key, hardLimit, usage, adding }*/);
 			}
 
 			return;
 		}
 
 		if (!(await this.isValid(key))) {
-			throw new FeatureFlagViolatedError({ key });
+			throw new ResourceRestrictedError({ key });
 		}
 	}
 
