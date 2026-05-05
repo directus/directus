@@ -101,7 +101,7 @@ const {
 	},
 	{
 		onSaveError: (err) => {
-			if (err?.extensions?.code === 'INTERNAL_SERVER_ERROR') {
+			if (err?.extensions?.code === 'LIMIT_EXCEEDED') {
 				seatsLimitModalOpen.value = true;
 				return true;
 			}
