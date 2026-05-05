@@ -555,9 +555,7 @@ async function saveVersionAction() {
 			revisionsSidebarDetailRef.value?.refresh?.();
 		}
 	} catch (error) {
-		if (!handleVersionGone(error)) {
-			// versionErrorHandler already showed unexpected error dialog
-		}
+		handleVersionGone(error);
 	}
 }
 
