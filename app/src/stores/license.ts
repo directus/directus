@@ -31,7 +31,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const collectionsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
-		return info.value.entitlements.collections.limit - (info.value.usage?.collections ?? 0);
+		//return info.value.entitlements.collections.limit - (info.value.usage?.collections ?? 0);
+		return 5;
 	});
 
 	const hasRemainingCollections = computed(() => collectionsRemaining.value === null || collectionsRemaining.value > 0);

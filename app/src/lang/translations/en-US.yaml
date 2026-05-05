@@ -1450,6 +1450,7 @@ license:
   collections_limit_body: >-
     You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
   manage_plan: Manage Plan
+  collections_remaining: '{n} Collection Left | {n} Collections Left'
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
