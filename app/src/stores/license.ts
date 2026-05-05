@@ -38,6 +38,11 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
 
+	const isLicensed = computed(() => {
+		const status = info.value?.status;
+		return status === 'active' || status === 'grace';
+	});
+
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -112,6 +117,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		seatsRemaining,
 		hasRemainingSeats,
 		isLocked,
+		isLicensed,
 		hydrate,
 		hydrateAddons,
 		dehydrate,

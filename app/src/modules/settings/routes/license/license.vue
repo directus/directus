@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { LicenseEntitlements } from '@directus/sdk';
-import { readLicenseResolve } from '@directus/sdk';
+import type { Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -22,17 +21,19 @@ import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import sdk from '@/sdk';
+import type { PendingResolution } from '@/license/types';
+import sdk, { requestEndpoint } from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
 import { formatNumber } from '@/utils/format-number';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView } from '@/views/private';
 
 const { t, locale } = useI18n();
 
 const licenseStore = useLicenseStore();
 
-const { info: license, addons, loading, boundary } = storeToRefs(licenseStore);
+const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp)) return null;
@@ -41,18 +42,16 @@ const boundaryDate = computed(() => {
 });
 
 onMounted(() => {
-	licenseStore.hydrate({ scenario: 'active' });
+	licenseStore.hydrateAddons();
 });
 
-const planDisplayName = computed(() => license.value?.plan ?? null);
+const planDisplayName = computed(() => license.value?.type ?? null);
 
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
 
-const isLicensed = computed(() => license.value?.source !== null && license.value?.status === 'active');
-
 type EntitlementConfig = {
-	key: keyof LicenseEntitlements;
+	key: keyof Entitlements;
 	icon: string;
 	title: string;
 	formatter?: (value: number) => string;
@@ -79,7 +78,7 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 		formatter: formatTimeframe,
 	},
 	{
-		key: 'revisions_historical_timeframe',
+		key: 'revision_historical_timeframe',
 		icon: 'manage_history',
 		title: t('licensing.entitlements.revisions_historical_timeframe'),
 		formatter: formatTimeframe,
@@ -93,9 +92,34 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 		icon: 'policy',
 		title: t('licensing.entitlements.custom_policy_rules_enabled'),
 	},
-	{ key: 'display_powered_by', icon: 'info', title: t('licensing.entitlements.display_powered_by') },
 	{ key: 'production_enabled', icon: 'rocket_launch', title: t('licensing.entitlements.production_enabled') },
 ];
+
+type NumericEntitlement = { limit: number; addon?: number; overage?: number };
+type FeatureFlagEntitlement = { default: boolean; override?: boolean };
+
+function isNumericEntitlement(value: unknown): value is NumericEntitlement {
+	return typeof value === 'object' && value !== null && 'limit' in value;
+}
+
+function isFeatureFlagEntitlement(value: unknown): value is FeatureFlagEntitlement {
+	return typeof value === 'object' && value !== null && 'default' in value;
+}
+
+function effectiveLimit(entitlement: NumericEntitlement): number {
+	return entitlement.limit + (entitlement.addon ?? 0) + (entitlement.overage ?? 0);
+}
+
+function isIncluded(entitlement: FeatureFlagEntitlement): boolean {
+	return entitlement.override ?? entitlement.default;
+}
+
+function usageFor(key: keyof Entitlements): number | null {
+	if (!license.value) return null;
+	if (key === 'seats') return license.value.usage.seats;
+	if (key === 'collections') return license.value.usage.collections;
+	return null;
+}
 
 const deactivateConfirmOpen = ref(false);
 const deactivateLoading = ref(false);
@@ -104,13 +128,17 @@ async function handleDeactivateClick() {
 	deactivateLoading.value = true;
 
 	try {
-		const assessment = await sdk.request(readLicenseResolve({ deactivate: true }));
+		const assessment = await sdk.request(
+			requestEndpoint<PendingResolution[]>('/license/pending-resolution', { method: 'GET' }),
+		);
 
 		if (assessment.length === 0) {
 			deactivateConfirmOpen.value = true;
 		} else {
 			// TODO: show conflict resolution modal
 		}
+	} catch (err) {
+		unexpectedError(err);
 	} finally {
 		deactivateLoading.value = false;
 	}
@@ -159,18 +187,22 @@ async function handleDeactivateClick() {
 					<span class="entitlements-title">{{ t('licensing.plan_usage') }}</span>
 					<template v-for="item in ENTITLEMENT_CONFIG" :key="item.key">
 						<LicenseEntitlementItem
-							v-if="typeof license.entitlements[item.key] === 'boolean'"
+							v-if="isFeatureFlagEntitlement(license.entitlements[item.key])"
 							:icon="item.icon"
 							:title="item.title"
-							:included="license.entitlements[item.key] as boolean"
+							:included="isIncluded(license.entitlements[item.key] as FeatureFlagEntitlement)"
 						/>
-						<LicenseEntitlementItem v-else :icon="item.icon" :title="item.title">
+						<LicenseEntitlementItem
+							v-else-if="isNumericEntitlement(license.entitlements[item.key])"
+							:icon="item.icon"
+							:title="item.title"
+						>
 							<span v-if="item.formatter" class="usage-value">
-								{{ item.formatter(license.entitlements[item.key] as number) }}
+								{{ item.formatter(effectiveLimit(license.entitlements[item.key] as NumericEntitlement)) }}
 							</span>
 							<span v-else>
-								<span class="usage-value">{{ license.usage[item.key] ?? 0 }}</span>
-								<span class="limit">/ {{ license.entitlements[item.key] }}</span>
+								<span class="usage-value">{{ usageFor(item.key) ?? 0 }}</span>
+								<span class="limit">/ {{ effectiveLimit(license.entitlements[item.key] as NumericEntitlement) }}</span>
 							</span>
 						</LicenseEntitlementItem>
 					</template>
