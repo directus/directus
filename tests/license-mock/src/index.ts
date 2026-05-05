@@ -2,12 +2,15 @@ import { env } from 'process';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import Fastify from 'fastify';
 import { exportJWK } from 'jose/key/export';
+import type { License } from './licenses.js';
 import { activateRoute } from './routes/activate.js';
 import { checkRoute } from './routes/check.js';
 import { deactivateRoute } from './routes/deactivate.js';
 import { licenseRoute } from './routes/license.js';
 import { refreshRoute } from './routes/refresh.js';
 import { publicKey } from './token.js';
+
+export type { License };
 
 const app = Fastify({
 	logger: true,

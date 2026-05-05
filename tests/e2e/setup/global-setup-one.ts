@@ -32,6 +32,7 @@ export async function setup(project: TestProject) {
 			redis: true,
 			saml: true,
 			minio: true,
+			license: true,
 		},
 		cache: false,
 	};

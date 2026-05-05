@@ -7,6 +7,10 @@
 		"build": "tsdown src/index.ts src/cli.ts --dts",
 		"dev": "tsdown -w"
 	},
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"keywords": [],
 	"type": "module",
 	"author": "Nils Twelker (nils@directus.io)",

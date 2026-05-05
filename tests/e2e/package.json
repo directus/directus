@@ -18,6 +18,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"@directus/license-mock": "workspace:*",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"async-mutex": "catalog:",
