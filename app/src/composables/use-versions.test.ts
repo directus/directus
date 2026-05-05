@@ -777,7 +777,7 @@ describe('useVersions', () => {
 			const edits = ref({ title: 'my changes' });
 			const item = ref({ id: '1', title: 'original' });
 
-			await expect(saveVersion(edits, item, '1')).rejects.toThrow();
+			await expect(saveVersion(edits, item)).rejects.toThrow();
 			expect(edits.value).toEqual({ title: 'my changes' });
 		});
 	});
