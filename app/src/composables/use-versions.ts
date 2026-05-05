@@ -189,7 +189,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function versionErrorHandler(error: any) {
+	function versionErrorHandler(error: any) {
 		// Backend returns 403 for both deleted records and permission denials.
 		// Tag the original error so the caller surfaces the standard Forbidden
 		// dialog with a redirect-on-dismiss; suppress the default notification here.
@@ -260,7 +260,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return savedData;
 		} catch (error) {
-			await versionErrorHandler(error);
+			versionErrorHandler(error);
 		} finally {
 			saveVersionLoading.value = false;
 		}
@@ -284,7 +284,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return itemKey ?? null;
 		} catch (error) {
-			await versionErrorHandler(error);
+			versionErrorHandler(error);
 			return null;
 		} finally {
 			publishVersionLoading.value = false;
