@@ -21,6 +21,7 @@ import { useItem } from '@/composables/use-item';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { uploadFile } from '@/utils/upload-file';
 import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -57,7 +58,6 @@ const {
 	save,
 	remove,
 	deleting,
-	saveAsCopy,
 	refresh,
 	getItem,
 	validationErrors,
@@ -160,8 +160,48 @@ async function saveAndStay() {
 }
 
 async function saveAsCopyAndNavigate() {
-	const newPrimaryKey = await saveAsCopy();
-	if (newPrimaryKey) router.push({ name: 'files-item', params: { primaryKey: newPrimaryKey } });
+	saving.value = true;
+
+	try {
+		const blobResponse = await api.get(`/assets/${primaryKey.value}`, { responseType: 'blob' });
+
+		const fileObject = new File([blobResponse.data], item.value!.filename_download, {
+			type: item.value!.type ?? undefined,
+		});
+
+		// Only forward user-editable fields (not hidden or readonly in the system definition).
+		// filename_disk, server timestamps, file dimensions, etc. are excluded and handled by the upload pipeline.
+		const copyableFieldNames = new Set(
+			fields.value.filter((field) => !field.meta?.hidden && !field.meta?.readonly).map((field) => field.field),
+		);
+
+		// folder and storage are readonly in the form but should carry over to the copy.
+		copyableFieldNames.add('folder');
+		copyableFieldNames.add('storage');
+
+		const preset: Record<string, any> = {};
+
+		for (const [key, value] of Object.entries(item.value ?? {})) {
+			if (copyableFieldNames.has(key)) preset[key] = value;
+		}
+
+		Object.assign(preset, edits.value);
+
+		const uploadedFile = await uploadFile(fileObject, {
+			preset: preset as Partial<File>,
+			notifications: false,
+		});
+
+		if (uploadedFile) {
+			notify({ title: t('item_create_success', 1) });
+			edits.value = {};
+			router.push({ name: 'files-item', params: { primaryKey: uploadedFile.id } });
+		}
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		saving.value = false;
+	}
 }
 
 async function deleteAndQuit() {
