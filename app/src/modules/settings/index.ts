@@ -9,6 +9,7 @@ import Extensions from './routes/extensions/extensions.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import FlowsDetail from './routes/flows/flow.vue';
 import FlowsOverview from './routes/flows/overview.vue';
+import License from './routes/license/license.vue';
 import MarketplaceAccount from './routes/marketplace/routes/account/account.vue';
 import MarketplaceExtension from './routes/marketplace/routes/extension/extension.vue';
 import MarketplaceRegistry from './routes/marketplace/routes/registry/registry.vue';
@@ -198,6 +199,11 @@ export default defineModule({
 					props: true,
 				},
 			],
+		},
+		{
+			name: 'settings-license',
+			path: 'license',
+			component: License,
 		},
 		{
 			name: 'settings-ai',
