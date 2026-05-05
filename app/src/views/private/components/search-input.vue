@@ -169,7 +169,6 @@ function emitValue() {
 					bottom
 					right
 					class="search-badge"
-					:class="{ active, 'filter-active': filterActive }"
 					:value="activeFilterCount"
 					:disabled="disabled || !activeFilterCount || filterActive"
 				>
