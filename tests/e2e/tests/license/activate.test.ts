@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { activateLicense } from '@directus/license';
+import { activateLicenseKey } from '@directus/license';
 import type { License } from '@directus/license-mock';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { env, port } from '@utils/constants.js';
@@ -19,7 +19,7 @@ test('activate a license key', async () => {
 		project_id: randomUUID(),
 		token: {
 			meta: {
-				type: 'TEAM',
+				name: 'TEAM',
 				grace_period: 10000,
 				validation_interval: 1000,
 				expires_at: now + 1000,
@@ -39,8 +39,10 @@ test('activate a license key', async () => {
 				telemetry_required: { default: true },
 				display_powered_by: 'NONE',
 				custom_llms_enabled: { default: false, override: true },
-				custom_policy_rules_enabled: { default: false },
+				custom_permission_rules_enabled: { default: false },
+				ai_translations_enabled: { default: false },
 				production_enabled: { default: true },
+				flows: { limit: 10 },
 			},
 		},
 	};
@@ -53,7 +55,7 @@ test('activate a license key', async () => {
 		body: JSON.stringify(license),
 	});
 
-	const activeLicense = await api.request(activateLicense(key));
+	const activeLicense = await api.request(activateLicenseKey({ license_key: key }));
 
 	expect(activeLicense).toEqual({});
 });

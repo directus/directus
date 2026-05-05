@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { LicenseImmutableError } from '@directus/errors';
-import type { LicenseSource, LicenseStatus, PendingResolution } from '@directus/license';
 import {
 	activateKey,
 	billinPortal,
