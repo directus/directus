@@ -43,6 +43,9 @@ setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
 setup_license_title: Set up your license
+license_onboarding_title: Have a license key?
+license_onboarding_desc: >
+  Enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be eligible for our {oig}.
 project_usage: What are you using Directus for?
 project_usage_personal: Personal / Side project
 project_usage_commercial: Business / Commercial
