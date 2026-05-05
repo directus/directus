@@ -1,4 +1,6 @@
-import type { AppEntitlements, CountableEntitlementKey, 
+import type {
+	AppEntitlements,
+	CountableEntitlementKey,
 	EntitlementCheckResult,
 	Entitlements,
 	FeatureFlagCheckResult,
@@ -6,49 +8,49 @@ import type { AppEntitlements, CountableEntitlementKey,
 	FeatureFlagValidator,
 	License,
 	NumericEntitlementKey,
-	UsageCounter } from '@directus/license';
-import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FeatureFlagViolatedError, LimitExceededError  } from '@directus/license';
+	UsageCounter,
+} from '@directus/license';
+import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
 
 /**
  * Example:
- * 
+ *
  * Adding usage counter for "Seats" in the API
  * ```ts
  * import { entitlements } from '@directus/license'
- * 
+ *
  * // on startup
  * entitlements.registerCounter('seats', async () => {
  *   const userCounts = await fetchUserCount({
  *     knex: getDatabase()
  *   });
- * 
+ *
  *   return userCounts.admin + userCounts.app;
  * });
- * 
+ *
  * // in the users service
  * entitlements.assert('seats', { adding: 5 });
  * // throws error if adding 5 would pass the limit
  * // or call .check for non-throwing information
  * ```
- * 
+ *
  * Adding validator for "sso_enabled" in the API
  * ```ts
  * import { entitlements } from '@directus/license'
- * 
+ *
  * // on startup
  * entitlements.registerValidator('sso_enabled', async () => {
  *   const count_sso = // check the db for sso enabled users
- * 
+ *
  *   return count_sso > 0;
  * });
- * 
+ *
  * // in the users service when trying to enable sso on a user
  * entitlements.assert('sso_enabled');
  * // throws error if sso is disabled but there are users with it enabled
  * // or call .check for non-throwing information
  * ```
  */
-
 
 export class EntitlementManager {
 	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
@@ -62,7 +64,7 @@ export class EntitlementManager {
 		this.entitlements = license?.entitlements ?? CORE_LICENSE['entitlements'];
 	}
 
-	/**		
+	/**
 	 * Returns whether a feature flag is enabled, applying `override` when
 	 * present and falling back to `default` otherwise.
 	 */
@@ -149,15 +151,12 @@ export class EntitlementManager {
 	 * limit / usage / remaining / allowed. For feature flags: returns the
 	 * validator's verdict (`valid`) and the license-side `entitled` state.
 	 */
-	check(
-		key: CountableEntitlementKey,
-		opts?: { adding?: number, removing?: number },
-	): Promise<EntitlementCheckResult>;
+	check(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<EntitlementCheckResult>;
 
 	check(key: FeatureFlagEntitlementKey): Promise<FeatureFlagCheckResult>;
 	async check(
 		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number, removing?: number },
+		opts?: { adding?: number; removing?: number },
 	): Promise<EntitlementCheckResult | FeatureFlagCheckResult> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
@@ -186,12 +185,9 @@ export class EntitlementManager {
 	 * flag: throws `FeatureFlagViolatedError` when the registered validator
 	 * reports the entitlement is broken.
 	 */
-	assert(key: CountableEntitlementKey, opts?: { adding?: number, removing?: number }): Promise<void>;
+	assert(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<void>;
 	assert(key: FeatureFlagEntitlementKey): Promise<void>;
-	async assert(
-		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number },
-	): Promise<void> {
+	async assert(key: CountableEntitlementKey | FeatureFlagEntitlementKey, opts?: { adding?: number }): Promise<void> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
 			if (hardLimit === null) return;
@@ -200,20 +196,20 @@ export class EntitlementManager {
 			const adding = opts?.adding ?? 0;
 
 			if (usage + adding > hardLimit) {
-				throw new LimitExceededError({ key, hardLimit, usage, adding });
+				// LICENSE-TODO: replace with correct error
+				// throw new LimitExceededError({ key, hardLimit, usage, adding });
 			}
 
 			return;
 		}
 
 		if (!(await this.isValid(key))) {
-			throw new FeatureFlagViolatedError({ key });
+			// LICENSE-TODO: replace with correct error
+			// throw new FeatureFlagViolatedError({ key });
 		}
 	}
 
-	private isCountableKey(
-		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-	): key is CountableEntitlementKey {
+	private isCountableKey(key: CountableEntitlementKey | FeatureFlagEntitlementKey): key is CountableEntitlementKey {
 		return COUNTABLE_ENTITLEMENT_KEYS.includes(key as CountableEntitlementKey);
 	}
 }
