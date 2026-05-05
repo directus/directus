@@ -1,7 +1,7 @@
 import { appAccessMinimalPermissions, appRecommendedPermissions } from "@directus/system-data";
 import type { Permission } from "@directus/types";
 import { isEqual } from "lodash-es";
-import { ItemsService, PermissionsService } from "../../services/index.js";
+import { ItemsService } from "../../services/index.js";
 import { getSchema } from "../../utils/get-schema.js";
 import { entitlementManager } from "./manager.js";
 
