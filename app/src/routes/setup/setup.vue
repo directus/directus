@@ -39,7 +39,7 @@ const showLicenseStep = computed(() => {
 	if (!info.value.onboarding) return false;
 	const { adminInEnv, licenseInEnv, projectOwnerInEnv } = info.value.onboarding;
 	if (licenseInEnv) return false;
-	return (!adminInEnv && !projectOwnerInEnv) || (adminInEnv && projectOwnerInEnv);
+	return !adminInEnv && !projectOwnerInEnv;
 });
 
 onMounted(() => {

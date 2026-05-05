@@ -33,6 +33,7 @@ const mockServerInfo = {
 		public_registration: null,
 		public_registration_verify_email: null,
 	},
+	onboarding: null,
 };
 
 const mockAuthProviders: Auth['providers'] = [
@@ -78,6 +79,7 @@ describe('hydrate action', async () => {
 		await serverStore.hydrate();
 
 		expect(serverStore.info.project).toEqual(mockServerInfo.project);
+		expect(serverStore.info.onboarding).toEqual(mockServerInfo.onboarding);
 	});
 
 	test('should hydrate auth', async () => {
