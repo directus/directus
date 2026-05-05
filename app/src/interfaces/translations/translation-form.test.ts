@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
 import { computed } from 'vue';
 import TranslationForm from './translation-form.vue';
@@ -64,7 +64,7 @@ describe('translation-form', () => {
 		});
 
 		await wrapper.setProps({ lang: 'en' });
-		await wrapper.vm.$nextTick();
+		await flushPromises();
 
 		const vForm = wrapper.find('[data-testid="v-form"]');
 
@@ -91,7 +91,7 @@ describe('translation-form', () => {
 		});
 
 		await wrapper.setProps({ lang: 'en' });
-		await wrapper.vm.$nextTick();
+		await flushPromises();
 
 		const vForm = wrapper.find('[data-testid="v-form"]');
 

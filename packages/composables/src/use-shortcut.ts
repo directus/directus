@@ -12,18 +12,24 @@ export const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab',
 
 const keysDown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
+let listenersAttached = false;
 
-document.body.addEventListener('keydown', (event: KeyboardEvent) => {
-	if (event.repeat || !event.key) return;
+function attachGlobalListeners() {
+	if (listenersAttached) return;
+	listenersAttached = true;
 
-	keysDown.add(mapKeys(event));
-	callHandlers(event);
-});
+	document.body.addEventListener('keydown', (event: KeyboardEvent) => {
+		if (event.repeat || !event.key) return;
 
-document.body.addEventListener('keyup', (event: KeyboardEvent) => {
-	if (event.repeat || !event.key) return;
-	keysDown.clear();
-});
+		keysDown.add(mapKeys(event));
+		callHandlers(event);
+	});
+
+	document.body.addEventListener('keyup', (event: KeyboardEvent) => {
+		if (event.repeat || !event.key) return;
+		keysDown.clear();
+	});
+}
 
 export function useShortcut(
 	shortcuts: string | string[],
@@ -49,6 +55,8 @@ export function useShortcut(
 	};
 
 	onMounted(() => {
+		attachGlobalListeners();
+
 		[shortcuts].flat().forEach((shortcut) => {
 			if (shortcut in handlers) {
 				handlers[shortcut]?.unshift(callback);

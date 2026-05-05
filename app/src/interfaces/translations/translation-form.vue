@@ -92,6 +92,15 @@ const translateBtn = useTemplateRef<HTMLButtonElement>('translateBtn');
 const formWrapper = useTemplateRef<HTMLDivElement>('formWrapper');
 const isHoveringTranslateButton = useElementHover(translateBtn);
 
+// Unmount the form when fields or lang change to avoid WYSIWYG crashing while Vue manipulates the DOM.
+const formReady = ref(true);
+
+watch([fields, lang], async () => {
+	formReady.value = false;
+	await nextTick();
+	formReady.value = true;
+});
+
 const activatorDisabled = computed(() => {
 	return (
 		disabled || (!item.value && !saveAllowed.value) || (item.value && !deleteAllowed.value && !isLocalItem(item.value))
@@ -337,6 +346,7 @@ function getTranslationSurface(fieldEl: HTMLElement): HTMLElement {
 			:class="{ 'is-translating': isTranslatingLanguage }"
 		>
 			<VForm
+				v-if="formReady"
 				:key="selectedLanguage.value"
 				:primary-key="itemPrimaryKey ?? '+'"
 				:class="{ unselected: !item, disabled }"

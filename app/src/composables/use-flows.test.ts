@@ -399,6 +399,56 @@ describe('runManualFlow', () => {
 		expect(mockOnRefresh).toHaveBeenCalledOnce();
 	});
 
+	test('clears selection after successfully running flow', async () => {
+		const mockFlowsStore = {
+			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+
+		vi.mocked(api.post).mockResolvedValue({});
+
+		const selection = ref([{ id: 'item1' }, { id: 'item2' }]);
+
+		const testOptions = {
+			...useFlowsOptions,
+			primaryKey: undefined,
+			selection,
+			hasEdits: ref(false),
+		};
+
+		const { runManualFlow } = useFlows(testOptions);
+
+		await runManualFlow(mockFlows[4]!.id);
+
+		expect(selection.value).toEqual([]);
+	});
+
+	test('does not clear selection if flow API call fails', async () => {
+		const mockFlowsStore = {
+			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+
+		vi.mocked(api.post).mockRejectedValue(new Error('flow failed'));
+
+		const selection = ref([{ id: 'item1' }, { id: 'item2' }]);
+
+		const testOptions = {
+			...useFlowsOptions,
+			primaryKey: undefined,
+			selection,
+			hasEdits: ref(false),
+		};
+
+		const { runManualFlow } = useFlows(testOptions);
+
+		await runManualFlow(mockFlows[4]!.id);
+
+		expect(selection.value).toEqual([{ id: 'item1' }, { id: 'item2' }]);
+	});
+
 	test('resets confirm state after flow API error, showing dialog again on next trigger', async () => {
 		const flowWithConfirm = {
 			id: 'flow-confirm',
