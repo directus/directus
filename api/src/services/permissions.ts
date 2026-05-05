@@ -9,8 +9,7 @@ import type {
 	Query,
 	QueryOptions,
 } from '@directus/types';
-import { omit } from 'graphql-compose';
-import { uniq } from 'lodash-es';
+import { omit, uniq } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
 import { hasCustomRule, isRecommendedAppPermission } from '../license/entitlements/custom_policy_rules_enabled.js';
 import { entitlementManager } from '../license/entitlements/manager.js';
