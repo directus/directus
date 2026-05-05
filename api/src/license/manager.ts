@@ -191,7 +191,10 @@ export class LicenseManager {
 	public async isLocked() {
 		const status = await this.getStatus();
 
-		return ['expired', 'suspended', 'locked'].includes(status);
+		// LICENSE-TODO: revert
+		return false;
+
+		// return ['expired', 'suspended', 'locked'].includes(status);
 	}
 
 	/**
