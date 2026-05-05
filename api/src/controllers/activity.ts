@@ -5,6 +5,7 @@ import { validateBatch } from '../middleware/validate-batch.js';
 import { ActivityService } from '../services/activity.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
+import { getHistoryFilterQuery } from '../utils/get-history-filter-query.js';
 
 const router = express.Router();
 
@@ -31,7 +32,13 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_activity', req.sanitizedQuery);
+	const historyQuery = getHistoryFilterQuery(req.sanitizedQuery, 'revision_historical_timeframe', (sinceDate) => ({
+		timestamp: {
+			_gte: sinceDate.toISOString(),
+		},
+	}));
+
+	const meta = await metaService.getMetaForQuery('directus_activity', historyQuery);
 
 	res.locals['payload'] = {
 		data: result,

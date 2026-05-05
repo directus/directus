@@ -4,14 +4,17 @@ import type { LicenseSource, LicenseStatus, PendingResolution } from '@directus/
 import {
 	activateKey,
 	billinPortal,
-	checkKey,
 	CORE_LICENSE,
 	deactivateKey,
 	deleteAddon,
 	License,
-	listAddons,
+	type LicensePendingResolution,
+	type LicenseSource,
+	type LicenseStatus,
+	previewKey,
 	refreshLicense,
 	updateAddonQuantity,
+	updateKey,
 	verifyLicense,
 } from '@directus/license';
 import { toBoolean } from '@directus/utils';
@@ -188,11 +191,20 @@ export class LicenseManager {
 		}
 	}
 
+	public async isLocked() {
+		const status = await this.getStatus();
+
+		// LICENSE-TODO: revert
+		return false;
+
+		// return ['expired', 'suspended', 'locked'].includes(status);
+	}
+
 	/**
 	 *  Check a license meta/info without activating it
 	 */
 	public async check(key: string) {
-		return checkKey({
+		return previewKey({
 			license_key: key,
 		});
 	}
@@ -252,6 +264,7 @@ export class LicenseManager {
 		await deactivateKey({
 			license_key: currentKey,
 			project_id: project_id!,
+			public_url: env['PUBLIC_URL'] as string,
 		});
 
 		await this.downgrade();
@@ -262,7 +275,27 @@ export class LicenseManager {
 	 */
 	public async update(oldKey: string, newKey: string) {
 		this.assertMutable({ action: 'update' });
-		// TODO: pending update endpoint on license server
+
+		const settingsService = new SettingsService({ schema: await getSchema() });
+
+		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+		const { token } = await updateKey(
+			{
+				license_key: oldKey,
+				project_id: project_id!,
+				public_url: env['PUBLIC_URL'] as string,
+			},
+			{ license_key: newKey },
+		);
+
+		await settingsService.upsertSingleton({
+			license_key: newKey,
+			license_token: token,
+			project_id: project_id!,
+		});
+
+		this.rpc.refreshCache();
 	}
 
 	private async verify(token: string): Promise<License | null> {
@@ -299,11 +332,21 @@ export class LicenseManager {
 
 		if (license?.meta.offline === false) {
 			try {
-				const { token } = await refreshLicense({
-					license_key: key,
-					project_id: project_id!,
-					public_url: env['PUBLIC_URL'] as string,
-				});
+				const { token } = await refreshLicense(
+					{
+						license_key: key,
+						project_id: project_id!,
+						public_url: env['PUBLIC_URL'] as string,
+					},
+					{
+						// LICENSE-TODO: Add actual usage
+						usage_metrics: {
+							seats: 4,
+							collections: 3,
+							flows: 2,
+						},
+					},
+				);
 
 				await settingsService.upsertSingleton({
 					license_token: token,
@@ -334,6 +377,7 @@ export class LicenseManager {
 		const { url } = await billinPortal({
 			license_key: this.licenseKey!,
 			project_id: project_id!,
+			public_url: env['PUBLIC_URL'] as string,
 		});
 
 		return url;
@@ -387,12 +431,27 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		await updateAddonQuantity({
-			license_key: this.licenseKey!,
-			project_id: project_id!,
-			addon_id: options.addonId,
-			quantity: options.quantity,
-		});
+		await updateAddonQuantity(
+			{
+				license_key: this.licenseKey!,
+				project_id: project_id!,
+				public_url: env['PUBLIC_URL'] as string,
+			},
+			{
+				addons: [
+					{
+						addon_id: options.addonId,
+						quantity: options.quantity,
+					},
+				],
+				// LICENSE-TODO: Add actual usage
+				usage_metrics: {
+					seats: 4,
+					collections: 3,
+					flows: 2,
+				},
+			},
+		);
 	}
 
 	public async removeAddon(addonId: string) {
@@ -402,11 +461,14 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		await deleteAddon({
-			license_key: this.licenseKey!,
-			project_id: project_id!,
-			addon_id: addonId,
-		});
+		await deleteAddon(
+			{
+				license_key: this.licenseKey!,
+				project_id: project_id!,
+				public_url: env['PUBLIC_URL'] as string,
+			},
+			{ addon_ids: [addonId] },
+		);
 	}
 
 	/**
@@ -415,7 +477,7 @@ export class LicenseManager {
 	 * If no entitlements to resolve, an empty array will be returned
 	 */
 	public async pendingResolution(options: { adminId: string }) {
-		const pendingResolution: PendingResolution[] = [];
+		const pendingResolution: LicensePendingResolution[] = [];
 		const schema = await getSchema();
 
 		// collection candidates = all collections not marked as disabled, db only or system
@@ -553,7 +615,7 @@ export class LicenseManager {
 			}
 
 			pendingResolution.push({
-				key: 'sso',
+				key: 'sso_enabled',
 				kind: 'feature_gate',
 				blockers: ['ADMIN_MISSING_EMAIL', 'ADMIN_MISSING_PASSWORD'],
 			});
@@ -586,7 +648,7 @@ export class LicenseManager {
 
 		// custom policy rules - any policy with a custom permission set
 		// LICENSE-TODO: replace with entitlement check
-		const isCustomPolicyRulesEnabled = license.entitlements.custom_policy_rules_enabled.default;
+		const isCustomPolicyRulesEnabled = license.entitlements.custom_permission_rules_enabled.default;
 
 		if (!isCustomPolicyRulesEnabled) {
 			const policiesService = new PoliciesService({ schema });
@@ -640,7 +702,7 @@ export class LicenseManager {
 
 			if (customPolicyRules.length) {
 				pendingResolution.push({
-					key: 'custom_policy_rules_enabled',
+					key: 'custom_permission_rules_enabled',
 					kind: 'feature_gate',
 				});
 			}
@@ -769,7 +831,7 @@ async function getLicenseKey(options?: { database?: Knex }): Promise<{ source: L
 
 	return {
 		source: 'settings',
-		key: license_key,
+		key: license_key ?? null,
 	};
 }
 
@@ -789,6 +851,6 @@ async function getLicenseToken(options?: {
 	const { license_token } = await settingsService.readSingleton({ fields: ['license_token'] });
 	return {
 		source: 'settings',
-		token: license_token,
+		token: license_token ?? null,
 	};
 }

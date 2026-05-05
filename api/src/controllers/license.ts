@@ -1,22 +1,16 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { LicenseCheck, LicenseInfo } from '@directus/license';
-import express, { type RequestHandler } from 'express';
+import { InvalidPayloadError } from '@directus/errors';
+import type { LicenseInfoOutput, LicensePreviewOutput } from '@directus/license';
+import express from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getLicense, getLicenseManager } from '../license/manager.js';
 import { ResolveInput } from '../license/schema.js';
+import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
-import { isAdmin } from '../utils/is-admin.js';
 
 const router = express.Router();
 
-export const multipartHandler: RequestHandler = (req, _res, next) => {
-	if (!isAdmin(req.accountability)) {
-		throw new ForbiddenError();
-	}
-
-	return next();
-};
+router.use(checkIsAdmin);
 
 router.get(
 	'/',
@@ -25,8 +19,8 @@ router.get(
 		const license = await getLicense();
 		const licenseStatus = await licenseManager.getStatus();
 
-		const payload: LicenseInfo = {
-			type: license.meta.type,
+		const payload: LicenseInfoOutput = {
+			name: license.meta.name,
 			status: licenseStatus,
 			source: licenseManager.getSource(),
 			renews_at: license.meta.renews_at,
@@ -38,6 +32,7 @@ router.get(
 			usage: {
 				seats: 1,
 				collections: 15,
+				flows: 2,
 			},
 		};
 
@@ -86,9 +81,9 @@ router.post(
 
 		const license = await licenseManager.check(req.body.license_key);
 
-		const payload: LicenseCheck = {
-			type: license.type,
-			expires_at: license.expires_at,
+		const payload: LicensePreviewOutput = {
+			plan_name: license.name,
+			expires_at: license.expires_at!,
 			production_enabled: license.production_enabled,
 		};
 

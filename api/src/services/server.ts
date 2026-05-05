@@ -9,6 +9,7 @@ import { merge } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
+import { entitlementManager } from '../license/entitlements/manager.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
@@ -153,6 +154,8 @@ export class ServerService {
 		}
 
 		if (this.accountability?.user || !setupComplete) info['version'] = version;
+
+		info['license'] = entitlementManager.getAppEntitlements();
 
 		return info;
 	}

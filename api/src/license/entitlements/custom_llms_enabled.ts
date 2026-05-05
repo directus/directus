@@ -3,9 +3,6 @@ import { SettingsService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { entitlementManager } from './manager.js';
 
-/**
- * Counting the current amount of users with sso enabled
- */
 async function checkCustomLLM() {
     const settingsService = new SettingsService({
         schema: await getSchema(),

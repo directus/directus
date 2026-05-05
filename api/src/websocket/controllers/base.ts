@@ -12,6 +12,7 @@ import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import WebSocket, { type Server, WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
+import { getLicenseManager } from '../../license/manager.js';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
@@ -117,6 +118,16 @@ export default abstract class SocketController {
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
 		const { pathname, query } = parse(request.url!, true);
 		if (pathname !== this.endpoint) return;
+
+		const licenseManager = getLicenseManager();
+		const isLocked = await licenseManager.isLocked();
+
+		if (isLocked) {
+			logger.debug('WebSocket upgrade denied - License is in a locked state and must be resolved');
+			socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
+			socket.destroy();
+			return;
+		}
 
 		if (this.clients.size >= this.maxConnections) {
 			logger.debug('WebSocket upgrade denied - max connections reached');
@@ -259,6 +270,21 @@ export default abstract class SocketController {
 					logger.debug(`WebSocket#${client.uid} is rate limited`);
 					return;
 				}
+			}
+
+			const licenseManager = getLicenseManager();
+			const isLocked = await licenseManager.isLocked();
+
+			if (isLocked) {
+				const error = new WebSocketError(
+					'license',
+					'SERVICE_UNAVAILABLE',
+					`License is in a locked state and must be resolved`,
+				);
+
+				handleWebSocketError(client, error, 'server');
+				logger.debug(`WebSocket#${client.uid} closed due to license in locked state`);
+				return;
 			}
 
 			let message: WebSocketMessage;
