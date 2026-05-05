@@ -11,7 +11,6 @@ import {
 	listAddons,
 	refreshLicense,
 	updateAddonQuantity,
-	verifyLicense,
 } from '@directus/license';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -29,6 +28,8 @@ import { useRPC } from './rpc.js';
 import type { ResolveInput } from './schema.js';
 import { getStatus } from './status.js';
 import type { LicenseSource, LicenseStatus, PendingResolution } from './types.js';
+// TODO: replace with `verifyLicense` from '@directus/license' once licit.dev emits compact JWT format
+import { verifyLicenseCompat as verifyLicense } from './verify-compat.js';
 
 let licenseManager: LicenseManager | undefined;
 const env = useEnv();
@@ -124,7 +125,9 @@ export class LicenseManager {
 			// CASE D
 			if (envKey && !dbKey) {
 				this.source = 'env';
-				await this.activate(envKey);
+				// TODO: temporary bypass flags to avoid redlock re-entrance from within initialize().
+				// Remove once licensing rebuild lands a clean lock structure.
+				await this.activate(envKey, { bypassMutability: true, skipStoreUpdate: true });
 			}
 
 			if (envKey && dbKey) {
@@ -134,7 +137,7 @@ export class LicenseManager {
 				if (envKey !== dbKey) {
 					await this.update(dbKey, envKey);
 				} else {
-					await this.refresh({ key: envKey, token: dbToken ?? null });
+					await this.refresh({ key: envKey, token: dbToken ?? null, skipStoreUpdate: true });
 				}
 			}
 
@@ -149,12 +152,14 @@ export class LicenseManager {
 
 				// CASE F else G
 				if (dbToken) {
-					await this.refresh({ key: dbKey, token: dbToken });
+					await this.refresh({ key: dbKey, token: dbToken, skipStoreUpdate: true });
 				} else {
-					await this.activate(dbKey);
+					await this.activate(dbKey, { bypassMutability: true, skipStoreUpdate: true });
 				}
 			}
 
+			// status is set here since activate()/refresh() were called with skipStoreUpdate inside this lock
+			await store.set('status', 'active');
 			await store.set('initialized', true);
 		});
 	}
@@ -199,10 +204,16 @@ export class LicenseManager {
 
 	/**
 	 * Activates a new license and overwrites an existing one
+	 *
+	 * TODO: bypassMutability and skipStoreUpdate are temporary escape hatches used
+	 * by initialize() to avoid redlock re-entrance and immutability false positives.
+	 * Remove once the licensing rebuild lands a cleaner lock structure.
 	 */
-	public async activate(key: string) {
+	public async activate(key: string, options?: { bypassMutability?: boolean; skipStoreUpdate?: boolean }) {
 		// bypass core tier for core -> key flow
-		this.assertMutable({ action: 'activation', bypassCore: true });
+		if (options?.bypassMutability !== true) {
+			this.assertMutable({ action: 'activation', bypassCore: true });
+		}
 
 		const license: License | null = null;
 		let error: Error | undefined;
@@ -230,9 +241,11 @@ export class LicenseManager {
 			await this.downgrade();
 			throw err;
 		} finally {
-			await store(async (store) => {
-				await store.set('status', getStatus(license, error));
-			});
+			if (options?.skipStoreUpdate !== true) {
+				await store(async (store) => {
+					await store.set('status', getStatus(license, error));
+				});
+			}
 		}
 	}
 
@@ -277,8 +290,11 @@ export class LicenseManager {
 
 	/**
 	 * Verifys a current token and refreshes it with a new token
+	 *
+	 * TODO: skipStoreUpdate is a temporary escape hatch used by initialize() to avoid
+	 * redlock re-entrance. Remove once the licensing rebuild lands a cleaner lock structure.
 	 */
-	public async refresh(options?: { key: string; token?: string | null }): Promise<void> {
+	public async refresh(options?: { key: string; token?: string | null; skipStoreUpdate?: boolean }): Promise<void> {
 		const key = this.licenseKey ?? options?.key;
 		const token = this.licenseToken ?? options?.token;
 
@@ -319,9 +335,11 @@ export class LicenseManager {
 			}
 		}
 
-		await store(async (store) => {
-			await store.set('status', getStatus(license, error));
-		});
+		if (options?.skipStoreUpdate !== true) {
+			await store(async (store) => {
+				await store.set('status', getStatus(license, error));
+			});
+		}
 	}
 
 	public async billingPortalUrl() {

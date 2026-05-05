@@ -1,13 +1,7 @@
-import {
-	type LicenseAddon,
-	type LicenseInfo,
-	type LicenseMockQuery,
-	readLicense,
-	readLicenseAddons,
-} from '@directus/sdk';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import sdk from '@/sdk';
+import type { LicenseAddon, LicenseInfo } from '@/license/types';
+import sdk, { requestEndpoint } from '@/sdk';
 
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
@@ -16,8 +10,9 @@ export type LicenseBoundary = {
 
 export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<LicenseInfo | null>(null);
-	const addons = ref<LicenseAddon[]>([]);
+	const addons = ref<LicenseAddon[] | null>(null);
 	const loading = ref(false);
+	const loadingAddons = ref(false);
 	const error = ref<unknown>(null);
 
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
@@ -31,10 +26,17 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const seatsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
-		return info.value.entitlements.seats - (info.value.usage?.seats ?? 0);
+		const seats = info.value.entitlements.seats;
+		const effective = seats.limit + (seats.addon ?? 0) + (seats.overage ?? 0);
+		return effective - (info.value.usage?.seats ?? 0);
 	});
 
 	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
+
+	const isLocked = computed(() => {
+		const status = info.value?.status;
+		return status === 'expired' || status === 'suspended' || status === 'canceled';
+	});
 
 	function clearTimer() {
 		if (refreshTimer) {
@@ -67,15 +69,11 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		}, delayMs);
 	}
 
-	async function hydrate(query?: LicenseMockQuery) {
+	async function hydrate() {
 		loading.value = true;
 
 		try {
-			[info.value, addons.value] = await Promise.all([
-				sdk.request(readLicense(query)),
-				sdk.request(readLicenseAddons()),
-			]);
-
+			info.value = await sdk.request(requestEndpoint<LicenseInfo>('/license', { method: 'GET' }));
 			error.value = null;
 			scheduleNextRefresh();
 		} catch (err) {
@@ -85,23 +83,37 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		}
 	}
 
+	async function hydrateAddons() {
+		loadingAddons.value = true;
+
+		try {
+			addons.value = await sdk.request(requestEndpoint<LicenseAddon[]>('/license/addons', { method: 'GET' }));
+		} finally {
+			loadingAddons.value = false;
+		}
+	}
+
 	async function dehydrate() {
 		clearTimer();
 		info.value = null;
-		addons.value = [];
+		addons.value = null;
 		error.value = null;
 		loading.value = false;
+		loadingAddons.value = false;
 	}
 
 	return {
 		info,
 		addons,
 		loading,
+		loadingAddons,
 		error,
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
+		isLocked,
 		hydrate,
+		hydrateAddons,
 		dehydrate,
 	};
 });
