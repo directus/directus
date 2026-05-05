@@ -1,10 +1,11 @@
 import { randomUUID } from 'crypto';
+import { activateLicense } from '@directus/license';
 import type { License } from '@directus/license-mock';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { env, port } from '@utils/constants.js';
-import { test } from 'vitest';
+import { expect, test } from 'vitest';
 
-const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<any>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const now = Math.floor(Date.now() / 1000);
 
 test('activate a license key', async () => {
@@ -51,4 +52,8 @@ test('activate a license key', async () => {
 		},
 		body: JSON.stringify(license),
 	});
+
+	const activeLicense = await api.request(activateLicense(key));
+
+	expect(activeLicense).toEqual({});
 });

@@ -1,9 +1,9 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import type { LicenseCheck, LicenseInfo } from '@directus/license';
 import express, { type RequestHandler } from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getLicense, getLicenseManager } from '../license/manager.js';
 import { ResolveInput } from '../license/schema.js';
-import type { LicenseCheck, LicenseInfo } from '../license/types.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { isAdmin } from '../utils/is-admin.js';
@@ -50,7 +50,7 @@ router.get(
 router.post(
 	'/',
 	asyncHandler(async (req, _res, next) => {
-		if (req.body.license_key) {
+		if (!req.body.license_key) {
 			throw new InvalidPayloadError({ reason: 'A "license_key" is required' });
 		}
 

@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { LicenseImmutableError } from '@directus/errors';
+import type { LicenseSource, LicenseStatus, PendingResolution } from '@directus/license';
 import {
 	activateKey,
 	billinPortal,
@@ -28,7 +29,6 @@ import { useStore } from '../utils/store.js';
 import { useRPC } from './rpc.js';
 import type { ResolveInput } from './schema.js';
 import { getStatus } from './status.js';
-import type { LicenseSource, LicenseStatus, PendingResolution } from './types.js';
 
 let licenseManager: LicenseManager | undefined;
 const env = useEnv();
