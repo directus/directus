@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Updated SearchFilter component to match the new design
+Updated SearchInput component to match the new design
