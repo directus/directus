@@ -38,6 +38,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
 
+	const customLLMEnabled = computed(() => info.value?.entitlements?.custom_llms_enabled?.default === true);
+
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -112,6 +114,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		seatsRemaining,
 		hasRemainingSeats,
 		isLocked,
+		customLLMEnabled,
 		hydrate,
 		hydrateAddons,
 		dehydrate,
