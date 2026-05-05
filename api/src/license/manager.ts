@@ -11,7 +11,6 @@ import {
 	listAddons,
 	refreshLicense,
 	updateAddonQuantity,
-	verifyLicense,
 } from '@directus/license';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -29,6 +28,8 @@ import { useRPC } from './rpc.js';
 import type { ResolveInput } from './schema.js';
 import { getStatus } from './status.js';
 import type { LicenseSource, LicenseStatus, PendingResolution } from './types.js';
+// TODO: replace with `verifyLicense` from '@directus/license' once licit.dev emits compact JWT format
+import { verifyLicenseCompat as verifyLicense } from './verify-compat.js';
 
 let licenseManager: LicenseManager | undefined;
 const env = useEnv();
