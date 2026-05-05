@@ -128,9 +128,9 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 				<div class="error-buttons-container">
 					<VButton outlined class="retry-button" x-small danger @click="aiStore.retry()">
 						<VIcon name="refresh" x-small />
-						{{ $t('ai.retry') }}
+						{{ $t('retry') }}
 					</VButton>
-					<VButton class="clear-button" outline x-small danger @click="aiStore.reset()">
+					<VButton class="clear-button" outlined x-small danger @click="aiStore.reset()">
 						{{ $t('ai.clear_conversation') }}
 					</VButton>
 				</div>

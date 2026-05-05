@@ -1673,6 +1673,23 @@ fields:
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
+    ai_translation_default_model: Translation Default Model
+    ai_translation_default_model_note:
+      'Choose the default model used for AI translations. Only models enabled in the settings above are available here.'
+    ai_glossary_term: Term
+    ai_glossary_term_placeholder: Directus Flows
+    ai_glossary_note: Translation Note
+    ai_glossary_note_placeholder: Never translate, keep as-is
+    ai_translation_glossary: Translation Glossary
+    ai_translation_glossary_note:
+      'Define key terms and their approved translations across your languages. Keep product names, UI labels, and other
+      important phrases consistent across your content.'
+    ai_translation_style_guide: Translation Style Guide
+    ai_translation_style_guide_note:
+      'Describe how your content should be translated, including tone, formality, and formatting rules. Include details
+      about your business, product, and audience to help AI keep your brand voice consistent.'
+    ai_translation_style_guide_placeholder:
+      "Translate in a confident, approachable tone. Use informal 'you,' avoid slang, and keep terminology consistent."
     ai_openai_api_key: OpenAI API Key
     ai_openai_allowed_models: OpenAI Allowed Models
     ai_anthropic_api_key: Anthropic API Key
@@ -1863,6 +1880,7 @@ no_shares: No shares to show
 new_share: New Share
 show_more: Show More
 show_less: Show Less
+retry: Retry
 ai:
   thinking: Thinking...
   input: Input
@@ -1879,7 +1897,6 @@ ai:
   always_allow: Always Allow
   deny: Deny
   approve_tool_execution: Approve tool execution?
-  retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
   build_with_assistant: Build with AI Assistant
@@ -2429,6 +2446,30 @@ interfaces:
     default_language: Default Language
     language_field: Language Indicator Field
     language_direction_field: Language Direction Field
+    ai_translate: Translate with AI
+    ai_translate_short: Translate
+    ai_translate_tooltip: Translate your content automatically with AI
+    model: Model
+    source_language: Source Language
+    target_languages: Target Languages
+    translate_n_languages: 'Translate {count} language | Translate {count} languages'
+    no_source_content: The selected source fields have no content to translate.
+    no_additional_languages: No additional languages configured.
+    no_translation_models: No translation models are currently available.
+    translation_error: Translation failed for this language.
+    translation_not_allowed: You don't have permission to translate this language.
+    translation_pending_delete: This language has pending deletion and can't be translated.
+    permission_check_failed: Could not verify permissions for this language. Please try again.
+    empty: (empty)
+    field_empty_tooltip: This field has no source content to translate
+    ai_translating: Translating...
+    ai_translating_progress: 'Translating {done} of {total} languages...'
+    translation_has_errors: Some translations failed.
+    translation_complete: Translations completed successfully.
+    translation_complete_with_warnings: Translations completed, but some fields may be incomplete.
+    partial_translation: 'Only {count} of {total} fields were translated.'
+    rate_limited: The AI provider is rate limiting requests. Please wait a moment and try again.
+
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -2589,9 +2630,6 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
-    timezone: Timezone
-    timezone_local: Local Timezone
-    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files
