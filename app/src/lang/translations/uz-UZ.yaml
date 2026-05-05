@@ -272,16 +272,211 @@ field_name: Maydon nomi
 translations: Tarjimalar
 no_translations: Tarjima yo'q
 left_to_right: Chapdan o'ngga
+right_to_left: O'ngdan chapga
+note: Izoh
+enter_a_value: Qiymat kiriting...
+enter_a_placeholder: To'ldiruvchi kiriting...
+length: Uzunligi
+soft_length: Yumshoq chegara
+download_page_as_csv_unsupported: Bu tartib joriy sahifani yuklab olishni qo'llab-quvvatlamaydi.
+private_user: Shaxsiy foydalanuvchi
+creation_preview: Yaratish ko'rinishi
+revision_preview: Tahrirlash ko'rinishi
+updates_made: Yangilanishlar amalga oshirildi
+leave_comment: Izoh qoldiring...
+post_comment_success: Izoh joylashtirildi
+post_comment_updated: Fikr yangilandi
+item_create_success: Element yaratildi | Elementlar yaratildi
+item_update_success: Element yangilandi | Elementlar yangilandi
+item_delete_success: Element o'chirildi | Elementlar o'chirildi
+this_collection: Ushbu to'plam
+related_collection: Bog'liq to'plam
+related_collections: Bog'liq to'plamlar
+translations_collection: Tarjima to'plami
+languages_collection: Tillar to'plami
+enable_translations: Tarjimalarni yoqish
+manage_translation_fields: Tarjima maydonlarini qo'shish
+fields_to_translate: Tarjima qilinadigan maydonlar
+fields_to_add_to_translations: Tarjimalarga qo'shish uchun maydonlar
+translations_collection_name: Tarjimalar to'plami nomi
+translations_already_enabled: Tarjimalar yoqilgan
+translations_manage_helper_description: Ushbu to'plamdan tarjima qilish uchun ko'proq maydonlar qo'shishingiz mumkin.
+translations_copy_data_note: Maydonlar tarjimalar to'plamiga ko'chiriladi. Mavjud ma'lumotlar ko'chirilmaydi.
+add_fields: Maydonlar qo'shish
+show_advanced_options: Munosabat tafsilotlarini ko'rsatish
+hide_advanced_options: Munosabat tafsilotlarini yashirish
+translations_field_name_required: Barcha tarjima maydon nomlari talab qilinadi.
+translations_foreign_key_name_conflict: Ota va til tashqi kalit nomlari har xil bo'lishi kerak.
+translations_duplicate_field_names: Tarjima maydon nomlari noyob bo'lishi kerak.
+translation_configuration: Tarjima konfiguratsiyasi
+translations_invalid_config_warning: '{count} ta tarjima konfiguratsiyasi hal qilinmadi va faqat o''qish uchun qoladi | {count} ta tarjima konfiguratsiyalari hal qilinmadi va faqat o''qish uchun qoladi'
+translations_collection_already_exists: Bu tarjimalar to'plami allaqachon mavjud va qayta ishlatiladi
+translations_fields_up_to_date: Barcha mos maydonlar tarjimalar to'plamida allaqachon mavjud.
+translations_preview_collections: To'plamlar
+translations_preview_fields: Maydonlar
+translations_preview_relations: Munosabatlar
+ungrouped: Guruhdan chiqqan
+translations_enable_helper_description: Kontentni bir nechta tillarga tarjima qiling.
+import_data_input_placeholder: CSV yoki JSON...
+import_data_button: Import qilishni boshlash
+import_background: Fonda import qilish
+import_data_indeterminate: Ma'lumotlar import qilinmoqda...
+import_data_success: Ma'lumotlar {filename} dan muvaffaqiyatli import qilindi
+import_upload_success: '{filename} muvaffaqiyatli yuklandi. Ma''lumotlar fonda import qilinmoqda.'
+import_data_errors: Import Xatosi
+import_data_error: Ushbu faylning ma'lumotlar strukturasi to'plamga mos kelmaydi.
+import_data_validation_errors_notice: 'Quyidagi qatorlarda noto''g''ri qiymatlar mavjud:'
+import_data_error_row: 'Qator {rows}{field}:'
+snapshot:
+  export: Sxemani eksport qilish
+label_import: Import
 functions:
   count: Soni
+months:
+  january: Yanvar
+  february: Fevral
+  march: Mart
+  april: Aprel
+  may: May
+  june: Iyun
+  july: Iyul
+  august: Avgust
+  september: Sentabr
+  october: Oktabr
+  november: Noyabr
+  december: Dekabr
+drag_mode: Sudrab ko'chirish rejimi
+move_tool: Ko'chirish vositasi
+crop_tool: Qirqish vositasi
+focal_point_tool: Fokus nuqtasi vositasi
+cancel_crop: Qirqishni bekor qilish
+cancel_selection: Tanlovni bekor qilish
+original: Asl nuxsasi
+url: URL
+import_label: Import
+file_details: Fayl tafsilotlari
+copy_id: IDni nusxalash
+copy_id_success: ID nusxalandi
+copy_id_fail: ID nusxalanmadi
+dimensions: O'lchamlar
+size: Hajm
+created: Yaratilgan
+uploaded: Yuklandi
+modified: O'zgartirilgan
+owner: Egasi
+edited_by: Tomonidan tahrirlangan
+folder: Papka
+folders: Papkalar
+zoom: Yaqinlashtirish
+download: Yuklab olish
+open: Ochish
+open_in_new_window: Yangi oynada ochish
+open_folder: '"{folder}" papkasini ochish'
+foreground_color: Old fon rangi
+background_color: Fon rangi
+upload_from_device: Qurilmadan fayl yuklash
+choose_from_library: Kutubxonadan fayl tanlash
+import_from_url: URL dan fayl import qilish
+replace_from_device: Qurilmadan fayl almashtirish
+replace_from_library: Kutubxonadan fayl almashtirish
+replace_from_url: URL dan fayl almashtirish
+no_image_selected: Hech qanday rasm tanlanmagan
+no_file_selected: Hech qanday fayl tanlanmagan
+download_file: Faylni yuklab olish
+operation_not_found: '"{operation}" operatsiyasi topilmadi.'
+reset_interface: Interfeysni tiklash
+display_not_found: '"{display}" ko''rinishi topilmadi.'
+reset_display: Ko'rinishni tiklash
+list-m2a: Yaratuvchi (M2A)
+item_count: 'Elementlar yo''q | Bitta element | {count} ta element'
+filtered_item_count: 'Filtr bo''yicha elementlar yo''q | Bitta filtr elementi | {count} ta filtr elementi'
+no_items_copy: Bu to'plamda hali hech qanday element yo'q.
+file_count: 'Fayllar yo''q | Bitta fayl | {count} ta fayl'
+no_files_copy: Bu yerda fayllar yo'q.
+user_count: 'Foydalanuvchilar yo''q | Bitta foydalanuvchi | {count} ta foydalanuvchi'
+no_users_copy: Bu rolda hali hech qanday foydalanuvchi yo'q.
+no_active_users: Faol foydalanuvchilar yo'q
+no_suspended_users: To'xtatilgan foydalanuvchilar yo'q
+no_invited_users: Taklif qilingan foydalanuvchilar yo'q
+no_status_users_copy: '{status} holatidagi foydalanuvchilar yo''q.'
+no_notifications: Bildirishnomalar yo'q
+no_notifications_copy: Hamma narsa yangilangan!
+activity_log: Faoliyat jurnali
+all_items: Barcha elementlar
+any: Istalgan
+csv: CSV
+csv_utf8: CSV Excel (UTF-8)
+no_collections: To'plamlar yo'q
+create_collection: To'plam yaratish
+no_collections_copy_admin: Hali hech qanday to'plamingiz yo'q. Boshlash uchun tugmani bosing.
+no_collections_copy: Hali hech qanday to'plamingiz yo'q. Iltimos, administratoringizga murojaat qiling.
+relationship_not_setup: Munosabat to'g'ri sozlanmagan yoki unga kirish uchun ruxsatingiz yo'q
+no_singleton_relations: Yagona ob'ektlarga munosabatlar qo'llab-quvvatlanmaydi
+display_template_not_setup: Ko'rsatish shabloni parametri noto'g'ri sozlangan
+collection_field_not_setup: To'plam maydoni parametri noto'g'ri sozlangan
+select_a_collection: To'plam tanlang
+select_a_field: Maydon tanlang
+active: Faol
+move_to: Ko'chirish...
+copy: Nusxalash
+copy_to: Nusxalab ko'chirish...
+inactive: Faol emas
+users: Foydalanuvchilar
+roles: Rollar
+activity: Faoliyat
+activity_item: Faoliyat elementi
+action: Harakat
+ip_address: IP manzil
+user_agent: Foydalanuvchi agenti
+origin: Manba
+decimals: Kasrlar
+value_decimals: Qiymat kasrlari
+min_value: Minimal qiymat
+errors:
+  GRAPHQL_VALIDATION: GraphQL tekshiruvi
+  ILLEGAL_ASSET_TRANSFORMATION: Tasvir manbasi ko'rish uchun juda katta
+  INTERNAL_SERVER_ERROR: Kutilmagan xato
+  INVALID_CONFIG: Noto'g'ri konfiguratsiya
+  INVALID_CREDENTIALS: Noto'g'ri foydalanuvchi nomi yoki parol
+  INVALID_FOREIGN_KEY: Noto'g'ri tashqi kalit
+  INVALID_INVITE: Bu taklif endi amal qilmaydi
+  INVALID_IP: IP manzilga ruxsat berilmagan
+  INVALID_OTP: Noto'g'ri bir martalik parol
+  INVALID_PAYLOAD: Noto'g'ri ma'lumot
+  INVALID_PROVIDER: Foydalanuvchi boshqa autentifikatsiya provayderiga tegishli
+  INVALID_PROVIDER_CONFIG: Noto'g'ri provayder konfiguratsiyasi
+  INVALID_QUERY: Noto'g'ri so'rov
+  INVALID_TOKEN: Noto'g'ri token
+  INVALID_USER: Foydalanuvchini autentifikatsiya qilishda xatolik
+  ITEM_LIMIT_REACHED: Element limiti cheklandi
+  ITEM_NOT_FOUND: Element topilmadi
+  LIMIT_EXCEEDED: 'Limit oshib ketdi'
+  METHOD_NOT_ALLOWED: Metod ruxsat etilmagan
+  NOT_NULL_VIOLATION: Qiymat null bo'lishi mumkin emas
+  RANGE_NOT_SATISFIABLE: Yaroqsiz oraliq
+  RECORD_NOT_UNIQUE: Takroriy qiymat aniqlandi
+  REQUESTS_EXCEEDED: So'rovlar limiti cheklandi
+  ROUTE_NOT_FOUND: Topilmadi
+  SERVICE_UNAVAILABLE: Xizmat mavjud emas
+wysiwyg_options:
+  forecolor: Old fon rangi
+  backcolor: Fon rangi
 settings_translations: Tarjimalar
 source_registry: Bozor
 fields:
+  directus_activity:
+    origin: Manba
+  directus_collections:
+    note: Izoh
+  directus_files:
+    folder: Papka
   directus_users:
     language: Til
+    status_active: Faol
   directus_settings:
     module_bar: Modul paneli
   directus_fields:
+    note: Izoh
     translation: Maydon nomi tarjimalari
   directus_roles:
     name: Rol nomi
@@ -291,21 +486,40 @@ field_options:
   directus_collections:
     language: Til
     archive_divider: Arxivlash
+  directus_users:
+    status_dropdown_active: Faol
+live_preview:
+  new_window: Yangi oynada ochish
 ai:
   unknown: Noma'lum
   ask_user_next: Keyingi
 ai_tools:
+  folders: Papkalar
   operations: Mavjud emas
 discard_label: Bekor qilish
 interfaces:
+  filter:
+    any: Istalgan
   group-tabs:
     fill_width: Kenglikni to'ldirish
+  system-fields:
+    select_a_collection: To'plam tanlang
+  system-display-template:
+    collection_field_not_setup: To'plam maydoni parametri noto'g'ri sozlangan
+    select_a_collection: To'plam tanlang
+  select-dropdown:
+    choices_value_placeholder: Qiymat kiriting...
+  map:
+    zoom: Yaqinlashtirish
 displays:
   translations:
     translations: Tarjimalar
+  labels:
+    choices_value_placeholder: Qiymat kiriting...
 triggers:
   webhook:
     method: Usul
 operations:
   request:
+    url: URL
     method: Usul
