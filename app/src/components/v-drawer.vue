@@ -76,7 +76,7 @@ const internalActive = computed({
 				<template #actions:primary><slot name="actions:primary" /></template>
 			</VDrawerHeader>
 
-			<div v-if="$slots.sidebar" class="mobile-sidebar" :class="{ open: mobileSidebarOpen }">
+			<div v-if="$slots.sidebar" class="mobile-sidebar">
 				<VDetail v-model="mobileSidebarOpen" :label="sidebarLabel || $t('sidebar')">
 					<nav class="sidebar-content" @click="mobileSidebarOpen = false">
 						<slot name="sidebar" />
@@ -113,20 +113,6 @@ const internalActive = computed({
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-$mobile-sidebar-breakpoint: 50.5rem;
-
-@mixin mobile-sidebar-breakpoint-up {
-	@media (width > $mobile-sidebar-breakpoint) {
-		@content;
-	}
-}
-
-@mixin mobile-sidebar-breakpoint-down {
-	@media (width <= $mobile-sidebar-breakpoint) {
-		@content;
-	}
-}
 
 .v-drawer {
 	position: relative;
