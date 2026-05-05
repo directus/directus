@@ -256,27 +256,7 @@ describe('useVersions', () => {
 		});
 	});
 
-	describe('saveVersion', () => {
-		it('should use the resolved primary key for new version creation on singletons', async () => {
-			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(1));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
-
-			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
-
-			vi.mocked(api.post)
-				.mockResolvedValueOnce({ data: { data: { id: 'new-version-id' } } })
-				.mockResolvedValueOnce({ data: { data: { title: 'saved' } } });
-
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
-
-			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }));
-
-			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
-				'/versions',
-				{ key: 'draft', collection: 'singleton_collection', item: '1' },
-			]);
-		});
-
+	describe('primary key resolution', () => {
 		it('should load existing versions for an existing singleton via the resolved primary key', async () => {
 			vi.mocked(api.get).mockResolvedValue({ data: { data: [] } });
 
@@ -301,6 +281,28 @@ describe('useVersions', () => {
 					}),
 				),
 			);
+		});
+	});
+
+	describe('saveVersion', () => {
+		it('should use the resolved primary key for new version creation on singletons', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(1));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({ data: { data: { id: 'new-version-id' } } })
+				.mockResolvedValueOnce({ data: { data: { title: 'saved' } } });
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }));
+
+			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
+				'/versions',
+				{ key: 'draft', collection: 'singleton_collection', item: '1' },
+			]);
 		});
 
 		it('should create an item-less draft when primary key is + on a pristine singleton', async () => {
@@ -654,7 +656,7 @@ describe('useVersions', () => {
 	});
 
 	describe('version-gone detection', () => {
-		it('should tag error with versionGone when version re-fetch fails after save 403', async () => {
+		it('should tag error with versionGone when save returns 403 on an existing version', async () => {
 			const existingVersion: ContentVersion = {
 				id: 'version-123',
 				key: 'draft',
@@ -672,9 +674,10 @@ describe('useVersions', () => {
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
 
 			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			await vi.waitFor(() => expect(versions.value.some((v) => v.id === 'version-123')).toBe(true));
 
-			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			currentVersion.value = versions.value.find((v) => v.id === 'version-123') ?? null;
+			expect(currentVersion.value?.id).toBe('version-123');
 
 			const saveError = Object.assign(new Error('Forbidden'), {
 				response: { status: 403, data: { errors: [{ extensions: { code: 'FORBIDDEN' } }] } },
@@ -682,22 +685,15 @@ describe('useVersions', () => {
 
 			vi.mocked(api.post).mockRejectedValueOnce(saveError);
 
-			// Reset api.get mocks and set re-fetch to reject (version is gone)
-			vi.mocked(api.get).mockReset();
-
-			vi.mocked(api.get).mockImplementationOnce(() => {
-				return Promise.reject(Object.assign(new Error('Forbidden'), { response: { status: 403 } }));
-			});
-
 			const edits = ref({ title: 'updated' });
 			const item = ref({ id: '1', title: 'original' });
 
-			await expect(saveVersion(edits, item, '1')).rejects.toMatchObject({
+			await expect(saveVersion(edits, item)).rejects.toMatchObject({
 				versionGone: true,
 			});
 		});
 
-		it('should NOT tag error with versionGone when version re-fetch succeeds (permission error)', async () => {
+		it('should NOT tag error with versionGone for non-403 errors', async () => {
 			const existingVersion: ContentVersion = {
 				id: 'version-123',
 				key: 'draft',
@@ -714,25 +710,41 @@ describe('useVersions', () => {
 
 			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
 
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+
+			const saveError = Object.assign(new Error('Server Error'), {
+				response: { status: 500, data: { errors: [{ extensions: { code: 'INTERNAL_SERVER_ERROR' } }] } },
+			});
+
+			vi.mocked(api.post).mockRejectedValueOnce(saveError);
+
+			const edits = ref({ title: 'updated' });
+			const item = ref({ id: '1', title: 'original' });
+
+			await expect(saveVersion(edits, item)).rejects.not.toMatchObject({
+				versionGone: true,
+			});
+		});
+
+		it('should NOT tag error with versionGone for new (unsaved) versions', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('+'));
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			expect(currentVersion.value?.id).toBe('+');
+
 			const saveError = Object.assign(new Error('Forbidden'), {
 				response: { status: 403, data: { errors: [{ extensions: { code: 'FORBIDDEN' } }] } },
 			});
 
 			vi.mocked(api.post).mockRejectedValueOnce(saveError);
 
-			// Re-fetch succeeds — version exists, this was a real permission error
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: existingVersion } });
-
-			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
-
-			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
-
 			const edits = ref({ title: 'updated' });
-			const item = ref({ id: '1', title: 'original' });
+			const item = ref(null);
 
-			// Should throw the original error, not a versionGone error
-			await expect(saveVersion(edits, item, '1')).rejects.not.toMatchObject({
+			await expect(saveVersion(edits, item)).rejects.not.toMatchObject({
 				versionGone: true,
 			});
 		});
@@ -767,92 +779,6 @@ describe('useVersions', () => {
 
 			await expect(saveVersion(edits, item, '1')).rejects.toThrow();
 			expect(edits.value).toEqual({ title: 'my changes' });
-		});
-	});
-
-	describe('version promoted by another user', () => {
-		it('should set versionPromotedItem when item-less version gains an item on refresh', async () => {
-			const itemLessVersion: ContentVersion = {
-				id: 'version-abc',
-				key: 'draft',
-				name: null,
-				collection: 'test_collection',
-				item: null as any,
-				hash: 'abc',
-				date_created: '2024-01-01',
-				date_updated: '2024-01-01',
-				user_created: 'user-1',
-				user_updated: 'user-1',
-				delta: {},
-			};
-
-			// Use primaryKey='+' — getVersions returns early on init (no queryVersionId)
-			const primaryKey = ref('+');
-
-			const { versionPromotedItem, getVersions, currentVersion } = useVersions(
-				ref('test_collection'),
-				ref(false),
-				primaryKey,
-			);
-
-			// Manually set currentVersion to simulate being on an item-less version
-			currentVersion.value = { id: 'version-abc', key: 'draft', name: null, type: 'global' };
-
-			expect(versionPromotedItem.value).toBeNull();
-
-			// Simulate a refresh where the version now has an item (promoted by another user)
-			// Switch to a real primaryKey so getVersions makes the API call
-			const promotedVersion = { ...itemLessVersion, item: 'real-item-123' };
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [promotedVersion] } });
-
-			primaryKey.value = '1';
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
-
-			// isNewItem is now false (primaryKey='1'), so promoted detection doesn't trigger
-			// The detection only fires for isNewItem=true (primaryKey='+')
-			// This is correct — if primaryKey changed, the user already navigated
-		});
-
-		it('should detect promoted version when queryVersionId is set and version gains item', async () => {
-			const itemLessVersion: ContentVersion = {
-				id: 'version-abc',
-				key: 'draft',
-				name: null,
-				collection: 'test_collection',
-				item: null as any,
-				hash: 'abc',
-				date_created: '2024-01-01',
-				date_updated: '2024-01-01',
-				user_created: 'user-1',
-				user_updated: 'user-1',
-				delta: {},
-			};
-
-			// To test promoted detection, we need isNewItem=true AND queryVersionId set
-			// Mock useRouteQuery to return a ref with version ID for the versionId param
-			const { useRouteQuery } = await import('@vueuse/router');
-
-			const mockQueryVersionId = ref('version-abc');
-
-			vi.mocked(useRouteQuery)
-				.mockReturnValueOnce(mockQueryVersionId as any) // versionId
-				.mockReturnValueOnce(ref(null) as any); // version
-
-			// Initial fetch returns item-less version
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [itemLessVersion] } });
-
-			const { versionPromotedItem, getVersions } = useVersions(ref('test_collection'), ref(false), ref('+'));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
-
-			expect(versionPromotedItem.value).toBeNull();
-
-			// Second fetch: version now has an item (promoted by another user)
-			const promotedVersion = { ...itemLessVersion, item: 'real-item-123' };
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [promotedVersion] } });
-
-			await getVersions();
-
-			expect(versionPromotedItem.value).toBe('real-item-123');
 		});
 	});
 });

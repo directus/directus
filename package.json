@@ -34,13 +34,13 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"fast-xml-parser": "5.5.11",
+			"fast-xml-parser": "5.7.2",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"tar": "7.5.13",
 			"qs": "6.15.1",
 			"minimatch@10": "10.2.5",
 			"minimatch@9": "9.0.9",
-			"basic-ftp": "5.2.2",
+			"basic-ftp": "5.3.0",
 			"underscore": "1.13.8",
 			"flatted": "3.4.2",
 			"express@4>path-to-regexp": "0.1.13",
@@ -48,7 +48,10 @@
 			"anymatch>picomatch": "2.3.2",
 			"picomatch": "4.0.4",
 			"defu": "6.1.7",
-			"unplugin-vue>vite": "8.0.8"
+			"unplugin-vue>vite": "8.0.10",
+			"@xmldom/xmldom": "0.8.13",
+			"vitest@3>vite": "7.3.2",
+			"protobufjs": "7.5.6"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",

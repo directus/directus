@@ -50,7 +50,6 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
-import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -58,6 +57,7 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { PrivateView } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
@@ -137,7 +137,6 @@ const {
 	publishVersionLoading,
 	publishVersion,
 	isItemlessVersion,
-	versionPromotedItem,
 } = useVersions(collection, isSingleton, resolvedPrimaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
@@ -158,38 +157,23 @@ async function onVersionDelete(versionId: PrimaryKey) {
 }
 
 function handleVersionGone(error: unknown) {
-	if (error && typeof error === 'object' && 'versionGone' in error) {
-		useNotificationsStore().add({
-			title: t('version_no_longer_exists'),
-			type: 'warning',
-		});
+	if (!error || typeof error !== 'object' || !('versionGone' in error)) return false;
 
-		edits.value = {};
+	unexpectedError(error, {
+		dismissAction: () => {
+			edits.value = {};
 
-		if (isItemlessVersion.value) {
-			router.push(collectionRoute.value);
-		} else {
-			currentVersion.value = null;
-			refresh();
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
-watch(versionPromotedItem, (newItemKey) => {
-	if (!newItemKey) return;
-
-	useNotificationsStore().add({
-		title: t('version_no_longer_exists'),
-		type: 'warning',
+			if (isItemlessVersion.value) {
+				router.push(collectionRoute.value);
+			} else {
+				currentVersion.value = null;
+				refresh();
+			}
+		},
 	});
 
-	edits.value = {};
-	router.replace(getItemRoute(props.collection, newItemKey));
-});
+	return true;
+}
 
 const {
 	isNew,

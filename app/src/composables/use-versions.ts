@@ -22,7 +22,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const saveVersionLoading = ref(false);
 	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
-	const versionPromotedItem = ref<PrimaryKey | null>(null);
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
 		useCollectionPermissions('directus_versions');
@@ -139,15 +138,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			});
 
 			rawVersions.value = response.data;
-
-			// Detect if item-less version was promoted by another user
-			if (isNewItem.value && queryVersionId.value) {
-				const fetchedVersion = response.data.find((v: ContentVersion) => v.id === queryVersionId.value);
-
-				if (fetchedVersion?.item) {
-					versionPromotedItem.value = fetchedVersion.item;
-				}
-			}
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -189,31 +179,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function confirmVersionExists(versionId: PrimaryKey): Promise<boolean> {
-		try {
-			await api.get(`/versions/${versionId}`, { params: { fields: ['id'] } });
-			return true;
-		} catch (confirmError: any) {
-			if (confirmError?.response?.status === 404) {
-				return false;
-			}
-
-			throw confirmError;
-		}
-	}
-
-	async function versionErrorHandler(error: any) {
-		// Check if the version was deleted/promoted by another user
-		if (
-			currentVersion.value &&
-			currentVersion.value.id !== '+' &&
-			(error?.response?.status === 403 || error?.response?.status === 404)
-		) {
-			const exists = await confirmVersionExists(currentVersion.value.id);
-
-			if (!exists) {
-				throw Object.assign(new Error('Version no longer exists'), { versionGone: true });
-			}
+	function versionErrorHandler(error: any) {
+		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
+			throw Object.assign(error, { versionGone: true });
 		}
 
 		if (error?.response?.data?.errors) {
@@ -279,7 +247,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return savedData;
 		} catch (error) {
-			await versionErrorHandler(error);
+			versionErrorHandler(error);
 		} finally {
 			saveVersionLoading.value = false;
 		}
@@ -303,7 +271,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return itemKey ?? null;
 		} catch (error) {
-			await versionErrorHandler(error);
+			versionErrorHandler(error);
 			return null;
 		} finally {
 			publishVersionLoading.value = false;
@@ -330,6 +298,5 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		publishVersionLoading,
 		publishVersion,
 		isItemlessVersion,
-		versionPromotedItem,
 	};
 }
