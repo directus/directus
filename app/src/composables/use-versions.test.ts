@@ -256,27 +256,7 @@ describe('useVersions', () => {
 		});
 	});
 
-	describe('saveVersion', () => {
-		it('should use the resolved primary key for new version creation on singletons', async () => {
-			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(1));
-			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
-
-			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
-
-			vi.mocked(api.post)
-				.mockResolvedValueOnce({ data: { data: { id: 'new-version-id' } } })
-				.mockResolvedValueOnce({ data: { data: { title: 'saved' } } });
-
-			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
-
-			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }));
-
-			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
-				'/versions',
-				{ key: 'draft', collection: 'singleton_collection', item: '1' },
-			]);
-		});
-
+	describe('primary key resolution', () => {
 		it('should load existing versions for an existing singleton via the resolved primary key', async () => {
 			vi.mocked(api.get).mockResolvedValue({ data: { data: [] } });
 
@@ -301,6 +281,28 @@ describe('useVersions', () => {
 					}),
 				),
 			);
+		});
+	});
+
+	describe('saveVersion', () => {
+		it('should use the resolved primary key for new version creation on singletons', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('singleton_collection'), ref(true), ref(1));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft')!;
+
+			vi.mocked(api.post)
+				.mockResolvedValueOnce({ data: { data: { id: 'new-version-id' } } })
+				.mockResolvedValueOnce({ data: { data: { title: 'saved' } } });
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+			await saveVersion(ref({ title: 'Updated' }), ref({ id: 1, title: 'Original' }));
+
+			expect(vi.mocked(api.post).mock.calls[0]).toEqual([
+				'/versions',
+				{ key: 'draft', collection: 'singleton_collection', item: '1' },
+			]);
 		});
 
 		it('should create an item-less draft when primary key is + on a pristine singleton', async () => {
