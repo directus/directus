@@ -50,7 +50,6 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
-import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -138,7 +137,6 @@ const {
 	publishVersionLoading,
 	publishVersion,
 	isItemlessVersion,
-	versionPromotedItem,
 } = useVersions(collection, isSingleton, resolvedPrimaryKey);
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
@@ -176,18 +174,6 @@ function handleVersionGone(error: unknown) {
 
 	return true;
 }
-
-watch(versionPromotedItem, (newItemKey) => {
-	if (!newItemKey) return;
-
-	useNotificationsStore().add({
-		title: t('version_no_longer_exists'),
-		type: 'warning',
-	});
-
-	edits.value = {};
-	router.replace(getItemRoute(props.collection, newItemKey));
-});
 
 const {
 	isNew,

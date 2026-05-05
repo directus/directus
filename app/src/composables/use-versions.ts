@@ -22,7 +22,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const saveVersionLoading = ref(false);
 	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
-	const versionPromotedItem = ref<PrimaryKey | null>(null);
 
 	const { createAllowed: createVersionsAllowed, readAllowed: readVersionsAllowed } =
 		useCollectionPermissions('directus_versions');
@@ -139,15 +138,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			});
 
 			rawVersions.value = response.data;
-
-			// Detect if item-less version was promoted by another user
-			if (isNewItem.value && queryVersionId.value) {
-				const fetchedVersion = response.data.find((v: ContentVersion) => v.id === queryVersionId.value);
-
-				if (fetchedVersion?.item) {
-					versionPromotedItem.value = fetchedVersion.item;
-				}
-			}
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -190,9 +180,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	}
 
 	function versionErrorHandler(error: any) {
-		// Backend returns 403 for both deleted records and permission denials.
-		// Tag the original error so the caller surfaces the standard Forbidden
-		// dialog with a redirect-on-dismiss; suppress the default notification here.
 		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
 			throw Object.assign(error, { versionGone: true });
 		}
@@ -311,6 +298,5 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		publishVersionLoading,
 		publishVersion,
 		isItemlessVersion,
-		versionPromotedItem,
 	};
 }
