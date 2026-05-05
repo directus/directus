@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import type { LicenseInfo } from '@/license/types';
 import sdk, { requestEndpoint } from '@/sdk';
-
-// TODO: replace with type from @directus/license once exported
-type LicenseInfo = any;
 
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
@@ -26,10 +24,17 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const seatsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
-		return info.value.entitlements.seats - (info.value.usage?.seats ?? 0);
+		const seats = info.value.entitlements.seats;
+		const effective = seats.limit + (seats.addon ?? 0) + (seats.overage ?? 0);
+		return effective - (info.value.usage?.seats ?? 0);
 	});
 
 	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
+
+	const isLocked = computed(() => {
+		const status = info.value?.status;
+		return status === 'expired' || status === 'suspended' || status === 'canceled';
+	});
 
 	function clearTimer() {
 		if (refreshTimer) {
@@ -90,6 +95,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
+		isLocked,
 		hydrate,
 		dehydrate,
 	};
