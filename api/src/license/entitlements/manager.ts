@@ -7,7 +7,7 @@ import type { AppEntitlements, CountableEntitlementKey,
 	License,
 	NumericEntitlementKey,
 	UsageCounter } from '@directus/license';
-import { CORE_ENTITLEMENT_DEFAULTS, COUNTABLE_ENTITLEMENT_KEYS, FeatureFlagViolatedError, LimitExceededError  } from '@directus/license';
+import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FeatureFlagViolatedError, LimitExceededError  } from '@directus/license';
 
 /**
  * Example:
@@ -51,7 +51,7 @@ import { CORE_ENTITLEMENT_DEFAULTS, COUNTABLE_ENTITLEMENT_KEYS, FeatureFlagViola
 
 
 export class EntitlementManager {
-	private entitlements: Entitlements = CORE_ENTITLEMENT_DEFAULTS;
+	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 
@@ -59,10 +59,10 @@ export class EntitlementManager {
 	 * Replace the active license. Pass `null` to reset to the core license.
 	 */
 	setLicense(license: License | null): void {
-		this.entitlements = license?.entitlements ?? CORE_ENTITLEMENT_DEFAULTS;
+		this.entitlements = license?.entitlements ?? CORE_LICENSE['entitlements'];
 	}
 
-	/**
+	/**		
 	 * Returns whether a feature flag is enabled, applying `override` when
 	 * present and falling back to `default` otherwise.
 	 */
