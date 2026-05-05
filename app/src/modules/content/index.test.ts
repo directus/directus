@@ -9,8 +9,14 @@ vi.mock('@/stores/collections', () => ({
 
 vi.mock('@/api', () => ({ default: { get: vi.fn() } }));
 
-const { stripOrphanedVersionId, stripVersionOnNonVersioned, stripVersionIdOnRealItem, validateItemlessDraft } =
-	await import('./index');
+const {
+	enterDraftContext,
+	redirectSingleton,
+	stripOrphanedVersionId,
+	stripVersionOnNonVersioned,
+	stripVersionIdOnRealItem,
+	validateItemlessDraft,
+} = await import('./index');
 
 function makeRoute(overrides: {
 	collection?: string | string[];
@@ -29,6 +35,143 @@ function makeRoute(overrides: {
 
 	return { params, query, fullPath: computedFullPath };
 }
+
+describe('enterDraftContext', () => {
+	beforeEach(() => mockGetCollection.mockReset());
+
+	it('adds version=draft for new items (primaryKey="+") on versioned collections', () => {
+		mockGetCollection.mockReturnValue({ meta: { versioning: true } });
+
+		const to = makeRoute({
+			primaryKey: '+',
+			query: {},
+			fullPath: '/content/posts/+',
+		});
+
+		const result = enterDraftContext(to, {} as any, vi.fn());
+		expect(result).toMatchObject({ query: { version: 'draft' } });
+	});
+
+	it('passes through when already in version context', () => {
+		mockGetCollection.mockReturnValue({ meta: { versioning: true } });
+
+		const to = makeRoute({
+			primaryKey: '+',
+			query: { version: 'draft' },
+			fullPath: '/content/posts/+?version=draft',
+		});
+
+		expect(enterDraftContext(to, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through when versioning is disabled', () => {
+		mockGetCollection.mockReturnValue({ meta: { versioning: false } });
+
+		const to = makeRoute({
+			primaryKey: '+',
+			query: {},
+			fullPath: '/content/posts/+',
+		});
+
+		expect(enterDraftContext(to, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through for singleton collections (auto-draft is decided post-load)', () => {
+		mockGetCollection.mockReturnValue({ meta: { versioning: true, singleton: true } });
+
+		const to = {
+			params: { collection: 'settings' },
+			query: {},
+			fullPath: '/content/settings',
+		};
+
+		expect(enterDraftContext(to as any, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through for singleton without versioning', () => {
+		mockGetCollection.mockReturnValue({ meta: { versioning: false, singleton: true } });
+
+		const to = {
+			params: { collection: 'settings' },
+			query: {},
+			fullPath: '/content/settings',
+		};
+
+		expect(enterDraftContext(to as any, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through for singleton already in version context', () => {
+		mockGetCollection.mockReturnValue({ meta: { versioning: true, singleton: true } });
+
+		const to = {
+			params: { collection: 'settings' },
+			query: { version: 'draft' },
+			fullPath: '/content/settings?version=draft',
+		};
+
+		expect(enterDraftContext(to as any, {} as any, vi.fn())).toBeUndefined();
+	});
+});
+
+describe('redirectSingleton', () => {
+	beforeEach(() => mockGetCollection.mockReset());
+
+	it('redirects to content-singleton route when collection is a singleton', () => {
+		mockGetCollection.mockReturnValue({ meta: { singleton: true } });
+
+		const to = {
+			params: { collection: 'settings' },
+			query: {},
+		};
+
+		const result = redirectSingleton(to as any, {} as any, vi.fn());
+
+		expect(result).toMatchObject({
+			name: 'content-singleton',
+			params: { collection: 'settings' },
+			query: {},
+		});
+	});
+
+	it('passes through for non-singleton collections', () => {
+		mockGetCollection.mockReturnValue({ meta: { singleton: false } });
+
+		const to = {
+			params: { collection: 'posts' },
+			query: {},
+		};
+
+		expect(redirectSingleton(to as any, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through when collection is not found', () => {
+		mockGetCollection.mockReturnValue(null);
+
+		const to = {
+			params: { collection: 'unknown' },
+			query: {},
+		};
+
+		expect(redirectSingleton(to as any, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('preserves query params when redirecting', () => {
+		mockGetCollection.mockReturnValue({ meta: { singleton: true } });
+
+		const to = {
+			params: { collection: 'settings' },
+			query: { version: 'draft' },
+		};
+
+		const result = redirectSingleton(to as any, {} as any, vi.fn());
+
+		expect(result).toMatchObject({
+			name: 'content-singleton',
+			params: { collection: 'settings' },
+			query: { version: 'draft' },
+		});
+	});
+});
 
 describe('stripOrphanedVersionId', () => {
 	it('strips versionId when version is absent', () => {

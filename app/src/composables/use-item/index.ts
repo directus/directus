@@ -59,6 +59,7 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
+	isItemlessVersion: ComputedRef<boolean> = computed(() => false),
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -73,7 +74,6 @@ export function useItem<T extends Item>(
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
-	const isItemLessVersion = computed(() => isNew.value && currentVersion?.value && currentVersion?.value.id !== '+');
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
@@ -138,7 +138,7 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			if (isItemLessVersion.value) {
+			if (isItemlessVersion.value) {
 				const { delta } = await sdk.request<T>(() => ({ path: `versions/${currentVersion!.value!.id}` }));
 				setItemValueToResponse(delta);
 				return;
@@ -527,7 +527,7 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value && !isItemLessVersion.value) {
+		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
 		} else {
 			getItem();

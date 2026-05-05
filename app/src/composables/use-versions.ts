@@ -14,7 +14,7 @@ export interface PublishVersionOptions {
 	fields?: string[];
 }
 
-export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
+export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<PrimaryKey | null>) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
@@ -37,7 +37,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	});
 
 	const isNewItem = computed(() => primaryKey.value === '+');
-	const isItemLessVersion = computed(() => isNewItem.value && currentVersion.value?.id !== '+');
+
+	const isItemlessVersion = computed(() => {
+		const version = currentVersion.value;
+		if (!version || version.id === '+') return false;
+		return (version as ContentVersionWithType).item === null;
+	});
 
 	const versions = computed<ContentVersionMaybeNew[]>(() => {
 		const draftVersion = getGlobalVersion(VERSION_KEY_DRAFT);
@@ -86,9 +91,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	watch(currentVersion, (newCurrentVersion) => {
 		queryVersion.value = newCurrentVersion?.key ?? null;
 
-		if (newCurrentVersion !== null) {
-			queryVersionId.value = isItemLessVersion.value ? newCurrentVersion.id : null;
-		}
+		queryVersionId.value =
+			newCurrentVersion && isNewItem.value && newCurrentVersion.id !== '+' ? newCurrentVersion.id : null;
 
 		validationErrors.value = [];
 	});
@@ -114,10 +118,13 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		try {
 			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
 
-			if (!isNewItem.value) {
-				filterConditions.push({ item: { _eq: primaryKey.value } });
-			} else if (queryVersionId.value) {
-				filterConditions.push({ item: { _null: true } }, { id: { _eq: queryVersionId.value } });
+			if (isNewItem.value) {
+				// No parent item yet — match item-less drafts; scope to a specific version if known
+				filterConditions.push({ item: { _null: true } });
+
+				if (queryVersionId.value) filterConditions.push({ id: { _eq: queryVersionId.value } });
+			} else if (primaryKey.value) {
+				filterConditions.push({ item: { _eq: String(primaryKey.value) } });
 			}
 
 			const filter: Filter = { _and: filterConditions };
@@ -199,13 +206,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		throw error;
 	}
 
-	/** @param actualPrimaryKey Resolved PK of the item — needed because for singletons the route PK is null */
-	async function saveVersion(
-		edits: Ref<Record<string, any>>,
-		item: Ref<Item | null>,
-		actualPrimaryKey: PrimaryKey | null,
-	) {
-		if (!currentVersion.value || !actualPrimaryKey) return;
+	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item | null>) {
+		if (!currentVersion.value || !primaryKey.value) return;
 
 		saveVersionLoading.value = true;
 		validationErrors.value = [];
@@ -219,7 +221,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				} = await api.post(`/versions`, {
 					key: currentVersion.value.key,
 					collection: collection.value,
-					item: actualPrimaryKey === '+' ? null : String(actualPrimaryKey),
+					item: isNewItem.value ? null : String(primaryKey.value),
 				});
 
 				versionId = version.id;
@@ -235,7 +237,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			edits.value = {};
 
-			if (actualPrimaryKey === '+') queryVersionId.value = versionId;
+			if (isNewItem.value) queryVersionId.value = versionId;
 
 			await getVersions();
 
@@ -291,5 +293,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
+		isItemlessVersion,
 	};
 }
