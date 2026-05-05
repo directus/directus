@@ -1,5 +1,6 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import { getHistoryFilterQuery } from '../utils/get-history-filter-query.js';
 import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
@@ -53,5 +54,21 @@ export class RevisionsService extends ItemsService {
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		return super.updateMany(keys, data, this.setDefaultOptions(opts));
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions) {
+		if (this.accountability === null) {
+			return super.readByQuery(query, opts);
+		}
+
+		const historyQuery = getHistoryFilterQuery(query, 'revision_historical_timeframe', (sinceDate) => ({
+			activity: {
+				timestamp: {
+					_gte: sinceDate.toISOString(),
+				},
+			},
+		}));
+
+		return super.readByQuery(historyQuery, opts);
 	}
 }
