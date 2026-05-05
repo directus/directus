@@ -106,14 +106,6 @@ describe('getTypes – json() inside {field}_func (Phase 3)', () => {
 	});
 
 	test('{field}_func for a json field has a json sub-field with a path arg', () => {
-		const schema = makeSchema('read', {
-			articles: makeCollection('articles', {
-				metadata: makeField('metadata', 'json'),
-			}),
-		});
-
-		const { CollectionTypes } = getTypes(sc as any, 'items', schema as any, mockInconsistentFields, 'read');
-
 		const funcType = sc.tcs.get('articles_metadata_func');
 		expect(funcType).toBeDefined();
 		expect(funcType!.getFields()).toHaveProperty('json');
