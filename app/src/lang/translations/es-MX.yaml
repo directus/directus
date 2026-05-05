@@ -20,8 +20,21 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+privacy_policy: Política de Privacidad
+contact_our_team: Contácta a nuestro Equipo
+setup_welcome: Bienvenido a Directus
+setup_marketing_emails: Envíame actualizaciones de producto y notas de publicaciones
+setup_launch: Iniciar Directus
+setup_project: Configurar Proyecto
 first_name: Nombre
 last_name: Apellido
+admin_email: Email del Administrador
+owner_email: Email del Dueño
+email_address: Dirección de Email
+organization_name: Nombre de la Organización
+usage_personal: Personal / Aprendizaje
+usage_commercial: Negocios / Comercial
+usage_community: Open Source / Comunidad
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -49,6 +62,9 @@ collection_names_are_case_sensitive: Los nombres de las colecciones son sensible
 condition_rules: Reglas condicionales
 input: Entrada
 invalid_input: Entrada no válida
+invalid_file_type: Tipo de Archivo Inválido
+invalid_files_selected: ''
+files_wrong_type: ''
 not_a_number: No es un número
 maps: Mapas
 switch_user: Cambiar de usuario
