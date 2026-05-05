@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useGroupable } from '@directus/composables';
 import { computed, watch } from 'vue';
+import { RouteLocationRaw } from 'vue-router';
 import VIcon from './v-icon/v-icon.vue';
 import VListItemIcon from './v-list-item-icon.vue';
 import VListItem from './v-list-item.vue';
@@ -9,7 +10,7 @@ interface Props {
 	/** If enabled, multiple elements can be selected */
 	multiple?: boolean;
 	/** To what route the item should link to */
-	to?: string;
+	to?: string | RouteLocationRaw;
 	/** If the item should be active or not */
 	active?: boolean;
 	/** Renders an active state if the route matches exactly */

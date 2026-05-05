@@ -1,4 +1,5 @@
 import { isSystemCollection } from '@directus/system-data';
+import type { RouteLocationRaw } from 'vue-router';
 
 const accessibleSystemCollections = {
 	directus_users: { route: '/users' },
@@ -33,12 +34,17 @@ export function getSystemCollectionRoute(collection: string) {
  * Get the route of a collection in the admin app for a given collection name
  *
  * @param collection - Collection name
+ * @param isSingleton - Whether the collection is a singleton
  * @returns - URL route for the collection
  */
-export function getCollectionRoute(collection: string | null) {
+export function getCollectionRoute(collection: string | null): string;
+export function getCollectionRoute(collection: string | null, isSingleton: boolean): string | RouteLocationRaw;
+export function getCollectionRoute(collection: string | null, isSingleton?: boolean): string | RouteLocationRaw {
 	if (collection === null) return '';
 
 	if (isSystemCollection(collection)) return getSystemCollectionRoute(collection);
+
+	if (isSingleton) return { name: 'content-singleton', params: { collection } };
 
 	return `/content/${collection}`;
 }
