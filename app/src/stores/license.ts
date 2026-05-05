@@ -31,6 +31,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
 
+	const customLLMEnabled = computed(() => info.value?.entitlements?.custom_llms_enabled?.default === true);
+
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -90,6 +92,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
+		customLLMEnabled,
 		hydrate,
 		dehydrate,
 	};
