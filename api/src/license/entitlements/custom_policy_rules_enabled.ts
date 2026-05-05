@@ -57,4 +57,4 @@ export async function checkCustomPolicyRules() {
     return customRulePermissions.length > 0;
 }
 
-entitlementManager.registerValidator('custom_policy_rules_enabled', checkCustomPolicyRules);
+entitlementManager.registerValidator('custom_permission_rules_enabled', checkCustomPolicyRules);
