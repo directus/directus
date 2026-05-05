@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -21,6 +22,8 @@ const emit = defineEmits<{
 	(e: 'cancel'): void;
 }>();
 
+const router = useRouter();
+
 const titleKey = computed(() => `license.${props.type}_limit_title`);
 
 const bodyKey = computed(() => {
@@ -39,7 +42,7 @@ function close() {
 
 function handleManagePlan() {
 	emit('update:modelValue', false);
-	window.open('/settings/license', '_blank', 'noopener,noreferrer');
+	window.open(router.resolve({ name: 'settings-license' }).href, '_blank', 'noopener,noreferrer');
 }
 
 function handleSave() {

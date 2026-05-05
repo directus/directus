@@ -4,6 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import LicenseLimitModal from './license-limit-modal.vue';
 import { i18n } from '@/lang';
 
+vi.mock('vue-router', () => ({
+	useRouter: () => ({
+		resolve: ({ name }: { name: string }) => ({ href: `/settings/${name.replace('settings-', '')}` }),
+	}),
+}));
+
 const global = {
 	stubs: {
 		VDialog: { template: '<div><slot /></div>' },
