@@ -1,8 +1,8 @@
-import type { Entitlements, License, Meta } from '@directus/license';
+import type { Entitlements, Meta } from '@directus/license';
 
 export type LicenseSource = 'env' | 'settings' | null;
 
-export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled';
+export type LicenseStatus = 'active' | 'grace' | 'expired' | 'suspended' | 'canceled' | 'locked';
 
 export type LicensePlan = string;
 

@@ -16,6 +16,7 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { getLicenseManager } from '../license/manager.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
@@ -223,6 +224,20 @@ export class AuthenticationService {
 			{ knex: this.knex },
 		);
 
+		const licenseManager = getLicenseManager();
+		const isLocked = await licenseManager.isLocked();
+
+		if (isLocked && globalAccess.admin === false) {
+			const loginError = new ServiceUnavailableError({
+				reason: 'License is in a locked state and must be resolved',
+				service: 'license',
+			});
+
+			emitStatus('fail', updatedPayload, user, loginError);
+			await stall(STALL_TIME, timeStart);
+			throw loginError;
+		}
+
 		const tokenPayload: DirectusTokenPayload = {
 			id: user.id,
 			role: user.role,
@@ -381,6 +396,16 @@ export class AuthenticationService {
 			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },
 			{ knex: this.knex },
 		);
+
+		const licenseManager = getLicenseManager();
+		const isLocked = await licenseManager.isLocked();
+
+		if (isLocked && globalAccess.admin === false) {
+			throw new ServiceUnavailableError({
+				reason: 'License is in a locked state and must be resolved',
+				service: 'license',
+			});
+		}
 
 		if (record.user_id) {
 			const provider = getAuthProvider(record.user_provider);

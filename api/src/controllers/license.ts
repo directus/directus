@@ -1,22 +1,16 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import express, { type RequestHandler } from 'express';
+import { InvalidPayloadError } from '@directus/errors';
+import express from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getLicense, getLicenseManager } from '../license/manager.js';
 import { ResolveInput } from '../license/schema.js';
 import type { LicenseCheck, LicenseInfo } from '../license/types.js';
+import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
-import { isAdmin } from '../utils/is-admin.js';
 
 const router = express.Router();
 
-export const multipartHandler: RequestHandler = (req, _res, next) => {
-	if (!isAdmin(req.accountability)) {
-		throw new ForbiddenError();
-	}
-
-	return next();
-};
+router.use(checkIsAdmin);
 
 router.get(
 	'/',
