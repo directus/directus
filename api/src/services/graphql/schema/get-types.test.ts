@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/order
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 // ---------------------------------------------------------------------------
