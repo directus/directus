@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import type { LicenseInfo } from '@/license/types';
+import type { LicenseAddon, LicenseInfo } from '@/license/types';
 import sdk, { requestEndpoint } from '@/sdk';
 
 export type LicenseBoundary = {
@@ -10,7 +10,9 @@ export type LicenseBoundary = {
 
 export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<LicenseInfo | null>(null);
+	const addons = ref<LicenseAddon[] | null>(null);
 	const loading = ref(false);
+	const loadingAddons = ref(false);
 	const error = ref<unknown>(null);
 
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
@@ -81,22 +83,37 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		}
 	}
 
+	async function hydrateAddons() {
+		loadingAddons.value = true;
+
+		try {
+			addons.value = await sdk.request(requestEndpoint<LicenseAddon[]>('/license/addons', { method: 'GET' }));
+		} finally {
+			loadingAddons.value = false;
+		}
+	}
+
 	async function dehydrate() {
 		clearTimer();
 		info.value = null;
+		addons.value = null;
 		error.value = null;
 		loading.value = false;
+		loadingAddons.value = false;
 	}
 
 	return {
 		info,
+		addons,
 		loading,
+		loadingAddons,
 		error,
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
 		isLocked,
 		hydrate,
+		hydrateAddons,
 		dehydrate,
 	};
 });
