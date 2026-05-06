@@ -6,6 +6,7 @@ import {
 	CORE_LICENSE,
 	deactivateKey,
 	deleteAddon,
+	Entitlements,
 	License,
 	type LicenseAddonOutput,
 	type LicensePendingResolution,
@@ -506,17 +507,22 @@ export class LicenseManager {
 	 */
 	public async pendingResolution(options: {
 		adminId: string;
-		licenseKey?: string;
+		licenseKey?: string | null;
 	}): Promise<LicensePendingResolutionOutput> {
 		const pendingResolution: LicensePendingResolution[] = [];
 
-		const schema = await getSchema();
-
-		let entitlements = CORE_LICENSE.entitlements;
+		let entitlements: Entitlements | undefined;
 
 		if (options.licenseKey) {
 			const preview = await this.preview(options.licenseKey);
 			entitlements = preview.entitlements;
+		} else if (options.licenseKey !== null) {
+			// Ensure we are in lockdown, if not return no pending
+			const isLocked = await this.isLocked();
+
+			if (!isLocked) {
+				return;
+			}
 		}
 
 		// New manager to build entitlements for future license
@@ -526,6 +532,8 @@ export class LicenseManager {
 		const collection = await entitlementManager.check('collections');
 
 		if (collection.allowed == false) {
+			const schema = await getSchema();
+
 			const collectionsService = new CollectionsService({ schema });
 			const collections = await collectionsService.readByQuery();
 
