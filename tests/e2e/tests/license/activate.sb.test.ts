@@ -93,5 +93,59 @@ test('activate a license key', async () => {
 
 	activeLicense = await api.request(readLicense());
 
-	expect(activeLicense).toEqual({});
+	expect(activeLicense).toEqual({
+		entitlements: {
+			activity_historical_timeframe: {
+				addon: 2292000,
+				limit: 2592000,
+				overage: 0,
+			},
+			ai_translations_enabled: {
+				default: false,
+			},
+			collections: {
+				limit: 10,
+			},
+			custom_llms_enabled: {
+				default: false,
+				override: true,
+			},
+			custom_permission_rules_enabled: {
+				default: false,
+			},
+			display_powered_by: 'NONE',
+			flows: {
+				limit: 10,
+			},
+			offline_enabled: {
+				default: false,
+			},
+			production_enabled: {
+				default: true,
+			},
+			revision_historical_timeframe: {
+				limit: 2582000,
+			},
+			seats: {
+				limit: 10,
+			},
+			sso_enabled: {
+				default: true,
+			},
+			telemetry_required: {
+				default: true,
+			},
+		},
+		expires_at: now + 1000,
+		grace_period: 10000,
+		name: 'TEAM',
+		offline: false,
+		source: null,
+		status: 'active',
+		usage: {
+			collections: 0,
+			flows: 5,
+			seats: 1,
+		},
+	});
 });
