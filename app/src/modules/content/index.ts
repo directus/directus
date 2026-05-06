@@ -6,6 +6,7 @@ import { isNil, orderBy } from 'lodash';
 import { LocationQuery, NavigationGuard } from 'vue-router';
 import { useNavigation } from './composables/use-navigation';
 import CollectionRoute from './routes/collection.vue';
+import CollectionRoute from './routes/collection.vue';
 import Item from './routes/item.vue';
 import NoCollections from './routes/no-collections.vue';
 import ItemNotFound from './routes/not-found.vue';
@@ -24,6 +25,7 @@ export const enterDraftContext: NavigationGuard = (to) => {
 	if (!collection) return;
 
 	const collectionsStore = useCollectionsStore();
+	const collectionsStore = useCollectionsStore();
 	const collectionInfo = collectionsStore.getCollection(collection);
 	if (!collectionInfo?.meta?.versioning) return;
 
@@ -33,7 +35,34 @@ export const enterDraftContext: NavigationGuard = (to) => {
 	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
 	if (!isNewItem) return;
 
+	// Auto-enter draft for new items (/+). Singletons are handled post-load in item.vue —
+	// existing singletons default to the published view; only pristine (no record yet) ones
+	// auto-enter draft, which we can only determine after fetching.
+	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
+	if (!isNewItem) return;
+
 	return { ...to, query: { ...to.query, version: VERSION_KEY_DRAFT } };
+};
+
+export const redirectSingleton: NavigationGuard = (to) => {
+	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collection) return;
+
+	const collectionInfo = useCollectionsStore().getCollection(collection);
+	if (!collectionInfo?.meta?.singleton) return;
+
+	return { name: 'content-singleton', params: to.params, query: to.query };
+};
+
+export const trackLastAccessedCollection: NavigationGuard = (to) => {
+	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collection) return;
+
+	const lastAccessedCollection = useLocalStorage<string | null>('directus-last-accessed-collection', null);
+
+	if (lastAccessedCollection.value !== collection) {
+		lastAccessedCollection.value = collection;
+	}
 };
 
 export const redirectSingleton: NavigationGuard = (to) => {
@@ -225,6 +254,7 @@ export default defineModule({
 				{
 					name: 'content-collection',
 					path: '',
+					component: CollectionRoute,
 					component: CollectionRoute,
 					props: (route) => {
 						const archive = getArchiveValue(route.query);
