@@ -111,11 +111,11 @@ export class EntitlementManager {
 
 	/**
 	 * Returns the effective hard limit (`limit + overage + addon`) for a numeric
-	 * entitlement, or `null` if any term is `-1` (unlimited, by convention).
+	 * entitlement with `-1` denoting unlimited
 	 */
-	getEntitlementLimit(key: NumericEntitlementKey): number | null {
+	getEntitlementLimit(key: NumericEntitlementKey): number {
 		const { limit, overage, addon } = this.entitlements[key];
-		if (limit === -1 || overage === -1 || addon === -1) return null;
+		if (limit === -1 || overage === -1 || addon === -1) return -1;
 		return limit + (overage ?? 0) + (addon ?? 0);
 	}
 
@@ -170,8 +170,8 @@ export class EntitlementManager {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
 
-			if (hardLimit === null) {
-				return { allowed: true, hardLimit: null, usage: 0, remaining: null };
+			if (hardLimit === -1) {
+				return { allowed: true, hardLimit: -1, usage: 0, remaining: null };
 			}
 
 			const usage = await this.getUsage(key);
@@ -189,17 +189,17 @@ export class EntitlementManager {
 	}
 
 	/**
-	 * Throws when an entitlement is being violated. Countable: throws
-	 * `LimitExceededError` when `usage + (adding ?? 0) > hardLimit`. Feature
-	 * flag: throws `FeatureFlagViolatedError` when the registered validator
-	 * reports the entitlement is broken.
+	 * Throws when an entitlement is being violated.
+	 *
+	 * Countable: throws `LimitExceededError` when `usage + (adding ?? 0) > hardLimit`
+	 * Feature flag: throws `ResourceRestrictedError` when its validator indicates invalid
 	 */
 	assert(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<void>;
 	assert(key: FeatureFlagEntitlementKey): Promise<void>;
 	async assert(key: CountableEntitlementKey | FeatureFlagEntitlementKey, opts?: { adding?: number }): Promise<void> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
-			if (hardLimit === null) return;
+			if (hardLimit === -1) return;
 
 			const usage = await this.getUsage(key);
 			const adding = opts?.adding ?? 0;

@@ -24,16 +24,16 @@ import {
 // LICENSE_MOCK shim to bypass real JWT verification for local dev/QA scenarios.
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import licenseCheckSchedule from '../schedules/license.js';
-import { CollectionsService } from '../services/collections.js';
-import { AccessService, FlowsService, UsersService } from '../services/index.js';
+import { AccessService, UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
+import { getActiveCollections } from './entitlements/lib/collections.js';
+import { getActiveFlows } from './entitlements/lib/flows.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
 import { getLicenseKey } from './lib/get-license-key.js';
 import { getLicenseToken } from './lib/get-license-token.js';
@@ -376,8 +376,7 @@ export class LicenseManager {
 				usage_metrics: {
 					seats: await entitlementManager.getUsage('seats'),
 					collections: await entitlementManager.getUsage('collections'),
-					// LICENSE-TODO: Add actual usage once handler registered
-					flows: 2,
+					flows: await entitlementManager.getUsage('flows'),
 				},
 			};
 
@@ -479,8 +478,7 @@ export class LicenseManager {
 				usage_metrics: {
 					seats: await entitlementManager.getUsage('seats'),
 					collections: await entitlementManager.getUsage('collections'),
-					// LICENSE-TODO: Add actual usage
-					flows: 2,
+					flows: await entitlementManager.getUsage('flows'),
 				},
 			},
 		);
@@ -536,29 +534,15 @@ export class LicenseManager {
 		const collection = await entitlementManager.check('collections');
 
 		if (collection.allowed == false) {
-			const collectionsService = new CollectionsService({ schema });
-			const collections = await collectionsService.readByQuery();
+			const activeCollections = await getActiveCollections();
 
-			const candidateCollections = [];
-
-			for (const candidateCollection of collections) {
-				if (
-					candidateCollection.meta?.system !== true &&
-					candidateCollection.schema !== null &&
-					candidateCollection.meta?.status === 'active'
-				) {
-					candidateCollections.push(candidateCollection.collection);
-				}
-			}
-
-			if (candidateCollections.length) {
+			if (activeCollections.length) {
 				pendingResolution.push({
 					key: 'collections',
 					kind: 'limit',
-					// LICENSE-TODO: Remove if hardlimit updated to -1
-					limit: collection.hardLimit!,
+					limit: collection.hardLimit,
 					usage: collection.usage,
-					candidates: candidateCollections,
+					candidates: activeCollections.map((c) => c.collection),
 				});
 			}
 		}
@@ -683,33 +667,28 @@ export class LicenseManager {
 				pendingResolution.push({
 					key: 'seats',
 					kind: 'limit',
-					// LICENSE-TODO: Remove if hardlimit updated to -1
-					limit: seats.hardLimit!,
+					limit: seats.hardLimit,
 					usage: seats.usage,
 					candidates: [...appCandidates, ...adminCandidates.map((admin) => ({ ...admin, admin: true }))] as any,
 				});
 			}
 		}
 
-		// LICENSE-TODO: Implement once flows check registered
-		// const flows = await entitlementManager.check('flows');
+		const flows = await entitlementManager.check('flows');
 
-		// if (flows.allowed === false) {
-		const flowsService = new FlowsService({ schema });
+		if (flows.allowed === false) {
+			const flowCandidates = await getActiveFlows();
 
-		const flowCandidates = await flowsService.readByQuery({ fields: ['id'], filter: { status: { _eq: 'active' } } });
-
-		if (flowCandidates.length) {
-			pendingResolution.push({
-				key: 'flows',
-				kind: 'limit',
-				// LICENSE-TODO: Replace with actual values once implemented
-				limit: 5,
-				usage: 2,
-				candidates: flowCandidates as unknown as string[],
-			});
+			if (flowCandidates.length) {
+				pendingResolution.push({
+					key: 'flows',
+					kind: 'limit',
+					limit: flows.hardLimit,
+					usage: flows.usage,
+					candidates: flowCandidates as unknown as string[],
+				});
+			}
 		}
-		// }
 
 		const sso = await entitlementManager.check('sso_enabled');
 
