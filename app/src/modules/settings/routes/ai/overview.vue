@@ -15,6 +15,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -24,11 +25,30 @@ const router = useRouter();
 
 const settingsStore = useSettingsStore();
 const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
+
+const customLLMInputs = new Set([
+	'ai_openai_compatible_name',
+	'ai_openai_compatible_base_url',
+	'ai_openai_compatible_api_key',
+	'ai_openai_compatible_headers',
+	'ai_openai_compatible_models',
+]);
 
 const { fields: allFields } = useCollection('directus_settings');
 
 const aiFields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group'),
+	unref(allFields)
+		.filter((field) => {
+			if (field.meta?.group !== 'ai_group' && field.field !== 'ai_group') return false;
+			// hide the gating notice when Custom LLM is licensed
+			if (field.field === 'ai_openai_compatible_notice' && licenseStore.customLLMEnabled === true) return false;
+			return true;
+		})
+		.map((field) => {
+			if (licenseStore.customLLMEnabled === true || customLLMInputs.has(field.field) === false) return field;
+			return { ...field, meta: { ...field.meta, readonly: true } } as typeof field;
+		}),
 );
 
 const mcpFields = computed(() =>

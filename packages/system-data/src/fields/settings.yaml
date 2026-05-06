@@ -889,6 +889,17 @@ fields:
     width: full
     group: ai_group
 
+  - field: ai_openai_compatible_notice
+    interface: presentation-notice
+    options:
+      icon: diamond
+      text: $t:fields.directus_settings.ai_openai_compatible_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
   - field: ai_openai_compatible_name
     interface: input
     options:
