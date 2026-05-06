@@ -8,7 +8,10 @@ export async function countActiveCollections() {
 	const schema = await getSchema();
 
 	return (
-		// TODO dont forget to filter out hidden collections when implemented
+		// LICENSE-TODO
+		// exclude disabled collections
+		// exclude folders collections
+		// exclude db only collections
 		Object.keys(schema.collections).filter((collection) => !isSystemCollection(collection)).length
 	);
 }

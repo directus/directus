@@ -75,8 +75,11 @@ export class EntitlementManager {
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 
 	registerHandlers() {
+		// limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
+
+		// features gates
 		this.registerValidator('sso_enabled', checkUsersSSO);
 		this.registerValidator('custom_llms_enabled', checkCustomLLM);
 		this.registerValidator('custom_permission_rules_enabled', checkCustomPermissionRules);
