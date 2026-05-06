@@ -49,7 +49,12 @@ const isBookmarkActive = computed(() => 'bookmark' in route.query);
 
 const to = computed(() => {
 	if (!props.collection.schema) return '';
-	return getCollectionRoute(props.collection.collection, props.collection.meta?.singleton ?? false);
+
+	if (props.collection.meta?.singleton) {
+		return { name: 'content-singleton', params: { collection: props.collection.collection } };
+	}
+
+	return getCollectionRoute(props.collection.collection);
 });
 
 const matchesSearch = computed(() => {
