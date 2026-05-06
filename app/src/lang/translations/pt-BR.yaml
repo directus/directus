@@ -2564,6 +2564,7 @@ series_grouping: Agrupamento de Série
 date_precision: Precisão de Data
 export_dashboard: Exportar Painel
 duplicate_dashboard: Duplicar Painel
+duplicate_policy: Duplicar Política
 search_dashboard: Procurar Painel...
 search_flow: Procurar Fluxo...
 percent: Porcentagem
