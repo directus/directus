@@ -1,6 +1,6 @@
 import { CORE_LICENSE } from '@directus/license';
 import { expect, test } from 'vitest';
-import { getStatus } from './status.js';
+import { getStatus } from './get-status.js';
 
 test('status of core license', () => {
 	const result = getStatus(CORE_LICENSE);

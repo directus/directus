@@ -24,7 +24,6 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	const records = await service.readByQuery(req.sanitizedQuery);
 
-
 	const historyQuery = getHistoryFilterQuery(req.sanitizedQuery, 'revision_historical_timeframe', (sinceDate) => ({
 		activity: {
 			timestamp: {

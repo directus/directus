@@ -1,5 +1,7 @@
 import { LimitExceededError, ResourceRestrictedError } from '@directus/errors';
-import type { AppEntitlements, CountableEntitlementKey, 
+import type {
+	AppEntitlements,
+	CountableEntitlementKey,
 	EntitlementCheckResult,
 	Entitlements,
 	FeatureFlagCheckResult,
@@ -8,12 +10,40 @@ import type { AppEntitlements, CountableEntitlementKey,
 	License,
 	NumericEntitlementKey,
 	UsageCounter } from '@directus/license';
-import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS  } from '@directus/license';
+import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
+import { countActiveCollections } from './lib/collections.js';
+import { checkCustomLLM } from './lib/custom_llms_enabled.js';
+import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
+import { countActiveSeats } from './lib/seats.js';
+import { checkUsersSSO } from './lib/sso_enabled.js';
+
+let entitlementManager: EntitlementManager | undefined;
+
+export function getEntitlementManager(): EntitlementManager {
+	if (entitlementManager) {
+		return entitlementManager;
+	}
+
+	entitlementManager = new EntitlementManager();
+
+	return entitlementManager;
+}
 
 export class EntitlementManager {
 	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
+
+	registerHandlers() {
+		// limits
+		this.registerCounter('collections', countActiveCollections);
+		this.registerCounter('seats', countActiveSeats);
+
+		// features gates
+		this.registerValidator('sso_enabled', checkUsersSSO);
+		this.registerValidator('custom_llms_enabled', checkCustomLLM);
+		this.registerValidator('custom_permission_rules_enabled', checkCustomPermissionRules);
+	}
 
 	/**
 	 * Replace the active license. Pass `null` to reset to the core license.
@@ -22,7 +52,7 @@ export class EntitlementManager {
 		this.entitlements = license?.entitlements ?? CORE_LICENSE['entitlements'];
 	}
 
-	/**		
+	/**
 	 * Returns whether a feature flag is enabled, applying `override` when
 	 * present and falling back to `default` otherwise.
 	 */
@@ -109,15 +139,12 @@ export class EntitlementManager {
 	 * limit / usage / remaining / allowed. For feature flags: returns the
 	 * validator's verdict (`valid`) and the license-side `entitled` state.
 	 */
-	check(
-		key: CountableEntitlementKey,
-		opts?: { adding?: number, removing?: number },
-	): Promise<EntitlementCheckResult>;
+	check(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<EntitlementCheckResult>;
 
 	check(key: FeatureFlagEntitlementKey): Promise<FeatureFlagCheckResult>;
 	async check(
 		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number, removing?: number },
+		opts?: { adding?: number; removing?: number },
 	): Promise<EntitlementCheckResult | FeatureFlagCheckResult> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
@@ -146,12 +173,9 @@ export class EntitlementManager {
 	 * flag: throws `FeatureFlagViolatedError` when the registered validator
 	 * reports the entitlement is broken.
 	 */
-	assert(key: CountableEntitlementKey, opts?: { adding?: number, removing?: number }): Promise<void>;
+	assert(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<void>;
 	assert(key: FeatureFlagEntitlementKey): Promise<void>;
-	async assert(
-		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number },
-	): Promise<void> {
+	async assert(key: CountableEntitlementKey | FeatureFlagEntitlementKey, opts?: { adding?: number }): Promise<void> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
 			if (hardLimit === null) return;
@@ -171,11 +195,7 @@ export class EntitlementManager {
 		}
 	}
 
-	private isCountableKey(
-		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-	): key is CountableEntitlementKey {
+	private isCountableKey(key: CountableEntitlementKey | FeatureFlagEntitlementKey): key is CountableEntitlementKey {
 		return COUNTABLE_ENTITLEMENT_KEYS.includes(key as CountableEntitlementKey);
 	}
 }
-
-export const entitlementManager = new EntitlementManager();
