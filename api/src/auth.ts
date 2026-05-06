@@ -11,7 +11,7 @@ import {
 } from './auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
-import { entitlementManager } from './license/entitlements/manager.js';
+import { getEntitlementManager } from './license/index.js';
 import { useLogger } from './logger/index.js';
 import type { AuthDriverOptions } from './types/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
@@ -36,6 +36,7 @@ export async function registerAuthProviders(): Promise<void> {
 
 	const providerNames = toArray(env['AUTH_PROVIDERS'] as string);
 
+	const entitlementManager = getEntitlementManager();
 	const sso_allowed = entitlementManager.isEntitled('sso_enabled');
 	// const { entitled: sso_allowed, valid: sso_valid } = await entitlementManager.check('sso_enabled');
 

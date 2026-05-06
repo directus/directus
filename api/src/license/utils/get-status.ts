@@ -1,5 +1,4 @@
-import type { License } from '@directus/license';
-import type { LicenseStatus } from './types.js';
+import type { License, LicenseStatus } from '@directus/license';
 
 export function getStatus(license: License | null, error?: Error): LicenseStatus {
 	if (!license) {

@@ -1,3 +1,2 @@
-export * from './manager.js';
-// import so the register functions are called
-import './entitlements/index.js';
+export { getLicense, getLicenseManager } from './manager.js';
+export { getEntitlementManager } from './entitlements/manager.js';
