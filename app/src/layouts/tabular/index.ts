@@ -61,7 +61,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
 		);
 
-		const versionKey = useVersionQuery();
+		const routeVersionKey = useVersionQuery();
+		const versionKey = computed(() => (props.selectMode ? null : routeVersionKey.value));
 
 		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
@@ -153,6 +154,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			fieldsWithRelationalAliased,
 			aliasedFields,
 			aliasedKeys,
+			versionKey,
 		};
 
 		async function resetPresetAndRefresh() {

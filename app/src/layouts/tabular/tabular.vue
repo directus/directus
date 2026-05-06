@@ -20,7 +20,6 @@ import VTable from '@/components/v-table/v-table.vue';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 import { usePageSize } from '@/composables/use-page-size';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { useVersionQuery } from '@/composables/use-version-query';
 import { Collection } from '@/types/collections';
 import RenderDisplay from '@/views/private/components/render-display.vue';
 
@@ -57,6 +56,7 @@ interface Props {
 	aliasedKeys: string[];
 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
+	versionKey?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -71,6 +71,7 @@ const props = withDefaults(defineProps<Props>(), {
 	filterUser: undefined,
 	search: undefined,
 	onAlignChange: () => undefined,
+	versionKey: null,
 });
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
@@ -78,8 +79,7 @@ const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:lim
 const { collection } = toRefs(props);
 
 const { sortAllowed } = useCollectionPermissions(collection);
-const versionKey = useVersionQuery();
-const manualSortAllowed = computed(() => sortAllowed.value && !versionKey.value);
+const manualSortAllowed = computed(() => sortAllowed.value && !props.versionKey);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);

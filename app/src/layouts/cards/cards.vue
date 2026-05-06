@@ -10,7 +10,6 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { usePageSize } from '@/composables/use-page-size';
-import { useVersionQuery } from '@/composables/use-version-query';
 import { Collection } from '@/types/collections';
 import RenderTemplate from '@/views/private/components/render-template.vue';
 
@@ -52,6 +51,7 @@ const props = withDefaults(
 		search?: string;
 		hasPrependContent?: boolean;
 		extraSelection?: (number | string)[];
+		versionKey?: string | null;
 	}>(),
 	{
 		showSelect: 'multiple',
@@ -74,8 +74,6 @@ const extraSelectionWritable = useSync(props, 'extraSelection', emit);
 const limitWritable = useSync(props, 'limit', emit);
 const sizeWritable = useSync(props, 'size', emit);
 const sortWritable = useSync(props, 'sort', emit);
-
-const versionKey = useVersionQuery();
 
 const mainElement = inject<Ref<Element | undefined>>('main-element');
 
