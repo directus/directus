@@ -14,17 +14,16 @@ import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
 import { countActiveCollections } from './lib/collections.js';
 import { checkCustomLLM } from './lib/custom_llms_enabled.js';
 import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
+import { countActiveFlows } from './lib/flows.js';
 import { countActiveSeats } from './lib/seats.js';
 import { checkUsersSSO } from './lib/sso_enabled.js';
 
 let entitlementManager: EntitlementManager | undefined;
 
 export function getEntitlementManager(): EntitlementManager {
-	if (entitlementManager) {
-		return entitlementManager;
+	if (!entitlementManager) {
+		entitlementManager = new EntitlementManager();
 	}
-
-	entitlementManager = new EntitlementManager();
 
 	return entitlementManager;
 }
@@ -34,10 +33,13 @@ export class EntitlementManager {
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 
-	registerHandlers() {
-		// limits
+	initialize() {
+		countActiveCollections();
+
+		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
+		this.registerCounter('flows', countActiveFlows)
 
 		// features gates
 		this.registerValidator('sso_enabled', checkUsersSSO);
@@ -92,9 +94,10 @@ export class EntitlementManager {
 	 * uses them to adapt its UI (production indicator, powered-by branding).
 	 */
 	getAppEntitlements(): AppEntitlements {
-		const { production_enabled, display_powered_by } = this.entitlements;
+		const { production_enabled, display_powered_by, ai_translations_enabled } = this.entitlements;
 		return {
 			production_enabled: production_enabled.override ?? production_enabled.default,
+			ai_translations_enabled: ai_translations_enabled.override ?? ai_translations_enabled.default,
 			display_powered_by,
 		};
 	}
@@ -193,6 +196,10 @@ export class EntitlementManager {
 		if (!(await this.isValid(key))) {
 			throw new ResourceRestrictedError({ category: key });
 		}
+	}
+
+	resolve() {
+
 	}
 
 	private isCountableKey(key: CountableEntitlementKey | FeatureFlagEntitlementKey): key is CountableEntitlementKey {

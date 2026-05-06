@@ -1,8 +1,7 @@
-import { FlowsService } from '../../services/flows.js';
-import { getSchema } from '../../utils/get-schema.js';
-import { entitlementManager } from './manager.js';
+import { FlowsService } from '../../../services/flows.js';
+import { getSchema } from '../../../utils/get-schema.js';
 
-async function countActiveFlows() {
+export async function countActiveFlows() {
     const flowsService = new FlowsService({
         schema: await getSchema(),
     });
@@ -18,5 +17,3 @@ async function countActiveFlows() {
 
     return flows.length;
 }
-
-entitlementManager.registerCounter('flows', countActiveFlows);

@@ -101,7 +101,7 @@ export class LicenseManager {
 	public async initialize(): Promise<void> {
 		// Register entitlement enforcement for all instances
 		const entitlementManager = getEntitlementManager();
-		entitlementManager.registerHandlers();
+		entitlementManager.initialize();
 
 		// Lock the whole store for the entirety of initialization
 		await store(async (store) => {
