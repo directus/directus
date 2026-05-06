@@ -236,7 +236,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 	const env = await getEnv(database, opts);
 	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
-	let apis: [Api, ...Api[]];
+	let apis: [Api, ...Api[]] | undefined;
 	let app: ChildProcessWithoutNullStreams | undefined;
 	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
@@ -267,7 +267,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function restartApi() {
-		apis.forEach((api) => api.process.kill());
+		apis?.forEach((api) => api.process.kill());
 		apis = await startApi(opts, env, logger);
 	}
 
@@ -276,14 +276,20 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		logger.info('Stopping sandbox');
 		clearInterval(interval);
 		build?.kill();
-		apis.forEach((api) => api.process.kill());
+		apis?.forEach((api) => api.process.kill());
 		app?.kill();
 		license?.kill();
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 
 		if (!opts.docker.keep && 'DB_FILENAME' in env) {
-			setTimeout(() => unlink(env.DB_FILENAME).catch(() => {}), 1);
-			logger.info(`Removed database file at ${env.DB_FILENAME}`);
+			await new Promise((r) => setTimeout(r, 100));
+
+			try {
+				await unlink(join(process.cwd(), env.DB_FILENAME));
+				logger.info(`Removed database file at ${env.DB_FILENAME}`);
+			} catch (e: any) {
+				logger.error(`Failed to remove database file at ${env.DB_FILENAME}: ${e.message}`);
+			}
 		}
 
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);

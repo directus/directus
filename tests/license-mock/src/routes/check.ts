@@ -23,7 +23,7 @@ export async function checkRoute(app: FastifyInstance) {
 		async (req, res) => {
 			const key = req.body.license_key;
 
-			const license = licenses.find((license) => license.key === key);
+			const license = licenses[key];
 
 			if (!license) return res.status(404).send(notFoundError('License not available'));
 

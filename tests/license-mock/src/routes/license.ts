@@ -1,19 +1,19 @@
 import type { FastifyInstance } from 'fastify';
-import { licenses } from '../licenses.js';
+import { merge } from 'lodash-es';
+import { type License, licenses } from '../licenses.js';
 
 export async function licenseRoute(app: FastifyInstance) {
-	app.post('/', async (req, _res) => {
-		licenses.push(req.body as any);
+	app.post<{ Body: License }>('/', async (req, _res) => {
+		licenses[req.body.key] = req.body;
 	});
 
 	app.get('/', async (_req, res) => {
-		return res.send(licenses);
+		return res.send(Object.values(licenses));
 	});
 
-	app.get('/licenses/{license_key}', async (req, res) => {
+	app.get<{ Params: { license_key: string } }>('/licenses/{license_key}', async (req, res) => {
 		// Extract the license key from the request URL path
-		const licenseKey = (req.params as any).license_key;
-		const license = licenses.find((license) => license.key === licenseKey);
+		const license = licenses[req.params.license_key];
 
 		if (!license) {
 			return res.status(404).send({ error: 'License not found' });
@@ -22,28 +22,24 @@ export async function licenseRoute(app: FastifyInstance) {
 		res.send(license);
 	});
 
-	app.patch('/licenses/{license_key}', async (req, res) => {
-		const licenseKey = (req.params as any).license_key;
-		const license = licenses.find((license) => license.key === licenseKey);
+	app.patch<{ Body: License; Params: { license_key: string } }>('/licenses/{license_key}', async (req, res) => {
+		const license = licenses[req.params.license_key];
 
 		if (!license) {
 			return res.status(404).send({ error: 'License not found' });
 		}
 
-		Object.assign(license, req.body);
+		merge(license, req.body);
 
 		res.send(license);
 	});
 
-	app.delete('/licenses/{license_key}', async (req, res) => {
-		const licenseKey = (req.params as any).license_key;
-		const license = licenses.find((license) => license.key === licenseKey);
-
-		if (!license) {
+	app.delete<{ Params: { license_key: string } }>('/licenses/{license_key}', async (req, res) => {
+		if (!(req.params.license_key in licenses)) {
 			return res.status(404).send({ error: 'License not found' });
 		}
 
-		licenses.splice(licenses.indexOf(license), 1);
+		delete licenses[req.params.license_key];
 
 		res.status(204).send();
 	});

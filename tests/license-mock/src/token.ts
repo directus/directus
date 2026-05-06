@@ -14,7 +14,7 @@ export async function createNewToken(license: License) {
 	const now = Math.floor(Date.now() / 1000);
 
 	return new SignJWT(encodedToken)
-		.setProtectedHeader({ alg: 'EdDSA', kid: '1234567890' })
+		.setProtectedHeader({ alg: 'EdDSA', kid: 'jwks' })
 		.setIssuer('directus-licensing-service')
 		.setIssuedAt(now)
 		.setJti(randomUUID())

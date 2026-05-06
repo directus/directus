@@ -27,7 +27,9 @@ export async function deactivateRoute(app: FastifyInstance) {
 		async (req, res) => {
 			const { license_key, project_id, public_url: _public_url } = req.headers;
 
-			const license = licenses.find((license) => license.key === license_key && license.project_id === project_id);
+			const license = Object.values(licenses).find(
+				(license) => license.key === license_key && license.project_id === project_id,
+			);
 
 			if (!license) return res.status(400).send(forbiddenError('License not found'));
 
