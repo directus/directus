@@ -40,6 +40,10 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const customLLMEnabled = computed(() => info.value?.entitlements?.custom_llms_enabled?.default === true);
 
+	const customPermissionRulesEnabled = computed(
+		() => info.value?.entitlements?.custom_permission_rules_enabled?.default === true,
+	);
+
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -115,6 +119,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		hasRemainingSeats,
 		isLocked,
 		customLLMEnabled,
+		customPermissionRulesEnabled,
 		hydrate,
 		hydrateAddons,
 		dehydrate,
