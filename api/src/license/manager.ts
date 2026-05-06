@@ -105,7 +105,7 @@ export class LicenseManager {
 		try {
 			// Register entitlement enforcement for all instances
 			const entitlementManager = getEntitlementManager();
-			entitlementManager.registerHandlers();
+			entitlementManager.initialize();
 
 			// Lock the whole store for the entirety of initialization
 			await this.store(async (store) => {
@@ -541,11 +541,10 @@ export class LicenseManager {
 			const candidateCollections = [];
 
 			for (const candidateCollection of collections) {
-				// LICENSE-TODO: re-check field for determining disables/excluded
 				if (
 					candidateCollection.meta?.system !== true &&
 					candidateCollection.schema !== null &&
-					candidateCollection.status !== 'disabled'
+					candidateCollection.meta?.status === 'active'
 				) {
 					candidateCollections.push(candidateCollection.collection);
 				}

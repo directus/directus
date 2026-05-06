@@ -1,3 +1,4 @@
+import { LimitExceededError, ResourceRestrictedError } from '@directus/errors';
 import type {
 	AppEntitlements,
 	CountableEntitlementKey,
@@ -7,76 +8,37 @@ import type {
 	FeatureFlagEntitlementKey,
 	FeatureFlagValidator,
 	NumericEntitlementKey,
-	UsageCounter,
-} from '@directus/license';
+	UsageCounter } from '@directus/license';
 import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
 import { countActiveCollections } from './lib/collections.js';
 import { checkCustomLLM } from './lib/custom_llms_enabled.js';
 import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
+import { countActiveFlows } from './lib/flows.js';
 import { countActiveSeats } from './lib/seats.js';
 import { checkUsersSSO } from './lib/sso_enabled.js';
 
 let entitlementManager: EntitlementManager | undefined;
 
 export function getEntitlementManager(): EntitlementManager {
-	if (entitlementManager) {
-		return entitlementManager;
+	if (!entitlementManager) {
+		entitlementManager = new EntitlementManager();
 	}
-
-	entitlementManager = new EntitlementManager();
 
 	return entitlementManager;
 }
-
-/**
- * Example:
- *
- * Adding usage counter for "Seats" in the API
- * ```ts
- * import { entitlements } from '@directus/license'
- *
- * // on startup
- * entitlements.registerCounter('seats', async () => {
- *   const userCounts = await fetchUserCount({
- *     knex: getDatabase()
- *   });
- *
- *   return userCounts.admin + userCounts.app;
- * });
- *
- * // in the users service
- * entitlements.assert('seats', { adding: 5 });
- * // throws error if adding 5 would pass the limit
- * // or call .check for non-throwing information
- * ```
- *
- * Adding validator for "sso_enabled" in the API
- * ```ts
- * import { entitlements } from '@directus/license'
- *
- * // on startup
- * entitlements.registerValidator('sso_enabled', async () => {
- *   const count_sso = // check the db for sso enabled users
- *
- *   return count_sso > 0;
- * });
- *
- * // in the users service when trying to enable sso on a user
- * entitlements.assert('sso_enabled');
- * // throws error if sso is disabled but there are users with it enabled
- * // or call .check for non-throwing information
- * ```
- */
 
 export class EntitlementManager {
 	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 
-	registerHandlers() {
-		// limits
+	initialize() {
+		countActiveCollections();
+
+		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
+		this.registerCounter('flows', countActiveFlows)
 
 		// features gates
 		this.registerValidator('sso_enabled', checkUsersSSO);
@@ -131,9 +93,10 @@ export class EntitlementManager {
 	 * uses them to adapt its UI (production indicator, powered-by branding).
 	 */
 	getAppEntitlements(): AppEntitlements {
-		const { production_enabled, display_powered_by } = this.entitlements;
+		const { production_enabled, display_powered_by, ai_translations_enabled } = this.entitlements;
 		return {
 			production_enabled: production_enabled.override ?? production_enabled.default,
+			ai_translations_enabled: ai_translations_enabled.override ?? ai_translations_enabled.default,
 			display_powered_by,
 		};
 	}
@@ -223,17 +186,19 @@ export class EntitlementManager {
 			const adding = opts?.adding ?? 0;
 
 			if (usage + adding > hardLimit) {
-				// LICENSE-TODO: replace with correct error
-				// throw new LimitExceededError({ key, hardLimit, usage, adding });
+				throw new LimitExceededError({ category: key }/*{ key, hardLimit, usage, adding }*/);
 			}
 
 			return;
 		}
 
 		if (!(await this.isValid(key))) {
-			// LICENSE-TODO: replace with correct error
-			// throw new FeatureFlagViolatedError({ key });
+			throw new ResourceRestrictedError({ category: key });
 		}
+	}
+
+	resolve() {
+
 	}
 
 	private isCountableKey(key: CountableEntitlementKey | FeatureFlagEntitlementKey): key is CountableEntitlementKey {

@@ -1,5 +1,6 @@
 import type { AbstractServiceOptions, FlowRaw, Item, MutationOptions, PrimaryKey } from '@directus/types';
 import { getFlowManager } from '../flows.js';
+import { getEntitlementManager } from '../license/entitlements/manager.js';
 import { ItemsService } from './items.js';
 
 export class FlowsService extends ItemsService<FlowRaw> {
@@ -8,6 +9,9 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const entitlementManager = getEntitlementManager();
+		await entitlementManager.assert('collections', { adding: 1 });
+
 		const result = await super.createOne(data, opts);
 
 		const flowManager = getFlowManager();
@@ -17,6 +21,11 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if ('status' in data && data['status'] === 'active') {
+			const entitlementManager = getEntitlementManager();
+			await entitlementManager.assert('collections', { adding: keys.length });
+		}
+
 		const result = await super.updateMany(keys, data, opts);
 
 		const flowManager = getFlowManager();

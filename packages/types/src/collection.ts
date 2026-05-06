@@ -30,6 +30,7 @@ export type CollectionMeta = {
 	sort: number | null;
 	group: string | null;
 	collapse: 'open' | 'closed' | 'locked';
+	status: 'active' | 'inactive';
 };
 
 export interface Collection {
@@ -60,6 +61,7 @@ export type BaseCollectionMeta = Pick<
 	| 'accountability'
 	| 'group'
 	| 'system'
+	| 'status'
 >;
 
 export type RawCollection = {
