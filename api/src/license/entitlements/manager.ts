@@ -11,6 +11,23 @@ import type {
 	UsageCounter,
 } from '@directus/license';
 import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
+import { countActiveCollections } from './lib/collections.js';
+import { checkCustomLLM } from './lib/custom_llms_enabled.js';
+import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
+import { countActiveSeats } from './lib/seats.js';
+import { checkUsersSSO } from './lib/sso_enabled.js';
+
+let entitlementManager: EntitlementManager | undefined;
+
+export function getEntitlementManager(): EntitlementManager {
+	if (entitlementManager) {
+		return entitlementManager;
+	}
+
+	entitlementManager = new EntitlementManager();
+
+	return entitlementManager;
+}
 
 /**
  * Example:
@@ -56,6 +73,17 @@ export class EntitlementManager {
 	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
+
+	registerHandlers() {
+		// limits
+		this.registerCounter('collections', countActiveCollections);
+		this.registerCounter('seats', countActiveSeats);
+
+		// features gates
+		this.registerValidator('sso_enabled', checkUsersSSO);
+		this.registerValidator('custom_llms_enabled', checkCustomLLM);
+		this.registerValidator('custom_permission_rules_enabled', checkCustomPermissionRules);
+	}
 
 	/**
 	 * Replace the active license. Pass `null` to reset to the core license.
@@ -213,5 +241,3 @@ export class EntitlementManager {
 		return COUNTABLE_ENTITLEMENT_KEYS.includes(key as CountableEntitlementKey);
 	}
 }
-
-export const entitlementManager = new EntitlementManager();

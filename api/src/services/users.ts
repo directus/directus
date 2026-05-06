@@ -19,7 +19,7 @@ import type { StringValue } from 'ms';
 import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { entitlementManager } from '../license/entitlements/manager.js';
+import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
@@ -203,6 +203,7 @@ export class UsersService extends ItemsService {
 		}
 
 		if (!('status' in data) || data['status'] === 'active') {
+			const entitlementManager = getEntitlementManager();
 			await entitlementManager.assert('seats', { adding: 1 });
 		}
 
@@ -312,6 +313,7 @@ export class UsersService extends ItemsService {
 		}
 
 		if ('status' in data && data['status'] === 'active') {
+			const entitlementManager = getEntitlementManager();
 			await entitlementManager.assert('seats', { adding: keys.length });
 		}
 
@@ -445,6 +447,7 @@ export class UsersService extends ItemsService {
 			schema: this.schema,
 		});
 
+		const entitlementManager = getEntitlementManager();
 		const { allowed: isWithinLicenseLimits } = await entitlementManager.check('seats');
 		const status = isWithinLicenseLimits ? 'active' : 'inactive';
 

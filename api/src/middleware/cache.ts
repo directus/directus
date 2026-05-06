@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import { getCache, getCacheValue } from '../cache.js';
-import { entitlementManager } from '../license/entitlements/manager.js';
+import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -14,6 +14,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 	const env = useEnv();
 	const { cache } = getCache();
 	const logger = useLogger();
+	const entitlementManager = getEntitlementManager();
 
 	if (req.method.toLowerCase() !== 'get' && req.originalUrl?.startsWith('/graphql') === false) return next();
 	if (env['CACHE_ENABLED'] !== true) return next();

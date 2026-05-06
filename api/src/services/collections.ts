@@ -24,7 +24,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
-import { entitlementManager } from '../license/entitlements/manager.js';
+import { getEntitlementManager } from '../license/index.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { Collection } from '../types/index.js';
@@ -79,9 +79,10 @@ export class CollectionsService {
 		if (payload.collection.includes('/')) {
 			throw new InvalidPayloadError({ reason: `Collection name can't contain "/"` });
 		}
-		
+
 		// TODO update when implementing disabled/excluded collections
 		if (!('disabled' in payload) || payload['disabled'] === false) {
+			const entitlementManager = getEntitlementManager();
 			await entitlementManager.assert('collections', { adding: 1 });
 		}
 
