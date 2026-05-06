@@ -210,8 +210,11 @@ function getSystemFields() {
 				display: 'boolean',
 				display_options: {
 					iconOn: 'archive',
+					colorOn: 'var(--theme--foreground-subdued)',
+					labelOn: '$t:archived',
 					iconOff: 'unarchive',
 					colorOff: 'transparent',
+					labelOff: '$t:not_archived',
 				},
 			},
 			schema: {
