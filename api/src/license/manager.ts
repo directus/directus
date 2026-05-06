@@ -110,62 +110,59 @@ export class LicenseManager {
 			const envKey = env['LICENSE_KEY'] as string | undefined;
 			const envToken = env['LICENSE_TOKEN'] as string | undefined;
 
-			const settingsService = new SettingsService({ schema: await getSchema() });
-
 			// CASE A
 			if (envKey && envToken) {
 				logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
 				process.exit(1);
 			}
 
+			const settingsService = new SettingsService({ schema: await getSchema() });
+
 			const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
 				fields: ['license_key', 'license_token'],
 			});
 
-			// CASE I
-			if (!envKey && !envToken && !dbKey) {
-				// CASE H
+			if (envKey) {
+				this.source = 'env';
+
+				if (!dbKey) {
+					// CASE D
+					await this.activate(envKey);
+				} else if (envKey !== dbKey) {
+					// CASE B
+					await this.update(dbKey, { oldKey: envKey });
+				} else {
+					// CASE C
+					await this.refresh({ key: envKey, token: dbToken ?? null });
+				}
+			} else if (envToken) {
+				// CASE E — verify offline token, cleanup DB
+				this.source = 'env';
+				const license = await this.verify(envToken);
+
+				if (dbKey || dbToken) {
+					await settingsService.upsertSingleton({ license_key: null, license_token: null });
+				}
+
+				await store.set('status', getStatus(license));
+			} else if (dbKey) {
+				this.source = 'settings';
+
 				if (dbToken) {
+					// CASE F
+					await this.refresh({ key: dbKey, token: dbToken });
+				} else {
+					// CASE G
+					await this.activate(dbKey);
+				}
+			} else {
+				if (dbToken) {
+					// CASE H — stale token, drop it before serving core
 					await this.downgrade();
 				}
 
-				// Use core license
+				// CASE H tail / CASE I — core license
 				await store.set('status', 'active');
-				return;
-			}
-
-			// CASE D
-			if (envKey && !dbKey) {
-				this.source = 'env';
-				await this.activate(envKey);
-			}
-
-			if (envKey && dbKey) {
-				this.source = 'env';
-
-				// CASE B else C
-				if (envKey !== dbKey) {
-					await this.update(dbKey, { oldKey: envKey });
-				} else {
-					await this.refresh({ key: envKey, token: dbToken ?? null });
-				}
-			}
-
-			// CASE E
-			if (envToken) {
-				this.source = 'env';
-				await this.verify(envToken);
-			}
-
-			if (dbKey) {
-				this.source = 'settings';
-
-				// CASE F else G
-				if (dbToken) {
-					await this.refresh({ key: dbKey, token: dbToken });
-				} else {
-					await this.activate(dbKey);
-				}
 			}
 
 			await store.set('initialized', true);
@@ -183,22 +180,7 @@ export class LicenseManager {
 	}
 
 	public async assertMutable(options: { action: string; bypassCore?: boolean }): Promise<void> {
-		const license = await getLicense();
-
-		// offline
-		if (this.licenseKey === null && license.meta.offline) {
-			throw new LicenseImmutableError({ action: options?.action, source: 'Offline' });
-		}
-
-		// env source
-		if (this.source === 'env') {
-			throw new LicenseImmutableError({ action: options?.action, source: 'Env-sourced' });
-		}
-
-		// core tier
-		if (options?.bypassCore !== true && this.source === null) {
-			throw new LicenseImmutableError({ action: options?.action, source: 'Core' });
-		}
+		// LICENSE-TODO
 	}
 
 	public async isLocked() {
@@ -223,9 +205,6 @@ export class LicenseManager {
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
-		// bypass core tier for core -> key flow
-		this.assertMutable({ action: 'activation', bypassCore: true });
-
 		const license: License | null = null;
 		let error: Error | undefined;
 
@@ -259,8 +238,6 @@ export class LicenseManager {
 	}
 
 	public async deactivate(key?: string) {
-		this.assertMutable({ action: 'deactivation' });
-
 		const currentKey = this.licenseKey ?? key;
 
 		if (!currentKey) {
@@ -284,8 +261,6 @@ export class LicenseManager {
 	 * Update from an existing key to a new key
 	 */
 	public async update(newKey: string, options?: { oldKey: string }) {
-		this.assertMutable({ action: 'update' });
-
 		const currentKey = this.licenseKey ?? options?.oldKey;
 
 		if (!currentKey) {
@@ -384,8 +359,6 @@ export class LicenseManager {
 	}
 
 	public async billingPortalUrl() {
-		this.assertMutable({ action: 'view portal' });
-
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -400,8 +373,6 @@ export class LicenseManager {
 	}
 
 	public async availableAddons(): Promise<LicenseAddonOutput> {
-		this.assertMutable({ action: 'list addons' });
-
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -426,8 +397,6 @@ export class LicenseManager {
 	}
 
 	public async setAddonQuantity(options: { addonId: string; quantity: number }) {
-		this.assertMutable({ action: 'set addon quantity' });
-
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -459,8 +428,6 @@ export class LicenseManager {
 	}
 
 	public async removeAddon(addonId: string) {
-		this.assertMutable({ action: 'remove addon' });
-
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
