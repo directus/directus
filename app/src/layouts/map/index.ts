@@ -358,8 +358,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
-			getTotalCount();
-			getItemCount();
+			getTotalCount(true);
+			getItemCount(true);
 		}
 
 		function download() {
