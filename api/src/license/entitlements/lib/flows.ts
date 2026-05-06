@@ -1,7 +1,7 @@
 import { FlowsService } from '../../../services/flows.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-export async function countActiveFlows() {
+export async function getActiveFlows() {
     const flowsService = new FlowsService({
         schema: await getSchema(),
     });
@@ -15,5 +15,18 @@ export async function countActiveFlows() {
         }
     });
 
+    return flows;
+}
+
+export async function countActiveFlows() {
+    const flows = await getActiveFlows();
+
     return flows.length;
 }
+
+export async function resolveFlows(flows: string[]) {
+    const flowsService = new FlowsService({ schema: await getSchema() });
+
+    await Promise.allSettled(flows.map((flow_id) => flowsService.updateOne(flow_id, { status: 'inactive' })));
+}
+

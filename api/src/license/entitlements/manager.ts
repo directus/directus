@@ -3,19 +3,22 @@ import type {
 	AppEntitlements,
 	CountableEntitlementKey,
 	EntitlementCheckResult,
+	EntitlementResolver,
 	Entitlements,
 	FeatureFlagCheckResult,
 	FeatureFlagEntitlementKey,
 	FeatureFlagValidator,
 	NumericEntitlementKey,
-	UsageCounter } from '@directus/license';
+	ResolveInput,
+	UsageCounter,
+} from '@directus/license';
 import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
-import { countActiveCollections } from './lib/collections.js';
+import { countActiveCollections, resolveCollections } from './lib/collections.js';
 import { checkCustomLLM } from './lib/custom_llms_enabled.js';
 import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
-import { countActiveFlows } from './lib/flows.js';
-import { countActiveSeats } from './lib/seats.js';
-import { checkUsersSSO } from './lib/sso_enabled.js';
+import { countActiveFlows, resolveFlows } from './lib/flows.js';
+import { countActiveSeats, resolveSeats } from './lib/seats.js';
+import { checkUsersSSO, resolveSSOUsers } from './lib/sso_enabled.js';
 
 let entitlementManager: EntitlementManager | undefined;
 
@@ -31,19 +34,24 @@ export class EntitlementManager {
 	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
+	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
 
 	initialize() {
-		countActiveCollections();
-
 		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
-		this.registerCounter('flows', countActiveFlows)
+		this.registerCounter('flows', countActiveFlows);
 
 		// features gates
 		this.registerValidator('sso_enabled', checkUsersSSO);
 		this.registerValidator('custom_llms_enabled', checkCustomLLM);
 		this.registerValidator('custom_permission_rules_enabled', checkCustomPermissionRules);
+
+		// resolvers
+		this.registerResolver('collections', resolveCollections);
+		this.registerResolver('seats', resolveSeats);
+		this.registerResolver('flows', resolveFlows);
+		this.registerResolver('sso_enabled', resolveSSOUsers);
 	}
 
 	/**
@@ -67,7 +75,7 @@ export class EntitlementManager {
 	 */
 	registerValidator(key: FeatureFlagEntitlementKey, validator: FeatureFlagValidator): void {
 		if (this.validatorSources.has(key)) {
-			throw new Error(`Validator already registered for entitlement "${String(key)}"`);
+			throw new Error(`Validator was already registered for entitlement "${String(key)}"`);
 		}
 
 		this.validatorSources.set(key, validator);
@@ -116,10 +124,21 @@ export class EntitlementManager {
 	 */
 	registerCounter(key: CountableEntitlementKey, source: UsageCounter): void {
 		if (this.counterSources.has(key)) {
-			throw new Error(`Usage source already registered for entitlement "${String(key)}"`);
+			throw new Error(`Counter was already registered for entitlement "${String(key)}"`);
 		}
 
 		this.counterSources.set(key, source);
+	}
+
+	/**
+	 * Wire up a resolver function for an entitlement.
+	 */
+	registerResolver<K extends keyof ResolveInput>(key: K, source: EntitlementResolver<K>) {
+		if (this.resolverSources.has(key)) {
+			throw new Error(`Resolver was already registered for entitlement "${String(key)}"`);
+		}
+
+		this.resolverSources.set(key, source as EntitlementResolver<any>);
 	}
 
 	/**
@@ -186,7 +205,7 @@ export class EntitlementManager {
 			const adding = opts?.adding ?? 0;
 
 			if (usage + adding > hardLimit) {
-				throw new LimitExceededError({ category: key }/*{ key, hardLimit, usage, adding }*/);
+				throw new LimitExceededError({ category: key } /*{ key, hardLimit, usage, adding }*/);
 			}
 
 			return;
@@ -197,8 +216,22 @@ export class EntitlementManager {
 		}
 	}
 
-	resolve() {
+	/**
+	 * Apply a resolution payload to an entitlement by invoking its registered
+	 * resolver
+	 */
+	async resolve<K extends keyof ResolveInput>(
+		key: K,
+		input: NonNullable<ResolveInput[K]>,
+		ctx?: { adminId: string },
+	): Promise<void> {
+		const source = this.resolverSources.get(key);
 
+		if (!source) {
+			throw new Error(`No resolver registered for entitlement "${String(key)}"`);
+		}
+
+		await source(input, ctx);
 	}
 
 	private isCountableKey(key: CountableEntitlementKey | FeatureFlagEntitlementKey): key is CountableEntitlementKey {
