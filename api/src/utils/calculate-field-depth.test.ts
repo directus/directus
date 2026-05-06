@@ -88,3 +88,37 @@ test('Calculates _sort in deep correctly', () => {
 
 	expect(result).toBe(4);
 });
+
+test('Skips _json key and does not count its contents as relational depth', () => {
+	// metadata._json.color._eq would be depth 3 without the skip, but _json is ignored
+	// so depth should be 1 (just the 'metadata' field)
+	const filter = {
+		metadata: {
+			_json: {
+				color: { _eq: 'red' },
+			},
+		},
+	};
+
+	const result = calculateFieldDepth(filter);
+
+	expect(result).toBe(1);
+});
+
+test('Skips _json key in a relational context', () => {
+	// category_id.metadata._json.color would be depth 3 without the skip,
+	// but _json is ignored so depth should be 2 (category_id → metadata)
+	const filter = {
+		category_id: {
+			metadata: {
+				_json: {
+					color: { _eq: 'blue' },
+				},
+			},
+		},
+	};
+
+	const result = calculateFieldDepth(filter);
+
+	expect(result).toBe(2);
+});
