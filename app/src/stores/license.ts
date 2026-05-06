@@ -44,8 +44,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const collectionsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
-		//return info.value.entitlements.collections.limit - (info.value.usage?.collections ?? 0);
-		return 5;
+		return info.value.entitlements.collections.limit - (info.value.usage?.collections ?? 0);
 	});
 
 	const hasRemainingCollections = computed(() => collectionsRemaining.value === null || collectionsRemaining.value > 0);
@@ -65,7 +64,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		const ent = info.value?.entitlements?.custom_llms_enabled;
 		if (!ent) return false;
 		return ent.override ?? ent.default;
-	})
+	});
 
 	const isLicensed = computed(() => {
 		const status = info.value?.status;
