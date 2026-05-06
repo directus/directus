@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { Entitlements } from '@directus/license';
+import { deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
+import LicenseResolutionDialog from './components/license-resolution-dialog.vue';
 import LicenseSection from './components/license-section.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
@@ -21,8 +22,7 @@ import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import type { PendingResolution } from '@/license/types';
-import sdk, { requestEndpoint } from '@/sdk';
+import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
 import { formatTimeframe } from '@/utils/format-timeframe';
@@ -45,7 +45,7 @@ onMounted(() => {
 	licenseStore.hydrateAddons();
 });
 
-const planDisplayName = computed(() => license.value?.type ?? null);
+const planDisplayName = computed(() => license.value?.name ?? null);
 
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
@@ -112,20 +112,38 @@ function usageFor(key: keyof Entitlements): number | null {
 
 const deactivateConfirmOpen = ref(false);
 const deactivateLoading = ref(false);
+const resolutionDialogOpen = ref(false);
 
 async function handleDeactivateClick() {
 	deactivateLoading.value = true;
 
 	try {
-		const assessment = await sdk.request(
-			requestEndpoint<PendingResolution[]>('/license/pending-resolution', { method: 'GET' }),
-		);
+		await licenseStore.hydratePendingResolution();
 
-		if (assessment.length === 0) {
+		if ((licenseStore.pendingResolution?.length ?? 0) === 0) {
 			deactivateConfirmOpen.value = true;
 		} else {
-			// TODO: show conflict resolution modal
+			resolutionDialogOpen.value = true;
 		}
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		deactivateLoading.value = false;
+	}
+}
+
+function handleResolutionConfirm() {
+	resolutionDialogOpen.value = false;
+	deactivateConfirmOpen.value = true;
+}
+
+async function handleDeactivateConfirm() {
+	deactivateLoading.value = true;
+
+	try {
+		await sdk.request(deactivateLicense());
+		await licenseStore.hydrate();
+		deactivateConfirmOpen.value = false;
 	} catch (err) {
 		unexpectedError(err);
 	} finally {
@@ -204,29 +222,37 @@ async function handleDeactivateClick() {
 				</LicenseSection>
 
 				<LicenseSection icon="emergency_home" :title="t('danger_zone')" variant="danger">
-					<VNotice v-if="license.source === 'env'" type="info">
-						{{ t('licensing.env_managed') }}
-					</VNotice>
-					<VButton
-						:disabled="license.source === 'env'"
-						:loading="deactivateLoading"
-						danger
-						@click="handleDeactivateClick"
-					>
-						{{ t('licensing.deactivate') }}
-					</VButton>
+					<div class="danger-zone-content">
+						<VNotice v-if="license.source === 'env'" type="info">
+							{{ t('licensing.env_managed') }}
+						</VNotice>
+						<VButton
+							:disabled="license.source === 'env'"
+							:loading="deactivateLoading"
+							danger
+							@click="handleDeactivateClick"
+						>
+							{{ t('licensing.deactivate') }}
+						</VButton>
+					</div>
 				</LicenseSection>
 			</template>
 		</div>
 	</PrivateView>
+
+	<LicenseResolutionDialog v-model="resolutionDialogOpen" @confirm="handleResolutionConfirm" />
 
 	<VDialog v-model="deactivateConfirmOpen" @esc="deactivateConfirmOpen = false">
 		<VCard>
 			<VCardTitle>{{ t('licensing.deactivate_confirm_title') }}</VCardTitle>
 			<VCardText>{{ t('licensing.deactivate_confirm_body') }}</VCardText>
 			<VCardActions>
-				<VButton secondary @click="deactivateConfirmOpen = false">{{ t('cancel') }}</VButton>
-				<VButton danger>{{ t('licensing.deactivate') }}</VButton>
+				<VButton secondary :disabled="deactivateLoading" @click="deactivateConfirmOpen = false">
+					{{ t('cancel') }}
+				</VButton>
+				<VButton danger :loading="deactivateLoading" @click="handleDeactivateConfirm">
+					{{ t('licensing.deactivate') }}
+				</VButton>
 			</VCardActions>
 		</VCard>
 	</VDialog>
@@ -313,6 +339,13 @@ async function handleDeactivateClick() {
 .limit {
 	color: var(--theme--foreground-subdued);
 	margin-inline-start: 0.25rem;
+}
+
+.danger-zone-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 1rem;
 }
 
 .drawer-content {

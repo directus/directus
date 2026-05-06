@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LicenseAddon } from '@directus/sdk';
+import type { LicenseAddon } from '@directus/license';
 import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';

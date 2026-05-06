@@ -1404,6 +1404,33 @@ licensing:
   deactivate_confirm_title: Deactivate License?
   deactivate_confirm_body:
     Are you sure you want to deactivate the license? Your instance will be downgraded to the Core plan.
+  resolve_title_manual: Deactivate License
+  resolve_title_expired: License Expiration
+  resolve_title_suspended: License Suspension
+  resolve_title_env_removed: License Removed
+  resolve_subtitle: If you need to update your license key, you can update it in your environment variable.
+  resolve_notice_manual:
+    Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
+    Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
+  resolve_notice_expired:
+    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
+    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
+    access rules will also be locked.
+  resolve_notice_suspended:
+    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
+    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
+    access rules will also be locked.
+  resolve_notice_env_removed:
+    Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
+    collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
+    locked in Directus, and custom access rules will also be locked.
+  resolve_continue: Continue
+  resolve_section_collections: 'Collections ({usage}/{limit})'
+  resolve_section_seats: 'Seats ({usage}/{limit})'
+  resolve_section_flows: 'Flows ({usage}/{limit})'
+  resolve_section_sso_enabled: SSO must be disabled
+  resolve_section_custom_llms_enabled: Custom LLM must be disabled
+  resolve_section_custom_permission_rules_enabled: Custom permission rules must be removed
   env_managed: Your license key is managed via an environment variable and can't be updated here.
   key_management: License Key Management
   key: License Key
