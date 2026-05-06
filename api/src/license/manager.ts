@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { ForbiddenError } from '@directus/errors';
 import {
 	activateKey,
 	billinPortal,
@@ -14,6 +15,7 @@ import {
 	listAddons,
 	previewKey,
 	refreshLicense,
+	type RefreshLicenseInput,
 	ResolveInput,
 	updateAddonQuantity,
 	updateKey,
@@ -31,7 +33,7 @@ import { SettingsService } from '../services/settings.js';
 import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
-import { getEntitlementManager } from './entitlements/manager.js';
+import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
 import { getLicenseKey } from './lib/get-license-key.js';
 import { getLicenseToken } from './lib/get-license-token.js';
 import { getStatus } from './utils/get-status.js';
@@ -189,8 +191,36 @@ export class LicenseManager {
 		return this.source;
 	}
 
-	public async assertMutable(options: { action: string; bypassCore?: boolean }): Promise<void> {
-		// LICENSE-TODO
+	/**
+	 * Throw if the current license cannot have its key changed (activate / update / deactivate).
+	 *
+	 * License managements is only allowed for setting based licenses
+	 */
+	private assertCanManageLicense() {
+		// If both are null === initialization stage
+		if (this.licenseKey === null && this.licenseToken === null) return;
+		if (this.source === 'settings') return;
+
+		throw new ForbiddenError({
+			reason: `You cannot manage license for the current license.`,
+		});
+	}
+
+	/**
+	 * Throw if the current license cannot have its entitlements changed (e.g. adding addons).
+	 *
+	 * License addons is supported for all licenses aside from offline
+	 */
+	private assertCanManageAddons() {
+		// If both are null === initialization stage
+		if (this.licenseKey === null && this.licenseToken === null) return;
+
+		if (this.source === 'settings') return;
+		if (this.source === 'env' && this.licenseKey) return;
+
+		throw new ForbiddenError({
+			reason: `You cannot manage addons for the current license.`,
+		});
 	}
 
 	public async isLocked() {
@@ -215,6 +245,8 @@ export class LicenseManager {
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
+		this.assertCanManageLicense();
+
 		const license: License | null = null;
 		let error: Error | undefined;
 
@@ -248,7 +280,9 @@ export class LicenseManager {
 	}
 
 	public async deactivate(key?: string) {
-		const currentKey = this.licenseKey ?? key;
+		this.assertCanManageLicense();
+
+		const currentKey = key ?? this.licenseKey;
 
 		if (!currentKey) {
 			throw new TypeError('"key" has to be defined in order to deactivate');
@@ -271,7 +305,9 @@ export class LicenseManager {
 	 * Update from an existing key to a new key
 	 */
 	public async update(newKey: string, options?: { oldKey: string }) {
-		const currentKey = this.licenseKey ?? options?.oldKey;
+		this.assertCanManageLicense();
+
+		const currentKey = options?.oldKey ?? this.licenseKey;
 
 		if (!currentKey) {
 			throw new TypeError('"oldKey" has to be defined in order to update');
@@ -407,6 +443,8 @@ export class LicenseManager {
 	}
 
 	public async setAddonQuantity(options: { addonId: string; quantity: number }) {
+		this.assertCanManageAddons();
+
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -438,6 +476,8 @@ export class LicenseManager {
 	}
 
 	public async removeAddon(addonId: string) {
+		this.assertCanManageAddons();
+
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
