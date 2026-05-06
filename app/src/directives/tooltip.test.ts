@@ -1,7 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DirectiveBinding } from 'vue';
-import { getGlobalTooltip, isDisabled, resolveAlign, resolveSide, resolveTooltipValue } from './tooltip';
-import type { TooltipPayload } from '@/composables/use-global-tooltip';
+import {
+	getGlobalTooltip,
+	isDisabled,
+	resolveAlign,
+	resolveSide,
+	resolveTooltipValue,
+	type TooltipPayload,
+} from './tooltip';
 
 function makePayload(overrides: Partial<TooltipPayload> = {}): TooltipPayload {
 	return {

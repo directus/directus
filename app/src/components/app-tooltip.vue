@@ -2,8 +2,7 @@
 import { TooltipArrow, TooltipContent, TooltipPortal, TooltipRoot, TooltipTrigger } from 'reka-ui';
 import { onUnmounted, reactive } from 'vue';
 import VKbd from '@/components/v-kbd.vue';
-import { TOOLTIP_CONTENT_ID } from '@/composables/use-global-tooltip';
-import { getGlobalTooltip } from '@/directives/tooltip';
+import { getGlobalTooltip, TOOLTIP_CONTENT_ID } from '@/directives/tooltip';
 
 const tooltip = getGlobalTooltip();
 const state = reactive({ ...tooltip.state });

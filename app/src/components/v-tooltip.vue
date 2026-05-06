@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TooltipArrow, TooltipContent, TooltipPortal, TooltipRoot, TooltipTrigger } from 'reka-ui';
-import type { TooltipAlign, TooltipSide } from '@/composables/use-global-tooltip';
+import type { TooltipAlign, TooltipSide } from '@/directives/tooltip';
 
 interface Props {
 	side?: TooltipSide;

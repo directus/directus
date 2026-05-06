@@ -1,10 +1,21 @@
+import type { ReferenceElement } from 'reka-ui';
 import type { Directive, DirectiveBinding } from 'vue';
-import {
-	TOOLTIP_CONTENT_ID,
-	type TooltipAlign,
-	type TooltipPayload,
-	type TooltipSide,
-} from '@/composables/use-global-tooltip';
+
+export const TOOLTIP_CONTENT_ID = 'app-tooltip-content';
+
+export type TooltipSide = 'top' | 'bottom' | 'left' | 'right';
+export type TooltipAlign = 'start' | 'center' | 'end';
+
+export interface TooltipPayload {
+	content: string;
+	kbd?: string[];
+	side: TooltipSide;
+	align: TooltipAlign;
+	inverted: boolean;
+	monospace: boolean;
+	delayDuration: number;
+	virtualRef: ReferenceElement | null;
+}
 
 export function isDisabled(element: HTMLElement): boolean {
 	return (
