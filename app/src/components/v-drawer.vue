@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, provide, ref, useTemplateRef } from 'vue';
+import { useBreakpoints } from '@vueuse/core';
+import { computed, provide, ref, useId, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
 import VOverlay from '@/components/v-overlay.vue';
+import { BREAKPOINTS } from '@/constants';
 
 export interface Props {
 	title: string;
@@ -31,7 +33,7 @@ const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
 const localActive = ref(false);
 
-const mobileSidebarOpen = ref(false);
+const { mobileSidebarOpen, mobileOutletId, desktopOutletId, teleportTarget } = useSidebar();
 
 const scrollContainer = useTemplateRef('scroll-container');
 
@@ -46,6 +48,26 @@ const internalActive = computed({
 		emit('update:modelValue', newActive);
 	},
 });
+
+function useSidebar() {
+	const mobileSidebarOpen = ref(false);
+	const breakpoints = useBreakpoints(BREAKPOINTS);
+	const isMobile = breakpoints.smallerOrEqual('lg');
+	const sidebarId = useId();
+	const mobileOutletId = `v-drawer-sidebar-mobile-${sidebarId}`;
+	const desktopOutletId = `v-drawer-sidebar-desktop-${sidebarId}`;
+
+	const teleportTarget = computed(() =>
+		isMobile.value && mobileSidebarOpen.value ? `#${mobileOutletId}` : `#${desktopOutletId}`,
+	);
+
+	return {
+		mobileSidebarOpen,
+		mobileOutletId,
+		desktopOutletId,
+		teleportTarget,
+	};
+}
 </script>
 
 <template>
@@ -79,16 +101,18 @@ const internalActive = computed({
 			<div v-if="$slots.sidebar" class="mobile-sidebar">
 				<VDetail v-model="mobileSidebarOpen" :label="sidebarLabel || $t('sidebar')">
 					<nav class="sidebar-content" @click="mobileSidebarOpen = false">
-						<slot name="sidebar" />
+						<div :id="mobileOutletId" />
 					</nav>
 				</VDetail>
 			</div>
 
+			<Teleport v-if="$slots.sidebar" defer :to="teleportTarget">
+				<slot name="sidebar" />
+			</Teleport>
+
 			<div class="content">
 				<nav v-if="$slots.sidebar" class="sidebar">
-					<div class="sidebar-content">
-						<slot name="sidebar" />
-					</div>
+					<div :id="desktopOutletId" class="sidebar-content" />
 				</nav>
 
 				<main
