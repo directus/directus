@@ -7,7 +7,6 @@ import { mergeFilters } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
-import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
@@ -58,7 +57,6 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
-const collectionsStore = useCollectionsStore();
 const collectionsStore = useCollectionsStore();
 
 const layoutRef = ref();
