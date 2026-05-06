@@ -96,7 +96,7 @@ onBeforeRouteUpdate((to, from) => {
 	trackLastAccessedCollection(to, from, () => {});
 });
 
-const { collectionRoute, backRoute } = useItemNavigation();
+const { collectionRoute, backRoute, discardReturnRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
@@ -152,7 +152,7 @@ async function onVersionDelete(versionId: PrimaryKey) {
 		// watchers to update queryVersionId via useRouteQuery (mode:'push'), which triggers
 		// its own router.push. Without nextTick, that push fires after ours and cancels it.
 		await nextTick();
-		router.push(collectionRoute.value);
+		router.push(discardReturnRoute.value);
 	}
 }
 
@@ -164,7 +164,7 @@ function handleVersionGone(error: unknown) {
 			edits.value = {};
 
 			if (isItemlessVersion.value) {
-				router.push(collectionRoute.value);
+				router.push(discardReturnRoute.value);
 			} else {
 				currentVersion.value = null;
 				refresh();
@@ -744,7 +744,15 @@ function useItemNavigation() {
 		return collectionRoute.value;
 	});
 
-	return { collectionRoute, backRoute };
+	// Used after discarding/losing an item-less version: forward the version key
+	// so the collection view stays scoped to the same draft filter (e.g. ?version=draft).
+	const discardReturnRoute = computed(() => {
+		const version = Array.isArray(route.query.version) ? route.query.version[0] : route.query.version;
+		const versionKey = version ?? VERSION_KEY_DRAFT;
+		return { path: getCollectionRoute(props.collection), query: { version: versionKey } };
+	});
+
+	return { collectionRoute, backRoute, discardReturnRoute };
 }
 
 function usePublishComparison() {
