@@ -28,6 +28,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import CollectionsRemaining from '@/views/private/components/license/collections-remaining.vue';
 import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
+import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
@@ -202,6 +203,8 @@ async function downloadSnapshot() {
 		</template>
 
 		<div class="padding-box">
+			<MaxCapacityAlert />
+
 			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}
 
