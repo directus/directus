@@ -1,6 +1,5 @@
-// TODO: remove this whole file once licit.dev emits compact JWT format (e/m claims).
 // Temporary shim that bypasses real JWT verification when LICENSE_MOCK is set,
-// returning a hardcoded License object that matches the new compact spec.
+// returning a hardcoded License object that matches the @directus/license spec.
 //
 // Set LICENSE_MOCK to one of: team | team-grace | team-expired | oig
 // Any other value falls back to the real verifyLicense().
@@ -18,6 +17,7 @@ const nowSec = () => Math.floor(Date.now() / 1000);
 const TEAM_ENTITLEMENTS: License['entitlements'] = {
 	seats: { limit: 10 },
 	collections: { limit: 50 },
+	flows: { limit: 25 },
 	activity_historical_timeframe: { limit: 30 * DAY },
 	revision_historical_timeframe: { limit: 30 * DAY },
 	sso_enabled: { default: true },
@@ -25,13 +25,15 @@ const TEAM_ENTITLEMENTS: License['entitlements'] = {
 	telemetry_required: { default: true },
 	display_powered_by: 'NONE',
 	custom_llms_enabled: { default: true },
-	custom_policy_rules_enabled: { default: true },
+	custom_permission_rules_enabled: { default: true },
 	production_enabled: { default: true },
+	ai_translations_enabled: { default: true },
 };
 
 const OIG_ENTITLEMENTS: License['entitlements'] = {
 	seats: { limit: 5 },
 	collections: { limit: 25 },
+	flows: { limit: 10 },
 	activity_historical_timeframe: { limit: 7 * DAY },
 	revision_historical_timeframe: { limit: 7 * DAY },
 	sso_enabled: { default: false },
@@ -39,8 +41,9 @@ const OIG_ENTITLEMENTS: License['entitlements'] = {
 	telemetry_required: { default: true },
 	display_powered_by: 'OIG',
 	custom_llms_enabled: { default: false },
-	custom_policy_rules_enabled: { default: false },
+	custom_permission_rules_enabled: { default: false },
 	production_enabled: { default: false },
+	ai_translations_enabled: { default: false },
 };
 
 function buildMock(scenario: MockScenario): License {
@@ -49,7 +52,7 @@ function buildMock(scenario: MockScenario): License {
 			return {
 				entitlements: TEAM_ENTITLEMENTS,
 				meta: {
-					type: 'TEAM',
+					name: 'Team',
 					offline: false,
 					grace_period: 30 * DAY,
 					validation_interval: DAY,
@@ -60,7 +63,7 @@ function buildMock(scenario: MockScenario): License {
 			return {
 				entitlements: TEAM_ENTITLEMENTS,
 				meta: {
-					type: 'TEAM',
+					name: 'Team',
 					offline: false,
 					grace_period: 30 * DAY,
 					validation_interval: DAY,
@@ -71,7 +74,7 @@ function buildMock(scenario: MockScenario): License {
 			return {
 				entitlements: TEAM_ENTITLEMENTS,
 				meta: {
-					type: 'TEAM',
+					name: 'Team',
 					offline: false,
 					grace_period: 30 * DAY,
 					validation_interval: DAY,
@@ -82,7 +85,7 @@ function buildMock(scenario: MockScenario): License {
 			return {
 				entitlements: OIG_ENTITLEMENTS,
 				meta: {
-					type: 'OIG',
+					name: 'Open Innovation Grant',
 					offline: false,
 					grace_period: 30 * DAY,
 					validation_interval: DAY,

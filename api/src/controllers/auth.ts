@@ -63,10 +63,6 @@ for (const authProvider of authProviders) {
 	router.use(`/login/${authProvider.name}`, authRouter);
 }
 
-if (!env['AUTH_DISABLE_DEFAULT']) {
-	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
-}
-
 function getCurrentMode(req: Request): AuthenticationMode {
 	if (req.body.mode) {
 		return req.body.mode as AuthenticationMode;
@@ -99,6 +95,9 @@ function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string 
 
 	return undefined;
 }
+
+// Always register local auth, blocked at runtime when applicable
+router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 
 router.post(
 	'/refresh',

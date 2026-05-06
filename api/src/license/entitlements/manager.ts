@@ -1,4 +1,3 @@
-import { createError } from '@directus/errors';
 import type {
 	AppEntitlements,
 	CountableEntitlementKey,
@@ -11,30 +10,24 @@ import type {
 	NumericEntitlementKey,
 	UsageCounter,
 } from '@directus/license';
-import { CORE_LICENSE } from '@directus/license';
+import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
+import { countActiveCollections } from './lib/collections.js';
+import { checkCustomLLM } from './lib/custom_llms_enabled.js';
+import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
+import { countActiveSeats } from './lib/seats.js';
+import { checkUsersSSO } from './lib/sso_enabled.js';
 
-// Not yet exported from @directus/license
-const CORE_ENTITLEMENT_DEFAULTS: Entitlements = CORE_LICENSE.entitlements;
+let entitlementManager: EntitlementManager | undefined;
 
-const COUNTABLE_ENTITLEMENT_KEYS: readonly CountableEntitlementKey[] = [
-	'seats',
-	'collections',
-	'activity_historical_timeframe',
-	'revision_historical_timeframe',
-] as unknown as readonly CountableEntitlementKey[];
+export function getEntitlementManager(): EntitlementManager {
+	if (entitlementManager) {
+		return entitlementManager;
+	}
 
-const LimitExceededError = createError<{ key: string; hardLimit: number; usage: number; adding: number }>(
-	'LICENSE_LIMIT_EXCEEDED',
-	({ key, hardLimit, usage, adding }) =>
-		`Entitlement "${key}" exceeded: limit ${hardLimit}, usage ${usage}, adding ${adding}`,
-	422,
-);
+	entitlementManager = new EntitlementManager();
 
-const FeatureFlagViolatedError = createError<{ key: string }>(
-	'LICENSE_FEATURE_FLAG_VIOLATED',
-	({ key }) => `Feature flag entitlement "${key}" is violated`,
-	402,
-);
+	return entitlementManager;
+}
 
 /**
  * Example:
@@ -77,15 +70,26 @@ const FeatureFlagViolatedError = createError<{ key: string }>(
  */
 
 export class EntitlementManager {
-	private entitlements: Entitlements = CORE_ENTITLEMENT_DEFAULTS;
+	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
+
+	registerHandlers() {
+		// limits
+		this.registerCounter('collections', countActiveCollections);
+		this.registerCounter('seats', countActiveSeats);
+
+		// features gates
+		this.registerValidator('sso_enabled', checkUsersSSO);
+		this.registerValidator('custom_llms_enabled', checkCustomLLM);
+		this.registerValidator('custom_permission_rules_enabled', checkCustomPermissionRules);
+	}
 
 	/**
 	 * Replace the active license. Pass `null` to reset to the core license.
 	 */
 	setLicense(license: License | null): void {
-		this.entitlements = license?.entitlements ?? CORE_ENTITLEMENT_DEFAULTS;
+		this.entitlements = license?.entitlements ?? CORE_LICENSE['entitlements'];
 	}
 
 	/**
@@ -220,14 +224,16 @@ export class EntitlementManager {
 			const adding = opts?.adding ?? 0;
 
 			if (usage + adding > hardLimit) {
-				throw new LimitExceededError({ key, hardLimit, usage, adding });
+				// LICENSE-TODO: replace with correct error
+				// throw new LimitExceededError({ key, hardLimit, usage, adding });
 			}
 
 			return;
 		}
 
 		if (!(await this.isValid(key))) {
-			throw new FeatureFlagViolatedError({ key });
+			// LICENSE-TODO: replace with correct error
+			// throw new FeatureFlagViolatedError({ key });
 		}
 	}
 
@@ -235,5 +241,3 @@ export class EntitlementManager {
 		return COUNTABLE_ENTITLEMENT_KEYS.includes(key as CountableEntitlementKey);
 	}
 }
-
-export const entitlementManager = new EntitlementManager();
