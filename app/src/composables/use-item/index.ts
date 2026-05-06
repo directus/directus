@@ -54,7 +54,6 @@ export function useItem<T extends Item>(
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
-	// TODO: collapse currentVersion + extraQuery + saveOptions into a single options object to avoid growing positional args.
 	saveOptions: { onSaveError?: (error: APIError) => boolean } = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);

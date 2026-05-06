@@ -101,9 +101,6 @@ const {
 	},
 	{
 		onSaveError: (err) => {
-			// LICENSE-TODO: switch to LimitExceededError + extensions.limit_type
-			// (e.g. USERS_LICENSE_LIMIT) once the API exposes it, per the
-			// convention agreed here https://directus-team.slack.com/archives/C0AUJ0J6L2J/p1778029465240839?thread_ts=1777563903.136119&cid=C0AUJ0J6L2J
 			if (err?.extensions?.code === 'INTERNAL_SERVER_ERROR') {
 				seatsLimitModalOpen.value = true;
 				return true;
