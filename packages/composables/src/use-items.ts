@@ -23,8 +23,8 @@ export type UsableItems = {
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
-	getTotalCount: () => Promise<void>;
-	getItemCount: () => Promise<void>;
+	getTotalCount: (force?: boolean) => Promise<void>;
+	getItemCount: (force?: boolean) => Promise<void>;
 };
 
 export type ComputedQuery = {
@@ -290,13 +290,17 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		await api.post(endpoint.value, { item, to });
 	}
 
-	async function getTotalCount() {
+	async function getTotalCount(force = false) {
 		if (!endpoint.value) return;
 
 		const currentGeneration = ++totalCountGeneration;
 
 		try {
-			const count = await fetchAggregate(endpoint.value, filterSystem?.value, undefined);
+			// Bypass memoize cache on explicit refresh so that data mutations (deletes,
+			// inserts, etc.) are reflected; otherwise the previously cached aggregate
+			// keyed on (url, filter, search) would mask the new count.
+			const fetcher = force ? fetchAggregate.load : fetchAggregate;
+			const count = await fetcher(endpoint.value, filterSystem?.value, undefined);
 
 			// Discard the result if a newer request has been initiated (prevents race conditions
 			// when navigating between collections quickly)
@@ -310,7 +314,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		}
 	}
 
-	async function getItemCount() {
+	async function getItemCount(force = false) {
 		if (!endpoint.value) return;
 
 		const currentGeneration = ++itemCountGeneration;
@@ -318,7 +322,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		loadingItemCount.value = true;
 
 		try {
-			const count = await fetchAggregate(endpoint.value, filter.value, search.value);
+			const fetcher = force ? fetchAggregate.load : fetchAggregate;
+			const count = await fetcher(endpoint.value, filter.value, search.value);
 
 			// Discard the result if a newer request has been initiated (prevents race conditions
 			// when rapidly changing filters or search terms)

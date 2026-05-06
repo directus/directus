@@ -2,7 +2,7 @@
 '@directus/app': major
 ---
 
-Locked published items in versioned collections from editing and added a header action button to edit in the draft version.
+Locked published items in versioned collections from editing and added a header action button to edit in the draft version @alvarosabu
 
 ::: notice
 

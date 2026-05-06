@@ -3,4 +3,4 @@
 '@directus/composables': minor
 ---
 
-Added version select to collection page
+Added version select to collection page @alvarosabu

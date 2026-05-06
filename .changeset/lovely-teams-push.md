@@ -3,4 +3,4 @@
 '@directus/api': minor
 ---
 
-Added support for the `version` query parameter in collections
+Added support for the `version` query parameter in collections @Nitwel
