@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
+import LicenseSection from './components/license-section.vue';
 import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -16,7 +17,6 @@ import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -208,27 +208,13 @@ async function handleDeactivateClick() {
 					</template>
 				</div>
 
-				<div class="addons">
-					<div class="section-header">
-						<span class="section-title">
-							<VIcon name="diamond" small />
-							{{ t('licensing.addons') }}
-						</span>
-						<VDivider />
-					</div>
+				<LicenseSection icon="diamond" :title="t('licensing.addons')">
 					<VList>
 						<LicenseAddonItem v-for="addon in addons" :key="addon.id" :addon="addon" />
 					</VList>
-				</div>
+				</LicenseSection>
 
-				<div class="danger-zone">
-					<div class="danger-header">
-						<span class="danger-title">
-							<VIcon name="emergency_home" small class="danger-icon" />
-							{{ t('danger_zone') }}
-						</span>
-						<VDivider />
-					</div>
+				<LicenseSection icon="emergency_home" :title="t('danger_zone')" variant="danger">
 					<VNotice v-if="license.source === 'env'" type="info">
 						{{ t('licensing.env_managed') }}
 					</VNotice>
@@ -240,7 +226,7 @@ async function handleDeactivateClick() {
 					>
 						{{ t('licensing.deactivate') }}
 					</VButton>
-				</div>
+				</LicenseSection>
 			</template>
 		</div>
 	</PrivateView>
@@ -338,35 +324,6 @@ async function handleDeactivateClick() {
 .limit {
 	color: var(--theme--foreground-subdued);
 	margin-inline-start: 0.25rem;
-}
-
-.addons,
-.danger-zone {
-	margin-block-start: 2.5rem;
-}
-
-.section-header,
-.danger-header {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-	margin-block-end: 1.5rem;
-}
-
-.section-title,
-.danger-title {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	font-size: 1.375rem;
-	font-weight: var(--theme--fonts--display--font-weight);
-	font-family: var(--theme--fonts--display--font-family);
-	color: var(--theme--foreground-accent);
-	line-height: 1;
-}
-
-.danger-icon {
-	--v-icon-color: var(--theme--danger);
 }
 
 .drawer-content {
