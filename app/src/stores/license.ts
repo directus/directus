@@ -38,12 +38,15 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
 
+<<<<<<< HEAD
 	const customLLMEnabled = computed(() => info.value?.entitlements?.custom_llms_enabled?.default === true);
 
 	const customPermissionRulesEnabled = computed(
 		() => info.value?.entitlements?.custom_permission_rules_enabled?.default === true,
 	);
 
+=======
+>>>>>>> parent of fa5c49fc83 (feat: implement customLLM screen)
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -118,7 +121,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		seatsRemaining,
 		hasRemainingSeats,
 		isLocked,
-		customLLMEnabled,
 		customPermissionRulesEnabled,
 		hydrate,
 		hydrateAddons,
