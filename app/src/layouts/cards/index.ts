@@ -47,7 +47,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { collection, filter, search, filterSystem, filterUser } = toRefs(props);
 
-		const versionKey = useVersionQuery();
+		const routeVersionKey = useVersionQuery();
+		const versionKey = computed(() => (props.selectMode ? null : routeVersionKey.value));
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -158,6 +159,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filterUser,
 			search,
 			download,
+			versionKey,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -167,8 +169,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
-			getTotalCount();
-			getItemCount();
+			getTotalCount(true);
+			getItemCount(true);
 		}
 
 		function download() {

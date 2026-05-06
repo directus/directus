@@ -3,7 +3,7 @@
 '@directus/app': minor
 ---
 
-Replaced status field with archived boolean in collection settings
+Replaced status field with archived boolean in collection settings @alvarosabu
 
 ::: notice
 

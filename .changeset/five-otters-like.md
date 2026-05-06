@@ -3,4 +3,4 @@
 '@directus/api': minor
 ---
 
-Added support for item-less versions
+Added support for item-less versions @Nitwel

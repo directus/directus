@@ -527,4 +527,89 @@ describe('useItems', () => {
 			expect(mockApiGet).toHaveBeenCalledTimes(4);
 		});
 	});
+
+	describe('refresh cache bypass', () => {
+		test('getItemCount(true) bypasses memoize and reflects mutated count', async () => {
+			const collection = ref('test_collection');
+
+			// Initial fetch returns count = 1
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 1, countDistinct: { id: 1 } }] },
+			});
+
+			// Active search ensures itemCount makes its own aggregate request (can't reuse totalCount)
+			const { itemCount, getItemCount } = useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref('foo'),
+				filter: ref({}),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			// Initial: items + totalCount + itemCount = 3
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
+			expect(itemCount.value).toBe(1);
+
+			// Simulate the row being deleted on the server
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 0, countDistinct: { id: 0 } }] },
+			});
+
+			// Without force the memoize returns the cached `1` and skips the network
+			await getItemCount();
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
+			expect(itemCount.value).toBe(1);
+
+			// With force=true the cache is bypassed and the fresh `0` is observed
+			await getItemCount(true);
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(4);
+			expect(itemCount.value).toBe(0);
+		});
+
+		test('getTotalCount(true) bypasses memoize and reflects mutated count', async () => {
+			const collection = ref('test_collection');
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 1, countDistinct: { id: 1 } }] },
+			});
+
+			const { totalCount, getTotalCount } = useItems(collection, {
+				fields: ref(['id']),
+				limit: ref(25),
+				sort: ref(['id']),
+				search: ref<string | null>(null),
+				filter: ref<Filter | null>(null),
+				page: ref(1),
+			});
+
+			await flushPromises();
+
+			// Initial: items + totalCount = 2 (itemCount reuses totalCount when no filter/search)
+			expect(mockApiGet).toHaveBeenCalledTimes(2);
+			expect(totalCount.value).toBe(1);
+
+			vi.mocked(mockApiGet).mockResolvedValue({
+				data: { data: [{ count: 0, countDistinct: { id: 0 } }] },
+			});
+
+			await getTotalCount();
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(2);
+			expect(totalCount.value).toBe(1);
+
+			await getTotalCount(true);
+			await flushPromises();
+
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
+			expect(totalCount.value).toBe(0);
+		});
+	});
 });

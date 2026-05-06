@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
+import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
@@ -138,7 +139,7 @@ export async function parseFields(
 			// parseFilterFunctionPath may have moved relational segments outside
 			// the function args (e.g., json(m2m.data, color) → m2m.json(data, color)).
 			// For plain fields, split on fieldKey to preserve existing alias behavior.
-			const parts = (isFunctionCall ? name : fieldKey).split('.');
+			const parts = splitFieldPath(isFunctionCall ? name : fieldKey);
 
 			let rootField = parts[0]!;
 			let collectionScope: string | null = null;
