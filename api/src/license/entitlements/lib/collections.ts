@@ -3,7 +3,6 @@ import { CollectionsService } from '../../../services/index.js';
 import type { Collection } from '../../../types/collection.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-
 export async function getActiveCollections() {
 	const schema = await getSchema();
 
@@ -11,7 +10,12 @@ export async function getActiveCollections() {
 
 	const dbCollections = await collectionService.readByQuery();
 
-	return dbCollections.filter((collection) => !isSystemCollection(collection.collection) && !isDBOnlyCollection(collection) && !isExcludedCollection(collection)).map(({ collection }) => collection);
+	return dbCollections.filter(
+		(collection) =>
+			!isSystemCollection(collection.collection) &&
+			!isDBOnlyCollection(collection) &&
+			!isExcludedCollection(collection),
+	);
 }
 
 export async function countActiveCollections() {
@@ -28,6 +32,4 @@ function isExcludedCollection(collection: Collection) {
 	return false;
 }
 
-export function resolveCollections() {
-	
-}
+export function resolveCollections() {}
