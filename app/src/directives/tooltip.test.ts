@@ -1,6 +1,20 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DirectiveBinding } from 'vue';
-import { isDisabled, resolveAlign, resolveSide, resolveTooltipValue } from './tooltip';
+import { getGlobalTooltip, isDisabled, resolveAlign, resolveSide, resolveTooltipValue } from './tooltip';
+import type { TooltipPayload } from '@/composables/use-global-tooltip';
+
+function makePayload(overrides: Partial<TooltipPayload> = {}): TooltipPayload {
+	return {
+		content: 'hello',
+		side: 'top',
+		align: 'center',
+		inverted: false,
+		monospace: false,
+		delayDuration: 0,
+		virtualRef: null,
+		...overrides,
+	};
+}
 
 function createElement(html: string): HTMLElement {
 	const div = document.createElement('div');
@@ -117,5 +131,86 @@ describe('resolveTooltipValue', () => {
 
 	it('normalizes an object value with no kbd', () => {
 		expect(resolveTooltipValue({ text: 'Save' })).toEqual({ content: 'Save', kbd: undefined });
+	});
+});
+
+describe('getGlobalTooltip', () => {
+	const resetState = {
+		open: false,
+		content: '',
+		kbd: undefined,
+		side: 'top',
+		align: 'center',
+		inverted: false,
+		monospace: false,
+		virtualRef: null,
+	};
+
+	beforeEach(() => {
+		vi.useFakeTimers();
+		Object.assign(getGlobalTooltip().state, resetState);
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it('starts closed', () => {
+		expect(getGlobalTooltip().state.open).toBe(false);
+	});
+
+	it('opens after delay', () => {
+		const { state, openTooltip } = getGlobalTooltip();
+		openTooltip(makePayload({ content: 'hello', delayDuration: 500 }));
+		expect(state.open).toBe(false);
+		expect(state.content).not.toBe('hello');
+		vi.advanceTimersByTime(500);
+		expect(state.open).toBe(true);
+		expect(state.content).toBe('hello');
+	});
+
+	it('opens immediately when delayDuration is 0', () => {
+		const { state, openTooltip } = getGlobalTooltip();
+		openTooltip(makePayload());
+		vi.advanceTimersByTime(0);
+		expect(state.open).toBe(true);
+	});
+
+	it('closes immediately', () => {
+		const { state, openTooltip, closeTooltip } = getGlobalTooltip();
+		openTooltip(makePayload());
+		vi.advanceTimersByTime(0);
+		expect(state.open).toBe(true);
+		closeTooltip();
+		expect(state.open).toBe(false);
+	});
+
+	it('updates content immediately when immediateContent is true', () => {
+		const { state, openTooltip } = getGlobalTooltip();
+		openTooltip(makePayload({ content: 'hello', delayDuration: 500 }), true);
+		expect(state.content).toBe('hello');
+		expect(state.open).toBe(false);
+	});
+
+	it('stores kbd keys in state', () => {
+		const { state, openTooltip } = getGlobalTooltip();
+		openTooltip(makePayload({ content: 'Save', kbd: ['meta', 's'] }));
+		vi.advanceTimersByTime(0);
+		expect(state.kbd).toEqual(['meta', 's']);
+	});
+
+	it('kbd defaults to undefined when not provided', () => {
+		const { state, openTooltip } = getGlobalTooltip();
+		openTooltip(makePayload());
+		vi.advanceTimersByTime(0);
+		expect(state.kbd).toBeUndefined();
+	});
+
+	it('cancels pending open when closed before delay', () => {
+		const { state, openTooltip, closeTooltip } = getGlobalTooltip();
+		openTooltip(makePayload({ delayDuration: 500 }));
+		closeTooltip();
+		vi.advanceTimersByTime(500);
+		expect(state.open).toBe(false);
 	});
 });

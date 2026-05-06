@@ -2,8 +2,8 @@ import type { Directive, DirectiveBinding } from 'vue';
 import {
 	TOOLTIP_CONTENT_ID,
 	type TooltipAlign,
+	type TooltipPayload,
 	type TooltipSide,
-	useGlobalTooltip,
 } from '@/composables/use-global-tooltip';
 
 export function isDisabled(element: HTMLElement): boolean {
@@ -43,8 +43,68 @@ export function resolveTooltipValue(value: string | TooltipValue): { content: st
 	return { content: value.text, kbd: value.kbd };
 }
 
+interface TooltipState extends Omit<TooltipPayload, 'delayDuration'> {
+	open: boolean;
+}
+
+const state: TooltipState = {
+	open: false,
+	content: '',
+	kbd: undefined,
+	side: 'top',
+	align: 'center',
+	inverted: false,
+	monospace: false,
+	virtualRef: null,
+};
+
+let timer: ReturnType<typeof setTimeout> | null = null;
+let onChange: (() => void) | null = null;
+
+function notify(): void {
+	onChange?.();
+}
+
+function openTooltip(payload: TooltipPayload, immediateContent = false): void {
+	if (timer) clearTimeout(timer);
+
+	if (immediateContent) {
+		state.content = payload.content;
+		notify();
+	}
+
+	timer = setTimeout(() => {
+		const { delayDuration: _, kbd, ...rest } = payload;
+		Object.assign(state, rest);
+		state.kbd = kbd;
+		state.open = true;
+		notify();
+	}, payload.delayDuration);
+}
+
+function closeTooltip(): void {
+	if (timer) clearTimeout(timer);
+	timer = null;
+	state.open = false;
+	notify();
+}
+
+export function getGlobalTooltip() {
+	return {
+		state,
+		openTooltip,
+		closeTooltip,
+		watch: (cb: () => void) => {
+			onChange = cb;
+
+			return () => {
+				onChange = null;
+			};
+		},
+	};
+}
+
 const handlerMap = new WeakMap<HTMLElement, TooltipHandlers>();
-const { openTooltip, closeTooltip } = useGlobalTooltip();
 
 function beforeMount(element: HTMLElement, binding: DirectiveBinding): void {
 	if (!binding.value) return;
