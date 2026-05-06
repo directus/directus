@@ -18,6 +18,7 @@ catalog:
   '@aws-sdk/client-sesv2': 3.928.0
   '@aws-sdk/lib-storage': 3.928.0
   '@azure/storage-blob': 12.29.1
+  '@braintrust/otel': 0.2.0
   '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
@@ -41,6 +42,7 @@ catalog:
   '@editorjs/table': 2.4.5
   '@editorjs/underline': 1.2.1
   '@eslint/js': 9.39.1
+  '@fastify/type-provider-typebox': 6.1.0
   '@fortawesome/fontawesome-svg-core': 6.7.2
   '@fortawesome/free-brands-svg-icons': 6.7.2
   '@fullcalendar/core': 6.1.19
@@ -55,7 +57,6 @@ catalog:
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 3.0.1
-  '@braintrust/otel': 0.2.0
   '@langfuse/otel': 4.0.0
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
@@ -195,6 +196,8 @@ catalog:
   execa: 9.6.0
   exif-reader: 2.0.2
   express: 4.21.2
+  fastify: 5.8.5
+  fastify-type-provider-zod: 6.1.0
   file-saver: 2.0.5
   find-cache-directory: 6.0.0
   find-process: 2.0.0
@@ -219,6 +222,7 @@ catalog:
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
   joi: 18.0.1
+  jose: 6.2.3
   js-yaml: 4.1.1
   js2xmlparser: 5.0.0
   json-to-graphql-query: 2.3.0
@@ -311,6 +315,7 @@ catalog:
   tsdown: 0.15.11
   tsx: 4.20.6
   tus-js-client: 4.3.1
+  typebox: 1.1.37
   typedoc: 0.28.12
   typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
