@@ -1,7 +1,14 @@
+import {
+	checkPendingResolution,
+	type LicenseAddon,
+	type LicenseInfoOutput,
+	type LicensePendingResolution,
+	readLicense,
+	readLicenseAddons,
+} from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import type { LicenseAddon, LicenseInfo } from '@/license/types';
-import sdk, { requestEndpoint } from '@/sdk';
+import sdk from '@/sdk';
 
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
@@ -9,10 +16,12 @@ export type LicenseBoundary = {
 };
 
 export const useLicenseStore = defineStore('licenseStore', () => {
-	const info = ref<LicenseInfo | null>(null);
+	const info = ref<LicenseInfoOutput | null>(null);
 	const addons = ref<LicenseAddon[] | null>(null);
+	const pendingResolution = ref<LicensePendingResolution[] | null>(null);
 	const loading = ref(false);
 	const loadingAddons = ref(false);
+	const loadingPendingResolution = ref(false);
 	const error = ref<unknown>(null);
 
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
@@ -34,6 +43,18 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
 
 	const isLocked = computed(() => {
+		const status = info.value?.status;
+		return status === 'expired' || status === 'suspended' || status === 'canceled';
+	});
+
+	const isLicensed = computed(() => {
+		const status = info.value?.status;
+		return status === 'active' || status === 'grace';
+	});
+
+	const customLLMEnabled = computed(() => info.value?.entitlements?.custom_llms_enabled?.default === true);
+
+	const needsResolution = computed(() => {
 		const status = info.value?.status;
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
@@ -73,7 +94,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loading.value = true;
 
 		try {
-			info.value = await sdk.request(requestEndpoint<LicenseInfo>('/license', { method: 'GET' }));
+			info.value = await sdk.request(readLicense());
 			error.value = null;
 			scheduleNextRefresh();
 		} catch (err) {
@@ -87,9 +108,20 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loadingAddons.value = true;
 
 		try {
-			addons.value = await sdk.request(requestEndpoint<LicenseAddon[]>('/license/addons', { method: 'GET' }));
+			addons.value = await sdk.request(readLicenseAddons());
 		} finally {
 			loadingAddons.value = false;
+		}
+	}
+
+	async function hydratePendingResolution() {
+		loadingPendingResolution.value = true;
+
+		try {
+			const result: LicensePendingResolution[] | void = await sdk.request(checkPendingResolution({}));
+			pendingResolution.value = result ?? [];
+		} finally {
+			loadingPendingResolution.value = false;
 		}
 	}
 
@@ -97,23 +129,31 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		clearTimer();
 		info.value = null;
 		addons.value = null;
+		pendingResolution.value = null;
 		error.value = null;
 		loading.value = false;
 		loadingAddons.value = false;
+		loadingPendingResolution.value = false;
 	}
 
 	return {
 		info,
 		addons,
+		pendingResolution,
 		loading,
 		loadingAddons,
+		loadingPendingResolution,
 		error,
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
 		isLocked,
+		isLicensed,
+		needsResolution,
+		customLLMEnabled,
 		hydrate,
 		hydrateAddons,
+		hydratePendingResolution,
 		dehydrate,
 	};
 });
