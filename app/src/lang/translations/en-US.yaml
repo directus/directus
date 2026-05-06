@@ -766,6 +766,8 @@ list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
 filtered_item_count: 'No Filtered Items | One Filtered Item | {count} Filtered Items'
 no_items_copy: There are no items in this collection yet.
+no_versions: 'No "{version}" version'
+no_versions_copy: 'There are no "{version}" versions in this collection yet.'
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'

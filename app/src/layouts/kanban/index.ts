@@ -164,6 +164,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filter,
 			search,
 			filterSystem,
+			version: versionKey,
 		});
 
 		watch(ungroupedDisabled, (disabled) => {
@@ -396,8 +397,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
-			getTotalCount();
-			getItemCount();
+			getTotalCount(true);
+			getItemCount(true);
 			// potentially reload the related group items, if the group field is relational
 			if (isRelational.value) getGroups();
 		}

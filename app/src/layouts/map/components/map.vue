@@ -193,7 +193,10 @@ function updateStyle(style: any) {
 
 function startWatchers() {
 	unwatchers.push(
-		watch(() => props.source, updateSource, { immediate: true }),
+		watch(() => [props.source, props.featureId],
+			([newSource, _newFeatureId]) => updateSource(newSource as GeoJSONSource),
+			{ immediate: true }
+		),
 		watch(() => props.selection, updateSelection, { immediate: true }),
 		watch(() => props.layers, updateLayers),
 		watch(() => props.data, updateData),
@@ -263,7 +266,7 @@ function onFeatureClick(event: MapLayerMouseEvent) {
 		if (boxSelectControl.active()) {
 			emit('featureselect', { ids: [feature.id], replace });
 		} else {
-			emit('featureclick', { id: feature.id, replace });
+			emit('featureclick', { id: feature.id, replace, event: event.originalEvent });
 		}
 	}
 }

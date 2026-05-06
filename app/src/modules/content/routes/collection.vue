@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useCollection, useLayout } from '@directus/composables';
-import { VERSION_KEY_DRAFT } from '@directus/constants';
+import { isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -15,16 +16,23 @@ import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
+import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useFlows } from '@/composables/use-flows';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -56,8 +64,9 @@ const layoutRef = ref();
 const { collection } = toRefs(props);
 const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
-const { selection } = useSelection();
 const { info: currentCollection } = useCollection(collection);
+const { isVersioned, isVersion, version, versionName, versionKeyQuery } = useVersion();
+const { selection } = useSelection();
 
 onBeforeRouteUpdate((to) => {
 	const collectionParam = typeof to.params.collection === 'string' ? to.params.collection : undefined;
@@ -195,13 +204,28 @@ function useBreadcrumb() {
 function useSelection() {
 	const selection = ref<Item[]>([]);
 
-	// Whenever the collection we're working on changes, we have to clear the selection
-	watch(
-		() => props.collection,
-		() => (selection.value = []),
-	);
+	// Clear selection when the collection changes or when switching version mode
+	// (stale keys across modes — draft selections are version_ids, published are primary keys)
+	watch([() => props.collection, versionKeyQuery], () => (selection.value = []));
 
 	return { selection };
+}
+
+function useVersion() {
+	const versionKeyQuery = useVersionQuery();
+	const isVersioned = computed(() => !!currentCollection.value?.meta?.versioning);
+	const version = computed(() => getValidVersion());
+	const versionName = computed(() => getVersionDisplayName(version.value ? { key: version.value, name: null } : null));
+	const isVersion = computed(() => !isNil(version.value));
+
+	return { isVersioned, isVersion, version, versionName, versionKeyQuery };
+
+	function getValidVersion() {
+		if (!isVersioned.value) return undefined;
+		if (versionKeyQuery.value === VERSION_KEY_DRAFT) return VERSION_KEY_DRAFT;
+		if (!versionKeyQuery.value || isPublishedVersionKey(versionKeyQuery.value)) return null;
+		return undefined;
+	}
 }
 
 function useBatch() {
@@ -222,12 +246,12 @@ function useBatch() {
 
 		deleting.value = true;
 
-		const batchPrimaryKeys = selection.value;
-
 		try {
-			await api.delete(`/items/${props.collection}`, {
-				data: batchPrimaryKeys,
-			});
+			if (isVersion.value) {
+				await api.delete('/versions', { data: selection.value });
+			} else {
+				await api.delete(`/items/${props.collection}`, { data: selection.value });
+			}
 
 			selection.value = [];
 			await refresh();
@@ -269,11 +293,7 @@ function useBatch() {
 }
 
 function useLinks() {
-	const addNewLink = computed<string>(() => {
-		return currentCollection.value?.meta?.versioning
-			? getItemRoute(props.collection, '+', VERSION_KEY_DRAFT)
-			: getItemRoute(props.collection, '+');
-	});
+	const addNewLink = computed<string>(() => getItemRoute(props.collection, '+', version.value));
 
 	const currentCollectionLink = computed<string>(() => {
 		return getCollectionRoute(props.collection);
@@ -350,6 +370,24 @@ function clearFilters() {
 			</template>
 
 			<template #title-outer:append>
+				<VMenu v-if="isVersioned" show-arrow placement="bottom">
+					<template #activator="{ toggle, active }">
+						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
+							{{ versionName }}
+							<VIcon small name="arrow_drop_down" />
+						</VChip>
+					</template>
+
+					<VList>
+						<VListItem clickable :active="version === null" @click="versionKeyQuery = null">
+							<VListItemContent>{{ $t('published') }}</VListItemContent>
+						</VListItem>
+						<VListItem clickable :active="version === VERSION_KEY_DRAFT" @click="versionKeyQuery = VERSION_KEY_DRAFT">
+							<VListItemContent>{{ $t('draft') }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
+
 				<div class="bookmark-controls">
 					<BookmarkAdd
 						v-if="!bookmark"
@@ -452,7 +490,8 @@ function clearFilters() {
 						selection.length > 0 &&
 						currentCollection.meta &&
 						currentCollection.meta.archive_field &&
-						archive !== 'archived'
+						archive !== 'archived' &&
+						!isVersion
 					"
 					v-model="confirmArchive"
 					@esc="confirmArchive = false"
@@ -483,7 +522,7 @@ function clearFilters() {
 				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && !isVersion"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 					secondary
 					:disabled="batchEditAllowed === false"
@@ -533,11 +572,17 @@ function clearFilters() {
 				</template>
 
 				<template #no-items>
-					<VInfo :title="$t('item_count', 0)" :icon="currentCollection.icon" center>
-						{{ $t('no_items_copy') }}
+					<VInfo
+						:title="isVersion ? $t('no_versions', { version: versionName }) : $t('item_count', 0)"
+						:icon="currentCollection.icon"
+						center
+					>
+						{{ isVersion ? $t('no_versions_copy', { version: versionName }) : $t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<VButton :to="getItemRoute(collection, '+')">{{ $t('create_item') }}</VButton>
+							<VButton :to="addNewLink">
+								{{ $t('create_item') }}
+							</VButton>
 						</template>
 					</VInfo>
 				</template>
@@ -569,9 +614,10 @@ function clearFilters() {
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<ArchiveSidebarDetail v-if="hasArchive" :collection="collection" :archive="archive" />
+				<ArchiveSidebarDetail v-if="hasArchive && !isVersion" :collection="collection" :archive="archive" />
 				<RefreshSidebarDetail v-model="refreshInterval" @refresh="refresh" />
 				<ExportSidebarDetail
+					v-if="!isVersion"
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
@@ -579,7 +625,7 @@ function clearFilters() {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<FlowSidebarDetail :manual-flows />
+				<FlowSidebarDetail v-if="!isVersion" :manual-flows />
 			</template>
 
 			<VDialog :model-value="deleteError !== null" @esc="deleteError = null">
@@ -653,6 +699,24 @@ function clearFilters() {
 
 	.saved {
 		color: var(--theme--primary);
+	}
+}
+
+.version-select-activator {
+	--v-chip-padding: 0 0.3125rem 0 0.6875rem;
+	--v-chip-color: var(--theme--foreground-accent);
+	--v-chip-color-hover: var(--v-chip-color);
+	--v-chip-background-color-hover: color-mix(in srgb, var(--theme--background), var(--theme--foreground) 10%);
+	margin-inline-start: 0.5rem;
+
+	&.active {
+		--v-chip-color: var(--foreground-inverted);
+		--v-chip-background-color: var(--theme--primary);
+		--v-chip-background-color-hover: var(--v-chip-background-color);
+	}
+
+	&.v-chip {
+		border-width: 0;
 	}
 }
 </style>
