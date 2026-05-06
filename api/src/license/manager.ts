@@ -48,8 +48,6 @@ type LicenseStore = {
 	status: LicenseStatus | undefined;
 };
 
-const store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
-
 export async function getLicense(options?: { database?: Knex }): Promise<License> {
 	if (licenseCache) return licenseCache;
 
@@ -82,6 +80,7 @@ export class LicenseManager {
 	/** Where the key or token comes from */
 	private source: LicenseSource = null;
 	private rpc = useRPC<Pick<LicenseManager, 'refreshCache'>>(this, LICENSE_CHANNEL);
+	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
 	/**
 	 * Initialize license state based on the following state permutations.
@@ -99,78 +98,92 @@ export class LicenseManager {
 	 * |   -    |    -     |   -   |    -    |  -   |  CORE_LICENSE                                |  I   |
 	 */
 	public async initialize(): Promise<void> {
-		// Register entitlement enforcement for all instances
-		const entitlementManager = getEntitlementManager();
-		entitlementManager.registerHandlers();
+		const existingStore = this.store;
 
-		// Lock the whole store for the entirety of initialization
-		await store(async (store) => {
-			if (await store.get('initialized')) return;
+		try {
+			// Register entitlement enforcement for all instances
+			const entitlementManager = getEntitlementManager();
+			entitlementManager.registerHandlers();
 
-			const envKey = env['LICENSE_KEY'] as string | undefined;
-			const envToken = env['LICENSE_TOKEN'] as string | undefined;
+			// Lock the whole store for the entirety of initialization
+			await this.store(async (store) => {
+				// Replace existing store temporarely to avoid deadlocks
+				this.store = (cb) => {
+					return cb(store);
+				};
 
-			// CASE A
-			if (envKey && envToken) {
-				logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
-				process.exit(1);
-			}
+				if (await store.get('initialized')) return;
 
-			const settingsService = new SettingsService({ schema: await getSchema() });
+				const envKey = env['LICENSE_KEY'] as string | undefined;
+				const envToken = env['LICENSE_TOKEN'] as string | undefined;
 
-			const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
-				fields: ['license_key', 'license_token'],
-			});
+				// CASE A
+				if (envKey && envToken) {
+					logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
+					process.exit(1);
+				}
 
-			if (envKey) {
-				this.source = 'env';
+				const settingsService = new SettingsService({ schema: await getSchema() });
 
-				if (!dbKey) {
-					// CASE D
+				const { license_key: dbKey, license_token: dbToken } = await settingsService.readSingleton({
+					fields: ['license_key', 'license_token'],
+				});
+
+				// CASE I
+				if (!envKey && !envToken && !dbKey) {
+					// CASE H
+					if (dbToken) {
+						await this.downgrade();
+					}
+
+					// Use core license
+					await store.set('status', 'active');
+					return;
+				}
+
+				// CASE D
+				if (envKey && !dbKey) {
+					this.source = 'env';
 					await this.activate(envKey);
-				} else if (envKey !== dbKey) {
-					// CASE B
-					await this.update(dbKey, { oldKey: envKey });
-				} else {
-					// CASE C
-					await this.refresh({ key: envKey, token: dbToken ?? null });
-				}
-			} else if (envToken) {
-				// CASE E — verify offline token, cleanup DB
-				this.source = 'env';
-				const license = await this.verify(envToken);
-
-				if (dbKey || dbToken) {
-					await settingsService.upsertSingleton({ license_key: null, license_token: null });
 				}
 
-				await store.set('status', getStatus(license));
-			} else if (dbKey) {
-				this.source = 'settings';
+				if (envKey && dbKey) {
+					this.source = 'env';
 
-				if (dbToken) {
-					// CASE F
-					await this.refresh({ key: dbKey, token: dbToken });
-				} else {
-					// CASE G
-					await this.activate(dbKey);
-				}
-			} else {
-				if (dbToken) {
-					// CASE H — stale token, drop it before serving core
-					await this.downgrade();
+					// CASE B else C
+					if (envKey !== dbKey) {
+						await this.update(dbKey, { oldKey: envKey });
+					} else {
+						await this.refresh({ key: envKey, token: dbToken ?? null });
+					}
 				}
 
-				// CASE H tail / CASE I — core license
-				await store.set('status', 'active');
-			}
+				// CASE E
+				if (envToken) {
+					this.source = 'env';
+					await this.verify(envToken);
+				}
 
-			await store.set('initialized', true);
-		});
+				if (dbKey) {
+					this.source = 'settings';
+
+					// CASE F else G
+					if (dbToken) {
+						await this.refresh({ key: dbKey, token: dbToken });
+					} else {
+						await this.activate(dbKey);
+					}
+				}
+
+				await store.set('initialized', true);
+			});
+		} finally {
+			this.store = existingStore;
+		}
 	}
 
 	public async getStatus() {
-		const status = await store(async (store) => store.get('status'));
+		const status = await this.store(async (store) => store.get('status'));
 
 		return status ?? 'active';
 	}
@@ -231,7 +244,7 @@ export class LicenseManager {
 			await this.downgrade();
 			throw err;
 		} finally {
-			await store(async (store) => {
+			await this.store(async (store) => {
 				await store.set('status', getStatus(license, error));
 			});
 		}
@@ -353,7 +366,7 @@ export class LicenseManager {
 			}
 		}
 
-		await store(async (store) => {
+		await this.store(async (store) => {
 			await store.set('status', getStatus(license, error));
 		});
 	}
