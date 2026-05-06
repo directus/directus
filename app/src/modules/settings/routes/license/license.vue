@@ -25,11 +25,11 @@ import type { PendingResolution } from '@/license/types';
 import sdk, { requestEndpoint } from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
-import { formatNumber } from '@/utils/format-number';
+import { formatTimeframe } from '@/utils/format-timeframe';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView } from '@/views/private';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
 const licenseStore = useLicenseStore();
 
@@ -56,17 +56,6 @@ type EntitlementConfig = {
 	title: string;
 	formatter?: (value: number) => string;
 };
-
-function formatTimeframe(seconds: number): string {
-	const days = Math.floor(seconds / 86400);
-
-	if (days % 365 === 0)
-		return formatNumber(days / 365, locale.value, { style: 'unit', unit: 'year', unitDisplay: 'long' });
-	if (days % 30 === 0)
-		return formatNumber(days / 30, locale.value, { style: 'unit', unit: 'month', unitDisplay: 'long' });
-	if (days % 7 === 0) return formatNumber(days / 7, locale.value, { style: 'unit', unit: 'week', unitDisplay: 'long' });
-	return formatNumber(days, locale.value, { style: 'unit', unit: 'day', unitDisplay: 'long' });
-}
 
 const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 	{ key: 'collections', icon: 'database', title: t('licensing.entitlements.collections') },
