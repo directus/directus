@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto';
 import type { FastifyInstance } from 'fastify';
 import Type, { type Static } from 'typebox';
-import { ErrorCode, forbiddenError, notFoundError } from '../errors.js';
-import { licenses } from '../licenses.js';
+import { forbiddenError, notFoundError } from '../errors.js';
+import { type License, licenses } from '../licenses.js';
 import { createNewToken } from '../token.js';
 
 export const ActivateRequestSchema = Type.Object({
@@ -22,32 +22,45 @@ export async function activateRoute(app: FastifyInstance) {
 			},
 		},
 		async (req, res) => {
-			const { license_key, project_id, public_url: _public_url } = req.body;
+			const { license_key, project_id, public_url } = req.body;
 
 			const license = licenses[license_key];
 
 			if (!license) return res.status(404).send(notFoundError('License not available'));
 
-			if (license.activated) return res.status(400).send(forbiddenError('License is already active'));
+			if (license.projects.length >= license.max_projects)
+				return res.status(400).send(forbiddenError('License usage limit reached'));
 
-			if (license.project_id && license.project_id !== project_id) {
-				return res
-					.code(403)
-					.send(forbiddenError('License is already bound to a different project', ErrorCode.LICENSE_BOUND));
+			if (license.projects.some(({ id, url }) => id === project_id && url === public_url))
+				return res.status(400).send(forbiddenError('License already used'));
+
+			let collidingLicense: License | undefined;
+
+			for (const license of Object.values(licenses)) {
+				if (license.key === license_key) continue;
+
+				for (const { id, url } of license.projects) {
+					if (id !== project_id) continue;
+
+					if (url === public_url) {
+						return res.status(400).send(forbiddenError('Project already used by different license key'));
+					} else {
+						collidingLicense = license;
+					}
+				}
 			}
 
-			const collidingLicense = Object.values(licenses).find((license) => license.project_id === project_id);
-
 			if (collidingLicense) {
-				license.project_id = randomUUID();
+				const new_project_id = randomUUID();
+				license.projects.push({ id: new_project_id, url: public_url });
 
 				return res.status(200).send({
 					token: await createNewToken(license),
-					new_project_id: license.project_id,
+					new_project_id,
 				});
 			}
 
-			license.activated = true;
+			license.projects.push({ id: project_id, url: public_url });
 
 			return res.status(200).send({
 				token: await createNewToken(license),

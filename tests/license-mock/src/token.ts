@@ -9,7 +9,7 @@ const { privateKey, publicKey } = await generateKeyPair('EdDSA');
 export { publicKey };
 
 export async function createNewToken(license: License) {
-	const encodedToken = Token.encode(license.token);
+	const encodedToken = Token.encode({ entitlements: license.entitlements, meta: license.meta });
 
 	const now = Math.floor(Date.now() / 1000);
 
@@ -18,6 +18,6 @@ export async function createNewToken(license: License) {
 		.setIssuer('directus-licensing-service')
 		.setIssuedAt(now)
 		.setJti(randomUUID())
-		.setExpirationTime(license.token.meta.expires_at ?? now + 1000)
+		.setExpirationTime(license.meta.expires_at ?? now + 1000)
 		.sign(privateKey);
 }
