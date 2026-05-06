@@ -26,6 +26,7 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import CollectionsRemaining from '@/views/private/components/license/collections-remaining.vue';
 import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
 import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -168,6 +169,8 @@ async function downloadSnapshot() {
 		</template>
 
 		<template #actions>
+			<CollectionsRemaining />
+
 			<SearchInput
 				v-model="search"
 				:show-filter="false"

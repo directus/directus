@@ -64,7 +64,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		const ent = info.value?.entitlements?.custom_llms_enabled;
 		if (!ent) return false;
 		return ent.override ?? ent.default;
-	})
+	});
 
 	const isLicensed = computed(() => {
 		const status = info.value?.status;
