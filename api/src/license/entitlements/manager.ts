@@ -6,7 +6,6 @@ import type {
 	FeatureFlagCheckResult,
 	FeatureFlagEntitlementKey,
 	FeatureFlagValidator,
-	License,
 	NumericEntitlementKey,
 	UsageCounter,
 } from '@directus/license';
@@ -88,8 +87,8 @@ export class EntitlementManager {
 	/**
 	 * Replace the active license. Pass `null` to reset to the core license.
 	 */
-	setLicense(license: License | null): void {
-		this.entitlements = license?.entitlements ?? CORE_LICENSE['entitlements'];
+	setEntitlements(entitlements?: Entitlements | null): void {
+		this.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
 	}
 
 	/**
