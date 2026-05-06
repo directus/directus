@@ -187,7 +187,7 @@ router.post(
 			throw new InvalidPayloadError({ reason: fromZodError(error).message });
 		}
 
-		if (Object.keys(data).length) {
+		if (Object.keys(data).length === 0) {
 			return next();
 		}
 

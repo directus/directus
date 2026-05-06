@@ -51,4 +51,3 @@ export async function resolveCollections(collections: string[]) {
 		})
 	);
 }
-

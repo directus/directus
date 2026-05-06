@@ -29,3 +29,4 @@ export async function resolveFlows(flows: string[]) {
 
     await Promise.allSettled(flows.map((flow_id) => flowsService.updateOne(flow_id, { status: 'inactive' })));
 }
+
