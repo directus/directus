@@ -1,7 +1,6 @@
-
 // import so the register functions are called
-import './collections.js';
-import './seats.js';
-import './sso_enabled.js';
-import './custom_llms_enabled.js';
-import './custom_policy_rules_enabled.js';
+import './lib/collections.js';
+import './lib/custom_llms_enabled.js';
+import './lib/custom_permission_rules_enabled.js';
+import './lib/seats.js';
+import './lib/sso_enabled.js';

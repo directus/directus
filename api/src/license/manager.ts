@@ -12,6 +12,7 @@ import {
 	type LicenseStatus,
 	previewKey,
 	refreshLicense,
+	ResolveInput,
 	updateAddonQuantity,
 	updateKey,
 	verifyLicense,
@@ -28,9 +29,10 @@ import { SettingsService } from '../services/settings.js';
 import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
-import { useRPC } from './rpc.js';
-import type { ResolveInput } from './schema.js';
-import { getStatus } from './status.js';
+import { getLicenseKey } from './lib/get-license-key.js';
+import { getLicenseToken } from './lib/get-license-token.js';
+import { getStatus } from './utils/get-status.js';
+import { useRPC } from './utils/use-rpc.js';
 
 let licenseManager: LicenseManager | undefined;
 const env = useEnv();
@@ -813,43 +815,4 @@ export class LicenseManager {
 
 		this.rpc.refreshCache();
 	}
-}
-
-async function getLicenseKey(options?: { database?: Knex }): Promise<{ source: LicenseSource; key: string | null }> {
-	if (env['LICENSE_KEY']) {
-		return {
-			source: 'env',
-			key: String(env['LICENSE_KEY']),
-		};
-	}
-
-	const schema = await getSchema(options);
-	const settingsService = new SettingsService({ schema, ...options });
-
-	const { license_key } = await settingsService.readSingleton({ fields: ['license_key'] });
-
-	return {
-		source: 'settings',
-		key: license_key ?? null,
-	};
-}
-
-async function getLicenseToken(options?: {
-	database?: Knex;
-}): Promise<{ source: LicenseSource; token: string | null }> {
-	if (env['LICENSE_TOKEN']) {
-		return {
-			source: 'env',
-			token: String(env['LICENSE_TOKEN']),
-		};
-	}
-
-	const schema = await getSchema(options);
-	const settingsService = new SettingsService({ schema, ...options });
-
-	const { license_token } = await settingsService.readSingleton({ fields: ['license_token'] });
-	return {
-		source: 'settings',
-		token: license_token ?? null,
-	};
 }
