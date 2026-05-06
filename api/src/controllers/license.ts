@@ -96,13 +96,13 @@ router.post(
 
 		const licenseManager = getLicenseManager();
 
-		const license = await licenseManager.preview(req.body.license_key);
+		const preview = await licenseManager.preview(req.body.license_key);
 
 		const payload: LicensePreviewOutput = {
-			plan_name: license.name,
-			expires_at: license.expires_at,
-			renews_at: license.renews_at,
-			production_enabled: license.production_enabled,
+			plan_name: preview.name,
+			expires_at: preview.expires_at,
+			renews_at: preview.renews_at,
+			production_enabled: preview.production_enabled,
 		};
 
 		res.locals['payload'] = { data: payload };
@@ -138,8 +138,8 @@ router.get(
 router.patch(
 	'/addons/:id',
 	asyncHandler(async (req, _res, next) => {
-		if (typeof req.body.quantity === 'undefined') {
-			throw new InvalidPayloadError({ reason: 'A "quantity" is required' });
+		if (typeof req.body.quantity !== 'number') {
+			throw new InvalidPayloadError({ reason: 'A numbered "quantity" is required' });
 		}
 
 		const licenseManager = getLicenseManager();
