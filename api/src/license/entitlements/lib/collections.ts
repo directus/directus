@@ -42,17 +42,13 @@ function isEnvExcludedCollection(collection: Collection) {
 export async function resolveCollections(collections: string[]) {
 	const collectionsService = new CollectionsService({ schema: await getSchema() });
 
-	try {
-		await Promise.allSettled(
-			collections.map((collection) => {
-				collectionsService.updateOne(collection, {
-					// @ts-ignore TODO fix collection type
-					meta: { status: 'inactive' }
-				})
+	await Promise.allSettled(
+		collections.map((collection) => {
+			collectionsService.updateOne(collection, {
+				// @ts-ignore TODO fix collection type
+				meta: { status: 'inactive' }
 			})
-		);
-	} catch {
-		// ignore errors
-	}
+		})
+	);
 }
 

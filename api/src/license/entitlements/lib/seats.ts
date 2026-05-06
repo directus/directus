@@ -22,11 +22,7 @@ export async function resolveSeats(seats: string[], ctx?: { adminId: string }) {
 
 	const users = seats.filter((user_id) => user_id !== ctx.adminId);
 
-	try {
-		await Promise.allSettled(
-			users.map((user_id) => usersService.updateOne(user_id, { status: 'deactivated-license-exceeded' })),
-		);
-	} catch {
-		// ignore errors
-	}
+	await Promise.allSettled(
+		users.map((user_id) => usersService.updateOne(user_id, { status: 'deactivated-license-exceeded' })),
+	);
 }

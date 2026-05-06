@@ -27,9 +27,5 @@ export async function countActiveFlows() {
 export async function resolveFlows(flows: string[]) {
     const flowsService = new FlowsService({ schema: await getSchema() });
 
-    try {
-        await Promise.allSettled(flows.map((flow_id) => flowsService.updateOne(flow_id, { status: 'inactive' })));
-    } catch {
-        // ignore errors
-    }
+    await Promise.allSettled(flows.map((flow_id) => flowsService.updateOne(flow_id, { status: 'inactive' })));
 }

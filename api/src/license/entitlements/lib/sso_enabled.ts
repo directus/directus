@@ -28,32 +28,28 @@ export async function resolveSSOUsers(resolution: NonNullable<ResolveInput['sso_
 	const { adminId } = ctx;
 	const usersService = new UsersService({ schema: await getSchema() });
 
-	try {
-		await usersService.updateByQuery(
-			{
-				filter: {
-					_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
-				},
+	await usersService.updateByQuery(
+		{
+			filter: {
+				_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
 			},
-			{ status: 'deactivated-license-exceeded' },
-		);
+		},
+		{ status: 'deactivated-license-exceeded' },
+	);
 
-		if (typeof resolution === 'object' && Object.keys(resolution.admin).length) {
-			const payload: { email?: string | undefined; password?: string; provider: string } = {
-				provider: DEFAULT_AUTH_PROVIDER,
-			};
+	if (typeof resolution === 'object' && Object.keys(resolution.admin).length) {
+		const payload: { email?: string | undefined; password?: string; provider: string } = {
+			provider: DEFAULT_AUTH_PROVIDER,
+		};
 
-			if (resolution.admin.email?.length) {
-				payload['email'] = resolution.admin.email;
-			}
-
-			if (resolution.admin.password?.length) {
-				payload['password'] = resolution.admin.password;
-			}
-
-			await usersService.updateOne(adminId, payload);
+		if (resolution.admin.email?.length) {
+			payload['email'] = resolution.admin.email;
 		}
-	} catch {
-		// ignore errors
+
+		if (resolution.admin.password?.length) {
+			payload['password'] = resolution.admin.password;
+		}
+
+		await usersService.updateOne(adminId, payload);
 	}
 }
