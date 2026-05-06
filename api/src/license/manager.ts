@@ -1,10 +1,12 @@
 import { useEnv } from '@directus/env';
+import { ForbiddenError } from '@directus/errors';
 import {
 	activateKey,
 	billinPortal,
 	CORE_LICENSE,
 	deactivateKey,
 	deleteAddon,
+	Entitlements,
 	License,
 	type LicenseAddonOutput,
 	type LicensePendingResolution,
@@ -14,6 +16,7 @@ import {
 	listAddons,
 	previewKey,
 	refreshLicense,
+	type RefreshLicenseInput,
 	ResolveInput,
 	updateAddonQuantity,
 	updateKey,
@@ -31,7 +34,7 @@ import { SettingsService } from '../services/settings.js';
 import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
-import { getEntitlementManager } from './entitlements/manager.js';
+import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
 import { getLicenseKey } from './lib/get-license-key.js';
 import { getLicenseToken } from './lib/get-license-token.js';
 import { getStatus } from './utils/get-status.js';
@@ -188,8 +191,36 @@ export class LicenseManager {
 		return this.source;
 	}
 
-	public async assertMutable(options: { action: string; bypassCore?: boolean }): Promise<void> {
-		// LICENSE-TODO
+	/**
+	 * Throw if the current license cannot have its key changed (activate / update / deactivate).
+	 *
+	 * License managements is only allowed for setting based licenses
+	 */
+	private assertCanManageLicense() {
+		// If both are null === initialization stage
+		if (this.licenseKey === null && this.licenseToken === null) return;
+		if (this.source === 'settings') return;
+
+		throw new ForbiddenError({
+			reason: `You cannot manage license for the current license.`,
+		});
+	}
+
+	/**
+	 * Throw if the current license cannot have its entitlements changed (e.g. adding addons).
+	 *
+	 * License addons is supported for all licenses aside from offline
+	 */
+	private assertCanManageAddons() {
+		// If both are null === initialization stage
+		if (this.licenseKey === null && this.licenseToken === null) return;
+
+		if (this.source === 'settings') return;
+		if (this.source === 'env' && this.licenseKey) return;
+
+		throw new ForbiddenError({
+			reason: `You cannot manage addons for the current license.`,
+		});
 	}
 
 	public async isLocked() {
@@ -214,6 +245,8 @@ export class LicenseManager {
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
+		this.assertCanManageLicense();
+
 		const license: License | null = null;
 		let error: Error | undefined;
 
@@ -247,7 +280,9 @@ export class LicenseManager {
 	}
 
 	public async deactivate(key?: string) {
-		const currentKey = this.licenseKey ?? key;
+		this.assertCanManageLicense();
+
+		const currentKey = key ?? this.licenseKey;
 
 		if (!currentKey) {
 			throw new TypeError('"key" has to be defined in order to deactivate');
@@ -270,7 +305,9 @@ export class LicenseManager {
 	 * Update from an existing key to a new key
 	 */
 	public async update(newKey: string, options?: { oldKey: string }) {
-		const currentKey = this.licenseKey ?? options?.oldKey;
+		this.assertCanManageLicense();
+
+		const currentKey = options?.oldKey ?? this.licenseKey;
 
 		if (!currentKey) {
 			throw new TypeError('"oldKey" has to be defined in order to update');
@@ -312,8 +349,8 @@ export class LicenseManager {
 	 * Verifys a current token and refreshes it with a new token
 	 */
 	public async refresh(options?: { key: string; token?: string | null }): Promise<void> {
-		const key = this.licenseKey ?? options?.key;
-		const token = this.licenseToken ?? options?.token;
+		const key = options?.key ?? this.licenseKey;
+		const token = options?.token ?? this.licenseToken;
 
 		if (!key) {
 			throw new TypeError('key has to be defined in order to refresh');
@@ -322,15 +359,30 @@ export class LicenseManager {
 		let license: License | null = null;
 		let error: Error | undefined;
 
-		const settingsService = new SettingsService({ schema: await getSchema() });
-
 		if (token) {
 			license = await this.verify(token);
 		}
 
-		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
-
 		if (license?.meta.offline === false) {
+			const entitlementManager = getEntitlementManager();
+			const settingsService = new SettingsService({ schema: await getSchema() });
+
+			const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+			const refreshPayload: RefreshLicenseInput = {
+				usage_metrics: {
+					seats: await entitlementManager.getUsage('seats'),
+					collections: await entitlementManager.getUsage('collections'),
+					// LICENSE-TODO: Add actual usage once handler registered
+					flows: 2,
+				},
+			};
+
+			// If changed, send new public url
+			if (license.meta.public_url && license.meta.public_url !== env['PUBLIC_URL']) {
+				refreshPayload['new_public_url'] = env['PUBLIC_URL'] as string;
+			}
+
 			try {
 				const { token } = await refreshLicense(
 					{
@@ -338,14 +390,7 @@ export class LicenseManager {
 						project_id: project_id!,
 						public_url: env['PUBLIC_URL'] as string,
 					},
-					{
-						// LICENSE-TODO: Add actual usage
-						usage_metrics: {
-							seats: 4,
-							collections: 3,
-							flows: 2,
-						},
-					},
+					refreshPayload,
 				);
 
 				await settingsService.upsertSingleton({
@@ -406,6 +451,8 @@ export class LicenseManager {
 	}
 
 	public async setAddonQuantity(options: { addonId: string; quantity: number }) {
+		this.assertCanManageAddons();
+
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -437,6 +484,8 @@ export class LicenseManager {
 	}
 
 	public async removeAddon(addonId: string) {
+		this.assertCanManageAddons();
+
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -458,16 +507,33 @@ export class LicenseManager {
 	 */
 	public async pendingResolution(options: {
 		adminId: string;
-		licenseKey?: string;
+		licenseKey?: string | null;
 	}): Promise<LicensePendingResolutionOutput> {
 		const pendingResolution: LicensePendingResolution[] = [];
 
-		const schema = await getSchema();
-		const entitlementManager = getEntitlementManager();
+		let entitlements: Entitlements | undefined;
+
+		if (options.licenseKey) {
+			const preview = await this.preview(options.licenseKey);
+			entitlements = preview.entitlements;
+		} else if (options.licenseKey !== null) {
+			// Ensure we are in lockdown, if not return no pending
+			const isLocked = await this.isLocked();
+
+			if (!isLocked) {
+				return;
+			}
+		}
+
+		// New manager to build entitlements for future license
+		const entitlementManager = new EntitlementManager();
+		entitlementManager.setEntitlements(entitlements);
 
 		const collection = await entitlementManager.check('collections');
 
 		if (collection.allowed == false) {
+			const schema = await getSchema();
+
 			const collectionsService = new CollectionsService({ schema });
 			const collections = await collectionsService.readByQuery();
 
@@ -698,6 +764,7 @@ export class LicenseManager {
 		}
 
 		if (resolution.seats?.length) {
+			// LICENSE-TODOL: Exclude current admin from seat resolution
 			const usersService = new UsersService({ schema });
 
 			try {
@@ -732,7 +799,7 @@ export class LicenseManager {
 							_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
 						},
 					},
-					{ status: 'deactivated-license-exceede' },
+					{ status: 'deactivated-license-exceeded' },
 				);
 
 				if (typeof resolution.sso_enabled === 'object' && Object.keys(resolution.sso_enabled.admin).length) {
