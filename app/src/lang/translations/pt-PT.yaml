@@ -926,6 +926,8 @@ wysiwyg_options:
   aligncenter: Alinhar ao centro
   alignjustify: Alinhar justificado
   alignleft: Alinhar à esquerda
+  alignnone: Sem alinhamento
+  alignright: Alinhar à direita
   forecolor: Cor principal
   backcolor: Cor de Fundo
   bold: Negrito
@@ -1200,6 +1202,7 @@ interfaces:
   input-block-editor:
     tools_options:
       table: Tabela
+      alignment: Alinhamento
   system-token:
     system-token: Token
     value_securely_saved: Valor Guardado em Segurança
@@ -1281,4 +1284,5 @@ operations:
 standard: Predefinido
 fonts:
   bold: Negrito
+text_align: Alinhar texto
 set_to_now: Definir para agora
