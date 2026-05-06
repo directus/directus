@@ -63,7 +63,6 @@ const props = withDefaults(defineProps<Props>(), {
 	delay: 0,
 	offsetY: 8,
 	offsetX: 0,
-	invert: false,
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -485,7 +484,7 @@ function usePopper(
 						events: ['click'],
 					}"
 					class="v-menu-popper"
-					:class="{ active: isActive, attached, 'keep-behind': keepBehind, invert }"
+					:class="{ active: isActive, attached, 'keep-behind': keepBehind }"
 					:data-placement="popperPlacement"
 					:style="styles"
 				>
@@ -540,11 +539,6 @@ function usePopper(
 
 	&.keep-behind {
 		z-index: 490;
-	}
-
-	&.invert {
-		--theme--popover--menu--background: var(--background-inverted);
-		--theme--popover--menu--foreground: var(--foreground-inverted);
 	}
 }
 
