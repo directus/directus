@@ -762,78 +762,25 @@ export class LicenseManager {
 	 * Allows partial resolution
 	 */
 	public async applyResolution(adminId: string, resolution: ResolveInput) {
-		const schema = await getSchema();
+		const entitlementManager = getEntitlementManager();
 
-		if (resolution.collections?.length) {
-			// const collectionsService = new CollectionsService({ schema });
-
-			try {
-				// LICENSE-TODO: Enable once status field added to collection
-				// await Promise.allSettled(
-				// 	resolution.collections.map((collection) => collectionsService.updateOne(collection, { status: 'disabled' })),
-				// );
-			} catch {
-				// ignore errors
-			}
+		if (resolution.collections && resolution.collections.length > 0) {
+			await entitlementManager.resolve('collections', resolution.collections);
 		}
 
-		if (resolution.seats?.length) {
-			// LICENSE-TODOL: Exclude current admin from seat resolution
-			const usersService = new UsersService({ schema });
-
-			try {
-				await Promise.allSettled(
-					resolution.seats.map((user) => usersService.updateOne(user, { status: 'deactivated-license-exceeded' })),
-				);
-			} catch {
-				// ignore errors
-			}
+		if (resolution.seats && resolution.seats.length > 0) {
+			await entitlementManager.resolve('seats', resolution.seats, { adminId });
 		}
 
-		if (resolution.flows?.length) {
-			const flowsService = new FlowsService({ schema });
-
-			try {
-				await Promise.allSettled(resolution.flows.map((user) => flowsService.updateOne(user, { status: 'inactive' })));
-			} catch {
-				// ignore errors
-			}
+		if (resolution.flows && resolution.flows.length > 0) {
+			await entitlementManager.resolve('flows', resolution.flows);
 		}
 
 		/**
 		 * Set all sso users to disabled and optional set the current admin email and password
 		 */
 		if (resolution.sso_enabled) {
-			const usersService = new UsersService({ schema });
-
-			try {
-				await usersService.updateByQuery(
-					{
-						filter: {
-							_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
-						},
-					},
-					{ status: 'deactivated-license-exceeded' },
-				);
-
-				if (typeof resolution.sso_enabled === 'object' && Object.keys(resolution.sso_enabled.admin).length) {
-					const payload: { email?: string | undefined; password?: string; provider: string } = {
-						provider: DEFAULT_AUTH_PROVIDER,
-					};
-
-					if (resolution.sso_enabled.admin.email?.length) {
-						payload['email'] = resolution.sso_enabled.admin.email;
-					}
-
-					if (resolution.sso_enabled.admin.password?.length) {
-						payload['password'] = resolution.sso_enabled.admin.password;
-					}
-
-					await usersService.updateOne(adminId, payload);
-				}
-			} catch {
-				// ignore errors
-			}
+			await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, { adminId });
 		}
 	}
 

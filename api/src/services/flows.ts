@@ -9,8 +9,10 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const entitlementManager = getEntitlementManager();
-		await entitlementManager.assert('collections', { adding: 1 });
+		if (!('status' in data) || data['status'] === 'active') {
+			const entitlementManager = getEntitlementManager();
+			await entitlementManager.assert('flows', { adding: 1 });
+		}
 
 		const result = await super.createOne(data, opts);
 
@@ -23,7 +25,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if ('status' in data && data['status'] === 'active') {
 			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('collections', { adding: keys.length });
+			await entitlementManager.assert('flows', { adding: keys.length });
 		}
 
 		const result = await super.updateMany(keys, data, opts);
