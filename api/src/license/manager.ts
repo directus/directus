@@ -358,15 +358,30 @@ export class LicenseManager {
 		let license: License | null = null;
 		let error: Error | undefined;
 
-		const settingsService = new SettingsService({ schema: await getSchema() });
-
 		if (token) {
 			license = await this.verify(token);
 		}
 
-		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
-
 		if (license?.meta.offline === false) {
+			const entitlementManager = getEntitlementManager();
+			const settingsService = new SettingsService({ schema: await getSchema() });
+
+			const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
+
+			const refreshPayload: RefreshLicenseInput = {
+				usage_metrics: {
+					seats: await entitlementManager.getUsage('seats'),
+					collections: await entitlementManager.getUsage('collections'),
+					// LICENSE-TODO: Add actual usage once handler registered
+					flows: 2,
+				},
+			};
+
+			// If changed, send new public url
+			if (license.meta.public_url && license.meta.public_url !== env['PUBLIC_URL']) {
+				refreshPayload['new_public_url'] = env['PUBLIC_URL'] as string;
+			}
+
 			try {
 				const { token } = await refreshLicense(
 					{
@@ -374,14 +389,7 @@ export class LicenseManager {
 						project_id: project_id!,
 						public_url: env['PUBLIC_URL'] as string,
 					},
-					{
-						// LICENSE-TODO: Add actual usage
-						usage_metrics: {
-							seats: 4,
-							collections: 3,
-							flows: 2,
-						},
-					},
+					refreshPayload,
 				);
 
 				await settingsService.upsertSingleton({
