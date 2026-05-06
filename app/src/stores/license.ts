@@ -47,6 +47,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
 
+	const customPermissionRulesEnabled = computed(() => {
+		const ent = info.value?.entitlements?.custom_permission_rules_enabled;
+		if (!ent) return false;
+		return ent.override ?? ent.default;
+	});
+
 	const customLLMEnabled = computed(() => {
 		const ent = info.value?.entitlements?.custom_llms_enabled;
 		if (!ent) return false;
@@ -152,6 +158,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		seatsRemaining,
 		hasRemainingSeats,
 		isLocked,
+		customPermissionRulesEnabled,
 		isLicensed,
 		needsResolution,
 		customLLMEnabled,
