@@ -917,9 +917,15 @@ deployment:
       cancel_confirm: Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 visible: Visível
 full_screen: Ecrã completo
+center_align: Alinhar ao centro
+left_align: Alinhar à esquerda
+right_align: Alinhar à direita
 fit_to_screen: Ajustar ao ecrã
 save_image: Guardar imagem
 wysiwyg_options:
+  aligncenter: Alinhar ao centro
+  alignjustify: Alinhar justificado
+  alignleft: Alinhar à esquerda
   forecolor: Cor principal
   backcolor: Cor de Fundo
   bold: Negrito
