@@ -1,16 +1,17 @@
-import type{ PassiveLimitEntitlementKey } from '@directus/license';
+import type { PassiveLimitEntitlementKey } from '@directus/license';
 import type { Filter, Query } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { entitlementManager } from '../license/entitlements/manager.js';
+import { getEntitlementManager } from '../license/index.js';
 
 type HistoryFilterBuilder = (sinceDate: Date) => Filter;
 
 export function getHistoryFilterQuery(
 	query: Query,
-    entitlement: PassiveLimitEntitlementKey,
+	entitlement: PassiveLimitEntitlementKey,
 	buildFilter: HistoryFilterBuilder,
 ): Query {
-    const limit = entitlementManager.getEntitlementLimit(entitlement);
+	const entitlementManager = getEntitlementManager();
+	const limit = entitlementManager.getEntitlementLimit(entitlement);
 
 	if (limit === null || !Number.isFinite(limit) || limit < 0) {
 		return query;

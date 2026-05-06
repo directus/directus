@@ -11,8 +11,11 @@ import type {
 } from '@directus/types';
 import { omit, uniq } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
-import { hasCustomRule, isRecommendedAppPermission } from '../license/entitlements/custom_policy_rules_enabled.js';
-import { entitlementManager } from '../license/entitlements/manager.js';
+import {
+	hasCustomRule,
+	isRecommendedAppPermission,
+} from '../license/entitlements/lib/custom_permission_rules_enabled.js';
+import { getEntitlementManager } from '../license/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { withAppMinimalPermissions } from '../permissions/lib/with-app-minimal-permissions.js';
@@ -34,11 +37,13 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
-		if (entitlementManager.isEntitled('custom_policy_rules_enabled')) {
+		const entitlementManager = getEntitlementManager();
+
+		if (entitlementManager.isEntitled('custom_permission_rules_enabled')) {
 			const result = (await super.readByQuery(query, opts)) as Permission[];
 			return withAppMinimalPermissions(this.accountability, result, query.filter);
 		}
-		
+
 		const requiredFields = ['fields', 'permissions', 'validation', 'presets'];
 		let extraFields: string[] = [];
 
@@ -51,7 +56,8 @@ export class PermissionsService extends ItemsService {
 
 		const filteredPermissions = result.filter((p) => !hasCustomRule(p) || isRecommendedAppPermission(p));
 
-		const mappedPermissions: Partial<Permission>[] = extraFields.length > 0 ? filteredPermissions.map((p) => omit(p, extraFields)) : filteredPermissions;
+		const mappedPermissions: Partial<Permission>[] =
+			extraFields.length > 0 ? filteredPermissions.map((p) => omit(p, extraFields)) : filteredPermissions;
 
 		return withAppMinimalPermissions(this.accountability, mappedPermissions, query.filter);
 	}

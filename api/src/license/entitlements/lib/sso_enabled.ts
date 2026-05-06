@@ -1,12 +1,11 @@
 import { DEFAULT_AUTH_PROVIDER } from '../../../constants.js';
 import { UsersService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { entitlementManager } from '../manager.js';
 
 /**
  * Counting the current amount of users with sso enabled
  */
-async function checkUsersSSO() {
+export async function checkUsersSSO() {
 	const usersService = new UsersService({
 		schema: await getSchema(),
 	});
@@ -21,5 +20,3 @@ async function checkUsersSSO() {
 
 	return sso_users.length > 0;
 }
-
-entitlementManager.registerValidator('sso_enabled', checkUsersSSO);

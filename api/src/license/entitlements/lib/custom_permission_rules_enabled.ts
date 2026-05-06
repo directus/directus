@@ -3,7 +3,6 @@ import type { Permission } from '@directus/types';
 import { isEqual } from 'lodash-es';
 import { ItemsService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { entitlementManager } from '../manager.js';
 
 export function hasCustomRule(permission: Partial<Permission>): boolean {
 	if (permission.system === true) return false;
@@ -67,5 +66,3 @@ export async function checkCustomPermissionRules() {
 
 	return customRulePermissions.length > 0;
 }
-
-entitlementManager.registerValidator('custom_permission_rules_enabled', checkCustomPermissionRules);

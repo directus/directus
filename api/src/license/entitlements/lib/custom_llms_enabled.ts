@@ -1,9 +1,8 @@
 import { CUSTOM_LLM_FIELDS } from '../../../constants.js';
 import { SettingsService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { entitlementManager } from '../manager.js';
 
-async function checkCustomLLM() {
+export async function checkCustomLLM() {
 	const settingsService = new SettingsService({
 		schema: await getSchema(),
 	});
@@ -14,5 +13,3 @@ async function checkCustomLLM() {
 
 	return Boolean(CUSTOM_LLM_FIELDS.find((key) => data[key] !== null));
 }
-
-entitlementManager.registerValidator('custom_llms_enabled', checkCustomLLM);

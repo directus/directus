@@ -1,11 +1,10 @@
 import { isSystemCollection } from '@directus/system-data';
 import { getSchema } from '../../../utils/get-schema.js';
-import { entitlementManager } from '../manager.js';
 
 /**
  * Counting the current user collections
  */
-async function countActiveCollections() {
+export async function countActiveCollections() {
 	const schema = await getSchema();
 
 	return (
@@ -13,5 +12,3 @@ async function countActiveCollections() {
 		Object.keys(schema.collections).filter((collection) => !isSystemCollection(collection)).length
 	);
 }
-
-entitlementManager.registerCounter('collections', countActiveCollections);
