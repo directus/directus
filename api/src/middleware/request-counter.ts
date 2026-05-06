@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { RequestHandler } from 'express';
-import { entitlementManager } from '../license/entitlements/manager.js';
+import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import { useBufferedCounter } from '../telemetry/counter/use-buffered-counter.js';
 import { TRACKED_METHODS } from '../telemetry/utils/format-api-request-counts.js';
@@ -11,6 +11,8 @@ const TRACKED_METHODS_UPPER = new Set(TRACKED_METHODS.map((m) => m.toUpperCase()
 const env = useEnv();
 
 const requestCounterMiddleware: RequestHandler = (req, _res, next) => {
+	const entitlementManager = getEntitlementManager();
+
 	const force_telemetry = entitlementManager.isEntitled('telemetry_required');
 
 	if (force_telemetry === false && toBoolean(env['TELEMETRY']) === false) {

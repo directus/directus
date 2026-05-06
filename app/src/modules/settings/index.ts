@@ -49,6 +49,11 @@ export default defineModule({
 			component: Project,
 		},
 		{
+			name: 'settings-license',
+			path: 'license',
+			component: License,
+		},
+		{
 			name: 'settings-appearance',
 			path: 'appearance',
 			component: Appearance,

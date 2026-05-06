@@ -1,7 +1,15 @@
-import type { AbstractServiceOptions, MutationOptions, OwnerInformation, PrimaryKey, Query, QueryOptions, Settings } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	MutationOptions,
+	OwnerInformation,
+	PrimaryKey,
+	Query,
+	QueryOptions,
+	Settings,
+} from '@directus/types';
 import { version } from 'directus/version';
 import { CUSTOM_LLM_FIELDS } from '../constants.js';
-import { entitlementManager } from '../license/entitlements/manager.js';
+import { getEntitlementManager } from '../license/index.js';
 import { sendReport } from '../telemetry/index.js';
 import { ItemsService } from './items.js';
 
@@ -12,14 +20,20 @@ export class SettingsService extends ItemsService<Settings> {
 
 	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
+			const entitlementManager = getEntitlementManager();
 			await entitlementManager.assert('custom_llms_enabled');
 		}
 
 		return super.createOne(data, opts);
 	}
 
-	override async updateMany(keys: PrimaryKey[], data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Settings>,
+		opts?: MutationOptions,
+	): Promise<PrimaryKey[]> {
 		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
+			const entitlementManager = getEntitlementManager();
 			await entitlementManager.assert('custom_llms_enabled');
 		}
 
@@ -38,7 +52,7 @@ export class SettingsService extends ItemsService<Settings> {
 				}
 			}
 		}
-		
+
 		return data;
 	}
 
