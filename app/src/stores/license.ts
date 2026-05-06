@@ -36,6 +36,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const hasRemainingCollections = computed(() => collectionsRemaining.value === null || collectionsRemaining.value > 0);
 
+	const isEnterprise = computed(() => info.value?.plan === 'enterprise');
+
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -97,6 +99,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		hasRemainingSeats,
 		collectionsRemaining,
 		hasRemainingCollections,
+		isEnterprise,
 		hydrate,
 		dehydrate,
 	};
