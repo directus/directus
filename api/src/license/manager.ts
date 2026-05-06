@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { LicenseImmutableError } from '@directus/errors';
 import {
 	activateKey,
 	billinPortal,
@@ -129,50 +128,47 @@ export class LicenseManager {
 					fields: ['license_key', 'license_token'],
 				});
 
-				// CASE I
-				if (!envKey && !envToken && !dbKey) {
-					// CASE H
+				if (envKey) {
+					this.source = 'env';
+
+					if (!dbKey) {
+						// CASE D
+						await this.activate(envKey);
+					} else if (envKey !== dbKey) {
+						// CASE B
+						await this.update(dbKey, { oldKey: envKey });
+					} else {
+						// CASE C
+						await this.refresh({ key: envKey, token: dbToken ?? null });
+					}
+				} else if (envToken) {
+					// CASE E — verify offline token, cleanup DB
+					this.source = 'env';
+					const license = await this.verify(envToken);
+
+					if (dbKey || dbToken) {
+						await settingsService.upsertSingleton({ license_key: null, license_token: null });
+					}
+
+					await store.set('status', getStatus(license));
+				} else if (dbKey) {
+					this.source = 'settings';
+
 					if (dbToken) {
+						// CASE F
+						await this.refresh({ key: dbKey, token: dbToken });
+					} else {
+						// CASE G
+						await this.activate(dbKey);
+					}
+				} else {
+					if (dbToken) {
+						// CASE H — stale token, drop it before serving core
 						await this.downgrade();
 					}
 
-					// Use core license
+					// CASE H tail / CASE I — core license
 					await store.set('status', 'active');
-					return;
-				}
-
-				// CASE D
-				if (envKey && !dbKey) {
-					this.source = 'env';
-					await this.activate(envKey);
-				}
-
-				if (envKey && dbKey) {
-					this.source = 'env';
-
-					// CASE B else C
-					if (envKey !== dbKey) {
-						await this.update(dbKey, { oldKey: envKey });
-					} else {
-						await this.refresh({ key: envKey, token: dbToken ?? null });
-					}
-				}
-
-				// CASE E
-				if (envToken) {
-					this.source = 'env';
-					await this.verify(envToken);
-				}
-
-				if (dbKey) {
-					this.source = 'settings';
-
-					// CASE F else G
-					if (dbToken) {
-						await this.refresh({ key: dbKey, token: dbToken });
-					} else {
-						await this.activate(dbKey);
-					}
 				}
 
 				await store.set('initialized', true);
