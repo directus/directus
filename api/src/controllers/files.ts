@@ -10,6 +10,7 @@ import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
+import checkIsLocked from '../middleware/is-locked.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -22,6 +23,7 @@ const router = express.Router();
 const env = useEnv();
 
 router.use(useCollection('directus_files'));
+router.use(checkIsLocked);
 
 export const multipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();

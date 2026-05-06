@@ -11,7 +11,6 @@ export * from './files.js';
 export * from './flows.js';
 export * from './folders.js';
 export * from './items.js';
-export * from './license.js';
 export * from './notifications.js';
 export * from './operations.js';
 export * from './panels.js';
