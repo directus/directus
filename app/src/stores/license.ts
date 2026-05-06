@@ -47,12 +47,16 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
 
+	const customLLMEnabled = computed(() => {
+		const ent = info.value?.entitlements?.custom_llms_enabled;
+		if (!ent) return false;
+		return ent.override ?? ent.default;
+	})
+
 	const isLicensed = computed(() => {
 		const status = info.value?.status;
 		return status === 'active' || status === 'grace';
 	});
-
-	const customLLMEnabled = computed(() => info.value?.entitlements?.custom_llms_enabled?.default === true);
 
 	const needsResolution = computed(() => {
 		const status = info.value?.status;
