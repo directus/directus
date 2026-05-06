@@ -349,8 +349,8 @@ export class LicenseManager {
 	 * Verifys a current token and refreshes it with a new token
 	 */
 	public async refresh(options?: { key: string; token?: string | null }): Promise<void> {
-		const key = this.licenseKey ?? options?.key;
-		const token = this.licenseToken ?? options?.token;
+		const key = options?.key ?? this.licenseKey;
+		const token = options?.token ?? this.licenseToken;
 
 		if (!key) {
 			throw new TypeError('key has to be defined in order to refresh');
@@ -740,6 +740,7 @@ export class LicenseManager {
 		}
 
 		if (resolution.seats?.length) {
+			// LICENSE-TODOL: Exclude current admin from seat resolution
 			const usersService = new UsersService({ schema });
 
 			try {
@@ -774,7 +775,7 @@ export class LicenseManager {
 							_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
 						},
 					},
-					{ status: 'deactivated-license-exceede' },
+					{ status: 'deactivated-license-exceeded' },
 				);
 
 				if (typeof resolution.sso_enabled === 'object' && Object.keys(resolution.sso_enabled.admin).length) {
