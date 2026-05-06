@@ -38,9 +38,8 @@ export async function registerAuthProviders(): Promise<void> {
 
 	const entitlementManager = getEntitlementManager();
 	const sso_allowed = entitlementManager.isEntitled('sso_enabled');
-	// const { entitled: sso_allowed, valid: sso_valid } = await entitlementManager.check('sso_enabled');
 
-	if (sso_allowed === false && providerNames.length > 0) {
+	if (sso_allowed === false && env['AUTH_PROVIDERS'] && providerNames.length > 0) {
 		logger.warn('you have SSO providers configured these will be unavailable under the current license tier');
 	}
 
