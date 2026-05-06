@@ -481,6 +481,7 @@ related_collection: Coleção relacionada
 related_collections: Coleções relacionadas
 translations_collection: Coleção de tradução
 languages_collection: Coleção de idiomas
+translations_duplicate_field_names: Nomes dos campos de tradução devem ser únicos.
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Iniciar importação
 import_data_indeterminate: A importar dados...
@@ -1127,6 +1128,7 @@ continue_as: >-
 delete_are_you_sure: >-
   Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 description: Descrição
+duplicate: Duplicar
 file_library: Biblioteca de Arquivos
 forgot_password: Repor palavra-passe
 revisions: Revisões
@@ -1285,4 +1287,6 @@ standard: Predefinido
 fonts:
   bold: Negrito
 text_align: Alinhar texto
+duplicate_dashboard: Duplicar Painel
+duplicate_policy: Duplicar Política
 set_to_now: Definir para agora
