@@ -504,7 +504,17 @@ export class LicenseManager {
 		const pendingResolution: LicensePendingResolution[] = [];
 
 		const schema = await getSchema();
-		const entitlementManager = getEntitlementManager();
+
+		let entitlements = CORE_LICENSE.entitlements;
+
+		if (options.licenseKey) {
+			const preview = await this.preview(options.licenseKey);
+			entitlements = preview.entitlements;
+		}
+
+		// New manager to build entitlements for future license
+		const entitlementManager = new EntitlementManager();
+		entitlementManager.setEntitlements(entitlements);
 
 		const collection = await entitlementManager.check('collections');
 
