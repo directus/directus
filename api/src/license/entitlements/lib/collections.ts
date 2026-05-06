@@ -1,12 +1,13 @@
+import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
 import { CollectionsService } from '../../../services/index.js';
 import type { Collection } from '../../../types/collection.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
 export async function getActiveCollections() {
-	const schema = await getSchema();
-
-	const collectionService = new CollectionsService({ schema });
+	const collectionService = new CollectionsService({
+		schema: await getSchema(),
+	});
 
 	const dbCollections = await collectionService.readByQuery();
 
@@ -14,7 +15,8 @@ export async function getActiveCollections() {
 		(collection) =>
 			!isSystemCollection(collection.collection) &&
 			!isDBOnlyCollection(collection) &&
-			!isExcludedCollection(collection),
+			!isDisabledCollection(collection) &&
+			!isEnvExcludedCollection(collection),
 	);
 }
 
@@ -28,8 +30,13 @@ function isDBOnlyCollection(collection: Collection) {
 	return collection.meta === null;
 }
 
-function isExcludedCollection(collection: Collection) {
-	return false;
+function isDisabledCollection(collection: Collection) {
+	return collection.meta?.status !== 'active';
+}
+
+function isEnvExcludedCollection(collection: Collection) {
+	const env = useEnv();
+	return (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection);
 }
 
 export function resolveCollections() {}
