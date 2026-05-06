@@ -1,21 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import Type, { type Static } from 'typebox';
-import { forbiddenError, notFoundError } from '../errors.js';
+import { notFoundError } from '../errors.js';
 import { licenses } from '../licenses.js';
 import { createNewToken } from '../token.js';
-
-export const RefreshRequestHeaders = Type.Object(
-	{
-		project_id: Type.String({ minLength: 1 }),
-		license_key: Type.String({ minLength: 1 }),
-		public_url: Type.String({ minLength: 1 }),
-	},
-	{
-		additionalProperties: false,
-	},
-);
-
-export type RefreshRequestHeaders = Static<typeof RefreshRequestHeaders>;
+import { LicenseAuthHeaders, type LicenseAuthHeadersType } from '../types.js';
 
 export const RefreshRequestBody = Type.Object(
 	{
@@ -37,20 +25,22 @@ export const RefreshRequestBody = Type.Object(
 export type RefreshRequestBody = Static<typeof RefreshRequestBody>;
 
 export async function refreshRoute(app: FastifyInstance) {
-	app.post<{ Headers: RefreshRequestHeaders; Body: RefreshRequestBody }>(
+	app.post<{ Headers: LicenseAuthHeadersType; Body: RefreshRequestBody }>(
 		'/',
 		{
 			schema: {
 				body: RefreshRequestBody,
-				headers: RefreshRequestHeaders,
+				headers: LicenseAuthHeaders,
 			},
 		},
 		async (req, res) => {
 			const license = licenses[req.headers.license_key];
 
-			if (!license) return res.status(404).send(notFoundError('License not available'));
-
-			if (!license.activated) return res.status(400).send(forbiddenError('License not active'));
+			if (
+				!license ||
+				license.projects.every(({ id, url }) => id !== req.headers.license_key && url !== req.headers.public_url)
+			)
+				return res.status(404).send(notFoundError('License not available'));
 
 			return res.status(200).send({
 				token: await createNewToken(license),

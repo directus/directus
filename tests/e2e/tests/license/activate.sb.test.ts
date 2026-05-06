@@ -44,38 +44,41 @@ test('activate a license key', async () => {
 	const { project_id } = await api.request(readSettings({ fields: ['project_id'] }));
 
 	const license: License = {
-		activated: false,
+		projects: [
+			{
+				id: project_id,
+				url: `http://localhost:${directus.apis[0].port}`,
+			},
+		],
+		max_projects: 1,
 		key,
 		addons: [],
 		name: 'test-license',
-		project_id,
-		token: {
-			meta: {
-				name: 'TEAM',
-				grace_period: 10000,
-				validation_interval: 1000,
-				expires_at: now + 1000,
-				offline: false,
+		meta: {
+			name: 'TEAM',
+			grace_period: 10000,
+			validation_interval: 1000,
+			expires_at: now + 1000,
+			offline: false,
+		},
+		entitlements: {
+			collections: { limit: 10 },
+			seats: { limit: 10 },
+			activity_historical_timeframe: {
+				limit: 2592000,
+				overage: 0,
+				addon: 2292000,
 			},
-			entitlements: {
-				collections: { limit: 10 },
-				seats: { limit: 10 },
-				activity_historical_timeframe: {
-					limit: 2592000,
-					overage: 0,
-					addon: 2292000,
-				},
-				revision_historical_timeframe: { limit: 2582000 },
-				sso_enabled: { default: true },
-				offline_enabled: { default: false },
-				telemetry_required: { default: true },
-				display_powered_by: 'NONE',
-				custom_llms_enabled: { default: false, override: true },
-				custom_permission_rules_enabled: { default: false },
-				ai_translations_enabled: { default: false },
-				production_enabled: { default: true },
-				flows: { limit: 10 },
-			},
+			revision_historical_timeframe: { limit: 2582000 },
+			sso_enabled: { default: true },
+			offline_enabled: { default: false },
+			telemetry_required: { default: true },
+			display_powered_by: 'NONE',
+			custom_llms_enabled: { default: false, override: true },
+			custom_permission_rules_enabled: { default: false },
+			ai_translations_enabled: { default: false },
+			production_enabled: { default: true },
+			flows: { limit: 10 },
 		},
 	};
 
@@ -94,48 +97,7 @@ test('activate a license key', async () => {
 	activeLicense = await api.request(readLicense());
 
 	expect(activeLicense).toEqual({
-		entitlements: {
-			activity_historical_timeframe: {
-				addon: 2292000,
-				limit: 2592000,
-				overage: 0,
-			},
-			ai_translations_enabled: {
-				default: false,
-			},
-			collections: {
-				limit: 10,
-			},
-			custom_llms_enabled: {
-				default: false,
-				override: true,
-			},
-			custom_permission_rules_enabled: {
-				default: false,
-			},
-			display_powered_by: 'NONE',
-			flows: {
-				limit: 10,
-			},
-			offline_enabled: {
-				default: false,
-			},
-			production_enabled: {
-				default: true,
-			},
-			revision_historical_timeframe: {
-				limit: 2582000,
-			},
-			seats: {
-				limit: 10,
-			},
-			sso_enabled: {
-				default: true,
-			},
-			telemetry_required: {
-				default: true,
-			},
-		},
+		entitlements: license.entitlements,
 		expires_at: now + 1000,
 		grace_period: 10000,
 		name: 'TEAM',

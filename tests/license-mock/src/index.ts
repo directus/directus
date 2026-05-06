@@ -4,9 +4,9 @@ import Fastify from 'fastify';
 import { exportJWK } from 'jose/key/export';
 import type { License } from './licenses.js';
 import { activateRoute } from './routes/activate.js';
-import { checkRoute } from './routes/check.js';
 import { deactivateRoute } from './routes/deactivate.js';
 import { licenseRoute } from './routes/license.js';
+import { previewRoute } from './routes/preview.js';
 import { refreshRoute } from './routes/refresh.js';
 import { publicKey } from './token.js';
 
@@ -18,7 +18,7 @@ const app = Fastify({
 
 app.withTypeProvider<TypeBoxTypeProvider>();
 
-app.register(checkRoute, { prefix: '/api/licenses/check' });
+app.register(previewRoute, { prefix: '/api/licenses/check' });
 app.register(activateRoute, { prefix: '/api/licenses/activate' });
 app.register(deactivateRoute, { prefix: '/api/licenses/deactivate' });
 app.register(licenseRoute, { prefix: '/admin/license' });
