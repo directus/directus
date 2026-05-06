@@ -247,7 +247,7 @@ export class LicenseManager {
 	public async activate(key: string) {
 		this.assertCanManageLicense();
 
-		const license: License | null = null;
+		let license: License | null = null;
 		let error: Error | undefined;
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
@@ -266,6 +266,8 @@ export class LicenseManager {
 				license_token: token,
 				project_id: new_project_id ?? project_id!,
 			});
+
+			license = await verifyLicense(token);
 
 			this.rpc.refreshCache();
 		} catch (err) {
@@ -522,7 +524,7 @@ export class LicenseManager {
 			const isLocked = await this.isLocked();
 
 			if (!isLocked) {
-				return;
+				return [];
 			}
 		}
 
@@ -533,7 +535,6 @@ export class LicenseManager {
 		const collection = await entitlementManager.check('collections');
 
 		if (collection.allowed == false) {
-
 			const collectionsService = new CollectionsService({ schema });
 			const collections = await collectionsService.readByQuery();
 
@@ -590,7 +591,9 @@ export class LicenseManager {
 					) {
 						appUsers.add(accessRow['user'].id);
 					}
-				} else if (accessRow['role']) {
+				}
+
+				if (accessRow['role']) {
 					if (isAdmin) {
 						adminRoles.add(accessRow['role']);
 					} else {
@@ -632,6 +635,11 @@ export class LicenseManager {
 								},
 							],
 						},
+						{
+							status: {
+								_eq: 'active',
+							},
+						},
 					],
 				},
 			});
@@ -660,6 +668,11 @@ export class LicenseManager {
 									},
 								},
 							],
+						},
+						{
+							status: {
+								_eq: 'active',
+							},
 						},
 					],
 				},
@@ -711,7 +724,7 @@ export class LicenseManager {
 			}
 
 			if (adminUser['password'] === null) {
-				blockers.push('ADMIN_MISSING_EMAIL');
+				blockers.push('ADMIN_MISSING_PASSWORD');
 			}
 
 			pendingResolution.push({
