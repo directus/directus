@@ -32,8 +32,7 @@ router.get(
 			usage: {
 				seats: await entitlementManager.getUsage('seats'),
 				collections: await entitlementManager.getUsage('collections'),
-				// LICENSE-TODO: add getUsage once handler registered
-				flows: 5,
+				flows: await entitlementManager.getUsage('flows'),
 			},
 		};
 

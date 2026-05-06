@@ -39,4 +39,20 @@ function isEnvExcludedCollection(collection: Collection) {
 	return (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection);
 }
 
-export function resolveCollections() {}
+export async function resolveCollections(collections: string[]) {
+	const collectionsService = new CollectionsService({ schema: await getSchema() });
+
+	try {
+		await Promise.allSettled(
+			collections.map((collection) => {
+				collectionsService.updateOne(collection, {
+					// @ts-ignore TODO fix collection type
+					meta: { status: 'inactive' }
+				})
+			})
+		);
+	} catch {
+		// ignore errors
+	}
+}
+
