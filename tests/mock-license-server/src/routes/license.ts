@@ -3,8 +3,10 @@ import { merge } from 'lodash-es';
 import { type License, licenses } from '../licenses.js';
 
 export async function licenseRoute(app: FastifyInstance) {
-	app.post<{ Body: License }>('/', async (req, _res) => {
+	app.post<{ Body: License }>('/', async (req, res) => {
 		licenses[req.body.key] = req.body;
+
+		return res.send(req.body);
 	});
 
 	app.get('/', async (_req, res) => {
