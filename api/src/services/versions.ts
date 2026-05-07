@@ -46,7 +46,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		if (isPublishedVersionKey(data['key']))
 			throw new InvalidPayloadError({ reason: `"${data['key']}" is a reserved version key` });
 
-		if (itemLess && data['key'] !== 'draft') {
+		if (itemLess && data['key'] !== VERSION_KEY_DRAFT) {
 			throw new InvalidPayloadError({
 				reason: `"key" must be "${VERSION_KEY_DRAFT}" for versions not linked to an item`,
 			});
