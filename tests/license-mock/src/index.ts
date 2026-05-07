@@ -6,8 +6,10 @@ import type { License } from './licenses.js';
 import { activateRoute } from './routes/activate.js';
 import { deactivateRoute } from './routes/deactivate.js';
 import { licenseRoute } from './routes/license.js';
+import { portalRoute } from './routes/portal.js';
 import { previewRoute } from './routes/preview.js';
 import { refreshRoute } from './routes/refresh.js';
+import { updateRoute } from './routes/update.js';
 import { publicKey } from './token.js';
 
 export type { License };
@@ -18,11 +20,16 @@ const app = Fastify({
 
 app.withTypeProvider<TypeBoxTypeProvider>();
 
-app.register(previewRoute, { prefix: '/api/licenses/check' });
-app.register(activateRoute, { prefix: '/api/licenses/activate' });
-app.register(deactivateRoute, { prefix: '/api/licenses/deactivate' });
+// routes inteded to be utilized test setup
 app.register(licenseRoute, { prefix: '/admin/license' });
+
+// license server route mocks
+app.register(previewRoute, { prefix: '/api/licenses/preview' });
+app.register(activateRoute, { prefix: '/api/licenses/activate' });
+app.register(updateRoute, { prefix: '/api/licenses/update' });
+app.register(deactivateRoute, { prefix: '/api/licenses/deactivate' });
 app.register(refreshRoute, { prefix: '/api/licenses/refresh' });
+app.register(portalRoute, { prefix: '/api/licenses/portal' });
 
 app.get('/.well-known/jwks.json', async (_req, res) => {
 	return res.send({
