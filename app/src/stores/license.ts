@@ -9,6 +9,7 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import sdk from '@/sdk';
+import { useUserStore } from '@/stores/user';
 
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
@@ -110,6 +111,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	}
 
 	async function hydrate() {
+		// License endpoints are admin-only — skip silently for non-admin users.
+		if (!useUserStore().isAdmin) return;
+
 		loading.value = true;
 
 		try {
@@ -124,6 +128,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	}
 
 	async function hydrateAddons() {
+		if (!useUserStore().isAdmin) return;
+
 		loadingAddons.value = true;
 
 		try {
@@ -134,6 +140,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	}
 
 	async function hydratePendingResolution() {
+		if (!useUserStore().isAdmin) return;
+
 		loadingPendingResolution.value = true;
 
 		try {
