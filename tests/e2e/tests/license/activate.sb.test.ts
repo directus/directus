@@ -4,6 +4,7 @@ import { createDirectus, type DirectusClient, rest, type RestClient, staticToken
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
+import type { MockLicense } from '../../../mock-license-server/dist/index.js';
 
 let directus: Sandbox;
 let api: DirectusClient<any> & RestClient<any>;

@@ -1,11 +1,10 @@
 import { type LicenseInfoOutput, readLicense } from '@directus/license';
-import { type License as MockLicense } from '@directus/license-mock';
 import { sandbox } from '@directus/sandbox';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { describe, expect, test } from 'vitest';
-import { createLicense } from '../../../license-mock/dist/index.js';
+import { createLicense } from '../../../mock-license-server/dist/index.js';
 
 describe('initialization', () => {
 	test('Activate LICENSE_KEY (Case D)', async () => {
