@@ -98,4 +98,51 @@ describe('getItemRoute', async () => {
 		expect(getItemRoute(collection, primaryKey, null)).toBe(`${collectionRoute}/${primaryKey}`);
 		expect(getItemRoute(collection, primaryKey, undefined)).toBe(`${collectionRoute}/${primaryKey}`);
 	});
+
+	it('Returns route with version and versionId when primaryKey is "+" and both are provided', () => {
+		const primaryKey = '+';
+		const versionKey = 'draft';
+		const versionId = 'abc-123';
+
+		expect(getItemRoute(collection, primaryKey, versionKey, versionId)).toBe(
+		  `${collectionRoute}/+?version=${versionKey}&versionId=${versionId}`,
+		);
+	  });
+
+	  it('Returns route with only version when primaryKey is "+" and versionId is omitted', () => {
+		const primaryKey = '+';
+		const versionKey = 'draft';
+
+		expect(getItemRoute(collection, primaryKey, versionKey)).toBe(
+		  `${collectionRoute}/+?version=${versionKey}`,
+		);
+	  });
+
+	  it('Returns route with only version (no versionId) when primaryKey is not "+" even if versionId is provided', () => {
+		const primaryKey = 123;
+		const versionKey = 'draft';
+		const versionId = 'abc-123';
+
+		expect(getItemRoute(collection, primaryKey, versionKey, versionId)).toBe(
+		  `${collectionRoute}/${primaryKey}?version=${versionKey}`,
+		);
+	  });
+
+	  it('Returns base route when only versionId is provided without versionKey', () => {
+		const primaryKey = 123;
+		const versionId = 'abc-123';
+
+		expect(getItemRoute(collection, primaryKey, undefined, versionId)).toBe(
+		  `${collectionRoute}/${primaryKey}`,
+		);
+	  });
+
+	  it('Returns base route when primaryKey is "+" but only versionId is provided without versionKey', () => {
+		const primaryKey = '+';
+		const versionId = 'abc-123';
+
+		expect(getItemRoute(collection, primaryKey, undefined, versionId)).toBe(
+		  `${collectionRoute}/+`,
+		);
+	  });
 });

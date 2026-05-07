@@ -1,3 +1,4 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
@@ -9,7 +10,6 @@ import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { DRAFT_VERSION_KEY } from '@/constants';
 import { i18n } from '@/lang';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { analyzeTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
@@ -140,7 +140,7 @@ describe('Version selector', () => {
 
 		const wrapper = mount(VisualEditor, {
 			global,
-			props: { dynamicUrl: `https://example.com/?version=${DRAFT_VERSION_KEY}` },
+			props: { dynamicUrl: `https://example.com/?version=${VERSION_KEY_DRAFT}` },
 		});
 
 		const initialCount = wrapper.findAll('.v-list-item').length;
@@ -166,7 +166,7 @@ describe('Version selector', () => {
 		await wrapper.findAll('.v-list-item')[1]!.trigger('click');
 
 		const placement = analyzeTemplate(template);
-		const newUrl = replaceVersion(currentUrl, placement, DRAFT_VERSION_KEY);
+		const newUrl = replaceVersion(currentUrl, placement, VERSION_KEY_DRAFT);
 		expect(replaceSpy).toHaveBeenCalledWith(getUrlRoute(newUrl));
 	});
 });

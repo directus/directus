@@ -1,3 +1,4 @@
+import { VERSION_KEY_PUBLISHED, VERSION_KEY_PUBLISHED_LEGACY } from '@directus/constants';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
@@ -83,19 +84,35 @@ describe('Integration Tests', () => {
 			});
 		});
 
-		describe('read with version "main"', () => {
-			test('on readOne', async () => {
+		describe('read with published version key', () => {
+			test('on readOne with current key', async () => {
 				service.readByQuery = vi.fn(async () => [{ id: 1 }]);
 
-				await service.readOne(1, { version: 'main' });
+				await service.readOne(1, { version: VERSION_KEY_PUBLISHED });
 
 				expect(handleVersion).not.toHaveBeenCalled();
 			});
 
-			test('on readSingleton', async () => {
+			test('on readSingleton with current key', async () => {
 				service.readByQuery = vi.fn(async () => [{ id: 1 }]);
 
-				await service.readSingleton({ version: 'main' });
+				await service.readSingleton({ version: VERSION_KEY_PUBLISHED });
+
+				expect(handleVersion).not.toHaveBeenCalled();
+			});
+
+			test('on readOne with legacy key (backwards compat)', async () => {
+				service.readByQuery = vi.fn(async () => [{ id: 1 }]);
+
+				await service.readOne(1, { version: VERSION_KEY_PUBLISHED_LEGACY });
+
+				expect(handleVersion).not.toHaveBeenCalled();
+			});
+
+			test('on readSingleton with legacy key (backwards compat)', async () => {
+				service.readByQuery = vi.fn(async () => [{ id: 1 }]);
+
+				await service.readSingleton({ version: VERSION_KEY_PUBLISHED_LEGACY });
 
 				expect(handleVersion).not.toHaveBeenCalled();
 			});
