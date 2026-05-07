@@ -8,11 +8,11 @@ const ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 // where D is a constant
 // where X is based on the alphabet
 // where C is checksum of all Xes based on luhnChecksum
-function luhnChecksum(payload: string) {
+function luhnChecksum(payload: string): string {
 	let sum = 0;
 
 	for (let i = 0; i < payload.length; i++) {
-		const char = payload.at(-(1 + i))!;
+		const char = payload.at(-(1 + i)) as string;
 		const value = ALPHABET.indexOf(char);
 		const position = i + 1; // 1-indexed from the right of the payload
 
@@ -26,7 +26,7 @@ function luhnChecksum(payload: string) {
 	}
 
 	const remainder = sum % 32;
-	const expectedChecksumChar = ALPHABET[(32 - remainder) % 32];
+	const expectedChecksumChar = ALPHABET[(32 - remainder) % 32] as string;
 
 	return expectedChecksumChar;
 }
