@@ -1,10 +1,13 @@
 import { ForbiddenError } from '@directus/errors';
 import { Router } from 'express';
 import { DirectusMCP } from '../ai/mcp/index.js';
+import checkIsLocked from '../middleware/is-locked.js';
 import { SettingsService } from '../services/settings.js';
 import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
+
+router.use(checkIsLocked);
 
 const mcpHandler = asyncHandler(async (req, res) => {
 	const settings = new SettingsService({

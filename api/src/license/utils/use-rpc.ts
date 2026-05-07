@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { useBus } from '../bus/index.js';
+import { useBus } from '../../bus/index.js';
 
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 

@@ -41,3 +41,4 @@ export { ValueOutOfRangeError } from './value-out-of-range.js';
 export { ValueTooLongError } from './value-too-long.js';
 export { TimeoutError } from './timeout.js';
 export { LicenseImmutableError } from './license-immutable.js';
+export { ResourceRestrictedError } from './resource-restricted.js';

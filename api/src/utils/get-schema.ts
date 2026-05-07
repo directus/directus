@@ -127,8 +127,9 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	const collections = [
 		...(await database
-			.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
-			.from('directus_collections')),
+			.select('collection', 'singleton', 'note', 'sort_field', 'accountability', 'status')
+			.from('directus_collections')
+			.where('status', '=', 'active')),
 		...systemCollectionRows,
 	];
 

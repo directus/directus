@@ -20,7 +20,9 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 	const start = performance.now();
 	logger.info('Starting up Docker containers');
 
-	const extrasList = Object.entries(opts.extras)
+	const { license: _, ...extras } = opts.extras;
+
+	const extrasList = Object.entries(extras)
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 

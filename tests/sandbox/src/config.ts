@@ -20,6 +20,7 @@ const directusConfig = {
 	HOST: '127.0.0.1',
 	REDIS_HOST: '127.0.0.1',
 	REDIS_PORT: '$PORT',
+	LICENSE_PORT: '$PORT',
 } as const;
 
 const maria = {

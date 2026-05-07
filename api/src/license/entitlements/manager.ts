@@ -1,65 +1,64 @@
-import type { AppEntitlements, CountableEntitlementKey, 
+import { LimitExceededError, ResourceRestrictedError } from '@directus/errors';
+import type {
+	AppEntitlements,
+	CountableEntitlementKey,
 	EntitlementCheckResult,
+	EntitlementResolver,
 	Entitlements,
 	FeatureFlagCheckResult,
 	FeatureFlagEntitlementKey,
 	FeatureFlagValidator,
-	License,
 	NumericEntitlementKey,
-	UsageCounter } from '@directus/license';
-import { CORE_ENTITLEMENT_DEFAULTS, COUNTABLE_ENTITLEMENT_KEYS, FeatureFlagViolatedError, LimitExceededError  } from '@directus/license';
+	ResolveInput,
+	UsageCounter,
+} from '@directus/license';
+import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
+import { countActiveCollections, resolveCollections } from './lib/collections.js';
+import { checkCustomLLM } from './lib/custom_llms_enabled.js';
+import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
+import { countActiveFlows, resolveFlows } from './lib/flows.js';
+import { countActiveSeats, resolveSeats } from './lib/seats.js';
+import { checkUsersSSO, resolveSSOUsers } from './lib/sso_enabled.js';
 
-/**
- * Example:
- * 
- * Adding usage counter for "Seats" in the API
- * ```ts
- * import { entitlements } from '@directus/license'
- * 
- * // on startup
- * entitlements.registerCounter('seats', async () => {
- *   const userCounts = await fetchUserCount({
- *     knex: getDatabase()
- *   });
- * 
- *   return userCounts.admin + userCounts.app;
- * });
- * 
- * // in the users service
- * entitlements.assert('seats', { adding: 5 });
- * // throws error if adding 5 would pass the limit
- * // or call .check for non-throwing information
- * ```
- * 
- * Adding validator for "sso_enabled" in the API
- * ```ts
- * import { entitlements } from '@directus/license'
- * 
- * // on startup
- * entitlements.registerValidator('sso_enabled', async () => {
- *   const count_sso = // check the db for sso enabled users
- * 
- *   return count_sso > 0;
- * });
- * 
- * // in the users service when trying to enable sso on a user
- * entitlements.assert('sso_enabled');
- * // throws error if sso is disabled but there are users with it enabled
- * // or call .check for non-throwing information
- * ```
- */
+let entitlementManager: EntitlementManager | undefined;
 
+export function getEntitlementManager(): EntitlementManager {
+	if (!entitlementManager) {
+		entitlementManager = new EntitlementManager();
+	}
+
+	return entitlementManager;
+}
 
 export class EntitlementManager {
-	private entitlements: Entitlements = CORE_ENTITLEMENT_DEFAULTS;
+	private entitlements: Entitlements = CORE_LICENSE['entitlements'];
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
+	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
+
+	initialize() {
+		// countable limits
+		this.registerCounter('collections', countActiveCollections);
+		this.registerCounter('seats', countActiveSeats);
+		this.registerCounter('flows', countActiveFlows);
+
+		// features gates
+		this.registerValidator('sso_enabled', checkUsersSSO);
+		this.registerValidator('custom_llms_enabled', checkCustomLLM);
+		this.registerValidator('custom_permission_rules_enabled', checkCustomPermissionRules);
+
+		// resolvers
+		this.registerResolver('collections', resolveCollections);
+		this.registerResolver('seats', resolveSeats);
+		this.registerResolver('flows', resolveFlows);
+		this.registerResolver('sso_enabled', resolveSSOUsers);
+	}
 
 	/**
 	 * Replace the active license. Pass `null` to reset to the core license.
 	 */
-	setLicense(license: License | null): void {
-		this.entitlements = license?.entitlements ?? CORE_ENTITLEMENT_DEFAULTS;
+	setEntitlements(entitlements?: Entitlements | null): void {
+		this.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
 	}
 
 	/**
@@ -76,7 +75,7 @@ export class EntitlementManager {
 	 */
 	registerValidator(key: FeatureFlagEntitlementKey, validator: FeatureFlagValidator): void {
 		if (this.validatorSources.has(key)) {
-			throw new Error(`Validator already registered for entitlement "${String(key)}"`);
+			throw new Error(`Validator was already registered for entitlement "${String(key)}"`);
 		}
 
 		this.validatorSources.set(key, validator);
@@ -102,20 +101,21 @@ export class EntitlementManager {
 	 * uses them to adapt its UI (production indicator, powered-by branding).
 	 */
 	getAppEntitlements(): AppEntitlements {
-		const { production_enabled, display_powered_by } = this.entitlements;
+		const { production_enabled, display_powered_by, ai_translations_enabled } = this.entitlements;
 		return {
 			production_enabled: production_enabled.override ?? production_enabled.default,
+			ai_translations_enabled: ai_translations_enabled.override ?? ai_translations_enabled.default,
 			display_powered_by,
 		};
 	}
 
 	/**
 	 * Returns the effective hard limit (`limit + overage + addon`) for a numeric
-	 * entitlement, or `null` if any term is `-1` (unlimited, by convention).
+	 * entitlement with `-1` denoting unlimited
 	 */
-	getEntitlementLimit(key: NumericEntitlementKey): number | null {
+	getEntitlementLimit(key: NumericEntitlementKey): number {
 		const { limit, overage, addon } = this.entitlements[key];
-		if (limit === -1 || overage === -1 || addon === -1) return null;
+		if (limit === -1 || overage === -1 || addon === -1) return -1;
 		return limit + (overage ?? 0) + (addon ?? 0);
 	}
 
@@ -124,10 +124,21 @@ export class EntitlementManager {
 	 */
 	registerCounter(key: CountableEntitlementKey, source: UsageCounter): void {
 		if (this.counterSources.has(key)) {
-			throw new Error(`Usage source already registered for entitlement "${String(key)}"`);
+			throw new Error(`Counter was already registered for entitlement "${String(key)}"`);
 		}
 
 		this.counterSources.set(key, source);
+	}
+
+	/**
+	 * Wire up a resolver function for an entitlement.
+	 */
+	registerResolver<K extends keyof ResolveInput>(key: K, source: EntitlementResolver<K>) {
+		if (this.resolverSources.has(key)) {
+			throw new Error(`Resolver was already registered for entitlement "${String(key)}"`);
+		}
+
+		this.resolverSources.set(key, source as EntitlementResolver<any>);
 	}
 
 	/**
@@ -149,21 +160,18 @@ export class EntitlementManager {
 	 * limit / usage / remaining / allowed. For feature flags: returns the
 	 * validator's verdict (`valid`) and the license-side `entitled` state.
 	 */
-	check(
-		key: CountableEntitlementKey,
-		opts?: { adding?: number, removing?: number },
-	): Promise<EntitlementCheckResult>;
+	check(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<EntitlementCheckResult>;
 
 	check(key: FeatureFlagEntitlementKey): Promise<FeatureFlagCheckResult>;
 	async check(
 		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number, removing?: number },
+		opts?: { adding?: number; removing?: number },
 	): Promise<EntitlementCheckResult | FeatureFlagCheckResult> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
 
-			if (hardLimit === null) {
-				return { allowed: true, hardLimit: null, usage: 0, remaining: null };
+			if (hardLimit === -1) {
+				return { allowed: true, hardLimit: -1, usage: 0, remaining: null };
 			}
 
 			const usage = await this.getUsage(key);
@@ -181,41 +189,52 @@ export class EntitlementManager {
 	}
 
 	/**
-	 * Throws when an entitlement is being violated. Countable: throws
-	 * `LimitExceededError` when `usage + (adding ?? 0) > hardLimit`. Feature
-	 * flag: throws `FeatureFlagViolatedError` when the registered validator
-	 * reports the entitlement is broken.
+	 * Throws when an entitlement is being violated.
+	 *
+	 * Countable: throws `LimitExceededError` when `usage + (adding ?? 0) > hardLimit`
+	 * Feature flag: throws `ResourceRestrictedError` when its validator indicates invalid
 	 */
-	assert(key: CountableEntitlementKey, opts?: { adding?: number, removing?: number }): Promise<void>;
+	assert(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<void>;
 	assert(key: FeatureFlagEntitlementKey): Promise<void>;
-	async assert(
-		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number },
-	): Promise<void> {
+	async assert(key: CountableEntitlementKey | FeatureFlagEntitlementKey, opts?: { adding?: number }): Promise<void> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
-			if (hardLimit === null) return;
+			if (hardLimit === -1) return;
 
 			const usage = await this.getUsage(key);
 			const adding = opts?.adding ?? 0;
 
 			if (usage + adding > hardLimit) {
-				throw new LimitExceededError({ key, hardLimit, usage, adding });
+				throw new LimitExceededError({ category: key } /*{ key, hardLimit, usage, adding }*/);
 			}
 
 			return;
 		}
 
 		if (!(await this.isValid(key))) {
-			throw new FeatureFlagViolatedError({ key });
+			throw new ResourceRestrictedError({ category: key });
 		}
 	}
 
-	private isCountableKey(
-		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-	): key is CountableEntitlementKey {
+	/**
+	 * Apply a resolution payload to an entitlement by invoking its registered
+	 * resolver
+	 */
+	async resolve<K extends keyof ResolveInput>(
+		key: K,
+		input: NonNullable<ResolveInput[K]>,
+		ctx?: { adminId: string },
+	): Promise<void> {
+		const source = this.resolverSources.get(key);
+
+		if (!source) {
+			throw new Error(`No resolver registered for entitlement "${String(key)}"`);
+		}
+
+		await source(input, ctx);
+	}
+
+	private isCountableKey(key: CountableEntitlementKey | FeatureFlagEntitlementKey): key is CountableEntitlementKey {
 		return COUNTABLE_ENTITLEMENT_KEYS.includes(key as CountableEntitlementKey);
 	}
 }
-
-export const entitlementManager = new EntitlementManager();
