@@ -139,7 +139,7 @@ export class LicenseManager {
 						await this.activate(envKey);
 					} else if (envKey !== dbKey) {
 						// CASE B
-						await this.update(dbKey, { oldKey: envKey });
+						await this.update(envKey, { oldKey: dbKey });
 					} else {
 						// CASE C
 						await this.refresh({ key: envKey, token: dbToken ?? null });
