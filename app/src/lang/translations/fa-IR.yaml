@@ -615,7 +615,7 @@ functions:
   minute: دقیقه
   second: ثانیه
   count: تعداد
-date-fns_date: فرمت PPP برای تاریخ
+date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_time_24hour: 'HH:mm:ss'
