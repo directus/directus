@@ -109,10 +109,6 @@ defineExpose({
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : undefined"
 		@toggle="onToggle"
 	>
-		<VNotice v-if="revisionHistoryTimeframe !== null" type="info" icon="diamond" class="history-notice">
-			{{ $t('license.revisions_history_notice', { timeframe: revisionHistoryTimeframe }) }}
-		</VNotice>
-
 		<VProgressLinear v-if="!revisions && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">
@@ -133,6 +129,10 @@ defineExpose({
 			</template>
 			<VPagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 		</template>
+
+		<VNotice v-if="revisionHistoryTimeframe !== null" type="info" icon="diamond" class="history-notice">
+			{{ $t('license.revisions_history_notice', { timeframe: revisionHistoryTimeframe }) }}
+		</VNotice>
 
 		<ComparisonModal
 			v-model="comparisonModalActive"
@@ -191,6 +191,6 @@ defineExpose({
 .history-notice {
 	--v-notice-background-color: var(--theme--background-subdued);
 
-	margin-block-end: 0.875rem;
+	margin-block-start: 0.875rem;
 }
 </style>
