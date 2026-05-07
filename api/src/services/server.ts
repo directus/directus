@@ -9,7 +9,7 @@ import { merge } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
-import { getEntitlementManager } from '../license/index.js';
+import { getEntitlementManager, getLicenseManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
@@ -41,11 +41,13 @@ export class ServerService {
 
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
-		const setupComplete = await this.isSetupCompleted();
+		const licenseManager = getLicenseManager();
+		const isSetupCompleted = await this.isSetupCompleted();
 
-		const projectInfo = await this.settingsService.readSingleton({
+		const { project_owner, ...projectInfo } = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
+				'project_owner',
 				'project_descriptor',
 				'project_logo',
 				'project_color',
@@ -74,7 +76,12 @@ export class ServerService {
 
 		info['project'] = publicProjectInfo;
 
-		info['setupCompleted'] = setupComplete;
+		if (!isSetupCompleted) {
+			info['setup'] = {
+				license_complete: licenseManager.getSource() !== null,
+				owner_complete: Boolean(project_owner),
+			};
+		}
 
 		const licenseInEnv = Boolean(env['LICENSE_KEY']);
 		const adminInEnv = Boolean(env['ADMIN_EMAIL'] && env['ADMIN_PASSWORD']);
@@ -172,11 +179,17 @@ export class ServerService {
 			}
 		}
 
-		if (this.accountability?.user || !setupComplete) info['version'] = version;
+		if (this.accountability?.user || !isSetupCompleted) {
+			info['version'] = version;
+		}
 
+		// License
 		const entitlementManager = getEntitlementManager();
 
-		info['license'] = entitlementManager.getAppEntitlements();
+		info['license'] = {
+			source: licenseManager.getSource(),
+			entitlements: entitlementManager.getAppEntitlements(),
+		};
 
 		return info;
 	}

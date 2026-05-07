@@ -21,6 +21,7 @@ import {
 	updateAddonQuantity,
 	updateKey,
 } from '@directus/license';
+// LICENSE_MOCK shim to bypass real JWT verification for local dev/QA scenarios.
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
@@ -38,7 +39,6 @@ import { getLicenseKey } from './lib/get-license-key.js';
 import { getLicenseToken } from './lib/get-license-token.js';
 import { getStatus } from './utils/get-status.js';
 import { useRPC } from './utils/use-rpc.js';
-// LICENSE_MOCK shim to bypass real JWT verification for local dev/QA scenarios.
 import { verifyLicenseCompat as verifyLicense } from './verify-compat.js';
 
 const env = useEnv();
@@ -81,7 +81,7 @@ export class LicenseManager {
 	private licenseKey: string | null = null;
 	private licenseToken: string | null = null;
 	/** Where the key or token comes from */
-	private source: LicenseSource = null;
+	private source: LicenseSource = 'settings';
 	private rpc = useRPC<Pick<LicenseManager, 'refreshCache'>>(this, LICENSE_CHANNEL);
 	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
@@ -156,8 +156,6 @@ export class LicenseManager {
 
 					await store.set('status', getStatus(license));
 				} else if (dbKey) {
-					this.source = 'settings';
-
 					if (dbToken) {
 						// CASE F
 						await this.refresh({ key: dbKey, token: dbToken, skipStoreUpdate: true });
@@ -218,9 +216,6 @@ export class LicenseManager {
 	 * License addons is supported for all licenses aside from offline
 	 */
 	private assertCanManageAddons() {
-		// If both are null === initialization stage
-		if (this.licenseKey === null && this.licenseToken === null) return;
-
 		if (this.source === 'settings') return;
 		if (this.source === 'env' && this.licenseKey) return;
 
@@ -249,11 +244,10 @@ export class LicenseManager {
 
 	/**
 	 * Activates a new license and overwrites an existing one
-	 *
-	 * `skipStoreUpdate` is a temporary escape hatch used by initialize() to
-	 * avoid redlock re-entrance (initialize already holds the store lock).
 	 */
-	public async activate(key: string, options?: { skipStoreUpdate?: boolean }) {
+	public async activate(key: string) {
+		if (this.licenseKey || this.licenseToken) throw new ForbiddenError({ reason: 'A license was already activated' });
+
 		this.assertCanManageLicense();
 
 		let license: License | null = null;
@@ -284,11 +278,9 @@ export class LicenseManager {
 			await this.downgrade();
 			throw err;
 		} finally {
-			if (options?.skipStoreUpdate !== true) {
-				await this.store(async (store) => {
-					await store.set('status', getStatus(license, error));
-				});
-			}
+			await this.store(async (store) => {
+				await store.set('status', getStatus(license, error));
+			});
 		}
 	}
 
@@ -360,11 +352,8 @@ export class LicenseManager {
 
 	/**
 	 * Verifys a current token and refreshes it with a new token
-	 *
-	 * `skipStoreUpdate` is a temporary escape hatch used by initialize() to
-	 * avoid redlock re-entrance (initialize already holds the store lock).
 	 */
-	public async refresh(options?: { key: string; token?: string | null; skipStoreUpdate?: boolean }): Promise<void> {
+	public async refresh(options?: { key: string; token?: string | null }): Promise<void> {
 		const key = options?.key ?? this.licenseKey;
 		const token = options?.token ?? this.licenseToken;
 
@@ -422,11 +411,9 @@ export class LicenseManager {
 			}
 		}
 
-		if (options?.skipStoreUpdate !== true) {
-			await this.store(async (store) => {
-				await store.set('status', getStatus(license, error));
-			});
-		}
+		await this.store(async (store) => {
+			await store.set('status', getStatus(license, error));
+		});
 	}
 
 	public async billingPortalUrl() {

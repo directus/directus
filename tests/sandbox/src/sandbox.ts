@@ -152,7 +152,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 export const apiFolder = join(directusFolder, 'api');
 export const appFolder = join(directusFolder, 'app');
-export const licenseFolder = join(directusFolder, 'tests/license-mock');
+export const licenseFolder = join(directusFolder, 'tests/mock-license-server');
 
 export const databases: Database[] = [
 	'maria',
@@ -214,7 +214,7 @@ export async function sandboxes(
 					const project = await dockerUp(database, opts, env, logger);
 					if (project) projects.push({ project, logger, env });
 
-					await bootstrap(env, logger);
+					await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 					if (opts.knex) knex = createDatabase(env, logger);
 					await opts.hooks.beforeApi?.({ env, logger, knex });
@@ -275,7 +275,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		project = await dockerUp(database, opts, env, logger);
-		await bootstrap(env, logger);
+		await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		if (opts.knex) knex = createDatabase(env, logger);
 		await opts.hooks.beforeApi?.({ env, logger, knex });

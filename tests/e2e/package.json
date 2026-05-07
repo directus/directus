@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest --project sqlite",
-		"test:dev": "NODE_ENV=development DEV=true vitest --project sqlite",
+		"test:dev": "NODE_ENV=development vitest --project sqlite",
 		"test:all": "ALL=true vitest"
 	},
 	"keywords": [],
@@ -18,7 +18,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@directus/license-mock": "workspace:*",
+		"@directus/mock-license-server": "workspace:*",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"async-mutex": "catalog:",
