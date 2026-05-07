@@ -80,7 +80,7 @@ export class LicenseManager {
 	private licenseKey: string | null = null;
 	private licenseToken: string | null = null;
 	/** Where the key or token comes from */
-	private source: LicenseSource = null;
+	private source: LicenseSource = 'settings';
 	private rpc = useRPC<Pick<LicenseManager, 'refreshCache'>>(this, LICENSE_CHANNEL);
 	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
@@ -155,8 +155,6 @@ export class LicenseManager {
 
 					await store.set('status', getStatus(license));
 				} else if (dbKey) {
-					this.source = 'settings';
-
 					if (dbToken) {
 						// CASE F
 						await this.refresh({ key: dbKey, token: dbToken });
@@ -245,6 +243,8 @@ export class LicenseManager {
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
+		if (this.licenseKey || this.licenseToken) throw new ForbiddenError({ reason: 'A license was already activated' });
+
 		this.assertCanManageLicense();
 
 		let license: License | null = null;
