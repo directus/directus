@@ -3329,9 +3329,9 @@ importers:
 
   tests/e2e:
     devDependencies:
-      '@directus/license-mock':
+      '@directus/mock-license-server':
         specifier: workspace:*
-        version: link:../license-mock
+        version: link:../mock-license-server
       '@directus/sandbox':
         specifier: workspace:*
         version: link:../sandbox
@@ -3381,11 +3381,14 @@ importers:
         specifier: 'catalog:'
         version: 3.2.4(@types/node@22.13.14)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jiti@2.6.1)(jsdom@20.0.3)(lightningcss@1.32.0)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
-  tests/license-mock:
+  tests/mock-license-server:
     dependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 4.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@fastify/type-provider-typebox':
         specifier: 'catalog:'
         version: 6.1.0(typebox@1.1.37)
