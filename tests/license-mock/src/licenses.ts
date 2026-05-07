@@ -25,6 +25,8 @@ export const licenses: Record<string, License> = {
 		projects: [],
 		meta: {
 			name: 'UNLIMITED',
+			version: '1',
+			public_url: 'http://localhost',
 			grace_period: 60 * 60 * 24,
 			validation_interval: 60 * 60,
 			expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,

@@ -11,11 +11,13 @@ export const RefreshRequestBody = Type.Object(
 			{
 				seats: Type.Number(),
 				collections: Type.Number(),
+				flows: Type.Number(),
 			},
 			{
 				additionalProperties: false,
 			},
 		),
+		new_public_url: Type.Optional(Type.String({ minLength: 1 })),
 	},
 	{
 		additionalProperties: false,
@@ -34,13 +36,20 @@ export async function refreshRoute(app: FastifyInstance) {
 			},
 		},
 		async (req, res) => {
-			const license = licenses[req.headers.license_key];
+			const license_key = req.headers['directus-license-key'];
+			const project_id = req.headers['directus-project-id'];
+			const public_url = req.headers['directus-project-url'];
 
-			if (
-				!license ||
-				license.projects.every(({ id, url }) => id !== req.headers.license_key && url !== req.headers.public_url)
-			)
+			const license = licenses[license_key];
+
+			if (!license || license.projects.some(({ id, url }) => id === project_id && url === public_url)) {
 				return res.status(404).send(notFoundError('License not available'));
+			}
+
+			// Honor public_url change: replace the project entry with the new url
+			if (req.body.new_public_url) {
+				// TBD
+			}
 
 			return res.status(200).send({
 				token: await createNewToken(license),

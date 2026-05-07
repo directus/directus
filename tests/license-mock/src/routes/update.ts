@@ -24,7 +24,9 @@ export async function updateRoute(app: FastifyInstance) {
 			},
 		},
 		async (req, res) => {
-			const { license_key, project_id, public_url } = req.headers;
+			const license_key = req.headers['directus-license-key'];
+			const project_id = req.headers['directus-project-id'];
+			const public_url = req.headers['directus-project-url'];
 
 			const old_license = Object.values(licenses).find(
 				(license) =>
@@ -38,8 +40,13 @@ export async function updateRoute(app: FastifyInstance) {
 					license.projects.every(({ id, url }) => id !== project_id && url !== public_url),
 			);
 
-			if (!old_license) return res.status(400).send(forbiddenError('Old License not found'));
-			if (!new_license) return res.status(400).send(forbiddenError('New License not found'));
+			if (!old_license) {
+				return res.status(400).send(forbiddenError('Old License not found'));
+			}
+
+			if (!new_license) {
+				return res.status(400).send(forbiddenError('New License not found'));
+			}
 
 			old_license.projects = old_license.projects.filter(({ id, url }) => id !== project_id || url !== public_url);
 			new_license.projects.push({ id: project_id, url: public_url });
