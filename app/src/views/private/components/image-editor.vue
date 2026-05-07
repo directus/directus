@@ -639,7 +639,6 @@ function setAspectRatio() {
 				:label="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
-				:split-menu-disabled="!hasEdits"
 				icon="check"
 				@click="save"
 			>

@@ -64,8 +64,6 @@ export interface VButtonProps {
 	xLarge?: boolean;
 	/** Tooltip text to show on hover */
 	tooltip?: string;
-	/** Disables the split-menu dropdown button */
-	splitMenuDisabled?: boolean;
 }
 
 export interface VButtonEmits {
@@ -198,7 +196,7 @@ async function onClick(event: MouseEvent) {
 						},
 						kind,
 					]"
-					:disabled="splitMenuDisabled"
+					:disabled="disabled"
 					:aria-label="$t('aria.more_options')"
 					@click.stop="toggleSplitMenu"
 				>

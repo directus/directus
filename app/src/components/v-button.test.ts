@@ -50,14 +50,14 @@ const splitMenuGlobal = () => ({
 	},
 });
 
-test('disables split-menu button when splitMenuDisabled is true', () => {
+test('disables split-menu button when button is disabled', () => {
 	const wrapper = mount(VButton, {
 		global: splitMenuGlobal(),
 		slots: {
 			'split-menu': '<div>Menu item</div>',
 		},
 		props: {
-			splitMenuDisabled: true,
+			disabled: true,
 		},
 	});
 
