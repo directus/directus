@@ -1,6 +1,12 @@
 import type { Query } from '@directus/types';
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import { extractPathsFromQuery } from './extract-paths-from-query.js';
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		MAX_JSON_QUERY_DEPTH: 10,
+	}),
+}));
 
 test('Returns empty lists when query does not contain filter sort or aggregate', () => {
 	expect(extractPathsFromQuery({})).toEqual({ paths: [], readOnlyPaths: [] });
@@ -91,4 +97,63 @@ test('Does not include wildcard field from aggregate', () => {
 	};
 
 	expect(extractPathsFromQuery(query).paths).toEqual([]);
+});
+
+test('Extracts underlying field from json() sort expression', () => {
+	const query: Query = {
+		sort: ['json(metadata, color)'],
+	};
+
+	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+});
+
+test('Extracts underlying field from descending json() sort expression', () => {
+	const query: Query = {
+		sort: ['-json(metadata, color)'],
+	};
+
+	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+});
+
+test('Extracts underlying field from json() sort with dotted path', () => {
+	const query: Query = {
+		sort: ['json(metadata, dimensions.width)'],
+	};
+
+	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+});
+
+test('Resolves alias to json() expression and extracts underlying field', () => {
+	const query: Query = {
+		sort: ['my_color'],
+		alias: { my_color: 'json(metadata, color)' },
+	};
+
+	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+});
+
+test('Resolves descending alias to json() expression and extracts underlying field', () => {
+	const query: Query = {
+		sort: ['-my_color'],
+		alias: { my_color: 'json(metadata, color)' },
+	};
+
+	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
+});
+
+test('Resolves non-json alias to the target field name', () => {
+	const query: Query = {
+		sort: ['label'],
+		alias: { label: 'name' },
+	};
+
+	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['name']]);
+});
+
+test('Deduplicates when multiple json() sort expressions resolve to the same field', () => {
+	const query: Query = {
+		sort: ['json(metadata, color)', 'json(metadata, size)'],
+	};
+
+	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['metadata']]);
 });
