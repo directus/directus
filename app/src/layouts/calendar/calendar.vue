@@ -76,14 +76,4 @@ const atLimit = computed(() => {
 .v-notice {
 	margin-block-end: 1.375rem;
 }
-
-:deep(.fc-header-toolbar) {
-	overflow-x: auto;
-	flex-wrap: nowrap;
-
-	.fc-toolbar-chunk {
-		flex-shrink: 0;
-		white-space: nowrap;
-	}
-}
 </style>
