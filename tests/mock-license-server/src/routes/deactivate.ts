@@ -26,7 +26,7 @@ export async function deactivateRoute(app: FastifyInstance) {
 
 			license.projects = license.projects.filter(({ id, url }) => id !== project_id || url !== public_url);
 
-			return res.status(204);
+			return res.status(204).send();
 		},
 	);
 }
