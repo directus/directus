@@ -31,6 +31,10 @@ vi.mock('@/utils/push-group-options-down', () => ({
 	pushGroupOptionsDown: vi.fn(() => []),
 }));
 
+vi.mock('@/utils/unexpected-error', () => ({
+	unexpectedError: vi.fn(),
+}));
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
