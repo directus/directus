@@ -1,6 +1,6 @@
 {
 	"name": "@directus/visual-editing",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Visual editing library to enable in-place editing of your website’s frontend from within the Visual Editor in Directus",
 	"homepage": "https://directus.io/docs/guides/content/visual-editor",
 	"repository": {

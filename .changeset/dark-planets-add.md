@@ -2,6 +2,7 @@
 '@directus/api': minor
 '@directus/sdk': minor
 '@directus/types': patch
+'@directus/utils': patch
 ---
 
-Added a force option to schema apply to bypass hash check
+Added JSON filtering, alias and sorting support
