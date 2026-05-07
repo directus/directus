@@ -120,8 +120,9 @@ const licenseStore = useLicenseStore();
 const seatsLimitModalOpen = ref(false);
 
 const canSaveNewUser = computed(() => {
-	if (!isNew.value) return true;
-	return licenseStore.hasRemainingSeats;
+	return true;
+	// if (!isNew.value) return true;
+	// return licenseStore.hasRemainingSeats;
 });
 
 watchEffect(() => {
@@ -203,6 +204,7 @@ async function saveAndQuit() {
 }
 
 async function saveAndStay() {
+
 	if (!canSaveNewUser.value) return;
 
 	try {
