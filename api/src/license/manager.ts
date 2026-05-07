@@ -101,6 +101,9 @@ export class LicenseManager {
 	 */
 	public async initialize(): Promise<void> {
 		const existingStore = this.store;
+			
+		const entitlementManager = getEntitlementManager();
+		entitlementManager.initialize();
 
 		try {
 			// Lock the whole store for the entirety of initialization
@@ -168,9 +171,6 @@ export class LicenseManager {
 			});
 		} finally {
 			this.store = existingStore;
-			// Register entitlement enforcement for all instances
-			const entitlementManager = getEntitlementManager();
-			entitlementManager.initialize();
 		}
 	}
 
@@ -397,8 +397,9 @@ export class LicenseManager {
 				license = await verifyLicense(token);
 			} catch (err) {
 				error = err as Error;
+				console.error(err);
 				// TODO: Should not clear when license API unavailable
-				await this.downgrade();
+				// await this.downgrade();
 			}
 		}
 
