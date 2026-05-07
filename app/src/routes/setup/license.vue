@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import { SetupForm } from '@directus/types';
-import { defaultValues, useLicenseFields } from './form';
+import { computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { defaultValues, useKycFields, useLicenseFields } from './form';
 import VButton from '@/components/v-button.vue';
-import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import VRadioCards from '@/components/v-radio-cards.vue';
+import { useLicenseForm } from '@/composables/use-license-form';
+import { useServerStore } from '@/stores/server';
+
+const { t } = useI18n();
 
 withDefaults(
 	defineProps<{
-		register?: boolean;
 		modelValue?: Partial<SetupForm>;
 		initialValues?: SetupForm;
 	}>(),
 	{
-		register: true,
 		initialValues: () => defaultValues,
 		modelValue: () => ({}),
 	},
@@ -21,27 +25,88 @@ withDefaults(
 
 const value = defineModel<SetupForm>();
 
-const fields = useLicenseFields();
+const licenseFields = useLicenseFields();
+const kycFields = useKycFields();
+const serverStore = useServerStore();
+
+const { licenseChoice, showOrgName, licenseChoices, canProceed } = useLicenseForm({
+	projectUsage: () => value.value?.project_usage,
+	orgName: () => value.value?.org_name,
+	isLicenseKeyValid: () => !!value.value?.license_key,
+	initialChoice: value.value?.license_key ? 'key' : null,
+});
+
+watch(licenseChoice, (choice) => {
+	if (!value.value) return;
+
+	if (choice === 'key') {
+		value.value = { ...value.value, project_usage: null, org_name: null };
+	} else {
+		value.value = { ...value.value, license_key: null };
+	}
+});
+
+watch(
+	() => value.value?.project_usage,
+	(usage, prev) => {
+		if (prev === 'commercial' && usage !== 'commercial' && value.value) {
+			value.value = { ...value.value, org_name: null };
+		}
+	},
+);
+
+const visibleKycFields = computed(() =>
+	showOrgName.value ? kycFields.value : kycFields.value.filter((f) => f.field !== 'org_name'),
+);
+
+// VForm.setValue uses selectiveClone which only keeps fields it knows about, so binding
+// v-model directly to the full parent form would wipe admin fields on any KYC interaction.
+// These slice computeds merge field-specific updates back into the full form instead.
+const licenseKeySlice = computed({
+	get: () => ({ license_key: value.value?.license_key ?? null }),
+	set: (update: Partial<SetupForm>) => {
+		if (value.value) value.value = { ...value.value, ...update };
+	},
+});
+
+const kycSlice = computed({
+	get: () => ({ project_usage: value.value?.project_usage ?? null, org_name: value.value?.org_name ?? null }),
+	set: (update: Partial<SetupForm>) => {
+		if (value.value) value.value = { ...value.value, ...update };
+	},
+});
+
+defineExpose({ canProceed });
 </script>
 
 <template>
 	<div class="license-form">
+		<VRadioCards v-model="licenseChoice" :items="licenseChoices" />
+
 		<VForm
-			v-model="value"
-			:initial-values="initialValues"
+			v-if="licenseChoice === 'key'"
+			v-model="licenseKeySlice"
 			:show-validation-errors="false"
-			:fields="fields"
+			:fields="licenseFields"
 			disabled-menu
-		></VForm>
+		/>
 
-		<VDivider center>
-			<span class="license-key-or">{{ $t('or') }}</span>
-		</VDivider>
+		<VForm
+			v-else-if="licenseChoice === 'core'"
+			v-model="kycSlice"
+			:show-validation-errors="false"
+			:fields="visibleKycFields"
+			disabled-menu
+		/>
 
-		<div class="get-license-key">
+		<div v-if="licenseChoice === 'key'" class="get-license-key">
 			{{ $t('no_license_key') }}
-			<VButton secondary>
-				<VIcon name="key"></VIcon>
+			<VButton
+				secondary
+				:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${serverStore.info.version}&utm_content=onboarding_get_license_link`"
+				target="_blank"
+			>
+				<VIcon name="key" />
 				{{ $t('get_license_key') }}
 			</VButton>
 		</div>
@@ -52,20 +117,11 @@ const fields = useLicenseFields();
 .license-form {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
+	gap: 1.8125rem;
 }
 
 .v-form {
 	--theme--form--row-gap: 1.8125rem;
-}
-
-.v-divider {
-	margin-block: 1.8125rem;
-}
-
-.license-key-or {
-	color: var(--theme--foreground-subdued);
-	text-transform: lowercase;
-	font-weight: 500;
 }
 
 .get-license-key {

@@ -12,6 +12,7 @@ export const SetupValidator = z.object({
 	project_owner: z.email(),
 	password: z.string().min(1),
 	password_confirm: z.string().min(1),
+	license: z.literal(true),
 });
 
 export const FormValidator = z.object({
@@ -34,6 +35,8 @@ export const defaultValues: SetupForm = {
 	license: false,
 	license_key: null,
 	product_updates: false,
+	project_usage: null,
+	org_name: null,
 };
 
 export type ValidationError = Omit<FailedValidationErrorExtensions, 'type'> & { type: string };
@@ -132,6 +135,43 @@ export function useSetupFields(register: MaybeRef<boolean>): ComputedRef<Field[]
 
 		return fields as Field[];
 	});
+}
+
+export function useKycFields(): ComputedRef<Field[]> {
+	const { t } = useI18n();
+
+	return computed(
+		() =>
+			[
+				{
+					field: 'project_usage',
+					name: t('project_usage'),
+					meta: {
+						interface: 'select-dropdown',
+						width: 'full',
+						options: {
+							choices: [
+								{ text: t('project_usage_personal'), value: 'personal' },
+								{ text: t('project_usage_commercial'), value: 'commercial' },
+								{ text: t('project_usage_nonprofit'), value: 'nonprofit' },
+								{ text: t('project_usage_education'), value: 'education' },
+							],
+						},
+					},
+				},
+				{
+					field: 'org_name',
+					name: t('org_name'),
+					meta: {
+						interface: 'input',
+						width: 'full',
+						options: {
+							placeholder: t('org_name_placeholder'),
+						},
+					},
+				},
+			] as unknown as Field[],
+	);
 }
 
 export function useLicenseFields(): ComputedRef<Field[]> {

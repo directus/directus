@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import { useSetupFields, validate } from './form';
+import { useKycFields, useSetupFields, validate } from './form';
 
 vi.mock('@/stores/relations', () => ({
 	useRelationsStore: () => ({
@@ -82,4 +82,9 @@ test('validate with unequal password', () => {
 			type: 'confirm_password',
 		},
 	]);
+});
+
+test('useKycFields returns usage and org_name fields', () => {
+	const result = useKycFields();
+	expect(result.value.map((f) => f.field)).toEqual(['project_usage', 'org_name']);
 });

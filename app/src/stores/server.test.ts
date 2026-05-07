@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
-import { Auth, Info, useServerStore } from './server';
+import { Auth, useServerStore } from './server';
 import api, * as apiFunctions from '@/api';
 
 beforeEach(() => {
@@ -13,7 +13,7 @@ beforeEach(() => {
 	);
 });
 
-const mockServerInfo: Info = {
+const mockServerInfo = {
 	project: {
 		project_name: 'Directus',
 		project_descriptor: null,
@@ -33,6 +33,7 @@ const mockServerInfo: Info = {
 		public_registration: null,
 		public_registration_verify_email: null,
 	},
+	onboarding: null,
 };
 
 const mockAuthProviders: Auth['providers'] = [
@@ -77,7 +78,8 @@ describe('hydrate action', async () => {
 		const serverStore = useServerStore();
 		await serverStore.hydrate();
 
-		expect(serverStore.info).toEqual(mockServerInfo);
+		expect(serverStore.info.project).toEqual(mockServerInfo.project);
+		expect(serverStore.info.onboarding).toEqual(mockServerInfo.onboarding);
 	});
 
 	test('should hydrate auth', async () => {

@@ -2,10 +2,10 @@
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { defaultValues, FormValidator, SetupValidator, useSetupFields, validate, ValidationError } from './form';
+import { defaultValues, SetupValidator, useSetupFields, validate, ValidationError } from './form';
 import SetupForm from './form.vue';
 import LicenseForm from './license.vue';
 import api from '@/api';
@@ -25,6 +25,7 @@ useHead({
 const { info } = storeToRefs(useServerStore());
 
 const form = ref<Form>(defaultValues);
+const licenseFormRef = ref<InstanceType<typeof LicenseForm> | null>(null);
 const router = useRouter();
 
 const fields = useSetupFields(true);
@@ -33,23 +34,44 @@ const error = ref<any>(null);
 const isSaving = ref(false);
 const page = ref<'setup' | 'license'>('setup');
 
-async function launch() {
-	errors.value = validate(form.value, fields, true);
+const showAdminStep = computed(() => !info.value.onboarding?.adminInEnv);
 
-	if (errors.value.length > 0) return;
+const showLicenseStep = computed(() => !info.value.onboarding?.licenseInEnv);
+
+onMounted(() => {
+	if (!showAdminStep.value && !showLicenseStep.value) {
+		router.replace('/content');
+	} else if (!showAdminStep.value && showLicenseStep.value) {
+		page.value = 'license';
+	}
+});
+
+async function launch() {
+	if (showAdminStep.value) {
+		if (!form.value.license) return;
+
+		errors.value = validate(form.value, fields, true);
+		if (errors.value.length > 0) return;
+	}
+
+	if (showLicenseStep.value && !licenseFormRef.value?.canProceed) return;
 
 	try {
 		isSaving.value = true;
 		await api.post('server/setup', form.value);
 
-		await login({
-			credentials: {
-				email: form.value.project_owner!,
-				password: form.value.password!,
-			},
-		});
+		if (showAdminStep.value) {
+			await login({
+				credentials: {
+					email: form.value.project_owner!,
+					password: form.value.password!,
+				},
+			});
 
-		router.push('/content');
+			router.push('/content');
+		} else {
+			router.push('/login');
+		}
 	} catch (err: any) {
 		error.value = err;
 	} finally {
@@ -62,22 +84,20 @@ const errorMessage = computed(() => {
 });
 
 const setupComplete = computed(() => SetupValidator.safeParse(form.value).success);
-const formComplete = computed(() => FormValidator.safeParse(form.value).success);
-const licenseComplete = computed(() => formComplete.value && form.value.license_key);
 </script>
 
 <template>
 	<PublicView wide>
 		<h1>{{ $t('setup_welcome') }}</h1>
 
-		<template v-if="page === 'setup'">
+		<template v-if="page === 'setup' && showAdminStep">
 			<p>{{ $t('setup_info') }}</p>
 			<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
-			<VButton full-width secondary :disabled="!setupComplete" @click="page = 'license'">
-				{{ $t('continue') }}
+			<VButton full-width secondary :disabled="!setupComplete" @click="showLicenseStep ? (page = 'license') : launch()">
+				{{ showLicenseStep ? $t('continue') : $t('setup_launch') }}
 			</VButton>
 		</template>
-		<template v-else>
+		<template v-if="page === 'license' && showLicenseStep">
 			<I18nT keypath="setup_license_key_notice" tag="p">
 				<template #oig>
 					<a
@@ -89,13 +109,13 @@ const licenseComplete = computed(() => formComplete.value && form.value.license_
 				</template>
 			</I18nT>
 
-			<LicenseForm v-model="form" :errors="errors"></LicenseForm>
+			<LicenseForm ref="licenseFormRef" v-model="form" :errors="errors"></LicenseForm>
 			<div class="actions">
-				<VButton secondary @click="page = 'setup'">
+				<VButton v-if="showAdminStep" secondary @click="page = 'setup'">
 					{{ $t('back') }}
 				</VButton>
-				<VButton :secondary="!licenseComplete" :loading="isSaving" @click="launch()">
-					{{ licenseComplete ? $t('setup_launch') : $t('skip') }}
+				<VButton :disabled="!licenseFormRef?.canProceed" :loading="isSaving" @click="launch()">
+					{{ $t('setup_launch') }}
 				</VButton>
 			</div>
 		</template>
