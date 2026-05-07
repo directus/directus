@@ -240,9 +240,12 @@ export class LicenseManager {
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
-		if (this.licenseKey || this.licenseToken) throw new ForbiddenError({ reason: 'A license was already activated' });
-
 		this.assertCanManageLicense();
+
+		// Keys cannot be directly activated if one is already active, must go via update route
+		if (this.licenseKey) {
+			throw new ForbiddenError({ reason: 'A license was already activated' });
+		}
 
 		let license: License | null = null;
 		let error: Error | undefined;
