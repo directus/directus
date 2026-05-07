@@ -33,7 +33,7 @@ const isVisible = computed(() => !dismissed.value && isAtCapacity.value);
 
 <style scoped>
 .max-capacity-alert {
-	margin-bottom: 2.25rem;
+	margin-block-end: 2.25rem;
 }
 
 .max-capacity-alert :deep(.v-notice-title) {

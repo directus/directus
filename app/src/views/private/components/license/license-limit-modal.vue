@@ -13,7 +13,6 @@ const props = defineProps<{
 	modelValue: boolean;
 	type: 'collections' | 'seats';
 	isAdmin?: boolean;
-	persistent?: boolean;
 	onSave?: () => void;
 }>();
 
@@ -52,12 +51,7 @@ function handleSave() {
 </script>
 
 <template>
-	<VDialog
-		:model-value="modelValue"
-		:persistent="persistent"
-		@update:model-value="$emit('update:modelValue', $event)"
-		@esc="close"
-	>
+	<VDialog :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" @esc="close">
 		<VCard>
 			<VCardTitle>{{ $t(titleKey) }}</VCardTitle>
 

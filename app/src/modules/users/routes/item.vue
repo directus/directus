@@ -58,10 +58,13 @@ async function saveAsDeactivated() {
 	edits.value = { ...edits.value, status: 'deactivated-license-exceeded' };
 
 	try {
-		const savedItem: Record<string, any> = await save();
-		await setLang(savedItem);
-		await refreshCurrentUser();
-		router.push({ name: 'users-active' });
+		const savedItem = await save();
+
+		if (savedItem) {
+			await setLang(savedItem);
+			await refreshCurrentUser();
+			router.push({ name: 'users-active' });
+		}
 	} catch {
 		// `save` will show unexpected error dialog
 	}

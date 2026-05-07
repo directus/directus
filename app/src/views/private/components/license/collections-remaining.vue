@@ -37,9 +37,6 @@ const variant = computed(() => (licenseStore.collectionsRemaining === 0 ? 'dange
 	border-radius: 9999px;
 	font-weight: 600;
 	font-size: 0.8125rem;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 	flex-shrink: 0;
 
 	&.warning {
