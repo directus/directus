@@ -12,7 +12,8 @@ import { refreshRoute } from './routes/refresh.js';
 import { updateRoute } from './routes/update.js';
 import { publicKey } from './token.js';
 
-export type { License };
+export type { License as MockLicense };
+export { generateKey, createLicense } from './utils.js';
 
 const app = Fastify({
 	logger: true,
