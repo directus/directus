@@ -116,6 +116,15 @@ describe('Component', () => {
 				expect(search.classes()).not.toContain('active');
 				expect(search.classes()).not.toContain('filter-active');
 			});
+
+			it('should stay open when focusout has no relatedTarget while filter is active (drag operation)', async () => {
+				wrapper.find('input').element.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
+
+				await wrapper.vm.$nextTick();
+
+				expect(search.classes()).toContain('active');
+				expect(search.classes()).toContain('filter-active');
+			});
 		});
 
 		describe('when focus moves into v-menu-content', () => {
