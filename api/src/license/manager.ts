@@ -211,9 +211,6 @@ export class LicenseManager {
 	 * License addons is supported for all licenses aside from offline
 	 */
 	private assertCanManageAddons() {
-		// If both are null === initialization stage
-		if (this.licenseKey === null && this.licenseToken === null) return;
-
 		if (this.source === 'settings') return;
 		if (this.source === 'env' && this.licenseKey) return;
 
