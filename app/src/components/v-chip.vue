@@ -6,10 +6,6 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 interface Props {
 	/** Model the active state */
 	active?: boolean;
-	/** Displays a close icon which triggers the close event */
-	close?: boolean;
-	/** Which icon should be displayed to close it */
-	closeIcon?: string;
 	/** Styling of the chip */
 	kind?: 'primary' | 'secondary' | 'neutral' | 'success' | 'warning' | 'danger' | 'info';
 	/** No background */
@@ -28,6 +24,10 @@ interface Props {
 	large?: boolean;
 	/** Renders a larger chip */
 	xLarge?: boolean;
+	/** @deprecated Use the default slot instead */
+	close?: boolean;
+	/** @deprecated Use the default slot instead */
+	closeIcon?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -90,6 +90,7 @@ function onCloseClick(event: MouseEvent) {
 	>
 		<span class="chip-content">
 			<slot />
+
 			<span v-if="close" class="close-outline" :class="{ disabled }" @click.stop="onCloseClick">
 				<VIcon class="close" :name="closeIcon" x-small />
 			</span>
@@ -112,10 +113,12 @@ function onCloseClick(event: MouseEvent) {
 		--v-chip-background-color-hover  [var(--v-chip-background-color)]
 		--v-chip-border-color            [var(--v-chip-background-color)]
 		--v-chip-border-color-hover      [var(--v-chip-background-color-hover)]
-		--v-chip-close-color             []
-		--v-chip-close-color-disabled    []
-		--v-chip-close-color-hover       []
 		--v-chip-padding                 [0 0.4375rem]
+
+		Deprecated Variables:
+		--v-chip-close-color             [var(--theme--danger)]
+		--v-chip-close-color-hover       [var(--theme--danger-accent)]
+		--v-chip-close-color-disabled    [var(--v-chip-background-color)]
 
 */
 
@@ -207,6 +210,7 @@ function onCloseClick(event: MouseEvent) {
 		align-items: center;
 		white-space: nowrap;
 
+		/** @deprecated Use the default slot instead */
 		.close-outline {
 			position: relative;
 			inset-inline-end: -0.25rem;
@@ -216,15 +220,15 @@ function onCloseClick(event: MouseEvent) {
 			inline-size: 0.8125rem;
 			block-size: 0.8125rem;
 			margin-inline-start: 0.25rem;
-			background-color: var(--v-chip-close-color);
+			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 0.5625rem;
 
 			&:not(.disabled):hover {
-				background-color: var(--v-chip-close-color-hover);
+				background-color: var(--v-chip-close-color-hover, var(--theme--danger-accent));
 			}
 
 			&.disabled {
-				background-color: var(--v-chip-close-color-disabled);
+				background-color: var(--v-chip-close-color-disabled, var(--v-chip-background-color));
 			}
 		}
 	}
