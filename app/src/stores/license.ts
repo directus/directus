@@ -78,6 +78,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	});
 
 	const isEnterprise = computed(() => info.value?.plan === 'enterprise');
+	const isTeam = computed(() => info.value?.plan === 'team');
 
 	function clearTimer() {
 		if (refreshTimer) {
@@ -182,6 +183,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		needsResolution,
 		customLLMEnabled,
 		isEnterprise,
+		isTeam,
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,

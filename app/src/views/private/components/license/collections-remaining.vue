@@ -3,10 +3,21 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLicenseStore } from '@/stores/license';
 
+const COLLECTIONS_REMAINING_THRESHOLD_DEFAULT = 5;
+const COLLECTIONS_REMAINING_THRESHOLD_TEAM_ENTERPRISE = 10;
+
 const { t } = useI18n();
 const licenseStore = useLicenseStore();
 
-const show = computed(() => licenseStore.collectionsRemaining !== null && licenseStore.collectionsRemaining <= 5);
+const threshold = computed(() =>
+	licenseStore.isTeam || licenseStore.isEnterprise
+		? COLLECTIONS_REMAINING_THRESHOLD_TEAM_ENTERPRISE
+		: COLLECTIONS_REMAINING_THRESHOLD_DEFAULT,
+);
+
+const show = computed(
+	() => licenseStore.collectionsRemaining !== null && licenseStore.collectionsRemaining <= threshold.value,
+);
 
 const label = computed(() =>
 	t('license.collections_remaining', { n: licenseStore.collectionsRemaining }, licenseStore.collectionsRemaining ?? 0),
