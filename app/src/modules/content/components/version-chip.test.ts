@@ -6,7 +6,7 @@ import { DRAFT_VERSION_KEY } from '@/constants';
 const mountOptions = {
 	global: {
 		stubs: {
-			VChip: { template: '<button class="v-chip"><slot /></button>' },
+			VChip: { props: ['kind'], template: '<button class="v-chip" :class="kind"><slot /></button>' },
 			VIcon: { template: '<span class="v-icon" />' },
 			VTextOverflow: { template: '<span class="v-text-overflow" />' },
 		},
@@ -29,25 +29,13 @@ describe('VersionChip', () => {
 			expect(wrapper.classes()).toContain('secondary');
 		});
 
-		it('uses normal for any other version key', () => {
+		it('uses neutral for any other version key', () => {
 			const wrapper = mount(VersionChip, {
 				...mountOptions,
 				props: { version: { key: 'my-version', name: 'My Version' } },
 			});
 
-			expect(wrapper.classes()).toContain('normal');
-		});
-	});
-
-	describe('active prop', () => {
-		it('applies active class when active is true', () => {
-			const wrapper = mount(VersionChip, { ...mountOptions, props: { version: null, active: true } });
-			expect(wrapper.classes()).toContain('active');
-		});
-
-		it('does not apply active class when active is omitted', () => {
-			const wrapper = mount(VersionChip, { ...mountOptions, props: { version: null } });
-			expect(wrapper.classes()).not.toContain('active');
+			expect(wrapper.classes()).toContain('neutral');
 		});
 	});
 
@@ -56,7 +44,7 @@ describe('VersionChip', () => {
 		expect(wrapper.classes()).toContain('primary');
 
 		await wrapper.setProps({ version: { key: 'my-version', name: 'My Version' } });
-		expect(wrapper.classes()).toContain('normal');
+		expect(wrapper.classes()).toContain('neutral');
 		expect(wrapper.classes()).not.toContain('primary');
 	});
 });

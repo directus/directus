@@ -33,4 +33,22 @@
 	.alt-colors {
 		--background-subdued: var(--theme--background);
 	}
+
+	// Dimmed variants
+	--primary-dimmed: #e2dbff;
+	--secondary-dimmed: #ffdbf4;
+	--neutral-dimmed: var(--theme--background-accent);
+	--success-dimmed: #c1f0e5;
+	--warning-dimmed: #fbe5c8;
+	--danger-dimmed: #f0cdd2;
+	--info-dimmed: #c2e1ff;
+
+	// On dimmed variants
+	--primary-ondimmed: var(--primary-125);
+	--secondary-ondimmed: #b82888;
+	--neutral-ondimmed: var(--theme--foreground);
+	--success-ondimmed: #19715b;
+	--warning-ondimmed: #955500;
+	--danger-ondimmed: #b41d35;
+	--info-ondimmed: #0063c7;
 }
