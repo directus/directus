@@ -103,18 +103,12 @@ export class LicenseManager {
 		const existingStore = this.store;
 
 		try {
-			// Register entitlement enforcement for all instances
-			const entitlementManager = getEntitlementManager();
-			entitlementManager.initialize();
-
 			// Lock the whole store for the entirety of initialization
 			await this.store(async (store) => {
 				// Replace existing store temporarely to avoid deadlocks
 				this.store = (cb) => {
 					return cb(store);
 				};
-
-				if (await store.get('initialized')) return;
 
 				const envKey = env['LICENSE_KEY'] as string | undefined;
 				const envToken = env['LICENSE_TOKEN'] as string | undefined;
@@ -171,11 +165,12 @@ export class LicenseManager {
 					// CASE H tail / CASE I — core license
 					await store.set('status', 'active');
 				}
-
-				await store.set('initialized', true);
 			});
 		} finally {
 			this.store = existingStore;
+			// Register entitlement enforcement for all instances
+			const entitlementManager = getEntitlementManager();
+			entitlementManager.initialize();
 		}
 	}
 
@@ -257,6 +252,8 @@ export class LicenseManager {
 				project_id: project_id!,
 				public_url: env['PUBLIC_URL'] as string,
 			});
+
+			console.log('activate', token, key);
 
 			await settingsService.upsertSingleton({
 				license_key: key,
