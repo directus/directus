@@ -1537,6 +1537,8 @@ license:
   manage_plan: Manage Plan
   contact_sales: Contact Sales
   upgrade_to_unlock: Upgrade your plan to unlock this feature.
+  activity_history_notice: '{timeframe} of Activity History is included in your current plan.'
+  revisions_history_notice: '{timeframe} of Revision History is included in your current plan.'
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
