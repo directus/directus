@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { KEY, normalizeKey } from '@directus/license';
 import { throttle } from 'lodash';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
+import api from '@/api';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -10,7 +11,14 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 
 const { t } = useI18n();
 
-withDefaults(
+type LicensePreview = {
+	plan_name: string;
+	expires_at?: number;
+	renews_at?: number;
+	production_enabled: boolean;
+};
+
+const props = withDefaults(
 	defineProps<{
 		value: string | null;
 		edit?: boolean;
@@ -20,12 +28,7 @@ withDefaults(
 	},
 );
 
-const licenseInfo = ref({
-	valid: true,
-	plan: 'Team Plan',
-	expires_on: new Date(1776996042000),
-	environment: 'Production',
-});
+const licenseInfo = ref<LicensePreview | null>(null);
 
 const validating = ref(false);
 const stored = ref(true);
@@ -34,21 +37,31 @@ const error = ref<Error | null>(null);
 const emit = defineEmits(['input']);
 
 const validate = throttle(async (value: string | null) => {
-	if (!value || value.length < 29) return;
+	if (!value || value.length < 29) {
+		licenseInfo.value = null;
+		return;
+	}
 
 	const parsed = KEY.safeParse(value);
 
 	if (parsed.error) {
 		error.value = parsed.error;
-	} else {
-		error.value = null;
+		licenseInfo.value = null;
+		return;
 	}
 
+	error.value = null;
 	validating.value = true;
-	// TODO: Request status from server and update licenseInfo
-	await new Promise((r) => setTimeout(r, 1000));
+	licenseInfo.value = null;
 
-	validating.value = false;
+	try {
+		const response = await api.post<{ data: LicensePreview }>('/license/preview', { license_key: value });
+		licenseInfo.value = response.data.data;
+	} catch (err) {
+		error.value = err instanceof Error ? err : new Error(String(err));
+	} finally {
+		validating.value = false;
+	}
 }, 300);
 
 function onUpdated(value: string | null) {
@@ -60,6 +73,12 @@ function onUpdated(value: string | null) {
 
 	validate(value);
 }
+
+onMounted(() => {
+	if (props.value) {
+		validate(props.value);
+	}
+});
 </script>
 
 <template>
@@ -84,19 +103,22 @@ function onUpdated(value: string | null) {
 				<span>{{ t('license_valid') }}</span>
 			</div>
 
-			<span v-if="licenseInfo.plan">
+			<span v-if="licenseInfo.plan_name">
 				<VIcon name="check_circle" />
-				<span>{{ licenseInfo.plan }}</span>
+				<span>{{ licenseInfo.plan_name }}</span>
 			</span>
 
-			<div v-if="licenseInfo.expires_on">
+			<div v-if="licenseInfo.expires_at ?? licenseInfo.renews_at">
 				<VIcon name="check_circle" />
-				<span>{{ $t('expires_on') }} {{ Intl.DateTimeFormat().format(licenseInfo.expires_on) }}</span>
+				<span>
+					{{ $t('expires_on') }}
+					{{ Intl.DateTimeFormat().format((licenseInfo.expires_at ?? licenseInfo.renews_at)! * 1000) }}
+				</span>
 			</div>
 
-			<div v-if="licenseInfo.environment">
+			<div>
 				<VIcon name="check_circle" />
-				<span>{{ $t('environment') }}: {{ licenseInfo.environment }}</span>
+				<span>{{ $t('environment') }}: {{ licenseInfo.production_enabled ? $t('production') : $t('staging') }}</span>
 			</div>
 		</div>
 
