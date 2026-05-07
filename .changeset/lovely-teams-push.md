@@ -1,4 +1,5 @@
 ---
+'@directus/specs': minor
 '@directus/types': minor
 '@directus/api': minor
 ---
