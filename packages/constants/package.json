@@ -29,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
