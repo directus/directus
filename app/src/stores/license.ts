@@ -10,6 +10,7 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
+import { formatTimeframe } from '@/utils/format-timeframe';
 
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
@@ -75,6 +76,16 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const needsResolution = computed(() => {
 		const status = info.value?.status;
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
+	});
+
+	const revisionHistoryTimeframe = computed(() => {
+		const limit = info.value?.entitlements?.revision_historical_timeframe?.limit;
+		return limit ? formatTimeframe(limit) : null;
+	});
+
+	const activityHistoryTimeframe = computed(() => {
+		const limit = info.value?.entitlements?.activity_historical_timeframe?.limit;
+		return limit ? formatTimeframe(limit) : null;
 	});
 
 	function clearTimer() {
@@ -179,6 +190,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		isLicensed,
 		needsResolution,
 		customLLMEnabled,
+		revisionHistoryTimeframe,
+		activityHistoryTimeframe,
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
