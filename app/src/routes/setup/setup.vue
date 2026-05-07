@@ -47,25 +47,31 @@ onMounted(() => {
 });
 
 async function launch() {
-	if (!form.value.license) return;
+	if (showAdminStep.value) {
+		if (!form.value.license) return;
+
+		errors.value = validate(form.value, fields, true);
+		if (errors.value.length > 0) return;
+	}
+
 	if (showLicenseStep.value && !licenseFormRef.value?.canProceed) return;
-
-	errors.value = validate(form.value, fields, true);
-
-	if (errors.value.length > 0) return;
 
 	try {
 		isSaving.value = true;
 		await api.post('server/setup', form.value);
 
-		await login({
-			credentials: {
-				email: form.value.project_owner!,
-				password: form.value.password!,
-			},
-		});
+		if (showAdminStep.value) {
+			await login({
+				credentials: {
+					email: form.value.project_owner!,
+					password: form.value.password!,
+				},
+			});
 
-		router.push('/content');
+			router.push('/content');
+		} else {
+			router.push('/login');
+		}
 	} catch (err: any) {
 		error.value = err;
 	} finally {

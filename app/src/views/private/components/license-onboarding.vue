@@ -13,8 +13,10 @@ import VDialog from '@/components/v-dialog.vue';
 import VInput from '@/components/v-input.vue';
 import VRadioCards from '@/components/v-radio-cards.vue';
 import VSelect from '@/components/v-select/v-select.vue';
+import { useLicenseForm } from '@/composables/use-license-form';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import { useServerStore } from '@/stores/server';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const model = defineModel<boolean>();
 
@@ -22,13 +24,25 @@ const cookies = useCookies(['license-onboarding-dismissed']);
 const { t } = useI18n();
 const serverStore = useServerStore();
 
-type LicenseChoice = 'key' | 'core';
-
-const licenseChoice = ref<LicenseChoice | null>(null);
 const licenseKey = ref<string | null>(null);
 const projectUsage = ref<string | null>(null);
 const orgName = ref<string | null>(null);
 const isSaving = ref(false);
+
+const isKeyValid = computed(
+	() => !!licenseKey.value && licenseKey.value.length >= 29 && KEY.safeParse(licenseKey.value).success,
+);
+
+const {
+	licenseChoice,
+	showOrgName,
+	licenseChoices,
+	canProceed: canSave,
+} = useLicenseForm({
+	projectUsage,
+	orgName,
+	isLicenseKeyValid: isKeyValid,
+});
 
 watch(licenseChoice, () => {
 	licenseKey.value = null;
@@ -39,25 +53,6 @@ watch(licenseChoice, () => {
 watch(projectUsage, () => {
 	orgName.value = null;
 });
-
-const isKeyValid = computed(
-	() => !!licenseKey.value && licenseKey.value.length >= 29 && KEY.safeParse(licenseKey.value).success,
-);
-
-const showOrgName = computed(() => licenseChoice.value === 'core' && projectUsage.value === 'commercial');
-
-const canSave = computed(() => {
-	if (!licenseChoice.value) return false;
-	if (licenseChoice.value === 'key') return isKeyValid.value;
-	if (!projectUsage.value) return false;
-	if (showOrgName.value && !orgName.value?.trim()) return false;
-	return true;
-});
-
-const licenseChoices = computed(() => [
-	{ value: 'key', label: t('license_key_option'), description: t('license_key_option_desc'), icon: 'key' },
-	{ value: 'core', label: t('core_option'), description: t('core_option_desc'), icon: 'deployed_code' },
-]);
 
 const projectUsageChoices = computed(() => [
 	{ text: t('project_usage_personal'), value: 'personal' },
@@ -84,6 +79,8 @@ async function save() {
 		await api.patch('/settings', payload);
 		await serverStore.hydrate();
 		model.value = false;
+	} catch (err) {
+		unexpectedError(err);
 	} finally {
 		isSaving.value = false;
 	}

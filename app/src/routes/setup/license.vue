@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { SetupForm } from '@directus/types';
-import { computed, ref, watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { defaultValues, useKycFields, useLicenseFields } from './form';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VRadioCards from '@/components/v-radio-cards.vue';
+import { useLicenseForm } from '@/composables/use-license-form';
 import { useServerStore } from '@/stores/server';
 
 const { t } = useI18n();
@@ -28,9 +29,12 @@ const licenseFields = useLicenseFields();
 const kycFields = useKycFields();
 const serverStore = useServerStore();
 
-type LicenseChoice = 'key' | 'core';
-
-const licenseChoice = ref<LicenseChoice | null>(value.value?.license_key ? 'key' : null);
+const { licenseChoice, showOrgName, licenseChoices, canProceed } = useLicenseForm({
+	projectUsage: () => value.value?.project_usage,
+	orgName: () => value.value?.org_name,
+	isLicenseKeyValid: () => !!value.value?.license_key,
+	initialChoice: value.value?.license_key ? 'key' : null,
+});
 
 watch(licenseChoice, (choice) => {
 	if (!value.value) return;
@@ -51,16 +55,9 @@ watch(
 	},
 );
 
-const showOrgName = computed(() => licenseChoice.value === 'core' && value.value?.project_usage === 'commercial');
-
 const visibleKycFields = computed(() =>
 	showOrgName.value ? kycFields.value : kycFields.value.filter((f) => f.field !== 'org_name'),
 );
-
-const licenseChoices = computed(() => [
-	{ value: 'key', label: t('license_key_option'), description: t('license_key_option_desc'), icon: 'key' },
-	{ value: 'core', label: t('core_option'), description: t('core_option_desc'), icon: 'deployed_code' },
-]);
 
 // VForm.setValue uses selectiveClone which only keeps fields it knows about, so binding
 // v-model directly to the full parent form would wipe admin fields on any KYC interaction.
@@ -77,14 +74,6 @@ const kycSlice = computed({
 	set: (update: Partial<SetupForm>) => {
 		if (value.value) value.value = { ...value.value, ...update };
 	},
-});
-
-const canProceed = computed(() => {
-	if (!licenseChoice.value) return false;
-	if (licenseChoice.value === 'key') return !!value.value?.license_key;
-	if (!value.value?.project_usage) return false;
-	if (showOrgName.value && !value.value?.org_name?.trim()) return false;
-	return true;
 });
 
 defineExpose({ canProceed });
