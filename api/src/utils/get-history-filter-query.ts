@@ -21,7 +21,7 @@ export function getHistoryFilterQuery(
 		return { ...query, limit: 0 };
 	}
 
-	const sinceDate = new Date(Date.now() - limit * 24 * 60 * 60 * 1000);
+	const sinceDate = new Date(Date.now() - limit * 1000);
 	const filter = mergeFilters(buildFilter(sinceDate), query.filter ?? null, 'and');
 
 	if (!filter) {
