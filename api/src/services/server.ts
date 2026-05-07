@@ -44,10 +44,9 @@ export class ServerService {
 		const licenseManager = getLicenseManager();
 		const isSetupCompleted = await this.isSetupCompleted();
 
-		const { project_owner, ...projectInfo } = await this.settingsService.readSingleton({
+		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
-				'project_owner',
 				'project_descriptor',
 				'project_logo',
 				'project_color',
