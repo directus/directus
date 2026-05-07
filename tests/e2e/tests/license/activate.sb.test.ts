@@ -21,9 +21,6 @@ beforeAll(async () => {
 			CACHE_SCHEMA: 'false',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
 		},
-		docker: {
-			keep: devMode,
-		},
 		extras: {
 			license: true,
 		},
@@ -38,12 +35,12 @@ afterAll(async () => {
 	await directus.stop();
 });
 
-test('activate a license key', async () => {
-	const key = 'DX043-MN4TJ-7NSGJ-1K4QF-TMP8W';
+const key = 'DX043-MN4TJ-7NSGJ-1K4QF-TMP8W';
 
+test('activate a license key', async () => {
 	const license: License = {
 		projects: [],
-		max_projects: 1,
+		max_projects: 2,
 		key,
 		addons: [],
 		name: 'test-license',
@@ -97,7 +94,7 @@ test('activate a license key', async () => {
 		grace_period: 10000,
 		name: 'TEAM',
 		offline: false,
-		source: null,
+		source: 'settings',
 		status: 'active',
 		usage: {
 			collections: 0,
@@ -105,4 +102,8 @@ test('activate a license key', async () => {
 			seats: 1,
 		},
 	});
+});
+
+test('prevent activating key on project with existing license', async () => {
+	await expect(api.request(activateLicense({ license_key: key }))).rejects.toThrowError();
 });
