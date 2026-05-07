@@ -1,5 +1,5 @@
 import { isObject } from '@directus/utils';
-import knex, { type Knex } from 'knex';
+import { default as knex, type Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
@@ -96,5 +96,5 @@ export function createDatabase(env: Env, logger: Logger): Knex {
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
-	return knex.default(knexConfig);
+	return knex(knexConfig);
 }
