@@ -12,6 +12,7 @@ export const SetupValidator = z.object({
 	project_owner: z.email(),
 	password: z.string().min(1),
 	password_confirm: z.string().min(1),
+	license: z.literal(true),
 });
 
 export const FormValidator = z.object({

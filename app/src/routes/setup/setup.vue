@@ -25,6 +25,7 @@ useHead({
 const { info } = storeToRefs(useServerStore());
 
 const form = ref<Form>(defaultValues);
+const licenseFormRef = ref<InstanceType<typeof LicenseForm> | null>(null);
 const router = useRouter();
 
 const fields = useSetupFields(true);
@@ -51,6 +52,9 @@ onMounted(() => {
 });
 
 async function launch() {
+	if (!form.value.license) return;
+	if (showLicenseStep.value && !licenseFormRef.value?.canProceed) return;
+
 	errors.value = validate(form.value, fields, true);
 
 	if (errors.value.length > 0) return;
@@ -104,12 +108,12 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 				</template>
 			</I18nT>
 
-			<LicenseForm v-model="form" :errors="errors"></LicenseForm>
+			<LicenseForm ref="licenseFormRef" v-model="form" :errors="errors"></LicenseForm>
 			<div class="actions">
 				<VButton v-if="showAdminStep" secondary @click="page = 'setup'">
 					{{ $t('back') }}
 				</VButton>
-				<VButton :loading="isSaving" @click="launch()">
+				<VButton :disabled="!licenseFormRef?.canProceed" :loading="isSaving" @click="launch()">
 					{{ $t('setup_launch') }}
 				</VButton>
 			</div>

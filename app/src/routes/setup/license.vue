@@ -30,7 +30,7 @@ const serverStore = useServerStore();
 
 type LicenseChoice = 'key' | 'core';
 
-const licenseChoice = ref<LicenseChoice>(value.value?.license_key ? 'key' : 'core');
+const licenseChoice = ref<LicenseChoice | null>(value.value?.license_key ? 'key' : null);
 
 watch(licenseChoice, (choice) => {
 	if (!value.value) return;
@@ -41,6 +41,15 @@ watch(licenseChoice, (choice) => {
 		value.value = { ...value.value, license_key: null };
 	}
 });
+
+watch(
+	() => value.value?.project_usage,
+	(usage, prev) => {
+		if (prev === 'commercial' && usage !== 'commercial' && value.value) {
+			value.value = { ...value.value, org_name: null };
+		}
+	},
+);
 
 const showOrgName = computed(() => licenseChoice.value === 'core' && value.value?.project_usage === 'commercial');
 
@@ -69,6 +78,16 @@ const kycSlice = computed({
 		if (value.value) value.value = { ...value.value, ...update };
 	},
 });
+
+const canProceed = computed(() => {
+	if (!licenseChoice.value) return false;
+	if (licenseChoice.value === 'key') return !!value.value?.license_key;
+	if (!value.value?.project_usage) return false;
+	if (showOrgName.value && !value.value?.org_name?.trim()) return false;
+	return true;
+});
+
+defineExpose({ canProceed });
 </script>
 
 <template>
@@ -83,7 +102,13 @@ const kycSlice = computed({
 			disabled-menu
 		/>
 
-		<VForm v-else v-model="kycSlice" :show-validation-errors="false" :fields="visibleKycFields" disabled-menu />
+		<VForm
+			v-else-if="licenseChoice === 'core'"
+			v-model="kycSlice"
+			:show-validation-errors="false"
+			:fields="visibleKycFields"
+			disabled-menu
+		/>
 
 		<div v-if="licenseChoice === 'key'" class="get-license-key">
 			{{ $t('no_license_key') }}

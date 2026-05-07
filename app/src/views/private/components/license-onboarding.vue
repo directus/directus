@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { KEY } from '@directus/license';
 import { useCookies } from '@vueuse/integrations/useCookies';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -10,9 +10,11 @@ import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
+import VInput from '@/components/v-input.vue';
+import VRadioCards from '@/components/v-radio-cards.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import { useServerStore } from '@/stores/server';
-import { notify } from '@/utils/notify';
 
 const model = defineModel<boolean>();
 
@@ -20,18 +22,66 @@ const cookies = useCookies(['license-onboarding-dismissed']);
 const { t } = useI18n();
 const serverStore = useServerStore();
 
+type LicenseChoice = 'key' | 'core';
+
+const licenseChoice = ref<LicenseChoice | null>(null);
 const licenseKey = ref<string | null>(null);
+const projectUsage = ref<string | null>(null);
+const orgName = ref<string | null>(null);
 const isSaving = ref(false);
+
+watch(licenseChoice, () => {
+	licenseKey.value = null;
+	projectUsage.value = null;
+	orgName.value = null;
+});
+
+watch(projectUsage, () => {
+	orgName.value = null;
+});
 
 const isKeyValid = computed(
 	() => !!licenseKey.value && licenseKey.value.length >= 29 && KEY.safeParse(licenseKey.value).success,
 );
 
+const showOrgName = computed(() => licenseChoice.value === 'core' && projectUsage.value === 'commercial');
+
+const canSave = computed(() => {
+	if (!licenseChoice.value) return false;
+	if (licenseChoice.value === 'key') return isKeyValid.value;
+	if (!projectUsage.value) return false;
+	if (showOrgName.value && !orgName.value?.trim()) return false;
+	return true;
+});
+
+const licenseChoices = computed(() => [
+	{ value: 'key', label: t('license_key_option'), description: t('license_key_option_desc'), icon: 'key' },
+	{ value: 'core', label: t('core_option'), description: t('core_option_desc'), icon: 'deployed_code' },
+]);
+
+const projectUsageChoices = computed(() => [
+	{ text: t('project_usage_personal'), value: 'personal' },
+	{ text: t('project_usage_commercial'), value: 'commercial' },
+	{ text: t('project_usage_nonprofit'), value: 'nonprofit' },
+	{ text: t('project_usage_education'), value: 'education' },
+]);
+
 async function save() {
+	if (!canSave.value) return;
+
 	isSaving.value = true;
 
 	try {
-		await api.patch('/settings', { license_key: licenseKey.value });
+		const payload: Record<string, any> = {};
+
+		if (licenseChoice.value === 'key') {
+			payload.license_key = licenseKey.value;
+		} else {
+			payload.project_usage = projectUsage.value;
+			if (showOrgName.value) payload.org_name = orgName.value;
+		}
+
+		await api.patch('/settings', payload);
 		await serverStore.hydrate();
 		model.value = false;
 	} finally {
@@ -40,8 +90,10 @@ async function save() {
 }
 
 function dismiss() {
-	cookies.set('license-onboarding-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
-	notify({ title: t('remind_next_login'), type: 'info' });
+	cookies.set('license-onboarding-dismissed', 'true', {
+		expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10),
+	});
+
 	model.value = false;
 }
 </script>
@@ -57,16 +109,31 @@ function dismiss() {
 							<a href="https://directus.io/license-request" target="_blank">{{ $t('open_innovation_grant') }}</a>
 						</template>
 					</I18nT>
-					<label class="license-label">
-						{{ $t('license_key') }}
-						<span class="optional">({{ $t('optional') }})</span>
-					</label>
-					<SystemLicenseKey :value="licenseKey" @input="licenseKey = $event" />
+
+					<VRadioCards v-model="licenseChoice" :items="licenseChoices" />
+
+					<template v-if="licenseChoice === 'key'">
+						<label class="field-label">{{ $t('license_key') }}</label>
+						<SystemLicenseKey :value="licenseKey" @input="licenseKey = $event" />
+					</template>
+
+					<template v-else-if="licenseChoice === 'core'">
+						<label class="field-label">{{ $t('project_usage') }}</label>
+						<VSelect v-model="projectUsage" :items="projectUsageChoices" />
+
+						<template v-if="showOrgName">
+							<label class="field-label">{{ $t('org_name') }}</label>
+							<VInput
+								:model-value="orgName ?? undefined"
+								:placeholder="$t('org_name_placeholder')"
+								@update:model-value="orgName = $event ?? null"
+							/>
+						</template>
+					</template>
 				</VCardText>
 				<VCardActions>
-					<VButton secondary>{{ $t('get_license_key') }}</VButton>
-					<VButton v-if="isKeyValid" :loading="isSaving" @click="save">{{ $t('setup_launch') }}</VButton>
-					<VButton v-else secondary @click="dismiss">{{ $t('skip') }}</VButton>
+					<VButton secondary @click="dismiss">{{ $t('skip') }}</VButton>
+					<VButton :disabled="!canSave" :loading="isSaving" @click="save">{{ $t('save') }}</VButton>
 				</VCardActions>
 			</div>
 		</VCard>
@@ -90,15 +157,14 @@ p {
 	}
 }
 
-.license-label {
+.v-radio-cards {
+	margin-block-end: 1.25rem;
+}
+
+.field-label {
 	display: block;
 	font-size: 0.875rem;
 	font-weight: 600;
-	margin-block-end: 0.5rem;
-
-	.optional {
-		font-weight: 400;
-		color: var(--theme--primary);
-	}
+	margin-block: 1.25rem 0.5rem;
 }
 </style>
