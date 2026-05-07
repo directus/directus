@@ -53,7 +53,7 @@ import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -96,7 +96,7 @@ onBeforeRouteUpdate((to, from) => {
 	trackLastAccessedCollection(to, from, () => {});
 });
 
-const { collectionRoute, backRoute, discardReturnRoute } = useItemNavigation();
+const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
@@ -152,7 +152,7 @@ async function onVersionDelete(versionId: PrimaryKey) {
 		// watchers to update queryVersionId via useRouteQuery (mode:'push'), which triggers
 		// its own router.push. Without nextTick, that push fires after ours and cancels it.
 		await nextTick();
-		router.push(discardReturnRoute.value);
+		router.push(collectionRoute.value);
 	}
 }
 
@@ -164,7 +164,7 @@ function handleVersionGone(error: unknown) {
 			edits.value = {};
 
 			if (isItemlessVersion.value) {
-				router.push(discardReturnRoute.value);
+				router.push(collectionRoute.value);
 			} else {
 				currentVersion.value = null;
 				refresh();
@@ -726,12 +726,15 @@ function useResolvePrimaryKey() {
 }
 
 function useItemNavigation() {
-	const route = useRoute();
-
 	const collectionRoute = computed(() => {
-		const collectionPath = getCollectionRoute(props.collection);
-		if (route.query.bookmark) return `${collectionPath}?bookmark=${route.query.bookmark}`;
-		return collectionPath;
+		const bookmark = route.query.bookmark;
+		const version = route.query.version === VERSION_KEY_DRAFT ? VERSION_KEY_DRAFT : undefined;
+
+		return router.resolve({
+			name: 'content-collection',
+			params: { collection: props.collection },
+			query: { bookmark, version },
+		}).fullPath;
 	});
 
 	// If there's in-app navigation history, use browser back
@@ -744,15 +747,7 @@ function useItemNavigation() {
 		return collectionRoute.value;
 	});
 
-	// Used after discarding/losing an item-less version: forward the version key
-	// so the collection view stays scoped to the same draft filter (e.g. ?version=draft).
-	const discardReturnRoute = computed(() => {
-		const version = Array.isArray(route.query.version) ? route.query.version[0] : route.query.version;
-		const versionKey = version ?? VERSION_KEY_DRAFT;
-		return { path: getCollectionRoute(props.collection), query: { version: versionKey } };
-	});
-
-	return { collectionRoute, backRoute, discardReturnRoute };
+	return { collectionRoute, backRoute };
 }
 
 function usePublishComparison() {
