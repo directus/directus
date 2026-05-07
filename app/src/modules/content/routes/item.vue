@@ -6,7 +6,17 @@ import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
 import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
-import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
+import {
+	type ComponentPublicInstance,
+	computed,
+	nextTick,
+	onBeforeUnmount,
+	provide,
+	ref,
+	toRefs,
+	unref,
+	watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -43,10 +53,11 @@ import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { PrivateView } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
@@ -130,6 +141,39 @@ const {
 
 const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
 	usePublishComparison();
+
+async function onVersionDelete(versionId: PrimaryKey) {
+	const wasItemLess = isItemlessVersion.value;
+	await deleteVersion(versionId);
+
+	if (wasItemLess) {
+		edits.value = {};
+		// Wait for Vue's watcher cascade to flush: deleting the version causes useVersions'
+		// watchers to update queryVersionId via useRouteQuery (mode:'push'), which triggers
+		// its own router.push. Without nextTick, that push fires after ours and cancels it.
+		await nextTick();
+		router.push(collectionRoute.value);
+	}
+}
+
+function handleVersionGone(error: unknown) {
+	if (!error || typeof error !== 'object' || !('versionGone' in error)) return false;
+
+	unexpectedError(error, {
+		dismissAction: () => {
+			edits.value = {};
+
+			if (isItemlessVersion.value) {
+				router.push(collectionRoute.value);
+			} else {
+				currentVersion.value = null;
+				refresh();
+			}
+		},
+	});
+
+	return true;
+}
 
 const {
 	isNew,
@@ -510,8 +554,8 @@ async function saveVersionAction() {
 			refresh();
 			revisionsSidebarDetailRef.value?.refresh?.();
 		}
-	} catch {
-		// Save shows unexpected error dialog
+	} catch (error) {
+		handleVersionGone(error);
 	}
 }
 
@@ -682,12 +726,15 @@ function useResolvePrimaryKey() {
 }
 
 function useItemNavigation() {
-	const route = useRoute();
-
 	const collectionRoute = computed(() => {
-		const collectionPath = getCollectionRoute(props.collection);
-		if (route.query.bookmark) return `${collectionPath}?bookmark=${route.query.bookmark}`;
-		return collectionPath;
+		const bookmark = route.query.bookmark;
+		const version = route.query.version === VERSION_KEY_DRAFT ? VERSION_KEY_DRAFT : undefined;
+
+		return router.resolve({
+			name: 'content-collection',
+			params: { collection: props.collection },
+			query: { bookmark, version },
+		}).fullPath;
 	});
 
 	// If there's in-app navigation history, use browser back
@@ -736,8 +783,8 @@ function usePublishComparison() {
 				else router.replace(getItemRoute(props.collection, newItemKey));
 
 				deleteVersion(versionId);
-			} catch {
-				// publishVersion / deleteVersion handle unexpected errors
+			} catch (error) {
+				handleVersionGone(error);
 			} finally {
 				quitAfterPublish.value = false;
 			}
@@ -786,8 +833,8 @@ function usePublishComparison() {
 			currentVersion.value = null;
 			refresh();
 			revisionsSidebarDetailRef.value?.refresh?.();
-		} catch {
-			// publishVersion / deleteVersion handle unexpected errors
+		} catch (error) {
+			handleVersionGone(error);
 		} finally {
 			comparisonModalActive.value = false;
 			quitAfterPublish.value = false;
@@ -862,7 +909,7 @@ function editDraftVersion() {
 					:delete-version-loading="deleteVersionLoading"
 					@add="addVersion"
 					@update="updateVersion"
-					@delete="deleteVersion"
+					@delete="onVersionDelete"
 					@switch="currentVersion = $event"
 				/>
 			</div>

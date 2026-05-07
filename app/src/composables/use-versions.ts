@@ -180,6 +180,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	}
 
 	function versionErrorHandler(error: any) {
+		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
+			throw Object.assign(error, { versionGone: true });
+		}
+
 		if (error?.response?.data?.errors) {
 			const serverValidationErrors = error.response.data.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))

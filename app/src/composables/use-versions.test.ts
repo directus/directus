@@ -610,4 +610,175 @@ describe('useVersions', () => {
 			);
 		});
 	});
+
+	describe('isItemlessVersion', () => {
+		it('should be true when currentVersion has a real id and item is null', () => {
+			// primaryKey='+' with no queryVersionId means getVersions returns early (no API call)
+			// Just set currentVersion manually to test the computed
+			const { isItemlessVersion, currentVersion } = useVersions(ref('test_collection'), ref(false), ref('+'));
+
+			currentVersion.value = {
+				id: 'version-abc',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: null,
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-02',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+				type: 'global',
+			};
+
+			expect(isItemlessVersion.value).toBe(true);
+		});
+
+		it('should be false when primaryKey is a real id', async () => {
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [] } });
+
+			const { isItemlessVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			expect(isItemlessVersion.value).toBe(false);
+		});
+
+		it('should be false when currentVersion has virtual id "+"', () => {
+			// primaryKey='+' with no queryVersionId means getVersions returns early
+			const { isItemlessVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(false), ref('+'));
+
+			// The virtual draft version always has id='+'
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			expect(currentVersion.value?.id).toBe('+');
+			expect(isItemlessVersion.value).toBe(false);
+		});
+	});
+
+	describe('version-gone detection', () => {
+		it('should tag error with versionGone when save returns 403 on an existing version', async () => {
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc123',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-02',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
+			await vi.waitFor(() => expect(versions.value.some((v) => v.id === 'version-123')).toBe(true));
+
+			currentVersion.value = versions.value.find((v) => v.id === 'version-123') ?? null;
+			expect(currentVersion.value?.id).toBe('version-123');
+
+			const saveError = Object.assign(new Error('Forbidden'), {
+				response: { status: 403, data: { errors: [{ extensions: { code: 'FORBIDDEN' } }] } },
+			});
+
+			vi.mocked(api.post).mockRejectedValueOnce(saveError);
+
+			const edits = ref({ title: 'updated' });
+			const item = ref({ id: '1', title: 'original' });
+
+			await expect(saveVersion(edits, item)).rejects.toMatchObject({
+				versionGone: true,
+			});
+		});
+
+		it('should NOT tag error with versionGone for non-403 errors', async () => {
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc123',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-02',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+
+			const saveError = Object.assign(new Error('Server Error'), {
+				response: { status: 500, data: { errors: [{ extensions: { code: 'INTERNAL_SERVER_ERROR' } }] } },
+			});
+
+			vi.mocked(api.post).mockRejectedValueOnce(saveError);
+
+			const edits = ref({ title: 'updated' });
+			const item = ref({ id: '1', title: 'original' });
+
+			await expect(saveVersion(edits, item)).rejects.not.toMatchObject({
+				versionGone: true,
+			});
+		});
+
+		it('should NOT tag error with versionGone for new (unsaved) versions', async () => {
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('+'));
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+			expect(currentVersion.value?.id).toBe('+');
+
+			const saveError = Object.assign(new Error('Forbidden'), {
+				response: { status: 403, data: { errors: [{ extensions: { code: 'FORBIDDEN' } }] } },
+			});
+
+			vi.mocked(api.post).mockRejectedValueOnce(saveError);
+
+			const edits = ref({ title: 'updated' });
+			const item = ref(null);
+
+			await expect(saveVersion(edits, item)).rejects.not.toMatchObject({
+				versionGone: true,
+			});
+		});
+	});
+
+	describe('network error preserves edits', () => {
+		it('should preserve edits when save fails with network error', async () => {
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc123',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-02',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			vi.mocked(api.post).mockRejectedValueOnce(new Error('Network Error'));
+
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(true), ref('1'));
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+
+			const edits = ref({ title: 'my changes' });
+			const item = ref({ id: '1', title: 'original' });
+
+			await expect(saveVersion(edits, item)).rejects.toThrow();
+			expect(edits.value).toEqual({ title: 'my changes' });
+		});
+	});
 });
