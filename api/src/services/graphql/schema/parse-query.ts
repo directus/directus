@@ -127,6 +127,17 @@ export async function getQuery(
 					for (const subSelection of selection.selectionSet.selections) {
 						if (subSelection.kind !== 'Field') continue;
 						if (subSelection.name!.value.startsWith('__')) continue;
+
+						if (subSelection.name.value === 'json' && subSelection.arguments?.length) {
+							const pathArg = subSelection.arguments.find((a) => a.name.value === 'path');
+
+							if (pathArg) {
+								const pathValue = (parseArgs([pathArg], variableValues) as { path: string }).path;
+								children.push(`json(${rootField}, ${pathValue})`);
+								continue;
+							}
+						}
+
 						children.push(`${subSelection.name!.value}(${rootField})`);
 					}
 				} else {
