@@ -244,13 +244,20 @@ function selectLog(index: number) {
 			class="unread-chip"
 			:active="unreadLogsChipVisible && unreadLogsCount > 0"
 			small
-			close
 			clickable
 			@click="scrollToBottom"
-			@close="unreadLogsChipVisible = false"
 		>
-			<VIcon name="arrow_downward" x-small />
+			<VIcon class="arrow" name="arrow_downward" x-small />
 			<span class="label">{{ $t('logs_unread_count', { count: n(unreadLogsCount) }) }}</span>
+
+			<button
+				type="button"
+				class="close-button"
+				:aria-label="$t('dismiss')"
+				@click.stop="unreadLogsChipVisible = false"
+			>
+				<VIcon class="close" name="close" x-small />
+			</button>
 		</VChip>
 	</div>
 </template>
@@ -319,15 +326,14 @@ function selectLog(index: number) {
 
 .unread-chip {
 	--v-chip-color: var(--white);
+	--v-chip-color-hover: var(--v-chip-color);
 	--v-chip-background-color: var(--theme--primary);
-	--v-chip-close-color: var(--theme--primary);
-	--v-chip-close-color-hover: var(--theme--primary-accent);
-	--v-chip-close-color-disabled: var(--theme--primary);
+	--v-chip-background-color-hover: var(--theme--primary-accent);
 
 	cursor: pointer;
 	box-shadow: -4px 0 7px -4px var(--shadow-color);
 
-	.v-icon {
+	.arrow {
 		margin-inline-end: 0.4375rem;
 	}
 
@@ -335,6 +341,25 @@ function selectLog(index: number) {
 		font-weight: bold;
 		font-size: 0.6875rem;
 		text-transform: uppercase;
+	}
+
+	.close-button {
+		position: relative;
+		inset-inline-end: -0.25rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 0.8125rem;
+		block-size: 0.8125rem;
+		margin-inline-start: 0.25rem;
+		padding: 0;
+		background-color: var(--theme--primary);
+		border: none;
+		border-radius: 0.5625rem;
+
+		&:hover {
+			background-color: var(--theme--primary-accent);
+		}
 	}
 }
 
