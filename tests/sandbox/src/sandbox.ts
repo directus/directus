@@ -211,7 +211,7 @@ export async function sandboxes(
 					const project = await dockerUp(database, opts, env, logger);
 					if (project) projects.push({ project, logger, env });
 
-					await bootstrap(env, logger);
+					await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 					if (opts.knex) knex = createDatabase(env, logger);
 					await opts.hooks.beforeApi?.({ env, logger, knex });
@@ -272,7 +272,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		}
 
 		project = await dockerUp(database, opts, env, logger);
-		await bootstrap(env, logger);
+		await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		if (opts.knex) knex = createDatabase(env, logger);
 		await opts.hooks.beforeApi?.({ env, logger, knex });

@@ -125,13 +125,25 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	const schemaOverview = await schemaInspector.overview();
 
-	const collections = [
-		...(await database
-			.select('collection', 'singleton', 'note', 'sort_field', 'accountability', 'status')
-			.from('directus_collections')
-			.where('status', '=', 'active')),
-		...systemCollectionRows,
-	];
+	let collections;
+
+	// TODD: Tim has to fix this
+	if (schemaOverview['directus_collections']?.columns?.['status']) {
+		collections = [
+			...(await database
+				.select('collection', 'singleton', 'note', 'sort_field', 'accountability', 'status')
+				.from('directus_collections')
+				.where('status', '=', 'active')),
+			...systemCollectionRows,
+		];
+	} else {
+		collections = [
+			...(await database
+				.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
+				.from('directus_collections')),
+			...systemCollectionRows,
+		];
+	}
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
