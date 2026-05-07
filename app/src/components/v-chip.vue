@@ -109,7 +109,7 @@ function onCloseClick(event: MouseEvent) {
 		--v-chip-color                   [var(--neutral-ondimmed)]
 		--v-chip-color-hover             [var(--v-chip-color)]
 		--v-chip-background-color        [var(--neutral-dimmed)]
-		--v-chip-background-color-hover  [var(--v-chip-background-color )]
+		--v-chip-background-color-hover  [var(--v-chip-background-color)]
 		--v-chip-border-color            [var(--v-chip-background-color)]
 		--v-chip-border-color-hover      [var(--v-chip-background-color-hover)]
 		--v-chip-close-color             []
