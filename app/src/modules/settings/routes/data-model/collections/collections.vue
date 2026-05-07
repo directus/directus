@@ -307,7 +307,7 @@ async function downloadSnapshot() {
 			@update:model-value="editCollection = null"
 		/>
 
-		<LicenseLimitModal v-model="collectionsLimitModalOpen" type="collections" :is-admin="true" />
+		<LicenseLimitModal v-model="collectionsLimitModalOpen" type="collections" is-admin />
 	</PrivateView>
 </template>
 

@@ -1503,21 +1503,23 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 license:
-  seats_limit_title: The user will be created but placed in deactivated state.
-  seats_limit_body_admin: >-
-    You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
-  seats_limit_body_member: >-
-    You have reached the max limit allowed for your plan. Contact admin to purchase additional add-ons or upgrade.
-  collections_limit_title: Collection limit reached
-  collections_limit_body: >-
-    You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  seats_limit:
+    title: The user will be created but placed in deactivated state.
+    body_admin: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+    body_member: >-
+      You have reached the max limit allowed for your plan. Contact admin to purchase additional add-ons or upgrade.
+  collections_limit:
+    title: Collection limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  max_capacity:
+    label: 'max capacity'
+    alert_danger: 'You have reached max capacity. Upgrade plan to unlock more.'
+    alert_danger_enterprise: 'You have reached your soft limit max capacity. Contact sales to purchase more add-ons.'
+    alert_warning: 'You have {count} left. Upgrade your plan to unlock more.'
   manage_plan: Manage Plan
   collections_remaining: '{n} Collection Left | {n} Collections Left'
-  max_capacity: 'max capacity'
-  max_capacity_alert_danger: 'You have reached max capacity. Upgrade plan to unlock more.'
-  max_capacity_alert_danger_enterprise:
-    'You have reached your soft limit max capacity. Contact sales to purchase more add-ons.'
-  max_capacity_alert_warning: 'You have {count} left. Upgrade your plan to unlock more.'
   contact_sales: Contact Sales
   upgrade_to_unlock: Upgrade your plan to unlock this feature.
 no_upscale: Don't upscale images
@@ -1642,6 +1644,7 @@ fields:
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
+    status_deactivated_license_exceeded: Deactivated (License Exceeded)
     role: Role
     token: Token
     provider: Provider

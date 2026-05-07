@@ -24,15 +24,15 @@ const emit = defineEmits<{
 
 const router = useRouter();
 
-const titleKey = computed(() => `license.${props.type}_limit_title`);
+const titleKey = computed(() => `license.${props.type}_limit.title`);
 
 const bodyKey = computed(() => {
 	if (props.type === 'seats') {
-		return props.isAdmin ? 'license.seats_limit_body_admin' : 'license.seats_limit_body_member';
+		return props.isAdmin ? 'license.seats_limit.body_admin' : 'license.seats_limit.body_member';
 	}
 
 	// Collections are always admin-facing; no member variant needed.
-	return 'license.collections_limit_body';
+	return 'license.collections_limit.body';
 });
 
 function close() {

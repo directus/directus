@@ -38,8 +38,8 @@ const isVisible = computed(() => !dismissed.value && isAtCapacity.value);
 				<span>
 					{{
 						licenseStore.isEnterprise
-							? $t('license.max_capacity_alert_danger_enterprise')
-							: $t('license.max_capacity_alert_danger')
+							? $t('license.max_capacity.alert_danger_enterprise')
+							: $t('license.max_capacity.alert_danger')
 					}}
 				</span>
 			</span>

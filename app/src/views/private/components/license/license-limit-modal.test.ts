@@ -40,7 +40,7 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 			global,
 		});
 
-		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit_title'));
+		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit.title'));
 	});
 
 	it('shows admin body copy', () => {
@@ -49,8 +49,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 			global,
 		});
 
-		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit_body_admin'));
-		expect(wrapper.text()).not.toContain(i18n.global.t('license.seats_limit_body_member'));
+		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit.body_admin'));
+		expect(wrapper.text()).not.toContain(i18n.global.t('license.seats_limit.body_member'));
 	});
 
 	it('renders Cancel, Manage Plan, Save buttons in that order', () => {
@@ -146,7 +146,7 @@ describe('LicenseLimitModal (type=seats, isAdmin=false)', () => {
 			global,
 		});
 
-		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit_title'));
+		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit.title'));
 	});
 
 	it('shows member body copy', () => {
@@ -155,8 +155,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=false)', () => {
 			global,
 		});
 
-		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit_body_member'));
-		expect(wrapper.text()).not.toContain(i18n.global.t('license.seats_limit_body_admin'));
+		expect(wrapper.text()).toContain(i18n.global.t('license.seats_limit.body_member'));
+		expect(wrapper.text()).not.toContain(i18n.global.t('license.seats_limit.body_admin'));
 	});
 
 	it('renders Cancel and Save buttons only — no Manage Plan', () => {
@@ -190,7 +190,7 @@ describe('LicenseLimitModal (type=collections, isAdmin=true)', () => {
 			global,
 		});
 
-		expect(wrapper.text()).toContain(i18n.global.t('license.collections_limit_title'));
+		expect(wrapper.text()).toContain(i18n.global.t('license.collections_limit.title'));
 	});
 
 	it('shows collections body copy', () => {
@@ -199,7 +199,7 @@ describe('LicenseLimitModal (type=collections, isAdmin=true)', () => {
 			global,
 		});
 
-		expect(wrapper.text()).toContain(i18n.global.t('license.collections_limit_body'));
+		expect(wrapper.text()).toContain(i18n.global.t('license.collections_limit.body'));
 	});
 
 	it('renders Cancel and Manage Plan buttons only — no Save', () => {
