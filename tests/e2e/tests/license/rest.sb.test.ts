@@ -26,9 +26,6 @@ beforeAll(async () => {
 		extras: {
 			license: true,
 		},
-		docker: {
-			keep: true,
-		},
 		cache: false,
 	});
 
