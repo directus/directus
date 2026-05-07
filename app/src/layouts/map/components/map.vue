@@ -193,9 +193,10 @@ function updateStyle(style: any) {
 
 function startWatchers() {
 	unwatchers.push(
-		watch(() => [props.source, props.featureId],
+		watch(
+			() => [props.source, props.featureId],
 			([newSource, _newFeatureId]) => updateSource(newSource as GeoJSONSource),
-			{ immediate: true }
+			{ immediate: true },
 		),
 		watch(() => props.selection, updateSelection, { immediate: true }),
 		watch(() => props.layers, updateLayers),
