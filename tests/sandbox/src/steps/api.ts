@@ -73,6 +73,8 @@ export async function bootstrap(opts: Options, env: Env, logger: Logger) {
 				PUBLIC_URL: `http://${env.HOST}:${port}`,
 				PORT: port,
 			},
+			shell: true,
+			stdio: 'overlapped', // Has to be here, only god knows why.
 		});
 	} else {
 		bootstrap = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'bootstrap'], {

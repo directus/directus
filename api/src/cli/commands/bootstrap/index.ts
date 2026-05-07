@@ -8,7 +8,7 @@ import getDatabase, {
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
-import { getLicenseManager } from '../../../license/manager.js';
+import { getEntitlementManager } from '../../../license/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { SettingsService } from '../../../services/settings.js';
 import { createAdmin } from '../../../utils/create-admin.js';
@@ -35,8 +35,15 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 		const schema = await getSchema();
 
-		// HACK: cause Tims working on a correct fix
-		await getLicenseManager().initialize();
+		/*
+		 * Initialize only the entitlement manager, not the full license
+		 * manager: a single admin fits within core license limits, and
+		 * staying at this layer keeps tests simple.
+		 *
+		 * Required regardless — createAdmin below triggers the seat
+		 * counter, which errors if entitlements aren't registered.
+		 */
+		getEntitlementManager().initialize();
 
 		if (skipAdminInit == null) {
 			await createAdmin(schema);

@@ -7,6 +7,6 @@
 	},
 	"include": ["src"],
 	"typedocOptions": {
-		"entryPoints": ["./src/index.ts", "./src/cli.ts"]
+		"entryPoints": ["./src/index.ts", "./src/run.ts"]
 	}
 }

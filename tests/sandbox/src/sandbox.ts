@@ -243,8 +243,6 @@ export async function sandboxes(
 		await Promise.all(sandboxes.map((sandbox) => sandbox.knex?.destroy()));
 		sandboxes.forEach((sandbox) => sandbox.apis.forEach((api) => api.process.kill()));
 		license?.kill();
-		if (opts.docker.keep)
-			await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -258,7 +256,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
 	let apis: [Api, ...Api[]] | undefined;
 	let app: ChildProcessWithoutNullStreams | undefined;
-	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
 	let license: ChildProcessWithoutNullStreams | undefined;
@@ -274,7 +271,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			license = await startLicenseServer(env, logger);
 		}
 
-		project = await dockerUp(database, opts, env, logger);
+		await dockerUp(database, opts, env, logger);
 		await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		if (opts.knex) knex = createDatabase(env, logger);
@@ -303,18 +300,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		apis?.forEach((api) => api.process.kill());
 		app?.kill();
 		license?.kill();
-		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
-
-		if (!opts.docker.keep && 'DB_FILENAME' in env) {
-			await new Promise((r) => setTimeout(r, 100));
-
-			try {
-				await unlink(join(process.cwd(), env.DB_FILENAME));
-				logger.info(`Removed database file at ${env.DB_FILENAME}`);
-			} catch (e: any) {
-				logger.error(`Failed to remove database file at ${env.DB_FILENAME}: ${e.message}`);
-			}
-		}
 
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);
