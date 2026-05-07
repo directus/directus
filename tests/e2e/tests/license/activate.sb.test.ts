@@ -1,5 +1,4 @@
 import { activateLicense, readLicense } from '@directus/license';
-import type { License } from '@directus/license-mock';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
@@ -38,7 +37,7 @@ afterAll(async () => {
 const key = 'DX043-MN4TJ-7NSGJ-1K4QF-TMP8W';
 
 test('activate a license key', async () => {
-	const license: License = {
+	const license: MockLicense = {
 		projects: [],
 		max_projects: 2,
 		key,
