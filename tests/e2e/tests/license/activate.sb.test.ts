@@ -1,7 +1,7 @@
 import { activateLicense, readLicense } from '@directus/license';
 import type { License } from '@directus/license-mock';
 import { sandbox, type Sandbox } from '@directus/sandbox';
-import { createDirectus, type DirectusClient, readSettings, rest, type RestClient, staticToken } from '@directus/sdk';
+import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
@@ -11,7 +11,7 @@ let api: DirectusClient<any> & RestClient<any>;
 let now: number;
 
 beforeAll(async () => {
-	const devMode = process.env['DEV'] === 'true';
+	const devMode = process.env['NODE_ENV'] === 'development';
 
 	directus = await sandbox(database, {
 		dev: devMode,
@@ -41,15 +41,8 @@ afterAll(async () => {
 test('activate a license key', async () => {
 	const key = 'DX043-MN4TJ-7NSGJ-1K4QF-TMP8W';
 
-	const { project_id } = await api.request(readSettings({ fields: ['project_id'] }));
-
 	const license: License = {
-		projects: [
-			{
-				id: project_id,
-				url: `http://localhost:${directus.apis[0].port}`,
-			},
-		],
+		projects: [],
 		max_projects: 1,
 		key,
 		addons: [],
@@ -60,6 +53,8 @@ test('activate a license key', async () => {
 			validation_interval: 1000,
 			expires_at: now + 1000,
 			offline: false,
+			version: '1.0',
+			public_url: 'heh?',
 		},
 		entitlements: {
 			collections: { limit: 10 },
@@ -106,7 +101,7 @@ test('activate a license key', async () => {
 		status: 'active',
 		usage: {
 			collections: 0,
-			flows: 5,
+			flows: 0,
 			seats: 1,
 		},
 	});

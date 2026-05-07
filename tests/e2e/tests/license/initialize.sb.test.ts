@@ -50,7 +50,7 @@ function createLicenseKey(key: string, overrides?: DeepPartial<MockLicense>): Mo
 describe('initialization', () => {
 	test('Activate LICENSE_KEY (Case D)', async () => {
 		const envKey = 'D0000-00000-00000-00000-00001';
-		const devMode = process.env['DEV'] === 'true';
+		const devMode = process.env['NODE_ENV'] === 'development';
 
 		const directus = await sandbox(database, {
 			dev: devMode,
@@ -109,7 +109,7 @@ describe('initialization', () => {
 
 	test('Activate db license_key (Case G)', async () => {
 		const dbKey = 'D0000-00000-00000-00000-00002';
-		const devMode = process.env['DEV'] === 'true';
+		const devMode = process.env['NODE_ENV'] === 'development';
 
 		const directus = await sandbox(database, {
 			dev: devMode,
