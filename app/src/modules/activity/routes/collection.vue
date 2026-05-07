@@ -96,6 +96,5 @@ const { activityHistoryTimeframe } = storeToRefs(useLicenseStore());
 	--v-notice-background-color: var(--theme--background-subdued);
 
 	margin: var(--content-padding);
-	margin-block-end: 0;
 }
 </style>
