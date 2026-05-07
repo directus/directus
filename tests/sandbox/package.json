@@ -39,6 +39,7 @@
 		"copyfiles": "catalog:",
 		"detect-port": "catalog:",
 		"get-port": "catalog:",
+		"knex": "catalog:",
 		"lodash-es": "catalog:",
 		"tsdown": "catalog:",
 		"tsx": "catalog:",
