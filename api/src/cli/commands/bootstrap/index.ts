@@ -8,6 +8,7 @@ import getDatabase, {
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
+import { getLicenseManager } from '../../../license/manager.js';
 import { useLogger } from '../../../logger/index.js';
 import { SettingsService } from '../../../services/settings.js';
 import { createAdmin } from '../../../utils/create-admin.js';
@@ -33,6 +34,9 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 		await runMigrations(database, 'latest');
 
 		const schema = await getSchema();
+
+		// HACK: cause Tims working on a correct fix
+		await getLicenseManager().initialize();
 
 		if (skipAdminInit == null) {
 			await createAdmin(schema);

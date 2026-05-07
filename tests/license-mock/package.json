@@ -1,0 +1,37 @@
+{
+	"name": "@directus/license-mock",
+	"version": "1.0.0",
+	"description": "Mock implmentation of the Directus license service",
+	"homepage": "https://directus.io",
+	"scripts": {
+		"build": "tsdown src/index.ts src/cli.ts --dts",
+		"dev": "tsdown -w"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"keywords": [],
+	"type": "module",
+	"author": "Nils Twelker (nils@directus.io)",
+	"private": true,
+	"packageManager": "pnpm@10.14.0",
+	"dependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@fastify/type-provider-typebox": "catalog:",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
+		"fastify": "catalog:",
+		"fastify-type-provider-zod": "catalog:",
+		"jose": "catalog:",
+		"lodash-es": "catalog:",
+		"tsdown": "catalog:",
+		"tsx": "catalog:",
+		"typebox": "catalog:",
+		"typescript": "catalog:",
+		"zod": "catalog:"
+	},
+	"engines": {
+		"node": ">=22"
+	}
+}
