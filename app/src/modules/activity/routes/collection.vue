@@ -2,11 +2,14 @@
 import { useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { RouterView } from 'vue-router';
 import ActivityNavigation from '../components/navigation.vue';
 import VInfo from '@/components/v-info.vue';
+import VNotice from '@/components/v-notice.vue';
 import { usePreset } from '@/composables/use-preset';
+import { useLicenseStore } from '@/stores/license';
 import { PrivateView } from '@/views/private';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -20,6 +23,8 @@ const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('di
 const { layoutWrapper } = useLayout(layout);
 
 const roleFilter = ref<Filter | null>(null);
+
+const { activityHistoryTimeframe } = storeToRefs(useLicenseStore());
 </script>
 
 <template>
@@ -47,6 +52,10 @@ const roleFilter = ref<Filter | null>(null);
 			<template #navigation>
 				<ActivityNavigation v-model:filter="roleFilter" />
 			</template>
+
+			<VNotice v-if="activityHistoryTimeframe !== null" type="info" icon="diamond" class="history-notice">
+				{{ $t('license.activity_history_notice', { timeframe: activityHistoryTimeframe }) }}
+			</VNotice>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
@@ -81,5 +90,12 @@ const roleFilter = ref<Filter | null>(null);
 
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
+}
+
+.history-notice {
+	--v-notice-background-color: var(--theme--background-subdued);
+
+	margin: var(--content-padding);
+	margin-block-end: 0;
 }
 </style>
