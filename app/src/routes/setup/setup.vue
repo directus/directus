@@ -36,11 +36,7 @@ const page = ref<'setup' | 'license'>('setup');
 
 const showAdminStep = computed(() => !info.value.onboarding?.adminInEnv);
 
-const showLicenseStep = computed(() => {
-	if (!info.value.onboarding) return false;
-	const { adminInEnv, licenseInEnv, projectOwnerInEnv } = info.value.onboarding;
-	if (licenseInEnv) return false;
-	return !adminInEnv && !projectOwnerInEnv;
+const showLicenseStep = computed(() => !info.value.onboarding?.licenseInEnv);
 });
 
 onMounted(() => {
