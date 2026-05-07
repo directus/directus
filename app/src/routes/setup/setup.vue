@@ -37,7 +37,6 @@ const page = ref<'setup' | 'license'>('setup');
 const showAdminStep = computed(() => !info.value.onboarding?.adminInEnv);
 
 const showLicenseStep = computed(() => !info.value.onboarding?.licenseInEnv);
-});
 
 onMounted(() => {
 	if (!showAdminStep.value && !showLicenseStep.value) {
