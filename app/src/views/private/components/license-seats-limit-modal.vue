@@ -22,7 +22,7 @@ const emit = defineEmits<{
 const router = useRouter();
 const licenseStore = useLicenseStore();
 
-const isEnterprisePlan = computed(() => licenseStore.info?.plan === 'enterprise');
+const isEnterprisePlan = computed(() => licenseStore.info?.type === 'enterprise');
 
 function close() {
 	emit('update:modelValue', false);
