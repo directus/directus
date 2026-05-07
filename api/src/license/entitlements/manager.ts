@@ -57,7 +57,7 @@ export class EntitlementManager {
 	/**
 	 * Replace the active license. Pass `null` to reset to the core license.
 	 */
-	setEntitlements(entitlements?: Entitlements | null): void {
+	setEntitlements(entitlements: Entitlements | null): void {
 		this.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
 	}
 

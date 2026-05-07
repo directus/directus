@@ -4,7 +4,7 @@
 	"description": "Mock implmentation of the Directus license service",
 	"homepage": "https://directus.io",
 	"scripts": {
-		"build": "tsdown src/index.ts src/cli.ts --dts",
+		"build": "tsdown src/index.ts src/run.ts --dts",
 		"dev": "tsdown -w"
 	},
 	"exports": {
