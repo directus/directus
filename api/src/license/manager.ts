@@ -509,7 +509,7 @@ export class LicenseManager {
 		const schema = await getSchema();
 		const pendingResolution: LicensePendingResolution[] = [];
 
-		let entitlements: Entitlements | undefined;
+		let entitlements: Entitlements | null = null;
 
 		if (options.licenseKey) {
 			const preview = await this.preview(options.licenseKey);
