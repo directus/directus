@@ -1515,8 +1515,7 @@ license:
       You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
   max_capacity:
     label: 'max capacity'
-    alert_danger: 'You have reached max capacity. Upgrade plan to unlock more.'
-    alert_danger_enterprise: 'You have reached your soft limit max capacity. Contact sales to purchase more add-ons.'
+    alert_danger: 'You have reached max capacity. Manage plan to unlock more.'
     alert_warning: 'You have {count} left. Upgrade your plan to unlock more.'
   manage_plan: Manage Plan
   collections_remaining: '{n} Collection Left | {n} Collections Left'

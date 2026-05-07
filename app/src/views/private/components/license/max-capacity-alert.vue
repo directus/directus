@@ -20,29 +20,13 @@ const remaining = computed(() => {
 
 const isAtCapacity = computed(() => remaining.value !== null && remaining.value <= 0);
 
-const noticeType = computed<'warning' | 'danger'>(() => (licenseStore.isEnterprise ? 'warning' : 'danger'));
-
 const isVisible = computed(() => !dismissed.value && isAtCapacity.value);
 </script>
 
 <template>
-	<VNotice
-		v-if="isVisible"
-		:type="noticeType"
-		:icon="licenseStore.isEnterprise ? 'warning' : 'dangerous'"
-		multiline
-		class="max-capacity-alert"
-	>
+	<VNotice v-if="isVisible" type="danger" icon="dangerous" multiline class="max-capacity-alert">
 		<template #title>
-			<span class="message">
-				<span>
-					{{
-						licenseStore.isEnterprise
-							? $t('license.max_capacity.alert_danger_enterprise')
-							: $t('license.max_capacity.alert_danger')
-					}}
-				</span>
-			</span>
+			<span class="message">{{ $t('license.max_capacity.alert_danger') }}</span>
 		</template>
 	</VNotice>
 </template>

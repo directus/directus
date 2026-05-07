@@ -77,9 +77,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
 
-	const isEnterprise = computed(() => info.value?.plan === 'enterprise');
-	const isTeam = computed(() => info.value?.plan === 'team');
-
 	function clearTimer() {
 		if (refreshTimer) {
 			clearTimeout(refreshTimer);
@@ -182,8 +179,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		isLicensed,
 		needsResolution,
 		customLLMEnabled,
-		isEnterprise,
-		isTeam,
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
