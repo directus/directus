@@ -763,14 +763,11 @@ export class LicenseManager {
 	}
 
 	public async refreshCache() {
-		console.log('refresh cache');
 		licenseCache = undefined;
 		const oldSource = this.source;
 
 		const { source: keySource, key } = await getLicenseKey();
 		const { token } = await getLicenseToken();
-
-		console.log('license key', key, token);
 
 		this.licenseKey = key;
 		this.licenseToken = token;
