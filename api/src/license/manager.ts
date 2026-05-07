@@ -266,7 +266,7 @@ export class LicenseManager {
 
 			license = await verifyLicense(token);
 
-			this.rpc.refreshCache();
+			await this.rpc.refreshCache();
 		} catch (err) {
 			error = err as Error;
 			await this.downgrade();
@@ -331,7 +331,7 @@ export class LicenseManager {
 			project_id: project_id!,
 		});
 
-		this.rpc.refreshCache();
+		await this.rpc.refreshCache();
 	}
 
 	private async verify(token: string): Promise<License | null> {
@@ -395,7 +395,7 @@ export class LicenseManager {
 					license_token: token,
 				});
 
-				this.rpc.refreshCache();
+				await this.rpc.refreshCache();
 
 				license = await verifyLicense(token);
 			} catch (err) {
@@ -760,11 +760,14 @@ export class LicenseManager {
 	}
 
 	public async refreshCache() {
+		console.log('refresh cache');
 		licenseCache = undefined;
 		const oldSource = this.source;
 
 		const { source: keySource, key } = await getLicenseKey();
 		const { token } = await getLicenseToken();
+
+		console.log('license key', key, token);
 
 		this.licenseKey = key;
 		this.licenseToken = token;
@@ -785,6 +788,6 @@ export class LicenseManager {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 		await settingsService.upsertSingleton({ license_token: null });
 
-		this.rpc.refreshCache();
+		await this.rpc.refreshCache();
 	}
 }
