@@ -77,6 +77,11 @@ export type Options = {
 	};
 	/** Enable or disable caching */
 	cache: boolean;
+	/** Lifecycle hooks */
+	hooks: {
+		/** Runs after bootstrap (+ load schema) but before the api starts */
+		beforeApi?: (ctx: { env: Env; logger: Logger }) => Promise<void> | void;
+	};
 };
 
 export type Sandboxes = {
@@ -129,6 +134,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				license: false,
 			},
 			cache: false,
+			hooks: {},
 		} satisfies Options,
 		options,
 	);
@@ -199,6 +205,7 @@ export async function sandboxes(
 					await bootstrap(env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
 
+					await opts.hooks.beforeApi?.({ env, logger });
 					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger };
 				} catch (e) {
 					logger.error(String(e));
@@ -256,6 +263,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		project = await dockerUp(database, opts, env, logger);
 		await bootstrap(env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
+		await opts.hooks.beforeApi?.({ env, logger });
 		apis = await startApi(opts, env, logger);
 		if (opts.app !== false) app = await startApp(opts, env, logger);
 
