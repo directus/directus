@@ -581,6 +581,7 @@ function useUrls() {
 	container-type: inline-size;
 	inline-size: 100%;
 	block-size: 100%;
+	overflow: hidden;
 
 	&.header-expanded {
 		--preview--header--height: var(--header-bar-height);
