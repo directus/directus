@@ -59,18 +59,30 @@ export async function buildApi(opts: Options, logger: Logger, onRebuild: () => v
 	}
 }
 
-export async function bootstrap(env: Env, logger: Logger) {
+export async function bootstrap(opts: Options, env: Env, logger: Logger) {
 	const start = performance.now();
 	logger.info('Bootstraping Database');
 	const port = '8055';
 
-	const bootstrap = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'bootstrap'], {
-		env: {
-			...env,
-			PUBLIC_URL: `http://${env.HOST}:${port}`,
-			PORT: port,
-		},
-	});
+	let bootstrap: ChildProcessWithoutNullStreams;
+
+	if (opts.dev) {
+		bootstrap = spawn('pnpm', ['tsx', join(apiFolder, 'src', 'cli', 'run.ts'), 'bootstrap'], {
+			env: {
+				...env,
+				PUBLIC_URL: `http://${env.HOST}:${port}`,
+				PORT: port,
+			},
+		});
+	} else {
+		bootstrap = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'bootstrap'], {
+			env: {
+				...env,
+				PUBLIC_URL: `http://${env.HOST}:${port}`,
+				PORT: port,
+			},
+		});
+	}
 
 	bootstrap.on('error', (err) => {
 		bootstrap.kill();

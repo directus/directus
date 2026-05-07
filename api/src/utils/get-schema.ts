@@ -5,7 +5,7 @@ import { systemCollectionRows } from '@directus/system-data';
 import type { Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { mapValues, pick } from 'lodash-es';
+import { mapValues } from 'lodash-es';
 import { useBus } from '../bus/index.js';
 import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
@@ -125,14 +125,25 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	const schemaOverview = await schemaInspector.overview();
 
-	const allCollections = await database.select('*').from('directus_collections');
+	let collections;
 
-	const collections = [
-		...allCollections
-			.filter((c) => !('status' in c) || c['status'] === 'active')
-			.map((c) => pick(c, 'collection', 'singleton', 'note', 'sort_field', 'accountability')),
-		...systemCollectionRows,
-	];
+	// TODD: Tim has to fix this
+	if (schemaOverview['directus_collections']?.columns?.['status']) {
+		collections = [
+			...(await database
+				.select('collection', 'singleton', 'note', 'sort_field', 'accountability', 'status')
+				.from('directus_collections')
+				.where('status', '=', 'active')),
+			...systemCollectionRows,
+		];
+	} else {
+		collections = [
+			...(await database
+				.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
+				.from('directus_collections')),
+			...systemCollectionRows,
+		];
+	}
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
