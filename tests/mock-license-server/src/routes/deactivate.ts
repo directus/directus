@@ -14,7 +14,7 @@ export async function deactivateRoute(app: FastifyInstance) {
 		async (req, res) => {
 			const license_key = req.headers['directus-license-key'];
 			const project_id = req.headers['directus-project-id'];
-			const public_url = req.headers['directus-project-url'];
+			const public_url = req.headers['directus-public-url'];
 
 			const license = Object.values(licenses).find(
 				(license) =>

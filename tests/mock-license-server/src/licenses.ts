@@ -1,8 +1,4 @@
-import type { License as Token } from '@directus/license';
-
-type Addon = {
-	name: string;
-};
+import type { LicenseAddon, License as Token } from '@directus/license';
 
 export type License = {
 	name: string;
@@ -12,7 +8,7 @@ export type License = {
 	max_projects: number;
 	projects: { id: string; url: string }[];
 	/** Available Addons */
-	addons: Addon[];
+	addons: LicenseAddon[];
 };
 
 export const licenses: Record<string, License> = {
@@ -26,7 +22,6 @@ export const licenses: Record<string, License> = {
 		meta: {
 			name: 'UNLIMITED',
 			version: '1',
-			public_url: 'http://localhost',
 			grace_period: 60 * 60 * 24,
 			validation_interval: 60 * 60,
 			expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,

@@ -28,7 +28,7 @@ export async function previewRoute(app: FastifyInstance) {
 			if (!license) return res.status(404).send(notFoundError('License not available'));
 
 			return res.status(200).send({
-				name: license.name,
+				plan_name: license.name,
 				production_enabled:
 					license.entitlements.production_enabled.override ?? license.entitlements.production_enabled.default,
 				expires_at: license.meta.expires_at,

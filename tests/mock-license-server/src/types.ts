@@ -4,7 +4,7 @@ export const LicenseAuthHeaders = Type.Object(
 	{
 		'directus-license-key': Type.String({ minLength: 1 }),
 		'directus-project-id': Type.String({ minLength: 1 }),
-		'directus-project-url': Type.String({ minLength: 1 }),
+		'directus-public-url': Type.String({ minLength: 1 }),
 	},
 	{
 		additionalProperties: true,
