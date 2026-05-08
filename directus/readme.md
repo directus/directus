@@ -49,6 +49,13 @@ storage, all connected via Railway's private network for secure, zero-egress com
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/directus-official?referralCode=b2RDZT&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
+### Deploy on Sealos
+
+Fully provisioned — one click to deploy Directus with PostgreSQL database, Redis cache, persistent file storage, and
+optional S3-compatible object storage, all connected via Sealos' private network for secure, zero-egress communication.
+
+[![Deploy on Sealos](https://sealos.io/Deploy-on-Sealos.svg)](https://sealos.io/products/app-store/directus)
+
 <br />
 
 ## 🤔 Community Help
