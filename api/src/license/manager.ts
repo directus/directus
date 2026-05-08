@@ -21,19 +21,16 @@ import {
 	updateAddonQuantity,
 	updateKey,
 } from '@directus/license';
-// LICENSE_MOCK shim to bypass real JWT verification for local dev/QA scenarios.
-import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import licenseCheckSchedule from '../schedules/license.js';
-import { AccessService, UsersService } from '../services/index.js';
+import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
-import { fetchAccessRoles } from '../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../utils/get-schema.js';
 import { useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
+import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
@@ -505,18 +502,16 @@ export class LicenseManager {
 		let entitlements: Entitlements | null = null;
 
 		if (options.licenseKey) {
+			// required resolution when changing tier
 			const preview = await this.preview(options.licenseKey);
 			entitlements = preview.entitlements;
-		} else if (options.licenseKey !== null) {
-			// Ensure we are in lockdown, if not return no pending
-			const isLocked = await this.isLocked();
-
-			if (!isLocked) {
-				return [];
-			}
+		} else if (!('licenseKey' in options)) {
+			// possible resolution during current tier
+			const license = await getLicense();
+			entitlements = license.entitlements;
 		}
 
-		// New manager to build entitlements for future license
+		// New manager to ensure no conflicts with main manager
 		const entitlementManager = new EntitlementManager();
 		entitlementManager.setEntitlements(entitlements);
 
@@ -539,126 +534,15 @@ export class LicenseManager {
 		const seats = await entitlementManager.check('seats');
 
 		if (seats.allowed == false) {
-			const accessService = new AccessService({ schema });
+			const activeSeats = await getActiveSeats({ adminId: options.adminId });
 
-			const accessRows = await accessService.readByQuery({
-				fields: ['role', 'user.id', 'user.status', 'user.role', 'policy.app_access', 'policy.admin_access'],
-			});
-
-			const adminRoles = new Set<string>();
-			const appRoles = new Set<string>();
-			const adminUsers = new Set<string>();
-			const appUsers = new Set<string>();
-
-			for (const accessRow of accessRows) {
-				const isAdmin = toBoolean(accessRow['policy']?.['admin_access']);
-				const isApp = !isAdmin && toBoolean(accessRow['policy']?.['app_access']);
-
-				if (!isAdmin && !isApp) continue;
-
-				if (accessRow['user'] && accessRow['user'].status === 'active') {
-					if (isAdmin) {
-						adminUsers.add(accessRow['user'].id);
-					} else if (
-						adminUsers.has(accessRow['user'].id) === false &&
-						adminRoles.has(accessRow['user']?.role) === false
-					) {
-						appUsers.add(accessRow['user'].id);
-					}
-				}
-
-				if (accessRow['role']) {
-					if (isAdmin) {
-						adminRoles.add(accessRow['role']);
-					} else {
-						appRoles.add(accessRow['role']);
-					}
-				}
-			}
-
-			const { adminRoles: allAdminRoles, appRoles: allAppRoles } = await fetchAccessRoles(
-				{
-					adminRoles,
-					appRoles,
-				},
-				{ knex: await getDatabase() },
-			);
-
-			const usersService = new UsersService({ schema });
-
-			const adminCandidates = await usersService.readByQuery({
-				fields: ['id', 'first_name', 'last_name', 'avatar'],
-				filter: {
-					_and: [
-						{
-							id: {
-								_neq: options.adminId,
-							},
-						},
-						{
-							_or: [
-								{
-									id: {
-										_in: Array.from(adminUsers),
-									},
-								},
-								{
-									role: {
-										_in: Array.from(allAdminRoles),
-									},
-								},
-							],
-						},
-						{
-							status: {
-								_eq: 'active',
-							},
-						},
-					],
-				},
-			});
-
-			const appCandidates = await usersService.readByQuery({
-				fields: ['id', 'first_name', 'last_name', 'avatar'],
-				filter: {
-					_and: [
-						{
-							id: {
-								_neq: options.adminId,
-							},
-						},
-						{
-							_or: [
-								{
-									id: {
-										_in: Array.from(appUsers),
-										_nin: Array.from(adminUsers),
-									},
-								},
-								{
-									role: {
-										_in: Array.from(allAppRoles),
-										_nin: Array.from(allAdminRoles),
-									},
-								},
-							],
-						},
-						{
-							status: {
-								_eq: 'active',
-							},
-						},
-					],
-				},
-			});
-
-			if (adminCandidates.length || appCandidates.length) {
+			if (activeSeats && activeSeats.length) {
 				pendingResolution.push({
 					key: 'seats',
 					kind: 'limit',
 					limit: seats.hardLimit,
 					usage: seats.usage,
-					candidates: [...appCandidates, ...adminCandidates.map((admin) => ({ ...admin, admin: true }))] as any,
+					candidates: activeSeats,
 				});
 			}
 		}
