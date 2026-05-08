@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion } from '@directus/types';
 import { computed } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { DRAFT_VERSION_KEY } from '@/constants';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 
 const { version } = defineProps<{
@@ -13,7 +13,7 @@ const { version } = defineProps<{
 
 const kind = computed(() => {
 	if (!version) return 'primary';
-	if (version.key === DRAFT_VERSION_KEY) return 'secondary';
+	if (version.key === VERSION_KEY_DRAFT) return 'secondary';
 	return 'neutral';
 });
 </script>
