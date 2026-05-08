@@ -392,7 +392,7 @@ export class LicenseManager {
 
 				this.rpc.refreshCache();
 
-				license = await verifyLicense(token);
+				license = await this.verify(token);
 			} catch (err) {
 				error = err as Error;
 				logger.error(err);
