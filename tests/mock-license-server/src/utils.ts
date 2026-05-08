@@ -56,7 +56,7 @@ export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense
 			name: `mock-${key}`,
 			meta: {
 				name: 'TEAM',
-				version: '1',
+				version: '2026-05-08',
 				grace_period: 10_000,
 				validation_interval: 1000,
 				expires_at: now + 100_000,
