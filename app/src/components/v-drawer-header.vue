@@ -77,7 +77,7 @@ defineEmits<{
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: 1.5rem;
+	gap: var(--header-bar-gap);
 	inline-size: 100%;
 	block-size: var(--header-bar-height);
 	padding-inline: var(--content-padding);
@@ -104,6 +104,7 @@ defineEmits<{
 
 	&.end {
 		flex-shrink: 0;
+		max-inline-size: calc(100vw - var(--sidebar-collapsed-width) - var(--content-padding) * 2 - var(--header-bar-gap));
 	}
 }
 
