@@ -2,12 +2,13 @@ import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqu
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
+import jwt from 'jsonwebtoken';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { verifyJWT } from '../utils/jwt.js';
-import { ItemsService, MailService, UsersService } from './index.js';
+import { ItemsService, MailService, SettingsService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -24,6 +25,8 @@ vi.mock('./mail', () => {
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		EMAIL_TEMPLATES_PATH: './templates',
+		EMAIL_VERIFICATION_TOKEN_TTL: '1d',
+		REGISTER_STALL_TIME: 0,
 		USERS_ADMIN_ACCESS_LIMIT: 3,
 		USERS_APP_ACCESS_LIMIT: 3,
 		USERS_API_ACCESS_LIMIT: 3,
@@ -65,6 +68,7 @@ describe('Integration Tests', () => {
 		});
 
 		const superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('user-id-1');
+		const superUpdateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('user-id-1');
 		const superUpdateManySpy = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue(['user-id-2']);
 
 		const checkUniqueEmailsSpy = vi
@@ -479,6 +483,66 @@ describe('Integration Tests', () => {
 				});
 
 				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
+			});
+		});
+
+		describe('registerUser', () => {
+			it('should sign email verification tokens with the resolved secret', async () => {
+				vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+					public_registration: true,
+					public_registration_verify_email: true,
+					public_registration_role: 'role-id',
+				});
+
+				const signSpy = vi.spyOn(jwt, 'sign');
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(undefined);
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.registerUser({
+					email: 'test@example.com',
+					password: 'Password123!',
+					verification_url: 'https://example.com/verify',
+				});
+
+				expect(signSpy).toHaveBeenCalledWith(
+					{ email: 'test@example.com', scope: 'pending-registration' },
+					'test-secret',
+					{
+						expiresIn: '1d',
+						issuer: 'directus',
+					},
+				);
+
+				expect(mailService.send).toHaveBeenCalledTimes(1);
+			});
+		});
+
+		describe('verifyRegistration', () => {
+			it('should verify registration tokens with the resolved secret', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'pending-registration' });
+
+				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+					id: 'user-id-18',
+					status: 'unverified',
+					email: 'test@example.com',
+				});
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.verifyRegistration('fake-token');
+
+				expect(verifyJWT).toHaveBeenCalledWith('fake-token', 'test-secret');
+				expect(superUpdateOneSpy).toHaveBeenCalledWith('user-id-18', { status: 'active' });
 			});
 		});
 	});
