@@ -205,7 +205,6 @@ keep: Оставить
 version: Версия
 version_key: Ключ Версии
 version_name: Название Версии
-main_version: Основная
 your_version: Ваша версия
 switch_version: Сменить Версию
 switch_version_copy: Вы уверены, что хотите переключиться на версию "{version}"? Несохраненные изменения будут потеряны.
@@ -213,7 +212,6 @@ create_version: Создать Версию
 rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
-promote_version: Повысить версию
 apply: Применить
 select_all_differences: Выбрать все различия
 delete_version: Удалить версию
@@ -658,7 +656,6 @@ manual_string: Введённая вручную строка
 save_and_create_new: Сохранить и создать новый
 save_and_stay: Сохранить и остаться
 save_and_quit: Сохранить и выйти
-save_and_return_to_main: Сохранить и вернуться на главную
 save_as_copy: Сохранить и копировать
 add_existing: Добавить существующий
 creating_items: Создание элементов

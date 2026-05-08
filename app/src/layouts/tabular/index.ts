@@ -1,4 +1,5 @@
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
 import { debounce, flatten } from 'lodash';
@@ -12,6 +13,7 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
@@ -58,7 +60,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
 		);
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
+		const routeVersionKey = useVersionQuery();
+		const versionKey = computed(() => (props.selectMode ? null : routeVersionKey.value));
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
 		const {
 			items,
@@ -81,6 +86,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filter,
 			search,
 			filterSystem,
+			version: versionKey,
 		});
 
 		const { tableSort, tableHeaders, tableRowHeight, onSortChange, onAlignChange, activeFields, tableSpacing } =
@@ -100,9 +106,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
+		const isVersion = computed(() => !!versionKey.value && !isPublishedVersionKey(versionKey.value));
+
+		const itemsOrVersions = computed(() => {
+			if (!isVersion.value) return items.value;
+
+			return items.value.map((item: Record<string, any>) => ({
+				...item,
+				_versionId: item.$meta?.version_id ?? null,
+			}));
+		});
+
 		return {
 			tableHeaders,
-			items,
+			items: itemsOrVersions,
 			loading,
 			loadingItemCount,
 			error,
@@ -136,6 +153,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			fieldsWithRelationalAliased,
 			aliasedFields,
 			aliasedKeys,
+			versionKey,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -145,8 +163,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
-			getTotalCount();
-			getItemCount();
+			getTotalCount(true);
+			getItemCount(true);
 		}
 
 		function download() {
@@ -159,6 +177,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function selectAll() {
+			if (isVersion.value) {
+				selection.value = items.value.map((item) => item.$meta?.version_id).filter((id): id is string => !!id);
+
+				return;
+			}
+
 			if (!primaryKeyField.value) return;
 			const pk = primaryKeyField.value;
 			selection.value = items.value.map((item) => item[pk.field]);

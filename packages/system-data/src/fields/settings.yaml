@@ -877,6 +877,70 @@ fields:
     options:
       label: $t:fields.directus_settings.ai_system_prompt
 
+  - field: ai_translation_divider
+    interface: presentation-divider
+    options:
+      inlineTitle: true
+      color: 'var(--theme--foreground-subdued)'
+      title: $t:translation
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_translation_default_model
+    interface: select-dropdown
+    note: $t:fields.directus_settings.ai_translation_default_model_note
+    group: ai_group
+    width: half
+    options:
+      allowNone: true
+      choices: []
+
+  - field: ai_translation_glossary
+    interface: list
+    special:
+      - cast-json
+    note: $t:fields.directus_settings.ai_translation_glossary_note
+    options:
+      template: '{{term}}'
+      limit: 200
+      fields:
+        - field: term
+          name: $t:fields.directus_settings.ai_glossary_term
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: $t:fields.directus_settings.ai_glossary_term_placeholder
+        - field: translation_note
+          name: $t:fields.directus_settings.ai_glossary_note
+          type: string
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            required: false
+            width: half
+            options:
+              placeholder: $t:fields.directus_settings.ai_glossary_note_placeholder
+    width: full
+    group: ai_group
+
+  - field: ai_translation_style_guide
+    interface: input-rich-text-md
+    note: $t:fields.directus_settings.ai_translation_style_guide_note
+    group: ai_group
+    width: full
+    options:
+      label: $t:fields.directus_settings.ai_translation_style_guide
+      placeholder: $t:fields.directus_settings.ai_translation_style_guide_placeholder
+
   - field: ai_openai_compatible_divider
     interface: presentation-divider
     options:

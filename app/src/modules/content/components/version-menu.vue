@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -21,19 +22,17 @@ import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { DRAFT_VERSION_KEY } from '@/constants';
-import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
-import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 
 interface Props {
 	collection: string;
-	primaryKey: PrimaryKey;
-	updateAllowed: boolean;
+	primaryKey: PrimaryKey | null;
 	hasEdits: boolean;
 	currentVersion: ContentVersionMaybeNew | null;
 	versions: ContentVersionMaybeNew[];
+	deleteVersionLoading?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -41,15 +40,15 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
 	add: [version: ContentVersion];
 	update: [updates: { key: string; name?: string | null }];
-	delete: [deleteOnPromote: boolean];
+	delete: [versionId: PrimaryKey];
 	switch: [version: ContentVersionMaybeNew | null];
 }>();
 
-const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
+const { collection, primaryKey, hasEdits, currentVersion, versions, deleteVersionLoading } = toRefs(props);
 
 const { t } = useI18n();
 
-const draftVersion = computed(() => versions.value.find((version) => version.key === DRAFT_VERSION_KEY));
+const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT));
 const localVersions = computed(() => versions.value.filter((version) => version.type === 'local'));
 
 const {
@@ -74,13 +73,12 @@ const {
 const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renameVersion, isRenameDisabled } =
 	useRenameDialog();
 
-const { deleting, deleteVersion } = useDelete();
 const { deleteDialogActive, onDeleteVersion } = useDeleteDialog();
-
-const { comparisonModalActive, comparableVersion, onPromoteComplete } = useComparisonDialog();
 
 const { isCurrentVersionGlobal, isCurrentVersionNew, canAccessGlobalVersion, isVersionKeyGlobal, isVersionNew } =
 	useGlobalVersions();
+
+const isNewItem = computed(() => primaryKey.value === '+');
 
 const newVersionKeyReservedTooltip = computed(() =>
 	isVersionKeyGlobal(newVersionKey.value) ? t('reserved_version_key', { key: newVersionKey.value }) : undefined,
@@ -238,71 +236,17 @@ function useRenameDialog() {
 	}
 }
 
-function useDelete() {
-	const deleting = ref(false);
-
-	return {
-		deleting,
-		deleteVersion,
-	};
-
-	async function deleteVersion(deleteOnPromote = false) {
-		if (!currentVersion.value) return;
-
-		deleting.value = true;
-
-		try {
-			await api.delete(`/versions/${currentVersion.value.id}`);
-
-			emit('delete', deleteOnPromote);
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			deleting.value = false;
-		}
-	}
-}
-
 function useDeleteDialog() {
 	const deleteDialogActive = ref(false);
 
-	return {
-		deleteDialogActive,
-		onDeleteVersion,
-	};
+	return { deleteDialogActive, onDeleteVersion };
 
 	async function onDeleteVersion() {
-		if (deleting.value) return;
+		const versionId = currentVersion.value?.id;
+		if (!versionId || deleteVersionLoading.value) return;
 
-		await deleteVersion();
+		emit('delete', versionId);
 		deleteDialogActive.value = false;
-	}
-}
-
-function useComparisonDialog() {
-	const comparisonModalActive = ref(false);
-
-	const comparableVersion = computed(() => {
-		if (currentVersion.value === null) return null;
-		if (currentVersion.value.id === '+') return undefined;
-		return currentVersion.value as ContentVersionWithType;
-	});
-
-	return {
-		comparisonModalActive,
-		comparableVersion,
-		onPromoteComplete,
-	};
-
-	async function onPromoteComplete(deleteOnPromote: boolean) {
-		comparisonModalActive.value = false;
-
-		if (deleteOnPromote) {
-			await deleteVersion(true);
-			return;
-		}
-
-		emit('switch', null);
 	}
 }
 
@@ -344,13 +288,19 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 		</template>
 
 		<VList class="version-list">
-			<VListItem class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
+			<VListItem
+				class="version-item"
+				clickable
+				:active="currentVersion === null"
+				:disabled="isNewItem"
+				@click="switchVersion(null)"
+			>
 				<VListItemIcon class="version-item-icon">
-					<span v-tooltip="$t('content_edited')" class="edit-dot edit-dot-primary" />
+					<span v-if="!isNewItem" v-tooltip="$t('content_edited')" class="edit-dot edit-dot-primary" />
 				</VListItemIcon>
 
 				<VListItemContent>
-					{{ $t('main_version') }}
+					{{ $t('published') }}
 				</VListItemContent>
 			</VListItem>
 
@@ -395,7 +345,12 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 			<template v-if="createVersionsAllowed">
 				<VDivider />
 
-				<VListItem clickable @click="createDialogActive = true">
+				<VListItem
+					v-tooltip="isNewItem ? $t('version_create_item_less') : undefined"
+					:disabled="isNewItem"
+					clickable
+					@click="createDialogActive = true"
+				>
 					<VListItemIcon>
 						<VIcon name="add" />
 					</VListItemIcon>
@@ -406,14 +361,6 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 
 			<template v-if="currentVersion !== null">
 				<VDivider />
-
-				<VListItem v-if="updateAllowed" :disabled="isCurrentVersionNew" clickable @click="comparisonModalActive = true">
-					<VListItemIcon>
-						<VIcon name="arrow_upload_progress" />
-					</VListItemIcon>
-
-					<VListItemContent>{{ $t('promote_version') }}</VListItemContent>
-				</VListItem>
 
 				<VListItem v-if="updateVersionsAllowed && !isCurrentVersionGlobal" clickable @click="openRenameDialog">
 					<VListItemIcon>
@@ -440,25 +387,13 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 		</VList>
 	</VMenu>
 
-	<ComparisonModal
-		v-if="comparableVersion"
-		v-model="comparisonModalActive"
-		:delete-versions-allowed
-		:collection
-		:primary-key
-		mode="version"
-		:current-version="comparableVersion"
-		@cancel="comparisonModalActive = false"
-		@promote="onPromoteComplete"
-	/>
-
 	<VDialog v-model="switchDialogActive" @esc="switchDialogActive = false" @apply="switchVersion">
 		<VCard>
 			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
 			<VCardText>
 				{{
 					$t('switch_version_copy', {
-						version: switchTarget ? switchTarget.name || switchTarget.key : $t('main_version'),
+						version: switchTarget ? switchTarget.name || switchTarget.key : $t('published'),
 					})
 				}}
 			</VCardText>
@@ -560,7 +495,7 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 			</VCardTitle>
 			<VCardActions>
 				<VButton secondary @click="deleteDialogActive = false">{{ $t('cancel') }}</VButton>
-				<VButton :loading="deleting" kind="danger" @click="onDeleteVersion">
+				<VButton :loading="deleteVersionLoading" kind="danger" @click="onDeleteVersion">
 					{{ $t(isCurrentVersionGlobal ? 'discard_label' : 'delete_label') }}
 				</VButton>
 			</VCardActions>

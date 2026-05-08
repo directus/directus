@@ -47,7 +47,15 @@ const { active: isGroupOpen } = useGroupable({
 
 const isBookmarkActive = computed(() => 'bookmark' in route.query);
 
-const to = computed(() => (props.collection.schema ? getCollectionRoute(props.collection.collection) : ''));
+const to = computed(() => {
+	if (!props.collection.schema) return '';
+
+	if (props.collection.meta?.singleton) {
+		return { name: 'content-singleton', params: { collection: props.collection.collection } };
+	}
+
+	return getCollectionRoute(props.collection.collection);
+});
 
 const matchesSearch = computed(() => {
 	if (!props.search || props.search.length < 3) return true;
