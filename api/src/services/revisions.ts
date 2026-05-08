@@ -4,6 +4,8 @@ import { getHistoryFilterQuery } from '../utils/get-history-filter-query.js';
 import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
+	private queryCache = new WeakMap<Query, Query>();
+
 	constructor(options: AbstractServiceOptions) {
 		super('directus_revisions', options);
 	}
@@ -61,14 +63,26 @@ export class RevisionsService extends ItemsService {
 			return super.readByQuery(query, opts);
 		}
 
-		const historyQuery = getHistoryFilterQuery(query, 'revision_historical_timeframe', (sinceDate) => ({
-			activity: {
-				timestamp: {
-					_gte: sinceDate.toISOString(),
-				},
-			},
-		}));
+		const historyQuery = this.getLimitedHistoryQuery(query);
 
 		return super.readByQuery(historyQuery, opts);
+	}
+
+	getLimitedHistoryQuery(query: Query) {
+		let cachedQuery = this.queryCache.get(query);
+
+		if (!cachedQuery) {
+			cachedQuery = getHistoryFilterQuery(query, 'revision_historical_timeframe', (sinceDate) => ({
+				activity: {
+					timestamp: {
+						_gte: sinceDate.toISOString(),
+					},
+				},
+			}));
+
+			this.queryCache.set(query, cachedQuery);
+		}
+
+		return cachedQuery;
 	}
 }

@@ -3,7 +3,7 @@ import type { Filter, Query } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { getEntitlementManager } from '../license/index.js';
 
-type HistoryFilterBuilder = (sinceDate: Date) => Filter;
+export type HistoryFilterBuilder = (sinceDate: Date) => Filter;
 
 export function getHistoryFilterQuery(
 	query: Query,
