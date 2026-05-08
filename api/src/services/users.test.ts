@@ -28,6 +28,7 @@ vi.mock('@directus/env', () => ({
 		EMAIL_TEMPLATES_PATH: './templates',
 		EMAIL_VERIFICATION_TOKEN_TTL: '1d',
 		REGISTER_STALL_TIME: 0,
+		USER_REGISTER_URL_ALLOW_LIST: 'https://example.com/verify',
 		USERS_ADMIN_ACCESS_LIMIT: 3,
 		USERS_APP_ACCESS_LIMIT: 3,
 		USERS_API_ACCESS_LIMIT: 3,
@@ -79,6 +80,13 @@ describe('Integration Tests', () => {
 		const clearUserSessionsSpy = vi
 			.spyOn(UsersService.prototype as any, 'clearUserSessions')
 			.mockResolvedValue(() => vi.fn());
+
+		const mockGetUserByEmail = (user: unknown) => {
+			const getUserByEmailSpy = vi.spyOn(UsersService.prototype as any, 'getUserByEmail');
+
+			getUserByEmailSpy.mockReset();
+			getUserByEmailSpy.mockResolvedValueOnce(user);
+		};
 
 		beforeEach(() => {
 			_cache.secret = null;
@@ -367,7 +375,7 @@ describe('Integration Tests', () => {
 			vi.spyOn(UsersService.prototype as any, 'inviteUrl').mockImplementation(() => vi.fn());
 
 			it('should invite new users', async () => {
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(undefined);
+				mockGetUserByEmail(undefined);
 
 				const service = new UsersService({
 					knex: db,
@@ -398,7 +406,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock an invited user
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					status: 'invited',
 					role: 'invite-role',
 				});
@@ -418,7 +426,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock an active user
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					status: 'active',
 					role: 'invite-role',
 				});
@@ -444,13 +452,12 @@ describe('Integration Tests', () => {
 				};
 
 				// mock an invited user with different role
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(mockUser);
+				mockGetUserByEmail(mockUser);
 
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([mockUser.id]);
-				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
+				expect(superUpdateOneSpy).toHaveBeenCalledWith(mockUser.id, { role: 'invite-role' }, {});
 			});
 		});
 
@@ -458,7 +465,7 @@ describe('Integration Tests', () => {
 			it('should throw InvalidInviteError when user is not in invited status', async () => {
 				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'invite' });
 
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					id: 'user-id',
 					status: 'active',
 					email: 'test@example.com',
@@ -497,7 +504,7 @@ describe('Integration Tests', () => {
 
 				const signSpy = vi.spyOn(jwt, 'sign');
 
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(undefined);
+				mockGetUserByEmail(undefined);
 
 				const mailService = new MailService({ schema });
 
@@ -530,7 +537,7 @@ describe('Integration Tests', () => {
 			it('should verify registration tokens with a secret when SECRET is not configured', async () => {
 				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'pending-registration' });
 
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					id: 'user-id-18',
 					status: 'unverified',
 					email: 'test@example.com',
