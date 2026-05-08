@@ -8,6 +8,7 @@ import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
+import VersionChip from '../components/version-chip.vue';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -15,7 +16,6 @@ import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
-import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -370,11 +370,8 @@ function clearFilters() {
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
 			<template #title-outer:append>
 				<VMenu v-if="isVersioned" show-arrow placement="bottom">
-					<template #activator="{ toggle, active }">
-						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ versionName }}
-							<VIcon small name="arrow_drop_down" />
-						</VChip>
+					<template #activator="{ toggle }">
+						<VersionChip :version="version ? { key: version, name: null } : null" @click="toggle" />
 					</template>
 
 					<VList>
@@ -647,24 +644,5 @@ function clearFilters() {
 	justify-content: center;
 	inline-size: 2rem;
 	block-size: 2rem;
-}
-
-.version-select-activator {
-	--v-chip-padding: 0 0.3125rem 0 0.6875rem;
-	--v-chip-color: var(--theme--foreground-accent);
-	--v-chip-color-hover: var(--v-chip-color);
-	--v-chip-background-color-hover: color-mix(in srgb, var(--theme--background), var(--theme--foreground) 10%);
-
-	margin-inline-start: 0.5rem;
-
-	&.active {
-		--v-chip-color: var(--foreground-inverted);
-		--v-chip-background-color: var(--theme--primary);
-		--v-chip-background-color-hover: var(--v-chip-background-color);
-	}
-
-	&.v-chip {
-		border-width: 0;
-	}
 }
 </style>
