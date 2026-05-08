@@ -108,7 +108,7 @@ export type Api = {
 export async function startApi(opts: Options, env: Env, logger: Logger) {
 	const apiCount = Math.max(1, Number(opts.instances));
 
-	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(opts.port) + i * (opts.inspect ? 2 : 1));
+	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(opts.port ?? 8055) + i * (opts.inspect ? 2 : 1));
 
 	return (await Promise.all(
 		apiPorts.map((port) => {

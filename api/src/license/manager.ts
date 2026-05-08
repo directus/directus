@@ -140,7 +140,7 @@ export class LicenseManager {
 						await this.activate(envKey, { skipStoreUpdate: true });
 					} else if (envKey !== dbKey) {
 						// CASE B
-						await this.update(dbKey, { oldKey: envKey });
+						await this.update(envKey, { oldKey: dbKey });
 					} else {
 						// CASE C
 						await this.refresh({ key: envKey, token: dbToken ?? null, skipStoreUpdate: true });
@@ -246,9 +246,12 @@ export class LicenseManager {
 	 * Activates a new license and overwrites an existing one
 	 */
 	public async activate(key: string) {
-		if (this.licenseKey || this.licenseToken) throw new ForbiddenError({ reason: 'A license was already activated' });
-
 		this.assertCanManageLicense();
+
+		// Keys cannot be directly activated if one is already active, must go via update route
+		if (this.licenseKey) {
+			throw new ForbiddenError({ reason: 'A license was already activated' });
+		}
 
 		let license: License | null = null;
 		let error: Error | undefined;
@@ -272,7 +275,7 @@ export class LicenseManager {
 
 			license = await verifyLicense(token);
 
-			this.rpc.refreshCache();
+			await this.rpc.refreshCache();
 		} catch (err) {
 			error = err as Error;
 			await this.downgrade();
@@ -337,7 +340,7 @@ export class LicenseManager {
 			project_id: project_id!,
 		});
 
-		this.rpc.refreshCache();
+		await this.rpc.refreshCache();
 	}
 
 	private async verify(token: string): Promise<License | null> {
@@ -401,7 +404,7 @@ export class LicenseManager {
 					license_token: token,
 				});
 
-				this.rpc.refreshCache();
+				await this.rpc.refreshCache();
 
 				license = await verifyLicense(token);
 			} catch (err) {
@@ -791,6 +794,6 @@ export class LicenseManager {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 		await settingsService.upsertSingleton({ license_token: null });
 
-		this.rpc.refreshCache();
+		await this.rpc.refreshCache();
 	}
 }

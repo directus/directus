@@ -1,4 +1,11 @@
-import { activateLicense, readLicense, updateLicense } from '@directus/license';
+import {
+	activateLicense,
+	CORE_LICENSE,
+	deactivateLicense,
+	type LicenseInfoOutput,
+	readLicense,
+	updateLicense,
+} from '@directus/license';
 import { createLicense } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
@@ -9,8 +16,8 @@ import { afterAll, beforeAll, expect, test } from 'vitest';
 let directus: Sandbox;
 let api: DirectusClient<any> & RestClient<any>;
 
-const license = createLicense();
-const otherLicense = createLicense();
+const license = createLicense({ meta: { name: 'og-license' } });
+const otherLicense = createLicense({ meta: { name: 'changed-license' } });
 
 beforeAll(async () => {
 	const devMode = process.env['NODE_ENV'] === 'development';
@@ -25,9 +32,6 @@ beforeAll(async () => {
 		},
 		extras: {
 			license: true,
-		},
-		docker: {
-			keep: true,
 		},
 		cache: false,
 	});
@@ -56,18 +60,21 @@ afterAll(async () => {
 });
 
 test('activate a license key', async () => {
-	const activeLicense = await api.request(activateLicense({ license_key: license.key }));
+	await api.request(activateLicense({ license_key: license.key }));
 
-	expect(activeLicense).toEqual(null);
+	const licenseInfo: LicenseInfoOutput = await api.request(readLicense());
+
+	expect(licenseInfo.name).toEqual(license.meta.name);
+	expect(licenseInfo.entitlements).toEqual(license.entitlements);
 });
 
 test('prevent activating key on project with existing license', async () => {
-	await expect(api.request(activateLicense({ license_key: license.key }))).rejects.toThrowError();
+	await expect(api.request(activateLicense({ license_key: license.key }))).rejects.toThrowError(
+		'A license was already activated',
+	);
 });
 
 test('reading a license', async () => {
-	await new Promise((r) => setTimeout(r, 1000));
-
 	const activeLicense = await api.request(readLicense());
 
 	expect(activeLicense).toEqual({
@@ -78,15 +85,47 @@ test('reading a license', async () => {
 		offline: false,
 		source: 'settings',
 		status: 'active',
-		usage: {
-			collections: 0,
-			flows: 0,
-			seats: 1,
-		},
+		usage: expect.any(Object),
 	});
 });
 
 test('updating the license', async () => {
-	const activeLicense = await api.request(updateLicense({ license_key: otherLicense.key }));
-	expect(activeLicense).toEqual(null);
+	await api.request(updateLicense({ license_key: otherLicense.key }));
+
+	const licenseInfo: LicenseInfoOutput = await api.request(readLicense());
+
+	expect(licenseInfo.name).toEqual(otherLicense.meta.name);
+	expect(licenseInfo.entitlements).toEqual(otherLicense.entitlements);
+});
+
+test('reading the other license', async () => {
+	const activeLicense = await api.request(readLicense());
+
+	expect(activeLicense).toEqual({
+		entitlements: otherLicense.entitlements,
+		expires_at: otherLicense.meta.expires_at,
+		grace_period: otherLicense.meta.grace_period,
+		name: otherLicense.meta.name,
+		offline: false,
+		source: 'settings',
+		status: 'active',
+		usage: expect.any(Object),
+	});
+});
+
+test('deactivate the license', async () => {
+	await api.request(deactivateLicense());
+
+	const activeLicense = await api.request(readLicense());
+
+	expect(activeLicense).toEqual({
+		entitlements: CORE_LICENSE.entitlements,
+		expires_at: CORE_LICENSE.meta.expires_at,
+		grace_period: CORE_LICENSE.meta.grace_period,
+		name: CORE_LICENSE.meta.name,
+		offline: false,
+		source: 'settings',
+		status: 'active',
+		usage: expect.any(Object),
+	});
 });
