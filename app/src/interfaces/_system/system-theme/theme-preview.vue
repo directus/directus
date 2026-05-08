@@ -131,7 +131,7 @@ const localVars = computed(() => {
 				fill="white"
 			/>
 
-			<!-- Module Bar Button Foreground Active -->
+			<!-- Module Bar Button Background Active -->
 			<rect
 				x="4"
 				y="20"
@@ -152,7 +152,7 @@ const localVars = computed(() => {
 			<rect x="156" y="4" width="8" height="8" rx="2" fill="var(--theme--background-normal)" />
 
 			<!-- Sidebar Background -->
-			<rect x="184" y="17" width="16" height="140" fillx="var(--theme--sidebar--background)" />
+			<rect x="184" y="17" width="16" height="140" fill="var(--theme--sidebar--background)" />
 
 			<!-- Sidebar Toggle -->
 			<rect x="188" y="4" width="8" height="8" rx="2" fill="var(--theme--background-normal)" />
