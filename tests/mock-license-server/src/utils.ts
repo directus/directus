@@ -61,6 +61,7 @@ export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense
 				validation_interval: 1000,
 				expires_at: now + 100_000,
 				offline: false,
+				overage_billed: { seats: 0, collections: 0, flows: 0 },
 			},
 			entitlements: {
 				collections: { limit: 100 },
