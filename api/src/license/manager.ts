@@ -101,20 +101,17 @@ export class LicenseManager {
 	 */
 	public async initialize(): Promise<void> {
 		const existingStore = this.store;
+			
+		const entitlementManager = getEntitlementManager();
+		entitlementManager.initialize();
 
 		try {
-			// Register entitlement enforcement for all instances
-			const entitlementManager = getEntitlementManager();
-			entitlementManager.initialize();
-
 			// Lock the whole store for the entirety of initialization
 			await this.store(async (store) => {
 				// Replace existing store temporarely to avoid deadlocks
 				this.store = (cb) => {
 					return cb(store);
 				};
-
-				if (await store.get('initialized')) return;
 
 				const envKey = env['LICENSE_KEY'] as string | undefined;
 				const envToken = env['LICENSE_TOKEN'] as string | undefined;
@@ -171,8 +168,6 @@ export class LicenseManager {
 					// CASE H tail / CASE I — core license
 					await store.set('status', 'active');
 				}
-
-				await store.set('initialized', true);
 			});
 		} finally {
 			this.store = existingStore;
@@ -267,7 +262,7 @@ export class LicenseManager {
 				project_id: new_project_id ?? project_id!,
 			});
 
-			license = await verifyLicense(token);
+			license = await this.verify(token);
 
 			await this.rpc.refreshCache();
 		} catch (err) {
@@ -400,11 +395,10 @@ export class LicenseManager {
 
 				await this.rpc.refreshCache();
 
-				license = await verifyLicense(token);
+				license = await this.verify(token);
 			} catch (err) {
 				error = err as Error;
-				// TODO: Should not clear when license API unavailable
-				await this.downgrade();
+				logger.error(err);
 			}
 		}
 

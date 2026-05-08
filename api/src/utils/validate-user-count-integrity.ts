@@ -1,4 +1,5 @@
 import { UserIntegrityCheckFlag } from '@directus/types';
+import { getEntitlementManager } from '../license/index.js';
 import { validateRemainingAdminCount } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-count.js';
 import { checkUserLimits } from '../telemetry/utils/check-user-limits.js';
 import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
@@ -12,16 +13,20 @@ export async function validateUserCountIntegrity(options: ValidateUserCountInteg
 	const validateUserLimits = (options.flags & UserIntegrityCheckFlag.UserLimits) !== 0;
 	const validateRemainingAdminUsers = (options.flags & UserIntegrityCheckFlag.RemainingAdmins) !== 0;
 
-	const limitCheck = validateUserLimits && shouldCheckUserLimits();
+	const envLimitCheck = validateUserLimits && shouldCheckUserLimits();
 
-	if (!validateRemainingAdminUsers && !limitCheck) {
+	if (!validateRemainingAdminUsers && !validateUserLimits) {
 		return;
 	}
 
-	const adminOnly = validateRemainingAdminUsers && !limitCheck;
+	const adminOnly = validateRemainingAdminUsers && !validateUserLimits;
 	const userCounts = await fetchUserCount({ ...options, adminOnly });
 
-	if (limitCheck) {
+	if (validateUserLimits) {
+		await getEntitlementManager().assert('seats');
+	}
+
+	if (envLimitCheck) {
 		await checkUserLimits(userCounts);
 	}
 
