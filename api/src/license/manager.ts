@@ -35,8 +35,8 @@ import { useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
-import { getLicenseKey } from './lib/get-license-key.js';
-import { getLicenseToken } from './lib/get-license-token.js';
+import { getLicenseKey } from './utils/get-license-key.js';
+import { getLicenseToken } from './utils/get-license-token.js';
 import { getStatus } from './utils/get-status.js';
 import { useRPC } from './utils/use-rpc.js';
 
