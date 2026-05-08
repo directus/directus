@@ -1,5 +1,4 @@
 import { UserIntegrityCheckFlag } from '@directus/types';
-import { getEntitlementManager } from '../license/index.js';
 import { validateRemainingAdminCount } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-count.js';
 import { checkUserLimits } from '../telemetry/utils/check-user-limits.js';
 import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
@@ -23,6 +22,8 @@ export async function validateUserCountIntegrity(options: ValidateUserCountInteg
 	const userCounts = await fetchUserCount({ ...options, adminOnly });
 
 	if (validateUserLimits) {
+		// Dynamic import to prevent circular imports in services
+		const { getEntitlementManager } = await import('../license/index.js');
 		await getEntitlementManager().assert('seats');
 	}
 
