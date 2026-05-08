@@ -1,9 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import Type, { type Static } from 'typebox';
 import { forbiddenError, notFoundError } from '../errors.js';
-import { licenses } from '../licenses.js';
-import { createNewToken } from '../token.js';
+import { requireLicense } from '../hooks/require-license.js';
 import { LicenseAuthHeaders, type LicenseAuthHeadersType } from '../types.js';
+import { createNewToken } from '../utils.js';
 
 export const UpdateAddonsRequestSchema = Type.Object(
 	{
@@ -31,13 +31,6 @@ export const DeleteAddonsRequestSchema = Type.Array(Type.String({ minLength: 1 }
 
 export type DeleteAddonsRequestBody = Static<typeof DeleteAddonsRequestSchema>;
 
-function findLicense(license_key: string, project_id: string, public_url: string) {
-	return Object.values(licenses).find(
-		(license) =>
-			license.key === license_key && license.projects.some(({ id, url }) => id === project_id && url === public_url),
-	);
-}
-
 export async function addonsRoute(app: FastifyInstance) {
 	app.get<{ Headers: LicenseAuthHeadersType }>(
 		'/options',
@@ -45,17 +38,10 @@ export async function addonsRoute(app: FastifyInstance) {
 			schema: {
 				headers: LicenseAuthHeaders,
 			},
+			preHandler: requireLicense,
 		},
 		async (req, res) => {
-			const license = findLicense(
-				req.headers['directus-license-key'],
-				req.headers['directus-project-id'],
-				req.headers['directus-public-url'],
-			);
-
-			if (!license) return res.status(400).send(forbiddenError('License not found'));
-
-			return res.status(200).send({ available_addons: license.addons });
+			return res.status(200).send({ available_addons: req.license.addons });
 		},
 	);
 
@@ -66,18 +52,11 @@ export async function addonsRoute(app: FastifyInstance) {
 				headers: LicenseAuthHeaders,
 				body: UpdateAddonsRequestSchema,
 			},
+			preHandler: requireLicense,
 		},
 		async (req, res) => {
-			const license = findLicense(
-				req.headers['directus-license-key'],
-				req.headers['directus-project-id'],
-				req.headers['directus-public-url'],
-			);
-
-			if (!license) return res.status(400).send(forbiddenError('License not found'));
-
 			for (const { addon_id, quantity } of req.body.addons) {
-				const addon = license.addons.find((a) => a.id === addon_id);
+				const addon = req.license.addons.find((a) => a.id === addon_id);
 				if (!addon) return res.status(404).send(notFoundError(`Addon ${addon_id} not available`));
 
 				if (quantity < addon.min_quantity || quantity > addon.max_quantity) {
@@ -88,7 +67,7 @@ export async function addonsRoute(app: FastifyInstance) {
 			}
 
 			return res.status(200).send({
-				token: await createNewToken(license),
+				token: await createNewToken(req.license),
 			});
 		},
 	);
@@ -100,18 +79,11 @@ export async function addonsRoute(app: FastifyInstance) {
 				headers: LicenseAuthHeaders,
 				body: DeleteAddonsRequestSchema,
 			},
+			preHandler: requireLicense,
 		},
 		async (req, res) => {
-			const license = findLicense(
-				req.headers['directus-license-key'],
-				req.headers['directus-project-id'],
-				req.headers['directus-public-url'],
-			);
-
-			if (!license) return res.status(400).send(forbiddenError('License not found'));
-
 			for (const addon_id of req.body) {
-				const addon = license.addons.find((a) => a.id === addon_id);
+				const addon = req.license.addons.find((a) => a.id === addon_id);
 				if (addon) addon.active_quantity = 0;
 			}
 

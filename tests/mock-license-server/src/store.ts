@@ -1,17 +1,6 @@
-import type { LicenseAddon, License as Token } from '@directus/license';
+import type { MockLicense } from './types.js';
 
-export type License = {
-	name: string;
-	key: string;
-	entitlements: Token['entitlements'];
-	meta: Token['meta'];
-	max_projects: number;
-	projects: { id: string; url: string }[];
-	/** Available Addons */
-	addons: LicenseAddon[];
-};
-
-export const licenses: Record<string, License> = {
+export const licenseStore: Record<string, MockLicense> = {
 	// Base license for testing
 	'D0000-00000-00000-00000-00000': {
 		max_projects: 10_000,
