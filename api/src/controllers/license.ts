@@ -1,5 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
-import { type LicenseInfoOutput, type LicensePreviewOutput, ResolveInput } from '@directus/license';
+import { type LicensePreviewOutput, type ReadLicenseOutput, ResolveInput } from '@directus/license';
 import express from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getEntitlementManager } from '../license/index.js';
@@ -19,7 +19,7 @@ router.get(
 
 		const license = await getLicense();
 
-		const payload: LicenseInfoOutput = {
+		const payload: ReadLicenseOutput = {
 			name: license.meta.name,
 			status: await licenseManager.getStatus(),
 			source: licenseManager.getSource(),
@@ -156,7 +156,7 @@ router.patch(
 );
 
 router.delete(
-	'/addon/:id',
+	'/addons/:id',
 	checkIsAdmin,
 	asyncHandler(async (req, _res, next) => {
 		const licenseManager = getLicenseManager();
