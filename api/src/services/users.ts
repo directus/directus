@@ -203,12 +203,6 @@ export class UsersService extends ItemsService {
 		}
 
 		if (!('status' in data) || data['status'] === 'active') {
-			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('seats', { adding: 1 });
-		}
-
-		// TODO unify telemetry user counting and entitlements
-		if (!('status' in data) || data['status'] === 'active') {
 			// Creating a user only requires checking user limits if the user is active, no need to care about the role
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
@@ -312,12 +306,6 @@ export class UsersService extends ItemsService {
 			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
 		}
 
-		if ('status' in data && data['status'] === 'active') {
-			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('seats', { adding: keys.length });
-		}
-
-		// TODO unify these checks perhaps
 		if ('status' in data) {
 			if (data['status'] === 'active') {
 				// User are being activated, no need to check if there are enough admins
@@ -449,7 +437,7 @@ export class UsersService extends ItemsService {
 
 		const entitlementManager = getEntitlementManager();
 		const { allowed: isWithinLicenseLimits } = await entitlementManager.check('seats');
-		const status = isWithinLicenseLimits ? 'active' : 'inactive';
+		const status = isWithinLicenseLimits ? 'active' : 'deactivated-license-exceeded';
 
 		await service.updateOne(user.id, { password, status });
 	}
