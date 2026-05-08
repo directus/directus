@@ -53,7 +53,6 @@ export function createLicense(overrides?: DeepPartial<License>): License {
 			meta: {
 				name: 'TEAM',
 				version: '1',
-				public_url: 'http://localhost',
 				grace_period: 10_000,
 				validation_interval: 1000,
 				expires_at: now + 100_000,
