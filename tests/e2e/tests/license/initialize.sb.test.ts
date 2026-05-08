@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { type LicenseInfoOutput, readLicense } from '@directus/license';
+import { readLicense, type ReadLicenseOutput } from '@directus/license';
 import { sandbox } from '@directus/sandbox';
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
@@ -41,7 +41,7 @@ describe('new env LICENSE_KEY (Case D)', async () => {
 
 	const api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
-	const info: LicenseInfoOutput = await api.request(readLicense());
+	const info: ReadLicenseOutput = await api.request(readLicense());
 
 	// Confirm License Meta
 	expect(info.source).toBe('env');
@@ -123,7 +123,7 @@ describe('env LICENSE_KEY changed (Case B)', async () => {
 
 	const api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
-	const info: LicenseInfoOutput = await api.request(readLicense());
+	const info: ReadLicenseOutput = await api.request(readLicense());
 
 	// Confirm License Meta
 	expect(info.source).toBe('env');
@@ -220,7 +220,7 @@ describe('db license_key (Case G)', async () => {
 
 	const api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
-	const info: LicenseInfoOutput = await api.request(readLicense());
+	const info: ReadLicenseOutput = await api.request(readLicense());
 
 	// Confirm License Meta
 	expect(info.source).toBe('settings');
