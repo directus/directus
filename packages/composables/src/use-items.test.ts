@@ -514,8 +514,8 @@ describe('useItems', () => {
 				version,
 			});
 
-			// Initial: items + count + total = 3
-			expect(mockApiGet).toHaveBeenCalledTimes(3);
+			// Initial: items + 1 deduped aggregate (itemCount/totalCount share the same memoize key when filter and search are empty)
+			expect(mockApiGet).toHaveBeenCalledTimes(2);
 
 			// Switch to draft mode
 			version.value = 'draft';
@@ -523,8 +523,8 @@ describe('useItems', () => {
 			await vi.advanceTimersByTimeAsync(500);
 
 			// Should call getItems again (no separate count call since version is now set)
-			// items(2) + count(1) + total(1) = 4
-			expect(mockApiGet).toHaveBeenCalledTimes(4);
+			// items(2) + initial deduped aggregate(1) = 3
+			expect(mockApiGet).toHaveBeenCalledTimes(3);
 		});
 	});
 
