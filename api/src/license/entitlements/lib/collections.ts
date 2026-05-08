@@ -1,17 +1,53 @@
+import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
+import { CollectionsService } from '../../../services/index.js';
+import type { Collection } from '../../../types/collection.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-/**
- * Counting the current user collections
- */
-export async function countActiveCollections() {
-	const schema = await getSchema();
+export async function getActiveCollections() {
+	const collectionService = new CollectionsService({
+		schema: await getSchema(),
+	});
 
-	return (
-		// LICENSE-TODO
-		// exclude disabled collections
-		// exclude folders collections
-		// exclude db only collections
-		Object.keys(schema.collections).filter((collection) => !isSystemCollection(collection)).length
+	const dbCollections = await collectionService.readByQuery();
+
+	return dbCollections.filter(
+		(collection) =>
+			!isSystemCollection(collection.collection) &&
+			!isDBOnlyCollection(collection) &&
+			!isDisabledCollection(collection) &&
+			!isEnvExcludedCollection(collection),
+	);
+}
+
+export async function countActiveCollections() {
+	const collections = await getActiveCollections();
+
+	return collections.length;
+}
+
+function isDBOnlyCollection(collection: Collection) {
+	return collection.meta === null;
+}
+
+function isDisabledCollection(collection: Collection) {
+	return collection.meta?.status !== 'active';
+}
+
+function isEnvExcludedCollection(collection: Collection) {
+	const env = useEnv();
+	return (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection);
+}
+
+export async function resolveCollections(collections: string[]) {
+	const collectionsService = new CollectionsService({ schema: await getSchema() });
+
+	await Promise.allSettled(
+		collections.map((collection) => {
+			collectionsService.updateOne(collection, {
+				// @ts-ignore TODO fix collection type
+				meta: { status: 'inactive' }
+			})
+		})
 	);
 }

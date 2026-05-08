@@ -10,10 +10,9 @@ import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 
-router.use(checkIsAdmin);
-
 router.get(
 	'/',
+	checkIsAdmin,
 	asyncHandler(async (_req, res, next) => {
 		const licenseManager = getLicenseManager();
 		const entitlementManager = getEntitlementManager();
@@ -32,8 +31,7 @@ router.get(
 			usage: {
 				seats: await entitlementManager.getUsage('seats'),
 				collections: await entitlementManager.getUsage('collections'),
-				// LICENSE-TODO: add getUsage once handler registered
-				flows: 5,
+				flows: await entitlementManager.getUsage('flows'),
 			},
 		};
 
@@ -45,6 +43,7 @@ router.get(
 
 router.post(
 	'/',
+	checkIsAdmin,
 	asyncHandler(async (req, _res, next) => {
 		if (!req.body.license_key) {
 			throw new InvalidPayloadError({ reason: 'A "license_key" is required' });
@@ -61,6 +60,7 @@ router.post(
 
 router.patch(
 	'/',
+	checkIsAdmin,
 	asyncHandler(async (req, _res, next) => {
 		if (!req.body.license_key) {
 			throw new InvalidPayloadError({ reason: 'A "license_key" is required' });
@@ -77,6 +77,7 @@ router.patch(
 
 router.delete(
 	'/',
+	checkIsAdmin,
 	asyncHandler(async (_req, _res, next) => {
 		const licenseManager = getLicenseManager();
 
@@ -96,13 +97,13 @@ router.post(
 
 		const licenseManager = getLicenseManager();
 
-		const license = await licenseManager.preview(req.body.license_key);
+		const preview = await licenseManager.preview(req.body.license_key);
 
 		const payload: LicensePreviewOutput = {
-			plan_name: license.name,
-			expires_at: license.expires_at,
-			renews_at: license.renews_at,
-			production_enabled: license.production_enabled,
+			plan_name: preview.name,
+			expires_at: preview.expires_at,
+			renews_at: preview.renews_at,
+			production_enabled: preview.production_enabled,
 		};
 
 		res.locals['payload'] = { data: payload };
@@ -113,6 +114,7 @@ router.post(
 
 router.get(
 	'/portal',
+	checkIsAdmin,
 	asyncHandler(async (_req, res) => {
 		const licenseManager = getLicenseManager();
 
@@ -124,6 +126,7 @@ router.get(
 
 router.get(
 	'/addons',
+	checkIsAdmin,
 	asyncHandler(async (_req, res, next) => {
 		const licenseManager = getLicenseManager();
 
@@ -137,9 +140,10 @@ router.get(
 
 router.patch(
 	'/addons/:id',
+	checkIsAdmin,
 	asyncHandler(async (req, _res, next) => {
-		if (typeof req.body.quantity === 'undefined') {
-			throw new InvalidPayloadError({ reason: 'A "quantity" is required' });
+		if (typeof req.body.quantity !== 'number') {
+			throw new InvalidPayloadError({ reason: 'A numbered "quantity" is required' });
 		}
 
 		const licenseManager = getLicenseManager();
@@ -153,6 +157,7 @@ router.patch(
 
 router.delete(
 	'/addon/:id',
+	checkIsAdmin,
 	asyncHandler(async (req, _res, next) => {
 		const licenseManager = getLicenseManager();
 
@@ -165,6 +170,7 @@ router.delete(
 
 router.post(
 	'/pending-resolution',
+	checkIsAdmin,
 	asyncHandler(async (req, res, next) => {
 		const licenseManager = getLicenseManager();
 
@@ -181,6 +187,7 @@ router.post(
 
 router.post(
 	'/resolve',
+	checkIsAdmin,
 	asyncHandler(async (req, _res, next) => {
 		const { error, data } = ResolveInput.safeParse(req.body);
 
@@ -188,7 +195,7 @@ router.post(
 			throw new InvalidPayloadError({ reason: fromZodError(error).message });
 		}
 
-		if (Object.keys(data).length) {
+		if (Object.keys(data).length === 0) {
 			return next();
 		}
 

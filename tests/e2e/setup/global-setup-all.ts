@@ -23,6 +23,7 @@ export async function setup(project: TestProject) {
 				port: port,
 				env: {
 					CACHE_SCHEMA: 'false',
+					LICENSE_KEY: 'D0000-00000-00000-00000-00000',
 				},
 				docker: {
 					port: port + 10,

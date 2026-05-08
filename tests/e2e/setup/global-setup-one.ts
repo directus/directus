@@ -13,7 +13,7 @@ export async function setup(project: TestProject) {
 
 	const database = project.config.env['DATABASE'] as Database;
 	const port = project.config.env['PORT']!;
-	const devMode = project.config.env['DEV'] === 'true';
+	const devMode = project.config.env['NODE_ENV'] === 'development';
 
 	const options: DeepPartial<Options> = {
 		port,
@@ -22,6 +22,7 @@ export async function setup(project: TestProject) {
 		prefix: database,
 		env: {
 			CACHE_SCHEMA: 'false',
+			LICENSE_KEY: 'D0000-00000-00000-00000-00000',
 		},
 		docker: {
 			port: String(Number(project.config.env['PORT']) + 10),
@@ -32,6 +33,7 @@ export async function setup(project: TestProject) {
 			redis: true,
 			saml: true,
 			minio: true,
+			license: true,
 		},
 		cache: false,
 	};

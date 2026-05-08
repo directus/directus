@@ -80,8 +80,7 @@ export class CollectionsService {
 			throw new InvalidPayloadError({ reason: `Collection name can't contain "/"` });
 		}
 
-		// TODO update when implementing disabled/excluded collections
-		if (!('disabled' in payload) || payload['disabled'] === false) {
+		if (payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 			const entitlementManager = getEntitlementManager();
 			await entitlementManager.assert('collections', { adding: 1 });
 		}
@@ -468,8 +467,8 @@ export class CollectionsService {
 				return collectionKey;
 			}
 
-			// TODO update when implementing disabled/excluded collections
-			if ('disabled' in payload && payload['disabled'] === false) {
+			if (payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
+				const entitlementManager = getEntitlementManager();
 				await entitlementManager.assert('collections', { adding: 1 });
 			}
 

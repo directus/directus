@@ -3,6 +3,7 @@ import { unlink } from 'fs/promises';
 import { join } from 'path';
 import type { DatabaseClient, DeepPartial } from '@directus/types';
 import chalk from 'chalk';
+import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
@@ -13,12 +14,14 @@ import {
 	type Api,
 	bootstrap,
 	buildApi,
+	createDatabase,
 	dockerDown,
 	dockerUp,
 	loadSchema,
 	saveSchema,
 	startApi,
 } from './steps/index.js';
+import { startLicenseServer } from './steps/license.js';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -71,9 +74,18 @@ export type Options = {
 		minio: boolean;
 		/** Email server */
 		maildev: boolean;
+		/** License server */
+		license: boolean;
 	};
 	/** Enable or disable caching */
 	cache: boolean;
+	/** Open a Knex connection for direct db access via `sandbox.knex`. Off by default.  */
+	knex: boolean;
+	/** Lifecycle hooks */
+	hooks: {
+		/** Runs after bootstrap (+ load schema) but before the api starts */
+		beforeApi?: (ctx: { env: Env; logger: Logger; knex?: Knex | undefined }) => Promise<void> | void;
+	};
 };
 
 export type Sandboxes = {
@@ -81,6 +93,7 @@ export type Sandboxes = {
 		apis: [Api, ...Api[]];
 		env: Env;
 		logger: Logger;
+		knex?: Knex | undefined;
 	}[];
 	restartApis(): Promise<void>;
 	stop(): Promise<void>;
@@ -92,6 +105,7 @@ export type Sandbox = {
 	env: Env;
 	apis: [Api, ...Api[]];
 	logger: Logger;
+	knex?: Knex | undefined;
 };
 
 async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
@@ -123,8 +137,11 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				maildev: false,
 				minio: false,
 				saml: false,
+				license: false,
 			},
 			cache: false,
+			knex: false,
+			hooks: {},
 		} satisfies Options,
 		options,
 	);
@@ -132,6 +149,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 export const apiFolder = join(directusFolder, 'api');
 export const appFolder = join(directusFolder, 'app');
+export const licenseFolder = join(directusFolder, 'tests/mock-license-server');
 
 export const databases: Database[] = [
 	'maria',
@@ -164,10 +182,17 @@ export async function sandboxes(
 		opts: Options;
 		env: Env;
 		logger: Logger;
+		knex?: Knex | undefined;
 	}[] = [];
 
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env }[] = [];
+
+	let license: ChildProcessWithoutNullStreams | undefined;
+
+	if (opts.extras.license) {
+		license = await startLicenseServer(await getEnv('sqlite', opts), logger);
+	}
 
 	try {
 		// Rebuild directus
@@ -180,15 +205,17 @@ export async function sandboxes(
 				const opts = await getOptions(options);
 				const env = await getEnv(database, opts);
 				const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
+				let knex;
 
 				try {
 					const project = await dockerUp(database, opts, env, logger);
 					if (project) projects.push({ project, logger, env });
 
-					await bootstrap(env, logger);
+					await bootstrap(opts, env, logger);
 					if (opts.schema) await loadSchema(opts.schema, env, logger);
-
-					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger };
+					if (opts.knex) knex = createDatabase(env, logger);
+					await opts.hooks.beforeApi?.({ env, logger, knex });
+					sandboxes[index] = { apis: await startApi(opts, env, logger), opts, env, logger, knex };
 				} catch (e) {
 					logger.error(String(e));
 					throw e;
@@ -210,9 +237,9 @@ export async function sandboxes(
 
 	async function stop() {
 		build?.kill();
-		sandboxes.forEach((api) => api.apis.forEach((api) => api.process.kill()));
-		if (opts.docker.keep)
-			await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
+		await Promise.all(sandboxes.map((sandbox) => sandbox.knex?.destroy()));
+		sandboxes.forEach((sandbox) => sandbox.apis.forEach((api) => api.process.kill()));
+		license?.kill();
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -224,11 +251,12 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 	const env = await getEnv(database, opts);
 	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
-	let apis: [Api, ...Api[]];
+	let apis: [Api, ...Api[]] | undefined;
 	let app: ChildProcessWithoutNullStreams | undefined;
-	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
 	let interval: NodeJS.Timeout;
+	let license: ChildProcessWithoutNullStreams | undefined;
+	let knex: Knex | undefined;
 
 	try {
 		// Rebuild directus
@@ -236,9 +264,15 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			build = await buildApi(opts, logger, restartApi);
 		}
 
-		project = await dockerUp(database, opts, env, logger);
-		await bootstrap(env, logger);
+		if (opts.extras.license) {
+			license = await startLicenseServer(env, logger);
+		}
+
+		await dockerUp(database, opts, env, logger);
+		await bootstrap(opts, env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
+		if (opts.knex) knex = createDatabase(env, logger);
+		await opts.hooks.beforeApi?.({ env, logger, knex });
 		apis = await startApi(opts, env, logger);
 		if (opts.app !== false) app = await startApp(opts, env, logger);
 
@@ -250,7 +284,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function restartApi() {
-		apis.forEach((api) => api.process.kill());
+		apis?.forEach((api) => api.process.kill());
 		apis = await startApi(opts, env, logger);
 	}
 
@@ -259,18 +293,14 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		logger.info('Stopping sandbox');
 		clearInterval(interval);
 		build?.kill();
-		apis.forEach((api) => api.process.kill());
+		if (knex) await knex.destroy();
+		apis?.forEach((api) => api.process.kill());
 		app?.kill();
-		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
-
-		if (!opts.docker.keep && 'DB_FILENAME' in env) {
-			setTimeout(() => unlink(env.DB_FILENAME).catch(() => {}), 1);
-			logger.info(`Removed database file at ${env.DB_FILENAME}`);
-		}
+		license?.kill();
 
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);
 	}
 
-	return { stop, restartApi, env, logger, apis };
+	return { stop, restartApi, env, logger, apis, knex };
 }

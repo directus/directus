@@ -31,6 +31,7 @@ export enum ErrorCode {
 	OutOfTime = 'OUT_OF_TIME',
 	RangeNotSatisfiable = 'RANGE_NOT_SATISFIABLE',
 	RecordNotUnique = 'RECORD_NOT_UNIQUE',
+	ResourceRestricted = 'RESOURCE_RESTRICTED',
 	RequestsExceeded = 'REQUESTS_EXCEEDED',
 	RouteNotFound = 'ROUTE_NOT_FOUND',
 	ServiceUnavailable = 'SERVICE_UNAVAILABLE',

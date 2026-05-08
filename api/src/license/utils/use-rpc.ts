@@ -20,11 +20,12 @@ export function useRPC<C>(self: C, channel: string): ExtractMethods<C> {
 		(self as any)[method].call(args);
 	});
 
-	return new Proxy(self as any, {
-		async apply(_, method, args) {
-			messenger.publish(channel, { uid, method, args });
-
-			await (self as any)[method].call(args);
+	return new Proxy({} as any, {
+		get(_, method) {
+			return async (...args: any) => {
+				messenger.publish(channel, { uid, method, args });
+				await (self as any)[method].call(args);
+			};
 		},
 	});
 }

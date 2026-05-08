@@ -1,7 +1,10 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, RouteNotFoundError } from '@directus/errors';
 import { format } from 'date-fns';
 import { Router } from 'express';
+import z from 'zod';
+import { fromZodError } from 'zod-validation-error';
+import { getLicenseManager } from '../license/manager.js';
 import { respond } from '../middleware/respond.js';
 import { SettingsService } from '../services/index.js';
 import { ServerService } from '../services/server.js';
@@ -91,6 +94,24 @@ router.get(
 	respond,
 );
 
+const SetupSchema = z.object({
+	admin: z.object({
+		email: z.string(),
+		password: z.string(),
+		first_name: z.string().optional(),
+		last_name: z.string().optional(),
+	}),
+	license_key: z.string().optional(),
+	owner: z
+		.object({
+			project_owner: z.string().nullable(),
+			project_usage: z.enum(['personal', 'commercial', 'community']).nullable(),
+			org_name: z.string().nullable(),
+			product_updates: z.boolean(),
+		})
+		.optional(),
+});
+
 router.post(
 	'/setup',
 	asyncHandler(async (req, _res, next) => {
@@ -100,17 +121,35 @@ router.post(
 			throw new ForbiddenError();
 		}
 
+		const { error, data } = SetupSchema.safeParse(req.body);
+
+		if (error) {
+			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+		}
+
+		const licenseManager = getLicenseManager();
+
 		try {
 			await createAdmin(req.schema, {
-				email: req.body.project_owner,
-				password: req.body.password,
-				first_name: req.body.first_name,
-				last_name: req.body.last_name,
+				email: data.admin.email,
+				password: data.admin.password,
+				first_name: data.admin.first_name,
+				last_name: data.admin.last_name,
 			});
 
 			const settingsService = new SettingsService({ schema: req.schema });
 
-			settingsService.setOwner(req.body);
+			if (data.license_key) {
+				try {
+					await licenseManager.activate(data.license_key);
+				} catch {
+					//
+				}
+			}
+
+			if (data.owner) {
+				settingsService.setOwner(data.owner);
+			}
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();

@@ -126,7 +126,8 @@ export default async function createApp(): Promise<express.Application> {
 	await licenseManager.initialize();
 
 	const entitlementManager = getEntitlementManager();
-	entitlementManager.setLicense(await getLicense());
+	const license = await getLicense();
+	entitlementManager.setEntitlements(license.entitlements);
 
 	await registerAuthProviders();
 	registerDeploymentDrivers();
