@@ -2,19 +2,19 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import {
 	activateKey,
-	billinPortal,
+	billingPortal,
 	CORE_LICENSE,
 	deactivateKey,
 	deleteAddon,
 	Entitlements,
 	License,
-	type LicenseAddonOutput,
+	type LicenseAddonsOutput,
 	type LicensePendingResolution,
 	type LicensePendingResolutionOutput,
 	type LicenseSource,
 	type LicenseStatus,
-	listAddons,
 	previewKey,
+	readAddons,
 	refreshLicense,
 	type RefreshLicenseInput,
 	ResolveInput,
@@ -102,7 +102,7 @@ export class LicenseManager {
 	 */
 	public async initialize(): Promise<void> {
 		const existingStore = this.store;
-			
+
 		const entitlementManager = getEntitlementManager();
 		entitlementManager.initialize();
 
@@ -375,11 +375,6 @@ export class LicenseManager {
 				},
 			};
 
-			// If changed, send new public url
-			if (license.meta.public_url && license.meta.public_url !== env['PUBLIC_URL']) {
-				refreshPayload['new_public_url'] = env['PUBLIC_URL'] as string;
-			}
-
 			try {
 				const { token } = await refreshLicense(
 					{
@@ -413,7 +408,7 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		const { url } = await billinPortal({
+		const { url } = await billingPortal({
 			license_key: this.licenseKey!,
 			project_id: project_id!,
 			public_url: env['PUBLIC_URL'] as string,
@@ -422,12 +417,12 @@ export class LicenseManager {
 		return url;
 	}
 
-	public async availableAddons(): Promise<LicenseAddonOutput> {
+	public async availableAddons(): Promise<LicenseAddonsOutput> {
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		const addons = await listAddons({
+		const addons = await readAddons({
 			license_key: this.licenseKey!,
 			project_id: project_id!,
 			public_url: env['PUBLIC_URL'] as string,
