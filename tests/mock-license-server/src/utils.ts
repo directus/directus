@@ -1,6 +1,10 @@
+import { randomUUID } from 'crypto';
+import { License } from '@directus/license';
 import type { DeepPartial } from '@directus/types';
+import { generateKeyPair } from 'jose';
+import { SignJWT } from 'jose/jwt/sign';
 import { merge } from 'lodash-es';
-import type { License } from './licenses.js';
+import type { MockLicense } from './types.js';
 
 const ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
@@ -39,7 +43,7 @@ export function generateKey() {
 	return `D${c.slice(0, 4)}-${c.slice(4, 9)}-${c.slice(9, 14)}-${c.slice(14, 19)}-${c.slice(19, 23) + luhnChecksum(c)}`;
 }
 
-export function createLicense(overrides?: DeepPartial<License>): License {
+export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense {
 	const key = generateKey();
 	const now = Math.floor(Date.now() / 1000);
 
@@ -76,4 +80,22 @@ export function createLicense(overrides?: DeepPartial<License>): License {
 		},
 		overrides,
 	);
+}
+
+const { privateKey, publicKey } = await generateKeyPair('EdDSA');
+
+export { publicKey };
+
+export async function createNewToken(license: License) {
+	const encodedToken = License.encode({ entitlements: license.entitlements, meta: license.meta });
+
+	const now = Math.floor(Date.now() / 1000);
+
+	return new SignJWT(encodedToken)
+		.setProtectedHeader({ alg: 'EdDSA' })
+		.setIssuer('directus-licensing-service')
+		.setIssuedAt(now)
+		.setJti(randomUUID())
+		.setExpirationTime(license.meta.expires_at ?? now + 1000)
+		.sign(privateKey);
 }

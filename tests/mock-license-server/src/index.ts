@@ -1,3 +1,3 @@
-export type { License as MockLicense } from './licenses.js';
+export type { MockLicense } from './types.js';
 export { generateKey, createLicense } from './utils.js';
 export { startServer } from './app.js';

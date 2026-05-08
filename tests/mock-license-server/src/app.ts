@@ -10,7 +10,7 @@ import { portalRoute } from './routes/portal.js';
 import { previewRoute } from './routes/preview.js';
 import { refreshRoute } from './routes/refresh.js';
 import { updateRoute } from './routes/update.js';
-import { publicKey } from './token.js';
+import { publicKey } from './utils.js';
 
 const app = Fastify({
 	logger: true,
