@@ -53,7 +53,7 @@ export type OptionsCreateRole = {
 
 export type OptionsCreateVersion = {
 	collection: string;
-	item: PrimaryKey;
+	item: PrimaryKey | null;
 	key: string;
 	name: string;
 };
@@ -66,6 +66,7 @@ export async function CreateVersion(vendor: Vendor, options: OptionsCreateVersio
 
 	return response.body.data;
 }
+
 export async function SaveVersion(
 	vendor: Vendor,
 	options: {
@@ -79,6 +80,13 @@ export async function SaveVersion(
 		.send(options.delta);
 
 	return response.body.data;
+}
+
+export async function DeleteVersion(vendor: Vendor, key: string) {
+	await request(getUrl(vendor))
+		.delete(`/versions/${key}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send();
 }
 
 export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
@@ -738,6 +746,19 @@ export async function UpdateItem(vendor: Vendor, options: OptionsUpdateItem) {
 		.send(options.item);
 
 	return response.body.data;
+}
+
+export type OptionsDeleteItem = {
+	id: string | number;
+	collection: string;
+};
+
+export async function DeleteItem(vendor: Vendor, options: OptionsDeleteItem) {
+	// Action
+	await request(getUrl(vendor))
+		.delete(`/items/${options.collection}/${options.id}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send();
 }
 
 export type OptionsCreatePolicy = {

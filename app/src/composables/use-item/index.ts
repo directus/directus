@@ -49,10 +49,17 @@ type UsableItem<T extends Item> = {
 	validationErrors: Ref<any[]>;
 };
 
+function coerceArchiveValue(value: string | null): string | boolean | null {
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	return value;
+}
+
 export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
+	isItemlessVersion: ComputedRef<boolean> = computed(() => false),
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -71,11 +78,9 @@ export function useItem<T extends Item>(
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
 
-		if (collectionInfo.value.meta.archive_value === 'true') {
-			return item.value?.[collectionInfo.value.meta.archive_field] === true;
-		}
+		const { archive_field, archive_value } = collectionInfo.value.meta;
 
-		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
+		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
 	const query = computed<Query>(() => {
@@ -133,8 +138,13 @@ export function useItem<T extends Item>(
 		error.value = null;
 
 		try {
-			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
+			if (isItemlessVersion.value) {
+				const { delta } = await sdk.request<T>(() => ({ path: `versions/${currentVersion!.value!.id}` }));
+				setItemValueToResponse(delta);
+				return;
+			}
 
+			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
 			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
@@ -451,20 +461,11 @@ export function useItem<T extends Item>(
 		archiving.value = true;
 
 		const field = collectionInfo.value.meta.archive_field;
-
-		let archiveValue: any = collectionInfo.value.meta.archive_value;
-		if (archiveValue === 'true') archiveValue = true;
-		if (archiveValue === 'false') archiveValue = false;
-
-		let unarchiveValue: any = collectionInfo.value.meta.unarchive_value;
-		if (unarchiveValue === 'true') unarchiveValue = true;
-		if (unarchiveValue === 'false') unarchiveValue = false;
+		const archiveValue = coerceArchiveValue(collectionInfo.value.meta.archive_value);
+		const unarchiveValue = coerceArchiveValue(collectionInfo.value.meta.unarchive_value);
 
 		try {
-			let value: any = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
-
-			if (value === 'true') value = true;
-			if (value === 'false') value = false;
+			const value = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
 			await sdk.request(
 				requestEndpoint(itemEndpoint.value, {
@@ -526,7 +527,7 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value) {
+		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
 		} else {
 			getItem();

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, inject, ref, Ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, computed, inject, ref, Ref, toRefs, watch } from 'vue';
 import VDivider from '@/components/v-divider.vue';
 import VFieldList from '@/components/v-field-list/v-field-list.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -55,6 +56,7 @@ interface Props {
 	aliasedKeys: string[];
 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
+	versionKey?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -69,6 +71,7 @@ const props = withDefaults(defineProps<Props>(), {
 	filterUser: undefined,
 	search: undefined,
 	onAlignChange: () => undefined,
+	versionKey: null,
 });
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
@@ -76,6 +79,7 @@ const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:lim
 const { collection } = toRefs(props);
 
 const { sortAllowed } = useCollectionPermissions(collection);
+const manualSortAllowed = computed(() => sortAllowed.value && !props.versionKey);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
@@ -137,8 +141,8 @@ function removeField(fieldKey: string) {
 			:items="items"
 			:loading="loading"
 			:row-height="tableRowHeight"
-			:item-key="primaryKeyField?.field"
-			:show-manual-sort="sortAllowed"
+			:item-key="versionKey && !isPublishedVersionKey(versionKey) ? '_versionId' : primaryKeyField?.field"
+			:show-manual-sort="manualSortAllowed"
 			:manual-sort-key="sortField"
 			allow-header-reorder
 			selection-use-keys
