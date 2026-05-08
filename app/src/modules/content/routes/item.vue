@@ -93,7 +93,7 @@ onBeforeRouteUpdate((to, from) => {
 	if (to.params.collection === from.params.collection) return;
 
 	// `beforeEnter` doesn’t re-fire on sibling/param-only navigation. Auto-draft for pristine singletons is handled by the post-load watcher below, since sync route guards can’t detect existing items.
-	trackLastAccessedCollection(to);
+	trackLastAccessedCollection(to, from, () => {});
 });
 
 const { collectionRoute, backRoute } = useItemNavigation();
