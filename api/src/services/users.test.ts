@@ -5,8 +5,9 @@ import { UserIntegrityCheckFlag } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { _cache } from '../utils/get-secret.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { ItemsService, MailService, SettingsService, UsersService } from './index.js';
 
@@ -37,10 +38,6 @@ vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admi
 
 vi.mock('../utils/jwt.js', () => ({
 	verifyJWT: vi.fn(),
-}));
-
-vi.mock('../utils/get-secret.js', () => ({
-	getSecret: vi.fn().mockReturnValue('test-secret'),
 }));
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
@@ -82,6 +79,10 @@ describe('Integration Tests', () => {
 		const clearUserSessionsSpy = vi
 			.spyOn(UsersService.prototype as any, 'clearUserSessions')
 			.mockResolvedValue(() => vi.fn());
+
+		beforeEach(() => {
+			_cache.secret = null;
+		});
 
 		afterEach(() => {
 			vi.clearAllMocks();
@@ -487,7 +488,7 @@ describe('Integration Tests', () => {
 		});
 
 		describe('registerUser', () => {
-			it('should sign email verification tokens with the resolved secret', async () => {
+			it('should sign email verification tokens with a secret when SECRET is not configured', async () => {
 				vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
 					public_registration: true,
 					public_registration_verify_email: true,
@@ -513,19 +514,20 @@ describe('Integration Tests', () => {
 
 				expect(signSpy).toHaveBeenCalledWith(
 					{ email: 'test@example.com', scope: 'pending-registration' },
-					'test-secret',
+					expect.any(String),
 					{
 						expiresIn: '1d',
 						issuer: 'directus',
 					},
 				);
 
+				expect(signSpy.mock.calls[0]![1]).not.toBe('');
 				expect(mailService.send).toHaveBeenCalledTimes(1);
 			});
 		});
 
 		describe('verifyRegistration', () => {
-			it('should verify registration tokens with the resolved secret', async () => {
+			it('should verify registration tokens with a secret when SECRET is not configured', async () => {
 				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'pending-registration' });
 
 				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
@@ -541,7 +543,8 @@ describe('Integration Tests', () => {
 
 				await service.verifyRegistration('fake-token');
 
-				expect(verifyJWT).toHaveBeenCalledWith('fake-token', 'test-secret');
+				expect(verifyJWT).toHaveBeenCalledWith('fake-token', expect.any(String));
+				expect(vi.mocked(verifyJWT).mock.calls[0]![1]).not.toBe('');
 				expect(superUpdateOneSpy).toHaveBeenCalledWith('user-id-18', { status: 'active' });
 			});
 		});
