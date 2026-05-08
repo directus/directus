@@ -1,12 +1,14 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { UserIntegrityCheckFlag } from '@directus/types';
+import { type Accountability, UserIntegrityCheckFlag } from '@directus/types';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, type MockedFunction, test, vi } from 'vitest';
 import { getDatabaseClient } from '../database/index.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
-import { ItemsService } from './index.js';
+import { ActivityService } from './activity.js';
+import { ItemsService } from './items.js';
+import { RevisionsService } from './revisions.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -19,6 +21,9 @@ vi.mock('../utils/versioning/handle-version.js', { spy: true });
 const schema = new SchemaBuilder()
 	.collection('test', (c) => {
 		c.field('id').id();
+		c.field('status').string();
+		c.field('sort').integer().sort();
+		c.field('name').string();
 	})
 	.collection('directus_versions', (c) => {
 		c.field('id').id();
@@ -176,6 +181,76 @@ describe('Integration Tests', () => {
 				await service.updateMany([1], {}, { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
 				expect(validateUserCountIntegrity).toHaveBeenCalled();
+			});
+
+			it('should match revision snapshots to items by primary key', async () => {
+				const accountability = {
+					admin: true,
+					user: 'user-id',
+				} as Accountability;
+
+				service = new ItemsService('test', {
+					accountability,
+					knex: db,
+					schema,
+				});
+
+				const readManySpy = vi.spyOn(ItemsService.prototype, 'readMany').mockResolvedValue([
+					{ id: 3, status: 'published', sort: 1, name: 'third' },
+					{ id: 1, status: 'published', sort: 2, name: 'first' },
+					{ id: 2, status: 'published', sort: 3, name: 'second' },
+				]);
+
+				const createActivitySpy = vi.spyOn(ActivityService.prototype, 'createMany').mockResolvedValue([101, 102, 103]);
+
+				const createRevisionsSpy = vi
+					.spyOn(RevisionsService.prototype, 'createMany')
+					.mockResolvedValue([201, 202, 203]);
+
+				try {
+					await service.updateMany([1, 2, 3], { status: 'published' }, { emitEvents: false });
+
+					expect(readManySpy).toHaveBeenCalledWith([1, 2, 3], {
+						fields: ['id', 'status', 'sort', 'name'],
+					});
+
+					expect(createActivitySpy).toHaveBeenCalledWith(
+						[
+							expect.objectContaining({ item: 1 }),
+							expect.objectContaining({ item: 2 }),
+							expect.objectContaining({ item: 3 }),
+						],
+						{ bypassLimits: true },
+					);
+
+					expect(createRevisionsSpy).toHaveBeenCalledWith([
+						{
+							activity: 101,
+							collection: 'test',
+							item: 1,
+							data: { id: 1, status: 'published', sort: 2, name: 'first' },
+							delta: { status: 'published' },
+						},
+						{
+							activity: 102,
+							collection: 'test',
+							item: 2,
+							data: { id: 2, status: 'published', sort: 3, name: 'second' },
+							delta: { status: 'published' },
+						},
+						{
+							activity: 103,
+							collection: 'test',
+							item: 3,
+							data: { id: 3, status: 'published', sort: 1, name: 'third' },
+							delta: { status: 'published' },
+						},
+					]);
+				} finally {
+					readManySpy.mockRestore();
+					createActivitySpy.mockRestore();
+					createRevisionsSpy.mockRestore();
+				}
 			});
 		});
 

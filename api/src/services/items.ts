@@ -890,6 +890,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						fields: snapshotFields.length > 0 ? snapshotFields : ['*'],
 					});
 
+					const snapshotsByKey = new Map(snapshots.map((snapshot) => [String(snapshot[primaryKeyField]), snapshot]));
+
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
@@ -897,16 +899,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 					const revisions = (
 						await Promise.all(
-							activity.map(async (activity, index) => ({
-								activity: activity,
-								collection: this.collection,
-								item: keys[index],
-								data:
-									Array.isArray(snapshots) && snapshots[index]
-										? await payloadService.prepareDelta(snapshots[index])
-										: null,
-								delta: await payloadService.prepareDelta(payloadWithTypeCasting),
-							})),
+							activity.map(async (activity, index) => {
+								const key = keys[index]!;
+								const snapshot = snapshotsByKey.get(String(key));
+
+								return {
+									activity: activity,
+									collection: this.collection,
+									item: key,
+									data: snapshot ? await payloadService.prepareDelta(snapshot) : null,
+									delta: await payloadService.prepareDelta(payloadWithTypeCasting),
+								};
+							}),
 						)
 					).filter((revision) => revision.delta);
 
