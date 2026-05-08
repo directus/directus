@@ -35,6 +35,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import LicenseSeatsLimitModal from '@/views/private/components/license-seats-limit-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -120,9 +121,8 @@ const licenseStore = useLicenseStore();
 const seatsLimitModalOpen = ref(false);
 
 const canSaveNewUser = computed(() => {
-	return true;
-	// if (!isNew.value) return true;
-	// return licenseStore.hasRemainingSeats;
+	if (!isNew.value) return true;
+	return licenseStore.hasRemainingSeats;
 });
 
 watchEffect(() => {
@@ -204,7 +204,6 @@ async function saveAndQuit() {
 }
 
 async function saveAndStay() {
-
 	if (!canSaveNewUser.value) return;
 
 	try {
@@ -521,6 +520,13 @@ function revert(values: Record<string, any>) {
 			:current-version="null"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
+		/>
+
+		<LicenseSeatsLimitModal
+			v-if="isNew"
+			v-model="seatsLimitModalOpen"
+			persistent
+			@cancel="router.push({ name: 'users-active' })"
 		/>
 
 		<template #sidebar>

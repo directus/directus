@@ -253,15 +253,13 @@ export class LicenseManager {
 				public_url: env['PUBLIC_URL'] as string,
 			});
 
-			console.log('activate', token, key);
-
 			await settingsService.upsertSingleton({
 				license_key: key,
 				license_token: token,
 				project_id: new_project_id ?? project_id!,
 			});
 
-			license = await verifyLicense(token);
+			license = await this.verify(token);
 
 			this.rpc.refreshCache();
 		} catch (err) {
@@ -397,9 +395,7 @@ export class LicenseManager {
 				license = await verifyLicense(token);
 			} catch (err) {
 				error = err as Error;
-				console.error(err);
-				// TODO: Should not clear when license API unavailable
-				// await this.downgrade();
+				logger.error(err);
 			}
 		}
 
