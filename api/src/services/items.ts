@@ -900,7 +900,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const revisions = (
 						await Promise.all(
 							activity.map(async (activity, index) => {
-								const key = keys[index]!;
+								const key = keys[index];
 								const snapshot = snapshotsByKey.get(String(key));
 
 								return {
