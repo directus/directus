@@ -487,6 +487,7 @@ function clearFilters() {
 }
 
 .nav-divider {
-	margin-inline: 0.6875rem;
+	margin-inline: 0.4375rem;
+	padding-block: 0.25rem;
 }
 </style>

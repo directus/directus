@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed, provide, ref, useTemplateRef } from 'vue';
+import { useBreakpoints } from '@vueuse/core';
+import { computed, provide, ref, useId, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VDetail from '@/components/v-detail.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
+import VOverlay from '@/components/v-overlay.vue';
+import { BREAKPOINTS } from '@/constants';
 
 export interface Props {
 	title: string;
@@ -30,6 +33,8 @@ const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
 const localActive = ref(false);
 
+const { mobileSidebarOpen, mobileOutletId, desktopOutletId, teleportTarget } = useSidebar();
+
 const scrollContainer = useTemplateRef('scroll-container');
 
 provide('main-element', scrollContainer);
@@ -43,6 +48,26 @@ const internalActive = computed({
 		emit('update:modelValue', newActive);
 	},
 });
+
+function useSidebar() {
+	const mobileSidebarOpen = ref(false);
+	const breakpoints = useBreakpoints(BREAKPOINTS);
+	const isMobile = breakpoints.smallerOrEqual('lg');
+	const sidebarId = useId();
+	const mobileOutletId = `v-drawer-sidebar-mobile-${sidebarId}`;
+	const desktopOutletId = `v-drawer-sidebar-desktop-${sidebarId}`;
+
+	const teleportTarget = computed(() =>
+		isMobile.value && mobileSidebarOpen.value ? `#${mobileOutletId}` : `#${desktopOutletId}`,
+	);
+
+	return {
+		mobileSidebarOpen,
+		mobileOutletId,
+		desktopOutletId,
+		teleportTarget,
+	};
+}
 </script>
 
 <template>
@@ -73,22 +98,38 @@ const internalActive = computed({
 				<template #actions:primary><slot name="actions:primary" /></template>
 			</VDrawerHeader>
 
+			<div v-if="$slots.sidebar" class="mobile-sidebar">
+				<VDetail v-model="mobileSidebarOpen" :label="sidebarLabel || $t('sidebar')">
+					<nav class="sidebar-content" @click="mobileSidebarOpen = false">
+						<div :id="mobileOutletId" />
+					</nav>
+				</VDetail>
+			</div>
+
+			<Teleport v-if="$slots.sidebar" defer :to="teleportTarget">
+				<slot name="sidebar" />
+			</Teleport>
+
 			<div class="content">
 				<nav v-if="$slots.sidebar" class="sidebar">
-					<div class="sidebar-content">
-						<slot name="sidebar" />
-					</div>
+					<div :id="desktopOutletId" class="sidebar-content" />
 				</nav>
 
-				<main ref="scroll-container" class="main" :class="{ 'has-sidebar': $slots.sidebar }">
-					<VDetail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
-						<nav>
-							<slot name="sidebar" />
-						</nav>
-					</VDetail>
-
+				<main
+					ref="scroll-container"
+					class="main"
+					:class="{ 'has-sidebar': $slots.sidebar, 'sidebar-open': mobileSidebarOpen }"
+				>
 					<slot />
 				</main>
+
+				<VOverlay
+					v-if="$slots.sidebar"
+					absolute
+					:active="mobileSidebarOpen"
+					class="mobile-sidebar-overlay"
+					@click="mobileSidebarOpen = false"
+				/>
 			</div>
 		</article>
 	</VDialog>
@@ -105,6 +146,10 @@ const internalActive = computed({
 	max-inline-size: calc(var(--content-padding) * 2 + var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	block-size: 100%;
 	background-color: var(--theme--shell--background);
+
+	@include mixins.breakpoint-up('lg') {
+		inline-size: calc(100% - 3.625rem);
+	}
 
 	.header-icon {
 		--v-button-background-color: var(--theme--background-normal);
@@ -172,23 +217,37 @@ const internalActive = computed({
 					border-start-start-radius: var(--theme--border-radius);
 				}
 			}
-		}
-	}
 
-	@include mixins.breakpoint-up('lg') {
-		inline-size: calc(100% - 3.625rem);
+			&.sidebar-open {
+				@include mixins.breakpoint-down('lg') {
+					border-color: transparent;
+				}
+			}
+		}
 	}
 }
 
 .mobile-sidebar {
-	position: relative;
-	z-index: 2;
-	margin: var(--content-padding);
+	display: none;
+	padding-inline: var(--content-padding);
+	padding-block: 0.625rem;
+	background-color: var(--theme--shell--background);
 
-	nav {
-		background-color: var(--theme--background-subdued);
-		border-radius: var(--theme--border-radius);
+	@include mixins.breakpoint-up('sm') {
+		padding-inline: calc(var(--content-padding) - 1.5rem);
 	}
+
+	@include mixins.breakpoint-down('lg') {
+		display: block;
+	}
+
+	.sidebar-content :deep(.v-list) {
+		--v-list-padding: 0;
+	}
+}
+
+.mobile-sidebar-overlay {
+	--v-overlay-color: color-mix(in srgb, var(--overlay-color) 85%, transparent);
 
 	@include mixins.breakpoint-up('lg') {
 		display: none;
