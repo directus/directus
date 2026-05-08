@@ -296,18 +296,14 @@ async function onClick(event: MouseEvent) {
 	background-color: var(--v-button-background-color, var(--theme--primary));
 	border: var(--theme--border-width) solid var(--v-button-background-color, var(--theme--primary));
 	border-radius: var(--theme--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, border, color;
 
 	&:hover {
 		color: var(--v-button-color-hover, var(--foreground-inverted));
 		background-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
 		border-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
 	}
-}
-
-.button,
-.split-menu-button {
-	transition: var(--fast) var(--transition);
-	transition-property: background-color, border, color;
 }
 
 .button {
