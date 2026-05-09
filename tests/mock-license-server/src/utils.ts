@@ -95,6 +95,7 @@ export async function createNewToken(license: License) {
 	return new SignJWT(encodedToken)
 		.setProtectedHeader({ alg: 'EdDSA' })
 		.setIssuer('directus-licensing-service')
+		.setAudience('directus')
 		.setIssuedAt(now)
 		.setJti(randomUUID())
 		.setExpirationTime(license.meta.expires_at ?? now + 1000)
