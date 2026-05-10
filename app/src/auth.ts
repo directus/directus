@@ -7,6 +7,7 @@ import {
 	RestCommand,
 } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
+import { useLocalStorage } from '@vueuse/core';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { RouteLocationRaw } from 'vue-router';
 import { emitter, Events } from './events';
@@ -32,6 +33,9 @@ type LoginParams = {
 };
 
 const cookies = useCookies(['license-banner-dismissed']);
+const ACCESS_TOKEN_EXPIRY_STORAGE_KEY = 'directus-access-token-expiry';
+const MAX_SAFE_TIMEOUT = 2 ** 31 - 1;
+const accessTokenExpiryStorage = useLocalStorage<number | null>(ACCESS_TOKEN_EXPIRY_STORAGE_KEY, null);
 
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
@@ -72,7 +76,7 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 		}
 	}
 
-	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
+	setAccessTokenExpiry(appStore, Date.now() + (response.expires ?? 0));
 	cookies.remove('license-banner-dismissed');
 	appStore.authenticated = true;
 
@@ -84,9 +88,11 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 
 let idle = false;
 let firstRefresh = true;
+let scheduledRefresh: number | null = null;
 
 // Prevent the auto-refresh when the app isn't in use
 emitter.on(Events.tabIdle, () => {
+	clearScheduledRefresh();
 	sdk.stopRefreshing();
 	idle = true;
 });
@@ -106,18 +112,22 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	if (!firstRefresh && !appStore.authenticated) return;
 
 	try {
-		// Skip access token refreshing if it is still fresh but validate the session
-		if (appStore.accessTokenExpiry && Date.now() < appStore.accessTokenExpiry - SDK_AUTH_REFRESH_BEFORE_EXPIRES) {
-			await sdk.request(readMe({ fields: ['id'] }));
-			return;
-		}
+		if (await validateStoredSession(appStore)) return;
 
+		clearScheduledRefresh();
 		const response = await sdk.refresh();
 
-		appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
+		setAccessTokenExpiry(appStore, Date.now() + (response.expires ?? 0));
 		appStore.authenticated = true;
 		firstRefresh = false;
 	} catch {
+		// The failed request may have been sent with a stale session cookie while another tab was refreshing.
+		try {
+			if (await validateStoredSession(appStore)) return;
+		} catch {
+			// Fall through to the regular session-expired logout flow.
+		}
+
 		await logout({ navigate, reason: LogoutReason.SESSION_EXPIRED });
 	} finally {
 		resumeQueue();
@@ -159,6 +169,8 @@ export async function logout(options: LogoutOptions = {}): Promise<void> {
 	}
 
 	appStore.authenticated = false;
+	clearScheduledRefresh();
+	clearAccessTokenExpiry(appStore);
 
 	await dehydrate();
 
@@ -169,5 +181,64 @@ export async function logout(options: LogoutOptions = {}): Promise<void> {
 		};
 
 		router.push(location);
+	}
+}
+
+async function validateStoredSession(appStore: ReturnType<typeof useAppStore>): Promise<boolean> {
+	const accessTokenExpiry = Math.max(appStore.accessTokenExpiry, getStoredAccessTokenExpiry());
+
+	if (!accessTokenExpiry || Date.now() >= accessTokenExpiry - SDK_AUTH_REFRESH_BEFORE_EXPIRES) return false;
+
+	await sdk.request(readMe({ fields: ['id'] }));
+
+	setAccessTokenExpiry(appStore, accessTokenExpiry);
+	scheduleRefresh(accessTokenExpiry);
+	appStore.authenticated = true;
+	firstRefresh = false;
+
+	return true;
+}
+
+function setAccessTokenExpiry(appStore: ReturnType<typeof useAppStore>, accessTokenExpiry: number): void {
+	appStore.accessTokenExpiry = accessTokenExpiry;
+	accessTokenExpiryStorage.value = accessTokenExpiry;
+}
+
+function clearAccessTokenExpiry(appStore: ReturnType<typeof useAppStore>): void {
+	appStore.accessTokenExpiry = 0;
+	accessTokenExpiryStorage.value = null;
+}
+
+function scheduleRefresh(accessTokenExpiry: number): void {
+	clearScheduledRefresh();
+
+	const delay = accessTokenExpiry - Date.now() - SDK_AUTH_REFRESH_BEFORE_EXPIRES;
+
+	if (delay <= 0 || delay > MAX_SAFE_TIMEOUT) return;
+
+	scheduledRefresh = window.setTimeout(() => {
+		scheduledRefresh = null;
+
+		refresh().catch(() => {
+			// refresh handles session-expired state internally.
+		});
+	}, delay);
+}
+
+function clearScheduledRefresh(): void {
+	if (!scheduledRefresh) return;
+
+	window.clearTimeout(scheduledRefresh);
+	scheduledRefresh = null;
+}
+
+function getStoredAccessTokenExpiry(): number {
+	try {
+		// Read storage directly so recovery sees cross-tab refreshes before the VueUse ref receives a storage event.
+		const accessTokenExpiry = Number(localStorage.getItem(ACCESS_TOKEN_EXPIRY_STORAGE_KEY));
+
+		return Number.isFinite(accessTokenExpiry) ? accessTokenExpiry : 0;
+	} catch {
+		return accessTokenExpiryStorage.value ?? 0;
 	}
 }
