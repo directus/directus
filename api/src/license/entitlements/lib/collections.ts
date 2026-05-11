@@ -13,13 +13,15 @@ export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 
 	const dbCollections = await collectionService.readByQuery();
 
-	return dbCollections.filter(
-		(collection) =>
-			!isSystemCollection(collection.collection) &&
-			!isDBOnlyCollection(collection) &&
-			!isDisabledCollection(collection) &&
-			!isEnvExcludedCollection(collection),
-	);
+	return dbCollections
+		.filter(
+			(collection) =>
+				!isSystemCollection(collection.collection) &&
+				!isDBOnlyCollection(collection) &&
+				!isDisabledCollection(collection) &&
+				!isEnvExcludedCollection(collection),
+		)
+		.map((collection) => collection.collection);
 }
 
 export async function countActiveCollections(opts?: { knex?: Knex | undefined }) {
@@ -48,8 +50,8 @@ export async function resolveCollections(collections: string[]) {
 		collections.map((collection) => {
 			collectionsService.updateOne(collection, {
 				// @ts-ignore TODO fix collection type
-				meta: { status: 'inactive' }
-			})
-		})
+				meta: { status: 'inactive' },
+			});
+		}),
 	);
 }
