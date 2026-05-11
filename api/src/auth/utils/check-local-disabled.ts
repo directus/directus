@@ -7,11 +7,8 @@ import asyncHandler from '../../utils/async-handler.js';
 
 export const checkLocalAuthDisabled: RequestHandler = asyncHandler(async (req, _res, next) => {
 	const env = useEnv();
-	const entitlementManager = getEntitlementManager();
 
-	const sso_allowed = entitlementManager.isEntitled('sso_enabled');
-
-	if (sso_allowed === true && toBoolean(env['AUTH_DISABLE_DEFAULT'])) {
+	if (getEntitlementManager().isEntitled('sso_enabled') && toBoolean(env['AUTH_DISABLE_DEFAULT'])) {
 		throw new RouteNotFoundError({ path: req.path });
 	}
 

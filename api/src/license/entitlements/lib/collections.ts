@@ -2,10 +2,11 @@ import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
 import type { Knex } from 'knex';
 import { CollectionsService } from '../../../services/index.js';
-import type { Collection } from '../../../types/collection.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
 export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
+	const env = useEnv();
+
 	const collectionService = new CollectionsService({
 		schema: await getSchema(),
 		knex: opts?.knex,
@@ -14,14 +15,14 @@ export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 	const dbCollections = await collectionService.readByQuery();
 
 	return dbCollections
-		.filter(
-			(collection) =>
-				!isFolder(collection) &&
-				!isSystemCollection(collection.collection) &&
-				!isDBOnlyCollection(collection) &&
-				!isDisabledCollection(collection) &&
-				!isEnvExcludedCollection(collection),
-		)
+		.filter((collection) => {
+			const isFolder = collection.schema === null;
+			const isDBOnly = collection.meta === null;
+			const isDisabled = collection.meta?.status !== 'active';
+			const isEnvExcluded = (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection);
+
+			return !isFolder && !isSystemCollection(collection.collection) && !isDBOnly && !isDisabled && !isEnvExcluded;
+		})
 		.map((collection) => collection.collection);
 }
 
@@ -31,30 +32,12 @@ export async function countActiveCollections(opts?: { knex?: Knex | undefined })
 	return collections.length;
 }
 
-function isFolder(collection: Collection) {
-	return collection.schema === null;
-}
-
-function isDBOnlyCollection(collection: Collection) {
-	return collection.meta === null;
-}
-
-function isDisabledCollection(collection: Collection) {
-	return collection.meta?.status !== 'active';
-}
-
-function isEnvExcludedCollection(collection: Collection) {
-	const env = useEnv();
-	return (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection);
-}
-
 export async function resolveCollections(collections: string[]) {
 	const collectionsService = new CollectionsService({ schema: await getSchema() });
 
 	await Promise.allSettled(
 		collections.map((collection) => {
 			collectionsService.updateOne(collection, {
-				// @ts-ignore TODO fix collection type
 				meta: { status: 'inactive' },
 			});
 		}),

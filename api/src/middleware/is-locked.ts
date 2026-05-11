@@ -7,11 +7,7 @@ import asyncHandler from '../utils/async-handler.js';
  * Throws an error if the license is in a locked state
  */
 export const handler = async (_req: Request, _res: Response, next: NextFunction) => {
-	const licenseManager = getLicenseManager();
-
-	const isLocked = await licenseManager.isLocked();
-
-	if (isLocked) {
+	if (await getLicenseManager().isLocked()) {
 		// LICENSE-TODO: Convert to a dedicated PROJECT_LOCKED?
 		throw new ServiceUnavailableError({
 			reason: 'License is in a locked state and must be resolved',
