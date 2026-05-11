@@ -11,9 +11,10 @@ export async function getActiveSeats(opts?: {
 	adminId?: string;
 	knex?: Knex | undefined;
 }): Promise<LicensePendingResolutionLimitSeats['candidates']> {
-	const schema = await getSchema();
+	const knex = opts?.knex ?? getDatabase();
+	const schema = await getSchema({ database: knex });
 
-	const accessService = new AccessService({ schema, knex: opts?.knex ?? getDatabase() });
+	const accessService = new AccessService({ schema, knex });
 
 	const accessRows = await accessService.readByQuery({
 		fields: ['role', 'user.id', 'user.status', 'user.role', 'policy.app_access', 'policy.admin_access'],
