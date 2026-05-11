@@ -45,6 +45,7 @@ function useIcon() {
 	});
 
 	const activeTooltip = computed(() => {
+		if (showIcon.value && label && tooltip) return `${label} (${tooltip})`;
 		if (tooltip) return tooltip;
 		if (showIcon.value) return label;
 		return undefined;
