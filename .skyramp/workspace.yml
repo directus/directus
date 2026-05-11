@@ -9,15 +9,27 @@ metadata:
   createdAt: "2026-05-11T17:36:55.286Z"
   updatedAt: "2026-05-11T17:36:55.295Z"
 services:
-  - serviceName: directus
+  - serviceName: directus-api-backend
     language: typescript
     framework: playwright
-    testDirectory: tests/skyramp
+    testDirectory: tests/blackbox/api
     api:
       schemaPath: packages/specs/src/openapi.yaml
       authType: bearer
       authHeader: Authorization
       baseUrl: http://localhost:8055
+    runtimeDetails:
+      serverStartCommand: docker compose -f docker-compose.testbot.yml up -d
+      runtime: docker
+      dockerNetwork: directus_default
+  - serviceName: directus-app-frontend
+    language: typescript
+    framework: playwright
+    testDirectory: app/tests
+    api:
+      baseUrl: http://localhost:8055
+      authType: none
+      authHeader: ""
     runtimeDetails:
       serverStartCommand: docker compose -f docker-compose.testbot.yml up -d
       runtime: docker
