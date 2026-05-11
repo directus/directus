@@ -960,72 +960,58 @@ function editDraftVersion() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
+
+		<template #actions:primary>
 			<template v-if="shouldShowVersioning">
-				<VButton v-if="currentVersion === null" rounded icon :tooltip="$t('edit_item')" small @click="editDraftVersion">
-					<VIcon name="edit" small />
-				</VButton>
+				<PrivateViewHeaderBarActionButton
+					v-if="currentVersion === null"
+					:label="$t('edit')"
+					icon="edit"
+					@click="editDraftVersion()"
+				/>
 
 				<template v-else>
-					<VButton
-						rounded
-						icon
+					<PrivateViewHeaderBarActionButton
+						:label="$t('save')"
+						:tooltip="translateShortcut(['meta', 's'])"
+						icon="beenhere"
 						secondary
-						:tooltip="$t('save_version')"
-						:loading="saveVersionLoading"
 						:disabled="!isSavable"
-						small
 						@click="saveVersionAction()"
-					>
-						<VIcon name="beenhere" small />
-					</VButton>
+					/>
 
-					<VButton
-						rounded
-						icon
-						small
+					<PrivateViewHeaderBarActionButton
+						:label="$t('publish')"
+						:tooltip="translateShortcut(['meta', 'alt', 'p'])"
+						icon="public"
 						:disabled="!isPublishAllowed"
-						:tooltip="`${$t('publish')} (${translateShortcut(['meta', 'alt', 'p'])})`"
 						@click="onVersionPublishCompare()"
 					>
-						<VIcon name="public" small />
-
-						<template #append-outer>
-							<VMenu
-								v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isPublishAllowed"
-								show-arrow
-							>
-								<template #activator="{ toggle }">
-									<VIcon class="version-more-options" name="more_vert" clickable @click="toggle" />
-								</template>
-
-								<VList>
-									<VListItem clickable @click="onVersionPublishCompare(true)">
-										<VListItemIcon><VIcon name="public" /></VListItemIcon>
-										<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
-										<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
-									</VListItem>
-								</VList>
-							</VMenu>
+						<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
+							<VList>
+								<VListItem clickable @click="onVersionPublishCompare(true)">
+									<VListItemIcon><VIcon name="public" /></VListItemIcon>
+									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
+									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
+								</VListItem>
+							</VList>
 						</template>
-					</VButton>
+					</PrivateViewHeaderBarActionButton>
 				</template>
 			</template>
+
 			<template v-else>
-				<VButton
-					v-if="currentVersion === null"
-					rounded
-					icon
-					:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
+				<PrivateViewHeaderBarActionButton
+					:label="$t('save')"
+					:tooltip="!saveAllowed ? $t('not_allowed') : undefined"
+					icon="check"
 					:loading="saving"
 					:disabled="!isSavable"
-					small
-					@click="saveAndQuit"
+					@click="saveAndQuit()"
 				>
-					<VIcon name="check" small />
-
-					<template #append-outer>
+					<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
 						<SaveOptions
-							v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 							:disabled-options="disabledOptions"
 							@save-and-stay="saveAndStay"
 							@save-and-add-new="saveAndAddNew"
@@ -1033,7 +1019,7 @@ function editDraftVersion() {
 							@discard-and-stay="discardAndStay"
 						/>
 					</template>
-				</VButton>
+				</PrivateViewHeaderBarActionButton>
 			</template>
 		</template>
 
