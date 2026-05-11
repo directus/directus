@@ -392,55 +392,48 @@ function clearFilters() {
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
 
-				<div class="bookmark-controls">
-					<BookmarkAdd
-						v-if="!bookmark"
-						v-model="bookmarkDialogActive"
-						:saving="creatingBookmark"
-						@save="createBookmark"
-					>
-						<template #activator="{ on }">
-							<PrivateViewHeaderBarActionButton
-								v-tooltip.bottom="$t('create_bookmark')"
-								icon="bookmark"
-								variant="ghost"
-								@click="on"
-							/>
-						</template>
-					</BookmarkAdd>
+				<BookmarkAdd v-if="!bookmark" v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="$t('create_bookmark')"
+							icon="bookmark"
+							variant="ghost"
+							@click="on"
+						/>
+					</template>
+				</BookmarkAdd>
 
-					<div v-else-if="bookmarkSaved" class="saved-bookmark">
-						<VIcon name="bookmark" filled />
-					</div>
-
-					<PrivateViewHeaderBarActionButton
-						v-else-if="bookmarkIsMine"
-						v-tooltip.bottom="$t('update_bookmark')"
-						icon="bookmark_save"
-						variant="ghost"
-						@click="savePreset()"
-					/>
-
-					<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
-						<template #activator="{ on }">
-							<PrivateViewHeaderBarActionButton
-								v-tooltip.bottom="$t('create_bookmark')"
-								icon="bookmark"
-								variant="ghost"
-								@click="on"
-							/>
-						</template>
-					</BookmarkAdd>
-
-					<PrivateViewHeaderBarActionButton
-						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
-						v-tooltip.bottom="$t('reset_bookmark')"
-						icon="settings_backup_restore"
-						variant="ghost"
-						kind="danger"
-						@click="clearLocalSave"
-					/>
+				<div v-else-if="bookmarkSaved" class="saved-bookmark">
+					<VIcon name="bookmark" filled />
 				</div>
+
+				<PrivateViewHeaderBarActionButton
+					v-else-if="bookmarkIsMine"
+					v-tooltip.bottom="$t('update_bookmark')"
+					icon="bookmark_save"
+					variant="ghost"
+					@click="savePreset()"
+				/>
+
+				<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="$t('create_bookmark')"
+							icon="bookmark"
+							variant="ghost"
+							@click="on"
+						/>
+					</template>
+				</BookmarkAdd>
+
+				<PrivateViewHeaderBarActionButton
+					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					v-tooltip.bottom="$t('reset_bookmark')"
+					icon="settings_backup_restore"
+					variant="ghost"
+					kind="danger"
+					@click="clearLocalSave"
+				/>
 
 				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
@@ -642,7 +635,8 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 2rem;
 	block-size: 2rem;
+	inline-size: 2rem;
+	min-inline-size: 2rem;
 }
 </style>
