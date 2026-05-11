@@ -2,8 +2,9 @@ import { randomUUID } from 'crypto';
 import type { FastifyInstance } from 'fastify';
 import Type, { type Static } from 'typebox';
 import { forbiddenError, notFoundError } from '../errors.js';
-import { type License, licenses } from '../licenses.js';
-import { createNewToken } from '../token.js';
+import { licenseStore } from '../store.js';
+import type { MockLicense } from '../types.js';
+import { createNewToken } from '../utils.js';
 
 export const ActivateRequestSchema = Type.Object({
 	license_key: Type.String({ minLength: 1 }),
@@ -24,7 +25,7 @@ export async function activateRoute(app: FastifyInstance) {
 		async (req, res) => {
 			const { license_key, project_id, public_url } = req.body;
 
-			const license = licenses[license_key];
+			const license = licenseStore[license_key];
 
 			if (!license) return res.status(404).send(notFoundError('License not available'));
 
@@ -34,9 +35,9 @@ export async function activateRoute(app: FastifyInstance) {
 			if (license.projects.some(({ id, url }) => id === project_id && url === public_url))
 				return res.status(400).send(forbiddenError('License already used'));
 
-			let collidingLicense: License | undefined;
+			let collidingLicense: MockLicense | undefined;
 
-			for (const license of Object.values(licenses)) {
+			for (const license of Object.values(licenseStore)) {
 				if (license.key === license_key) continue;
 
 				for (const { id, url } of license.projects) {

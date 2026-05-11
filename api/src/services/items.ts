@@ -131,6 +131,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(1);
 		}
 
+		if (this.collection === 'directus_users') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 
@@ -433,6 +438,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
+		if (this.collection === 'directus_users') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+		}
+
 		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
 			const service = this.fork({ knex });
 
@@ -711,6 +721,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
+		}
+
+		if (this.collection === 'directus_users') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;

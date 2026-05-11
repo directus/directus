@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import Type, { type Static } from 'typebox';
 import { notFoundError } from '../errors.js';
-import { licenses } from '../licenses.js';
+import { licenseStore } from '../store.js';
 
 export const PreviewRequestSchema = Type.Object({
 	license_key: Type.String({
@@ -23,12 +23,12 @@ export async function previewRoute(app: FastifyInstance) {
 		async (req, res) => {
 			const key = req.body.license_key;
 
-			const license = licenses[key];
+			const license = licenseStore[key];
 
 			if (!license) return res.status(404).send(notFoundError('License not available'));
 
 			return res.status(200).send({
-				name: license.name,
+				plan_name: license.name,
 				production_enabled:
 					license.entitlements.production_enabled.override ?? license.entitlements.production_enabled.default,
 				expires_at: license.meta.expires_at,

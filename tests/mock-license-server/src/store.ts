@@ -1,21 +1,6 @@
-import type { License as Token } from '@directus/license';
+import type { MockLicense } from './types.js';
 
-type Addon = {
-	name: string;
-};
-
-export type License = {
-	name: string;
-	key: string;
-	entitlements: Token['entitlements'];
-	meta: Token['meta'];
-	max_projects: number;
-	projects: { id: string; url: string }[];
-	/** Available Addons */
-	addons: Addon[];
-};
-
-export const licenses: Record<string, License> = {
+export const licenseStore: Record<string, MockLicense> = {
 	// Base license for testing
 	'D0000-00000-00000-00000-00000': {
 		max_projects: 10_000,
@@ -25,12 +10,12 @@ export const licenses: Record<string, License> = {
 		projects: [],
 		meta: {
 			name: 'UNLIMITED',
-			version: '1',
-			public_url: 'http://localhost',
+			version: '2026-05-08',
 			grace_period: 60 * 60 * 24,
 			validation_interval: 60 * 60,
 			expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
 			offline: false,
+			overage_billed: { seats: 0, collections: 0, flows: 0 },
 		},
 		entitlements: {
 			collections: { limit: -1 },

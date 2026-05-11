@@ -1,9 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import Type, { type Static } from 'typebox';
-import { notFoundError } from '../errors.js';
-import { licenses } from '../licenses.js';
-import { createNewToken } from '../token.js';
+import { requireLicense } from '../hooks/require-license.js';
 import { LicenseAuthHeaders, type LicenseAuthHeadersType } from '../types.js';
+import { createNewToken } from '../utils.js';
 
 export const RefreshRequestBody = Type.Object(
 	{
@@ -17,7 +16,6 @@ export const RefreshRequestBody = Type.Object(
 				additionalProperties: false,
 			},
 		),
-		new_public_url: Type.Optional(Type.String({ minLength: 1 })),
 	},
 	{
 		additionalProperties: false,
@@ -34,25 +32,11 @@ export async function refreshRoute(app: FastifyInstance) {
 				body: RefreshRequestBody,
 				headers: LicenseAuthHeaders,
 			},
+			preHandler: requireLicense,
 		},
 		async (req, res) => {
-			const license_key = req.headers['directus-license-key'];
-			const project_id = req.headers['directus-project-id'];
-			const public_url = req.headers['directus-project-url'];
-
-			const license = licenses[license_key];
-
-			if (!license || license.projects.some(({ id, url }) => id === project_id && url === public_url)) {
-				return res.status(404).send(notFoundError('License not available'));
-			}
-
-			// Honor public_url change: replace the project entry with the new url
-			if (req.body.new_public_url) {
-				// TBD
-			}
-
 			return res.status(200).send({
-				token: await createNewToken(license),
+				token: await createNewToken(req.license),
 			});
 		},
 	);
