@@ -13,5 +13,5 @@ export async function checkCustomLLM(opts?: { knex?: Knex | undefined }) {
 		fields: [...CUSTOM_LLM_FIELDS],
 	});
 
-	return Boolean(CUSTOM_LLM_FIELDS.find((key) => data[key] !== null));
+	return !CUSTOM_LLM_FIELDS.find((key) => data[key] !== null);
 }

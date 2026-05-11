@@ -66,5 +66,5 @@ export async function checkCustomPermissionRules(opts?: { knex?: Knex | undefine
 
 	const customRulePermissions = permissions.filter((p) => hasCustomRule(p) && !isRecommendedAppPermission(p));
 
-	return customRulePermissions.length > 0;
+	return customRulePermissions.length === 0;
 }

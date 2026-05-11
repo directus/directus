@@ -14,7 +14,8 @@ export async function getActiveFlows(opts?: { knex?: Knex | undefined }) {
             status: {
                 _eq: 'active',
             }
-        }
+        },
+        limit: -1
     });
 
     return flows;

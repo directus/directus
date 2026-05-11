@@ -37,9 +37,11 @@ export async function resolveCollections(collections: string[]) {
 
 	await Promise.allSettled(
 		collections.map((collection) => {
-			collectionsService.updateOne(collection, {
-				meta: { status: 'inactive' },
-			});
-		}),
+
+			return collectionsService.updateOne(collection, {
+				// @ts-ignore TODO fix collection type
+				meta: { status: 'inactive' }
+			})
+		})
 	);
 }

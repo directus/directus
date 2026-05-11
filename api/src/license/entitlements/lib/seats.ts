@@ -1,24 +1,23 @@
 import type { LicensePendingResolutionLimitSeats } from '@directus/license';
+import type { Filter } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
 import { AccessService, UsersService } from '../../../services/index.js';
 import { fetchAccessRoles } from '../../../utils/fetch-user-count/fetch-access-roles.js';
-import { fetchUserCount } from '../../../utils/fetch-user-count/fetch-user-count.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-export async function getActiveSeats(ctx?: {
-	adminId: string;
+export async function getActiveSeats(opts?: {
+	adminId?: string;
+	knex?: Knex | undefined;
 }): Promise<LicensePendingResolutionLimitSeats['candidates']> {
-	// license-TODO refactor
-	if (!ctx?.adminId) return [];
-
 	const schema = await getSchema();
 
-	const accessService = new AccessService({ schema });
+	const accessService = new AccessService({ schema, knex: opts?.knex ?? getDatabase() });
 
 	const accessRows = await accessService.readByQuery({
 		fields: ['role', 'user.id', 'user.status', 'user.role', 'policy.app_access', 'policy.admin_access'],
+		limit: -1,
 	});
 
 	const adminRoles = new Set<string>();
@@ -54,86 +53,94 @@ export async function getActiveSeats(ctx?: {
 			adminRoles,
 			appRoles,
 		},
-		{ knex: getDatabase() },
+		{ knex: opts?.knex ?? getDatabase() },
 	);
 
 	const usersService = new UsersService({ schema });
 
-	const adminCandidates = await usersService.readByQuery({
-		fields: ['id', 'first_name', 'last_name', 'avatar'],
-		filter: {
-			_and: [
+	const adminFilters: Filter[] = [
+		{
+			_or: [
 				{
 					id: {
-						_neq: ctx.adminId,
+						_in: Array.from(adminUsers),
 					},
 				},
 				{
-					_or: [
-						{
-							id: {
-								_in: Array.from(adminUsers),
-							},
-						},
-						{
-							role: {
-								_in: Array.from(allAdminRoles),
-							},
-						},
-					],
-				},
-				{
-					status: {
-						_eq: 'active',
+					role: {
+						_in: Array.from(allAdminRoles),
 					},
 				},
 			],
 		},
+		{
+			status: {
+				_eq: 'active',
+			},
+		},
+	];
+
+	const appFilters: Filter[] = [
+		{
+			_or: [
+				{
+					id: {
+						_in: Array.from(appUsers),
+						_nin: Array.from(adminUsers),
+					},
+				},
+				{
+					role: {
+						_in: Array.from(allAppRoles),
+						_nin: Array.from(allAdminRoles),
+					},
+				},
+			],
+		},
+		{
+			status: {
+				_eq: 'active',
+			},
+		},
+	];
+
+	if (opts?.adminId) {
+		adminFilters.push({
+			id: {
+				_neq: opts.adminId,
+			},
+		});
+
+		appFilters.push({
+			id: {
+				_neq: opts.adminId,
+			},
+		});
+	}
+
+	const adminCandidates = await usersService.readByQuery({
+		fields: ['id', 'first_name', 'last_name', 'avatar'],
+		filter: {
+			_and: adminFilters,
+		},
+		limit: -1,
 	});
 
 	const appCandidates = await usersService.readByQuery({
 		fields: ['id', 'first_name', 'last_name', 'avatar'],
 		filter: {
-			_and: [
-				{
-					id: {
-						_neq: ctx.adminId,
-					},
-				},
-				{
-					_or: [
-						{
-							id: {
-								_in: Array.from(appUsers),
-								_nin: Array.from(adminUsers),
-							},
-						},
-						{
-							role: {
-								_in: Array.from(allAppRoles),
-								_nin: Array.from(allAdminRoles),
-							},
-						},
-					],
-				},
-				{
-					status: {
-						_eq: 'active',
-					},
-				},
-			],
+			_and: appFilters,
 		},
+		limit: -1,
 	});
 
 	return [...appCandidates, ...adminCandidates.map((admin) => ({ ...admin, admin: true }))] as any;
 }
 
 export async function countActiveSeats(opts?: { knex?: Knex | undefined }) {
-	const userCounts = await fetchUserCount({
-		knex: opts?.knex ?? getDatabase(),
-	});
+	const seats = await getActiveSeats(opts);
 
-	return userCounts.admin + userCounts.app;
+	return seats.length;
 }
 
 export async function resolveSeats(seats: string[], ctx?: { adminId: string }) {
