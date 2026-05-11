@@ -977,6 +977,7 @@ function editDraftVersion() {
 						:tooltip="translateShortcut(['meta', 's'])"
 						icon="beenhere"
 						secondary
+						:loading="saveVersionLoading"
 						:disabled="!isSavable"
 						@click="saveVersionAction()"
 					/>
