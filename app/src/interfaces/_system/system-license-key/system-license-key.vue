@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KEY, normalizeKey } from '@directus/license';
+import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash';
 import { onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -42,7 +42,7 @@ const validate = throttle(async (value: string | null) => {
 		return;
 	}
 
-	const parsed = KEY.safeParse(value);
+	const parsed = LICENSE_KEY.safeParse(value);
 
 	if (parsed.error) {
 		error.value = parsed.error;
@@ -66,7 +66,7 @@ const validate = throttle(async (value: string | null) => {
 
 function onUpdated(value: string | null) {
 	if (value) {
-		value = normalizeKey(value);
+		value = normalizeLicenseKey(value);
 	}
 
 	emit('input', value);

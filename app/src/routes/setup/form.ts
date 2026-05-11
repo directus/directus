@@ -1,4 +1,4 @@
-import { KEY } from '@directus/license';
+import { LICENSE_KEY } from '@directus/license';
 import { DeepPartial, Field, SetupForm } from '@directus/types';
 import { FailedValidationErrorExtensions } from '@directus/validation';
 import { computed, ComputedRef, MaybeRef, unref } from 'vue';
@@ -22,7 +22,7 @@ export const FormValidator = z.object({
 	password: z.string(),
 	password_confirm: z.string(),
 	license: z.literal(true),
-	license_key: KEY.nullable(),
+	license_key: LICENSE_KEY.nullable(),
 	product_updates: z.boolean().optional(),
 });
 
