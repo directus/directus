@@ -26,17 +26,32 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
+import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
+import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
+import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 
 const { t } = useI18n();
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
+const licenseStore = useLicenseStore();
 
 const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
 const editFlow = ref<string | undefined>();
+const flowsLimitModalOpen = ref(false);
+
+function openCreateFlow() {
+	if (!licenseStore.hasRemainingFlows) {
+		flowsLimitModalOpen.value = true;
+		return;
+	}
+
+	editFlow.value = '+';
+}
 
 const conditionalFormatting = ref([
 	{
@@ -161,19 +176,25 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<template #actions>
+			<EntitlementRemaining entitlement-key="flows" />
+
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
 				:disabled="createAllowed === false"
 				icon="add"
-				@click="editFlow = '+'"
+				@click="openCreateFlow"
 			/>
 		</template>
+
+		<div class="padding-box">
+			<MaxCapacityAlert entitlement-key="flows" />
+		</div>
 
 		<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
 			{{ $t('no_flows_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<VButton @click="editFlow = '+'">{{ $t('create_flow') }}</VButton>
+				<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
 			</template>
 		</VInfo>
 
@@ -263,6 +284,8 @@ function onFlowDrawerCompletion(id: string) {
 		/>
 
 		<RouterView name="add" />
+
+		<LicenseLimitModal v-model="flowsLimitModalOpen" type="flows" is-admin />
 	</PrivateView>
 </template>
 
@@ -285,5 +308,9 @@ function onFlowDrawerCompletion(id: string) {
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
+}
+
+.padding-box {
+	padding: var(--content-padding);
 }
 </style>

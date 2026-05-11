@@ -11,7 +11,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	modelValue: boolean;
-	type: 'collections' | 'seats';
+	type: 'collections' | 'seats' | 'flows';
 	isAdmin?: boolean;
 	onSave?: () => void;
 }>();
@@ -29,6 +29,8 @@ const bodyKey = computed(() => {
 	if (props.type === 'seats') {
 		return props.isAdmin ? 'license.seats_limit.body_admin' : 'license.seats_limit.body_member';
 	}
+
+	if (props.type === 'flows') return 'license.flows_limit.body';
 
 	// Collections are always admin-facing; no member variant needed.
 	return 'license.collections_limit.body';
