@@ -210,7 +210,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		throw error;
 	}
 
-	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item | null>) {
+	async function saveVersion(
+		edits: Ref<Record<string, any>>,
+		item: Ref<Item | null>,
+		opts?: { patchRevision?: boolean },
+	) {
 		if (!currentVersion.value || !primaryKey.value) return;
 
 		saveVersionLoading.value = true;
@@ -233,9 +237,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				versionId = currentVersion.value.id;
 			}
 
+			// On a brand-new version we just created above there is no prior revision to coalesce into,
+			// so the patchRevision flag would just trigger the server's fallback path. Skip sending it.
+			const shouldPatchRevision = opts?.patchRevision === true && currentVersion.value.id !== '+';
+
+			const url = shouldPatchRevision ? `/versions/${versionId}/save?patchRevision` : `/versions/${versionId}/save`;
+
 			const {
 				data: { data: savedData },
-			} = await api.post(`/versions/${versionId}/save`, edits.value);
+			} = await api.post(url, edits.value);
 
 			// Update local item with the saved changes
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;

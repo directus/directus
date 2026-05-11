@@ -579,8 +579,7 @@ async function autoSaveRevision(forceNew: boolean) {
 				revisionsSidebarDetailRef.value?.refresh?.();
 			}
 		} else {
-			// TODO: re-enable once `patchVersionDelta` is reintroduced in use-versions
-			// await patchVersionDelta(edits, item, actualPrimaryKey.value);
+			await saveVersion(edits, item, { patchRevision: true });
 		}
 	} catch (error) {
 		// Version-gone errors (deleted/promoted by another user) are handled silently here:

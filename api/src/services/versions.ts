@@ -270,7 +270,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async save(key: PrimaryKey, delta: Partial<Item>): Promise<Partial<Item>> {
+	async save(key: PrimaryKey, delta: Partial<Item>, opts?: { patchRevision?: boolean }): Promise<Partial<Item>> {
 		const version = await super.readOne(key);
 
 		const payloadService = new PayloadService(this.collection, {
@@ -289,35 +289,62 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			const trackingAccountability = this.schema.collections[collection]?.accountability ?? null;
 
 			if (trackingAccountability !== null) {
-				const activityService = new ActivityService({
+				const revisionsService = new RevisionsService({
 					knex: this.knex,
 					schema: this.schema,
 				});
 
-				const activity = await activityService.createOne({
-					action: Action.VERSION_SAVE,
-					user: this.accountability?.user ?? null,
-					collection,
-					ip: this.accountability?.ip ?? null,
-					user_agent: this.accountability?.userAgent ?? null,
-					origin: this.accountability?.origin ?? null,
-					item,
-				});
+				// In patch mode, try to coalesce into the most recent revision for this version
+				// instead of appending a new activity + revision pair.
+				let patchedExistingRevision = false;
 
-				if (trackingAccountability === 'all') {
-					const revisionsService = new RevisionsService({
+				if (opts?.patchRevision && trackingAccountability === 'all') {
+					const [latestRevision] = await revisionsService.readByQuery({
+						filter: { version: { _eq: key } },
+						sort: ['-id'],
+						limit: 1,
+					});
+
+					if (latestRevision) {
+						const mergedRevisionData = assign({}, latestRevision['data'], revisionDelta);
+						const mergedRevisionDelta = assign({}, latestRevision['delta'], revisionDelta);
+
+						await revisionsService.updateOne(latestRevision['id'], {
+							data: mergedRevisionData,
+							delta: mergedRevisionDelta,
+						});
+
+						patchedExistingRevision = true;
+					}
+				}
+
+				// Fall through to create-new path when not patching, or when patching had nothing to coalesce.
+				if (!patchedExistingRevision) {
+					const activityService = new ActivityService({
 						knex: this.knex,
 						schema: this.schema,
 					});
 
-					await revisionsService.createOne({
-						activity,
-						version: key,
+					const activity = await activityService.createOne({
+						action: Action.VERSION_SAVE,
+						user: this.accountability?.user ?? null,
 						collection,
+						ip: this.accountability?.ip ?? null,
+						user_agent: this.accountability?.userAgent ?? null,
+						origin: this.accountability?.origin ?? null,
 						item,
-						data: revisionDelta,
-						delta: revisionDelta,
 					});
+
+					if (trackingAccountability === 'all') {
+						await revisionsService.createOne({
+							activity,
+							version: key,
+							collection,
+							item,
+							data: revisionDelta,
+							delta: revisionDelta,
+						});
+					}
 				}
 			}
 		}
