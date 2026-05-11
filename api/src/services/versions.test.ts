@@ -124,5 +124,57 @@ describe('Integration Tests', () => {
 				);
 			});
 		});
+
+		describe('save with patchRevision', () => {
+			test('should coalesce into latest revision and skip new activity when one exists', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Old' },
+				});
+
+				vi.spyOn(RevisionsService.prototype, 'readByQuery').mockResolvedValue([
+					{ id: 42, data: { id: 2, title: 'Old' }, delta: { title: 'Old' } },
+				]);
+
+				await service.save(1, { title: 'Newer' }, { patchRevision: true });
+
+				expect(ActivityService.prototype.createOne).not.toHaveBeenCalled();
+				expect(RevisionsService.prototype.createOne).not.toHaveBeenCalled();
+
+				expect(RevisionsService.prototype.updateOne).toHaveBeenCalledWith(42, {
+					data: expect.objectContaining({ title: 'Newer' }),
+					delta: expect.objectContaining({ title: 'Newer' }),
+				});
+			});
+
+			test('should fall back to creating activity + revision when no prior revision exists', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+				});
+
+				vi.spyOn(RevisionsService.prototype, 'readByQuery').mockResolvedValue([]);
+
+				await service.save(1, { title: 'First' }, { patchRevision: true });
+
+				expect(ActivityService.prototype.createOne).toHaveBeenCalledTimes(1);
+				expect(RevisionsService.prototype.createOne).toHaveBeenCalledTimes(1);
+				expect(RevisionsService.prototype.updateOne).not.toHaveBeenCalled();
+			});
+
+			test('should create activity (no revision) under "activity" tracking even with patchRevision', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_activity',
+					item: 1,
+				});
+
+				await service.save(1, { title: 'Updated' }, { patchRevision: true });
+
+				expect(ActivityService.prototype.createOne).toHaveBeenCalledTimes(1);
+				expect(RevisionsService.prototype.createOne).not.toHaveBeenCalled();
+				expect(RevisionsService.prototype.updateOne).not.toHaveBeenCalled();
+			});
+		});
 	});
 });
