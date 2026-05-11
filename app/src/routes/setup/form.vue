@@ -33,21 +33,24 @@ const initialValues = toRef(props, 'initialValues');
 
 const value = defineModel<SetupForm>();
 
+const formSlice = computed({
+	get: () => value.value,
+	set: (update: Partial<SetupForm>) => {
+		if (value.value) value.value = { ...value.value, ...update };
+	},
+});
+
 const license = computed({
 	get: () => value.value?.license ?? initialValues.value.license,
 	set: (val: boolean) => {
-		if (value.value) {
-			value.value.license = val;
-		}
+		if (value.value) value.value = { ...value.value, license: val };
 	},
 });
 
 const product_updates = computed({
 	get: () => value.value?.product_updates ?? initialValues.value.product_updates,
 	set: (val: boolean) => {
-		if (value.value) {
-			value.value.product_updates = val;
-		}
+		if (value.value) value.value = { ...value.value, product_updates: val };
 	},
 });
 
@@ -57,7 +60,7 @@ const fields = useSetupFields(props.register);
 <template>
 	<div class="setup-form" :class="{ skipLicense }">
 		<VForm
-			v-model="value"
+			v-model="formSlice"
 			:initial-values="initialValues"
 			:validation-errors="errors"
 			:show-validation-errors="false"

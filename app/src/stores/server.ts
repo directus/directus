@@ -141,7 +141,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
 		info.files = serverInfoResponse.data.data?.files;
-		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
+		info.setupCompleted = !serverInfoResponse.data.data?.setup;
 		info.onboarding = serverInfoResponse.data.data?.onboarding ?? null;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;

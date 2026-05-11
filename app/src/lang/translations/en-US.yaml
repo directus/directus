@@ -49,8 +49,7 @@ license_onboarding_desc: >
 project_usage: What are you using Directus for?
 project_usage_personal: Personal / Side project
 project_usage_commercial: Business / Commercial
-project_usage_nonprofit: Non-profit / NGO
-project_usage_education: Education / Research
+project_usage_community: Open Source / Community
 org_name: Organization Name
 org_name_placeholder: Acme Inc.
 license_key_option: I have a license key

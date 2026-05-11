@@ -153,8 +153,7 @@ export function useKycFields(): ComputedRef<Field[]> {
 							choices: [
 								{ text: t('project_usage_personal'), value: 'personal' },
 								{ text: t('project_usage_commercial'), value: 'commercial' },
-								{ text: t('project_usage_nonprofit'), value: 'nonprofit' },
-								{ text: t('project_usage_education'), value: 'education' },
+								{ text: t('project_usage_community'), value: 'community' },
 							],
 						},
 					},
@@ -172,6 +171,26 @@ export function useKycFields(): ComputedRef<Field[]> {
 				},
 			] as unknown as Field[],
 	);
+}
+
+export function buildSetupPayload(form: Partial<SetupForm>, showAdminStep: boolean) {
+	return {
+		...(showAdminStep && {
+			admin: {
+				email: form.project_owner!,
+				password: form.password!,
+				...(form.first_name && { first_name: form.first_name }),
+				...(form.last_name && { last_name: form.last_name }),
+			},
+		}),
+		...(form.license_key && { license_key: form.license_key }),
+		owner: {
+			project_owner: form.project_owner ?? null,
+			project_usage: form.project_usage ?? null,
+			org_name: form.org_name ?? null,
+			product_updates: form.product_updates ?? false,
+		},
+	};
 }
 
 export function useLicenseFields(): ComputedRef<Field[]> {

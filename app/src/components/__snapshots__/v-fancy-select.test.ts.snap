@@ -21,7 +21,7 @@ exports[`Mount component 1`] = `
       </div>
       <!--v-if-->
     </button>
-    <v-divider-stub data-v-167e9f7d="" vertical="false" inlinetitle="true" large="false"></v-divider-stub><button data-v-167e9f7d="" type="button" class="v-fancy-select-option" style="--index: 3;">
+    <v-divider-stub data-v-167e9f7d="" vertical="false" inlinetitle="true" large="false" center="false"></v-divider-stub><button data-v-167e9f7d="" type="button" class="v-fancy-select-option" style="--index: 3;">
       <div data-v-167e9f7d="" class="icon">
         <v-icon-stub data-v-167e9f7d="" name="home" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false"></v-icon-stub>
       </div>

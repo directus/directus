@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { defaultValues, SetupValidator, useSetupFields, validate, ValidationError } from './form';
+import { buildSetupPayload, defaultValues, SetupValidator, useSetupFields, validate, ValidationError } from './form';
 import SetupForm from './form.vue';
 import LicenseForm from './license.vue';
 import api from '@/api';
@@ -58,7 +58,7 @@ async function launch() {
 
 	try {
 		isSaving.value = true;
-		await api.post('server/setup', form.value);
+		await api.post('server/setup', buildSetupPayload(form.value, showAdminStep.value));
 
 		if (showAdminStep.value) {
 			await login({

@@ -195,6 +195,48 @@ describe('hydrate action', async () => {
 			interval: 500,
 		});
 	});
+
+	test('setupCompleted is true when /info response has no setup key', async () => {
+		apiGetSpy.mockImplementation((path: string) => {
+			if (path === '/server/info') {
+				return Promise.resolve({ data: { data: { ...mockServerInfo } } });
+			}
+
+			if (path.startsWith('/auth')) {
+				return Promise.resolve({ data: {} });
+			}
+
+			return;
+		});
+
+		const serverStore = useServerStore();
+		await serverStore.hydrate();
+
+		expect(serverStore.info.setupCompleted).toBe(true);
+	});
+
+	test('setupCompleted is false when /info response has a setup key', async () => {
+		apiGetSpy.mockImplementation((path: string) => {
+			if (path === '/server/info') {
+				return Promise.resolve({
+					data: {
+						data: { ...mockServerInfo, setup: { license_complete: false, owner_complete: false } },
+					},
+				});
+			}
+
+			if (path.startsWith('/auth')) {
+				return Promise.resolve({ data: {} });
+			}
+
+			return;
+		});
+
+		const serverStore = useServerStore();
+		await serverStore.hydrate();
+
+		expect(serverStore.info.setupCompleted).toBe(false);
+	});
 });
 
 describe('dehydrate action', () => {
