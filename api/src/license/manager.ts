@@ -520,19 +520,21 @@ export class LicenseManager {
 		for (const check of COUNTABLE_ENTITLEMENT_KEYS) {
 			const resolution = await entitlementManager.check(check);
 
-			const candidates: Record<CountableEntitlementKey, any> = {
-				seats: await getActiveSeats({ adminId: options.adminId }),
-				collections: await getActiveCollections(),
-				flows: await getActiveFlows(),
+			const candidateGetters: Record<CountableEntitlementKey, any> = {
+				seats: getActiveSeats,
+				collections: getActiveCollections,
+				flows: getActiveFlows,
 			};
 
 			if (resolution.allowed) {
+				const candidates = await candidateGetters[check]({ adminId: options.adminId });
+
 				pendingResolution.push({
 					key: check,
 					kind: 'limit',
 					limit: resolution.hardLimit,
 					usage: resolution.usage,
-					candidates: candidates[check],
+					candidates,
 				});
 			}
 		}
