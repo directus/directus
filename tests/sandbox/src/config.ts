@@ -5,10 +5,6 @@ import type { Database, Options } from './sandbox.js';
 
 const directusConfig = {
 	TZ: 'UTC',
-	ADMIN_EMAIL: 'admin@example.com',
-	PROJECT_OWNER: 'admin@example.com',
-	ADMIN_PASSWORD: 'pw',
-	ADMIN_TOKEN: 'admin',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
 	CONFIG_PATH: join(directusFolder, '.env'), // Override to non existent file so process envs aren't overwritten by file envs
@@ -153,6 +149,14 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
 		NODE_ENV: opts.dev ? 'development' : 'production',
+		...(!opts.skipSetup
+			? {
+					ADMIN_EMAIL: 'admin@example.com',
+					PROJECT_OWNER: 'admin@example.com',
+					ADMIN_PASSWORD: 'pw',
+					ADMIN_TOKEN: 'admin',
+				}
+			: {}),
 		...(process.arch === 'arm64' ? { DOCKER_DEFAULT_PLATFORM: 'linux/amd64' } : {}),
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
@@ -186,6 +190,10 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 }
 
 export type Env = (typeof baseConfig)[Database] & {
+	ADMIN_EMAIL?: string;
+	ADMIN_PASSWORD?: string;
+	PROJECT_OWNER?: string;
+	ADMIN_TOKEN?: string;
 	REDIS_ENABLED: string;
 	CACHE_ENABLED: string;
 	NODE_ENV: string;

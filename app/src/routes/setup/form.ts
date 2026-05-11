@@ -1,34 +1,30 @@
+import { KEY } from '@directus/license';
 import { DeepPartial, Field, SetupForm } from '@directus/types';
 import { FailedValidationErrorExtensions } from '@directus/validation';
-import { computed, ComputedRef, MaybeRef, ModelRef, Ref, unref } from 'vue';
+import { computed, ComputedRef, MaybeRef, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import z from 'zod';
 import { validateItem } from '@/utils/validate-item';
 
-export const FormValidator = z.discriminatedUnion('project_usage', [
-	z.object({
-		first_name: z.string(),
-		last_name: z.string(),
-		project_owner: z.email(),
-		password: z.string(),
-		password_confirm: z.string(),
-		project_usage: z.enum(['personal', 'community']).nullable().optional(),
-		org_name: z.string().nullable().optional(),
-		license: z.literal(true),
-		product_updates: z.boolean().optional(),
-	}),
-	z.object({
-		first_name: z.string(),
-		last_name: z.string(),
-		project_owner: z.email(),
-		password: z.string(),
-		password_confirm: z.string(),
-		project_usage: z.literal('commercial'),
-		org_name: z.string(),
-		license: z.literal(true),
-		product_updates: z.boolean().optional(),
-	}),
-]);
+export const SetupValidator = z.object({
+	first_name: z.string().min(1),
+	last_name: z.string().min(1),
+	project_owner: z.email(),
+	password: z.string().min(1),
+	password_confirm: z.string().min(1),
+	license: z.literal(true),
+});
+
+export const FormValidator = z.object({
+	first_name: z.string(),
+	last_name: z.string(),
+	project_owner: z.email(),
+	password: z.string(),
+	password_confirm: z.string(),
+	license: z.literal(true),
+	license_key: KEY.nullable(),
+	product_updates: z.boolean().optional(),
+});
 
 export const defaultValues: SetupForm = {
 	first_name: null,
@@ -36,16 +32,17 @@ export const defaultValues: SetupForm = {
 	project_owner: null,
 	password: null,
 	password_confirm: null,
+	license: false,
+	license_key: null,
+	product_updates: false,
 	project_usage: null,
 	org_name: null,
-	license: false,
-	product_updates: false,
 };
 
 export type ValidationError = Omit<FailedValidationErrorExtensions, 'type'> & { type: string };
 
 export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, register = false) {
-	let errors: ValidationError[] = validateItem(value, unref(fields), true);
+	const errors: ValidationError[] = validateItem(value, unref(fields), true);
 
 	if (!z.email().safeParse(value.project_owner).success) {
 		errors.push({
@@ -63,28 +60,16 @@ export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, 
 		});
 	}
 
-	errors = errors.map((error) => {
-		if (error.field === 'org_name' && (error.type === 'nnull' || error.type === 'required')) {
-			error.type = 'org_name';
-		}
-
-		return error;
-	});
-
 	return errors;
 }
 
-export function useFormFields(
-	register: MaybeRef<boolean>,
-	value: Ref<Partial<SetupForm>> | ModelRef<Partial<SetupForm> | undefined>,
-	initialValues?: Ref<Partial<SetupForm>> | ModelRef<Partial<SetupForm> | undefined>,
-): ComputedRef<Field[]> {
+export function useSetupFields(register: MaybeRef<boolean>): ComputedRef<Field[]> {
 	const { t } = useI18n();
 
 	return computed(() => {
 		const fields: DeepPartial<Field>[] = [];
 
-		if (register) {
+		if (unref(register)) {
 			fields.push({
 				field: 'first_name',
 				name: t('first_name'),
@@ -114,7 +99,7 @@ export function useFormFields(
 
 		fields.push({
 			field: 'project_owner',
-			name: t(register ? 'admin_email' : 'owner_email'),
+			name: t(unref(register) ? 'admin_email' : 'owner_email'),
 			meta: {
 				required: true,
 				interface: 'input',
@@ -125,7 +110,7 @@ export function useFormFields(
 			},
 		});
 
-		if (register) {
+		if (unref(register)) {
 			fields.push({
 				field: 'password',
 				name: t('password'),
@@ -148,35 +133,79 @@ export function useFormFields(
 			});
 		}
 
-		fields.push({
-			field: 'project_usage',
-			name: t('how_do_you_use_directus'),
-			meta: {
-				required: false,
-				interface: 'select-dropdown',
-				options: {
-					items: [
-						{ icon: 'account_circle', value: 'personal', text: t('usage_personal') },
-						{ icon: 'domain', value: 'commercial', text: t('usage_commercial') },
-						{ icon: 'groups', value: 'community', text: t('usage_community') },
-					],
-				},
-				width: 'full',
-			},
-		});
+		return fields as Field[];
+	});
+}
 
-		if ((value.value?.project_usage ?? initialValues?.value?.project_usage) === 'commercial')
-			fields.push({
-				field: 'org_name',
-				name: t('organization_name'),
+export function useKycFields(): ComputedRef<Field[]> {
+	const { t } = useI18n();
+
+	return computed(
+		() =>
+			[
+				{
+					field: 'project_usage',
+					name: t('project_usage'),
+					meta: {
+						interface: 'select-dropdown',
+						width: 'full',
+						options: {
+							choices: [
+								{ text: t('project_usage_personal'), value: 'personal' },
+								{ text: t('project_usage_commercial'), value: 'commercial' },
+								{ text: t('project_usage_community'), value: 'community' },
+							],
+						},
+					},
+				},
+				{
+					field: 'org_name',
+					name: t('org_name'),
+					meta: {
+						interface: 'input',
+						width: 'full',
+						options: {
+							placeholder: t('org_name_placeholder'),
+						},
+					},
+				},
+			] as unknown as Field[],
+	);
+}
+
+export function buildSetupPayload(form: Partial<SetupForm>, showAdminStep: boolean) {
+	return {
+		...(showAdminStep && {
+			admin: {
+				email: form.project_owner!,
+				password: form.password!,
+				...(form.first_name && { first_name: form.first_name }),
+				...(form.last_name && { last_name: form.last_name }),
+			},
+		}),
+		...(form.license_key && { license_key: form.license_key }),
+		owner: {
+			project_owner: form.project_owner ?? null,
+			project_usage: form.project_usage ?? null,
+			org_name: form.org_name ?? null,
+			product_updates: form.product_updates ?? false,
+		},
+	};
+}
+
+export function useLicenseFields(): ComputedRef<Field[]> {
+	const { t } = useI18n();
+
+	return computed(() => {
+		return [
+			{
+				field: 'license_key',
+				name: t('license_key'),
 				meta: {
-					required: true,
-					interface: 'input',
-					options: {},
+					interface: 'system-license-key',
 					width: 'full',
 				},
-			});
-
-		return fields as Field[];
+			},
+		] as unknown as Field[];
 	});
 }

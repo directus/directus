@@ -79,6 +79,8 @@ export type Options = {
 	};
 	/** Enable or disable caching */
 	cache: boolean;
+	/** Skips setting initial admin and owner */
+	skipSetup: boolean;
 	/** Open a Knex connection for direct db access via `sandbox.knex`. Off by default.  */
 	knex: boolean;
 	/** Lifecycle hooks */
@@ -140,6 +142,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				license: false,
 			},
 			cache: false,
+			skipSetup: false,
 			knex: false,
 			hooks: {},
 		} satisfies Options,
