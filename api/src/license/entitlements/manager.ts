@@ -12,7 +12,7 @@ import type {
 	ResolveInput,
 	UsageCounter,
 } from '@directus/license';
-import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS } from '@directus/license';
+import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FEATURE_FLAG_ENTITLEMENT_KEYS } from '@directus/license';
 import { countActiveCollections, resolveCollections } from './lib/collections.js';
 import { checkCustomLLM } from './lib/custom_llms_enabled.js';
 import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
@@ -185,7 +185,14 @@ export class EntitlementManager {
 			};
 		}
 
-		return { valid: await this.isValid(key), entitled: this.isEntitled(key) };
+		const entitled = this.isEntitled(key);
+
+		if (!entitled) {
+			return { valid: await this.isValid(key), entitled };
+		} else {
+			// if you're entitled to a feature then its always valid/within the limit
+			return { valid: true, entitled };
+		}
 	}
 
 	/**
@@ -211,8 +218,38 @@ export class EntitlementManager {
 			return;
 		}
 
-		if (!(await this.isValid(key))) {
+		if (!this.isEntitled(key) && !(await this.isValid(key))) {
 			throw new ResourceRestrictedError({ category: key });
+		}
+	}
+
+	/**
+	 * Checks all entitlements and returns true if all are within the limits
+	 */
+	async checkAll(): Promise<boolean> {
+		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
+			const { allowed } = await this.check(key);
+			if (!allowed) return false;
+		}
+
+		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
+			const { valid } = await this.check(key);
+			if (!valid) return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Asserts all entitlements and throws if a limit is breached
+	 */
+	async assertAll(): Promise<void> {
+		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
+			this.assert(key);
+		}
+
+		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
+			this.assert(key);
 		}
 	}
 

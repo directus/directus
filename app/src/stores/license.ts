@@ -1,5 +1,5 @@
 import {
-	checkPendingResolution,
+	generateLicensePendingResolution,
 	type LicenseAddon,
 	type LicenseInfoOutput,
 	type LicensePendingResolution,
@@ -157,7 +157,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loadingPendingResolution.value = true;
 
 		try {
-			const result: LicensePendingResolution[] | void = await sdk.request(checkPendingResolution({}));
+			const result: LicensePendingResolution[] | void = await sdk.request(generateLicensePendingResolution({}));
 			pendingResolution.value = result ?? [];
 		} finally {
 			loadingPendingResolution.value = false;

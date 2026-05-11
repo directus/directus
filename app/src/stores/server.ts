@@ -32,6 +32,14 @@ export type Info = {
 		mimeTypeAllowList: string[];
 	};
 	setupCompleted: boolean;
+	onboarding: {
+		adminInEnv: boolean;
+		licenseInEnv: boolean;
+		projectOwnerInEnv: boolean;
+		hasLicense: boolean;
+		hasProjectOwner: boolean;
+		hasCompletedKyc: boolean;
+	} | null;
 	rateLimit?:
 		| false
 		| {
@@ -94,6 +102,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		ai_enabled: true,
 		files: undefined,
 		setupCompleted: false,
+		onboarding: null,
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
@@ -132,7 +141,8 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
 		info.files = serverInfoResponse.data.data?.files;
-		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
+		info.setupCompleted = !serverInfoResponse.data.data?.setup;
+		info.onboarding = serverInfoResponse.data.data?.onboarding ?? null;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.websocket = serverInfoResponse.data.data?.websocket;

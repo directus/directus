@@ -2,8 +2,8 @@ import {
 	activateLicense,
 	CORE_LICENSE,
 	deactivateLicense,
-	type LicenseInfoOutput,
 	readLicense,
+	type ReadLicenseOutput,
 	updateLicense,
 } from '@directus/license';
 import { createLicense } from '@directus/mock-license-server';
@@ -62,7 +62,7 @@ afterAll(async () => {
 test('activate a license key', async () => {
 	await api.request(activateLicense({ license_key: license.key }));
 
-	const licenseInfo: LicenseInfoOutput = await api.request(readLicense());
+	const licenseInfo: ReadLicenseOutput = await api.request(readLicense());
 
 	expect(licenseInfo.name).toEqual(license.meta.name);
 	expect(licenseInfo.entitlements).toEqual(license.entitlements);
@@ -92,7 +92,7 @@ test('reading a license', async () => {
 test('updating the license', async () => {
 	await api.request(updateLicense({ license_key: otherLicense.key }));
 
-	const licenseInfo: LicenseInfoOutput = await api.request(readLicense());
+	const licenseInfo: ReadLicenseOutput = await api.request(readLicense());
 
 	expect(licenseInfo.name).toEqual(otherLicense.meta.name);
 	expect(licenseInfo.entitlements).toEqual(otherLicense.entitlements);

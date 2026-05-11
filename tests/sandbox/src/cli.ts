@@ -33,7 +33,8 @@ program
 	.option('-x, --export', 'Export the schema to a file every 2 seconds')
 	.option('-s, --schema [schema]', 'Load an additional schema snapshot on startup')
 	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
-	.option('--silent', 'Silence all logs except for errors');
+	.option('--silent', 'Silence all logs except for errors')
+	.option('--skip-setup', 'Skips setting initial admin and owner');
 
 program.parse();
 const options = program.opts();

@@ -12,16 +12,22 @@ export async function validateUserCountIntegrity(options: ValidateUserCountInteg
 	const validateUserLimits = (options.flags & UserIntegrityCheckFlag.UserLimits) !== 0;
 	const validateRemainingAdminUsers = (options.flags & UserIntegrityCheckFlag.RemainingAdmins) !== 0;
 
-	const limitCheck = validateUserLimits && shouldCheckUserLimits();
+	const envLimitCheck = validateUserLimits && shouldCheckUserLimits();
 
-	if (!validateRemainingAdminUsers && !limitCheck) {
+	if (!validateRemainingAdminUsers && !validateUserLimits) {
 		return;
 	}
 
-	const adminOnly = validateRemainingAdminUsers && !limitCheck;
+	const adminOnly = validateRemainingAdminUsers && !validateUserLimits;
 	const userCounts = await fetchUserCount({ ...options, adminOnly });
 
-	if (limitCheck) {
+	if (validateUserLimits) {
+		// Dynamic import to prevent circular imports in services
+		const { getEntitlementManager } = await import('../license/index.js');
+		await getEntitlementManager().assert('seats');
+	}
+
+	if (envLimitCheck) {
 		await checkUserLimits(userCounts);
 	}
 

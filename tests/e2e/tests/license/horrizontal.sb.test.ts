@@ -2,8 +2,8 @@ import {
 	activateLicense,
 	CORE_LICENSE,
 	deactivateLicense,
-	type LicenseInfoOutput,
 	readLicense,
+	type ReadLicenseOutput,
 	updateLicense,
 } from '@directus/license';
 import { createLicense } from '@directus/mock-license-server';

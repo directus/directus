@@ -3,7 +3,7 @@ import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
-import { defaultValues, useFormFields } from './form';
+import { defaultValues, useSetupFields } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -33,35 +33,34 @@ const initialValues = toRef(props, 'initialValues');
 
 const value = defineModel<SetupForm>();
 
+const formSlice = computed({
+	get: () => value.value,
+	set: (update: Partial<SetupForm>) => {
+		if (value.value) value.value = { ...value.value, ...update };
+	},
+});
+
 const license = computed({
 	get: () => value.value?.license ?? initialValues.value.license,
 	set: (val: boolean) => {
-		if (value.value) {
-			value.value.license = val;
-		}
+		if (value.value) value.value = { ...value.value, license: val };
 	},
 });
 
 const product_updates = computed({
 	get: () => value.value?.product_updates ?? initialValues.value.product_updates,
 	set: (val: boolean) => {
-		if (value.value) {
-			value.value.product_updates = val;
-		}
+		if (value.value) value.value = { ...value.value, product_updates: val };
 	},
 });
 
-const fields = useFormFields(props.register, value, initialValues);
+const fields = useSetupFields(props.register);
 </script>
 
 <template>
 	<div class="setup-form" :class="{ skipLicense }">
-		<template v-if="register">
-			<h1>{{ $t('setup_welcome') }}</h1>
-			<p>{{ $t('setup_info') }}</p>
-		</template>
 		<VForm
-			v-model="value"
+			v-model="formSlice"
 			:initial-values="initialValues"
 			:validation-errors="errors"
 			:show-validation-errors="false"
@@ -151,22 +150,6 @@ const fields = useFormFields(props.register, value, initialValues);
 
 .v-form {
 	--theme--form--row-gap: 1.8125rem;
-}
-
-h1 {
-	color: var(--theme--foreground-accent);
-	font-size: 2.25rem;
-	font-weight: 600;
-	line-height: 1.1944;
-
-	margin-block-end: 1.375rem;
-}
-
-p {
-	font-size: 0.8125rem;
-	font-weight: 500;
-	line-height: 1.3846;
-	margin-block-end: 1.8125rem;
 }
 
 .v-notice {

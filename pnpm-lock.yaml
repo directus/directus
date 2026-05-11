@@ -1613,6 +1613,9 @@ importers:
       '@directus/format-title':
         specifier: workspace:*
         version: link:../packages/format-title
+      '@directus/license':
+        specifier: link:../../license
+        version: link:../../license
       '@directus/sdk':
         specifier: workspace:*
         version: link:../sdk

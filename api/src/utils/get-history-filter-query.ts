@@ -3,7 +3,7 @@ import type { Filter, Query } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { getEntitlementManager } from '../license/index.js';
 
-type HistoryFilterBuilder = (sinceDate: Date) => Filter;
+export type HistoryFilterBuilder = (sinceDate: Date) => Filter;
 
 export function getHistoryFilterQuery(
 	query: Query,
@@ -21,7 +21,7 @@ export function getHistoryFilterQuery(
 		return { ...query, limit: 0 };
 	}
 
-	const sinceDate = new Date(Date.now() - limit * 24 * 60 * 60 * 1000);
+	const sinceDate = new Date(Date.now() - limit * 1000);
 	const filter = mergeFilters(buildFilter(sinceDate), query.filter ?? null, 'and');
 
 	if (!filter) {

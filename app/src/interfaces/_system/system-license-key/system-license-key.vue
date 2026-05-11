@@ -1,0 +1,162 @@
+<script setup lang="ts">
+import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
+import { throttle } from 'lodash';
+import { onMounted, ref } from 'vue';
+import { I18nT, useI18n } from 'vue-i18n';
+import api from '@/api';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+
+const { t } = useI18n();
+
+type LicensePreview = {
+	plan_name: string;
+	expires_at?: number;
+	renews_at?: number;
+	production_enabled: boolean;
+};
+
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		edit?: boolean;
+	}>(),
+	{
+		edit: false,
+	},
+);
+
+const licenseInfo = ref<LicensePreview | null>(null);
+
+const validating = ref(false);
+const stored = ref(true);
+const error = ref<Error | null>(null);
+
+const emit = defineEmits(['input']);
+
+const validate = throttle(async (value: string | null) => {
+	if (!value || value.length < 29) {
+		licenseInfo.value = null;
+		return;
+	}
+
+	const parsed = LICENSE_KEY.safeParse(value);
+
+	if (parsed.error) {
+		error.value = parsed.error;
+		licenseInfo.value = null;
+		return;
+	}
+
+	error.value = null;
+	validating.value = true;
+	licenseInfo.value = null;
+
+	try {
+		const response = await api.post<{ data: LicensePreview }>('/license/preview', { license_key: value });
+		licenseInfo.value = response.data.data;
+	} catch (err) {
+		error.value = err instanceof Error ? err : new Error(String(err));
+	} finally {
+		validating.value = false;
+	}
+}, 300);
+
+function onUpdated(value: string | null) {
+	if (value) {
+		value = normalizeLicenseKey(value);
+	}
+
+	emit('input', value);
+
+	validate(value);
+}
+
+onMounted(() => {
+	if (props.value) {
+		validate(props.value);
+	}
+});
+</script>
+
+<template>
+	<div class="license-key">
+		<VInput
+			:model-value="value ?? undefined"
+			class="license-input"
+			:placeholder="$t('enter_license_key')"
+			nullable
+			:max-length="29"
+			@update:model-value="onUpdated"
+		>
+			<template #append>
+				<VProgressCircular v-if="validating" class="spinner" small indeterminate />
+				<VIcon v-if="edit" :name="stored ? 'lock' : 'lock_open'" class="lock-icon" />
+			</template>
+		</VInput>
+
+		<div v-if="licenseInfo && !error && !validating" class="validation-status">
+			<div>
+				<VIcon name="check_circle" />
+				<span>{{ t('license_valid') }}</span>
+			</div>
+
+			<span v-if="licenseInfo.plan_name">
+				<VIcon name="check_circle" />
+				<span>{{ licenseInfo.plan_name }}</span>
+			</span>
+
+			<div v-if="licenseInfo.expires_at ?? licenseInfo.renews_at">
+				<VIcon name="check_circle" />
+				<span>
+					{{ $t('expires_on') }}
+					{{ Intl.DateTimeFormat().format((licenseInfo.expires_at ?? licenseInfo.renews_at)! * 1000) }}
+				</span>
+			</div>
+
+			<div>
+				<VIcon name="check_circle" />
+				<span>{{ $t('environment') }}: {{ licenseInfo.production_enabled ? $t('production') : $t('staging') }}</span>
+			</div>
+		</div>
+
+		<VNotice v-else-if="error && !validating" type="warning">
+			<I18nT keypath="setup_license_invalid" tag="span">
+				<template #contactSupport>
+					<a :href="`https://directus.io/license-request`" target="_blank" rel="noopener noreferrer">
+						{{ $t('contact_support') }}
+					</a>
+				</template>
+			</I18nT>
+		</VNotice>
+	</div>
+</template>
+
+<style scoped>
+.validation-status {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	margin-block-start: 0.5rem;
+
+	& > div {
+		display: flex;
+	}
+
+	.v-icon {
+		margin-inline-end: 0.325rem;
+
+		--v-icon-color: var(--theme--success);
+	}
+}
+
+.v-notice {
+	margin-block-start: 1.25rem;
+
+	:deep(a) {
+		color: var(--theme--primary);
+		text-decoration: underline;
+	}
+}
+</style>

@@ -5,7 +5,9 @@
 	"homepage": "https://directus.io",
 	"scripts": {
 		"build": "tsdown src/index.ts src/run.ts --dts",
-		"dev": "tsdown -w"
+		"start": "node dist/run.js",
+		"dev": "tsx watch src/run.ts",
+		"seed": "tsx scripts/seed.ts"
 	},
 	"exports": {
 		".": "./dist/index.js",
