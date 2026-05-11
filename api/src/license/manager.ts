@@ -152,6 +152,8 @@ export class LicenseManager {
 						await settingsService.upsertSingleton({ license_key: null, license_token: null });
 					}
 				} else if (dbKey) {
+					this.source = 'settings';
+
 					if (dbToken) {
 						// CASE F
 						await this.refresh({ key: dbKey, token: dbToken });
