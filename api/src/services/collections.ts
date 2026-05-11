@@ -80,7 +80,7 @@ export class CollectionsService {
 			throw new InvalidPayloadError({ reason: `Collection name can't contain "/"` });
 		}
 
-		if (payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
+		if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 			const entitlementManager = getEntitlementManager();
 			await entitlementManager.assert('collections', { adding: 1, knex: this.knex });
 		}
@@ -467,7 +467,7 @@ export class CollectionsService {
 				return collectionKey;
 			}
 
-			if (payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
+			if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 				const entitlementManager = getEntitlementManager();
 				await entitlementManager.assert('collections', { adding: 1, knex: this.knex });
 			}
