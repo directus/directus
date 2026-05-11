@@ -28,12 +28,15 @@ const variant = computed(() => (licenseStore.collectionsRemaining === 0 ? 'dange
 
 <style scoped lang="scss">
 .collections-remaining {
+	--collections-remaining-size: 1.25rem;
+	--collections-remaining-padding: 0.625rem;
+
 	display: inline-flex;
 	align-items: center;
 	align-self: center;
 	justify-content: center;
-	height: 1.25rem;
-	padding: 0 0.625rem;
+	height: var(--collections-remaining-size);
+	padding: 0 var(--collections-remaining-padding);
 	border-radius: 9999px;
 	font-weight: 600;
 	font-size: 0.8125rem;

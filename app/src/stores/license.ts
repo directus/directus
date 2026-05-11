@@ -48,6 +48,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		if (!info.value) return null;
 		const col = info.value.entitlements.collections;
 		if (!col) return null;
+		if (col.limit == null) return null;
 		const effective = col.limit + (col.addon ?? 0) + (col.overage ?? 0);
 		return effective - (info.value.usage?.collections ?? 0);
 	});

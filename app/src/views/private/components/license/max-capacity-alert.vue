@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
@@ -13,15 +13,11 @@ const props = withDefaults(
 
 const licenseStore = useLicenseStore();
 
-const dismissed = ref(false);
-
 const remaining = computed(() => {
 	return props.entitlementKey === 'collections' ? licenseStore.collectionsRemaining : licenseStore.seatsRemaining;
 });
 
-const isAtCapacity = computed(() => remaining.value !== null && remaining.value <= 0);
-
-const isVisible = computed(() => !dismissed.value && isAtCapacity.value);
+const isVisible = computed(() => remaining.value !== null && remaining.value <= 0);
 </script>
 
 <template>

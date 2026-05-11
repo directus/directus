@@ -54,7 +54,7 @@ const userStore = useUserStore();
 const serverStore = useServerStore();
 const seatsLimitModalOpen = ref(false);
 
-async function saveAsDeactivated() {
+async function saveAsInactive() {
 	edits.value = { ...edits.value, status: 'inactive-license-exceeded' };
 
 	try {
@@ -550,7 +550,7 @@ function revert(values: Record<string, any>) {
 			v-model="seatsLimitModalOpen"
 			type="seats"
 			:is-admin="userStore.isAdmin"
-			:on-save="saveAsDeactivated"
+			:on-save="saveAsInactive"
 		/>
 	</PrivateView>
 </template>
