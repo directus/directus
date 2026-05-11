@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activateLicense, deactivateLicense, type Entitlements } from '@directus/license';
+import { activateLicense, deactivateLicense, type Entitlements, updateLicense } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -63,8 +63,11 @@ async function handleActivate() {
 
 	activateLoading.value = true;
 
+	const key = licenseKey.value.trim();
+	const command = isLicensed.value ? updateLicense({ license_key: key }) : activateLicense({ license_key: key });
+
 	try {
-		await sdk.request(activateLicense({ license_key: licenseKey.value.trim() }));
+		await sdk.request(command);
 		await licenseStore.hydrate();
 		addLicenseDrawer.value = false;
 		resetAddLicenseForm();
@@ -210,7 +213,7 @@ async function handleDeactivateConfirm() {
 						<VButton v-if="!isLicensed" secondary small @click="addLicenseDrawer = true">
 							{{ t('licensing.add') }}
 						</VButton>
-						<VButton v-if="isLicensed && license.source !== null" secondary small @click="() => {}">
+						<VButton v-if="isLicensed && license.source !== null" secondary small @click="addLicenseDrawer = true">
 							{{ t('licensing.manage') }}
 						</VButton>
 						<VButton small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
@@ -318,6 +321,7 @@ async function handleDeactivateConfirm() {
 				<label class="field-label">{{ t('licensing.key') }}</label>
 				<SystemLicenseKey
 					:value="licenseKey"
+					:edit="isLicensed"
 					@input="licenseKey = $event ?? ''"
 					@validity="licenseKeyValidity = $event"
 				/>

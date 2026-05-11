@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import api from '@/api';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -31,8 +31,19 @@ const props = withDefaults(
 const licenseInfo = ref<LicensePreview | null>(null);
 
 const validating = ref(false);
-const stored = ref(true);
 const error = ref<Error | null>(null);
+
+const stored = ref(false);
+
+watch(
+	() => props.edit,
+	(isEdit) => {
+		stored.value = isEdit;
+	},
+	{ immediate: true },
+);
+
+const placeholder = computed(() => (stored.value ? t('value_securely_stored') : t('enter_license_key')));
 
 const emit = defineEmits<{
 	input: [value: string | null];
@@ -44,6 +55,11 @@ function emitValidity() {
 		valid: !!licenseInfo.value && !error.value && !validating.value,
 		validating: validating.value,
 	});
+}
+
+function unlock() {
+	if (!stored.value) return;
+	stored.value = false;
 }
 
 const validate = throttle(async (value: string | null) => {
@@ -96,18 +112,25 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="license-key">
+	<div class="license-key" :class="{ stored }">
 		<VInput
-			:model-value="value ?? undefined"
+			:model-value="stored ? null : (value ?? undefined)"
 			class="license-input"
-			:placeholder="$t('enter_license_key')"
+			:placeholder="placeholder"
 			nullable
 			:max-length="29"
 			@update:model-value="onUpdated"
+			@focus="unlock"
 		>
 			<template #append>
 				<VProgressCircular v-if="validating" class="spinner" small indeterminate />
-				<VIcon v-if="edit" :name="stored ? 'lock' : 'lock_open'" class="lock-icon" />
+				<VIcon
+					v-else-if="edit"
+					:name="stored ? 'lock' : 'lock_open'"
+					class="lock-icon"
+					:clickable="stored"
+					@click="unlock"
+				/>
 			</template>
 		</VInput>
 
@@ -149,6 +172,14 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.license-key.stored {
+	--v-input-placeholder-color: var(--theme--primary);
+
+	.lock-icon {
+		--v-icon-color: var(--theme--primary);
+	}
+}
+
 .validation-status {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
