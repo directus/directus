@@ -54,10 +54,10 @@ export async function getActiveSeats(opts?: {
 			adminRoles,
 			appRoles,
 		},
-		{ knex: opts?.knex ?? getDatabase() },
+		{ knex },
 	);
 
-	const usersService = new UsersService({ schema });
+	const usersService = new UsersService({ schema, knex });
 
 	const adminFilters: Filter[] = [
 		{
