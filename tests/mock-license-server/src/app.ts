@@ -2,6 +2,7 @@ import { env } from 'process';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import Fastify from 'fastify';
 import { exportJWK } from 'jose/key/export';
+import { requireLicenseVersion } from './hooks/require-license-version.js';
 import { activateRoute } from './routes/activate.js';
 import { addonsRoute } from './routes/addons.js';
 import { deactivateRoute } from './routes/deactivate.js';
@@ -21,14 +22,22 @@ app.withTypeProvider<TypeBoxTypeProvider>();
 // routes inteded to be utilized test setup
 app.register(licenseRoute, { prefix: '/admin/license' });
 
-// license server route mocks
-app.register(previewRoute, { prefix: '/api/licenses/preview' });
-app.register(activateRoute, { prefix: '/api/licenses/activate' });
-app.register(updateRoute, { prefix: '/api/licenses/update' });
-app.register(deactivateRoute, { prefix: '/api/licenses/deactivate' });
-app.register(refreshRoute, { prefix: '/api/licenses/refresh' });
-app.register(portalRoute, { prefix: '/api/licenses/portal' });
-app.register(addonsRoute, { prefix: '/api/licenses/addons' });
+app.register(
+	async (api) => {
+		//  all routes require Directus-License-Version
+		api.addHook('preHandler', requireLicenseVersion);
+
+		// license server route mocks
+		api.register(previewRoute, { prefix: '/preview' });
+		api.register(activateRoute, { prefix: '/activate' });
+		api.register(updateRoute, { prefix: '/update' });
+		api.register(deactivateRoute, { prefix: '/deactivate' });
+		api.register(refreshRoute, { prefix: '/refresh' });
+		api.register(portalRoute, { prefix: '/portal' });
+		api.register(addonsRoute, { prefix: '/addons' });
+	},
+	{ prefix: '/api/licenses' },
+);
 
 app.get('/.well-known/jwks.json', async (_req, res) => {
 	return res.send({
