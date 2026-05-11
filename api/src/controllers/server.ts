@@ -143,7 +143,7 @@ router.post(
 				try {
 					await licenseManager.activate(data.license_key);
 				} catch {
-					//
+					// LICENSE-TODO: circle back
 				}
 			}
 
