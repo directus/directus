@@ -439,7 +439,7 @@ export class LicenseManager {
 
 		const entitlementManager = getEntitlementManager();
 
-		await updateAddonQuantity(
+		const { token } = await updateAddonQuantity(
 			{
 				license_key: this.licenseKey!,
 				project_id: project_id!,
@@ -460,6 +460,12 @@ export class LicenseManager {
 				},
 			},
 		);
+
+		await settingsService.upsertSingleton({
+			license_token: token,
+		});
+
+		await this.commitState();
 	}
 
 	public async removeAddon(addonId: string) {
