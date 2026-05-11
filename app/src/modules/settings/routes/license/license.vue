@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deactivateLicense, type Entitlements } from '@directus/license';
+import { activateLicense, deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -48,6 +48,29 @@ const planDisplayName = computed(() => license.value?.name ?? null);
 
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
+const activateLoading = ref(false);
+
+async function handleActivate() {
+	if (!licenseKey.value.trim() || activateLoading.value) return;
+
+	activateLoading.value = true;
+
+	try {
+		await sdk.request(activateLicense({ license_key: licenseKey.value.trim() }));
+		await licenseStore.hydrate();
+		addLicenseDrawer.value = false;
+		licenseKey.value = '';
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		activateLoading.value = false;
+	}
+}
+
+function handleAddLicenseCancel() {
+	addLicenseDrawer.value = false;
+	licenseKey.value = '';
+}
 
 type EntitlementConfig = {
 	key: keyof Entitlements;
@@ -258,13 +281,26 @@ async function handleDeactivateConfirm() {
 		v-model="addLicenseDrawer"
 		:title="t('licensing.key_management')"
 		icon="vpn_key"
-		@cancel="addLicenseDrawer = false"
+		@cancel="handleAddLicenseCancel"
+		@apply="handleActivate"
 	>
+		<template #actions>
+			<VButton
+				v-tooltip.bottom="t('save')"
+				small
+				:disabled="!licenseKey.trim()"
+				:loading="activateLoading"
+				@click="handleActivate"
+			>
+				{{ t('save') }}
+			</VButton>
+		</template>
+
 		<div class="drawer-content">
 			<VNotice type="info">
 				{{ t('licensing.key_notice') }}
 			</VNotice>
-			<VInput v-model="licenseKey" :placeholder="t('licensing.key')" />
+			<VInput v-model="licenseKey" :placeholder="t('licensing.key')" @keyup.enter="handleActivate" />
 		</div>
 	</VDrawer>
 </template>
