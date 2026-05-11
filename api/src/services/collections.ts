@@ -7,6 +7,7 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	DeepPartial,
 	FieldMeta,
 	FieldMutationOptions,
 	MutationOptions,
@@ -447,7 +448,7 @@ export class CollectionsService {
 	/**
 	 * Update a single collection by name
 	 */
-	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
+	async updateOne(collectionKey: string, payload: DeepPartial<Collection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -460,8 +461,6 @@ export class CollectionsService {
 				accountability: this.accountability,
 				schema: this.schema,
 			});
-
-			const payload = data as Partial<Collection>;
 
 			if (!payload.meta) {
 				return collectionKey;
@@ -519,7 +518,7 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections in a single transaction
 	 */
-	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
+	async updateBatch(data: DeepPartial<Collection>[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -580,7 +579,7 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
+	async updateMany(collectionKeys: string[], data: DeepPartial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
