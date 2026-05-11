@@ -15,7 +15,6 @@ export const licenseStore: Record<string, MockLicense> = {
 			validation_interval: 60 * 60,
 			expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
 			offline: false,
-			overage_billed: { seats: 0, collections: 0, flows: 0 },
 		},
 		entitlements: {
 			collections: { limit: -1 },
