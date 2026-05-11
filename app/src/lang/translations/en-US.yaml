@@ -1531,7 +1531,7 @@ batch_delete_confirm: >-
 cancel: Cancel
 license:
   seats_limit:
-    title: The user will be created but placed in deactivated state.
+    title: The user will be created but placed in an inactive state.
     body_admin: >-
       You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
     body_member: >-
@@ -1541,9 +1541,10 @@ license:
     body: >-
       You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
   max_capacity:
-    label: 'max capacity'
-    alert_danger: 'You have reached max capacity. Manage plan to unlock more.'
-    alert_warning: 'You have {count} left. Upgrade your plan to unlock more.'
+    label: max capacity
+    alert_danger_prefix: You have reached max capacity.
+    alert_danger_suffix: to unlock more.
+    alert_warning: You have {count} left. Upgrade your plan to unlock more.
   manage_plan: Manage Plan
   collections_remaining: '{n} Collection Left | {n} Collections Left'
   contact_sales: Contact Sales
@@ -1672,7 +1673,7 @@ fields:
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
-    status_deactivated_license_exceeded: Deactivated (License Exceeded)
+    status_inactive_license_exceeded: Inactive (License Exceeded)
     role: Role
     token: Token
     provider: Provider

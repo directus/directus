@@ -437,7 +437,7 @@ export class UsersService extends ItemsService {
 
 		const entitlementManager = getEntitlementManager();
 		const { allowed: isWithinLicenseLimits } = await entitlementManager.check('seats');
-		const status = isWithinLicenseLimits ? 'active' : 'deactivated-license-exceeded';
+		const status = isWithinLicenseLimits ? 'active' : 'inactive-license-exceeded';
 
 		await service.updateOne(user.id, { password, status });
 	}

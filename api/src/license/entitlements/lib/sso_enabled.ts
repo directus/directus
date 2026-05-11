@@ -36,7 +36,7 @@ export async function resolveSSOUsers(resolution: NonNullable<ResolveInput['sso_
 				_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
 			},
 		},
-		{ status: 'deactivated-license-exceeded' },
+		{ status: 'inactive-license-exceeded' },
 	);
 
 	if (typeof resolution === 'object' && Object.keys(resolution.admin).length) {

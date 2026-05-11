@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
 
@@ -26,7 +27,13 @@ const isVisible = computed(() => !dismissed.value && isAtCapacity.value);
 <template>
 	<VNotice v-if="isVisible" type="danger" icon="dangerous" multiline class="max-capacity-alert">
 		<template #title>
-			<span class="message">{{ $t('license.max_capacity.alert_danger') }}</span>
+			<span class="message">
+				{{ $t('license.max_capacity.alert_danger_prefix') }}
+				<RouterLink class="manage-plan-link" :to="{ name: 'settings-license' }" target="_blank">
+					{{ $t('license.manage_plan') }}
+				</RouterLink>
+				{{ $t('license.max_capacity.alert_danger_suffix') }}
+			</span>
 		</template>
 	</VNotice>
 </template>
@@ -43,5 +50,10 @@ const isVisible = computed(() => !dismissed.value && isAtCapacity.value);
 
 .message {
 	flex: 1;
+}
+
+.manage-plan-link {
+	cursor: pointer;
+	text-decoration: underline;
 }
 </style>

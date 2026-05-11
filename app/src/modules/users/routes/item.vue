@@ -55,7 +55,7 @@ const serverStore = useServerStore();
 const seatsLimitModalOpen = ref(false);
 
 async function saveAsDeactivated() {
-	edits.value = { ...edits.value, status: 'deactivated-license-exceeded' };
+	edits.value = { ...edits.value, status: 'inactive-license-exceeded' };
 
 	try {
 		const savedItem = await save();
