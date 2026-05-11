@@ -517,14 +517,14 @@ export class LicenseManager {
 		const entitlementManager = new EntitlementManager();
 		entitlementManager.setEntitlements(entitlements);
 
+		const candidateGetters: Record<CountableEntitlementKey, any> = {
+			seats: getActiveSeats,
+			collections: getActiveCollections,
+			flows: getActiveFlows,
+		};
+
 		for (const check of COUNTABLE_ENTITLEMENT_KEYS) {
 			const resolution = await entitlementManager.check(check);
-
-			const candidateGetters: Record<CountableEntitlementKey, any> = {
-				seats: getActiveSeats,
-				collections: getActiveCollections,
-				flows: getActiveFlows,
-			};
 
 			if (resolution.allowed) {
 				const candidates = await candidateGetters[check]({ adminId: options.adminId });
