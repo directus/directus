@@ -103,12 +103,12 @@ export type Api = {
 export async function startApi(opts: Options, env: Env, logger: Logger) {
 	const apiCount = Math.max(1, Number(opts.instances));
 
-	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(opts.port ?? 8055) + i * (opts.inspect ? 2 : 1));
+	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * (opts.inspect ? 2 : 1));
 
 	return (await Promise.all(
 		apiPorts.map((port) => {
 			const newLogger = apiCount > 1 ? logger.addGroup(`API ${port}`) : logger;
-			return startApiInstance({ ...opts, port }, env, newLogger);
+			return startApiInstance({ ...opts, port }, { ...env, PORT: String(port) }, newLogger);
 		}),
 	)) as [Api, ...Api[]];
 }
@@ -116,33 +116,22 @@ export async function startApi(opts: Options, env: Env, logger: Logger) {
 async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 	const start = performance.now();
 	logger.info('Starting Server');
-	const port = await getPort(opts.port);
-	const inspector = await getPort(port + 1);
+	const inspector = await getPort(Number(opts.port) + 1);
 	let api;
 	let timeout: NodeJS.Timeout;
 	const inspect = opts.inspect ? [`--inspect=${inspector}`] : [];
-
-	if (port !== opts.port) throw new Error(`Port ${opts.port} for directus is not available.`);
 
 	if (opts.dev) {
 		const watch = opts.watch ? ['watch', '--clear-screen=false'] : [];
 
 		api = spawn('pnpm ', ['tsx', ...watch, ...inspect, join(apiFolder, 'src', 'start.ts')], {
-			env: {
-				...env,
-				PUBLIC_URL: `http://${env.HOST}:${port}`,
-				PORT: String(port),
-			},
+			env,
 			shell: true,
 			stdio: 'overlapped', // Has to be here, only god knows why.
 		});
 	} else {
 		api = spawn('node', [...inspect, join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
-			env: {
-				...env,
-				PUBLIC_URL: `http://${env.HOST}:${port}`,
-				PORT: String(port),
-			},
+			env,
 		});
 	}
 
@@ -176,9 +165,9 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		api.stdout.on('data', (data) => {
 			const msg = String(data);
 
-			if (msg.includes(`Server started at http://${env.HOST}:${port}`)) {
+			if (msg.includes(`Server started at http://${env.HOST}:${opts.port}`)) {
 				resolve(undefined);
-			} else if (msg.includes(`ERROR: Port ${port} is already in use`)) {
+			} else if (msg.includes(`ERROR: Port ${opts.port} is already in use`)) {
 				reject(new Error(msg));
 			} else {
 				logger.debug(msg);
@@ -194,12 +183,12 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 
 	logger.info(
-		`Server started at http://${env.HOST}:${port}, Debugger listening on http://${env.HOST}:${inspector} ${time}`,
+		`Server started at http://${env.HOST}:${opts.port}, Debugger listening on http://${env.HOST}:${inspector} ${time}`,
 	);
 
 	logger.info(
 		`User: ${chalk.cyan(env.ADMIN_EMAIL)} Password: ${chalk.cyan(env.ADMIN_PASSWORD)} Token: ${chalk.cyan(env.ADMIN_TOKEN)}`,
 	);
 
-	return { process: api, port, inspector };
+	return { process: api, port: opts.port, inspector };
 }
