@@ -5,7 +5,7 @@ import { createLicense } from '../src/utils.js';
 const DAY = 24 * 60 * 60;
 const now = () => Math.floor(Date.now() / 1000);
 
-type Scenario = 'team' | 'team-grace' | 'team-expired' | 'oig' | 'core';
+type Scenario = 'team' | 'team-grace' | 'team-expired' | 'oig' | 'core' | 'tiny';
 
 const SCENARIOS: Record<Scenario, DeepPartial<MockLicense>> = {
 	team: {
@@ -40,6 +40,14 @@ const SCENARIOS: Record<Scenario, DeepPartial<MockLicense>> = {
 			sso_enabled: { default: false },
 			custom_llms_enabled: { default: false },
 			custom_permission_rules_enabled: { default: false },
+		},
+	},
+	tiny: {
+		meta: { name: 'Tiny', expires_at: now() + 365 * DAY },
+		entitlements: {
+			seats: { limit: 1 },
+			collections: { limit: 1 },
+			flows: { limit: 1 },
 		},
 	},
 };
