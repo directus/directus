@@ -1,15 +1,19 @@
 import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
 import type { Knex } from 'knex';
+import getDatabase from '../../../database/index.js';
 import { CollectionsService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
 export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 	const env = useEnv();
 
+	const knex = opts?.knex ?? getDatabase();
+	const schema = await getSchema({ database: knex });
+	
 	const collectionService = new CollectionsService({
-		schema: await getSchema(),
-		knex: opts?.knex,
+		schema,
+		knex,
 	});
 
 	const dbCollections = await collectionService.readByQuery();
