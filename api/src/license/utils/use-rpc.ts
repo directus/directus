@@ -9,6 +9,8 @@ type ExtractMethods<T> = PickMatching<T, Function>;
 
 /**
  * RPC means remote procedure call, allowing to call functions across multiple instances in a code native manner.
+ *
+ * Does not call the function on its OWN instance
  */
 export function useRPC<C>(self: C, channel: string): ExtractMethods<C> {
 	const uid = randomUUID();
@@ -24,7 +26,6 @@ export function useRPC<C>(self: C, channel: string): ExtractMethods<C> {
 		get(_, method) {
 			return async (...args: any) => {
 				messenger.publish(channel, { uid, method, args });
-				await (self as any)[method].call(args);
 			};
 		},
 	});
