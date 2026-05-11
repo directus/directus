@@ -34,11 +34,22 @@ const validating = ref(false);
 const stored = ref(true);
 const error = ref<Error | null>(null);
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: string | null];
+	validity: [value: { valid: boolean; validating: boolean }];
+}>();
+
+function emitValidity() {
+	emit('validity', {
+		valid: !!licenseInfo.value && !error.value && !validating.value,
+		validating: validating.value,
+	});
+}
 
 const validate = throttle(async (value: string | null) => {
 	if (!value || value.length < 29) {
 		licenseInfo.value = null;
+		emitValidity();
 		return;
 	}
 
@@ -47,12 +58,14 @@ const validate = throttle(async (value: string | null) => {
 	if (parsed.error) {
 		error.value = parsed.error;
 		licenseInfo.value = null;
+		emitValidity();
 		return;
 	}
 
 	error.value = null;
 	validating.value = true;
 	licenseInfo.value = null;
+	emitValidity();
 
 	try {
 		const response = await api.post<{ data: LicensePreview }>('/license/preview', { license_key: value });
@@ -61,6 +74,7 @@ const validate = throttle(async (value: string | null) => {
 		error.value = err instanceof Error ? err : new Error(String(err));
 	} finally {
 		validating.value = false;
+		emitValidity();
 	}
 }, 300);
 

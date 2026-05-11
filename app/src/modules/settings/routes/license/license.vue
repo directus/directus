@@ -2,7 +2,7 @@
 import { activateLicense, deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { I18nT, useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
@@ -17,10 +17,10 @@ import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
-import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
@@ -49,9 +49,17 @@ const planDisplayName = computed(() => license.value?.name ?? null);
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
 const activateLoading = ref(false);
+const licenseKeyValidity = ref<{ valid: boolean; validating: boolean }>({ valid: false, validating: false });
+
+const canSave = computed(() => licenseKeyValidity.value.valid && !licenseKeyValidity.value.validating);
+
+function resetAddLicenseForm() {
+	licenseKey.value = '';
+	licenseKeyValidity.value = { valid: false, validating: false };
+}
 
 async function handleActivate() {
-	if (!licenseKey.value.trim() || activateLoading.value) return;
+	if (!canSave.value || activateLoading.value) return;
 
 	activateLoading.value = true;
 
@@ -59,7 +67,7 @@ async function handleActivate() {
 		await sdk.request(activateLicense({ license_key: licenseKey.value.trim() }));
 		await licenseStore.hydrate();
 		addLicenseDrawer.value = false;
-		licenseKey.value = '';
+		resetAddLicenseForm();
 	} catch (err) {
 		unexpectedError(err);
 	} finally {
@@ -69,7 +77,7 @@ async function handleActivate() {
 
 function handleAddLicenseCancel() {
 	addLicenseDrawer.value = false;
-	licenseKey.value = '';
+	resetAddLicenseForm();
 }
 
 type EntitlementConfig = {
@@ -288,7 +296,7 @@ async function handleDeactivateConfirm() {
 			<VButton
 				v-tooltip.bottom="t('save')"
 				small
-				:disabled="!licenseKey.trim()"
+				:disabled="!canSave"
 				:loading="activateLoading"
 				@click="handleActivate"
 			>
@@ -298,9 +306,22 @@ async function handleDeactivateConfirm() {
 
 		<div class="drawer-content">
 			<VNotice type="info">
-				{{ t('licensing.key_notice') }}
+				<I18nT keypath="setup_license_key_notice" tag="span">
+					<template #oig>
+						<a href="https://directus.io/license-request" target="_blank" rel="noopener noreferrer">
+							{{ t('open_innovation_grant') }}
+						</a>
+					</template>
+				</I18nT>
 			</VNotice>
-			<VInput v-model="licenseKey" :placeholder="t('licensing.key')" @keyup.enter="handleActivate" />
+			<div class="license-key-field">
+				<label class="field-label">{{ t('licensing.key') }}</label>
+				<SystemLicenseKey
+					:value="licenseKey"
+					@input="licenseKey = $event ?? ''"
+					@validity="licenseKeyValidity = $event"
+				/>
+			</div>
 		</div>
 	</VDrawer>
 </template>
@@ -386,5 +407,17 @@ async function handleDeactivateConfirm() {
 	flex-direction: column;
 	gap: 2.25rem;
 	padding: var(--content-padding);
+}
+
+.license-key-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.field-label {
+	font-size: 0.9375rem;
+	font-weight: 600;
+	color: var(--theme--foreground);
 }
 </style>

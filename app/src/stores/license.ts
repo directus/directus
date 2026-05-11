@@ -79,8 +79,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const customLLMEnabled = computed(() => isEntitlementEnabled('custom_llms_enabled'));
 
 	const isLicensed = computed(() => {
-		const status = info.value?.status;
-		return status === 'active' || status === 'grace';
+		if (!info.value || info.value.source === null) return false;
+		return info.value.status === 'active' || info.value.status === 'grace';
 	});
 
 	const needsResolution = computed(() => {
