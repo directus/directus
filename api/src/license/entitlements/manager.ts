@@ -15,11 +15,11 @@ import type {
 import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FEATURE_FLAG_ENTITLEMENT_KEYS } from '@directus/license';
 import type { Knex } from 'knex';
 import { countActiveCollections, resolveCollections } from './lib/collections.js';
-import { checkCustomLLM } from './lib/custom_llms_enabled.js';
-import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
+import { checkCustomLLM } from './lib/custom-llms-enabled.js';
+import { checkCustomPermissionRules } from './lib/custom-permission-rules-enabled.js';
 import { countActiveFlows, resolveFlows } from './lib/flows.js';
 import { countActiveSeats, resolveSeats } from './lib/seats.js';
-import { checkUsersSSO, resolveSSOUsers } from './lib/sso_enabled.js';
+import { checkUsersSSO, resolveSSOUsers } from './lib/sso-enabled.js';
 
 let entitlementManager: EntitlementManager | undefined;
 

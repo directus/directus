@@ -14,7 +14,7 @@ import { clearSystemCache } from '../cache.js';
 import {
 	hasCustomRule,
 	isRecommendedAppPermission,
-} from '../license/entitlements/lib/custom_permission_rules_enabled.js';
+} from '../license/entitlements/lib/custom-permission-rules-enabled.js';
 import { getEntitlementManager } from '../license/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
