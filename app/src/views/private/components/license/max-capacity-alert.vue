@@ -46,6 +46,7 @@ const isVisible = computed(() => remaining.value !== null && remaining.value <= 
 
 .message {
 	flex: 1;
+	color: var(--theme--foreground);
 }
 
 .manage-plan-link {
