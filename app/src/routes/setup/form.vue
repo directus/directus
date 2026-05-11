@@ -107,12 +107,12 @@ const fields = useSetupFields(props.register);
 			<span v-md="$t('setup_license_notice')"></span>
 			<br />
 			<I18nT keypath="setup_license_follow_up" tag="span">
-				<template #contactOurTeam>
+				<template #oig>
 					<a
-						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_contact_our_team_link`"
+						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_open_innovation_grant_link`"
 						target="_blank"
 					>
-						{{ $t('contact_our_team') }}
+						{{ $t('open_innovation_grant') }}
 					</a>
 				</template>
 			</I18nT>
@@ -120,12 +120,12 @@ const fields = useSetupFields(props.register);
 			<span v-if="skipLicense">
 				<br />
 				<I18nT v-if="skipLicense" keypath="setup_save_accept_license" tag="span">
-					<template #directusBsl>
+					<template #directusMscl>
 						<a
-							:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_bsl_1.1_link`"
+							:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
 							target="_blank"
 						>
-							{{ $t('directus_bsl') }}
+							{{ $t('directus_mscl') }}
 						</a>
 					</template>
 					<template #privacyPolicy>
@@ -142,12 +142,12 @@ const fields = useSetupFields(props.register);
 
 		<VCheckbox v-if="!skipLicense" v-model="license">
 			<I18nT keypath="setup_accept_license" tag="span">
-				<template #directusBsl>
+				<template #directusMscl>
 					<a
-						:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=bsl_1.1_link`"
+						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
 						target="_blank"
 					>
-						{{ $t('directus_bsl') }}
+						{{ $t('directus_mscl') }}
 					</a>
 				</template>
 				<template #privacyPolicy>
