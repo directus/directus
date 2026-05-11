@@ -9,9 +9,9 @@ import { getSchema } from '../../../utils/get-schema.js';
 
 export async function getActiveSeats(ctx?: {
 	adminId: string;
-}): Promise<LicensePendingResolutionLimitSeats['candidates'] | void> {
+}): Promise<LicensePendingResolutionLimitSeats['candidates']> {
 	// license-TODO refactor
-	if (!ctx?.adminId) return;
+	if (!ctx?.adminId) return [];
 
 	const schema = await getSchema();
 
@@ -54,7 +54,7 @@ export async function getActiveSeats(ctx?: {
 			adminRoles,
 			appRoles,
 		},
-		{ knex: await getDatabase() },
+		{ knex: getDatabase() },
 	);
 
 	const usersService = new UsersService({ schema });

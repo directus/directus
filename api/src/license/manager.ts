@@ -4,6 +4,8 @@ import {
 	activateKey,
 	billingPortal,
 	CORE_LICENSE,
+	COUNTABLE_ENTITLEMENT_KEYS,
+	type CountableEntitlementKey,
 	deactivateKey,
 	deleteAddon,
 	Entitlements,
@@ -515,50 +517,22 @@ export class LicenseManager {
 		const entitlementManager = new EntitlementManager();
 		entitlementManager.setEntitlements(entitlements);
 
-		const collection = await entitlementManager.check('collections');
+		for (const check of COUNTABLE_ENTITLEMENT_KEYS) {
+			const resolution = await entitlementManager.check(check);
 
-		if (collection.allowed == false) {
-			const activeCollections = await getActiveCollections();
+			const candidates: Record<CountableEntitlementKey, any> = {
+				seats: await getActiveSeats({ adminId: options.adminId }),
+				collections: await getActiveCollections(),
+				flows: await getActiveFlows(),
+			};
 
-			if (activeCollections.length) {
+			if (resolution.allowed) {
 				pendingResolution.push({
-					key: 'collections',
+					key: check,
 					kind: 'limit',
-					limit: collection.hardLimit,
-					usage: collection.usage,
-					candidates: activeCollections.map((c) => c.collection),
-				});
-			}
-		}
-
-		const seats = await entitlementManager.check('seats');
-
-		if (seats.allowed == false) {
-			const activeSeats = await getActiveSeats({ adminId: options.adminId });
-
-			if (activeSeats && activeSeats.length) {
-				pendingResolution.push({
-					key: 'seats',
-					kind: 'limit',
-					limit: seats.hardLimit,
-					usage: seats.usage,
-					candidates: activeSeats,
-				});
-			}
-		}
-
-		const flows = await entitlementManager.check('flows');
-
-		if (flows.allowed === false) {
-			const flowCandidates = await getActiveFlows();
-
-			if (flowCandidates.length) {
-				pendingResolution.push({
-					key: 'flows',
-					kind: 'limit',
-					limit: flows.hardLimit,
-					usage: flows.usage,
-					candidates: flowCandidates as unknown as string[],
+					limit: resolution.hardLimit,
+					usage: resolution.usage,
+					candidates: candidates[check],
 				});
 			}
 		}
