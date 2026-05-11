@@ -888,7 +888,7 @@ function editDraftVersion() {
 		<template #actions>
 			<PrivateViewHeaderBarActionButton
 				v-if="previewUrl"
-				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
+				:tooltip="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				icon="visibility"
 				variant="ghost"
 				:active="!!livePreviewMode"
@@ -905,7 +905,7 @@ function editDraftVersion() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
+						:tooltip="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						icon="delete"
 						kind="danger"
 						variant="ghost"
@@ -938,7 +938,7 @@ function editDraftVersion() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="archiveTooltip"
+						:tooltip="archiveTooltip"
 						:icon="isArchived ? 'unarchive' : 'archive'"
 						kind="warning"
 						variant="ghost"
