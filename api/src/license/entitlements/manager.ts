@@ -229,11 +229,15 @@ export class EntitlementManager {
 	 */
 	async checkAll(opts?: { knex?: Knex | undefined }): Promise<boolean> {
 		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
+			// skip entitlements with no registered handlers
+			if (!this.counterSources.has(key)) continue;
 			const { allowed } = await this.check(key, opts);
 			if (!allowed) return false;
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
+			// skip entitlements with no registered handlers
+			if (!this.validatorSources.has(key)) continue;
 			const { valid } = await this.check(key, opts);
 			if (!valid) return false;
 		}
@@ -246,10 +250,14 @@ export class EntitlementManager {
 	 */
 	async assertAll(opts?: { knex?: Knex | undefined }): Promise<void> {
 		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
+			// skip entitlements with no registered handlers
+			if (!this.counterSources.has(key)) continue;
 			await this.assert(key, opts);
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
+			// skip entitlements with no registered handlers
+			if (!this.validatorSources.has(key)) continue;
 			await this.assert(key, opts);
 		}
 	}
