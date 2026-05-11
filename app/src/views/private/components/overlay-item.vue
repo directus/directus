@@ -663,7 +663,13 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton :label="$t('save')" :disabled="!isSavable" icon="check" @click="save" />
+			<PrivateViewHeaderBarActionButton
+				:label="$t('save')"
+				:tooltip="getSaveShortcut()"
+				:disabled="!isSavable"
+				icon="check"
+				@click="save"
+			/>
 		</template>
 
 		<OverlayItemContent
