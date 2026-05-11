@@ -246,11 +246,11 @@ export class EntitlementManager {
 	 */
 	async assertAll(opts?: { knex?: Knex | undefined }): Promise<void> {
 		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
-			this.assert(key, opts);
+			await this.assert(key, opts);
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
-			this.assert(key, opts);
+			await this.assert(key, opts);
 		}
 	}
 
