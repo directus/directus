@@ -1,3 +1,4 @@
+import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
 import { UsersService } from '../../../services/index.js';
 import { fetchUserCount } from '../../../utils/fetch-user-count/fetch-user-count.js';
@@ -7,9 +8,9 @@ export async function getActiveSeats() {
 	// license-TODO use simplified "fetchUserCount"
 }
 
-export async function countActiveSeats() {
+export async function countActiveSeats(opts?: { knex?: Knex | undefined }) {
 	const userCounts = await fetchUserCount({
-		knex: getDatabase(),
+		knex: opts?.knex ?? getDatabase(),
 	});
 
 	return userCounts.admin + userCounts.app;

@@ -23,8 +23,8 @@ export async function validateUserCountIntegrity(options: ValidateUserCountInteg
 
 	if (validateUserLimits) {
 		// Dynamic import to prevent circular imports in services
-		const { getEntitlementManager } = await import('../license/index.js');
-		await getEntitlementManager().assert('seats');
+		const { getEntitlementManager } = await import('../license/entitlements/manager.js');
+		await getEntitlementManager().assert('seats', { knex: options.knex });
 	}
 
 	if (envLimitCheck) {
