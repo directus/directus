@@ -100,7 +100,7 @@ router.post(
 		const preview = await licenseManager.preview(req.body.license_key);
 
 		const payload: LicensePreviewOutput = {
-			plan_name: preview.name,
+			plan_name: preview.plan_name,
 			expires_at: preview.expires_at,
 			renews_at: preview.renews_at,
 			production_enabled: preview.production_enabled,
