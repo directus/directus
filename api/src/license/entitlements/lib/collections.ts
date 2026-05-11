@@ -16,6 +16,7 @@ export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 	return dbCollections
 		.filter(
 			(collection) =>
+				!isFolder(collection) &&
 				!isSystemCollection(collection.collection) &&
 				!isDBOnlyCollection(collection) &&
 				!isDisabledCollection(collection) &&
@@ -28,6 +29,10 @@ export async function countActiveCollections(opts?: { knex?: Knex | undefined })
 	const collections = await getActiveCollections(opts);
 
 	return collections.length;
+}
+
+function isFolder(collection: Collection) {
+	return collection.schema === null;
 }
 
 function isDBOnlyCollection(collection: Collection) {
