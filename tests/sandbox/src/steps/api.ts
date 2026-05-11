@@ -62,7 +62,6 @@ export async function buildApi(opts: Options, logger: Logger, onRebuild: () => v
 export async function bootstrap(opts: Options, env: Env, logger: Logger) {
 	const start = performance.now();
 	logger.info('Bootstraping Database');
-	const port = '8055';
 
 	let bootstrap: ChildProcessWithoutNullStreams;
 
@@ -70,8 +69,6 @@ export async function bootstrap(opts: Options, env: Env, logger: Logger) {
 		bootstrap = spawn('pnpm', ['tsx', join(apiFolder, 'src', 'cli', 'run.ts'), 'bootstrap'], {
 			env: {
 				...env,
-				PUBLIC_URL: `http://${env.HOST}:${port}`,
-				PORT: port,
 			},
 			shell: true,
 			stdio: 'overlapped', // Has to be here, only god knows why.
@@ -80,8 +77,6 @@ export async function bootstrap(opts: Options, env: Env, logger: Logger) {
 		bootstrap = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'bootstrap'], {
 			env: {
 				...env,
-				PUBLIC_URL: `http://${env.HOST}:${port}`,
-				PORT: port,
 			},
 		});
 	}
@@ -126,6 +121,8 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 	let api;
 	let timeout: NodeJS.Timeout;
 	const inspect = opts.inspect ? [`--inspect=${inspector}`] : [];
+
+	if (port !== opts.port) throw new Error(`Port ${opts.port} for directus is not available.`);
 
 	if (opts.dev) {
 		const watch = opts.watch ? ['watch', '--clear-screen=false'] : [];
