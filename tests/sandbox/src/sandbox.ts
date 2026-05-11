@@ -8,7 +8,7 @@ import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
 import { createLogger, type Logger } from './logger.js';
-import type { Port, PortRange } from './port.js';
+import { getPort, type Port, type PortRange } from './port.js';
 import { startApp } from './steps/app.js';
 import {
 	type Api,
@@ -111,12 +111,16 @@ export type Sandbox = {
 async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	if ((options as any)?.schema === true) options!.schema = 'snapshot.json';
 
+	const port = await getPort(options?.port ?? 8055);
+
+	if (options?.port && port !== options?.port) throw new Error(`Port ${options?.port} for directus is already in use.`);
+
 	return merge(
 		{
 			build: false,
 			dev: false,
 			watch: false,
-			port: 8055,
+			port,
 			app: false,
 			dbVersion: undefined,
 			docker: {
