@@ -112,7 +112,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/preview' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
+		expect(wrapper.find('.version-chip').exists()).toBe(false);
 	});
 
 	it('is not rendered when user lacks read permission on directus_versions', () => {
@@ -123,7 +123,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/?version=v1' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
+		expect(wrapper.find('.version-chip').exists()).toBe(false);
 	});
 
 	it('is rendered when the URL matches a version template and user can read versions', () => {
@@ -135,7 +135,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/?version=v1' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(true);
+		expect(wrapper.find('.version-chip').exists()).toBe(true);
 	});
 
 	it('adds a new version to the list when the URL contains a custom version key', async () => {
