@@ -21,7 +21,7 @@ export async function checkUsersSSO(opts?: { knex?: Knex | undefined }) {
 		},
 	});
 
-	return sso_users.length > 0;
+	return sso_users.length == 0;
 }
 
 export async function resolveSSOUsers(resolution: NonNullable<ResolveInput['sso_enabled']>, ctx?: { adminId: string }) {
