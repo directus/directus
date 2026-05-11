@@ -34,7 +34,7 @@ export type Options = {
 	/** Restart the api when changes are made */
 	watch: boolean;
 	/** Port to start the api on */
-	port: Port | PortRange | undefined;
+	port: Port | undefined;
 	/** Spin up the app in dev mode */
 	app: boolean | Port;
 	/** Which version of the database to use */
@@ -116,7 +116,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			build: false,
 			dev: false,
 			watch: false,
-			port: undefined,
+			port: 8055,
 			app: false,
 			dbVersion: undefined,
 			docker: {
