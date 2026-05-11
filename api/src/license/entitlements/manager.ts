@@ -227,14 +227,14 @@ export class EntitlementManager {
 	/**
 	 * Checks all entitlements and returns true if all are within the limits
 	 */
-	async checkAll(): Promise<boolean> {
+	async checkAll(opts?: { knex?: Knex | undefined }): Promise<boolean> {
 		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
-			const { allowed } = await this.check(key);
+			const { allowed } = await this.check(key, opts);
 			if (!allowed) return false;
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
-			const { valid } = await this.check(key);
+			const { valid } = await this.check(key, opts);
 			if (!valid) return false;
 		}
 
@@ -244,13 +244,13 @@ export class EntitlementManager {
 	/**
 	 * Asserts all entitlements and throws if a limit is breached
 	 */
-	async assertAll(): Promise<void> {
+	async assertAll(opts?: { knex?: Knex | undefined }): Promise<void> {
 		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
-			this.assert(key);
+			this.assert(key, opts);
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
-			this.assert(key);
+			this.assert(key, opts);
 		}
 	}
 
