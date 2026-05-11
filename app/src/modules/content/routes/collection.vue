@@ -371,7 +371,7 @@ function clearFilters() {
 			<template #title-outer:append>
 				<VMenu v-if="isVersioned" show-arrow placement="bottom">
 					<template #activator="{ toggle }">
-						<VersionChip :version="version ? { key: version, name: null } : null" @click="toggle" />
+						<VersionChip :version="version ? { key: version, name: null } : null" @click="toggle()" />
 					</template>
 
 					<VList>
