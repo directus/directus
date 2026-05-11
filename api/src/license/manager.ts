@@ -636,7 +636,7 @@ export class LicenseManager {
 		}
 
 		await this.syncState();
-		await this.store(async (store) => store.set('status', await getStatus(options)));
+		await this.store(async (store) => store.set('status', options?.status ?? (await getStatus(options))));
 		await this.rpc.syncState();
 	}
 

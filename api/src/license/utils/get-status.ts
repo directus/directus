@@ -3,11 +3,7 @@ import { getEntitlementManager } from '../entitlements/manager.js';
 import { getLicense } from '../manager.js';
 import { getCoreGracePeriod } from './get-core-grace-period.js';
 
-export async function getStatus(options?: { status?: LicenseStatus; isCore?: boolean }): Promise<LicenseStatus> {
-	if (options?.status) {
-		return options.status;
-	}
-
+export async function getStatus(options?: { isCore?: boolean }): Promise<LicenseStatus> {
 	const license = await getLicense();
 	const entitlementManager = getEntitlementManager();
 
