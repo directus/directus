@@ -4,21 +4,23 @@ import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
 import { AccessService, UsersService } from '../../../services/index.js';
 import { fetchAccessRoles } from '../../../utils/fetch-user-count/fetch-access-roles.js';
-import { fetchUserCount } from '../../../utils/fetch-user-count/fetch-user-count.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-export async function getActiveSeats(ctx?: {
-	adminId: string;
-}): Promise<LicensePendingResolutionLimitSeats['candidates'] | void> {
-	// license-TODO refactor
-	if (!ctx?.adminId) return;
+export type SeatUser = {
+	id: string;
+    first_name: string | null;
+    last_name: string | null;
+    avatar: string | null;
+};
 
+export async function getActiveSeats(opts?: { knex?: Knex | undefined }): Promise<LicensePendingResolutionLimitSeats['candidates']> {
 	const schema = await getSchema();
 
-	const accessService = new AccessService({ schema });
+	const accessService = new AccessService({ schema, knex: opts?.knex ?? getDatabase() });
 
 	const accessRows = await accessService.readByQuery({
 		fields: ['role', 'user.id', 'user.status', 'user.role', 'policy.app_access', 'policy.admin_access'],
+		limit: -1,
 	});
 
 	const adminRoles = new Set<string>();
@@ -54,7 +56,7 @@ export async function getActiveSeats(ctx?: {
 			adminRoles,
 			appRoles,
 		},
-		{ knex: await getDatabase() },
+		{ knex: opts?.knex ?? getDatabase() },
 	);
 
 	const usersService = new UsersService({ schema });
@@ -63,11 +65,6 @@ export async function getActiveSeats(ctx?: {
 		fields: ['id', 'first_name', 'last_name', 'avatar'],
 		filter: {
 			_and: [
-				{
-					id: {
-						_neq: ctx.adminId,
-					},
-				},
 				{
 					_or: [
 						{
@@ -89,17 +86,13 @@ export async function getActiveSeats(ctx?: {
 				},
 			],
 		},
+		limit: -1,
 	});
 
 	const appCandidates = await usersService.readByQuery({
 		fields: ['id', 'first_name', 'last_name', 'avatar'],
 		filter: {
 			_and: [
-				{
-					id: {
-						_neq: ctx.adminId,
-					},
-				},
 				{
 					_or: [
 						{
@@ -123,17 +116,20 @@ export async function getActiveSeats(ctx?: {
 				},
 			],
 		},
+		limit: -1,
 	});
 
 	return [...appCandidates, ...adminCandidates.map((admin) => ({ ...admin, admin: true }))] as any;
 }
 
 export async function countActiveSeats(opts?: { knex?: Knex | undefined }) {
-	const userCounts = await fetchUserCount({
-		knex: opts?.knex ?? getDatabase(),
-	});
+	const seats = await getActiveSeats(opts);
 
-	return userCounts.admin + userCounts.app;
+	return seats.length;
+}
+
+export async function getSeatResolutionCandidates(ctx?: { adminId: string }) {
+
 }
 
 export async function resolveSeats(seats: string[], ctx?: { adminId: string }) {
