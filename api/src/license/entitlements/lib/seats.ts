@@ -1,5 +1,6 @@
 import type { LicensePendingResolutionLimitSeats } from '@directus/license';
 import { toBoolean } from '@directus/utils';
+import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
 import { AccessService, UsersService } from '../../../services/index.js';
 import { fetchAccessRoles } from '../../../utils/fetch-user-count/fetch-access-roles.js';
@@ -127,9 +128,9 @@ export async function getActiveSeats(ctx?: {
 	return [...appCandidates, ...adminCandidates.map((admin) => ({ ...admin, admin: true }))] as any;
 }
 
-export async function countActiveSeats() {
+export async function countActiveSeats(opts?: { knex?: Knex | undefined }) {
 	const userCounts = await fetchUserCount({
-		knex: getDatabase(),
+		knex: opts?.knex ?? getDatabase(),
 	});
 
 	return userCounts.admin + userCounts.app;

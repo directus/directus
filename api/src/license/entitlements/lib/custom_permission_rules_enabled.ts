@@ -1,5 +1,6 @@
 import { appAccessMinimalPermissions, appRecommendedPermissions } from '@directus/system-data';
 import type { Permission } from '@directus/types';
+import type { Knex } from 'knex';
 import { isEqual } from 'lodash-es';
 import { ItemsService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
@@ -47,9 +48,10 @@ export function isMinimumAppPermission(permission: Partial<Permission>): boolean
 	);
 }
 
-export async function checkCustomPermissionRules() {
+export async function checkCustomPermissionRules(opts?: { knex?: Knex | undefined }) {
 	const permissionService = new ItemsService('directus_permissions', {
 		schema: await getSchema(),
+		knex: opts?.knex,
 	});
 
 	const permissions = await permissionService.readByQuery({

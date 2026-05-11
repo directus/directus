@@ -82,7 +82,7 @@ export class CollectionsService {
 
 		if (payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('collections', { adding: 1 });
+			await entitlementManager.assert('collections', { adding: 1, knex: this.knex });
 		}
 
 		payload.collection = await this.helpers.schema.parseCollectionName(payload.collection);
@@ -469,7 +469,7 @@ export class CollectionsService {
 
 			if (payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
 				const entitlementManager = getEntitlementManager();
-				await entitlementManager.assert('collections', { adding: 1 });
+				await entitlementManager.assert('collections', { adding: 1, knex: this.knex });
 			}
 
 			const exists = !!(await this.knex
