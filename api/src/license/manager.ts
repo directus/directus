@@ -20,6 +20,7 @@ import {
 	ResolveInput,
 	updateAddonQuantity,
 	updateKey,
+	verifyLicense,
 } from '@directus/license';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
@@ -36,7 +37,6 @@ import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
 import { getStatus } from './utils/get-status.js';
 import { useRPC } from './utils/use-rpc.js';
-import { verifyLicenseCompat as verifyLicense } from './verify-compat.js';
 
 const env = useEnv();
 const logger = useLogger();
