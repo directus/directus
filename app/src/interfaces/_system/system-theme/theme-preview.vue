@@ -20,8 +20,20 @@ const localVars = computed(() => {
 <template>
 	<div class="theme-preview" :style="localVars">
 		<svg class="theme-preview" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<!-- Page Background -->
-			<rect width="208" height="140" rx="2" fill="var(--theme--background)" />
+			<!-- Shell Background -->
+			<rect width="208" height="140" rx="2" fill="var(--theme--shell--background)" />
+
+			<!-- Content Background -->
+			<rect
+				x="56.5"
+				y="16.5"
+				width="150"
+				height="130"
+				rx="2"
+				fill="var(--theme--background)"
+				stroke="var(--theme--shell--border-color)"
+				stroke-width="1"
+			/>
 
 			<!-- Header Bar -->
 			<rect x="56" width="144" height="16" fill="var(--theme--shell--background)" />
@@ -147,15 +159,15 @@ const localVars = computed(() => {
 			<rect x="4" y="68" width="8" height="8" rx="2" fill="var(--theme--navigation--modules--button--foreground)" />
 
 			<!-- Header Bar Buttons -->
-			<rect x="62" y="4" width="8" height="8" rx="2" fill="var(--theme--background-normal)" />
+			<rect x="62" y="4" width="8" height="8" rx="2" fill="var(--theme--foreground-subdued)" fill-opacity="0.2" />
 			<rect x="166" y="4" width="17.5" height="8" rx="2" fill="var(--theme--primary)" />
-			<rect x="156" y="4" width="8" height="8" rx="2" fill="var(--theme--background-normal)" />
+			<rect x="156" y="4" width="8" height="8" rx="2" fill="var(--theme--foreground-subdued)" fill-opacity="0.2" />
 
 			<!-- Sidebar Background -->
 			<rect x="184" y="17" width="16" height="140" fill="var(--theme--sidebar--background)" />
 
 			<!-- Sidebar Toggle -->
-			<rect x="188" y="4" width="8" height="8" rx="2" fill="var(--theme--background-normal)" />
+			<rect x="188" y="4" width="8" height="8" rx="2" fill="var(--theme--foreground-subdued)" fill-opacity="0.2" />
 
 			<!-- Sidebar Section Toggle Foreground -->
 			<rect
@@ -186,11 +198,8 @@ const localVars = computed(() => {
 				fill-opacity="0.2"
 			/>
 
-			<!-- Header Border -->
-			<rect x="56" y="16" width="144" height="1" fill="var(--theme--shell--border-color)" />
-
-			<!-- Navigation Border -->
-			<rect x="56" y="16" width="1" height="124" fill="var(--theme--shell--border-color)" />
+			<!-- Module Bar Border -->
+			<rect x="16" y="0" width="1" height="140" fill="var(--theme--navigation--modules--border-color)" />
 
 			<!-- Sidebar Border -->
 			<rect x="183" y="17" width="1" height="140" fill="var(--theme--background-accent)" />
