@@ -1,21 +1,36 @@
-import type { License, LicenseStatus } from '@directus/license';
+import type { LicenseStatus } from '@directus/license';
+import { getEntitlementManager } from '../entitlements/manager.js';
+import { getLicense } from '../manager.js';
+import { getCoreGracePeriod } from './get-core-grace-period.js';
 
-export function getStatus(license: License | null, error?: Error): LicenseStatus {
-	if (!license) {
-		if (error && error.message.includes('canceled')) {
-			return 'canceled';
+export async function getStatus(options?: { status?: LicenseStatus; isCore?: boolean }): Promise<LicenseStatus> {
+	if (options?.status) {
+		return options.status;
+	}
+
+	const license = await getLicense();
+	const entitlementManager = getEntitlementManager();
+
+	if (options?.isCore) {
+		const isInGrace = await getCoreGracePeriod();
+
+		if (isInGrace) {
+			return 'grace';
 		}
 
-		if (error && error.message.includes('expired')) {
-			return 'expired';
+		const isInViolation = await entitlementManager.checkAll();
+
+		if (isInViolation === false) {
+			return 'locked';
 		}
 
-		if (error && error.message.includes('suspended')) {
-			return 'suspended';
-		}
-
-		// assume core license
 		return 'active';
+	}
+
+	const isInViolation = await entitlementManager.checkAll();
+
+	if (isInViolation === false) {
+		return 'locked';
 	}
 
 	// current time in seconds
