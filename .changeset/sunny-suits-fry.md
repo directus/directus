@@ -4,11 +4,11 @@
 '@directus/app': minor
 ---
 
-Updated sidebar styles
+Updated sidebar styles @formfcw
 
 ::: notice
 
-- Potential breaking change: Removed `section.toggle.borderWidth` / `section.toggle.borderColor` in favor of section-level border tokens. No action is required — these props will simply no longer have any effect.
-- Potential breaking change: Removed `sidebarShadow` and `headerShadow` from `defineLayout()`. No action is required — these props will simply no longer have any effect.
+- Potential breaking change for theme extensions: Removed `section.toggle.borderWidth` / `section.toggle.borderColor` in favor of section-level border tokens. No action is required — these props will simply no longer have any effect.
+- Potential breaking change for theme extensions: Removed `sidebarShadow` and `headerShadow` from `defineLayout()`. No action is required — these props will simply no longer have any effect.
 
 :::
