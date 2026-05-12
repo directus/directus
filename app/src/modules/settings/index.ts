@@ -206,6 +206,11 @@ export default defineModule({
 			],
 		},
 		{
+			name: 'settings-license',
+			path: 'license',
+			component: License,
+		},
+		{
 			name: 'settings-ai',
 			path: 'ai',
 			component: AiOverview,

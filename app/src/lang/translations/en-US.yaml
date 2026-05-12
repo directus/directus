@@ -1533,10 +1533,28 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 license:
-  seats_reached: You have reached the max user limit allowed for your plan.
-  manage_plan_copy: You will need to purchase additional user seats or upgrade your plan.
-  contact_sales_copy: Contact sales to purchase more feature add-ons.
+  seats_limit:
+    title: The user will be created but placed in an inactive state.
+    body_admin: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+    body_member: >-
+      You have reached the max limit allowed for your plan. Contact admin to purchase additional add-ons or upgrade.
+  collections_limit:
+    title: Collection limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  max_capacity:
+    label: max capacity
+    alert_danger_prefix: You have reached max capacity.
+    alert_danger_suffix: to unlock more.
+    alert_warning: You have {count} left. Upgrade your plan to unlock more.
   manage_plan: Manage Plan
+  collections_remaining: '{n} Collection Left | {n} Collections Left'
+  flows_limit:
+    title: Flow limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  flows_remaining: '{n} Flow Left | {n} Flows Left'
   contact_sales: Contact Sales
   upgrade_to_unlock: Upgrade your plan to unlock this feature.
   activity_history_notice: '{timeframe} of Activity History is included in your current plan.'
@@ -1663,6 +1681,7 @@ fields:
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
+    status_inactive_license_exceeded: Inactive (License Exceeded)
     role: Role
     token: Token
     provider: Provider

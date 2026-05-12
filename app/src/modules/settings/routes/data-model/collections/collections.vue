@@ -20,11 +20,16 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { useLicenseStore } from '@/stores/license';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
+import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
+import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
+import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 
@@ -33,6 +38,14 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+const licenseStore = useLicenseStore();
+
+const { limitModalOpen: collectionsLimitModalOpen, navigate } = useLicenseGuard(
+	() => licenseStore.hasRemainingCollections,
+);
+
+const navigateToNewCollection = () => navigate({ name: 'settings-add-new' });
+
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
@@ -55,8 +68,6 @@ async function includeCollection(collectionKey: string) {
 		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'active' } });
 		await collectionsStore.hydrate();
 	} catch (error: any) {
-		// TODO: open Rob's LicenseLimitModal (PR cms-2250) once merged when
-		// error?.response?.data?.errors?.[0]?.extensions?.code === 'LIMIT_EXCEEDED'
 		unexpectedError(error);
 	}
 }
@@ -181,6 +192,8 @@ async function downloadSnapshot() {
 		</template>
 
 		<template #actions>
+			<EntitlementRemaining />
+
 			<SearchInput
 				v-model="search"
 				:show-filter="false"
@@ -202,8 +215,8 @@ async function downloadSnapshot() {
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('create_collection')"
-				:to="{ name: 'settings-add-new' }"
 				icon="add"
+				@click="navigateToNewCollection"
 			/>
 		</template>
 
@@ -212,11 +225,13 @@ async function downloadSnapshot() {
 		</template>
 
 		<div class="padding-box">
+			<MaxCapacityAlert />
+
 			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<VButton :to="{ name: 'settings-add-new' }">{{ $t('create_collection') }}</VButton>
+					<VButton @click="navigateToNewCollection">{{ $t('create_collection') }}</VButton>
 				</template>
 			</VInfo>
 
@@ -329,6 +344,8 @@ async function downloadSnapshot() {
 			:collection="editCollection"
 			@update:model-value="editCollection = null"
 		/>
+
+		<EntitlementLimitModal v-model="collectionsLimitModalOpen" entitlement-key="collections" is-admin />
 	</PrivateView>
 </template>
 

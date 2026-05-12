@@ -3,7 +3,7 @@ import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
 import api from '@/api';
@@ -37,12 +37,15 @@ const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
 const userStore = useUserStore();
+const router = useRouter();
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
+
+const navigateToNewUser = () => router.push(addNewLink.value);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
@@ -265,9 +268,9 @@ function clearFilters() {
 
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
-					:to="addNewLink"
 					:disabled="createAllowed === false"
 					icon="add"
+					@click="navigateToNewUser"
 				/>
 			</template>
 
@@ -283,7 +286,7 @@ function clearFilters() {
 						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
-							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton @click="navigateToNewUser">
 								{{ $t('create_user') }}
 							</VButton>
 						</template>
@@ -303,7 +306,7 @@ function clearFilters() {
 						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
-							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton @click="navigateToNewUser">
 								{{ $t('create_user') }}
 							</VButton>
 						</template>

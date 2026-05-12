@@ -54,6 +54,7 @@ export function useItem<T extends Item>(
 	primaryKey: Ref<PrimaryKey | null>,
 	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
 	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
+	saveOptions: { onSaveError?: (error: APIError) => boolean } = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -436,10 +437,16 @@ export function useItem<T extends Item>(
 			const otherErrors = error.errors.filter((err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code));
 
 			if (otherErrors.length > 0) {
-				otherErrors.forEach(unexpectedError);
+				otherErrors.forEach((err: APIError) => {
+					if (!saveOptions.onSaveError?.(err)) {
+						unexpectedError(err);
+					}
+				});
 			}
 		} else {
-			unexpectedError(error);
+			if (!saveOptions.onSaveError?.(error)) {
+				unexpectedError(error);
+			}
 		}
 
 		throw error;
