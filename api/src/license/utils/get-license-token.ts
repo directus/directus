@@ -22,7 +22,7 @@ export async function getLicenseToken(options?: {
 	const { license_token } = await settingsService.readSingleton({ fields: ['license_token'] });
 
 	return {
-		source: 'settings',
+		source: license_token ? 'settings' : null,
 		token: license_token ?? null,
 	};
 }

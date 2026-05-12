@@ -21,10 +21,7 @@ export const jobCallback = () => {
 export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
 
-	const entitlementManager = getEntitlementManager();
-	const force_telemetry = entitlementManager.isEntitled('telemetry_required');
-
-	if (force_telemetry === false && toBoolean(env['TELEMETRY']) === false) {
+	if (!getEntitlementManager().isEntitled('telemetry_required') && !toBoolean(env['TELEMETRY'])) {
 		return false;
 	}
 

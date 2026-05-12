@@ -1,38 +1,188 @@
 import type { MockLicense } from './types.js';
 
-export const licenseStore: Record<string, MockLicense> = {
-	// Base license for testing
-	'D0000-00000-00000-00000-00000': {
+const DAY = 60 * 60 * 24;
+const now = () => Math.floor(Date.now() / 1000);
+
+function basePlan(overrides: Partial<MockLicense> & Pick<MockLicense, 'key' | 'name'>): MockLicense {
+	return {
 		max_projects: 10_000,
-		key: 'D0000-00000-00000-00000-00000',
 		addons: [],
-		name: 'test-license',
 		projects: [],
 		meta: {
-			name: 'UNLIMITED',
+			name: overrides.name,
 			version: '2026-05-08',
-			grace_period: 60 * 60 * 24,
+			grace_period: DAY,
 			validation_interval: 60 * 60,
-			expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+			expires_at: now() + 30 * DAY,
 			offline: false,
-			overage_billed: { seats: 0, collections: 0, flows: 0 },
+			...overrides.meta,
 		},
 		entitlements: {
 			collections: { limit: -1 },
 			seats: { limit: -1 },
-			activity_historical_timeframe: {
-				limit: -1,
-			},
+			activity_historical_timeframe: { limit: -1 },
 			revision_historical_timeframe: { limit: -1 },
+			flows: { limit: -1 },
 			sso_enabled: { default: true },
 			offline_enabled: { default: false },
 			telemetry_required: { default: false },
-			display_powered_by: 'NONE',
+			display_powered_by: 'HIDDEN',
 			custom_llms_enabled: { default: true },
 			custom_permission_rules_enabled: { default: true },
 			ai_translations_enabled: { default: true },
 			production_enabled: { default: true },
-			flows: { limit: -1 },
+			...overrides.entitlements,
 		},
-	},
+		...overrides,
+	};
+}
+
+export const licenseStore: Record<string, MockLicense> = {
+	// Baseline — unlimited, no enforcement
+	'D0000-00000-00000-00000-00000': basePlan({
+		key: 'D0000-00000-00000-00000-00000',
+		name: 'UNLIMITED',
+	}),
+
+	// Standard team plan — 10 seats / 50 collections
+	'D0001-00000-00000-00000-0000Z': basePlan({
+		key: 'D0001-00000-00000-00000-0000Z',
+		name: 'TEAM',
+		entitlements: {
+			collections: { limit: 50 },
+			seats: { limit: 10 },
+			flows: { limit: 25 },
+			activity_historical_timeframe: { limit: 90 * DAY },
+			revision_historical_timeframe: { limit: 90 * DAY },
+			sso_enabled: { default: true },
+			offline_enabled: { default: false },
+			telemetry_required: { default: false },
+			display_powered_by: 'HIDDEN',
+			custom_llms_enabled: { default: true },
+			custom_permission_rules_enabled: { default: true },
+			ai_translations_enabled: { default: true },
+			production_enabled: { default: true },
+		},
+	}),
+
+	// Team expired 2 days ago, still in grace
+	'D0002-00000-00000-00000-0000Y': basePlan({
+		key: 'D0002-00000-00000-00000-0000Y',
+		name: 'TEAM_GRACE',
+		meta: {
+			name: 'TEAM_GRACE',
+			version: '2026-05-08',
+			grace_period: 7 * DAY,
+			validation_interval: 60 * 60,
+			expires_at: now() - 2 * DAY,
+			offline: false,
+		},
+		entitlements: {
+			collections: { limit: 50 },
+			seats: { limit: 10 },
+			flows: { limit: 25 },
+			activity_historical_timeframe: { limit: 90 * DAY },
+			revision_historical_timeframe: { limit: 90 * DAY },
+			sso_enabled: { default: true },
+			offline_enabled: { default: false },
+			telemetry_required: { default: false },
+			display_powered_by: 'HIDDEN',
+			custom_llms_enabled: { default: true },
+			custom_permission_rules_enabled: { default: true },
+			ai_translations_enabled: { default: true },
+			production_enabled: { default: true },
+		},
+	}),
+
+	// Team past grace period
+	'D0003-00000-00000-00000-0000X': basePlan({
+		key: 'D0003-00000-00000-00000-0000X',
+		name: 'TEAM_EXPIRED',
+		meta: {
+			name: 'TEAM_EXPIRED',
+			version: '2026-05-08',
+			grace_period: DAY,
+			validation_interval: 60 * 60,
+			expires_at: now() - 10 * DAY,
+			offline: false,
+		},
+		entitlements: {
+			collections: { limit: 50 },
+			seats: { limit: 10 },
+			flows: { limit: 25 },
+			activity_historical_timeframe: { limit: 90 * DAY },
+			revision_historical_timeframe: { limit: 90 * DAY },
+			sso_enabled: { default: true },
+			offline_enabled: { default: false },
+			telemetry_required: { default: false },
+			display_powered_by: 'HIDDEN',
+			custom_llms_enabled: { default: true },
+			custom_permission_rules_enabled: { default: true },
+			ai_translations_enabled: { default: true },
+			production_enabled: { default: true },
+		},
+	}),
+
+	// Open Innovation Grant — restricted features
+	'D0004-00000-00000-00000-0000W': basePlan({
+		key: 'D0004-00000-00000-00000-0000W',
+		name: 'OIG',
+		entitlements: {
+			collections: { limit: 25 },
+			seats: { limit: 5 },
+			flows: { limit: 10 },
+			activity_historical_timeframe: { limit: 30 * DAY },
+			revision_historical_timeframe: { limit: 30 * DAY },
+			sso_enabled: { default: false },
+			offline_enabled: { default: false },
+			telemetry_required: { default: true },
+			display_powered_by: 'OIG',
+			custom_llms_enabled: { default: false },
+			custom_permission_rules_enabled: { default: false },
+			ai_translations_enabled: { default: false },
+			production_enabled: { default: true },
+		},
+	}),
+
+	// Tight 1/1/1 limits — enforcement testing
+	'D0005-00000-00000-00000-0000V': basePlan({
+		key: 'D0005-00000-00000-00000-0000V',
+		name: 'TINY',
+		entitlements: {
+			collections: { limit: 1 },
+			seats: { limit: 1 },
+			flows: { limit: 1 },
+			activity_historical_timeframe: { limit: 7 * DAY },
+			revision_historical_timeframe: { limit: 7 * DAY },
+			sso_enabled: { default: false },
+			offline_enabled: { default: false },
+			telemetry_required: { default: false },
+			display_powered_by: 'DIRECTUS',
+			custom_llms_enabled: { default: false },
+			custom_permission_rules_enabled: { default: false },
+			ai_translations_enabled: { default: false },
+			production_enabled: { default: false },
+		},
+	}),
+
+	// Free tier — Directus branding
+	'D0006-00000-00000-00000-0000T': basePlan({
+		key: 'D0006-00000-00000-00000-0000T',
+		name: 'CORE',
+		entitlements: {
+			collections: { limit: 10 },
+			seats: { limit: 3 },
+			flows: { limit: 5 },
+			activity_historical_timeframe: { limit: 14 * DAY },
+			revision_historical_timeframe: { limit: 14 * DAY },
+			sso_enabled: { default: false },
+			offline_enabled: { default: false },
+			telemetry_required: { default: false },
+			display_powered_by: 'DIRECTUS',
+			custom_llms_enabled: { default: false },
+			custom_permission_rules_enabled: { default: false },
+			ai_translations_enabled: { default: false },
+			production_enabled: { default: true },
+		},
+	}),
 };
