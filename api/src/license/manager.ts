@@ -513,6 +513,7 @@ export class LicenseManager {
 
 		// New manager to ensure no conflicts with main manager
 		const entitlementManager = new EntitlementManager();
+		entitlementManager.initialize();
 		entitlementManager.setEntitlements(entitlements);
 
 		const collection = await entitlementManager.check('collections');

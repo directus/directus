@@ -1455,12 +1455,25 @@ licensing:
     collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
     locked in Directus, and custom access rules will also be locked.
   resolve_continue: Continue
-  resolve_section_collections: 'Collections ({usage}/{limit})'
-  resolve_section_seats: 'Seats ({usage}/{limit})'
-  resolve_section_flows: 'Flows ({usage}/{limit})'
-  resolve_section_sso_enabled: SSO must be disabled
-  resolve_section_custom_llms_enabled: Custom LLM must be disabled
-  resolve_section_custom_permission_rules_enabled: Custom permission rules must be removed
+  resolve_submit: Deactivate Selected Items
+  resolve_select_n_items: 'Select {count} item | Select {count} items'
+  resolve_show_n_more: 'Show {count} more'
+  resolve_section_collections: Data Collections
+  resolve_section_seats: User Seats
+  resolve_section_flows: Flows
+  resolve_section_collections_caption: Select collection(s) to deactivate
+  resolve_section_seats_caption: Select user seat(s) to deactivate
+  resolve_section_flows_caption: Select flow(s) to deactivate
+  resolve_section_sso: SSO Deactivation
+  resolve_sso_confirm: Confirm SSO Deactivation
+  resolve_sso_caption:
+    Anyone who was accessing via SSO will need a password and email configured (can be done via the users directory).
+    To retain access, they will have to go through the password reset flow.
+  resolve_sso_blocker_notice:
+    The current admin account does not have a local email and/or password configured. Set them below to avoid being
+    locked out once SSO is deactivated.
+  resolve_sso_admin_email: Admin Email
+  resolve_sso_admin_password: Admin Password
   env_managed: Your license key is managed via an environment variable and can't be updated here.
   key_management: License Key Management
   key: License Key
