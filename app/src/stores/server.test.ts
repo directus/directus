@@ -32,9 +32,6 @@ const mockServerInfo = {
 		custom_css: null,
 		public_registration: null,
 		public_registration_verify_email: null,
-		project_owner: null,
-		project_usage: null,
-		org_name: null,
 	},
 	license: null,
 };

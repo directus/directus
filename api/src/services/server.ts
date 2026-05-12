@@ -67,11 +67,10 @@ export class ServerService {
 				'license_key',
 				'license_token',
 				'project_owner',
-				'project_usage',
 			],
 		});
 
-		const { license_key, license_token, project_owner, project_usage, ...publicProjectInfo } = projectInfo ?? {};
+		const { license_key, license_token, project_owner, ...publicProjectInfo } = projectInfo ?? {};
 
 		info['project'] = publicProjectInfo;
 
@@ -83,9 +82,6 @@ export class ServerService {
 		}
 
 		if (this.accountability?.user) {
-			info['project'].project_owner = project_owner ?? null;
-			info['project'].project_usage = project_usage ?? null;
-
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 

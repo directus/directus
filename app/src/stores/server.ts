@@ -25,9 +25,6 @@ export type Info = {
 		custom_css: string | null;
 		public_registration: boolean | null;
 		public_registration_verify_email: boolean | null;
-		project_owner: string | null;
-		project_usage: 'personal' | 'commercial' | 'community' | null;
-		org_name: string | null;
 	};
 	mcp_enabled: boolean;
 	ai_enabled: boolean;

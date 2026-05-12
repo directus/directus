@@ -33,6 +33,7 @@ import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
 import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 
 defineProps<PrivateViewProps>();
@@ -47,12 +48,13 @@ const appAccess = computed(() => {
 
 const cookies = useCookies(['license-banner-dismissed', 'license-onboarding-dismissed']);
 const serverStore = useServerStore();
+const settingsStore = useSettingsStore();
 
 const showLicenseBanner = computed(
 	() =>
 		userStore.isAdmin &&
 		!serverStore.info.license?.source &&
-		!serverStore.info.project?.project_owner &&
+		!settingsStore.settings?.project_owner &&
 		!cookies.get('license-banner-dismissed'),
 );
 
@@ -61,7 +63,7 @@ const showLicenseOnboarding = computed({
 		userStore.isAdmin &&
 		serverStore.info.setupCompleted &&
 		!serverStore.info.license?.source &&
-		!serverStore.info.project?.project_usage &&
+		!settingsStore.settings?.project_usage &&
 		!cookies.get('license-onboarding-dismissed'),
 	set: () => {
 		// close is handled by cookie and hydrate inside the modal
