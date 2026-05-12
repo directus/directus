@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Updated collab avatar indicator design
+Updated collab avatar indicator design @formfcw
