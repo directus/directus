@@ -51,8 +51,8 @@ const serverStore = useServerStore();
 const showLicenseBanner = computed(
 	() =>
 		userStore.isAdmin &&
-		!serverStore.info.onboarding?.hasLicense &&
-		!serverStore.info.onboarding?.hasProjectOwner &&
+		!serverStore.info.license?.source &&
+		!serverStore.info.project?.project_owner &&
 		!cookies.get('license-banner-dismissed'),
 );
 
@@ -60,8 +60,8 @@ const showLicenseOnboarding = computed({
 	get: () =>
 		userStore.isAdmin &&
 		serverStore.info.setupCompleted &&
-		serverStore.info.onboarding?.hasLicense === false &&
-		serverStore.info.onboarding?.hasCompletedKyc === false &&
+		!serverStore.info.license?.source &&
+		!serverStore.info.project?.project_usage &&
 		!cookies.get('license-onboarding-dismissed'),
 	set: () => {
 		// close is handled by cookie and hydrate inside the modal

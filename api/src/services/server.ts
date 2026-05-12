@@ -82,20 +82,10 @@ export class ServerService {
 			};
 		}
 
-		const licenseInEnv = Boolean(env['LICENSE_KEY'] || env['LICENSE_TOKEN']);
-		const adminInEnv = Boolean(env['ADMIN_EMAIL'] && env['ADMIN_PASSWORD']);
-		const projectOwnerInEnv = Boolean(env['PROJECT_OWNER']);
-
-		info['onboarding'] = {
-			adminInEnv,
-			licenseInEnv,
-			projectOwnerInEnv,
-			hasLicense: licenseInEnv || Boolean(license_key || license_token),
-			hasProjectOwner: projectOwnerInEnv || Boolean(project_owner),
-			hasCompletedKyc: Boolean(project_usage),
-		};
-
 		if (this.accountability?.user) {
+			info['project'].project_owner = project_owner ?? null;
+			info['project'].project_usage = project_usage ?? null;
+
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 

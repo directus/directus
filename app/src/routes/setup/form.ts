@@ -36,7 +36,9 @@ export const defaultValues: SetupForm = {
 	license_key: null,
 	product_updates: false,
 	project_usage: null,
-	org_name: null,
+	owner: {
+		org_name: null,
+	},
 };
 
 export type ValidationError = Omit<FailedValidationErrorExtensions, 'type'> & { type: string };
@@ -187,7 +189,7 @@ export function buildSetupPayload(form: Partial<SetupForm>, showAdminStep: boole
 		owner: {
 			project_owner: form.project_owner ?? null,
 			project_usage: form.project_usage ?? null,
-			org_name: form.org_name ?? null,
+			org_name: form.owner?.org_name ?? null,
 			product_updates: form.product_updates ?? false,
 		},
 	};

@@ -31,7 +31,7 @@ const serverStore = useServerStore();
 
 const { licenseChoice, showOrgName, licenseChoices, canProceed } = useLicenseForm({
 	projectUsage: () => value.value?.project_usage,
-	orgName: () => value.value?.org_name,
+	orgName: () => value.value?.owner?.org_name,
 	isLicenseKeyValid: () => !!value.value?.license_key,
 	initialChoice: value.value?.license_key ? 'key' : null,
 });
@@ -40,7 +40,7 @@ watch(licenseChoice, (choice) => {
 	if (!value.value) return;
 
 	if (choice === 'key') {
-		value.value = { ...value.value, project_usage: null, org_name: null };
+		value.value = { ...value.value, project_usage: null, owner: { ...value.value.owner, org_name: null } };
 	} else {
 		value.value = { ...value.value, license_key: null };
 	}
@@ -50,7 +50,7 @@ watch(
 	() => value.value?.project_usage,
 	(usage, prev) => {
 		if (prev === 'commercial' && usage !== 'commercial' && value.value) {
-			value.value = { ...value.value, org_name: null };
+			value.value = { ...value.value, owner: { ...value.value.owner, org_name: null } };
 		}
 	},
 );
@@ -70,9 +70,16 @@ const licenseKeySlice = computed({
 });
 
 const kycSlice = computed({
-	get: () => ({ project_usage: value.value?.project_usage ?? null, org_name: value.value?.org_name ?? null }),
-	set: (update: Partial<SetupForm>) => {
-		if (value.value) value.value = { ...value.value, ...update };
+	get: () => ({ project_usage: value.value?.project_usage ?? null, org_name: value.value?.owner?.org_name ?? null }),
+	set: (update: { project_usage?: SetupForm['project_usage']; org_name?: string | null }) => {
+		if (!value.value) return;
+		const { org_name, ...rest } = update;
+
+		value.value = {
+			...value.value,
+			...rest,
+			...(org_name !== undefined && { owner: { ...value.value.owner, org_name } }),
+		};
 	},
 });
 

@@ -56,7 +56,7 @@ test('preserves license when VForm emits a partial update without the license fi
 		product_updates: false,
 		license_key: null,
 		project_usage: null,
-		org_name: null,
+		owner: { org_name: null },
 	};
 
 	const wrapper = mount(SetupForm, {
@@ -95,7 +95,7 @@ test('preserves product_updates when VForm emits a partial update', async () => 
 		product_updates: true,
 		license_key: null,
 		project_usage: null,
-		org_name: null,
+		owner: { org_name: null },
 	};
 
 	const wrapper = mount(SetupForm, {

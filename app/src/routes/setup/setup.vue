@@ -34,9 +34,9 @@ const error = ref<any>(null);
 const isSaving = ref(false);
 const page = ref<'setup' | 'license'>('setup');
 
-const showAdminStep = computed(() => !info.value.onboarding?.adminInEnv);
+const showAdminStep = computed(() => !info.value.setupCompleted);
 
-const showLicenseStep = computed(() => !info.value.onboarding?.licenseInEnv);
+const showLicenseStep = computed(() => info.value.setup?.license_complete === false);
 
 onMounted(() => {
 	if (!showAdminStep.value && !showLicenseStep.value) {

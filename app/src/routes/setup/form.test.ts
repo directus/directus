@@ -138,7 +138,7 @@ describe('buildSetupPayload', () => {
 			...defaultValues,
 			project_owner: 'alice@example.com',
 			project_usage: 'commercial' as const,
-			org_name: 'Acme',
+			owner: { org_name: 'Acme' },
 			product_updates: true,
 		};
 
