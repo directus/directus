@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCollection, useLayout } from '@directus/composables';
+import { translateShortcut, useCollection, useLayout, useShortcut } from '@directus/composables';
 import { isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
@@ -132,6 +132,11 @@ const {
 	deleteAllowed: batchDeleteAllowed,
 	createAllowed,
 } = useCollectionPermissions(collection);
+
+useShortcut('meta+n', () => {
+	if (!createAllowed.value) return;
+	router.push(addNewLink.value);
+});
 
 const permissionsStore = usePermissionsStore();
 
@@ -509,7 +514,7 @@ function clearFilters() {
 
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					:tooltip="createAllowed ? undefined : $t('not_allowed')"
+					:tooltip="createAllowed ? translateShortcut(['meta', 'n']) : $t('not_allowed')"
 					:label="$t('create')"
 					icon="add"
 					:to="addNewLink"

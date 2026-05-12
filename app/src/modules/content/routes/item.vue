@@ -313,6 +313,14 @@ useShortcut(
 	form,
 );
 
+useShortcut(
+	'meta+n',
+	() => {
+		if (canCreateNew.value) createNewItem();
+	},
+	form,
+);
+
 const isSavable = computed(() => {
 	if (saveAllowed.value === false && currentVersion.value === null) return false;
 	if (hasEdits.value === true) return true;
@@ -584,6 +592,18 @@ async function saveAsCopyAndNavigate() {
 	} catch {
 		// Save shows unexpected error dialog
 	}
+}
+
+const canCreateNew = computed(() => {
+	if (currentVersion.value === null) return false;
+	if (!createAllowed.value) return false;
+	if (isCurrentVersionNew.value) return false;
+	if (collectionInfo.value?.meta?.singleton) return false;
+	return !hasEdits.value;
+});
+
+function createNewItem() {
+	router.push(getItemRoute(props.collection, '+', VERSION_KEY_DRAFT));
 }
 
 async function saveAndQuit() {
@@ -995,6 +1015,11 @@ function editDraftVersion() {
 									<VListItemIcon><VIcon name="public" /></VListItemIcon>
 									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
+								</VListItem>
+								<VListItem clickable :disabled="!canCreateNew" @click="createNewItem()">
+									<VListItemIcon><VIcon name="add" /></VListItemIcon>
+									<VListItemContent>{{ $t('create_new') }}</VListItemContent>
+									<VListItemHint>{{ translateShortcut(['meta', 'n']) }}</VListItemHint>
 								</VListItem>
 							</VList>
 						</template>

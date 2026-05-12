@@ -98,7 +98,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	});
 
 	watch(
-		[collection, isSingleton, primaryKey],
+		[collection, isSingleton, primaryKey, queryVersionId],
 		([newCollection], [oldCollection]) => {
 			if (oldCollection && newCollection !== oldCollection) currentVersion.value = null;
 			getVersions();
@@ -111,7 +111,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		if (!isSingleton.value && !primaryKey.value) return;
 
-		if (isNewItem.value && !queryVersionId.value) return;
+		if (isNewItem.value && !queryVersionId.value) {
+			// Reset existing state so navigating to a fresh itemless draft (no versionId)
+			// surfaces the global draft placeholder instead of a stale loaded version.
+			rawVersions.value = null;
+			return;
+		}
 
 		loading.value = true;
 
