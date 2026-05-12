@@ -14,9 +14,13 @@ export default async function scheduleOAuthCleanup(): Promise<boolean> {
 	}
 
 	scheduleSynchronizedJob('oauth-cleanup', schedule, async () => {
-		const schema = await getSchema();
-		const service = new McpOAuthService({ schema });
-		await service.cleanup();
+		try {
+			const schema = await getSchema();
+			const service = new McpOAuthService({ schema });
+			await service.cleanup();
+		} catch (error) {
+			useLogger().error(error, 'MCP OAuth cleanup failed');
+		}
 	});
 
 	return true;

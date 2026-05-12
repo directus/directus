@@ -1,5 +1,7 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../logger/index.js';
+import { getSchema } from '../utils/get-schema.js';
 import * as schedule from '../utils/schedule.js';
 import { default as oauthCleanupSchedule } from './oauth-cleanup.js';
 
@@ -11,10 +13,18 @@ vi.mock('../utils/get-schema.js', () => ({
 	getSchema: vi.fn().mockResolvedValue({}),
 }));
 
+const mockCleanup = vi.fn().mockResolvedValue(undefined);
+
 vi.mock('../services/mcp-oauth.js', () => ({
 	McpOAuthService: vi.fn().mockImplementation(() => ({
-		cleanup: vi.fn().mockResolvedValue(undefined),
+		cleanup: mockCleanup,
 	})),
+}));
+
+vi.mock('../logger/index.js', () => ({
+	useLogger: vi.fn().mockReturnValue({
+		error: vi.fn(),
+	}),
 }));
 
 vi.spyOn(schedule, 'scheduleSynchronizedJob');
@@ -26,6 +36,7 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.clearAllMocks();
+	mockCleanup.mockResolvedValue(undefined);
 });
 
 describe('oauth cleanup schedule', () => {
@@ -49,5 +60,29 @@ describe('oauth cleanup schedule', () => {
 			expect.any(Function),
 		);
 		expect(res).toBe(true);
+	});
+
+	test('scheduled callback gets schema and runs cleanup', async () => {
+		await oauthCleanupSchedule();
+
+		const callback = vi.mocked(schedule.scheduleSynchronizedJob).mock.calls[0]![2];
+
+		await callback();
+
+		expect(getSchema).toHaveBeenCalled();
+		expect(mockCleanup).toHaveBeenCalled();
+	});
+
+	test('scheduled callback logs cleanup errors', async () => {
+		const error = new Error('cleanup failed');
+		mockCleanup.mockRejectedValueOnce(error);
+
+		await oauthCleanupSchedule();
+
+		const callback = vi.mocked(schedule.scheduleSynchronizedJob).mock.calls[0]![2];
+
+		await callback();
+
+		expect(useLogger().error).toHaveBeenCalledWith(error, 'MCP OAuth cleanup failed');
 	});
 });
