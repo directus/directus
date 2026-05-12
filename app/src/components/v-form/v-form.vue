@@ -101,8 +101,9 @@ const { width } = useElementSize(el);
 const gridClass = computed<string | null>(() => {
 	if (el.value === null) return null;
 
-	// 770 (drawer width) - 2 * 22 (content-padding) = 726
-	if (width.value > 726) {
+	// 342px (--form-column-max-width) * 2 + 28 (--theme--form--column-gap) = 712 (44.5rem)
+	// Keep the value in sync with the `@container (inline-size > 44.5rem)` breakpoint in the app/src/styles/mixins/_form-grid.scss
+	if (width.value > 712) {
 		return 'grid with-fill';
 	} else {
 		return 'grid';

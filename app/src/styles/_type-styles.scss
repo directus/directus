@@ -1,5 +1,9 @@
 @use 'mixins';
 
+.type-display {
+	@include mixins.type-display;
+}
+
 .type-title {
 	@include mixins.type-title;
 }

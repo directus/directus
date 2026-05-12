@@ -3,7 +3,7 @@ import { defineModule } from '@directus/extensions';
 import { Collection } from '@directus/types';
 import { useLocalStorage } from '@vueuse/core';
 import { isNil, orderBy } from 'lodash';
-import { LocationQuery, NavigationGuard } from 'vue-router';
+import { LocationQuery, NavigationGuard, RouteLocationNormalized } from 'vue-router';
 import { useNavigation } from './composables/use-navigation';
 import CollectionRoute from './routes/collection.vue';
 import Item from './routes/item.vue';
@@ -46,7 +46,7 @@ export const redirectSingleton: NavigationGuard = (to) => {
 	return { name: 'content-singleton', params: to.params, query: to.query };
 };
 
-export const trackLastAccessedCollection: NavigationGuard = (to) => {
+export const trackLastAccessedCollection = (to: RouteLocationNormalized) => {
 	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
 	if (!collection) return;
 

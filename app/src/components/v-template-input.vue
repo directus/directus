@@ -311,7 +311,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
 	white-space: nowrap;
-	background-color: var(--theme--background);
+	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
@@ -333,7 +333,8 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&:focus-within {
-		border-color: var(--theme--form--field--input--border-color-focus);
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
 	}
 
 	:deep(.preview) {

@@ -8,15 +8,14 @@ import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
+import VersionChip from '../components/version-chip.vue';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
-import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -80,7 +79,6 @@ onBeforeRouteUpdate((to) => {
 });
 
 const { addNewLink, currentCollectionLink } = useLinks();
-const { breadcrumb } = useBreadcrumb();
 
 const {
 	layout,
@@ -98,7 +96,10 @@ const {
 	refreshInterval,
 	busy: bookmarkSaving,
 	clearLocalSave,
+	localPreset,
 } = usePreset(collection, bookmarkID);
+
+const { headerTitle, headerIcon, headerIconColor } = useCollectionHeader();
 
 const { layoutWrapper } = useLayout(layout);
 
@@ -190,15 +191,24 @@ async function batchRefresh() {
 	await refresh();
 }
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: currentCollection.value?.name,
-			to: getCollectionRoute(props.collection),
-		},
-	]);
+function useCollectionHeader() {
+	const headerTitle = computed(() => {
+		if (props.bookmark) return bookmarkTitle.value ?? undefined;
+		return currentCollection.value?.name;
+	});
 
-	return { breadcrumb };
+	const headerIcon = computed(() => {
+		if (props.archive) return 'archive';
+		if (props.bookmark) return localPreset.value.icon ?? undefined;
+		return currentCollection.value?.icon;
+	});
+
+	const headerIconColor = computed(() => {
+		if (props.bookmark) return localPreset.value.color ?? undefined;
+		return currentCollection.value?.color ?? undefined;
+	});
+
+	return { headerTitle, headerIcon, headerIconColor };
 }
 
 function useSelection() {
@@ -357,25 +367,11 @@ function clearFilters() {
 	>
 		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
 
-		<PrivateView
-			v-else
-			:title="bookmark ? bookmarkTitle : currentCollection.name"
-			:icon="archive ? 'archive' : currentCollection.icon"
-			:icon-color="currentCollection.color"
-			:sidebar-shadow="layoutState.sidebarShadow"
-		>
-			<template #headline>
-				<VBreadcrumb v-if="bookmark" :items="breadcrumb" />
-				<VBreadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
-			</template>
-
+		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
 			<template #title-outer:append>
 				<VMenu v-if="isVersioned" show-arrow placement="bottom">
-					<template #activator="{ toggle, active }">
-						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ versionName }}
-							<VIcon small name="arrow_drop_down" />
-						</VChip>
+					<template #activator="{ toggle }">
+						<VersionChip :version="version ? { key: version, name: null } : null" @click="toggle()" />
 					</template>
 
 					<VList>
@@ -387,69 +383,6 @@ function clearFilters() {
 						</VListItem>
 					</VList>
 				</VMenu>
-
-				<div class="bookmark-controls">
-					<BookmarkAdd
-						v-if="!bookmark"
-						v-model="bookmarkDialogActive"
-						class="add"
-						:saving="creatingBookmark"
-						@save="createBookmark"
-					>
-						<template #activator="{ on }">
-							<VIcon
-								v-tooltip.right="$t('create_bookmark')"
-								small
-								class="toggle"
-								clickable
-								name="bookmark"
-								@click="on"
-							/>
-						</template>
-					</BookmarkAdd>
-
-					<VIcon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled small />
-
-					<template v-else-if="bookmarkIsMine">
-						<VIcon
-							v-tooltip.bottom="$t('update_bookmark')"
-							class="save"
-							clickable
-							name="bookmark_save"
-							small
-							@click="savePreset()"
-						/>
-					</template>
-
-					<BookmarkAdd
-						v-else
-						v-model="bookmarkDialogActive"
-						class="add"
-						:saving="creatingBookmark"
-						@save="createBookmark"
-					>
-						<template #activator="{ on }">
-							<VIcon
-								v-tooltip.bottom="$t('create_bookmark')"
-								small
-								class="toggle"
-								name="bookmark"
-								clickable
-								@click="on"
-							/>
-						</template>
-					</BookmarkAdd>
-
-					<VIcon
-						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
-						v-tooltip.bottom="$t('reset_bookmark')"
-						name="settings_backup_restore"
-						clickable
-						class="clear"
-						small
-						@click="clearLocalSave"
-					/>
-				</div>
 			</template>
 
 			<template #actions:prepend>
@@ -459,14 +392,57 @@ function clearFilters() {
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
 
+				<BookmarkAdd v-if="!bookmark" v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="$t('create_bookmark')"
+							icon="bookmark"
+							variant="ghost"
+							@click="on"
+						/>
+					</template>
+				</BookmarkAdd>
+
+				<div v-else-if="bookmarkSaved" class="saved-bookmark">
+					<VIcon name="bookmark" filled />
+				</div>
+
+				<PrivateViewHeaderBarActionButton
+					v-else-if="bookmarkIsMine"
+					v-tooltip.bottom="$t('update_bookmark')"
+					icon="bookmark_save"
+					variant="ghost"
+					@click="savePreset()"
+				/>
+
+				<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="$t('create_bookmark')"
+							icon="bookmark"
+							variant="ghost"
+							@click="on"
+						/>
+					</template>
+				</BookmarkAdd>
+
+				<PrivateViewHeaderBarActionButton
+					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					v-tooltip.bottom="$t('reset_bookmark')"
+					icon="settings_backup_restore"
+					variant="ghost"
+					kind="danger"
+					@click="clearLocalSave"
+				/>
+
 				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							class="action-delete"
 							icon="delete"
-							secondary
+							kind="danger"
+							variant="ghost"
 							@click="on"
 						/>
 					</template>
@@ -502,7 +478,7 @@ function clearFilters() {
 							v-tooltip.bottom="batchArchiveAllowed ? $t('archive') : $t('not_allowed')"
 							:disabled="batchArchiveAllowed !== true"
 							icon="archive"
-							secondary
+							variant="ghost"
 							@click="on"
 						/>
 					</template>
@@ -524,20 +500,21 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0 && !isVersion"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+					:tooltip="createAllowed ? undefined : $t('not_allowed')"
+					:label="$t('create')"
 					icon="add"
 					:to="addNewLink"
 					:disabled="createAllowed === false"
 				/>
-
-				<FlowDialogs v-bind="flowDialogsContext" />
 			</template>
 
 			<template #navigation>
@@ -639,16 +616,13 @@ function clearFilters() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+
+			<FlowDialogs v-bind="flowDialogsContext" />
 		</PrivateView>
 	</component>
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
 }
@@ -657,66 +631,12 @@ function clearFilters() {
 	margin-block-start: 1.375rem;
 }
 
-.bookmark-controls {
-	.add,
-	.save,
-	.saved,
-	.clear {
-		display: inline-block;
-	}
-
-	.add,
-	.save,
-	.clear {
-		cursor: pointer;
-		transition: color var(--fast) var(--transition);
-	}
-
-	.add {
-		color: var(--theme--foreground-subdued);
-
-		&:hover {
-			color: var(--theme--foreground);
-		}
-	}
-
-	.save {
-		color: var(--theme--warning);
-
-		&:hover {
-			color: var(--warning-125);
-		}
-	}
-
-	.clear {
-		margin-inline-start: 0.25rem;
-		color: var(--theme--foreground-subdued);
-
-		&:hover {
-			color: var(--theme--warning);
-		}
-	}
-
-	.saved {
-		color: var(--theme--primary);
-	}
-}
-
-.version-select-activator {
-	--v-chip-padding: 0 0.3125rem 0 0.6875rem;
-	--v-chip-color: var(--theme--foreground-accent);
-	--v-chip-color-hover: var(--v-chip-color);
-	--v-chip-background-color-hover: color-mix(in srgb, var(--theme--background), var(--theme--foreground) 10%);
-	margin-inline-start: 0.5rem;
-
-	&.active {
-		--v-chip-color: var(--foreground-inverted);
-		--v-chip-background-color: var(--theme--primary);
-		--v-chip-background-color-hover: var(--v-chip-background-color);
-	}
-
-	&.v-chip {
-		border-width: 0;
-	}
+.saved-bookmark {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	block-size: 2rem;
+	inline-size: 2rem;
+	min-inline-size: 2rem;
 }
 </style>

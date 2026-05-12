@@ -412,7 +412,6 @@ function usePublishDialog() {
 
 <style lang="scss" scoped>
 .comparison-modal {
-	--header-bar-height: 3.375rem;
 	--comparison-modal--width: max(100% - 8vw, 100% - var(--header-bar-height) * 2);
 	--comparison-modal--height: var(--comparison-modal--width);
 	--comparison-modal--padding-x: 1.5625rem;
@@ -426,7 +425,6 @@ function usePublishDialog() {
 
 	background: var(--theme--background);
 	border-radius: var(--comparison-modal--border-radius);
-	box-shadow: var(--theme--shadow);
 	display: flex;
 	flex-direction: column;
 	block-size: var(--comparison-modal--height);
@@ -453,7 +451,7 @@ function usePublishDialog() {
 	}
 
 	.comparison-content-divider {
-		border-block-start: 2px solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.columns {
@@ -515,7 +513,7 @@ function usePublishDialog() {
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal--padding-x);
 		padding-block: 1rem;
-		border-block-start: 2px solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		.columns {
 			flex-direction: row;

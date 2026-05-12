@@ -7,7 +7,6 @@ import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import FilesNotFound from './not-found.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -43,8 +42,6 @@ const router = useRouter();
 
 const form = ref<HTMLElement>();
 const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
@@ -117,28 +114,6 @@ useShortcut('meta+s', saveAndStay, form);
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		if (!item?.value?.folder) {
-			return [
-				{
-					name: t('file_library'),
-					to: '/files',
-				},
-			];
-		}
-
-		return [
-			{
-				name: t('file_library'),
-				to: { path: `/files/folders/${item.value.folder}` },
-			},
-		];
-	});
-
-	return { breadcrumb };
-}
 
 async function saveAndQuit() {
 	try {
@@ -293,27 +268,25 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<FilesNotFound v-if="!loading && !item" />
-	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
-		<template #headline>
-			<VBreadcrumb :items="breadcrumb" />
-		</template>
-
-		<template #actions>
+	<PrivateView v-else :title="loading || !item ? $t('loading') : (item.title ?? undefined)" show-back back-to="/files">
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						class="action-delete"
 						:disabled="item === null || deleteAllowed === false"
 						icon="delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						@click="on"
 					/>
 				</template>
@@ -341,7 +314,7 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="item === null || !updateAllowed ? $t('not_allowed') : $t('move_to_folder')"
-						secondary
+						variant="ghost"
 						:disabled="item === null || !updateAllowed"
 						icon="folder_move"
 						@click="on"
@@ -368,7 +341,7 @@ function revert(values: Record<string, any>) {
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('download')"
-				secondary
+				variant="ghost"
 				:download="item?.filename_download"
 				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
 				icon="download"
@@ -377,21 +350,23 @@ function revert(values: Record<string, any>) {
 			<PrivateViewHeaderBarActionButton
 				v-if="item?.type?.includes('image') && updateAllowed"
 				v-tooltip.bottom="$t('edit')"
-				secondary
+				variant="ghost"
 				icon="tune"
 				@click="editActive = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				:label="$t('save')"
+				:tooltip="saveAllowed ? undefined : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template v-if="isSavable" #split-menu>
 					<SaveOptions
-						v-if="isSavable"
 						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -500,11 +475,6 @@ function revert(values: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);
 }
