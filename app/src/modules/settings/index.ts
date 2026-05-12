@@ -26,15 +26,14 @@ import RolesPublicItem from './routes/roles/public-item.vue';
 import SystemLogs from './routes/system-logs/logs.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
-
-const McpOAuthClientsCollection = () => import('./routes/mcp-oauth-clients/collection.vue');
-const McpOAuthClientsItem = () => import('./routes/mcp-oauth-clients/item.vue');
-
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
 import RouterPass from '@/utils/router-passthrough';
+
+const McpOAuthClientsCollection = () => import('./routes/mcp-oauth-clients/collection.vue');
+const McpOAuthClientsItem = () => import('./routes/mcp-oauth-clients/item.vue');
 
 export default defineModule({
 	id: 'settings',
