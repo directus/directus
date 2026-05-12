@@ -1,6 +1,7 @@
 import type { ResolveInput } from '@directus/license';
 import type { Knex } from 'knex';
 import { DEFAULT_AUTH_PROVIDER } from '../../../constants.js';
+import getDatabase from '../../../database/index.js';
 import { UsersService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
@@ -8,9 +9,12 @@ import { getSchema } from '../../../utils/get-schema.js';
  * Counting the current amount of users with sso enabled
  */
 export async function checkUsersSSO(opts?: { knex?: Knex | undefined }) {
+	const knex = opts?.knex ?? getDatabase();
+	const schema = await getSchema({ database: knex });
+
 	const usersService = new UsersService({
-		schema: await getSchema(),
-		knex: opts?.knex,
+		schema,
+		knex,
 	});
 
 	const sso_users = await usersService.readByQuery({
@@ -21,7 +25,7 @@ export async function checkUsersSSO(opts?: { knex?: Knex | undefined }) {
 		},
 	});
 
-	return sso_users.length > 0;
+	return sso_users.length === 0;
 }
 
 export async function resolveSSOUsers(resolution: NonNullable<ResolveInput['sso_enabled']>, ctx?: { adminId: string }) {

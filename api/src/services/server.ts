@@ -82,7 +82,7 @@ export class ServerService {
 			};
 		}
 
-		const licenseInEnv = Boolean(env['LICENSE_KEY']);
+		const licenseInEnv = Boolean(env['LICENSE_KEY'] || env['LICENSE_TOKEN']);
 		const adminInEnv = Boolean(env['ADMIN_EMAIL'] && env['ADMIN_PASSWORD']);
 		const projectOwnerInEnv = Boolean(env['PROJECT_OWNER']);
 
@@ -182,12 +182,9 @@ export class ServerService {
 			info['version'] = version;
 		}
 
-		// License
-		const entitlementManager = getEntitlementManager();
-
 		info['license'] = {
 			source: licenseManager.getSource(),
-			entitlements: entitlementManager.getAppEntitlements(),
+			entitlements: getEntitlementManager().getAppEntitlements(),
 		};
 
 		return info;

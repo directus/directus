@@ -33,7 +33,6 @@ import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
 import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 
 defineProps<PrivateViewProps>();
@@ -47,11 +46,14 @@ const appAccess = computed(() => {
 });
 
 const cookies = useCookies(['license-banner-dismissed', 'license-onboarding-dismissed']);
-const settingsStore = useSettingsStore();
 const serverStore = useServerStore();
 
 const showLicenseBanner = computed(
-	() => userStore.isAdmin && !settingsStore.settings?.project_owner && !cookies.get('license-banner-dismissed'),
+	() =>
+		userStore.isAdmin &&
+		!serverStore.info.onboarding?.hasLicense &&
+		!serverStore.info.onboarding?.hasProjectOwner &&
+		!cookies.get('license-banner-dismissed'),
 );
 
 const showLicenseOnboarding = computed({

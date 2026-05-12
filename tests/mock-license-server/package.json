@@ -6,8 +6,7 @@
 	"scripts": {
 		"build": "tsdown src/index.ts src/run.ts --dts",
 		"start": "node dist/run.js",
-		"dev": "tsx watch src/run.ts",
-		"seed": "tsx scripts/seed.ts"
+		"dev": "tsx watch src/run.ts"
 	},
 	"exports": {
 		".": "./dist/index.js",
