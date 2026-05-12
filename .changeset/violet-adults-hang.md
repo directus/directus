@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Extracted reusable ModuleBarButton component
+Extracted reusable ModuleBarButton component @formfcw

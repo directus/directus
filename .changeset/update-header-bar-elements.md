@@ -3,10 +3,10 @@
 '@directus/themes': minor
 ---
 
-Updated header bar elements and removed headline and breadcrumbs
+Updated header bar elements and removed headline and breadcrumbs @formfcw
 
 ::: notice
 
-- **Potential Breaking Change**: The `headline` slot has been removed from the header bar. Extensions relying on it will silently lose that content.
+- Potential breaking change for extensions: The `headline` slot has been removed from the header bar. Extensions relying on it will silently lose that content.
 
 :::
