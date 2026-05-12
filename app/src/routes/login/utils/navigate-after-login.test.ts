@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { navigateAfterLogin } from './navigate-after-login';
+import { getRootPath } from '@/utils/get-root-path';
 
 vi.mock('@/utils/get-root-path', () => ({
 	getRootPath: vi.fn(),
 }));
-
-import { getRootPath } from '@/utils/get-root-path';
 
 const mockGetRootPath = vi.mocked(getRootPath);
 

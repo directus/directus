@@ -199,6 +199,7 @@ async function postForm(router: Router, path: string, body: Record<string, strin
 describe('mcp-oauth controller', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+
 		mockSettingsReadSingleton.mockResolvedValue({
 			mcp_enabled: true,
 			mcp_oauth_enabled: true,
@@ -359,6 +360,7 @@ describe('mcp-oauth controller', () => {
 			);
 
 			expect(res.status).toBe(400);
+
 			expect(res.body).toMatchObject({
 				error: 'invalid_request',
 				error_description: expect.stringContaining('Duplicate parameter'),
@@ -388,6 +390,7 @@ describe('mcp-oauth controller', () => {
 			const res = await postForm(mcpOAuthProtectedRouter, '/mcp-oauth/authorize/decision', 'approved=yes&approved=no');
 
 			expect(res.status).toBe(400);
+
 			expect(res.body).toMatchObject({
 				error: 'invalid_request',
 				error_description: expect.stringContaining('Duplicate parameter'),
