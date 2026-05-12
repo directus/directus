@@ -951,6 +951,9 @@ active_users: Active Users
 suspended_users: Suspended Users
 invited_users: Invited Users
 delete_collection: Delete Collection
+include_collection: Include Collection
+exclude_collection: Exclude Collection
+deactivated_collections: Deactivated Collections
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
