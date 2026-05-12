@@ -37,9 +37,7 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
-		const entitlementManager = getEntitlementManager();
-
-		if (entitlementManager.isEntitled('custom_permission_rules_enabled')) {
+		if (getEntitlementManager().isEntitled('custom_permission_rules_enabled')) {
 			const result = (await super.readByQuery(query, opts)) as Permission[];
 			return withAppMinimalPermissions(this.accountability, result, query.filter);
 		}
@@ -65,7 +63,7 @@ export class PermissionsService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
 		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
 			throw new ResourceRestrictedError({
-				category: 'custom_permissions_rules_enabled'
+				category: 'custom_permissions_rules_enabled',
 			});
 		}
 
@@ -79,7 +77,7 @@ export class PermissionsService extends ItemsService {
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
 		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
 			throw new ResourceRestrictedError({
-				category: 'custom_permissions_rules_enabled'
+				category: 'custom_permissions_rules_enabled',
 			});
 		}
 

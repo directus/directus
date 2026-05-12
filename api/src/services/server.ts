@@ -164,12 +164,9 @@ export class ServerService {
 			info['version'] = version;
 		}
 
-		// License
-		const entitlementManager = getEntitlementManager();
-
 		info['license'] = {
 			source: licenseManager.getSource(),
-			entitlements: entitlementManager.getAppEntitlements(),
+			entitlements: getEntitlementManager().getAppEntitlements(),
 		};
 
 		return info;

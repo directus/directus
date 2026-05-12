@@ -11,11 +11,7 @@ const TRACKED_METHODS_UPPER = new Set(TRACKED_METHODS.map((m) => m.toUpperCase()
 const env = useEnv();
 
 const requestCounterMiddleware: RequestHandler = (req, _res, next) => {
-	const entitlementManager = getEntitlementManager();
-
-	const force_telemetry = entitlementManager.isEntitled('telemetry_required');
-
-	if (force_telemetry === false && toBoolean(env['TELEMETRY']) === false) {
+	if (!getEntitlementManager().isEntitled('telemetry_required') && toBoolean(env['TELEMETRY']) === false) {
 		return next();
 	}
 
