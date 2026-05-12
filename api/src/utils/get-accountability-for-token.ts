@@ -30,10 +30,20 @@ export async function getAccountabilityForToken(
 				accountability.session = payload.session;
 
 				if (oauth_client !== null) {
+					let aud: string[];
+
+					if (Array.isArray(payload.aud)) {
+						aud = payload.aud;
+					} else if (payload.aud) {
+						aud = [String(payload.aud)];
+					} else {
+						aud = [];
+					}
+
 					accountability.oauth = {
 						client: oauth_client,
 						scopes: parseOAuthScope(payload.scope),
-						aud: Array.isArray(payload.aud) ? payload.aud : payload.aud ? [String(payload.aud)] : [],
+						aud,
 					};
 				}
 			}
