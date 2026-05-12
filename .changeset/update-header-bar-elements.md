@@ -1,12 +1,12 @@
 ---
-'@directus/app': major
+'@directus/app': minor
 '@directus/themes': minor
 ---
 
-Updated header bar elements and removed headline and breadcrumbs @formfcw
+Updated header bar elements and deprecated the `headline` slot @formfcw
 
 ::: notice
 
-- Potential breaking change for extensions: The `headline` slot has been removed from the header bar. Extensions relying on it will silently lose that content.
+- Deprecation for extensions: The `headline` slot on the private view header bar has been deprecated. Existing content keeps rendering, but consumers using `<template #headline>` will now see a deprecation hint from Volar.
 
 :::

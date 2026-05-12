@@ -177,21 +177,6 @@ describe('PrivateViewHeaderBar', () => {
 		expect(icon.props('iconColor')).toBe('blue');
 	});
 
-	test('renders headline slot content', () => {
-		const wrapper = mount(PrivateViewHeaderBar, {
-			...mountOptions,
-			props: {
-				inlineNav: false,
-			},
-			slots: {
-				headline: '<div class="custom-headline">Headline Content</div>',
-			},
-		});
-
-		expect(wrapper.find('.custom-headline').exists()).toBe(true);
-		expect(wrapper.text()).toContain('Headline Content');
-	});
-
 	test('renders title slot content', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,

@@ -20,7 +20,27 @@ export interface Props {
 	sidebarLabel?: string;
 	cancelable?: boolean;
 	applyShortcut?: ApplyShortcut;
+	/** @deprecated Use the `title` prop instead */
+	subtitle?: string | null;
 }
+
+defineSlots<{
+	activator(props: { on: () => void }): any;
+	'title-outer:prepend'(): any;
+	title(): any;
+	'title-outer:append'(): any;
+	'actions:prepend'(): any;
+	actions(): any;
+	'actions:primary'(): any;
+	sidebar(): any;
+	default(): any;
+	/** @deprecated Use the default `actions` slot for secondary actions, or `actions:primary` for primary CTAs. */
+	'actions:append'(): any;
+	/** @deprecated The `subtitle` slot is deprecated. */
+	subtitle(): any;
+	/** @deprecated The `header:append` slot is deprecated. */
+	'header:append'(): any;
+}>();
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
@@ -88,13 +108,24 @@ function useSidebar() {
 				<template #title-outer:prepend>
 					<slot name="title-outer:prepend" />
 				</template>
+
+				<template v-if="!!$slots.subtitle || subtitle" #title:prepend>
+					<slot name="subtitle">{{ subtitle }}</slot>
+				</template>
 				<template #title><slot name="title" /></template>
+				<template v-if="!!$slots['header:append']" #title:append>
+					<slot name="header:append" />
+				</template>
+
 				<template #title-outer:append>
 					<slot name="title-outer:append" />
 				</template>
 
 				<template #actions:prepend><slot name="actions:prepend" /></template>
-				<template #actions><slot name="actions" /></template>
+				<template #actions>
+					<slot name="actions" />
+					<slot name="actions:append" />
+				</template>
 				<template #actions:primary><slot name="actions:primary" /></template>
 			</VDrawerHeader>
 
