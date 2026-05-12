@@ -86,6 +86,8 @@ const { privateKey, publicKey } = await generateKeyPair('EdDSA');
 
 export { publicKey };
 
+const TOKEN_LIFETIME_SECONDS = 7 * 24 * 60 * 60;
+
 export async function createNewToken(license: License) {
 	const encodedToken = License.encode({ entitlements: license.entitlements, meta: license.meta });
 
@@ -97,6 +99,6 @@ export async function createNewToken(license: License) {
 		.setAudience('directus')
 		.setIssuedAt(now)
 		.setJti(randomUUID())
-		.setExpirationTime(license.meta.expires_at ?? now + 1000)
+		.setExpirationTime(now + TOKEN_LIFETIME_SECONDS)
 		.sign(privateKey);
 }
