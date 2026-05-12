@@ -82,7 +82,7 @@ export class ServerService {
 			};
 		}
 
-		const licenseInEnv = Boolean(env['LICENSE_KEY']);
+		const licenseInEnv = Boolean(env['LICENSE_KEY'] || env['LICENSE_TOKEN']);
 		const adminInEnv = Boolean(env['ADMIN_EMAIL'] && env['ADMIN_PASSWORD']);
 		const projectOwnerInEnv = Boolean(env['PROJECT_OWNER']);
 
