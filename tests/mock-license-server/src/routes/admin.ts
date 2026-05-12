@@ -3,7 +3,7 @@ import { merge } from 'lodash-es';
 import { licenseStore } from '../store.js';
 import type { MockLicense } from '../types.js';
 
-export async function licenseRoute(app: FastifyInstance) {
+export async function adminRoute(app: FastifyInstance) {
 	app.post<{ Body: MockLicense }>('/', async (req, res) => {
 		licenseStore[req.body.key] = req.body;
 
