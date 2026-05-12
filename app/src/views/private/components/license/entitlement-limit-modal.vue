@@ -11,7 +11,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	modelValue: boolean;
-	type: 'collections' | 'seats' | 'flows';
+	entitlementKey: 'collections' | 'seats' | 'flows';
 	isAdmin?: boolean;
 	onSave?: () => void;
 }>();
@@ -23,14 +23,14 @@ const emit = defineEmits<{
 
 const router = useRouter();
 
-const titleKey = computed(() => `license.${props.type}_limit.title`);
+const titleKey = computed(() => `license.${props.entitlementKey}_limit.title`);
 
 const bodyKey = computed(() => {
-	if (props.type === 'seats') {
+	if (props.entitlementKey === 'seats') {
 		return props.isAdmin ? 'license.seats_limit.body_admin' : 'license.seats_limit.body_member';
 	}
 
-	if (props.type === 'flows') return 'license.flows_limit.body';
+	if (props.entitlementKey === 'flows') return 'license.flows_limit.body';
 
 	// Collections are always admin-facing; no member variant needed.
 	return 'license.collections_limit.body';

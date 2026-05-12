@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import LicenseLimitModal from './license-limit-modal.vue';
+import EntitlementLimitModal from './entitlement-limit-modal.vue';
 import { i18n } from '@/lang';
 
 vi.mock('vue-router', () => ({
@@ -33,10 +33,10 @@ beforeEach(() => {
 
 // --- seats, admin ---
 
-describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
+describe('EntitlementLimitModal (type=seats, isAdmin=true)', () => {
 	it('shows seats title', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave: vi.fn() },
 			global,
 		});
 
@@ -44,8 +44,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	});
 
 	it('shows admin body copy', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave: vi.fn() },
 			global,
 		});
 
@@ -54,8 +54,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	});
 
 	it('renders Cancel, Manage Plan, Save buttons in that order', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave: vi.fn() },
 			global,
 		});
 
@@ -67,8 +67,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	});
 
 	it('Manage Plan is secondary when Save is the primary CTA', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave: vi.fn() },
 			global,
 		});
 
@@ -76,8 +76,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	});
 
 	it('Manage Plan button shows open_in_new icon', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave: vi.fn() },
 			global,
 		});
 
@@ -86,8 +86,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	});
 
 	it('Manage Plan opens /settings/license in new tab', async () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave: vi.fn() },
 			global,
 		});
 
@@ -97,8 +97,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	});
 
 	it('Manage Plan emits update:modelValue false', async () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave: vi.fn() },
 			global,
 		});
 
@@ -110,8 +110,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	it('Save calls onSave and closes modal', async () => {
 		const onSave = vi.fn();
 
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave },
 			global,
 		});
 
@@ -124,8 +124,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 	it('Cancel closes modal without calling onSave', async () => {
 		const onSave = vi.fn();
 
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: true, onSave },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: true, onSave },
 			global,
 		});
 
@@ -139,10 +139,10 @@ describe('LicenseLimitModal (type=seats, isAdmin=true)', () => {
 
 // --- seats, member ---
 
-describe('LicenseLimitModal (type=seats, isAdmin=false)', () => {
+describe('EntitlementLimitModal (type=seats, isAdmin=false)', () => {
 	it('shows seats title', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: false, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: false, onSave: vi.fn() },
 			global,
 		});
 
@@ -150,8 +150,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=false)', () => {
 	});
 
 	it('shows member body copy', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: false, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: false, onSave: vi.fn() },
 			global,
 		});
 
@@ -160,8 +160,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=false)', () => {
 	});
 
 	it('renders Cancel and Save buttons only — no Manage Plan', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: false, onSave: vi.fn() },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: false, onSave: vi.fn() },
 			global,
 		});
 
@@ -172,8 +172,8 @@ describe('LicenseLimitModal (type=seats, isAdmin=false)', () => {
 	});
 
 	it('does not open any URL (no Manage Plan button)', () => {
-		mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'seats', isAdmin: false, onSave: vi.fn() },
+		mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'seats', isAdmin: false, onSave: vi.fn() },
 			global,
 		});
 
@@ -183,10 +183,10 @@ describe('LicenseLimitModal (type=seats, isAdmin=false)', () => {
 
 // --- collections, admin ---
 
-describe('LicenseLimitModal (type=collections, isAdmin=true)', () => {
+describe('EntitlementLimitModal (type=collections, isAdmin=true)', () => {
 	it('shows collections title', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'collections', isAdmin: true },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'collections', isAdmin: true },
 			global,
 		});
 
@@ -194,8 +194,8 @@ describe('LicenseLimitModal (type=collections, isAdmin=true)', () => {
 	});
 
 	it('shows collections body copy', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'collections', isAdmin: true },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'collections', isAdmin: true },
 			global,
 		});
 
@@ -203,8 +203,8 @@ describe('LicenseLimitModal (type=collections, isAdmin=true)', () => {
 	});
 
 	it('renders Cancel and Manage Plan buttons only — no Save', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'collections', isAdmin: true },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'collections', isAdmin: true },
 			global,
 		});
 
@@ -215,8 +215,8 @@ describe('LicenseLimitModal (type=collections, isAdmin=true)', () => {
 	});
 
 	it('Manage Plan is the primary CTA when no Save button', () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'collections', isAdmin: true },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'collections', isAdmin: true },
 			global,
 		});
 
@@ -224,8 +224,8 @@ describe('LicenseLimitModal (type=collections, isAdmin=true)', () => {
 	});
 
 	it('Manage Plan opens /settings/license in new tab', async () => {
-		const wrapper = mount(LicenseLimitModal, {
-			props: { modelValue: true, type: 'collections', isAdmin: true },
+		const wrapper = mount(EntitlementLimitModal, {
+			props: { modelValue: true, entitlementKey: 'collections', isAdmin: true },
 			global,
 		});
 

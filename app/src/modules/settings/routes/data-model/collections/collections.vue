@@ -26,8 +26,8 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
-import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
 import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -68,8 +68,6 @@ async function includeCollection(collectionKey: string) {
 		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'active' } });
 		await collectionsStore.hydrate();
 	} catch (error: any) {
-		// TODO: open Rob's LicenseLimitModal (PR cms-2250) once merged when
-		// error?.response?.data?.errors?.[0]?.extensions?.code === 'LIMIT_EXCEEDED'
 		unexpectedError(error);
 	}
 }
@@ -347,7 +345,7 @@ async function downloadSnapshot() {
 			@update:model-value="editCollection = null"
 		/>
 
-		<LicenseLimitModal v-model="collectionsLimitModalOpen" type="collections" is-admin />
+		<EntitlementLimitModal v-model="collectionsLimitModalOpen" entitlement-key="collections" is-admin />
 	</PrivateView>
 </template>
 

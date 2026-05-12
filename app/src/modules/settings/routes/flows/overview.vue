@@ -31,7 +31,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
-import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 
 const { t } = useI18n();
@@ -285,7 +285,7 @@ function onFlowDrawerCompletion(id: string) {
 
 		<RouterView name="add" />
 
-		<LicenseLimitModal v-model="flowsLimitModalOpen" type="flows" is-admin />
+		<EntitlementLimitModal v-model="flowsLimitModalOpen" entitlement-key="flows" is-admin />
 	</PrivateView>
 </template>
 
