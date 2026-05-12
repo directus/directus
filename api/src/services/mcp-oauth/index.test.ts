@@ -550,10 +550,16 @@ describe('McpOAuthService', () => {
 			await service.registerClient(createTestClient({ token_endpoint_auth_method: 'none' }));
 
 			const insertCall = tracker.history.insert[0];
-			const bindings = insertCall!.bindings;
-			// Verify no 64-char hex string in bindings (would be a secret hash)
-			const hasHexHash = bindings.some((b: unknown) => typeof b === 'string' && /^[0-9a-f]{64}$/.test(b));
-			expect(hasHexHash).toBe(false);
+			const columns =
+				insertCall!.sql
+					.match(/\((.*)\) values/i)?.[1]
+					?.split(',')
+					.map((column) => column.replaceAll('"', '').trim()) ?? [];
+
+			const clientSecretHashIndex = columns.indexOf('client_secret_hash');
+
+			expect(clientSecretHashIndex).toBeGreaterThanOrEqual(0);
+			expect(insertCall!.bindings[clientSecretHashIndex]).toBeNull();
 		});
 
 		it('unsupported auth method (e.g. private_key_jwt) rejected', async () => {
@@ -2672,6 +2678,7 @@ describe('McpOAuthService', () => {
 		});
 
 		it('unknown token returns 200', async () => {
+			mockClientLookup(clientId);
 			tracker.on.select('directus_oauth_tokens').response([]);
 
 			await service.revokeToken(validParams());
