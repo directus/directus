@@ -1,4 +1,5 @@
 import { performance } from 'perf_hooks';
+import { USER_INACTIVE_LICENSE_EXCEEDED_STATUS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -436,7 +437,7 @@ export class UsersService extends ItemsService {
 		});
 
 		const { allowed: isWithinLicenseLimits } = await getEntitlementManager().check('seats');
-		const status = isWithinLicenseLimits ? 'active' : 'inactive-license-exceeded';
+		const status = isWithinLicenseLimits ? 'active' : USER_INACTIVE_LICENSE_EXCEEDED_STATUS;
 
 		await service.updateOne(user.id, { password, status });
 	}

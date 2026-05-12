@@ -1,3 +1,4 @@
+import { USER_INACTIVE_LICENSE_EXCEEDED_STATUS } from '@directus/constants';
 import type { LicensePendingResolutionLimitSeats } from '@directus/license';
 import type { Filter } from '@directus/types';
 import { toBoolean } from '@directus/utils';
@@ -152,6 +153,6 @@ export async function resolveSeats(seats: string[], ctx?: { adminId: string }) {
 	const users = seats.filter((user_id) => user_id !== ctx.adminId);
 
 	await Promise.allSettled(
-		users.map((user_id) => usersService.updateOne(user_id, { status: 'inactive-license-exceeded' })),
+		users.map((user_id) => usersService.updateOne(user_id, { status: USER_INACTIVE_LICENSE_EXCEEDED_STATUS })),
 	);
 }

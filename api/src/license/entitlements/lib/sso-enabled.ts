@@ -1,3 +1,4 @@
+import { USER_INACTIVE_LICENSE_EXCEEDED_STATUS } from '@directus/constants';
 import type { ResolveInput } from '@directus/license';
 import type { Knex } from 'knex';
 import { DEFAULT_AUTH_PROVIDER } from '../../../constants.js';
@@ -40,7 +41,7 @@ export async function resolveSSOUsers(resolution: NonNullable<ResolveInput['sso_
 				_and: [{ provider: { _neq: DEFAULT_AUTH_PROVIDER, _nnull: true } }, { id: { _neq: adminId } }],
 			},
 		},
-		{ status: 'inactive-license-exceeded' },
+		{ status: USER_INACTIVE_LICENSE_EXCEEDED_STATUS },
 	);
 
 	if (typeof resolution === 'object' && Object.keys(resolution.admin).length) {
