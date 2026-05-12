@@ -525,7 +525,7 @@ export class LicenseManager {
 		for (const check of COUNTABLE_ENTITLEMENT_KEYS) {
 			const resolution = await entitlementManager.check(check);
 
-			if (resolution.allowed) {
+			if (resolution.allowed === false) {
 				const candidates = await candidateGetters[check]({ adminId: options.adminId });
 
 				pendingResolution.push({
@@ -540,7 +540,7 @@ export class LicenseManager {
 
 		const sso = await entitlementManager.check('sso_enabled');
 
-		if (sso.entitled === false && sso.valid === false) {
+		if (sso.valid === false) {
 			const usersService = new UsersService({ schema });
 			const adminUser = await usersService.readOne(options.adminId, { fields: ['email', 'password'] });
 
@@ -564,7 +564,7 @@ export class LicenseManager {
 
 		const customLLMs = await entitlementManager.check('custom_llms_enabled');
 
-		if (customLLMs.entitled === false && customLLMs.valid === false) {
+		if (customLLMs.valid === false) {
 			pendingResolution.push({
 				key: 'custom_llms_enabled',
 				kind: 'feature_gate',
@@ -573,7 +573,7 @@ export class LicenseManager {
 
 		const customPermissionRules = await entitlementManager.check('custom_permission_rules_enabled');
 
-		if (customPermissionRules.entitled === false && customPermissionRules.valid === false) {
+		if (customPermissionRules.valid === false) {
 			pendingResolution.push({
 				key: 'custom_permission_rules_enabled',
 				kind: 'feature_gate',
