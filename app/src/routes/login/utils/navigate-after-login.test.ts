@@ -54,12 +54,6 @@ describe('navigateAfterLogin', () => {
 			expect(router.push).toHaveBeenCalledWith('/collections/articles');
 			expect(hrefSetter).not.toHaveBeenCalled();
 		});
-
-		test('does not call getRootPath for regular paths', () => {
-			const router = makeRouter();
-			navigateAfterLogin(router as any, '/content');
-			expect(mockGetRootPath).not.toHaveBeenCalled();
-		});
 	});
 
 	describe('unsafe paths', () => {

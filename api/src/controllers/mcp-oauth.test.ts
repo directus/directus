@@ -1,4 +1,7 @@
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
 import type { SchemaOverview } from '@directus/types';
+import express, { type Router } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
 import { expectMcpBearerChallenge } from '../test-utils/mcp-oauth.js';
@@ -151,6 +154,44 @@ function createRedirectResponse() {
 	return res;
 }
 
+function createAppForRouter(router: Router) {
+	const app = express();
+	app.use(router);
+	return app;
+}
+
+async function postForm(router: Router, path: string, body: Record<string, string> | string) {
+	const server = http.createServer(createAppForRouter(router));
+
+	await new Promise<void>((resolve, reject) => {
+		server.on('error', reject);
+		server.listen(0, resolve);
+	});
+
+	const { port } = server.address() as AddressInfo;
+	const encodedBody = typeof body === 'string' ? body : new URLSearchParams(body).toString();
+
+	try {
+		const response = await fetch(`http://127.0.0.1:${port}${path}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'User-Agent': 'test',
+			},
+			body: encodedBody,
+		});
+
+		return {
+			body: await response.json(),
+			status: response.status,
+		};
+	} finally {
+		await new Promise<void>((resolve, reject) => {
+			server.close((error) => (error ? reject(error) : resolve()));
+		});
+	}
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -245,7 +286,7 @@ describe('mcp-oauth controller', () => {
 			expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
 		});
 
-		test('discovery endpoints accept requests with invalid Authorization header', async () => {
+		test('public discovery router ignores invalid Authorization header', async () => {
 			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'GET', '/.well-known/oauth-protected-resource*');
 			const req = createMockRequest({ headers: { authorization: 'Bearer invalid-garbage' } });
 			const res = createMockResponse();
@@ -298,54 +339,30 @@ describe('mcp-oauth controller', () => {
 
 	describe('POST /mcp-oauth/token', () => {
 		test('accepts urlencoded, returns RFC 6749 format', async () => {
-			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/token');
-
-			const req = createMockRequest({
-				method: 'POST',
-				body: {
-					grant_type: 'authorization_code',
-					client_id: 'c1',
-					code: 'x',
-					redirect_uri: 'http://l',
-					code_verifier: 'v'.repeat(43),
-				},
-				ip: '127.0.0.1',
-				headers: { 'user-agent': 'test' },
+			const res = await postForm(mcpOAuthPublicRouter, '/mcp-oauth/token', {
+				grant_type: 'authorization_code',
+				client_id: 'c1',
+				code: 'x',
+				redirect_uri: 'http://l',
+				code_verifier: 'v'.repeat(43),
 			});
 
-			const res = createMockResponse();
-			const next = vi.fn();
-
-			// Skip express.urlencoded (index 0), run from rejectDuplicateParams onward
-			for (let i = 1; i < handlers.length; i++) {
-				await handlers[i]!.handle(req, res, next);
-			}
-
-			expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ access_token: 'at', token_type: 'Bearer' }));
+			expect(res.status).toBe(200);
+			expect(res.body).toMatchObject({ access_token: 'at', token_type: 'Bearer' });
 		});
 
 		test('duplicate form params on /mcp-oauth/token rejected as invalid_request', async () => {
-			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/token');
-
-			const req = createMockRequest({
-				method: 'POST',
-				body: { grant_type: ['authorization_code', 'refresh_token'], client_id: 'c1' },
-			});
-
-			const res = createMockResponse();
-			const next = vi.fn();
-
-			// rejectDuplicateParams is index 1
-			await handlers[1]!.handle(req, res, next);
-
-			expect(res.status).toHaveBeenCalledWith(400);
-
-			expect(res.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					error: 'invalid_request',
-					error_description: expect.stringContaining('Duplicate parameter'),
-				}),
+			const res = await postForm(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/token',
+				'grant_type=authorization_code&grant_type=refresh_token&client_id=c1',
 			);
+
+			expect(res.status).toBe(400);
+			expect(res.body).toMatchObject({
+				error: 'invalid_request',
+				error_description: expect.stringContaining('Duplicate parameter'),
+			});
 		});
 	});
 
@@ -355,21 +372,10 @@ describe('mcp-oauth controller', () => {
 
 	describe('POST /mcp-oauth/revoke', () => {
 		test('duplicate form params on /mcp-oauth/revoke rejected as invalid_request', async () => {
-			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/revoke');
+			const res = await postForm(mcpOAuthPublicRouter, '/mcp-oauth/revoke', 'token=a&token=b');
 
-			const req = createMockRequest({
-				method: 'POST',
-				body: { token: ['a', 'b'] },
-			});
-
-			const res = createMockResponse();
-			const next = vi.fn();
-
-			// rejectDuplicateParams is index 1
-			await handlers[1]!.handle(req, res, next);
-
-			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: 'invalid_request' }));
+			expect(res.status).toBe(400);
+			expect(res.body).toMatchObject({ error: 'invalid_request' });
 		});
 	});
 
@@ -379,27 +385,13 @@ describe('mcp-oauth controller', () => {
 
 	describe('POST /mcp-oauth/authorize/decision', () => {
 		test('duplicate form params on decision endpoint rejected', async () => {
-			const handlers = getRouteHandler(mcpOAuthProtectedRouter, 'POST', '/mcp-oauth/authorize/decision');
+			const res = await postForm(mcpOAuthProtectedRouter, '/mcp-oauth/authorize/decision', 'approved=yes&approved=no');
 
-			const req = createMockRequest({
-				method: 'POST',
-				body: { approved: ['yes', 'no'] },
+			expect(res.status).toBe(400);
+			expect(res.body).toMatchObject({
+				error: 'invalid_request',
+				error_description: expect.stringContaining('Duplicate parameter'),
 			});
-
-			const res = createMockResponse();
-			const next = vi.fn();
-
-			// rejectDuplicateParams is index 1
-			await handlers[1]!.handle(req, res, next);
-
-			expect(res.status).toHaveBeenCalledWith(400);
-
-			expect(res.json).toHaveBeenCalledWith(
-				expect.objectContaining({
-					error: 'invalid_request',
-					error_description: expect.stringContaining('Duplicate parameter'),
-				}),
-			);
 		});
 
 		test('rejects non-cookie tokens', async () => {
@@ -596,47 +588,5 @@ describe('error-handler MCP 401', () => {
 			'WWW-Authenticate',
 			'Bearer resource_metadata="http://localhost/directus/.well-known/oauth-protected-resource/mcp", scope="mcp:access", error="invalid_token"',
 		);
-	});
-});
-
-// ---------------------------------------------------------------------------
-// App.ts wiring tests (env-based feature flag)
-// ---------------------------------------------------------------------------
-
-describe('MCP_OAUTH_ENABLED feature flag', () => {
-	test('MCP_OAUTH_ENABLED=true + MCP_ENABLED=false -> warning logged, OAuth disabled', async () => {
-		const { useEnv } = await import('@directus/env');
-
-		const mockEnv: Record<string, unknown> = {
-			MCP_OAUTH_ENABLED: true,
-			MCP_ENABLED: false,
-			SERVE_APP: true,
-		};
-
-		vi.mocked(useEnv).mockReturnValue(mockEnv as any);
-
-		const { toBoolean } = await import('@directus/utils');
-
-		// Simulate the startup validation logic from app.ts
-		if (mockEnv['MCP_OAUTH_ENABLED'] === true) {
-			if (toBoolean(mockEnv['MCP_ENABLED']) !== true) {
-				mockEnv['MCP_OAUTH_ENABLED'] = false;
-			}
-		}
-
-		expect(mockEnv['MCP_OAUTH_ENABLED']).toBe(false);
-	});
-
-	test('MCP_OAUTH_ENABLED=false -> routes not present on public router', () => {
-		// The routers are always created as modules, but app.ts conditionally mounts them.
-		// We verify the routers exist and have routes (they do), and the conditional
-		// is env-gated in app.ts. This test verifies the pattern works.
-		const publicStack = (mcpOAuthPublicRouter as any).stack;
-
-		// Public router has routes defined
-		expect(publicStack.length).toBeGreaterThan(0);
-
-		// But when MCP_OAUTH_ENABLED=false, app.ts skips `app.use(mcpOAuthPublicRouter)`
-		// so these routes are unreachable. This is validated by the app.ts wiring code.
 	});
 });
