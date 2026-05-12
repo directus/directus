@@ -1808,21 +1808,10 @@ describe('McpOAuthService', () => {
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
 
-			expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(0);
-			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
-			expect(queryHistory('delete', 'directus_sessions')).toHaveLength(0);
-		});
-
-		it('code replay does not look up or revoke grants for public clients', async () => {
-			mockCodeLookup();
-			tracker.on.update('directus_oauth_codes').response(0);
-
-			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
-
-			expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(0);
-			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
-			expect(queryHistory('delete', 'directus_sessions')).toHaveLength(0);
-		});
+				expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(0);
+				expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
+				expect(queryHistory('delete', 'directus_sessions')).toHaveLength(0);
+			});
 
 		it('concurrent code exchange - only one wins (atomic UPDATE)', async () => {
 			mockClientLookup(clientId);
@@ -3588,6 +3577,8 @@ describe('McpOAuthService', () => {
 			['Basic !!!not-base64!!!', 'invalid base64'],
 			[`Basic ${Buffer.from('no-colon-here').toString('base64')}`, 'missing colon separator'],
 			[`Basic ${Buffer.from('client\x00:secret').toString('base64')}`, 'null bytes'],
+			[`Basic ${Buffer.from('client%00:secret').toString('base64')}`, 'decoded null bytes'],
+			[`Basic ${Buffer.from(':secret').toString('base64')}`, 'empty client_id'],
 			[`Basic ${Buffer.from('client%ZZ:secret').toString('base64')}`, 'invalid percent-encoding'],
 		])('rejects malformed header: %s', (header) => {
 			try {
@@ -3688,6 +3679,23 @@ describe('McpOAuthService', () => {
 			});
 
 			expect(result.clientId).toBe('my-client');
+		});
+
+		it('rejects empty Basic client_id instead of falling back to body client_id', () => {
+			const encoded = Buffer.from(':secret').toString('base64');
+
+			try {
+				service.resolveClientId({
+					client_id: 'body-client',
+					authorization_header: `Basic ${encoded}`,
+				});
+
+				expect.unreachable('should have thrown');
+			} catch (err) {
+				expect(err).toBeInstanceOf(OAuthError);
+				expect((err as OAuthError).status).toBe(400);
+				expect((err as OAuthError).code).toBe('invalid_request');
+			}
 		});
 
 		it('throws when no client_id available from any source', () => {

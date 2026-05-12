@@ -1493,9 +1493,20 @@ export class McpOAuthService {
 		// RFC 6749 Section 2.3.1: application/x-www-form-urlencoded decoding
 		// Replace + with space before decodeURIComponent (form-urlencoded allows + for spaces)
 		try {
+			const clientId = decodeURIComponent(decoded.slice(0, colonIndex).replace(/\+/g, ' '));
+			const clientSecret = decodeURIComponent(decoded.slice(colonIndex + 1).replace(/\+/g, ' '));
+
+			if (!clientId) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: client_id is required');
+			}
+
+			if (clientId.includes('\0') || clientSecret.includes('\0')) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: contains null bytes');
+			}
+
 			return {
-				clientId: decodeURIComponent(decoded.slice(0, colonIndex).replace(/\+/g, ' ')),
-				clientSecret: decodeURIComponent(decoded.slice(colonIndex + 1).replace(/\+/g, ' ')),
+				clientId,
+				clientSecret,
 			};
 		} catch (err) {
 			if (err instanceof URIError) {
