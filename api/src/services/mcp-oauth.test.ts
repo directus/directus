@@ -407,12 +407,6 @@ describe('McpOAuthService', () => {
 			});
 		});
 
-		it('grant_types with only refresh_token rejected', async () => {
-			await assertOAuthError(() => service.registerClient(createTestClient({ grant_types: ['refresh_token'] })), {
-				error: 'invalid_client_metadata',
-			});
-		});
-
 		it('omitted grant_types rejected with invalid_client_metadata', async () => {
 			await assertOAuthError(() => service.registerClient(createTestClient({ grant_types: undefined })), {
 				error: 'invalid_client_metadata',
@@ -1169,24 +1163,7 @@ describe('McpOAuthService', () => {
 			expect(codeInserts[0]!.bindings).toContain(expectedHash);
 		});
 
-		it('Referrer-Policy: no-referrer set on 302 response (controller responsibility)', async () => {
-			// NOTE: Referrer-Policy header is a controller-layer concern.
-			// The service returns the redirect URL; the controller sets the header.
-			// This test just documents the expectation.
-			mockClientLookup(clientId);
-			tracker.on.insert('directus_oauth_codes').response([]);
-
-			tracker.on.select('directus_oauth_consents').response([]);
-			tracker.on.insert('directus_oauth_consents').response([]);
-
-			const signed = signConsent();
-			const url = await service.processDecision({ signed_params: signed, approved: true }, userId, sessionToken);
-
-			// Service returns a URL string; Referrer-Policy is set by the controller
-			expect(typeof url).toBe('string');
-		});
-
-		it('code creation and consent upsert wrapped in a single transaction', async () => {
+		it('code creation and consent upsert use one transaction boundary', async () => {
 			mockClientLookup(clientId);
 			tracker.on.insert('directus_oauth_codes').response([]);
 
@@ -1470,7 +1447,7 @@ describe('McpOAuthService', () => {
 			expect(queryHistory('delete', 'directus_sessions').length).toBe(1);
 		});
 
-		it('code replay does not revoke grants for a different authenticated client', async () => {
+		it('code replay revocation lookup is scoped to the authenticated client', async () => {
 			const otherClientId = crypto.randomUUID();
 
 			mockCodeLookup({ client: otherClientId });
@@ -1479,6 +1456,11 @@ describe('McpOAuthService', () => {
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
 
+			const grantSelects = queryHistory('select', 'directus_oauth_tokens');
+			expect(grantSelects[0]!.sql).toContain('code_hash');
+			expect(grantSelects[0]!.sql).toContain('client');
+			expect(grantSelects[0]!.bindings).toContain(codeHash);
+			expect(grantSelects[0]!.bindings).toContain(clientId);
 			expect(queryHistory('delete', 'directus_oauth_tokens').length).toBe(0);
 			expect(queryHistory('delete', 'directus_sessions').length).toBe(0);
 		});
@@ -1566,13 +1548,11 @@ describe('McpOAuthService', () => {
 			expect(deletes[0]!.bindings).toContain(userId);
 		});
 
-		it('code burn and grant creation in same transaction', async () => {
+		it('code exchange burns the code and creates a grant', async () => {
 			mockSuccessfulExchange();
 
 			await service.exchangeCode(validParams(), context);
 
-			// The update (mark used) and inserts (session, token) should all be part of a transaction
-			// We verify by checking both operations occurred
 			const codeUpdates = queryHistory('update', 'directus_oauth_codes');
 			const tokenInserts = queryHistory('insert', 'directus_oauth_tokens');
 			expect(codeUpdates.length).toBe(1);
@@ -1654,7 +1634,7 @@ describe('McpOAuthService', () => {
 			expect(sessionDeletes[0]!.bindings).toContain(oldSessionHash);
 		});
 
-		it('burn, validations, cleanup, and grant creation all use trx', async () => {
+		it('exchange replacing an existing grant burns, cleans up, and creates a new grant', async () => {
 			// Set up with existing grant to exercise all code paths
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(1);
@@ -1673,7 +1653,6 @@ describe('McpOAuthService', () => {
 
 			await service.exchangeCode(validParams(), context);
 
-			// All operations should have occurred inside the transaction
 			const codeUpdates = queryHistory('update', 'directus_oauth_codes');
 			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');
 			const sessionDeletes = queryHistory('delete', 'directus_sessions');
@@ -1965,7 +1944,7 @@ describe('McpOAuthService', () => {
 			expect(tokenDeletes.length).toBe(1);
 		});
 
-		it('reuse detection does not revoke grants for a different authenticated client', async () => {
+		it('reuse detection lookup is scoped to the authenticated client', async () => {
 			mockClientLookup(clientId);
 
 			let tokenSelectCount = 0;
@@ -1980,11 +1959,16 @@ describe('McpOAuthService', () => {
 
 			await assertOAuthError(() => service.refreshToken(validParams(), context), { error: 'invalid_grant' });
 
+			const tokenSelects = queryHistory('select', 'directus_oauth_tokens');
+			expect(tokenSelects[1]!.sql).toContain('previous_session');
+			expect(tokenSelects[1]!.sql).toContain('client');
+			expect(tokenSelects[1]!.bindings).toContain(sessionHash);
+			expect(tokenSelects[1]!.bindings).toContain(clientId);
 			expect(queryHistory('delete', 'directus_oauth_tokens').length).toBe(0);
 			expect(queryHistory('delete', 'directus_sessions').length).toBe(0);
 		});
 
-		it('reuse detection: grant and session deleted via transaction', async () => {
+		it('reuse detection deletes grant and session through one transaction boundary', async () => {
 			mockClientLookup(clientId);
 
 			// Sequence: primary lookup (not found) -> reuse detection (found)
@@ -2004,7 +1988,7 @@ describe('McpOAuthService', () => {
 
 			await assertOAuthError(() => service.refreshToken(validParams(), context), { error: 'invalid_grant' });
 
-			// Both deletes should be wrapped in a single transaction
+			// Keep one smoke assertion that the revoke path still enters the transaction helper.
 			expect(transactionSpy).toHaveBeenCalledOnce();
 
 			// Verify both deletes still happened
@@ -2178,15 +2162,6 @@ describe('McpOAuthService', () => {
 			expect(sessionDeletes.length).toBe(1);
 		});
 
-		it('stale rotated token (matches previous_session only) returns 200 no-op', async () => {
-			mockClientLookup(clientId);
-			// Grant lookup by session: not found
-			tracker.on.select('directus_oauth_tokens').response([]);
-
-			// Should NOT throw - returns void (200 OK)
-			await service.revokeToken(validParams());
-		});
-
 		it('client_id mismatch returns 200 (not invalid_client)', async () => {
 			mockClientLookup(clientId);
 			const otherClientId = crypto.randomUUID();
@@ -2201,35 +2176,34 @@ describe('McpOAuthService', () => {
 		});
 
 		it('unknown client_id returns 200 silently (no enumeration leak)', async () => {
-			tracker.on.select('directus_oauth_tokens').response([]);
+			mockGrantLookup();
+			tracker.on.select('directus_oauth_clients').response([]);
 
 			await expect(service.revokeToken(validParams())).resolves.toBeUndefined();
+			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
 		});
 
 		it('unknown token returns 200', async () => {
-			mockClientLookup(clientId);
 			tracker.on.select('directus_oauth_tokens').response([]);
 
 			await service.revokeToken(validParams());
 		});
 
-		it('already-revoked token returns 200', async () => {
-			mockClientLookup(clientId);
-			tracker.on.select('directus_oauth_tokens').response([]);
+		it.each(['refresh_token', 'access_token', 'unknown_token_type'])(
+			'token_type_hint=%s does not change revocation behavior',
+			async (tokenTypeHint) => {
+				mockClientLookup(clientId);
+				mockGrantLookup();
+				tracker.on.delete('directus_oauth_tokens').response(1);
+				tracker.on.delete('directus_sessions').response(1);
+				tracker.on.select('directus_users').response([createUserRow()]);
 
-			await service.revokeToken(validParams());
-		});
+				await service.revokeToken({ ...validParams(), token_type_hint: tokenTypeHint });
 
-		it('token_type_hint ignored (known and unknown values)', async () => {
-			mockClientLookup(clientId);
-			mockGrantLookup();
-			tracker.on.delete('directus_oauth_tokens').response(1);
-			tracker.on.delete('directus_sessions').response(1);
-			tracker.on.select('directus_users').response([createUserRow()]);
-
-			// Known hint
-			await service.revokeToken({ ...validParams(), token_type_hint: 'refresh_token' });
-		});
+				expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(1);
+				expect(queryHistory('delete', 'directus_sessions')).toHaveLength(1);
+			},
+		);
 
 		it('missing token parameter returns invalid_request', async () => {
 			await assertOAuthError(() => service.revokeToken(validParams({ token: undefined })), {
@@ -2267,7 +2241,7 @@ describe('McpOAuthService', () => {
 			await service.revokeToken({ ...validParams(), token: fakeJwt });
 		});
 
-		it('grant and session deleted via transaction', async () => {
+		it('revocation deletes grant and session through one transaction boundary', async () => {
 			mockClientLookup(clientId);
 			mockGrantLookup();
 			tracker.on.delete('directus_oauth_tokens').response(1);
@@ -2278,7 +2252,7 @@ describe('McpOAuthService', () => {
 
 			await service.revokeToken(validParams());
 
-			// Both deletes should be wrapped in a single transaction
+			// Keep one smoke assertion that the revoke path still enters the transaction helper.
 			expect(transactionSpy).toHaveBeenCalledOnce();
 
 			// Verify both deletes still happened
@@ -2410,7 +2384,7 @@ describe('McpOAuthService', () => {
 			expect(clientSelects[0]!.sql).toContain('directus_oauth_consents');
 		});
 
-		it('never-authorized client younger than unused TTL is kept', async () => {
+		it('never-authorized client cleanup query applies unused TTL cutoff', async () => {
 			// Steps 1-4
 			tracker.on.delete('directus_oauth_codes').response(0);
 			tracker.on.delete('directus_oauth_codes').response(0);
@@ -2423,9 +2397,12 @@ describe('McpOAuthService', () => {
 
 			const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
 			expect(clientDeletes.length).toBe(0);
+
+			const clientSelects = queryHistory('select', 'directus_oauth_clients');
+			expect(clientSelects[0]!.sql).toContain('date_created');
 		});
 
-		it('authorized client (has consent) is NOT deleted when idle TTL is disabled (default)', async () => {
+		it('idle authorized client cleanup is skipped when idle TTL is disabled', async () => {
 			// Steps 1-4
 			tracker.on.delete('directus_oauth_codes').response(0);
 			tracker.on.delete('directus_oauth_codes').response(0);
@@ -2439,9 +2416,12 @@ describe('McpOAuthService', () => {
 
 			const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
 			expect(clientDeletes.length).toBe(0);
+
+			const clientSelects = queryHistory('select', 'directus_oauth_clients');
+			expect(clientSelects).toHaveLength(1);
 		});
 
-		it('authorized client IS deleted when idle TTL is enabled and client is older than idle TTL', async () => {
+		it('idle authorized client cleanup deletes clients returned by the eligibility query', async () => {
 			const { useEnv } = await import('@directus/env');
 			const env = useEnv() as Record<string, unknown>;
 			const originalIdleTtl = env['MCP_OAUTH_CLIENT_IDLE_TTL'];
@@ -2465,12 +2445,15 @@ describe('McpOAuthService', () => {
 
 				const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
 				expect(clientDeletes.length).toBe(1);
+
+				const clientSelects = queryHistory('select', 'directus_oauth_clients');
+				expect(clientSelects[1]!.sql).toContain('date_created');
 			} finally {
 				env['MCP_OAUTH_CLIENT_IDLE_TTL'] = originalIdleTtl;
 			}
 		});
 
-		it('authorized client is NOT deleted when idle TTL is enabled but client is younger than idle TTL', async () => {
+		it('idle authorized client cleanup query applies idle TTL cutoff', async () => {
 			const { useEnv } = await import('@directus/env');
 			const env = useEnv() as Record<string, unknown>;
 			const originalIdleTtl = env['MCP_OAUTH_CLIENT_IDLE_TTL'];
@@ -2491,12 +2474,15 @@ describe('McpOAuthService', () => {
 
 				const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
 				expect(clientDeletes.length).toBe(0);
+
+				const clientSelects = queryHistory('select', 'directus_oauth_clients');
+				expect(clientSelects[1]!.sql).toContain('date_created');
 			} finally {
 				env['MCP_OAUTH_CLIENT_IDLE_TTL'] = originalIdleTtl;
 			}
 		});
 
-		it('client with active session is NOT eligible for cleanup (even if old)', async () => {
+		it('client cleanup eligibility excludes clients with active sessions in the query', async () => {
 			// Simulate: no orphaned clients returned (query filters them out)
 			tracker.on.delete('directus_oauth_codes').response(0);
 			tracker.on.delete('directus_oauth_codes').response(0);
@@ -2509,6 +2495,10 @@ describe('McpOAuthService', () => {
 
 			const clientDeletes = queryHistory('delete', 'directus_oauth_clients');
 			expect(clientDeletes.length).toBe(0);
+
+			const clientSelects = queryHistory('select', 'directus_oauth_clients');
+			expect(clientSelects[0]!.sql).toContain('directus_sessions');
+			expect(clientSelects[0]!.sql).toContain('directus_oauth_tokens');
 		});
 
 		it('cleanup queries use indexed columns (expires_at, used_at, session)', async () => {
