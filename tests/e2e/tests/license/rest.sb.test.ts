@@ -2,13 +2,24 @@ import {
 	activateLicense,
 	CORE_LICENSE,
 	deactivateLicense,
+	generateLicensePendingResolution,
+	previewLicense,
 	readLicense,
 	type ReadLicenseOutput,
 	updateLicense,
 } from '@directus/license';
 import { createLicense } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
-import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
+import {
+	createCollection,
+	createDirectus,
+	createUser,
+	type DirectusClient,
+	rest,
+	type RestClient,
+	staticToken,
+	updateSettings,
+} from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
@@ -18,6 +29,15 @@ let api: DirectusClient<any> & RestClient<any>;
 
 const license = createLicense({ meta: { name: 'og-license' } });
 const otherLicense = createLicense({ meta: { name: 'changed-license' } });
+
+const restrictedLicense = createLicense({
+	meta: { name: 'restricted-license' },
+	entitlements: {
+		collections: { limit: 1 },
+		seats: { limit: 1 },
+		custom_llms_enabled: { default: false },
+	},
+});
 
 beforeAll(async () => {
 	const devMode = process.env['NODE_ENV'] === 'development';
@@ -53,10 +73,28 @@ beforeAll(async () => {
 		},
 		body: JSON.stringify(otherLicense),
 	});
+
+	await fetch(`http://localhost:${directus.env.LICENSE_PORT}/admin/license`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(restrictedLicense),
+	});
 });
 
 afterAll(async () => {
 	await directus.stop();
+});
+
+test('preview a license key', async () => {
+	const result = await api.request(previewLicense({ license_key: license.key }));
+
+	expect(result).toEqual({
+		expires_at: license.meta.expires_at,
+		plan_name: license.name,
+		production_enabled: true,
+	});
 });
 
 test('activate a license key', async () => {
@@ -123,9 +161,75 @@ test('deactivate the license', async () => {
 		expires_at: CORE_LICENSE.meta.expires_at,
 		grace_period: CORE_LICENSE.meta.grace_period,
 		name: CORE_LICENSE.meta.name,
-		offline: false,
+		offline: true,
 		source: 'settings',
 		status: 'active',
 		usage: expect.any(Object),
 	});
+});
+
+test('check resolution with no conflicts', async () => {
+	const result = await api.request(generateLicensePendingResolution());
+
+	expect(result).toEqual([
+		{
+			candidates: [],
+			key: 'seats',
+			kind: 'limit',
+			limit: 3,
+			usage: 1,
+		},
+		{
+			candidates: [],
+			key: 'collections',
+			kind: 'limit',
+			limit: 50,
+			usage: 0,
+		},
+		{
+			candidates: [],
+			key: 'flows',
+			kind: 'limit',
+			limit: 5,
+			usage: 0,
+		},
+	]);
+});
+
+test('check resolution with conflicts', async () => {
+	await api.request(createCollection({ collection: 'A', meta: {}, schema: {} }));
+	await api.request(createCollection({ collection: 'B', meta: {}, schema: {} }));
+
+	await api.request(createUser({ first_name: 'John', last_name: 'Doe', email: 'test@example.com', password: 'pw' }));
+
+	// Activate license that is more restrictive than core
+	await api.request(activateLicense({ license_key: restrictedLicense.key }));
+
+	// await api.request(updateSettings({ ai_openai_compatible_api_key: 'test' }));
+
+	const result = await api.request(generateLicensePendingResolution());
+
+	expect(result).toEqual([
+		{
+			candidates: [],
+			key: 'seats',
+			kind: 'limit',
+			limit: 3,
+			usage: 1,
+		},
+		{
+			candidates: [],
+			key: 'collections',
+			kind: 'limit',
+			limit: 50,
+			usage: 0,
+		},
+		{
+			candidates: [],
+			key: 'flows',
+			kind: 'limit',
+			limit: 5,
+			usage: 0,
+		},
+	]);
 });
