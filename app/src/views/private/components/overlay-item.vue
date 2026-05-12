@@ -96,7 +96,7 @@ const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, relatedPrim
 
 const { internalEdits, loading, initialValues, refresh } = useItem();
 
-const { save, cancel, overlayActive, getSaveShortcut } = useActions();
+const { save, cancel, overlayActive, applyShortcutFormatted } = useActions();
 
 const { resolvedPopoverProps } = usePopoverProps();
 
@@ -458,6 +458,7 @@ function useRelation() {
 
 function useActions() {
 	const { nestedValidationErrors, resetNestedValidationErrors } = useNestedValidation();
+	const applyShortcutFormatted = computed(() => translateShortcut(props.applyShortcut.split('+')));
 
 	watch(internalActive, (active) => {
 		if (!active) resetNestedValidationErrors();
@@ -489,11 +490,7 @@ function useActions() {
 		cancelNext();
 	});
 
-	return { save, cancel, overlayActive, getSaveShortcut };
-
-	function getSaveShortcut() {
-		return translateShortcut(props.applyShortcut.split('+'));
-	}
+	return { save, cancel, overlayActive, applyShortcutFormatted };
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
 		return validateItem(
@@ -663,7 +660,13 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton :label="$t('save')" :disabled="!isSavable" icon="check" @click="save" />
+			<PrivateViewHeaderBarActionButton
+				:label="$t('save')"
+				:tooltip="applyShortcutFormatted"
+				:disabled="!isSavable"
+				icon="check"
+				@click="save"
+			/>
 		</template>
 
 		<OverlayItemContent
@@ -701,7 +704,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 				<slot name="actions" />
 
-				<VButton v-tooltip="getSaveShortcut()" :disabled="!isSavable" @click="save">{{ $t('save') }}</VButton>
+				<VButton v-tooltip="applyShortcutFormatted" :disabled="!isSavable" @click="save">{{ $t('save') }}</VButton>
 			</VCardActions>
 		</VCard>
 	</VDialog>
@@ -748,7 +751,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 				<slot name="actions" />
 
-				<VButton v-tooltip="getSaveShortcut()" x-small :disabled="!isSavable" @click="save">
+				<VButton v-tooltip="applyShortcutFormatted" x-small :disabled="!isSavable" @click="save">
 					{{ $t('save') }}
 				</VButton>
 			</div>

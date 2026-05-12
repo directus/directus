@@ -58,12 +58,14 @@ const sizeClass = computed<string | null>(() => {
 });
 
 const customIconName = computed(() => {
+	if (!props.name) return null;
 	const name = `CustomIcon${upperFirst(camelCase(props.name.replace(/_/g, '-')))}`;
 	if (name in components) return components[name];
 	return null;
 });
 
 const socialIconName = computed<IconName | null>(() => {
+	if (!props.name) return null;
 	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-') as IconName;
 	return null;
 });
@@ -88,7 +90,7 @@ function emitClick(event: MouseEvent) {
 	>
 		<component :is="customIconName" v-if="customIconName" class="custom-icon-svg" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else :class="{ filled }" :data-icon="name"></i>
+		<i v-else-if="name" :class="{ filled }" :data-icon="name"></i>
 	</component>
 </template>
 

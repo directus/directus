@@ -31,6 +31,9 @@ useProvideHeaderBarInline(toRef(props, 'headerBarInline'));
 	display: flex;
 	align-items: center;
 	gap: 0.625rem;
+	flex-grow: 1;
+	min-inline-size: 0;
+	justify-content: end;
 }
 
 .default {
@@ -38,12 +41,16 @@ useProvideHeaderBarInline(toRef(props, 'headerBarInline'));
 	display: flex;
 	align-items: center;
 	gap: 0.125rem;
+	flex-grow: 1;
+	min-inline-size: 0;
+	max-inline-size: fit-content;
 }
 
 .primary {
 	display: flex;
 	align-items: center;
 	gap: 0.625rem;
+	flex-shrink: 0;
 }
 
 .prepend,

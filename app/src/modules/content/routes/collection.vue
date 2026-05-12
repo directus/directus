@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { useCollection, useLayout } from '@directus/composables';
+import { isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
+import VersionChip from '../components/version-chip.vue';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -17,11 +20,18 @@ import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useFlows } from '@/composables/use-flows';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useVersionQuery } from '@/composables/use-version-query';
+import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -46,14 +56,28 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
+const collectionsStore = useCollectionsStore();
 
 const layoutRef = ref();
 
 const { collection } = toRefs(props);
 const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
-const { selection } = useSelection();
 const { info: currentCollection } = useCollection(collection);
+const { isVersioned, isVersion, version, versionName, versionKeyQuery } = useVersion();
+const { selection } = useSelection();
+
+onBeforeRouteUpdate((to) => {
+	const collectionParam = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collectionParam) return true;
+
+	if (collectionsStore.getCollection(collectionParam)?.meta?.singleton) {
+		return { name: 'content-singleton', params: to.params, query: to.query };
+	}
+
+	return true;
+});
+
 const { addNewLink, currentCollectionLink } = useLinks();
 
 const {
@@ -190,13 +214,28 @@ function useCollectionHeader() {
 function useSelection() {
 	const selection = ref<Item[]>([]);
 
-	// Whenever the collection we're working on changes, we have to clear the selection
-	watch(
-		() => props.collection,
-		() => (selection.value = []),
-	);
+	// Clear selection when the collection changes or when switching version mode
+	// (stale keys across modes — draft selections are version_ids, published are primary keys)
+	watch([() => props.collection, versionKeyQuery], () => (selection.value = []));
 
 	return { selection };
+}
+
+function useVersion() {
+	const versionKeyQuery = useVersionQuery();
+	const isVersioned = computed(() => !!currentCollection.value?.meta?.versioning);
+	const version = computed(() => getValidVersion());
+	const versionName = computed(() => getVersionDisplayName(version.value ? { key: version.value, name: null } : null));
+	const isVersion = computed(() => !isNil(version.value));
+
+	return { isVersioned, isVersion, version, versionName, versionKeyQuery };
+
+	function getValidVersion() {
+		if (!isVersioned.value) return undefined;
+		if (versionKeyQuery.value === VERSION_KEY_DRAFT) return VERSION_KEY_DRAFT;
+		if (!versionKeyQuery.value || isPublishedVersionKey(versionKeyQuery.value)) return null;
+		return undefined;
+	}
 }
 
 function useBatch() {
@@ -217,12 +256,12 @@ function useBatch() {
 
 		deleting.value = true;
 
-		const batchPrimaryKeys = selection.value;
-
 		try {
-			await api.delete(`/items/${props.collection}`, {
-				data: batchPrimaryKeys,
-			});
+			if (isVersion.value) {
+				await api.delete('/versions', { data: selection.value });
+			} else {
+				await api.delete(`/items/${props.collection}`, { data: selection.value });
+			}
 
 			selection.value = [];
 			await refresh();
@@ -264,9 +303,7 @@ function useBatch() {
 }
 
 function useLinks() {
-	const addNewLink = computed<string>(() => {
-		return getItemRoute(props.collection, '+');
-	});
+	const addNewLink = computed<string>(() => getItemRoute(props.collection, '+', version.value));
 
 	const currentCollectionLink = computed<string>(() => {
 		return getCollectionRoute(props.collection);
@@ -331,6 +368,23 @@ function clearFilters() {
 		<ContentNotFound v-if="!currentCollection || isSystemCollection(collection)" />
 
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
+			<template #title-outer:append>
+				<VMenu v-if="isVersioned" show-arrow placement="bottom">
+					<template #activator="{ toggle }">
+						<VersionChip :version="version ? { key: version, name: null } : null" @click="toggle()" />
+					</template>
+
+					<VList>
+						<VListItem clickable :active="version === null" @click="versionKeyQuery = null">
+							<VListItemContent>{{ $t('published') }}</VListItemContent>
+						</VListItem>
+						<VListItem clickable :active="version === VERSION_KEY_DRAFT" @click="versionKeyQuery = VERSION_KEY_DRAFT">
+							<VListItemContent>{{ $t('draft') }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
+			</template>
+
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
 			</template>
@@ -338,55 +392,48 @@ function clearFilters() {
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
 
-				<div class="bookmark-controls">
-					<BookmarkAdd
-						v-if="!bookmark"
-						v-model="bookmarkDialogActive"
-						:saving="creatingBookmark"
-						@save="createBookmark"
-					>
-						<template #activator="{ on }">
-							<PrivateViewHeaderBarActionButton
-								v-tooltip.bottom="$t('create_bookmark')"
-								icon="bookmark"
-								variant="ghost"
-								@click="on"
-							/>
-						</template>
-					</BookmarkAdd>
+				<BookmarkAdd v-if="!bookmark" v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="$t('create_bookmark')"
+							icon="bookmark"
+							variant="ghost"
+							@click="on"
+						/>
+					</template>
+				</BookmarkAdd>
 
-					<div v-else-if="bookmarkSaved" class="saved-bookmark">
-						<VIcon name="bookmark" filled />
-					</div>
-
-					<PrivateViewHeaderBarActionButton
-						v-else-if="bookmarkIsMine"
-						v-tooltip.bottom="$t('update_bookmark')"
-						icon="bookmark_save"
-						variant="ghost"
-						@click="savePreset()"
-					/>
-
-					<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
-						<template #activator="{ on }">
-							<PrivateViewHeaderBarActionButton
-								v-tooltip.bottom="$t('create_bookmark')"
-								icon="bookmark"
-								variant="ghost"
-								@click="on"
-							/>
-						</template>
-					</BookmarkAdd>
-
-					<PrivateViewHeaderBarActionButton
-						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
-						v-tooltip.bottom="$t('reset_bookmark')"
-						icon="settings_backup_restore"
-						variant="ghost"
-						kind="danger"
-						@click="clearLocalSave"
-					/>
+				<div v-else-if="bookmarkSaved" class="saved-bookmark">
+					<VIcon name="bookmark" filled />
 				</div>
+
+				<PrivateViewHeaderBarActionButton
+					v-else-if="bookmarkIsMine"
+					v-tooltip.bottom="$t('update_bookmark')"
+					icon="bookmark_save"
+					variant="ghost"
+					@click="savePreset()"
+				/>
+
+				<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							v-tooltip.bottom="$t('create_bookmark')"
+							icon="bookmark"
+							variant="ghost"
+							@click="on"
+						/>
+					</template>
+				</BookmarkAdd>
+
+				<PrivateViewHeaderBarActionButton
+					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+					v-tooltip.bottom="$t('reset_bookmark')"
+					icon="settings_backup_restore"
+					variant="ghost"
+					kind="danger"
+					@click="clearLocalSave"
+				/>
 
 				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
@@ -419,7 +466,8 @@ function clearFilters() {
 						selection.length > 0 &&
 						currentCollection.meta &&
 						currentCollection.meta.archive_field &&
-						archive !== 'archived'
+						archive !== 'archived' &&
+						!isVersion
 					"
 					v-model="confirmArchive"
 					@esc="confirmArchive = false"
@@ -450,7 +498,7 @@ function clearFilters() {
 				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && !isVersion"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 					variant="ghost"
 					:disabled="batchEditAllowed === false"
@@ -462,7 +510,7 @@ function clearFilters() {
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					:tooltip="createAllowed ? undefined : $t('not_allowed')"
-					:label="$t('create_item')"
+					:label="$t('create')"
 					icon="add"
 					:to="addNewLink"
 					:disabled="createAllowed === false"
@@ -501,11 +549,17 @@ function clearFilters() {
 				</template>
 
 				<template #no-items>
-					<VInfo :title="$t('item_count', 0)" :icon="currentCollection.icon" center>
-						{{ $t('no_items_copy') }}
+					<VInfo
+						:title="isVersion ? $t('no_versions', { version: versionName }) : $t('item_count', 0)"
+						:icon="currentCollection.icon"
+						center
+					>
+						{{ isVersion ? $t('no_versions_copy', { version: versionName }) : $t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<VButton :to="getItemRoute(collection, '+')">{{ $t('create_item') }}</VButton>
+							<VButton :to="addNewLink">
+								{{ $t('create_item') }}
+							</VButton>
 						</template>
 					</VInfo>
 				</template>
@@ -537,9 +591,10 @@ function clearFilters() {
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
-				<ArchiveSidebarDetail v-if="hasArchive" :collection="collection" :archive="archive" />
+				<ArchiveSidebarDetail v-if="hasArchive && !isVersion" :collection="collection" :archive="archive" />
 				<RefreshSidebarDetail v-model="refreshInterval" @refresh="refresh" />
 				<ExportSidebarDetail
+					v-if="!isVersion"
 					:collection="collection"
 					:filter="mergeFilters(filter, archiveFilter)"
 					:search="search"
@@ -547,7 +602,7 @@ function clearFilters() {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<FlowSidebarDetail :manual-flows />
+				<FlowSidebarDetail v-if="!isVersion" :manual-flows />
 			</template>
 
 			<VDialog :model-value="deleteError !== null" @esc="deleteError = null">
@@ -580,7 +635,8 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 2rem;
 	block-size: 2rem;
+	inline-size: 2rem;
+	min-inline-size: 2rem;
 }
 </style>

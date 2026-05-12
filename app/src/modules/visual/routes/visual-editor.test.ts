@@ -1,3 +1,4 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
@@ -9,7 +10,6 @@ import { generateRouter } from '@/__utils__/router';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { DRAFT_VERSION_KEY } from '@/constants';
 import { i18n } from '@/lang';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { analyzeTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
@@ -112,7 +112,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/preview' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
+		expect(wrapper.find('.version-chip').exists()).toBe(false);
 	});
 
 	it('is not rendered when user lacks read permission on directus_versions', () => {
@@ -123,7 +123,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/?version=v1' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(false);
+		expect(wrapper.find('.version-chip').exists()).toBe(false);
 	});
 
 	it('is rendered when the URL matches a version template and user can read versions', () => {
@@ -135,7 +135,7 @@ describe('Version selector', () => {
 			props: { dynamicUrl: 'https://example.com/?version=v1' },
 		});
 
-		expect(wrapper.find('.version-select-activator').exists()).toBe(true);
+		expect(wrapper.find('.version-chip').exists()).toBe(true);
 	});
 
 	it('adds a new version to the list when the URL contains a custom version key', async () => {
@@ -144,7 +144,7 @@ describe('Version selector', () => {
 
 		const wrapper = mount(VisualEditor, {
 			global,
-			props: { dynamicUrl: `https://example.com/?version=${DRAFT_VERSION_KEY}` },
+			props: { dynamicUrl: `https://example.com/?version=${VERSION_KEY_DRAFT}` },
 		});
 
 		const initialCount = wrapper.findAll('.v-list-item').length;
@@ -170,7 +170,7 @@ describe('Version selector', () => {
 		await wrapper.findAll('.v-list-item')[1]!.trigger('click');
 
 		const placement = analyzeTemplate(template);
-		const newUrl = replaceVersion(currentUrl, placement, DRAFT_VERSION_KEY);
+		const newUrl = replaceVersion(currentUrl, placement, VERSION_KEY_DRAFT);
 		expect(replaceSpy).toHaveBeenCalledWith(getUrlRoute(newUrl));
 	});
 });

@@ -118,9 +118,8 @@
 
 	.fc-toolbar {
 		&.fc-header-toolbar {
-			position: sticky;
-			inset-block-start: 0;
-			z-index: 4;
+			overflow-x: auto;
+			flex-wrap: nowrap;
 			block-size: calc(var(--sub-header-height) + var(--theme--border-width));
 			margin-block-end: var(--content-padding);
 			font-weight: inherit !important;
@@ -128,6 +127,11 @@
 			background-color: var(--theme--background);
 			border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 			box-shadow: 0 0 0 2px var(--theme--background);
+
+			.fc-toolbar-chunk {
+				flex-shrink: 0;
+				white-space: nowrap;
+			}
 		}
 	}
 

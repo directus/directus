@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import { resolveFieldName } from './resolve-field-name';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -91,11 +92,13 @@ const defaults = computed(() => {
 	return values;
 });
 
+const { locale } = useI18n();
+
 const fieldsWithNames = computed(() =>
 	props.fields?.map((field) => {
 		return {
 			...field,
-			name: formatTitle(field.name ?? field.field!),
+			name: resolveFieldName(field, locale.value),
 		};
 	}),
 );

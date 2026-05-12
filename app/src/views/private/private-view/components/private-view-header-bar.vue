@@ -113,7 +113,7 @@ const showNavToggle = computed(() => {
 		display: flex;
 		block-size: var(--header-bar-height);
 		align-items: center;
-		gap: 1.5rem;
+		gap: var(--header-bar-gap);
 		padding-inline: var(--content-padding) var(--sidebar-collapsed-width);
 	}
 }
@@ -144,6 +144,10 @@ const showNavToggle = computed(() => {
 	&.end {
 		justify-content: flex-end;
 		flex-shrink: 0;
+
+		@include mixins.breakpoint-up('sm') {
+			max-inline-size: calc(100vw - var(--sidebar-collapsed-width) * 3 - var(--header-bar-gap));
+		}
 	}
 }
 
