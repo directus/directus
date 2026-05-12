@@ -13,6 +13,7 @@ import type {
 	UsageCounter,
 } from '@directus/license';
 import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FEATURE_FLAG_ENTITLEMENT_KEYS } from '@directus/license';
+import type { Knex } from 'knex';
 import { countActiveCollections, resolveCollections } from './lib/collections.js';
 import { checkCustomLLM } from './lib/custom_llms_enabled.js';
 import { checkCustomPermissionRules } from './lib/custom_permission_rules_enabled.js';
@@ -85,14 +86,14 @@ export class EntitlementManager {
 	 * Resolve the validity of a feature flag by invoking its registered
 	 * validator. Throws if no validator has been registered for `key`.
 	 */
-	async isValid(key: FeatureFlagEntitlementKey): Promise<boolean> {
+	async isValid(key: FeatureFlagEntitlementKey, opts?: { knex?: Knex | undefined }): Promise<boolean> {
 		const validator = this.validatorSources.get(key);
 
 		if (!validator) {
 			throw new Error(`No validator registered for entitlement "${String(key)}"`);
 		}
 
-		return await validator();
+		return await validator(opts);
 	}
 
 	/**
@@ -145,14 +146,14 @@ export class EntitlementManager {
 	 * Resolve current usage for a countable entitlement by invoking the
 	 * registered source. Throws if no source has been registered for `key`.
 	 */
-	async getUsage(key: CountableEntitlementKey): Promise<number> {
+	async getUsage(key: CountableEntitlementKey, opts?: { knex?: Knex | undefined }): Promise<number> {
 		const source = this.counterSources.get(key);
 
 		if (!source) {
 			throw new Error(`No usage source registered for entitlement "${String(key)}"`);
 		}
 
-		return await source();
+		return await source(opts);
 	}
 
 	/**
@@ -160,12 +161,12 @@ export class EntitlementManager {
 	 * limit / usage / remaining / allowed. For feature flags: returns the
 	 * validator's verdict (`valid`) and the license-side `entitled` state.
 	 */
-	check(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<EntitlementCheckResult>;
+	check(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number, knex?: Knex | undefined }): Promise<EntitlementCheckResult>;
 
-	check(key: FeatureFlagEntitlementKey): Promise<FeatureFlagCheckResult>;
+	check(key: FeatureFlagEntitlementKey, opts?: { knex?: Knex | undefined }): Promise<FeatureFlagCheckResult>;
 	async check(
 		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number; removing?: number },
+		opts?: { adding?: number; removing?: number, knex?: Knex | undefined },
 	): Promise<EntitlementCheckResult | FeatureFlagCheckResult> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
@@ -174,7 +175,7 @@ export class EntitlementManager {
 				return { allowed: true, hardLimit: -1, usage: 0, remaining: null };
 			}
 
-			const usage = await this.getUsage(key);
+			const usage = await this.getUsage(key, { knex: opts?.knex });
 			const adding = opts?.adding ?? 0;
 
 			return {
@@ -188,7 +189,7 @@ export class EntitlementManager {
 		const entitled = this.isEntitled(key);
 
 		if (!entitled) {
-			return { valid: await this.isValid(key), entitled };
+			return { valid: await this.isValid(key, { knex: opts?.knex }), entitled };
 		} else {
 			// if you're entitled to a feature then its always valid/within the limit
 			return { valid: true, entitled };
@@ -201,14 +202,14 @@ export class EntitlementManager {
 	 * Countable: throws `LimitExceededError` when `usage + (adding ?? 0) > hardLimit`
 	 * Feature flag: throws `ResourceRestrictedError` when its validator indicates invalid
 	 */
-	assert(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number }): Promise<void>;
-	assert(key: FeatureFlagEntitlementKey): Promise<void>;
-	async assert(key: CountableEntitlementKey | FeatureFlagEntitlementKey, opts?: { adding?: number }): Promise<void> {
+	assert(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number, knex?: Knex | undefined }): Promise<void>;
+	assert(key: FeatureFlagEntitlementKey, opts?: { knex?: Knex | undefined }): Promise<void>;
+	async assert(key: CountableEntitlementKey | FeatureFlagEntitlementKey, opts?: { adding?: number, knex?: Knex | undefined }): Promise<void> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
 			if (hardLimit === -1) return;
 
-			const usage = await this.getUsage(key);
+			const usage = await this.getUsage(key, { knex: opts?.knex });
 			const adding = opts?.adding ?? 0;
 
 			if (usage + adding > hardLimit) {
@@ -218,7 +219,7 @@ export class EntitlementManager {
 			return;
 		}
 
-		if (!this.isEntitled(key) && !(await this.isValid(key))) {
+		if (!this.isEntitled(key) && !(await this.isValid(key, { knex: opts?.knex }))) {
 			throw new ResourceRestrictedError({ category: key });
 		}
 	}
@@ -226,14 +227,14 @@ export class EntitlementManager {
 	/**
 	 * Checks all entitlements and returns true if all are within the limits
 	 */
-	async checkAll(): Promise<boolean> {
+	async checkAll(opts?: { knex?: Knex | undefined }): Promise<boolean> {
 		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
-			const { allowed } = await this.check(key);
+			const { allowed } = await this.check(key, opts);
 			if (!allowed) return false;
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
-			const { valid } = await this.check(key);
+			const { valid } = await this.check(key, opts);
 			if (!valid) return false;
 		}
 
@@ -243,13 +244,13 @@ export class EntitlementManager {
 	/**
 	 * Asserts all entitlements and throws if a limit is breached
 	 */
-	async assertAll(): Promise<void> {
+	async assertAll(opts?: { knex?: Knex | undefined }): Promise<void> {
 		for (const key of COUNTABLE_ENTITLEMENT_KEYS) {
-			this.assert(key);
+			this.assert(key, opts);
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
-			this.assert(key);
+			this.assert(key, opts);
 		}
 	}
 

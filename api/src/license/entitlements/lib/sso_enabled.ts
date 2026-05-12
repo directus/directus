@@ -1,4 +1,5 @@
 import type { ResolveInput } from '@directus/license';
+import type { Knex } from 'knex';
 import { DEFAULT_AUTH_PROVIDER } from '../../../constants.js';
 import { UsersService } from '../../../services/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
@@ -6,9 +7,10 @@ import { getSchema } from '../../../utils/get-schema.js';
 /**
  * Counting the current amount of users with sso enabled
  */
-export async function checkUsersSSO() {
+export async function checkUsersSSO(opts?: { knex?: Knex | undefined }) {
 	const usersService = new UsersService({
 		schema: await getSchema(),
+		knex: opts?.knex,
 	});
 
 	const sso_users = await usersService.readByQuery({

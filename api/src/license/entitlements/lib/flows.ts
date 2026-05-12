@@ -1,9 +1,11 @@
+import type { Knex } from 'knex';
 import { FlowsService } from '../../../services/flows.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-export async function getActiveFlows() {
+export async function getActiveFlows(opts?: { knex?: Knex | undefined }) {
     const flowsService = new FlowsService({
         schema: await getSchema(),
+        knex: opts?.knex,
     });
 
     const flows = await flowsService.readByQuery({
@@ -18,8 +20,8 @@ export async function getActiveFlows() {
     return flows;
 }
 
-export async function countActiveFlows() {
-    const flows = await getActiveFlows();
+export async function countActiveFlows(opts?: { knex?: Knex | undefined }) {
+    const flows = await getActiveFlows(opts);
 
     return flows.length;
 }
