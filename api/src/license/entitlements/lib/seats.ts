@@ -152,6 +152,6 @@ export async function resolveSeats(seats: string[], ctx?: { adminId: string }) {
 	const users = seats.filter((user_id) => user_id !== ctx.adminId);
 
 	await Promise.allSettled(
-		users.map((user_id) => usersService.updateOne(user_id, { status: 'deactivated-license-exceeded' })),
+		users.map((user_id) => usersService.updateOne(user_id, { status: 'inactive-license-exceeded' })),
 	);
 }
