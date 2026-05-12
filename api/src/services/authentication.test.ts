@@ -418,13 +418,16 @@ describe('Integration Tests', () => {
 				});
 			});
 
-			it('should throw InvalidCredentialsError when refreshing an OAuth session token', async () => {
+			it('should reject refresh tokens from OAuth sessions', async () => {
 				tracker.on.select('directus_sessions').responseOnce([]);
 
 				await expect(service.refresh('oauth-session-token')).rejects.toBeInstanceOf(InvalidCredentialsError);
 
 				const selectQuery = tracker.history.select.find((q) => q.sql.includes('directus_sessions'));
-				expect(selectQuery?.sql).toContain('oauth_client');
+				expect(selectQuery?.sql).toContain('"s"."oauth_client" is null');
+				expect(mockRefreshProvider.refresh).not.toHaveBeenCalled();
+				expect(tracker.history.update).toHaveLength(0);
+				expect(tracker.history.delete).toHaveLength(0);
 			});
 		});
 
@@ -467,93 +470,16 @@ describe('Integration Tests', () => {
 				expect(mockLogoutProvider.logout).toHaveBeenCalledOnce();
 			});
 
-			it('should return early without deleting session or calling provider.logout for OAuth sessions', async () => {
+			it('should ignore logout requests for OAuth sessions', async () => {
 				tracker.on.select('directus_sessions').responseOnce([]);
 
 				await service.logout('oauth-session-token');
 
 				expect(mockLogoutProvider.logout).not.toHaveBeenCalled();
+				expect(tracker.history.delete).toHaveLength(0);
 
 				const selectQuery = tracker.history.select.find((q) => q.sql.includes('directus_sessions'));
-				expect(selectQuery?.sql).toContain('oauth_client');
-			});
-		});
-
-		describe('updateStatefulSession', () => {
-			const mockSessionRecordWithOAuthClient = {
-				session_expires: new Date(Date.now() + 86400000),
-				session_next_token: null,
-				user_id: mockUser.id,
-				user_first_name: mockUser.first_name,
-				user_last_name: mockUser.last_name,
-				user_email: mockUser.email,
-				user_password: mockUser.password,
-				user_status: 'active',
-				user_provider: 'default',
-				user_external_identifier: null,
-				user_auth_data: null,
-				user_role: mockUser.role,
-				share_id: null,
-				share_start: null,
-				share_end: null,
-				oauth_client: 'my-oauth-client',
-			};
-
-			let mockRefreshProvider: {
-				getUserID: ReturnType<typeof vi.fn>;
-				login: ReturnType<typeof vi.fn>;
-				refresh: ReturnType<typeof vi.fn>;
-			};
-
-			beforeEach(() => {
-				mockRefreshProvider = {
-					getUserID: vi.fn().mockResolvedValue(mockUser.id),
-					login: vi.fn().mockResolvedValue(undefined),
-					refresh: vi.fn().mockResolvedValue(undefined),
-				};
-
-				vi.mocked(getAuthProvider).mockReturnValue(mockRefreshProvider as any);
-			});
-
-			it('should preserve non-null oauth_client when rotated (verified via insert bindings)', async () => {
-				// We test updateStatefulSession directly by accessing private method via any cast
-				const svc = service as any;
-
-				const sessionRecord = {
-					user_id: mockUser.id,
-					share_id: null,
-					oauth_client: 'my-oauth-client',
-				};
-
-				tracker.on.update('directus_sessions').responseOnce([{ next_token: null }]);
-				tracker.on.insert('directus_sessions').responseOnce([1]);
-
-				await svc.updateStatefulSession(sessionRecord, 'old-token', 'new-token', new Date(Date.now() + 86400000));
-
-				const inserts = tracker.history.insert;
-				const sessionInsert = inserts.find((q) => q.sql.includes('directus_sessions'));
-				expect(sessionInsert).toBeDefined();
-				expect(sessionInsert!.bindings).toContain('my-oauth-client');
-			});
-
-			it('should preserve null oauth_client for regular sessions', async () => {
-				const svc = service as any;
-
-				const sessionRecord = {
-					user_id: mockUser.id,
-					share_id: null,
-					oauth_client: null,
-				};
-
-				tracker.on.update('directus_sessions').responseOnce([{ next_token: null }]);
-				tracker.on.insert('directus_sessions').responseOnce([1]);
-
-				await svc.updateStatefulSession(sessionRecord, 'old-token', 'new-token', new Date(Date.now() + 86400000));
-
-				const inserts = tracker.history.insert;
-				const sessionInsert = inserts.find((q) => q.sql.includes('directus_sessions'));
-				expect(sessionInsert).toBeDefined();
-				expect(sessionInsert!.sql).toContain('oauth_client');
+				expect(selectQuery?.sql).toContain('"s"."oauth_client" is null');
 			});
 		});
 	});

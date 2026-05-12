@@ -1445,12 +1445,26 @@ describe('mcp server', () => {
 			expect(mockRes.status).not.toHaveBeenCalledWith(401);
 		});
 
-		test('valid OAuth session with correct scope and aud via header returns 200', () => {
+		test('valid OAuth session with correct scope and aud via header returns JSON-RPC result', async () => {
 			const directusMCP = new DirectusMCP();
 			const req = makeAuthReq({ accountability: oauthAccountability, tokenSource: 'header' });
 
 			expect(() => directusMCP.handleRequest(req, mockRes)).not.toThrow();
+			await awaitJsonResponse(directusMCP);
+
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					id: 1,
+					jsonrpc: '2.0',
+					result: expect.objectContaining({
+						tools: expect.any(Array),
+					}),
+				}),
+			);
+
 			expect(mockRes.status).not.toHaveBeenCalledWith(401);
+			expect(mockRes.status).not.toHaveBeenCalledWith(403);
+			expect(mockRes.set).not.toHaveBeenCalledWith('WWW-Authenticate', expect.any(String));
 		});
 
 		test('OAuth session with wrong aud returns 401', () => {
@@ -1506,30 +1520,5 @@ describe('mcp server', () => {
 			expectMcpBearerChallenge(mockRes, { status: 403, error: 'insufficient_scope' });
 		});
 
-		test('401 responses include Access-Control-Expose-Headers: WWW-Authenticate', () => {
-			const directusMCP = new DirectusMCP();
-
-			const req = makeAuthReq({
-				accountability: { user: null, role: null, roles: [], admin: false, app: false, ip: null },
-			});
-
-			directusMCP.handleRequest(req, mockRes);
-			expectMcpBearerChallenge(mockRes, { status: 401, resourceMetadata: true });
-		});
-
-		test('403 insufficient_scope includes Access-Control-Expose-Headers: WWW-Authenticate', () => {
-			const directusMCP = new DirectusMCP();
-
-			const req = makeAuthReq({
-				accountability: {
-					...regularAccountability,
-					oauth: { client: 'client-id', scopes: ['other:scope'], aud: [MCP_RESOURCE_URL] },
-				},
-				tokenSource: 'header',
-			});
-
-			directusMCP.handleRequest(req, mockRes);
-			expectMcpBearerChallenge(mockRes, { status: 403, error: 'insufficient_scope' });
-		});
 	});
 });
