@@ -5,8 +5,8 @@ import { exportJWK } from 'jose/key/export';
 import { requireLicenseVersion } from './hooks/require-license-version.js';
 import { activateRoute } from './routes/activate.js';
 import { addonsRoute } from './routes/addons.js';
+import { adminRoute } from './routes/admin.js';
 import { deactivateRoute } from './routes/deactivate.js';
-import { licenseRoute } from './routes/license.js';
 import { portalRoute } from './routes/portal.js';
 import { previewRoute } from './routes/preview.js';
 import { refreshRoute } from './routes/refresh.js';
@@ -19,8 +19,13 @@ const app = Fastify({
 
 app.withTypeProvider<TypeBoxTypeProvider>();
 
-// routes inteded to be utilized test setup
-app.register(licenseRoute, { prefix: '/admin/license' });
+// Test-only routes for sandbox setup
+app.register(
+	async (admin) => {
+		admin.register(adminRoute, { prefix: '/license' });
+	},
+	{ prefix: '/admin' },
+);
 
 app.register(
 	async (api) => {
