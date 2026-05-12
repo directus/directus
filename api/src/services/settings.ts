@@ -21,7 +21,7 @@ export class SettingsService extends ItemsService<Settings> {
 	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
 			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('custom_llms_enabled');
+			await entitlementManager.assert('custom_llms_enabled', { knex: this.knex });
 		}
 
 		return super.createOne(data, opts);
@@ -34,7 +34,7 @@ export class SettingsService extends ItemsService<Settings> {
 	): Promise<PrimaryKey[]> {
 		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
 			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('custom_llms_enabled');
+			await entitlementManager.assert('custom_llms_enabled', { knex: this.knex });
 		}
 
 		return super.updateMany(keys, data, opts);

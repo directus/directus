@@ -1,12 +1,14 @@
 import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
+import type { Knex } from 'knex';
 import { CollectionsService } from '../../../services/index.js';
 import type { Collection } from '../../../types/collection.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-export async function getActiveCollections() {
+export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 	const collectionService = new CollectionsService({
 		schema: await getSchema(),
+		knex: opts?.knex,
 	});
 
 	const dbCollections = await collectionService.readByQuery();
@@ -20,8 +22,8 @@ export async function getActiveCollections() {
 	);
 }
 
-export async function countActiveCollections() {
-	const collections = await getActiveCollections();
+export async function countActiveCollections(opts?: { knex?: Knex | undefined }) {
+	const collections = await getActiveCollections(opts);
 
 	return collections.length;
 }
