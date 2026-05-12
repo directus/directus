@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Updated content section spacing and drawer content spacing
+Updated content section spacing and drawer content spacing @HZooly

@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Introduced VersionChip component
+Introduced VersionChip component @formfcw

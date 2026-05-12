@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Updated mobile appearance of drawer sidebar
+Updated mobile appearance of drawer sidebar @formfcw

@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed bookmark icon and color not showing in header
+Fixed bookmark icon and color not showing in header @formfcw
