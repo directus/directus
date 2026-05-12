@@ -11,7 +11,6 @@ export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 	const knex = opts?.knex ?? getDatabase();
 	const schema = await getSchema({ database: knex });
 
-
 	const collectionService = new CollectionsService({
 		schema,
 		knex,
