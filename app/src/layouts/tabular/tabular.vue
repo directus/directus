@@ -289,15 +289,16 @@ function removeField(fieldKey: string) {
 </template>
 
 <style lang="scss" scoped>
-.v-table {
-	--v-table-sticky-offset-top: var(--layout-offset-top);
+.layout-tabular {
+	padding-block-start: var(--content-padding-top-table);
+}
 
+.v-table {
 	display: contents;
 
 	& > :deep(table) {
 		min-inline-size: calc(100% - var(--content-padding)) !important;
 		margin-inline-start: var(--content-padding);
-
 		tr {
 			margin-inline-end: var(--content-padding);
 		}

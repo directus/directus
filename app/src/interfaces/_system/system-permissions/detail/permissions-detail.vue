@@ -226,7 +226,7 @@ function save() {
 			<Presets v-if="currentTab === 'presets'" v-model:permission="permission" :policy="policy" />
 		</div>
 
-		<template v-if="!loading && permission" #actions>
+		<template v-if="!loading && permission" #actions:primary>
 			<Actions :policy-key="policyKey" :permission="permission" @save="save" />
 		</template>
 	</VDrawer>

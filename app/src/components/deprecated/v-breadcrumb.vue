@@ -1,3 +1,8 @@
+<script lang="ts">
+/** @deprecated Build an inline breadcrumb with `v-icon` and `router-link` instead. */
+export default {};
+</script>
+
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';

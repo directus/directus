@@ -1,10 +1,4 @@
-<script setup lang="ts">
-import { useSync } from '@directus/composables';
-import { useElementVisibility, useEventListener } from '@vueuse/core';
-import { clamp } from 'lodash';
-import { computed, ref, watch } from 'vue';
-import { useUserStore } from '@/stores/user';
-
+<script lang="ts">
 type SnapZone = {
 	snapPos: number;
 	width: number;
@@ -14,6 +8,17 @@ type SnapZone = {
 };
 
 export type ResizeableOptions = { snapZones?: SnapZone[]; alwaysShowHandle?: boolean; disableTransition?: boolean };
+
+/** @deprecated Use `@directus/vue-split-panel` instead. */
+export default {};
+</script>
+
+<script setup lang="ts">
+import { useSync } from '@directus/composables';
+import { useElementVisibility, useEventListener } from '@vueuse/core';
+import { clamp } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 const props = withDefaults(
 	defineProps<{

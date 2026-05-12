@@ -34,7 +34,9 @@ useHead({
 <template>
 	<PublicView>
 		<div class="header">
-			<h1 class="type-title">{{ wasSuccessful ? $t('registration_successful_headline') : $t('register') }}</h1>
+			<h1 class="type-display type-display-public">
+				{{ wasSuccessful ? $t('registration_successful_headline') : $t('register') }}
+			</h1>
 		</div>
 
 		<div v-if="wasSuccessful" class="after-success">
@@ -93,7 +95,7 @@ h1 {
 	justify-content: space-between;
 	margin-block-end: 1.125rem;
 
-	.type-title {
+	.type-display {
 		margin-block-end: 0;
 	}
 

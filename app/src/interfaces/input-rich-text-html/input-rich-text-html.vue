@@ -553,8 +553,8 @@ const menuActive = computed(
 				></InterfaceInputCode>
 			</div>
 
-			<template #actions>
-				<PrivateViewHeaderBarActionButton icon="check" @click="saveCode" />
+			<template #actions:primary>
+				<PrivateViewHeaderBarActionButton :label="$t('save')" icon="check" @click="saveCode" />
 			</template>
 		</VDrawer>
 
@@ -612,8 +612,8 @@ const menuActive = computed(
 				/>
 			</div>
 
-			<template #actions>
-				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_image')" icon="check" @click="saveImage" />
+			<template #actions:primary>
+				<PrivateViewHeaderBarActionButton :label="$t('save_image')" icon="check" @click="saveImage" />
 			</template>
 		</VDrawer>
 
@@ -680,8 +680,8 @@ const menuActive = computed(
 				</VTabsItems>
 			</div>
 
-			<template #actions>
-				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_media')" icon="check" @click="saveMedia" />
+			<template #actions:primary>
+				<PrivateViewHeaderBarActionButton :label="$t('save_media')" icon="check" @click="saveMedia" />
 			</template>
 		</VDrawer>
 	</div>

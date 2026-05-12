@@ -5,7 +5,7 @@ import type { AppCollection, Item, PrimaryKey } from '@directus/types';
 import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
+import { useBreakpoints, useEventListener, useLocalStorage } from '@vueuse/core';
 import {
 	type ComponentPublicInstance,
 	computed,
@@ -25,7 +25,6 @@ import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -39,7 +38,6 @@ import VListItemHint from '@/components/v-list-item-hint.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -59,7 +57,7 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
@@ -109,13 +107,7 @@ const isPublishAllowed = computed(() => {
 
 const form = ref<ComponentPublicInstance>();
 
-const scrollParent = computed(() => form.value?.$el?.parentElement);
-const { y: formScrollY } = useScroll(scrollParent);
-const showHeaderShadow = computed(() => formScrollY.value > 0);
-
 const { collection } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
@@ -532,17 +524,6 @@ onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: collectionInfo.value?.name,
-			to: collectionRoute.value,
-		},
-	]);
-
-	return { breadcrumb };
-}
-
 async function saveVersionAction() {
 	if (isSavable.value === false) return;
 
@@ -737,15 +718,7 @@ function useItemNavigation() {
 		}).fullPath;
 	});
 
-	// If there's in-app navigation history, use browser back
-	// Otherwise fall back to collection route
-	const backRoute = computed(() => {
-		if (history.state?.back) {
-			return undefined;
-		}
-
-		return collectionRoute.value;
-	});
+	const backRoute = computed(() => collectionRoute.value);
 
 	return { collectionRoute, backRoute };
 }
@@ -865,11 +838,9 @@ function editDraftVersion() {
 
 	<PrivateView
 		v-else
-		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
 		:back-to="backRoute"
-		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
@@ -890,51 +861,39 @@ function editDraftVersion() {
 			</h1>
 		</template>
 
-		<template #headline>
-			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
-				<VBreadcrumb
-					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-					:items="[{ name: $t('content'), to: '/content' }]"
-					class="headline-breadcrumb"
-				/>
-				<VBreadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
-
-				<VersionMenu
-					v-if="shouldShowVersioning"
-					:collection="collection"
-					:primary-key="resolvedPrimaryKey"
-					:has-edits="hasEdits"
-					:current-version="currentVersion"
-					:versions="versions"
-					:delete-version-loading="deleteVersionLoading"
-					@add="addVersion"
-					@update="updateVersion"
-					@delete="onVersionDelete"
-					@switch="currentVersion = $event"
-				/>
-			</div>
+		<template v-if="shouldShowVersioning" #title-outer:append>
+			<VersionMenu
+				:collection="collection"
+				:primary-key="resolvedPrimaryKey"
+				:has-edits="hasEdits"
+				:current-version="currentVersion"
+				:versions="versions"
+				:delete-version-loading="deleteVersionLoading"
+				@add="addVersion"
+				@update="updateVersion"
+				@delete="onVersionDelete"
+				@switch="currentVersion = $event"
+			/>
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
-			<VButton
+		<template #actions>
+			<PrivateViewHeaderBarActionButton
 				v-if="previewUrl"
-				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
-				rounded
-				icon
-				class="action-preview"
-				:secondary="livePreviewMode === null"
-				small
+				:tooltip="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
+				icon="visibility"
+				variant="ghost"
+				:active="!!livePreviewMode"
 				@click="livePreviewCollapsed = !livePreviewCollapsed"
-			>
-				<VIcon name="visibility" outline small />
-			</VButton>
+			/>
 
 			<VDialog
 				v-if="!isNew && currentVersion === null"
@@ -944,19 +903,15 @@ function editDraftVersion() {
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<VButton
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
+						:tooltip="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
+						icon="delete"
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
-						small
 						@click="on"
-					>
-						<VIcon name="delete" outline small />
-					</VButton>
+					/>
 				</template>
 
 				<VCard>
@@ -981,18 +936,15 @@ function editDraftVersion() {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<VButton
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
-						secondary
+						:tooltip="archiveTooltip"
+						:icon="isArchived ? 'unarchive' : 'archive'"
+						kind="warning"
+						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
-						small
 						@click="on"
-					>
-						<VIcon :name="isArchived ? 'unarchive' : 'archive'" outline small />
-					</VButton>
+					/>
 				</template>
 
 				<VCard>
@@ -1008,71 +960,59 @@ function editDraftVersion() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
+
+		<template #actions:primary>
 			<template v-if="shouldShowVersioning">
-				<VButton v-if="currentVersion === null" rounded icon :tooltip="$t('edit_item')" small @click="editDraftVersion">
-					<VIcon name="edit" small />
-				</VButton>
+				<PrivateViewHeaderBarActionButton
+					v-if="currentVersion === null"
+					:label="$t('edit')"
+					icon="edit"
+					@click="editDraftVersion()"
+				/>
+
 				<template v-else>
-					<VButton
-						rounded
-						icon
+					<PrivateViewHeaderBarActionButton
+						:label="$t('save')"
+						:tooltip="translateShortcut(['meta', 's'])"
+						icon="beenhere"
 						secondary
-						:tooltip="$t('save_version')"
 						:loading="saveVersionLoading"
 						:disabled="!isSavable"
-						small
 						@click="saveVersionAction()"
-					>
-						<VIcon name="beenhere" small />
-					</VButton>
+					/>
 
-					<VButton
-						rounded
-						icon
-						small
+					<PrivateViewHeaderBarActionButton
+						:label="$t('publish')"
+						:tooltip="translateShortcut(['meta', 'alt', 'p'])"
+						icon="public"
 						:disabled="!isPublishAllowed"
-						:tooltip="`${$t('publish')} (${translateShortcut(['meta', 'alt', 'p'])})`"
 						@click="onVersionPublishCompare()"
 					>
-						<VIcon name="public" small />
-
-						<template #append-outer>
-							<VMenu
-								v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isPublishAllowed"
-								show-arrow
-							>
-								<template #activator="{ toggle }">
-									<VIcon class="version-more-options" name="more_vert" clickable @click="toggle" />
-								</template>
-
-								<VList>
-									<VListItem clickable @click="onVersionPublishCompare(true)">
-										<VListItemIcon><VIcon name="public" /></VListItemIcon>
-										<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
-										<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
-									</VListItem>
-								</VList>
-							</VMenu>
+						<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
+							<VList>
+								<VListItem clickable @click="onVersionPublishCompare(true)">
+									<VListItemIcon><VIcon name="public" /></VListItemIcon>
+									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
+									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
+								</VListItem>
+							</VList>
 						</template>
-					</VButton>
+					</PrivateViewHeaderBarActionButton>
 				</template>
 			</template>
+
 			<template v-else>
-				<VButton
-					v-if="currentVersion === null"
-					rounded
-					icon
-					:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
+				<PrivateViewHeaderBarActionButton
+					:label="$t('save')"
+					:tooltip="!saveAllowed ? $t('not_allowed') : undefined"
+					icon="check"
 					:loading="saving"
 					:disabled="!isSavable"
-					small
-					@click="saveAndQuit"
+					@click="saveAndQuit()"
 				>
-					<VIcon name="check" small />
-
-					<template #append-outer>
+					<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
 						<SaveOptions
-							v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 							:disabled-options="disabledOptions"
 							@save-and-stay="saveAndStay"
 							@save-and-add-new="saveAndAddNew"
@@ -1080,10 +1020,8 @@ function editDraftVersion() {
 							@discard-and-stay="discardAndStay"
 						/>
 					</template>
-				</VButton>
+				</PrivateViewHeaderBarActionButton>
 			</template>
-
-			<FlowDialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
@@ -1234,16 +1172,13 @@ function editDraftVersion() {
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
+
+		<FlowDialogs v-bind="flowDialogsContext" />
 	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);
@@ -1262,50 +1197,6 @@ function editDraftVersion() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
-}
-
-.headline-wrapper {
-	display: flex;
-	align-items: center;
-	gap: 0.1875rem;
-}
-
-.version-more-options.v-icon {
-	--focus-ring-offset: var(--focus-ring-offset-invert);
-
-	color: var(--theme--foreground-subdued);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
-}
-
-.has-content-versioning {
-	:deep(.header-bar .title-container) {
-		flex-direction: column;
-		justify-content: center;
-		gap: 0;
-		align-items: start;
-
-		.headline {
-			opacity: 1;
-			inset-block-start: 0.1875rem;
-		}
-
-		.title {
-			inset-block-start: 0.25rem;
-		}
-
-		@include mixins.breakpoint-up('sm') {
-			opacity: 1;
-		}
-	}
-}
-
-.headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (width < 33.75rem) {
-		display: none;
-	}
 }
 
 .content-split {

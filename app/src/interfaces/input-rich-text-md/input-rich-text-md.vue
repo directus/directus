@@ -391,7 +391,6 @@ const menuActive = computed(() => imageDialogOpen.value);
 				:model-value="[view]"
 				class="view"
 				mandatory
-				rounded
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
 				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :class="[{ active: view !== 'preview' }]">
@@ -403,7 +402,7 @@ const menuActive = computed(() => imageDialogOpen.value);
 			</VItemGroup>
 		</div>
 
-		<div ref="codemirrorEl"></div>
+		<div ref="codemirrorEl" class="codemirror-no-bg-color"></div>
 		<template v-if="softLength">
 			<span
 				class="remaining"
@@ -457,10 +456,10 @@ const menuActive = computed(() => imageDialogOpen.value);
 	font-family: var(--theme--fonts--sans--font-family);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	box-shadow: var(--theme--form--field--input--box-shadow);
 	transition-duration: var(--fast);
 	transition-timing-function: var(--transition);
-	transition-property: box-shadow, border-color;
+	transition-property: border-color;
+	background-color: var(--theme--form--field--input--background);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
@@ -478,12 +477,15 @@ const menuActive = computed(() => imageDialogOpen.value);
 
 .interface-input-rich-text-md:not(.disabled):hover {
 	border-color: var(--theme--form--field--input--border-color-hover);
-	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
 .interface-input-rich-text-md:not(.disabled):focus-within {
-	border-color: var(--theme--form--field--input--border-color-focus);
-	box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+	outline-offset: var(--focus-ring-offset-invert);
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror.CodeMirror-focused) {
+	outline: 0;
 }
 
 textarea {

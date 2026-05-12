@@ -2,8 +2,8 @@
 import { omit } from 'lodash';
 import { computed } from 'vue';
 import ModuleBarAvatar from './module-bar-avatar.vue';
+import ModuleBarButton from './module-bar-button.vue';
 import ModuleBarLogo from './module-bar-logo.vue';
-import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
@@ -52,18 +52,15 @@ const modules = computed(() => {
 		<ModuleBarLogo />
 
 		<div class="modules">
-			<VButton
+			<ModuleBarButton
 				v-for="modulePart in modules"
 				:key="modulePart.id"
 				v-tooltip.right="modulePart.name"
-				icon
-				x-large
 				:to="modulePart.to"
 				:href="modulePart.href"
-				tile
 			>
 				<VIcon :name="modulePart.icon" />
-			</VButton>
+			</ModuleBarButton>
 		</div>
 
 		<ModuleBarAvatar />
@@ -72,13 +69,13 @@ const modules = computed(() => {
 
 <style lang="scss" scoped>
 .module-bar {
+	--module-bar-width: 3.375rem;
+	--module-bar-gap: 1.375rem;
 	--focus-ring-color: var(--theme--navigation--modules--button--foreground);
-	--focus-ring-offset: var(--focus-ring-offset-inset);
-	--focus-ring-radius: 0;
 
 	display: flex;
 	flex-direction: column;
-	inline-size: 3.375rem;
+	inline-size: var(--module-bar-width);
 	block-size: 100%;
 	background-color: var(--theme--navigation--modules--background);
 	border-inline-end: var(--theme--navigation--modules--border-width) solid
@@ -88,21 +85,13 @@ const modules = computed(() => {
 	box-sizing: content-box;
 
 	.modules {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		flex-grow: 1;
+		padding-block: calc(var(--module-bar-gap) / 2);
+		gap: var(--module-bar-gap);
 		overflow: hidden auto;
-	}
-
-	.v-button {
-		--v-button-color: var(--theme--navigation--modules--button--foreground);
-		--v-button-color-hover: var(--theme--navigation--modules--button--foreground-hover);
-		--v-button-color-active: var(--theme--navigation--modules--button--foreground-active);
-		--v-button-background-color: var(--theme--navigation--modules--button--background);
-		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
-		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
-
-		:deep(.active) {
-			--focus-ring-color: var(--v-button-color-active);
-		}
 	}
 }
 

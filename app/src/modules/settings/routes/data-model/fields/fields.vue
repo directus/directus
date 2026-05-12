@@ -6,7 +6,6 @@ import { computed, ref, toRefs } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -79,18 +78,14 @@ function discardAndLeave() {
 
 <template>
 	<PrivateView :title="formatTitle(collection)" show-back back-to="/settings/data-model">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
-		</template>
-
 		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-if="isSystemCollection(collection) === false"
 						v-tooltip.bottom="$t('delete_collection')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="!item"
 						icon="delete"
 						@click="on"
@@ -110,9 +105,11 @@ function discardAndLeave() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:loading="saving"
 				:disabled="hasEdits === false"
 				icon="check"
@@ -171,17 +168,12 @@ function discardAndLeave() {
 }
 
 .collections-item {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .fields {
 	max-inline-size: 45rem;
 	margin-block-end: 2.6875rem;
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 </style>
