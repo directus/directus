@@ -50,20 +50,6 @@ type LicenseStore = {
 	status: LicenseStatus | undefined;
 };
 
-export async function getLicense(options?: { database?: Knex }): Promise<License> {
-	if (licenseCache) return licenseCache;
-
-	const { token } = await getLicenseToken(options);
-
-	if (!token) {
-		licenseCache = CORE_LICENSE;
-	} else {
-		licenseCache = await verifyLicense(token);
-	}
-
-	return licenseCache;
-}
-
 let licenseManager: LicenseManager | undefined;
 
 export function getLicenseManager(): LicenseManager {
@@ -171,6 +157,20 @@ export class LicenseManager {
 		} finally {
 			this.store = existingStore;
 		}
+	}
+
+	public async getLicense(options?: { database?: Knex }): Promise<License> {
+		if (licenseCache) return licenseCache;
+
+		const { token } = await getLicenseToken(options);
+
+		if (!token) {
+			licenseCache = CORE_LICENSE;
+		} else {
+			licenseCache = (await this.verify(token)) ?? CORE_LICENSE;
+		}
+
+		return licenseCache;
 	}
 
 	public async getStatus() {
@@ -507,7 +507,7 @@ export class LicenseManager {
 			entitlements = preview.entitlements;
 		} else if (!('licenseKey' in options)) {
 			// possible resolution during current tier
-			const license = await getLicense();
+			const license = await this.getLicense();
 			entitlements = license.entitlements;
 		}
 

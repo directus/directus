@@ -3,7 +3,7 @@ import { type LicensePreviewOutput, type ReadLicenseOutput, ResolveInput } from 
 import express from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getEntitlementManager } from '../license/index.js';
-import { getLicense, getLicenseManager } from '../license/manager.js';
+import { getLicenseManager } from '../license/manager.js';
 import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -17,7 +17,7 @@ router.get(
 		const licenseManager = getLicenseManager();
 		const entitlementManager = getEntitlementManager();
 
-		const license = await getLicense();
+		const license = await licenseManager.getLicense();
 
 		const payload: ReadLicenseOutput = {
 			name: license.meta.name,
