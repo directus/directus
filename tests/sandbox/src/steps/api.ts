@@ -118,7 +118,6 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting Server');
 	const inspector = await getPort(Number(opts.port) + 1);
 	let api;
-	let timeout: NodeJS.Timeout;
 	const inspect = opts.inspect ? [`--inspect=${inspector}`] : [];
 
 	if (opts.dev) {
@@ -135,6 +134,11 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		});
 	}
 
+	const { promise: startup, resolve, reject } = Promise.withResolvers<void>();
+
+	// In case the api takes too long to start
+	const timeout = setTimeout(() => reject(new Error('timeout starting directus')), 60_000);
+
 	api.on('error', (err) => {
 		logger.error(err.toString());
 	});
@@ -145,7 +149,7 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		const error = new Error(`Api stopped with error code ${code}`);
 		clearTimeout(timeout);
 		logger.error(error.toString());
-		throw error;
+		reject(error);
 	});
 
 	api.stderr.on('data', (data) => {
@@ -161,24 +165,20 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		logger.error(msg);
 	});
 
-	await new Promise((resolve, reject) => {
-		api.stdout.on('data', (data) => {
-			const msg = String(data);
+	api.stdout.on('data', (data) => {
+		const msg = String(data);
 
-			if (msg.includes(`Server started at http://${env.HOST}:${opts.port}`)) {
-				resolve(undefined);
-			} else if (msg.includes(`ERROR: Port ${opts.port} is already in use`)) {
-				reject(new Error(msg));
-			} else {
-				logger.debug(msg);
-			}
-		});
-
-		// In case the api takes too long to start
-		timeout = setTimeout(() => {
-			reject(new Error('timeout starting directus'));
-		}, 60_000);
+		if (msg.includes(`Server started at http://${env.HOST}:${opts.port}`)) {
+			resolve();
+		} else if (msg.includes(`ERROR: Port ${opts.port} is already in use`)) {
+			reject(new Error(msg));
+		} else {
+			logger.debug(msg);
+		}
 	});
+
+	await startup;
+	clearTimeout(timeout);
 
 	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 

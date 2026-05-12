@@ -224,10 +224,7 @@ export class AuthenticationService {
 			{ knex: this.knex },
 		);
 
-		const licenseManager = getLicenseManager();
-		const isLocked = await licenseManager.isLocked();
-
-		if (isLocked && globalAccess.admin === false) {
+		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
 			const loginError = new ServiceUnavailableError({
 				reason: 'License is in a locked state and must be resolved',
 				service: 'license',
@@ -397,10 +394,7 @@ export class AuthenticationService {
 			{ knex: this.knex },
 		);
 
-		const licenseManager = getLicenseManager();
-		const isLocked = await licenseManager.isLocked();
-
-		if (isLocked && globalAccess.admin === false) {
+		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
 			throw new ServiceUnavailableError({
 				reason: 'License is in a locked state and must be resolved',
 				service: 'license',

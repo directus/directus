@@ -10,7 +10,8 @@ export async function getActiveCollections(opts?: { knex?: Knex | undefined }) {
 
 	const knex = opts?.knex ?? getDatabase();
 	const schema = await getSchema({ database: knex });
-	
+
+
 	const collectionService = new CollectionsService({
 		schema,
 		knex,
@@ -41,11 +42,9 @@ export async function resolveCollections(collections: string[]) {
 
 	await Promise.allSettled(
 		collections.map((collection) => {
-
 			return collectionsService.updateOne(collection, {
-				// @ts-ignore TODO fix collection type
-				meta: { status: 'inactive' }
-			})
-		})
+				meta: { status: 'inactive' },
+			});
+		}),
 	);
 }

@@ -41,7 +41,6 @@ export default abstract class SocketController {
 	constructor(httpServer: httpServer, configPrefix: string) {
 		this.server = new WebSocketServer({
 			noServer: true,
-			// @ts-ignore TODO Remove once @types/ws has been updated
 			autoPong: false,
 		});
 
@@ -119,10 +118,7 @@ export default abstract class SocketController {
 		const { pathname, query } = parse(request.url!, true);
 		if (pathname !== this.endpoint) return;
 
-		const licenseManager = getLicenseManager();
-		const isLocked = await licenseManager.isLocked();
-
-		if (isLocked) {
+		if (await getLicenseManager().isLocked()) {
 			logger.debug('WebSocket upgrade denied - License is in a locked state and must be resolved');
 			socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
 			socket.destroy();
@@ -272,10 +268,7 @@ export default abstract class SocketController {
 				}
 			}
 
-			const licenseManager = getLicenseManager();
-			const isLocked = await licenseManager.isLocked();
-
-			if (isLocked) {
+			if (await getLicenseManager().isLocked()) {
 				const error = new WebSocketError(
 					'license',
 					'SERVICE_UNAVAILABLE',
