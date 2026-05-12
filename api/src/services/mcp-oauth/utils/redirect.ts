@@ -18,7 +18,8 @@ export function matchRedirectUri(requested: string, registered: string[]): boole
 				return (
 					regUrl.protocol === reqUrl.protocol &&
 					regUrl.hostname === reqUrl.hostname &&
-					regUrl.pathname === reqUrl.pathname
+					regUrl.pathname === reqUrl.pathname &&
+					regUrl.search === reqUrl.search
 				);
 			}
 		} catch {

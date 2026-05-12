@@ -8,7 +8,7 @@ import { getRootPath } from '@/utils/get-root-path';
  */
 export function navigateAfterLogin(router: Router, target: string): void {
 	// Reject non-relative paths to prevent open redirect
-	if (!target.startsWith('/') || target.startsWith('//')) {
+	if (!target.startsWith('/') || target.startsWith('//') || target.includes('\\')) {
 		router.push('/');
 		return;
 	}

@@ -7,6 +7,7 @@ import { getMcpUrls } from '../ai/mcp/utils.js';
 import getDatabase from '../database/index.js';
 import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
 import { McpOAuthService, OAuthError } from '../services/mcp-oauth/index.js';
+import { SettingsService } from '../services/settings.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
@@ -129,6 +130,55 @@ function setNoCacheHeaders(_req: Request, res: Response, next: NextFunction) {
 	next();
 }
 
+/**
+ * Middleware: check mcp_enabled + mcp_oauth_enabled settings.
+ * Env vars (MCP_ENABLED, MCP_OAUTH_ENABLED) are already gated at the app.ts mount level.
+ */
+async function checkOAuthSettings(req: Request, res: Response, next: NextFunction) {
+	const db = getDatabase();
+	const settingsService = new SettingsService({ schema: req.schema ?? (await getSchema()) });
+
+	const settings = await settingsService.readSingleton({ fields: ['mcp_enabled', 'mcp_oauth_enabled'] });
+
+	if (toBoolean(settings?.mcp_enabled) !== true || toBoolean(settings?.mcp_oauth_enabled) !== true) {
+		// For browser endpoints (authorize), render error page
+		if (req.path.includes('/authorize')) {
+			const [fullSettings, user] = await Promise.all([
+				settingsService.readSingleton({
+					fields: ['project_name', 'project_color', 'project_logo', 'default_appearance'],
+				}),
+				req.accountability?.user
+					? db('directus_users').where('id', req.accountability.user).select('appearance').first()
+					: null,
+			]);
+
+			const pageOpts: PageOpts = {
+				projectName: fullSettings?.project_name ?? 'Directus',
+				projectColor: fullSettings?.project_color ?? '#6644ff',
+				logoUrl: null,
+				appearance: (user?.appearance ?? fullSettings?.default_appearance ?? 'auto') as string,
+			};
+
+			res.set('Content-Type', 'text/html; charset=utf-8');
+			res.status(403).send(await renderErrorPage('MCP OAuth is disabled in project settings.', pageOpts));
+			return;
+		}
+
+		// For API endpoints (register, token, revoke), return JSON error
+		res.set('Access-Control-Allow-Origin', '*');
+		if (req.path.includes('/token')) noCache(res);
+
+		res.status(403).json({
+			error: 'mcp_oauth_disabled',
+			error_description: 'MCP OAuth is disabled in project settings.',
+		});
+
+		return;
+	}
+
+	next();
+}
+
 // ---------------------------------------------------------------------------
 // Rate limiter (lazy init to avoid env access at import time)
 // ---------------------------------------------------------------------------
@@ -169,6 +219,11 @@ let rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => vo
  * `/mcp-oauth/register` (DCR), `/mcp-oauth/token`, `/mcp-oauth/revoke`.
  */
 export const mcpOAuthPublicRouter = Router();
+
+mcpOAuthPublicRouter.use(
+	['/mcp-oauth', '/.well-known/oauth-authorization-server', '/.well-known/oauth-protected-resource'],
+	asyncHandler(checkOAuthSettings),
+);
 
 // Discovery: .well-known/oauth-protected-resource (with and without RFC 9728 path insertion)
 mcpOAuthPublicRouter.get(
@@ -228,27 +283,14 @@ mcpOAuthPublicRouter.get(
 
 		// Load project settings and user appearance
 		const db = getDatabase();
+		const settingsService = new SettingsService({ schema });
 
 		const [settings, user] = await Promise.all([
-			db('directus_settings')
-				.select('project_name', 'project_color', 'project_logo', 'default_appearance', 'mcp_enabled')
-				.first(),
+			settingsService.readSingleton({
+				fields: ['project_name', 'project_color', 'project_logo', 'default_appearance'],
+			}),
 			db('directus_users').where('id', accountability.user).select('appearance').first(),
 		]);
-
-		if (toBoolean(settings?.mcp_enabled) !== true) {
-			const pageOpts = {
-				projectName: settings?.project_name ?? 'Directus',
-				projectColor: settings?.project_color ?? '#6644ff',
-				logoUrl: null,
-				appearance: (user?.appearance ?? settings?.default_appearance ?? 'auto') as string,
-			};
-
-			res.set('Content-Type', 'text/html; charset=utf-8');
-			noCache(res);
-			res.status(403).send(await renderErrorPage('MCP is disabled in project settings.', pageOpts));
-			return;
-		}
 
 		const projectName = settings?.project_name ?? 'Directus';
 		const projectColor = settings?.project_color ?? '#6644ff';
@@ -296,7 +338,11 @@ mcpOAuthPublicRouter.get(
 
 			res.send(await renderConsentPage(consentData, pageOpts));
 		} catch (err) {
-			if (err instanceof OAuthError && err.redirectable) {
+			if (!(err instanceof OAuthError)) {
+				throw err;
+			}
+
+			if (err.redirectable) {
 				// Trusted redirect URI -- redirect with error per RFC 6749 Section 4.1.2.1
 				const redirectUri = req.query['redirect_uri'] as string;
 				const state = req.query['state'] as string | undefined;
@@ -312,14 +358,11 @@ mcpOAuthPublicRouter.get(
 			}
 
 			// Pre-trust error or unknown -- render local error page
-			const status = err instanceof OAuthError ? err.status : 400;
-			const description = err instanceof OAuthError ? err.description : 'Invalid authorization request';
-
 			const pageOpts = { projectName, projectColor, logoUrl, appearance };
 
 			res.set('Content-Type', 'text/html; charset=utf-8');
 			noCache(res);
-			res.status(status).send(await renderErrorPage(description, pageOpts));
+			res.status(err.status).send(await renderErrorPage(err.description, pageOpts));
 		}
 	}),
 );

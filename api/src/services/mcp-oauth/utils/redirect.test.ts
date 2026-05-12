@@ -31,6 +31,12 @@ describe('matchRedirectUri', () => {
 			expect(matchRedirectUri('http://localhost:3000/other', ['http://localhost/callback'])).toBe(false);
 		});
 
+		it('still requires matching query string on loopback', () => {
+			expect(matchRedirectUri('http://localhost:3000/callback?code=two', ['http://localhost/callback?code=one'])).toBe(
+				false,
+			);
+		});
+
 		it('still requires matching protocol on loopback', () => {
 			expect(matchRedirectUri('https://localhost:3000/cb', ['http://localhost/cb'])).toBe(false);
 		});

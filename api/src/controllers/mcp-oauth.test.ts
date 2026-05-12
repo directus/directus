@@ -13,6 +13,15 @@ const mockDbChain = {
 	first: vi.fn().mockResolvedValue({ mcp_enabled: true }),
 };
 
+const mockSettingsReadSingleton = vi.fn().mockResolvedValue({
+	mcp_enabled: true,
+	mcp_oauth_enabled: true,
+	project_name: 'Directus',
+	project_color: '#6644ff',
+	project_logo: null,
+	default_appearance: 'auto',
+});
+
 vi.mock('../database/index.js', () => ({
 	default: vi.fn(() => vi.fn().mockReturnValue(mockDbChain)),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -82,6 +91,12 @@ vi.mock('../services/mcp-oauth/index.js', () => {
 	return { McpOAuthService, OAuthError };
 });
 
+vi.mock('../services/settings.js', () => ({
+	SettingsService: vi.fn().mockImplementation(() => ({
+		readSingleton: mockSettingsReadSingleton,
+	})),
+}));
+
 vi.mock('../utils/get-schema.js', () => ({
 	getSchema: vi.fn().mockResolvedValue({
 		collections: {},
@@ -143,6 +158,37 @@ function createRedirectResponse() {
 describe('mcp-oauth controller', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		mockSettingsReadSingleton.mockResolvedValue({
+			mcp_enabled: true,
+			mcp_oauth_enabled: true,
+			project_name: 'Directus',
+			project_color: '#6644ff',
+			project_logo: null,
+			default_appearance: 'auto',
+		});
+	});
+
+	describe('settings gate', () => {
+		test('disabled token endpoint response includes CORS and no-store headers', async () => {
+			mockSettingsReadSingleton.mockResolvedValueOnce({
+				mcp_enabled: true,
+				mcp_oauth_enabled: false,
+			});
+
+			const settingsGate = (mcpOAuthPublicRouter as any).stack[0].handle;
+			const req = createMockRequest({ path: '/mcp-oauth/token' });
+			const res = createMockResponse();
+			const next = vi.fn();
+
+			await settingsGate(req, res, next);
+
+			expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
+			expect(res.set).toHaveBeenCalledWith('Cache-Control', 'no-store');
+			expect(res.set).toHaveBeenCalledWith('Pragma', 'no-cache');
+			expect(res.status).toHaveBeenCalledWith(403);
+			expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: 'mcp_oauth_disabled' }));
+			expect(next).not.toHaveBeenCalled();
+		});
 	});
 
 	// -----------------------------------------------------------------------

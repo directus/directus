@@ -62,6 +62,15 @@ describe('navigateAfterLogin', () => {
 		});
 	});
 
+	describe('unsafe paths', () => {
+		test('rejects paths containing backslashes', () => {
+			const router = makeRouter();
+			navigateAfterLogin(router as any, '/\\evil.com');
+			expect(router.push).toHaveBeenCalledWith('/');
+			expect(hrefSetter).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('/mcp-oauth/ paths', () => {
 		test('sets window.location.href instead of calling router.push', () => {
 			mockGetRootPath.mockReturnValue('/');
