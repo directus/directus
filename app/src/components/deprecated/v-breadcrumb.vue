@@ -1,12 +1,4 @@
 <script lang="ts">
-/** @deprecated Build an inline breadcrumb with `v-icon` and `router-link` instead. */
-export default {};
-</script>
-
-<script setup lang="ts">
-import { RouterLink } from 'vue-router';
-import VIcon from '@/components/v-icon/v-icon.vue';
-
 interface Breadcrumb {
 	to: string;
 	name: string;
@@ -18,6 +10,14 @@ interface Props {
 	/** An array of objects which information about each section */
 	items?: Breadcrumb[];
 }
+
+/** @deprecated Build an inline breadcrumb with `v-icon` and `router-link` instead. */
+export default {};
+</script>
+
+<script setup lang="ts">
+import { RouterLink } from 'vue-router';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 withDefaults(defineProps<Props>(), {
 	items: () => [],
