@@ -29,12 +29,6 @@ setup_info: Let's create your admin account and get your project up and running.
 setup_license_key_notice: >
   If have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be
   eligible for our {oig}.
-setup_license_notice: >
-  You can continue to use Directus for free without a software key, provided the project stays within the Core tier's
-  limits.
-setup_license_follow_up: >
-  Alternatively, qualifying organizations with under $5M in annual revenue, funding, or operating budget can obtain a
-  free license without limits. Check eligibility for the {oig}.
 setup_save_accept_license: >
   By hitting save, you accept the terms of the {directusMscl} and {privacyPolicy}.
 setup_license_invalid: >
