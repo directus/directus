@@ -56,7 +56,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields } = useLayoutQuery();
 
-		const versionKey = useVersionQuery();
+		const routeVersionKey = useVersionQuery();
+		const versionKey = computed(() => (props.selectMode ? null : routeVersionKey.value));
 
 		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
