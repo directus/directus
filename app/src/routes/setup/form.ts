@@ -7,36 +7,50 @@ import z from 'zod';
 import { validateItem } from '@/utils/validate-item';
 
 export const SetupValidator = z.object({
-	first_name: z.string().min(1),
-	last_name: z.string().min(1),
-	project_owner: z.email(),
-	password: z.string().min(1),
+	admin: z.object({
+		email: z.email(),
+		password: z.string().min(1),
+		first_name: z.string().min(1),
+		last_name: z.string().min(1),
+	}),
 	password_confirm: z.string().min(1),
 	license: z.literal(true),
 });
 
 export const FormValidator = z.object({
-	first_name: z.string(),
-	last_name: z.string(),
-	project_owner: z.email(),
-	password: z.string(),
+	admin: z.object({
+		email: z.email(),
+		password: z.string(),
+		first_name: z.string(),
+		last_name: z.string(),
+	}),
 	password_confirm: z.string(),
 	license: z.literal(true),
 	license_key: LICENSE_KEY.nullable(),
-	product_updates: z.boolean().optional(),
+	owner: z.object({
+		project_owner: z.string().nullable(),
+		project_usage: z.enum(['personal', 'commercial', 'community']).nullable(),
+		org_name: z.string().nullable(),
+		product_updates: z.boolean(),
+	}),
 });
 
 export const defaultValues: SetupForm = {
-	first_name: null,
-	last_name: null,
-	project_owner: null,
-	password: null,
+	admin: {
+		email: null,
+		password: null,
+		first_name: null,
+		last_name: null,
+	},
 	password_confirm: null,
 	license: false,
 	license_key: null,
-	product_updates: false,
-	project_usage: null,
-	org_name: null,
+	owner: {
+		project_owner: null,
+		project_usage: null,
+		org_name: null,
+		product_updates: false,
+	},
 };
 
 export type ValidationError = Omit<FailedValidationErrorExtensions, 'type'> & { type: string };
@@ -174,21 +188,24 @@ export function useKycFields(): ComputedRef<Field[]> {
 }
 
 export function buildSetupPayload(form: Partial<SetupForm>, showAdminStep: boolean) {
+	const adminEmail = form.admin?.email ?? null;
+
 	return {
-		...(showAdminStep && {
-			admin: {
-				email: form.project_owner!,
-				password: form.password!,
-				...(form.first_name && { first_name: form.first_name }),
-				...(form.last_name && { last_name: form.last_name }),
-			},
-		}),
+		...(showAdminStep &&
+			form.admin && {
+				admin: {
+					email: form.admin.email!,
+					password: form.admin.password!,
+					...(form.admin.first_name && { first_name: form.admin.first_name }),
+					...(form.admin.last_name && { last_name: form.admin.last_name }),
+				},
+			}),
 		...(form.license_key && { license_key: form.license_key }),
 		owner: {
-			project_owner: form.project_owner ?? null,
-			project_usage: form.project_usage ?? null,
-			org_name: form.org_name ?? null,
-			product_updates: form.product_updates ?? false,
+			project_owner: form.owner?.project_owner ?? adminEmail,
+			project_usage: form.owner?.project_usage ?? null,
+			org_name: form.owner?.org_name ?? null,
+			product_updates: form.owner?.product_updates ?? false,
 		},
 	};
 }

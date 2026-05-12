@@ -57,8 +57,7 @@ watch(projectUsage, () => {
 const projectUsageChoices = computed(() => [
 	{ text: t('project_usage_personal'), value: 'personal' },
 	{ text: t('project_usage_commercial'), value: 'commercial' },
-	{ text: t('project_usage_nonprofit'), value: 'nonprofit' },
-	{ text: t('project_usage_education'), value: 'education' },
+	{ text: t('project_usage_community'), value: 'community' },
 ]);
 
 async function save() {

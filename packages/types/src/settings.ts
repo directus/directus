@@ -90,15 +90,19 @@ export type Settings = {
 export type OwnerInformation = {
 	project_owner: string | null;
 	product_updates: boolean;
-	project_usage: string | null;
+	project_usage: 'personal' | 'commercial' | 'community' | null;
 	org_name: string | null;
 };
 
 export type SetupForm = {
-	first_name: string | null;
-	last_name: string | null;
-	password: string | null;
+	admin: {
+		email: string | null;
+		password: string | null;
+		first_name: string | null;
+		last_name: string | null;
+	};
 	password_confirm: string | null;
 	license: boolean;
 	license_key: string | null;
-} & OwnerInformation;
+	owner: OwnerInformation;
+};
