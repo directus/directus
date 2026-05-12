@@ -508,7 +508,7 @@ export class UsersService extends ItemsService {
 			const mailService = new MailService(serviceOptions);
 			const payload = { email: input.email, scope: 'pending-registration' };
 
-			const token = jwt.sign(payload, env['SECRET'] as string, {
+			const token = jwt.sign(payload, getSecret(), {
 				expiresIn: env['EMAIL_VERIFICATION_TOKEN_TTL'] as StringValue | number,
 				issuer: 'directus',
 			});
@@ -544,7 +544,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async verifyRegistration(token: string): Promise<string> {
-		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+		const { email, scope } = verifyJWT(token, getSecret()) as {
 			email: string;
 			scope: string;
 		};

@@ -2,7 +2,7 @@
 
 exports[`Mount component 1`] = `
 "<div data-v-51167fde="" class="v-divider inlineTitle">
-  <!--v-if--><span data-v-51167fde="" class="wrapper"><span data-v-51167fde="" class="type-text">Default slot</span></span>
+  <!--v-if--><span data-v-51167fde="" class="wrapper"><span data-v-51167fde="" class="text">Default slot</span></span>
   <hr data-v-51167fde="" aria-orientation="horizontal">
 </div>"
 `;

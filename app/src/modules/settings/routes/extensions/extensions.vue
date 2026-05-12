@@ -7,7 +7,6 @@ import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/ExtensionItem.vue';
 import { ExtensionType } from './types';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VInfo from '@/components/v-info.vue';
 import VList from '@/components/v-list.vue';
 import { useExtensionsStore } from '@/stores/extensions';
@@ -36,8 +35,6 @@ const extensionsByType = computed(() => {
 
 <template>
 	<PrivateView :title="$t('extensions')" icon="category">
-		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>

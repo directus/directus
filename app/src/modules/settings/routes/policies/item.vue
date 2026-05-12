@@ -5,7 +5,6 @@ import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -13,7 +12,6 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useUserStore } from '@/stores/user';
@@ -119,17 +117,13 @@ function discardAndStay() {
 		show-back
 		back-to="/settings/policies"
 	>
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
-		</template>
-
 		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null"
 						icon="delete"
 						@click="on"
@@ -149,20 +143,25 @@ function discardAndStay() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
-			<VButton rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
-				<VIcon name="check" small />
-
-				<template #append-outer>
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton
+				:label="$t('save')"
+				icon="check"
+				:loading="saving"
+				:disabled="!hasEdits"
+				@click="saveAndQuit"
+			>
+				<template v-if="hasEdits" #split-menu>
 					<SaveOptions
-						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</VButton>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>
@@ -210,11 +209,6 @@ function discardAndStay() {
 	--v-button-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-subdued);
 	--v-button-color-hover: var(--theme--primary);
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 
 .content {

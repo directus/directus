@@ -7,7 +7,6 @@ import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -30,8 +29,8 @@ import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
-import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
+import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
 import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 
 const { t } = useI18n();
@@ -167,19 +166,18 @@ function onFlowDrawerCompletion(id: string) {
 
 <template>
 	<PrivateView :title="$t('flows')" icon="bolt">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
 			<EntitlementRemaining entitlement-key="flows" />
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
+				:tooltip="createAllowed ? undefined : $t('not_allowed')"
+				:label="$t('create_flow')"
 				:disabled="createAllowed === false"
 				icon="add"
 				@click="openCreateFlow"
@@ -292,6 +290,7 @@ function onFlowDrawerCompletion(id: string) {
 <style scoped>
 .v-table {
 	padding: var(--content-padding);
+	padding-block-start: var(--content-padding-top-table);
 }
 
 .ctx-toggle {

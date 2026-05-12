@@ -128,9 +128,9 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 				<div class="error-buttons-container">
 					<VButton outlined class="retry-button" x-small danger @click="aiStore.retry()">
 						<VIcon name="refresh" x-small />
-						{{ $t('ai.retry') }}
+						{{ $t('retry') }}
 					</VButton>
-					<VButton class="clear-button" outline x-small danger @click="aiStore.reset()">
+					<VButton class="clear-button" outlined x-small danger @click="aiStore.reset()">
 						{{ $t('ai.clear_conversation') }}
 					</VButton>
 				</div>
@@ -141,7 +141,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 		<div v-if="hasProviders" class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
-				<VButton icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
+				<VButton icon secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
 					<VIcon small name="arrow_downward" />
 				</VButton>
 			</div>
@@ -175,7 +175,6 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .messages-container {
 	position: relative;
-	padding-inline: 0.4375rem;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -193,7 +192,6 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .input-container {
 	flex-shrink: 0;
 	position: relative;
-	padding-inline-end: 0.6875rem;
 }
 
 .error-message {
@@ -233,7 +231,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	pointer-events: none;
 }
 
-.scroll-to-bottom-btn {
+.scroll-to-bottom-btn :deep(.button) {
 	box-shadow: 0 0 8px rgb(0 0 0 / 0.15);
 	pointer-events: all;
 }
@@ -243,7 +241,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	inset: 0;
 	z-index: 100;
 	background-color: var(--theme--primary-background);
-	border: 2px dashed var(--theme--primary);
+	border: var(--theme--border-width) dashed var(--theme--primary);
 	display: flex;
 	flex-direction: column;
 	align-items: center;

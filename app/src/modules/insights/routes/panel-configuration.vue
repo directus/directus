@@ -135,16 +135,15 @@ const stageChanges = () => {
 <template>
 	<VDrawer
 		:model-value="isOpen"
-		:title="panel?.name || $t('panel')"
-		:subtitle="$t('panel_options')"
+		:title="panel?.name || $t('panel_options')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
 		@cancel="router.push({ name: 'insights-dashboard', params: { primaryKey: dashboardKey } })"
 		@apply="stageChanges"
 	>
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('done')"
+				:label="$t('done')"
 				:disabled="!panel.type"
 				icon="check"
 				@click="stageChanges"

@@ -1,6 +1,6 @@
 import type { License } from '@directus/license';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getLicense, getLicenseManager } from '../license/manager.js';
+import { getLicenseManager } from '../license/manager.js';
 import * as schedule from '../utils/schedule.js';
 import licenseSchedule from './license.js';
 import { durationToCron } from './utils/duration-to-cron.js';
@@ -16,7 +16,6 @@ vi.mock('@directus/env', async () => {
 });
 
 vi.mock('../license/manager.js', () => ({
-	getLicense: vi.fn(),
 	getLicenseManager: vi.fn(),
 }));
 
@@ -29,7 +28,6 @@ const stop = vi.fn();
 
 beforeEach(() => {
 	vi.mocked(getLicenseManager).mockReturnValue({ refresh } as any);
-	vi.mocked(getLicense).mockResolvedValue({ meta: { validation_interval: 3600 } } as License);
 	vi.mocked(durationToCron).mockReturnValue('0 0 0/1 * * *');
 	vi.mocked(schedule.scheduleSynchronizedJob).mockReturnValue({ stop });
 });
@@ -40,7 +38,7 @@ afterEach(() => {
 
 describe('schedule license-check', () => {
 	test('passes the license validation_interval through to durationToCron', async () => {
-		vi.mocked(getLicense).mockResolvedValue({ meta: { validation_interval: 7200 } } as License);
+		vi.mocked(getLicenseManager().getLicense).mockResolvedValue({ meta: { validation_interval: 7200 } } as License);
 
 		await licenseSchedule();
 
@@ -83,7 +81,7 @@ describe('schedule license-check', () => {
 	});
 
 	test('skips scheduling and returns false for the CORE -1 sentinel', async () => {
-		vi.mocked(getLicense).mockResolvedValue({ meta: { validation_interval: -1 } } as License);
+		vi.mocked(getLicenseManager().getLicense).mockResolvedValue({ meta: { validation_interval: -1 } } as License);
 
 		const res = await licenseSchedule();
 
@@ -104,7 +102,7 @@ describe('schedule license-check', () => {
 	});
 
 	test('the schedule stops the existing job and re-schedules when validation_interval has changed', async () => {
-		vi.mocked(getLicense)
+		vi.mocked(getLicenseManager().getLicense)
 			.mockResolvedValueOnce({ meta: { validation_interval: 3600 } } as License) // initial boot
 			.mockResolvedValueOnce({ meta: { validation_interval: 7200 } } as License) // tick: detect change
 			.mockResolvedValueOnce({ meta: { validation_interval: 7200 } } as License); // recursive schedule()
@@ -120,7 +118,7 @@ describe('schedule license-check', () => {
 	});
 
 	test('the scheduled tick stops the existing job and does not re-schedule when validation_interval changed to the -1 sentinel', async () => {
-		vi.mocked(getLicense)
+		vi.mocked(getLicenseManager().getLicense)
 			.mockResolvedValueOnce({ meta: { validation_interval: 3600 } } as License)
 			.mockResolvedValueOnce({ meta: { validation_interval: -1 } } as License);
 

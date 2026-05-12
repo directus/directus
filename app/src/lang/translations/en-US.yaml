@@ -82,6 +82,7 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+not_archived: Not Archived
 marketplace: Marketplace
 extensions: Extensions
 skip_link_nav: Skip to Navigation
@@ -247,7 +248,6 @@ keep: Keep
 version: Version
 version_key: Version Key
 version_name: Version Name
-main_version: Main
 your_version: Your Version
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
@@ -256,17 +256,18 @@ rename_version: Rename Version
 reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'
 compare_version: Compare Version
 save_version: Save Version
-promote_version: Promote Version
+publish: Publish
+version_create_item_less: Versions can only be created once the draft version is published
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
 show_differences_only: Show Differences Only
-main_updated_notice: The main item has been updated since this version was created.
+published_updated_notice: The published item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
-  You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
+  You are about to publish “{version}”. What should happen to “{version}” after publishing?
 content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
@@ -757,7 +758,8 @@ manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_and_quit: Save and Quit
-save_and_return_to_main: Save and Return to Main
+publish_and_quit: Publish and Quit
+save_and_return_to_published: Save and Return to Published
 save_as_copy: Save as Copy
 save_as_new_file: Save as New File
 add_existing: Add Existing
@@ -791,6 +793,8 @@ list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
 filtered_item_count: 'No Filtered Items | One Filtered Item | {count} Filtered Items'
 no_items_copy: There are no items in this collection yet.
+no_versions: 'No "{version}" version'
+no_versions_copy: 'There are no "{version}" versions in this collection yet.'
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
@@ -1157,6 +1161,7 @@ no_url_copy: Please add a URL in the settings.
 invalid_url: Invalid URL
 invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
+overview: Overview
 deployment:
   deployment: Deployment
   overview:
@@ -1794,6 +1799,23 @@ fields:
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
+    ai_translation_default_model: Translation Default Model
+    ai_translation_default_model_note:
+      'Choose the default model used for AI translations. Only models enabled in the settings above are available here.'
+    ai_glossary_term: Term
+    ai_glossary_term_placeholder: Directus Flows
+    ai_glossary_note: Translation Note
+    ai_glossary_note_placeholder: Never translate, keep as-is
+    ai_translation_glossary: Translation Glossary
+    ai_translation_glossary_note:
+      'Define key terms and their approved translations across your languages. Keep product names, UI labels, and other
+      important phrases consistent across your content.'
+    ai_translation_style_guide: Translation Style Guide
+    ai_translation_style_guide_note:
+      'Describe how your content should be translated, including tone, formality, and formatting rules. Include details
+      about your business, product, and audience to help AI keep your brand voice consistent.'
+    ai_translation_style_guide_placeholder:
+      "Translate in a confident, approachable tone. Use informal 'you,' avoid slang, and keep terminology consistent."
     ai_openai_api_key: OpenAI API Key
     ai_openai_allowed_models: OpenAI Allowed Models
     ai_anthropic_api_key: Anthropic API Key
@@ -1985,6 +2007,7 @@ no_shares: No shares to show
 new_share: New Share
 show_more: Show More
 show_less: Show Less
+retry: Retry
 ai:
   thinking: Thinking...
   input: Input
@@ -2001,7 +2024,6 @@ ai:
   always_allow: Always Allow
   deny: Deny
   approve_tool_execution: Approve tool execution?
-  retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
   build_with_assistant: Build with AI Assistant
@@ -2551,6 +2573,30 @@ interfaces:
     default_language: Default Language
     language_field: Language Indicator Field
     language_direction_field: Language Direction Field
+    ai_translate: Translate with AI
+    ai_translate_short: Translate
+    ai_translate_tooltip: Translate your content automatically with AI
+    model: Model
+    source_language: Source Language
+    target_languages: Target Languages
+    translate_n_languages: 'Translate {count} language | Translate {count} languages'
+    no_source_content: The selected source fields have no content to translate.
+    no_additional_languages: No additional languages configured.
+    no_translation_models: No translation models are currently available.
+    translation_error: Translation failed for this language.
+    translation_not_allowed: You don't have permission to translate this language.
+    translation_pending_delete: This language has pending deletion and can't be translated.
+    permission_check_failed: Could not verify permissions for this language. Please try again.
+    empty: (empty)
+    field_empty_tooltip: This field has no source content to translate
+    ai_translating: Translating...
+    ai_translating_progress: 'Translating {done} of {total} languages...'
+    translation_has_errors: Some translations failed.
+    translation_complete: Translations completed successfully.
+    translation_complete_with_warnings: Translations completed, but some fields may be incomplete.
+    partial_translation: 'Only {count} of {total} fields were translated.'
+    rate_limited: The AI provider is rate limiting requests. Please wait a moment and try again.
+
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -2711,9 +2757,6 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
-    timezone: Timezone
-    timezone_local: Local Timezone
-    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files
@@ -3151,3 +3194,5 @@ text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
 text_direction_rtl: Right to Left (RTL)
 set_to_now: Set to Now
+aria:
+  more_options: More options
