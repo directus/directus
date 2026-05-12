@@ -21,9 +21,6 @@ const global: GlobalMountOptions = {
 		'click-outside': ClickOutside,
 		tooltip: Tooltip,
 	},
-	provide: {
-		'main-element': document.body,
-	},
 };
 
 describe('Component', () => {
@@ -36,6 +33,18 @@ describe('Component', () => {
 		});
 
 		expect(wrapper.exists()).toBe(true);
+	});
+
+	it('should apply the expanded class when expanded', () => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: '',
+				expanded: true,
+			},
+			global,
+		});
+
+		expect(wrapper.find('.search-input').classes()).toContain('expanded');
 	});
 
 	it('should render action buttons disabled when disabled', () => {
@@ -115,6 +124,15 @@ describe('Component', () => {
 
 				expect(search.classes()).not.toContain('active');
 				expect(search.classes()).not.toContain('filter-active');
+			});
+
+			it('should stay open when focusout has no relatedTarget while filter is active (drag operation)', async () => {
+				wrapper.find('input').element.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
+
+				await wrapper.vm.$nextTick();
+
+				expect(search.classes()).toContain('active');
+				expect(search.classes()).toContain('filter-active');
 			});
 		});
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isPublishedVersionKey, VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
 import type { ContentVersion } from '@directus/types';
 import { sameOrigin } from '@directus/utils/browser';
 import { useHead } from '@unhead/vue';
@@ -11,15 +12,14 @@ import AiConversation from '@/ai/components/ai-conversation.vue';
 import AiMagicButton from '@/ai/components/ai-magic-button.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import TransitionExpand from '@/components/transition/expand.vue';
-import VButton from '@/components/v-button.vue';
-import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
-import { BREAKPOINTS, DRAFT_VERSION_KEY } from '@/constants';
+import { BREAKPOINTS } from '@/constants';
+import VersionChip from '@/modules/content/components/version-chip.vue';
 import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import type { NavigationData } from '@/modules/visual/types';
@@ -27,11 +27,13 @@ import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useServerStore } from '@/stores/server';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
+import LivePreviewHeaderButton from '@/views/private/components/live-preview-header-button.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
 import NotificationsGroup from '@/views/private/components/notifications-group.vue';
 import PrivateViewDrawer from '@/views/private/private-view/components/private-view-drawer.vue';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	dynamicUrl?: string;
@@ -50,6 +52,8 @@ const moduleBarOpen = ref(true);
 const showEditableElements = ref(false);
 
 const { sidebarSize, sidebarCollapsed, splitterCollapsed, mobileDrawerOpen, aiButtonHovering } = useAiSidebar(isMobile);
+
+const teleportTarget = computed(() => (isMobile.value ? '#ve-sidebar-mobile-outlet' : '#ve-sidebar-desktop-outlet'));
 
 const { dynamicDisplay, onNavigation } = usePageInfo();
 
@@ -86,7 +90,28 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 
 function useAiSidebar(isMobile: ComputedRef<boolean>) {
 	const aiStore = useAiStore();
-	const sidebarSize = ref(370);
+	const storedSize = ref(SIDEBAR_DEFAULT_SIZE);
+	const enforceDefault = ref(false);
+
+	const sidebarSize = computed({
+		get() {
+			// Enforce default size when the AI sidebar is below the minimum size
+			if (enforceDefault.value && storedSize.value <= SIDEBAR_MIN_SIZE) {
+				return SIDEBAR_DEFAULT_SIZE;
+			}
+
+			return storedSize.value;
+		},
+		set(val: number) {
+			// Remove default size enforcement once the sidebar is larger than the minimum size
+			if (enforceDefault.value && val > SIDEBAR_MIN_SIZE) {
+				enforceDefault.value = false;
+			}
+
+			storedSize.value = val;
+		},
+	});
+
 	const sidebarCollapsed = useLocalStorage('visual-editor-ai-sidebar-collapsed', false);
 	const mobileDrawerOpen = ref(false);
 
@@ -100,10 +125,12 @@ function useAiSidebar(isMobile: ComputedRef<boolean>) {
 		},
 	});
 
-	watch(isMobile, (mobile) => {
-		if (mobile) {
-			mobileDrawerOpen.value = false;
-		}
+	watch(sidebarCollapsed, (isCollapsed) => {
+		if (!isCollapsed) enforceDefault.value = true;
+	});
+
+	watch(isMobile, () => {
+		mobileDrawerOpen.value = false;
 	});
 
 	aiStore.onFocusInput(() => {
@@ -143,12 +170,12 @@ function useVersionSelection() {
 
 		const extractedVersion = extractVersion(dynamicUrl, activeVersionPlacement.value);
 
-		return extractedVersion === 'main' ? null : extractedVersion;
+		return isPublishedVersionKey(extractedVersion) ? null : extractedVersion;
 	});
 
 	const versions = computed<Pick<ContentVersion, 'key' | 'name'>[]>(() => {
-		const versionList = [{ key: DRAFT_VERSION_KEY, name: null }];
-		const isDetectedVersionCustom = !isNil(detectedVersion.value) && detectedVersion.value !== DRAFT_VERSION_KEY;
+		const versionList = [{ key: VERSION_KEY_DRAFT, name: null }];
+		const isDetectedVersionCustom = !isNil(detectedVersion.value) && detectedVersion.value !== VERSION_KEY_DRAFT;
 
 		if (isDetectedVersionCustom) versionList.push({ key: detectedVersion.value!, name: null });
 
@@ -168,7 +195,7 @@ function useVersionSelection() {
 	function onVersionSelect(versionKey: ContentVersion['key'] | null) {
 		if (!activeVersionPlacement.value || !dynamicUrl) return;
 
-		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? 'main');
+		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? VERSION_KEY_PUBLISHED);
 		router.replace(getUrlRoute(newUrl));
 	}
 }
@@ -186,7 +213,7 @@ function useVersionSelection() {
 			:dynamic-url
 			:dynamic-display
 			:single-url-subdued="false"
-			:header-expanded="moduleBarOpen"
+			header-expanded
 			:sidebar-size="sidebarSize"
 			:sidebar-collapsed="splitterCollapsed"
 			:sidebar-disabled="isMobile"
@@ -198,42 +225,28 @@ function useVersionSelection() {
 			@update:sidebar-collapsed="splitterCollapsed = $event"
 		>
 			<template #prepend-header>
-				<VButton
-					v-tooltip.bottom.end="$t('toggle_navigation')"
-					x-small
-					rounded
-					icon
-					secondary
-					@click="moduleBarOpen = !moduleBarOpen"
-				>
-					<VIcon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
-				</VButton>
+				<LivePreviewHeaderButton v-tooltip.bottom.end="$t('toggle_navigation')" @click="moduleBarOpen = !moduleBarOpen">
+					<VIcon :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
+				</LivePreviewHeaderButton>
 
-				<VButton
+				<LivePreviewHeaderButton
 					v-tooltip.bottom.end="$t('toggle_editable_elements')"
-					x-small
-					rounded
-					icon
 					:active="showEditableElements"
-					secondary
 					@click="showEditableElements = !showEditableElements"
 				>
-					<VIcon small name="edit" outline />
-				</VButton>
+					<VIcon name="edit" outline />
+				</LivePreviewHeaderButton>
 			</template>
 
 			<template #append-url>
 				<VMenu v-if="isVersionSelectable" show-arrow :placement="'bottom'">
-					<template #activator="{ toggle, active }">
-						<VChip small clickable :label="false" class="version-select-activator" :class="{ active }" @click="toggle">
-							{{ selectedVersion?.name ?? $t('main_version') }}
-							<VIcon small name="arrow_drop_down"></VIcon>
-						</VChip>
+					<template #activator="{ toggle }">
+						<VersionChip :version="selectedVersion" @click="toggle()" />
 					</template>
 
 					<VList>
 						<VListItem clickable :active="selectedVersion === null" @click="onVersionSelect(null)">
-							<VListItemContent>{{ $t('main_version') }}</VListItemContent>
+							<VListItemContent>{{ $t('published') }}</VListItemContent>
 						</VListItem>
 						<VListItem
 							v-for="version in versions"
@@ -249,25 +262,19 @@ function useVersionSelection() {
 			</template>
 
 			<template #append-header>
-				<VButton
+				<LivePreviewHeaderButton
 					v-if="serverStore.info.ai_enabled"
 					ref="ai-button"
 					v-tooltip.bottom.start="$t('ai_assistant')"
-					x-small
-					rounded
-					icon
-					secondary
 					:active="isMobile ? mobileDrawerOpen : !sidebarCollapsed"
 					@click="isMobile ? (mobileDrawerOpen = !mobileDrawerOpen) : (sidebarCollapsed = !sidebarCollapsed)"
 				>
-					<AiMagicButton :animate="aiButtonHovering" />
-				</VButton>
+					<AiMagicButton class="ai-magic-button" :animate="aiButtonHovering" />
+				</LivePreviewHeaderButton>
 			</template>
 
-			<template v-if="serverStore.info.ai_enabled && !isMobile" #sidebar>
-				<aside class="ai-sidebar">
-					<AiConversation />
-				</aside>
+			<template v-if="serverStore.info.ai_enabled" #sidebar>
+				<div id="ve-sidebar-desktop-outlet" class="sidebar-outlet sidebar-border" />
 			</template>
 
 			<template #overlay="{ frameEl, frameSrc }">
@@ -287,15 +294,20 @@ function useVersionSelection() {
 		</LivePreview>
 
 		<PrivateViewDrawer
-			v-if="serverStore.info.ai_enabled && isMobile"
+			v-if="serverStore.info.ai_enabled"
 			:collapsed="!mobileDrawerOpen"
 			placement="right"
+			keep-mounted
 			@update:collapsed="mobileDrawerOpen = !$event"
 		>
+			<div id="ve-sidebar-mobile-outlet" class="sidebar-outlet" />
+		</PrivateViewDrawer>
+
+		<Teleport v-if="serverStore.info.ai_enabled" defer :to="teleportTarget">
 			<aside class="ai-sidebar">
 				<AiConversation />
 			</aside>
-		</PrivateViewDrawer>
+		</Teleport>
 	</div>
 </template>
 
@@ -308,38 +320,33 @@ function useVersionSelection() {
 	overflow: hidden;
 }
 
+.sidebar-outlet {
+	block-size: 100%;
+	inline-size: 100%;
+}
+
+.sidebar-border {
+	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+}
+
+.ai-magic-button {
+	block-size: 1.25rem;
+	inline-size: 1.25rem;
+}
+
 .ai-sidebar {
 	block-size: 100%;
 	inline-size: 100%;
-	padding: 0.6875rem;
+	padding: var(--sidebar-section-content-padding);
 	background-color: var(--theme--sidebar--background);
-	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+	font-family: var(--theme--sidebar--font-family);
 	display: flex;
 	flex-direction: column;
+
+	/* Border set by parent element; hidden on mobile */
 }
 
 .spacer {
 	flex: 1;
-}
-
-.version-select-activator {
-	--v-chip-padding: 0 0.3125rem 0 0.6875rem;
-	--v-chip-color: var(--theme--foreground-accent);
-	--v-chip-color-hover: var(--v-chip-color);
-	--v-chip-background-color-hover: color-mix(
-		in srgb,
-		var(--theme--navigation--modules--background),
-		var(--theme--navigation--modules--button--background-active) 87.5%
-	);
-
-	&.active {
-		--v-chip-color: var(--foreground-inverted);
-		--v-chip-background-color: var(--theme--primary);
-		--v-chip-background-color-hover: var(--v-chip-background-color);
-	}
-
-	&.v-chip {
-		border-width: 0;
-	}
 }
 </style>

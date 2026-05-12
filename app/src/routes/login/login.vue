@@ -53,7 +53,7 @@ useHead({
 <template>
 	<PublicView>
 		<div class="header">
-			<h1 class="type-title"><VTextOverflow :text="$t('sign_in')" /></h1>
+			<h1 class="type-display type-display-public"><VTextOverflow :text="$t('sign_in')" /></h1>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
 				<VSelect v-model="providerSelect" inline :items="providerOptions" label />
 			</div>
@@ -116,7 +116,7 @@ h1 {
 	justify-content: space-between;
 	margin-block-end: 1.125rem;
 
-	.type-title {
+	.type-display {
 		margin-block-end: 0;
 	}
 

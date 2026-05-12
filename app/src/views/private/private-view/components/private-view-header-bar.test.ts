@@ -58,7 +58,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -66,36 +65,11 @@ describe('PrivateViewHeaderBar', () => {
 		expect(wrapper.find('.header-bar').exists()).toBe(true);
 	});
 
-	test('applies shadow class when shadow prop is true', () => {
-		const wrapper = mount(PrivateViewHeaderBar, {
-			...mountOptions,
-			props: {
-				shadow: true,
-				inlineNav: false,
-			},
-		});
-
-		expect(wrapper.find('.header-bar.shadow').exists()).toBe(true);
-	});
-
-	test('does not apply shadow class when shadow prop is false', () => {
-		const wrapper = mount(PrivateViewHeaderBar, {
-			...mountOptions,
-			props: {
-				shadow: false,
-				inlineNav: false,
-			},
-		});
-
-		expect(wrapper.find('.header-bar.shadow').exists()).toBe(false);
-	});
-
 	test('renders title when provided', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
 				title: 'Test Title',
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -107,7 +81,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -120,7 +93,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: true,
 			},
 		});
@@ -136,13 +108,12 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
 
 		const navBarStore = useNavBarStore();
-		const navToggle = wrapper.find('.nav-toggle');
+		const navToggle = wrapper.find('.nav-toggle .button');
 		await navToggle.trigger('click');
 
 		expect(navBarStore.expand).toHaveBeenCalled();
@@ -152,7 +123,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
@@ -165,13 +135,12 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 		});
 
 		const sidebarStore = useSidebarStore();
-		const sidebarToggle = wrapper.find('.sidebar-toggle');
+		const sidebarToggle = wrapper.find('.sidebar-toggle .button');
 		await sidebarToggle.trigger('click');
 
 		expect(sidebarStore.toggle).toHaveBeenCalled();
@@ -181,22 +150,21 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 			},
 		});
 
 		const backIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(backIcon.exists()).toBe(true);
-		expect(backIcon.props('showBack')).toBe(true);
+		expect(backIcon.props('backTo')).toBe('/back');
 	});
 
 	test('renders custom icon when icon prop is provided', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				icon: 'edit',
 				iconColor: 'blue',
@@ -209,27 +177,10 @@ describe('PrivateViewHeaderBar', () => {
 		expect(icon.props('iconColor')).toBe('blue');
 	});
 
-	test('renders headline slot content', () => {
-		const wrapper = mount(PrivateViewHeaderBar, {
-			...mountOptions,
-			props: {
-				shadow: false,
-				inlineNav: false,
-			},
-			slots: {
-				headline: '<div class="custom-headline">Headline Content</div>',
-			},
-		});
-
-		expect(wrapper.find('.custom-headline').exists()).toBe(true);
-		expect(wrapper.text()).toContain('Headline Content');
-	});
-
 	test('renders title slot content', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -245,7 +196,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -260,7 +210,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -275,7 +224,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 			},
 			slots: {
@@ -290,7 +238,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				title: 'Test Title',
 			},
@@ -306,7 +253,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				title: 'Test Title',
 			},
@@ -322,16 +268,16 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 				icon: 'edit',
 			},
 		});
 
 		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(headerBarIcon.exists()).toBe(true);
-		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('backTo')).toBe('/back');
 		expect(headerBarIcon.props('icon')).toBeUndefined();
 	});
 
@@ -339,9 +285,9 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 			},
 			slots: {
 				'title-outer:prepend': '<div class="custom-prepend">Prepend</div>',
@@ -350,7 +296,7 @@ describe('PrivateViewHeaderBar', () => {
 
 		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(headerBarIcon.exists()).toBe(true);
-		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('backTo')).toBe('/back');
 		expect(wrapper.find('.custom-prepend').exists()).toBe(false);
 	});
 
@@ -358,7 +304,6 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				icon: 'edit',
 			},
@@ -377,9 +322,9 @@ describe('PrivateViewHeaderBar', () => {
 		const wrapper = mount(PrivateViewHeaderBar, {
 			...mountOptions,
 			props: {
-				shadow: false,
 				inlineNav: false,
 				showBack: true,
+				backTo: '/back',
 				icon: 'edit',
 			},
 			slots: {
@@ -389,7 +334,7 @@ describe('PrivateViewHeaderBar', () => {
 
 		const headerBarIcon = wrapper.findComponent({ name: 'PrivateViewHeaderBarIcon' });
 		expect(headerBarIcon.exists()).toBe(true);
-		expect(headerBarIcon.props('showBack')).toBe(true);
+		expect(headerBarIcon.props('backTo')).toBe('/back');
 		expect(headerBarIcon.props('icon')).toBeUndefined();
 		expect(wrapper.find('.custom-prepend').exists()).toBe(false);
 	});

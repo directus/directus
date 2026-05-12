@@ -10,7 +10,7 @@ export type DirectusVersion<Schema = any> = MergeCoreCollection<
 		key: string;
 		name: string | null;
 		collection: DirectusCollection<Schema> | string;
-		item: string;
+		item: string | null;
 		hash: string;
 		date_created: 'datetime' | null;
 		date_updated: 'datetime' | null;

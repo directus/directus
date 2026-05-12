@@ -55,7 +55,7 @@ const isActive = computed(() => {
 		@click="multiple ? undefined : $emit('update:modelValue', item.value)"
 	>
 		<VListItemIcon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
-			<VIcon v-if="item.icon" :name="item.icon" :color="item.color" />
+			<VIcon v-if="item.icon" :name="item.icon" :color="item.color" small />
 			<DisplayColor v-else :value="item.color" />
 		</VListItemIcon>
 		<VListItemContent>

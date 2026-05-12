@@ -118,19 +118,20 @@
 
 	.fc-toolbar {
 		&.fc-header-toolbar {
-			position: sticky;
-			inset-block-start: var(--layout-offset-top);
-			z-index: 4;
-			inline-size: 100%;
-			block-size: 2.9375rem;
-			margin-block-end: 2rem;
-			padding: 0 0.4375rem;
+			overflow-x: auto;
+			flex-wrap: nowrap;
+			block-size: calc(var(--sub-header-height) + var(--theme--border-width));
+			margin-block-end: var(--content-padding);
 			font-weight: inherit !important;
 			font-size: inherit !important;
 			background-color: var(--theme--background);
-			border-block-start: 2px solid var(--theme--border-color-subdued);
-			border-block-end: 2px solid var(--theme--border-color-subdued);
+			border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 			box-shadow: 0 0 0 2px var(--theme--background);
+
+			.fc-toolbar-chunk {
+				flex-shrink: 0;
+				white-space: nowrap;
+			}
 		}
 	}
 

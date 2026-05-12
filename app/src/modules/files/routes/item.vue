@@ -7,7 +7,6 @@ import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import FilesNotFound from './not-found.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -21,6 +20,7 @@ import { useItem } from '@/composables/use-item';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { uploadFile } from '@/utils/upload-file';
 import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -42,8 +42,6 @@ const router = useRouter();
 
 const form = ref<HTMLElement>();
 const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
@@ -57,7 +55,6 @@ const {
 	save,
 	remove,
 	deleting,
-	saveAsCopy,
 	refresh,
 	getItem,
 	validationErrors,
@@ -118,28 +115,6 @@ const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => {
-		if (!item?.value?.folder) {
-			return [
-				{
-					name: t('file_library'),
-					to: '/files',
-				},
-			];
-		}
-
-		return [
-			{
-				name: t('file_library'),
-				to: { path: `/files/folders/${item.value.folder}` },
-			},
-		];
-	});
-
-	return { breadcrumb };
-}
-
 async function saveAndQuit() {
 	try {
 		await save();
@@ -160,8 +135,48 @@ async function saveAndStay() {
 }
 
 async function saveAsCopyAndNavigate() {
-	const newPrimaryKey = await saveAsCopy();
-	if (newPrimaryKey) router.push({ name: 'files-item', params: { primaryKey: newPrimaryKey } });
+	saving.value = true;
+
+	try {
+		const blobResponse = await api.get(`/assets/${primaryKey.value}`, { responseType: 'blob' });
+
+		const fileObject = new File([blobResponse.data], item.value!.filename_download, {
+			type: item.value!.type ?? undefined,
+		});
+
+		// Only forward user-editable fields (not hidden or readonly in the system definition).
+		// filename_disk, server timestamps, file dimensions, etc. are excluded and handled by the upload pipeline.
+		const copyableFieldNames = new Set(
+			fields.value.filter((field) => !field.meta?.hidden && !field.meta?.readonly).map((field) => field.field),
+		);
+
+		// folder and storage are readonly in the form but should carry over to the copy.
+		copyableFieldNames.add('folder');
+		copyableFieldNames.add('storage');
+
+		const preset: Record<string, any> = {};
+
+		for (const [key, value] of Object.entries(item.value ?? {})) {
+			if (copyableFieldNames.has(key)) preset[key] = value;
+		}
+
+		Object.assign(preset, edits.value);
+
+		const uploadedFile = await uploadFile(fileObject, {
+			preset: preset as Partial<File>,
+			notifications: false,
+		});
+
+		if (uploadedFile) {
+			notify({ title: t('item_create_success', 1) });
+			edits.value = {};
+			router.push({ name: 'files-item', params: { primaryKey: uploadedFile.id } });
+		}
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		saving.value = false;
+	}
 }
 
 async function deleteAndQuit() {
@@ -253,27 +268,25 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<FilesNotFound v-if="!loading && !item" />
-	<PrivateView v-else :title="loading || !item ? $t('loading') : item.title" show-back back-to="/files">
-		<template #headline>
-			<VBreadcrumb :items="breadcrumb" />
-		</template>
-
-		<template #actions>
+	<PrivateView v-else :title="loading || !item ? $t('loading') : (item.title ?? undefined)" show-back back-to="/files">
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						class="action-delete"
 						:disabled="item === null || deleteAllowed === false"
 						icon="delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						@click="on"
 					/>
 				</template>
@@ -301,7 +314,7 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="item === null || !updateAllowed ? $t('not_allowed') : $t('move_to_folder')"
-						secondary
+						variant="ghost"
 						:disabled="item === null || !updateAllowed"
 						icon="folder_move"
 						@click="on"
@@ -328,7 +341,7 @@ function revert(values: Record<string, any>) {
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('download')"
-				secondary
+				variant="ghost"
 				:download="item?.filename_download"
 				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
 				icon="download"
@@ -337,21 +350,23 @@ function revert(values: Record<string, any>) {
 			<PrivateViewHeaderBarActionButton
 				v-if="item?.type?.includes('image') && updateAllowed"
 				v-tooltip.bottom="$t('edit')"
-				secondary
+				variant="ghost"
 				icon="tune"
 				@click="editActive = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				:label="$t('save')"
+				:tooltip="saveAllowed ? undefined : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template v-if="isSavable" #split-menu>
 					<SaveOptions
-						v-if="isSavable"
 						:disabled-options="createAllowed ? ['save-and-add-new'] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -460,11 +475,6 @@ function revert(values: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);
 }

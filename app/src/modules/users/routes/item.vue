@@ -8,7 +8,6 @@ import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { logout } from '@/auth';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -55,8 +54,6 @@ const userStore = useUserStore();
 const serverStore = useServerStore();
 
 const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const { info: collectionInfo } = useCollection('directus_users');
 
 const revisionsSidebarDetail = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
@@ -178,17 +175,6 @@ const archiveTooltip = computed(() => {
 
 useShortcut('meta+s', saveAndStay, form);
 useShortcut('meta+shift+s', saveAndAddNew, form);
-
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: t('user_directory'),
-			to: `/users`,
-		},
-	]);
-
-	return { breadcrumb };
-}
 
 async function saveAndQuit() {
 	if (!canSaveNewUser.value) return;
@@ -325,18 +311,16 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<PrivateView :title="title" show-back back-to="/users">
-		<template #headline>
-			<VBreadcrumb :items="breadcrumb" />
-		</template>
-
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<VDialog
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
@@ -346,8 +330,8 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
 						icon="delete"
 						@click="on"
@@ -379,7 +363,7 @@ function revert(values: Record<string, any>) {
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						secondary
+						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
 						:icon="isArchived ? 'unarchive' : 'archive'"
 						@click="on"
@@ -399,17 +383,19 @@ function revert(values: Record<string, any>) {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				:label="$t('save')"
+				:tooltip="saveAllowed ? undefined : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template v-if="isSavable" #split-menu>
 					<SaveOptions
-						v-if="isSavable"
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -545,11 +531,6 @@ function revert(values: Record<string, any>) {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);
