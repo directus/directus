@@ -59,6 +59,7 @@ invalid_input: Saisie invalide
 not_a_number: Pas un nombre
 maps: Cartes
 switch_user: Changer d'utilisateur
+item_deleted: L'élément que vous étiez en train de modifier a été supprimé.
 item_creation: Création d'article
 item_revision: Historique de l'article
 enter_a_name: Saisir un nom...
@@ -112,6 +113,7 @@ report_an_issue: Signaler un problème
 website: Site internet
 github: GitHub
 beta: Bêta
+collab_collision: L'élément a été modifié pendant que vous étiez en cours d'édition. Sélectionnez les changements à garder.
 n_downloads: '{n} Téléchargements'
 downloads: Téléchargements
 compatibility_not_guaranteed: Compatibilité non garantie
