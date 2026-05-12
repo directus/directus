@@ -277,6 +277,9 @@ export const DIRECTUS_VARIABLES = [
 	'METRICS_HEALTH_CHECK_PREFIX',
 	'METRICS_NAME_PREFIX',
 
+	// content versioning
+	'CONTENT_VERSIONING_.+',
+
 	// mcp
 	'MCP_ENABLED',
 

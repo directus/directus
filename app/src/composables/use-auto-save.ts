@@ -1,18 +1,18 @@
-import { useDebounceFn } from "@vueuse/core";
-import { ref, Ref, watch } from "vue";
+import { useDebounceFn } from '@vueuse/core';
+import { ref, Ref, watch } from 'vue';
+import { useServerStore } from '@/stores/server';
 
-
-/** Minutes of inactivity after which the next save creates a new revision instead of updating in-place. */
-export const AUTO_SAVE_SNAPSHOT_INTERVAL_MINUTES = 5;
+/** Fallback when the server hasn't reported a value yet. Minutes of inactivity after which the next save creates a new revision instead of updating in-place. */
+export const AUTO_SAVE_SNAPSHOT_INTERVAL_MINUTES_FALLBACK = 5;
 export const AUTO_SAVE_DEBOUNCE_MS = 750;
 
 export interface UseAutoSaveOptions {
-  /** Auto-save only fires when this is true (e.g. currentVersion !== null && hasPermission). */
-  enabled: Ref<boolean>;
-  /** date_updated of the currently-active version record, used to check revision freshness. */
-  currentVersionDateUpdated: Ref<string | null>;
-  /** Debounce delay in milliseconds. Default: 750. */
-  debounceMs?: number;
+	/** Auto-save only fires when this is true (e.g. currentVersion !== null && hasPermission). */
+	enabled: Ref<boolean>;
+	/** date_updated of the currently-active version record, used to check revision freshness. */
+	currentVersionDateUpdated: Ref<string | null>;
+	/** Debounce delay in milliseconds. Default: 750. */
+	debounceMs?: number;
 }
 
 export function useAutoSave(
@@ -20,8 +20,8 @@ export function useAutoSave(
 	saveRevisionCb: (forceNew: boolean) => Promise<void>,
 	options: UseAutoSaveOptions,
 ) {
-
 	const { enabled, currentVersionDateUpdated, debounceMs = AUTO_SAVE_DEBOUNCE_MS } = options;
+	const serverStore = useServerStore();
 
 	const isSaving = ref(false);
 	const sessionHasSaved = ref(false);
@@ -45,29 +45,36 @@ export function useAutoSave(
 		} finally {
 			isSaving.value = false;
 		}
-	}, debounceMs)
+	}, debounceMs);
 
-	watch(edits, (newEdits) => {
-		if (!enabled.value) return;
-		if (Object.keys(newEdits).length === 0) return;
-		debouncedSave();
-	}, { deep: true });
-
+	watch(
+		edits,
+		(newEdits) => {
+			if (!enabled.value) return;
+			if (Object.keys(newEdits).length === 0) return;
+			debouncedSave();
+		},
+		{ deep: true },
+	);
 
 	function isRevisionStale(): boolean {
 		const dateUpdated = currentVersionDateUpdated.value;
 		if (!dateUpdated) return true;
-		const intervalMs = AUTO_SAVE_SNAPSHOT_INTERVAL_MINUTES * 60 * 1000;
+
+		const minutes =
+			serverStore.info.contentVersioning?.autosaveRevisionInterval ?? AUTO_SAVE_SNAPSHOT_INTERVAL_MINUTES_FALLBACK;
+
+		const intervalMs = minutes * 60 * 1000;
 		return Date.now() - new Date(dateUpdated).getTime() > intervalMs;
-	  }
+	}
 
-	  function resetSession() {
+	function resetSession() {
 		sessionHasSaved.value = false;
-	  }
+	}
 
-	  return {
+	return {
 		autoSaveError,
 		isSaving,
 		resetSession,
-	  };
+	};
 }
