@@ -43,7 +43,7 @@ const variant = computed(() => (remaining.value === 0 ? 'danger' : 'warning'));
 	align-items: center;
 	align-self: center;
 	justify-content: center;
-	height: var(--entitlement-remaining-size);
+	block-size: var(--entitlement-remaining-size);
 	padding: 0 var(--entitlement-remaining-padding);
 	border-radius: 9999px;
 	font-weight: 600;
