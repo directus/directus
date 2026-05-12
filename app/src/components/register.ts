@@ -1,4 +1,5 @@
 import { App } from 'vue';
+import VResizeable from './deprecated/v-resizeable.vue';
 import TransitionBounce from './transition/bounce.vue';
 import TransitionDialog from './transition/dialog.vue';
 import TransitionExpand from './transition/expand.vue';
@@ -120,6 +121,7 @@ export function registerComponents(app: App): void {
 	app.component('VProgressCircular', VProgressCircular);
 	app.component('VProgressLinear', VProgressLinear);
 	app.component('VRadio', VRadio);
+	app.component('VResizeable', VResizeable);
 	app.component('VSelect', VSelect);
 	app.component('VSheet', VSheet);
 	app.component('VSkeletonLoader', VSkeletonLoader);
