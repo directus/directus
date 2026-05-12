@@ -1,4 +1,5 @@
 import { App } from 'vue';
+import VBreadcrumb from './deprecated/v-breadcrumb.vue';
 import VResizeable from './deprecated/v-resizeable.vue';
 import TransitionBounce from './transition/bounce.vue';
 import TransitionDialog from './transition/dialog.vue';
@@ -79,6 +80,7 @@ import ValueNull from '@/views/private/components/value-null.vue';
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
 	app.component('VBadge', VBadge);
+	app.component('VBreadcrumb', VBreadcrumb);
 	app.component('VButton', VButton);
 	app.component('VCardActions', VCardActions);
 	app.component('VCardSubtitle', VCardSubtitle);
