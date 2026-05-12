@@ -18,12 +18,7 @@ import { parseOAuthScope } from '../../utils/parse-oauth-scope.js';
 import { transaction } from '../../utils/transaction.js';
 import { Url } from '../../utils/url.js';
 import { ActivityService } from '../activity.js';
-import {
-	type CimdMetadata,
-	detectClientIdType,
-	fetchCimdMetadata,
-	getAllowedDomains,
-} from './cimd.js';
+import { type CimdMetadata, detectClientIdType, fetchCimdMetadata, getAllowedDomains } from './cimd.js';
 import { OAuthError } from './types/error.js';
 import { isDomainAllowed } from './utils/domain.js';
 import { matchRedirectUri, validateRedirectUri } from './utils/redirect.js';
