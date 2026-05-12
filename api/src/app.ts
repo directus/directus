@@ -305,6 +305,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/deployments/webhooks', deploymentWebhookRouter);
 
 	app.use(authenticate);
+	app.use(mcpOAuthGuard);
 
 	app.use(schema);
 

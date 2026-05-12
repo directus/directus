@@ -62,13 +62,13 @@ export class DirectusMCP {
 	 * Includes `resource_metadata` pointing to `/.well-known/oauth-protected-resource/mcp`
 	 * so clients can discover the authorization server from a 401 response.
 	 */
-	private sendUnauthorized(res: Response, error?: string): void {
+	private sendUnauthorized(res: Response, error?: string, status = 401): void {
 		const { metadataUrl } = getMcpUrls();
 
 		res
 			.set('WWW-Authenticate', buildMcpWWWAuthenticateHeader(metadataUrl, error))
 			.set('Access-Control-Expose-Headers', 'WWW-Authenticate')
-			.status(401)
+			.status(status)
 			.send();
 	}
 
@@ -102,14 +102,7 @@ export class DirectusMCP {
 			}
 
 			if (!oauth.scopes.includes(MCP_ACCESS_SCOPE)) {
-				const { metadataUrl } = getMcpUrls();
-
-				res
-					.set('WWW-Authenticate', buildMcpWWWAuthenticateHeader(metadataUrl, 'insufficient_scope'))
-					.set('Access-Control-Expose-Headers', 'WWW-Authenticate')
-					.status(403)
-					.send();
-
+				this.sendUnauthorized(res, 'insufficient_scope', 403);
 				return;
 			}
 
