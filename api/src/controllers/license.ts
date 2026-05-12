@@ -103,7 +103,8 @@ router.post(
 			plan_name: preview.plan_name,
 			expires_at: preview.expires_at,
 			renews_at: preview.renews_at,
-			production_enabled: preview.production_enabled,
+			production_enabled:
+				preview.entitlements.production_enabled.override ?? preview.entitlements.production_enabled.default,
 		};
 
 		res.locals['payload'] = { data: payload };

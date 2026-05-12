@@ -67,11 +67,10 @@ export class ServerService {
 				'license_key',
 				'license_token',
 				'project_owner',
-				'project_usage',
 			],
 		});
 
-		const { license_key, license_token, project_owner, project_usage, ...publicProjectInfo } = projectInfo ?? {};
+		const { license_key, license_token, project_owner, ...publicProjectInfo } = projectInfo ?? {};
 
 		info['project'] = publicProjectInfo;
 
@@ -81,19 +80,6 @@ export class ServerService {
 				owner_complete: Boolean(project_owner),
 			};
 		}
-
-		const licenseInEnv = Boolean(env['LICENSE_KEY'] || env['LICENSE_TOKEN']);
-		const adminInEnv = Boolean(env['ADMIN_EMAIL'] && env['ADMIN_PASSWORD']);
-		const projectOwnerInEnv = Boolean(env['PROJECT_OWNER']);
-
-		info['onboarding'] = {
-			adminInEnv,
-			licenseInEnv,
-			projectOwnerInEnv,
-			hasLicense: licenseInEnv || Boolean(license_key || license_token),
-			hasProjectOwner: projectOwnerInEnv || Boolean(project_owner),
-			hasCompletedKyc: Boolean(project_usage),
-		};
 
 		if (this.accountability?.user) {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);

@@ -38,8 +38,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const seatsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
 		const seats = info.value.entitlements.seats;
+		const usage = info.value.usage;
 		const effective = seats.limit + (seats.addon ?? 0) + (seats.overage ?? 0);
-		return effective - (info.value.usage?.seats ?? 0);
+		return effective - (usage?.seats ?? 0);
 	});
 
 	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
