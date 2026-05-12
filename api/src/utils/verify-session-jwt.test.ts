@@ -68,7 +68,7 @@ describe('verifySessionJWT', () => {
 		await expect(() => verifySessionJWT(payload)).rejects.toThrow(InvalidCredentialsError);
 	});
 
-	test('selects oauth_client column', async () => {
+	test('selects oauth_client so session verification can return OAuth ownership', async () => {
 		const db = getDatabase();
 		vi.spyOn(db, 'first').mockResolvedValue({ oauth_client: null });
 
