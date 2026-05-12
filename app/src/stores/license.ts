@@ -38,9 +38,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const seatsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
 		const seats = info.value.entitlements.seats;
-		const addons = info.value.addons;
 		const usage = info.value.usage;
-		const effective = seats.limit + (addons?.seats ?? 0) + (seats.overage ?? 0);
+		const effective = seats.limit + (seats.addon ?? 0) + (seats.overage ?? 0);
 		return effective - (usage?.seats ?? 0);
 	});
 
