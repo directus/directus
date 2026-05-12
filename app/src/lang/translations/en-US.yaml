@@ -1550,6 +1550,11 @@ license:
     alert_warning: You have {count} left. Upgrade your plan to unlock more.
   manage_plan: Manage Plan
   collections_remaining: '{n} Collection Left | {n} Collections Left'
+  flows_limit:
+    title: Flow limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  flows_remaining: '{n} Flow Left | {n} Flows Left'
   contact_sales: Contact Sales
   upgrade_to_unlock: Upgrade your plan to unlock this feature.
   activity_history_notice: '{timeframe} of Activity History is included in your current plan.'

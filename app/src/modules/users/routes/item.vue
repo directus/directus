@@ -34,7 +34,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
-import LicenseLimitModal from '@/views/private/components/license/license-limit-modal.vue';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -546,9 +546,9 @@ function revert(values: Record<string, any>) {
 			<CommentsSidebarDetail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
 
-		<LicenseLimitModal
+		<EntitlementLimitModal
 			v-model="seatsLimitModalOpen"
-			type="seats"
+			entitlement-key="seats"
 			:is-admin="userStore.isAdmin"
 			:on-save="saveAsInactive"
 		/>

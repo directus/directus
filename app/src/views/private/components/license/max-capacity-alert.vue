@@ -6,7 +6,7 @@ import { useLicenseStore } from '@/stores/license';
 
 const props = withDefaults(
 	defineProps<{
-		entitlementKey?: 'collections' | 'seats';
+		entitlementKey?: 'collections' | 'seats' | 'flows';
 	}>(),
 	{ entitlementKey: 'collections' },
 );
@@ -14,6 +14,7 @@ const props = withDefaults(
 const licenseStore = useLicenseStore();
 
 const remaining = computed(() => {
+	if (props.entitlementKey === 'flows') return licenseStore.flowsRemaining;
 	return props.entitlementKey === 'collections' ? licenseStore.collectionsRemaining : licenseStore.seatsRemaining;
 });
 
