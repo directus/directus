@@ -47,16 +47,21 @@ function makeGlobal(): GlobalMountOptions {
 
 test('preserves license when VForm emits a partial update without the license field', async () => {
 	const modelValue = {
-		first_name: 'Alice',
-		last_name: 'Smith',
-		project_owner: 'alice@example.com',
-		password: 'secret',
+		admin: {
+			email: 'alice@example.com',
+			password: 'secret',
+			first_name: 'Alice',
+			last_name: 'Smith',
+		},
 		password_confirm: 'secret',
 		license: true,
-		product_updates: false,
 		license_key: null,
-		project_usage: null,
-		owner: { org_name: null },
+		owner: {
+			project_owner: null,
+			project_usage: null,
+			org_name: null,
+			product_updates: false,
+		},
 	};
 
 	const wrapper = mount(SetupForm, {
@@ -86,16 +91,21 @@ test('preserves license when VForm emits a partial update without the license fi
 
 test('preserves product_updates when VForm emits a partial update', async () => {
 	const modelValue = {
-		first_name: 'Alice',
-		last_name: 'Smith',
-		project_owner: 'alice@example.com',
-		password: 'secret',
+		admin: {
+			email: 'alice@example.com',
+			password: 'secret',
+			first_name: 'Alice',
+			last_name: 'Smith',
+		},
 		password_confirm: 'secret',
 		license: false,
-		product_updates: true,
 		license_key: null,
-		project_usage: null,
-		owner: { org_name: null },
+		owner: {
+			project_owner: null,
+			project_usage: null,
+			org_name: null,
+			product_updates: true,
+		},
 	};
 
 	const wrapper = mount(SetupForm, {
@@ -119,5 +129,5 @@ test('preserves product_updates when VForm emits a partial update', async () => 
 	const emitted = wrapper.emitted('update:modelValue');
 	const lastValue = emitted?.[emitted.length - 1]?.[0] as any;
 
-	expect(lastValue?.product_updates).toBe(true);
+	expect(lastValue?.owner?.product_updates).toBe(true);
 });

@@ -33,10 +33,41 @@ const initialValues = toRef(props, 'initialValues');
 
 const value = defineModel<SetupForm>();
 
+type AdminSlice = {
+	first_name: string | null;
+	last_name: string | null;
+	project_owner: string | null;
+	password: string | null;
+	password_confirm: string | null;
+};
+
 const formSlice = computed({
-	get: () => value.value,
-	set: (update: Partial<SetupForm>) => {
-		if (value.value) value.value = { ...value.value, ...update };
+	get: (): AdminSlice => ({
+		first_name: value.value?.admin.first_name ?? null,
+		last_name: value.value?.admin.last_name ?? null,
+		project_owner: props.register ? (value.value?.admin.email ?? null) : (value.value?.owner.project_owner ?? null),
+		password: value.value?.admin.password ?? null,
+		password_confirm: value.value?.password_confirm ?? null,
+	}),
+	set: (update: Partial<AdminSlice>) => {
+		if (!value.value) return;
+		const { password_confirm, project_owner, ...admin } = update;
+
+		value.value = {
+			...value.value,
+			admin: {
+				...value.value.admin,
+				...(admin.first_name !== undefined && { first_name: admin.first_name }),
+				...(admin.last_name !== undefined && { last_name: admin.last_name }),
+				...(admin.password !== undefined && { password: admin.password }),
+				...(props.register && project_owner !== undefined && { email: project_owner }),
+			},
+			...(password_confirm !== undefined && { password_confirm }),
+			...(!props.register &&
+				project_owner !== undefined && {
+					owner: { ...value.value.owner, project_owner },
+				}),
+		};
 	},
 });
 
@@ -48,9 +79,14 @@ const license = computed({
 });
 
 const product_updates = computed({
-	get: () => value.value?.product_updates ?? initialValues.value.product_updates,
+	get: () => value.value?.owner.product_updates ?? initialValues.value.owner.product_updates,
 	set: (val: boolean) => {
-		if (value.value) value.value = { ...value.value, product_updates: val };
+		if (value.value) {
+			value.value = {
+				...value.value,
+				owner: { ...value.value.owner, product_updates: val },
+			};
+		}
 	},
 });
 

@@ -95,13 +95,14 @@ export type OwnerInformation = {
 };
 
 export type SetupForm = {
-	first_name: string | null;
-	last_name: string | null;
-	password: string | null;
+	admin: {
+		email: string | null;
+		password: string | null;
+		first_name: string | null;
+		last_name: string | null;
+	};
 	password_confirm: string | null;
 	license: boolean;
 	license_key: string | null;
-	owner: {
-		org_name: string | null;
-	};
-} & Omit<OwnerInformation, 'org_name'>;
+	owner: OwnerInformation;
+};

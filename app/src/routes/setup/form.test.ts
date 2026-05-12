@@ -100,10 +100,12 @@ describe('buildSetupPayload', () => {
 	test('nests admin fields under admin key when showAdminStep is true', () => {
 		const form = {
 			...defaultValues,
-			first_name: 'Alice',
-			last_name: 'Smith',
-			project_owner: 'alice@example.com',
-			password: 'secret',
+			admin: {
+				email: 'alice@example.com',
+				password: 'secret',
+				first_name: 'Alice',
+				last_name: 'Smith',
+			},
 			password_confirm: 'secret',
 		};
 
@@ -136,10 +138,12 @@ describe('buildSetupPayload', () => {
 	test('always includes owner with project_owner, project_usage, org_name, product_updates', () => {
 		const form = {
 			...defaultValues,
-			project_owner: 'alice@example.com',
-			project_usage: 'commercial' as const,
-			owner: { org_name: 'Acme' },
-			product_updates: true,
+			owner: {
+				project_owner: 'alice@example.com',
+				project_usage: 'commercial' as const,
+				org_name: 'Acme',
+				product_updates: true,
+			},
 		};
 
 		const result = buildSetupPayload(form, false);
@@ -152,13 +156,26 @@ describe('buildSetupPayload', () => {
 		});
 	});
 
+	test('mirrors admin email into owner.project_owner when owner.project_owner is unset', () => {
+		const form = {
+			...defaultValues,
+			admin: { ...defaultValues.admin, email: 'alice@example.com' },
+		};
+
+		const result = buildSetupPayload(form, true);
+
+		expect(result.owner.project_owner).toBe('alice@example.com');
+	});
+
 	test('omits first_name and last_name from admin when blank', () => {
 		const form = {
 			...defaultValues,
-			project_owner: 'alice@example.com',
-			password: 'secret',
-			first_name: null,
-			last_name: null,
+			admin: {
+				email: 'alice@example.com',
+				password: 'secret',
+				first_name: null,
+				last_name: null,
+			},
 		};
 
 		const result = buildSetupPayload(form, true);

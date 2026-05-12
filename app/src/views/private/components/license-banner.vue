@@ -23,26 +23,21 @@ const errors = ref<Record<string, any>[]>([]);
 
 const isSaveDisabled = computed(
 	() =>
-		!form.value.project_owner ||
+		!form.value.owner.project_owner ||
 		!form.value.license ||
-		(form.value.project_usage === 'commercial' && !form.value.owner?.org_name),
+		(form.value.owner.project_usage === 'commercial' && !form.value.owner.org_name),
 );
 
 const isSaving = ref(false);
 
 async function setOwner() {
-	errors.value = validate(form.value, fields);
+	errors.value = validate({ project_owner: form.value.owner.project_owner }, fields);
 
 	if (errors.value.length > 0) return;
 
 	isSaving.value = true;
 
-	await settingsStore.setOwner({
-		project_owner: form.value.project_owner,
-		project_usage: form.value.project_usage,
-		product_updates: form.value.product_updates,
-		org_name: form.value.owner?.org_name ?? null,
-	});
+	await settingsStore.setOwner(form.value.owner);
 
 	await settingsStore.hydrate();
 	isSaving.value = false;
@@ -56,7 +51,7 @@ async function remindLater() {
 
 const form = ref<Form>(defaultValues);
 
-const fields = useSetupFields(false, form);
+const fields = useSetupFields(false);
 </script>
 
 <template>
