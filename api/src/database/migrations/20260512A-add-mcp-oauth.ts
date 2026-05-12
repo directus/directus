@@ -1,21 +1,28 @@
 import type { Knex } from 'knex';
 
-/**
- * Create MCP OAuth tables in FK-dependency order:
- * 1. `directus_oauth_clients` -- no FKs
- * 2. `directus_oauth_consents` -- FKs to users + clients, unique(user, client, redirect_uri)
- * 3. `directus_oauth_codes` -- FKs to users + clients, unique code_hash
- * 4. `directus_oauth_tokens` -- FKs to users + clients, unique(client, user), session index
- * 5. `directus_sessions.oauth_client` -- nullable FK to clients (identifies OAuth sessions)
- */
 export async function up(knex: Knex): Promise<void> {
+	await knex.schema.alterTable('directus_settings', (table) => {
+		table.boolean('mcp_oauth_enabled').defaultTo(false);
+		table.boolean('mcp_oauth_dcr_enabled').defaultTo(true);
+		table.boolean('mcp_oauth_cimd_enabled').defaultTo(false);
+	});
+
 	await knex.schema.createTable('directus_oauth_clients', (table) => {
 		table.string('client_id', 255).primary().notNullable();
 		table.string('client_name', 200).notNullable();
 		table.json('redirect_uris').notNullable();
 		table.json('grant_types').notNullable();
 		table.string('token_endpoint_auth_method').notNullable().defaultTo('none');
-		table.timestamp('date_created').notNullable().defaultTo(knex.fn.now());
+		table.string('client_secret_hash', 64).nullable();
+		table.string('registration_type', 10).notNullable().defaultTo('dcr');
+		table.text('client_uri').nullable();
+		table.text('logo_uri').nullable();
+		table.text('tos_uri').nullable();
+		table.text('policy_uri').nullable();
+		table.timestamp('metadata_fetched_at').nullable();
+		table.timestamp('metadata_expires_at').nullable();
+		table.string('metadata_etag', 255).nullable();
+		table.timestamp('date_created').notNullable().defaultTo(knex.fn.now()).index();
 	});
 
 	await knex.schema.createTable('directus_oauth_consents', (table) => {
@@ -34,6 +41,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.timestamp('date_created').notNullable();
 		table.timestamp('date_updated').notNullable();
 		table.unique(['user', 'client', 'redirect_uri']);
+		table.index('client');
 	});
 
 	await knex.schema.createTable('directus_oauth_codes', (table) => {
@@ -89,7 +97,6 @@ export async function up(knex: Knex): Promise<void> {
 	});
 }
 
-/** Drop in reverse FK-dependency order: column first, then tables. */
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_sessions', (table) => {
 		table.dropForeign('oauth_client');
@@ -100,4 +107,10 @@ export async function down(knex: Knex): Promise<void> {
 	await knex.schema.dropTable('directus_oauth_codes');
 	await knex.schema.dropTable('directus_oauth_consents');
 	await knex.schema.dropTable('directus_oauth_clients');
+
+	await knex.schema.alterTable('directus_settings', (table) => {
+		table.dropColumn('mcp_oauth_enabled');
+		table.dropColumn('mcp_oauth_dcr_enabled');
+		table.dropColumn('mcp_oauth_cimd_enabled');
+	});
 }
