@@ -186,9 +186,11 @@ async function downloadSnapshot() {
 
 <template>
 	<PrivateView :title="$t('settings_data_model')" icon="database">
-		<template #actions>
+		<template #actions:prepend>
 			<EntitlementRemaining />
+		</template>
 
+		<template #actions>
 			<SearchInput
 				v-model="search"
 				:show-filter="false"
