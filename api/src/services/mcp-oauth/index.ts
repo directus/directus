@@ -1527,7 +1527,7 @@ export class McpOAuthService {
 								new Date(existing['metadata_fetched_at'] as string).getTime()
 							: null;
 
-					newTtlMs = prevTtl && prevTtl > 0 ? prevTtl : DEFAULT_CIMD_TTL_MS;
+					newTtlMs = prevTtl !== null && prevTtl >= 0 ? prevTtl : DEFAULT_CIMD_TTL_MS;
 				}
 
 				const expiresAt = newTtlMs > 0 ? new Date(now.getTime() + newTtlMs) : now;

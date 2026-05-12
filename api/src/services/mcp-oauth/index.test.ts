@@ -3093,6 +3093,41 @@ describe('McpOAuthService', () => {
 			expect(actualTtl).toBe(prevTtl);
 		});
 
+		it('CIMD stale 304 with null TTL preserves previous zero TTL', async () => {
+			mockDetectClientIdType.mockReturnValue('cimd');
+
+			const fetchedAt = new Date(Date.now() - 3600_000);
+			const expiresAt = fetchedAt;
+
+			tracker.on.select('directus_settings').response([{ mcp_oauth_cimd_enabled: true }]);
+
+			tracker.on.select('directus_oauth_clients').response([
+				{
+					client_id: cimdClientId,
+					client_name: 'Existing Client',
+					redirect_uris: JSON.stringify([TEST_REDIRECT_URI]),
+					metadata_expires_at: expiresAt,
+					metadata_fetched_at: fetchedAt,
+					metadata_etag: '"etag-1"',
+					registration_type: 'cimd',
+				},
+			]);
+
+			mockFetchCimdMetadata.mockResolvedValue({
+				notModified: true,
+				ttlMs: null,
+			});
+
+			tracker.on.update('directus_oauth_clients').response(1);
+
+			const result = await service.resolveClientWithFetch(cimdClientId);
+
+			const resultExpiresAt = new Date(result['metadata_expires_at'] as string).getTime();
+			const resultFetchedAt = new Date(result['metadata_fetched_at'] as string).getTime();
+
+			expect(resultExpiresAt - resultFetchedAt).toBe(0);
+		});
+
 		it('CIMD 304 on first contact (no existing row) throws invalid_client_metadata', async () => {
 			mockDetectClientIdType.mockReturnValue('cimd');
 

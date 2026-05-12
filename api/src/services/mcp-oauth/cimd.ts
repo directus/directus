@@ -108,8 +108,10 @@ export function isValidCimdClientId(input: string): boolean {
 		return false;
 	}
 
+	const hostname = url.hostname.replace(/\.$/, '').toLowerCase();
+
 	// No IP address hostname (strip brackets for IPv6)
-	const bareHost = url.hostname.replace(/^\[|\]$/g, '');
+	const bareHost = hostname.replace(/^\[|\]$/g, '');
 
 	if (isIP(bareHost)) {
 		logger.debug({ client_id: input, reason: 'IP address hostname' }, 'CIMD client_id rejected');
@@ -120,10 +122,9 @@ export function isValidCimdClientId(input: string): boolean {
 	const envTlds = env['MCP_OAUTH_CIMD_BLOCKED_TLDS'] as string[];
 	const tlds = envTlds.length > 0 ? envTlds : DEFAULT_BLOCKED_TLDS;
 	const suffixes = tlds.map((t) => `.${t.toLowerCase()}`);
-	const hostLower = url.hostname.toLowerCase();
 
 	for (const suffix of suffixes) {
-		if (hostLower === suffix.slice(1) || hostLower.endsWith(suffix)) {
+		if (hostname === suffix.slice(1) || hostname.endsWith(suffix)) {
 			logger.debug({ client_id: input, reason: `blocked TLD: ${suffix}` }, 'CIMD client_id rejected');
 			return false;
 		}
@@ -224,7 +225,7 @@ function validateOptionalHttpsUri(value: unknown, field: string): void {
 	}
 }
 
-const CONTENT_TYPE_JSON_RE = /^application\/([\w.]+\+)?json/i;
+const CONTENT_TYPE_JSON_RE = /^application\/(?:json|[\w.-]+\+json)(?:\s*;|$)/i;
 
 /**
  * Fetch and validate a CIMD metadata document.

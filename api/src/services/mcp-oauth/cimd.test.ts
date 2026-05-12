@@ -119,12 +119,20 @@ describe('isValidCimdClientId', () => {
 		expect(isValidCimdClientId('https://192.168.1.1/client')).toBe(false);
 	});
 
+	it('rejects IPv4 hostname with trailing dot', () => {
+		expect(isValidCimdClientId('https://127.0.0.1./client')).toBe(false);
+	});
+
 	it('rejects IPv6 hostname', () => {
 		expect(isValidCimdClientId('https://[::1]/client')).toBe(false);
 	});
 
 	it.each(['test', 'localhost', 'invalid', 'example', 'local', 'onion'])('rejects blocked TLD .%s', (tld) => {
 		expect(isValidCimdClientId(`https://myapp.${tld}/client`)).toBe(false);
+	});
+
+	it('rejects blocked TLD with trailing dot', () => {
+		expect(isValidCimdClientId('https://myapp.localhost./client')).toBe(false);
 	});
 
 	it('rejects URL longer than 255 characters', () => {
@@ -371,6 +379,19 @@ describe('fetchCimdMetadata', () => {
 
 		await expect(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client')).rejects.toThrow(OAuthError);
 	});
+
+	it.each(['application/jsonp', 'application/json-seq', 'application/jsonxyz'])(
+		'rejects non-JSON application subtype %s',
+		async (contentType) => {
+			mockAxiosGet.mockResolvedValue({
+				status: 200,
+				headers: { 'content-type': contentType },
+				data: validMetadata,
+			});
+
+			await expect(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client')).rejects.toThrow(OAuthError);
+		},
+	);
 
 	it('accepts application/*+json content type', async () => {
 		mockAxiosGet.mockResolvedValue({
