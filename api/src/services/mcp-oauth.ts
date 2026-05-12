@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
+import { isObject } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { getMcpUrls, MCP_ACCESS_SCOPE } from '../ai/mcp/utils.js';
@@ -254,8 +255,13 @@ export class McpOAuthService {
 	 * @throws {OAuthError} `invalid_client_metadata` or `invalid_redirect_uri`
 	 */
 	async registerClient(body: unknown): Promise<DCRResponse> {
-		const input = body as Record<string, unknown>;
 		const env = useEnv();
+
+		if (!isObject(body)) {
+			throw new OAuthError(400, 'invalid_client_metadata', 'Registration metadata must be an object');
+		}
+
+		const input = body;
 
 		// RFC 7591 Section 2: client_name is REQUIRED
 		const clientName = input['client_name'];
@@ -741,121 +747,127 @@ export class McpOAuthService {
 		const sessionExpiry = new Date(Date.now() + refreshTtl);
 		const grantId = crypto.randomUUID();
 
-		const { clientGrantTypes, clientName, userEmail, userRole, userId, scope, resource } = await transaction(
-			this.knex,
-			async (trx) => {
-				// 4a. RFC 6749 Section 4.1.2: codes are single-use. Atomic burn via UPDATE WHERE used_at IS NULL
-				const burned = await trx('directus_oauth_codes')
-					.where({ code_hash: codeHash })
-					.whereNull('used_at')
-					.update({ used_at: new Date() });
+		const exchangeResult = await transaction(this.knex, async (trx) => {
+			// 4a. RFC 6749 Section 4.1.2: codes are single-use. Atomic burn via UPDATE WHERE used_at IS NULL
+			const burned = await trx('directus_oauth_codes')
+				.where({ code_hash: codeHash })
+				.whereNull('used_at')
+				.update({ used_at: new Date() });
 
-				if (burned === 0) {
-					rejectCode({}, 'Authorization code already used');
-				}
+			if (burned === 0) {
+				logger.warn({ code_hash: codeHash }, 'Authorization code already used');
+				await this.revokeGrantByCodeHash(trx, codeHash, params.client_id);
+				return { replayed: true as const };
+			}
 
-				// 4b. Validate code fields (failure rolls back burn, restoring code)
-				if (new Date(codeRecord['expires_at']) < new Date()) {
-					rejectCode({}, 'Authorization code expired');
-				}
+			// 4b. Validate code fields (failure rolls back burn, restoring code)
+			if (new Date(codeRecord['expires_at']) < new Date()) {
+				rejectCode({}, 'Authorization code expired');
+			}
 
-				if (codeRecord['client'] !== params.client_id) {
-					rejectCode({ expected: codeRecord['client'], got: params.client_id }, 'client_id mismatch');
-				}
+			if (codeRecord['client'] !== params.client_id) {
+				rejectCode({ expected: codeRecord['client'], got: params.client_id }, 'client_id mismatch');
+			}
 
-				if (codeRecord['redirect_uri'] !== params.redirect_uri) {
-					rejectCode({}, 'redirect_uri mismatch');
-				}
+			if (codeRecord['redirect_uri'] !== params.redirect_uri) {
+				rejectCode({}, 'redirect_uri mismatch');
+			}
 
-				const resolvedExchangeResource =
-					params.resource || (!env['MCP_OAUTH_REQUIRE_RESOURCE'] ? codeRecord['resource'] : null);
+			const resolvedExchangeResource =
+				params.resource || (!env['MCP_OAUTH_REQUIRE_RESOURCE'] ? codeRecord['resource'] : null);
 
-				if (codeRecord['resource'] !== resolvedExchangeResource) {
-					logger.warn(
-						{ code_hash: codeHash, expected: codeRecord['resource'], got: params.resource },
-						'resource mismatch',
-					);
+			if (codeRecord['resource'] !== resolvedExchangeResource) {
+				logger.warn(
+					{ code_hash: codeHash, expected: codeRecord['resource'], got: params.resource },
+					'resource mismatch',
+				);
 
-					throw new OAuthError(400, 'invalid_target', 'Authorization code is invalid or has expired');
-				}
+				throw new OAuthError(400, 'invalid_target', 'Authorization code is invalid or has expired');
+			}
 
-				// 4c. RFC 7636 Section 4.6: compute S256(code_verifier) and compare to stored challenge
-				const computedChallenge = this.hashToken(params.code_verifier!, 'base64url');
-				const storedChallenge = codeRecord['code_challenge'] as string;
+			// 4c. RFC 7636 Section 4.6: compute S256(code_verifier) and compare to stored challenge
+			const computedChallenge = this.hashToken(params.code_verifier!, 'base64url');
+			const storedChallenge = codeRecord['code_challenge'] as string;
 
-				if (
-					computedChallenge.length !== storedChallenge.length ||
-					!crypto.timingSafeEqual(Buffer.from(computedChallenge), Buffer.from(storedChallenge))
-				) {
-					rejectCode({}, 'PKCE verification failed');
-				}
+			if (
+				computedChallenge.length !== storedChallenge.length ||
+				!crypto.timingSafeEqual(Buffer.from(computedChallenge), Buffer.from(storedChallenge))
+			) {
+				rejectCode({}, 'PKCE verification failed');
+			}
 
-				// 4d. Client lookup via trx
-				const client = await trx('directus_oauth_clients').where('client_id', params.client_id).first();
+			// 4d. Client lookup via trx
+			const client = await trx('directus_oauth_clients').where('client_id', params.client_id).first();
 
-				if (!client) {
-					rejectCode({ client_id: params.client_id }, 'Unknown client during code exchange');
-				}
+			if (!client) {
+				rejectCode({ client_id: params.client_id }, 'Unknown client during code exchange');
+			}
 
-				const txClientGrantTypes: string[] = JSON.parse(client['grant_types']);
-				const txClientName = client['client_name'] as string;
+			const txClientGrantTypes: string[] = JSON.parse(client['grant_types']);
+			const txClientName = client['client_name'] as string;
 
-				// 4e. User status check via trx
-				const txUserId = codeRecord['user'] as string;
+			// 4e. User status check via trx
+			const txUserId = codeRecord['user'] as string;
 
-				const { email: txUserEmail, role: txUserRole } = await this.requireActiveUser(txUserId, trx);
-				const txScope = (codeRecord['scope'] as string) || MCP_ACCESS_SCOPE;
-				const txResource = codeRecord['resource'] as string;
+			const { email: txUserEmail, role: txUserRole } = await this.requireActiveUser(txUserId, trx);
+			const txScope = (codeRecord['scope'] as string) || MCP_ACCESS_SCOPE;
+			const txResource = codeRecord['resource'] as string;
 
-				// 4f. Delete existing grant + its session if exists
-				const existingGrant = await trx('directus_oauth_tokens')
-					.where({ client: params.client_id, user: txUserId })
-					.first();
+			// 4f. Delete existing grant + its session if exists
+			const existingGrant = await trx('directus_oauth_tokens')
+				.where({ client: params.client_id, user: txUserId })
+				.first();
 
-				if (existingGrant) {
-					await trx('directus_oauth_tokens').where({ client: params.client_id, user: txUserId }).delete();
-					await trx('directus_sessions').where('token', existingGrant.session).delete();
-				}
+			if (existingGrant) {
+				await trx('directus_oauth_tokens').where({ client: params.client_id, user: txUserId }).delete();
+				await trx('directus_sessions').where('token', existingGrant.session).delete();
+			}
 
-				// 4g. Create session + grant.
-				// directus_sessions: the stateful session used by Directus for accountability resolution.
-				// oauth_client FK marks it as an OAuth session (filtered out by refresh/logout guards).
-				// token is the SHA-256 hash of the raw session token (which becomes the refresh_token).
-				await trx('directus_sessions').insert({
-					token: sessionHash,
-					user: txUserId,
-					expires: sessionExpiry,
-					ip: context.ip,
-					user_agent: context.userAgent,
-					oauth_client: params.client_id,
-				});
+			// 4g. Create session + grant.
+			// directus_sessions: the stateful session used by Directus for accountability resolution.
+			// oauth_client FK marks it as an OAuth session (filtered out by refresh/logout guards).
+			// token is the SHA-256 hash of the raw session token (which becomes the refresh_token).
+			await trx('directus_sessions').insert({
+				token: sessionHash,
+				user: txUserId,
+				expires: sessionExpiry,
+				ip: context.ip,
+				user_agent: context.userAgent,
+				oauth_client: params.client_id,
+			});
 
-				// directus_oauth_tokens: the OAuth grant tracking the (client, user) relationship.
-				// Links to the session via session hash. Holds resource + scope for token refresh,
-				// and previous_session for reuse detection (populated on refresh rotation).
-				await trx('directus_oauth_tokens').insert({
-					id: grantId,
-					client: params.client_id,
-					user: txUserId,
-					session: sessionHash,
-					resource: txResource,
-					code_hash: codeHash,
-					scope: txScope,
-					expires_at: sessionExpiry,
-					date_created: new Date(),
-				});
+			// directus_oauth_tokens: the OAuth grant tracking the (client, user) relationship.
+			// Links to the session via session hash. Holds resource + scope for token refresh,
+			// and previous_session for reuse detection (populated on refresh rotation).
+			await trx('directus_oauth_tokens').insert({
+				id: grantId,
+				client: params.client_id,
+				user: txUserId,
+				session: sessionHash,
+				resource: txResource,
+				code_hash: codeHash,
+				scope: txScope,
+				expires_at: sessionExpiry,
+				date_created: new Date(),
+			});
 
-				return {
-					clientGrantTypes: txClientGrantTypes,
-					clientName: txClientName,
-					userEmail: txUserEmail,
-					userRole: txUserRole,
-					userId: txUserId,
-					scope: txScope,
-					resource: txResource,
-				};
-			},
-		);
+			return {
+				replayed: false as const,
+				clientGrantTypes: txClientGrantTypes,
+				clientName: txClientName,
+				userEmail: txUserEmail,
+				userRole: txUserRole,
+				userId: txUserId,
+				scope: txScope,
+				resource: txResource,
+			};
+		});
+
+		if (exchangeResult.replayed) {
+			throw new OAuthError(400, 'invalid_grant', 'Authorization code is invalid or has expired');
+		}
+
+		const { clientGrantTypes, clientName, userEmail, userRole, userId, scope, resource } = exchangeResult;
 
 		// 5. Sign JWT (bypassing emitter.emitFilter('auth.jwt'))
 		const accessToken = await this.issueMcpAccessToken({
@@ -932,10 +944,6 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_target', 'resource is required');
 		}
 
-		if (params.scope && !parseOAuthScope(params.scope).includes(MCP_ACCESS_SCOPE)) {
-			throw new OAuthError(400, 'invalid_scope', 'Scope must include mcp:access');
-		}
-
 		// 2. Verify client exists and supports refresh_token grant
 		const client = await this.knex('directus_oauth_clients').where('client_id', params.client_id).first();
 
@@ -969,6 +977,19 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');
 		}
 
+		if (params.scope) {
+			const requestedScopes = parseOAuthScope(params.scope);
+			const grantedScopes = parseOAuthScope((grant['scope'] as string) || MCP_ACCESS_SCOPE);
+
+			if (!requestedScopes.includes(MCP_ACCESS_SCOPE)) {
+				throw new OAuthError(400, 'invalid_scope', 'Scope must include mcp:access');
+			}
+
+			if (requestedScopes.some((scope) => !grantedScopes.includes(scope))) {
+				throw new OAuthError(400, 'invalid_scope', 'Scope must not include scopes outside the original grant');
+			}
+		}
+
 		// 6. Validate resource matches grant's stored resource (RFC 8707)
 		const resolvedRefreshResource = params.resource || (!env['MCP_OAUTH_REQUIRE_RESOURCE'] ? grant['resource'] : null);
 
@@ -998,7 +1019,7 @@ export class McpOAuthService {
 		const clientName = client['client_name'] as string;
 
 		// Session rotation in a single transaction
-		await transaction(this.knex, async (trx) => {
+		const rotated = await transaction(this.knex, async (trx) => {
 			// Atomic UPDATE WHERE session = old_hash (concurrency protection)
 			const updated = await trx('directus_oauth_tokens').where('session', oldSessionHash).update({
 				session: newSessionHash,
@@ -1009,7 +1030,7 @@ export class McpOAuthService {
 			if (updated === 0) {
 				// Race loser: reuse detection within the same transaction
 				await this.detectReuse(trx, oldSessionHash, params.client_id!, logger);
-				throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');
+				return false;
 			}
 
 			// Delete old session, create new session
@@ -1023,7 +1044,13 @@ export class McpOAuthService {
 				user_agent: context.userAgent,
 				oauth_client: grant['client'],
 			});
+
+			return true;
 		});
+
+		if (!rotated) {
+			throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');
+		}
 
 		// 10. Sign new access token
 		const accessToken = await this.issueMcpAccessToken({
@@ -1338,7 +1365,9 @@ export class McpOAuthService {
 		clientId: string,
 		logger: ReturnType<typeof useLogger>,
 	): Promise<void> {
-		const reuseGrant = await db('directus_oauth_tokens').where('previous_session', oldSessionHash).first();
+		const reuseGrant = await db('directus_oauth_tokens')
+			.where({ previous_session: oldSessionHash, client: clientId })
+			.first();
 
 		if (reuseGrant) {
 			await db('directus_oauth_tokens').where('id', reuseGrant['id']).delete();
@@ -1346,6 +1375,19 @@ export class McpOAuthService {
 
 			logger.warn({ client_id: clientId, grant_id: reuseGrant['id'] }, 'Refresh token reuse detected, grant revoked');
 		}
+	}
+
+	/**
+	 * Revoke tokens issued from a replayed authorization code. We retain only the
+	 * active grant row, so this detects code replay but not a full refresh-token family history.
+	 */
+	private async revokeGrantByCodeHash(db: Knex | Knex.Transaction, codeHash: string, clientId: string): Promise<void> {
+		const grant = await db('directus_oauth_tokens').where({ code_hash: codeHash, client: clientId }).first();
+
+		if (!grant) return;
+
+		await db('directus_oauth_tokens').where('id', grant['id']).delete();
+		await db('directus_sessions').where('token', grant['session']).delete();
 	}
 
 	/** HMAC-SHA256 key derived from SECRET for signing/verifying consent JWTs. Domain-separated to prevent token confusion. */

@@ -369,6 +369,13 @@ describe('McpOAuthService', () => {
 			expect(result.token_endpoint_auth_method).toBe('none');
 		});
 
+		it.each([undefined, null, 'not an object', 123, []])('rejects non-object registration body: %s', async (body) => {
+			await assertOAuthError(() => service.registerClient(body), {
+				error: 'invalid_client_metadata',
+				statusCode: 400,
+			});
+		});
+
 		it('omitted token_endpoint_auth_method defaults to none', async () => {
 			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
 			tracker.on.insert('directus_oauth_clients').response([]);
@@ -1447,14 +1454,40 @@ describe('McpOAuthService', () => {
 			mockCodeLookup();
 			// Atomic update returns 0 = already used
 			tracker.on.update('directus_oauth_codes').response(0);
+			tracker.on.select('directus_oauth_tokens').response([
+				{
+					id: 'grant-id',
+					client: clientId,
+					session: 'issued-session-hash',
+				},
+			]);
+			tracker.on.delete('directus_oauth_tokens').response(1);
+			tracker.on.delete('directus_sessions').response(1);
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
+
+			expect(queryHistory('delete', 'directus_oauth_tokens').length).toBe(1);
+			expect(queryHistory('delete', 'directus_sessions').length).toBe(1);
+		});
+
+		it('code replay does not revoke grants for a different authenticated client', async () => {
+			const otherClientId = crypto.randomUUID();
+
+			mockCodeLookup({ client: otherClientId });
+			tracker.on.update('directus_oauth_codes').response(0);
+			tracker.on.select('directus_oauth_tokens').response([]);
+
+			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
+
+			expect(queryHistory('delete', 'directus_oauth_tokens').length).toBe(0);
+			expect(queryHistory('delete', 'directus_sessions').length).toBe(0);
 		});
 
 		it('concurrent code exchange - only one wins (atomic UPDATE)', async () => {
 			// First call: code found in SELECT, but UPDATE returns 0 (someone else used it first)
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(0);
+			tracker.on.select('directus_oauth_tokens').response([]);
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
 		});
@@ -1932,6 +1965,25 @@ describe('McpOAuthService', () => {
 			expect(tokenDeletes.length).toBe(1);
 		});
 
+		it('reuse detection does not revoke grants for a different authenticated client', async () => {
+			mockClientLookup(clientId);
+
+			let tokenSelectCount = 0;
+
+			tracker.on.select('directus_oauth_tokens').response(() => {
+				tokenSelectCount++;
+
+				if (tokenSelectCount === 1) return [];
+
+				return [];
+			});
+
+			await assertOAuthError(() => service.refreshToken(validParams(), context), { error: 'invalid_grant' });
+
+			expect(queryHistory('delete', 'directus_oauth_tokens').length).toBe(0);
+			expect(queryHistory('delete', 'directus_sessions').length).toBe(0);
+		});
+
 		it('reuse detection: grant and session deleted via transaction', async () => {
 			mockClientLookup(clientId);
 
@@ -1978,9 +2030,17 @@ describe('McpOAuthService', () => {
 		});
 
 		it('scope on refresh request validated (only mcp:access accepted)', async () => {
-			mockClientLookup(clientId);
+			mockSuccessfulRefresh();
 
 			await assertOAuthError(() => service.refreshToken(validParams({ scope: 'openid' }), context), {
+				error: 'invalid_scope',
+			});
+		});
+
+		it('scope on refresh request rejects scopes outside the original grant', async () => {
+			mockSuccessfulRefresh();
+
+			await assertOAuthError(() => service.refreshToken(validParams({ scope: 'mcp:access openid' }), context), {
 				error: 'invalid_scope',
 			});
 		});
