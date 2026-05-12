@@ -499,13 +499,15 @@ export class LicenseManager {
 		const schema = await getSchema();
 		const pendingResolution: LicensePendingResolution[] = [];
 
-		let entitlements: Entitlements | null = null;
+		let entitlements: Entitlements | null;
 
 		if (options.licenseKey) {
 			// required resolution when changing tier
 			const preview = await this.preview(options.licenseKey);
 			entitlements = preview.entitlements;
-		} else if (!('licenseKey' in options)) {
+		} else if (options.licenseKey === null) {
+			entitlements = null;
+		} else {
 			// possible resolution during current tier
 			const license = await this.getLicense();
 			entitlements = license.entitlements;
