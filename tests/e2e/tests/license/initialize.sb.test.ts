@@ -1,5 +1,5 @@
-import { randomUUID } from 'crypto';
-import { LICENSE_API_VERSION, readLicense } from '@directus/license';
+import { randomUUID } from 'node:crypto';
+import { activateLicense, LICENSE_API_VERSION, readLicense } from '@directus/license';
 import { createLicense } from '@directus/mock-license-server';
 import { type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
@@ -23,7 +23,7 @@ async function registerLicense(licensePort: string | number, license: License) {
 async function mocActivateKey(
 	licensePort: string | number,
 	body: { license_key: string; project_id: string; public_url: string },
-) {
+): Promise<{ token: string; new_project_id?: string }> {
 	const res = await fetch(`http://localhost:${licensePort}/api/licenses/activate`, {
 		method: 'POST',
 		headers: {
@@ -36,6 +36,8 @@ async function mocActivateKey(
 	if (!res.ok) {
 		throw new Error(`Mock activate failed: ${res.status} ${await res.text()}`);
 	}
+
+	return (await res.json()) as { token: string; new_project_id?: string };
 }
 
 function createSandboxOptions(overrides?: DeepPartial<Options>): DeepPartial<Options> {
@@ -83,7 +85,7 @@ describe('new env LICENSE_KEY (Case D)', () => {
 		await directus?.stop();
 	});
 
-	test('loads license from env', async () => {
+	test('activate license', async () => {
 		const info = await api.request(readLicense());
 
 		expect(info).toEqual({
@@ -162,7 +164,49 @@ describe('env LICENSE_KEY changed (Case B)', () => {
 	});
 });
 
-describe.todo('env LICENSE_KEY unchanged refreshes (Case C)');
+describe('env LICENSE_KEY unchanged (Case C)', () => {
+	const license = createLicense({ meta: { name: 'env-license-key-unchanged' } });
+
+	let directus: Sandbox;
+	let api: DirectusClient<any> & RestClient<any>;
+
+	beforeAll(async () => {
+		directus = await sandbox(
+			database,
+			createSandboxOptions({
+				env: { LICENSE_KEY: license.key },
+				hooks: {
+					beforeApi: async ({ env }) => {
+						await registerLicense(env.LICENSE_PORT, license);
+					},
+				},
+			}),
+		);
+
+		await directus.restartApi();
+
+		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
+	});
+
+	afterAll(async () => {
+		await directus?.stop();
+	});
+
+	test('keeps license active via refresh', async () => {
+		const info = await api.request(readLicense());
+
+		expect(info).toEqual({
+			entitlements: license.entitlements,
+			expires_at: license.meta.expires_at,
+			grace_period: license.meta.grace_period,
+			name: license.meta.name,
+			offline: false,
+			source: 'env',
+			status: 'active',
+			usage: expect.any(Object),
+		});
+	});
+});
 
 describe('db license_key (Case G)', () => {
 	const license = createLicense({ key: 'DKPB1-FRPVF-WDA27-842N0-VPNW2', meta: { name: 'db-license-key' } });
@@ -197,6 +241,51 @@ describe('db license_key (Case G)', () => {
 	});
 
 	test('loads license from directus_settings', async () => {
+		const info = await api.request(readLicense());
+
+		expect(info).toEqual({
+			entitlements: license.entitlements,
+			expires_at: license.meta.expires_at,
+			grace_period: license.meta.grace_period,
+			name: license.meta.name,
+			offline: false,
+			source: 'settings',
+			status: 'active',
+			usage: expect.any(Object),
+		});
+	});
+});
+
+describe('db license_key + license_token (Case F)', () => {
+	const license = createLicense({ meta: { name: 'db-license-key-and-token' } });
+
+	let directus: Sandbox;
+	let api: DirectusClient<any> & RestClient<any>;
+
+	beforeAll(async () => {
+		directus = await sandbox(
+			database,
+			createSandboxOptions({
+				hooks: {
+					beforeApi: async ({ env }) => {
+						await registerLicense(env.LICENSE_PORT, license);
+					},
+				},
+			}),
+		);
+
+		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
+
+		await api.request(activateLicense({ license_key: license.key }));
+
+		await directus.restartApi();
+	});
+
+	afterAll(async () => {
+		await directus?.stop();
+	});
+
+	test('verifies token and loads license from settings', async () => {
 		const info = await api.request(readLicense());
 
 		expect(info).toEqual({
