@@ -1,4 +1,6 @@
 import { App } from 'vue';
+import VBreadcrumb from './deprecated/v-breadcrumb.vue';
+import VResizeable from './deprecated/v-resizeable.vue';
 import TransitionBounce from './transition/bounce.vue';
 import TransitionDialog from './transition/dialog.vue';
 import TransitionExpand from './transition/expand.vue';

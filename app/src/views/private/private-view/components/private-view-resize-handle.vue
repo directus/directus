@@ -8,6 +8,8 @@ const { location = 'start' } = defineProps<{ location?: 'start' | 'end' }>();
 
 <style scoped>
 div {
+	--width: 3px; /* stylelint-disable-line unit-disallowed-list -- line */
+
 	position: absolute;
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition);
