@@ -215,6 +215,7 @@ compare_version: Сравнить Версии
 save_version: Сохранить Версию
 promote_version: Повысить версию
 apply: Применить
+discard: Отменить
 select_all_differences: Выбрать все различия
 delete_version: Удалить версию
 delete_version_copy: >-
@@ -522,10 +523,15 @@ related_collection: Связанная коллекция
 related_collections: Связанные коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция языков
+fields_to_translate: Поля для перевода
+add_fields: Добавление полей
 translations_preview_collections: Коллекции
 translations_preview_fields: Поля
+translations_preview_relations: Отношения
+ungrouped: Без группировки
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Начать импорт
+import_background: Импорт в фоновом режиме
 import_data_indeterminate: Импорт данных...
 import_data_success: Данные успешно импортированы из {filename}
 import_data_errors: Ошибка импорта
@@ -1670,6 +1676,7 @@ no_permissions: Нет прав доступа
 permission_add_collection: Добавить коллекцию
 default_label: По умолчанию
 delete_label: Удалить
+discard_label: Отменить
 delete_are_you_sure: >-
   Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
 delete_field_are_you_sure: >-
