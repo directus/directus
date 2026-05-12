@@ -1,0 +1,36 @@
+# Skyramp Workspace Configuration
+workspace:
+  repoName: roshinimichael/directus
+  repoUrl: https://github.com/roshinimichael/directus
+metadata:
+  schemaVersion: v1
+  mcpVersion: 0.1.7
+  executorVersion: v1.3.24
+  createdAt: "2026-05-12T23:55:06.740Z"
+  updatedAt: "2026-05-12T23:55:06.747Z"
+services:
+  - serviceName: directus-api-backend
+    language: typescript
+    framework: playwright
+    testDirectory: tests/blackbox/api
+    api:
+      schemaPath: packages/specs/src/openapi.yaml
+      authType: bearer
+      authHeader: Authorization
+      baseUrl: http://localhost:8055
+    runtimeDetails:
+      serverStartCommand: docker compose -f docker-compose.testbot.yml up -d
+      runtime: docker
+      dockerNetwork: directus_default
+  - serviceName: directus-app-frontend
+    language: typescript
+    framework: playwright
+    testDirectory: app/tests
+    api:
+      authType: none
+      authHeader: ""
+      baseUrl: http://localhost:8055
+    runtimeDetails:
+      serverStartCommand: docker compose -f docker-compose.testbot.yml up -d
+      runtime: docker
+      dockerNetwork: directus_default
