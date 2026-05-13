@@ -180,7 +180,9 @@ async function handleDeactivateConfirm() {
 						<VButton v-if="!isLicensed" secondary small @click="addLicenseDrawer = true">
 							{{ t('licensing.add') }}
 						</VButton>
-						<VButton v-if="isLicensed" secondary small @click="() => {}">{{ t('licensing.manage') }}</VButton>
+						<VButton v-if="isLicensed && license.source !== null" secondary small @click="() => {}">
+							{{ t('licensing.manage') }}
+						</VButton>
 						<VButton small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
 					</div>
 				</div>
