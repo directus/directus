@@ -550,6 +550,7 @@ describe('McpOAuthService', () => {
 			await service.registerClient(createTestClient({ token_endpoint_auth_method: 'none' }));
 
 			const insertCall = tracker.history.insert[0];
+
 			const columns =
 				insertCall!.sql
 					.match(/\((.*)\) values/i)?.[1]
