@@ -8,7 +8,6 @@ import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
 import LicenseResolutionDialog from './components/license-resolution-dialog.vue';
 import LicenseSection from './components/license-section.vue';
-import VBreadcrumb from '@/components/deprecated/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
