@@ -28,6 +28,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
+	const aiTranslationsEnabled = computed(() => isEntitlementEnabled('ai_translations_enabled'));
+
 	const boundary = computed<LicenseBoundary | null>(() => {
 		if (!info.value) return null;
 		if (info.value.renews_at !== undefined) return { type: 'renewal', timestamp: info.value.renews_at };
@@ -72,17 +74,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return status === 'expired' || status === 'suspended' || status === 'canceled';
 	});
 
-	const customPermissionRulesEnabled = computed(() => {
-		const ent = info.value?.entitlements?.custom_permission_rules_enabled;
-		if (!ent) return false;
-		return ent.override ?? ent.default;
-	});
+	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
 
-	const customLLMEnabled = computed(() => {
-		const ent = info.value?.entitlements?.custom_llms_enabled;
-		if (!ent) return false;
-		return ent.override ?? ent.default;
-	});
+	const customLLMEnabled = computed(() => isEntitlementEnabled('custom_llms_enabled'));
 
 	const isLicensed = computed(() => {
 		const status = info.value?.status;
@@ -103,6 +97,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		const limit = info.value?.entitlements?.activity_historical_timeframe?.limit;
 		return limit ? formatTimeframe(limit) : null;
 	});
+
+	function isEntitlementEnabled(key: string) {
+		const ent = info.value?.entitlements[key];
+		if (!ent) return false;
+		return ent.override ?? ent.default;
+	}
 
 	function clearTimer() {
 		if (refreshTimer) {
@@ -196,6 +196,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loadingAddons,
 		loadingPendingResolution,
 		error,
+		aiTranslationsEnabled,
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
