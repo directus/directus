@@ -219,7 +219,7 @@ async function handleDeactivateConfirm() {
 					</VList>
 				</LicenseSection>
 
-				<LicenseSection icon="emergency_home" :title="t('danger_zone')" variant="danger">
+				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" variant="danger">
 					<div class="danger-zone-content">
 						<VNotice v-if="license.source === 'env'" type="info">
 							{{ t('licensing.env_managed') }}
