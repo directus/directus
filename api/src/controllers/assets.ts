@@ -28,7 +28,7 @@ const router = Router();
 const env = useEnv();
 
 router.use(useCollection('directus_files'));
-router.use(checkIsLocked);
+router.use(checkIsLocked('assets'));
 
 router.post(
 	'/folder/:pk',
