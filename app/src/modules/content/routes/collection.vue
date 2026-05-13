@@ -2,13 +2,16 @@
 import { useCollection, useLayout } from '@directus/composables';
 import { isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { isSystemCollection } from '@directus/system-data';
-import { Filter } from '@directus/types';
+import { Filter, Preset } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
+import BookmarkDelete from '../components/bookmark-delete.vue';
 import ContentNavigation from '../components/navigation.vue';
 import VersionChip from '../components/version-chip.vue';
+import { useDeleteBookmark } from '../composables/use-delete-bookmark';
+import { getBookmarkScope } from '../utils/get-bookmark-scope';
 import ContentNotFound from './not-found.vue';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
@@ -18,7 +21,6 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VError from '@/components/v-error.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
@@ -30,6 +32,7 @@ import { usePreset } from '@/composables/use-preset';
 import { useVersionQuery } from '@/composables/use-version-query';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -114,8 +117,19 @@ const {
 	batchEditActive,
 } = useBatch();
 
-const { bookmarkDialogActive, creatingBookmark, isBookmarkUpdateable, isBookmarkResetable, createBookmark } =
-	useBookmarks();
+const {
+	bookmarkDialogActive,
+	creatingBookmark,
+	isBookmarkUpdateable,
+	isBookmarkResetable,
+	createBookmark,
+	bookmarkPreset,
+	bookmarkScope,
+	hasBookmarkPermission,
+	deleteActive,
+	deleteSaving,
+	deleteSave,
+} = useBookmarks();
 
 watch(
 	collection,
@@ -314,10 +328,18 @@ function useLinks() {
 }
 
 function useBookmarks() {
+	const userStore = useUserStore();
+
 	const bookmarkDialogActive = ref(false);
 	const creatingBookmark = ref(false);
 	const isBookmarkUpdateable = computed(() => props.bookmark && !bookmarkSaved.value && bookmarkIsMine.value);
 	const isBookmarkResetable = computed(() => props.bookmark && !bookmarkSaved.value && !bookmarkSaving.value);
+
+	const bookmarkPreset = computed(() => localPreset.value as Preset);
+	const bookmarkScope = computed(() => getBookmarkScope(bookmarkPreset.value));
+	const hasBookmarkPermission = computed(() => bookmarkIsMine.value || userStore.isAdmin);
+
+	const { deleteActive, deleteSaving, deleteSave } = useDeleteBookmark();
 
 	return {
 		bookmarkDialogActive,
@@ -325,6 +347,12 @@ function useBookmarks() {
 		isBookmarkUpdateable,
 		isBookmarkResetable,
 		createBookmark,
+		bookmarkPreset,
+		bookmarkScope,
+		hasBookmarkPermission,
+		deleteActive,
+		deleteSaving,
+		deleteSave,
 	};
 
 	async function createBookmark(bookmark: any) {
@@ -414,16 +442,30 @@ function clearFilters() {
 					@click="savePreset()"
 				/>
 
-				<PrivateViewHeaderBarActionButton
+				<BookmarkDelete
 					v-if="bookmark"
-					:tooltip="$t(`delete_personal_bookmark`)"
-					icon="bookmark"
-					icon-filled
-					variant="ghost"
-					kind="warning"
-					active
-					@click="() => {}"
-				/>
+					v-model="deleteActive"
+					:bookmark="bookmarkPreset"
+					:saving="deleteSaving"
+					@delete="deleteSave(bookmarkPreset)"
+				>
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							:tooltip="
+								hasBookmarkPermission
+									? $t(`delete_${bookmarkScope}_bookmark`)
+									: $t(`cannot_edit_${bookmarkScope}_bookmarks`)
+							"
+							:disabled="!hasBookmarkPermission"
+							icon="bookmark"
+							icon-filled
+							variant="ghost"
+							kind="warning"
+							active
+							@click="on"
+						/>
+					</template>
+				</BookmarkDelete>
 
 				<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
 					<template #activator="{ on }">

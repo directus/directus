@@ -2,6 +2,7 @@
 import { Preset } from '@directus/types';
 import { computed, reactive, ref } from 'vue';
 import { useDeleteBookmark } from '../composables/use-delete-bookmark';
+import { getBookmarkScope } from '../utils/get-bookmark-scope';
 import BookmarkDelete from './bookmark-delete.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -38,11 +39,7 @@ const isMine = computed(() => props.bookmark.user === userStore.currentUser!.id)
 
 const hasPermission = computed(() => isMine.value || userStore.isAdmin);
 
-const scope = computed(() => {
-	if (props.bookmark.user && !props.bookmark.role) return 'personal';
-	if (!props.bookmark.user && props.bookmark.role) return 'role';
-	return 'global';
-});
+const scope = computed(() => getBookmarkScope(props.bookmark));
 
 const { editActive, editValue, editSave, editSaving, editCancel, isEditDisabled } = useEditBookmark();
 const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
