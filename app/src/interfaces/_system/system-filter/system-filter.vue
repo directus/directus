@@ -209,7 +209,7 @@ function addKeyAsNode() {
 					<button class="add-filter" :class="{ active }" @click="toggle">
 						<VIcon v-if="inline" name="add" class="add" small />
 						<span>{{ $t('interfaces.filter.add_filter') }}</span>
-						<VIcon name="expand_more" class="expand_more" />
+						<VIcon name="arrow_drop_down" class="expand_more" />
 					</button>
 				</template>
 				<VFieldList
@@ -338,22 +338,18 @@ function addKeyAsNode() {
 			border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			border-radius: 5.625rem;
 			transition: border-color var(--fast) var(--transition);
+
 			&:hover,
 			&.active {
 				border-color: var(--theme--form--field--input--border-color);
 			}
-			&.active {
-				.expand_more {
-					transform: scaleY(-1);
-					transition-timing-function: var(--transition-in);
-				}
-			}
+
 			.add {
 				margin-inline: 0.3125rem 0.25rem;
 			}
+
 			.expand_more {
 				margin-inline: auto 0.3125rem;
-				transition: transform var(--medium) var(--transition-out);
 			}
 		}
 	}
