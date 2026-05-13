@@ -197,6 +197,10 @@ export type Env = (typeof baseConfig)[Database] & {
 	REDIS_ENABLED: string;
 	CACHE_ENABLED: string;
 	NODE_ENV: string;
+	ADMIN_EMAIL?: 'admin@example.com';
+	PROJECT_OWNER?: 'admin@example.com';
+	ADMIN_PASSWORD?: 'pw';
+	ADMIN_TOKEN?: 'admin';
 	DOCKER_DEFAULT_PLATFORM?: string;
 } & Partial<typeof minio> &
 	Partial<typeof saml> &

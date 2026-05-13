@@ -8,7 +8,6 @@ import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
 import LicenseResolutionDialog from './components/license-resolution-dialog.vue';
 import LicenseSection from './components/license-section.vue';
-import VBreadcrumb from '@/components/deprecated/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -36,7 +35,7 @@ const licenseStore = useLicenseStore();
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
 const boundaryDate = computed(() => {
-	if (!boundary.value || !Number.isFinite(boundary.value.timestamp)) return null;
+	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
 	const dateStr = new Date(boundary.value.timestamp * 1000).toISOString().slice(0, 10);
 	return formatDate(dateStr, { type: 'date', format: 'long' });
 });
@@ -154,10 +153,6 @@ async function handleDeactivateConfirm() {
 
 <template>
 	<PrivateView :title="t('settings_license')" icon="diamond">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
@@ -184,7 +179,9 @@ async function handleDeactivateConfirm() {
 						<VButton v-if="!isLicensed" secondary small @click="addLicenseDrawer = true">
 							{{ t('licensing.add') }}
 						</VButton>
-						<VButton v-if="isLicensed" secondary small @click="() => {}">{{ t('licensing.manage') }}</VButton>
+						<VButton v-if="isLicensed && license.source !== null" secondary small @click="() => {}">
+							{{ t('licensing.manage') }}
+						</VButton>
 						<VButton small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
 					</div>
 				</div>
@@ -215,13 +212,13 @@ async function handleDeactivateConfirm() {
 					</template>
 				</div>
 
-				<LicenseSection icon="diamond" :title="t('licensing.addons')">
+				<LicenseSection v-if="addons && addons.length > 0" icon="diamond" :title="t('licensing.addons')">
 					<VList>
 						<LicenseAddonItem v-for="addon in addons" :key="addon.id" :addon="addon" />
 					</VList>
 				</LicenseSection>
 
-				<LicenseSection icon="emergency_home" :title="t('danger_zone')" variant="danger">
+				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" variant="danger">
 					<div class="danger-zone-content">
 						<VNotice v-if="license.source === 'env'" type="info">
 							{{ t('licensing.env_managed') }}

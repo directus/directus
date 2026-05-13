@@ -1823,6 +1823,7 @@ fields:
     ai_google_api_key: Google API Key
     ai_google_allowed_models: Google Allowed Models
     ai_openai_compatible: OpenAI-Compatible Provider
+    ai_translations_notice: Your current plan doesn't include AI Translation. Upgrade to unlock.
     ai_openai_compatible_notice: Your current plan doesn't include Custom LLM. Upgrade to unlock.
     ai_openai_compatible_name: Provider Name
     ai_openai_compatible_base_url: Base URL

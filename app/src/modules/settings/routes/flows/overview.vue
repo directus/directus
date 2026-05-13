@@ -184,7 +184,7 @@ function onFlowDrawerCompletion(id: string) {
 			/>
 		</template>
 
-		<div class="padding-box">
+		<div v-if="licenseStore.flowsRemaining !== null && licenseStore.flowsRemaining <= 0" class="padding-box">
 			<MaxCapacityAlert entitlement-key="flows" />
 		</div>
 
