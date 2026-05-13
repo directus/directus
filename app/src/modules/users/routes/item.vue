@@ -97,6 +97,7 @@ const {
 	ref('directus_users'),
 	primaryKey,
 	null,
+	computed(() => false),
 	{
 		fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
 	},
