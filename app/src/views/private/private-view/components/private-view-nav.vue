@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
+import InterfaceSystemPoweredByBadge from '@/interfaces/_system/system-powered-by-badge/system-powered-by-badge.vue';
 
 // id attribute for accessibility linking doesn’t work on the top-level element
 defineProps<{ id?: string }>();
@@ -12,6 +13,8 @@ defineProps<{ id?: string }>();
 		<div :id class="module-nav-content">
 			<slot name="navigation" />
 		</div>
+
+		<InterfaceSystemPoweredByBadge private />
 	</aside>
 </template>
 
@@ -20,7 +23,8 @@ defineProps<{ id?: string }>();
 	block-size: 100%;
 	inline-size: 100%;
 	position: relative;
-	display: block;
+	display: flex;
+	flex-direction: column;
 	font-size: 0.8125rem;
 	background: var(--theme--shell--background);
 }
