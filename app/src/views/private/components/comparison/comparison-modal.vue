@@ -451,7 +451,7 @@ function usePublishDialog() {
 	}
 
 	.comparison-content-divider {
-		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color);
 	}
 
 	.columns {
@@ -513,7 +513,7 @@ function usePublishDialog() {
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal--padding-x);
 		padding-block: 1rem;
-		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color);
 
 		.columns {
 			flex-direction: row;
