@@ -114,7 +114,8 @@ const {
 	batchEditActive,
 } = useBatch();
 
-const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
+const { bookmarkDialogActive, creatingBookmark, isBookmarkUpdateable, isBookmarkResetable, createBookmark } =
+	useBookmarks();
 
 watch(
 	collection,
@@ -315,10 +316,14 @@ function useLinks() {
 function useBookmarks() {
 	const bookmarkDialogActive = ref(false);
 	const creatingBookmark = ref(false);
+	const isBookmarkUpdateable = computed(() => props.bookmark && !bookmarkSaved.value && bookmarkIsMine.value);
+	const isBookmarkResetable = computed(() => props.bookmark && !bookmarkSaved.value && !bookmarkSaving.value);
 
 	return {
 		bookmarkDialogActive,
 		creatingBookmark,
+		isBookmarkUpdateable,
+		isBookmarkResetable,
 		createBookmark,
 	};
 
@@ -392,48 +397,45 @@ function clearFilters() {
 			<template #actions>
 				<SearchInput v-model="search" v-model:filter="filter" :collection="collection" />
 
-				<BookmarkAdd v-if="!bookmark" v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
-					<template #activator="{ on }">
-						<PrivateViewHeaderBarActionButton
-							v-tooltip.bottom="$t('create_bookmark')"
-							icon="bookmark"
-							variant="ghost"
-							@click="on"
-						/>
-					</template>
-				</BookmarkAdd>
-
-				<div v-else-if="bookmarkSaved" class="saved-bookmark">
-					<VIcon name="bookmark" filled />
-				</div>
-
 				<PrivateViewHeaderBarActionButton
-					v-else-if="bookmarkIsMine"
-					v-tooltip.bottom="$t('update_bookmark')"
-					icon="bookmark_save"
-					variant="ghost"
-					@click="savePreset()"
-				/>
-
-				<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
-					<template #activator="{ on }">
-						<PrivateViewHeaderBarActionButton
-							v-tooltip.bottom="$t('create_bookmark')"
-							icon="bookmark"
-							variant="ghost"
-							@click="on"
-						/>
-					</template>
-				</BookmarkAdd>
-
-				<PrivateViewHeaderBarActionButton
-					v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
-					v-tooltip.bottom="$t('reset_bookmark')"
+					v-if="isBookmarkResetable"
+					:tooltip="$t('reset_bookmark')"
 					icon="settings_backup_restore"
 					variant="ghost"
 					kind="danger"
 					@click="clearLocalSave"
 				/>
+
+				<PrivateViewHeaderBarActionButton
+					v-if="isBookmarkUpdateable"
+					:tooltip="$t('update_bookmark')"
+					icon="bookmark_save"
+					variant="ghost"
+					@click="savePreset()"
+				/>
+
+				<PrivateViewHeaderBarActionButton
+					v-if="bookmark"
+					:tooltip="$t(`delete_personal_bookmark`)"
+					icon="bookmark"
+					icon-filled
+					variant="ghost"
+					kind="warning"
+					active
+					@click="() => {}"
+				/>
+
+				<BookmarkAdd v-else v-model="bookmarkDialogActive" :saving="creatingBookmark" @save="createBookmark">
+					<template #activator="{ on }">
+						<PrivateViewHeaderBarActionButton
+							:tooltip="$t('create_bookmark')"
+							icon="bookmark"
+							variant="ghost"
+							kind="warning"
+							@click="on"
+						/>
+					</template>
+				</BookmarkAdd>
 
 				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
