@@ -619,7 +619,10 @@ export class LicenseManager {
 	private async commitStateChange(options?: { status?: LicenseStatus; isCore?: boolean; downgrade?: boolean }) {
 		if (options?.downgrade) {
 			const settingsService = new SettingsService({ schema: await getSchema() });
-			await settingsService.upsertSingleton({ license_token: null });
+
+			await settingsService.upsertSingleton(
+				options.isCore ? { license_key: null, license_token: null } : { license_token: null },
+			);
 		}
 
 		await this.syncState();

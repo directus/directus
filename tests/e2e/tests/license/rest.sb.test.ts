@@ -1,5 +1,6 @@
 import {
 	activateLicense,
+	applyLicenseResolution,
 	CORE_LICENSE,
 	deactivateLicense,
 	generateLicensePendingResolution,
@@ -15,11 +16,15 @@ import {
 	createDirectus,
 	createUser,
 	type DirectusClient,
+	readCollection,
+	readCollections,
+	readMe,
 	rest,
 	type RestClient,
 	staticToken,
 	updateSettings,
 } from '@directus/sdk';
+import type { User } from '@directus/types';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
@@ -49,6 +54,7 @@ beforeAll(async () => {
 		env: {
 			CACHE_SCHEMA: 'false',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
+			LOG_LEVEL: 'debug',
 		},
 		extras: {
 			license: true,
@@ -174,40 +180,113 @@ test('check resolution with no conflicts', async () => {
 	expect(result).toEqual([]);
 });
 
+let newUser: User | undefined;
+
 test('check resolution with conflicts', async () => {
 	await api.request(createCollection({ collection: 'A', meta: {}, schema: {} }));
 	await api.request(createCollection({ collection: 'B', meta: {}, schema: {} }));
 
-	await api.request(createUser({ first_name: 'John', last_name: 'Doe', email: 'test@example.com', password: 'pw' }));
+	const admin = await api.request(readMe());
+
+	newUser = await api.request(
+		createUser({
+			first_name: 'John',
+			last_name: 'Doe',
+			email: 'test@example.com',
+			password: 'pw',
+			status: 'active',
+			role: admin['role'],
+		}) as any,
+	);
 
 	// Activate license that is more restrictive than core
 	await api.request(activateLicense({ license_key: restrictedLicense.key }));
 
-	// await api.request(updateSettings({ ai_openai_compatible_api_key: 'test' }));
+	await api.request(updateSettings({ ai_openai_compatible_api_key: 'test' }));
 
 	const result = await api.request(generateLicensePendingResolution());
 
 	expect(result).toEqual([
 		{
-			candidates: [],
+			candidates: [
+				{
+					admin: true,
+					avatar: null,
+					first_name: 'John',
+					id: newUser!.id,
+					last_name: 'Doe',
+				},
+			],
 			key: 'seats',
 			kind: 'limit',
-			limit: 3,
-			usage: 1,
+			limit: 1,
+			usage: 2,
 		},
 		{
-			candidates: [],
+			candidates: ['A', 'B'],
 			key: 'collections',
 			kind: 'limit',
-			limit: 50,
-			usage: 0,
+			limit: 1,
+			usage: 2,
 		},
 		{
-			candidates: [],
-			key: 'flows',
-			kind: 'limit',
-			limit: 5,
-			usage: 0,
+			key: 'custom_llms_enabled',
+			kind: 'feature_gate',
 		},
 	]);
+});
+
+test('partially resolve conflicts', async () => {
+	await api.request(applyLicenseResolution({ collections: ['B'] }));
+
+	const result = await api.request(generateLicensePendingResolution());
+
+	expect(result).toEqual([
+		{
+			candidates: [
+				{
+					admin: true,
+					avatar: null,
+					first_name: 'John',
+					id: newUser!.id,
+					last_name: 'Doe',
+				},
+			],
+			key: 'seats',
+			kind: 'limit',
+			limit: 1,
+			usage: 2,
+		},
+		{
+			key: 'custom_llms_enabled',
+			kind: 'feature_gate',
+		},
+	]);
+
+	const collectionA = await api.request(readCollection('A'));
+	const collectionB = await api.request(readCollection('B'));
+
+	expect(collectionA).toMatchObject({
+		collection: 'A',
+		meta: {
+			status: 'active',
+		},
+	});
+
+	expect(collectionB).toMatchObject({
+		collection: 'B',
+		meta: {
+			status: 'inactive',
+		},
+	});
+});
+
+test('fully resolve conflicts', async () => {
+	await api.request(applyLicenseResolution({ seats: [newUser!.id] }));
+
+	await api.request(updateSettings({ ai_openai_compatible_api_key: null }));
+
+	const result = await api.request(generateLicensePendingResolution());
+
+	expect(result).toEqual([]);
 });
