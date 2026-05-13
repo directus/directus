@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-	applyLicenseResolution,
 	type LicensePendingResolution,
 	type LicensePendingResolutionFeatureGateSSO,
 	type LicensePendingResolutionLimitCollections,
@@ -22,7 +21,6 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
-import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
@@ -104,22 +102,18 @@ async function submit() {
 	submitting.value = true;
 
 	try {
-		await sdk.request(
-			applyLicenseResolution({
-				...(collections.value ? { collections: [...selected.collections] } : {}),
-				...(seats.value ? { seats: [...selected.seats] } : {}),
-				...(flows.value ? { flows: [...selected.flows] } : {}),
-				...(sso.value
-					? {
-							sso_enabled: sso.value.blockers?.length ? { admin: { ...adminCreds.value } } : true,
-						}
-					: {}),
-				// Feature gates custom_llms_enabled and custom_permission_rules_enabled are
-				// locked server-side without user action and are intentionally not submitted.
-			}),
-		);
-
-		await Promise.all([licenseStore.hydrate(), licenseStore.hydratePendingResolution()]);
+		// Feature gates custom_llms_enabled and custom_permission_rules_enabled are
+		// locked server-side without user action and are intentionally not submitted.
+		await licenseStore.resolve({
+			...(collections.value ? { collections: [...selected.collections] } : {}),
+			...(seats.value ? { seats: [...selected.seats] } : {}),
+			...(flows.value ? { flows: [...selected.flows] } : {}),
+			...(sso.value
+				? {
+						sso_enabled: sso.value.blockers?.length ? { admin: { ...adminCreds.value } } : true,
+					}
+				: {}),
+		});
 
 		if (scope.value === 'manual') {
 			emit('confirm');
