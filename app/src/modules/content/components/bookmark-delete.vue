@@ -36,7 +36,7 @@ function confirmDelete() {
 		</template>
 
 		<VCard>
-			<VCardTitle>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</VCardTitle>
+			<VCardTitle>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark ?? '' }) }}</VCardTitle>
 			<VCardActions>
 				<VButton secondary @click="$emit('update:modelValue', false)">{{ $t('cancel') }}</VButton>
 				<VButton :loading="saving" kind="danger" @click="confirmDelete">
