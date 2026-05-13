@@ -217,7 +217,9 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 
 		// License lockdown: admin must resolve before accessing the app.
-		if (to.path !== '/license-recovery' && to.path !== '/logout') {
+		const allowedWhileLocked = ['/license-recovery', '/logout', '/settings/license'];
+
+		if (!allowedWhileLocked.includes(to.path)) {
 			const licenseStore = useLicenseStore();
 
 			if (userStore.isAdmin && licenseStore.isLocked) {

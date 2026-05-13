@@ -6,6 +6,7 @@ import {
 	type LicensePendingResolutionLimitFlows,
 	type LicensePendingResolutionLimitSeats,
 } from '@directus/license';
+import { useCookies } from '@vueuse/integrations/useCookies';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -41,17 +42,28 @@ const router = useRouter();
 const licenseStore = useLicenseStore();
 const { info, pendingResolution } = storeToRefs(licenseStore);
 
-type ResolveScope = 'manual' | 'expired' | 'suspended' | 'env_removed';
+type ResolveScope = 'manual' | 'expired' | 'suspended' | 'env_removed' | 'grace';
 
 const scope = computed<ResolveScope>(() => {
 	if (info.value === null) return 'env_removed';
 	const status = info.value.status;
+	if (status === 'grace') return 'grace';
 	if (status === 'expired' || status === 'locked') return 'expired';
 	if (status === 'suspended' || status === 'canceled') return 'suspended';
 	return 'manual';
 });
 
+const graceCountdown = computed<{ days: number; date: string } | null>(() => {
+	if (scope.value !== 'grace' || !info.value?.expires_at) return null;
+	const deadlineSeconds = info.value.expires_at + (info.value.grace_period ?? 0);
+	const deadlineMs = deadlineSeconds * 1000;
+	const days = Math.max(0, Math.ceil((deadlineMs - Date.now()) / (1000 * 60 * 60 * 24)));
+	const date = new Date(deadlineMs).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+	return { days, date };
+});
+
 const title = computed(() => t(`licensing.resolve_title_${scope.value}`));
+
 const noticeMessage = computed(() => t(`licensing.resolve_notice_${scope.value}`));
 
 type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number];
@@ -74,6 +86,13 @@ const sso = computed<LicensePendingResolutionFeatureGateSSO | undefined>(
 
 function find(kind: LicensePendingResolution['kind'], key: string): LicensePendingResolution | undefined {
 	return pendingResolution.value?.find((entry: LicensePendingResolution) => entry.kind === kind && entry.key === key);
+}
+
+function toUser(candidate: SeatCandidate) {
+	return {
+		first_name: candidate.first_name ?? undefined,
+		last_name: candidate.last_name ?? undefined,
+	};
 }
 
 const selected = reactive({
@@ -128,12 +147,30 @@ async function submit() {
 }
 
 function manageLicense() {
-	emit('update:modelValue', false);
+	// For locked scopes the router guard redirects back to /license-recovery, so closing
+	// the modal would leave a blank page behind. Only close in the (dismissible) manual flow.
+	if (scope.value === 'manual') {
+		emit('update:modelValue', false);
+	}
+
 	router.push('/settings/license');
+}
+
+const cookies = useCookies(['license-resolution-acknowledged']);
+
+function acknowledge() {
+	// Dismiss for this session. The cookie is cleared on logout so the modal reappears next login.
+	cookies.set('license-resolution-acknowledged', 'true', { path: '/' });
+	emit('update:modelValue', false);
 }
 
 function close() {
 	emit('update:modelValue', false);
+}
+
+function onEsc() {
+	if (scope.value === 'manual') close();
+	else if (scope.value === 'grace') acknowledge();
 }
 </script>
 
@@ -142,7 +179,7 @@ function close() {
 		:model-value="modelValue"
 		:persistent="scope !== 'manual'"
 		@update:model-value="emit('update:modelValue', $event)"
-		@esc="scope === 'manual' && close()"
+		@esc="onEsc"
 	>
 		<VCard class="resolution-card">
 			<VCardTitle class="title-row">
@@ -155,7 +192,17 @@ function close() {
 			<VCardText>
 				<p class="subtitle">{{ t('licensing.resolve_subtitle') }}</p>
 
-				<VNotice type="danger" icon="cancel" class="notice">{{ noticeMessage }}</VNotice>
+				<VNotice
+					:type="scope === 'grace' ? 'warning' : 'danger'"
+					:icon="scope === 'grace' ? 'warning' : 'cancel'"
+					class="notice"
+				>
+					{{ noticeMessage }}
+				</VNotice>
+
+				<p v-if="scope === 'grace' && graceCountdown" class="countdown">
+					{{ t('licensing.resolve_countdown', graceCountdown, graceCountdown.days) }}
+				</p>
 
 				<ResolutionSsoSection
 					v-if="sso"
@@ -190,10 +237,10 @@ function close() {
 				>
 					<template #item="{ candidate }">
 						<VAvatar x-small round>
-							<img v-if="candidate.avatar" :src="`/assets/${candidate.avatar}`" :alt="userName(candidate)" />
+							<img v-if="candidate.avatar" :src="`/assets/${candidate.avatar}`" :alt="userName(toUser(candidate))" />
 							<VIcon v-else name="person" small />
 						</VAvatar>
-						<span class="item-label">{{ userName(candidate) }}</span>
+						<span class="item-label">{{ userName(toUser(candidate)) }}</span>
 					</template>
 				</ResolutionLimitSection>
 
@@ -212,6 +259,9 @@ function close() {
 
 			<VCardActions>
 				<VButton v-if="scope === 'manual'" secondary @click="close">{{ t('cancel') }}</VButton>
+				<VButton v-else-if="scope === 'grace'" secondary @click="acknowledge">
+					{{ t('licensing.resolve_acknowledge') }}
+				</VButton>
 				<VButton :disabled="!isValid" :loading="submitting" @click="submit">
 					{{ t('licensing.resolve_submit') }}
 				</VButton>
@@ -244,6 +294,12 @@ function close() {
 
 .notice {
 	margin-block-end: 1rem;
+}
+
+.countdown {
+	margin-block-end: 1rem;
+	color: var(--theme--warning);
+	font-weight: 600;
 }
 
 .item-label {
