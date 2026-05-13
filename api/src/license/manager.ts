@@ -89,11 +89,10 @@ export class LicenseManager {
 	public async initialize(): Promise<void> {
 		const existingStore = this.store;
 
-		const entitlementManager = getEntitlementManager();
+		// initialize the manager if not done yet
+		getEntitlementManager();
 
 		try {
-			entitlementManager.initialize();
-
 			// Lock the whole store for the entirety of initialization
 			await this.store(async (store) => {
 				// Replace existing store temporarily to avoid deadlocks

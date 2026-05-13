@@ -37,7 +37,7 @@ export class EntitlementManager {
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
 
-	initialize() {
+	constructor() {
 		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
