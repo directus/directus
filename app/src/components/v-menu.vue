@@ -16,7 +16,7 @@ import { computed, nextTick, onUnmounted, type Ref, ref, useTemplateRef, watch }
 import TransitionBounce from '@/components/transition/bounce.vue';
 import { useUserStore } from '@/stores/user';
 
-interface Props {
+export interface VMenuProps {
 	/** Where to position the popper */
 	placement?: Placement;
 	/** Model the open state */
@@ -55,7 +55,7 @@ interface Props {
 	invert?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VMenuProps>(), {
 	placement: 'bottom',
 	modelValue: undefined,
 	closeOnClick: true,

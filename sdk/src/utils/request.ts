@@ -1,4 +1,5 @@
 import type { FetchInterface } from '../index.js';
+import { RequestError } from './error.js';
 import { extractData } from './extract-data.js';
 
 /**
@@ -33,7 +34,13 @@ export const request = async <Output = any>(
 				result.message = result.errors[0].message;
 			}
 
-			return Promise.reject(result);
+			return Promise.reject(
+				new RequestError(result.message, {
+					response: result.response,
+					errors: result.errors,
+					data: result.data,
+				}),
+			);
 		});
 	});
 };

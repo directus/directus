@@ -149,7 +149,7 @@ export class LicenseManager {
 					}
 				} else {
 					// CASE H stale token / CASE I — core license
-					await this.commitState({ isCore: true, downgrade: !!dbToken });
+					await this.commitStateChange({ isCore: true, downgrade: !!dbToken });
 				}
 
 				this.initialized = true;
@@ -269,7 +269,7 @@ export class LicenseManager {
 				this.source = 'settings';
 			}
 
-			await this.commitState();
+			await this.commitStateChange();
 		} catch {
 			// LICENSE-TODO: Add error translation
 			throw new ServiceUnavailableError({ service: 'license', reason: 'activate' });
@@ -295,7 +295,7 @@ export class LicenseManager {
 			public_url: env['PUBLIC_URL'] as string,
 		});
 
-		await this.commitState({ downgrade: true });
+		await this.commitStateChange({ isCore: true, downgrade: true });
 	}
 
 	/**
@@ -329,7 +329,7 @@ export class LicenseManager {
 			project_id: project_id!,
 		});
 
-		await this.commitState();
+		await this.commitStateChange();
 	}
 
 	private async verify(token: string): Promise<License | null> {
@@ -337,7 +337,7 @@ export class LicenseManager {
 			return await verifyLicense(token);
 		} catch {
 			// LICENSE-TODO: set status based on error
-			await this.commitState({ status: 'expired', downgrade: true });
+			await this.commitStateChange({ status: 'expired', isCore: true, downgrade: true });
 			return null;
 		}
 	}
@@ -387,7 +387,7 @@ export class LicenseManager {
 					license_token: token,
 				});
 
-				await this.commitState();
+				await this.commitStateChange();
 			} catch (err) {
 				logger.error(err);
 			}
@@ -467,7 +467,7 @@ export class LicenseManager {
 			license_token: token,
 		});
 
-		await this.commitState();
+		await this.commitStateChange();
 	}
 
 	public async removeAddon(addonId: string) {
@@ -616,10 +616,13 @@ export class LicenseManager {
 	/**
 	 * Single entry point for every state-changing
 	 */
-	private async commitState(options?: { status?: LicenseStatus; isCore?: boolean; downgrade?: boolean }) {
+	private async commitStateChange(options?: { status?: LicenseStatus; isCore?: boolean; downgrade?: boolean }) {
 		if (options?.downgrade) {
 			const settingsService = new SettingsService({ schema: await getSchema() });
-			await settingsService.upsertSingleton({ license_token: null });
+
+			await settingsService.upsertSingleton(
+				options.isCore ? { license_key: null, license_token: null } : { license_token: null },
+			);
 		}
 
 		await this.syncState();
@@ -639,6 +642,8 @@ export class LicenseManager {
 		this.initialized = true;
 
 		/**
+		 * LICENSE-TODO: Rework
+		 *
 		 * Upgrade from core tier requires registering the scheduled check
 		 * De-register on downgrade is handled in the schedule
 		 */
@@ -648,5 +653,9 @@ export class LicenseManager {
 
 		// reset cache
 		licenseCache = null;
+
+		// "reset" entitlements
+		const license = await this.getLicense();
+		getEntitlementManager().setEntitlements(license.entitlements);
 	}
 }

@@ -266,7 +266,7 @@ function getDeltaOptionUser(deltaOption: any) {
 				align-items: center;
 				justify-content: space-between;
 				cursor: pointer;
-				border: 2px solid var(--theme--border-color);
+				border: var(--theme--border-width) solid var(--theme--border-color);
 				border-radius: var(--theme--border-radius);
 				padding-inline: 0.875rem;
 				padding-block: 0.4375rem;

@@ -159,7 +159,9 @@ defineProps<{
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '@/styles/mixins';
+
 .v-banner {
 	container-type: inline-size;
 	inline-size: 100%;
@@ -203,11 +205,12 @@ defineProps<{
 		}
 
 		.title {
+			@include mixins.type-display;
+
 			--theme--foreground: var(--theme--banner--foreground);
 			color: var(--theme--banner--title--foreground);
 			font-family: var(--theme--banner--title--font-family);
 			font-weight: var(--theme--banner--title--font-weight);
-			font-size: 1.375rem;
 			line-height: 1.4091;
 		}
 

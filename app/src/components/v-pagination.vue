@@ -86,7 +86,7 @@ function toPage(page: number) {
 		<VButton
 			v-for="page in visiblePages"
 			:key="page"
-			:class="{ active: modelValue === page }"
+			:active="modelValue === page"
 			class="page"
 			secondary
 			small
@@ -109,7 +109,7 @@ function toPage(page: number) {
 			v-if="
 				showFirstLast && totalVisible && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible
 			"
-			:class="{ active: modelValue === length }"
+			:active="modelValue === length"
 			class="page"
 			secondary
 			small
@@ -130,13 +130,13 @@ function toPage(page: number) {
 
 .v-pagination {
 	display: flex;
+	align-items: center;
 }
 
 .gap {
 	display: none;
 	margin: 0 0.25rem;
 	color: var(--theme--foreground-subdued);
-	line-height: 2;
 }
 
 @include mixins.breakpoint-up('sm') {
@@ -146,10 +146,6 @@ function toPage(page: number) {
 }
 
 .v-button {
-	--v-button-background-color-hover: var(--theme--background-normal);
-	--v-button-background-color: var(--theme--form--field--input--background-subdued);
-	--v-button-color: var(--theme--foreground);
-
 	margin: 0 0.125rem;
 	vertical-align: middle;
 }
@@ -165,7 +161,8 @@ function toPage(page: number) {
 }
 
 .v-button :deep(.small) {
-	--v-button-min-width: 1.8125rem;
+	--v-button-min-width: var(--v-button-height);
+	--v-button-padding: 0 0.375rem;
 }
 
 .v-button:first-child {
@@ -174,12 +171,5 @@ function toPage(page: number) {
 
 .v-button:last-child {
 	margin-inline-end: 0;
-}
-
-.v-button.active {
-	--v-button-background-color-hover: var(--theme--primary);
-	--v-button-color-hover: var(--foreground-inverted);
-	--v-button-background-color: var(--theme--primary);
-	--v-button-color: var(--foreground-inverted);
 }
 </style>

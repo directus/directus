@@ -220,7 +220,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		if (to.path !== '/license-recovery' && to.path !== '/logout') {
 			const licenseStore = useLicenseStore();
 
-			if (userStore.isAdmin && licenseStore.info?.resolution_required) {
+			if (userStore.isAdmin && licenseStore.isLocked) {
 				return '/license-recovery';
 			}
 		}

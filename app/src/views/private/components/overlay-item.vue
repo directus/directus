@@ -3,8 +3,9 @@ import { translateShortcut, useCollection, useShortcut } from '@directus/composa
 import { isSystemCollection } from '@directus/system-data';
 import { ContentVersion, Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
+import { useElementSize } from '@vueuse/core';
 import { isEmpty, set, uniqBy } from 'lodash';
-import { computed, type Ref, ref, toRefs, unref, watch } from 'vue';
+import { computed, type Ref, ref, toRefs, unref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
@@ -12,7 +13,6 @@ import ComparisonModal from './comparison/comparison-modal.vue';
 import OverlayItemContent from './overlay-item-content.vue';
 import RenderTemplate from './render-template.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -21,7 +21,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog, { type ApplyShortcut } from '@/components/v-dialog.vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import VMenu from '@/components/v-menu.vue';
+import VMenu, { type VMenuProps } from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -58,7 +58,7 @@ export interface OverlayItemProps {
 	circularField?: string | null;
 	junctionFieldLocation?: string;
 	selectedFields?: string[] | null;
-	popoverProps?: Record<string, any>;
+	popoverProps?: (ctx: { popoverWidth: number }) => Partial<VMenuProps>;
 	applyShortcut?: ApplyShortcut;
 	preventCancelWithEdits?: boolean;
 	// Only use when editing a version directly (e.g. visual editor). Not for regular item editing.
@@ -96,7 +96,9 @@ const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, relatedPrim
 
 const { internalEdits, loading, initialValues, refresh } = useItem();
 
-const { save, cancel, overlayActive, getTooltip } = useActions();
+const { save, cancel, overlayActive, applyShortcutFormatted } = useActions();
+
+const { resolvedPopoverProps } = usePopoverProps();
 
 const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
@@ -456,6 +458,7 @@ function useRelation() {
 
 function useActions() {
 	const { nestedValidationErrors, resetNestedValidationErrors } = useNestedValidation();
+	const applyShortcutFormatted = computed(() => translateShortcut(props.applyShortcut.split('+')));
 
 	watch(internalActive, (active) => {
 		if (!active) resetNestedValidationErrors();
@@ -487,20 +490,7 @@ function useActions() {
 		cancelNext();
 	});
 
-	return { save, cancel, overlayActive, getTooltip };
-
-	function getTooltip(shortcutType: 'save' | 'cancel', label: string | null = null) {
-		let shortcut = null;
-
-		if (shortcutType === 'save') shortcut = translateShortcut(props.applyShortcut.split('+'));
-		else shortcut = translateShortcut(['esc']);
-
-		if (label && shortcut) return `${label} (${shortcut})`;
-		if (label) return label;
-		if (shortcut) return shortcut;
-
-		return null;
-	}
+	return { save, cancel, overlayActive, applyShortcutFormatted };
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
 		return validateItem(
@@ -622,6 +612,14 @@ function useCancelGuard() {
 	}
 }
 
+function usePopoverProps() {
+	const popoverWrapperEl = useTemplateRef<HTMLElement>('popover-wrapper');
+	const { width: popoverWidth } = useElementSize(popoverWrapperEl);
+	const resolvedPopoverProps = computed(() => props.popoverProps?.({ popoverWidth: popoverWidth.value }) ?? {});
+
+	return { resolvedPopoverProps };
+}
+
 function popoverClickOutsideMiddleware(e: Event) {
 	const dialogs = document.getElementById('dialog-outlet');
 	if (!dialogs) return true;
@@ -648,21 +646,23 @@ function popoverClickOutsideMiddleware(e: Event) {
 			</h1>
 		</template>
 
-		<template #subtitle>
-			<VBreadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
-		</template>
-
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="uniqBy([...(collab?.users.value ?? []), ...(relatedCollab?.users.value ?? [])], 'connection')"
 				:connected="collab?.connected.value && (!relatedCollab || relatedCollab?.connected.value)"
 				:focuses="{ ...collab?.focused.value, ...relatedCollab?.focused.value }"
 				:current-connection="collab?.connectionId.value"
 			/>
-			<slot name="actions" />
+		</template>
 
+		<template #actions>
+			<slot name="actions" />
+		</template>
+
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="getTooltip('save', $t('save'))"
+				:label="$t('save')"
+				:tooltip="applyShortcutFormatted"
 				:disabled="!isSavable"
 				icon="check"
 				@click="save"
@@ -697,19 +697,21 @@ function popoverClickOutsideMiddleware(e: Event) {
 				class="modal-item-content"
 			/>
 
-			<div class="shadow-cover" />
+			<div class="border-cover" />
 
 			<VCardActions>
+				<VButton v-tooltip="translateShortcut(['esc'])" secondary @click="cancel">{{ $t('cancel') }}</VButton>
+
 				<slot name="actions" />
-				<VButton v-tooltip="getTooltip('cancel')" secondary @click="cancel">{{ $t('cancel') }}</VButton>
-				<VButton v-tooltip="getTooltip('save')" :disabled="!isSavable" @click="save">{{ $t('save') }}</VButton>
+
+				<VButton v-tooltip="applyShortcutFormatted" :disabled="!isSavable" @click="save">{{ $t('save') }}</VButton>
 			</VCardActions>
 		</VCard>
 	</VDialog>
 
 	<VMenu
 		v-else-if="overlay === 'popover'"
-		v-bind="popoverProps"
+		v-bind="resolvedPopoverProps"
 		v-model="overlayActive"
 		:close-on-click="false"
 		:close-on-content-click="false"
@@ -725,32 +727,34 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</template>
 
 		<div
+			ref="popover-wrapper"
 			v-click-outside="{
 				handler: cancel,
 				middleware: popoverClickOutsideMiddleware,
 				disabled: !preventCancelWithEdits,
 				events: ['click'],
 			}"
+			class="popover-wrapper"
 		>
-			<div class="popover-actions">
-				<div class="popover-actions-inner">
-					<slot name="actions" />
-
-					<VButton v-tooltip="getTooltip('cancel', $t('cancel'))" x-small rounded icon secondary @click="cancel">
-						<VIcon small name="close" outline />
-					</VButton>
-
-					<VButton v-tooltip="getTooltip('save', $t('save'))" x-small rounded icon :disabled="!isSavable" @click="save">
-						<VIcon small name="check" outline />
-					</VButton>
-				</div>
-			</div>
-
 			<OverlayItemContent
 				v-model:internal-edits="internalEdits"
 				v-bind="overlayItemContentProps"
 				class="popover-item-content"
 			/>
+
+			<div class="border-cover" />
+
+			<div class="popover-actions">
+				<VButton v-tooltip="translateShortcut(['esc'])" x-small secondary @click="cancel">
+					{{ $t('cancel') }}
+				</VButton>
+
+				<slot name="actions" />
+
+				<VButton v-tooltip="applyShortcutFormatted" x-small :disabled="!isSavable" @click="save">
+					{{ $t('save') }}
+				</VButton>
+			</div>
 		</div>
 	</VMenu>
 
@@ -828,11 +832,18 @@ function popoverClickOutsideMiddleware(e: Event) {
 </template>
 
 <style lang="scss" scoped>
+@mixin breakpoint-sticky-actions-up {
+	@media (min-height: 21.125rem) {
+		@content;
+	}
+}
+
 .modal-card,
-.modal-item-content,
-.popover-item-content {
+.popover-wrapper {
 	--theme--form--column-gap: 0.875rem;
 	--theme--form--row-gap: 1.375rem;
+	--border-cover-offset: 1px; /* stylelint-disable-line unit-disallowed-list -- hairline */
+	--border-cover-height: calc(2 * var(--border-cover-offset) + var(--theme--border-width));
 }
 
 .modal-card {
@@ -841,41 +852,21 @@ function popoverClickOutsideMiddleware(e: Event) {
 	) !important;
 	max-inline-size: 90vw !important;
 
-	@media (min-height: 21.125rem) {
-		--button-height: var(--v-button-height, 2.5rem);
-		--button-gap: 0.6875rem;
-		--shadow-height: 0.375rem;
-		--shadow-cover-height: 0.5625rem;
+	@include breakpoint-sticky-actions-up {
+		--button-height: var(--v-button-height, var(--button-height-default));
+		--button-gap: 0.625rem;
+		--background-color: var(--v-card-background-color);
+		--border-cover-bottom: calc(
+			var(--button-gap) + var(--button-height) + var(--button-gap) - var(--theme--border-width)
+		);
 
 		.v-card-actions {
 			z-index: 100;
 			position: sticky;
 			inset-block-end: calc(var(--button-gap) - var(--v-card-padding));
 			padding-block-start: var(--button-gap);
-			background: var(--v-card-background-color);
-			box-shadow: 0 0 var(--shadow-height) 0 rgb(0 0 0 / 0.2);
-
-			.dark & {
-				box-shadow: 0 0 var(--shadow-height) 0 black;
-			}
-		}
-
-		.shadow-cover {
-			z-index: 101;
-			position: sticky;
-			inset-block-end: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
-			block-size: calc(var(--v-card-padding) - var(--button-gap));
-			inline-size: 100%;
-
-			&::after {
-				content: '';
-				position: absolute;
-				inset-block-end: 0;
-				inset-inline-start: 0;
-				inline-size: 100%;
-				block-size: var(--shadow-cover-height);
-				background: var(--v-card-background-color);
-			}
+			background: var(--background-color);
+			border-block-start: var(--theme--border-width) solid var(--theme--border-color);
 		}
 	}
 }
@@ -889,46 +880,65 @@ function popoverClickOutsideMiddleware(e: Event) {
 	padding-block-end: var(--theme--form--column-gap);
 }
 
-.popover-item-content {
+.popover-wrapper {
 	--content-padding: var(--theme--form--column-gap);
-	--content-padding-bottom: var(--theme--form--row-gap);
+	--button-height: var(--v-button-height, var(--button-height-xs));
+	--button-gap: 0.375rem;
+	--background-color: var(--theme--popover--menu--background);
+	--border-cover-bottom: calc(
+		var(--content-padding) + var(--button-height) + var(--content-padding) - var(--border-cover-height)
+	);
+}
 
-	padding-block-start: var(--content-padding-bottom);
+.popover-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--button-gap);
+	padding: var(--content-padding);
+
+	@include breakpoint-sticky-actions-up {
+		position: sticky;
+		inset-block-end: 0;
+		z-index: 100;
+		background: var(--background-color);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color);
+	}
+}
+
+.popover-item-content {
+	--content-padding-bottom: 0;
+
+	padding-block-start: var(--content-padding);
 	position: relative;
 	z-index: 0;
 	inline-size: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
 	max-inline-size: 90vw;
-
-	:deep(.v-form:first-child .first-visible-field .field-label),
-	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
-		--popover-action-width: 5.625rem; // 3 * 28 (button) + 2 * 8 (gap)
-
-		max-inline-size: calc(100% - var(--popover-action-width));
-	}
 
 	&.empty {
 		min-block-size: 13.0625rem;
 	}
 }
 
-.popover-actions {
-	position: sticky;
-	inset-block-start: 0;
-	inset-inline-start: 0;
-	z-index: 1;
-}
+.border-cover {
+	display: none;
 
-.popover-actions-inner {
-	position: relative;
-	display: flex;
-	justify-content: end;
-	gap: 0.4375rem;
-	inset-block-start: 0.6875rem;
-	inset-inline-end: 0.875rem;
-}
+	@include breakpoint-sticky-actions-up {
+		display: block;
+		z-index: 101;
+		position: sticky;
+		inset-block-end: var(--border-cover-bottom);
+		block-size: 0;
+		inline-size: 100%;
 
-// Puts the action buttons closer to the field
-.popover-actions:has(+ .popover-item-content .v-form:first-child > .field:first-child) .popover-actions-inner {
-	position: absolute;
+		&::after {
+			content: '';
+			position: absolute;
+			inset-block-end: calc(var(--theme--border-width) * -1 - var(--border-cover-offset));
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: var(--border-cover-height);
+			background: var(--background-color);
+		}
+	}
 }
 </style>

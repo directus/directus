@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-32785375="" class="v-radio-cards" tabindex="-1" dir="ltr" style="outline-color: none; outline-style: none; outline-width: initial;" role="radiogroup" aria-required="false"><button data-v-32785375="" data-reka-collection-item="" tabindex="-1" class="v-radio-card" role="radio" type="button" aria-checked="false" data-state="unchecked" required="false" value="core">
+    <div data-v-32785375="" class="icon-box">
+      <v-icon-stub data-v-32785375="" name="deployed_code" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false"></v-icon-stub>
+    </div>
+    <div data-v-32785375="" class="text">
+      <p data-v-32785375="" class="label type-text-bold">I'm using Core</p>
+      <p data-v-32785375="" class="description type-text">Free, no key required</p>
+    </div>
+    <!--v-if-->
+  </button><button data-v-32785375="" data-reka-collection-item="" tabindex="-1" class="v-radio-card" role="radio" type="button" aria-checked="false" data-state="unchecked" required="false" value="licensed">
+    <div data-v-32785375="" class="icon-box">
+      <v-icon-stub data-v-32785375="" name="key" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="false" large="false" xlarge="false"></v-icon-stub>
+    </div>
+    <div data-v-32785375="" class="text">
+      <p data-v-32785375="" class="label type-text-bold">I have a license key</p>
+      <p data-v-32785375="" class="description type-text">OIG, Team, or Enterprise plan</p>
+    </div>
+    <!--v-if-->
+  </button>
+  <!--v-if-->
+</div>"
+`;

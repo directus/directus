@@ -24,8 +24,12 @@ about: About
 directus_bsl: Directus BSL 1.1
 privacy_policy: Privacy Policy
 contact_our_team: Contact our Team
+contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
+setup_license_key_notice: >
+  If have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be
+  eligible for our {oig}.
 setup_license_notice: >
   Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
 setup_license_follow_up: >
@@ -33,20 +37,43 @@ setup_license_follow_up: >
   when you're ready to discuss production use.
 setup_save_accept_license: >
   By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
+setup_license_invalid: >
+  License invalid. Please {contactSupport} to resolve this issue.
 setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
+setup_license_title: Set up your license
+license_onboarding_title: Have a license key?
+license_onboarding_desc: >
+  Enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be eligible for our {oig}.
+project_usage: What are you using Directus for?
+project_usage_personal: Personal / Side project
+project_usage_commercial: Business / Commercial
+project_usage_community: Open Source / Community
+org_name: Organization Name
+org_name_placeholder: Acme Inc.
+license_key_option: I have a license key
+license_key_option_desc: 'OIG, Team, or Enterprise plan'
+core_option: I'm using Core
+core_option_desc: Free, no key required
+remind_later: Remind Later
+remind_next_login: We'll remind you next time you log in
+open_innovation_grant: Open Innovation Grant
 setup_project: Setup Project
+enter_license_key: Enter Your License Key
+license_valid: License Valid
+license_key: License Key
+no_license_key: Don't have a license key?
+get_license_key: Get License Key
+expires_on: Expires on
+environment: Environment
+skip: Skip
+continue: Continue
 first_name: First Name
 last_name: Last Name
 admin_email: Admin Email
 owner_email: Owner Email
 email_address: Email Address
-organization_name: Organization Name
-how_do_you_use_directus: What are you using Directus for?
-usage_personal: Personal / Learning
-usage_commercial: Business / Commercial
-usage_community: Open Source / Community
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -55,6 +82,7 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+not_archived: Not Archived
 marketplace: Marketplace
 extensions: Extensions
 skip_link_nav: Skip to Navigation
@@ -220,7 +248,6 @@ keep: Keep
 version: Version
 version_key: Version Key
 version_name: Version Name
-main_version: Main
 your_version: Your Version
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
@@ -229,17 +256,18 @@ rename_version: Rename Version
 reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'
 compare_version: Compare Version
 save_version: Save Version
-promote_version: Promote Version
+publish: Publish
+version_create_item_less: Versions can only be created once the draft version is published
 apply: Apply
 discard: Discard
 select_all_differences: Select All Differences
 show_differences_only: Show Differences Only
-main_updated_notice: The main item has been updated since this version was created.
+published_updated_notice: The published item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
-  You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
+  You are about to publish “{version}”. What should happen to “{version}” after publishing?
 content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
@@ -730,7 +758,8 @@ manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_and_quit: Save and Quit
-save_and_return_to_main: Save and Return to Main
+publish_and_quit: Publish and Quit
+save_and_return_to_published: Save and Return to Published
 save_as_copy: Save as Copy
 save_as_new_file: Save as New File
 add_existing: Add Existing
@@ -764,6 +793,8 @@ list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
 filtered_item_count: 'No Filtered Items | One Filtered Item | {count} Filtered Items'
 no_items_copy: There are no items in this collection yet.
+no_versions: 'No "{version}" version'
+no_versions_copy: 'There are no "{version}" versions in this collection yet.'
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
@@ -924,6 +955,9 @@ active_users: Active Users
 suspended_users: Suspended Users
 invited_users: Invited Users
 delete_collection: Delete Collection
+include_collection: Include Collection
+exclude_collection: Exclude Collection
+deactivated_collections: Deactivated Collections
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
@@ -1127,6 +1161,7 @@ no_url_copy: Please add a URL in the settings.
 invalid_url: Invalid URL
 invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
+overview: Overview
 deployment:
   deployment: Deployment
   overview:
@@ -1388,6 +1423,68 @@ settings_data_model: Data Model
 settings_roles: User Roles
 settings_permissions: Access Policies
 settings_project: Settings
+settings_license: License
+licensing:
+  expires_on: 'Expires on {date}'
+  renews_on: 'Renews on {date}'
+  add: Add License
+  manage: Manage License
+  upgrade_plan: Upgrade Plan
+  included: Included
+  not_included: Not Included
+  plan_usage: Your Plan Usage
+  addons: Add-on Packages
+  addon_purchase: Purchase
+  deactivate: Deactivate License
+  deactivate_confirm_title: Deactivate License?
+  deactivate_confirm_body:
+    Are you sure you want to deactivate the license? Your instance will be downgraded to the Core plan.
+  resolve_title_manual: Deactivate License
+  resolve_title_expired: License Expiration
+  resolve_title_suspended: License Suspension
+  resolve_title_env_removed: License Removed
+  resolve_subtitle: If you need to update your license key, you can update it in your environment variable.
+  resolve_notice_manual:
+    Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
+    Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
+  resolve_notice_expired:
+    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
+    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
+    access rules will also be locked.
+  resolve_notice_suspended:
+    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
+    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
+    access rules will also be locked.
+  resolve_notice_env_removed:
+    Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
+    collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
+    locked in Directus, and custom access rules will also be locked.
+  resolve_continue: Continue
+  resolve_section_collections: 'Collections ({usage}/{limit})'
+  resolve_section_seats: 'Seats ({usage}/{limit})'
+  resolve_section_flows: 'Flows ({usage}/{limit})'
+  resolve_section_sso_enabled: SSO must be disabled
+  resolve_section_custom_llms_enabled: Custom LLM must be disabled
+  resolve_section_custom_permission_rules_enabled: Custom permission rules must be removed
+  env_managed: Your license key is managed via an environment variable and can't be updated here.
+  key_management: License Key Management
+  key: License Key
+  key_notice:
+    If you have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue
+    may be eligible for our Open Innovation Grant.
+  entitlements:
+    collections: Collections
+    seats: Seats
+    activity_historical_timeframe: Activity History
+    revisions_historical_timeframe: Revision History
+    sso_enabled: SSO
+    offline_enabled: Offline Mode
+    telemetry_required: Telemetry Required
+    custom_llms_enabled: Custom LLM
+    custom_policy_rules_enabled: Custom Rules (Access Policies)
+    display_powered_by: Display Powered By
+    production_enabled: Production
+danger_zone: Danger Zone
 settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -1441,11 +1538,32 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 license:
-  seats_reached: You have reached the max user limit allowed for your plan.
-  manage_plan_copy: You will need to purchase additional user seats or upgrade your plan.
-  contact_sales_copy: Contact sales to purchase more feature add-ons.
+  seats_limit:
+    title: The user will be created but placed in an inactive state.
+    body_admin: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+    body_member: >-
+      You have reached the max limit allowed for your plan. Contact admin to purchase additional add-ons or upgrade.
+  collections_limit:
+    title: Collection limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  max_capacity:
+    label: max capacity
+    alert_danger_prefix: You have reached max capacity.
+    alert_danger_suffix: to unlock more.
+    alert_warning: You have {count} left. Upgrade your plan to unlock more.
   manage_plan: Manage Plan
+  collections_remaining: '{n} Collection Left | {n} Collections Left'
+  flows_limit:
+    title: Flow limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  flows_remaining: '{n} Flow Left | {n} Flows Left'
   contact_sales: Contact Sales
+  upgrade_to_unlock: Upgrade your plan to unlock this feature.
+  activity_history_notice: '{timeframe} of Activity History is included in your current plan.'
+  revisions_history_notice: '{timeframe} of Revision History is included in your current plan.'
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
@@ -1568,6 +1686,7 @@ fields:
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
+    status_inactive_license_exceeded: Inactive (License Exceeded)
     role: Role
     token: Token
     provider: Provider
@@ -1680,6 +1799,23 @@ fields:
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Assistant interactions. Leave empty to use the default.'
+    ai_translation_default_model: Translation Default Model
+    ai_translation_default_model_note:
+      'Choose the default model used for AI translations. Only models enabled in the settings above are available here.'
+    ai_glossary_term: Term
+    ai_glossary_term_placeholder: Directus Flows
+    ai_glossary_note: Translation Note
+    ai_glossary_note_placeholder: Never translate, keep as-is
+    ai_translation_glossary: Translation Glossary
+    ai_translation_glossary_note:
+      'Define key terms and their approved translations across your languages. Keep product names, UI labels, and other
+      important phrases consistent across your content.'
+    ai_translation_style_guide: Translation Style Guide
+    ai_translation_style_guide_note:
+      'Describe how your content should be translated, including tone, formality, and formatting rules. Include details
+      about your business, product, and audience to help AI keep your brand voice consistent.'
+    ai_translation_style_guide_placeholder:
+      "Translate in a confident, approachable tone. Use informal 'you,' avoid slang, and keep terminology consistent."
     ai_openai_api_key: OpenAI API Key
     ai_openai_allowed_models: OpenAI Allowed Models
     ai_anthropic_api_key: Anthropic API Key
@@ -1687,6 +1823,7 @@ fields:
     ai_google_api_key: Google API Key
     ai_google_allowed_models: Google Allowed Models
     ai_openai_compatible: OpenAI-Compatible Provider
+    ai_openai_compatible_notice: Your current plan doesn't include Custom LLM. Upgrade to unlock.
     ai_openai_compatible_name: Provider Name
     ai_openai_compatible_base_url: Base URL
     ai_openai_compatible_api_key: API Key
@@ -1870,6 +2007,7 @@ no_shares: No shares to show
 new_share: New Share
 show_more: Show More
 show_less: Show Less
+retry: Retry
 ai:
   thinking: Thinking...
   input: Input
@@ -1886,7 +2024,6 @@ ai:
   always_allow: Always Allow
   deny: Deny
   approve_tool_execution: Approve tool execution?
-  retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
   build_with_assistant: Build with AI Assistant
@@ -2436,6 +2573,30 @@ interfaces:
     default_language: Default Language
     language_field: Language Indicator Field
     language_direction_field: Language Direction Field
+    ai_translate: Translate with AI
+    ai_translate_short: Translate
+    ai_translate_tooltip: Translate your content automatically with AI
+    model: Model
+    source_language: Source Language
+    target_languages: Target Languages
+    translate_n_languages: 'Translate {count} language | Translate {count} languages'
+    no_source_content: The selected source fields have no content to translate.
+    no_additional_languages: No additional languages configured.
+    no_translation_models: No translation models are currently available.
+    translation_error: Translation failed for this language.
+    translation_not_allowed: You don't have permission to translate this language.
+    translation_pending_delete: This language has pending deletion and can't be translated.
+    permission_check_failed: Could not verify permissions for this language. Please try again.
+    empty: (empty)
+    field_empty_tooltip: This field has no source content to translate
+    ai_translating: Translating...
+    ai_translating_progress: 'Translating {done} of {total} languages...'
+    translation_has_errors: Some translations failed.
+    translation_complete: Translations completed successfully.
+    translation_complete_with_warnings: Translations completed, but some fields may be incomplete.
+    partial_translation: 'Only {count} of {total} fields were translated.'
+    rate_limited: The AI provider is rate limiting requests. Please wait a moment and try again.
+
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -2596,9 +2757,6 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
-    timezone: Timezone
-    timezone_local: Local Timezone
-    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files
@@ -3036,3 +3194,5 @@ text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
 text_direction_rtl: Right to Left (RTL)
 set_to_now: Set to Now
+aria:
+  more_options: More options

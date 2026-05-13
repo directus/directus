@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks';
-import { USER_INACTIVE_LICENSE_EXCEEDED_STATUS } from '@directus/constants';
+import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -437,7 +437,7 @@ export class UsersService extends ItemsService {
 		});
 
 		const { allowed: isWithinLicenseLimits } = await getEntitlementManager().check('seats');
-		const status = isWithinLicenseLimits ? 'active' : USER_INACTIVE_LICENSE_EXCEEDED_STATUS;
+		const status = isWithinLicenseLimits ? 'active' : USER_INACTIVE_LICENSE_STATUS;
 
 		await service.updateOne(user.id, { password, status });
 	}
@@ -508,7 +508,7 @@ export class UsersService extends ItemsService {
 			const mailService = new MailService(serviceOptions);
 			const payload = { email: input.email, scope: 'pending-registration' };
 
-			const token = jwt.sign(payload, env['SECRET'] as string, {
+			const token = jwt.sign(payload, getSecret(), {
 				expiresIn: env['EMAIL_VERIFICATION_TOKEN_TTL'] as StringValue | number,
 				issuer: 'directus',
 			});
@@ -544,7 +544,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async verifyRegistration(token: string): Promise<string> {
-		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+		const { email, scope } = verifyJWT(token, getSecret()) as {
 			email: string;
 			scope: string;
 		};

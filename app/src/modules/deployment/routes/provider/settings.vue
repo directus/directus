@@ -15,7 +15,6 @@ import { useRouter } from 'vue-router';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import { useProviderConfigs } from '../../config/providers';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -270,10 +269,6 @@ watch(
 		show-back
 		:back-to="initialProjectIds.length > 0 ? `/deployments/${provider}` : '/deployments'"
 	>
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('deployment.deployment'), to: '/deployments' }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
@@ -283,14 +278,16 @@ watch(
 				v-if="canDelete"
 				v-tooltip.bottom="$t('deployment.provider.settings.delete')"
 				icon="delete"
-				secondary
-				class="action-delete"
+				kind="danger"
+				variant="ghost"
 				@click="confirmDelete = true"
 			/>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="canUpdate || canManageProjects"
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:disabled="!hasEdits"
 				:loading="saving"
 				icon="check"
@@ -393,16 +390,15 @@ watch(
 <style scoped lang="scss">
 @use '@/styles/mixins';
 
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .container {
 	@include mixins.form-grid;
 
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
+
+	> :first-child.presentation-divider {
+		margin-block-start: 0;
+	}
 }
 
 .spinner {

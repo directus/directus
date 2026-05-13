@@ -67,7 +67,7 @@ async function save() {
 		}
 
 		emit('update:modelValue', false);
-	} catch (error) {
+	} catch (error: any) {
 		unexpectedError(error);
 	} finally {
 		saving.value = false;

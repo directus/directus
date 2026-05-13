@@ -1,5 +1,4 @@
 import { type ChildProcessWithoutNullStreams } from 'child_process';
-import { unlink } from 'fs/promises';
 import { join } from 'path';
 import type { DatabaseClient, DeepPartial } from '@directus/types';
 import chalk from 'chalk';
@@ -7,6 +6,7 @@ import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { type Env, getEnv } from './config.js';
 import { directusFolder } from './find-directus.js';
+import { kill } from './kill.js';
 import { createLogger, type Logger } from './logger.js';
 import { getPort, type Port, type PortRange } from './port.js';
 import { startApp } from './steps/app.js';
@@ -15,7 +15,6 @@ import {
 	bootstrap,
 	buildApi,
 	createDatabase,
-	dockerDown,
 	dockerUp,
 	loadSchema,
 	saveSchema,
@@ -79,6 +78,8 @@ export type Options = {
 	};
 	/** Enable or disable caching */
 	cache: boolean;
+	/** Skips setting initial admin and owner */
+	skipSetup: boolean;
 	/** Open a Knex connection for direct db access via `sandbox.knex`. Off by default.  */
 	knex: boolean;
 	/** Lifecycle hooks */
@@ -144,6 +145,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 				license: false,
 			},
 			cache: false,
+			skipSetup: false,
 			knex: false,
 			hooks: {},
 		} satisfies Options,
@@ -232,7 +234,7 @@ export async function sandboxes(
 	}
 
 	async function restartApis() {
-		sandboxes.forEach((api) => api.apis.forEach((api) => api.process.kill()));
+		sandboxes.forEach((api) => api.apis.forEach((api) => kill(api.process)));
 
 		sandboxes = await Promise.all(
 			sandboxes.map(async (api) => ({ ...api, processes: await startApi(api.opts, api.env, api.logger) })),
@@ -240,10 +242,16 @@ export async function sandboxes(
 	}
 
 	async function stop() {
-		build?.kill();
+		kill(build);
 		await Promise.all(sandboxes.map((sandbox) => sandbox.knex?.destroy()));
-		sandboxes.forEach((sandbox) => sandbox.apis.forEach((api) => api.process.kill()));
-		license?.kill();
+
+		for (const sandbox of sandboxes) {
+			for (const api of sandbox.apis) {
+				kill(api.process);
+			}
+		}
+
+		kill(license);
 	}
 
 	return { sandboxes, stop, restartApis };
@@ -288,7 +296,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function restartApi() {
-		apis?.forEach((api) => api.process.kill());
+		apis?.forEach((api) => kill(api.process));
 		apis = await startApi(opts, env, logger);
 	}
 
@@ -296,11 +304,15 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		const start = performance.now();
 		logger.info('Stopping sandbox');
 		clearInterval(interval);
-		build?.kill();
+		kill(build);
 		if (knex) await knex.destroy();
-		apis?.forEach((api) => api.process.kill());
-		app?.kill();
-		license?.kill();
+
+		for (const api of apis ?? []) {
+			kill(api.process);
+		}
+
+		kill(app);
+		kill(license);
 
 		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`Stopped sandbox ${time}`);

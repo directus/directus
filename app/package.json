@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "15.9.0",
+	"version": "15.10.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -166,6 +166,7 @@
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
-		"zod": "catalog:"
+		"zod": "catalog:",
+		"@directus/license": "link:../../license"
 	}
 }

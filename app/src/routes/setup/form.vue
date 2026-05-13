@@ -3,7 +3,7 @@ import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
-import { defaultValues, useFormFields } from './form';
+import { defaultValues, useSetupFields } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -33,35 +33,70 @@ const initialValues = toRef(props, 'initialValues');
 
 const value = defineModel<SetupForm>();
 
+type AdminSlice = {
+	first_name: string | null;
+	last_name: string | null;
+	project_owner: string | null;
+	password: string | null;
+	password_confirm: string | null;
+};
+
+const formSlice = computed({
+	get: (): AdminSlice => ({
+		first_name: value.value?.admin.first_name ?? null,
+		last_name: value.value?.admin.last_name ?? null,
+		project_owner: props.register ? (value.value?.admin.email ?? null) : (value.value?.owner.project_owner ?? null),
+		password: value.value?.admin.password ?? null,
+		password_confirm: value.value?.password_confirm ?? null,
+	}),
+	set: (update: Partial<AdminSlice>) => {
+		if (!value.value) return;
+		const { password_confirm, project_owner, ...admin } = update;
+
+		value.value = {
+			...value.value,
+			admin: {
+				...value.value.admin,
+				...(admin.first_name !== undefined && { first_name: admin.first_name }),
+				...(admin.last_name !== undefined && { last_name: admin.last_name }),
+				...(admin.password !== undefined && { password: admin.password }),
+				...(props.register && project_owner !== undefined && { email: project_owner }),
+			},
+			...(password_confirm !== undefined && { password_confirm }),
+			...(!props.register &&
+				project_owner !== undefined && {
+					owner: { ...value.value.owner, project_owner },
+				}),
+		};
+	},
+});
+
 const license = computed({
 	get: () => value.value?.license ?? initialValues.value.license,
 	set: (val: boolean) => {
-		if (value.value) {
-			value.value.license = val;
-		}
+		if (value.value) value.value = { ...value.value, license: val };
 	},
 });
 
 const product_updates = computed({
-	get: () => value.value?.product_updates ?? initialValues.value.product_updates,
+	get: () => value.value?.owner.product_updates ?? initialValues.value.owner.product_updates,
 	set: (val: boolean) => {
 		if (value.value) {
-			value.value.product_updates = val;
+			value.value = {
+				...value.value,
+				owner: { ...value.value.owner, product_updates: val },
+			};
 		}
 	},
 });
 
-const fields = useFormFields(props.register, value, initialValues);
+const fields = useSetupFields(props.register);
 </script>
 
 <template>
 	<div class="setup-form" :class="{ skipLicense }">
-		<template v-if="register">
-			<h1>{{ $t('setup_welcome') }}</h1>
-			<p>{{ $t('setup_info') }}</p>
-		</template>
 		<VForm
-			v-model="value"
+			v-model="formSlice"
 			:initial-values="initialValues"
 			:validation-errors="errors"
 			:show-validation-errors="false"
@@ -151,22 +186,6 @@ const fields = useFormFields(props.register, value, initialValues);
 
 .v-form {
 	--theme--form--row-gap: 1.8125rem;
-}
-
-h1 {
-	color: var(--theme--foreground-accent);
-	font-size: 2.25rem;
-	font-weight: 600;
-	line-height: 1.1944;
-
-	margin-block-end: 1.375rem;
-}
-
-p {
-	font-size: 0.8125rem;
-	font-weight: 500;
-	line-height: 1.3846;
-	margin-block-end: 1.8125rem;
 }
 
 .v-notice {

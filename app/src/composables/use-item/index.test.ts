@@ -218,6 +218,119 @@ describe('Save As Copy', () => {
 	});
 });
 
+describe('isArchived', () => {
+	const mockPrimaryKeyField = {
+		field: 'id',
+	} as Field;
+
+	test('should return null when no archive_field is configured', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: null,
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived } = useItem(ref('test'), ref(1));
+
+		expect(isArchived.value).toBeNull();
+	});
+
+	test('should return true when item field matches boolean archive_value stored as string', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'archived',
+				archive_value: 'true',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { archived: true } as any;
+
+		expect(isArchived.value).toBe(true);
+	});
+
+	test('should return false when item field does not match boolean archive_value stored as string', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'archived',
+				archive_value: 'true',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { archived: false } as any;
+
+		expect(isArchived.value).toBe(false);
+	});
+
+	test('should return true when item field matches string archive_value', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'status',
+				archive_value: 'archived',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { status: 'archived' } as any;
+
+		expect(isArchived.value).toBe(true);
+	});
+
+	test('should return false when item field does not match string archive_value', () => {
+		const mockCollection = {
+			collection: 'test',
+			meta: {
+				archive_field: 'status',
+				archive_value: 'archived',
+			},
+		} as AppCollection;
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => []),
+		} as any);
+
+		const { isArchived, item } = useItem(ref('test'), ref(1));
+
+		item.value = { status: 'active' } as any;
+
+		expect(isArchived.value).toBe(false);
+	});
+});
+
 describe('Query merging', () => {
 	const mockCollection = {
 		collection: 'test',
@@ -240,7 +353,7 @@ describe('Query merging', () => {
 	test('should include extra query params when no content version is provided', async () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
 
-		useItem(ref('test'), ref(1), null, { fields: ['*', 'role.*'] });
+		useItem(ref('test'), ref(1), null, undefined, { fields: ['*', 'role.*'] });
 
 		await Promise.resolve();
 
@@ -263,7 +376,7 @@ describe('Query merging', () => {
 		const sdkSpy = vi.spyOn(sdk, 'request');
 		const currentVersion = ref({ id: 'version-id', key: 'v1' } as any);
 
-		useItem(ref('test'), ref(1), currentVersion, { deep: { users: { _limit: 0 } } });
+		useItem(ref('test'), ref(1), currentVersion, undefined, { deep: { users: { _limit: 0 } } });
 
 		await Promise.resolve();
 

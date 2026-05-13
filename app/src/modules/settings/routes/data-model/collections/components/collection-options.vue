@@ -29,6 +29,13 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {});
 
+const emit = defineEmits<{
+	includeCollection: [collection: string];
+	excludeCollection: [collection: string];
+}>();
+
+const isDeactivated = computed(() => props.collection.meta?.status !== 'active');
+
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -86,7 +93,16 @@ async function update(updates: DeepPartial<Collection>) {
 				<VIcon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<VList>
-				<VListItem v-if="collection.schema" clickable :to="getCollectionRoute(collection.collection)">
+				<VListItem v-if="isDeactivated" clickable @click="emit('includeCollection', collection.collection)">
+					<VListItemIcon>
+						<VIcon name="add" />
+					</VListItemIcon>
+					<VListItemContent>
+						{{ $t('include_collection') }}
+					</VListItemContent>
+				</VListItem>
+
+				<VListItem v-if="!isDeactivated && collection.schema" clickable :to="getCollectionRoute(collection.collection)">
 					<VListItemIcon>
 						<VIcon name="box" />
 					</VListItemIcon>
@@ -95,7 +111,20 @@ async function update(updates: DeepPartial<Collection>) {
 					</VListItemContent>
 				</VListItem>
 
-				<VListItem clickable @click="update({ meta: { hidden: !collection.meta?.hidden } })">
+				<VListItem
+					v-if="!isDeactivated && collection.schema"
+					clickable
+					@click="emit('excludeCollection', collection.collection)"
+				>
+					<VListItemIcon>
+						<VIcon name="remove_circle_outline" />
+					</VListItemIcon>
+					<VListItemContent>
+						{{ $t('exclude_collection') }}
+					</VListItemContent>
+				</VListItem>
+
+				<VListItem v-if="!isDeactivated" clickable @click="update({ meta: { hidden: !collection.meta?.hidden } })">
 					<template v-if="collection.meta?.hidden === false">
 						<VListItemIcon><VIcon name="visibility_off" /></VListItemIcon>
 						<VListItemContent>
@@ -110,7 +139,7 @@ async function update(updates: DeepPartial<Collection>) {
 					</template>
 				</VListItem>
 
-				<template v-if="collection.type === 'alias' || hasNestedCollections">
+				<template v-if="!isDeactivated && (collection.type === 'alias' || hasNestedCollections)">
 					<VDivider />
 
 					<VListItem

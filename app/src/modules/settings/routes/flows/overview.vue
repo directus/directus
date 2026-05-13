@@ -7,7 +7,6 @@ import { RouterView } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import FlowDrawer from './flow-drawer.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
@@ -26,17 +25,32 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vue';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
+import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
+import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
+import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
 
 const { t } = useI18n();
 
 const { createAllowed } = useCollectionPermissions('directus_flows');
+const licenseStore = useLicenseStore();
 
 const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
 const editFlow = ref<string | undefined>();
+const flowsLimitModalOpen = ref(false);
+
+function openCreateFlow() {
+	if (!licenseStore.hasRemainingFlows) {
+		flowsLimitModalOpen.value = true;
+		return;
+	}
+
+	editFlow.value = '+';
+}
 
 const conditionalFormatting = ref([
 	{
@@ -152,28 +166,33 @@ function onFlowDrawerCompletion(id: string) {
 
 <template>
 	<PrivateView :title="$t('flows')" icon="bolt">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
+			<EntitlementRemaining entitlement-key="flows" />
+		</template>
+
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
+				:tooltip="createAllowed ? undefined : $t('not_allowed')"
+				:label="$t('create_flow')"
 				:disabled="createAllowed === false"
 				icon="add"
-				@click="editFlow = '+'"
+				@click="openCreateFlow"
 			/>
 		</template>
+
+		<div class="padding-box">
+			<MaxCapacityAlert entitlement-key="flows" />
+		</div>
 
 		<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
 			{{ $t('no_flows_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<VButton @click="editFlow = '+'">{{ $t('create_flow') }}</VButton>
+				<VButton @click="openCreateFlow">{{ $t('create_flow') }}</VButton>
 			</template>
 		</VInfo>
 
@@ -263,12 +282,15 @@ function onFlowDrawerCompletion(id: string) {
 		/>
 
 		<RouterView name="add" />
+
+		<EntitlementLimitModal v-model="flowsLimitModalOpen" entitlement-key="flows" is-admin />
 	</PrivateView>
 </template>
 
 <style scoped>
 .v-table {
 	padding: var(--content-padding);
+	padding-block-start: var(--content-padding-top-table);
 }
 
 .ctx-toggle {
@@ -285,5 +307,9 @@ function onFlowDrawerCompletion(id: string) {
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
+}
+
+.padding-box {
+	padding: var(--content-padding);
 }
 </style>

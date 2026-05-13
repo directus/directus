@@ -1,84 +1,123 @@
-import { describe, expect, test, vi } from 'vitest';
-import { convertToMySQLPath } from './mysql.js';
+import type { SchemaOverview } from '@directus/types';
+import knex from 'knex';
+import { MockClient } from 'knex-mock-client';
+import { beforeAll, describe, expect, test, vi } from 'vitest';
+import { FnHelperMySQL } from './mysql.js';
 
-// Mock dependencies to avoid loading the full FnHelper class
-vi.mock('../types.js', () => ({
-	FnHelper: class FnHelper {},
-	FnHelperOptions: {},
+vi.mock('../../../run-ast/lib/apply-query/filter/index.js', () => ({
+	applyFilter: vi.fn((_knex, _schema, query) => ({ query })),
 }));
 
-vi.mock('../json/parse-function.js', () => ({
-	parseJsonFunction: vi.fn(),
-}));
-
-const TEST_CASES = [
-	// Simple property access
-	{ input: '.color', expected: '$.color', description: 'simple property access' },
-	{ input: '.name', expected: '$.name', description: 'simple property access' },
-
-	// Nested property access
-	{ input: '.user.name', expected: '$.user.name', description: 'nested property access' },
-	{
-		input: '.data.settings.theme',
-		expected: '$.data.settings.theme',
-		description: 'deeply nested property access',
+const schema: SchemaOverview = {
+	collections: {
+		items: {
+			collection: 'items',
+			primary: 'id',
+			singleton: false,
+			sortField: null,
+			note: null,
+			accountability: null,
+			fields: {
+				data: {
+					field: 'data',
+					type: 'json',
+					dbType: 'json',
+					nullable: true,
+					generated: false,
+					defaultValue: null,
+					alias: false,
+					validation: null,
+					special: [],
+					note: null,
+					precision: null,
+					scale: null,
+					searchable: false,
+				},
+			},
+		},
 	},
-	{ input: '.a.b.c.d', expected: '$.a.b.c.d', description: 'multiple nested levels' },
+	relations: [],
+};
 
-	// Array index access
-	{ input: '.items[0]', expected: '$.items[0]', description: 'array index access' },
-	{ input: '.items[5]', expected: '$.items[5]', description: 'array index with higher number' },
-	{ input: '.items[123]', expected: '$.items[123]', description: 'array index with multi-digit number' },
+describe('FnHelperMySQL', () => {
+	let db: ReturnType<typeof knex>;
 
-	// Mixed property and array access
-	{ input: '.items[0].name', expected: '$.items[0].name', description: 'array index followed by property' },
-	{
-		input: '.data.items[0].name',
-		expected: '$.data.items[0].name',
-		description: 'nested property, array, then property',
-	},
-	{
-		input: '.users[0].profile.email',
-		expected: '$.users[0].profile.email',
-		description: 'complex nested path',
-	},
+	beforeAll(() => {
+		db = vi.mocked(knex.default({ client: MockClient }));
+	});
 
-	// Multiple array indices
-	{ input: '.matrix[0][1]', expected: '$.matrix[0][1]', description: 'multiple array indices' },
-	{ input: '.data[0][1][2]', expected: '$.data[0][1][2]', description: 'three array indices' },
+	describe('json()', () => {
+		test('jsonReturnType numeric uses JSON_EXTRACT without JSON_UNQUOTE', () => {
+			// JSON_EXTRACT preserves the native numeric type from the JSON document.
+			// JSON_UNQUOTE would coerce it to a string, breaking numeric comparisons.
+			const helper = new FnHelperMySQL(db, schema);
 
-	// Complex real-world scenarios
-	{
-		input: '.metadata.tags[0].value',
-		expected: '$.metadata.tags[0].value',
-		description: 'metadata with array and property',
-	},
-	{
-		input: '.response.data.items[3].attributes.name',
-		expected: '$.response.data.items[3].attributes.name',
-		description: 'deeply nested with array in middle',
-	},
-	{
-		input: '.config.servers[0].host',
-		expected: '$.config.servers[0].host',
-		description: 'config with array access',
-	},
+			const result = helper.json('items', 'data', {
+				type: 'json',
+				jsonPath: '.price',
+				jsonReturnType: 'numeric' as const,
+				originalCollectionName: undefined,
+				relationalCountOptions: undefined,
+			});
 
-	// Edge cases with underscore and special characters
-	{ input: '.user_data', expected: '$.user_data', description: 'property with underscore' },
-	{
-		input: '.first_name.last_name',
-		expected: '$.first_name.last_name',
-		description: 'nested properties with underscores',
-	},
+			const { sql } = result.toSQL();
+			expect(sql).toMatch(/JSON_EXTRACT/i);
+			expect(sql).not.toMatch(/JSON_UNQUOTE/i);
+		});
 
-	// Edge cases with numbers in property names
-	{ input: '.item1', expected: '$.item1', description: 'property with number suffix' },
-	{ input: '.test123.value', expected: '$.test123.value', description: 'property with numbers in name' },
-];
+		test('default (no jsonReturnType) wraps with JSON_UNQUOTE(JSON_EXTRACT(...))', () => {
+			const helper = new FnHelperMySQL(db, schema);
 
-describe('convertToMySQLPath', () => {
-	test.each(TEST_CASES)('converts "$input" to "$expected" ($description)', ({ input, expected }) => {
-		expect(convertToMySQLPath(input)).toBe(expected);
+			const result = helper.json('items', 'data', {
+				type: 'json',
+				jsonPath: '.name',
+				originalCollectionName: undefined,
+				relationalCountOptions: undefined,
+			});
+
+			const { sql } = result.toSQL();
+			expect(sql).toMatch(/JSON_UNQUOTE\(JSON_EXTRACT/i);
+		});
+
+		test('uses originalCollectionName for schema lookup when provided', () => {
+			const helper = new FnHelperMySQL(db, schema);
+
+			// 'aliased' is not in the schema, but 'items' is — without originalCollectionName this would throw
+			const result = helper.json('aliased', 'data', {
+				type: 'json',
+				jsonPath: '.color',
+				originalCollectionName: 'items',
+				relationalCountOptions: undefined,
+			});
+
+			const { bindings } = result.toSQL();
+			expect(bindings).toContain('$.color');
+		});
+
+		test('throws when the field is not a JSON field', () => {
+			const helper = new FnHelperMySQL(db, schema);
+
+			expect(() =>
+				helper.json('items', 'nonexistent', {
+					type: 'json',
+					jsonPath: '.color',
+					originalCollectionName: undefined,
+					relationalCountOptions: undefined,
+				}),
+			).toThrow('is not a JSON field');
+		});
+
+		test('throws when jsonPath is absent', () => {
+			const helper = new FnHelperMySQL(db, schema);
+
+			expect(() =>
+				helper.json('items', 'data', {
+					type: 'json',
+					jsonPath: undefined,
+					originalCollectionName: undefined,
+					relationalCountOptions: undefined,
+				}),
+			).toThrow('is not a JSON field');
+		});
 	});
 });

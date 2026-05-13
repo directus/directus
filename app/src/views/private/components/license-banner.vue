@@ -10,7 +10,7 @@ import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
+import { defaultValues, useSetupFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -23,20 +23,22 @@ const errors = ref<Record<string, any>[]>([]);
 
 const isSaveDisabled = computed(
 	() =>
-		!form.value.project_owner ||
+		!form.value.owner.project_owner ||
 		!form.value.license ||
-		(form.value.project_usage === 'commercial' && !form.value.org_name),
+		(form.value.owner.project_usage === 'commercial' && !form.value.owner.org_name),
 );
 
 const isSaving = ref(false);
 
 async function setOwner() {
-	errors.value = validate(form.value, fields);
+	errors.value = validate({ project_owner: form.value.owner.project_owner }, fields);
 
 	if (errors.value.length > 0) return;
 
 	isSaving.value = true;
-	await settingsStore.setOwner(form.value);
+
+	await settingsStore.setOwner(form.value.owner);
+
 	await settingsStore.hydrate();
 	isSaving.value = false;
 }
@@ -49,7 +51,7 @@ async function remindLater() {
 
 const form = ref<Form>(defaultValues);
 
-const fields = useFormFields(false, form);
+const fields = useSetupFields(false);
 </script>
 
 <template>
