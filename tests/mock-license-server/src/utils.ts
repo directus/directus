@@ -7,6 +7,7 @@ import { merge } from 'lodash-es';
 import type { MockLicense } from './types.js';
 
 const ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const DAY = 60 * 60 * 24;
 
 // random key based on this format: DXXXX-XXXXX-XXXXX-XXXXX-XXXXC
 // where D is a constant
@@ -44,7 +45,7 @@ export function generateKey() {
 }
 
 export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense {
-	const key = generateKey();
+	const key = overrides?.key ?? generateKey();
 	const now = Math.floor(Date.now() / 1000);
 
 	return merge(
@@ -57,16 +58,16 @@ export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense
 			meta: {
 				name: 'TEAM',
 				version: '2026-05-08',
-				grace_period: 10_000,
-				validation_interval: 1000,
-				expires_at: now + 100_000,
+				grace_period: DAY,
+				validation_interval: 60 * 60,
+				expires_at: now + 30 * DAY,
 				offline: false,
 			},
 			entitlements: {
-				collections: { limit: 100 },
-				seats: { limit: 100 },
-				activity_historical_timeframe: { limit: 2_592_000 },
-				revision_historical_timeframe: { limit: 2_582_000 },
+				collections: { limit: -1 },
+				seats: { limit: -1 },
+				activity_historical_timeframe: { limit: -1 },
+				revision_historical_timeframe: { limit: -1 },
 				sso_enabled: { default: true },
 				offline_enabled: { default: false },
 				telemetry_required: { default: false },
@@ -75,7 +76,7 @@ export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense
 				custom_permission_rules_enabled: { default: true },
 				ai_translations_enabled: { default: true },
 				production_enabled: { default: true },
-				flows: { limit: 100 },
+				flows: { limit: -1 },
 			},
 		},
 		overrides,
