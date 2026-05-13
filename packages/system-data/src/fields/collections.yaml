@@ -153,6 +153,29 @@ fields:
       label: $t:field_options.directus_collections.enable_versioning
     width: half
 
+  - field: versioning_revision_interval
+    interface: select-dropdown
+    options:
+      placeholder: $t:field_options.directus_collections.versioning_revision_interval_placeholder
+      choices:
+        - text: $t:field_options.directus_collections.interval_default
+          value: null
+        - text: 30s
+          value: 0.5
+        - text: 1m
+          value: 1
+        - text: 5m
+          value: 5
+        - text: 10m
+          value: 10
+    conditions:
+      - name: hide_when_versioning_disabled
+        rule:
+          versioning:
+            _neq: true
+        hidden: true
+    width: half
+
   - field: archive_divider
     special:
       - alias

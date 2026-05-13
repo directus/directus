@@ -1814,6 +1814,9 @@ field_options:
     content_translations_divider: Content Translations
     content_versioning_divider: Content Versioning
     enable_versioning: Enable Versioning
+    versioning_revision_interval_placeholder: Auto-save revision interval
+    interval_default: 'Default ({minutes} Minutes)'
+    interval_default_seconds: 'Default ({seconds} Seconds)'
   directus_files:
     title: A unique title...
     description: An optional description...
