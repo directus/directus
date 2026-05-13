@@ -1519,6 +1519,5 @@ describe('mcp server', () => {
 			directusMCP.handleRequest(req, mockRes);
 			expectMcpBearerChallenge(mockRes, { status: 403, error: 'insufficient_scope' });
 		});
-
 	});
 });

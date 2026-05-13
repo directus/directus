@@ -16,17 +16,11 @@ export function expectMcpBearerChallenge(
 	expect(res.status).toHaveBeenCalledWith(opts.status);
 
 	if (opts.error) {
-		expect(res.set).toHaveBeenCalledWith(
-			'WWW-Authenticate',
-			expect.stringContaining(`error="${opts.error}"`),
-		);
+		expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', expect.stringContaining(`error="${opts.error}"`));
 	}
 
 	if (opts.resourceMetadata === true) {
-		expect(res.set).toHaveBeenCalledWith(
-			'WWW-Authenticate',
-			expect.stringContaining('resource_metadata='),
-		);
+		expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', expect.stringContaining('resource_metadata='));
 	} else if (typeof opts.resourceMetadata === 'string') {
 		expect(res.set).toHaveBeenCalledWith(
 			'WWW-Authenticate',
@@ -34,10 +28,7 @@ export function expectMcpBearerChallenge(
 		);
 	}
 
-	expect(res.set).toHaveBeenCalledWith(
-		'WWW-Authenticate',
-		expect.stringContaining('scope="mcp:access"'),
-	);
+	expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', expect.stringContaining('scope="mcp:access"'));
 
 	expect(res.set).toHaveBeenCalledWith('Access-Control-Expose-Headers', 'WWW-Authenticate');
 }
