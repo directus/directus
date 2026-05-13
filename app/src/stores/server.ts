@@ -34,7 +34,6 @@ export type Info = {
 	setupCompleted: boolean;
 	setup: {
 		license_complete: boolean;
-		owner_complete: boolean;
 	} | null;
 	license: {
 		source: string | null;

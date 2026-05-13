@@ -64,20 +64,14 @@ export class ServerService {
 				'custom_css',
 				'public_registration',
 				'public_registration_verify_email',
-				'license_key',
-				'license_token',
-				'project_owner',
 			],
 		});
 
-		const { license_key, license_token, project_owner, ...publicProjectInfo } = projectInfo ?? {};
-
-		info['project'] = publicProjectInfo;
+		info['project'] = projectInfo;
 
 		if (!isSetupCompleted) {
 			info['setup'] = {
 				license_complete: licenseManager.getSource() !== null,
-				owner_complete: Boolean(project_owner),
 			};
 		}
 
