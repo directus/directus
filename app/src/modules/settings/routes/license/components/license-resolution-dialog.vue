@@ -42,11 +42,23 @@ const router = useRouter();
 const licenseStore = useLicenseStore();
 const { info, pendingResolution } = storeToRefs(licenseStore);
 
-type ResolveScope = 'manual' | 'expired' | 'suspended' | 'env_removed' | 'grace';
+type ResolveScope = 'manual' | 'expired' | 'suspended' | 'env_removed' | 'grace' | 'downgraded';
+
+const hasResolution = computed(() => (pendingResolution.value?.length ?? 0) > 0);
 
 const scope = computed<ResolveScope>(() => {
 	if (info.value === null) return 'env_removed';
 	const status = info.value.status;
+
+	// Locked/expired/suspended with nothing to resolve = silent downgrade to Core.
+	// Show an informational acknowledgement instead of the resolution form.
+	if (
+		(status === 'expired' || status === 'locked' || status === 'suspended' || status === 'canceled') &&
+		!hasResolution.value
+	) {
+		return 'downgraded';
+	}
+
 	if (status === 'grace') return 'grace';
 	if (status === 'expired' || status === 'locked') return 'expired';
 	if (status === 'suspended' || status === 'canceled') return 'suspended';
@@ -262,7 +274,10 @@ function onEsc() {
 				<VButton v-else-if="scope === 'grace'" secondary @click="acknowledge">
 					{{ t('licensing.resolve_acknowledge') }}
 				</VButton>
-				<VButton :disabled="!isValid" :loading="submitting" @click="submit">
+				<VButton v-else-if="scope === 'downgraded'" @click="close">
+					{{ t('continue_label') }}
+				</VButton>
+				<VButton v-else :disabled="!isValid" :loading="submitting" @click="submit">
 					{{ t('licensing.resolve_submit') }}
 				</VButton>
 			</VCardActions>
