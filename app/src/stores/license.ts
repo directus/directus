@@ -1,10 +1,13 @@
 import {
+	applyLicenseResolution,
+	type ApplyLicenseResolutionInput,
 	generateLicensePendingResolution,
 	type LicenseAddon,
-	type LicenseInfoOutput,
 	type LicensePendingResolution,
+	type LicensePendingResolutionInput,
 	readLicense,
 	readLicenseAddons,
+	type ReadLicenseOutput,
 } from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -18,7 +21,7 @@ export type LicenseBoundary = {
 };
 
 export const useLicenseStore = defineStore('licenseStore', () => {
-	const info = ref<LicenseInfoOutput | null>(null);
+	const info = ref<ReadLicenseOutput | null>(null);
 	const addons = ref<LicenseAddon[] | null>(null);
 	const pendingResolution = ref<LicensePendingResolution[] | null>(null);
 	const loading = ref(false);
@@ -69,7 +72,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isLocked = computed(() => {
 		const status = info.value?.status;
-		return status === 'expired' || status === 'suspended' || status === 'canceled';
+		return status === 'expired' || status === 'suspended' || status === 'canceled' || status === 'locked';
 	});
 
 	const customPermissionRulesEnabled = computed(() => {
@@ -91,7 +94,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const needsResolution = computed(() => {
 		const status = info.value?.status;
-		return status === 'expired' || status === 'suspended' || status === 'canceled';
+		return status === 'expired' || status === 'suspended' || status === 'canceled' || status === 'locked';
 	});
 
 	const revisionHistoryTimeframe = computed(() => {
@@ -164,17 +167,23 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		}
 	}
 
-	async function hydratePendingResolution() {
+	async function hydratePendingResolution(opts: LicensePendingResolutionInput = {}) {
 		if (!useUserStore().isAdmin) return;
 
 		loadingPendingResolution.value = true;
 
 		try {
-			const result: LicensePendingResolution[] | void = await sdk.request(generateLicensePendingResolution({}));
+			const result: LicensePendingResolution[] | void = await sdk.request(generateLicensePendingResolution(opts));
 			pendingResolution.value = result ?? [];
 		} finally {
 			loadingPendingResolution.value = false;
 		}
+	}
+
+	async function resolve(payload: ApplyLicenseResolutionInput) {
+		await sdk.request(applyLicenseResolution(payload));
+		pendingResolution.value = null;
+		await hydrate();
 	}
 
 	async function dehydrate() {
@@ -213,6 +222,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
+		resolve,
 		dehydrate,
 	};
 });
