@@ -30,7 +30,6 @@ import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
-import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
