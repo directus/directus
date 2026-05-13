@@ -21,10 +21,12 @@ export interface PrivateViewProps {
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed } from 'vue';
 import LicenseBanner from '../../components/license-banner.vue';
+import LicenseOnboarding from '../../components/license-onboarding.vue';
 import NotificationDialogs from '../../components/notification-dialogs.vue';
 import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 
@@ -56,12 +58,29 @@ const appAccess = computed(() => {
 	return userStore.currentUser?.app_access || false;
 });
 
-const cookies = useCookies(['license-banner-dismissed']);
+const cookies = useCookies(['license-banner-dismissed', 'license-onboarding-dismissed']);
+const serverStore = useServerStore();
 const settingsStore = useSettingsStore();
 
 const showLicenseBanner = computed(
-	() => userStore.isAdmin && !settingsStore.settings?.project_owner && !cookies.get('license-banner-dismissed'),
+	() =>
+		userStore.isAdmin &&
+		!serverStore.info.license?.source &&
+		!settingsStore.settings?.project_owner &&
+		!cookies.get('license-banner-dismissed'),
 );
+
+const showLicenseOnboarding = computed({
+	get: () =>
+		userStore.isAdmin &&
+		serverStore.info.setupCompleted &&
+		!serverStore.info.license?.source &&
+		!settingsStore.settings?.project_usage &&
+		!cookies.get('license-onboarding-dismissed'),
+	set: () => {
+		// close is handled by cookie and hydrate inside the modal
+	},
+});
 </script>
 
 <template>
@@ -91,4 +110,5 @@ const showLicenseBanner = computed(
 	<NotificationDialogs />
 
 	<LicenseBanner v-model="showLicenseBanner" />
+	<LicenseOnboarding v-model="showLicenseOnboarding" />
 </template>

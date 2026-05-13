@@ -64,6 +64,8 @@ export class SettingsService extends ItemsService<Settings> {
 		return await this.upsertSingleton({
 			project_owner: data.project_owner,
 			product_updates: data.product_updates,
+			project_usage: data.project_usage,
+			org_name: data.org_name,
 		});
 	}
 }

@@ -166,6 +166,7 @@
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
-		"zod": "catalog:"
+		"zod": "catalog:",
+		"@directus/license": "link:../../license"
 	}
 }

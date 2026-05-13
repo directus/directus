@@ -140,7 +140,7 @@ async function save() {
 		});
 
 		router.replace({ name: 'settings-fields', params: { collection: createdCollectionName } });
-	} catch (error) {
+	} catch (error: any) {
 		unexpectedError(error);
 	} finally {
 		saving.value = false;

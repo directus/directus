@@ -24,8 +24,12 @@ about: About
 directus_bsl: Directus BSL 1.1
 privacy_policy: Privacy Policy
 contact_our_team: Contact our Team
+contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
+setup_license_key_notice: >
+  If have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be
+  eligible for our {oig}.
 setup_license_notice: >
   Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
 setup_license_follow_up: >
@@ -33,20 +37,43 @@ setup_license_follow_up: >
   when you're ready to discuss production use.
 setup_save_accept_license: >
   By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
+setup_license_invalid: >
+  License invalid. Please {contactSupport} to resolve this issue.
 setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
+setup_license_title: Set up your license
+license_onboarding_title: Have a license key?
+license_onboarding_desc: >
+  Enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be eligible for our {oig}.
+project_usage: What are you using Directus for?
+project_usage_personal: Personal / Side project
+project_usage_commercial: Business / Commercial
+project_usage_community: Open Source / Community
+org_name: Organization Name
+org_name_placeholder: Acme Inc.
+license_key_option: I have a license key
+license_key_option_desc: 'OIG, Team, or Enterprise plan'
+core_option: I'm using Core
+core_option_desc: Free, no key required
+remind_later: Remind Later
+remind_next_login: We'll remind you next time you log in
+open_innovation_grant: Open Innovation Grant
 setup_project: Setup Project
+enter_license_key: Enter Your License Key
+license_valid: License Valid
+license_key: License Key
+no_license_key: Don't have a license key?
+get_license_key: Get License Key
+expires_on: Expires on
+environment: Environment
+skip: Skip
+continue: Continue
 first_name: First Name
 last_name: Last Name
 admin_email: Admin Email
 owner_email: Owner Email
 email_address: Email Address
-organization_name: Organization Name
-how_do_you_use_directus: What are you using Directus for?
-usage_personal: Personal / Learning
-usage_commercial: Business / Commercial
-usage_community: Open Source / Community
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -928,6 +955,9 @@ active_users: Active Users
 suspended_users: Suspended Users
 invited_users: Invited Users
 delete_collection: Delete Collection
+include_collection: Include Collection
+exclude_collection: Exclude Collection
+deactivated_collections: Deactivated Collections
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
@@ -1393,6 +1423,68 @@ settings_data_model: Data Model
 settings_roles: User Roles
 settings_permissions: Access Policies
 settings_project: Settings
+settings_license: License
+licensing:
+  expires_on: 'Expires on {date}'
+  renews_on: 'Renews on {date}'
+  add: Add License
+  manage: Manage License
+  upgrade_plan: Upgrade Plan
+  included: Included
+  not_included: Not Included
+  plan_usage: Your Plan Usage
+  addons: Add-on Packages
+  addon_purchase: Purchase
+  deactivate: Deactivate License
+  deactivate_confirm_title: Deactivate License?
+  deactivate_confirm_body:
+    Are you sure you want to deactivate the license? Your instance will be downgraded to the Core plan.
+  resolve_title_manual: Deactivate License
+  resolve_title_expired: License Expiration
+  resolve_title_suspended: License Suspension
+  resolve_title_env_removed: License Removed
+  resolve_subtitle: If you need to update your license key, you can update it in your environment variable.
+  resolve_notice_manual:
+    Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
+    Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
+  resolve_notice_expired:
+    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
+    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
+    access rules will also be locked.
+  resolve_notice_suspended:
+    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
+    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
+    access rules will also be locked.
+  resolve_notice_env_removed:
+    Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
+    collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
+    locked in Directus, and custom access rules will also be locked.
+  resolve_continue: Continue
+  resolve_section_collections: 'Collections ({usage}/{limit})'
+  resolve_section_seats: 'Seats ({usage}/{limit})'
+  resolve_section_flows: 'Flows ({usage}/{limit})'
+  resolve_section_sso_enabled: SSO must be disabled
+  resolve_section_custom_llms_enabled: Custom LLM must be disabled
+  resolve_section_custom_permission_rules_enabled: Custom permission rules must be removed
+  env_managed: Your license key is managed via an environment variable and can't be updated here.
+  key_management: License Key Management
+  key: License Key
+  key_notice:
+    If you have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue
+    may be eligible for our Open Innovation Grant.
+  entitlements:
+    collections: Collections
+    seats: Seats
+    activity_historical_timeframe: Activity History
+    revisions_historical_timeframe: Revision History
+    sso_enabled: SSO
+    offline_enabled: Offline Mode
+    telemetry_required: Telemetry Required
+    custom_llms_enabled: Custom LLM
+    custom_policy_rules_enabled: Custom Rules (Access Policies)
+    display_powered_by: Display Powered By
+    production_enabled: Production
+danger_zone: Danger Zone
 settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -1446,11 +1538,32 @@ batch_delete_confirm: >-
   you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 license:
-  seats_reached: You have reached the max user limit allowed for your plan.
-  manage_plan_copy: You will need to purchase additional user seats or upgrade your plan.
-  contact_sales_copy: Contact sales to purchase more feature add-ons.
+  seats_limit:
+    title: The user will be created but placed in an inactive state.
+    body_admin: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+    body_member: >-
+      You have reached the max limit allowed for your plan. Contact admin to purchase additional add-ons or upgrade.
+  collections_limit:
+    title: Collection limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  max_capacity:
+    label: max capacity
+    alert_danger_prefix: You have reached max capacity.
+    alert_danger_suffix: to unlock more.
+    alert_warning: You have {count} left. Upgrade your plan to unlock more.
   manage_plan: Manage Plan
+  collections_remaining: '{n} Collection Left | {n} Collections Left'
+  flows_limit:
+    title: Flow limit reached
+    body: >-
+      You have reached the max limit allowed for your plan. You will need to purchase additional add-ons or upgrade.
+  flows_remaining: '{n} Flow Left | {n} Flows Left'
   contact_sales: Contact Sales
+  upgrade_to_unlock: Upgrade your plan to unlock this feature.
+  activity_history_notice: '{timeframe} of Activity History is included in your current plan.'
+  revisions_history_notice: '{timeframe} of Revision History is included in your current plan.'
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
@@ -1573,6 +1686,7 @@ fields:
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
+    status_inactive_license_exceeded: Inactive (License Exceeded)
     role: Role
     token: Token
     provider: Provider
@@ -1709,6 +1823,7 @@ fields:
     ai_google_api_key: Google API Key
     ai_google_allowed_models: Google Allowed Models
     ai_openai_compatible: OpenAI-Compatible Provider
+    ai_openai_compatible_notice: Your current plan doesn't include Custom LLM. Upgrade to unlock.
     ai_openai_compatible_name: Provider Name
     ai_openai_compatible_base_url: Base URL
     ai_openai_compatible_api_key: API Key
