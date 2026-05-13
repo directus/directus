@@ -6,6 +6,8 @@ import {
 	createDirectus,
 	deleteCollection,
 	type DirectusClient,
+	type DirectusCollection,
+	type NestedPartial,
 	readCollections,
 	rest,
 	type RestClient,
@@ -13,10 +15,11 @@ import {
 	updateCollection,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
-import { getUID } from '@utils/getUID.js';
-import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 
 const LIMIT = 3;
+
+let createdCollections: string[] = [];
 
 let directus: Sandbox;
 let api: DirectusClient<any> & RestClient<any>;
@@ -28,15 +31,7 @@ const license = createLicense({
 	},
 });
 
-const createdCollections: string[] = [];
-
-function nextCollectionName() {
-	const name = `ent_collections_${createdCollections.length}_${getUID()}`;
-	createdCollections.push(name);
-	return name;
-}
-
-async function createActiveCollection(name: string) {
+async function createEmptyCollection(name: string, overrides?: NestedPartial<DirectusCollection<any>>) {
 	return api.request(
 		createCollection({
 			collection: name,
@@ -50,8 +45,19 @@ async function createActiveCollection(name: string) {
 			],
 			schema: {},
 			meta: {},
+			...(overrides ?? {}),
 		}),
 	);
+}
+
+async function fillCollectionLimit(prefix: string) {
+	for (let i = 1; i <= LIMIT; i++) {
+		const name = prefix + '_collection_entitlement_' + i;
+
+		await createEmptyCollection(name);
+
+		createdCollections.push(name);
+	}
 }
 
 beforeAll(async () => {
@@ -65,19 +71,26 @@ beforeAll(async () => {
 			CACHE_SCHEMA: 'false',
 			DB_FILENAME: `directus_test_${randomUUID()}.db`,
 			LICENSE_KEY: license.key,
+			DB_EXCLUDE_TABLES: 'secrets',
 		},
 		extras: {
 			license: true,
 		},
 		cache: false,
+		knex: true,
 		hooks: {
-			beforeApi: async ({ env }) => {
+			beforeApi: async ({ env, knex }) => {
 				// Register the license with the mock license server before the api boots so
 				// directus picks it up via the LICENSE_KEY env var (avoids the activate path).
 				await fetch(`http://localhost:${env.LICENSE_PORT}/admin/license`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(license),
+				});
+
+				// Create a db only table
+				await knex?.schema.createTable('db_only_collection', (table) => {
+					table.increments('id').primary();
 				});
 			},
 		},
@@ -87,35 +100,40 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-	for (const name of createdCollections) {
-		try {
-			await api.request(deleteCollection(name));
-		} catch {
-			// ignore cleanup failures
-		}
-	}
-
-	await directus.stop();
+	await directus?.stop();
 });
 
 describe('collections entitlement', () => {
-	test('creating collections up to the license limit succeeds', async () => {
-		for (let i = 0; i < LIMIT; i++) {
-			const name = nextCollectionName();
-			const result = await createActiveCollection(name);
-			expect(result).toMatchObject({ collection: name });
+	afterEach(async () => {
+		for (const name of createdCollections) {
+			try {
+				await api.request(deleteCollection(name));
+			} catch {
+				// ignore cleanup failures
+			}
 		}
 
-		const all = await api.request(readCollections());
-		const ours = all.filter((c: any) => createdCollections.includes(c.collection));
-
-		expect(ours).toHaveLength(LIMIT);
+		createdCollections = [];
 	});
 
-	test('creating one collection above the license limit rejects with LIMIT_EXCEEDED', async () => {
-		const overName = `ent_collections_overflow_${getUID()}`;
+	test('can successfully create collections within the limit', async () => {
+		await fillCollectionLimit('a');
 
-		await expect(createActiveCollection(overName)).rejects.toMatchObject({
+		const all = await api.request(readCollections());
+
+		const activeUserTables = all.filter((c) => {
+			return !c['meta']?.system && 'schema' in c && c['meta']?.status === 'active';
+		});
+
+		expect(activeUserTables).toHaveLength(LIMIT);
+	});
+
+	test('creating a collection above the license limit rejects with LIMIT_EXCEEDED', async () => {
+		await fillCollectionLimit('b');
+
+		const collection = 'b_collection_entitlement_' + (LIMIT + 1);
+
+		await expect(createEmptyCollection(collection)).rejects.toMatchObject({
 			errors: [
 				expect.objectContaining({
 					extensions: expect.objectContaining({
@@ -126,46 +144,68 @@ describe('collections entitlement', () => {
 		});
 	});
 
-	test('deactivating a collection frees up a slot for a new active collection', async () => {
-		const victim = createdCollections[0]!;
+	test('creating a folder above the license limit succeeds', async () => {
+		await fillCollectionLimit('c');
+
+		await expect(
+			api.request(
+				createCollection({
+					collection: 'c_collection_entitlement_folder',
+					meta: {},
+				}),
+			),
+		).resolves.toBeDefined();
+	});
+
+	test('creating an inactive collection above the license limit succeeds', async () => {
+		await fillCollectionLimit('d');
+
+		await expect(
+			createEmptyCollection('d_collection_entitlement_inactive', {
+				meta: { status: 'inactive' },
+			}),
+		).resolves.toBeDefined();
+	});
+
+	test('deactivating an existing collection allows new creation', async () => {
+		await fillCollectionLimit('e');
 
 		await api.request(
-			updateCollection(victim, {
+			updateCollection(createdCollections[0]!, {
 				meta: { status: 'inactive' } as any,
 			}),
 		);
 
-		const name = nextCollectionName();
-		const result = await createActiveCollection(name);
-		expect(result).toMatchObject({ collection: name });
+		const collection = 'e_collection_entitlement_' + (LIMIT + 1);
+
+		await expect(createEmptyCollection(collection)).resolves.toBeDefined();
 	});
 
-	test('creating again after slot is filled rejects with LIMIT_EXCEEDED', async () => {
-		const overName = `ent_collections_overflow2_${getUID()}`;
+	test('can deactivate an existing collection remaining over the limit', async () => {
+		await fillCollectionLimit('f');
 
-		await expect(createActiveCollection(overName)).rejects.toMatchObject({
-			errors: [
-				expect.objectContaining({
-					extensions: expect.objectContaining({
-						code: 'LIMIT_EXCEEDED',
-					}),
-				}),
-			],
+		// create 2 collections over the limit
+		await directus.knex!.schema.createTable('f_collection_entitlement_extra_1', (table) => {
+			table.increments('id').primary();
 		});
-	});
 
-	test('creating a folder (schema: null) is not counted toward the limit', async () => {
-		const folderName = `ent_collections_folder_${getUID()}`;
-		createdCollections.push(folderName);
+		await directus.knex!.schema.createTable('f_collection_entitlement_extra_2', (table) => {
+			table.increments('id').primary();
+		});
 
-		const result = await api.request(
-			createCollection({
-				collection: folderName,
-				schema: null,
-				meta: {},
-			} as any),
-		);
+		await directus.knex!('directus_collections').insert({ collection: 'f_collection_entitlement_extra_1' });
+		await directus.knex!('directus_collections').insert({ collection: 'f_collection_entitlement_extra_2' });
 
-		expect(result).toMatchObject({ collection: folderName, schema: null });
+		createdCollections.push('f_collection_entitlement_extra_1');
+		createdCollections.push('f_collection_entitlement_extra_2');
+
+		// try to deactivate a collection
+		await expect(
+			api.request(
+				updateCollection(createdCollections[0]!, {
+					meta: { status: 'inactive' } as any,
+				}),
+			),
+		).resolves.toBeDefined();
 	});
 });
