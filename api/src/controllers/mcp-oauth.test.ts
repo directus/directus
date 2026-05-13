@@ -656,8 +656,9 @@ describe('error-handler MCP 401', () => {
 			'Bearer resource_metadata="http://localhost/directus/.well-known/oauth-protected-resource/mcp", scope="mcp:access", error="invalid_token"',
 		);
 	});
-});
-describe('getRedirectIndicator', () => {
+	});
+
+	describe('getRedirectIndicator', () => {
 	let getRedirectIndicator: typeof import('./mcp-oauth.js').getRedirectIndicator;
 
 	beforeEach(async () => {
