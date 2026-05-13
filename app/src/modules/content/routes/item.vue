@@ -340,12 +340,13 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
-const { autoSaveError, isSaving, resetSession } = useAutoSave(edits, autoSaveRevision, {
+const { resetSession } = useAutoSave(edits, autoSaveRevision, {
 	enabled: computed(() => currentVersion.value !== null && updateVersionsAllowed.value),
 	currentVersionDateUpdated: computed(() => {
 		const v = currentVersion.value;
 		return v && 'date_updated' in v ? (v.date_updated ?? null) : null;
 	}),
+	collection: computed(() => props.collection),
 });
 
 const isFormDisabled = computed(() => {
@@ -1003,16 +1004,6 @@ function editDraftVersion() {
 				/>
 
 				<template v-else>
-					<PrivateViewHeaderBarActionButton
-						:label="$t('save')"
-						:tooltip="translateShortcut(['meta', 's'])"
-						icon="beenhere"
-						secondary
-						:loading="saveVersionLoading"
-						:disabled="!isSavable"
-						@click="saveVersionAction()"
-					/>
-
 					<PrivateViewHeaderBarActionButton
 						:label="$t('publish')"
 						:tooltip="translateShortcut(['meta', 'alt', 'p'])"
