@@ -16,17 +16,15 @@ const props = withDefaults(
 const { t } = useI18n();
 const licenseStore = useLicenseStore();
 
-const remaining = computed(() => licenseStore.remaining(props.entitlementKey));
+const limit = computed(() => licenseStore.limits[props.entitlementKey]);
 
-const show = computed(
-	() => !licenseStore.isUnlimited(props.entitlementKey) && (remaining.value ?? 0) <= REMAINING_THRESHOLD,
-);
+const show = computed(() => limit.value.remaining !== null && limit.value.remaining <= REMAINING_THRESHOLD);
 
 const label = computed(() =>
-	t(`license.${props.entitlementKey}_remaining`, { n: remaining.value }, remaining.value ?? 0),
+	t(`license.${props.entitlementKey}_remaining`, { n: limit.value.remaining }, limit.value.remaining ?? 0),
 );
 
-const variant = computed(() => ((remaining.value ?? 1) <= 0 ? 'danger' : 'warning'));
+const variant = computed(() => (limit.value.remaining !== null && limit.value.remaining <= 0 ? 'danger' : 'warning'));
 </script>
 
 <template>

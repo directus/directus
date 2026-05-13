@@ -18,6 +18,12 @@ export type LicenseBoundary = {
 	timestamp: number;
 };
 
+type LicenseLimit = {
+	remaining: number | null;
+	isUnlimited: boolean;
+	hasRemaining: boolean;
+};
+
 export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<ReadLicenseOutput | null>(null);
 	const addons = ref<LicenseAddon[] | null>(null);
@@ -36,25 +42,29 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return null;
 	});
 
-	function isUnlimited(key: CountableEntitlementKey): boolean {
-		if (!info.value) return false;
+	function getLimit(key: CountableEntitlementKey): LicenseLimit {
+		if (!info.value) return { remaining: null, isUnlimited: false, hasRemaining: loading.value };
 		const ent = info.value.entitlements[key];
-		if (!ent || ent.limit == null) return false;
-		return ent.limit === -1 || ent.overage === -1 || ent.addon === -1;
-	}
+		if (!ent || ent.limit == null) return { remaining: null, isUnlimited: false, hasRemaining: false };
 
-	function remaining(key: CountableEntitlementKey): number | null {
-		if (isUnlimited(key)) return null;
-		if (!info.value) return null;
-		const ent = info.value.entitlements[key];
-		if (!ent || ent.limit == null) return null;
+		const isUnlimited = ent.limit === -1 || ent.overage === -1 || ent.addon === -1;
+		if (isUnlimited) return { remaining: null, isUnlimited: true, hasRemaining: true };
+
 		const effective = ent.limit + (ent.addon ?? 0) + (ent.overage ?? 0);
-		return effective - (info.value.usage?.[key] ?? 0);
+		const remaining = effective - (info.value.usage?.[key] ?? 0);
+
+		return {
+			remaining,
+			isUnlimited: false,
+			hasRemaining: remaining > 0,
+		};
 	}
 
-	function hasRemaining(key: CountableEntitlementKey): boolean {
-		return isUnlimited(key) || (remaining(key) ?? 0) > 0;
-	}
+	const limits = computed<Record<CountableEntitlementKey, LicenseLimit>>(() => ({
+		seats: getLimit('seats'),
+		collections: getLimit('collections'),
+		flows: getLimit('flows'),
+	}));
 
 	const isLocked = computed(() => {
 		const status = info.value?.status;
@@ -186,9 +196,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loadingPendingResolution,
 		error,
 		boundary,
-		remaining,
-		hasRemaining,
-		isUnlimited,
+		limits,
 		isLocked,
 		customPermissionRulesEnabled,
 		isLicensed,

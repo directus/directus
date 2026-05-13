@@ -14,9 +14,9 @@ const props = withDefaults(
 
 const licenseStore = useLicenseStore();
 
-const remaining = computed(() => licenseStore.remaining(props.entitlementKey));
+const limit = computed(() => licenseStore.limits[props.entitlementKey]);
 
-const isVisible = computed(() => !licenseStore.isUnlimited(props.entitlementKey) && (remaining.value ?? 0) <= 0);
+const isVisible = computed(() => !limit.value.isUnlimited && !limit.value.hasRemaining);
 </script>
 
 <template>
