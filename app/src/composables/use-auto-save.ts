@@ -1,6 +1,8 @@
 import { useDebounceFn } from '@vueuse/core';
-import { ref, Ref, watch } from 'vue';
+import { onScopeDispose, ref, Ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useCollectionsStore } from '@/stores/collections';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
 
 /** Fallback when neither the collection nor the server reports a value. Minutes of inactivity after which the next save creates a new revision instead of updating in-place. */
@@ -26,10 +28,13 @@ export function useAutoSave(
 	const { enabled, currentVersionDateUpdated, collection, debounceMs = AUTO_SAVE_DEBOUNCE_MS } = options;
 	const serverStore = useServerStore();
 	const collectionsStore = useCollectionsStore();
+	const notificationsStore = useNotificationsStore();
+	const { t } = useI18n();
 
 	const isSaving = ref(false);
 	const sessionHasSaved = ref(false);
 	const autoSaveError = ref<Error | null>(null);
+	let errorNotificationId: string | null = null;
 
 	const debouncedSave = useDebounceFn(async () => {
 		if (!enabled.value) return;
@@ -39,17 +44,38 @@ export function useAutoSave(
 		const forceNew = !sessionHasSaved.value || isRevisionStale();
 
 		isSaving.value = true;
-		autoSaveError.value = null;
 
 		try {
 			await saveRevisionCb(forceNew);
 			sessionHasSaved.value = true;
+			autoSaveError.value = null;
+			dismissErrorNotification();
 		} catch (error) {
 			autoSaveError.value = error instanceof Error ? error : new Error(String(error));
+			showErrorNotification();
 		} finally {
 			isSaving.value = false;
 		}
 	}, debounceMs);
+
+	function showErrorNotification() {
+		if (errorNotificationId) return;
+
+		errorNotificationId = notificationsStore.add({
+			title: t('auto_save_failed'),
+			text: t('auto_save_failed_copy'),
+			type: 'warning',
+			icon: 'cloud_off',
+			persist: true,
+			closeable: true,
+		});
+	}
+
+	function dismissErrorNotification() {
+		if (!errorNotificationId) return;
+		notificationsStore.remove(errorNotificationId);
+		errorNotificationId = null;
+	}
 
 	watch(
 		edits,
@@ -79,6 +105,8 @@ export function useAutoSave(
 	function resetSession() {
 		sessionHasSaved.value = false;
 	}
+
+	onScopeDispose(dismissErrorNotification);
 
 	return {
 		autoSaveError,

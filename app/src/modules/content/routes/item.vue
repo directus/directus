@@ -102,11 +102,6 @@ const userStore = useUserStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
-const isPublishAllowed = computed(() => {
-	if (isCurrentVersionNew.value) return false;
-	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
-});
-
 const form = ref<ComponentPublicInstance>();
 
 const { collection } = toRefs(props);
@@ -340,13 +335,19 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
-const { resetSession } = useAutoSave(edits, autoSaveRevision, {
+const { autoSaveError, resetSession } = useAutoSave(edits, autoSaveRevision, {
 	enabled: computed(() => currentVersion.value !== null && updateVersionsAllowed.value),
 	currentVersionDateUpdated: computed(() => {
 		const v = currentVersion.value;
 		return v && 'date_updated' in v ? (v.date_updated ?? null) : null;
 	}),
 	collection: computed(() => props.collection),
+});
+
+const isPublishAllowed = computed(() => {
+	if (isCurrentVersionNew.value) return false;
+	if (autoSaveError.value !== null) return false;
+	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
 });
 
 const isFormDisabled = computed(() => {
@@ -555,20 +556,19 @@ async function saveVersionAction() {
 async function autoSaveRevision(forceNew: boolean) {
 	try {
 		if (forceNew) {
-			await saveVersion(edits, item);
+			await saveVersion(edits, item, { silent: true });
 
 			if (!isNew.value) {
 				revisionsSidebarDetailRef.value?.refresh?.();
 			}
 		} else {
-			await saveVersion(edits, item, { patchRevision: true });
+			await saveVersion(edits, item, { patchRevision: true, silent: true });
 		}
 	} catch (error) {
-		// Version-gone errors (deleted/promoted by another user) are handled silently here:
-		// handleVersionGone shows a notification and navigates away, so we do NOT re-throw
-		// and autoSaveError is NOT set. All other errors are re-thrown so useAutoSave
-		// captures them in autoSaveError and shows the persistent warning indicator.
-		handleVersionGone(error);
+		// Version-gone errors (deleted/promoted by another user) are handled by handleVersionGone:
+		// it shows a notification and navigates away. Re-throw anything else so useAutoSave
+		// captures it in autoSaveError and the persistent warning toast surfaces it.
+		if (!handleVersionGone(error)) throw error;
 	}
 }
 
