@@ -211,7 +211,7 @@ async function handleDeactivateConfirm() {
 					</template>
 				</div>
 
-				<LicenseSection icon="diamond" :title="t('licensing.addons')">
+				<LicenseSection v-if="addons && addons.length > 0" icon="diamond" :title="t('licensing.addons')">
 					<VList>
 						<LicenseAddonItem v-for="addon in addons" :key="addon.id" :addon="addon" />
 					</VList>
