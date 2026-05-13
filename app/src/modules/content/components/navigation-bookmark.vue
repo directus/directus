@@ -135,7 +135,7 @@ function useEditBookmark() {
 			</VList>
 		</VMenu>
 
-		<BookmarkDelete v-model="deleteActive" :bookmark="bookmark" :saving="deleteSaving" @delete="deleteSave" />
+		<BookmarkDelete v-model="deleteActive" :bookmark="bookmark" :saving="deleteSaving" @delete="deleteSave(bookmark)" />
 
 		<VDialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
 			<VCard>
