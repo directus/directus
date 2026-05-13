@@ -35,6 +35,12 @@ const customLLMInputs = new Set([
 	'ai_openai_compatible_models',
 ]);
 
+const aiTranslationInputs = new Set([
+	'ai_translation_default_model',
+	'ai_translation_glossary',
+	'ai_translation_style_guide',
+]);
+
 const { fields: allFields } = useCollection('directus_settings');
 
 const initialValues = ref(clone(settingsStore.settings));
@@ -50,6 +56,8 @@ const aiFields = computed(() =>
 	unref(allFields)
 		.filter((field) => {
 			if (field.meta?.group !== 'ai_group' && field.field !== 'ai_group') return false;
+			if (field.field === 'ai_translations_notice' && licenseStore.aiTranslationsEnabled === true) return false;
+
 			if (field.field === 'ai_openai_compatible_notice' && licenseStore.customLLMEnabled === true) return false;
 			return true;
 		})
@@ -59,7 +67,7 @@ const aiFields = computed(() =>
 					...field,
 					meta: {
 						...field.meta,
-						readonly: availableTranslationModels.value.length === 0,
+						readonly: availableTranslationModels.value.length === 0 || licenseStore.aiTranslationsEnabled === false,
 						options: {
 							...(field.meta?.options ?? {}),
 							allowNone: true,
@@ -71,6 +79,10 @@ const aiFields = computed(() =>
 						},
 					},
 				} as Field;
+			}
+
+			if (licenseStore.aiTranslationsEnabled === false && aiTranslationInputs.has(field.field)) {
+				return { ...field, meta: { ...field.meta, readonly: true } } as typeof field;
 			}
 
 			if (licenseStore.customLLMEnabled === true || customLLMInputs.has(field.field) === false) return field;
