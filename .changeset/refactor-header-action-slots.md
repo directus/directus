@@ -1,11 +1,11 @@
 ---
-'@directus/app': major
+'@directus/app': minor
 ---
 
-Refactored header bar action slots and reorganize CTAs @formfcw
+Refactored header bar action slots and reorganized CTAs @formfcw
 
 :::notice
 
-- Breaking change for extensions: The `actions:append` slot has been replaced by `actions:primary`. Extensions relying on `actions:append` will need to update.
+- Deprecation for extensions: The `actions:append` slot in the header bar has been deprecated in favor of the new `actions:primary` slot for primary CTAs. Existing `actions:append` usage keeps rendering in the secondary-actions zone, but consumers will now see a deprecation hint from Volar.
 
 :::
