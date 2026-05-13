@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { type CountableEntitlementKey } from '@directus/license';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLicenseStore } from '@/stores/license';
@@ -7,7 +8,7 @@ const REMAINING_THRESHOLD = 5;
 
 const props = withDefaults(
 	defineProps<{
-		entitlementKey?: 'collections' | 'flows';
+		entitlementKey?: CountableEntitlementKey;
 	}>(),
 	{ entitlementKey: 'collections' },
 );
@@ -15,17 +16,17 @@ const props = withDefaults(
 const { t } = useI18n();
 const licenseStore = useLicenseStore();
 
-const remaining = computed(() =>
-	props.entitlementKey === 'flows' ? licenseStore.flowsRemaining : licenseStore.collectionsRemaining,
-);
+const remaining = computed(() => licenseStore.remaining(props.entitlementKey));
 
-const show = computed(() => remaining.value !== null && remaining.value <= REMAINING_THRESHOLD);
+const show = computed(
+	() => !licenseStore.isUnlimited(props.entitlementKey) && (remaining.value ?? 0) <= REMAINING_THRESHOLD,
+);
 
 const label = computed(() =>
 	t(`license.${props.entitlementKey}_remaining`, { n: remaining.value }, remaining.value ?? 0),
 );
 
-const variant = computed(() => (remaining.value === 0 ? 'danger' : 'warning'));
+const variant = computed(() => ((remaining.value ?? 1) <= 0 ? 'danger' : 'warning'));
 </script>
 
 <template>

@@ -44,7 +44,7 @@ const editFlow = ref<string | undefined>();
 const flowsLimitModalOpen = ref(false);
 
 function openCreateFlow() {
-	if (!licenseStore.hasRemainingFlows) {
+	if (!licenseStore.hasRemaining('flows')) {
 		flowsLimitModalOpen.value = true;
 		return;
 	}

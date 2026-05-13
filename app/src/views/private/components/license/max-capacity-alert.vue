@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { type CountableEntitlementKey } from '@directus/license';
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import VNotice from '@/components/v-notice.vue';
@@ -6,19 +7,16 @@ import { useLicenseStore } from '@/stores/license';
 
 const props = withDefaults(
 	defineProps<{
-		entitlementKey?: 'collections' | 'seats' | 'flows';
+		entitlementKey?: CountableEntitlementKey;
 	}>(),
 	{ entitlementKey: 'collections' },
 );
 
 const licenseStore = useLicenseStore();
 
-const remaining = computed(() => {
-	if (props.entitlementKey === 'flows') return licenseStore.flowsRemaining;
-	return props.entitlementKey === 'collections' ? licenseStore.collectionsRemaining : licenseStore.seatsRemaining;
-});
+const remaining = computed(() => licenseStore.remaining(props.entitlementKey));
 
-const isVisible = computed(() => remaining.value !== null && remaining.value <= 0);
+const isVisible = computed(() => !licenseStore.isUnlimited(props.entitlementKey) && (remaining.value ?? 0) <= 0);
 </script>
 
 <template>

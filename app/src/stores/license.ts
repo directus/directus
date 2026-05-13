@@ -1,10 +1,11 @@
 import {
+	type CountableEntitlementKey,
 	generateLicensePendingResolution,
 	type LicenseAddon,
-	type LicenseInfoOutput,
 	type LicensePendingResolution,
 	readLicense,
 	readLicenseAddons,
+	type ReadLicenseOutput,
 } from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -18,7 +19,7 @@ export type LicenseBoundary = {
 };
 
 export const useLicenseStore = defineStore('licenseStore', () => {
-	const info = ref<LicenseInfoOutput | null>(null);
+	const info = ref<ReadLicenseOutput | null>(null);
 	const addons = ref<LicenseAddon[] | null>(null);
 	const pendingResolution = ref<LicensePendingResolution[] | null>(null);
 	const loading = ref(false);
@@ -35,37 +36,25 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return null;
 	});
 
-	const seatsRemaining = computed<number | null>(() => {
+	function isUnlimited(key: CountableEntitlementKey): boolean {
+		if (!info.value) return false;
+		const ent = info.value.entitlements[key];
+		if (!ent || ent.limit == null) return false;
+		return ent.limit === -1 || ent.overage === -1 || ent.addon === -1;
+	}
+
+	function remaining(key: CountableEntitlementKey): number | null {
+		if (isUnlimited(key)) return null;
 		if (!info.value) return null;
-		const seats = info.value.entitlements.seats;
-		const usage = info.value.usage;
-		const effective = seats.limit + (seats.addon ?? 0) + (seats.overage ?? 0);
-		return effective - (usage?.seats ?? 0);
-	});
+		const ent = info.value.entitlements[key];
+		if (!ent || ent.limit == null) return null;
+		const effective = ent.limit + (ent.addon ?? 0) + (ent.overage ?? 0);
+		return effective - (info.value.usage?.[key] ?? 0);
+	}
 
-	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
-
-	const collectionsRemaining = computed<number | null>(() => {
-		if (!info.value) return null;
-		const col = info.value.entitlements.collections;
-		if (!col) return null;
-		if (col.limit == null) return null;
-		const effective = col.limit + (col.addon ?? 0) + (col.overage ?? 0);
-		return effective - (info.value.usage?.collections ?? 0);
-	});
-
-	const hasRemainingCollections = computed(() => collectionsRemaining.value === null || collectionsRemaining.value > 0);
-
-	const flowsRemaining = computed<number | null>(() => {
-		if (!info.value) return null;
-		const fl = info.value.entitlements.flows;
-		if (!fl) return null;
-		if (fl.limit == null) return null;
-		const effective = fl.limit + (fl.addon ?? 0) + (fl.overage ?? 0);
-		return effective - (info.value.usage?.flows ?? 0);
-	});
-
-	const hasRemainingFlows = computed(() => flowsRemaining.value === null || flowsRemaining.value > 0);
+	function hasRemaining(key: CountableEntitlementKey): boolean {
+		return isUnlimited(key) || (remaining(key) ?? 0) > 0;
+	}
 
 	const isLocked = computed(() => {
 		const status = info.value?.status;
@@ -197,12 +186,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loadingPendingResolution,
 		error,
 		boundary,
-		seatsRemaining,
-		hasRemainingSeats,
-		collectionsRemaining,
-		hasRemainingCollections,
-		flowsRemaining,
-		hasRemainingFlows,
+		remaining,
+		hasRemaining,
+		isUnlimited,
 		isLocked,
 		customPermissionRulesEnabled,
 		isLicensed,
