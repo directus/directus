@@ -179,6 +179,8 @@ describe('collections entitlement', () => {
 		const collection = 'e_collection_entitlement_' + (LIMIT + 1);
 
 		await expect(createEmptyCollection(collection)).resolves.toBeDefined();
+
+		createdCollections.push(collection);
 	});
 
 	test('can deactivate an existing collection remaining over the limit', async () => {
