@@ -491,8 +491,10 @@ translations_preview_collections: Collections
 translations_preview_fields: Champs
 import_data_input_placeholder: CSV ou JSON...
 import_data_button: Commencer l'import
+import_background: Importer en arrière-plan
 import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
+import_upload_success: '{filename} a été téléchargé avec succès. Importation des données en arrière-plan.'
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 snapshot:
   export: Exporter le schéma
