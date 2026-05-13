@@ -154,10 +154,6 @@ async function handleDeactivateConfirm() {
 
 <template>
 	<PrivateView :title="t('settings_license')" icon="diamond">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
