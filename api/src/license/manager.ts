@@ -514,7 +514,6 @@ export class LicenseManager {
 
 		// New manager to ensure no conflicts with main manager
 		const entitlementManager = new EntitlementManager();
-		entitlementManager.initialize();
 		entitlementManager.setEntitlements(entitlements);
 
 		const candidateGetters: Record<CountableEntitlementKey, any> = {
@@ -625,8 +624,21 @@ export class LicenseManager {
 		}
 
 		await this.syncState();
-		await this.store(async (store) => store.set('status', options?.status ?? (await getStatus(options))));
-		await this.rpc.syncState();
+		const status = options?.status ?? (await getStatus(options));
+
+		const entitlementManager = new EntitlementManager();
+
+		if (['expired', 'suspended', 'cancelled'].includes(status)) {
+			// Invalid state within core limits downgrade otherwise lock
+			if (await entitlementManager.checkAll()) {
+				this.commitStateChange({ isCore: true, downgrade: true });
+			} else {
+				this.commitStateChange({ status: 'locked' });
+			}
+		} else {
+			await this.store(async (store) => store.set('status', status));
+			await this.rpc.syncState();
+		}
 	}
 
 	public async syncState() {
