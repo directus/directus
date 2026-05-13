@@ -22,5 +22,5 @@ export type MockLicense = {
 	max_projects: number;
 	projects: { id: string; url: string }[];
 	/** Available Addons */
-	addons: LicenseAddon[];
+	addons: (LicenseAddon & { unit: 'seats' | 'collections' | 'flows' })[];
 };

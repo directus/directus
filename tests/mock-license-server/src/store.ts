@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import type { MockLicense } from './types.js';
 
 const DAY = 60 * 60 * 24;
@@ -63,6 +64,34 @@ export const licenseStore: Record<string, MockLicense> = {
 			ai_translations_enabled: { default: true },
 			production_enabled: { default: true },
 		},
+		addons: [
+			{
+				id: randomUUID(),
+				active_quantity: 0,
+				billing_interval: 'monthly',
+				description: 'Alodda Seats addon',
+				icon: 'group',
+				min_quantity: 0,
+				max_quantity: 10,
+				name: 'Gimme more seats',
+				pricing_summary: 'pay os som 💰',
+				unit: 'seats',
+				upgrade_required: false,
+			},
+			{
+				id: randomUUID(),
+				active_quantity: 0,
+				billing_interval: 'monthly',
+				description: 'Get mooore collections',
+				icon: 'deployed_code',
+				min_quantity: 0,
+				max_quantity: 10,
+				name: 'Coollections 😎',
+				pricing_summary: 'pay os som 💰',
+				unit: 'collections',
+				upgrade_required: false,
+			},
+		],
 	}),
 
 	// Team expired 2 days ago, still in grace
