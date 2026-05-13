@@ -179,7 +179,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	function versionErrorHandler(error: any) {
+	function versionErrorHandler(error: any, opts: { silent?: boolean } = {}) {
 		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
 			throw Object.assign(error, { versionGone: true });
 		}
@@ -200,10 +200,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
 			);
 
-			if (otherErrors.length > 0) {
+			if (otherErrors.length > 0 && !opts.silent) {
 				otherErrors.forEach(unexpectedError);
 			}
-		} else {
+		} else if (!opts.silent) {
 			unexpectedError(error);
 		}
 
@@ -213,7 +213,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	async function saveVersion(
 		edits: Ref<Record<string, any>>,
 		item: Ref<Item | null>,
-		opts?: { patchRevision?: boolean },
+		opts?: { patchRevision?: boolean; silent?: boolean },
 	) {
 		if (!currentVersion.value || !primaryKey.value) return;
 
@@ -257,7 +257,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return savedData;
 		} catch (error) {
-			versionErrorHandler(error);
+			versionErrorHandler(error, { silent: opts?.silent });
 		} finally {
 			saveVersionLoading.value = false;
 		}

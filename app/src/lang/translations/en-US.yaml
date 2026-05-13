@@ -241,6 +241,9 @@ delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
   You are about to publish “{version}”. What should happen to “{version}” after publishing?
+auto_save_failed: Auto-save Failed
+auto_save_failed_copy: >-
+  Your changes are still saved locally. We'll keep retrying as you edit.
 content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
