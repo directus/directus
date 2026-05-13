@@ -62,7 +62,7 @@ const deactivatedRootCollections = computed(() => {
 	return collections.value.filter((collection) => !collection.meta?.group && collection.meta?.status !== 'active');
 });
 
-async function includeCollection(collectionKey: string) {
+async function activateCollection(collectionKey: string) {
 	try {
 		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'active' } });
 		await collectionsStore.hydrate();
@@ -71,7 +71,7 @@ async function includeCollection(collectionKey: string) {
 	}
 }
 
-async function excludeCollection(collectionKey: string) {
+async function deactivateCollection(collectionKey: string) {
 	try {
 		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'inactive' } });
 		await collectionsStore.hydrate();
@@ -259,8 +259,8 @@ async function downloadSnapshot() {
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
 							@toggle-collapse="toggleCollapse"
-							@include-collection="includeCollection"
-							@exclude-collection="excludeCollection"
+							@activate-collection="activateCollection"
+							@deactivate-collection="deactivateCollection"
 						/>
 					</template>
 				</Draggable>
@@ -274,8 +274,8 @@ async function downloadSnapshot() {
 						:is-collapsed="false"
 						:visibility-tree="findVisibilityChild(collection.collection)!"
 						disable-drag
-						@include-collection="includeCollection"
-						@exclude-collection="excludeCollection"
+						@activate-collection="activateCollection"
+						@deactivate-collection="deactivateCollection"
 					/>
 				</VDetail>
 			</template>

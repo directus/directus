@@ -2,10 +2,12 @@
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
-import { computed, onMounted, onUnmounted, toRefs } from 'vue';
-import { RouterView } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { RouterView, useRouter } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { useLicenseStore } from './stores/license';
 import { useUserStore } from './stores/user';
 import VButton from '@/components/v-button.vue';
 import VError from '@/components/v-error.vue';
@@ -18,6 +20,19 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 const appStore = useAppStore();
 const serverStore = useServerStore();
 const userStore = useUserStore();
+const licenseStore = useLicenseStore();
+const router = useRouter();
+
+const { isLocked } = storeToRefs(licenseStore);
+
+// React to the license becoming locked while the admin is browsing —
+// the router guard only fires on navigation, so we need a reactive watch here.
+watch(isLocked, (locked) => {
+	if (!locked || !userStore.isAdmin) return;
+	const currentPath = router.currentRoute.value.path;
+	if (currentPath === '/license-recovery' || currentPath === '/logout') return;
+	router.push('/license-recovery');
+});
 
 const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
 
