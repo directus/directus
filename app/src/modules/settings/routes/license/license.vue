@@ -36,7 +36,7 @@ const licenseStore = useLicenseStore();
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
 const boundaryDate = computed(() => {
-	if (!boundary.value || !Number.isFinite(boundary.value.timestamp)) return null;
+	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
 	const dateStr = new Date(boundary.value.timestamp * 1000).toISOString().slice(0, 10);
 	return formatDate(dateStr, { type: 'date', format: 'long' });
 });
