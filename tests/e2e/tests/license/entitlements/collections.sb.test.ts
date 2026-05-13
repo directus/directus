@@ -155,6 +155,8 @@ describe('collections entitlement', () => {
 				}),
 			),
 		).resolves.toBeDefined();
+
+		createdCollections.push('c_collection_entitlement_folder');
 	});
 
 	test('creating an inactive collection above the license limit succeeds', async () => {
@@ -165,6 +167,8 @@ describe('collections entitlement', () => {
 				meta: { status: 'inactive' },
 			}),
 		).resolves.toBeDefined();
+
+		createdCollections.push('d_collection_entitlement_inactive');
 	});
 
 	test('deactivating an existing collection allows new creation', async () => {
