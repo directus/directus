@@ -16,6 +16,7 @@ import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/compo
 import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { fetchAll } from '@/utils/fetch-all';
@@ -65,6 +66,7 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
+const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
 const settingsStore = useSettingsStore();
 const aiStore = useAiStore();
@@ -83,6 +85,7 @@ const aiTranslateAvailable = computed(() =>
 		availableModelCount: aiStore.models.length,
 		disabled: props.disabled,
 		nonEditable: props.nonEditable,
+		licenseEntitlement: licenseStore.aiTranslationsEnabled,
 	}),
 );
 

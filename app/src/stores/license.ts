@@ -28,6 +28,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
+	const aiTranslationsEnabled = computed(() => {
+		const ent = info.value?.entitlements?.ai_translations_enabled;
+		if (!ent) return false;
+		return ent.override ?? ent.default;
+	});
+
 	const boundary = computed<LicenseBoundary | null>(() => {
 		if (!info.value) return null;
 		if (info.value.renews_at !== undefined) return { type: 'renewal', timestamp: info.value.renews_at };
@@ -196,6 +202,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loadingAddons,
 		loadingPendingResolution,
 		error,
+		aiTranslationsEnabled,
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
