@@ -28,6 +28,24 @@ import PrivateViewRoot from './private-view-root.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 
+defineSlots<{
+	navigation(): any;
+	'title-outer:prepend'(): any;
+	'title-outer:append'(): any;
+	'title:prepend'(): any;
+	'title:append'(): any;
+	title(): any;
+	'actions:prepend'(): any;
+	actions(): any;
+	'actions:primary'(): any;
+	sidebar(): any;
+	default(): any;
+	/** @deprecated The `headline` slot is deprecated. Headline content now renders prepended to the title. */
+	headline(): any;
+	/** @deprecated Use `actions:primary` for primary CTAs, or the default `actions` slot for secondary actions. */
+	'actions:append'(): any;
+}>();
+
 defineProps<PrivateViewProps>();
 defineOptions({ inheritAttrs: false });
 
@@ -52,11 +70,14 @@ const showLicenseBanner = computed(
 		<template #navigation><slot name="navigation" /></template>
 		<template #actions:prepend><slot name="actions:prepend" /></template>
 		<template #actions><slot name="actions" /></template>
-		<template #actions:primary><slot name="actions:primary" /></template>
+		<template #headline><slot name="headline" /></template>
 		<template #title-outer:append><slot name="title-outer:append" /></template>
 		<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
 		<template #title:append><slot name="title:append" /></template>
-		<template #title:prepend><slot name="title:prepend" /></template>
+		<template #title:prepend>
+			<slot name="headline" />
+			<slot name="title:prepend" />
+		</template>
 		<template #title><slot name="title" /></template>
 		<template #sidebar><slot name="sidebar" /></template>
 
