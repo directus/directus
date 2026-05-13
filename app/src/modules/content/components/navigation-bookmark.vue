@@ -128,25 +128,14 @@ function useEditBookmark() {
 						<VTextOverflow :text="$t(`edit_${scope}_bookmark`)" />
 					</VListItemContent>
 				</VListItem>
-				<BookmarkDelete
-					v-model="deleteActive"
-					:bookmark="bookmark"
-					:saving="deleteSaving"
-					@delete="deleteSave(bookmark)"
-				>
-					<template #activator="{ on }">
-						<VListItem clickable class="danger" @click="on">
-							<VListItemIcon>
-								<VIcon name="delete" outline />
-							</VListItemIcon>
-							<VListItemContent>
-								<VTextOverflow :text="$t(`delete_${scope}_bookmark`)" />
-							</VListItemContent>
-						</VListItem>
-					</template>
-				</BookmarkDelete>
+				<VListItem clickable class="danger" @click="deleteActive = true">
+					<VListItemIcon><VIcon name="delete" outline /></VListItemIcon>
+					<VListItemContent><VTextOverflow :text="$t(`delete_${scope}_bookmark`)" /></VListItemContent>
+				</VListItem>
 			</VList>
 		</VMenu>
+
+		<BookmarkDelete v-model="deleteActive" :bookmark="bookmark" :saving="deleteSaving" @delete="deleteSave" />
 
 		<VDialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
 			<VCard>
