@@ -118,33 +118,49 @@ export class LicenseManager {
 				if (envKey) {
 					this.source = 'env';
 
-					if (!dbKey) {
-						// CASE D
-						await this.activate(envKey);
-					} else if (envKey !== dbKey) {
-						// CASE B
-						await this.update(envKey, { oldKey: dbKey });
-					} else {
-						// CASE C
-						await this.refresh({ key: envKey, token: dbToken ?? null });
+					try {
+						if (!dbKey) {
+							// CASE D
+							await this.activate(envKey);
+						} else if (envKey !== dbKey) {
+							// CASE B
+							await this.update(envKey, { oldKey: dbKey });
+						} else {
+							// CASE C
+							await this.refresh({ key: envKey, token: dbToken ?? null });
+						}
+					} catch {
+						logger.error('Unable to validate LICENSE_KEY.');
+						process.exit(1);
 					}
 				} else if (envToken) {
 					this.source = 'env';
-					// CASE E — verify offline token, cleanup DB
-					await this.refresh({ token: envToken });
 
-					if (dbKey || dbToken) {
-						await settingsService.upsertSingleton({ license_key: null, license_token: null });
+					try {
+						// CASE E — verify offline token, cleanup DB
+						await this.refresh({ token: envToken });
+
+						if (dbKey || dbToken) {
+							await settingsService.upsertSingleton({ license_key: null, license_token: null });
+						}
+					} catch {
+						logger.error('Unable to validate LICENSE_TOKEN');
+						process.exit(1);
 					}
 				} else if (dbKey) {
 					this.source = 'settings';
 
-					if (dbToken) {
-						// CASE F
-						await this.refresh({ key: dbKey, token: dbToken });
-					} else {
-						// CASE G
-						await this.activate(dbKey);
+					try {
+						if (dbToken) {
+							// CASE F
+							await this.refresh({ key: dbKey, token: dbToken });
+						} else {
+							// CASE G
+							await this.activate(dbKey);
+						}
+					} catch {
+						logger.error('Unable to validate license key, downgrading to core');
+						await this.commitStateChange({ isCore: true });
 					}
 				} else {
 					// CASE H stale token / CASE I — core license
