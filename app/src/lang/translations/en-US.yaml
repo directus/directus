@@ -244,7 +244,7 @@ delete_on_apply_copy: >-
 auto_save_failed: Auto-save Failed
 auto_save_failed_copy: >-
   Your changes are still saved locally. We'll keep retrying as you edit.
-auto_save_enabled: Auto-save is enabled — your work is safe.
+auto_save_enabled: Auto-save enabled
 content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
