@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
-import { USER_INACTIVE_LICENSE_EXCEEDED_STATUS } from '@directus/constants';
+import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import type { User } from '@directus/types';
 import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -55,7 +55,7 @@ const serverStore = useServerStore();
 const seatsLimitModalOpen = ref(false);
 
 async function saveAsInactive() {
-	edits.value = { ...edits.value, status: USER_INACTIVE_LICENSE_EXCEEDED_STATUS };
+	edits.value = { ...edits.value, status: USER_INACTIVE_LICENSE_STATUS };
 
 	try {
 		const savedItem = await save();
