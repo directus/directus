@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import VImage from '@/components/v-image.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
+import InterfaceSystemPoweredByBadge from '@/interfaces/_system/system-powered-by-badge/system-powered-by-badge.vue';
 import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
@@ -97,6 +98,8 @@ const logoURL = computed<string | null>(() => {
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />
 			</div>
 		</div>
+
+		<InterfaceSystemPoweredByBadge />
 	</div>
 </template>
 

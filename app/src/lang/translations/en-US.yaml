@@ -2320,6 +2320,10 @@ interfaces:
     error: Cannot perform action
     action_type: Action Type
     select_manual_flow_note: Flow must be configured with a manual trigger for this collection
+  powered-by-badge:
+    name: Powered By Badge
+    directus: Powered by Directus
+    oig: Open Innovation Grant
   select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
