@@ -4,10 +4,10 @@ workspace:
   repoUrl: https://github.com/roshinimichael/directus
 metadata:
   schemaVersion: v1
-  mcpVersion: 0.1.6
-  executorVersion: v1.3.23
-  createdAt: "2026-05-11T17:36:55.286Z"
-  updatedAt: "2026-05-11T17:36:55.295Z"
+  mcpVersion: 0.1.7
+  executorVersion: v1.3.24
+  createdAt: "2026-05-12T23:55:06.740Z"
+  updatedAt: "2026-05-12T23:55:06.747Z"
 services:
   - serviceName: directus-api-backend
     language: typescript
@@ -27,9 +27,9 @@ services:
     framework: playwright
     testDirectory: app/tests
     api:
-      baseUrl: http://localhost:8055
       authType: none
       authHeader: ""
+      baseUrl: http://localhost:8055
     runtimeDetails:
       serverStartCommand: docker compose -f docker-compose.testbot.yml up -d
       runtime: docker
