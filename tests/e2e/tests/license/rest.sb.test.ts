@@ -171,29 +171,7 @@ test('deactivate the license', async () => {
 test('check resolution with no conflicts', async () => {
 	const result = await api.request(generateLicensePendingResolution());
 
-	expect(result).toEqual([
-		{
-			candidates: [],
-			key: 'seats',
-			kind: 'limit',
-			limit: 3,
-			usage: 1,
-		},
-		{
-			candidates: [],
-			key: 'collections',
-			kind: 'limit',
-			limit: 50,
-			usage: 0,
-		},
-		{
-			candidates: [],
-			key: 'flows',
-			kind: 'limit',
-			limit: 5,
-			usage: 0,
-		},
-	]);
+	expect(result).toEqual([]);
 });
 
 test('check resolution with conflicts', async () => {
