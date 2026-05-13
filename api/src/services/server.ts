@@ -74,6 +74,7 @@ export class ServerService {
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 
 			info['contentVersioning'] = {
+				// Minutes. Floats allowed (`0.5` = 30s) to support sub-minute revision intervals.
 				autosaveRevisionInterval: Number(env['CONTENT_VERSIONING_AUTOSAVE_REVISION_INTERVAL']),
 			};
 

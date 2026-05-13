@@ -19,6 +19,7 @@ export type CollectionMeta = {
 	display_template: string | null;
 	preview_url: string | null;
 	versioning: boolean;
+	versioning_revision_interval: number | null;
 	sort_field: string | null;
 	archive_field: string | null;
 	archive_value: string | null;
@@ -56,6 +57,7 @@ export type BaseCollectionMeta = Pick<
 	| 'icon'
 	| 'translations'
 	| 'versioning'
+	| 'versioning_revision_interval'
 	| 'item_duplication_fields'
 	| 'accountability'
 	| 'group'
