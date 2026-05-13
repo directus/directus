@@ -193,6 +193,6 @@ function filter(field: Field, parent?: FieldNode): boolean {
 
 <style lang="scss" scoped>
 .v-list {
-	--v-list-min-width: 16.875rem;
+	--v-list-min-width: calc(var(--form-column-width) - 1.5rem);
 }
 </style>
