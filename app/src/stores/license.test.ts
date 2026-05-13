@@ -48,19 +48,16 @@ describe('limits', () => {
 
 		expect(licenseStore.limits.seats).toEqual({
 			remaining: 2,
-			isUnlimited: false,
 			hasRemaining: true,
 		});
 
 		expect(licenseStore.limits.collections).toEqual({
 			remaining: 0,
-			isUnlimited: false,
 			hasRemaining: false,
 		});
 
 		expect(licenseStore.limits.flows).toEqual({
 			remaining: null,
-			isUnlimited: true,
 			hasRemaining: true,
 		});
 	});
@@ -70,7 +67,6 @@ describe('limits', () => {
 
 		expect(licenseStore.limits.seats).toEqual({
 			remaining: null,
-			isUnlimited: false,
 			hasRemaining: false,
 		});
 	});
@@ -81,7 +77,6 @@ describe('limits', () => {
 
 		expect(licenseStore.limits.flows).toEqual({
 			remaining: null,
-			isUnlimited: false,
 			hasRemaining: true,
 		});
 	});

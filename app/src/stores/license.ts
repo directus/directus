@@ -20,7 +20,6 @@ export type LicenseBoundary = {
 
 type LicenseLimit = {
 	remaining: number | null;
-	isUnlimited: boolean;
 	hasRemaining: boolean;
 };
 
@@ -45,21 +44,16 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	});
 
 	function getLimit(key: CountableEntitlementKey): LicenseLimit {
-		if (!info.value) return { remaining: null, isUnlimited: false, hasRemaining: loading.value };
+		if (!info.value) return { remaining: null, hasRemaining: loading.value };
 		const ent = info.value.entitlements[key];
-		if (!ent || ent.limit == null) return { remaining: null, isUnlimited: false, hasRemaining: false };
+		if (!ent || ent.limit == null) return { remaining: null, hasRemaining: false };
 
-		const isUnlimited = ent.limit === -1 || ent.overage === -1 || ent.addon === -1;
-		if (isUnlimited) return { remaining: null, isUnlimited: true, hasRemaining: true };
+		if (ent.limit === -1 || ent.overage === -1 || ent.addon === -1) return { remaining: null, hasRemaining: true };
 
 		const effective = ent.limit + (ent.addon ?? 0) + (ent.overage ?? 0);
 		const remaining = effective - (info.value.usage?.[key] ?? 0);
 
-		return {
-			remaining,
-			isUnlimited: false,
-			hasRemaining: remaining > 0,
-		};
+		return { remaining, hasRemaining: remaining > 0 };
 	}
 
 	const limits = computed<Record<CountableEntitlementKey, LicenseLimit>>(() => ({

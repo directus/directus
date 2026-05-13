@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { type CountableEntitlementKey } from '@directus/license';
-import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
@@ -13,14 +12,16 @@ const props = withDefaults(
 );
 
 const licenseStore = useLicenseStore();
-
-const limit = computed(() => licenseStore.limits[props.entitlementKey]);
-
-const isVisible = computed(() => !limit.value.isUnlimited && !limit.value.hasRemaining);
 </script>
 
 <template>
-	<VNotice v-if="isVisible" type="danger" icon="dangerous" multiline class="max-capacity-alert">
+	<VNotice
+		v-if="!licenseStore.limits[props.entitlementKey].hasRemaining"
+		type="danger"
+		icon="dangerous"
+		multiline
+		class="max-capacity-alert"
+	>
 		<template #title>
 			<span class="message">
 				{{ $t('license.max_capacity.alert_danger_prefix') }}
