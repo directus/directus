@@ -84,14 +84,6 @@ const { activityHistoryTimeframe } = storeToRefs(useLicenseStore());
 </template>
 
 <style lang="scss" scoped>
-.content {
-	padding: var(--content-padding);
-}
-
-.header-icon {
-	--v-button-color-disabled: var(--theme--foreground);
-}
-
 .history-notice {
 	--v-notice-background-color: var(--theme--background-subdued);
 

@@ -64,7 +64,7 @@ import { ensureDeploymentWebhooks, registerDeploymentDrivers } from './deploymen
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
-import { getEntitlementManager, getLicense, getLicenseManager } from './license/index.js';
+import { getEntitlementManager, getLicenseManager } from './license/index.js';
 import { createExpressLogger, useLogger } from './logger/index.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
@@ -122,12 +122,10 @@ export default async function createApp(): Promise<express.Application> {
 	await validateDatabaseExtensions();
 	await validateStorage();
 
-	const licenseManager = getLicenseManager();
-	await licenseManager.initialize();
+	await getLicenseManager().initialize();
 
-	const entitlementManager = getEntitlementManager();
-	const license = await getLicense();
-	entitlementManager.setEntitlements(license.entitlements);
+	const license = await getLicenseManager().getLicense();
+	getEntitlementManager().setEntitlements(license.entitlements);
 
 	await registerAuthProviders();
 	registerDeploymentDrivers();

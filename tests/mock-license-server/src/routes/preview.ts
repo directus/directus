@@ -29,8 +29,6 @@ export async function previewRoute(app: FastifyInstance) {
 
 			return res.status(200).send({
 				plan_name: license.name,
-				production_enabled:
-					license.entitlements.production_enabled.override ?? license.entitlements.production_enabled.default,
 				expires_at: license.meta.expires_at,
 				renews_at: license.meta.renews_at,
 				entitlements: license.entitlements,

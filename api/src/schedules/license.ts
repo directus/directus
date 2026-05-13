@@ -1,4 +1,4 @@
-import { getLicense, getLicenseManager } from '../license/manager.js';
+import { getLicenseManager } from '../license/manager.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { durationToCron } from './utils/duration-to-cron.js';
 
@@ -7,7 +7,7 @@ import { durationToCron } from './utils/duration-to-cron.js';
  */
 export default async function schedule(): Promise<boolean> {
 	const licenseManager = getLicenseManager();
-	const license = await getLicense();
+	const license = await licenseManager.getLicense();
 
 	// -1 = no verification required
 	if (license.meta.validation_interval === -1) return false;
@@ -17,7 +17,7 @@ export default async function schedule(): Promise<boolean> {
 	if (!validateCron(cron)) return false;
 
 	const { stop } = scheduleSynchronizedJob('license-check', cron, async () => {
-		const jobLicense = await getLicense();
+		const jobLicense = await licenseManager.getLicense();
 
 		// If interval has changed from a refresh, reschedule job with new
 		if (jobLicense.meta.validation_interval !== license.meta.validation_interval) {

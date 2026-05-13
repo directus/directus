@@ -9,7 +9,5 @@
 	align-items: center;
 	margin-block-start: 0.25rem;
 	padding: var(--v-card-padding, 0.875rem);
-	font-weight: 600;
-	line-height: 1.6;
 }
 </style>

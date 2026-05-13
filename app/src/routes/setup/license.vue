@@ -30,8 +30,8 @@ const kycFields = useKycFields();
 const serverStore = useServerStore();
 
 const { licenseChoice, showOrgName, licenseChoices, canProceed } = useLicenseForm({
-	projectUsage: () => value.value?.project_usage,
-	orgName: () => value.value?.org_name,
+	projectUsage: () => value.value?.owner?.project_usage,
+	orgName: () => value.value?.owner?.org_name,
 	isLicenseKeyValid: () => !!value.value?.license_key,
 	initialChoice: value.value?.license_key ? 'key' : null,
 });
@@ -40,17 +40,20 @@ watch(licenseChoice, (choice) => {
 	if (!value.value) return;
 
 	if (choice === 'key') {
-		value.value = { ...value.value, project_usage: null, org_name: null };
+		value.value = {
+			...value.value,
+			owner: { ...value.value.owner, project_usage: null, org_name: null },
+		};
 	} else {
 		value.value = { ...value.value, license_key: null };
 	}
 });
 
 watch(
-	() => value.value?.project_usage,
+	() => value.value?.owner?.project_usage,
 	(usage, prev) => {
 		if (prev === 'commercial' && usage !== 'commercial' && value.value) {
-			value.value = { ...value.value, org_name: null };
+			value.value = { ...value.value, owner: { ...value.value.owner, org_name: null } };
 		}
 	},
 );
@@ -64,15 +67,27 @@ const visibleKycFields = computed(() =>
 // These slice computeds merge field-specific updates back into the full form instead.
 const licenseKeySlice = computed({
 	get: () => ({ license_key: value.value?.license_key ?? null }),
-	set: (update: Partial<SetupForm>) => {
+	set: (update: { license_key?: string | null }) => {
 		if (value.value) value.value = { ...value.value, ...update };
 	},
 });
 
 const kycSlice = computed({
-	get: () => ({ project_usage: value.value?.project_usage ?? null, org_name: value.value?.org_name ?? null }),
-	set: (update: Partial<SetupForm>) => {
-		if (value.value) value.value = { ...value.value, ...update };
+	get: () => ({
+		project_usage: value.value?.owner?.project_usage ?? null,
+		org_name: value.value?.owner?.org_name ?? null,
+	}),
+	set: (update: { project_usage?: SetupForm['owner']['project_usage']; org_name?: string | null }) => {
+		if (!value.value) return;
+
+		value.value = {
+			...value.value,
+			owner: {
+				...value.value.owner,
+				...(update.project_usage !== undefined && { project_usage: update.project_usage }),
+				...(update.org_name !== undefined && { org_name: update.org_name }),
+			},
+		};
 	},
 });
 

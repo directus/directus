@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { computed, inject, onMounted, ref, Ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import TransitionExpand from '@/components/transition/expand.vue';
 import VBadge from '@/components/v-badge.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -13,6 +12,7 @@ const props = withDefaults(
 		modelValue: string | null;
 		disabled?: boolean;
 		showFilter?: boolean;
+		expanded?: boolean;
 		collection?: string;
 		filter?: Filter | null;
 		autofocus?: boolean;
@@ -20,6 +20,7 @@ const props = withDefaults(
 	}>(),
 	{
 		showFilter: true,
+		expanded: false,
 	},
 );
 
@@ -33,33 +34,6 @@ const input = ref<HTMLInputElement | null>(null);
 const active = ref(props.autofocus);
 const filterActive = ref(false);
 const filterBorder = ref(false);
-
-const mainElement = inject<Ref<Element | undefined>>('main-element');
-const filterElement = ref<HTMLElement>();
-const { width: mainElementWidth } = useElementSize(mainElement!);
-const { width: filterElementWidth } = useElementSize(filterElement);
-
-watch(
-	[mainElementWidth, filterElementWidth],
-	() => {
-		if (!filterElement.value) return;
-
-		const headerElement = mainElement?.value?.firstElementChild;
-
-		if (!headerElement) return;
-
-		const searchElement = filterElement.value.parentElement!;
-		const minWidth = searchElement.offsetWidth - 4;
-
-		const maxWidth =
-			searchElement.getBoundingClientRect().right -
-			(headerElement.getBoundingClientRect().left +
-				Number(window.getComputedStyle(headerElement).paddingInlineStart.replace('px', '')));
-
-		filterElement.value.style.maxInlineSize = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
-	},
-	{ immediate: true },
-);
 
 onMounted(() => {
 	if (active.value) input.value?.focus();
@@ -126,6 +100,8 @@ function onFocusOut(event: FocusEvent) {
 
 	if (relatedTarget && searchElement?.contains(relatedTarget)) return;
 
+	if (filterActive.value && !relatedTarget) return;
+
 	disable();
 }
 
@@ -137,14 +113,7 @@ function emitValue() {
 </script>
 
 <template>
-	<VBadge
-		bottom
-		right
-		class="search-badge"
-		:class="{ active, 'filter-active': filterActive }"
-		:value="activeFilterCount"
-		:disabled="disabled || !activeFilterCount || filterActive"
-	>
+	<div class="search-input-wrapper">
 		<div
 			v-click-outside="{
 				handler: disable,
@@ -154,6 +123,7 @@ function emitValue() {
 			class="search-input"
 			:class="{
 				active,
+				expanded,
 				disabled,
 				'filter-active': filterActive,
 				'has-content': !!modelValue,
@@ -164,9 +134,11 @@ function emitValue() {
 			@click="activate"
 			@focusout="onFocusOut"
 		>
-			<VIcon small name="search" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
+			<VIcon name="search" class="icon-search" :disabled :clickable="!active" @click="input?.focus()" />
+
 			<input
 				ref="input"
+				class="search-input-field"
 				:value="modelValue"
 				:placeholder="placeholder ?? $t('search_items')"
 				type="search"
@@ -181,30 +153,39 @@ function emitValue() {
 				@keydown.esc="disable"
 				@focusin="activate"
 			/>
+
 			<div class="spacer" />
+
 			<VIcon
 				v-if="modelValue"
 				v-tooltip.bottom="$t('clear_value')"
-				small
 				clickable
 				class="icon-clear"
 				name="close"
 				:disabled
 				@click.stop="clear"
 			/>
+
 			<template v-if="showFilter">
-				<VIcon
-					v-tooltip.bottom="!disabled && $t('filter')"
-					small
-					clickable
-					class="icon-filter"
-					name="filter_list"
-					:disabled
-					@click="toggleFilter"
-				/>
+				<VBadge
+					bottom
+					right
+					class="search-badge"
+					:value="activeFilterCount"
+					:disabled="disabled || !activeFilterCount || filterActive"
+				>
+					<VIcon
+						v-tooltip.bottom="!disabled && $t('filter')"
+						clickable
+						class="icon-filter"
+						name="filter_list"
+						:disabled
+						@click="toggleFilter"
+					/>
+				</VBadge>
 
 				<TransitionExpand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
-					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">
+					<div v-show="filterActive" class="filter" :class="{ active }">
 						<InterfaceSystemFilter
 							class="filter-input"
 							inline
@@ -216,52 +197,40 @@ function emitValue() {
 				</TransitionExpand>
 			</template>
 		</div>
-	</VBadge>
+	</div>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
-.search-badge {
-	--v-badge-background-color: var(--theme--primary);
-	--v-badge-offset-y: 0.4375rem;
-	--v-badge-offset-x: 0.4375rem;
-
-	@media (width <= 22.5rem) {
-		&.active,
-		&.filter-active {
-			position: absolute;
-			inset-inline: 0;
-			z-index: 1;
-			background-color: var(--theme--header--background);
-		}
-	}
-
-	:deep(.badge) {
-		pointer-events: none;
-	}
+/* Lets .search-input expand when filter is active (.filter-active) without stretching the parent flex layout */
+.search-input-wrapper {
+	display: flex;
+	flex: 1 1 var(--form-column-width);
+	min-inline-size: 0;
 }
 
 .search-input {
 	--button-size: 2rem;
-	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
-	--search-input-radius: calc(var(--button-size) / 2);
-	--icon-size: 1rem;
+	--search-input-border-width: var(--theme--border-width);
+	--search-input-size: calc(var(--button-size) - var(--search-input-border-width) * 2);
+	--search-input-radius: var(--theme--border-radius);
+	--icon-size: var(--icon-size-default);
 	--icon-search-padding-left: 0.375rem; // visually center in closed filter
 	--icon-search-padding-right: 0.25rem;
 	--icon-filter-margin-right: 0.4375rem;
 
+	position: relative;
 	box-sizing: content-box;
 	display: flex;
 	align-items: center;
 	inline-size: var(--search-input-size);
 	min-block-size: var(--search-input-size);
-	max-inline-size: calc(100% - var(--theme--border-width) * 2);
-	overflow: hidden;
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border: var(--search-input-border-width) solid transparent;
 	border-radius: var(--search-input-radius);
 	transition:
 		inline-size var(--slow) var(--transition),
+		border-color var(--fast) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
 		border-end-end-radius var(--fast) var(--transition);
 
@@ -274,7 +243,19 @@ function emitValue() {
 		/* stylelint-enable scss/operator-no-newline-after */
 	}
 
-	input {
+	/* Show focus ring only when the text input is focused */
+	&:has(.search-input-field:focus-visible) {
+		outline: var(--focus-ring-width) solid var(--theme--primary);
+		outline-offset: var(--focus-ring-offset-invert);
+	}
+
+	&.active:not(.expanded),
+	&.has-content:not(.expanded) {
+		inline-size: var(--form-column-width);
+		max-inline-size: 100%;
+	}
+
+	.search-input-field {
 		inline-size: 0;
 		block-size: 100%;
 		margin: 0;
@@ -293,7 +274,7 @@ function emitValue() {
 		}
 	}
 
-	&.disabled input {
+	&.disabled .search-input-field {
 		color: var(--theme--foreground-subdued);
 	}
 
@@ -311,11 +292,7 @@ function emitValue() {
 
 	.icon-search,
 	.icon-filter {
-		--v-icon-color-hover: var(--theme--primary);
-
-		&:focus-visible {
-			border-radius: 50%;
-		}
+		--v-icon-color-hover: var(--theme--foreground-accent);
 	}
 
 	&.disabled {
@@ -334,19 +311,24 @@ function emitValue() {
 		margin-inline-end: var(--icon-filter-margin-right);
 	}
 
-	&:focus-within,
-	&:not(.disabled):not(.active):hover {
-		border-color: var(--theme--form--field--input--border-color-hover);
+	&:not(.disabled):not(.active):not(.expanded):not(.has-content):hover {
+		background-color: var(--theme--background-accent);
 	}
 
 	&.has-content {
-		inline-size: 11.25rem;
+		border-color: var(--theme--form--field--input--border-color);
+		background-color: var(--theme--form--field--input--background);
+
+		&:not(.disabled):not(.active):not(:focus-within):hover {
+			border-color: var(--theme--form--field--input--border-color-hover);
+			background-color: var(--theme--form--field--input--background);
+		}
 
 		.icon-clear {
 			margin-inline-end: 0.4375rem;
 		}
 
-		input {
+		.search-input-field {
 			opacity: 1;
 		}
 
@@ -357,49 +339,35 @@ function emitValue() {
 		}
 	}
 
-	&.active {
-		inline-size: 100%;
-		border-color: var(--theme--form--field--input--border-color-focus);
+	&.active,
+	&.expanded {
+		border-color: var(--theme--form--field--input--focus-ring-color);
+		background-color: var(--theme--form--field--input--background);
 
-		@media (width > 22.5rem) {
-			inline-size: 8.4375rem;
-		}
-
-		@include mixins.breakpoint-up('sm') {
-			inline-size: 11.25rem;
-		}
-
-		input {
+		.search-input-field {
 			opacity: 1;
 		}
 	}
 
-	&.filter-active {
+	&.expanded {
 		inline-size: 100%;
+
+		&:not(.active) {
+			border-color: var(--theme--border-color);
+		}
+	}
+
+	&.filter-active {
+		min-inline-size: var(--form-column-min-width);
+		z-index: 5;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
 		}
-
-		@media (width > 22.5rem) {
-			inline-size: 8.4375rem;
-		}
-
-		@include mixins.breakpoint-up('sm') {
-			inline-size: 11.25rem;
-		}
-
-		@media (width >= 54rem) {
-			inline-size: 16.875rem;
-		}
-
-		@media (width >= 70.875rem) {
-			inline-size: 23.625rem; /* blaze it */
-		}
 	}
 
 	&.filter-border {
-		padding-block-end: var(--theme--border-width);
+		padding-block-end: var(--search-input-border-width);
 		border-block-end: none;
 		border-end-end-radius: 0;
 		border-end-start-radius: 0;
@@ -409,10 +377,10 @@ function emitValue() {
 
 		&::after {
 			position: absolute;
-			inset-inline: var(--theme--border-width) var(--theme--border-width);
-			inset-block-end: calc(-1 * var(--theme--border-width));
+			inset-inline: var(--search-input-border-width);
+			inset-block-end: calc(-1 * var(--search-input-border-width));
 			inline-size: auto;
-			block-size: var(--theme--border-width);
+			block-size: var(--search-input-border-width);
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
@@ -423,23 +391,40 @@ function emitValue() {
 .filter {
 	position: absolute;
 	inset-block-start: 100%;
-	inset-inline-end: 0;
-	inline-size: auto;
-	min-inline-size: 100%;
+	inset-inline-start: calc(-1 * var(--search-input-border-width));
+	inline-size: calc(100% + var(--search-input-border-width) * 2);
 	padding: 0;
 	background-color: var(--theme--background-subdued);
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border: var(--search-input-border-width) solid var(--theme--form--field--input--border-color);
+	border-block-start: none;
 	border-start-end-radius: 0;
 	border-end-end-radius: var(--search-input-radius);
 	border-end-start-radius: var(--search-input-radius);
+	z-index: 5;
+
+	&::before {
+		content: '';
+		display: block;
+		border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	}
 
 	&.active {
-		border-color: var(--theme--form--field--input--border-color-focus);
+		border-color: var(--theme--form--field--input--focus-ring-color);
 	}
 
 	.filter-input {
 		/* Use margin instead of padding to make sure transition expand takes it into account */
 		margin: 0.5625rem 0.4375rem;
+	}
+}
+
+.search-badge {
+	--v-badge-background-color: var(--theme--primary);
+	--v-badge-offset-y: 0.1875rem;
+	--v-badge-offset-x: 0.4375rem;
+
+	:deep(.badge) {
+		pointer-events: none;
 	}
 }
 </style>

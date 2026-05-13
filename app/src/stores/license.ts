@@ -38,11 +38,34 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const seatsRemaining = computed<number | null>(() => {
 		if (!info.value) return null;
 		const seats = info.value.entitlements.seats;
+		const usage = info.value.usage;
 		const effective = seats.limit + (seats.addon ?? 0) + (seats.overage ?? 0);
-		return effective - (info.value.usage?.seats ?? 0);
+		return effective - (usage?.seats ?? 0);
 	});
 
 	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
+
+	const collectionsRemaining = computed<number | null>(() => {
+		if (!info.value) return null;
+		const col = info.value.entitlements.collections;
+		if (!col) return null;
+		if (col.limit == null) return null;
+		const effective = col.limit + (col.addon ?? 0) + (col.overage ?? 0);
+		return effective - (info.value.usage?.collections ?? 0);
+	});
+
+	const hasRemainingCollections = computed(() => collectionsRemaining.value === null || collectionsRemaining.value > 0);
+
+	const flowsRemaining = computed<number | null>(() => {
+		if (!info.value) return null;
+		const fl = info.value.entitlements.flows;
+		if (!fl) return null;
+		if (fl.limit == null) return null;
+		const effective = fl.limit + (fl.addon ?? 0) + (fl.overage ?? 0);
+		return effective - (info.value.usage?.flows ?? 0);
+	});
+
+	const hasRemainingFlows = computed(() => flowsRemaining.value === null || flowsRemaining.value > 0);
 
 	const isLocked = computed(() => {
 		const status = info.value?.status;
@@ -176,6 +199,10 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		boundary,
 		seatsRemaining,
 		hasRemainingSeats,
+		collectionsRemaining,
+		hasRemainingCollections,
+		flowsRemaining,
+		hasRemainingFlows,
 		isLocked,
 		customPermissionRulesEnabled,
 		isLicensed,

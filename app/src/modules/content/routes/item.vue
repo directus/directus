@@ -1,19 +1,30 @@
 <script setup lang="ts">
 import { translateShortcut, useCollection, useShortcut } from '@directus/composables';
-import type { PrimaryKey } from '@directus/types';
+import { VERSION_KEY_DRAFT, VERSION_KEY_PUBLISHED } from '@directus/constants';
+import type { AppCollection, Item, PrimaryKey } from '@directus/types';
 import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { useBreakpoints, useEventListener, useLocalStorage, useScroll } from '@vueuse/core';
-import { type ComponentPublicInstance, computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
+import { useBreakpoints, useEventListener, useLocalStorage } from '@vueuse/core';
+import {
+	type ComponentPublicInstance,
+	computed,
+	nextTick,
+	onBeforeUnmount,
+	provide,
+	ref,
+	toRefs,
+	unref,
+	watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
+import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -27,21 +38,26 @@ import VListItemHint from '@/components/v-list-item-hint.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
-import { useItemPermissions } from '@/composables/use-permissions';
+import { useCollectionPermissions, useItemPermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
-import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import type { ContentVersionWithType } from '@/types/versions';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { getItemRoute } from '@/utils/get-route';
+import { mergeItemData } from '@/utils/merge-item-data';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import { PrivateView } from '@/views/private';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { validateItem } from '@/utils/validate-item';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
@@ -68,22 +84,35 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+const route = useRoute();
+
+onBeforeRouteUpdate((to, from) => {
+	if (to.name !== 'content-singleton') return;
+	if (to.params.collection === from.params.collection) return;
+
+	// `beforeEnter` doesn’t re-fire on sibling/param-only navigation. Auto-draft for pristine singletons is handled by the post-load watcher below, since sync route guards can’t detect existing items.
+	trackLastAccessedCollection(to);
+});
+
 const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
 
+const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
+
+const isPublishAllowed = computed(() => {
+	if (isCurrentVersionNew.value) return false;
+	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
+});
+
 const form = ref<ComponentPublicInstance>();
 
-const scrollParent = computed(() => form.value?.$el?.parentElement);
-const { y: formScrollY } = useScroll(scrollParent);
-const showHeaderShadow = computed(() => formScrollY.value > 0);
-
-const { collection, primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
+const { collection } = toRefs(props);
 const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
+
+const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey();
 
 const {
 	readVersionsAllowed,
@@ -93,10 +122,50 @@ const {
 	addVersion,
 	updateVersion,
 	deleteVersion,
+	deleteVersionLoading,
 	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
-} = useVersions(collection, isSingleton, primaryKey);
+	publishVersionLoading,
+	publishVersion,
+	isItemlessVersion,
+} = useVersions(collection, isSingleton, resolvedPrimaryKey);
+
+const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
+	usePublishComparison();
+
+async function onVersionDelete(versionId: PrimaryKey) {
+	const wasItemLess = isItemlessVersion.value;
+	await deleteVersion(versionId);
+
+	if (wasItemLess) {
+		edits.value = {};
+		// Wait for Vue's watcher cascade to flush: deleting the version causes useVersions'
+		// watchers to update queryVersionId via useRouteQuery (mode:'push'), which triggers
+		// its own router.push. Without nextTick, that push fires after ours and cancels it.
+		await nextTick();
+		router.push(collectionRoute.value);
+	}
+}
+
+function handleVersionGone(error: unknown) {
+	if (!error || typeof error !== 'object' || !('versionGone' in error)) return false;
+
+	unexpectedError(error, {
+		dismissAction: () => {
+			edits.value = {};
+
+			if (isItemlessVersion.value) {
+				router.push(collectionRoute.value);
+			} else {
+				currentVersion.value = null;
+				refresh();
+			}
+		},
+	});
+
+	return true;
+}
 
 const {
 	isNew,
@@ -117,7 +186,15 @@ const {
 	refresh,
 	getItem,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, currentVersion);
+} = useItem(collection, primaryKeyParam, currentVersion, isItemlessVersion);
+
+watch(
+	[item, isSingleton, primaryKeyParam],
+	([newItem, newIsSingleton, newPKParam]) => resolvePrimaryKey(newItem, newIsSingleton, newPKParam),
+	{ immediate: true },
+);
+
+watch([isSingleton, resolvedPrimaryKey, collectionInfo], (values) => enterSingletonDraftContext(...values));
 
 const toolsStore = useAiToolsStore();
 
@@ -138,7 +215,7 @@ const {
 	discard: discardCollab,
 	focused,
 	connectionId,
-} = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
+} = useCollab(collection, primaryKeyParam, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -150,9 +227,11 @@ const {
 	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
 } = permissions;
 
-const { templateData } = useTemplateData(collectionInfo, primaryKey);
+const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
+const { templateData } = useTemplateData(collectionInfo, primaryKeyParam);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version', 'versionId'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 const confirmDiscard = ref(false);
@@ -196,10 +275,10 @@ const archiveTooltip = computed(() => {
 useShortcut(
 	'meta+s',
 	() => {
-		if (unref(currentVersion) === null) {
+		if (currentVersion.value === null) {
 			saveAndStay();
 		} else {
-			saveVersionAction('stay');
+			saveVersionAction();
 		}
 	},
 	form,
@@ -208,20 +287,27 @@ useShortcut(
 useShortcut(
 	'meta+shift+s',
 	() => {
-		if (unref(currentVersion) === null) {
-			saveAndAddNew();
-		} else {
-			saveVersionAction('quit');
+		if (currentVersion.value !== null) return;
+		saveAndAddNew();
+	},
+	form,
+);
+
+useShortcut(
+	'meta+alt+p',
+	() => {
+		if (currentVersion.value !== null && isPublishAllowed.value) {
+			onVersionPublishCompare();
 		}
 	},
 	form,
 );
 
 useShortcut(
-	'meta+alt+s',
+	'meta+alt+shift+p',
 	() => {
-		if (unref(currentVersion) !== null) {
-			saveVersionAction('main');
+		if (currentVersion.value !== null && isPublishAllowed.value && !collectionInfo.value?.meta?.singleton) {
+			onVersionPublishCompare(true);
 		}
 	},
 	form,
@@ -239,7 +325,7 @@ const isSavable = computed(() => {
 		return !!edits.value?.[primaryKeyField.value.field];
 	}
 
-	if (isNew.value === true) {
+	if (isNew.value && currentVersion.value === null) {
 		return Object.keys(defaults.value).length > 0 || hasEdits.value;
 	}
 
@@ -259,28 +345,7 @@ const isFormDisabled = computed(() => {
 	return true;
 });
 
-const actualPrimaryKey = computed(() => {
-	if (unref(isSingleton)) {
-		const singleton = unref(item);
-		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? (singleton[pkField] ?? null) : null) as PrimaryKey | null;
-	}
-
-	return props.primaryKey;
-});
-
-const internalPrimaryKey = computed(() => {
-	if (unref(loading)) return '+';
-	if (unref(isNew)) return '+';
-
-	if (unref(isSingleton)) {
-		const singleton = unref(item);
-		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? (singleton[pkField] ?? '+') : '+') as PrimaryKey;
-	}
-
-	return props.primaryKey;
-});
+const isFormNonEditable = computed(() => shouldShowVersioning.value && currentVersion.value === null);
 
 const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
@@ -295,9 +360,9 @@ watch(currentVersion, async () => {
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, {
+const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKeyParam, {
 	template: previewTemplate,
-	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+	injectData: computed(() => ({ $version: currentVersion.value?.key ?? VERSION_KEY_PUBLISHED })),
 });
 
 const previewUrl = computed(() => {
@@ -412,7 +477,7 @@ watch(
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 	collection,
-	primaryKey: actualPrimaryKey,
+	primaryKey: existingPrimaryKey,
 	location: 'item',
 	hasEdits,
 	onRefreshCallback: refresh,
@@ -459,35 +524,19 @@ onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: collectionInfo.value?.name,
-			to: collectionRoute.value,
-		},
-	]);
-
-	return { breadcrumb };
-}
-
-async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
+async function saveVersionAction() {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits, ref(item.value ?? {}), actualPrimaryKey.value);
+		await saveVersion(edits, item);
 		edits.value = {};
 
-		if (action === 'main') {
-			currentVersion.value = null;
-			refresh();
-		} else if (action === 'stay') {
+		if (!isNew.value) {
 			refresh();
 			revisionsSidebarDetailRef.value?.refresh?.();
-		} else if (action === 'quit') {
-			if (!props.singleton) router.push({ name: 'content-collection', params: { collection: props.collection } });
 		}
-	} catch {
-		// Save shows unexpected error dialog
+	} catch (error) {
+		handleVersionGone(error);
 	}
 }
 
@@ -497,7 +546,7 @@ async function saveAndStay() {
 	try {
 		const savedItem: Record<string, any> = await save();
 
-		if (props.primaryKey === '+') {
+		if (primaryKeyParam.value === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 
 			router.replace(getItemRoute(props.collection, newPrimaryKey));
@@ -512,7 +561,7 @@ async function saveAndStay() {
 
 async function saveAndAddNew() {
 	if (isSavable.value === false) return;
-	if (unref(currentVersion) !== null) return;
+	if (currentVersion.value !== null) return;
 
 	try {
 		await save();
@@ -606,50 +655,192 @@ function revert(values: Record<string, any>) {
 	};
 }
 
-const shouldShowVersioning = computed(
-	() =>
-		collectionInfo.value?.meta?.versioning &&
-		!isNew.value &&
-		internalPrimaryKey.value !== '+' &&
-		readVersionsAllowed.value &&
-		!versionsLoading.value,
-);
+const shouldShowVersioning = computed(() => {
+	if (!collectionInfo.value?.meta?.versioning) return false;
+	if (!readVersionsAllowed.value) return false;
+	if (versionsLoading.value) return false;
+	return true;
+});
 
-function useItemNavigation() {
-	const route = useRoute();
+function enterSingletonDraftContext(
+	newIsSingleton: boolean,
+	newResolvedPK: PrimaryKey | null,
+	newCollectionInfo: AppCollection | null,
+) {
+	if (!newCollectionInfo?.meta?.versioning) return;
+	if (!newIsSingleton) return;
+	if (route.query.version) return;
+	if (newResolvedPK !== '+') return;
 
-	const collectionRoute = computed(() => {
-		const collectionPath = getCollectionRoute(props.collection);
-		if (route.query.bookmark) return `${collectionPath}?bookmark=${route.query.bookmark}`;
-		return collectionPath;
-	});
+	router.replace({ ...route, query: { ...route.query, version: VERSION_KEY_DRAFT } });
+}
 
-	// If there's in-app navigation history, use browser back
-	// Otherwise fall back to collection route
-	const backRoute = computed(() => {
-		if (history.state?.back) {
-			return undefined;
+function useResolvePrimaryKey() {
+	const { primaryKey: primaryKeyParam } = toRefs(props);
+
+	/**
+	 * Collection Item PK: ID or '+' (new item).
+	 * Singleton Item PK: ID or '+' (new item) or `null` (not-yet loaded).
+	 */
+	const resolvedPrimaryKey = ref<PrimaryKey | null>(primaryKeyParam.value);
+	const existingPrimaryKey = computed(() => (resolvedPrimaryKey.value === '+' ? null : resolvedPrimaryKey.value));
+
+	return {
+		primaryKeyParam,
+		resolvedPrimaryKey,
+		existingPrimaryKey,
+		resolvePrimaryKey,
+	};
+
+	function resolvePrimaryKey(newItem: Item | null, newIsSingleton: boolean, newPrimaryKeyParam: PrimaryKey | null) {
+		if (newIsSingleton) {
+			if (!newItem) return;
+			// Note: After fetching a singleton item, `newItem` will be `{ id: null }` if it hasn’t been created yet.
+
+			const pkField = primaryKeyField.value?.field;
+			resolvedPrimaryKey.value = (pkField ? (newItem[pkField] ?? '+') : '+') as PrimaryKey;
+			return;
 		}
 
-		return collectionRoute.value;
+		resolvedPrimaryKey.value = newPrimaryKeyParam;
+	}
+}
+
+function useItemNavigation() {
+	const collectionRoute = computed(() => {
+		const bookmark = route.query.bookmark;
+		const version = route.query.version === VERSION_KEY_DRAFT ? VERSION_KEY_DRAFT : undefined;
+
+		return router.resolve({
+			name: 'content-collection',
+			params: { collection: props.collection },
+			query: { bookmark, version },
+		}).fullPath;
 	});
 
+	const backRoute = computed(() => collectionRoute.value);
+
 	return { collectionRoute, backRoute };
+}
+
+function usePublishComparison() {
+	const comparisonModalActive = ref(false);
+	const quitAfterPublish = ref(false);
+
+	const comparableVersion = computed(() => {
+		if (currentVersion.value === null || currentVersion.value.id === '+') return null;
+		return currentVersion.value as ContentVersionWithType;
+	});
+
+	async function onVersionPublishCompare(quit = false) {
+		quitAfterPublish.value = quit;
+
+		if (isItemlessVersion.value) {
+			const defaultValues = getDefaultValuesFromFields(fields);
+			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+			const fieldsToValidate = pushGroupOptionsDown(fields.value);
+
+			const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+			versionValidationErrors.value = clientErrors;
+
+			if (versionValidationErrors.value.length) return;
+
+			try {
+				const versionId = currentVersion.value!.id;
+				const newItemKey = await publishVersion(versionId, {});
+
+				if (!newItemKey) return;
+
+				if (quit || isSingleton.value) router.push(collectionRoute.value);
+				else router.replace(getItemRoute(props.collection, newItemKey));
+
+				deleteVersion(versionId);
+			} catch (error) {
+				handleVersionGone(error);
+			} finally {
+				quitAfterPublish.value = false;
+			}
+
+			return;
+		}
+
+		comparisonModalActive.value = true;
+	}
+
+	async function onVersionPublishConfirm(opts: {
+		versionId: string;
+		mainHash: string;
+		fields: string[];
+		deleteOnPublish: boolean;
+	}) {
+		const defaultValues = getDefaultValuesFromFields(fields);
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+		const fieldsToValidate = pushGroupOptionsDown(fields.value);
+
+		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+		versionValidationErrors.value = clientErrors;
+
+		if (versionValidationErrors.value.length) {
+			comparisonModalActive.value = false;
+			return;
+		}
+
+		try {
+			await publishVersion(opts.versionId, { mainHash: opts.mainHash, fields: opts.fields });
+
+			if (versionValidationErrors.value.length) {
+				comparisonModalActive.value = false;
+				return;
+			}
+
+			if (quitAfterPublish.value) {
+				router.push(collectionRoute.value);
+				if (opts.deleteOnPublish) deleteVersion(opts.versionId);
+				return;
+			}
+
+			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
+
+			currentVersion.value = null;
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
+		} catch (error) {
+			handleVersionGone(error);
+		} finally {
+			comparisonModalActive.value = false;
+			quitAfterPublish.value = false;
+		}
+	}
+
+	return {
+		comparisonModalActive,
+		comparableVersion,
+		onVersionPublishCompare,
+		onVersionPublishConfirm,
+	};
+}
+
+function editDraftVersion() {
+	const draftVersion = versions.value.find((version) => version.key === VERSION_KEY_DRAFT);
+
+	if (draftVersion) {
+		currentVersion.value = draftVersion;
+	}
 }
 </script>
 
 <template>
 	<ContentNotFound
-		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
+		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKeyParam !== null)"
 	/>
 
 	<PrivateView
 		v-else
-		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
 		:back-to="backRoute"
-		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
@@ -670,51 +861,39 @@ function useItemNavigation() {
 			</h1>
 		</template>
 
-		<template #headline>
-			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
-				<VBreadcrumb
-					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-					:items="[{ name: $t('content'), to: '/content' }]"
-					class="headline-breadcrumb"
-				/>
-				<VBreadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
-
-				<VersionMenu
-					v-if="shouldShowVersioning"
-					:collection="collection"
-					:primary-key="internalPrimaryKey!"
-					:update-allowed="updateAllowed"
-					:has-edits="hasEdits"
-					:current-version="currentVersion"
-					:versions="versions"
-					@add="addVersion"
-					@update="updateVersion"
-					@delete="deleteVersion"
-					@switch="currentVersion = $event"
-				/>
-			</div>
+		<template v-if="shouldShowVersioning" #title-outer:append>
+			<VersionMenu
+				:collection="collection"
+				:primary-key="resolvedPrimaryKey"
+				:has-edits="hasEdits"
+				:current-version="currentVersion"
+				:versions="versions"
+				:delete-version-loading="deleteVersionLoading"
+				@add="addVersion"
+				@update="updateVersion"
+				@delete="onVersionDelete"
+				@switch="currentVersion = $event"
+			/>
 		</template>
 
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
-			<VButton
+		<template #actions>
+			<PrivateViewHeaderBarActionButton
 				v-if="previewUrl"
-				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
-				rounded
-				icon
-				class="action-preview"
-				:secondary="livePreviewMode === null"
-				small
+				:tooltip="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
+				icon="visibility"
+				variant="ghost"
+				:active="!!livePreviewMode"
 				@click="livePreviewCollapsed = !livePreviewCollapsed"
-			>
-				<VIcon name="visibility" outline small />
-			</VButton>
+			/>
 
 			<VDialog
 				v-if="!isNew && currentVersion === null"
@@ -724,19 +903,15 @@ function useItemNavigation() {
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<VButton
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
+						:tooltip="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
+						icon="delete"
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
-						small
 						@click="on"
-					>
-						<VIcon name="delete" outline small />
-					</VButton>
+					/>
 				</template>
 
 				<VCard>
@@ -761,18 +936,15 @@ function useItemNavigation() {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<VButton
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
-						secondary
+						:tooltip="archiveTooltip"
+						:icon="isArchived ? 'unarchive' : 'archive'"
+						kind="warning"
+						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
-						small
 						@click="on"
-					>
-						<VIcon :name="isArchived ? 'unarchive' : 'archive'" outline small />
-					</VButton>
+					/>
 				</template>
 
 				<VCard>
@@ -788,69 +960,68 @@ function useItemNavigation() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
-			<VButton
-				v-if="currentVersion === null"
-				rounded
-				icon
-				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
-				:loading="saving"
-				:disabled="!isSavable"
-				small
-				@click="saveAndQuit"
-			>
-				<VIcon name="check" small />
+		<template #actions:primary>
+			<template v-if="shouldShowVersioning">
+				<PrivateViewHeaderBarActionButton
+					v-if="currentVersion === null"
+					:label="$t('edit')"
+					icon="edit"
+					@click="editDraftVersion()"
+				/>
 
-				<template #append-outer>
-					<SaveOptions
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
-						:disabled-options="disabledOptions"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
-						@save-as-copy="saveAsCopyAndNavigate"
-						@discard-and-stay="discardAndStay"
+				<template v-else>
+					<PrivateViewHeaderBarActionButton
+						:label="$t('save')"
+						:tooltip="translateShortcut(['meta', 's'])"
+						icon="beenhere"
+						secondary
+						:loading="saveVersionLoading"
+						:disabled="!isSavable"
+						@click="saveVersionAction()"
 					/>
-				</template>
-			</VButton>
-			<VButton
-				v-else
-				rounded
-				icon
-				:tooltip="$t('save_version')"
-				:loading="saveVersionLoading"
-				:disabled="!isSavable"
-				small
-				@click="saveVersionAction('stay')"
-			>
-				<VIcon name="beenhere" small />
 
-				<template #append-outer>
-					<VMenu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
-						<template #activator="{ toggle }">
-							<VIcon class="version-more-options" name="more_vert" clickable @click="toggle" />
+					<PrivateViewHeaderBarActionButton
+						:label="$t('publish')"
+						:tooltip="translateShortcut(['meta', 'alt', 'p'])"
+						icon="public"
+						:disabled="!isPublishAllowed"
+						@click="onVersionPublishCompare()"
+					>
+						<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
+							<VList>
+								<VListItem clickable @click="onVersionPublishCompare(true)">
+									<VListItemIcon><VIcon name="public" /></VListItemIcon>
+									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
+									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
+								</VListItem>
+							</VList>
 						</template>
-
-						<VList>
-							<VListItem clickable @click="saveVersionAction('main')">
-								<VListItemIcon><VIcon name="check" /></VListItemIcon>
-								<VListItemContent>{{ $t('save_and_return_to_main') }}</VListItemContent>
-								<VListItemHint>{{ translateShortcut(['meta', 'alt', 's']) }}</VListItemHint>
-							</VListItem>
-							<VListItem clickable @click="saveVersionAction('quit')">
-								<VListItemIcon><VIcon name="done_all" /></VListItemIcon>
-								<VListItemContent>{{ $t('save_and_quit') }}</VListItemContent>
-								<VListItemHint>{{ translateShortcut(['meta', 'shift', 's']) }}</VListItemHint>
-							</VListItem>
-							<VListItem clickable @click="discardAndStay">
-								<VListItemIcon><VIcon name="undo" /></VListItemIcon>
-								<VListItemContent>{{ $t('discard_all_changes') }}</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
+					</PrivateViewHeaderBarActionButton>
 				</template>
-			</VButton>
+			</template>
 
-			<FlowDialogs v-bind="flowDialogsContext" />
+			<template v-else>
+				<PrivateViewHeaderBarActionButton
+					:label="$t('save')"
+					:tooltip="!saveAllowed ? $t('not_allowed') : undefined"
+					icon="check"
+					:loading="saving"
+					:disabled="!isSavable"
+					@click="saveAndQuit()"
+				>
+					<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
+						<SaveOptions
+							:disabled-options="disabledOptions"
+							@save-and-stay="saveAndStay"
+							@save-and-add-new="saveAndAddNew"
+							@save-as-copy="saveAsCopyAndNavigate"
+							@discard-and-stay="discardAndStay"
+						/>
+					</template>
+				</PrivateViewHeaderBarActionButton>
+			</template>
 		</template>
 
 		<template #navigation>
@@ -877,11 +1048,12 @@ function useItemNavigation() {
 					ref="form"
 					v-model="edits"
 					:autofocus="isNew"
-					:disabled="isFormDisabled"
+					:disabled="isFormDisabled || isFormNonEditable"
 					:loading="loading"
 					:initial-values="item"
 					:fields="fields"
-					:primary-key="internalPrimaryKey"
+					:non-editable="isFormNonEditable"
+					:primary-key="resolvedPrimaryKey ?? undefined"
 					:collab-context="collabContext"
 					:validation-errors="validationErrors"
 					:version="currentVersion"
@@ -918,12 +1090,25 @@ function useItemNavigation() {
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
 			:collection="collection"
-			:primary-key="internalPrimaryKey"
+			:primary-key="resolvedPrimaryKey ?? '+'"
 			:current-collab="collabCollision"
 			:collab-context="collabContext"
 			mode="collab"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
+		/>
+
+		<ComparisonModal
+			v-if="comparableVersion"
+			v-model="comparisonModalActive"
+			:delete-versions-allowed="deleteVersionsAllowed"
+			:collection="collection"
+			:primary-key="resolvedPrimaryKey ?? '+'"
+			mode="version"
+			:current-version="comparableVersion"
+			:publish-version-loading="publishVersionLoading"
+			@publish="onVersionPublishConfirm"
+			@cancel="comparisonModalActive = false"
 		/>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
@@ -963,12 +1148,12 @@ function useItemNavigation() {
 		</VDialog>
 
 		<template #sidebar>
-			<template v-if="isNew === false && actualPrimaryKey">
+			<template v-if="isNew === false && resolvedPrimaryKey">
 				<RevisionsSidebarDetail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsSidebarDetailRef"
 					:collection="collection"
-					:primary-key="actualPrimaryKey"
+					:primary-key="resolvedPrimaryKey"
 					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
@@ -976,27 +1161,24 @@ function useItemNavigation() {
 				<CommentsSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="actualPrimaryKey"
+					:primary-key="resolvedPrimaryKey"
 				/>
 				<SharesSidebarDetail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="actualPrimaryKey"
+					:primary-key="resolvedPrimaryKey"
 					:allowed="shareAllowed"
 				/>
 				<FlowSidebarDetail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
+
+		<FlowDialogs v-bind="flowDialogsContext" />
 	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);
@@ -1015,50 +1197,6 @@ function useItemNavigation() {
 
 :deep(.type-title) {
 	min-inline-size: 0;
-}
-
-.headline-wrapper {
-	display: flex;
-	align-items: center;
-	gap: 0.1875rem;
-}
-
-.version-more-options.v-icon {
-	--focus-ring-offset: var(--focus-ring-offset-invert);
-
-	color: var(--theme--foreground-subdued);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
-}
-
-.has-content-versioning {
-	:deep(.header-bar .title-container) {
-		flex-direction: column;
-		justify-content: center;
-		gap: 0;
-		align-items: start;
-
-		.headline {
-			opacity: 1;
-			inset-block-start: 0.1875rem;
-		}
-
-		.title {
-			inset-block-start: 0.25rem;
-		}
-
-		@include mixins.breakpoint-up('sm') {
-			opacity: 1;
-		}
-	}
-}
-
-.headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (width < 33.75rem) {
-		display: none;
-	}
 }
 
 .content-split {

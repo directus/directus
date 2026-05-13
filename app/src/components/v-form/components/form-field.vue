@@ -312,6 +312,7 @@ function useComputedValues() {
 
 	:deep(a) {
 		color: var(--theme--primary);
+		text-decoration: underline;
 
 		&:hover {
 			color: var(--theme--primary-accent);

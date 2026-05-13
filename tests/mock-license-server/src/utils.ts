@@ -61,7 +61,6 @@ export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense
 				validation_interval: 1000,
 				expires_at: now + 100_000,
 				offline: false,
-				overage_billed: { seats: 0, collections: 0, flows: 0 },
 			},
 			entitlements: {
 				collections: { limit: 100 },
@@ -71,7 +70,7 @@ export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense
 				sso_enabled: { default: true },
 				offline_enabled: { default: false },
 				telemetry_required: { default: false },
-				display_powered_by: 'NONE',
+				display_powered_by: 'HIDDEN',
 				custom_llms_enabled: { default: true },
 				custom_permission_rules_enabled: { default: true },
 				ai_translations_enabled: { default: true },
@@ -87,6 +86,8 @@ const { privateKey, publicKey } = await generateKeyPair('EdDSA');
 
 export { publicKey };
 
+const TOKEN_LIFETIME_SECONDS = 7 * 24 * 60 * 60;
+
 export async function createNewToken(license: License) {
 	const encodedToken = License.encode({ entitlements: license.entitlements, meta: license.meta });
 
@@ -98,6 +99,6 @@ export async function createNewToken(license: License) {
 		.setAudience('directus')
 		.setIssuedAt(now)
 		.setJti(randomUUID())
-		.setExpirationTime(license.meta.expires_at ?? now + 1000)
+		.setExpirationTime(now + TOKEN_LIFETIME_SECONDS)
 		.sign(privateKey);
 }

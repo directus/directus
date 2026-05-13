@@ -68,8 +68,6 @@ async function save() {
 
 		emit('update:modelValue', false);
 	} catch (error: any) {
-		// TODO: open Rob's LicenseLimitModal (PR cms-2250) once merged when
-		// error?.response?.data?.errors?.[0]?.extensions?.code === 'LIMIT_EXCEEDED'
 		unexpectedError(error);
 	} finally {
 		saving.value = false;

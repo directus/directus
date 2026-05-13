@@ -1,9 +1,11 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import {
 	activateKey,
 	billingPortal,
 	CORE_LICENSE,
+	COUNTABLE_ENTITLEMENT_KEYS,
+	type CountableEntitlementKey,
 	deactivateKey,
 	deleteAddon,
 	Entitlements,
@@ -41,26 +43,12 @@ import { useRPC } from './utils/use-rpc.js';
 const env = useEnv();
 const logger = useLogger();
 const LICENSE_CHANNEL = `license`;
-let licenseCache: License | undefined;
+let licenseCache: License | null;
 
 type LicenseStore = {
 	initialized: true | undefined;
 	status: LicenseStatus | undefined;
 };
-
-export async function getLicense(options?: { database?: Knex }): Promise<License> {
-	if (licenseCache) return licenseCache;
-
-	const { token } = await getLicenseToken(options);
-
-	if (!token) {
-		licenseCache = CORE_LICENSE;
-	} else {
-		licenseCache = await verifyLicense(token);
-	}
-
-	return licenseCache;
-}
 
 let licenseManager: LicenseManager | undefined;
 
@@ -78,8 +66,9 @@ export class LicenseManager {
 	private licenseKey: string | null = null;
 	private licenseToken: string | null = null;
 	/** Where the key or token comes from */
-	private source: LicenseSource = 'settings';
-	private rpc = useRPC<Pick<LicenseManager, 'refreshCache'>>(this, LICENSE_CHANNEL);
+	private source: LicenseSource = null;
+	private initialized = false;
+	private rpc = useRPC<Pick<LicenseManager, 'syncState'>>(this, LICENSE_CHANNEL);
 	private store = useStore<LicenseStore>(String(env['LICENSE_NAMESPACE']));
 
 	/**
@@ -101,12 +90,13 @@ export class LicenseManager {
 		const existingStore = this.store;
 
 		const entitlementManager = getEntitlementManager();
-		entitlementManager.initialize();
 
 		try {
+			entitlementManager.initialize();
+
 			// Lock the whole store for the entirety of initialization
 			await this.store(async (store) => {
-				// Replace existing store temporarely to avoid deadlocks
+				// Replace existing store temporarily to avoid deadlocks
 				this.store = (cb) => {
 					return cb(store);
 				};
@@ -140,16 +130,16 @@ export class LicenseManager {
 						await this.refresh({ key: envKey, token: dbToken ?? null });
 					}
 				} else if (envToken) {
-					// CASE E — verify offline token, cleanup DB
 					this.source = 'env';
-					const license = await this.verify(envToken);
+					// CASE E — verify offline token, cleanup DB
+					await this.refresh({ token: envToken });
 
 					if (dbKey || dbToken) {
 						await settingsService.upsertSingleton({ license_key: null, license_token: null });
 					}
-
-					await store.set('status', getStatus(license));
 				} else if (dbKey) {
+					this.source = 'settings';
+
 					if (dbToken) {
 						// CASE F
 						await this.refresh({ key: dbKey, token: dbToken });
@@ -158,18 +148,29 @@ export class LicenseManager {
 						await this.activate(dbKey);
 					}
 				} else {
-					if (dbToken) {
-						// CASE H — stale token, drop it before serving core
-						await this.downgrade();
-					}
-
-					// CASE H tail / CASE I — core license
-					await store.set('status', 'active');
+					// CASE H stale token / CASE I — core license
+					await this.commitState({ isCore: true, downgrade: !!dbToken });
 				}
+
+				this.initialized = true;
 			});
 		} finally {
 			this.store = existingStore;
 		}
+	}
+
+	public async getLicense(options?: { database?: Knex }): Promise<License> {
+		if (licenseCache) return licenseCache;
+
+		const { token } = await getLicenseToken(options);
+
+		if (!token) {
+			licenseCache = CORE_LICENSE;
+		} else {
+			licenseCache = (await this.verify(token)) ?? CORE_LICENSE;
+		}
+
+		return licenseCache;
 	}
 
 	public async getStatus() {
@@ -185,39 +186,42 @@ export class LicenseManager {
 	/**
 	 * Throw if the current license cannot have its key changed (activate / update / deactivate).
 	 *
-	 * License managements is only allowed for setting based licenses
+	 * License management is only allowed for setting-based licenses
 	 */
 	private assertCanManageLicense() {
-		// If both are null === initialization stage
-		if (this.licenseKey === null && this.licenseToken === null) return;
-		if (this.source === 'settings') return;
-
-		throw new ForbiddenError({
-			reason: `You cannot manage license for the current license.`,
-		});
+		if (this.initialized && this.source !== 'settings') {
+			throw new ForbiddenError({
+				reason: `You cannot manage license for the current license.`,
+			});
+		}
 	}
 
 	/**
 	 * Throw if the current license cannot have its entitlements changed (e.g. adding addons).
 	 *
-	 * License addons is supported for all licenses aside from offline
+	 * Addons are supported for all licenses except core and offline.
 	 */
 	private assertCanManageAddons() {
-		if (this.source === 'settings') return;
-		if (this.source === 'env' && this.licenseKey) return;
-
-		throw new ForbiddenError({
-			reason: `You cannot manage addons for the current license.`,
-		});
+		if (this.source === null || this.licenseKey === null) {
+			throw new ForbiddenError({
+				reason: `You cannot manage addons for the current license.`,
+			});
+		}
 	}
 
 	public async isLocked() {
+		const entitlementManager = getEntitlementManager();
 		const status = await this.getStatus();
 
-		// LICENSE-TODO: revert
-		return false;
+		const isInViolation = await entitlementManager.checkAll();
 
-		// return ['expired', 'suspended', 'locked'].includes(status);
+		if (['expired', 'suspended'].includes(status) && isInViolation === false) {
+			return true;
+		}
+
+		if (status === 'locked') return true;
+
+		return false;
 	}
 
 	/**
@@ -230,18 +234,18 @@ export class LicenseManager {
 	}
 
 	/**
-	 * Activates a new license and overwrites an existing one
+	 * Activates a new license
 	 */
 	public async activate(key: string) {
-		this.assertCanManageLicense();
+		// bypass case for upgrading from core to another license
+		if (this.source !== null) {
+			this.assertCanManageLicense();
+		}
 
 		// Keys cannot be directly activated if one is already active, must go via update route
 		if (this.licenseKey) {
 			throw new ForbiddenError({ reason: 'A license was already activated' });
 		}
-
-		let license: License | null = null;
-		let error: Error | undefined;
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -260,17 +264,15 @@ export class LicenseManager {
 				project_id: new_project_id ?? project_id!,
 			});
 
-			license = await this.verify(token);
+			// During init, source is already set, only flip if via API
+			if (this.initialized) {
+				this.source = 'settings';
+			}
 
-			await this.rpc.refreshCache();
-		} catch (err) {
-			error = err as Error;
-			await this.downgrade();
-			throw err;
-		} finally {
-			await this.store(async (store) => {
-				await store.set('status', getStatus(license, error));
-			});
+			await this.commitState();
+		} catch {
+			// LICENSE-TODO: Add error translation
+			throw new ServiceUnavailableError({ service: 'license', reason: 'activate' });
 		}
 	}
 
@@ -280,7 +282,7 @@ export class LicenseManager {
 		const currentKey = key ?? this.licenseKey;
 
 		if (!currentKey) {
-			throw new TypeError('"key" has to be defined in order to deactivate');
+			throw new InvalidPayloadError({ reason: '"key" has to be defined in order to deactivate' });
 		}
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
@@ -293,7 +295,7 @@ export class LicenseManager {
 			public_url: env['PUBLIC_URL'] as string,
 		});
 
-		await this.downgrade();
+		await this.commitState({ downgrade: true });
 	}
 
 	/**
@@ -305,7 +307,7 @@ export class LicenseManager {
 		const currentKey = options?.oldKey ?? this.licenseKey;
 
 		if (!currentKey) {
-			throw new TypeError('"oldKey" has to be defined in order to update');
+			throw new InvalidPayloadError({ reason: '"oldKey" has to be defined in order to update' });
 		}
 
 		const settingsService = new SettingsService({ schema: await getSchema() });
@@ -327,38 +329,37 @@ export class LicenseManager {
 			project_id: project_id!,
 		});
 
-		await this.rpc.refreshCache();
+		await this.commitState();
 	}
 
 	private async verify(token: string): Promise<License | null> {
 		try {
 			return await verifyLicense(token);
-		} catch (e) {
-			logger.warn('Failed to verify license token defaulting to "core"', { error: e });
+		} catch {
+			// LICENSE-TODO: set status based on error
+			await this.commitState({ status: 'expired', downgrade: true });
+			return null;
 		}
-
-		return null;
 	}
 
 	/**
-	 * Verifys a current token and refreshes it with a new token
+	 * Verify a license token. On failure, downgrade and mark status 'expired'.
 	 */
-	public async refresh(options?: { key: string; token?: string | null }): Promise<void> {
+	public async refresh(options?: { key?: string; token?: string | null }): Promise<void> {
 		const key = options?.key ?? this.licenseKey;
 		const token = options?.token ?? this.licenseToken;
 
-		if (!key) {
-			throw new TypeError('key has to be defined in order to refresh');
-		}
-
 		let license: License | null = null;
-		let error: Error | undefined;
 
 		if (token) {
 			license = await this.verify(token);
 		}
 
 		if (license?.meta.offline === false) {
+			if (!key) {
+				throw new InvalidPayloadError({ reason: 'A "key" is required' });
+			}
+
 			const entitlementManager = getEntitlementManager();
 			const settingsService = new SettingsService({ schema: await getSchema() });
 
@@ -386,18 +387,11 @@ export class LicenseManager {
 					license_token: token,
 				});
 
-				await this.rpc.refreshCache();
-
-				license = await this.verify(token);
+				await this.commitState();
 			} catch (err) {
-				error = err as Error;
 				logger.error(err);
 			}
 		}
-
-		await this.store(async (store) => {
-			await store.set('status', getStatus(license, error));
-		});
 	}
 
 	public async billingPortalUrl() {
@@ -447,7 +441,7 @@ export class LicenseManager {
 
 		const entitlementManager = getEntitlementManager();
 
-		await updateAddonQuantity(
+		const { token } = await updateAddonQuantity(
 			{
 				license_key: this.licenseKey!,
 				project_id: project_id!,
@@ -468,6 +462,12 @@ export class LicenseManager {
 				},
 			},
 		);
+
+		await settingsService.upsertSingleton({
+			license_token: token,
+		});
+
+		await this.commitState();
 	}
 
 	public async removeAddon(addonId: string) {
@@ -499,15 +499,17 @@ export class LicenseManager {
 		const schema = await getSchema();
 		const pendingResolution: LicensePendingResolution[] = [];
 
-		let entitlements: Entitlements | null = null;
+		let entitlements: Entitlements | null;
 
 		if (options.licenseKey) {
 			// required resolution when changing tier
 			const preview = await this.preview(options.licenseKey);
 			entitlements = preview.entitlements;
-		} else if (!('licenseKey' in options)) {
+		} else if (options.licenseKey === null) {
+			entitlements = null;
+		} else {
 			// possible resolution during current tier
-			const license = await getLicense();
+			const license = await this.getLicense();
 			entitlements = license.entitlements;
 		}
 
@@ -516,57 +518,31 @@ export class LicenseManager {
 		entitlementManager.initialize();
 		entitlementManager.setEntitlements(entitlements);
 
-		const collection = await entitlementManager.check('collections');
+		const candidateGetters: Record<CountableEntitlementKey, any> = {
+			seats: getActiveSeats,
+			collections: getActiveCollections,
+			flows: getActiveFlows,
+		};
 
-		if (collection.allowed == false) {
-			const activeCollections = await getActiveCollections();
+		for (const check of COUNTABLE_ENTITLEMENT_KEYS) {
+			const resolution = await entitlementManager.check(check);
 
-			if (activeCollections.length) {
+			if (resolution.allowed === false) {
+				const candidates = await candidateGetters[check]({ adminId: options.adminId });
+
 				pendingResolution.push({
-					key: 'collections',
+					key: check,
 					kind: 'limit',
-					limit: collection.hardLimit,
-					usage: collection.usage,
-					candidates: activeCollections.map((c) => c.collection),
-				});
-			}
-		}
-
-		const seats = await entitlementManager.check('seats');
-
-		if (seats.allowed == false) {
-			const activeSeats = await getActiveSeats({ adminId: options.adminId });
-
-			if (activeSeats && activeSeats.length) {
-				pendingResolution.push({
-					key: 'seats',
-					kind: 'limit',
-					limit: seats.hardLimit,
-					usage: seats.usage,
-					candidates: activeSeats,
-				});
-			}
-		}
-
-		const flows = await entitlementManager.check('flows');
-
-		if (flows.allowed === false) {
-			const flowCandidates = await getActiveFlows();
-
-			if (flowCandidates.length) {
-				pendingResolution.push({
-					key: 'flows',
-					kind: 'limit',
-					limit: flows.hardLimit,
-					usage: flows.usage,
-					candidates: flowCandidates as unknown as string[],
+					limit: resolution.hardLimit,
+					usage: resolution.usage,
+					candidates,
 				});
 			}
 		}
 
 		const sso = await entitlementManager.check('sso_enabled');
 
-		if (sso.entitled === false && sso.valid === false) {
+		if (sso.valid === false) {
 			const usersService = new UsersService({ schema });
 			const adminUser = await usersService.readOne(options.adminId, { fields: ['email', 'password'] });
 
@@ -590,7 +566,7 @@ export class LicenseManager {
 
 		const customLLMs = await entitlementManager.check('custom_llms_enabled');
 
-		if (customLLMs.entitled === false && customLLMs.valid === false) {
+		if (customLLMs.valid === false) {
 			pendingResolution.push({
 				key: 'custom_llms_enabled',
 				kind: 'feature_gate',
@@ -599,7 +575,7 @@ export class LicenseManager {
 
 		const customPermissionRules = await entitlementManager.check('custom_permission_rules_enabled');
 
-		if (customPermissionRules.entitled === false && customPermissionRules.valid === false) {
+		if (customPermissionRules.valid === false) {
 			pendingResolution.push({
 				key: 'custom_permission_rules_enabled',
 				kind: 'feature_gate',
@@ -637,15 +613,30 @@ export class LicenseManager {
 		}
 	}
 
-	public async refreshCache() {
-		licenseCache = undefined;
-		const oldSource = this.source;
+	/**
+	 * Single entry point for every state-changing
+	 */
+	private async commitState(options?: { status?: LicenseStatus; isCore?: boolean; downgrade?: boolean }) {
+		if (options?.downgrade) {
+			const settingsService = new SettingsService({ schema: await getSchema() });
+			await settingsService.upsertSingleton({ license_token: null });
+		}
 
+		await this.syncState();
+		await this.store(async (store) => store.set('status', options?.status ?? (await getStatus(options))));
+		await this.rpc.syncState();
+	}
+
+	public async syncState() {
+		const oldSource = this.source;
 		const { source: keySource, key } = await getLicenseKey();
 		const { token } = await getLicenseToken();
 
+		// set local vars
 		this.licenseKey = key;
 		this.licenseToken = token;
+
+		this.initialized = true;
 
 		/**
 		 * Upgrade from core tier requires registering the scheduled check
@@ -654,15 +645,8 @@ export class LicenseManager {
 		if (oldSource === null && keySource === 'settings') {
 			licenseCheckSchedule();
 		}
-	}
 
-	/**
-	 * Downgrade internal tracker to core, does NOT unbind existing key
-	 */
-	private async downgrade() {
-		const settingsService = new SettingsService({ schema: await getSchema() });
-		await settingsService.upsertSingleton({ license_token: null });
-
-		await this.rpc.refreshCache();
+		// reset cache
+		licenseCache = null;
 	}
 }

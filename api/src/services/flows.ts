@@ -10,28 +10,24 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!('status' in data) || data['status'] === 'active') {
-			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('flows', { adding: 1, knex: this.knex });
+			await getEntitlementManager().assert('flows', { adding: 1, knex: this.knex });
 		}
 
 		const result = await super.createOne(data, opts);
 
-		const flowManager = getFlowManager();
-		await flowManager.reload();
+		await getFlowManager().reload();
 
 		return result;
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if ('status' in data && data['status'] === 'active') {
-			const entitlementManager = getEntitlementManager();
-			await entitlementManager.assert('flows', { adding: keys.length, knex: this.knex });
+			await getEntitlementManager().assert('flows', { adding: keys.length, knex: this.knex });
 		}
 
 		const result = await super.updateMany(keys, data, opts);
 
-		const flowManager = getFlowManager();
-		await flowManager.reload();
+		await getFlowManager().reload();
 
 		return result;
 	}
@@ -42,8 +38,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 		const result = await super.deleteMany(keys, opts);
 
-		const flowManager = getFlowManager();
-		await flowManager.reload();
+		await getFlowManager().reload();
 
 		return result;
 	}

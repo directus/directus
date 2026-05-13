@@ -3,7 +3,7 @@ import { type LicensePreviewOutput, type ReadLicenseOutput, ResolveInput } from 
 import express from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getEntitlementManager } from '../license/index.js';
-import { getLicense, getLicenseManager } from '../license/manager.js';
+import { getLicenseManager } from '../license/manager.js';
 import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -17,7 +17,7 @@ router.get(
 		const licenseManager = getLicenseManager();
 		const entitlementManager = getEntitlementManager();
 
-		const license = await getLicense();
+		const license = await licenseManager.getLicense();
 
 		const payload: ReadLicenseOutput = {
 			name: license.meta.name,
@@ -100,10 +100,11 @@ router.post(
 		const preview = await licenseManager.preview(req.body.license_key);
 
 		const payload: LicensePreviewOutput = {
-			plan_name: preview.name,
+			plan_name: preview.plan_name,
 			expires_at: preview.expires_at,
 			renews_at: preview.renews_at,
-			production_enabled: preview.production_enabled,
+			production_enabled:
+				preview.entitlements.production_enabled.override ?? preview.entitlements.production_enabled.default,
 		};
 
 		res.locals['payload'] = { data: payload };

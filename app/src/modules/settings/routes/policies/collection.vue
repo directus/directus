@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import { type PolicyItem, useDuplicate } from './use-duplicate';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -184,8 +183,6 @@ function openDuplicateDialog(item: PolicyItem) {
 
 <template>
 	<PrivateView :title="$t('settings_permissions')" icon="admin_panel_settings">
-		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
 		<template #actions>
 			<SearchInput
 				v-if="!loading"
@@ -195,8 +192,10 @@ function openDuplicateDialog(item: PolicyItem) {
 				:show-filter="false"
 				small
 			/>
+		</template>
 
-			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('create_policy')" :to="addNewLink" icon="add" />
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton :label="$t('create_policy')" :to="addNewLink" icon="add" />
 		</template>
 
 		<template #navigation>
@@ -279,7 +278,7 @@ function openDuplicateDialog(item: PolicyItem) {
 
 .policies {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-block: var(--content-padding-top-table) var(--content-padding-bottom);
 }
 
 .system {

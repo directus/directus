@@ -6,3 +6,5 @@ export * from './injection.js';
 export * from './number.js';
 export * from './permissions.js';
 export * from './regex.js';
+export * from './user.js';
+export * from './versions.js';

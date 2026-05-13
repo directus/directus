@@ -120,11 +120,6 @@ function handleSubmit() {
 	min-inline-size: 0;
 	align-self: flex-start;
 	overflow: hidden;
-
-	.v-chip {
-		--v-chip-close-color: var(--theme--background-normal);
-		--v-chip-close-color-hover: var(--theme--foreground-subdued);
-	}
 }
 
 .input-controls {

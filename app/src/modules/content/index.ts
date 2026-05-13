@@ -1,18 +1,61 @@
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import { defineModule } from '@directus/extensions';
 import { Collection } from '@directus/types';
 import { useLocalStorage } from '@vueuse/core';
 import { isNil, orderBy } from 'lodash';
-import { LocationQuery, NavigationGuard } from 'vue-router';
+import { LocationQuery, NavigationGuard, RouteLocationNormalized } from 'vue-router';
 import { useNavigation } from './composables/use-navigation';
-import CollectionOrItem from './routes/collection-or-item.vue';
+import CollectionRoute from './routes/collection.vue';
 import Item from './routes/item.vue';
 import NoCollections from './routes/no-collections.vue';
 import ItemNotFound from './routes/not-found.vue';
 import Preview from './routes/preview.vue';
+import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
+import { removeQueryFromPath } from '@/utils/remove-query-from-path';
 import RouterPass from '@/utils/router-passthrough';
+
+export const enterDraftContext: NavigationGuard = (to) => {
+	if (to.query.version) return; // already in version context
+
+	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collection) return;
+
+	const collectionsStore = useCollectionsStore();
+	const collectionInfo = collectionsStore.getCollection(collection);
+	if (!collectionInfo?.meta?.versioning) return;
+
+	// Auto-enter draft for new items (/+). Singletons are handled post-load in item.vue —
+	// existing singletons default to the published view; only pristine (no record yet) ones
+	// auto-enter draft, which we can only determine after fetching.
+	const isNewItem = typeof to.params.primaryKey === 'string' && to.params.primaryKey === '+';
+	if (!isNewItem) return;
+
+	return { ...to, query: { ...to.query, version: VERSION_KEY_DRAFT } };
+};
+
+export const redirectSingleton: NavigationGuard = (to) => {
+	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collection) return;
+
+	const collectionInfo = useCollectionsStore().getCollection(collection);
+	if (!collectionInfo?.meta?.singleton) return;
+
+	return { name: 'content-singleton', params: to.params, query: to.query };
+};
+
+export const trackLastAccessedCollection = (to: RouteLocationNormalized) => {
+	const collection = typeof to.params.collection === 'string' ? to.params.collection : undefined;
+	if (!collection) return;
+
+	const lastAccessedCollection = useLocalStorage<string | null>('directus-last-accessed-collection', null);
+
+	if (lastAccessedCollection.value !== collection) {
+		lastAccessedCollection.value = collection;
+	}
+};
 
 const checkForSystem: NavigationGuard = (to, from) => {
 	if (!to.params?.collection) return;
@@ -40,6 +83,67 @@ const checkForSystem: NavigationGuard = (to, from) => {
 	}
 
 	return;
+};
+
+export const stripOrphanedVersionId: NavigationGuard = (to) => {
+	if ((to.query.versionId !== '' && !to.query.versionId) || to.query.version) return;
+
+	const target = removeQueryFromPath(to.fullPath, 'versionId');
+	if (target === to.fullPath) return;
+	return target;
+};
+
+export const stripVersionOnNonVersioned: NavigationGuard = (to) => {
+	if (typeof to.params.collection !== 'string') return;
+	if (!to.query.version && !to.query.versionId) return;
+
+	const collection = useCollectionsStore().getCollection(to.params.collection);
+	if (!collection || collection.meta?.versioning) return;
+
+	const target = removeQueryFromPath(to.fullPath, 'version', 'versionId');
+	if (target === to.fullPath) return;
+	return target;
+};
+
+export const stripVersionIdOnRealItem: NavigationGuard = (to) => {
+	if (to.params.primaryKey === '+' || (to.query.versionId !== '' && !to.query.versionId)) return;
+
+	const target = removeQueryFromPath(to.fullPath, 'versionId');
+	if (target === to.fullPath) return;
+	return target;
+};
+
+export const validateItemlessDraft: NavigationGuard = async (to) => {
+	if (to.params.primaryKey !== '+') return;
+
+	const version = Array.isArray(to.query.version) ? to.query.version[0] : to.query.version;
+	const versionId = Array.isArray(to.query.versionId) ? to.query.versionId[0] : to.query.versionId;
+
+	if (!version || !versionId) return;
+	if (typeof to.params.collection !== 'string') return;
+
+	try {
+		const {
+			data: { data: fetchedVersion },
+		} = await api.get(`/versions/${versionId}`, { params: { fields: ['item', 'key'] } });
+
+		if (fetchedVersion.item !== null) {
+			const target = getItemRoute(to.params.collection, String(fetchedVersion.item), fetchedVersion.key);
+			if (target === to.fullPath) return;
+			return target;
+		}
+
+		if (fetchedVersion.key !== version) {
+			const target = getItemRoute(to.params.collection, '+', fetchedVersion.key, versionId);
+			if (target === to.fullPath) return;
+			return target;
+		}
+
+		return;
+	} catch {
+		// API error — fall through, let the page load
+		return;
+	}
 };
 
 const getArchiveValue = (query: LocationQuery) => {
@@ -121,7 +225,7 @@ export default defineModule({
 				{
 					name: 'content-collection',
 					path: '',
-					component: CollectionOrItem,
+					component: CollectionRoute,
 					props: (route) => {
 						const archive = getArchiveValue(route.query);
 						return {
@@ -130,14 +234,31 @@ export default defineModule({
 							archive,
 						};
 					},
-					beforeEnter: checkForSystem,
+					beforeEnter: [checkForSystem, trackLastAccessedCollection, redirectSingleton, stripVersionOnNonVersioned],
+				},
+				{
+					name: 'content-singleton',
+					path: '',
+					component: Item,
+					props: (route) => ({
+						collection: route.params.collection,
+						singleton: true,
+					}),
+					beforeEnter: [checkForSystem, trackLastAccessedCollection, enterDraftContext, stripVersionOnNonVersioned],
 				},
 				{
 					name: 'content-item',
 					path: ':primaryKey',
 					component: Item,
 					props: true,
-					beforeEnter: checkForSystem,
+					beforeEnter: [
+						checkForSystem,
+						enterDraftContext,
+						stripOrphanedVersionId,
+						stripVersionOnNonVersioned,
+						stripVersionIdOnRealItem,
+						validateItemlessDraft,
+					],
 				},
 			],
 		},
@@ -146,6 +267,13 @@ export default defineModule({
 			path: ':collection/:primaryKey/preview',
 			component: Preview,
 			props: true,
+			beforeEnter: [
+				enterDraftContext,
+				stripOrphanedVersionId,
+				stripVersionOnNonVersioned,
+				stripVersionIdOnRealItem,
+				validateItemlessDraft,
+			],
 		},
 		{
 			name: 'content-item-not-found',

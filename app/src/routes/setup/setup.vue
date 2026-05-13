@@ -34,9 +34,9 @@ const error = ref<any>(null);
 const isSaving = ref(false);
 const page = ref<'setup' | 'license'>('setup');
 
-const showAdminStep = computed(() => !info.value.onboarding?.adminInEnv);
+const showAdminStep = computed(() => !info.value.setupCompleted);
 
-const showLicenseStep = computed(() => !info.value.onboarding?.licenseInEnv);
+const showLicenseStep = computed(() => info.value.setup?.license_complete === false);
 
 onMounted(() => {
 	if (!showAdminStep.value && !showLicenseStep.value) {
@@ -50,7 +50,18 @@ async function launch() {
 	if (showAdminStep.value) {
 		if (!form.value.license) return;
 
-		errors.value = validate(form.value, fields, true);
+		errors.value = validate(
+			{
+				first_name: form.value.admin.first_name,
+				last_name: form.value.admin.last_name,
+				project_owner: form.value.admin.email,
+				password: form.value.admin.password,
+				password_confirm: form.value.password_confirm,
+			},
+			fields,
+			true,
+		);
+
 		if (errors.value.length > 0) return;
 	}
 
@@ -63,8 +74,8 @@ async function launch() {
 		if (showAdminStep.value) {
 			await login({
 				credentials: {
-					email: form.value.project_owner!,
-					password: form.value.password!,
+					email: form.value.admin.email!,
+					password: form.value.admin.password!,
 				},
 			});
 

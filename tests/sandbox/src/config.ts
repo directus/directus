@@ -146,6 +146,8 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 
 	const env = {
 		...baseConfig[database],
+		PUBLIC_URL: `http://${baseConfig[database].HOST}:${opts.port}`,
+		PORT: String(opts.port),
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
 		NODE_ENV: opts.dev ? 'development' : 'production',
@@ -190,10 +192,8 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 }
 
 export type Env = (typeof baseConfig)[Database] & {
-	ADMIN_EMAIL?: string;
-	ADMIN_PASSWORD?: string;
-	PROJECT_OWNER?: string;
-	ADMIN_TOKEN?: string;
+	PORT: string;
+	PUBLIC_URL: string;
 	REDIS_ENABLED: string;
 	CACHE_ENABLED: string;
 	NODE_ENV: string;

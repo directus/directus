@@ -6,7 +6,6 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { RouterView } from 'vue-router';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -208,33 +207,14 @@ const refreshInterval = computed({
 <template>
 	<InsightsNotFound v-if="!currentDashboard" />
 	<PrivateView v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
-		</template>
-
 		<template #actions>
 			<template v-if="editMode">
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('clear_changes')"
-					class="clear-changes"
-					outlined
-					icon="clear"
+					kind="danger"
+					variant="ghost"
+					icon="undo"
 					@click="cancelChanges"
-				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('create_panel')"
-					outlined
-					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
-					icon="add"
-				/>
-
-				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('save')"
-					:disabled="!hasEdits"
-					:loading="saving"
-					icon="check"
-					@click="saveChanges"
 				/>
 			</template>
 
@@ -243,20 +223,39 @@ const refreshInterval = computed({
 					v-tooltip.bottom="$t('fit_to_screen')"
 					:active="zoomToFit"
 					class="zoom-to-fit"
-					outlined
+					variant="ghost"
 					icon="aspect_ratio"
 					@click="toggleZoomToFit"
 				/>
+			</template>
+		</template>
+
+		<template #actions:primary>
+			<template v-if="editMode">
+				<PrivateViewHeaderBarActionButton
+					:label="$t('create_panel')"
+					secondary
+					:to="{ name: 'panel-detail', params: { primaryKey: currentDashboard.id, panelKey: '+' } }"
+					icon="add"
+				/>
 
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="$t('edit_panels')"
-					class="edit"
-					outlined
-					:disabled="!updateAllowed"
-					icon="edit"
-					@click="editMode = !editMode"
+					:label="$t('save')"
+					:disabled="!hasEdits"
+					:loading="saving"
+					icon="check"
+					@click="saveChanges"
 				/>
 			</template>
+
+			<PrivateViewHeaderBarActionButton
+				v-else
+				:label="$t('edit_panels')"
+				class="edit"
+				:disabled="!updateAllowed"
+				icon="edit"
+				@click="editMode = !editMode"
+			/>
 		</template>
 
 		<template #sidebar>
@@ -384,8 +383,7 @@ const refreshInterval = computed({
 </template>
 
 <style scoped lang="scss">
-.zoom-to-fit,
-.clear-changes {
+.zoom-to-fit {
 	--v-button-color: var(--theme--foreground);
 	--v-button-color-hover: var(--theme--foreground);
 	--v-button-background-color: var(--theme--foreground-subdued);
