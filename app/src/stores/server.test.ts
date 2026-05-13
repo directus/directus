@@ -220,7 +220,7 @@ describe('hydrate action', async () => {
 			if (path === '/server/info') {
 				return Promise.resolve({
 					data: {
-						data: { ...mockServerInfo, setup: { license_complete: false, owner_complete: false } },
+						data: { ...mockServerInfo, setup: { license_complete: false } },
 					},
 				});
 			}
