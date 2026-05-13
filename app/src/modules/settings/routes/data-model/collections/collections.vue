@@ -220,7 +220,7 @@ async function downloadSnapshot() {
 		</template>
 
 		<div class="padding-box" :class="{ 'has-action': hasExpandableCollections }">
-			<MaxCapacityAlert />
+			<MaxCapacityAlert v-if="licenseStore.collectionsRemaining !== null && licenseStore.collectionsRemaining <= 0" />
 
 			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}
