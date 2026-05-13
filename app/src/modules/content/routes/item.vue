@@ -49,6 +49,7 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -98,6 +99,7 @@ onBeforeRouteUpdate((to, from) => {
 const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
@@ -274,7 +276,11 @@ useShortcut(
 		if (currentVersion.value === null) {
 			saveAndStay();
 		} else {
-			saveVersionAction();
+			notificationsStore.add({
+				title: t('auto_save_enabled'),
+				type: 'info',
+				icon: 'cloud_done',
+			});
 		}
 	},
 	form,
@@ -535,22 +541,6 @@ watch(saveVersionLoading, async (newVal, oldVal) => {
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
-
-async function saveVersionAction() {
-	if (isSavable.value === false) return;
-
-	try {
-		await saveVersion(edits, item);
-		edits.value = {};
-
-		if (!isNew.value) {
-			refresh();
-			revisionsSidebarDetailRef.value?.refresh?.();
-		}
-	} catch (error) {
-		handleVersionGone(error);
-	}
-}
 
 async function autoSaveRevision(forceNew: boolean) {
 	try {

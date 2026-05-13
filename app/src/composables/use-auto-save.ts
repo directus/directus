@@ -64,7 +64,7 @@ export function useAutoSave(
 		errorNotificationId = notificationsStore.add({
 			title: t('auto_save_failed'),
 			text: t('auto_save_failed_copy'),
-			type: 'warning',
+			type: 'error',
 			icon: 'cloud_off',
 			persist: true,
 			closeable: true,
