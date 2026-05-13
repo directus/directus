@@ -6,7 +6,6 @@ import {
 	type LicensePendingResolutionLimitFlows,
 	type LicensePendingResolutionLimitSeats,
 } from '@directus/license';
-import { useCookies } from '@vueuse/integrations/useCookies';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,7 +16,6 @@ import VAvatar from '@/components/v-avatar.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
-import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -168,21 +166,12 @@ function manageLicense() {
 	router.push('/settings/license');
 }
 
-const cookies = useCookies(['license-resolution-acknowledged']);
-
-function acknowledge() {
-	// Dismiss for this session. The cookie is cleared on logout so the modal reappears next login.
-	cookies.set('license-resolution-acknowledged', 'true', { path: '/' });
-	emit('update:modelValue', false);
-}
-
 function close() {
 	emit('update:modelValue', false);
 }
 
 function onEsc() {
 	if (scope.value === 'manual') close();
-	else if (scope.value === 'grace') acknowledge();
 }
 </script>
 
@@ -194,16 +183,17 @@ function onEsc() {
 		@esc="onEsc"
 	>
 		<VCard class="resolution-card">
-			<VCardTitle class="title-row">
-				<span class="title-text">{{ title }}</span>
+			<header class="title-row">
+				<div class="title-stack">
+					<span class="title-text">{{ title }}</span>
+					<span class="subtitle">{{ t('licensing.resolve_subtitle') }}</span>
+				</div>
 				<VButton secondary small @click="manageLicense">
 					{{ t('licensing.manage') }}
 				</VButton>
-			</VCardTitle>
+			</header>
 
 			<VCardText>
-				<p class="subtitle">{{ t('licensing.resolve_subtitle') }}</p>
-
 				<VNotice
 					:type="scope === 'grace' ? 'warning' : 'danger'"
 					:icon="scope === 'grace' ? 'warning' : 'cancel'"
@@ -271,13 +261,10 @@ function onEsc() {
 
 			<VCardActions>
 				<VButton v-if="scope === 'manual'" secondary @click="close">{{ t('cancel') }}</VButton>
-				<VButton v-else-if="scope === 'grace'" secondary @click="acknowledge">
-					{{ t('licensing.resolve_acknowledge') }}
-				</VButton>
 				<VButton v-else-if="scope === 'downgraded'" @click="close">
 					{{ t('continue_label') }}
 				</VButton>
-				<VButton v-else :disabled="!isValid" :loading="submitting" @click="submit">
+				<VButton v-else kind="danger" :disabled="!isValid" :loading="submitting" @click="submit">
 					{{ t('licensing.resolve_submit') }}
 				</VButton>
 			</VCardActions>
@@ -287,8 +274,20 @@ function onEsc() {
 
 <style scoped>
 .resolution-card {
-	max-inline-size: 60rem;
-	inline-size: 100%;
+	--v-card-min-width: auto;
+	inline-size: calc(100vw - 7rem);
+	max-inline-size: none;
+	block-size: calc(100vh - 7rem);
+	max-block-size: calc(100vh - 7rem);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.resolution-card :deep(.v-card-text) {
+	flex: 1;
+	overflow-y: auto;
+	padding-block-start: 1rem;
 }
 
 .title-row {
@@ -296,15 +295,26 @@ function onEsc() {
 	align-items: center;
 	justify-content: space-between;
 	gap: 1rem;
+	padding: 1rem 1.75rem;
+	border-block-end: 1px solid var(--theme--border-color-subdued);
+}
+
+.title-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-inline-size: 0;
 }
 
 .title-text {
 	color: var(--theme--danger);
+	font-size: 1rem;
+	font-weight: 600;
 }
 
 .subtitle {
-	color: var(--theme--foreground-subdued);
-	margin-block-end: 1rem;
+	color: var(--theme--foreground-normal);
+	font-weight: 500;
 }
 
 .notice {

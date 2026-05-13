@@ -1451,7 +1451,6 @@ licensing:
     project will be locked. Deactivated items will remained stored but locked in Directus, and custom access rules will
     also be locked.
   resolve_countdown: '{days} day remaining (until {date}) | {days} days remaining (until {date})'
-  resolve_acknowledge: Remind Me Later
   resolve_notice_manual:
     Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
     Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.

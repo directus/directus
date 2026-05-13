@@ -31,7 +31,7 @@ type LoginParams = {
 	share?: boolean;
 };
 
-const cookies = useCookies(['license-banner-dismissed', 'license-resolution-acknowledged']);
+const cookies = useCookies(['license-banner-dismissed']);
 
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
@@ -74,7 +74,6 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
 	cookies.remove('license-banner-dismissed');
-	cookies.remove('license-resolution-acknowledged');
 	appStore.authenticated = true;
 
 	// Reload server store to get authenticated data
