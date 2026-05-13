@@ -71,6 +71,10 @@ const title = computed(() => t(`licensing.resolve_title_${scope.value}`));
 
 const noticeMessage = computed(() => t(`licensing.resolve_notice_${scope.value}`));
 
+const severity = computed<'warning' | 'danger'>(() => {
+	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';
+});
+
 type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number];
 
 const collections = computed<LicensePendingResolutionLimitCollections | undefined>(
@@ -163,9 +167,16 @@ function manageLicense() {
 
 const cookies = useCookies(['license-resolution-acknowledged']);
 
+// Scope the acknowledgement to the current license so applying a new key resets the dismiss.
+const acknowledgeKey = computed(() => {
+	const name = info.value?.name ?? '';
+	const boundary = info.value?.expires_at ?? info.value?.renews_at ?? '';
+	return `${name}:${boundary}`;
+});
+
 function acknowledge() {
 	// Dismiss for this session. The cookie is cleared on logout so the modal reappears next login.
-	cookies.set('license-resolution-acknowledged', 'true', { path: '/' });
+	cookies.set('license-resolution-acknowledged', acknowledgeKey.value, { path: '/' });
 	emit('update:modelValue', false);
 }
 
@@ -189,7 +200,7 @@ function onEsc() {
 		<VCard class="resolution-card">
 			<header class="title-row">
 				<div class="title-stack">
-					<span class="title-text">{{ title }}</span>
+					<span class="title-text" :class="severity">{{ title }}</span>
 					<span class="subtitle">{{ t('licensing.resolve_subtitle') }}</span>
 				</div>
 				<VButton secondary small @click="manageLicense">
@@ -198,11 +209,7 @@ function onEsc() {
 			</header>
 
 			<VCardText>
-				<VNotice
-					:type="scope === 'grace' ? 'warning' : 'danger'"
-					:icon="scope === 'grace' ? 'warning' : 'cancel'"
-					class="notice"
-				>
+				<VNotice :type="severity" :icon="severity === 'warning' ? 'warning' : 'cancel'" class="notice">
 					{{ noticeMessage }}
 				</VNotice>
 
@@ -322,9 +329,16 @@ function onEsc() {
 }
 
 .title-text {
-	color: var(--theme--danger);
 	font-size: 1rem;
 	font-weight: 600;
+}
+
+.title-text.danger {
+	color: var(--theme--danger);
+}
+
+.title-text.warning {
+	color: var(--theme--warning);
 }
 
 .subtitle {
