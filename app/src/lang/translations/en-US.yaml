@@ -1444,7 +1444,7 @@ licensing:
   resolve_title_suspended: License Suspension
   resolve_title_env_removed: License Removed
   resolve_title_grace: Resolve License Limits
-  resolve_title_downgraded: License Expired
+  resolve_title_no_resolution: License Inactive
   resolve_subtitle: If you need to update your license key, you can update it in your environment variable.
   resolve_notice_grace:
     Your project usage exceeds your plan limits. Resolve the breach before your grace period ends, otherwise your
@@ -1466,9 +1466,10 @@ licensing:
     Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
     collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
     locked in Directus, and custom access rules will also be locked.
-  resolve_notice_downgraded:
-    Your Directus license expired and the grace period has passed. This instance is now running on the Core plan — some
-    features may no longer be available.
+  resolve_notice_no_resolution:
+    Your license is no longer active and your project has been downgraded to the Starter plan. Some features may no
+    longer be available, and items beyond the Starter plan limits remain stored but locked in Directus. To restore full
+    access, add a new license key.
   resolve_continue: Continue
   resolve_submit: Deactivate Selected Items
   resolve_select_n_items: 'Select {count} item | Select {count} items'

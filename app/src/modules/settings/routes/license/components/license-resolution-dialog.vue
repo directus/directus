@@ -6,6 +6,7 @@ import {
 	type LicensePendingResolutionLimitFlows,
 	type LicensePendingResolutionLimitSeats,
 } from '@directus/license';
+import { useCookies } from '@vueuse/integrations/useCookies';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -39,7 +40,7 @@ const router = useRouter();
 const licenseStore = useLicenseStore();
 const { info, pendingResolution } = storeToRefs(licenseStore);
 
-type ResolveScope = 'manual' | 'expired' | 'suspended' | 'env_removed' | 'grace' | 'downgraded';
+type ResolveScope = 'manual' | 'expired' | 'suspended' | 'env_removed' | 'grace' | 'no_resolution';
 
 const hasResolution = computed(() => (pendingResolution.value?.length ?? 0) > 0);
 
@@ -47,16 +48,11 @@ const scope = computed<ResolveScope>(() => {
 	if (info.value === null) return 'env_removed';
 	const status = info.value.status;
 
-	// Locked/expired/suspended with nothing to resolve = silent downgrade to Core.
-	// Show an informational acknowledgement instead of the resolution form.
-	if (
-		(status === 'expired' || status === 'locked' || status === 'suspended' || status === 'canceled') &&
-		!hasResolution.value
-	) {
-		return 'downgraded';
-	}
-
 	if (status === 'grace') return 'grace';
+
+	// Terminal status with nothing actionable = informational acknowledgement.
+	if (!hasResolution.value && status !== 'active') return 'no_resolution';
+
 	if (status === 'expired' || status === 'locked') return 'expired';
 	if (status === 'suspended' || status === 'canceled') return 'suspended';
 	return 'manual';
@@ -165,12 +161,21 @@ function manageLicense() {
 	router.push('/settings/license');
 }
 
+const cookies = useCookies(['license-resolution-acknowledged']);
+
+function acknowledge() {
+	// Dismiss for this session. The cookie is cleared on logout so the modal reappears next login.
+	cookies.set('license-resolution-acknowledged', 'true', { path: '/' });
+	emit('update:modelValue', false);
+}
+
 function close() {
 	emit('update:modelValue', false);
 }
 
 function onEsc() {
 	if (scope.value === 'manual') close();
+	else if (scope.value === 'grace') acknowledge();
 }
 </script>
 
@@ -260,7 +265,10 @@ function onEsc() {
 
 			<footer class="action-row">
 				<VButton v-if="scope === 'manual'" secondary @click="close">{{ t('cancel') }}</VButton>
-				<VButton v-else-if="scope === 'downgraded'" @click="close">
+				<VButton v-else-if="scope === 'grace'" secondary @click="acknowledge">
+					{{ t('licensing.resolve_acknowledge') }}
+				</VButton>
+				<VButton v-else-if="scope === 'no_resolution'" @click="close">
 					{{ t('continue_label') }}
 				</VButton>
 				<VButton v-else kind="danger" :disabled="!isValid" :loading="submitting" @click="submit">
