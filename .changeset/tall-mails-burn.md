@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Improved bookmark flow
+Improved bookmark flow @formfcw
