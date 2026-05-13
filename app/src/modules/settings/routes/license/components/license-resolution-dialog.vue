@@ -14,7 +14,6 @@ import ResolutionLimitSection from './resolution-limit-section.vue';
 import ResolutionSsoSection from './resolution-sso-section.vue';
 import VAvatar from '@/components/v-avatar.vue';
 import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
@@ -259,7 +258,7 @@ function onEsc() {
 				/>
 			</VCardText>
 
-			<VCardActions>
+			<footer class="action-row">
 				<VButton v-if="scope === 'manual'" secondary @click="close">{{ t('cancel') }}</VButton>
 				<VButton v-else-if="scope === 'downgraded'" @click="close">
 					{{ t('continue_label') }}
@@ -267,7 +266,7 @@ function onEsc() {
 				<VButton v-else kind="danger" :disabled="!isValid" :loading="submitting" @click="submit">
 					{{ t('licensing.resolve_submit') }}
 				</VButton>
-			</VCardActions>
+			</footer>
 		</VCard>
 	</VDialog>
 </template>
@@ -288,6 +287,14 @@ function onEsc() {
 	flex: 1;
 	overflow-y: auto;
 	padding-block-start: 1rem;
+}
+
+.action-row {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.6875rem;
+	padding: 1rem 1.75rem;
+	border-block-start: 1px solid var(--theme--border-color-subdued);
 }
 
 .title-row {
