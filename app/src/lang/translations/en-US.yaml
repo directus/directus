@@ -1487,6 +1487,7 @@ licensing:
   badge:
     directus: Powered by Directus
     oig: Open Innovation Grant
+    non_prod: Non-Production
 danger_zone: Danger Zone
 settings_appearance: Appearance
 settings_ai: AI
