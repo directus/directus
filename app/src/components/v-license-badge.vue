@@ -41,7 +41,7 @@ a {
 	inset-inline-end: 4rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
-	padding: 0.375rem 0;
+	padding: 0.375rem 1.2rem;
 	font-size: 0.6875rem;
 	line-height: 1rem;
 	font-weight: 600;
@@ -78,6 +78,7 @@ a {
 		justify-content: space-around;
 		inline-size: 100%;
 		white-space: nowrap;
+		padding-inline: unset;
 	}
 }
 </style>
