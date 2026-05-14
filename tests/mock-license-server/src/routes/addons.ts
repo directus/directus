@@ -63,6 +63,8 @@ export async function addonsRoute(app: FastifyInstance) {
 					return res.status(400).send(forbiddenError(`Quantity ${quantity} out of range for addon ${addon_id}`));
 				}
 
+				req.license.entitlements[addon.unit].limit += quantity - addon.active_quantity;
+
 				req.license.entitlements[addon.unit].addon =
 					(req.license.entitlements[addon.unit].addon ?? 0) + quantity - addon.active_quantity;
 
@@ -94,9 +96,9 @@ export async function addonsRoute(app: FastifyInstance) {
 
 				if (!addon) return res.status(404).send(notFoundError(`Addon ${addon_id} not available`));
 
-				if (req.license.entitlements[addon.unit].addon === 0) {
-					delete req.license.entitlements[addon.unit].addon;
-				}
+				req.license.entitlements[addon.unit].limit -= addon.active_quantity;
+
+				delete req.license.entitlements[addon.unit].addon;
 
 				addon.active_quantity = 0;
 			}
