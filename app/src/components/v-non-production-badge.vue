@@ -20,7 +20,7 @@ const displayPoweredBy = computed(() => serverStore.info?.license?.entitlements?
 .non-production-badge {
 	font-weight: 600;
 	inline-size: fit-content;
-	margin: 0.319rem 1rem;
+	margin: 0.3125rem 1rem;
 
 	:deep(.chip-content) {
 		gap: 0.25rem;

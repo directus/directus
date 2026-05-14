@@ -20,8 +20,8 @@ const visible = computed(() => {
 
 <style lang="scss" scoped>
 .wrapper {
-	padding-block-end: 0.6875rem;
-	gap: 0.6875rem;
+	padding-block-end: 0.6565rem;
+	gap: 0.6565rem;
 	display: flex;
 	position: relative;
 	flex-direction: column;
