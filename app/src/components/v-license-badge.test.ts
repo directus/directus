@@ -61,19 +61,19 @@ describe('v-license-badge', () => {
 		expect(wrapper.find('a').attributes('href')).toBe('https://directus.io/oig');
 	});
 
-	it('adds private class to wrapper when private prop is true', () => {
+	it('adds private class to anchor when private prop is true', () => {
 		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'DIRECTUS' } };
 
 		const wrapper = mount(VLicenseBadge, { props: { private: true }, global });
 
-		expect(wrapper.find('.wrapper').classes()).toContain('private');
+		expect(wrapper.find('a').classes()).toContain('private');
 	});
 
-	it('does not add private class to wrapper when private prop is false', () => {
+	it('does not add private class to anchor when private prop is false', () => {
 		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'DIRECTUS' } };
 
 		const wrapper = mount(VLicenseBadge, { props: { private: false }, global });
 
-		expect(wrapper.find('.wrapper').classes()).not.toContain('private');
+		expect(wrapper.find('a').classes()).not.toContain('private');
 	});
 });

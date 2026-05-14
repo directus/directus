@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PrivateViewNavFooter from './private-view-nav-footer.vue';
 import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
 import VLicenseBadge from '@/components/v-license-badge.vue';
 
@@ -14,7 +15,9 @@ defineProps<{ id?: string }>();
 			<slot name="navigation" />
 		</div>
 
-		<VLicenseBadge private />
+		<PrivateViewNavFooter>
+			<VLicenseBadge private />
+		</PrivateViewNavFooter>
 	</aside>
 </template>
 
