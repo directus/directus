@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import PrivateViewNavFooter from './private-view-nav-footer.vue';
 import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
+import VLicenseBadge from '@/components/v-license-badge.vue';
+import VNonProductionBadge from '@/components/v-non-production-badge.vue';
 
 // id attribute for accessibility linking doesn’t work on the top-level element
 defineProps<{ id?: string }>();
@@ -12,6 +15,11 @@ defineProps<{ id?: string }>();
 		<div :id class="module-nav-content">
 			<slot name="navigation" />
 		</div>
+
+		<PrivateViewNavFooter>
+			<VLicenseBadge private />
+			<VNonProductionBadge />
+		</PrivateViewNavFooter>
 	</aside>
 </template>
 
@@ -20,7 +28,8 @@ defineProps<{ id?: string }>();
 	block-size: 100%;
 	inline-size: 100%;
 	position: relative;
-	display: block;
+	display: flex;
+	flex-direction: column;
 	font-size: 0.8125rem;
 	background: var(--theme--shell--background);
 }

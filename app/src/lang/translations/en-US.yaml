@@ -1475,6 +1475,10 @@ licensing:
     custom_policy_rules_enabled: Custom Rules (Access Policies)
     display_powered_by: Display Powered By
     production_enabled: Production
+  badge:
+    directus: Powered by Directus
+    oig: Open Innovation Grant
+    non_prod: Non-Production
 danger_zone: Danger Zone
 settings_appearance: Appearance
 settings_ai: AI
