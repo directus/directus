@@ -216,7 +216,16 @@ async function handleDeactivateConfirm() {
 						<VButton v-if="isLicensed && license.source !== null" secondary small @click="addLicenseDrawer = true">
 							{{ t('licensing.manage') }}
 						</VButton>
-						<VButton small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
+						<VButton
+							v-if="!isLicensed"
+							small
+							href="https://directus.io/pricing"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{{ t('licensing.upgrade_plan') }}
+						</VButton>
+						<VButton v-else small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
 					</div>
 				</div>
 				<VDivider />
