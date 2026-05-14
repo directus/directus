@@ -27,6 +27,7 @@ const link = computed(() => {
 <template>
 	<template v-if="displayPoweredBy === 'DIRECTUS' || displayPoweredBy === 'OIG'">
 		<div class="wrapper" :class="{ private: isPrivate }">
+			<hr />
 			<a :href="link" target="_blank" rel="noopener noreferrer">
 				<div class="link-inner">
 					<!-- eslint-disable-next-line vue/no-v-html -->
@@ -44,23 +45,22 @@ const link = computed(() => {
 
 <style lang="scss" scoped>
 .wrapper {
-	display: flex;
-	position: relative;
-	flex-direction: column;
-	gap: 0.5rem;
-
 	&.private {
-		padding: 0.6875rem;
+		padding-block-end: 0.6875rem;
+		gap: 0.6875rem;
+		display: flex;
+		position: relative;
+		flex-direction: column;
 	}
 
-	&::before {
-		content: '';
-		position: absolute;
-		inset-block-start: 0;
-		inset-inline: 0.75rem;
-		block-size: var(--theme--border-width);
-		background-color: var(--theme--navigation--list--divider--border-color);
-		opacity: 0.5;
+	hr {
+		flex-grow: 1;
+		max-inline-size: 100%;
+		border: solid;
+		border-color: var(--theme--navigation--list--divider--border-color);
+		border-width: var(--theme--border-width) 0 0 0;
+		inline-size: calc(100% - 2.25rem);
+		align-self: center;
 	}
 
 	a {
