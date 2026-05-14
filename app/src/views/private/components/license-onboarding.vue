@@ -15,7 +15,9 @@ import VRadioCards from '@/components/v-radio-cards.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 import { useLicenseForm } from '@/composables/use-license-form';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const model = defineModel<boolean>();
@@ -23,6 +25,8 @@ const model = defineModel<boolean>();
 const cookies = useCookies(['license-onboarding-dismissed']);
 const { t } = useI18n();
 const serverStore = useServerStore();
+const settingsStore = useSettingsStore();
+const licenseStore = useLicenseStore();
 
 const licenseKey = ref<string | null>(null);
 const projectUsage = ref<string | null>(null);
@@ -66,17 +70,17 @@ async function save() {
 	isSaving.value = true;
 
 	try {
-		const payload: Record<string, any> = {};
-
 		if (licenseChoice.value === 'key') {
-			payload.license_key = licenseKey.value;
+			await licenseStore.activate(licenseKey.value!);
+			await serverStore.hydrate();
 		} else {
-			payload.project_usage = projectUsage.value;
+			const payload: Record<string, any> = { project_usage: projectUsage.value };
 			if (showOrgName.value) payload.org_name = orgName.value;
+
+			await api.patch('/settings', payload);
+			await Promise.all([serverStore.hydrate(), settingsStore.hydrate()]);
 		}
 
-		await api.patch('/settings', payload);
-		await serverStore.hydrate();
 		model.value = false;
 	} catch (err) {
 		unexpectedError(err);

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SetupForm as Form } from '@directus/types';
 import { useCookies } from '@vueuse/integrations/useCookies';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -15,11 +15,32 @@ import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
 
+const model = defineModel<boolean>();
+
 const settingsStore = useSettingsStore();
 const cookies = useCookies(['license-banner-dismissed']);
 const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([]);
+
+const form = ref<Form>(buildInitialForm());
+
+const fields = useSetupFields(false);
+
+function buildInitialForm(): Form {
+	return {
+		...defaultValues,
+		owner: {
+			...defaultValues.owner,
+			project_usage: settingsStore.settings?.project_usage ?? null,
+			org_name: settingsStore.settings?.org_name ?? null,
+		},
+	};
+}
+
+watch(model, (open) => {
+	if (open) form.value = buildInitialForm();
+});
 
 const isSaveDisabled = computed(
 	() =>
@@ -41,21 +62,19 @@ async function setOwner() {
 
 	await settingsStore.hydrate();
 	isSaving.value = false;
+	model.value = false;
 }
 
-async function remindLater() {
+function remindLater() {
 	// 30 days, will be deleted on logout / session end
 	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
 	notify({ title: t('license_banner.remind_next_login'), type: 'info' });
+	model.value = false;
 }
-
-const form = ref<Form>(defaultValues);
-
-const fields = useSetupFields(false);
 </script>
 
 <template>
-	<VDialog>
+	<VDialog v-model="model">
 		<VCard>
 			<div class="inner">
 				<VCardTitle>
