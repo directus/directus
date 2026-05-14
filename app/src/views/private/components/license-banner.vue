@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SetupForm as Form } from '@directus/types';
 import { useCookies } from '@vueuse/integrations/useCookies';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -22,34 +22,11 @@ const cookies = useCookies(['license-banner-dismissed']);
 const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([]);
-
-const form = ref<Form>(buildInitialForm());
-
+const form = ref<Form>(defaultValues);
 const fields = useSetupFields(false);
-
-function buildInitialForm(): Form {
-	return {
-		...defaultValues,
-		owner: {
-			...defaultValues.owner,
-			project_usage: settingsStore.settings?.project_usage ?? null,
-			org_name: settingsStore.settings?.org_name ?? null,
-		},
-	};
-}
-
-watch(model, (open) => {
-	if (open) form.value = buildInitialForm();
-});
-
-const isSaveDisabled = computed(
-	() =>
-		!form.value.owner.project_owner ||
-		!form.value.license ||
-		(form.value.owner.project_usage === 'commercial' && !form.value.owner.org_name),
-);
-
 const isSaving = ref(false);
+
+const isSaveDisabled = computed(() => !form.value.owner.project_owner || !form.value.license);
 
 async function setOwner() {
 	errors.value = validate({ project_owner: form.value.owner.project_owner }, fields);
@@ -58,7 +35,12 @@ async function setOwner() {
 
 	isSaving.value = true;
 
-	await settingsStore.setOwner(form.value.owner);
+	await settingsStore.setOwner({
+		project_owner: form.value.owner.project_owner,
+		product_updates: form.value.owner.product_updates,
+		project_usage: settingsStore.settings?.project_usage ?? null,
+		org_name: settingsStore.settings?.org_name ?? null,
+	});
 
 	await settingsStore.hydrate();
 	isSaving.value = false;
