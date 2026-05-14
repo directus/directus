@@ -41,6 +41,7 @@ const boundaryDate = computed(() => {
 });
 
 onMounted(() => {
+	licenseStore.hydrate();
 	licenseStore.hydrateAddons();
 });
 
@@ -158,7 +159,7 @@ async function handleDeactivateConfirm() {
 		</template>
 
 		<div class="license">
-			<VProgressCircular v-if="loading" indeterminate />
+			<VProgressCircular v-if="loading && !license" indeterminate />
 
 			<template v-else-if="license">
 				<div class="plan-header">
