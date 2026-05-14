@@ -49,6 +49,43 @@ const planDisplayName = computed(() => license.value?.name ?? null);
 
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
+const activateLoading = ref(false);
+const licenseKeyValidity = ref<{ valid: boolean; validating: boolean }>({ valid: false, validating: false });
+
+const canSave = computed(() => licenseKeyValidity.value.valid && !licenseKeyValidity.value.validating);
+
+function resetAddLicenseForm() {
+	licenseKey.value = '';
+	licenseKeyValidity.value = { valid: false, validating: false };
+}
+
+async function handleActivate() {
+	if (!canSave.value || activateLoading.value) return;
+
+	activateLoading.value = true;
+
+	const key = licenseKey.value.trim();
+
+	try {
+		if (isLicensed.value) {
+			await licenseStore.update(key);
+		} else {
+			await licenseStore.activate(key);
+		}
+
+		addLicenseDrawer.value = false;
+		resetAddLicenseForm();
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		activateLoading.value = false;
+	}
+}
+
+function handleAddLicenseCancel() {
+	addLicenseDrawer.value = false;
+	resetAddLicenseForm();
+}
 
 type EntitlementConfig = {
 	key: keyof Entitlements;
@@ -353,5 +390,10 @@ async function handleDeactivateConfirm() {
 	flex-direction: column;
 	gap: 2.25rem;
 	padding: var(--content-padding);
+}
+.license-key-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
 }
 </style>
