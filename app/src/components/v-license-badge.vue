@@ -9,11 +9,7 @@ const logoSvg = rawLogoSvg.replace('<svg ', '<svg viewBox="0 0 64 39" ');
 
 const serverStore = useServerStore();
 
-const displayPoweredBy = computed(() => {
-	if (!serverStore.info.license?.entitlements.display_powered_by) return null;
-
-	return serverStore.info.license?.entitlements.display_powered_by;
-});
+const displayPoweredBy = computed(() => serverStore.info?.license?.entitlements?.display_powered_by);
 
 const link = computed(() => {
 	if (displayPoweredBy.value === 'DIRECTUS') return 'https://directus.io/';
