@@ -33,17 +33,19 @@ const licenseInfo = ref<LicensePreview | null>(null);
 const validating = ref(false);
 const error = ref<Error | null>(null);
 
-const stored = ref(false);
+const isLicenseKeyMasked = ref(false);
 
 watch(
 	() => props.edit,
 	(isEdit) => {
-		stored.value = isEdit;
+		isLicenseKeyMasked.value = isEdit;
 	},
 	{ immediate: true },
 );
 
-const placeholder = computed(() => (stored.value ? t('value_securely_stored') : t('enter_license_key')));
+const placeholder = computed(() =>
+	isLicenseKeyMasked.value ? t('value_securely_stored') : t('enter_license_key'),
+);
 
 const emit = defineEmits<{
 	input: [value: string | null];
@@ -58,8 +60,8 @@ function emitValidity() {
 }
 
 function unlock() {
-	if (!stored.value) return;
-	stored.value = false;
+	if (!isLicenseKeyMasked.value) return;
+	isLicenseKeyMasked.value = false;
 }
 
 const validate = throttle(async (value: string | null) => {
@@ -112,9 +114,9 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="license-key" :class="{ stored }">
+	<div class="license-key" :class="{ masked: isLicenseKeyMasked }">
 		<VInput
-			:model-value="stored ? undefined : (value ?? undefined)"
+			:model-value="isLicenseKeyMasked ? undefined : (value ?? undefined)"
 			class="license-input"
 			:placeholder="placeholder"
 			nullable
@@ -126,9 +128,9 @@ onMounted(() => {
 				<VProgressCircular v-if="validating" class="spinner" small indeterminate />
 				<VIcon
 					v-else-if="edit"
-					:name="stored ? 'lock' : 'lock_open'"
+					:name="isLicenseKeyMasked ? 'lock' : 'lock_open'"
 					class="lock-icon"
-					:clickable="stored"
+					:clickable="isLicenseKeyMasked"
 					@click="unlock"
 				/>
 			</template>
@@ -172,7 +174,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.license-key.stored {
+.license-key.masked {
 	--v-input-placeholder-color: var(--theme--primary);
 
 	.lock-icon {

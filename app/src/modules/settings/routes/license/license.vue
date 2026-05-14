@@ -318,7 +318,7 @@ async function handleDeactivateConfirm() {
 				</I18nT>
 			</VNotice>
 			<div class="license-key-field">
-				<label class="field-label">{{ t('licensing.key') }}</label>
+				<label class="type-label">{{ t('licensing.key') }}</label>
 				<SystemLicenseKey
 					:value="licenseKey"
 					:edit="isLicensed"
@@ -419,9 +419,4 @@ async function handleDeactivateConfirm() {
 	gap: 0.5rem;
 }
 
-.field-label {
-	font-size: 0.9375rem;
-	font-weight: 600;
-	color: var(--theme--foreground);
-}
 </style>
