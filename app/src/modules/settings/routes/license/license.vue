@@ -25,6 +25,7 @@ import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
 import { formatTimeframe } from '@/utils/format-timeframe';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView } from '@/views/private';
 
@@ -225,7 +226,15 @@ async function handleDeactivateConfirm() {
 						>
 							{{ t('licensing.upgrade_plan') }}
 						</VButton>
-						<VButton v-else small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
+						<VButton
+							v-else
+							small
+							:href="`${getRootPath()}license/portal`"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{{ t('licensing.upgrade_plan') }}
+						</VButton>
 					</div>
 				</div>
 				<VDivider />
