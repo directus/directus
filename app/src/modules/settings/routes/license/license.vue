@@ -40,8 +40,13 @@ const boundaryDate = computed(() => {
 	return formatDate(dateStr, { type: 'date', format: 'long' });
 });
 
-onMounted(() => {
-	licenseStore.hydrateAddons();
+onMounted(async () => {
+	await licenseStore.hydrate();
+
+	// Core tier has no addons (source === null), skip the request.
+	if (licenseStore.info?.source != null) {
+		licenseStore.hydrateAddons();
+	}
 });
 
 const planDisplayName = computed(() => license.value?.name ?? null);
@@ -195,7 +200,7 @@ async function handleDeactivateConfirm() {
 		</template>
 
 		<div class="license">
-			<VProgressCircular v-if="loading" indeterminate />
+			<VProgressCircular v-if="loading && !license" indeterminate />
 
 			<template v-else-if="license">
 				<div class="plan-header">
