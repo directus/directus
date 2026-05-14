@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activateLicense, deactivateLicense, type Entitlements, updateLicense } from '@directus/license';
+import { deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -64,11 +64,14 @@ async function handleActivate() {
 	activateLoading.value = true;
 
 	const key = licenseKey.value.trim();
-	const command = isLicensed.value ? updateLicense({ license_key: key }) : activateLicense({ license_key: key });
 
 	try {
-		await sdk.request(command);
-		await licenseStore.hydrate();
+		if (isLicensed.value) {
+			await licenseStore.update(key);
+		} else {
+			await licenseStore.activate(key);
+		}
+
 		addLicenseDrawer.value = false;
 		resetAddLicenseForm();
 	} catch (err) {
@@ -418,5 +421,4 @@ async function handleDeactivateConfirm() {
 	flex-direction: column;
 	gap: 0.5rem;
 }
-
 </style>
