@@ -40,9 +40,12 @@ const boundaryDate = computed(() => {
 	return formatDate(dateStr, { type: 'date', format: 'long' });
 });
 
-onMounted(() => {
-	licenseStore.hydrate();
-	licenseStore.hydrateAddons();
+onMounted(async () => {
+	await licenseStore.hydrate();
+
+	if (licenseStore.info?.source !== null) {
+		licenseStore.hydrateAddons();
+	}
 });
 
 const planDisplayName = computed(() => license.value?.name ?? null);
