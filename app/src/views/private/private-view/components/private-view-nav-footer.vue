@@ -20,7 +20,7 @@ const visible = computed(() => {
 
 <style lang="scss" scoped>
 .wrapper {
-	padding-block-end: 0.6565rem;
+	padding: 0 0.6875rem 0.6565rem;
 	gap: 0.6565rem;
 	display: flex;
 	position: relative;
@@ -32,7 +32,7 @@ const visible = computed(() => {
 		border: solid;
 		border-color: var(--theme--navigation--list--divider--border-color);
 		border-width: var(--theme--border-width) 0 0 0;
-		inline-size: calc(100% - 2.25rem);
+		inline-size: calc(100% - 1.375rem);
 		align-self: center;
 	}
 }

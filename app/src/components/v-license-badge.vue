@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import rawLogoSvg from '@/assets/logo-dark.svg?raw';
+import VIcon from './v-icon/v-icon.vue';
 import { useServerStore } from '@/stores/server';
 
 const { private: isPrivate = false } = defineProps<{ private?: boolean }>();
-
-const logoSvg = rawLogoSvg.replace('<svg ', '<svg viewBox="0 0 64 39" ');
 
 const serverStore = useServerStore();
 
@@ -29,8 +27,7 @@ const link = computed(() => {
 		rel="noopener noreferrer"
 	>
 		<div class="link-inner">
-			<!-- eslint-disable-next-line vue/no-v-html -->
-			<span class="directus-logo" aria-label="Directus" v-html="logoSvg" />
+			<VIcon name="directus" class="directus-logo" />
 			{{ displayPoweredBy === 'DIRECTUS' ? $t('licensing.badge.directus') : $t('licensing.badge.oig') }}
 		</div>
 	</a>
@@ -44,7 +41,7 @@ a {
 	inset-inline-end: 4rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
-	padding: 0.5rem 1.2rem;
+	padding: 0.375rem 0;
 	font-size: 0.6875rem;
 	line-height: 1rem;
 	font-weight: 600;
@@ -77,8 +74,9 @@ a {
 		inset-block-end: unset;
 		inset-inline-end: unset;
 		background-color: var(--theme--background-normal);
-		display: inline-flex;
-		align-self: center;
+		display: flex;
+		justify-content: space-around;
+		inline-size: 100%;
 		white-space: nowrap;
 	}
 }
