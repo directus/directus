@@ -1469,9 +1469,6 @@ licensing:
   env_managed: Your license key is managed via an environment variable and can't be updated here.
   key_management: License Key Management
   key: License Key
-  key_notice:
-    If you have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue
-    may be eligible for our Open Innovation Grant.
   entitlements:
     collections: Collections
     seats: Seats

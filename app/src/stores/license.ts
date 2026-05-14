@@ -1,4 +1,5 @@
 import {
+	activateLicense,
 	type CountableEntitlementKey,
 	generateLicensePendingResolution,
 	type LicenseAddon,
@@ -6,6 +7,7 @@ import {
 	readLicense,
 	readLicenseAddons,
 	type ReadLicenseOutput,
+	updateLicense,
 } from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -72,8 +74,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const customLLMEnabled = computed(() => isEntitlementEnabled('custom_llms_enabled'));
 
 	const isLicensed = computed(() => {
-		const status = info.value?.status;
-		return status === 'active' || status === 'grace';
+		if (!info.value || info.value.source === null) return false;
+		return info.value.status === 'active' || info.value.status === 'grace';
 	});
 
 	const needsResolution = computed(() => {
@@ -170,6 +172,16 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		}
 	}
 
+	async function activate(licenseKey: string) {
+		await sdk.request(activateLicense({ license_key: licenseKey }));
+		await hydrate();
+	}
+
+	async function update(licenseKey: string) {
+		await sdk.request(updateLicense({ license_key: licenseKey }));
+		await hydrate();
+	}
+
 	async function dehydrate() {
 		clearTimer();
 		info.value = null;
@@ -202,6 +214,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
+		activate,
+		update,
 		dehydrate,
 	};
 });

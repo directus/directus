@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import api from '@/api';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -31,14 +31,43 @@ const props = withDefaults(
 const licenseInfo = ref<LicensePreview | null>(null);
 
 const validating = ref(false);
-const stored = ref(true);
 const error = ref<Error | null>(null);
 
-const emit = defineEmits(['input']);
+const isLicenseKeyMasked = ref(false);
+
+watch(
+	() => props.edit,
+	(isEdit) => {
+		isLicenseKeyMasked.value = isEdit;
+	},
+	{ immediate: true },
+);
+
+const placeholder = computed(() =>
+	isLicenseKeyMasked.value ? t('value_securely_stored') : t('enter_license_key'),
+);
+
+const emit = defineEmits<{
+	input: [value: string | null];
+	validity: [value: { valid: boolean; validating: boolean }];
+}>();
+
+function emitValidity() {
+	emit('validity', {
+		valid: !!licenseInfo.value && !error.value && !validating.value,
+		validating: validating.value,
+	});
+}
+
+function unlock() {
+	if (!isLicenseKeyMasked.value) return;
+	isLicenseKeyMasked.value = false;
+}
 
 const validate = throttle(async (value: string | null) => {
 	if (!value || value.length < 29) {
 		licenseInfo.value = null;
+		emitValidity();
 		return;
 	}
 
@@ -47,12 +76,14 @@ const validate = throttle(async (value: string | null) => {
 	if (parsed.error) {
 		error.value = parsed.error;
 		licenseInfo.value = null;
+		emitValidity();
 		return;
 	}
 
 	error.value = null;
 	validating.value = true;
 	licenseInfo.value = null;
+	emitValidity();
 
 	try {
 		const response = await api.post<{ data: LicensePreview }>('/license/preview', { license_key: value });
@@ -61,6 +92,7 @@ const validate = throttle(async (value: string | null) => {
 		error.value = err instanceof Error ? err : new Error(String(err));
 	} finally {
 		validating.value = false;
+		emitValidity();
 	}
 }, 300);
 
@@ -82,18 +114,25 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="license-key">
+	<div class="license-key" :class="{ masked: isLicenseKeyMasked }">
 		<VInput
-			:model-value="value ?? undefined"
+			:model-value="isLicenseKeyMasked ? undefined : (value ?? undefined)"
 			class="license-input"
-			:placeholder="$t('enter_license_key')"
+			:placeholder="placeholder"
 			nullable
 			:max-length="29"
 			@update:model-value="onUpdated"
+			@focus="unlock"
 		>
 			<template #append>
 				<VProgressCircular v-if="validating" class="spinner" small indeterminate />
-				<VIcon v-if="edit" :name="stored ? 'lock' : 'lock_open'" class="lock-icon" />
+				<VIcon
+					v-else-if="edit"
+					:name="isLicenseKeyMasked ? 'lock' : 'lock_open'"
+					class="lock-icon"
+					:clickable="isLicenseKeyMasked"
+					@click="unlock"
+				/>
 			</template>
 		</VInput>
 
@@ -135,6 +174,14 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.license-key.masked {
+	--v-input-placeholder-color: var(--theme--primary);
+
+	.lock-icon {
+		--v-icon-color: var(--theme--primary);
+	}
+}
+
 .validation-status {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
