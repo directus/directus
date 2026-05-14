@@ -31,11 +31,7 @@ const link = computed(() => {
 		<div class="link-inner">
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span class="directus-logo" aria-label="Directus" v-html="logoSvg" />
-			{{
-				displayPoweredBy === 'DIRECTUS'
-					? $t('interfaces.powered-by-badge.directus')
-					: $t('interfaces.powered-by-badge.oig')
-			}}
+			{{ displayPoweredBy === 'DIRECTUS' ? $t('licensing.badge.directus') : $t('licensing.badge.oig') }}
 		</div>
 	</a>
 </template>

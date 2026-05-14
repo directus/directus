@@ -1484,6 +1484,9 @@ licensing:
     custom_policy_rules_enabled: Custom Rules (Access Policies)
     display_powered_by: Display Powered By
     production_enabled: Production
+  badge:
+    directus: Powered by Directus
+    oig: Open Innovation Grant
 danger_zone: Danger Zone
 settings_appearance: Appearance
 settings_ai: AI
@@ -2320,10 +2323,6 @@ interfaces:
     error: Cannot perform action
     action_type: Action Type
     select_manual_flow_note: Flow must be configured with a manual trigger for this collection
-  powered-by-badge:
-    name: Powered By Badge
-    directus: Powered by Directus
-    oig: Open Innovation Grant
   select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
