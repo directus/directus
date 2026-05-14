@@ -40,7 +40,7 @@ const collectionsStore = useCollectionsStore();
 const licenseStore = useLicenseStore();
 
 const { limitModalOpen: collectionsLimitModalOpen, navigate } = useLicenseGuard(
-	() => licenseStore.hasRemainingCollections,
+	() => licenseStore.limits.collections.hasRemaining,
 );
 
 const navigateToNewCollection = () => navigate({ name: 'settings-add-new' });
@@ -220,7 +220,7 @@ async function downloadSnapshot() {
 		</template>
 
 		<div class="padding-box" :class="{ 'has-action': hasExpandableCollections }">
-			<MaxCapacityAlert v-if="licenseStore.collectionsRemaining !== null && licenseStore.collectionsRemaining <= 0" />
+			<MaxCapacityAlert />
 
 			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}

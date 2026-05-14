@@ -21,25 +21,19 @@
 # 'Proxy', 'Intl'
 
 about: About
-directus_bsl: Directus BSL 1.1
+directus_mscl: Directus MSCL-1.0-GPL
 privacy_policy: Privacy Policy
-contact_our_team: Contact our Team
 contact_support: contact support
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
 setup_license_key_notice: >
   If have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue may be
   eligible for our {oig}.
-setup_license_notice: >
-  Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
-setup_license_follow_up: >
-  Entities above this threshold require a paid license. You can continue evaluating Directus now and {contactOurTeam}
-  when you're ready to discuss production use.
 setup_save_accept_license: >
-  By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
+  By hitting save, you accept the terms of the {directusMscl} and {privacyPolicy}.
 setup_license_invalid: >
   License invalid. Please {contactSupport} to resolve this issue.
-setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
+setup_accept_license: I accept the terms of the {directusMscl} and {privacyPolicy}
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
 setup_license_title: Set up your license
@@ -1471,9 +1465,6 @@ licensing:
   env_managed: Your license key is managed via an environment variable and can't be updated here.
   key_management: License Key Management
   key: License Key
-  key_notice:
-    If you have a license key enter it below to unlock your full plan. Qualifying businesses under $5M annual revenue
-    may be eligible for our Open Innovation Grant.
   entitlements:
     collections: Collections
     seats: Seats
@@ -3184,11 +3175,11 @@ search_flow: Search Flow...
 percent: Percent
 show_password: Show password
 hide_password: Hide password
-bsl_banner:
+license_banner:
   title: You have not set a project owner.
   license:
-    We need this to ensure compliance with our BSL 1.1 license. This should be the primary contact responsible for your
-    project.
+    We need this to ensure compliance with our MSCL-1.0-GPL license. This should be the primary contact responsible for
+    your project.
   set_owner: Set Owner
   remind_later: Remind Later
   remind_next_login: We'll remind you again on your next login.
