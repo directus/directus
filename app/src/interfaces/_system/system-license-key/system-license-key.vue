@@ -114,7 +114,7 @@ onMounted(() => {
 <template>
 	<div class="license-key" :class="{ stored }">
 		<VInput
-			:model-value="stored ? null : (value ?? undefined)"
+			:model-value="stored ? undefined : (value ?? undefined)"
 			class="license-input"
 			:placeholder="placeholder"
 			nullable
