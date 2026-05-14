@@ -2,8 +2,8 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import VImage from '@/components/v-image.vue';
+import VLicenseBadge from '@/components/v-license-badge.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import InterfaceSystemPoweredByBadge from '@/interfaces/_system/system-powered-by-badge/system-powered-by-badge.vue';
 import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 
@@ -99,7 +99,7 @@ const logoURL = computed<string | null>(() => {
 			</div>
 		</div>
 
-		<InterfaceSystemPoweredByBadge />
+		<VLicenseBadge />
 	</div>
 </template>
 

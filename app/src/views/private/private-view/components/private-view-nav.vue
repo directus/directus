@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
-import InterfaceSystemPoweredByBadge from '@/interfaces/_system/system-powered-by-badge/system-powered-by-badge.vue';
+import VLicenseBadge from '@/components/v-license-badge.vue';
 
 // id attribute for accessibility linking doesn’t work on the top-level element
 defineProps<{ id?: string }>();
@@ -14,7 +14,7 @@ defineProps<{ id?: string }>();
 			<slot name="navigation" />
 		</div>
 
-		<InterfaceSystemPoweredByBadge private />
+		<VLicenseBadge private />
 	</aside>
 </template>
 
