@@ -43,7 +43,8 @@ const boundaryDate = computed(() => {
 onMounted(async () => {
 	await licenseStore.hydrate();
 
-	if (licenseStore.info?.source !== null) {
+	// Core tier has no addons (source === null), skip the request.
+	if (licenseStore.info?.source != null) {
 		licenseStore.hydrateAddons();
 	}
 });
