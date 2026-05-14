@@ -44,7 +44,7 @@ const editFlow = ref<string | undefined>();
 const flowsLimitModalOpen = ref(false);
 
 function openCreateFlow() {
-	if (!licenseStore.hasRemainingFlows) {
+	if (!licenseStore.limits.flows.hasRemaining) {
 		flowsLimitModalOpen.value = true;
 		return;
 	}
@@ -184,7 +184,7 @@ function onFlowDrawerCompletion(id: string) {
 			/>
 		</template>
 
-		<div v-if="licenseStore.flowsRemaining !== null && licenseStore.flowsRemaining <= 0" class="padding-box">
+		<div v-if="!licenseStore.limits.flows.hasRemaining" class="padding-box">
 			<MaxCapacityAlert entitlement-key="flows" />
 		</div>
 
