@@ -173,11 +173,7 @@ async function downloadSnapshot() {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton
-				:label="$t('create_collection')"
-				:to="{ name: 'settings-add-new' }"
-				icon="add"
-			/>
+			<PrivateViewHeaderBarActionButton :label="$t('create')" :to="{ name: 'settings-add-new' }" icon="add" />
 		</template>
 
 		<template #navigation>
