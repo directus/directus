@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deactivateLicense, type Entitlements } from '@directus/license';
+import { activateLicense, deactivateLicense, type Entitlements, updateLicense } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -25,6 +25,7 @@ import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
 import { formatTimeframe } from '@/utils/format-timeframe';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView } from '@/views/private';
 
@@ -218,13 +219,22 @@ async function handleDeactivateConfirm() {
 						</div>
 					</div>
 					<div class="plan-actions">
-						<VButton v-if="!isLicensed" secondary small @click="addLicenseDrawer = true">
-							{{ t('licensing.add') }}
-						</VButton>
-						<VButton v-if="isLicensed && license.source !== null" secondary small @click="addLicenseDrawer = true">
-							{{ t('licensing.manage') }}
-						</VButton>
-						<VButton small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
+						<template v-if="!isLicensed">
+							<VButton secondary small @click="addLicenseDrawer = true">
+								{{ t('licensing.add') }}
+							</VButton>
+							<VButton small href="https://directus.io/pricing" target="_blank" rel="noopener noreferrer">
+								{{ t('licensing.upgrade_plan') }}
+							</VButton>
+						</template>
+						<template v-else>
+							<VButton secondary small @click="addLicenseDrawer = true">
+								{{ t('licensing.manage') }}
+							</VButton>
+							<VButton small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
+								{{ t('licensing.upgrade_plan') }}
+							</VButton>
+						</template>
 					</div>
 				</div>
 				<VDivider />
