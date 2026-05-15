@@ -97,10 +97,10 @@ function navigateToUser() {
 			</VAvatar>
 			<div class="data">
 				<div class="name type-label">{{ userName(data) }}</div>
-				<VChip class="status" :class="data.status" small>
+				<VChip class="status" :class="data.status" :label="false" small>
 					{{ $t(`fields.directus_users.status_${data.status}`) }}
 				</VChip>
-				<VChip v-if="data.role?.name" small>{{ data.role.name }}</VChip>
+				<VChip v-if="data.role?.name" :label="false" small>{{ data.role.name }}</VChip>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
