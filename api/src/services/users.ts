@@ -657,7 +657,7 @@ export class UsersService extends ItemsService {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 
 		// user status/provider changes affect both seat count and sso validity
-		await getEntitlementManager().invalidate('seats', 'sso_enabled');
+		await getEntitlementManager().clearCache('seats', 'sso_enabled');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();

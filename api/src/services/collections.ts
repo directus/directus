@@ -252,7 +252,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-				await getEntitlementManager().invalidate('collections');
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -304,7 +304,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-				await getEntitlementManager().invalidate('collections');
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -502,7 +502,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-				await getEntitlementManager().invalidate('collections');
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -562,7 +562,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-				await getEntitlementManager().invalidate('collections');
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -613,7 +613,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-				await getEntitlementManager().invalidate('collections');
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -798,7 +798,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-				await getEntitlementManager().invalidate('collections');
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -847,7 +847,7 @@ export class CollectionsService {
 
 			if (opts?.autoPurgeSystemCache !== false) {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-				await getEntitlementManager().invalidate('collections');
+				await getEntitlementManager().clearCache('collections');
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {

@@ -20,7 +20,7 @@ export default async function cacheClear({ system, data }: { system?: boolean; d
 			if (clearAll || system) {
 				await clearSystemCache({ forced: true });
 				// publishes on the bus so running server nodes drop their entitlement caches
-				await getEntitlementManager().invalidateAll();
+				await getEntitlementManager().clearCache();
 			}
 
 			if (clearAll || data) {

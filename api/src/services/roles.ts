@@ -123,7 +123,7 @@ export class RolesService extends ItemsService {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 
 		// role membership/admin flag changes affect seat partitioning
-		await getEntitlementManager().invalidate('seats');
+		await getEntitlementManager().clearCache('seats');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();

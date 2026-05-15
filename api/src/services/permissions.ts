@@ -32,7 +32,7 @@ export class PermissionsService extends ItemsService {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 
 		// permission rule additions/edits can flip the custom-permission validator
-		await getEntitlementManager().invalidate('custom_permission_rules_enabled');
+		await getEntitlementManager().clearCache('custom_permission_rules_enabled');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();

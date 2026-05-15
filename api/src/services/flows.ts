@@ -15,7 +15,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 		const result = await super.createOne(data, opts);
 
-		await getEntitlementManager().invalidate('flows');
+		await getEntitlementManager().clearCache('flows');
 		await getFlowManager().reload();
 
 		return result;
@@ -29,7 +29,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 		const result = await super.updateMany(keys, data, opts);
 
 		// any update may have toggled status, which is what gates the active-flow count
-		await getEntitlementManager().invalidate('flows');
+		await getEntitlementManager().clearCache('flows');
 		await getFlowManager().reload();
 
 		return result;
@@ -41,7 +41,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 		const result = await super.deleteMany(keys, opts);
 
-		await getEntitlementManager().invalidate('flows');
+		await getEntitlementManager().clearCache('flows');
 		await getFlowManager().reload();
 
 		return result;

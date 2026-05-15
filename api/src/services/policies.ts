@@ -16,7 +16,7 @@ export class PoliciesService extends ItemsService<Policy> {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 
 		// admin/app access toggles on policies reclassify users between seat tiers
-		await getEntitlementManager().invalidate('seats');
+		await getEntitlementManager().clearCache('seats');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();

@@ -28,7 +28,7 @@ export class SettingsService extends ItemsService<Settings> {
 		const result = await super.createOne(data, opts);
 
 		// invalidate on any LLM-field write (including clearing to null, which can re-enable validity)
-		if (touchesLLM) await getEntitlementManager().invalidate('custom_llms_enabled');
+		if (touchesLLM) await getEntitlementManager().clearCache('custom_llms_enabled');
 
 		return result;
 	}
@@ -46,7 +46,7 @@ export class SettingsService extends ItemsService<Settings> {
 
 		const result = await super.updateMany(keys, data, opts);
 
-		if (touchesLLM) await getEntitlementManager().invalidate('custom_llms_enabled');
+		if (touchesLLM) await getEntitlementManager().clearCache('custom_llms_enabled');
 
 		return result;
 	}

@@ -166,7 +166,7 @@ export class UtilsService {
 
 		if (system) {
 			await clearSystemCache({ forced: true });
-			await getEntitlementManager().invalidateAll();
+			await getEntitlementManager().clearCache();
 		}
 
 		return cache?.clear();

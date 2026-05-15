@@ -64,8 +64,12 @@ export class EntitlementManager {
 		this.registerResolver('flows', resolveFlows);
 		this.registerResolver('sso_enabled', resolveSSOUsers);
 
-		// invalidations from other nodes
-		useBus().subscribe<InvalidateMessage>(BUS_CHANNEL, (msg) => this.applyInvalidate(msg?.keys));
+		// cache invalidations from other nodes
+		useBus().subscribe<InvalidateMessage>(BUS_CHANNEL, (msg) => {
+			const keys = msg?.keys;
+			if (!keys || keys.length === 0) this.cache.clear();
+			else for (const key of keys) this.cache.delete(key);
+		});
 	}
 
 	/**
@@ -74,14 +78,14 @@ export class EntitlementManager {
 	setEntitlements(entitlements: Entitlements | null): void {
 		this.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
 		// license change can flip limits or default flags, so any cached usage/validity is suspect
-		void this.invalidateAll();
+		void this.clearCache();
 	}
 
 	/**
 	 * Create a manager that uses a different entitlement set while sharing
 	 * this instance's cache and registered sources. Used to preview how a
 	 * license change would affect the current user. Intended for read-only
-	 * checks. Mutating methods (`setEntitlements`, `invalidate*`) on the
+	 * checks. Mutating methods (`setEntitlements`, `clearCache`) on the
 	 * fork will affect the shared cache.
 	 */
 	fork(entitlements: Entitlements): EntitlementManager {
@@ -95,31 +99,19 @@ export class EntitlementManager {
 	}
 
 	/**
-	 * Drop cached usage/validity for the given keys and notify other nodes.
-	 * Called from mutation paths that change entitlement-relevant state.
+	 * Drop cached usage/validity locally and notify other nodes. Pass specific
+	 * keys to clear only those entries; call with no args to clear everything.
+	 * Used by mutation paths (services) and by the manual cache-clear endpoint
+	 * and CLI command.
 	 */
-	async invalidate(...keys: EntitlementCacheKey[]): Promise<void> {
-		if (keys.length === 0) return;
-		this.applyInvalidate(keys);
-		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
-	}
-
-	/**
-	 * Drop the entire entitlement cache and notify other nodes. Used by the
-	 * manual cache-clear endpoint and CLI command.
-	 */
-	async invalidateAll(): Promise<void> {
-		this.applyInvalidate();
-		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, {});
-	}
-
-	private applyInvalidate(keys?: EntitlementCacheKey[]): void {
-		if (!keys || keys.length === 0) {
+	async clearCache(...keys: EntitlementCacheKey[]): Promise<void> {
+		if (keys.length === 0) {
 			this.cache.clear();
-			return;
+			await useBus().publish<InvalidateMessage>(BUS_CHANNEL, {});
+		} else {
+			for (const key of keys) this.cache.delete(key);
+			await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
 		}
-
-		for (const key of keys) this.cache.delete(key);
 	}
 
 	/**
