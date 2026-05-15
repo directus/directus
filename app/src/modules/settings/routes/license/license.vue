@@ -208,7 +208,8 @@ async function handleDeactivateConfirm() {
 					<div class="plan-title">
 						<span class="plan-name">{{ planDisplayName }}</span>
 						<div class="plan-status">
-							<VChip :class="license.status" x-small>{{ license.status }}</VChip>
+							<VChip v-if="license.source === null" x-small>{{ t('licensing.unlicensed') }}</VChip>
+							<VChip v-else kind="primary" x-small>{{ t('licensing.current_plan') }}</VChip>
 							<span v-if="boundaryDate" class="boundary-date">
 								{{
 									boundary?.type === 'expiration'

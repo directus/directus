@@ -1419,6 +1419,8 @@ settings_permissions: Access Policies
 settings_project: Settings
 settings_license: License
 licensing:
+  unlicensed: Unlicensed
+  current_plan: Current Plan
   expires_on: 'Expires on {date}'
   renews_on: 'Renews on {date}'
   add: Add License
