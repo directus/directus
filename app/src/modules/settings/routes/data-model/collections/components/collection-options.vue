@@ -30,8 +30,8 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {});
 
 const emit = defineEmits<{
-	includeCollection: [collection: string];
-	excludeCollection: [collection: string];
+	activateCollection: [collection: string];
+	deactivateCollection: [collection: string];
 }>();
 
 const isDeactivated = computed(() => props.collection.meta?.status !== 'active');
@@ -93,12 +93,12 @@ async function update(updates: DeepPartial<Collection>) {
 				<VIcon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
 			</template>
 			<VList>
-				<VListItem v-if="isDeactivated" clickable @click="emit('includeCollection', collection.collection)">
+				<VListItem v-if="isDeactivated" clickable @click="emit('activateCollection', collection.collection)">
 					<VListItemIcon>
 						<VIcon name="add" />
 					</VListItemIcon>
 					<VListItemContent>
-						{{ $t('include_collection') }}
+						{{ $t('activate_collection') }}
 					</VListItemContent>
 				</VListItem>
 
@@ -114,13 +114,13 @@ async function update(updates: DeepPartial<Collection>) {
 				<VListItem
 					v-if="!isDeactivated && collection.schema"
 					clickable
-					@click="emit('excludeCollection', collection.collection)"
+					@click="emit('deactivateCollection', collection.collection)"
 				>
 					<VListItemIcon>
 						<VIcon name="remove_circle_outline" />
 					</VListItemIcon>
 					<VListItemContent>
-						{{ $t('exclude_collection') }}
+						{{ $t('deactivate_collection') }}
 					</VListItemContent>
 				</VListItem>
 
