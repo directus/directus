@@ -1428,6 +1428,7 @@ licensing:
   upgrade_plan: Upgrade Plan
   included: Included
   not_included: Not Included
+  unlimited: Unlimited
   plan_usage: Your Plan Usage
   addons: Add-on Packages
   addon_purchase: Purchase
