@@ -23,6 +23,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 
 const defaultSystemFields = {
 	archived: {
@@ -95,6 +96,7 @@ const unarchiveValue = ref<string>();
 const systemFields = reactive(cloneDeep(defaultSystemFields));
 
 const saving = ref(false);
+const limitModalOpen = ref(false);
 
 watch(() => singleton.value, setOptionsForSingleton);
 
@@ -141,7 +143,11 @@ async function save() {
 
 		router.replace({ name: 'settings-fields', params: { collection: createdCollectionName } });
 	} catch (error: any) {
-		unexpectedError(error);
+		if (error?.extensions?.code === 'LIMIT_EXCEEDED') {
+			limitModalOpen.value = true;
+		} else {
+			unexpectedError(error);
+		}
 	} finally {
 		saving.value = false;
 	}
@@ -482,6 +488,8 @@ function onApply() {
 			/>
 		</template>
 	</VDrawer>
+
+	<EntitlementLimitModal v-model="limitModalOpen" entitlement-key="collections" is-admin />
 </template>
 
 <style lang="scss" scoped>
