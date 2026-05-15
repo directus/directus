@@ -373,7 +373,7 @@ function revert(values: Record<string, any>) {
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template v-if="isSavable" #split-menu>
+				<template #split-menu>
 					<SaveOptions
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
