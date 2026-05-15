@@ -64,13 +64,17 @@ const cookies = useCookies(['license-banner-dismissed', 'license-onboarding-dism
 const serverStore = useServerStore();
 const settingsStore = useSettingsStore();
 
-const showLicenseBanner = computed(
-	() =>
+const showLicenseBanner = computed({
+	get: () =>
 		userStore.isAdmin &&
 		!serverStore.info.license?.source &&
 		!settingsStore.settings?.project_owner &&
+		!!settingsStore.settings?.project_usage &&
 		!cookies.get('license-banner-dismissed'),
-);
+	set: () => {
+		// close is handled by cookie and hydrate inside the modal
+	},
+});
 
 const showLicenseOnboarding = computed({
 	get: () =>
