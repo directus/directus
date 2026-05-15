@@ -52,6 +52,10 @@ const errorFormatted = computed(() => {
 		return translateAPIError('INVALID_CREDENTIALS');
 	}
 
+	if (error.value === 'RESOURCE_RESTRICTED') {
+		return translateAPIError('PROJECT_LOCKED');
+	}
+
 	if (error.value) {
 		return translateAPIError(error.value);
 	}
