@@ -251,7 +251,7 @@ function clearFilters() {
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
 					:tooltip="createAllowed ? undefined : $t('not_allowed')"
-					:label="$t('create_item')"
+					:label="$t('create')"
 					:to="addNewLink"
 					:disabled="createAllowed === false"
 					icon="add"
