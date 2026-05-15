@@ -64,7 +64,8 @@ const { collection } = toRefs(props);
 const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
 const { info: currentCollection } = useCollection(collection);
-const { isVersioned, isVersion, version, versionName, versionKeyQuery, readVersionsAllowed } = useVersion();
+const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
+const { isVersioned, isVersion, version, versionName, versionKeyQuery } = useVersion();
 const { selection } = useSelection();
 
 onBeforeRouteUpdate((to) => {
@@ -224,22 +225,17 @@ function useSelection() {
 function useVersion() {
 	const versionKeyQuery = useVersionQuery();
 	const isVersioned = computed(() => !!currentCollection.value?.meta?.versioning);
-	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 	const version = computed(() => getValidVersion());
 	const versionName = computed(() => getVersionDisplayName(version.value ? { key: version.value, name: null } : null));
 	const isVersion = computed(() => !isNil(version.value));
 
-	watch(
-		[isVersioned, readVersionsAllowed, versionKeyQuery],
-		([newIsVersioned, newReadAllowed, newVersionKey]) => {
-			if (newIsVersioned && !newReadAllowed && newVersionKey === VERSION_KEY_DRAFT) {
-				versionKeyQuery.value = null;
-			}
-		},
-		{ immediate: true },
-	);
+	watch([isVersioned, readVersionsAllowed, versionKeyQuery], ([newIsVersioned, newReadAllowed, newVersionKey]) => {
+		if (newIsVersioned && !newReadAllowed && newVersionKey === VERSION_KEY_DRAFT) {
+			versionKeyQuery.value = null;
+		}
+	});
 
-	return { isVersioned, isVersion, version, versionName, versionKeyQuery, readVersionsAllowed };
+	return { isVersioned, isVersion, version, versionName, versionKeyQuery };
 
 	function getValidVersion() {
 		if (!isVersioned.value) return undefined;

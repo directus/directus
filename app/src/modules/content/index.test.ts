@@ -2,9 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import api from '@/api';
 
 const mockGetCollection = vi.fn();
+const mockHasPermission = vi.fn();
 
 vi.mock('@/stores/collections', () => ({
 	useCollectionsStore: () => ({ getCollection: mockGetCollection }),
+}));
+
+vi.mock('@/stores/permissions', () => ({
+	usePermissionsStore: () => ({ hasPermission: mockHasPermission }),
 }));
 
 vi.mock('@/api', () => ({ default: { get: vi.fn() } }));
@@ -14,6 +19,7 @@ const {
 	redirectSingleton,
 	stripOrphanedVersionId,
 	stripVersionOnNonVersioned,
+	stripVersionWithoutReadAccess,
 	stripVersionIdOnRealItem,
 	validateItemlessDraft,
 } = await import('./index');
@@ -245,6 +251,50 @@ describe('stripVersionOnNonVersioned', () => {
 		});
 
 		expect(stripVersionOnNonVersioned(to, {} as any, vi.fn())).toBe('/content/posts/3?bookmark=my-bookmark');
+	});
+});
+
+describe('stripVersionWithoutReadAccess', () => {
+	beforeEach(() => mockHasPermission.mockReset());
+
+	it('strips version and versionId when user lacks directus_versions read access', () => {
+		mockHasPermission.mockReturnValue(false);
+
+		const to = makeRoute({
+			query: { version: 'draft', versionId: 'abc' },
+			fullPath: '/content/posts/3?version=draft&versionId=abc',
+		});
+
+		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBe('/content/posts/3');
+		expect(mockHasPermission).toHaveBeenCalledWith('directus_versions', 'read');
+	});
+
+	it('passes through when user has read access', () => {
+		mockHasPermission.mockReturnValue(true);
+
+		const to = makeRoute({
+			query: { version: 'draft' },
+			fullPath: '/content/posts/3?version=draft',
+		});
+
+		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('passes through when no version params present', () => {
+		mockHasPermission.mockReturnValue(false);
+		const to = makeRoute({ query: {}, fullPath: '/content/posts/3' });
+		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBeUndefined();
+	});
+
+	it('preserves other query params when stripping', () => {
+		mockHasPermission.mockReturnValue(false);
+
+		const to = makeRoute({
+			query: { version: 'draft', bookmark: 'my-bookmark' },
+			fullPath: '/content/posts/3?version=draft&bookmark=my-bookmark',
+		});
+
+		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBe('/content/posts/3?bookmark=my-bookmark');
 	});
 });
 

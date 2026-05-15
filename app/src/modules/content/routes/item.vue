@@ -113,10 +113,12 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
+const { readAllowed: readVersionsAllowed, deleteAllowed: deleteVersionsAllowed } =
+	useCollectionPermissions('directus_versions');
+
 const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey();
 
 const {
-	readVersionsAllowed,
 	currentVersion,
 	versions,
 	loading: versionsLoading,
@@ -227,8 +229,6 @@ const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
 	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
 } = permissions;
-
-const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
 const { templateData } = useTemplateData(collectionInfo, primaryKeyParam);
 

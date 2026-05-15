@@ -12,6 +12,7 @@ import ItemNotFound from './routes/not-found.vue';
 import Preview from './routes/preview.vue';
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
+import { usePermissionsStore } from '@/stores/permissions';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
 import { removeQueryFromPath } from '@/utils/remove-query-from-path';
@@ -99,6 +100,17 @@ export const stripVersionOnNonVersioned: NavigationGuard = (to) => {
 
 	const collection = useCollectionsStore().getCollection(to.params.collection);
 	if (!collection || collection.meta?.versioning) return;
+
+	const target = removeQueryFromPath(to.fullPath, 'version', 'versionId');
+	if (target === to.fullPath) return;
+	return target;
+};
+
+export const stripVersionWithoutReadAccess: NavigationGuard = (to) => {
+	if (!to.query.version && !to.query.versionId) return;
+
+	const permissionsStore = usePermissionsStore();
+	if (permissionsStore.hasPermission('directus_versions', 'read')) return;
 
 	const target = removeQueryFromPath(to.fullPath, 'version', 'versionId');
 	if (target === to.fullPath) return;
@@ -234,7 +246,13 @@ export default defineModule({
 							archive,
 						};
 					},
-					beforeEnter: [checkForSystem, trackLastAccessedCollection, redirectSingleton, stripVersionOnNonVersioned],
+					beforeEnter: [
+						checkForSystem,
+						trackLastAccessedCollection,
+						redirectSingleton,
+						stripVersionOnNonVersioned,
+						stripVersionWithoutReadAccess,
+					],
 				},
 				{
 					name: 'content-singleton',
@@ -244,7 +262,13 @@ export default defineModule({
 						collection: route.params.collection,
 						singleton: true,
 					}),
-					beforeEnter: [checkForSystem, trackLastAccessedCollection, enterDraftContext, stripVersionOnNonVersioned],
+					beforeEnter: [
+						checkForSystem,
+						trackLastAccessedCollection,
+						enterDraftContext,
+						stripVersionOnNonVersioned,
+						stripVersionWithoutReadAccess,
+					],
 				},
 				{
 					name: 'content-item',
@@ -256,6 +280,7 @@ export default defineModule({
 						enterDraftContext,
 						stripOrphanedVersionId,
 						stripVersionOnNonVersioned,
+						stripVersionWithoutReadAccess,
 						stripVersionIdOnRealItem,
 						validateItemlessDraft,
 					],
@@ -271,6 +296,7 @@ export default defineModule({
 				enterDraftContext,
 				stripOrphanedVersionId,
 				stripVersionOnNonVersioned,
+				stripVersionWithoutReadAccess,
 				stripVersionIdOnRealItem,
 				validateItemlessDraft,
 			],
