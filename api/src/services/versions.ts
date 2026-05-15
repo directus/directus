@@ -303,9 +303,16 @@ export class VersionsService extends ItemsService<ContentVersion> {
 						filter: { version: { _eq: key } },
 						sort: ['-id'],
 						limit: 1,
+						fields: ['id', 'data', 'delta', 'activity.user'],
 					});
 
-					if (latestRevision) {
+					// Only coalesce when the latest revision was authored by the current user.
+					// Otherwise we'd silently rewrite another user's revision with our content while
+					// leaving the linked activity attributed to the original author — breaking the audit trail.
+					const currentUser = this.accountability?.user ?? null;
+					const latestRevisionUser = (latestRevision?.['activity'] as { user?: string | null })?.user ?? null;
+
+					if (latestRevision && latestRevisionUser === currentUser) {
 						const mergedRevisionData = assign({}, latestRevision['data'], revisionDelta);
 						const mergedRevisionDelta = assign({}, latestRevision['delta'], revisionDelta);
 
