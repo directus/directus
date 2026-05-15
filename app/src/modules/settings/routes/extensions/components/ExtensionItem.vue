@@ -117,7 +117,7 @@ function isAppExtension(type?: ExtensionType) {
 				</RouterLink>
 				<span v-else>{{ name }}</span>
 				{{ ' ' }}
-				<VChip v-if="version" class="version" small>
+				<VChip v-if="version" class="version" :label="false" small>
 					{{ version }}
 				</VChip>
 			</span>
@@ -127,7 +127,7 @@ function isAppExtension(type?: ExtensionType) {
 			<VProgressCircular indeterminate small />
 		</span>
 
-		<VChip v-if="type !== 'missing'" class="state" :class="state.value" small>
+		<VChip v-if="type !== 'missing'" class="state" :class="state.value" :label="false" small>
 			{{ state.text }}
 		</VChip>
 
