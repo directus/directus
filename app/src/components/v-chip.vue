@@ -106,7 +106,7 @@ function onCloseClick(event: MouseEvent) {
 	Available Variables:
 
 		--v-chip-font-family			 [var(--theme--fonts--sans--font-family)]
-		--v-chip-font-weight			 [var(--theme--fonts--sans--font-weight)]
+		--v-chip-font-weight			 [inherit]
 		--v-chip-color                   [var(--neutral-ondimmed)]
 		--v-chip-color-hover             [var(--v-chip-color)]
 		--v-chip-background-color        [var(--neutral-dimmed)]
@@ -130,7 +130,7 @@ function onCloseClick(event: MouseEvent) {
 	block-size: var(--height);
 	padding: var(--v-chip-padding, 0 0.4375rem);
 	color: var(--v-chip-color, var(--neutral-ondimmed));
-	font-weight: var(--v-chip-font-weight, var(--theme--fonts--sans--font-weight));
+	font-weight: var(--v-chip-font-weight, inherit);
 	font-family: var(--v-chip-font-family, var(--theme--fonts--sans--font-family));
 	line-height: 1.25rem;
 	background-color: var(--v-chip-background-color, var(--neutral-dimmed));

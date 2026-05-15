@@ -294,7 +294,7 @@ function toggleManualSort() {
 		font-weight: 500;
 		font-size: 0.8125rem;
 		background-color: var(--v-table-background-color, var(--theme--background));
-		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 
 		&.select {
 			--focus-ring-offset: var(--focus-ring-offset-invert);
@@ -432,17 +432,19 @@ function toggleManualSort() {
 		&::after {
 			position: relative;
 			inset-block-start: 20%;
-			inset-inline-start: 0.1875rem;
+			inset-inline-start: 50%;
+			transform: translateX(-50%);
 			display: block;
 			inline-size: var(--theme--border-width);
 			block-size: 60%;
-			background-color: var(--theme--border-color-subdued);
+			background-color: var(--theme--border-color);
 			content: '';
 			transition: background-color var(--fast) var(--transition);
 		}
 
 		&:hover::after {
 			background-color: var(--theme--primary);
+			inline-size: var(--drag-handle-width);
 		}
 	}
 }

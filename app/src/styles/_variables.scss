@@ -63,4 +63,7 @@
 	--focus-ring-offset-inset: calc(-1 * (var(--focus-ring-width) + var(--focus-ring-offset)));
 	--focus-ring-radius: var(--theme--border-radius);
 	--focus-ring-color: var(--theme--primary);
+
+	// Drag Handle
+	--drag-handle-width: 3px; /* stylelint-disable-line unit-disallowed-list -- line */
 }
