@@ -51,28 +51,6 @@ onMounted(async () => {
 
 const planDisplayName = computed(() => license.value?.name ?? null);
 
-type ChipKind = 'primary' | 'neutral' | 'warning' | 'danger';
-
-const statusChip = computed<{ label: string; kind: ChipKind } | null>(() => {
-	if (!license.value) return null;
-	if (license.value.source === null) return { label: t('licensing.unlicensed'), kind: 'neutral' };
-
-	switch (license.value.status) {
-		case 'grace':
-			return { label: t('licensing.grace_period'), kind: 'warning' };
-		case 'expired':
-			return { label: t('licensing.expired'), kind: 'danger' };
-		case 'suspended':
-			return { label: t('licensing.suspended'), kind: 'danger' };
-		case 'canceled':
-			return { label: t('licensing.canceled'), kind: 'danger' };
-		case 'locked':
-			return { label: t('licensing.locked'), kind: 'danger' };
-		default:
-			return { label: t('licensing.current_plan'), kind: 'primary' };
-	}
-});
-
 const addLicenseDrawer = ref(false);
 const licenseKey = ref('');
 const activateLoading = ref(false);
@@ -229,7 +207,8 @@ async function handleDeactivateConfirm() {
 					<div class="plan-title">
 						<span class="plan-name">{{ planDisplayName }}</span>
 						<div class="plan-status">
-							<VChip v-if="statusChip" :kind="statusChip.kind" x-small>{{ statusChip.label }}</VChip>
+							<VChip v-if="license.source === null" x-small>{{ t('licensing.unlicensed') }}</VChip>
+							<VChip v-else kind="primary" x-small>{{ t('licensing.current_plan') }}</VChip>
 							<span v-if="boundaryDate" class="boundary-date">
 								{{
 									boundary?.type === 'expiration'
