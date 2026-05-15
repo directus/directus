@@ -20,6 +20,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -143,7 +144,7 @@ async function save() {
 
 		router.replace({ name: 'settings-fields', params: { collection: createdCollectionName } });
 	} catch (error: any) {
-		if (error?.extensions?.code === 'LIMIT_EXCEEDED') {
+		if (extractErrorCode(error) === 'LIMIT_EXCEEDED') {
 			limitModalOpen.value = true;
 		} else {
 			unexpectedError(error);

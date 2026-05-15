@@ -14,6 +14,7 @@ import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 
@@ -70,7 +71,7 @@ async function save() {
 
 		emit('update:modelValue', false);
 	} catch (error: any) {
-		if (error?.extensions?.code === 'LIMIT_EXCEEDED') {
+		if (extractErrorCode(error) === 'LIMIT_EXCEEDED') {
 			limitModalOpen.value = true;
 		} else {
 			unexpectedError(error);
