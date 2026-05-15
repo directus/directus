@@ -19,11 +19,18 @@ export class SettingsService extends ItemsService<Settings> {
 	}
 
 	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
+		const touchesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data);
+
+		if (touchesLLM && CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
 			await getEntitlementManager().assert('custom_llms_enabled', { knex: this.knex });
 		}
 
-		return super.createOne(data, opts);
+		const result = await super.createOne(data, opts);
+
+		// invalidate on any LLM-field write (including clearing to null, which can re-enable validity)
+		if (touchesLLM) await getEntitlementManager().invalidate('custom_llms_enabled');
+
+		return result;
 	}
 
 	override async updateMany(
@@ -31,11 +38,17 @@ export class SettingsService extends ItemsService<Settings> {
 		data: Partial<Settings>,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey[]> {
-		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
+		const touchesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data);
+
+		if (touchesLLM && CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
 			await getEntitlementManager().assert('custom_llms_enabled', { knex: this.knex });
 		}
 
-		return super.updateMany(keys, data, opts);
+		const result = await super.updateMany(keys, data, opts);
+
+		if (touchesLLM) await getEntitlementManager().invalidate('custom_llms_enabled');
+
+		return result;
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Settings[]> {
