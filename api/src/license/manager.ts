@@ -440,6 +440,7 @@ export class LicenseManager {
 			description: addon.description,
 			icon: addon.icon,
 			upgrade_required: addon.upgrade_required,
+			unit_price: addon.unit_price,
 			pricing_summary: addon.pricing_summary,
 			min_quantity: addon.min_quantity,
 			max_quantity: addon.max_quantity,
