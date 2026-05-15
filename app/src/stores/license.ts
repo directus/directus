@@ -96,6 +96,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return limit ? formatTimeframe(limit) : null;
 	});
 
+	const graceDays = computed<number | null>(() => {
+		if (!info.value || info.value.status !== 'grace' || !info.value.expires_at) return null;
+		const deadlineMs = (info.value.expires_at + (info.value.grace_period ?? 0)) * 1000;
+		return Math.max(0, Math.ceil((deadlineMs - Date.now()) / (1000 * 60 * 60 * 24)));
+	});
+
 	function isEntitlementEnabled(key: string) {
 		const ent = info.value?.entitlements[key];
 		if (!ent) return false;
@@ -220,6 +226,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		customLLMEnabled,
 		revisionHistoryTimeframe,
 		activityHistoryTimeframe,
+		graceDays,
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,

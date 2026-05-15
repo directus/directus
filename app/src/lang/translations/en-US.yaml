@@ -1584,6 +1584,13 @@ license:
   upgrade_to_unlock: Upgrade your plan to unlock this feature.
   activity_history_notice: '{timeframe} of Activity History is included in your current plan.'
   revisions_history_notice: '{timeframe} of Revision History is included in your current plan.'
+  status_notice:
+    grace_period_prefix: You have upgraded and require a license key. You have
+    grace_days: '{days} day | {days} days'
+    grace_period_suffix: to resolve your license issue or your Directus project will be locked.
+  pinned_status_notice:
+    grace_period_title: 'Grace Period ({days}d left)'
+    grace_period_body: Manage your license key in Settings > License.
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.

@@ -3,6 +3,7 @@ import PrivateViewNavFooter from './private-view-nav-footer.vue';
 import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
 import VLicenseBadge from '@/components/v-license-badge.vue';
 import VNonProductionBadge from '@/components/v-non-production-badge.vue';
+import PinnedStatusNotice from '@/views/private/components/license/pinned-status-notice.vue';
 
 // id attribute for accessibility linking doesn’t work on the top-level element
 defineProps<{ id?: string }>();
@@ -17,6 +18,7 @@ defineProps<{ id?: string }>();
 		</div>
 
 		<PrivateViewNavFooter>
+			<PinnedStatusNotice />
 			<VLicenseBadge private />
 			<VNonProductionBadge />
 		</PrivateViewNavFooter>
