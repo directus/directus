@@ -40,7 +40,7 @@ const collectionsStore = useCollectionsStore();
 const licenseStore = useLicenseStore();
 
 const { limitModalOpen: collectionsLimitModalOpen, navigate } = useLicenseGuard(
-	() => licenseStore.hasRemainingCollections,
+	() => licenseStore.limits.collections.hasRemaining,
 );
 
 const navigateToNewCollection = () => navigate({ name: 'settings-add-new' });

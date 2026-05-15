@@ -167,6 +167,13 @@ function mountTranslations() {
 							ai_anthropic_api_key: 'key',
 						},
 					},
+					licenseStore: {
+						info: {
+							entitlements: {
+								ai_translations_enabled: { default: true },
+							},
+						},
+					},
 				},
 			}),
 		],

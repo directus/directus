@@ -5,13 +5,19 @@ import type { Collection } from '../../../types/collection.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { countActiveCollections, getActiveCollections } from './collections.js';
 
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(),
-}));
+vi.mock('@directus/env', async () => {
+	const { mockEnv } = await import('../../../test-utils/env.js');
+	return mockEnv({ DB_EXCLUDE_TABLES: [] });
+});
 
 vi.mock('../../../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),
 }));
+
+vi.mock('../../../database/index.js', async () => {
+	const { mockDatabase } = await import('../../../test-utils/database.js');
+	return mockDatabase();
+});
 
 vi.mock('../../../services/index.js', async () => {
 	const { mockItemsService } = await import('../../../test-utils/services/items-service.js');
@@ -28,7 +34,6 @@ function makeCollection(name: string, overrides: Partial<Pick<Collection, 'meta'
 }
 
 beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({ DB_EXCLUDE_TABLES: [] as string[] });
 	vi.mocked(getSchema).mockResolvedValue({} as any);
 });
 
@@ -45,7 +50,7 @@ describe('getActiveCollections', () => {
 
 		const result = await getActiveCollections();
 
-		expect(result.map((c) => c.collection)).toEqual(['articles']);
+		expect(result).toEqual(['articles']);
 	});
 
 	test('filters out only known system collections', async () => {
@@ -58,7 +63,7 @@ describe('getActiveCollections', () => {
 
 		const result = await getActiveCollections();
 
-		expect(result.map((c) => c.collection)).toEqual(['articles', 'directus_custom']);
+		expect(result).toEqual(['articles', 'directus_custom']);
 	});
 
 	test('filters out db-only collections (meta is null)', async () => {
@@ -69,7 +74,7 @@ describe('getActiveCollections', () => {
 
 		const result = await getActiveCollections();
 
-		expect(result.map((c) => c.collection)).toEqual(['articles']);
+		expect(result).toEqual(['articles']);
 	});
 
 	test('filters out collections whose meta.status is not "active"', async () => {
@@ -80,7 +85,7 @@ describe('getActiveCollections', () => {
 
 		const result = await getActiveCollections();
 
-		expect(result.map((c) => c.collection)).toEqual(['articles']);
+		expect(result).toEqual(['articles']);
 	});
 
 	test('filters out collections listed in DB_EXCLUDE_TABLES', async () => {
@@ -93,7 +98,7 @@ describe('getActiveCollections', () => {
 
 		const result = await getActiveCollections();
 
-		expect(result.map((c) => c.collection)).toEqual(['articles']);
+		expect(result).toEqual(['articles']);
 	});
 });
 

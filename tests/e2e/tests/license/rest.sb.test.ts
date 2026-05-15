@@ -1,13 +1,18 @@
+import { randomUUID } from 'crypto';
 import {
 	activateLicense,
 	applyLicenseResolution,
 	CORE_LICENSE,
 	deactivateLicense,
+	deleteLicenseAddon,
 	generateLicensePendingResolution,
 	previewLicense,
+	readAddons,
 	readLicense,
+	readLicenseAddons,
 	type ReadLicenseOutput,
 	updateLicense,
+	updateLicenseAddon,
 } from '@directus/license';
 import { createLicense } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
@@ -17,7 +22,6 @@ import {
 	createUser,
 	type DirectusClient,
 	readCollection,
-	readCollections,
 	readMe,
 	rest,
 	type RestClient,
@@ -28,6 +32,7 @@ import type { User } from '@directus/types';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
+import { registerLicense } from './shared.js';
 
 let directus: Sandbox;
 let api: DirectusClient<any> & RestClient<any>;
@@ -42,6 +47,30 @@ const restrictedLicense = createLicense({
 		seats: { limit: 1 },
 		custom_llms_enabled: { default: false },
 	},
+});
+
+const seatsAddon = randomUUID();
+
+const addonLicense = createLicense({
+	meta: { name: 'addon-license' },
+	entitlements: {
+		seats: { limit: 1 },
+	},
+	addons: [
+		{
+			id: seatsAddon,
+			active_quantity: 0,
+			billing_interval: 'monthly',
+			description: 'Alodda Seats addon',
+			icon: 'group',
+			min_quantity: 0,
+			max_quantity: 10,
+			name: 'Gimme more seats',
+			pricing_summary: 'pay os som 💰',
+			unit: 'seats',
+			upgrade_required: false,
+		},
+	],
 });
 
 beforeAll(async () => {
@@ -64,29 +93,10 @@ beforeAll(async () => {
 
 	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
-	await fetch(`http://localhost:${directus.env.LICENSE_PORT}/admin/license`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(license),
-	});
-
-	await fetch(`http://localhost:${directus.env.LICENSE_PORT}/admin/license`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(otherLicense),
-	});
-
-	await fetch(`http://localhost:${directus.env.LICENSE_PORT}/admin/license`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(restrictedLicense),
-	});
+	await registerLicense(directus.env.LICENSE_PORT, license);
+	await registerLicense(directus.env.LICENSE_PORT, otherLicense);
+	await registerLicense(directus.env.LICENSE_PORT, restrictedLicense);
+	await registerLicense(directus.env.LICENSE_PORT, addonLicense);
 });
 
 afterAll(async () => {
@@ -289,4 +299,99 @@ test('fully resolve conflicts', async () => {
 	const result = await api.request(generateLicensePendingResolution());
 
 	expect(result).toEqual([]);
+});
+
+test('read addons where none are available', async () => {
+	const result = await api.request(readLicenseAddons());
+
+	expect(result).toEqual([]);
+});
+
+test('read addons', async () => {
+	await api.request(updateLicense({ license_key: addonLicense.key }));
+
+	const result = await api.request(readLicenseAddons());
+
+	expect(result).toEqual([
+		{
+			active_quantity: 0,
+			description: 'Alodda Seats addon',
+			icon: 'group',
+			id: seatsAddon,
+			max_quantity: 10,
+			min_quantity: 0,
+			name: 'Gimme more seats',
+			pricing_summary: 'pay os som 💰',
+			upgrade_required: false,
+		},
+	]);
+});
+
+test('increase an addons quantity', async () => {
+	await api.request(updateLicenseAddon(seatsAddon, { quantity: 2 }));
+
+	const activeLicense = await api.request(readLicense());
+
+	const result = await api.request(readLicenseAddons());
+
+	expect(result).toMatchObject([
+		{
+			active_quantity: 2,
+		},
+	]);
+
+	expect(activeLicense).toMatchObject({
+		entitlements: {
+			seats: {
+				limit: 3,
+				addon: 2,
+			},
+		},
+	});
+});
+
+test('decrease an addons quantity', async () => {
+	await api.request(updateLicenseAddon(seatsAddon, { quantity: 1 }));
+
+	const activeLicense = await api.request(readLicense());
+
+	const result = await api.request(readLicenseAddons());
+
+	expect(result).toMatchObject([
+		{
+			active_quantity: 1,
+		},
+	]);
+
+	expect(activeLicense).toMatchObject({
+		entitlements: {
+			seats: {
+				limit: 2,
+				addon: 1,
+			},
+		},
+	});
+});
+
+test('delete an addon', async () => {
+	await api.request(deleteLicenseAddon(seatsAddon));
+
+	const activeLicense = await api.request(readLicense());
+
+	const result = await api.request(readLicenseAddons());
+
+	expect(result).toMatchObject([
+		{
+			active_quantity: 0,
+		},
+	]);
+
+	// Limit will be updated at the next billing cycle.
+	expect(activeLicense).toMatchObject({
+		entitlements: {
+			seats: {
+				limit: 2,
+			},
+		},
+	});
 });

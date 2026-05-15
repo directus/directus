@@ -2,6 +2,7 @@ import {
 	activateLicense,
 	applyLicenseResolution,
 	type ApplyLicenseResolutionInput,
+	type CountableEntitlementKey,
 	generateLicensePendingResolution,
 	type LicenseAddon,
 	type LicensePendingResolution,
@@ -22,6 +23,11 @@ export type LicenseBoundary = {
 	timestamp: number;
 };
 
+type LicenseLimit = {
+	remaining: number | null;
+	hasRemaining: boolean;
+};
+
 export const useLicenseStore = defineStore('licenseStore', () => {
 	const info = ref<ReadLicenseOutput | null>(null);
 	const addons = ref<LicenseAddon[] | null>(null);
@@ -33,6 +39,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
+	const aiTranslationsEnabled = computed(() => isEntitlementEnabled('ai_translations_enabled'));
+
 	const boundary = computed<LicenseBoundary | null>(() => {
 		if (!info.value) return null;
 		if (info.value.renews_at !== undefined) return { type: 'renewal', timestamp: info.value.renews_at };
@@ -40,58 +48,37 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return null;
 	});
 
-	const seatsRemaining = computed<number | null>(() => {
-		if (!info.value) return null;
-		const seats = info.value.entitlements.seats;
-		const usage = info.value.usage;
-		const effective = seats.limit + (seats.addon ?? 0) + (seats.overage ?? 0);
-		return effective - (usage?.seats ?? 0);
-	});
+	function getLimit(key: CountableEntitlementKey): LicenseLimit {
+		if (!info.value) return { remaining: null, hasRemaining: loading.value };
+		const ent = info.value.entitlements[key];
+		if (!ent || ent.limit == null) return { remaining: null, hasRemaining: false };
 
-	const hasRemainingSeats = computed(() => seatsRemaining.value === null || seatsRemaining.value > 0);
+		if (ent.limit === -1 || ent.overage === -1 || ent.addon === -1) return { remaining: null, hasRemaining: true };
 
-	const collectionsRemaining = computed<number | null>(() => {
-		if (!info.value) return null;
-		const col = info.value.entitlements.collections;
-		if (!col) return null;
-		if (col.limit == null) return null;
-		const effective = col.limit + (col.addon ?? 0) + (col.overage ?? 0);
-		return effective - (info.value.usage?.collections ?? 0);
-	});
+		const effective = ent.limit + (ent.addon ?? 0) + (ent.overage ?? 0);
+		const remaining = effective - (info.value.usage?.[key] ?? 0);
 
-	const hasRemainingCollections = computed(() => collectionsRemaining.value === null || collectionsRemaining.value > 0);
+		return { remaining, hasRemaining: remaining > 0 };
+	}
 
-	const flowsRemaining = computed<number | null>(() => {
-		if (!info.value) return null;
-		const fl = info.value.entitlements.flows;
-		if (!fl) return null;
-		if (fl.limit == null) return null;
-		const effective = fl.limit + (fl.addon ?? 0) + (fl.overage ?? 0);
-		return effective - (info.value.usage?.flows ?? 0);
-	});
-
-	const hasRemainingFlows = computed(() => flowsRemaining.value === null || flowsRemaining.value > 0);
+	const limits = computed<Record<CountableEntitlementKey, LicenseLimit>>(() => ({
+		seats: getLimit('seats'),
+		collections: getLimit('collections'),
+		flows: getLimit('flows'),
+	}));
 
 	const isLocked = computed(() => {
 		const status = info.value?.status;
 		return status === 'expired' || status === 'suspended' || status === 'canceled' || status === 'locked';
 	});
 
-	const customPermissionRulesEnabled = computed(() => {
-		const ent = info.value?.entitlements?.custom_permission_rules_enabled;
-		if (!ent) return false;
-		return ent.override ?? ent.default;
-	});
+	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
 
-	const customLLMEnabled = computed(() => {
-		const ent = info.value?.entitlements?.custom_llms_enabled;
-		if (!ent) return false;
-		return ent.override ?? ent.default;
-	});
+	const customLLMEnabled = computed(() => isEntitlementEnabled('custom_llms_enabled'));
 
 	const isLicensed = computed(() => {
-		const status = info.value?.status;
-		return status === 'active' || status === 'grace';
+		if (!info.value || info.value.source === null) return false;
+		return info.value.status === 'active' || info.value.status === 'grace';
 	});
 
 	const needsResolution = computed(() => {
@@ -108,6 +95,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		const limit = info.value?.entitlements?.activity_historical_timeframe?.limit;
 		return limit ? formatTimeframe(limit) : null;
 	});
+
+	function isEntitlementEnabled(key: string) {
+		const ent = info.value?.entitlements[key];
+		if (!ent) return false;
+		return ent.override ?? ent.default;
+	}
 
 	function clearTimer() {
 		if (refreshTimer) {
@@ -217,13 +210,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		loadingAddons,
 		loadingPendingResolution,
 		error,
+		aiTranslationsEnabled,
 		boundary,
-		seatsRemaining,
-		hasRemainingSeats,
-		collectionsRemaining,
-		hasRemainingCollections,
-		flowsRemaining,
-		hasRemainingFlows,
+		limits,
 		isLocked,
 		customPermissionRulesEnabled,
 		isLicensed,

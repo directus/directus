@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import VImage from '@/components/v-image.vue';
+import VLicenseBadge from '@/components/v-license-badge.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -97,6 +98,8 @@ const logoURL = computed<string | null>(() => {
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />
 			</div>
 		</div>
+
+		<VLicenseBadge />
 	</div>
 </template>
 

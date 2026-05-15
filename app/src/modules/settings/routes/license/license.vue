@@ -2,13 +2,12 @@
 import { deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { I18nT, useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import LicenseAddonItem from './components/license-addon-item.vue';
 import LicenseEntitlementItem from './components/license-entitlement-item.vue';
 import LicenseResolutionDialog from './components/license-resolution-dialog.vue';
 import LicenseSection from './components/license-section.vue';
-import VBreadcrumb from '@/components/deprecated/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -18,10 +17,10 @@ import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VDivider from '@/components/v-divider.vue';
 import VDrawer from '@/components/v-drawer.vue';
-import VInput from '@/components/v-input.vue';
 import VList from '@/components/v-list.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
 import { formatDate } from '@/utils/format-date';
@@ -36,13 +35,18 @@ const licenseStore = useLicenseStore();
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
 const boundaryDate = computed(() => {
-	if (!boundary.value || !Number.isFinite(boundary.value.timestamp)) return null;
+	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
 	const dateStr = new Date(boundary.value.timestamp * 1000).toISOString().slice(0, 10);
 	return formatDate(dateStr, { type: 'date', format: 'long' });
 });
 
-onMounted(() => {
-	licenseStore.hydrateAddons();
+onMounted(async () => {
+	await licenseStore.hydrate();
+
+	// Core tier has no addons (source === null), skip the request.
+	if (licenseStore.info?.source != null) {
+		licenseStore.hydrateAddons();
+	}
 });
 
 const planDisplayName = computed(() => license.value?.name ?? null);
@@ -191,16 +195,12 @@ async function handleDeactivateConfirm() {
 
 <template>
 	<PrivateView :title="t('settings_license')" icon="diamond">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
 
 		<div class="license">
-			<VProgressCircular v-if="loading" indeterminate />
+			<VProgressCircular v-if="loading && !license" indeterminate />
 
 			<template v-else-if="license">
 				<div class="plan-header">
@@ -221,7 +221,9 @@ async function handleDeactivateConfirm() {
 						<VButton v-if="!isLicensed" secondary small @click="addLicenseDrawer = true">
 							{{ t('licensing.add') }}
 						</VButton>
-						<VButton v-if="isLicensed" secondary small @click="() => {}">{{ t('licensing.manage') }}</VButton>
+						<VButton v-if="isLicensed && license.source !== null" secondary small @click="addLicenseDrawer = true">
+							{{ t('licensing.manage') }}
+						</VButton>
 						<VButton small @click="() => {}">{{ t('licensing.upgrade_plan') }}</VButton>
 					</div>
 				</div>
@@ -252,13 +254,13 @@ async function handleDeactivateConfirm() {
 					</template>
 				</div>
 
-				<LicenseSection icon="diamond" :title="t('licensing.addons')">
+				<LicenseSection v-if="addons && addons.length > 0" icon="diamond" :title="t('licensing.addons')">
 					<VList>
 						<LicenseAddonItem v-for="addon in addons" :key="addon.id" :addon="addon" />
 					</VList>
 				</LicenseSection>
 
-				<LicenseSection icon="emergency_home" :title="t('danger_zone')" variant="danger">
+				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" variant="danger">
 					<div class="danger-zone-content">
 						<VNotice v-if="license.source === 'env'" type="info">
 							{{ t('licensing.env_managed') }}
@@ -298,13 +300,40 @@ async function handleDeactivateConfirm() {
 		v-model="addLicenseDrawer"
 		:title="t('licensing.key_management')"
 		icon="vpn_key"
-		@cancel="addLicenseDrawer = false"
+		@cancel="handleAddLicenseCancel"
+		@apply="handleActivate"
 	>
+		<template #actions>
+			<VButton
+				v-tooltip.bottom="t('save')"
+				small
+				:disabled="!canSave"
+				:loading="activateLoading"
+				@click="handleActivate"
+			>
+				{{ t('save') }}
+			</VButton>
+		</template>
+
 		<div class="drawer-content">
 			<VNotice type="info">
-				{{ t('licensing.key_notice') }}
+				<I18nT keypath="setup_license_key_notice" tag="span">
+					<template #oig>
+						<a href="https://directus.io/license-request" target="_blank" rel="noopener noreferrer">
+							{{ t('open_innovation_grant') }}
+						</a>
+					</template>
+				</I18nT>
 			</VNotice>
-			<VInput v-model="licenseKey" :placeholder="t('licensing.key')" />
+			<div class="license-key-field">
+				<label class="type-label">{{ t('licensing.key') }}</label>
+				<SystemLicenseKey
+					:value="licenseKey"
+					:edit="isLicensed"
+					@input="licenseKey = $event ?? ''"
+					@validity="licenseKeyValidity = $event"
+				/>
+			</div>
 		</div>
 	</VDrawer>
 </template>
@@ -391,6 +420,7 @@ async function handleDeactivateConfirm() {
 	gap: 2.25rem;
 	padding: var(--content-padding);
 }
+
 .license-key-field {
 	display: flex;
 	flex-direction: column;

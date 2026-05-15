@@ -313,7 +313,8 @@ export class UsersService extends ItemsService {
 				opts.userIntegrityCheckFlags =
 					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 			} else {
-				opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+				opts.userIntegrityCheckFlags =
+					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.RemainingAdmins;
 			}
 		}
 

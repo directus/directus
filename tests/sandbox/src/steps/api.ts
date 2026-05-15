@@ -186,9 +186,11 @@ async function startApiInstance(opts: Options, env: Env, logger: Logger) {
 		`Server started at http://${env.HOST}:${opts.port}, Debugger listening on http://${env.HOST}:${inspector} ${time}`,
 	);
 
-	logger.info(
-		`User: ${chalk.cyan(env.ADMIN_EMAIL)} Password: ${chalk.cyan(env.ADMIN_PASSWORD)} Token: ${chalk.cyan(env.ADMIN_TOKEN)}`,
-	);
+	if (env.ADMIN_EMAIL && env.ADMIN_PASSWORD && env.ADMIN_TOKEN) {
+		logger.info(
+			`User: ${chalk.cyan(env.ADMIN_EMAIL)} Password: ${chalk.cyan(env.ADMIN_PASSWORD)} Token: ${chalk.cyan(env.ADMIN_TOKEN)}`,
+		);
+	}
 
 	return { process: api, port: opts.port, inspector };
 }

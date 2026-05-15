@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { type CountableEntitlementKey } from '@directus/license';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import VButton from '@/components/v-button.vue';
@@ -11,7 +12,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 
 const props = defineProps<{
 	modelValue: boolean;
-	entitlementKey: 'collections' | 'seats' | 'flows';
+	entitlementKey: CountableEntitlementKey;
 	isAdmin?: boolean;
 	onSave?: () => void;
 }>();

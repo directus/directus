@@ -43,7 +43,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 		 * Required regardless — createAdmin below triggers the seat
 		 * counter, which errors if entitlements aren't registered.
 		 */
-		getEntitlementManager().initialize();
+		getEntitlementManager();
 
 		if (skipAdminInit == null) {
 			await createAdmin(schema);
