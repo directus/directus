@@ -78,6 +78,23 @@ export class EntitlementManager {
 	}
 
 	/**
+	 * Create a manager that uses a different entitlement set while sharing
+	 * this instance's cache and registered sources. Used to preview how a
+	 * license change would affect the current user. Intended for read-only
+	 * checks. Mutating methods (`setEntitlements`, `invalidate*`) on the
+	 * fork will affect the shared cache.
+	 */
+	fork(entitlements: Entitlements): EntitlementManager {
+		const forked = Object.create(EntitlementManager.prototype) as EntitlementManager;
+		forked.entitlements = entitlements;
+		forked.counterSources = this.counterSources;
+		forked.validatorSources = this.validatorSources;
+		forked.resolverSources = this.resolverSources;
+		forked.cache = this.cache;
+		return forked;
+	}
+
+	/**
 	 * Drop cached usage/validity for the given keys and notify other nodes.
 	 * Called from mutation paths that change entitlement-relevant state.
 	 */
