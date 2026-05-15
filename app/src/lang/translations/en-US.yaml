@@ -1421,6 +1421,11 @@ settings_license: License
 licensing:
   unlicensed: Unlicensed
   current_plan: Current Plan
+  grace_period: Grace Period
+  expired: Expired
+  suspended: Suspended
+  canceled: Canceled
+  locked: Locked
   expires_on: 'Expires on {date}'
   renews_on: 'Renews on {date}'
   add: Add License
