@@ -15,20 +15,18 @@ import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
 
+const model = defineModel<boolean>();
+
 const settingsStore = useSettingsStore();
 const cookies = useCookies(['license-banner-dismissed']);
 const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([]);
-
-const isSaveDisabled = computed(
-	() =>
-		!form.value.owner.project_owner ||
-		!form.value.license ||
-		(form.value.owner.project_usage === 'commercial' && !form.value.owner.org_name),
-);
-
+const form = ref<Form>(defaultValues);
+const fields = useSetupFields(false);
 const isSaving = ref(false);
+
+const isSaveDisabled = computed(() => !form.value.owner.project_owner || !form.value.license);
 
 async function setOwner() {
 	errors.value = validate({ project_owner: form.value.owner.project_owner }, fields);
@@ -37,25 +35,28 @@ async function setOwner() {
 
 	isSaving.value = true;
 
-	await settingsStore.setOwner(form.value.owner);
+	await settingsStore.setOwner({
+		project_owner: form.value.owner.project_owner,
+		product_updates: form.value.owner.product_updates,
+		project_usage: settingsStore.settings?.project_usage ?? null,
+		org_name: settingsStore.settings?.org_name ?? null,
+	});
 
 	await settingsStore.hydrate();
 	isSaving.value = false;
+	model.value = false;
 }
 
-async function remindLater() {
+function remindLater() {
 	// 30 days, will be deleted on logout / session end
 	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
 	notify({ title: t('license_banner.remind_next_login'), type: 'info' });
+	model.value = false;
 }
-
-const form = ref<Form>(defaultValues);
-
-const fields = useSetupFields(false);
 </script>
 
 <template>
-	<VDialog>
+	<VDialog v-model="model">
 		<VCard>
 			<div class="inner">
 				<VCardTitle>

@@ -1,9 +1,12 @@
 import {
 	activateLicense,
+	applyLicenseResolution,
+	type ApplyLicenseResolutionInput,
 	type CountableEntitlementKey,
 	generateLicensePendingResolution,
 	type LicenseAddon,
 	type LicensePendingResolution,
+	type LicensePendingResolutionInput,
 	readLicense,
 	readLicenseAddons,
 	type ReadLicenseOutput,
@@ -66,7 +69,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isLocked = computed(() => {
 		const status = info.value?.status;
-		return status === 'expired' || status === 'suspended' || status === 'canceled';
+		return status === 'expired' || status === 'suspended' || status === 'canceled' || status === 'locked';
 	});
 
 	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
@@ -80,7 +83,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const needsResolution = computed(() => {
 		const status = info.value?.status;
-		return status === 'expired' || status === 'suspended' || status === 'canceled';
+		return status === 'expired' || status === 'suspended' || status === 'canceled' || status === 'locked';
 	});
 
 	const revisionHistoryTimeframe = computed(() => {
@@ -159,17 +162,23 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		}
 	}
 
-	async function hydratePendingResolution() {
+	async function hydratePendingResolution(opts: LicensePendingResolutionInput = {}) {
 		if (!useUserStore().isAdmin) return;
 
 		loadingPendingResolution.value = true;
 
 		try {
-			const result: LicensePendingResolution[] | void = await sdk.request(generateLicensePendingResolution({}));
+			const result: LicensePendingResolution[] | void = await sdk.request(generateLicensePendingResolution(opts));
 			pendingResolution.value = result ?? [];
 		} finally {
 			loadingPendingResolution.value = false;
 		}
+	}
+
+	async function resolve(payload: ApplyLicenseResolutionInput) {
+		await sdk.request(applyLicenseResolution(payload));
+		pendingResolution.value = null;
+		await hydrate();
 	}
 
 	async function activate(licenseKey: string) {
@@ -214,6 +223,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
+		resolve,
 		activate,
 		update,
 		dehydrate,

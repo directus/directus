@@ -18,6 +18,9 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
 
+/** Routes an admin can still reach while the license is locked. */
+export const ALLOWED_WHILE_LOCKED: string[] = ['/license-recovery', '/logout', '/settings/license'];
+
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
@@ -217,7 +220,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 
 		// License lockdown: admin must resolve before accessing the app.
-		if (to.path !== '/license-recovery' && to.path !== '/logout') {
+		if (!ALLOWED_WHILE_LOCKED.includes(to.path)) {
 			const licenseStore = useLicenseStore();
 
 			if (userStore.isAdmin && licenseStore.isLocked) {

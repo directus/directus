@@ -949,8 +949,8 @@ active_users: Active Users
 suspended_users: Suspended Users
 invited_users: Invited Users
 delete_collection: Delete Collection
-include_collection: Include Collection
-exclude_collection: Exclude Collection
+activate_collection: Activate Collection
+deactivate_collection: Deactivate Collection
 deactivated_collections: Deactivated Collections
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
@@ -1437,7 +1437,14 @@ licensing:
   resolve_title_expired: License Expiration
   resolve_title_suspended: License Suspension
   resolve_title_env_removed: License Removed
+  resolve_title_grace: Resolve License Limits
+  resolve_title_no_resolution: License Inactive
   resolve_subtitle: If you need to update your license key, you can update it in your environment variable.
+  resolve_notice_grace:
+    Your project usage exceeds your plan limits. Resolve the breach before your grace period ends, otherwise your
+    project will be locked. Deactivated items will remained stored but locked in Directus, and custom access rules will
+    also be locked.
+  resolve_countdown: '{days} day remaining (until {date}) | {days} days remaining (until {date})'
   resolve_notice_manual:
     Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
     Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
@@ -1453,13 +1460,31 @@ licensing:
     Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
     collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
     locked in Directus, and custom access rules will also be locked.
+  resolve_notice_no_resolution:
+    Your license is no longer active and your project has been downgraded to the Starter plan. Some features may no
+    longer be available, and items beyond the Starter plan limits remain stored but locked in Directus. To restore full
+    access, add a new license key.
   resolve_continue: Continue
-  resolve_section_collections: 'Collections ({usage}/{limit})'
-  resolve_section_seats: 'Seats ({usage}/{limit})'
-  resolve_section_flows: 'Flows ({usage}/{limit})'
-  resolve_section_sso_enabled: SSO must be disabled
-  resolve_section_custom_llms_enabled: Custom LLM must be disabled
-  resolve_section_custom_permission_rules_enabled: Custom permission rules must be removed
+  resolve_acknowledge: Acknowledge
+  resolve_submit: Deactivate Selected Items
+  resolve_select_n_items: 'Select {count} item | Select {count} items'
+  resolve_show_n_more: 'Show {count} more'
+  resolve_section_collections: Data Collections
+  resolve_section_seats: User Seats
+  resolve_section_flows: Flows
+  resolve_section_collections_caption: Select collection(s) to deactivate
+  resolve_section_seats_caption: Select user seat(s) to deactivate
+  resolve_section_flows_caption: Select flow(s) to deactivate
+  resolve_section_sso: SSO Deactivation
+  resolve_sso_confirm: Confirm SSO Deactivation
+  resolve_sso_caption:
+    Anyone who was accessing via SSO will need a password and email configured (can be done via the users directory). To
+    retain access, they will have to go through the password reset flow.
+  resolve_sso_blocker_notice:
+    The current admin account does not have a local email and/or password configured. Set them below to avoid being
+    locked out once SSO is deactivated.
+  resolve_sso_admin_email: Admin Email
+  resolve_sso_admin_password: Admin Password
   env_managed: Your license key is managed via an environment variable and can't be updated here.
   key_management: License Key Management
   key: License Key
