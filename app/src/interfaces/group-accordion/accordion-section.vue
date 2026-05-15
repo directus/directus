@@ -120,7 +120,7 @@ function useComparisonIndicator() {
 					<VIcon class="icon" :class="{ active }" name="expand_more" />
 					<span class="field-name">{{ field.name }}</span>
 					<VIcon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-					<VChip v-if="badge" x-small>{{ badge }}</VChip>
+					<VChip v-if="badge" :label="false" x-small>{{ badge }}</VChip>
 					<VIcon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
 				</button>
 
