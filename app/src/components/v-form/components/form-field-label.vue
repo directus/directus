@@ -93,7 +93,7 @@ const isPromotableField = computed(() => {
 					filled
 				/>
 
-				<VChip v-if="badge" class="badge" x-small>{{ badge }}</VChip>
+				<VChip v-if="badge" class="badge" :label="false" x-small>{{ badge }}</VChip>
 
 				<VIcon
 					v-if="!disabled && rawEditorEnabled"
