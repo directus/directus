@@ -22,8 +22,8 @@ const emit = defineEmits([
 	'setNestedSort',
 	'editCollection',
 	'toggleCollapse',
-	'includeCollection',
-	'excludeCollection',
+	'activateCollection',
+	'deactivateCollection',
 ]);
 
 const isDeactivated = computed(() => props.collection.meta?.status !== 'active');
@@ -90,8 +90,8 @@ function onGroupSortChange(collections: Collection[]) {
 				:has-nested-collections="nestedCollections.length > 0"
 				:collection="collection"
 				@collection-toggle="toggleCollapse"
-				@include-collection="$emit('includeCollection', $event)"
-				@exclude-collection="$emit('excludeCollection', $event)"
+				@activate-collection="$emit('activateCollection', $event)"
+				@deactivate-collection="$emit('deactivateCollection', $event)"
 			/>
 		</VListItem>
 
@@ -116,8 +116,8 @@ function onGroupSortChange(collections: Collection[]) {
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
 						@toggle-collapse="$emit('toggleCollapse', $event)"
-						@include-collection="$emit('includeCollection', $event)"
-						@exclude-collection="$emit('excludeCollection', $event)"
+						@activate-collection="$emit('activateCollection', $event)"
+						@deactivate-collection="$emit('deactivateCollection', $event)"
 					/>
 				</template>
 			</Draggable>
