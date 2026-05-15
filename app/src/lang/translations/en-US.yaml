@@ -1465,6 +1465,7 @@ licensing:
     longer be available, and items beyond the Starter plan limits remain stored but locked in Directus. To restore full
     access, add a new license key.
   resolve_continue: Continue
+  resolve_acknowledge: Acknowledge
   resolve_submit: Deactivate Selected Items
   resolve_select_n_items: 'Select {count} item | Select {count} items'
   resolve_show_n_more: 'Show {count} more'
