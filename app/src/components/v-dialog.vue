@@ -85,13 +85,25 @@ function nudge() {
 function useOverlayFocusTrap() {
 	const overlayEl = useTemplateRef<HTMLDivElement>('overlayEl');
 	const { addFocusTrap } = useFocusTrapManager();
+	let returnFocusTarget: HTMLElement | null = null;
 
 	const focusTrap = useFocusTrap(overlayEl, {
 		escapeDeactivates: false,
 		initialFocus: false,
+		setReturnFocus: () => (returnFocusTarget instanceof HTMLElement ? returnFocusTarget : false),
 	});
 
 	addFocusTrap(focusTrap);
+
+	watch(
+		internalActive,
+		(newActive) => {
+			if (newActive && document.activeElement instanceof HTMLElement && document.activeElement !== document.body) {
+				returnFocusTarget = document.activeElement;
+			}
+		},
+		{ flush: 'sync' },
+	);
 
 	watch(
 		internalActive,
