@@ -175,6 +175,72 @@ describe('Integration Tests', () => {
 				expect(RevisionsService.prototype.createOne).not.toHaveBeenCalled();
 				expect(RevisionsService.prototype.updateOne).not.toHaveBeenCalled();
 			});
+
+			test('should NOT coalesce when latest revision belongs to a different user', async () => {
+				const serviceAsUserB = new VersionsService({
+					knex: db,
+					schema,
+					accountability: { user: 'user-b', role: null, admin: false, app: false, roles: [] } as any,
+				});
+
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Old' },
+				});
+
+				vi.spyOn(RevisionsService.prototype, 'readByQuery').mockResolvedValue([
+					{
+						id: 42,
+						data: { title: 'A wrote this' },
+						delta: { title: 'A wrote this' },
+						activity: { user: 'user-a' },
+					},
+				]);
+
+				await serviceAsUserB.save(1, { title: 'B wrote this' }, { patchRevision: true });
+
+				expect(RevisionsService.prototype.updateOne).not.toHaveBeenCalled();
+
+				expect(ActivityService.prototype.createOne).toHaveBeenCalledWith(
+					expect.objectContaining({ user: 'user-b', action: 'version_save' }),
+				);
+
+				expect(RevisionsService.prototype.createOne).toHaveBeenCalledTimes(1);
+			});
+
+			test('should coalesce when latest revision belongs to the same user', async () => {
+				const serviceAsUserA = new VersionsService({
+					knex: db,
+					schema,
+					accountability: { user: 'user-a', role: null, admin: false, app: false, roles: [] } as any,
+				});
+
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_all',
+					item: 2,
+					delta: { title: 'Old' },
+				});
+
+				vi.spyOn(RevisionsService.prototype, 'readByQuery').mockResolvedValue([
+					{
+						id: 42,
+						data: { title: 'A first edit' },
+						delta: { title: 'A first edit' },
+						activity: { user: 'user-a' },
+					},
+				]);
+
+				await serviceAsUserA.save(1, { title: 'A second edit' }, { patchRevision: true });
+
+				expect(RevisionsService.prototype.updateOne).toHaveBeenCalledWith(42, {
+					data: expect.objectContaining({ title: 'A second edit' }),
+					delta: expect.objectContaining({ title: 'A second edit' }),
+				});
+
+				expect(ActivityService.prototype.createOne).not.toHaveBeenCalled();
+				expect(RevisionsService.prototype.createOne).not.toHaveBeenCalled();
+			});
 		});
 	});
 });
