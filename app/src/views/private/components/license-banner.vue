@@ -46,7 +46,7 @@ async function setOwner() {
 async function remindLater() {
 	// 30 days, will be deleted on logout / session end
 	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
-	notify({ title: t('bsl_banner.remind_next_login'), type: 'info' });
+	notify({ title: t('license_banner.remind_next_login'), type: 'info' });
 }
 
 const form = ref<Form>(defaultValues);
@@ -60,22 +60,22 @@ const fields = useSetupFields(false);
 			<div class="inner">
 				<VCardTitle>
 					<span class="warning">
-						{{ $t('bsl_banner.title') }}
+						{{ $t('license_banner.title') }}
 						<VIcon name="warning" filled />
 					</span>
 				</VCardTitle>
 
 				<VCardText>
-					<div class="sub">{{ $t('bsl_banner.license') }}</div>
+					<div class="sub">{{ $t('license_banner.license') }}</div>
 					<SetupForm v-model="form" :errors="errors" :register="false" utm-location="banner"></SetupForm>
 				</VCardText>
 
 				<VCardActions>
 					<VButton secondary @click="remindLater">
-						{{ $t('bsl_banner.remind_later') }}
+						{{ $t('license_banner.remind_later') }}
 					</VButton>
 					<VButton :disabled="isSaveDisabled" :loading="isSaving" @click="setOwner">
-						{{ $t('bsl_banner.set_owner') }}
+						{{ $t('license_banner.set_owner') }}
 					</VButton>
 				</VCardActions>
 			</div>

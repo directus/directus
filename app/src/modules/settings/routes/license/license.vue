@@ -41,8 +41,13 @@ const boundaryDate = computed(() => {
 	return formatDate(dateStr, { type: 'date', format: 'long' });
 });
 
-onMounted(() => {
-	licenseStore.hydrateAddons();
+onMounted(async () => {
+	await licenseStore.hydrate();
+
+	// Core tier has no addons (source === null), skip the request.
+	if (licenseStore.info?.source != null) {
+		licenseStore.hydrateAddons();
+	}
 });
 
 const planDisplayName = computed(() => license.value?.name ?? null);
@@ -65,11 +70,14 @@ async function handleActivate() {
 	activateLoading.value = true;
 
 	const key = licenseKey.value.trim();
-	const command = isLicensed.value ? updateLicense({ license_key: key }) : activateLicense({ license_key: key });
 
 	try {
-		await sdk.request(command);
-		await licenseStore.hydrate();
+		if (isLicensed.value) {
+			await licenseStore.update(key);
+		} else {
+			await licenseStore.activate(key);
+		}
+
 		addLicenseDrawer.value = false;
 		resetAddLicenseForm();
 	} catch (err) {
@@ -193,7 +201,7 @@ async function handleDeactivateConfirm() {
 		</template>
 
 		<div class="license">
-			<VProgressCircular v-if="loading" indeterminate />
+			<VProgressCircular v-if="loading && !license" indeterminate />
 
 			<template v-else-if="license">
 				<div class="plan-header">
@@ -226,13 +234,7 @@ async function handleDeactivateConfirm() {
 						>
 							{{ t('licensing.upgrade_plan') }}
 						</VButton>
-						<VButton
-							v-else
-							small
-							:href="`${getRootPath()}license/portal`"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
+						<VButton v-else small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
 							{{ t('licensing.upgrade_plan') }}
 						</VButton>
 					</div>
@@ -336,7 +338,7 @@ async function handleDeactivateConfirm() {
 				</I18nT>
 			</VNotice>
 			<div class="license-key-field">
-				<label class="field-label">{{ t('licensing.key') }}</label>
+				<label class="type-label">{{ t('licensing.key') }}</label>
 				<SystemLicenseKey
 					:value="licenseKey"
 					:edit="isLicensed"
@@ -435,11 +437,5 @@ async function handleDeactivateConfirm() {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
-}
-
-.field-label {
-	font-size: 0.9375rem;
-	font-weight: 600;
-	color: var(--theme--foreground);
 }
 </style>
