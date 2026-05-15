@@ -146,6 +146,38 @@ describe('DirectusFrame', () => {
 
 				expect(frame.isAiEnabled()).toBe(false);
 			});
+
+			it('stores theme and messages when present on confirm payload', () => {
+				const frame = new DirectusFrame();
+				frame.connect(ORIGIN);
+
+				const theme = {
+					primaryColor: '#abc',
+					primaryAccentColor: '#def',
+					borderRadius: '4px',
+					borderWidth: '1px',
+					buttonSize: '24px',
+					focusRingWidth: '2px',
+					focusRingOffset: '2px',
+				};
+
+				const messages = { edit: 'Edit', addToContext: 'Add to AI Context' };
+
+				frame.receive(makeEvent(ORIGIN, 'confirm', { aiEnabled: false, theme, messages }));
+
+				expect(frame.getTheme()).toEqual(theme);
+				expect(frame.getMessages()).toEqual(messages);
+			});
+
+			it('exposes null theme and messages when confirm omits them (older admin)', () => {
+				const frame = new DirectusFrame();
+				frame.connect(ORIGIN);
+
+				frame.receive(makeEvent(ORIGIN, 'confirm', { aiEnabled: false }));
+
+				expect(frame.getTheme()).toBeNull();
+				expect(frame.getMessages()).toBeNull();
+			});
 		});
 
 		describe('showEditableElements action', () => {
