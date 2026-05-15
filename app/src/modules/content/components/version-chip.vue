@@ -34,7 +34,6 @@ const kind = computed(() => {
 
 	&.not-clickable {
 		padding-inline: 0.6875rem;
-		cursor: default;
 	}
 }
 
