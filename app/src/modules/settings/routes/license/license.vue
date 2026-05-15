@@ -219,24 +219,22 @@ async function handleDeactivateConfirm() {
 						</div>
 					</div>
 					<div class="plan-actions">
-						<VButton v-if="!isLicensed" secondary small @click="addLicenseDrawer = true">
-							{{ t('licensing.add') }}
-						</VButton>
-						<VButton v-if="isLicensed && license.source !== null" secondary small @click="addLicenseDrawer = true">
-							{{ t('licensing.manage') }}
-						</VButton>
-						<VButton
-							v-if="!isLicensed"
-							small
-							href="https://directus.io/pricing"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{{ t('licensing.upgrade_plan') }}
-						</VButton>
-						<VButton v-else small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
-							{{ t('licensing.upgrade_plan') }}
-						</VButton>
+						<template v-if="!isLicensed">
+							<VButton secondary small @click="addLicenseDrawer = true">
+								{{ t('licensing.add') }}
+							</VButton>
+							<VButton small href="https://directus.io/pricing" target="_blank" rel="noopener noreferrer">
+								{{ t('licensing.upgrade_plan') }}
+							</VButton>
+						</template>
+						<template v-else>
+							<VButton secondary small @click="addLicenseDrawer = true">
+								{{ t('licensing.manage') }}
+							</VButton>
+							<VButton small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
+								{{ t('licensing.upgrade_plan') }}
+							</VButton>
+						</template>
 					</div>
 				</div>
 				<VDivider />
