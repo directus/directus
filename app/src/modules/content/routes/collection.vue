@@ -64,7 +64,7 @@ const { collection } = toRefs(props);
 const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
 const { info: currentCollection } = useCollection(collection);
-const { isVersioned, isVersion, version, versionName, versionKeyQuery } = useVersion();
+const { isVersioned, isVersion, version, versionName, versionKeyQuery, readVersionsAllowed } = useVersion();
 const { selection } = useSelection();
 
 onBeforeRouteUpdate((to) => {
@@ -224,14 +224,26 @@ function useSelection() {
 function useVersion() {
 	const versionKeyQuery = useVersionQuery();
 	const isVersioned = computed(() => !!currentCollection.value?.meta?.versioning);
+	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 	const version = computed(() => getValidVersion());
 	const versionName = computed(() => getVersionDisplayName(version.value ? { key: version.value, name: null } : null));
 	const isVersion = computed(() => !isNil(version.value));
 
-	return { isVersioned, isVersion, version, versionName, versionKeyQuery };
+	watch(
+		[isVersioned, readVersionsAllowed, versionKeyQuery],
+		([newIsVersioned, newReadAllowed, newVersionKey]) => {
+			if (newIsVersioned && !newReadAllowed && newVersionKey === VERSION_KEY_DRAFT) {
+				versionKeyQuery.value = null;
+			}
+		},
+		{ immediate: true },
+	);
+
+	return { isVersioned, isVersion, version, versionName, versionKeyQuery, readVersionsAllowed };
 
 	function getValidVersion() {
 		if (!isVersioned.value) return undefined;
+		if (!readVersionsAllowed.value) return null;
 		if (versionKeyQuery.value === VERSION_KEY_DRAFT) return VERSION_KEY_DRAFT;
 		if (!versionKeyQuery.value || isPublishedVersionKey(versionKeyQuery.value)) return null;
 		return undefined;
@@ -369,7 +381,7 @@ function clearFilters() {
 
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
 			<template #title-outer:append>
-				<VMenu v-if="isVersioned" show-arrow placement="bottom">
+				<VMenu v-if="isVersioned && readVersionsAllowed" show-arrow placement="bottom">
 					<template #activator="{ toggle }">
 						<VersionChip :version="version ? { key: version, name: null } : null" @click="toggle()" />
 					</template>
@@ -383,6 +395,8 @@ function clearFilters() {
 						</VListItem>
 					</VList>
 				</VMenu>
+
+				<VersionChip v-else-if="isVersioned" :version="null" :clickable="false" />
 			</template>
 
 			<template #actions:prepend>

@@ -7,8 +7,9 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
 
-const { version } = defineProps<{
+const { version, clickable = true } = defineProps<{
 	version: Pick<ContentVersion, 'key' | 'name'> | null;
+	clickable?: boolean;
 }>();
 
 const kind = computed(() => {
@@ -19,9 +20,9 @@ const kind = computed(() => {
 </script>
 
 <template>
-	<VChip small clickable :label="false" class="version-chip" :kind>
+	<VChip small :clickable :label="false" class="version-chip" :class="{ 'not-clickable': !clickable }" :kind>
 		<VTextOverflow class="version-name" :text="getVersionDisplayName(version)" placement="bottom" />
-		<VIcon small name="arrow_drop_down" />
+		<VIcon v-if="clickable" small name="arrow_drop_down" />
 	</VChip>
 </template>
 
@@ -30,6 +31,11 @@ const kind = computed(() => {
 	--v-chip-font-weight: var(--theme--fonts--title--font-weight);
 
 	padding-inline: 0.6875rem 0.3125rem;
+
+	&.not-clickable {
+		padding-inline: 0.6875rem;
+		cursor: default;
+	}
 }
 
 .version-name {

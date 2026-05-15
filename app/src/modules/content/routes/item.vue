@@ -20,6 +20,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
+import VersionChip from '../components/version-chip.vue';
 import VersionMenu from '../components/version-menu.vue';
 import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
@@ -662,6 +663,11 @@ const shouldShowVersioning = computed(() => {
 	return true;
 });
 
+const shouldShowReadOnlyVersionChip = computed(() => {
+	if (!collectionInfo.value?.meta?.versioning) return false;
+	return !readVersionsAllowed.value;
+});
+
 function enterSingletonDraftContext(
 	newIsSingleton: boolean,
 	newResolvedPK: PrimaryKey | null,
@@ -874,6 +880,10 @@ function editDraftVersion() {
 				@delete="onVersionDelete"
 				@switch="currentVersion = $event"
 			/>
+		</template>
+
+		<template v-else-if="shouldShowReadOnlyVersionChip" #title-outer:append>
+			<VersionChip :version="null" :clickable="false" />
 		</template>
 
 		<template #actions:prepend>
