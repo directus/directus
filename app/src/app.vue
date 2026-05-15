@@ -7,6 +7,7 @@ import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { ALLOWED_WHILE_LOCKED } from './router';
 import { useLicenseStore } from './stores/license';
 import { useUserStore } from './stores/user';
 import VButton from '@/components/v-button.vue';
@@ -30,7 +31,7 @@ const { isLocked } = storeToRefs(licenseStore);
 watch(isLocked, (locked) => {
 	if (!locked || !userStore.isAdmin) return;
 	const currentPath = router.currentRoute.value.path;
-	if (currentPath === '/license-recovery' || currentPath === '/logout') return;
+	if (ALLOWED_WHILE_LOCKED.includes(currentPath)) return;
 	router.push('/license-recovery');
 });
 
