@@ -30,6 +30,7 @@ import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
+import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -61,6 +62,7 @@ useShortcut('meta+s', () => {
 // ------------- Manage Current Flow ------------- //
 
 const flowsStore = useFlowsStore();
+const licenseStore = useLicenseStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
 const flow = computed<FlowRaw | undefined>({
@@ -95,6 +97,7 @@ async function deleteFlow() {
 	try {
 		await api.delete(`/flows/${flow.value.id}`);
 		await flowsStore.hydrate();
+		await licenseStore.hydrate();
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
