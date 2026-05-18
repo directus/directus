@@ -10,6 +10,7 @@ import type {
 	HighlightElementData,
 	SavedData,
 	SendAction,
+	VisualEditingTheme,
 } from '@directus/visual-editing/types';
 import { useEventListener } from '@vueuse/core';
 import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
@@ -154,7 +155,41 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	function sendConfirm() {
 		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
-		send('confirm', { aiEnabled });
+
+		send('confirm', {
+			aiEnabled,
+			theme: getTheme(),
+			messages: {
+				edit: t('edit'),
+				addToContext: t('add_to_ai_context'),
+			},
+		});
+	}
+
+	function getTheme(): VisualEditingTheme {
+		const style = getComputedStyle(document.documentElement);
+
+		return {
+			primaryColor: read('--theme--primary'),
+			primaryAccentColor: read('--theme--primary-accent'),
+			borderRadius: read('--theme--border-radius'),
+			buttonSize: resolveButtonHeightFromDom(),
+			focusRingWidth: read('--focus-ring-width'),
+			focusRingOffset: read('--focus-ring-offset'),
+		};
+
+		function read(name: string) {
+			return style.getPropertyValue(name).trim() || undefined;
+		}
+
+		function resolveButtonHeightFromDom() {
+			const probe = document.createElement('div');
+			probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;height:var(--button-height-xs);';
+			document.body.append(probe);
+			const size = getComputedStyle(probe).height || undefined;
+			probe.remove();
+			return size;
+		}
 	}
 
 	function sendShowEditableElements(show: boolean) {
