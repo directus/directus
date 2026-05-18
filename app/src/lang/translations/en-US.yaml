@@ -1433,6 +1433,19 @@ licensing:
   plan_usage: Your Plan Usage
   addons: Add-on Packages
   addon_purchase: Purchase
+  addon_manage: Manage
+  addon_contact_sales: Contact Sales
+  addon_purchase_dialog_title: 'Purchase Additional {name}'
+  addon_total_summary: '{current} current → {new} new total'
+  addon_price_was: '(was ${previous}/{interval})'
+  addon_prorated_notice:
+    'By confirming, you agree to be charged ${total}/{interval}. A prorated charge for the remainder of your current
+    billing period will be added to your next invoice.'
+  addon_renewal_notice: 'Change takes effect at your next renewal.'
+  addon_renewal_notice_date: 'Change takes effect on {date} (next renewal).'
+  addon_update: Update
+  addon_remove: Remove Addon
+  addon_confirm_purchase: Confirm Purchase
   deactivate: Deactivate License
   deactivate_confirm_title: Deactivate License?
   deactivate_confirm_body:

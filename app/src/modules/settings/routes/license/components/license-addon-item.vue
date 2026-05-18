@@ -1,16 +1,55 @@
 <script setup lang="ts">
 import type { LicenseAddon } from '@directus/license';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import LicenseAddonPurchaseDialog from './license-addon-purchase-dialog.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
+import { getRootPath } from '@/utils/get-root-path';
 
-defineProps<{
+const props = defineProps<{
 	addon: LicenseAddon;
 }>();
 
 const { t } = useI18n();
+
+const dialogOpen = ref(false);
+
+const buttonState = computed<'manage' | 'purchase' | 'contact_sales'>(() => {
+	if (props.addon.upgrade_required) return 'contact_sales';
+	if (props.addon.active_quantity > 0) return 'manage';
+	return 'purchase';
+});
+
+const buttonLabel = computed(() => {
+	switch (buttonState.value) {
+		case 'manage':
+			return t('licensing.addon_manage');
+		case 'contact_sales':
+			return t('licensing.addon_contact_sales');
+		default:
+			return t('licensing.addon_purchase');
+	}
+});
+
+const buttonIcon = computed(() => {
+	switch (buttonState.value) {
+		case 'manage':
+			return 'settings';
+		case 'contact_sales':
+			return 'mail';
+		default:
+			return 'add_shopping_cart';
+	}
+});
+
+const portalHref = `${getRootPath()}license/portal`;
+
+function onClick() {
+	dialogOpen.value = true;
+}
 </script>
 
 <template>
@@ -22,10 +61,22 @@ const { t } = useI18n();
 			<div class="addon-name">{{ addon.name }}</div>
 			<div class="addon-pricing">{{ addon.pricing_summary }}</div>
 		</VListItemContent>
-		<VButton secondary>
-			<VIcon name="add_shopping_cart" left />
-			{{ t('licensing.addon_purchase') }}
+		<VButton
+			v-if="buttonState === 'contact_sales'"
+			secondary
+			:href="portalHref"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			<VIcon :name="buttonIcon" left />
+			{{ buttonLabel }}
 		</VButton>
+		<VButton v-else secondary @click="onClick">
+			<VIcon :name="buttonIcon" left />
+			{{ buttonLabel }}
+		</VButton>
+
+		<LicenseAddonPurchaseDialog v-model="dialogOpen" :addon="addon" />
 	</VListItem>
 </template>
 
