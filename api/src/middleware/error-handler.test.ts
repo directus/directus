@@ -3,7 +3,6 @@ import type { AddressInfo } from 'node:net';
 import { useEnv } from '@directus/env';
 import {
 	createError,
-	ErrorCode,
 	InvalidCredentialsError,
 	InvalidTokenError,
 	TokenExpiredError,

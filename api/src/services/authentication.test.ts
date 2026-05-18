@@ -2,7 +2,6 @@ import {
 	InvalidCredentialsError,
 	InvalidOtpError,
 	ServiceUnavailableError,
-	UserSuspendedError,
 } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
