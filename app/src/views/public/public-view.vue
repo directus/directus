@@ -438,7 +438,7 @@ const logoURL = computed<string | null>(() => {
 		}
 	}
 
-	@media (width <= 68rem) {
+	@include mixins.breakpoint-down('xl') {
 		.license-badge {
 			display: none;
 		}
