@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCollection, useLayout } from '@directus/composables';
+import { translateShortcut, useCollection, useLayout, useShortcut } from '@directus/composables';
 import { isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
 import { isSystemCollection } from '@directus/system-data';
 import { Filter, Preset } from '@directus/types';
@@ -155,6 +155,11 @@ const {
 const createNewAllowed = computed(() => {
 	if (isVersioned.value) return createAllowed.value && readVersionsAllowed.value;
 	return createAllowed.value;
+});
+
+useShortcut('meta+alt+n', () => {
+	if (!createAllowed.value) return;
+	router.push(addNewLink.value);
 });
 
 const permissionsStore = usePermissionsStore();
@@ -568,7 +573,7 @@ function clearFilters() {
 
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					:tooltip="createNewAllowed ? undefined : $t('not_allowed')"
+					:tooltip="createNewAllowed ? translateShortcut(['meta', 'alt', 'n']) : $t('not_allowed')"
 					:label="$t('create')"
 					icon="add"
 					:to="addNewLink"
