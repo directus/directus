@@ -20,7 +20,7 @@ const directusConfig = {
 	HOST: '127.0.0.1',
 	REDIS_HOST: '127.0.0.1',
 	REDIS_PORT: '$PORT',
-	LICENSE_PORT: '$PORT',
+	LICENSE_PORT: '$PORT_LICENSE',
 } as const;
 
 const maria = {
@@ -143,10 +143,11 @@ const baseConfig = {
 
 export async function getEnv(database: Database, opts: Options): Promise<Env> {
 	const portMap: Record<string, string> = {};
+	const base = baseConfig[database];
 
 	const env = {
-		...baseConfig[database],
-		PUBLIC_URL: `http://${baseConfig[database].HOST}:${opts.port}`,
+		...base,
+		PUBLIC_URL: `http://${base.HOST}:${opts.port}`,
 		PORT: String(opts.port),
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
@@ -163,6 +164,7 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
+		...(opts.extras.license ? { LICENSE_API_URL: `http://${base.HOST}:$PORT_LICENSE` } : {}),
 		...opts.env,
 		...(process.env as Record<string, any>),
 	} satisfies Env;

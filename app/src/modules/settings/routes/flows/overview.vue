@@ -186,10 +186,6 @@ function onFlowDrawerCompletion(id: string) {
 			/>
 		</template>
 
-		<div v-if="!licenseStore.limits.flows.hasRemaining" class="padding-box">
-			<MaxCapacityAlert entitlement-key="flows" />
-		</div>
-
 		<VInfo v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
 			{{ $t('no_flows_copy') }}
 
@@ -198,68 +194,71 @@ function onFlowDrawerCompletion(id: string) {
 			</template>
 		</VInfo>
 
-		<VTable
-			v-else
-			v-model:headers="tableHeaders"
-			:items="flows"
-			:sort="internalSort"
-			show-resize
-			fixed-header
-			@click:row="navigateToFlow"
-			@update:sort="updateSort($event)"
-		>
-			<template #[`item.icon`]="{ item }">
-				<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
-			</template>
+		<div v-else class="padding-box">
+			<MaxCapacityAlert v-if="!licenseStore.limits.flows.hasRemaining" entitlement-key="flows" />
 
-			<template #[`item.status`]="{ item }">
-				<DisplayFormattedValue
-					type="string"
-					:item="item"
-					:value="item.status"
-					:conditional-formatting="conditionalFormatting"
-				/>
-			</template>
+			<VTable
+				v-model:headers="tableHeaders"
+				:items="flows"
+				:sort="internalSort"
+				show-resize
+				fixed-header
+				@click:row="navigateToFlow"
+				@update:sort="updateSort($event)"
+			>
+				<template #[`item.icon`]="{ item }">
+					<VIcon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--theme--primary)'" />
+				</template>
 
-			<template #item-append="{ item }">
-				<VMenu placement="left-start" show-arrow>
-					<template #activator="{ toggle }">
-						<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
-					</template>
+				<template #[`item.status`]="{ item }">
+					<DisplayFormattedValue
+						type="string"
+						:item="item"
+						:value="item.status"
+						:conditional-formatting="conditionalFormatting"
+					/>
+				</template>
 
-					<VList>
-						<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
-							<template v-if="item.status === 'active'">
-								<VListItemIcon><VIcon name="block" /></VListItemIcon>
-								<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
-							</template>
-							<template v-else>
-								<VListItemIcon><VIcon name="check" /></VListItemIcon>
-								<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
-							</template>
-						</VListItem>
+				<template #item-append="{ item }">
+					<VMenu placement="left-start" show-arrow>
+						<template #activator="{ toggle }">
+							<VIcon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
+						</template>
 
-						<VListItem clickable @click="editFlow = item.id">
-							<VListItemIcon>
-								<VIcon name="edit" outline />
-							</VListItemIcon>
-							<VListItemContent>
-								{{ $t('edit_flow') }}
-							</VListItemContent>
-						</VListItem>
+						<VList>
+							<VListItem clickable @click="toggleFlowStatusById(item.id, item.status)">
+								<template v-if="item.status === 'active'">
+									<VListItemIcon><VIcon name="block" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_inactive') }}</VListItemContent>
+								</template>
+								<template v-else>
+									<VListItemIcon><VIcon name="check" /></VListItemIcon>
+									<VListItemContent>{{ $t('set_flow_active') }}</VListItemContent>
+								</template>
+							</VListItem>
 
-						<VListItem class="danger" clickable @click="confirmDelete = item">
-							<VListItemIcon>
-								<VIcon name="delete" outline />
-							</VListItemIcon>
-							<VListItemContent>
-								{{ $t('delete_flow') }}
-							</VListItemContent>
-						</VListItem>
-					</VList>
-				</VMenu>
-			</template>
-		</VTable>
+							<VListItem clickable @click="editFlow = item.id">
+								<VListItemIcon>
+									<VIcon name="edit" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('edit_flow') }}
+								</VListItemContent>
+							</VListItem>
+
+							<VListItem class="danger" clickable @click="confirmDelete = item">
+								<VListItemIcon>
+									<VIcon name="delete" outline />
+								</VListItemIcon>
+								<VListItemContent>
+									{{ $t('delete_flow') }}
+								</VListItemContent>
+							</VListItem>
+						</VList>
+					</VMenu>
+				</template>
+			</VTable>
+		</div>
 
 		<VDialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
 			<VCard>
@@ -290,7 +289,7 @@ function onFlowDrawerCompletion(id: string) {
 </template>
 
 <style scoped>
-.v-table {
+.padding-box {
 	padding: var(--content-padding);
 	padding-block-start: var(--content-padding-top-table);
 }
@@ -309,9 +308,5 @@ function onFlowDrawerCompletion(id: string) {
 .header-icon {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-disabled: var(--theme--primary-background);
-}
-
-.padding-box {
-	padding: var(--content-padding);
 }
 </style>
