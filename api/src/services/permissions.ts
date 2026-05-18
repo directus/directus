@@ -30,6 +30,7 @@ export class PermissionsService extends ItemsService {
 
 	private async clearCaches(opts?: MutationOptions) {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await getEntitlementManager().clearCache('custom_permission_rules_enabled');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
@@ -62,9 +63,7 @@ export class PermissionsService extends ItemsService {
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
 		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			throw new ResourceRestrictedError({
-				category: 'custom_permissions_rules_enabled',
-			});
+			await getEntitlementManager().assert('custom_permission_rules_enabled');
 		}
 
 		const res = await super.createOne(data, opts);
@@ -76,9 +75,7 @@ export class PermissionsService extends ItemsService {
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
 		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			throw new ResourceRestrictedError({
-				category: 'custom_permissions_rules_enabled',
-			});
+			await getEntitlementManager().assert('custom_permission_rules_enabled');
 		}
 
 		const res = await super.updateMany(keys, data, opts);

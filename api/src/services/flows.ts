@@ -15,6 +15,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 		const result = await super.createOne(data, opts);
 
+		await getEntitlementManager().clearCache('flows');
 		await getFlowManager().reload();
 
 		return result;
@@ -27,6 +28,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 		const result = await super.updateMany(keys, data, opts);
 
+		await getEntitlementManager().clearCache('flows');
 		await getFlowManager().reload();
 
 		return result;
@@ -38,6 +40,7 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 		const result = await super.deleteMany(keys, opts);
 
+		await getEntitlementManager().clearCache('flows');
 		await getFlowManager().reload();
 
 		return result;

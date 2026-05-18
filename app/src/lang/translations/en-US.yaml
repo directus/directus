@@ -33,6 +33,7 @@ setup_save_accept_license: >
   By hitting save, you accept the terms of the {directusMscl} and {privacyPolicy}.
 setup_license_invalid: >
   License invalid. Please {contactSupport} to resolve this issue.
+setup_license_invalid_format: Invalid license key format.
 setup_accept_license: I accept the terms of the {directusMscl} and {privacyPolicy}
 setup_marketing_emails: Send me product updates and release notes
 setup_launch: Launch Directus
@@ -61,6 +62,8 @@ no_license_key: Don't have a license key?
 get_license_key: Get License Key
 expires_on: Expires on
 environment: Environment
+production: Production
+non_production: Non-Production
 skip: Skip
 continue: Continue
 first_name: First Name
