@@ -68,7 +68,6 @@ export class OverlayManager {
 			primaryColor: theme?.primaryColor?.trim() || '#6644ff',
 			primaryAccentColor: theme?.primaryAccentColor?.trim() || 'color-mix(in srgb, #6644ff, #2e3C43 25%)',
 			borderRadius: theme?.borderRadius?.trim() || '6px',
-			borderWidth: theme?.borderWidth?.trim() || '1px',
 			buttonSize: theme?.buttonSize?.trim() || '24px',
 			focusRingWidth: theme?.focusRingWidth?.trim() || '2px',
 			focusRingOffset: theme?.focusRingOffset?.trim() || '2px',
@@ -84,7 +83,7 @@ export class OverlayManager {
 		const buttonHeight = `var(${OverlayManager.CSS_VAR_BUTTON_HEIGHT}, ${t.buttonSize})`;
 		const buttonRadius = `var(${OverlayManager.CSS_VAR_BUTTON_RADIUS}, ${t.borderRadius})`;
 		const borderSpacing = `var(${OverlayManager.CSS_VAR_BORDER_SPACING}, 8px)`;
-		const borderWidth = `var(${OverlayManager.CSS_VAR_BORDER_WIDTH}, ${t.borderWidth})`;
+		const borderWidth = `var(${OverlayManager.CSS_VAR_BORDER_WIDTH}, ${t.focusRingWidth})`;
 		const borderColor = `var(${OverlayManager.CSS_VAR_BORDER_COLOR}, ${t.primaryColor})`;
 		const borderRadius = `var(${OverlayManager.CSS_VAR_BORDER_RADIUS}, ${t.borderRadius})`;
 		const focusRingColor = `var(${OverlayManager.CSS_VAR_FOCUS_RING_COLOR}, ${t.primaryColor})`;
@@ -120,18 +119,18 @@ export class OverlayManager {
 					opacity: 0;
 				}
 				.${OverlayManager.RECT_CLASS_NAME}.${OverlayManager.RECT_HOVER_CLASS_NAME} .${OverlayManager.RECT_INNER_CLASS_NAME} {
-					--hover-opacity: var(${OverlayManager.CSS_VAR_HOVER_OPACITY}, 0.4);
+					--hover-opacity: var(${OverlayManager.CSS_VAR_HOVER_OPACITY}, 0.333);
 					opacity: var(--hover-opacity);
 				}
 				.${OverlayManager.RECT_CLASS_NAME}.${OverlayManager.RECT_PARENT_HOVER_CLASS_NAME} .${OverlayManager.RECT_INNER_CLASS_NAME} {
-					opacity: calc(var(--hover-opacity) * 0.4);
+					opacity: calc(var(--hover-opacity) / 3);
 				}
 				.${OverlayManager.RECT_HIGHLIGHT_CLASS_NAME} {
 					pointer-events: all;
 					cursor: pointer;
 				}
 				.${OverlayManager.RECT_HIGHLIGHT_CLASS_NAME} .${OverlayManager.RECT_INNER_CLASS_NAME}  {
-					opacity: var(${OverlayManager.CSS_VAR_HIGHLIGHT_OPACITY}, 0.4);
+					opacity: var(${OverlayManager.CSS_VAR_HIGHLIGHT_OPACITY}, 0.333);
 				}
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}:visited,
 				.${OverlayManager.RECT_BUTTON_CLASS_NAME}:active,

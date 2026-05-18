@@ -173,7 +173,6 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 			primaryColor: read('--theme--primary'),
 			primaryAccentColor: read('--theme--primary-accent'),
 			borderRadius: read('--theme--border-radius'),
-			borderWidth: read('--theme--border-width'),
 			buttonSize: resolveButtonHeightFromDom(),
 			focusRingWidth: read('--focus-ring-width'),
 			focusRingOffset: read('--focus-ring-offset'),

@@ -44,7 +44,6 @@ export type VisualEditingTheme = {
 	primaryColor: string | undefined;
 	primaryAccentColor: string | undefined;
 	borderRadius: string | undefined;
-	borderWidth: string | undefined;
 	buttonSize: string | undefined;
 	focusRingWidth: string | undefined;
 	focusRingOffset: string | undefined;

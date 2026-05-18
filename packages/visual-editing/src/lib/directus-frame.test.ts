@@ -155,7 +155,6 @@ describe('DirectusFrame', () => {
 					primaryColor: '#abc',
 					primaryAccentColor: '#def',
 					borderRadius: '4px',
-					borderWidth: '1px',
 					buttonSize: '24px',
 					focusRingWidth: '2px',
 					focusRingOffset: '2px',
