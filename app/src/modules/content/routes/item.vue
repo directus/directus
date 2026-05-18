@@ -110,6 +110,8 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
+const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
+
 const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey();
 
 const {
@@ -224,8 +226,6 @@ const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
 	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
 } = permissions;
-
-const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
 const { templateData } = useTemplateData(collectionInfo, primaryKeyParam);
 
@@ -362,7 +362,9 @@ const isFormDisabled = computed(() => {
 	return true;
 });
 
-const isFormNonEditable = computed(() => shouldShowVersioning.value && currentVersion.value === null);
+const isFormNonEditable = computed(
+	() => shouldShowVersioning.value && readVersionsAllowed.value && currentVersion.value === null,
+);
 
 const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
@@ -678,7 +680,6 @@ function revert(values: Record<string, any>) {
 
 const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
-	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
 	return true;
 });
@@ -984,7 +985,7 @@ function editDraftVersion() {
 		</template>
 
 		<template #actions:primary>
-			<template v-if="shouldShowVersioning">
+			<template v-if="shouldShowVersioning && readVersionsAllowed">
 				<PrivateViewHeaderBarActionButton
 					v-if="currentVersion === null"
 					:label="$t('edit')"
