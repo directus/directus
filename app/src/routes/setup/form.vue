@@ -91,6 +91,13 @@ const product_updates = computed({
 });
 
 const fields = useSetupFields(props.register);
+
+const showPasswordMismatch = computed(() => {
+	if (!props.register) return false;
+	const password = value.value?.admin.password;
+	const passwordConfirm = value.value?.password_confirm;
+	return !!password && !!passwordConfirm && password !== passwordConfirm;
+});
 </script>
 
 <template>
@@ -103,6 +110,9 @@ const fields = useSetupFields(props.register);
 			:fields="fields"
 			disabled-menu
 		></VForm>
+		<VNotice v-if="showPasswordMismatch" type="warning">
+			{{ $t('validationError.confirm_password') }}
+		</VNotice>
 		<VNotice v-if="skipLicense">
 			<I18nT keypath="setup_save_accept_license" tag="span">
 				<template #directusMscl>
