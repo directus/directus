@@ -11,8 +11,6 @@ export class AccessService extends ItemsService {
 
 	private async clearCaches(opts?: MutationOptions) {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-
-		// policy/role attachments determine which users count as admin/app seats
 		await getEntitlementManager().clearCache('seats');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {

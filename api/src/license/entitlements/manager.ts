@@ -48,6 +48,12 @@ export class EntitlementManager {
 	private cache = new Map<EntitlementCacheKey, number | boolean>();
 
 	constructor() {
+		this.registerHandlers();
+	}
+
+	private registerHandlers() {
+		const messenger = useBus();
+
 		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
@@ -64,11 +70,10 @@ export class EntitlementManager {
 		this.registerResolver('flows', resolveFlows);
 		this.registerResolver('sso_enabled', resolveSSOUsers);
 
-		// cache invalidations from other nodes
-		useBus().subscribe<InvalidateMessage>(BUS_CHANNEL, (msg) => {
-			const keys = msg?.keys;
-			if (!keys || keys.length === 0) this.cache.clear();
-			else for (const key of keys) this.cache.delete(key);
+		// cache invalidation
+		messenger.subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
+			const keys = msg?.keys ?? [];
+			await this.clearCache(...keys);
 		});
 	}
 
@@ -77,8 +82,7 @@ export class EntitlementManager {
 	 */
 	setEntitlements(entitlements: Entitlements | null): void {
 		this.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
-		// license change can flip limits or default flags, so any cached usage/validity is suspect
-		void this.clearCache();
+		this.clearCache();
 	}
 
 	/**
@@ -145,16 +149,19 @@ export class EntitlementManager {
 			throw new Error(`No validator registered for entitlement "${String(key)}"`);
 		}
 
-		// skip cache when a request-scoped knex (often a transaction) is passed,
-		// to avoid reading a pre-mutation result back into the assertion
-		if (opts?.knex) return await validator(opts);
+		// skip cache when a transaction is passed
+		if (opts?.knex?.isTransaction) {
+			return await validator(opts);
+		}
+			
+		let cached = this.cache.get(key);
 
-		const cached = this.cache.get(key);
-		if (typeof cached === 'boolean') return cached;
+		if (typeof cached !== 'boolean') {
+			cached = await validator(opts);
+			this.cache.set(key, cached);
+		}
 
-		const value = await validator(opts);
-		this.cache.set(key, value);
-		return value;
+		return cached;
 	}
 
 	/**
@@ -214,16 +221,19 @@ export class EntitlementManager {
 			throw new Error(`No usage source registered for entitlement "${String(key)}"`);
 		}
 
-		// skip cache when a request-scoped knex (often a transaction) is passed,
-		// to avoid reading a pre-mutation count back into the assertion
-		if (opts?.knex) return await source(opts);
+		// skip cache when a transaction is passed
+		if (opts?.knex?.isTransaction) {
+			return await source(opts);
+		}
+			
+		let cached = this.cache.get(key);
 
-		const cached = this.cache.get(key);
-		if (typeof cached === 'number') return cached;
+		if (typeof cached !== 'number') {
+			cached = await source(opts);
+			this.cache.set(key, cached);
+		}
 
-		const value = await source(opts);
-		this.cache.set(key, value);
-		return value;
+		return cached;
 	}
 
 	/**
