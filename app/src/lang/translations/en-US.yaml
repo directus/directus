@@ -900,6 +900,7 @@ edit_bookmark: Edit Bookmark
 edit_personal_bookmark: Edit Personal Bookmark
 edit_role_bookmark: Edit Role Bookmark
 edit_global_bookmark: Edit Global Bookmark
+cannot_edit_personal_bookmarks: Can't Edit Personal Bookmarks
 cannot_edit_role_bookmarks: Can't Edit Role Bookmarks
 cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
