@@ -310,10 +310,6 @@ export class EntitlementManager {
 			const adding = opts?.adding ?? 0;
 			const removing = opts?.removing ?? 0;
 
-			// A pure reduction never violates the limit, regardless of current usage.
-			// Skip the usage query in that case.
-			if (adding === 0 && removing > 0) return;
-
 			const usage = await this.getUsage(key, { knex: opts?.knex });
 
 			if (usage + adding - removing > hardLimit) {
