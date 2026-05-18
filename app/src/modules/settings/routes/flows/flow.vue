@@ -97,7 +97,7 @@ async function deleteFlow() {
 	try {
 		await api.delete(`/flows/${flow.value.id}`);
 		await flowsStore.hydrate();
-		await licenseStore.hydrate();
+		licenseStore.hydrate();
 	} catch (error) {
 		unexpectedError(error);
 	} finally {

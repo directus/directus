@@ -135,7 +135,7 @@ async function deleteFlow() {
 	try {
 		await api.delete(`/flows/${confirmDelete.value.id}`);
 		await flowsStore.hydrate();
-		await licenseStore.hydrate();
+		licenseStore.hydrate();
 		confirmDelete.value = null;
 	} catch (error) {
 		unexpectedError(error);
@@ -151,7 +151,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 		});
 
 		await flowsStore.hydrate();
-		await licenseStore.hydrate();
+		licenseStore.hydrate();
 	} catch (error) {
 		unexpectedError(error);
 	}

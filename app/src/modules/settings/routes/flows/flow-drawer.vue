@@ -145,7 +145,7 @@ async function save() {
 		}
 
 		await flowsStore.hydrate();
-		await licenseStore.hydrate();
+		licenseStore.hydrate();
 
 		emit('done', id);
 	} catch (error) {
