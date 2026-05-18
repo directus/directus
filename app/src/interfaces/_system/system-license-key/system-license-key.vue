@@ -157,7 +157,7 @@ onMounted(() => {
 
 			<div>
 				<VIcon name="check_circle" />
-				<span>{{ $t('environment') }}: {{ licenseInfo.production_enabled ? $t('production') : $t('staging') }}</span>
+				<span>{{ $t('environment') }}: {{ licenseInfo.production_enabled ? $t('production') : $t('non_production') }}</span>
 			</div>
 		</div>
 
