@@ -21,6 +21,7 @@ router.get(
 
 		const [status, downgradeReason, seats, collections, flows] = await Promise.all([
 			licenseManager.getStatus(),
+			licenseManager.getDowngradeReason(),
 			entitlementManager.getUsage('seats'),
 			entitlementManager.getUsage('collections'),
 			entitlementManager.getUsage('flows'),
@@ -35,6 +36,7 @@ router.get(
 			entitlements: license.entitlements,
 			grace_period: license.meta.grace_period,
 			offline: license.meta.offline,
+			downgrade_reason: downgradeReason,
 			usage: { seats, collections, flows },
 		};
 
@@ -197,10 +199,6 @@ router.post(
 
 		if (error) {
 			throw new InvalidPayloadError({ reason: fromZodError(error).message });
-		}
-
-		if (Object.keys(data).length === 0) {
-			return next();
 		}
 
 		const licenseManager = getLicenseManager();
