@@ -13,6 +13,7 @@ import InterfaceList from '@/interfaces/list/list.vue';
 import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { useLicenseStore } from '@/stores/license';
 import { Collection } from '@/types/collections';
 import { extractErrorCode } from '@/utils/extract-error-code';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -26,6 +27,7 @@ const props = defineProps<{
 const emit = defineEmits(['update:modelValue']);
 
 const collectionsStore = useCollectionsStore();
+const licenseStore = useLicenseStore();
 
 const values = reactive({
 	collection: props.collection?.collection ?? null,
@@ -66,7 +68,7 @@ async function save() {
 			await collectionsStore.hydrate();
 		} else {
 			await api.post<any>('/collections', { collection: values.collection, meta: values });
-			await collectionsStore.hydrate();
+			await Promise.all([collectionsStore.hydrate(), licenseStore.hydrate()]);
 		}
 
 		emit('update:modelValue', false);
