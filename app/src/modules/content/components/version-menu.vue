@@ -541,11 +541,11 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 		background-color: var(--theme--foreground);
 
 		&.edit-dot-primary {
-			background-color: var(--theme--primary);
+			background-color: var(--primary);
 		}
 
 		&.edit-dot-secondary {
-			background-color: var(--theme--secondary);
+			background-color: var(--secondary);
 		}
 	}
 }
