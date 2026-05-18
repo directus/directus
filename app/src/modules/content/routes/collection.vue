@@ -133,7 +133,7 @@ const {
 	createAllowed,
 } = useCollectionPermissions(collection);
 
-useShortcut('meta+n', () => {
+useShortcut('meta+alt+n', () => {
 	if (!createAllowed.value) return;
 	router.push(addNewLink.value);
 });
@@ -514,7 +514,7 @@ function clearFilters() {
 
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					:tooltip="createAllowed ? translateShortcut(['meta', 'n']) : $t('not_allowed')"
+					:tooltip="createAllowed ? translateShortcut(['meta', 'alt', 'n']) : $t('not_allowed')"
 					:label="$t('create')"
 					icon="add"
 					:to="addNewLink"

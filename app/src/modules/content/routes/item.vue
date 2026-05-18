@@ -314,7 +314,7 @@ useShortcut(
 );
 
 useShortcut(
-	'meta+n',
+	'meta+alt+n',
 	() => {
 		if (canCreateNew.value) createNewItem();
 	},
@@ -1019,7 +1019,7 @@ function editDraftVersion() {
 								<VListItem clickable :disabled="!canCreateNew" @click="createNewItem()">
 									<VListItemIcon><VIcon name="add" /></VListItemIcon>
 									<VListItemContent>{{ $t('create_new') }}</VListItemContent>
-									<VListItemHint>{{ translateShortcut(['meta', 'n']) }}</VListItemHint>
+									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'n']) }}</VListItemHint>
 								</VListItem>
 							</VList>
 						</template>
