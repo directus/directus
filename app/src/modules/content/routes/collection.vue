@@ -11,6 +11,7 @@ import BookmarkAdd from '../components/bookmark-add.vue';
 import BookmarkDelete from '../components/bookmark-delete.vue';
 import ContentNavigation from '../components/navigation.vue';
 import VersionChip from '../components/version-chip.vue';
+import { stripVersionWithoutReadAccess } from '../index';
 import { useDeleteBookmark } from '../composables/use-delete-bookmark';
 import { getBookmarkScope } from '../utils/get-bookmark-scope';
 import ContentNotFound from './not-found.vue';
@@ -67,7 +68,7 @@ const { collection } = toRefs(props);
 const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
 
 const { info: currentCollection } = useCollection(collection);
-const { isVersioned, isVersion, version, versionName, versionKeyQuery } = useVersion();
+const { isVersioned, isVersion, version, versionName, versionKeyQuery, readVersionsAllowed } = useVersion();
 const { selection } = useSelection();
 
 onBeforeRouteUpdate((to) => {
@@ -77,6 +78,9 @@ onBeforeRouteUpdate((to) => {
 	if (collectionsStore.getCollection(collectionParam)?.meta?.singleton) {
 		return { name: 'content-singleton', params: to.params, query: to.query };
 	}
+
+	const stripped = stripVersionWithoutReadAccess(to);
+	if (stripped) return stripped;
 
 	return true;
 });
@@ -147,6 +151,11 @@ const {
 	deleteAllowed: batchDeleteAllowed,
 	createAllowed,
 } = useCollectionPermissions(collection);
+
+const createNewAllowed = computed(() => {
+	if (isVersioned.value) return createAllowed.value && readVersionsAllowed.value;
+	return createAllowed.value;
+});
 
 const permissionsStore = usePermissionsStore();
 
@@ -239,14 +248,16 @@ function useSelection() {
 function useVersion() {
 	const versionKeyQuery = useVersionQuery();
 	const isVersioned = computed(() => !!currentCollection.value?.meta?.versioning);
+	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 	const version = computed(() => getValidVersion());
 	const versionName = computed(() => getVersionDisplayName(version.value ? { key: version.value, name: null } : null));
 	const isVersion = computed(() => !isNil(version.value));
 
-	return { isVersioned, isVersion, version, versionName, versionKeyQuery };
+	return { isVersioned, isVersion, version, versionName, versionKeyQuery, readVersionsAllowed };
 
 	function getValidVersion() {
 		if (!isVersioned.value) return undefined;
+		if (!readVersionsAllowed.value) return null;
 		if (versionKeyQuery.value === VERSION_KEY_DRAFT) return VERSION_KEY_DRAFT;
 		if (!versionKeyQuery.value || isPublishedVersionKey(versionKeyQuery.value)) return null;
 		return undefined;
@@ -402,9 +413,13 @@ function clearFilters() {
 
 		<PrivateView v-else :title="headerTitle" :icon="headerIcon" :icon-color="headerIconColor">
 			<template #title-outer:append>
-				<VMenu v-if="isVersioned" show-arrow placement="bottom">
+				<VMenu v-if="isVersioned" show-arrow placement="bottom" :disabled="!readVersionsAllowed">
 					<template #activator="{ toggle }">
-						<VersionChip :version="version ? { key: version, name: null } : null" @click="toggle()" />
+						<VersionChip
+							:version="version ? { key: version, name: null } : null"
+							:clickable="readVersionsAllowed"
+							@click="toggle()"
+						/>
 					</template>
 
 					<VList>
@@ -553,11 +568,11 @@ function clearFilters() {
 
 			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					:tooltip="createAllowed ? undefined : $t('not_allowed')"
+					:tooltip="createNewAllowed ? undefined : $t('not_allowed')"
 					:label="$t('create')"
 					icon="add"
 					:to="addNewLink"
-					:disabled="createAllowed === false"
+					:disabled="createNewAllowed === false"
 				/>
 			</template>
 
