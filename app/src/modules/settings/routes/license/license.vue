@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activateLicense, deactivateLicense, type Entitlements, updateLicense } from '@directus/license';
+import { deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -253,6 +253,7 @@ async function handleDeactivateConfirm() {
 							v-else-if="isNumericEntitlement(license.entitlements[item.key])"
 							:icon="item.icon"
 							:title="item.title"
+							:unlimited="effectiveLimit(license.entitlements[item.key] as NumericEntitlement) === -1"
 						>
 							<span v-if="item.formatter" class="usage-value">
 								{{ item.formatter(effectiveLimit(license.entitlements[item.key] as NumericEntitlement)) }}
