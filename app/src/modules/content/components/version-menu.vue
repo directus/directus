@@ -282,9 +282,9 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 </script>
 
 <template>
-	<VMenu class="version-menu" placement="bottom" show-arrow>
+	<VMenu class="version-menu" placement="bottom" show-arrow :disabled="!readVersionsAllowed">
 		<template #activator="{ toggle }">
-			<VersionChip :version="currentVersion" @click="toggle()" />
+			<VersionChip :version="currentVersion" :clickable="readVersionsAllowed" @click="toggle()" />
 		</template>
 
 		<VList class="version-list">
