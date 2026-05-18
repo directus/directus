@@ -159,7 +159,11 @@ function createAppForRouter(router: Router) {
 	return app;
 }
 
-async function postForm(router: Router, path: string, body: Record<string, string> | string) {
+async function requestRouter(
+	router: Router,
+	path: string,
+	options: { method?: string; body?: Record<string, string> | string; headers?: Record<string, string> } = {},
+) {
 	const server = http.createServer(createAppForRouter(router));
 
 	await new Promise<void>((resolve, reject) => {
@@ -168,27 +172,54 @@ async function postForm(router: Router, path: string, body: Record<string, strin
 	});
 
 	const { port } = server.address() as AddressInfo;
-	const encodedBody = typeof body === 'string' ? body : new URLSearchParams(body).toString();
+	let encodedBody: string | undefined;
+
+	if (typeof options.body === 'string') {
+		encodedBody = options.body;
+	} else if (options.body) {
+		encodedBody = new URLSearchParams(options.body).toString();
+	}
 
 	try {
 		const response = await fetch(`http://127.0.0.1:${port}${path}`, {
-			method: 'POST',
+			method: options.method ?? 'GET',
 			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
 				'User-Agent': 'test',
+				...options.headers,
 			},
 			body: encodedBody,
 		});
 
+		const text = await response.text();
+		let body;
+
+		try {
+			body = text ? JSON.parse(text) : undefined;
+		} catch {
+			body = undefined;
+		}
+
 		return {
-			body: await response.json(),
+			body,
+			headers: response.headers,
 			status: response.status,
+			text,
 		};
 	} finally {
 		await new Promise<void>((resolve, reject) => {
 			server.close((error) => (error ? reject(error) : resolve()));
 		});
 	}
+}
+
+async function postForm(router: Router, path: string, body: Record<string, string> | string) {
+	return requestRouter(router, path, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		body,
+	});
 }
 
 // ---------------------------------------------------------------------------
@@ -216,19 +247,32 @@ describe('mcp-oauth controller', () => {
 				mcp_oauth_enabled: false,
 			});
 
-			const settingsGate = (mcpOAuthPublicRouter as any).stack[0].handle;
-			const req = createMockRequest({ path: '/mcp-oauth/token' });
-			const res = createMockResponse();
-			const next = vi.fn();
+			const res = await postForm(mcpOAuthPublicRouter, '/mcp-oauth/token', {
+				grant_type: 'authorization_code',
+				client_id: 'c1',
+			});
 
-			await settingsGate(req, res, next);
+			expect(res.headers.get('access-control-allow-origin')).toBe('*');
+			expect(res.headers.get('cache-control')).toBe('no-store');
+			expect(res.headers.get('pragma')).toBe('no-cache');
+			expect(res.status).toBe(403);
+			expect(res.body).toMatchObject({ error: 'mcp_oauth_disabled' });
+		});
 
-			expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
-			expect(res.set).toHaveBeenCalledWith('Cache-Control', 'no-store');
-			expect(res.set).toHaveBeenCalledWith('Pragma', 'no-cache');
-			expect(res.status).toHaveBeenCalledWith(403);
-			expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: 'mcp_oauth_disabled' }));
-			expect(next).not.toHaveBeenCalled();
+		test('disabled authorize endpoint renders local HTML error page', async () => {
+			mockSettingsReadSingleton.mockResolvedValueOnce({
+				mcp_enabled: true,
+				mcp_oauth_enabled: false,
+			});
+
+			const res = await requestRouter(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/authorize?client_id=test-client&redirect_uri=http://localhost/callback',
+			);
+
+			expect(res.status).toBe(403);
+			expect(res.headers.get('content-type')).toContain('text/html');
+			expect(res.text).toBe('<html>error</html>');
 		});
 	});
 
