@@ -62,12 +62,8 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
-		const customRulesAllowed = getEntitlementManager().isEntitled('custom_permission_rules_enabled');
-
-		if (!customRulesAllowed && hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			throw new ResourceRestrictedError({
-				category: 'custom_permissions_rules_enabled',
-			});
+		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
+			await getEntitlementManager().assert('custom_permission_rules_enabled');
 		}
 
 		const res = await super.createOne(data, opts);
@@ -78,12 +74,8 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
-		const customRulesAllowed = getEntitlementManager().isEntitled('custom_permission_rules_enabled');
-
-		if (!customRulesAllowed && hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			throw new ResourceRestrictedError({
-				category: 'custom_permissions_rules_enabled',
-			});
+		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
+			await getEntitlementManager().assert('custom_permission_rules_enabled');
 		}
 
 		const res = await super.updateMany(keys, data, opts);

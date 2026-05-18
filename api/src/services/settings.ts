@@ -1,3 +1,4 @@
+import { ResourceRestrictedError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	MutationOptions,
@@ -19,16 +20,18 @@ export class SettingsService extends ItemsService<Settings> {
 	}
 
 	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const touchesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data);
+		const entitlementManager = getEntitlementManager();
+		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null);
 
-		if (touchesLLM && CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
-			await getEntitlementManager().assert('custom_llms_enabled', { knex: this.knex });
+		if (!entitlementManager.isEntitled('custom_llms_enabled') && changesLLM) {
+			throw new ResourceRestrictedError({ category: 'custom_llms_enabled' });
 		}
 
 		const result = await super.createOne(data, opts);
 
-		// invalidate on any LLM-field write (including clearing to null, which can re-enable validity)
-		if (touchesLLM) await getEntitlementManager().clearCache('custom_llms_enabled');
+		if (changesLLM) {
+			await getEntitlementManager().clearCache('custom_llms_enabled');
+		}
 
 		return result;
 	}
@@ -38,15 +41,18 @@ export class SettingsService extends ItemsService<Settings> {
 		data: Partial<Settings>,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey[]> {
-		const touchesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data);
+		const entitlementManager = getEntitlementManager();
+		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null)
 
-		if (touchesLLM && CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
-			await getEntitlementManager().assert('custom_llms_enabled', { knex: this.knex });
+		if (!entitlementManager.isEntitled('custom_llms_enabled') && changesLLM) {
+			throw new ResourceRestrictedError({ category: 'custom_llms_enabled' });
 		}
 
 		const result = await super.updateMany(keys, data, opts);
 
-		if (touchesLLM) await getEntitlementManager().clearCache('custom_llms_enabled');
+		if (changesLLM) {
+			await entitlementManager.clearCache('custom_llms_enabled');
+		}
 
 		return result;
 	}
