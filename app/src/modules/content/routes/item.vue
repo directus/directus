@@ -20,7 +20,6 @@ import {
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
-import VersionChip from '../components/version-chip.vue';
 import VersionMenu from '../components/version-menu.vue';
 import { trackLastAccessedCollection } from '../index';
 import ContentNotFound from './not-found.vue';
@@ -113,12 +112,12 @@ const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
-const { readAllowed: readVersionsAllowed, deleteAllowed: deleteVersionsAllowed } =
-	useCollectionPermissions('directus_versions');
+const { deleteAllowed: deleteVersionsAllowed } = useCollectionPermissions('directus_versions');
 
 const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryKey } = useResolvePrimaryKey();
 
 const {
+	readVersionsAllowed,
 	currentVersion,
 	versions,
 	loading: versionsLoading,
@@ -346,7 +345,9 @@ const isFormDisabled = computed(() => {
 	return true;
 });
 
-const isFormNonEditable = computed(() => shouldShowVersioning.value && currentVersion.value === null);
+const isFormNonEditable = computed(
+	() => shouldShowVersioning.value && readVersionsAllowed.value && currentVersion.value === null,
+);
 
 const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
@@ -658,14 +659,8 @@ function revert(values: Record<string, any>) {
 
 const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
-	if (!readVersionsAllowed.value) return false;
 	if (versionsLoading.value) return false;
 	return true;
-});
-
-const shouldShowReadOnlyVersionChip = computed(() => {
-	if (!collectionInfo.value?.meta?.versioning) return false;
-	return !readVersionsAllowed.value;
 });
 
 function enterSingletonDraftContext(
@@ -882,10 +877,6 @@ function editDraftVersion() {
 			/>
 		</template>
 
-		<template v-else-if="shouldShowReadOnlyVersionChip" #title-outer:append>
-			<VersionChip :version="null" :clickable="false" />
-		</template>
-
 		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
@@ -973,7 +964,7 @@ function editDraftVersion() {
 		</template>
 
 		<template #actions:primary>
-			<template v-if="shouldShowVersioning">
+			<template v-if="shouldShowVersioning && readVersionsAllowed">
 				<PrivateViewHeaderBarActionButton
 					v-if="currentVersion === null"
 					:label="$t('edit')"

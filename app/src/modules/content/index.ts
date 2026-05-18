@@ -106,7 +106,7 @@ export const stripVersionOnNonVersioned: NavigationGuard = (to) => {
 	return target;
 };
 
-export const stripVersionWithoutReadAccess: NavigationGuard = (to) => {
+export const stripVersionWithoutReadAccess = (to: RouteLocationNormalized) => {
 	if (!to.query.version && !to.query.versionId) return;
 
 	const permissionsStore = usePermissionsStore();

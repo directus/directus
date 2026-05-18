@@ -265,7 +265,7 @@ describe('stripVersionWithoutReadAccess', () => {
 			fullPath: '/content/posts/3?version=draft&versionId=abc',
 		});
 
-		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBe('/content/posts/3');
+		expect(stripVersionWithoutReadAccess(to)).toBe('/content/posts/3');
 		expect(mockHasPermission).toHaveBeenCalledWith('directus_versions', 'read');
 	});
 
@@ -277,13 +277,13 @@ describe('stripVersionWithoutReadAccess', () => {
 			fullPath: '/content/posts/3?version=draft',
 		});
 
-		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBeUndefined();
+		expect(stripVersionWithoutReadAccess(to)).toBeUndefined();
 	});
 
 	it('passes through when no version params present', () => {
 		mockHasPermission.mockReturnValue(false);
 		const to = makeRoute({ query: {}, fullPath: '/content/posts/3' });
-		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBeUndefined();
+		expect(stripVersionWithoutReadAccess(to)).toBeUndefined();
 	});
 
 	it('preserves other query params when stripping', () => {
@@ -294,7 +294,7 @@ describe('stripVersionWithoutReadAccess', () => {
 			fullPath: '/content/posts/3?version=draft&bookmark=my-bookmark',
 		});
 
-		expect(stripVersionWithoutReadAccess(to, {} as any, vi.fn())).toBe('/content/posts/3?bookmark=my-bookmark');
+		expect(stripVersionWithoutReadAccess(to)).toBe('/content/posts/3?bookmark=my-bookmark');
 	});
 });
 
