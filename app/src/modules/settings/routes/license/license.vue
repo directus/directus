@@ -35,6 +35,8 @@ const licenseStore = useLicenseStore();
 
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
+const isEnvManaged = computed(() => license.value?.source === 'env');
+
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
 	const dateStr = new Date(boundary.value.timestamp * 1000).toISOString().slice(0, 10);
@@ -229,7 +231,13 @@ async function handleDeactivateConfirm() {
 							</VButton>
 						</template>
 						<template v-else>
-							<VButton secondary small @click="addLicenseDrawer = true">
+							<VButton
+								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
+								secondary
+								small
+								:disabled="isEnvManaged"
+								@click="addLicenseDrawer = true"
+							>
 								{{ t('licensing.manage') }}
 							</VButton>
 							<VButton small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
@@ -274,11 +282,11 @@ async function handleDeactivateConfirm() {
 
 				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" variant="danger">
 					<div class="danger-zone-content">
-						<VNotice v-if="license.source === 'env'" type="info">
+						<VNotice v-if="isEnvManaged" type="info">
 							{{ t('licensing.env_managed') }}
 						</VNotice>
 						<VButton
-							:disabled="license.source === 'env'"
+							:disabled="isEnvManaged"
 							:loading="deactivateLoading"
 							danger
 							@click="handleDeactivateClick"
