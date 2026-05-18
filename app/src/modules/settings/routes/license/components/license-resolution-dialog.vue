@@ -23,6 +23,7 @@ import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 
 defineProps<{
 	/** Whether the dialog is open (v-model) */
@@ -85,6 +86,26 @@ const seats = computed<LicensePendingResolutionLimitSeats | undefined>(
 	() => find('limit', 'seats') as LicensePendingResolutionLimitSeats | undefined,
 );
 
+const seatGroups = computed(() => {
+	if (!seats.value) return [];
+	const users: SeatCandidate[] = [];
+	const admins: SeatCandidate[] = [];
+
+	for (const candidate of seats.value.candidates) {
+		if (candidate.admin) admins.push(candidate);
+		else users.push(candidate);
+	}
+
+	const groups: Array<{ caption: string; candidates: SeatCandidate[] }> = [];
+	if (users.length > 0) groups.push({ caption: t('licensing.resolve_section_seats_users_caption'), candidates: users });
+
+	if (admins.length > 0) {
+		groups.push({ caption: t('licensing.resolve_section_seats_admins_caption'), candidates: admins });
+	}
+
+	return groups;
+});
+
 const flows = computed<LicensePendingResolutionLimitFlows | undefined>(
 	() => find('limit', 'flows') as LicensePendingResolutionLimitFlows | undefined,
 );
@@ -113,6 +134,19 @@ const selected = reactive({
 
 const adminCreds = ref<{ email?: string; password?: string }>({});
 const ssoSectionRef = ref<InstanceType<typeof ResolutionSsoSection> | null>(null);
+
+const editingUserId = ref<string | null>(null);
+
+const userDrawerActive = computed({
+	get: () => editingUserId.value !== null,
+	set: (value: boolean) => {
+		if (!value) editingUserId.value = null;
+	},
+});
+
+function openUserDrawer(candidate: SeatCandidate) {
+	editingUserId.value = candidate.id;
+}
 
 const isValid = computed(() => {
 	if (collections.value && selected.collections.size < collections.value.usage - collections.value.limit) return false;
@@ -194,6 +228,7 @@ function onEsc() {
 	<VDialog
 		:model-value="modelValue"
 		:persistent="scope !== 'manual'"
+		:keep-behind="userDrawerActive"
 		@update:model-value="emit('update:modelValue', $event)"
 		@esc="onEsc"
 	>
@@ -230,23 +265,25 @@ function onEsc() {
 					v-model="selected.collections"
 					icon="database"
 					:title="t('licensing.resolve_section_collections')"
-					:description="t('licensing.resolve_section_collections_caption')"
 					:usage="collections.usage"
 					:limit="collections.limit"
-					:candidates="collections.candidates"
+					:groups="[
+						{ caption: t('licensing.resolve_section_collections_caption'), candidates: collections.candidates },
+					]"
 					:id-for="(name: string) => name"
 				/>
 
 				<ResolutionLimitSection
-					v-if="seats && seats.candidates.length > 0"
+					v-if="seatGroups.length > 0 && seats"
 					v-model="selected.seats"
 					icon="group"
 					:title="t('licensing.resolve_section_seats')"
-					:description="t('licensing.resolve_section_seats_caption')"
 					:usage="seats.usage"
 					:limit="seats.limit"
-					:candidates="seats.candidates"
+					:groups="seatGroups"
 					:id-for="(user: SeatCandidate) => user.id"
+					linkable
+					@open-item="openUserDrawer"
 				>
 					<template #item="{ candidate }">
 						<VAvatar x-small round>
@@ -262,10 +299,9 @@ function onEsc() {
 					v-model="selected.flows"
 					icon="bolt"
 					:title="t('licensing.resolve_section_flows')"
-					:description="t('licensing.resolve_section_flows_caption')"
 					:usage="flows.usage"
 					:limit="flows.limit"
-					:candidates="flows.candidates"
+					:groups="[{ caption: t('licensing.resolve_section_flows_caption'), candidates: flows.candidates }]"
 					:id-for="(name: string) => name"
 				/>
 			</VCardText>
@@ -282,6 +318,13 @@ function onEsc() {
 					{{ t('licensing.resolve_submit') }}
 				</VButton>
 			</footer>
+
+			<DrawerItem
+				v-model:active="userDrawerActive"
+				collection="directus_users"
+				:primary-key="editingUserId ?? '+'"
+				non-editable
+			/>
 		</VCard>
 	</VDialog>
 </template>
