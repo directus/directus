@@ -756,7 +756,6 @@ export class McpOAuthService {
 
 			if (burned === 0) {
 				logger.warn({ code_hash: codeHash }, 'Authorization code already used');
-				await this.revokeGrantByCodeHash(trx, codeHash, params.client_id);
 				return { replayed: true as const };
 			}
 
@@ -1375,19 +1374,6 @@ export class McpOAuthService {
 
 			logger.warn({ client_id: clientId, grant_id: reuseGrant['id'] }, 'Refresh token reuse detected, grant revoked');
 		}
-	}
-
-	/**
-	 * Revoke tokens issued from a replayed authorization code. We retain only the
-	 * active grant row, so this detects code replay but not a full refresh-token family history.
-	 */
-	private async revokeGrantByCodeHash(db: Knex | Knex.Transaction, codeHash: string, clientId: string): Promise<void> {
-		const grant = await db('directus_oauth_tokens').where({ code_hash: codeHash, client: clientId }).first();
-
-		if (!grant) return;
-
-		await db('directus_oauth_tokens').where('id', grant['id']).delete();
-		await db('directus_sessions').where('token', grant['session']).delete();
 	}
 
 	/** HMAC-SHA256 key derived from SECRET for signing/verifying consent JWTs. Domain-separated to prevent token confusion. */

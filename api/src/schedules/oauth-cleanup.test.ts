@@ -47,6 +47,7 @@ describe('oauth cleanup schedule', () => {
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('#');
 		expect(schedule.scheduleSynchronizedJob).not.toHaveBeenCalled();
+
 		expect(res).toBe(false);
 	});
 
@@ -54,11 +55,13 @@ describe('oauth cleanup schedule', () => {
 		const res = await oauthCleanupSchedule();
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('*/15 * * * *');
+
 		expect(schedule.scheduleSynchronizedJob).toHaveBeenCalledWith(
 			'oauth-cleanup',
 			'*/15 * * * *',
 			expect.any(Function),
 		);
+
 		expect(res).toBe(true);
 	});
 

@@ -1427,49 +1427,33 @@ describe('McpOAuthService', () => {
 			expect(result.access_token).toBeDefined();
 		});
 
-		it('code already used returns invalid_grant (atomic UPDATE returns 0)', async () => {
+		it('code already used returns invalid_grant without revoking public-client grant', async () => {
 			mockCodeLookup();
 			// Atomic update returns 0 = already used
 			tracker.on.update('directus_oauth_codes').response(0);
-			tracker.on.select('directus_oauth_tokens').response([
-				{
-					id: 'grant-id',
-					client: clientId,
-					session: 'issued-session-hash',
-				},
-			]);
-			tracker.on.delete('directus_oauth_tokens').response(1);
-			tracker.on.delete('directus_sessions').response(1);
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
 
-			expect(queryHistory('delete', 'directus_oauth_tokens').length).toBe(1);
-			expect(queryHistory('delete', 'directus_sessions').length).toBe(1);
+			expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(0);
+			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
+			expect(queryHistory('delete', 'directus_sessions')).toHaveLength(0);
 		});
 
-		it('code replay revocation lookup is scoped to the authenticated client', async () => {
-			const otherClientId = crypto.randomUUID();
-
-			mockCodeLookup({ client: otherClientId });
+		it('code replay does not look up or revoke grants for public clients', async () => {
+			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(0);
-			tracker.on.select('directus_oauth_tokens').response([]);
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
 
-			const grantSelects = queryHistory('select', 'directus_oauth_tokens');
-			expect(grantSelects[0]!.sql).toContain('code_hash');
-			expect(grantSelects[0]!.sql).toContain('client');
-			expect(grantSelects[0]!.bindings).toContain(codeHash);
-			expect(grantSelects[0]!.bindings).toContain(clientId);
-			expect(queryHistory('delete', 'directus_oauth_tokens').length).toBe(0);
-			expect(queryHistory('delete', 'directus_sessions').length).toBe(0);
+			expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(0);
+			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
+			expect(queryHistory('delete', 'directus_sessions')).toHaveLength(0);
 		});
 
 		it('concurrent code exchange - only one wins (atomic UPDATE)', async () => {
 			// First call: code found in SELECT, but UPDATE returns 0 (someone else used it first)
 			mockCodeLookup();
 			tracker.on.update('directus_oauth_codes').response(0);
-			tracker.on.select('directus_oauth_tokens').response([]);
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
 		});
