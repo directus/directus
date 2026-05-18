@@ -404,6 +404,7 @@ export class LicenseManager {
 				});
 
 				await this.store(async (store) => await store.delete('invalidStatus'));
+				await this.syncLicense();
 			} catch (err) {
 				// LICENSE-TODO: replace with error handler
 				const message = err instanceof Error ? err.message : String(err);
