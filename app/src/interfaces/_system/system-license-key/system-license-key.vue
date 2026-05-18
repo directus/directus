@@ -31,7 +31,7 @@ const props = withDefaults(
 const licenseInfo = ref<LicensePreview | null>(null);
 
 const validating = ref(false);
-const error = ref<Error | null>(null);
+const error = ref<'format' | 'server' | null>(null);
 
 const isLicenseKeyMasked = ref(false);
 
@@ -43,9 +43,7 @@ watch(
 	{ immediate: true },
 );
 
-const placeholder = computed(() =>
-	isLicenseKeyMasked.value ? t('value_securely_stored') : t('enter_license_key'),
-);
+const placeholder = computed(() => (isLicenseKeyMasked.value ? t('value_securely_stored') : t('enter_license_key')));
 
 const emit = defineEmits<{
 	input: [value: string | null];
@@ -74,7 +72,7 @@ const validate = throttle(async (value: string | null) => {
 	const parsed = LICENSE_KEY.safeParse(value);
 
 	if (parsed.error) {
-		error.value = parsed.error;
+		error.value = 'format';
 		licenseInfo.value = null;
 		emitValidity();
 		return;
@@ -88,8 +86,8 @@ const validate = throttle(async (value: string | null) => {
 	try {
 		const response = await api.post<{ data: LicensePreview }>('/license/preview', { license_key: value });
 		licenseInfo.value = response.data.data;
-	} catch (err) {
-		error.value = err instanceof Error ? err : new Error(String(err));
+	} catch {
+		error.value = 'server';
 	} finally {
 		validating.value = false;
 		emitValidity();
@@ -161,7 +159,11 @@ onMounted(() => {
 			</div>
 		</div>
 
-		<VNotice v-else-if="error && !validating" type="warning">
+		<VNotice v-else-if="error === 'format' && !validating" type="warning">
+			{{ $t('setup_license_invalid_format') }}
+		</VNotice>
+
+		<VNotice v-else-if="error === 'server' && !validating" type="warning">
 			<I18nT keypath="setup_license_invalid" tag="span">
 				<template #contactSupport>
 					<a :href="`https://directus.io/license-request`" target="_blank" rel="noopener noreferrer">
