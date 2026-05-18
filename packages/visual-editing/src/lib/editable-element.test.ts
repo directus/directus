@@ -18,9 +18,10 @@ const mockSend = vi.fn();
 const mockIsAiEnabled = vi.fn().mockReturnValue(false);
 
 vi.mock('./directus-frame.ts', () => ({
-	DirectusFrame: vi.fn(function (this: { send: typeof mockSend; isAiEnabled: () => boolean }) {
+	DirectusFrame: vi.fn(function (this: { send: typeof mockSend; isAiEnabled: () => boolean; getMessages: () => null }) {
 		this.send = mockSend;
 		this.isAiEnabled = mockIsAiEnabled;
+		this.getMessages = () => null;
 	}),
 }));
 
