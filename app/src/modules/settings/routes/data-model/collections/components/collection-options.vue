@@ -18,6 +18,7 @@ import VMenu from '@/components/v-menu.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useRelationsStore } from '@/stores/relations';
 import { Collection } from '@/types/collections';
 import { getCollectionRoute } from '@/utils/get-route';
@@ -39,6 +40,7 @@ const isDeactivated = computed(() => props.collection.meta?.status !== 'active')
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
+const licenseStore = useLicenseStore();
 const { deleting, deleteActive, deleteCollection } = useDelete();
 
 const peerDependencies = computed(() => {
@@ -74,6 +76,7 @@ function useDelete() {
 			}
 
 			await collectionsStore.deleteCollection(props.collection.collection);
+			licenseStore.hydrate();
 			deleteActive.value = false;
 		} finally {
 			deleting.value = false;
