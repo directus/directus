@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { NextFunction, Request, Response } from 'express';
 import { afterEach, expect, it, test, vi } from 'vitest';
@@ -59,7 +60,7 @@ it.each([
 ])('blocks OAuth sessions on %s', (path) => {
 	const req = makeOAuthReq(path);
 	handler(req, res, next);
-	expect(next).toHaveBeenCalledWith(expect.any(Error));
+	expect(next).toHaveBeenCalledWith(expect.any(ForbiddenError));
 });
 
 test('passes through when accountability is undefined', () => {
