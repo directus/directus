@@ -112,8 +112,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		if (!isSingleton.value && !primaryKey.value) return;
 
 		if (isNewItem.value && !queryVersionId.value) {
-			// Reset existing state so navigating to a fresh itemless draft (no versionId)
-			// surfaces the global draft placeholder instead of a stale loaded version.
+			// Drop versions carried over from a previously viewed item so the unsaved itemless version starts with no versions loaded
 			rawVersions.value = null;
 			return;
 		}
