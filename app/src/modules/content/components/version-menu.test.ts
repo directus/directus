@@ -1,6 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ref } from 'vue';
 import VersionMenu from './version-menu.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import { i18n } from '@/lang';
@@ -17,10 +18,10 @@ vi.mock('@/api', () => ({
 
 vi.mock('@/composables/use-permissions', () => ({
 	useCollectionPermissions: vi.fn(() => ({
-		createAllowed: { value: true },
-		readAllowed: { value: true },
-		updateAllowed: { value: true },
-		deleteAllowed: { value: true },
+		createAllowed: ref(true),
+		readAllowed: ref(true),
+		updateAllowed: ref(true),
+		deleteAllowed: ref(true),
 	})),
 }));
 
