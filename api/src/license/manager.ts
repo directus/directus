@@ -34,7 +34,7 @@ import { useStore } from '../utils/store.js';
 import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
-import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
+import { getEntitlementManager } from './entitlements/manager.js';
 import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
@@ -547,8 +547,7 @@ export class LicenseManager {
 		}
 
 		// New manager to ensure no conflicts with main manager
-		const entitlementManager = new EntitlementManager();
-		entitlementManager.setEntitlements(entitlements);
+		const entitlementManager = getEntitlementManager().fork(entitlements);
 
 		const candidateGetters: Record<CountableEntitlementKey, any> = {
 			seats: getActiveSeats,
