@@ -322,7 +322,6 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(mcpOAuthGuard);
 
 	if (env['MCP_OAUTH_ENABLED'] === true) {
-		app.use(mcpOAuthGuard);
 		app.use(mcpOAuthProtectedRouter);
 	}
 

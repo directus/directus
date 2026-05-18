@@ -366,6 +366,17 @@ describe('mcp-oauth controller', () => {
 				error_description: expect.stringContaining('Duplicate parameter'),
 			});
 		});
+
+		test.each([
+			['missing grant_type', 'invalid_request', { client_id: 'c1' }],
+			['empty grant_type', 'invalid_request', { grant_type: '', client_id: 'c1' }],
+			['unsupported grant_type', 'unsupported_grant_type', { grant_type: 'client_credentials', client_id: 'c1' }],
+		])('%s returns %s', async (_name, error, body) => {
+			const res = await postForm(mcpOAuthPublicRouter, '/mcp-oauth/token', body);
+
+			expect(res.status).toBe(400);
+			expect(res.body).toMatchObject({ error });
+		});
 	});
 
 	// -----------------------------------------------------------------------
@@ -459,6 +470,48 @@ describe('mcp-oauth controller', () => {
 			} as any);
 		}
 
+		async function runAuthorizeRequest(query: Record<string, string> = {}) {
+			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize');
+			const req = createAuthorizeRequest(query);
+			const res = createRedirectResponse();
+			const next = vi.fn();
+
+			const lastHandler = handlers[handlers.length - 1]!;
+			await lastHandler.handle(req, res, next);
+
+			return { req, res, next };
+		}
+
+		test('OAuth accountability redirects to login before consent validation', async () => {
+			const { getAccountabilityForToken } = await import('../utils/get-accountability-for-token.js');
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+
+			vi.mocked(getAccountabilityForToken).mockResolvedValueOnce({
+				user: 'test-user-id',
+				role: 'test-role',
+				roles: [],
+				admin: false,
+				app: false,
+				ip: null,
+				oauth: {
+					client: 'client-id',
+					scopes: ['mcp:access'],
+					aud: ['http://localhost/mcp'],
+				},
+			});
+
+			const { res, next } = await runAuthorizeRequest();
+
+			expect(res.redirect).toHaveBeenCalledWith(
+				302,
+				'http://localhost/admin/login?redirect=%2Fmcp-oauth%2Fauthorize%3Fclient_id%3Dtest-client',
+			);
+
+			expect(McpOAuthService.prototype.validateAuthorization).not.toHaveBeenCalled();
+			expect(res.send).not.toHaveBeenCalled();
+			expect(next).not.toHaveBeenCalled();
+		});
+
 		test('pre-trust error (invalid client_id) renders local error page', async () => {
 			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth/index.js');
 
@@ -466,14 +519,7 @@ describe('mcp-oauth controller', () => {
 				new OAuthError(400, 'invalid_request', 'Unknown client_id'),
 			);
 
-			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize');
-			const req = createAuthorizeRequest();
-			const res = createRedirectResponse();
-			const next = vi.fn();
-
-			// Run the asyncHandler (last handler in the stack)
-			const lastHandler = handlers[handlers.length - 1]!;
-			await lastHandler.handle(req, res, next);
+			const { res } = await runAuthorizeRequest();
 
 			// Should render local error page, NOT redirect
 			expect(res.redirect).not.toHaveBeenCalled();
@@ -490,14 +536,7 @@ describe('mcp-oauth controller', () => {
 				new OAuthError(400, 'invalid_scope', 'Only scope mcp:access is supported', true),
 			);
 
-			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize');
-
-			const req = createAuthorizeRequest({ state: 'abc' });
-			const res = createRedirectResponse();
-			const next = vi.fn();
-
-			const lastHandler = handlers[handlers.length - 1]!;
-			await lastHandler.handle(req, res, next);
+			const { res } = await runAuthorizeRequest({ state: 'abc' });
 
 			// Should redirect, NOT render local error page
 			expect(res.send).not.toHaveBeenCalled();
@@ -519,15 +558,7 @@ describe('mcp-oauth controller', () => {
 				new OAuthError(400, 'invalid_request', 'code_challenge is required', true),
 			);
 
-			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize');
-
-			// No state param in query
-			const req = createAuthorizeRequest();
-			const res = createRedirectResponse();
-			const next = vi.fn();
-
-			const lastHandler = handlers[handlers.length - 1]!;
-			await lastHandler.handle(req, res, next);
+			const { res } = await runAuthorizeRequest();
 
 			expect(res.redirect).toHaveBeenCalledWith(302, expect.any(String));
 

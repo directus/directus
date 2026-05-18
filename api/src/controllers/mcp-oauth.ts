@@ -276,7 +276,7 @@ mcpOAuthPublicRouter.get(
 			return;
 		}
 
-		if (!accountability?.user) {
+		if (!accountability?.user || accountability.oauth) {
 			redirectToLogin();
 			return;
 		}
@@ -405,8 +405,10 @@ mcpOAuthPublicRouter.post(
 			result = await service.exchangeCode(req.body, context);
 		} else if (grantType === 'refresh_token') {
 			result = await service.refreshToken(req.body, context);
+		} else if (!grantType) {
+			throw new OAuthError(400, 'invalid_request', 'grant_type is required');
 		} else {
-			throw new OAuthError(400, 'unsupported_grant_type', `Unsupported grant_type: ${grantType ?? 'missing'}`);
+			throw new OAuthError(400, 'unsupported_grant_type', `Unsupported grant_type: ${grantType}`);
 		}
 
 		res.json(result);
