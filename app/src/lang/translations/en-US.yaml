@@ -1480,8 +1480,10 @@ licensing:
   resolve_section_seats: User Seats
   resolve_section_flows: Flows
   resolve_section_collections_caption: Select collection(s) to deactivate
-  resolve_section_seats_caption: Select user seat(s) to deactivate
+  resolve_section_seats_users_caption: Select user seat(s) to deactivate
+  resolve_section_seats_admins_caption: Select admin(s) to deactivate
   resolve_section_flows_caption: Select flow(s) to deactivate
+  resolve_all_set: All Set
   resolve_section_sso: SSO Deactivation
   resolve_sso_confirm: Confirm SSO Deactivation
   resolve_sso_caption:
