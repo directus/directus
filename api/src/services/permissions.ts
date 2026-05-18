@@ -30,8 +30,6 @@ export class PermissionsService extends ItemsService {
 
 	private async clearCaches(opts?: MutationOptions) {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-
-		// permission rule additions/edits can flip the custom-permission validator
 		await getEntitlementManager().clearCache('custom_permission_rules_enabled');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
@@ -64,7 +62,9 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
-		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
+		const customRulesAllowed = getEntitlementManager().isEntitled('custom_permission_rules_enabled');
+
+		if (!customRulesAllowed && hasCustomRule(data) && !isRecommendedAppPermission(data)) {
 			throw new ResourceRestrictedError({
 				category: 'custom_permissions_rules_enabled',
 			});
@@ -78,7 +78,9 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
-		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
+		const customRulesAllowed = getEntitlementManager().isEntitled('custom_permission_rules_enabled');
+
+		if (!customRulesAllowed && hasCustomRule(data) && !isRecommendedAppPermission(data)) {
 			throw new ResourceRestrictedError({
 				category: 'custom_permissions_rules_enabled',
 			});
