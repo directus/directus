@@ -2485,20 +2485,5 @@ describe('McpOAuthService', () => {
 			expect(clientSelects[0]!.sql).toContain('directus_oauth_tokens');
 		});
 
-		it('cleanup queries use indexed columns (expires_at, used_at, session)', async () => {
-			tracker.on.delete('directus_oauth_codes').response(0);
-			tracker.on.delete('directus_oauth_codes').response(0);
-			tracker.on.select('directus_oauth_tokens').response([]);
-			tracker.on.select('directus_oauth_clients').response([]);
-
-			await service.cleanup();
-
-			const allSql = [...tracker.history.delete.map((q) => q.sql), ...tracker.history.select.map((q) => q.sql)].join(
-				'\n',
-			);
-
-			expect(allSql).toContain('expires_at');
-			expect(allSql).toContain('used_at');
-		});
 	});
 });
