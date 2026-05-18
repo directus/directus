@@ -82,6 +82,11 @@ const collections = computed<LicensePendingResolutionLimitCollections | undefine
 	() => find('limit', 'collections') as LicensePendingResolutionLimitCollections | undefined,
 );
 
+const collectionGroups = computed(() => {
+	if (!collections.value || collections.value.candidates.length === 0) return [];
+	return [{ caption: t('licensing.resolve_section_collections_caption'), candidates: collections.value.candidates }];
+});
+
 const seats = computed<LicensePendingResolutionLimitSeats | undefined>(
 	() => find('limit', 'seats') as LicensePendingResolutionLimitSeats | undefined,
 );
@@ -109,6 +114,11 @@ const seatGroups = computed(() => {
 const flows = computed<LicensePendingResolutionLimitFlows | undefined>(
 	() => find('limit', 'flows') as LicensePendingResolutionLimitFlows | undefined,
 );
+
+const flowGroups = computed(() => {
+	if (!flows.value || flows.value.candidates.length === 0) return [];
+	return [{ caption: t('licensing.resolve_section_flows_caption'), candidates: flows.value.candidates }];
+});
 
 const sso = computed<LicensePendingResolutionFeatureGateSSO | undefined>(
 	() => find('feature_gate', 'sso_enabled') as LicensePendingResolutionFeatureGateSSO | undefined,
@@ -261,15 +271,13 @@ function onEsc() {
 				/>
 
 				<ResolutionLimitSection
-					v-if="collections && collections.candidates.length > 0"
+					v-if="collections && collectionGroups.length > 0"
 					v-model="selected.collections"
 					icon="database"
 					:title="t('licensing.resolve_section_collections')"
 					:usage="collections.usage"
 					:limit="collections.limit"
-					:groups="[
-						{ caption: t('licensing.resolve_section_collections_caption'), candidates: collections.candidates },
-					]"
+					:groups="collectionGroups"
 					:id-for="(name: string) => name"
 				/>
 
@@ -295,13 +303,13 @@ function onEsc() {
 				</ResolutionLimitSection>
 
 				<ResolutionLimitSection
-					v-if="flows && flows.candidates.length > 0"
+					v-if="flows && flowGroups.length > 0"
 					v-model="selected.flows"
 					icon="bolt"
 					:title="t('licensing.resolve_section_flows')"
 					:usage="flows.usage"
 					:limit="flows.limit"
-					:groups="[{ caption: t('licensing.resolve_section_flows_caption'), candidates: flows.candidates }]"
+					:groups="flowGroups"
 					:id-for="(name: string) => name"
 				/>
 			</VCardText>
@@ -322,7 +330,7 @@ function onEsc() {
 			<DrawerItem
 				v-model:active="userDrawerActive"
 				collection="directus_users"
-				:primary-key="editingUserId ?? '+'"
+				:primary-key="editingUserId"
 				non-editable
 			/>
 		</VCard>
