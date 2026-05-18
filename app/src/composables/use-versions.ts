@@ -98,7 +98,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	});
 
 	watch(
-		[collection, isSingleton, primaryKey],
+		[collection, isSingleton, primaryKey, queryVersionId],
 		([newCollection], [oldCollection]) => {
 			if (oldCollection && newCollection !== oldCollection) currentVersion.value = null;
 			getVersions();
@@ -111,7 +111,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		if (!isSingleton.value && !primaryKey.value) return;
 
-		if (isNewItem.value && !queryVersionId.value) return;
+		if (isNewItem.value && !queryVersionId.value) {
+			// Drop versions carried over from a previously viewed item so the unsaved itemless version starts with no versions loaded
+			rawVersions.value = null;
+			return;
+		}
 
 		loading.value = true;
 
