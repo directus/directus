@@ -1815,10 +1815,46 @@ describe('McpOAuthService', () => {
 
 			await assertOAuthError(() => service.exchangeCode(validParams(), context), { error: 'invalid_grant' });
 
-				expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(0);
-				expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
-				expect(queryHistory('delete', 'directus_sessions')).toHaveLength(0);
+			expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(0);
+			expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(0);
+			expect(queryHistory('delete', 'directus_sessions')).toHaveLength(0);
+		});
+
+		describe.each(confidentialMethods)('$label code replay', ({ method, makeAuthParams }) => {
+			const clientSecret = 'super-secret-value';
+			const clientSecretHash = crypto.createHash('sha256').update(clientSecret).digest('hex');
+
+			it('revokes the confidential-client grant and session', async () => {
+				mockClientLookup(clientId, {
+					token_endpoint_auth_method: method,
+					client_secret_hash: clientSecretHash,
+				});
+
+				mockCodeLookup();
+				tracker.on.update('directus_oauth_codes').response(0);
+
+				tracker.on.select('directus_oauth_tokens').response([
+					{
+						id: 'winner-grant',
+						client: clientId,
+						session: 'winner-session-hash',
+						code_hash: codeHash,
+					},
+				]);
+
+				tracker.on.delete('directus_oauth_tokens').response(1);
+				tracker.on.delete('directus_sessions').response(1);
+
+				await assertOAuthError(
+					() => service.exchangeCode(validParams(makeAuthParams(clientId, clientSecret)), context),
+					{ error: 'invalid_grant' },
+				);
+
+				expect(queryHistory('select', 'directus_oauth_tokens')).toHaveLength(1);
+				expect(queryHistory('delete', 'directus_oauth_tokens')).toHaveLength(1);
+				expect(queryHistory('delete', 'directus_sessions')).toHaveLength(1);
 			});
+		});
 
 		it('concurrent code exchange - only one wins (atomic UPDATE)', async () => {
 			mockClientLookup(clientId);
