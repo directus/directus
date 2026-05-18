@@ -17,6 +17,7 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { getEntitlementManager } from '../license/index.js';
 import { getLicenseManager } from '../license/manager.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
@@ -149,6 +150,7 @@ export class AuthenticationService {
 			} catch (error) {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+					await getEntitlementManager().clearCache('seats', 'sso_enabled');
 
 					if (this.accountability) {
 						const activity = await this.activityService.createOne({

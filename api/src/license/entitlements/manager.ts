@@ -14,12 +14,21 @@ import type {
 } from '@directus/license';
 import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FEATURE_FLAG_ENTITLEMENT_KEYS } from '@directus/license';
 import type { Knex } from 'knex';
+import { useBus } from '../../bus/index.js';
 import { countActiveCollections, resolveCollections } from './lib/collections.js';
 import { checkCustomLLM } from './lib/custom-llms-enabled.js';
 import { checkCustomPermissionRules } from './lib/custom-permission-rules-enabled.js';
 import { countActiveFlows, resolveFlows } from './lib/flows.js';
 import { countActiveSeats, resolveSeats } from './lib/seats.js';
 import { checkUsersSSO, resolveSSOUsers } from './lib/sso-enabled.js';
+
+type EntitlementCacheKey = CountableEntitlementKey | FeatureFlagEntitlementKey;
+
+const BUS_CHANNEL = 'entitlements.invalidate';
+
+interface InvalidateMessage {
+	keys?: EntitlementCacheKey[];
+}
 
 let entitlementManager: EntitlementManager | undefined;
 
@@ -36,8 +45,15 @@ export class EntitlementManager {
 	private counterSources = new Map<CountableEntitlementKey, UsageCounter>();
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
+	private cache = new Map<EntitlementCacheKey, number | boolean>();
 
 	constructor() {
+		this.registerHandlers();
+	}
+
+	private registerHandlers() {
+		const messenger = useBus();
+
 		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
@@ -53,6 +69,12 @@ export class EntitlementManager {
 		this.registerResolver('seats', resolveSeats);
 		this.registerResolver('flows', resolveFlows);
 		this.registerResolver('sso_enabled', resolveSSOUsers);
+
+		// cache invalidation
+		messenger.subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
+			const keys = msg?.keys ?? [];
+			this.clearCacheNoPublish(...keys);
+		});
 	}
 
 	/**
@@ -60,6 +82,46 @@ export class EntitlementManager {
 	 */
 	setEntitlements(entitlements: Entitlements | null): void {
 		this.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
+		this.clearCache();
+	}
+
+	/**
+	 * Create a manager that uses a different entitlement set while sharing
+	 * this instance's cache and registered sources. Used to preview how a
+	 * license change would affect the current user. Intended for read-only
+	 * checks. Mutating methods (`setEntitlements`, `clearCache`) on the
+	 * fork will affect the shared cache.
+	 */
+	fork(entitlements: Entitlements): EntitlementManager {
+		const forked = Object.create(EntitlementManager.prototype) as EntitlementManager;
+		forked.entitlements = entitlements;
+		forked.counterSources = this.counterSources;
+		forked.validatorSources = this.validatorSources;
+		forked.resolverSources = this.resolverSources;
+		forked.cache = this.cache;
+		return forked;
+	}
+
+	private clearCacheNoPublish(...keys: EntitlementCacheKey[]): void {
+		if (keys.length === 0) {
+			this.cache.clear();
+		} else {
+			for (const key of keys) {
+				this.cache.delete(key);
+			}
+		}
+	}
+
+	/**
+	 * Drop cached usage/validity locally and notify other nodes. Pass specific
+	 * keys to clear only those entries; call with no args to clear everything.
+	 * Used by mutation paths (services) and by the manual cache-clear endpoint
+	 * and CLI command.
+	 */
+	async clearCache(...keys: EntitlementCacheKey[]): Promise<void> {
+		this.clearCacheNoPublish();
+
+		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
 	}
 
 	/**
@@ -93,7 +155,19 @@ export class EntitlementManager {
 			throw new Error(`No validator registered for entitlement "${String(key)}"`);
 		}
 
-		return await validator(opts);
+		// skip cache when a transaction is passed
+		if (opts?.knex?.isTransaction) {
+			return await validator(opts);
+		}
+
+		let cached = this.cache.get(key);
+
+		if (typeof cached !== 'boolean') {
+			cached = await validator(opts);
+			this.cache.set(key, cached);
+		}
+
+		return cached;
 	}
 
 	/**
@@ -153,7 +227,19 @@ export class EntitlementManager {
 			throw new Error(`No usage source registered for entitlement "${String(key)}"`);
 		}
 
-		return await source(opts);
+		// skip cache when a transaction is passed
+		if (opts?.knex?.isTransaction) {
+			return await source(opts);
+		}
+
+		let cached = this.cache.get(key);
+
+		if (typeof cached !== 'number') {
+			cached = await source(opts);
+			this.cache.set(key, cached);
+		}
+
+		return cached;
 	}
 
 	/**
@@ -161,12 +247,15 @@ export class EntitlementManager {
 	 * limit / usage / remaining / allowed. For feature flags: returns the
 	 * validator's verdict (`valid`) and the license-side `entitled` state.
 	 */
-	check(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number, knex?: Knex | undefined }): Promise<EntitlementCheckResult>;
+	check(
+		key: CountableEntitlementKey,
+		opts?: { adding?: number; removing?: number; knex?: Knex | undefined },
+	): Promise<EntitlementCheckResult>;
 
 	check(key: FeatureFlagEntitlementKey, opts?: { knex?: Knex | undefined }): Promise<FeatureFlagCheckResult>;
 	async check(
 		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number; removing?: number, knex?: Knex | undefined },
+		opts?: { adding?: number; removing?: number; knex?: Knex | undefined },
 	): Promise<EntitlementCheckResult | FeatureFlagCheckResult> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
@@ -177,9 +266,10 @@ export class EntitlementManager {
 
 			const usage = await this.getUsage(key, { knex: opts?.knex });
 			const adding = opts?.adding ?? 0;
+			const removing = opts?.removing ?? 0;
 
 			return {
-				allowed: usage + adding <= hardLimit,
+				allowed: usage + adding - removing <= hardLimit,
 				hardLimit,
 				usage,
 				remaining: hardLimit - usage,
@@ -199,21 +289,31 @@ export class EntitlementManager {
 	/**
 	 * Throws when an entitlement is being violated.
 	 *
-	 * Countable: throws `LimitExceededError` when `usage + (adding ?? 0) > hardLimit`
+	 * Countable: throws `LimitExceededError` when `usage + (adding ?? 0) - (removing ?? 0) > hardLimit`.
+	 * A pure reduction (adding = 0, removing > 0) never throws, so over-limit state can always be drained.
 	 * Feature flag: throws `ResourceRestrictedError` when its validator indicates invalid
 	 */
-	assert(key: CountableEntitlementKey, opts?: { adding?: number; removing?: number, knex?: Knex | undefined }): Promise<void>;
+	assert(
+		key: CountableEntitlementKey,
+		opts?: { adding?: number; removing?: number; knex?: Knex | undefined },
+	): Promise<void>;
+
 	assert(key: FeatureFlagEntitlementKey, opts?: { knex?: Knex | undefined }): Promise<void>;
-	async assert(key: CountableEntitlementKey | FeatureFlagEntitlementKey, opts?: { adding?: number, knex?: Knex | undefined }): Promise<void> {
+	async assert(
+		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
+		opts?: { adding?: number; removing?: number; knex?: Knex | undefined },
+	): Promise<void> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
 			if (hardLimit === -1) return;
 
-			const usage = await this.getUsage(key, { knex: opts?.knex });
 			const adding = opts?.adding ?? 0;
+			const removing = opts?.removing ?? 0;
 
-			if (usage + adding > hardLimit) {
-				throw new LimitExceededError({ category: key } /*{ key, hardLimit, usage, adding }*/);
+			const usage = await this.getUsage(key, { knex: opts?.knex });
+
+			if (usage + adding - removing > hardLimit) {
+				throw new LimitExceededError({ category: key });
 			}
 
 			return;
