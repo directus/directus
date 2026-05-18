@@ -23,6 +23,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
+import { useServerStore } from '@/stores/server';
 import { formatDate } from '@/utils/format-date';
 import { formatTimeframe } from '@/utils/format-timeframe';
 import { getRootPath } from '@/utils/get-root-path';
@@ -32,6 +33,7 @@ import { PrivateView } from '@/views/private';
 const { t } = useI18n();
 
 const licenseStore = useLicenseStore();
+const serverStore = useServerStore();
 
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
 
@@ -224,7 +226,12 @@ async function handleDeactivateConfirm() {
 							<VButton secondary small @click="addLicenseDrawer = true">
 								{{ t('licensing.add') }}
 							</VButton>
-							<VButton small href="https://directus.io/pricing" target="_blank" rel="noopener noreferrer">
+							<VButton
+								small
+								:href="`https://directus.io/pricing?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_upgrade_plan_link`"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								{{ t('licensing.upgrade_plan') }}
 							</VButton>
 						</template>
@@ -331,7 +338,11 @@ async function handleDeactivateConfirm() {
 			<VNotice type="info">
 				<I18nT keypath="setup_license_key_notice" tag="span">
 					<template #oig>
-						<a href="https://directus.io/license-request" target="_blank" rel="noopener noreferrer">
+						<a
+							:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_drawer_open_innovation_grant_link`"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
 							{{ t('open_innovation_grant') }}
 						</a>
 					</template>

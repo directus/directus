@@ -107,7 +107,7 @@ const fields = useSetupFields(props.register);
 			<I18nT keypath="setup_save_accept_license" tag="span">
 				<template #directusMscl>
 					<a
-						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
+						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
 						target="_blank"
 					>
 						{{ $t('directus_mscl') }}
@@ -115,7 +115,7 @@ const fields = useSetupFields(props.register);
 				</template>
 				<template #privacyPolicy>
 					<a
-						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
+						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
 						target="_blank"
 					>
 						{{ $t('privacy_policy') }}
@@ -128,7 +128,7 @@ const fields = useSetupFields(props.register);
 			<I18nT keypath="setup_accept_license" tag="span">
 				<template #directusMscl>
 					<a
-						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
+						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
 						target="_blank"
 					>
 						{{ $t('directus_mscl') }}
@@ -136,7 +136,7 @@ const fields = useSetupFields(props.register);
 				</template>
 				<template #privacyPolicy>
 					<a
-						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=privacy_link`"
+						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=privacy_link`"
 						target="_blank"
 					>
 						{{ $t('privacy_policy') }}
