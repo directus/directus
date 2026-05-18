@@ -140,7 +140,6 @@ vi.mock('./mcp-oauth-consent-page.js', () => ({
 // ---------------------------------------------------------------------------
 // Import after mocks
 // ---------------------------------------------------------------------------
-const { createRateLimiter } = await import('../rate-limiter.js');
 const { mcpOAuthPublicRouter, mcpOAuthProtectedRouter } = await import('./mcp-oauth.js');
 
 // ---------------------------------------------------------------------------
