@@ -45,10 +45,10 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const expanded = reactive(new Set<number>());
+const expanded = reactive(new Set<string>());
 
-function visibleCandidatesFor(index: number, candidates: TCandidate[]): TCandidate[] {
-	if (expanded.has(index)) return candidates;
+function visibleCandidatesFor(caption: string, candidates: TCandidate[]): TCandidate[] {
+	if (expanded.has(caption)) return candidates;
 	return candidates.slice(0, props.initialVisible);
 }
 
@@ -88,12 +88,12 @@ function toggle(candidate: TCandidate): void {
 			</span>
 		</header>
 
-		<div v-for="(group, index) in groups" :key="index" class="group">
+		<div v-for="group in groups" :key="group.caption" class="group">
 			<p class="caption">{{ group.caption }}</p>
 
 			<div class="grid">
 				<div
-					v-for="candidate in visibleCandidatesFor(index, group.candidates)"
+					v-for="candidate in visibleCandidatesFor(group.caption, group.candidates)"
 					:key="idFor(candidate)"
 					class="item"
 					:class="{ selected: isChecked(candidate) }"
@@ -107,16 +107,16 @@ function toggle(candidate: TCandidate): void {
 						</span>
 					</button>
 					<button v-if="linkable" type="button" class="item-link" @click.stop="emit('open-item', candidate)">
-						<VIcon name="launch" small />
+						<VIcon name="open_in_new" small />
 					</button>
 				</div>
 			</div>
 
 			<button
-				v-if="!expanded.has(index) && hiddenCountFor(group.candidates) > 0"
+				v-if="!expanded.has(group.caption) && hiddenCountFor(group.candidates) > 0"
 				type="button"
 				class="show-more"
-				@click="expanded.add(index)"
+				@click="expanded.add(group.caption)"
 			>
 				{{ t('licensing.resolve_show_n_more', { count: hiddenCountFor(group.candidates) }) }}
 			</button>
