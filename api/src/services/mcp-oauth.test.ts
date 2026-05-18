@@ -2477,6 +2477,5 @@ describe('McpOAuthService', () => {
 			expect(clientSelects[0]!.sql).toContain('directus_sessions');
 			expect(clientSelects[0]!.sql).toContain('directus_oauth_tokens');
 		});
-
 	});
 });
