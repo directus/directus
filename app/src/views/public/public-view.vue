@@ -437,6 +437,12 @@ const logoURL = computed<string | null>(() => {
 			object-position: center center;
 		}
 	}
+
+	@media (width <= 68rem) {
+		.license-badge {
+			display: none;
+		}
+	}
 }
 
 .scale-enter-active,
