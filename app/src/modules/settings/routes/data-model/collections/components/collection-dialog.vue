@@ -14,7 +14,9 @@ import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { unexpectedError } from '@/utils/unexpected-error';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 
 const props = defineProps<{
 	modelValue?: boolean;
@@ -47,6 +49,7 @@ watch(
 );
 
 const saving = ref(false);
+const limitModalOpen = ref(false);
 
 function cancel() {
 	emit('update:modelValue', false);
@@ -68,7 +71,11 @@ async function save() {
 
 		emit('update:modelValue', false);
 	} catch (error: any) {
-		unexpectedError(error);
+		if (extractErrorCode(error) === 'LIMIT_EXCEEDED') {
+			limitModalOpen.value = true;
+		} else {
+			unexpectedError(error);
+		}
 	} finally {
 		saving.value = false;
 	}
@@ -152,6 +159,8 @@ async function save() {
 			</VCardActions>
 		</VCard>
 	</VDialog>
+
+	<EntitlementLimitModal v-model="limitModalOpen" entitlement-key="collections" is-admin />
 </template>
 
 <style scoped>

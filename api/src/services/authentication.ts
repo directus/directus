@@ -4,6 +4,7 @@ import { useEnv } from '@directus/env';
 import {
 	InvalidCredentialsError,
 	InvalidOtpError,
+	ResourceRestrictedError,
 	ServiceUnavailableError,
 	UserSuspendedError,
 } from '@directus/errors';
@@ -225,14 +226,9 @@ export class AuthenticationService {
 		);
 
 		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
-			const loginError = new ServiceUnavailableError({
-				reason: 'License is in a locked state and must be resolved',
-				service: 'license',
+			throw new ResourceRestrictedError({
+				category: 'login',
 			});
-
-			emitStatus('fail', updatedPayload, user, loginError);
-			await stall(STALL_TIME, timeStart);
-			throw loginError;
 		}
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -395,9 +391,8 @@ export class AuthenticationService {
 		);
 
 		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
-			throw new ServiceUnavailableError({
-				reason: 'License is in a locked state and must be resolved',
-				service: 'license',
+			throw new ResourceRestrictedError({
+				category: 'login',
 			});
 		}
 
