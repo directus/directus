@@ -1135,13 +1135,7 @@ describe('McpOAuthService', () => {
 		it('code stored with PKCE challenge, user, client, redirect_uri, resource', async () => {
 			mockClientLookup(clientId);
 
-			let insertedCodeData: Record<string, unknown> | undefined;
-
-			tracker.on.insert('directus_oauth_codes').response(function (rawQuery) {
-				insertedCodeData = rawQuery.bindings ? undefined : undefined;
-				// knex-mock-client: capture via history instead
-				return [];
-			});
+			tracker.on.insert('directus_oauth_codes').response([]);
 
 			tracker.on.select('directus_oauth_consents').response([]);
 			tracker.on.insert('directus_oauth_consents').response([]);
@@ -2106,7 +2100,6 @@ describe('McpOAuthService', () => {
 		const grantId = crypto.randomUUID();
 		const rawSessionToken = 'c'.repeat(64);
 		const sessionHash = crypto.createHash('sha256').update(rawSessionToken).digest('hex');
-		const resource = TEST_RESOURCE_URL;
 
 		function validParams(overrides: Record<string, unknown> = {}) {
 			return {
