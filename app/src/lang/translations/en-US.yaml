@@ -239,8 +239,6 @@ published_updated_notice: The published item has been updated since this version
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
-delete_on_apply_copy: >-
-  You are about to publish “{version}”. What should happen to “{version}” after publishing?
 content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
