@@ -3,7 +3,7 @@ import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
-import { defaultValues, useSetupFields } from './form';
+import { defaultValues, useSetupFields, ValidationError } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -92,11 +92,18 @@ const product_updates = computed({
 
 const fields = useSetupFields(props.register);
 
-const showPasswordMismatch = computed(() => {
-	if (!props.register) return false;
+const mergedErrors = computed<ValidationError[]>(() => {
+	const base = (props.errors ?? []) as ValidationError[];
+
+	if (!props.register) return base;
+
 	const password = value.value?.admin.password;
 	const passwordConfirm = value.value?.password_confirm;
-	return !!password && !!passwordConfirm && password !== passwordConfirm;
+
+	if (!password || !passwordConfirm || password === passwordConfirm) return base;
+	if (base.some((err) => err.field === 'password_confirm' && err.type === 'confirm_password')) return base;
+
+	return [...base, { field: 'password_confirm', path: [], type: 'confirm_password' }];
 });
 </script>
 
@@ -105,14 +112,11 @@ const showPasswordMismatch = computed(() => {
 		<VForm
 			v-model="formSlice"
 			:initial-values="initialValues"
-			:validation-errors="errors"
+			:validation-errors="mergedErrors"
 			:show-validation-errors="false"
 			:fields="fields"
 			disabled-menu
 		></VForm>
-		<VNotice v-if="showPasswordMismatch" type="warning">
-			{{ $t('validationError.confirm_password') }}
-		</VNotice>
 		<VNotice v-if="skipLicense">
 			<I18nT keypath="setup_save_accept_license" tag="span">
 				<template #directusMscl>
