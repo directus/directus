@@ -285,7 +285,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, client_id: 'https://other.example.com/client' },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects missing client_name', async () => {
@@ -295,7 +298,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, client_name: undefined },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects client_name exceeding 200 chars', async () => {
@@ -305,7 +311,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, client_name: 'x'.repeat(201) },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects missing redirect_uris', async () => {
@@ -315,7 +324,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, redirect_uris: undefined },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects empty redirect_uris array', async () => {
@@ -325,7 +337,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, redirect_uris: [] },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects document with client_secret', async () => {
@@ -335,7 +350,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, client_secret: 'secret123' },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects document with client_secret_expires_at', async () => {
@@ -345,7 +363,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, client_secret_expires_at: 0 },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects shared-secret auth method (client_secret_basic)', async () => {
@@ -355,7 +376,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, token_endpoint_auth_method: 'client_secret_basic' },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects private_key_jwt (not supported by server)', async () => {
@@ -365,7 +389,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, token_endpoint_auth_method: 'private_key_jwt' },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects null response body', async () => {
@@ -375,7 +402,10 @@ describe('fetchCimdMetadata', () => {
 			data: null,
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 
 		try {
 			await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client');
@@ -392,7 +422,10 @@ describe('fetchCimdMetadata', () => {
 			data: validMetadata,
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it.each(['application/jsonp', 'application/json-seq', 'application/jsonxyz'])(
@@ -404,7 +437,10 @@ describe('fetchCimdMetadata', () => {
 				data: validMetadata,
 			});
 
-			await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+			await expectOAuthError(
+				fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+				invalidClientMetadata,
+			);
 		},
 	);
 
@@ -456,7 +492,10 @@ describe('fetchCimdMetadata', () => {
 			}),
 		);
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('defaults grant_types to authorization_code when absent', async () => {
@@ -479,7 +518,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, grant_types: ['client_credentials'] },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects response_types other than ["code"]', async () => {
@@ -489,7 +531,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, response_types: ['token'] },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('defaults token_endpoint_auth_method to none when absent', async () => {
@@ -512,7 +557,10 @@ describe('fetchCimdMetadata', () => {
 			data: { ...validMetadata, client_uri: 'http://insecure.example.com' },
 		});
 
-		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), invalidClientMetadata);
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('accepts valid optional URI fields', async () => {
