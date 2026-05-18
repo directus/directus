@@ -73,7 +73,7 @@ export class EntitlementManager {
 		// cache invalidation
 		messenger.subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
 			const keys = msg?.keys ?? [];
-			await this.clearCache(...keys);
+			this.clearCacheNoPublish(...keys);
 		});
 	}
 
@@ -102,6 +102,16 @@ export class EntitlementManager {
 		return forked;
 	}
 
+	private clearCacheNoPublish(...keys: EntitlementCacheKey[]): void {
+		if (keys.length === 0) {
+			this.cache.clear();
+		} else {
+			for (const key of keys) {
+				this.cache.delete(key);
+			}
+		}
+	}
+
 	/**
 	 * Drop cached usage/validity locally and notify other nodes. Pass specific
 	 * keys to clear only those entries; call with no args to clear everything.
@@ -109,13 +119,9 @@ export class EntitlementManager {
 	 * and CLI command.
 	 */
 	async clearCache(...keys: EntitlementCacheKey[]): Promise<void> {
-		if (keys.length === 0) {
-			this.cache.clear();
-			await useBus().publish<InvalidateMessage>(BUS_CHANNEL, {});
-		} else {
-			for (const key of keys) this.cache.delete(key);
-			await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
-		}
+		this.clearCacheNoPublish();
+
+		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
 	}
 
 	/**
@@ -153,7 +159,7 @@ export class EntitlementManager {
 		if (opts?.knex?.isTransaction) {
 			return await validator(opts);
 		}
-			
+
 		let cached = this.cache.get(key);
 
 		if (typeof cached !== 'boolean') {
@@ -225,7 +231,7 @@ export class EntitlementManager {
 		if (opts?.knex?.isTransaction) {
 			return await source(opts);
 		}
-			
+
 		let cached = this.cache.get(key);
 
 		if (typeof cached !== 'number') {
@@ -260,9 +266,10 @@ export class EntitlementManager {
 
 			const usage = await this.getUsage(key, { knex: opts?.knex });
 			const adding = opts?.adding ?? 0;
+			const removing = opts?.removing ?? 0;
 
 			return {
-				allowed: usage + adding <= hardLimit,
+				allowed: usage + adding - removing <= hardLimit,
 				hardLimit,
 				usage,
 				remaining: hardLimit - usage,
@@ -282,7 +289,8 @@ export class EntitlementManager {
 	/**
 	 * Throws when an entitlement is being violated.
 	 *
-	 * Countable: throws `LimitExceededError` when `usage + (adding ?? 0) > hardLimit`
+	 * Countable: throws `LimitExceededError` when `usage + (adding ?? 0) - (removing ?? 0) > hardLimit`.
+	 * A pure reduction (adding = 0, removing > 0) never throws, so over-limit state can always be drained.
 	 * Feature flag: throws `ResourceRestrictedError` when its validator indicates invalid
 	 */
 	assert(
@@ -293,17 +301,23 @@ export class EntitlementManager {
 	assert(key: FeatureFlagEntitlementKey, opts?: { knex?: Knex | undefined }): Promise<void>;
 	async assert(
 		key: CountableEntitlementKey | FeatureFlagEntitlementKey,
-		opts?: { adding?: number; knex?: Knex | undefined },
+		opts?: { adding?: number; removing?: number; knex?: Knex | undefined },
 	): Promise<void> {
 		if (this.isCountableKey(key)) {
 			const hardLimit = this.getEntitlementLimit(key);
 			if (hardLimit === -1) return;
 
-			const usage = await this.getUsage(key, { knex: opts?.knex });
 			const adding = opts?.adding ?? 0;
+			const removing = opts?.removing ?? 0;
 
-			if (usage + adding > hardLimit) {
-				throw new LimitExceededError({ category: key } /*{ key, hardLimit, usage, adding }*/);
+			// A pure reduction never violates the limit, regardless of current usage.
+			// Skip the usage query in that case.
+			if (adding === 0 && removing > 0) return;
+
+			const usage = await this.getUsage(key, { knex: opts?.knex });
+
+			if (usage + adding - removing > hardLimit) {
+				throw new LimitExceededError({ category: key });
 			}
 
 			return;
