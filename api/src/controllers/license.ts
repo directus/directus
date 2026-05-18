@@ -19,20 +19,23 @@ router.get(
 
 		const license = await licenseManager.getLicense();
 
+		const [status, downgradeReason, seats, collections, flows] = await Promise.all([
+			licenseManager.getStatus(),
+			entitlementManager.getUsage('seats'),
+			entitlementManager.getUsage('collections'),
+			entitlementManager.getUsage('flows'),
+		]);
+
 		const payload: ReadLicenseOutput = {
 			name: license.meta.name,
-			status: await licenseManager.getStatus(),
+			status,
 			source: licenseManager.getSource(),
 			renews_at: license.meta.renews_at,
 			expires_at: license.meta.expires_at,
 			entitlements: license.entitlements,
 			grace_period: license.meta.grace_period,
 			offline: license.meta.offline,
-			usage: {
-				seats: await entitlementManager.getUsage('seats'),
-				collections: await entitlementManager.getUsage('collections'),
-				flows: await entitlementManager.getUsage('flows'),
-			},
+			usage: { seats, collections, flows },
 		};
 
 		res.locals['payload'] = { data: payload };
