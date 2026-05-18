@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
-import { isObject } from '@directus/utils';
+import { isObject, parseJSON } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { getMcpUrls, MCP_ACCESS_SCOPE } from '../ai/mcp/utils.js';
@@ -44,6 +44,20 @@ export class OAuthError extends Error {
 		super(description);
 		this.name = 'OAuthError';
 	}
+}
+
+function parseStringArrayField(value: unknown, field: string): string[] {
+	let parsed = value;
+
+	if (typeof value === 'string') {
+		parsed = parseJSON(value);
+	}
+
+	if (!Array.isArray(parsed) || parsed.some((item) => typeof item !== 'string')) {
+		throw new Error(`Invalid OAuth client ${field}: expected an array of strings`);
+	}
+
+	return parsed;
 }
 
 /**
@@ -436,7 +450,7 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_request', 'redirect_uri is required');
 		}
 
-		const registeredUris: string[] = JSON.parse(client['redirect_uris']);
+		const registeredUris = parseStringArrayField(client['redirect_uris'], 'redirect_uris');
 
 		if (!registeredUris.includes(redirectUri)) {
 			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
@@ -606,7 +620,7 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_request', 'Client no longer exists');
 		}
 
-		const registeredUris: string[] = JSON.parse(client['redirect_uris']);
+		const registeredUris = parseStringArrayField(client['redirect_uris'], 'redirect_uris');
 
 		if (!registeredUris.includes(redirectUri)) {
 			throw new OAuthError(400, 'invalid_request', 'redirect_uri no longer registered for this client');
@@ -802,7 +816,7 @@ export class McpOAuthService {
 				rejectCode({ client_id: params.client_id }, 'Unknown client during code exchange');
 			}
 
-			const txClientGrantTypes: string[] = JSON.parse(client['grant_types']);
+			const txClientGrantTypes = parseStringArrayField(client['grant_types'], 'grant_types');
 			const txClientName = client['client_name'] as string;
 
 			// 4e. User status check via trx
@@ -951,7 +965,7 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');
 		}
 
-		const clientGrantTypes: string[] = JSON.parse(client['grant_types']);
+		const clientGrantTypes = parseStringArrayField(client['grant_types'], 'grant_types');
 
 		if (!clientGrantTypes.includes('refresh_token')) {
 			throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');

@@ -669,6 +669,15 @@ describe('McpOAuthService', () => {
 			expect(decoded['client_id']).toBe(clientId);
 		});
 
+		it('accepts redirect_uris already deserialized by the database driver', async () => {
+			mockClientLookup(clientId, { redirect_uris: [TEST_REDIRECT_URI] });
+
+			const result = await service.validateAuthorization(validParams(), userId, sessionHash);
+
+			expect(result.signed_params).toBeDefined();
+			expect(result.redirect_uri).toBe(TEST_REDIRECT_URI);
+		});
+
 		it('unknown client_id returns error (no redirect)', async () => {
 			tracker.on.select('directus_oauth_clients').response([]);
 
@@ -989,6 +998,18 @@ describe('McpOAuthService', () => {
 			expect(parsed.searchParams.get('iss')).toBe(TEST_PUBLIC_URL);
 		});
 
+		it('accepts redirect_uris already deserialized by the database driver', async () => {
+			mockClientLookup(clientId, { redirect_uris: [TEST_REDIRECT_URI] });
+			tracker.on.insert('directus_oauth_codes').response([]);
+			tracker.on.select('directus_oauth_consents').response([]);
+			tracker.on.insert('directus_oauth_consents').response([]);
+
+			const url = await service.processDecision({ signed_params: signConsent(), approved: true }, userId, sessionToken);
+			const parsed = new URL(url);
+
+			expect(parsed.searchParams.get('code')).toBeDefined();
+		});
+
 		it('denial returns redirect URL with error=access_denied, state, iss', async () => {
 			const signed = signConsent();
 			const url = await service.processDecision({ signed_params: signed, approved: false }, userId, sessionToken);
@@ -1228,13 +1249,13 @@ describe('McpOAuthService', () => {
 		}
 
 		/** Set up all DB mocks for a successful exchange */
-		function mockSuccessfulExchange() {
+		function mockSuccessfulExchange(clientOverrides: Record<string, unknown> = {}) {
 			// 1. Code lookup (read-only, outside transaction)
 			mockCodeLookup();
 			// 2. Atomic burn (inside transaction)
 			tracker.on.update('directus_oauth_codes').response(1);
 			// 3. Client lookup (inside transaction)
-			mockClientLookup(clientId);
+			mockClientLookup(clientId, clientOverrides);
 			// 4. User lookup for email + status (inside transaction)
 			mockUserLookup();
 			// 5. Existing grant lookup (none found)
@@ -1333,6 +1354,14 @@ describe('McpOAuthService', () => {
 			expect(result.refresh_token).toBeDefined();
 			expect(result.scope).toBe('mcp:access');
 			expect(result.expires_in).toBe(900); // 15m = 900s
+		});
+
+		it('accepts grant_types already deserialized by the database driver', async () => {
+			mockSuccessfulExchange({ grant_types: ['authorization_code', 'refresh_token'] });
+
+			const result = await service.exchangeCode(validParams(), context);
+
+			expect(result.access_token).toBeDefined();
 		});
 
 		it('session created with expiry from REFRESH_TOKEN_TTL', async () => {
@@ -1698,9 +1727,9 @@ describe('McpOAuthService', () => {
 				]);
 		}
 
-		function mockSuccessfulRefresh() {
+		function mockSuccessfulRefresh(clientOverrides: Record<string, unknown> = {}) {
 			// 1. Client lookup
-			mockClientLookup(clientId);
+			mockClientLookup(clientId, clientOverrides);
 			// 2. Grant lookup by session
 			mockGrantLookup();
 			// 3. User status + email lookup
@@ -1778,6 +1807,14 @@ describe('McpOAuthService', () => {
 			expect(result.refresh_token).toBeDefined();
 			expect(result.scope).toBe('mcp:access');
 			expect(result.expires_in).toBe(900); // 15m
+		});
+
+		it('accepts grant_types already deserialized by the database driver', async () => {
+			mockSuccessfulRefresh({ grant_types: ['authorization_code', 'refresh_token'] });
+
+			const result = await service.refreshToken(validParams(), context);
+
+			expect(result.access_token).toBeDefined();
 		});
 
 		it('rotation: old session deleted, new session created, grant pointer updated', async () => {
