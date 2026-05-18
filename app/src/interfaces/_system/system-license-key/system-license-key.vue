@@ -8,8 +8,10 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useServerStore } from '@/stores/server';
 
 const { t } = useI18n();
+const serverStore = useServerStore();
 
 type LicensePreview = {
 	plan_name: string;
@@ -166,7 +168,11 @@ onMounted(() => {
 		<VNotice v-else-if="error === 'server' && !validating" type="warning">
 			<I18nT keypath="setup_license_invalid" tag="span">
 				<template #contactSupport>
-					<a :href="`https://directus.io/license-request`" target="_blank" rel="noopener noreferrer">
+					<a
+						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_key_invalid_contact_support_link`"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
 						{{ $t('contact_support') }}
 					</a>
 				</template>
