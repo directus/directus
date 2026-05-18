@@ -28,7 +28,6 @@ export class FlowsService extends ItemsService<FlowRaw> {
 
 		const result = await super.updateMany(keys, data, opts);
 
-		// any update may have toggled status, which is what gates the active-flow count
 		await getEntitlementManager().clearCache('flows');
 		await getFlowManager().reload();
 

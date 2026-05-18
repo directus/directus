@@ -150,8 +150,6 @@ export class AuthenticationService {
 			} catch (error) {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-
-					// direct knex write bypasses UsersService.clearCaches; invalidate manually
 					await getEntitlementManager().clearCache('seats', 'sso_enabled');
 
 					if (this.accountability) {
