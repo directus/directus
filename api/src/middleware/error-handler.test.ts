@@ -1,12 +1,7 @@
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { useEnv } from '@directus/env';
-import {
-	createError,
-	InvalidCredentialsError,
-	InvalidTokenError,
-	TokenExpiredError,
-} from '@directus/errors';
+import { createError, InvalidCredentialsError, InvalidTokenError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import axios, { AxiosError } from 'axios';
 import type { Request, RequestHandler, Response } from 'express';

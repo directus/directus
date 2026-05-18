@@ -1,8 +1,4 @@
-import {
-	InvalidCredentialsError,
-	InvalidOtpError,
-	ServiceUnavailableError,
-} from '@directus/errors';
+import { InvalidCredentialsError, InvalidOtpError, ServiceUnavailableError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { createTracker, MockClient, type Tracker } from 'knex-mock-client';
