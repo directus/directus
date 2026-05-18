@@ -98,14 +98,21 @@ function toggle(candidate: TCandidate): void {
 					class="item"
 					:class="{ selected: isChecked(candidate) }"
 				>
-					<button type="button" class="item-toggle" @click="toggle(candidate)">
-						<VCheckbox :checked="isChecked(candidate)" />
+					<div
+						class="item-toggle"
+						role="button"
+						tabindex="0"
+						@click="toggle(candidate)"
+						@keydown.space.prevent="toggle(candidate)"
+						@keydown.enter.prevent="toggle(candidate)"
+					>
+						<VCheckbox :model-value="isChecked(candidate)" @update:model-value="toggle(candidate)" />
 						<span class="item-content">
 							<slot name="item" :candidate="candidate">
 								<span class="item-label">{{ idFor(candidate) }}</span>
 							</slot>
 						</span>
-					</button>
+					</div>
 					<button v-if="linkable" type="button" class="item-link" @click.stop="emit('open-item', candidate)">
 						<VIcon name="open_in_new" small />
 					</button>
@@ -219,12 +226,16 @@ function toggle(candidate: TCandidate): void {
 	flex: 1;
 	min-width: 0;
 	padding: 0.5rem 0.75rem;
-	border: none;
-	background: none;
 	color: inherit;
 	font: inherit;
 	text-align: start;
 	cursor: pointer;
+}
+
+.item-toggle:focus-visible {
+	outline: 2px solid var(--theme--primary);
+	outline-offset: -2px;
+	border-radius: var(--theme--border-radius);
 }
 
 .item-content {
