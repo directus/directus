@@ -1,8 +1,11 @@
 import { DirectusFrame } from './directus-frame.ts';
 import { EditableStore } from './editable-store.ts';
 import { OverlayManager } from './overlay-manager.ts';
+import type { VisualEditingMessages } from './types/index.ts';
 
 export class OverlayElement {
+	private static readonly NEAR_TOP_THRESHOLD = 54;
+
 	private hasNoDimensions: boolean = false;
 	private element: HTMLElement;
 	private container: HTMLElement;
@@ -14,7 +17,11 @@ export class OverlayElement {
 		this.container = this.createContainer();
 		this.element = this.createElement();
 		this.editButton = this.createEditButton();
-		this.aiButton = new DirectusFrame().isAiEnabled() ? this.createAiButton() : null;
+
+		const directusFrame = new DirectusFrame();
+		this.aiButton = directusFrame.isAiEnabled() ? this.createAiButton() : null;
+		this.setMessages(directusFrame.getMessages());
+
 		this.createRectElement();
 
 		OverlayManager.getGlobalOverlay().appendChild(this.container);
@@ -65,6 +72,18 @@ export class OverlayElement {
 		return aiButton;
 	}
 
+	private setMessages(messages: VisualEditingMessages | null) {
+		if (!messages) return;
+
+		this.editButton.title = messages.edit;
+		this.editButton.setAttribute('aria-label', messages.edit);
+
+		if (this.aiButton) {
+			this.aiButton.title = messages.addToContext;
+			this.aiButton.setAttribute('aria-label', messages.addToContext);
+		}
+	}
+
 	updateRect(rect: DOMRect) {
 		const hasDimensions = rect.width !== 0 && rect.height !== 0;
 
@@ -82,6 +101,11 @@ export class OverlayElement {
 		this.element.style.width = `${rect.width}px`;
 		this.element.style.height = `${rect.height}px`;
 		this.element.style.transform = `translate(${rect.left}px,${rect.top}px)`;
+
+		this.element.classList.toggle(
+			OverlayManager.RECT_ACTIONS_FLIPPED_CLASS_NAME,
+			rect.top < OverlayElement.NEAR_TOP_THRESHOLD,
+		);
 	}
 
 	setCustomClass(customClass: string | undefined) {

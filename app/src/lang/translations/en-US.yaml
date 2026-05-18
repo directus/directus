@@ -832,6 +832,7 @@ modified_on: Modified On
 card_size: Card Size
 sort_field: Sort Field
 add_sort_field: Add Sort Field
+add_to_ai_context: Add to AI Context
 sort: Sort
 status: Status
 remove: Remove
