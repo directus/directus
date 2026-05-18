@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Preset } from '@directus/types';
+import type { Preset } from '@directus/types';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardTitle from '@/components/v-card-title.vue';
