@@ -101,6 +101,7 @@ const userStore = useUserStore();
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
 const isPublishAllowed = computed(() => {
+	if (currentVersion.value === null) return false;
 	if (isCurrentVersionNew.value) return false;
 	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
 });
@@ -118,6 +119,7 @@ const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryK
 
 const {
 	readVersionsAllowed,
+	createVersionsAllowed,
 	currentVersion,
 	versions,
 	loading: versionsLoading,
@@ -346,15 +348,39 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
+const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT));
+
+const isDraftEmpty = computed(() => {
+	const draft = draftVersion.value;
+	if (!draft) return false;
+	if (draft.id === '+') return true;
+	return (draft as ContentVersionWithType).delta === null;
+});
+
+const canAutoSwitchToDraft = computed(() => {
+	if (isNew.value) return false;
+	if (!shouldShowVersioning.value) return false;
+	if (!readVersionsAllowed.value) return false;
+	if (currentVersion.value !== null) return false;
+	if (!isDraftEmpty.value) return false;
+	if (draftVersion.value?.id === '+') return createVersionsAllowed.value;
+	return updateVersionsAllowed.value || createVersionsAllowed.value;
+});
+
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
 	if (currentVersion.value !== null && updateVersionsAllowed.value) return false;
+	if (canAutoSwitchToDraft.value) return false;
 	return true;
 });
 
 const isFormNonEditable = computed(
-	() => shouldShowVersioning.value && readVersionsAllowed.value && currentVersion.value === null,
+	() =>
+		shouldShowVersioning.value &&
+		readVersionsAllowed.value &&
+		currentVersion.value === null &&
+		!canAutoSwitchToDraft.value,
 );
 
 const disabledOptions = computed(() => {
@@ -363,9 +389,35 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
+const autoSwitchPendingEdits = ref<Record<string, any> | null>(null);
+
 watch(currentVersion, async () => {
-	edits.value = {};
+	if (autoSwitchPendingEdits.value !== null) {
+		edits.value = autoSwitchPendingEdits.value;
+		autoSwitchPendingEdits.value = null;
+	} else {
+		edits.value = {};
+	}
+
 	await refreshLivePreview();
+});
+
+watch(hasEdits, (newHasEdits, oldHasEdits) => {
+	if (!newHasEdits || oldHasEdits) return;
+	if (!canAutoSwitchToDraft.value) return;
+	if (!draftVersion.value) return;
+
+	// Stash the first edit, clear edits so the useEditsGuard navigation guard
+	// sees no edits during the route change, then push the version query. The
+	// currentVersion watcher above will restore the stashed edits after the
+	// route cascade has switched currentVersion to the draft.
+	autoSwitchPendingEdits.value = { ...edits.value };
+	edits.value = {};
+
+	router.replace({
+		...route,
+		query: { ...route.query, version: VERSION_KEY_DRAFT },
+	});
 });
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
@@ -844,10 +896,8 @@ function usePublishComparison() {
 }
 
 function editDraftVersion() {
-	const draftVersion = versions.value.find((version) => version.key === VERSION_KEY_DRAFT);
-
-	if (draftVersion) {
-		currentVersion.value = draftVersion;
+	if (draftVersion.value) {
+		currentVersion.value = draftVersion.value;
 	}
 }
 </script>
@@ -986,7 +1036,7 @@ function editDraftVersion() {
 		<template #actions:primary>
 			<template v-if="shouldShowVersioning && readVersionsAllowed">
 				<PrivateViewHeaderBarActionButton
-					v-if="currentVersion === null"
+					v-if="currentVersion === null && !canAutoSwitchToDraft"
 					:label="$t('edit')"
 					icon="edit"
 					@click="editDraftVersion()"
