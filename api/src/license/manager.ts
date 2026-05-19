@@ -209,18 +209,9 @@ export class LicenseManager {
 	}
 
 	public async isLocked() {
-		const entitlementManager = getEntitlementManager();
 		const status = await this.getStatus();
 
-		const isInViolation = await entitlementManager.checkAll();
-
-		if (['expired', 'suspended'].includes(status) && isInViolation === false) {
-			return true;
-		}
-
-		if (status === 'locked') return true;
-
-		return false;
+		return status === 'locked';
 	}
 
 	/**
