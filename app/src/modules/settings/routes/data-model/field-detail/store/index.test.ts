@@ -31,7 +31,7 @@ vi.mock('@/api', () => {
 			},
 			post: (path: string) => {
 				if (path === '/fields/collection_b') {
-					return Promise.reject(new Error("Error From API"));
+					return Promise.reject(new Error('Error From API'));
 				}
 
 				// stub for `/fields/:collection` route
@@ -126,23 +126,60 @@ describe('Actions', () => {
 				collection: 'collection_b',
 				field: '+',
 				localType: 'presentation',
-				fieldName: 'new_field'
+				fieldName: 'new_field',
 			};
 
 			fieldDetailStore.startEditing(testValue.collection, testValue.field, testValue.localType);
 
 			fieldDetailStore.update({
 				field: {
-					field: testValue.fieldName
-				}
-			})
+					field: testValue.fieldName,
+				},
+			});
 
 			expect(fieldDetailStore.collection).toEqual(testValue.collection);
 			expect(fieldDetailStore.field.collection).toEqual(testValue.collection);
 			expect(fieldDetailStore.field.field).toEqual(testValue.fieldName);
 			expect(fieldDetailStore.editing).toEqual(testValue.field);
 			expect(fieldDetailStore.localType).toEqual(testValue.localType);
-			await expect(fieldDetailStore.save()).rejects.toThrow('Error From API')
+			await expect(fieldDetailStore.save()).rejects.toThrow('Error From API');
+		});
+
+		it('New Field - Success to saving a new field', async () => {
+			const testValue: { collection: string; field: string; localType: 'presentation'; fieldName: string } = {
+				collection: 'collection_c',
+				field: '+',
+				localType: 'presentation',
+				fieldName: 'new_field',
+			};
+
+			const fieldsStore = useFieldsStore();
+
+			(fieldsStore.upsertField as Mock).mockReturnValue({
+				collection: testValue.collection,
+				field: testValue.fieldName,
+			});
+
+			(fieldsStore.hydrate as Mock).mockReturnValue(null);
+
+			const fieldDetailStore = useFieldDetailStore();
+
+			fieldDetailStore.startEditing(testValue.collection, testValue.field, testValue.localType);
+
+			fieldDetailStore.update({
+				field: {
+					field: testValue.fieldName,
+				},
+			});
+
+			expect(fieldDetailStore.collection).toEqual(testValue.collection);
+			expect(fieldDetailStore.field.collection).toEqual(testValue.collection);
+			expect(fieldDetailStore.field.field).toEqual(testValue.fieldName);
+			expect(fieldDetailStore.editing).toEqual(testValue.field);
+			expect(fieldDetailStore.localType).toEqual(testValue.localType);
+			await fieldDetailStore.save();
+			expect(fieldsStore.upsertField).toHaveBeenCalledTimes(1);
+			expect(fieldsStore.hydrate).toHaveBeenCalledTimes(1);
 		});
 	});
 
