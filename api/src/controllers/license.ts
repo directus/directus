@@ -23,6 +23,7 @@ router.get(
 			name: license.meta.name,
 			status: await licenseManager.getStatus(),
 			source: licenseManager.getSource(),
+			downgrade_reason: await licenseManager.getDowngradeReason(),
 			renews_at: license.meta.renews_at,
 			expires_at: license.meta.expires_at,
 			entitlements: license.entitlements,

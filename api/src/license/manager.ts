@@ -9,6 +9,7 @@ import {
 	deactivateKey,
 	deleteAddon,
 	Entitlements,
+	type InvalidLicenseStatus,
 	License,
 	type LicenseAddonsOutput,
 	type LicensePendingResolution,
@@ -48,7 +49,7 @@ let licenseCache: License | null;
 
 type LicenseStore = {
 	initialized: true | undefined;
-	status: LicenseStatus | undefined;
+	invalidStatus: InvalidLicenseStatus | undefined;
 };
 
 let licenseManager: LicenseManager | undefined;
@@ -175,6 +176,11 @@ export class LicenseManager {
 
 	public async getStatus() {
 		return computeLicenseStatus(this.source === null ? null : await this.getLicense());
+	}
+
+	public async getDowngradeReason(): Promise<InvalidLicenseStatus | null> {
+		const invalidStatus = await this.store(async (store) => store.get('invalidStatus'));
+		return invalidStatus ?? null;
 	}
 
 	public getSource() {
