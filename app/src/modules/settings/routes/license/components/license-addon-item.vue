@@ -28,7 +28,7 @@ const buttonLabel = computed(() => {
 		case 'manage':
 			return t('licensing.addon_manage');
 		case 'contact_sales':
-			return t('license.contact_sales');
+			return t('licensing.contact_sales');
 		default:
 			return t('licensing.addon_purchase');
 	}
