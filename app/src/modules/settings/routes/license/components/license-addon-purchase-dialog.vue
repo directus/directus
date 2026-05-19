@@ -24,8 +24,10 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const licenseStore = useLicenseStore();
 
+const effectiveQuantity = computed(() => props.addon.scheduled_quantity);
+
 const initialQuantity = computed(() =>
-	props.addon.active_quantity > 0 ? props.addon.active_quantity : props.addon.min_quantity,
+	effectiveQuantity.value > 0 ? effectiveQuantity.value : props.addon.min_quantity,
 );
 
 const quantity = ref(initialQuantity.value);
@@ -40,17 +42,18 @@ watch(
 
 const maxQuantity = computed(() => (props.addon.max_quantity === -1 ? undefined : props.addon.max_quantity));
 
-const unitPrice = computed(() => props.addon.unit_price ?? 0);
+const unitPrice = computed(() => props.addon.unit_price);
+const interval = computed(() => props.addon.billing_interval);
 
-const interval = computed(() => props.addon.billing_interval ?? 'month');
-
-const currentTotal = computed(() => props.addon.active_quantity * unitPrice.value);
+const activeTotal = computed(() => props.addon.active_quantity * unitPrice.value);
 const newTotal = computed(() => quantity.value * unitPrice.value);
 
+const hasPendingDeactivation = computed(() => props.addon.scheduled_quantity < props.addon.active_quantity);
 const isRemove = computed(() => quantity.value === 0);
-const isDowngrade = computed(() => quantity.value < props.addon.active_quantity);
 const isInitialPurchase = computed(() => props.addon.active_quantity === 0);
-const hasNoChange = computed(() => quantity.value === props.addon.active_quantity);
+const isDowngrade = computed(() => quantity.value < props.addon.active_quantity);
+const isUpgrade = computed(() => quantity.value > props.addon.active_quantity);
+const hasNoChange = computed(() => quantity.value === effectiveQuantity.value);
 
 const renewalDate = computed(() => {
 	const ts = licenseStore.info?.renews_at;
@@ -102,12 +105,41 @@ async function confirm() {
 				<VInput v-model="quantity" type="number" :min="0" :max="maxQuantity" :step="1" />
 
 				<div class="summary">
-					{{
-						t('licensing.addon_total_summary', {
-							current: addon.active_quantity,
-							new: quantity,
-						})
-					}}
+					<template v-if="isInitialPurchase">
+						{{ t('licensing.addon_summary_purchase', { new: quantity }) }}
+					</template>
+					<template v-else-if="hasPendingDeactivation && quantity === effectiveQuantity">
+						{{
+							t('licensing.addon_summary_pending', {
+								active: addon.active_quantity,
+								effective: effectiveQuantity,
+								date: renewalDate,
+							})
+						}}
+					</template>
+					<template v-else-if="isRemove">
+						{{
+							t('licensing.addon_summary_remove', {
+								active: addon.active_quantity,
+								date: renewalDate,
+							})
+						}}
+					</template>
+					<template v-else-if="isDowngrade">
+						{{
+							t('licensing.addon_summary_downgrade', {
+								active: addon.active_quantity,
+								new: quantity,
+								date: renewalDate,
+							})
+						}}
+					</template>
+					<template v-else-if="isUpgrade">
+						{{ t('licensing.addon_summary_upgrade', { active: addon.active_quantity, new: quantity }) }}
+					</template>
+					<template v-else>
+						{{ t('licensing.addon_summary_active', { active: addon.active_quantity }) }}
+					</template>
 				</div>
 
 				<hr />
@@ -115,23 +147,20 @@ async function confirm() {
 				<div class="price">
 					<span class="price-new">${{ newTotal.toFixed(2) }}/{{ interval }}</span>
 					<span v-if="!isInitialPurchase" class="price-was">
-						{{ t('licensing.addon_price_was', { previous: currentTotal.toFixed(2), interval }) }}
+						{{ t('licensing.addon_price_was', { previous: activeTotal.toFixed(2), interval }) }}
 					</span>
 				</div>
 
 				<p class="notice">
-					<template v-if="isInitialPurchase">
+					<template v-if="isInitialPurchase || isUpgrade">
 						{{ t('licensing.addon_prorated_notice', { total: newTotal.toFixed(2), interval }) }}
 					</template>
-					<template v-else-if="isDowngrade">
+					<template v-else>
 						{{
 							renewalDate
 								? t('licensing.addon_renewal_notice_date', { date: renewalDate })
 								: t('licensing.addon_renewal_notice')
 						}}
-					</template>
-					<template v-else>
-						{{ t('licensing.addon_prorated_notice', { total: newTotal.toFixed(2), interval }) }}
 					</template>
 				</p>
 			</VCardText>

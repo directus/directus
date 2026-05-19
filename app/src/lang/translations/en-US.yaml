@@ -1439,7 +1439,13 @@ licensing:
   addon_manage: Manage
   addon_contact_sales: Contact Sales
   addon_purchase_dialog_title: 'Purchase Additional {name}'
-  addon_total_summary: '{current} current → {new} new total'
+  addon_summary_purchase: '{new} new total.'
+  addon_summary_active: '{active} active.'
+  addon_summary_pending:
+    '{active} active → {effective} effective at next renewal ({date}). Increase to cancel the pending deactivation.'
+  addon_summary_upgrade: '{active} active → {new} new total. Adding units (prorated charge today).'
+  addon_summary_downgrade: '{active} active → {new} effective at next renewal ({date}).'
+  addon_summary_remove: '{active} active → 0 effective at next renewal. Addon will be removed on {date}.'
   addon_price_was: '(was ${previous}/{interval})'
   addon_prorated_notice:
     'By confirming, you agree to be charged ${total}/{interval}. A prorated charge for the remainder of your current
