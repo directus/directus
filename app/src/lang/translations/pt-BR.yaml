@@ -212,8 +212,6 @@ select_all_differences: Selecionar Todas as Diferenças
 delete_version: Deletar Versão
 delete_version_copy: >-
   Tem certeza que deseja excluir a versão "{version}"? Esta ação não pode ser desfeita.
-delete_on_apply_copy: >-
-  Você está prestes a promover "{version}" a Principal. O que deve acontecer com "{version}" depois da promoção?
 reset_bookmark: Redefinir Favoritos
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
