@@ -456,4 +456,57 @@ describe('seats entitlement', () => {
 			),
 		).resolves.toBeDefined();
 	});
+
+	test('creating a non-seat user after editing a seat user should not throw LIMIT_EXCEEDED', async () => {
+		await fillSeatLimit('k');
+
+		// seed 2 active admin-role users directly via knex to push the seat count over the license limit
+		const extra1 = randomUUID();
+		const extra2 = randomUUID();
+
+		await directus.knex!('directus_users').insert({
+			id: extra1,
+			first_name: 'k_seat_entitlement_extra_1',
+			email: `k_seat_entitlement_extra_1_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		await directus.knex!('directus_users').insert({
+			id: extra2,
+			first_name: 'k_seat_entitlement_extra_2',
+			email: `k_seat_entitlement_extra_2_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		createdUsers.push(extra1);
+		createdUsers.push(extra2);
+
+		await refreshSeatCache();
+
+		// this edit clears the seats cache as a side effect (see UsersService.clearCaches when role changes)
+		await api.request(
+			updateUser(createdUsers[0]!, {
+				role: null,
+			}),
+		);
+
+		// a fresh non-seat (api) user does not push the seat count up, so this should succeed;
+		// the bug is that the cleared cache plus the lingering over-limit state trips the
+		// seat check at validate-user-count-integrity.ts:48 and an incorrect LIMIT_EXCEEDED is thrown
+		const apiUser = await api.request(
+			createUser({
+				first_name: 'k_seat_entitlement_api',
+				last_name: 'seat',
+				email: `k_seat_entitlement_api_${randomUUID()}@test.com`,
+				status: 'active',
+				role: null,
+			}),
+		);
+
+		createdUsers.push(apiUser['id'] as string);
+
+		expect(apiUser).toBeDefined();
+	});
 });
