@@ -1,6 +1,6 @@
 import type { License, LicenseStatus } from '@directus/license';
 import { getEntitlementManager } from '../index.js';
-import { getCoreGracePeriod } from './get-core-grace-period.js';
+import { isInCoreGracePeriod } from './is-in-core-grace-period.js';
 
 /**
  * Compute the operational license status.
@@ -11,7 +11,7 @@ export async function computeLicenseStatus(license: License | null): Promise<Lic
 	if (!license) {
 		// The core upgrade grace period allowes one to bypasses limit checks
 		// Ideally enough time to obtain a license
-		const isWithinCoreGracePeriod = await getCoreGracePeriod();
+		const isWithinCoreGracePeriod = await isInCoreGracePeriod();
 		if (isWithinCoreGracePeriod) return 'grace';
 
 		const isWithinLimits = await entitlementManager.checkAll();

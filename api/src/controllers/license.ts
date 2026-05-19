@@ -197,10 +197,6 @@ router.post(
 			throw new InvalidPayloadError({ reason: fromZodError(error).message });
 		}
 
-		if (Object.keys(data).length === 0) {
-			return next();
-		}
-
 		const licenseManager = getLicenseManager();
 
 		await licenseManager.applyResolution(req.accountability!.user!, data);
