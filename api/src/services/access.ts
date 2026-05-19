@@ -11,7 +11,7 @@ export class AccessService extends ItemsService {
 
 	private async clearCaches(opts?: MutationOptions) {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-		await getEntitlementManager().clearCache('seats');
+		await getEntitlementManager().refreshCache('seats');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
