@@ -10,6 +10,7 @@ import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VInput from '@/components/v-input.vue';
 import { useLicenseStore } from '@/stores/license';
+import { formatDate } from '@/utils/format-date';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
@@ -41,13 +42,10 @@ watch(
 );
 
 const maxQuantity = computed(() => (props.addon.max_quantity === -1 ? undefined : props.addon.max_quantity));
-
 const unitPrice = computed(() => props.addon.unit_price);
 const interval = computed(() => props.addon.billing_interval);
-
 const activeTotal = computed(() => props.addon.active_quantity * unitPrice.value);
 const newTotal = computed(() => quantity.value * unitPrice.value);
-
 const hasPendingDeactivation = computed(() => props.addon.scheduled_quantity < props.addon.active_quantity);
 const isRemove = computed(() => quantity.value === 0);
 const isInitialPurchase = computed(() => props.addon.active_quantity === 0);
@@ -58,7 +56,8 @@ const hasNoChange = computed(() => quantity.value === effectiveQuantity.value);
 const renewalDate = computed(() => {
 	const ts = licenseStore.info?.renews_at;
 	if (!ts) return null;
-	return new Date(ts * 1000).toLocaleDateString();
+	const dateStr = new Date(ts * 1000).toISOString().slice(0, 10);
+	return formatDate(dateStr, { type: 'date', format: 'long' });
 });
 
 const canConfirm = computed(() => {
