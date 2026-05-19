@@ -1487,8 +1487,7 @@ licensing:
   resolve_section_sso: SSO Deactivation
   resolve_sso_confirm: Confirm SSO Deactivation
   resolve_sso_caption:
-    Anyone who was accessing via SSO will need a password and email configured (can be done via the users directory). To
-    retain access, they will have to go through the password reset flow.
+    SSO-only users will be deactivated when this change is made. To restore their access, you'll need to reactivate them and configure an email and password via the user directory.
   resolve_sso_blocker_notice:
     The current admin account does not have a local email and/or password configured. Set them below to avoid being
     locked out once SSO is deactivated.
@@ -1504,9 +1503,10 @@ licensing:
     revisions_historical_timeframe: Revision History
     sso_enabled: SSO
     offline_enabled: Offline Mode
-    telemetry_required: Telemetry Required
+    telemetry_opt_out: Telemetry Opt-Out
     custom_llms_enabled: Custom LLM
     custom_policy_rules_enabled: Custom Rules (Access Policies)
+    ai_translations_enabled: AI Translations
     display_powered_by: Display Powered By
     production_enabled: Production
   badge:
