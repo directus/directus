@@ -23,7 +23,7 @@ const router = express.Router();
 const env = useEnv();
 
 router.use(useCollection('directus_files'));
-router.use(checkIsLocked);
+router.use(checkIsLocked('files'));
 
 export const multipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();
