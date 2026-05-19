@@ -24,6 +24,7 @@ export function applySuggestedKeyForInterface(updates: StateUpdates) {
 	if (!chosenInterface.value?.suggestedKey) return;
 
 	const fieldDetailStore = useFieldDetailStore();
+
 	if (!fieldDetailStore.field.field) {
 		set(updates, 'field.field', chosenInterface.value.suggestedKey);
 	}
