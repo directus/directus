@@ -117,15 +117,12 @@ async function confirm() {
 							})
 						}}
 					</template>
-					<template v-else-if="isRemove">
-						{{ t('licensing.addon_summary_remove', { active: addon.active_quantity, date: renewalDate }) }}
-					</template>
-					<template v-else-if="isDowngrade">
+					<template v-else-if="isDowngrade || isRemove">
 						{{
 							t('licensing.addon_summary_downgrade', {
 								active: addon.active_quantity,
 								new: quantity,
-								date: renewalDate,
+								difference: addon.active_quantity - quantity,
 							})
 						}}
 					</template>
@@ -166,7 +163,7 @@ async function confirm() {
 							})
 						}}
 					</template>
-					<template v-else-if="isDowngrade">
+					<template v-else>
 						{{ t('licensing.addon_renewal_notice_date', { date: renewalDate }) }}
 					</template>
 				</p>
