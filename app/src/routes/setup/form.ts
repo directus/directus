@@ -6,16 +6,20 @@ import { useI18n } from 'vue-i18n';
 import z from 'zod';
 import { validateItem } from '@/utils/validate-item';
 
-export const SetupValidator = z.object({
-	admin: z.object({
-		email: z.email(),
-		password: z.string().min(1),
-		first_name: z.string().min(1),
-		last_name: z.string().min(1),
-	}),
-	password_confirm: z.string().min(1),
-	license: z.literal(true),
-});
+export const SetupValidator = z
+	.object({
+		admin: z.object({
+			email: z.email(),
+			password: z.string().min(1),
+			first_name: z.string().min(1),
+			last_name: z.string().min(1),
+		}),
+		password_confirm: z.string().min(1),
+		license: z.literal(true),
+	})
+	.refine((data) => data.admin.password === data.password_confirm, {
+		path: ['password_confirm'],
+	});
 
 export const FormValidator = z.object({
 	admin: z.object({

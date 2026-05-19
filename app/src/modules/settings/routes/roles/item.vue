@@ -14,6 +14,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -31,6 +32,7 @@ const router = useRouter();
 
 const userStore = useUserStore();
 const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
 const userInviteModalActive = ref(false);
 const { primaryKey } = toRefs(props);
 
@@ -68,6 +70,7 @@ async function saveAndStay() {
 	try {
 		await save();
 		await userStore.hydrate();
+		licenseStore.hydrate();
 		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// `save` shows unexpected error dialog
@@ -78,6 +81,7 @@ async function saveAndAddNew() {
 	try {
 		await save();
 		await userStore.hydrate();
+		licenseStore.hydrate();
 		router.push({ name: 'settings-add-new-role' });
 	} catch {
 		// `save` shows unexpected error dialog
@@ -88,6 +92,7 @@ async function saveAndQuit() {
 	try {
 		await save();
 		await userStore.hydrate();
+		licenseStore.hydrate();
 		router.push({ name: 'settings-roles-collection' });
 	} catch {
 		// `save` shows unexpected error dialog
@@ -99,6 +104,7 @@ async function deleteAndQuit() {
 
 	try {
 		await remove();
+		licenseStore.hydrate();
 		edits.value = {};
 		router.replace({ name: 'settings-roles-collection' });
 	} catch {

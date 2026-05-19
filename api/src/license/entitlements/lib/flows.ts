@@ -13,7 +13,7 @@ export async function getActiveFlows(opts?: { knex?: Knex | undefined }) {
     });
 
     const flows = await flowsService.readByQuery({
-        fields: ['id'],
+        fields: ['id', 'name'],
         filter: {
             status: {
                 _eq: 'active',

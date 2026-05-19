@@ -42,8 +42,8 @@ const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.get(`/trigger/:pk(${UUID_REGEX})`, checkIsLocked, webhookFlowHandler, respond);
-router.post(`/trigger/:pk(${UUID_REGEX})`, checkIsLocked, webhookFlowHandler, respond);
+router.get(`/trigger/:pk(${UUID_REGEX})`, checkIsLocked('flows'), webhookFlowHandler, respond);
+router.post(`/trigger/:pk(${UUID_REGEX})`, checkIsLocked('flows'), webhookFlowHandler, respond);
 
 router.post(
 	'/',

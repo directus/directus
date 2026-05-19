@@ -1,3 +1,4 @@
+import { InvalidPayloadError, ResourceRestrictedError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	MutationOptions,
@@ -19,11 +20,30 @@ export class SettingsService extends ItemsService<Settings> {
 	}
 
 	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
-			await getEntitlementManager().assert('custom_llms_enabled', { knex: this.knex });
+		if (this.accountability !== null) {
+			if ('license_key' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_key" value manually` });
+			}
+
+			if ('license_token' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_token" value manually` });
+			}
 		}
 
-		return super.createOne(data, opts);
+		const entitlementManager = getEntitlementManager();
+		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null);
+
+		if (!entitlementManager.isEntitled('custom_llms_enabled') && changesLLM) {
+			throw new ResourceRestrictedError({ category: 'custom_llms_enabled' });
+		}
+
+		const result = await super.createOne(data, opts);
+
+		if (changesLLM) {
+			await getEntitlementManager().clearCache('custom_llms_enabled');
+		}
+
+		return result;
 	}
 
 	override async updateMany(
@@ -31,11 +51,30 @@ export class SettingsService extends ItemsService<Settings> {
 		data: Partial<Settings>,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey[]> {
-		if (CUSTOM_LLM_FIELDS.find((field) => field in data && data[field] !== null)) {
-			await getEntitlementManager().assert('custom_llms_enabled', { knex: this.knex });
+		if (this.accountability !== null) {
+			if ('license_key' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_key" value manually` });
+			}
+
+			if ('license_token' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_token" value manually` });
+			}
 		}
 
-		return super.updateMany(keys, data, opts);
+		const entitlementManager = getEntitlementManager();
+		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null);
+
+		if (!entitlementManager.isEntitled('custom_llms_enabled') && changesLLM) {
+			throw new ResourceRestrictedError({ category: 'custom_llms_enabled' });
+		}
+
+		const result = await super.updateMany(keys, data, opts);
+
+		if (changesLLM) {
+			await entitlementManager.clearCache('custom_llms_enabled');
+		}
+
+		return result;
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Settings[]> {

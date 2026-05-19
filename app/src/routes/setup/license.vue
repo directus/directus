@@ -118,7 +118,7 @@ defineExpose({ canProceed });
 			{{ $t('no_license_key') }}
 			<VButton
 				secondary
-				:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${serverStore.info.version}&utm_content=onboarding_get_license_link`"
+				:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=onboarding_get_license_link`"
 				target="_blank"
 			>
 				<VIcon name="key" />

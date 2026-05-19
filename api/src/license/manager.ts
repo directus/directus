@@ -9,12 +9,12 @@ import {
 	deactivateKey,
 	deleteAddon,
 	Entitlements,
+	type InvalidLicenseStatus,
 	License,
 	type LicenseAddonsOutput,
 	type LicensePendingResolution,
 	type LicensePendingResolutionOutput,
 	type LicenseSource,
-	type LicenseStatus,
 	previewKey,
 	readAddons,
 	refreshLicense,
@@ -35,9 +35,9 @@ import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
+import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
-import { getStatus } from './utils/get-status.js';
 import { useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
@@ -47,7 +47,7 @@ let licenseCache: License | null;
 
 type LicenseStore = {
 	initialized: true | undefined;
-	status: LicenseStatus | undefined;
+	invalidStatus: InvalidLicenseStatus | undefined;
 };
 
 let licenseManager: LicenseManager | undefined;
@@ -105,7 +105,7 @@ export class LicenseManager {
 
 				// CASE A
 				if (envKey && envToken) {
-					logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
+					logger.fatal('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
 					process.exit(1);
 				}
 
@@ -116,39 +116,62 @@ export class LicenseManager {
 				});
 
 				if (envKey) {
-					this.source = 'env';
+					try {
+						this.source = 'env';
 
-					if (!dbKey) {
-						// CASE D
-						await this.activate(envKey);
-					} else if (envKey !== dbKey) {
-						// CASE B
-						await this.update(envKey, { oldKey: dbKey });
-					} else {
-						// CASE C
-						await this.refresh({ key: envKey, token: dbToken ?? null });
+						if (!dbKey) {
+							// CASE D
+							await this.activate(envKey);
+						} else if (envKey !== dbKey) {
+							// CASE B
+							await this.update(envKey, { oldKey: dbKey });
+						} else {
+							// CASE C
+							await this.refresh({ key: envKey, token: dbToken ?? null });
+						}
+					} catch (error) {
+						logger.fatal('Unable to validate the LICENSE_KEY, please check the key and try again.');
+						logger.fatal(error);
+						process.exit(1);
 					}
 				} else if (envToken) {
-					this.source = 'env';
-					// CASE E — verify offline token, cleanup DB
-					await this.refresh({ token: envToken });
+					try {
+						this.source = 'env';
+						// CASE E — verify offline token, cleanup DB
+						await this.refresh({ token: envToken });
 
-					if (dbKey || dbToken) {
-						await settingsService.upsertSingleton({ license_key: null, license_token: null });
+						if (dbKey || dbToken) {
+							await settingsService.upsertSingleton({ license_key: null, license_token: null });
+						}
+					} catch (error) {
+						logger.fatal('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
+						logger.fatal(error);
+						process.exit(1);
 					}
 				} else if (dbKey) {
-					this.source = 'settings';
+					try {
+						this.source = 'settings';
 
-					if (dbToken) {
-						// CASE F
-						await this.refresh({ key: dbKey, token: dbToken });
-					} else {
-						// CASE G
-						await this.activate(dbKey);
+						if (dbToken) {
+							// CASE F
+							await this.refresh({ key: dbKey, token: dbToken });
+						} else {
+							// CASE G
+							await this.activate(dbKey);
+						}
+					} catch (error) {
+						logger.error('Unable to validate the license key from the database, downgrading to core tier.');
+						logger.error(error);
+						await this.syncLicense({ kind: 'downgrade' });
 					}
 				} else {
-					// CASE H stale token / CASE I — core license
-					await this.commitStateChange({ isCore: true, downgrade: !!dbToken });
+					if (dbToken) {
+						// CASE H — stale token, clear and drop to core
+						await this.syncLicense({ kind: 'downgrade' });
+					} else {
+						// CASE I — already core, just propagate
+						await this.syncLicense();
+					}
 				}
 
 				this.initialized = true;
@@ -164,18 +187,27 @@ export class LicenseManager {
 		const { token } = await getLicenseToken(options);
 
 		if (!token) {
+			this.source = null;
 			licenseCache = CORE_LICENSE;
 		} else {
-			licenseCache = (await this.verify(token)) ?? CORE_LICENSE;
+			licenseCache = await this.verify(token);
+
+			if (!licenseCache) {
+				this.source = null;
+				licenseCache = CORE_LICENSE;
+			}
 		}
 
 		return licenseCache;
 	}
 
 	public async getStatus() {
-		const status = await this.store(async (store) => store.get('status'));
+		return computeLicenseStatus(this.source === null ? null : await this.getLicense());
+	}
 
-		return status ?? 'active';
+	public async getDowngradeReason(): Promise<InvalidLicenseStatus | null> {
+		const invalidStatus = await this.store(async (store) => store.get('invalidStatus'));
+		return invalidStatus ?? null;
 	}
 
 	public getSource() {
@@ -209,18 +241,9 @@ export class LicenseManager {
 	}
 
 	public async isLocked() {
-		const entitlementManager = getEntitlementManager();
 		const status = await this.getStatus();
 
-		const isInViolation = await entitlementManager.checkAll();
-
-		if (['expired', 'suspended'].includes(status) && isInViolation === false) {
-			return true;
-		}
-
-		if (status === 'locked') return true;
-
-		return false;
+		return status === 'locked';
 	}
 
 	/**
@@ -268,7 +291,7 @@ export class LicenseManager {
 				this.source = 'settings';
 			}
 
-			await this.commitStateChange();
+			await this.syncLicense();
 		} catch {
 			// LICENSE-TODO: Add error translation
 			throw new ServiceUnavailableError({ service: 'license', reason: 'activate' });
@@ -294,7 +317,7 @@ export class LicenseManager {
 			public_url: env['PUBLIC_URL'] as string,
 		});
 
-		await this.commitStateChange({ isCore: true, downgrade: true });
+		await this.syncLicense({ kind: 'downgrade' });
 	}
 
 	/**
@@ -328,15 +351,13 @@ export class LicenseManager {
 			project_id: project_id!,
 		});
 
-		await this.commitStateChange();
+		await this.syncLicense();
 	}
 
 	private async verify(token: string): Promise<License | null> {
 		try {
 			return await verifyLicense(token);
 		} catch {
-			// LICENSE-TODO: set status based on error
-			await this.commitStateChange({ status: 'expired', isCore: true, downgrade: true });
 			return null;
 		}
 	}
@@ -352,6 +373,11 @@ export class LicenseManager {
 
 		if (token) {
 			license = await this.verify(token);
+
+			if (!license) {
+				await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
+				return;
+			}
 		}
 
 		if (license?.meta.offline === false) {
@@ -386,9 +412,19 @@ export class LicenseManager {
 					license_token: token,
 				});
 
-				await this.commitStateChange();
+				await this.syncLicense();
 			} catch (err) {
 				logger.error(err);
+
+				// LICENSE-TODO: Add error translation and proper handling based on error type
+				if (err instanceof Error) {
+					for (const terminalStatus of ['expired', 'suspended', 'canceled'] as const) {
+						if (err.message.includes(terminalStatus)) {
+							await this.syncLicense({ kind: 'downgrade', reason: terminalStatus });
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -423,11 +459,14 @@ export class LicenseManager {
 			name: addon.name,
 			description: addon.description,
 			icon: addon.icon,
+			unit_price: addon.unit_price,
+			billing_interval: addon.billing_interval,
 			upgrade_required: addon.upgrade_required,
 			pricing_summary: addon.pricing_summary,
 			min_quantity: addon.min_quantity,
 			max_quantity: addon.max_quantity,
 			active_quantity: addon.active_quantity,
+			scheduled_quantity: addon.scheduled_quantity,
 		}));
 	}
 
@@ -466,7 +505,7 @@ export class LicenseManager {
 			license_token: token,
 		});
 
-		await this.commitStateChange();
+		await this.syncLicense();
 	}
 
 	public async removeAddon(addonId: string) {
@@ -609,39 +648,48 @@ export class LicenseManager {
 		if (resolution.sso_enabled) {
 			await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, { adminId });
 		}
+
+		if (await entitlementManager.checkAll()) {
+			await this.syncLicense({ kind: 'clear-status' });
+		}
 	}
 
 	/**
-	 * Single entry point for every state-changing
+	 * Apply a state transition and propagate to all instances.
+	 *
+	 *  - { kind: 'downgrade', reason? }: clear key + token, drop to core, propagate.
+	 *  - { kind: 'clear-token' }: clear only the token; key survives for re-activation. Marker preserved (server's verdict still applies). Propagates.
+	 *  - { kind: 'clear-status' }: clear the invalidStatus marker only. Redis-only, does NOT propagate.
 	 */
-	private async commitStateChange(options?: { status?: LicenseStatus; isCore?: boolean; downgrade?: boolean }) {
-		if (options?.downgrade) {
-			const settingsService = new SettingsService({ schema: await getSchema() });
+	private async syncLicense(
+		options?: { kind: 'downgrade'; reason?: InvalidLicenseStatus } | { kind: 'clear-token' } | { kind: 'clear-status' },
+	) {
+		if (options?.kind !== 'downgrade' || (options?.kind === 'downgrade' && options.reason === undefined)) {
+			await this.store(async (store) => store.delete('invalidStatus'));
 
-			await settingsService.upsertSingleton(
-				options.isCore ? { license_key: null, license_token: null } : { license_token: null },
-			);
-		}
-
-		await this.syncState();
-		const status = options?.status ?? (await getStatus(options));
-
-		const entitlementManager = new EntitlementManager();
-
-		if (['expired', 'suspended', 'cancelled'].includes(status)) {
-			// Invalid state within core limits downgrade otherwise lock
-			if (await entitlementManager.checkAll()) {
-				this.commitStateChange({ isCore: true, downgrade: true });
-			} else {
-				this.commitStateChange({ status: 'locked' });
+			if (options?.kind === 'clear-status') {
+				return;
 			}
-		} else {
-			await this.store(async (store) => store.set('status', status));
-			await this.rpc.syncState();
 		}
+
+		if (options?.kind === 'downgrade') {
+			const settingsService = new SettingsService({ schema: await getSchema() });
+			await settingsService.upsertSingleton({ license_key: null, license_token: null });
+			this.source = null;
+
+			if (options.reason) {
+				await this.store(async (store) => store.set('invalidStatus', options.reason));
+			}
+		} else if (options?.kind === 'clear-token') {
+			const settingsService = new SettingsService({ schema: await getSchema() });
+			await settingsService.upsertSingleton({ license_token: null });
+		}
+
+		await this.syncState({ source: this.source });
+		await this.rpc.syncState({ source: this.source });
 	}
 
-	public async syncState() {
+	public async syncState(options?: { source?: LicenseSource }) {
 		const oldSource = this.source;
 		const { source: keySource, key } = await getLicenseKey();
 		const { token } = await getLicenseToken();
@@ -651,6 +699,10 @@ export class LicenseManager {
 		this.licenseToken = token;
 
 		this.initialized = true;
+
+		if (options && 'source' in options) {
+			this.source = options.source;
+		}
 
 		/**
 		 * LICENSE-TODO: Rework

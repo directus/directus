@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activateLicense, deactivateLicense, type Entitlements, updateLicense } from '@directus/license';
+import { deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
@@ -23,6 +23,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import sdk from '@/sdk';
 import { useLicenseStore } from '@/stores/license';
+import { useServerStore } from '@/stores/server';
 import { formatDate } from '@/utils/format-date';
 import { formatTimeframe } from '@/utils/format-timeframe';
 import { getRootPath } from '@/utils/get-root-path';
@@ -33,8 +34,11 @@ import StatusNotice from '@/views/private/components/license/status-notice.vue';
 const { t } = useI18n();
 
 const licenseStore = useLicenseStore();
+const serverStore = useServerStore();
 
 const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
+
+const isEnvManaged = computed(() => license.value?.source === 'env');
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
@@ -98,6 +102,7 @@ type EntitlementConfig = {
 	icon: string;
 	title: string;
 	formatter?: (value: number) => string;
+	invert?: boolean;
 };
 
 const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
@@ -117,13 +122,14 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 	},
 	{ key: 'sso_enabled', icon: 'lock', title: t('licensing.entitlements.sso_enabled') },
 	{ key: 'offline_enabled', icon: 'cloud_off', title: t('licensing.entitlements.offline_enabled') },
-	{ key: 'telemetry_required', icon: 'analytics', title: t('licensing.entitlements.telemetry_required') },
+	{ key: 'telemetry_required', icon: 'analytics', title: t('licensing.entitlements.telemetry_opt_out'), invert: true },
 	{ key: 'custom_llms_enabled', icon: 'smart_toy', title: t('licensing.entitlements.custom_llms_enabled') },
 	{
 		key: 'custom_policy_rules_enabled',
 		icon: 'policy',
 		title: t('licensing.entitlements.custom_policy_rules_enabled'),
 	},
+	{ key: 'ai_translations_enabled', icon: 'translate', title: t('licensing.entitlements.ai_translations_enabled') },
 	{ key: 'production_enabled', icon: 'rocket_launch', title: t('licensing.entitlements.production_enabled') },
 ];
 
@@ -152,6 +158,30 @@ function usageFor(key: keyof Entitlements): number | null {
 	if (key === 'collections') return license.value.usage.collections;
 	return null;
 }
+
+type EntitlementItem =
+	| (EntitlementConfig & { kind: 'flag'; included: boolean })
+	| (EntitlementConfig & { kind: 'numeric'; limit: number; unlimited: boolean; usage: number | null });
+
+const entitlementItems = computed<EntitlementItem[]>(() => {
+	if (!license.value) return [];
+
+	const items: EntitlementItem[] = [];
+
+	for (const config of ENTITLEMENT_CONFIG) {
+		const ent = license.value.entitlements[config.key];
+
+		if (isFeatureFlagEntitlement(ent)) {
+			const included = isIncluded(ent);
+			items.push({ ...config, kind: 'flag', included: config.invert ? !included : included });
+		} else if (isNumericEntitlement(ent)) {
+			const limit = effectiveLimit(ent);
+			items.push({ ...config, kind: 'numeric', limit, unlimited: limit === -1, usage: usageFor(config.key) });
+		}
+	}
+
+	return items;
+});
 
 const deactivateConfirmOpen = ref(false);
 const deactivateLoading = ref(false);
@@ -209,7 +239,8 @@ async function handleDeactivateConfirm() {
 					<div class="plan-title">
 						<span class="plan-name">{{ planDisplayName }}</span>
 						<div class="plan-status">
-							<VChip :class="license.status" x-small>{{ license.status }}</VChip>
+							<VChip v-if="license.source === null" x-small>{{ t('licensing.unlicensed') }}</VChip>
+							<VChip v-else kind="primary" x-small>{{ t('licensing.current_plan') }}</VChip>
 							<span v-if="boundaryDate" class="boundary-date">
 								{{
 									boundary?.type === 'expiration'
@@ -224,12 +255,23 @@ async function handleDeactivateConfirm() {
 							<VButton secondary small @click="addLicenseDrawer = true">
 								{{ t('licensing.add') }}
 							</VButton>
-							<VButton small href="https://directus.io/pricing" target="_blank" rel="noopener noreferrer">
+							<VButton
+								small
+								:href="`https://directus.io/pricing?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_upgrade_plan_link`"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								{{ t('licensing.upgrade_plan') }}
 							</VButton>
 						</template>
 						<template v-else>
-							<VButton secondary small @click="addLicenseDrawer = true">
+							<VButton
+								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
+								secondary
+								small
+								:disabled="isEnvManaged"
+								@click="addLicenseDrawer = true"
+							>
 								{{ t('licensing.manage') }}
 							</VButton>
 							<VButton small :href="`${getRootPath()}license/portal`" target="_blank" rel="noopener noreferrer">
@@ -244,24 +286,20 @@ async function handleDeactivateConfirm() {
 
 				<div class="entitlements">
 					<span class="entitlements-title">{{ t('licensing.plan_usage') }}</span>
-					<template v-for="item in ENTITLEMENT_CONFIG" :key="item.key">
+					<template v-for="item in entitlementItems" :key="item.key">
 						<LicenseEntitlementItem
-							v-if="isFeatureFlagEntitlement(license.entitlements[item.key])"
+							v-if="item.kind === 'flag'"
 							:icon="item.icon"
 							:title="item.title"
-							:included="isIncluded(license.entitlements[item.key] as FeatureFlagEntitlement)"
+							:included="item.included"
 						/>
-						<LicenseEntitlementItem
-							v-else-if="isNumericEntitlement(license.entitlements[item.key])"
-							:icon="item.icon"
-							:title="item.title"
-						>
+						<LicenseEntitlementItem v-else :icon="item.icon" :title="item.title" :unlimited="item.unlimited">
 							<span v-if="item.formatter" class="usage-value">
-								{{ item.formatter(effectiveLimit(license.entitlements[item.key] as NumericEntitlement)) }}
+								{{ item.formatter(item.limit) }}
 							</span>
 							<span v-else>
-								<span class="usage-value">{{ usageFor(item.key) ?? 0 }}</span>
-								<span class="limit">/ {{ effectiveLimit(license.entitlements[item.key] as NumericEntitlement) }}</span>
+								<span class="usage-value">{{ item.usage ?? 0 }}</span>
+								<span class="limit">/ {{ item.limit }}</span>
 							</span>
 						</LicenseEntitlementItem>
 					</template>
@@ -275,15 +313,10 @@ async function handleDeactivateConfirm() {
 
 				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" variant="danger">
 					<div class="danger-zone-content">
-						<VNotice v-if="license.source === 'env'" type="info">
+						<VNotice v-if="isEnvManaged" type="info">
 							{{ t('licensing.env_managed') }}
 						</VNotice>
-						<VButton
-							:disabled="license.source === 'env'"
-							:loading="deactivateLoading"
-							danger
-							@click="handleDeactivateClick"
-						>
+						<VButton :disabled="isEnvManaged" :loading="deactivateLoading" danger @click="handleDeactivateClick">
 							{{ t('licensing.deactivate') }}
 						</VButton>
 					</div>
@@ -332,7 +365,11 @@ async function handleDeactivateConfirm() {
 			<VNotice type="info">
 				<I18nT keypath="setup_license_key_notice" tag="span">
 					<template #oig>
-						<a href="https://directus.io/license-request" target="_blank" rel="noopener noreferrer">
+						<a
+							:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_drawer_open_innovation_grant_link`"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
 							{{ t('open_innovation_grant') }}
 						</a>
 					</template>
@@ -351,7 +388,9 @@ async function handleDeactivateConfirm() {
 	</VDrawer>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '@/styles/mixins';
+
 .license {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -362,6 +401,8 @@ async function handleDeactivateConfirm() {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
 	margin-block-end: 1rem;
 }
 
@@ -375,7 +416,25 @@ async function handleDeactivateConfirm() {
 .plan-status {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 	gap: 0.5rem;
+}
+
+.plan-actions {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+@include mixins.breakpoint-down('sm') {
+	.plan-header {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.plan-actions {
+		justify-content: flex-end;
+	}
 }
 
 .boundary-date {
@@ -392,11 +451,6 @@ async function handleDeactivateConfirm() {
 	line-height: 1;
 }
 
-.plan-actions {
-	display: flex;
-	gap: 0.5rem;
-}
-
 .status-notice {
 	margin-block-start: 2.5rem;
 }
@@ -406,6 +460,12 @@ async function handleDeactivateConfirm() {
 	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
 	margin-block-start: 2.5rem;
+}
+
+@include mixins.breakpoint-down('sm') {
+	.entitlements {
+		grid-template-columns: 1fr;
+	}
 }
 
 .entitlements-title {

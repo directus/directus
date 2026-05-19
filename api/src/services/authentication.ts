@@ -4,6 +4,7 @@ import { useEnv } from '@directus/env';
 import {
 	InvalidCredentialsError,
 	InvalidOtpError,
+	ResourceRestrictedError,
 	ServiceUnavailableError,
 	UserSuspendedError,
 } from '@directus/errors';
@@ -16,6 +17,7 @@ import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { getEntitlementManager } from '../license/index.js';
 import { getLicenseManager } from '../license/manager.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
@@ -148,6 +150,8 @@ export class AuthenticationService {
 			} catch (error) {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+					await getEntitlementManager().clearCache('sso_enabled');
+					await getEntitlementManager().refreshCache('seats');
 
 					if (this.accountability) {
 						const activity = await this.activityService.createOne({
@@ -225,14 +229,9 @@ export class AuthenticationService {
 		);
 
 		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
-			const loginError = new ServiceUnavailableError({
-				reason: 'License is in a locked state and must be resolved',
-				service: 'license',
+			throw new ResourceRestrictedError({
+				category: 'login',
 			});
-
-			emitStatus('fail', updatedPayload, user, loginError);
-			await stall(STALL_TIME, timeStart);
-			throw loginError;
 		}
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -395,9 +394,8 @@ export class AuthenticationService {
 		);
 
 		if ((await getLicenseManager().isLocked()) && globalAccess.admin === false) {
-			throw new ServiceUnavailableError({
-				reason: 'License is in a locked state and must be resolved',
-				service: 'license',
+			throw new ResourceRestrictedError({
+				category: 'login',
 			});
 		}
 

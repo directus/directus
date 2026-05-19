@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useSlots } from 'vue';
-import { useI18n } from 'vue-i18n';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 
@@ -8,9 +7,9 @@ defineProps<{
 	icon: string;
 	title: string;
 	included?: boolean;
+	unlimited?: boolean;
 }>();
 
-const { t } = useI18n();
 const slots = useSlots();
 </script>
 
@@ -21,9 +20,12 @@ const slots = useSlots();
 			<span>{{ title }}</span>
 		</div>
 		<div class="value">
-			<slot v-if="slots.default" />
+			<VChip v-if="unlimited" x-small class="unlimited">
+				{{ $t('licensing.unlimited') }}
+			</VChip>
+			<slot v-else-if="slots.default" />
 			<VChip v-else x-small :class="{ included }">
-				{{ included ? t('licensing.included') : t('licensing.not_included') }}
+				{{ included ? $t('licensing.included') : $t('licensing.not_included') }}
 			</VChip>
 		</div>
 	</div>
@@ -63,7 +65,8 @@ const slots = useSlots();
 	font-weight: 600;
 }
 
-.value :deep(.v-chip.included) {
+.value :deep(.v-chip.included),
+.value :deep(.v-chip.unlimited) {
 	--v-chip-background-color: var(--theme--success-subdued);
 	--v-chip-color: var(--theme--success-accent);
 }

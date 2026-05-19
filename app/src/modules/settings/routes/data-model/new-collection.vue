@@ -19,6 +19,7 @@ import VTabs from '@/components/v-tabs.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useRelationsStore } from '@/stores/relations';
 import { extractErrorCode } from '@/utils/extract-error-code';
 import { notify } from '@/utils/notify';
@@ -77,6 +78,7 @@ const router = useRouter();
 
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
+const licenseStore = useLicenseStore();
 const relationsStore = useRelationsStore();
 
 const isOpen = useDialogRoute();
@@ -135,7 +137,7 @@ async function save() {
 			storeHydrations.push(relationsStore.hydrate());
 		}
 
-		storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate());
+		storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate(), licenseStore.hydrate());
 		await Promise.all(storeHydrations);
 
 		notify({

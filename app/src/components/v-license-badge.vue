@@ -22,6 +22,7 @@ const link = computed(() => {
 	<a
 		v-if="displayPoweredBy === 'DIRECTUS' || displayPoweredBy === 'OIG'"
 		:href="link"
+		class="license-badge"
 		:class="{ private: isPrivate }"
 		target="_blank"
 		rel="noopener noreferrer"
