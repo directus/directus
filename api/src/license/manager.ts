@@ -105,7 +105,7 @@ export class LicenseManager {
 
 				// CASE A
 				if (envKey && envToken) {
-					logger.error('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
+					logger.fatal('LICENSE_KEY and LICENSE_TOKEN cannot both be set. Provide one or the other.');
 					process.exit(1);
 				}
 
@@ -130,8 +130,8 @@ export class LicenseManager {
 
 						this.source = 'env';
 					} catch (error) {
-						logger.error('Unable to validate the LICENSE_KEY, please check the key and try again.');
-						logger.error(error);
+						logger.fatal('Unable to validate the LICENSE_KEY, please check the key and try again.');
+						logger.fatal(error);
 						process.exit(1);
 					}
 				} else if (envToken) {
@@ -145,8 +145,8 @@ export class LicenseManager {
 
 						this.source = 'env';
 					} catch (error) {
-						logger.error('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
-						logger.error(error);
+						logger.fatal('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
+						logger.fatal(error);
 						process.exit(1);
 					}
 				} else if (dbKey) {
