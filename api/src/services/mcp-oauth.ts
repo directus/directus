@@ -178,6 +178,20 @@ function checkDuplicateParams(params: Record<string, unknown>, keys: readonly st
 	}
 }
 
+function getStringParam(params: Record<string, unknown>, key: string, redirectable: boolean): string | undefined {
+	const value = params[key];
+
+	if (value === undefined) {
+		return undefined;
+	}
+
+	if (typeof value !== 'string') {
+		throw new OAuthError(400, 'invalid_request', `${key} must be a string`, redirectable);
+	}
+
+	return value;
+}
+
 /**
  * OAuth 2.1 authorization server for MCP (Model Context Protocol) access.
  *
@@ -424,14 +438,8 @@ export class McpOAuthService {
 		// Phase 1: Check pre-trust params for duplicates (non-redirectable)
 		checkDuplicateParams(params, PRE_TRUST_DUPLICATE_PARAMS, false);
 
-		const clientId = params['client_id'] as string | undefined;
-		const redirectUri = params['redirect_uri'] as string | undefined;
-		const responseType = params['response_type'] as string | undefined;
-		const codeChallenge = params['code_challenge'] as string | undefined;
-		const codeChallengeMethod = params['code_challenge_method'] as string | undefined;
-		const scope = params['scope'] as string | undefined;
-		const resource = params['resource'] as string | undefined;
-		const state = params['state'] as string | undefined;
+		const clientId = getStringParam(params, 'client_id', false);
+		const redirectUri = getStringParam(params, 'redirect_uri', false);
 
 		// Validate client_id exists in DB - errors before redirect validation must not redirect
 		if (!clientId) {
@@ -460,6 +468,13 @@ export class McpOAuthService {
 
 		// Phase 2: Check post-trust params for duplicates (redirectable)
 		checkDuplicateParams(params, POST_TRUST_DUPLICATE_PARAMS, true);
+
+		const responseType = getStringParam(params, 'response_type', true);
+		const codeChallenge = getStringParam(params, 'code_challenge', true);
+		const codeChallengeMethod = getStringParam(params, 'code_challenge_method', true);
+		const scope = getStringParam(params, 'scope', true);
+		const resource = getStringParam(params, 'resource', true);
+		const state = getStringParam(params, 'state', true);
 
 		// RFC 6749 Section 3.1.1: response_type REQUIRED
 		if (!responseType) {

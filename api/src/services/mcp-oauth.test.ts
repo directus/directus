@@ -924,12 +924,31 @@ describe('McpOAuthService', () => {
 			);
 		});
 
+		it('object client_id returns non-redirectable invalid_request before client lookup', async () => {
+			await assertOAuthError(
+				() => service.validateAuthorization(validParams({ client_id: { nested: clientId } }), userId, sessionHash),
+				{ error: 'invalid_request', redirectable: false },
+			);
+
+			expect(queryHistory('select', 'directus_oauth_clients')).toHaveLength(0);
+		});
+
 		it('missing redirect_uri returns non-redirectable invalid_request', async () => {
 			mockClientLookup(clientId);
 
 			await assertOAuthError(
 				() => service.validateAuthorization(validParams({ redirect_uri: undefined }), userId, sessionHash),
 				{ error: 'invalid_request', redirectable: false },
+			);
+		});
+
+		it('object resource returns redirectable invalid_request after redirect_uri validation', async () => {
+			mockClientLookup(clientId);
+
+			await assertOAuthError(
+				() =>
+					service.validateAuthorization(validParams({ resource: { nested: TEST_RESOURCE_URL } }), userId, sessionHash),
+				{ error: 'invalid_request', redirectable: true },
 			);
 		});
 
