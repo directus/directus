@@ -420,7 +420,7 @@ function emitValue() {
 
 .search-badge {
 	--v-badge-background-color: var(--theme--primary);
-	--v-badge-offset-y: 0.1875rem;
+	--v-badge-offset-y: 0.125rem;
 	--v-badge-offset-x: 0.4375rem;
 
 	:deep(.badge) {
