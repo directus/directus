@@ -1,4 +1,4 @@
-import { ResourceRestrictedError } from '@directus/errors';
+import { InvalidPayloadError, ResourceRestrictedError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	MutationOptions,
@@ -20,6 +20,16 @@ export class SettingsService extends ItemsService<Settings> {
 	}
 
 	override async createOne(data: Partial<Settings>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (this.accountability !== null) {
+			if ('license_key' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_key" value manually` });
+			}
+
+			if ('license_token' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_token" value manually` });
+			}
+		}
+
 		const entitlementManager = getEntitlementManager();
 		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null);
 
@@ -41,8 +51,18 @@ export class SettingsService extends ItemsService<Settings> {
 		data: Partial<Settings>,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey[]> {
+		if (this.accountability !== null) {
+			if ('license_key' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_key" value manually` });
+			}
+
+			if ('license_token' in data) {
+				throw new InvalidPayloadError({ reason: `You can't change the "license_token" value manually` });
+			}
+		}
+
 		const entitlementManager = getEntitlementManager();
-		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null)
+		const changesLLM = CUSTOM_LLM_FIELDS.some((field) => field in data && data[field] !== null);
 
 		if (!entitlementManager.isEntitled('custom_llms_enabled') && changesLLM) {
 			throw new ResourceRestrictedError({ category: 'custom_llms_enabled' });
