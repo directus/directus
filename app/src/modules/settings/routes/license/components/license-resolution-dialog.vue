@@ -77,6 +77,7 @@ const severity = computed<'warning' | 'danger'>(() => {
 });
 
 type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number];
+type FlowCandidate = LicensePendingResolutionLimitFlows['candidates'][number];
 
 const collections = computed<LicensePendingResolutionLimitCollections | undefined>(
 	() => find('limit', 'collections') as LicensePendingResolutionLimitCollections | undefined,
@@ -310,8 +311,12 @@ function onEsc() {
 					:usage="flows.usage"
 					:limit="flows.limit"
 					:groups="flowGroups"
-					:id-for="(name: string) => name"
-				/>
+					:id-for="(flow: FlowCandidate) => flow.id"
+				>
+					<template #item="{ candidate }">
+						<span class="item-label">{{ candidate.name }}</span>
+					</template>
+				</ResolutionLimitSection>
 			</VCardText>
 
 			<footer class="action-row">

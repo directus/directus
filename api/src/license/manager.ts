@@ -430,6 +430,7 @@ export class LicenseManager {
 			min_quantity: addon.min_quantity,
 			max_quantity: addon.max_quantity,
 			active_quantity: addon.active_quantity,
+			scheduled_quantity: addon.scheduled_quantity,
 		}));
 	}
 

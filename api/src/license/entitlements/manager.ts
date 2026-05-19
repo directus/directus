@@ -92,9 +92,9 @@ export class EntitlementManager {
 	 * checks. Mutating methods (`setEntitlements`, `clearCache`) on the
 	 * fork will affect the shared cache.
 	 */
-	fork(entitlements: Entitlements): EntitlementManager {
+	fork(entitlements: Entitlements | null): EntitlementManager {
 		const forked = Object.create(EntitlementManager.prototype) as EntitlementManager;
-		forked.entitlements = entitlements;
+		forked.entitlements = entitlements ?? CORE_LICENSE['entitlements'];
 		forked.counterSources = this.counterSources;
 		forked.validatorSources = this.validatorSources;
 		forked.resolverSources = this.resolverSources;
