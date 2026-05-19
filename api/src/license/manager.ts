@@ -117,6 +117,8 @@ export class LicenseManager {
 
 				if (envKey) {
 					try {
+						this.source = 'env';
+
 						if (!dbKey) {
 							// CASE D
 							await this.activate(envKey);
@@ -127,8 +129,6 @@ export class LicenseManager {
 							// CASE C
 							await this.refresh({ key: envKey, token: dbToken ?? null });
 						}
-
-						this.source = 'env';
 					} catch (error) {
 						logger.fatal('Unable to validate the LICENSE_KEY, please check the key and try again.');
 						logger.fatal(error);
@@ -136,14 +136,13 @@ export class LicenseManager {
 					}
 				} else if (envToken) {
 					try {
+						this.source = 'env';
 						// CASE E — verify offline token, cleanup DB
 						await this.refresh({ token: envToken });
 
 						if (dbKey || dbToken) {
 							await settingsService.upsertSingleton({ license_key: null, license_token: null });
 						}
-
-						this.source = 'env';
 					} catch (error) {
 						logger.fatal('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
 						logger.fatal(error);
@@ -151,6 +150,8 @@ export class LicenseManager {
 					}
 				} else if (dbKey) {
 					try {
+						this.source = 'settings';
+
 						if (dbToken) {
 							// CASE F
 							await this.refresh({ key: dbKey, token: dbToken });
@@ -158,8 +159,6 @@ export class LicenseManager {
 							// CASE G
 							await this.activate(dbKey);
 						}
-
-						this.source = 'settings';
 					} catch (error) {
 						logger.error('Unable to validate the license key from the database, downgrading to core tier.');
 						logger.error(error);
