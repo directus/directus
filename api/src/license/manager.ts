@@ -424,11 +424,14 @@ export class LicenseManager {
 			name: addon.name,
 			description: addon.description,
 			icon: addon.icon,
+			unit_price: addon.unit_price,
+			billing_interval: addon.billing_interval,
 			upgrade_required: addon.upgrade_required,
 			pricing_summary: addon.pricing_summary,
 			min_quantity: addon.min_quantity,
 			max_quantity: addon.max_quantity,
 			active_quantity: addon.active_quantity,
+			scheduled_quantity: addon.scheduled_quantity,
 		}));
 	}
 

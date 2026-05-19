@@ -3,7 +3,7 @@ import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
-import { defaultValues, useSetupFields } from './form';
+import { defaultValues, useSetupFields, ValidationError } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -91,6 +91,20 @@ const product_updates = computed({
 });
 
 const fields = useSetupFields(props.register);
+
+const mergedErrors = computed<ValidationError[]>(() => {
+	const base = (props.errors ?? []) as ValidationError[];
+
+	if (!props.register) return base;
+
+	const password = value.value?.admin.password;
+	const passwordConfirm = value.value?.password_confirm;
+
+	if (!password || !passwordConfirm || password === passwordConfirm) return base;
+	if (base.some((err) => err.field === 'password_confirm' && err.type === 'confirm_password')) return base;
+
+	return [...base, { field: 'password_confirm', path: [], type: 'confirm_password' }];
+});
 </script>
 
 <template>
@@ -98,7 +112,7 @@ const fields = useSetupFields(props.register);
 		<VForm
 			v-model="formSlice"
 			:initial-values="initialValues"
-			:validation-errors="errors"
+			:validation-errors="mergedErrors"
 			:show-validation-errors="false"
 			:fields="fields"
 			disabled-menu
@@ -107,7 +121,7 @@ const fields = useSetupFields(props.register);
 			<I18nT keypath="setup_save_accept_license" tag="span">
 				<template #directusMscl>
 					<a
-						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
+						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
 						target="_blank"
 					>
 						{{ $t('directus_mscl') }}
@@ -115,7 +129,7 @@ const fields = useSetupFields(props.register);
 				</template>
 				<template #privacyPolicy>
 					<a
-						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
+						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
 						target="_blank"
 					>
 						{{ $t('privacy_policy') }}
@@ -128,7 +142,7 @@ const fields = useSetupFields(props.register);
 			<I18nT keypath="setup_accept_license" tag="span">
 				<template #directusMscl>
 					<a
-						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
+						:href="`https://directus.io/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
 						target="_blank"
 					>
 						{{ $t('directus_mscl') }}
@@ -136,7 +150,7 @@ const fields = useSetupFields(props.register);
 				</template>
 				<template #privacyPolicy>
 					<a
-						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=privacy_link`"
+						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=privacy_link`"
 						target="_blank"
 					>
 						{{ $t('privacy_policy') }}

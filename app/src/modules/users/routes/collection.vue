@@ -16,6 +16,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -36,6 +37,7 @@ const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
 const userStore = useUserStore();
+const licenseStore = useLicenseStore();
 const router = useRouter();
 
 const layoutRef = ref();
@@ -148,7 +150,7 @@ function useBatch() {
 			}
 
 			await refresh();
-
+			licenseStore.hydrate();
 			selection.value = [];
 			confirmDelete.value = false;
 		} catch (e) {
