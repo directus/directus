@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import http from 'node:http';
 import { port } from '@utils/constants.js';
 
 export const baseUrl = `http://127.0.0.1:${port}`;
@@ -19,7 +20,121 @@ export type OAuthTokens = {
 	scope: string;
 };
 
+export type CimdMetadataServerOptions = {
+	path?: string;
+};
+
 type JsonValue = Record<string, unknown> | unknown[];
+
+export class CimdMetadataServer {
+	private server: http.Server | undefined;
+	private port = 0;
+	private metadata: Record<string, unknown> = {};
+	private requestCount = 0;
+	private etag: string | null = null;
+	private readonly servePath: string;
+
+	constructor(opts: CimdMetadataServerOptions = {}) {
+		this.servePath = opts.path ?? `/metadata-${crypto.randomUUID()}.json`;
+	}
+
+	async start(): Promise<void> {
+		await new Promise<void>((resolve, reject) => {
+			this.server = http.createServer((req, res) => {
+				if (req.url !== this.servePath) {
+					res.writeHead(404);
+					res.end();
+					return;
+				}
+
+				this.requestCount++;
+
+				if (this.etag && req.headers['if-none-match'] === this.etag) {
+					res.writeHead(304, { ETag: this.etag });
+					res.end();
+					return;
+				}
+
+				const headers: Record<string, string> = {
+					'Content-Type': 'application/json',
+					'Cache-Control': 'max-age=3600',
+				};
+
+				if (this.etag) headers['ETag'] = this.etag;
+
+				res.writeHead(200, headers);
+				res.end(JSON.stringify(this.metadata));
+			});
+
+			this.server.listen(0, 'localhost', () => {
+				const address = this.server?.address();
+
+				if (!address || typeof address === 'string') {
+					reject(new Error('CIMD metadata server did not expose a TCP port'));
+					return;
+				}
+
+				this.port = address.port;
+				resolve();
+			});
+
+			this.server.on('error', reject);
+		});
+	}
+
+	async stop(): Promise<void> {
+		const server = this.server;
+
+		if (!server) return;
+
+		await new Promise<void>((resolve, reject) => {
+			server.close((error) => {
+				if (error) reject(error);
+				else resolve();
+			});
+		});
+
+		this.server = undefined;
+		this.port = 0;
+	}
+
+	getUrl(): string {
+		if (this.port === 0) throw new Error('CIMD metadata server has not started');
+
+		return `http://localhost:${this.port}`;
+	}
+
+	getClientId(): string {
+		return `${this.getUrl()}${this.servePath}`;
+	}
+
+	getRequestCount(): number {
+		return this.requestCount;
+	}
+
+	resetRequestCount(): void {
+		this.requestCount = 0;
+	}
+
+	setMetadata(doc: Record<string, unknown>): void {
+		this.metadata = doc;
+	}
+
+	setEtag(etag: string | null): void {
+		this.etag = etag;
+	}
+
+	setDefaultMetadata(overrides: Record<string, unknown> = {}): void {
+		this.metadata = {
+			client_id: this.getClientId(),
+			client_name: 'Test CIMD Client',
+			redirect_uris: ['http://127.0.0.1:9876/callback'],
+			grant_types: ['authorization_code', 'refresh_token'],
+			token_endpoint_auth_method: 'none',
+			...overrides,
+		};
+	}
+}
 
 export function generatePKCE(): Pkce {
 	const verifier = crypto.randomBytes(32).toString('hex');
@@ -143,6 +258,7 @@ export async function enableMcpOAuthSettings(apiUrl = baseUrl): Promise<void> {
 			mcp_enabled: true,
 			mcp_oauth_enabled: true,
 			mcp_oauth_dcr_enabled: true,
+			mcp_oauth_cimd_enabled: true,
 		},
 		apiUrl,
 	);
