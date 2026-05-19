@@ -53,7 +53,12 @@ const { activityHistoryTimeframe } = storeToRefs(useLicenseStore());
 				<ActivityNavigation v-model:filter="roleFilter" />
 			</template>
 
-			<VNotice v-if="activityHistoryTimeframe !== null" type="info" icon="diamond" class="history-notice">
+			<VNotice
+				v-if="activityHistoryTimeframe !== null && parseInt(activityHistoryTimeframe) >= 0"
+				type="info"
+				icon="diamond"
+				class="history-notice"
+			>
 				{{ $t('license.activity_history_notice', { timeframe: activityHistoryTimeframe }) }}
 			</VNotice>
 
@@ -88,5 +93,6 @@ const { activityHistoryTimeframe } = storeToRefs(useLicenseStore());
 	--v-notice-background-color: var(--theme--background-subdued);
 
 	margin: var(--content-padding);
+	margin-block-end: 0;
 }
 </style>
