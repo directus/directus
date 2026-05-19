@@ -28,6 +28,7 @@ import { formatTimeframe } from '@/utils/format-timeframe';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateView } from '@/views/private';
+import StatusNotice from '@/views/private/components/license/status-notice.vue';
 
 const { t } = useI18n();
 
@@ -239,6 +240,8 @@ async function handleDeactivateConfirm() {
 				</div>
 				<VDivider />
 
+				<StatusNotice class="status-notice" />
+
 				<div class="entitlements">
 					<span class="entitlements-title">{{ t('licensing.plan_usage') }}</span>
 					<template v-for="item in ENTITLEMENT_CONFIG" :key="item.key">
@@ -392,6 +395,10 @@ async function handleDeactivateConfirm() {
 .plan-actions {
 	display: flex;
 	gap: 0.5rem;
+}
+
+.status-notice {
+	margin-block-start: 2.5rem;
 }
 
 .entitlements {

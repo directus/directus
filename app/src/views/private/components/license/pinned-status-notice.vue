@@ -5,18 +5,22 @@ import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useLicenseStore } from '@/stores/license';
+import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { graceDays } = storeToRefs(useLicenseStore());
+const { expiryWarning } = storeToRefs(useLicenseStore());
+const { isAdmin } = storeToRefs(useUserStore());
 
-const show = computed(() => graceDays.value !== null);
+const show = computed(() => isAdmin.value && expiryWarning.value !== null);
 </script>
 
 <template>
-	<div v-if="show" class="pinned-status-notice">
-		<VIcon name="warning" class="notice-icon" />
+	<div v-if="show" class="pinned-status-notice" :class="expiryWarning?.severity">
+		<VIcon :name="expiryWarning?.severity === 'danger' ? 'error' : 'warning'" class="notice-icon" />
 		<div class="notice-content">
-			<span class="notice-title">{{ t('license.pinned_status_notice.grace_period_title', { days: graceDays }) }}</span>
+			<span class="notice-title">
+				{{ t('license.pinned_status_notice.grace_period_title', { days: expiryWarning?.days }) }}
+			</span>
 			<RouterLink :to="{ name: 'settings-license' }" class="notice-body">
 				{{ t('license.pinned_status_notice.grace_period_body') }}
 			</RouterLink>
@@ -30,13 +34,13 @@ const show = computed(() => graceDays.value !== null);
 	margin-block-end: 0.5rem;
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	padding: 12px 12px 12px 16px;
+	gap: 0.75rem;
+	padding: 0.75rem 0.75rem 0.75rem 1rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-normal);
 	overflow: hidden;
-	font-size: 11px;
-	line-height: 16px;
+	font-size: 0.6875rem;
+	line-height: 1rem;
 }
 
 .pinned-status-notice::before {
@@ -49,16 +53,24 @@ const show = computed(() => graceDays.value !== null);
 	background-color: var(--theme--warning);
 }
 
+.pinned-status-notice.danger::before {
+	background-color: var(--theme--danger);
+}
+
 .notice-icon {
-	--v-icon-size: 16px;
+	--v-icon-size: 1rem;
 	--v-icon-color: var(--theme--warning);
 	flex-shrink: 0;
+}
+
+.danger .notice-icon {
+	--v-icon-color: var(--theme--danger);
 }
 
 .notice-content {
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 0.125rem;
 	min-width: 0;
 }
 
@@ -69,7 +81,6 @@ const show = computed(() => graceDays.value !== null);
 
 .notice-body {
 	font-weight: 500;
-	color: var(--theme--foreground-subdued);
 	text-decoration: none;
 }
 

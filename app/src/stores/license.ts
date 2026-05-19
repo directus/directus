@@ -96,10 +96,28 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return limit ? formatTimeframe(limit) : null;
 	});
 
-	const graceDays = computed<number | null>(() => {
-		if (!info.value || info.value.status !== 'grace' || !info.value.expires_at) return null;
-		const deadlineMs = (info.value.expires_at + (info.value.grace_period ?? 0)) * 1000;
-		return Math.max(0, Math.ceil((deadlineMs - Date.now()) / (1000 * 60 * 60 * 24)));
+	const expiryWarning = computed<{ days: number; severity: 'warning' | 'danger' } | null>(() => {
+		if (!info.value || !info.value.expires_at) return null;
+
+		const nowSec = Date.now() / 1000;
+		const isTeam = (info.value.name ?? '').toLowerCase().includes('team');
+
+		if (isTeam && info.value.renews_at) return null;
+
+		if (info.value.status === 'grace') {
+			const deadline = info.value.expires_at + (info.value.grace_period ?? 0);
+			const days = Math.max(0, Math.ceil((deadline - nowSec) / (60 * 60 * 24)));
+			return { days, severity: days <= 3 ? 'danger' : 'warning' };
+		}
+
+		if (info.value.status !== 'active') return null;
+
+		const windowDays = isTeam ? 7 : 30;
+		const days = Math.ceil((info.value.expires_at - nowSec) / (60 * 60 * 24));
+
+		if (days < 0 || days > windowDays) return null;
+
+		return { days, severity: days <= 3 ? 'danger' : 'warning' };
 	});
 
 	function isEntitlementEnabled(key: string) {
@@ -226,7 +244,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		customLLMEnabled,
 		revisionHistoryTimeframe,
 		activityHistoryTimeframe,
-		graceDays,
+		expiryWarning,
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,

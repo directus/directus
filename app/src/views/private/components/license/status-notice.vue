@@ -4,19 +4,21 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
+import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { graceDays } = storeToRefs(useLicenseStore());
+const { expiryWarning } = storeToRefs(useLicenseStore());
+const { isAdmin } = storeToRefs(useUserStore());
 
-const show = computed(() => graceDays.value !== null);
+const show = computed(() => isAdmin.value && expiryWarning.value !== null);
 </script>
 
 <template>
-	<VNotice v-if="show" type="warning" multiline class="status-notice">
+	<VNotice v-if="show" :type="expiryWarning!.severity" multiline class="status-notice">
 		<template #title>
 			<span class="message">
 				{{ t('license.status_notice.grace_period_prefix') }}
-				<strong>{{ t('license.status_notice.grace_days', { days: graceDays }, graceDays!) }}</strong>
+				<strong>{{ t('license.status_notice.grace_days', { days: expiryWarning!.days }, expiryWarning!.days) }}</strong>
 				{{ t('license.status_notice.grace_period_suffix') }}
 			</span>
 		</template>
