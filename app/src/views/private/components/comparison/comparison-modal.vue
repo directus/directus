@@ -110,7 +110,7 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-const { onPublishClick } = usePublishDialog();
+const { onPublishClick } = usePublish();
 
 const modalLoading = ref(false);
 
@@ -178,7 +178,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 
-function usePublishDialog() {
+function usePublish() {
 	return { onPublishClick };
 
 	function onPublishClick() {
