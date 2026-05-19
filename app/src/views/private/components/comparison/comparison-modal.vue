@@ -8,9 +8,6 @@ import ComparisonHeader from './comparison-header.vue';
 import ComparisonToggle from './comparison-toggle.vue';
 import { useComparison } from './use-comparison';
 import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VCardTitle from '@/components/v-card-title.vue';
-import VCard from '@/components/v-card.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -113,7 +110,7 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-const { confirmDeleteOnPublishDialogActive, onPublishClick, publish } = usePublishDialog();
+const { onPublishClick } = usePublish();
 
 const modalLoading = ref(false);
 
@@ -181,19 +178,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 
-function usePublishDialog() {
-	const confirmDeleteOnPublishDialogActive = ref(false);
-
-	return { confirmDeleteOnPublishDialogActive, onPublishClick, publish };
+function usePublish() {
+	return { onPublishClick };
 
 	function onPublishClick() {
 		if (selectedComparisonFields.value.length === 0) return;
-
-		if (deleteVersionsAllowed.value) {
-			confirmDeleteOnPublishDialogActive.value = true;
-		} else {
-			publish(false);
-		}
+		publish(deleteVersionsAllowed.value);
 	}
 
 	function publish(deleteOnPublish: boolean) {
@@ -225,8 +215,6 @@ function usePublishDialog() {
 			emit('confirm', restoreData);
 			emit('cancel');
 		}
-
-		confirmDeleteOnPublishDialogActive.value = false;
 	}
 }
 </script>
@@ -389,24 +377,6 @@ function usePublishDialog() {
 				</div>
 			</div>
 		</div>
-
-		<VDialog
-			v-model="confirmDeleteOnPublishDialogActive"
-			@esc="confirmDeleteOnPublishDialogActive = false"
-			@apply="publish(true)"
-		>
-			<VCard>
-				<VCardTitle>
-					{{ $t('delete_on_apply_copy', { version: deltaDisplayName }) }}
-				</VCardTitle>
-				<VCardActions>
-					<VButton secondary @click="publish(false)">{{ $t('keep') }}</VButton>
-					<VButton :loading="publishVersionLoading" kind="danger" @click="publish(true)">
-						{{ $t(currentVersion!.type === 'global' ? 'discard_changes' : 'delete_label') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
 	</VDialog>
 </template>
 
