@@ -1507,6 +1507,7 @@ licensing:
     telemetry_opt_out: Telemetry Opt-Out
     custom_llms_enabled: Custom LLM
     custom_policy_rules_enabled: Custom Rules (Access Policies)
+    ai_translations_enabled: AI Translations
     display_powered_by: Display Powered By
     production_enabled: Production
   badge:

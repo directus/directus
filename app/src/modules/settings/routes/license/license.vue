@@ -128,6 +128,7 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 		icon: 'policy',
 		title: t('licensing.entitlements.custom_policy_rules_enabled'),
 	},
+	{ key: 'ai_translations_enabled', icon: 'translate', title: t('licensing.entitlements.ai_translations_enabled') },
 	{ key: 'production_enabled', icon: 'rocket_launch', title: t('licensing.entitlements.production_enabled') },
 ];
 
