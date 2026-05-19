@@ -345,6 +345,30 @@ export async function postMcpToolsList(accessToken: string, apiUrl = baseUrl): P
 	);
 }
 
+export async function createNonAdminToken(apiUrl = baseUrl): Promise<string> {
+	const token = crypto.randomUUID();
+	const email = `mcp-oauth-non-admin-${crypto.randomUUID()}@example.com`;
+
+	const response = await postJson(
+		'/users',
+		{
+			email,
+			password: crypto.randomUUID(),
+			token,
+		},
+		{
+			headers: {
+				Authorization: `Bearer ${adminToken}`,
+			},
+		},
+		apiUrl,
+	);
+
+	await expectJsonResponse(response, 200);
+
+	return token;
+}
+
 export function openWebSocket(apiUrl = baseUrl): Promise<WebSocket> {
 	return new Promise((resolve, reject) => {
 		const wsUrl = apiUrl.replace(/^http/, 'ws');
