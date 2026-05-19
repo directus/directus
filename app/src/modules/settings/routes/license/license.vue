@@ -158,6 +158,30 @@ function usageFor(key: keyof Entitlements): number | null {
 	return null;
 }
 
+type EntitlementItem =
+	| (EntitlementConfig & { kind: 'flag'; included: boolean })
+	| (EntitlementConfig & { kind: 'numeric'; limit: number; unlimited: boolean; usage: number | null });
+
+const entitlementItems = computed<EntitlementItem[]>(() => {
+	if (!license.value) return [];
+
+	const items: EntitlementItem[] = [];
+
+	for (const config of ENTITLEMENT_CONFIG) {
+		const ent = license.value.entitlements[config.key];
+
+		if (isFeatureFlagEntitlement(ent)) {
+			const included = isIncluded(ent);
+			items.push({ ...config, kind: 'flag', included: config.invert ? !included : included });
+		} else if (isNumericEntitlement(ent)) {
+			const limit = effectiveLimit(ent);
+			items.push({ ...config, kind: 'numeric', limit, unlimited: limit === -1, usage: usageFor(config.key) });
+		}
+	}
+
+	return items;
+});
+
 const deactivateConfirmOpen = ref(false);
 const deactivateLoading = ref(false);
 const resolutionDialogOpen = ref(false);
@@ -259,29 +283,20 @@ async function handleDeactivateConfirm() {
 
 				<div class="entitlements">
 					<span class="entitlements-title">{{ t('licensing.plan_usage') }}</span>
-					<template v-for="item in ENTITLEMENT_CONFIG" :key="item.key">
+					<template v-for="item in entitlementItems" :key="item.key">
 						<LicenseEntitlementItem
-							v-if="isFeatureFlagEntitlement(license.entitlements[item.key])"
+							v-if="item.kind === 'flag'"
 							:icon="item.icon"
 							:title="item.title"
-							:included="
-								item.invert
-									? !isIncluded(license.entitlements[item.key] as FeatureFlagEntitlement)
-									: isIncluded(license.entitlements[item.key] as FeatureFlagEntitlement)
-							"
+							:included="item.included"
 						/>
-						<LicenseEntitlementItem
-							v-else-if="isNumericEntitlement(license.entitlements[item.key])"
-							:icon="item.icon"
-							:title="item.title"
-							:unlimited="effectiveLimit(license.entitlements[item.key] as NumericEntitlement) === -1"
-						>
+						<LicenseEntitlementItem v-else :icon="item.icon" :title="item.title" :unlimited="item.unlimited">
 							<span v-if="item.formatter" class="usage-value">
-								{{ item.formatter(effectiveLimit(license.entitlements[item.key] as NumericEntitlement)) }}
+								{{ item.formatter(item.limit) }}
 							</span>
 							<span v-else>
-								<span class="usage-value">{{ usageFor(item.key) ?? 0 }}</span>
-								<span class="limit">/ {{ effectiveLimit(license.entitlements[item.key] as NumericEntitlement) }}</span>
+								<span class="usage-value">{{ item.usage ?? 0 }}</span>
+								<span class="limit">/ {{ item.limit }}</span>
 							</span>
 						</LicenseEntitlementItem>
 					</template>
