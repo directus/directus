@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { LicenseAddon } from '@directus/license';
-import { difference } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
@@ -43,9 +42,8 @@ watch(
 );
 
 const maxQuantity = computed(() => (props.addon.max_quantity === -1 ? undefined : props.addon.max_quantity));
-const unitPrice = computed(() => 100);
+const unitPrice = computed(() => props.addon.unit_price);
 const interval = computed(() => props.addon.billing_interval);
-const activeTotal = computed(() => props.addon.active_quantity * unitPrice.value);
 const newTotal = computed(() => quantity.value * unitPrice.value);
 const hasPendingDeactivation = computed(() => props.addon.scheduled_quantity < props.addon.active_quantity);
 const isRemove = computed(() => quantity.value === 0);
@@ -66,11 +64,6 @@ const canConfirm = computed(() => {
 	if (quantity.value < 0) return false;
 	if (maxQuantity.value !== undefined && quantity.value > maxQuantity.value) return false;
 	return !hasNoChange.value;
-});
-
-const confirmLabel = computed(() => {
-	if (isRemove.value) return t('licensing.addon_remove');
-	return t('licensing.addon_update');
 });
 
 async function confirm() {
@@ -159,7 +152,8 @@ async function confirm() {
 							t('licensing.addon_prorated_notice', {
 								total: newTotal.toFixed(2),
 								interval,
-								adjustedTotal: unitPrice * (quantity - addon.active_quantity),
+								adjustedTotal: (unitPrice * (quantity - addon.active_quantity)).toFixed(2),
+								renewalDate,
 							})
 						}}
 					</template>
@@ -174,7 +168,7 @@ async function confirm() {
 					{{ t('cancel') }}
 				</VButton>
 				<VButton :kind="isRemove ? 'danger' : undefined" :loading="saving" :disabled="!canConfirm" @click="confirm">
-					{{ confirmLabel }}
+					{{ t('licensing.addon_update') }}
 				</VButton>
 			</VCardActions>
 		</VCard>
@@ -202,7 +196,7 @@ async function confirm() {
 hr {
 	margin-block: 1rem;
 	border: 0;
-	border-top: 1px solid var(--theme--border-color-subdued);
+	border-block-start: 1px solid var(--theme--border-color-subdued);
 }
 
 .price {
