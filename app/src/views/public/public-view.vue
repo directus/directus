@@ -437,6 +437,12 @@ const logoURL = computed<string | null>(() => {
 			object-position: center center;
 		}
 	}
+
+	@include mixins.breakpoint-down('xl') {
+		.license-badge {
+			display: none;
+		}
+	}
 }
 
 .scale-enter-active,
