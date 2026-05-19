@@ -212,8 +212,8 @@ export const DEFAULTS: Env = {
 
 	ACCEPT_TERMS: false,
 
-	/** Auto-save revision-snapshot cadence in minutes. Floats allowed (`0.5` = 30 seconds). */
-	CONTENT_VERSIONING_AUTOSAVE_REVISION_INTERVAL: 5,
+	/** Auto-save revision-snapshot cadence in seconds. */
+	AUTOSAVE_REVISION_INTERVAL: 300,
 
 	MCP_ENABLED: true,
 

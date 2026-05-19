@@ -39,7 +39,6 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import { useAutoSave } from '@/composables/use-auto-save';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFlows } from '@/composables/use-flows';
@@ -49,6 +48,7 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { useAutoSave } from '@/modules/content/composables/use-auto-save';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
@@ -348,7 +348,7 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
-const { autoSaveError, resetSession } = useAutoSave(edits, autoSaveRevision, {
+const { autoSaveError, resetSession } = useAutoSave(edits, autoSave, {
 	enabled: computed(() => currentVersion.value !== null && updateVersionsAllowed.value),
 	currentVersionDateUpdated: computed(() => {
 		const v = currentVersion.value;
@@ -552,9 +552,9 @@ onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-async function autoSaveRevision(forceNew: boolean) {
+async function autoSave(forceNewRevision: boolean) {
 	try {
-		if (forceNew) {
+		if (forceNewRevision) {
 			await saveVersion(edits, item, { silent: true });
 
 			if (!isNew.value) {

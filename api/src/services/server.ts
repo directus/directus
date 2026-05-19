@@ -73,9 +73,8 @@ export class ServerService {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 
-			info['contentVersioning'] = {
-				// Minutes. Floats allowed (`0.5` = 30s) to support sub-minute revision intervals.
-				autosaveRevisionInterval: Number(env['CONTENT_VERSIONING_AUTOSAVE_REVISION_INTERVAL']),
+			info['autoSave'] = {
+				revisionInterval: Number(env['AUTOSAVE_REVISION_INTERVAL']),
 			};
 
 			info['files'] = {

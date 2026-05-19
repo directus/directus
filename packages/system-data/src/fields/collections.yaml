@@ -153,21 +153,21 @@ fields:
       label: $t:field_options.directus_collections.enable_versioning
     width: half
 
-  - field: versioning_revision_interval
+  - field: autosave_revision_interval
     interface: select-dropdown
     options:
-      placeholder: $t:field_options.directus_collections.versioning_revision_interval_placeholder
+      placeholder: $t:field_options.directus_collections.autosave_revision_interval_placeholder
       choices:
         - text: $t:field_options.directus_collections.interval_default
           value: null
         - text: 30s
-          value: 0.5
+          value: 30
         - text: 1m
-          value: 1
+          value: 60
         - text: 5m
-          value: 5
+          value: 300
         - text: 10m
-          value: 10
+          value: 600
     conditions:
       - name: hide_when_versioning_disabled
         rule:

@@ -80,8 +80,8 @@ export type Info = {
 		chunkSize?: number;
 		maxConcurrency?: number;
 	};
-	contentVersioning?: {
-		autosaveRevisionInterval: number;
+	autoSave?: {
+		revisionInterval: number;
 	};
 };
 
@@ -102,7 +102,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		queryLimit: undefined,
 		websocket: undefined,
 		uploads: undefined,
-		contentVersioning: undefined,
+		autoSave: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -142,7 +142,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.websocket = serverInfoResponse.data.data?.websocket;
 		info.version = serverInfoResponse.data.data?.version;
 		info.uploads = serverInfoResponse.data.data?.uploads;
-		info.contentVersioning = serverInfoResponse.data.data?.contentVersioning;
+		info.autoSave = serverInfoResponse.data.data?.autoSave;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;

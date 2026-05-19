@@ -41,17 +41,19 @@ const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('di
 
 const collectionMetaFields = computed<Field[]>(() => {
 	const fields = fieldsStore.getFieldsForCollection('directus_collections');
-	const envMinutes = serverStore.info.contentVersioning?.autosaveRevisionInterval ?? 5;
+	const envSeconds = serverStore.info.autoSave?.revisionInterval ?? 300;
 
 	const label =
-		envMinutes < 1
+		envSeconds < 60
 			? i18n.global.t('field_options.directus_collections.interval_default_seconds', {
-					seconds: Math.round(envMinutes * 60),
+					seconds: envSeconds,
 				})
-			: i18n.global.t('field_options.directus_collections.interval_default', { minutes: envMinutes });
+			: i18n.global.t('field_options.directus_collections.interval_default', {
+					minutes: Math.round(envSeconds / 60),
+				});
 
 	return fields.map((field) => {
-		if (field.field !== 'versioning_revision_interval') return field;
+		if (field.field !== 'autosave_revision_interval') return field;
 
 		const choices = field.meta?.options?.['choices']?.map((choice: { text: string; value: unknown }) =>
 			choice.value === null ? { ...choice, text: label } : choice,
