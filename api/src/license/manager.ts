@@ -35,6 +35,7 @@ import { getActiveCollections } from './entitlements/lib/collections.js';
 import { getActiveFlows } from './entitlements/lib/flows.js';
 import { getActiveSeats } from './entitlements/lib/seats.js';
 import { EntitlementManager, getEntitlementManager } from './entitlements/manager.js';
+import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
 import { getStatus } from './utils/get-status.js';
@@ -173,9 +174,7 @@ export class LicenseManager {
 	}
 
 	public async getStatus() {
-		const status = await this.store(async (store) => store.get('status'));
-
-		return status ?? 'active';
+		return computeLicenseStatus(this.source === null ? null : await this.getLicense());
 	}
 
 	public getSource() {
