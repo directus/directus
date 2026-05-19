@@ -243,6 +243,13 @@ export class EntitlementManager {
 	}
 
 	/**
+	 * Returns a cached value by key
+	 */
+	getCached(key: CountableEntitlementKey | FeatureFlagEntitlementKey) {
+		return this.cache.get(key);
+	}
+
+	/**
 	 * Non-throwing variant of `assert`. For countable entitlements: returns
 	 * limit / usage / remaining / allowed. For feature flags: returns the
 	 * validator's verdict (`valid`) and the license-side `entitled` state.

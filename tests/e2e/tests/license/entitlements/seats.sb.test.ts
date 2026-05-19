@@ -13,6 +13,7 @@ import {
 	rest,
 	type RestClient,
 	staticToken,
+	updatePolicy,
 	updateUser,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
@@ -60,6 +61,21 @@ async function fillSeatLimit(prefix: string) {
 
 		createdUsers.push(user['id'] as string);
 	}
+}
+
+// Force the entitlement manager's seats cache to reflect the real (DB-side) count.
+// Direct knex inserts bypass validation but also bypass the in-process cache, so
+// validation still sees the boot-time cached value. Without this refresh, any
+// over-limit edit that triggers UserLimits would throw because newCount > cachedCount.
+async function refreshSeatCache() {
+	// Touching ip_access on any policy clears the seats cache without running seat validation
+	const policy = await directus.knex!('directus_policies').select('id').first();
+	await api.request(updatePolicy(policy['id'] as string, { ip_access: null }));
+
+	// Re-populate the cache from the live count (entitlement manager caches the result of getUsage)
+	await fetch(`http://localhost:${directus.apis[0].port}/license`, {
+		headers: { Authorization: 'Bearer admin' },
+	});
 }
 
 beforeAll(async () => {
@@ -226,6 +242,216 @@ describe('seats entitlement', () => {
 			api.request(
 				updateUser(createdUsers[0]!, {
 					status: 'suspended',
+				}),
+			),
+		).resolves.toBeDefined();
+	});
+
+	test('can clear a role from an existing user while over the limit', async () => {
+		await fillSeatLimit('g');
+
+		// seed 2 active admin-role users directly via knex to push the seat count over the license limit
+		const extra1 = randomUUID();
+		const extra2 = randomUUID();
+
+		await directus.knex!('directus_users').insert({
+			id: extra1,
+			first_name: 'g_seat_entitlement_extra_1',
+			email: `g_seat_entitlement_extra_1_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		await directus.knex!('directus_users').insert({
+			id: extra2,
+			first_name: 'g_seat_entitlement_extra_2',
+			email: `g_seat_entitlement_extra_2_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		createdUsers.push(extra1);
+		createdUsers.push(extra2);
+
+		await refreshSeatCache();
+
+		// clearing the role drops a seat and should remain allowed even though total active is over the limit
+		await expect(
+			api.request(
+				updateUser(createdUsers[0]!, {
+					role: null,
+				}),
+			),
+		).resolves.toBeDefined();
+	});
+
+	test('can detach a direct admin policy from a user while over the limit', async () => {
+		await fillSeatLimit('h');
+
+		const adminPolicy = await directus.knex!('directus_policies').where({ admin_access: true }).select('id').first();
+
+		// seed an extra admin-role user via knex to push over the limit
+		const extra = randomUUID();
+
+		await directus.knex!('directus_users').insert({
+			id: extra,
+			first_name: 'h_seat_entitlement_extra',
+			email: `h_seat_entitlement_extra_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		createdUsers.push(extra);
+
+		// seed a roleless user with a direct admin policy attachment, pushing one further over the limit
+		const directUser = randomUUID();
+
+		await directus.knex!('directus_users').insert({
+			id: directUser,
+			first_name: 'h_seat_entitlement_direct',
+			email: `h_seat_entitlement_direct_${randomUUID()}@test.com`,
+			status: 'active',
+			role: null,
+		});
+
+		createdUsers.push(directUser);
+
+		const accessId = randomUUID();
+
+		await directus.knex!('directus_access').insert({
+			id: accessId,
+			user: directUser,
+			role: null,
+			policy: adminPolicy.id,
+		});
+
+		await refreshSeatCache();
+
+		// detaching the direct policy drops a seat and should remain allowed even though total active is over the limit
+		await expect(
+			fetch(`http://localhost:${directus.apis[0].port}/access/${accessId}`, {
+				method: 'DELETE',
+				headers: { Authorization: 'Bearer admin' },
+			}).then((res) => {
+				if (!res.ok) throw new Error(`Detach failed with status ${res.status}`);
+				return res;
+			}),
+		).resolves.toBeDefined();
+	});
+
+	test('can revoke admin and app access on a policy while over the limit', async () => {
+		await fillSeatLimit('i');
+
+		// seed an extra admin-role user via knex to push over the limit
+		const extra = randomUUID();
+
+		await directus.knex!('directus_users').insert({
+			id: extra,
+			first_name: 'i_seat_entitlement_extra',
+			email: `i_seat_entitlement_extra_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		createdUsers.push(extra);
+
+		// seed a custom policy + role + user attached via knex to push one further over the limit
+		const policyId = randomUUID();
+		const roleId = randomUUID();
+		const userId = randomUUID();
+		const accessId = randomUUID();
+
+		await directus.knex!('directus_policies').insert({
+			id: policyId,
+			name: 'i_seat_entitlement_policy',
+			icon: 'badge',
+			admin_access: true,
+			app_access: true,
+		});
+
+		await directus.knex!('directus_roles').insert({
+			id: roleId,
+			name: 'i_seat_entitlement_role',
+			icon: 'supervised_user_circle',
+		});
+
+		await directus.knex!('directus_access').insert({
+			id: accessId,
+			role: roleId,
+			user: null,
+			policy: policyId,
+		});
+
+		await directus.knex!('directus_users').insert({
+			id: userId,
+			first_name: 'i_seat_entitlement_user',
+			email: `i_seat_entitlement_user_${randomUUID()}@test.com`,
+			status: 'active',
+			role: roleId,
+		});
+
+		createdUsers.push(userId);
+
+		await refreshSeatCache();
+
+		// stripping app/admin access from the policy drops users on that policy out of the seat count
+		await expect(
+			api.request(
+				updatePolicy(policyId, {
+					admin_access: false,
+					app_access: false,
+				}),
+			),
+		).resolves.toBeDefined();
+	});
+
+	test('can clear a role from a user that retains a direct policy seat', async () => {
+		await fillSeatLimit('j');
+
+		const adminPolicy = await directus.knex!('directus_policies').where({ admin_access: true }).select('id').first();
+
+		// seed an extra admin-role user via knex to push over the limit
+		const extra = randomUUID();
+
+		await directus.knex!('directus_users').insert({
+			id: extra,
+			first_name: 'j_seat_entitlement_extra',
+			email: `j_seat_entitlement_extra_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		createdUsers.push(extra);
+
+		// seed an active admin-role user with an additional direct admin policy attachment;
+		// this user holds a seat through two paths (role + direct policy)
+		const dualUser = randomUUID();
+
+		await directus.knex!('directus_users').insert({
+			id: dualUser,
+			first_name: 'j_seat_entitlement_dual',
+			email: `j_seat_entitlement_dual_${randomUUID()}@test.com`,
+			status: 'active',
+			role: adminRole,
+		});
+
+		createdUsers.push(dualUser);
+
+		await directus.knex!('directus_access').insert({
+			id: randomUUID(),
+			user: dualUser,
+			role: null,
+			policy: adminPolicy.id,
+		});
+
+		await refreshSeatCache();
+
+		// removing the role does not actually drop a seat (direct policy still grants admin access),
+		// but should still be permitted because the total seat count does not increase
+		await expect(
+			api.request(
+				updateUser(dualUser, {
+					role: null,
 				}),
 			),
 		).resolves.toBeDefined();
