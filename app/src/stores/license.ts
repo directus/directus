@@ -98,10 +98,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return limit ? formatTimeframe(limit) : null;
 	});
 
+	const isTeamPlan = computed(() => info.value?.name.toLowerCase() === 'team');
+
 	const gracePeriodDaysRemaining = computed<number | null>(() => {
 		if (!info.value || info.value.status !== 'grace') return null;
 		if (!info.value.grace_period || info.value.grace_period < 0) return null;
-		if (info.value.renews_at != null) return null;
+		if (isTeamPlan.value && info.value.renews_at != null) return null;
 
 		const nowSec = Date.now() / 1000;
 		const deadline = info.value.expires_at + info.value.grace_period;

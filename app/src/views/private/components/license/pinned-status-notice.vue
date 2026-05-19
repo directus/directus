@@ -8,7 +8,7 @@ import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { gracePeriodDaysRemaining } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLicensed } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
 const show = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null);
@@ -18,6 +18,12 @@ const severity = computed(() =>
 		? 'danger'
 		: 'warning',
 );
+
+const titleKey = computed(() =>
+	isLicensed.value
+		? 'license.pinned_status_notice.grace_period_title'
+		: 'license.pinned_status_notice.upgrade_grace_period_title',
+);
 </script>
 
 <template>
@@ -25,7 +31,7 @@ const severity = computed(() =>
 		<VIcon :name="severity === 'danger' ? 'error' : 'warning'" class="notice-icon" />
 		<div class="notice-content">
 			<span class="notice-title">
-				{{ t('license.pinned_status_notice.grace_period_title', { days: gracePeriodDaysRemaining }) }}
+				{{ t(titleKey, { days: gracePeriodDaysRemaining }) }}
 			</span>
 			<RouterLink :to="{ name: 'settings-license' }" class="notice-body">
 				{{ t('license.pinned_status_notice.grace_period_body') }}
