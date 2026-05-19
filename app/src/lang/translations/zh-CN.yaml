@@ -209,8 +209,6 @@ select_all_differences: 选择所有差异
 delete_version: 删除版本
 delete_version_copy: >-
   你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
-delete_on_apply_copy: >-
-  您即将将 "{version}" 提升为主版本。提升后 "{version}" 应该如何处理？
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签

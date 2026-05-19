@@ -212,8 +212,6 @@ select_all_differences: すべての差異を選択
 delete_version: バージョンを削除
 delete_version_copy: >-
   バージョン {version} を削除してもよろしいですか ? この操作は元に戻せません。
-delete_on_apply_copy: >-
-  {version} をメインに反映しようとしています。反映後の {version} の処理を選択してください。
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
