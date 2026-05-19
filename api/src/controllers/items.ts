@@ -13,7 +13,7 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
-router.use(checkIsLocked);
+router.use(checkIsLocked('items'));
 
 router.post(
 	'/:collection',
