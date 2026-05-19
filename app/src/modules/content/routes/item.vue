@@ -130,11 +130,17 @@ const {
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
 	publishVersion,
+	fetchVersionMainHash,
 	isItemlessVersion,
 } = useVersions(collection, isSingleton, resolvedPrimaryKey);
 
-const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
-	usePublishComparison();
+const {
+	comparisonModalActive,
+	comparableVersion,
+	onVersionPublishCompare,
+	onVersionPublishConfirm,
+	onVersionPublishWithoutReview,
+} = usePublishComparison();
 
 async function onVersionDelete(versionId: PrimaryKey) {
 	const wasItemLess = isItemlessVersion.value;
@@ -308,6 +314,16 @@ useShortcut(
 	() => {
 		if (currentVersion.value !== null && isPublishAllowed.value && !collectionInfo.value?.meta?.singleton) {
 			onVersionPublishCompare(true);
+		}
+	},
+	form,
+);
+
+useShortcut(
+	'meta+alt+shift+enter',
+	() => {
+		if (currentVersion.value !== null && isPublishAllowed.value) {
+			onVersionPublishWithoutReview();
 		}
 	},
 	form,
@@ -835,11 +851,51 @@ function usePublishComparison() {
 		}
 	}
 
+	async function onVersionPublishWithoutReview() {
+		const defaultValues = getDefaultValuesFromFields(fields);
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+		const fieldsToValidate = pushGroupOptionsDown(fields.value);
+
+		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+
+		versionValidationErrors.value = clientErrors;
+
+		if (versionValidationErrors.value.length) return;
+
+		try {
+			const versionId = currentVersion.value!.id;
+
+			if (isItemlessVersion.value) {
+				const newItemKey = await publishVersion(versionId, {});
+				if (!newItemKey) return;
+
+				if (isSingleton.value) router.push(collectionRoute.value);
+				else router.replace(getItemRoute(props.collection, newItemKey));
+
+				deleteVersion(versionId);
+				return;
+			}
+
+			const mainHash = await fetchVersionMainHash(versionId);
+			if (mainHash === null) return;
+
+			const newItemKey = await publishVersion(versionId, { mainHash });
+			if (!newItemKey) return;
+
+			currentVersion.value = null;
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
+		} catch (error) {
+			handleVersionGone(error);
+		}
+	}
+
 	return {
 		comparisonModalActive,
 		comparableVersion,
 		onVersionPublishCompare,
 		onVersionPublishConfirm,
+		onVersionPublishWithoutReview,
 	};
 }
 
@@ -1016,6 +1072,11 @@ function editDraftVersion() {
 									<VListItemIcon><VIcon name="public" /></VListItemIcon>
 									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
+								</VListItem>
+								<VListItem clickable :disabled="!isPublishAllowed" @click="onVersionPublishWithoutReview()">
+									<VListItemIcon><VIcon name="bolt" /></VListItemIcon>
+									<VListItemContent>{{ $t('publish_without_review') }}</VListItemContent>
+									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'enter']) }}</VListItemHint>
 								</VListItem>
 								<VListItem clickable :disabled="!canCreateNew" @click="createNewItem()">
 									<VListItemIcon><VIcon name="add" /></VListItemIcon>

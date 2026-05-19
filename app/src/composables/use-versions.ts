@@ -282,6 +282,16 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
+	async function fetchVersionMainHash(versionId: PrimaryKey): Promise<string | null> {
+		try {
+			const { data } = await api.get(`/versions/${versionId}/compare`);
+			return typeof data?.data?.mainHash === 'string' ? data.data.mainHash : null;
+		} catch (error) {
+			versionErrorHandler(error);
+			return null;
+		}
+	}
+
 	function isVersionSelectable(version: ContentVersionMaybeNew) {
 		return version.id === '+' ? createVersionsAllowed.value : readVersionsAllowed.value;
 	}
@@ -301,6 +311,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		validationErrors,
 		publishVersionLoading,
 		publishVersion,
+		fetchVersionMainHash,
 		isItemlessVersion,
 	};
 }
