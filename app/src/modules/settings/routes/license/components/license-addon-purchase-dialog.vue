@@ -118,12 +118,7 @@ async function confirm() {
 						}}
 					</template>
 					<template v-else-if="isRemove">
-						{{
-							t('licensing.addon_summary_remove', {
-								active: addon.active_quantity,
-								date: renewalDate,
-							})
-						}}
+						{{ t('licensing.addon_summary_remove', { active: addon.active_quantity, date: renewalDate }) }}
 					</template>
 					<template v-else-if="isDowngrade">
 						{{
@@ -156,11 +151,7 @@ async function confirm() {
 						{{ t('licensing.addon_prorated_notice', { total: newTotal.toFixed(2), interval }) }}
 					</template>
 					<template v-else>
-						{{
-							renewalDate
-								? t('licensing.addon_renewal_notice_date', { date: renewalDate })
-								: t('licensing.addon_renewal_notice')
-						}}
+						{{ t('licensing.addon_renewal_notice_date', { date: renewalDate }) }}
 					</template>
 				</p>
 			</VCardText>

@@ -1437,7 +1437,6 @@ licensing:
   addons: Add-on Packages
   addon_purchase: Purchase
   addon_manage: Manage
-  addon_contact_sales: Contact Sales
   addon_purchase_dialog_title: 'Purchase Additional {name}'
   addon_summary_purchase: '{new} new total.'
   addon_summary_active: '{active} active.'

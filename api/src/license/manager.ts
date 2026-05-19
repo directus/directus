@@ -269,9 +269,8 @@ export class LicenseManager {
 			}
 
 			await this.commitStateChange();
-		} catch (err) {
+		} catch {
 			// LICENSE-TODO: Add error translation
-			logger.error({ err, LICENSE_API_URL: process.env['LICENSE_API_URL'] }, '[license/activate] underlying error');
 			throw new ServiceUnavailableError({ service: 'license', reason: 'activate' });
 		}
 	}
