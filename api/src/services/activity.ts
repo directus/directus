@@ -24,10 +24,8 @@ export class ActivityService extends ItemsService {
 
 		if (!cachedQuery) {
 			cachedQuery = getHistoryFilterQuery(query, 'activity_historical_timeframe', (sinceDate) => ({
-				activity: {
-					timestamp: {
-						_gte: sinceDate.toISOString(),
-					},
+				timestamp: {
+					_gte: sinceDate.toISOString(),
 				},
 			}));
 
