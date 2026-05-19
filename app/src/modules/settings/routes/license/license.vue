@@ -101,6 +101,7 @@ type EntitlementConfig = {
 	icon: string;
 	title: string;
 	formatter?: (value: number) => string;
+	invert?: boolean;
 };
 
 const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
@@ -120,7 +121,7 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 	},
 	{ key: 'sso_enabled', icon: 'lock', title: t('licensing.entitlements.sso_enabled') },
 	{ key: 'offline_enabled', icon: 'cloud_off', title: t('licensing.entitlements.offline_enabled') },
-	{ key: 'telemetry_required', icon: 'analytics', title: t('licensing.entitlements.telemetry_required') },
+	{ key: 'telemetry_required', icon: 'analytics', title: t('licensing.entitlements.telemetry_opt_out'), invert: true },
 	{ key: 'custom_llms_enabled', icon: 'smart_toy', title: t('licensing.entitlements.custom_llms_enabled') },
 	{
 		key: 'custom_policy_rules_enabled',
@@ -262,7 +263,11 @@ async function handleDeactivateConfirm() {
 							v-if="isFeatureFlagEntitlement(license.entitlements[item.key])"
 							:icon="item.icon"
 							:title="item.title"
-							:included="isIncluded(license.entitlements[item.key] as FeatureFlagEntitlement)"
+							:included="
+								item.invert
+									? !isIncluded(license.entitlements[item.key] as FeatureFlagEntitlement)
+									: isIncluded(license.entitlements[item.key] as FeatureFlagEntitlement)
+							"
 						/>
 						<LicenseEntitlementItem
 							v-else-if="isNumericEntitlement(license.entitlements[item.key])"
@@ -292,12 +297,7 @@ async function handleDeactivateConfirm() {
 						<VNotice v-if="isEnvManaged" type="info">
 							{{ t('licensing.env_managed') }}
 						</VNotice>
-						<VButton
-							:disabled="isEnvManaged"
-							:loading="deactivateLoading"
-							danger
-							@click="handleDeactivateClick"
-						>
+						<VButton :disabled="isEnvManaged" :loading="deactivateLoading" danger @click="handleDeactivateClick">
 							{{ t('licensing.deactivate') }}
 						</VButton>
 					</div>
