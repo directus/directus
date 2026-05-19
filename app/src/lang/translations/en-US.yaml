@@ -1442,6 +1442,9 @@ licensing:
     Are you sure you want to deactivate the license? Your instance will be downgraded to the Core plan.
   resolve_title_manual: Deactivate License
   resolve_title_locked: Resolve License Limits
+  resolve_title_expired: License Expiration
+  resolve_title_suspended: License Suspension
+  resolve_title_canceled: License Canceled
   resolve_title_env_removed: License Removed
   resolve_title_grace: Resolve License Limits
   resolve_title_no_resolution: License Inactive

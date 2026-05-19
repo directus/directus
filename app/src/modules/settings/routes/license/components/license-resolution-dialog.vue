@@ -64,7 +64,15 @@ const graceCountdown = computed<{ days: number; date: string } | null>(() => {
 	return { days, date };
 });
 
-const title = computed(() => t(`licensing.resolve_title_${scope.value}`));
+const title = computed(() => {
+	const reason = info.value?.downgrade_reason;
+
+	if (reason && (scope.value === 'locked' || scope.value === 'no_resolution')) {
+		return t(`licensing.resolve_title_${reason}`);
+	}
+
+	return t(`licensing.resolve_title_${scope.value}`);
+});
 
 const noticeMessage = computed(() => t(`licensing.resolve_notice_${scope.value}`));
 
