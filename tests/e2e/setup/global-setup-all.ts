@@ -5,6 +5,14 @@ import { type TestProject } from 'vitest/node';
 
 let sb: Sandboxes | undefined;
 
+const mcpOAuthEnv = {
+	MCP_ENABLED: 'true',
+	MCP_OAUTH_ENABLED: 'true',
+	MCP_OAUTH_DCR_ENABLED: 'true',
+	RATE_LIMITER_MCP_OAUTH_POINTS: '1000',
+	RATE_LIMITER_MCP_OAUTH_DURATION: '60',
+};
+
 export async function setup(project: TestProject) {
 	// Enable full depth logging for better error visibility
 	util.inspect.defaultOptions.depth = null;
@@ -23,6 +31,7 @@ export async function setup(project: TestProject) {
 				port: port,
 				env: {
 					CACHE_SCHEMA: 'false',
+					...mcpOAuthEnv,
 				},
 				docker: {
 					port: port + 10,
@@ -46,6 +55,11 @@ export async function setup(project: TestProject) {
 	project.provide(
 		'options',
 		Object.fromEntries(dbs.map((db) => [db.database, db.options])) as Record<Database, DeepPartial<Options>>,
+	);
+
+	project.provide(
+		'port',
+		Object.fromEntries(dbs.map((db) => [db.database, db.options.port])) as Record<Database, number>,
 	);
 }
 
