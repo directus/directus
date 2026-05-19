@@ -4,22 +4,28 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { useLicenseStore } from '@/stores/license';
+import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { expiryWarning } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
-const show = computed(() => isAdmin.value && expiryWarning.value !== null);
+const show = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null);
+
+const severity = computed(() =>
+	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
+		? 'danger'
+		: 'warning',
+);
 </script>
 
 <template>
-	<div v-if="show" class="pinned-status-notice" :class="expiryWarning?.severity">
-		<VIcon :name="expiryWarning?.severity === 'danger' ? 'error' : 'warning'" class="notice-icon" />
+	<div v-if="show" class="pinned-status-notice" :class="severity">
+		<VIcon :name="severity === 'danger' ? 'error' : 'warning'" class="notice-icon" />
 		<div class="notice-content">
 			<span class="notice-title">
-				{{ t('license.pinned_status_notice.grace_period_title', { days: expiryWarning?.days }) }}
+				{{ t('license.pinned_status_notice.grace_period_title', { days: gracePeriodDaysRemaining }) }}
 			</span>
 			<RouterLink :to="{ name: 'settings-license' }" class="notice-body">
 				{{ t('license.pinned_status_notice.grace_period_body') }}

@@ -18,6 +18,8 @@ import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
 import { formatTimeframe } from '@/utils/format-timeframe';
 
+export const GRACE_DANGER_THRESHOLD_DAYS = 3;
+
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
 	timestamp: number;
@@ -96,15 +98,14 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return limit ? formatTimeframe(limit) : null;
 	});
 
-	const expiryWarning = computed<{ days: number; severity: 'warning' | 'danger' } | null>(() => {
+	const gracePeriodDaysRemaining = computed<number | null>(() => {
 		if (!info.value || info.value.status !== 'grace') return null;
 		if (!info.value.grace_period || info.value.grace_period < 0) return null;
 		if (info.value.renews_at != null) return null;
 
 		const nowSec = Date.now() / 1000;
 		const deadline = info.value.expires_at + info.value.grace_period;
-		const days = Math.max(0, Math.ceil((deadline - nowSec) / (60 * 60 * 24)));
-		return { days, severity: days <= 3 ? 'danger' : 'warning' };
+		return Math.max(0, Math.ceil((deadline - nowSec) / (60 * 60 * 24)));
 	});
 
 	function isEntitlementEnabled(key: string) {
@@ -231,7 +232,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		customLLMEnabled,
 		revisionHistoryTimeframe,
 		activityHistoryTimeframe,
-		expiryWarning,
+		gracePeriodDaysRemaining,
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
