@@ -29,6 +29,16 @@ vi.mock('@/api', () => {
 
 				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
 			},
+			post: (path: string) => {
+				if (path === '/fields/collection_b') {
+					return Promise.reject(new Error("Error From API"));
+				}
+
+				// stub for `/fields/:collection` route
+				if (/^\/fields\/.+$/.test(path)) return Promise.resolve({ data: {} });
+
+				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
+			},
 		},
 	};
 });
@@ -105,6 +115,34 @@ describe('Actions', () => {
 					(relation) => relation.collection === mockedField.collection && relation.field === mockedField.field,
 				),
 			);
+		});
+	});
+
+	describe('saving', () => {
+		it('New Field - Failed to saving a new field', async () => {
+			const fieldDetailStore = useFieldDetailStore();
+
+			const testValue: { collection: string; field: string; localType: 'presentation'; fieldName: string } = {
+				collection: 'collection_b',
+				field: '+',
+				localType: 'presentation',
+				fieldName: 'new_field'
+			};
+
+			fieldDetailStore.startEditing(testValue.collection, testValue.field, testValue.localType);
+
+			fieldDetailStore.update({
+				field: {
+					field: testValue.fieldName
+				}
+			})
+
+			expect(fieldDetailStore.collection).toEqual(testValue.collection);
+			expect(fieldDetailStore.field.collection).toEqual(testValue.collection);
+			expect(fieldDetailStore.field.field).toEqual(testValue.fieldName);
+			expect(fieldDetailStore.editing).toEqual(testValue.field);
+			expect(fieldDetailStore.localType).toEqual(testValue.localType);
+			await expect(fieldDetailStore.save()).rejects.toThrow('Error From API')
 		});
 	});
 
