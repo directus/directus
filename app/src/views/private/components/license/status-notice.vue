@@ -7,19 +7,22 @@ import { useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { expiryWarning } = storeToRefs(useLicenseStore());
+const { expiryWarning, isLicensed } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
 const show = computed(() => isAdmin.value && expiryWarning.value !== null);
+const noticeKey = computed(() => (isLicensed.value ? 'license.status_notice' : 'license.unlicensed_status_notice'));
 </script>
 
 <template>
-	<VNotice v-if="show" :type="expiryWarning!.severity" multiline class="status-notice">
+	<VNotice v-if="show" :type="expiryWarning?.severity" multiline class="status-notice">
 		<template #title>
 			<span class="message">
-				{{ t('license.status_notice.grace_period_prefix') }}
-				<strong>{{ t('license.status_notice.grace_days', { days: expiryWarning!.days }, expiryWarning!.days) }}</strong>
-				{{ t('license.status_notice.grace_period_suffix') }}
+				{{ t(`${noticeKey}.grace_period_prefix`) }}
+				<strong>
+					{{ t(`${noticeKey}.grace_days`, { days: expiryWarning?.days }, expiryWarning?.days ?? 0) }}
+				</strong>
+				{{ t(`${noticeKey}.grace_period_suffix`) }}
 			</span>
 		</template>
 	</VNotice>

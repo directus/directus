@@ -1585,6 +1585,10 @@ license:
   activity_history_notice: '{timeframe} of Activity History is included in your current plan.'
   revisions_history_notice: '{timeframe} of Revision History is included in your current plan.'
   status_notice:
+    grace_period_prefix: You have
+    grace_days: '{days} day | {days} days'
+    grace_period_suffix: remaining before your Directus license key expires.
+  unlicensed_status_notice:
     grace_period_prefix: You have upgraded and require a license key. You have
     grace_days: '{days} day | {days} days'
     grace_period_suffix: to resolve your license issue or your Directus project will be locked.
