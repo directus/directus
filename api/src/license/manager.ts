@@ -116,35 +116,54 @@ export class LicenseManager {
 				});
 
 				if (envKey) {
-					this.source = 'env';
+					try {
+						if (!dbKey) {
+							// CASE D
+							await this.activate(envKey);
+						} else if (envKey !== dbKey) {
+							// CASE B
+							await this.update(envKey, { oldKey: dbKey });
+						} else {
+							// CASE C
+							await this.refresh({ key: envKey, token: dbToken ?? null });
+						}
 
-					if (!dbKey) {
-						// CASE D
-						await this.activate(envKey);
-					} else if (envKey !== dbKey) {
-						// CASE B
-						await this.update(envKey, { oldKey: dbKey });
-					} else {
-						// CASE C
-						await this.refresh({ key: envKey, token: dbToken ?? null });
+						this.source = 'env';
+					} catch (error) {
+						logger.error('Unable to validate the LICENSE_KEY, please check the key and try again.');
+						logger.error(error);
+						process.exit(1);
 					}
 				} else if (envToken) {
-					this.source = 'env';
-					// CASE E — verify offline token, cleanup DB
-					await this.refresh({ token: envToken });
+					try {
+						// CASE E — verify offline token, cleanup DB
+						await this.refresh({ token: envToken });
 
-					if (dbKey || dbToken) {
-						await settingsService.upsertSingleton({ license_key: null, license_token: null });
+						if (dbKey || dbToken) {
+							await settingsService.upsertSingleton({ license_key: null, license_token: null });
+						}
+
+						this.source = 'env';
+					} catch (error) {
+						logger.error('Unable to validate the LICENSE_TOKEN, please check the token and try again.');
+						logger.error(error);
+						process.exit(1);
 					}
 				} else if (dbKey) {
-					this.source = 'settings';
+					try {
+						if (dbToken) {
+							// CASE F
+							await this.refresh({ key: dbKey, token: dbToken });
+						} else {
+							// CASE G
+							await this.activate(dbKey);
+						}
 
-					if (dbToken) {
-						// CASE F
-						await this.refresh({ key: dbKey, token: dbToken });
-					} else {
-						// CASE G
-						await this.activate(dbKey);
+						this.source = 'settings';
+					} catch (error) {
+						logger.error('Unable to validate the license key from the database, downgrading to core tier.');
+						logger.error(error);
+						await this.commitStateChange({ downgrade: true });
 					}
 				} else {
 					// CASE H stale token / CASE I — core license
