@@ -60,6 +60,7 @@ const percentageRemaining = computed(() => {
 
 const inputType = computed(() => {
 	if (props.masked) return 'password';
+	if (isFloat.value) return 'text';
 	if (APP_NUMERIC_TYPES.includes(props.type!)) return 'number';
 	return 'text';
 });
@@ -89,6 +90,7 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 		:integer="isInteger"
 		:float="isFloat"
 		:autocomplete="masked ? 'new-password' : 'off'"
+		:inputmode="isFloat ? 'decimal' : undefined"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><VIcon :name="iconLeft" /></template>
