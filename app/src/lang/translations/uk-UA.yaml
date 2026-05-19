@@ -207,8 +207,6 @@ select_all_differences: Вибрати всі відмінності
 delete_version: Видалити версію
 delete_version_copy: >-
   Ви впевнені, що хочете видалити версію "{version}"? Цю дію не можна скасувати.
-delete_on_apply_copy: >-
-  Ви збираєтесь просувати версію “{version}” до основної. Що повинно статися з версією “{version}” після її просування?
 reset_bookmark: Скинути закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
