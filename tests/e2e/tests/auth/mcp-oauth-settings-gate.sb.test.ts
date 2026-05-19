@@ -241,6 +241,7 @@ describe('/mcp-oauth settings gate', () => {
 			const text = await expectTextResponse(response, 400);
 
 			expect(text).toContain('CIMD client registration is disabled');
+			expect(metadataServer.getRequestCount()).toBe(0);
 		});
 	});
 
