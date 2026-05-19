@@ -149,6 +149,7 @@ export const useFieldDetailStore = defineStore({
 
 			this.$patch((state) => {
 				if (hasChanged('field.meta.interface')) {
+					alterations.global.applySuggestedKeyForInterface(updates);
 					alterations.global.setLocalTypeForInterface(updates);
 					alterations.global.setTypeForInterface(updates, state);
 				}

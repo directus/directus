@@ -14,6 +14,22 @@ export function resetSchema(updates: StateUpdates, state: State) {
 }
 
 /**
+ * When an interface with a suggestedKey is chosen, pre-fill the field key if it hasn't been set yet.
+ */
+export function applySuggestedKeyForInterface(updates: StateUpdates) {
+	if (!updates.field?.meta?.interface) return;
+
+	const chosenInterface = useExtension('interface', updates.field.meta.interface);
+
+	if (!chosenInterface.value?.suggestedKey) return;
+
+	const fieldDetailStore = useFieldDetailStore();
+	if (!fieldDetailStore.field.field) {
+		set(updates, 'field.field', chosenInterface.value.suggestedKey);
+	}
+}
+
+/**
  * When an interface is chosen, we set the localType to match the interface's supported localTypes.
  * If the localType is already compatible with the interface, we keep it.
  * If not, we fall back to the first supported localType.

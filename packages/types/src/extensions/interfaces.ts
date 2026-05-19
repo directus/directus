@@ -26,6 +26,7 @@ export interface InterfaceConfig {
 	hideLoader?: boolean;
 	indicatorStyle?: 'active' | 'hidden' | 'muted';
 	autoKey?: boolean;
+	suggestedKey?: string;
 	system?: boolean;
 	recommendedDisplays?: string[];
 	preview?: string;
