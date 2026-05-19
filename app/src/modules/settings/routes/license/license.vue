@@ -385,7 +385,9 @@ async function handleDeactivateConfirm() {
 	</VDrawer>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '@/styles/mixins';
+
 .license {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -396,6 +398,8 @@ async function handleDeactivateConfirm() {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 1rem;
+	flex-wrap: wrap;
 	margin-block-end: 1rem;
 }
 
@@ -409,7 +413,25 @@ async function handleDeactivateConfirm() {
 .plan-status {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 	gap: 0.5rem;
+}
+
+.plan-actions {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+@include mixins.breakpoint-down('sm') {
+	.plan-header {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.plan-actions {
+		justify-content: flex-end;
+	}
 }
 
 .boundary-date {
@@ -426,16 +448,17 @@ async function handleDeactivateConfirm() {
 	line-height: 1;
 }
 
-.plan-actions {
-	display: flex;
-	gap: 0.5rem;
-}
-
 .entitlements {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
 	margin-block-start: 2.5rem;
+}
+
+@include mixins.breakpoint-down('sm') {
+	.entitlements {
+		grid-template-columns: 1fr;
+	}
 }
 
 .entitlements-title {
