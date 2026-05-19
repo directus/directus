@@ -2,7 +2,7 @@
 '@directus/app': major
 ---
 
-Removed the extra confirmation step from the publish flow
+Removed the extra confirmation step from the publish flow @alvarosabu
 
 ::: notice
 
