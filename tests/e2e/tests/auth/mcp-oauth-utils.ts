@@ -20,6 +20,15 @@ export type OAuthTokens = {
 	scope: string;
 };
 
+export type ConfidentialAuthMethod = 'client_secret_basic' | 'client_secret_post';
+
+export type RegisteredConfidentialClient = {
+	clientId: string;
+	clientSecret: string;
+	redirectUri: string;
+	tokenEndpointAuthMethod: ConfidentialAuthMethod;
+};
+
 export type CimdMetadataServerOptions = {
 	path?: string;
 };
@@ -330,6 +339,57 @@ export async function registerPublicClient(
 	return body.client_id;
 }
 
+export async function registerConfidentialClient(
+	opts: {
+		redirectUri?: string;
+		grantTypes?: string[];
+		tokenEndpointAuthMethod?: ConfidentialAuthMethod;
+		apiUrl?: string;
+	} = {},
+): Promise<RegisteredConfidentialClient> {
+	const apiUrl = opts.apiUrl ?? baseUrl;
+	const redirectUri = opts.redirectUri ?? `${apiUrl}/mcp-oauth-test-callback`;
+	const grantTypes = opts.grantTypes ?? ['authorization_code', 'refresh_token'];
+	const tokenEndpointAuthMethod = opts.tokenEndpointAuthMethod ?? 'client_secret_basic';
+
+	const response = await postJson(
+		'/mcp-oauth/register',
+		{
+			client_name: `test-confidential-client-${crypto.randomUUID()}`,
+			redirect_uris: [redirectUri],
+			grant_types: grantTypes,
+			token_endpoint_auth_method: tokenEndpointAuthMethod,
+		},
+		undefined,
+		apiUrl,
+	);
+
+	const body = (await expectJsonResponse(response, 201)) as {
+		client_id?: string;
+		client_secret?: string;
+		token_endpoint_auth_method?: ConfidentialAuthMethod;
+	};
+
+	if (!body.client_id || !body.client_secret) {
+		throw new Error(`No confidential client credentials in registration response: ${JSON.stringify(body)}`);
+	}
+
+	return {
+		clientId: body.client_id,
+		clientSecret: body.client_secret,
+		redirectUri,
+		tokenEndpointAuthMethod: body.token_endpoint_auth_method ?? tokenEndpointAuthMethod,
+	};
+}
+
+function formEncode(value: string): string {
+	return encodeURIComponent(value).replace(/%20/g, '+');
+}
+
+export function basicClientAuthHeader(clientId: string, clientSecret: string): string {
+	return `Basic ${Buffer.from(`${formEncode(clientId)}:${formEncode(clientSecret)}`).toString('base64')}`;
+}
+
 export async function authorizePublicClient(args: {
 	clientId: string;
 	redirectUri: string;
@@ -388,23 +448,25 @@ export async function exchangeCode(args: {
 	code: string;
 	redirectUri: string;
 	codeVerifier: string;
+	clientSecret?: string;
+	authorizationHeader?: string;
 	apiUrl?: string;
 }): Promise<OAuthTokens> {
 	const apiUrl = args.apiUrl ?? baseUrl;
+	const headers = args.authorizationHeader ? { Authorization: args.authorizationHeader } : undefined;
 
-	const response = await postForm(
-		'/mcp-oauth/token',
-		{
-			grant_type: 'authorization_code',
-			client_id: args.clientId,
-			code: args.code,
-			redirect_uri: args.redirectUri,
-			code_verifier: args.codeVerifier,
-			resource: getResourceUrl(apiUrl),
-		},
-		undefined,
-		apiUrl,
-	);
+	const body: Record<string, string> = {
+		grant_type: 'authorization_code',
+		client_id: args.clientId,
+		code: args.code,
+		redirect_uri: args.redirectUri,
+		code_verifier: args.codeVerifier,
+		resource: getResourceUrl(apiUrl),
+	};
+
+	if (args.clientSecret) body['client_secret'] = args.clientSecret;
+
+	const response = await postForm('/mcp-oauth/token', body, headers ? { headers } : undefined, apiUrl);
 
 	return (await expectJsonResponse(response, 200)) as OAuthTokens;
 }
@@ -412,35 +474,43 @@ export async function exchangeCode(args: {
 export async function refreshToken(args: {
 	clientId: string;
 	refreshToken: string;
+	clientSecret?: string;
+	authorizationHeader?: string;
 	apiUrl?: string;
 }): Promise<Response> {
 	const apiUrl = args.apiUrl ?? baseUrl;
+	const headers = args.authorizationHeader ? { Authorization: args.authorizationHeader } : undefined;
 
-	return postForm(
-		'/mcp-oauth/token',
-		{
-			grant_type: 'refresh_token',
-			client_id: args.clientId,
-			refresh_token: args.refreshToken,
-			resource: getResourceUrl(apiUrl),
-		},
-		undefined,
-		apiUrl,
-	);
+	const body: Record<string, string> = {
+		grant_type: 'refresh_token',
+		client_id: args.clientId,
+		refresh_token: args.refreshToken,
+		resource: getResourceUrl(apiUrl),
+	};
+
+	if (args.clientSecret) body['client_secret'] = args.clientSecret;
+
+	return postForm('/mcp-oauth/token', body, headers ? { headers } : undefined, apiUrl);
 }
 
-export async function revokeToken(args: { clientId: string; token: string; apiUrl?: string }): Promise<Response> {
+export async function revokeToken(args: {
+	clientId: string;
+	token: string;
+	clientSecret?: string;
+	authorizationHeader?: string;
+	apiUrl?: string;
+}): Promise<Response> {
 	const apiUrl = args.apiUrl ?? baseUrl;
+	const headers = args.authorizationHeader ? { Authorization: args.authorizationHeader } : undefined;
 
-	return postForm(
-		'/mcp-oauth/revoke',
-		{
-			client_id: args.clientId,
-			token: args.token,
-		},
-		undefined,
-		apiUrl,
-	);
+	const body: Record<string, string> = {
+		client_id: args.clientId,
+		token: args.token,
+	};
+
+	if (args.clientSecret) body['client_secret'] = args.clientSecret;
+
+	return postForm('/mcp-oauth/revoke', body, headers ? { headers } : undefined, apiUrl);
 }
 
 export async function postMcpToolsList(accessToken: string, apiUrl = baseUrl): Promise<Response> {
