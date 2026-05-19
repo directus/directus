@@ -41,21 +41,17 @@ const router = useRouter();
 const licenseStore = useLicenseStore();
 const { info, pendingResolution } = storeToRefs(licenseStore);
 
-type ResolveScope = 'manual' | 'expired' | 'suspended' | 'env_removed' | 'grace' | 'no_resolution';
-
-const hasResolution = computed(() => (pendingResolution.value?.length ?? 0) > 0);
+type ResolveScope = 'manual' | 'locked' | 'env_removed' | 'grace' | 'no_resolution';
 
 const scope = computed<ResolveScope>(() => {
 	if (info.value === null) return 'env_removed';
-	const status = info.value.status;
 
-	if (status === 'grace') return 'grace';
+	if (info.value.status === 'grace') return 'grace';
+	if (info.value.status === 'locked') return 'locked';
 
-	// Terminal status with nothing actionable = informational acknowledgement.
-	if (!hasResolution.value && status !== 'active') return 'no_resolution';
+	// Downgraded to core (within limits): informational acknowledgement.
+	if (info.value.downgrade_reason != null) return 'no_resolution';
 
-	if (status === 'expired' || status === 'locked') return 'expired';
-	if (status === 'suspended' || status === 'canceled') return 'suspended';
 	return 'manual';
 });
 

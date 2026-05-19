@@ -1441,8 +1441,9 @@ licensing:
   deactivate_confirm_body:
     Are you sure you want to deactivate the license? Your instance will be downgraded to the Core plan.
   resolve_title_manual: Deactivate License
-  resolve_title_expired: License Expiration
-  resolve_title_suspended: License Suspension
+  resolve_title_locked: Resolve License Limits
+  resolve_title_locked_expired: License Expiration
+  resolve_title_locked_suspended: License Suspension
   resolve_title_env_removed: License Removed
   resolve_title_grace: Resolve License Limits
   resolve_title_no_resolution: License Inactive
@@ -1455,14 +1456,10 @@ licensing:
   resolve_notice_manual:
     Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
     Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
-  resolve_notice_expired:
-    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
-    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
-    access rules will also be locked.
-  resolve_notice_suspended:
-    Your license has expired and the grace period has ended. To unlock your project, reduce it to the Starter plan
-    limits of 50 collections and 3 user seats. Deactivated items will remained stored but locked in Directus, and custom
-    access rules will also be locked.
+  resolve_notice_locked:
+    Your project exceeds the Starter plan limits of 50 collections and 3 user seats. To unlock your project, reduce
+    usage below those limits. Deactivated items will remain stored but locked in Directus, and custom access rules will
+    also be locked.
   resolve_notice_env_removed:
     Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
     collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
