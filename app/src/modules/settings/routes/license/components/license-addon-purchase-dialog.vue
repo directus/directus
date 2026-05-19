@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { LicenseAddon } from '@directus/license';
+import { difference } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
@@ -42,7 +43,7 @@ watch(
 );
 
 const maxQuantity = computed(() => (props.addon.max_quantity === -1 ? undefined : props.addon.max_quantity));
-const unitPrice = computed(() => props.addon.unit_price);
+const unitPrice = computed(() => 100);
 const interval = computed(() => props.addon.billing_interval);
 const activeTotal = computed(() => props.addon.active_quantity * unitPrice.value);
 const newTotal = computed(() => quantity.value * unitPrice.value);
@@ -129,7 +130,13 @@ async function confirm() {
 						}}
 					</template>
 					<template v-else-if="isUpgrade">
-						{{ t('licensing.addon_summary_upgrade', { active: addon.active_quantity, new: quantity }) }}
+						{{
+							t('licensing.addon_summary_upgrade', {
+								active: addon.active_quantity,
+								new: quantity,
+								difference: quantity - addon.active_quantity,
+							})
+						}}
 					</template>
 					<template v-else>
 						{{ t('licensing.addon_summary_active', { active: addon.active_quantity }) }}
@@ -139,15 +146,25 @@ async function confirm() {
 				<hr />
 
 				<div class="price">
-					<span class="price-new">${{ newTotal.toFixed(2) }}/{{ interval }}</span>
-					<span v-if="!isInitialPurchase" class="price-was">
-						{{ t('licensing.addon_price_was', { previous: activeTotal.toFixed(2), interval }) }}
-					</span>
+					{{
+						t('licensing.addon_summary_upgrade', {
+							new: quantity,
+							unitPrice: unitPrice.toFixed(2),
+							interval,
+							total: newTotal.toFixed(2),
+						})
+					}}
 				</div>
 
 				<p class="notice">
 					<template v-if="isInitialPurchase || isUpgrade">
-						{{ t('licensing.addon_prorated_notice', { total: newTotal.toFixed(2), interval }) }}
+						{{
+							t('licensing.addon_prorated_notice', {
+								total: newTotal.toFixed(2),
+								interval,
+								adjustedTotal: unitPrice * (quantity - addon.active_quantity),
+							})
+						}}
 					</template>
 					<template v-else>
 						{{ t('licensing.addon_renewal_notice_date', { date: renewalDate }) }}
