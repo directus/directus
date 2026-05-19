@@ -7,7 +7,7 @@ import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 
-router.use(checkIsLocked);
+router.use(checkIsLocked('mcp'));
 
 const mcpHandler = asyncHandler(async (req, res) => {
 	const settings = new SettingsService({
