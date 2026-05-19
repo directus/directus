@@ -151,6 +151,9 @@ describe('client_secret_post confidential client flow', () => {
 			clientSecret: client.clientSecret,
 		});
 
+		const mcpResponse = await postMcpToolsList(tokens.access_token);
+		expect(mcpResponse.status).toBe(200);
+
 		const refreshResponse = await refreshToken({
 			clientId: client.clientId,
 			refreshToken: tokens.refresh_token,
@@ -169,6 +172,16 @@ describe('client_secret_post confidential client flow', () => {
 			}),
 			200,
 		);
+
+		const afterRevokeResponse = await refreshToken({
+			clientId: client.clientId,
+			refreshToken: refreshedTokens.refresh_token,
+			clientSecret: client.clientSecret,
+		});
+
+		const afterRevokeBody = (await expectJsonResponse(afterRevokeResponse, 400)) as { error?: string };
+
+		expect(afterRevokeBody.error).toBe('invalid_grant');
 	});
 
 	test('rejects Authorization header for client_secret_post clients', async () => {
