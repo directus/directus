@@ -162,7 +162,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 		<VListItem v-if="showSearch">
 			<VListItemContent>
 				<VInput v-model="search" autofocus small :placeholder="$t('search')" @click.stop>
-					<template #append>
+					<template #prepend>
 						<VIcon small name="search" />
 					</template>
 				</VInput>
