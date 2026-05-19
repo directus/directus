@@ -147,7 +147,7 @@ async function confirm() {
 
 				<div class="price">
 					{{
-						t('licensing.addon_summary_upgrade', {
+						t('licensing.addon_price_summary', {
 							new: quantity,
 							unitPrice: unitPrice.toFixed(2),
 							interval,
@@ -166,7 +166,7 @@ async function confirm() {
 							})
 						}}
 					</template>
-					<template v-else>
+					<template v-else-if="isDowngrade">
 						{{ t('licensing.addon_renewal_notice_date', { date: renewalDate }) }}
 					</template>
 				</p>
