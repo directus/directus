@@ -1,7 +1,8 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
+import { ref } from 'vue';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { setLocalTypeForInterface } from './alterations/global';
+import { applySuggestedKeyForInterface, setLocalTypeForInterface } from './alterations/global';
 import type { StateUpdates } from './types';
 import { useFieldDetailStore } from './index';
 import { cryptoStub } from '@/__utils__/crypto';
@@ -440,6 +441,71 @@ describe('Alterations', () => {
 
 			// Should preserve standard since it's compatible
 			expect(updates.localType).toBe('standard');
+		});
+	});
+
+	describe('applySuggestedKeyForInterface', () => {
+		beforeEach(() => {
+			vi.mocked(useExtension).mockClear();
+		});
+
+		it('should pre-fill field key when interface has suggestedKey and field key is empty', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+
+			vi.mocked(useExtension).mockReturnValue(ref({ suggestedKey: 'roundness' }));
+
+			const updates: StateUpdates = {
+				field: { meta: { interface: 'roundness' } },
+			};
+
+			applySuggestedKeyForInterface(updates);
+
+			expect(updates.field?.field).toBe('roundness');
+		});
+
+		it('should not override field key when it is already set', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+			fieldDetailStore.update({ field: { field: 'my_custom_key' } });
+
+			vi.mocked(useExtension).mockReturnValue(ref({ suggestedKey: 'roundness' }));
+
+			const updates: StateUpdates = {
+				field: { meta: { interface: 'roundness' } },
+			};
+
+			applySuggestedKeyForInterface(updates);
+
+			expect(updates.field?.field).toBeUndefined();
+		});
+
+		it('should do nothing when interface has no suggestedKey', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+
+			vi.mocked(useExtension).mockReturnValue(ref({ suggestedKey: undefined }));
+
+			const updates: StateUpdates = {
+				field: { meta: { interface: 'demo-interface' } },
+			};
+
+			applySuggestedKeyForInterface(updates);
+
+			expect(updates.field?.field).toBeUndefined();
+		});
+
+		it('should do nothing when no interface is in updates', () => {
+			const fieldDetailStore = useFieldDetailStore();
+			fieldDetailStore.startEditing('test_collection', '+', 'standard');
+
+			const updates: StateUpdates = {
+				field: { meta: {} },
+			};
+
+			applySuggestedKeyForInterface(updates);
+
+			expect(updates.field?.field).toBeUndefined();
 		});
 	});
 });
