@@ -229,7 +229,7 @@ function toggleInterface(id: string) {
 	inline-size: 9rem;
 	block-size: 5.625rem;
 	margin-block-end: 0.4375rem;
-	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border: var(--theme--border-width) solid var(--theme--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
 	transition-property: background-color, border-color;
@@ -266,7 +266,7 @@ function toggleInterface(id: string) {
 }
 
 .interface:hover .preview {
-	border-color: var(--theme--form--field--input--border-color);
+	border-color: var(--theme--border-color-accent);
 }
 
 .interface.active .preview {
