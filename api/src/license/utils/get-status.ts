@@ -1,14 +1,14 @@
 import type { LicenseStatus } from '@directus/license';
 import { getEntitlementManager } from '../entitlements/manager.js';
 import { getLicenseManager } from '../manager.js';
-import { getCoreGracePeriod } from './get-core-grace-period.js';
+import { isInCoreGracePeriod } from './is-in-core-grace-period.js';
 
 export async function getStatus(options?: { isCore?: boolean }): Promise<LicenseStatus> {
 	const license = await getLicenseManager().getLicense();
 	const entitlementManager = getEntitlementManager();
 
 	if (options?.isCore) {
-		const isInGrace = await getCoreGracePeriod();
+		const isInGrace = await isInCoreGracePeriod();
 
 		if (isInGrace) {
 			return 'grace';
