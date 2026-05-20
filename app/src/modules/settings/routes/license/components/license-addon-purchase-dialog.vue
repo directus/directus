@@ -42,7 +42,7 @@ watch(
 );
 
 const maxQuantity = computed(() => (props.addon.max_quantity === -1 ? undefined : props.addon.max_quantity));
-const unitPrice = computed(() => props.addon.unit_price);
+const unitPrice = computed(() => props.addon.unit_price / 100);
 const interval = computed(() => props.addon.billing_interval);
 const newTotal = computed(() => quantity.value * unitPrice.value);
 const hasPendingDeactivation = computed(() => props.addon.scheduled_quantity < props.addon.active_quantity);
