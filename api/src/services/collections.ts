@@ -467,7 +467,7 @@ export class CollectionsService {
 				return collectionKey;
 			}
 
-			if (payload.schema && payload.meta && (!('status' in payload.meta) || payload.meta.status === 'active')) {
+			if (payload.schema && payload.meta && payload.meta.status === 'active') {
 				await getEntitlementManager().assert('collections', { adding: 1, knex: this.knex });
 			}
 
