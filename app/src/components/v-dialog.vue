@@ -90,7 +90,7 @@ function useOverlayFocusTrap() {
 	const focusTrap = useFocusTrap(overlayEl, {
 		escapeDeactivates: false,
 		initialFocus: false,
-		setReturnFocus: () => (returnFocusTarget instanceof HTMLElement ? returnFocusTarget : false),
+		setReturnFocus: () => (returnFocusTarget && document.contains(returnFocusTarget) ? returnFocusTarget : false),
 	});
 
 	addFocusTrap(focusTrap);
