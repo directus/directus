@@ -19,6 +19,7 @@ const collectionsStore = useCollectionsStore();
 
 const props = withDefaults(
 	defineProps<{
+		attached?: boolean;
 		collection: string;
 		field?: string;
 		disabledFields?: string[];
@@ -157,7 +158,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 </script>
 
 <template>
-	<VList :mandatory="false" @toggle="loadFieldRelations($event.value)">
+	<VList :class="{ attached }" :mandatory="false" @toggle="loadFieldRelations($event.value)">
 		<slot name="prepend" />
 		<VListItem v-if="showSearch">
 			<VListItemContent>
@@ -193,6 +194,10 @@ function filter(field: Field, parent?: FieldNode): boolean {
 
 <style lang="scss" scoped>
 .v-list {
-	--v-list-min-width: 16.875rem;
+	--v-list-min-width: var(--form-column-width);
+
+	&.attached {
+		--v-list-min-width: var(--form-column-min-width);
+	}
 }
 </style>

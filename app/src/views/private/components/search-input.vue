@@ -359,7 +359,7 @@ function emitValue() {
 
 	&.filter-active {
 		min-inline-size: var(--form-column-min-width);
-		z-index: 5;
+		z-index: 10;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
@@ -400,7 +400,7 @@ function emitValue() {
 	border-start-end-radius: 0;
 	border-end-end-radius: var(--search-input-radius);
 	border-end-start-radius: var(--search-input-radius);
-	z-index: 5;
+	z-index: 10;
 
 	&::before {
 		content: '';
