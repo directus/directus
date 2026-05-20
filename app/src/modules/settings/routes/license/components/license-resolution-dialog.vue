@@ -336,6 +336,7 @@ function onEsc() {
 			</footer>
 
 			<DrawerItem
+				v-if="editingUserId"
 				v-model:active="userDrawerActive"
 				collection="directus_users"
 				:primary-key="editingUserId"
