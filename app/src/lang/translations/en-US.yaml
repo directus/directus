@@ -1458,7 +1458,7 @@ licensing:
     Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
     Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
   resolve_notice_locked:
-    Your project exceeds the Starter plan limits of 50 collections and 3 user seats. To unlock your project, reduce
+    Your project exceeds the Core plan limits of 50 collections and 3 user seats. To unlock your project, reduce
     usage below those limits. Deactivated items will remain stored but locked in Directus, and custom access rules will
     also be locked.
   resolve_notice_env_removed:
