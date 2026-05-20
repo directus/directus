@@ -58,7 +58,7 @@ defineExpose({ isValid });
 			:class="{ selected: modelValue }"
 			@click="emit('update:modelValue', !modelValue)"
 		>
-			<VCheckbox :checked="modelValue" />
+			<VCheckbox :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)" />
 			<span>{{ t('licensing.resolve_sso_confirm') }}</span>
 		</button>
 
