@@ -188,6 +188,19 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			throw Object.assign(error, { versionGone: true });
 		}
 
+		if (error?.response?.status === 422) {
+			const driftError = error.response.data?.errors?.find(
+				(err: APIError) => err?.extensions?.code === 'VERSION_HASH_MISMATCH',
+			);
+
+			if (driftError) {
+				throw Object.assign(error, {
+					versionDrift: true,
+					mainHash: driftError.extensions.mainHash as string,
+				});
+			}
+		}
+
 		if (error?.response?.data?.errors) {
 			const serverValidationErrors = error.response.data.errors
 				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
