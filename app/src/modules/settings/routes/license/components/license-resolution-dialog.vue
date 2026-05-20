@@ -22,6 +22,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useLicenseStore } from '@/stores/license';
+import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -41,6 +42,8 @@ const router = useRouter();
 
 const licenseStore = useLicenseStore();
 const { info, pendingResolution } = storeToRefs(licenseStore);
+
+const userStore = useUserStore();
 
 type ResolveScope = 'manual' | 'locked' | 'env_removed' | 'grace' | 'no_resolution';
 
@@ -79,7 +82,7 @@ const severity = computed<'warning' | 'danger'>(() => {
 	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';
 });
 
-type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number];
+type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number] & { disabled?: boolean };
 type FlowCandidate = LicensePendingResolutionLimitFlows['candidates'][number];
 
 const collections = computed<LicensePendingResolutionLimitCollections | undefined>(
@@ -95,6 +98,20 @@ const seats = computed<LicensePendingResolutionLimitSeats | undefined>(
 	() => find('limit', 'seats') as LicensePendingResolutionLimitSeats | undefined,
 );
 
+const currentAdminCandidate = computed<SeatCandidate | null>(() => {
+	const user = userStore.currentUser;
+	if (!user || 'share' in user) return null;
+
+	return {
+		id: user.id,
+		first_name: user.first_name ?? null,
+		last_name: user.last_name ?? null,
+		avatar: typeof user.avatar === 'string' ? user.avatar : (user.avatar?.id ?? null),
+		admin: true,
+		disabled: true,
+	};
+});
+
 const seatGroups = computed(() => {
 	if (!seats.value) return [];
 	const users: SeatCandidate[] = [];
@@ -104,6 +121,8 @@ const seatGroups = computed(() => {
 		if (candidate.admin) admins.push(candidate);
 		else users.push(candidate);
 	}
+
+	if (currentAdminCandidate.value) admins.push(currentAdminCandidate.value);
 
 	const groups: Array<{ caption: string; candidates: SeatCandidate[] }> = [];
 	if (users.length > 0) groups.push({ caption: t('licensing.resolve_section_seats_users_caption'), candidates: users });
@@ -294,6 +313,7 @@ function onEsc() {
 					:limit="seats.limit"
 					:groups="seatGroups"
 					:id-for="(user: SeatCandidate) => user.id"
+					:disabled-for="(user: SeatCandidate) => user.disabled === true"
 					linkable
 					@open-item="openUserDrawer"
 				>
