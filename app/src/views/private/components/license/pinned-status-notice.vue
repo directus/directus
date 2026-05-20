@@ -8,10 +8,10 @@ import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { gracePeriodDaysRemaining, isLicensed } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLicensed, isLocked } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
-const show = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null);
+const show = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null && !isLocked.value);
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS

@@ -1458,9 +1458,9 @@ licensing:
     Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
     Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
   resolve_notice_locked:
-    Your project exceeds the Core plan limits of 50 collections and 3 user seats. To unlock your project, reduce
-    usage below those limits. Deactivated items will remain stored but locked in Directus, and custom access rules will
-    also be locked.
+    Your project exceeds the Core plan limits of 50 collections and 3 user seats. To unlock your project, reduce usage
+    below those limits. Deactivated items will remain stored but locked in Directus, and custom access rules will also
+    be locked.
   resolve_notice_env_removed:
     Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
     collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
@@ -1600,6 +1600,7 @@ license:
     grace_period_prefix: You have upgraded and require a license key. You have
     grace_days: '{days} day | {days} days'
     grace_period_suffix: to resolve your license issue or your Directus project will be locked.
+  locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   pinned_status_notice:
     grace_period_title: 'License Expiring ({days}d left)'
     upgrade_grace_period_title: 'Grace Period ({days}d left)'
