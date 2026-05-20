@@ -69,10 +69,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		flows: getLimit('flows'),
 	}));
 
-	const isLocked = computed(() => {
-		const status = info.value?.status;
-		return status === 'expired' || status === 'suspended' || status === 'canceled' || status === 'locked';
-	});
+	const isLocked = computed(() => info.value?.status === 'locked');
+
+	const wasDowngraded = computed(() => info.value?.downgrade_reason != null);
 
 	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
 
@@ -81,11 +80,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const isLicensed = computed(() => {
 		if (!info.value || info.value.source === null) return false;
 		return info.value.status === 'active' || info.value.status === 'grace';
-	});
-
-	const needsResolution = computed(() => {
-		const status = info.value?.status;
-		return status === 'expired' || status === 'suspended' || status === 'canceled' || status === 'locked';
 	});
 
 	const revisionHistoryTimeframe = computed(() => {
@@ -228,9 +222,9 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		boundary,
 		limits,
 		isLocked,
+		wasDowngraded,
 		customPermissionRulesEnabled,
 		isLicensed,
-		needsResolution,
 		customLLMEnabled,
 		revisionHistoryTimeframe,
 		activityHistoryTimeframe,
