@@ -287,6 +287,8 @@ function toggleManualSort() {
 
 <style lang="scss" scoped>
 .table-header {
+	--drag-handle-hit-area: calc(var(--drag-handle-width) * 2);
+
 	.cell {
 		position: relative;
 		block-size: 2.8125rem; /* +2px for bottom border */
@@ -424,16 +426,16 @@ function toggleManualSort() {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		inline-size: 0.3125rem;
+		inline-size: var(--drag-handle-hit-area);
 		block-size: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);
 
 		&::after {
 			position: relative;
-			inset-block-start: 20%;
+			inset-block-start: 50%;
 			inset-inline-start: 50%;
-			transform: translateX(-50%);
+			transform: translate(-50%, -50%);
 			display: block;
 			inline-size: var(--theme--border-width);
 			block-size: 60%;
@@ -456,18 +458,19 @@ function toggleManualSort() {
 :deep(.header-order-ghost) {
 	&::after,
 	&::before {
-		inline-size: 0.125rem;
 		content: '';
 		display: block;
-		position: absolute;
-		inset-inline-end: 0;
-		inset-block-start: 20%;
+		inline-size: var(--drag-handle-width);
 		block-size: 60%;
+		position: absolute;
+		inset-block-start: 50%;
+		inset-inline-start: 100%;
+		transform: translate(calc(-50% - var(--drag-handle-hit-area) / 2), -50%);
 		background-color: var(--theme--primary);
 	}
 
 	&::before {
-		inset-inline: 0 auto;
+		inset-inline-start: 0;
 	}
 }
 
