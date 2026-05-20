@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 
 const serverStore = useServerStore();
+const { gracePeriodDaysRemaining } = storeToRefs(useLicenseStore());
+const { isAdmin } = storeToRefs(useUserStore());
 
-const visible = computed(() => {
-	if (!serverStore.info?.license?.entitlements?.display_powered_by) return false;
-
-	return serverStore.info?.license?.entitlements?.display_powered_by !== 'NONE';
+const hasBadge = computed(() => {
+	const dpb = serverStore.info?.license?.entitlements?.display_powered_by;
+	return !!dpb && dpb !== 'NONE';
 });
+
+const hasPinnedNotice = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null);
+
+const visible = computed(() => hasBadge.value || hasPinnedNotice.value);
 </script>
 
 <template>
