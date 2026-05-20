@@ -452,14 +452,14 @@ async function handleDeactivateConfirm() {
 }
 
 .status-notice {
-	margin-block-start: 2.5rem;
+	margin-block-start: 2.25rem;
 }
 
 .entitlements {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
-	margin-block-start: 2.5rem;
+	margin-block-start: 2.25rem;
 }
 
 @include mixins.breakpoint-down('sm') {
