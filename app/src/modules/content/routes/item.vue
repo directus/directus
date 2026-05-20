@@ -133,8 +133,15 @@ const {
 	isItemlessVersion,
 } = useVersions(collection, isSingleton, resolvedPrimaryKey);
 
-const { comparisonModalActive, comparableVersion, onVersionPublishCompare, onVersionPublishConfirm } =
-	usePublishComparison();
+const {
+	comparisonModalActive,
+	comparableVersion,
+	confirmOverwriteActive,
+	onVersionPublishCompare,
+	onVersionPublishConfirm,
+	onVersionPublishWithoutReview,
+	confirmOverwrite,
+} = usePublishActions();
 
 async function onVersionDelete(versionId: PrimaryKey) {
 	const wasItemLess = isItemlessVersion.value;
@@ -308,6 +315,16 @@ useShortcut(
 	() => {
 		if (currentVersion.value !== null && isPublishAllowed.value && !collectionInfo.value?.meta?.singleton) {
 			onVersionPublishCompare(true);
+		}
+	},
+	form,
+);
+
+useShortcut(
+	'meta+alt+shift+enter',
+	() => {
+		if (currentVersion.value !== null && isPublishAllowed.value) {
+			onVersionPublishWithoutReview();
 		}
 	},
 	form,
@@ -744,8 +761,10 @@ function useItemNavigation() {
 	return { collectionRoute, backRoute };
 }
 
-function usePublishComparison() {
+function usePublishActions() {
 	const comparisonModalActive = ref(false);
+	const confirmOverwriteActive = ref(false);
+	const pendingOverwriteHash = ref<string | null>(null);
 	const quitAfterPublish = ref(false);
 
 	const comparableVersion = computed(() => {
@@ -757,26 +776,10 @@ function usePublishComparison() {
 		quitAfterPublish.value = quit;
 
 		if (isItemlessVersion.value) {
-			const defaultValues = getDefaultValuesFromFields(fields);
-			const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
-			const fieldsToValidate = pushGroupOptionsDown(fields.value);
-
-			const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
-
-			versionValidationErrors.value = clientErrors;
-
-			if (versionValidationErrors.value.length) return;
+			if (!runClientValidation()) return;
 
 			try {
-				const versionId = currentVersion.value!.id;
-				const newItemKey = await publishVersion(versionId, {});
-
-				if (!newItemKey) return;
-
-				if (quit || isSingleton.value) router.push(collectionRoute.value);
-				else router.replace(getItemRoute(props.collection, newItemKey));
-
-				deleteVersion(versionId);
+				await publishItemlessAndNavigate(currentVersion.value!.id, quit);
 			} catch (error) {
 				handleVersionGone(error);
 			} finally {
@@ -795,15 +798,7 @@ function usePublishComparison() {
 		fields: string[];
 		deleteOnPublish: boolean;
 	}) {
-		const defaultValues = getDefaultValuesFromFields(fields);
-		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
-		const fieldsToValidate = pushGroupOptionsDown(fields.value);
-
-		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
-
-		versionValidationErrors.value = clientErrors;
-
-		if (versionValidationErrors.value.length) {
+		if (!runClientValidation()) {
 			comparisonModalActive.value = false;
 			return;
 		}
@@ -824,9 +819,7 @@ function usePublishComparison() {
 
 			if (opts.deleteOnPublish) await deleteVersion(opts.versionId);
 
-			currentVersion.value = null;
-			refresh();
-			revisionsSidebarDetailRef.value?.refresh?.();
+			finalizePublishedItem();
 		} catch (error) {
 			handleVersionGone(error);
 		} finally {
@@ -835,11 +828,91 @@ function usePublishComparison() {
 		}
 	}
 
+	async function onVersionPublishWithoutReview() {
+		if (publishVersionLoading.value) return;
+		if (!currentVersion.value || currentVersion.value.id === '+') return;
+		if (!runClientValidation()) return;
+
+		const version = currentVersion.value as ContentVersionWithType;
+
+		try {
+			if (isItemlessVersion.value) {
+				await publishItemlessAndNavigate(version.id, false);
+				return;
+			}
+
+			const newItemKey = await publishVersion(version.id, { mainHash: version.hash });
+			if (!newItemKey) return;
+
+			if (deleteVersionsAllowed.value) await deleteVersion(version.id);
+
+			finalizePublishedItem();
+		} catch (error) {
+			if (error && typeof error === 'object' && 'versionDrift' in error) {
+				pendingOverwriteHash.value = (error as unknown as { mainHash: string }).mainHash;
+				confirmOverwriteActive.value = true;
+				return;
+			}
+
+			handleVersionGone(error);
+		}
+	}
+
+	async function confirmOverwrite() {
+		if (!currentVersion.value || currentVersion.value.id === '+') return;
+		if (!pendingOverwriteHash.value) return;
+
+		const version = currentVersion.value as ContentVersionWithType;
+		const mainHash = pendingOverwriteHash.value;
+
+		try {
+			const newItemKey = await publishVersion(version.id, { mainHash });
+			if (!newItemKey) return;
+
+			if (deleteVersionsAllowed.value) await deleteVersion(version.id);
+
+			finalizePublishedItem();
+		} catch (error) {
+			handleVersionGone(error);
+		} finally {
+			confirmOverwriteActive.value = false;
+			pendingOverwriteHash.value = null;
+		}
+	}
+
+	function runClientValidation(): boolean {
+		const defaultValues = getDefaultValuesFromFields(fields);
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value ?? {}, edits.value);
+		const fieldsToValidate = pushGroupOptionsDown(fields.value);
+		const clientErrors = validateItem(payloadToValidate, fieldsToValidate, false, false, currentVersion.value);
+		versionValidationErrors.value = clientErrors;
+		return clientErrors.length === 0;
+	}
+
+	async function publishItemlessAndNavigate(versionId: PrimaryKey, quit: boolean) {
+		const newItemKey = await publishVersion(versionId, {});
+		if (!newItemKey) return;
+
+		if (quit || isSingleton.value) router.push(collectionRoute.value);
+		else router.replace(getItemRoute(props.collection, newItemKey));
+
+		deleteVersion(versionId);
+	}
+
+	function finalizePublishedItem() {
+		currentVersion.value = null;
+		refresh();
+		revisionsSidebarDetailRef.value?.refresh?.();
+	}
+
 	return {
 		comparisonModalActive,
 		comparableVersion,
+		confirmOverwriteActive,
 		onVersionPublishCompare,
 		onVersionPublishConfirm,
+		onVersionPublishWithoutReview,
+		confirmOverwrite,
 	};
 }
 
@@ -1017,6 +1090,15 @@ function editDraftVersion() {
 									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
 								</VListItem>
+								<VListItem
+									clickable
+									:disabled="!isPublishAllowed || isItemlessVersion"
+									@click="onVersionPublishWithoutReview()"
+								>
+									<VListItemIcon><VIcon name="bolt" /></VListItemIcon>
+									<VListItemContent>{{ $t('publish_without_review') }}</VListItemContent>
+									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'enter']) }}</VListItemHint>
+								</VListItem>
 								<VListItem clickable :disabled="!canCreateNew" @click="createNewItem()">
 									<VListItemIcon><VIcon name="add" /></VListItemIcon>
 									<VListItemContent>{{ $t('create_new') }}</VListItemContent>
@@ -1136,6 +1218,21 @@ function editDraftVersion() {
 			@publish="onVersionPublishConfirm"
 			@cancel="comparisonModalActive = false"
 		/>
+
+		<VDialog v-model="confirmOverwriteActive" @esc="confirmOverwriteActive = false" @apply="confirmOverwrite">
+			<VCard>
+				<VCardTitle>{{ $t('published_item_has_changed') }}</VCardTitle>
+				<VCardText>{{ $t('published_item_has_changed_copy') }}</VCardText>
+				<VCardActions>
+					<VButton secondary @click="confirmOverwriteActive = false">
+						{{ $t('cancel') }}
+					</VButton>
+					<VButton :loading="publishVersionLoading" @click="confirmOverwrite">
+						{{ $t('publish_anyway') }}
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
 		<VDialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<VCard v-if="!connected || collabUsers.length <= 1">

@@ -30,5 +30,6 @@ export { UnprocessableContentError } from './unprocessable-content.js';
 export { UnsupportedMediaTypeError } from './unsupported-media-type.js';
 export { UserSuspendedError } from './user-suspended.js';
 export { ValueOutOfRangeError } from './value-out-of-range.js';
+export { VersionHashMismatchError } from './version-hash-mismatch.js';
 export { ValueTooLongError } from './value-too-long.js';
 export { TimeoutError } from './timeout.js';
