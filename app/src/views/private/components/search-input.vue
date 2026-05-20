@@ -359,7 +359,7 @@ function emitValue() {
 
 	&.filter-active {
 		min-inline-size: var(--form-column-min-width);
-		z-index: 5;
+		z-index: 10;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
@@ -400,7 +400,7 @@ function emitValue() {
 	border-start-end-radius: 0;
 	border-end-end-radius: var(--search-input-radius);
 	border-end-start-radius: var(--search-input-radius);
-	z-index: 5;
+	z-index: 10;
 
 	&::before {
 		content: '';
@@ -420,7 +420,7 @@ function emitValue() {
 
 .search-badge {
 	--v-badge-background-color: var(--theme--primary);
-	--v-badge-offset-y: 0.1875rem;
+	--v-badge-offset-y: 0.125rem;
 	--v-badge-offset-x: 0.4375rem;
 
 	:deep(.badge) {
