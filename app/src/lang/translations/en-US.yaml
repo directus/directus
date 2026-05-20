@@ -240,8 +240,7 @@ delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 auto_save_failed: Auto-save Failed
-auto_save_failed_copy: >-
-  Your changes are still saved locally. We'll keep retrying as you edit.
+auto_save_failed_copy: Keep this page open while we retry!
 delete_on_apply_copy: >-
   You are about to publish “{version}”. What should happen to “{version}” after publishing?
 auto_save_enabled: Auto-save enabled
