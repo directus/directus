@@ -67,7 +67,6 @@ const settingsStore = useSettingsStore();
 const showLicenseBanner = computed({
 	get: () =>
 		userStore.isAdmin &&
-		!serverStore.info.license?.source &&
 		!settingsStore.settings?.project_owner &&
 		!showLicenseOnboarding.value &&
 		!cookies.get('license-banner-dismissed'),
