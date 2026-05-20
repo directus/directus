@@ -204,7 +204,7 @@ function addKeyAsNode() {
 			<button @click="addNode('$group')">{{ $t('interfaces.filter.add_group') }}</button>
 		</div>
 		<div v-else class="buttons">
-			<VMenu ref="menuEl" placement="bottom-start" show-arrow>
+			<VMenu ref="menuEl" placement="bottom-start" show-arrow :attached="inline">
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
 						<VIcon v-if="inline" name="add" class="add" small />
@@ -214,6 +214,7 @@ function addKeyAsNode() {
 				</template>
 				<VFieldList
 					v-if="collectionRequired"
+					:attached="inline"
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
