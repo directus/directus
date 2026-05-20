@@ -2,6 +2,8 @@
 import {
 	type InvalidLicenseStatus,
 	type LicensePendingResolution,
+	type LicensePendingResolutionFeatureGateCustomLLMs,
+	type LicensePendingResolutionFeatureGateCustomPermissionRules,
 	type LicensePendingResolutionFeatureGateSSO,
 	type LicensePendingResolutionLimitCollections,
 	type LicensePendingResolutionLimitFlows,
@@ -18,6 +20,7 @@ import VAvatar from '@/components/v-avatar.vue';
 import VButton from '@/components/v-button.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -128,6 +131,17 @@ const sso = computed<LicensePendingResolutionFeatureGateSSO | undefined>(
 	() => find('feature_gate', 'sso_enabled') as LicensePendingResolutionFeatureGateSSO | undefined,
 );
 
+const customLLMs = computed<LicensePendingResolutionFeatureGateCustomLLMs | undefined>(
+	() => find('feature_gate', 'custom_llms_enabled') as LicensePendingResolutionFeatureGateCustomLLMs | undefined,
+);
+
+const customPermissionRules = computed<LicensePendingResolutionFeatureGateCustomPermissionRules | undefined>(
+	() =>
+		find('feature_gate', 'custom_permission_rules_enabled') as
+			| LicensePendingResolutionFeatureGateCustomPermissionRules
+			| undefined,
+);
+
 function find(kind: LicensePendingResolution['kind'], key: string): LicensePendingResolution | undefined {
 	return pendingResolution.value?.find((entry: LicensePendingResolution) => entry.kind === kind && entry.key === key);
 }
@@ -145,6 +159,8 @@ const selected = reactive({
 	seats: new Set<string>(),
 	flows: new Set<string>(),
 	sso: false,
+	customLLMs: false,
+	customPermissionRules: false,
 });
 
 const adminCreds = ref<{ email?: string; password?: string }>({});
@@ -168,6 +184,8 @@ const isValid = computed(() => {
 	if (seats.value && selected.seats.size < seats.value.usage - seats.value.limit) return false;
 	if (flows.value && selected.flows.size < flows.value.usage - flows.value.limit) return false;
 	if (sso.value && !ssoSectionRef.value?.isValid) return false;
+	if (customLLMs.value && !selected.customLLMs) return false;
+	if (customPermissionRules.value && !selected.customPermissionRules) return false;
 	return true;
 });
 
@@ -179,8 +197,6 @@ async function submit() {
 	submitting.value = true;
 
 	try {
-		// Feature gates custom_llms_enabled and custom_permission_rules_enabled are
-		// locked server-side without user action and are intentionally not submitted.
 		await licenseStore.resolve({
 			...(collections.value ? { collections: [...selected.collections] } : {}),
 			...(seats.value ? { seats: [...selected.seats] } : {}),
@@ -274,6 +290,44 @@ function onEsc() {
 					:blockers="sso.blockers"
 					@update:admin="adminCreds = $event"
 				/>
+
+				<section v-if="customLLMs" class="resolution-feature-section">
+					<header class="section-header">
+						<span class="section-title">
+							<VIcon name="smart_toy" small />
+							{{ t('licensing.resolve_section_custom_llms') }}
+						</span>
+					</header>
+					<button
+						type="button"
+						class="confirm"
+						:class="{ selected: selected.customLLMs }"
+						@click="selected.customLLMs = !selected.customLLMs"
+					>
+						<VCheckbox :checked="selected.customLLMs" />
+						<span>{{ t('licensing.resolve_custom_llms_confirm') }}</span>
+					</button>
+					<p class="feature-caption">{{ t('licensing.resolve_custom_llms_caption') }}</p>
+				</section>
+
+				<section v-if="customPermissionRules" class="resolution-feature-section">
+					<header class="section-header">
+						<span class="section-title">
+							<VIcon name="policy" small />
+							{{ t('licensing.resolve_section_custom_permissions') }}
+						</span>
+					</header>
+					<button
+						type="button"
+						class="confirm"
+						:class="{ selected: selected.customPermissionRules }"
+						@click="selected.customPermissionRules = !selected.customPermissionRules"
+					>
+						<VCheckbox :checked="selected.customPermissionRules" />
+						<span>{{ t('licensing.resolve_custom_permissions_confirm') }}</span>
+					</button>
+					<p class="feature-caption">{{ t('licensing.resolve_custom_permissions_caption') }}</p>
+				</section>
 
 				<ResolutionLimitSection
 					v-if="collections && collectionGroups.length > 0"
@@ -432,5 +486,58 @@ function onEsc() {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.resolution-feature-section {
+	margin-block-start: 2rem;
+}
+
+.section-header {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin-block-end: 0.75rem;
+	padding-block-end: 0.75rem;
+	border-block-end: 1px solid var(--theme--border-color-subdued);
+}
+
+.section-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: var(--theme--foreground-accent);
+}
+
+.confirm {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	inline-size: 100%;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	background: var(--theme--form--field--input--background);
+	color: var(--theme--foreground);
+	font: inherit;
+	text-align: start;
+	cursor: pointer;
+	transition: border-color var(--fast) var(--transition);
+}
+
+.confirm:hover {
+	border-color: var(--theme--form--field--input--border-color-hover);
+}
+
+.confirm.selected {
+	border-color: var(--theme--primary);
+}
+
+.feature-caption {
+	color: var(--theme--foreground-subdued);
+	margin-block-start: 0.5rem;
+	font-size: 0.8125rem;
+	line-height: 1.4;
 }
 </style>
