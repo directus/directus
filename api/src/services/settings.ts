@@ -80,7 +80,9 @@ export class SettingsService extends ItemsService<Settings> {
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Settings[]> {
 		const data = await super.readByQuery(query, opts);
 
-		if (this.accountability !== null) {
+		const entitlementManager = getEntitlementManager();
+
+		if (!entitlementManager.isEntitled('custom_llms_enabled') && this.accountability !== null) {
 			for (const record of data) {
 				for (const field of CUSTOM_LLM_FIELDS) {
 					if (record[field]) {
