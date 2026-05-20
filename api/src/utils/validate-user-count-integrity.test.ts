@@ -2,7 +2,7 @@ import { LimitExceededError } from '@directus/errors';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import type { Knex } from 'knex';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getEntitlementManager } from '../license/index.js';
+import { getEntitlementManager } from '../license/entitlements/manager.js';
 import { validateRemainingAdminCount } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-count.js';
 import { checkUserLimits } from '../telemetry/utils/check-user-limits.js';
 import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
@@ -10,19 +10,22 @@ import { fetchUserCount } from './fetch-user-count/fetch-user-count.js';
 import { validateUserCountIntegrity } from './validate-user-count-integrity.js';
 
 vi.mock('./fetch-user-count/fetch-user-count.js');
-vi.mock('../license/index.js');
+vi.mock('../license/entitlements/manager.js');
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-count.js');
 vi.mock('../telemetry/utils/check-user-limits.js');
 vi.mock('../telemetry/utils/should-check-user-limits.js');
 
 const knex = {} as Knex;
 
-const assertSeats = vi.fn();
+const getCached = vi.fn();
+const getEntitlementLimit = vi.fn();
 
 beforeEach(() => {
 	vi.mocked(fetchUserCount).mockResolvedValue({ admin: 1, app: 0, api: 0 });
 	vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
-	vi.mocked(getEntitlementManager).mockReturnValue({ assert: assertSeats } as any);
+	getEntitlementLimit.mockReturnValue(-1);
+	getCached.mockReturnValue(undefined);
+	vi.mocked(getEntitlementManager).mockReturnValue({ getCached, getEntitlementLimit } as any);
 });
 
 afterEach(() => {
@@ -34,7 +37,7 @@ describe('flag gating', () => {
 		await validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.None, knex });
 
 		expect(fetchUserCount).not.toHaveBeenCalled();
-		expect(assertSeats).not.toHaveBeenCalled();
+		expect(getEntitlementLimit).not.toHaveBeenCalled();
 		expect(checkUserLimits).not.toHaveBeenCalled();
 		expect(validateRemainingAdminCount).not.toHaveBeenCalled();
 	});
@@ -53,24 +56,66 @@ describe('flag gating', () => {
 });
 
 describe('seats entitlement enforcement', () => {
-	test('asserts seats when UserLimits flag is set', async () => {
+	test('reads cached count and limit for the seats entitlement when UserLimits is set', async () => {
 		await validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex });
 
-		expect(assertSeats).toHaveBeenCalledWith('seats');
+		expect(getCached).toHaveBeenCalledWith('seats');
+		expect(getEntitlementLimit).toHaveBeenCalledWith('seats');
 	});
 
-	test('does not assert seats when UserLimits flag is unset', async () => {
+	test('does not read seats entitlement when UserLimits flag is unset', async () => {
 		await validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.RemainingAdmins, knex });
 
-		expect(assertSeats).not.toHaveBeenCalled();
+		expect(getCached).not.toHaveBeenCalled();
+		expect(getEntitlementLimit).not.toHaveBeenCalled();
 	});
 
-	test('propagates LimitExceededError thrown by the entitlement manager', async () => {
-		assertSeats.mockRejectedValueOnce(new LimitExceededError({ category: 'seats' }));
+	test('allows any count when the seat limit is unlimited (-1)', async () => {
+		getEntitlementLimit.mockReturnValue(-1);
+		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 100, app: 9000, api: 0 });
+
+		await expect(
+			validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex }),
+		).resolves.toBeUndefined();
+	});
+
+	test('allows the count when within the seat limit', async () => {
+		getEntitlementLimit.mockReturnValue(5);
+		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 2, app: 3, api: 99 });
+
+		await expect(
+			validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex }),
+		).resolves.toBeUndefined();
+	});
+
+	test('throws when over the limit and no cached count exists', async () => {
+		getEntitlementLimit.mockReturnValue(5);
+		getCached.mockReturnValue(undefined);
+		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 3, app: 3, api: 0 });
 
 		await expect(validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex })).rejects.toBeInstanceOf(
 			LimitExceededError,
 		);
+	});
+
+	test('throws when over the limit and adding a seat', async () => {
+		getEntitlementLimit.mockReturnValue(5);
+		getCached.mockReturnValue(6);
+		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 3, app: 4, api: 0 });
+
+		await expect(validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex })).rejects.toBeInstanceOf(
+			LimitExceededError,
+		);
+	});
+
+	test('allows removing/editing when over the limit', async () => {
+		getEntitlementLimit.mockReturnValue(5);
+		getCached.mockReturnValue(10);
+		vi.mocked(fetchUserCount).mockResolvedValue({ admin: 5, app: 5, api: 0 });
+
+		await expect(
+			validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.UserLimits, knex }),
+		).resolves.toBeUndefined();
 	});
 });
 
@@ -116,10 +161,10 @@ describe('remaining admin enforcement', () => {
 		expect(validateRemainingAdminCount).not.toHaveBeenCalled();
 	});
 
-	test('runs both seats assert and admin validation when All is set', async () => {
+	test('runs both seats check and admin validation when All is set', async () => {
 		await validateUserCountIntegrity({ flags: UserIntegrityCheckFlag.All, knex });
 
-		expect(assertSeats).toHaveBeenCalledWith('seats');
+		expect(getEntitlementLimit).toHaveBeenCalledWith('seats');
 		expect(validateRemainingAdminCount).toHaveBeenCalledWith(1);
 	});
 });
