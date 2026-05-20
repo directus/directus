@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import type { ContentVersion, PrimaryKey } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
+import type { ContentVersion, Item, PrimaryKey, SchemaOverview } from '@directus/types';
+import { buildPayload, getEndpoint, resolveWriteTarget } from '@directus/utils';
 import { sameOrigin } from '@directus/utils/browser';
 import type {
 	AddToContextData,
@@ -23,23 +23,29 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { useVersionGate, type VersionGateParentScope } from '@/composables/use-version-gate';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
+import { ensureVersionId } from '@/utils/ensure-version-id';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 
-const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
+const { frameSrc, frameEl, showEditableElements, version, parentScope, switchVersion } = defineProps<{
 	frameSrc: string;
 	frameEl?: HTMLIFrameElement;
 	showEditableElements?: boolean;
 	version: Pick<ContentVersion, 'key' | 'name'> | null;
+	parentScope?: VersionGateParentScope;
+	switchVersion?: (versionKey: string) => void | Promise<void>;
 }>();
 
 const emit = defineEmits<{
@@ -49,10 +55,21 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const { collection, primaryKey, fields, mode, position, isNew, edits, editOverlayActive, itemRoute, onClickEdit } =
-	useItemWithEdits();
+const {
+	collection,
+	primaryKey,
+	fields,
+	mode,
+	position,
+	isNew,
+	edits,
+	editOverlayActive,
+	itemRoute,
+	onClickEdit,
+	guardVersionSwitch,
+} = useItemWithEdits();
 
-const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
+const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit, guardVersionSwitch });
 
 useVisualEditingAi({ sendSaved, sendHighlightElement });
 
@@ -63,7 +80,13 @@ watch(editOverlayActive, (isActive) => {
 	}
 });
 
-function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
+function useWebsiteFrame({
+	onClickEdit,
+	guardVersionSwitch,
+}: {
+	onClickEdit: (data: unknown) => void;
+	guardVersionSwitch: (collection: string) => Promise<boolean>;
+}) {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
 	const userStore = useUserStore();
@@ -97,7 +120,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 		if (action === 'edit') onClickEdit(data);
 
-		if (action === 'addToContext') receiveAddToContext(data);
+		if (action === 'addToContext') void receiveAddToContext(data);
 	});
 
 	watch(
@@ -204,16 +227,21 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		send('highlightElement', data);
 	}
 
-	function receiveAddToContext(data: unknown) {
+	async function receiveAddToContext(data: unknown) {
 		const { key, editConfig, rect } = data as AddToContextData;
 
 		if (!key || !editConfig?.collection || editConfig.item == null) return;
+		if ((await guardVersionSwitch(editConfig.collection)) === false) return;
 
 		stageVisualElement({
 			key,
 			collection: editConfig.collection,
 			item: editConfig.item,
 			fields: editConfig.fields,
+			...(version?.key ? { version: version.key } : {}),
+			...(version?.key && parentScope
+				? { parent: { collection: parentScope.collection, item: parentScope.key, version: version.key } }
+				: {}),
 			rect,
 		});
 	}
@@ -229,13 +257,19 @@ function useVisualEditingAi({
 	const aiStore = useAiStore();
 	const contextStore = useAiContextStore();
 	const toolsStore = useAiToolsStore();
+	let savedTimer: ReturnType<typeof setTimeout> | null = null;
 
 	// Any non-read mutation should trigger a preview refresh
 	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input) => {
 		if (tool !== 'items') return;
 		if (input.action === 'read') return;
 
-		sendSaved({ key: '', collection: input.collection as string, item: null, payload: {} });
+		if (savedTimer) clearTimeout(savedTimer);
+
+		savedTimer = setTimeout(() => {
+			sendSaved({ key: '', collection: '', item: null, payload: {} });
+			savedTimer = null;
+		}, 250);
 	});
 
 	const unsubscribeHighlight = aiStore.onVisualElementHighlight((data) => {
@@ -260,6 +294,7 @@ function useVisualEditingAi({
 	});
 
 	onUnmounted(() => {
+		if (savedTimer) clearTimeout(savedTimer);
 		unsubscribeItemsResult.off();
 		unsubscribeHighlight.off();
 		contextStore.clearVisualElementContext();
@@ -281,9 +316,22 @@ function useItemWithEdits() {
 	const itemEndpoint = computed(getItemEndpoint);
 	const itemRoute = computed(getContentRoute);
 	const notificationsStore = useNotificationsStore();
+	const collectionsStore = useCollectionsStore();
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
 	const { info: collectionInfo } = useCollection(collection);
 
 	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
+	const hasUnsavedEdits = computed(() => Object.keys(edits.value).length > 0);
+
+	const versionGate = useVersionGate({
+		currentVersion: computed(() => version),
+		parentScope: computed(() => parentScope ?? null),
+		hasUnsavedEdits,
+		switchTo: async (versionKey) => {
+			await switchVersion?.(versionKey);
+		},
+	});
 
 	watch([edits, saving], ([newEdits, isSaving]) => {
 		const hasEdits = Object.keys(newEdits)?.length;
@@ -303,6 +351,7 @@ function useItemWithEdits() {
 		editOverlayActive,
 		itemRoute,
 		onClickEdit,
+		guardVersionSwitch,
 	};
 
 	function getItemEndpoint() {
@@ -325,53 +374,66 @@ function useItemWithEdits() {
 		edits.value = {};
 	}
 
-	async function fetchOrCreateVersionId(versionKey: ContentVersion['key']) {
-		const {
-			data: { data: existing },
-		} = await api.get('/versions', {
-			params: {
-				filter: {
-					collection: { _eq: collection.value },
-					item: { _eq: String(primaryKey.value) },
-					key: { _eq: versionKey },
-				},
-				limit: 1,
-				fields: ['id'],
-			},
-		});
-
-		if (existing.length) return existing[0].id;
-
-		const {
-			data: { data: created },
-		} = await api.post('/versions', {
-			key: versionKey,
-			collection: collection.value,
-			item: String(primaryKey.value),
-		});
-
-		return created.id;
-	}
-
 	async function save() {
 		saving.value = true;
 
 		try {
 			let response;
+			let shouldReplaceEdits = true;
 
-			if (version) {
-				const versionId: PrimaryKey = await fetchOrCreateVersionId(version.key);
-				response = await api.post(`/versions/${versionId}/save`, edits.value);
-			} else if (isNew.value) {
+			if (isNew.value) {
 				response = await api.post(itemEndpoint.value, edits.value);
 				notify({ title: t('item_create_success', 1), icon: 'check' });
 			} else {
-				response = await api.patch(itemEndpoint.value, edits.value);
-				notify({ title: t('item_update_success', 1), icon: 'check' });
+				const target = await resolveWriteTarget({
+					schema: getSchemaOverview(),
+					target: { collection: collection.value, key: primaryKey.value },
+					hint: {
+						explicitVersion: version?.key,
+						page:
+							version?.key && parentScope
+								? { collection: parentScope.collection, item: parentScope.key, version: version.key }
+								: null,
+					},
+					collectionHasVersioning: (collection) =>
+						Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
+					readParent,
+				});
+
+				if (target.kind === 'refuse') {
+					notify({ title: target.message, type: 'error' });
+					return;
+				}
+
+				if (target.kind === 'published') {
+					response = await api.patch(itemEndpoint.value, edits.value);
+					notify({ title: t('item_update_success', 1), icon: 'check' });
+				} else if (target.kind === 'item-version') {
+					const versionId = await ensureVersionId(api, {
+						collection: target.collection,
+						item: target.key,
+						versionKey: target.versionKey,
+					});
+
+					await api.post(`/versions/${versionId}/save`, buildPayload(target, edits.value, primaryKey.value));
+
+					response = await api.get(itemEndpoint.value, {
+						params: {
+							fields: Object.keys(edits.value),
+							version: target.versionKey,
+						},
+					});
+				} else {
+					const versionId = await ensureVersionId(api, target.parent);
+					await api.post(`/versions/${versionId}/save`, buildPayload(target, edits.value, primaryKey.value));
+					shouldReplaceEdits = false;
+				}
 			}
 
-			const replaceEditsWithResponseData = (key: string) => (edits.value[key] = response.data.data[key]);
-			Object.keys(edits.value).forEach(replaceEditsWithResponseData);
+			if (shouldReplaceEdits && response) {
+				const replaceEditsWithResponseData = (key: string) => (edits.value[key] = response.data.data[key]);
+				Object.keys(edits.value).forEach(replaceEditsWithResponseData);
+			}
 
 			sendSaved({
 				key: msgKey.value,
@@ -432,6 +494,9 @@ function useItemWithEdits() {
 	}
 
 	async function onClickEdit(data: unknown) {
+		const { editConfig } = data as { editConfig?: EditConfig };
+		if (editConfig?.collection && (await guardVersionSwitch(editConfig.collection)) === false) return;
+
 		const success = setEditConfigData(data);
 		if (!success) return;
 		await nextTick();
@@ -440,6 +505,53 @@ function useItemWithEdits() {
 		setFocusTemporarily();
 
 		editOverlayActive.value = true;
+	}
+
+	async function guardVersionSwitch(targetCollection: string) {
+		const decision = versionGate.check(targetCollection);
+		if (decision.allowed) return true;
+
+		await versionGate.requestSwitch(decision);
+		return false;
+	}
+
+	function getSchemaOverview(): SchemaOverview {
+		const collections = Object.fromEntries(
+			collectionsStore.collections.map((collection) => {
+				const primary = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)?.field ?? 'id';
+
+				return [
+					collection.collection,
+					{
+						collection: collection.collection,
+						primary,
+						singleton: collection.meta?.singleton ?? false,
+						sortField: null,
+						note: null,
+						accountability: null,
+						fields: {},
+					},
+				];
+			}),
+		);
+
+		return {
+			collections,
+			relations: relationsStore.relations,
+		} as unknown as SchemaOverview;
+	}
+
+	async function readParent(ref: { collection: string; key: PrimaryKey; versionKey: string }, fields: string[]) {
+		const {
+			data: { data },
+		} = await api.get<{ data: Item }>(`${getEndpoint(ref.collection)}/${encodeURIComponent(String(ref.key))}`, {
+			params: {
+				fields,
+				version: ref.versionKey,
+			},
+		});
+
+		return data;
 	}
 
 	async function setFocusTemporarily() {

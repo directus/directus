@@ -64,6 +64,12 @@ export interface VisualElementContextData {
 	collection: string;
 	item: PrimaryKey;
 	fields?: string[];
+	version?: string;
+	parent?: {
+		collection: string;
+		item: PrimaryKey;
+		version: string;
+	};
 	rect?: { top: number; left: number; width: number; height: number };
 }
 

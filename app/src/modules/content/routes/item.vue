@@ -710,6 +710,19 @@ const shouldShowVersioning = computed(() => {
 	return true;
 });
 
+const livePreviewParentScope = computed(() => {
+	if (!resolvedPrimaryKey.value || resolvedPrimaryKey.value === '+') return undefined;
+
+	return {
+		collection: collection.value,
+		key: resolvedPrimaryKey.value,
+	};
+});
+
+async function switchToVersion(versionKey: string) {
+	currentVersion.value = versions.value.find((version) => version.key === versionKey) ?? null;
+}
+
 function enterSingletonDraftContext(
 	newIsSingleton: boolean,
 	newResolvedPK: PrimaryKey | null,
@@ -1234,6 +1247,8 @@ function useAutoSwitchToDraft() {
 					v-if="livePreviewActive && previewUrl"
 					:url="previewUrl"
 					:version="currentVersion"
+					:parent-scope="livePreviewParentScope"
+					:switch-version="switchToVersion"
 					:can-enable-visual-editing="visualEditingEnabled"
 					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"

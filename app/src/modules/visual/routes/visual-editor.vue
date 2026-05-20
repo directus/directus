@@ -283,6 +283,7 @@ function useVersionSelection() {
 					:frame-el
 					:show-editable-elements
 					:version="selectedVersion"
+					:switch-version="onVersionSelect"
 					@navigation="onNavigation"
 				/>
 			</template>

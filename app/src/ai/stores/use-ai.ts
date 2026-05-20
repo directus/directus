@@ -149,6 +149,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		const path = route.path;
 		const collection = route.params.collection as string | undefined;
 		const item = route.params.primaryKey as string | number | undefined;
+		const version = Array.isArray(route.query.version) ? route.query.version[0] : route.query.version;
 
 		// Extract module from path (first segment after /)
 		const pathParts = path.split('/').filter(Boolean);
@@ -158,6 +159,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			path,
 			...(collection && { collection }),
 			...(item !== undefined && { item }),
+			...(typeof version === 'string' && { version }),
 			...(module && { module }),
 		};
 	});
@@ -184,7 +186,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			// Build context for system prompt
 			const context: {
 				attachments?: ContextAttachment[];
-				page?: { path: string; collection?: string; item?: string | number; module?: string };
+				page?: { path: string; collection?: string; item?: string | number; version?: string; module?: string };
 			} = {
 				page: currentPageContext.value,
 			};
@@ -518,8 +520,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const respondToToolCall = (approvalId: string, approved: boolean) => {
 		normalizePendingApprovalState(approvalId);
 
-		void chat
-			.addToolApprovalResponse({ id: approvalId, approved })
+		void Promise.resolve(chat.addToolApprovalResponse({ id: approvalId, approved }))
 			.then(() => {
 				applyLocalApprovalResponseFallback(approvalId, approved);
 				maybeContinueAfterApprovalResponse();

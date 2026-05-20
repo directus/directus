@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import type { ContentVersion } from '@directus/types';
+import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
@@ -44,6 +44,8 @@ const {
 	sidebarSize,
 	sidebarCollapsed = true,
 	sidebarDisabled = false,
+	parentScope,
+	switchVersion,
 } = defineProps<{
 	url: string | string[];
 	invalidUrl?: boolean;
@@ -63,6 +65,8 @@ const {
 	sidebarSize?: number;
 	sidebarCollapsed?: boolean;
 	sidebarDisabled?: boolean;
+	parentScope?: { collection: string; key: PrimaryKey };
+	switchVersion?: (versionKey: string) => void | Promise<void>;
 }>();
 
 const emit = defineEmits<{
@@ -505,6 +509,8 @@ function useUrls() {
 								:frame-el="frameEl"
 								:frame-src="frameSrc"
 								:version="version"
+								:parent-scope
+								:switch-version
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
 							/>
@@ -547,6 +553,8 @@ function useUrls() {
 						:frame-el="frameEl"
 						:frame-src="frameSrc"
 						:version="version"
+						:parent-scope
+						:switch-version
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
 					/>

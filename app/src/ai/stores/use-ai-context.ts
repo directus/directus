@@ -85,11 +85,11 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		visualElementContextUrl.value = url;
 	};
 
-	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*']) => {
+	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*'], version?: string) => {
 		try {
 			return await sdk.request<Item>(
 				requestEndpoint(`${getEndpoint(collection)}/${id}`, {
-					params: { fields },
+					params: { fields, ...(version ? { version } : {}) },
 				}),
 			);
 		} catch (error) {
@@ -104,7 +104,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		const fetches = nonFileItems.map(async (item): Promise<ContextAttachment | null> => {
 			if (isVisualElement(item)) {
 				const fields = item.data.fields?.length ? item.data.fields : ['*'];
-				const snapshot = await fetchItem(item.data.collection, item.data.item, fields);
+				const snapshot = await fetchItem(item.data.collection, item.data.item, fields, item.data.version);
 				if (!snapshot) return null;
 				return { type: 'visual-element', data: item.data, display: item.display, snapshot };
 			}
