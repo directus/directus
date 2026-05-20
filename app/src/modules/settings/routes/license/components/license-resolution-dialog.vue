@@ -328,7 +328,7 @@ function onEsc() {
 				<VButton v-else-if="scope === 'grace'" secondary @click="acknowledge">
 					{{ t('licensing.resolve_acknowledge') }}
 				</VButton>
-				<VButton v-else-if="scope === 'no_resolution'" @click="close">
+				<VButton v-else-if="scope === 'no_resolution'" :loading="submitting" @click="submit">
 					{{ t('continue_label') }}
 				</VButton>
 				<VButton v-else kind="danger" :disabled="!isValid" :loading="submitting" @click="submit">
