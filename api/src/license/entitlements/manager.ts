@@ -119,7 +119,7 @@ export class EntitlementManager {
 	}
 
 	private async refreshCacheNoPublish(...keys: EntitlementCacheKey[]): Promise<void> {
-		// refresh currently only supports countable keys 
+		// refresh currently only supports countable keys
 		for (const key of keys) {
 			if (this.isCountableKey(key)) {
 				await this.getUsage(key);
@@ -366,8 +366,8 @@ export class EntitlementManager {
 		}
 
 		for (const key of FEATURE_FLAG_ENTITLEMENT_KEYS) {
-			// skip entitlements with no registered handlers
-			if (!this.validatorSources.has(key)) continue;
+			// skip entitlements with no registered handlers or resolvers
+			if (!this.validatorSources.has(key) || !this.resolverSources.has(key as any)) continue;
 			const { valid } = await this.check(key, opts);
 			if (!valid) return false;
 		}
