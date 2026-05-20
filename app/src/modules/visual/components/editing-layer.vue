@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import type { ContentVersion, Item, PrimaryKey, SchemaOverview } from '@directus/types';
+import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
 import { buildPayload, getEndpoint, resolveWriteTarget } from '@directus/utils';
 import { sameOrigin } from '@directus/utils/browser';
 import type {
@@ -33,6 +33,7 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { ensureVersionId } from '@/utils/ensure-version-id';
+import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -386,7 +387,11 @@ function useItemWithEdits() {
 				notify({ title: t('item_create_success', 1), icon: 'check' });
 			} else {
 				const target = await resolveWriteTarget({
-					schema: getSchemaOverview(),
+					schema: getSchemaOverview({
+						collections: collectionsStore.collections,
+						relations: relationsStore.relations,
+						getPrimaryKeyFieldForCollection: fieldsStore.getPrimaryKeyFieldForCollection,
+					}),
 					target: { collection: collection.value, key: primaryKey.value },
 					hint: {
 						explicitVersion: version?.key,
@@ -513,32 +518,6 @@ function useItemWithEdits() {
 
 		await versionGate.requestSwitch(decision);
 		return false;
-	}
-
-	function getSchemaOverview(): SchemaOverview {
-		const collections = Object.fromEntries(
-			collectionsStore.collections.map((collection) => {
-				const primary = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)?.field ?? 'id';
-
-				return [
-					collection.collection,
-					{
-						collection: collection.collection,
-						primary,
-						singleton: collection.meta?.singleton ?? false,
-						sortField: null,
-						note: null,
-						accountability: null,
-						fields: {},
-					},
-				];
-			}),
-		);
-
-		return {
-			collections,
-			relations: relationsStore.relations,
-		} as unknown as SchemaOverview;
 	}
 
 	async function readParent(ref: { collection: string; key: PrimaryKey; versionKey: string }, fields: string[]) {
