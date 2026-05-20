@@ -8,7 +8,7 @@ import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
 const licenseStore = useLicenseStore();
-const { info, pendingResolution } = storeToRefs(licenseStore);
+const { info, pendingResolution, wasDowngraded, isLocked } = storeToRefs(licenseStore);
 
 const cookies = useCookies(['license-resolution-acknowledged']);
 
@@ -21,20 +21,26 @@ const acknowledgeKey = computed(() => {
 
 const acknowledged = ref<string | null>(cookies.get('license-resolution-acknowledged') ?? null);
 
+const isGracePrompt = computed(() => info.value?.status === 'grace' && (pendingResolution.value?.length ?? 0) > 0);
+
+// Downgrade acknowledgement clears server-side after resolve()
+const isDowngradePrompt = computed(() => wasDowngraded.value && !isLocked.value);
+
 const open = computed({
 	get: () => {
-		if (!userStore.isAdmin || info.value?.status !== 'grace') return false;
-		if ((pendingResolution.value?.length ?? 0) === 0) return false;
-		return acknowledged.value !== acknowledgeKey.value;
+		if (!userStore.isAdmin) return false;
+		if (isDowngradePrompt.value) return true;
+		if (isGracePrompt.value) return acknowledged.value !== acknowledgeKey.value;
+		return false;
 	},
 	set: (value) => {
-		if (value === false) acknowledged.value = acknowledgeKey.value;
+		if (value === false && isGracePrompt.value) acknowledged.value = acknowledgeKey.value;
 	},
 });
 
-// Clear the acknowledgement when grace ends so a future grace event re-prompts.
-// Without this, a Core license (constant `expires_at: -1`) acknowledged once would
-// stay dismissed forever across repeated violations.
+// Clear the grace acknowledgement when grace ends so a future grace event re-prompts.
+// Without this, a Core license (constant expires_at: -1) acknowledged once would stay
+// dismissed forever across repeated violations, since acknowledgeKey would never change.
 watch(
 	() => info.value?.status,
 	(newStatus, oldStatus) => {

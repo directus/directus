@@ -21,8 +21,8 @@ export interface PrivateViewProps {
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed } from 'vue';
 import LicenseBanner from '../../components/license-banner.vue';
-import LicenseGraceWarning from '../../components/license-grace-warning.vue';
 import LicenseOnboarding from '../../components/license-onboarding.vue';
+import LicenseResolutionPrompt from '../../components/license-resolution-prompt.vue';
 import NotificationDialogs from '../../components/notification-dialogs.vue';
 import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
@@ -117,5 +117,5 @@ const showLicenseOnboarding = computed({
 
 	<LicenseBanner v-model="showLicenseBanner" />
 	<LicenseOnboarding v-model="showLicenseOnboarding" />
-	<LicenseGraceWarning />
+	<LicenseResolutionPrompt />
 </template>
