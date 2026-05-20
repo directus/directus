@@ -27,6 +27,14 @@ const VisualElementContextData = z.object({
 	collection: z.string(),
 	item: z.union([z.string(), z.number()]),
 	fields: z.array(z.string()).optional(),
+	version: z.string().optional(),
+	parent: z
+		.object({
+			collection: z.string(),
+			item: z.union([z.string(), z.number()]),
+			version: z.string(),
+		})
+		.optional(),
 	rect: z
 		.object({
 			top: z.number(),
@@ -70,6 +78,7 @@ export const PageContext = z.object({
 	path: z.string(),
 	collection: z.string().optional(),
 	item: z.union([z.string(), z.number()]).optional(),
+	version: z.string().optional(),
 	module: z.string().optional(),
 });
 

@@ -5,18 +5,20 @@ import { jsonSchema, tool, zodSchema } from 'ai';
 import { fromZodError } from 'zod-validation-error';
 import { ALL_TOOLS } from '../../tools/index.js';
 import { coerceJsonFields } from '../../tools/utils.js';
-import type { ChatRequestTool, ToolApprovalMode } from '../models/chat-request.js';
+import type { ChatContext, ChatRequestTool, ToolApprovalMode } from '../models/chat-request.js';
 
 export const chatRequestToolToAiSdkTool = ({
 	chatRequestTool,
 	accountability,
 	schema,
 	toolApprovals,
+	context,
 }: {
 	chatRequestTool: ChatRequestTool;
 	accountability: Accountability;
 	schema: SchemaOverview;
 	toolApprovals?: Record<string, ToolApprovalMode>;
+	context?: ChatContext;
 }): Tool => {
 	if (typeof chatRequestTool === 'string') {
 		const directusTool = ALL_TOOLS.find(({ name }) => name === chatRequestTool);
@@ -47,7 +49,7 @@ export const chatRequestToolToAiSdkTool = ({
 					throw new InvalidPayloadError({ reason: fromZodError(error).message });
 				}
 
-				return directusTool.handler({ args, accountability, schema });
+				return directusTool.handler({ args, accountability, schema, context });
 			},
 		});
 	}

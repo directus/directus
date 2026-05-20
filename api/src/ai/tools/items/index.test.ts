@@ -1,10 +1,16 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
+import { CollectionsService } from '../../../services/collections.js';
 import { ItemsService } from '../../../services/items.js';
+import { VersionsService } from '../../../services/versions.js';
 import { items } from './index.js';
 
+vi.mock('../../../services/collections.js');
 vi.mock('../../../services/items.js');
+vi.mock('../../../services/versions.js', () => ({
+	VersionsService: vi.fn(),
+}));
 
 describe('items tool', () => {
 	const mockSchema = {
@@ -18,6 +24,24 @@ describe('items tool', () => {
 
 	const mockAccountability = { user: 'test-user' } as Accountability;
 
+	beforeEach(() => {
+		vi.mocked(CollectionsService).mockImplementation(
+			() =>
+				({
+					readOne: vi.fn().mockResolvedValue({ meta: { versioning: false } }),
+				}) as unknown as CollectionsService,
+		);
+
+		vi.mocked(VersionsService).mockImplementation(
+			() =>
+				({
+					readByQuery: vi.fn().mockResolvedValue([]),
+					createOne: vi.fn().mockResolvedValue('version-1'),
+					save: vi.fn().mockResolvedValue({}),
+				}) as unknown as VersionsService,
+		);
+	});
+
 	afterEach(() => {
 		vi.clearAllMocks();
 	});
@@ -26,8 +50,10 @@ describe('items tool', () => {
 		let mockItemsService: {
 			createMany: MockedFunction<any>;
 			readMany: MockedFunction<any>;
+			readOne: MockedFunction<any>;
 			readByQuery: MockedFunction<any>;
 			readSingleton: MockedFunction<any>;
+			updateOne: MockedFunction<any>;
 			updateMany: MockedFunction<any>;
 			updateBatch: MockedFunction<any>;
 			updateByQuery: MockedFunction<any>;
@@ -39,8 +65,10 @@ describe('items tool', () => {
 			mockItemsService = {
 				createMany: vi.fn(),
 				readMany: vi.fn(),
+				readOne: vi.fn(),
 				readByQuery: vi.fn(),
 				readSingleton: vi.fn(),
+				updateOne: vi.fn(),
 				updateMany: vi.fn(),
 				updateBatch: vi.fn(),
 				updateByQuery: vi.fn(),
@@ -321,6 +349,53 @@ describe('items tool', () => {
 					data: updatedSingleton,
 				});
 			});
+
+			test('should save versioned item updates to the requested version', async () => {
+				const updateData = { title: 'Updated Title' };
+				const updatedItem = { id: 1, title: 'Updated Title' };
+				const mockVersionsService = {
+					readByQuery: vi.fn().mockResolvedValue([]),
+					createOne: vi.fn().mockResolvedValue('version-1'),
+					save: vi.fn().mockResolvedValue({}),
+				};
+
+				vi.mocked(CollectionsService).mockImplementation(
+					() =>
+						({
+							readOne: vi.fn().mockResolvedValue({ meta: { versioning: true } }),
+						}) as unknown as CollectionsService,
+				);
+
+				vi.mocked(VersionsService).mockImplementation(() => mockVersionsService as unknown as VersionsService);
+				vi.mocked(ItemsService).mockImplementation(() => mockItemsService as unknown as ItemsService);
+				mockItemsService.readMany.mockResolvedValue([updatedItem]);
+
+				const result = await items.handler({
+					args: {
+						action: 'update',
+						collection: 'test_collection',
+						keys: [1],
+						data: updateData,
+						query: { version: 'draft' },
+					},
+					schema: mockSchema,
+					accountability: mockAccountability,
+				});
+
+				expect(mockItemsService.updateMany).not.toHaveBeenCalled();
+				expect(mockVersionsService.createOne).toHaveBeenCalledWith({
+					key: 'draft',
+					collection: 'test_collection',
+					item: '1',
+				});
+				expect(mockVersionsService.save).toHaveBeenCalledWith('version-1', updateData);
+				expect(mockItemsService.readMany).toHaveBeenCalledWith([1], expect.objectContaining({ version: 'draft' }));
+
+				expect(result).toEqual({
+					type: 'text',
+					data: [updatedItem],
+				});
+			});
 		});
 
 		describe('DELETE action', () => {
@@ -368,8 +443,10 @@ describe('items tool', () => {
 		let mockItemsService: {
 			createMany: MockedFunction<any>;
 			readMany: MockedFunction<any>;
+			readOne: MockedFunction<any>;
 			readByQuery: MockedFunction<any>;
 			readSingleton: MockedFunction<any>;
+			updateOne: MockedFunction<any>;
 			updateMany: MockedFunction<any>;
 			updateBatch: MockedFunction<any>;
 			updateByQuery: MockedFunction<any>;
@@ -381,8 +458,10 @@ describe('items tool', () => {
 			mockItemsService = {
 				createMany: vi.fn(),
 				readMany: vi.fn(),
+				readOne: vi.fn(),
 				readByQuery: vi.fn(),
 				readSingleton: vi.fn(),
+				updateOne: vi.fn(),
 				updateMany: vi.fn(),
 				updateBatch: vi.fn(),
 				updateByQuery: vi.fn(),
@@ -441,8 +520,10 @@ describe('items tool', () => {
 		let mockItemsService: {
 			createMany: MockedFunction<any>;
 			readMany: MockedFunction<any>;
+			readOne: MockedFunction<any>;
 			readByQuery: MockedFunction<any>;
 			readSingleton: MockedFunction<any>;
+			updateOne: MockedFunction<any>;
 			updateMany: MockedFunction<any>;
 			updateBatch: MockedFunction<any>;
 			updateByQuery: MockedFunction<any>;
@@ -454,8 +535,10 @@ describe('items tool', () => {
 			mockItemsService = {
 				createMany: vi.fn(),
 				readMany: vi.fn(),
+				readOne: vi.fn(),
 				readByQuery: vi.fn(),
 				readSingleton: vi.fn(),
+				updateOne: vi.fn(),
 				updateMany: vi.fn(),
 				updateBatch: vi.fn(),
 				updateByQuery: vi.fn(),

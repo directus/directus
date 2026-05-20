@@ -14,9 +14,9 @@ import {
 	type Query,
 	type QueryOptions,
 } from '@directus/types';
-import { deepMapWithSchema } from '@directus/utils';
+import { deepMapWithSchema, mergeNestedRelationDeltaInto } from '@directus/utils';
 import Joi from 'joi';
-import { assign, get, isEqual, isNil, isPlainObject, pick } from 'lodash-es';
+import { get, isEqual, isNil, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
@@ -341,7 +341,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			object['_date'] = date;
 		});
 
-		const finalVersionDelta = assign({}, existingDelta, revisionDelta);
+		const finalVersionDelta = mergeNestedRelationDeltaInto({ ...(existingDelta ?? {}) }, revisionDelta ?? {});
 
 		const sudoService = new ItemsService(this.collection, {
 			knex: this.knex,

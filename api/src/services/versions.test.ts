@@ -123,6 +123,39 @@ describe('Integration Tests', () => {
 					expect.objectContaining({ collection: 'articles_track_all', item: 2, version: 1, activity: 1 }),
 				);
 			});
+
+			test('should merge detailed nested relation deltas when saving repeatedly', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_none',
+					item: 1,
+					delta: {
+						blocks: {
+							create: [],
+							update: [{ id: 1, title: 'First' }],
+							delete: [],
+						},
+					},
+				});
+
+				await service.save(1, {
+					blocks: {
+						create: [],
+						update: [{ id: 2, title: 'Second' }],
+						delete: [],
+					},
+				});
+
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(
+					1,
+					expect.objectContaining({
+						delta: expect.objectContaining({
+							blocks: expect.objectContaining({
+								update: [expect.objectContaining({ id: 1 }), expect.objectContaining({ id: 2 })],
+							}),
+						}),
+					}),
+				);
+			});
 		});
 	});
 });
