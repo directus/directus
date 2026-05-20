@@ -352,7 +352,10 @@ function usePopper(
 			{
 				...offset,
 				options: {
-					offset: options.value.attached ? [0, 0] : [options.value.offsetX ?? 0, options.value.offsetY ?? padding],
+					offset:
+						options.value.attached && !options.value.arrow
+							? [0, 0]
+							: [options.value.offsetX ?? 0, options.value.offsetY ?? padding],
 				},
 			},
 			{
@@ -730,13 +733,13 @@ function usePopper(
 }
 
 .attached {
-	&[data-placement^='top'] {
+	&:not(:has(.arrow))[data-placement^='top'] {
 		> .v-menu-content {
 			transform: translateY(-0.125rem);
 		}
 	}
 
-	&[data-placement^='bottom'] {
+	&:not(:has(.arrow))[data-placement^='bottom'] {
 		> .v-menu-content {
 			transform: translateY(0.125rem);
 		}
