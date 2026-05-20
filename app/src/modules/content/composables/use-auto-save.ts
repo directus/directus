@@ -7,7 +7,7 @@ import { useServerStore } from '@/stores/server';
 
 /** Fallback when neither the collection nor the server reports a value. Seconds of inactivity after which the next save creates a new revision instead of updating in-place. */
 export const AUTO_SAVE_SNAPSHOT_INTERVAL_SECONDS_FALLBACK = 300;
-export const AUTO_SAVE_DEBOUNCE_MS = 750;
+export const AUTO_SAVE_DEBOUNCE_MS = 300;
 
 export interface UseAutoSaveOptions {
 	/** Auto-save only fires when this is true (e.g. currentVersion !== null && hasPermission). */
@@ -16,7 +16,7 @@ export interface UseAutoSaveOptions {
 	currentVersionDateUpdated: Ref<string | null>;
 	/** Collection name — used to read per-collection `autosave_revision_interval` override. */
 	collection: Ref<string>;
-	/** Debounce delay in milliseconds. Default: 750. */
+	/** Debounce delay in milliseconds. Default: 300. */
 	debounceMs?: number;
 }
 

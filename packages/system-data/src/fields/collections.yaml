@@ -156,7 +156,6 @@ fields:
   - field: autosave_revision_interval
     interface: select-dropdown
     options:
-      placeholder: $t:field_options.directus_collections.autosave_revision_interval_placeholder
       choices:
         - text: $t:field_options.directus_collections.interval_default
           value: null
@@ -169,11 +168,13 @@ fields:
         - text: 10m
           value: 600
     conditions:
-      - name: hide_when_versioning_disabled
-        rule:
-          versioning:
-            _neq: true
-        hidden: true
+      - rule:
+          _or:
+            - versioning:
+                _neq: true
+            - accountability:
+                _neq: all
+        readonly: true
     width: half
 
   - field: archive_divider

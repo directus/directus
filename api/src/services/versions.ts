@@ -301,7 +301,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				if (opts?.patchRevision && trackingAccountability === 'all') {
 					const [latestRevision] = await revisionsService.readByQuery({
 						filter: { version: { _eq: key } },
-						sort: ['-id'],
+						sort: ['-activity.timestamp'],
 						limit: 1,
 						fields: ['id', 'data', 'delta', 'activity.user'],
 					});
