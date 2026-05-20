@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+	type InvalidLicenseStatus,
 	type LicensePendingResolution,
 	type LicensePendingResolutionFeatureGateSSO,
 	type LicensePendingResolutionLimitCollections,
@@ -64,14 +65,12 @@ const graceCountdown = computed<{ days: number; date: string } | null>(() => {
 	return { days, date };
 });
 
-const title = computed(() => {
+type TitleKey = ResolveScope | InvalidLicenseStatus;
+
+const title = computed<string>(() => {
 	const reason = info.value?.downgrade_reason;
-
-	if (reason && (scope.value === 'locked' || scope.value === 'no_resolution')) {
-		return t(`licensing.resolve_title_${reason}`);
-	}
-
-	return t(`licensing.resolve_title_${scope.value}`);
+	const key: TitleKey = reason && (scope.value === 'locked' || scope.value === 'no_resolution') ? reason : scope.value;
+	return t(`licensing.resolve_title_${key}`);
 });
 
 const noticeMessage = computed(() => t(`licensing.resolve_notice_${scope.value}`));
