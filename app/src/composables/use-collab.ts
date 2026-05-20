@@ -491,6 +491,9 @@ export function useCollab(
 			}
 		}
 
+		// Skip the toast in auto-save (versioned) mode — every keystroke would surface it.
+		if (version.value !== null) return;
+
 		// Prevent duplicate messages on sender side, kinda hacky
 		if (!notificationsStore.queue.some((notify) => notify.title === t('item_update_success')))
 			notificationsStore.add({
