@@ -71,6 +71,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isLocked = computed(() => info.value?.status === 'locked');
 
+	const isCoreGrace = computed(() => info.value?.status === 'grace' && !isLicensed.value);
+
 	const wasDowngraded = computed(() => info.value?.downgrade_reason != null);
 
 	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
@@ -222,6 +224,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		boundary,
 		limits,
 		isLocked,
+		isCoreGrace,
 		wasDowngraded,
 		customPermissionRulesEnabled,
 		isLicensed,

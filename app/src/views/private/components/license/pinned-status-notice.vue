@@ -8,10 +8,12 @@ import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
-const { gracePeriodDaysRemaining, isLicensed, isLocked } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
-const show = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null && !isLocked.value);
+const show = computed(
+	() => isAdmin.value && (gracePeriodDaysRemaining.value !== null || isCoreGrace.value) && !isLocked.value,
+);
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
@@ -20,9 +22,9 @@ const severity = computed(() =>
 );
 
 const titleKey = computed(() =>
-	isLicensed.value
-		? 'license.pinned_status_notice.grace_period_title'
-		: 'license.pinned_status_notice.upgrade_grace_period_title',
+	isCoreGrace.value
+		? 'license.unlicensed_pinned_status_notice.grace_period_title'
+		: 'license.pinned_status_notice.grace_period_title',
 );
 </script>
 

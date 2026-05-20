@@ -10,18 +10,18 @@ import { useUserStore } from '@/stores/user';
 
 const { t } = useI18n();
 const serverStore = useServerStore();
-const { gracePeriodDaysRemaining, isLicensed, isLocked } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace } = storeToRefs(useLicenseStore());
 const { isAdmin } = storeToRefs(useUserStore());
 
-const show = computed(() => isAdmin.value && (gracePeriodDaysRemaining.value !== null || isLocked.value));
+const show = computed(
+	() => isAdmin.value && (gracePeriodDaysRemaining.value !== null || isLocked.value || isCoreGrace.value),
+);
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
 		? 'danger'
 		: 'warning',
 );
-
-const noticeKey = computed(() => (isLicensed.value ? 'license.status_notice' : 'license.unlicensed_status_notice'));
 
 const lockedSupportUrl = computed(
 	() =>
@@ -41,14 +41,19 @@ const lockedSupportUrl = computed(
 			</span>
 		</template>
 	</VNotice>
+	<VNotice v-else-if="show && isCoreGrace" type="warning" multiline class="status-notice">
+		<template #title>
+			<span class="message">{{ t('license.unlicensed_status_notice.grace_period') }}</span>
+		</template>
+	</VNotice>
 	<VNotice v-else-if="show" :type="severity" multiline class="status-notice">
 		<template #title>
 			<span class="message">
-				{{ t(`${noticeKey}.grace_period_prefix`) }}
+				{{ t('license.status_notice.grace_period_prefix') }}
 				<strong>
-					{{ t(`${noticeKey}.grace_days`, { days: gracePeriodDaysRemaining }, gracePeriodDaysRemaining ?? 0) }}
+					{{ t('license.status_notice.grace_days', { days: gracePeriodDaysRemaining }, gracePeriodDaysRemaining ?? 0) }}
 				</strong>
-				{{ t(`${noticeKey}.grace_period_suffix`) }}
+				{{ t('license.status_notice.grace_period_suffix') }}
 			</span>
 		</template>
 	</VNotice>
