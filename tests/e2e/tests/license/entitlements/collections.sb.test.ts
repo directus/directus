@@ -187,6 +187,22 @@ describe('collections entitlement', () => {
 		createdCollections.push(collection);
 	});
 
+	test('updating an existing collection without status in meta does not consume entitlement', async () => {
+		await fillCollectionLimit('g');
+
+		// Update an existing (already-active) collection at the limit with a payload
+		// that includes both schema and meta but no status field. This should be a
+		// pure update, not counted as adding a new collection.
+		await expect(
+			api.request(
+				updateCollection(createdCollections[0]!, {
+					meta: { note: 'updated note' },
+					schema: {},
+				} as any),
+			),
+		).resolves.toBeDefined();
+	});
+
 	test('can deactivate an existing collection remaining over the limit', async () => {
 		await fillCollectionLimit('f');
 
