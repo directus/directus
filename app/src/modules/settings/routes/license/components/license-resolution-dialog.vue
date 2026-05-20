@@ -350,7 +350,7 @@ function onEsc() {
 	--v-card-min-width: auto;
 	inline-size: calc(100vw - 7rem);
 	max-inline-size: none;
-	block-size: calc(100vh - 7rem);
+	block-size: auto;
 	max-block-size: calc(100vh - 7rem);
 	display: flex;
 	flex-direction: column;

@@ -21,7 +21,7 @@ const acknowledgeKey = computed(() => {
 
 const acknowledged = ref<string | null>(cookies.get('license-resolution-acknowledged') ?? null);
 
-const isGracePrompt = computed(() => info.value?.status === 'grace' && (pendingResolution.value?.length ?? 0) > 0);
+const isGracePrompt = computed(() => info.value?.status === 'grace');
 
 // Downgrade acknowledgement clears server-side after resolve()
 const isDowngradePrompt = computed(() => wasDowngraded.value && !isLocked.value);
