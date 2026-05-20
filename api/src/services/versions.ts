@@ -1,5 +1,10 @@
 import { Action, isPublishedVersionKey, VERSION_KEY_DRAFT } from '@directus/constants';
-import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import {
+	ForbiddenError,
+	InvalidPayloadError,
+	UnprocessableContentError,
+	VersionHashMismatchError,
+} from '@directus/errors';
 import {
 	type AbstractServiceOptions,
 	type ContentVersion,
@@ -394,12 +399,10 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		}
 
 		if (item) {
-			const { outdated } = await this.verifyHash(collection, item, opts?.mainHash as string);
+			const { outdated, mainHash } = await this.verifyHash(collection, item, opts?.mainHash as string);
 
 			if (outdated) {
-				throw new UnprocessableContentError({
-					reason: `Main item has changed since this version was last updated`,
-				});
+				throw new VersionHashMismatchError({ mainHash });
 			}
 		}
 
