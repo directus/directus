@@ -79,7 +79,7 @@ const severity = computed<'warning' | 'danger'>(() => {
 	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';
 });
 
-type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number];
+type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number] & { email?: string | null };
 type FlowCandidate = LicensePendingResolutionLimitFlows['candidates'][number];
 
 const collections = computed<LicensePendingResolutionLimitCollections | undefined>(
@@ -136,6 +136,7 @@ function toUser(candidate: SeatCandidate) {
 	return {
 		first_name: candidate.first_name ?? undefined,
 		last_name: candidate.last_name ?? undefined,
+		email: candidate.email ?? undefined,
 	};
 }
 
@@ -339,6 +340,18 @@ function onEsc() {
 				v-model:active="userDrawerActive"
 				collection="directus_users"
 				:primary-key="editingUserId"
+				:selected-fields="[
+					'first_name',
+					'last_name',
+					'email',
+					'avatar',
+					'title',
+					'status',
+					'role',
+					'provider',
+					'external_identifier',
+					'policies',
+				]"
 				non-editable
 			/>
 		</VCard>
