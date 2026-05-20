@@ -80,8 +80,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		return info.value.status === 'active' || info.value.status === 'grace';
 	});
 
-	const needsResolution = computed(() => isLocked.value || wasDowngraded.value);
-
 	const revisionHistoryTimeframe = computed(() => {
 		const limit = info.value?.entitlements?.revision_historical_timeframe?.limit;
 		return limit ? formatTimeframe(limit) : null;
@@ -213,7 +211,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		wasDowngraded,
 		customPermissionRulesEnabled,
 		isLicensed,
-		needsResolution,
 		customLLMEnabled,
 		revisionHistoryTimeframe,
 		activityHistoryTimeframe,
