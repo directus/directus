@@ -283,51 +283,47 @@ function onEsc() {
 					{{ t('licensing.resolve_countdown', graceCountdown, graceCountdown.days) }}
 				</p>
 
-				<ResolutionSsoSection
-					v-if="sso"
-					ref="ssoSectionRef"
-					v-model="selected.sso"
-					:blockers="sso.blockers"
-					@update:admin="adminCreds = $event"
-				/>
+				<div v-if="sso || customLLMs || customPermissionRules" class="feature-gate-grid">
+					<ResolutionSsoSection
+						v-if="sso"
+						ref="ssoSectionRef"
+						v-model="selected.sso"
+						:blockers="sso.blockers"
+						@update:admin="adminCreds = $event"
+					/>
 
-				<section v-if="customLLMs" class="resolution-feature-section">
-					<header class="section-header">
-						<span class="section-title">
-							<VIcon name="smart_toy" small />
-							{{ t('licensing.resolve_section_custom_llms') }}
-						</span>
-					</header>
-					<button
-						type="button"
-						class="confirm"
-						:class="{ selected: selected.customLLMs }"
-						@click="selected.customLLMs = !selected.customLLMs"
-					>
-						<VCheckbox :checked="selected.customLLMs" />
-						<span>{{ t('licensing.resolve_custom_llms_confirm') }}</span>
-					</button>
-					<p class="feature-caption">{{ t('licensing.resolve_custom_llms_caption') }}</p>
-				</section>
+					<section v-if="customLLMs" class="resolution-feature-section">
+						<header class="section-header">
+							<span class="section-title">{{ t('licensing.resolve_section_custom_llms') }}</span>
+						</header>
+						<button
+							type="button"
+							class="confirm"
+							:class="{ selected: selected.customLLMs }"
+							@click="selected.customLLMs = !selected.customLLMs"
+						>
+							<VCheckbox :checked="selected.customLLMs" style="pointer-events: none" />
+							<span>{{ t('licensing.resolve_custom_llms_confirm') }}</span>
+						</button>
+						<p class="feature-caption">{{ t('licensing.resolve_custom_llms_caption') }}</p>
+					</section>
 
-				<section v-if="customPermissionRules" class="resolution-feature-section">
-					<header class="section-header">
-						<span class="section-title">
-							<VIcon name="policy" small />
-							{{ t('licensing.resolve_section_custom_permissions') }}
-						</span>
-					</header>
-					<button
-						type="button"
-						class="confirm"
-						:class="{ selected: selected.customPermissionRules }"
-						@click="selected.customPermissionRules = !selected.customPermissionRules"
-					>
-						<VCheckbox :checked="selected.customPermissionRules" />
-						<span>{{ t('licensing.resolve_custom_permissions_confirm') }}</span>
-					</button>
-					<p class="feature-caption">{{ t('licensing.resolve_custom_permissions_caption') }}</p>
-				</section>
+					<section v-if="customPermissionRules" class="resolution-feature-section">
+						<header class="section-header">
+							<span class="section-title">{{ t('licensing.resolve_section_custom_permissions') }}</span>
+						</header>
+						<button
+							type="button"
+							class="confirm"
+							:class="{ selected: selected.customPermissionRules }"
+							@click="selected.customPermissionRules = !selected.customPermissionRules"
+						>
+							<VCheckbox :checked="selected.customPermissionRules" style="pointer-events: none" />
+							<span>{{ t('licensing.resolve_custom_permissions_confirm') }}</span>
+						</button>
+						<p class="feature-caption">{{ t('licensing.resolve_custom_permissions_caption') }}</p>
+					</section>
+				</div>
 
 				<ResolutionLimitSection
 					v-if="collections && collectionGroups.length > 0"
@@ -494,8 +490,21 @@ function onEsc() {
 	white-space: nowrap;
 }
 
-.resolution-feature-section {
+.feature-gate-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.5rem;
 	margin-block-start: 2rem;
+}
+
+@media (max-width: 37.5rem) {
+	.feature-gate-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.resolution-feature-section {
+	margin-block-start: 0;
 }
 
 .section-header {
@@ -503,15 +512,13 @@ function onEsc() {
 	align-items: center;
 	gap: 0.75rem;
 	margin-block-end: 0.75rem;
-	padding-block-end: 0.75rem;
-	border-block-end: 1px solid var(--theme--border-color-subdued);
 }
 
 .section-title {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	font-size: 1.125rem;
+	font-size: 0.875rem;
 	font-weight: 600;
 	color: var(--theme--foreground-accent);
 }

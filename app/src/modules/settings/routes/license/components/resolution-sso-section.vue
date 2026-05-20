@@ -2,7 +2,6 @@
 import { computed, reactive, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VCheckbox from '@/components/v-checkbox.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 
@@ -46,10 +45,7 @@ defineExpose({ isValid });
 <template>
 	<section class="resolution-sso-section">
 		<header class="section-header">
-			<span class="section-title">
-				<VIcon name="key" small />
-				{{ t('licensing.resolve_section_sso') }}
-			</span>
+			<span class="section-title">{{ t('licensing.resolve_section_sso') }}</span>
 		</header>
 
 		<button
@@ -93,15 +89,13 @@ defineExpose({ isValid });
 	align-items: center;
 	gap: 0.75rem;
 	margin-block-end: 0.75rem;
-	padding-block-end: 0.75rem;
-	border-block-end: 1px solid var(--theme--border-color-subdued);
 }
 
 .section-title {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	font-size: 1.125rem;
+	font-size: 0.875rem;
 	font-weight: 600;
 	color: var(--theme--foreground-accent);
 }
