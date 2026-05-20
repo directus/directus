@@ -61,10 +61,12 @@ export async function checkCustomPermissionRules(opts?: { knex?: Knex | undefine
 	const permissions = await permissionService.readByQuery({
 		limit: -1,
 		filter: {
-			permissions: { _nnull: true },
-			validation: { _nnull: true },
-			presets: { _nnull: true },
-			fields: { _nnull: true },
+			_or: [
+				{ permissions: { _nnull: true } },
+				{ validation: { _nnull: true } },
+				{ presets: { _nnull: true } },
+				{ fields: { _nnull: true } },
+			],
 		},
 	});
 
