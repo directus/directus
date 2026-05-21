@@ -15,7 +15,7 @@ vi.mock('../utils/get-schema.js', () => ({
 
 const mockCleanup = vi.fn().mockResolvedValue(undefined);
 
-vi.mock('../services/mcp-oauth.js', () => ({
+vi.mock('../services/mcp-oauth/index.js', () => ({
 	McpOAuthService: vi.fn().mockImplementation(() => ({
 		cleanup: mockCleanup,
 	})),

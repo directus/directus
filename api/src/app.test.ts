@@ -70,7 +70,7 @@ vi.mock('./deployment.js', () => ({
 
 vi.mock('./utils/validate-env.js');
 
-beforeEach(() => {
+function mockAppEnv(overrides: Partial<ReturnType<typeof useEnv>> = {}) {
 	vi.mocked(useEnv).mockReturnValue({
 		SECRET: 'abcdef',
 		SERVE_APP: 'true',
@@ -82,7 +82,12 @@ beforeEach(() => {
 		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 		ROOT_REDIRECT: './admin',
 		IP_TRUST_PROXY: true,
+		...overrides,
 	});
+}
+
+beforeEach(() => {
+	mockAppEnv();
 });
 
 afterEach(() => {
@@ -179,23 +184,19 @@ describe('createApp', async () => {
 
 	describe('MCP OAuth guard', () => {
 		test('Should mount after authenticate even when OAuth endpoints are disabled', async () => {
-			vi.mocked(useEnv).mockReturnValue({
-				SECRET: 'abcdef',
-				SERVE_APP: 'true',
-				PUBLIC_URL: 'http://localhost:8055/directus',
-				TELEMETRY: 'false',
-				LOG_STYLE: 'raw',
-				EXTENSIONS_PATH: './extensions',
-				STORAGE_LOCATIONS: ['local'],
-				ROBOTS_TXT: 'User-agent: *\nDisallow: /',
-				ROOT_REDIRECT: './admin',
-				IP_TRUST_PROXY: true,
-				MCP_OAUTH_ENABLED: false,
-			});
+			mockAppEnv({ MCP_OAUTH_ENABLED: false });
 
 			await request('/items/test');
 
-			expect(mockMcpOAuthGuard).toHaveBeenCalled();
+			expect(mockMcpOAuthGuard).toHaveBeenCalledTimes(1);
+		});
+
+		test('Should mount OAuth guard once when OAuth endpoints are enabled', async () => {
+			mockAppEnv({ MCP_ENABLED: true, MCP_OAUTH_ENABLED: true });
+
+			await request('/items/test');
+
+			expect(mockMcpOAuthGuard).toHaveBeenCalledTimes(1);
 		});
 	});
 

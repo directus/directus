@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { useLogger } from '../logger/index.js';
-import { McpOAuthService } from '../services/mcp-oauth.js';
+import { McpOAuthService } from '../services/mcp-oauth/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
