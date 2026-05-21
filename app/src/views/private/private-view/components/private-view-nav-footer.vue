@@ -1,19 +1,26 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 
 const serverStore = useServerStore();
+const { gracePeriodDaysRemaining, isLocked } = storeToRefs(useLicenseStore());
+const { isAdmin } = storeToRefs(useUserStore());
 
-const visible = computed(() => {
-	if (!serverStore.info?.license?.entitlements?.display_powered_by) return false;
-
-	return serverStore.info?.license?.entitlements?.display_powered_by !== 'HIDDEN';
+const hasBadge = computed(() => {
+	const dpb = serverStore.info?.license?.entitlements?.display_powered_by;
+	return !!dpb && dpb !== 'HIDDEN';
 });
+
+const hasPinnedNotice = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null && !isLocked.value);
+
+const visible = computed(() => hasBadge.value || hasPinnedNotice.value);
 </script>
 
 <template>
 	<div v-if="visible" class="wrapper">
-		<hr />
 		<slot />
 	</div>
 </template>
@@ -25,15 +32,5 @@ const visible = computed(() => {
 	display: flex;
 	position: relative;
 	flex-direction: column;
-
-	hr {
-		flex-grow: 1;
-		max-inline-size: 100%;
-		border: solid;
-		border-color: var(--theme--navigation--list--divider--border-color);
-		border-width: var(--theme--border-width) 0 0 0;
-		inline-size: calc(100% - 1.375rem);
-		align-self: center;
-	}
 }
 </style>

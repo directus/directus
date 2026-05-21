@@ -19,6 +19,8 @@ import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
 import { formatTimeframe } from '@/utils/format-timeframe';
 
+export const GRACE_DANGER_THRESHOLD_DAYS = 3;
+
 export type LicenseBoundary = {
 	type: 'renewal' | 'expiration';
 	timestamp: number;
@@ -70,6 +72,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isLocked = computed(() => info.value?.status === 'locked');
 
+	const isCoreGrace = computed(() => info.value?.status === 'grace' && !isLicensed.value);
+
 	const wasDowngraded = computed(() => info.value?.downgrade_reason != null);
 
 	const customPermissionRulesEnabled = computed(() => isEntitlementEnabled('custom_permission_rules_enabled'));
@@ -89,6 +93,18 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	const activityHistoryTimeframe = computed(() => {
 		const limit = info.value?.entitlements?.activity_historical_timeframe?.limit;
 		return limit ? formatTimeframe(limit) : null;
+	});
+
+	const isTeamPlan = computed(() => info.value?.name.toLowerCase() === 'team');
+
+	const gracePeriodDaysRemaining = computed<number | null>(() => {
+		if (!info.value || info.value.status !== 'grace') return null;
+		if (!info.value.grace_period || info.value.grace_period < 0) return null;
+		if (isTeamPlan.value && info.value.renews_at != null) return null;
+
+		const nowSec = Date.now() / 1000;
+		const deadline = info.value.expires_at + info.value.grace_period;
+		return Math.max(0, Math.ceil((deadline - nowSec) / (60 * 60 * 24)));
 	});
 
 	function isEntitlementEnabled(key: string) {
@@ -214,12 +230,14 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		boundary,
 		limits,
 		isLocked,
+		isCoreGrace,
 		wasDowngraded,
 		customPermissionRulesEnabled,
 		isLicensed,
 		customLLMEnabled,
 		revisionHistoryTimeframe,
 		activityHistoryTimeframe,
+		gracePeriodDaysRemaining,
 		hydrate,
 		hydrateAddons,
 		hydratePendingResolution,
