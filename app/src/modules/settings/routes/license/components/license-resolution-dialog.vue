@@ -375,7 +375,7 @@ function onEsc() {
 <style scoped>
 .resolution-card {
 	--v-card-min-width: auto;
-	inline-size: calc(100vw - 7rem);
+	inline-size: min(60rem, calc(100vw - 7rem));
 	max-inline-size: none;
 	block-size: auto;
 	max-block-size: calc(100vh - 7rem);
