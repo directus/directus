@@ -31,7 +31,7 @@ const FULL_CUSTOM_RULE_SHAPE = CUSTOM_RULE_SHAPES.reduce(
 	{},
 );
 
-function createCustomPermission(overrides?: Record<string, unknown>) {
+function buildPermission(overrides?: Record<string, unknown>) {
 	return merge(
 		{
 			collection: getUID(),
@@ -77,18 +77,18 @@ describe('custom_permission_rules_enabled', () => {
 		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
 		// seed permissions
-		await directus.knex!('directus_permissions').insert(createCustomPermission({ fields: '*' }));
+		await directus.knex!('directus_permissions').insert(buildPermission({ fields: '*' }));
 
 		// specifcally test fields: null (DELETE permission)
-		await directus.knex!('directus_permissions').insert(createCustomPermission({ fields: null, action: 'delete' }));
+		await directus.knex!('directus_permissions').insert(buildPermission({ fields: null, action: 'delete' }));
 
 		for (const [field, shape] of CUSTOM_RULE_SHAPES) {
 			await directus.knex!('directus_permissions').insert(
-				createCustomPermission({ [field]: field === 'fields' ? shape.join(',') : shape }),
+				buildPermission({ [field]: field === 'fields' ? shape.join(',') : shape }),
 			);
 		}
 
-		await directus.knex!('directus_permissions').insert(createCustomPermission(FULL_CUSTOM_RULE_SHAPE));
+		await directus.knex!('directus_permissions').insert(buildPermission(FULL_CUSTOM_RULE_SHAPE));
 	});
 
 	afterAll(async () => {
@@ -107,7 +107,7 @@ describe('custom_permission_rules_enabled', () => {
 		test.each(CUSTOM_RULE_SHAPES)(
 			'POST /permissions with custom %s rejects with RESOURCE_RESTRICTED',
 			async (field, shape) => {
-				await expect(api.request(createPermission(createCustomPermission({ [field]: shape })))).rejects.toMatchObject({
+				await expect(api.request(createPermission(buildPermission({ [field]: shape })))).rejects.toMatchObject({
 					errors: [
 						expect.objectContaining({
 							extensions: expect.objectContaining({
@@ -121,7 +121,7 @@ describe('custom_permission_rules_enabled', () => {
 		);
 
 		test('POST /permissions with all custom fields rejects with RESOURCE_RESTRICTED', async () => {
-			await expect(api.request(createPermission(createCustomPermission(FULL_CUSTOM_RULE_SHAPE)))).rejects.toMatchObject(
+			await expect(api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE)))).rejects.toMatchObject(
 				{
 					errors: [
 						expect.objectContaining({
@@ -142,18 +142,18 @@ describe('custom_permission_rules_enabled', () => {
 		});
 
 		test('POST /permissions with wildcard fields and no other custom predicates succeeds', async () => {
-			await expect(api.request(createPermission(createCustomPermission({ fields: ['*'] })))).resolves.toBeDefined();
+			await expect(api.request(createPermission(buildPermission({ fields: ['*'] })))).resolves.toBeDefined();
 		});
 
 		test('POST /permissions (batch) with mixed allowed + restricted rows rejects', async () => {
 			await expect(
 				api.request(
 					createPermissions([
-						createCustomPermission({
+						buildPermission({
 							action: 'read',
 							fields: ['*'],
 						}),
-						createCustomPermission({
+						buildPermission({
 							action: 'read',
 							fields: ['*'],
 							validation: { first_name: { _nnull: true } },
@@ -173,14 +173,14 @@ describe('custom_permission_rules_enabled', () => {
 		});
 
 		test('PATCH /permissions/:id of unrelated field on non-custom row succeeds', async () => {
-			const permission = await api.request(createPermission(createCustomPermission()));
+			const permission = await api.request(createPermission(buildPermission()));
 
 			await expect(api.request(updatePermission(permission.id, { action: 'update' }))).resolves.toBeDefined();
 		});
 
 		test('DELETE /permissions/:id of custom-rule row succeeds', async () => {
 			await directus.knex!('directus_permissions').insert(
-				createCustomPermission({
+				buildPermission({
 					collection: `${getUID()}-delete-test`,
 					validation: JSON.stringify({ first_name: { _nnull: true } }),
 				}),
@@ -206,13 +206,13 @@ describe('custom_permission_rules_enabled', () => {
 
 		test.each(CUSTOM_RULE_SHAPES)('POST /permissions with custom %s succeeds', async (field, shape) => {
 			await expect(
-				api.request(createPermission(createCustomPermission({ [field]: JSON.stringify(shape) }))),
+				api.request(createPermission(buildPermission({ [field]: JSON.stringify(shape) }))),
 			).resolves.toBeDefined();
 		});
 
 		test('POST /permissions with all custom fields succeeds', async () => {
 			await expect(
-				api.request(createPermission(createCustomPermission(FULL_CUSTOM_RULE_SHAPE))),
+				api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE))),
 			).resolves.toBeDefined();
 		});
 
