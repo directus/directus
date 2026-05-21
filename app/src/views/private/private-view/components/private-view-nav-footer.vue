@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useLicenseStore } from '@/stores/license';
+import { useServerStore } from '@/stores/server';
 
-const licenseStore = useLicenseStore();
+const serverStore = useServerStore();
 
 const visible = computed(() => {
-	if (!licenseStore.info?.entitlements?.display_powered_by) return false;
+	if (!serverStore.info?.license?.entitlements?.display_powered_by) return false;
 
-	return licenseStore.info?.entitlements?.display_powered_by !== 'HIDDEN';
+	return serverStore.info?.license?.entitlements?.display_powered_by !== 'HIDDEN';
 });
 </script>
 
