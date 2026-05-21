@@ -186,7 +186,7 @@ describe('custom_permission_rules_enabled', () => {
 				.where('collection', `${getUID()}-delete-test`)
 				.first();
 
-			await expect(api.request(deletePermission(row.id)));
+			await expect(api.request(deletePermission(row.id))).resolves.not.toThrow();
 		});
 	});
 
