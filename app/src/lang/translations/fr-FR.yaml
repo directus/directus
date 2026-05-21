@@ -29,6 +29,10 @@ setup_launch: Lancer Directus
 setup_project: Configurer un projet
 first_name: Prénom
 last_name: Nom
+how_do_you_use_directus: Pour quoi utilisez-vous Directus ?
+usage_personal: Personnel / Apprentissage
+usage_commercial: Entreprise / Commercial
+usage_community: Open Source / Communauté
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -239,6 +243,8 @@ recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
+delete_folder_dialog:
+  delete_content: Supprimer tout le contenu
 validation_errors_notice: 'Les champs suivants contiennent des valeurs invalides:'
 validation_value_is_invalid: La valeur est invalide
 validationError:
@@ -511,6 +517,7 @@ translations_collection: Collection de traduction
 languages_collection: Collection de langues
 enable_translations: Activer les traductions
 manage_translation_fields: Ajouter des champs de traduction
+add_fields: Ajouter des champs
 translations_preview_collections: Collections
 translations_preview_fields: Champs
 import_data_input_placeholder: CSV ou JSON...
@@ -519,6 +526,7 @@ import_background: Importer en arrière-plan
 import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_upload_success: '{filename} a été téléchargé avec succès. Importation des données en arrière-plan.'
+import_data_errors: Erreur d'importation
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 snapshot:
   export: Exporter le schéma
@@ -650,6 +658,7 @@ save_and_stay: Enregistrer et rester
 save_and_quit: Enregistrer et quitter
 save_and_return_to_main: Enregistrer et revenir au menu principal
 save_as_copy: Enregistrer une copie
+save_as_new_file: Enregistrer comme nouveau fichier
 add_existing: Sélectionner
 creating_items: Création d'éléments
 enable_create_button: Activer le bouton de création
@@ -688,12 +697,14 @@ no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
 no_active_users: Aucun utilisateur actif
 no_suspended_users: Aucun utilisateur suspendu
 no_invited_users: Aucun utilisateur invité
+no_status_users_copy: 'Il n''y a aucun utilisateur avec le statut {status}.'
 no_notifications: Aucune notification
 no_notifications_copy: Vous êtes à jour !
 activity_log: Journal d’activité
 all_items: Tous les éléments
 any: N'importe quel
 csv: CSV
+csv_utf8: Excel CSV (UTF-8)
 no_collections: Aucune collection
 create_collection: Créer une collection
 no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
