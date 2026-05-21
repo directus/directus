@@ -56,6 +56,7 @@ collection_names_are_case_sensitive: Le nom des collections est sensible à la c
 condition_rules: Règles de conditions
 input: Texte simple
 invalid_input: Saisie invalide
+invalid_file_type: Type de fichier invalide
 not_a_number: Pas un nombre
 maps: Cartes
 switch_user: Changer d'utilisateur
@@ -71,6 +72,7 @@ full_width: Toute la largeur
 group: Groupe
 popular: Popularité
 recent: Récent
+previous: Précédent
 latest: Dernière version
 export_items: Exporter
 and: Et
@@ -176,6 +178,7 @@ connection_good: Bonne connexion
 connection_fair: Connexion moyenne
 connection_poor: Mauvaise connexion
 primary: Primaire
+download_folder: Télécharger le dossier
 rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
@@ -190,6 +193,7 @@ switch_version: Changer de version
 switch_version_copy: Êtes-vous sûr de vouloir basculer vers la version "{version}" ? Les modifications non enregistrées seront perdues.
 create_version: Créer une version
 rename_version: Renommer la version
+reserved_version_key: 'L''identifiant de version "{key}" est réservé et ne peut pas être utilisé.'
 compare_version: Comparer la version
 save_version: Enregistrer la version
 promote_version: Promouvoir la version
@@ -197,6 +201,7 @@ apply: Appliquer
 discard: Abandonner
 select_all_differences: Sélectionner toutes les différences
 show_differences_only: Afficher uniquement les différences
+main_updated_notice: L'élément principal a été mis à jour depuis la création de cette version.
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
@@ -235,6 +240,7 @@ unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
 validation_errors_notice: 'Les champs suivants contiennent des valeurs invalides:'
+validation_value_is_invalid: La valeur est invalide
 validationError:
   eq: La valeur doit être {valid}
   neq: La valeur ne peut pas être {invalid}
@@ -439,6 +445,8 @@ precision_scale: Précision et échelle
 readonly: Lecture seule
 unique: Unique
 index: Index
+searchable: Indexable
+field_searchable: Inclure le champ dans les requêtes de recherche
 updated_on: Modifié le
 updated_by: Modifié par
 primary_key: Clef primaire
@@ -501,6 +509,8 @@ related_collection: Collection associée
 related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
+enable_translations: Activer les traductions
+manage_translation_fields: Ajouter des champs de traduction
 translations_preview_collections: Collections
 translations_preview_fields: Champs
 import_data_input_placeholder: CSV ou JSON...
@@ -675,6 +685,9 @@ file_count: 'Aucun fichier | Un fichier | {count} fichiers'
 no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
+no_active_users: Aucun utilisateur actif
+no_suspended_users: Aucun utilisateur suspendu
+no_invited_users: Aucun utilisateur invité
 no_notifications: Aucune notification
 no_notifications_copy: Vous êtes à jour !
 activity_log: Journal d’activité
@@ -763,6 +776,7 @@ errors:
   INVALID_CONFIG: Configuration non valide
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
   INVALID_FOREIGN_KEY: Clé étrangère invalide
+  INVALID_INVITE: Cette invitation n'est plus valide
   INVALID_IP: Adresse IP non autorisée
   INVALID_OTP: Mauvais mot de passe unique
   INVALID_PAYLOAD: Payload invalide
@@ -816,6 +830,9 @@ flip_vertical: Miroir vertical
 aspect_ratio: Rapport de forme
 rotate: Faire pivoter
 all_users: Tous les utilisateurs
+active_users: Utilisateurs actifs
+suspended_users: Utilisateurs Suspendus
+invited_users: Utilisateurs invités
 delete_collection: Supprimer la collection
 update_collection_success: Collection mise à jour
 delete_collection_success: Collection supprimée
@@ -1012,9 +1029,14 @@ no_url_copy: Veuillez ajouter une URL dans les paramètres.
 invalid_url: URL invalide
 insights: Analyses
 deployment:
+  deployment: Déploiement
   provider:
     settings:
       delete_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
+    vercel:
+      name: Vercel
+      account_type:
+        team: Équipe
     run:
       currently_deploying: En cours de déploiement...
       cancel_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
