@@ -50,11 +50,14 @@ export default defineOperationApi<Options>({
 		}
 
 		let result: PrimaryKey | PrimaryKey[] | null;
+		const hasQuery = !!query;
 
 		if (Array.isArray(payloadObject)) {
 			result = await itemsService.updateBatch(payloadObject, { emitEvents: !!emitEvents });
-		} else if (!key || (Array.isArray(key) && key.length === 0)) {
+		} else if ((!key || (Array.isArray(key) && key.length === 0)) && hasQuery) {
 			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents: !!emitEvents });
+		} else if (!key || (Array.isArray(key) && key.length === 0)) {
+			result = null;
 		} else {
 			const keys = toArray(key);
 

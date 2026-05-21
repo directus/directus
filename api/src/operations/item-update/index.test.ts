@@ -69,6 +69,18 @@ describe('Operations / Item Update', () => {
 		expect(vi.mocked(ItemsService).prototype.updateMany).not.toHaveBeenCalled();
 	});
 
+	test('should not update by query when key is an empty array and query is not defined', async () => {
+		const result = await config.handler(
+			{ collection: testCollection, payload: testPayload, key: [], query: null } as any,
+			{ accountability: testAccountability, getSchema } as any,
+		);
+
+		expect(result).toBe(null);
+		expect(vi.mocked(ItemsService).prototype.updateByQuery).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateOne).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateMany).not.toHaveBeenCalled();
+	});
+
 	test('should emit events for updateByQuery when true', async () => {
 		const query = { limit: -1 };
 
