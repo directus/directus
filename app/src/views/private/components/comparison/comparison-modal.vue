@@ -18,15 +18,15 @@ import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
 
 interface Props {
-	deleteVersionsAllowed: boolean;
 	collection: string;
 	primaryKey: PrimaryKey;
 	mode: 'version' | 'revision' | 'collab';
-	currentVersion: ContentVersionWithType | null | undefined;
-	currentCollab: { from: Item; to: Item } | undefined;
+	currentVersion?: ContentVersionWithType | null | undefined;
+	deleteVersionsAllowed?: boolean;
 	revisions?: Revision[] | null;
-	collabContext?: CollabContext;
 	publishVersionLoading?: boolean;
+	currentCollab?: { from: Item; to: Item } | undefined;
+	collabContext?: CollabContext;
 }
 
 const props = defineProps<Props>();
