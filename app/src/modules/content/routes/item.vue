@@ -49,7 +49,7 @@ import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
-import type { ContentVersionWithType } from '@/types/versions';
+import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
@@ -365,24 +365,7 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
-const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT));
-
-const isDraftEmpty = computed(() => {
-	const draft = draftVersion.value;
-	if (!draft) return false;
-	if (draft.id === '+') return true;
-	return (draft as ContentVersionWithType).delta === null;
-});
-
-const canAutoSwitchToDraft = computed(() => {
-	if (isNew.value) return false;
-	if (!shouldShowVersioning.value) return false;
-	if (!readVersionsAllowed.value) return false;
-	if (currentVersion.value !== null) return false;
-	if (!isDraftEmpty.value) return false;
-	if (draftVersion.value?.id === '+') return createVersionsAllowed.value;
-	return updateVersionsAllowed.value || createVersionsAllowed.value;
-});
+const { applyAutoSwitchPendingEdits, canAutoSwitchToDraft, draftVersion } = useAutoSwitchToDraft();
 
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
@@ -406,35 +389,10 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-const autoSwitchPendingEdits = ref<Record<string, any> | null>(null);
-
 watch(currentVersion, async () => {
-	if (autoSwitchPendingEdits.value !== null) {
-		edits.value = autoSwitchPendingEdits.value;
-		autoSwitchPendingEdits.value = null;
-	} else {
-		edits.value = {};
-	}
-
+	const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
+	edits.value = autoSwitchPendingEdits ?? {};
 	await refreshLivePreview();
-});
-
-watch(hasEdits, (newHasEdits, oldHasEdits) => {
-	if (!newHasEdits || oldHasEdits) return;
-	if (!canAutoSwitchToDraft.value) return;
-	if (!draftVersion.value) return;
-
-	// Stash the first edit, clear edits so the useEditsGuard navigation guard
-	// sees no edits during the route change, then push the version query. The
-	// currentVersion watcher above will restore the stashed edits after the
-	// route cascade has switched currentVersion to the draft.
-	autoSwitchPendingEdits.value = { ...edits.value };
-	edits.value = {};
-
-	router.replace({
-		...route,
-		query: { ...route.query, version: VERSION_KEY_DRAFT },
-	});
 });
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
@@ -968,9 +926,56 @@ function usePublishActions() {
 	};
 }
 
-function editDraftVersion() {
-	if (draftVersion.value) {
-		currentVersion.value = draftVersion.value;
+function useAutoSwitchToDraft() {
+	const autoSwitchPendingEdits = ref<Item>({});
+	const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT)!);
+
+	const canAutoSwitchToDraft = computed(() => {
+		if (isNew.value) return false;
+		if (!shouldShowVersioning.value) return false;
+		if (!readVersionsAllowed.value) return false;
+		if (currentVersion.value !== null) return false;
+		if (hasVersionEdits(draftVersion.value)) return false;
+		if (draftVersion.value?.id === '+') return createVersionsAllowed.value;
+		return updateVersionsAllowed.value || createVersionsAllowed.value;
+	});
+
+	watch(hasEdits, (newHasEdits, oldHasEdits) => {
+		if (!newHasEdits || oldHasEdits) return;
+		if (!canAutoSwitchToDraft.value) return;
+		if (!draftVersion.value) return;
+
+		stashAutoSwitchPendingEdits();
+
+		router.replace({
+			...route,
+			query: { ...route.query, version: VERSION_KEY_DRAFT },
+		});
+	});
+
+	return {
+		canAutoSwitchToDraft,
+		draftVersion,
+		applyAutoSwitchPendingEdits,
+	};
+
+	function applyAutoSwitchPendingEdits() {
+		if (!Object.keys(autoSwitchPendingEdits.value).length) return null;
+
+		const editsToApply = { ...autoSwitchPendingEdits.value };
+		autoSwitchPendingEdits.value = {};
+
+		return editsToApply;
+	}
+
+	function stashAutoSwitchPendingEdits() {
+		autoSwitchPendingEdits.value = { ...edits.value };
+		edits.value = {};
+	}
+
+	function hasVersionEdits(version: ContentVersionMaybeNew | null) {
+		if (!version || version?.id === '+') return false;
+		return (version as ContentVersionWithType).delta !== null;
 	}
 }
 </script>
@@ -1112,7 +1117,7 @@ function editDraftVersion() {
 					v-if="currentVersion === null && !canAutoSwitchToDraft"
 					:label="$t('edit')"
 					icon="edit"
-					@click="editDraftVersion()"
+					@click="currentVersion = draftVersion"
 				/>
 
 				<template v-else>

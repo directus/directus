@@ -83,11 +83,6 @@ export function useItem<T extends Item>(
 		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
-	// Memoize the query reference so equivalent shapes don't trigger refresh.
-	// Without this, transitioning currentVersion from null → a new (id: '+')
-	// draft re-creates the same object literal but with a fresh reference,
-	// causing the watch below to refetch the item and disable form fields
-	// mid-edit (e.g., during the auto-switch-to-draft flow).
 	const query = computed<Query>((prev) => {
 		const version = unref(currentVersion);
 		const extra = unref(extraQuery);
@@ -95,6 +90,7 @@ export function useItem<T extends Item>(
 		const next: Query =
 			!version || version.id === '+' ? { ...extra } : { ...extra, version: version.key, versionRaw: true };
 
+		// Preserve reference on equivalent shapes; otherwise the auto-switch to a new ('+') draft would refetch and disable form fields mid-edit.
 		return prev && isEqual(prev, next) ? prev : next;
 	});
 
