@@ -1,8 +1,10 @@
+import { useEnv } from '@directus/env';
 import { ErrorCode, InternalServerError, isDirectusError } from '@directus/errors';
 import type { DeepPartial } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler } from 'express';
+import { buildMcpWWWAuthenticateHeader, getMcpUrls, isMcpPath } from '../ai/mcp/utils.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
@@ -18,6 +20,7 @@ type ApiError = {
 const FALLBACK_ERROR = new InternalServerError();
 
 export const errorHandler = asyncErrorHandler(async (err, req, res) => {
+	const env = useEnv();
 	const logger = useLogger();
 
 	let errors: ApiError[] = [];
@@ -27,6 +30,28 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 	const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
 
 	for (const error of receivedErrors) {
+		// MCP OAuth: return RFC 6750 WWW-Authenticate on 401 for /mcp paths.
+		// This catches expired/invalid tokens that fail in the authenticate middleware
+		// BEFORE the request reaches the MCP server. The MCP server handles the "no
+		// credentials" case itself; this handles "bad credentials" from upstream.
+		if (
+			(isDirectusError(error, ErrorCode.InvalidCredentials) ||
+				isDirectusError(error, ErrorCode.InvalidToken) ||
+				isDirectusError(error, ErrorCode.TokenExpired)) &&
+			isMcpPath(req.path) &&
+			env['MCP_OAUTH_ENABLED'] === true
+		) {
+			const { metadataUrl } = getMcpUrls();
+
+			res
+				.status(401)
+				.set('WWW-Authenticate', buildMcpWWWAuthenticateHeader(metadataUrl, 'invalid_token'))
+				.set('Access-Control-Expose-Headers', 'WWW-Authenticate')
+				.json({ error: 'invalid_token', error_description: error.message });
+
+			return;
+		}
+
 		// In dev mode, if available, expose stack trace under error's extensions data
 		if (getNodeEnv() === 'development' && error instanceof Error && error.stack) {
 			((error as DeepPartial<ApiError>).extensions ??= {})['stack'] = error.stack;

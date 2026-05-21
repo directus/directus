@@ -11,6 +11,7 @@ const accessibleSystemCollections = {
 	directus_presets: { route: '/settings/presets' },
 	directus_translations: { route: '/settings/translations' },
 	directus_flows: { route: '/settings/flows' },
+	directus_oauth_clients: { route: '/settings/mcp-oauth-clients' },
 } as const;
 
 function isAccessibleSystemCollection(collection: string): collection is keyof typeof accessibleSystemCollections {
