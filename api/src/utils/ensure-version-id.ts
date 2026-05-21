@@ -1,3 +1,7 @@
+// Keep this in sync with app/src/utils/ensure-version-id.ts.
+// Phase 1 bridge: AI/visual paths only have { collection, item, versionKey }, but
+// versionsService.save needs a version id. Phase 2 will accept version keys directly.
+
 import type { Item, PrimaryKey } from '@directus/types';
 import type { VersionsService } from '../services/versions.js';
 

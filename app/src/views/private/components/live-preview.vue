@@ -46,6 +46,7 @@ const {
 	sidebarDisabled = false,
 	parentScope,
 	switchVersion,
+	hasUnsavedEdits = false,
 } = defineProps<{
 	url: string | string[];
 	invalidUrl?: boolean;
@@ -67,6 +68,7 @@ const {
 	sidebarDisabled?: boolean;
 	parentScope?: { collection: string; key: PrimaryKey };
 	switchVersion?: (versionKey: string) => void | Promise<void>;
+	hasUnsavedEdits?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -511,6 +513,7 @@ function useUrls() {
 								:version="version"
 								:parent-scope
 								:switch-version
+								:has-unsaved-edits="hasUnsavedEdits"
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
 							/>
@@ -555,6 +558,7 @@ function useUrls() {
 						:version="version"
 						:parent-scope
 						:switch-version
+						:has-unsaved-edits="hasUnsavedEdits"
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
 					/>

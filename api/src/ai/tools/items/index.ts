@@ -6,19 +6,20 @@ import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Item, PrimaryKey, SchemaOverview } from '@directus/types';
 import {
 	buildPayload,
+	getSchemaPrimaryKeyFields,
 	isObject,
 	mergeNestedRelationDeltaInto,
-	REFUSAL,
 	resolveWriteTarget,
 	toArray,
+	WRITE_TARGET_REFUSAL,
 } from '@directus/utils';
 import { z } from 'zod';
-import type { ChatContext } from '../../chat/models/chat-request.js';
 import { CollectionsService } from '../../../services/collections.js';
 import { ItemsService } from '../../../services/items.js';
 import { VersionsService } from '../../../services/versions.js';
 import { ensureVersionId } from '../../../utils/ensure-version-id.js';
 import { requireText } from '../../../utils/require-text.js';
+import type { ChatContext } from '../../chat/models/chat-request.js';
 import { defineTool } from '../define-tool.js';
 import {
 	ItemInputSchema,
@@ -31,6 +32,11 @@ import {
 import { buildSanitizedQueryFromArgs } from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const ITEM_TOOL_REFUSAL = {
+	NO_KEYS: 'NO_KEYS',
+	NO_PUBLISHED_SINGLETON: 'NO_PUBLISHED_SINGLETON',
+} as const;
 
 const PartialItemInputSchema = z.strictObject({
 	collection: z.string(),
@@ -108,7 +114,10 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		if (args.action === 'create') {
 			if (hasDraftVersionHint(args.query?.version, context)) {
 				throw new InvalidPayloadError({
-					reason: `${REFUSAL.VERSIONING_REQUIRED} Creating items through a content version is not supported.`,
+					reason: formatVersioningRefusal(
+						WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED,
+						'Creating items through a content version is not supported.',
+					),
 				});
 			}
 
@@ -176,7 +185,10 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 					if (singletonKey === undefined || singletonKey === null) {
 						if (collectionIsVersioned) {
 							throw new InvalidPayloadError({
-								reason: `${REFUSAL.NO_PUBLISHED_SINGLETON} Versioned singleton has no published row to version.`,
+								reason: formatVersioningRefusal(
+									ITEM_TOOL_REFUSAL.NO_PUBLISHED_SINGLETON,
+									'Versioned singleton has no published row to version.',
+								),
 							});
 						}
 
@@ -223,7 +235,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 
 				if (updates.length === 0) {
 					throw new InvalidPayloadError({
-						reason: `${REFUSAL.NO_KEYS} Versioned updates require explicit item keys.`,
+						reason: formatVersioningRefusal(ITEM_TOOL_REFUSAL.NO_KEYS, 'Versioned updates require explicit item keys.'),
 					});
 				}
 
@@ -266,7 +278,10 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		if (args.action === 'delete') {
 			if (hasDraftVersionHint(args.query?.version, context)) {
 				throw new InvalidPayloadError({
-					reason: `${REFUSAL.VERSIONING_REQUIRED} Deleting items through a content version is not supported.`,
+					reason: formatVersioningRefusal(
+						WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED,
+						'Deleting items through a content version is not supported.',
+					),
 				});
 			}
 
@@ -306,6 +321,7 @@ async function updateWithVersionRouting({
 	const versionsService = new VersionsService({ schema, accountability });
 	const results: unknown[] = [];
 	const parentBatches = new Map<string, { collection: string; item: PrimaryKey; versionKey: string; payload: Item }>();
+	const identityFields = getSchemaPrimaryKeyFields(schema);
 
 	for (const update of updates) {
 		const target = await resolveWriteTarget({
@@ -314,6 +330,15 @@ async function updateWithVersionRouting({
 			hint: getVersionHint(args, update.key, context),
 			collectionHasVersioning,
 			readParent: async (parent, fields) => {
+				// Materialize the version row before reading. ItemsService.readOne with `version`
+				// throws 403 when no directus_versions row exists for that (collection, item, key).
+				// Phase 2 will teach handleVersion to fall back to published.
+				await ensureVersionId(versionsService, {
+					collection: parent.collection,
+					item: parent.key,
+					versionKey: parent.versionKey,
+				});
+
 				const parentService = new ItemsService(parent.collection, { schema, accountability });
 
 				return parentService.readOne(parent.key, {
@@ -325,7 +350,7 @@ async function updateWithVersionRouting({
 		});
 
 		if (target.kind === 'refuse') {
-			throw new InvalidPayloadError({ reason: target.message });
+			throw new InvalidPayloadError({ reason: formatVersioningRefusal(target.token, target.message) });
 		}
 
 		if (target.kind === 'published') {
@@ -372,7 +397,7 @@ async function updateWithVersionRouting({
 		const batch = parentBatches.get(batchKey);
 
 		if (batch) {
-			mergePayloadForSingleSave(batch.payload, payload);
+			mergePayloadForSingleSave(batch.payload, payload, identityFields);
 		} else {
 			parentBatches.set(batchKey, {
 				collection: target.parent.collection,
@@ -400,7 +425,10 @@ function getKeyedUpdates(args: ItemsArgs, primaryKeyField: string): { key: Prima
 
 			if (key === undefined || key === null) {
 				throw new InvalidPayloadError({
-					reason: `${REFUSAL.NO_KEYS} Batch updates against versions require "${primaryKeyField}".`,
+					reason: formatVersioningRefusal(
+						ITEM_TOOL_REFUSAL.NO_KEYS,
+						`Batch updates against versions require "${primaryKeyField}".`,
+					),
 				});
 			}
 
@@ -409,7 +437,7 @@ function getKeyedUpdates(args: ItemsArgs, primaryKeyField: string): { key: Prima
 	}
 
 	if (args.keys) {
-		return args.keys.map((key) => ({ key, data: args.data }));
+		return args.keys.map((key) => ({ key, data: { ...args.data } }));
 	}
 
 	return [];
@@ -482,11 +510,16 @@ function isDraftVersionKey(versionKey: string | null | undefined) {
 	return Boolean(versionKey && !isPublishedVersionKey(versionKey));
 }
 
+function formatVersioningRefusal(token: string, message: string) {
+	if (token === WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED) return `[VERSIONING_REQUIRED] ${message}`;
+	return `[VERSIONING_REQUIRED:${token}] ${message}`;
+}
+
 function getPrimaryKeyField(schema: SchemaOverview, collection: string) {
 	return schema.collections[collection]?.primary ?? 'id';
 }
 
-function mergePayloadForSingleSave(target: Item, source: Item) {
+function mergePayloadForSingleSave(target: Item, source: Item, identityFields: string[]) {
 	for (const [field, incoming] of Object.entries(source)) {
 		const existing = target[field];
 
@@ -500,7 +533,7 @@ function mergePayloadForSingleSave(target: Item, source: Item) {
 			continue;
 		}
 
-		mergeNestedRelationDeltaInto(target, { [field]: incoming });
+		mergeNestedRelationDeltaInto(target, { [field]: incoming }, { identityFields });
 	}
 }
 

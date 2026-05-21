@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
-import { buildPayload, getEndpoint, resolveWriteTarget, type ParentRelation } from '@directus/utils';
+import {
+	buildPayload,
+	findParentInitialValue,
+	getEndpoint,
+	getParentInitialValueFields,
+	resolveWriteTarget,
+	WRITE_TARGET_REFUSAL,
+	type WriteTargetRefusalToken,
+} from '@directus/utils';
 import { sameOrigin } from '@directus/utils/browser';
 import type {
 	AddToContextData,
@@ -13,9 +21,10 @@ import type {
 	VisualEditingTheme,
 } from '@directus/visual-editing/types';
 import { useEventListener } from '@vueuse/core';
+import { cloneDeep, isEqual } from 'lodash';
 import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { NavigationData, ReceiveData } from '../types';
+import type { EditData, NavigationData, ReceiveData } from '../types';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useAiContextStore } from '@/ai/stores/use-ai-context';
@@ -33,20 +42,29 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { ensureVersionId } from '@/utils/ensure-version-id';
-import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 
-const { frameSrc, frameEl, showEditableElements, version, parentScope, switchVersion } = defineProps<{
+const {
+	frameSrc,
+	frameEl,
+	showEditableElements,
+	version,
+	parentScope,
+	switchVersion,
+	hasUnsavedEdits: parentHasUnsavedEdits = false,
+} = defineProps<{
 	frameSrc: string;
 	frameEl?: HTMLIFrameElement;
 	showEditableElements?: boolean;
 	version: Pick<ContentVersion, 'key' | 'name'> | null;
 	parentScope?: VersionGateParentScope;
 	switchVersion?: (versionKey: string) => void | Promise<void>;
+	hasUnsavedEdits?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -55,6 +73,15 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+
+const writeTargetRefusalMessageKeys = {
+	[WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED]: 'write_target_refusal.versioning_required',
+	[WRITE_TARGET_REFUSAL.NO_PARENT_CONTEXT]: 'write_target_refusal.no_parent_context',
+	[WRITE_TARGET_REFUSAL.NO_PARENT_PATH]: 'write_target_refusal.no_parent_path',
+	[WRITE_TARGET_REFUSAL.MULTI_RELATION]: 'write_target_refusal.multi_relation',
+	[WRITE_TARGET_REFUSAL.RELATED_NOT_FOUND]: 'write_target_refusal.related_not_found',
+	[WRITE_TARGET_REFUSAL.STALE_ATTACHMENT]: 'write_target_refusal.stale_attachment',
+} satisfies Record<WriteTargetRefusalToken, string>;
 
 const {
 	collection,
@@ -87,7 +114,7 @@ function useWebsiteFrame({
 	guardVersionSwitch,
 }: {
 	onClickEdit: (data: unknown) => void;
-	guardVersionSwitch: (collection: string) => Promise<boolean>;
+	guardVersionSwitch: (collection: string, effectiveParentScope?: VersionGateParentScope | null) => Promise<boolean>;
 }) {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
@@ -236,9 +263,10 @@ function useWebsiteFrame({
 
 	async function receiveAddToContext(data: unknown) {
 		const { key, editConfig, rect } = data as AddToContextData;
+		const effectiveParentScope = parentScope ?? null;
 
 		if (!key || !editConfig?.collection || editConfig.item == null) return;
-		if ((await guardVersionSwitch(editConfig.collection)) === false) return;
+		if ((await guardVersionSwitch(editConfig.collection, effectiveParentScope)) === false) return;
 
 		stageVisualElement({
 			key,
@@ -246,8 +274,14 @@ function useWebsiteFrame({
 			item: editConfig.item,
 			fields: editConfig.fields,
 			...(version?.key ? { version: version.key } : {}),
-			...(version?.key && parentScope
-				? { parent: { collection: parentScope.collection, item: parentScope.key, version: version.key } }
+			...(version?.key && effectiveParentScope
+				? {
+						parent: {
+							collection: effectiveParentScope.collection,
+							item: effectiveParentScope.key,
+							version: version.key,
+						},
+					}
 				: {}),
 			rect,
 		});
@@ -330,12 +364,13 @@ function useItemWithEdits() {
 	const { info: collectionInfo } = useCollection(collection);
 
 	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
-	const hasUnsavedEdits = computed(() => Object.keys(edits.value).length > 0);
+	const hasOverlayEdits = computed(() => Object.keys(edits.value).length > 0);
+	const hasVersionSwitchEdits = computed(() => parentHasUnsavedEdits || hasOverlayEdits.value);
 
 	const versionGate = useVersionGate({
 		currentVersion: computed(() => version),
 		parentScope: computed(() => parentScope ?? null),
-		hasUnsavedEdits,
+		hasUnsavedEdits: hasVersionSwitchEdits,
 		switchTo: async (versionKey) => {
 			await switchVersion?.(versionKey);
 		},
@@ -345,7 +380,7 @@ function useItemWithEdits() {
 		const hasEdits = Object.keys(newEdits)?.length;
 		if (!hasEdits || saving.value) return;
 
-		void save();
+		void savePendingEdits();
 	});
 
 	return {
@@ -379,21 +414,35 @@ function useItemWithEdits() {
 		return getItemRoute(collection.value, primaryKey.value, version?.key);
 	}
 
-	function resetEdits() {
-		edits.value = {};
-	}
-
-	async function save() {
+	async function savePendingEdits() {
 		saving.value = true;
 
 		try {
+			while (Object.keys(edits.value).length > 0) {
+				const snapshot = cloneDeep(edits.value);
+				const saved = await save(snapshot);
+
+				if (!saved) return;
+
+				removeSavedEdits(snapshot);
+			}
+		} finally {
+			saving.value = false;
+		}
+	}
+
+	async function save(editsSnapshot: Record<string, any>) {
+		try {
 			let response;
 			let shouldReplaceEdits = true;
+			let savedPayload = cloneDeep(editsSnapshot);
 
 			if (isNew.value) {
-				response = await api.post(itemEndpoint.value, edits.value);
+				response = await api.post(itemEndpoint.value, editsSnapshot);
 				notify({ title: t('item_create_success', 1), icon: 'check' });
 			} else {
+				const effectiveParentScope = getEffectiveParentScope();
+
 				const target = await resolveWriteTarget({
 					schema: getSchemaOverview({
 						collections: collectionsStore.collections,
@@ -404,8 +453,8 @@ function useItemWithEdits() {
 					hint: {
 						explicitVersion: version?.key,
 						page:
-							version?.key && parentScope
-								? { collection: parentScope.collection, item: parentScope.key, version: version.key }
+							version?.key && effectiveParentScope
+								? { collection: effectiveParentScope.collection, item: effectiveParentScope.key, version: version.key }
 								: null,
 					},
 					collectionHasVersioning: (collection) =>
@@ -414,12 +463,12 @@ function useItemWithEdits() {
 				});
 
 				if (target.kind === 'refuse') {
-					notify({ title: target.message, type: 'error' });
-					return;
+					notify({ title: getWriteTargetRefusalMessage(target.token), type: 'error' });
+					return false;
 				}
 
 				if (target.kind === 'published') {
-					response = await api.patch(itemEndpoint.value, edits.value);
+					response = await api.patch(itemEndpoint.value, editsSnapshot);
 					notify({ title: t('item_update_success', 1), icon: 'check' });
 				} else if (target.kind === 'item-version') {
 					const versionId = await ensureVersionId(api, {
@@ -428,11 +477,11 @@ function useItemWithEdits() {
 						versionKey: target.versionKey,
 					});
 
-					await api.post(`/versions/${versionId}/save`, buildPayload(target, edits.value, primaryKey.value));
+					await api.post(`/versions/${versionId}/save`, buildPayload(target, editsSnapshot, primaryKey.value));
 
 					response = await api.get(itemEndpoint.value, {
 						params: {
-							fields: Object.keys(edits.value),
+							fields: Object.keys(editsSnapshot),
 							version: target.versionKey,
 						},
 					});
@@ -443,31 +492,41 @@ function useItemWithEdits() {
 						versionKey: target.parent.versionKey,
 					});
 
-					await api.post(`/versions/${versionId}/save`, buildPayload(target, edits.value, primaryKey.value));
+					await api.post(`/versions/${versionId}/save`, buildPayload(target, editsSnapshot, primaryKey.value));
 					shouldReplaceEdits = false;
 				}
 			}
 
 			if (shouldReplaceEdits && response) {
-				const replaceEditsWithResponseData = (key: string) => (edits.value[key] = response.data.data[key]);
-				Object.keys(edits.value).forEach(replaceEditsWithResponseData);
+				savedPayload = Object.fromEntries(Object.keys(editsSnapshot).map((key) => [key, response.data.data[key]]));
 			}
 
 			sendSaved({
 				key: msgKey.value,
 				collection: collection.value,
 				item: primaryKey.value,
-				payload: JSON.parse(JSON.stringify(edits.value)),
+				payload: JSON.parse(JSON.stringify(savedPayload)),
 			});
 
 			emit('saved', { collection: collection.value, primaryKey: primaryKey.value });
 
-			resetEdits();
+			return true;
 		} catch (error) {
 			unexpectedError(error);
-		} finally {
-			saving.value = false;
+			return false;
 		}
+	}
+
+	function removeSavedEdits(savedSnapshot: Record<string, any>) {
+		const nextEdits = { ...edits.value };
+
+		for (const [key, value] of Object.entries(savedSnapshot)) {
+			if (isEqual(nextEdits[key], value)) {
+				delete nextEdits[key];
+			}
+		}
+
+		edits.value = nextEdits;
 	}
 
 	function setEditConfigData(data: unknown, createNew = false) {
@@ -513,8 +572,12 @@ function useItemWithEdits() {
 	}
 
 	async function onClickEdit(data: unknown) {
-		const { editConfig } = data as { editConfig?: EditConfig };
-		if (editConfig?.collection && (await guardVersionSwitch(editConfig.collection)) === false) return;
+		const { editConfig } = data as EditData;
+		const effectiveParentScope = parentScope ?? null;
+
+		if (editConfig?.collection && (await guardVersionSwitch(editConfig.collection, effectiveParentScope)) === false) {
+			return;
+		}
 
 		const success = setEditConfigData(data);
 		if (!success) return;
@@ -535,12 +598,16 @@ function useItemWithEdits() {
 		editOverlayActive.value = true;
 	}
 
-	async function fetchParentVersionInitialValues() {
-		if (!version?.key || !parentScope || isNew.value) return null;
-		if (collectionsStore.getCollection(collection.value)?.meta?.versioning) return null;
-		if (!collectionsStore.getCollection(parentScope.collection)?.meta?.versioning) return null;
+	function getWriteTargetRefusalMessage(token: WriteTargetRefusalToken) {
+		return t(writeTargetRefusalMessageKeys[token]);
+	}
 
-		const readParentResults = new Map<string, Item | null>();
+	async function fetchParentVersionInitialValues() {
+		const effectiveParentScope = getEffectiveParentScope();
+
+		if (!version?.key || !effectiveParentScope || isNew.value) return null;
+		if (collectionsStore.getCollection(collection.value)?.meta?.versioning) return null;
+		if (!collectionsStore.getCollection(effectiveParentScope.collection)?.meta?.versioning) return null;
 
 		const target = await resolveWriteTarget({
 			schema: getSchemaOverview({
@@ -551,34 +618,39 @@ function useItemWithEdits() {
 			target: { collection: collection.value, key: primaryKey.value },
 			hint: {
 				explicitVersion: version.key,
-				page: { collection: parentScope.collection, item: parentScope.key, version: version.key },
+				page: { collection: effectiveParentScope.collection, item: effectiveParentScope.key, version: version.key },
 			},
 			collectionHasVersioning: (collection) => Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
-			readParent: async (ref, fields) => {
-				const parentItem = await readParent(ref, fields);
-				readParentResults.set(getFieldsKey(fields), parentItem);
-				return parentItem;
-			},
+			readParent,
 		});
 
 		if (target.kind !== 'parent-version') return null;
 
-		const fields = getParentInitialValueFields(target.relation);
-		const parentItem = readParentResults.get(getFieldsKey(fields)) ?? (await readParent(target.parent, fields));
+		const parentItem = await readParent(target.parent, getParentInitialValueFields(target.relation));
 		if (!parentItem) return null;
 
 		return findParentInitialValue(target.relation, parentItem, collection.value, primaryKey.value);
 	}
 
-	async function guardVersionSwitch(targetCollection: string) {
-		const decision = versionGate.check(targetCollection);
+	async function guardVersionSwitch(
+		targetCollection: string,
+		effectiveParentScope: VersionGateParentScope | null = null,
+	) {
+		const decision = versionGate.check(targetCollection, effectiveParentScope);
 		if (decision.allowed) return true;
 
 		await versionGate.requestSwitch(decision);
 		return false;
 	}
 
+	function getEffectiveParentScope() {
+		return parentScope ?? null;
+	}
+
 	async function readParent(ref: { collection: string; key: PrimaryKey; versionKey: string }, fields: string[]) {
+		// Materialize the version row before reading. `GET /items/:c/:k?version=X` returns 403
+		// when no directus_versions row exists for that (collection, item, key). Phase 2 will
+		// teach the API to fall back to published; this call can be removed then.
 		await ensureVersionId(api, {
 			collection: ref.collection,
 			item: ref.key,
@@ -595,72 +667,6 @@ function useItemWithEdits() {
 		});
 
 		return data;
-	}
-
-	function getParentInitialValueFields(relation: ParentRelation) {
-		if (relation.kind === 'm2o') return [`${relation.parentField}.*`];
-		if (relation.kind === 'o2m') return [`${relation.parentField}.*`];
-
-		if (relation.kind === 'm2m') {
-			return [
-				`${relation.parentField}.${relation.junctionPkField}`,
-				`${relation.parentField}.${relation.junctionField}.*`,
-			];
-		}
-
-		return [
-			`${relation.parentField}.${relation.junctionPkField}`,
-			`${relation.parentField}.${relation.collectionField}`,
-			`${relation.parentField}.${relation.junctionField}.*`,
-		];
-	}
-
-	function findParentInitialValue(
-		relation: ParentRelation,
-		parentItem: Item,
-		targetCollection: string,
-		targetKey: PrimaryKey,
-	) {
-		if (relation.kind === 'm2o') {
-			const child = parentItem[relation.parentField];
-			if (!isItem(child)) return null;
-			return sameKey(child[relation.childPkField], targetKey) ? child : null;
-		}
-
-		const relationValue = parentItem[relation.parentField];
-		if (!Array.isArray(relationValue)) return null;
-
-		if (relation.kind === 'o2m') {
-			return relationValue.find((item) => isItem(item) && sameKey(item[relation.childPkField], targetKey)) ?? null;
-		}
-
-		for (const junctionItem of relationValue) {
-			if (!isItem(junctionItem)) continue;
-
-			const child = junctionItem[relation.junctionField];
-			if (!isItem(child)) continue;
-			if (!sameKey(child[relation.childPkField], targetKey)) continue;
-
-			if (relation.kind === 'm2a' && junctionItem[relation.collectionField] !== targetCollection) {
-				continue;
-			}
-
-			return child;
-		}
-
-		return null;
-	}
-
-	function getFieldsKey(fields: string[]) {
-		return fields.join('\0');
-	}
-
-	function sameKey(left: unknown, right: PrimaryKey) {
-		return String(left) === String(right);
-	}
-
-	function isItem(value: unknown): value is Item {
-		return typeof value === 'object' && value !== null && !Array.isArray(value);
 	}
 
 	async function setFocusTemporarily() {

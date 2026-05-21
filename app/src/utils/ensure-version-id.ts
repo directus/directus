@@ -1,3 +1,7 @@
+// Keep this in sync with api/src/utils/ensure-version-id.ts.
+// Phase 1 bridge: AI/visual paths only have { collection, item, versionKey }, but
+// /versions/save needs a version id. Phase 2 will accept version keys directly.
+
 import type { PrimaryKey } from '@directus/types';
 import type { AxiosInstance } from 'axios';
 
@@ -19,7 +23,7 @@ export async function ensureVersionId(
 		},
 	});
 
-	if (existing.length > 0) return existing[0].id;
+	if (existing.length > 0 && existing[0]?.id !== undefined) return existing[0].id;
 
 	const {
 		data: { data: created },

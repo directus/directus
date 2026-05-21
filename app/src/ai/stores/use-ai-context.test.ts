@@ -1,5 +1,5 @@
-import { createTestingPinia } from '@pinia/testing';
 import type { Relation } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { PendingContextItem } from '../types';
@@ -288,8 +288,42 @@ describe('useAiContextStore', () => {
 			expect(attachments[0]!.snapshot).toEqual({ title: 'Fetched Title' });
 		});
 
+		test('does not pass a stale visual element version when target resolves to published', async () => {
+			const store = useAiContextStore();
+			setupSchema([collection('pages', true), collection('blocks', false)], []);
+			vi.mocked(sdk.request).mockResolvedValue({ title: 'Published Title' });
+
+			store.addPendingContext({
+				id: 'block',
+				type: 'visual-element',
+				data: {
+					collection: 'blocks',
+					item: 1,
+					key: 'block',
+					fields: ['title'],
+					version: 'draft',
+					parent: {
+						collection: 'pages',
+						item: 1,
+						version: 'published',
+					},
+				},
+				display: 'Block',
+			});
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments[0]!.snapshot).toEqual({ title: 'Published Title' });
+
+			expect(vi.mocked(sdk.request).mock.calls[0]?.[0]()).toEqual({
+				path: '/items/blocks/1',
+				params: { fields: ['title'] },
+			});
+		});
+
 		test('fetches O2M visual elements through the parent version', async () => {
 			const store = useAiContextStore();
+
 			setupSchema(
 				[collection('articles', true), collection('article_translations', false)],
 				[relation('article_translations', 'article_id', 'articles', { oneField: 'translations' })],
@@ -310,6 +344,7 @@ describe('useAiContextStore', () => {
 			const attachments = await store.fetchContextData();
 
 			expect(attachments[0]!.snapshot).toEqual({ id: 5, title: 'Draft title' });
+
 			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
 				path: '/items/articles/1',
 				params: { fields: ['translations.id', 'translations.title'], version: 'draft' },
@@ -318,6 +353,7 @@ describe('useAiContextStore', () => {
 
 		test('fetches M2M visual elements through the parent version', async () => {
 			const store = useAiContextStore();
+
 			setupSchema(
 				[collection('articles', true), collection('articles_tags', false), collection('tags', false)],
 				[
@@ -341,6 +377,7 @@ describe('useAiContextStore', () => {
 			const attachments = await store.fetchContextData();
 
 			expect(attachments[0]!.snapshot).toEqual({ id: 5, title: 'Draft tag' });
+
 			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
 				path: '/items/articles/1',
 				params: { fields: ['tags.id', 'tags.tags_id.id', 'tags.tags_id.title'], version: 'draft' },
@@ -349,6 +386,7 @@ describe('useAiContextStore', () => {
 
 		test('fetches M2A visual elements through the parent version', async () => {
 			const store = useAiContextStore();
+
 			setupSchema(
 				[collection('pages', true), collection('pages_blocks', false), collection('block_hero', false)],
 				[
@@ -377,6 +415,7 @@ describe('useAiContextStore', () => {
 			const attachments = await store.fetchContextData();
 
 			expect(attachments[0]!.snapshot).toEqual({ id: 9, title: 'Draft block' });
+
 			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
 				path: '/items/pages/1',
 				params: {
@@ -405,6 +444,7 @@ describe('useAiContextStore', () => {
 			const attachments = await store.fetchContextData();
 
 			expect(attachments[0]!.snapshot).toEqual({ id: 4, title: 'Draft SEO' });
+
 			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
 				path: '/items/pages/1',
 				params: { fields: ['seo.id', 'seo.title'], version: 'draft' },

@@ -1,5 +1,5 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability, Relation, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, type MockedFunction, test, vi } from 'vitest';
 import { CollectionsService } from '../../../services/collections.js';
 import { ItemsService } from '../../../services/items.js';
@@ -8,6 +8,7 @@ import { items } from './index.js';
 
 vi.mock('../../../services/collections.js');
 vi.mock('../../../services/items.js');
+
 vi.mock('../../../services/versions.js', () => ({
 	VersionsService: vi.fn(),
 }));
@@ -353,6 +354,7 @@ describe('items tool', () => {
 			test('should save versioned item updates to the requested version', async () => {
 				const updateData = { title: 'Updated Title' };
 				const updatedItem = { id: 1, title: 'Updated Title' };
+
 				const mockVersionsService = {
 					readByQuery: vi.fn().mockResolvedValue([]),
 					createOne: vi.fn().mockResolvedValue('version-1'),
@@ -383,17 +385,87 @@ describe('items tool', () => {
 				});
 
 				expect(mockItemsService.updateMany).not.toHaveBeenCalled();
+
 				expect(mockVersionsService.createOne).toHaveBeenCalledWith({
 					key: 'draft',
 					collection: 'test_collection',
 					item: '1',
 				});
+
 				expect(mockVersionsService.save).toHaveBeenCalledWith('version-1', updateData);
 				expect(mockItemsService.readMany).toHaveBeenCalledWith([1], expect.objectContaining({ version: 'draft' }));
 
 				expect(result).toEqual({
 					type: 'text',
 					data: [updatedItem],
+				});
+			});
+
+			test('should merge multiple child updates into one parent version save', async () => {
+				const mockVersionsService = {
+					readByQuery: vi.fn().mockResolvedValue([]),
+					createOne: vi.fn().mockResolvedValue('version-1'),
+					save: vi.fn().mockResolvedValue({}),
+				};
+
+				const schema = {
+					collections: {
+						pages: { singleton: false, primary: 'id' },
+						pages_blocks: { singleton: false, primary: 'id' },
+						block_hero: { singleton: false, primary: 'id' },
+					},
+					fields: {},
+					relations: [
+						relation('pages_blocks', 'pages_id', 'pages', {
+							oneField: 'blocks',
+							junctionField: 'item',
+						}),
+						relation('pages_blocks', 'item', null, {
+							oneCollectionField: 'collection',
+							oneAllowedCollections: ['block_hero'],
+						}),
+					],
+				} as unknown as SchemaOverview;
+
+				vi.mocked(CollectionsService).mockImplementation(
+					() =>
+						({
+							readOne: vi.fn(async (collection) => ({ meta: { versioning: collection === 'pages' } })),
+						}) as unknown as CollectionsService,
+				);
+
+				vi.mocked(VersionsService).mockImplementation(() => mockVersionsService as unknown as VersionsService);
+
+				mockItemsService.readOne.mockResolvedValue({
+					blocks: [
+						{ id: 7, collection: 'block_hero', item: { id: 9 } },
+						{ id: 8, collection: 'block_hero', item: { id: 10 } },
+					],
+				});
+
+				await items.handler({
+					args: {
+						action: 'update',
+						collection: 'block_hero',
+						keys: [9, 10],
+						data: { title: 'Updated Title' },
+					},
+					schema,
+					accountability: mockAccountability,
+					context: { page: { path: '/visual/pages/page-id', collection: 'pages', item: 'page-id', version: 'draft' } },
+				});
+
+				expect(mockVersionsService.save).toHaveBeenCalledTimes(1);
+
+				expect(mockVersionsService.save).toHaveBeenCalledWith('version-1', {
+					blocks: {
+						create: [],
+						update: [
+							{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Updated Title' } },
+							{ id: 8, collection: 'block_hero', item: { id: 10, title: 'Updated Title' } },
+						],
+						delete: [],
+					},
 				});
 			});
 		});
@@ -664,3 +736,34 @@ describe('items tool', () => {
 		});
 	});
 });
+
+function relation(
+	collection: string,
+	field: string,
+	relatedCollection: string | null,
+	options: {
+		oneField?: string | null;
+		junctionField?: string | null;
+		oneCollectionField?: string | null;
+		oneAllowedCollections?: string[] | null;
+	} = {},
+): Relation {
+	return {
+		collection,
+		field,
+		related_collection: relatedCollection,
+		schema: null,
+		meta: {
+			id: 1,
+			many_collection: collection,
+			many_field: field,
+			one_collection: relatedCollection,
+			one_field: options.oneField ?? null,
+			one_collection_field: options.oneCollectionField ?? null,
+			one_allowed_collections: options.oneAllowedCollections ?? null,
+			one_deselect_action: 'nullify',
+			junction_field: options.junctionField ?? null,
+			sort_field: null,
+		},
+	};
+}

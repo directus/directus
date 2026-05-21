@@ -1,20 +1,23 @@
 import { isPublishedVersionKey } from '@directus/constants';
-import type { Item, PrimaryKey, Relation, SchemaOverview } from '@directus/types';
+import type { Item, PrimaryKey, Relation, RelationMeta, SchemaOverview } from '@directus/types';
 import { isDetailedUpdateSyntax } from './is-detailed-update-syntax.js';
 import { isObject } from './is-object.js';
 
-export const REFUSAL = {
-	VERSIONING_REQUIRED: '[VERSIONING_REQUIRED]',
-	NO_KEYS: '[VERSIONING_REQUIRED:NO_KEYS]',
-	NO_PUBLISHED_SINGLETON: '[VERSIONING_REQUIRED:NO_PUBLISHED_SINGLETON]',
-	NO_PARENT_CONTEXT: '[VERSIONING_REQUIRED:NO_PARENT_CONTEXT]',
-	NO_PARENT_PATH: '[VERSIONING_REQUIRED:NO_PARENT_PATH]',
-	MULTI_RELATION: '[VERSIONING_REQUIRED:MULTI_RELATION]',
-	RELATED_NOT_FOUND: '[VERSIONING_REQUIRED:RELATED_ITEM_NOT_FOUND]',
-	STALE_ATTACHMENT: '[VERSIONING_REQUIRED:STALE_ATTACHMENT]',
+type RelationWithOneField = Relation & { meta: RelationMeta & { one_field: string } };
+type ParentJunctionRelation = Relation & {
+	meta: RelationMeta & { one_field: string; junction_field: string };
+};
+
+export const WRITE_TARGET_REFUSAL = {
+	VERSIONING_REQUIRED: 'VERSIONING_REQUIRED',
+	NO_PARENT_CONTEXT: 'NO_PARENT_CONTEXT',
+	NO_PARENT_PATH: 'NO_PARENT_PATH',
+	MULTI_RELATION: 'MULTI_RELATION',
+	RELATED_NOT_FOUND: 'RELATED_ITEM_NOT_FOUND',
+	STALE_ATTACHMENT: 'STALE_ATTACHMENT',
 } as const;
 
-export type RefusalToken = (typeof REFUSAL)[keyof typeof REFUSAL];
+export type WriteTargetRefusalToken = (typeof WRITE_TARGET_REFUSAL)[keyof typeof WRITE_TARGET_REFUSAL];
 
 export type ParentRef = {
 	collection: string;
@@ -67,9 +70,13 @@ export type ParentRelation =
 export type WriteTarget =
 	| { kind: 'published'; collection: string; key: PrimaryKey }
 	| { kind: 'item-version'; collection: string; key: PrimaryKey; versionKey: string }
-	| { kind: 'parent-version'; parent: ParentRef; relation: ParentRelation };
+	| { kind: 'parent-version'; parent: ParentRef; relation: ParentRelation; parentItem: Item };
 
-export type ResolveResult = WriteTarget | { kind: 'refuse'; token: RefusalToken; message: string };
+export type ResolveResult = WriteTarget | { kind: 'refuse'; token: WriteTargetRefusalToken; message: string };
+
+export type MergeNestedRelationDeltaOptions = {
+	identityFields?: Iterable<string>;
+};
 
 type ParentRelationCandidate =
 	| { kind: 'o2m'; parentField: string; childPkField: string }
@@ -105,7 +112,10 @@ export async function resolveWriteTarget(input: {
 
 	if (targetIsVersioned) {
 		if (!versionKey || isPublishedVersionKey(versionKey)) {
-			return refuse(REFUSAL.VERSIONING_REQUIRED, 'Updates to versioned collections require a draft version.');
+			return refuse(
+				WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED,
+				'Updates to versioned collections require a draft version.',
+			);
 		}
 
 		return {
@@ -120,7 +130,10 @@ export async function resolveWriteTarget(input: {
 
 	if (!parent) {
 		if (versionKey && !isPublishedVersionKey(versionKey)) {
-			return refuse(REFUSAL.NO_PARENT_CONTEXT, 'A parent item is required to save this child item to a version.');
+			return refuse(
+				WRITE_TARGET_REFUSAL.NO_PARENT_CONTEXT,
+				'A parent item is required to save this child item to a version.',
+			);
 		}
 
 		return { kind: 'published', collection: input.target.collection, key: input.target.key };
@@ -135,25 +148,29 @@ export async function resolveWriteTarget(input: {
 	const candidates = findParentRelationCandidates(input.schema, parent.collection, input.target.collection);
 
 	if (candidates.length === 0) {
-		return refuse(REFUSAL.NO_PARENT_PATH, 'No relation path exists from the parent item to this target item.');
+		return refuse(
+			WRITE_TARGET_REFUSAL.NO_PARENT_PATH,
+			'No relation path exists from the parent item to this target item.',
+		);
 	}
 
-	const matches: ParentRelation[] = [];
+	const matches: { relation: ParentRelation; parentItem: Item }[] = [];
 
 	for (const candidate of candidates) {
 		const parentItem = await input.readParent(parent, getParentReadFields(candidate));
 		if (!parentItem) continue;
 
 		const relation = findTargetInParentItem(candidate, parentItem, input.target.collection, input.target.key);
-		if (relation) matches.push(relation);
+		if (relation) matches.push({ relation, parentItem });
 	}
 
 	if (matches.length > 1) {
-		return refuse(REFUSAL.MULTI_RELATION, 'Multiple parent relations contain this target item.');
+		return refuse(WRITE_TARGET_REFUSAL.MULTI_RELATION, 'Multiple parent relations contain this target item.');
 	}
 
 	if (matches.length === 0) {
-		const token = hint.attachment ? REFUSAL.STALE_ATTACHMENT : REFUSAL.RELATED_NOT_FOUND;
+		const token = hint.attachment ? WRITE_TARGET_REFUSAL.STALE_ATTACHMENT : WRITE_TARGET_REFUSAL.RELATED_NOT_FOUND;
+
 		const message = hint.attachment
 			? 'The visual element no longer matches the parent item.'
 			: 'The target item was not found in the parent version.';
@@ -161,7 +178,8 @@ export async function resolveWriteTarget(input: {
 		return refuse(token, message);
 	}
 
-	return { kind: 'parent-version', parent, relation: matches[0]! };
+	const winner = matches[0]!;
+	return { kind: 'parent-version', parent, relation: winner.relation, parentItem: winner.parentItem };
 }
 
 export function buildPayload(target: WriteTarget, edits: Item, childPk: PrimaryKey): Item {
@@ -215,14 +233,20 @@ export function buildPayload(target: WriteTarget, edits: Item, childPk: PrimaryK
 	};
 }
 
-export function mergeNestedRelationDeltaInto(target: Item, source: Item): Item {
+export function mergeNestedRelationDeltaInto(
+	target: Item,
+	source: Item,
+	options: MergeNestedRelationDeltaOptions = {},
+): Item {
+	const identityFields = normalizeIdentityFields(options.identityFields);
+
 	for (const [field, incoming] of Object.entries(source)) {
 		const existing = target[field];
 
 		if (isDetailedUpdateSyntax(existing) && isDetailedUpdateSyntax(incoming)) {
 			target[field] = {
 				create: [...existing.create, ...incoming.create],
-				update: mergeDetailedUpdateEntries(existing.update, incoming.update),
+				update: mergeDetailedUpdateEntries(existing.update, incoming.update, identityFields),
 				delete: [...existing.delete, ...incoming.delete],
 			};
 
@@ -235,24 +259,52 @@ export function mergeNestedRelationDeltaInto(target: Item, source: Item): Item {
 	return target;
 }
 
-function mergeDetailedUpdateEntries(existing: unknown[], incoming: unknown[]): unknown[] {
+export function getSchemaPrimaryKeyFields(schema: SchemaOverview): string[] {
+	const fields = new Set<string>();
+
+	for (const collection of Object.values(schema.collections)) {
+		if (collection?.primary) fields.add(collection.primary);
+	}
+
+	return normalizeIdentityFields(fields);
+}
+
+function normalizeIdentityFields(fields: Iterable<string> | undefined): string[] {
+	const normalized = new Set<string>();
+
+	for (const field of fields ?? []) {
+		if (field) normalized.add(field);
+	}
+
+	normalized.add('id');
+
+	return [...normalized].sort((left, right) => {
+		if (left === 'id') return 1;
+		if (right === 'id') return -1;
+		return 0;
+	});
+}
+
+function mergeDetailedUpdateEntries(existing: unknown[], incoming: unknown[], identityFields: string[]): unknown[] {
 	const merged = [...existing];
 
 	for (const incomingEntry of incoming) {
-		const existingIndex = merged.findIndex((existingEntry) => hasSameUpdateIdentity(existingEntry, incomingEntry));
+		const existingIndex = merged.findIndex((existingEntry) =>
+			hasSameUpdateIdentity(existingEntry, incomingEntry, identityFields),
+		);
 
 		if (existingIndex === -1) {
 			merged.push(incomingEntry);
 			continue;
 		}
 
-		merged[existingIndex] = mergeUpdateEntry(merged[existingIndex], incomingEntry);
+		merged[existingIndex] = mergeUpdateEntry(merged[existingIndex], incomingEntry, identityFields);
 	}
 
 	return merged;
 }
 
-function mergeUpdateEntry(existing: unknown, incoming: unknown): unknown {
+function mergeUpdateEntry(existing: unknown, incoming: unknown, identityFields: string[]): unknown {
 	if (!isObject(existing) || !isObject(incoming)) return incoming;
 
 	const merged: Item = { ...existing, ...incoming };
@@ -260,27 +312,30 @@ function mergeUpdateEntry(existing: unknown, incoming: unknown): unknown {
 	for (const [field, incomingValue] of Object.entries(incoming)) {
 		const existingValue = existing[field];
 
-		if (hasSameUpdateIdentity(existingValue, incomingValue)) {
-			merged[field] = mergeUpdateEntry(existingValue, incomingValue);
+		if (hasSameUpdateIdentity(existingValue, incomingValue, identityFields)) {
+			merged[field] = mergeUpdateEntry(existingValue, incomingValue, identityFields);
 		}
 	}
 
 	return merged;
 }
 
-function hasSameUpdateIdentity(existing: unknown, incoming: unknown): boolean {
-	const existingId = getUpdateIdentity(existing);
-	const incomingId = getUpdateIdentity(incoming);
+function hasSameUpdateIdentity(existing: unknown, incoming: unknown, identityFields: string[]): boolean {
+	if (!isObject(existing) || !isObject(incoming)) return false;
 
-	if (existingId === undefined || incomingId === undefined) return false;
+	for (const field of identityFields) {
+		const existingId = getUpdateIdentity(existing, field);
+		const incomingId = getUpdateIdentity(incoming, field);
 
-	return String(existingId) === String(incomingId);
+		if (existingId === undefined || incomingId === undefined) continue;
+		if (String(existingId) === String(incomingId)) return true;
+	}
+
+	return false;
 }
 
-function getUpdateIdentity(value: unknown): unknown {
-	if (!isObject(value)) return undefined;
-
-	const id = value['id'];
+function getUpdateIdentity(value: Item, field: string): unknown {
+	const id = value[field];
 	if (id === null) return undefined;
 
 	return id;
@@ -288,17 +343,17 @@ function getUpdateIdentity(value: unknown): unknown {
 
 function resolveVersionKey(hint: VersionHint): string | undefined {
 	return (
-		normalizeVersionKey(hint.explicitVersion) ??
-		normalizeVersionKey(hint.attachment?.parent?.versionKey) ??
-		normalizeVersionKey(hint.attachment?.version) ??
-		normalizeVersionKey(hint.page?.version)
+		hint.explicitVersion ||
+		hint.attachment?.parent?.versionKey ||
+		hint.attachment?.version ||
+		hint.page?.version ||
+		undefined
 	);
 }
 
 function resolveParentRef(hint: VersionHint): ParentRef | null {
 	const attachmentParent = hint.attachment?.parent;
-	const attachmentParentVersion =
-		normalizeVersionKey(attachmentParent?.versionKey) ?? normalizeVersionKey(hint.attachment?.version);
+	const attachmentParentVersion = attachmentParent?.versionKey || hint.attachment?.version;
 
 	if (attachmentParent && attachmentParentVersion) {
 		return {
@@ -308,7 +363,7 @@ function resolveParentRef(hint: VersionHint): ParentRef | null {
 		};
 	}
 
-	const pageVersion = normalizeVersionKey(hint.page?.version);
+	const pageVersion = hint.page?.version;
 
 	if (hint.page?.collection && hint.page.item !== undefined && pageVersion) {
 		return {
@@ -321,13 +376,8 @@ function resolveParentRef(hint: VersionHint): ParentRef | null {
 	return null;
 }
 
-function normalizeVersionKey(versionKey: string | null | undefined): string | undefined {
-	if (!versionKey) return undefined;
-	return versionKey;
-}
-
-function refuse(token: RefusalToken, message: string): ResolveResult {
-	return { kind: 'refuse', token, message: `${token} ${message}` };
+function refuse(token: WriteTargetRefusalToken, message: string): ResolveResult {
+	return { kind: 'refuse', token, message };
 }
 
 function findParentRelationCandidates(
@@ -341,7 +391,7 @@ function findParentRelationCandidates(
 		if (isO2MRelation(relation, parentCollection, targetCollection)) {
 			candidates.push({
 				kind: 'o2m',
-				parentField: relation.meta.one_field!,
+				parentField: relation.meta.one_field,
 				childPkField: primaryKeyField(schema, targetCollection),
 			});
 
@@ -359,20 +409,20 @@ function findParentRelationCandidates(
 			if (collectionField) {
 				candidates.push({
 					kind: 'm2a',
-					parentField: relation.meta.one_field!,
+					parentField: relation.meta.one_field,
 					junctionCollection: relation.collection,
 					junctionPkField,
-					junctionField: relation.meta.junction_field!,
+					junctionField: relation.meta.junction_field,
 					collectionField,
 					childPkField,
 				});
 			} else {
 				candidates.push({
 					kind: 'm2m',
-					parentField: relation.meta.one_field!,
+					parentField: relation.meta.one_field,
 					junctionCollection: relation.collection,
 					junctionPkField,
-					junctionField: relation.meta.junction_field!,
+					junctionField: relation.meta.junction_field,
 					childPkField,
 				});
 			}
@@ -392,7 +442,11 @@ function findParentRelationCandidates(
 	return candidates;
 }
 
-function isO2MRelation(relation: Relation, parentCollection: string, targetCollection: string) {
+function isO2MRelation(
+	relation: Relation,
+	parentCollection: string,
+	targetCollection: string,
+): relation is RelationWithOneField {
 	return (
 		relation.collection === targetCollection &&
 		relation.related_collection === parentCollection &&
@@ -402,7 +456,7 @@ function isO2MRelation(relation: Relation, parentCollection: string, targetColle
 	);
 }
 
-function isParentJunctionRelation(relation: Relation, parentCollection: string) {
+function isParentJunctionRelation(relation: Relation, parentCollection: string): relation is ParentJunctionRelation {
 	return (
 		relation.related_collection === parentCollection &&
 		typeof relation.meta?.one_field === 'string' &&
@@ -416,8 +470,7 @@ function isM2ORelation(relation: Relation, parentCollection: string, targetColle
 	return (
 		relation.collection === parentCollection &&
 		relation.related_collection === targetCollection &&
-		!relation.meta?.junction_field &&
-		!relation.meta?.one_field
+		!relation.meta?.junction_field
 	);
 }
 
@@ -501,6 +554,61 @@ function findTargetInParentItem(
 		}
 
 		return { ...candidate, junctionItem };
+	}
+
+	return null;
+}
+
+export function getParentInitialValueFields(relation: ParentRelation): string[] {
+	if (relation.kind === 'm2o') return [`${relation.parentField}.*`];
+	if (relation.kind === 'o2m') return [`${relation.parentField}.*`];
+
+	if (relation.kind === 'm2m') {
+		return [
+			`${relation.parentField}.${relation.junctionPkField}`,
+			`${relation.parentField}.${relation.junctionField}.*`,
+		];
+	}
+
+	return [
+		`${relation.parentField}.${relation.junctionPkField}`,
+		`${relation.parentField}.${relation.collectionField}`,
+		`${relation.parentField}.${relation.junctionField}.*`,
+	];
+}
+
+export function findParentInitialValue(
+	relation: ParentRelation,
+	parentItem: Item,
+	targetCollection: string,
+	targetKey: PrimaryKey,
+): Item | null {
+	if (relation.kind === 'm2o') {
+		const child = parentItem[relation.parentField];
+		if (!isObject(child)) return null;
+		return sameKey(child[relation.childPkField], targetKey) ? child : null;
+	}
+
+	const relatedValue = parentItem[relation.parentField];
+	if (!Array.isArray(relatedValue)) return null;
+
+	if (relation.kind === 'o2m') {
+		const child = relatedValue.find((item) => isObject(item) && sameKey(item[relation.childPkField], targetKey));
+		return isObject(child) ? child : null;
+	}
+
+	for (const junctionItem of relatedValue) {
+		if (!isObject(junctionItem)) continue;
+
+		const child = junctionItem[relation.junctionField];
+		if (!isObject(child)) continue;
+		if (!sameKey(child[relation.childPkField], targetKey)) continue;
+
+		if (relation.kind === 'm2a' && junctionItem[relation.collectionField] !== targetCollection) {
+			continue;
+		}
+
+		return child;
 	}
 
 	return null;

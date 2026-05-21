@@ -1249,6 +1249,7 @@ function useAutoSwitchToDraft() {
 					:version="currentVersion"
 					:parent-scope="livePreviewParentScope"
 					:switch-version="switchToVersion"
+					:has-unsaved-edits="hasEdits"
 					:can-enable-visual-editing="visualEditingEnabled"
 					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"

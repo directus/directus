@@ -1,6 +1,15 @@
 import type { Relation, SchemaOverview } from '@directus/types';
 import { describe, expect, test, vi } from 'vitest';
-import { buildPayload, mergeNestedRelationDeltaInto, REFUSAL, resolveWriteTarget } from './write-target.js';
+import {
+	buildPayload,
+	findParentInitialValue,
+	getParentInitialValueFields,
+	getSchemaPrimaryKeyFields,
+	mergeNestedRelationDeltaInto,
+	resolveWriteTarget,
+	WRITE_TARGET_REFUSAL,
+	type WriteTarget,
+} from './write-target.js';
 
 describe('resolveWriteTarget', () => {
 	test('routes versioned collection updates to the item version', async () => {
@@ -25,7 +34,7 @@ describe('resolveWriteTarget', () => {
 				readParent: vi.fn(),
 			});
 
-			expect(result).toMatchObject({ kind: 'refuse', token: REFUSAL.VERSIONING_REQUIRED });
+			expect(result).toMatchObject({ kind: 'refuse', token: WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED });
 		}
 	});
 
@@ -45,7 +54,8 @@ describe('resolveWriteTarget', () => {
 		});
 
 		expect(result.kind).toBe('parent-version');
-		expect(buildPayload(result as any, { title: 'New' }, 5)).toEqual({
+
+		expect(buildPayload(result as WriteTarget, { title: 'New' }, 5)).toEqual({
 			translations: {
 				create: [],
 				update: [{ id: 5, title: 'New' }],
@@ -72,7 +82,8 @@ describe('resolveWriteTarget', () => {
 		});
 
 		expect(result.kind).toBe('parent-version');
-		expect(buildPayload(result as any, { name: 'New' }, 5)).toEqual({
+
+		expect(buildPayload(result as WriteTarget, { name: 'New' }, 5)).toEqual({
 			tags: {
 				create: [],
 				update: [{ id: 12, tags_id: { id: 5, name: 'New' } }],
@@ -102,7 +113,8 @@ describe('resolveWriteTarget', () => {
 		});
 
 		expect(result.kind).toBe('parent-version');
-		expect(buildPayload(result as any, { title: 'New' }, 9)).toEqual({
+
+		expect(buildPayload(result as WriteTarget, { title: 'New' }, 9)).toEqual({
 			blocks: {
 				create: [],
 				update: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'New' } }],
@@ -123,7 +135,26 @@ describe('resolveWriteTarget', () => {
 		});
 
 		expect(result.kind).toBe('parent-version');
-		expect(buildPayload(result as any, { title: 'New' }, 4)).toEqual({
+
+		expect(buildPayload(result as WriteTarget, { title: 'New' }, 4)).toEqual({
+			seo: { id: 4, title: 'New' },
+		});
+	});
+
+	test('routes M2O child updates through the parent version when a reverse alias exists', async () => {
+		const schema = createSchema([relation('pages', 'seo', 'seo', { oneField: 'pages' })]);
+
+		const result = await resolveWriteTarget({
+			schema,
+			target: { collection: 'seo', key: 4 },
+			hint: { page: { collection: 'pages', item: 1, version: 'draft' } },
+			collectionHasVersioning: versionedCollections('pages'),
+			readParent: vi.fn(async () => ({ seo: { id: 4, title: 'Old' } })),
+		});
+
+		expect(result.kind).toBe('parent-version');
+
+		expect(buildPayload(result as WriteTarget, { title: 'New' }, 4)).toEqual({
 			seo: { id: 4, title: 'New' },
 		});
 	});
@@ -193,7 +224,7 @@ describe('resolveWriteTarget', () => {
 			})),
 		});
 
-		expect(result).toMatchObject({ kind: 'refuse', token: REFUSAL.MULTI_RELATION });
+		expect(result).toMatchObject({ kind: 'refuse', token: WRITE_TARGET_REFUSAL.MULTI_RELATION });
 	});
 
 	test('refuses versioned child saves without parent context', async () => {
@@ -205,7 +236,93 @@ describe('resolveWriteTarget', () => {
 			readParent: vi.fn(),
 		});
 
-		expect(result).toMatchObject({ kind: 'refuse', token: REFUSAL.NO_PARENT_CONTEXT });
+		expect(result).toMatchObject({ kind: 'refuse', token: WRITE_TARGET_REFUSAL.NO_PARENT_CONTEXT });
+	});
+
+	test('routes to published when the parent collection is not versioned', async () => {
+		const readParent = vi.fn();
+
+		const result = await resolveWriteTarget({
+			schema: createSchema([relation('pages', 'seo', 'seo')]),
+			target: { collection: 'seo', key: 4 },
+			hint: { page: { collection: 'pages', item: 1, version: 'draft' } },
+			collectionHasVersioning: versionedCollections(),
+			readParent,
+		});
+
+		expect(result).toEqual({ kind: 'published', collection: 'seo', key: 4 });
+		expect(readParent).not.toHaveBeenCalled();
+	});
+
+	test('refuses parent version saves when the target item is not in the parent version', async () => {
+		const result = await resolveWriteTarget({
+			schema: createSchema([relation('pages', 'seo', 'seo')]),
+			target: { collection: 'seo', key: 4 },
+			hint: { page: { collection: 'pages', item: 1, version: 'draft' } },
+			collectionHasVersioning: versionedCollections('pages'),
+			readParent: vi.fn(async () => ({ seo: { id: 5 } })),
+		});
+
+		expect(result).toMatchObject({ kind: 'refuse', token: WRITE_TARGET_REFUSAL.RELATED_NOT_FOUND });
+	});
+
+	test('refuses stale visual attachments when the target item is not in the parent version', async () => {
+		const result = await resolveWriteTarget({
+			schema: createSchema([relation('pages', 'seo', 'seo')]),
+			target: { collection: 'seo', key: 4 },
+			hint: {
+				attachment: {
+					collection: 'seo',
+					item: 4,
+					version: 'draft',
+					parent: { collection: 'pages', key: 1, versionKey: 'draft' },
+				},
+			},
+			collectionHasVersioning: versionedCollections('pages'),
+			readParent: vi.fn(async () => ({ seo: { id: 5 } })),
+		});
+
+		expect(result).toMatchObject({ kind: 'refuse', token: WRITE_TARGET_REFUSAL.STALE_ATTACHMENT });
+	});
+
+	test('returns the parent item from the winning candidate, not a later non-match', async () => {
+		const schema = createSchema([
+			relation('pages_blocks', 'pages_id', 'pages', {
+				oneField: 'blocks',
+				junctionField: 'item',
+			}),
+			relation('pages_blocks', 'item', null, {
+				oneCollectionField: 'collection',
+				oneAllowedCollections: ['block_hero'],
+			}),
+			relation('pages_other_blocks', 'pages_id', 'pages', {
+				oneField: 'other_blocks',
+				junctionField: 'item',
+			}),
+			relation('pages_other_blocks', 'item', null, {
+				oneCollectionField: 'collection',
+				oneAllowedCollections: ['block_hero'],
+			}),
+		]);
+
+		const winningParent = { blocks: [{ id: 7, collection: 'block_hero', item: { id: 9 } }], _marker: 'winner' };
+
+		const nonMatchingParent = {
+			other_blocks: [{ id: 8, collection: 'block_hero', item: { id: 10 } }],
+			_marker: 'loser',
+		};
+
+		const readParent = vi.fn().mockResolvedValueOnce(winningParent).mockResolvedValueOnce(nonMatchingParent);
+
+		const result = await resolveWriteTarget({
+			schema,
+			target: { collection: 'block_hero', key: 9 },
+			hint: { page: { collection: 'pages', item: 1, version: 'draft' } },
+			collectionHasVersioning: versionedCollections('pages'),
+			readParent,
+		});
+
+		expect(result).toMatchObject({ kind: 'parent-version', parentItem: { _marker: 'winner' } });
 	});
 });
 
@@ -267,6 +384,211 @@ describe('mergeNestedRelationDeltaInto', () => {
 				item: { id: 'block-1', headline: 'Old', tagline: 'Backend + CMS carlos' },
 			},
 		]);
+	});
+
+	test('merges repeated detailed updates with custom primary key fields', () => {
+		const target = {
+			blocks: {
+				create: [],
+				update: [{ junction_uuid: 'junction-1', title: 'Old' }],
+				delete: [],
+			},
+		};
+
+		mergeNestedRelationDeltaInto(
+			target,
+			{
+				blocks: {
+					create: [],
+					update: [{ junction_uuid: 'junction-1', title: 'New' }],
+					delete: [],
+				},
+			},
+			{ identityFields: ['junction_uuid'] },
+		);
+
+		expect(target.blocks.update).toEqual([{ junction_uuid: 'junction-1', title: 'New' }]);
+	});
+
+	test('preserves nested custom primary key fields when merging repeated updates', () => {
+		const target = {
+			blocks: {
+				create: [],
+				update: [
+					{
+						junction_uuid: 'junction-1',
+						collection: 'block_hero',
+						item: { block_uuid: 'block-1', headline: 'Old', tagline: 'Old tagline' },
+					},
+				],
+				delete: [],
+			},
+		};
+
+		mergeNestedRelationDeltaInto(
+			target,
+			{
+				blocks: {
+					create: [],
+					update: [
+						{
+							junction_uuid: 'junction-1',
+							collection: 'block_hero',
+							item: { block_uuid: 'block-1', tagline: 'New tagline' },
+						},
+					],
+					delete: [],
+				},
+			},
+			{ identityFields: ['junction_uuid', 'block_uuid'] },
+		);
+
+		expect(target.blocks.update).toEqual([
+			{
+				junction_uuid: 'junction-1',
+				collection: 'block_hero',
+				item: { block_uuid: 'block-1', headline: 'Old', tagline: 'New tagline' },
+			},
+		]);
+	});
+
+	test('derives primary key fields from the schema', () => {
+		const schema = createSchema();
+		schema.collections['pages']!.primary = 'page_uuid';
+		schema.collections['block_hero']!.primary = 'block_uuid';
+
+		expect(getSchemaPrimaryKeyFields(schema)).toEqual(['block_uuid', 'page_uuid', 'id']);
+	});
+});
+
+describe('getParentInitialValueFields', () => {
+	test('uses `.*` projection for o2m and m2m so the form has data to render', () => {
+		// Locks the intentional divergence from the internal `getParentReadFields` — read-time
+		// only needs the child pk to verify the match, but the initial-value preview needs the
+		// full child shape. A future "harmonization" pass that collapses the two would silently
+		// break the form preview for o2m and m2m children.
+		expect(getParentInitialValueFields({ kind: 'o2m', parentField: 'translations', childPkField: 'id' })).toEqual([
+			'translations.*',
+		]);
+
+		expect(
+			getParentInitialValueFields({
+				kind: 'm2m',
+				parentField: 'tags',
+				junctionCollection: 'articles_tags',
+				junctionPkField: 'id',
+				junctionField: 'tags_id',
+				junctionItem: {},
+				childPkField: 'id',
+			}),
+		).toEqual(['tags.id', 'tags.tags_id.*']);
+	});
+
+	test('returns full field paths for m2o and m2a', () => {
+		expect(getParentInitialValueFields({ kind: 'm2o', parentField: 'seo', childPkField: 'id' })).toEqual(['seo.*']);
+
+		expect(
+			getParentInitialValueFields({
+				kind: 'm2a',
+				parentField: 'blocks',
+				junctionCollection: 'pages_blocks',
+				junctionPkField: 'id',
+				junctionField: 'item',
+				collectionField: 'collection',
+				junctionItem: {},
+				childPkField: 'id',
+			}),
+		).toEqual(['blocks.id', 'blocks.collection', 'blocks.item.*']);
+	});
+});
+
+describe('findParentInitialValue', () => {
+	test('returns the matching child for m2o', () => {
+		const child = findParentInitialValue(
+			{ kind: 'm2o', parentField: 'seo', childPkField: 'id' },
+			{ seo: { id: 4, title: 'Hello' } },
+			'seo',
+			4,
+		);
+
+		expect(child).toEqual({ id: 4, title: 'Hello' });
+	});
+
+	test('returns null when the m2o child key does not match', () => {
+		const child = findParentInitialValue(
+			{ kind: 'm2o', parentField: 'seo', childPkField: 'id' },
+			{ seo: { id: 4 } },
+			'seo',
+			99,
+		);
+
+		expect(child).toBeNull();
+	});
+
+	test('returns the matching child for o2m', () => {
+		const child = findParentInitialValue(
+			{ kind: 'o2m', parentField: 'translations', childPkField: 'id' },
+			{
+				translations: [
+					{ id: 5, title: 'Old' },
+					{ id: 6, title: 'Other' },
+				],
+			},
+			'articles_translations',
+			5,
+		);
+
+		expect(child).toEqual({ id: 5, title: 'Old' });
+	});
+
+	test('returns the matching child for m2m', () => {
+		const child = findParentInitialValue(
+			{
+				kind: 'm2m',
+				parentField: 'tags',
+				junctionCollection: 'articles_tags',
+				junctionPkField: 'id',
+				junctionField: 'tags_id',
+				junctionItem: {},
+				childPkField: 'id',
+			},
+			{ tags: [{ id: 12, tags_id: { id: 5, name: 'Featured' } }] },
+			'tags',
+			5,
+		);
+
+		expect(child).toEqual({ id: 5, name: 'Featured' });
+	});
+
+	test('returns the matching child for m2a and rejects mismatching collection', () => {
+		const relation = {
+			kind: 'm2a' as const,
+			parentField: 'blocks',
+			junctionCollection: 'pages_blocks',
+			junctionPkField: 'id',
+			junctionField: 'item',
+			collectionField: 'collection',
+			junctionItem: {},
+			childPkField: 'id',
+		};
+
+		expect(
+			findParentInitialValue(
+				relation,
+				{ blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, headline: 'Hi' } }] },
+				'block_hero',
+				9,
+			),
+		).toEqual({ id: 9, headline: 'Hi' });
+
+		expect(
+			findParentInitialValue(
+				relation,
+				{ blocks: [{ id: 7, collection: 'block_cta', item: { id: 9, headline: 'Hi' } }] },
+				'block_hero',
+				9,
+			),
+		).toBeNull();
 	});
 });
 

@@ -1,6 +1,6 @@
+import type { Relation } from '@directus/types';
 import type { CheckFieldAccessData } from '@directus/visual-editing/types';
 import { createTestingPinia } from '@pinia/testing';
-import type { Relation } from '@directus/types';
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -15,6 +15,11 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useUserStore } from '@/stores/user';
 import { ensureVersionId } from '@/utils/ensure-version-id';
+import { notify } from '@/utils/notify';
+
+type CheckFieldAccessDataWithParent = CheckFieldAccessData & {
+	parent?: { collection: string; item: string | number };
+};
 
 vi.mock('@directus/composables', () => ({
 	useCollection: () => ({
@@ -55,6 +60,10 @@ vi.mock('@/utils/ensure-version-id', () => ({
 	ensureVersionId: vi.fn(),
 }));
 
+vi.mock('@/utils/notify', () => ({
+	notify: vi.fn(),
+}));
+
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
@@ -81,7 +90,7 @@ function sendCheckFieldAccess(elements: CheckFieldAccessData[]) {
 	);
 }
 
-function createElements(...overrides: Partial<CheckFieldAccessData>[]): CheckFieldAccessData[] {
+function createElements(...overrides: Partial<CheckFieldAccessDataWithParent>[]): CheckFieldAccessDataWithParent[] {
 	if (overrides.length === 0) overrides = [{}];
 
 	return overrides.map((o, i) => ({
@@ -232,7 +241,7 @@ function relation(
 	};
 }
 
-function sendEdit() {
+function sendEdit(options: { parent?: { collection: string; item: string | number } } = {}) {
 	window.dispatchEvent(
 		new MessageEvent('message', {
 			origin: FRAME_SRC,
@@ -246,11 +255,24 @@ function sendEdit() {
 						fields: ['title'],
 						mode: 'drawer',
 					},
+					...(options.parent ? { parent: options.parent } : {}),
 					rect: { top: 0, left: 0, width: 100, height: 40 },
 				},
 			},
 		}),
 	);
+}
+
+function deferred<T>() {
+	let resolve!: (value: T | PromiseLike<T>) => void;
+	let reject!: (reason?: unknown) => void;
+
+	const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+		resolve = resolvePromise;
+		reject = rejectPromise;
+	});
+
+	return { promise, resolve, reject };
 }
 
 describe('checkFieldAccess', () => {
@@ -457,9 +479,29 @@ describe('checkFieldAccess', () => {
 });
 
 describe('save', () => {
+	it('confirms before switching versions when the parent form has unsaved edits', async () => {
+		setupCollections({ block_hero: true });
+
+		const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+		const switchVersion = vi.fn();
+
+		try {
+			mountEditingLayer(null, { hasUnsavedEdits: true, switchVersion });
+
+			sendEdit();
+			await flushPromises();
+
+			expect(confirm).toHaveBeenCalled();
+			expect(switchVersion).not.toHaveBeenCalled();
+		} finally {
+			confirm.mockRestore();
+		}
+	});
+
 	it('hydrates the overlay from the parent version before opening', async () => {
 		setupParentVersionSaveSchema();
 		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
+
 		vi.mocked(api.get).mockResolvedValue({
 			data: {
 				data: {
@@ -492,9 +534,10 @@ describe('save', () => {
 		});
 	});
 
-	it('ensures the parent version before reading the parent version', async () => {
+	it('ensures the parent version before saving nested edits', async () => {
 		setupParentVersionSaveSchema();
 		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
+
 		vi.mocked(api.get).mockResolvedValue({
 			data: {
 				data: {
@@ -502,6 +545,7 @@ describe('save', () => {
 				},
 			},
 		});
+
 		vi.mocked(api.post).mockResolvedValue({ data: { data: {} } });
 
 		const wrapper = mountEditingLayer(
@@ -517,27 +561,11 @@ describe('save', () => {
 
 		await vi.waitFor(() => expect(api.post).toHaveBeenCalled());
 
-		expect(ensureVersionId).toHaveBeenNthCalledWith(1, api, {
+		expect(ensureVersionId).toHaveBeenCalledWith(api, {
 			collection: 'pages',
 			item: 'page-id',
 			versionKey: 'draft',
 		});
-
-		expect(ensureVersionId).toHaveBeenNthCalledWith(2, api, {
-			collection: 'pages',
-			item: 'page-id',
-			versionKey: 'draft',
-		});
-
-		expect(ensureVersionId).toHaveBeenNthCalledWith(3, api, {
-			collection: 'pages',
-			item: 'page-id',
-			versionKey: 'draft',
-		});
-
-		expect(vi.mocked(ensureVersionId).mock.invocationCallOrder[0]!).toBeLessThan(
-			vi.mocked(api.get).mock.invocationCallOrder[0]!,
-		);
 
 		expect(api.get).toHaveBeenCalledWith('/items/pages/page-id', {
 			params: {
@@ -555,10 +583,62 @@ describe('save', () => {
 		});
 	});
 
+	it('saves edits made while a previous save is in flight', async () => {
+		setupCollections({ block_hero: false });
+
+		const firstPatch = deferred<{ data: { data: { title: string } } }>();
+
+		vi.mocked(api.patch)
+			.mockReturnValueOnce(firstPatch.promise as ReturnType<typeof api.patch>)
+			.mockResolvedValueOnce({ data: { data: { slug: 'second' } } });
+
+		const wrapper = mountEditingLayer();
+
+		sendEdit();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
+
+		const overlay = wrapper.findComponent({ name: 'OverlayItem' });
+
+		overlay.vm.$emit('input', { title: 'First' });
+
+		await vi.waitFor(() => expect(api.patch).toHaveBeenCalledTimes(1));
+
+		overlay.vm.$emit('input', { slug: 'second' });
+		await flushPromises();
+
+		expect(api.patch).toHaveBeenCalledTimes(1);
+
+		firstPatch.resolve({ data: { data: { title: 'First' } } });
+
+		await vi.waitFor(() => expect(api.patch).toHaveBeenCalledTimes(2));
+
+		expect(api.patch).toHaveBeenNthCalledWith(1, '/items/block_hero/9', { title: 'First' });
+		expect(api.patch).toHaveBeenNthCalledWith(2, '/items/block_hero/9', { slug: 'second' });
+
+		await vi.waitFor(() => {
+			expect(postMessageSpy).toHaveBeenCalledWith(
+				{
+					action: 'saved',
+					data: { key: 'visual-key', collection: 'block_hero', item: 9, payload: { slug: 'second' } },
+				},
+				FRAME_SRC,
+			);
+		});
+	});
+
 	it('does not retry a failed save when saving finishes', async () => {
 		setupParentVersionSaveSchema();
 		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
+
 		vi.mocked(api.get)
+			.mockResolvedValueOnce({
+				data: {
+					data: {
+						blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Old' } }],
+					},
+				},
+			})
 			.mockResolvedValueOnce({
 				data: {
 					data: {
@@ -579,11 +659,33 @@ describe('save', () => {
 
 		wrapper.findComponent({ name: 'OverlayItem' }).vm.$emit('input', { title: 'New' });
 
-		await vi.waitFor(() => expect(api.get).toHaveBeenCalledTimes(2));
+		await vi.waitFor(() => expect(api.get).toHaveBeenCalledTimes(3));
 		await flushPromises();
 		await flushPromises();
 
-		expect(api.get).toHaveBeenCalledTimes(2);
+		expect(api.get).toHaveBeenCalledTimes(3);
 		expect(api.post).not.toHaveBeenCalled();
+	});
+
+	it('shows version refusal messages without machine tokens', async () => {
+		useCollectionsStore().collections = [collection('block_hero', false)];
+		setupCollections({ block_hero: false });
+		vi.mocked(useFieldsStore().getPrimaryKeyFieldForCollection).mockReturnValue({ field: 'id' } as any);
+		useRelationsStore().relations = [];
+
+		const wrapper = mountEditingLayer({ key: 'draft', name: 'Draft' });
+
+		sendEdit();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
+
+		wrapper.findComponent({ name: 'OverlayItem' }).vm.$emit('input', { title: 'New' });
+
+		await vi.waitFor(() => {
+			expect(notify).toHaveBeenCalledWith({
+				title: 'A parent item is required to save this child item to a version.',
+				type: 'error',
+			});
+		});
 	});
 });

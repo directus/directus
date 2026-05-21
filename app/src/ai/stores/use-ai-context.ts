@@ -1,6 +1,6 @@
 import type { ContextAttachment, PrimaryKey, ProviderFileRef, VisualElementContextData } from '@directus/ai';
 import type { Item } from '@directus/types';
-import { getEndpoint, resolveWriteTarget, type ParentRelation } from '@directus/utils';
+import { getEndpoint, type ParentRelation, resolveWriteTarget } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import {
@@ -18,6 +18,7 @@ import sdk, { requestEndpoint } from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { extractErrorCode } from '@/utils/extract-error-code';
 import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -101,6 +102,11 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 				}),
 			);
 		} catch (error) {
+			// `GET /items/:c/:k?version=X` returns 403 when no directus_versions row exists for
+			// that key — normal state for first-edit drafts. Surface no toast; caller treats as
+			// "no draft context yet". Phase 2 will replace this with a published fallback.
+			if (version && extractErrorCode(error) === 'FORBIDDEN') return null;
+
 			unexpectedError(error);
 			return null;
 		}
@@ -139,7 +145,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		if (target.kind === 'refuse') return null;
 
 		if (target.kind !== 'parent-version') {
-			const versionKey = target.kind === 'item-version' ? target.versionKey : data.version;
+			const versionKey = target.kind === 'item-version' ? target.versionKey : undefined;
 			return fetchItem(data.collection, data.item, fields, versionKey);
 		}
 

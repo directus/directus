@@ -25,7 +25,7 @@ export function useVersionGate(deps: {
 
 	return { check, requestSwitch };
 
-	function check(targetCollection: string): GateDecision {
+	function check(targetCollection: string, parentScopeOverride: VersionGateParentScope | null = null): GateDecision {
 		if (deps.currentVersion.value !== null) return { allowed: true };
 
 		const target = collectionsStore.getCollection(targetCollection);
@@ -37,7 +37,7 @@ export function useVersionGate(deps: {
 			};
 		}
 
-		const parentScope = deps.parentScope.value;
+		const parentScope = parentScopeOverride ?? deps.parentScope.value;
 		if (!parentScope) return { allowed: true };
 
 		const parent = collectionsStore.getCollection(parentScope.collection);
@@ -59,6 +59,7 @@ export function useVersionGate(deps: {
 		}
 
 		await deps.switchTo(decision.redirect.versionKey);
+
 		notify({
 			title: t('version_switch_required_title', { version: decision.redirect.versionKey }),
 			text: t('version_switch_required_text'),

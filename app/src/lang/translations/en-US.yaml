@@ -226,6 +226,13 @@ switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 version_switch_required_title: Switched to {version}
 version_switch_required_text: The published version cannot be edited when content versioning is enabled.
+write_target_refusal:
+  versioning_required: Updates to versioned collections require a draft version.
+  no_parent_context: A parent item is required to save this child item to a version.
+  no_parent_path: No relation path exists from the parent item to this target item.
+  multi_relation: Multiple parent relations contain this target item.
+  related_not_found: The target item was not found in the parent version.
+  stale_attachment: The visual element no longer matches the parent item.
 create_version: Create Version
 rename_version: Rename Version
 reserved_version_key: 'The version key "{key}" is reserved and cannot be used.'

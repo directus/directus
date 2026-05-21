@@ -75,6 +75,7 @@ describe('useVersionGate', () => {
 	test('switches to the requested version and notifies', async () => {
 		const switchTo = vi.fn();
 		const gate = createGate({ switchTo });
+
 		const decision = {
 			allowed: false,
 			redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'collection-versioned' },
@@ -82,6 +83,7 @@ describe('useVersionGate', () => {
 
 		await expect(gate.requestSwitch(decision)).resolves.toBe('switched');
 		expect(switchTo).toHaveBeenCalledWith(VERSION_KEY_DRAFT);
+
 		expect(notify).toHaveBeenCalledWith({
 			title: 'version_switch_required_title',
 			text: 'version_switch_required_text',
@@ -94,6 +96,7 @@ describe('useVersionGate', () => {
 
 		const switchTo = vi.fn();
 		const gate = createGate({ hasUnsavedEdits: true, switchTo });
+
 		const decision = {
 			allowed: false,
 			redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'collection-versioned' },

@@ -6,8 +6,8 @@ import OverlayItem from './overlay-item.vue';
 import { ClickOutside } from '@/__utils__/click-outside';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
-import { i18n } from '@/lang';
 import api from '@/api';
+import { i18n } from '@/lang';
 
 const mockCollabConnected = ref<boolean | undefined>(false);
 const mockSaveAllowed = ref(true);
