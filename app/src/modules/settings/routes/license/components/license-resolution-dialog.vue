@@ -82,7 +82,7 @@ const severity = computed<'warning' | 'danger'>(() => {
 	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';
 });
 
-type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number] & { email?: string | null };
+type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number];
 type FlowCandidate = LicensePendingResolutionLimitFlows['candidates'][number];
 
 const collections = computed<LicensePendingResolutionLimitCollections | undefined>(
