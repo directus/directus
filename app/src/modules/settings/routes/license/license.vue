@@ -83,6 +83,11 @@ async function handleActivate() {
 			await licenseStore.activate(key);
 		}
 
+		// The new license may expose a different addon catalog.
+		if (licenseStore.info?.source != null) {
+			await licenseStore.hydrateAddons();
+		}
+
 		addLicenseDrawer.value = false;
 		resetAddLicenseForm();
 	} catch (err) {
