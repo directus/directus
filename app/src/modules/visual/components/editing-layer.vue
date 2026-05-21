@@ -639,8 +639,8 @@ function useItemWithEdits() {
 		const decision = versionGate.check(targetCollection, effectiveParentScope);
 		if (decision.allowed) return true;
 
-		await versionGate.requestSwitch(decision);
-		return false;
+		const outcome = await versionGate.requestSwitch(decision);
+		return outcome === 'switched';
 	}
 
 	function getEffectiveParentScope() {

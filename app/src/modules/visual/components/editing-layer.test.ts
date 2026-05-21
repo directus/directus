@@ -498,6 +498,19 @@ describe('save', () => {
 		}
 	});
 
+	it('opens the overlay after switching versions in a single click', async () => {
+		setupCollections({ block_hero: true });
+
+		const switchVersion = vi.fn();
+		const wrapper = mountEditingLayer(null, { switchVersion });
+
+		sendEdit();
+		await flushPromises();
+
+		expect(switchVersion).toHaveBeenCalledWith('draft');
+		expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true);
+	});
+
 	it('hydrates the overlay from the parent version before opening', async () => {
 		setupParentVersionSaveSchema();
 		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
