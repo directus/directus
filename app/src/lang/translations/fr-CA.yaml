@@ -62,6 +62,8 @@ switch_user: Changer d'utilisateur
 item_deleted: L'élément que vous étiez en train de modifier a été supprimé.
 item_creation: Création d'article
 item_revision: Historique de l'article
+latest_revision: Dernière révision
+compare_to_latest_to_restore: Comparer à la dernière fois pour envisager de restaurer cette révision
 enter_a_name: Saisir un nom...
 duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
@@ -69,6 +71,7 @@ full_width: Toute la largeur
 group: Groupe
 popular: Popularité
 recent: Récent
+latest: Dernière version
 export_items: Exporter
 and: Et
 or: Ou
@@ -114,6 +117,9 @@ website: Site internet
 github: GitHub
 beta: Bêta
 collab_collision: L'élément a été modifié pendant que vous étiez en cours d'édition. Sélectionnez les changements à garder.
+collab_disconnected: Édition collaborative déconnectée
+collab_currently_viewing: En train de consulter
+you: vous
 n_downloads: '{n} Téléchargements'
 downloads: Téléchargements
 compatibility_not_guaranteed: Compatibilité non garantie
@@ -177,8 +183,9 @@ suffix: Suffixe
 keep: Conserver
 version: Version
 version_key: Identifiant de la version
-version_name: Nom De la Version
+version_name: Nom de la version
 main_version: Principale
+your_version: Votre version
 switch_version: Changer de version
 switch_version_copy: Êtes-vous sûr de vouloir basculer vers la version "{version}" ? Les modifications non enregistrées seront perdues.
 create_version: Créer une version
@@ -186,9 +193,14 @@ rename_version: Renommer la version
 compare_version: Comparer la version
 save_version: Enregistrer la version
 promote_version: Promouvoir la version
+apply: Appliquer
+select_all_differences: Sélectionner toutes les différences
+show_differences_only: Afficher uniquement les différences
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
+delete_on_apply_copy: >-
+  Vous êtes sur le point de promouvoir "{version}" vers Principale. Que doit-il arriver à "{version}" après la promotion?
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -469,6 +481,7 @@ revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
+differences_count: 'Pas de différence | 1 Différence | {count} Différences'
 presentation_text_values_cannot_be_reimported: 'Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées.'
 download_page_as_csv: 'Télécharger la page au format CSV'
 download_page_as_csv_unsupported: Cette mise en page ne prend pas en charge le téléchargement de la page actuelle.
@@ -990,7 +1003,8 @@ operation_key_unique_error: Les clés d'Opération doivent être uniques dans un
 operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 visual_editor: Éditeur visuel
-toggle_navigation: Activer/désactiver la navigation
+toggle_navigation: Afficher/cacher la navigation
+toggle_sidebar: Afficher/masquer la barre latérale
 toggle_editable_elements: Activer/désactiver les éléments modifiables
 no_url: Aucune URL fournie
 no_url_copy: Veuillez ajouter une URL dans les paramètres.
@@ -1001,6 +1015,7 @@ deployment:
     settings:
       delete_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
     run:
+      currently_deploying: En cours de déploiement...
       cancel_confirm: Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
       log_all: Tous les niveaux de log
   target_value:
@@ -1173,9 +1188,12 @@ data: Données
 theme-overrides: Éditeur de thème
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
+unsaved_changes_collab: Modifications collaboratives non enregistrées
+unsaved_changes_copy_collab: Vous éditez cet objet avec d'autres. Vos modifications resteront dans la session collaborative pour l'instant, mais peuvent être perdues si personne ne les enregistre.
 discard_changes: Annuler les modifications
 discard_all_changes: Ignorer toutes les modifications
 discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
+discard_changes_copy_collab: Vous éditez cet élément avec d'autres. Annuler les modifications effacera toutes les modifications non enregistrées pour tous les participants à cette session collaborative.
 show_x_axis: Afficher l'axe X
 show_y_axis: Afficher l'axe Y
 keep_editing: Continuer l’édition
@@ -1376,6 +1394,9 @@ fields:
     public_registration_email_filter_note: Seules les adresses e-mail correspondant à ce filtre peuvent s'inscrire.
     public_registration_verify_email: Vérifier l'adresse e-mail
     public_registration_verify_email_note: Envoie un e-mail à l'utilisateur qui vient de s'inscrire, lui demandant de cliquer sur un lien de vérification avant de pouvoir se connecter.
+    collaborative_editing: Édition collaborative
+    collaborative_editing_enabled: Activer l'édition collaborative
+    collaborative_editing_note: Les WebSockets sont nécessaires pour que l'édition collaborative puisse fonctionner.
     ai_header_name: En-tête
   directus_shares:
     name: Nom
