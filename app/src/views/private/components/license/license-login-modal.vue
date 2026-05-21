@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCookies } from '@vueuse/integrations/useCookies';
+import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { I18nT } from 'vue-i18n';
 import VButton from '@/components/v-button.vue';
@@ -29,15 +30,7 @@ const isOverLimit = computed(() =>
 	Object.values(licenseStore.limits).some((l) => l.remaining !== null && !l.hasRemaining),
 );
 
-const graceDeadline = computed(() => {
-	const info = licenseStore.info;
-	if (!info || info.expires_at == null || !info.grace_period) return null;
-	return new Date((info.expires_at + info.grace_period) * 1000);
-});
-
-const formattedGraceDeadline = computed(() =>
-	graceDeadline.value ? Intl.DateTimeFormat().format(graceDeadline.value) : '',
-);
+const { formattedGraceDeadline } = storeToRefs(licenseStore);
 
 async function save() {
 	if (!licenseKeyValidity.value.valid || isSaving.value) return;

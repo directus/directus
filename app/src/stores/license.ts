@@ -97,14 +97,21 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const isTeamPlan = computed(() => info.value?.name.toLowerCase() === 'team');
 
-	const gracePeriodDaysRemaining = computed<number | null>(() => {
+	const graceDeadline = computed<Date | null>(() => {
 		if (!info.value || info.value.status !== 'grace') return null;
-		if (!info.value.grace_period || info.value.grace_period < 0) return null;
+		if (info.value.expires_at == null || !info.value.grace_period) return null;
 		if (isTeamPlan.value && info.value.renews_at != null) return null;
+		return new Date((info.value.expires_at + info.value.grace_period) * 1000);
+	});
 
+	const formattedGraceDeadline = computed(() =>
+		graceDeadline.value ? Intl.DateTimeFormat().format(graceDeadline.value) : '',
+	);
+
+	const gracePeriodDaysRemaining = computed<number | null>(() => {
+		if (!graceDeadline.value) return null;
 		const nowSec = Date.now() / 1000;
-		const deadline = info.value.expires_at + info.value.grace_period;
-		return Math.max(0, Math.ceil((deadline - nowSec) / (60 * 60 * 24)));
+		return Math.max(0, Math.ceil((graceDeadline.value.getTime() / 1000 - nowSec) / (60 * 60 * 24)));
 	});
 
 	function isEntitlementEnabled(key: string) {
@@ -237,6 +244,8 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		customLLMEnabled,
 		revisionHistoryTimeframe,
 		activityHistoryTimeframe,
+		graceDeadline,
+		formattedGraceDeadline,
 		gracePeriodDaysRemaining,
 		hydrate,
 		hydrateAddons,
