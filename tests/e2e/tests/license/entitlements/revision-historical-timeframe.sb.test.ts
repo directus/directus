@@ -1,15 +1,7 @@
 import { activateLicense, deactivateLicense } from '@directus/license';
 import { createLicense, mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
-import {
-	createDirectus,
-	type DirectusClient,
-	readActivities,
-	readRevisions,
-	rest,
-	type RestClient,
-	staticToken,
-} from '@directus/sdk';
+import { createDirectus, type DirectusClient, readRevisions, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
