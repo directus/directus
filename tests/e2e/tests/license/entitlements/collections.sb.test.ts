@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { activateLicense, deactivateLicense } from '@directus/license';
 import { createLicense, mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
@@ -21,20 +20,17 @@ import { merge } from 'lodash-es';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { createSandboxOptions } from '../shared.js';
 
+const DEFAULT_LIMIT = 3;
+
 const restrictedLicense = createLicense({
 	meta: { name: 'collections-restricted' },
-	entitlements: { collections: { limit: LIMIT } },
-});
-
-const unlimitedLicense = createLicense({
-	meta: { name: 'collections-unlimited' },
-	entitlements: { collections: { limit: -1 } },
+	entitlements: { collections: { limit: DEFAULT_LIMIT } },
 });
 
 function buildCollection(collection: string, overrides?: NestedPartial<DirectusCollection<any>>) {
 	return merge(
 		{
-			collection,
+			collection: getUID() + '_' + collection,
 			fields: [
 				{
 					field: 'id',
@@ -51,8 +47,8 @@ function buildCollection(collection: string, overrides?: NestedPartial<DirectusC
 }
 
 async function seedCollectionsToLimit(api: DirectusClient<unknown> & RestClient<unknown>, limit?: number) {
-	for (let i = 1; i <= (limit || 3); i++) {
-		await api.request(createCollection(buildCollection(`${getUID()}_${i}`)));
+	for (let i = 1; i <= (limit || DEFAULT_LIMIT); i++) {
+		await api.request(createCollection(buildCollection(i + '')));
 	}
 }
 
@@ -73,7 +69,6 @@ describe('collections', () => {
 					beforeApi: async ({ env }) => {
 						const base = `http://localhost:${env.LICENSE_PORT}`;
 						mockClient.registerLicense(base, restrictedLicense);
-						mockClient.registerLicense(base, unlimitedLicense);
 					},
 				},
 			}),
@@ -116,7 +111,7 @@ describe('collections', () => {
 				table.increments('id').primary();
 			});
 
-			await expect(seedCollectionsToLimit(api));
+			await expect(seedCollectionsToLimit(api)).resolves.not.toThrow();
 		});
 
 		test('creating collections within the limit and with existing DB_EXCLUDED_TABLES table succeeds', async () => {
@@ -124,13 +119,13 @@ describe('collections', () => {
 				table.increments('id').primary();
 			});
 
-			await expect(seedCollectionsToLimit(api));
+			await expect(seedCollectionsToLimit(api)).resolves.not.toThrow();
 		});
 
 		test('creating a collection above the limit rejects with LIMIT_EXCEEDED', async () => {
 			await seedCollectionsToLimit(api);
 
-			await expect(api.request(createCollection(buildCollection(`${getUID()}_${LIMIT + 1}`)))).rejects.toMatchObject({
+			await expect(api.request(createCollection(buildCollection(`_${DEFAULT_LIMIT + 1}`)))).rejects.toMatchObject({
 				errors: [
 					expect.objectContaining({
 						extensions: expect.objectContaining({ code: 'LIMIT_EXCEEDED' }),
@@ -144,11 +139,12 @@ describe('collections', () => {
 
 			await expect(
 				api.request(
-					createCollection({
-						collection: `${getUID()}_folder`,
-						meta: {},
-						schema: null,
-					}),
+					createCollection(
+						buildCollection('folder', {
+							meta: {},
+							schema: null,
+						}),
+					),
 				),
 			).resolves.toBeDefined();
 		});
@@ -159,7 +155,7 @@ describe('collections', () => {
 			await expect(
 				api.request(
 					createCollection(
-						buildCollection(`${getUID()}_inactive`, {
+						buildCollection('inactive', {
 							meta: { status: 'inactive' },
 						}),
 					),
@@ -176,7 +172,7 @@ describe('collections', () => {
 				}),
 			);
 
-			await expect(api.request(createCollection(buildCollection(`${getUID()}_new`)))).resolves.toBeDefined();
+			await expect(api.request(createCollection(buildCollection('new')))).resolves.toBeDefined();
 		});
 
 		test('updating any field aside from status succeeds', async () => {
@@ -185,7 +181,7 @@ describe('collections', () => {
 			// Pure update at the limit — no status field, so should not be counted as a new active collection.
 			await expect(
 				api.request(
-					updateCollection(`${getUID()}_1`, {
+					updateCollection('1', {
 						meta: { note: 'updated note' },
 					}),
 				),
@@ -213,6 +209,46 @@ describe('collections', () => {
 					}),
 				),
 			).resolves.toBeDefined();
+		});
+
+		test('activating a collection when above the limit throws an error', async () => {
+			await seedCollectionsToLimit(api);
+
+			// create 2 collections over the limit
+			await directus.knex!.schema.createTable(`${getUID()}_entitlement_extra_1`, (table) => {
+				table.increments('id').primary();
+			});
+
+			await directus.knex!.schema.createTable(`${getUID()}_entitlement_extra_2`, (table) => {
+				table.increments('id').primary();
+			});
+
+			await directus.knex!('directus_collections').insert({
+				collection: `${getUID()}_entitlement_extra_1`,
+				status: 'inactive',
+			});
+
+			await directus.knex!('directus_collections').insert({
+				collection: `${getUID()}_entitlement_extra_2`,
+				status: 'inactive',
+			});
+
+			// attempt to reactivate a collection
+			await expect(
+				api.request(
+					updateCollection(`${getUID()}_entitlement_extra_1`, {
+						meta: { status: 'active' },
+					}),
+				),
+			).rejects.toMatchObject({
+				errors: [
+					expect.objectContaining({
+						extensions: expect.objectContaining({
+							code: 'LIMIT_EXCEEDED',
+						}),
+					}),
+				],
+			});
 		});
 	});
 });
