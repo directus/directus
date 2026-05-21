@@ -2,11 +2,11 @@
 import { computed } from 'vue';
 import VChip from '@/components/v-chip.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { useServerStore } from '@/stores/server';
+import { useLicenseStore } from '@/stores/license';
 
-const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
 
-const displayPoweredBy = computed(() => serverStore.info?.license?.entitlements?.display_powered_by);
+const displayPoweredBy = computed(() => licenseStore.info?.entitlements?.display_powered_by);
 </script>
 
 <template>
