@@ -46,4 +46,16 @@ jobs:
           allowedAuthors: |
             roshinimichael
           testRepo: 'roshinimichael/directus-tests'
-          testRepoToken: ${{ steps.app-token.outputs.token }}
+          testRepoToken: ${{ steps.skyramp-testbot-app-token.outputs.token }}
+          autoCommit: 'true'
+          skyrampMcpVersion: next
+          skyrampExecutorVersion: v1.3.24
+          targetSetupCommand: 'docker compose -f docker-compose.testbot.yml up -d'
+          targetTeardownCommand: 'docker compose -f docker-compose.testbot.yml down -v'
+          targetReadyCheckCommand: 'curl -sf http://localhost:8055/server/health'
+          targetReadyCheckTimeout: '300'
+          authTokenCommand: >
+            curl -sf -X POST http://localhost:8055/auth/login
+            -H 'Content-Type: application/json'
+            -d '{"email":"admin@example.com","password":"admin"}'
+            | jq -r '.data.access_token'
