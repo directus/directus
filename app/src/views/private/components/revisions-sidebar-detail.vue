@@ -129,10 +129,9 @@ defineExpose({
 		<ComparisonModal
 			v-model="comparisonModalActive"
 			v-model:current-revision="currentRevision"
-			:delete-versions-allowed="false"
+			mode="revision"
 			:collection
 			:primary-key
-			mode="revision"
 			:current-version="comparableVersion"
 			:revisions="revisions as Revision[]"
 			@confirm="$emit('revert', $event)"

@@ -449,13 +449,11 @@ function revert(values: Record<string, any>) {
 
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
+			mode="collab"
 			collection="directus_files"
 			:primary-key="primaryKey"
 			:current-collab="collabCollision"
 			:collab-context="collabContext"
-			mode="collab"
-			:delete-versions-allowed="false"
-			:current-version="null"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
 		/>
