@@ -27,6 +27,8 @@ const props = withDefaults(
 		modelValue: Set<string>;
 		/** Returns the unique identifier for a candidate (used for selection state) */
 		idFor: (candidate: TCandidate) => string;
+		/** Returns true for candidates that are shown but can't be selected (e.g. the current admin) */
+		disabledFor?: (candidate: TCandidate) => boolean;
 		/** When true, each card shows a launch icon that emits `open-item` on click */
 		linkable?: boolean;
 		/** Number of candidates rendered per group before the "Show more" toggle expands the rest */
@@ -56,15 +58,19 @@ function hiddenCountFor(candidates: TCandidate[]): number {
 	return Math.max(0, candidates.length - props.initialVisible);
 }
 
-const requiredCount = computed(() => Math.max(0, props.usage - props.limit - props.modelValue.size));
+// Usage that would remain once the selected items are deactivated
+const effectiveUsage = computed(() => props.usage - props.modelValue.size);
 
-const isSatisfied = computed(() => requiredCount.value === 0);
+function isDisabled(candidate: TCandidate): boolean {
+	return props.disabledFor?.(candidate) ?? false;
+}
 
 function isChecked(candidate: TCandidate): boolean {
 	return props.modelValue.has(props.idFor(candidate));
 }
 
 function toggle(candidate: TCandidate): void {
+	if (isDisabled(candidate)) return;
 	const id = props.idFor(candidate);
 	const next = new Set(props.modelValue);
 	if (next.has(id)) next.delete(id);
@@ -80,11 +86,9 @@ function toggle(candidate: TCandidate): void {
 				<VIcon :name="icon" small />
 				{{ title }}
 			</span>
-			<span v-if="isSatisfied" class="badge satisfied">
-				{{ t('licensing.resolve_all_set') }}
-			</span>
-			<span v-else class="badge required">
-				{{ t('licensing.resolve_select_n_items', { count: requiredCount }, requiredCount) }}
+			<span class="usage-counter" :class="effectiveUsage > limit ? 'over' : 'within'">
+				<span class="usage-current">{{ effectiveUsage }}</span>
+				<span class="usage-total">/ {{ limit }} {{ t('licensing.resolve_available') }}</span>
 			</span>
 		</header>
 
@@ -96,17 +100,22 @@ function toggle(candidate: TCandidate): void {
 					v-for="candidate in visibleCandidatesFor(group.caption, group.candidates)"
 					:key="idFor(candidate)"
 					class="item"
-					:class="{ selected: isChecked(candidate) }"
+					:class="{ selected: isChecked(candidate), disabled: isDisabled(candidate) }"
 				>
 					<div
 						class="item-toggle"
 						role="button"
-						tabindex="0"
+						:tabindex="isDisabled(candidate) ? -1 : 0"
+						:aria-disabled="isDisabled(candidate)"
 						@click="toggle(candidate)"
 						@keydown.space.prevent="toggle(candidate)"
 						@keydown.enter.prevent="toggle(candidate)"
 					>
-						<VCheckbox :model-value="isChecked(candidate)" @update:model-value="toggle(candidate)" />
+						<VCheckbox
+							:model-value="isChecked(candidate)"
+							:disabled="isDisabled(candidate)"
+							@update:model-value="toggle(candidate)"
+						/>
 						<span class="item-content">
 							<slot name="item" :candidate="candidate">
 								<span class="item-label">{{ idFor(candidate) }}</span>
@@ -154,23 +163,40 @@ function toggle(candidate: TCandidate): void {
 	color: var(--theme--foreground-accent);
 }
 
-.badge {
+.usage-counter {
 	display: inline-flex;
 	align-items: center;
+	gap: 0.25rem;
 	padding: 0.125rem 0.5rem;
-	border-radius: 999px;
-	font-size: 0.75rem;
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--background-subdued);
+	font-size: 0.8125rem;
 	font-weight: 600;
-	line-height: 1.4;
+	font-variant-numeric: tabular-nums;
 }
 
-.badge.required {
+.usage-current {
+	color: var(--theme--foreground-accent);
+}
+
+.usage-total {
+	color: var(--theme--foreground-subdued);
+	font-weight: 500;
+}
+
+.usage-counter.over {
 	background-color: var(--theme--danger-background, var(--theme--danger));
+}
+
+.usage-counter.over .usage-current {
 	color: var(--theme--danger);
 }
 
-.badge.satisfied {
+.usage-counter.within {
 	background-color: var(--theme--success-background, var(--theme--success));
+}
+
+.usage-counter.within .usage-current {
 	color: var(--theme--success);
 }
 
@@ -213,6 +239,14 @@ function toggle(candidate: TCandidate): void {
 
 .item.selected {
 	border-color: var(--theme--primary);
+}
+
+.item.disabled {
+	opacity: 0.5;
+}
+
+.item.disabled .item-toggle {
+	cursor: not-allowed;
 }
 
 .item.selected :deep(.item-label) {

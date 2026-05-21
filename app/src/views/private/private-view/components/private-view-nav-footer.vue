@@ -7,7 +7,7 @@ const serverStore = useServerStore();
 const visible = computed(() => {
 	if (!serverStore.info?.license?.entitlements?.display_powered_by) return false;
 
-	return serverStore.info?.license?.entitlements?.display_powered_by !== 'NONE';
+	return serverStore.info?.license?.entitlements?.display_powered_by !== 'HIDDEN';
 });
 </script>
 

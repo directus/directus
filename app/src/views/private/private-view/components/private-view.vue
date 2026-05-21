@@ -21,8 +21,8 @@ export interface PrivateViewProps {
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed } from 'vue';
 import LicenseBanner from '../../components/license-banner.vue';
-import LicenseGraceWarning from '../../components/license-grace-warning.vue';
 import LicenseOnboarding from '../../components/license-onboarding.vue';
+import LicenseResolutionPrompt from '../../components/license-resolution-prompt.vue';
 import NotificationDialogs from '../../components/notification-dialogs.vue';
 import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
@@ -67,9 +67,8 @@ const settingsStore = useSettingsStore();
 const showLicenseBanner = computed({
 	get: () =>
 		userStore.isAdmin &&
-		!serverStore.info.license?.source &&
 		!settingsStore.settings?.project_owner &&
-		!!settingsStore.settings?.project_usage &&
+		!showLicenseOnboarding.value &&
 		!cookies.get('license-banner-dismissed'),
 	set: () => {
 		// close is handled by cookie and hydrate inside the modal
@@ -117,5 +116,5 @@ const showLicenseOnboarding = computed({
 
 	<LicenseBanner v-model="showLicenseBanner" />
 	<LicenseOnboarding v-model="showLicenseOnboarding" />
-	<LicenseGraceWarning />
+	<LicenseResolutionPrompt />
 </template>
