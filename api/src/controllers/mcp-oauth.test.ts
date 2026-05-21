@@ -12,6 +12,8 @@ import { expectMcpBearerChallenge } from '../test-utils/mcp-oauth.js';
 // Mocks
 // ---------------------------------------------------------------------------
 
+const createdRateLimiters = vi.hoisted(() => [] as string[]);
+
 const mockDbChain = {
 	select: vi.fn().mockReturnThis(),
 	where: vi.fn().mockReturnThis(),
@@ -98,8 +100,12 @@ vi.mock('../utils/get-schema.js', () => ({
 }));
 
 vi.mock('../rate-limiter.js', () => ({
-	createRateLimiter: vi.fn().mockReturnValue({
-		consume: vi.fn().mockResolvedValue({}),
+	createRateLimiter: vi.fn().mockImplementation((prefix: string) => {
+		createdRateLimiters.push(prefix);
+
+		return {
+			consume: vi.fn().mockResolvedValue({}),
+		};
 	}),
 	RateLimiterRes: class RateLimiterRes {
 		msBeforeNext = 1000;
@@ -110,7 +116,8 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		PUBLIC_URL: 'http://localhost',
 		SESSION_COOKIE_NAME: 'directus_session',
-		RATE_LIMITER_MCP_OAUTH_ENABLED: true,
+		RATE_LIMITER_MCP_OAUTH_AUTHORIZE_ENABLED: true,
+		RATE_LIMITER_MCP_OAUTH_REGISTRATION_ENABLED: true,
 	}),
 }));
 
@@ -279,7 +286,7 @@ describe('mcp-oauth controller', () => {
 	test.each([
 		['GET', '/.well-known/oauth-protected-resource*', 0],
 		['POST', '/mcp-oauth/register', 2],
-		['POST', '/mcp-oauth/token', 3],
+		['POST', '/mcp-oauth/token', 2],
 		['POST', '/mcp-oauth/revoke', 2],
 	])('setCorsWildcard sets Access-Control-Allow-Origin: * on %s %s', async (method, path, corsIndex) => {
 		const handlers = getRouteHandler(mcpOAuthPublicRouter, method, path);
@@ -290,6 +297,17 @@ describe('mcp-oauth controller', () => {
 		await handlers[corsIndex]!.handle(req, res, next);
 
 		expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
+	});
+
+	test('dedicated MCP OAuth limiters apply only to authorize and register routes', () => {
+		expect(createdRateLimiters).toContain('RATE_LIMITER_MCP_OAUTH_AUTHORIZE');
+		expect(createdRateLimiters).toContain('RATE_LIMITER_MCP_OAUTH_REGISTRATION');
+		expect(createdRateLimiters).not.toContain('RATE_LIMITER_MCP_OAUTH');
+
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize')).toHaveLength(2);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/register')).toHaveLength(4);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/token')).toHaveLength(5);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/revoke')).toHaveLength(4);
 	});
 
 	// -----------------------------------------------------------------------

@@ -227,32 +227,40 @@ async function checkOAuthSettings(req: Request, res: Response, next: NextFunctio
 }
 
 // ---------------------------------------------------------------------------
-// Rate limiter (lazy init to avoid env access at import time)
+// Rate limiters (lazy init to avoid env access at import time)
 // ---------------------------------------------------------------------------
 
-let rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => void = (_req, _res, next) => next();
+type McpOAuthRateLimitPrefix = 'RATE_LIMITER_MCP_OAUTH_AUTHORIZE' | 'RATE_LIMITER_MCP_OAUTH_REGISTRATION';
 
-{
+function createRateLimitMiddleware(
+	prefix: McpOAuthRateLimitPrefix,
+): (req: Request, res: Response, next: NextFunction) => void {
 	const env = useEnv();
+	const enabledKey = `${prefix}_ENABLED` as const;
 
-	if (env['RATE_LIMITER_MCP_OAUTH_ENABLED'] === true) {
-		const limiter = createRateLimiter('RATE_LIMITER_MCP_OAUTH');
-
-		rateLimitMiddleware = (req: Request, res: Response, next: NextFunction) => {
-			limiter
-				.consume(getIPFromReq(req) ?? '0.0.0.0')
-				.then(() => next())
-				.catch((rlRes: unknown) => {
-					if (rlRes instanceof RateLimiterRes) {
-						res.set('Retry-After', String(Math.ceil(rlRes.msBeforeNext / 1000)));
-						res.status(429).json({ error: 'rate_limit_exceeded', error_description: 'Too many requests' });
-					} else {
-						next(rlRes);
-					}
-				});
-		};
+	if (env[enabledKey] !== true) {
+		return (_req, _res, next) => next();
 	}
+
+	const limiter = createRateLimiter(prefix);
+
+	return (req: Request, res: Response, next: NextFunction) => {
+		limiter
+			.consume(getIPFromReq(req) ?? '0.0.0.0')
+			.then(() => next())
+			.catch((rlRes: unknown) => {
+				if (rlRes instanceof RateLimiterRes) {
+					res.set('Retry-After', String(Math.ceil(rlRes.msBeforeNext / 1000)));
+					res.status(429).json({ error: 'rate_limit_exceeded', error_description: 'Too many requests' });
+				} else {
+					next(rlRes);
+				}
+			});
+	};
 }
+
+const authorizeRateLimitMiddleware = createRateLimitMiddleware('RATE_LIMITER_MCP_OAUTH_AUTHORIZE');
+const registrationRateLimitMiddleware = createRateLimitMiddleware('RATE_LIMITER_MCP_OAUTH_REGISTRATION');
 
 // ---------------------------------------------------------------------------
 // Public router (mounted BEFORE authenticate in app.ts)
@@ -295,6 +303,7 @@ mcpOAuthPublicRouter.get(
 // Authorize: GET /mcp-oauth/authorize - standalone consent page (no SPA dependency)
 mcpOAuthPublicRouter.get(
 	'/mcp-oauth/authorize',
+	authorizeRateLimitMiddleware,
 	asyncHandler(async (req: Request, res: Response) => {
 		const env = useEnv();
 		const loginUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'login').toString();
@@ -424,7 +433,7 @@ mcpOAuthPublicRouter.get(
 mcpOAuthPublicRouter.post(
 	'/mcp-oauth/register',
 	express.json(),
-	rateLimitMiddleware,
+	registrationRateLimitMiddleware,
 	setCorsWildcard,
 	asyncHandler(async (req: Request, res: Response) => {
 		const schema = await getSchema();
@@ -440,7 +449,6 @@ mcpOAuthPublicRouter.post(
 	'/mcp-oauth/token',
 	express.urlencoded({ extended: false }),
 	rejectDuplicateParams,
-	rateLimitMiddleware,
 	setCorsWildcard,
 	setNoCacheHeaders,
 	asyncHandler(async (req: Request, res: Response) => {
