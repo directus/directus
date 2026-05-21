@@ -222,7 +222,7 @@ export function mergeNestedRelationDeltaInto(target: Item, source: Item): Item {
 		if (isDetailedUpdateSyntax(existing) && isDetailedUpdateSyntax(incoming)) {
 			target[field] = {
 				create: [...existing.create, ...incoming.create],
-				update: [...existing.update, ...incoming.update],
+				update: mergeDetailedUpdateEntries(existing.update, incoming.update),
 				delete: [...existing.delete, ...incoming.delete],
 			};
 
@@ -233,6 +233,57 @@ export function mergeNestedRelationDeltaInto(target: Item, source: Item): Item {
 	}
 
 	return target;
+}
+
+function mergeDetailedUpdateEntries(existing: unknown[], incoming: unknown[]): unknown[] {
+	const merged = [...existing];
+
+	for (const incomingEntry of incoming) {
+		const existingIndex = merged.findIndex((existingEntry) => hasSameUpdateIdentity(existingEntry, incomingEntry));
+
+		if (existingIndex === -1) {
+			merged.push(incomingEntry);
+			continue;
+		}
+
+		merged[existingIndex] = mergeUpdateEntry(merged[existingIndex], incomingEntry);
+	}
+
+	return merged;
+}
+
+function mergeUpdateEntry(existing: unknown, incoming: unknown): unknown {
+	if (!isObject(existing) || !isObject(incoming)) return incoming;
+
+	const merged: Item = { ...existing, ...incoming };
+
+	for (const [field, incomingValue] of Object.entries(incoming)) {
+		const existingValue = existing[field];
+
+		if (hasSameUpdateIdentity(existingValue, incomingValue)) {
+			merged[field] = mergeUpdateEntry(existingValue, incomingValue);
+		}
+	}
+
+	return merged;
+}
+
+function hasSameUpdateIdentity(existing: unknown, incoming: unknown): boolean {
+	const existingId = getUpdateIdentity(existing);
+	const incomingId = getUpdateIdentity(incoming);
+
+	if (existingId === undefined || incomingId === undefined) return false;
+
+	return String(existingId) === String(incomingId);
+}
+
+function getUpdateIdentity(value: unknown): unknown {
+	if (!isObject(value)) return undefined;
+
+	const id = value['id'];
+	if (id === null) return undefined;
+
+	return id;
 }
 
 function resolveVersionKey(hint: VersionHint): string | undefined {

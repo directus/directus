@@ -210,7 +210,7 @@ describe('resolveWriteTarget', () => {
 });
 
 describe('mergeNestedRelationDeltaInto', () => {
-	test('deep-merges detailed update syntax and overwrites other fields', () => {
+	test('deep-merges detailed update syntax for different rows and overwrites other fields', () => {
 		const target = {
 			blocks: { create: [{ id: 1 }], update: [{ id: 2 }], delete: [3] },
 			seo: { id: 1, title: 'Old' },
@@ -229,6 +229,44 @@ describe('mergeNestedRelationDeltaInto', () => {
 			},
 			seo: { id: 1, description: 'New' },
 		});
+	});
+
+	test('merges repeated detailed updates for the same row', () => {
+		const target = {
+			blocks: {
+				create: [],
+				update: [
+					{
+						id: 'junction-1',
+						collection: 'block_hero',
+						item: { id: 'block-1', headline: 'Old', tagline: 'Backend + CMS test' },
+					},
+				],
+				delete: [],
+			},
+		};
+
+		mergeNestedRelationDeltaInto(target, {
+			blocks: {
+				create: [],
+				update: [
+					{
+						id: 'junction-1',
+						collection: 'block_hero',
+						item: { id: 'block-1', tagline: 'Backend + CMS carlos' },
+					},
+				],
+				delete: [],
+			},
+		});
+
+		expect(target.blocks.update).toEqual([
+			{
+				id: 'junction-1',
+				collection: 'block_hero',
+				item: { id: 'block-1', headline: 'Old', tagline: 'Backend + CMS carlos' },
+			},
+		]);
 	});
 });
 

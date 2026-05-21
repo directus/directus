@@ -156,6 +156,61 @@ describe('Integration Tests', () => {
 					}),
 				);
 			});
+
+			test('should replace repeated detailed updates for the same nested relation row', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_none',
+					item: 1,
+					delta: {
+						blocks: {
+							create: [],
+							update: [
+								{
+									id: 'junction-1',
+									collection: 'block_hero',
+									item: { id: 'block-1', headline: 'Old', tagline: 'Backend + CMS test' },
+								},
+							],
+							delete: [],
+						},
+					},
+				});
+
+				await service.save(1, {
+					blocks: {
+						create: [],
+						update: [
+							{
+								id: 'junction-1',
+								collection: 'block_hero',
+								item: { id: 'block-1', tagline: 'Backend + CMS carlos' },
+							},
+						],
+						delete: [],
+					},
+				});
+
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(
+					1,
+					expect.objectContaining({
+						delta: expect.objectContaining({
+							blocks: expect.objectContaining({
+								update: [
+									expect.objectContaining({
+										id: 'junction-1',
+										collection: 'block_hero',
+										item: expect.objectContaining({
+											id: 'block-1',
+											headline: 'Old',
+											tagline: 'Backend + CMS carlos',
+										}),
+									}),
+								],
+							}),
+						}),
+					}),
+				);
+			});
 		});
 	});
 });
