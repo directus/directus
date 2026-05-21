@@ -194,6 +194,7 @@ compare_version: Comparer la version
 save_version: Enregistrer la version
 promote_version: Promouvoir la version
 apply: Appliquer
+discard: Abandonner
 select_all_differences: Sélectionner toutes les différences
 show_differences_only: Afficher uniquement les différences
 delete_version: Supprimer la version
@@ -1614,6 +1615,7 @@ no_permissions: Aucune Permission
 permission_add_collection: Ajouter une collection
 default_label: Défaut
 delete_label: Supprimer
+discard_label: Abandonner
 delete_are_you_sure: >-
   Cette action est définitive et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
 delete_field_are_you_sure: >-
