@@ -159,7 +159,7 @@ function useWebsiteFrame({
 		const collectionInfo = collectionsStore.getCollection(collection);
 		if (!collectionInfo) return false;
 
-		if (version && !collectionInfo.meta?.versioning) return false;
+		if (version && !collectionInfo.meta?.versioning && !parentScopeHasVersioning()) return false;
 
 		if (userStore.isAdmin) return true;
 
@@ -171,6 +171,11 @@ function useWebsiteFrame({
 		}
 
 		return true;
+	}
+
+	function parentScopeHasVersioning() {
+		if (!parentScope) return false;
+		return Boolean(collectionsStore.getCollection(parentScope.collection)?.meta?.versioning);
 	}
 
 	function send(action: SendAction, data: unknown) {

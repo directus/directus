@@ -110,10 +110,10 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-function mountEditingLayer(version: { key: string; name: string } | null = null) {
+function mountEditingLayer(version: { key: string; name: string } | null = null, props: Record<string, unknown> = {}) {
 	mount(EditingLayer, {
 		global: mountOptions,
-		props: { frameSrc: FRAME_SRC, frameEl: mockFrameEl, version },
+		props: { frameSrc: FRAME_SRC, frameEl: mockFrameEl, version, ...props },
 	});
 }
 
@@ -122,6 +122,16 @@ function setupCollection(meta: Record<string, unknown> = {}) {
 		collection: 'articles',
 		meta: { versioning: false, ...meta },
 	} as any);
+}
+
+function setupCollections(versioningByCollection: Record<string, boolean>) {
+	vi.mocked(useCollectionsStore().getCollection).mockImplementation(
+		(collection) =>
+			({
+				collection,
+				meta: { versioning: versioningByCollection[collection] ?? false },
+			}) as any,
+	);
 }
 
 function setupPermission(fields: string[] | null = null, access = 'full') {
@@ -166,6 +176,19 @@ describe('checkFieldAccess', () => {
 		sendCheckFieldAccess(createElements());
 
 		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: [] }, FRAME_SRC);
+	});
+
+	it('allows non-versioned child elements when version is set and parent scope is versioned', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' }, { parentScope: { collection: 'pages', key: '1' } });
+
+		setupCollections({ pages: true, blocks: false });
+		setupNonAdmin();
+		setupPermission(['*']);
+		setupVersionPermissions({ read: true, update: true });
+
+		sendCheckFieldAccess(createElements({ collection: 'blocks' }));
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
 	});
 
 	it('allows elements when version is set and collection has versioning', () => {
