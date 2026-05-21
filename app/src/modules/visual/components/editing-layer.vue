@@ -339,11 +339,11 @@ function useItemWithEdits() {
 		},
 	});
 
-	watch([edits, saving], ([newEdits, isSaving]) => {
+	watch(edits, (newEdits) => {
 		const hasEdits = Object.keys(newEdits)?.length;
-		if (!hasEdits || isSaving) return;
+		if (!hasEdits || saving.value) return;
 
-		save();
+		void save();
 	});
 
 	return {
@@ -434,7 +434,12 @@ function useItemWithEdits() {
 						},
 					});
 				} else {
-					const versionId = await ensureVersionId(api, target.parent);
+					const versionId = await ensureVersionId(api, {
+						collection: target.parent.collection,
+						item: target.parent.key,
+						versionKey: target.parent.versionKey,
+					});
+
 					await api.post(`/versions/${versionId}/save`, buildPayload(target, edits.value, primaryKey.value));
 					shouldReplaceEdits = false;
 				}
@@ -526,6 +531,12 @@ function useItemWithEdits() {
 	}
 
 	async function readParent(ref: { collection: string; key: PrimaryKey; versionKey: string }, fields: string[]) {
+		await ensureVersionId(api, {
+			collection: ref.collection,
+			item: ref.key,
+			versionKey: ref.versionKey,
+		});
+
 		const {
 			data: { data },
 		} = await api.get<{ data: Item }>(`${getEndpoint(ref.collection)}/${encodeURIComponent(String(ref.key))}`, {
