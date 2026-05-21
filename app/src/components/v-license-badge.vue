@@ -1,19 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import VIcon from './v-icon/v-icon.vue';
-import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 
 const { private: isPrivate = false } = defineProps<{ private?: boolean }>();
 
 const serverStore = useServerStore();
-const licenseStore = useLicenseStore();
 
-const displayPoweredBy = computed(() => {
-	if (isPrivate) return licenseStore.info?.entitlements?.display_powered_by;
-
-	return serverStore.info?.license?.entitlements?.display_powered_by;
-});
+const displayPoweredBy = computed(() => serverStore.info?.license?.entitlements?.display_powered_by);
 
 const link = computed(() => {
 	if (displayPoweredBy.value === 'DIRECTUS') return 'https://directus.io/';
