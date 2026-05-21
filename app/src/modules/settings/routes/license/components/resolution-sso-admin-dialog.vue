@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { z } from 'zod';
 import VButton from '@/components/v-button.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCard from '@/components/v-card.vue';
@@ -26,6 +27,12 @@ const userStore = useUserStore();
 
 const needsPassword = computed(() => props.blockers?.includes('ADMIN_MISSING_PASSWORD') ?? false);
 
+const description = computed(() =>
+	needsPassword.value
+		? t('licensing.resolve_sso_admin_description')
+		: t('licensing.resolve_sso_admin_description_email_only'),
+);
+
 const admin = reactive<{ email: string; password: string }>({ email: '', password: '' });
 
 // Prefill the email from the current admin each time the dialog opens.
@@ -39,8 +46,10 @@ watch(
 	},
 );
 
+const emailValid = computed(() => z.email().safeParse(admin.email).success);
+
 const isValid = computed(() => {
-	if (!admin.email) return false;
+	if (!emailValid.value) return false;
 	if (needsPassword.value && !admin.password) return false;
 	return true;
 });
@@ -69,7 +78,7 @@ function cancel() {
 			</header>
 
 			<VCardText>
-				<p class="description">{{ t('licensing.resolve_sso_admin_description') }}</p>
+				<p class="description">{{ description }}</p>
 
 				<div class="field">
 					<label class="field-label">{{ t('licensing.resolve_sso_admin_email') }}</label>

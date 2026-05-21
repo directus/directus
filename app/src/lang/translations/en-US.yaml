@@ -1502,8 +1502,10 @@ licensing:
     and configure an email and password via the user directory.
   resolve_sso_admin_title: Confirm SSO Admin Information
   resolve_sso_admin_description:
-    Please confirm your email and password is correct. Once SSO has been deactivated, you will need both your email and
-    password to log back in.
+    Please confirm your email and password are correct. Once SSO has been deactivated, you will need both to log back
+    in.
+  resolve_sso_admin_description_email_only:
+    Please confirm your email is correct. Once SSO has been deactivated, you will need it to log back in.
   resolve_sso_admin_email: Email Address
   resolve_sso_admin_password: Password
   resolve_sso_admin_password_placeholder: Set a password...
