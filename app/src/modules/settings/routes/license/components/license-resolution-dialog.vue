@@ -225,6 +225,8 @@ async function submit() {
 	submitting.value = true;
 
 	try {
+		// Feature gates custom_llms_enabled and custom_permission_rules_enabled are
+		// locked server-side without user action and are intentionally not submitted.
 		await licenseStore.resolve({
 			...(collections.value ? { collections: [...selected.collections] } : {}),
 			...(seats.value ? { seats: [...selected.seats] } : {}),
