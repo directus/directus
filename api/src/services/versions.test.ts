@@ -1,3 +1,4 @@
+import { UnprocessableContentError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
@@ -63,6 +64,11 @@ const schema = new SchemaBuilder()
 		c.field('title').string();
 	})
 	.options({ accountability: null })
+	.collection('singleton_collection', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+	})
+	.options({ singleton: true })
 	.build();
 
 describe('Integration Tests', () => {
@@ -122,6 +128,38 @@ describe('Integration Tests', () => {
 				expect(RevisionsService.prototype.createOne).toHaveBeenCalledWith(
 					expect.objectContaining({ collection: 'articles_track_all', item: 2, version: 1, activity: 1 }),
 				);
+			});
+		});
+
+		describe('verifySingletonNotPopulated', () => {
+			test('does not throw when collection is not a singleton', async () => {
+				await expect(
+					(service as any).verifySingletonNotPopulated('articles_track_all', 'create'),
+				).resolves.toBeUndefined();
+			});
+
+			test('does not throw when singleton collection is empty', async () => {
+				tracker.on.select('singleton_collection').response([]);
+
+				await expect(
+					(service as any).verifySingletonNotPopulated('singleton_collection', 'create'),
+				).resolves.toBeUndefined();
+			});
+
+			test('throws UnprocessableContentError when creating on populated singleton', async () => {
+				tracker.on.select('singleton_collection').response([{ id: 1 }]);
+
+				await expect(
+					(service as any).verifySingletonNotPopulated('singleton_collection', 'create'),
+				).rejects.toThrowError(UnprocessableContentError);
+			});
+
+			test('throws with publish wording when publishing on populated singleton', async () => {
+				tracker.on.select('singleton_collection').response([{ id: 1 }]);
+
+				await expect(
+					(service as any).verifySingletonNotPopulated('singleton_collection', 'publish'),
+				).rejects.toThrowError(/Cannot publish an item-less version on singleton collection "singleton_collection"/);
 			});
 		});
 	});

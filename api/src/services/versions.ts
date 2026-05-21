@@ -97,8 +97,12 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		// Skip checking for existing versions if the version is itemless.
-		if (itemLess) return;
+		if (itemLess) {
+			await this.verifySingletonNotPopulated(data['collection'], 'create');
+
+			// Skip checking for existing versions if the version is item-less.
+			return;
+		}
 
 		const sudoService = new VersionsService({
 			knex: this.knex,
@@ -242,7 +246,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				});
 			}
 
-			// Skip checking for existing versions or duplicates if the version is itemless.
+			// Skip checking for existing versions or duplicates if the version is item-less.
 			if (item === null) continue;
 
 			const keyCombo = `${key}-${collection}-${item}`;
@@ -438,6 +442,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				overwriteDefaults: defaultOverwrites as any,
 			});
 		} else {
+			await this.verifySingletonNotPopulated(collection, 'publish');
+
 			updatedItemKey = await itemsService.createOne(payloadAfterHooks, {
 				overwriteDefaults: defaultOverwrites as any,
 			});
@@ -461,6 +467,20 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		);
 
 		return updatedItemKey;
+	}
+
+	private async verifySingletonNotPopulated(collection: string, action: 'create' | 'publish'): Promise<void> {
+		const collectionMeta = this.schema.collections[collection];
+
+		if (!collectionMeta?.singleton) return;
+
+		const existingRow = await this.knex.select(collectionMeta.primary).from(collection).limit(1).first();
+
+		if (existingRow) {
+			throw new UnprocessableContentError({
+				reason: `Cannot ${action} an item-less version on singleton collection "${collection}" because it already contains an item`,
+			});
+		}
 	}
 
 	private mapDelta(version: ContentVersion) {
