@@ -15,6 +15,7 @@ import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ResolutionLimitSection from './resolution-limit-section.vue';
+import ResolutionSsoAdminDialog from './resolution-sso-admin-dialog.vue';
 import ResolutionSsoSection from './resolution-sso-section.vue';
 import VAvatar from '@/components/v-avatar.vue';
 import VButton from '@/components/v-button.vue';
@@ -85,7 +86,10 @@ const severity = computed<'warning' | 'danger'>(() => {
 	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';
 });
 
-type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number] & { disabled?: boolean };
+type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number] & {
+	email?: string | null;
+	disabled?: boolean;
+};
 type FlowCandidate = LicensePendingResolutionLimitFlows['candidates'][number];
 
 const collections = computed<LicensePendingResolutionLimitCollections | undefined>(
@@ -183,7 +187,12 @@ const selected = reactive({
 });
 
 const adminCreds = ref<{ email?: string; password?: string }>({});
-const ssoSectionRef = ref<InstanceType<typeof ResolutionSsoSection> | null>(null);
+const ssoAdminDialogOpen = ref(false);
+
+function onSsoConfirm(creds: { email: string; password?: string }) {
+	adminCreds.value = creds;
+	selected.sso = true;
+}
 
 const editingUserId = ref<string | null>(null);
 
@@ -202,7 +211,7 @@ const isValid = computed(() => {
 	if (collections.value && selected.collections.size < collections.value.usage - collections.value.limit) return false;
 	if (seats.value && selected.seats.size < seats.value.usage - seats.value.limit) return false;
 	if (flows.value && selected.flows.size < flows.value.usage - flows.value.limit) return false;
-	if (sso.value && !ssoSectionRef.value?.isValid) return false;
+	if (sso.value && !selected.sso) return false;
 	if (customLLMs.value && !selected.customLLMs) return false;
 	if (customPermissionRules.value && !selected.customPermissionRules) return false;
 	return true;
@@ -220,11 +229,7 @@ async function submit() {
 			...(collections.value ? { collections: [...selected.collections] } : {}),
 			...(seats.value ? { seats: [...selected.seats] } : {}),
 			...(flows.value ? { flows: [...selected.flows] } : {}),
-			...(sso.value
-				? {
-						sso_enabled: sso.value.blockers?.length ? { admin: { ...adminCreds.value } } : true,
-					}
-				: {}),
+			...(sso.value ? { sso_enabled: { admin: { ...adminCreds.value } } } : {}),
 		});
 
 		if (scope.value === 'manual') {
@@ -303,13 +308,7 @@ function onEsc() {
 				</p>
 
 				<div v-if="sso || customLLMs || customPermissionRules" class="feature-gate-grid">
-					<ResolutionSsoSection
-						v-if="sso"
-						ref="ssoSectionRef"
-						v-model="selected.sso"
-						:blockers="sso.blockers"
-						@update:admin="adminCreds = $event"
-					/>
+					<ResolutionSsoSection v-if="sso" v-model="selected.sso" @open-admin-dialog="ssoAdminDialogOpen = true" />
 
 					<section v-if="customLLMs" class="resolution-feature-section">
 						<header class="section-header">
@@ -411,6 +410,13 @@ function onEsc() {
 					{{ t('licensing.resolve_submit') }}
 				</VButton>
 			</footer>
+
+			<ResolutionSsoAdminDialog
+				v-if="sso"
+				v-model="ssoAdminDialogOpen"
+				:blockers="sso.blockers"
+				@confirm="onSsoConfirm"
+			/>
 
 			<DrawerItem
 				v-if="editingUserId"

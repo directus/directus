@@ -1500,11 +1500,14 @@ licensing:
   resolve_sso_caption:
     SSO-only users will be deactivated when this change is made. To restore their access, you'll need to reactivate them
     and configure an email and password via the user directory.
-  resolve_sso_blocker_notice:
-    The current admin account does not have a local email and/or password configured. Set them below to avoid being
-    locked out once SSO is deactivated.
-  resolve_sso_admin_email: Admin Email
-  resolve_sso_admin_password: Admin Password
+  resolve_sso_admin_title: Confirm SSO Admin Information
+  resolve_sso_admin_description:
+    Please confirm your email and password is correct. Once SSO has been deactivated, you will need both your email and
+    password to log back in.
+  resolve_sso_admin_email: Email Address
+  resolve_sso_admin_password: Password
+  resolve_sso_admin_password_placeholder: Set a password...
+  resolve_sso_admin_confirm: Confirm
   resolve_section_custom_llms: Custom LLM
   resolve_custom_llms_confirm: Confirm Custom LLM Deactivation
   resolve_custom_llms_caption: Custom LLM configurations will be disabled when this change is made.
