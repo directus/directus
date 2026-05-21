@@ -80,7 +80,7 @@ describe('activity_historical_timeframe', () => {
 		});
 
 		test('GET /activity excludes rows older than the timeframe', async () => {
-			const rows = await api.request(readActivities({}));
+			const rows = await api.request(readActivities({ limit: -1 }));
 
 			expect(rows.filter((r) => ['within', 'boundary', 'outside'].includes(r['item']))).toHaveLength(10);
 		});
