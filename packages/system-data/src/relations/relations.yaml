@@ -297,6 +297,7 @@ data:
   - many_collection: directus_oauth_tokens
     many_field: client
     one_collection: directus_oauth_clients
+    one_field: tokens
 
   - many_collection: directus_oauth_tokens
     many_field: user

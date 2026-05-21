@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { isIP } from 'node:net';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { NextFunction, Request, Response } from 'express';
@@ -14,6 +15,48 @@ import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import { getSchema } from '../utils/get-schema.js';
 import { Url } from '../utils/url.js';
 import { type ConsentPageData, type PageOpts, renderConsentPage, renderErrorPage } from './mcp-oauth-consent-page.js';
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+export function getRedirectIndicator(
+	redirectUri: string,
+	clientId: string,
+	registrationType: string,
+): string | undefined {
+	try {
+		const redirectUrl = new URL(redirectUri);
+		const host = redirectUrl.hostname;
+
+		// Localhost check
+		if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]') {
+			return 'localhost';
+		}
+
+		// Bare IP (non-loopback)
+		if (isIP(host) !== 0) {
+			return 'ip-address';
+		}
+
+		// Cross-origin check (CIMD only)
+		if (registrationType === 'cimd') {
+			try {
+				const clientUrl = new URL(clientId);
+
+				if (redirectUrl.hostname !== clientUrl.hostname) {
+					return 'cross-origin';
+				}
+			} catch {
+				/* not a URL client_id, skip */
+			}
+		}
+	} catch {
+		/* invalid redirect URI, skip */
+	}
+
+	return undefined;
+}
 
 // ---------------------------------------------------------------------------
 // Shared middleware
@@ -104,6 +147,10 @@ function relaxFormAction(res: Response) {
  */
 function oauthErrorHandler(err: unknown, _req: Request, res: Response, next: NextFunction) {
 	if (err instanceof OAuthError) {
+		for (const [key, value] of Object.entries(err.headers)) {
+			res.set(key, value);
+		}
+
 		res.status(err.status).json({
 			error: err.code,
 			error_description: err.description,
@@ -241,7 +288,7 @@ mcpOAuthPublicRouter.get(
 	setCorsWildcard,
 	asyncHandler(async (_req: Request, res: Response) => {
 		const service = new McpOAuthService({ schema: await getSchema() });
-		res.json(service.getAuthorizationServerMetadata());
+		res.json(await service.getAuthorizationServerMetadata());
 	}),
 );
 
@@ -328,12 +375,18 @@ mcpOAuthPublicRouter.get(
 			noCache(res);
 			relaxFormAction(res);
 
+			const clientId = req.query['client_id'] as string;
+			const registrationType = result.registration_type ?? 'dcr';
+
 			const consentData: ConsentPageData = {
 				clientName: result.client_name,
 				redirectUri: result.redirect_uri,
 				scope: result.scope,
 				signedParams: result.signed_params,
 				decisionUrl,
+				clientDomain: result.client_domain,
+				registrationType,
+				redirectIndicator: getRedirectIndicator(result.redirect_uri, clientId, registrationType),
 			};
 
 			res.send(await renderConsentPage(consentData, pageOpts));
@@ -377,6 +430,7 @@ mcpOAuthPublicRouter.post(
 		const schema = await getSchema();
 		const service = new McpOAuthService({ schema });
 		const result = await service.registerClient(req.body);
+		res.set('Cache-Control', 'no-store');
 		res.status(201).json(result);
 	}),
 );
@@ -401,10 +455,12 @@ mcpOAuthPublicRouter.post(
 		const grantType = req.body.grant_type;
 		let result;
 
+		const authParams = { ...req.body, authorization_header: req.headers.authorization };
+
 		if (grantType === 'authorization_code') {
-			result = await service.exchangeCode(req.body, context);
+			result = await service.exchangeCode(authParams, context);
 		} else if (grantType === 'refresh_token') {
-			result = await service.refreshToken(req.body, context);
+			result = await service.refreshToken(authParams, context);
 		} else if (!grantType) {
 			throw new OAuthError(400, 'invalid_request', 'grant_type is required');
 		} else {
@@ -424,7 +480,7 @@ mcpOAuthPublicRouter.post(
 	asyncHandler(async (req: Request, res: Response) => {
 		const schema = await getSchema();
 		const service = new McpOAuthService({ schema });
-		await service.revokeToken(req.body);
+		await service.revokeToken({ ...req.body, authorization_header: req.headers.authorization });
 		res.status(200).json({});
 	}),
 );

@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import http from 'node:http';
 import { port } from '@utils/constants.js';
 
 export const baseUrl = `http://127.0.0.1:${port}`;
@@ -19,7 +20,130 @@ export type OAuthTokens = {
 	scope: string;
 };
 
+export type ConfidentialAuthMethod = 'client_secret_basic' | 'client_secret_post';
+
+export type RegisteredConfidentialClient = {
+	clientId: string;
+	clientSecret: string;
+	redirectUri: string;
+	tokenEndpointAuthMethod: ConfidentialAuthMethod;
+};
+
+export type CimdMetadataServerOptions = {
+	path?: string;
+};
+
 type JsonValue = Record<string, unknown> | unknown[];
+
+export class CimdMetadataServer {
+	private server: http.Server | undefined;
+	private port = 0;
+	private metadata: Record<string, unknown> = {};
+	private requestCount = 0;
+	private etag: string | null = null;
+	private readonly servePath: string;
+
+	constructor(opts: CimdMetadataServerOptions = {}) {
+		this.servePath = opts.path ?? `/metadata-${crypto.randomUUID()}.json`;
+	}
+
+	async start(): Promise<void> {
+		await new Promise<void>((resolve, reject) => {
+			this.server = http.createServer((req, res) => {
+				if (req.url !== this.servePath) {
+					res.writeHead(404);
+					res.end();
+					return;
+				}
+
+				this.requestCount++;
+
+				if (this.etag && req.headers['if-none-match'] === this.etag) {
+					res.writeHead(304, { ETag: this.etag });
+					res.end();
+					return;
+				}
+
+				const headers: Record<string, string> = {
+					'Content-Type': 'application/json',
+					'Cache-Control': 'max-age=3600',
+				};
+
+				if (this.etag) headers['ETag'] = this.etag;
+
+				res.writeHead(200, headers);
+				res.end(JSON.stringify(this.metadata));
+			});
+
+			this.server.listen(0, 'localhost', () => {
+				const address = this.server?.address();
+
+				if (!address || typeof address === 'string') {
+					reject(new Error('CIMD metadata server did not expose a TCP port'));
+					return;
+				}
+
+				this.port = address.port;
+				resolve();
+			});
+
+			this.server.on('error', reject);
+		});
+	}
+
+	async stop(): Promise<void> {
+		const server = this.server;
+
+		if (!server) return;
+
+		await new Promise<void>((resolve, reject) => {
+			server.close((error) => {
+				if (error) reject(error);
+				else resolve();
+			});
+		});
+
+		this.server = undefined;
+		this.port = 0;
+	}
+
+	getUrl(): string {
+		if (this.port === 0) throw new Error('CIMD metadata server has not started');
+
+		return `http://localhost:${this.port}`;
+	}
+
+	getClientId(): string {
+		return `${this.getUrl()}${this.servePath}`;
+	}
+
+	getRequestCount(): number {
+		return this.requestCount;
+	}
+
+	resetRequestCount(): void {
+		this.requestCount = 0;
+	}
+
+	setMetadata(doc: Record<string, unknown>): void {
+		this.metadata = doc;
+	}
+
+	setEtag(etag: string | null): void {
+		this.etag = etag;
+	}
+
+	setDefaultMetadata(overrides: Record<string, unknown> = {}): void {
+		this.metadata = {
+			client_id: this.getClientId(),
+			client_name: 'Test CIMD Client',
+			redirect_uris: ['http://127.0.0.1:9876/callback'],
+			grant_types: ['authorization_code', 'refresh_token'],
+			token_endpoint_auth_method: 'none',
+			...overrides,
+		};
+	}
+}
 
 export function generatePKCE(): Pkce {
 	const verifier = crypto.randomBytes(32).toString('hex');
@@ -143,6 +267,7 @@ export async function enableMcpOAuthSettings(apiUrl = baseUrl): Promise<void> {
 			mcp_enabled: true,
 			mcp_oauth_enabled: true,
 			mcp_oauth_dcr_enabled: true,
+			mcp_oauth_cimd_enabled: true,
 		},
 		apiUrl,
 	);
@@ -214,6 +339,57 @@ export async function registerPublicClient(
 	return body.client_id;
 }
 
+export async function registerConfidentialClient(
+	opts: {
+		redirectUri?: string;
+		grantTypes?: string[];
+		tokenEndpointAuthMethod?: ConfidentialAuthMethod;
+		apiUrl?: string;
+	} = {},
+): Promise<RegisteredConfidentialClient> {
+	const apiUrl = opts.apiUrl ?? baseUrl;
+	const redirectUri = opts.redirectUri ?? `${apiUrl}/mcp-oauth-test-callback`;
+	const grantTypes = opts.grantTypes ?? ['authorization_code', 'refresh_token'];
+	const tokenEndpointAuthMethod = opts.tokenEndpointAuthMethod ?? 'client_secret_basic';
+
+	const response = await postJson(
+		'/mcp-oauth/register',
+		{
+			client_name: `test-confidential-client-${crypto.randomUUID()}`,
+			redirect_uris: [redirectUri],
+			grant_types: grantTypes,
+			token_endpoint_auth_method: tokenEndpointAuthMethod,
+		},
+		undefined,
+		apiUrl,
+	);
+
+	const body = (await expectJsonResponse(response, 201)) as {
+		client_id?: string;
+		client_secret?: string;
+		token_endpoint_auth_method?: ConfidentialAuthMethod;
+	};
+
+	if (!body.client_id || !body.client_secret) {
+		throw new Error(`No confidential client credentials in registration response: ${JSON.stringify(body)}`);
+	}
+
+	return {
+		clientId: body.client_id,
+		clientSecret: body.client_secret,
+		redirectUri,
+		tokenEndpointAuthMethod: body.token_endpoint_auth_method ?? tokenEndpointAuthMethod,
+	};
+}
+
+function formEncode(value: string): string {
+	return encodeURIComponent(value).replace(/%20/g, '+');
+}
+
+export function basicClientAuthHeader(clientId: string, clientSecret: string): string {
+	return `Basic ${Buffer.from(`${formEncode(clientId)}:${formEncode(clientSecret)}`).toString('base64')}`;
+}
+
 export async function authorizePublicClient(args: {
 	clientId: string;
 	redirectUri: string;
@@ -272,23 +448,25 @@ export async function exchangeCode(args: {
 	code: string;
 	redirectUri: string;
 	codeVerifier: string;
+	clientSecret?: string;
+	authorizationHeader?: string;
 	apiUrl?: string;
 }): Promise<OAuthTokens> {
 	const apiUrl = args.apiUrl ?? baseUrl;
+	const headers = args.authorizationHeader ? { Authorization: args.authorizationHeader } : undefined;
 
-	const response = await postForm(
-		'/mcp-oauth/token',
-		{
-			grant_type: 'authorization_code',
-			client_id: args.clientId,
-			code: args.code,
-			redirect_uri: args.redirectUri,
-			code_verifier: args.codeVerifier,
-			resource: getResourceUrl(apiUrl),
-		},
-		undefined,
-		apiUrl,
-	);
+	const body: Record<string, string> = {
+		grant_type: 'authorization_code',
+		client_id: args.clientId,
+		code: args.code,
+		redirect_uri: args.redirectUri,
+		code_verifier: args.codeVerifier,
+		resource: getResourceUrl(apiUrl),
+	};
+
+	if (args.clientSecret) body['client_secret'] = args.clientSecret;
+
+	const response = await postForm('/mcp-oauth/token', body, headers ? { headers } : undefined, apiUrl);
 
 	return (await expectJsonResponse(response, 200)) as OAuthTokens;
 }
@@ -296,35 +474,43 @@ export async function exchangeCode(args: {
 export async function refreshToken(args: {
 	clientId: string;
 	refreshToken: string;
+	clientSecret?: string;
+	authorizationHeader?: string;
 	apiUrl?: string;
 }): Promise<Response> {
 	const apiUrl = args.apiUrl ?? baseUrl;
+	const headers = args.authorizationHeader ? { Authorization: args.authorizationHeader } : undefined;
 
-	return postForm(
-		'/mcp-oauth/token',
-		{
-			grant_type: 'refresh_token',
-			client_id: args.clientId,
-			refresh_token: args.refreshToken,
-			resource: getResourceUrl(apiUrl),
-		},
-		undefined,
-		apiUrl,
-	);
+	const body: Record<string, string> = {
+		grant_type: 'refresh_token',
+		client_id: args.clientId,
+		refresh_token: args.refreshToken,
+		resource: getResourceUrl(apiUrl),
+	};
+
+	if (args.clientSecret) body['client_secret'] = args.clientSecret;
+
+	return postForm('/mcp-oauth/token', body, headers ? { headers } : undefined, apiUrl);
 }
 
-export async function revokeToken(args: { clientId: string; token: string; apiUrl?: string }): Promise<Response> {
+export async function revokeToken(args: {
+	clientId: string;
+	token: string;
+	clientSecret?: string;
+	authorizationHeader?: string;
+	apiUrl?: string;
+}): Promise<Response> {
 	const apiUrl = args.apiUrl ?? baseUrl;
+	const headers = args.authorizationHeader ? { Authorization: args.authorizationHeader } : undefined;
 
-	return postForm(
-		'/mcp-oauth/revoke',
-		{
-			client_id: args.clientId,
-			token: args.token,
-		},
-		undefined,
-		apiUrl,
-	);
+	const body: Record<string, string> = {
+		client_id: args.clientId,
+		token: args.token,
+	};
+
+	if (args.clientSecret) body['client_secret'] = args.clientSecret;
+
+	return postForm('/mcp-oauth/revoke', body, headers ? { headers } : undefined, apiUrl);
 }
 
 export async function postMcpToolsList(accessToken: string, apiUrl = baseUrl): Promise<Response> {
@@ -343,6 +529,30 @@ export async function postMcpToolsList(accessToken: string, apiUrl = baseUrl): P
 		},
 		apiUrl,
 	);
+}
+
+export async function createNonAdminToken(apiUrl = baseUrl): Promise<string> {
+	const token = crypto.randomUUID();
+	const email = `mcp-oauth-non-admin-${crypto.randomUUID()}@example.com`;
+
+	const response = await postJson(
+		'/users',
+		{
+			email,
+			password: crypto.randomUUID(),
+			token,
+		},
+		{
+			headers: {
+				Authorization: `Bearer ${adminToken}`,
+			},
+		},
+		apiUrl,
+	);
+
+	await expectJsonResponse(response, 200);
+
+	return token;
 }
 
 export function openWebSocket(apiUrl = baseUrl): Promise<WebSocket> {

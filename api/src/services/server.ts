@@ -72,6 +72,7 @@ export class ServerService {
 		if (this.accountability?.user) {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
+			info['mcp_oauth_enabled'] = toBoolean(env['MCP_OAUTH_ENABLED'] ?? false);
 
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
