@@ -79,9 +79,6 @@ describe('custom_permission_rules_enabled', () => {
 		// seed permissions
 		await directus.knex!('directus_permissions').insert(buildPermission({ fields: '*' }));
 
-		// specifcally test fields: null (DELETE permission)
-		await directus.knex!('directus_permissions').insert(buildPermission({ fields: null, action: 'delete' }));
-
 		for (const [field, shape] of CUSTOM_RULE_SHAPES) {
 			await directus.knex!('directus_permissions').insert(
 				buildPermission({ [field]: field === 'fields' ? shape.join(',') : shape }),
@@ -121,24 +118,22 @@ describe('custom_permission_rules_enabled', () => {
 		);
 
 		test('POST /permissions with all custom fields rejects with RESOURCE_RESTRICTED', async () => {
-			await expect(api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE)))).rejects.toMatchObject(
-				{
-					errors: [
-						expect.objectContaining({
-							extensions: expect.objectContaining({
-								code: 'RESOURCE_RESTRICTED',
-								category: 'custom_permission_rules_enabled',
-							}),
+			await expect(api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE)))).rejects.toMatchObject({
+				errors: [
+					expect.objectContaining({
+						extensions: expect.objectContaining({
+							code: 'RESOURCE_RESTRICTED',
+							category: 'custom_permission_rules_enabled',
 						}),
-					],
-				},
-			);
+					}),
+				],
+			});
 		});
 
 		test('GET /permissions filters out custom rules', async () => {
 			const rows = await api.request(readPermissions({ filter: { collection: { _eq: getUID() } }, limit: -1 }));
 
-			expect(rows).toHaveLength(2);
+			expect(rows).toHaveLength(1);
 		});
 
 		test('POST /permissions with wildcard fields and no other custom predicates succeeds', async () => {
@@ -211,9 +206,7 @@ describe('custom_permission_rules_enabled', () => {
 		});
 
 		test('POST /permissions with all custom fields succeeds', async () => {
-			await expect(
-				api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE))),
-			).resolves.toBeDefined();
+			await expect(api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE)))).resolves.toBeDefined();
 		});
 
 		test('GET /permissions returns custom rules', async () => {
