@@ -3,7 +3,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, mergeWith } from 'lodash';
+import { cloneDeep, isEqual, mergeWith } from 'lodash';
 import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
@@ -83,11 +83,15 @@ export function useItem<T extends Item>(
 		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
-	const query = computed<Query>(() => {
+	const query = computed<Query>((prev) => {
 		const version = unref(currentVersion);
 		const extra = unref(extraQuery);
-		if (!version || version.id === '+') return { ...extra };
-		return { ...extra, version: version.key, versionRaw: true };
+
+		const next: Query =
+			!version || version.id === '+' ? { ...extra } : { ...extra, version: version.key, versionRaw: true };
+
+		// Preserve reference on equivalent shapes; otherwise the auto-switch to a new ('+') draft would refetch and disable form fields mid-edit.
+		return prev && isEqual(prev, next) ? prev : next;
 	});
 
 	const isVersion = computed(() => unref(currentVersion) !== null);
