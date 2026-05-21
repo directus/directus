@@ -31,7 +31,7 @@ const SEED_PLAN: Array<{ label: Label; daysAgo: number }> = [
 
 describe('revision_historical_timeframe', () => {
 	let directus: Sandbox;
-	let api: DirectusClient<any> & RestClient<any>;
+	let api: DirectusClient<unknown> & RestClient<unknown>;
 
 	beforeAll(async () => {
 		directus = await sandbox(

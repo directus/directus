@@ -26,7 +26,7 @@ const unlimitedLicense = createLicense({
 
 describe('custom_llms_enabled', () => {
 	let directus: Sandbox;
-	let api: DirectusClient<any> & RestClient<any>;
+	let api: DirectusClient<unknown> & RestClient<unknown>;
 
 	beforeAll(async () => {
 		directus = await sandbox(
