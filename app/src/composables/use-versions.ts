@@ -1,6 +1,7 @@
 import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, Filter, Item, PrimaryKey } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
+import { isEqual } from 'lodash';
 import { computed, ref, type Ref, watch } from 'vue';
 import { useCollectionPermissions } from './use-permissions';
 import api from '@/api';
@@ -260,13 +261,23 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			const url = shouldPatchRevision ? `/versions/${versionId}/save?patchRevision` : `/versions/${versionId}/save`;
 
+			// Capture the edits we're sending so we can diff-merge on return.
+			const sentEdits = { ...edits.value };
+
 			const {
 				data: { data: savedData },
-			} = await api.post(url, edits.value);
+			} = await api.post(url, sentEdits);
 
 			// Update local item with the saved changes
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
-			edits.value = {};
+
+			const remaining: Record<string, any> = {};
+
+			for (const [key, current] of Object.entries(edits.value)) {
+				if (!isEqual(current, sentEdits[key])) remaining[key] = current;
+			}
+
+			edits.value = remaining;
 
 			if (isNewItem.value) queryVersionId.value = versionId;
 
