@@ -59,7 +59,11 @@ export function useVersionGate(deps: {
 		}
 
 		await deps.switchTo(decision.redirect.versionKey);
-		notify({ title: t('switch_version') });
+		notify({
+			title: t('version_switch_required_title', { version: decision.redirect.versionKey }),
+			text: t('version_switch_required_text'),
+			alwaysShowText: true,
+		});
 
 		return 'switched';
 	}

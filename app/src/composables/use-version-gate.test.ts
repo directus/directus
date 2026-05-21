@@ -82,7 +82,11 @@ describe('useVersionGate', () => {
 
 		await expect(gate.requestSwitch(decision)).resolves.toBe('switched');
 		expect(switchTo).toHaveBeenCalledWith(VERSION_KEY_DRAFT);
-		expect(notify).toHaveBeenCalledWith({ title: 'switch_version' });
+		expect(notify).toHaveBeenCalledWith({
+			title: 'version_switch_required_title',
+			text: 'version_switch_required_text',
+			alwaysShowText: true,
+		});
 	});
 
 	test('cancels when unsaved edits are not discarded', async () => {
