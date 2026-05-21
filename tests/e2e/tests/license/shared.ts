@@ -39,15 +39,15 @@ export async function mocActivateKey(
 }
 
 export function createSandboxOptions(overrides?: DeepPartial<Options>): DeepPartial<Options> {
+	const devMode = process.env['NODE_ENV'] === 'development';
+
 	return merge(
 		{
 			dev: devMode,
 			watch: devMode,
 			prefix: database,
 			docker: { keep: devMode },
-			extras: { license: true },
 			cache: false,
-			knex: true,
 			env: {
 				CACHE_SCHEMA: 'false',
 				DB_FILENAME: `directus_test_${randomUUID()}.db`,
