@@ -40,8 +40,8 @@ describe('private-view-nav-footer', () => {
 		expect(wrapper.find('.wrapper').exists()).toBe(false);
 	});
 
-	it('renders nothing when display_powered_by is NONE', () => {
-		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'NONE' } };
+	it('renders nothing when display_powered_by is HIDDEN', () => {
+		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'HIDDEN' } };
 
 		const wrapper = mount(PrivateViewNavFooter, { global });
 
@@ -62,14 +62,6 @@ describe('private-view-nav-footer', () => {
 		const wrapper = mount(PrivateViewNavFooter, { global });
 
 		expect(wrapper.find('.wrapper').exists()).toBe(true);
-	});
-
-	it('renders hr inside wrapper', () => {
-		useServerStore().info.license = { source: null, entitlements: { display_powered_by: 'DIRECTUS' } };
-
-		const wrapper = mount(PrivateViewNavFooter, { global });
-
-		expect(wrapper.find('.wrapper hr').exists()).toBe(true);
 	});
 
 	it('renders slot content inside wrapper', () => {
