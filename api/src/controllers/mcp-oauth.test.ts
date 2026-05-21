@@ -3,6 +3,8 @@ import type { AddressInfo } from 'node:net';
 import type { SchemaOverview } from '@directus/types';
 import express, { type Router } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { OAuthError } from '../services/mcp-oauth/types/error.js';
+import { isLoopbackHost } from '../services/mcp-oauth/utils/loopback.js';
 import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
 import { expectMcpBearerChallenge } from '../test-utils/mcp-oauth.js';
 
@@ -79,19 +81,7 @@ vi.mock('../services/mcp-oauth/index.js', () => {
 		.fn()
 		.mockResolvedValue('http://localhost/callback?code=abc&iss=http://localhost');
 
-	class OAuthError extends Error {
-		constructor(
-			public status: number,
-			public code: string,
-			public description: string,
-			public redirectable: boolean = false,
-		) {
-			super(description);
-			this.name = 'OAuthError';
-		}
-	}
-
-	return { McpOAuthService, OAuthError };
+	return { McpOAuthService, OAuthError, isLoopbackHost };
 });
 
 vi.mock('../services/settings.js', () => ({
@@ -212,11 +202,17 @@ async function requestRouter(
 	}
 }
 
-async function postForm(router: Router, path: string, body: Record<string, string> | string) {
+async function postForm(
+	router: Router,
+	path: string,
+	body: Record<string, string> | string,
+	options: { headers?: Record<string, string> } = {},
+) {
 	return requestRouter(router, path, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers,
 		},
 		body,
 	});
@@ -395,6 +391,72 @@ describe('mcp-oauth controller', () => {
 			expect(res.body).toMatchObject({ access_token: 'at', token_type: 'Bearer' });
 		});
 
+		test('forwards Basic Authorization header to authorization_code exchange', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
+
+			await postForm(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/token',
+				{
+					grant_type: 'authorization_code',
+					client_id: 'client-id',
+					code: 'x',
+					redirect_uri: 'http://l',
+					code_verifier: 'v'.repeat(43),
+				},
+				{ headers: { Authorization: authorization } },
+			);
+
+			expect(McpOAuthService.prototype.exchangeCode).toHaveBeenCalledWith(
+				expect.objectContaining({ authorization_header: authorization }),
+				expect.any(Object),
+			);
+		});
+
+		test('forwards Basic Authorization header to refresh_token exchange', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
+
+			await postForm(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/token',
+				{
+					grant_type: 'refresh_token',
+					client_id: 'client-id',
+					refresh_token: 'refresh-token',
+				},
+				{ headers: { Authorization: authorization } },
+			);
+
+			expect(McpOAuthService.prototype.refreshToken).toHaveBeenCalledWith(
+				expect.objectContaining({ authorization_header: authorization }),
+				expect.any(Object),
+			);
+		});
+
+		test('serializes OAuthError response headers', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+
+			vi.mocked(McpOAuthService.prototype.exchangeCode).mockRejectedValueOnce(
+				new OAuthError(401, 'invalid_client', 'Invalid client authentication', false, {
+					'WWW-Authenticate': 'Basic realm="mcp-oauth"',
+				}),
+			);
+
+			const res = await postForm(mcpOAuthPublicRouter, '/mcp-oauth/token', {
+				grant_type: 'authorization_code',
+				client_id: 'client-id',
+				code: 'x',
+				redirect_uri: 'http://l',
+				code_verifier: 'v'.repeat(43),
+			});
+
+			expect(res.status).toBe(401);
+			expect(res.headers.get('www-authenticate')).toBe('Basic realm="mcp-oauth"');
+			expect(res.body).toMatchObject({ error: 'invalid_client' });
+		});
+
 		test('duplicate form params on /mcp-oauth/token rejected as invalid_request', async () => {
 			const res = await postForm(
 				mcpOAuthPublicRouter,
@@ -432,6 +494,25 @@ describe('mcp-oauth controller', () => {
 
 			expect(res.status).toBe(400);
 			expect(res.body).toMatchObject({ error: 'invalid_request' });
+		});
+
+		test('forwards Basic Authorization header to token revocation', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
+
+			await postForm(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/revoke',
+				{
+					token: 'access-token',
+					client_id: 'client-id',
+				},
+				{ headers: { Authorization: authorization } },
+			);
+
+			expect(McpOAuthService.prototype.revokeToken).toHaveBeenCalledWith(
+				expect.objectContaining({ authorization_header: authorization }),
+			);
 		});
 	});
 
@@ -665,5 +746,45 @@ describe('error-handler MCP 401', () => {
 			'WWW-Authenticate',
 			'Bearer resource_metadata="http://localhost/directus/.well-known/oauth-protected-resource/mcp", scope="mcp:access", error="invalid_token"',
 		);
+	});
+});
+
+describe('getRedirectIndicator', () => {
+	let getRedirectIndicator: typeof import('./mcp-oauth.js').getRedirectIndicator;
+
+	beforeEach(async () => {
+		({ getRedirectIndicator } = await import('./mcp-oauth.js'));
+	});
+
+	test('localhost redirect returns "localhost"', () => {
+		expect(getRedirectIndicator('http://localhost:3000/cb', 'some-client', 'dcr')).toBe('localhost');
+	});
+
+	test('127.0.0.1 redirect returns "localhost"', () => {
+		expect(getRedirectIndicator('http://127.0.0.1:3000/cb', 'some-client', 'dcr')).toBe('localhost');
+	});
+
+	test('IPv6 loopback [::1] redirect returns "localhost"', () => {
+		expect(getRedirectIndicator('http://[::1]:3000/cb', 'some-client', 'dcr')).toBe('localhost');
+	});
+
+	test('bare IP redirect returns "ip-address"', () => {
+		expect(getRedirectIndicator('http://192.168.1.1:3000/cb', 'some-client', 'dcr')).toBe('ip-address');
+	});
+
+	test('CIMD cross-origin redirect returns "cross-origin"', () => {
+		expect(getRedirectIndicator('https://other.example.com/cb', 'https://tools.example.com/meta', 'cimd')).toBe(
+			'cross-origin',
+		);
+	});
+
+	test('CIMD same-origin redirect returns undefined', () => {
+		expect(
+			getRedirectIndicator('https://tools.example.com/cb', 'https://tools.example.com/meta', 'cimd'),
+		).toBeUndefined();
+	});
+
+	test('DCR normal HTTPS redirect returns undefined', () => {
+		expect(getRedirectIndicator('https://example.com/cb', 'some-uuid', 'dcr')).toBeUndefined();
 	});
 });

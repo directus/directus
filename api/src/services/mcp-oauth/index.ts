@@ -1,11 +1,13 @@
 import crypto from 'node:crypto';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
+import { RecordNotUniqueError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
-import { isObject, parseJSON } from '@directus/utils';
+import { isObject, parseJSON, toBoolean } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { getMcpUrls, MCP_ACCESS_SCOPE } from '../../ai/mcp/utils.js';
+import { translateDatabaseError } from '../../database/errors/translate.js';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger/index.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
@@ -16,37 +18,25 @@ import { parseOAuthScope } from '../../utils/parse-oauth-scope.js';
 import { transaction } from '../../utils/transaction.js';
 import { Url } from '../../utils/url.js';
 import { ActivityService } from '../activity.js';
-import { isLoopbackHost } from './utils/loopback.js';
-import { matchRedirectUri } from './utils/redirect.js';
+import { type CimdMetadata, detectClientIdType, fetchCimdMetadata, getAllowedDomains } from './cimd.js';
+import { OAuthError } from './types/error.js';
+import { isDomainAllowed } from './utils/domain.js';
+import { matchRedirectUri, validateRedirectUri } from './utils/redirect.js';
+
+export { OAuthError } from './types/error.js';
+export { isDomainAllowed } from './utils/domain.js';
+export { isLoopbackHost } from './utils/loopback.js';
+export { validateRedirectUri } from './utils/redirect.js';
 
 const DEFAULT_UNUSED_CLIENT_TTL_MS = 3 * 24 * 60 * 60 * 1000; // 3d -- matches env default
+const DEFAULT_CIMD_TTL_MS = 3_600_000; // 1 hour
 const MAX_REDIRECT_URIS = 10;
-const MAX_REDIRECT_URI_LENGTH = 255;
 const MAX_CLIENT_NAME_LENGTH = 200;
 
 /** Consent JWT typ claim -- prevents token confusion with regular Directus JWTs */
 const CONSENT_JWT_TYP = 'directus-mcp-consent+jwt';
 /** Consent JWT audience -- binds the token to the decision endpoint */
 const CONSENT_JWT_AUD = 'mcp-oauth-authorize-decision';
-
-/**
- * RFC 6749/7591 error with structured code for JSON serialization.
- *
- * `code` maps to the OAuth `error` field. `redirectable` controls whether
- * the controller can redirect the error back to the client's redirect_uri
- * (only safe after redirect_uri is validated against registered URIs).
- */
-export class OAuthError extends Error {
-	constructor(
-		public status: number,
-		public code: string,
-		public description: string,
-		public redirectable: boolean = false,
-	) {
-		super(description);
-		this.name = 'OAuthError';
-	}
-}
 
 function parseStringArrayField(value: unknown, field: string): string[] {
 	let parsed = value;
@@ -62,29 +52,6 @@ function parseStringArrayField(value: unknown, field: string): string[] {
 	return parsed;
 }
 
-/**
- * Check if a hostname matches any of the provided domain patterns.
- * Supports exact match and `*.example.com` wildcard prefix (matches subdomains, not base).
- * Case-insensitive. Whitespace in patterns is trimmed.
- */
-export function isDomainAllowed(hostname: string, patterns: string[]): boolean {
-	const lower = hostname.toLowerCase();
-
-	for (const pattern of patterns) {
-		const p = pattern.toLowerCase().trim();
-		if (!p) continue;
-
-		if (p.startsWith('*.')) {
-			const suffix = p.slice(1); // ".example.com"
-			if (lower.endsWith(suffix) && lower.length > suffix.length) return true;
-		} else if (lower === p) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
 /** RFC 7591 Dynamic Client Registration response. */
 export interface DCRResponse {
 	client_id: string;
@@ -94,6 +61,8 @@ export interface DCRResponse {
 	response_types: string[];
 	token_endpoint_auth_method: string;
 	client_id_issued_at: number;
+	client_secret?: string;
+	client_secret_expires_at?: number;
 }
 
 /** Authorization validation result. `signed_params` is an HMAC-SHA256 consent JWT. */
@@ -103,6 +72,8 @@ export interface ValidateResponse {
 	already_consented: boolean;
 	redirect_uri: string;
 	scope: string;
+	registration_type: 'dcr' | 'cimd';
+	client_domain?: string;
 }
 
 /** POST body for the consent decision endpoint. `approved` is string "true"/"false" from form POST. */
@@ -111,10 +82,16 @@ export interface DecisionParams {
 	approved: boolean;
 }
 
-/** RFC 6749 Section 4.1.3 token request (authorization_code grant). */
-export interface TokenParams {
-	grant_type?: string;
+/** Shared auth fields used by resolveClientId and authenticateClient. */
+export interface AuthParams {
 	client_id?: string;
+	client_secret?: string;
+	authorization_header?: string;
+}
+
+/** RFC 6749 Section 4.1.3 token request (authorization_code grant). */
+export interface TokenParams extends AuthParams {
+	grant_type?: string;
 	code?: string;
 	redirect_uri?: string;
 	code_verifier?: string;
@@ -137,18 +114,16 @@ export interface TokenContext {
 }
 
 /** RFC 6749 Section 6 refresh token request. */
-export interface RefreshParams {
+export interface RefreshParams extends AuthParams {
 	grant_type?: string;
-	client_id?: string;
 	refresh_token?: string;
 	resource?: string;
 	scope?: string;
 }
 
 /** RFC 7009 token revocation request. Always returns 200 (idempotent). */
-export interface RevokeParams {
+export interface RevokeParams extends AuthParams {
 	token?: string;
-	client_id?: string;
 	token_type_hint?: string;
 }
 
@@ -157,6 +132,15 @@ const CODE_VERIFIER_RE = /^[A-Za-z0-9\-._~]{43,128}$/;
 
 /** RFC 7636 Section 4.2: S256 code_challenge is base64url-encoded SHA-256 (always 43 chars) */
 const CODE_CHALLENGE_S256_RE = /^[A-Za-z0-9_-]{43}$/;
+
+/** RFC 6749 Section 9 token endpoint auth methods supported by this server */
+const SUPPORTED_TOKEN_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'] as const;
+
+/** SHA-256 hash hex format guard (64 hex chars = 256 bits) */
+const SHA256_HEX_RE = /^[0-9a-f]{64}$/;
+
+/** Client secret byte length for confidential clients (32 bytes = 256 bits) */
+const CLIENT_SECRET_BYTES = 32;
 
 /** Params checked for duplicates before redirect_uri validation (non-redirectable errors) */
 const PRE_TRUST_DUPLICATE_PARAMS = ['client_id', 'redirect_uri'] as const;
@@ -242,32 +226,51 @@ export class McpOAuthService {
 	 * Called by `GET /.well-known/oauth-authorization-server*`. The client fetches this after
 	 * discovering the AS from the protected resource metadata, then uses the endpoint URLs
 	 * to register (DCR) and start the authorization flow.
+	 *
+	 * Queries settings to conditionally include `registration_endpoint` (DCR) and
+	 * `client_id_metadata_document_supported` (CIMD).
 	 */
-	getAuthorizationServerMetadata(): Record<string, unknown> {
+	async getAuthorizationServerMetadata(): Promise<Record<string, unknown>> {
 		const { issuerUrl } = getMcpUrls();
 		const env = useEnv();
 		const baseUrl = env['PUBLIC_URL'] as string;
 
+		const settings = await this.knex('directus_settings')
+			.select('mcp_oauth_dcr_enabled', 'mcp_oauth_cimd_enabled')
+			.first();
+
+		const dcrEnabled = toBoolean(env['MCP_OAUTH_DCR_ENABLED']) && toBoolean(settings?.mcp_oauth_dcr_enabled);
+		const cimdEnabled = toBoolean(env['MCP_OAUTH_CIMD_ENABLED']) && toBoolean(settings?.mcp_oauth_cimd_enabled);
+
 		const authorizationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'authorize');
 		const tokenEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'token');
-		const registrationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'register');
 		const revocationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'revoke');
 
-		return {
+		const metadata: Record<string, unknown> = {
 			issuer: issuerUrl,
 			authorization_endpoint: authorizationEndpoint.toString(),
 			token_endpoint: tokenEndpoint.toString(),
-			registration_endpoint: registrationEndpoint.toString(),
 			revocation_endpoint: revocationEndpoint.toString(),
 			response_types_supported: ['code'],
 			grant_types_supported: ['authorization_code', 'refresh_token'],
-			token_endpoint_auth_methods_supported: ['none'],
-			revocation_endpoint_auth_methods_supported: ['none'],
+			token_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
+			revocation_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
 			code_challenge_methods_supported: ['S256'],
 			scopes_supported: [MCP_ACCESS_SCOPE],
 			response_modes_supported: ['query'],
 			authorization_response_iss_parameter_supported: true,
 		};
+
+		if (dcrEnabled) {
+			const registrationEndpoint = new Url(baseUrl).addPath('mcp-oauth', 'register');
+			metadata['registration_endpoint'] = registrationEndpoint.toString();
+		}
+
+		if (cimdEnabled) {
+			metadata['client_id_metadata_document_supported'] = true;
+		}
+
+		return metadata;
 	}
 
 	/**
@@ -287,6 +290,17 @@ export class McpOAuthService {
 	async registerClient(body: unknown): Promise<DCRResponse> {
 		const env = useEnv();
 		const logger = useLogger();
+
+		// DCR enabled gate: env AND setting must both be true
+		if (!toBoolean(env['MCP_OAUTH_DCR_ENABLED'])) {
+			throw new OAuthError(404, 'not_found', 'Dynamic client registration is not available');
+		}
+
+		const settings = await this.knex('directus_settings').select('mcp_oauth_dcr_enabled').first();
+
+		if (!toBoolean(settings?.mcp_oauth_dcr_enabled)) {
+			throw new OAuthError(404, 'not_found', 'Dynamic client registration is not available');
+		}
 
 		function rejectRegistration(code: string, description: string): never {
 			logger.debug({ code, description, input }, 'DCR validation failed');
@@ -347,15 +361,11 @@ export class McpOAuthService {
 			rejectRegistration('invalid_client_metadata', 'Unsupported grant type');
 		}
 
-		// RFC 7591 Section 2: spec defaults to client_secret_basic if omitted, but Section 3.1
-		// allows the server to override requested metadata. We default to none because:
-		// 1. We never issue client_secrets, so client_secret_basic is impossible to fulfill
-		// 2. AS metadata advertises token_endpoint_auth_methods_supported: ['none']
-		// 3. A client expecting client_secret_basic would fail at token exchange (no secret), which is correct
-		const authMethod = input['token_endpoint_auth_method'] ?? 'none';
+		// RFC 7591 Section 2: defaults to client_secret_basic if omitted
+		const authMethod = input['token_endpoint_auth_method'] ?? 'client_secret_basic';
 
-		if (authMethod !== 'none') {
-			rejectRegistration('invalid_client_metadata', 'Only token_endpoint_auth_method "none" is supported');
+		if (!SUPPORTED_TOKEN_AUTH_METHODS.includes(authMethod as string)) {
+			rejectRegistration('invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
 		}
 
 		// RFC 7591 Section 2: response_types derived from grant_types if omitted
@@ -364,6 +374,35 @@ export class McpOAuthService {
 		if (responseTypes !== undefined) {
 			if (!Array.isArray(responseTypes) || responseTypes.length !== 1 || responseTypes[0] !== 'code') {
 				rejectRegistration('invalid_client_metadata', 'Only response_types ["code"] is supported');
+			}
+		}
+
+		// Optional URI fields: validate as HTTPS URLs if present
+		const optionalUriFields = ['client_uri', 'logo_uri', 'tos_uri', 'policy_uri'] as const;
+		const optionalUris: Record<string, string | null> = {};
+
+		for (const field of optionalUriFields) {
+			const value = input[field];
+
+			if (value !== undefined && value !== null) {
+				if (typeof value !== 'string') {
+					rejectRegistration('invalid_client_metadata', `${field} must be a string`);
+				}
+
+				try {
+					const parsed = new URL(value);
+
+					if (parsed.protocol !== 'https:') {
+						rejectRegistration('invalid_client_metadata', `${field} must use HTTPS`);
+					}
+				} catch (err) {
+					if (err instanceof OAuthError) throw err;
+					rejectRegistration('invalid_client_metadata', `${field} is not a valid URL`);
+				}
+
+				optionalUris[field] = value;
+			} else {
+				optionalUris[field] = null;
 			}
 		}
 
@@ -381,6 +420,16 @@ export class McpOAuthService {
 			}
 		}
 
+		// Generate client secret for confidential clients
+		const isConfidential = authMethod !== 'none';
+		let clientSecret: string | undefined;
+		let clientSecretHash: string | null = null;
+
+		if (isConfidential) {
+			clientSecret = crypto.randomBytes(CLIENT_SECRET_BYTES).toString('base64url');
+			clientSecretHash = this.hashToken(clientSecret);
+		}
+
 		// Create client
 		const clientId = crypto.randomUUID();
 		const now = Math.floor(Date.now() / 1000);
@@ -390,7 +439,13 @@ export class McpOAuthService {
 			client_name: clientName,
 			redirect_uris: JSON.stringify(redirectUris),
 			grant_types: JSON.stringify(grantTypes),
-			token_endpoint_auth_method: 'none',
+			token_endpoint_auth_method: authMethod,
+			client_secret_hash: clientSecretHash,
+			registration_type: 'dcr',
+			client_uri: optionalUris['client_uri'],
+			logo_uri: optionalUris['logo_uri'],
+			tos_uri: optionalUris['tos_uri'],
+			policy_uri: optionalUris['policy_uri'],
 		});
 
 		return {
@@ -399,8 +454,9 @@ export class McpOAuthService {
 			redirect_uris: redirectUris as string[],
 			grant_types: grantTypes as string[],
 			response_types: ['code'],
-			token_endpoint_auth_method: 'none',
+			token_endpoint_auth_method: authMethod as string,
 			client_id_issued_at: now,
+			...(isConfidential ? { client_secret: clientSecret, client_secret_expires_at: 0 } : {}),
 		};
 	}
 
@@ -441,17 +497,12 @@ export class McpOAuthService {
 		const clientId = getStringParam(params, 'client_id', false);
 		const redirectUri = getStringParam(params, 'redirect_uri', false);
 
-		// Validate client_id exists in DB - errors before redirect validation must not redirect
+		// Validate client_id exists -- resolveClientWithFetch handles DCR DB lookup and CIMD fetch/cache
 		if (!clientId) {
 			throw new OAuthError(400, 'invalid_request', 'client_id is required');
 		}
 
-		const client = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
-
-		// Collapse client + redirect_uri errors to the same message to prevent enumeration
-		if (!client) {
-			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
-		}
+		const client = await this.resolveClientWithFetch(clientId);
 
 		// Validate redirect_uri matches registered URIs.
 		// RFC 6749 Section 3.1.2: exact string match for non-loopback.
@@ -553,12 +604,25 @@ export class McpOAuthService {
 			{ expiresIn: '5m', algorithm: 'HS256' },
 		);
 
+		const registrationType = (client['registration_type'] as 'dcr' | 'cimd') ?? 'dcr';
+		let clientDomain: string | undefined;
+
+		if (registrationType === 'cimd') {
+			try {
+				clientDomain = new URL(clientId).hostname;
+			} catch {
+				// Should not happen since clientId was already validated
+			}
+		}
+
 		return {
 			signed_params: signedParams,
 			client_name: client['client_name'] as string,
 			already_consented: false,
 			redirect_uri: redirectUri,
 			scope: normalizedScope,
+			registration_type: registrationType,
+			client_domain: clientDomain,
 		};
 	}
 
@@ -644,7 +708,7 @@ export class McpOAuthService {
 		}
 
 		// RFC 6749 Section 4.1.2: generate authorization code (opaque to client)
-		const rawCode = crypto.randomBytes(32).toString('hex');
+		const rawCode = crypto.randomBytes(CLIENT_SECRET_BYTES).toString('hex');
 		const codeHash = this.hashToken(rawCode);
 
 		// Store code (never store raw code)
@@ -726,6 +790,23 @@ export class McpOAuthService {
 		const env = useEnv();
 		const logger = useLogger();
 
+		// Pre-transaction: resolve client_id and authenticate
+		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
+		params.client_id = resolvedClientId;
+
+		const preAuthClient = await this.resolveClientFromDb(resolvedClientId);
+
+		if (!preAuthClient) {
+			throw new OAuthError(400, 'invalid_grant', 'Authorization code is invalid or has expired');
+		}
+
+		this.authenticateClient(preAuthClient, params, basicAuth);
+
+		const tokenEndpointAuthMethod = preAuthClient['token_endpoint_auth_method'];
+
+		const isAuthenticatedConfidentialClient =
+			tokenEndpointAuthMethod === 'client_secret_basic' || tokenEndpointAuthMethod === 'client_secret_post';
+
 		// 1. RFC 6749 Section 4.1.3: required token request params
 		if (!params.grant_type) {
 			throw new OAuthError(400, 'invalid_request', 'grant_type is required');
@@ -733,10 +814,6 @@ export class McpOAuthService {
 
 		if (params.grant_type !== 'authorization_code') {
 			throw new OAuthError(400, 'unsupported_grant_type', 'Only authorization_code grant is supported');
-		}
-
-		if (!params.client_id) {
-			throw new OAuthError(400, 'invalid_request', 'client_id is required');
 		}
 
 		if (!params.code) {
@@ -787,6 +864,11 @@ export class McpOAuthService {
 
 			if (burned === 0) {
 				logger.warn({ code_hash: codeHash }, 'Authorization code already used');
+
+				if (isAuthenticatedConfidentialClient) {
+					await this.revokeGrantByCodeHash(trx, codeHash, resolvedClientId);
+				}
+
 				return { replayed: true as const };
 			}
 
@@ -826,8 +908,8 @@ export class McpOAuthService {
 				rejectCode({}, 'PKCE verification failed');
 			}
 
-			// 4d. Client lookup via trx
-			const client = await trx('directus_oauth_clients').where('client_id', params.client_id).first();
+			// 4d. Client lookup via trx (drain-naturally: no CIMD gating)
+			const client = await this.resolveClientFromDb(params.client_id!, trx);
 
 			if (!client) {
 				rejectCode({ client_id: params.client_id }, 'Unknown client during code exchange');
@@ -957,13 +1039,12 @@ export class McpOAuthService {
 		const env = useEnv();
 		const logger = useLogger();
 
+		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
+		params.client_id = resolvedClientId;
+
 		// 1. Validate required params
 		if (params.grant_type !== 'refresh_token') {
 			throw new OAuthError(400, 'unsupported_grant_type', 'grant_type must be refresh_token');
-		}
-
-		if (!params.client_id) {
-			throw new OAuthError(400, 'invalid_request', 'client_id is required');
 		}
 
 		if (!params.refresh_token) {
@@ -974,13 +1055,15 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_target', 'resource is required');
 		}
 
-		// 2. Verify client exists and supports refresh_token grant
-		const client = await this.knex('directus_oauth_clients').where('client_id', params.client_id).first();
+		// 2. Verify client exists and supports refresh_token grant (drain-naturally: no CIMD gating)
+		const client = await this.resolveClientFromDb(params.client_id!);
 
 		// Collapse client existence + grant type errors to prevent enumeration
 		if (!client) {
 			throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');
 		}
+
+		this.authenticateClient(client, params, basicAuth);
 
 		const clientGrantTypes = parseStringArrayField(client['grant_types'], 'grant_types');
 
@@ -1124,44 +1207,46 @@ export class McpOAuthService {
 	}
 
 	/**
-	 * Revoke a refresh token (RFC 7009 Section 2). Idempotent.
+	 * Revoke a refresh token (RFC 7009 Section 2). Idempotent for unknown tokens.
 	 *
 	 * Called by `POST /mcp-oauth/revoke`. The client sends its refresh_token to end the session.
 	 *
-	 * Per RFC 7009 Section 2.2, returns 200 for all cases -- successful revocation, unknown
-	 * tokens, and unknown client_ids. This prevents client_id enumeration on the public endpoint.
-	 * Only throws for missing required params (token, client_id).
+	 * Client authentication is enforced first (resolveClientId + authenticateClient).
+	 * Unknown client_id or failed secret verification rejects with 401 invalid_client.
+	 * Per RFC 7009 Section 2.2, unknown/mismatched tokens return silent 200.
 	 *
-	 * @param params - Token and client_id
-	 * @throws {OAuthError} `invalid_request` if token or client_id is missing
+	 * @param params - Token, client_id, and optional authorization_header
+	 * @throws {OAuthError} `invalid_client` if client unknown or auth fails
+	 * @throws {OAuthError} `invalid_request` if token is missing
 	 */
 	async revokeToken(params: RevokeParams): Promise<void> {
 		const logger = useLogger();
+
+		// Resolve client_id from header or body
+		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
+		params.client_id = resolvedClientId;
+
+		// Look up client and authenticate
+		const client = await this.resolveClientFromDb(resolvedClientId);
+
+		if (!client) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		this.authenticateClient(client, params, basicAuth);
 
 		// RFC 7009 Section 2.1: token REQUIRED
 		if (!params.token) {
 			throw new OAuthError(400, 'invalid_request', 'token is required');
 		}
 
-		if (!params.client_id) {
-			throw new OAuthError(400, 'invalid_request', 'client_id is required');
-		}
-
 		// Look up grant by token hash and verify client binding.
-		// RFC 7009 Section 2.2: return 200 for all failure cases (no information leak).
-		// For public clients, we don't distinguish unknown client_id from unknown token --
-		// both silently succeed to prevent client_id enumeration.
+		// RFC 7009 Section 2.2: return 200 for unknown/mismatched tokens (no information leak).
 		const tokenHash = this.hashToken(params.token);
 
 		const grant = await this.knex('directus_oauth_tokens').where('session', tokenHash).first();
 
 		if (!grant || grant['client'] !== params.client_id) {
-			return;
-		}
-
-		const client = await this.knex('directus_oauth_clients').where('client_id', params.client_id).first();
-
-		if (!client) {
 			return;
 		}
 
@@ -1303,6 +1388,423 @@ export class McpOAuthService {
 		}
 	}
 
+	// ---------------------------------------------------------------------------
+	// Client resolution methods
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Resolve a client by ID, handling both DCR (UUID) and CIMD (URL) client IDs.
+	 * Used ONLY by `validateAuthorization` -- the authorization entry point where
+	 * CIMD clients are fetched/cached on first contact.
+	 */
+	async resolveClientWithFetch(clientId: string): Promise<Record<string, unknown>> {
+		const logger = useLogger();
+		const type = detectClientIdType(clientId);
+
+		if (type === null) {
+			throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
+		}
+
+		if (type === 'dcr') {
+			const row = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
+
+			if (!row) throw new OAuthError(400, 'invalid_request', 'Invalid client_id or redirect_uri');
+
+			return row;
+		}
+
+		// --- CIMD path ---
+		const env = useEnv();
+
+		// Gate 1: CIMD enabled (env AND setting)
+		if (!toBoolean(env['MCP_OAUTH_CIMD_ENABLED'])) {
+			throw new OAuthError(400, 'invalid_client', 'CIMD client registration is disabled');
+		}
+
+		const settings = await this.knex('directus_settings').select('mcp_oauth_cimd_enabled').first();
+
+		if (!toBoolean(settings?.mcp_oauth_cimd_enabled)) {
+			throw new OAuthError(400, 'invalid_client', 'CIMD client registration is disabled');
+		}
+
+		// Gate 2: Domain allowlist
+		const allowedDomains = getAllowedDomains();
+
+		if (allowedDomains.length > 0) {
+			const hostname = new URL(clientId).hostname;
+
+			if (!isDomainAllowed(hostname, allowedDomains)) {
+				logger.debug({ client_id: clientId }, 'CIMD client_id domain not in allowlist');
+				throw new OAuthError(400, 'invalid_client', 'Client not allowed');
+			}
+		}
+
+		// DB lookup
+		const existing = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
+
+		if (existing) {
+			const expiresAt = existing['metadata_expires_at'] ? new Date(existing['metadata_expires_at']).getTime() : 0;
+
+			if (expiresAt > Date.now()) {
+				return existing; // Fresh cache
+			}
+
+			return await this.refreshCimdClient(existing); // Stale cache
+		}
+
+		return await this.insertCimdClient(clientId); // First contact
+	}
+
+	/**
+	 * Simple DB lookup for a client. Used by `exchangeCode` (with trx!), `refreshToken`,
+	 * and `revokeToken`. Does NOT gate on CIMD disabled (drain-naturally pattern).
+	 */
+	async resolveClientFromDb(
+		clientId: string,
+		db: Knex | Knex.Transaction = this.knex,
+	): Promise<Record<string, unknown> | undefined> {
+		return db('directus_oauth_clients').where('client_id', clientId).first();
+	}
+
+	/** Base64 character set: A-Z, a-z, 0-9, +, /, = (padding) */
+	private static readonly BASE64_RE = /^[A-Za-z0-9+/]*={0,2}$/;
+
+	/**
+	 * Parse an Authorization: Basic header. Returns { clientId, clientSecret }
+	 * or null if the header is absent or not Basic scheme.
+	 * Throws OAuthError on malformed Basic header.
+	 */
+	parseBasicAuth(header: string | undefined): { clientId: string; clientSecret: string } | null {
+		if (!header) return null;
+
+		// RFC 7617: scheme comparison is case-insensitive
+		if (header.length < 6 || header.slice(0, 6).toLowerCase() !== 'basic ') {
+			return null;
+		}
+
+		const encoded = header.slice(6).trim();
+
+		if (!McpOAuthService.BASE64_RE.test(encoded)) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: invalid base64');
+		}
+
+		const decoded = Buffer.from(encoded, 'base64').toString('utf-8');
+
+		if (decoded.includes('\0')) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: contains null bytes');
+		}
+
+		const colonIndex = decoded.indexOf(':');
+
+		if (colonIndex === -1) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: missing colon separator');
+		}
+
+		// RFC 6749 Section 2.3.1: application/x-www-form-urlencoded decoding
+		// Replace + with space before decodeURIComponent (form-urlencoded allows + for spaces)
+		try {
+			const clientId = decodeURIComponent(decoded.slice(0, colonIndex).replace(/\+/g, ' '));
+			const clientSecret = decodeURIComponent(decoded.slice(colonIndex + 1).replace(/\+/g, ' '));
+
+			if (!clientId) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: client_id is required');
+			}
+
+			if (clientId.includes('\0') || clientSecret.includes('\0')) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: contains null bytes');
+			}
+
+			return {
+				clientId,
+				clientSecret,
+			};
+		} catch (err) {
+			if (err instanceof URIError) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: invalid percent-encoding');
+			}
+
+			throw err;
+		}
+	}
+
+	/**
+	 * Extract client_id from the request. Method-agnostic -- runs before the client
+	 * record is loaded. Only the Basic scheme is recognized; other Authorization
+	 * header schemes are ignored (client_id comes from body only).
+	 */
+	resolveClientId(params: AuthParams): {
+		clientId: string;
+		basicAuth: { clientId: string; clientSecret: string } | null;
+	} {
+		const basicAuth = this.parseBasicAuth(params.authorization_header);
+		const headerClientId = basicAuth?.clientId;
+		const bodyClientId = params.client_id;
+
+		if (headerClientId && bodyClientId && headerClientId !== bodyClientId) {
+			throw new OAuthError(400, 'invalid_request', 'client_id mismatch between Authorization header and request body');
+		}
+
+		const clientId = headerClientId ?? bodyClientId;
+
+		if (!clientId) {
+			throw new OAuthError(400, 'invalid_request', 'client_id is required');
+		}
+
+		return { clientId, basicAuth };
+	}
+
+	private static readonly WWW_AUTH_BASIC = { 'WWW-Authenticate': 'Basic realm="directus"' };
+
+	/**
+	 * Enforce that the request matches the client's registered auth method exactly.
+	 * Accepts pre-parsed Basic auth from resolveClientId to avoid double decoding.
+	 * If preParsedBasicAuth is not provided, parses from params.authorization_header.
+	 */
+	authenticateClient(
+		clientRecord: Record<string, unknown>,
+		params: AuthParams,
+		preParsedBasicAuth?: { clientId: string; clientSecret: string } | null,
+	): void {
+		const authMethod = clientRecord['token_endpoint_auth_method'] as string;
+
+		const basicAuth =
+			preParsedBasicAuth !== undefined ? preParsedBasicAuth : this.parseBasicAuth(params.authorization_header);
+
+		const hasBasicHeader = basicAuth !== null;
+		const hasBodySecret = typeof params.client_secret === 'string' && params.client_secret.length > 0;
+
+		if (authMethod === 'none') {
+			if (hasBasicHeader) {
+				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for public clients');
+			}
+
+			if (hasBodySecret) {
+				throw new OAuthError(400, 'invalid_request', 'client_secret not allowed for public clients');
+			}
+
+			return;
+		}
+
+		if (authMethod === 'client_secret_basic') {
+			if (hasBodySecret) {
+				throw new OAuthError(400, 'invalid_request', 'client_secret in body not allowed for client_secret_basic');
+			}
+
+			if (!hasBasicHeader) {
+				throw new OAuthError(
+					401,
+					'invalid_client',
+					'Authorization header required for client_secret_basic',
+					false,
+					McpOAuthService.WWW_AUTH_BASIC,
+				);
+			}
+
+			this.verifySecret(basicAuth!.clientSecret, clientRecord, McpOAuthService.WWW_AUTH_BASIC);
+			return;
+		}
+
+		if (authMethod === 'client_secret_post') {
+			if (hasBasicHeader) {
+				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for client_secret_post');
+			}
+
+			if (!hasBodySecret) {
+				throw new OAuthError(401, 'invalid_client', 'client_secret required for client_secret_post');
+			}
+
+			this.verifySecret(params.client_secret as string, clientRecord);
+			return;
+		}
+
+		throw new OAuthError(401, 'invalid_client', 'Unsupported authentication method');
+	}
+
+	/** Timing-safe secret verification with hex format guard and length pre-check. */
+	private verifySecret(
+		providedSecret: string,
+		clientRecord: Record<string, unknown>,
+		errorHeaders: Record<string, string> = {},
+	): void {
+		const storedHash = clientRecord['client_secret_hash'] as string | null;
+
+		if (!storedHash || !SHA256_HEX_RE.test(storedHash)) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed', false, errorHeaders);
+		}
+
+		const computedHash = this.hashToken(providedSecret);
+		const hashA = Buffer.from(computedHash, 'hex');
+		const hashB = Buffer.from(storedHash, 'hex');
+
+		if (hashA.length !== hashB.length || !crypto.timingSafeEqual(hashA, hashB)) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed', false, errorHeaders);
+		}
+	}
+
+	/**
+	 * First contact: fetch CIMD metadata, INSERT new client row.
+	 * Handles concurrent inserts via unique constraint catch + SELECT fallback.
+	 */
+	private async insertCimdClient(clientId: string): Promise<Record<string, unknown>> {
+		const env = useEnv();
+		const logger = useLogger();
+
+		// Gate: Max clients cap (shared with DCR)
+		const parsed = Number(env['MCP_OAUTH_MAX_CLIENTS']);
+		const maxClients = Number.isNaN(parsed) ? 10_000 : parsed;
+
+		if (maxClients > 0) {
+			const [{ count }] = (await this.knex('directus_oauth_clients').count('* as count')) as [
+				{ count: number | string },
+			];
+
+			if (Number(count) >= maxClients) {
+				throw new OAuthError(400, 'invalid_client', 'Maximum number of registered clients reached');
+			}
+		}
+
+		const result = await fetchCimdMetadata(clientId);
+
+		if (result.notModified || !result.metadata) {
+			throw new OAuthError(400, 'invalid_client_metadata', 'Unexpected 304 on first contact');
+		}
+
+		const metadata = result.metadata;
+		const now = new Date();
+		const ttlMs = result.ttlMs ?? DEFAULT_CIMD_TTL_MS;
+		const expiresAt = ttlMs > 0 ? new Date(now.getTime() + ttlMs) : now;
+
+		const row: Record<string, unknown> = {
+			client_id: metadata.client_id,
+			client_name: metadata.client_name,
+			redirect_uris: JSON.stringify(metadata.redirect_uris),
+			grant_types: JSON.stringify(metadata.grant_types),
+			token_endpoint_auth_method: metadata.token_endpoint_auth_method,
+			registration_type: 'cimd',
+			client_uri: metadata.client_uri ?? null,
+			logo_uri: metadata.logo_uri ?? null,
+			tos_uri: metadata.tos_uri ?? null,
+			policy_uri: metadata.policy_uri ?? null,
+			metadata_fetched_at: now,
+			metadata_expires_at: expiresAt,
+			metadata_etag: result.etag ?? null,
+		};
+
+		try {
+			await this.knex('directus_oauth_clients').insert(row);
+			logger.info({ client_id: clientId }, 'CIMD client registered');
+			return row;
+		} catch (err: unknown) {
+			// Concurrent INSERT: catch unique constraint violation, SELECT existing
+			const translated = await translateDatabaseError(err, row);
+
+			if (translated instanceof RecordNotUniqueError) {
+				logger.debug({ client_id: clientId }, 'CIMD concurrent insert, selecting existing');
+				const existing = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
+
+				if (!existing) throw new OAuthError(400, 'invalid_client', 'Failed to register CIMD client');
+
+				return existing;
+			}
+
+			throw err;
+		}
+	}
+
+	/**
+	 * Stale cache: re-fetch CIMD metadata with conditional request support.
+	 * On 304: recompute TTL and update timestamps.
+	 * On 200: validate and update full row.
+	 * On failure: block request (don't serve stale).
+	 */
+	private async refreshCimdClient(existing: Record<string, unknown>): Promise<Record<string, unknown>> {
+		const logger = useLogger();
+		const clientId = existing['client_id'] as string;
+		const storedEtag = existing['metadata_etag'] as string | null;
+
+		try {
+			const result = await fetchCimdMetadata(clientId, storedEtag ?? undefined);
+
+			if (result.notModified) {
+				// 304 Not Modified
+				const now = new Date();
+				let newTtlMs: number;
+
+				if (result.ttlMs !== null) {
+					newTtlMs = result.ttlMs; // 304 had Cache-Control
+				} else {
+					// Reuse previous TTL
+					const prevTtl =
+						existing['metadata_expires_at'] && existing['metadata_fetched_at']
+							? new Date(existing['metadata_expires_at'] as string).getTime() -
+								new Date(existing['metadata_fetched_at'] as string).getTime()
+							: null;
+
+					newTtlMs = prevTtl !== null && prevTtl >= 0 ? prevTtl : DEFAULT_CIMD_TTL_MS;
+				}
+
+				const expiresAt = newTtlMs > 0 ? new Date(now.getTime() + newTtlMs) : now;
+
+				await this.knex('directus_oauth_clients').where('client_id', clientId).update({
+					metadata_fetched_at: now,
+					metadata_expires_at: expiresAt,
+				});
+
+				logger.debug({ client_id: clientId }, 'CIMD metadata revalidated (304)');
+
+				return { ...existing, metadata_fetched_at: now, metadata_expires_at: expiresAt };
+			}
+
+			// 200 with new content
+			return await this.updateCimdClient(
+				existing,
+				result.metadata!,
+				result.etag ?? null,
+				result.ttlMs ?? DEFAULT_CIMD_TTL_MS,
+			);
+		} catch (err) {
+			// Fetch failed: block request (don't serve stale)
+			logger.warn({ client_id: clientId, err: err instanceof Error ? err.message : err }, 'CIMD re-fetch failed');
+
+			if (err instanceof OAuthError) throw err;
+
+			throw new OAuthError(400, 'invalid_client', 'Failed to revalidate client metadata');
+		}
+	}
+
+	/**
+	 * UPDATE all metadata columns + cache timestamps for a CIMD client.
+	 */
+	private async updateCimdClient(
+		existing: Record<string, unknown>,
+		metadata: CimdMetadata,
+		etag: string | null,
+		ttlMs: number,
+	): Promise<Record<string, unknown>> {
+		const logger = useLogger();
+		const now = new Date();
+		const expiresAt = ttlMs > 0 ? new Date(now.getTime() + ttlMs) : now;
+
+		const updates: Record<string, unknown> = {
+			client_name: metadata.client_name,
+			redirect_uris: JSON.stringify(metadata.redirect_uris),
+			grant_types: JSON.stringify(metadata.grant_types),
+			token_endpoint_auth_method: metadata.token_endpoint_auth_method,
+			client_uri: metadata.client_uri ?? null,
+			logo_uri: metadata.logo_uri ?? null,
+			tos_uri: metadata.tos_uri ?? null,
+			policy_uri: metadata.policy_uri ?? null,
+			metadata_fetched_at: now,
+			metadata_expires_at: expiresAt,
+			metadata_etag: etag,
+		};
+
+		await this.knex('directus_oauth_clients').where('client_id', existing['client_id']).update(updates);
+		logger.info({ client_id: existing['client_id'] }, 'CIMD metadata refreshed');
+
+		return { ...existing, ...updates };
+	}
+
 	private buildRedirectUrl(
 		redirectUri: string,
 		params: Record<string, string>,
@@ -1407,6 +1909,16 @@ export class McpOAuthService {
 		}
 	}
 
+	/** Detect and revoke a grant issued from a replayed authorization code. */
+	private async revokeGrantByCodeHash(db: Knex | Knex.Transaction, codeHash: string, clientId: string): Promise<void> {
+		const replayGrant = await db('directus_oauth_tokens').where({ code_hash: codeHash, client: clientId }).first();
+
+		if (replayGrant) {
+			await db('directus_oauth_tokens').where('id', replayGrant['id']).delete();
+			await db('directus_sessions').where('token', replayGrant['session']).delete();
+		}
+	}
+
 	/** HMAC-SHA256 key derived from SECRET for signing/verifying consent JWTs. Domain-separated to prevent token confusion. */
 	private getConsentKey(): Buffer {
 		return crypto.createHmac('sha256', getSecret()).update('mcp-oauth-consent-v1').digest();
@@ -1417,50 +1929,6 @@ export class McpOAuthService {
 	}
 
 	private validateRedirectUri(uri: unknown): void {
-		if (typeof uri !== 'string') {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must be a string');
-		}
-
-		if (uri.length > MAX_REDIRECT_URI_LENGTH) {
-			throw new OAuthError(
-				400,
-				'invalid_redirect_uri',
-				`redirect_uri must not exceed ${MAX_REDIRECT_URI_LENGTH} characters`,
-			);
-		}
-
-		let parsed: URL;
-
-		try {
-			parsed = new URL(uri);
-		} catch {
-			throw new OAuthError(400, 'invalid_redirect_uri', `Invalid redirect URI: ${uri}`);
-		}
-
-		// No fragment
-		if (parsed.hash) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain a fragment');
-		}
-
-		// No userinfo
-		if (parsed.username || parsed.password) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain userinfo');
-		}
-
-		// Must be HTTPS, except localhost
-		if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && isLoopbackHost(parsed.hostname))) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)');
-		}
-
-		// Optional operator-defined domain allowlist. Loopback bypasses to keep native OAuth clients working.
-		const allowedDomains = (useEnv()['MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS'] as string[]) ?? [];
-
-		if (
-			allowedDomains.length > 0 &&
-			!isLoopbackHost(parsed.hostname) &&
-			!isDomainAllowed(parsed.hostname, allowedDomains)
-		) {
-			throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri domain is not in the allowlist');
-		}
+		validateRedirectUri(uri);
 	}
 }

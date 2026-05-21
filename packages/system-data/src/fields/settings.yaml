@@ -1128,6 +1128,41 @@ fields:
             _neq: true
         readonly: true
 
+  - field: mcp_oauth_dcr_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note:
+      'Allow MCP clients to register automatically using the OAuth 2.0 Dynamic Client Registration protocol (RFC 7591).'
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_dcr_enabled
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
+  - field: mcp_oauth_cimd_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note:
+      'Allow MCP clients to identify themselves using an HTTPS URL that hosts their metadata (IETF
+      draft-oauth-client-id-metadata-document).'
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_cimd_enabled
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
   - field: mcp_oauth_clients_link
     interface: presentation-links
     group: mcp_group
