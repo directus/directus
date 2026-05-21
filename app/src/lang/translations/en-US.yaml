@@ -1471,25 +1471,23 @@ licensing:
     also be locked.
   resolve_countdown: '{days} day remaining (until {date}) | {days} days remaining (until {date})'
   resolve_notice_manual:
-    Voluntary removal — your project will be downgraded to the Starter plan limits of 50 collections and 3 user seats.
-    Deactivated items will remained stored but locked in Directus, and custom access rules will also be locked.
+    To deactivate your project, it must first comply with Core plan limits. Any items that exceed the Core limits and
+    require adjustment are shown below.
   resolve_notice_locked:
-    Your project exceeds the Core plan limits of 50 collections and 3 user seats. To unlock your project, reduce usage
-    below those limits. Deactivated items will remain stored but locked in Directus, and custom access rules will also
-    be locked.
+    Your project exceeds the Core plan limits and is locked. Any items that exceed the Core limits and require
+    adjustment are shown below.
   resolve_notice_env_removed:
-    Your project no longer has an active license key. To unlock your project, reduce it to the Starter plan limits of 50
-    collections and 3 user seats, or add a new license key to continue. Deactivated items will remained stored but
-    locked in Directus, and custom access rules will also be locked.
+    Your project no longer has an active license key. Any items that exceed the Core limits and require adjustment are
+    shown below.
   resolve_notice_no_resolution:
-    Your license is no longer active and your project has been downgraded to the Starter plan. Some features may no
-    longer be available, and items beyond the Starter plan limits remain stored but locked in Directus. To restore full
-    access, add a new license key.
+    Your license is no longer active and your project has been downgraded to the Core plan. Some features may no longer
+    be available, and items beyond the Core plan limits remain stored but locked in Directus. To restore full access,
+    add a new license key.
   resolve_continue: Continue
   resolve_acknowledge: Acknowledge
   resolve_submit: Deactivate Selected Items
-  resolve_select_n_items: 'Select {count} item | Select {count} items'
   resolve_show_n_more: 'Show {count} more'
+  resolve_available: Available
   resolve_section_collections: Data Collections
   resolve_section_seats: User Seats
   resolve_section_flows: Flows
@@ -1497,7 +1495,6 @@ licensing:
   resolve_section_seats_users_caption: Select user seat(s) to deactivate
   resolve_section_seats_admins_caption: Select admin(s) to deactivate
   resolve_section_flows_caption: Select flow(s) to deactivate
-  resolve_all_set: All Set
   resolve_section_sso: SSO Deactivation
   resolve_sso_confirm: Confirm SSO Deactivation
   resolve_sso_caption:
