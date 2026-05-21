@@ -8,6 +8,8 @@ import { useServerStore } from '@/stores/server';
 /** Fallback when neither the collection nor the server reports a value. Seconds of inactivity after which the next save creates a new revision instead of updating in-place. */
 export const AUTO_SAVE_SNAPSHOT_INTERVAL_SECONDS_FALLBACK = 300;
 export const AUTO_SAVE_DEBOUNCE_MS = 300;
+/** Bounded backoff used to retry after a failed auto-save when the user has stopped typing. */
+export const AUTO_SAVE_RETRY_DELAYS_MS = [5_000, 15_000, 30_000];
 
 export interface UseAutoSaveOptions {
 	/** Auto-save only fires when this is true (e.g. currentVersion !== null && hasPermission). */
@@ -35,11 +37,17 @@ export function useAutoSave(
 	const sessionHasSaved = ref(false);
 	const autoSaveError = ref<Error | null>(null);
 	let errorNotificationId: string | null = null;
+	let retryTimer: ReturnType<typeof setTimeout> | null = null;
+	let retryAttempt = 0;
 
-	const debouncedSave = useDebounceFn(async () => {
+	const debouncedSave = useDebounceFn(runSave, debounceMs);
+
+	async function runSave() {
 		if (!enabled.value) return;
 		if (Object.keys(edits.value).length === 0) return;
 		if (isSaving.value) return; // mutex — skip overlapping saves
+
+		clearRetryTimer();
 
 		const forceNewRevision = !sessionHasSaved.value || isRevisionStale();
 
@@ -49,26 +57,35 @@ export function useAutoSave(
 			await saveCallback(forceNewRevision);
 			sessionHasSaved.value = true;
 			autoSaveError.value = null;
+			retryAttempt = 0;
 			dismissErrorNotification();
 		} catch (error) {
 			autoSaveError.value = error instanceof Error ? error : new Error(String(error));
 			showErrorNotification();
+			scheduleRetry();
 		} finally {
 			isSaving.value = false;
 		}
-	}, debounceMs);
+	}
 
 	watch(
 		edits,
 		(newEdits) => {
 			if (!enabled.value) return;
 			if (Object.keys(newEdits).length === 0) return;
+			// User is editing again — cancel any pending retry and reset the backoff so an exhausted
+			// chain doesn't permanently skip retries on subsequent failures.
+			clearRetryTimer();
+			retryAttempt = 0;
 			debouncedSave();
 		},
 		{ deep: true },
 	);
 
-	onScopeDispose(dismissErrorNotification);
+	onScopeDispose(() => {
+		clearRetryTimer();
+		dismissErrorNotification();
+	});
 
 	function showErrorNotification() {
 		if (errorNotificationId) return;
@@ -80,6 +97,10 @@ export function useAutoSave(
 			icon: 'cloud_off',
 			persist: true,
 			closeable: true,
+			alwaysShowText: true,
+			dismissAction: () => {
+				errorNotificationId = null;
+			},
 		});
 	}
 
@@ -87,6 +108,23 @@ export function useAutoSave(
 		if (!errorNotificationId) return;
 		notificationsStore.remove(errorNotificationId);
 		errorNotificationId = null;
+	}
+
+	function scheduleRetry() {
+		const delay = AUTO_SAVE_RETRY_DELAYS_MS[retryAttempt];
+		if (delay === undefined) return; // attempts exhausted — toast stays up until next edit or dismiss
+		retryAttempt += 1;
+
+		retryTimer = setTimeout(() => {
+			retryTimer = null;
+			runSave();
+		}, delay);
+	}
+
+	function clearRetryTimer() {
+		if (!retryTimer) return;
+		clearTimeout(retryTimer);
+		retryTimer = null;
 	}
 
 	function isRevisionStale(): boolean {
