@@ -10,13 +10,24 @@ const displayPoweredBy = computed(() => serverStore.info?.license?.entitlements?
 </script>
 
 <template>
-	<VChip v-if="displayPoweredBy === 'NON_PROD'" small :label="false" kind="info" class="non-production-badge">
-		<VIcon name="code" small />
-		{{ $t('licensing.badge.non_prod') }}
-	</VChip>
+	<template v-if="displayPoweredBy === 'NON_PROD'">
+		<hr class="badge-divider" />
+		<VChip small :label="false" kind="info" class="non-production-badge">
+			<VIcon name="code" small />
+			{{ $t('licensing.badge.non_prod') }}
+		</VChip>
+	</template>
 </template>
 
 <style lang="scss" scoped>
+.badge-divider {
+	inline-size: calc(100% - 1.375rem);
+	align-self: center;
+	border: solid;
+	border-color: var(--theme--navigation--list--divider--border-color);
+	border-width: var(--theme--border-width) 0 0 0;
+}
+
 .non-production-badge {
 	font-weight: 600;
 	inline-size: fit-content;

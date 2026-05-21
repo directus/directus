@@ -197,7 +197,6 @@ describe('collections entitlement', () => {
 			api.request(
 				updateCollection(createdCollections[0]!, {
 					meta: { note: 'updated note' },
-					schema: {},
 				} as any),
 			),
 		).resolves.toBeDefined();
@@ -229,5 +228,50 @@ describe('collections entitlement', () => {
 				}),
 			),
 		).resolves.toBeDefined();
+	});
+
+	test('re-activating an existing collection throws an error', async () => {
+		await fillCollectionLimit('f');
+
+		// create 2 collections over the limit
+		await directus.knex!.schema.createTable('f_collection_entitlement_extra_1', (table) => {
+			table.increments('id').primary();
+		});
+
+		await directus.knex!.schema.createTable('f_collection_entitlement_extra_2', (table) => {
+			table.increments('id').primary();
+		});
+
+		await directus.knex!('directus_collections').insert({ collection: 'f_collection_entitlement_extra_1' });
+		await directus.knex!('directus_collections').insert({ collection: 'f_collection_entitlement_extra_2' });
+
+		createdCollections.push('f_collection_entitlement_extra_1');
+		createdCollections.push('f_collection_entitlement_extra_2');
+
+		// try to deactivate a collection
+		await expect(
+			api.request(
+				updateCollection(createdCollections[0]!, {
+					meta: { status: 'inactive' } as any,
+				}),
+			),
+		).resolves.toBeDefined();
+
+		// try to reactivate a collection
+		await expect(
+			api.request(
+				updateCollection(createdCollections[0]!, {
+					meta: { status: 'active' } as any,
+				}),
+			),
+		).rejects.toMatchObject({
+			errors: [
+				expect.objectContaining({
+					extensions: expect.objectContaining({
+						code: 'LIMIT_EXCEEDED',
+					}),
+				}),
+			],
+		});
 	});
 });
