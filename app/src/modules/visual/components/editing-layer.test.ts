@@ -1,7 +1,7 @@
 import type { CheckFieldAccessData } from '@directus/visual-editing/types';
 import { createTestingPinia } from '@pinia/testing';
 import type { Relation } from '@directus/types';
-import { flushPromises, mount } from '@vue/test-utils';
+import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import EditingLayer from './editing-layer.vue';
@@ -70,6 +70,8 @@ let postMessageSpy: ReturnType<typeof vi.fn>;
 let mockFrameEl: HTMLIFrameElement;
 let mountOptions: GlobalMountOptions;
 
+enableAutoUnmount(afterEach);
+
 function sendCheckFieldAccess(elements: CheckFieldAccessData[]) {
 	window.dispatchEvent(
 		new MessageEvent('message', {
@@ -92,6 +94,11 @@ function createElements(...overrides: Partial<CheckFieldAccessData>[]): CheckFie
 }
 
 beforeEach(() => {
+	vi.mocked(api.get).mockReset();
+	vi.mocked(api.post).mockReset();
+	vi.mocked(api.patch).mockReset();
+	vi.mocked(ensureVersionId).mockReset();
+
 	postMessageSpy = vi.fn();
 
 	mockFrameEl = {
@@ -450,6 +457,41 @@ describe('checkFieldAccess', () => {
 });
 
 describe('save', () => {
+	it('hydrates the overlay from the parent version before opening', async () => {
+		setupParentVersionSaveSchema();
+		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
+		vi.mocked(api.get).mockResolvedValue({
+			data: {
+				data: {
+					blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Draft title' } }],
+				},
+			},
+		});
+
+		const wrapper = mountEditingLayer(
+			{ key: 'draft', name: 'Draft' },
+			{ parentScope: { collection: 'pages', key: 'page-id' } },
+		);
+
+		sendEdit();
+
+		await vi.waitFor(() => {
+			expect(wrapper.findComponent({ name: 'OverlayItem' }).props('initialValues')).toEqual({
+				id: 9,
+				title: 'Draft title',
+			});
+		});
+
+		expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true);
+
+		expect(api.get).toHaveBeenCalledWith('/items/pages/page-id', {
+			params: {
+				fields: ['blocks.id', 'blocks.collection', 'blocks.item.*'],
+				version: 'draft',
+			},
+		});
+	});
+
 	it('ensures the parent version before reading the parent version', async () => {
 		setupParentVersionSaveSchema();
 		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
@@ -468,7 +510,8 @@ describe('save', () => {
 		);
 
 		sendEdit();
-		await flushPromises();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
 
 		wrapper.findComponent({ name: 'OverlayItem' }).vm.$emit('input', { title: 'New' });
 
@@ -481,6 +524,12 @@ describe('save', () => {
 		});
 
 		expect(ensureVersionId).toHaveBeenNthCalledWith(2, api, {
+			collection: 'pages',
+			item: 'page-id',
+			versionKey: 'draft',
+		});
+
+		expect(ensureVersionId).toHaveBeenNthCalledWith(3, api, {
 			collection: 'pages',
 			item: 'page-id',
 			versionKey: 'draft',
@@ -509,7 +558,15 @@ describe('save', () => {
 	it('does not retry a failed save when saving finishes', async () => {
 		setupParentVersionSaveSchema();
 		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
-		vi.mocked(api.get).mockRejectedValue(new Error('Forbidden'));
+		vi.mocked(api.get)
+			.mockResolvedValueOnce({
+				data: {
+					data: {
+						blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Old' } }],
+					},
+				},
+			})
+			.mockRejectedValueOnce(new Error('Forbidden'));
 
 		const wrapper = mountEditingLayer(
 			{ key: 'draft', name: 'Draft' },
@@ -517,15 +574,16 @@ describe('save', () => {
 		);
 
 		sendEdit();
-		await flushPromises();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
 
 		wrapper.findComponent({ name: 'OverlayItem' }).vm.$emit('input', { title: 'New' });
 
-		await vi.waitFor(() => expect(api.get).toHaveBeenCalledTimes(1));
+		await vi.waitFor(() => expect(api.get).toHaveBeenCalledTimes(2));
 		await flushPromises();
 		await flushPromises();
 
-		expect(api.get).toHaveBeenCalledTimes(1);
+		expect(api.get).toHaveBeenCalledTimes(2);
 		expect(api.post).not.toHaveBeenCalled();
 	});
 });

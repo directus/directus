@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
-import { buildPayload, getEndpoint, resolveWriteTarget } from '@directus/utils';
+import { buildPayload, getEndpoint, resolveWriteTarget, type ParentRelation } from '@directus/utils';
 import { sameOrigin } from '@directus/utils/browser';
 import type {
 	AddToContextData,
@@ -62,6 +62,7 @@ const {
 	fields,
 	mode,
 	position,
+	initialValues,
 	isNew,
 	edits,
 	editOverlayActive,
@@ -318,6 +319,7 @@ function useItemWithEdits() {
 	const availableModes: EditConfig['mode'][] = ['drawer', 'modal', 'popover'];
 	const mode = ref<EditConfig['mode']>('drawer');
 	const position = ref<Pick<DOMRect, 'top' | 'left' | 'width' | 'height'>>({ top: 0, left: 0, width: 0, height: 0 });
+	const initialValues = ref<Item | null>(null);
 	const isNew = computed(() => primaryKey.value === '+');
 	const itemEndpoint = computed(getItemEndpoint);
 	const itemRoute = computed(getContentRoute);
@@ -352,6 +354,7 @@ function useItemWithEdits() {
 		fields,
 		mode,
 		position,
+		initialValues,
 		isNew,
 		edits,
 		editOverlayActive,
@@ -505,6 +508,7 @@ function useItemWithEdits() {
 		primaryKey.value = '';
 		fields.value = [];
 		mode.value = 'drawer';
+		initialValues.value = null;
 		position.value = { top: 0, left: 0, width: 0, height: 0 };
 	}
 
@@ -514,12 +518,56 @@ function useItemWithEdits() {
 
 		const success = setEditConfigData(data);
 		if (!success) return;
+
+		try {
+			initialValues.value = await fetchParentVersionInitialValues();
+		} catch (error) {
+			resetEditConfigData();
+			unexpectedError(error);
+			return;
+		}
+
 		await nextTick();
 
 		// `setFocusTemporarily()` makes sure that after clicking an edit button inside the iframe, the :focus moves to the Studio module, so the shortcuts work as expected.
 		setFocusTemporarily();
 
 		editOverlayActive.value = true;
+	}
+
+	async function fetchParentVersionInitialValues() {
+		if (!version?.key || !parentScope || isNew.value) return null;
+		if (collectionsStore.getCollection(collection.value)?.meta?.versioning) return null;
+		if (!collectionsStore.getCollection(parentScope.collection)?.meta?.versioning) return null;
+
+		const readParentResults = new Map<string, Item | null>();
+
+		const target = await resolveWriteTarget({
+			schema: getSchemaOverview({
+				collections: collectionsStore.collections,
+				relations: relationsStore.relations,
+				getPrimaryKeyFieldForCollection: fieldsStore.getPrimaryKeyFieldForCollection,
+			}),
+			target: { collection: collection.value, key: primaryKey.value },
+			hint: {
+				explicitVersion: version.key,
+				page: { collection: parentScope.collection, item: parentScope.key, version: version.key },
+			},
+			collectionHasVersioning: (collection) => Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
+			readParent: async (ref, fields) => {
+				const parentItem = await readParent(ref, fields);
+				readParentResults.set(getFieldsKey(fields), parentItem);
+				return parentItem;
+			},
+		});
+
+		if (target.kind !== 'parent-version') return null;
+
+		const fields = getParentInitialValueFields(target.relation);
+		const parentItem = readParentResults.get(getFieldsKey(fields)) ?? (await readParent(target.parent, fields));
+		if (!parentItem) return null;
+
+		return findParentInitialValue(target.relation, parentItem, collection.value, primaryKey.value);
 	}
 
 	async function guardVersionSwitch(targetCollection: string) {
@@ -549,6 +597,72 @@ function useItemWithEdits() {
 		return data;
 	}
 
+	function getParentInitialValueFields(relation: ParentRelation) {
+		if (relation.kind === 'm2o') return [`${relation.parentField}.*`];
+		if (relation.kind === 'o2m') return [`${relation.parentField}.*`];
+
+		if (relation.kind === 'm2m') {
+			return [
+				`${relation.parentField}.${relation.junctionPkField}`,
+				`${relation.parentField}.${relation.junctionField}.*`,
+			];
+		}
+
+		return [
+			`${relation.parentField}.${relation.junctionPkField}`,
+			`${relation.parentField}.${relation.collectionField}`,
+			`${relation.parentField}.${relation.junctionField}.*`,
+		];
+	}
+
+	function findParentInitialValue(
+		relation: ParentRelation,
+		parentItem: Item,
+		targetCollection: string,
+		targetKey: PrimaryKey,
+	) {
+		if (relation.kind === 'm2o') {
+			const child = parentItem[relation.parentField];
+			if (!isItem(child)) return null;
+			return sameKey(child[relation.childPkField], targetKey) ? child : null;
+		}
+
+		const relationValue = parentItem[relation.parentField];
+		if (!Array.isArray(relationValue)) return null;
+
+		if (relation.kind === 'o2m') {
+			return relationValue.find((item) => isItem(item) && sameKey(item[relation.childPkField], targetKey)) ?? null;
+		}
+
+		for (const junctionItem of relationValue) {
+			if (!isItem(junctionItem)) continue;
+
+			const child = junctionItem[relation.junctionField];
+			if (!isItem(child)) continue;
+			if (!sameKey(child[relation.childPkField], targetKey)) continue;
+
+			if (relation.kind === 'm2a' && junctionItem[relation.collectionField] !== targetCollection) {
+				continue;
+			}
+
+			return child;
+		}
+
+		return null;
+	}
+
+	function getFieldsKey(fields: string[]) {
+		return fields.join('\0');
+	}
+
+	function sameKey(left: unknown, right: PrimaryKey) {
+		return String(left) === String(right);
+	}
+
+	function isItem(value: unknown): value is Item {
+		return typeof value === 'object' && value !== null && !Array.isArray(value);
+	}
+
 	async function setFocusTemporarily() {
 		if (!editingLayerEl.value) return;
 
@@ -571,6 +685,7 @@ function useItemWithEdits() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			:initial-values="initialValues"
 			:version="version?.key"
 			:popover-props="({ popoverWidth }) => (position.width > popoverWidth ? { arrowPlacement: 'start' } : {})"
 			apply-shortcut="meta+s"

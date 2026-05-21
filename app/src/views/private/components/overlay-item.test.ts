@@ -1,5 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, ref } from 'vue';
 import OverlayItem from './overlay-item.vue';
@@ -7,6 +7,7 @@ import { ClickOutside } from '@/__utils__/click-outside';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
+import api from '@/api';
 
 const mockCollabConnected = ref<boolean | undefined>(false);
 const mockSaveAllowed = ref(true);
@@ -203,6 +204,27 @@ describe('isSavable', () => {
 
 		const saveButton = getSaveButton(wrapper);
 		expect(saveButton.attributes('disabled')).toBe('true');
+	});
+});
+
+describe('initialValues', () => {
+	it('uses provided initial values instead of fetching the item', async () => {
+		const initialValues = { id: '1', title: 'Draft title' };
+
+		const wrapper = mount(OverlayItem, {
+			props: {
+				collection: 'articles',
+				active: true,
+				primaryKey: '1',
+				initialValues,
+			},
+			global,
+		});
+
+		await flushPromises();
+
+		expect(api.get).not.toHaveBeenCalled();
+		expect(wrapper.findComponent({ name: 'OverlayItemContent' }).props('initialValues')).toEqual(initialValues);
 	});
 });
 
