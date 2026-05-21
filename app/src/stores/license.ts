@@ -11,6 +11,7 @@ import {
 	readLicenseAddons,
 	type ReadLicenseOutput,
 	updateLicense,
+	updateLicenseAddon,
 } from '@directus/license';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -201,6 +202,11 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		await hydrate();
 	}
 
+	async function setAddonQuantity(addonId: string, quantity: number) {
+		await sdk.request(updateLicenseAddon(addonId, { quantity }));
+		await Promise.all([hydrate(), hydrateAddons()]);
+	}
+
 	async function dehydrate() {
 		clearTimer();
 		info.value = null;
@@ -238,6 +244,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		resolve,
 		activate,
 		update,
+		setAddonQuantity,
 		dehydrate,
 	};
 });

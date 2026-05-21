@@ -67,9 +67,8 @@ const settingsStore = useSettingsStore();
 const showLicenseBanner = computed({
 	get: () =>
 		userStore.isAdmin &&
-		!serverStore.info.license?.source &&
 		!settingsStore.settings?.project_owner &&
-		!!settingsStore.settings?.project_usage &&
+		!showLicenseOnboarding.value &&
 		!cookies.get('license-banner-dismissed'),
 	set: () => {
 		// close is handled by cookie and hydrate inside the modal

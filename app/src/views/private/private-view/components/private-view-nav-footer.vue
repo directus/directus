@@ -11,7 +11,7 @@ const { isAdmin } = storeToRefs(useUserStore());
 
 const hasBadge = computed(() => {
 	const dpb = serverStore.info?.license?.entitlements?.display_powered_by;
-	return !!dpb && dpb !== 'NONE';
+	return !!dpb && dpb !== 'HIDDEN';
 });
 
 const hasPinnedNotice = computed(() => isAdmin.value && gracePeriodDaysRemaining.value !== null && !isLocked.value);

@@ -191,7 +191,7 @@ async function handleDeactivateClick() {
 	deactivateLoading.value = true;
 
 	try {
-		await licenseStore.hydratePendingResolution();
+		await licenseStore.hydratePendingResolution({ license_key: null });
 
 		if ((licenseStore.pendingResolution?.length ?? 0) === 0) {
 			deactivateConfirmOpen.value = true;
