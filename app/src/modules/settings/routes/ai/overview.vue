@@ -32,7 +32,11 @@ const aiFields = computed(() =>
 );
 
 const mcpFields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group === 'mcp_group' || field.field === 'mcp_group'),
+	unref(allFields).filter((field) => {
+		if (field.field.startsWith('mcp_oauth') && !serverStore.info.mcp_oauth_enabled) return false;
+
+		return field.meta?.group === 'mcp_group' || field.field === 'mcp_group';
+	}),
 );
 
 const initialValues = ref(clone(settingsStore.settings));
