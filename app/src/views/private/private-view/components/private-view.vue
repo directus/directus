@@ -20,8 +20,8 @@ export interface PrivateViewProps {
 <script setup lang="ts">
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed } from 'vue';
+import LicenseLoginModal from '../../components/license/license-login-modal.vue';
 import LicenseBanner from '../../components/license-banner.vue';
-import LicenseGraceKeyModal from '../../components/license-grace-key-modal.vue';
 import LicenseOnboarding from '../../components/license-onboarding.vue';
 import LicenseResolutionPrompt from '../../components/license-resolution-prompt.vue';
 import NotificationDialogs from '../../components/notification-dialogs.vue';
@@ -64,7 +64,7 @@ const appAccess = computed(() => {
 const cookies = useCookies([
 	'license-banner-dismissed',
 	'license-onboarding-dismissed',
-	'license-grace-key-modal-dismissed',
+	'license-login-modal-dismissed',
 ]);
 
 const serverStore = useServerStore();
@@ -94,12 +94,12 @@ const showLicenseOnboarding = computed({
 	},
 });
 
-const showLicenseGraceKeyModal = computed({
+const showLicenseLoginModal = computed({
 	get: () =>
 		userStore.isAdmin &&
 		licenseStore.isCoreGrace &&
 		!showLicenseOnboarding.value &&
-		!cookies.get('license-grace-key-modal-dismissed'),
+		!cookies.get('license-login-modal-dismissed'),
 	set: () => {
 		// close is handled by cookie inside the modal
 	},
@@ -134,6 +134,6 @@ const showLicenseGraceKeyModal = computed({
 
 	<LicenseBanner v-model="showLicenseBanner" />
 	<LicenseOnboarding v-model="showLicenseOnboarding" />
-	<LicenseGraceKeyModal v-model="showLicenseGraceKeyModal" />
+	<LicenseLoginModal v-model="showLicenseLoginModal" />
 	<LicenseResolutionPrompt />
 </template>

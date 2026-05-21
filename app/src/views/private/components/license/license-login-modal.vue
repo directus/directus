@@ -17,7 +17,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 const model = defineModel<boolean>();
 
-const cookies = useCookies(['license-grace-key-modal-dismissed']);
+const cookies = useCookies(['license-login-modal-dismissed']);
 const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
 
@@ -56,7 +56,7 @@ async function save() {
 }
 
 function dismiss() {
-	cookies.set('license-grace-key-modal-dismissed', 'true', {
+	cookies.set('license-login-modal-dismissed', 'true', {
 		expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
 	});
 
@@ -93,17 +93,11 @@ function openGetLicenseKey() {
 							<span class="optional">({{ $t('license_grace_key_modal.optional') }})</span>
 						</label>
 
-						<div class="license-key-row">
-							<SystemLicenseKey
-								class="key-input"
-								:value="licenseKey"
-								@input="licenseKey = $event"
-								@validity="licenseKeyValidity = $event"
-							/>
-							<VButton :disabled="!licenseKeyValidity.valid || isSaving" :loading="isSaving" @click="save">
-								{{ $t('save') }}
-							</VButton>
-						</div>
+						<SystemLicenseKey
+							:value="licenseKey"
+							@input="licenseKey = $event"
+							@validity="licenseKeyValidity = $event"
+						/>
 					</div>
 
 					<VNotice v-if="isOverLimit" type="warning">
@@ -119,13 +113,20 @@ function openGetLicenseKey() {
 				</VCardText>
 
 				<VCardActions>
-					<VButton @click="openGetLicenseKey">
-						<VIcon name="vpn_key" left />
-						{{ $t('license_grace_key_modal.get_license_key') }}
-					</VButton>
-					<VButton secondary @click="dismiss">
-						{{ isOverLimit ? $t('remind_later') : $t('skip') }}
-					</VButton>
+					<template v-if="licenseKeyValidity.valid">
+						<VButton :loading="isSaving" @click="save">
+							{{ $t('save') }}
+						</VButton>
+					</template>
+					<template v-else>
+						<VButton @click="openGetLicenseKey">
+							<VIcon name="vpn_key" left />
+							{{ $t('license_grace_key_modal.get_license_key') }}
+						</VButton>
+						<VButton secondary @click="dismiss">
+							{{ isOverLimit ? $t('remind_later') : $t('skip') }}
+						</VButton>
+					</template>
 				</VCardActions>
 			</div>
 		</VCard>
@@ -182,16 +183,5 @@ p {
 	font-weight: 400;
 	color: var(--theme--foreground-subdued);
 	margin-inline-start: 0.25rem;
-}
-
-.license-key-row {
-	display: flex;
-	gap: 0.5rem;
-	align-items: flex-start;
-}
-
-.key-input {
-	flex: 1;
-	min-inline-size: 0;
 }
 </style>
