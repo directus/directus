@@ -3,6 +3,7 @@ import { createLicense, mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, readRevisions, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getHelpers } from '@utils/db-helpers/index.js';
 import { getUID } from '@utils/getUID.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { createSandboxOptions } from '../shared.js';
@@ -54,7 +55,7 @@ describe('revision_historical_timeframe', () => {
 		let counter = 50;
 
 		for (const { label, daysAgo } of SEED_PLAN) {
-			const timestamp = new Date(Date.now() - daysAgo * DAY_IN_SECONDS * 1000).toISOString();
+			const timestamp = getHelpers(directus.knex!).date.parse(new Date(Date.now() - daysAgo * DAY_IN_SECONDS * 1000));
 
 			for (let i = 0; i < 5; i++) {
 				const collection = getUID();

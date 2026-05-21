@@ -25,6 +25,7 @@
 		"chalk": "catalog:",
 		"commander": "catalog:",
 		"get-port": "catalog:",
+		"knex": "catalog:",
 		"lodash-es": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:",
