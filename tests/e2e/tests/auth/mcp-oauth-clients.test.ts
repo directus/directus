@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { beforeAll, describe, expect, test } from 'vitest';
 import {
 	adminToken,
@@ -7,6 +8,7 @@ import {
 	enableMcpOAuthSettings,
 	expectJsonResponse,
 	refreshToken,
+	registerConfidentialClient,
 	registerPublicClient,
 } from './mcp-oauth-utils.js';
 
@@ -53,6 +55,57 @@ describe('/mcp-oauth/clients admin endpoints', () => {
 		const body = (await expectJsonResponse(response, 200)) as { data?: { client_id?: string } };
 
 		expect(body.data).toMatchObject({ client_id: clientId });
+	});
+
+	test('admin client detail redacts confidential client_secret_hash', async () => {
+		const client = await registerConfidentialClient({
+			redirectUri: `${baseUrl}/mcp-oauth-client-secret-hash-callback`,
+			tokenEndpointAuthMethod: 'client_secret_basic',
+		});
+
+		const response = await fetch(`${baseUrl}/mcp-oauth/clients/${client.clientId}`, {
+			headers: {
+				Authorization: `Bearer ${adminToken}`,
+			},
+		});
+
+		const body = (await expectJsonResponse(response, 200)) as {
+			data?: { client_secret_hash?: string };
+		};
+
+		const expectedHash = crypto.createHash('sha256').update(client.clientSecret).digest('hex');
+		const serialized = JSON.stringify(body);
+
+		expect(serialized).not.toContain(client.clientSecret);
+		expect(serialized).not.toContain(expectedHash);
+		expect(body.data?.client_secret_hash).toBe('**********');
+	});
+
+	test('client_secret_hash only allows safe filter operators', async () => {
+		const rejectedResponse = await fetch(`${baseUrl}/mcp-oauth/clients?filter[client_secret_hash][_contains]=abc`, {
+			headers: {
+				Authorization: `Bearer ${adminToken}`,
+			},
+		});
+
+		const rejectedBody = (await expectJsonResponse(rejectedResponse, 400)) as {
+			errors?: Array<{ extensions?: { code?: string }; message?: string }>;
+		};
+
+		expect(rejectedBody.errors?.[0]?.extensions?.code).toBe('INVALID_QUERY');
+
+		expect(rejectedBody.errors?.[0]?.message).toContain(
+			'Field with "conceal" special does not allow the "_contains" filter operator',
+		);
+
+		await expectJsonResponse(
+			await fetch(`${baseUrl}/mcp-oauth/clients?filter[client_secret_hash][_null]=false`, {
+				headers: {
+					Authorization: `Bearer ${adminToken}`,
+				},
+			}),
+			200,
+		);
 	});
 
 	test('admin can delete a client and cascade OAuth state', async () => {

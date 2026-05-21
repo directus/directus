@@ -202,11 +202,17 @@ async function requestRouter(
 	}
 }
 
-async function postForm(router: Router, path: string, body: Record<string, string> | string) {
+async function postForm(
+	router: Router,
+	path: string,
+	body: Record<string, string> | string,
+	options: { headers?: Record<string, string> } = {},
+) {
 	return requestRouter(router, path, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
+			...options.headers,
 		},
 		body,
 	});
@@ -385,6 +391,72 @@ describe('mcp-oauth controller', () => {
 			expect(res.body).toMatchObject({ access_token: 'at', token_type: 'Bearer' });
 		});
 
+		test('forwards Basic Authorization header to authorization_code exchange', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
+
+			await postForm(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/token',
+				{
+					grant_type: 'authorization_code',
+					client_id: 'client-id',
+					code: 'x',
+					redirect_uri: 'http://l',
+					code_verifier: 'v'.repeat(43),
+				},
+				{ headers: { Authorization: authorization } },
+			);
+
+			expect(McpOAuthService.prototype.exchangeCode).toHaveBeenCalledWith(
+				expect.objectContaining({ authorization_header: authorization }),
+				expect.any(Object),
+			);
+		});
+
+		test('forwards Basic Authorization header to refresh_token exchange', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
+
+			await postForm(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/token',
+				{
+					grant_type: 'refresh_token',
+					client_id: 'client-id',
+					refresh_token: 'refresh-token',
+				},
+				{ headers: { Authorization: authorization } },
+			);
+
+			expect(McpOAuthService.prototype.refreshToken).toHaveBeenCalledWith(
+				expect.objectContaining({ authorization_header: authorization }),
+				expect.any(Object),
+			);
+		});
+
+		test('serializes OAuthError response headers', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+
+			vi.mocked(McpOAuthService.prototype.exchangeCode).mockRejectedValueOnce(
+				new OAuthError(401, 'invalid_client', 'Invalid client authentication', false, {
+					'WWW-Authenticate': 'Basic realm="mcp-oauth"',
+				}),
+			);
+
+			const res = await postForm(mcpOAuthPublicRouter, '/mcp-oauth/token', {
+				grant_type: 'authorization_code',
+				client_id: 'client-id',
+				code: 'x',
+				redirect_uri: 'http://l',
+				code_verifier: 'v'.repeat(43),
+			});
+
+			expect(res.status).toBe(401);
+			expect(res.headers.get('www-authenticate')).toBe('Basic realm="mcp-oauth"');
+			expect(res.body).toMatchObject({ error: 'invalid_client' });
+		});
+
 		test('duplicate form params on /mcp-oauth/token rejected as invalid_request', async () => {
 			const res = await postForm(
 				mcpOAuthPublicRouter,
@@ -422,6 +494,25 @@ describe('mcp-oauth controller', () => {
 
 			expect(res.status).toBe(400);
 			expect(res.body).toMatchObject({ error: 'invalid_request' });
+		});
+
+		test('forwards Basic Authorization header to token revocation', async () => {
+			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
+
+			await postForm(
+				mcpOAuthPublicRouter,
+				'/mcp-oauth/revoke',
+				{
+					token: 'access-token',
+					client_id: 'client-id',
+				},
+				{ headers: { Authorization: authorization } },
+			);
+
+			expect(McpOAuthService.prototype.revokeToken).toHaveBeenCalledWith(
+				expect.objectContaining({ authorization_header: authorization }),
+			);
 		});
 	});
 

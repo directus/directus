@@ -147,6 +147,10 @@ function relaxFormAction(res: Response) {
  */
 function oauthErrorHandler(err: unknown, _req: Request, res: Response, next: NextFunction) {
 	if (err instanceof OAuthError) {
+		for (const [key, value] of Object.entries(err.headers)) {
+			res.set(key, value);
+		}
+
 		res.status(err.status).json({
 			error: err.code,
 			error_description: err.description,
@@ -426,6 +430,7 @@ mcpOAuthPublicRouter.post(
 		const schema = await getSchema();
 		const service = new McpOAuthService({ schema });
 		const result = await service.registerClient(req.body);
+		res.set('Cache-Control', 'no-store');
 		res.status(201).json(result);
 	}),
 );
@@ -450,10 +455,12 @@ mcpOAuthPublicRouter.post(
 		const grantType = req.body.grant_type;
 		let result;
 
+		const authParams = { ...req.body, authorization_header: req.headers.authorization };
+
 		if (grantType === 'authorization_code') {
-			result = await service.exchangeCode(req.body, context);
+			result = await service.exchangeCode(authParams, context);
 		} else if (grantType === 'refresh_token') {
-			result = await service.refreshToken(req.body, context);
+			result = await service.refreshToken(authParams, context);
 		} else if (!grantType) {
 			throw new OAuthError(400, 'invalid_request', 'grant_type is required');
 		} else {
@@ -473,7 +480,7 @@ mcpOAuthPublicRouter.post(
 	asyncHandler(async (req: Request, res: Response) => {
 		const schema = await getSchema();
 		const service = new McpOAuthService({ schema });
-		await service.revokeToken(req.body);
+		await service.revokeToken({ ...req.body, authorization_header: req.headers.authorization });
 		res.status(200).json({});
 	}),
 );

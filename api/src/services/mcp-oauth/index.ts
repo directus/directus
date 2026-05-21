@@ -61,6 +61,8 @@ export interface DCRResponse {
 	response_types: string[];
 	token_endpoint_auth_method: string;
 	client_id_issued_at: number;
+	client_secret?: string;
+	client_secret_expires_at?: number;
 }
 
 /** Authorization validation result. `signed_params` is an HMAC-SHA256 consent JWT. */
@@ -80,10 +82,16 @@ export interface DecisionParams {
 	approved: boolean;
 }
 
-/** RFC 6749 Section 4.1.3 token request (authorization_code grant). */
-export interface TokenParams {
-	grant_type?: string;
+/** Shared auth fields used by resolveClientId and authenticateClient. */
+export interface AuthParams {
 	client_id?: string;
+	client_secret?: string;
+	authorization_header?: string;
+}
+
+/** RFC 6749 Section 4.1.3 token request (authorization_code grant). */
+export interface TokenParams extends AuthParams {
+	grant_type?: string;
 	code?: string;
 	redirect_uri?: string;
 	code_verifier?: string;
@@ -106,18 +114,16 @@ export interface TokenContext {
 }
 
 /** RFC 6749 Section 6 refresh token request. */
-export interface RefreshParams {
+export interface RefreshParams extends AuthParams {
 	grant_type?: string;
-	client_id?: string;
 	refresh_token?: string;
 	resource?: string;
 	scope?: string;
 }
 
 /** RFC 7009 token revocation request. Always returns 200 (idempotent). */
-export interface RevokeParams {
+export interface RevokeParams extends AuthParams {
 	token?: string;
-	client_id?: string;
 	token_type_hint?: string;
 }
 
@@ -126,6 +132,15 @@ const CODE_VERIFIER_RE = /^[A-Za-z0-9\-._~]{43,128}$/;
 
 /** RFC 7636 Section 4.2: S256 code_challenge is base64url-encoded SHA-256 (always 43 chars) */
 const CODE_CHALLENGE_S256_RE = /^[A-Za-z0-9_-]{43}$/;
+
+/** RFC 6749 Section 9 token endpoint auth methods supported by this server */
+const SUPPORTED_TOKEN_AUTH_METHODS = ['none', 'client_secret_basic', 'client_secret_post'] as const;
+
+/** SHA-256 hash hex format guard (64 hex chars = 256 bits) */
+const SHA256_HEX_RE = /^[0-9a-f]{64}$/;
+
+/** Client secret byte length for confidential clients (32 bytes = 256 bits) */
+const CLIENT_SECRET_BYTES = 32;
 
 /** Params checked for duplicates before redirect_uri validation (non-redirectable errors) */
 const PRE_TRUST_DUPLICATE_PARAMS = ['client_id', 'redirect_uri'] as const;
@@ -238,8 +253,8 @@ export class McpOAuthService {
 			revocation_endpoint: revocationEndpoint.toString(),
 			response_types_supported: ['code'],
 			grant_types_supported: ['authorization_code', 'refresh_token'],
-			token_endpoint_auth_methods_supported: ['none'],
-			revocation_endpoint_auth_methods_supported: ['none'],
+			token_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
+			revocation_endpoint_auth_methods_supported: SUPPORTED_TOKEN_AUTH_METHODS,
 			code_challenge_methods_supported: ['S256'],
 			scopes_supported: [MCP_ACCESS_SCOPE],
 			response_modes_supported: ['query'],
@@ -346,15 +361,11 @@ export class McpOAuthService {
 			rejectRegistration('invalid_client_metadata', 'Unsupported grant type');
 		}
 
-		// RFC 7591 Section 2: spec defaults to client_secret_basic if omitted, but Section 3.1
-		// allows the server to override requested metadata. We default to none because:
-		// 1. We never issue client_secrets, so client_secret_basic is impossible to fulfill
-		// 2. AS metadata advertises token_endpoint_auth_methods_supported: ['none']
-		// 3. A client expecting client_secret_basic would fail at token exchange (no secret), which is correct
-		const authMethod = input['token_endpoint_auth_method'] ?? 'none';
+		// RFC 7591 Section 2: defaults to client_secret_basic if omitted
+		const authMethod = input['token_endpoint_auth_method'] ?? 'client_secret_basic';
 
-		if (authMethod !== 'none') {
-			rejectRegistration('invalid_client_metadata', 'Only token_endpoint_auth_method "none" is supported');
+		if (!SUPPORTED_TOKEN_AUTH_METHODS.includes(authMethod as string)) {
+			rejectRegistration('invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
 		}
 
 		// RFC 7591 Section 2: response_types derived from grant_types if omitted
@@ -409,6 +420,16 @@ export class McpOAuthService {
 			}
 		}
 
+		// Generate client secret for confidential clients
+		const isConfidential = authMethod !== 'none';
+		let clientSecret: string | undefined;
+		let clientSecretHash: string | null = null;
+
+		if (isConfidential) {
+			clientSecret = crypto.randomBytes(CLIENT_SECRET_BYTES).toString('base64url');
+			clientSecretHash = this.hashToken(clientSecret);
+		}
+
 		// Create client
 		const clientId = crypto.randomUUID();
 		const now = Math.floor(Date.now() / 1000);
@@ -418,7 +439,8 @@ export class McpOAuthService {
 			client_name: clientName,
 			redirect_uris: JSON.stringify(redirectUris),
 			grant_types: JSON.stringify(grantTypes),
-			token_endpoint_auth_method: 'none',
+			token_endpoint_auth_method: authMethod,
+			client_secret_hash: clientSecretHash,
 			registration_type: 'dcr',
 			client_uri: optionalUris['client_uri'],
 			logo_uri: optionalUris['logo_uri'],
@@ -432,8 +454,9 @@ export class McpOAuthService {
 			redirect_uris: redirectUris as string[],
 			grant_types: grantTypes as string[],
 			response_types: ['code'],
-			token_endpoint_auth_method: 'none',
+			token_endpoint_auth_method: authMethod as string,
 			client_id_issued_at: now,
+			...(isConfidential ? { client_secret: clientSecret, client_secret_expires_at: 0 } : {}),
 		};
 	}
 
@@ -685,7 +708,7 @@ export class McpOAuthService {
 		}
 
 		// RFC 6749 Section 4.1.2: generate authorization code (opaque to client)
-		const rawCode = crypto.randomBytes(32).toString('hex');
+		const rawCode = crypto.randomBytes(CLIENT_SECRET_BYTES).toString('hex');
 		const codeHash = this.hashToken(rawCode);
 
 		// Store code (never store raw code)
@@ -767,6 +790,23 @@ export class McpOAuthService {
 		const env = useEnv();
 		const logger = useLogger();
 
+		// Pre-transaction: resolve client_id and authenticate
+		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
+		params.client_id = resolvedClientId;
+
+		const preAuthClient = await this.resolveClientFromDb(resolvedClientId);
+
+		if (!preAuthClient) {
+			throw new OAuthError(400, 'invalid_grant', 'Authorization code is invalid or has expired');
+		}
+
+		this.authenticateClient(preAuthClient, params, basicAuth);
+
+		const tokenEndpointAuthMethod = preAuthClient['token_endpoint_auth_method'];
+
+		const isAuthenticatedConfidentialClient =
+			tokenEndpointAuthMethod === 'client_secret_basic' || tokenEndpointAuthMethod === 'client_secret_post';
+
 		// 1. RFC 6749 Section 4.1.3: required token request params
 		if (!params.grant_type) {
 			throw new OAuthError(400, 'invalid_request', 'grant_type is required');
@@ -774,10 +814,6 @@ export class McpOAuthService {
 
 		if (params.grant_type !== 'authorization_code') {
 			throw new OAuthError(400, 'unsupported_grant_type', 'Only authorization_code grant is supported');
-		}
-
-		if (!params.client_id) {
-			throw new OAuthError(400, 'invalid_request', 'client_id is required');
 		}
 
 		if (!params.code) {
@@ -828,6 +864,11 @@ export class McpOAuthService {
 
 			if (burned === 0) {
 				logger.warn({ code_hash: codeHash }, 'Authorization code already used');
+
+				if (isAuthenticatedConfidentialClient) {
+					await this.revokeGrantByCodeHash(trx, codeHash, resolvedClientId);
+				}
+
 				return { replayed: true as const };
 			}
 
@@ -998,13 +1039,12 @@ export class McpOAuthService {
 		const env = useEnv();
 		const logger = useLogger();
 
+		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
+		params.client_id = resolvedClientId;
+
 		// 1. Validate required params
 		if (params.grant_type !== 'refresh_token') {
 			throw new OAuthError(400, 'unsupported_grant_type', 'grant_type must be refresh_token');
-		}
-
-		if (!params.client_id) {
-			throw new OAuthError(400, 'invalid_request', 'client_id is required');
 		}
 
 		if (!params.refresh_token) {
@@ -1022,6 +1062,8 @@ export class McpOAuthService {
 		if (!client) {
 			throw new OAuthError(400, 'invalid_grant', 'Invalid refresh token');
 		}
+
+		this.authenticateClient(client, params, basicAuth);
 
 		const clientGrantTypes = parseStringArrayField(client['grant_types'], 'grant_types');
 
@@ -1165,45 +1207,46 @@ export class McpOAuthService {
 	}
 
 	/**
-	 * Revoke a refresh token (RFC 7009 Section 2). Idempotent.
+	 * Revoke a refresh token (RFC 7009 Section 2). Idempotent for unknown tokens.
 	 *
 	 * Called by `POST /mcp-oauth/revoke`. The client sends its refresh_token to end the session.
 	 *
-	 * Per RFC 7009 Section 2.2, returns 200 for all cases -- successful revocation, unknown
-	 * tokens, and unknown client_ids. This prevents client_id enumeration on the public endpoint.
-	 * Only throws for missing required params (token, client_id).
+	 * Client authentication is enforced first (resolveClientId + authenticateClient).
+	 * Unknown client_id or failed secret verification rejects with 401 invalid_client.
+	 * Per RFC 7009 Section 2.2, unknown/mismatched tokens return silent 200.
 	 *
-	 * @param params - Token and client_id
-	 * @throws {OAuthError} `invalid_request` if token or client_id is missing
+	 * @param params - Token, client_id, and optional authorization_header
+	 * @throws {OAuthError} `invalid_client` if client unknown or auth fails
+	 * @throws {OAuthError} `invalid_request` if token is missing
 	 */
 	async revokeToken(params: RevokeParams): Promise<void> {
 		const logger = useLogger();
+
+		// Resolve client_id from header or body
+		const { clientId: resolvedClientId, basicAuth } = this.resolveClientId(params);
+		params.client_id = resolvedClientId;
+
+		// Look up client and authenticate
+		const client = await this.resolveClientFromDb(resolvedClientId);
+
+		if (!client) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed');
+		}
+
+		this.authenticateClient(client, params, basicAuth);
 
 		// RFC 7009 Section 2.1: token REQUIRED
 		if (!params.token) {
 			throw new OAuthError(400, 'invalid_request', 'token is required');
 		}
 
-		if (!params.client_id) {
-			throw new OAuthError(400, 'invalid_request', 'client_id is required');
-		}
-
 		// Look up grant by token hash and verify client binding.
-		// RFC 7009 Section 2.2: return 200 for all failure cases (no information leak).
-		// For public clients, we don't distinguish unknown client_id from unknown token --
-		// both silently succeed to prevent client_id enumeration.
+		// RFC 7009 Section 2.2: return 200 for unknown/mismatched tokens (no information leak).
 		const tokenHash = this.hashToken(params.token);
 
 		const grant = await this.knex('directus_oauth_tokens').where('session', tokenHash).first();
 
 		if (!grant || grant['client'] !== params.client_id) {
-			return;
-		}
-
-		// Drain-naturally: no CIMD gating on revoke
-		const client = await this.resolveClientFromDb(params.client_id!);
-
-		if (!client) {
 			return;
 		}
 
@@ -1421,6 +1464,181 @@ export class McpOAuthService {
 		db: Knex | Knex.Transaction = this.knex,
 	): Promise<Record<string, unknown> | undefined> {
 		return db('directus_oauth_clients').where('client_id', clientId).first();
+	}
+
+	/** Base64 character set: A-Z, a-z, 0-9, +, /, = (padding) */
+	private static readonly BASE64_RE = /^[A-Za-z0-9+/]*={0,2}$/;
+
+	/**
+	 * Parse an Authorization: Basic header. Returns { clientId, clientSecret }
+	 * or null if the header is absent or not Basic scheme.
+	 * Throws OAuthError on malformed Basic header.
+	 */
+	parseBasicAuth(header: string | undefined): { clientId: string; clientSecret: string } | null {
+		if (!header) return null;
+
+		// RFC 7617: scheme comparison is case-insensitive
+		if (header.length < 6 || header.slice(0, 6).toLowerCase() !== 'basic ') {
+			return null;
+		}
+
+		const encoded = header.slice(6).trim();
+
+		if (!McpOAuthService.BASE64_RE.test(encoded)) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: invalid base64');
+		}
+
+		const decoded = Buffer.from(encoded, 'base64').toString('utf-8');
+
+		if (decoded.includes('\0')) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: contains null bytes');
+		}
+
+		const colonIndex = decoded.indexOf(':');
+
+		if (colonIndex === -1) {
+			throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: missing colon separator');
+		}
+
+		// RFC 6749 Section 2.3.1: application/x-www-form-urlencoded decoding
+		// Replace + with space before decodeURIComponent (form-urlencoded allows + for spaces)
+		try {
+			const clientId = decodeURIComponent(decoded.slice(0, colonIndex).replace(/\+/g, ' '));
+			const clientSecret = decodeURIComponent(decoded.slice(colonIndex + 1).replace(/\+/g, ' '));
+
+			if (!clientId) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: client_id is required');
+			}
+
+			if (clientId.includes('\0') || clientSecret.includes('\0')) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: contains null bytes');
+			}
+
+			return {
+				clientId,
+				clientSecret,
+			};
+		} catch (err) {
+			if (err instanceof URIError) {
+				throw new OAuthError(400, 'invalid_request', 'Malformed Basic authorization: invalid percent-encoding');
+			}
+
+			throw err;
+		}
+	}
+
+	/**
+	 * Extract client_id from the request. Method-agnostic -- runs before the client
+	 * record is loaded. Only the Basic scheme is recognized; other Authorization
+	 * header schemes are ignored (client_id comes from body only).
+	 */
+	resolveClientId(params: AuthParams): {
+		clientId: string;
+		basicAuth: { clientId: string; clientSecret: string } | null;
+	} {
+		const basicAuth = this.parseBasicAuth(params.authorization_header);
+		const headerClientId = basicAuth?.clientId;
+		const bodyClientId = params.client_id;
+
+		if (headerClientId && bodyClientId && headerClientId !== bodyClientId) {
+			throw new OAuthError(400, 'invalid_request', 'client_id mismatch between Authorization header and request body');
+		}
+
+		const clientId = headerClientId ?? bodyClientId;
+
+		if (!clientId) {
+			throw new OAuthError(400, 'invalid_request', 'client_id is required');
+		}
+
+		return { clientId, basicAuth };
+	}
+
+	private static readonly WWW_AUTH_BASIC = { 'WWW-Authenticate': 'Basic realm="directus"' };
+
+	/**
+	 * Enforce that the request matches the client's registered auth method exactly.
+	 * Accepts pre-parsed Basic auth from resolveClientId to avoid double decoding.
+	 * If preParsedBasicAuth is not provided, parses from params.authorization_header.
+	 */
+	authenticateClient(
+		clientRecord: Record<string, unknown>,
+		params: AuthParams,
+		preParsedBasicAuth?: { clientId: string; clientSecret: string } | null,
+	): void {
+		const authMethod = clientRecord['token_endpoint_auth_method'] as string;
+
+		const basicAuth =
+			preParsedBasicAuth !== undefined ? preParsedBasicAuth : this.parseBasicAuth(params.authorization_header);
+
+		const hasBasicHeader = basicAuth !== null;
+		const hasBodySecret = typeof params.client_secret === 'string' && params.client_secret.length > 0;
+
+		if (authMethod === 'none') {
+			if (hasBasicHeader) {
+				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for public clients');
+			}
+
+			if (hasBodySecret) {
+				throw new OAuthError(400, 'invalid_request', 'client_secret not allowed for public clients');
+			}
+
+			return;
+		}
+
+		if (authMethod === 'client_secret_basic') {
+			if (hasBodySecret) {
+				throw new OAuthError(400, 'invalid_request', 'client_secret in body not allowed for client_secret_basic');
+			}
+
+			if (!hasBasicHeader) {
+				throw new OAuthError(
+					401,
+					'invalid_client',
+					'Authorization header required for client_secret_basic',
+					false,
+					McpOAuthService.WWW_AUTH_BASIC,
+				);
+			}
+
+			this.verifySecret(basicAuth!.clientSecret, clientRecord, McpOAuthService.WWW_AUTH_BASIC);
+			return;
+		}
+
+		if (authMethod === 'client_secret_post') {
+			if (hasBasicHeader) {
+				throw new OAuthError(400, 'invalid_request', 'Authorization header not allowed for client_secret_post');
+			}
+
+			if (!hasBodySecret) {
+				throw new OAuthError(401, 'invalid_client', 'client_secret required for client_secret_post');
+			}
+
+			this.verifySecret(params.client_secret as string, clientRecord);
+			return;
+		}
+
+		throw new OAuthError(401, 'invalid_client', 'Unsupported authentication method');
+	}
+
+	/** Timing-safe secret verification with hex format guard and length pre-check. */
+	private verifySecret(
+		providedSecret: string,
+		clientRecord: Record<string, unknown>,
+		errorHeaders: Record<string, string> = {},
+	): void {
+		const storedHash = clientRecord['client_secret_hash'] as string | null;
+
+		if (!storedHash || !SHA256_HEX_RE.test(storedHash)) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed', false, errorHeaders);
+		}
+
+		const computedHash = this.hashToken(providedSecret);
+		const hashA = Buffer.from(computedHash, 'hex');
+		const hashB = Buffer.from(storedHash, 'hex');
+
+		if (hashA.length !== hashB.length || !crypto.timingSafeEqual(hashA, hashB)) {
+			throw new OAuthError(401, 'invalid_client', 'Client authentication failed', false, errorHeaders);
+		}
 	}
 
 	/**
@@ -1688,6 +1906,16 @@ export class McpOAuthService {
 			await db('directus_sessions').where('token', reuseGrant['session']).delete();
 
 			logger.warn({ client_id: clientId, grant_id: reuseGrant['id'] }, 'Refresh token reuse detected, grant revoked');
+		}
+	}
+
+	/** Detect and revoke a grant issued from a replayed authorization code. */
+	private async revokeGrantByCodeHash(db: Knex | Knex.Transaction, codeHash: string, clientId: string): Promise<void> {
+		const replayGrant = await db('directus_oauth_tokens').where({ code_hash: codeHash, client: clientId }).first();
+
+		if (replayGrant) {
+			await db('directus_oauth_tokens').where('id', replayGrant['id']).delete();
+			await db('directus_sessions').where('token', replayGrant['session']).delete();
 		}
 	}
 
