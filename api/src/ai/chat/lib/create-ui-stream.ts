@@ -22,6 +22,7 @@ import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 import type { ChatContext } from '../models/chat-request.js';
 import { formatContextForSystemPrompt } from '../utils/format-context.js';
 import {
+	applyAnthropicConversationCaching,
 	buildCacheAwareSystemPrompt,
 	formatUsageWithCacheTokens,
 	type PromptCachingUsage,
@@ -67,17 +68,24 @@ export const createUiStream = async (
 		});
 	}
 
-	// Compute the full system prompt once to avoid re-computing on each step
-	const fullSystemPrompt = contextBlock ? baseSystemPrompt + contextBlock : baseSystemPrompt;
-	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, fullSystemPrompt);
+	// For Anthropic, keep `system` as the stable base prompt only (so the tools+system prefix
+	// caches across page changes) and inject context after a cache breakpoint on the last
+	// existing message. For other providers, keep context inside `system` as before.
+	const systemPromptText =
+		provider === 'anthropic' || !contextBlock ? baseSystemPrompt : baseSystemPrompt + contextBlock;
+
+	const streamSystemPrompt = buildCacheAwareSystemPrompt(provider, systemPromptText);
 
 	const finalTools = sortToolsByName(applyAnthropicToolSearch(provider, model, tools));
 	const telemetryConfig = getAITelemetryConfig({ provider, model, userId, role });
 
+	const modelMessages = await convertToModelMessages(transformFilePartsForProvider(messages));
+	const streamMessages = applyAnthropicConversationCaching(provider, modelMessages, contextBlock);
+
 	const stream = streamText({
 		system: streamSystemPrompt,
 		model: languageModel,
-		messages: await convertToModelMessages(transformFilePartsForProvider(messages)),
+		messages: streamMessages,
 		stopWhen: [stepCountIs(10)],
 		providerOptions,
 		tools: finalTools,

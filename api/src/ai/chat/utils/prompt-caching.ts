@@ -1,5 +1,5 @@
 import type { ProviderType } from '@directus/ai';
-import type { LanguageModelUsage, ProviderMetadata, SystemModelMessage, Tool } from 'ai';
+import type { LanguageModelUsage, ModelMessage, ProviderMetadata, SystemModelMessage, Tool } from 'ai';
 
 export type PromptCachingUsage = Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'> & {
 	cacheReadTokens?: number;
@@ -31,6 +31,54 @@ export function buildCacheAwareSystemPrompt(provider: ProviderType, content: str
 			},
 		},
 	};
+}
+
+/**
+ * For Anthropic, place a cache breakpoint on the last existing message so the conversation
+ * prefix (tools + system + history) caches as it grows, and append the per-request page
+ * context as a new user message after the breakpoint so it stays out of the cached prefix.
+ *
+ * Context is only appended after a real user turn. On multi-step continuations the last
+ * message is an assistant or tool result; appending a user message there would make the
+ * model respond to the context instead of synthesizing the tool output. The model still
+ * sees context from the originating user turn earlier in the conversation.
+ *
+ * Other providers either auto-cache (Google/OpenAI) or don't support this, so we keep the
+ * context inside the system prompt for them (handled upstream).
+ */
+export function applyAnthropicConversationCaching(
+	provider: ProviderType,
+	messages: ModelMessage[],
+	contextBlock: string | null,
+): ModelMessage[] {
+	if (provider !== 'anthropic' || messages.length === 0) return messages;
+
+	const lastIndex = messages.length - 1;
+
+	const messagesWithCache = messages.map((message, index) =>
+		index === lastIndex
+			? {
+					...message,
+					providerOptions: {
+						...message.providerOptions,
+						anthropic: {
+							...(message.providerOptions?.['anthropic'] as Record<string, unknown> | undefined),
+							cacheControl: { type: 'ephemeral' },
+						},
+					},
+				}
+			: message,
+	);
+
+	if (!contextBlock || messages[lastIndex]?.role !== 'user') return messagesWithCache;
+
+	return [
+		...messagesWithCache,
+		{
+			role: 'user',
+			content: contextBlock,
+		},
+	];
 }
 
 export function sortToolsByName<T extends Record<string, Tool>>(tools: T): T {
