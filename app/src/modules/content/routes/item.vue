@@ -53,7 +53,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getItemRoute } from '@/utils/get-route';
+import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -914,7 +914,8 @@ function usePublishActions() {
 		const newItemKey = await publishVersion(versionId, {});
 		if (!newItemKey) return;
 
-		if (quit || isSingleton.value) router.push(collectionRoute.value);
+		if (isSingleton.value) router.push(getCollectionRoute(props.collection));
+		else if (quit) router.push(collectionRoute.value);
 		else router.replace(getItemRoute(props.collection, newItemKey));
 
 		deleteVersion(versionId);
