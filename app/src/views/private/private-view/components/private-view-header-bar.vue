@@ -178,6 +178,10 @@ const showNavToggle = computed(() => {
 	margin-inline-end: 0.25rem;
 }
 
+.header-bar:has(.nav-toggle) .title-outer-prepend:empty + .title-container {
+	margin-inline-start: 0.5rem;
+}
+
 .title-outer-append {
 	margin-inline-start: 0.5rem;
 }
