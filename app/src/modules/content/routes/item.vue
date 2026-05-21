@@ -49,7 +49,7 @@ import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
-import type { ContentVersionWithType } from '@/types/versions';
+import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { mergeItemData } from '@/utils/merge-item-data';
@@ -101,6 +101,7 @@ const userStore = useUserStore();
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
 
 const isPublishAllowed = computed(() => {
+	if (currentVersion.value === null) return false;
 	if (isCurrentVersionNew.value) return false;
 	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
 });
@@ -118,6 +119,7 @@ const { primaryKeyParam, resolvedPrimaryKey, existingPrimaryKey, resolvePrimaryK
 
 const {
 	readVersionsAllowed,
+	createVersionsAllowed,
 	currentVersion,
 	versions,
 	loading: versionsLoading,
@@ -363,15 +365,22 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 	computed(() => !currentVersion.value),
 );
 
+const { applyAutoSwitchPendingEdits, canAutoSwitchToDraft, draftVersion } = useAutoSwitchToDraft();
+
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
 	if (currentVersion.value !== null && updateVersionsAllowed.value) return false;
+	if (canAutoSwitchToDraft.value) return false;
 	return true;
 });
 
 const isFormNonEditable = computed(
-	() => shouldShowVersioning.value && readVersionsAllowed.value && currentVersion.value === null,
+	() =>
+		shouldShowVersioning.value &&
+		readVersionsAllowed.value &&
+		currentVersion.value === null &&
+		!canAutoSwitchToDraft.value,
 );
 
 const disabledOptions = computed(() => {
@@ -381,7 +390,8 @@ const disabledOptions = computed(() => {
 });
 
 watch(currentVersion, async () => {
-	edits.value = {};
+	const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
+	edits.value = autoSwitchPendingEdits ?? {};
 	await refreshLivePreview();
 });
 
@@ -917,11 +927,56 @@ function usePublishActions() {
 	};
 }
 
-function editDraftVersion() {
-	const draftVersion = versions.value.find((version) => version.key === VERSION_KEY_DRAFT);
+function useAutoSwitchToDraft() {
+	const autoSwitchPendingEdits = ref<Item>({});
+	const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT)!);
 
-	if (draftVersion) {
-		currentVersion.value = draftVersion;
+	const canAutoSwitchToDraft = computed(() => {
+		if (isNew.value) return false;
+		if (!shouldShowVersioning.value) return false;
+		if (!readVersionsAllowed.value) return false;
+		if (currentVersion.value !== null) return false;
+		if (hasVersionEdits(draftVersion.value)) return false;
+		if (draftVersion.value?.id === '+') return createVersionsAllowed.value;
+		return updateVersionsAllowed.value || createVersionsAllowed.value;
+	});
+
+	watch(hasEdits, (newHasEdits, oldHasEdits) => {
+		if (!newHasEdits || oldHasEdits) return;
+		if (!canAutoSwitchToDraft.value) return;
+		if (!draftVersion.value) return;
+
+		stashAutoSwitchPendingEdits();
+
+		router.replace({
+			...route,
+			query: { ...route.query, version: VERSION_KEY_DRAFT },
+		});
+	});
+
+	return {
+		canAutoSwitchToDraft,
+		draftVersion,
+		applyAutoSwitchPendingEdits,
+	};
+
+	function applyAutoSwitchPendingEdits() {
+		if (!Object.keys(autoSwitchPendingEdits.value).length) return null;
+
+		const editsToApply = { ...autoSwitchPendingEdits.value };
+		autoSwitchPendingEdits.value = {};
+
+		return editsToApply;
+	}
+
+	function stashAutoSwitchPendingEdits() {
+		autoSwitchPendingEdits.value = { ...edits.value };
+		edits.value = {};
+	}
+
+	function hasVersionEdits(version: ContentVersionMaybeNew | null) {
+		if (!version || version?.id === '+') return false;
+		return (version as ContentVersionWithType).delta !== null;
 	}
 }
 </script>
@@ -1060,10 +1115,10 @@ function editDraftVersion() {
 		<template #actions:primary>
 			<template v-if="shouldShowVersioning && readVersionsAllowed">
 				<PrivateViewHeaderBarActionButton
-					v-if="currentVersion === null"
+					v-if="currentVersion === null && !canAutoSwitchToDraft"
 					:label="$t('edit')"
 					icon="edit"
-					@click="editDraftVersion()"
+					@click="currentVersion = draftVersion"
 				/>
 
 				<template v-else>
