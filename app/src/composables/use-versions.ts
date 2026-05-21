@@ -322,6 +322,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	return {
 		readVersionsAllowed,
+		createVersionsAllowed,
 		currentVersion,
 		versions,
 		loading,
