@@ -22,10 +22,10 @@ const unlimitedLicense = createLicense({
 
 type Label = 'within' | 'boundary' | 'outside';
 
-const SEED_PLAN: Array<{ label: Label; daysAgo: number; count: number }> = [
-	{ label: 'within', daysAgo: 1, count: 5 },
-	{ label: 'boundary', daysAgo: TIMEFRAME_DAYS - 1, count: 5 },
-	{ label: 'outside', daysAgo: 30, count: 5 },
+const SEED_PLAN: Array<{ label: Label; daysAgo: number }> = [
+	{ label: 'within', daysAgo: 1 },
+	{ label: 'boundary', daysAgo: TIMEFRAME_DAYS - 1 },
+	{ label: 'outside', daysAgo: 30 },
 ];
 
 describe('activity_historical_timeframe', () => {
@@ -51,18 +51,18 @@ describe('activity_historical_timeframe', () => {
 		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
 		// seed activity data for the test scenarios
-		for (const { label, daysAgo, count } of SEED_PLAN) {
+		for (const { label, daysAgo } of SEED_PLAN) {
 			const timestamp = new Date(Date.now() - daysAgo * DAY_IN_SECONDS * 1000).toISOString();
 
-			await directus.knex!('directus_activity').insert(
-				Array.from({ length: count }, () => ({
+			for (let i = 0; i < 5; i++) {
+				await directus.knex!('directus_activity').insert({
 					action: 'create',
 					user: null,
 					timestamp,
 					collection: getUID(),
 					item: label,
-				})),
-			);
+				});
+			}
 		}
 	});
 
