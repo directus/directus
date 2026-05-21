@@ -524,10 +524,6 @@ function onEsc() {
 	}
 }
 
-.resolution-feature-section {
-	margin-block-start: 0;
-}
-
 .section-header {
 	display: flex;
 	align-items: center;

@@ -80,10 +80,6 @@ defineExpose({ isValid });
 </template>
 
 <style scoped>
-.resolution-sso-section {
-	margin-block-start: 2rem;
-}
-
 .section-header {
 	display: flex;
 	align-items: center;
