@@ -26,7 +26,7 @@ const emit = defineEmits([
 	'deactivateCollection',
 ]);
 
-const isDeactivated = computed(() => props.collection.meta?.status !== 'active');
+const isDeactivated = computed(() => props.collection.meta?.status === 'inactive');
 
 const toggleCollapse = () => {
 	emit('toggleCollapse', props.collection.collection);
