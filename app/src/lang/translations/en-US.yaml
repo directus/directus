@@ -1615,7 +1615,7 @@ license:
       upgrade to increase your limits.
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   pinned_status_notice:
-    grace_period_title: 'License Downgrading ({days}d left)'
+    grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
   unlicensed_pinned_status_notice:
     grace_period_title: You are in a 30-day grace period

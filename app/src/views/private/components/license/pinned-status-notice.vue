@@ -53,7 +53,7 @@ const titleKey = computed(() =>
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-normal);
 	overflow: hidden;
-	font-size: 0.6875rem;
+	font-size: 11px;
 	line-height: 1rem;
 }
 
@@ -85,17 +85,19 @@ const titleKey = computed(() =>
 	display: flex;
 	flex-direction: column;
 	gap: 0.125rem;
-	min-width: 0;
+	min-inline-size: 0;
 }
 
 .notice-title {
 	font-weight: 600;
 	color: var(--theme--foreground);
+	text-wrap: balance;
 }
 
 .notice-body {
 	font-weight: 500;
 	text-decoration: none;
+	text-wrap: balance;
 }
 
 .notice-body:hover {

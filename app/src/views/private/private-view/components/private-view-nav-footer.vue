@@ -21,7 +21,6 @@ const visible = computed(() => hasBadge.value || hasPinnedNotice.value);
 
 <template>
 	<div v-if="visible" class="wrapper">
-		<hr />
 		<slot />
 	</div>
 </template>
@@ -33,15 +32,5 @@ const visible = computed(() => hasBadge.value || hasPinnedNotice.value);
 	display: flex;
 	position: relative;
 	flex-direction: column;
-
-	hr {
-		flex-grow: 1;
-		max-inline-size: 100%;
-		border: solid;
-		border-color: var(--theme--navigation--list--divider--border-color);
-		border-width: var(--theme--border-width) 0 0 0;
-		inline-size: calc(100% - 1.375rem);
-		align-self: center;
-	}
 }
 </style>
