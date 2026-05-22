@@ -216,7 +216,7 @@ describe('initialValues', () => {
 				collection: 'articles',
 				active: true,
 				primaryKey: '1',
-				initialValues,
+				initialItem: initialValues,
 			},
 			global,
 		});

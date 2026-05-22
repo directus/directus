@@ -563,12 +563,3 @@ function getPrimaryKeyField(schema: SchemaOverview, collection: string) {
 function mergePayloadForSingleSave(target: Item, source: Item, identityFields: string[]) {
 	mergeNestedRelationDeltaInto(target, source, { identityFields });
 }
-
-function isDetailedUpdatePayload(value: unknown) {
-	return (
-		isObject(value) &&
-		Array.isArray(value['create']) &&
-		Array.isArray(value['update']) &&
-		Array.isArray(value['delete'])
-	);
-}

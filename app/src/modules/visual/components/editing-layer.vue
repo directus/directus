@@ -700,7 +700,7 @@ function useItemWithEdits() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
-			:initial-values="initialValues"
+			:initial-item="initialValues"
 			:version="version?.key"
 			:popover-props="({ popoverWidth }) => (position.width > popoverWidth ? { arrowPlacement: 'start' } : {})"
 			apply-shortcut="meta+s"
