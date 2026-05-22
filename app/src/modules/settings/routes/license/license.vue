@@ -219,7 +219,7 @@ async function handleDeactivateConfirm() {
 
 	try {
 		await sdk.request(deactivateLicense());
-		await licenseStore.hydrate();
+		await Promise.all([licenseStore.hydrate(), licenseStore.hydrateAddons()]);
 		deactivateConfirmOpen.value = false;
 	} catch (err) {
 		unexpectedError(err);
