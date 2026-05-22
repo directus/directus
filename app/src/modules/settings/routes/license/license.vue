@@ -83,6 +83,10 @@ async function handleActivate() {
 			await licenseStore.activate(key);
 		}
 
+		if (licenseStore.info?.source != null) {
+			await licenseStore.hydrateAddons();
+		}
+
 		addLicenseDrawer.value = false;
 		resetAddLicenseForm();
 	} catch (err) {
