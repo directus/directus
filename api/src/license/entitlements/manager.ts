@@ -46,6 +46,7 @@ export class EntitlementManager {
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
 	private cache = new Map<EntitlementCacheKey, number | boolean>();
+	private initialized = false;
 
 	constructor() {
 		this.registerHandlers();
@@ -67,16 +68,15 @@ export class EntitlementManager {
 		this.registerResolver('seats', resolveSeats);
 		this.registerResolver('flows', resolveFlows);
 		this.registerResolver('sso_enabled', resolveSSOUsers);
-
 	}
 
 	initialize() {
-		// const messenger = useBus();
-		// cache invalidation
-		// messenger.subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
-		// 	const keys = msg?.keys ?? [];
-		// 		this.clearCacheNoPublish(...keys);
-		// });
+		if (this.initialized) return;
+		this.initialized = true;
+
+		useBus().subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
+			this.clearCacheNoPublish(...(msg?.keys ?? []));
+		});
 	}
 
 	/**
@@ -123,7 +123,9 @@ export class EntitlementManager {
 	async clearCache(...keys: EntitlementCacheKey[]): Promise<void> {
 		this.clearCacheNoPublish(...keys);
 
-		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
+		if (this.initialized) {
+			await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
+		}
 	}
 
 	/**
