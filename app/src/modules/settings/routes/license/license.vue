@@ -112,6 +112,7 @@ type EntitlementConfig = {
 const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 	{ key: 'collections', icon: 'database', title: t('licensing.entitlements.collections') },
 	{ key: 'seats', icon: 'people', title: t('licensing.entitlements.seats') },
+	{ key: 'flows', icon: 'bolt', title: t('licensing.entitlements.flows') },
 	{
 		key: 'activity_historical_timeframe',
 		icon: 'timeline',
@@ -160,6 +161,7 @@ function usageFor(key: keyof Entitlements): number | null {
 	if (!license.value) return null;
 	if (key === 'seats') return license.value.usage.seats;
 	if (key === 'collections') return license.value.usage.collections;
+	if (key === 'flows') return license.value.usage.flows;
 	return null;
 }
 
