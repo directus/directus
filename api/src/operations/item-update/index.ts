@@ -53,8 +53,11 @@ export default defineOperationApi<Options>({
 
 		if (Array.isArray(payloadObject)) {
 			result = await itemsService.updateBatch(payloadObject, { emitEvents: !!emitEvents });
-		} else if (!key || (Array.isArray(key) && key.length === 0)) {
+		} else if (!key) {
 			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents: !!emitEvents });
+		} else if (Array.isArray(key) && key.length === 0) {
+			// Empty keys array — nothing to update
+			result = [];
 		} else {
 			const keys = toArray(key);
 
