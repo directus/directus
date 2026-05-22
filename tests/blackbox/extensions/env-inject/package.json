@@ -1,0 +1,11 @@
+{
+	"name": "env-inject",
+	"version": "0.0.0",
+	"private": true,
+	"directus:extension": {
+		"type": "endpoint",
+		"path": "index.mjs",
+		"source": "index.mjs",
+		"host": "^10.10.0"
+	}
+}

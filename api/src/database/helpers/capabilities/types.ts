@@ -14,4 +14,18 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	supportsDeduplicationOfParameters(): boolean {
 		return true;
 	}
+
+	/**
+	 * Whether `INSERT … RETURNING` (or the dialect equivalent) yields rows in insertion
+	 * order with a contractual guarantee. When true, `ItemsService.createMany` can use a
+	 * single multi-row `knex.batchInsert` and map the returned PKs back positionally;
+	 * when false it must fall back to a per-row insert loop.
+	 *
+	 * Default: `false` — the conservative answer. Override only in dialects where both
+	 * the underlying RETURNING semantics AND the knex driver path emitting them preserve
+	 * order.
+	 */
+	async preservesInsertOrderInReturning(): Promise<boolean> {
+		return false;
+	}
 }

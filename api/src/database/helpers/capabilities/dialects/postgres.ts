@@ -13,4 +13,11 @@ export class CapabilitiesHelperPostgres extends CapabilitiesHelper {
 		// See https://www.postgresql.org/docs/current/sql-prepare.html
 		return false;
 	}
+
+	override async preservesInsertOrderInReturning(): Promise<boolean> {
+		// Postgres's INSERT … RETURNING returns one row per inserted row, in insertion order,
+		// within a single statement. Same semantics inherited by CockroachDB and Redshift.
+		// https://www.postgresql.org/docs/current/sql-insert.html
+		return true;
+	}
 }
