@@ -166,7 +166,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								schema: this.schema,
 								accountability: this.accountability,
 							},
-					  )
+						)
 					: payload;
 
 			const payloadWithPresets = this.accountability
@@ -182,7 +182,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							knex: trx,
 							schema: this.schema,
 						},
-				  )
+					)
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -573,7 +573,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								schema: this.schema,
 								accountability: this.accountability,
 							},
-					  )
+						)
 					: payload;
 
 			const payloadWithPresets = this.accountability
@@ -586,7 +586,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							nested: this.nested,
 						},
 						{ knex: trx, schema: this.schema },
-				  )
+					)
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -620,7 +620,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
-			let primaryKey: PrimaryKey | undefined = payloadWithTypeCasting[primaryKeyField];
+			const primaryKey: PrimaryKey | undefined = payloadWithTypeCasting[primaryKeyField];
 
 			if (primaryKey) {
 				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
@@ -845,7 +845,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: query;
 
 		// Default to ORDER BY <primary key> ASC for integer / bigInteger PKs when no
@@ -923,7 +923,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: records;
 
 		if (opts?.emitEvents !== false) {
@@ -1109,7 +1109,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: payload;
 
 		// Sort keys to ensure that the order is maintained
@@ -1144,7 +1144,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						knex: this.knex,
 						schema: this.schema,
 					},
-			  )
+				)
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {
@@ -1458,7 +1458,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: keys;
 
 		if (this.accountability) {

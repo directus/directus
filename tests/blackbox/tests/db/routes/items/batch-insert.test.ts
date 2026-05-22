@@ -1,9 +1,9 @@
+import { randomUUID } from 'node:crypto';
 import { getUrl } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { setDirectusEnv } from '@utils/set-directus-env';
-import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { collectionArtists } from './no-relation.seed';
