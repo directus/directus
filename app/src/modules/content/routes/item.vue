@@ -710,6 +710,29 @@ const shouldShowVersioning = computed(() => {
 	return true;
 });
 
+const livePreviewParentScope = computed(() => {
+	if (!resolvedPrimaryKey.value || resolvedPrimaryKey.value === '+') return undefined;
+
+	return {
+		collection: collection.value,
+		key: resolvedPrimaryKey.value,
+	};
+});
+
+async function switchToVersion(versionKey: string) {
+	const target = versions.value.find((version) => version.key === versionKey);
+	if (!target) return;
+
+	const canSwitch =
+		draftVersion.value?.id === '+'
+			? createVersionsAllowed.value
+			: updateVersionsAllowed.value || createVersionsAllowed.value;
+
+	if (!canSwitch) return;
+
+	currentVersion.value = target;
+}
+
 function enterSingletonDraftContext(
 	newIsSingleton: boolean,
 	newResolvedPK: PrimaryKey | null,
@@ -1234,6 +1257,9 @@ function useAutoSwitchToDraft() {
 					v-if="livePreviewActive && previewUrl"
 					:url="previewUrl"
 					:version="currentVersion"
+					:parent-scope="livePreviewParentScope"
+					:switch-version="switchToVersion"
+					:has-unsaved-edits="hasEdits"
 					:can-enable-visual-editing="visualEditingEnabled"
 					:show-open-in-visual-editor="visualModuleEnabled"
 					:is-full-width="livePreviewFullWidth"

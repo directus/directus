@@ -1,3 +1,4 @@
+import type { Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -5,6 +6,9 @@ import type { PendingContextItem } from '../types';
 import { MAX_PENDING_CONTEXT, useAiContextStore } from './use-ai-context';
 import api from '@/api';
 import sdk from '@/sdk';
+import { useCollectionsStore } from '@/stores/collections';
+import { useRelationsStore } from '@/stores/relations';
+import { ensureVersionId } from '@/utils/ensure-version-id';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 vi.mock('@/api', () => ({
@@ -21,6 +25,10 @@ vi.mock('@/sdk', async () => {
 
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
+}));
+
+vi.mock('@/utils/ensure-version-id', () => ({
+	ensureVersionId: vi.fn().mockResolvedValue('version-id'),
 }));
 
 beforeEach(() => {
@@ -46,6 +54,30 @@ const createVisualElement = (key: string): PendingContextItem => ({
 	display: `Post ${key}`,
 });
 
+function createParentedVisualElement(options: {
+	collection: string;
+	item: string | number;
+	parentCollection: string;
+}): PendingContextItem {
+	return {
+		id: `${options.collection}-${options.item}`,
+		type: 'visual-element',
+		data: {
+			collection: options.collection,
+			item: options.item,
+			key: `${options.collection}-${options.item}`,
+			fields: ['title'],
+			version: 'draft',
+			parent: {
+				collection: options.parentCollection,
+				item: 1,
+				version: 'draft',
+			},
+		},
+		display: `${options.collection} ${options.item}`,
+	};
+}
+
 const createItemContext = (id: string, itemId: string = '1'): PendingContextItem => ({
 	id,
 	type: 'item',
@@ -66,6 +98,52 @@ const createPromptContext = (id: string): PendingContextItem => ({
 	},
 	display: `Prompt ${id}`,
 });
+
+function setupSchema(collections: ReturnType<typeof collection>[], relations: Relation[]) {
+	useCollectionsStore().collections = collections;
+	useRelationsStore().relations = relations;
+}
+
+function collection(collection: string, versioning: boolean) {
+	return {
+		collection,
+		name: collection,
+		type: 'table',
+		meta: { versioning },
+		schema: {},
+	} as any;
+}
+
+function relation(
+	collection: string,
+	field: string,
+	relatedCollection: string | null,
+	options: {
+		oneField?: string | null;
+		junctionField?: string | null;
+		oneCollectionField?: string | null;
+		oneAllowedCollections?: string[] | null;
+	} = {},
+): Relation {
+	return {
+		collection,
+		field,
+		related_collection: relatedCollection,
+		schema: null,
+		meta: {
+			id: 1,
+			many_collection: collection,
+			many_field: field,
+			one_collection: relatedCollection,
+			one_field: options.oneField ?? null,
+			one_collection_field: options.oneCollectionField ?? null,
+			one_allowed_collections: options.oneAllowedCollections ?? null,
+			one_deselect_action: 'nullify',
+			junction_field: options.junctionField ?? null,
+			sort_field: null,
+		},
+	};
+}
 
 describe('useAiContextStore', () => {
 	afterEach(() => {
@@ -213,6 +291,293 @@ describe('useAiContextStore', () => {
 			expect(attachments).toHaveLength(1);
 			expect(attachments[0]!.type).toBe('visual-element');
 			expect(attachments[0]!.snapshot).toEqual({ title: 'Fetched Title' });
+		});
+
+		test('ensures direct item versions before fetching versioned visual elements', async () => {
+			const store = useAiContextStore();
+			setupSchema([collection('posts', true)], []);
+			vi.mocked(sdk.request).mockResolvedValue({ title: 'Draft Title' });
+
+			store.addPendingContext({
+				id: 'post',
+				type: 'visual-element',
+				data: {
+					collection: 'posts',
+					item: 1,
+					key: 'post',
+					fields: ['title'],
+					version: 'draft',
+				},
+				display: 'Post',
+			});
+
+			const attachments = await store.fetchContextData();
+
+			expect(ensureVersionId).toHaveBeenCalledWith(api, {
+				collection: 'posts',
+				item: 1,
+				versionKey: 'draft',
+			});
+
+			expect(vi.mocked(sdk.request).mock.calls[0]?.[0]()).toEqual({
+				path: '/items/posts/1',
+				params: { fields: ['title'], version: 'draft' },
+			});
+
+			expect(attachments).toHaveLength(1);
+			expect(attachments[0]!.snapshot).toEqual({ title: 'Draft Title' });
+		});
+
+		test('does not pass a stale visual element version when target resolves to published', async () => {
+			const store = useAiContextStore();
+			setupSchema([collection('pages', true), collection('blocks', false)], []);
+			vi.mocked(sdk.request).mockResolvedValue({ title: 'Published Title' });
+
+			store.addPendingContext({
+				id: 'block',
+				type: 'visual-element',
+				data: {
+					collection: 'blocks',
+					item: 1,
+					key: 'block',
+					fields: ['title'],
+					version: 'draft',
+					parent: {
+						collection: 'pages',
+						item: 1,
+						version: 'published',
+					},
+				},
+				display: 'Block',
+			});
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments[0]!.snapshot).toEqual({ title: 'Published Title' });
+
+			expect(vi.mocked(sdk.request).mock.calls[0]?.[0]()).toEqual({
+				path: '/items/blocks/1',
+				params: { fields: ['title'] },
+			});
+		});
+
+		test('fetches O2M visual elements through the parent version', async () => {
+			const store = useAiContextStore();
+
+			setupSchema(
+				[collection('articles', true), collection('article_translations', false)],
+				[relation('article_translations', 'article_id', 'articles', { oneField: 'translations' })],
+			);
+
+			vi.mocked(sdk.request)
+				.mockResolvedValueOnce({ translations: [{ id: 5 }] })
+				.mockResolvedValueOnce({ translations: [{ id: 5, title: 'Draft title' }] });
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'article_translations',
+					item: 5,
+					parentCollection: 'articles',
+				}),
+			);
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments[0]!.snapshot).toEqual({ id: 5, title: 'Draft title' });
+
+			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
+				path: '/items/articles/1',
+				params: { fields: ['translations.id', 'translations.title'], version: 'draft' },
+			});
+		});
+
+		test('fetches M2M visual elements through the parent version', async () => {
+			const store = useAiContextStore();
+
+			setupSchema(
+				[collection('articles', true), collection('articles_tags', false), collection('tags', false)],
+				[
+					relation('articles_tags', 'articles_id', 'articles', { oneField: 'tags', junctionField: 'tags_id' }),
+					relation('articles_tags', 'tags_id', 'tags'),
+				],
+			);
+
+			vi.mocked(sdk.request)
+				.mockResolvedValueOnce({ tags: [{ id: 12, tags_id: { id: 5 } }] })
+				.mockResolvedValueOnce({ tags: [{ id: 12, tags_id: { id: 5, title: 'Draft tag' } }] });
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'tags',
+					item: 5,
+					parentCollection: 'articles',
+				}),
+			);
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments[0]!.snapshot).toEqual({ id: 5, title: 'Draft tag' });
+
+			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
+				path: '/items/articles/1',
+				params: { fields: ['tags.id', 'tags.tags_id.id', 'tags.tags_id.title'], version: 'draft' },
+			});
+		});
+
+		test('fetches M2A visual elements through the parent version', async () => {
+			const store = useAiContextStore();
+
+			setupSchema(
+				[collection('pages', true), collection('pages_blocks', false), collection('block_hero', false)],
+				[
+					relation('pages_blocks', 'pages_id', 'pages', { oneField: 'blocks', junctionField: 'item' }),
+					relation('pages_blocks', 'item', null, {
+						oneCollectionField: 'collection',
+						oneAllowedCollections: ['block_hero'],
+					}),
+				],
+			);
+
+			const parent = {
+				blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Draft block' } }],
+			};
+
+			vi.mocked(sdk.request).mockResolvedValueOnce(parent).mockResolvedValueOnce(parent);
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'block_hero',
+					item: 9,
+					parentCollection: 'pages',
+				}),
+			);
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments[0]!.snapshot).toEqual({ id: 9, title: 'Draft block' });
+
+			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
+				path: '/items/pages/1',
+				params: {
+					fields: ['blocks.id', 'blocks.item.id', 'blocks.item.title', 'blocks.collection'],
+					version: 'draft',
+				},
+			});
+		});
+
+		test('ensures parent versions before resolving parented visual elements', async () => {
+			const store = useAiContextStore();
+
+			setupSchema(
+				[collection('pages', true), collection('pages_blocks', false), collection('block_hero', false)],
+				[
+					relation('pages_blocks', 'pages_id', 'pages', { oneField: 'blocks', junctionField: 'item' }),
+					relation('pages_blocks', 'item', null, {
+						oneCollectionField: 'collection',
+						oneAllowedCollections: ['block_hero'],
+					}),
+				],
+			);
+
+			const parent = {
+				blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Draft block' } }],
+			};
+
+			vi.mocked(sdk.request).mockResolvedValueOnce(parent).mockResolvedValueOnce(parent);
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'block_hero',
+					item: 9,
+					parentCollection: 'pages',
+				}),
+			);
+
+			const attachments = await store.fetchContextData();
+
+			expect(ensureVersionId).toHaveBeenCalledWith(api, {
+				collection: 'pages',
+				item: 1,
+				versionKey: 'draft',
+			});
+
+			expect(attachments).toHaveLength(1);
+			expect(attachments[0]!.snapshot).toEqual({ id: 9, title: 'Draft block' });
+		});
+
+		test('deduplicates concurrent parent version creation for visual elements from the same draft', async () => {
+			const store = useAiContextStore();
+
+			setupSchema(
+				[collection('pages', true), collection('pages_blocks', false), collection('block_hero', false)],
+				[
+					relation('pages_blocks', 'pages_id', 'pages', { oneField: 'blocks', junctionField: 'item' }),
+					relation('pages_blocks', 'item', null, {
+						oneCollectionField: 'collection',
+						oneAllowedCollections: ['block_hero'],
+					}),
+				],
+			);
+
+			vi.mocked(sdk.request).mockResolvedValue({
+				blocks: [
+					{ id: 7, collection: 'block_hero', item: { id: 9, title: 'First block' } },
+					{ id: 8, collection: 'block_hero', item: { id: 10, title: 'Second block' } },
+				],
+			});
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'block_hero',
+					item: 9,
+					parentCollection: 'pages',
+				}),
+			);
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'block_hero',
+					item: 10,
+					parentCollection: 'pages',
+				}),
+			);
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments).toHaveLength(2);
+
+			expect(ensureVersionId).toHaveBeenCalledOnce();
+			expect(ensureVersionId).toHaveBeenCalledWith(api, {
+				collection: 'pages',
+				item: 1,
+				versionKey: 'draft',
+			});
+		});
+
+		test('fetches M2O visual elements through the parent version', async () => {
+			const store = useAiContextStore();
+			setupSchema([collection('pages', true), collection('seo', false)], [relation('pages', 'seo', 'seo')]);
+
+			vi.mocked(sdk.request)
+				.mockResolvedValueOnce({ seo: { id: 4 } })
+				.mockResolvedValueOnce({ seo: { id: 4, title: 'Draft SEO' } });
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'seo',
+					item: 4,
+					parentCollection: 'pages',
+				}),
+			);
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments[0]!.snapshot).toEqual({ id: 4, title: 'Draft SEO' });
+
+			expect(vi.mocked(sdk.request).mock.calls[1]?.[0]()).toEqual({
+				path: '/items/pages/1',
+				params: { fields: ['seo.id', 'seo.title'], version: 'draft' },
+			});
 		});
 
 		test('uses wildcard fields when none specified', async () => {

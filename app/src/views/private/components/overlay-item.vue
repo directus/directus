@@ -46,6 +46,7 @@ export interface OverlayItemProps {
 	active?: boolean;
 	primaryKey?: PrimaryKey | null;
 	edits?: Record<string, any>;
+	initialItem?: Record<string, any> | null;
 	junctionField?: string | null;
 	disabled?: boolean;
 	nonEditable?: boolean;
@@ -366,6 +367,11 @@ function useItem() {
 
 	async function fetchItem() {
 		if (!props.primaryKey) return;
+
+		if (props.initialItem) {
+			initialValues.value = props.initialItem;
+			return;
+		}
 
 		loading.value = true;
 

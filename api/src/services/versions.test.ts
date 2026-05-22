@@ -61,6 +61,8 @@ const schema = new SchemaBuilder()
 	.collection('articles_track_none', (c) => {
 		c.field('id').id();
 		c.field('title').string();
+		c.field('config').json();
+		c.field('blocks').m2a(['block_hero']);
 	})
 	.options({ accountability: null })
 	.build();
@@ -122,6 +124,114 @@ describe('Integration Tests', () => {
 				expect(RevisionsService.prototype.createOne).toHaveBeenCalledWith(
 					expect.objectContaining({ collection: 'articles_track_all', item: 2, version: 1, activity: 1 }),
 				);
+			});
+
+			test('should merge detailed nested relation deltas when saving repeatedly', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_none',
+					item: 1,
+					delta: {
+						blocks: {
+							create: [],
+							update: [{ id: 1, title: 'First' }],
+							delete: [],
+						},
+					},
+				});
+
+				await service.save(1, {
+					blocks: {
+						create: [],
+						update: [{ id: 2, title: 'Second' }],
+						delete: [],
+					},
+				});
+
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(
+					1,
+					expect.objectContaining({
+						delta: expect.objectContaining({
+							blocks: expect.objectContaining({
+								update: [expect.objectContaining({ id: 1 }), expect.objectContaining({ id: 2 })],
+							}),
+						}),
+					}),
+				);
+			});
+
+			test('should replace repeated detailed updates for the same nested relation row', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_none',
+					item: 1,
+					delta: {
+						blocks: {
+							create: [],
+							update: [
+								{
+									id: 'junction-1',
+									collection: 'block_hero',
+									item: { id: 'block-1', headline: 'Old', tagline: 'Backend + CMS test' },
+								},
+							],
+							delete: [],
+						},
+					},
+				});
+
+				await service.save(1, {
+					blocks: {
+						create: [],
+						update: [
+							{
+								id: 'junction-1',
+								collection: 'block_hero',
+								item: { id: 'block-1', tagline: 'Backend + CMS carlos' },
+							},
+						],
+						delete: [],
+					},
+				});
+
+				expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(
+					1,
+					expect.objectContaining({
+						delta: expect.objectContaining({
+							blocks: expect.objectContaining({
+								update: [
+									expect.objectContaining({
+										id: 'junction-1',
+										collection: 'block_hero',
+										item: expect.objectContaining({
+											id: 'block-1',
+											headline: 'Old',
+											tagline: 'Backend + CMS carlos',
+										}),
+									}),
+								],
+							}),
+						}),
+					}),
+				);
+			});
+
+			test('should overwrite plain JSON fields instead of merging by identity', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_none',
+					item: 1,
+					delta: {
+						config: { id: 'x', a: 1, b: 2 },
+					},
+				});
+
+				await service.save(1, {
+					config: { id: 'x', a: 1 },
+				});
+
+				const call = vi.mocked(ItemsService.prototype.updateOne).mock.calls[0]!;
+				const storedConfig = (call[1] as { delta: { config: Record<string, unknown> } }).delta.config;
+
+				expect(storedConfig).toMatchObject({ id: 'x', a: 1 });
+				expect(storedConfig).not.toHaveProperty('b');
 			});
 		});
 	});

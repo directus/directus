@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
-import type { ContentVersion, PrimaryKey } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
+import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
+import {
+	buildPayload,
+	findParentInitialValue,
+	findParentRelationCandidates,
+	getEndpoint,
+	getParentInitialValueFields,
+	resolveWriteTarget,
+	WRITE_TARGET_REFUSAL,
+	type WriteTargetRefusalToken,
+} from '@directus/utils';
 import { sameOrigin } from '@directus/utils/browser';
 import type {
 	AddToContextData,
@@ -13,9 +22,10 @@ import type {
 	VisualEditingTheme,
 } from '@directus/visual-editing/types';
 import { useEventListener } from '@vueuse/core';
+import { cloneDeep, isEqual } from 'lodash';
 import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { NavigationData, ReceiveData } from '../types';
+import type { EditData, NavigationData, ReceiveData } from '../types';
 import { useContextStaging } from '@/ai/composables/use-context-staging';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useAiContextStore } from '@/ai/stores/use-ai-context';
@@ -23,23 +33,37 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { useSchemaOverview } from '@/composables/use-schema';
+import { useVersionGate, type VersionGateParentScope } from '@/composables/use-version-gate';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
+import { ensureVersionId } from '@/utils/ensure-version-id';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 
-const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
+const {
+	frameSrc,
+	frameEl,
+	showEditableElements,
+	version,
+	parentScope,
+	switchVersion,
+	hasUnsavedEdits: parentHasUnsavedEdits = false,
+} = defineProps<{
 	frameSrc: string;
 	frameEl?: HTMLIFrameElement;
 	showEditableElements?: boolean;
 	version: Pick<ContentVersion, 'key' | 'name'> | null;
+	parentScope?: VersionGateParentScope;
+	switchVersion?: (versionKey: string) => void | Promise<void>;
+	hasUnsavedEdits?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -49,10 +73,31 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const { collection, primaryKey, fields, mode, position, isNew, edits, editOverlayActive, itemRoute, onClickEdit } =
-	useItemWithEdits();
+const writeTargetRefusalMessageKeys = {
+	[WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED]: 'write_target_refusal.versioning_required',
+	[WRITE_TARGET_REFUSAL.NO_PARENT_CONTEXT]: 'write_target_refusal.no_parent_context',
+	[WRITE_TARGET_REFUSAL.NO_PARENT_PATH]: 'write_target_refusal.no_parent_path',
+	[WRITE_TARGET_REFUSAL.MULTI_RELATION]: 'write_target_refusal.multi_relation',
+	[WRITE_TARGET_REFUSAL.RELATED_NOT_FOUND]: 'write_target_refusal.related_not_found',
+	[WRITE_TARGET_REFUSAL.STALE_ATTACHMENT]: 'write_target_refusal.stale_attachment',
+} satisfies Record<WriteTargetRefusalToken, string>;
 
-const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
+const {
+	collection,
+	primaryKey,
+	fields,
+	mode,
+	position,
+	initialValues,
+	isNew,
+	edits,
+	editOverlayActive,
+	itemRoute,
+	onClickEdit,
+	guardVersionSwitch,
+} = useItemWithEdits();
+
+const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit, guardVersionSwitch });
 
 useVisualEditingAi({ sendSaved, sendHighlightElement });
 
@@ -63,12 +108,22 @@ watch(editOverlayActive, (isActive) => {
 	}
 });
 
-function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
+function useWebsiteFrame({
+	onClickEdit,
+	guardVersionSwitch,
+}: {
+	onClickEdit: (data: unknown) => void;
+	guardVersionSwitch: (
+		collection: string,
+		effectiveParentScope?: VersionGateParentScope | null,
+	) => Promise<string | false>;
+}) {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 	const collectionsStore = useCollectionsStore();
+	const schema = useSchemaOverview();
 	const contextStore = useAiContextStore();
 	const { stageVisualElement } = useContextStaging();
 
@@ -97,7 +152,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 		if (action === 'edit') onClickEdit(data);
 
-		if (action === 'addToContext') receiveAddToContext(data);
+		if (action === 'addToContext') void receiveAddToContext(data);
 	});
 
 	watch(
@@ -135,7 +190,13 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		const collectionInfo = collectionsStore.getCollection(collection);
 		if (!collectionInfo) return false;
 
-		if (version && !collectionInfo.meta?.versioning) return false;
+		if (
+			version &&
+			!collectionInfo.meta?.versioning &&
+			!parentScopeCanVersionCollection(collection)
+		) {
+			return false;
+		}
 
 		if (userStore.isAdmin) return true;
 
@@ -147,6 +208,13 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		}
 
 		return true;
+	}
+
+	function parentScopeCanVersionCollection(collection: string) {
+		if (!parentScope) return false;
+		if (!collectionsStore.getCollection(parentScope.collection)?.meta?.versioning) return false;
+
+		return findParentRelationCandidates(schema.value, parentScope.collection, collection).length > 0;
 	}
 
 	function send(action: SendAction, data: unknown) {
@@ -204,16 +272,30 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 		send('highlightElement', data);
 	}
 
-	function receiveAddToContext(data: unknown) {
+	async function receiveAddToContext(data: unknown) {
 		const { key, editConfig, rect } = data as AddToContextData;
+		const effectiveParentScope = parentScope ?? null;
 
 		if (!key || !editConfig?.collection || editConfig.item == null) return;
+
+		const effectiveVersionKey = await guardVersionSwitch(editConfig.collection, effectiveParentScope);
+		if (effectiveVersionKey === false) return;
 
 		stageVisualElement({
 			key,
 			collection: editConfig.collection,
 			item: editConfig.item,
 			fields: editConfig.fields,
+			...(effectiveVersionKey ? { version: effectiveVersionKey } : {}),
+			...(effectiveVersionKey && effectiveParentScope
+				? {
+						parent: {
+							collection: effectiveParentScope.collection,
+							item: effectiveParentScope.key,
+							version: effectiveVersionKey,
+						},
+					}
+				: {}),
 			rect,
 		});
 	}
@@ -229,13 +311,25 @@ function useVisualEditingAi({
 	const aiStore = useAiStore();
 	const contextStore = useAiContextStore();
 	const toolsStore = useAiToolsStore();
+	let savedTimer: ReturnType<typeof setTimeout> | null = null;
 
 	// Any non-read mutation should trigger a preview refresh
 	const unsubscribeItemsResult = toolsStore.onSystemToolResult((tool, input) => {
 		if (tool !== 'items') return;
 		if (input.action === 'read') return;
 
-		sendSaved({ key: '', collection: input.collection as string, item: null, payload: {} });
+		if (savedTimer) clearTimeout(savedTimer);
+
+		savedTimer = setTimeout(() => {
+			sendSaved({ key: '', collection: '', item: null, payload: {} });
+
+			emit('saved', {
+				collection: parentScope?.collection ?? '',
+				primaryKey: parentScope?.key ?? '',
+			});
+
+			savedTimer = null;
+		}, 250);
 	});
 
 	const unsubscribeHighlight = aiStore.onVisualElementHighlight((data) => {
@@ -260,6 +354,7 @@ function useVisualEditingAi({
 	});
 
 	onUnmounted(() => {
+		if (savedTimer) clearTimeout(savedTimer);
 		unsubscribeItemsResult.off();
 		unsubscribeHighlight.off();
 		contextStore.clearVisualElementContext();
@@ -277,19 +372,33 @@ function useItemWithEdits() {
 	const availableModes: EditConfig['mode'][] = ['drawer', 'modal', 'popover'];
 	const mode = ref<EditConfig['mode']>('drawer');
 	const position = ref<Pick<DOMRect, 'top' | 'left' | 'width' | 'height'>>({ top: 0, left: 0, width: 0, height: 0 });
+	const initialValues = ref<Item | null>(null);
 	const isNew = computed(() => primaryKey.value === '+');
 	const itemEndpoint = computed(getItemEndpoint);
 	const itemRoute = computed(getContentRoute);
 	const notificationsStore = useNotificationsStore();
+	const collectionsStore = useCollectionsStore();
+	const schema = useSchemaOverview();
 	const { info: collectionInfo } = useCollection(collection);
 
 	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
+	const hasOverlayEdits = computed(() => Object.keys(edits.value).length > 0);
+	const hasVersionSwitchEdits = computed(() => parentHasUnsavedEdits || hasOverlayEdits.value);
 
-	watch([edits, saving], ([newEdits, isSaving]) => {
+	const versionGate = useVersionGate({
+		currentVersion: computed(() => version),
+		parentScope: computed(() => parentScope ?? null),
+		hasUnsavedEdits: hasVersionSwitchEdits,
+		switchTo: async (versionKey) => {
+			await switchVersion?.(versionKey);
+		},
+	});
+
+	watch(edits, (newEdits) => {
 		const hasEdits = Object.keys(newEdits)?.length;
-		if (!hasEdits || isSaving) return;
+		if (!hasEdits || saving.value) return;
 
-		save();
+		void savePendingEdits();
 	});
 
 	return {
@@ -298,11 +407,13 @@ function useItemWithEdits() {
 		fields,
 		mode,
 		position,
+		initialValues,
 		isNew,
 		edits,
 		editOverlayActive,
 		itemRoute,
 		onClickEdit,
+		guardVersionSwitch,
 	};
 
 	function getItemEndpoint() {
@@ -321,73 +432,115 @@ function useItemWithEdits() {
 		return getItemRoute(collection.value, primaryKey.value, version?.key);
 	}
 
-	function resetEdits() {
-		edits.value = {};
-	}
-
-	async function fetchOrCreateVersionId(versionKey: ContentVersion['key']) {
-		const {
-			data: { data: existing },
-		} = await api.get('/versions', {
-			params: {
-				filter: {
-					collection: { _eq: collection.value },
-					item: { _eq: String(primaryKey.value) },
-					key: { _eq: versionKey },
-				},
-				limit: 1,
-				fields: ['id'],
-			},
-		});
-
-		if (existing.length) return existing[0].id;
-
-		const {
-			data: { data: created },
-		} = await api.post('/versions', {
-			key: versionKey,
-			collection: collection.value,
-			item: String(primaryKey.value),
-		});
-
-		return created.id;
-	}
-
-	async function save() {
+	async function savePendingEdits() {
 		saving.value = true;
 
 		try {
-			let response;
+			while (Object.keys(edits.value).length > 0) {
+				const snapshot = cloneDeep(edits.value);
+				const saved = await save(snapshot);
 
-			if (version) {
-				const versionId: PrimaryKey = await fetchOrCreateVersionId(version.key);
-				response = await api.post(`/versions/${versionId}/save`, edits.value);
-			} else if (isNew.value) {
-				response = await api.post(itemEndpoint.value, edits.value);
+				if (!saved) return;
+
+				removeSavedEdits(snapshot);
+			}
+		} finally {
+			saving.value = false;
+		}
+	}
+
+	async function save(editsSnapshot: Record<string, any>) {
+		try {
+			let response;
+			let shouldReplaceEdits = true;
+			let savedPayload = cloneDeep(editsSnapshot);
+
+			if (isNew.value) {
+				response = await api.post(itemEndpoint.value, editsSnapshot);
 				notify({ title: t('item_create_success', 1), icon: 'check' });
 			} else {
-				response = await api.patch(itemEndpoint.value, edits.value);
-				notify({ title: t('item_update_success', 1), icon: 'check' });
+				const effectiveParentScope = parentScope ?? null;
+
+				const target = await resolveWriteTarget({
+					schema: schema.value,
+					target: { collection: collection.value, key: primaryKey.value },
+					hint: {
+						explicitVersion: version?.key,
+						page:
+							version?.key && effectiveParentScope
+								? { collection: effectiveParentScope.collection, item: effectiveParentScope.key, version: version.key }
+								: null,
+					},
+					collectionHasVersioning: (collection) =>
+						Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
+					readParent,
+				});
+
+				if (target.kind === 'refuse') {
+					notify({ title: getWriteTargetRefusalMessage(target.token), type: 'error' });
+					return false;
+				}
+
+				if (target.kind === 'published') {
+					response = await api.patch(itemEndpoint.value, editsSnapshot);
+					notify({ title: t('item_update_success', 1), icon: 'check' });
+				} else if (target.kind === 'item-version') {
+					const versionId = await ensureVersionId(api, {
+						collection: target.collection,
+						item: target.key,
+						versionKey: target.versionKey,
+					});
+
+					await api.post(`/versions/${versionId}/save`, buildPayload(target, editsSnapshot, primaryKey.value));
+
+					response = await api.get(itemEndpoint.value, {
+						params: {
+							fields: Object.keys(editsSnapshot),
+							version: target.versionKey,
+						},
+					});
+				} else {
+					const versionId = await ensureVersionId(api, {
+						collection: target.parent.collection,
+						item: target.parent.key,
+						versionKey: target.parent.versionKey,
+					});
+
+					await api.post(`/versions/${versionId}/save`, buildPayload(target, editsSnapshot, primaryKey.value));
+					shouldReplaceEdits = false;
+				}
 			}
 
-			const replaceEditsWithResponseData = (key: string) => (edits.value[key] = response.data.data[key]);
-			Object.keys(edits.value).forEach(replaceEditsWithResponseData);
+			if (shouldReplaceEdits && response) {
+				savedPayload = Object.fromEntries(Object.keys(editsSnapshot).map((key) => [key, response.data.data[key]]));
+			}
 
 			sendSaved({
 				key: msgKey.value,
 				collection: collection.value,
 				item: primaryKey.value,
-				payload: JSON.parse(JSON.stringify(edits.value)),
+				payload: JSON.parse(JSON.stringify(savedPayload)),
 			});
 
 			emit('saved', { collection: collection.value, primaryKey: primaryKey.value });
 
-			resetEdits();
+			return true;
 		} catch (error) {
 			unexpectedError(error);
-		} finally {
-			saving.value = false;
+			return false;
 		}
+	}
+
+	function removeSavedEdits(savedSnapshot: Record<string, any>) {
+		const nextEdits = { ...edits.value };
+
+		for (const [key, value] of Object.entries(savedSnapshot)) {
+			if (isEqual(nextEdits[key], value)) {
+				delete nextEdits[key];
+			}
+		}
+
+		edits.value = nextEdits;
 	}
 
 	function setEditConfigData(data: unknown, createNew = false) {
@@ -428,18 +581,102 @@ function useItemWithEdits() {
 		primaryKey.value = '';
 		fields.value = [];
 		mode.value = 'drawer';
+		initialValues.value = null;
 		position.value = { top: 0, left: 0, width: 0, height: 0 };
 	}
 
 	async function onClickEdit(data: unknown) {
+		const { editConfig } = data as EditData;
+		const effectiveParentScope = parentScope ?? null;
+
+		if (editConfig?.collection && (await guardVersionSwitch(editConfig.collection, effectiveParentScope)) === false) {
+			return;
+		}
+
 		const success = setEditConfigData(data);
 		if (!success) return;
+
+		try {
+			initialValues.value = await fetchParentVersionInitialValues();
+		} catch (error) {
+			resetEditConfigData();
+			unexpectedError(error);
+			return;
+		}
+
 		await nextTick();
 
 		// `setFocusTemporarily()` makes sure that after clicking an edit button inside the iframe, the :focus moves to the Studio module, so the shortcuts work as expected.
 		setFocusTemporarily();
 
 		editOverlayActive.value = true;
+	}
+
+	function getWriteTargetRefusalMessage(token: WriteTargetRefusalToken) {
+		return t(writeTargetRefusalMessageKeys[token]);
+	}
+
+	async function fetchParentVersionInitialValues() {
+		const effectiveParentScope = parentScope ?? null;
+
+		if (!version?.key || !effectiveParentScope || isNew.value) return null;
+		if (collectionsStore.getCollection(collection.value)?.meta?.versioning) return null;
+		if (!collectionsStore.getCollection(effectiveParentScope.collection)?.meta?.versioning) return null;
+
+		const target = await resolveWriteTarget({
+			schema: schema.value,
+			target: { collection: collection.value, key: primaryKey.value },
+			hint: {
+				explicitVersion: version.key,
+				page: { collection: effectiveParentScope.collection, item: effectiveParentScope.key, version: version.key },
+			},
+			collectionHasVersioning: (collection) => Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
+			readParent,
+		});
+
+		if (target.kind !== 'parent-version') return null;
+
+		const parentItem = await readParent(target.parent, getParentInitialValueFields(target.relation));
+		if (!parentItem) return null;
+
+		return findParentInitialValue(target.relation, parentItem, collection.value, primaryKey.value);
+	}
+
+	async function guardVersionSwitch(
+		targetCollection: string,
+		effectiveParentScope: VersionGateParentScope | null = null,
+	): Promise<string | false> {
+		const decision = versionGate.check(targetCollection, effectiveParentScope);
+		if (decision.allowed) return version?.key ?? '';
+		if (!switchVersion) return false;
+
+		const outcome = await versionGate.requestSwitch(decision);
+		if (outcome !== 'switched') return false;
+
+		await nextTick();
+		return decision.redirect.versionKey;
+	}
+
+	async function readParent(ref: { collection: string; key: PrimaryKey; versionKey: string }, fields: string[]) {
+		// Materialize the version row before reading. `GET /items/:c/:k?version=X` returns 403
+		// when no directus_versions row exists for that (collection, item, key). Phase 2 will
+		// teach the API to fall back to published; this call can be removed then.
+		await ensureVersionId(api, {
+			collection: ref.collection,
+			item: ref.key,
+			versionKey: ref.versionKey,
+		});
+
+		const {
+			data: { data },
+		} = await api.get<{ data: Item }>(`${getEndpoint(ref.collection)}/${encodeURIComponent(String(ref.key))}`, {
+			params: {
+				fields,
+				version: ref.versionKey,
+			},
+		});
+
+		return data;
 	}
 
 	async function setFocusTemporarily() {
@@ -464,6 +701,7 @@ function useItemWithEdits() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			:initial-item="initialValues"
 			:version="version?.key"
 			:popover-props="({ popoverWidth }) => (position.width > popoverWidth ? { arrowPlacement: 'start' } : {})"
 			apply-shortcut="meta+s"

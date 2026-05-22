@@ -1,6 +1,6 @@
 import type { ContextAttachment, PrimaryKey, ProviderFileRef, VisualElementContextData } from '@directus/ai';
 import type { Item } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
+import { getEndpoint, type ParentRelation, resolveWriteTarget } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import {
@@ -15,12 +15,35 @@ import {
 import api from '@/api';
 import { i18n } from '@/lang';
 import sdk, { requestEndpoint } from '@/sdk';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { ensureVersionId } from '@/utils/ensure-version-id';
+import { extractErrorCode } from '@/utils/extract-error-code';
+import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export const MAX_PENDING_CONTEXT = 10;
 
+type EnsureVersion = (ref: { collection: string; item: PrimaryKey; versionKey: string }) => Promise<PrimaryKey>;
+
+// Same page, different draft state — not a navigation.
+function stripVersionParam(url: string) {
+	try {
+		const u = new URL(url, window.location.origin);
+		u.searchParams.delete('version');
+		return u.toString();
+	} catch {
+		return url;
+	}
+}
+
 export const useAiContextStore = defineStore('ai-context-store', () => {
+	const collectionsStore = useCollectionsStore();
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+
 	const pendingContext = ref<PendingContextItem[]>([]);
 
 	const visualElementContextUrl = ref<string | null>(null);
@@ -78,33 +101,107 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	 * to the previous page.
 	 */
 	const syncVisualElementContextUrl = (url: string) => {
-		if (visualElementContextUrl.value !== null && visualElementContextUrl.value !== url) {
-			clearVisualElementContext();
-		}
+		const changed =
+			visualElementContextUrl.value !== null &&
+			stripVersionParam(visualElementContextUrl.value) !== stripVersionParam(url);
+
+		if (changed) clearVisualElementContext();
 
 		visualElementContextUrl.value = url;
 	};
 
-	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*']) => {
+	const fetchItem = async (collection: string, id: PrimaryKey, fields: string[] = ['*'], version?: string) => {
 		try {
 			return await sdk.request<Item>(
 				requestEndpoint(`${getEndpoint(collection)}/${id}`, {
-					params: { fields },
+					params: { fields, ...(version ? { version } : {}) },
 				}),
 			);
 		} catch (error) {
+			// `GET /items/:c/:k?version=X` returns 403 when no directus_versions row exists for
+			// that key — normal state for first-edit drafts. Surface no toast; caller treats as
+			// "no draft context yet". Phase 2 will replace this with a published fallback.
+			if (version && extractErrorCode(error) === 'FORBIDDEN') return null;
+
 			unexpectedError(error);
 			return null;
 		}
 	};
 
+	const fetchVisualElementSnapshot = async (
+		data: VisualElementContextData,
+		fields: string[],
+		ensureVersion: EnsureVersion,
+	) => {
+		if (!data.parent) {
+			if (data.version && collectionsStore.getCollection(data.collection)?.meta?.versioning) {
+				await ensureVersion({
+					collection: data.collection,
+					item: data.item,
+					versionKey: data.version,
+				});
+			}
+
+			return fetchItem(data.collection, data.item, fields, data.version);
+		}
+
+		const target = await resolveWriteTarget({
+			schema: getSchemaOverview({
+				collections: collectionsStore.collections,
+				relations: relationsStore.relations,
+				getPrimaryKeyFieldForCollection: fieldsStore.getPrimaryKeyFieldForCollection,
+			}),
+			target: { collection: data.collection, key: data.item },
+			hint: {
+				attachment: {
+					collection: data.collection,
+					item: data.item,
+					version: data.version,
+					parent: {
+						collection: data.parent.collection,
+						key: data.parent.item,
+						versionKey: data.parent.version,
+					},
+				},
+			},
+			collectionHasVersioning: (collection) => Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
+			readParent: async (parent, readFields) => {
+				await ensureVersion({
+					collection: parent.collection,
+					item: parent.key,
+					versionKey: parent.versionKey,
+				});
+
+				return fetchItem(parent.collection, parent.key, readFields, parent.versionKey);
+			},
+		});
+
+		if (target.kind === 'refuse') return null;
+
+		if (target.kind !== 'parent-version') {
+			const versionKey = target.kind === 'item-version' ? target.versionKey : undefined;
+			return fetchItem(data.collection, data.item, fields, versionKey);
+		}
+
+		const parent = await fetchItem(
+			target.parent.collection,
+			target.parent.key,
+			getParentSnapshotFields(target.relation, fields),
+			target.parent.versionKey,
+		);
+
+		if (!parent) return null;
+		return getSnapshotFromParent(parent, target.relation, data.collection, data.item);
+	};
+
 	const fetchContextData = async (): Promise<ContextAttachment[]> => {
 		const nonFileItems = pendingContext.value.filter((item) => !isFileContext(item) && !isLocalFileContext(item));
+		const ensureVersion = createEnsureVersionOnce();
 
 		const fetches = nonFileItems.map(async (item): Promise<ContextAttachment | null> => {
 			if (isVisualElement(item)) {
 				const fields = item.data.fields?.length ? item.data.fields : ['*'];
-				const snapshot = await fetchItem(item.data.collection, item.data.item, fields);
+				const snapshot = await fetchVisualElementSnapshot(item.data, fields, ensureVersion);
 				if (!snapshot) return null;
 				return { type: 'visual-element', data: item.data, display: item.display, snapshot };
 			}
@@ -225,3 +322,81 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		dehydrate,
 	};
 });
+
+function createEnsureVersionOnce(): EnsureVersion {
+	const pending = new Map<string, Promise<PrimaryKey>>();
+
+	return (ref) => {
+		const key = `${ref.collection}:${String(ref.item)}:${ref.versionKey}`;
+		const existing = pending.get(key);
+		if (existing) return existing;
+
+		const promise = ensureVersionId(api, ref).catch((error) => {
+			pending.delete(key);
+			throw error;
+		});
+
+		pending.set(key, promise);
+
+		return promise;
+	};
+}
+
+function getParentSnapshotFields(relation: ParentRelation, fields: string[]) {
+	const childFields = fields.includes('*') ? ['*'] : Array.from(new Set([relation.childPkField, ...fields]));
+
+	if (relation.kind === 'm2o' || relation.kind === 'o2m') {
+		return childFields.map((field) => `${relation.parentField}.${field}`);
+	}
+
+	const parentFields = [
+		`${relation.parentField}.${relation.junctionPkField}`,
+		...childFields.map((field) => `${relation.parentField}.${relation.junctionField}.${field}`),
+	];
+
+	if (relation.kind === 'm2a') {
+		parentFields.push(`${relation.parentField}.${relation.collectionField}`);
+	}
+
+	return parentFields;
+}
+
+function getSnapshotFromParent(
+	parent: Item,
+	relation: ParentRelation,
+	targetCollection: string,
+	targetKey: PrimaryKey,
+): Item | null {
+	if (relation.kind === 'm2o') {
+		const child = parent[relation.parentField];
+		if (!isItem(child)) return null;
+		if (!sameKey(child[relation.childPkField], targetKey)) return null;
+		return child;
+	}
+
+	const relatedItems = parent[relation.parentField];
+	if (!Array.isArray(relatedItems)) return null;
+
+	if (relation.kind === 'o2m') {
+		return relatedItems.find((child) => isItem(child) && sameKey(child[relation.childPkField], targetKey)) ?? null;
+	}
+
+	for (const junctionItem of relatedItems) {
+		if (!isItem(junctionItem)) continue;
+		if (relation.kind === 'm2a' && junctionItem[relation.collectionField] !== targetCollection) continue;
+
+		const child = junctionItem[relation.junctionField];
+		if (!isItem(child)) continue;
+		if (sameKey(child[relation.childPkField], targetKey)) return child;
+	}
+
+	return null;
+}
+
+function isItem(value: unknown): value is Item {
+	return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function sameKey(left: unknown, right: PrimaryKey) {
+	return String(left) === String(right);
+}

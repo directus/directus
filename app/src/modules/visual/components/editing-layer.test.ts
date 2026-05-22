@@ -1,15 +1,25 @@
+import type { Relation } from '@directus/types';
 import type { CheckFieldAccessData } from '@directus/visual-editing/types';
 import { createTestingPinia } from '@pinia/testing';
-import { mount } from '@vue/test-utils';
+import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import EditingLayer from './editing-layer.vue';
 import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
+import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
 import { useUserStore } from '@/stores/user';
+import { ensureVersionId } from '@/utils/ensure-version-id';
+import { notify } from '@/utils/notify';
+
+type CheckFieldAccessDataWithParent = CheckFieldAccessData & {
+	parent?: { collection: string; item: string | number };
+};
 
 vi.mock('@directus/composables', () => ({
 	useCollection: () => ({
@@ -46,6 +56,18 @@ vi.mock('@/api', () => ({
 	default: { get: vi.fn(), post: vi.fn(), patch: vi.fn() },
 }));
 
+vi.mock('@/utils/ensure-version-id', () => ({
+	ensureVersionId: vi.fn(),
+}));
+
+vi.mock('@/utils/notify', () => ({
+	notify: vi.fn(),
+}));
+
+vi.mock('@/utils/unexpected-error', () => ({
+	unexpectedError: vi.fn(),
+}));
+
 vi.mock('@directus/utils/browser', async (importOriginal) => ({
 	...(await importOriginal<typeof import('@directus/utils/browser')>()),
 	sameOrigin: () => true,
@@ -57,6 +79,8 @@ let postMessageSpy: ReturnType<typeof vi.fn>;
 let mockFrameEl: HTMLIFrameElement;
 let mountOptions: GlobalMountOptions;
 
+enableAutoUnmount(afterEach);
+
 function sendCheckFieldAccess(elements: CheckFieldAccessData[]) {
 	window.dispatchEvent(
 		new MessageEvent('message', {
@@ -66,7 +90,7 @@ function sendCheckFieldAccess(elements: CheckFieldAccessData[]) {
 	);
 }
 
-function createElements(...overrides: Partial<CheckFieldAccessData>[]): CheckFieldAccessData[] {
+function createElements(...overrides: Partial<CheckFieldAccessDataWithParent>[]): CheckFieldAccessDataWithParent[] {
 	if (overrides.length === 0) overrides = [{}];
 
 	return overrides.map((o, i) => ({
@@ -79,6 +103,11 @@ function createElements(...overrides: Partial<CheckFieldAccessData>[]): CheckFie
 }
 
 beforeEach(() => {
+	vi.mocked(api.get).mockReset();
+	vi.mocked(api.post).mockReset();
+	vi.mocked(api.patch).mockReset();
+	vi.mocked(ensureVersionId).mockReset();
+
 	postMessageSpy = vi.fn();
 
 	mockFrameEl = {
@@ -95,6 +124,11 @@ beforeEach(() => {
 
 	setActivePinia(pinia);
 
+	vi.mocked(useFieldsStore().getFieldsForCollection).mockReturnValue([
+		{ field: 'id', type: 'integer', schema: {}, meta: {} },
+	] as any);
+	vi.mocked(useFieldsStore().getPrimaryKeyFieldForCollection).mockReturnValue({ field: 'id' } as any);
+
 	mountOptions = {
 		plugins: [i18n, pinia],
 		directives: { tooltip: Tooltip },
@@ -110,10 +144,10 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-function mountEditingLayer(version: { key: string; name: string } | null = null) {
-	mount(EditingLayer, {
+function mountEditingLayer(version: { key: string; name: string } | null = null, props: Record<string, unknown> = {}) {
+	return mount(EditingLayer, {
 		global: mountOptions,
-		props: { frameSrc: FRAME_SRC, frameEl: mockFrameEl, version },
+		props: { frameSrc: FRAME_SRC, frameEl: mockFrameEl, version, ...props },
 	});
 }
 
@@ -122,6 +156,16 @@ function setupCollection(meta: Record<string, unknown> = {}) {
 		collection: 'articles',
 		meta: { versioning: false, ...meta },
 	} as any);
+}
+
+function setupCollections(versioningByCollection: Record<string, boolean>) {
+	vi.mocked(useCollectionsStore().getCollection).mockImplementation(
+		(collection) =>
+			({
+				collection,
+				meta: { versioning: versioningByCollection[collection] ?? false },
+			}) as any,
+	);
 }
 
 function setupPermission(fields: string[] | null = null, access = 'full') {
@@ -140,6 +184,100 @@ function setupVersionPermissions({ read = false, create = false, update = false 
 
 function setupNonAdmin() {
 	(useUserStore() as any).isAdmin = false;
+}
+
+function setupParentVersionSaveSchema() {
+	useCollectionsStore().collections = [
+		collection('pages', true),
+		collection('pages_blocks', false),
+		collection('block_hero', false),
+	];
+
+	setupCollections({ pages: true, pages_blocks: false, block_hero: false });
+	vi.mocked(useFieldsStore().getPrimaryKeyFieldForCollection).mockReturnValue({ field: 'id' } as any);
+
+	useRelationsStore().relations = [
+		relation('pages_blocks', 'pages_id', 'pages', { oneField: 'blocks', junctionField: 'item' }),
+		relation('pages_blocks', 'item', null, {
+			oneCollectionField: 'collection',
+			oneAllowedCollections: ['block_hero'],
+		}),
+	];
+}
+
+function collection(collection: string, versioning: boolean) {
+	return {
+		collection,
+		name: collection,
+		type: 'table',
+		meta: { versioning },
+		schema: {},
+	} as any;
+}
+
+function relation(
+	collection: string,
+	field: string,
+	relatedCollection: string | null,
+	options: {
+		oneField?: string | null;
+		junctionField?: string | null;
+		oneCollectionField?: string | null;
+		oneAllowedCollections?: string[] | null;
+	} = {},
+): Relation {
+	return {
+		collection,
+		field,
+		related_collection: relatedCollection,
+		schema: null,
+		meta: {
+			id: 1,
+			many_collection: collection,
+			many_field: field,
+			one_collection: relatedCollection,
+			one_field: options.oneField ?? null,
+			one_collection_field: options.oneCollectionField ?? null,
+			one_allowed_collections: options.oneAllowedCollections ?? null,
+			one_deselect_action: 'nullify',
+			junction_field: options.junctionField ?? null,
+			sort_field: null,
+		},
+	};
+}
+
+function sendEdit(options: { parent?: { collection: string; item: string | number } } = {}) {
+	window.dispatchEvent(
+		new MessageEvent('message', {
+			origin: FRAME_SRC,
+			data: {
+				action: 'edit',
+				data: {
+					key: 'visual-key',
+					editConfig: {
+						collection: 'block_hero',
+						item: 9,
+						fields: ['title'],
+						mode: 'drawer',
+					},
+					...(options.parent ? { parent: options.parent } : {}),
+					rect: { top: 0, left: 0, width: 100, height: 40 },
+				},
+			},
+		}),
+	);
+}
+
+function deferred<T>() {
+	let resolve!: (value: T | PromiseLike<T>) => void;
+	let reject!: (reason?: unknown) => void;
+
+	const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+		resolve = resolvePromise;
+		reject = rejectPromise;
+	});
+
+	return { promise, resolve, reject };
 }
 
 describe('checkFieldAccess', () => {
@@ -164,6 +302,32 @@ describe('checkFieldAccess', () => {
 		setupCollection({ versioning: false });
 
 		sendCheckFieldAccess(createElements());
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: [] }, FRAME_SRC);
+	});
+
+	it('allows non-versioned child elements when version is set and parent scope is versioned', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' }, { parentScope: { collection: 'pages', key: '1' } });
+
+		setupParentVersionSaveSchema();
+		setupNonAdmin();
+		setupPermission(['*']);
+		setupVersionPermissions({ read: true, update: true });
+
+		sendCheckFieldAccess(createElements({ collection: 'block_hero' }));
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
+	});
+
+	it('filters non-versioned elements unrelated to the versioned parent scope', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' }, { parentScope: { collection: 'pages', key: '1' } });
+
+		setupParentVersionSaveSchema();
+		setupNonAdmin();
+		setupPermission(['*']);
+		setupVersionPermissions({ read: true, update: true });
+
+		sendCheckFieldAccess(createElements({ collection: 'unrelated' }));
 
 		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: [] }, FRAME_SRC);
 	});
@@ -329,5 +493,241 @@ describe('checkFieldAccess', () => {
 		sendCheckFieldAccess(createElements());
 
 		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
+	});
+});
+
+describe('save', () => {
+	it('confirms before switching versions when the parent form has unsaved edits', async () => {
+		setupCollections({ block_hero: true });
+
+		const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+		const switchVersion = vi.fn();
+
+		try {
+			mountEditingLayer(null, { hasUnsavedEdits: true, switchVersion });
+
+			sendEdit();
+			await flushPromises();
+
+			expect(confirm).toHaveBeenCalled();
+			expect(switchVersion).not.toHaveBeenCalled();
+		} finally {
+			confirm.mockRestore();
+		}
+	});
+
+	it('opens the overlay after switching versions in a single click', async () => {
+		setupCollections({ block_hero: true });
+
+		const switchVersion = vi.fn();
+		const wrapper = mountEditingLayer(null, { switchVersion });
+
+		sendEdit();
+		await flushPromises();
+
+		expect(switchVersion).toHaveBeenCalledWith('draft');
+		expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true);
+	});
+
+	it('refuses to open the overlay when no switchVersion handler is wired', async () => {
+		setupCollections({ block_hero: true });
+
+		const wrapper = mountEditingLayer(null);
+
+		sendEdit();
+		await flushPromises();
+
+		expect(wrapper.findComponent({ name: 'OverlayItem' }).exists()).toBe(false);
+	});
+
+	it('hydrates the overlay from the parent version before opening', async () => {
+		setupParentVersionSaveSchema();
+		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
+
+		vi.mocked(api.get).mockResolvedValue({
+			data: {
+				data: {
+					blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Draft title' } }],
+				},
+			},
+		});
+
+		const wrapper = mountEditingLayer(
+			{ key: 'draft', name: 'Draft' },
+			{ parentScope: { collection: 'pages', key: 'page-id' } },
+		);
+
+		sendEdit();
+
+		await vi.waitFor(() => {
+			expect(wrapper.findComponent({ name: 'OverlayItem' }).props('initialItem')).toEqual({
+				id: 9,
+				title: 'Draft title',
+			});
+		});
+
+		expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true);
+
+		expect(api.get).toHaveBeenCalledWith('/items/pages/page-id', {
+			params: {
+				fields: ['blocks.id', 'blocks.collection', 'blocks.item.*'],
+				version: 'draft',
+			},
+		});
+	});
+
+	it('ensures the parent version before saving nested edits', async () => {
+		setupParentVersionSaveSchema();
+		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
+
+		vi.mocked(api.get).mockResolvedValue({
+			data: {
+				data: {
+					blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Old' } }],
+				},
+			},
+		});
+
+		vi.mocked(api.post).mockResolvedValue({ data: { data: {} } });
+
+		const wrapper = mountEditingLayer(
+			{ key: 'draft', name: 'Draft' },
+			{ parentScope: { collection: 'pages', key: 'page-id' } },
+		);
+
+		sendEdit();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
+
+		wrapper.findComponent({ name: 'OverlayItem' }).vm.$emit('input', { title: 'New' });
+
+		await vi.waitFor(() => expect(api.post).toHaveBeenCalled());
+
+		expect(ensureVersionId).toHaveBeenCalledWith(api, {
+			collection: 'pages',
+			item: 'page-id',
+			versionKey: 'draft',
+		});
+
+		expect(api.get).toHaveBeenCalledWith('/items/pages/page-id', {
+			params: {
+				fields: ['blocks.id', 'blocks.collection', 'blocks.item.*'],
+				version: 'draft',
+			},
+		});
+
+		expect(api.post).toHaveBeenCalledWith('/versions/version-id/save', {
+			blocks: {
+				create: [],
+				update: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'New' } }],
+				delete: [],
+			},
+		});
+	});
+
+	it('saves edits made while a previous save is in flight', async () => {
+		setupCollections({ block_hero: false });
+
+		const firstPatch = deferred<{ data: { data: { title: string } } }>();
+
+		vi.mocked(api.patch)
+			.mockReturnValueOnce(firstPatch.promise as ReturnType<typeof api.patch>)
+			.mockResolvedValueOnce({ data: { data: { slug: 'second' } } });
+
+		const wrapper = mountEditingLayer();
+
+		sendEdit();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
+
+		const overlay = wrapper.findComponent({ name: 'OverlayItem' });
+
+		overlay.vm.$emit('input', { title: 'First' });
+
+		await vi.waitFor(() => expect(api.patch).toHaveBeenCalledTimes(1));
+
+		overlay.vm.$emit('input', { slug: 'second' });
+		await flushPromises();
+
+		expect(api.patch).toHaveBeenCalledTimes(1);
+
+		firstPatch.resolve({ data: { data: { title: 'First' } } });
+
+		await vi.waitFor(() => expect(api.patch).toHaveBeenCalledTimes(2));
+
+		expect(api.patch).toHaveBeenNthCalledWith(1, '/items/block_hero/9', { title: 'First' });
+		expect(api.patch).toHaveBeenNthCalledWith(2, '/items/block_hero/9', { slug: 'second' });
+
+		await vi.waitFor(() => {
+			expect(postMessageSpy).toHaveBeenCalledWith(
+				{
+					action: 'saved',
+					data: { key: 'visual-key', collection: 'block_hero', item: 9, payload: { slug: 'second' } },
+				},
+				FRAME_SRC,
+			);
+		});
+	});
+
+	it('does not retry a failed save when saving finishes', async () => {
+		setupParentVersionSaveSchema();
+		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
+
+		vi.mocked(api.get)
+			.mockResolvedValueOnce({
+				data: {
+					data: {
+						blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Old' } }],
+					},
+				},
+			})
+			.mockResolvedValueOnce({
+				data: {
+					data: {
+						blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Old' } }],
+					},
+				},
+			})
+			.mockRejectedValueOnce(new Error('Forbidden'));
+
+		const wrapper = mountEditingLayer(
+			{ key: 'draft', name: 'Draft' },
+			{ parentScope: { collection: 'pages', key: 'page-id' } },
+		);
+
+		sendEdit();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
+
+		wrapper.findComponent({ name: 'OverlayItem' }).vm.$emit('input', { title: 'New' });
+
+		await vi.waitFor(() => expect(api.get).toHaveBeenCalledTimes(3));
+		await flushPromises();
+		await flushPromises();
+
+		expect(api.get).toHaveBeenCalledTimes(3);
+		expect(api.post).not.toHaveBeenCalled();
+	});
+
+	it('shows version refusal messages without machine tokens', async () => {
+		useCollectionsStore().collections = [collection('block_hero', false)];
+		setupCollections({ block_hero: false });
+		vi.mocked(useFieldsStore().getPrimaryKeyFieldForCollection).mockReturnValue({ field: 'id' } as any);
+		useRelationsStore().relations = [];
+
+		const wrapper = mountEditingLayer({ key: 'draft', name: 'Draft' });
+
+		sendEdit();
+
+		await vi.waitFor(() => expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true));
+
+		wrapper.findComponent({ name: 'OverlayItem' }).vm.$emit('input', { title: 'New' });
+
+		await vi.waitFor(() => {
+			expect(notify).toHaveBeenCalledWith({
+				title: 'A parent item is required to save this child item to a version.',
+				type: 'error',
+			});
+		});
 	});
 });

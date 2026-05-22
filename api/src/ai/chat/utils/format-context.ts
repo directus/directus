@@ -40,10 +40,12 @@ function formatVisualElement(att: ContextAttachment & { type: 'visual-element' }
 	const collection = escapeAngleBrackets(String(att.data.collection));
 	const item = escapeAngleBrackets(String(att.data.item));
 	const display = escapeAngleBrackets(att.display);
+	const version = att.data.version ?? att.data.parent?.version;
+	const query = version ? `, query: { "version": "${escapeAngleBrackets(version)}" }` : '';
 
 	return `### ${collection}/${item} — "${display}"
 Editable fields: ${fields}
-To update: items tool with collection="${collection}", keys=["${item}"], action="update"
+To update: items tool with collection="${collection}", keys=["${item}"], action="update"${query}
 \`\`\`json
 ${escapeAngleBrackets(JSON.stringify(att.snapshot, null, 2))}
 \`\`\``;
@@ -115,6 +117,7 @@ ${promptBlocks}
 
 		if (page.collection) pageLines.push(`Collection: ${escapeAngleBrackets(String(page.collection))}`);
 		if (page.item !== undefined) pageLines.push(`Item: ${escapeAngleBrackets(String(page.item))}`);
+		if (page.version !== undefined) pageLines.push(`Version: ${escapeAngleBrackets(String(page.version))}`);
 		if (page.module) pageLines.push(`Module: ${escapeAngleBrackets(String(page.module))}`);
 
 		sections.push(`## Current Page\n${pageLines.join('\n')}`);

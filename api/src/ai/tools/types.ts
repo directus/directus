@@ -1,6 +1,7 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import type { ZodType } from 'zod';
+import type { ChatContext } from '../chat/models/chat-request.js';
 
 export type ToolResultBase = {
 	type?: 'text' | 'image' | 'audio';
@@ -25,6 +26,7 @@ export type ToolHandler<T> = {
 		args: T;
 		schema: SchemaOverview;
 		accountability: Accountability | undefined;
+		context?: ChatContext;
 	}): Promise<ToolResult | undefined>;
 };
 

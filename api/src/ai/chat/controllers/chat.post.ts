@@ -51,6 +51,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 			accountability: req.accountability!,
 			schema: req.schema,
 			...(toolApprovals && { toolApprovals }),
+			...(context && { context }),
 		}) as Tool<unknown, unknown>;
 
 		acc[name] = aiTool;
