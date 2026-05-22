@@ -107,9 +107,11 @@ function dismiss() {
 					<I18nT keypath="license_onboarding_desc" tag="p">
 						<template #oig>
 							<a
-								:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_onboarding_open_innovation_grant_link`"
+								:href="`https://directus.io/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_onboarding_open_innovation_grant_link`"
 								target="_blank"
-							>{{ $t('open_innovation_grant') }}</a>
+							>
+								{{ $t('open_innovation_grant') }}
+							</a>
 						</template>
 					</I18nT>
 
