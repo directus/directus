@@ -341,7 +341,23 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			object['_date'] = date;
 		});
 
-		const finalVersionDelta = mergeNestedRelationDeltaInto({ ...(existingDelta ?? {}) }, revisionDelta ?? {}, {
+		// Only relation-ish fields go through identity-aware merging. Plain scalar/JSON
+		// fields must overwrite, otherwise removed keys in a JSON value with a PK-named
+		// root (`{ id: "x", ... }`) would silently persist across saves.
+		const relationFields = getRelationFieldNames(this.schema, collection);
+		const baseDelta: Item = { ...(existingDelta ?? {}) };
+		const incomingDelta = revisionDelta ?? {};
+		const relationOnlyDelta: Item = {};
+
+		for (const [field, value] of Object.entries(incomingDelta)) {
+			if (relationFields.has(field)) {
+				relationOnlyDelta[field] = value;
+			} else {
+				baseDelta[field] = value;
+			}
+		}
+
+		const finalVersionDelta = mergeNestedRelationDeltaInto(baseDelta, relationOnlyDelta, {
 			identityFields: getSchemaPrimaryKeyFields(this.schema),
 		});
 
@@ -500,6 +516,22 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			{ mapNonExistentFields: true, detailedUpdateSyntax: true },
 		);
 	}
+}
+
+function getRelationFieldNames(schema: VersionsService['schema'], collection: string): Set<string> {
+	const names = new Set<string>();
+
+	for (const [name, field] of Object.entries(schema.collections[collection]?.fields ?? {})) {
+		// alias-typed fields are o2m/m2m/m2a/translations on the local side
+		if (field.type === 'alias') names.add(name);
+	}
+
+	for (const relation of schema.relations) {
+		// m2o/a2o: scalar field on this collection pointing at another
+		if (relation.collection === collection) names.add(relation.field);
+	}
+
+	return names;
 }
 
 /** Deeply maps all objects of a structure. Only calls the callback for objects, not for arrays. Objects in arrays will continued to be mapped. */

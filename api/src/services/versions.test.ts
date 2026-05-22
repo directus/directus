@@ -61,6 +61,8 @@ const schema = new SchemaBuilder()
 	.collection('articles_track_none', (c) => {
 		c.field('id').id();
 		c.field('title').string();
+		c.field('config').json();
+		c.field('blocks').m2a(['block_hero']);
 	})
 	.options({ accountability: null })
 	.build();
@@ -210,6 +212,26 @@ describe('Integration Tests', () => {
 						}),
 					}),
 				);
+			});
+
+			test('should overwrite plain JSON fields instead of merging by identity', async () => {
+				vi.spyOn(ItemsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'articles_track_none',
+					item: 1,
+					delta: {
+						config: { id: 'x', a: 1, b: 2 },
+					},
+				});
+
+				await service.save(1, {
+					config: { id: 'x', a: 1 },
+				});
+
+				const call = vi.mocked(ItemsService.prototype.updateOne).mock.calls[0]!;
+				const storedConfig = (call[1] as { delta: { config: Record<string, unknown> } }).delta.config;
+
+				expect(storedConfig).toMatchObject({ id: 'x', a: 1 });
+				expect(storedConfig).not.toHaveProperty('b');
 			});
 		});
 	});
