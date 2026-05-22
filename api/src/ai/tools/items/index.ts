@@ -10,6 +10,8 @@ import {
 	getSchemaPrimaryKeyFields,
 	isObject,
 	mergeNestedRelationDeltaInto,
+	type ParentRef,
+	type ParentRelation,
 	resolveWriteTarget,
 	toArray,
 	WRITE_TARGET_REFUSAL,
@@ -321,7 +323,7 @@ async function updateWithVersionRouting({
 }) {
 	const versionsService = new VersionsService({ schema, accountability });
 	const results: unknown[] = [];
-	const deferredReads: Array<{ index: number; key: PrimaryKey; versionKey: string }> = [];
+	const deferredReads: Array<{ index: number; key: PrimaryKey; parent: ParentRef; relation: ParentRelation }> = [];
 	const parentBatches = new Map<string, { collection: string; item: PrimaryKey; versionKey: string; payload: Item }>();
 	const identityFields = getSchemaPrimaryKeyFields(schema);
 
@@ -409,7 +411,13 @@ async function updateWithVersionRouting({
 			});
 		}
 
-		deferredReads.push({ index: results.length, key: update.key, versionKey: target.parent.versionKey });
+		deferredReads.push({
+			index: results.length,
+			key: update.key,
+			parent: target.parent,
+			relation: target.relation,
+		});
+
 		results.push(null);
 	}
 
@@ -418,16 +426,23 @@ async function updateWithVersionRouting({
 		await versionsService.save(versionId, batch.payload);
 	}
 
+	// Child rows don't get their own directus_versions entries when edits route through
+	// a parent — the row exists against the parent collection. Reading the child at the
+	// parent's version key would 403 in handleVersion. Read the parent at its version
+	// instead and pluck the child out of the draft-merged relation array; this also
+	// reflects draft edits accumulated across earlier turns, not just this call.
 	for (const deferred of deferredReads) {
-		const readService = new ItemsService(args.collection, { schema, accountability });
+		const parentService = new ItemsService(deferred.parent.collection, { schema, accountability });
 
-		const items = await readService.readMany([deferred.key], {
-			...sanitizedQuery,
-			version: deferred.versionKey,
+		const childFields = sanitizedQuery['fields']?.length ? sanitizedQuery['fields'] : ['*'];
+
+		const parentItem = await parentService.readOne(deferred.parent.key, {
+			fields: prefixChildFields(deferred.relation, childFields),
+			version: deferred.parent.versionKey,
 			versionRaw: false,
 		});
 
-		results[deferred.index] = items[0] ?? null;
+		results[deferred.index] = parentItem ? extractChildFromParent(deferred.relation, parentItem, deferred.key) : null;
 	}
 
 	return results;
@@ -558,6 +573,46 @@ function formatVersioningRefusal(token: string, message: string) {
 
 function getPrimaryKeyField(schema: SchemaOverview, collection: string) {
 	return schema.collections[collection]?.primary ?? 'id';
+}
+
+function prefixChildFields(relation: ParentRelation, childFields: string[]): string[] {
+	const path =
+		relation.kind === 'm2o' || relation.kind === 'o2m'
+			? relation.parentField
+			: `${relation.parentField}.${relation.junctionField}`;
+
+	return childFields.map((field) => `${path}.${field}`);
+}
+
+function extractChildFromParent(relation: ParentRelation, parentItem: Item, childKey: PrimaryKey): Item | null {
+	const root = (parentItem as Record<string, unknown>)[relation.parentField];
+
+	if (relation.kind === 'm2o') {
+		return isObject(root) ? (root as Item) : null;
+	}
+
+	if (!Array.isArray(root)) return null;
+
+	for (const entry of root) {
+		if (!isObject(entry)) continue;
+
+		if (relation.kind === 'o2m') {
+			if (String((entry as Record<string, unknown>)[relation.childPkField]) === String(childKey)) {
+				return entry as Item;
+			}
+
+			continue;
+		}
+
+		const child = (entry as Record<string, unknown>)[relation.junctionField];
+		if (!isObject(child)) continue;
+
+		if (String((child as Record<string, unknown>)[relation.childPkField]) === String(childKey)) {
+			return child as Item;
+		}
+	}
+
+	return null;
 }
 
 function mergePayloadForSingleSave(target: Item, source: Item, identityFields: string[]) {
