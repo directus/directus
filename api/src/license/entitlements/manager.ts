@@ -28,7 +28,6 @@ const BUS_CHANNEL = 'entitlements.invalidate';
 
 interface InvalidateMessage {
 	keys?: EntitlementCacheKey[];
-	refresh?: boolean;
 }
 
 let entitlementManager: EntitlementManager | undefined;
@@ -47,14 +46,13 @@ export class EntitlementManager {
 	private validatorSources = new Map<FeatureFlagEntitlementKey, FeatureFlagValidator>();
 	private resolverSources = new Map<keyof ResolveInput, EntitlementResolver<any>>();
 	private cache = new Map<EntitlementCacheKey, number | boolean>();
+	private initialized = false;
 
 	constructor() {
 		this.registerHandlers();
 	}
 
 	private registerHandlers() {
-		const messenger = useBus();
-
 		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
@@ -70,16 +68,14 @@ export class EntitlementManager {
 		this.registerResolver('seats', resolveSeats);
 		this.registerResolver('flows', resolveFlows);
 		this.registerResolver('sso_enabled', resolveSSOUsers);
+	}
 
-		// cache invalidation
-		messenger.subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
-			const keys = msg?.keys ?? [];
+	initialize() {
+		if (this.initialized) return;
+		this.initialized = true;
 
-			if (msg.refresh) {
-				this.refreshCacheNoPublish(...keys);
-			} else {
-				this.clearCacheNoPublish(...keys);
-			}
+		useBus().subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
+			this.clearCacheNoPublish(...(msg?.keys ?? []));
 		});
 	}
 
@@ -118,15 +114,6 @@ export class EntitlementManager {
 		}
 	}
 
-	private async refreshCacheNoPublish(...keys: EntitlementCacheKey[]): Promise<void> {
-		// refresh currently only supports countable keys
-		for (const key of keys) {
-			if (this.isCountableKey(key)) {
-				await this.getUsage(key);
-			}
-		}
-	}
-
 	/**
 	 * Drop cached usage/validity locally and notify other nodes. Pass specific
 	 * keys to clear only those entries; call with no args to clear everything.
@@ -136,15 +123,9 @@ export class EntitlementManager {
 	async clearCache(...keys: EntitlementCacheKey[]): Promise<void> {
 		this.clearCacheNoPublish(...keys);
 
-		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
-	}
-
-	async refreshCache(...keys: EntitlementCacheKey[]): Promise<void> {
-		this.clearCacheNoPublish(...keys);
-
-		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys, refresh: true });
-
-		this.refreshCacheNoPublish(...keys);
+		if (this.initialized) {
+			await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
+		}
 	}
 
 	/**

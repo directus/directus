@@ -3,7 +3,6 @@ import type { AbstractServiceOptions, MutationOptions, Policy, PrimaryKey } from
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import { clearSystemCache } from '../cache.js';
-import { getEntitlementManager } from '../license/index.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
 
@@ -14,9 +13,6 @@ export class PoliciesService extends ItemsService<Policy> {
 
 	private async clearCaches(opts?: MutationOptions) {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-
-		// admin/app access toggles on policies reclassify users between seat tiers
-		await getEntitlementManager().refreshCache('seats');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
