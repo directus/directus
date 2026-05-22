@@ -28,7 +28,6 @@ const BUS_CHANNEL = 'entitlements.invalidate';
 
 interface InvalidateMessage {
 	keys?: EntitlementCacheKey[];
-	refresh?: boolean;
 }
 
 let entitlementManager: EntitlementManager | undefined;
@@ -53,8 +52,6 @@ export class EntitlementManager {
 	}
 
 	private registerHandlers() {
-		const messenger = useBus();
-
 		// countable limits
 		this.registerCounter('collections', countActiveCollections);
 		this.registerCounter('seats', countActiveSeats);
@@ -71,16 +68,15 @@ export class EntitlementManager {
 		this.registerResolver('flows', resolveFlows);
 		this.registerResolver('sso_enabled', resolveSSOUsers);
 
-		// cache invalidation
-		messenger.subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
-			const keys = msg?.keys ?? [];
+	}
 
-			if (msg.refresh) {
-				this.refreshCacheNoPublish(...keys);
-			} else {
-				this.clearCacheNoPublish(...keys);
-			}
-		});
+	initialize() {
+		// const messenger = useBus();
+		// cache invalidation
+		// messenger.subscribe<InvalidateMessage>(BUS_CHANNEL, async (msg) => {
+		// 	const keys = msg?.keys ?? [];
+		// 		this.clearCacheNoPublish(...keys);
+		// });
 	}
 
 	/**
@@ -118,15 +114,6 @@ export class EntitlementManager {
 		}
 	}
 
-	private async refreshCacheNoPublish(...keys: EntitlementCacheKey[]): Promise<void> {
-		// refresh currently only supports countable keys
-		for (const key of keys) {
-			if (this.isCountableKey(key)) {
-				await this.getUsage(key);
-			}
-		}
-	}
-
 	/**
 	 * Drop cached usage/validity locally and notify other nodes. Pass specific
 	 * keys to clear only those entries; call with no args to clear everything.
@@ -137,14 +124,6 @@ export class EntitlementManager {
 		this.clearCacheNoPublish(...keys);
 
 		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys });
-	}
-
-	async refreshCache(...keys: EntitlementCacheKey[]): Promise<void> {
-		this.clearCacheNoPublish(...keys);
-
-		await useBus().publish<InvalidateMessage>(BUS_CHANNEL, { keys, refresh: true });
-
-		this.refreshCacheNoPublish(...keys);
 	}
 
 	/**

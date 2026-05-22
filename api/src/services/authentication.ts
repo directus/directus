@@ -150,8 +150,7 @@ export class AuthenticationService {
 			} catch (error) {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-					await getEntitlementManager().clearCache('sso_enabled');
-					await getEntitlementManager().refreshCache('seats');
+					await getEntitlementManager().clearCache('sso_enabled', 'seats');
 
 					if (this.accountability) {
 						const activity = await this.activityService.createOne({
