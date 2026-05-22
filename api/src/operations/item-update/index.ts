@@ -53,8 +53,15 @@ export default defineOperationApi<Options>({
 
 		if (Array.isArray(payloadObject)) {
 			result = await itemsService.updateBatch(payloadObject, { emitEvents: !!emitEvents });
-		} else if (!key || (Array.isArray(key) && key.length === 0)) {
+		} else if (!key) {
 			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents: !!emitEvents });
+		} else if (Array.isArray(key) && key.length === 0) {
+			// Empty keys array — only update via query if a filter is explicitly provided
+			if (queryObject && Object.keys(queryObject).length > 0) {
+				result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents: !!emitEvents });
+			} else {
+				result = [];
+			}
 		} else {
 			const keys = toArray(key);
 
