@@ -1511,6 +1511,7 @@ licensing:
   entitlements:
     collections: Collections
     seats: Seats
+    flows: Flows
     activity_historical_timeframe: Activity History
     revisions_historical_timeframe: Revision History
     sso_enabled: SSO
