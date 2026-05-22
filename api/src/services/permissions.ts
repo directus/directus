@@ -63,7 +63,7 @@ export class PermissionsService extends ItemsService {
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
 		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			await getEntitlementManager().assert('custom_permission_rules_enabled');
+			await getEntitlementManager().assert('custom_permission_rules_enabled', { knex: this.knex });
 		}
 
 		const res = await super.createOne(data, opts);
@@ -75,7 +75,7 @@ export class PermissionsService extends ItemsService {
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
 		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			await getEntitlementManager().assert('custom_permission_rules_enabled');
+			await getEntitlementManager().assert('custom_permission_rules_enabled', { knex: this.knex });
 		}
 
 		const res = await super.updateMany(keys, data, opts);

@@ -26,6 +26,7 @@ import {
 } from '@directus/license';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
+import { clearCache as clearPermissionCache } from '../permissions/cache.js';
 import licenseCheckSchedule from '../schedules/license.js';
 import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
@@ -685,6 +686,8 @@ export class LicenseManager {
 			await settingsService.upsertSingleton({ license_token: null });
 		}
 
+		// clear permission cache when the license entitlements change
+		await clearPermissionCache();
 		await this.syncState({ source: this.source });
 		await this.rpc.syncState({ source: this.source });
 	}
