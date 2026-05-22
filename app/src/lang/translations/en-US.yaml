@@ -1447,8 +1447,8 @@ licensing:
   addon_summary_downgrade: '{active} current - {difference} unit(s) = {new} unit(s) total'
   addon_price_summary: '{ new } x ${ unitPrice }/unit/{ interval } = ${ total }/{ interval }'
   addon_prorated_notice:
-    'By confirming, you agree to be charged ${total}/{interval} when your next renewal occurs ({renewalDate}). A charge
-    of ${adjustedTotal} prorated for the remainder of your current billing period will be charged immediately.'
+    'By confirming, you agree to be charged ${total}/{interval} starting {renewalDate}. A prorated charge of
+    ${adjustedTotal} for the remainder of your current billing period will be added to your next invoice.'
   addon_renewal_notice_date: 'Changes will take effect next renewal ({date}).'
   addon_update: Update
   addon_confirm_purchase: Confirm Purchase
