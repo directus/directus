@@ -253,6 +253,13 @@ export function mergeNestedRelationDeltaInto(
 			continue;
 		}
 
+		// Same-identity plain objects (e.g. m2o relation rewrites) accumulate field-by-field
+		// instead of overwriting, so successive autosaves don't drop earlier draft edits.
+		if (hasSameUpdateIdentity(existing, incoming, identityFields)) {
+			target[field] = mergeUpdateEntry(existing, incoming, identityFields);
+			continue;
+		}
+
 		target[field] = incoming;
 	}
 

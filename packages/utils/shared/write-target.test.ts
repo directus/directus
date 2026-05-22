@@ -327,7 +327,7 @@ describe('resolveWriteTarget', () => {
 });
 
 describe('mergeNestedRelationDeltaInto', () => {
-	test('deep-merges detailed update syntax for different rows and overwrites other fields', () => {
+	test('deep-merges detailed update syntax for different rows and accumulates same-identity field edits', () => {
 		const target = {
 			blocks: { create: [{ id: 1 }], update: [{ id: 2 }], delete: [3] },
 			seo: { id: 1, title: 'Old' },
@@ -344,8 +344,16 @@ describe('mergeNestedRelationDeltaInto', () => {
 				update: [{ id: 2 }, { id: 5 }],
 				delete: [3, 6],
 			},
-			seo: { id: 1, description: 'New' },
+			seo: { id: 1, title: 'Old', description: 'New' },
 		});
+	});
+
+	test('overwrites m2o relation when the related row identity changes', () => {
+		const target = { seo: { id: 1, title: 'Old' } };
+
+		mergeNestedRelationDeltaInto(target, { seo: { id: 2, title: 'Other' } });
+
+		expect(target).toEqual({ seo: { id: 2, title: 'Other' } });
 	});
 
 	test('merges repeated detailed updates for the same row', () => {

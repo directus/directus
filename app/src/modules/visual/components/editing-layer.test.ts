@@ -511,6 +511,17 @@ describe('save', () => {
 		expect(wrapper.findComponent({ name: 'OverlayItem' }).props('active')).toBe(true);
 	});
 
+	it('refuses to open the overlay when no switchVersion handler is wired', async () => {
+		setupCollections({ block_hero: true });
+
+		const wrapper = mountEditingLayer(null);
+
+		sendEdit();
+		await flushPromises();
+
+		expect(wrapper.findComponent({ name: 'OverlayItem' }).exists()).toBe(false);
+	});
+
 	it('hydrates the overlay from the parent version before opening', async () => {
 		setupParentVersionSaveSchema();
 		vi.mocked(ensureVersionId).mockResolvedValue('version-id');
