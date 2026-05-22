@@ -421,10 +421,9 @@ function onEsc() {
 			/>
 
 			<DrawerItem
-				v-if="editingUserId"
 				v-model:active="userDrawerActive"
 				collection="directus_users"
-				:primary-key="editingUserId"
+				:primary-key="editingUserId || '+'"
 				:selected-fields="[
 					'first_name',
 					'last_name',
