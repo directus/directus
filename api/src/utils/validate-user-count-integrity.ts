@@ -35,6 +35,12 @@ export async function validateUserCountIntegrity(options: ValidateUserCountInteg
 	if (validateRemainingAdminUsers) {
 		validateRemainingAdminCount(userCounts.admin);
 	}
+
+	// Invalidate the entitlement cache only on when the count has changed
+	if (validateUserLimits && options.previousSeatCount !== userCounts.admin + userCounts.app) {
+		const { getEntitlementManager } = await import('../license/entitlements/manager.js');
+		await getEntitlementManager().clearCache('seats', 'sso_enabled');
+	}
 }
 
 async function checkSeatsCount(userCounts: UserCount, previousSeatCount: number | undefined) {

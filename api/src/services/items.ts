@@ -738,7 +738,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(keys.length);
 		}
 
-		if ((this.collection === 'directus_users' && !('status' in data)) || data['status'] === 'active') {
+		if (this.collection === 'directus_users' && data['status'] === 'active') {
 			opts.userIntegrityCheckFlags =
 				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}

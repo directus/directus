@@ -360,6 +360,9 @@ export class UsersService extends ItemsService {
 		await super.deleteMany(keys, opts);
 		await this.clearUserSessions(keys);
 
+		// `super.deleteMany` doesn't set integrity flags, so clear explicitly.
+		await getEntitlementManager().clearCache('seats', 'sso_enabled');
+
 		return keys;
 	}
 
@@ -655,10 +658,6 @@ export class UsersService extends ItemsService {
 
 	private async clearCaches(opts?: MutationOptions) {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-
-		// user status/provider changes affect both seat count and sso validity
-		await getEntitlementManager().clearCache('sso_enabled', 'seats');
-
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
