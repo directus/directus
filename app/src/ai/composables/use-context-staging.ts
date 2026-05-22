@@ -144,14 +144,12 @@ export function useContextStaging() {
 			return true;
 		}
 
-		const collectionInfo = collectionsStore.getCollection(element.collection);
-
-		if (!collectionInfo) {
+		if (!collectionsStore.getCollection(element.collection)) {
 			notify({ title: t('ai.invalid_collection') });
 			return false;
 		}
 
-		const display = await fetchDisplayValue(element, collectionInfo);
+		const display = buildVisualElementLabel(element);
 
 		const existingContext = contextStore.pendingContext.find(
 			(item) => item.type === 'visual-element' && isSameVisualElement(item.data, element),
@@ -181,48 +179,10 @@ export function useContextStaging() {
 		return true;
 	}
 
-	async function fetchDisplayValue(
-		element: VisualElementContextData,
-		collectionInfo: ReturnType<typeof collectionsStore.getCollection>,
-	): Promise<string> {
-		const fallback = formatTitle(element.collection);
-
-		if (!element.item || element.item === '+') return fallback;
-
-		try {
-			if (element.fields?.length === 1) {
-				const field = element.fields[0]!;
-
-				const item = await sdk.request<Item>(
-					requestEndpoint(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
-						params: { fields: [field] },
-					}),
-				);
-
-				if (item?.[field]) return String(item[field]);
-				return fallback;
-			}
-
-			if (!collectionInfo?.meta?.display_template) {
-				return formatTitle(element.collection);
-			}
-
-			const primaryKey = fieldsStore.getPrimaryKeyFieldForCollection(element.collection)?.field ?? 'id';
-			const displayTemplate = collectionInfo.meta.display_template;
-			const displayFields = getFieldsFromTemplate(displayTemplate);
-
-			const item = await sdk.request<Item>(
-				requestEndpoint(`${getEndpoint(element.collection)}/${encodeURIComponent(element.item)}`, {
-					params: { fields: [primaryKey, ...displayFields] },
-				}),
-			);
-
-			if (!item) return fallback;
-
-			return renderDisplayStringTemplate(element.collection, displayTemplate, item) || fallback;
-		} catch {
-			return fallback;
-		}
+	function buildVisualElementLabel(element: VisualElementContextData): string {
+		const collection = formatTitle(element.collection);
+		if (element.fields?.length === 1) return `${collection} · ${formatTitle(element.fields[0]!)}`;
+		return collection;
 	}
 
 	async function stageFiles(ids: string[]) {

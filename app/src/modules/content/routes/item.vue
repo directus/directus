@@ -720,7 +720,17 @@ const livePreviewParentScope = computed(() => {
 });
 
 async function switchToVersion(versionKey: string) {
-	currentVersion.value = versions.value.find((version) => version.key === versionKey) ?? null;
+	const target = versions.value.find((version) => version.key === versionKey);
+	if (!target) return;
+
+	const canSwitch =
+		draftVersion.value?.id === '+'
+			? createVersionsAllowed.value
+			: updateVersionsAllowed.value || createVersionsAllowed.value;
+
+	if (!canSwitch) return;
+
+	currentVersion.value = target;
 }
 
 function enterSingletonDraftContext(

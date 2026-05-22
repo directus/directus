@@ -18,12 +18,24 @@ import sdk, { requestEndpoint } from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { ensureVersionId } from '@/utils/ensure-version-id';
 import { extractErrorCode } from '@/utils/extract-error-code';
 import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export const MAX_PENDING_CONTEXT = 10;
+
+// Same page, different draft state — not a navigation.
+function stripVersionParam(url: string) {
+	try {
+		const u = new URL(url, window.location.origin);
+		u.searchParams.delete('version');
+		return u.toString();
+	} catch {
+		return url;
+	}
+}
 
 export const useAiContextStore = defineStore('ai-context-store', () => {
 	const collectionsStore = useCollectionsStore();
@@ -87,9 +99,11 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 	 * to the previous page.
 	 */
 	const syncVisualElementContextUrl = (url: string) => {
-		if (visualElementContextUrl.value !== null && visualElementContextUrl.value !== url) {
-			clearVisualElementContext();
-		}
+		const changed =
+			visualElementContextUrl.value !== null &&
+			stripVersionParam(visualElementContextUrl.value) !== stripVersionParam(url);
+
+		if (changed) clearVisualElementContext();
 
 		visualElementContextUrl.value = url;
 	};
@@ -114,6 +128,14 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 	const fetchVisualElementSnapshot = async (data: VisualElementContextData, fields: string[]) => {
 		if (!data.parent) {
+			if (data.version && collectionsStore.getCollection(data.collection)?.meta?.versioning) {
+				await ensureVersionId(api, {
+					collection: data.collection,
+					item: data.item,
+					versionKey: data.version,
+				});
+			}
+
 			return fetchItem(data.collection, data.item, fields, data.version);
 		}
 
@@ -138,6 +160,12 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 			},
 			collectionHasVersioning: (collection) => Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
 			readParent: async (parent, readFields) => {
+				await ensureVersionId(api, {
+					collection: parent.collection,
+					item: parent.key,
+					versionKey: parent.versionKey,
+				});
+
 				return fetchItem(parent.collection, parent.key, readFields, parent.versionKey);
 			},
 		});

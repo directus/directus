@@ -414,62 +414,30 @@ describe('useContextStaging', () => {
 			expect(result).toBe(true);
 		});
 
-		test('uses single field value as display when element has exactly one field', async () => {
-			const aiStore = useAiStore();
+		test('labels single-field element with collection and field', async () => {
 			const contextStore = useAiContextStore();
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
-			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
-			vi.mocked(sdk.request).mockResolvedValue({ headline: 'Breaking News' });
-
-			const sdkSpy = vi.spyOn(sdk, 'request');
+			vi.spyOn(useAiStore(), 'focusInput').mockImplementation(() => {});
 
 			const { stageVisualElement } = useContextStaging();
 
 			await stageVisualElement({ collection: 'posts', item: '1', key: 'key-1', fields: ['headline'] });
 
-			const call = addSpy.mock.calls[0]![0];
-			expect(call.display).toBe('Breaking News');
-			expect(sdkSpy.mock.calls[0]?.[0]()).toEqual({ path: '/items/posts/1', params: { fields: ['headline'] } });
+			expect(addSpy.mock.calls[0]![0].display).toBe('Posts · Headline');
+			expect(sdk.request).not.toHaveBeenCalled();
 		});
 
-		test('uses formatted collection name when no display_template', async () => {
-			const aiStore = useAiStore();
+		test('labels multi-field element with collection only', async () => {
 			const contextStore = useAiContextStore();
 			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
-			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
-
-			const { useCollectionsStore } = await import('@/stores/collections');
-
-			vi.mocked(useCollectionsStore).mockReturnValueOnce({
-				getCollection: vi.fn((collection) => ({
-					collection,
-					meta: { display_template: null },
-				})),
-			} as any);
+			vi.spyOn(useAiStore(), 'focusInput').mockImplementation(() => {});
 
 			const { stageVisualElement } = useContextStaging();
 
 			await stageVisualElement({ collection: 'blog_posts', item: '1', key: 'key-1' });
 
-			const call = addSpy.mock.calls[0]![0];
-			expect(call.display).toBe('Blog Posts');
+			expect(addSpy.mock.calls[0]![0].display).toBe('Blog Posts');
 			expect(sdk.request).not.toHaveBeenCalled();
-		});
-
-		test('uses fallback display value when fetch fails', async () => {
-			const aiStore = useAiStore();
-			const contextStore = useAiContextStore();
-			const addSpy = vi.spyOn(contextStore, 'addPendingContext').mockReturnValue(true);
-			vi.spyOn(aiStore, 'focusInput').mockImplementation(() => {});
-
-			vi.mocked(sdk.request).mockRejectedValue(new Error('API Error'));
-
-			const { stageVisualElement } = useContextStaging();
-
-			await stageVisualElement({ collection: 'posts', item: '42', key: 'key-1' });
-
-			const call = addSpy.mock.calls[0]![0];
-			expect(call.display).toBe('Posts');
 		});
 	});
 });

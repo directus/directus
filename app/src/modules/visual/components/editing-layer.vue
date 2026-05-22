@@ -114,7 +114,10 @@ function useWebsiteFrame({
 	guardVersionSwitch,
 }: {
 	onClickEdit: (data: unknown) => void;
-	guardVersionSwitch: (collection: string, effectiveParentScope?: VersionGateParentScope | null) => Promise<boolean>;
+	guardVersionSwitch: (
+		collection: string,
+		effectiveParentScope?: VersionGateParentScope | null,
+	) => Promise<string | false>;
 }) {
 	const serverStore = useServerStore();
 	const settingsStore = useSettingsStore();
@@ -266,20 +269,22 @@ function useWebsiteFrame({
 		const effectiveParentScope = parentScope ?? null;
 
 		if (!key || !editConfig?.collection || editConfig.item == null) return;
-		if ((await guardVersionSwitch(editConfig.collection, effectiveParentScope)) === false) return;
+
+		const effectiveVersionKey = await guardVersionSwitch(editConfig.collection, effectiveParentScope);
+		if (effectiveVersionKey === false) return;
 
 		stageVisualElement({
 			key,
 			collection: editConfig.collection,
 			item: editConfig.item,
 			fields: editConfig.fields,
-			...(version?.key ? { version: version.key } : {}),
-			...(version?.key && effectiveParentScope
+			...(effectiveVersionKey ? { version: effectiveVersionKey } : {}),
+			...(effectiveVersionKey && effectiveParentScope
 				? {
 						parent: {
 							collection: effectiveParentScope.collection,
 							item: effectiveParentScope.key,
-							version: version.key,
+							version: effectiveVersionKey,
 						},
 					}
 				: {}),
@@ -635,16 +640,16 @@ function useItemWithEdits() {
 	async function guardVersionSwitch(
 		targetCollection: string,
 		effectiveParentScope: VersionGateParentScope | null = null,
-	) {
+	): Promise<string | false> {
 		const decision = versionGate.check(targetCollection, effectiveParentScope);
-		if (decision.allowed) return true;
+		if (decision.allowed) return version?.key ?? '';
 		if (!switchVersion) return false;
 
 		const outcome = await versionGate.requestSwitch(decision);
 		if (outcome !== 'switched') return false;
 
 		await nextTick();
-		return true;
+		return decision.redirect.versionKey;
 	}
 
 	function getEffectiveParentScope() {
