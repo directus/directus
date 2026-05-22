@@ -78,7 +78,7 @@ export type MergeNestedRelationDeltaOptions = {
 	identityFields?: Iterable<string>;
 };
 
-type ParentRelationCandidate =
+export type ParentRelationCandidate =
 	| { kind: 'o2m'; parentField: string; childPkField: string }
 	| {
 			kind: 'm2m';
@@ -380,7 +380,7 @@ function refuse(token: WriteTargetRefusalToken, message: string): ResolveResult 
 	return { kind: 'refuse', token, message };
 }
 
-function findParentRelationCandidates(
+export function findParentRelationCandidates(
 	schema: SchemaOverview,
 	parentCollection: string,
 	targetCollection: string,

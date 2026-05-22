@@ -6,6 +6,7 @@ import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Item, PrimaryKey, SchemaOverview } from '@directus/types';
 import {
 	buildPayload,
+	findParentRelationCandidates,
 	getSchemaPrimaryKeyFields,
 	isObject,
 	mergeNestedRelationDeltaInto,
@@ -112,7 +113,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		const collectionHasVersioning = createCollectionVersioningResolver(schema, accountability);
 
 		if (args.action === 'create') {
-			if (hasDraftVersionHint(args.query?.version, context)) {
+			if (hasDraftVersionHint(args, context, schema)) {
 				throw new InvalidPayloadError({
 					reason: formatVersioningRefusal(
 						WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED,
@@ -170,7 +171,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		if (args.action === 'update') {
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const collectionIsVersioned = await collectionHasVersioning(args.collection);
-			const needsVersionRouting = collectionIsVersioned || hasDraftVersionHint(args.query?.version, context);
+			const needsVersionRouting = collectionIsVersioned || hasDraftVersionHint(args, context, schema);
 
 			if (isSingleton) {
 				if (Array.isArray(args.data)) {
@@ -276,7 +277,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		}
 
 		if (args.action === 'delete') {
-			if (hasDraftVersionHint(args.query?.version, context)) {
+			if (hasDraftVersionHint(args, context, schema)) {
 				throw new InvalidPayloadError({
 					reason: formatVersioningRefusal(
 						WRITE_TARGET_REFUSAL.VERSIONING_REQUIRED,
@@ -492,13 +493,25 @@ function getVersionHint(args: ItemsArgs, key: PrimaryKey, context: ChatContext |
 	};
 }
 
-function hasDraftVersionHint(queryVersion: string | null | undefined, context: ChatContext | undefined) {
-	if (isDraftVersionKey(queryVersion)) return true;
-	if (isDraftVersionKey(context?.page?.version)) return true;
+function hasDraftVersionHint(args: ItemsArgs, context: ChatContext | undefined, schema: SchemaOverview) {
+	if (isDraftVersionKey(args.query?.version)) return true;
+
+	if (context?.page?.collection === args.collection && isDraftVersionKey(context.page.version)) {
+		return true;
+	}
+
+	if (
+		context?.page?.collection &&
+		isDraftVersionKey(context.page.version) &&
+		hasParentRelationPath(schema, context.page.collection, args.collection)
+	) {
+		return true;
+	}
 
 	return (
 		context?.attachments?.some((attachment) => {
 			if (attachment.type !== 'visual-element') return false;
+			if (attachment.data.collection !== args.collection) return false;
 			if (isDraftVersionKey(attachment.data.version)) return true;
 
 			return isDraftVersionKey(attachment.data.parent?.version);
@@ -508,6 +521,10 @@ function hasDraftVersionHint(queryVersion: string | null | undefined, context: C
 
 function isDraftVersionKey(versionKey: string | null | undefined) {
 	return Boolean(versionKey && !isPublishedVersionKey(versionKey));
+}
+
+function hasParentRelationPath(schema: SchemaOverview, parentCollection: string, targetCollection: string) {
+	return findParentRelationCandidates(schema, parentCollection, targetCollection).length > 0;
 }
 
 function formatVersioningRefusal(token: string, message: string) {

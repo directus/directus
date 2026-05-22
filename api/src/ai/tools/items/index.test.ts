@@ -20,7 +20,7 @@ describe('items tool', () => {
 			singleton_collection: { singleton: true },
 		},
 		fields: {},
-		relations: {},
+		relations: [],
 	} as unknown as SchemaOverview;
 
 	const mockAccountability = { user: 'test-user' } as Accountability;
@@ -275,6 +275,29 @@ describe('items tool', () => {
 				expect(result).toEqual({
 					type: 'text',
 					data: updatedItems,
+				});
+			});
+
+			test('should not route unrelated updates through draft page context', async () => {
+				const updateData = { status: 'published' };
+				const updatedItem = { id: 1, status: 'published' };
+
+				mockItemsService.updateMany.mockResolvedValue([1]);
+				mockItemsService.readMany.mockResolvedValue([updatedItem]);
+
+				const result = await items.handler({
+					args: { action: 'update', collection: 'test_collection', keys: [1], data: updateData },
+					schema: mockSchema,
+					accountability: mockAccountability,
+					context: { page: { path: '/visual/pages/1', collection: 'pages', item: 1, version: 'draft' } },
+				});
+
+				expect(mockItemsService.updateMany).toHaveBeenCalledWith([1], updateData);
+				expect(mockItemsService.updateOne).not.toHaveBeenCalled();
+
+				expect(result).toEqual({
+					type: 'text',
+					data: [updatedItem],
 				});
 			});
 
