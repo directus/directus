@@ -6,12 +6,14 @@ import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Item, PrimaryKey, SchemaOverview } from '@directus/types';
 import {
 	buildPayload,
+	findParentInitialValue,
 	findParentRelationCandidates,
 	getSchemaPrimaryKeyFields,
 	isObject,
 	mergeNestedRelationDeltaInto,
 	type ParentRef,
 	type ParentRelation,
+	prefixChildFields,
 	resolveWriteTarget,
 	toArray,
 	WRITE_TARGET_REFUSAL,
@@ -401,7 +403,7 @@ async function updateWithVersionRouting({
 		const batch = parentBatches.get(batchKey);
 
 		if (batch) {
-			mergePayloadForSingleSave(batch.payload, payload, identityFields);
+			mergeNestedRelationDeltaInto(batch.payload, payload, { identityFields });
 		} else {
 			parentBatches.set(batchKey, {
 				collection: target.parent.collection,
@@ -434,7 +436,11 @@ async function updateWithVersionRouting({
 	for (const deferred of deferredReads) {
 		const parentService = new ItemsService(deferred.parent.collection, { schema, accountability });
 
-		const childFields = sanitizedQuery['fields']?.length ? sanitizedQuery['fields'] : ['*'];
+		const requestedFields =
+			Array.isArray(sanitizedQuery['fields']) && sanitizedQuery['fields'].length ? sanitizedQuery['fields'] : ['*'];
+		const childFields = requestedFields.includes('*')
+			? requestedFields
+			: Array.from(new Set([deferred.relation.childPkField, ...requestedFields]));
 
 		const parentItem = await parentService.readOne(deferred.parent.key, {
 			fields: prefixChildFields(deferred.relation, childFields),
@@ -442,7 +448,9 @@ async function updateWithVersionRouting({
 			versionRaw: false,
 		});
 
-		results[deferred.index] = parentItem ? extractChildFromParent(deferred.relation, parentItem, deferred.key) : null;
+		results[deferred.index] = parentItem
+			? findParentInitialValue(deferred.relation, parentItem, args.collection, deferred.key)
+			: null;
 	}
 
 	return results;
@@ -573,48 +581,4 @@ function formatVersioningRefusal(token: string, message: string) {
 
 function getPrimaryKeyField(schema: SchemaOverview, collection: string) {
 	return schema.collections[collection]?.primary ?? 'id';
-}
-
-function prefixChildFields(relation: ParentRelation, childFields: string[]): string[] {
-	const path =
-		relation.kind === 'm2o' || relation.kind === 'o2m'
-			? relation.parentField
-			: `${relation.parentField}.${relation.junctionField}`;
-
-	return childFields.map((field) => `${path}.${field}`);
-}
-
-function extractChildFromParent(relation: ParentRelation, parentItem: Item, childKey: PrimaryKey): Item | null {
-	const root = (parentItem as Record<string, unknown>)[relation.parentField];
-
-	if (relation.kind === 'm2o') {
-		return isObject(root) ? (root as Item) : null;
-	}
-
-	if (!Array.isArray(root)) return null;
-
-	for (const entry of root) {
-		if (!isObject(entry)) continue;
-
-		if (relation.kind === 'o2m') {
-			if (String((entry as Record<string, unknown>)[relation.childPkField]) === String(childKey)) {
-				return entry as Item;
-			}
-
-			continue;
-		}
-
-		const child = (entry as Record<string, unknown>)[relation.junctionField];
-		if (!isObject(child)) continue;
-
-		if (String((child as Record<string, unknown>)[relation.childPkField]) === String(childKey)) {
-			return child as Item;
-		}
-	}
-
-	return null;
-}
-
-function mergePayloadForSingleSave(target: Item, source: Item, identityFields: string[]) {
-	mergeNestedRelationDeltaInto(target, source, { identityFields });
 }

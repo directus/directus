@@ -6,6 +6,7 @@ import {
 	getParentInitialValueFields,
 	getSchemaPrimaryKeyFields,
 	mergeNestedRelationDeltaInto,
+	prefixChildFields,
 	resolveWriteTarget,
 	WRITE_TARGET_REFUSAL,
 	type WriteTarget,
@@ -467,6 +468,103 @@ describe('mergeNestedRelationDeltaInto', () => {
 
 		expect(getSchemaPrimaryKeyFields(schema)).toEqual(['block_uuid', 'page_uuid', 'id']);
 	});
+
+	test('drops earlier update when a later save deletes the same identity', () => {
+		const target = {
+			blocks: { create: [], update: [{ id: 5, title: 'A' }], delete: [] },
+		};
+
+		mergeNestedRelationDeltaInto(target, {
+			blocks: { create: [], update: [], delete: [5] },
+		});
+
+		expect(target).toEqual({
+			blocks: { create: [], update: [], delete: [5] },
+		});
+	});
+
+	test('drops earlier create when a later save deletes the same identity', () => {
+		const target = {
+			blocks: { create: [{ id: 5, title: 'A' }], update: [], delete: [] },
+		};
+
+		mergeNestedRelationDeltaInto(target, {
+			blocks: { create: [], update: [], delete: [5] },
+		});
+
+		expect(target).toEqual({
+			blocks: { create: [], update: [], delete: [5] },
+		});
+	});
+
+	test('drops earlier delete when a later save updates the same identity', () => {
+		const target = {
+			blocks: { create: [], update: [], delete: [5] },
+		};
+
+		mergeNestedRelationDeltaInto(target, {
+			blocks: { create: [], update: [{ id: 5, title: 'B' }], delete: [] },
+		});
+
+		expect(target).toEqual({
+			blocks: { create: [], update: [{ id: 5, title: 'B' }], delete: [] },
+		});
+	});
+
+	test('drops earlier delete when a later save creates the same identity', () => {
+		const target = {
+			blocks: { create: [], update: [], delete: [5] },
+		};
+
+		mergeNestedRelationDeltaInto(target, {
+			blocks: { create: [{ id: 5, title: 'B' }], update: [], delete: [] },
+		});
+
+		expect(target).toEqual({
+			blocks: { create: [{ id: 5, title: 'B' }], update: [], delete: [] },
+		});
+	});
+
+	test('reconciles using custom identity fields', () => {
+		const target = {
+			blocks: { create: [], update: [{ junction_uuid: 'j-1', title: 'A' }], delete: [] },
+		};
+
+		mergeNestedRelationDeltaInto(
+			target,
+			{ blocks: { create: [], update: [], delete: ['j-1'] } },
+			{ identityFields: ['junction_uuid'] },
+		);
+
+		expect(target).toEqual({
+			blocks: { create: [], update: [], delete: ['j-1'] },
+		});
+	});
+
+	test('leaves unrelated identities untouched while reconciling overlapping ones', () => {
+		const target = {
+			blocks: {
+				create: [{ id: 1 }],
+				update: [
+					{ id: 2, title: 'Keep' },
+					{ id: 3, title: 'Drop' },
+				],
+				delete: [9],
+			},
+		};
+
+		mergeNestedRelationDeltaInto(target, {
+			blocks: { create: [{ id: 9, title: 'Resurrect' }], update: [], delete: [3] },
+		});
+
+		expect(target).toEqual({
+			blocks: {
+				create: [{ id: 1 }, { id: 9, title: 'Resurrect' }],
+				update: [{ id: 2, title: 'Keep' }],
+				delete: [3],
+			},
+		});
+	});
 });
 
 describe('getParentInitialValueFields', () => {
@@ -507,6 +605,55 @@ describe('getParentInitialValueFields', () => {
 				childPkField: 'id',
 			}),
 		).toEqual(['blocks.id', 'blocks.collection', 'blocks.item.*']);
+	});
+});
+
+describe('prefixChildFields', () => {
+	test('prefixes child fields with the parent field for o2m', () => {
+		expect(
+			prefixChildFields({ kind: 'o2m', parentField: 'translations', childPkField: 'id' }, ['id', 'title', 'body']),
+		).toEqual(['translations.id', 'translations.title', 'translations.body']);
+	});
+
+	test('prefixes child fields with the parent field for m2o', () => {
+		expect(prefixChildFields({ kind: 'm2o', parentField: 'seo', childPkField: 'id' }, ['title'])).toEqual([
+			'seo.title',
+		]);
+	});
+
+	test('prefixes through the junction field for m2m', () => {
+		expect(
+			prefixChildFields(
+				{
+					kind: 'm2m',
+					parentField: 'tags',
+					junctionCollection: 'articles_tags',
+					junctionPkField: 'id',
+					junctionField: 'tags_id',
+					junctionItem: {},
+					childPkField: 'id',
+				},
+				['id', 'name'],
+			),
+		).toEqual(['tags.tags_id.id', 'tags.tags_id.name']);
+	});
+
+	test('prefixes through the junction field for m2a and includes the collection discriminator', () => {
+		expect(
+			prefixChildFields(
+				{
+					kind: 'm2a',
+					parentField: 'blocks',
+					junctionCollection: 'pages_blocks',
+					junctionPkField: 'id',
+					junctionField: 'item',
+					collectionField: 'collection',
+					junctionItem: {},
+					childPkField: 'id',
+				},
+				['id', 'headline'],
+			),
+		).toEqual(['blocks.collection', 'blocks.item.id', 'blocks.item.headline']);
 	});
 });
 

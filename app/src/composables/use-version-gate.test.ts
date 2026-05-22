@@ -54,7 +54,7 @@ describe('useVersionGate', () => {
 
 		expect(gate.check('articles')).toStrictEqual({
 			allowed: false,
-			redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'collection-versioned' },
+			redirect: { versionKey: VERSION_KEY_DRAFT },
 		});
 	});
 
@@ -68,7 +68,7 @@ describe('useVersionGate', () => {
 
 		expect(gate.check('blocks')).toStrictEqual({
 			allowed: false,
-			redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'parent-versioned' },
+			redirect: { versionKey: VERSION_KEY_DRAFT },
 		});
 	});
 
@@ -78,7 +78,7 @@ describe('useVersionGate', () => {
 
 		const decision = {
 			allowed: false,
-			redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'collection-versioned' },
+			redirect: { versionKey: VERSION_KEY_DRAFT },
 		} as const;
 
 		await expect(gate.requestSwitch(decision)).resolves.toBe('switched');
@@ -99,7 +99,7 @@ describe('useVersionGate', () => {
 
 		const decision = {
 			allowed: false,
-			redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'collection-versioned' },
+			redirect: { versionKey: VERSION_KEY_DRAFT },
 		} as const;
 
 		await expect(gate.requestSwitch(decision)).resolves.toBe('cancelled');

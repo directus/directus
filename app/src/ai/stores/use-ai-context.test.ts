@@ -505,6 +505,55 @@ describe('useAiContextStore', () => {
 			expect(attachments[0]!.snapshot).toEqual({ id: 9, title: 'Draft block' });
 		});
 
+		test('deduplicates concurrent parent version creation for visual elements from the same draft', async () => {
+			const store = useAiContextStore();
+
+			setupSchema(
+				[collection('pages', true), collection('pages_blocks', false), collection('block_hero', false)],
+				[
+					relation('pages_blocks', 'pages_id', 'pages', { oneField: 'blocks', junctionField: 'item' }),
+					relation('pages_blocks', 'item', null, {
+						oneCollectionField: 'collection',
+						oneAllowedCollections: ['block_hero'],
+					}),
+				],
+			);
+
+			vi.mocked(sdk.request).mockResolvedValue({
+				blocks: [
+					{ id: 7, collection: 'block_hero', item: { id: 9, title: 'First block' } },
+					{ id: 8, collection: 'block_hero', item: { id: 10, title: 'Second block' } },
+				],
+			});
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'block_hero',
+					item: 9,
+					parentCollection: 'pages',
+				}),
+			);
+
+			store.addPendingContext(
+				createParentedVisualElement({
+					collection: 'block_hero',
+					item: 10,
+					parentCollection: 'pages',
+				}),
+			);
+
+			const attachments = await store.fetchContextData();
+
+			expect(attachments).toHaveLength(2);
+
+			expect(ensureVersionId).toHaveBeenCalledOnce();
+			expect(ensureVersionId).toHaveBeenCalledWith(api, {
+				collection: 'pages',
+				item: 1,
+				versionKey: 'draft',
+			});
+		});
+
 		test('fetches M2O visual elements through the parent version', async () => {
 			const store = useAiContextStore();
 			setupSchema([collection('pages', true), collection('seo', false)], [relation('pages', 'seo', 'seo')]);

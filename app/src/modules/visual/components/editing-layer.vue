@@ -4,6 +4,7 @@ import type { ContentVersion, Item, PrimaryKey } from '@directus/types';
 import {
 	buildPayload,
 	findParentInitialValue,
+	findParentRelationCandidates,
 	getEndpoint,
 	getParentInitialValueFields,
 	resolveWriteTarget,
@@ -32,18 +33,16 @@ import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { useSchemaOverview } from '@/composables/use-schema';
 import { useVersionGate, type VersionGateParentScope } from '@/composables/use-version-gate';
 import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
 import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
-import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { ensureVersionId } from '@/utils/ensure-version-id';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
-import { getSchemaOverview } from '@/utils/get-schema-overview';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -124,6 +123,7 @@ function useWebsiteFrame({
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 	const collectionsStore = useCollectionsStore();
+	const schema = useSchemaOverview();
 	const contextStore = useAiContextStore();
 	const { stageVisualElement } = useContextStaging();
 
@@ -190,7 +190,13 @@ function useWebsiteFrame({
 		const collectionInfo = collectionsStore.getCollection(collection);
 		if (!collectionInfo) return false;
 
-		if (version && !collectionInfo.meta?.versioning && !parentScopeHasVersioning()) return false;
+		if (
+			version &&
+			!collectionInfo.meta?.versioning &&
+			!parentScopeCanVersionCollection(collection)
+		) {
+			return false;
+		}
 
 		if (userStore.isAdmin) return true;
 
@@ -204,9 +210,11 @@ function useWebsiteFrame({
 		return true;
 	}
 
-	function parentScopeHasVersioning() {
+	function parentScopeCanVersionCollection(collection: string) {
 		if (!parentScope) return false;
-		return Boolean(collectionsStore.getCollection(parentScope.collection)?.meta?.versioning);
+		if (!collectionsStore.getCollection(parentScope.collection)?.meta?.versioning) return false;
+
+		return findParentRelationCandidates(schema.value, parentScope.collection, collection).length > 0;
 	}
 
 	function send(action: SendAction, data: unknown) {
@@ -370,8 +378,7 @@ function useItemWithEdits() {
 	const itemRoute = computed(getContentRoute);
 	const notificationsStore = useNotificationsStore();
 	const collectionsStore = useCollectionsStore();
-	const fieldsStore = useFieldsStore();
-	const relationsStore = useRelationsStore();
+	const schema = useSchemaOverview();
 	const { info: collectionInfo } = useCollection(collection);
 
 	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
@@ -452,14 +459,10 @@ function useItemWithEdits() {
 				response = await api.post(itemEndpoint.value, editsSnapshot);
 				notify({ title: t('item_create_success', 1), icon: 'check' });
 			} else {
-				const effectiveParentScope = getEffectiveParentScope();
+				const effectiveParentScope = parentScope ?? null;
 
 				const target = await resolveWriteTarget({
-					schema: getSchemaOverview({
-						collections: collectionsStore.collections,
-						relations: relationsStore.relations,
-						getPrimaryKeyFieldForCollection: fieldsStore.getPrimaryKeyFieldForCollection,
-					}),
+					schema: schema.value,
 					target: { collection: collection.value, key: primaryKey.value },
 					hint: {
 						explicitVersion: version?.key,
@@ -614,18 +617,14 @@ function useItemWithEdits() {
 	}
 
 	async function fetchParentVersionInitialValues() {
-		const effectiveParentScope = getEffectiveParentScope();
+		const effectiveParentScope = parentScope ?? null;
 
 		if (!version?.key || !effectiveParentScope || isNew.value) return null;
 		if (collectionsStore.getCollection(collection.value)?.meta?.versioning) return null;
 		if (!collectionsStore.getCollection(effectiveParentScope.collection)?.meta?.versioning) return null;
 
 		const target = await resolveWriteTarget({
-			schema: getSchemaOverview({
-				collections: collectionsStore.collections,
-				relations: relationsStore.relations,
-				getPrimaryKeyFieldForCollection: fieldsStore.getPrimaryKeyFieldForCollection,
-			}),
+			schema: schema.value,
 			target: { collection: collection.value, key: primaryKey.value },
 			hint: {
 				explicitVersion: version.key,
@@ -656,10 +655,6 @@ function useItemWithEdits() {
 
 		await nextTick();
 		return decision.redirect.versionKey;
-	}
-
-	function getEffectiveParentScope() {
-		return parentScope ?? null;
 	}
 
 	async function readParent(ref: { collection: string; key: PrimaryKey; versionKey: string }, fields: string[]) {

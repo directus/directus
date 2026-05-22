@@ -124,6 +124,11 @@ beforeEach(() => {
 
 	setActivePinia(pinia);
 
+	vi.mocked(useFieldsStore().getFieldsForCollection).mockReturnValue([
+		{ field: 'id', type: 'integer', schema: {}, meta: {} },
+	] as any);
+	vi.mocked(useFieldsStore().getPrimaryKeyFieldForCollection).mockReturnValue({ field: 'id' } as any);
+
 	mountOptions = {
 		plugins: [i18n, pinia],
 		directives: { tooltip: Tooltip },
@@ -304,14 +309,27 @@ describe('checkFieldAccess', () => {
 	it('allows non-versioned child elements when version is set and parent scope is versioned', () => {
 		mountEditingLayer({ key: 'draft', name: 'Draft' }, { parentScope: { collection: 'pages', key: '1' } });
 
-		setupCollections({ pages: true, blocks: false });
+		setupParentVersionSaveSchema();
 		setupNonAdmin();
 		setupPermission(['*']);
 		setupVersionPermissions({ read: true, update: true });
 
-		sendCheckFieldAccess(createElements({ collection: 'blocks' }));
+		sendCheckFieldAccess(createElements({ collection: 'block_hero' }));
 
 		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: ['el-0'] }, FRAME_SRC);
+	});
+
+	it('filters non-versioned elements unrelated to the versioned parent scope', () => {
+		mountEditingLayer({ key: 'draft', name: 'Draft' }, { parentScope: { collection: 'pages', key: '1' } });
+
+		setupParentVersionSaveSchema();
+		setupNonAdmin();
+		setupPermission(['*']);
+		setupVersionPermissions({ read: true, update: true });
+
+		sendCheckFieldAccess(createElements({ collection: 'unrelated' }));
+
+		expect(postMessageSpy).toHaveBeenCalledWith({ action: 'activateElements', data: [] }, FRAME_SRC);
 	});
 
 	it('allows elements when version is set and collection has versioning', () => {
@@ -542,7 +560,7 @@ describe('save', () => {
 		sendEdit();
 
 		await vi.waitFor(() => {
-			expect(wrapper.findComponent({ name: 'OverlayItem' }).props('initialValues')).toEqual({
+			expect(wrapper.findComponent({ name: 'OverlayItem' }).props('initialItem')).toEqual({
 				id: 9,
 				title: 'Draft title',
 			});

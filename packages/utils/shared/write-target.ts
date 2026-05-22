@@ -244,11 +244,7 @@ export function mergeNestedRelationDeltaInto(
 		const existing = target[field];
 
 		if (isDetailedUpdateSyntax(existing) && isDetailedUpdateSyntax(incoming)) {
-			target[field] = {
-				create: [...existing.create, ...incoming.create],
-				update: mergeDetailedUpdateEntries(existing.update, incoming.update, identityFields),
-				delete: [...existing.delete, ...incoming.delete],
-			};
+			target[field] = reconcileDetailedUpdate(existing, incoming, identityFields);
 
 			continue;
 		}
@@ -290,6 +286,82 @@ function normalizeIdentityFields(fields: Iterable<string> | undefined): string[]
 		if (right === 'id') return -1;
 		return 0;
 	});
+}
+
+function reconcileDetailedUpdate(
+	existing: { create: unknown[]; update: unknown[]; delete: unknown[] },
+	incoming: { create: unknown[]; update: unknown[]; delete: unknown[] },
+	identityFields: string[],
+): { create: unknown[]; update: unknown[]; delete: unknown[] } {
+	// Incoming wins across buckets: a later delete supersedes earlier create/update for
+	// the same identity, and a later create/update supersedes an earlier delete.
+	const incomingDeleteIds = collectScalarIdentities(incoming.delete);
+	const incomingMutateIds = collectEntryIdentities([incoming.create, incoming.update], identityFields);
+
+	return {
+		create: [
+			...existing.create.filter((entry) => !entryMatchesIdentity(entry, identityFields, incomingDeleteIds)),
+			...incoming.create,
+		],
+		update: mergeDetailedUpdateEntries(
+			existing.update.filter((entry) => !entryMatchesIdentity(entry, identityFields, incomingDeleteIds)),
+			incoming.update,
+			identityFields,
+		),
+		delete: [
+			...existing.delete.filter((value) => {
+				const id = scalarIdentity(value);
+				return id === undefined || !incomingMutateIds.has(id);
+			}),
+			...incoming.delete,
+		],
+	};
+}
+
+function collectScalarIdentities(values: unknown[]): Set<string> {
+	const ids = new Set<string>();
+
+	for (const value of values) {
+		const id = scalarIdentity(value);
+		if (id !== undefined) ids.add(id);
+	}
+
+	return ids;
+}
+
+function collectEntryIdentities(buckets: unknown[][], identityFields: string[]): Set<string> {
+	const ids = new Set<string>();
+
+	for (const bucket of buckets) {
+		for (const entry of bucket) {
+			if (!isObject(entry)) continue;
+
+			for (const field of identityFields) {
+				const value = entry[field];
+				if (value !== null && value !== undefined) ids.add(String(value));
+			}
+		}
+	}
+
+	return ids;
+}
+
+function entryMatchesIdentity(entry: unknown, identityFields: string[], ids: Set<string>): boolean {
+	if (ids.size === 0 || !isObject(entry)) return false;
+
+	for (const field of identityFields) {
+		const value = entry[field];
+		if (value === null || value === undefined) continue;
+		if (ids.has(String(value))) return true;
+	}
+
+	return false;
+}
+
+function scalarIdentity(value: unknown): string | undefined {
+	if (value === null || value === undefined) return undefined;
+	if (typeof value === 'object') return undefined;
+	return String(value);
 }
 
 function mergeDetailedUpdateEntries(existing: unknown[], incoming: unknown[], identityFields: string[]): unknown[] {
@@ -564,6 +636,23 @@ function findTargetInParentItem(
 	}
 
 	return null;
+}
+
+export function prefixChildFields(relation: ParentRelation, childFields: string[]): string[] {
+	if (relation.kind === 'm2o' || relation.kind === 'o2m') {
+		return childFields.map((field) => `${relation.parentField}.${field}`);
+	}
+
+	const path = `${relation.parentField}.${relation.junctionField}`;
+	const prefixed = childFields.map((field) => `${path}.${field}`);
+
+	// M2A junctions are polymorphic; include the collection discriminator so post-save
+	// readback can reject entries that point at another collection sharing the child PK.
+	if (relation.kind === 'm2a') {
+		return [`${relation.parentField}.${relation.collectionField}`, ...prefixed];
+	}
+
+	return prefixed;
 }
 
 export function getParentInitialValueFields(relation: ParentRelation): string[] {

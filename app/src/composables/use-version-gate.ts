@@ -10,9 +10,7 @@ export type VersionGateParentScope = {
 	key: PrimaryKey;
 };
 
-export type GateDecision =
-	| { allowed: true }
-	| { allowed: false; redirect: { versionKey: string; reason: 'collection-versioned' | 'parent-versioned' } };
+export type GateDecision = { allowed: true } | { allowed: false; redirect: { versionKey: string } };
 
 export function useVersionGate(deps: {
 	currentVersion: Ref<Pick<ContentVersion, 'key' | 'name'> | null>;
@@ -31,10 +29,7 @@ export function useVersionGate(deps: {
 		const target = collectionsStore.getCollection(targetCollection);
 
 		if (target?.meta?.versioning) {
-			return {
-				allowed: false,
-				redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'collection-versioned' },
-			};
+			return { allowed: false, redirect: { versionKey: VERSION_KEY_DRAFT } };
 		}
 
 		const parentScope = parentScopeOverride ?? deps.parentScope.value;
@@ -43,10 +38,7 @@ export function useVersionGate(deps: {
 		const parent = collectionsStore.getCollection(parentScope.collection);
 
 		if (parent?.meta?.versioning) {
-			return {
-				allowed: false,
-				redirect: { versionKey: VERSION_KEY_DRAFT, reason: 'parent-versioned' },
-			};
+			return { allowed: false, redirect: { versionKey: VERSION_KEY_DRAFT } };
 		}
 
 		return { allowed: true };

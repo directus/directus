@@ -491,6 +491,72 @@ describe('items tool', () => {
 					},
 				});
 			});
+
+			test('should include the child primary key when reading back parent-version updates with selected fields', async () => {
+				const mockVersionsService = {
+					readByQuery: vi.fn().mockResolvedValue([]),
+					createOne: vi.fn().mockResolvedValue('version-1'),
+					save: vi.fn().mockResolvedValue({}),
+				};
+
+				const schema = {
+					collections: {
+						pages: { singleton: false, primary: 'id' },
+						pages_blocks: { singleton: false, primary: 'id' },
+						block_hero: { singleton: false, primary: 'id' },
+					},
+					fields: {},
+					relations: [
+						relation('pages_blocks', 'pages_id', 'pages', {
+							oneField: 'blocks',
+							junctionField: 'item',
+						}),
+						relation('pages_blocks', 'item', null, {
+							oneCollectionField: 'collection',
+							oneAllowedCollections: ['block_hero'],
+						}),
+					],
+				} as unknown as SchemaOverview;
+
+				vi.mocked(CollectionsService).mockImplementation(
+					() =>
+						({
+							readOne: vi.fn(async (collection) => ({ meta: { versioning: collection === 'pages' } })),
+						}) as unknown as CollectionsService,
+				);
+
+				vi.mocked(VersionsService).mockImplementation(() => mockVersionsService as unknown as VersionsService);
+
+				mockItemsService.readOne.mockResolvedValue({
+					blocks: [{ id: 7, collection: 'block_hero', item: { id: 9, title: 'Updated Title' } }],
+				});
+
+				const result = await items.handler({
+					args: {
+						action: 'update',
+						collection: 'block_hero',
+						keys: [9],
+						data: { title: 'Updated Title' },
+						query: { fields: ['title'] },
+					},
+					schema,
+					accountability: mockAccountability,
+					context: { page: { path: '/visual/pages/page-id', collection: 'pages', item: 'page-id', version: 'draft' } },
+				});
+
+				expect(mockItemsService.readOne).toHaveBeenLastCalledWith(
+					'page-id',
+					expect.objectContaining({
+						fields: ['blocks.collection', 'blocks.item.id', 'blocks.item.title'],
+						version: 'draft',
+					}),
+				);
+
+				expect(result).toEqual({
+					type: 'text',
+					data: [{ id: 9, title: 'Updated Title' }],
+				});
+			});
 		});
 
 		describe('DELETE action', () => {

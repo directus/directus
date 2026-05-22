@@ -26,6 +26,8 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 export const MAX_PENDING_CONTEXT = 10;
 
+type EnsureVersion = (ref: { collection: string; item: PrimaryKey; versionKey: string }) => Promise<PrimaryKey>;
+
 // Same page, different draft state — not a navigation.
 function stripVersionParam(url: string) {
 	try {
@@ -126,10 +128,14 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		}
 	};
 
-	const fetchVisualElementSnapshot = async (data: VisualElementContextData, fields: string[]) => {
+	const fetchVisualElementSnapshot = async (
+		data: VisualElementContextData,
+		fields: string[],
+		ensureVersion: EnsureVersion,
+	) => {
 		if (!data.parent) {
 			if (data.version && collectionsStore.getCollection(data.collection)?.meta?.versioning) {
-				await ensureVersionId(api, {
+				await ensureVersion({
 					collection: data.collection,
 					item: data.item,
 					versionKey: data.version,
@@ -160,7 +166,7 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 			},
 			collectionHasVersioning: (collection) => Boolean(collectionsStore.getCollection(collection)?.meta?.versioning),
 			readParent: async (parent, readFields) => {
-				await ensureVersionId(api, {
+				await ensureVersion({
 					collection: parent.collection,
 					item: parent.key,
 					versionKey: parent.versionKey,
@@ -190,11 +196,12 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 
 	const fetchContextData = async (): Promise<ContextAttachment[]> => {
 		const nonFileItems = pendingContext.value.filter((item) => !isFileContext(item) && !isLocalFileContext(item));
+		const ensureVersion = createEnsureVersionOnce();
 
 		const fetches = nonFileItems.map(async (item): Promise<ContextAttachment | null> => {
 			if (isVisualElement(item)) {
 				const fields = item.data.fields?.length ? item.data.fields : ['*'];
-				const snapshot = await fetchVisualElementSnapshot(item.data, fields);
+				const snapshot = await fetchVisualElementSnapshot(item.data, fields, ensureVersion);
 				if (!snapshot) return null;
 				return { type: 'visual-element', data: item.data, display: item.display, snapshot };
 			}
@@ -315,6 +322,25 @@ export const useAiContextStore = defineStore('ai-context-store', () => {
 		dehydrate,
 	};
 });
+
+function createEnsureVersionOnce(): EnsureVersion {
+	const pending = new Map<string, Promise<PrimaryKey>>();
+
+	return (ref) => {
+		const key = `${ref.collection}:${String(ref.item)}:${ref.versionKey}`;
+		const existing = pending.get(key);
+		if (existing) return existing;
+
+		const promise = ensureVersionId(api, ref).catch((error) => {
+			pending.delete(key);
+			throw error;
+		});
+
+		pending.set(key, promise);
+
+		return promise;
+	};
+}
 
 function getParentSnapshotFields(relation: ParentRelation, fields: string[]) {
 	const childFields = fields.includes('*') ? ['*'] : Array.from(new Set([relation.childPkField, ...fields]));
