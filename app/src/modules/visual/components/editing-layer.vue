@@ -314,6 +314,12 @@ function useVisualEditingAi({
 
 		savedTimer = setTimeout(() => {
 			sendSaved({ key: '', collection: '', item: null, payload: {} });
+
+			emit('saved', {
+				collection: parentScope?.collection ?? '',
+				primaryKey: parentScope?.key ?? '',
+			});
+
 			savedTimer = null;
 		}, 250);
 	});
