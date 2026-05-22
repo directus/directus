@@ -21,6 +21,7 @@ import SearchHighlight from './search-highlight.vue';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { getItemRoute } from '@/utils/get-route';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -65,7 +66,6 @@ const filteredCommands = computed(() => {
 		.map(({ command }) => command);
 });
 
- 
 const ungrouped = Symbol();
 const groupIdsSet = computed(() => new Set(groups.value.map(({ id }) => id)));
 
@@ -95,7 +95,7 @@ function askAi() {
 }
 
 function navigateToItem(item: GlobalSearchResultItem) {
-	router.push(`/content/${item.collection}/${item.pk}`);
+	router.push(getItemRoute(item.collection, item.pk));
 	context.close();
 }
 

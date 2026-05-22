@@ -5,6 +5,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useFieldsStore } from '@/stores/fields';
+import { getItemRoute } from '@/utils/get-route';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { unexpectedError } from '@/utils/unexpected-error';
 import CommandPaletteEmpty from '../../command-palette-empty.vue';
@@ -122,7 +123,7 @@ async function fetchItems(query: string) {
 
 function selectItem(pk: string, displayValue: string) {
 	addRecentItem({ collection: props.collection, pk, displayValue });
-	router.push(`/content/${props.collection}/${pk}`);
+	router.push(getItemRoute(props.collection, pk));
 	close();
 }
 </script>

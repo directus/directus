@@ -1,3 +1,4 @@
+import { getEndpoint } from '@directus/utils';
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
 import { defineCommands } from '../composables/use-command-registry';
@@ -19,7 +20,8 @@ export const copyApiUrlCommands = defineCommands({
 						icon: 'content_copy',
 						group: 'context',
 						action: () => {
-							const path = `items/${collection}${primaryKey ? `/${primaryKey}` : ''}`;
+							const endpoint = getEndpoint(collection).slice(1);
+							const path = `${endpoint}${primaryKey ? `/${encodeURIComponent(primaryKey)}` : ''}`;
 							const url = new URL(path, getPublicURL());
 							navigator.clipboard?.writeText(url.toString());
 						},

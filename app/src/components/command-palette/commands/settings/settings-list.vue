@@ -28,6 +28,7 @@ const sections = computed<SettingsSection[]>(() => {
 		{ id: 'permissions', name: t('settings_permissions'), icon: 'admin_panel_settings', to: '/settings/policies' },
 		{ id: 'project', name: t('settings_project'), icon: 'tune', to: '/settings/project' },
 		{ id: 'appearance', name: t('settings_appearance'), icon: 'palette', to: '/settings/appearance' },
+		{ id: 'global-search', name: t('global_search'), icon: 'search', to: '/settings/global-search' },
 		{ id: 'presets', name: t('settings_presets'), icon: 'bookmark', to: '/settings/presets' },
 		{ id: 'translations', name: t('settings_translations'), icon: 'translate', to: '/settings/translations' },
 	];

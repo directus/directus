@@ -11,6 +11,7 @@ import { getDatabase } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
+import { CollectionsService } from '../services/collections.js';
 import { ExportService, ImportService } from '../services/import-export.js';
 import { ItemsService } from '../services/items.js';
 import { RevisionsService } from '../services/revisions.js';
@@ -266,6 +267,9 @@ router.post(
 		}
 
 		const collections = config.slice(0, MAX_SEARCH_COLLECTIONS);
+		const collectionsService = new CollectionsService({ accountability: req.accountability, schema: req.schema });
+		const collectionMeta = await collectionsService.readByQuery();
+		const collectionMetaByName = new Map(collectionMeta.map((collection) => [collection.collection, collection.meta]));
 
 		const results: Record<string, any[]> = {};
 
@@ -283,12 +287,16 @@ router.post(
 
 					const filter = collectionConfig.filter ? mergeFilters(collectionConfig.filter, searchFilter) : searchFilter;
 
-					const templateFields = collectionConfig.display_template
-						? getFieldsFromTemplate(collectionConfig.display_template)
-						: [];
+					const displayTemplate =
+						collectionConfig.display_template ??
+						collectionMetaByName.get(collectionConfig.collection)?.display_template ??
+						null;
 
+					const templateFields = displayTemplate ? getFieldsFromTemplate(displayTemplate) : [];
+
+					const primaryKeyField = req.schema.collections[collectionConfig.collection]?.primary;
 					const fieldsToFetch = [
-						'*',
+						...(primaryKeyField ? [primaryKeyField] : []),
 						...templateFields,
 						...collectionConfig.fields,
 						...(collectionConfig.description_field ? [collectionConfig.description_field] : []),

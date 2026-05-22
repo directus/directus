@@ -20,6 +20,7 @@ const sections: SettingsSection[] = [
 	{ id: 'permissions', nameKey: 'settings_permissions', icon: 'admin_panel_settings', to: '/settings/policies' },
 	{ id: 'project', nameKey: 'settings_project', icon: 'tune', to: '/settings/project' },
 	{ id: 'appearance', nameKey: 'settings_appearance', icon: 'palette', to: '/settings/appearance' },
+	{ id: 'global-search', nameKey: 'global_search', icon: 'search', to: '/settings/global-search' },
 	{ id: 'presets', nameKey: 'settings_presets', icon: 'bookmark', to: '/settings/presets' },
 	{ id: 'translations', nameKey: 'settings_translations', icon: 'translate', to: '/settings/translations' },
 	{
