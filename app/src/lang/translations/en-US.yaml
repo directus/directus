@@ -1474,8 +1474,8 @@ licensing:
     To deactivate your project, it must first comply with Core plan limits. Any items that exceed the Core limits and
     require adjustment are shown below.
   resolve_notice_locked:
-    Your project exceeds the Core plan limits and is locked. Any items that exceed the Core limits and require
-    adjustment are shown below.
+    Your project exceeds the plan limits and is locked. Any items that exceed the limits and require adjustment are
+    shown below.
   resolve_notice_env_removed:
     Your project no longer has an active license key. Any items that exceed the Core limits and require adjustment are
     shown below.
