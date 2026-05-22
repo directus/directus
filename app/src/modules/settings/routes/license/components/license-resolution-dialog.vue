@@ -2,6 +2,8 @@
 import {
 	type InvalidLicenseStatus,
 	type LicensePendingResolution,
+	type LicensePendingResolutionFeatureGateCustomLLMs,
+	type LicensePendingResolutionFeatureGateCustomPermissionRules,
 	type LicensePendingResolutionFeatureGateSSO,
 	type LicensePendingResolutionLimitCollections,
 	type LicensePendingResolutionLimitFlows,
@@ -13,11 +15,13 @@ import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ResolutionLimitSection from './resolution-limit-section.vue';
+import ResolutionSsoAdminDialog from './resolution-sso-admin-dialog.vue';
 import ResolutionSsoSection from './resolution-sso-section.vue';
 import VAvatar from '@/components/v-avatar.vue';
 import VButton from '@/components/v-button.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -82,7 +86,10 @@ const severity = computed<'warning' | 'danger'>(() => {
 	return scope.value === 'grace' || scope.value === 'no_resolution' ? 'warning' : 'danger';
 });
 
-type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number] & { disabled?: boolean };
+type SeatCandidate = LicensePendingResolutionLimitSeats['candidates'][number] & {
+	email?: string | null;
+	disabled?: boolean;
+};
 type FlowCandidate = LicensePendingResolutionLimitFlows['candidates'][number];
 
 const collections = computed<LicensePendingResolutionLimitCollections | undefined>(
@@ -147,6 +154,17 @@ const sso = computed<LicensePendingResolutionFeatureGateSSO | undefined>(
 	() => find('feature_gate', 'sso_enabled') as LicensePendingResolutionFeatureGateSSO | undefined,
 );
 
+const customLLMs = computed<LicensePendingResolutionFeatureGateCustomLLMs | undefined>(
+	() => find('feature_gate', 'custom_llms_enabled') as LicensePendingResolutionFeatureGateCustomLLMs | undefined,
+);
+
+const customPermissionRules = computed<LicensePendingResolutionFeatureGateCustomPermissionRules | undefined>(
+	() =>
+		find('feature_gate', 'custom_permission_rules_enabled') as
+			| LicensePendingResolutionFeatureGateCustomPermissionRules
+			| undefined,
+);
+
 function find(kind: LicensePendingResolution['kind'], key: string): LicensePendingResolution | undefined {
 	return pendingResolution.value?.find((entry: LicensePendingResolution) => entry.kind === kind && entry.key === key);
 }
@@ -155,6 +173,7 @@ function toUser(candidate: SeatCandidate) {
 	return {
 		first_name: candidate.first_name ?? undefined,
 		last_name: candidate.last_name ?? undefined,
+		email: candidate.email ?? undefined,
 	};
 }
 
@@ -163,10 +182,17 @@ const selected = reactive({
 	seats: new Set<string>(),
 	flows: new Set<string>(),
 	sso: false,
+	customLLMs: false,
+	customPermissionRules: false,
 });
 
 const adminCreds = ref<{ email?: string; password?: string }>({});
-const ssoSectionRef = ref<InstanceType<typeof ResolutionSsoSection> | null>(null);
+const ssoAdminDialogOpen = ref(false);
+
+function onSsoConfirm(creds: { email: string; password?: string }) {
+	adminCreds.value = creds;
+	selected.sso = true;
+}
 
 const editingUserId = ref<string | null>(null);
 
@@ -185,7 +211,9 @@ const isValid = computed(() => {
 	if (collections.value && selected.collections.size < collections.value.usage - collections.value.limit) return false;
 	if (seats.value && selected.seats.size < seats.value.usage - seats.value.limit) return false;
 	if (flows.value && selected.flows.size < flows.value.usage - flows.value.limit) return false;
-	if (sso.value && !ssoSectionRef.value?.isValid) return false;
+	if (sso.value && !selected.sso) return false;
+	if (customLLMs.value && !selected.customLLMs) return false;
+	if (customPermissionRules.value && !selected.customPermissionRules) return false;
 	return true;
 });
 
@@ -203,11 +231,7 @@ async function submit() {
 			...(collections.value ? { collections: [...selected.collections] } : {}),
 			...(seats.value ? { seats: [...selected.seats] } : {}),
 			...(flows.value ? { flows: [...selected.flows] } : {}),
-			...(sso.value
-				? {
-						sso_enabled: sso.value.blockers?.length ? { admin: { ...adminCreds.value } } : true,
-					}
-				: {}),
+			...(sso.value ? { sso_enabled: { admin: { ...adminCreds.value } } } : {}),
 		});
 
 		if (scope.value === 'manual') {
@@ -285,13 +309,41 @@ function onEsc() {
 					{{ t('licensing.resolve_countdown', graceCountdown, graceCountdown.days) }}
 				</p>
 
-				<ResolutionSsoSection
-					v-if="sso"
-					ref="ssoSectionRef"
-					v-model="selected.sso"
-					:blockers="sso.blockers"
-					@update:admin="adminCreds = $event"
-				/>
+				<div v-if="sso || customLLMs || customPermissionRules" class="feature-gate-grid">
+					<ResolutionSsoSection v-if="sso" v-model="selected.sso" @open-admin-dialog="ssoAdminDialogOpen = true" />
+
+					<section v-if="customLLMs" class="resolution-feature-section">
+						<header class="section-header">
+							<span class="section-title">{{ t('licensing.resolve_section_custom_llms') }}</span>
+						</header>
+						<button
+							type="button"
+							class="confirm"
+							:class="{ selected: selected.customLLMs }"
+							@click="selected.customLLMs = !selected.customLLMs"
+						>
+							<VCheckbox :checked="selected.customLLMs" style="pointer-events: none" />
+							<span>{{ t('licensing.resolve_custom_llms_confirm') }}</span>
+						</button>
+						<p class="feature-caption">{{ t('licensing.resolve_custom_llms_caption') }}</p>
+					</section>
+
+					<section v-if="customPermissionRules" class="resolution-feature-section">
+						<header class="section-header">
+							<span class="section-title">{{ t('licensing.resolve_section_custom_permissions') }}</span>
+						</header>
+						<button
+							type="button"
+							class="confirm"
+							:class="{ selected: selected.customPermissionRules }"
+							@click="selected.customPermissionRules = !selected.customPermissionRules"
+						>
+							<VCheckbox :checked="selected.customPermissionRules" style="pointer-events: none" />
+							<span>{{ t('licensing.resolve_custom_permissions_confirm') }}</span>
+						</button>
+						<p class="feature-caption">{{ t('licensing.resolve_custom_permissions_caption') }}</p>
+					</section>
+				</div>
 
 				<ResolutionLimitSection
 					v-if="collections && collectionGroups.length > 0"
@@ -361,11 +413,30 @@ function onEsc() {
 				</VButton>
 			</footer>
 
+			<ResolutionSsoAdminDialog
+				v-if="sso"
+				v-model="ssoAdminDialogOpen"
+				:blockers="sso.blockers"
+				@confirm="onSsoConfirm"
+			/>
+
 			<DrawerItem
 				v-if="editingUserId"
 				v-model:active="userDrawerActive"
 				collection="directus_users"
 				:primary-key="editingUserId"
+				:selected-fields="[
+					'first_name',
+					'last_name',
+					'email',
+					'avatar',
+					'title',
+					'status',
+					'role',
+					'provider',
+					'external_identifier',
+					'policies',
+				]"
 				non-editable
 			/>
 		</VCard>
@@ -446,5 +517,65 @@ function onEsc() {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.feature-gate-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.5rem;
+	margin-block-start: 2rem;
+}
+
+@media (max-width: 37.5rem) {
+	.feature-gate-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.section-header {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin-block-end: 0.75rem;
+}
+
+.section-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--theme--foreground-accent);
+}
+
+.confirm {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	inline-size: 100%;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	background: var(--theme--form--field--input--background);
+	color: var(--theme--foreground);
+	font: inherit;
+	text-align: start;
+	cursor: pointer;
+	transition: border-color var(--fast) var(--transition);
+}
+
+.confirm:hover {
+	border-color: var(--theme--form--field--input--border-color-hover);
+}
+
+.confirm.selected {
+	border-color: var(--theme--primary);
+}
+
+.feature-caption {
+	color: var(--theme--foreground-subdued);
+	margin-block-start: 0.5rem;
+	font-size: 0.8125rem;
+	line-height: 1.4;
 }
 </style>

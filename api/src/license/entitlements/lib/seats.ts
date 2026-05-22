@@ -121,7 +121,7 @@ export async function getActiveSeats(opts?: {
 	}
 
 	const adminCandidates = await usersService.readByQuery({
-		fields: ['id', 'first_name', 'last_name', 'avatar'],
+		fields: ['id', 'first_name', 'last_name', 'avatar', 'email'],
 		filter: {
 			_and: adminFilters,
 		},
@@ -129,7 +129,7 @@ export async function getActiveSeats(opts?: {
 	});
 
 	const appCandidates = await usersService.readByQuery({
-		fields: ['id', 'first_name', 'last_name', 'avatar'],
+		fields: ['id', 'first_name', 'last_name', 'avatar', 'email'],
 		filter: {
 			_and: appFilters,
 		},
