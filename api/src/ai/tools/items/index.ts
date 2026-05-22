@@ -321,6 +321,7 @@ async function updateWithVersionRouting({
 }) {
 	const versionsService = new VersionsService({ schema, accountability });
 	const results: unknown[] = [];
+	const deferredReads: Array<{ index: number; key: PrimaryKey; versionKey: string }> = [];
 	const parentBatches = new Map<string, { collection: string; item: PrimaryKey; versionKey: string; payload: Item }>();
 	const identityFields = getSchemaPrimaryKeyFields(schema);
 
@@ -408,12 +409,25 @@ async function updateWithVersionRouting({
 			});
 		}
 
+		deferredReads.push({ index: results.length, key: update.key, versionKey: target.parent.versionKey });
 		results.push(null);
 	}
 
 	for (const batch of parentBatches.values()) {
 		const versionId = await ensureVersionId(versionsService, batch);
 		await versionsService.save(versionId, batch.payload);
+	}
+
+	for (const deferred of deferredReads) {
+		const readService = new ItemsService(args.collection, { schema, accountability });
+
+		const items = await readService.readMany([deferred.key], {
+			...sanitizedQuery,
+			version: deferred.versionKey,
+			versionRaw: false,
+		});
+
+		results[deferred.index] = items[0] ?? null;
 	}
 
 	return results;
@@ -475,7 +489,10 @@ function getVersionHint(args: ItemsArgs, key: PrimaryKey, context: ChatContext |
 
 	return {
 		explicitVersion: args.query?.version,
-		page: context?.page,
+		page:
+			context?.page?.collection === args.collection && String(context.page.item) !== String(key)
+				? undefined
+				: context?.page,
 		attachment: visualElement
 			? {
 					collection: visualElement.data.collection,
@@ -497,7 +514,14 @@ function hasDraftVersionHint(args: ItemsArgs, context: ChatContext | undefined, 
 	if (isDraftVersionKey(args.query?.version)) return true;
 
 	if (context?.page?.collection === args.collection && isDraftVersionKey(context.page.version)) {
-		return true;
+		const pkField = getPrimaryKeyField(schema, args.collection);
+		const pageItemStr = String(context.page.item);
+
+		const hasMatchingKey =
+			args.keys?.some((k) => String(k) === pageItemStr) ||
+			(Array.isArray(args.data) && args.data.some((d) => String(d[pkField]) === pageItemStr));
+
+		if (hasMatchingKey) return true;
 	}
 
 	if (
@@ -537,21 +561,7 @@ function getPrimaryKeyField(schema: SchemaOverview, collection: string) {
 }
 
 function mergePayloadForSingleSave(target: Item, source: Item, identityFields: string[]) {
-	for (const [field, incoming] of Object.entries(source)) {
-		const existing = target[field];
-
-		if (
-			isObject(existing) &&
-			isObject(incoming) &&
-			!isDetailedUpdatePayload(existing) &&
-			!isDetailedUpdatePayload(incoming)
-		) {
-			target[field] = { ...existing, ...incoming };
-			continue;
-		}
-
-		mergeNestedRelationDeltaInto(target, { [field]: incoming }, { identityFields });
-	}
+	mergeNestedRelationDeltaInto(target, source, { identityFields });
 }
 
 function isDetailedUpdatePayload(value: unknown) {

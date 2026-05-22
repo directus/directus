@@ -360,7 +360,7 @@ function resolveVersionKey(hint: VersionHint): string | undefined {
 
 function resolveParentRef(hint: VersionHint): ParentRef | null {
 	const attachmentParent = hint.attachment?.parent;
-	const attachmentParentVersion = attachmentParent?.versionKey || hint.attachment?.version;
+	const attachmentParentVersion = hint.explicitVersion || attachmentParent?.versionKey || hint.attachment?.version;
 
 	if (attachmentParent && attachmentParentVersion) {
 		return {
@@ -370,7 +370,7 @@ function resolveParentRef(hint: VersionHint): ParentRef | null {
 		};
 	}
 
-	const pageVersion = hint.page?.version;
+	const pageVersion = hint.explicitVersion || hint.page?.version;
 
 	if (hint.page?.collection && hint.page.item !== undefined && pageVersion) {
 		return {
