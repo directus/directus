@@ -1631,7 +1631,7 @@ license:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
   unlicensed_pinned_status_notice:
-    grace_period_title: You are in a 30-day grace period
+    grace_period_title: Grace Period (30d)
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
@@ -3250,6 +3250,11 @@ search_flow: Search Flow...
 percent: Percent
 show_password: Show password
 hide_password: Hide password
+license_grace_key_modal:
+  optional: Optional
+  get_license_key: Get a License Key
+  over_limit_warning_lead: "You've exceeded the allowed usage limit on your current plan."
+  over_limit_warning_tail: 'Please resolve this by {date} ({days} days from now).'
 license_banner:
   title: You have not set a project owner.
   license:

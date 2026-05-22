@@ -1,6 +1,6 @@
 import type { ReadLicenseOutput } from '@directus/license';
 import { createPinia, setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLicenseStore } from './license';
 
 const entitlements: ReadLicenseOutput['entitlements'] = {
@@ -37,8 +37,134 @@ function createLicenseInfo(overrides: Partial<ReadLicenseOutput> = {}): ReadLice
 	};
 }
 
+// Unix timestamp used as a fixed "now" across grace period tests (2025-01-01T00:00:00Z)
+const FIXED_NOW_SEC = 1_735_689_600;
+
 beforeEach(() => {
 	setActivePinia(createPinia());
+});
+
+describe('graceDeadline', () => {
+	test('returns null when status is not grace', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo({ status: 'active', expires_at: FIXED_NOW_SEC, grace_period: 86400 });
+		expect(licenseStore.graceDeadline).toBeNull();
+	});
+
+	test('returns null when grace_period is falsy', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo({ status: 'grace', expires_at: FIXED_NOW_SEC, grace_period: 0, name: 'Pro' });
+		expect(licenseStore.graceDeadline).toBeNull();
+	});
+
+	test('returns null for team plan with renews_at set', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			status: 'grace',
+			name: 'Team',
+			expires_at: FIXED_NOW_SEC,
+			grace_period: 86400,
+			renews_at: FIXED_NOW_SEC + 86400,
+		});
+
+		expect(licenseStore.graceDeadline).toBeNull();
+	});
+
+	test('returns deadline date for non-team plan in grace', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			status: 'grace',
+			name: 'Pro',
+			expires_at: FIXED_NOW_SEC,
+			grace_period: 86400,
+			renews_at: undefined,
+		});
+
+		expect(licenseStore.graceDeadline).toEqual(new Date((FIXED_NOW_SEC + 86400) * 1000));
+	});
+
+	test('returns deadline for team plan without renews_at', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			status: 'grace',
+			name: 'Team',
+			expires_at: FIXED_NOW_SEC,
+			grace_period: 86400,
+			renews_at: undefined,
+		});
+
+		expect(licenseStore.graceDeadline).toEqual(new Date((FIXED_NOW_SEC + 86400) * 1000));
+	});
+});
+
+describe('formattedGraceDeadline', () => {
+	test('returns empty string when graceDeadline is null', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo({ status: 'active' });
+		expect(licenseStore.formattedGraceDeadline).toBe('');
+	});
+
+	test('returns a formatted date string when graceDeadline is set', () => {
+		const licenseStore = useLicenseStore();
+		const deadline = new Date((FIXED_NOW_SEC + 86400) * 1000);
+
+		licenseStore.info = createLicenseInfo({
+			status: 'grace',
+			name: 'Pro',
+			expires_at: FIXED_NOW_SEC,
+			grace_period: 86400,
+			renews_at: undefined,
+		});
+
+		expect(licenseStore.formattedGraceDeadline).toBe(Intl.DateTimeFormat().format(deadline));
+	});
+});
+
+describe('gracePeriodDaysRemaining', () => {
+	beforeEach(() => {
+		vi.spyOn(Date, 'now').mockReturnValue(FIXED_NOW_SEC * 1000);
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	test('returns null when graceDeadline is null', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo({ status: 'active' });
+		expect(licenseStore.gracePeriodDaysRemaining).toBeNull();
+	});
+
+	test('returns days remaining until deadline', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			status: 'grace',
+			name: 'Pro',
+			expires_at: FIXED_NOW_SEC,
+			grace_period: 3 * 86400,
+			renews_at: undefined,
+		});
+
+		expect(licenseStore.gracePeriodDaysRemaining).toBe(3);
+	});
+
+	test('returns 0 when deadline has passed', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			status: 'grace',
+			name: 'Pro',
+			expires_at: FIXED_NOW_SEC - 10 * 86400,
+			grace_period: 5 * 86400,
+			renews_at: undefined,
+		});
+
+		expect(licenseStore.gracePeriodDaysRemaining).toBe(0);
+	});
 });
 
 describe('limits', () => {

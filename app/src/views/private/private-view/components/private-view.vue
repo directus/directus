@@ -20,6 +20,7 @@ export interface PrivateViewProps {
 <script setup lang="ts">
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed } from 'vue';
+import LicenseLoginModal from '../../components/license/license-login-modal.vue';
 import LicenseBanner from '../../components/license-banner.vue';
 import LicenseOnboarding from '../../components/license-onboarding.vue';
 import LicenseResolutionPrompt from '../../components/license-resolution-prompt.vue';
@@ -27,6 +28,7 @@ import NotificationDialogs from '../../components/notification-dialogs.vue';
 import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
@@ -59,10 +61,15 @@ const appAccess = computed(() => {
 	return userStore.currentUser?.app_access || false;
 });
 
-const cookies = useCookies(['license-banner-dismissed', 'license-onboarding-dismissed']);
+const cookies = useCookies([
+	'license-banner-dismissed',
+	'license-onboarding-dismissed',
+	'license-login-modal-dismissed',
+]);
 
 const serverStore = useServerStore();
 const settingsStore = useSettingsStore();
+const licenseStore = useLicenseStore();
 
 const showLicenseBanner = computed({
 	get: () =>
@@ -84,6 +91,17 @@ const showLicenseOnboarding = computed({
 		!cookies.get('license-onboarding-dismissed'),
 	set: () => {
 		// close is handled by cookie and hydrate inside the modal
+	},
+});
+
+const showLicenseLoginModal = computed({
+	get: () =>
+		userStore.isAdmin &&
+		licenseStore.isCoreGrace &&
+		!showLicenseOnboarding.value &&
+		!cookies.get('license-login-modal-dismissed'),
+	set: () => {
+		// close is handled by cookie inside the modal
 	},
 });
 </script>
@@ -116,5 +134,6 @@ const showLicenseOnboarding = computed({
 
 	<LicenseBanner v-model="showLicenseBanner" />
 	<LicenseOnboarding v-model="showLicenseOnboarding" />
+	<LicenseLoginModal v-model="showLicenseLoginModal" />
 	<LicenseResolutionPrompt />
 </template>
