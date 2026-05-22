@@ -1,0 +1,49 @@
+name: CLA Assistant Comment
+
+# Keep this separate from the CLA check workflow: fork PR runs are intentionally
+# read-only, while this trusted workflow can write the sticky CLA comment after
+# reading only the minimal artifact signal from the completed check run.
+on:
+  workflow_run:
+    workflows: [CLA Assistant]
+    types: [completed]
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  comment:
+    name: Comment
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download CLA handoff
+        id: cla-missing
+        if: github.event.workflow_run.conclusion == 'failure'
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: cla-missing
+          path: cla-missing
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Comment on missing CLA
+        if: steps.cla-missing.outcome == 'success'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          message: |
+            Thank you for contributing to Directus.
+
+            Before we can consider this pull request, every contributor needs to sign the Contributor License Agreement (CLA).
+
+            Please review https://github.com/directus/directus/blob/main/cla.md and add the missing GitHub username(s) to contributors.yml in this pull request.
+
+      - name: Delete CLA comment
+        if: github.event.workflow_run.conclusion == 'success'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          delete: true
