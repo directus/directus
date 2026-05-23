@@ -123,8 +123,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items batch-insert', (pkType) => {
 
 				await resetQueryCounter(vendor);
 
+				// Narrow response to the columns this test owns. The shared `no-relation.seed`
+				// collection carries additional fields (group, date_published) on upstream
+				// that this test doesn't seed and doesn't care about; without fields= the
+				// strict `toEqual` below would tip over on those extra props.
 				const response = await request(getUrl(vendor))
 					.post(`/items/${localCollectionArtists}`)
+					.query({ fields: 'id,name,company' })
 					.send(artists)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -200,6 +205,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items batch-insert', (pkType) => {
 
 				const response = await request(getUrl(vendor))
 					.post(`/items/${localCollectionArtists}`)
+					.query({ fields: 'id,name,company' })
 					.send(artists)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -271,6 +277,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items batch-insert', (pkType) => {
 
 				const response = await request(getUrl(vendor))
 					.post(`/items/${localCollectionArtists}`)
+					.query({ fields: 'id,name,company' })
 					.send(artists)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
