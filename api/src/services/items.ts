@@ -295,7 +295,25 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const chunkSizeEnv = env['DB_BATCH_INSERT_CHUNK_SIZE'];
 					const chunkSize = chunkSizeEnv !== undefined ? Number(chunkSizeEnv) : undefined;
 
-					const rowsToInsert = prepared.map((p) => p.payloadWithoutAliases);
+					// SQLite's batchInsert path normalizes columns across all rows in the
+					// chunk; columns missing from a row are bound as `undefined`, which the
+					// driver translates to `NULL` and fails for non-nullable fields. Spread
+					// per-column defaults for non-nullable fields first so the payload only
+					// overrides what it explicitly sets. https://github.com/knex/knex/issues/332
+					const isSqlite = getDatabaseClient(trx) === 'sqlite';
+					const collectionFieldsSchema = this.schema.collections[this.collection]!.fields;
+
+					const sqliteFieldsRequiringValue: Record<string, unknown> = isSqlite
+						? Object.fromEntries(
+								Object.entries(collectionFieldsSchema)
+									.filter(([fieldName, field]) => fieldName !== primaryKeyField && field.nullable === false)
+									.map(([fieldName, field]) => [fieldName, field.defaultValue]),
+							)
+						: {};
+
+					const rowsToInsert = prepared.map((p) =>
+						isSqlite ? { ...sqliteFieldsRequiringValue, ...p.payloadWithoutAliases } : p.payloadWithoutAliases,
+					);
 
 					const insertedRows = (await trx
 						.batchInsert(this.collection, rowsToInsert, chunkSize)
