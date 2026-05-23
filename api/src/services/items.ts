@@ -122,319 +122,26 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	}
 
 	/**
-	 * Create a single new item.
+	 * Create a single new item. Thin wrapper around {@link createMany} so the
+	 * fast `knex.batchInsert` dispatch is the single insert path; both single-
+	 * and multi-row callers benefit from one tested implementation.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
-
-		if (!opts.bypassLimits) {
-			opts.mutationTracker.trackMutations(1);
-		}
-
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
-
-		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
-			.filter((field) => field.alias === true)
-			.map((field) => field.field);
-
-		const payload: AnyItem = cloneDeep(data);
-		let actionHookPayload = payload;
-		const nestedActionEvents: ActionEventParams[] = [];
-
-		/**
-		 * By wrapping the logic in a transaction, we make sure we automatically roll back all the
-		 * changes in the DB if any of the parts contained within throws an error. This also means
-		 * that any errors thrown in any nested relational changes will bubble up and cancel the whole
-		 * update tree
-		 */
-		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
-			// Run all hooks that are attached to this event so the end user has the chance to augment the
-			// item that is about to be saved
-			const payloadAfterHooks =
-				opts.emitEvents !== false
-					? await emitter.emitFilter(
-							this.eventScope === 'items'
-								? ['items.create', `${this.collection}.items.create`]
-								: `${this.eventScope}.create`,
-							payload,
-							{
-								collection: this.collection,
-							},
-							{
-								database: trx,
-								schema: this.schema,
-								accountability: this.accountability,
-							},
-						)
-					: payload;
-
-			const payloadWithPresets = this.accountability
-				? await processPayload(
-						{
-							accountability: this.accountability,
-							action: 'create',
-							collection: this.collection,
-							payload: payloadAfterHooks,
-							nested: this.nested,
-						},
-						{
-							knex: trx,
-							schema: this.schema,
-						},
-					)
-				: payloadAfterHooks;
-
-			if (opts.preMutationError) {
-				throw opts.preMutationError;
-			}
-
-			// Ensure the action hook payload has the post filter hook + preset changes
-			actionHookPayload = payloadWithPresets;
-
-			// We're creating new services instances so they can use the transaction as their Knex interface
-			const payloadService = new PayloadService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-				nested: this.nested,
-				overwriteDefaults: opts.overwriteDefaults,
-			});
-
-			const {
-				payload: payloadWithM2O,
-				revisions: revisionsM2O,
-				nestedActionEvents: nestedActionEventsM2O,
-				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
-			} = await payloadService.processM2O(payloadWithPresets, opts);
-
-			const {
-				payload: payloadWithA2O,
-				revisions: revisionsA2O,
-				nestedActionEvents: nestedActionEventsA2O,
-				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
-			} = await payloadService.processA2O(payloadWithM2O, opts);
-
-			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
-			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
-
-			// The primary key can already exist in the payload.
-			// In case of manual string / UUID primary keys it's always provided at this point.
-			// In case of an (big) integer primary key, it might be provided as the user can specify the value manually.
-			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
-
-			if (primaryKey) {
-				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
-			}
-
-			// If a PK of type number was provided, although the PK is set the auto_increment,
-			// depending on the database, the sequence might need to be reset to protect future PK collisions.
-			let autoIncrementSequenceNeedsToBeReset = false;
-
-			const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
-
-			if (
-				primaryKey &&
-				pkField &&
-				!opts.bypassAutoIncrementSequenceReset &&
-				['integer', 'bigInteger'].includes(pkField.type) &&
-				pkField.defaultValue === 'AUTO_INCREMENT'
-			) {
-				autoIncrementSequenceNeedsToBeReset = true;
-			}
-
-			try {
-				let returningOptions = undefined;
-
-				// Support MSSQL tables that have triggers.
-				if (getDatabaseClient(trx) === 'mssql') {
-					returningOptions = { includeTriggerModifications: true };
-				}
-
-				const result = await trx
-					.insert(payloadWithoutAliases)
-					.into(this.collection)
-					.returning(primaryKeyField, returningOptions)
-					.then((result) => result[0]);
-
-				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
-
-				if (pkField!.type === 'uuid') {
-					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);
-				} else {
-					primaryKey = primaryKey ?? returnedKey;
-				}
-			} catch (err: any) {
-				const dbError = await translateDatabaseError(err, data);
-
-				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
-					// This is a MySQL specific thing we need to handle here, since MySQL does not return the field name
-					// if the unique constraint is the primary key
-					dbError.extensions.field = pkField?.field ?? null;
-
-					delete dbError.extensions.primaryKey;
-				}
-
-				throw dbError;
-			}
-
-			// Most database support returning, those who don't tend to return the PK anyways
-			// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
-			// fetching it based on the last inserted row
-			if (!primaryKey) {
-				// Fetching it with max should be safe, as we're in the context of the current transaction
-				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
-				primaryKey = result.id;
-
-				// Set the primary key on the input item, in order for the "after" event hook to be able
-				// to read from it
-				actionHookPayload[primaryKeyField] = primaryKey;
-			}
-
-			// At this point, the primary key is guaranteed to be set.
-			primaryKey = primaryKey as PrimaryKey;
-
-			const {
-				revisions: revisionsO2M,
-				nestedActionEvents: nestedActionEventsO2M,
-				userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
-			} = await payloadService.processO2M(payloadWithPresets, primaryKey, opts);
-
-			nestedActionEvents.push(...nestedActionEventsM2O);
-			nestedActionEvents.push(...nestedActionEventsA2O);
-			nestedActionEvents.push(...nestedActionEventsO2M);
-
-			const userIntegrityCheckFlags =
-				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) |
-				userIntegrityCheckFlagsM2O |
-				userIntegrityCheckFlagsA2O |
-				userIntegrityCheckFlagsO2M;
-
-			if (userIntegrityCheckFlags) {
-				if (opts.onRequireUserIntegrityCheck) {
-					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
-				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
-				}
-			}
-
-			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (
-				opts.skipTracking !== true &&
-				this.accountability &&
-				this.schema.collections[this.collection]!.accountability !== null
-			) {
-				const { ActivityService } = await import('./activity.js');
-				const { RevisionsService } = await import('./revisions.js');
-
-				const activityService = new ActivityService({
-					knex: trx,
-					schema: this.schema,
-				});
-
-				const activity = await activityService.createOne({
-					action: Action.CREATE,
-					user: this.accountability!.user,
-					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
-					origin: this.accountability!.origin,
-					item: primaryKey,
-				});
-
-				// If revisions are tracked, create revisions record
-				if (this.schema.collections[this.collection]!.accountability === 'all') {
-					const revisionsService = new RevisionsService({
-						knex: trx,
-						schema: this.schema,
-					});
-
-					const relationalFields = getRelationsForCollection(this.schema, this.collection);
-
-					const revisionPayload = await payloadService.prepareDelta(omit(payloadWithPresets, relationalFields));
-
-					const revision = await revisionsService.createOne({
-						activity: activity,
-						collection: this.collection,
-						item: primaryKey,
-						data: revisionPayload,
-						delta: revisionPayload,
-					});
-
-					// Make sure to set the parent field of the child-revision rows
-					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
-
-					if (childrenRevisions.length > 0) {
-						await revisionsService.updateMany(childrenRevisions, { parent: revision });
-					}
-
-					if (opts.onRevisionCreate) {
-						opts.onRevisionCreate(revision);
-					}
-				}
-			}
-
-			if (autoIncrementSequenceNeedsToBeReset) {
-				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
-			}
-
-			if (opts.onItemCreate) {
-				opts.onItemCreate(this.collection, primaryKey);
-			}
-
-			return primaryKey;
-		});
-
-		if (opts.emitEvents !== false) {
-			const actionEvent = {
-				event:
-					this.eventScope === 'items'
-						? ['items.create', `${this.collection}.items.create`]
-						: `${this.eventScope}.create`,
-				meta: {
-					payload: actionHookPayload,
-					key: primaryKey,
-					collection: this.collection,
-				},
-				context: {
-					database: getDatabase(),
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			};
-
-			if (opts.bypassEmitAction) {
-				opts.bypassEmitAction(actionEvent);
-			} else {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
-			}
-
-			for (const nestedActionEvent of nestedActionEvents) {
-				if (opts.bypassEmitAction) {
-					opts.bypassEmitAction(nestedActionEvent);
-				} else {
-					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-				}
-			}
-		}
-
-		if (shouldClearCache(this.cache, opts, this.collection)) {
-			await this.cache.clear();
-		}
-
-		return primaryKey;
+		const [primaryKey] = await this.createMany([data], opts);
+		return primaryKey as PrimaryKey;
 	}
 
 	/**
-	 * Create multiple new items at once, wrapped in a transaction.
+	 * Create one or more new items, wrapped in a transaction.
 	 *
 	 * Fast path: vendors whose `INSERT … RETURNING` is contractually ordered
-	 * (see `CapabilitiesHelper.preservesInsertOrderInReturning`) use a single
+	 * (see `CapabilitiesHelper.preservesInsertOrderInReturning`) emit a single
 	 * `knex.batchInsert` and map the returned PKs back positionally.
 	 *
-	 * Fallback: per-row `this.createOne` loop (identical to the pre-batchInsert
-	 * implementation), used for MySQL/MariaDB and other vendors where RETURNING
-	 * order isn't guaranteed.
+	 * Slow path: per-row `trx.insert(row).into(...).returning(pk, returningOptions)`
+	 * inline (no recursion through `createOne`). Used for MySQL / MariaDB and
+	 * MSSQL when `DB_MSSQL_TRUST_BATCH_RETURNING` isn't opted in. The MSSQL
+	 * `includeTriggerModifications` returning option is preserved on this path.
 	 *
 	 * The `DB_BATCH_INSERT_CHUNK_SIZE` env var (knex passthrough, default 1000)
 	 * tunes the fast path; `DB_MSSQL_TRUST_BATCH_RETURNING` opts MSSQL into it.
@@ -446,56 +153,368 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			return [];
 		}
 
-		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
-			const useBatchInsert = data.length > 1 && (await getHelpers(knex).capabilities.preservesInsertOrderInReturning());
+		if (!opts.bypassLimits) {
+			opts.mutationTracker.trackMutations(data.length);
+		}
 
-			if (useBatchInsert) {
-				return await this.createManyBatched(data, opts, knex);
-			}
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 
-			const service = this.fork({ knex });
+		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
+			.filter((field) => field.alias === true)
+			.map((field) => field.field);
 
-			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+		const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
 
-			const primaryKeys: PrimaryKey[] = [];
+		type ActionPayload = { primaryKey: PrimaryKey; actionHookPayload: AnyItem };
+
+		const { primaryKeys, nestedActionEvents, actionPayloads } = await transaction(this.knex, async (trx) => {
 			const nestedActionEvents: ActionEventParams[] = [];
+			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+			let autoIncrementSequenceNeedsToBeReset = false;
 
-			const pkField = this.schema.collections[this.collection]!.primary;
+			type PreparedRow = {
+				actionHookPayload: AnyItem;
+				payloadAfterHooks: AnyItem;
+				payloadWithPresets: AnyItem;
+				payloadWithoutAliases: Record<string, unknown>;
+				primaryKey: PrimaryKey | undefined;
+				revisionsM2O: Awaited<ReturnType<PayloadService['processM2O']>>['revisions'];
+				revisionsA2O: Awaited<ReturnType<PayloadService['processA2O']>>['revisions'];
+				nestedActionEventsM2O: ActionEventParams[];
+				nestedActionEventsA2O: ActionEventParams[];
+				userIntegrityCheckFlagsM2O: UserIntegrityCheckFlag;
+				userIntegrityCheckFlagsA2O: UserIntegrityCheckFlag;
+				payloadService: PayloadService;
+			};
 
-			for (const [index, payload] of data.entries()) {
-				let bypassAutoIncrementSequenceReset = true;
+			// === Per-row prep: filter hooks, presets, M2O / A2O processing ===
+			const prepared: PreparedRow[] = [];
 
-				// the auto_increment sequence needs to be reset if the current item contains a manual PK and
-				// if it's the last item of the batch or if the next item doesn't include a PK and hence one needs to be generated
-				if (payload[pkField] && (index === data.length - 1 || !data[index + 1]?.[pkField])) {
-					bypassAutoIncrementSequenceReset = false;
+			for (const [index, payloadInput] of data.entries()) {
+				const payload: AnyItem = cloneDeep(payloadInput);
+
+				const payloadAfterHooks =
+					opts.emitEvents !== false
+						? await emitter.emitFilter(
+								this.eventScope === 'items'
+									? ['items.create', `${this.collection}.items.create`]
+									: `${this.eventScope}.create`,
+								payload,
+								{ collection: this.collection },
+								{
+									database: trx,
+									schema: this.schema,
+									accountability: this.accountability,
+								},
+							)
+						: payload;
+
+				const payloadWithPresets = this.accountability
+					? await processPayload(
+							{
+								accountability: this.accountability,
+								action: 'create',
+								collection: this.collection,
+								payload: payloadAfterHooks,
+								nested: this.nested,
+							},
+							{ knex: trx, schema: this.schema },
+						)
+					: payloadAfterHooks;
+
+				if (opts.preMutationError) {
+					throw opts.preMutationError;
 				}
 
-				const primaryKey = await service.createOne(payload, {
-					...(opts || {}),
-					autoPurgeCache: false,
-					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-					bypassEmitAction: (params) => nestedActionEvents.push(params),
-					mutationTracker: opts.mutationTracker,
+				const actionHookPayload = payloadWithPresets;
+
+				const payloadService = new PayloadService(this.collection, {
+					accountability: this.accountability,
+					knex: trx,
+					schema: this.schema,
+					nested: this.nested,
 					overwriteDefaults: opts.overwriteDefaults?.[index],
-					bypassAutoIncrementSequenceReset,
 				});
 
-				primaryKeys.push(primaryKey);
+				const {
+					payload: payloadWithM2O,
+					revisions: revisionsM2O,
+					nestedActionEvents: nestedActionEventsM2O,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
+				} = await payloadService.processM2O(payloadWithPresets, opts);
+
+				const {
+					payload: payloadWithA2O,
+					revisions: revisionsA2O,
+					nestedActionEvents: nestedActionEventsA2O,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
+				} = await payloadService.processA2O(payloadWithM2O, opts);
+
+				const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
+				const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
+
+				const primaryKey: PrimaryKey | undefined = payloadWithTypeCasting[primaryKeyField];
+
+				if (primaryKey) {
+					validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
+				}
+
+				if (
+					primaryKey &&
+					pkField &&
+					!opts.bypassAutoIncrementSequenceReset &&
+					['integer', 'bigInteger'].includes(pkField.type) &&
+					pkField.defaultValue === 'AUTO_INCREMENT'
+				) {
+					autoIncrementSequenceNeedsToBeReset = true;
+				}
+
+				prepared.push({
+					actionHookPayload,
+					payloadAfterHooks,
+					payloadWithPresets,
+					payloadWithoutAliases,
+					primaryKey,
+					revisionsM2O,
+					revisionsA2O,
+					nestedActionEventsM2O,
+					nestedActionEventsA2O,
+					userIntegrityCheckFlagsM2O,
+					userIntegrityCheckFlagsA2O,
+					payloadService,
+				});
+			}
+
+			// === Insert dispatch: batched (fast) or per-row (slow) ===
+			const useBatchInsert =
+				prepared.length > 1 && (await getHelpers(trx).capabilities.preservesInsertOrderInReturning());
+
+			try {
+				if (useBatchInsert) {
+					const chunkSizeEnv = env['DB_BATCH_INSERT_CHUNK_SIZE'];
+					const chunkSize = chunkSizeEnv !== undefined ? Number(chunkSizeEnv) : undefined;
+
+					const rowsToInsert = prepared.map((p) => p.payloadWithoutAliases);
+
+					const insertedRows = (await trx
+						.batchInsert(this.collection, rowsToInsert, chunkSize)
+						.returning(primaryKeyField)) as unknown as Array<Record<string, unknown> | PrimaryKey>;
+
+					if (insertedRows.length !== prepared.length) {
+						throw new Error(`batchInsert returned ${insertedRows.length} rows but expected ${prepared.length}`);
+					}
+
+					for (let i = 0; i < prepared.length; i++) {
+						const row = insertedRows[i]!;
+						const p = prepared[i]!;
+
+						const returnedKey =
+							typeof row === 'object' && row !== null ? (row as Record<string, unknown>)[primaryKeyField] : row;
+
+						if (pkField?.type === 'uuid') {
+							p.primaryKey = getHelpers(trx).schema.formatUUID((p.primaryKey ?? (returnedKey as string)) as string);
+						} else {
+							p.primaryKey = (p.primaryKey ?? returnedKey) as PrimaryKey;
+						}
+
+						p.actionHookPayload[primaryKeyField] = p.primaryKey;
+					}
+				} else {
+					// Per-row insert path. Mirrors upstream's pre-batchInsert `createOne`
+					// so MSSQL triggers + the max(pk) fallback for vendors that don't
+					// return a PK both still work.
+					let returningOptions: { includeTriggerModifications: true } | undefined;
+
+					if (getDatabaseClient(trx) === 'mssql') {
+						returningOptions = { includeTriggerModifications: true };
+					}
+
+					for (const p of prepared) {
+						const result = await trx
+							.insert(p.payloadWithoutAliases)
+							.into(this.collection)
+							.returning(primaryKeyField, returningOptions)
+							.then((rows) => rows[0]);
+
+						const returnedKey =
+							typeof result === 'object' && result !== null
+								? (result as Record<string, unknown>)[primaryKeyField]
+								: result;
+
+						if (pkField?.type === 'uuid') {
+							p.primaryKey = getHelpers(trx).schema.formatUUID((p.primaryKey ?? (returnedKey as string)) as string);
+						} else {
+							p.primaryKey = (p.primaryKey ?? returnedKey) as PrimaryKey;
+						}
+
+						if (!p.primaryKey) {
+							// Best-effort PK lookup for vendors / driver paths where
+							// RETURNING didn't surface one (legacy MySQL / SQLite).
+							const maxResult = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
+
+							p.primaryKey = maxResult?.id;
+						}
+
+						p.actionHookPayload[primaryKeyField] = p.primaryKey;
+					}
+				}
+			} catch (err: any) {
+				const dbError = await translateDatabaseError(err, data);
+
+				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
+					dbError.extensions.field = pkField?.field ?? null;
+					delete dbError.extensions.primaryKey;
+				}
+
+				throw dbError;
+			}
+
+			// === Per-row post-insert: O2M, integrity flags, nested action events ===
+			type PostRow = PreparedRow & {
+				primaryKey: PrimaryKey;
+				revisionsO2M: Awaited<ReturnType<PayloadService['processO2M']>>['revisions'];
+				nestedActionEventsO2M: ActionEventParams[];
+			};
+
+			const postPrepared: PostRow[] = [];
+
+			for (const p of prepared) {
+				const primaryKey = p.primaryKey as PrimaryKey;
+
+				const {
+					revisions: revisionsO2M,
+					nestedActionEvents: nestedActionEventsO2M,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
+				} = await p.payloadService.processO2M(p.payloadWithPresets, primaryKey, opts);
+
+				userIntegrityCheckFlags |=
+					p.userIntegrityCheckFlagsM2O | p.userIntegrityCheckFlagsA2O | userIntegrityCheckFlagsO2M;
+
+				nestedActionEvents.push(...p.nestedActionEventsM2O, ...p.nestedActionEventsA2O, ...nestedActionEventsO2M);
+
+				postPrepared.push({
+					...p,
+					primaryKey,
+					revisionsO2M,
+					nestedActionEventsO2M,
+				});
 			}
 
 			if (userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
 				}
 			}
 
-			return { primaryKeys, nestedActionEvents };
+			// === Activity + revisions, batched via createMany on those services ===
+			if (
+				opts.skipTracking !== true &&
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null
+			) {
+				const { ActivityService } = await import('./activity.js');
+				const { RevisionsService } = await import('./revisions.js');
+
+				const activityService = new ActivityService({ knex: trx, schema: this.schema });
+
+				const activityIds = await activityService.createMany(
+					postPrepared.map((p) => ({
+						action: Action.CREATE,
+						user: this.accountability!.user,
+						collection: this.collection,
+						ip: this.accountability!.ip,
+						user_agent: this.accountability!.userAgent,
+						origin: this.accountability!.origin,
+						item: p.primaryKey,
+					})),
+				);
+
+				if (this.schema.collections[this.collection]!.accountability === 'all') {
+					const revisionsService = new RevisionsService({ knex: trx, schema: this.schema });
+					const relationalFields = getRelationsForCollection(this.schema, this.collection);
+
+					const revisionInputs = await Promise.all(
+						postPrepared.map(async (p, index) => {
+							const revisionPayload = await p.payloadService.prepareDelta(omit(p.payloadWithPresets, relationalFields));
+
+							return {
+								activity: activityIds[index]!,
+								collection: this.collection,
+								item: p.primaryKey,
+								data: revisionPayload,
+								delta: revisionPayload,
+							};
+						}),
+					);
+
+					const revisionIds = await revisionsService.createMany(revisionInputs);
+
+					for (let i = 0; i < postPrepared.length; i++) {
+						const p = postPrepared[i]!;
+						const revisionId = revisionIds[i]!;
+						const childrenRevisions = [...p.revisionsM2O, ...p.revisionsA2O, ...p.revisionsO2M];
+
+						if (childrenRevisions.length > 0) {
+							await revisionsService.updateMany(childrenRevisions, { parent: revisionId });
+						}
+
+						if (opts.onRevisionCreate) {
+							opts.onRevisionCreate(revisionId);
+						}
+					}
+				}
+			}
+
+			if (autoIncrementSequenceNeedsToBeReset) {
+				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
+			}
+
+			if (opts.onItemCreate) {
+				for (const p of postPrepared) {
+					opts.onItemCreate(this.collection, p.primaryKey);
+				}
+			}
+
+			return {
+				primaryKeys: postPrepared.map((p) => p.primaryKey),
+				nestedActionEvents,
+				actionPayloads: postPrepared.map(
+					(p): ActionPayload => ({ primaryKey: p.primaryKey, actionHookPayload: p.actionHookPayload }),
+				),
+			};
 		});
 
+		// Top-level action events fire AFTER the transaction commits, so listeners
+		// observe a durable row.
 		if (opts.emitEvents !== false) {
+			const eventName =
+				this.eventScope === 'items' ? ['items.create', `${this.collection}.items.create`] : `${this.eventScope}.create`;
+
+			for (const { primaryKey, actionHookPayload } of actionPayloads) {
+				const actionEvent = {
+					event: eventName,
+					meta: {
+						payload: actionHookPayload,
+						key: primaryKey,
+						collection: this.collection,
+					},
+					context: {
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				};
+
+				if (opts.bypassEmitAction) {
+					opts.bypassEmitAction(actionEvent);
+				} else {
+					emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+				}
+			}
+
 			for (const nestedActionEvent of nestedActionEvents) {
 				if (opts.bypassEmitAction) {
 					opts.bypassEmitAction(nestedActionEvent);
@@ -510,320 +529,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		return primaryKeys;
-	}
-
-	/**
-	 * Batched `createMany` fast path: prep every payload up front, run one
-	 * multi-row INSERT (`knex.batchInsert`), then process O2M / activity /
-	 * revisions in bulk. Only safe for vendors where RETURNING preserves
-	 * insertion order — gated by `CapabilitiesHelper.preservesInsertOrderInReturning`.
-	 */
-	private async createManyBatched(
-		data: Partial<Item>[],
-		opts: MutationOptions,
-		trx: Knex.Transaction,
-	): Promise<{ primaryKeys: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
-		if (!opts.bypassLimits) {
-			opts.mutationTracker!.trackMutations(data.length);
-		}
-
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
-
-		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
-			.filter((field) => field.alias === true)
-			.map((field) => field.field);
-
-		const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
-
-		const nestedActionEvents: ActionEventParams[] = [];
-		let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
-		let autoIncrementSequenceNeedsToBeReset = false;
-
-		type PreparedRow = {
-			actionHookPayload: AnyItem;
-			payloadAfterHooks: AnyItem;
-			payloadWithPresets: AnyItem;
-			payloadWithoutAliases: Record<string, unknown>;
-			primaryKey: PrimaryKey | undefined;
-			revisionsM2O: Awaited<ReturnType<PayloadService['processM2O']>>['revisions'];
-			revisionsA2O: Awaited<ReturnType<PayloadService['processA2O']>>['revisions'];
-			nestedActionEventsM2O: ActionEventParams[];
-			nestedActionEventsA2O: ActionEventParams[];
-			userIntegrityCheckFlagsM2O: UserIntegrityCheckFlag;
-			userIntegrityCheckFlagsA2O: UserIntegrityCheckFlag;
-			payloadService: PayloadService;
-		};
-
-		const prepared: PreparedRow[] = [];
-
-		for (const [index, payloadInput] of data.entries()) {
-			const payload: AnyItem = cloneDeep(payloadInput);
-
-			const payloadAfterHooks =
-				opts.emitEvents !== false
-					? await emitter.emitFilter(
-							this.eventScope === 'items'
-								? ['items.create', `${this.collection}.items.create`]
-								: `${this.eventScope}.create`,
-							payload,
-							{ collection: this.collection },
-							{
-								database: trx,
-								schema: this.schema,
-								accountability: this.accountability,
-							},
-						)
-					: payload;
-
-			const payloadWithPresets = this.accountability
-				? await processPayload(
-						{
-							accountability: this.accountability,
-							action: 'create',
-							collection: this.collection,
-							payload: payloadAfterHooks,
-							nested: this.nested,
-						},
-						{ knex: trx, schema: this.schema },
-					)
-				: payloadAfterHooks;
-
-			if (opts.preMutationError) {
-				throw opts.preMutationError;
-			}
-
-			const actionHookPayload = payloadWithPresets;
-
-			const payloadService = new PayloadService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-				nested: this.nested,
-				overwriteDefaults: opts.overwriteDefaults?.[index],
-			});
-
-			const {
-				payload: payloadWithM2O,
-				revisions: revisionsM2O,
-				nestedActionEvents: nestedActionEventsM2O,
-				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
-			} = await payloadService.processM2O(payloadWithPresets, opts);
-
-			const {
-				payload: payloadWithA2O,
-				revisions: revisionsA2O,
-				nestedActionEvents: nestedActionEventsA2O,
-				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
-			} = await payloadService.processA2O(payloadWithM2O, opts);
-
-			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
-			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
-
-			const primaryKey: PrimaryKey | undefined = payloadWithTypeCasting[primaryKeyField];
-
-			if (primaryKey) {
-				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
-			}
-
-			if (
-				primaryKey &&
-				pkField &&
-				!opts.bypassAutoIncrementSequenceReset &&
-				['integer', 'bigInteger'].includes(pkField.type) &&
-				pkField.defaultValue === 'AUTO_INCREMENT'
-			) {
-				autoIncrementSequenceNeedsToBeReset = true;
-			}
-
-			prepared.push({
-				actionHookPayload,
-				payloadAfterHooks,
-				payloadWithPresets,
-				payloadWithoutAliases,
-				primaryKey,
-				revisionsM2O,
-				revisionsA2O,
-				nestedActionEventsM2O,
-				nestedActionEventsA2O,
-				userIntegrityCheckFlagsM2O,
-				userIntegrityCheckFlagsA2O,
-				payloadService,
-			});
-		}
-
-		try {
-			const rowsToInsert = prepared.map((p) => p.payloadWithoutAliases);
-
-			// undefined → knex default chunk size (1000): https://knexjs.org/guide/query-builder.html#batchinsert
-			const chunkSizeEnv = env['DB_BATCH_INSERT_CHUNK_SIZE'];
-			const chunkSize = chunkSizeEnv !== undefined ? Number(chunkSizeEnv) : undefined;
-
-			const insertedRows = (await trx
-				.batchInsert(this.collection, rowsToInsert, chunkSize)
-				.returning(primaryKeyField)) as unknown as Array<Record<string, unknown> | PrimaryKey>;
-
-			if (insertedRows.length !== prepared.length) {
-				throw new Error(`batchInsert returned ${insertedRows.length} rows but expected ${prepared.length}`);
-			}
-
-			for (let i = 0; i < prepared.length; i++) {
-				const row = insertedRows[i]!;
-				const p = prepared[i]!;
-
-				const returnedKey =
-					typeof row === 'object' && row !== null ? (row as Record<string, unknown>)[primaryKeyField] : row;
-
-				if (pkField?.type === 'uuid') {
-					p.primaryKey = getHelpers(trx).schema.formatUUID((p.primaryKey ?? (returnedKey as string)) as string);
-				} else {
-					p.primaryKey = (p.primaryKey ?? returnedKey) as PrimaryKey;
-				}
-
-				p.actionHookPayload[primaryKeyField] = p.primaryKey;
-			}
-		} catch (err: any) {
-			const dbError = await translateDatabaseError(err, data);
-
-			if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
-				dbError.extensions.field = pkField?.field ?? null;
-				delete dbError.extensions.primaryKey;
-			}
-
-			throw dbError;
-		}
-
-		type PostRow = PreparedRow & {
-			primaryKey: PrimaryKey;
-			revisionsO2M: Awaited<ReturnType<PayloadService['processO2M']>>['revisions'];
-			nestedActionEventsO2M: ActionEventParams[];
-		};
-
-		const postPrepared: PostRow[] = [];
-
-		for (const p of prepared) {
-			const primaryKey = p.primaryKey as PrimaryKey;
-
-			const {
-				revisions: revisionsO2M,
-				nestedActionEvents: nestedActionEventsO2M,
-				userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
-			} = await p.payloadService.processO2M(p.payloadWithPresets, primaryKey, opts);
-
-			userIntegrityCheckFlags |=
-				p.userIntegrityCheckFlagsM2O | p.userIntegrityCheckFlagsA2O | userIntegrityCheckFlagsO2M;
-
-			nestedActionEvents.push(...p.nestedActionEventsM2O, ...p.nestedActionEventsA2O, ...nestedActionEventsO2M);
-
-			postPrepared.push({
-				...p,
-				primaryKey,
-				revisionsO2M,
-				nestedActionEventsO2M,
-			});
-		}
-
-		if (userIntegrityCheckFlags) {
-			if (opts.onRequireUserIntegrityCheck) {
-				opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
-			} else {
-				await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
-			}
-		}
-
-		if (
-			opts.skipTracking !== true &&
-			this.accountability &&
-			this.schema.collections[this.collection]!.accountability !== null
-		) {
-			const { ActivityService } = await import('./activity.js');
-			const { RevisionsService } = await import('./revisions.js');
-
-			const activityService = new ActivityService({ knex: trx, schema: this.schema });
-
-			const activityIds = await activityService.createMany(
-				postPrepared.map((p) => ({
-					action: Action.CREATE,
-					user: this.accountability!.user,
-					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
-					origin: this.accountability!.origin,
-					item: p.primaryKey,
-				})),
-			);
-
-			if (this.schema.collections[this.collection]!.accountability === 'all') {
-				const revisionsService = new RevisionsService({ knex: trx, schema: this.schema });
-				const relationalFields = getRelationsForCollection(this.schema, this.collection);
-
-				const revisionInputs = await Promise.all(
-					postPrepared.map(async (p, index) => {
-						const revisionPayload = await p.payloadService.prepareDelta(omit(p.payloadWithPresets, relationalFields));
-
-						return {
-							activity: activityIds[index]!,
-							collection: this.collection,
-							item: p.primaryKey,
-							data: revisionPayload,
-							delta: revisionPayload,
-						};
-					}),
-				);
-
-				const revisionIds = await revisionsService.createMany(revisionInputs);
-
-				for (let i = 0; i < postPrepared.length; i++) {
-					const p = postPrepared[i]!;
-					const revisionId = revisionIds[i]!;
-					const childrenRevisions = [...p.revisionsM2O, ...p.revisionsA2O, ...p.revisionsO2M];
-
-					if (childrenRevisions.length > 0) {
-						await revisionsService.updateMany(childrenRevisions, { parent: revisionId });
-					}
-
-					if (opts.onRevisionCreate) {
-						opts.onRevisionCreate(revisionId);
-					}
-				}
-			}
-		}
-
-		if (autoIncrementSequenceNeedsToBeReset) {
-			await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
-		}
-
-		if (opts.onItemCreate) {
-			for (const p of postPrepared) {
-				opts.onItemCreate(this.collection, p.primaryKey);
-			}
-		}
-
-		if (opts.emitEvents !== false) {
-			for (const p of postPrepared) {
-				nestedActionEvents.push({
-					event:
-						this.eventScope === 'items'
-							? ['items.create', `${this.collection}.items.create`]
-							: `${this.eventScope}.create`,
-					meta: {
-						payload: p.actionHookPayload,
-						key: p.primaryKey,
-						collection: this.collection,
-					},
-					context: {
-						database: getDatabase(),
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				});
-			}
-		}
-
-		return {
-			primaryKeys: postPrepared.map((p) => p.primaryKey),
-			nestedActionEvents,
-		};
 	}
 
 	/**
