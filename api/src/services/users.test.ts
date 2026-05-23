@@ -96,40 +96,9 @@ describe('Integration Tests', () => {
 			vi.clearAllMocks();
 		});
 
-		describe('createOne', () => {
-			it('should not checkUniqueEmails', async () => {
-				await service.createOne({});
-
-				expect(checkUniqueEmailsSpy).not.toBeCalled();
-			});
-
-			it('should checkUniqueEmails once', async () => {
-				await service.createOne({ email: 'test@example.com' });
-
-				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
-			});
-
-			it('should not checkPasswordPolicy', async () => {
-				await service.createOne({});
-
-				expect(checkPasswordPolicySpy).not.toBeCalled();
-			});
-
-			it('should checkPasswordPolicy once', async () => {
-				await service.createOne({ password: 'testpassword' });
-
-				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
-			});
-
-			it('should request user limits checks', async () => {
-				const opts: MutationOptions = {};
-
-				await service.createOne({}, opts);
-
-				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
-			});
-		});
-
+		// NOTE: no `createOne` block — since the batchInsert refactor `createOne` is
+		// a thin `[pk] = await createMany([data])` wrapper, so the createMany tests
+		// below exercise the same per-row validation path.
 		describe('createMany', () => {
 			vi.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([1]);
 

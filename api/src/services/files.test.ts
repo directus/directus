@@ -58,7 +58,11 @@ describe('Service / Files', () => {
 		resetKnexMocks(tracker, mockSchemaBuilder);
 	});
 
-	describe('createOne', () => {
+	// Since the batchInsert refactor, `createOne` is a thin `await createMany([data])`
+	// wrapper on `ItemsService`. FilesService's per-row validation moved to its
+	// `createMany` override — so these assertions spy on `createMany` rather than
+	// `createOne` to verify what the override forwarded to the parent class.
+	describe('createMany', () => {
 		let service: FilesService;
 
 		beforeEach(() => {
@@ -70,17 +74,19 @@ describe('Service / Files', () => {
 
 		test('throws InvalidPayloadError when "type" is not provided', async () => {
 			try {
-				await service.createOne({
-					title: 'Test File',
-					storage: 'local',
-					filename_download: 'test_file',
-				});
+				await service.createMany([
+					{
+						title: 'Test File',
+						storage: 'local',
+						filename_download: 'test_file',
+					},
+				]);
 			} catch (err: any) {
 				expect(err).toBeInstanceOf(InvalidPayloadError);
 				expect(err.message).toBe('Invalid payload. "type" is required.');
 			}
 
-			expect(ItemsService.prototype.createOne).not.toHaveBeenCalled();
+			expect(ItemsService.prototype.createMany).not.toHaveBeenCalled();
 		});
 
 		test('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
@@ -88,41 +94,49 @@ describe('Service / Files', () => {
 				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
 				.response([{ filename_disk: 'existing-file.jpg' }]);
 
-			await service.createOne({
-				type: 'application/octet-stream',
-				filename_disk: 'existing-file.jpg',
-			});
-
-			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
+			await service.createMany([
 				{
 					type: 'application/octet-stream',
 					filename_disk: 'existing-file.jpg',
 				},
+			]);
+
+			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(
+				[
+					{
+						type: 'application/octet-stream',
+						filename_disk: 'existing-file.jpg',
+					},
+				],
 				expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
 			);
 		});
 
 		test('creates a file entry when "type" is provided', async () => {
-			await service.createOne({
-				title: 'Test File',
-				storage: 'local',
-				filename_download: 'test_file',
-				type: 'application/octet-stream',
-			});
+			await service.createMany([
+				{
+					title: 'Test File',
+					storage: 'local',
+					filename_download: 'test_file',
+					type: 'application/octet-stream',
+				},
+			]);
 
-			expect(ItemsService.prototype.createOne).toHaveBeenCalled();
+			expect(ItemsService.prototype.createMany).toHaveBeenCalled();
 		});
 
 		test('should normalize filename_disk path', async () => {
 			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
 
-			await service.createOne({
-				type: 'application/octet-stream',
-				filename_disk: '/folder/../new-file.jpg',
-			});
+			await service.createMany([
+				{
+					type: 'application/octet-stream',
+					filename_disk: '/folder/../new-file.jpg',
+				},
+			]);
 
-			expect(ItemsService.prototype.createOne).toHaveBeenCalledWith(
-				{ filename_disk: 'new-file.jpg', type: 'application/octet-stream' },
+			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(
+				[{ filename_disk: 'new-file.jpg', type: 'application/octet-stream' }],
 				{},
 			);
 		});
