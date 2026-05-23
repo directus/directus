@@ -187,33 +187,10 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create a new user
 	 */
-	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		try {
-			if ('email' in data && data['email'] !== undefined) {
-				this.validateEmail(data['email']);
-				await this.checkUniqueEmails([data['email']]);
-			}
-
-			if ('password' in data) {
-				await this.checkPasswordPolicy([data['password']]);
-			}
-		} catch (err: any) {
-			opts.preMutationError = err;
-		}
-
-		if (!('status' in data) || data['status'] === 'active') {
-			// Creating a user only requires checking user limits if the user is active, no need to care about the role
-			opts.userIntegrityCheckFlags =
-				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
-
-			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
-		}
-
-		return await super.createOne(data, opts);
-	}
-
 	/**
-	 * Create multiple new users
+	 * Create one or more new users. `createOne` (now a `createMany([data])`
+	 * wrapper on `ItemsService`) routes through here, so per-row validation
+	 * naturally collapses into the array form below.
 	 */
 	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		const emails = data.map((payload) => payload['email']).filter((email) => email);

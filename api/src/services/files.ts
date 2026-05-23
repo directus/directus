@@ -337,24 +337,28 @@ export class FilesService extends ItemsService<File> {
 	/**
 	 * Create a file
 	 */
-	override async createOne(data: Partial<File>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		if (!data.type) {
-			throw new InvalidPayloadError({ reason: `"type" is required` });
-		}
+	override async createMany(data: Partial<File>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		// `ItemsService.createMany` is the single insert path now (`createOne` wraps
+		// it); run the per-row validation + filename rewrite up front so a bad row
+		// aborts the whole batch before any insert happens.
+		for (const item of data) {
+			if (!item.type) {
+				throw new InvalidPayloadError({ reason: `"type" is required` });
+			}
 
-		if (data.filename_disk) {
-			data.filename_disk = this.generateFilenamePath(data.filename_disk);
+			if (item.filename_disk) {
+				item.filename_disk = this.generateFilenamePath(item.filename_disk);
 
-			try {
-				await this.checkUniqueFilename(data.filename_disk);
-			} catch (err: any) {
-				// Defer the error to be thrown until after permission checks
-				opts.preMutationError = err;
+				try {
+					await this.checkUniqueFilename(item.filename_disk);
+				} catch (err: any) {
+					// Defer the error to be thrown until after permission checks
+					opts.preMutationError = err;
+				}
 			}
 		}
 
-		const key = await super.createOne(data, opts);
-		return key;
+		return super.createMany(data, opts);
 	}
 
 	/**

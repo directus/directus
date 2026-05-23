@@ -26,28 +26,32 @@ export class CommentsService extends ItemsService {
 		this.usersService = new UsersService({ schema: this.schema });
 	}
 
-	override async createOne(data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createMany(data: Partial<Comment>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
-		if (!data['comment']) {
-			throw new InvalidPayloadError({ reason: `"comment" is required` });
-		}
+		// Pre-insert: validate every payload before any insert runs so a bad row
+		// aborts the batch cleanly. `ItemsService.createMany` is the single insert
+		// path now (`createOne` wraps it), so this is the only place per-row
+		// validation can live.
+		for (const item of data) {
+			if (!item['comment']) {
+				throw new InvalidPayloadError({ reason: `"comment" is required` });
+			}
 
-		if (!data['collection']) {
-			throw new InvalidPayloadError({ reason: `"collection" is required` });
-		}
+			if (!item['collection']) {
+				throw new InvalidPayloadError({ reason: `"collection" is required` });
+			}
 
-		if (!data['item']) {
-			throw new InvalidPayloadError({ reason: `"item" is required` });
-		}
+			if (!item['item']) {
+				throw new InvalidPayloadError({ reason: `"item" is required` });
+			}
 
-		if (this.accountability) {
 			await validateAccess(
 				{
 					accountability: this.accountability,
 					action: 'read',
-					collection: data['collection'],
-					primaryKeys: [data['item']],
+					collection: item['collection'],
+					primaryKeys: [item['item']],
 				},
 				{
 					schema: this.schema,
@@ -56,14 +60,26 @@ export class CommentsService extends ItemsService {
 			);
 		}
 
-		const result = await super.createOne(data, opts);
+		const result = await super.createMany(data, opts);
+
+		// Post-insert: process @mentions per row. Errors per mention are swallowed
+		// (warn-and-continue) inside `sendMentionNotifications`.
+		for (const item of data) {
+			await this.sendMentionNotifications(item);
+		}
+
+		return result;
+	}
+
+	private async sendMentionNotifications(data: Partial<Comment>): Promise<void> {
+		if (!this.accountability?.user) return;
 
 		const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
-		const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
+		const mentions = uniq(data['comment']!.match(usersRegExp) ?? []);
 
 		if (mentions.length === 0) {
-			return result;
+			return;
 		}
 
 		const sender = await this.usersService.readOne(this.accountability.user, {
@@ -98,8 +114,8 @@ export class CommentsService extends ItemsService {
 					{
 						accountability,
 						action: 'read',
-						collection: data['collection'],
-						primaryKeys: [data['item']],
+						collection: data['collection']!,
+						primaryKeys: [data['item']!],
 					},
 					{
 						schema: this.schema,
@@ -120,7 +136,7 @@ export class CommentsService extends ItemsService {
 					{} as Record<string, string>,
 				);
 
-				let comment = data['comment'];
+				let comment = data['comment']!;
 
 				for (const mention of mentions) {
 					const uuid = mention.substring(1);
@@ -132,7 +148,7 @@ export class CommentsService extends ItemsService {
 				comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
 				const href = new Url(env['PUBLIC_URL'] as string)
-					.addPath('admin', 'content', data['collection'], data['item'])
+					.addPath('admin', 'content', data['collection']!, data['item']!)
 					.toString();
 
 				const message = `
@@ -150,8 +166,8 @@ ${comment}
 					sender: sender['id'],
 					subject: `You were mentioned in ${data['collection']}`,
 					message,
-					collection: data['collection'],
-					item: data['item'],
+					collection: data['collection']!,
+					item: data['item']!,
 				});
 			} catch (err: any) {
 				if (isDirectusError(err, ErrorCode.Forbidden)) {
@@ -161,8 +177,6 @@ ${comment}
 				}
 			}
 		}
-
-		return result;
 	}
 
 	override updateOne(key: PrimaryKey, data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {

@@ -7,9 +7,11 @@ export class OperationsService extends ItemsService<OperationRaw> {
 		super('directus_operations', options);
 	}
 
-	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const result = await super.createOne(data, opts);
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const result = await super.createMany(data, opts);
 
+		// `ItemsService.createMany` is the single insert path now (`createOne` wraps
+		// it); reload once after the whole batch — reload is global, not per row.
 		const flowManager = getFlowManager();
 		await flowManager.reload();
 

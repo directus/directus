@@ -132,16 +132,6 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return version;
 	}
 
-	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.validateCreateData(data);
-
-		const mainItem = await this.getMainItem(data['collection'], data['item']);
-
-		data['hash'] = objectHash(mainItem);
-
-		return super.createOne(data, opts);
-	}
-
 	override async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<ContentVersion> {
 		const version = await super.readOne(key, query, opts);
 
@@ -155,9 +145,17 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
+		// `createOne` (now a `createMany([data])` wrapper on `ItemsService`) routes
+		// through here, so per-row validation + `hash` computation moved into the
+		// loop below — there's no longer a separate single-row override to host them.
 		const keyCombos = new Set();
 
 		for (const item of data) {
+			await this.validateCreateData(item);
+
+			const mainItem = await this.getMainItem(item['collection'], item['item']);
+			item['hash'] = objectHash(mainItem);
+
 			const keyCombo = `${item['key']}-${item['collection']}-${item['item']}`;
 
 			if (keyCombos.has(keyCombo)) {

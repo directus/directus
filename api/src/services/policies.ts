@@ -46,16 +46,21 @@ export class PoliciesService extends ItemsService<Policy> {
 		}
 	}
 
-	override async createOne(data: Partial<Policy>, opts: MutationOptions = {}): Promise<PrimaryKey> {
-		this.assertValidIpAccess(data);
+	override async createMany(data: Partial<Policy>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		// `ItemsService.createMany` is the single insert path now (`createOne` wraps
+		// it); validate every payload up front so a bad row aborts the whole batch
+		// before any insert happens.
+		for (const item of data) {
+			this.assertValidIpAccess(item);
+		}
 
 		// A policy has been created, but the attachment to a user/role happens in the AccessService,
 		// so no need to check user integrity
 
-		const result = await super.createOne(data, opts);
+		const result = await super.createMany(data, opts);
 
 		// TODO is this necessary? Since the attachment should be handled in the AccessService
-		// A new policy has created, clear the permissions cache
+		// A new policy has created, clear the permissions cache (once for the batch).
 		await clearPermissionsCache();
 
 		return result;
