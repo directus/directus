@@ -14,6 +14,8 @@ vi.mock('@/lang/set-language', () => ({
 }));
 
 beforeEach(() => {
+	vi.useFakeTimers();
+
 	setActivePinia(
 		createTestingPinia({
 			createSpy: vi.fn,
@@ -23,6 +25,8 @@ beforeEach(() => {
 
 afterEach(() => {
 	vi.clearAllMocks();
+	vi.clearAllTimers();
+	vi.useRealTimers();
 });
 
 describe('setLanguage', () => {
