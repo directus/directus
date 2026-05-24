@@ -1,16 +1,21 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { describe, expect, test, vi } from 'vitest';
-import { computed } from 'vue';
 import TranslationForm from './translation-form.vue';
 import type { GlobalMountOptions } from '@/__utils__/types';
 
 vi.mock('@/composables/use-permissions', () => ({
-	usePermissions: () => ({
-		itemPermissions: {
-			saveAllowed: computed(() => true),
-			deleteAllowed: computed(() => true),
-		},
-	}),
+	usePermissions: () => {
+		/* eslint-disable-next-line @typescript-eslint/no-require-imports */
+		const { computed, ref } = require('vue');
+		return {
+			itemPermissions: {
+				saveAllowed: computed(() => true),
+				deleteAllowed: computed(() => true),
+				loading: ref(false),
+				fields: computed(() => []),
+			},
+		};
+	},
 }));
 
 const global: GlobalMountOptions = {

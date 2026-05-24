@@ -62,7 +62,7 @@ const itemPrimaryKey = computed(() => relationInfo && itemInitial.value?.[relati
 const itemNew = computed(() => !!(relationInfo && itemPrimaryKey.value === undefined));
 
 const {
-	itemPermissions: { saveAllowed, fields, deleteAllowed },
+	itemPermissions: { saveAllowed, fields, deleteAllowed, loading: permissionsLoading },
 } = usePermissions(
 	computed(() => relationInfo?.junctionCollection.collection ?? null),
 	itemPrimaryKey,
@@ -72,11 +72,19 @@ const {
 // Unmount the form when fields or lang change to avoid WYSIWYG crashing while Vue manipulates the DOM.
 const formReady = ref(true);
 
-watch([fields, lang], async () => {
-	formReady.value = false;
-	await nextTick();
-	formReady.value = true;
-});
+watch(
+	[fields, lang, permissionsLoading],
+	async () => {
+		if (permissionsLoading.value) {
+			formReady.value = false;
+		} else {
+			formReady.value = false;
+			await nextTick();
+			formReady.value = true;
+		}
+	},
+	{ immediate: true },
+);
 
 const activatorDisabled = computed(() => {
 	return (
