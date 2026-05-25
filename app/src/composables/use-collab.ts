@@ -114,7 +114,7 @@ export function useCollab(
 	version: Ref<ContentVersionMaybeNew | null>,
 	initialValues: Ref<Item | null>,
 	edits: Ref<Item>,
-	getItem: () => Promise<void>,
+	getItem: (opts?: { silent?: boolean }) => Promise<void>,
 	active?: Ref<boolean>,
 ): {
 	update: (changes: Item) => void;
@@ -466,7 +466,7 @@ export function useCollab(
 	}
 
 	async function receiveSave() {
-		await getItem();
+		await getItem({ silent: true });
 
 		if (!initialValues.value) return;
 
