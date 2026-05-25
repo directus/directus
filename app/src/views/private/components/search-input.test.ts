@@ -56,6 +56,38 @@ describe('Component', () => {
 		expect(wrapper.find('input').attributes('disabled')).toBe('');
 	});
 
+	it('should trim surrounding whitespace from emitted search values', async () => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: '',
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+
+		await input.setValue('  test  ');
+
+		const emitted = wrapper.emitted('update:modelValue');
+		expect(emitted?.[emitted.length - 1]).toEqual(['test']);
+	});
+
+	it('should emit null when search value only contains whitespace', async () => {
+		const wrapper = mount(SearchInput, {
+			props: {
+				modelValue: '',
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+
+		await input.setValue('   ');
+
+		const emitted = wrapper.emitted('update:modelValue');
+		expect(emitted?.[emitted.length - 1]).toEqual([null]);
+	});
+
 	describe('focusout behavior', () => {
 		let wrapper: VueWrapper;
 		let search: DOMWrapper<Element>;
