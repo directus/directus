@@ -1139,9 +1139,13 @@ function useAutoSwitchToDraft() {
 						:disabled="!isPublishAllowed"
 						@click="onVersionPublishCompare()"
 					>
-						<template v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true" #split-menu>
+						<template v-if="collectionInfo.meta" #split-menu>
 							<VList>
-								<VListItem clickable @click="onVersionPublishCompare(true)">
+								<VListItem
+									v-if="collectionInfo.meta.singleton !== true"
+									clickable
+									@click="onVersionPublishCompare(true)"
+								>
 									<VListItemIcon><VIcon name="public" /></VListItemIcon>
 									<VListItemContent>{{ $t('publish_and_quit') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'p']) }}</VListItemHint>
@@ -1155,7 +1159,12 @@ function useAutoSwitchToDraft() {
 									<VListItemContent>{{ $t('publish_without_review') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'shift', 'enter']) }}</VListItemHint>
 								</VListItem>
-								<VListItem clickable :disabled="!canCreateNew" @click="createNewItem()">
+								<VListItem
+									v-if="collectionInfo.meta.singleton !== true"
+									clickable
+									:disabled="!canCreateNew"
+									@click="createNewItem()"
+								>
 									<VListItemIcon><VIcon name="add" /></VListItemIcon>
 									<VListItemContent>{{ $t('create_new') }}</VListItemContent>
 									<VListItemHint>{{ translateShortcut(['meta', 'alt', 'n']) }}</VListItemHint>
