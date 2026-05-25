@@ -46,6 +46,7 @@ const buttonIcon = computed(() => {
 });
 
 const portalHref = `${getRootPath()}license/portal`;
+const salesHref = 'https://directus.io/sales';
 
 function onClick() {
 	dialogOpen.value = true;
@@ -64,7 +65,7 @@ function onClick() {
 		<VButton
 			v-if="buttonState === 'contact_sales'"
 			secondary
-			:href="portalHref"
+			:href="buttonState === 'contact_sales' ? salesHref : portalHref"
 			target="_blank"
 			rel="noopener noreferrer"
 		>
