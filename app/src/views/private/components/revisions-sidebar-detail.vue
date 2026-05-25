@@ -42,6 +42,8 @@ const comparisonModalActive = ref(false);
 const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
 
+const isNewUnsavedVersion = computed(() => version.value?.id === '+');
+
 const comparableVersion = computed(() => {
 	if (version.value === undefined || version.value === null) return version.value;
 	if (version.value.id === '+') return undefined;
@@ -59,9 +61,11 @@ const {
 	getRevisions,
 	loadingCount,
 	getRevisionsCount,
-} = useRevisions(collection, primaryKey, comparableVersion, { full: true });
+} = useRevisions(collection, primaryKey, comparableVersion, { full: true, disabled: isNewUnsavedVersion });
 
 onMounted(() => {
+	if (isNewUnsavedVersion.value) return;
+
 	getRevisionsCount();
 
 	if (open.value || sidebarStore.activeAccordionItem === 'revisions') {
@@ -89,6 +93,7 @@ function closeModal() {
 }
 
 function onToggle(open: boolean) {
+	if (isNewUnsavedVersion.value) return;
 	if (open && revisions.value === null) getRevisions();
 }
 
