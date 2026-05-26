@@ -192,11 +192,11 @@ function useVersionSelection() {
 
 	return { versions, selectedVersion, isVersionSelectable, onVersionSelect };
 
-	function onVersionSelect(versionKey: ContentVersion['key'] | null) {
+	async function onVersionSelect(versionKey: ContentVersion['key'] | null) {
 		if (!activeVersionPlacement.value || !dynamicUrl) return;
 
 		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? VERSION_KEY_PUBLISHED);
-		router.replace(getUrlRoute(newUrl));
+		await router.replace(getUrlRoute(newUrl));
 	}
 }
 </script>
@@ -284,6 +284,12 @@ function useVersionSelection() {
 					:show-editable-elements
 					:version="selectedVersion"
 					@navigation="onNavigation"
+					@switch-version="
+						async (key, done) => {
+							await onVersionSelect(key);
+							done();
+						}
+					"
 				/>
 			</template>
 

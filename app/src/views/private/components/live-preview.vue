@@ -5,7 +5,7 @@ import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import LivePreviewHeaderButton from './live-preview-header-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -75,6 +75,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const route = useRoute();
 const router = useRouter();
 const slots = useSlots();
 useResizeObserver();
@@ -165,6 +166,10 @@ function refresh(url: string | null) {
 
 function onIframeLoad() {
 	isRefreshing.value = false;
+}
+
+async function switchVersion(version: ContentVersion['key']) {
+	await router.replace({ ...route, query: { ...route.query, version } });
 }
 
 window.refreshLivePreview = refresh;
@@ -507,6 +512,12 @@ function useUrls() {
 								:version="version"
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
+								@switch-version="
+									async (key, done) => {
+										await switchVersion(key);
+										done();
+									}
+								"
 							/>
 						</div>
 					</div>
@@ -549,6 +560,12 @@ function useUrls() {
 						:version="version"
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
+						@switch-version="
+							async (key, done) => {
+								await switchVersion(key);
+								done();
+							}
+						"
 					/>
 				</div>
 			</div>
