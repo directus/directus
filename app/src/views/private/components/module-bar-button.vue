@@ -33,4 +33,12 @@ defineEmits<VButtonEmits>();
 	--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
 	--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
 }
+
+.v-button :deep(.button)::before {
+	--hit-area: calc(-1 * var(--module-bar-gap) / 2);
+
+	content: '';
+	position: absolute;
+	inset: var(--hit-area);
+}
 </style>

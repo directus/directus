@@ -419,7 +419,7 @@ function revert(values: Record<string, any>) {
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template v-if="isSavable" #split-menu>
+				<template #split-menu>
 					<SaveOptions
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
@@ -522,13 +522,11 @@ function revert(values: Record<string, any>) {
 
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
+			mode="collab"
 			collection="directus_users"
 			:primary-key="primaryKey"
 			:current-collab="collabCollision"
 			:collab-context="collabContext"
-			mode="collab"
-			:delete-versions-allowed="false"
-			:current-version="null"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
 		/>

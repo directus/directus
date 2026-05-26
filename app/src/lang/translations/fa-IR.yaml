@@ -226,8 +226,6 @@ select_all_differences: انتخاب همه تفاوت‌ها
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
-delete_on_apply_copy: >-
-  شما در شرف ارتقای "{version}" به اصلی هستید. بعد از ارتقا باید چه اتفاقی برای "{version}" بیافتد؟
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک

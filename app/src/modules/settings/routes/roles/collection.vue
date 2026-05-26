@@ -172,7 +172,7 @@ function navigateToRole({ item }: { item: Role }) {
 		</template>
 
 		<template #actions:primary>
-			<PrivateViewHeaderBarActionButton :label="$t('create_role')" :to="addNewLink" icon="add" />
+			<PrivateViewHeaderBarActionButton :label="$t('create')" :to="addNewLink" icon="add" />
 		</template>
 
 		<template #navigation>

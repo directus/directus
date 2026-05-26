@@ -10,6 +10,7 @@ import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
+import VChip from '@/components/v-chip.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VImage from '@/components/v-image.vue';
@@ -175,7 +176,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 									<div class="title-content">
 										{{ group.id === null ? $t('layouts.kanban.no_group') : group.title }}
 									</div>
-									<span class="badge">{{ group.items.length }}</span>
+									<VChip :label="false" x-small>{{ group.items.length }}</VChip>
 								</div>
 								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
 									<VMenu show-arrow placement="bottom-end">
@@ -351,20 +352,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						color: var(--theme--foreground-accent);
 						margin-inline-end: 0.3125rem;
 					}
-				}
-
-				.badge {
-					display: inline-flex;
-					justify-content: center;
-					padding: 0 0.3125rem;
-					block-size: 1.125rem;
-					min-inline-size: 1.125rem;
-					margin-block-start: 0.125rem;
-					text-align: center;
-					font-size: 0.6875rem;
-					line-height: 1.6364;
-					background-color: var(--theme--background-accent);
-					border-radius: 0.6875rem;
 				}
 
 				.actions {

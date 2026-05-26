@@ -120,7 +120,7 @@ function useComparisonIndicator() {
 					<VIcon class="icon" :class="{ active }" name="expand_more" />
 					<span class="field-name">{{ field.name }}</span>
 					<VIcon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-					<VChip v-if="badge" x-small>{{ badge }}</VChip>
+					<VChip v-if="badge" :label="false" x-small>{{ badge }}</VChip>
 					<VIcon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
 				</button>
 
@@ -212,8 +212,9 @@ function useComparisonIndicator() {
 
 	.edit-dot {
 		position: absolute;
-		inset-block-start: 0.8125rem;
 		inset-inline-start: -0.375rem;
+		inset-block-start: 50%;
+		transform: translateY(-50%);
 		display: block;
 		inline-size: 0.25rem;
 		block-size: 0.25rem;

@@ -248,8 +248,8 @@ async function submit() {
 
 function manageLicense() {
 	// For locked scopes the router guard redirects back to /license-recovery, so closing
-	// the modal would leave a blank page behind. Only close in the (dismissible) manual flow.
-	if (scope.value === 'manual') {
+	// the modal would leave a blank page behind. Only close in the (dismissible) manual/no_resolution flows.
+	if (scope.value === 'manual' || scope.value === 'no_resolution') {
 		emit('update:modelValue', false);
 	}
 

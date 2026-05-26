@@ -169,7 +169,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			_and: [
 				...(query.filter ? [query.filter] : []),
 				{
-					id: { _in: ids },
+					[primaryKeyField]: { _in: ids },
 				} as Filter,
 			],
 		};

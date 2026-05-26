@@ -76,6 +76,7 @@ const showLicenseBanner = computed({
 		userStore.isAdmin &&
 		!settingsStore.settings?.project_owner &&
 		!showLicenseOnboarding.value &&
+		!licenseStore.isCoreGrace &&
 		!cookies.get('license-banner-dismissed'),
 	set: () => {
 		// close is handled by cookie and hydrate inside the modal
@@ -88,6 +89,7 @@ const showLicenseOnboarding = computed({
 		serverStore.info.setupCompleted &&
 		!serverStore.info.license?.source &&
 		!settingsStore.settings?.project_usage &&
+		!licenseStore.isCoreGrace &&
 		!cookies.get('license-onboarding-dismissed'),
 	set: () => {
 		// close is handled by cookie and hydrate inside the modal

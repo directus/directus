@@ -241,7 +241,7 @@ async function revert(values: Record<string, any>) {
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template v-if="hasEdits" #split-menu>
+				<template #split-menu>
 					<SaveOptions
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
