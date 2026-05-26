@@ -330,7 +330,7 @@ export class LicenseManager {
 		const currentKey = options?.oldKey ?? this.licenseKey;
 
 		if (!currentKey) {
-			throw new InvalidPayloadError({ reason: '"oldKey" has to be defined in order to update' });
+			throw new InvalidPayloadError({ reason: 'A current license must be provided in order to update' });
 		}
 
 		const settingsService = new SettingsService({ schema: await getSchema() });

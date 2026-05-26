@@ -13,12 +13,12 @@
 	"license": "MIT",
 	"packageManager": "pnpm@10.14.0",
 	"devDependencies": {
+		"@directus/mock-license-server": "workspace:*",
 		"@directus/sandbox": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@directus/mock-license-server": "workspace:*",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"async-mutex": "catalog:",
@@ -35,5 +35,8 @@
 	"engines": {
 		"node": ">=22",
 		"pnpm": ">=10"
+	},
+	"dependencies": {
+		"@directus/errors": "catalog:"
 	}
 }
