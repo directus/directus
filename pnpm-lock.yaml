@@ -424,8 +424,8 @@ catalogs:
       specifier: 0.5.0
       version: 0.5.0
     axios:
-      specifier: 1.15.0
-      version: 1.15.0
+      specifier: 1.16.1
+      version: 1.16.1
     axios-cache-interceptor:
       specifier: 1.11.1
       version: 1.11.1
@@ -1167,7 +1167,7 @@ importers:
         version: 0.5.0
       axios:
         specifier: 'catalog:'
-        version: 1.15.0
+        version: 1.16.1
       busboy:
         specifier: 'catalog:'
         version: 1.6.0
@@ -1802,7 +1802,7 @@ importers:
         version: 14.0.0(vue@3.5.24(typescript@5.9.3))
       '@vueuse/integrations':
         specifier: 'catalog:'
-        version: 14.0.0(axios@1.15.0)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))
+        version: 14.0.0(axios@1.16.1)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))
       '@vueuse/router':
         specifier: 'catalog:'
         version: 14.0.0(vue-router@4.6.3(vue@3.5.24(typescript@5.9.3)))(vue@3.5.24(typescript@5.9.3))
@@ -1814,7 +1814,7 @@ importers:
         version: 4.7.0
       axios:
         specifier: 'catalog:'
-        version: 1.15.0
+        version: 1.16.1
       base-64:
         specifier: 'catalog:'
         version: 1.0.0
@@ -2006,7 +2006,7 @@ importers:
         version: 14.0.0(vue@3.5.24(typescript@5.9.3))
       axios:
         specifier: 'catalog:'
-        version: 1.15.0
+        version: 1.16.1
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -2998,10 +2998,10 @@ importers:
     dependencies:
       axios:
         specifier: 'catalog:'
-        version: 1.15.0
+        version: 1.16.1
       axios-cache-interceptor:
         specifier: 'catalog:'
-        version: 1.11.1(axios@1.15.0)
+        version: 1.11.1(axios@1.16.1)
       boxen:
         specifier: 'catalog:'
         version: 8.0.1
@@ -3248,7 +3248,7 @@ importers:
         version: 8.0.0
       axios:
         specifier: 'catalog:'
-        version: 1.15.0
+        version: 1.16.1
       get-port:
         specifier: 'catalog:'
         version: 7.1.0
@@ -8415,8 +8415,8 @@ packages:
     peerDependencies:
       axios: ^1
 
-  axios@1.15.0:
-    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
+  axios@1.16.1:
+    resolution: {integrity: sha512-caYkukvroVPO8KrzuJEb50Hm07KwfBZPEC3VeFHTsqWHvKTsy54hjJz9BS/cdaypROE2rH6xvm9mHX4fgWkr3A==}
 
   b4a@1.7.3:
     resolution: {integrity: sha512-5Q2mfq2WfGuFp3uS//0s6baOJLMoVduPYVeNmDYxu5OUA1/cBfvr2RIS7vi62LdNj/urk1hfmj867I3qt6uZ7Q==}
@@ -10149,6 +10149,15 @@ packages:
 
   follow-redirects@1.15.11:
     resolution: {integrity: sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+
+  follow-redirects@1.16.0:
+    resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -21086,13 +21095,13 @@ snapshots:
       '@vueuse/shared': 14.2.1(vue@3.5.24(typescript@5.9.3))
       vue: 3.5.24(typescript@5.9.3)
 
-  '@vueuse/integrations@14.0.0(axios@1.15.0)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))':
+  '@vueuse/integrations@14.0.0(axios@1.16.1)(focus-trap@7.6.6)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 14.0.0(vue@3.5.24(typescript@5.9.3))
       '@vueuse/shared': 14.0.0(vue@3.5.24(typescript@5.9.3))
       vue: 3.5.24(typescript@5.9.3)
     optionalDependencies:
-      axios: 1.15.0
+      axios: 1.16.1
       focus-trap: 7.6.6
       qrcode: 1.5.4
       sortablejs: 1.14.0
@@ -21537,22 +21546,24 @@ snapshots:
   aws-ssl-profiles@1.1.2:
     optional: true
 
-  axios-cache-interceptor@1.11.1(axios@1.15.0):
+  axios-cache-interceptor@1.11.1(axios@1.16.1):
     dependencies:
-      axios: 1.15.0
+      axios: 1.16.1
       cache-parser: 1.2.6
       fast-defer: 1.1.9
       http-vary: 1.0.3
       object-code: 2.0.0
       try: 1.0.3
 
-  axios@1.15.0:
+  axios@1.16.1:
     dependencies:
-      follow-redirects: 1.15.11(debug@4.3.7)
+      follow-redirects: 1.16.0
       form-data: 4.0.5
+      https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
+      - supports-color
 
   b4a@1.7.3: {}
 
@@ -23436,6 +23447,8 @@ snapshots:
     optionalDependencies:
       debug: 4.3.7
 
+  follow-redirects@1.16.0: {}
+
   for-each@0.3.5:
     dependencies:
       is-callable: 1.2.7
@@ -24938,11 +24951,12 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.15.0
+      axios: 1.16.1
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
       - debug
+      - supports-color
     optional: true
 
   mailparser@3.9.8:
@@ -25494,6 +25508,7 @@ snapshots:
       - react-dom
       - slm
       - squirrelly
+      - supports-color
       - swig
       - swig-templates
       - teacup
