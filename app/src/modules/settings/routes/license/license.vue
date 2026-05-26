@@ -259,7 +259,13 @@ async function handleDeactivateConfirm() {
 					</div>
 					<div class="plan-actions">
 						<template v-if="!isLicensed">
-							<VButton secondary small @click="addLicenseDrawer = true">
+							<VButton
+								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
+								secondary
+								small
+								:disabled="isEnvManaged"
+								@click="addLicenseDrawer = true"
+							>
 								{{ t('licensing.add') }}
 							</VButton>
 							<VButton
