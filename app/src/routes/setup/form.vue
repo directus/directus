@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_HOMEPAGE } from '@directus/constants';
+import { DIRECTUS_DOMAIN } from '@directus/constants';
 import { SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
@@ -122,7 +122,7 @@ const mergedErrors = computed<ValidationError[]>(() => {
 			<I18nT keypath="setup_save_accept_license" tag="span">
 				<template #directusMscl>
 					<a
-						:href="`${DIRECTUS_HOMEPAGE}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
+						:href="`https://${DIRECTUS_DOMAIN}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
 						target="_blank"
 					>
 						{{ $t('directus_mscl') }}
@@ -130,7 +130,7 @@ const mergedErrors = computed<ValidationError[]>(() => {
 				</template>
 				<template #privacyPolicy>
 					<a
-						:href="`${DIRECTUS_HOMEPAGE}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
+						:href="`https://${DIRECTUS_DOMAIN}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
 						target="_blank"
 					>
 						{{ $t('privacy_policy') }}
@@ -143,7 +143,7 @@ const mergedErrors = computed<ValidationError[]>(() => {
 			<I18nT keypath="setup_accept_license" tag="span">
 				<template #directusMscl>
 					<a
-						:href="`${DIRECTUS_HOMEPAGE}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
+						:href="`https://${DIRECTUS_DOMAIN}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
 						target="_blank"
 					>
 						{{ $t('directus_mscl') }}
@@ -151,7 +151,7 @@ const mergedErrors = computed<ValidationError[]>(() => {
 				</template>
 				<template #privacyPolicy>
 					<a
-						:href="`${DIRECTUS_HOMEPAGE}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=privacy_link`"
+						:href="`https://${DIRECTUS_DOMAIN}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=privacy_link`"
 						target="_blank"
 					>
 						{{ $t('privacy_policy') }}
