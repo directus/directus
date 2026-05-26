@@ -68,12 +68,6 @@ describe('Service / Files', () => {
 				schema: { collections: {}, relations: [] },
 			});
 
-			// `createOne` is a thin `[pk] = await this.createMany([data])` wrapper
-			// since the batchInsert refactor. The shared `mockItemsService` test
-			// helper mocks createOne to a no-op spy, which would short-circuit the
-			// wrapper before FilesService.createMany's validation runs — patch the
-			// mock here to flow through to createMany so these tests still cover
-			// the FilesService override.
 			vi.mocked(ItemsService.prototype.createOne).mockImplementation(async function (this: ItemsService, data, opts) {
 				const [pk] = await this.createMany([data], opts ?? {});
 				return pk as PrimaryKey;

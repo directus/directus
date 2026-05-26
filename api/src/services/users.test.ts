@@ -65,11 +65,6 @@ describe('Integration Tests', () => {
 			schema,
 		});
 
-		// `createOne` is a thin wrapper around `createMany([data])` since the
-		// batchInsert refactor; spying on it without mocking lets the wrapper
-		// flow through to `UsersService.createMany` (so the email / password /
-		// integrity checks fire), while the spy still records what the caller
-		// passed for the `inviteUser` assertions below.
 		const superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne');
 		const superCreateManySpy = vi.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue(['user-id-1']);
 		const superUpdateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('user-id-1');
