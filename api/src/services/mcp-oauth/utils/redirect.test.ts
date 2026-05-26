@@ -42,6 +42,24 @@ describe('matchRedirectUri', () => {
 			);
 		});
 
+		it('allows loopback port flexibility when the query string matches', () => {
+			expect(matchRedirectUri('http://localhost:3000/callback?code=one', ['http://localhost/callback?code=one'])).toBe(
+				true,
+			);
+		});
+
+		it('does not allow adding a query string on loopback', () => {
+			expect(matchRedirectUri('http://localhost:3000/callback?code=one', ['http://localhost/callback'])).toBe(false);
+		});
+
+		it.each(['http://user@localhost:3000/callback', 'http://localhost:3000/callback#fragment'])(
+			'rejects requested loopback URI decorations: %s',
+			(requested) => {
+				expect(matchRedirectUri(requested, [requested])).toBe(false);
+				expect(matchRedirectUri(requested, ['http://localhost/callback'])).toBe(false);
+			},
+		);
+
 		it('still requires matching protocol on loopback', () => {
 			expect(matchRedirectUri('https://localhost:3000/cb', ['http://localhost/cb'])).toBe(false);
 		});

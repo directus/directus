@@ -979,6 +979,21 @@ describe('McpOAuthService', () => {
 			},
 		);
 
+		it.each(['http://user@localhost:54771/callback', 'http://localhost:54771/callback#fragment'])(
+			'rejects decorated requested loopback redirect_uri before trusting redirect: %s',
+			async (redirectUri) => {
+				mockClientLookup(clientId, { redirect_uris: JSON.stringify(['http://localhost/callback']) });
+
+				await assertOAuthError(
+					() => service.validateAuthorization(validParams({ redirect_uri: redirectUri }), userId, sessionHash),
+					{
+						error: 'invalid_redirect_uri',
+						redirectable: false,
+					},
+				);
+			},
+		);
+
 		it('loopback port flexibility does NOT apply to non-loopback hosts', async () => {
 			mockClientLookup(clientId, { redirect_uris: JSON.stringify(['https://example.com/callback']) });
 
@@ -1364,6 +1379,8 @@ describe('McpOAuthService', () => {
 		);
 
 		it('denial returns redirect URL with error=access_denied, state, iss', async () => {
+			mockClientLookup(clientId);
+
 			const signed = signConsent();
 			const url = await service.processDecision({ signed_params: signed, approved: false }, userId, sessionToken);
 			const parsed = new URL(url);
@@ -1372,6 +1389,28 @@ describe('McpOAuthService', () => {
 			expect(parsed.searchParams.get('state')).toBe('test-state');
 			expect(parsed.searchParams.get('iss')).toBe(TEST_PUBLIC_URL);
 			expect(parsed.searchParams.has('code')).toBe(false);
+		});
+
+		it('denial re-validates redirect_uri before redirecting', async () => {
+			mockClientLookup(clientId, { redirect_uris: JSON.stringify(['http://localhost/callback']) });
+
+			const signed = signConsent({ redirect_uri: 'http://localhost:54771/callback#fragment' });
+
+			await assertOAuthError(
+				() => service.processDecision({ signed_params: signed, approved: false }, userId, sessionToken),
+				{ error: 'invalid_redirect_uri' },
+			);
+		});
+
+		it('denial rejects stale redirect_uri removed since consent', async () => {
+			mockClientLookup(clientId, { redirect_uris: JSON.stringify(['https://other.example.com/callback']) });
+
+			const signed = signConsent();
+
+			await assertOAuthError(
+				() => service.processDecision({ signed_params: signed, approved: false }, userId, sessionToken),
+				{ error: 'invalid_request' },
+			);
 		});
 
 		it('signed consent JWT invalid/tampered rejects', async () => {
@@ -2188,6 +2227,10 @@ describe('McpOAuthService', () => {
 				]);
 		}
 
+		function mockSessionConsumed() {
+			tracker.on.delete('directus_sessions').response(1);
+		}
+
 		function mockSuccessfulRefresh(clientOverrides: Record<string, unknown> = {}) {
 			// 1. Client lookup
 			mockClientLookup(clientId, clientOverrides);
@@ -2195,10 +2238,10 @@ describe('McpOAuthService', () => {
 			mockGrantLookup();
 			// 3. User status + email lookup
 			tracker.on.select('directus_users').response([createUserRow()]);
-			// 4. Atomic update (session rotation)
+			// 4. Consume the live backing session
+			mockSessionConsumed();
+			// 5. Atomic update (session rotation)
 			tracker.on.update('directus_oauth_tokens').response(1);
-			// 5. Delete old session
-			tracker.on.delete('directus_sessions').response(1);
 			// 6. Insert new session
 			tracker.on.insert('directus_sessions').response([]);
 		}
@@ -2287,6 +2330,8 @@ describe('McpOAuthService', () => {
 			const deletes = queryHistory('delete', 'directus_sessions');
 			expect(deletes.length).toBe(1);
 			expect(deletes[0]!.bindings).toContain(sessionHash);
+			expect(deletes[0]!.bindings).toContain(userId);
+			expect(deletes[0]!.bindings).toContain(clientId);
 
 			// New session created
 			const sessionInserts = queryHistory('insert', 'directus_sessions');
@@ -2295,11 +2340,48 @@ describe('McpOAuthService', () => {
 			// Grant updated (atomic UPDATE WHERE session = old_hash)
 			const updates = queryHistory('update', 'directus_oauth_tokens');
 			expect(updates.length).toBe(1);
+			expect(updates[0]!.bindings).toContain(grantId);
 			expect(updates[0]!.bindings).toContain(sessionHash); // WHERE clause has old hash
+			expect(updates[0]!.bindings).toContain(clientId);
 
 			// New refresh token returned
 			expect(result.refresh_token).toBeDefined();
 			expect(result.refresh_token).not.toBe(rawSessionToken);
+		});
+
+		it('orphaned grant without backing session returns invalid_grant and deletes grant', async () => {
+			mockClientLookup(clientId);
+
+			let tokenSelectCount = 0;
+
+			tracker.on.select('directus_oauth_tokens').response(() => {
+				tokenSelectCount++;
+
+				if (tokenSelectCount === 1) {
+					return [createGrantRow({ id: grantId, client: clientId, user: userId, session: sessionHash })];
+				}
+
+				return [createGrantRow({ id: grantId, client: clientId, user: userId, session: sessionHash })];
+			});
+
+			tracker.on.select('directus_users').response([createUserRow()]);
+			tracker.on.delete('directus_sessions').response(0);
+			tracker.on.delete('directus_oauth_tokens').response(1);
+
+			await assertOAuthError(() => service.refreshToken(validParams(), context), {
+				error: 'invalid_grant',
+				statusCode: 400,
+			});
+
+			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');
+			expect(tokenDeletes.length).toBe(1);
+			expect(tokenDeletes[0]!.bindings).toContain(grantId);
+			expect(tokenDeletes[0]!.bindings).toContain(sessionHash);
+			expect(tokenDeletes[0]!.bindings).toContain(clientId);
+			expect(queryHistory('update', 'directus_oauth_tokens').length).toBe(0);
+			expect(queryHistory('insert', 'directus_sessions').length).toBe(0);
+			expect(mockFetchRolesTree).not.toHaveBeenCalled();
+			expect(mockActivityCreateOne).not.toHaveBeenCalled();
 		});
 
 		it('grant expires_at renewed (sliding window)', async () => {
@@ -2346,6 +2428,8 @@ describe('McpOAuthService', () => {
 
 			// User status check
 			tracker.on.select('directus_users').response([createUserRow()]);
+			// Consume the live backing session
+			mockSessionConsumed();
 
 			// Atomic update returns 0 = someone else already rotated
 			tracker.on.update('directus_oauth_tokens').response(0);
@@ -2385,6 +2469,8 @@ describe('McpOAuthService', () => {
 
 			// User status check
 			tracker.on.select('directus_users').response([createUserRow()]);
+			// Consume the live backing session
+			mockSessionConsumed();
 
 			// Atomic update returns 0 = someone else already rotated
 			tracker.on.update('directus_oauth_tokens').response(0);
@@ -2418,6 +2504,15 @@ describe('McpOAuthService', () => {
 			// Verify grant was deleted (revoked)
 			const tokenDeletes = queryHistory('delete', 'directus_oauth_tokens');
 			expect(tokenDeletes.length).toBe(1);
+			expect(tokenDeletes[0]!.bindings).toContain(grantId);
+			expect(tokenDeletes[0]!.bindings).toContain(sessionHash);
+			expect(tokenDeletes[0]!.bindings).toContain(clientId);
+
+			const sessionDeletes = queryHistory('delete', 'directus_sessions');
+			expect(sessionDeletes.length).toBe(1);
+			expect(sessionDeletes[0]!.bindings).toContain('new-hash');
+			expect(sessionDeletes[0]!.bindings).toContain(userId);
+			expect(sessionDeletes[0]!.bindings).toContain(clientId);
 		});
 
 		it('reuse detection lookup is scoped to the authenticated client', async () => {

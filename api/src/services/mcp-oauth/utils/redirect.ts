@@ -66,19 +66,33 @@ export function validateRedirectUri(uri: unknown): void {
  * at request time, since native apps bind to ephemeral ports.
  */
 export function matchRedirectUri(requested: string, registered: string[]): boolean {
+	let reqUrl: URL;
+
+	try {
+		reqUrl = new URL(requested);
+	} catch {
+		return false;
+	}
+
+	if (reqUrl.username || reqUrl.password || reqUrl.hash) {
+		return false;
+	}
+
 	return registered.some((reg) => {
 		if (reg === requested) return true;
 
 		try {
 			const regUrl = new URL(reg);
-			const reqUrl = new URL(requested);
 
-			if (isLoopbackHost(regUrl.hostname)) {
+			if (isLoopbackHost(regUrl.hostname) && isLoopbackHost(reqUrl.hostname)) {
 				return (
 					regUrl.protocol === reqUrl.protocol &&
+					regUrl.username === reqUrl.username &&
+					regUrl.password === reqUrl.password &&
 					regUrl.hostname === reqUrl.hostname &&
 					regUrl.pathname === reqUrl.pathname &&
-					regUrl.search === reqUrl.search
+					regUrl.search === reqUrl.search &&
+					regUrl.hash === reqUrl.hash
 				);
 			}
 		} catch {

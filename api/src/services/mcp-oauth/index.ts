@@ -511,6 +511,8 @@ export class McpOAuthService {
 			throw new OAuthError(400, 'invalid_request', 'redirect_uri is required');
 		}
 
+		this.validateRedirectUri(redirectUri);
+
 		const registeredUris = parseStringArrayField(client['redirect_uris'], 'redirect_uris');
 
 		if (!matchRedirectUri(redirectUri, registeredUris)) {
@@ -685,16 +687,11 @@ export class McpOAuthService {
 		const redirectUri = claims['redirect_uri'] as string;
 		const state = claims['state'] as string | undefined;
 		const { issuerUrl } = getMcpUrls();
-
-		// RFC 6749 Section 4.1.2.1: user denied the authorization request
-		// Form urlencoded sends "true"/"false" as strings
-		if (String(approved) !== 'true') {
-			return this.buildRedirectUrl(redirectUri, { error: 'access_denied' }, state, issuerUrl);
-		}
-
-		// Approval path: re-validate client against DB
 		const clientId = claims['client_id'] as string;
 
+		this.validateRedirectUri(redirectUri);
+
+		// Re-validate client and redirect against DB before any front-channel redirect.
 		const client = await this.knex('directus_oauth_clients').where('client_id', clientId).first();
 
 		if (!client) {
@@ -705,6 +702,12 @@ export class McpOAuthService {
 
 		if (!matchRedirectUri(redirectUri, registeredUris)) {
 			throw new OAuthError(400, 'invalid_request', 'redirect_uri no longer registered for this client');
+		}
+
+		// RFC 6749 Section 4.1.2.1: user denied the authorization request
+		// Form urlencoded sends "true"/"false" as strings
+		if (String(approved) !== 'true') {
+			return this.buildRedirectUrl(redirectUri, { error: 'access_denied' }, state, issuerUrl);
 		}
 
 		// RFC 6749 Section 4.1.2: generate authorization code (opaque to client)
@@ -1133,21 +1136,44 @@ export class McpOAuthService {
 
 		// Session rotation in a single transaction
 		const rotated = await transaction(this.knex, async (trx) => {
+			const consumedSession = await trx('directus_sessions')
+				.where({
+					token: oldSessionHash,
+					user: userId,
+					oauth_client: grant['client'],
+				})
+				.delete();
+
+			if (consumedSession === 0) {
+				const currentGrant = await trx('directus_oauth_tokens')
+					.where({ id: grantId, session: oldSessionHash, client: params.client_id })
+					.first('id');
+
+				if (currentGrant) {
+					await trx('directus_oauth_tokens')
+						.where({ id: grantId, session: oldSessionHash, client: params.client_id })
+						.delete();
+				} else {
+					await this.detectReuse(trx, oldSessionHash, params.client_id!, logger);
+				}
+
+				return false;
+			}
+
 			// Atomic UPDATE WHERE session = old_hash (concurrency protection)
-			const updated = await trx('directus_oauth_tokens').where('session', oldSessionHash).update({
-				session: newSessionHash,
-				previous_session: oldSessionHash,
-				expires_at: newExpiry,
-			});
+			const updated = await trx('directus_oauth_tokens')
+				.where({ id: grantId, session: oldSessionHash, client: params.client_id })
+				.update({
+					session: newSessionHash,
+					previous_session: oldSessionHash,
+					expires_at: newExpiry,
+				});
 
 			if (updated === 0) {
 				// Race loser: reuse detection within the same transaction
 				await this.detectReuse(trx, oldSessionHash, params.client_id!, logger);
 				return false;
 			}
-
-			// Delete old session, create new session
-			await trx('directus_sessions').where('token', oldSessionHash).delete();
 
 			await trx('directus_sessions').insert({
 				token: newSessionHash,
@@ -1902,8 +1928,13 @@ export class McpOAuthService {
 			.first();
 
 		if (reuseGrant) {
-			await db('directus_oauth_tokens').where('id', reuseGrant['id']).delete();
-			await db('directus_sessions').where('token', reuseGrant['session']).delete();
+			await db('directus_oauth_tokens')
+				.where({ id: reuseGrant['id'], previous_session: oldSessionHash, client: clientId })
+				.delete();
+
+			await db('directus_sessions')
+				.where({ token: reuseGrant['session'], user: reuseGrant['user'], oauth_client: clientId })
+				.delete();
 
 			logger.warn({ client_id: clientId, grant_id: reuseGrant['id'] }, 'Refresh token reuse detected, grant revoked');
 		}
