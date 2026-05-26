@@ -13,6 +13,7 @@ import type {
 	UsageCounter,
 } from '@directus/license';
 import { CORE_LICENSE, COUNTABLE_ENTITLEMENT_KEYS, FEATURE_FLAG_ENTITLEMENT_KEYS } from '@directus/license';
+import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import { useBus } from '../../bus/index.js';
 import { countActiveCollections, resolveCollections } from './lib/collections.js';
@@ -380,7 +381,7 @@ export class EntitlementManager {
 	async resolve<K extends keyof ResolveInput>(
 		key: K,
 		input: NonNullable<ResolveInput[K]>,
-		ctx?: { adminId: string },
+		ctx?: { accountability?: Accountability | undefined },
 	): Promise<void> {
 		const source = this.resolverSources.get(key);
 

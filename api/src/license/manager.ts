@@ -24,6 +24,7 @@ import {
 	updateKey,
 	verifyLicense,
 } from '@directus/license';
+import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
@@ -628,26 +629,26 @@ export class LicenseManager {
 	 *
 	 * Allows partial resolution
 	 */
-	public async applyResolution(adminId: string, resolution: ResolveInput) {
+	public async applyResolution(resolution: ResolveInput, ctx?: { accountability?: Accountability | undefined }) {
 		const entitlementManager = getEntitlementManager();
 
 		if (resolution.collections && resolution.collections.length > 0) {
-			await entitlementManager.resolve('collections', resolution.collections);
+			await entitlementManager.resolve('collections', resolution.collections, { accountability: ctx?.accountability });
 		}
 
 		if (resolution.seats && resolution.seats.length > 0) {
-			await entitlementManager.resolve('seats', resolution.seats, { adminId });
+			await entitlementManager.resolve('seats', resolution.seats, { accountability: ctx?.accountability });
 		}
 
 		if (resolution.flows && resolution.flows.length > 0) {
-			await entitlementManager.resolve('flows', resolution.flows);
+			await entitlementManager.resolve('flows', resolution.flows, { accountability: ctx?.accountability });
 		}
 
 		/**
 		 * Set all sso users to disabled and optional set the current admin email and password
 		 */
 		if (resolution.sso_enabled) {
-			await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, { adminId });
+			await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, { accountability: ctx?.accountability });
 		}
 
 		if (await entitlementManager.checkAll()) {

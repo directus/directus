@@ -1,5 +1,6 @@
 import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import type { ResolveInput } from '@directus/license';
+import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import { DEFAULT_AUTH_PROVIDER } from '../../../constants.js';
 import getDatabase from '../../../database/index.js';
@@ -29,11 +30,14 @@ export async function checkUsersSSO(opts?: { knex?: Knex | undefined }) {
 	return sso_users.length === 0;
 }
 
-export async function resolveSSOUsers(resolution: NonNullable<ResolveInput['sso_enabled']>, ctx?: { adminId: string }) {
-	if (!ctx?.adminId) return;
+export async function resolveSSOUsers(
+	resolution: NonNullable<ResolveInput['sso_enabled']>,
+	ctx?: { accountability?: Accountability | undefined },
+) {
+	if (!ctx?.accountability?.user) return;
 
-	const { adminId } = ctx;
-	const usersService = new UsersService({ schema: await getSchema() });
+	const adminId = ctx.accountability.user;
+	const usersService = new UsersService({ schema: await getSchema(), accountability: ctx?.accountability });
 
 	await usersService.updateByQuery(
 		{

@@ -70,8 +70,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		flows: getLimit('flows'),
 	}));
 
-	const isEnvManaged = computed(() => info.value?.source === 'env');
-
 	const isLocked = computed(() => info.value?.status === 'locked');
 
 	const isCoreGrace = computed(() => info.value?.status === 'grace' && !isLicensed.value);
@@ -238,7 +236,6 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 		aiTranslationsEnabled,
 		boundary,
 		limits,
-		isEnvManaged,
 		isLocked,
 		isCoreGrace,
 		wasDowngraded,

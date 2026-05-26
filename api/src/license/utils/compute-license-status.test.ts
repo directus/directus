@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { computeLicenseStatus } from './compute-license-status.js';
 
 const checkAll = vi.fn<() => Promise<boolean>>();
-const getCoreGracePeriod = vi.fn<() => Promise<boolean>>();
+const isInCoreGracePeriod = vi.fn<() => Promise<boolean>>();
 
 vi.mock('../index.js', () => ({
 	getEntitlementManager: () => ({
@@ -12,34 +12,41 @@ vi.mock('../index.js', () => ({
 	}),
 }));
 
-vi.mock('./get-core-grace-period.js', () => ({
-	getCoreGracePeriod: () => getCoreGracePeriod(),
+vi.mock('./is-in-core-grace-period.js', () => ({
+	isInCoreGracePeriod: () => isInCoreGracePeriod(),
 }));
 
 const now = () => Math.floor(Date.now() / 1000);
 
 beforeEach(() => {
 	checkAll.mockReset();
-	getCoreGracePeriod.mockReset();
+	isInCoreGracePeriod.mockReset();
 });
 
 describe('no license (core)', () => {
-	test('within core grace period -> grace', async () => {
-		getCoreGracePeriod.mockResolvedValue(true);
+	test('within core grace period, over limits -> grace', async () => {
+		isInCoreGracePeriod.mockResolvedValue(true);
+		checkAll.mockResolvedValue(false);
 
 		await expect(computeLicenseStatus(null)).resolves.toBe('grace');
-		expect(checkAll).not.toHaveBeenCalled();
+	});
+
+	test('within core grace, within limits -> active', async () => {
+		isInCoreGracePeriod.mockResolvedValue(false);
+		checkAll.mockResolvedValue(true);
+
+		await expect(computeLicenseStatus(null)).resolves.toBe('active');
 	});
 
 	test('outside core grace, within limits -> active', async () => {
-		getCoreGracePeriod.mockResolvedValue(false);
+		isInCoreGracePeriod.mockResolvedValue(false);
 		checkAll.mockResolvedValue(true);
 
 		await expect(computeLicenseStatus(null)).resolves.toBe('active');
 	});
 
 	test('outside core grace, over limits -> locked', async () => {
-		getCoreGracePeriod.mockResolvedValue(false);
+		isInCoreGracePeriod.mockResolvedValue(false);
 		checkAll.mockResolvedValue(false);
 
 		await expect(computeLicenseStatus(null)).resolves.toBe('locked');
@@ -55,7 +62,7 @@ describe('with license', () => {
 		});
 
 		await expect(computeLicenseStatus(license)).resolves.toBe('locked');
-		expect(getCoreGracePeriod).not.toHaveBeenCalled();
+		expect(isInCoreGracePeriod).not.toHaveBeenCalled();
 	});
 
 	test('perpetual (expires_at === -1) -> active', async () => {

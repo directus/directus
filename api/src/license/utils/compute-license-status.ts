@@ -9,12 +9,13 @@ export async function computeLicenseStatus(license: License | null): Promise<Lic
 	const entitlementManager = getEntitlementManager().fork(license?.entitlements ?? null);
 
 	if (!license) {
+		const isWithinLimits = await entitlementManager.checkAll();
+
 		// The core upgrade grace period allowes one to bypasses limit checks
 		// Ideally enough time to obtain a license
 		const isWithinCoreGracePeriod = await isInCoreGracePeriod();
-		if (isWithinCoreGracePeriod) return 'grace';
+		if (isWithinLimits === false && isWithinCoreGracePeriod) return 'grace';
 
-		const isWithinLimits = await entitlementManager.checkAll();
 		if (isWithinLimits === false) return 'locked';
 
 		return 'active';
