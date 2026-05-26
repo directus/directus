@@ -530,7 +530,7 @@ const menuActive = computed(() => Boolean(currentlyEditing.value) || selectModal
 				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
-				<RenderTemplate
+					<RenderTemplate
 						:collection="relationInfo.relatedCollection.collection"
 						:item="item"
 						:template="`{{${header.value}}}`"
