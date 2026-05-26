@@ -2,7 +2,7 @@
 	"name": "@directus/app",
 	"version": "15.10.0",
 	"description": "App dashboard for Directus",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

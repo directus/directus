@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DIRECTUS_DOMAIN } from '@directus/constants';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
@@ -58,7 +59,7 @@ function dismiss() {
 
 function openGetLicenseKey() {
 	window.open(
-		`https://directus.io/docs/licensing/overview?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=upgrade_modal_open_get_license`,
+		`https://${DIRECTUS_DOMAIN}/docs/licensing/overview?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=upgrade_modal_open_get_license`,
 		'_blank',
 		'noopener,noreferrer',
 	);
@@ -75,7 +76,7 @@ function openGetLicenseKey() {
 					<I18nT keypath="license_onboarding_desc" tag="p">
 						<template #oig>
 							<a
-								:href="`https://directus.io/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=upgrade_modal_open_innovation_grant_link`"
+								:href="`https://${DIRECTUS_DOMAIN}/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=upgrade_modal_open_innovation_grant_link`"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
