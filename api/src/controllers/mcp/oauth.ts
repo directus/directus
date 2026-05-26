@@ -14,7 +14,14 @@ import { getAccountabilityForToken } from '../../utils/get-accountability-for-to
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { Url } from '../../utils/url.js';
-import { type ConsentPageData, type PageOpts, renderConsentPage, renderErrorPage } from './oauth-consent-page.js';
+import {
+	type ConsentPageData,
+	type PageOpts,
+	type RedirectIndicator,
+	type RegistrationType,
+	renderConsentPage,
+	renderErrorPage,
+} from './oauth-consent-page.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -23,8 +30,8 @@ import { type ConsentPageData, type PageOpts, renderConsentPage, renderErrorPage
 export function getRedirectIndicator(
 	redirectUri: string,
 	clientId: string,
-	registrationType: string,
-): string | undefined {
+	registrationType: RegistrationType,
+): RedirectIndicator | undefined {
 	try {
 		const redirectUrl = new URL(redirectUri);
 		const host = redirectUrl.hostname;
@@ -382,7 +389,7 @@ mcpOAuthPublicRouter.get(
 			relaxFormAction(res);
 
 			const clientId = req.query['client_id'] as string;
-			const registrationType = result.registration_type ?? 'dcr';
+			const registrationType: RegistrationType = result.registration_type ?? 'dcr';
 
 			const consentData: ConsentPageData = {
 				clientName: result.client_name,

@@ -315,6 +315,10 @@ export interface PageOpts {
 	appearance: string;
 }
 
+export type RegistrationType = 'dcr' | 'cimd';
+
+export type RedirectIndicator = 'localhost' | 'cross-origin' | 'ip-address';
+
 /** Data specific to the consent form: client info, signed params JWT, and the form action URL. */
 export interface ConsentPageData {
 	clientName: string;
@@ -323,8 +327,8 @@ export interface ConsentPageData {
 	signedParams: string;
 	decisionUrl: string;
 	clientDomain?: string;
-	registrationType: 'dcr' | 'cimd';
-	redirectIndicator?: string;
+	registrationType: RegistrationType;
+	redirectIndicator?: RedirectIndicator;
 }
 
 const DEFAULT_PROJECT_COLOR = '#6644ff';
