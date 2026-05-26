@@ -1,10 +1,10 @@
 import { RouteNotFoundError } from '@directus/errors';
 import type { RequestHandler } from 'express';
-import { getEntitlementManager } from '../../license/index.js';
+import { isSsoEscapeHatchActive } from '../../license/utils/is-sso-escape-hatch-active.js';
 import asyncHandler from '../../utils/async-handler.js';
 
 export const checkSsoEnabled: RequestHandler = asyncHandler(async (req, _res, next) => {
-	if (!getEntitlementManager().isEntitled('sso_enabled')) {
+	if (!(await isSsoEscapeHatchActive(req.schema))) {
 		throw new RouteNotFoundError({ path: req.path });
 	}
 

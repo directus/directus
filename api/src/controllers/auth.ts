@@ -12,9 +12,8 @@ import {
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
-import { getActiveSeats } from '../license/entitlements/lib/seats.js';
 import { getEntitlementManager } from '../license/index.js';
-import { getLicenseManager } from '../license/manager.js';
+import { isSsoEscapeHatchActive } from '../license/utils/is-sso-escape-hatch-active.js';
 import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
@@ -260,31 +259,11 @@ router.get(
 
 		let providers = getAuthProviders({ sessionOnly });
 
-		// Hide SSO providers when license doesn't entitle them
 		const isSSOEnabled = getEntitlementManager().isEntitled('sso_enabled');
 
-		if (isSSOEnabled === false && providers.length > 0) {
-			if (await getLicenseManager().isLocked()) {
-				// Lockout escape hatch — keep SSO visible if at least one admin has SSO to allow recovery
-				// LICENSE-TODO: cache
-				const activeSeats = await getActiveSeats();
-				const adminSeats = activeSeats.filter((seat) => seat.admin).map((seat) => seat.id);
-
-				const usersService = new UsersService({ schema: req.schema });
-
-				const admins = await usersService.readByQuery({
-					filter: {
-						id: { _in: adminSeats },
-						provider: { _neq: DEFAULT_AUTH_PROVIDER },
-					},
-				});
-
-				if (admins.length === 0) {
-					providers = [];
-				}
-			} else {
-				providers = [];
-			}
+		// Hide SSO providers when not entitled, unless the lockout escape hatch keeps them reachable
+		if (providers.length > 0 && !(await isSsoEscapeHatchActive(req.schema))) {
+			providers = [];
 		}
 
 		res.locals['payload'] = {
