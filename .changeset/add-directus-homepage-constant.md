@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Added `DIRECTUS_HOMEPAGE` constant and replaced hardcoded `https://directus.io` to `https://directus.com` using the new constant
+Added `DIRECTUS_DOMAIN` constant and replaced hardcoded `directus.io` to `directus.com` using the new constant
