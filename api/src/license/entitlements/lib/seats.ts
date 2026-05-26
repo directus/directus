@@ -1,6 +1,6 @@
 import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import type { LicensePendingResolutionLimitSeats } from '@directus/license';
-import type { Filter } from '@directus/types';
+import type { Accountability, Filter } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
@@ -145,12 +145,12 @@ export async function countActiveSeats(opts?: { knex?: Knex | undefined }) {
 	return seats.length;
 }
 
-export async function resolveSeats(seats: string[], ctx?: { adminId: string }) {
-	if (!ctx?.adminId) return;
+export async function resolveSeats(seats: string[], ctx?: { accountability?: Accountability | undefined }) {
+	if (!ctx?.accountability?.user) return;
 
-	const usersService = new UsersService({ schema: await getSchema() });
+	const usersService = new UsersService({ schema: await getSchema(), accountability: ctx.accountability });
 
-	const users = seats.filter((user_id) => user_id !== ctx.adminId);
+	const users = seats.filter((user_id) => user_id !== ctx.accountability!.user);
 
 	await Promise.allSettled(
 		users.map((user_id) => usersService.updateOne(user_id, { status: USER_INACTIVE_LICENSE_STATUS })),

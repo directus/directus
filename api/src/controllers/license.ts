@@ -206,7 +206,7 @@ router.post(
 
 		const licenseManager = getLicenseManager();
 
-		await licenseManager.applyResolution(req.accountability!.user!, data);
+		await licenseManager.applyResolution(data, { accountability: req.accountability });
 
 		return next();
 	}),

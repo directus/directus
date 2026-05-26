@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
+import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../../../database/index.js';
 import { CollectionsService } from '../../../services/index.js';
@@ -36,8 +37,8 @@ export async function countActiveCollections(opts?: { knex?: Knex | undefined })
 	return collections.length;
 }
 
-export async function resolveCollections(collections: string[]) {
-	const collectionsService = new CollectionsService({ schema: await getSchema() });
+export async function resolveCollections(collections: string[], ctx?: { accountability?: Accountability | undefined }) {
+	const collectionsService = new CollectionsService({ schema: await getSchema(), accountability: ctx?.accountability });
 
 	await Promise.allSettled(
 		collections.map((collection) => {
