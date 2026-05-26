@@ -41,7 +41,7 @@ async function getUpgradeTimestampMs(): Promise<number | null> {
 
 		_cache.migrations = {
 			oldest,
-			v12
+			v12,
 		};
 	}
 
