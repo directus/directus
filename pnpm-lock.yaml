@@ -805,8 +805,8 @@ catalogs:
       specifier: 2.0.0
       version: 2.0.0
     samlify:
-      specifier: 2.12.0
-      version: 2.12.0
+      specifier: 2.13.1
+      version: 2.13.1
     sanitize-filename:
       specifier: 1.6.3
       version: 1.6.3
@@ -1045,7 +1045,7 @@ importers:
         version: 2.0.35(zod@4.1.12)
       '@authenio/samlify-node-xmllint':
         specifier: 'catalog:'
-        version: 2.0.0(samlify@2.12.0)
+        version: 2.0.0(samlify@2.13.1)
       '@aws-sdk/client-sesv2':
         specifier: 'catalog:'
         version: 3.928.0
@@ -1381,7 +1381,7 @@ importers:
         version: 4.59.0
       samlify:
         specifier: 'catalog:'
-        version: 2.12.0
+        version: 2.13.1
       sanitize-filename:
         specifier: 'catalog:'
         version: 1.6.3
@@ -13447,8 +13447,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  samlify@2.12.0:
-    resolution: {integrity: sha512-ewGsHyY4kInDH0BfprlAZ1rHpH1jBmbqYiXDbuI3t1Y8h71gqEt4Z7jdCFyPHFR8jItJkbdckTijUZGg14CDlg==}
+  samlify@2.13.1:
+    resolution: {integrity: sha512-vdYr/zohDGBbfWNU4miEzc1jmWOtkLySPViapC6nfGkv9KxzLq4UlGkKyryzwLw4jVlZk88Rw93HaCRVpe+t+g==}
 
   sanitize-filename@1.6.3:
     resolution: {integrity: sha512-y/52Mcy7aw3gRm7IrcGDFx/bCk4AhRh2eI9luHOQM86nZsqwiRkkq2GekHXBBD+SmPidc8i2PqtYZl+pWJ8Oeg==}
@@ -15545,10 +15545,10 @@ snapshots:
 
   '@assemblyscript/loader@0.19.23': {}
 
-  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.12.0)':
+  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.13.1)':
     dependencies:
       node-xmllint: 1.0.0
-      samlify: 2.12.0
+      samlify: 2.13.1
 
   '@authenio/xml-encryption@2.0.2':
     dependencies:
@@ -27171,7 +27171,7 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  samlify@2.12.0:
+  samlify@2.13.1:
     dependencies:
       '@authenio/xml-encryption': 2.0.2
       '@xmldom/xmldom': 0.9.10
