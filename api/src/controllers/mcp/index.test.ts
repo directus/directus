@@ -4,6 +4,7 @@ import { createMockRequest, createMockResponse, getRouteHandler } from '../../te
 
 const readSingleton = vi.fn();
 const handleRequest = vi.fn();
+
 const mockEnv = {
 	MCP_OAUTH_ENABLED: true,
 };
@@ -110,12 +111,14 @@ describe('mcp controller', () => {
 		await handler!.handle(req, res, next);
 
 		expect(next).not.toHaveBeenCalled();
+
 		expect(DirectusMCP).toHaveBeenCalledWith({
 			promptsCollection: null,
 			allowDeletes: false,
 			systemPromptEnabled: false,
 			systemPrompt: null,
 		});
+
 		expect(handleRequest).toHaveBeenCalledWith(req, res);
 	});
 });

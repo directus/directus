@@ -506,6 +506,7 @@ describe('fetchCimdMetadata', () => {
 			expect.unreachable('Expected OAuthError');
 		} catch (err) {
 			expect(err).toBeInstanceOf(OAuthError);
+
 			expect(err).toMatchObject({
 				status: 400,
 				code: 'invalid_client_metadata',

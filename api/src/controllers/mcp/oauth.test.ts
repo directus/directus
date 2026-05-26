@@ -302,6 +302,7 @@ describe('mcp-oauth controller', () => {
 			expect(res.status).toBe(403);
 			expect(res.headers.get('content-type')).toContain('text/html');
 			expect(res.text).toBe('<html>error</html>');
+
 			expect(renderErrorPage).toHaveBeenCalledWith('MCP OAuth is disabled in project settings.', {
 				projectName: 'Branded Project',
 				projectColor: '#123456',

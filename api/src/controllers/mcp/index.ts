@@ -10,6 +10,7 @@ const router = Router();
 
 const mcpHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
+
 	const settings = new SettingsService({
 		schema: req.schema,
 	});
