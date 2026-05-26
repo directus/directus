@@ -214,6 +214,71 @@ describe('Service / Files', () => {
 				{},
 			);
 		});
+
+		test('throws InvalidPayloadError when any file in a multi-file payload is missing "type"', async () => {
+			try {
+				await service.createMany([
+					{ type: 'application/octet-stream', filename_download: 'good.txt' },
+					{ storage: 'local', filename_download: 'no-type.txt' },
+				]);
+			} catch (err: any) {
+				expect(err).toBeInstanceOf(InvalidPayloadError);
+				expect(err.message).toBe('Invalid payload. "type" is required.');
+			}
+
+			expect(ItemsService.prototype.createMany).not.toHaveBeenCalled();
+		});
+
+		test('should throw ForbiddenError deferred when any filename_disk in a multi-file payload is not unique', async () => {
+			tracker.on
+				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
+				.response([{ filename_disk: 'existing-file.jpg' }]);
+
+			await service.createMany([
+				{ type: 'application/octet-stream', filename_disk: 'first-file.jpg' },
+				{ type: 'application/octet-stream', filename_disk: 'second-file.jpg' },
+			]);
+
+			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(
+				[
+					{ type: 'application/octet-stream', filename_disk: 'first-file.jpg' },
+					{ type: 'application/octet-stream', filename_disk: 'second-file.jpg' },
+				],
+				expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+			);
+		});
+
+		test('creates multiple file entries when all "type" fields are provided', async () => {
+			await service.createMany([
+				{ type: 'application/octet-stream', filename_download: 'first.txt' },
+				{ type: 'image/jpeg', filename_download: 'second.jpg' },
+			]);
+
+			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(
+				[
+					{ type: 'application/octet-stream', filename_download: 'first.txt' },
+					{ type: 'image/jpeg', filename_download: 'second.jpg' },
+				],
+				{},
+			);
+		});
+
+		test('should normalize each filename_disk path in a multi-file payload', async () => {
+			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
+
+			await service.createMany([
+				{ type: 'application/octet-stream', filename_disk: '/folder/../first.jpg' },
+				{ type: 'application/octet-stream', filename_disk: '/other/../second.jpg' },
+			]);
+
+			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(
+				[
+					{ type: 'application/octet-stream', filename_disk: 'first.jpg' },
+					{ type: 'application/octet-stream', filename_disk: 'second.jpg' },
+				],
+				{},
+			);
+		});
 	});
 
 	describe('uploadOne', () => {
