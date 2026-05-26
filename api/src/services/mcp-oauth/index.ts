@@ -1134,8 +1134,13 @@ export class McpOAuthService {
 		const grantId = grant['id'] as string;
 		const clientName = client['client_name'] as string;
 
-		// Session rotation in a single transaction
+		// Rotate the OAuth refresh token and its Directus accountability session together.
+		// The grant row records which session hash is current, while directus_sessions is
+		// the liveness row that access-token accountability resolution depends on.
 		const rotated = await transaction(this.knex, async (trx) => {
+			// The session row is the Directus liveness/accountability record referenced by
+			// access tokens and also backs the OAuth refresh token hash. Deleting it first
+			// makes the old refresh token single-use before we move the grant pointer.
 			const consumedSession = await trx('directus_sessions')
 				.where({
 					token: oldSessionHash,
@@ -1150,17 +1155,25 @@ export class McpOAuthService {
 					.first('id');
 
 				if (currentGrant) {
+					// The grant still points at this hash, but the backing Directus session
+					// was already consumed or cleaned up. Drop the orphaned grant instead of
+					// issuing a replacement refresh token for a session we cannot prove live.
 					await trx('directus_oauth_tokens')
 						.where({ id: grantId, session: oldSessionHash, client: params.client_id })
 						.delete();
 				} else {
+					// The old hash is no longer current. If it matches the immediately
+					// previous hash on the grant, treat it as refresh-token replay and revoke
+					// the current grant/session through detectReuse.
 					await this.detectReuse(trx, oldSessionHash, params.client_id!, logger);
 				}
 
 				return false;
 			}
 
-			// Atomic UPDATE WHERE session = old_hash (concurrency protection)
+			// Move the grant from old hash to new hash only if it still points at the
+			// session we consumed above. previous_session is a one-step replay sentinel,
+			// not a retry window and not a complete history of older refresh tokens.
 			const updated = await trx('directus_oauth_tokens')
 				.where({ id: grantId, session: oldSessionHash, client: params.client_id })
 				.update({
@@ -1170,11 +1183,15 @@ export class McpOAuthService {
 				});
 
 			if (updated === 0) {
-				// Race loser: reuse detection within the same transaction
+				// Another request rotated first. Check whether this old hash is now the
+				// immediately previous session hash and revoke on replay.
 				await this.detectReuse(trx, oldSessionHash, params.client_id!, logger);
 				return false;
 			}
 
+			// Insert the new Directus liveness/accountability row after the grant pointer
+			// moved. New access tokens will reference this hash; the raw token is returned
+			// only once as the OAuth refresh_token response value.
 			await trx('directus_sessions').insert({
 				token: newSessionHash,
 				user: userId,
