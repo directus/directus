@@ -124,7 +124,6 @@ const {
 	updateVersion,
 	deleteVersion,
 	deleteVersionLoading,
-	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
@@ -368,12 +367,13 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 
 const { applyAutoSwitchPendingEdits, canAutoSwitchToDraft, draftVersion } = useAutoSwitchToDraft();
 
-const { autoSaveError, resetSession } = useAutoSave(edits, autoSave, {
-	enabled: computed(() => currentVersion.value !== null && updateVersionsAllowed.value),
-	currentVersionDateUpdated: computed(() => {
-		const v = currentVersion.value;
-		return v && 'date_updated' in v ? (v.date_updated ?? null) : null;
-	}),
+const {
+	autoSaveError,
+	isSaving: autoSaveIsSaving,
+	resetOpenRevision,
+} = useAutoSave(edits, autoSave, {
+	currentVersion,
+	updateVersionsAllowed,
 	collection: computed(() => props.collection),
 });
 
@@ -406,12 +406,18 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-watch(currentVersion, async () => {
-	resetSession();
-	const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
-	edits.value = autoSwitchPendingEdits ?? {};
-	await refreshLivePreview();
-});
+// Trigger only on logical version changes (user switches versions). `getVersions()` after a save
+// reassigns `currentVersion` to a fresh object with the same id/key — without this guard the watcher
+// would fire on every save and wipe `edits`, eating any keystrokes typed during the in-flight save.
+watch(
+	() => currentVersion.value?.id ?? null,
+	async () => {
+		resetOpenRevision();
+		const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
+		edits.value = autoSwitchPendingEdits ?? {};
+		await refreshLivePreview();
+	},
+);
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
@@ -569,7 +575,7 @@ watch(saving, async (newVal, oldVal) => {
 	await refreshLivePreview();
 });
 
-watch(saveVersionLoading, async (newVal, oldVal) => {
+watch(autoSaveIsSaving, async (newVal, oldVal) => {
 	if (newVal === true || oldVal === false) return;
 
 	await refreshLivePreview();
@@ -582,13 +588,13 @@ onBeforeUnmount(() => {
 async function autoSave(forceNewRevision: boolean) {
 	try {
 		if (forceNewRevision) {
-			await saveVersion(edits, item, { silent: true });
+			await saveVersion(edits, item);
 
 			if (!isNew.value) {
 				revisionsSidebarDetailRef.value?.refresh?.();
 			}
 		} else {
-			await saveVersion(edits, item, { patchRevision: true, silent: true });
+			await saveVersion(edits, item, { patchRevision: true });
 		}
 	} catch (error) {
 		// Version-gone errors (deleted/promoted by another user) are handled by handleVersionGone:

@@ -39,8 +39,10 @@ function setup(opts?: {
 	saveCallback?: (forceNewRevision: boolean) => Promise<void>;
 }) {
 	const edits = ref<Record<string, any>>({});
-	const enabled = ref(opts?.enabled ?? true);
-	const currentVersionDateUpdated = ref<string | null>(opts?.currentVersionDateUpdated ?? new Date().toISOString());
+	const dateUpdated = opts?.currentVersionDateUpdated ?? new Date().toISOString();
+
+	const currentVersion = ref<any>({ id: 'v1', key: 'draft', date_updated: dateUpdated });
+	const updateVersionsAllowed = ref(opts?.enabled ?? true);
 	const collection = ref('articles');
 
 	const saveCallback = vi.fn(opts?.saveCallback ?? (async () => undefined));
@@ -49,14 +51,14 @@ function setup(opts?: {
 
 	const api = scope.run(() =>
 		useAutoSave(edits, saveCallback, {
-			enabled,
-			currentVersionDateUpdated,
+			currentVersion,
+			updateVersionsAllowed,
 			collection,
 			debounceMs: opts?.debounceMs,
 		}),
 	)!;
 
-	return { edits, enabled, currentVersionDateUpdated, saveCallback, scope, ...api };
+	return { edits, currentVersion, updateVersionsAllowed, saveCallback, scope, ...api };
 }
 
 beforeEach(() => {

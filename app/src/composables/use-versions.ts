@@ -1,6 +1,7 @@
 import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, Filter, Item, PrimaryKey } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
+import { isEqual } from 'lodash';
 import { computed, ref, type Ref, watch } from 'vue';
 import { useCollectionPermissions } from './use-permissions';
 import api from '@/api';
@@ -19,7 +20,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const rawVersions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
 	const deleteVersionLoading = ref(false);
-	const saveVersionLoading = ref(false);
 	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
 
@@ -230,11 +230,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	async function saveVersion(
 		edits: Ref<Record<string, any>>,
 		item: Ref<Item | null>,
-		opts?: { patchRevision?: boolean; silent?: boolean },
+		opts?: { patchRevision?: boolean },
 	) {
 		if (!currentVersion.value || !primaryKey.value) return;
 
-		saveVersionLoading.value = true;
 		validationErrors.value = [];
 
 		try {
@@ -260,13 +259,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			const url = shouldPatchRevision ? `/versions/${versionId}/save?patchRevision` : `/versions/${versionId}/save`;
 
+			// Snapshot before the request so keystrokes that land mid-flight stay queued for the next save.
+			const editsToSave = { ...edits.value };
+
 			const {
 				data: { data: savedData },
-			} = await api.post(url, edits.value);
+			} = await api.post(url, editsToSave);
 
-			// Update local item with the saved changes
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
-			edits.value = {};
+			clearSavedEditKeys(edits, editsToSave);
 
 			if (isNewItem.value) queryVersionId.value = versionId;
 
@@ -274,9 +275,13 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			return savedData;
 		} catch (error) {
-			versionErrorHandler(error, { silent: opts?.silent });
-		} finally {
-			saveVersionLoading.value = false;
+			versionErrorHandler(error, { silent: true });
+		}
+	}
+
+	function clearSavedEditKeys(edits: Ref<Record<string, any>>, savedEdits: Record<string, any>) {
+		for (const key of Object.keys(savedEdits)) {
+			if (isEqual(edits.value[key], savedEdits[key])) delete edits.value[key];
 		}
 	}
 
@@ -320,7 +325,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		updateVersion,
 		deleteVersion,
 		deleteVersionLoading,
-		saveVersionLoading,
 		saveVersion,
 		validationErrors,
 		publishVersionLoading,

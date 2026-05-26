@@ -1,9 +1,10 @@
 import { useDebounceFn } from '@vueuse/core';
-import { onScopeDispose, ref, Ref, watch } from 'vue';
+import { computed, onScopeDispose, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 
 /** Fallback when neither the collection nor the server reports a value. Seconds of inactivity after which the next save creates a new revision instead of updating in-place. */
 export const AUTO_SAVE_SNAPSHOT_INTERVAL_SECONDS_FALLBACK = 300;
@@ -12,11 +13,8 @@ export const AUTO_SAVE_DEBOUNCE_MS = 300;
 export const AUTO_SAVE_RETRY_DELAYS_MS = [5_000, 15_000, 30_000];
 
 export interface UseAutoSaveOptions {
-	/** Auto-save only fires when this is true (e.g. currentVersion !== null && hasPermission). */
-	enabled: Ref<boolean>;
-	/** date_updated of the currently-active version record, used to check revision freshness. */
-	currentVersionDateUpdated: Ref<string | null>;
-	/** Collection name — used to read per-collection `autosave_revision_interval` override. */
+	currentVersion: Ref<ContentVersionMaybeNew | null>;
+	updateVersionsAllowed: Ref<boolean>;
 	collection: Ref<string>;
 	/** Debounce delay in milliseconds. Default: 300. */
 	debounceMs?: number;
@@ -27,46 +25,27 @@ export function useAutoSave(
 	saveCallback: (forceNewRevision: boolean) => Promise<void>,
 	options: UseAutoSaveOptions,
 ) {
-	const { enabled, currentVersionDateUpdated, collection, debounceMs = AUTO_SAVE_DEBOUNCE_MS } = options;
+	const { currentVersion, updateVersionsAllowed, collection, debounceMs = AUTO_SAVE_DEBOUNCE_MS } = options;
 	const serverStore = useServerStore();
 	const collectionsStore = useCollectionsStore();
 	const notificationsStore = useNotificationsStore();
 	const { t } = useI18n();
 
+	const enabled = computed(() => currentVersion.value !== null && updateVersionsAllowed.value);
+
+	const currentVersionDateUpdated = computed(() => {
+		const v = currentVersion.value;
+		return v && 'date_updated' in v ? (v.date_updated ?? null) : null;
+	});
+
 	const isSaving = ref(false);
-	const sessionHasSaved = ref(false);
+	const hasOpenRevision = ref(false);
 	const autoSaveError = ref<Error | null>(null);
 	let errorNotificationId: string | null = null;
 	let retryTimer: ReturnType<typeof setTimeout> | null = null;
 	let retryAttempt = 0;
 
 	const debouncedSave = useDebounceFn(runSave, debounceMs);
-
-	async function runSave() {
-		if (!enabled.value) return;
-		if (Object.keys(edits.value).length === 0) return;
-		if (isSaving.value) return; // mutex — skip overlapping saves
-
-		clearRetryTimer();
-
-		const forceNewRevision = !sessionHasSaved.value || isRevisionStale();
-
-		isSaving.value = true;
-
-		try {
-			await saveCallback(forceNewRevision);
-			sessionHasSaved.value = true;
-			autoSaveError.value = null;
-			retryAttempt = 0;
-			dismissErrorNotification();
-		} catch (error) {
-			autoSaveError.value = error instanceof Error ? error : new Error(String(error));
-			showErrorNotification();
-			scheduleRetry();
-		} finally {
-			isSaving.value = false;
-		}
-	}
 
 	watch(
 		edits,
@@ -86,6 +65,38 @@ export function useAutoSave(
 		clearRetryTimer();
 		dismissErrorNotification();
 	});
+
+	return {
+		autoSaveError,
+		isSaving,
+		resetOpenRevision,
+	};
+
+	async function runSave() {
+		if (!enabled.value) return;
+		if (Object.keys(edits.value).length === 0) return;
+		if (isSaving.value) return; // mutex — skip overlapping saves
+
+		clearRetryTimer();
+
+		const forceNewRevision = !hasOpenRevision.value || isRevisionStale();
+
+		isSaving.value = true;
+
+		try {
+			await saveCallback(forceNewRevision);
+			hasOpenRevision.value = true;
+			autoSaveError.value = null;
+			retryAttempt = 0;
+			dismissErrorNotification();
+		} catch (error) {
+			autoSaveError.value = error instanceof Error ? error : new Error(String(error));
+			showErrorNotification();
+			scheduleRetry();
+		} finally {
+			isSaving.value = false;
+		}
+	}
 
 	function showErrorNotification() {
 		if (errorNotificationId) return;
@@ -140,13 +151,7 @@ export function useAutoSave(
 		return Date.now() - new Date(dateUpdated).getTime() > intervalMs;
 	}
 
-	function resetSession() {
-		sessionHasSaved.value = false;
+	function resetOpenRevision() {
+		hasOpenRevision.value = false;
 	}
-
-	return {
-		autoSaveError,
-		isSaving,
-		resetSession,
-	};
 }
