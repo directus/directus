@@ -518,6 +518,7 @@ function useItemWithEdits() {
 					<VButton
 						v-if="mode === 'modal' || mode === 'popover'"
 						:to="itemRoute"
+						:active="false"
 						:disabled="isNew"
 						:x-small="mode === 'popover'"
 						secondary
