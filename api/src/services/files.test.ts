@@ -2,6 +2,7 @@ import { PassThrough, Readable } from 'node:stream';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InternalServerError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { Driver, StorageManager } from '@directus/storage';
+import type { PrimaryKey } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, test, vi } from 'vitest';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -58,10 +59,89 @@ describe('Service / Files', () => {
 		resetKnexMocks(tracker, mockSchemaBuilder);
 	});
 
-	// Since the batchInsert refactor, `createOne` is a thin `await createMany([data])`
-	// wrapper on `ItemsService`. FilesService's per-row validation moved to its
-	// `createMany` override — so these assertions spy on `createMany` rather than
-	// `createOne` to verify what the override forwarded to the parent class.
+	describe('createOne', () => {
+		let service: FilesService;
+
+		beforeEach(() => {
+			service = new FilesService({
+				knex: db,
+				schema: { collections: {}, relations: [] },
+			});
+
+			// `createOne` is a thin `[pk] = await this.createMany([data])` wrapper
+			// since the batchInsert refactor. The shared `mockItemsService` test
+			// helper mocks createOne to a no-op spy, which would short-circuit the
+			// wrapper before FilesService.createMany's validation runs — patch the
+			// mock here to flow through to createMany so these tests still cover
+			// the FilesService override.
+			vi.mocked(ItemsService.prototype.createOne).mockImplementation(async function (this: ItemsService, data, opts) {
+				const [pk] = await this.createMany([data], opts ?? {});
+				return pk as PrimaryKey;
+			});
+		});
+
+		test('throws InvalidPayloadError when "type" is not provided', async () => {
+			try {
+				await service.createOne({
+					title: 'Test File',
+					storage: 'local',
+					filename_download: 'test_file',
+				});
+			} catch (err: any) {
+				expect(err).toBeInstanceOf(InvalidPayloadError);
+				expect(err.message).toBe('Invalid payload. "type" is required.');
+			}
+
+			expect(ItemsService.prototype.createMany).not.toHaveBeenCalled();
+		});
+
+		test('should throw ForbiddenError deferred when filename_disk is not unique', async () => {
+			tracker.on
+				.select('select "filename_disk" from "directus_files" where "filename_disk" = ?')
+				.response([{ filename_disk: 'existing-file.jpg' }]);
+
+			await service.createOne({
+				type: 'application/octet-stream',
+				filename_disk: 'existing-file.jpg',
+			});
+
+			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(
+				[
+					{
+						type: 'application/octet-stream',
+						filename_disk: 'existing-file.jpg',
+					},
+				],
+				expect.objectContaining({ preMutationError: expect.any(ForbiddenError) }),
+			);
+		});
+
+		test('creates a file entry when "type" is provided', async () => {
+			await service.createOne({
+				title: 'Test File',
+				storage: 'local',
+				filename_download: 'test_file',
+				type: 'application/octet-stream',
+			});
+
+			expect(ItemsService.prototype.createMany).toHaveBeenCalled();
+		});
+
+		test('should normalize filename_disk path', async () => {
+			tracker.on.select('select "filename_disk" from "directus_files" where "filename_disk" = ?').response([]);
+
+			await service.createOne({
+				type: 'application/octet-stream',
+				filename_disk: '/folder/../new-file.jpg',
+			});
+
+			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(
+				[{ filename_disk: 'new-file.jpg', type: 'application/octet-stream' }],
+				{},
+			);
+		});
+	});
+
 	describe('createMany', () => {
 		let service: FilesService;
 
