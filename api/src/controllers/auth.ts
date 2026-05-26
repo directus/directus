@@ -262,7 +262,7 @@ router.get(
 		const isSSOEnabled = getEntitlementManager().isEntitled('sso_enabled');
 
 		// Hide SSO providers when not entitled, unless the lockout escape hatch keeps them reachable
-		if (providers.length > 0 && !(await isSsoEscapeHatchActive(req.schema))) {
+		if (providers.length > 0 && !(await isSsoEscapeHatchActive())) {
 			providers = [];
 		}
 

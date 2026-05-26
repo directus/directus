@@ -4,7 +4,7 @@ import { isSsoEscapeHatchActive } from '../../license/utils/is-sso-escape-hatch-
 import asyncHandler from '../../utils/async-handler.js';
 
 export const checkSsoEnabled: RequestHandler = asyncHandler(async (req, _res, next) => {
-	if (!(await isSsoEscapeHatchActive(req.schema))) {
+	if (!(await isSsoEscapeHatchActive())) {
 		throw new RouteNotFoundError({ path: req.path });
 	}
 
