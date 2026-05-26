@@ -13,7 +13,7 @@ import {
 } from '../auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { getEntitlementManager } from '../license/index.js';
-import { isSsoEscapeHatchActive } from '../license/utils/is-sso-escape-hatch-active.js';
+import { getLicenseManager } from '../license/manager.js';
 import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
@@ -261,8 +261,10 @@ router.get(
 
 		const isSSOEnabled = getEntitlementManager().isEntitled('sso_enabled');
 
-		// Hide SSO providers when not entitled, unless the lockout escape hatch keeps them reachable
-		if (providers.length > 0 && !(await isSsoEscapeHatchActive())) {
+		// Hide SSO providers when not entitled, unless the license is locked — admins on a
+		// non-default provider need SSO reachable to sign in and set a default-provider
+		// password before SSO is fully disabled.
+		if (providers.length > 0 && !isSSOEnabled && !(await getLicenseManager().isLocked())) {
 			providers = [];
 		}
 
