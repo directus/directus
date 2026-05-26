@@ -338,9 +338,6 @@ export class FilesService extends ItemsService<File> {
 	 * Create a file
 	 */
 	override async createMany(data: Partial<File>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		// `ItemsService.createMany` is the single insert path now (`createOne` wraps
-		// it); run the per-row validation + filename rewrite up front so a bad row
-		// aborts the whole batch before any insert happens.
 		for (const item of data) {
 			if (!item.type) {
 				throw new InvalidPayloadError({ reason: `"type" is required` });

@@ -20,9 +20,6 @@ export class NotificationsService extends ItemsService {
 	override async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeys = await super.createMany(data, opts);
 
-		// `ItemsService.createMany` is now the single insert path (`createOne` is a
-		// `createMany([data])` wrapper since the batchInsert refactor), so the side
-		// effect lives here — `super.createOne` no longer loops through this class.
 		for (const notification of data) {
 			await this.sendEmail(notification);
 		}

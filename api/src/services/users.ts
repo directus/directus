@@ -185,12 +185,7 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
-	 * Create a new user
-	 */
-	/**
-	 * Create one or more new users. `createOne` (now a `createMany([data])`
-	 * wrapper on `ItemsService`) routes through here, so per-row validation
-	 * naturally collapses into the array form below.
+	 * Create one or more new users
 	 */
 	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		const emails = data.map((payload) => payload['email']).filter((email) => email);

@@ -40,8 +40,6 @@ export class RevisionsService extends ItemsService {
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		// `createOne` (now a `createMany([data])` wrapper on `ItemsService`) already
-		// routes through here, so we only need the one override.
 		return super.createMany(data, this.setDefaultOptions(opts));
 	}
 

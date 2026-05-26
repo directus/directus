@@ -145,9 +145,6 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
-		// `createOne` (now a `createMany([data])` wrapper on `ItemsService`) routes
-		// through here, so per-row validation + `hash` computation moved into the
-		// loop below — there's no longer a separate single-row override to host them.
 		const keyCombos = new Set();
 
 		for (const item of data) {

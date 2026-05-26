@@ -38,9 +38,6 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions) {
-		// `createOne` (now a `createMany([data])` wrapper on `ItemsService`) routes
-		// through here, so a single override covers both paths and the cache only
-		// clears once per batch.
 		const res = await super.createMany(data, opts);
 
 		await this.clearCaches(opts);

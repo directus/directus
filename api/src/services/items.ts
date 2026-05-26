@@ -122,9 +122,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	}
 
 	/**
-	 * Create a single new item. Thin wrapper around {@link createMany} so the
-	 * fast `knex.batchInsert` dispatch is the single insert path; both single-
-	 * and multi-row callers benefit from one tested implementation.
+	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		const [primaryKey] = await this.createMany([data], opts);
@@ -133,18 +131,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 	/**
 	 * Create one or more new items, wrapped in a transaction.
-	 *
-	 * Fast path: vendors whose `INSERT … RETURNING` is contractually ordered
-	 * (see `CapabilitiesHelper.preservesInsertOrderInReturning`) emit a single
-	 * `knex.batchInsert` and map the returned PKs back positionally.
-	 *
-	 * Slow path: per-row `trx.insert(row).into(...).returning(pk, returningOptions)`
-	 * inline (no recursion through `createOne`). Used for MySQL / MariaDB and
-	 * MSSQL when `DB_MSSQL_TRUST_BATCH_RETURNING` isn't opted in. The MSSQL
-	 * `includeTriggerModifications` returning option is preserved on this path.
-	 *
-	 * The `DB_BATCH_INSERT_CHUNK_SIZE` env var (knex passthrough, default 1000)
-	 * tunes the fast path; `DB_MSSQL_TRUST_BATCH_RETURNING` opts MSSQL into it.
 	 */
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
@@ -188,7 +174,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				payloadService: PayloadService;
 			};
 
-			// === Per-row prep: filter hooks, presets, M2O / A2O processing ===
 			const prepared: PreparedRow[] = [];
 
 			for (const [index, payloadInput] of data.entries()) {
@@ -286,7 +271,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				});
 			}
 
-			// === Insert dispatch: batched (fast) or per-row (slow) ===
 			const useBatchInsert =
 				prepared.length > 1 && (await getHelpers(trx).capabilities.preservesInsertOrderInReturning());
 
@@ -339,11 +323,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						p.actionHookPayload[primaryKeyField] = p.primaryKey;
 					}
 				} else {
-					// Per-row insert path. Mirrors upstream's pre-batchInsert `createOne`
-					// so MSSQL triggers + the max(pk) fallback for vendors that don't
-					// return a PK both still work.
 					let returningOptions: { includeTriggerModifications: true } | undefined;
 
+					// Support MSSQL tables that have triggers.
 					if (getDatabaseClient(trx) === 'mssql') {
 						returningOptions = { includeTriggerModifications: true };
 					}
@@ -388,7 +370,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				throw dbError;
 			}
 
-			// === Per-row post-insert: O2M, integrity flags, nested action events ===
 			type PostRow = PreparedRow & {
 				primaryKey: PrimaryKey;
 				revisionsO2M: Awaited<ReturnType<PayloadService['processO2M']>>['revisions'];
@@ -427,7 +408,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 			}
 
-			// === Activity + revisions, batched via createMany on those services ===
 			if (
 				opts.skipTracking !== true &&
 				this.accountability &&
@@ -505,8 +485,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			};
 		});
 
-		// Top-level action events fire AFTER the transaction commits, so listeners
-		// observe a durable row.
 		if (opts.emitEvents !== false) {
 			const eventName =
 				this.eventScope === 'items' ? ['items.create', `${this.collection}.items.create`] : `${this.eventScope}.create`;
