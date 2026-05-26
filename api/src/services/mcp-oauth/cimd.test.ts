@@ -498,6 +498,22 @@ describe('fetchCimdMetadata', () => {
 		);
 	});
 
+	it('maps request-layer denied IP failures to invalid_client_metadata', async () => {
+		mockAxiosGet.mockRejectedValue(new Error('Requested domain "metadata.example" resolves to a denied IP address'));
+
+		try {
+			await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client');
+			expect.unreachable('Expected OAuthError');
+		} catch (err) {
+			expect(err).toBeInstanceOf(OAuthError);
+			expect(err).toMatchObject({
+				status: 400,
+				code: 'invalid_client_metadata',
+				description: 'Failed to fetch client metadata document',
+			});
+		}
+	});
+
 	it('defaults grant_types to authorization_code when absent', async () => {
 		const { grant_types: _, ...metaWithoutGrants } = validMetadata;
 
