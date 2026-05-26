@@ -6,7 +6,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 
-export const AUTO_SAVE_DEBOUNCE_MS = 800;
+export const AUTO_SAVE_DEBOUNCE_MS = 650;
 export const AUTO_SAVE_RETRY_DELAYS_MS = [5_000, 15_000, 30_000];
 
 export interface UseAutoSaveOptions {
