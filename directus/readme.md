@@ -17,17 +17,17 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **Manage Pure SQL.** Works with new or existing SQL databases, no migration required.
 - **Choose your Database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
 - **On-Prem or Cloud.** Run locally, install on-premises, or use our
-  [self-service Cloud service](https://directus.io/pricing).
+  [self-service Cloud service](https://directus.com/pricing).
 - **Completely Extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A Modern Dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
-**[Learn more about Directus](https://directus.io)** • **[Documentation](https://docs.directus.io)**
+**[Learn more about Directus](https://directus.com)** • **[Documentation](https://docs.directus.com)**
 
 <br />
 
 ## 🚀 Directus Cloud
 
-[Directus Cloud](https://directus.io/pricing) allows you to create projects, hosted by the Directus team, from
+[Directus Cloud](https://directus.com/pricing) allows you to create projects, hosted by the Directus team, from
 $15/month.
 
 - A self-service dashboard to create and monitor all your projects in one place.
@@ -53,7 +53,7 @@ storage, all connected via Railway's private network for secure, zero-egress com
 
 ## 🤔 Community Help
 
-[The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
+[The Directus Documentation](https://directus.com/docs) is a great place to start, or explore these other channels:
 
 - [Community](https://community.directus.io) (Questions, Discussions)
 - [Discord](https://directus.chat) (Live Chat)
@@ -69,7 +69,7 @@ storage, all connected via Railway's private network for secure, zero-egress com
 Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
 
 All security vulnerabilities should be reported in accordance with our
-[Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
+[Security Policy](https://docs.directus.com/contributing/introduction/#reporting-security-vulnerabilities).
 
 Directus is made possible with support from our passionate core team, talented contributors, and amazing
 [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
