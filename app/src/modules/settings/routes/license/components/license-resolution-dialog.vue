@@ -45,7 +45,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const licenseStore = useLicenseStore();
-const { info, pendingResolution } = storeToRefs(licenseStore);
+const { info, pendingResolution, isEnvManaged } = storeToRefs(licenseStore);
 
 const userStore = useUserStore();
 
@@ -255,8 +255,6 @@ function manageLicense() {
 
 	router.push('/settings/license');
 }
-
-const isEnvManaged = computed(() => info.value?.source === 'env');
 
 const cookies = useCookies(['license-resolution-acknowledged']);
 
