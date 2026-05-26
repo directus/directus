@@ -12,11 +12,10 @@ export const _cache: { migrations: { oldest: Item | undefined; v12: Item | undef
 };
 
 /**
- * Resolve the V12 migration timestamp in epoch milliseconds
- *
- * Returns `null` when no real V11 → V12 upgrade is detected
+ * V12 migration timestamp in ms, used as the Core "expires_at" during the upgrade grace.
+ * Returns `null` when no grace applies
  */
-async function getUpgradeTimestampMs(): Promise<number | null> {
+export async function getCoreGraceExpiresAt(): Promise<number | null> {
 	if (!_cache.migrations) {
 		const itemsService = new ItemsService('directus_migrations', {
 			schema: await getSchema(),
@@ -56,16 +55,7 @@ async function getUpgradeTimestampMs(): Promise<number | null> {
 }
 
 export async function isInCoreGracePeriod(): Promise<boolean> {
-	const upgradeMs = await getUpgradeTimestampMs();
-	if (upgradeMs === null) return false;
-	return Date.now() - upgradeMs < GRACE_PERIOD_MS;
-}
-
-/**
- * Epoch-seconds timestamp the synthetic Core grace window starts ticking
- */
-export async function getCoreGraceExpiresAt(): Promise<number | null> {
-	const upgradeMs = await getUpgradeTimestampMs();
-	if (upgradeMs === null) return null;
-	return Math.floor(upgradeMs / 1000);
+	const expiresAt = await getCoreGraceExpiresAt();
+	if (expiresAt === null) return false;
+	return Date.now() - expiresAt < GRACE_PERIOD_MS;
 }

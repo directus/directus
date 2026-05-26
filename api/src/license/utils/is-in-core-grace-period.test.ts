@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { ItemsService } from '../../services/items.js';
-import { _cache, isInCoreGracePeriod } from './is-in-core-grace-period.js';
+import { _cache, getCoreGraceExpiresAt, isInCoreGracePeriod } from './is-in-core-grace-period.js';
 
 vi.mock('../../services/items.js', async () => {
 	const { mockItemsService } = await import('../../test-utils/services/items-service.js');
@@ -125,5 +125,50 @@ describe('isInCoreGracePeriod', () => {
 			filter: { version: { _eq: V12_MIGRATION_VERSION } },
 			limit: 1,
 		});
+	});
+});
+
+describe('getCoreGraceExpiresAt', () => {
+	beforeEach(() => {
+		_cache.migrations = undefined;
+	});
+
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
+
+	test('returns null when no migrations exist', async () => {
+		vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+
+		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
+	});
+
+	test('returns null when the v12 migration has not been applied', async () => {
+		vi.spyOn(ItemsService.prototype, 'readByQuery')
+			.mockResolvedValueOnce([{ timestamp: new Date(Date.now() - 365 * DAY_MS).toISOString() }])
+			.mockResolvedValueOnce([]);
+
+		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
+	});
+
+	test('returns null for a clean v12 install (oldest and v12 within 24h)', async () => {
+		const now = Date.now();
+
+		vi.spyOn(ItemsService.prototype, 'readByQuery')
+			.mockResolvedValueOnce([{ timestamp: new Date(now - 60 * 1000).toISOString() }])
+			.mockResolvedValueOnce([{ timestamp: new Date(now).toISOString() }]);
+
+		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
+	});
+
+	test('returns the v12 migration timestamp in milliseconds on a real upgrade', async () => {
+		const now = Date.now();
+		const v12Ms = now - 5 * DAY_MS;
+
+		vi.spyOn(ItemsService.prototype, 'readByQuery')
+			.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
+			.mockResolvedValueOnce([{ timestamp: new Date(v12Ms).toISOString() }]);
+
+		await expect(getCoreGraceExpiresAt()).resolves.toBe(v12Ms);
 	});
 });
