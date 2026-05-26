@@ -160,6 +160,36 @@ describe('Integration Tests', () => {
 
 				expect(checkPasswordPolicySpy).toBeCalledWith(['']);
 			});
+
+			it('should set UserLimits flag when status is active', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createOne({ status: 'active' }, opts);
+
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+			});
+
+			it('should not set UserLimits flag when status is inactive', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createOne({ status: 'inactive' }, opts);
+
+				expect(opts.userIntegrityCheckFlags).toBeUndefined();
+			});
+
+			it('should OR existing userIntegrityCheckFlags and invoke onRequireUserIntegrityCheck', async () => {
+				const onRequireUserIntegrityCheck = vi.fn();
+
+				const opts: MutationOptions = {
+					userIntegrityCheckFlags: UserIntegrityCheckFlag.RemainingAdmins,
+					onRequireUserIntegrityCheck,
+				};
+
+				await service.createOne({}, opts);
+
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
+				expect(onRequireUserIntegrityCheck).toHaveBeenCalledWith(UserIntegrityCheckFlag.All);
+			});
 		});
 
 		describe('createMany', () => {
@@ -221,6 +251,44 @@ describe('Integration Tests', () => {
 				await service.createMany([{ password: 'testpassword' }, { password: '' }]);
 
 				expect(checkPasswordPolicySpy).toBeCalledWith(['testpassword', '']);
+			});
+
+			it('should set UserLimits flag if any row is active', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createMany([{ status: 'active' }, { status: 'inactive' }], opts);
+
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+			});
+
+			it('should set UserLimits flag if any row has no status', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createMany([{}, { status: 'inactive' }], opts);
+
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+			});
+
+			it('should not set UserLimits flag if all rows are inactive', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createMany([{ status: 'inactive' }, { status: 'inactive' }], opts);
+
+				expect(opts.userIntegrityCheckFlags).toBeUndefined();
+			});
+
+			it('should OR existing userIntegrityCheckFlags and invoke onRequireUserIntegrityCheck', async () => {
+				const onRequireUserIntegrityCheck = vi.fn();
+
+				const opts: MutationOptions = {
+					userIntegrityCheckFlags: UserIntegrityCheckFlag.RemainingAdmins,
+					onRequireUserIntegrityCheck,
+				};
+
+				await service.createMany([{}, { status: 'active' }], opts);
+
+				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
+				expect(onRequireUserIntegrityCheck).toHaveBeenCalledWith(UserIntegrityCheckFlag.All);
 			});
 		});
 
