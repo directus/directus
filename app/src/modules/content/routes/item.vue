@@ -48,6 +48,7 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -930,6 +931,7 @@ function usePublishActions() {
 function useAutoSwitchToDraft() {
 	const autoSwitchPendingEdits = ref<Item>({});
 	const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT)!);
+	const notificationsStore = useNotificationsStore();
 
 	const canAutoSwitchToDraft = computed(() => {
 		if (isNew.value) return false;
@@ -941,16 +943,21 @@ function useAutoSwitchToDraft() {
 		return updateVersionsAllowed.value || createVersionsAllowed.value;
 	});
 
-	watch(hasEdits, (newHasEdits, oldHasEdits) => {
+	watch(hasEdits, async (newHasEdits, oldHasEdits) => {
 		if (!newHasEdits || oldHasEdits) return;
 		if (!canAutoSwitchToDraft.value) return;
 		if (!draftVersion.value) return;
 
 		stashAutoSwitchPendingEdits();
 
-		router.replace({
+		await router.replace({
 			...route,
 			query: { ...route.query, version: VERSION_KEY_DRAFT },
+		});
+
+		notificationsStore.add({
+			title: t('editing_draft_version'),
+			icon: 'edit',
 		});
 	});
 
