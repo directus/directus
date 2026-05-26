@@ -39,7 +39,10 @@ async function getUpgradeTimestampMs(): Promise<number | null> {
 				.then((r) => r[0]),
 		]);
 
-		_cache.migrations = { oldest, v12 };
+		_cache.migrations = {
+			oldest,
+			v12
+		};
 	}
 
 	if (!_cache.migrations.oldest || !_cache.migrations.v12) return null;
