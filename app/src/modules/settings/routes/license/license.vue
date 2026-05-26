@@ -36,7 +36,9 @@ const { t } = useI18n();
 const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
 
-const { info: license, addons, loading, boundary, isLicensed, isEnvManaged } = storeToRefs(licenseStore);
+const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
+
+const isEnvManaged = computed(() => license.value?.source === 'env');
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;

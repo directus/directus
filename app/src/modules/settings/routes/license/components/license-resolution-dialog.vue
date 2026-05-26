@@ -45,7 +45,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const licenseStore = useLicenseStore();
-const { info, pendingResolution, isEnvManaged } = storeToRefs(licenseStore);
+const { info, pendingResolution } = storeToRefs(licenseStore);
 
 const userStore = useUserStore();
 
@@ -295,7 +295,7 @@ function onEsc() {
 					<span class="title-text" :class="severity">{{ title }}</span>
 					<span class="subtitle">{{ t('licensing.resolve_subtitle') }}</span>
 				</div>
-				<VButton v-if="!isEnvManaged" secondary small @click="manageLicense">
+				<VButton secondary small @click="manageLicense">
 					{{ t('licensing.manage') }}
 				</VButton>
 			</header>
