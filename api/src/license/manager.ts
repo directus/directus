@@ -431,6 +431,8 @@ export class LicenseManager {
 	}
 
 	public async billingPortalUrl() {
+		this.assertCanManageAddons();
+
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
@@ -445,6 +447,8 @@ export class LicenseManager {
 	}
 
 	public async availableAddons(): Promise<LicenseAddonsOutput> {
+		this.assertCanManageAddons();
+
 		const settingsService = new SettingsService({ schema: await getSchema() });
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });

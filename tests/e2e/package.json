@@ -35,8 +35,5 @@
 	"engines": {
 		"node": ">=22",
 		"pnpm": ">=10"
-	},
-	"dependencies": {
-		"@directus/errors": "catalog:"
 	}
 }

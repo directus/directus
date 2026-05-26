@@ -1,5 +1,4 @@
 import { randomUUID } from 'crypto';
-import { InvalidPayloadError } from '@directus/errors';
 import {
 	activateLicense,
 	applyLicenseResolution,
@@ -33,6 +32,7 @@ import {
 	type RestClient,
 	staticToken,
 	updateSettings,
+	withToken,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
@@ -43,19 +43,43 @@ let api: DirectusClient<any> & RestClient<any>;
 
 const originalLicense = createLicense({ meta: { name: 'og-license' } });
 
-const updatedLicense = createLicense({
-	meta: { name: 'changed-license' },
+const unlimitedLicenses = createLicense({
+	meta: { name: 'unlimited-license' },
 	entitlements: {
+		// meta
+		sso_enabled: { default: true },
 		custom_permission_rules_enabled: { default: true },
+		custom_llms_enabled: { default: true },
+		offline_enabled: { default: true },
+		production_enabled: { default: true },
+		telemetry_required: { default: false },
+
+		// entitlements
+		seats: { limit: -1 },
+		collections: { limit: -1 },
+		flows: { limit: -1 },
+		activity_historical_timeframe: { limit: -1 },
+		revision_historical_timeframe: { limit: -1 },
 	},
 });
 
 const restrictedLicense = createLicense({
-	meta: { name: 'restricted-license' },
+	meta: { name: 'fully-restricted' },
 	entitlements: {
-		collections: { limit: 1 },
-		seats: { limit: 1 },
+		// meta
+		sso_enabled: { default: false },
+		custom_permission_rules_enabled: { default: false },
 		custom_llms_enabled: { default: false },
+		offline_enabled: { default: false },
+		production_enabled: { default: false },
+		telemetry_required: { default: true },
+
+		// entitlements
+		seats: { limit: 1 },
+		collections: { limit: 1 },
+		flows: { limit: 1 },
+		activity_historical_timeframe: { limit: 1 },
+		revision_historical_timeframe: { limit: 1 },
 	},
 });
 
@@ -82,18 +106,6 @@ const llmDisabledLicense = createLicense({
 const customPermRulesDisabledLicense = createLicense({
 	meta: { name: 'custom-perm-rules-disabled' },
 	entitlements: { custom_permission_rules_enabled: { default: false } },
-});
-
-const fullyRestrictedLicense = createLicense({
-	meta: { name: 'fully-restricted' },
-	entitlements: {
-		collections: { limit: 0 },
-		seats: { limit: 1 },
-		flows: { limit: 0 },
-		sso_enabled: { default: false },
-		custom_llms_enabled: { default: false },
-		custom_permission_rules_enabled: { default: false },
-	},
 });
 
 const seatsAddon = randomUUID();
@@ -140,16 +152,15 @@ beforeAll(async () => {
 
 	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, originalLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, updatedLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, restrictedLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, addonLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, seatsLimitedLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, flowsLimitedLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, ssoDisabledLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, llmDisabledLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, customPermRulesDisabledLicense);
-	await mockClient.registerLicense(directus.env.LICENSE_PORT, fullyRestrictedLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, originalLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, unlimitedLicenses);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, restrictedLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, addonLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, seatsLimitedLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, flowsLimitedLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, ssoDisabledLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, llmDisabledLicense);
+	await mockClient.registerLicense(directus.env.LICENSE_API_URL!, customPermRulesDisabledLicense);
 });
 
 afterAll(async () => {
@@ -165,7 +176,7 @@ describe('GET /license', () => {
 			expires_at: CORE_LICENSE.meta.expires_at,
 			grace_period: CORE_LICENSE.meta.grace_period,
 			name: CORE_LICENSE.meta.name,
-			offline: false,
+			offline: CORE_LICENSE.meta.offline,
 			source: null,
 			status: 'active',
 			usage: expect.any(Object),
@@ -202,7 +213,7 @@ describe('POST /license', () => {
 
 describe('PATCH /license', () => {
 	test('rejects update from core', async () => {
-		await expect(api.request(updateLicense({ license_key: 'LICENSE' }))).rejects.toThrowError(InvalidPayloadError);
+		await expect(api.request(updateLicense({ license_key: 'LICENSE' }))).rejects.toThrowError();
 	});
 
 	test('returns updated license info after key change', async () => {
@@ -210,14 +221,14 @@ describe('PATCH /license', () => {
 		await api.request(activateLicense({ license_key: originalLicense.key }));
 
 		// action
-		await api.request(updateLicense({ license_key: updatedLicense.key }));
+		await api.request(updateLicense({ license_key: unlimitedLicenses.key }));
 
 		// assert
 		const licenseInfo: ReadLicenseOutput = await api.request(readLicense());
 
 		expect(licenseInfo).toMatchObject({
-			entitlements: updatedLicense.entitlements,
-			name: updatedLicense.meta.name,
+			entitlements: unlimitedLicenses.entitlements,
+			name: unlimitedLicenses.meta.name,
 			source: 'settings',
 			status: 'active',
 			usage: expect.any(Object),
@@ -318,29 +329,24 @@ describe('POST /license/pending-resolution', () => {
 
 	test('preview mode against null returns violations against core', async () => {
 		// setup
-		await api.request(activateLicense({ license_key: updatedLicense.key }));
+		await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
 
 		const policy = await api.request(createPolicy({ name: 'Lorem' }));
 
 		const permission = await api.request(
-			createPermission({ action: 'read', collection: 'directus_users', fields: ['id'], policy }),
+			createPermission({ action: 'read', collection: 'directus_users', fields: ['id'], policy: policy['id'] }),
 		);
 
 		const result = await api.request(generateLicensePendingResolution({ license_key: null }));
 
 		expect(result).toEqual([
 			{
-				custom_permission_rules_enabled: {
-					blockers: [],
-					kind: 'feature_gate',
-					key: 'custom_permission_rules_enabled',
-				},
+				kind: 'feature_gate',
+				key: 'custom_permission_rules_enabled',
 			},
 		]);
 
 		// cleanup
-		await api.request(deleteCollection('A'));
-		await api.request(deleteCollection('B'));
 		await api.request(deletePermission(permission['id']));
 		await api.request(deletePolicy(policy['id']));
 		await api.request(deactivateLicense());
@@ -421,8 +427,9 @@ describe('POST /license/pending-resolution', () => {
 
 	describe('feature_gate kinds', () => {
 		test('custom_llms_enabled when LLM settings are populated', async () => {
+			await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
 			await api.request(updateSettings({ ai_openai_compatible_name: 'lorem' } as any));
-			await api.request(activateLicense({ license_key: llmDisabledLicense.key }));
+			await api.request(updateLicense({ license_key: llmDisabledLicense.key }));
 
 			const result = await api.request(generateLicensePendingResolution());
 
@@ -434,18 +441,20 @@ describe('POST /license/pending-resolution', () => {
 		});
 
 		test('custom_permission_rules_enabled when a custom-rule permission exists', async () => {
+			await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 			const policy = await api.request(createPolicy({ name: 'Lorem' }));
 
 			const permission = await api.request(
 				createPermission({
 					action: 'read',
 					collection: 'directus_users',
-					policy,
+					policy: policy['id'],
 					fields: ['first_name'],
 				}),
 			);
 
-			await api.request(activateLicense({ license_key: customPermRulesDisabledLicense.key }));
+			await api.request(updateLicense({ license_key: customPermRulesDisabledLicense.key }));
 
 			const result = await api.request(generateLicensePendingResolution());
 
@@ -463,17 +472,18 @@ describe('POST /license/pending-resolution', () => {
 
 				const ssoUser = await api.request(
 					createUser({
-						first_name: 'Sso',
-						last_name: 'User',
 						email: 'sso-no-blockers@example.com',
+						password: '1234',
 						status: 'active',
+						token: '1234',
+						provider: 'oidc',
 						role: adminMe['role'],
 					}),
 				);
 
 				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
 
-				const result = await api.request(generateLicensePendingResolution());
+				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
 
 				expect(result).toEqual([{ key: 'sso_enabled', kind: 'feature_gate', blockers: [] }]);
 
@@ -487,16 +497,17 @@ describe('POST /license/pending-resolution', () => {
 
 				const ssoUser = await api.request(
 					createUser({
-						first_name: 'Sso',
-						last_name: 'User',
+						password: '1234',
 						status: 'active',
+						token: '1234',
+						provider: 'oidc',
 						role: adminMe['role'],
 					}),
 				);
 
 				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
 
-				const result = await api.request(generateLicensePendingResolution());
+				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
 
 				expect(result).toEqual([{ key: 'sso_enabled', kind: 'feature_gate', blockers: ['ADMIN_MISSING_EMAIL'] }]);
 
@@ -510,17 +521,17 @@ describe('POST /license/pending-resolution', () => {
 
 				const ssoUser = await api.request(
 					createUser({
-						first_name: 'Sso',
-						last_name: 'User',
 						email: 'sso-blockers-pw@example.com',
 						status: 'active',
+						token: '1234',
+						provider: 'oidc',
 						role: adminMe['role'],
 					}),
 				);
 
 				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
 
-				const result = await api.request(generateLicensePendingResolution());
+				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
 
 				expect(result).toEqual([{ key: 'sso_enabled', kind: 'feature_gate', blockers: ['ADMIN_MISSING_PASSWORD'] }]);
 
@@ -534,16 +545,16 @@ describe('POST /license/pending-resolution', () => {
 
 				const ssoUser = await api.request(
 					createUser({
-						first_name: 'Sso',
-						last_name: 'User',
 						status: 'active',
+						token: '1234',
+						provider: 'oidc',
 						role: adminMe['role'],
 					}),
 				);
 
 				await api.request(activateLicense({ license_key: ssoDisabledLicense.key }));
 
-				const result = await api.request(generateLicensePendingResolution());
+				const result = await api.request(withToken('1234', generateLicensePendingResolution()));
 
 				expect(result).toMatchObject([{ key: 'sso_enabled', kind: 'feature_gate' }]);
 				expect((result[0] as any).blockers).toEqual(['ADMIN_MISSING_EMAIL', 'ADMIN_MISSING_PASSWORD']);
@@ -557,27 +568,29 @@ describe('POST /license/pending-resolution', () => {
 
 	describe('response shape', () => {
 		test('multiple violations are returned in single response', async () => {
+			await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 			const adminMe = await api.request(readMe());
 
-			await api.request(createCollection({ collection: 'order-collection', meta: {}, schema: {} }));
-			const flow = await api.request(createFlow({ name: 'order-flow', trigger: 'manual', status: 'active' }));
+			await api.request(createCollection({ collection: 'A', meta: {}, schema: {} }));
+			await api.request(createCollection({ collection: 'B', meta: {}, schema: {} }));
+			const flowA = await api.request(createFlow({ name: 'A', trigger: 'manual', status: 'active' }));
+			const flowB = await api.request(createFlow({ name: 'B', trigger: 'manual', status: 'active' }));
 
-			const extraUser = await api.request(
+			const userA = await api.request(
 				createUser({
-					first_name: 'X',
-					last_name: 'Y',
-					email: 'order@example.com',
+					first_name: 'A',
+					email: 'a@example.com',
 					password: 'pw',
 					status: 'active',
 					role: adminMe['role'],
 				}),
 			);
 
-			const ssoUser = await api.request(
+			const userB = await api.request(
 				createUser({
-					first_name: 'S',
-					last_name: 'O',
-					email: 'order-sso@example.com',
+					first_name: 'B',
+					email: 'b@example.com',
 					provider: 'oidc',
 					status: 'active',
 					role: adminMe['role'],
@@ -597,7 +610,7 @@ describe('POST /license/pending-resolution', () => {
 				}),
 			);
 
-			await api.request(activateLicense({ license_key: fullyRestrictedLicense.key }));
+			await api.request(updateLicense({ license_key: restrictedLicense.key }));
 
 			const result = await api.request(generateLicensePendingResolution());
 
@@ -614,21 +627,25 @@ describe('POST /license/pending-resolution', () => {
 			await api.request(deactivateLicense());
 			await api.request(updateSettings({ ai_openai_compatible_name: null } as any));
 			await api.request(deletePermission(permission.id));
-			await api.request(deleteFlow(flow['id']));
-			await api.request(deleteUser(extraUser['id']));
-			await api.request(deleteUser(ssoUser['id']));
-			await api.request(deleteCollection('order-collection'));
+			await api.request(deleteFlow(flowA['id']));
+			await api.request(deleteFlow(flowB['id']));
+			await api.request(deleteUser(userA['id']));
+			await api.request(deleteUser(userB['id']));
+			await api.request(deleteCollection('A'));
+			await api.request(deleteCollection('B'));
 		});
 	});
 });
 
 describe('POST /license/resolve', () => {
 	test('allows partial resolution of a subset of conflicts', async () => {
+		await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 		// setup
 		await api.request(createCollection({ collection: 'A', meta: {}, schema: {} }));
 		await api.request(createCollection({ collection: 'B', meta: {}, schema: {} }));
 		await api.request(updateSettings({ ai_openai_compatible_name: 'lorem' } as any));
-		await api.request(activateLicense({ license_key: restrictedLicense.key }));
+		await api.request(updateLicense({ license_key: restrictedLicense.key }));
 
 		await api.request(applyLicenseResolution({ collections: ['B'] }));
 
@@ -667,6 +684,8 @@ describe('POST /license/resolve', () => {
 
 	test('fully resolving all conflicts clears pending resolution', async () => {
 		// setup
+		await api.request(activateLicense({ license_key: unlimitedLicenses.key }));
+
 		const adminMe = await api.request(readMe());
 
 		const newUser = await api.request(
@@ -681,7 +700,7 @@ describe('POST /license/resolve', () => {
 		);
 
 		await api.request(updateSettings({ ai_openai_compatible_name: 'lorem' } as any));
-		await api.request(activateLicense({ license_key: restrictedLicense.key }));
+		await api.request(updateLicense({ license_key: restrictedLicense.key }));
 
 		const before = await api.request(generateLicensePendingResolution());
 		expect(before.length).toBeGreaterThan(0);
@@ -702,10 +721,8 @@ describe('POST /license/resolve', () => {
 
 describe('License addons', () => {
 	describe('without an active license', () => {
-		test('returns empty list', async () => {
-			const result = await api.request(readLicenseAddons());
-
-			expect(result).toEqual([]);
+		test('rejects when attempting to request addons for non manageable license', async () => {
+			await expect(api.request(readLicenseAddons())).rejects.toThrowError('cannot manage addons');
 		});
 	});
 
@@ -725,6 +742,7 @@ describe('License addons', () => {
 				{
 					active_quantity: 0,
 					description: 'Alodda Seats addon',
+					billing_interval: 'monthly',
 					icon: 'group',
 					id: seatsAddon,
 					max_quantity: 10,

@@ -206,4 +206,5 @@ export type Env = (typeof baseConfig)[Database] & {
 	DOCKER_DEFAULT_PLATFORM?: string;
 } & Partial<typeof minio> &
 	Partial<typeof saml> &
-	Partial<typeof maildev>;
+	Partial<typeof maildev> &
+	Partial<{ LICENSE_API_URL: string }>;
