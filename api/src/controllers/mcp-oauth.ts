@@ -177,34 +177,49 @@ function setNoCacheHeaders(_req: Request, res: Response, next: NextFunction) {
 	next();
 }
 
+function isOAuthHtmlEndpoint(req: Request) {
+	return req.path === '/mcp-oauth/authorize' || req.path === '/mcp-oauth/authorize/decision';
+}
+
+async function loadOAuthPageOpts(
+	req: Request,
+	settingsService: SettingsService,
+	authenticatedUserId = req.accountability?.user,
+): Promise<PageOpts> {
+	const env = useEnv();
+
+	const [settings, user] = await Promise.all([
+		settingsService.readSingleton({
+			fields: ['project_name', 'project_color', 'project_logo', 'default_appearance'],
+		}),
+		authenticatedUserId
+			? getDatabase()('directus_users').where('id', authenticatedUserId).select('appearance').first()
+			: null,
+	]);
+
+	const projectLogo = settings?.project_logo;
+
+	return {
+		projectName: settings?.project_name ?? 'Directus',
+		projectColor: settings?.project_color ?? '#6644ff',
+		logoUrl: projectLogo ? new Url(env['PUBLIC_URL'] as string).addPath('assets', projectLogo).toString() : null,
+		appearance: (user?.appearance ?? settings?.default_appearance ?? 'auto') as string,
+	};
+}
+
 /**
  * Middleware: check mcp_enabled + mcp_oauth_enabled settings.
  * Env vars (MCP_ENABLED, MCP_OAUTH_ENABLED) are already gated at the app.ts mount level.
  */
 async function checkOAuthSettings(req: Request, res: Response, next: NextFunction) {
-	const db = getDatabase();
 	const settingsService = new SettingsService({ schema: req.schema ?? (await getSchema()) });
 
 	const settings = await settingsService.readSingleton({ fields: ['mcp_enabled', 'mcp_oauth_enabled'] });
 
 	if (toBoolean(settings?.mcp_enabled) !== true || toBoolean(settings?.mcp_oauth_enabled) !== true) {
 		// For browser endpoints (authorize), render error page
-		if (req.path.includes('/authorize')) {
-			const [fullSettings, user] = await Promise.all([
-				settingsService.readSingleton({
-					fields: ['project_name', 'project_color', 'project_logo', 'default_appearance'],
-				}),
-				req.accountability?.user
-					? db('directus_users').where('id', req.accountability.user).select('appearance').first()
-					: null,
-			]);
-
-			const pageOpts: PageOpts = {
-				projectName: fullSettings?.project_name ?? 'Directus',
-				projectColor: fullSettings?.project_color ?? '#6644ff',
-				logoUrl: null,
-				appearance: (user?.appearance ?? fullSettings?.default_appearance ?? 'auto') as string,
-			};
+		if (isOAuthHtmlEndpoint(req)) {
+			const pageOpts = await loadOAuthPageOpts(req, settingsService);
 
 			res.set('Content-Type', 'text/html; charset=utf-8');
 			res.status(403).send(await renderErrorPage('MCP OAuth is disabled in project settings.', pageOpts));
@@ -336,22 +351,8 @@ mcpOAuthPublicRouter.get(
 		}
 
 		// Load project settings and user appearance
-		const db = getDatabase();
 		const settingsService = new SettingsService({ schema });
-
-		const [settings, user] = await Promise.all([
-			settingsService.readSingleton({
-				fields: ['project_name', 'project_color', 'project_logo', 'default_appearance'],
-			}),
-			db('directus_users').where('id', accountability.user).select('appearance').first(),
-		]);
-
-		const projectName = settings?.project_name ?? 'Directus';
-		const projectColor = settings?.project_color ?? '#6644ff';
-		const projectLogo = settings?.project_logo;
-		const appearance = user?.appearance ?? settings?.default_appearance ?? 'auto';
-
-		const logoUrl = projectLogo ? new Url(env['PUBLIC_URL'] as string).addPath('assets', projectLogo).toString() : null;
+		const pageOpts = await loadOAuthPageOpts(req, settingsService, accountability.user);
 
 		// Validate OAuth params and get signed consent JWT
 		const service = new McpOAuthService({ schema });
@@ -375,8 +376,6 @@ mcpOAuthPublicRouter.get(
 			);
 
 			const decisionUrl = new Url(env['PUBLIC_URL'] as string).addPath('mcp-oauth', 'authorize', 'decision').toString();
-
-			const pageOpts = { projectName, projectColor, logoUrl, appearance };
 
 			res.set('Content-Type', 'text/html; charset=utf-8');
 			noCache(res);
@@ -418,8 +417,6 @@ mcpOAuthPublicRouter.get(
 			}
 
 			// Pre-trust error or unknown -- render local error page
-			const pageOpts = { projectName, projectColor, logoUrl, appearance };
-
 			res.set('Content-Type', 'text/html; charset=utf-8');
 			noCache(res);
 			res.status(err.status).send(await renderErrorPage(err.description, pageOpts));

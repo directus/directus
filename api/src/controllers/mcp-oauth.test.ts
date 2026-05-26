@@ -138,6 +138,7 @@ vi.mock('./mcp-oauth-consent-page.js', () => ({
 // Import after mocks
 // ---------------------------------------------------------------------------
 const { mcpOAuthPublicRouter, mcpOAuthProtectedRouter } = await import('./mcp-oauth.js');
+const { renderErrorPage } = await import('./mcp-oauth-consent-page.js');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -260,13 +261,38 @@ describe('mcp-oauth controller', () => {
 			expect(res.headers.get('pragma')).toBe('no-cache');
 			expect(res.status).toBe(403);
 			expect(res.body).toMatchObject({ error: 'mcp_oauth_disabled' });
+			expect(mockSettingsReadSingleton).toHaveBeenCalledTimes(1);
+			expect(mockSettingsReadSingleton).toHaveBeenCalledWith({ fields: ['mcp_enabled', 'mcp_oauth_enabled'] });
 		});
 
-		test('disabled authorize endpoint renders local HTML error page', async () => {
+		test('disabled discovery endpoint with authorize path segment returns JSON error', async () => {
 			mockSettingsReadSingleton.mockResolvedValueOnce({
 				mcp_enabled: true,
 				mcp_oauth_enabled: false,
 			});
+
+			const res = await requestRouter(mcpOAuthPublicRouter, '/.well-known/oauth-protected-resource/authorize');
+
+			expect(res.status).toBe(403);
+			expect(res.headers.get('access-control-allow-origin')).toBe('*');
+			expect(res.body).toMatchObject({ error: 'mcp_oauth_disabled' });
+			expect(renderErrorPage).not.toHaveBeenCalled();
+			expect(mockSettingsReadSingleton).toHaveBeenCalledTimes(1);
+			expect(mockSettingsReadSingleton).toHaveBeenCalledWith({ fields: ['mcp_enabled', 'mcp_oauth_enabled'] });
+		});
+
+		test('disabled authorize endpoint renders local HTML error page', async () => {
+			mockSettingsReadSingleton
+				.mockResolvedValueOnce({
+					mcp_enabled: true,
+					mcp_oauth_enabled: false,
+				})
+				.mockResolvedValueOnce({
+					project_name: 'Branded Project',
+					project_color: '#123456',
+					project_logo: 'logo-id',
+					default_appearance: 'light',
+				});
 
 			const res = await requestRouter(
 				mcpOAuthPublicRouter,
@@ -276,6 +302,12 @@ describe('mcp-oauth controller', () => {
 			expect(res.status).toBe(403);
 			expect(res.headers.get('content-type')).toContain('text/html');
 			expect(res.text).toBe('<html>error</html>');
+			expect(renderErrorPage).toHaveBeenCalledWith('MCP OAuth is disabled in project settings.', {
+				projectName: 'Branded Project',
+				projectColor: '#123456',
+				logoUrl: 'http://localhost/assets/logo-id',
+				appearance: 'light',
+			});
 		});
 	});
 
