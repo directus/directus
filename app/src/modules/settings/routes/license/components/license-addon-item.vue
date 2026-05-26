@@ -7,7 +7,6 @@ import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItem from '@/components/v-list-item.vue';
-import { getRootPath } from '@/utils/get-root-path';
 
 const props = defineProps<{
 	addon: LicenseAddon;
@@ -45,7 +44,7 @@ const buttonIcon = computed(() => {
 	}
 });
 
-const portalHref = `${getRootPath()}license/portal`;
+const salesHref = 'https://directus.io/sales';
 
 function onClick() {
 	dialogOpen.value = true;
@@ -64,7 +63,7 @@ function onClick() {
 		<VButton
 			v-if="buttonState === 'contact_sales'"
 			secondary
-			:href="portalHref"
+			:href="salesHref"
 			target="_blank"
 			rel="noopener noreferrer"
 		>
@@ -90,8 +89,8 @@ function onClick() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 2.5rem;
-	height: 2.5rem;
+	inline-size: 2.5rem;
+	block-size: 2.5rem;
 	border-radius: 50%;
 	background-color: var(--theme--primary);
 	margin-inline-end: 0.75rem;

@@ -63,21 +63,6 @@ async function fillSeatLimit(prefix: string) {
 	}
 }
 
-// Force the entitlement manager's seats cache to reflect the real (DB-side) count.
-// Direct knex inserts bypass validation but also bypass the in-process cache, so
-// validation still sees the boot-time cached value. Without this refresh, any
-// over-limit edit that triggers UserLimits would throw because newCount > cachedCount.
-async function refreshSeatCache() {
-	// Touching ip_access on any policy clears the seats cache without running seat validation
-	const policy = await directus.knex!('directus_policies').select('id').first();
-	await api.request(updatePolicy(policy['id'] as string, { ip_access: null }));
-
-	// Re-populate the cache from the live count (entitlement manager caches the result of getUsage)
-	await fetch(`http://localhost:${directus.apis[0].port}/license`, {
-		headers: { Authorization: 'Bearer admin' },
-	});
-}
-
 beforeAll(async () => {
 	const devMode = process.env['NODE_ENV'] === 'development';
 
@@ -273,8 +258,6 @@ describe('seats entitlement', () => {
 		createdUsers.push(extra1);
 		createdUsers.push(extra2);
 
-		await refreshSeatCache();
-
 		// clearing the role drops a seat and should remain allowed even though total active is over the limit
 		await expect(
 			api.request(
@@ -324,8 +307,6 @@ describe('seats entitlement', () => {
 			role: null,
 			policy: adminPolicy.id,
 		});
-
-		await refreshSeatCache();
 
 		// detaching the direct policy drops a seat and should remain allowed even though total active is over the limit
 		await expect(
@@ -392,8 +373,6 @@ describe('seats entitlement', () => {
 
 		createdUsers.push(userId);
 
-		await refreshSeatCache();
-
 		// stripping app/admin access from the policy drops users on that policy out of the seat count
 		await expect(
 			api.request(
@@ -444,8 +423,6 @@ describe('seats entitlement', () => {
 			policy: adminPolicy.id,
 		});
 
-		await refreshSeatCache();
-
 		// removing the role does not actually drop a seat (direct policy still grants admin access),
 		// but should still be permitted because the total seat count does not increase
 		await expect(
@@ -482,8 +459,6 @@ describe('seats entitlement', () => {
 
 		createdUsers.push(extra1);
 		createdUsers.push(extra2);
-
-		await refreshSeatCache();
 
 		// this edit clears the seats cache as a side effect (see UsersService.clearCaches when role changes)
 		await api.request(

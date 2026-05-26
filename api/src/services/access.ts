@@ -1,7 +1,6 @@
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
-import { getEntitlementManager } from '../license/index.js';
 import { ItemsService } from './items.js';
 
 export class AccessService extends ItemsService {
@@ -11,7 +10,6 @@ export class AccessService extends ItemsService {
 
 	private async clearCaches(opts?: MutationOptions) {
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
-		await getEntitlementManager().refreshCache('seats');
 
 		if (this.cache && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
