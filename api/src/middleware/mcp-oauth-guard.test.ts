@@ -14,6 +14,7 @@ afterEach(() => {
 
 function makeReq(overrides: Partial<Request> = {}): Request {
 	return {
+		method: 'GET',
 		path: '/items/test',
 		token: null,
 		accountability: { user: 'user-id', role: null, roles: [], admin: false, app: false, ip: null } as Accountability,
@@ -21,8 +22,9 @@ function makeReq(overrides: Partial<Request> = {}): Request {
 	} as unknown as Request;
 }
 
-function makeOAuthReq(path: string): Request {
+function makeOAuthReq(path: string, method = 'GET'): Request {
 	return makeReq({
+		method,
 		path,
 		accountability: {
 			user: 'user-id',
@@ -43,8 +45,13 @@ test('allows regular sessions on any route', () => {
 	expect(next).toHaveBeenCalledTimes(1);
 });
 
-it.each(['/mcp/server', '/mcp', '/mcp/some/nested/path'])('allows OAuth sessions on %s', (path) => {
-	const req = makeOAuthReq(path);
+it.each([
+	['GET', '/mcp'],
+	['GET', '/mcp/'],
+	['POST', '/mcp'],
+	['POST', '/mcp/'],
+])('allows OAuth sessions on %s %s', (method, path) => {
+	const req = makeOAuthReq(path, method);
 	handler(req, res, next);
 	expect(next).toHaveBeenCalledWith();
 	expect(next).toHaveBeenCalledTimes(1);
@@ -53,12 +60,20 @@ it.each(['/mcp/server', '/mcp', '/mcp/some/nested/path'])('allows OAuth sessions
 it.each([
 	'/items/test',
 	'/graphql',
+	'/mcp/server',
+	'/mcp/some/nested/path',
 	'/mcp-oauth/authorize/decision',
 	'/mcp-oauth/token',
 	'/mcp-oauth/register',
 	'/mcp-oauth/revoke',
 ])('blocks OAuth sessions on %s', (path) => {
 	const req = makeOAuthReq(path);
+	handler(req, res, next);
+	expect(next).toHaveBeenCalledWith(expect.any(ForbiddenError));
+});
+
+it.each(['PUT', 'PATCH', 'DELETE'])('blocks OAuth sessions using %s on /mcp', (method) => {
+	const req = makeOAuthReq('/mcp', method);
 	handler(req, res, next);
 	expect(next).toHaveBeenCalledWith(expect.any(ForbiddenError));
 });

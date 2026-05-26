@@ -12,7 +12,7 @@ export function handler(req: Request, _res: Response, next: NextFunction): void 
 		return;
 	}
 
-	if (!isMcpPath(req.path)) {
+	if (!isMcpPath(req.path) || (req.method !== 'GET' && req.method !== 'POST')) {
 		next(new ForbiddenError());
 		return;
 	}

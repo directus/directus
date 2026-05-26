@@ -16,9 +16,9 @@ export function getMcpUrls(): { issuerUrl: string; resourceUrl: string; metadata
 	};
 }
 
-/** Check if a request path targets the MCP endpoint. Includes `/mcp/*` for forward compatibility with sub-paths. */
+/** Check if a request path targets the concrete MCP endpoint. */
 export function isMcpPath(path: string): boolean {
-	return path === '/mcp' || path.startsWith('/mcp/');
+	return path === '/mcp' || path === '/mcp/';
 }
 
 /**

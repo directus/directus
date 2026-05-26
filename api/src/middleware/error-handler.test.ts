@@ -265,12 +265,12 @@ describe('MCP OAuth RFC 6750 WWW-Authenticate', () => {
 		expectMcpBearerChallenge(mockResponse, { status: 401, resourceMetadata: true });
 	});
 
-	test('TokenExpiredError on /mcp sub-path returns 401 with WWW-Authenticate', async () => {
+	test('TokenExpiredError on /mcp sub-path does NOT get WWW-Authenticate treatment', async () => {
 		setupMcpMocks('/mcp/sub-path');
 
 		await errorHandlerMod.errorHandler(new TokenExpiredError(), mockRequest, mockResponse, nextFunction);
 
-		expectMcpBearerChallenge(mockResponse, { status: 401, resourceMetadata: true });
+		expect(mockResponse.set).not.toHaveBeenCalledWith('WWW-Authenticate', expect.anything());
 	});
 
 	test('auth failure on /mcp-oauth path does NOT get WWW-Authenticate treatment', async () => {

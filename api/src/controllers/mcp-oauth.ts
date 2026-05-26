@@ -230,7 +230,7 @@ async function checkOAuthSettings(req: Request, res: Response, next: NextFunctio
 // Rate limiters (lazy init to avoid env access at import time)
 // ---------------------------------------------------------------------------
 
-type McpOAuthRateLimitPrefix = 'RATE_LIMITER_MCP_OAUTH_AUTHORIZE' | 'RATE_LIMITER_MCP_OAUTH_REGISTRATION';
+type McpOAuthRateLimitPrefix = 'RATE_LIMITER_MCP_OAUTH' | 'RATE_LIMITER_MCP_OAUTH_REGISTRATION';
 
 function createRateLimitMiddleware(
 	prefix: McpOAuthRateLimitPrefix,
@@ -259,7 +259,7 @@ function createRateLimitMiddleware(
 	};
 }
 
-const authorizeRateLimitMiddleware = createRateLimitMiddleware('RATE_LIMITER_MCP_OAUTH_AUTHORIZE');
+const oauthRateLimitMiddleware = createRateLimitMiddleware('RATE_LIMITER_MCP_OAUTH');
 const registrationRateLimitMiddleware = createRateLimitMiddleware('RATE_LIMITER_MCP_OAUTH_REGISTRATION');
 
 // ---------------------------------------------------------------------------
@@ -275,15 +275,11 @@ const registrationRateLimitMiddleware = createRateLimitMiddleware('RATE_LIMITER_
  */
 export const mcpOAuthPublicRouter = Router();
 
-mcpOAuthPublicRouter.use(
-	['/mcp-oauth', '/.well-known/oauth-authorization-server', '/.well-known/oauth-protected-resource'],
-	asyncHandler(checkOAuthSettings),
-);
-
 // Discovery: .well-known/oauth-protected-resource (with and without RFC 9728 path insertion)
 mcpOAuthPublicRouter.get(
 	'/.well-known/oauth-protected-resource*',
 	setCorsWildcard,
+	asyncHandler(checkOAuthSettings),
 	asyncHandler(async (_req: Request, res: Response) => {
 		const service = new McpOAuthService({ schema: await getSchema() });
 		res.json(service.getProtectedResourceMetadata());
@@ -294,6 +290,7 @@ mcpOAuthPublicRouter.get(
 mcpOAuthPublicRouter.get(
 	'/.well-known/oauth-authorization-server*',
 	setCorsWildcard,
+	asyncHandler(checkOAuthSettings),
 	asyncHandler(async (_req: Request, res: Response) => {
 		const service = new McpOAuthService({ schema: await getSchema() });
 		res.json(await service.getAuthorizationServerMetadata());
@@ -303,7 +300,8 @@ mcpOAuthPublicRouter.get(
 // Authorize: GET /mcp-oauth/authorize - standalone consent page (no SPA dependency)
 mcpOAuthPublicRouter.get(
 	'/mcp-oauth/authorize',
-	authorizeRateLimitMiddleware,
+	oauthRateLimitMiddleware,
+	asyncHandler(checkOAuthSettings),
 	asyncHandler(async (req: Request, res: Response) => {
 		const env = useEnv();
 		const loginUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'login').toString();
@@ -432,8 +430,9 @@ mcpOAuthPublicRouter.get(
 // DCR: POST /mcp-oauth/register
 mcpOAuthPublicRouter.post(
 	'/mcp-oauth/register',
-	express.json(),
 	registrationRateLimitMiddleware,
+	asyncHandler(checkOAuthSettings),
+	express.json(),
 	setCorsWildcard,
 	asyncHandler(async (req: Request, res: Response) => {
 		const schema = await getSchema();
@@ -447,6 +446,8 @@ mcpOAuthPublicRouter.post(
 // Token: POST /mcp-oauth/token
 mcpOAuthPublicRouter.post(
 	'/mcp-oauth/token',
+	oauthRateLimitMiddleware,
+	asyncHandler(checkOAuthSettings),
 	express.urlencoded({ extended: false }),
 	rejectDuplicateParams,
 	setCorsWildcard,
@@ -482,6 +483,8 @@ mcpOAuthPublicRouter.post(
 // Revoke: POST /mcp-oauth/revoke
 mcpOAuthPublicRouter.post(
 	'/mcp-oauth/revoke',
+	oauthRateLimitMiddleware,
+	asyncHandler(checkOAuthSettings),
 	express.urlencoded({ extended: false }),
 	rejectDuplicateParams,
 	setCorsWildcard,
@@ -512,6 +515,7 @@ export const mcpOAuthProtectedRouter = Router();
 // CSP form-action in app.ts allows https: and localhost: redirect targets.
 mcpOAuthProtectedRouter.post(
 	'/mcp-oauth/authorize/decision',
+	asyncHandler(checkOAuthSettings),
 	express.urlencoded({ extended: false }),
 	rejectDuplicateParams,
 	requireCookieAuth,

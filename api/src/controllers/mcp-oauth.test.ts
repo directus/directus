@@ -116,7 +116,7 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		PUBLIC_URL: 'http://localhost',
 		SESSION_COOKIE_NAME: 'directus_session',
-		RATE_LIMITER_MCP_OAUTH_AUTHORIZE_ENABLED: true,
+		RATE_LIMITER_MCP_OAUTH_ENABLED: true,
 		RATE_LIMITER_MCP_OAUTH_REGISTRATION_ENABLED: true,
 	}),
 }));
@@ -285,9 +285,9 @@ describe('mcp-oauth controller', () => {
 
 	test.each([
 		['GET', '/.well-known/oauth-protected-resource*', 0],
-		['POST', '/mcp-oauth/register', 2],
-		['POST', '/mcp-oauth/token', 2],
-		['POST', '/mcp-oauth/revoke', 2],
+		['POST', '/mcp-oauth/register', 3],
+		['POST', '/mcp-oauth/token', 4],
+		['POST', '/mcp-oauth/revoke', 4],
 	])('setCorsWildcard sets Access-Control-Allow-Origin: * on %s %s', async (method, path, corsIndex) => {
 		const handlers = getRouteHandler(mcpOAuthPublicRouter, method, path);
 		const req = createMockRequest({ method: method as any, body: {}, ip: '127.0.0.1' });
@@ -299,15 +299,15 @@ describe('mcp-oauth controller', () => {
 		expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
 	});
 
-	test('dedicated MCP OAuth limiters apply only to authorize and register routes', () => {
-		expect(createdRateLimiters).toContain('RATE_LIMITER_MCP_OAUTH_AUTHORIZE');
+	test('dedicated MCP OAuth limiters use shared runtime pool plus registration pool', () => {
+		expect(createdRateLimiters).toContain('RATE_LIMITER_MCP_OAUTH');
 		expect(createdRateLimiters).toContain('RATE_LIMITER_MCP_OAUTH_REGISTRATION');
-		expect(createdRateLimiters).not.toContain('RATE_LIMITER_MCP_OAUTH');
+		expect(createdRateLimiters).not.toContain('RATE_LIMITER_MCP_OAUTH_AUTHORIZE');
 
-		expect(getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize')).toHaveLength(2);
-		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/register')).toHaveLength(4);
-		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/token')).toHaveLength(5);
-		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/revoke')).toHaveLength(4);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize')).toHaveLength(3);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/register')).toHaveLength(5);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/token')).toHaveLength(7);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/revoke')).toHaveLength(6);
 	});
 
 	// -----------------------------------------------------------------------
@@ -562,8 +562,8 @@ describe('mcp-oauth controller', () => {
 			const res = createMockResponse();
 			const next = vi.fn();
 
-			// requireCookieAuth is index 2
-			await handlers[2]!.handle(req, res, next);
+			// requireCookieAuth is index 3
+			await handlers[3]!.handle(req, res, next);
 
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: 'access_denied' }));
@@ -582,10 +582,36 @@ describe('mcp-oauth controller', () => {
 			const res = createMockResponse();
 			const next = vi.fn();
 
-			// requireSameOrigin is index 3
-			await handlers[3]!.handle(req, res, next);
+			// requireSameOrigin is index 4
+			await handlers[4]!.handle(req, res, next);
 
 			expect(res.status).toHaveBeenCalledWith(403);
+		});
+
+		test('rejects consent decisions when MCP OAuth is disabled in settings', async () => {
+			mockSettingsReadSingleton.mockResolvedValueOnce({
+				mcp_enabled: true,
+				mcp_oauth_enabled: false,
+			});
+
+			const handlers = getRouteHandler(mcpOAuthProtectedRouter, 'POST', '/mcp-oauth/authorize/decision');
+
+			const req = createMockRequest({
+				method: 'POST',
+				path: '/mcp-oauth/authorize/decision',
+				tokenSource: 'cookie',
+				token: 'session-token',
+				accountability: { user: 'test-user-id' },
+			} as any);
+
+			const res = createMockResponse();
+			const next = vi.fn();
+
+			await handlers[0]!.handle(req, res, next);
+
+			expect(res.status).toHaveBeenCalledWith(403);
+			expect(res.send).toHaveBeenCalledWith('<html>error</html>');
+			expect(next).not.toHaveBeenCalled();
 		});
 	});
 
@@ -733,7 +759,7 @@ describe('error-handler MCP 401', () => {
 		const { InvalidCredentialsError } = await import('@directus/errors');
 
 		const error = new InvalidCredentialsError();
-		const req = createMockRequest({ path: '/mcp/messages' } as any);
+		const req = createMockRequest({ path: '/mcp' } as any);
 		const res = createMockResponse();
 		const next = vi.fn();
 
@@ -754,7 +780,7 @@ describe('error-handler MCP 401', () => {
 		const { InvalidCredentialsError } = await import('@directus/errors');
 
 		const error = new InvalidCredentialsError();
-		const req = createMockRequest({ path: '/mcp/messages' } as any);
+		const req = createMockRequest({ path: '/mcp' } as any);
 		const res = createMockResponse();
 		const next = vi.fn();
 
