@@ -2,9 +2,9 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import { toBoolean } from '@directus/utils';
 import { Router } from 'express';
-import { DirectusMCP } from '../ai/mcp/index.js';
-import { SettingsService } from '../services/settings.js';
-import asyncHandler from '../utils/async-handler.js';
+import { DirectusMCP } from '../../ai/mcp/index.js';
+import { SettingsService } from '../../services/settings.js';
+import asyncHandler from '../../utils/async-handler.js';
 
 const router = Router();
 

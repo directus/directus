@@ -1,12 +1,12 @@
 import { ForbiddenError } from '@directus/errors';
 import { Router } from 'express';
-import { respond } from '../middleware/respond.js';
-import useCollection from '../middleware/use-collection.js';
-import { validateBatch } from '../middleware/validate-batch.js';
-import { ItemsService } from '../services/items.js';
-import { MetaService } from '../services/meta.js';
-import asyncHandler from '../utils/async-handler.js';
-import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { respond } from '../../middleware/respond.js';
+import useCollection from '../../middleware/use-collection.js';
+import { validateBatch } from '../../middleware/validate-batch.js';
+import { ItemsService } from '../../services/items.js';
+import { MetaService } from '../../services/meta.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
 
 const router = Router();
 

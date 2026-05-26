@@ -4,17 +4,17 @@ import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { NextFunction, Request, Response } from 'express';
 import express, { Router } from 'express';
-import { getMcpUrls } from '../ai/mcp/utils.js';
-import getDatabase from '../database/index.js';
-import { createRateLimiter, RateLimiterRes } from '../rate-limiter.js';
-import { McpOAuthService, OAuthError } from '../services/mcp-oauth/index.js';
-import { SettingsService } from '../services/settings.js';
-import asyncHandler from '../utils/async-handler.js';
-import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
-import { getIPFromReq } from '../utils/get-ip-from-req.js';
-import { getSchema } from '../utils/get-schema.js';
-import { Url } from '../utils/url.js';
-import { type ConsentPageData, type PageOpts, renderConsentPage, renderErrorPage } from './mcp-oauth-consent-page.js';
+import { getMcpUrls } from '../../ai/mcp/utils.js';
+import getDatabase from '../../database/index.js';
+import { createRateLimiter, RateLimiterRes } from '../../rate-limiter.js';
+import { McpOAuthService, OAuthError } from '../../services/mcp-oauth/index.js';
+import { SettingsService } from '../../services/settings.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { Url } from '../../utils/url.js';
+import { type ConsentPageData, type PageOpts, renderConsentPage, renderErrorPage } from './oauth-consent-page.js';
 
 // ---------------------------------------------------------------------------
 // Helpers

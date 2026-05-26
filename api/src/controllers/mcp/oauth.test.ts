@@ -3,10 +3,10 @@ import type { AddressInfo } from 'node:net';
 import type { SchemaOverview } from '@directus/types';
 import express, { type Router } from 'express';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { OAuthError } from '../services/mcp-oauth/types/error.js';
-import { isLoopbackHost } from '../services/mcp-oauth/utils/loopback.js';
-import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
-import { expectMcpBearerChallenge } from '../test-utils/mcp-oauth.js';
+import { OAuthError } from '../../services/mcp-oauth/types/error.js';
+import { isLoopbackHost } from '../../services/mcp-oauth/utils/loopback.js';
+import { createMockRequest, createMockResponse, getRouteHandler } from '../../test-utils/controllers.js';
+import { expectMcpBearerChallenge } from '../../test-utils/mcp-oauth.js';
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -29,12 +29,12 @@ const mockSettingsReadSingleton = vi.fn().mockResolvedValue({
 	default_appearance: 'auto',
 });
 
-vi.mock('../database/index.js', () => ({
+vi.mock('../../database/index.js', () => ({
 	default: vi.fn(() => vi.fn().mockReturnValue(mockDbChain)),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
-vi.mock('../services/mcp-oauth/index.js', () => {
+vi.mock('../../services/mcp-oauth/index.js', () => {
 	const McpOAuthService = vi.fn();
 
 	McpOAuthService.prototype.getProtectedResourceMetadata = vi
@@ -86,20 +86,20 @@ vi.mock('../services/mcp-oauth/index.js', () => {
 	return { McpOAuthService, OAuthError, isLoopbackHost };
 });
 
-vi.mock('../services/settings.js', () => ({
+vi.mock('../../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(() => ({
 		readSingleton: mockSettingsReadSingleton,
 	})),
 }));
 
-vi.mock('../utils/get-schema.js', () => ({
+vi.mock('../../utils/get-schema.js', () => ({
 	getSchema: vi.fn().mockResolvedValue({
 		collections: {},
 		relations: [],
 	} as unknown as SchemaOverview),
 }));
 
-vi.mock('../rate-limiter.js', () => ({
+vi.mock('../../rate-limiter.js', () => ({
 	createRateLimiter: vi.fn().mockImplementation((prefix: string) => {
 		createdRateLimiters.push(prefix);
 
@@ -121,7 +121,7 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
-vi.mock('../utils/get-accountability-for-token.js', () => ({
+vi.mock('../../utils/get-accountability-for-token.js', () => ({
 	getAccountabilityForToken: vi.fn().mockResolvedValue({
 		user: 'test-user-id',
 		role: 'test-role',
@@ -129,7 +129,7 @@ vi.mock('../utils/get-accountability-for-token.js', () => ({
 	}),
 }));
 
-vi.mock('./mcp-oauth-consent-page.js', () => ({
+vi.mock('./oauth-consent-page.js', () => ({
 	renderConsentPage: vi.fn().mockResolvedValue('<html>consent</html>'),
 	renderErrorPage: vi.fn().mockResolvedValue('<html>error</html>'),
 }));
@@ -137,8 +137,8 @@ vi.mock('./mcp-oauth-consent-page.js', () => ({
 // ---------------------------------------------------------------------------
 // Import after mocks
 // ---------------------------------------------------------------------------
-const { mcpOAuthPublicRouter, mcpOAuthProtectedRouter } = await import('./mcp-oauth.js');
-const { renderErrorPage } = await import('./mcp-oauth-consent-page.js');
+const { mcpOAuthPublicRouter, mcpOAuthProtectedRouter } = await import('./oauth.js');
+const { renderErrorPage } = await import('./oauth-consent-page.js');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -442,7 +442,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('forwards Basic Authorization header to authorization_code exchange', async () => {
-			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
 			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
 
 			await postForm(
@@ -465,7 +465,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('forwards Basic Authorization header to refresh_token exchange', async () => {
-			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
 			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
 
 			await postForm(
@@ -486,7 +486,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('serializes OAuthError response headers', async () => {
-			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
 
 			vi.mocked(McpOAuthService.prototype.exchangeCode).mockRejectedValueOnce(
 				new OAuthError(401, 'invalid_client', 'Invalid client authentication', false, {
@@ -547,7 +547,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('forwards Basic Authorization header to token revocation', async () => {
-			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
 			const authorization = `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`;
 
 			await postForm(
@@ -683,8 +683,8 @@ describe('mcp-oauth controller', () => {
 		}
 
 		test('OAuth accountability redirects to login before consent validation', async () => {
-			const { getAccountabilityForToken } = await import('../utils/get-accountability-for-token.js');
-			const { McpOAuthService } = await import('../services/mcp-oauth/index.js');
+			const { getAccountabilityForToken } = await import('../../utils/get-accountability-for-token.js');
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
 
 			vi.mocked(getAccountabilityForToken).mockResolvedValueOnce({
 				user: 'test-user-id',
@@ -713,7 +713,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('pre-trust error (invalid client_id) renders local error page', async () => {
-			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth/index.js');
+			const { McpOAuthService, OAuthError } = await import('../../services/mcp-oauth/index.js');
 
 			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockRejectedValueOnce(
 				new OAuthError(400, 'invalid_request', 'Unknown client_id'),
@@ -730,7 +730,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('post-trust error redirects to redirect_uri with error params', async () => {
-			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth/index.js');
+			const { McpOAuthService, OAuthError } = await import('../../services/mcp-oauth/index.js');
 
 			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockRejectedValueOnce(
 				new OAuthError(400, 'invalid_scope', 'Only scope mcp:access is supported', true),
@@ -752,7 +752,7 @@ describe('mcp-oauth controller', () => {
 		});
 
 		test('post-trust error without state omits state param', async () => {
-			const { McpOAuthService, OAuthError } = await import('../services/mcp-oauth/index.js');
+			const { McpOAuthService, OAuthError } = await import('../../services/mcp-oauth/index.js');
 
 			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockRejectedValueOnce(
 				new OAuthError(400, 'invalid_request', 'code_challenge is required', true),
@@ -786,7 +786,7 @@ describe('error-handler MCP 401', () => {
 		} as any);
 
 		// Import the real error handler
-		const { errorHandler } = await import('../middleware/error-handler.js');
+		const { errorHandler } = await import('../../middleware/error-handler.js');
 
 		const { InvalidCredentialsError } = await import('@directus/errors');
 
@@ -808,7 +808,7 @@ describe('error-handler MCP 401', () => {
 			MCP_OAUTH_ENABLED: true,
 		} as any);
 
-		const { errorHandler } = await import('../middleware/error-handler.js');
+		const { errorHandler } = await import('../../middleware/error-handler.js');
 		const { InvalidCredentialsError } = await import('@directus/errors');
 
 		const error = new InvalidCredentialsError();
@@ -826,10 +826,10 @@ describe('error-handler MCP 401', () => {
 });
 
 describe('getRedirectIndicator', () => {
-	let getRedirectIndicator: typeof import('./mcp-oauth.js').getRedirectIndicator;
+	let getRedirectIndicator: typeof import('./oauth.js').getRedirectIndicator;
 
 	beforeEach(async () => {
-		({ getRedirectIndicator } = await import('./mcp-oauth.js'));
+		({ getRedirectIndicator } = await import('./oauth.js'));
 	});
 
 	test('localhost redirect returns "localhost"', () => {

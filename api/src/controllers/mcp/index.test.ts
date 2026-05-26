@@ -1,6 +1,6 @@
 import type { Accountability } from '@directus/types';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createMockRequest, createMockResponse, getRouteHandler } from '../test-utils/controllers.js';
+import { createMockRequest, createMockResponse, getRouteHandler } from '../../test-utils/controllers.js';
 
 const readSingleton = vi.fn();
 const handleRequest = vi.fn();
@@ -12,20 +12,20 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => mockEnv),
 }));
 
-vi.mock('../services/settings.js', () => ({
+vi.mock('../../services/settings.js', () => ({
 	SettingsService: vi.fn().mockImplementation(() => ({
 		readSingleton,
 	})),
 }));
 
-vi.mock('../ai/mcp/index.js', () => ({
+vi.mock('../../ai/mcp/index.js', () => ({
 	DirectusMCP: vi.fn().mockImplementation(() => ({
 		handleRequest,
 	})),
 }));
 
-const { default: router } = await import('./mcp.js');
-const { DirectusMCP } = await import('../ai/mcp/index.js');
+const { default: router } = await import('./index.js');
+const { DirectusMCP } = await import('../../ai/mcp/index.js');
 
 function makeAccountability(overrides: Partial<Accountability> = {}): Accountability {
 	return {

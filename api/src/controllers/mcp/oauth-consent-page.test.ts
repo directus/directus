@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { renderConsentPage, renderErrorPage } from './mcp-oauth-consent-page.js';
+import { renderConsentPage, renderErrorPage } from './oauth-consent-page.js';
 
 const baseOpts = {
 	projectName: 'Test Project',
