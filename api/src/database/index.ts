@@ -48,7 +48,10 @@ export function getDatabase(): Knex {
 		connectionString,
 		pool: poolConfig = {},
 		...connectionConfig
-	} = getConfigFromEnv('DB_', { omitPrefix: 'DB_EXCLUDE_TABLES' });
+	} = getConfigFromEnv('DB_', {
+		omitPrefix: 'DB_EXCLUDE_TABLES',
+		omitKey: ['DB_BATCH_INSERT_CHUNK_SIZE', 'DB_DEFAULT_ORDER_READS_BY_PK', 'DB_MSSQL_TRUST_BATCH_RETURNING'],
+	});
 
 	const requiredEnvVars = ['DB_CLIENT'];
 
