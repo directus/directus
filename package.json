@@ -54,7 +54,8 @@
 			"protobufjs": "7.5.6",
 			"js-beautify>js-cookie": "3.0.7",
 			"pm2-sysmonit>systeminformation": "5.31.6",
-			"ajv>fast-uri": "3.1.2"
+			"ajv>fast-uri": "3.1.2",
+			"braintrust>simple-git": "3.36.0"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
