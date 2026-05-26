@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import { toBoolean } from '@directus/utils';
 import { CapabilitiesHelperDefault } from './default.js';
 
 const env = useEnv();
@@ -20,6 +19,6 @@ export class CapabilitiesHelperMSSQL extends CapabilitiesHelperDefault {
 	 * would.
 	 */
 	override async preservesInsertOrderInReturning(): Promise<boolean> {
-		return toBoolean(env['DB_MSSQL_TRUST_BATCH_RETURNING']);
+		return env['DB_MSSQL_TRUST_BATCH_RETURNING'] as boolean;
 	}
 }

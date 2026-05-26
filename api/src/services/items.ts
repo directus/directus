@@ -16,7 +16,7 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
-import { getRelationsForCollection, toBoolean } from '@directus/utils';
+import { getRelationsForCollection } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, difference, omit, pick, without } from 'lodash-es';
@@ -276,8 +276,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			try {
 				if (useBatchInsert) {
-					const chunkSizeEnv = env['DB_BATCH_INSERT_CHUNK_SIZE'];
-					const chunkSize = chunkSizeEnv !== undefined ? Number(chunkSizeEnv) : undefined;
+					const chunkSize = env['DB_BATCH_INSERT_CHUNK_SIZE'] as number | undefined;
 
 					// SQLite's batchInsert path normalizes columns across all rows in the
 					// chunk; columns missing from a row are bound as `undefined`, which the
@@ -569,7 +568,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// Note: `updatedQuery` returned by emitFilter is frozen / non-extensible, so
 		// we replace the reference with a spread instead of mutating in place.
 		if (
-			toBoolean(env['DB_DEFAULT_ORDER_READS_BY_PK'] ?? true) &&
+			env['DB_DEFAULT_ORDER_READS_BY_PK'] &&
 			!updatedQuery.sort?.length &&
 			!updatedQuery.group?.length &&
 			!updatedQuery.aggregate
