@@ -2,7 +2,7 @@
 	"name": "@directus/storage-driver-s3",
 	"version": "12.1.8",
 	"description": "S3 file storage abstraction for `@directus/storage`",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

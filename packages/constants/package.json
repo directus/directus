@@ -2,7 +2,7 @@
 	"name": "@directus/constants",
 	"version": "14.3.0",
 	"description": "Shared constants for Directus",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

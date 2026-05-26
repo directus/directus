@@ -2,7 +2,7 @@
 	"name": "@directus/extensions",
 	"version": "3.0.25",
 	"description": "Utilities and types for Directus extensions",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
