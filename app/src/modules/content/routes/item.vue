@@ -374,7 +374,7 @@ const {
 } = useAutoSave(edits, autoSave, {
 	currentVersion,
 	updateVersionsAllowed,
-	collection: computed(() => props.collection),
+	collection,
 });
 
 const isPublishAllowed = computed(() => {
