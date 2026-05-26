@@ -568,7 +568,6 @@ const menuActive = computed(() => editModalActive.value || selectModalActive.val
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<RenderTemplate
-						:title="header.value"
 						:collection="relationInfo.junctionCollection.collection"
 						:item="item"
 						:template="`{{${header.value}}}`"
