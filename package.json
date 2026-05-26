@@ -52,7 +52,9 @@
 			"@xmldom/xmldom": "0.9.10",
 			"vitest@3>vite": "7.3.2",
 			"protobufjs": "7.5.6",
-			"js-beautify>js-cookie": "3.0.7"
+			"js-beautify>js-cookie": "3.0.7",
+			"pm2-sysmonit>systeminformation": "5.31.6",
+			"ajv>fast-uri": "3.1.2"
 		}
 	},
 	"packageManager": "pnpm@10.27.0",
