@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DIRECTUS_HOMEPAGE } from '@directus/constants';
 import { SetupForm } from '@directus/types';
 import { computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -118,7 +119,7 @@ defineExpose({ canProceed });
 			{{ $t('no_license_key') }}
 			<VButton
 				secondary
-				:href="`https://directus.io/docs/licensing/overview?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=onboarding_get_license_link`"
+				:href="`${DIRECTUS_HOMEPAGE}/docs/licensing/overview?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=onboarding_get_license_link`"
 				target="_blank"
 			>
 				<VIcon name="key" />

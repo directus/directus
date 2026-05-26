@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DIRECTUS_HOMEPAGE } from '@directus/constants';
 import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -157,7 +158,9 @@ onMounted(() => {
 
 			<div>
 				<VIcon name="check_circle" />
-				<span>{{ $t('environment') }}: {{ licenseInfo.production_enabled ? $t('production') : $t('non_production') }}</span>
+				<span>
+					{{ $t('environment') }}: {{ licenseInfo.production_enabled ? $t('production') : $t('non_production') }}
+				</span>
 			</div>
 		</div>
 
@@ -169,7 +172,7 @@ onMounted(() => {
 			<I18nT keypath="setup_license_invalid" tag="span">
 				<template #contactSupport>
 					<a
-						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_key_invalid_contact_support_link`"
+						:href="`${DIRECTUS_HOMEPAGE}/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_key_invalid_contact_support_link`"
 						target="_blank"
 						rel="noopener noreferrer"
 					>

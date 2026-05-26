@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DIRECTUS_HOMEPAGE } from '@directus/constants';
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
@@ -112,7 +113,7 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 			<I18nT keypath="setup_license_key_notice" tag="p">
 				<template #oig>
 					<a
-						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=onboarding_contact_our_team_link`"
+						:href="`${DIRECTUS_HOMEPAGE}/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=onboarding_contact_our_team_link`"
 						target="_blank"
 					>
 						{{ $t('open_innovation_grant') }}
