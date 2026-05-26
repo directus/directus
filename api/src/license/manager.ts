@@ -9,6 +9,7 @@ import {
 	deactivateKey,
 	deleteAddon,
 	Entitlements,
+	type FeatureFlagEntitlementKey,
 	type InvalidLicenseStatus,
 	License,
 	type LicenseAddonsOutput,
@@ -631,17 +632,21 @@ export class LicenseManager {
 	 */
 	public async applyResolution(resolution: ResolveInput, ctx?: { accountability?: Accountability | undefined }) {
 		const entitlementManager = getEntitlementManager();
+		const cachesToClear: (CountableEntitlementKey | FeatureFlagEntitlementKey)[] = [];
 
 		if (resolution.collections && resolution.collections.length > 0) {
 			await entitlementManager.resolve('collections', resolution.collections, { accountability: ctx?.accountability });
+			cachesToClear.push("seats");
 		}
 
 		if (resolution.seats && resolution.seats.length > 0) {
 			await entitlementManager.resolve('seats', resolution.seats, { accountability: ctx?.accountability });
+			cachesToClear.push('seats');
 		}
 
 		if (resolution.flows && resolution.flows.length > 0) {
 			await entitlementManager.resolve('flows', resolution.flows, { accountability: ctx?.accountability });
+			cachesToClear.push('flows');
 		}
 
 		/**
@@ -649,6 +654,12 @@ export class LicenseManager {
 		 */
 		if (resolution.sso_enabled) {
 			await entitlementManager.resolve('sso_enabled', resolution.sso_enabled, { accountability: ctx?.accountability });
+			if (!cachesToClear.includes('seats')) cachesToClear.push('seats');
+			cachesToClear.push('sso_enabled');
+		}
+
+		if (cachesToClear.length > 0) {
+			await entitlementManager.clearCache(...cachesToClear);
 		}
 
 		if (await entitlementManager.checkAll()) {
