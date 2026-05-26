@@ -256,6 +256,8 @@ function manageLicense() {
 	router.push('/settings/license');
 }
 
+const isEnvManaged = computed(() => info.value?.source === 'env');
+
 const cookies = useCookies(['license-resolution-acknowledged']);
 
 // Scope the acknowledgement to the current license so applying a new key resets the dismiss.
@@ -295,7 +297,7 @@ function onEsc() {
 					<span class="title-text" :class="severity">{{ title }}</span>
 					<span class="subtitle">{{ t('licensing.resolve_subtitle') }}</span>
 				</div>
-				<VButton secondary small @click="manageLicense">
+				<VButton v-if="!isEnvManaged" secondary small @click="manageLicense">
 					{{ t('licensing.manage') }}
 				</VButton>
 			</header>
