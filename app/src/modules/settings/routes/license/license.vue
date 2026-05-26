@@ -37,7 +37,9 @@ const { t } = useI18n();
 const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
 
-const { info: license, addons, loading, boundary, isLicensed, isEnvManaged } = storeToRefs(licenseStore);
+const { info: license, addons, loading, boundary, isLicensed } = storeToRefs(licenseStore);
+
+const isEnvManaged = computed(() => license.value?.source === 'env');
 
 const boundaryDate = computed(() => {
 	if (!boundary.value || !Number.isFinite(boundary.value.timestamp) || boundary.value.timestamp === -1) return null;
@@ -129,9 +131,9 @@ const ENTITLEMENT_CONFIG: EntitlementConfig[] = [
 	{ key: 'telemetry_required', icon: 'analytics', title: t('licensing.entitlements.telemetry_opt_out'), invert: true },
 	{ key: 'custom_llms_enabled', icon: 'smart_toy', title: t('licensing.entitlements.custom_llms_enabled') },
 	{
-		key: 'custom_policy_rules_enabled',
+		key: 'custom_permission_rules_enabled',
 		icon: 'policy',
-		title: t('licensing.entitlements.custom_policy_rules_enabled'),
+		title: t('licensing.entitlements.custom_permission_rules_enabled'),
 	},
 	{ key: 'ai_translations_enabled', icon: 'translate', title: t('licensing.entitlements.ai_translations_enabled') },
 	{ key: 'production_enabled', icon: 'rocket_launch', title: t('licensing.entitlements.production_enabled') },

@@ -45,7 +45,7 @@ const { t } = useI18n();
 const router = useRouter();
 
 const licenseStore = useLicenseStore();
-const { info, pendingResolution, isEnvManaged } = storeToRefs(licenseStore);
+const { info, pendingResolution } = storeToRefs(licenseStore);
 
 const userStore = useUserStore();
 
@@ -248,8 +248,8 @@ async function submit() {
 
 function manageLicense() {
 	// For locked scopes the router guard redirects back to /license-recovery, so closing
-	// the modal would leave a blank page behind. Only close in the (dismissible) manual flow.
-	if (scope.value === 'manual') {
+	// the modal would leave a blank page behind. Only close in the (dismissible) manual/no_resolution flows.
+	if (scope.value === 'manual' || scope.value === 'no_resolution') {
 		emit('update:modelValue', false);
 	}
 
@@ -295,7 +295,7 @@ function onEsc() {
 					<span class="title-text" :class="severity">{{ title }}</span>
 					<span class="subtitle">{{ t('licensing.resolve_subtitle') }}</span>
 				</div>
-				<VButton v-if="!isEnvManaged" secondary small @click="manageLicense">
+				<VButton secondary small @click="manageLicense">
 					{{ t('licensing.manage') }}
 				</VButton>
 			</header>
