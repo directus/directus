@@ -2068,6 +2068,9 @@ importers:
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../extensions-sdk
+      commander:
+        specifier: 'catalog:'
+        version: 14.0.2
       inquirer:
         specifier: 'catalog:'
         version: 12.11.0(@types/node@24.9.1)

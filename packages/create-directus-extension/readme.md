@@ -13,3 +13,23 @@ npx create-directus-extension
 ```
 yarn create directus-extension
 ```
+
+## Usage
+
+Run without arguments to create an extension interactively:
+
+```
+npx create-directus-extension
+```
+
+Pass the extension type and name to create an extension non-interactively:
+
+```
+npx create-directus-extension interface my-interface
+```
+
+You can also use options:
+
+```
+npx create-directus-extension --type hook --name my-hook --language typescript --no-install
+```
