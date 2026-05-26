@@ -113,9 +113,6 @@ export function useItem<T extends Item>(
 	watch([collection, primaryKey], refresh);
 
 	watch(query, () => {
-		// Once the item is loaded, query-only changes (e.g. version key flipping from '+' to a real id
-		// after the first auto-save) shouldn't blank the form and defocus the active field. Refetch
-		// silently so the form stays mounted.
 		const canRefetchSilently = item.value !== null;
 
 		if (canRefetchSilently) getItem({ silent: true });
