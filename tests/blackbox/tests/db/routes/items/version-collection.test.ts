@@ -325,6 +325,48 @@ describe('request version on collection a draft failed itemless', () => {
 	});
 });
 
+describe('request version on collection a draft failed itemless with limit=-1', () => {
+	it.each(vendors)('%s', async (vendor) => {
+		const versionKey = 'draft';
+
+		const version = await CreateVersion(vendor, {
+			collection: c.articles,
+			item: null,
+			key: versionKey,
+			name: versionKey,
+		});
+
+		await SaveVersion(vendor, {
+			id: version.id,
+			delta: {
+				title: null,
+				author: 'abc',
+			},
+		});
+
+		const response = await request(getUrl(vendor))
+			.get(`/items/${c.articles}?version=${versionKey}&limit=-1`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		expect(response.body.data).toMatchObject([
+			{
+				$meta: {
+					error: expect.anything(),
+					delta: {
+						title: null,
+						author: 'abc',
+					},
+					version_id: version.id,
+				},
+				author: 'abc',
+				title: null,
+			},
+		]);
+
+		await DeleteVersion(vendor, version.id);
+	});
+});
+
 describe('request version on collection a failed draft item', () => {
 	it.each(vendors)('%s', async (vendor) => {
 		const versionKey = randomUUID();
