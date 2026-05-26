@@ -2,9 +2,9 @@ import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
-		table.boolean('mcp_oauth_enabled').defaultTo(false);
-		table.boolean('mcp_oauth_dcr_enabled').defaultTo(true);
-		table.boolean('mcp_oauth_cimd_enabled').defaultTo(false);
+		table.boolean('mcp_oauth_enabled').defaultTo(false).notNullable();
+		table.boolean('mcp_oauth_dcr_enabled').defaultTo(false).notNullable();
+		table.boolean('mcp_oauth_cimd_enabled').defaultTo(false).notNullable();
 	});
 
 	await knex.schema.createTable('directus_oauth_clients', (table) => {

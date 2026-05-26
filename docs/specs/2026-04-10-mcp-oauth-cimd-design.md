@@ -303,7 +303,7 @@ New additive migration adding columns to `directus_oauth_clients`:
 
 | Column                   | Type    | Default | Purpose                                  |
 | ------------------------ | ------- | ------- | ---------------------------------------- |
-| `mcp_oauth_dcr_enabled`  | boolean | `true`  | Enable/disable DCR registration endpoint |
+| `mcp_oauth_dcr_enabled`  | boolean | `false` | Enable/disable DCR registration endpoint |
 | `mcp_oauth_cimd_enabled` | boolean | `false` | Enable/disable CIMD client_id detection  |
 
 **System data:** field definitions for all new columns in `packages/system-data`.
@@ -323,25 +323,23 @@ No changes to Protected Resource Metadata.
 
 | Config                           | Type                | Default                                      | Scope                                |
 | -------------------------------- | ------------------- | -------------------------------------------- | ------------------------------------ |
-| `MCP_OAUTH_DCR_ENABLED`          | env var             | `true`                                       | Enable/disable DCR                   |
-| `MCP_OAUTH_CIMD_ENABLED`         | env var             | `true`                                       | Enable/disable CIMD                  |
+| `MCP_OAUTH_DCR_ENABLED`          | env var             | `false`                                      | Enable/disable DCR                   |
+| `MCP_OAUTH_CIMD_ENABLED`         | env var             | `false`                                      | Enable/disable CIMD                  |
 | `MCP_OAUTH_CIMD_ALLOWED_DOMAINS` | env var             | (empty)                                      | Domain allowlist, empty = accept all |
 | `MCP_OAUTH_CIMD_BLOCKED_TLDS`    | env var             | `test,localhost,invalid,example,local,onion` | TLD blocklist for client_id URLs     |
 | `MCP_OAUTH_CIMD_ALLOW_HTTP`      | env var             | `false`                                      | Dev/test: allow HTTP client_id URLs  |
-| `mcp_oauth_dcr_enabled`          | setting + UI toggle | `true`                                       | Enable/disable DCR                   |
+| `mcp_oauth_dcr_enabled`          | setting + UI toggle | `false`                                      | Enable/disable DCR                   |
 | `mcp_oauth_cimd_enabled`         | setting + UI toggle | `false`                                      | Enable/disable CIMD                  |
 
-**Resolution:** both env var AND setting must be true for the feature to be active. Env vars default to `true` (allow),
-settings default vary: DCR defaults `true` (preserve existing behavior on upgrade), CIMD defaults `false` (new feature,
-opt-in). This means:
+**Resolution:** both env var AND setting must be true for the feature to be active. Env vars and settings default to
+`false` so both DCR and CIMD are explicit opt-ins. This means:
 
-- Fresh install: DCR is on (existing behavior preserved), CIMD is off (admin must opt in via UI)
+- Fresh install: DCR and CIMD are off until enabled by both env and project setting
 - Env var set to `false`: blocks the feature entirely regardless of setting (infrastructure-level lockdown)
 - Same pattern as existing `mcp_oauth_enabled`
 
-Note: `MCP_OAUTH_ENABLED` (the parent toggle) defaults to `false`, while `MCP_OAUTH_DCR_ENABLED` /
-`MCP_OAUTH_CIMD_ENABLED` default to `true`. This is intentional: the parent is the opt-in gate, the sub-toggles are
-allow/block switches.
+Note: `MCP_OAUTH_ENABLED` (the parent toggle), `MCP_OAUTH_DCR_ENABLED`, and `MCP_OAUTH_CIMD_ENABLED` all default to
+`false`. Registration modes require a separate opt-in beyond enabling the OAuth server itself.
 
 **Gating mechanism:** env vars are checked per-request inside the service methods (same as how `checkOAuthSettings`
 middleware queries `mcp_oauth_enabled` from the DB). The existing `checkOAuthSettings` middleware continues to check the
