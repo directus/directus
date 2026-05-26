@@ -402,18 +402,14 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-// Trigger only on logical version changes (user switches versions). `getVersions()` after a save
-// reassigns `currentVersion` to a fresh object with the same id/key — without this guard the watcher
-// would fire on every save and wipe `edits`, eating any keystrokes typed during the in-flight save.
-watch(
-	() => currentVersion.value?.id ?? null,
-	async () => {
-		resetOpenRevision();
-		const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
-		edits.value = autoSwitchPendingEdits ?? {};
-		await refreshLivePreview();
-	},
-);
+const currentVersionId = computed(() => currentVersion.value?.id ?? null);
+
+watch(currentVersionId, async () => {
+	resetOpenRevision();
+	const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
+	edits.value = autoSwitchPendingEdits ?? {};
+	await refreshLivePreview();
+});
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
@@ -579,19 +575,14 @@ async function autoSave(forceNewRevision: boolean) {
 	try {
 		if (forceNewRevision) {
 			await saveVersion(edits, item);
-
-			if (!isNew.value) {
-				revisionsSidebarDetailRef.value?.refresh?.();
-			}
+			if (!isNew.value) revisionsSidebarDetailRef.value?.refresh?.();
 		} else {
 			await saveVersion(edits, item, { patchRevision: true });
 		}
 
 		await refreshLivePreview();
 	} catch (error) {
-		// Version-gone errors (deleted/promoted by another user) are handled by handleVersionGone:
-		// it shows a notification and navigates away. Re-throw anything else so useAutoSave
-		// captures it in autoSaveError and the persistent warning toast surfaces it.
+		// Throw anyway if not a `versionGone` error
 		if (!handleVersionGone(error)) throw error;
 	}
 }

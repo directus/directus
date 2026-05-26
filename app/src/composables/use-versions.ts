@@ -253,18 +253,18 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				versionId = currentVersion.value.id;
 			}
 
-			// On a brand-new version we just created above there is no prior revision to coalesce into,
-			// so the patchRevision flag would just trigger the server's fallback path. Skip sending it.
+			// New versions have no prior revision to coalesce into
 			const shouldPatchRevision = opts?.patchRevision === true && currentVersion.value.id !== '+';
 
-			const url = shouldPatchRevision ? `/versions/${versionId}/save?patchRevision` : `/versions/${versionId}/save`;
+			const endpoint = shouldPatchRevision
+				? `/versions/${versionId}/save?patchRevision`
+				: `/versions/${versionId}/save`;
 
-			// Snapshot before the request so keystrokes that land mid-flight stay queued for the next save.
 			const editsToSave = { ...edits.value };
 
 			const {
 				data: { data: savedData },
-			} = await api.post(url, editsToSave);
+			} = await api.post(endpoint, editsToSave);
 
 			item.value = item.value ? Object.assign(item.value, savedData) : savedData;
 			clearSavedEditKeys(edits, editsToSave);

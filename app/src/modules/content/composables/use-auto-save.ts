@@ -6,17 +6,13 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
 import type { ContentVersionMaybeNew } from '@/types/versions';
 
-/** Fallback when neither the collection nor the server reports a value. Seconds of inactivity after which the next save creates a new revision instead of updating in-place. */
-export const AUTO_SAVE_SNAPSHOT_INTERVAL_SECONDS_FALLBACK = 300;
 export const AUTO_SAVE_DEBOUNCE_MS = 800;
-/** Bounded backoff used to retry after a failed auto-save when the user has stopped typing. */
 export const AUTO_SAVE_RETRY_DELAYS_MS = [5_000, 15_000, 30_000];
 
 export interface UseAutoSaveOptions {
 	currentVersion: Ref<ContentVersionMaybeNew | null>;
 	updateVersionsAllowed: Ref<boolean>;
 	collection: Ref<string>;
-	/** Debounce delay in milliseconds. Default: 300. */
 	debounceMs?: number;
 }
 
@@ -52,10 +48,11 @@ export function useAutoSave(
 		(newEdits) => {
 			if (!enabled.value) return;
 			if (Object.keys(newEdits).length === 0) return;
-			// User is editing again — cancel any pending retry and reset the backoff so an exhausted
-			// chain doesn't permanently skip retries on subsequent failures.
+
+			// Reset backoff on new edits so an exhausted retry chain doesn't lock out future retries
 			clearRetryTimer();
 			retryAttempt = 0;
+
 			debouncedSave();
 		},
 		{ deep: true },
@@ -144,8 +141,7 @@ export function useAutoSave(
 
 		const collectionOverride = collectionsStore.getCollection(collection.value)?.meta?.autosave_revision_interval;
 
-		const seconds =
-			collectionOverride ?? serverStore.info.autoSave?.revisionInterval ?? AUTO_SAVE_SNAPSHOT_INTERVAL_SECONDS_FALLBACK;
+		const seconds = collectionOverride ?? serverStore.info.autoSave?.revisionInterval ?? 300;
 
 		const intervalMs = seconds * 1000;
 		return Date.now() - new Date(dateUpdated).getTime() > intervalMs;
