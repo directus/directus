@@ -179,6 +179,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			for (const [index, payloadInput] of data.entries()) {
 				const payload: AnyItem = cloneDeep(payloadInput);
 
+				// Run all hooks that are attached to this event so the end user has the chance to augment the
+				// item that is about to be saved
 				const payloadAfterHooks =
 					opts.emitEvents !== false
 						? await emitter.emitFilter(
@@ -212,8 +214,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					throw opts.preMutationError;
 				}
 
+				// Ensure the action hook payload has the post filter hook + preset changes
 				const actionHookPayload = payloadWithPresets;
 
+				// We're creating new services instances so they can use the transaction as their Knex interface
 				const payloadService = new PayloadService(this.collection, {
 					accountability: this.accountability,
 					knex: trx,
@@ -239,12 +243,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 				const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
+				// The primary key can already exist in the payload.
+				// In case of manual string / UUID primary keys it's always provided at this point.
+				// In case of an (big) integer primary key, it might be provided as the user can specify the value manually.
 				const primaryKey: PrimaryKey | undefined = payloadWithTypeCasting[primaryKeyField];
 
 				if (primaryKey) {
 					validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
 				}
 
+				// If a PK of type number was provided, although the PK is set the auto_increment,
+				// depending on the database, the sequence might need to be reset to protect future PK collisions.
 				if (
 					primaryKey &&
 					pkField &&
@@ -347,14 +356,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							p.primaryKey = (p.primaryKey ?? returnedKey) as PrimaryKey;
 						}
 
+						// Most database support returning, those who don't tend to return the PK anyways
+						// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
+						// fetching it based on the last inserted row
 						if (!p.primaryKey) {
-							// Best-effort PK lookup for vendors / driver paths where
-							// RETURNING didn't surface one (legacy MySQL / SQLite).
+							// Fetching it with max should be safe, as we're in the context of the current transaction
 							const maxResult = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
 
 							p.primaryKey = maxResult?.id;
 						}
 
+						// Set the primary key on the input item, in order for the "after" event hook to be able
+						// to read from it
 						p.actionHookPayload[primaryKeyField] = p.primaryKey;
 					}
 				}
@@ -362,6 +375,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const dbError = await translateDatabaseError(err, data);
 
 				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
+					// This is a MySQL specific thing we need to handle here, since MySQL does not return the field name
+					// if the unique constraint is the primary key
 					dbError.extensions.field = pkField?.field ?? null;
 					delete dbError.extensions.primaryKey;
 				}
@@ -378,6 +393,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const postPrepared: PostRow[] = [];
 
 			for (const p of prepared) {
+				// At this point, the primary key is guaranteed to be set.
 				const primaryKey = p.primaryKey as PrimaryKey;
 
 				const {
@@ -407,6 +423,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 			}
 
+			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (
 				opts.skipTracking !== true &&
 				this.accountability &&
@@ -429,6 +446,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					})),
 				);
 
+				// If revisions are tracked, create revisions record
 				if (this.schema.collections[this.collection]!.accountability === 'all') {
 					const revisionsService = new RevisionsService({ knex: trx, schema: this.schema });
 					const relationalFields = getRelationsForCollection(this.schema, this.collection);
@@ -452,6 +470,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					for (let i = 0; i < postPrepared.length; i++) {
 						const p = postPrepared[i]!;
 						const revisionId = revisionIds[i]!;
+						// Make sure to set the parent field of the child-revision rows
 						const childrenRevisions = [...p.revisionsM2O, ...p.revisionsA2O, ...p.revisionsO2M];
 
 						if (childrenRevisions.length > 0) {
