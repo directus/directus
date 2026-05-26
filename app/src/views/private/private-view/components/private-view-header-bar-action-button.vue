@@ -13,6 +13,7 @@ const {
 	variant = 'solid',
 } = defineProps<{
 	icon: string;
+	iconFilled?: boolean;
 	label?: string;
 	tooltip?: VButtonProps['tooltip'];
 	disabled?: VButtonProps['disabled'];
@@ -74,7 +75,7 @@ function useIcon() {
 		exact
 		@click="$emit('click', $event)"
 	>
-		<VIcon v-if="showIcon" :name="icon" />
+		<VIcon v-if="showIcon" :name="icon" :filled="iconFilled" />
 		<span v-else>{{ label }}</span>
 		<template v-if="$slots['split-menu']" #split-menu><slot name="split-menu" /></template>
 		<template #append-outer><slot name="append-outer" /></template>

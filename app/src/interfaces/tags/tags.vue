@@ -247,6 +247,7 @@ function clearVariable() {
 			--v-chip-background-color: var(--theme--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--theme--danger);
+			--v-chip-color-hover: var(--foreground-inverted);
 			--v-chip-border-color-hover: var(--v-chip-background-color-hover);
 
 			transition: all var(--fast) var(--transition);

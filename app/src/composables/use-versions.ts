@@ -98,7 +98,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	});
 
 	watch(
-		[collection, isSingleton, primaryKey],
+		[collection, isSingleton, primaryKey, queryVersionId],
 		([newCollection], [oldCollection]) => {
 			if (oldCollection && newCollection !== oldCollection) currentVersion.value = null;
 			getVersions();
@@ -111,7 +111,11 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		if (!isSingleton.value && !primaryKey.value) return;
 
-		if (isNewItem.value && !queryVersionId.value) return;
+		if (isNewItem.value && !queryVersionId.value) {
+			// Drop versions carried over from a previously viewed item so the unsaved itemless version starts with no versions loaded
+			rawVersions.value = null;
+			return;
+		}
 
 		loading.value = true;
 
@@ -182,6 +186,19 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	function versionErrorHandler(error: any) {
 		if (currentVersion.value && currentVersion.value.id !== '+' && error?.response?.status === 403) {
 			throw Object.assign(error, { versionGone: true });
+		}
+
+		if (error?.response?.status === 422) {
+			const driftError = error.response.data?.errors?.find(
+				(err: APIError) => err?.extensions?.code === 'VERSION_HASH_MISMATCH',
+			);
+
+			if (driftError) {
+				throw Object.assign(error, {
+					versionDrift: true,
+					mainHash: driftError.extensions.mainHash as string,
+				});
+			}
 		}
 
 		if (error?.response?.data?.errors) {
@@ -284,6 +301,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	return {
 		readVersionsAllowed,
+		createVersionsAllowed,
 		currentVersion,
 		versions,
 		loading,

@@ -8,9 +8,6 @@ import ComparisonHeader from './comparison-header.vue';
 import ComparisonToggle from './comparison-toggle.vue';
 import { useComparison } from './use-comparison';
 import VButton from '@/components/v-button.vue';
-import VCardActions from '@/components/v-card-actions.vue';
-import VCardTitle from '@/components/v-card-title.vue';
-import VCard from '@/components/v-card.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -21,15 +18,15 @@ import type { Revision } from '@/types/revisions';
 import type { ContentVersionWithType } from '@/types/versions';
 
 interface Props {
-	deleteVersionsAllowed: boolean;
 	collection: string;
 	primaryKey: PrimaryKey;
 	mode: 'version' | 'revision' | 'collab';
-	currentVersion: ContentVersionWithType | null | undefined;
-	currentCollab: { from: Item; to: Item } | undefined;
+	currentVersion?: ContentVersionWithType | null | undefined;
+	deleteVersionsAllowed?: boolean;
 	revisions?: Revision[] | null;
-	collabContext?: CollabContext;
 	publishVersionLoading?: boolean;
+	currentCollab?: { from: Item; to: Item } | undefined;
+	collabContext?: CollabContext;
 }
 
 const props = defineProps<Props>();
@@ -113,7 +110,7 @@ const applyButtonTooltip = computed(() => {
 	return `${t('apply')} (${translateShortcut(['meta', 'enter'])})`;
 });
 
-const { confirmDeleteOnPublishDialogActive, onPublishClick, publish } = usePublishDialog();
+const { onPublishClick } = usePublish();
 
 const modalLoading = ref(false);
 
@@ -181,19 +178,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 
-function usePublishDialog() {
-	const confirmDeleteOnPublishDialogActive = ref(false);
-
-	return { confirmDeleteOnPublishDialogActive, onPublishClick, publish };
+function usePublish() {
+	return { onPublishClick };
 
 	function onPublishClick() {
 		if (selectedComparisonFields.value.length === 0) return;
-
-		if (deleteVersionsAllowed.value) {
-			confirmDeleteOnPublishDialogActive.value = true;
-		} else {
-			publish(false);
-		}
+		publish(deleteVersionsAllowed.value);
 	}
 
 	function publish(deleteOnPublish: boolean) {
@@ -225,8 +215,6 @@ function usePublishDialog() {
 			emit('confirm', restoreData);
 			emit('cancel');
 		}
-
-		confirmDeleteOnPublishDialogActive.value = false;
 	}
 }
 </script>
@@ -389,24 +377,6 @@ function usePublishDialog() {
 				</div>
 			</div>
 		</div>
-
-		<VDialog
-			v-model="confirmDeleteOnPublishDialogActive"
-			@esc="confirmDeleteOnPublishDialogActive = false"
-			@apply="publish(true)"
-		>
-			<VCard>
-				<VCardTitle>
-					{{ $t('delete_on_apply_copy', { version: deltaDisplayName }) }}
-				</VCardTitle>
-				<VCardActions>
-					<VButton secondary @click="publish(false)">{{ $t('keep') }}</VButton>
-					<VButton :loading="publishVersionLoading" kind="danger" @click="publish(true)">
-						{{ $t(currentVersion!.type === 'global' ? 'discard_changes' : 'delete_label') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
 	</VDialog>
 </template>
 
@@ -451,7 +421,7 @@ function usePublishDialog() {
 	}
 
 	.comparison-content-divider {
-		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color);
 	}
 
 	.columns {
@@ -513,7 +483,7 @@ function usePublishDialog() {
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal--padding-x);
 		padding-block: 1rem;
-		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color);
 
 		.columns {
 			flex-direction: row;

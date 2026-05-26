@@ -179,7 +179,7 @@ function onFlowDrawerCompletion(id: string) {
 		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				:tooltip="createAllowed ? undefined : $t('not_allowed')"
-				:label="$t('create_flow')"
+				:label="$t('create')"
 				:disabled="createAllowed === false"
 				icon="add"
 				@click="openCreateFlow"

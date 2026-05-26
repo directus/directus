@@ -763,23 +763,23 @@ function popoverClickOutsideMiddleware(e: Event) {
 	<ComparisonModal
 		v-if="collab"
 		:model-value="Boolean(collab.collabCollision.value) && overlayActive"
+		mode="collab"
 		:collection="collection"
 		:primary-key="primaryKey"
 		:current-collab="collab.collabCollision.value"
 		:collab-context="collab.collabContext"
-		mode="collab"
 		@confirm="collab.update"
 		@cancel="collab.clearCollidingChanges"
 	/>
 
 	<ComparisonModal
 		v-if="relatedCollab"
+		mode="collab"
 		:model-value="Boolean(relatedCollab.collabCollision.value) && overlayActive"
 		:collection="collection"
 		:primary-key="primaryKey"
 		:current-collab="relatedCollab.collabCollision.value"
 		:collab-context="relatedCollab.collabContext"
-		mode="collab"
 		@confirm="relatedCollab.update"
 		@cancel="relatedCollab.clearCollidingChanges"
 	/>

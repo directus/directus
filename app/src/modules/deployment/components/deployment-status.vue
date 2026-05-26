@@ -57,6 +57,7 @@ const statusLabel = computed(() => {
 
 <template>
 	<VChip
+		:label="false"
 		small
 		disabled
 		:style="{

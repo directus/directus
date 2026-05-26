@@ -282,9 +282,9 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 </script>
 
 <template>
-	<VMenu class="version-menu" placement="bottom" show-arrow>
+	<VMenu class="version-menu" placement="bottom" show-arrow :disabled="!readVersionsAllowed">
 		<template #activator="{ toggle }">
-			<VersionChip :version="currentVersion" @click="toggle()" />
+			<VersionChip :version="currentVersion" :clickable="readVersionsAllowed" @click="toggle()" />
 		</template>
 
 		<VList class="version-list">
@@ -541,11 +541,11 @@ function hasVersionEdits(version: ContentVersionMaybeNew | null) {
 		background-color: var(--theme--foreground);
 
 		&.edit-dot-primary {
-			background-color: var(--theme--primary);
+			background-color: var(--primary);
 		}
 
 		&.edit-dot-secondary {
-			background-color: var(--theme--secondary);
+			background-color: var(--secondary);
 		}
 	}
 }

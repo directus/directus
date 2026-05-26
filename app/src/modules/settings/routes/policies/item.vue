@@ -153,7 +153,7 @@ function discardAndStay() {
 				:disabled="!hasEdits"
 				@click="saveAndQuit"
 			>
-				<template v-if="hasEdits" #split-menu>
+				<template #split-menu>
 					<SaveOptions
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
