@@ -1,1 +1,1 @@
-export const DIRECTUS_HOMEPAGE = 'https://directus.com';
+export const DIRECTUS_DOMAIN = 'directus.com';
