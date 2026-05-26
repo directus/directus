@@ -188,8 +188,8 @@ export class UsersService extends ItemsService {
 	 * Create one or more new users
 	 */
 	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		const emails = data.map((payload) => payload['email']).filter((email) => email);
-		const passwords = data.map((payload) => payload['password']).filter((password) => password);
+		const emails = data.map((payload) => payload['email']).filter((email) => email !== undefined);
+		const passwords = data.map((payload) => payload['password']).filter((password) => password !== undefined);
 		const someActive = data.some((payload) => !('status' in payload) || payload['status'] === 'active');
 
 		try {

@@ -2,6 +2,7 @@ import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqu
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, MutationOptions } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
+import { FailedValidationError } from '@directus/validation';
 import jwt from 'jsonwebtoken';
 import knex from 'knex';
 import { createTracker, MockClient } from 'knex-mock-client';
@@ -129,6 +130,36 @@ describe('Integration Tests', () => {
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
 			});
+
+			it('should set preMutationError to FailedValidationError when email is null', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createOne({ email: null as any }, opts);
+
+				expect(opts.preMutationError).toBeInstanceOf(FailedValidationError);
+				expect(checkUniqueEmailsSpy).not.toBeCalled();
+			});
+
+			it('should set preMutationError to FailedValidationError when email is empty string', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createOne({ email: '' }, opts);
+
+				expect(opts.preMutationError).toBeInstanceOf(FailedValidationError);
+				expect(checkUniqueEmailsSpy).not.toBeCalled();
+			});
+
+			it('should checkPasswordPolicy when password is null', async () => {
+				await service.createOne({ password: null as any });
+
+				expect(checkPasswordPolicySpy).toBeCalledWith([null]);
+			});
+
+			it('should checkPasswordPolicy when password is empty string', async () => {
+				await service.createOne({ password: '' });
+
+				expect(checkPasswordPolicySpy).toBeCalledWith(['']);
+			});
 		});
 
 		describe('createMany', () => {
@@ -162,6 +193,34 @@ describe('Integration Tests', () => {
 				await service.createMany([{}], opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+			});
+
+			it('should set preMutationError to FailedValidationError if any email is null', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createMany([{ email: 'good@example.com' }, { email: null as any }], opts);
+
+				expect(opts.preMutationError).toBeInstanceOf(FailedValidationError);
+			});
+
+			it('should set preMutationError to FailedValidationError if any email is empty string', async () => {
+				const opts: MutationOptions = {};
+
+				await service.createMany([{ email: 'good@example.com' }, { email: '' }], opts);
+
+				expect(opts.preMutationError).toBeInstanceOf(FailedValidationError);
+			});
+
+			it('should checkPasswordPolicy when any password is null', async () => {
+				await service.createMany([{ password: 'testpassword' }, { password: null as any }]);
+
+				expect(checkPasswordPolicySpy).toBeCalledWith(['testpassword', null]);
+			});
+
+			it('should checkPasswordPolicy when any password is empty string', async () => {
+				await service.createMany([{ password: 'testpassword' }, { password: '' }]);
+
+				expect(checkPasswordPolicySpy).toBeCalledWith(['testpassword', '']);
 			});
 		});
 
