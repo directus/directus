@@ -23,7 +23,7 @@ const knownQueryKeys = [
  */
 const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
 const isString = (value: unknown): value is string => typeof value === 'string' && Boolean(value);
-const isNumber = (value: unknown): value is number => typeof value === 'number';
+const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 const isArray = (value: unknown): value is unknown[] => Array.isArray(value) && value.length > 0;
 
 const isObject = (value: unknown): value is Record<string, unknown> =>

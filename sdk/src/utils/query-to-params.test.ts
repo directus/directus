@@ -79,6 +79,16 @@ describe('queryToParams', () => {
 		});
 	});
 
+	test('should skip non-finite numeric parameters', () => {
+		const result = queryToParams({
+			limit: Number.NaN,
+			offset: Number.POSITIVE_INFINITY,
+			page: Number.NEGATIVE_INFINITY,
+		});
+
+		expect(result).toEqual({});
+	});
+
 	test('should format query.fields parameter', () => {
 		const result = queryToParams({
 			fields: ['id', 'name', { author: ['name'] }],
