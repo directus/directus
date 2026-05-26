@@ -367,11 +367,7 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 
 const { applyAutoSwitchPendingEdits, canAutoSwitchToDraft, draftVersion } = useAutoSwitchToDraft();
 
-const {
-	autoSaveError,
-	isSaving: autoSaveIsSaving,
-	resetOpenRevision,
-} = useAutoSave(edits, autoSave, {
+const { autoSaveError, resetOpenRevision } = useAutoSave(edits, autoSave, {
 	currentVersion,
 	updateVersionsAllowed,
 	collection,
@@ -575,12 +571,6 @@ watch(saving, async (newVal, oldVal) => {
 	await refreshLivePreview();
 });
 
-watch(autoSaveIsSaving, async (newVal, oldVal) => {
-	if (newVal === true || oldVal === false) return;
-
-	await refreshLivePreview();
-});
-
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
@@ -596,6 +586,8 @@ async function autoSave(forceNewRevision: boolean) {
 		} else {
 			await saveVersion(edits, item, { patchRevision: true });
 		}
+
+		await refreshLivePreview();
 	} catch (error) {
 		// Version-gone errors (deleted/promoted by another user) are handled by handleVersionGone:
 		// it shows a notification and navigates away. Re-throw anything else so useAutoSave
