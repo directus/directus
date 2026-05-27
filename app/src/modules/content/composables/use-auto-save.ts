@@ -139,9 +139,13 @@ export function useAutoSave(
 		const dateUpdated = currentVersionDateUpdated.value;
 		if (!dateUpdated) return true;
 
+		const UNREACHABLE_REVISION_INTERVAL_FALLBACK_SECONDS = 300;
 		const collectionOverride = collectionsStore.getCollection(collection.value)?.meta?.autosave_revision_interval;
 
-		const seconds = collectionOverride ?? serverStore.info.autoSave?.revisionInterval ?? 300;
+		const seconds =
+			collectionOverride ??
+			serverStore.info.autoSave?.revisionInterval ??
+			UNREACHABLE_REVISION_INTERVAL_FALLBACK_SECONDS;
 
 		const intervalMs = seconds * 1000;
 		return Date.now() - new Date(dateUpdated).getTime() > intervalMs;
