@@ -13,6 +13,7 @@
 	"license": "MIT",
 	"packageManager": "pnpm@10.14.0",
 	"devDependencies": {
+		"@directus/license": "0.2.0",
 		"@directus/mock-license-server": "workspace:*",
 		"@directus/sandbox": "workspace:*",
 		"@directus/sdk": "workspace:*",

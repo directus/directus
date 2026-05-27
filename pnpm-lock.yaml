@@ -3342,6 +3342,9 @@ importers:
 
   tests/e2e:
     devDependencies:
+      '@directus/license':
+        specifier: 0.2.0
+        version: 0.2.0(@directus/types@packages+types)(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       '@directus/mock-license-server':
         specifier: workspace:*
         version: link:../mock-license-server
