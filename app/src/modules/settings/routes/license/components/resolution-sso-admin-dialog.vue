@@ -19,12 +19,13 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	'update:modelValue': [value: boolean];
-	confirm: [value: { email: string; password?: string }];
+	confirm: [value: { email?: string; password?: string }];
 }>();
 
 const { t } = useI18n();
 const userStore = useUserStore();
 
+const needsEmail = computed(() => props.blockers?.includes('ADMIN_MISSING_EMAIL') ?? false);
 const needsPassword = computed(() => props.blockers?.includes('ADMIN_MISSING_PASSWORD') ?? false);
 
 const description = computed(() =>
@@ -46,7 +47,7 @@ watch(
 	},
 );
 
-const emailValid = computed(() => z.email().safeParse(admin.email).success);
+const emailValid = computed(() => !needsEmail.value || z.email().safeParse(admin.email).success);
 
 const isValid = computed(() => {
 	if (!emailValid.value) return false;
@@ -58,7 +59,7 @@ function confirm() {
 	if (!isValid.value) return;
 
 	emit('confirm', {
-		email: admin.email,
+		...(needsEmail.value ? { email: admin.email } : {}),
 		...(needsPassword.value ? { password: admin.password } : {}),
 	});
 
@@ -80,7 +81,7 @@ function cancel() {
 			<VCardText>
 				<p class="description">{{ description }}</p>
 
-				<div class="field">
+				<div v-if="needsEmail" class="field">
 					<label class="field-label">{{ t('licensing.resolve_sso_admin_email') }}</label>
 					<VInput v-model="admin.email" type="email" autocomplete="off">
 						<template #append>

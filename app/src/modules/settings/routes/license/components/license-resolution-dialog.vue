@@ -189,7 +189,7 @@ const selected = reactive({
 const adminCreds = ref<{ email?: string; password?: string }>({});
 const ssoAdminDialogOpen = ref(false);
 
-function onSsoConfirm(creds: { email: string; password?: string }) {
+function onSsoConfirm(creds: { email?: string; password?: string }) {
 	adminCreds.value = creds;
 	selected.sso = true;
 }
