@@ -70,6 +70,7 @@ const mockDetectClientIdType = vi.fn().mockReturnValue('dcr');
 const mockFetchCimdMetadata = vi.fn();
 const mockGetAllowedDomains = vi.fn().mockReturnValue([]);
 const mockIsDomainAllowed = vi.fn().mockReturnValue(true);
+const mockValidateCimdHostnameEgress = vi.fn().mockResolvedValue(undefined);
 
 vi.mock('./cimd.js', () => ({
 	detectClientIdType: (...args: unknown[]) => mockDetectClientIdType(...args),
@@ -77,6 +78,15 @@ vi.mock('./cimd.js', () => ({
 	getAllowedDomains: (...args: unknown[]) => mockGetAllowedDomains(...args),
 	isDomainAllowed: (...args: unknown[]) => mockIsDomainAllowed(...args),
 }));
+
+vi.mock('./utils/cimd-egress.js', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('./utils/cimd-egress.js')>();
+
+	return {
+		...actual,
+		validateCimdHostnameEgress: (...args: unknown[]) => mockValidateCimdHostnameEgress(...args),
+	};
+});
 
 const mockTranslateDatabaseError = vi.fn().mockResolvedValue(new Error('unknown'));
 
@@ -205,6 +215,7 @@ describe('McpOAuthService', () => {
 		mockFetchCimdMetadata.mockReset();
 		mockGetAllowedDomains.mockReturnValue([]);
 		mockIsDomainAllowed.mockReturnValue(true);
+		mockValidateCimdHostnameEgress.mockResolvedValue(undefined);
 		mockTranslateDatabaseError.mockResolvedValue(new Error('unknown'));
 		vi.clearAllMocks();
 	});
@@ -3254,6 +3265,7 @@ describe('McpOAuthService', () => {
 			const result = await service.resolveClientWithFetch(dcrClientId);
 			expect(result['client_id']).toBe(dcrClientId);
 			expect(result['client_name']).toBe('Test DCR Client');
+			expect(mockValidateCimdHostnameEgress).not.toHaveBeenCalled();
 		});
 
 		it('DCR UUID not found throws error', async () => {
@@ -3293,7 +3305,7 @@ describe('McpOAuthService', () => {
 
 			const result = await service.resolveClientWithFetch(cimdClientId);
 			expect(result['client_name']).toBe('Cached CIMD Client');
-			// fetchCimdMetadata should NOT have been called
+			expect(mockValidateCimdHostnameEgress).not.toHaveBeenCalled();
 			expect(mockFetchCimdMetadata).not.toHaveBeenCalled();
 		});
 

@@ -1,8 +1,11 @@
 import { isIP } from 'node:net';
+import { performance } from 'node:perf_hooks';
 import { useEnv } from '@directus/env';
+import type { AxiosRequestConfig } from 'axios';
 import { useLogger } from '../../logger/index.js';
 import { getAxios } from '../../request/index.js';
 import { OAuthError } from './types/error.js';
+import { CimdEgressError, createCimdLookup } from './utils/cimd-egress.js';
 import { validateRedirectUri } from './utils/redirect.js';
 
 const MIN_TTL_MS = 300_000; // 5 minutes
@@ -233,6 +236,21 @@ const CONTENT_TYPE_JSON_RE = /^application\/(?:json|[\w.-]+\+json)(?:\s*;|$)/i;
 export async function fetchCimdMetadata(clientId: string, etag?: string): Promise<FetchResult> {
 	const logger = useLogger();
 	const axios = await getAxios();
+	let url: URL;
+
+	try {
+		url = new URL(clientId);
+	} catch {
+		logger.debug({ client_id: clientId, reason: 'unparseable URL' }, 'CIMD metadata fetch rejected');
+		throw new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
+	}
+
+	const bareHost = url.hostname.replace(/^\[|\]$/g, '');
+
+	if (isIP(bareHost)) {
+		logger.debug({ client_id: clientId, reason: 'IP address hostname' }, 'CIMD metadata fetch rejected');
+		throw new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
+	}
 
 	const headers: Record<string, string> = {};
 
@@ -243,15 +261,32 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 	let response;
 
 	try {
-		response = await axios.get(clientId, {
+		const deadlineAt = performance.now() + 3000;
+
+		const requestConfig: AxiosRequestConfig = {
 			headers,
+			lookup: createCimdLookup({ deadlineAt }),
 			maxRedirects: 0,
 			maxContentLength: 5120,
+			proxy: false,
 			timeout: 3000,
 			responseType: 'json',
 			validateStatus: (s) => s === 200 || (etag ? s === 304 : false),
-		});
+		};
+
+		response = await axios.get(clientId, requestConfig);
 	} catch (err: any) {
+		if (err instanceof CimdEgressError) {
+			const reason = (err as { reason?: unknown }).reason;
+
+			logger.debug(
+				{ client_id: clientId, ...(typeof reason === 'string' ? { reason } : {}) },
+				'CIMD metadata fetch rejected',
+			);
+
+			throw new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
+		}
+
 		logger.debug({ client_id: clientId, error: err?.message }, 'CIMD metadata fetch failed');
 		throw new OAuthError(400, 'invalid_client_metadata', 'Failed to fetch client metadata document');
 	}
