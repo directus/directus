@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OAuthError } from '../types/error.js';
 import { matchRedirectUri, validateRedirectUri } from './redirect.js';
 
-const DEFAULT_ALLOWED_CUSTOM_REDIRECTS = ['raycast://oauth', 'cursor://cursor.mcp'];
+const DEFAULT_ALLOWED_CUSTOM_REDIRECTS = ['raycast://oauth', 'cursor://cursor.mcp', 'cursor://anysphere.cursor-mcp'];
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -98,6 +98,7 @@ describe('validateRedirectUri', () => {
 		'raycast://oauth/callback?package_name=directus',
 		'cursor://cursor.mcp?name=directus',
 		'cursor://cursor.mcp/callback?name=directus',
+		'cursor://anysphere.cursor-mcp/callback',
 	])('accepts known MCP desktop redirect URI %s', (uri) => {
 		expect(() => validateRedirectUri(uri)).not.toThrow();
 	});
@@ -156,6 +157,7 @@ describe('validateRedirectUri', () => {
 
 			expect(() => validateRedirectUri('raycast://oauth?package_name=directus')).toThrow(OAuthError);
 			expect(() => validateRedirectUri('cursor://cursor.mcp?name=directus')).toThrow(OAuthError);
+			expect(() => validateRedirectUri('cursor://anysphere.cursor-mcp/callback')).toThrow(OAuthError);
 		});
 	});
 
@@ -188,6 +190,7 @@ describe('validateRedirectUri', () => {
 		it('still allows known MCP desktop redirects when allowlist is set', () => {
 			expect(() => validateRedirectUri('raycast://oauth?package_name=directus')).not.toThrow();
 			expect(() => validateRedirectUri('cursor://cursor.mcp?name=directus')).not.toThrow();
+			expect(() => validateRedirectUri('cursor://anysphere.cursor-mcp/callback')).not.toThrow();
 		});
 	});
 });

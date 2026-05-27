@@ -216,6 +216,49 @@ describe('full OAuth flow', () => {
 			scope: 'mcp:access',
 		});
 	});
+
+	test('supports Cursor desktop OAuth redirect registration shape', async () => {
+		const redirectUri = 'cursor://anysphere.cursor-mcp/callback';
+
+		const clientId = await registerPublicClient({
+			redirectUri,
+			redirectUris: [redirectUri, 'https://www.cursor.com/callback', 'http://localhost:3000/callback'],
+		});
+
+		const cookies = await loginAsAdminSession();
+		const pkce = generatePKCE();
+
+		const consentResponse = await fetchPublicClientConsentPage({ clientId, redirectUri, pkce, cookies });
+
+		const csp = consentResponse.headers.get('content-security-policy');
+		expect(csp).toContain('form-action');
+		expect(csp).toContain('cursor:');
+
+		const signed_params = extractSignedParams(await expectTextResponse(consentResponse, 200));
+
+		const decisionResponse = await approvePublicClientConsent({ signedParams: signed_params, cookies });
+
+		expect(decisionResponse.status).toBe(302);
+
+		const location = decisionResponse.headers.get('location');
+		expect(location).toBeTruthy();
+		expect(location).toMatch(/^cursor:\/\/anysphere\.cursor-mcp\/callback\?/);
+
+		const redirectUrl = new URL(location!);
+		const code = redirectUrl.searchParams.get('code');
+
+		expect(code).toBeTruthy();
+		expect(redirectUrl.searchParams.get('iss')).toBe(baseUrl);
+
+		const tokens = await exchangeCode({ clientId, code: code!, redirectUri, codeVerifier: pkce.verifier });
+
+		expect(tokens).toMatchObject({
+			access_token: expect.any(String),
+			token_type: 'Bearer',
+			refresh_token: expect.any(String),
+			scope: 'mcp:access',
+		});
+	});
 });
 
 describe('OAuth token isolation', () => {

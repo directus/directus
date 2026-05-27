@@ -229,7 +229,7 @@ export const DEFAULTS: Env = {
 	MCP_OAUTH_REQUIRE_RESOURCE: false,
 	MCP_OAUTH_CLEANUP_SCHEDULE: '*/15 * * * *',
 	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: '',
-	MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: 'raycast://oauth,cursor://cursor.mcp',
+	MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: 'raycast://oauth,cursor://cursor.mcp,cursor://anysphere.cursor-mcp',
 	MCP_OAUTH_DCR_ENABLED: false,
 	MCP_OAUTH_CIMD_ENABLED: false,
 	MCP_OAUTH_CIMD_ALLOW_HTTP: false,

@@ -314,17 +314,18 @@ export async function loginAsAdminToken(apiUrl = baseUrl): Promise<string> {
 }
 
 export async function registerPublicClient(
-	opts: { redirectUri?: string; grantTypes?: string[]; apiUrl?: string } = {},
+	opts: { redirectUri?: string; redirectUris?: string[]; grantTypes?: string[]; apiUrl?: string } = {},
 ): Promise<string> {
 	const apiUrl = opts.apiUrl ?? baseUrl;
 	const redirectUri = opts.redirectUri ?? `${apiUrl}/mcp-oauth-test-callback`;
+	const redirectUris = opts.redirectUris ?? [redirectUri];
 	const grantTypes = opts.grantTypes ?? ['authorization_code', 'refresh_token'];
 
 	const response = await postJson(
 		'/mcp-oauth/register',
 		{
 			client_name: `test-client-${crypto.randomUUID()}`,
-			redirect_uris: [redirectUri],
+			redirect_uris: redirectUris,
 			grant_types: grantTypes,
 			token_endpoint_auth_method: 'none',
 		},

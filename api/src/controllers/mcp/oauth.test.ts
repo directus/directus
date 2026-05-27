@@ -251,7 +251,7 @@ describe('mcp-oauth controller', () => {
 			SESSION_COOKIE_NAME: 'directus_session',
 			RATE_LIMITER_MCP_OAUTH_ENABLED: true,
 			RATE_LIMITER_MCP_OAUTH_REGISTRATION_ENABLED: true,
-			MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['raycast://oauth', 'cursor://cursor.mcp'],
+			MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['raycast://oauth', 'cursor://cursor.mcp', 'cursor://anysphere.cursor-mcp'],
 		} as any);
 
 		mockSettingsReadSingleton.mockResolvedValue({
