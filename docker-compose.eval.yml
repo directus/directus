@@ -1,0 +1,26 @@
+# Compose file for Skyramp Testbot evaluation runs.
+# Builds the Directus image from the current branch and starts it with SQLite.
+#
+# Usage:
+#   docker compose -f docker-compose.eval.yml up -d --build
+
+services:
+  directus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8055:8055'
+    environment:
+      SECRET: 'skyramp-testbot-secret'
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'password'
+      DB_CLIENT: 'sqlite3'
+      DB_FILENAME: '/directus/database/database.sqlite'
+      TELEMETRY: 'false'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:8055/server/health || exit 1']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
