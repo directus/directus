@@ -26,7 +26,12 @@ export class CapabilitiesHelperMSSQL extends CapabilitiesHelperDefault {
 	 *     `.insert().returning()` path does).
 	 *   - So the OUTPUT clause is emitted without `INTO`, which SQL Server rejects on any
 	 *     table with an enabled trigger.
-	 *   - Tracked upstream at https://github.com/knex/knex/issues/4151.
+	 *   - Won't be closed without a knex redesign: maintainers consider
+	 *     `batchInsert` a second-class helper that shouldn't gain feature parity
+	 *     with `.insert()` (https://github.com/knex/knex/issues/3590 — open;
+	 *     `includeTriggerModifications` was added for `.insert().returning()` in
+	 *     https://github.com/knex/knex/issues/2446 but never extended to
+	 *     `batchInsert`).
 	 *   - Keep this flag off for trigger-bearing schemas; the default-false per-row dispatch
 	 *     retains trigger support.
 	 */

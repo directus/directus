@@ -8,15 +8,17 @@ import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { collectionArtists } from './no-relation.seed';
 
-// Vendors where ItemsService.createMany emits a single multi-row INSERT … RETURNING (the
-// "reliable batch" path in api/src/services/items.ts). All other vendors fall through the
-// per-row loop and emit one INSERT per item. Both paths must produce the same observable
-// result (count, distinct PKs, fields round-trip, explicit PKs preserved) — only the
-// expected number of INSERT statements differs.
+// Vendors where ItemsService.createMany emits a single multi-row INSERT … RETURNING
+// (the "reliable batch" path in api/src/services/items.ts).
 //
-// sqlite3 is included here because it sits on top of SQLite ≥ 3.35, where INSERT … RETURNING
-// is supported natively; ItemsService probes the version at runtime and falls back to the
-// loop path on older builds. https://www.sqlite.org/lang_returning.html
+// - All other vendors fall through the per-row loop and emit one INSERT per item.
+// - Both paths must produce the same observable result (count, distinct PKs, fields
+//   round-trip, explicit PKs preserved) — only the expected number of INSERT
+//   statements differs.
+// - sqlite3 is included because it sits on top of SQLite ≥ 3.35, where INSERT …
+//   RETURNING is supported natively; ItemsService probes the version at runtime and
+//   falls back to the loop path on older builds
+//   (https://www.sqlite.org/lang_returning.html).
 const RETURNING_VENDORS = [
 	'postgres',
 	'postgres10',
@@ -35,13 +37,17 @@ function isReliableBatchVendor(vendor: Vendor): boolean {
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// NOTE on response ordering: POST /items returns `data` via `service.readMany(savedKeys)`.
-// As of the DB_DEFAULT_ORDER_READS_BY_PK default in readByQuery, responses for collections
-// with an integer / bigInteger PK are ORDER BY <primary key> ASC (unless the caller passes
-// an explicit `sort`); UUID / string PK collections remain plan-dependent. Tests below sort
-// both `expected` and `got` by `name` before deep-equal: name is a stable semantic key
-// across every pkType, and keeps assertions resilient if the default ordering changes or
-// is turned off (e.g. DB_DEFAULT_ORDER_READS_BY_PK=false).
+// Response ordering note:
+//
+// - POST /items returns `data` via `service.readMany(savedKeys)`.
+// - With the DB_DEFAULT_ORDER_READS_BY_PK default in readByQuery, responses for
+//   collections with an integer / bigInteger PK are `ORDER BY <primary key> ASC`
+//   (unless the caller passes an explicit `sort`); UUID / string PK collections
+//   remain plan-dependent.
+// - Tests below sort both `expected` and `got` by `name` before deep-equal:
+//   - `name` is a stable semantic key across every pkType.
+//   - Keeps assertions resilient if the default ordering changes or is turned off
+//     (e.g. DB_DEFAULT_ORDER_READS_BY_PK=false).
 
 type Artist = {
 	id?: number | string;
@@ -145,10 +151,11 @@ describe.each(PRIMARY_KEY_TYPES)('/items batch-insert', (pkType) => {
 
 				if (pkType === 'integer') {
 					// Integer-PK collections get DB_DEFAULT_ORDER_READS_BY_PK = ORDER BY pk ASC.
-					// Auto-increment IDs are assigned in insertion order, so PK ASC == input
-					// order. Comparing without any sort actively pins that the default
-					// ordering kicked in — if DB_DEFAULT_ORDER_READS_BY_PK gets disabled or
-					// the integer-PK branch in readByQuery regresses, this assertion fails.
+					//
+					// - Auto-increment IDs are assigned in insertion order, so PK ASC == input order.
+					// - Comparing without any sort actively pins that the default ordering kicked in.
+					// - If DB_DEFAULT_ORDER_READS_BY_PK gets disabled or the integer-PK branch in
+					//   readByQuery regresses, this assertion fails.
 					expect(got).toEqual(expected);
 				} else {
 					// UUID / string PKs are intentionally excluded from the default sort, so
@@ -210,11 +217,13 @@ describe.each(PRIMARY_KEY_TYPES)('/items batch-insert', (pkType) => {
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				// MSSQL: inserting explicit values into an IDENTITY-typed integer PK requires
-				// SET IDENTITY_INSERT ON. Neither knex's mssql querycompiler nor Directus's
-				// createMany emits that toggle, so the INSERT fails with SQL Server error 544
-				// ("Cannot insert explicit value for identity column ... when IDENTITY_INSERT
-				// is set to OFF"). We pin the failure here so a future fix (e.g. an mssql
-				// override in api/src/database/helpers/sequence/dialects/) lights up this test.
+				// SET IDENTITY_INSERT ON.
+				//
+				// - Neither knex's mssql querycompiler nor Directus's createMany emits the toggle.
+				// - The INSERT fails with SQL Server error 544 ("Cannot insert explicit value for
+				//   identity column ... when IDENTITY_INSERT is set to OFF").
+				// - We pin the failure here so a future fix (e.g. an mssql override in
+				//   api/src/database/helpers/sequence/dialects/) lights up this test.
 				if (pkType === 'integer' && vendor === 'mssql') {
 					expect(response.statusCode).toBeGreaterThanOrEqual(400);
 					expect(Array.isArray(response.body.errors)).toBe(true);
