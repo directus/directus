@@ -44,11 +44,6 @@ function buildPermission(overrides?: Record<string, unknown>) {
 	);
 }
 
-const restrictedLicense = createLicense({
-	meta: { name: 'cpr-restricted' },
-	entitlements: { custom_permission_rules_enabled: { default: false } },
-});
-
 const unlimitedLicense = createLicense({
 	meta: { name: 'cpr-unlimited' },
 	entitlements: { custom_permission_rules_enabled: { default: true } },
@@ -67,8 +62,7 @@ describe('custom_permission_rules_enabled', () => {
 				hooks: {
 					beforeApi: async ({ env }) => {
 						const base = `http://localhost:${env.LICENSE_PORT}`;
-						mockClient.registerLicense(base, restrictedLicense);
-						mockClient.registerLicense(base, unlimitedLicense);
+						await mockClient.registerLicense(base, unlimitedLicense);
 					},
 				},
 			}),
@@ -93,14 +87,6 @@ describe('custom_permission_rules_enabled', () => {
 	});
 
 	describe('custom_permission_rules_enabled=false', () => {
-		beforeAll(async () => {
-			await api.request(activateLicense({ license_key: restrictedLicense.key }));
-		});
-
-		afterAll(async () => {
-			await api.request(deactivateLicense());
-		});
-
 		test.each(CUSTOM_RULE_SHAPES)(
 			'POST /permissions with custom %s rejects with RESOURCE_RESTRICTED',
 			async (field, shape) => {
