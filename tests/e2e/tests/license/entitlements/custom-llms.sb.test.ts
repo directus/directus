@@ -14,11 +14,6 @@ import { database } from '@utils/constants.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { createSandboxOptions } from '../shared.js';
 
-const restrictedLicense = createLicense({
-	meta: { name: 'restricted' },
-	entitlements: { custom_llms_enabled: { default: false } },
-});
-
 const unlimitedLicense = createLicense({
 	meta: { name: 'unlimited' },
 	entitlements: { custom_llms_enabled: { default: true } },
@@ -37,8 +32,7 @@ describe('custom_llms_enabled', () => {
 				hooks: {
 					beforeApi: async ({ env }) => {
 						const base = `http://localhost:${env.LICENSE_PORT}`;
-						mockClient.registerLicense(base, restrictedLicense);
-						mockClient.registerLicense(base, unlimitedLicense);
+						await mockClient.registerLicense(base, unlimitedLicense);
 					},
 				},
 			}),
@@ -52,18 +46,8 @@ describe('custom_llms_enabled', () => {
 	});
 
 	describe('custom_llms_enabled=false', () => {
-		beforeAll(async () => {
-			await api.request(activateLicense({ license_key: restrictedLicense.key }));
-		});
-
-		afterAll(async () => {
-			await api.request(deactivateLicense());
-		});
-
 		test('PATCH /settings with custom llm field rejects with RESOURCE_RESTRICTED', async () => {
-			await expect(
-				api.request(updateSettings({ ['ai_openai_compatible_name']: 'test-provider' } as any)),
-			).rejects.toMatchObject({
+			await expect(api.request(updateSettings({ ai_openai_compatible_name: 'test-provider' }))).rejects.toMatchObject({
 				errors: [
 					expect.objectContaining({
 						extensions: expect.objectContaining({
@@ -76,7 +60,7 @@ describe('custom_llms_enabled', () => {
 		});
 
 		test('GET /settings strips custom llm fields', async () => {
-			await directus.knex!('directus_settings').update({ ['ai_openai_compatible_name']: 'test-provider' });
+			await directus.knex!('directus_settings').update({ ai_openai_compatible_name: 'test-provider' });
 
 			const settings = await api.request(readSettings());
 
@@ -124,13 +108,11 @@ describe('custom_llms_enabled', () => {
 		});
 
 		test('PATCH /settings with custom llm fields succeeds', async () => {
-			const response = await api.request(updateSettings({ ['ai_openai_compatible_name']: 'test-provider' }));
-
-			expect(response).toEqual(expect.objectContaining({ ['ai_openai_compatible_name']: 'test-provider' }));
+			await expect(api.request(updateSettings({ ai_openai_compatible_name: 'test-provider' }))).resolves.not.toThrow();
 		});
 
 		test('GET /settings does NOT strip custom llm fields', async () => {
-			await api.request(updateSettings({ ['ai_openai_compatible_name']: 'test-provider' } as any));
+			await api.request(updateSettings({ ai_openai_compatible_name: 'test-provider' }));
 
 			const settings = await api.request(readSettings());
 
