@@ -35,6 +35,7 @@ fields:
     interface: list-o2m
     special:
       - o2m
+    hidden: true
     options:
       fields:
         - user
