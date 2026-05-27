@@ -162,6 +162,7 @@ describe('validateRedirectUri', () => {
 	describe('MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS', () => {
 		beforeEach(async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
+
 			useEnv.mockReturnValue({
 				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: DEFAULT_ALLOWED_CUSTOM_REDIRECTS,
 				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'],
