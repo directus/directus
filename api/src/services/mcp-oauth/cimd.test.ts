@@ -2,6 +2,26 @@ import type { AxiosInstance } from 'axios';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OAuthError } from './types/error.js';
 
+const { MockCimdEgressError, mockCimdLookup, mockCreateCimdLookup } = vi.hoisted(() => {
+	class MockCimdEgressError extends Error {
+		reason: string;
+
+		constructor(reason: string) {
+			super(`CIMD egress rejected: ${reason}`);
+			this.name = 'CimdEgressError';
+			this.reason = reason;
+		}
+	}
+
+	const mockCimdLookup = vi.fn();
+
+	return {
+		MockCimdEgressError,
+		mockCimdLookup,
+		mockCreateCimdLookup: vi.fn(() => mockCimdLookup),
+	};
+});
+
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		MCP_OAUTH_CIMD_ALLOW_HTTP: false,
@@ -24,6 +44,11 @@ vi.mock('../../request/index.js', () => ({
 	getAxios: vi.fn().mockResolvedValue({
 		get: (...args: unknown[]) => mockAxiosGet(...args),
 	} as unknown as AxiosInstance),
+}));
+
+vi.mock('./utils/cimd-egress.js', () => ({
+	CimdEgressError: MockCimdEgressError,
+	createCimdLookup: mockCreateCimdLookup,
 }));
 
 // Must import after mocks
@@ -251,6 +276,8 @@ describe('resolveCacheTtl', () => {
 describe('fetchCimdMetadata', () => {
 	beforeEach(() => {
 		mockAxiosGet.mockReset();
+		mockCimdLookup.mockClear();
+		mockCreateCimdLookup.mockClear();
 	});
 
 	const validMetadata = {
@@ -276,6 +303,27 @@ describe('fetchCimdMetadata', () => {
 		expect(result.metadata!.client_id).toBe(validMetadata.client_id);
 		expect(result.etag).toBe('"abc123"');
 		expect(result.ttlMs).toBe(3_600_000);
+		expect(mockCreateCimdLookup).toHaveBeenCalledWith({ deadlineAt: expect.any(Number) });
+
+		expect(mockAxiosGet).toHaveBeenCalledWith(
+			'https://myapp.example.com/.well-known/oauth-client',
+			expect.objectContaining({ lookup: mockCimdLookup, proxy: false }),
+		);
+	});
+
+	it('rejects IP-literal URL hostnames before dispatch', async () => {
+		await expectOAuthError(fetchCimdMetadata('https://[::1]/.well-known/oauth-client'), invalidClientMetadata);
+
+		expect(mockAxiosGet).not.toHaveBeenCalled();
+	});
+
+	it('maps CimdEgressError from lookup path to invalid_client_metadata', async () => {
+		mockAxiosGet.mockRejectedValue(new MockCimdEgressError('blocked_private_ip'));
+
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
 	});
 
 	it('rejects client_id mismatch', async () => {
