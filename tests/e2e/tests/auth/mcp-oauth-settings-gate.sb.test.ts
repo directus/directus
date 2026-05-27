@@ -245,7 +245,7 @@ describe('/mcp-oauth settings gate', () => {
 		});
 	});
 
-	test('GET /mcp-oauth/authorize allows CIMD client_id after re-enabling CIMD', async () => {
+	test('GET /mcp-oauth/authorize no longer returns disabled error after re-enabling CIMD', async () => {
 		const metadataServer = await startMetadataServer();
 		metadataServer.setDefaultMetadata();
 
@@ -253,9 +253,11 @@ describe('/mcp-oauth settings gate', () => {
 		await patchSettings({ mcp_oauth_cimd_enabled: true }, apiUrl);
 
 		const response = await fetchCimdConsentPage(metadataServer.getClientId());
-		const text = await expectTextResponse(response, 200);
+		const text = await expectTextResponse(response, 400);
 
-		expect(text).toContain('signed_params');
+		expect(text).toContain('Failed to fetch client metadata document');
+		expect(text).not.toContain('CIMD client registration is disabled');
+		expect(metadataServer.getRequestCount()).toBe(0);
 	});
 
 	test('GET /.well-known/oauth-authorization-server omits CIMD support when disabled', async () => {
