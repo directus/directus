@@ -27,18 +27,31 @@ jobs:
       # https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/making-authenticated-api-requests-with-a-github-app-in-a-github-actions-workflow
       - name: Generate GitHub App Token
         id: skyramp-testbot-app-token
-        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
+        uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ secrets.SKYRAMP_TESTBOT_APP_ID }}
           private-key: ${{ secrets.SKYRAMP_TESTBOT_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ steps.skyramp-testbot-app-token.outputs.token }}
 
-      - uses: skyramp/testbot@7054923f058e1fac3b92925fa475288c733cfea7 # v0.9.4
+      - uses: skyramp/testbot@v0.10.0
         with:
           skyrampLicenseFile: ${{ secrets.SKYRAMP_LICENSE_FILE }}
           anthropicApiKey: ${{ secrets.SKYRAMP_TESTBOT_API_KEY }}
           githubToken: ${{ steps.skyramp-testbot-app-token.outputs.token }}
+
+          # Build and start Directus from the PR branch using SQLite.
+          targetSetupCommand: 'docker compose -f docker-compose.eval.yml up -d --build'
+
+          # The full build can be slow; give it room before the readiness check times out.
+          targetReadyCheckTimeout: '300'
+
+          # Pin the MCP version that ships the DOM Analyzer + URL-cache work.
+          skyrampMcpVersion: '0.2.0-rc.1'
+
+          # Conservative limits for first runs; bump later if cost is fine.
+          maxRecommendations: '10'
+          maxGenerate: '2'
