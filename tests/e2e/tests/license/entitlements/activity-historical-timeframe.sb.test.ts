@@ -1,4 +1,4 @@
-import { activateLicense, deactivateLicense } from '@directus/license';
+import { activateLicense, CORE_LICENSE, deactivateLicense } from '@directus/license';
 import { createLicense, mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, readActivities, rest, type RestClient, staticToken } from '@directus/sdk';
@@ -9,12 +9,7 @@ import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { createSandboxOptions } from '../shared.js';
 
 const DAY_IN_SECONDS = 24 * 60 * 60;
-const TIMEFRAME_DAYS = 7;
-
-const restrictedLicense = createLicense({
-	meta: { name: 'restricted-activity' },
-	entitlements: { activity_historical_timeframe: { limit: TIMEFRAME_DAYS * DAY_IN_SECONDS } },
-});
+const TIMEFRAME_DAYS = CORE_LICENSE.entitlements.activity_historical_timeframe.limit / DAY_IN_SECONDS;
 
 const unlimitedLicense = createLicense({
 	meta: { name: 'unlimited-activity' },
@@ -42,8 +37,7 @@ describe('activity_historical_timeframe', () => {
 				hooks: {
 					beforeApi: async ({ env }) => {
 						const base = `http://localhost:${env.LICENSE_PORT}`;
-						mockClient.registerLicense(base, restrictedLicense);
-						mockClient.registerLicense(base, unlimitedLicense);
+						await mockClient.registerLicense(base, unlimitedLicense);
 					},
 				},
 			}),
@@ -71,15 +65,7 @@ describe('activity_historical_timeframe', () => {
 		await directus?.stop();
 	});
 
-	describe('activity_historical_timeframe=7d', () => {
-		beforeAll(async () => {
-			await api.request(activateLicense({ license_key: restrictedLicense.key }));
-		});
-
-		afterAll(async () => {
-			await api.request(deactivateLicense());
-		});
-
+	describe(`activity_historical_timeframe=${TIMEFRAME_DAYS}d`, () => {
 		test('GET /activity excludes rows older than the timeframe', async () => {
 			const rows = await api.request(readActivities({ limit: -1 }));
 
