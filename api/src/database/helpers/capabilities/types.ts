@@ -1,3 +1,4 @@
+import type { FieldOverview } from '@directus/types';
 import { DatabaseHelper } from '../types.js';
 
 export class CapabilitiesHelper extends DatabaseHelper {
@@ -31,5 +32,17 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	 */
 	async preservesInsertOrderInReturning(): Promise<boolean> {
 		return false;
+	}
+
+	/**
+	 * Pre-process rows before handing them to `knex.batchInsert`. Default is a
+	 * no-op; override in dialects whose driver requires column normalization
+	 * (e.g. SQLite, see its helper for the issue).
+	 */
+	padRowsForBatchInsert<T extends Record<string, unknown>>(
+		rows: T[],
+		_opts: { fields: Record<string, FieldOverview>; primaryKeyField: string },
+	): T[] {
+		return rows;
 	}
 }

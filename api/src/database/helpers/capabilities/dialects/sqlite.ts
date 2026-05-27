@@ -1,3 +1,4 @@
+import type { FieldOverview } from '@directus/types';
 import { CapabilitiesHelperDefault } from './default.js';
 
 /**
@@ -21,5 +22,29 @@ export class CapabilitiesHelperSqlite extends CapabilitiesHelperDefault {
 
 		this.preservesOrderCache = major > minMajor || (major === minMajor && minor >= minMinor);
 		return this.preservesOrderCache;
+	}
+
+	/**
+	 * SQLite batchInsert workaround (https://github.com/knex/knex/issues/332):
+	 *
+	 * - knex normalizes columns across all rows in the chunk.
+	 * - Columns missing from a row are bound as `undefined`.
+	 * - The sqlite3 driver translates that to `NULL` and the insert fails for
+	 *   non-nullable columns.
+	 *
+	 * Spread per-column defaults for non-nullable fields first so the payload
+	 * only overrides what it explicitly sets.
+	 */
+	override padRowsForBatchInsert<T extends Record<string, unknown>>(
+		rows: T[],
+		opts: { fields: Record<string, FieldOverview>; primaryKeyField: string },
+	): T[] {
+		const fieldsRequiringValue = Object.fromEntries(
+			Object.entries(opts.fields)
+				.filter(([fieldName, field]) => fieldName !== opts.primaryKeyField && field.nullable === false)
+				.map(([fieldName, field]) => [fieldName, field.defaultValue]),
+		);
+
+		return rows.map((row) => ({ ...fieldsRequiringValue, ...row }));
 	}
 }
