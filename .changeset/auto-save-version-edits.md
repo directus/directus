@@ -6,4 +6,4 @@
 '@directus/types': minor
 ---
 
-Added auto-save for version editing
+Added auto-save for version editing @alvarosabu
