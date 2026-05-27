@@ -22,6 +22,7 @@ import { type CimdMetadata, detectClientIdType, fetchCimdMetadata, getAllowedDom
 import { OAuthError } from './types/error.js';
 import { isDomainAllowed } from './utils/domain.js';
 import { matchRedirectUri, validateRedirectUri } from './utils/redirect.js';
+import { summarizeDcrRegistrationMetadata } from './utils/registration-debug.js';
 
 export { OAuthError } from './types/error.js';
 export { isDomainAllowed } from './utils/domain.js';
@@ -293,21 +294,36 @@ export class McpOAuthService {
 
 		// DCR enabled gate: env AND setting must both be true
 		if (!toBoolean(env['MCP_OAUTH_DCR_ENABLED'])) {
+			logger.debug({ reason: 'dcr_env_disabled' }, 'MCP OAuth DCR registration rejected');
 			throw new OAuthError(404, 'not_found', 'Dynamic client registration is not available');
 		}
 
 		const settings = await this.knex('directus_settings').select('mcp_oauth_dcr_enabled').first();
 
 		if (!toBoolean(settings?.mcp_oauth_dcr_enabled)) {
+			logger.debug({ reason: 'dcr_setting_disabled' }, 'MCP OAuth DCR registration rejected');
 			throw new OAuthError(404, 'not_found', 'Dynamic client registration is not available');
 		}
 
 		function rejectRegistration(code: string, description: string): never {
-			logger.debug({ code, description, input }, 'DCR validation failed');
+			logger.debug(
+				{ code, description, registration: summarizeDcrRegistrationMetadata(input) },
+				'MCP OAuth DCR validation failed',
+			);
+
 			throw new OAuthError(400, code, description);
 		}
 
 		if (!isObject(body)) {
+			logger.debug(
+				{
+					code: 'invalid_client_metadata',
+					description: 'Registration metadata must be an object',
+					registration: summarizeDcrRegistrationMetadata(body),
+				},
+				'MCP OAuth DCR validation failed',
+			);
+
 			throw new OAuthError(400, 'invalid_client_metadata', 'Registration metadata must be an object');
 		}
 
@@ -340,7 +356,18 @@ export class McpOAuthService {
 		// RFC 6749 Section 3.1.2: redirect URIs must be absolute, no fragment
 		// Policy: HTTPS required (localhost excepted), no userinfo
 		for (const uri of redirectUris) {
-			this.validateRedirectUri(uri);
+			try {
+				this.validateRedirectUri(uri);
+			} catch (err) {
+				if (err instanceof OAuthError) {
+					logger.debug(
+						{ code: err.code, description: err.description, registration: summarizeDcrRegistrationMetadata(input) },
+						'MCP OAuth DCR validation failed',
+					);
+				}
+
+				throw err;
+			}
 		}
 
 		// RFC 7591 Section 2: grant_types determines what grants the client can use

@@ -6,8 +6,11 @@ import type { NextFunction, Request, Response } from 'express';
 import express, { Router } from 'express';
 import { getMcpUrls } from '../../ai/mcp/utils.js';
 import getDatabase from '../../database/index.js';
+import { useLogger } from '../../logger/index.js';
 import { createRateLimiter, RateLimiterRes } from '../../rate-limiter.js';
 import { McpOAuthService, OAuthError } from '../../services/mcp-oauth/index.js';
+import { getAllowedCustomRedirectSchemes } from '../../services/mcp-oauth/utils/redirect.js';
+import { summarizeDcrRegistrationMetadata } from '../../services/mcp-oauth/utils/registration-debug.js';
 import { SettingsService } from '../../services/settings.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
@@ -135,15 +138,21 @@ function requireSameOrigin(req: Request, res: Response, next: NextFunction) {
  * Override Helmet's CSP form-action directive on this response only.
  * The consent page form POSTs to 'self', but the 302 redirect targets external
  * callback URIs. Chrome extends form-action to the redirect chain.
- * Redirect URIs are validated at DCR time (HTTPS or localhost only).
+ * Redirect URIs are validated at DCR/CIMD time (HTTPS, localhost, or known MCP desktop redirects only).
  */
 function relaxFormAction(res: Response) {
 	const csp = res.getHeader('Content-Security-Policy');
 
 	if (typeof csp === 'string') {
+		const customSchemes = getAllowedCustomRedirectSchemes();
+		const customSchemeSources = customSchemes.length > 0 ? ` ${customSchemes.join(' ')}` : '';
+
 		res.set(
 			'Content-Security-Policy',
-			csp.replace(/form-action\s+([^;]+)/, 'form-action $1 https: http://localhost:* http://127.0.0.1:*'),
+			csp.replace(
+				/form-action\s+([^;]+)/,
+				`form-action $1 https: http://localhost:* http://127.0.0.1:*${customSchemeSources}`,
+			),
 		);
 	}
 }
@@ -182,6 +191,27 @@ function noCache(res: Response) {
 function setNoCacheHeaders(_req: Request, res: Response, next: NextFunction) {
 	noCache(res);
 	next();
+}
+
+function getRegistrationRequestDebugContext(req: Request) {
+	return {
+		content_type: req.headers['content-type'],
+		user_agent: req.headers['user-agent'],
+		registration: summarizeDcrRegistrationMetadata(req.body),
+	};
+}
+
+function logRegistrationBodyParseError(err: unknown, req: Request, _res: Response, next: NextFunction) {
+	useLogger().debug(
+		{
+			reason: 'invalid_json',
+			content_type: req.headers['content-type'],
+			error: err instanceof Error ? err.message : undefined,
+		},
+		'MCP OAuth DCR request body parsing failed',
+	);
+
+	next(err);
 }
 
 function isOAuthHtmlEndpoint(req: Request) {
@@ -437,11 +467,51 @@ mcpOAuthPublicRouter.post(
 	registrationRateLimitMiddleware,
 	asyncHandler(checkOAuthSettings),
 	express.json(),
+	logRegistrationBodyParseError,
 	setCorsWildcard,
 	asyncHandler(async (req: Request, res: Response) => {
+		const logger = useLogger();
 		const schema = await getSchema();
 		const service = new McpOAuthService({ schema });
-		const result = await service.registerClient(req.body);
+		const debugContext = getRegistrationRequestDebugContext(req);
+		let result;
+
+		try {
+			result = await service.registerClient(req.body);
+		} catch (err) {
+			if (err instanceof OAuthError) {
+				logger.debug(
+					{
+						...debugContext,
+						status: err.status,
+						code: err.code,
+						description: err.description,
+					},
+					'MCP OAuth DCR request rejected',
+				);
+			} else {
+				logger.debug(
+					{
+						...debugContext,
+						error: err instanceof Error ? { name: err.name, message: err.message } : undefined,
+					},
+					'MCP OAuth DCR request failed',
+				);
+			}
+
+			throw err;
+		}
+
+		logger.debug(
+			{
+				client_id: result.client_id,
+				token_endpoint_auth_method: result.token_endpoint_auth_method,
+				redirect_uri_count: result.redirect_uris.length,
+				grant_types: result.grant_types,
+			},
+			'MCP OAuth DCR client registered',
+		);
+
 		res.set('Cache-Control', 'no-store');
 		res.status(201).json(result);
 	}),
@@ -516,7 +586,7 @@ export const mcpOAuthProtectedRouter = Router();
 
 // Decision: POST /mcp-oauth/authorize/decision
 // Native form POST + 302 redirect. Auth code stays in HTTP layer, never enters JS.
-// CSP form-action in app.ts allows https: and localhost: redirect targets.
+// Consent page CSP form-action allows https:, localhost, and known MCP desktop redirect targets.
 mcpOAuthProtectedRouter.post(
 	'/mcp-oauth/authorize/decision',
 	asyncHandler(checkOAuthSettings),

@@ -397,38 +397,11 @@ export async function authorizePublicClient(args: {
 	cookies: string;
 	apiUrl?: string;
 }): Promise<string> {
-	const apiUrl = args.apiUrl ?? baseUrl;
-	const authorizeUrl = new URL(`${apiUrl}/mcp-oauth/authorize`);
-
-	authorizeUrl.searchParams.set('client_id', args.clientId);
-	authorizeUrl.searchParams.set('redirect_uri', args.redirectUri);
-	authorizeUrl.searchParams.set('response_type', 'code');
-	authorizeUrl.searchParams.set('code_challenge', args.pkce.challenge);
-	authorizeUrl.searchParams.set('code_challenge_method', 'S256');
-	authorizeUrl.searchParams.set('scope', 'mcp:access');
-	authorizeUrl.searchParams.set('resource', getResourceUrl(apiUrl));
-
-	const consentResponse = await fetch(authorizeUrl, {
-		headers: {
-			Cookie: args.cookies,
-		},
-	});
-
+	const consentResponse = await fetchPublicClientConsentPage(args);
 	const consentHtml = await expectTextResponse(consentResponse, 200);
 	const signed_params = extractSignedParams(consentHtml);
 
-	const decisionResponse = await postForm(
-		'/mcp-oauth/authorize/decision',
-		{ signed_params, approved: 'true' },
-		{
-			redirect: 'manual',
-			headers: {
-				Cookie: args.cookies,
-				Origin: apiUrl,
-			},
-		},
-		apiUrl,
-	);
+	const decisionResponse = await approvePublicClientConsent({ ...args, signedParams: signed_params });
 
 	if (decisionResponse.status !== 302) {
 		throw new Error(
@@ -441,6 +414,52 @@ export async function authorizePublicClient(args: {
 	if (!location) throw new Error('No Location header in authorize decision response');
 
 	return extractCodeFromLocation(location);
+}
+
+export async function fetchPublicClientConsentPage(args: {
+	clientId: string;
+	redirectUri: string;
+	pkce: Pkce;
+	cookies: string;
+	apiUrl?: string;
+}): Promise<Response> {
+	const apiUrl = args.apiUrl ?? baseUrl;
+	const authorizeUrl = new URL(`${apiUrl}/mcp-oauth/authorize`);
+
+	authorizeUrl.searchParams.set('client_id', args.clientId);
+	authorizeUrl.searchParams.set('redirect_uri', args.redirectUri);
+	authorizeUrl.searchParams.set('response_type', 'code');
+	authorizeUrl.searchParams.set('code_challenge', args.pkce.challenge);
+	authorizeUrl.searchParams.set('code_challenge_method', 'S256');
+	authorizeUrl.searchParams.set('scope', 'mcp:access');
+	authorizeUrl.searchParams.set('resource', getResourceUrl(apiUrl));
+
+	return fetch(authorizeUrl, {
+		headers: {
+			Cookie: args.cookies,
+		},
+	});
+}
+
+export async function approvePublicClientConsent(args: {
+	signedParams: string;
+	cookies: string;
+	apiUrl?: string;
+}): Promise<Response> {
+	const apiUrl = args.apiUrl ?? baseUrl;
+
+	return postForm(
+		'/mcp-oauth/authorize/decision',
+		{ signed_params: args.signedParams, approved: 'true' },
+		{
+			redirect: 'manual',
+			headers: {
+				Cookie: args.cookies,
+				Origin: apiUrl,
+			},
+		},
+		apiUrl,
+	);
 }
 
 export async function exchangeCode(args: {
@@ -525,6 +544,23 @@ export async function postMcpToolsList(accessToken: string, apiUrl = baseUrl): P
 			headers: {
 				Accept: 'application/json',
 				Authorization: `Bearer ${accessToken}`,
+			},
+		},
+		apiUrl,
+	);
+}
+
+export async function postMcpToolsListWithQueryToken(accessToken: string, apiUrl = baseUrl): Promise<Response> {
+	return postJson(
+		`/mcp?access_token=${encodeURIComponent(accessToken)}`,
+		{
+			jsonrpc: '2.0',
+			method: 'tools/list',
+			id: 1,
+		},
+		{
+			headers: {
+				Accept: 'application/json',
 			},
 		},
 		apiUrl,

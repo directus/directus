@@ -5,18 +5,59 @@ import { isLoopbackHost } from './loopback.js';
 
 const MAX_REDIRECT_URI_LENGTH = 255;
 
-const ALLOWED_MCP_DESKTOP_REDIRECTS = new Set(['raycast://oauth', 'cursor://cursor.mcp']);
+const DEFAULT_ALLOWED_CUSTOM_REDIRECTS = ['raycast://oauth', 'cursor://cursor.mcp'];
 
-function isAllowedMcpDesktopRedirectUri(parsed: URL): boolean {
+interface AllowedCustomRedirect {
+	protocol: string;
+	hostname: string;
+}
+
+function parseAllowedCustomRedirect(value: string): AllowedCustomRedirect | null {
+	let parsed: URL;
+
+	try {
+		parsed = new URL(value);
+	} catch {
+		return null;
+	}
+
+	if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return null;
+	if (!parsed.hostname || parsed.port || parsed.username || parsed.password || parsed.search || parsed.hash)
+		return null;
+	if (parsed.pathname && parsed.pathname !== '/') return null;
+
+	return {
+		protocol: parsed.protocol,
+		hostname: parsed.hostname.toLowerCase(),
+	};
+}
+
+function getAllowedCustomRedirects(): AllowedCustomRedirect[] {
+	const configured = useEnv()['MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS'] as string[] | undefined;
+	const values = configured ?? DEFAULT_ALLOWED_CUSTOM_REDIRECTS;
+
+	return values.flatMap((value) => {
+		const redirect = parseAllowedCustomRedirect(value);
+		return redirect ? [redirect] : [];
+	});
+}
+
+export function getAllowedCustomRedirectSchemes(): string[] {
+	return [...new Set(getAllowedCustomRedirects().map(({ protocol }) => protocol))];
+}
+
+function isAllowedCustomRedirectUri(parsed: URL): boolean {
 	if (parsed.port) return false;
 
-	return ALLOWED_MCP_DESKTOP_REDIRECTS.has(`${parsed.protocol}//${parsed.hostname.toLowerCase()}`);
+	return getAllowedCustomRedirects().some(
+		({ protocol, hostname }) => parsed.protocol === protocol && parsed.hostname.toLowerCase() === hostname,
+	);
 }
 
 /**
  * Validate a redirect URI per RFC 6749 Section 3.1.2 + OAuth 2.1 policy (HTTPS, no fragment, no userinfo).
  * RFC 8252 Section 7.3: HTTP is allowed for loopback addresses (localhost, 127.0.0.1, [::1]).
- * Compatibility: Raycast and Cursor MCP clients use known custom-scheme desktop redirects.
+ * Compatibility: MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS configures known custom-scheme desktop redirects.
  * Optional MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS env var enforces a server-wide domain allowlist
  * (loopback and known desktop redirects bypass the allowlist to keep native OAuth clients working).
  */
@@ -51,7 +92,7 @@ export function validateRedirectUri(uri: unknown): void {
 		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain userinfo');
 	}
 
-	if (isAllowedMcpDesktopRedirectUri(parsed)) {
+	if (isAllowedCustomRedirectUri(parsed)) {
 		return;
 	}
 

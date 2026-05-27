@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { beforeAll, describe, expect, test } from 'vitest';
 import {
+	approvePublicClientConsent,
 	authorizePublicClient,
 	baseUrl,
 	createOAuthTokens,
@@ -9,6 +10,7 @@ import {
 	expectJsonResponse,
 	expectTextResponse,
 	extractSignedParams,
+	fetchPublicClientConsentPage,
 	generatePKCE,
 	getResourceUrl,
 	loginAsAdminSession,
@@ -17,6 +19,7 @@ import {
 	postForm,
 	postJson,
 	postMcpToolsList,
+	postMcpToolsListWithQueryToken,
 	refreshToken,
 	registerPublicClient,
 	revokeToken,
@@ -69,6 +72,19 @@ describe('/mcp-oauth discovery endpoints', () => {
 
 	test('GET /.well-known/oauth-authorization-server/mcp uses path insertion', async () => {
 		const response = await fetch(`${baseUrl}/.well-known/oauth-authorization-server/mcp`);
+		const body = await expectJsonResponse(response, 200);
+
+		expect(body).toMatchObject({
+			issuer: baseUrl,
+			token_endpoint: `${baseUrl}/mcp-oauth/token`,
+		});
+	});
+
+	test('discovery ignores invalid bearer tokens because it is public OAuth metadata', async () => {
+		const response = await fetch(`${baseUrl}/.well-known/oauth-authorization-server`, {
+			headers: { Authorization: 'Bearer invalid-token' },
+		});
+
 		const body = await expectJsonResponse(response, 200);
 
 		expect(body).toMatchObject({
@@ -161,6 +177,45 @@ describe('full OAuth flow', () => {
 
 		expect(afterRevokeBody.error).toBe('invalid_grant');
 	});
+
+	test('supports default custom-scheme MCP desktop redirects', async () => {
+		const redirectUri = 'raycast://oauth?package_name=directus';
+		const clientId = await registerPublicClient({ redirectUri });
+		const cookies = await loginAsAdminSession();
+		const pkce = generatePKCE();
+
+		const consentResponse = await fetchPublicClientConsentPage({ clientId, redirectUri, pkce, cookies });
+
+		const csp = consentResponse.headers.get('content-security-policy');
+		expect(csp).toContain('form-action');
+		expect(csp).toContain('raycast:');
+
+		const signed_params = extractSignedParams(await expectTextResponse(consentResponse, 200));
+
+		const decisionResponse = await approvePublicClientConsent({ signedParams: signed_params, cookies });
+
+		expect(decisionResponse.status).toBe(302);
+
+		const location = decisionResponse.headers.get('location');
+		expect(location).toBeTruthy();
+		expect(location).toMatch(/^raycast:\/\/oauth\?/);
+
+		const redirectUrl = new URL(location!);
+		const code = redirectUrl.searchParams.get('code');
+
+		expect(redirectUrl.searchParams.get('package_name')).toBe('directus');
+		expect(code).toBeTruthy();
+		expect(redirectUrl.searchParams.get('iss')).toBe(baseUrl);
+
+		const tokens = await exchangeCode({ clientId, code: code!, redirectUri, codeVerifier: pkce.verifier });
+
+		expect(tokens).toMatchObject({
+			access_token: expect.any(String),
+			token_type: 'Bearer',
+			refresh_token: expect.any(String),
+			scope: 'mcp:access',
+		});
+	});
 });
 
 describe('OAuth token isolation', () => {
@@ -197,12 +252,46 @@ describe('OAuth token isolation', () => {
 
 		expect(authLogoutResponse.status).toBe(403);
 	});
+
+	test('OAuth refresh_token cannot be used as a regular Directus refresh token', async () => {
+		const { clientId, tokens } = await createOAuthTokens();
+
+		const authRefreshResponse = await postJson('/auth/refresh', { refresh_token: tokens.refresh_token });
+
+		expect(authRefreshResponse.status).toBe(401);
+
+		const mcpRefreshResponse = await refreshToken({ clientId, refreshToken: tokens.refresh_token });
+		await expectJsonResponse(mcpRefreshResponse, 200);
+	});
+
+	test('regular Directus logout ignores OAuth refresh_token without revoking the OAuth grant', async () => {
+		const { clientId, tokens } = await createOAuthTokens();
+
+		const authLogoutResponse = await postJson('/auth/logout', { refresh_token: tokens.refresh_token });
+
+		expect(authLogoutResponse.status).toBe(204);
+
+		const mcpRefreshResponse = await refreshToken({ clientId, refreshToken: tokens.refresh_token });
+		await expectJsonResponse(mcpRefreshResponse, 200);
+	});
 });
 
 describe('regular Directus tokens accessing /mcp', () => {
 	test('regular Directus access_token can reach /mcp', async () => {
 		const accessToken = await loginAsAdminToken();
 		const response = await postMcpToolsList(accessToken);
+
+		expect(response.status).toBe(200);
+	});
+
+	test('static API key can reach /mcp via Authorization header', async () => {
+		const response = await postMcpToolsList('admin');
+
+		expect(response.status).toBe(200);
+	});
+
+	test('static API key can reach /mcp via access_token query parameter', async () => {
+		const response = await postMcpToolsListWithQueryToken('admin');
 
 		expect(response.status).toBe(200);
 	});
@@ -225,6 +314,25 @@ describe('concurrent refresh', () => {
 		const failedBody = (await expectJsonResponse(failedResponse, 400)) as { error?: string };
 
 		expect(failedBody.error).toBe('invalid_grant');
+	});
+});
+
+describe('public OAuth route ordering', () => {
+	test('token endpoint returns OAuth invalid_request instead of Directus invalid_token for invalid bearer auth', async () => {
+		const response = await postForm(
+			'/mcp-oauth/token',
+			{},
+			{
+				headers: { Authorization: 'Bearer invalid-token' },
+			},
+		);
+
+		const body = (await expectJsonResponse(response, 400)) as { error?: string; error_description?: string };
+
+		expect(body).toMatchObject({
+			error: 'invalid_request',
+			error_description: 'grant_type is required',
+		});
 	});
 });
 
@@ -440,6 +548,94 @@ describe('WebSocket guard', () => {
 			});
 
 			expect(result).toBe('rejected');
+		} finally {
+			socket.close();
+		}
+	});
+
+	test('OAuth scoped token is rejected on /websocket access_token query auth', async () => {
+		const { tokens } = await createOAuthTokens();
+		const wsUrl = baseUrl.replace(/^http/, 'ws');
+		const socket = new WebSocket(`${wsUrl}/websocket?access_token=${encodeURIComponent(tokens.access_token)}`);
+
+		const result = await new Promise<string>((resolve) => {
+			const timeout = setTimeout(() => {
+				socket.close();
+				resolve('timeout');
+			}, 5_000);
+
+			socket.addEventListener(
+				'open',
+				() => {
+					clearTimeout(timeout);
+					socket.close();
+					resolve('accepted');
+				},
+				{ once: true },
+			);
+
+			socket.addEventListener(
+				'close',
+				() => {
+					clearTimeout(timeout);
+					resolve('rejected');
+				},
+				{ once: true },
+			);
+
+			socket.addEventListener(
+				'error',
+				() => {
+					clearTimeout(timeout);
+					resolve('rejected');
+				},
+				{ once: true },
+			);
+		});
+
+		expect(result).toBe('rejected');
+	});
+
+	test('static API key can connect to /websocket with access_token query auth', async () => {
+		const wsUrl = baseUrl.replace(/^http/, 'ws');
+		const socket = new WebSocket(`${wsUrl}/websocket?access_token=admin`);
+
+		try {
+			const result = await new Promise<string>((resolve) => {
+				const timeout = setTimeout(() => {
+					socket.close();
+					resolve('timeout');
+				}, 5_000);
+
+				socket.addEventListener(
+					'open',
+					() => {
+						clearTimeout(timeout);
+						resolve('accepted');
+					},
+					{ once: true },
+				);
+
+				socket.addEventListener(
+					'close',
+					() => {
+						clearTimeout(timeout);
+						resolve('rejected');
+					},
+					{ once: true },
+				);
+
+				socket.addEventListener(
+					'error',
+					() => {
+						clearTimeout(timeout);
+						resolve('rejected');
+					},
+					{ once: true },
+				);
+			});
+
+			expect(result).toBe('accepted');
 		} finally {
 			socket.close();
 		}

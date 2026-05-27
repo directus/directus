@@ -90,6 +90,30 @@ describe('tokenSource', () => {
 		expect(mockRequest.tokenSource).toBe('cookie');
 	});
 
+	test('header bearer token takes precedence over session cookie', () => {
+		mockRequest = {
+			cookies: { directus_session_token: 'cookie-token' },
+			headers: { authorization: 'Bearer header-token' },
+		};
+
+		extractToken(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockRequest.token).toBe('header-token');
+		expect(mockRequest.tokenSource).toBe('header');
+	});
+
+	test('query access_token takes precedence over session cookie', () => {
+		mockRequest = {
+			cookies: { directus_session_token: 'cookie-token' },
+			query: { access_token: 'query-token' },
+		};
+
+		extractToken(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockRequest.token).toBe('query-token');
+		expect(mockRequest.tokenSource).toBe('query');
+	});
+
 	test('is null when no token present', () => {
 		mockRequest = {};
 		extractToken(mockRequest as Request, mockResponse as Response, nextFunction);

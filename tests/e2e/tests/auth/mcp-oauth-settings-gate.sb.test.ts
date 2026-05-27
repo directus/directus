@@ -13,6 +13,8 @@ import {
 	patchSettings,
 	postForm,
 	postJson,
+	postMcpToolsList,
+	postMcpToolsListWithQueryToken,
 } from './mcp-oauth-utils.js';
 
 let directus: Awaited<ReturnType<typeof sandbox>>;
@@ -198,6 +200,16 @@ describe('/mcp-oauth settings gate', () => {
 		});
 	});
 
+	test('static API key can reach /mcp when MCP OAuth is disabled', async () => {
+		await withMcpOAuthDisabled(async () => {
+			const headerResponse = await postMcpToolsList('admin', apiUrl);
+			const queryResponse = await postMcpToolsListWithQueryToken('admin', apiUrl);
+
+			expect(headerResponse.status).toBe(200);
+			expect(queryResponse.status).toBe(200);
+		});
+	});
+
 	test('endpoints no longer return 403 after re-enabling', async () => {
 		await patchSettings({ mcp_oauth_enabled: false }, apiUrl);
 
@@ -309,5 +321,52 @@ describe('/mcp-oauth settings gate', () => {
 		);
 
 		await expectJsonResponse(response, 201);
+	});
+});
+
+describe('/mcp-oauth env gate', () => {
+	test('OAuth routes are not mounted when MCP_OAUTH_ENABLED is false', async () => {
+		const oauthDisabledDirectus = await sandbox(database, {
+			inspect: false,
+			prefix: `mcp-oauth-env-disabled-${getUID()}`,
+			env: {
+				MCP_ENABLED: 'true',
+				MCP_OAUTH_ENABLED: 'false',
+				RATE_LIMITER_MCP_OAUTH_POINTS: '1000',
+				RATE_LIMITER_MCP_OAUTH_DURATION: '60',
+				DB_FILENAME: `directus_test_${getUID()}.db`,
+			},
+			docker: {
+				suffix: getUID(),
+			},
+			cache: false,
+		});
+
+		try {
+			const disabledApiUrl = `http://127.0.0.1:${oauthDisabledDirectus.apis[0].port}`;
+
+			for (const response of [
+				await fetch(`${disabledApiUrl}/.well-known/oauth-authorization-server`),
+				await postJson(
+					'/mcp-oauth/register',
+					{
+						client_name: 'test-env-disabled-client',
+						redirect_uris: [`${disabledApiUrl}/callback`],
+						grant_types: ['authorization_code'],
+						token_endpoint_auth_method: 'none',
+					},
+					undefined,
+					disabledApiUrl,
+				),
+			]) {
+				const body = (await expectJsonResponse(response, 404)) as {
+					errors?: Array<{ extensions?: { code?: string } }>;
+				};
+
+				expect(body.errors?.[0]?.extensions?.code).toBe('ROUTE_NOT_FOUND');
+			}
+		} finally {
+			await oauthDisabledDirectus.stop();
+		}
 	});
 });

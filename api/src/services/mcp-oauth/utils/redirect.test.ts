@@ -132,6 +132,31 @@ describe('validateRedirectUri', () => {
 		expect(() => validateRedirectUri('https://user:pass@example.com/cb')).toThrow(OAuthError);
 	});
 
+	describe('MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS', () => {
+		it('uses configured custom redirect authorities instead of the defaults', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['myapp://oauth'] } as any);
+
+			expect(() => validateRedirectUri('myapp://oauth/callback?package_name=directus')).not.toThrow();
+			expect(() => validateRedirectUri('raycast://oauth?package_name=directus')).toThrow(OAuthError);
+		});
+
+		it('rejects configured custom redirect requests with a port', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['myapp://oauth'] } as any);
+
+			expect(() => validateRedirectUri('myapp://oauth:1234/callback')).toThrow(OAuthError);
+		});
+
+		it('can disable custom redirect schemes', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: [] } as any);
+
+			expect(() => validateRedirectUri('raycast://oauth?package_name=directus')).toThrow(OAuthError);
+			expect(() => validateRedirectUri('cursor://cursor.mcp?name=directus')).toThrow(OAuthError);
+		});
+	});
+
 	describe('MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS', () => {
 		beforeEach(async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));

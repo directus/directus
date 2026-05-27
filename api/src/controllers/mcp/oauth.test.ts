@@ -14,6 +14,13 @@ import { expectMcpBearerChallenge } from '../../test-utils/mcp-oauth.js';
 
 const createdRateLimiters = vi.hoisted(() => [] as string[]);
 
+const mockLogger = vi.hoisted(() => ({
+	debug: vi.fn(),
+	info: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn(),
+}));
+
 const mockDbChain = {
 	select: vi.fn().mockReturnThis(),
 	where: vi.fn().mockReturnThis(),
@@ -112,6 +119,10 @@ vi.mock('../../rate-limiter.js', () => ({
 	},
 }));
 
+vi.mock('../../logger/index.js', () => ({
+	useLogger: () => mockLogger,
+}));
+
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		PUBLIC_URL: 'http://localhost',
@@ -137,6 +148,7 @@ vi.mock('./oauth-consent-page.js', () => ({
 // ---------------------------------------------------------------------------
 // Import after mocks
 // ---------------------------------------------------------------------------
+const { useEnv } = await import('@directus/env');
 const { mcpOAuthPublicRouter, mcpOAuthProtectedRouter } = await import('./oauth.js');
 const { renderErrorPage } = await import('./oauth-consent-page.js');
 
@@ -234,6 +246,13 @@ describe('mcp-oauth controller', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 
+		vi.mocked(useEnv).mockReturnValue({
+			PUBLIC_URL: 'http://localhost',
+			SESSION_COOKIE_NAME: 'directus_session',
+			RATE_LIMITER_MCP_OAUTH_ENABLED: true,
+			RATE_LIMITER_MCP_OAUTH_REGISTRATION_ENABLED: true,
+		} as any);
+
 		mockSettingsReadSingleton.mockResolvedValue({
 			mcp_enabled: true,
 			mcp_oauth_enabled: true,
@@ -318,7 +337,7 @@ describe('mcp-oauth controller', () => {
 
 	test.each([
 		['GET', '/.well-known/oauth-protected-resource*', 0],
-		['POST', '/mcp-oauth/register', 3],
+		['POST', '/mcp-oauth/register', 4],
 		['POST', '/mcp-oauth/token', 4],
 		['POST', '/mcp-oauth/revoke', 4],
 	])('setCorsWildcard sets Access-Control-Allow-Origin: * on %s %s', async (method, path, corsIndex) => {
@@ -338,7 +357,7 @@ describe('mcp-oauth controller', () => {
 		expect(createdRateLimiters).not.toContain('RATE_LIMITER_MCP_OAUTH_AUTHORIZE');
 
 		expect(getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize')).toHaveLength(3);
-		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/register')).toHaveLength(5);
+		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/register')).toHaveLength(6);
 		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/token')).toHaveLength(7);
 		expect(getRouteHandler(mcpOAuthPublicRouter, 'POST', '/mcp-oauth/revoke')).toHaveLength(6);
 	});
@@ -414,13 +433,54 @@ describe('mcp-oauth controller', () => {
 			const res = createMockResponse();
 			const next = vi.fn();
 
-			// Run handlers starting from index 1 (rate limiter), 2 (cors), 3 (handler)
-			for (let i = 1; i < handlers.length; i++) {
-				await handlers[i]!.handle(req, res, next);
-			}
+			// Skip express.json() and the parse-error middleware; the body is already parsed in this unit test.
+			for (const index of [1, 4, 5]) await handlers[index]!.handle(req, res, next);
 
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ client_id: 'test-id' }));
+		});
+
+		test('logs non-sensitive debug context when registration is rejected', async () => {
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
+
+			vi.mocked(McpOAuthService.prototype.registerClient).mockRejectedValueOnce(
+				new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must use HTTPS (except for localhost)'),
+			);
+
+			const res = await requestRouter(mcpOAuthPublicRouter, '/mcp-oauth/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					client_name: 'Raycast MCP',
+					redirect_uris: ['raycast://callback?code=secret'],
+					grant_types: ['authorization_code'],
+					token_endpoint_auth_method: 'none',
+					client_secret: 'secret-value',
+				}),
+			});
+
+			expect(res.status).toBe(400);
+			expect(res.body).toMatchObject({ error: 'invalid_redirect_uri' });
+
+			expect(mockLogger.debug).toHaveBeenCalledWith(
+				expect.objectContaining({
+					code: 'invalid_redirect_uri',
+					description: 'redirect_uri must use HTTPS (except for localhost)',
+					registration: expect.objectContaining({
+						client_secret_present: true,
+						client_name: expect.objectContaining({ length: 11 }),
+						redirect_uris: expect.objectContaining({
+							uris: [expect.objectContaining({ scheme: 'raycast', hostname: 'callback', has_query: true })],
+						}),
+					}),
+				}),
+				'MCP OAuth DCR request rejected',
+			);
+
+			const debugCalls = JSON.stringify(mockLogger.debug.mock.calls);
+			expect(debugCalls).not.toContain('secret-value');
+			expect(debugCalls).not.toContain('code=secret');
+			expect(debugCalls).not.toContain('Raycast MCP');
 		});
 	});
 
@@ -682,6 +742,77 @@ describe('mcp-oauth controller', () => {
 
 			return { req, res, next };
 		}
+
+		test('consent page CSP allows known MCP desktop redirect schemes in form redirect chain', async () => {
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
+			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize');
+			const req = createAuthorizeRequest({ redirect_uri: 'raycast://oauth?package_name=directus' });
+
+			const res = createRedirectResponse();
+
+			(res as any).getHeader = vi
+				.fn()
+				.mockReturnValue("default-src 'self'; form-action 'self'; frame-ancestors 'self'");
+
+			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockResolvedValueOnce({
+				signed_params: 'jwt',
+				client_name: 'Raycast',
+				redirect_uri: 'raycast://oauth?package_name=directus',
+				scope: 'mcp:access',
+				registration_type: 'dcr',
+			});
+
+			const next = vi.fn();
+			const lastHandler = handlers[handlers.length - 1]!;
+			await lastHandler.handle(req, res, next);
+
+			expect(res.set).toHaveBeenCalledWith(
+				'Content-Security-Policy',
+				expect.stringContaining("form-action 'self' https: http://localhost:* http://127.0.0.1:* raycast: cursor:"),
+			);
+		});
+
+		test('consent page CSP derives custom redirect schemes from env', async () => {
+			const { useEnv } = vi.mocked(await import('@directus/env'));
+			const { McpOAuthService } = await import('../../services/mcp-oauth/index.js');
+
+			useEnv.mockReturnValue({
+				PUBLIC_URL: 'http://localhost',
+				SESSION_COOKIE_NAME: 'directus_session',
+				RATE_LIMITER_MCP_OAUTH_ENABLED: true,
+				RATE_LIMITER_MCP_OAUTH_REGISTRATION_ENABLED: true,
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: ['myapp://oauth'],
+			} as any);
+
+			vi.mocked(McpOAuthService.prototype.validateAuthorization).mockResolvedValueOnce({
+				signed_params: 'jwt',
+				client_name: 'Custom App',
+				redirect_uri: 'myapp://oauth/callback',
+				scope: 'mcp:access',
+				registration_type: 'dcr',
+			});
+
+			const handlers = getRouteHandler(mcpOAuthPublicRouter, 'GET', '/mcp-oauth/authorize');
+			const req = createAuthorizeRequest({ redirect_uri: 'myapp://oauth/callback' });
+			const res = createRedirectResponse();
+
+			(res as any).getHeader = vi
+				.fn()
+				.mockReturnValue("default-src 'self'; form-action 'self'; frame-ancestors 'self'");
+
+			const next = vi.fn();
+			const lastHandler = handlers[handlers.length - 1]!;
+			await lastHandler.handle(req, res, next);
+
+			expect(res.set).toHaveBeenCalledWith(
+				'Content-Security-Policy',
+				expect.stringContaining("form-action 'self' https: http://localhost:* http://127.0.0.1:* myapp:"),
+			);
+
+			const csp = vi.mocked(res.set).mock.calls.find(([header]) => header === 'Content-Security-Policy')?.[1];
+			expect(csp).not.toContain('raycast:');
+			expect(csp).not.toContain('cursor:');
+		});
 
 		test('OAuth accountability redirects to login before consent validation', async () => {
 			const { getAccountabilityForToken } = await import('../../utils/get-accountability-for-token.js');

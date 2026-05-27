@@ -81,6 +81,33 @@ describe('/mcp-oauth/clients admin endpoints', () => {
 		expect(body.data?.client_secret_hash).toBe('**********');
 	});
 
+	test('admin client listing redacts confidential client_secret_hash', async () => {
+		const client = await registerConfidentialClient({
+			redirectUri: `${baseUrl}/mcp-oauth-client-list-secret-hash-callback`,
+			tokenEndpointAuthMethod: 'client_secret_basic',
+		});
+
+		const response = await fetch(
+			`${baseUrl}/mcp-oauth/clients?filter[client_id][_eq]=${encodeURIComponent(client.clientId)}&fields=client_id,client_secret_hash`,
+			{
+				headers: {
+					Authorization: `Bearer ${adminToken}`,
+				},
+			},
+		);
+
+		const body = (await expectJsonResponse(response, 200)) as {
+			data?: Array<{ client_id?: string; client_secret_hash?: string }>;
+		};
+
+		const expectedHash = crypto.createHash('sha256').update(client.clientSecret).digest('hex');
+		const serialized = JSON.stringify(body);
+
+		expect(serialized).not.toContain(client.clientSecret);
+		expect(serialized).not.toContain(expectedHash);
+		expect(body.data).toEqual([{ client_id: client.clientId, client_secret_hash: '**********' }]);
+	});
+
 	test('client_secret_hash only allows safe filter operators', async () => {
 		const rejectedResponse = await fetch(`${baseUrl}/mcp-oauth/clients?filter[client_secret_hash][_contains]=abc`, {
 			headers: {
