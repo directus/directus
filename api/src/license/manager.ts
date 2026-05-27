@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import {
 	activateKey,
 	billingPortal,
@@ -15,6 +15,7 @@ import {
 	type LicenseAddonsOutput,
 	type LicensePendingResolution,
 	type LicensePendingResolutionOutput,
+	LicenseServerError,
 	type LicenseSource,
 	previewKey,
 	readAddons,
@@ -41,6 +42,7 @@ import { EntitlementManager, getEntitlementManager } from './entitlements/manage
 import { computeLicenseStatus } from './utils/compute-license-status.js';
 import { getLicenseKey } from './utils/get-license-key.js';
 import { getLicenseToken } from './utils/get-license-token.js';
+import { handleLicenseError } from './utils/handle-license-error.js';
 import { useRPC } from './utils/use-rpc.js';
 
 const env = useEnv();
@@ -253,9 +255,13 @@ export class LicenseManager {
 	 *  Check a license meta/info without activating it
 	 */
 	public async preview(key: string) {
-		return previewKey({
-			license_key: key,
-		});
+		try {
+			return await previewKey({
+				license_key: key,
+			});
+		} catch (err) {
+			handleLicenseError(err);
+		}
 	}
 
 	/**
@@ -295,9 +301,12 @@ export class LicenseManager {
 			}
 
 			await this.syncLicense();
-		} catch {
-			// LICENSE-TODO: Add error translation
-			throw new ServiceUnavailableError({ service: 'license', reason: 'activate' });
+		} catch (err) {
+			if (err instanceof LicenseServerError) {
+				handleLicenseError(err);
+			}
+
+			throw err;
 		}
 	}
 
@@ -314,13 +323,21 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		await deactivateKey({
-			license_key: currentKey,
-			project_id: project_id!,
-			public_url: env['PUBLIC_URL'] as string,
-		});
+		try {
+			await deactivateKey({
+				license_key: currentKey,
+				project_id: project_id!,
+				public_url: env['PUBLIC_URL'] as string,
+			});
 
-		await this.syncLicense({ kind: 'downgrade' });
+			await this.syncLicense({ kind: 'downgrade' });
+		} catch (err) {
+			if (err instanceof LicenseServerError) {
+				handleLicenseError(err);
+			}
+
+			throw err;
+		}
 	}
 
 	/**
@@ -339,22 +356,30 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		const { token } = await updateKey(
-			{
-				license_key: currentKey,
+		try {
+			const { token } = await updateKey(
+				{
+					license_key: currentKey,
+					project_id: project_id!,
+					public_url: env['PUBLIC_URL'] as string,
+				},
+				{ license_key: newKey },
+			);
+
+			await settingsService.upsertSingleton({
+				license_key: newKey,
+				license_token: token,
 				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
-			},
-			{ license_key: newKey },
-		);
+			});
 
-		await settingsService.upsertSingleton({
-			license_key: newKey,
-			license_token: token,
-			project_id: project_id!,
-		});
+			await this.syncLicense();
+		} catch (err) {
+			if (err instanceof LicenseServerError) {
+				handleLicenseError(err);
+			}
 
-		await this.syncLicense();
+			throw err;
+		}
 	}
 
 	private async verify(token: string): Promise<License | null> {
@@ -419,13 +444,13 @@ export class LicenseManager {
 			} catch (err) {
 				logger.error(err);
 
-				// LICENSE-TODO: Add error translation and proper handling based on error type
-				if (err instanceof Error) {
-					for (const terminalStatus of ['expired', 'suspended', 'canceled'] as const) {
-						if (err.message.includes(terminalStatus)) {
-							await this.syncLicense({ kind: 'downgrade', reason: terminalStatus });
-							break;
-						}
+				if (err instanceof LicenseServerError) {
+					if (err.code === 'LICENSE_EXPIRED') {
+						await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
+					} else if (err.code === 'LICENSE_CANCELED') {
+						await this.syncLicense({ kind: 'downgrade', reason: 'canceled' });
+					} else if (err.code === 'LICENSE_SUSPENDED') {
+						await this.syncLicense({ kind: 'downgrade', reason: 'suspended' });
 					}
 				}
 			}
@@ -439,13 +464,17 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		const { url } = await billingPortal({
-			license_key: this.licenseKey!,
-			project_id: project_id!,
-			public_url: env['PUBLIC_URL'] as string,
-		});
+		try {
+			const { url } = await billingPortal({
+				license_key: this.licenseKey!,
+				project_id: project_id!,
+				public_url: env['PUBLIC_URL'] as string,
+			});
 
-		return url;
+			return url;
+		} catch (err) {
+			handleLicenseError(err);
+		}
 	}
 
 	public async availableAddons(): Promise<LicenseAddonsOutput> {
@@ -455,26 +484,30 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		const addons = await readAddons({
-			license_key: this.licenseKey!,
-			project_id: project_id!,
-			public_url: env['PUBLIC_URL'] as string,
-		});
+		try {
+			const addons = await readAddons({
+				license_key: this.licenseKey!,
+				project_id: project_id!,
+				public_url: env['PUBLIC_URL'] as string,
+			});
 
-		return addons.available_addons.map((addon) => ({
-			id: addon.id,
-			name: addon.name,
-			description: addon.description,
-			icon: addon.icon,
-			unit_price: addon.unit_price,
-			billing_interval: addon.billing_interval,
-			upgrade_required: addon.upgrade_required,
-			pricing_summary: addon.pricing_summary,
-			min_quantity: addon.min_quantity,
-			max_quantity: addon.max_quantity,
-			active_quantity: addon.active_quantity,
-			scheduled_quantity: addon.scheduled_quantity,
-		}));
+			return addons.available_addons.map((addon) => ({
+				id: addon.id,
+				name: addon.name,
+				description: addon.description,
+				icon: addon.icon,
+				unit_price: addon.unit_price,
+				billing_interval: addon.billing_interval,
+				upgrade_required: addon.upgrade_required,
+				pricing_summary: addon.pricing_summary,
+				min_quantity: addon.min_quantity,
+				max_quantity: addon.max_quantity,
+				active_quantity: addon.active_quantity,
+				scheduled_quantity: addon.scheduled_quantity,
+			}));
+		} catch (err) {
+			handleLicenseError(err);
+		}
 	}
 
 	public async setAddonQuantity(options: { addonId: string; quantity: number }) {
@@ -486,27 +519,35 @@ export class LicenseManager {
 
 		const entitlementManager = getEntitlementManager();
 
-		const { token } = await updateAddonQuantity(
-			{
-				license_key: this.licenseKey!,
-				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
-			},
-			{
-				addons: [
-					{
-						addon_id: options.addonId,
-						quantity: options.quantity,
-					},
-				],
+		let token: string;
 
-				usage_metrics: {
-					seats: await entitlementManager.getUsage('seats'),
-					collections: await entitlementManager.getUsage('collections'),
-					flows: await entitlementManager.getUsage('flows'),
+		try {
+			const updateAddonResponse = await updateAddonQuantity(
+				{
+					license_key: this.licenseKey!,
+					project_id: project_id!,
+					public_url: env['PUBLIC_URL'] as string,
 				},
-			},
-		);
+				{
+					addons: [
+						{
+							addon_id: options.addonId,
+							quantity: options.quantity,
+						},
+					],
+
+					usage_metrics: {
+						seats: await entitlementManager.getUsage('seats'),
+						collections: await entitlementManager.getUsage('collections'),
+						flows: await entitlementManager.getUsage('flows'),
+					},
+				},
+			);
+
+			token = updateAddonResponse.token;
+		} catch (err) {
+			handleLicenseError(err);
+		}
 
 		await settingsService.upsertSingleton({
 			license_token: token,
@@ -522,14 +563,18 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		await deleteAddon(
-			{
-				license_key: this.licenseKey!,
-				project_id: project_id!,
-				public_url: env['PUBLIC_URL'] as string,
-			},
-			{ addon_ids: [addonId] },
-		);
+		try {
+			await deleteAddon(
+				{
+					license_key: this.licenseKey!,
+					project_id: project_id!,
+					public_url: env['PUBLIC_URL'] as string,
+				},
+				{ addon_ids: [addonId] },
+			);
+		} catch (err) {
+			handleLicenseError(err);
+		}
 	}
 
 	/**
