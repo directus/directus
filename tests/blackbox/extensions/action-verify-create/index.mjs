@@ -25,7 +25,7 @@ export default function registerHooks({ action }, { services }) {
 		try {
 			const item = await itemService.readOne(data.key);
 
-			if (item.name !== data.payload.name) {
+			if (item.name !== data.payload.name || data.payload.id !== data.key) {
 				throw 'Invalid item';
 			}
 
