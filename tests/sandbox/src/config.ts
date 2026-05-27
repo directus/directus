@@ -164,9 +164,9 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
-		...(opts.extras.license ? { LICENSE_API_URL: `http://${base.HOST}:$PORT_LICENSE` } : {}),
 		...opts.env,
 		...(process.env as Record<string, any>),
+		...(opts.extras.license ? { NODE_ENV: 'development', LICENSE_API_URL: `http://${base.HOST}:$PORT_LICENSE` } : {}),
 	} satisfies Env;
 
 	if (opts.dbVersion && 'DB_VERSION' in env) {
