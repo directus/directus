@@ -59,6 +59,8 @@ useHead({
 			</div>
 		</div>
 
+		<p v-if="!authenticated" class="subtitle">Welcome back! Enter your credentials to continue.</p>
+
 		<ContinueAs v-if="authenticated" />
 
 		<LdapForm v-else-if="driver === 'ldap'" :provider="provider" />
@@ -108,6 +110,12 @@ h1 {
 
 .registration-link {
 	color: var(--theme--foreground);
+}
+
+.subtitle {
+	margin-block-end: 1.25rem;
+	color: var(--theme--foreground-subdued);
+	font-size: 0.875rem;
 }
 
 .header {
