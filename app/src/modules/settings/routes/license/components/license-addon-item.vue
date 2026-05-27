@@ -64,6 +64,7 @@ function onClick() {
 		<VButton
 			v-if="buttonState === 'contact_sales'"
 			secondary
+			small
 			:href="salesHref"
 			target="_blank"
 			rel="noopener noreferrer"
@@ -71,7 +72,7 @@ function onClick() {
 			<VIcon :name="buttonIcon" left />
 			{{ buttonLabel }}
 		</VButton>
-		<VButton v-else secondary @click="onClick">
+		<VButton v-else secondary small @click="onClick">
 			<VIcon :name="buttonIcon" left />
 			{{ buttonLabel }}
 		</VButton>

@@ -246,8 +246,12 @@ async function handleDeactivateConfirm() {
 					<div class="plan-title">
 						<span class="plan-name">{{ planDisplayName }}</span>
 						<div class="plan-status">
-							<VChip v-if="license.source === null" x-small>{{ t('licensing.unlicensed') }}</VChip>
-							<VChip v-else kind="primary" x-small>{{ t('licensing.current_plan') }}</VChip>
+							<VChip v-if="license.source === null" class="status-chip" x-small :label="false">
+								{{ t('licensing.unlicensed') }}
+							</VChip>
+							<VChip v-else class="status-chip" kind="primary" x-small :label="false">
+								{{ t('licensing.current_plan') }}
+							</VChip>
 							<span v-if="boundaryDate" class="boundary-date">
 								{{
 									boundary?.type === 'expiration'
@@ -326,7 +330,7 @@ async function handleDeactivateConfirm() {
 
 				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" kind="danger">
 					<div class="danger-zone-content">
-						<VNotice v-if="isEnvManaged" type="info">
+						<VNotice v-if="isEnvManaged" type="info" class="danger-zone-notice">
 							{{ t('licensing.env_managed') }}
 						</VNotice>
 						<VButton :disabled="isEnvManaged" :loading="deactivateLoading" danger @click="handleDeactivateClick">
@@ -433,6 +437,10 @@ async function handleDeactivateConfirm() {
 	gap: 0.5rem;
 }
 
+.status-chip {
+	font-weight: 600;
+}
+
 .plan-actions {
 	display: flex;
 	gap: 0.5rem;
@@ -482,9 +490,9 @@ async function handleDeactivateConfirm() {
 }
 
 .entitlements-title {
+	@include mixins.type-label;
+
 	grid-column: 1 / -1;
-	font-size: 0.9375rem;
-	font-weight: 600;
 	color: var(--theme--foreground);
 }
 
@@ -502,6 +510,10 @@ async function handleDeactivateConfirm() {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 1rem;
+
+	.danger-zone-notice.v-notice {
+		inline-size: 100%;
+	}
 }
 
 .drawer-content {
