@@ -302,8 +302,6 @@ export class LicenseManager {
 
 			await this.syncLicense();
 		} catch (err) {
-			console.error(err);
-
 			if (err instanceof LicenseServerError) {
 				handleLicenseError(err);
 			}

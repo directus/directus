@@ -41,7 +41,11 @@ export function generateKey() {
 		.map((i) => ALPHABET[i])
 		.join('');
 
-	return `D${c.slice(0, 4)}-${c.slice(4, 9)}-${c.slice(9, 14)}-${c.slice(14, 19)}-${c.slice(19, 23) + luhnChecksum(c)}`;
+	// Checksum is computed over the full 24-char payload including the leading "D",
+	// matching @directus/license's LICENSE_KEY validation.
+	const checksum = luhnChecksum(`D${c}`);
+
+	return `D${c.slice(0, 4)}-${c.slice(4, 9)}-${c.slice(9, 14)}-${c.slice(14, 19)}-${c.slice(19, 23) + checksum}`;
 }
 
 export function createLicense(overrides?: DeepPartial<MockLicense>): MockLicense {

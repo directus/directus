@@ -22,7 +22,7 @@ export async function setup(project: TestProject) {
 		prefix: database,
 		env: {
 			CACHE_SCHEMA: 'false',
-			LICENSE_KEY: 'D0000-00000-00000-00000-00000',
+			LICENSE_KEY: 'D0000-00000-00000-00000-0000K',
 		},
 		docker: {
 			port: String(Number(project.config.env['PORT']) + 10),

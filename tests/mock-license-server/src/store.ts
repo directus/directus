@@ -7,14 +7,14 @@ const now = () => Math.floor(Date.now() / 1000);
 
 export const licenseStore: Record<string, MockLicense> = {
 	// Baseline — unlimited, no enforcement
-	'D0000-00000-00000-00000-00000': createLicense({
-		key: 'D0000-00000-00000-00000-00000',
+	'D0000-00000-00000-00000-0000K': createLicense({
+		key: 'D0000-00000-00000-00000-0000K',
 		name: 'UNLIMITED',
 	}),
 
 	// Standard team plan — 10 seats / 50 collections
-	'D0001-00000-00000-00000-0000Z': createLicense({
-		key: 'D0001-00000-00000-00000-0000Z',
+	'D0001-00000-00000-00000-0000J': createLicense({
+		key: 'D0001-00000-00000-00000-0000J',
 		name: 'TEAM',
 		entitlements: {
 			collections: { limit: 50 },
@@ -62,8 +62,8 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// Team expired 2 days ago, still in grace
-	'D0002-00000-00000-00000-0000Y': createLicense({
-		key: 'D0002-00000-00000-00000-0000Y',
+	'D0002-00000-00000-00000-0000H': createLicense({
+		key: 'D0002-00000-00000-00000-0000H',
 		name: 'TEAM_GRACE',
 		meta: {
 			name: 'TEAM_GRACE',
@@ -91,8 +91,8 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// Team past grace period
-	'D0003-00000-00000-00000-0000X': createLicense({
-		key: 'D0003-00000-00000-00000-0000X',
+	'D0003-00000-00000-00000-0000G': createLicense({
+		key: 'D0003-00000-00000-00000-0000G',
 		name: 'TEAM_EXPIRED',
 		meta: {
 			name: 'TEAM_EXPIRED',
@@ -120,8 +120,8 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// Open Innovation Grant — restricted features
-	'D0004-00000-00000-00000-0000W': createLicense({
-		key: 'D0004-00000-00000-00000-0000W',
+	'D0004-00000-00000-00000-0000F': createLicense({
+		key: 'D0004-00000-00000-00000-0000F',
 		name: 'OIG',
 		entitlements: {
 			collections: { limit: 25 },
@@ -141,8 +141,8 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// Tight 1/1/1 limits — enforcement testing
-	'D0005-00000-00000-00000-0000V': createLicense({
-		key: 'D0005-00000-00000-00000-0000V',
+	'D0005-00000-00000-00000-0000E': createLicense({
+		key: 'D0005-00000-00000-00000-0000E',
 		name: 'TINY',
 		entitlements: {
 			collections: { limit: 1 },
@@ -162,8 +162,8 @@ export const licenseStore: Record<string, MockLicense> = {
 	}),
 
 	// Free tier — Directus branding
-	'D0006-00000-00000-00000-0000T': createLicense({
-		key: 'D0006-00000-00000-00000-0000T',
+	'D0006-00000-00000-00000-0000D': createLicense({
+		key: 'D0006-00000-00000-00000-0000D',
 		name: 'CORE',
 		entitlements: {
 			collections: { limit: 10 },
