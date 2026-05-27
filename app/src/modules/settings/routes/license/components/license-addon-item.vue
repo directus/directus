@@ -59,7 +59,7 @@ function onClick() {
 		</div>
 		<VListItemContent>
 			<div class="addon-name">{{ addon.name }}</div>
-			<div class="addon-pricing">{{ addon.pricing_summary }}</div>
+			<div v-if="addon.unit_price !== null" class="addon-pricing">{{ addon.pricing_summary }}</div>
 		</VListItemContent>
 		<VButton
 			v-if="buttonState === 'contact_sales'"
