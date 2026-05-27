@@ -655,8 +655,8 @@ catalogs:
       specifier: 8.1.3
       version: 8.1.3
     liquidjs:
-      specifier: 10.25.7
-      version: 10.25.7
+      specifier: 10.26.0
+      version: 10.26.0
     lodash:
       specifier: 4.18.1
       version: 4.18.1
@@ -862,8 +862,8 @@ catalogs:
       specifier: 6.8.6
       version: 6.8.6
     tmp:
-      specifier: 0.2.5
-      version: 0.2.5
+      specifier: 0.2.6
+      version: 0.2.6
     tsdown:
       specifier: 0.15.11
       version: 0.15.11
@@ -1293,7 +1293,7 @@ importers:
         version: 8.1.3
       liquidjs:
         specifier: 'catalog:'
-        version: 10.25.7
+        version: 10.26.0
       lodash-es:
         specifier: 'catalog:'
         version: 4.18.1
@@ -3114,7 +3114,7 @@ importers:
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       tmp:
         specifier: 'catalog:'
-        version: 0.2.5
+        version: 0.2.6
       tsdown:
         specifier: 'catalog:'
         version: 0.15.11(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
@@ -11416,8 +11416,8 @@ packages:
   linkify-it@5.0.0:
     resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
 
-  liquidjs@10.25.7:
-    resolution: {integrity: sha512-rPCjJLiD4eDhQjvv964AeXFC+HbeYBbZrd7Z82Q6hqv1lX7G+5w4SJcKLn9CAAAwHI4aS3dTdo083UB79K3pDA==}
+  liquidjs@10.26.0:
+    resolution: {integrity: sha512-Ub9FFNOLB9tdH/gB2MKkeU7x9NifoVidxAam6YWU7LUcy7Glumi6q5C3tDpWOEpeNaT8Cdwdb1axEdlvLSoyaQ==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -14398,8 +14398,8 @@ packages:
     resolution: {integrity: sha512-QXqwfEl9ddlGBaRFXIvNKK6OhipSiLXuRuLJX5DErz0o0Q0rYxulWLdFryTkV5PkdZct5iMInwYEGe/eR++1AA==}
     hasBin: true
 
-  tmp@0.2.5:
-    resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
+  tmp@0.2.6:
+    resolution: {integrity: sha512-5sJPdPjfI5Kx+qbrDesxkglRBxW//g7hCsqspEjwkewGvBMGIKMOTKzLt1hFVJzyadba3lDUN20O9qhvbQUSTA==}
     engines: {node: '>=14.14'}
 
   to-regex-range@5.0.1:
@@ -24804,7 +24804,7 @@ snapshots:
     dependencies:
       uc.micro: 2.1.0
 
-  liquidjs@10.25.7:
+  liquidjs@10.26.0:
     dependencies:
       commander: 10.0.1
 
@@ -28299,7 +28299,7 @@ snapshots:
 
   tlds@1.261.0: {}
 
-  tmp@0.2.5: {}
+  tmp@0.2.6: {}
 
   to-regex-range@5.0.1:
     dependencies:
