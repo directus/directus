@@ -1130,6 +1130,7 @@ visual_editor: Visual Editor
 toggle_navigation: Toggle Navigation
 toggle_sidebar: Toggle Sidebar
 toggle_editable_elements: Toggle Editable Elements
+editing_draft_version: Editing on draft version
 no_url: No URL provided
 no_url_copy: Please add a URL in the settings.
 invalid_url: Invalid URL

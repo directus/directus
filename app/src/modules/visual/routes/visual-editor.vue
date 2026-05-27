@@ -27,6 +27,7 @@ import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { analyzeTemplate, extractVersion, matchesTemplate, replaceVersion } from '@/modules/visual/utils/version-url';
 import { useServerStore } from '@/stores/server';
 import { getVersionDisplayName } from '@/utils/get-version-display-name';
+import { unexpectedError } from '@/utils/unexpected-error';
 import LivePreviewHeaderButton from '@/views/private/components/live-preview-header-button.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
@@ -59,7 +60,7 @@ const { dynamicDisplay, onNavigation } = usePageInfo();
 
 const { urlTemplates, resolveUrls } = useVisualEditorUrls();
 
-const { versions, selectedVersion, isVersionSelectable, onVersionSelect } = useVersionSelection();
+const { versions, selectedVersion, isVersionSelectable, onVersionSelect, onSwitchVersion } = useVersionSelection();
 
 const urls = computed(() => resolveUrls(selectedVersion.value?.key));
 
@@ -190,13 +191,23 @@ function useVersionSelection() {
 		return versions.value.find((version) => version.key === detectedVersion.value) ?? null;
 	});
 
-	return { versions, selectedVersion, isVersionSelectable, onVersionSelect };
+	return { versions, selectedVersion, isVersionSelectable, onVersionSelect, onSwitchVersion };
 
-	function onVersionSelect(versionKey: ContentVersion['key'] | null) {
+	async function onVersionSelect(versionKey: ContentVersion['key'] | null) {
 		if (!activeVersionPlacement.value || !dynamicUrl) return;
 
 		const newUrl = replaceVersion(dynamicUrl, activeVersionPlacement.value, versionKey ?? VERSION_KEY_PUBLISHED);
-		router.replace(getUrlRoute(newUrl));
+		await router.replace(getUrlRoute(newUrl));
+	}
+
+	async function onSwitchVersion(key: ContentVersion['key'], onSwitched: () => void) {
+		try {
+			await onVersionSelect(key);
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			onSwitched();
+		}
 	}
 }
 </script>
@@ -284,6 +295,7 @@ function useVersionSelection() {
 					:show-editable-elements
 					:version="selectedVersion"
 					@navigation="onNavigation"
+					@switch-version="onSwitchVersion"
 				/>
 			</template>
 
