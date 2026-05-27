@@ -367,7 +367,11 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 
 const { applyAutoSwitchPendingEdits, canAutoSwitchToDraft, draftVersion } = useAutoSwitchToDraft();
 
-const { autoSaveError, resetOpenRevision } = useAutoSave(edits, autoSave, {
+const {
+	autoSaveError,
+	resetOpenRevision,
+	flush: flushAutoSave,
+} = useAutoSave(edits, autoSave, {
 	currentVersion,
 	updateVersionsAllowed,
 	collection,
@@ -793,6 +797,8 @@ function usePublishActions() {
 	});
 
 	async function onVersionPublishCompare(quit = false) {
+		if (!(await flushAutoSave())) return;
+
 		quitAfterPublish.value = quit;
 
 		if (isItemlessVersion.value) {
@@ -851,6 +857,7 @@ function usePublishActions() {
 	async function onVersionPublishWithoutReview() {
 		if (publishVersionLoading.value) return;
 		if (!currentVersion.value || currentVersion.value.id === '+') return;
+		if (!(await flushAutoSave())) return;
 		if (!runClientValidation()) return;
 
 		const version = currentVersion.value as ContentVersionWithType;

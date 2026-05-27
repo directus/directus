@@ -40,6 +40,8 @@ export function useAutoSave(
 	let errorNotificationId: string | null = null;
 	let retryTimer: ReturnType<typeof setTimeout> | null = null;
 	let retryAttempt = 0;
+	let pendingSave = false;
+	let activeSave: Promise<void> | null = null;
 
 	const debouncedSave = useDebounceFn(runSave, debounceMs);
 
@@ -47,11 +49,17 @@ export function useAutoSave(
 		edits,
 		(newEdits) => {
 			if (!enabled.value) return;
-			if (Object.keys(newEdits).length === 0) return;
 
 			// Reset backoff on new edits so an exhausted retry chain doesn't lock out future retries
 			clearRetryTimer();
 			retryAttempt = 0;
+
+			if (Object.keys(newEdits).length === 0) {
+				pendingSave = false;
+				return;
+			}
+
+			pendingSave = true;
 
 			debouncedSave();
 		},
@@ -67,11 +75,12 @@ export function useAutoSave(
 		autoSaveError,
 		isSaving,
 		resetOpenRevision,
+		flush,
 	};
 
 	async function runSave() {
 		if (!enabled.value) return;
-		if (Object.keys(edits.value).length === 0) return;
+		if (!pendingSave) return;
 		if (isSaving.value) return; // mutex — skip overlapping saves
 
 		clearRetryTimer();
@@ -79,20 +88,44 @@ export function useAutoSave(
 		const forceNewRevision = !hasOpenRevision.value || isRevisionStale();
 
 		isSaving.value = true;
+		pendingSave = false;
 
-		try {
-			await saveCallback(forceNewRevision);
-			hasOpenRevision.value = true;
-			autoSaveError.value = null;
-			retryAttempt = 0;
-			dismissErrorNotification();
-		} catch (error) {
-			autoSaveError.value = error instanceof Error ? error : new Error(String(error));
-			showErrorNotification();
-			scheduleRetry();
-		} finally {
-			isSaving.value = false;
+		activeSave = (async () => {
+			try {
+				await saveCallback(forceNewRevision);
+				hasOpenRevision.value = true;
+				autoSaveError.value = null;
+				retryAttempt = 0;
+				dismissErrorNotification();
+			} catch (error) {
+				pendingSave = true;
+				autoSaveError.value = error instanceof Error ? error : new Error(String(error));
+				showErrorNotification();
+				scheduleRetry();
+			} finally {
+				isSaving.value = false;
+				activeSave = null;
+			}
+		})();
+
+		await activeSave;
+	}
+
+	/**
+	 * Drains pending and active saves so callers (e.g. Publish) act on persisted data.
+	 * Returns false if a save failed — the error is already surfaced via notification.
+	 */
+	async function flush(): Promise<boolean> {
+		if (!enabled.value) return true;
+
+		while (pendingSave || activeSave) {
+			if (activeSave) await activeSave;
+			else await runSave();
+
+			if (autoSaveError.value) return false;
 		}
+
+		return true;
 	}
 
 	function showErrorNotification() {
