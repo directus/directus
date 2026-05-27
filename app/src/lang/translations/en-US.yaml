@@ -239,6 +239,9 @@ published_updated_notice: The published item has been updated since this version
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
+auto_save_failed: Auto-save failed
+auto_save_failed_copy: Keep this page open while we retry!
+auto_save_enabled: Auto-save enabled
 content_edited: Content Edited
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
@@ -1521,6 +1524,7 @@ fields:
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
     versioning: Versioning
+    autosave_revision_interval: Auto-save Revision Interval
     archive_field: Archive Field
     item_duplication_fields: Item Duplication Fields
   directus_files:
@@ -1819,6 +1823,8 @@ field_options:
     content_translations_divider: Content Translations
     content_versioning_divider: Content Versioning
     enable_versioning: Enable Versioning
+    interval_default: 'Default ({minutes} Minutes)'
+    interval_default_seconds: 'Default ({seconds} Seconds)'
   directus_files:
     title: A unique title...
     description: An optional description...
