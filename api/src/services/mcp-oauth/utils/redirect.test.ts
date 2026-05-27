@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OAuthError } from '../types/error.js';
 import { matchRedirectUri, validateRedirectUri } from './redirect.js';
 
+const DEFAULT_ALLOWED_CUSTOM_REDIRECTS = ['raycast://oauth', 'cursor://cursor.mcp'];
+
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
@@ -73,7 +75,7 @@ describe('matchRedirectUri', () => {
 describe('validateRedirectUri', () => {
 	beforeEach(async () => {
 		const { useEnv } = vi.mocked(await import('@directus/env'));
-		useEnv.mockReturnValue({} as any);
+		useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: DEFAULT_ALLOWED_CUSTOM_REDIRECTS } as any);
 	});
 
 	it('accepts a valid HTTPS URL', () => {
@@ -160,7 +162,10 @@ describe('validateRedirectUri', () => {
 	describe('MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS', () => {
 		beforeEach(async () => {
 			const { useEnv } = vi.mocked(await import('@directus/env'));
-			useEnv.mockReturnValue({ MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'] } as any);
+			useEnv.mockReturnValue({
+				MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: DEFAULT_ALLOWED_CUSTOM_REDIRECTS,
+				MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: ['cursor.com', '*.anthropic.com'],
+			} as any);
 		});
 
 		it('accepts redirect on allowed exact domain', () => {

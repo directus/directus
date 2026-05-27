@@ -5,8 +5,6 @@ import { isLoopbackHost } from './loopback.js';
 
 const MAX_REDIRECT_URI_LENGTH = 255;
 
-const DEFAULT_ALLOWED_CUSTOM_REDIRECTS = ['raycast://oauth', 'cursor://cursor.mcp'];
-
 interface AllowedCustomRedirect {
 	protocol: string;
 	hostname: string;
@@ -33,8 +31,7 @@ function parseAllowedCustomRedirect(value: string): AllowedCustomRedirect | null
 }
 
 function getAllowedCustomRedirects(): AllowedCustomRedirect[] {
-	const configured = useEnv()['MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS'] as string[] | undefined;
-	const values = configured ?? DEFAULT_ALLOWED_CUSTOM_REDIRECTS;
+	const values = (useEnv()['MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS'] as string[] | undefined) ?? [];
 
 	return values.flatMap((value) => {
 		const redirect = parseAllowedCustomRedirect(value);
