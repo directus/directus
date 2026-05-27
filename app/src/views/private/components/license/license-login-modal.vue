@@ -17,6 +17,8 @@ import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 
+const LICENSING_EMAIL = 'licensing@directus.io';
+
 const model = defineModel<boolean>();
 
 const cookies = useCookies(['license-login-modal-dismissed']);
@@ -118,9 +120,7 @@ function openGetLicenseKey() {
 						<p>
 							<I18nT keypath="license_grace_key_modal.over_limit_customer_help" tag="span">
 								<template #email>
-									<a :href="`mailto:${$t('license_grace_key_modal.customer_email_label')}`">
-										{{ $t('license_grace_key_modal.customer_email_label') }}
-									</a>
+									<a :href="`mailto:${LICENSING_EMAIL}`">{{ LICENSING_EMAIL }}</a>
 								</template>
 							</I18nT>
 						</p>

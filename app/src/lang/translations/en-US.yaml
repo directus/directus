@@ -3269,7 +3269,6 @@ license_grace_key_modal:
   over_limit_warning_tail: '{lead} Add a {licenseKey} before {date} ({days} days from now) to keep your current access.'
   over_limit_customer_help: 'Already a customer? Email {email} to retrieve your key.'
   license_key_link_label: license key
-  customer_email_label: licensing@directus.io
 license_banner:
   title: You have not set a project owner.
   license:
