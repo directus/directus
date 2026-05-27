@@ -36,6 +36,7 @@ const slots = useSlots();
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 1rem;
 	padding: 0.5rem 0.625rem;
 	font-weight: 600;
 	background-color: var(--theme--background-subdued);

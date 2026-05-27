@@ -409,6 +409,7 @@ async function handleDeactivateConfirm() {
 @use '@/styles/mixins';
 
 .license {
+	container-type: inline-size;
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 	max-inline-size: 67.5rem;
@@ -447,17 +448,6 @@ async function handleDeactivateConfirm() {
 	flex-wrap: wrap;
 }
 
-@include mixins.breakpoint-down('sm') {
-	.plan-header {
-		flex-direction: column;
-		align-items: stretch;
-	}
-
-	.plan-actions {
-		justify-content: flex-end;
-	}
-}
-
 .boundary-date {
 	font-size: 0.875rem;
 	font-weight: 500;
@@ -481,10 +471,8 @@ async function handleDeactivateConfirm() {
 	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
 	margin-block-start: 2.25rem;
-}
 
-@include mixins.breakpoint-down('sm') {
-	.entitlements {
+	@container (width <= 36rem) {
 		grid-template-columns: 1fr;
 	}
 }
