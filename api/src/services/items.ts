@@ -287,11 +287,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				if (useBatchInsert) {
 					const chunkSize = env['DB_BATCH_INSERT_CHUNK_SIZE'] as number | undefined;
 
-					// SQLite's batchInsert path normalizes columns across all rows in the
-					// chunk; columns missing from a row are bound as `undefined`, which the
-					// driver translates to `NULL` and fails for non-nullable fields. Spread
-					// per-column defaults for non-nullable fields first so the payload only
-					// overrides what it explicitly sets. https://github.com/knex/knex/issues/332
+					// SQLite batchInsert workaround (https://github.com/knex/knex/issues/332):
+					// - knex normalizes columns across all rows in the chunk.
+					// - Columns missing from a row are bound as `undefined`.
+					// - The sqlite3 driver translates that to `NULL` and the insert fails for
+					//   non-nullable columns.
+					// Spread per-column defaults for non-nullable fields first so the payload
+					// only overrides what it explicitly sets.
 					const isSqlite = getDatabaseClient(trx) === 'sqlite';
 					const collectionFieldsSchema = this.schema.collections[this.collection]!.fields;
 
@@ -568,24 +570,28 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				: query;
 
 		// Default to ORDER BY <primary key> ASC for integer / bigInteger PKs when no
-		// explicit sort was requested. Auto-increment integer PKs encode insertion
-		// order, so this restores temporal ordering that batch insert broke: rows in
-		// the same transaction share `date_created` (NOW() per transaction), breaking
-		// consumers that relied on date_created as a stable tiebreaker.
+		// explicit sort was requested.
 		//
-		// UUID / string PKs are deliberately excluded — sorting by a random UUID or a
-		// user-supplied string is deterministic but not semantically meaningful, so
-		// changing the default for those collections would be a surprise with no
-		// payoff. Callers can still pass an explicit `sort` for any pkType.
+		// - Why this restores ordering broken by batch insert:
+		//   - Auto-increment integer PKs encode insertion order.
+		//   - Batch insert collapses N transactions into one, so all rows share
+		//     `date_created` (NOW() per transaction).
+		//   - That breaks consumers that relied on `date_created` as a stable tiebreaker.
 		//
-		// Skipped also when the query uses `group` or `aggregate`: ORDER BY a column
-		// not in the GROUP BY / aggregate list is a SQL error on every dialect.
+		// - Excluded cases (deliberately not defaulted):
+		//   - UUID / string PKs — sorting by a random UUID or user-supplied string is
+		//     deterministic but not semantically meaningful; changing the default for
+		//     those collections would be a surprise with no payoff.
+		//   - Queries using `group` or `aggregate` — `ORDER BY` a column not in the
+		//     `GROUP BY` / aggregate list is a SQL error on every dialect.
+		//   - Callers can still pass an explicit `sort` for any pkType.
 		//
-		// Disable via DB_DEFAULT_ORDER_READS_BY_PK=false to restore the prior behavior
-		// (e.g. while you migrate existing queries to pass their own sort).
+		// - Escape hatch: disable via `DB_DEFAULT_ORDER_READS_BY_PK=false` (e.g. while
+		//   migrating existing queries to pass their own sort).
 		//
-		// Note: `updatedQuery` returned by emitFilter is frozen / non-extensible, so
-		// we replace the reference with a spread instead of mutating in place.
+		// - Implementation note: `updatedQuery` returned by emitFilter is frozen /
+		//   non-extensible, so we replace the reference with a spread instead of
+		//   mutating in place.
 		if (
 			env['DB_DEFAULT_ORDER_READS_BY_PK'] &&
 			!updatedQuery.sort?.length &&
