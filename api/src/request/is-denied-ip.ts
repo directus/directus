@@ -19,7 +19,7 @@ export function isDeniedIp(ip: string): boolean {
 			if (blockNetwork === '0.0.0.0') {
 				blockNetworkInterfaces = true;
 				blockList.parseSubnet('0.0.0.0/8');
-    			blockList.parseAddress('::');
+				blockList.parseAddress('::');
 				continue;
 			}
 
