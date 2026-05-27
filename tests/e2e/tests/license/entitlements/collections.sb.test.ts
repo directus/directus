@@ -68,7 +68,7 @@ describe('collections', () => {
 				hooks: {
 					beforeApi: async ({ env }) => {
 						const base = `http://localhost:${env.LICENSE_PORT}`;
-						mockClient.registerLicense(base, restrictedLicense);
+						await mockClient.registerLicense(base, restrictedLicense);
 					},
 				},
 			}),
