@@ -408,6 +408,70 @@ describe('useVersions', () => {
 
 			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save', { title: 'new value' });
 		});
+
+		it('should append ?patchRevision when opts.patchRevision is true', async () => {
+			const existingVersion: ContentVersion = {
+				id: 'version-123',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-01',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { title: 'new value' } } });
+			vi.mocked(api.get).mockResolvedValueOnce({ data: { data: [existingVersion] } });
+
+			const { versions, currentVersion, saveVersion } = useVersions(ref('test_collection'), ref(false), ref('1'));
+
+			await vi.waitFor(() => expect(api.get).toHaveBeenCalled());
+			currentVersion.value = versions.value.find((v) => v.key === 'draft') ?? null;
+
+			const edits = ref<Record<string, any>>({ title: 'new value' });
+			const item = ref<Record<string, any>>({ id: '1', title: 'old value' });
+
+			await saveVersion(edits, item, { patchRevision: true });
+
+			expect(api.post).toHaveBeenCalledWith('/versions/version-123/save?patchRevision', { title: 'new value' });
+		});
+
+		it('should omit ?patchRevision for brand-new versions even if opts.patchRevision is true', async () => {
+			const createdVersion: ContentVersion = {
+				id: 'version-new',
+				key: 'draft',
+				name: null,
+				collection: 'test_collection',
+				item: '1',
+				hash: 'abc',
+				date_created: '2024-01-01',
+				date_updated: '2024-01-01',
+				user_created: 'user-1',
+				user_updated: 'user-1',
+				delta: {},
+			};
+
+			// POST /versions (create version)
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: createdVersion } });
+			// POST /versions/:id/save
+			vi.mocked(api.post).mockResolvedValueOnce({ data: { data: { title: 'new value' } } });
+
+			const { saveVersion, currentVersion, versions } = useVersions(ref('test_collection'), ref(false), ref('+'));
+
+			currentVersion.value = versions.value.find((v) => v.id === '+') ?? null;
+
+			const edits = ref<Record<string, any>>({ title: 'new value' });
+			const item = ref<Record<string, any>>({ id: '1', title: 'old value' });
+
+			await saveVersion(edits, item, { patchRevision: true });
+
+			expect(api.post).toHaveBeenCalledWith('/versions/version-new/save', { title: 'new value' });
+		});
 	});
 
 	describe('publishVersion', () => {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { sameOrigin } from '@directus/utils/browser';
@@ -45,12 +46,24 @@ const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
 const emit = defineEmits<{
 	navigation: [data: NavigationData];
 	saved: [data: { collection: string; primaryKey: PrimaryKey }];
+	switchVersion: [versionKey: ContentVersion['key'], onSwitched: () => void];
 }>();
 
 const { t } = useI18n();
 
-const { collection, primaryKey, fields, mode, position, isNew, edits, editOverlayActive, itemRoute, onClickEdit } =
-	useItemWithEdits();
+const {
+	collection,
+	primaryKey,
+	fields,
+	mode,
+	position,
+	isNew,
+	edits,
+	editOverlayActive,
+	itemRoute,
+	hidePopoverArrow,
+	onClickEdit,
+} = useItemWithEdits();
 
 const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
 
@@ -270,6 +283,7 @@ function useItemWithEdits() {
 	const edits = ref<Record<string, any>>({});
 	const saving = ref(false);
 	const editOverlayActive = ref(false);
+	const hidePopoverArrow = ref(false);
 	const msgKey = ref('');
 	const collection = ref<EditConfig['collection']>('');
 	const primaryKey = ref<PrimaryKey>('');
@@ -302,6 +316,7 @@ function useItemWithEdits() {
 		edits,
 		editOverlayActive,
 		itemRoute,
+		hidePopoverArrow,
 		onClickEdit,
 	};
 
@@ -436,6 +451,18 @@ function useItemWithEdits() {
 		if (!success) return;
 		await nextTick();
 
+		const switchToDraftVersion = version === null && !!collectionInfo.value?.meta?.versioning;
+		hidePopoverArrow.value = switchToDraftVersion;
+
+		if (switchToDraftVersion) {
+			await new Promise<void>((resolve) => emit('switchVersion', VERSION_KEY_DRAFT, resolve));
+
+			notificationsStore.add({
+				title: t('editing_draft_version'),
+				icon: 'edit',
+			});
+		}
+
 		// `setFocusTemporarily()` makes sure that after clicking an edit button inside the iframe, the :focus moves to the Studio module, so the shortcuts work as expected.
 		setFocusTemporarily();
 
@@ -465,7 +492,12 @@ function useItemWithEdits() {
 			:selected-fields="fields"
 			:edits="edits"
 			:version="version?.key"
-			:popover-props="({ popoverWidth }) => (position.width > popoverWidth ? { arrowPlacement: 'start' } : {})"
+			:popover-props="
+				({ popoverWidth }) => ({
+					...(position.width > popoverWidth ? { arrowPlacement: 'start' } : {}),
+					showArrow: !hidePopoverArrow,
+				})
+			"
 			apply-shortcut="meta+s"
 			prevent-cancel-with-edits
 			@input="(value: any) => (edits = value)"
@@ -486,6 +518,7 @@ function useItemWithEdits() {
 					<VButton
 						v-if="mode === 'modal' || mode === 'popover'"
 						:to="itemRoute"
+						:active="false"
 						:disabled="isNew"
 						:x-small="mode === 'popover'"
 						secondary

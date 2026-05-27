@@ -212,6 +212,9 @@ export const DEFAULTS: Env = {
 
 	ACCEPT_TERMS: false,
 
+	/** Auto-save revision-snapshot cadence in seconds. */
+	AUTOSAVE_REVISION_INTERVAL: 300,
+
 	MCP_ENABLED: true,
 
 	AI_ENABLED: true,
