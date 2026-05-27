@@ -4,6 +4,7 @@ import express from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getEntitlementManager } from '../license/index.js';
 import { getLicenseManager } from '../license/manager.js';
+import { getCoreGraceExpiresAt, GRACE_PERIOD_MS } from '../license/utils/get-core-grace-expires-at.js';
 import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -26,15 +27,29 @@ router.get(
 			entitlementManager.getUsage('flows'),
 		]);
 
+		const source = licenseManager.getSource();
+
+		let expiresAt = license.meta.expires_at;
+		let gracePeriod = license.meta.grace_period;
+
+		if (source === null && status === 'grace') {
+			const coreGraceExpiresAt = await getCoreGraceExpiresAt();
+
+			if (coreGraceExpiresAt !== null) {
+				expiresAt = coreGraceExpiresAt;
+				gracePeriod = Math.floor(GRACE_PERIOD_MS / 1000);
+			}
+		}
+
 		const payload: ReadLicenseOutput = {
 			name: license.meta.name,
 			status,
-			source: licenseManager.getSource(),
+			source,
 			downgrade_reason: downgradeReason,
 			renews_at: license.meta.renews_at,
-			expires_at: license.meta.expires_at,
+			expires_at: expiresAt,
 			entitlements: license.entitlements,
-			grace_period: license.meta.grace_period,
+			grace_period: gracePeriod,
 			offline: license.meta.offline,
 			usage: {
 				seats: seatUsage,
