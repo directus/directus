@@ -48,6 +48,8 @@ import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useVisualEditing } from '@/composables/use-visual-editing';
 import { BREAKPOINTS } from '@/constants';
+import { useAutoSave } from '@/modules/content/composables/use-auto-save';
+import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import type { ContentVersionMaybeNew, ContentVersionWithType } from '@/types/versions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -97,14 +99,9 @@ onBeforeRouteUpdate((to, from) => {
 const { collectionRoute, backRoute } = useItemNavigation();
 
 const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
 
 const isCurrentVersionNew = computed(() => currentVersion.value?.id === '+');
-
-const isPublishAllowed = computed(() => {
-	if (currentVersion.value === null) return false;
-	if (isCurrentVersionNew.value) return false;
-	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
-});
 
 const form = ref<ComponentPublicInstance>();
 
@@ -127,7 +124,6 @@ const {
 	updateVersion,
 	deleteVersion,
 	deleteVersionLoading,
-	saveVersionLoading,
 	saveVersion,
 	validationErrors: versionValidationErrors,
 	publishVersionLoading,
@@ -287,7 +283,11 @@ useShortcut(
 		if (currentVersion.value === null) {
 			saveAndStay();
 		} else {
-			saveVersionAction();
+			notificationsStore.add({
+				title: t('auto_save_enabled'),
+				type: 'info',
+				icon: 'cloud_done',
+			});
 		}
 	},
 	form,
@@ -367,6 +367,19 @@ const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
 
 const { applyAutoSwitchPendingEdits, canAutoSwitchToDraft, draftVersion } = useAutoSwitchToDraft();
 
+const { autoSaveError, resetOpenRevision } = useAutoSave(edits, autoSave, {
+	currentVersion,
+	updateVersionsAllowed,
+	collection,
+});
+
+const isPublishAllowed = computed(() => {
+	if (currentVersion.value === null) return false;
+	if (isCurrentVersionNew.value) return false;
+	if (autoSaveError.value !== null) return false;
+	return isItemlessVersion.value ? createAllowed.value : updateAllowed.value;
+});
+
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
@@ -389,7 +402,10 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-watch(currentVersion, async () => {
+const currentVersionId = computed(() => currentVersion.value?.id ?? null);
+
+watch(currentVersionId, async () => {
+	resetOpenRevision();
 	const autoSwitchPendingEdits = applyAutoSwitchPendingEdits();
 	edits.value = autoSwitchPendingEdits ?? {};
 	await refreshLivePreview();
@@ -551,29 +567,23 @@ watch(saving, async (newVal, oldVal) => {
 	await refreshLivePreview();
 });
 
-watch(saveVersionLoading, async (newVal, oldVal) => {
-	if (newVal === true || oldVal === false) return;
-
-	await refreshLivePreview();
-});
-
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-async function saveVersionAction() {
-	if (isSavable.value === false) return;
-
+async function autoSave(forceNewRevision: boolean) {
 	try {
-		await saveVersion(edits, item);
-		edits.value = {};
-
-		if (!isNew.value) {
-			refresh();
-			revisionsSidebarDetailRef.value?.refresh?.();
+		if (forceNewRevision) {
+			await saveVersion(edits, item);
+			if (!isNew.value) revisionsSidebarDetailRef.value?.refresh?.();
+		} else {
+			await saveVersion(edits, item, { patchRevision: true });
 		}
+
+		await refreshLivePreview();
 	} catch (error) {
-		handleVersionGone(error);
+		// Throw anyway if not a `versionGone` error
+		if (!handleVersionGone(error)) throw error;
 	}
 }
 
@@ -1122,16 +1132,6 @@ function useAutoSwitchToDraft() {
 				/>
 
 				<template v-else>
-					<PrivateViewHeaderBarActionButton
-						:label="$t('save')"
-						:tooltip="translateShortcut(['meta', 's'])"
-						icon="beenhere"
-						secondary
-						:loading="saveVersionLoading"
-						:disabled="!isSavable"
-						@click="saveVersionAction()"
-					/>
-
 					<PrivateViewHeaderBarActionButton
 						:label="$t('publish')"
 						:tooltip="translateShortcut(['meta', 'alt', 'p'])"

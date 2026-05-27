@@ -73,6 +73,10 @@ export class ServerService {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 
+			info['autoSave'] = {
+				revisionInterval: Number(env['AUTOSAVE_REVISION_INTERVAL']),
+			};
+
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
 			};
