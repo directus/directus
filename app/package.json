@@ -167,6 +167,6 @@
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
 		"zod": "catalog:",
-		"@directus/license": "link:../../license"
+		"@directus/license": "catalog:"
 	}
 }
