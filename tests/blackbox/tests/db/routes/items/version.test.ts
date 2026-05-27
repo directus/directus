@@ -74,12 +74,11 @@ describe('version response', () => {
 
 		expect(JSON.parse(response.text)).toMatchObject({
 			data: {
-				id: 1,
 				title: 'Changed',
 				author: 1,
-				tags: [{ id: 1 }, { id: 2 }],
-				sections: [{ id: 1 }, { id: 2 }],
-				links: [{ id: 1 }, { id: 2 }],
+				tags: [1, 2],
+				sections: [1, 2],
+				links: [1, 2],
 			},
 		});
 
@@ -158,7 +157,6 @@ describe('version response', () => {
 					},
 				],
 				$meta: {
-					delta: delta,
 					version_id: versionResult.id,
 				},
 			},
@@ -273,7 +271,6 @@ describe('version response', () => {
 					},
 				],
 				$meta: {
-					delta: delta,
 					version_id: versionResult.id,
 				},
 			},
@@ -390,7 +387,6 @@ describe('version deadlocking', () => {
 			],
 
 			$meta: {
-				delta: deltaA,
 				version_id: versionResultA.id,
 			},
 		});
@@ -408,7 +404,6 @@ describe('version deadlocking', () => {
 				},
 			],
 			$meta: {
-				delta: deltaB,
 				version_id: versionResultB.id,
 			},
 		});
