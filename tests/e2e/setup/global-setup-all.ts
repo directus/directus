@@ -29,6 +29,9 @@ export async function setup(project: TestProject) {
 					port: port + 10,
 					keep: true,
 				},
+				extras: {
+					license: true,
+				},
 				killPorts: true,
 			} as DeepPartial<Options>,
 		};
