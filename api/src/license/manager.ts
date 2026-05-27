@@ -282,34 +282,32 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		let token: string;
-		let newProjectId: string | undefined;
-
 		try {
-			const activationResponse = await activateKey({
+			const { token, new_project_id } = await activateKey({
 				license_key: key,
 				project_id: project_id!,
 				public_url: env['PUBLIC_URL'] as string,
 			});
 
-			token = activationResponse.token;
-			newProjectId = activationResponse.new_project_id;
+			await settingsService.upsertSingleton({
+				license_key: key,
+				license_token: token,
+				project_id: new_project_id ?? project_id!,
+			});
+
+			// During init, source is already set, only flip if via API
+			if (this.initialized) {
+				this.source = 'settings';
+			}
+
+			await this.syncLicense();
 		} catch (err) {
-			handleLicenseError(err);
+			if (err instanceof LicenseServerError) {
+				handleLicenseError(err);
+			}
+
+			throw err;
 		}
-
-		await settingsService.upsertSingleton({
-			license_key: key,
-			license_token: token,
-			project_id: newProjectId ?? project_id!,
-		});
-
-		// During init, source is already set, only flip if via API
-		if (this.initialized) {
-			this.source = 'settings';
-		}
-
-		await this.syncLicense();
 	}
 
 	public async deactivate(key?: string) {
@@ -331,11 +329,15 @@ export class LicenseManager {
 				project_id: project_id!,
 				public_url: env['PUBLIC_URL'] as string,
 			});
-		} catch (err) {
-			handleLicenseError(err);
-		}
 
-		await this.syncLicense({ kind: 'downgrade' });
+			await this.syncLicense({ kind: 'downgrade' });
+		} catch (err) {
+			if (err instanceof LicenseServerError) {
+				handleLicenseError(err);
+			}
+
+			throw err;
+		}
 	}
 
 	/**
@@ -354,10 +356,8 @@ export class LicenseManager {
 
 		const { project_id } = await settingsService.readSingleton({ fields: ['project_id'] });
 
-		let token: string;
-
 		try {
-			const updateKeyResponse = await updateKey(
+			const { token } = await updateKey(
 				{
 					license_key: currentKey,
 					project_id: project_id!,
@@ -366,18 +366,20 @@ export class LicenseManager {
 				{ license_key: newKey },
 			);
 
-			token = updateKeyResponse.token;
+			await settingsService.upsertSingleton({
+				license_key: newKey,
+				license_token: token,
+				project_id: project_id!,
+			});
+
+			await this.syncLicense();
 		} catch (err) {
-			handleLicenseError(err);
+			if (err instanceof LicenseServerError) {
+				handleLicenseError(err);
+			}
+
+			throw err;
 		}
-
-		await settingsService.upsertSingleton({
-			license_key: newKey,
-			license_token: token,
-			project_id: project_id!,
-		});
-
-		await this.syncLicense();
 	}
 
 	private async verify(token: string): Promise<License | null> {
@@ -447,8 +449,8 @@ export class LicenseManager {
 						await this.syncLicense({ kind: 'downgrade', reason: 'expired' });
 					} else if (err.code === 'LICENSE_CANCELED') {
 						await this.syncLicense({ kind: 'downgrade', reason: 'canceled' });
-					} else if (err.code === 'SUBSCRIPTION_PAST_DUE') {
-						await this.syncLicense({ kind: 'downgrade', reason: 'canceled' });
+					} else if (err.code === 'LICENSE_SUSPENDED') {
+						await this.syncLicense({ kind: 'downgrade', reason: 'suspended' });
 					}
 				}
 			}

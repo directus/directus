@@ -18,6 +18,7 @@ export function handleLicenseError(error: unknown): never {
 			case 'INVALID_CREDENTIALS':
 			case 'LICENSE_EXPIRED':
 			case 'LICENSE_CANCELED':
+			case 'LICENSE_SUSPENDED':
 			case 'NOT_FOUND':
 				throw new LicenseInvalidError();
 			case 'FORBIDDEN':
