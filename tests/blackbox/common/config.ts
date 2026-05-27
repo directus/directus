@@ -92,6 +92,7 @@ const directusStorageConfig = {
 
 const directusConfig = {
 	...process.env,
+	NODE_ENV: 'development',
 	ADMIN_EMAIL: 'admin@example.com',
 	ADMIN_PASSWORD: 'password',
 	SECRET: 'directus-test',
