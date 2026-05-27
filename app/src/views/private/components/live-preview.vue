@@ -21,6 +21,7 @@ import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { parseUrl } from '@/utils/parse-url';
+import { unexpectedError } from '@/utils/unexpected-error';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
@@ -168,8 +169,14 @@ function onIframeLoad() {
 	isRefreshing.value = false;
 }
 
-async function switchVersion(version: ContentVersion['key']) {
-	await router.replace({ ...route, query: { ...route.query, version } });
+async function onSwitchVersion(key: ContentVersion['key'], onSwitched: () => void) {
+	try {
+		await router.replace({ ...route, query: { ...route.query, version: key } });
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		onSwitched();
+	}
 }
 
 window.refreshLivePreview = refresh;
@@ -512,12 +519,7 @@ function useUrls() {
 								:version="version"
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
-								@switch-version="
-									async (key, done) => {
-										await switchVersion(key);
-										done();
-									}
-								"
+								@switch-version="onSwitchVersion"
 							/>
 						</div>
 					</div>
@@ -560,12 +562,7 @@ function useUrls() {
 						:version="version"
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
-						@switch-version="
-							async (key, done) => {
-								await switchVersion(key);
-								done();
-							}
-						"
+						@switch-version="onSwitchVersion"
 					/>
 				</div>
 			</div>

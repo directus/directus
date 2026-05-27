@@ -950,10 +950,12 @@ function useAutoSwitchToDraft() {
 
 		stashAutoSwitchPendingEdits();
 
-		await router.replace({
+		const navigationFailure = await router.replace({
 			...route,
 			query: { ...route.query, version: VERSION_KEY_DRAFT },
 		});
+
+		if (navigationFailure) return;
 
 		notificationsStore.add({
 			title: t('editing_draft_version'),

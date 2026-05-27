@@ -418,8 +418,8 @@ describe('switchVersion on edit click', () => {
 		expect(overlay.attributes('data-active')).toBe('false');
 		expect(useNotificationsStore().add).not.toHaveBeenCalled();
 
-		const done = wrapper.emitted('switchVersion')![0]![1] as () => void;
-		done();
+		const onSwitched = wrapper.emitted('switchVersion')![0]![1] as () => void;
+		onSwitched();
 		await flushPromises();
 		await nextTick();
 

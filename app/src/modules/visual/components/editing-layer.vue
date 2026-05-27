@@ -46,7 +46,7 @@ const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
 const emit = defineEmits<{
 	navigation: [data: NavigationData];
 	saved: [data: { collection: string; primaryKey: PrimaryKey }];
-	switchVersion: [versionKey: ContentVersion['key'], done: () => void];
+	switchVersion: [versionKey: ContentVersion['key'], onSwitched: () => void];
 }>();
 
 const { t } = useI18n();
