@@ -91,6 +91,25 @@ describe('validateRedirectUri', () => {
 		expect(() => validateRedirectUri('http://example.com/callback')).toThrow(OAuthError);
 	});
 
+	it.each([
+		'raycast://oauth?package_name=directus',
+		'raycast://oauth/callback?package_name=directus',
+		'cursor://cursor.mcp?name=directus',
+		'cursor://cursor.mcp/callback?name=directus',
+	])('accepts known MCP desktop redirect URI %s', (uri) => {
+		expect(() => validateRedirectUri(uri)).not.toThrow();
+	});
+
+	it.each([
+		'raycast://callback?package_name=directus',
+		'raycast://evil.example/callback',
+		'cursor://oauth?name=directus',
+		'cursor://evil.example/callback',
+		'vscode://cursor.mcp/callback',
+	])('rejects unknown custom redirect URI %s', (uri) => {
+		expect(() => validateRedirectUri(uri)).toThrow(OAuthError);
+	});
+
 	it('rejects non-string input', () => {
 		expect(() => validateRedirectUri(42)).toThrow(OAuthError);
 		expect(() => validateRedirectUri(null)).toThrow(OAuthError);
@@ -133,6 +152,11 @@ describe('validateRedirectUri', () => {
 
 		it('still allows loopback redirects when allowlist is set', () => {
 			expect(() => validateRedirectUri('http://localhost:3000/cb')).not.toThrow();
+		});
+
+		it('still allows known MCP desktop redirects when allowlist is set', () => {
+			expect(() => validateRedirectUri('raycast://oauth?package_name=directus')).not.toThrow();
+			expect(() => validateRedirectUri('cursor://cursor.mcp?name=directus')).not.toThrow();
 		});
 	});
 });

@@ -5,11 +5,20 @@ import { isLoopbackHost } from './loopback.js';
 
 const MAX_REDIRECT_URI_LENGTH = 255;
 
+const ALLOWED_MCP_DESKTOP_REDIRECTS = new Set(['raycast://oauth', 'cursor://cursor.mcp']);
+
+function isAllowedMcpDesktopRedirectUri(parsed: URL): boolean {
+	if (parsed.port) return false;
+
+	return ALLOWED_MCP_DESKTOP_REDIRECTS.has(`${parsed.protocol}//${parsed.hostname.toLowerCase()}`);
+}
+
 /**
  * Validate a redirect URI per RFC 6749 Section 3.1.2 + OAuth 2.1 policy (HTTPS, no fragment, no userinfo).
  * RFC 8252 Section 7.3: HTTP is allowed for loopback addresses (localhost, 127.0.0.1, [::1]).
+ * Compatibility: Raycast and Cursor MCP clients use known custom-scheme desktop redirects.
  * Optional MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS env var enforces a server-wide domain allowlist
- * (loopback bypasses the allowlist to keep native OAuth clients working).
+ * (loopback and known desktop redirects bypass the allowlist to keep native OAuth clients working).
  */
 export function validateRedirectUri(uri: unknown): void {
 	if (typeof uri !== 'string') {
@@ -40,6 +49,10 @@ export function validateRedirectUri(uri: unknown): void {
 	// No userinfo
 	if (parsed.username || parsed.password) {
 		throw new OAuthError(400, 'invalid_redirect_uri', 'redirect_uri must not contain userinfo');
+	}
+
+	if (isAllowedMcpDesktopRedirectUri(parsed)) {
+		return;
 	}
 
 	// Must be HTTPS, except loopback (RFC 8252 Section 7.3)
