@@ -1,7 +1,7 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"type": "module",
 	"scripts": {
 		"build": "pnpm --recursive run build",

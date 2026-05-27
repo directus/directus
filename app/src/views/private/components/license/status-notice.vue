@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DIRECTUS_DOMAIN } from '@directus/constants';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -25,7 +26,7 @@ const severity = computed(() =>
 
 const lockedSupportUrl = computed(
 	() =>
-		`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info?.version}&utm_content=status_notice_locked_contact_support_link`,
+		`https://${DIRECTUS_DOMAIN}/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info?.version}&utm_content=status_notice_locked_contact_support_link`,
 );
 </script>
 

@@ -49,7 +49,7 @@ describe('v-license-badge', () => {
 		const wrapper = mount(VLicenseBadge, { global });
 
 		expect(wrapper.find('a').exists()).toBe(true);
-		expect(wrapper.find('a').attributes('href')).toBe('https://directus.io/');
+		expect(wrapper.find('a').attributes('href')).toBe('https://directus.com/');
 	});
 
 	it('renders badge linking to directus.io/oig when display_powered_by is OIG', () => {
@@ -58,7 +58,7 @@ describe('v-license-badge', () => {
 		const wrapper = mount(VLicenseBadge, { global });
 
 		expect(wrapper.find('a').exists()).toBe(true);
-		expect(wrapper.find('a').attributes('href')).toBe('https://directus.io/oig');
+		expect(wrapper.find('a').attributes('href')).toBe('https://directus.com/oig');
 	});
 
 	it('adds private class to anchor when private prop is true', () => {

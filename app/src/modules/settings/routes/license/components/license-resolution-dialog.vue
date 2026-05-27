@@ -243,6 +243,10 @@ async function submit() {
 		unexpectedError(err);
 	} finally {
 		submitting.value = false;
+
+		if (router.currentRoute.value.name === 'license-recovery') {
+			router.push({ name: 'settings-license' });
+		}
 	}
 }
 
@@ -253,7 +257,7 @@ function manageLicense() {
 		emit('update:modelValue', false);
 	}
 
-	router.push('/settings/license');
+	router.push({ name: 'settings-license' });
 }
 
 const cookies = useCookies(['license-resolution-acknowledged']);

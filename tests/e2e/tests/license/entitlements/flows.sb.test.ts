@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { createLicense } from '@directus/mock-license-server';
+import { activateLicense, deactivateLicense } from '@directus/license';
+import { createLicense, mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import {
 	createDirectus,
@@ -15,183 +16,159 @@ import {
 	updateFlow,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+import { createSandboxOptions } from '../shared.js';
 
-const LIMIT = 3;
+const DEFAULT_LIMIT = 3;
 
-let createdFlows: string[] = [];
-
-let directus: Sandbox;
-let api: DirectusClient<any> & RestClient<any>;
-
-const license = createLicense({
-	meta: { name: 'flows-entitlement-test' },
-	entitlements: {
-		flows: { limit: LIMIT },
-	},
+const restrictedLicense = createLicense({
+	meta: { name: 'flows-restricted' },
+	entitlements: { flows: { limit: DEFAULT_LIMIT } },
 });
 
-async function createEmptyFlow(name: string, overrides?: NestedPartial<DirectusFlow<any>>) {
-	return api.request(
-		createFlow({
-			name,
-			trigger: 'manual',
-			...(overrides ?? {}),
-		}),
-	);
+function buildFlow(name: string, overrides?: NestedPartial<DirectusFlow<any>>) {
+	return {
+		name: `${getUID()}_${name}`,
+		trigger: 'manual',
+		...(overrides ?? {}),
+	};
 }
 
-async function fillFlowLimit(prefix: string) {
-	for (let i = 1; i <= LIMIT; i++) {
-		const name = prefix + '_flow_entitlement_' + i;
-
-		const result = await createEmptyFlow(name);
-
-		createdFlows.push(result['id'] as string);
+async function seedFlowsToLimit(api: DirectusClient<unknown> & RestClient<unknown>, limit?: number) {
+	for (let i = 1; i <= (limit || DEFAULT_LIMIT); i++) {
+		await api.request(createFlow(buildFlow(String(i))));
 	}
 }
 
-beforeAll(async () => {
-	const devMode = process.env['NODE_ENV'] === 'development';
+describe('flows', () => {
+	let directus: Sandbox;
+	let api: DirectusClient<unknown> & RestClient<unknown>;
 
-	directus = await sandbox(database, {
-		dev: devMode,
-		watch: devMode,
-		prefix: database,
-		env: {
-			CACHE_SCHEMA: 'false',
-			DB_FILENAME: `directus_test_${randomUUID()}.db`,
-			LICENSE_KEY: license.key,
-			DB_EXCLUDE_TABLES: 'secrets',
-		},
-		extras: {
-			license: true,
-		},
-		cache: false,
-		knex: true,
-		hooks: {
-			beforeApi: async ({ env }) => {
-				// Register the license with the mock license server before the api boots so
-				// directus picks it up via the LICENSE_KEY env var (avoids the activate path).
-				await fetch(`http://localhost:${env.LICENSE_PORT}/admin/license`, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(license),
-				});
-			},
-		},
+	beforeAll(async () => {
+		directus = await sandbox(
+			database,
+			createSandboxOptions({
+				extras: { license: true },
+				knex: true,
+				hooks: {
+					beforeApi: async ({ env }) => {
+						const base = `http://localhost:${env.LICENSE_PORT}`;
+						mockClient.registerLicense(base, restrictedLicense);
+					},
+				},
+			}),
+		);
+
+		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 	});
 
-	api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
-});
+	afterAll(async () => {
+		await directus?.stop();
+	});
 
-afterAll(async () => {
-	await directus?.stop();
-});
-
-describe('flows entitlement', () => {
 	afterEach(async () => {
-		for (const id of createdFlows) {
+		const flows = await api.request(readFlows({ limit: -1 }));
+
+		for (const { id, name } of flows) {
+			if (name.includes(getUID()) === false) {
+				continue;
+			}
+
 			try {
 				await api.request(deleteFlow(id));
 			} catch {
 				// ignore cleanup failures
 			}
 		}
-
-		createdFlows = [];
 	});
 
-	test('can successfully create flows within the limit', async () => {
-		await fillFlowLimit('a');
+	describe('flows=3', () => {
+		beforeAll(async () => {
+			await api.request(activateLicense({ license_key: restrictedLicense.key }));
+		});
 
-		const all = await api.request(
-			readFlows({
-				filter: { status: { _eq: 'active' } },
-				limit: -1,
-			}),
-		);
+		afterAll(async () => {
+			await api.request(deactivateLicense());
+		});
 
-		expect(all).toHaveLength(LIMIT);
-	});
+		test('creating flows within the limit succeeds', async () => {
+			await expect(seedFlowsToLimit(api)).resolves.not.toThrow();
+		});
 
-	test('creating a flow above the license limit rejects with LIMIT_EXCEEDED', async () => {
-		await fillFlowLimit('b');
+		test('creating a flow above the limit rejects with LIMIT_EXCEEDED', async () => {
+			await seedFlowsToLimit(api);
 
-		const name = 'b_flow_entitlement_' + (LIMIT + 1);
-
-		await expect(createEmptyFlow(name)).rejects.toMatchObject({
-			errors: [
-				expect.objectContaining({
-					extensions: expect.objectContaining({
-						code: 'LIMIT_EXCEEDED',
+			await expect(api.request(createFlow(buildFlow(String(DEFAULT_LIMIT + 1))))).rejects.toMatchObject({
+				errors: [
+					expect.objectContaining({
+						extensions: expect.objectContaining({ code: 'LIMIT_EXCEEDED' }),
 					}),
-				}),
-			],
-		});
-	});
-
-	test('creating an inactive flow above the license limit succeeds', async () => {
-		await fillFlowLimit('c');
-
-		const result = await createEmptyFlow('c_flow_entitlement_inactive', {
-			status: 'inactive',
+				],
+			});
 		});
 
-		createdFlows.push(result['id'] as string);
+		test('creating an inactive flow when above the limit succeeds', async () => {
+			await seedFlowsToLimit(api);
 
-		expect(result).toBeDefined();
-	});
+			await expect(api.request(createFlow(buildFlow('inactive', { status: 'inactive' })))).resolves.toBeDefined();
+		});
 
-	test('deactivating an existing flow allows new creation', async () => {
-		await fillFlowLimit('d');
+		test('updating an existing flow to inactive reduces the limit', async () => {
+			await seedFlowsToLimit(api);
 
-		await api.request(
-			updateFlow(createdFlows[0]!, {
+			const [first] = await api.request(readFlows({ filter: { name: { _eq: `${getUID()}_1` } }, limit: 1 }));
+
+			await api.request(updateFlow(first!.id, { status: 'inactive' }));
+
+			await expect(api.request(createFlow(buildFlow('new')))).resolves.toBeDefined();
+		});
+
+		test('updating an existing flow to inactive while over the limit succeeds', async () => {
+			await seedFlowsToLimit(api);
+
+			// Seed two extra active flows directly via knex to push count over the limit.
+			for (const suffix of ['extra_1', 'extra_2']) {
+				await directus.knex!('directus_flows').insert({
+					id: randomUUID(),
+					name: `${getUID()}_${suffix}`,
+					status: 'active',
+					trigger: 'manual',
+				});
+			}
+
+			const [first] = await api.request(readFlows({ filter: { name: { _eq: `${getUID()}_1` } }, limit: 1 }));
+
+			await expect(api.request(updateFlow(first!.id, { status: 'inactive' }))).resolves.toBeDefined();
+		});
+
+		test('activating a flow when above the limit rejects with LIMIT_EXCEEDED', async () => {
+			await seedFlowsToLimit(api);
+
+			// Seed two inactive flows over the limit, then attempt to reactivate one.
+			const targetId = randomUUID();
+
+			await directus.knex!('directus_flows').insert({
+				id: targetId,
+				name: `${getUID()}_entitlement_extra_1`,
 				status: 'inactive',
-			}),
-		);
+				trigger: 'manual',
+			});
 
-		const name = 'd_flow_entitlement_' + (LIMIT + 1);
+			await directus.knex!('directus_flows').insert({
+				id: randomUUID(),
+				name: `${getUID()}_entitlement_extra_2`,
+				status: 'inactive',
+				trigger: 'manual',
+			});
 
-		const result = await createEmptyFlow(name);
-
-		createdFlows.push(result['id'] as string);
-
-		expect(result).toBeDefined();
-	});
-
-	test('can deactivate an existing flow remaining over the limit', async () => {
-		await fillFlowLimit('e');
-
-		// seed 2 flows directly via knex to push the active count over the license limit
-		const extra1 = randomUUID();
-		const extra2 = randomUUID();
-
-		await directus.knex!('directus_flows').insert({
-			id: extra1,
-			name: 'e_flow_entitlement_extra_1',
-			status: 'active',
-			trigger: 'manual',
+			await expect(api.request(updateFlow(targetId, { status: 'active' }))).rejects.toMatchObject({
+				errors: [
+					expect.objectContaining({
+						extensions: expect.objectContaining({ code: 'LIMIT_EXCEEDED' }),
+					}),
+				],
+			});
 		});
-
-		await directus.knex!('directus_flows').insert({
-			id: extra2,
-			name: 'e_flow_entitlement_extra_2',
-			status: 'active',
-			trigger: 'manual',
-		});
-
-		createdFlows.push(extra1);
-		createdFlows.push(extra2);
-
-		// deactivating should remain allowed even though total active is over the limit
-		await expect(
-			api.request(
-				updateFlow(createdFlows[0]!, {
-					status: 'inactive',
-				}),
-			),
-		).resolves.toBeDefined();
 	});
 });

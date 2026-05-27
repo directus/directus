@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DIRECTUS_DOMAIN } from '@directus/constants';
 import { deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
@@ -258,12 +259,18 @@ async function handleDeactivateConfirm() {
 					</div>
 					<div class="plan-actions">
 						<template v-if="!isLicensed">
-							<VButton secondary small @click="addLicenseDrawer = true">
+							<VButton
+								v-tooltip.bottom="isEnvManaged ? t('licensing.env_managed') : null"
+								secondary
+								small
+								:disabled="isEnvManaged"
+								@click="addLicenseDrawer = true"
+							>
 								{{ t('licensing.add') }}
 							</VButton>
 							<VButton
 								small
-								:href="`https://directus.io/pricing?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_upgrade_plan_link`"
+								:href="`https://${DIRECTUS_DOMAIN}/pricing?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_upgrade_plan_link`"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
@@ -372,7 +379,7 @@ async function handleDeactivateConfirm() {
 				<I18nT keypath="setup_license_key_notice" tag="span">
 					<template #oig>
 						<a
-							:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_drawer_open_innovation_grant_link`"
+							:href="`https://${DIRECTUS_DOMAIN}/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_drawer_open_innovation_grant_link`"
 							target="_blank"
 							rel="noopener noreferrer"
 						>

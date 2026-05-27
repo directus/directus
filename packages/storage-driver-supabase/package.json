@@ -2,7 +2,7 @@
 	"name": "@directus/storage-driver-supabase",
 	"version": "3.0.22",
 	"description": "Supabase file storage abstraction for `@directus/storage`",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
