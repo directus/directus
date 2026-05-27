@@ -33,7 +33,7 @@ const link = computed(() => {
 
 <style lang="scss" scoped>
 .badge-divider {
-	inline-size: calc(100% - 1.375rem);
+	inline-size: calc(100% - 0.875rem);
 	align-self: center;
 	border: solid;
 	border-color: var(--theme--navigation--list--divider--border-color);

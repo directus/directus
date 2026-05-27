@@ -16,15 +16,15 @@ const slots = useSlots();
 <template>
 	<div class="license-entitlement-item">
 		<div class="label">
-			<VIcon :name="icon" small />
+			<VIcon :name="icon" />
 			<span>{{ title }}</span>
 		</div>
 		<div class="value">
-			<VChip v-if="unlimited" x-small class="unlimited">
+			<VChip v-if="unlimited" x-small :label="false" kind="success">
 				{{ $t('licensing.unlimited') }}
 			</VChip>
 			<slot v-else-if="slots.default" />
-			<VChip v-else x-small :class="{ included }">
+			<VChip v-else x-small :label="false" :kind="included ? 'success' : 'neutral'">
 				{{ included ? $t('licensing.included') : $t('licensing.not_included') }}
 			</VChip>
 		</div>
@@ -36,38 +36,19 @@ const slots = useSlots();
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 1rem;
 	padding: 0.5rem 0.625rem;
+	font-weight: 600;
 	background-color: var(--theme--background-subdued);
-	border-radius: 6px;
+	border-radius: var(--theme--border-radius);
 }
 
 .label {
+	--v-icon-color: var(--theme--foreground-subdued);
+
 	display: flex;
 	align-items: center;
-	font-weight: 600;
 	gap: 0.5rem;
 	color: var(--theme--foreground);
-}
-
-.label :deep(.v-icon) {
-	color: var(--theme--foreground-subdued);
-}
-
-.value {
-	color: var(--theme--foreground);
-}
-
-.value :deep(.v-chip) {
-	--v-chip-background-color: var(--theme--background-accent);
-	--v-chip-color: var(--theme--foreground);
-	--v-chip-padding: 0 0.625rem;
-	border-radius: 9999px;
-	font-weight: 600;
-}
-
-.value :deep(.v-chip.included),
-.value :deep(.v-chip.unlimited) {
-	--v-chip-background-color: var(--theme--success-subdued);
-	--v-chip-color: var(--theme--success-accent);
 }
 </style>

@@ -247,8 +247,12 @@ async function handleDeactivateConfirm() {
 					<div class="plan-title">
 						<span class="plan-name">{{ planDisplayName }}</span>
 						<div class="plan-status">
-							<VChip v-if="license.source === null" x-small>{{ t('licensing.unlicensed') }}</VChip>
-							<VChip v-else kind="primary" x-small>{{ t('licensing.current_plan') }}</VChip>
+							<VChip v-if="license.source === null" class="status-chip" x-small :label="false">
+								{{ t('licensing.unlicensed') }}
+							</VChip>
+							<VChip v-else class="status-chip" kind="primary" x-small :label="false">
+								{{ t('licensing.current_plan') }}
+							</VChip>
 							<span v-if="boundaryDate" class="boundary-date">
 								{{
 									boundary?.type === 'expiration'
@@ -325,9 +329,9 @@ async function handleDeactivateConfirm() {
 					</VList>
 				</LicenseSection>
 
-				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" variant="danger">
+				<LicenseSection v-if="license.source !== null" icon="emergency_home" :title="t('danger_zone')" kind="danger">
 					<div class="danger-zone-content">
-						<VNotice v-if="isEnvManaged" type="info">
+						<VNotice v-if="isEnvManaged" type="info" class="danger-zone-notice">
 							{{ t('licensing.env_managed') }}
 						</VNotice>
 						<VButton :disabled="isEnvManaged" :loading="deactivateLoading" danger @click="handleDeactivateClick">
@@ -406,6 +410,7 @@ async function handleDeactivateConfirm() {
 @use '@/styles/mixins';
 
 .license {
+	container-type: inline-size;
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 	max-inline-size: 67.5rem;
@@ -434,21 +439,14 @@ async function handleDeactivateConfirm() {
 	gap: 0.5rem;
 }
 
+.status-chip {
+	font-weight: 600;
+}
+
 .plan-actions {
 	display: flex;
 	gap: 0.5rem;
 	flex-wrap: wrap;
-}
-
-@include mixins.breakpoint-down('sm') {
-	.plan-header {
-		flex-direction: column;
-		align-items: stretch;
-	}
-
-	.plan-actions {
-		justify-content: flex-end;
-	}
 }
 
 .boundary-date {
@@ -474,18 +472,16 @@ async function handleDeactivateConfirm() {
 	grid-template-columns: 1fr 1fr;
 	gap: 0.5rem;
 	margin-block-start: 2.25rem;
-}
 
-@include mixins.breakpoint-down('sm') {
-	.entitlements {
+	@container (width <= 36rem) {
 		grid-template-columns: 1fr;
 	}
 }
 
 .entitlements-title {
+	@include mixins.type-label;
+
 	grid-column: 1 / -1;
-	font-size: 0.9375rem;
-	font-weight: 600;
 	color: var(--theme--foreground);
 }
 
@@ -503,6 +499,10 @@ async function handleDeactivateConfirm() {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 1rem;
+
+	.danger-zone-notice.v-notice {
+		inline-size: 100%;
+	}
 }
 
 .drawer-content {
