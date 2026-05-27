@@ -22,6 +22,7 @@ export async function setup() {
 				const license = spawn('node', [join(paths.license, 'dist', 'run.js')], {
 					cwd: paths.cwd,
 					env: {
+						...process.env,
 						LICENSE_PORT: '7000',
 					},
 				});
