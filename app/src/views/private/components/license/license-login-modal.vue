@@ -99,14 +99,31 @@ function openGetLicenseKey() {
 					</div>
 
 					<VNotice v-if="isOverLimit" type="warning">
-						<strong>{{ $t('license_grace_key_modal.over_limit_warning_lead') }}</strong>
-						{{ ' ' }}
-						<I18nT keypath="license_grace_key_modal.over_limit_warning_tail" tag="span">
-							<template #date>
-								<strong>{{ formattedGraceDeadline }}</strong>
-							</template>
-							<template #days>{{ licenseStore.gracePeriodDaysRemaining ?? 0 }}</template>
-						</I18nT>
+						<p>
+							<I18nT keypath="license_grace_key_modal.over_limit_warning_tail" tag="span">
+								<template #lead>
+									<strong>{{ $t('license_grace_key_modal.over_limit_warning_lead') }}</strong>
+								</template>
+								<template #licenseKey>
+									<a href="https://directus.io/docs/licensing/overview" target="_blank" rel="noopener noreferrer">
+										{{ $t('license_grace_key_modal.license_key_link_label') }}
+									</a>
+								</template>
+								<template #date>
+									<strong>{{ formattedGraceDeadline }}</strong>
+								</template>
+								<template #days>{{ licenseStore.gracePeriodDaysRemaining ?? 0 }}</template>
+							</I18nT>
+						</p>
+						<p>
+							<I18nT keypath="license_grace_key_modal.over_limit_customer_help" tag="span">
+								<template #email>
+									<a :href="`mailto:${$t('license_grace_key_modal.customer_email_label')}`">
+										{{ $t('license_grace_key_modal.customer_email_label') }}
+									</a>
+								</template>
+							</I18nT>
+						</p>
 					</VNotice>
 				</VCardText>
 
