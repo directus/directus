@@ -19,6 +19,7 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import { getMcpSettingsField } from './mcp-settings';
 
 const router = useRouter();
 
@@ -32,10 +33,9 @@ const aiFields = computed(() =>
 );
 
 const mcpFields = computed(() =>
-	unref(allFields).filter((field) => {
-		if (field.field.startsWith('mcp_oauth') && !serverStore.info.mcp_oauth_enabled) return false;
-
-		return field.meta?.group === 'mcp_group' || field.field === 'mcp_group';
+	unref(allFields).flatMap((field) => {
+		const mcpField = getMcpSettingsField(field, serverStore.info);
+		return mcpField ? [mcpField] : [];
 	}),
 );
 

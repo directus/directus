@@ -73,6 +73,8 @@ export class ServerService {
 			info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 			info['ai_enabled'] = toBoolean(env['AI_ENABLED'] ?? true);
 			info['mcp_oauth_enabled'] = toBoolean(env['MCP_OAUTH_ENABLED'] ?? false);
+			info['mcp_oauth_dcr_enabled'] = toBoolean(env['MCP_OAUTH_DCR_ENABLED'] ?? false);
+			info['mcp_oauth_cimd_enabled'] = toBoolean(env['MCP_OAUTH_CIMD_ENABLED'] ?? false);
 
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
