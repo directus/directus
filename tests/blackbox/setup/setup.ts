@@ -19,16 +19,32 @@ export async function setup() {
 		{
 			title: 'start mock license server',
 			task: async () => {
-				const license = spawnSync('node', [paths.license, 'dist', 'run.js'], {
+				const license = spawn('node', [join(paths.license, 'dist', 'run.js')], {
 					cwd: paths.cwd,
 					env: {
 						LICENSE_PORT: '7000',
 					},
 				});
 
-				if (license.status !== null && license.status !== 0) {
-					throw new Error('Licensing Mock Server failed');
-				}
+				global.mockLicenseServer = license;
+
+				let licenseOutput = '';
+				license.stdout?.setEncoding('utf8');
+
+				license.stdout?.on('data', (data) => {
+					licenseOutput += data.toString();
+				});
+
+				license.stderr?.on('data', (data) => {
+					licenseOutput += data.toString();
+					console.log(`[LICENSE] ${data.toString()}`);
+				});
+
+				license.on('exit', (code) => {
+					if (code !== null && code !== 0) {
+						throw new Error(`Mock license server failed (${code}): \n ${licenseOutput}`);
+					}
+				});
 			},
 		},
 		{
@@ -166,6 +182,8 @@ export async function setup() {
 				serverNoCache?.kill();
 			}
 
+			global.mockLicenseServer?.kill();
+
 			throw new Error(reason);
 		});
 
@@ -199,6 +217,12 @@ export async function teardown() {
 						}),
 						{ concurrent: true, exitOnError: false },
 					);
+				},
+			},
+			{
+				title: 'Stop mock license server',
+				task: async () => {
+					global.mockLicenseServer?.kill();
 				},
 			},
 		]).run();
