@@ -373,6 +373,108 @@ test(`filtering _in`, async () => {
 	expect(rawQuery.bindings).toEqual(['title1', 'title2']);
 });
 
+test(`filtering _in on csv field matches entries at comma boundaries`, async () => {
+	const schema = new SchemaBuilder()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('tags').csv();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			tags: {
+				_in: ['tag1', 'tag2'],
+			},
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(
+		`select * where ("article"."tags" like ? or "article"."tags" like ? or "article"."tags" like ? or "article"."tags" like ? or "article"."tags" like ? or "article"."tags" like ? or "article"."tags" like ? or "article"."tags" like ?)`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['tag1', 'tag1,%', '%,tag1', '%,tag1,%', 'tag2', 'tag2,%', '%,tag2', '%,tag2,%']);
+});
+
+test(`filtering _nin on csv field excludes entries at comma boundaries`, async () => {
+	const schema = new SchemaBuilder()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('tags').csv();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			tags: {
+				_nin: ['tag1'],
+			},
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(
+		`select * where (not "article"."tags" like ? and not "article"."tags" like ? and not "article"."tags" like ? and not "article"."tags" like ?)`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['tag1', 'tag1,%', '%,tag1', '%,tag1,%']);
+});
+
+test(`filtering _in on csv field with empty array short-circuits`, async () => {
+	const schema = new SchemaBuilder()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('tags').csv();
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			tags: {
+				_in: [],
+			},
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select * where 1 = ?`);
+	expect(rawQuery.bindings).toEqual([0]);
+});
+
 test(`filtering _contains`, async () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {

@@ -187,6 +187,48 @@ export function applyOperator(
 		if (['integer', 'float', 'decimal'].includes(type)) {
 			compareValue = castToNumber(compareValue);
 		}
+
+		// CSV fields store multiple values as a comma-separated string. The generic
+		// `IN` / `NOT IN` operators compare the whole column to each value, so they
+		// only match rows that hold exactly one of the listed values. To match each
+		// input value as a discrete CSV entry, fall back to LIKE patterns that pin
+		// the value to a comma boundary (or the start/end of the string).
+		if (type === 'csv' && (operator === '_in' || operator === '_nin')) {
+			let value = compareValue;
+			if (typeof value === 'string') value = value.split(',');
+
+			if ((value as any[]).length === 0) {
+				if (operator === '_in') {
+					dbQuery[logical].whereIn(selectionRaw, []);
+				} else {
+					dbQuery[logical].whereNotIn(selectionRaw, []);
+				}
+
+				return;
+			}
+
+			if (operator === '_in') {
+				dbQuery[logical].where((sub) => {
+					for (const val of value as any[]) {
+						sub.orWhere(selectionRaw, 'like', `${val}`);
+						sub.orWhere(selectionRaw, 'like', `${val},%`);
+						sub.orWhere(selectionRaw, 'like', `%,${val}`);
+						sub.orWhere(selectionRaw, 'like', `%,${val},%`);
+					}
+				});
+			} else {
+				dbQuery[logical].where((sub) => {
+					for (const val of value as any[]) {
+						sub.whereNot(selectionRaw, 'like', `${val}`);
+						sub.whereNot(selectionRaw, 'like', `${val},%`);
+						sub.whereNot(selectionRaw, 'like', `%,${val}`);
+						sub.whereNot(selectionRaw, 'like', `%,${val},%`);
+					}
+				});
+			}
+
+			return;
+		}
 	}
 
 	applyOperatorToRaw(dbQuery, helpers, selectionRaw, operator, compareValue, logical, key);
