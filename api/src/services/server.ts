@@ -76,6 +76,10 @@ export class ServerService {
 			info['mcp_oauth_dcr_enabled'] = toBoolean(env['MCP_OAUTH_DCR_ENABLED'] ?? false);
 			info['mcp_oauth_cimd_enabled'] = toBoolean(env['MCP_OAUTH_CIMD_ENABLED'] ?? false);
 
+			info['autoSave'] = {
+				revisionInterval: Number(env['AUTOSAVE_REVISION_INTERVAL']),
+			};
+
 			info['files'] = {
 				mimeTypeAllowList: toArray(env['FILES_MIME_TYPE_ALLOW_LIST']),
 			};

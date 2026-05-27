@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useCollection } from '@directus/composables';
-import { useShortcut } from '@directus/composables';
+import { useCollection, useShortcut } from '@directus/composables';
+import type { Field } from '@directus/types';
 import { clone } from 'lodash';
 import { computed, ref, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import { getMcpSettingsField } from './mcp-settings';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import { getAvailableModels, getModelKey, getProviderIcon } from '@/ai/utils/available-models';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -28,8 +28,38 @@ const serverStore = useServerStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
+const initialValues = ref(clone(settingsStore.settings));
+
+const aiEdits = ref<Record<string, any> | null>(null);
+const mcpEdits = ref<Record<string, any> | null>(null);
+
+const effectiveAiSettings = computed(() => ({ ...(settingsStore.settings ?? {}), ...(aiEdits.value ?? {}) }));
+
+const availableTranslationModels = computed(() => getAvailableModels(effectiveAiSettings.value));
+
 const aiFields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group'),
+	unref(allFields)
+		.filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group')
+		.map((field) => {
+			if (field.field !== 'ai_translation_default_model') return field;
+
+			return {
+				...field,
+				meta: {
+					...field.meta,
+					readonly: availableTranslationModels.value.length === 0,
+					options: {
+						...(field.meta?.options ?? {}),
+						allowNone: true,
+						choices: availableTranslationModels.value.map((modelDefinition) => ({
+							text: modelDefinition.name,
+							value: getModelKey(modelDefinition),
+							icon: getProviderIcon(modelDefinition.provider),
+						})),
+					},
+				},
+			} as Field;
+		}),
 );
 
 const mcpFields = computed(() =>
@@ -38,11 +68,6 @@ const mcpFields = computed(() =>
 		return mcpField ? [mcpField] : [];
 	}),
 );
-
-const initialValues = ref(clone(settingsStore.settings));
-
-const aiEdits = ref<Record<string, any> | null>(null);
-const mcpEdits = ref<Record<string, any> | null>(null);
 
 const hasEdits = computed(
 	() =>
@@ -81,11 +106,9 @@ function discardAndLeave() {
 
 <template>
 	<PrivateView :title="$t('settings_ai')" icon="smart_toy">
-		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:disabled="!hasEdits"
 				:loading="saving"
 				icon="check"

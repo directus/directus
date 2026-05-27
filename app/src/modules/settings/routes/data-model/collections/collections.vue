@@ -11,7 +11,6 @@ import CollectionItem from './components/CollectionItem.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
 import api from '@/api';
 import TransitionExpand from '@/components/transition/expand.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VDetail from '@/components/v-detail.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -152,10 +151,6 @@ async function downloadSnapshot() {
 
 <template>
 	<PrivateView :title="$t('settings_data_model')" icon="database">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-		</template>
-
 		<template #actions>
 			<SearchInput
 				v-model="search"
@@ -169,25 +164,23 @@ async function downloadSnapshot() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('create_folder')"
-						secondary
+						variant="ghost"
 						icon="create_new_folder"
 						@click="on"
 					/>
 				</template>
 			</CollectionDialog>
+		</template>
 
-			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('create_collection')"
-				:to="{ name: 'settings-add-new' }"
-				icon="add"
-			/>
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton :label="$t('create')" :to="{ name: 'settings-add-new' }" icon="add" />
 		</template>
 
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
 
-		<div class="padding-box">
+		<div class="padding-box" :class="{ 'has-action': hasExpandableCollections }">
 			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}
 
@@ -293,8 +286,16 @@ async function downloadSnapshot() {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .padding-box {
 	padding: var(--content-padding);
+
+	&.has-action {
+		@include mixins.breakpoint-up('sm') {
+			padding-block-start: 1.875rem;
+		}
+	}
 }
 
 .v-info {

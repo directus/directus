@@ -22,7 +22,7 @@ defineProps<{ id?: string }>();
 	position: relative;
 	display: block;
 	font-size: 0.8125rem;
-	background: var(--theme--navigation--background);
+	background: var(--theme--shell--background);
 }
 
 .module-nav-content {
@@ -41,6 +41,7 @@ defineProps<{ id?: string }>();
 
 	block-size: calc(100% - var(--project-header-height));
 	overflow: hidden auto;
-	border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+
+	/* border is set on .main-split */
 }
 </style>

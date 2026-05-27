@@ -157,14 +157,12 @@ keep: Ponechať
 version: Verzia
 version_key: Kľúč verzie
 version_name: Názov verzie
-main_version: Hlavné
 switch_version: Prepnúť verziu
 switch_version_copy: Naozaj chcete prepnúť na verziu "{version}"? Neuložené zmeny sa stratia.
 create_version: Vytvoriť verziu
 rename_version: Premenovať verziu
 compare_version: Porovnať verzie
 save_version: Uložiť verziu
-promote_version: Povýšiť verziu
 delete_version: Odstrániť verziu
 delete_version_copy: >-
   Naozaj chcete odstrániť verziu "{version}"? Táto akcia sa nedá vrátiť.

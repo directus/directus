@@ -270,10 +270,10 @@ function onApply() {
 			</VTabItem>
 		</VTabsItems>
 
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'flow_setup'"
-				v-tooltip.bottom="isNew ? $t('next') : $t('save')"
+				:label="isNew ? $t('next') : $t('save')"
 				:disabled="isFlowSetupDisabled"
 				:loading="saving"
 				:icon="isNew ? 'arrow_forward' : 'check'"
@@ -282,7 +282,7 @@ function onApply() {
 
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'trigger_setup'"
-				v-tooltip.bottom="isNew ? $t('finish_setup') : $t('save')"
+				:label="isNew ? $t('finish_setup') : $t('save')"
 				:disabled="isFlowTriggerDisabled"
 				:loading="saving"
 				icon="check"

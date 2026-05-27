@@ -65,9 +65,9 @@ async function reset() {
 	</div>
 
 	<VDrawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:disabled="!isSaveAllowed"
 				:loading="isSaving"
 				icon="check"
