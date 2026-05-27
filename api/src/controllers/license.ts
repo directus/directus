@@ -4,7 +4,7 @@ import express from 'express';
 import { fromZodError } from 'zod-validation-error';
 import { getEntitlementManager } from '../license/index.js';
 import { getLicenseManager } from '../license/manager.js';
-import { getCoreGraceExpiresAt, GRACE_PERIOD_MS } from '../license/utils/is-in-core-grace-period.js';
+import { getCoreGraceExpiresAt, GRACE_PERIOD_MS } from '../license/utils/get-core-grace-expires-at.js';
 import checkIsAdmin from '../middleware/is-admin.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
