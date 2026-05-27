@@ -69,7 +69,7 @@ const emit = defineEmits(['update:modelValue']);
 .v-radio-cards {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-	gap: 0.5rem;
+	gap: 1rem;
 }
 
 .v-radio-card {
