@@ -42,9 +42,17 @@ const lockedSupportUrl = computed(
 			</span>
 		</template>
 	</VNotice>
-	<VNotice v-else-if="show && isCoreGrace" type="warning" multiline class="status-notice">
+	<VNotice v-else-if="show && isCoreGrace" :type="severity" multiline class="status-notice">
 		<template #title>
-			<span class="message">{{ t('license.unlicensed_status_notice.grace_period') }}</span>
+			<span class="message">
+				{{
+					t(
+						'license.unlicensed_status_notice.grace_period',
+						{ days: gracePeriodDaysRemaining },
+						gracePeriodDaysRemaining ?? 0,
+					)
+				}}
+			</span>
 		</template>
 	</VNotice>
 	<VNotice v-else-if="show" :type="severity" multiline class="status-notice">

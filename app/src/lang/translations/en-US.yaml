@@ -1633,14 +1633,15 @@ license:
     grace_period_suffix: remaining before Core tier resource limits will apply.
   unlicensed_status_notice:
     grace_period: >-
-      You are in a 30-day grace period after which Core tier resource limits will apply. Retrieve a license key or
-      upgrade to increase your limits.
+      'You have {days} day remaining before Core tier resource limits will apply. Retrieve a license key or upgrade to
+      increase your limits. | You have {days} days remaining before Core tier resource limits will apply. Retrieve a
+      license key or upgrade to increase your limits.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
     grace_period_body: Manage your license key in Settings > License.
   unlicensed_pinned_status_notice:
-    grace_period_title: Grace Period (30d)
+    grace_period_title: 'Grace Period ({days}d left)'
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
