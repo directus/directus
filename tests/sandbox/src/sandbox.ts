@@ -114,8 +114,6 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 
 	const port = await getPort(options?.port ?? 8055);
 
-	if (options?.port && port !== options?.port) throw new Error(`Port ${options?.port} for directus is already in use.`);
-
 	return merge(
 		{
 			build: false,
