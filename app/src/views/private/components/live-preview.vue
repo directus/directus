@@ -5,7 +5,7 @@ import { sameOrigin } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { computed, type CSSProperties, nextTick, onMounted, ref, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import LivePreviewHeaderButton from './live-preview-header-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -21,6 +21,7 @@ import EditingLayer from '@/modules/visual/components/editing-layer.vue';
 import { useVisualEditorUrls } from '@/modules/visual/composables/use-visual-editor-urls';
 import { getUrlRoute } from '@/modules/visual/utils/get-url-route';
 import { parseUrl } from '@/utils/parse-url';
+import { unexpectedError } from '@/utils/unexpected-error';
 import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE } from '@/views/private/private-view/stores/sidebar';
 
@@ -75,6 +76,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const route = useRoute();
 const router = useRouter();
 const slots = useSlots();
 useResizeObserver();
@@ -165,6 +167,16 @@ function refresh(url: string | null) {
 
 function onIframeLoad() {
 	isRefreshing.value = false;
+}
+
+async function onSwitchVersion(key: ContentVersion['key'], onSwitched: () => void) {
+	try {
+		await router.replace({ ...route, query: { ...route.query, version: key } });
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		onSwitched();
+	}
 }
 
 window.refreshLivePreview = refresh;
@@ -507,6 +519,7 @@ function useUrls() {
 								:version="version"
 								:show-editable-elements="showEditableElements"
 								@saved="(data) => emit('saved', data)"
+								@switch-version="onSwitchVersion"
 							/>
 						</div>
 					</div>
@@ -549,6 +562,7 @@ function useUrls() {
 						:version="version"
 						:show-editable-elements="showEditableElements"
 						@saved="(data) => emit('saved', data)"
+						@switch-version="onSwitchVersion"
 					/>
 				</div>
 			</div>
