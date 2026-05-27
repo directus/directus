@@ -405,6 +405,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.custom.after', { app });
 
 	app.use(notFoundHandler);
+	// codeql[js/missing-rate-limiting] The shared error handler is mounted after the app-level rate limiters above.
 	app.use(errorHandler);
 
 	await emitter.emitInit('routes.after', { app });

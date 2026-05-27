@@ -62,6 +62,7 @@ describe('Error handler behaves correctly in express app', () => {
 				routeHandler(req, res, next);
 			});
 
+			// codeql[js/missing-rate-limiting] This is a unit-test-only Express fixture.
 			app.use(errorHandlerMod.errorHandler);
 
 			server.listen(() => {
