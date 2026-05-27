@@ -4,7 +4,7 @@ import type { DeepPartial } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler } from 'express';
-import { buildMcpWWWAuthenticateHeader, getMcpUrls, isMcpPath } from '../ai/mcp/utils.js';
+import { buildMcpWWWAuthenticateHeader as buildMcpChallengeHeader, getMcpUrls, isMcpPath } from '../ai/mcp/utils.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
@@ -45,7 +45,7 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 
 			res
 				.status(401)
-				.set('WWW-Authenticate', buildMcpWWWAuthenticateHeader(metadataUrl, 'invalid_token'))
+				.set('WWW-Authenticate', buildMcpChallengeHeader(metadataUrl, 'invalid_token'))
 				.set('Access-Control-Expose-Headers', 'WWW-Authenticate')
 				.json({ error: 'invalid_token', error_description: error.message });
 
