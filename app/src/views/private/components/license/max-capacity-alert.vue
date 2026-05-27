@@ -19,38 +19,26 @@ const licenseStore = useLicenseStore();
 		v-if="!licenseStore.limits[props.entitlementKey].hasRemaining"
 		type="danger"
 		icon="dangerous"
-		multiline
 		class="max-capacity-alert"
 	>
-		<template #title>
-			<span class="message">
-				{{ $t('license.max_capacity.alert_danger_prefix') }}
-				<RouterLink class="manage-plan-link" :to="{ name: 'settings-license' }" target="_blank">
-					{{ $t('license.manage_plan') }}
-				</RouterLink>
-				{{ $t('license.max_capacity.alert_danger_suffix') }}
-			</span>
-		</template>
+		{{ $t('license.max_capacity.alert_danger_prefix') }}
+		<RouterLink class="manage-plan-link" :to="{ name: 'settings-license' }" target="_blank">
+			{{ $t('license.manage_plan') }}
+		</RouterLink>
+		{{ $t('license.max_capacity.alert_danger_suffix') }}
 	</VNotice>
 </template>
 
 <style scoped>
 .max-capacity-alert {
-	margin-block-end: 2.25rem;
-}
+	--v-notice-color: var(--theme--foreground);
 
-.max-capacity-alert :deep(.v-notice-title) {
-	flex: 1;
-	gap: 0.5rem;
-}
-
-.message {
-	flex: 1;
-	color: var(--theme--foreground);
+	margin-block-end: var(--content-padding);
 }
 
 .manage-plan-link {
 	cursor: pointer;
 	text-decoration: underline;
+	color: var(--theme--primary);
 }
 </style>

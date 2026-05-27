@@ -31,43 +31,32 @@ const lockedSupportUrl = computed(
 </script>
 
 <template>
-	<VNotice v-if="show && isLocked" type="danger" multiline class="status-notice">
-		<template #title>
-			<span class="message">
-				<I18nT keypath="license.locked_status_notice" tag="span">
-					<template #contactSupport>
-						<a :href="lockedSupportUrl" target="_blank" rel="noopener noreferrer">{{ t('contact_support') }}</a>
-					</template>
-				</I18nT>
-			</span>
-		</template>
+	<VNotice v-if="show && isLocked" type="danger" class="status-notice">
+		<I18nT keypath="license.locked_status_notice" tag="span">
+			<template #contactSupport>
+				<a :href="lockedSupportUrl" target="_blank" rel="noopener noreferrer">{{ t('contact_support') }}</a>
+			</template>
+		</I18nT>
 	</VNotice>
-	<VNotice v-else-if="show && isCoreGrace" type="warning" multiline class="status-notice">
-		<template #title>
-			<span class="message">{{ t('license.unlicensed_status_notice.grace_period') }}</span>
-		</template>
+	<VNotice v-else-if="show && isCoreGrace" type="warning" class="status-notice">
+		{{ t('license.unlicensed_status_notice.grace_period') }}
 	</VNotice>
-	<VNotice v-else-if="show" :type="severity" multiline class="status-notice">
-		<template #title>
-			<span class="message">
-				{{ t('license.status_notice.grace_period_prefix') }}
-				<strong>
-					{{ t('license.status_notice.grace_days', { days: gracePeriodDaysRemaining }, gracePeriodDaysRemaining ?? 0) }}
-				</strong>
-				{{ t('license.status_notice.grace_period_suffix') }}
-			</span>
-		</template>
+	<VNotice v-else-if="show" :type="severity" class="status-notice">
+		{{ t('license.status_notice.grace_period_prefix') }}
+		<strong>
+			{{ t('license.status_notice.grace_days', { days: gracePeriodDaysRemaining }, gracePeriodDaysRemaining ?? 0) }}
+		</strong>
+		{{ t('license.status_notice.grace_period_suffix') }}
 	</VNotice>
 </template>
 
-<style scoped>
-.status-notice :deep(.v-notice-title) {
-	flex: 1;
-}
+<style lang="scss" scoped>
+.status-notice {
+	--v-notice-color: var(--theme--foreground);
 
-.message {
-	flex: 1;
-	font-weight: normal;
-	color: var(--theme--foreground);
+	a {
+		text-decoration: underline;
+		color: var(--theme--primary);
+	}
 }
 </style>
