@@ -947,6 +947,7 @@ function usePublishActions() {
 function useAutoSwitchToDraft() {
 	const autoSwitchPendingEdits = ref<Item>({});
 	const draftVersion = computed(() => versions.value.find((version) => version.key === VERSION_KEY_DRAFT)!);
+	const notificationsStore = useNotificationsStore();
 
 	const canAutoSwitchToDraft = computed(() => {
 		if (isNew.value) return false;
@@ -958,16 +959,23 @@ function useAutoSwitchToDraft() {
 		return updateVersionsAllowed.value || createVersionsAllowed.value;
 	});
 
-	watch(hasEdits, (newHasEdits, oldHasEdits) => {
+	watch(hasEdits, async (newHasEdits, oldHasEdits) => {
 		if (!newHasEdits || oldHasEdits) return;
 		if (!canAutoSwitchToDraft.value) return;
 		if (!draftVersion.value) return;
 
 		stashAutoSwitchPendingEdits();
 
-		router.replace({
+		const navigationFailure = await router.replace({
 			...route,
 			query: { ...route.query, version: VERSION_KEY_DRAFT },
+		});
+
+		if (navigationFailure) return;
+
+		notificationsStore.add({
+			title: t('editing_draft_version'),
+			icon: 'edit',
 		});
 	});
 

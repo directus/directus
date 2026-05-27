@@ -717,7 +717,6 @@ function popoverClickOutsideMiddleware(e: Event) {
 		:close-on-content-click="false"
 		placement="top-start"
 		:offset-x="-16"
-		show-arrow
 		:arrow-padding="16"
 		seamless
 		keep-behind
