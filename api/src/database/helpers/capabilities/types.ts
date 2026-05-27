@@ -45,4 +45,13 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	): T[] {
 		return rows;
 	}
+
+	/**
+	 * Options to pass as the second arg of knex's per-row `.insert().returning(pk, ...)`.
+	 * Default `undefined` (no dialect-specific options); override where the driver
+	 * needs a hint (e.g. MSSQL trigger tables — see its helper).
+	 */
+	insertReturningOptions(): { includeTriggerModifications: true } | undefined {
+		return undefined;
+	}
 }

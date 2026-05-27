@@ -38,4 +38,14 @@ export class CapabilitiesHelperMSSQL extends CapabilitiesHelperDefault {
 	override async preservesInsertOrderInReturning(): Promise<boolean> {
 		return env['DB_MSSQL_TRUST_BATCH_RETURNING'] as boolean;
 	}
+
+	/**
+	 * MSSQL: tables with enabled triggers reject `OUTPUT INSERTED.<col>` unless the
+	 * server is told to redirect OUTPUT into a temp table via knex's
+	 * `includeTriggerModifications` option. Apply it on every per-row insert so
+	 * triggered tables work transparently.
+	 */
+	override insertReturningOptions(): { includeTriggerModifications: true } {
+		return { includeTriggerModifications: true };
+	}
 }

@@ -24,7 +24,7 @@ import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
-import getDatabase, { getDatabaseClient } from '../database/index.js';
+import getDatabase from '../database/index.js';
 import { runAst } from '../database/run-ast/run-ast.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
@@ -319,12 +319,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						p.actionHookPayload[primaryKeyField] = p.primaryKey;
 					}
 				} else {
-					let returningOptions: { includeTriggerModifications: true } | undefined;
-
-					// Support MSSQL tables that have triggers.
-					if (getDatabaseClient(trx) === 'mssql') {
-						returningOptions = { includeTriggerModifications: true };
-					}
+					const returningOptions = getHelpers(trx).capabilities.insertReturningOptions();
 
 					for (const p of prepared) {
 						const result = await trx
