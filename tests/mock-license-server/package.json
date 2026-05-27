@@ -18,6 +18,7 @@
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
 	"dependencies": {
+		"@directus/license": "catalog:",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@fastify/type-provider-typebox": "catalog:",
