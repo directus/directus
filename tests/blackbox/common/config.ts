@@ -22,6 +22,7 @@ export type Config = {
 export const paths = {
 	cli: join(__dirname, '..', '..', '..', 'dist', 'cli'),
 	cwd: join(__dirname, '..'),
+	license: join(__dirname, '..', '..', 'mock-license-server'),
 };
 
 const migrationsDir = './setup/migrations';
@@ -120,6 +121,7 @@ const directusConfig = {
 	EMAIL_TRANSPORT: 'smtp',
 	EMAIL_SMTP_HOST: '127.0.0.1',
 	EMAIL_SMTP_PORT: '1025',
+	LICENSE_KEY: 'D0000-00000-00000-00000-00000',
 	...directusAuthConfig,
 	...directusStorageConfig,
 };

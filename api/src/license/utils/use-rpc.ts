@@ -16,16 +16,24 @@ export function useRPC<C>(self: C, channel: string): ExtractMethods<C> {
 	const uid = randomUUID();
 	const messenger = useBus();
 
-	messenger.subscribe<{ uid: string; method: string; args: any[] }>(channel, ({ uid: id, method, args }) => {
+	messenger.subscribe<{ uid: string; method: string; args: any[] }>(channel, async ({ uid: id, method, args }) => {
 		if (uid == id) return;
 
-		(self as any)[method].call(args);
+		const fn = (self as any)[method];
+
+		if (typeof fn === 'function') {
+			try {
+				await fn.apply(self, args);
+			} catch {
+				// Prevent unhandled rejections
+			}
+		}
 	});
 
 	return new Proxy({} as any, {
 		get(_, method) {
 			return async (...args: any) => {
-				messenger.publish(channel, { uid, method, args });
+				await messenger.publish(channel, { uid, method, args });
 			};
 		},
 	});

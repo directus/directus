@@ -17,6 +17,21 @@ export async function setup() {
 
 	await new Listr([
 		{
+			title: 'start mock license server',
+			task: async () => {
+				const license = spawnSync('node', [paths.license, 'dist', 'run.js'], {
+					cwd: paths.cwd,
+					env: {
+						LICENSE_PORT: '7000',
+					},
+				});
+
+				if (license.status !== null && license.status !== 0) {
+					throw new Error('Licensing Mock Server failed');
+				}
+			},
+		},
+		{
 			title: 'Bootstrap databases and start servers',
 			task: async () => {
 				return new Listr(
