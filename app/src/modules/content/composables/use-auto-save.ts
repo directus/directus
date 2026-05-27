@@ -40,6 +40,8 @@ export function useAutoSave(
 	let errorNotificationId: string | null = null;
 	let retryTimer: ReturnType<typeof setTimeout> | null = null;
 	let retryAttempt = 0;
+	let pendingSave = false;
+	let currentSave: Promise<void> | null = null;
 
 	const debouncedSave = useDebounceFn(runSave, debounceMs);
 
@@ -48,6 +50,8 @@ export function useAutoSave(
 		(newEdits) => {
 			if (!enabled.value) return;
 			if (Object.keys(newEdits).length === 0) return;
+
+			pendingSave = true;
 
 			// Reset backoff on new edits so an exhausted retry chain doesn't lock out future retries
 			clearRetryTimer();
@@ -67,11 +71,12 @@ export function useAutoSave(
 		autoSaveError,
 		isSaving,
 		resetOpenRevision,
+		flush,
 	};
 
 	async function runSave() {
 		if (!enabled.value) return;
-		if (Object.keys(edits.value).length === 0) return;
+		if (!pendingSave) return;
 		if (isSaving.value) return; // mutex — skip overlapping saves
 
 		clearRetryTimer();
@@ -79,19 +84,46 @@ export function useAutoSave(
 		const forceNewRevision = !hasOpenRevision.value || isRevisionStale();
 
 		isSaving.value = true;
+		pendingSave = false; // snapshot — edits arriving during the save re-set this
+
+		currentSave = (async () => {
+			try {
+				await saveCallback(forceNewRevision);
+				hasOpenRevision.value = true;
+				autoSaveError.value = null;
+				retryAttempt = 0;
+				dismissErrorNotification();
+			} catch (error) {
+				pendingSave = true; // save failed — still dirty
+				autoSaveError.value = error instanceof Error ? error : new Error(String(error));
+				showErrorNotification();
+				scheduleRetry();
+			} finally {
+				isSaving.value = false;
+			}
+		})();
 
 		try {
-			await saveCallback(forceNewRevision);
-			hasOpenRevision.value = true;
-			autoSaveError.value = null;
-			retryAttempt = 0;
-			dismissErrorNotification();
-		} catch (error) {
-			autoSaveError.value = error instanceof Error ? error : new Error(String(error));
-			showErrorNotification();
-			scheduleRetry();
+			await currentSave;
 		} finally {
-			isSaving.value = false;
+			currentSave = null;
+		}
+	}
+
+	/**
+	 * Settle the auto-save queue: flush any pending debounced save and await the in-flight one.
+	 * Lets callers (e.g. Publish) queue behind unsaved changes before acting on persisted data.
+	 * Throws the auto-save error if a save fails so the caller can abort.
+	 */
+	async function flush(): Promise<void> {
+		if (!enabled.value) return;
+
+		while (pendingSave || isSaving.value) {
+			if (currentSave) await currentSave;
+			else if (pendingSave) await runSave();
+			else break;
+
+			if (autoSaveError.value) throw autoSaveError.value;
 		}
 	}
 

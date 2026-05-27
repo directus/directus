@@ -309,4 +309,66 @@ describe('useAutoSave', () => {
 			expect(saveCallback).toHaveBeenCalledTimes(1);
 		});
 	});
+
+	describe('flush', () => {
+		it('forces a pending debounced save instead of waiting out the debounce window', async () => {
+			const { edits, saveCallback, flush } = setup();
+
+			edits.value = { title: 'hello' };
+			await nextTick(); // let the watcher mark the queue dirty
+
+			await flush();
+
+			expect(saveCallback).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not save again when the debounce later fires after a flush', async () => {
+			const { edits, saveCallback, flush } = setup();
+
+			edits.value = { title: 'hello' };
+			await nextTick();
+			await flush();
+
+			await flushDebounce();
+
+			expect(saveCallback).toHaveBeenCalledTimes(1);
+		});
+
+		it('awaits an in-flight save before resolving', async () => {
+			let resolveSave!: () => void;
+			const saveCallback = vi.fn(() => new Promise<void>((resolve) => (resolveSave = resolve)));
+			const { edits, flush } = setup({ saveCallback });
+
+			edits.value = { title: 'hello' };
+			await flushDebounce(); // save starts and stays in-flight
+			expect(saveCallback).toHaveBeenCalledTimes(1);
+
+			let settled = false;
+			const flushed = flush().then(() => (settled = true));
+
+			await Promise.resolve();
+			expect(settled).toBe(false);
+
+			resolveSave();
+			await flushed;
+			expect(settled).toBe(true);
+		});
+
+		it('resolves immediately when there is nothing pending', async () => {
+			const { saveCallback, flush } = setup();
+
+			await flush();
+
+			expect(saveCallback).not.toHaveBeenCalled();
+		});
+
+		it('rejects when the forced save fails so the caller can abort the publish', async () => {
+			const { edits, flush } = setup({ saveCallback: () => Promise.reject(new Error('boom')) });
+
+			edits.value = { title: 'hello' };
+			await nextTick();
+
+			await expect(flush()).rejects.toThrow('boom');
+		});
+	});
 });
