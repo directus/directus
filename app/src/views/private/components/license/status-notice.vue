@@ -38,83 +38,61 @@ const coreGraceLicensingUrl = `https://${DIRECTUS_DOMAIN}/docs/licensing/overvie
 </script>
 
 <template>
-	<VNotice v-if="show && isLocked" type="danger" multiline class="status-notice">
-		<template #title>
-			<span class="message">
-				<I18nT keypath="license.locked_status_notice" tag="span">
-					<template #contactSupport>
-						<a :href="lockedSupportUrl" target="_blank" rel="noopener noreferrer">{{ $t('contact_support') }}</a>
-					</template>
-				</I18nT>
-			</span>
-		</template>
+	<VNotice v-if="show && isLocked" type="danger" class="status-notice">
+		<I18nT keypath="license.locked_status_notice" tag="span">
+			<template #contactSupport>
+				<a :href="lockedSupportUrl" target="_blank" rel="noopener noreferrer">{{ $t('contact_support') }}</a>
+			</template>
+		</I18nT>
 	</VNotice>
-	<VNotice v-else-if="show && isCoreGrace" :type="severity" multiline class="status-notice">
-		<template #title>
-			<span class="message">
-				<I18nT keypath="license.unlicensed_status_notice.grace_period" tag="span">
-					<template #daysLeft>
-						<strong>
-							{{
-								$t(
-									'license.unlicensed_status_notice.grace_days_left',
-									{ days: gracePeriodDaysRemaining },
-									gracePeriodDaysRemaining ?? 0,
-								)
-							}}
-						</strong>
-					</template>
-					<template #date>
-						<strong>{{ formattedCoreGraceDate }}</strong>
-					</template>
-					<template #retrieveLicenseKey>
-						<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
-							{{ $t('license.unlicensed_status_notice.retrieve_license_key') }}
-						</a>
-					</template>
-					<template #upgrade>
-						<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
-							{{ $t('license.unlicensed_status_notice.upgrade') }}
-						</a>
-					</template>
-				</I18nT>
-			</span>
-		</template>
+	<VNotice v-else-if="show && isCoreGrace" :type="severity" class="status-notice">
+		<I18nT keypath="license.unlicensed_status_notice.grace_period" tag="span">
+			<template #daysLeft>
+				<strong>
+					{{
+						$t(
+							'license.unlicensed_status_notice.grace_days_left',
+							{ days: gracePeriodDaysRemaining },
+							gracePeriodDaysRemaining ?? 0,
+						)
+					}}
+				</strong>
+			</template>
+			<template #date>
+				<strong>{{ formattedCoreGraceDate }}</strong>
+			</template>
+			<template #retrieveLicenseKey>
+				<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
+					{{ $t('license.unlicensed_status_notice.retrieve_license_key') }}
+				</a>
+			</template>
+			<template #upgrade>
+				<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
+					{{ $t('license.unlicensed_status_notice.upgrade') }}
+				</a>
+			</template>
+		</I18nT>
 	</VNotice>
-	<VNotice v-else-if="show" :type="severity" multiline class="status-notice">
-		<template #title>
-			<span class="message">
-				<I18nT keypath="license.status_notice.grace_period" tag="span">
-					<template #daysLeft>
-						<strong>
-							{{
-								$t(
-									'license.status_notice.grace_days',
-									{ days: gracePeriodDaysRemaining },
-									gracePeriodDaysRemaining ?? 0,
-								)
-							}}
-						</strong>
-					</template>
-				</I18nT>
-			</span>
-		</template>
+	<VNotice v-else-if="show" :type="severity" class="status-notice">
+		<I18nT keypath="license.status_notice.grace_period" tag="span">
+			<template #daysLeft>
+				<strong>
+					{{
+						$t('license.status_notice.grace_days', { days: gracePeriodDaysRemaining }, gracePeriodDaysRemaining ?? 0)
+					}}
+				</strong>
+			</template>
+		</I18nT>
 	</VNotice>
 </template>
 
-<style scoped>
-.status-notice :deep(.v-notice-title) {
-	flex: 1;
-}
+<style lang="scss" scoped>
+.status-notice {
+	--v-notice-color: var(--theme--foreground);
 
-.message {
-	flex: 1;
-	font-weight: normal;
-	color: var(--theme--foreground);
-}
-
-.message a {
-	color: var(--theme--primary);
-	text-decoration: underline;
+	a {
+		text-decoration: underline;
+		color: var(--theme--primary);
+	}
 }
 </style>
