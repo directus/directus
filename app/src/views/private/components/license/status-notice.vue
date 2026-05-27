@@ -116,10 +116,5 @@ const coreGraceLicensingUrl = `https://${DIRECTUS_DOMAIN}/docs/licensing/overvie
 .message a {
 	color: var(--theme--primary);
 	text-decoration: underline;
-	transition: color var(--fast) var(--transition);
-}
-
-.message a:hover {
-	color: var(--theme--foreground);
 }
 </style>
