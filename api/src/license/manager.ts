@@ -439,8 +439,6 @@ export class LicenseManager {
 				await settingsService.upsertSingleton({
 					license_token: token,
 				});
-
-				await this.syncLicense();
 			} catch (err) {
 				logger.error(err);
 
@@ -455,6 +453,8 @@ export class LicenseManager {
 				}
 			}
 		}
+
+		await this.syncLicense();
 	}
 
 	public async billingPortalUrl() {
