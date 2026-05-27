@@ -35,6 +35,7 @@ describe('getMcpSettingsField', () => {
 		});
 
 		expect(getMcpSettingsField(field('mcp_oauth_dcr_enabled'), serverInfo)).toBeNull();
+
 		expect(getMcpSettingsField(field('mcp_prompts_collection'), serverInfo)).toMatchObject({
 			field: 'mcp_prompts_collection',
 		});

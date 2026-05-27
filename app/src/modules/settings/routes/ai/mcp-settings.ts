@@ -19,6 +19,7 @@ const oauthEnvNotices = {
 
 export function getMcpSettingsField(field: SettingsField, serverInfo: Info): SettingsField | null {
 	if (field.meta?.group !== 'mcp_group' && field.field !== 'mcp_group') return null;
+
 	if (field.field === 'mcp_oauth_enabled' && !serverInfo.mcp_oauth_enabled) {
 		return createEnvNoticeField(field, oauthEnvNotices.mcp_oauth_enabled);
 	}

@@ -22,6 +22,7 @@ const selection = ref<string[]>([]);
 const filter = ref(null);
 const search = ref<string | null>(null);
 const layoutOptions = ref({});
+
 const layoutQuery = ref({
 	fields: ['client_name', 'registration_type', 'token_endpoint_auth_method', 'date_created'],
 });

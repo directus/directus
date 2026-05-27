@@ -37,7 +37,18 @@ jobs:
           build: false
 
       - name: Run Linter
-        run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          existing_files=()
+
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [ -e "$file" ]; then
+              existing_files+=("$file")
+            fi
+          done
+
+          if [ ${#existing_files[@]} -gt 0 ]; then
+            pnpm exec eslint "${existing_files[@]}"
+          fi
 
   stylelint:
     name: Stylelint
