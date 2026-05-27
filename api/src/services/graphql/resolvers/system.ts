@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { CollectionAccess } from '@directus/types';
+import type { CollectionAccess, GraphQLParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import {
 	GraphQLBoolean,
@@ -14,7 +14,6 @@ import { GraphQLJSON, SchemaComposer, toInputObjectType } from 'graphql-compose'
 import getDatabase from '../../../database/index.js';
 import { fetchAccountabilityCollectionAccess } from '../../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
 import { fetchAccountabilityPolicyGlobals } from '../../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
-import type { GraphQLParams } from '../../../types/index.js';
 import { CollectionsService } from '../../collections.js';
 import { FieldsService } from '../../fields.js';
 import { FilesService } from '../../files.js';
@@ -24,8 +23,9 @@ import { ServerService } from '../../server.js';
 import { SpecificationService } from '../../specifications.js';
 import { UsersService } from '../../users.js';
 import { GraphQLService } from '../index.js';
-import { generateSchema, type CollectionTypes, type Schema } from '../schema/index.js';
+import { type CollectionTypes, generateSchema, type Schema } from '../schema/index.js';
 import { getQuery } from '../schema/parse-query.js';
+import { dedupeResolver } from '../utils/dedupe-resolvers.js';
 import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 import { getCollectionType } from './get-collection-type.js';
 import { getFieldType } from './get-field-type.js';
@@ -78,7 +78,7 @@ export function injectSystemResolvers(
 								duration: { type: GraphQLInt },
 							},
 						}),
-				  }
+					}
 				: GraphQLBoolean,
 			rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
 				? {
@@ -89,7 +89,7 @@ export function injectSystemResolvers(
 								duration: { type: GraphQLInt },
 							},
 						}),
-				  }
+					}
 				: GraphQLBoolean,
 			websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
 				? {
@@ -113,7 +113,7 @@ export function injectSystemResolvers(
 													},
 													path: { type: GraphQLString },
 												},
-										  })
+											})
 										: GraphQLBoolean,
 								},
 								graphql: {
@@ -133,7 +133,7 @@ export function injectSystemResolvers(
 													},
 													path: { type: GraphQLString },
 												},
-										  })
+											})
 										: GraphQLBoolean,
 								},
 								heartbeat: {
@@ -141,7 +141,7 @@ export function injectSystemResolvers(
 								},
 							},
 						}),
-				  }
+					}
 				: GraphQLBoolean,
 			queryLimit: {
 				type: new GraphQLObjectType({
@@ -155,61 +155,67 @@ export function injectSystemResolvers(
 		});
 	}
 
-	/** Globally available query */
-	schemaComposer.Query.addFields({
-		server_specs_oas: {
-			type: GraphQLJSON,
-			resolve: async () => {
-				const service = new SpecificationService({ schema: gql.schema, accountability: gql.accountability });
-				return await service.oas.generate();
+	if (env['OPENAPI_ENABLED'] !== false) {
+		schemaComposer.Query.addFields({
+			server_specs_oas: {
+				type: GraphQLJSON,
+				resolve: dedupeResolver(async () => {
+					const service = new SpecificationService({ schema: gql.schema, accountability: gql.accountability });
+					return await service.oas.generate();
+				}, 'server_specs_oas'),
 			},
-		},
-		server_specs_graphql: {
-			type: GraphQLString,
-			args: {
-				scope: new GraphQLEnumType({
-					name: 'graphql_sdl_scope',
-					values: {
-						items: { value: 'items' },
-						system: { value: 'system' },
-					},
+		});
+	}
+
+	/** Globally available query */
+	if (env['GRAPHQL_INTROSPECTION'] !== false) {
+		schemaComposer.Query.addFields({
+			server_specs_graphql: {
+				type: GraphQLString,
+				args: {
+					scope: new GraphQLEnumType({
+						name: 'graphql_sdl_scope',
+						values: {
+							items: { value: 'items' },
+							system: { value: 'system' },
+						},
+					}),
+				},
+				resolve: dedupeResolver(async (_, args) => {
+					const service = new GraphQLService({
+						schema: gql.schema,
+						accountability: gql.accountability,
+						scope: args['scope'] ?? 'items',
+					});
+
+					return await generateSchema(service, 'sdl');
 				}),
 			},
-			resolve: async (_, args) => {
-				const service = new GraphQLService({
-					schema: gql.schema,
-					accountability: gql.accountability,
-					scope: args['scope'] ?? 'items',
-				});
+		});
+	}
 
-				return await generateSchema(service, 'sdl');
-			},
-		},
+	schemaComposer.Query.addFields({
 		server_ping: {
 			type: GraphQLString,
 			resolve: () => 'pong',
 		},
 		server_info: {
 			type: ServerInfo,
-			resolve: async () => {
+			resolve: dedupeResolver(async () => {
 				const service = new ServerService({
 					accountability: gql.accountability,
 					schema: gql.schema,
 				});
 
 				return await service.serverInfo();
-			},
+			}, 'server_info'),
 		},
 		server_health: {
 			type: GraphQLJSON,
-			resolve: async () => {
-				const service = new ServerService({
-					accountability: gql.accountability,
-					schema: gql.schema,
-				});
-
+			resolve: dedupeResolver(async () => {
+				const service = new ServerService({ accountability: gql.accountability, schema: gql.schema });
 				return await service.health();
-			},
+			}, 'server_health'),
 		},
 	});
 
@@ -219,14 +225,14 @@ export function injectSystemResolvers(
 		schemaComposer.Query.addFields({
 			collections: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Collection.getType()))),
-				resolve: async () => {
+				resolve: dedupeResolver(async () => {
 					const collectionsService = new CollectionsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await collectionsService.readByQuery();
-				},
+				}, 'directus_collections'),
 			},
 
 			collections_by_name: {
@@ -234,14 +240,14 @@ export function injectSystemResolvers(
 				args: {
 					name: new GraphQLNonNull(GraphQLString),
 				},
-				resolve: async (_, args) => {
+				resolve: dedupeResolver(async (_, args) => {
 					const collectionsService = new CollectionsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await collectionsService.readOne(args['name']);
-				},
+				}),
 			},
 		});
 	}
@@ -252,28 +258,28 @@ export function injectSystemResolvers(
 		schemaComposer.Query.addFields({
 			fields: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Field.getType()))),
-				resolve: async () => {
+				resolve: dedupeResolver(async () => {
 					const service = new FieldsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await service.readAll();
-				},
+				}, 'directus_fields'),
 			},
 			fields_in_collection: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Field.getType()))),
 				args: {
 					collection: new GraphQLNonNull(GraphQLString),
 				},
-				resolve: async (_, args) => {
+				resolve: dedupeResolver(async (_, args) => {
 					const service = new FieldsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await service.readAll(args['collection']);
-				},
+				}),
 			},
 			fields_by_name: {
 				type: Field,
@@ -281,14 +287,14 @@ export function injectSystemResolvers(
 					collection: new GraphQLNonNull(GraphQLString),
 					field: new GraphQLNonNull(GraphQLString),
 				},
-				resolve: async (_, args) => {
+				resolve: dedupeResolver(async (_, args) => {
 					const service = new FieldsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await service.readOne(args['collection'], args['field']);
-				},
+				}),
 			},
 		});
 	}
@@ -299,28 +305,28 @@ export function injectSystemResolvers(
 		schemaComposer.Query.addFields({
 			relations: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Relation.getType()))),
-				resolve: async () => {
+				resolve: dedupeResolver(async () => {
 					const service = new RelationsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await service.readAll();
-				},
+				}, 'directus_relations'),
 			},
 			relations_in_collection: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Relation.getType()))),
 				args: {
 					collection: new GraphQLNonNull(GraphQLString),
 				},
-				resolve: async (_, args) => {
+				resolve: dedupeResolver(async (_, args) => {
 					const service = new RelationsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await service.readAll(args['collection']);
-				},
+				}),
 			},
 			relations_by_name: {
 				type: Relation,
@@ -328,14 +334,14 @@ export function injectSystemResolvers(
 					collection: new GraphQLNonNull(GraphQLString),
 					field: new GraphQLNonNull(GraphQLString),
 				},
-				resolve: async (_, args) => {
+				resolve: dedupeResolver(async (_, args) => {
 					const service = new RelationsService({
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
 
 					return await service.readOne(args['collection'], args['field']);
-				},
+				}),
 			},
 		});
 	}
@@ -346,16 +352,23 @@ export function injectSystemResolvers(
 		schemaComposer.Query.addFields({
 			users_me: {
 				type: ReadCollectionTypes['directus_users']!,
-				resolve: async (_, args, __, info) => {
+				resolve: dedupeResolver(async (_, args, __, info) => {
 					if (!gql.accountability?.user) return null;
 					const service = new UsersService({ schema: gql.schema, accountability: gql.accountability });
 
 					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
-					const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+					const query = await getQuery(
+						args,
+						gql.schema,
+						selections || [],
+						info.variableValues,
+						gql.accountability,
+						'directus_users',
+					);
 
 					return await service.readOne(gql.accountability.user, query);
-				},
+				}),
 			},
 		});
 	}
@@ -368,7 +381,7 @@ export function injectSystemResolvers(
 					parseValue: (value: unknown) => value as CollectionAccess,
 					serialize: (value) => value,
 				}),
-				resolve: async (_, _args, __, _info) => {
+				resolve: dedupeResolver(async (_, _args, __, _info) => {
 					if (!gql.accountability?.user && !gql.accountability?.role) return null;
 
 					const result = await fetchAccountabilityCollectionAccess(gql.accountability, {
@@ -377,7 +390,7 @@ export function injectSystemResolvers(
 					});
 
 					return result;
-				},
+				}),
 			},
 		});
 	}
@@ -386,7 +399,7 @@ export function injectSystemResolvers(
 		schemaComposer.Query.addFields({
 			roles_me: {
 				type: ReadCollectionTypes['directus_roles']!.List,
-				resolve: async (_, args, __, info) => {
+				resolve: dedupeResolver(async (_, args, __, info) => {
 					if (!gql.accountability?.user && !gql.accountability?.role) return null;
 
 					const service = new RolesService({
@@ -396,13 +409,21 @@ export function injectSystemResolvers(
 
 					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
-					const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+					const query = await getQuery(
+						args,
+						gql.schema,
+						selections || [],
+						info.variableValues,
+						gql.accountability,
+						'directus_roles',
+					);
+
 					query.limit = -1;
 
 					const roles = await service.readMany(gql.accountability.roles, query);
 
 					return roles;
-				},
+				}),
 			},
 		});
 	}
@@ -418,7 +439,7 @@ export function injectSystemResolvers(
 						admin_access: 'Boolean',
 					},
 				}),
-				resolve: async (_, _args, __, _info) => {
+				resolve: dedupeResolver(async (_, _args, __, _info) => {
 					if (!gql.accountability?.user && !gql.accountability?.role) return null;
 
 					const result = await fetchAccountabilityPolicyGlobals(gql.accountability, {
@@ -427,7 +448,7 @@ export function injectSystemResolvers(
 					});
 
 					return result;
-				},
+				}),
 			},
 		});
 	}
@@ -455,7 +476,14 @@ export function injectSystemResolvers(
 							info.fragments,
 						);
 
-						const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+						const query = await getQuery(
+							args,
+							gql.schema,
+							selections || [],
+							info.variableValues,
+							gql.accountability,
+							'directus_users',
+						);
 
 						return await service.readOne(gql.accountability.user, query);
 					}
@@ -488,7 +516,15 @@ export function injectSystemResolvers(
 							info.fragments,
 						);
 
-						const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+						const query = await getQuery(
+							args,
+							gql.schema,
+							selections || [],
+							info.variableValues,
+							gql.accountability,
+							'directus_files',
+						);
+
 						return await service.readOne(primaryKey, query);
 					}
 

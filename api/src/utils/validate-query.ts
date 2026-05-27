@@ -4,7 +4,11 @@ import type { Filter, Query } from '@directus/types';
 import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
+import { parseJsonFunction } from '../database/helpers/fn/json/parse-function.js';
+import { parseJsonPath } from '../database/helpers/fn/json/parse-function.js';
 import { calculateFieldDepth } from './calculate-field-depth.js';
+import { extractFunctionName } from './extract-function-name.js';
+import { getFieldRelationalDepth } from './get-field-relational-depth.js';
 
 const env = useEnv();
 
@@ -24,12 +28,13 @@ const querySchema = Joi.object({
 	page: Joi.number().integer().min(0),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
-	export: Joi.string().valid('csv', 'json', 'xml', 'yaml'),
+	export: Joi.string().valid('csv', 'csv_utf8', 'json', 'xml', 'yaml'),
 	version: Joi.string(),
 	versionRaw: Joi.boolean(),
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),
+	backlink: Joi.boolean(),
 }).id('query');
 
 export function validateQuery(query: Query): Query {
@@ -41,6 +46,10 @@ export function validateQuery(query: Query): Query {
 
 	if (query.alias) {
 		validateAlias(query.alias);
+	}
+
+	if (query.sort) {
+		validateSort(query.sort);
 	}
 
 	validateRelationalDepth(query);
@@ -77,6 +86,9 @@ function validateFilter(filter: Filter) {
 				case '_intersects_bbox':
 				case '_nintersects_bbox':
 					validateGeometry(value, key);
+					break;
+				case '_json':
+					validateJsonFilter(value);
 					break;
 				case '_none':
 				case '_some':
@@ -166,6 +178,47 @@ export function validateGeometry(value: any, key: string) {
 	return true;
 }
 
+function validateJsonFilter(value: unknown) {
+	if (!isPlainObject(value)) {
+		throw new InvalidQueryError({ reason: `"_json" filter value must be an object` });
+	}
+
+	for (const [path, innerFilter] of Object.entries(value as Record<string, unknown>)) {
+		if (path.length === 0) {
+			throw new InvalidQueryError({ reason: `"_json" path key must be a non-empty string` });
+		}
+
+		if (path === '_or' || path === '_and') {
+			if (!Array.isArray(innerFilter)) {
+				throw new InvalidQueryError({ reason: `"_json" logical operator "${path}" must be an array` });
+			}
+
+			for (const subFilter of innerFilter) {
+				validateJsonFilter(subFilter);
+			}
+
+			continue;
+		}
+
+		// Throws for invalid or unsupported json paths
+		parseJsonPath(path);
+
+		if (!isPlainObject(innerFilter)) {
+			throw new InvalidQueryError({ reason: `"_json" inner filter for path "${path}" must be an object` });
+		}
+
+		const nestedPathKey = Object.keys(innerFilter as object).find((k) => !k.startsWith('_'));
+
+		if (nestedPathKey) {
+			throw new InvalidQueryError({
+				reason: `"_json" path "${path}" cannot contain a nested path "${nestedPathKey}"; use a single flat path like "${path}.${nestedPathKey}"`,
+			});
+		}
+
+		validateFilter(innerFilter as Filter);
+	}
+}
+
 function validateAlias(alias: any) {
 	if (isPlainObject(alias) === false) {
 		throw new InvalidQueryError({ reason: `"alias" has to be an object` });
@@ -180,8 +233,26 @@ function validateAlias(alias: any) {
 			throw new InvalidQueryError({ reason: `"alias" value has to be a string. "${typeof key}" given` });
 		}
 
-		if (key.includes('.') || value.includes('.')) {
-			throw new InvalidQueryError({ reason: `"alias" key/value can't contain a period character \`.\`` });
+		if (key.includes('.')) {
+			throw new InvalidQueryError({ reason: `"alias" key can't contain a period character \`.\`` });
+		}
+
+		if (extractFunctionName(value) === 'json') {
+			// throws InvalidQueryError on invalid json() syntax
+			parseJsonFunction(value);
+		} else if (value.includes('.')) {
+			throw new InvalidQueryError({ reason: `"alias" value can't contain a period character \`.\`` });
+		}
+	}
+}
+
+function validateSort(sort: string[]) {
+	for (const sortField of sort) {
+		const field = sortField.startsWith('-') ? sortField.slice(1) : sortField;
+
+		if (extractFunctionName(field) === 'json') {
+			// throws InvalidQueryError on invalid json() syntax
+			parseJsonFunction(field);
 		}
 	}
 }
@@ -215,7 +286,12 @@ function validateRelationalDepth(query: Query) {
 	fields = uniq(fields);
 
 	for (const field of fields) {
-		if (field.split('.').length > maxRelationalDepth) {
+		// Resolve user-defined aliases before measuring depth so that
+		// alias={"myAlias":"json(category_id.metadata, color)"} is checked
+		// against the actual relational path, not just the alias key.
+		const resolved = query.alias?.[field] ?? field;
+
+		if (getFieldRelationalDepth(resolved) > maxRelationalDepth) {
 			throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
 		}
 	}
@@ -230,7 +306,10 @@ function validateRelationalDepth(query: Query) {
 
 	if (query.sort) {
 		for (const sort of query.sort) {
-			if (sort.split('.').length > maxRelationalDepth) {
+			const field = sort.startsWith('-') ? sort.slice(1) : sort;
+			const resolved = query.alias?.[field] ?? field;
+
+			if (getFieldRelationalDepth(resolved) > maxRelationalDepth) {
 				throw new InvalidQueryError({ reason: 'Max relational depth exceeded' });
 			}
 		}

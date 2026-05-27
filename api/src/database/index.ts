@@ -1,19 +1,19 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
+import { performance } from 'perf_hooks';
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import type { DatabaseClient } from '@directus/types';
 import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { isArray, merge, toArray } from 'lodash-es';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
-import { performance } from 'perf_hooks';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';
-import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
 import { getHelpers } from './helpers/index.js';
@@ -321,11 +321,11 @@ export async function validateMigrations(): Promise<boolean> {
  * These database extensions should be optional, so we don't throw or return any problem states when they don't
  */
 export async function validateDatabaseExtensions(): Promise<void> {
+	const logger = useLogger();
 	const database = getDatabase();
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	const geometrySupport = await helpers.st.supported();
-	const logger = useLogger();
 
 	if (!geometrySupport) {
 		switch (client) {
@@ -337,6 +337,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 				break;
 			default:
 				logger.warn(`Geometry type not supported on ${client}`);
+				break;
 		}
 	}
 }

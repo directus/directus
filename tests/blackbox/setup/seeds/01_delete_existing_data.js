@@ -6,6 +6,8 @@ export async function seed(knex) {
 		await knex('directus_permissions').del();
 		await knex('directus_policies').del();
 		await knex('directus_access').del();
+		await knex('directus_revisions').del();
+		await knex('directus_versions').del();
 		await knex('directus_users').del();
 	}
 }

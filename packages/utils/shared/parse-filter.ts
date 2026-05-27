@@ -1,11 +1,10 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Filter, Policy, Role, User } from '@directus/types';
 import { isObjectLike } from 'lodash-es';
-import { adjustDate } from './adjust-date.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';
 import { isObject } from './is-object.js';
 import { parseJSON } from './parse-json.js';
+import { parseNow } from './parse-now.js';
 import { toArray } from './to-array.js';
 
 type ParseFilterContext = {
@@ -102,7 +101,7 @@ export function parsePreset(
 	preset: Record<string, any> | null,
 	accountability: BasicAccountability | null,
 	context: ParseFilterContext,
-) {
+): any {
 	if (!preset) return preset;
 	return deepMap(preset, (value) => {
 		if (value === 'true') return true;
@@ -132,13 +131,47 @@ function parseFilterEntry(
 		return {
 			[key]: parseDynamicVariable(typeof value === 'string' ? parseJSON(value) : value, accountability, context),
 		};
+	} else if (String(key) === '_json') {
+		return { [key]: parseJsonFilterValue(value, accountability, context) };
 	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseDynamicVariable(value, accountability, context) };
-	} else if (String(key).startsWith('item__') && isObjectLike(value)) {
-		return { [`item:${String(key).split('item__')[1]}`]: parseFilter(value, accountability, context) } as Filter;
 	} else {
 		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
 	}
+}
+
+function parseJsonFilterValue(
+	jsonFilter: Record<string, any>,
+	accountability: BasicAccountability | null,
+	context: ParseFilterContext,
+): Record<string, any> {
+	const result: Record<string, any> = {};
+
+	for (const [key, value] of Object.entries(jsonFilter)) {
+		if (key === '_or' || key === '_and') {
+			result[key] = (value as Record<string, any>[]).map((subFilter) =>
+				parseJsonFilterValue(subFilter, accountability, context),
+			);
+		} else if (['_in', '_nin', '_between', '_nbetween'].includes(key)) {
+			if (Array.isArray(value)) {
+				result[key] = value.flatMap((v) => parseDynamicVariable(v, accountability, context));
+			} else if (isObject(value)) {
+				// Dynamic variable passed as object (e.g. $CURRENT_USER) — wrap into array
+				result[key] = Object.values(value).flatMap((v) => parseDynamicVariable(v, accountability, context));
+			} else {
+				// Resolve dynamic variables (e.g. $CURRENT_ROLES → array); other invalid values pass through
+				// unchanged so validateQuery can reject them
+				result[key] = typeof value === 'string' ? parseDynamicVariable(value, accountability, context) : value;
+			}
+		} else if (key.startsWith('_')) {
+			result[key] = parseDynamicVariable(value, accountability, context);
+		} else {
+			// JSON path key — recurse to process the operator+value object beneath it
+			result[key] = parseJsonFilterValue(value as Record<string, any>, accountability, context);
+		}
+	}
+
+	return result;
 }
 
 function parseDynamicVariable(value: any, accountability: BasicAccountability | null, context: ParseFilterContext) {
@@ -147,13 +180,7 @@ function parseDynamicVariable(value: any, accountability: BasicAccountability | 
 	}
 
 	if (value.startsWith('$NOW')) {
-		if (value.includes('(') && value.includes(')')) {
-			const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
-			if (!adjustment) return new Date();
-			return adjustDate(new Date(), adjustment);
-		}
-
-		return new Date();
+		return parseNow(value);
 	}
 
 	if (value.startsWith('$CURRENT_USER')) {

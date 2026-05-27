@@ -1,11 +1,11 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
 import type { Field, Type } from '@directus/types';
 import fse from 'fs-extra';
 import yaml from 'js-yaml';
 import type { Knex } from 'knex';
 import { isObject } from 'lodash-es';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
 import { getHelpers } from '../helpers/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

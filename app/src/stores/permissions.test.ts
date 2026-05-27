@@ -1,13 +1,12 @@
-import api from '@/api';
-import { ActionPermission, CollectionPermission } from '@/types/permissions';
 import { PermissionsAction, User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest';
 import { usePermissionsStore } from './permissions';
 import { useUserStore } from './user';
-import { randomIdentifier, randomUUID } from '@directus/random';
 import { mockedStore } from '@/__utils__/store';
+import api from '@/api';
+import { ActionPermission, CollectionPermission } from '@/types/permissions';
 
 vi.mock('@/api');
 
@@ -26,9 +25,9 @@ beforeEach(() => {
 	);
 
 	sample = {
-		collection: randomIdentifier(),
-		user: { id: randomUUID() },
-		role: { id: randomUUID() },
+		collection: 'test_collection',
+		user: { id: 'test-user-id' },
+		role: { id: 'test-role-id' },
 	};
 });
 

@@ -1,0 +1,162 @@
+<script setup lang="ts">
+import type { ContextAttachment } from '@directus/ai';
+import { computed } from 'vue';
+import type { PendingContextItem } from '../types';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { useCollectionsStore } from '@/stores/collections';
+
+type ContextItem = ContextAttachment | PendingContextItem;
+
+const props = withDefaults(
+	defineProps<{
+		item: ContextItem;
+		imageUrl?: string;
+		removable?: boolean;
+	}>(),
+	{
+		imageUrl: undefined,
+		removable: false,
+	},
+);
+
+const emit = defineEmits<{
+	remove: [];
+	mouseenter: [];
+	mouseleave: [];
+}>();
+
+const collectionsStore = useCollectionsStore();
+
+const icon = computed(() => {
+	switch (props.item.type) {
+		case 'visual-element': {
+			const collection = collectionsStore.getCollection(props.item.data.collection);
+			return collection?.icon || 'view_in_ar';
+		}
+
+		case 'item': {
+			const collection = collectionsStore.getCollection(props.item.data.collection);
+			return collection?.icon || 'database';
+		}
+
+		case 'prompt':
+			return 'magic_button';
+
+		case 'file':
+		case 'local-file':
+			return 'description';
+
+		default:
+			return 'attachment';
+	}
+});
+</script>
+
+<template>
+	<div
+		:class="['ai-context-card', { removable, 'has-image': imageUrl }]"
+		@mouseenter="emit('mouseenter')"
+		@mouseleave="emit('mouseleave')"
+	>
+		<img v-if="imageUrl" :src="imageUrl" :alt="item.display" class="chip-image" />
+		<div v-else class="icon-wrapper">
+			<VIcon :name="icon" x-small class="item-icon" />
+		</div>
+		<VTextOverflow :text="String(item.display)" class="display-text" />
+		<button v-if="removable" type="button" class="close-button" :aria-label="$t('remove')" @click.stop="emit('remove')">
+			<VIcon name="close" small />
+		</button>
+	</div>
+</template>
+
+<style scoped>
+.ai-context-card {
+	display: flex;
+	align-items: center;
+	gap: 0.3125rem;
+	padding: 0.25rem 0.3125rem;
+	flex: 0 0 auto;
+	max-inline-size: 8.4375rem;
+	background-color: var(--theme--background);
+	border: 1px solid var(--theme--border-color);
+	border-radius: var(--theme--border-radius);
+
+	&.removable {
+		max-inline-size: 7.0625rem;
+		cursor: pointer;
+		transition:
+			border-color var(--fast) var(--transition),
+			background-color var(--fast) var(--transition);
+
+		&:hover {
+			border-color: var(--theme--border-color-accent);
+			background-color: var(--theme--background-normal);
+		}
+	}
+
+	&.has-image {
+		padding-inline-start: 0.25rem;
+	}
+}
+
+.icon-wrapper {
+	flex-shrink: 0;
+	background-color: var(--theme--primary-background);
+	padding: 0.125rem;
+	border-radius: var(--theme--border-radius);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.item-icon {
+	--v-icon-color: var(--purple);
+}
+
+.chip-image {
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
+	object-fit: cover;
+	border-radius: var(--theme--border-radius);
+	flex-shrink: 0;
+}
+
+.display-text {
+	flex: 1;
+	min-inline-size: 0;
+	font-size: 0.6875rem;
+	font-weight: 500;
+	color: var(--theme--foreground);
+	line-height: 1.3;
+	margin: 0;
+}
+
+.close-button {
+	all: unset;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.125rem;
+	border-radius: var(--theme--border-radius);
+	cursor: pointer;
+	opacity: 0.5;
+	flex-shrink: 0;
+	transition:
+		opacity var(--fast) var(--transition),
+		background-color var(--fast) var(--transition);
+
+	--v-icon-color: var(--theme--foreground);
+
+	&:hover {
+		opacity: 1;
+		background-color: var(--theme--background-normal);
+	}
+
+	&:focus-visible {
+		opacity: 1;
+		outline: 2px solid var(--theme--primary);
+		outline-offset: 1px;
+	}
+}
+</style>

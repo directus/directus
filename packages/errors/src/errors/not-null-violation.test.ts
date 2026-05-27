@@ -1,4 +1,3 @@
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import type { NotNullViolationErrorExtensions } from './not-null-violation.js';
 import { messageConstructor } from './not-null-violation.js';
@@ -7,8 +6,8 @@ let sample: NotNullViolationErrorExtensions;
 
 beforeEach(() => {
 	sample = {
-		collection: randomAlpha(randomInteger(2, 50)),
-		field: randomAlpha(randomInteger(2, 50)),
+		collection: 'test_collection',
+		field: 'test_field',
 	};
 });
 

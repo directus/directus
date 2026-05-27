@@ -8,16 +8,17 @@ import type { Driver, TusDriver } from '@directus/storage';
 import { supportsTus } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { Server, EVENTS } from '@tus/server';
-import { RESUMABLE_UPLOADS } from '../../constants.js';
+import { Server } from '@tus/server';
+import { pick } from 'lodash-es';
+import { FILE_UPLOADS, RESUMABLE_UPLOADS } from '../../constants.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
 import { getStorage } from '../../storage/index.js';
+import { getSchema } from '../../utils/get-schema.js';
 import { extractMetadata } from '../files/lib/extract-metadata.js';
 import { ItemsService } from '../index.js';
 import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
-import { pick } from 'lodash-es';
-import emitter from '../../emitter.js';
-import getDatabase from '../../database/index.js';
 
 type Context = {
 	schema: SchemaOverview;
@@ -51,10 +52,12 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 		path: '/files/tus',
 		datastore: store,
 		locker: getTusLocker(),
-		...(RESUMABLE_UPLOADS.MAX_SIZE !== null && { maxSize: RESUMABLE_UPLOADS.MAX_SIZE }),
-		async onUploadFinish(req: any, res, upload) {
+		...(FILE_UPLOADS.MAX_SIZE !== null && { maxSize: FILE_UPLOADS.MAX_SIZE }),
+		async onUploadFinish(_req: any, upload) {
+			const schema = await getSchema();
+
 			const service = new ItemsService<File>('directus_files', {
-				schema: req.schema,
+				schema,
 			});
 
 			const file = (
@@ -64,7 +67,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 				})
 			)[0];
 
-			if (!file) return res;
+			if (!file) return {};
 
 			let fileData;
 
@@ -116,22 +119,24 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 					collection: 'directus_files',
 				},
 				{
+					schema,
 					database: getDatabase(),
-					schema: req.schema,
-					accountability: req.accountability,
+					accountability: context.accountability ?? null,
 				},
 			);
 
-			return res;
+			return {
+				headers: {
+					'Directus-File-Id': upload.metadata!['id']!,
+				},
+			};
 		},
 		generateUrl(_req, opts) {
 			return env['PUBLIC_URL'] + '/files/tus/' + opts.id;
 		},
+		allowedHeaders: env['CORS_ALLOWED_HEADERS'] as string[],
+		exposedHeaders: env['CORS_EXPOSED_HEADERS'] as string[],
 		relativeLocation: String(env['PUBLIC_URL']).startsWith('http'),
-	});
-
-	server.on(EVENTS.POST_CREATE, async (_req, res, upload) => {
-		res.setHeader('Directus-File-Id', upload.metadata!['id']!);
 	});
 
 	return [server, cleanup];

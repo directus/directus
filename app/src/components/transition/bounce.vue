@@ -1,7 +1,7 @@
 <template>
-	<transition-group name="bounce" tag="div" v-bind="$attrs">
+	<TransitionGroup name="bounce" tag="div" v-bind="$attrs">
 		<slot />
-	</transition-group>
+	</TransitionGroup>
 </template>
 
 <style lang="scss">

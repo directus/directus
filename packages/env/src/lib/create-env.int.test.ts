@@ -1,9 +1,9 @@
+import { readFileSync } from 'node:fs';
 import { afterEach, expect, test, vi } from 'vitest';
+import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { readConfigurationFromProcess } from '../utils/read-configuration-from-process.js';
 import { createEnv } from './create-env.js';
 import { readConfigurationFromFile } from './read-configuration-from-file.js';
-import { isDirectusVariable } from '../utils/is-directus-variable.js';
-import { readFileSync } from 'node:fs';
 
 vi.mock('../utils/get-config-path.js');
 vi.mock('../utils/read-configuration-from-process.js');

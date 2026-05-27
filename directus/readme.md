@@ -2,6 +2,13 @@
 
 ---
 
+> [!NOTE]\
+> We’re planning an update to the Directus source code license and would love your feedback.\
+> Take a look at our community post and share your thoughts!\
+> [🔗 Directus License Revision: Community Feedback Requested](https://community.directus.io/t/directus-license-revision-community-feedback-requested/2125)
+
+---
+
 ## 🐰 Introduction
 
 Directus is a real-time API and App dashboard for managing SQL database content.
@@ -31,13 +38,27 @@ $15/month.
 
 <br />
 
+## ⚡ One-Click Deployment Options
+
+Deploy Directus with a single click via Railway—complete infrastructure without the complexity.
+
+### Deploy on Railway
+
+Fully provisioned — one click to deploy Directus with PostgreSQL database, Redis cache, and S3-compatible bucket
+storage, all connected via Railway's private network for secure, zero-egress communication.
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/directus-official?referralCode=b2RDZT&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
+<br />
+
 ## 🤔 Community Help
 
 [The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
-- [Discord](https://directus.chat) (Questions, Live Discussions)
+- [Community](https://community.directus.io) (Questions, Discussions)
+- [Discord](https://directus.chat) (Live Chat)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [GitHub Discussions](https://github.com/directus/directus/discussions) (Feature Requests)
+- [Roadmap](https://roadmap.directus.io/) (Roadmap & Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 

@@ -4,9 +4,9 @@ import VHover from './v-hover.vue';
 
 <template>
 	<Story title="VHover">
-		<v-hover v-slot="{ hover }">
+		<VHover v-slot="{ hover }">
 			Hover me!
 			<div v-if="hover">This is only shown on hover.</div>
-		</v-hover>
+		</VHover>
 	</Story>
 </template>

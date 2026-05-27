@@ -1,6 +1,6 @@
 import type { ApplyQueryFields, CollectionType, Query, QueryItem, SingletonCollections } from '../../../types/index.js';
-import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 
 export type ReadSingletonOutput<
 	Schema,

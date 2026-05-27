@@ -17,11 +17,11 @@ afterEach(() => {
 	vi.resetAllMocks();
 });
 
-test('Throws if version compatibility assertion throws', () => {
+test('Throws if version compatibility assertion throws', async () => {
 	const error = new Error();
 	vi.mocked(assertVersionCompatibility).mockRejectedValue(error);
 
-	expect(() => describe('test-id')).rejects.toBe(error);
+	await expect(() => describe('test-id')).rejects.toBe(error);
 });
 
 test('Fetches constructed URL', async () => {

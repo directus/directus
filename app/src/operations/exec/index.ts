@@ -1,5 +1,5 @@
-import { DeepPartial, Field } from '@directus/types';
 import { defineOperationApp } from '@directus/extensions';
+import { DeepPartial, Field } from '@directus/types';
 
 export default defineOperationApp({
 	id: 'exec',

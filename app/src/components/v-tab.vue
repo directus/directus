@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
 import { useGroupable } from '@directus/composables';
+import { inject, ref } from 'vue';
+import VListItem from '@/components/v-list-item.vue';
 
 interface Props {
 	/** A custom value to be used with `v-tabs` */
@@ -27,9 +28,9 @@ function onClick() {
 </script>
 
 <template>
-	<v-list-item v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" clickable @click="onClick">
+	<VListItem v-if="vertical" class="v-tab vertical" :active="active" :disabled="disabled" clickable @click="onClick">
 		<slot v-bind="{ active, toggle }" />
-	</v-list-item>
+	</VListItem>
 	<div v-else class="v-tab horizontal" :class="{ active, disabled }" @click="onClick">
 		<slot v-bind="{ active, toggle }" />
 	</div>
@@ -39,7 +40,7 @@ function onClick() {
 .v-tab.horizontal {
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	background-color: var(--theme--background);
 	transition: color var(--fast) var(--transition);
 

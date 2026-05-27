@@ -1,4 +1,4 @@
-import { GraphQLError, Token, locatedError } from 'graphql';
+import { GraphQLError, locatedError, Token } from 'graphql';
 
 export function addPathToValidationError(validationError: GraphQLError): GraphQLError {
 	const token = validationError.nodes?.[0]?.loc?.startToken;

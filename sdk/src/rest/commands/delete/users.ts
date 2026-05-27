@@ -1,6 +1,6 @@
+import type { DirectusUser } from '../../../schema/user.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
-import type { DirectusUser } from '../../../schema/user.js';
 
 /**
  * Delete multiple existing users.

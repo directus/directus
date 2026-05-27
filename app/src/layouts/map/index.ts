@@ -1,8 +1,3 @@
-import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
-import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
-import { getItemRoute } from '@/utils/get-route';
-import { saveAsCSV } from '@/utils/save-as-csv';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field, Filter, GeometryOptions } from '@directus/types';
@@ -16,6 +11,12 @@ import MapLayout from './map.vue';
 import MapOptions from './options.vue';
 import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
+import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
+import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
+import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
+import { getItemRoute } from '@/utils/get-route';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'map',
@@ -30,6 +31,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
+		const toolsStore = useAiToolsStore();
+
+		toolsStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const router = useRouter();
 		const { t, n } = useI18n();
 
@@ -232,7 +241,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		const featureId = computed(() => {
-			return props.readonly ? null : primaryKeyField.value?.field ?? null;
+			return props.readonly ? null : (primaryKeyField.value?.field ?? null);
 		});
 
 		const showingCount = computed(() => {
@@ -265,7 +274,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function updateItemPopup(update: Partial<ItemPopup>) {
 			if ('item' in update) {
 				const field = primaryKeyField.value?.field;
-				update.item = !field ? null : items.value.find((i) => i[field] === update.item) ?? null;
+				update.item = !field ? null : (items.value.find((i) => i[field] === update.item) ?? null);
 			}
 
 			itemPopup.value = merge({}, itemPopup.value, update);

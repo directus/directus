@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import axios from 'axios';
 import { spawn, spawnSync } from 'child_process';
+import fs from 'node:fs/promises';
+import { join } from 'node:path';
+import axios from 'axios';
 import knex from 'knex';
 import { Listr } from 'listr2';
 import { clone } from 'lodash-es';
-import fs from 'node:fs/promises';
-import { join } from 'node:path';
 import config, { getUrl, paths } from '../common/config';
 import vendors from '../common/get-dbs-to-test';
 import { USER } from '../common/variables';
@@ -61,7 +61,8 @@ export async function setup() {
 									});
 
 									server.stderr.on('data', (data) => {
-										console.log(data.toString());
+										serverOutput += data.toString();
+										console.log(`[MAIN] ${data.toString()}`);
 									});
 
 									server.on('exit', async (code) => {
@@ -87,6 +88,11 @@ export async function setup() {
 
 									serverNoCache.stdout.on('data', (data) => {
 										serverNoCacheOutput += data.toString();
+									});
+
+									serverNoCache.stderr.on('data', (data) => {
+										serverNoCacheOutput += data.toString();
+										console.log(`[NO CACHE] ${data.toString()}`);
 									});
 
 									serverNoCache.on('exit', async (code) => {

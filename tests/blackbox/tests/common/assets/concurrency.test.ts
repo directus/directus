@@ -1,10 +1,10 @@
+import { spawn } from 'child_process';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 import { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { sleep } from '@utils/sleep';
-import { spawn } from 'child_process';
-import { createReadStream } from 'fs';
-import { join } from 'path';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 

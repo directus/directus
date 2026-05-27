@@ -1,7 +1,7 @@
 import { type AllCollections } from '../../../index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { AggregationOptions, AggregationOutput } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 import { isSystemCollection } from '../../utils/is-system-collection.js';
 
 /**

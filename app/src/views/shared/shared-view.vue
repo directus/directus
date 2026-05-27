@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { useServerStore } from '@/stores/server';
+import { getAssetUrl } from '@/utils/get-asset-url';
 
 defineProps<{
 	title?: string;
@@ -13,8 +12,6 @@ defineProps<{
 const serverStore = useServerStore();
 
 const { info: serverInfo } = storeToRefs(serverStore);
-
-const { t } = useI18n();
 
 const logoURL = computed<string | null>(() => {
 	if (!serverStore.info?.project?.project_logo) return null;
@@ -45,7 +42,7 @@ const logoURL = computed<string | null>(() => {
 						<div class="title">
 							<p class="subtitle">{{ serverInfo?.project?.project_name }}</p>
 							<slot name="title">
-								<h1 class="type-title">{{ title ?? t('share_access_page') }}</h1>
+								<h1 class="type-title">{{ title ?? $t('share_access_page') }}</h1>
 							</slot>
 						</div>
 					</div>
@@ -63,9 +60,9 @@ const logoURL = computed<string | null>(() => {
 
 <style scoped lang="scss">
 .shared {
-	width: 100%;
-	height: 100%;
-	padding-bottom: 64px;
+	inline-size: 100%;
+	block-size: 100%;
+	padding-block-end: 3.625rem;
 	overflow: auto;
 	background-color: var(--theme--background-subdued);
 }
@@ -75,37 +72,37 @@ const logoURL = computed<string | null>(() => {
 }
 
 header {
-	margin-bottom: 32px;
-	padding: 10px;
+	margin-block-end: 1.8125rem;
+	padding: 0.5625rem;
 	background-color: var(--theme--background);
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .container {
-	max-width: 856px;
+	max-inline-size: 48.125rem;
 	margin: 0 auto;
 }
 
 .title-box {
 	display: flex;
 	align-items: center;
-	width: max-content;
-	max-width: 100%;
-	height: 60px;
-	margin-top: 2px;
+	inline-size: max-content;
+	max-inline-size: 100%;
+	block-size: 3.375rem;
+	margin-block-start: 0.125rem;
 
 	.title {
-		margin-left: 16px;
+		margin-inline-start: 0.875rem;
 
 		h1 {
 			color: var(--theme--foreground);
 			font-weight: 700;
-			font-size: 24px;
-			line-height: 24px;
+			font-size: 1.375rem;
+			line-height: 1;
 		}
 
 		.subtitle {
-			width: 100%;
+			inline-size: 100%;
 			color: var(--theme--foreground-subdued);
 		}
 	}
@@ -115,24 +112,24 @@ header {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 60px;
-	height: 60px;
+	inline-size: 3.375rem;
+	block-size: 3.375rem;
 	background-color: var(--project-color);
 	border-radius: var(--theme--border-radius);
 
 	img {
-		width: 40px;
-		height: 40px;
+		inline-size: 2.25rem;
+		block-size: 2.25rem;
 		object-fit: contain;
 		object-position: center center;
 	}
 }
 
 .content {
-	padding: 32px;
+	padding: 1.8125rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
-	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+	box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 }
 
 .inline {
@@ -142,21 +139,21 @@ header {
 
 	.inline-container {
 		display: block;
-		width: 100%;
-		max-width: 856px;
-		padding: 32px;
+		inline-size: 100%;
+		max-inline-size: 48.125rem;
+		padding: 1.8125rem;
 		background-color: var(--theme--background);
 		border-radius: var(--theme--border-radius);
-		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+		box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 
-		@media (min-width: 618px) {
-			width: 618px;
+		@media (width >= 34.75rem) {
+			inline-size: 34.75rem;
 		}
 	}
 
 	header {
 		padding: 0;
-		border-bottom: 0;
+		border-block-end: 0;
 	}
 
 	.container {

@@ -1,0 +1,20 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-633f20bc="" class="rating detailed">
+  <div data-v-633f20bc="" class="active" style="inline-size: 60%;">
+    <v-icon-stub data-v-633f20bc="" name="star" filled="true" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="true" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="true" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="true" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="true" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+  </div>
+  <div data-v-633f20bc="" class="inactive">
+    <v-icon-stub data-v-633f20bc="" name="star" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+    <v-icon-stub data-v-633f20bc="" name="star" filled="false" sup="false" left="false" right="false" disabled="false" clickable="false" xsmall="false" small="true" large="false" xlarge="false"></v-icon-stub>
+  </div>
+</div>"
+`;

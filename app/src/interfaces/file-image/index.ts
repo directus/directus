@@ -26,6 +26,7 @@ export default defineInterface({
 					note: '$t:interfaces.system-folder.field_hint',
 				},
 			},
+
 			{
 				field: 'crop',
 				name: '$t:interfaces.file-image.crop',
@@ -93,6 +94,28 @@ export default defineInterface({
 				},
 				schema: {
 					default_value: false,
+				},
+			},
+			{
+				field: 'allowedMimeTypes',
+				name: '$t:interfaces.file.allowed_mime_types',
+				type: 'json',
+				meta: {
+					interface: 'select-multiple-dropdown',
+					options: {
+						placeholder: '$t:interfaces.file.mime_types_placeholder',
+						choices: [
+							{ value: 'image/jpeg', text: 'image/jpeg' },
+							{ value: 'image/png', text: 'image/png' },
+							{ value: 'image/gif', text: 'image/gif' },
+							{ value: 'image/webp', text: 'image/webp' },
+							{ value: 'image/svg+xml', text: 'image/svg+xml' },
+							{ value: 'image/avif', text: 'image/avif' },
+							{ value: 'image/tiff', text: 'image/tiff' },
+						],
+						allowOther: true,
+					},
+					note: '$t:interfaces.file.mime_types_note',
 				},
 			},
 		];

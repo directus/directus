@@ -1,3 +1,7 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
-export const TokenExpiredError = createError(ErrorCode.TokenExpired, 'Token expired.', 401);
+export const TokenExpiredError: DirectusErrorConstructor<void> = createError(
+	ErrorCode.TokenExpired,
+	'Token expired.',
+	401,
+);

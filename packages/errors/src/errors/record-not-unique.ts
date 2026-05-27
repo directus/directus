@@ -1,13 +1,18 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface RecordNotUniqueErrorExtensions {
 	collection: string | null;
 	field: string | null;
+	value: string | null;
 	primaryKey?: boolean;
 }
 
-export const messageConstructor = ({ collection, field }: RecordNotUniqueErrorExtensions) => {
+export const messageConstructor = ({ collection, field, value }: RecordNotUniqueErrorExtensions): string => {
 	let message = 'Value ';
+
+	if (value) {
+		message += `"${value}" `;
+	}
 
 	if (field) {
 		message += `for field "${field}" `;
@@ -22,8 +27,5 @@ export const messageConstructor = ({ collection, field }: RecordNotUniqueErrorEx
 	return message;
 };
 
-export const RecordNotUniqueError = createError<RecordNotUniqueErrorExtensions>(
-	ErrorCode.RecordNotUnique,
-	messageConstructor,
-	400,
-);
+export const RecordNotUniqueError: DirectusErrorConstructor<RecordNotUniqueErrorExtensions> =
+	createError<RecordNotUniqueErrorExtensions>(ErrorCode.RecordNotUnique, messageConstructor, 400);

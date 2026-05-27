@@ -1,12 +1,12 @@
 import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
-import { joinFilterWithCases } from '../lib/apply-query/join-filter-with-cases.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { getColumn } from './get-column.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 import { getHelpers } from '../../helpers/index.js';
+import { joinFilterWithCases } from '../lib/apply-query/join-filter-with-cases.js';
 import { applyCaseWhen } from './apply-case-when.js';
+import { getColumn } from './get-column.js';
 import { getNodeAlias } from './get-field-alias.js';
 
 interface NodePreProcessOptions {

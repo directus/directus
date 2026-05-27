@@ -1,15 +1,15 @@
-import api from '@/api';
-import { emitter, Events } from '@/events';
-import { i18n } from '@/lang';
-import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
-import { notify } from '@/utils/notify';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import type { File } from '@directus/types';
 import type { AxiosProgressEvent } from 'axios';
 import type { PreviousUpload } from 'tus-js-client';
 import { Upload } from 'tus-js-client';
 import { unexpectedError } from './unexpected-error';
+import api from '@/api';
+import { emitter, Events } from '@/events';
+import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
+import { getRootPath } from '@/utils/get-root-path';
+import { notify } from '@/utils/notify';
 
 export async function uploadFile(
 	file: globalThis.File,
@@ -27,7 +27,7 @@ export async function uploadFile(
 	const server = useServerStore();
 	let notified = false;
 
-	if (server.info.uploads) {
+	if (server.info.uploads?.tus === true) {
 		const fileInfo: Partial<File> = { ...(options?.preset ?? {}) };
 
 		if (options?.fileId) {

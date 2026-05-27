@@ -1,12 +1,11 @@
 import { InvalidPayloadError } from '@directus/errors';
-import type { Item, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
-import { ItemsService } from './items.js';
 import { AccessService } from './access.js';
+import { ItemsService } from './items.js';
 import { PresetsService } from './presets.js';
 import { UsersService } from './users.js';
 
@@ -111,7 +110,7 @@ export class RolesService extends ItemsService {
 			throw new InvalidPayloadError({ reason: 'A role cannot be a parent of itself' });
 		}
 
-		const roles = await fetchRolesTree(parent, this.knex);
+		const roles = await fetchRolesTree(parent, { knex: this.knex });
 
 		if (ids.some((id) => roles.includes(id))) {
 			// The role tree up from the parent already includes this role, so it would create a circular reference

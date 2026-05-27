@@ -4,7 +4,7 @@
 
 	.axis,
 	.chart-label {
-		font-size: 10px;
+		font-size: 0.5625rem;
 		fill: var(--theme--foreground);
 
 		line {
@@ -64,32 +64,32 @@
 .graph-svg-tip {
 	position: absolute;
 	z-index: 99999;
-	padding: 10px;
+	padding: 0.5625rem;
 	color: var(--theme--form--field--input--border-color);
-	font-size: 12px;
+	font-size: 0.6875rem;
 	text-align: center;
-	background: rgba(0, 0, 0, 0.8);
-	border-radius: 3px;
+	background: rgb(0 0 0 / 0.8);
+	border-radius: 0.1875rem;
 
 	ul {
 		display: flex;
-		padding-left: 0;
+		padding-inline-start: 0;
 	}
 
 	ol {
 		display: flex;
-		padding-left: 0;
+		padding-inline-start: 0;
 	}
 
 	&.comparison {
 		padding: 0;
-		text-align: left;
+		text-align: start;
 		pointer-events: none;
 
 		.title {
 			display: block;
 			margin: 0;
-			padding: 10px;
+			padding: 0.5625rem;
 			font-weight: 600;
 			line-height: 1;
 			pointer-events: none;
@@ -103,14 +103,14 @@
 
 		li {
 			display: inline-block;
-			padding: 5px 10px;
+			padding: 0.3125rem 0.5625rem;
 		}
 	}
 
 	ul.data-point-list {
 		li {
 			flex: 1;
-			min-width: 90px;
+			min-inline-size: 5.0625rem;
 			font-weight: 600;
 		}
 	}
@@ -122,10 +122,10 @@
 
 	.svg-pointer {
 		position: absolute;
-		height: 5px;
-		margin: 0 0 0 -5px;
+		block-size: 0.3125rem;
+		margin: 0 0 0 -0.3125rem;
 		border: 5px solid transparent;
-		border-top-color: rgba(0, 0, 0, 0.8);
+		border-block-start-color: rgb(0 0 0 / 0.8);
 		content: ' ';
 	}
 }

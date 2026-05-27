@@ -16,11 +16,11 @@ export class LimiterLocal implements Limiter {
 		this.points = config.points;
 	}
 
-	async consume(key: string) {
+	async consume(key: string): Promise<void> {
 		return await consume(this.limiter, key, this.points);
 	}
 
-	async delete(key: string) {
+	async delete(key: string): Promise<void> {
 		await this.limiter.delete(key);
 	}
 }

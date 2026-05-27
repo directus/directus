@@ -1,5 +1,5 @@
-import { compress as compressSnappy, uncompress as uncompressSnappy } from 'snappy';
 import { compress as compressJSON, decompress as decompressJSON } from '@directus/utils';
+import { compress as compressSnappy, uncompress as uncompressSnappy } from 'snappy';
 
 export async function compress(raw: Record<string, any> | Record<string, any>[]): Promise<Buffer> {
 	if (!raw) return raw;

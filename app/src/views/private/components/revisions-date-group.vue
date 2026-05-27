@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { RevisionsByDate } from '@/types/revisions';
 import { ref } from 'vue';
-
 import RevisionItem from './revision-item.vue';
+import VDetail from '@/components/v-detail.vue';
+import { Revision, RevisionsByDate } from '@/types/revisions';
 
 interface Props {
 	group: RevisionsByDate;
@@ -15,15 +15,15 @@ const expand = ref(true);
 </script>
 
 <template>
-	<v-detail v-model="expand" :label="group.dateFormatted" class="revisions-date-group">
+	<VDetail v-model="expand" :label="group.dateFormatted" class="revisions-date-group">
 		<div v-show="expand" class="scroll-container">
-			<revision-item
+			<RevisionItem
 				v-for="(item, index) in group.revisions"
 				:key="item.id"
-				:revision="item"
+				:revision="item as Revision"
 				:last="index === group.revisions.length - 1"
 				@click="$emit('click', item.id)"
 			/>
 		</div>
-	</v-detail>
+	</VDetail>
 </template>

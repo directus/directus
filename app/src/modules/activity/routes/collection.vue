@@ -1,26 +1,23 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { usePreset } from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { RouterView } from 'vue-router';
 import ActivityNavigation from '../components/navigation.vue';
+import VInfo from '@/components/v-info.vue';
+import { usePreset } from '@/composables/use-preset';
+import { PrivateView } from '@/views/private';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 
 defineProps<{
 	primaryKey?: string;
 }>();
 
-const { t } = useI18n();
-
 const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
 
 const { layoutWrapper } = useLayout(layout);
-
-const currentLayout = useExtension('layout', layout);
 
 const roleFilter = ref<Filter | null>(null);
 </script>
@@ -38,55 +35,42 @@ const roleFilter = ref<Filter | null>(null);
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view
-			:title="t('activity_feed')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="access_time" />
-				</v-button>
-			</template>
-
+		<PrivateView :title="$t('activity_feed')" icon="access_time">
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
+				<SearchInput v-model="search" v-model:filter="filter" collection="directus_activity" />
 			</template>
 
 			<template #navigation>
-				<activity-navigation v-model:filter="roleFilter" />
+				<ActivityNavigation v-model:filter="roleFilter" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
-					</v-info>
+					<VInfo :title="$t('no_results')" icon="search" center>
+						{{ $t('no_results_copy') }}
+					</VInfo>
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('item_count', 0)" icon="access_time" center>
-						{{ t('no_items_copy') }}
-					</v-info>
+					<VInfo :title="$t('item_count', 0)" icon="access_time" center>
+						{{ $t('no_items_copy') }}
+					</VInfo>
 				</template>
 			</component>
 
-			<router-view name="detail" :primary-key="primaryKey" />
+			<RouterView name="detail" :primary-key="primaryKey" />
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_activity_collection')" class="page-description" />
-				</sidebar-detail>
-				<layout-sidebar-detail v-model="layout">
+				<LayoutSidebarDetail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
+				</LayoutSidebarDetail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 			</template>
-		</private-view>
+		</PrivateView>
 	</component>
 </template>
 

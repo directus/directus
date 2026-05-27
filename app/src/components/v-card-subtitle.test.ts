@@ -1,6 +1,5 @@
-import { test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-
+import { expect, test } from 'vitest';
 import VCardSubtitle from './v-card-subtitle.vue';
 
 test('Mount component', () => {

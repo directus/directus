@@ -1,6 +1,6 @@
+import { existsSync } from 'node:fs';
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
 import { isIn } from '@directus/utils';
-import { existsSync } from 'node:fs';
 import { getFileExtension } from '../utils/get-file-extension.js';
 import { readConfigurationFromDotEnv } from '../utils/read-configuration-from-dotenv.js';
 import { readConfigurationFromJavaScript } from '../utils/read-configuration-from-javascript.js';
@@ -10,7 +10,7 @@ import { readConfigurationFromYaml } from '../utils/read-configuration-from-yaml
 /**
  * Read configuration variables from config file
  */
-export const readConfigurationFromFile = (path: string) => {
+export const readConfigurationFromFile = (path: string): Record<string, unknown> | null => {
 	if (existsSync(path) === false) {
 		return null;
 	}

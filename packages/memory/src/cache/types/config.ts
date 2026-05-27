@@ -46,6 +46,11 @@ export interface CacheConfigRedis extends CacheConfigAbstract {
 	compressionMinSize?: number;
 
 	/**
+	 * Time-to-Live expires keys after duration in milliseconds.
+	 */
+	ttl?: number;
+
+	/**
 	 * Existing or new Redis connection to use with this memory class
 	 */
 	redis: Redis;

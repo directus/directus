@@ -1,4 +1,6 @@
+import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
+import { convertToMySQLPath } from '../json/mysql-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -48,5 +50,25 @@ export class FnHelperMySQL extends FnHelper {
 		}
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
+	}
+
+	json(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
+		const collectionName = options?.originalCollectionName || table;
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[column];
+
+		if (!fieldSchema || fieldSchema.type !== 'json' || !options?.jsonPath) {
+			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
+		}
+
+		// Convert dot notation to MySQL JSON path
+		const jsonPath = convertToMySQLPath(options.jsonPath);
+
+		if (options?.jsonReturnType === 'numeric') {
+			// JSON_EXTRACT preserves the native numeric type from the JSON document.
+			// JSON_UNQUOTE would convert it to a string, breaking numeric comparisons.
+			return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [table, column, jsonPath]);
+		}
+
+		return this.knex.raw(`JSON_UNQUOTE(JSON_EXTRACT(??.??, ?))`, [table, column, jsonPath]);
 	}
 }

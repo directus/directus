@@ -1,8 +1,8 @@
+import { createReadStream } from 'fs';
+import { join } from 'path';
 import { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
-import { createReadStream } from 'fs';
-import { join } from 'path';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 
@@ -31,6 +31,51 @@ describe('/files', () => {
 					.field('title', imageFile.title)
 					.field('description', imageFile.description)
 					.attach('file', createReadStream(imageFilePath));
+
+				// Normalize filesize to string as bigint returns as a string
+				response.body.data.filesize = String(response.body.data.filesize);
+
+				// Assert
+				expect(response.statusCode).toBe(200);
+
+				expect(response.body.data).toEqual(
+					expect.objectContaining({
+						filesize: imageFile.filesize,
+						type: imageFile.type,
+						filename_download: imageFile.name,
+						filename_disk: expect.any(String),
+						storage: storage,
+						title: imageFile.title,
+						description: imageFile.description,
+						id: expect.any(String),
+					}),
+				);
+			});
+		});
+	});
+
+	describe('PATCH /files/:id', () => {
+		describe.each(storages)('Storage: %s', (storage) => {
+			it.each(vendors)('%s', async (vendor) => {
+				// Setup
+				const readResponse = await request(getUrl(vendor))
+					.get('/files')
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.query({
+						filter: { filename_download: { _eq: imageFile.name }, storage: { _eq: storage } },
+						fields: ['id'],
+						limit: 1,
+					});
+
+				expect(readResponse.statusCode).toBe(200);
+
+				// Action
+				const response = await request(getUrl(vendor))
+					.patch(`/files/${readResponse.body.data[0].id}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.attach('file', createReadStream(imageFilePath));
+
+				expect(response.statusCode).toBe(200);
 
 				// Normalize filesize to string as bigint returns as a string
 				response.body.data.filesize = String(response.body.data.filesize);

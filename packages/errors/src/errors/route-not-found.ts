@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface RouteNotFoundErrorExtensions {
 	path: string;
@@ -6,4 +6,8 @@ export interface RouteNotFoundErrorExtensions {
 
 export const messageConstructor = ({ path }: RouteNotFoundErrorExtensions) => `Route ${path} doesn't exist.`;
 
-export const RouteNotFoundError = createError(ErrorCode.RouteNotFound, messageConstructor, 404);
+export const RouteNotFoundError: DirectusErrorConstructor<RouteNotFoundErrorExtensions> = createError(
+	ErrorCode.RouteNotFound,
+	messageConstructor,
+	404,
+);

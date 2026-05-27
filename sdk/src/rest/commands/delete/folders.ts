@@ -1,6 +1,6 @@
 import type { DirectusFolder } from '../../../schema/folder.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete multiple existing folders.

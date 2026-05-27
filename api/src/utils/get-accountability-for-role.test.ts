@@ -69,15 +69,15 @@ describe('getAccountabilityForRole', async () => {
 			ip: null,
 		});
 
-		expect(fetchRolesTree).toHaveBeenCalledWith('123-456', {});
-		expect(fetchGlobalAccess).toHaveBeenCalledWith({ roles, user: null, ip: null }, {});
+		expect(fetchRolesTree).toHaveBeenCalledWith('123-456', { knex: {} });
+		expect(fetchGlobalAccess).toHaveBeenCalledWith({ roles, user: null, ip: null }, { knex: {} });
 	});
 
 	test('invalid role throws error', async () => {
 		vi.mocked(fetchRolesTree).mockResolvedValue([]);
 		vi.mocked(fetchGlobalAccess).mockResolvedValue({ admin: false, app: false });
 
-		expect(
+		await expect(
 			getAccountabilityForRole('456-789', {
 				accountability: null,
 				schema: {} as any,

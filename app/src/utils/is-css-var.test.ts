@@ -1,5 +1,5 @@
-import { isCssVar } from '@/utils/is-css-var.js';
 import { expect, test } from 'vitest';
+import { isCssVar } from '@/utils/is-css-var.js';
 
 test('Returns true for valid var() with custom property', () => {
 	expect(isCssVar('var(--primary-color)')).toBe(true);

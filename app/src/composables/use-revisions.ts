@@ -1,15 +1,16 @@
-import api from '@/api';
-import { useServerStore } from '@/stores/server';
-import type { Revision, RevisionPartial, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
-import { localizedFormat } from '@/utils/localized-format';
-import { localizedFormatDistance } from '@/utils/localized-format-distance';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import type { ContentVersion, Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import api from '@/api';
+import { useServerStore } from '@/stores/server';
+import type { Revision, RevisionPartial, RevisionsByDate, RevisionWithTime } from '@/types/revisions';
+import type { ContentVersionWithType } from '@/types/versions';
+import { localizedFormat } from '@/utils/localized-format';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type UseRevisionsOptions = {
 	action?: Action;
@@ -19,7 +20,7 @@ type UseRevisionsOptions = {
 export function useRevisions(
 	collection: Ref<string>,
 	primaryKey: Ref<number | string>,
-	version: Ref<ContentVersion | null | undefined>,
+	version: Ref<ContentVersionWithType | null | undefined>,
 	options?: UseRevisionsOptions,
 ) {
 	const { t } = useI18n();
@@ -71,7 +72,7 @@ export function useRevisions(
 						version: version?.value
 							? {
 									_eq: version.value.id,
-							  }
+								}
 							: { _null: true },
 					},
 				],
@@ -224,7 +225,7 @@ export function useRevisions(
 						version: version?.value
 							? {
 									_eq: version.value.id,
-							  }
+								}
 							: { _null: true },
 					},
 				],

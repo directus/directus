@@ -7,22 +7,23 @@ defineProps<{
 </script>
 
 <template>
-	<transition name="fade">
+	<Transition name="fade">
 		<span v-if="showingCount" class="item-count">
 			{{ showingCount }}
 		</span>
-	</transition>
+	</Transition>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .item-count {
 	position: relative;
 	display: none;
-	margin: 0 8px;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 
-	@media (min-width: 600px) {
+	@include mixins.breakpoint-up('sm') {
 		display: inline;
 	}
 }

@@ -1,12 +1,17 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface InvalidForeignKeyErrorExtensions {
 	collection: string | null;
 	field: string | null;
+	value: string | null;
 }
 
-export const messageConstructor = ({ collection, field }: InvalidForeignKeyErrorExtensions) => {
+export const messageConstructor = ({ collection, field, value }: InvalidForeignKeyErrorExtensions): string => {
 	let message = 'Invalid foreign key';
+
+	if (value) {
+		message += ` "${value}"`;
+	}
 
 	if (field) {
 		message += ` for field "${field}"`;
@@ -21,8 +26,5 @@ export const messageConstructor = ({ collection, field }: InvalidForeignKeyError
 	return message;
 };
 
-export const InvalidForeignKeyError = createError<InvalidForeignKeyErrorExtensions>(
-	ErrorCode.InvalidForeignKey,
-	messageConstructor,
-	400,
-);
+export const InvalidForeignKeyError: DirectusErrorConstructor<InvalidForeignKeyErrorExtensions> =
+	createError<InvalidForeignKeyErrorExtensions>(ErrorCode.InvalidForeignKey, messageConstructor, 400);

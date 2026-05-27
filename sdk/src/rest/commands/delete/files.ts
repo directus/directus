@@ -1,6 +1,6 @@
 import type { DirectusFile } from '../../../schema/file.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete multiple files at once.

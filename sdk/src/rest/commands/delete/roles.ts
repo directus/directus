@@ -1,6 +1,6 @@
 import type { DirectusRole } from '../../../schema/role.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 /**
  * Delete multiple existing roles.

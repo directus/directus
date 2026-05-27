@@ -1,57 +1,54 @@
-import { describe, expect, it } from 'vitest';
 import type { Collection } from '@directus/types';
+import { describe, expect, it } from 'vitest';
 import { getCollectionType } from './get-collection-type.js';
 
-const TableCollection: Collection = {
-	collection: 'table',
-	schema: {
-		name: 'table',
-	},
-	meta: null,
-};
-
-const AliasCollection: Collection = {
-	collection: 'table',
-	schema: null,
-	meta: {
-		collection: 'table',
-		note: '',
-		hidden: true,
-		singleton: true,
-		icon: 'box',
-		color: '#abcabc',
-		translations: null,
-		display_template: null,
-		preview_url: null,
-		sort_field: null,
-		archive_field: null,
-		archive_value: null,
-		unarchive_value: null,
-		archive_app_filter: true,
-		item_duplication_fields: null,
-		accountability: null,
-		sort: null,
-		group: null,
-		collapse: 'open',
-	},
-};
-
-const UnknownCollection: Collection = {
-	collection: 'unknown',
-	schema: null,
-	meta: null,
-};
-
 describe('getCollectionType', () => {
-	it('returns "table" when collection has schema information', () => {
-		expect(getCollectionType(TableCollection)).toStrictEqual('table');
+	it('returns "table" when collection has schema', () => {
+		const collection = {
+			schema: { name: 'test_table' },
+		} as Collection;
+
+		expect(getCollectionType(collection)).toBe('table');
 	});
 
-	it('returns "alias" when collection has schema information', () => {
-		expect(getCollectionType(AliasCollection)).toStrictEqual('alias');
+	it('returns "alias" when collection has meta but no schema', () => {
+		const collection = {
+			meta: { collection: 'test_alias' },
+		} as Collection;
+
+		expect(getCollectionType(collection)).toBe('alias');
 	});
 
-	it('returns "unknown" when collection has schema information', () => {
-		expect(getCollectionType(UnknownCollection)).toStrictEqual('unknown');
+	it('returns "unknown" when collection has neither schema nor meta', () => {
+		const collection = {} as Collection;
+
+		expect(getCollectionType(collection)).toBe('unknown');
+	});
+
+	it('returns "table" when collection has both schema and meta', () => {
+		const collection = {
+			schema: { name: 'test_table' },
+			meta: { collection: 'test_table' },
+		} as Collection;
+
+		expect(getCollectionType(collection)).toBe('table');
+	});
+
+	it('returns "alias" when schema is null and meta exists', () => {
+		const collection = {
+			schema: null,
+			meta: { collection: 'test_alias' },
+		} as Collection;
+
+		expect(getCollectionType(collection)).toBe('alias');
+	});
+
+	it('returns "unknown" when both schema and meta are null', () => {
+		const collection = {
+			schema: null,
+			meta: null,
+		} as Collection;
+
+		expect(getCollectionType(collection)).toBe('unknown');
 	});
 });

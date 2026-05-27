@@ -1,6 +1,5 @@
-import type { File } from '@directus/types';
+import type { File, Transformation, TransformationParams } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import type { Transformation, TransformationParams } from '../types/assets.js';
 import { maybeExtractFormat, resolvePreset } from './transformations.js';
 
 const inputFile = {
@@ -27,6 +26,9 @@ const inputFile = {
 	modified_on: '',
 	focal_point_x: null,
 	focal_point_y: null,
+	created_on: '',
+	tus_data: null,
+	tus_id: null,
 } satisfies File;
 
 describe('resolvePreset', () => {
@@ -246,6 +248,93 @@ describe('resolvePreset', () => {
 					withoutEnlargement: undefined,
 				},
 			],
+		]);
+	});
+
+	test('Resize transformation with withoutEnlargement clamps dimensions larger than original', () => {
+		const transformationParams: TransformationParams = {
+			key: 'test-larger-than-original',
+			width: 2000, // larger than original width (1920)
+			height: 1200, // larger than original height (1080)
+			fit: 'cover',
+			withoutEnlargement: true,
+		};
+
+		const output = resolvePreset(
+			{ transformationParams },
+			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
+		);
+
+		// Dimensions should be clamped to original (1920x1080)
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 1920,
+					height: 1080,
+					fit: 'cover',
+					withoutEnlargement: true,
+				},
+			],
+			['extract', { left: 0, top: 0, width: 1920, height: 1080 }],
+		]);
+	});
+
+	test('Resize transformation with withoutEnlargement clamps only width when height is smaller', () => {
+		const transformationParams: TransformationParams = {
+			key: 'test-width-larger',
+			width: 2000, // larger than original width (1920)
+			height: 500, // smaller than original height (1080)
+			fit: 'cover',
+			withoutEnlargement: true,
+		};
+
+		const output = resolvePreset(
+			{ transformationParams },
+			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
+		);
+
+		// Width should be clamped to 1920, height stays at 500
+		// With 1920x500 target and centered focal point on 1920x1080 image
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 1920,
+					height: 1080,
+					fit: 'cover',
+					withoutEnlargement: true,
+				},
+			],
+			['extract', { left: 0, top: 290, width: 1920, height: 500 }],
+		]);
+	});
+
+	test('Resize transformation with withoutEnlargement with smaller dimensions is unchanged', () => {
+		const transformationParams: TransformationParams = {
+			key: 'test-smaller',
+			width: 800,
+			height: 600,
+			fit: 'cover',
+			withoutEnlargement: true,
+		};
+
+		const output = resolvePreset(
+			{ transformationParams },
+			{ ...inputFile, focal_point_x: inputFile.width / 2, focal_point_y: inputFile.height / 2 },
+		);
+
+		expect(output).toStrictEqual([
+			[
+				'resize',
+				{
+					width: 1067,
+					height: 600,
+					fit: 'cover',
+					withoutEnlargement: true,
+				},
+			],
+			['extract', { left: 133, top: 0, width: 800, height: 600 }],
 		]);
 	});
 

@@ -16,18 +16,18 @@
 		--v-sheet-width             [auto]
 		--v-sheet-min-width         [none]
 		--v-sheet-max-width         [none]
-		--v-sheet-padding           [8px]
+		--v-sheet-padding           [0.4375rem]
 
 */
 
 .v-sheet {
-	width: var(--v-sheet-width, auto);
-	min-width: var(--v-sheet-min-width, none);
-	max-width: var(--v-sheet-max-width, none);
-	height: var(--v-sheet-height, auto);
-	min-height: var(--v-sheet-min-height, var(--theme--form--field--input--height));
-	max-height: var(--v-sheet-max-height, none);
-	padding: var(--v-sheet-padding, 8px);
+	inline-size: var(--v-sheet-width, auto);
+	min-inline-size: var(--v-sheet-min-width, none);
+	max-inline-size: var(--v-sheet-max-width, none);
+	block-size: var(--v-sheet-height, auto);
+	min-block-size: var(--v-sheet-min-height, var(--theme--form--field--input--height));
+	max-block-size: var(--v-sheet-max-height, none);
+	padding: var(--v-sheet-padding, 0.4375rem);
 	overflow: auto;
 	background-color: var(--v-sheet-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);

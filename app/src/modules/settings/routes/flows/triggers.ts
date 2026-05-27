@@ -107,11 +107,12 @@ export function getTriggers() {
 							width: 'full' as Width,
 							readonly:
 								!scope ||
-								['items.create', 'items.update', 'items.delete', 'items.promote'].every(
+								['items.create', 'items.update', 'items.delete', 'items.promote', 'items.sort'].every(
 									(t) => scope?.includes(t) === false,
 								),
 							options: {
-								includeSystem: !scope || scope?.filter((t: string) => t !== 'items.promote').length > 0,
+								includeSystem:
+									!scope || scope?.filter((t: string) => t !== 'items.promote' && t !== 'items.sort').length > 0,
 							},
 						},
 					},
@@ -213,7 +214,7 @@ export function getTriggers() {
 					copyable: true,
 				},
 			],
-			options: ({ async, method }) => [
+			options: ({ async, method, cacheEnabled }) => [
 				{
 					field: 'method',
 					name: t('triggers.webhook.method'),
@@ -295,6 +296,23 @@ export function getTriggers() {
 					},
 					schema: {
 						default_value: true,
+					},
+				},
+				{
+					field: 'cacheQueryParams',
+					name: '$t:operations.trigger.cache_query',
+					type: 'json',
+					meta: {
+						width: 'full',
+						hidden: cacheEnabled === false || (method && method !== 'GET'),
+						interface: 'tags',
+						options: {
+							placeholder: '$t:operations.trigger.cache_query_placeholder',
+						},
+						note: '$t:operations.trigger.cache_query_description',
+					},
+					schema: {
+						default_value: null,
 					},
 				},
 			],

@@ -21,7 +21,6 @@ export const DEFAULT_DB_TABLES = [
 	'directus_settings',
 	'directus_shares',
 	'directus_users',
-	'directus_webhooks',
 ] as const;
 
 // Role IDs

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { KvLocal, createKv } from '../../kv/index.js';
+import { createKv, KvLocal } from '../../kv/index.js';
 import { CacheLocal } from './local.js';
 
 vi.mock('../../kv/index.js');
@@ -63,5 +63,34 @@ describe('has', () => {
 		const res = await cache.has(mockKey);
 
 		expect(res).toBe(true);
+	});
+});
+
+describe('clear', () => {
+	test('Clears the kv store', async () => {
+		await cache.clear();
+		expect(cache['store'].clear).toHaveBeenCalled();
+	});
+});
+
+describe('acquireLock', () => {
+	test('Acquires lock from kv store', async () => {
+		const mockLock = { release: vi.fn(), extend: vi.fn() };
+		vi.mocked(cache['store'].acquireLock).mockResolvedValue(mockLock as any);
+
+		const res = await cache.acquireLock(mockKey);
+		expect(cache['store'].acquireLock).toHaveBeenCalledWith(mockKey);
+		expect(res).toBe(mockLock);
+	});
+});
+
+describe('usingLock', () => {
+	test('Uses lock from kv store', async () => {
+		const mockCallback = vi.fn().mockResolvedValue('result');
+		vi.mocked(cache['store'].usingLock).mockResolvedValue('result');
+
+		const res = await cache.usingLock(mockKey, mockCallback);
+		expect(cache['store'].usingLock).toHaveBeenCalledWith(mockKey, mockCallback);
+		expect(res).toBe('result');
 	});
 });

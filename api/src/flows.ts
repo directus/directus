@@ -1,17 +1,28 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import type { OperationHandler } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	ActionHandler,
+	FilterHandler,
+	Flow,
+	Operation,
+	OperationHandler,
+	PrimaryKey,
+	SchemaOverview,
+} from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
+import PQueue from 'p-queue';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useLogger } from './logger/index.js';
+import { fetchPermissions } from './permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from './permissions/lib/fetch-policies.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';
@@ -19,7 +30,7 @@ import { RevisionsService } from './services/revisions.js';
 import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
-import { JobQueue } from './utils/job-queue.js';
+import { getService } from './utils/get-service.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -52,27 +63,27 @@ interface FlowMessage {
 class FlowManager {
 	private isLoaded = false;
 
+	private flows: Record<string, Flow> = {};
 	private operations: Map<string, OperationHandler> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
 
-	private reloadQueue: JobQueue;
+	private reloadQueue = new PQueue({ concurrency: 1 });
 	private envs: Record<string, any>;
 
 	constructor() {
 		const env = useEnv();
-		const logger = useLogger();
 
-		this.reloadQueue = new JobQueue();
 		this.envs = env['FLOWS_ENV_ALLOW_LIST'] ? pick(env, toArray(env['FLOWS_ENV_ALLOW_LIST'] as string)) : {};
 
 		const messenger = useBus();
+		const logger = useLogger();
 
 		messenger.subscribe<FlowMessage>('flows', (event) => {
-			if (event['type'] === 'reload') {
-				this.reloadQueue.enqueue(async () => {
+			if (event.type === 'reload') {
+				this.reloadQueue.add(async () => {
 					if (this.isLoaded) {
 						await this.unload();
 						await this.load();
@@ -105,6 +116,8 @@ class FlowManager {
 	}
 
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+		if (this.reloadQueue.pending > 0) await this.reloadQueue.onIdle();
+
 		const logger = useLogger();
 
 		if (!(id in this.operationFlowHandlers)) {
@@ -120,8 +133,10 @@ class FlowManager {
 	public async runWebhookFlow(
 		id: string,
 		data: unknown,
-		context: Record<string, unknown>,
+		context: { schema: SchemaOverview; accountability: Accountability | undefined } & Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
+		if (this.reloadQueue.pending > 0) await this.reloadQueue.onIdle();
+
 		const logger = useLogger();
 
 		if (!(id in this.webhookFlowHandlers)) {
@@ -132,6 +147,10 @@ class FlowManager {
 		const handler = this.webhookFlowHandlers[id];
 
 		return handler(data, context);
+	}
+
+	public getFlow(id: string): Flow | undefined {
+		return this.flows[id];
 	}
 
 	private async load(): Promise<void> {
@@ -148,6 +167,8 @@ class FlowManager {
 		const flowTrees = flows.map((flow) => constructFlowTree(flow));
 
 		for (const flow of flowTrees) {
+			this.flows[flow.id] = flow;
+
 			if (flow.trigger === 'event') {
 				let events: string[] = [];
 
@@ -248,7 +269,9 @@ class FlowManager {
 			} else if (flow.trigger === 'manual') {
 				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
+					const requireSelection = flow.options?.['requireSelection'] ?? true;
 					const targetCollection = (data as Record<string, any>)?.['body'].collection;
+					const targetKeys = (data as Record<string, any>)?.['body'].keys;
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
@@ -263,6 +286,65 @@ class FlowManager {
 					if (!enabledCollections.includes(targetCollection)) {
 						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
 						throw new ForbiddenError();
+					}
+
+					if (requireSelection && (!targetKeys || !Array.isArray(targetKeys))) {
+						logger.warn(`Manual trigger requires "keys" to be specified in the payload`);
+						throw new ForbiddenError();
+					}
+
+					if (requireSelection && targetKeys.length === 0) {
+						logger.warn(`Manual trigger requires at least one key to be specified in the payload`);
+						throw new ForbiddenError();
+					}
+
+					const accountability = context?.['accountability'] as Accountability | undefined;
+
+					if (!accountability) {
+						logger.warn(`Manual flows are only triggerable when authenticated`);
+						throw new ForbiddenError();
+					}
+
+					if (accountability.admin === false) {
+						const database = (context['database'] as Knex) ?? getDatabase();
+						const schema = (context['schema'] as SchemaOverview) ?? (await getSchema({ database }));
+
+						const policies = await fetchPolicies(accountability, { schema, knex: database });
+
+						const permissions = await fetchPermissions(
+							{
+								policies,
+								accountability,
+								action: 'read',
+								collections: [targetCollection],
+							},
+							{ schema, knex: database },
+						);
+
+						if (permissions.length === 0) {
+							logger.warn(`Triggering ${targetCollection} is not allowed`);
+							throw new ForbiddenError();
+						}
+
+						if (Array.isArray(targetKeys) && targetKeys.length > 0) {
+							const service = getService(targetCollection, { schema, accountability, knex: database });
+							const primaryField = schema.collections[targetCollection]!.primary;
+
+							const keys = await service.readMany(
+								targetKeys,
+								{ fields: [primaryField] },
+								{
+									emitEvents: false,
+								},
+							);
+
+							const allowedKeys: PrimaryKey[] = keys.map((key) => String(key[primaryField]));
+
+							if (targetKeys.some((key: PrimaryKey) => !allowedKeys.includes(String(key)))) {
+								logger.warn(`Triggering keys ${targetKeys} is not allowed`);
+								throw new ForbiddenError();
+							}
+						}
 					}
 
 					if (flow.options['async']) {
@@ -300,6 +382,7 @@ class FlowManager {
 			}
 		}
 
+		this.flows = {};
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
@@ -317,6 +400,8 @@ class FlowManager {
 			[ACCOUNTABILITY_KEY]: context?.['accountability'] ?? null,
 			[ENV_KEY]: this.envs,
 		};
+
+		context['flow'] ??= flow;
 
 		let nextOperation = flow.operation;
 		let lastOperationStatus: 'resolve' | 'reject' | 'unknown' = 'unknown';
@@ -377,6 +462,15 @@ class FlowManager {
 									['**', 'headers', 'cookie'],
 									['**', 'query', 'access_token'],
 									['**', 'payload', 'password'],
+									['**', 'payload', 'token'],
+									['**', 'payload', 'tfa_secret'],
+									['**', 'payload', 'external_identifier'],
+									['**', 'payload', 'auth_data'],
+									['**', 'payload', 'credentials'],
+									['**', 'payload', 'ai_openai_api_key'],
+									['**', 'payload', 'ai_anthropic_api_key'],
+									['**', 'payload', 'ai_google_api_key'],
+									['**', 'payload', 'ai_openai_compatible_api_key'],
 								],
 								values: this.envs,
 							},
@@ -429,10 +523,36 @@ class FlowManager {
 
 		const handler = this.operations.get(operation.type)!;
 
+		let optionData = keyedData;
+
+		if (operation.type === 'log') {
+			optionData = redactObject(
+				keyedData,
+				{
+					keys: [
+						['**', 'headers', 'authorization'],
+						['**', 'headers', 'cookie'],
+						['**', 'query', 'access_token'],
+						['**', 'payload', 'password'],
+						['**', 'payload', 'token'],
+						['**', 'payload', 'tfa_secret'],
+						['**', 'payload', 'external_identifier'],
+						['**', 'payload', 'auth_data'],
+						['**', 'payload', 'credentials'],
+						['**', 'payload', 'ai_openai_api_key'],
+						['**', 'payload', 'ai_anthropic_api_key'],
+						['**', 'payload', 'ai_google_api_key'],
+						['**', 'payload', 'ai_openai_compatible_api_key'],
+					],
+				},
+				getRedactedString,
+			);
+		}
+
 		let options = operation.options;
 
 		try {
-			options = applyOptionsData(options, keyedData);
+			options = applyOptionsData(options, optionData);
 
 			let result = await handler(options, {
 				services,

@@ -1,4 +1,4 @@
-<svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
 	<rect x="19" y="9" width="56" height="36" rx="6" fill="var(--theme--background)" class="glow" />
 	<rect x="20" y="10" width="54" height="34" rx="5" stroke="var(--theme--primary)" stroke-width="2" />
 	<rect x="25" y="15" width="44" height="24" rx="4" fill="var(--theme--primary)" fill-opacity=".25" />

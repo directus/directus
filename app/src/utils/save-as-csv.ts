@@ -1,10 +1,10 @@
-import { useAliasFields } from '@/composables/use-alias-fields';
-import { useExtension } from '@/composables/use-extension';
-import { useFieldsStore } from '@/stores/fields';
 import { Field, Item } from '@directus/types';
 import { Parser } from '@json2csv/plainjs';
 import { saveAs } from 'file-saver';
 import { computed } from 'vue';
+import { useAliasFields } from '@/composables/use-alias-fields';
+import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
 
 /**
  * Saves the given collection + items combination as a CSV file
@@ -55,7 +55,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
 							field: fieldsUsed[key] ?? undefined,
 							collection: collection,
-					  })
+						})
 					: value;
 			} else {
 				parsedItem[name] = value;

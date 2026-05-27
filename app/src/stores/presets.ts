@@ -1,10 +1,10 @@
-import api from '@/api';
-import { useUserStore } from '@/stores/user';
-import { fetchAll } from '@/utils/fetch-all';
 import { Preset } from '@directus/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
+import api from '@/api';
+import { useUserStore } from '@/stores/user';
+import { fetchAll } from '@/utils/fetch-all';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -41,18 +41,22 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 	},
 	directus_users: {
 		collection: 'directus_users',
-		layout: 'cards',
+		layout: 'tabular',
 		layout_query: {
-			cards: {
+			tabular: {
 				sort: ['email'],
+				fields: ['avatar', 'first_name', 'last_name', 'email', 'role'],
 			},
 		},
 		layout_options: {
-			cards: {
-				icon: 'account_circle',
-				title: '{{ first_name }} {{ last_name }}',
-				subtitle: '{{ email }}',
-				size: 4,
+			tabular: {
+				widths: {
+					avatar: 36,
+					first_name: 200,
+					last_name: 200,
+					email: 300,
+					role: 200,
+				},
 			},
 		},
 	},
@@ -110,26 +114,6 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 					icon: 36,
 					name: 248,
 					description: 500,
-				},
-			},
-		},
-	},
-	directus_webhooks: {
-		collection: 'directus_webhooks',
-		layout: 'tabular',
-		layout_query: {
-			tabular: {
-				fields: ['status', 'method', 'name', 'collections', 'actions'],
-			},
-		},
-		layout_options: {
-			tabular: {
-				widths: {
-					status: 32,
-					method: 100,
-					name: 210,
-					collections: 240,
-					actions: 210,
 				},
 			},
 		},
@@ -195,7 +179,7 @@ export const usePresetsStore = defineStore({
 								'filter[role][_eq]': role.id,
 								'filter[user][_null]': true,
 							},
-					  })
+						})
 					: Promise.resolve([]),
 				// All global saved bookmarks and presets
 				fetchAll<any>(`/presets`, {

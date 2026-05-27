@@ -1,5 +1,5 @@
 import type { DirectusVersion } from '../../../schema/version.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateContentVersionOutput<
@@ -18,7 +18,7 @@ export type CreateContentVersionOutput<
  */
 export const createContentVersions =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
-		items: Partial<DirectusVersion<Schema>>[],
+		items: NestedPartial<DirectusVersion<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateContentVersionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createContentVersions =
  */
 export const createContentVersion =
 	<Schema, const TQuery extends Query<Schema, DirectusVersion<Schema>>>(
-		item: Partial<DirectusVersion<Schema>>,
+		item: NestedPartial<DirectusVersion<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateContentVersionOutput<Schema, TQuery>, Schema> =>
 	() => ({

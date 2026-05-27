@@ -1,9 +1,8 @@
-import { useLatencyStore } from '@/stores/latency';
-import { useRequestsStore } from '@/stores/requests';
-import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import PQueue, { Options, QueueAddOptions } from 'p-queue';
 import sdk from './sdk';
+import { useRequestsStore } from '@/stores/requests';
+import { getRootPath } from '@/utils/get-root-path';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -78,15 +77,5 @@ function onRequestEnd(response?: AxiosResponse | Response) {
 	if (config?.id) {
 		const requestsStore = useRequestsStore();
 		requestsStore.endRequest(config.id);
-	}
-
-	if (config?.start) {
-		const end = performance.now();
-		const latencyStore = useLatencyStore();
-
-		latencyStore.save({
-			timestamp: new Date(),
-			latency: end - config.start,
-		});
 	}
 }

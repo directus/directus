@@ -1,7 +1,6 @@
-import type { File } from '@directus/types';
+import type { File, Transformation, TransformationFormat, TransformationSet } from '@directus/types';
 import { clamp } from 'lodash-es';
 import type { Region } from 'sharp';
-import type { Transformation, TransformationFormat, TransformationSet } from '../types/index.js';
 
 export function resolvePreset({ transformationParams, acceptFormat }: TransformationSet, file: File): Transformation[] {
 	const transforms = transformationParams.transforms ? [...transformationParams.transforms] : [];
@@ -17,8 +16,21 @@ export function resolvePreset({ transformationParams, acceptFormat }: Transforma
 	}
 
 	if ((transformationParams.width || transformationParams.height) && file.width && file.height) {
-		const toWidth = transformationParams.width ? Number(transformationParams.width) : undefined;
-		const toHeight = transformationParams.height ? Number(transformationParams.height) : undefined;
+		let toWidth = transformationParams.width ? Number(transformationParams.width) : undefined;
+		let toHeight = transformationParams.height ? Number(transformationParams.height) : undefined;
+
+		/*
+		 * When withoutEnlargement is true, clamp target dimensions to original dimensions to prevent "bad extract area" errors when using focal points.
+		 */
+		if (transformationParams.withoutEnlargement) {
+			if (toWidth !== undefined) {
+				toWidth = Math.min(toWidth, file.width);
+			}
+
+			if (toHeight !== undefined) {
+				toHeight = Math.min(toHeight, file.height);
+			}
+		}
 
 		const toFocalPointX = transformationParams.focal_point_x
 			? Number(transformationParams.focal_point_x)

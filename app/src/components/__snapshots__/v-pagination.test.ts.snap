@@ -2,17 +2,17 @@
 
 exports[`Mount component 1`] = `
 "<div data-v-278b16a4="" class="v-pagination">
-  <v-button-stub data-v-278b16a4="" class="previous" disabled="false" secondary="" icon="" small=""></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="true" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="previous"></v-button-stub>
   <!--v-if-->
   <!--v-if-->
-  <v-button-stub data-v-278b16a4="" class="page" secondary="" small="" disabled="false"></v-button-stub>
-  <v-button-stub data-v-278b16a4="" class="page" secondary="" small="" disabled="false"></v-button-stub>
-  <v-button-stub data-v-278b16a4="" class="page" secondary="" small="" disabled="false"></v-button-stub>
-  <v-button-stub data-v-278b16a4="" class="active page" secondary="" small="" disabled="false"></v-button-stub>
-  <v-button-stub data-v-278b16a4="" class="page" secondary="" small="" disabled="false"></v-button-stub>
-  <v-button-stub data-v-278b16a4="" class="page" secondary="" small="" disabled="false"></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="false" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="page"></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="false" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="page"></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="false" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="page"></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="false" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="active page"></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="false" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="page"></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="false" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="page"></v-button-stub>
   <!--v-if-->
   <!--v-if-->
-  <v-button-stub data-v-278b16a4="" class="next" disabled="false" secondary="" icon="" small=""></v-button-stub>
+  <v-button-stub data-v-278b16a4="" autofocus="false" kind="normal" fullwidth="false" rounded="false" outlined="false" icon="true" type="button" disabled="false" loading="false" to="" target="_blank" exact="false" query="false" secondary="true" warning="false" danger="false" dashed="false" tile="false" align="center" xsmall="false" small="true" large="false" xlarge="false" class="next"></v-button-stub>
 </div>"
 `;

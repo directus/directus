@@ -1,6 +1,5 @@
-import type { AppExtensionConfigs } from '@directus/extensions';
-import type { RefRecord } from '@directus/types';
-import { App, shallowRef, watch } from 'vue';
+import type { AppExtensionConfigs, ModuleConfig, RefRecord } from '@directus/types';
+import { App, shallowRef, type ShallowRef, watch } from 'vue';
 import { getInternalDisplays, registerDisplays } from './displays';
 import { getInternalInterfaces, registerInterfaces } from './interfaces';
 import { i18n } from './lang';
@@ -26,6 +25,8 @@ const extensions: RefRecord<AppExtensionConfigs> = {
 
 const onHydrateCallbacks: (() => Promise<void>)[] = [];
 const onDehydrateCallbacks: (() => Promise<void>)[] = [];
+
+const allModules = shallowRef<ModuleConfig[]>([]);
 
 export async function loadExtensions(): Promise<void> {
 	try {
@@ -84,6 +85,7 @@ export function registerExtensions(app: App): void {
 		[i18n.global.locale, registeredModules],
 		() => {
 			extensions.modules.value = translate(registeredModules.value);
+			allModules.value = translate(modules);
 		},
 		{ immediate: true },
 	);
@@ -102,4 +104,8 @@ export async function onDehydrateExtensions() {
 
 export function useExtensions(): RefRecord<AppExtensionConfigs> {
 	return extensions;
+}
+
+export function useAllModules(): ShallowRef<ModuleConfig[]> {
+	return allModules;
 }

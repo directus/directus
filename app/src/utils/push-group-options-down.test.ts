@@ -1,6 +1,5 @@
-import { expect, it, test, describe } from 'vitest';
-
 import { Field } from '@directus/types';
+import { describe, expect, it, test } from 'vitest';
 import { pushGroupOptionsDown } from './push-group-options-down.js';
 
 describe('basic', () => {

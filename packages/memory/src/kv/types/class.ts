@@ -1,3 +1,5 @@
+import type { Lock } from './lock.js';
+
 export interface Kv {
 	/**
 	 * Get the stored value by key. Returns undefined if the key doesn't exist in the store
@@ -46,6 +48,10 @@ export interface Kv {
 	 * @returns Whether or not the given value was saved
 	 */
 	setMax(key: string, value: number): Promise<boolean>;
+
+	acquireLock(key: string): Promise<Lock>;
+
+	usingLock<T>(key: string, callback: () => Promise<T>): Promise<T>;
 
 	/**
 	 * Remove all keys from the kv store

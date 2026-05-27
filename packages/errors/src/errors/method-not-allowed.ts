@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface MethodNotAllowedErrorExtensions {
 	allowed: string[];
@@ -10,8 +10,5 @@ export const messageConstructor = (extensions: MethodNotAllowedErrorExtensions) 
 		.map((method) => `"${method}"`)
 		.join(', ')}.`;
 
-export const MethodNotAllowedError = createError<MethodNotAllowedErrorExtensions>(
-	ErrorCode.MethodNotAllowed,
-	messageConstructor,
-	405,
-);
+export const MethodNotAllowedError: DirectusErrorConstructor<MethodNotAllowedErrorExtensions> =
+	createError<MethodNotAllowedErrorExtensions>(ErrorCode.MethodNotAllowed, messageConstructor, 405);

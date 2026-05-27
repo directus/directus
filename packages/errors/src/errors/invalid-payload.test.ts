@@ -1,16 +1,15 @@
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
-import type { InvalidQueryErrorExtensions } from './invalid-query.js';
-import { messageConstructor } from './invalid-query.js';
+import type { InvalidPayloadErrorExtensions } from './invalid-payload.js';
+import { messageConstructor } from './invalid-payload.js';
 
-let sample: InvalidQueryErrorExtensions;
+let sample: InvalidPayloadErrorExtensions;
 
 beforeEach(() => {
 	sample = {
-		reason: randomAlpha(randomInteger(2, 500)),
+		reason: 'Test payload validation failed',
 	};
 });
 
 test('Constructs message', () => {
-	expect(messageConstructor(sample)).toBe(`Invalid query. ${sample.reason}.`);
+	expect(messageConstructor(sample)).toBe(`Invalid payload. ${sample.reason}.`);
 });

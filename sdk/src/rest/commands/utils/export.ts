@@ -2,7 +2,7 @@ import type { Query } from '../../../index.js';
 import type { DirectusFile } from '../../../schema/file.js';
 import type { RestCommand } from '../../types.js';
 
-export type FileFormat = 'csv' | 'json' | 'xml' | 'yaml';
+export type FileFormat = 'csv' | 'csv_utf8' | 'json' | 'xml' | 'yaml';
 
 /**
  * Export a larger data set to a file in the File Library

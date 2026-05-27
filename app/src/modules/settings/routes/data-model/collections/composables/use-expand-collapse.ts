@@ -1,6 +1,6 @@
-import { useCollectionsStore } from '@/stores/collections';
 import { useLocalStorage } from '@vueuse/core';
 import { computed } from 'vue';
+import { useCollectionsStore } from '@/stores/collections';
 
 export function useExpandCollapse() {
 	const collectionsStore = useCollectionsStore();

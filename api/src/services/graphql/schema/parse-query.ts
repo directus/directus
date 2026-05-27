@@ -1,8 +1,11 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import { getRelationInfo } from '@directus/utils';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
+import { getRelatedCollection } from '../../../database/get-ast-from-query/utils/get-related-collection.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
+import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
 import { parseArgs } from './parse-args.js';
 
@@ -12,10 +15,11 @@ import { parseArgs } from './parse-args.js';
  */
 export async function getQuery(
 	rawQuery: Query,
+	schema: SchemaOverview,
 	selections: readonly SelectionNode[],
 	variableValues: GraphQLResolveInfo['variableValues'],
-	schema: SchemaOverview,
 	accountability?: Accountability | null,
+	collection?: string,
 ): Promise<Query> {
 	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
 
@@ -33,7 +37,12 @@ export async function getQuery(
 		return aliases;
 	};
 
-	const parseFields = async (selections: readonly SelectionNode[], parent?: string): Promise<string[]> => {
+	const parseFields = async (
+		selections: readonly SelectionNode[],
+		parent?: string,
+		currentCollection?: string,
+		parentFieldName?: string,
+	): Promise<string[]> => {
 		const fields: string[] = [];
 
 		for (let selection of selections) {
@@ -43,12 +52,28 @@ export async function getQuery(
 
 			let current: string;
 			let currentAlias: string | null = null;
+			let childCollection: string | undefined = currentCollection;
 
-			// Union type (Many-to-Any)
 			if (selection.kind === 'InlineFragment') {
 				if (selection.typeCondition!.name.value.startsWith('__')) continue;
 
-				current = `${parent}:${selection.typeCondition!.name.value}`;
+				const isM2A = getRelationInfo(schema.relations, currentCollection, parentFieldName).relationType === 'a2o';
+
+				if (isM2A) {
+					current = `${parent}:${selection.typeCondition!.name.value}`;
+					childCollection = selection.typeCondition!.name.value;
+				} else {
+					// Non-M2A fragment: inline children with same parent
+					const children = await parseFields(
+						selection.selectionSet?.selections ?? [],
+						parent,
+						currentCollection,
+						parentFieldName,
+					);
+
+					fields.push(...children);
+					continue;
+				}
 			}
 			// Any other field type
 			else {
@@ -71,13 +96,23 @@ export async function getQuery(
 						if (selection.selectionSet) {
 							if (!query.deep) query.deep = {};
 
+							const path = parent.replaceAll(':', '__');
+
 							set(
 								query.deep,
-								parent,
+								path,
 								merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } }),
 							);
 						}
 					}
+				}
+
+				// Resolve child collection for recursive calls
+				if (currentCollection && selection.selectionSet) {
+					// For A2O, getRelatedCollection returns null. Fallback to currentCollection
+					// keeps the junction in context so the next level can detect M2A via isM2AField.
+					// The actual target collection is then set from the InlineFragment typeCondition.
+					childCollection = getRelatedCollection(schema, currentCollection, selection.name.value) ?? currentCollection;
 				}
 			}
 
@@ -92,10 +127,26 @@ export async function getQuery(
 					for (const subSelection of selection.selectionSet.selections) {
 						if (subSelection.kind !== 'Field') continue;
 						if (subSelection.name!.value.startsWith('__')) continue;
+
+						if (subSelection.name.value === 'json' && subSelection.arguments?.length) {
+							const pathArg = subSelection.arguments.find((a) => a.name.value === 'path');
+
+							if (pathArg) {
+								const pathValue = (parseArgs([pathArg], variableValues) as { path: string }).path;
+								children.push(`json(${rootField}, ${pathValue})`);
+								continue;
+							}
+						}
+
 						children.push(`${subSelection.name!.value}(${rootField})`);
 					}
 				} else {
-					children = await parseFields(selection.selectionSet.selections, currentAlias ?? current);
+					children = await parseFields(
+						selection.selectionSet.selections,
+						currentAlias ?? current,
+						childCollection,
+						selection.kind === 'Field' ? selection.name.value : undefined,
+					);
 				}
 
 				fields.push(...children);
@@ -104,21 +155,21 @@ export async function getQuery(
 			}
 
 			if (selection.kind === 'Field' && selection.arguments && selection.arguments.length > 0) {
-				if (selection.arguments && selection.arguments.length > 0) {
-					if (!query.deep) query.deep = {};
+				if (!query.deep) query.deep = {};
 
-					const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
+				const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
 
-					set(
-						query.deep,
-						currentAlias ?? current,
-						merge(
-							{},
-							get(query.deep, currentAlias ?? current),
-							mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
-						),
-					);
-				}
+				const path = (currentAlias ?? current).replaceAll(':', '__');
+
+				set(
+					query.deep,
+					path,
+					merge(
+						{},
+						get(query.deep, path),
+						mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
+					),
+				);
 			}
 		}
 
@@ -126,9 +177,19 @@ export async function getQuery(
 	};
 
 	query.alias = parseAliases(selections);
-	query.fields = await parseFields(selections);
+	query.fields = await parseFields(selections, undefined, collection);
+
 	if (query.filter) query.filter = replaceFuncs(query.filter);
+
 	query.deep = replaceFuncs(query.deep as any) as any;
+
+	if (collection) {
+		if (query.filter) {
+			query.filter = filterReplaceM2A(query.filter, collection, schema, { aliasMap: query.alias });
+		}
+
+		query.deep = filterReplaceM2ADeep(query.deep, collection, schema, { aliasMap: query.alias });
+	}
 
 	validateQuery(query);
 

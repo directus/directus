@@ -1,7 +1,7 @@
 import type { DirectusFolder } from '../../../schema/folder.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateFolderOutput<
 	Schema,
@@ -20,7 +20,7 @@ export type UpdateFolderOutput<
 export const updateFolders =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		keys: DirectusFolder<Schema>['id'][],
-		item: Partial<DirectusFolder<Schema>>,
+		item: NestedPartial<DirectusFolder<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateFolderOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -63,7 +63,7 @@ export const updateFoldersBatch =
 export const updateFolder =
 	<Schema, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		key: DirectusFolder<Schema>['id'],
-		item: Partial<DirectusFolder<Schema>>,
+		item: NestedPartial<DirectusFolder<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateFolderOutput<Schema, TQuery>, Schema> =>
 	() => {

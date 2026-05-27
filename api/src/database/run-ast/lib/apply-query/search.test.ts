@@ -12,6 +12,12 @@ const schema = new SchemaBuilder()
 		c.field('string').string();
 		c.field('float').float();
 		c.field('integer').integer();
+
+		c.field('secret')
+			.string()
+			.options({
+				special: ['conceal'],
+			});
 	})
 	.build();
 
@@ -118,6 +124,27 @@ test(`Remove forbidden field(s) from search`, async () => {
 	expect(rawQuery.bindings).toEqual(['%directus%']);
 });
 
+test(`Remove "conceal" field(s) from search irrespective of permissions`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, schema, queryBuilder, 'directus', 'test', {}, [
+		{
+			collection: 'test',
+			action: 'read',
+			fields: ['text', 'string', 'secret'],
+			permissions: {
+				text: {},
+			},
+		} as unknown as Permission,
+	]);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."text") LIKE ?) or (LOWER("test"."string") LIKE ?))`);
+	expect(rawQuery.bindings).toEqual(['%directus%', '%directus%']);
+});
+
 test(`Add all fields for * field rule`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
@@ -177,4 +204,54 @@ test(`All field(s) are searched for admin`, async () => {
 	);
 
 	expect(rawQuery.bindings).toEqual(['%1%', '%1%', 1, 1]);
+});
+
+test(`Exclude fields marked as non-searchable`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaWithNonSearchable = new SchemaBuilder()
+		.collection('test', (c) => {
+			c.field('id').uuid().primary();
+			c.field('text').text();
+			c.field('string').string().options({ searchable: false });
+			c.field('float').float().options({ searchable: false });
+			c.field('integer').integer();
+		})
+		.build();
+
+	applySearch(db as any, schemaWithNonSearchable, queryBuilder, '1', 'test', {}, [
+		{
+			collection: 'test',
+			action: 'read',
+			fields: ['*'],
+			permissions: null,
+		} as unknown as Permission,
+	]);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	// only text and integer should be searched, string and float are marked as non-searchable
+	expect(rawQuery.sql).toEqual(`select * where (LOWER("test"."text") LIKE ? or "test"."integer" = ?)`);
+	expect(rawQuery.bindings).toEqual(['%1%', 1]);
+});
+
+test(`Return falsy query when all searchable fields are excluded`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	const schemaAllNonSearchable = new SchemaBuilder()
+		.collection('test', (c) => {
+			c.field('id').uuid().primary();
+			c.field('text').text().options({ searchable: false });
+			c.field('string').string().options({ searchable: false });
+		})
+		.build();
+
+	applySearch(db as any, schemaAllNonSearchable, queryBuilder, 'test', 'test', {}, []);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select * where (1 = 0)`);
+	expect(rawQuery.bindings).toEqual([]);
 });

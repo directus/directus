@@ -1,4 +1,4 @@
-import { onMounted, onBeforeUnmount, Ref, unref } from 'vue';
+import { onBeforeUnmount, onMounted, Ref, unref } from 'vue';
 
 /**
  * Adds the given event listener to the given element on mount. Auto-cleans up the event listener on

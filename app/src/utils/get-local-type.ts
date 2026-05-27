@@ -1,7 +1,7 @@
-import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { LocalType, Relation } from '@directus/types';
 import { getRelation } from '@directus/utils';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 export function getLocalTypeForField(collection: string, field: string): LocalType | null {
 	const fieldsStore = useFieldsStore();
@@ -46,10 +46,14 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 			return 'm2o';
 		}
 
-		if (
-			relations[0]!.related_collection === 'directus_files' ||
-			relations[1]!.related_collection === 'directus_files'
-		) {
+		const directusFilesRelationsCount = relations.filter(
+			(relation) => relation.related_collection === 'directus_files',
+		).length;
+
+		const isRelationToDirectusFiles = collection !== 'directus_files' && directusFilesRelationsCount === 1;
+		const isSelfRelationToDirectusFiles = directusFilesRelationsCount === 2;
+
+		if (isRelationToDirectusFiles || isSelfRelationToDirectusFiles) {
 			return 'files';
 		} else {
 			return 'm2m';

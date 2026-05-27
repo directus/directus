@@ -1,9 +1,9 @@
+import { SchemaBuilder } from '@directus/schema-builder';
 import type { DeepPartial, SchemaOverview } from '@directus/types';
 import { describe, expect, it } from 'vitest';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
 import type { FieldMap } from '../types.js';
 import { extractFieldsFromChildren } from './extract-fields-from-children.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 function createFieldMap({ read, other }: Partial<FieldMap> = {}): FieldMap {
 	return { read: new Map(read), other: new Map(other) };

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useExtensions } from '@/extensions';
-import { computed, toRefs, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { getTriggers } from '../triggers';
 import { FlowRaw } from '@directus/types';
+import { computed, toRefs, unref } from 'vue';
+import { getTriggers } from '../triggers';
 import VDetail from '@/components/v-detail.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import { useExtensions } from '@/extensions';
 import { Revision } from '@/types/revisions';
 
 const props = defineProps<{
@@ -13,8 +13,6 @@ const props = defineProps<{
 }>();
 
 const { flow, revision } = toRefs(props);
-
-const { t } = useI18n();
 
 const { triggers } = getTriggers();
 const { operations } = useExtensions();
@@ -71,9 +69,9 @@ const steps = computed(() => {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:model-value="!!revision"
-		:title="revision ? revision.timestampFormatted : t('logs')"
+		:title="revision ? revision.timestampFormatted : $t('logs')"
 		icon="fact_check"
 		@cancel="emit('close')"
 	>
@@ -83,23 +81,23 @@ const steps = computed(() => {
 					<div class="header">
 						<span class="dot" />
 						<span class="type-label">
-							{{ t('trigger') }}
+							{{ $t('trigger') }}
 							<span class="subdued">&nbsp;{{ usedTrigger?.name }}</span>
 						</span>
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="triggerData.options" :label="t('options')">
-							<pre class="json selectable">{{ triggerData.options }}</pre>
-						</v-detail>
+						<VDetail v-if="triggerData.options" :label="$t('options')">
+							<pre class="json">{{ triggerData.options }}</pre>
+						</VDetail>
 
-						<v-detail v-if="triggerData.trigger" :label="t('payload')">
-							<pre class="json selectable">{{ triggerData.trigger }}</pre>
-						</v-detail>
+						<VDetail v-if="triggerData.trigger" :label="$t('payload')">
+							<pre class="json">{{ triggerData.trigger }}</pre>
+						</VDetail>
 
-						<v-detail v-if="triggerData.accountability" :label="t('accountability')">
-							<pre class="json selectable">{{ triggerData.accountability }}</pre>
-						</v-detail>
+						<VDetail v-if="triggerData.accountability" :label="$t('accountability')">
+							<pre class="json">{{ triggerData.accountability }}</pre>
+						</VDetail>
 					</div>
 				</div>
 
@@ -113,18 +111,18 @@ const steps = computed(() => {
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="step.options" :label="t('options')">
-							<pre class="json selectable">{{ step.options }}</pre>
-						</v-detail>
+						<VDetail v-if="step.options" :label="$t('options')">
+							<pre class="json">{{ step.options }}</pre>
+						</VDetail>
 
-						<v-detail v-if="step.data !== null" :label="t('payload')">
-							<pre class="json selectable">{{ step.data }}</pre>
-						</v-detail>
+						<VDetail v-if="step.data !== null" :label="$t('payload')">
+							<pre class="json">{{ step.data }}</pre>
+						</VDetail>
 					</div>
 				</div>
 			</div>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>
@@ -136,8 +134,8 @@ const steps = computed(() => {
 	background-color: var(--theme--background-subdued);
 	font-family: var(--theme--fonts--monospace--font-family);
 	border-radius: var(--theme--border-radius);
-	padding: 20px;
-	margin-top: 20px;
+	padding: 1.125rem;
+	margin-block-start: 1.125rem;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 }
@@ -151,28 +149,27 @@ const steps = computed(() => {
 		&::after {
 			content: '';
 			position: absolute;
-			width: var(--theme--border-width);
-			left: -11px;
-			top: 0;
+			inline-size: var(--theme--border-width);
+			inset-inline-start: -0.625rem;
+			inset-block-start: 0;
 			background-color: var(--theme--border-color-subdued);
-			height: 100%;
+			block-size: 100%;
 		}
 
 		&:first-child::after {
-			top: 8px;
-			height: calc(100% - 8px);
+			inset-block-start: 0.4375rem;
+			block-size: calc(100% - 0.4375rem);
 		}
 
 		&:last-child::after {
-			height: 12px;
+			block-size: 0.6875rem;
 		}
 
 		.inset {
-			padding-top: 12px;
-			padding-bottom: 32px;
+			padding-block: 0.6875rem 1.8125rem;
 
 			.v-detail + .v-detail {
-				margin-top: 12px;
+				margin-block-start: 0.6875rem;
 			}
 		}
 
@@ -188,14 +185,14 @@ const steps = computed(() => {
 
 	.dot {
 		position: absolute;
-		top: 6px;
-		left: -16px;
+		inset-block-start: 0.3125rem;
+		inset-inline-start: -0.875rem;
 		z-index: 2;
-		width: 12px;
-		height: 12px;
+		inline-size: 0.6875rem;
+		block-size: 0.6875rem;
 		background-color: var(--theme--primary);
 		border: var(--theme--border-width) solid var(--theme--background);
-		border-radius: 8px;
+		border-radius: 0.4375rem;
 
 		&.resolve {
 			background-color: var(--theme--primary);

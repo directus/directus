@@ -12,7 +12,7 @@ function initState() {
 <template>
 	<Story title="VInfo" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-info v-bind="state">You have sadly eaten all the cookies!</v-info>
+			<VInfo v-bind="state">You have sadly eaten all the cookies!</VInfo>
 		</template>
 	</Story>
 </template>

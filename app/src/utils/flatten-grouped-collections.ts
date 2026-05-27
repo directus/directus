@@ -1,5 +1,5 @@
-import { Collection } from '@/types/collections';
 import { groupBy, isNil, orderBy } from 'lodash';
+import { Collection } from '@/types/collections';
 
 /**
  * Create a flat list of collections, in which grouped collections are sorted under their parent collection.

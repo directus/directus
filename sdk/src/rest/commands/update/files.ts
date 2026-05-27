@@ -1,7 +1,7 @@
 import type { DirectusFile } from '../../../schema/file.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateFileOutput<
 	Schema,
@@ -20,7 +20,7 @@ export type UpdateFileOutput<
 export const updateFiles =
 	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		keys: DirectusFile<Schema>['id'][],
-		item: Partial<DirectusFile<Schema>>,
+		item: NestedPartial<DirectusFile<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -63,7 +63,7 @@ export const updateFilesBatch =
 export const updateFile =
 	<Schema, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		key: DirectusFile<Schema>['id'],
-		item: Partial<DirectusFile<Schema>> | FormData,
+		item: NestedPartial<DirectusFile<Schema>> | FormData,
 		query?: TQuery,
 	): RestCommand<UpdateFileOutput<Schema, TQuery>, Schema> =>
 	() => {

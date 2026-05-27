@@ -1,7 +1,7 @@
 <template>
-	<transition name="dialog">
+	<Transition name="dialog">
 		<slot />
-	</transition>
+	</Transition>
 </template>
 
 <style lang="scss">
@@ -9,16 +9,20 @@
 
 .dialog-enter-active,
 .dialog-leave-active {
-	transition: opacity var(--slow) var(--transition);
+	transition: opacity var(--medium) var(--transition);
 
 	&.center > *:not(.v-overlay) {
-		transform: translateY(0px);
-		transition: transform var(--slow) var(--transition-in);
+		transform: translateY(0);
+		transition: transform var(--medium) var(--transition-in);
 	}
 
-	&.right > *:not(.v-overlay) {
-		transform: translateX(0px);
-		transition: transform var(--slow) var(--transition-in);
+	&:is(.right, .left) > *:not(.v-overlay) {
+		transform: translateX(0);
+		transition: transform var(--medium) var(--transition-in);
+
+		html[dir='rtl'] & {
+			transform: translateX(0);
+		}
 	}
 }
 
@@ -27,13 +31,26 @@
 	opacity: 0;
 
 	&.center > *:not(.v-overlay) {
-		transform: translateY(50px);
-		transition: transform var(--slow) var(--transition-out);
+		transform: translateY(2.8125rem);
+		transition: transform var(--medium) var(--transition-out);
+	}
+
+	&.left > *:not(.v-overlay) {
+		transform: translateX(-2.8125rem);
+		transition: transform var(--medium) var(--transition-out);
+
+		html[dir='rtl'] & {
+			transform: translateX(2.8125rem);
+		}
 	}
 
 	&.right > *:not(.v-overlay) {
-		transform: translateX(50px);
-		transition: transform var(--slow) var(--transition-out);
+		transform: translateX(2.8125rem);
+		transition: transform var(--medium) var(--transition-out);
+
+		html[dir='rtl'] & {
+			transform: translateX(-2.8125rem);
+		}
 	}
 }
 </style>

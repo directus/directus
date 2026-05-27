@@ -1,4 +1,4 @@
-import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, NestedPartial, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 
@@ -25,7 +25,7 @@ export const updateItems =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		keysOrQuery: string[] | number[] | Query<Schema, Schema[Collection]>,
-		item: Partial<UnpackList<Schema[Collection]>>,
+		item: NestedPartial<UnpackList<Schema[Collection]>>,
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -65,7 +65,7 @@ export const updateItems =
 export const updateItemsBatch =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		items: Partial<UnpackList<Schema[Collection]>>[],
+		items: NestedPartial<UnpackList<Schema[Collection]>>[],
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -102,7 +102,7 @@ export const updateItem =
 	>(
 		collection: Collection,
 		key: string | number,
-		item: Partial<Item>,
+		item: NestedPartial<Item>,
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

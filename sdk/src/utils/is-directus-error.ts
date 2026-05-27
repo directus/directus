@@ -3,7 +3,7 @@ import type { DirectusError } from '../types/error.js';
 /**
  * A type guard to check if an error is a Directus API error
  */
-export function isDirectusError(error: unknown): error is DirectusError {
+export function isDirectusError<R = Response>(error: unknown): error is DirectusError<R> {
 	return (
 		typeof error === 'object' &&
 		error !== null &&

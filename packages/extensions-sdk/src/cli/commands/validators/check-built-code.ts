@@ -1,12 +1,12 @@
+import path from 'path';
 import { EXTENSION_PKG_KEY } from '@directus/extensions';
 import fse from 'fs-extra';
 import { type Ora } from 'ora';
-import path from 'path';
 import type { Report } from '../../types.js';
 
 const checkBuiltCode = {
 	name: 'built-code',
-	handler: async (spinner: Ora, reports: Array<Report>) => {
+	handler: async (spinner: Ora, reports: Array<Report>): Promise<string> => {
 		spinner.text = 'Check for built code';
 
 		let codePath: any = '/dist';

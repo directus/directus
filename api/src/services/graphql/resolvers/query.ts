@@ -2,8 +2,6 @@ import type { Item, Query } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
 import type { GraphQLResolveInfo } from 'graphql';
 import { omit } from 'lodash-es';
-import { mergeVersionsRaw, mergeVersionsRecursive } from '../../../utils/merge-version-data.js';
-import { VersionsService } from '../../versions.js';
 import type { GraphQLService } from '../index.js';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
@@ -23,39 +21,23 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 	const args: Record<string, any> = parseArgs(info.fieldNodes[0]!.arguments || [], info.variableValues);
 
 	let query: Query;
-	let versionRaw = false;
 
 	const isAggregate = collection.endsWith('_aggregated') && collection in gql.schema.collections === false;
 
 	if (isAggregate) {
-		query = await getAggregateQuery(args, selections, gql.schema, gql.accountability);
 		collection = collection.slice(0, -11);
+		query = await getAggregateQuery(args, selections, gql.schema, gql.accountability, collection);
 	} else {
-		query = await getQuery(args, selections, info.variableValues, gql.schema, gql.accountability);
-
 		if (collection.endsWith('_by_id') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -6);
 		}
 
+		query = await getQuery(args, gql.schema, selections, info.variableValues, gql.accountability, collection);
+
 		if (collection.endsWith('_by_version') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -11);
-			versionRaw = true;
+			query.versionRaw = true;
 		}
-	}
-
-	if (args['id']) {
-		query.filter = {
-			_and: [
-				query.filter || {},
-				{
-					[gql.schema.collections[collection]!.primary]: {
-						_eq: args['id'],
-					},
-				},
-			],
-		};
-
-		query.limit = 1;
 	}
 
 	// Transform count(a.b.c) into a.b.count(c)
@@ -65,38 +47,34 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 		}
 	}
 
-	const result = await gql.read(collection, query);
+	const result = await gql.read(collection, query, args['id']);
 
-	if (args['version']) {
-		const versionsService = new VersionsService({ accountability: gql.accountability, schema: gql.schema });
+	if (args['id']) return result;
 
-		const saves = await versionsService.getVersionSaves(args['version'], collection, args['id']);
-
-		if (saves) {
-			if (gql.schema.collections[collection]!.singleton) {
-				return versionRaw
-					? mergeVersionsRaw(result, saves)
-					: mergeVersionsRecursive(result, saves, collection, gql.schema);
-			} else {
-				if (result?.[0] === undefined) return null;
-
-				return versionRaw
-					? mergeVersionsRaw(result[0], saves)
-					: mergeVersionsRecursive(result[0], saves, collection, gql.schema);
-			}
-		}
-	}
-
-	if (args['id']) {
-		return result?.[0] || null;
-	}
-
+	/**
+	 * Since grouped fields are returned at the top level, we duplicate those fields
+	 * into the expected `group` property on the payload, excluding any non-group
+	 * fields (i.e. aggregate keys).
+	 *
+	 * The payload can only contain grouped fields and aggregate keys, as the
+	 * aggregate selection is restricted to those fields. Therefore, the original
+	 * grouped fields can safely remain at the top level.
+	 *
+	 * We cannot iterate over `query.group`, because grouped fields that use
+	 * functions are normalized (e.g. function(field) → function_field), which would
+	 * result in them being skipped.
+	 *
+	 * Before:
+	 * { year_date: 2023, count: { id: 42 } }
+	 *
+	 * After:
+	 * { year_date: 2023, count: { id: 42 }, group: { year_date: 2023 } }
+	 */
 	if (query.group) {
-		// for every entry in result add a group field based on query.group;
 		const aggregateKeys = Object.keys(query.aggregate ?? {});
 
-		result['map']((field: Item) => {
-			field['group'] = omit(field, aggregateKeys);
+		result['map']((payload: Item) => {
+			payload['group'] = omit(payload, aggregateKeys);
 		});
 	}
 

@@ -1,7 +1,7 @@
 import type { DirectusShare } from '../../../schema/share.js';
 import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
-import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
+import { throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateShareOutput<
 	Schema,
@@ -20,7 +20,7 @@ export type UpdateShareOutput<
 export const updateShares =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		keys: DirectusShare<Schema>['id'][],
-		item: Partial<DirectusShare<Schema>>,
+		item: NestedPartial<DirectusShare<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateShareOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -63,7 +63,7 @@ export const updateSharesBatch =
 export const updateShare =
 	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		key: DirectusShare<Schema>['id'],
-		item: Partial<DirectusShare<Schema>>,
+		item: NestedPartial<DirectusShare<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateShareOutput<Schema, TQuery>, Schema> =>
 	() => {

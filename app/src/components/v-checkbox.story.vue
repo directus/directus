@@ -8,7 +8,7 @@ const value = ref();
 <template>
 	<Story title="VCheckbox">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-checkbox v-model="value" v-bind="state">My Checkbox</v-checkbox>
+			<VCheckbox v-model="value" v-bind="state">My Checkbox</VCheckbox>
 		</template>
 
 		<template #controls>

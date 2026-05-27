@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router';
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 interface Breadcrumb {
 	to: string;
 	name: string;
@@ -19,13 +22,13 @@ withDefaults(defineProps<Props>(), {
 <template>
 	<span class="v-breadcrumb">
 		<span v-for="(item, index) in items" :key="item.name" class="section" :class="{ disabled: item.disabled }">
-			<v-icon v-if="index > 0" name="chevron_right" small />
-			<router-link v-if="!item.disabled" :to="item.to" class="section-link">
-				<v-icon v-if="item.icon" :name="item.icon" small />
+			<VIcon v-if="index > 0" name="chevron_right" small />
+			<RouterLink v-if="!item.disabled" :to="item.to" class="section-link">
+				<VIcon v-if="item.icon" :name="item.icon" small />
 				{{ item.name }}
-			</router-link>
+			</RouterLink>
 			<span v-else class="section-link">
-				<v-icon v-if="item.icon" :name="item.icon" />
+				<VIcon v-if="item.icon" :name="item.icon" />
 				{{ item.name }}
 			</span>
 		</span>
@@ -54,7 +57,7 @@ withDefaults(defineProps<Props>(), {
 		.v-icon {
 			--v-icon-color: var(--v-breadcrumb-divider-color, var(--theme--foreground-subdued));
 
-			margin: 0 4px;
+			margin: 0 0.25rem;
 		}
 
 		&-link {
@@ -66,7 +69,7 @@ withDefaults(defineProps<Props>(), {
 			.v-icon {
 				--v-icon-color: var(--v-breadcrumb-color, var(--theme--foreground-subdued));
 
-				margin: 0 2px;
+				margin: 0 0.125rem;
 			}
 
 			&:hover {
@@ -78,8 +81,9 @@ withDefaults(defineProps<Props>(), {
 			}
 
 			&:focus-visible {
-				outline-offset: var(--focus-ring-offset-inset);
+				outline-offset: var(--focus-ring-offset-invert);
 				padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+				padding-block: var(--focus-ring-width);
 			}
 		}
 

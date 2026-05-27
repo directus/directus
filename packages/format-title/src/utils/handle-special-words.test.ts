@@ -1,5 +1,5 @@
-import { handleSpecialWords } from './handle-special-words.js';
 import { expect, test } from 'vitest';
+import { handleSpecialWords } from './handle-special-words.js';
 
 test('Returns special formatting when matches', () => {
 	expect(handleSpecialWords('mysql', 0, ['mysql'])).toBe('MySQL');

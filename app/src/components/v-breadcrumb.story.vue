@@ -27,7 +27,7 @@ function initState() {
 <template>
 	<Story title="VBreadcrumb" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-breadcrumb v-bind="state" />
+			<VBreadcrumb v-bind="state" />
 		</template>
 	</Story>
 </template>

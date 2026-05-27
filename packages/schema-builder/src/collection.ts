@@ -1,5 +1,5 @@
-import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
 import { ok as assert } from 'node:assert/strict';
+import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
 import { SchemaBuilder } from './builder.js';
 import { COLLECTION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
@@ -20,7 +20,7 @@ export class CollectionBuilder {
 		this._data = {
 			collection: name,
 			...COLLECTION_DEFAULTS,
-		};
+		} satisfies InitialCollectionOverview;
 
 		this._schemaBuilder = schema;
 	}
@@ -37,7 +37,7 @@ export class CollectionBuilder {
 		return field;
 	}
 
-	get_name() {
+	get_name(): string {
 		return this._data.collection;
 	}
 

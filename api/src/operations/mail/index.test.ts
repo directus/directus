@@ -1,6 +1,6 @@
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
-import { beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
+import { beforeEach, describe, expect, type MockInstance, test, vi } from 'vitest';
 import { MailService } from '../../services/mail/index.js';
 import * as mdUtil from '../../utils/md.js';
 import type { Options } from './index.js';
@@ -16,6 +16,7 @@ describe('Operations / Mail', () => {
 			accountability: null,
 			database: vi.mocked(knex.default({ client: MockClient })),
 			getSchema: vi.fn().mockResolvedValue({}),
+			flow: {},
 		};
 
 		mailServiceSendSpy = vi.spyOn(MailService.prototype, 'send').mockResolvedValue(true);

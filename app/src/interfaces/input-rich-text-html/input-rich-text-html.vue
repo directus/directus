@@ -1,24 +1,46 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
-import { useSettingsStore } from '@/stores/settings';
-import { percentage } from '@/utils/percentage';
-import { SettingsStorageAssetPreset } from '@directus/types';
+import type { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
+import tinymce from 'tinymce/tinymce';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
+import toolbarDefault from './toolbar-default';
 import useImage from './useImage';
+import useInlineCode from './useInlineCode';
 import useLink from './useLink';
 import useMedia from './useMedia';
+import usePre from './usePre';
 import useSourceCode from './useSourceCode';
-import tinymce from 'tinymce/tinymce';
-
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTabItem from '@/components/v-tab-item.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabsItems from '@/components/v-tabs-items.vue';
+import VTabs from '@/components/v-tabs.vue';
+import VTextarea from '@/components/v-textarea.vue';
+import VUpload from '@/components/v-upload.vue';
+import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { useFocusin } from '@/composables/use-focusin';
+import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
+import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { percentage } from '@/utils/percentage';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
-
 import 'tinymce/tinymce';
-
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';
@@ -46,35 +68,22 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
 		tinymceOverrides?: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
 		softLength?: number;
 		direction?: string;
+		comparisonMode?: boolean;
+		comparisonSide?: 'base' | 'incoming';
+		fieldData?: any;
 	}>(),
 	{
-		toolbar: () => [
-			'bold',
-			'italic',
-			'underline',
-			'h1',
-			'h2',
-			'h3',
-			'numlist',
-			'bullist',
-			'removeformat',
-			'blockquote',
-			'customLink',
-			'customImage',
-			'customMedia',
-			'code',
-			'fullscreen',
-		],
+		toolbar: () => toolbarDefault,
 		font: 'sans-serif',
 		customFormats: () => [],
 	},
@@ -85,10 +94,15 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
+const comparisonEditorRef = ref<any | null>(null);
+const comparisonEditorInitialized = ref(false);
 const editorKey = ref(0);
+const comparisonEditorKey = ref(0);
 
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
+const { info } = useServerStore();
+const allowedMimeTypes = computed(() => parseGlobalMimeTypeAllowList(info.files?.mimeTypeAllowList)?.join(','));
 
 const storageAssetTransform = ref('all');
 const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
@@ -126,6 +140,9 @@ const {
 const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, isLinkSaveable } = useLink(editorRef);
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+
+const { preButton } = usePre(editorRef);
+const { inlineCodeButton } = useInlineCode(editorRef);
 
 const internalValue = computed({
 	get() {
@@ -170,27 +187,64 @@ watch(
 	},
 );
 
+watch(
+	() => [props.value, props.font, props.direction, props.comparisonSide],
+	() => {
+		if (comparisonEditorRef.value && comparisonEditorInitialized.value) {
+			comparisonEditorRef.value.setContent(props.value || '');
+		}
+	},
+);
+
+watch(
+	() => props.comparisonSide,
+	() => {
+		comparisonEditorInitialized.value = false;
+		comparisonEditorKey.value++;
+	},
+);
+
+function getBaseEditorOptions() {
+	return {
+		skin: false,
+		body_class: props.nonEditable ? 'non-editable' : '',
+		content_css: false,
+		branding: false,
+		max_height: 1000,
+		elementpath: false,
+		statusbar: false,
+		menubar: false,
+		convert_urls: false,
+		directionality: props.direction,
+		language: i18n.global.locale.value,
+	};
+}
+
+function mapToolbarButton(button: string): string {
+	const buttonMap: Record<string, string> = {
+		link: 'customLink',
+		media: 'customMedia',
+		code: 'customCode',
+		image: 'customImage',
+		pre: 'customPre',
+		inlinecode: 'customInlineCode',
+	};
+
+	return buttonMap[button] || button;
+}
+
 const editorOptions = computed(() => {
 	const styleFormats =
 		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
 
-	let toolbarString = (props.toolbar ?? [])
-		.map((button) =>
-			button
-				.replace(/^link$/g, 'customLink')
-				.replace(/^media$/g, 'customMedia')
-				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage'),
-		)
-		.join(' ');
+	let toolbarString = (props.toolbar ?? []).map(mapToolbarButton).join(' ');
 
 	if (styleFormats) {
 		toolbarString += ' styles';
 	}
 
 	return {
-		skin: false,
-		content_css: false,
+		...getBaseEditorOptions(),
 		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
 		plugins: [
 			'media',
@@ -206,12 +260,6 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
-		branding: false,
-		max_height: 1000,
-		elementpath: false,
-		statusbar: false,
-		menubar: false,
-		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
 		toolbar: toolbarString ? toolbarString : false,
@@ -219,11 +267,28 @@ const editorOptions = computed(() => {
 		file_picker_types: 'customImage customMedia image media',
 		link_default_protocol: 'https',
 		browser_spellcheck: true,
-		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		language: i18n.global.locale.value,
+		ui_mode: 'split',
 		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
+	};
+});
+
+const comparisonEditorOptions = computed(() => {
+	return {
+		...getBaseEditorOptions(),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true),
+		plugins: ['autoresize', 'directionality'],
+		toolbar: false,
+		readonly: true,
+		setup: (editor: any) => {
+			comparisonEditorRef.value = editor;
+
+			editor.on('init', () => {
+				comparisonEditorInitialized.value = true;
+				editor.setContent(props.value || '');
+			});
+		},
 	};
 });
 
@@ -242,7 +307,7 @@ function contentUpdated() {
 
 	if (!observer) return;
 
-	const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
+	const newValue = editorRef.value.getContent() || null;
 
 	if (newValue === emittedValue) return;
 
@@ -268,9 +333,12 @@ function setup(editor: any) {
 
 	const linkShortcut = 'meta+k';
 
+	editor.ui.registry.addToggleButton('customPre', preButton);
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
 	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
+
+	editor.ui.registry.addToggleButton('customInlineCode', inlineCodeButton);
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
 
 	editor.on('init', function () {
@@ -302,17 +370,56 @@ function setup(editor: any) {
 			}
 		}
 	});
+
+	let pausedFocusTrap = false;
+	editor.on('OpenWindow', onOpenWindow);
+	editor.on('CloseWindow', onCloseWindow);
+
+	const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
+
+	function onOpenWindow() {
+		const toxDialogEl = document.querySelector('.tox-dialog') as HTMLElement | null;
+		if (toxDialogEl === null) return;
+
+		const firstFocusableElement = getFirstFocusableElement(toxDialogEl);
+		if (!firstFocusableElement) return;
+
+		pausedFocusTrap = true;
+		pauseFocusTrap();
+		firstFocusableElement.focus();
+	}
+
+	function getFirstFocusableElement(toxDialogEl: HTMLElement) {
+		// TinyMCE adds tabindex="-1" to all focusable elements in the dialog
+		const findElement = toxDialogEl.querySelector('[tabindex="-1"]') as HTMLElement | null;
+		if (!findElement) return;
+
+		// To shift the focus to this dialog, we need to make this element focusable
+		findElement.tabIndex = 0;
+		return findElement;
+	}
+
+	function onCloseWindow() {
+		if (!pausedFocusTrap) return;
+
+		pausedFocusTrap = false;
+		unpauseFocusTrap();
+	}
 }
 
 function setFocus(val: boolean) {
 	if (editorElement.value == null) return;
 	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
+	const { focus, blur } = useFocusin(body);
+
 	if (body == null) return;
 
 	if (val) {
+		focus();
 		body.classList.add('focus');
 	} else {
+		blur();
 		body.classList.remove('focus');
 	}
 }
@@ -361,11 +468,23 @@ onMounted(() => {
 		'Right to left': t('right_to_left'),
 	});
 });
+
+const menuActive = computed(
+	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
+);
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
-		<editor
+	<div v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
+		<Editor
+			v-if="nonEditable"
+			:key="`comparison-${comparisonSide ?? ''}-${comparisonEditorKey}`"
+			:value="value"
+			:init="comparisonEditorOptions"
+			disabled
+		/>
+		<Editor
+			v-else
 			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
@@ -388,62 +507,60 @@ onMounted(() => {
 				{{ softLength - count }}
 			</span>
 		</template>
-		<v-dialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
-			<v-card>
-				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
-				<v-card-text>
+		<VDialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
+			<VCard>
+				<VCardTitle>{{ $t('wysiwyg_options.link') }}</VCardTitle>
+				<VCardText>
 					<div class="grid">
 						<div class="field">
-							<div class="type-label">{{ t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')" autofocus></v-input>
+							<div class="type-label">{{ $t('url') }}</div>
+							<VInput v-model="linkSelection.url" :placeholder="$t('url_placeholder')" autofocus></VInput>
 						</div>
 						<div class="field">
-							<div class="type-label">{{ t('display_text') }}</div>
-							<v-input v-model="linkSelection.displayText" :placeholder="t('display_text_placeholder')"></v-input>
+							<div class="type-label">{{ $t('display_text') }}</div>
+							<VInput v-model="linkSelection.displayText" :placeholder="$t('display_text_placeholder')"></VInput>
 						</div>
 						<div class="field half">
-							<div class="type-label">{{ t('tooltip') }}</div>
-							<v-input v-model="linkSelection.title" :placeholder="t('tooltip_placeholder')"></v-input>
+							<div class="type-label">{{ $t('tooltip') }}</div>
+							<VInput v-model="linkSelection.title" :placeholder="$t('tooltip_placeholder')"></VInput>
 						</div>
 						<div class="field half-right">
-							<div class="type-label">{{ t('open_link_in') }}</div>
-							<v-checkbox v-model="linkSelection.newTab" block :label="t('new_tab')"></v-checkbox>
+							<div class="type-label">{{ $t('open_link_in') }}</div>
+							<VCheckbox v-model="linkSelection.newTab" block :label="$t('new_tab')"></VCheckbox>
 						</div>
 					</div>
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="!isLinkSaveable" @click="saveLink">{{ t('save') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+				</VCardText>
+				<VCardActions>
+					<VButton secondary @click="closeLinkDrawer">{{ $t('cancel') }}</VButton>
+					<VButton :disabled="!isLinkSaveable" @click="saveLink">{{ $t('save') }}</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 
-		<v-drawer
+		<VDrawer
 			v-model="codeDrawerOpen"
-			:title="t('wysiwyg_options.source_code')"
+			:title="$t('wysiwyg_options.source_code')"
 			icon="code"
 			@cancel="closeCodeDrawer"
 			@apply="saveCode"
 		>
 			<div class="content">
-				<interface-input-code
+				<InterfaceInputCode
 					:value="code"
 					language="htmlmixed"
 					line-wrapping
 					@input="code = $event"
-				></interface-input-code>
+				></InterfaceInputCode>
 			</div>
 
 			<template #actions>
-				<v-button icon rounded @click="saveCode">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton icon="check" @click="saveCode" />
 			</template>
-		</v-drawer>
+		</VDrawer>
 
-		<v-drawer
+		<VDrawer
 			v-model="imageDrawerOpen"
-			:title="t('wysiwyg_options.image')"
+			:title="$t('wysiwyg_options.image')"
 			icon="image"
 			@cancel="closeImageDrawer"
 			@apply="saveImage"
@@ -453,30 +570,30 @@ onMounted(() => {
 					<img class="image-preview" :src="imageSelection.previewUrl" />
 					<div class="grid">
 						<div class="field half">
-							<div class="type-label">{{ t('image_url') }}</div>
-							<v-input v-model="imageSelection.imageUrl" />
+							<div class="type-label">{{ $t('image_url') }}</div>
+							<VInput v-model="imageSelection.imageUrl" />
 						</div>
 						<div class="field half-right">
-							<div class="type-label">{{ t('alt_text') }}</div>
-							<v-input v-model="imageSelection.alt" :nullable="false" />
+							<div class="type-label">{{ $t('alt_text') }}</div>
+							<VInput v-model="imageSelection.alt" :nullable="false" />
 						</div>
 						<template v-if="storageAssetTransform === 'all'">
 							<div class="field half">
-								<div class="type-label">{{ t('width') }}</div>
-								<v-input v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
+								<div class="type-label">{{ $t('width') }}</div>
+								<VInput v-model="imageSelection.width" :disabled="!!imageSelection.transformationKey" />
 							</div>
 							<div class="field half-right">
-								<div class="type-label">{{ t('height') }}</div>
-								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
+								<div class="type-label">{{ $t('height') }}</div>
+								<VInput v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
 							</div>
 						</template>
 						<div class="field half">
-							<div class="type-label">{{ t('wysiwyg_options.lazy_loading') }}</div>
-							<v-checkbox v-model="imageSelection.lazy" block :label="t('wysiwyg_options.lazy_loading_label')" />
+							<div class="type-label">{{ $t('wysiwyg_options.lazy_loading') }}</div>
+							<VCheckbox v-model="imageSelection.lazy" block :label="$t('wysiwyg_options.lazy_loading_label')" />
 						</div>
 						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
-							<div class="type-label">{{ t('transformation_preset_key') }}</div>
-							<v-select
+							<div class="type-label">{{ $t('transformation_preset_key') }}</div>
+							<VSelect
 								v-model="imageSelection.transformationKey"
 								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
 								show-deselect
@@ -484,76 +601,89 @@ onMounted(() => {
 						</div>
 					</div>
 				</template>
-				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
+				<VUpload
+					v-else
+					:multiple="false"
+					from-library
+					from-url
+					:folder="folder"
+					:accept="allowedMimeTypes"
+					@input="onImageSelect"
+				/>
 			</div>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save_image')" icon rounded @click="saveImage">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_image')" icon="check" @click="saveImage" />
 			</template>
-		</v-drawer>
+		</VDrawer>
 
-		<v-drawer
+		<VDrawer
 			v-model="mediaDrawerOpen"
-			:title="t('wysiwyg_options.media')"
+			:title="$t('wysiwyg_options.media')"
 			icon="slideshow"
 			@cancel="closeMediaDrawer"
 			@apply="saveMedia"
 		>
 			<template #sidebar>
-				<v-tabs v-model="openMediaTab" vertical>
-					<v-tab value="video">{{ t('media') }}</v-tab>
-					<v-tab value="embed">{{ t('embed') }}</v-tab>
-				</v-tabs>
+				<VTabs v-model="openMediaTab" vertical>
+					<VTab value="video">{{ $t('media') }}</VTab>
+					<VTab value="embed">{{ $t('embed') }}</VTab>
+				</VTabs>
 			</template>
 
 			<div class="content">
-				<v-tabs-items v-model="openMediaTab">
-					<v-tab-item value="video">
+				<VTabsItems v-model="openMediaTab">
+					<VTabItem value="video">
 						<template v-if="mediaSelection">
 							<video v-if="mediaSelection.tag !== 'iframe'" class="media-preview" controls="true">
 								<source :src="mediaSelection.previewUrl" />
 							</video>
 							<iframe
 								v-if="mediaSelection.tag === 'iframe'"
+								:title="$t('interfaces.input-rich-text-html.media_preview_iframe_title')"
 								class="media-preview"
 								:src="mediaSelection.previewUrl"
 							></iframe>
 							<div class="grid">
 								<div class="field">
-									<div class="type-label">{{ t('source') }}</div>
-									<v-input v-model="mediaSource" />
+									<div class="type-label">{{ $t('source') }}</div>
+									<VInput v-model="mediaSource" />
 								</div>
 								<div class="field half">
-									<div class="type-label">{{ t('width') }}</div>
-									<v-input v-model="mediaWidth" />
+									<div class="type-label">{{ $t('width') }}</div>
+									<VInput v-model="mediaWidth" />
 								</div>
 								<div class="field half-right">
-									<div class="type-label">{{ t('height') }}</div>
-									<v-input v-model="mediaHeight" />
+									<div class="type-label">{{ $t('height') }}</div>
+									<VInput v-model="mediaHeight" />
 								</div>
 							</div>
 						</template>
-						<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onMediaSelect" />
-					</v-tab-item>
-					<v-tab-item value="embed">
+						<VUpload
+							v-else
+							:multiple="false"
+							from-library
+							from-url
+							:folder="folder"
+							:accept="allowedMimeTypes"
+							@input="onMediaSelect"
+						/>
+					</VTabItem>
+					<VTabItem value="embed">
 						<div class="grid">
 							<div class="field">
-								<div class="type-label">{{ t('embed') }}</div>
-								<v-textarea v-model="embed" :nullable="false" />
+								<div class="type-label">{{ $t('embed') }}</div>
+								<VTextarea v-model="embed" :nullable="false" />
 							</div>
 						</div>
-					</v-tab-item>
-				</v-tabs-items>
+					</VTabItem>
+				</VTabsItems>
 			</div>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save_media')" icon rounded @click="saveMedia">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_media')" icon="check" @click="saveMedia" />
 			</template>
-		</v-drawer>
+		</VDrawer>
 	</div>
 </template>
 
@@ -561,7 +691,7 @@ onMounted(() => {
 @use '@/styles/mixins';
 
 .body {
-	padding: 20px;
+	padding: 1.125rem;
 }
 
 .grid {
@@ -570,11 +700,11 @@ onMounted(() => {
 
 .remaining {
 	position: absolute;
-	right: 10px;
-	bottom: 5px;
+	inset-inline-end: 0.5625rem;
+	inset-block-end: 0.3125rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
-	text-align: right;
+	text-align: end;
 	vertical-align: middle;
 	font-feature-settings: 'tnum';
 }
@@ -589,16 +719,15 @@ onMounted(() => {
 
 .image-preview,
 .media-preview {
-	width: 100%;
-	height: var(--input-height-tall);
-	margin-bottom: 24px;
+	inline-size: 100%;
+	block-size: var(--input-height-md);
+	margin-block-end: 1.375rem;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 }
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 </style>

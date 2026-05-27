@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import { useElementSize } from '@directus/composables';
+import { ref, watch } from 'vue';
+import VHighlight from '@/components/v-highlight.vue';
 
 interface Props {
 	/** The text that should be displayed */
@@ -34,7 +35,7 @@ watch(
 
 <template>
 	<div ref="el" v-tooltip:[placement]="hasEllipsis && text" class="v-text-overflow">
-		<v-highlight v-if="highlight" :query="highlight" :text="text" />
+		<VHighlight v-if="highlight" :query="highlight" :text="text" />
 		<template v-else>{{ text }}</template>
 	</div>
 </template>

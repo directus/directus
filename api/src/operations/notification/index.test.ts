@@ -1,4 +1,6 @@
 import { afterEach, expect, test, vi } from 'vitest';
+import { NotificationsService } from '../../services/notifications.js';
+import config from './index.js';
 
 vi.mock('../../services/notifications.js', () => {
 	const NotificationsService = vi.fn();
@@ -9,9 +11,6 @@ vi.mock('../../services/notifications.js', () => {
 vi.mock('../../utils/get-accountability-for-role.js', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
-
-import { NotificationsService } from '../../services/notifications.js';
-import config from './index.js';
 
 const testId = '00000000-0000-0000-0000-000000000000';
 

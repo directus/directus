@@ -48,6 +48,10 @@ export type CollectionC = {
 	id: number;
 	parent_id: number | CollectionA;
 	dt_field: 'datetime' | null;
+	date_field: 'date' | null;
+	time_field: 'time' | null;
+	nullable: string | null;
+	non_nullable: string;
 };
 
 // Singleton collection

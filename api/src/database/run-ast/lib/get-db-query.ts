@@ -4,18 +4,22 @@ import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
-import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
+import { extractFunctionName } from '../../../utils/extract-function-name.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { getColumn } from '../utils/get-column.js';
+import { splitFieldPath } from '../../../utils/split-field-path.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from '../utils/apply-case-when.js';
+import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
+import { generateQueryAlias } from '../utils/generate-alias.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
+import { getColumn } from '../utils/get-column.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
-import applyQuery, { generateAlias } from './apply-query/index.js';
+import applyQuery from './apply-query/index.js';
 import { applyLimit } from './apply-query/pagination.js';
+import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 
 export type DBQueryOptions = {
 	table: string;
@@ -94,7 +98,19 @@ export function getDBQuery(
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, queryCopy.aggregate, table, aliasMap, true);
+		const fieldAliasMap: Record<string, string> = { ...(queryCopy.alias ?? {}) };
+
+		for (const node of fieldNodes) {
+			if (node.type === 'functionField' && extractFunctionName(node.name) === 'json') {
+				fieldAliasMap[applyFunctionToColumnName(node.fieldKey)] = node.name;
+			}
+		}
+
+		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, {
+			aggregate: queryCopy.aggregate,
+			returnRecords: true,
+			fieldAliasMap,
+		});
 
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;
@@ -148,27 +164,36 @@ export function getDBQuery(
 			let orderByString = '';
 			const orderByFields: Knex.Raw[] = [];
 
-			sortRecords.map((sortRecord) => {
+			sortRecords.map((sortRecord, index) => {
 				if (orderByString.length !== 0) {
 					orderByString += ', ';
 				}
 
-				const sortAlias = `sort_${generateAlias()}`;
+				const sortAlias = generateQueryAlias(
+					table,
+					queryCopy,
+					`sort_${index}_${sortRecord.column}_${sortRecord.order}`,
+				);
 
 				let orderByColumn: Knex.Raw;
 
-				if (sortRecord.column.includes('.')) {
-					const [alias, field] = sortRecord.column.split('.');
+				const colParts = splitFieldPath(sortRecord.column);
+
+				if (colParts.length > 1) {
+					const [alias, ...rest] = colParts;
+					const field = rest.join('.');
 					const originalCollectionName = getCollectionFromAlias(alias!, aliasMap);
-					dbQuery.select(getColumn(knex, alias!, field!, sortAlias, schema, { originalCollectionName }));
+					dbQuery.select(getColumn(knex, alias!, field, sortAlias, schema, { originalCollectionName }));
 
 					orderByString += `?? ${sortRecord.order}`;
-					orderByColumn = getColumn(knex, alias!, field!, false, schema, { originalCollectionName });
+					orderByColumn = getColumn(knex, alias!, field, false, schema, { originalCollectionName });
 				} else {
-					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
+					dbQuery.select(
+						getColumn(knex, table, sortRecord.column, sortAlias, schema, { jsonReturnType: 'text' as const }),
+					);
 
 					orderByString += `?? ${sortRecord.order}`;
-					orderByColumn = getColumn(knex, table, sortRecord.column, false, schema);
+					orderByColumn = getColumn(knex, table, sortRecord.column, false, schema, { jsonReturnType: 'text' as const });
 				}
 
 				orderByFields.push(orderByColumn);
@@ -194,14 +219,19 @@ export function getDBQuery(
 			dbQuery.orderByRaw(orderByString, orderByFields);
 		} else {
 			sortRecords.map((sortRecord) => {
-				if (sortRecord.column.includes('.')) {
-					const [alias, field] = sortRecord.column.split('.');
+				const colParts = splitFieldPath(sortRecord.column);
 
-					sortRecord.column = getColumn(knex, alias!, field!, false, schema, {
+				if (colParts.length > 1) {
+					const [alias, ...rest] = colParts;
+					const field = rest.join('.');
+
+					sortRecord.column = getColumn(knex, alias!, field, false, schema, {
 						originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
 					}) as any;
 				} else {
-					sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema) as any;
+					sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema, {
+						jsonReturnType: 'text' as const,
+					}) as any;
 				}
 			});
 
@@ -211,7 +241,7 @@ export function getDBQuery(
 
 	if (!needsInnerQuery) return dbQuery;
 
-	const innerCaseWhenAliasPrefix = generateAlias();
+	const innerCaseWhenAliasPrefix = generateQueryAlias(table, queryCopy, 'inner_case_when');
 
 	if (hasCaseWhen) {
 		/* If there are cases, we need to employ a trick in order to evaluate the case/when structure in the inner query,

@@ -1,6 +1,6 @@
+import type { Theme } from '@directus/types';
 import { defineStore } from 'pinia';
 import { reactive } from 'vue';
-import type { Theme } from '../schemas/theme.js';
 import { dark, light } from '../themes/index.js';
 
 export const useThemeStore = defineStore('🎨 Themes', () => {

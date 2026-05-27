@@ -12,7 +12,7 @@ function initState() {
 <template>
 	<Story title="VProgressLinear" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-progress-linear v-bind="state" />
+			<VProgressLinear v-bind="state" />
 		</template>
 	</Story>
 </template>

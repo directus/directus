@@ -12,7 +12,7 @@ function initState() {
 <template>
 	<Story title="VHighlight" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-highlight v-bind="state" />
+			<VHighlight v-bind="state" />
 		</template>
 	</Story>
 </template>

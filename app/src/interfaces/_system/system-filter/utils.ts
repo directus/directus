@@ -1,5 +1,5 @@
-import { get, isPlainObject } from 'lodash';
 import { Filter } from '@directus/types';
+import { get, isPlainObject } from 'lodash';
 
 export function getNodeName(node: Filter): string {
 	if (!node) return '';

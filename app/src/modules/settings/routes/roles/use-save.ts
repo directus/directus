@@ -1,8 +1,8 @@
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export interface UseSaveOptions {
 	name: Ref<string | null>;
@@ -25,7 +25,7 @@ export function useSave({ name }: UseSaveOptions) {
 				name: name.value,
 			});
 
-			router.push(`/settings/roles/${roleResponse.data.data.id}`);
+			router.push({ name: 'settings-roles-item', params: { primaryKey: roleResponse.data.data.id } });
 		} catch (error) {
 			unexpectedError(error);
 		} finally {

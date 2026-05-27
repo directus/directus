@@ -1,8 +1,9 @@
-import { test, expect, beforeEach, vi } from 'vitest';
-import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-
+import { setActivePinia } from 'pinia';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { cryptoStub } from '@/__utils__/crypto';
+import { useUserStore } from '@/stores/user';
+import { getAppearance } from '@/utils/get-appearance';
 
 vi.stubGlobal('crypto', cryptoStub);
 
@@ -13,9 +14,6 @@ beforeEach(() => {
 		}),
 	);
 });
-
-import { getAppearance } from '@/utils/get-appearance';
-import { useUserStore } from '@/stores/user';
 
 test(`Defaults to light when configured to auto and matchMedia isn't available in the browser`, () => {
 	const userStore = useUserStore();

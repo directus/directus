@@ -1,6 +1,6 @@
-import { notify } from '@/utils/notify';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { notify } from '@/utils/notify';
 
 type Message = {
 	success?: string;

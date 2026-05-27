@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction } from '@/types/panels';
 import type { Filter } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
@@ -9,6 +7,8 @@ import { isNil } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { monoThemeGenerator } from '../pie-chart/color-generator';
+import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction } from '@/types/panels';
 
 const props = withDefaults(
 	defineProps<{
@@ -130,7 +130,7 @@ function setUpChart() {
 	const colors = monoThemeGenerator(
 		props.color && props.color.startsWith('var(--')
 			? cssVar(props.color.substring(4, props.color.length - 1))
-			: props.color ?? 'var(--theme--primary)',
+			: (props.color ?? 'var(--theme--primary)'),
 		series.length,
 	);
 
@@ -211,13 +211,13 @@ function setUpChart() {
 						bottom: 5,
 						left: 0,
 						right: 0,
-				  }
+					}
 				: {
 						top: props.showHeader ? -20 : -2,
 						bottom: 0,
 						left: 12,
 						right: 12,
-				  },
+					},
 		},
 		markers: {
 			colors: colors,
@@ -262,7 +262,7 @@ function setUpChart() {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 			},
 			crosshairs: {
@@ -291,13 +291,13 @@ function setUpChart() {
 						: n(value, 'decimal', {
 								minimumFractionDigits: 0,
 								maximumFractionDigits: props.decimals,
-						  } as any);
+							} as any);
 				},
 				style: {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',
 					foreColor: 'var(--theme--foreground-subdued)',
 					fontWeight: 600,
-					fontSize: '10px',
+					fontSize: '0.5625rem',
 				},
 			},
 		},
@@ -312,7 +312,7 @@ function setUpChart() {
 			fontFamily: 'var(--theme--fonts--sans--font-family)',
 			foreColor: 'var(--theme--foreground)',
 			fontWeight: 600,
-			fontSize: '10px',
+			fontSize: '0.5625rem',
 		},
 	});
 
@@ -328,9 +328,9 @@ function setUpChart() {
 
 <style scoped>
 .line-chart {
-	padding: 0px;
-	height: 100%;
-	width: 100%;
+	padding: 0;
+	block-size: 100%;
+	inline-size: 100%;
 }
 </style>
 
@@ -341,17 +341,17 @@ function setUpChart() {
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
-	margin-bottom: 0;
-	padding: 0 4px;
+	margin-block-end: 0;
+	padding: 0 0.25rem;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 	background-color: var(--theme--background-subdued) !important;
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 0px;
+	padding: 0;
 	font-weight: 600 !important;
-	font-size: 10px !important;
+	font-size: 0.5625rem !important;
 }
 
 .apexcharts-tooltip-series-group {
@@ -361,8 +361,8 @@ function setUpChart() {
 
 .apexcharts-tooltip-series-group.apexcharts-active,
 .apexcharts-tooltip-series-group:last-child {
-	padding: 0 4px !important;
-	padding-bottom: 0px !important;
+	padding: 0 0.25rem !important;
+	padding-block-end: 0 !important;
 }
 
 .apexcharts-tooltip-text {
@@ -371,9 +371,9 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-marker {
-	height: 8px !important;
-	width: 8px !important;
-	padding: 4px !important;
+	block-size: 0.4375rem !important;
+	inline-size: 0.4375rem !important;
+	padding: 0.25rem !important;
 }
 
 .apexcharts-yaxistooltip {

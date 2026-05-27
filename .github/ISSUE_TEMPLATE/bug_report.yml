@@ -23,7 +23,8 @@ body:
       label: To Reproduce
       description:
         Steps to reproduce the behavior. Contributors should be able to follow the steps provided in order to reproduce
-        the bug.
+        the bug. Please include any relevant details that could help with reproduction, such as browser/server/database
+        logs, permission setup, schema snapshot (exported from **Settings > Data Model**) etc.
     validations:
       required: true
   - type: input

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import availableLanguages from '@/lang/available-languages.yaml';
 import { useI18n } from 'vue-i18n';
+import VSelect from '@/components/v-select/v-select.vue';
+import availableLanguages from '@/lang/available-languages.yaml';
 
 const props = defineProps<{
 	value: string | null;
@@ -25,11 +26,11 @@ if (props.includeProjectDefault) {
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:items="languages"
 		:disabled="disabled"
-		:placeholder="t('language_placeholder')"
+		:placeholder="$t('language_placeholder')"
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>

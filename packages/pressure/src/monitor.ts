@@ -1,8 +1,8 @@
-import { defaults } from '@directus/utils';
 import type { IntervalHistogram } from 'node:perf_hooks';
 import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
 import { memoryUsage } from 'node:process';
 import { setTimeout } from 'node:timers';
+import { defaults } from '@directus/utils';
 
 export type PressureMonitorOptions = {
 	maxEventLoopDelay?: number | false;
@@ -40,7 +40,7 @@ export class PressureMonitor {
 		this.timeout.unref();
 	}
 
-	get overloaded() {
+	get overloaded(): boolean {
 		if (this.options.maxMemoryHeapUsed && this.memoryHeapUsed > this.options.maxMemoryHeapUsed) {
 			return true;
 		}

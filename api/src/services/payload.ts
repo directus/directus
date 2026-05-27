@@ -1,46 +1,47 @@
+import { randomUUID } from 'node:crypto';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
+	AbstractServiceOptions,
 	Accountability,
+	ActionEventParams,
 	Aggregate,
 	Alterations,
+	DefaultOverwrite,
 	FieldOverview,
 	Item,
+	MutationOptions,
+	PayloadAction,
+	PayloadServiceProcessRelationResult,
 	PrimaryKey,
 	Query,
 	SchemaOverview,
 } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
-import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, isObject, isPlainObject, pick } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
+import { clone, cloneDeep, isNil, isObject, isPlainObject } from 'lodash-es';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
-import { getHelpers } from '../database/helpers/index.js';
+import { getFunctions, getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import { useLogger } from '../logger/index.js';
+import { decrypt, encrypt } from '../utils/encrypt.js';
+import { extractFunctionName } from '../utils/extract-function-name.js';
 import { generateHash } from '../utils/generate-hash.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
-
-type Action = 'create' | 'read' | 'update';
+import { getSecret } from '../utils/get-secret.js';
 
 type Transformers = {
 	[type: string]: (context: {
-		action: Action;
+		action: PayloadAction;
 		value: any;
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 		specials: string[];
 		helpers: Helpers;
+		overwriteDefaults: DefaultOverwrite | undefined;
 	}) => Promise<any>;
-};
-
-type PayloadServiceProcessRelationResult = {
-	revisions: PrimaryKey[];
-	nestedActionEvents: ActionEventParams[];
-	userIntegrityCheckFlags: UserIntegrityCheckFlag;
 };
 
 /**
@@ -54,14 +55,19 @@ export class PayloadService {
 	collection: string;
 	schema: SchemaOverview;
 	nested: string[];
+	overwriteDefaults: DefaultOverwrite | undefined;
 
-	constructor(collection: string, options: AbstractServiceOptions) {
+	constructor(
+		collection: string,
+		options: AbstractServiceOptions & { overwriteDefaults?: DefaultOverwrite | undefined },
+	) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 		this.nested = options.nested ?? [];
+		this.overwriteDefaults = options.overwriteDefaults;
 
 		return this;
 	}
@@ -113,12 +119,12 @@ export class PayloadService {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
 		},
-		async 'user-created'({ action, value, accountability }) {
-			if (action === 'create') return accountability?.user || null;
+		async 'user-created'({ action, value, accountability, overwriteDefaults }) {
+			if (action === 'create') return (overwriteDefaults ? overwriteDefaults._user : accountability?.user) ?? null;
 			return value;
 		},
-		async 'user-updated'({ action, value, accountability }) {
-			if (action === 'update') return accountability?.user || null;
+		async 'user-updated'({ action, value, accountability, overwriteDefaults }) {
+			if (action === 'update') return (overwriteDefaults ? overwriteDefaults._user : accountability?.user) ?? null;
 			return value;
 		},
 		async 'role-created'({ action, value, accountability }) {
@@ -129,12 +135,18 @@ export class PayloadService {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'({ action, value, helpers }) {
-			if (action === 'create') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-created'({ action, value, helpers, overwriteDefaults }) {
+			if (action === 'create')
+				return new Date(
+					overwriteDefaults ? overwriteDefaults._date : helpers.date.writeTimestamp(new Date().toISOString()),
+				);
 			return value;
 		},
-		async 'date-updated'({ action, value, helpers }) {
-			if (action === 'update') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-updated'({ action, value, helpers, overwriteDefaults }) {
+			if (action === 'update')
+				return new Date(
+					overwriteDefaults ? overwriteDefaults._date : helpers.date.writeTimestamp(new Date().toISOString()),
+				);
 			return value;
 		},
 		async 'cast-csv'({ action, value }) {
@@ -154,26 +166,53 @@ export class PayloadService {
 
 			return value;
 		},
+		async encrypt({ action, value, accountability }) {
+			if (!value) return value;
+
+			if (action === 'read') {
+				// In-system calls can still get the decrypted value
+				if (accountability === null) {
+					const key = getSecret();
+
+					try {
+						return await decrypt(value, key);
+					} catch (err) {
+						useLogger().warn(`Failed to decrypt field value: ${(err as Error).message}`);
+						return null;
+					}
+				}
+
+				// Requests from the API entrypoints have accountability and shouldn't get the raw value
+				return '**********';
+			}
+
+			if (typeof value === 'string') {
+				const key = getSecret();
+				return await encrypt(value, key);
+			}
+
+			return value;
+		},
 	};
 
-	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
+	processValues(action: PayloadAction, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
+	processValues(action: PayloadAction, payload: Partial<Item>): Promise<Partial<Item>>;
 	processValues(
-		action: Action,
+		action: PayloadAction,
 		payloads: Partial<Item>[],
 		aliasMap: Record<string, string>,
 		aggregate: Aggregate,
 	): Promise<Partial<Item>[]>;
 
 	processValues(
-		action: Action,
+		action: PayloadAction,
 		payload: Partial<Item>,
 		aliasMap: Record<string, string>,
 		aggregate: Aggregate,
 	): Promise<Partial<Item>>;
 
 	async processValues(
-		action: Action,
+		action: PayloadAction,
 		payload: Partial<Item> | Partial<Item>[],
 		aliasMap: Record<string, string> = {},
 		aggregate: Aggregate = {},
@@ -216,6 +255,10 @@ export class PayloadService {
 		this.processGeometries(fieldEntries, processedPayload, action);
 		this.processDates(fieldEntries, processedPayload, action, aliasMap, aggregate);
 
+		if (action === 'read') {
+			this.processJsonFunctionResults(processedPayload, aliasMap);
+		}
+
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
 				for (const [key, value] of Object.entries(record)) {
@@ -229,7 +272,7 @@ export class PayloadService {
 		}
 
 		if (action === 'read') {
-			this.processAggregates(processedPayload, aggregate);
+			await this.processAggregates(processedPayload, aggregate);
 		}
 
 		if (Array.isArray(payload)) {
@@ -239,7 +282,7 @@ export class PayloadService {
 		return processedPayload[0]!;
 	}
 
-	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
+	async processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
 		/**
 		 * Build access path with -> delimiter
 		 *
@@ -251,6 +294,8 @@ export class PayloadService {
 			return acc;
 		}, []);
 
+		const fieldEntries = this.schema.collections[this.collection]!.fields;
+
 		/**
 		 * Expand -> delimited keys in the payload to the equivalent expanded object
 		 *
@@ -259,8 +304,30 @@ export class PayloadService {
 		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
-				aggregateKeys.forEach((key) => delete item[key]);
+				for (const key of aggregateKeys) {
+					// Ignore keys that do not follow the `A->B` naming like count=*
+					if (key in item === false) continue;
+
+					const [operation, fieldName] = key.split('->') as [string, string];
+
+					const aggregateResult = { [fieldName]: item[key] };
+
+					if (fieldEntries[fieldName]?.special?.length > 0) {
+						const newValue = await this.processField(
+							fieldEntries[fieldName],
+							aggregateResult,
+							'read',
+							this.accountability,
+						);
+
+						if (newValue !== undefined) aggregateResult[fieldName] = newValue;
+					}
+
+					if (!isPlainObject(item[operation])) item[operation] = {};
+
+					item[operation][fieldName] = aggregateResult[fieldName];
+					delete item[key];
+				}
 			}
 		}
 	}
@@ -268,7 +335,7 @@ export class PayloadService {
 	async processField(
 		field: SchemaOverview['collections'][string]['fields'][string],
 		payload: Partial<Item>,
-		action: Action,
+		action: PayloadAction,
 		accountability: Accountability | null,
 	): Promise<any> {
 		if (!field.special) return payload[field.field];
@@ -285,6 +352,7 @@ export class PayloadService {
 					accountability,
 					specials: fieldSpecials,
 					helpers: this.helpers,
+					overwriteDefaults: this.overwriteDefaults,
 				});
 			}
 		}
@@ -301,7 +369,7 @@ export class PayloadService {
 	processGeometries<T extends Partial<Record<string, any>>[]>(
 		fieldEntries: [string, FieldOverview][],
 		payloads: T,
-		action: Action,
+		action: PayloadAction,
 	): T {
 		const process =
 			action == 'read'
@@ -322,13 +390,33 @@ export class PayloadService {
 	}
 
 	/**
+	 * When accessing JSON paths that contain objects or arrays, certain databases return stringified
+	 * JSON (MySQL, SQLite, MSSQL, Oracle). The fn helper's parseJsonResult handles this per-dialect —
+	 * vendors whose drivers already deserialize the result (e.g. pg for PostgreSQL) use a no-op.
+	 */
+	processJsonFunctionResults<T extends Partial<Record<string, any>>[]>(
+		payloads: T,
+		aliasMap: Record<string, string> = {},
+	) {
+		const fn = getFunctions(this.knex, this.schema);
+
+		for (const [aliasField, originalField] of Object.entries(aliasMap)) {
+			if (extractFunctionName(originalField) !== 'json') continue;
+
+			for (const payload of payloads) {
+				payload[aliasField] = fn.parseJsonResult(payload[aliasField]);
+			}
+		}
+	}
+
+	/**
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
 	processDates(
 		fieldEntries: [string, FieldOverview][],
 		payloads: Partial<Record<string, any>>[],
-		action: Action,
+		action: PayloadAction,
 		aliasMap: Record<string, string> = {},
 		aggregate: Aggregate = {},
 	): Partial<Record<string, any>>[] {
@@ -540,6 +628,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
@@ -550,6 +643,11 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					autoPurgeCache: opts?.autoPurgeCache,
+					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+					skipTracking: opts?.skipTracking,
+					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
 			}
@@ -630,6 +728,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
@@ -640,6 +743,11 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					autoPurgeCache: opts?.autoPurgeCache,
+					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+					skipTracking: opts?.skipTracking,
+					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
 			}
@@ -763,6 +871,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					})),
 				);
@@ -793,6 +906,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				} else {
@@ -805,6 +923,11 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						},
 					);
@@ -855,13 +978,18 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['create'],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
 
 				if (alterations.update) {
-					for (const item of alterations.update) {
-						const { [relatedPrimaryKeyField]: key, ...record } = item;
+					for (const index in alterations.update) {
+						const { [relatedPrimaryKeyField]: key, ...record } = alterations.update[index]!;
 
 						const existingRecord = await this.knex
 							.select(relatedPrimaryKeyField, relation.field)
@@ -879,6 +1007,11 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['update'][index],
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
 					}
@@ -909,6 +1042,11 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
 					} else {
@@ -921,6 +1059,11 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								autoPurgeCache: opts?.autoPurgeCache,
+								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+								skipTracking: opts?.skipTracking,
+								overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
+								onItemCreate: opts?.onItemCreate,
 								mutationTracker: opts?.mutationTracker,
 							},
 						);
@@ -936,8 +1079,8 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(data: Partial<Item>): Promise<string | null> {
-		let payload = cloneDeep(data);
+	async prepareDelta(delta: Partial<Item>): Promise<Partial<Item> | null> {
+		let payload = cloneDeep(delta);
 
 		for (const key in payload) {
 			if (payload[key]?.isRawInstance) {
@@ -949,6 +1092,6 @@ export class PayloadService {
 
 		if (Object.keys(payload).length === 0) return null;
 
-		return JSON.stringify(payload);
+		return payload;
 	}
 }

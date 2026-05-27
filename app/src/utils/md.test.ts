@@ -6,11 +6,11 @@ test.each([
 	{ value: 'test', expected: '<p>test</p>\n' },
 	{
 		value: `[Directus](https://directus.io)`,
-		expected: '<p><a href="https://directus.io" target="_self">Directus</a></p>\n',
+		expected: '<p><a target="_self" href="https://directus.io">Directus</a></p>\n',
 	},
 	{
 		value: `[Directus](https://directus.io)`,
-		expected: '<p><a href="https://directus.io" target="_blank" rel="noopener noreferrer">Directus</a></p>\n',
+		expected: '<p><a target="_blank" href="https://directus.io" rel="noopener noreferrer">Directus</a></p>\n',
 		options: { target: '_blank' } as const,
 	},
 	{ value: `test<script>alert('alert')</script>`, expected: '<p>test</p>\n' },

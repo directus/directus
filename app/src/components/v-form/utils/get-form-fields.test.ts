@@ -1,9 +1,10 @@
-import * as useExtension from '@/composables/use-extension';
 import type { InterfaceConfig } from '@directus/extensions';
 import type { DeepPartial, Field } from '@directus/types';
 import { expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
+import type { FormField } from '../types';
 import { getFormFields } from './get-form-fields';
+import * as useExtension from '@/composables/use-extension';
 
 vi.mock('@/utils/get-default-interface-for-type', () => ({
 	getDefaultInterfaceForType: () => 'input',
@@ -97,6 +98,7 @@ it('should arrange system and user fields and inject system divider', () => {
 		[
 		  {
 		    "field": "system_field",
+		    "indicatorStyle": "active",
 		    "meta": {
 		      "interface": "input",
 		      "system": true,
@@ -114,10 +116,23 @@ it('should arrange system and user fields and inject system divider', () => {
 		  },
 		  {
 		    "field": "user_field",
+		    "indicatorStyle": "active",
 		    "meta": {
 		      "interface": "input",
 		    },
 		  },
 		]
 	`);
+});
+
+it('should set indicatorStyle to "hidden" for group fields', () => {
+	const fields: DeepPartial<Field>[] = [{ field: 'field', meta: {} }];
+	const formFields: Ref<FormField[]> = getFormFields(ref(fields as Field[]));
+	expect(formFields.value[0]!.indicatorStyle).toBe('active');
+});
+
+it('should set indicatorStyle to "hidden" for group fields', () => {
+	const fields: DeepPartial<Field>[] = [{ field: 'group_field', meta: { special: ['group'] } }];
+	const formFields: Ref<FormField[]> = getFormFields(ref(fields as Field[]));
+	expect(formFields.value[0]!.indicatorStyle).toBe('hidden');
 });

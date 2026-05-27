@@ -1,7 +1,7 @@
 {
 	"extends": "@directus/tsconfig/node22",
 	"compilerOptions": {
-		"types": ["esbuild-yaml/types"]
+		"types": ["unplugin-yaml/types"]
 	},
 	"include": ["src"],
 	"typedocOptions": {

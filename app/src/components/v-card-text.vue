@@ -4,8 +4,7 @@
 
 <style lang="scss" scoped>
 .v-card-text {
-	padding: var(--v-card-padding, 16px);
-	padding-top: 0;
-	padding-bottom: 12px;
+	padding: var(--v-card-padding, 0.875rem);
+	padding-block: 0 0.6875rem;
 }
 </style>

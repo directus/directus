@@ -1,10 +1,10 @@
-import { useExtension } from '@/composables/use-extension';
-import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { get, getFieldsFromTemplate } from '@directus/utils';
 import { set } from 'lodash';
 import { render, renderFn } from 'micromustache';
-import { ComputedRef, Ref, computed, unref } from 'vue';
+import { computed, ComputedRef, Ref, unref } from 'vue';
+import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
@@ -85,7 +85,7 @@ export function renderDisplayStringTemplate(
 							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
 							field: fieldsUsed[key] ?? undefined,
 							collection: collection,
-					  })
+						})
 					: value,
 			);
 		} else {

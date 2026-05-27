@@ -1,6 +1,6 @@
+import { InvalidQueryError } from '@directus/errors';
 import type { DeepPartial } from '@directus/types';
 import { expect, test } from 'vitest';
-import { InvalidQueryError } from '@directus/errors';
 import type { ColPathProps } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 

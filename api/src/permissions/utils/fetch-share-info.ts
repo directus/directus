@@ -1,4 +1,4 @@
-import type { AbstractServiceOptions } from '../../types/services.js';
+import type { AbstractServiceOptions } from '@directus/types';
 import { withCache } from './with-cache.js';
 
 export interface ShareInfo {
@@ -11,7 +11,7 @@ export interface ShareInfo {
 	};
 }
 
-export const fetchShareInfo = withCache('share-info', _fetchShareInfo);
+export const fetchShareInfo = withCache('share-info', _fetchShareInfo, (shareId) => ({ shareId }));
 
 export async function _fetchShareInfo(shareId: string, context: AbstractServiceOptions): Promise<ShareInfo> {
 	const { SharesService } = await import('../../services/shares.js');

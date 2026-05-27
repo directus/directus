@@ -14,6 +14,41 @@ export type UsableCollection = {
 	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
 };
 
+/**
+ * A Vue composable that provides reactive access to collection metadata, fields, and computed properties.
+ *
+ * This composable serves as a centralized way to access and work with Directus collections,
+ * providing reactive computed properties for collection information, field definitions,
+ * default values, and various collection-specific metadata.
+ *
+ * @param collectionKey - The collection identifier. Can be a string or a reactive reference to a string.
+ *                        If null, most computed properties will return empty/null values.
+ *
+ * @returns An object containing reactive computed properties for the collection:
+ * - `info` - The complete collection configuration object or null if not found
+ * - `fields` - Array of sorted field definitions for the collection
+ * - `defaults` - Object mapping field names to their default values from schema
+ * - `primaryKeyField` - The field marked as primary key, or null if none exists
+ * - `userCreatedField` - The field with 'user_created' special type, or null if none exists
+ * - `sortField` - The field name used for sorting, from collection meta, or null
+ * - `isSingleton` - Boolean indicating if the collection is configured as a singleton
+ * - `accountabilityScope` - The accountability scope setting ('all', 'activity', or null)
+ *
+ * @example
+ * ```typescript
+ * // Using with a static collection name
+ * const { info, fields, primaryKeyField } = useCollection('users');
+ *
+ * // Using with a reactive collection name
+ * const collectionName = ref('articles');
+ * const { fields, defaults, isSingleton } = useCollection(collectionName);
+ *
+ * // Accessing properties
+ * console.log(info.value?.name); // Collection display name
+ * console.log(fields.value.length); // Number of fields
+ * console.log(primaryKeyField.value?.field); // Primary key field name
+ * ```
+ */
 export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
 	const { useCollectionsStore, useFieldsStore } = useStores();
 	const collectionsStore = useCollectionsStore();
@@ -66,9 +101,7 @@ export function useCollection(collectionKey: string | Ref<string | null>): Usabl
 	});
 
 	const accountabilityScope = computed(() => {
-		if (!info.value) return null;
-		if (!info.value.meta) return null;
-		return info.value.meta.accountability;
+		return info.value?.meta?.accountability || null;
 	});
 
 	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton, accountabilityScope };

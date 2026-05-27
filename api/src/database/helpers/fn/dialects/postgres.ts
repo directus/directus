@@ -1,4 +1,6 @@
+import { InvalidQueryError } from '@directus/errors';
 import type { Knex } from 'knex';
+import { buildPostgresJsonPath } from '../json/postgres-json-path.js';
 import type { FnHelperOptions } from '../types.js';
 import { FnHelper } from '../types.js';
 
@@ -61,5 +63,34 @@ export class FnHelperPostgres extends FnHelper {
 		}
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
+	}
+
+	// The pg driver automatically deserializes json/jsonb columns, so no string parsing needed.
+	override parseJsonResult(value: unknown): unknown {
+		return value;
+	}
+
+	json(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
+		const collectionName = options?.originalCollectionName || table;
+		const fieldSchema = this.schema.collections?.[collectionName]?.fields?.[column];
+
+		if (!fieldSchema || fieldSchema.type !== 'json' || !options?.jsonPath) {
+			throw new InvalidQueryError({ reason: `${collectionName}.${column} is not a JSON field` });
+		}
+
+		const { template, bindings } = buildPostgresJsonPath(options.jsonPath, {
+			asText: options.jsonReturnType !== undefined,
+		});
+
+		const cast = fieldSchema.dbType === 'jsonb' ? 'jsonb' : 'json';
+
+		if (options.jsonReturnType === 'numeric') {
+			// ->> returns text; cast to numeric for correct numeric comparisons.
+			// Parentheses are required to bind ::numeric to the whole expression,
+			// not to the last path binding.
+			return this.knex.raw(`(??::${cast}${template})::numeric`, [table + '.' + column, ...bindings]);
+		}
+
+		return this.knex.raw(`??::${cast}${template}`, [table + '.' + column, ...bindings]);
 	}
 }

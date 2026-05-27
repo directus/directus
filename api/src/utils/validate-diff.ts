@@ -1,7 +1,7 @@
-import Joi from 'joi';
 import { InvalidPayloadError } from '@directus/errors';
-import type { SnapshotDiffWithHash, SnapshotWithHash } from '../types/snapshot.js';
-import { DiffKind } from '../types/snapshot.js';
+import type { SnapshotDiffWithHash, SnapshotWithHash } from '@directus/types';
+import { DiffKind } from '@directus/types';
+import Joi from 'joi';
 
 const deepDiffSchema = Joi.object({
 	kind: Joi.string()
@@ -38,6 +38,15 @@ const applyJoiSchema = Joi.object({
 				}),
 			)
 			.required(),
+		systemFields: Joi.array()
+			.items(
+				Joi.object({
+					collection: Joi.string().required(),
+					field: Joi.string().required(),
+					diff: Joi.array().items(deepDiffSchema).required(),
+				}),
+			)
+			.required(),
 		relations: Joi.array()
 			.items(
 				Joi.object({
@@ -54,9 +63,17 @@ const applyJoiSchema = Joi.object({
 /**
  * Validates the diff against the current schema snapshot.
  *
+ * @param applyDiff The diff to validate with the expected hash
+ * @param currentSnapshotWithHash The current snapshot with hash to validate against
+ * @param force When true bypass hash validation. Use with caution as this can lead to unintended consequences, only use when the diff can be applied irrespective of the current schema.
+ *
  * @returns True if the diff can be applied (valid & not empty).
  */
-export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapshotWithHash: SnapshotWithHash) {
+export function validateApplyDiff(
+	applyDiff: SnapshotDiffWithHash,
+	currentSnapshotWithHash: SnapshotWithHash,
+	force: boolean = false,
+) {
 	const { error } = applyJoiSchema.validate(applyDiff);
 	if (error) throw new InvalidPayloadError({ reason: error.message });
 
@@ -64,13 +81,14 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	if (
 		applyDiff.diff.collections.length === 0 &&
 		applyDiff.diff.fields.length === 0 &&
+		applyDiff.diff.systemFields.length === 0 &&
 		applyDiff.diff.relations.length === 0
 	) {
 		return false;
 	}
 
 	// Diff can be applied due to matching hash
-	if (applyDiff.hash === currentSnapshotWithHash.hash) return true;
+	if (applyDiff.hash === currentSnapshotWithHash.hash || force) return true;
 
 	for (const diffCollection of applyDiff.diff.collections) {
 		const collection = diffCollection.collection;
@@ -124,6 +142,34 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 		}
 	}
 
+	for (const diffSystemField of applyDiff.diff.systemFields) {
+		const systemField = `${diffSystemField.collection}.${diffSystemField.field}`;
+
+		if (!diffSystemField.diff[0]) continue;
+
+		if (diffSystemField.diff[0].kind !== DiffKind.EDIT) {
+			let action = 'update array'; // DiffKind.ARRAY
+
+			if (diffSystemField.diff[0].kind === DiffKind.NEW) {
+				action = 'create';
+			} else if (diffSystemField.diff[0].kind === DiffKind.DELETE) {
+				action = 'delete';
+			}
+
+			throw new InvalidPayloadError({
+				reason: `Provided diff is trying to ${action} field "${systemField}" but this action is not supported. Please generate a new diff and try again`,
+			});
+		}
+
+		const pathString = diffSystemField.diff[0].path?.join('.') ?? '';
+
+		if (pathString.length === 0 || pathString !== 'schema.is_indexed') {
+			throw new InvalidPayloadError({
+				reason: `Provided diff is trying to alter property "${pathString}" on "${systemField}" but currently only "schema.is_indexed" is supported. Please generate a new diff and try again`,
+			});
+		}
+	}
+
 	for (const diffRelation of applyDiff.diff.relations) {
 		let relation = `${diffRelation.collection}.${diffRelation.field}`;
 		if (diffRelation.related_collection) relation += `-> ${diffRelation.related_collection}`;
@@ -152,6 +198,6 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	}
 
 	throw new InvalidPayloadError({
-		reason: `Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again`,
+		reason: `Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again or use the "force" query parameter to bypass this check`,
 	});
 }

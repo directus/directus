@@ -1,5 +1,5 @@
-import { DatabaseHelper } from '../types.js';
 import { parseISO } from 'date-fns';
+import { DatabaseHelper } from '../types.js';
 
 export abstract class DateHelper extends DatabaseHelper {
 	parse(date: string | Date): string {
@@ -19,7 +19,8 @@ export abstract class DateHelper extends DatabaseHelper {
 		return parseISO(date);
 	}
 
-	fieldFlagForField(_fieldType: string): string {
+	fieldFlagForField(fieldType: string): string {
+		if (fieldType === 'json') return 'cast-json';
 		return '';
 	}
 }

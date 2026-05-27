@@ -3,30 +3,31 @@
 
 /* eslint-disable no-console */
 
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import { execa } from 'execa';
 import fse from 'fs-extra';
 import logSymbols from 'log-symbols';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import ora from 'ora';
 import checkForUpdate from 'update-check';
 import checkRequirements from './check-requirements.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkg = JSON.parse(await fse.readFile(join(__dirname, '../package.json')));
+const pkg = JSON.parse(String(await fse.readFile(join(__dirname, '../package.json'), 'utf8')));
 
-const program = new Command(pkg.name);
-
-program
+const program = new Command(pkg.name)
 	.version(pkg.version)
 	.arguments('<directory>')
 	.description('Create a new Directus project')
-	.action(create)
-	.parse(process.argv);
+	.action(create);
 
-async function create(directory) {
+if (process.env.NODE_ENV !== 'test') {
+	program.parse(process.argv);
+}
+
+export async function create(directory) {
 	checkRequirements();
 
 	const rootPath = resolve(directory);
@@ -92,7 +93,7 @@ async function create(directory) {
 			stdin: 'ignore',
 		});
 	} catch (err) {
-		onError({ err });
+		onError({ err, text: undefined });
 	}
 
 	try {
@@ -101,7 +102,7 @@ async function create(directory) {
 			stdin: 'ignore',
 		});
 	} catch (err) {
-		onError({ err });
+		onError({ err, text: undefined });
 	}
 
 	spinner.stop();
@@ -112,7 +113,7 @@ async function create(directory) {
 			stdio: 'inherit',
 		});
 	} catch {
-		onError({ text: 'Error while initializing the project' });
+		onError({ err: undefined, text: 'Error while initializing the project' });
 	}
 
 	try {
@@ -126,6 +127,7 @@ async function create(directory) {
 		}
 	} catch {
 		onError({
+			err: undefined,
 			symbol: 'warning',
 			exit: false,
 			text: `Error while checking for newer version of \`${pkg.name}\``,

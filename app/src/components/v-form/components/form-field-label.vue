@@ -1,0 +1,265 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import type { ComparisonContext, FormField } from '../types';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import { CollabUser } from '@/composables/use-collab';
+import CollabIndicatorField from '@/views/private/components/collab/CollabIndicatorField.vue';
+
+const props = withDefaults(
+	defineProps<{
+		field: FormField;
+		toggle: (event: Event) => any;
+		batchMode?: boolean;
+		batchActive?: boolean;
+		disabled?: boolean;
+		active?: boolean;
+		edited?: boolean;
+		hasError?: boolean;
+		badge?: string | null;
+		loading?: boolean;
+		rawEditorEnabled?: boolean;
+		rawEditorActive?: boolean;
+		disabledMenu?: boolean;
+		comparison?: ComparisonContext;
+		comparisonActive?: boolean;
+		focusedBy?: CollabUser;
+	}>(),
+	{
+		batchMode: false,
+		batchActive: false,
+		disabled: false,
+		active: false,
+		edited: false,
+		hasError: false,
+		badge: null,
+		loading: false,
+		rawEditorEnabled: false,
+		rawEditorActive: false,
+		disabledMenu: false,
+	},
+);
+
+defineEmits(['toggle-batch', 'toggle-raw']);
+
+const showHiddenIndicator = computed(
+	() =>
+		(props.comparison?.fields?.has(props.field.field) || props.comparison?.revisionFields?.has(props.field.field)) &&
+		props.field.meta?.hidden,
+);
+
+const isPromotableField = computed(() => {
+	if (!props.comparison) return false;
+	return props.comparison.onToggleField !== null && props.comparison.fields.has(props.field.field);
+});
+</script>
+
+<template>
+	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
+		<component
+			:is="disabledMenu ? 'div' : 'button'"
+			class="field-name"
+			v-bind="!disabledMenu ? { type: 'button', onClick: toggle } : {}"
+		>
+			<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot" />
+			<VCheckbox
+				v-if="batchMode"
+				:model-value="batchActive"
+				:value="field.field"
+				@update:model-value="$emit('toggle-batch', field)"
+			/>
+
+			<VCheckbox
+				v-if="isPromotableField"
+				class="comparison-checkbox"
+				:model-value="comparisonActive"
+				:value="field.field"
+				@update:model-value="comparison!.onToggleField?.(field.field)"
+			/>
+
+			<div class="field-label-content">
+				<VTextOverflow :text="field.name" />
+
+				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ $t('hidden') }})</span>
+
+				<VIcon
+					v-if="field.meta?.required === true"
+					class="required"
+					:class="{ 'has-badge': badge }"
+					sup
+					name="star"
+					filled
+				/>
+
+				<VChip v-if="badge" class="badge" x-small>{{ badge }}</VChip>
+
+				<VIcon
+					v-if="!disabled && rawEditorEnabled"
+					v-tooltip="$t('toggle_raw_editor')"
+					class="raw-editor-toggle"
+					:class="{ active: rawEditorActive }"
+					name="data_object"
+					:filled="!rawEditorActive"
+					small
+					clickable
+					@click.stop="$emit('toggle-raw', !rawEditorActive)"
+				/>
+			</div>
+
+			<VIcon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+
+			<span class="spacer" />
+
+			<CollabIndicatorField :model-value="focusedBy" class="avatars" />
+		</component>
+	</div>
+</template>
+
+<style lang="scss" scoped>
+.field-label {
+	position: relative;
+	display: flex;
+	margin-block-end: 0.4375rem;
+	color: var(--theme--form--field--label--foreground);
+
+	.v-text-overflow {
+		display: inline;
+		white-space: normal;
+
+		@media (width >= 54rem) {
+			display: initial;
+			white-space: nowrap;
+		}
+	}
+
+	&.readonly button {
+		cursor: not-allowed;
+	}
+
+	.v-checkbox {
+		block-size: 1rem; // Don't push down label with normal icon height (1.375rem)
+		margin-inline-end: 0.25rem;
+		display: inline-flex;
+		align-self: baseline;
+	}
+
+	.v-checkbox.comparison-checkbox {
+		--v-checkbox-color: var(--theme--success);
+
+		margin-inline-end: 0.4375rem;
+
+		:deep(.checkbox) {
+			&:hover {
+				--v-icon-color: var(--theme--success);
+			}
+		}
+	}
+
+	.field-label-content {
+		display: inline;
+
+		@media (width >= 54rem) {
+			display: contents;
+		}
+	}
+
+	.badge {
+		margin: 0;
+		flex-shrink: 0;
+		margin-inline-start: 0.1875rem;
+	}
+
+	.required {
+		--v-icon-color: var(--theme--primary);
+
+		margin-inline-start: 0.1875rem;
+
+		&.has-badge {
+			margin-inline-end: 0.3125rem;
+		}
+	}
+
+	.ctx-arrow {
+		margin-block-start: -0.1875rem;
+		color: var(--theme--foreground-subdued);
+		opacity: 0;
+		transition: opacity var(--fast) var(--transition);
+
+		&.active {
+			opacity: 1;
+		}
+	}
+
+	.hidden-indicator {
+		margin-inline-start: 0.25em;
+		color: var(--theme--foreground-subdued);
+	}
+
+	&:focus-within,
+	&:hover {
+		.ctx-arrow {
+			opacity: 1;
+		}
+	}
+
+	.raw-editor-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		block-size: 1.375rem;
+		inline-size: 1.375rem;
+		margin-block-start: -0.125rem;
+		margin-inline-start: 0.3125rem;
+		color: var(--theme--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--theme--foreground);
+		}
+
+		&.active {
+			color: var(--theme--primary);
+			background-color: var(--theme--primary-background);
+			border-radius: 50%;
+		}
+	}
+
+	&.edited {
+		.edit-dot {
+			position: absolute;
+			inset-block-start: 0.375rem;
+			inset-inline-start: -0.375rem;
+			display: block;
+			inline-size: 0.25rem;
+			block-size: 0.25rem;
+			background-color: var(--theme--foreground-subdued);
+			border-radius: 0.25rem;
+			content: '';
+		}
+	}
+
+	.field-name {
+		flex-grow: 1;
+		max-inline-size: 100%;
+		text-align: start;
+		display: flex;
+		flex-wrap: nowrap;
+	}
+}
+
+.type-label {
+	font-family: var(--theme--form--field--label--font-family);
+}
+
+.spacer {
+	flex-grow: 1;
+}
+
+.avatars {
+	margin-block-start: -0.1875rem;
+	align-self: start;
+	flex-shrink: 0;
+}
+</style>

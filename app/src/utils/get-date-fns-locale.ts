@@ -1,5 +1,5 @@
-import { i18n } from '@/lang';
 import type { Locale } from 'date-fns';
+import { i18n } from '@/lang';
 
 const locales: { lang: string; locale: Locale }[] = [];
 

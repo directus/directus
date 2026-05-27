@@ -3,7 +3,7 @@ import { isFetchResponse } from './is-response.js';
 /**
  * Tries to extract a fetch response
  */
-export async function extractData(response: unknown) {
+export async function extractData(response: unknown): Promise<any> {
 	if (typeof response !== 'object' || !response) return;
 
 	if (isFetchResponse(response)) {

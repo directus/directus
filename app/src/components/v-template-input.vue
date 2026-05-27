@@ -260,16 +260,19 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		}
 	}
 
+	let targetPosition = caretPos;
+
+	if (isDirectInput || !window.getSelection()?.rangeCount) {
+		targetPosition += input.value.innerText.length - previousInnerTextLength;
+	}
+
 	if (input.value.innerHTML !== newHTML.replaceAll(String.fromCharCode(160), '&nbsp;')) {
 		input.value.innerHTML = newHTML;
 
-		const delta = input.value.innerText.length - previousInnerTextLength;
-		const newPosition = caretPos + delta;
-
-		if (newPosition > input.value.innerText.length || newPosition < 0) {
+		if (targetPosition > input.value.innerText.length || targetPosition < 0) {
 			position(input.value, input.value.innerText.length);
 		} else {
-			position(input.value, newPosition);
+			position(input.value, targetPosition);
 		}
 	}
 
@@ -282,7 +285,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	previousInnerTextLength = input.value.innerText.length;
-	previousCaretPos = caretPos;
+	previousCaretPos = targetPosition;
 }
 </script>
 
@@ -301,9 +304,9 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 <style scoped lang="scss">
 .v-template-input {
 	position: relative;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-bottom: 32px;
+	padding-block-end: 1.8125rem;
 	overflow: hidden;
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);
@@ -320,7 +323,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&.multiline {
-		height: var(--input-height-tall);
+		block-size: var(--input-height-md);
 		overflow-y: auto;
 		white-space: pre-wrap;
 	}
@@ -335,20 +338,18 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 
 	:deep(.preview) {
 		display: inline-block;
-		margin: 0px;
-		padding: 2px 4px;
+		margin: 0;
+		padding: 0.125rem 0.25rem;
 		color: var(--theme--primary);
 		font-size: 0;
 		line-height: 1;
-		vertical-align: -2px;
+		vertical-align: -0.125rem;
 		background: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
-		-webkit-user-select: text;
-		user-select: text;
 
 		&::before {
 			display: block;
-			font-size: 1rem;
+			font-size: 0.8125rem;
 			content: attr(data-preview);
 		}
 	}

@@ -78,9 +78,11 @@ export type FieldMeta = {
 	translations: FieldTranslations[] | null;
 	width: Width | null;
 	note: string | null;
+	clear_hidden_value_on_save?: boolean;
 	conditions: Condition[] | null;
 	validation: Filter | null;
 	validation_message: string | null;
+	searchable: boolean;
 	system?: true;
 };
 
@@ -98,6 +100,7 @@ export type Condition = {
 	hidden?: boolean;
 	options?: Record<string, any>;
 	required?: boolean;
+	clear_hidden_value_on_save?: boolean;
 };
 
 export type Filter = LogicalFilter | FieldFilter;
@@ -168,3 +171,8 @@ export type Permission = {
 export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'share';
 
 export type DataPermission = Partial<Permission> & Pick<Permission, 'collection' | 'action'>;
+
+export type FieldIndex = {
+	collection: string;
+	field: string;
+};

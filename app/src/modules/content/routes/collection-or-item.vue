@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { useLocalStorage } from '@vueuse/core';
 import { computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { useRoute } from 'vue-router';
-import { useLocalStorage } from '@/composables/use-local-storage';
 
 const props = defineProps<{
 	collection: string;
@@ -14,7 +14,7 @@ const props = defineProps<{
 
 const route = useRoute();
 
-const { data } = useLocalStorage('last-accessed-collection');
+const lastAccessedCollection = useLocalStorage<string | null>('directus-last-accessed-collection', null);
 
 const collectionsStore = useCollectionsStore();
 
@@ -26,8 +26,8 @@ const isSingleton = computed(() => {
 watch(
 	() => route.params,
 	(newParams) => {
-		if (newParams.collection && data.value !== newParams.collection) {
-			data.value = newParams.collection;
+		if (newParams.collection && lastAccessedCollection.value !== newParams.collection) {
+			lastAccessedCollection.value = newParams.collection;
 		}
 	},
 	{ immediate: true },

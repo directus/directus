@@ -1,6 +1,6 @@
 import type { MergeCoreCollection } from '../index.js';
-import type { DirectusUser } from './user.js';
 import type { DirectusAccess } from './access.js';
+import type { DirectusUser } from './user.js';
 
 export type DirectusRole<Schema = any> = MergeCoreCollection<
 	Schema,

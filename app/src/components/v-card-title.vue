@@ -7,9 +7,9 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	margin-top: 4px;
-	padding: var(--v-card-padding, 16px);
+	margin-block-start: 0.25rem;
+	padding: var(--v-card-padding, 0.875rem);
 	font-weight: 600;
-	line-height: 1.6em;
+	line-height: 1.6;
 }
 </style>

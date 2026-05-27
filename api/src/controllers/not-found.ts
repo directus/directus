@@ -1,7 +1,7 @@
+import { RouteNotFoundError } from '@directus/errors';
 import type { RequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { RouteNotFoundError } from '@directus/errors';
 
 /**
  * Handles not found routes.

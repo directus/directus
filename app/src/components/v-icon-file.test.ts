@@ -1,6 +1,6 @@
-import { test, expect } from 'vitest';
+import { createTestingPinia } from '@pinia/testing';
 import { mount } from '@vue/test-utils';
-
+import { expect, test, vi } from 'vitest';
 import VIconFile from './v-icon-file.vue';
 
 test('Mount component', () => {
@@ -11,6 +11,11 @@ test('Mount component', () => {
 			ext: 'png',
 		},
 		global: {
+			plugins: [
+				createTestingPinia({
+					createSpy: vi.fn,
+				}),
+			],
 			stubs: ['v-icon'],
 		},
 	});

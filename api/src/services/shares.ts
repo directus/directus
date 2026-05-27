@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
-import type { Item, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Item, LoginResult, MutationOptions, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import type { StringValue } from 'ms';
@@ -8,13 +8,7 @@ import { nanoid } from 'nanoid';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type {
-	AbstractServiceOptions,
-	DirectusTokenPayload,
-	LoginResult,
-	MutationOptions,
-	ShareData,
-} from '../types/index.js';
+import type { DirectusTokenPayload, ShareData } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { md } from '../utils/md.js';

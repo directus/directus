@@ -1,5 +1,5 @@
 import { HitRateLimitError } from '@directus/errors';
-import { RateLimiterMemory, type IRateLimiterRes } from 'rate-limiter-flexible';
+import { type IRateLimiterRes, RateLimiterMemory } from 'rate-limiter-flexible';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { consume } from './consume.js';
 

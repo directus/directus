@@ -12,7 +12,7 @@ export default defineTheme({
 		borderColor: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 20%)',
 		borderColorAccent: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 40%)',
 		borderColorSubdued: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 15%)',
-		borderRadius: '12px',
+		borderRadius: '0.6875rem',
 		borderWidth: '1px',
 		foreground: 'color-mix(in srgb, #000000, var(--theme--primary) 70%)',
 		foregroundAccent: 'color-mix(in srgb, #000000, var(--theme--primary) 50%)',

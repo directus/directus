@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: check
-        uses: directus/cla-bot@v0.0.2
+        uses: directus/cla-bot@v0.0.3
 
       - if: failure() && steps.check.outputs.missing
         uses: marocchino/sticky-pull-request-comment@v2

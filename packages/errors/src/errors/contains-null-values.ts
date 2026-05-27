@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface ContainsNullValuesErrorExtensions {
 	collection: string;
@@ -8,8 +8,5 @@ export interface ContainsNullValuesErrorExtensions {
 export const messageConstructor = ({ collection, field }: ContainsNullValuesErrorExtensions) =>
 	`Field "${field}" in collection "${collection}" contains null values.`;
 
-export const ContainsNullValuesError = createError<ContainsNullValuesErrorExtensions>(
-	ErrorCode.ContainsNullValues,
-	messageConstructor,
-	400,
-);
+export const ContainsNullValuesError: DirectusErrorConstructor<ContainsNullValuesErrorExtensions> =
+	createError<ContainsNullValuesErrorExtensions>(ErrorCode.ContainsNullValues, messageConstructor, 400);

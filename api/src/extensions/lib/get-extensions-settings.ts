@@ -1,9 +1,10 @@
-import type { BundleExtension, Extension, ExtensionSettings } from '@directus/extensions';
 import { randomUUID } from 'node:crypto';
+import { useEnv } from '@directus/env';
+import { list, type ListOptions } from '@directus/extensions-registry';
+import type { BundleExtension, Extension, ExtensionSettings } from '@directus/types';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { list } from '@directus/extensions-registry';
 
 /**
  * Loads stored settings for all extensions. Creates empty new rows in extensions tables for
@@ -72,8 +73,21 @@ export const getExtensionsSettings = async ({
 		extension: Extension,
 		source: 'local' | 'registry' | 'module',
 	) => {
-		const marketplace = await list({ search: extension.name });
-		const id = marketplace.data[0]?.id || randomUUID();
+		let marketplaceId;
+
+		if (source === 'registry') {
+			const env = useEnv();
+			const listOptions: ListOptions = {};
+
+			if (env['MARKETPLACE_REGISTRY'] && typeof env['MARKETPLACE_REGISTRY'] === 'string') {
+				listOptions.registry = env['MARKETPLACE_REGISTRY'];
+			}
+
+			const marketplace = await list({ search: extension.name }, listOptions);
+			marketplaceId = marketplace.data.find((ext) => ext.name === extension.name)?.id;
+		}
+
+		const id = marketplaceId ?? randomUUID();
 
 		if (extension.type === 'bundle') {
 			newSettings.push({

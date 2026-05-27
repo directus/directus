@@ -1,8 +1,8 @@
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/types';
 import { groupBy } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 let roles: Ref<BasicRole[] | null> | null = null;
 let loading: Ref<boolean> | null = null;

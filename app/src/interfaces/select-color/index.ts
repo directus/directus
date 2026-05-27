@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/extensions';
-import InterfaceColor from './select-color.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceColor from './select-color.vue';
 
 export default defineInterface({
 	id: 'select-color',
@@ -11,7 +11,7 @@ export default defineInterface({
 	types: ['string'],
 	recommendedDisplays: ['color'],
 	group: 'selection',
-	options: [
+	options: ({ field }) => [
 		{
 			field: 'opacity',
 			name: '$t:interfaces.select-color.opacity',
@@ -55,6 +55,9 @@ export default defineInterface({
 							meta: {
 								interface: 'select-color',
 								width: 'half',
+								options: {
+									opacity: field.meta?.options?.opacity ?? false,
+								},
 							},
 						},
 					],

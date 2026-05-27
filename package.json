@@ -4,28 +4,59 @@
 	"homepage": "https://directus.io",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm --recursive --filter '!docs' run build",
+		"build": "pnpm --recursive run build",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
+		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
-		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
+		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --legacy --prod dist && pnpm --filter tests-blackbox test",
+		"test:coverage": "pnpm --recursive --filter '!tests-blackbox' test:coverage"
 	},
 	"devDependencies": {
-		"@changesets/cli": "2.28.1",
+		"@changesets/cli": "catalog:",
 		"@directus/release-notes-generator": "workspace:*",
-		"@eslint/js": "9.21.0",
-		"eslint": "9.21.0",
-		"eslint-config-prettier": "9.1.0",
-		"eslint-plugin-vue": "9.32.0",
-		"globals": "15.15.0",
-		"prettier": "3.1.0",
-		"rimraf": "6.0.1",
-		"typescript": "5.8.2",
-		"typescript-eslint": "8.25.0"
+		"@eslint/js": "catalog:",
+		"eslint": "catalog:",
+		"eslint-config-prettier": "catalog:",
+		"eslint-plugin-import": "catalog:",
+		"eslint-plugin-vue": "catalog:",
+		"globals": "catalog:",
+		"postcss-html": "catalog:",
+		"prettier": "catalog:",
+		"rimraf": "catalog:",
+		"stylelint": "catalog:",
+		"stylelint-config-standard": "catalog:",
+		"stylelint-config-standard-scss": "catalog:",
+		"stylelint-config-standard-vue": "catalog:",
+		"stylelint-use-logical": "catalog:",
+		"typescript": "catalog:",
+		"typescript-eslint": "catalog:"
 	},
-	"packageManager": "pnpm@9.15.6",
+	"pnpm": {
+		"overrides": {
+			"fast-xml-parser": "5.7.2",
+			"@yarnpkg/shell>cross-spawn": "7.0.6",
+			"tar": "7.5.13",
+			"qs": "6.15.1",
+			"minimatch@10": "10.2.5",
+			"minimatch@9": "9.0.9",
+			"basic-ftp": "5.3.0",
+			"underscore": "1.13.8",
+			"flatted": "3.4.2",
+			"express@4>path-to-regexp": "0.1.13",
+			"micromatch>picomatch": "2.3.2",
+			"anymatch>picomatch": "2.3.2",
+			"picomatch": "4.0.4",
+			"defu": "6.1.7",
+			"unplugin-vue>vite": "8.0.10",
+			"@xmldom/xmldom": "0.8.13",
+			"vitest@3>vite": "7.3.2",
+			"protobufjs": "7.5.6"
+		}
+	},
+	"packageManager": "pnpm@10.27.0",
 	"engines": {
 		"node": "22",
-		"pnpm": "9"
+		"pnpm": ">=10 <11"
 	}
 }

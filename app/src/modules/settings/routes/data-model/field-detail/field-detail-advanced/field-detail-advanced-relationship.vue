@@ -13,9 +13,9 @@ const { localType } = storeToRefs(fieldDetailStore);
 </script>
 
 <template>
-	<relationship-m2o v-if="localType === 'm2o' || localType === 'file'" />
-	<relationship-o2m v-else-if="localType === 'o2m'" />
-	<relationship-m2m v-else-if="localType === 'm2m' || localType === 'files'" />
-	<relationship-m2a v-else-if="localType === 'm2a'" />
-	<relationship-translations v-else-if="localType === 'translations'" />
+	<RelationshipM2o v-if="localType === 'm2o' || localType === 'file'" />
+	<RelationshipO2m v-else-if="localType === 'o2m'" />
+	<RelationshipM2m v-else-if="localType === 'm2m' || localType === 'files'" />
+	<RelationshipM2a v-else-if="localType === 'm2a'" />
+	<RelationshipTranslations v-else-if="localType === 'translations'" />
 </template>

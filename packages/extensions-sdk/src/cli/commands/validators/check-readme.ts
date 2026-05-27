@@ -4,7 +4,7 @@ import type { Report } from '../../types.js';
 
 const checkReadMe = {
 	name: 'readme',
-	handler: async (spinner: Ora, reports: Array<Report>) => {
+	handler: async (spinner: Ora, reports: Array<Report>): Promise<string> => {
 		spinner.text = 'Check for readme';
 
 		if (!(await hasReadmeFile())) {

@@ -1,5 +1,5 @@
 import { Field } from '@directus/types';
-import { Ref, unref, computed, ComputedRef } from 'vue';
+import { computed, ComputedRef, Ref, unref } from 'vue';
 
 export function getDefaultValuesFromFields(fields: Field[] | Ref<Field[]>): ComputedRef<Record<string, any>> {
 	return computed(() => {

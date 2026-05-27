@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { isValid } from 'date-fns';
-import { computed, ref } from 'vue';
-import { parseDate } from '@/utils/parse-date';
+import { isValid, parseISO } from 'date-fns';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
+import { computed, ref, useTemplateRef } from 'vue';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
+import VDatePicker from '@/components/v-date-picker/v-date-picker.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VMenu from '@/components/v-menu.vue';
+import VRemove from '@/components/v-remove.vue';
+import { parseDate } from '@/utils/parse-date';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
+	tz?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,53 +30,94 @@ const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
 
-const dateTimeMenu = ref();
+const menuActive = ref(false);
+const dateTimeMenu = useTemplateRef('dateTimeMenu');
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
-function unsetValue(e: any) {
+function unsetValue(e: Event) {
 	e.preventDefault();
 	e.stopPropagation();
 	emit('input', null);
 }
+
+function closeDatePicker() {
+	dateTimeMenu.value?.deactivate();
+}
+
+// Computed property for date-picker value with timezone conversion
+const tzValue = computed({
+	get() {
+		if (props.type === 'timestamp' && props.tz && props.value) {
+			const date = parseISO(props.value);
+			if (!isValid(date)) return null;
+			return toZonedTime(date, props.tz).toISOString();
+		}
+
+		return props.value;
+	},
+	set(value: string | null) {
+		if (!value) {
+			emit('input', null);
+			return;
+		}
+
+		const date = parseISO(value);
+
+		if (isValid(date) && props.type === 'timestamp' && props.tz) {
+			emit('input', fromZonedTime(date, props.tz).toISOString());
+			return;
+		}
+
+		emit('input', value);
+	},
+});
 </script>
 
 <template>
-	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<VMenu
+		ref="dateTimeMenu"
+		v-model="menuActive"
+		v-prevent-focusout="menuActive"
+		:close-on-content-click="false"
+		attached
+		:disabled="disabled"
+		full-height
+		seamless
+	>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled :active @click="toggle">
+			<VListItem block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
-					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
+					<UseDatetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
-					</use-datetime>
+					</UseDatetime>
 				</template>
 
 				<div class="spacer" />
 
-				<template v-if="!disabled">
-					<v-icon
-						:name="value ? 'clear' : 'today'"
-						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
-						clickable
-						@click="value ? unsetValue($event) : undefined"
-					/>
-				</template>
-			</v-list-item>
+				<div v-if="!nonEditable" class="item-actions">
+					<VIcon v-if="tz" v-tooltip="tz" name="schedule" class="timezone-icon" :class="{ active, disabled }" />
+					<VRemove v-if="value" :disabled deselect class="clear-icon" @action="unsetValue($event)" />
+					<VIcon v-else name="today" class="today-icon" :class="{ active, disabled }" />
+				</div>
+			</VListItem>
 		</template>
 
-		<v-date-picker
+		<VDatePicker
 			:type
 			:disabled
 			:include-seconds
 			:use-24
-			:model-value="value"
-			@update:model-value="$emit('input', $event)"
-			@close="dateTimeMenu?.deactivate"
+			:model-value="tzValue"
+			@update:model-value="tzValue = $event"
+			@close="closeDatePicker"
 		/>
-	</v-menu>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .v-list-item {
 	--v-list-item-color-active: var(--v-list-item-color);
 	--v-list-item-background-color-active: var(
@@ -76,7 +125,11 @@ function unsetValue(e: any) {
 		var(--v-list-background-color, var(--theme--form--field--input--background))
 	);
 
-	&.active,
+	&.disabled:not(.non-editable) {
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+	}
+
+	&.active:not(.disabled),
 	&:focus-within,
 	&:focus-visible {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
@@ -87,19 +140,18 @@ function unsetValue(e: any) {
 	}
 }
 
-.v-icon {
-	&.today-icon {
-		&:hover,
-		&.active {
-			--v-icon-color: var(--theme--primary);
-		}
+.today-icon:not(.disabled) {
+	&:hover,
+	&.active {
+		--v-icon-color: var(--theme--primary);
 	}
+}
 
-	&.clear-icon {
-		&:hover,
-		&.active {
-			--v-icon-color: var(--theme--danger);
-		}
-	}
+.timezone-icon {
+	margin-inline-end: 0.25rem;
+}
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 </style>

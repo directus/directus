@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { Comment, User } from '@directus/types';
 import { ref, watch } from 'vue';
 import CommentInput from './comment-input.vue';
 import CommentItemHeader from './comment-item-header.vue';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = withDefaults(
 	defineProps<{
@@ -15,7 +15,7 @@ const props = withDefaults(
 		refresh: () => Promise<void>;
 		collection: string;
 		primaryKey: string | number;
-		userPreviews: Record<string, any>;
+		userPreviews?: Record<string, any>;
 	}>(),
 	{
 		userPreviews: () => ({}),
@@ -62,9 +62,9 @@ function useEdits() {
 
 <template>
 	<div class="comment-item">
-		<comment-item-header :refresh="refresh" :comment="comment" @edit="editing = true" />
+		<CommentItemHeader :refresh="refresh" :comment="comment" @edit="editing = true" />
 
-		<comment-input
+		<CommentInput
 			v-if="editing"
 			:existing-comment="comment"
 			:primary-key="primaryKey"
@@ -74,41 +74,41 @@ function useEdits() {
 			@cancel="cancelEditing"
 		/>
 
-		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content selectable" />
+		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content" />
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .comment-item {
 	position: relative;
-	margin-bottom: 8px;
-	padding: 8px;
+	margin-block-end: 0.4375rem;
+	padding: 0.4375rem;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 }
 
 .comment-item:last-of-type {
-	margin-bottom: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .comment-item .content {
 	display: inline-block;
-	max-height: 300px;
+	max-block-size: 16.875rem;
 	overflow-y: auto;
-	min-width: 100%;
-	max-width: 100%;
-	margin-bottom: -6px;
+	min-inline-size: 100%;
+	max-inline-size: 100%;
+	margin-block-end: -0.3125rem;
 	line-height: 1.4;
 }
 
 .comment-item .content :deep(> *:first-child),
 .comment-item .content :deep(p > *:first-child) {
-	margin-top: 0;
+	margin-block-start: 0;
 }
 
 .comment-item .content :deep(> *:last-child),
 .comment-item .content :deep(p > *:last-child) {
-	margin-bottom: 0;
+	margin-block-end: 0;
 }
 
 .comment-item .content :deep(a) {
@@ -116,57 +116,55 @@ function useEdits() {
 }
 
 .comment-item .content :deep(blockquote) {
-	margin: 8px 0;
-	padding-left: 6px;
+	margin: 0.4375rem 0;
+	padding-inline-start: 0.3125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
-	border-left: 2px solid var(--theme--form--field--input--border-color);
+	border-inline-start: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(img) {
-	max-width: 100%;
-	margin: 8px 0;
+	max-inline-size: 100%;
+	margin: 0.4375rem 0;
 	border-radius: var(--theme--border-radius);
 	display: block;
 }
 
 .comment-item .content :deep(hr) {
-	height: 2px;
-	margin: 12px 0;
+	block-size: 0.125rem;
+	margin: 0.6875rem 0;
 	border: 0;
-	border-top: 2px solid var(--theme--form--field--input--border-color);
+	border-block-start: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(mark) {
 	display: inline-block;
-	padding: 2px 4px;
+	padding: 0.125rem 0.25rem;
 	color: var(--theme--primary);
 	line-height: 1;
 	background: var(--theme--primary-background);
 	border-radius: var(--theme--border-radius);
-	-webkit-user-select: text;
-	user-select: text;
 	pointer-events: none;
 }
 
 .comment-item .content :deep(pre) {
-	padding: 2px 4px;
+	padding: 0.125rem 0.25rem;
 	color: var(--theme--foreground);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
-	margin: 2px 0;
+	margin: 0.125rem 0;
 	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
-	max-width: 100%;
+	max-inline-size: 100%;
 	overflow-x: auto;
 }
 
 .comment-item .content :deep(code) {
-	padding: 2px 4px;
+	padding: 0.125rem 0.25rem;
 	color: var(--theme--foreground);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
-	margin: 2px 0;
+	margin: 0.125rem 0;
 	font-family: var(--theme--fonts--monospace--font-family);
 }
 
@@ -177,19 +175,18 @@ function useEdits() {
 }
 
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
-	margin-top: 12px;
+	margin-block-start: 0.6875rem;
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 0.875rem;
 	color: var(--theme--foreground-accent);
 }
 
 .comment-item.expand .content::after {
 	position: absolute;
-	right: 0;
-	bottom: 4px;
-	left: 0;
+	inset-inline: 0;
+	inset-block-end: 0.25rem;
 	z-index: 1;
-	height: 40px;
+	block-size: 2.25rem;
 	background: linear-gradient(
 		180deg,
 		rgb(var(--background-page-rgb), 0) 0%,
@@ -201,22 +198,21 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text {
 	position: absolute;
-	right: 0;
-	bottom: 8px;
-	left: 0;
+	inset-inline: 0;
+	inset-block-end: 0.4375rem;
 	z-index: 2;
-	height: 24px;
+	block-size: 1.375rem;
 	text-align: center;
 	cursor: pointer;
 }
 
 .comment-item.expand .content .expand-text span {
-	padding: 4px 12px 5px;
+	padding: 0.25rem 0.6875rem 0.3125rem;
 	color: var(--theme--foreground-subdued);
 	font-weight: 600;
-	font-size: 12px;
+	font-size: 0.6875rem;
 	background-color: var(--theme--background-normal);
-	border-radius: 12px;
+	border-radius: 0.6875rem;
 	transition:
 		color var(--fast) var(--transition),
 		background-color var(--fast) var(--transition);
@@ -243,11 +239,11 @@ function useEdits() {
 
 .buttons {
 	position: absolute;
-	right: 8px;
-	bottom: 8px;
+	inset-inline-end: 0.4375rem;
+	inset-block-end: 0.4375rem;
 }
 
 .cancel {
-	margin-right: 4px;
+	margin-inline-end: 0.25rem;
 }
 </style>

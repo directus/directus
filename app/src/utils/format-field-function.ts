@@ -1,5 +1,5 @@
-import { useFieldsStore } from '@/stores/fields';
 import { i18n } from '@/lang';
+import { useFieldsStore } from '@/stores/fields';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 
 /**

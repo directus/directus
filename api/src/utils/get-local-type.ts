@@ -67,15 +67,15 @@ const localTypeMap: Record<string, Type | 'unknown'> = {
 	varbinary: 'binary',
 	uniqueidentifier: 'uuid',
 
-	// Postgres
+	// Postgres / Cockroachdb
 	json: 'json',
 	jsonb: 'json',
 	uuid: 'uuid',
 	int2: 'integer',
 	serial4: 'integer',
 	int4: 'integer',
-	serial8: 'integer',
-	int8: 'integer',
+	serial8: 'bigInteger',
+	int8: 'bigInteger',
 	bool: 'boolean',
 	'character varying': 'string',
 	character: 'string',
@@ -136,9 +136,17 @@ export default function getLocalType(
 		return 'decimal';
 	}
 
-	/** Handle MS SQL varchar(MAX) (eg TEXT) types */
-	if (column.data_type === 'nvarchar' && column.max_length === -1) {
+	/** Handle MS SQL varchar(MAX) and nvarchar(MAX) types */
+	if (
+		(column.data_type === 'nvarchar' || column.data_type === 'varchar') &&
+		(column.max_length === -1 || column.max_length === null)
+	) {
 		return 'text';
+	}
+
+	/** Handle CockroachDB 64-bit integers (reported as 'integer' with precision 64) */
+	if ((dataType === 'integer' || dataType === 'int') && column.numeric_precision === 64) {
+		return 'bigInteger';
 	}
 
 	return type ?? 'unknown';

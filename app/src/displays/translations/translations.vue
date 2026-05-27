@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { useRelationM2M } from '@/composables/use-relation-m2m';
-import { getCurrentLanguage } from '@/lang/get-current-language';
-import { useFieldsStore } from '@/stores/fields';
 import { isNil } from 'lodash';
 import { computed, toRefs } from 'vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { useFieldsStore } from '@/stores/fields';
+import { useUserStore } from '@/stores/user';
+import RenderTemplate from '@/views/private/components/render-template.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 
 interface Props {
 	collection: string;
@@ -26,6 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { collection, field } = toRefs(props);
 const fieldsStore = useFieldsStore();
+const userStore = useUserStore();
 
 const { relationInfo } = useRelationM2M(collection, field);
 
@@ -47,7 +56,7 @@ const displayItem = computed(() => {
 	let item = props.value.find((val) => val?.[langField]?.[langPkField] === props.defaultLanguage) ?? props.value[0];
 
 	if (props.userLanguage) {
-		const lang = getCurrentLanguage();
+		const lang = userStore.language;
 		item = props.value.find((val) => val?.[langField]?.[langPkField] === lang) ?? item;
 	}
 
@@ -87,16 +96,16 @@ const translations = computed(() => {
 </script>
 
 <template>
-	<value-null v-if="!relationInfo?.junctionCollection?.collection" />
+	<ValueNull v-if="!relationInfo?.junctionCollection?.collection" />
 	<div v-else class="display-translations">
-		<render-template
+		<RenderTemplate
 			:template="internalTemplate"
 			:item="displayItem"
 			:collection="relationInfo.junctionCollection.collection"
 		/>
-		<v-menu class="menu" show-arrow :disabled="value.length === 0">
+		<VMenu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
-				<v-icon
+				<VIcon
 					small
 					class="icon"
 					:class="{ active }"
@@ -104,39 +113,39 @@ const translations = computed(() => {
 					clickable
 					@click.stop="toggle"
 					@focusout="deactivate"
-				></v-icon>
+				></VIcon>
 			</template>
 
-			<v-list class="links">
-				<v-list-item v-for="item in translations" :key="item.id">
-					<v-list-item-content>
+			<VList class="links">
+				<VListItem v-for="item in translations" :key="item.id">
+					<VListItemContent>
 						<div class="header">
 							<div class="lang">
-								<v-icon name="translate" small />
+								<VIcon name="translate" small />
 								{{ item.lang }}
 							</div>
-							<v-progress-linear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
+							<VProgressLinear v-tooltip="`${item.progress}%`" :value="item.progress" colorful />
 						</div>
-						<render-template
+						<RenderTemplate
 							:template="internalTemplate"
 							:item="item.item"
 							:collection="relationInfo.junctionCollection.collection"
 						/>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-menu>
+					</VListItemContent>
+				</VListItem>
+			</VList>
+		</VMenu>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .v-list {
-	width: 300px;
+	inline-size: 16.875rem;
 }
 
 .display-translations {
 	display: inline-flex;
-	max-width: 100%;
+	max-inline-size: 100%;
 	align-items: center;
 
 	.icon {
@@ -156,37 +165,36 @@ const translations = computed(() => {
 
 .header {
 	display: flex;
-	gap: 20px;
+	gap: 1.125rem;
 	align-items: center;
 	justify-content: space-between;
 	color: var(--theme--foreground-subdued);
-	font-size: 12px;
+	font-size: 0.6875rem;
 
 	.lang {
 		font-weight: 600;
 	}
 
 	.v-icon {
-		margin-right: 4px;
+		margin-inline-end: 0.25rem;
 	}
 
 	.v-progress-linear {
 		flex: 1;
-		width: unset;
-		max-width: 100px;
-		border-radius: 4px;
+		inline-size: unset;
+		max-inline-size: 5.625rem;
+		border-radius: 0.25rem;
 	}
 }
 
 .v-list-item-content {
-	padding-top: 4px;
-	padding-bottom: 2px;
+	padding-block: 0.25rem 0.125rem;
 }
 
 .v-list-item:not(:first-child) {
 	.header {
-		padding-top: 8px;
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		padding-block-start: 0.4375rem;
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

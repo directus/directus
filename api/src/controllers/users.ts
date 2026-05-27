@@ -8,6 +8,8 @@ import {
 import type { PrimaryKey, RegisterUserInput } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { getDatabase } from '../database/index.js';
 import checkRateLimit from '../middleware/rate-limiter-registration.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -332,7 +334,15 @@ router.post(
 			throw new InvalidCredentialsError();
 		}
 
-		if (!req.body.password) {
+		const currentUser = await getDatabase()
+			.select('provider')
+			.from('directus_users')
+			.where({ id: req.accountability.user })
+			.first();
+
+		const requiresPassword = currentUser?.['provider'] === DEFAULT_AUTH_PROVIDER;
+
+		if (requiresPassword && !req.body.password) {
 			throw new InvalidPayloadError({ reason: `"password" is required` });
 		}
 
@@ -341,14 +351,16 @@ router.post(
 			schema: req.schema,
 		});
 
-		const authService = new AuthenticationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		if (requiresPassword) {
+			const authService = new AuthenticationService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		await authService.verifyPassword(req.accountability.user, req.body.password);
+			await authService.verifyPassword(req.accountability.user, req.body.password);
+		}
 
-		const { url, secret } = await service.generateTFA(req.accountability.user);
+		const { url, secret } = await service.generateTFA(req.accountability.user, requiresPassword);
 
 		res.locals['payload'] = { data: { secret, otpauth_url: url } };
 		return next();

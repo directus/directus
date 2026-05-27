@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { logout } from '@/auth';
 import { onMounted } from 'vue';
+import { logout } from '@/auth';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 
 onMounted(() => {
 	logout();
@@ -9,7 +10,7 @@ onMounted(() => {
 
 <template>
 	<div class="logout">
-		<v-progress-circular indeterminate />
+		<VProgressCircular indeterminate />
 	</div>
 </template>
 
@@ -18,7 +19,7 @@ onMounted(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>

@@ -1,5 +1,5 @@
-import { marked } from 'marked';
 import dompurify from 'dompurify';
+import { marked } from 'marked';
 
 type Options = {
 	target: '_blank' | '_self' | '_parent' | '_top';

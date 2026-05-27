@@ -61,6 +61,7 @@ fields:
     special:
       - cast-json
     interface: list
+    note: $t:field_options.directus_collections.collection_naming_translations_note
     options:
       template: '{{ translation }} ({{ language }})'
       fields:
@@ -98,6 +99,23 @@ fields:
             width: half
             options:
               placeholder: $t:field_options.directus_collections.translation_placeholder
+    width: full
+
+  - field: content_translations_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: translate
+      title: $t:field_options.directus_collections.content_translations_divider
+    width: full
+
+  - field: translations_enable_helper
+    special:
+      - alias
+      - no-data
+    interface: system-collections-translations
     width: full
 
   - field: preview_divider

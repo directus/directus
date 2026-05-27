@@ -4,6 +4,8 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore } from '../store';
+import VTab from '@/components/v-tab.vue';
+import VTabs from '@/components/v-tabs.vue';
 
 const props = defineProps<{
 	currentTab: string[];
@@ -77,9 +79,9 @@ const tabs = computed(() => {
 </script>
 
 <template>
-	<v-tabs v-model="currentTabSync" vertical>
-		<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
+	<VTabs v-model="currentTabSync" vertical>
+		<VTab v-for="tab in tabs" :key="tab.value" :value="tab.value">
 			{{ tab.text }}
-		</v-tab>
-	</v-tabs>
+		</VTab>
+	</VTabs>
 </template>

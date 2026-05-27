@@ -65,14 +65,14 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		// In order to get the actual max_length value, we'll divide the value by 2
 		// Unless the value is -1, which is the case for n(var)char(MAX)
 		if (['nvarchar', 'nchar', 'ntext'].includes(rawColumn.data_type)) {
-			return max_length === -1 ? max_length : max_length / 2;
+			return max_length === -1 ? null : max_length / 2;
 		}
 
-		return max_length;
+		return max_length === -1 ? null : max_length;
 	}
 }
 
-export function parseDefaultValue(value: string | null) {
+export function parseDefaultValue(value: string | null): string | null {
 	if (value === null) return null;
 
 	while (value.startsWith('(') && value.endsWith(')')) {
@@ -98,7 +98,7 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * Set the schema to be used in other methods
 	 */
-	withSchema(schema: string) {
+	withSchema(schema: string): this {
 		this.schema = schema;
 		return this;
 	}
@@ -166,6 +166,7 @@ export default class MSSQL implements SchemaInspector {
 				...column,
 				default_value: column.is_identity ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
+				max_length: column.max_length === -1 ? null : column.max_length,
 			};
 		}
 
@@ -178,7 +179,7 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * List all existing tables in the current schema/database
 	 */
-	async tables() {
+	async tables(): Promise<string[]> {
 		const records = await this.knex
 			.select<{ TABLE_NAME: string }[]>('TABLE_NAME')
 			.from('INFORMATION_SCHEMA.TABLES')
@@ -251,7 +252,12 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * Get all the available columns in the current schema/database. Can be filtered to a specific table
 	 */
-	async columns(table?: string) {
+	async columns(table?: string): Promise<
+		{
+			table: string;
+			column: string;
+		}[]
+	> {
 		const query = this.knex
 			.select<{ TABLE_NAME: string; COLUMN_NAME: string }[]>('TABLE_NAME', 'COLUMN_NAME')
 			.from('INFORMATION_SCHEMA.COLUMNS')
@@ -416,7 +422,7 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string) {
+	async primary(table: string): Promise<string> {
 		const results = await this.knex.raw(
 			`SELECT
          Col.Column_Name
@@ -439,7 +445,7 @@ export default class MSSQL implements SchemaInspector {
 	// Foreign Keys
 	// ===============================================================================================
 
-	async foreignKeys(table?: string) {
+	async foreignKeys(table?: string): Promise<ForeignKey[]> {
 		const result = await this.knex.raw<ForeignKey[]>(
 			`
       SELECT

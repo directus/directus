@@ -267,7 +267,7 @@ export const seedDBStructure = () => {
 									? { on_delete: 'NO ACTION' }
 									: {
 											on_delete: 'SET NULL',
-									  },
+										},
 						});
 
 						// Create self O2M relationship

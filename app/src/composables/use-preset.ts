@@ -1,10 +1,10 @@
-import { usePresetsStore } from '@/stores/presets';
-import { useUserStore } from '@/stores/user';
-import { translate } from '@/utils/translate-literal';
 import type { User } from '@directus/types';
 import { Filter, Preset } from '@directus/types';
 import { assign, cloneDeep, debounce, isEqual } from 'lodash';
-import { ComputedRef, Ref, computed, ref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
+import { usePresetsStore } from '@/stores/presets';
+import { useUserStore } from '@/stores/user';
+import { translate } from '@/utils/translate-literal';
 
 type UsablePreset = {
 	bookmarkExists: ComputedRef<boolean>;
@@ -43,9 +43,9 @@ export function usePreset(
 	});
 
 	const localPreset = ref<Partial<Preset>>({});
+	const bookmarkSaved = ref(true);
 	initLocalPreset();
 
-	const bookmarkSaved = ref(true);
 	const bookmarkIsMine = computed(() => localPreset.value.user === (userStore.currentUser as User).id);
 
 	/**
@@ -205,6 +205,7 @@ export function usePreset(
 		}
 
 		localPreset.value = preset;
+		bookmarkSaved.value = true;
 	}
 
 	/**

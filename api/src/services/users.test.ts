@@ -1,14 +1,15 @@
-import { InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
-import { randomUUID } from '@directus/random';
+import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Accountability } from '@directus/types';
+import type { Accountability, MutationOptions } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
+import jwt from 'jsonwebtoken';
 import knex from 'knex';
-import { MockClient, createTracker } from 'knex-mock-client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createTracker, MockClient } from 'knex-mock-client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
-import type { MutationOptions } from '../types/items.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
-import { ItemsService, MailService, UsersService } from './index.js';
+import { _cache } from '../utils/get-secret.js';
+import { verifyJWT } from '../utils/jwt.js';
+import { ItemsService, MailService, SettingsService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -25,6 +26,9 @@ vi.mock('./mail', () => {
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		EMAIL_TEMPLATES_PATH: './templates',
+		EMAIL_VERIFICATION_TOKEN_TTL: '1d',
+		REGISTER_STALL_TIME: 0,
+		USER_REGISTER_URL_ALLOW_LIST: 'https://example.com/verify',
 		USERS_ADMIN_ACCESS_LIMIT: 3,
 		USERS_APP_ACCESS_LIMIT: 3,
 		USERS_API_ACCESS_LIMIT: 3,
@@ -32,6 +36,10 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js');
+
+vi.mock('../utils/jwt.js', () => ({
+	verifyJWT: vi.fn(),
+}));
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 
@@ -57,8 +65,9 @@ describe('Integration Tests', () => {
 			schema,
 		});
 
-		const superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(randomUUID());
-		const superUpdateManySpy = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue([randomUUID()]);
+		const superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('user-id-1');
+		const superUpdateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('user-id-1');
+		const superUpdateManySpy = vi.spyOn(ItemsService.prototype, 'updateMany').mockResolvedValue(['user-id-2']);
 
 		const checkUniqueEmailsSpy = vi
 			.spyOn(UsersService.prototype as any, 'checkUniqueEmails')
@@ -71,6 +80,17 @@ describe('Integration Tests', () => {
 		const clearUserSessionsSpy = vi
 			.spyOn(UsersService.prototype as any, 'clearUserSessions')
 			.mockResolvedValue(() => vi.fn());
+
+		const mockGetUserByEmail = (user: unknown) => {
+			const getUserByEmailSpy = vi.spyOn(UsersService.prototype as any, 'getUserByEmail');
+
+			getUserByEmailSpy.mockReset();
+			getUserByEmailSpy.mockResolvedValueOnce(user);
+		};
+
+		beforeEach(() => {
+			_cache.secret = null;
+		});
 
 		afterEach(() => {
 			vi.clearAllMocks();
@@ -150,7 +170,7 @@ describe('Integration Tests', () => {
 			it('should not request user integrity checks if no relevant fields are changed', async () => {
 				const opts: MutationOptions = {};
 
-				await service.updateMany([randomUUID()], {}, opts);
+				await service.updateMany(['user-id-3'], {}, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(undefined);
 				expect(clearUserSessionsSpy).not.toBeCalled();
@@ -159,7 +179,7 @@ describe('Integration Tests', () => {
 			it('should request all user integrity checks if role is changed', async () => {
 				const opts: MutationOptions = {};
 
-				await service.updateMany([randomUUID()], { role: testRoleId }, opts);
+				await service.updateMany(['user-id-4'], { role: testRoleId }, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
 			});
@@ -167,7 +187,7 @@ describe('Integration Tests', () => {
 			it('should request all user integrity checks if status is changed to not "active"', async () => {
 				const opts: MutationOptions = {};
 
-				await service.updateMany([randomUUID()], { status: 'inactive' }, opts);
+				await service.updateMany(['user-id-5'], { status: 'inactive' }, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
 				expect(clearUserSessionsSpy).toBeCalled();
@@ -176,7 +196,7 @@ describe('Integration Tests', () => {
 			it('should request user limit checks if status is changed to "active"', async () => {
 				const opts: MutationOptions = {};
 
-				await service.updateMany([randomUUID()], { status: 'active' }, opts);
+				await service.updateMany(['user-id-6'], { status: 'active' }, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
 				expect(clearUserSessionsSpy).not.toBeCalled();
@@ -185,19 +205,19 @@ describe('Integration Tests', () => {
 			it('should clear caches if role is changed', async () => {
 				const clearCacheSpy = vi.spyOn(UsersService.prototype as any, 'clearCaches');
 
-				await service.updateMany([randomUUID()], { role: testRoleId });
+				await service.updateMany(['user-id-7'], { role: testRoleId });
 
 				expect(clearCacheSpy).toHaveBeenCalled();
 			});
 
 			it('should not checkUniqueEmails', async () => {
-				await service.updateMany([randomUUID()], {});
+				await service.updateMany(['user-id-8'], {});
 
 				expect(checkUniqueEmailsSpy).not.toBeCalled();
 			});
 
 			it('should checkUniqueEmails once', async () => {
-				await service.updateMany([randomUUID()], { email: 'test@example.com' });
+				await service.updateMany(['user-id-9'], { email: 'test@example.com' });
 
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
 				expect(clearUserSessionsSpy).toBeCalled();
@@ -206,12 +226,13 @@ describe('Integration Tests', () => {
 			it('should disallow updating multiple items to same email', async () => {
 				const opts: MutationOptions = {};
 
-				await service.updateMany([randomUUID(), randomUUID()], { email: 'test@example.com' }, opts);
+				await service.updateMany(['user-id-10', 'user-id-11'], { email: 'test@example.com' }, opts);
 
 				expect(opts.preMutationError).toStrictEqual(
 					new RecordNotUniqueError({
 						collection: 'directus_users',
 						field: 'email',
+						value: 'test@example.com',
 					}),
 				);
 
@@ -219,14 +240,14 @@ describe('Integration Tests', () => {
 			});
 
 			it('should not checkPasswordPolicy', async () => {
-				await service.updateMany([randomUUID()], {});
+				await service.updateMany(['user-id-12'], {});
 
 				expect(checkPasswordPolicySpy).not.toBeCalled();
 				expect(clearUserSessionsSpy).not.toBeCalled();
 			});
 
 			it('should checkPasswordPolicy once', async () => {
-				await service.updateMany([randomUUID()], { password: 'testpassword' });
+				await service.updateMany(['user-id-13'], { password: 'testpassword' });
 
 				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
 				expect(clearUserSessionsSpy).toBeCalled();
@@ -264,7 +285,7 @@ describe('Integration Tests', () => {
 					});
 
 					it.each(['provider', 'external_identifier'])('%s', async (field) => {
-						const promise = service.updateMany([randomUUID()], { [field]: 'test' });
+						const promise = service.updateMany(['user-id-14'], { [field]: 'test' });
 
 						await expect(promise).resolves.not.toThrow();
 
@@ -277,7 +298,7 @@ describe('Integration Tests', () => {
 		});
 
 		describe('deleteMany', () => {
-			vi.spyOn(ItemsService.prototype, 'deleteMany').mockResolvedValue([randomUUID()]);
+			vi.spyOn(ItemsService.prototype, 'deleteMany').mockResolvedValue(['user-id-15']);
 
 			it('should validate remaining admin users', async () => {
 				// mock notifications update query in deleteOne/deleteMany/deleteByQuery methods
@@ -293,10 +314,56 @@ describe('Integration Tests', () => {
 					accountability: { role: 'test', admin: false } as Accountability,
 				});
 
-				await service.deleteMany([randomUUID()]);
+				await service.deleteMany(['user-id-16']);
 
 				expect(validateRemainingAdminUsers).toHaveBeenCalled();
 				expect(clearUserSessionsSpy).toBeCalled();
+			});
+		});
+
+		describe('requestPasswordReset', () => {
+			it('should throw ForbiddenError for external provider users', async () => {
+				tracker.on.select('directus_users').response({
+					id: 'user-id-ext',
+					role: 'role-id',
+					status: 'active',
+					password: 'hashed',
+					email: 'ext@example.com',
+					provider: 'google',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(service.requestPasswordReset('ext@example.com', null)).rejects.toThrow(ForbiddenError);
+
+				expect(mailService.send).not.toHaveBeenCalled();
+			});
+
+			it('should send reset email for default provider users', async () => {
+				tracker.on.select('directus_users').response({
+					id: 'user-id-def',
+					role: 'role-id',
+					status: 'active',
+					password: 'hashed',
+					email: 'def@example.com',
+					provider: 'default',
+				});
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.requestPasswordReset('def@example.com', null);
+
+				expect(mailService.send).toHaveBeenCalledTimes(1);
 			});
 		});
 
@@ -308,7 +375,7 @@ describe('Integration Tests', () => {
 			vi.spyOn(UsersService.prototype as any, 'inviteUrl').mockImplementation(() => vi.fn());
 
 			it('should invite new users', async () => {
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(undefined);
+				mockGetUserByEmail(undefined);
 
 				const service = new UsersService({
 					knex: db,
@@ -339,7 +406,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock an invited user
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					status: 'invited',
 					role: 'invite-role',
 				});
@@ -359,7 +426,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock an active user
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({
+				mockGetUserByEmail({
 					status: 'active',
 					role: 'invite-role',
 				});
@@ -379,19 +446,113 @@ describe('Integration Tests', () => {
 				});
 
 				const mockUser = {
-					id: randomUUID(),
+					id: 'user-id-17',
 					status: 'invited',
 					role: 'existing-role',
 				};
 
 				// mock an invited user with different role
-				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce(mockUser);
+				mockGetUserByEmail(mockUser);
 
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([mockUser.id]);
-				expect(superUpdateManySpy.mock.lastCall![1]).toEqual({ role: 'invite-role' });
+				expect(superUpdateOneSpy).toHaveBeenCalledWith(mockUser.id, { role: 'invite-role' }, {});
+			});
+		});
+
+		describe('acceptInvite', () => {
+			it('should throw InvalidInviteError when user is not in invited status', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'invite' });
+
+				mockGetUserByEmail({
+					id: 'user-id',
+					status: 'active',
+					email: 'test@example.com',
+				});
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				const err = await service.acceptInvite('fake-token', 'Password123!').catch((e) => e);
+
+				expect(err).toBeInstanceOf(InvalidInviteError);
+				expect(err.message).not.toContain('test@example.com');
+			});
+
+			it('should throw ForbiddenError for non-invite scope tokens', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'password-reset' });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await expect(service.acceptInvite('fake-token', 'Password123!')).rejects.toThrow(ForbiddenError);
+			});
+		});
+
+		describe('registerUser', () => {
+			it('should sign email verification tokens with a secret when SECRET is not configured', async () => {
+				vi.spyOn(SettingsService.prototype, 'readSingleton').mockResolvedValueOnce({
+					public_registration: true,
+					public_registration_verify_email: true,
+					public_registration_role: 'role-id',
+				});
+
+				const signSpy = vi.spyOn(jwt, 'sign');
+
+				mockGetUserByEmail(undefined);
+
+				const mailService = new MailService({ schema });
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.registerUser({
+					email: 'test@example.com',
+					password: 'Password123!',
+					verification_url: 'https://example.com/verify',
+				});
+
+				expect(signSpy).toHaveBeenCalledWith(
+					{ email: 'test@example.com', scope: 'pending-registration' },
+					expect.any(String),
+					{
+						expiresIn: '1d',
+						issuer: 'directus',
+					},
+				);
+
+				expect(signSpy.mock.calls[0]![1]).not.toBe('');
+				expect(mailService.send).toHaveBeenCalledTimes(1);
+			});
+		});
+
+		describe('verifyRegistration', () => {
+			it('should verify registration tokens with a secret when SECRET is not configured', async () => {
+				vi.mocked(verifyJWT).mockReturnValueOnce({ email: 'test@example.com', scope: 'pending-registration' });
+
+				mockGetUserByEmail({
+					id: 'user-id-18',
+					status: 'unverified',
+					email: 'test@example.com',
+				});
+
+				const service = new UsersService({
+					knex: db,
+					schema,
+				});
+
+				await service.verifyRegistration('fake-token');
+
+				expect(verifyJWT).toHaveBeenCalledWith('fake-token', expect.any(String));
+				expect(vi.mocked(verifyJWT).mock.calls[0]![1]).not.toBe('');
+				expect(superUpdateOneSpy).toHaveBeenCalledWith('user-id-18', { status: 'active' });
 			});
 		});
 	});

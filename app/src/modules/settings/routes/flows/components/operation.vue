@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { useExtensions } from '@/extensions';
-import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
+import { computed, ref, toRefs, unref } from 'vue';
+import { ATTACHMENT_OFFSET, GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
 import OptionsOverview from './options-overview.vue';
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VWorkspaceTile from '@/components/v-workspace-tile.vue';
+import DisplayColor from '@/displays/color/color.vue';
+import { useExtensions } from '@/extensions';
+import { useUserStore } from '@/stores/user';
+import { Vector2 } from '@/utils/vector2';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {
@@ -23,7 +29,7 @@ const props = withDefaults(
 		parent?: { id: string; type: Target; loner: boolean };
 		flow: FlowRaw;
 		panelsToBeDeleted: string[];
-		isHovered: boolean;
+		isHovered?: boolean;
 		subdued?: boolean;
 	}>(),
 	{
@@ -55,16 +61,18 @@ const emit = defineEmits([
 	'flow-status',
 ]);
 
-const { t } = useI18n();
+const userStore = useUserStore();
 
-const styleVars = {
+const isRTL = computed(() => userStore.textDirection === 'rtl');
+
+const styleVars = computed(() => ({
 	'--reject-left': REJECT_OFFSET.x + 'px',
 	'--reject-top': REJECT_OFFSET.y + 'px',
 	'--resolve-left': RESOLVE_OFFSET.x + 'px',
 	'--resolve-top': RESOLVE_OFFSET.y + 'px',
-	'--attachment-x': ATTACHMENT_OFFSET.x + 'px',
+	'--attachment-x': unref(isRTL) ? -ATTACHMENT_OFFSET.x + 'px' : ATTACHMENT_OFFSET.x + 'px',
 	'--attachment-y': ATTACHMENT_OFFSET.y + 'px',
-};
+}));
 
 const currentOperation = computed(() => {
 	if (props.type === 'operation') return operations.value.find((operation) => operation.id === props.panel.type);
@@ -75,6 +83,7 @@ let down: Target | 'parent' | undefined = undefined;
 let rafId: number | null = null;
 const moving = ref(false);
 let workspaceOffset: Vector2 = new Vector2(0, 0);
+let workspaceWidth: number = 0;
 
 const isReject = computed(() => props.parent?.type === 'reject');
 
@@ -87,6 +96,7 @@ function pointerdown(target: Target | 'parent') {
 
 	if (rect) {
 		workspaceOffset = new Vector2(rect.left, rect.top);
+		workspaceWidth = rect.width;
 	}
 
 	window.addEventListener('pointermove', pointermove);
@@ -98,24 +108,28 @@ const pointermove = (event: PointerEvent) => {
 		moving.value = true;
 		if (!down) return;
 
-		const arrowInfo: ArrowInfo =
-			down === 'parent'
-				? {
-						id: props.parent?.id,
-						type: props.parent?.type as Target,
-						pos: new Vector2(
-							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
-						),
-				  }
-				: {
-						id: props.panel.id,
-						type: down,
-						pos: new Vector2(
-							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
-						),
-				  };
+		let xPos = Math.round((event.pageX - workspaceOffset.x) / GRID_SIZE) * GRID_SIZE;
+		const yPos = Math.round((event.pageY - workspaceOffset.y) / GRID_SIZE) * GRID_SIZE;
+
+		if (unref(isRTL)) {
+			xPos = workspaceWidth - xPos;
+		}
+
+		let arrowInfo: ArrowInfo;
+
+		if (down === 'parent') {
+			arrowInfo = {
+				id: props.parent!.id,
+				type: props.parent!.type as Target,
+				pos: new Vector2(xPos, yPos),
+			};
+		} else {
+			arrowInfo = {
+				id: props.panel.id,
+				type: down,
+				pos: new Vector2(xPos, yPos),
+			};
+		}
 
 		emit('arrow-move', arrowInfo);
 	});
@@ -162,7 +176,7 @@ function pointerLeave() {
 </script>
 
 <template>
-	<v-workspace-tile
+	<VWorkspaceTile
 		v-bind="panel"
 		:name="panel.panel_name"
 		:icon="type === 'trigger' ? panel.icon : currentOperation?.icon"
@@ -177,6 +191,7 @@ function pointerLeave() {
 		]"
 		:edit-mode="editMode"
 		:resizable="false"
+		:grid-size="GRID_SIZE"
 		:show-options="type !== 'trigger'"
 		:style="styleVars"
 		always-update-position
@@ -197,18 +212,18 @@ function pointerLeave() {
 				rounded
 				@pointerdown.stop="pointerdown('resolve')"
 			>
-				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
+				<VIcon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
 					class="hint resolve-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
-						<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
+						<VIcon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 			<div
 				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
 				x-small
@@ -217,18 +232,18 @@ function pointerLeave() {
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
+				<VIcon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
 			</div>
-			<transition name="fade">
+			<Transition name="fade">
 				<div
 					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
 					class="hint reject-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
-						<v-icon v-tooltip="t('operation_handle_reject')" name="add_circle_outline" />
+						<VIcon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
 					</div>
 				</div>
-			</transition>
+			</Transition>
 
 			<div
 				v-if="panel.id !== '$trigger'"
@@ -239,26 +254,26 @@ function pointerLeave() {
 				:class="{ reject: parent?.type === 'reject' }"
 				@pointerdown.stop="pointerdown('parent')"
 			>
-				<v-icon name="adjust" />
+				<VIcon name="adjust" />
 			</div>
 		</template>
-		<v-error-boundary
+		<VErrorBoundary
 			v-if="typeof currentOperation?.overview === 'function'"
 			:name="`operation-overview-${currentOperation.id}`"
 		>
 			<div class="block">
-				<options-overview :panel="panel" :current-operation="currentOperation" :flow="flow" />
+				<OptionsOverview :panel="panel" :current-operation="currentOperation" :flow="flow" />
 			</div>
 
 			<template #fallback="{ error: optionsOverviewError }">
 				<div class="options-overview-error">
-					<v-icon name="warning" />
-					{{ t('unexpected_error') }}
-					<v-error :error="optionsOverviewError" />
+					<VIcon name="warning" />
+					{{ $t('unexpected_error') }}
+					<VError :error="optionsOverviewError" />
 				</div>
 			</template>
-		</v-error-boundary>
-		<v-error-boundary
+		</VErrorBoundary>
+		<VErrorBoundary
 			v-else-if="currentOperation && 'id' in currentOperation"
 			:name="`operation-overview-${currentOperation.id}`"
 		>
@@ -266,45 +281,45 @@ function pointerLeave() {
 
 			<template #fallback="{ error: operationOverviewError }">
 				<div class="options-overview-error">
-					<v-icon name="warning" />
-					{{ t('unexpected_error') }}
-					<v-error :error="operationOverviewError" />
+					<VIcon name="warning" />
+					{{ $t('unexpected_error') }}
+					<VError :error="operationOverviewError" />
 				</div>
 			</template>
-		</v-error-boundary>
+		</VErrorBoundary>
 		<template v-if="panel.id === '$trigger'" #footer>
 			<div class="status-footer" :class="flowStatus">
-				<display-color
-					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
+				<DisplayColor
+					v-tooltip="flowStatus === 'active' ? $t('active') : $t('inactive')"
 					class="status-dot"
 					:value="flowStatus === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 				/>
 
-				<v-select
+				<VSelect
 					v-if="editMode"
 					class="flow-status-select"
 					inline
 					:model-value="flowStatus"
 					:items="[
-						{ text: t('active'), value: 'active' },
-						{ text: t('inactive'), value: 'inactive' },
+						{ text: $t('active'), value: 'active' },
+						{ text: $t('inactive'), value: 'inactive' },
 					]"
 					@update:model-value="flowStatus = $event"
 				/>
 
 				<span v-else>
-					{{ flowStatus === 'active' ? t('active') : t('inactive') }}
+					{{ flowStatus === 'active' ? $t('active') : $t('inactive') }}
 				</span>
 			</div>
 		</template>
-	</v-workspace-tile>
+	</VWorkspaceTile>
 </template>
 
 <style lang="scss" scoped>
 .v-workspace-tile.block-container {
 	position: relative;
 	overflow: visible;
-	padding: 4px;
+	padding: 0.25rem;
 
 	:deep(.header .name) {
 		color: var(--theme--primary);
@@ -315,16 +330,16 @@ function pointerLeave() {
 	}
 
 	.block {
-		padding: 0 12px;
-		height: 100%;
+		padding: 0 0.6875rem;
+		block-size: 100%;
 		overflow-y: auto;
 
 		.name {
 			display: inline-block;
-			font-size: 20px;
+			font-size: 1.125rem;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
-			margin-bottom: 8px;
+			margin-block-end: 0.4375rem;
 		}
 	}
 
@@ -338,11 +353,9 @@ function pointerLeave() {
 			position: absolute;
 			pointer-events: none;
 			content: '';
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			border-radius: 4px;
+			inset-block: 0;
+			inset-inline: 0;
+			border-radius: 0.25rem;
 			z-index: -1;
 			opacity: 0.2;
 			box-shadow: 0 0 0 10px var(--theme--primary);
@@ -392,9 +405,9 @@ function pointerLeave() {
 	}
 
 	.button-hint {
-		width: 32px;
-		height: 32px;
-		padding: 4px;
+		inline-size: 1.8125rem;
+		block-size: 1.8125rem;
+		padding: 0.25rem;
 	}
 
 	.hint {
@@ -402,26 +415,35 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 20px 20px 20px 60px;
-		transform: translate(-1px, calc(-50% - 2.5px));
+		padding: 1.125rem;
+		padding-inline-start: 3.375rem;
+		transform: translate(-0.0625rem, calc(-50% - 0.125rem));
+
+		html[dir='rtl'] & {
+			transform: translate(0.0625rem, calc(-50% - 0.125rem));
+		}
 	}
 
 	.button {
-		width: 20px;
-		height: 20px;
+		inline-size: 1.125rem;
+		block-size: 1.125rem;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		background-color: var(--theme--background);
-		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
+		transform: translate(calc(-50% - 0.0625rem), calc(-50% - 0.0625rem));
+
+		html[dir='rtl'] & {
+			transform: translate(calc(50% + 0.0625rem), calc(-50% - 0.0625rem));
+		}
 
 		--v-icon-color: var(--theme--primary);
 	}
 
 	.add-resolve,
 	.resolve-hint {
-		top: var(--resolve-top);
-		left: var(--resolve-left);
+		inset-block-start: var(--resolve-top);
+		inset-inline-start: var(--resolve-left);
 
 		.button-hint {
 			--v-icon-color: var(--theme--primary);
@@ -430,8 +452,8 @@ function pointerLeave() {
 
 	.add-reject,
 	.reject-hint {
-		top: var(--reject-top);
-		left: var(--reject-left);
+		inset-block-start: var(--reject-top);
+		inset-inline-start: var(--reject-left);
 
 		--v-icon-color: var(--theme--secondary);
 
@@ -441,8 +463,8 @@ function pointerLeave() {
 	}
 
 	.attachment {
-		top: var(--attachment-y);
-		left: var(--attachment-x);
+		inset-block-start: var(--attachment-y);
+		inset-inline-start: var(--attachment-x);
 	}
 
 	&.reject {
@@ -475,6 +497,7 @@ function pointerLeave() {
 
 		.button {
 			border-color: var(--theme--foreground-subdued);
+
 			--v-icon-color: var(--theme--foreground-subdued);
 
 			.dot {
@@ -489,25 +512,25 @@ function pointerLeave() {
 }
 
 .options-overview-error {
-	padding: 20px;
+	padding: 1.125rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-top: 8px;
-		max-width: 100%;
+		margin-block-start: 0.4375rem;
+		max-inline-size: 100%;
 	}
 }
 
 .status-footer {
 	display: flex;
-	gap: 8px;
+	gap: 0.4375rem;
 }
 
 .fade-enter-active,

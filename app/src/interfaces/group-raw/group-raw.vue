@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
+import type { ComparisonContext } from '@/components/v-form/types';
+import VForm from '@/components/v-form/v-form.vue';
+import { CollabContext } from '@/composables/use-collab';
+import type { ContentVersionMaybeNew } from '@/types/versions';
 
 withDefaults(
 	defineProps<{
@@ -9,13 +13,17 @@ withDefaults(
 		initialValues: Record<string, unknown>;
 		primaryKey: number | string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparison?: ComparisonContext;
+		collabContext?: CollabContext;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
 		rawEditorEnabled?: boolean;
 		direction?: string;
+		version?: ContentVersionMaybeNew | null;
 	}>(),
 	{
 		batchActiveFields: () => [],
@@ -28,7 +36,7 @@ defineEmits(['apply']);
 
 <template>
 	<div class="group-raw">
-		<v-form
+		<VForm
 			:initial-values="initialValues"
 			:fields="fields"
 			:model-value="values"
@@ -36,10 +44,15 @@ defineEmits(['apply']);
 			:group="field.meta?.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
+			:batch-mode="batchMode"
+			:non-editable="nonEditable"
 			:disabled="disabled"
+			:comparison="comparison"
+			:collab-context="collabContext"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
 			:direction="direction"
+			:version="version"
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
 			@update:model-value="$emit('apply', $event)"

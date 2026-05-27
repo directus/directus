@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useWindowSize } from '@/composables/use-window-size';
-import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { isValidJSON, parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
+import { useWindowSize } from '@/composables/use-window-size';
+import { getStringifiedValue } from '@/utils/get-stringified-value';
 
 const props = withDefaults(
 	defineProps<{
@@ -143,13 +143,13 @@ watch(
 <style lang="scss" scoped>
 .system-raw-editor {
 	position: relative;
-	height: var(--theme--form--field--input--height);
-	min-height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
+	min-block-size: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.CodeMirror) {
-		width: 100%;
-		line-height: 18px;
+		inline-size: 100%;
+		line-height: 1rem;
 		padding: var(--theme--form--field--input--padding);
 
 		.cm-tag {
@@ -163,19 +163,19 @@ watch(
 
 	:deep(.CodeMirror),
 	:deep(.CodeMirror-scroll) {
-		max-height: var(--theme--form--field--input--height);
+		max-block-size: var(--theme--form--field--input--height);
 	}
 
 	&.multi-line {
-		height: auto;
+		block-size: auto;
 
 		:deep(.CodeMirror),
 		:deep(.CodeMirror-scroll) {
-			max-height: 480px;
+			max-block-size: 27rem;
 		}
 
 		:deep(.CodeMirror-scroll) {
-			padding-bottom: 0;
+			padding-block-end: 0;
 		}
 	}
 }

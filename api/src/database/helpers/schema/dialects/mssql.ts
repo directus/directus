@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
+import { type CreateIndexOptions, SchemaHelper, type SortRecord, type Sql } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
@@ -77,5 +77,36 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 
 	override getTableNameMaxLength(): number {
 		return 128;
+	}
+
+	override async createIndex(
+		collection: string,
+		field: string,
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+
+		/*
+		Online index operations are not available in every edition of Microsoft SQL Server.
+		For a list of features that are supported by the editions of SQL Server, see Editions and supported features of SQL Server 2022.
+
+		https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-2022?view=sql-server-ver16#rdbms-high-availability
+		 */
+		const edition = await this.knex
+			.raw<{ edition?: string }[]>(`SELECT SERVERPROPERTY('edition') AS edition`)
+			.then((data) => data?.[0]?.['edition']);
+
+		if (options.attemptConcurrentIndex && typeof edition === 'string' && edition.startsWith('Enterprise')) {
+			// https://learn.microsoft.com/en-us/sql/t-sql/statements/create-index-transact-sql?view=sql-server-ver16#online---on--off-
+			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??) WITH (ONLINE = ON)`, [
+				constraintName,
+				collection,
+				field,
+			]);
+		}
+
+		// Fall back to blocking index creation for non-enterprise editions
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }

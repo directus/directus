@@ -1,3 +1,4 @@
+import path from 'path';
 import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
@@ -9,7 +10,6 @@ import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
-import path from 'path';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -56,7 +56,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	 * the row in directus_files async during the upload of the actual file.
 	 */
 
-	let disk: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 	let payload: any = {};
 	let fileCount = 0;
 
@@ -66,10 +65,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'null') fieldValue = null;
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'false') fieldValue = false;
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'true') fieldValue = true;
-
-		if (fieldname === 'storage') {
-			disk = val;
-		}
 
 		payload[fieldname] = fieldValue;
 	});
@@ -99,7 +94,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		const payloadWithRequiredFields = {
 			...payload,
 			type: mimeType,
-			storage: payload.storage || disk,
 		};
 
 		// Clear the payload for the next to-be-uploaded file
@@ -186,6 +180,7 @@ router.post(
 const importSchema = Joi.object({
 	url: Joi.string().required(),
 	data: Joi.object(),
+	options: Joi.object({ filterMimeType: Joi.array().items(Joi.string()) }),
 });
 
 router.post(
@@ -202,7 +197,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.importOne(req.body.url, req.body.data);
+		const primaryKey = await service.importOne(req.body.url, req.body.data, req.body.options);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);

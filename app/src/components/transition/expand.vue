@@ -29,7 +29,7 @@ const methods = ExpandMethods(props.expandedParentClass, props.xAxis, emit);
 </script>
 
 <template>
-	<transition name="expand-transition" mode="in-out" v-on="methods">
+	<Transition name="expand-transition" mode="in-out" v-on="methods">
 		<slot />
-	</transition>
+	</Transition>
 </template>

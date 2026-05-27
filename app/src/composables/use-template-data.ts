@@ -1,9 +1,9 @@
-import api from '@/api';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { Collection, Item, PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { has, merge, pick } from 'lodash';
-import { ComputedRef, Ref, computed, ref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
+import sdk, { requestEndpoint } from '@/sdk';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 type UsableTemplateData = {
 	template: ComputedRef<string | null>;
@@ -82,13 +82,15 @@ export function useTemplateData(
 		const endpoint = primaryKey.value ? `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}` : baseEndpoint;
 
 		try {
-			const result = await api.get(endpoint, {
-				params: {
-					fields: fields.value,
-				},
-			});
+			const item = await sdk.request<Item>(
+				requestEndpoint(endpoint, {
+					params: {
+						fields: fields.value,
+					},
+				}),
+			);
 
-			itemData.value = result.data.data;
+			itemData.value = item;
 		} catch (err) {
 			error.value = err;
 		} finally {

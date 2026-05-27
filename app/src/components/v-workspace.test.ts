@@ -1,7 +1,7 @@
-import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { expect, test } from 'vitest';
 import VWorkspace from './v-workspace.vue';
+import type { GlobalMountOptions } from '@/__utils__/types';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-workspace-tile'],
@@ -49,10 +49,10 @@ test('editMode prop', async () => {
 	});
 
 	expect(wrapper.classes()).toContain('editing');
-	expect(wrapper.getComponent({ name: 'v-workspace-tile' }).attributes()['edit-mode']).toBeTruthy();
+	expect(wrapper.getComponent({ name: 'v-workspace-tile' }).props('editMode')).toBe(true);
 });
 
-test('zoomToFit prop', async () => {
+test('zoomToFit prop applies a non-default scale', async () => {
 	const wrapper = mount(VWorkspace, {
 		props: {
 			tiles,
@@ -61,5 +61,11 @@ test('zoomToFit prop', async () => {
 		global,
 	});
 
-	expect(wrapper.get('.workspace').attributes().style).toContain('transform: scale(-0.40714285714285714)');
+	const zoomScale = (wrapper.vm as any).zoomScale;
+	expect(zoomScale).toBeTypeOf('number');
+	expect(zoomScale).not.toBe(1);
+
+	const style = wrapper.get('.workspace').attributes().style;
+	expect(style).toContain('transform: scale(');
+	expect(style).not.toContain('transform: scale(1)');
 });

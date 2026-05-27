@@ -1,5 +1,5 @@
-import run from '../../../database/migrations/run.js';
 import getDatabase from '../../../database/index.js';
+import run from '../../../database/migrations/run.js';
 import { useLogger } from '../../../logger/index.js';
 
 export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {

@@ -1,7 +1,7 @@
-import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
-import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
+import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
+import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
 import semver from 'semver';
 import config from '../config.js';
 import type { PackageVersion } from '../types.js';
@@ -117,7 +117,7 @@ export async function processPackages(): Promise<{
 		if (version) {
 			newVersion = version;
 		} else if (workspacePackage.manifest.version) {
-			newVersion = semver.inc(workspacePackage.manifest.version, isPrerelease ? 'prerelease' : 'patch', prereleaseId);
+			newVersion = semver.inc(workspacePackage.manifest.version, isPrerelease ? 'prerelease' : 'patch', prereleaseId!);
 		}
 
 		if (!newVersion) return;
