@@ -45,7 +45,7 @@ type UsableItem<T extends Item> = {
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
 	saveAsCopy: () => Promise<PrimaryKey | null>;
-	getItem: () => Promise<void>;
+	getItem: (opts?: { silent?: boolean }) => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
 
@@ -110,7 +110,14 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, query], refresh);
+	watch([collection, primaryKey], refresh);
+
+	watch(query, () => {
+		const canRefetchSilently = item.value !== null;
+
+		if (canRefetchSilently) getItem({ silent: true });
+		else refresh();
+	});
 
 	refreshItem();
 
@@ -137,8 +144,8 @@ export function useItem<T extends Item>(
 		validationErrors,
 	};
 
-	async function getItem() {
-		loadingItem.value = true;
+	async function getItem(opts?: { silent?: boolean }) {
+		if (!opts?.silent) loadingItem.value = true;
 		error.value = null;
 
 		try {
