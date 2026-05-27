@@ -362,13 +362,56 @@ describe('useAutoSave', () => {
 			expect(saveCallback).not.toHaveBeenCalled();
 		});
 
-		it('rejects when the forced save fails so the caller can abort the publish', async () => {
+		it('returns false when the forced save fails so the caller can abort the publish', async () => {
 			const { edits, flush } = setup({ saveCallback: () => Promise.reject(new Error('boom')) });
 
 			edits.value = { title: 'hello' };
 			await nextTick();
 
-			await expect(flush()).rejects.toThrow('boom');
+			await expect(flush()).resolves.toBe(false);
+		});
+
+		it('returns true when there is nothing to flush or the save succeeds', async () => {
+			const { edits, flush } = setup();
+
+			await expect(flush()).resolves.toBe(true);
+
+			edits.value = { title: 'hello' };
+			await nextTick();
+			await expect(flush()).resolves.toBe(true);
+		});
+
+		it('does not save when edits are added then reverted to empty', async () => {
+			const { edits, saveCallback, flush } = setup();
+
+			edits.value = { title: 'hi' };
+			await nextTick();
+			edits.value = {};
+			await nextTick();
+
+			await flushDebounce();
+			expect(saveCallback).not.toHaveBeenCalled();
+
+			await flush();
+			expect(saveCallback).not.toHaveBeenCalled();
+		});
+
+		it('does not double-save when two concurrent flush() calls race an in-flight save', async () => {
+			let resolveSave!: () => void;
+			const saveCallback = vi.fn(() => new Promise<void>((resolve) => (resolveSave = resolve)));
+			const { edits, flush } = setup({ saveCallback });
+
+			edits.value = { title: 'hello' };
+			await flushDebounce(); // save starts and stays in-flight
+			expect(saveCallback).toHaveBeenCalledTimes(1);
+
+			const a = flush();
+			const b = flush();
+
+			resolveSave();
+			await Promise.all([a, b]);
+
+			expect(saveCallback).toHaveBeenCalledTimes(1);
 		});
 	});
 });

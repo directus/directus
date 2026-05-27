@@ -798,11 +798,7 @@ function usePublishActions() {
 
 	async function onVersionPublishCompare(quit = false) {
 		// Queue behind unsaved/in-flight autosave
-		try {
-			await flushAutoSave();
-		} catch {
-			return;
-		}
+		if (!(await flushAutoSave())) return;
 
 		quitAfterPublish.value = quit;
 
@@ -864,11 +860,7 @@ function usePublishActions() {
 		if (!currentVersion.value || currentVersion.value.id === '+') return;
 
 		// Queue behind unsaved/in-flight autosave
-		try {
-			await flushAutoSave();
-		} catch {
-			return;
-		}
+		if (!(await flushAutoSave())) return;
 
 		if (!runClientValidation()) return;
 

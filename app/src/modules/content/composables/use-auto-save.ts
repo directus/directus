@@ -41,7 +41,7 @@ export function useAutoSave(
 	let retryTimer: ReturnType<typeof setTimeout> | null = null;
 	let retryAttempt = 0;
 	let pendingSave = false;
-	let currentSave: Promise<void> | null = null;
+	let activeSave: Promise<void> | null = null;
 
 	const debouncedSave = useDebounceFn(runSave, debounceMs);
 
@@ -49,13 +49,17 @@ export function useAutoSave(
 		edits,
 		(newEdits) => {
 			if (!enabled.value) return;
-			if (Object.keys(newEdits).length === 0) return;
-
-			pendingSave = true;
 
 			// Reset backoff on new edits so an exhausted retry chain doesn't lock out future retries
 			clearRetryTimer();
 			retryAttempt = 0;
+
+			if (Object.keys(newEdits).length === 0) {
+				pendingSave = false;
+				return;
+			}
+
+			pendingSave = true;
 
 			debouncedSave();
 		},
@@ -86,7 +90,7 @@ export function useAutoSave(
 		isSaving.value = true;
 		pendingSave = false; // snapshot — edits arriving during the save re-set this
 
-		currentSave = (async () => {
+		activeSave = (async () => {
 			try {
 				await saveCallback(forceNewRevision);
 				hasOpenRevision.value = true;
@@ -100,31 +104,28 @@ export function useAutoSave(
 				scheduleRetry();
 			} finally {
 				isSaving.value = false;
+				activeSave = null;
 			}
 		})();
 
-		try {
-			await currentSave;
-		} finally {
-			currentSave = null;
-		}
+		await activeSave;
 	}
 
 	/**
-	 * Settle the auto-save queue: flush any pending debounced save and await the in-flight one.
-	 * Lets callers (e.g. Publish) queue behind unsaved changes before acting on persisted data.
-	 * Throws the auto-save error if a save fails so the caller can abort.
+	 * Drains pending and active saves so callers (e.g. Publish) act on persisted data.
+	 * Returns false if a save failed — the error is already surfaced via notification.
 	 */
-	async function flush(): Promise<void> {
-		if (!enabled.value) return;
+	async function flush(): Promise<boolean> {
+		if (!enabled.value) return true;
 
-		while (pendingSave || isSaving.value) {
-			if (currentSave) await currentSave;
-			else if (pendingSave) await runSave();
-			else break;
+		while (pendingSave || activeSave) {
+			if (activeSave) await activeSave;
+			else await runSave();
 
-			if (autoSaveError.value) throw autoSaveError.value;
+			if (autoSaveError.value) return false;
 		}
+
+		return true;
 	}
 
 	function showErrorNotification() {
