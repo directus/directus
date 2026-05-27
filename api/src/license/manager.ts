@@ -685,7 +685,7 @@ export class LicenseManager {
 
 		if (resolution.collections && resolution.collections.length > 0) {
 			await entitlementManager.resolve('collections', resolution.collections, { accountability: ctx?.accountability });
-			cachesToClear.push('seats');
+			cachesToClear.push('collections');
 		}
 
 		if (resolution.seats && resolution.seats.length > 0) {
