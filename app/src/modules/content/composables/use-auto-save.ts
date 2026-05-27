@@ -88,7 +88,7 @@ export function useAutoSave(
 		const forceNewRevision = !hasOpenRevision.value || isRevisionStale();
 
 		isSaving.value = true;
-		pendingSave = false; // snapshot — edits arriving during the save re-set this
+		pendingSave = false;
 
 		activeSave = (async () => {
 			try {
@@ -98,7 +98,7 @@ export function useAutoSave(
 				retryAttempt = 0;
 				dismissErrorNotification();
 			} catch (error) {
-				pendingSave = true; // save failed — still dirty
+				pendingSave = true;
 				autoSaveError.value = error instanceof Error ? error : new Error(String(error));
 				showErrorNotification();
 				scheduleRetry();
