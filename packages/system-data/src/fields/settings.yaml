@@ -790,16 +790,28 @@ fields:
           value: gpt-5-mini
         - text: GPT-5
           value: gpt-5
+        - text: GPT-5.1
+          value: gpt-5.1
+        - text: GPT-5.1 Chat
+          value: gpt-5.1-chat-latest
         - text: GPT-5.2
           value: gpt-5.2
         - text: GPT-5.2 Chat
           value: gpt-5.2-chat-latest
         - text: GPT-5.2 Pro
           value: gpt-5.2-pro
+        - text: GPT-5.4 Nano
+          value: gpt-5.4-nano
+        - text: GPT-5.4 Mini
+          value: gpt-5.4-mini
         - text: GPT-5.4
           value: gpt-5.4
         - text: GPT-5.4 Pro
           value: gpt-5.4-pro
+        - text: GPT-5.5
+          value: gpt-5.5
+        - text: GPT-5.5 Pro
+          value: gpt-5.5-pro
     width: half
     group: ai_group
 
@@ -823,12 +835,10 @@ fields:
       choices:
         - text: Claude Haiku 4.5
           value: claude-haiku-4-5
-        - text: Claude Sonnet 4.5
-          value: claude-sonnet-4-5
-        - text: Claude Opus 4.5
-          value: claude-opus-4-5
         - text: Claude Sonnet 4.6
           value: claude-sonnet-4-6
+        - text: Claude Opus 4.7
+          value: claude-opus-4-7
         - text: Claude Opus 4.6
           value: claude-opus-4-6
     width: half
