@@ -13,8 +13,7 @@ import {
 } from '../auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { getEntitlementManager } from '../license/index.js';
-import { getLicenseManager } from '../license/manager.js';
-import { isInCoreGracePeriod } from '../license/utils/is-in-core-grace-period.js';
+import { isSsoBypassAllowed } from '../license/utils/is-sso-bypass-allowed.js';
 import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
@@ -264,8 +263,7 @@ router.get(
 
 		// Hide SSO providers when not entitled, unless the license is locked or in the v12 grace period
 		if (providers.length > 0 && !isSSOEnabled) {
-			const ssoAvailable = (await getLicenseManager().isLocked()) || (await isInCoreGracePeriod());
-			if (!ssoAvailable) providers = [];
+			if (!(await isSsoBypassAllowed())) providers = [];
 		}
 
 		res.locals['payload'] = {
