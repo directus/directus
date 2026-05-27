@@ -103,7 +103,7 @@ const mergedErrors = computed<DirectusValidationError[]>(() => {
 
 	const email = value.value?.admin?.email;
 
-	if (email && email.includes('@') && !z.email().safeParse(email).success) {
+	if (email && !z.email().safeParse(email).success) {
 		result.push({ field: 'project_owner', type: 'email' });
 	}
 
