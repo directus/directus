@@ -36,7 +36,7 @@ router.get(
 			const coreGraceExpiresAt = await getCoreGraceExpiresAt();
 
 			if (coreGraceExpiresAt !== null) {
-				expiresAt = Math.floor(coreGraceExpiresAt / 1000);
+				expiresAt = coreGraceExpiresAt;
 				gracePeriod = Math.floor(GRACE_PERIOD_MS / 1000);
 			}
 		}

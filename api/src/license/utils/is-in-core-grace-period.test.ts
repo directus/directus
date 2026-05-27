@@ -14,20 +14,20 @@ vi.mock('../../utils/get-schema.js', () => ({
 const V12_MIGRATION_VERSION = '20260507A';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-describe('isInCoreGracePeriod', () => {
-	beforeEach(() => {
-		_cache.migrations = undefined;
-	});
+beforeEach(() => {
+	_cache.migrations = undefined;
+});
 
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
-	describe('returns false when grace is not applicable', () => {
+describe('getCoreGraceExpiresAt', () => {
+	describe('returns null when no grace applies', () => {
 		test('no migrations exist', async () => {
 			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
-			await expect(isInCoreGracePeriod()).resolves.toBe(false);
+			await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
 		});
 
 		test('the v12 migration has not been applied yet', async () => {
@@ -35,7 +35,7 @@ describe('isInCoreGracePeriod', () => {
 				.mockResolvedValueOnce([{ timestamp: new Date(Date.now() - 365 * DAY_MS).toISOString() }])
 				.mockResolvedValueOnce([]);
 
-			await expect(isInCoreGracePeriod()).resolves.toBe(false);
+			await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
 		});
 
 		test('the database is a clean v12 install (oldest and v12 within 24h)', async () => {
@@ -45,30 +45,19 @@ describe('isInCoreGracePeriod', () => {
 				.mockResolvedValueOnce([{ timestamp: new Date(now - 60 * 1000).toISOString() }])
 				.mockResolvedValueOnce([{ timestamp: new Date(now).toISOString() }]);
 
-			await expect(isInCoreGracePeriod()).resolves.toBe(false);
+			await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
 		});
 	});
 
-	describe('grace window (30 days since v12 upgrade)', () => {
-		test('returns true while still within 30 days', async () => {
-			const now = Date.now();
+	test('returns the v12 migration timestamp in seconds on a real upgrade', async () => {
+		const now = Date.now();
+		const v12Ms = now - 5 * DAY_MS;
 
-			vi.spyOn(ItemsService.prototype, 'readByQuery')
-				.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
-				.mockResolvedValueOnce([{ timestamp: new Date(now - 5 * DAY_MS).toISOString() }]);
+		vi.spyOn(ItemsService.prototype, 'readByQuery')
+			.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
+			.mockResolvedValueOnce([{ timestamp: new Date(v12Ms).toISOString() }]);
 
-			await expect(isInCoreGracePeriod()).resolves.toBe(true);
-		});
-
-		test('returns false after 30 days have passed', async () => {
-			const now = Date.now();
-
-			vi.spyOn(ItemsService.prototype, 'readByQuery')
-				.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
-				.mockResolvedValueOnce([{ timestamp: new Date(now - 31 * DAY_MS).toISOString() }]);
-
-			await expect(isInCoreGracePeriod()).resolves.toBe(false);
-		});
+		await expect(getCoreGraceExpiresAt()).resolves.toBe(Math.floor(v12Ms / 1000));
 	});
 
 	describe('caching', () => {
@@ -80,9 +69,9 @@ describe('isInCoreGracePeriod', () => {
 				.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
 				.mockResolvedValueOnce([{ timestamp: new Date(now - 5 * DAY_MS).toISOString() }]);
 
-			await isInCoreGracePeriod();
-			await isInCoreGracePeriod();
-			await isInCoreGracePeriod();
+			await getCoreGraceExpiresAt();
+			await getCoreGraceExpiresAt();
+			await getCoreGraceExpiresAt();
 
 			expect(spy).toHaveBeenCalledTimes(2);
 		});
@@ -99,9 +88,9 @@ describe('isInCoreGracePeriod', () => {
 				.mockResolvedValueOnce([{ timestamp: oldestTs }])
 				.mockResolvedValueOnce([{ timestamp: v12Ts }]);
 
-			await isInCoreGracePeriod();
+			await getCoreGraceExpiresAt();
 			_cache.migrations = undefined;
-			await isInCoreGracePeriod();
+			await getCoreGraceExpiresAt();
 
 			expect(spy).toHaveBeenCalledTimes(4);
 		});
@@ -110,7 +99,7 @@ describe('isInCoreGracePeriod', () => {
 	test('queries directus_migrations with the correct schema and filters', async () => {
 		const spy = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
-		await isInCoreGracePeriod();
+		await getCoreGraceExpiresAt();
 
 		expect(ItemsService).toHaveBeenCalledWith('directus_migrations', { schema: {} });
 
@@ -128,47 +117,30 @@ describe('isInCoreGracePeriod', () => {
 	});
 });
 
-describe('getCoreGraceExpiresAt', () => {
-	beforeEach(() => {
-		_cache.migrations = undefined;
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
-
-	test('returns null when no migrations exist', async () => {
+describe('isInCoreGracePeriod', () => {
+	test('returns false when no grace is applicable', async () => {
 		vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
-		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
+		await expect(isInCoreGracePeriod()).resolves.toBe(false);
 	});
 
-	test('returns null when the v12 migration has not been applied', async () => {
-		vi.spyOn(ItemsService.prototype, 'readByQuery')
-			.mockResolvedValueOnce([{ timestamp: new Date(Date.now() - 365 * DAY_MS).toISOString() }])
-			.mockResolvedValueOnce([]);
-
-		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
-	});
-
-	test('returns null for a clean v12 install (oldest and v12 within 24h)', async () => {
+	test('returns true while still within 30 days', async () => {
 		const now = Date.now();
-
-		vi.spyOn(ItemsService.prototype, 'readByQuery')
-			.mockResolvedValueOnce([{ timestamp: new Date(now - 60 * 1000).toISOString() }])
-			.mockResolvedValueOnce([{ timestamp: new Date(now).toISOString() }]);
-
-		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
-	});
-
-	test('returns the v12 migration timestamp in milliseconds on a real upgrade', async () => {
-		const now = Date.now();
-		const v12Ms = now - 5 * DAY_MS;
 
 		vi.spyOn(ItemsService.prototype, 'readByQuery')
 			.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
-			.mockResolvedValueOnce([{ timestamp: new Date(v12Ms).toISOString() }]);
+			.mockResolvedValueOnce([{ timestamp: new Date(now - 5 * DAY_MS).toISOString() }]);
 
-		await expect(getCoreGraceExpiresAt()).resolves.toBe(v12Ms);
+		await expect(isInCoreGracePeriod()).resolves.toBe(true);
+	});
+
+	test('returns false after 30 days have passed', async () => {
+		const now = Date.now();
+
+		vi.spyOn(ItemsService.prototype, 'readByQuery')
+			.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
+			.mockResolvedValueOnce([{ timestamp: new Date(now - 31 * DAY_MS).toISOString() }]);
+
+		await expect(isInCoreGracePeriod()).resolves.toBe(false);
 	});
 });

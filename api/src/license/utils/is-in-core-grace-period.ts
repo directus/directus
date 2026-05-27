@@ -12,8 +12,8 @@ export const _cache: { migrations: { oldest: Item | undefined; v12: Item | undef
 };
 
 /**
- * V12 migration timestamp in ms, used as the Core "expires_at" during the upgrade grace.
- * Returns `null` when no grace applies
+ * V12 migration timestamp in seconds, used as the Core "expires_at" during the upgrade grace.
+ * Returns `null` when no grace applies.
  */
 export async function getCoreGraceExpiresAt(): Promise<number | null> {
 	if (!_cache.migrations) {
@@ -51,11 +51,11 @@ export async function getCoreGraceExpiresAt(): Promise<number | null> {
 
 	if (upgrade - start < CLEAN_INSTALL_MS) return null;
 
-	return upgrade;
+	return Math.floor(upgrade / 1000);
 }
 
 export async function isInCoreGracePeriod(): Promise<boolean> {
-	const expiresAt = await getCoreGraceExpiresAt();
-	if (expiresAt === null) return false;
-	return Date.now() - expiresAt < GRACE_PERIOD_MS;
+	const expiresAtSec = await getCoreGraceExpiresAt();
+	if (expiresAtSec === null) return false;
+	return Date.now() / 1000 - expiresAtSec < GRACE_PERIOD_MS / 1000;
 }
