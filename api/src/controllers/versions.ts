@@ -243,7 +243,9 @@ router.post(
 			mainItem = await service.getMainItem(version['collection'], version['item']);
 		}
 
-		const updatedVersion = await service.save(req.params['pk']!, req.body);
+		const patchRevision = req.query['patchRevision'] !== undefined && req.query['patchRevision'] !== 'false';
+
+		const updatedVersion = await service.save(req.params['pk']!, req.body, { patchRevision });
 
 		const result = assign(mainItem, updatedVersion);
 
