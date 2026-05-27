@@ -1186,6 +1186,78 @@ fields:
             _neq: true
         hidden: true
 
+  - field: mcp_oauth_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note: $t:fields.directus_settings.mcp_oauth_enabled_note
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_enabled
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+
+  - field: mcp_oauth_dcr_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note:
+      'Allow MCP clients to register automatically using the OAuth 2.0 Dynamic Client Registration protocol (RFC 7591).'
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_dcr_enabled
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
+  - field: mcp_oauth_cimd_enabled
+    interface: boolean
+    group: mcp_group
+    special:
+      - cast-boolean
+    note:
+      'Allow MCP clients to identify themselves using an HTTPS URL that hosts their metadata (IETF
+      draft-oauth-client-id-metadata-document).'
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_oauth_cimd_enabled
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
+  - field: mcp_oauth_clients_link
+    interface: presentation-links
+    group: mcp_group
+    width: half
+    special:
+      - alias
+      - no-data
+    options:
+      links:
+        - label: $t:manage_registered_clients
+          icon: key
+          type: normal
+          actionType: url
+          url: /settings/mcp-oauth-clients
+    conditions:
+      - name: mcp_oauth_disabled
+        rule:
+          mcp_oauth_enabled:
+            _neq: true
+        hidden: true
+
   - field: mcp_system_prompt_divider
     interface: presentation-divider
     options:
