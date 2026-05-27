@@ -139,29 +139,32 @@ const mergedErrors = computed<ValidationError[]>(() => {
 			</I18nT>
 		</VNotice>
 
-		<VCheckbox v-if="!skipLicense" v-model="license">
-			<I18nT keypath="setup_accept_license" tag="span">
-				<template #directusMscl>
-					<a
-						:href="`https://${DIRECTUS_DOMAIN}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
-						target="_blank"
-					>
-						{{ $t('directus_mscl') }}
-					</a>
-				</template>
-				<template #privacyPolicy>
-					<a
-						:href="`https://${DIRECTUS_DOMAIN}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=privacy_link`"
-						target="_blank"
-					>
-						{{ $t('privacy_policy') }}
-					</a>
-				</template>
-			</I18nT>
-		</VCheckbox>
-		<VCheckbox v-model="product_updates">
-			<span v-md="$t('setup_marketing_emails')"></span>
-		</VCheckbox>
+		<div class="toggle-group">
+			<VCheckbox v-if="!skipLicense" v-model="license">
+				<I18nT keypath="setup_accept_license" tag="span">
+					<template #directusMscl>
+						<a
+							:href="`https://${DIRECTUS_DOMAIN}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
+							target="_blank"
+						>
+							{{ $t('directus_mscl') }}
+						</a>
+					</template>
+					<template #privacyPolicy>
+						<a
+							:href="`https://${DIRECTUS_DOMAIN}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=privacy_link`"
+							target="_blank"
+						>
+							{{ $t('privacy_policy') }}
+						</a>
+					</template>
+				</I18nT>
+			</VCheckbox>
+
+			<VCheckbox v-model="product_updates">
+				<span v-md="$t('setup_marketing_emails')"></span>
+			</VCheckbox>
+		</div>
 	</div>
 </template>
 
@@ -191,8 +194,11 @@ const mergedErrors = computed<ValidationError[]>(() => {
 	margin-block: 1.8125rem;
 }
 
-.v-form + .v-checkbox {
+.toggle-group {
 	margin-block-start: 1.8125rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
 }
 
 .v-checkbox {

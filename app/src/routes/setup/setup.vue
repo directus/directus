@@ -100,12 +100,12 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 
 <template>
 	<PublicView wide>
-		<h1>{{ $t('setup_welcome') }}</h1>
+		<h1 class="type-display type-display-public">{{ $t('setup_welcome') }}</h1>
 
 		<template v-if="page === 'setup' && showAdminStep">
 			<p>{{ $t('setup_info') }}</p>
 			<SetupForm v-model="form" :errors="errors" utm-location="onboarding"></SetupForm>
-			<VButton full-width secondary :disabled="!setupComplete" @click="showLicenseStep ? (page = 'license') : launch()">
+			<VButton full-width :disabled="!setupComplete" @click="showLicenseStep ? (page = 'license') : launch()">
 				{{ showLicenseStep ? $t('continue') : $t('setup_launch') }}
 			</VButton>
 		</template>
@@ -145,19 +145,11 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 
 <style scoped>
 h1 {
-	color: var(--theme--foreground-accent);
-	font-size: 2.25rem;
-	font-weight: 600;
-	line-height: 1.1944;
-
 	margin-block: 5.625rem 1.375rem;
 }
 
 p {
-	font-size: 0.8125rem;
-	font-weight: 500;
-	line-height: 1.3846;
-	margin-block-end: 1.8125rem;
+	margin-block-end: 2rem;
 }
 
 .v-button {
@@ -180,7 +172,7 @@ p {
 .actions {
 	display: flex;
 	justify-content: flex-end;
-	gap: 1.8125rem;
+	gap: 0.625rem;
 }
 
 :deep(p a) {
