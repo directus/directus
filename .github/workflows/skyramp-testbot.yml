@@ -38,15 +38,13 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.skyramp-testbot-app-token.outputs.token }}
 
-      - uses: skyramp/testbot@0601948440f6d88a0292dcada04feadb18824a68 # v0.10.0
+      - uses: skyramp/testbot@v0.10.1
         with:
           skyrampLicenseFile: ${{ secrets.SKYRAMP_LICENSE_FILE }}
           anthropicApiKey: ${{ secrets.SKYRAMP_TESTBOT_API_KEY }}
           githubToken: ${{ steps.skyramp-testbot-app-token.outputs.token }}
           allowedAuthors: |
             roshinimichael
-          testRepo: 'roshinimichael/directus-tests'
-          testRepoToken: ${{ steps.skyramp-testbot-app-token.outputs.token }}
           autoCommit: 'true'
           skyrampMcpVersion: next
           skyrampExecutorVersion: v1.3.24
