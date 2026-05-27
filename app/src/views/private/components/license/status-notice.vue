@@ -52,40 +52,51 @@ const coreGraceLicensingUrl = `https://${DIRECTUS_DOMAIN}/docs/licensing/overvie
 	<VNotice v-else-if="show && isCoreGrace" :type="severity" multiline class="status-notice">
 		<template #title>
 			<span class="message">
-				{{ $t('license.unlicensed_status_notice.grace_period_prefix') }}
-				<strong>
-					{{
-						$t(
-							'license.unlicensed_status_notice.grace_days_left',
-							{ days: gracePeriodDaysRemaining },
-							gracePeriodDaysRemaining ?? 0,
-						)
-					}}
-				</strong>
-				{{ $t('license.unlicensed_status_notice.grace_period_middle') }}
-				<strong>{{ formattedCoreGraceDate }}.</strong>
-				{{ $t('license.unlicensed_status_notice.grace_period_suffix') }}
-				<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
-					{{ $t('license.unlicensed_status_notice.retrieve_license_key') }}
-				</a>
-				{{ $t('license.unlicensed_status_notice.grace_period_cta_separator') }}
-				<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
-					{{ $t('license.unlicensed_status_notice.upgrade') }}
-				</a>
-				{{ $t('license.unlicensed_status_notice.grace_period_cta_suffix') }}
+				<I18nT keypath="license.unlicensed_status_notice.grace_period" tag="span">
+					<template #daysLeft>
+						<strong>
+							{{
+								$t(
+									'license.unlicensed_status_notice.grace_days_left',
+									{ days: gracePeriodDaysRemaining },
+									gracePeriodDaysRemaining ?? 0,
+								)
+							}}
+						</strong>
+					</template>
+					<template #date>
+						<strong>{{ formattedCoreGraceDate }}</strong>
+					</template>
+					<template #retrieveLicenseKey>
+						<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
+							{{ $t('license.unlicensed_status_notice.retrieve_license_key') }}
+						</a>
+					</template>
+					<template #upgrade>
+						<a :href="coreGraceLicensingUrl" target="_blank" rel="noopener noreferrer">
+							{{ $t('license.unlicensed_status_notice.upgrade') }}
+						</a>
+					</template>
+				</I18nT>
 			</span>
 		</template>
 	</VNotice>
 	<VNotice v-else-if="show" :type="severity" multiline class="status-notice">
 		<template #title>
 			<span class="message">
-				{{ $t('license.status_notice.grace_period_prefix') }}
-				<strong>
-					{{
-						$t('license.status_notice.grace_days', { days: gracePeriodDaysRemaining }, gracePeriodDaysRemaining ?? 0)
-					}}
-				</strong>
-				{{ $t('license.status_notice.grace_period_suffix') }}
+				<I18nT keypath="license.status_notice.grace_period" tag="span">
+					<template #daysLeft>
+						<strong>
+							{{
+								$t(
+									'license.status_notice.grace_days',
+									{ days: gracePeriodDaysRemaining },
+									gracePeriodDaysRemaining ?? 0,
+								)
+							}}
+						</strong>
+					</template>
+				</I18nT>
 			</span>
 		</template>
 	</VNotice>
