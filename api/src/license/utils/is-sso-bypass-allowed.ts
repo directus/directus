@@ -7,7 +7,7 @@ import { isInCoreGracePeriod } from './is-in-core-grace-period.js';
  *
  * 'grace' only bypasses when also in the core grace period, so licensed expiry-grace doesn't qualify.
  */
-export async function isSsoBypassAllowed(): Promise<boolean> {
+export async function isSSOBypassAllowed(): Promise<boolean> {
 	const licenseManager = getLicenseManager();
 	const status = await licenseManager.getStatus();
 	const source = licenseManager.getSource();
