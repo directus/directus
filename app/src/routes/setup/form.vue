@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { DIRECTUS_DOMAIN } from '@directus/constants';
-import { SetupForm } from '@directus/types';
+import { ValidationError as DirectusValidationError, SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
 import { I18nT } from 'vue-i18n';
-import { defaultValues, useSetupFields, ValidationError } from './form';
+import z from 'zod';
+import { defaultValues, useSetupFields } from './form';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
@@ -93,18 +94,26 @@ const product_updates = computed({
 
 const fields = useSetupFields(props.register);
 
-const mergedErrors = computed<ValidationError[]>(() => {
-	const base = (props.errors ?? []) as ValidationError[];
+const mergedErrors = computed<DirectusValidationError[]>(() => {
+	const base = props.errors ?? [];
 
-	if (!props.register) return base;
+	if (!props.register) return base as unknown as DirectusValidationError[];
+
+	const result = [...base];
+
+	const email = value.value?.admin?.email;
+
+	if (email && email.includes('@') && !z.email().safeParse(email).success) {
+		result.push({ field: 'project_owner', type: 'email' });
+	}
 
 	const password = value.value?.admin?.password;
 	const passwordConfirm = value.value?.password_confirm;
 
-	if (!password || !passwordConfirm || password === passwordConfirm) return base;
-	if (base.some((err) => err.field === 'password_confirm' && err.type === 'confirm_password')) return base;
+	if (!password || !passwordConfirm || password === passwordConfirm)
+		return result as unknown as DirectusValidationError[];
 
-	return [...base, { field: 'password_confirm', path: [], type: 'confirm_password' }];
+	return [...result, { field: 'password_confirm', type: 'confirm_password' }] as unknown as DirectusValidationError[];
 });
 </script>
 
