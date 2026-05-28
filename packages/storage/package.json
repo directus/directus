@@ -9,7 +9,7 @@
 		"directory": "packages/storage"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "MSCL-1.0-GPL",
+	"license": "SEE LICENSE IN license",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"type": "module",
 	"exports": {
