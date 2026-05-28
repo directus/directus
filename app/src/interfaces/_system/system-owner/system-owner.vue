@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import VDrawer from '@/components/v-drawer.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
-import { useSetupFields, validate } from '@/routes/setup/form';
+import { defaultValues, useSetupFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -20,16 +20,21 @@ const fields = useSetupFields(false, form);
 
 const isSaveAllowed = computed(
 	() =>
-		form.value.project_owner ||
-		form.value.project_usage ||
-		('product_updates' in form.value && form.value.product_updates !== initialValues.value.product_updates),
+		form.value.owner?.project_owner ||
+		form.value.owner?.project_usage ||
+		(form.value.owner !== undefined &&
+			'product_updates' in form.value.owner &&
+			form.value.owner.product_updates !== initialValues.value.owner.product_updates),
 );
 
-const initialValues = computed(() => ({
-	project_owner: settingsStore.settings?.project_owner,
-	project_usage: settingsStore.settings?.project_usage,
-	org_name: settingsStore.settings?.org_name,
-	product_updates: settingsStore.settings?.product_updates,
+const initialValues = computed<Form>(() => ({
+	...defaultValues,
+	owner: {
+		project_owner: settingsStore.settings?.project_owner ?? null,
+		project_usage: settingsStore.settings?.project_usage ?? null,
+		org_name: settingsStore.settings?.org_name ?? null,
+		product_updates: settingsStore.settings?.product_updates ?? false,
+	},
 }));
 
 async function save() {
@@ -40,7 +45,7 @@ async function save() {
 	if (errors.value.length > 0) return;
 
 	isSaving.value = true;
-	await settingsStore.setOwner(value as Form);
+	await settingsStore.setOwner(value.owner);
 	await settingsStore.hydrate();
 	reset();
 	isSaving.value = false;
@@ -56,7 +61,7 @@ async function reset() {
 <template>
 	<div class="system-owner">
 		<VListItem type="text" block clickable @click="editing = true">
-			{{ form.project_owner ?? initialValues.project_owner }}
+			{{ form.owner?.project_owner ?? initialValues.owner.project_owner }}
 			<div class="spacer" />
 			<div class="item-actions">
 				<VIcon v-tooltip="$t('interfaces.system-owner.edit')" name="edit" clickable />
