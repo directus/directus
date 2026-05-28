@@ -75,6 +75,10 @@ Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](.
 
 Organizations under **$5M in annual revenue and 50 employees** can use the Directus platform for free under the [Open Innovation Grant](https://directus.com/oig)— no strings attached.
 
+### Free Core Tier
+
+Even above those thresholds, a free Core tier is available to explore and build on Directus without a commercial license.
+
 ### Commercial License
 
 Larger organizations using advanced or enterprise features require a commercial license. See [our pricing](https://directus.io/pricing/self-hosted) for details.
