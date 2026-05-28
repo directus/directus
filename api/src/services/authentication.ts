@@ -351,6 +351,7 @@ export class AuthenticationService {
 			.leftJoin('directus_shares AS d', 's.share', 'd.id')
 			.where('s.token', refreshToken)
 			.andWhere('s.expires', '>=', new Date())
+			.andWhere('s.oauth_client', null)
 			.andWhere((subQuery) => {
 				subQuery.whereNull('d.date_end').orWhere('d.date_end', '>=', new Date());
 			})
@@ -532,6 +533,7 @@ export class AuthenticationService {
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
 			origin: this.accountability?.origin,
+			oauth_client: sessionRecord['oauth_client'],
 		});
 
 		return newSessionToken;
@@ -545,6 +547,7 @@ export class AuthenticationService {
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
 			.where('s.token', refreshToken)
+			.andWhere('s.oauth_client', null)
 			.first();
 
 		if (record) {
