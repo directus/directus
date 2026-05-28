@@ -5,6 +5,20 @@ import { TestProject } from 'vitest/node';
 
 let sb: Sandbox | undefined;
 
+const mcpOAuthEnv = {
+	MCP_ENABLED: 'true',
+	MCP_OAUTH_ENABLED: 'true',
+	MCP_OAUTH_DCR_ENABLED: 'true',
+	MCP_OAUTH_CIMD_ENABLED: 'true',
+	MCP_OAUTH_CIMD_ALLOW_HTTP: 'true',
+	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'onion',
+	IMPORT_IP_DENY_LIST: '169.254.169.254',
+	RATE_LIMITER_MCP_OAUTH_POINTS: '1000',
+	RATE_LIMITER_MCP_OAUTH_DURATION: '60',
+	RATE_LIMITER_MCP_OAUTH_REGISTRATION_POINTS: '1000',
+	RATE_LIMITER_MCP_OAUTH_REGISTRATION_DURATION: '60',
+};
+
 export async function setup(project: TestProject) {
 	// Enable full depth logging for better error visibility
 	util.inspect.defaultOptions.depth = null;
@@ -22,6 +36,7 @@ export async function setup(project: TestProject) {
 		prefix: database,
 		env: {
 			CACHE_SCHEMA: 'false',
+			...mcpOAuthEnv,
 		},
 		docker: {
 			port: String(Number(project.config.env['PORT']) + 10),
