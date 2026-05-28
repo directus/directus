@@ -393,6 +393,8 @@ wysiwyg_options:
   forecolor: अग्रभूमि रंग
   backcolor: पृष्ठभूमि रंग
   selectall: सभी चुनें
+licensing:
+  addon_update: Update
 settings_presets: पृष्टस्मृतियाँ
 fields:
   directus_collections:
