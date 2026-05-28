@@ -1,14 +1,5 @@
 <p align="center"><img alt="Directus Logo" src="https://user-images.githubusercontent.com/522079/158864859-0fbeae62-9d7a-4619-b35e-f8fa5f68e0c8.png"></p>
 
----
-
-> [!NOTE]\
-> We’re planning an update to the Directus source code license and would love your feedback.\
-> Take a look at our community post and share your thoughts!\
-> [🔗 Directus License Revision: Community Feedback Requested](https://community.directus.io/t/directus-license-revision-community-feedback-requested/2125)
-
----
-
 ## 🐰 Introduction
 
 Directus is a real-time API and App dashboard for managing SQL database content.
