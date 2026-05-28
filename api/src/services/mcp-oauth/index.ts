@@ -64,6 +64,10 @@ export interface DCRResponse {
 	client_id_issued_at: number;
 	client_secret?: string;
 	client_secret_expires_at?: number;
+	client_uri?: string;
+	logo_uri?: string;
+	tos_uri?: string;
+	policy_uri?: string;
 }
 
 /** Authorization validation result. `signed_params` is an HMAC-SHA256 consent JWT. */
@@ -218,6 +222,7 @@ export class McpOAuthService {
 			resource: resourceUrl,
 			authorization_servers: [issuerUrl],
 			scopes_supported: [MCP_ACCESS_SCOPE],
+			bearer_methods_supported: ['header'],
 		};
 	}
 
@@ -280,8 +285,8 @@ export class McpOAuthService {
 	 * Called by `POST /mcp-oauth/register`. This is how MCP clients self-register before
 	 * starting the authorization flow. No authentication required.
 	 *
-	 * Validates: client_name, redirect_uris (HTTPS or localhost, no fragments),
-	 * grant_types (must include authorization_code), token_endpoint_auth_method (only "none").
+	 * Validates: client_name (Directus policy), redirect_uris (HTTPS or localhost, no fragments),
+	 * grant_types (defaults to authorization_code), token_endpoint_auth_method.
 	 * Enforces a global cap via MCP_OAUTH_MAX_CLIENTS (default 10,000). client_id is a random UUID (not a secret).
 	 *
 	 * @param body - Raw request body (validated internally)
@@ -329,7 +334,7 @@ export class McpOAuthService {
 
 		const input = body;
 
-		// RFC 7591 Section 2: client_name is REQUIRED
+		// Directus policy: client_name is required for consent UX.
 		const clientName = input['client_name'];
 
 		if (typeof clientName !== 'string' || clientName.length === 0) {
@@ -370,10 +375,10 @@ export class McpOAuthService {
 			}
 		}
 
-		// RFC 7591 Section 2: grant_types determines what grants the client can use
-		const grantTypes = input['grant_types'];
+		// RFC 7591 Section 2: omitted grant_types defaults to authorization_code
+		const grantTypes = input['grant_types'] === undefined ? ['authorization_code'] : input['grant_types'];
 
-		if (!Array.isArray(grantTypes) || grantTypes.length === 0) {
+		if (!Array.isArray(grantTypes) || grantTypes.length === 0 || grantTypes.some((gt) => typeof gt !== 'string')) {
 			rejectRegistration('invalid_client_metadata', 'grant_types is required and must include authorization_code');
 		}
 
@@ -483,6 +488,10 @@ export class McpOAuthService {
 			response_types: ['code'],
 			token_endpoint_auth_method: authMethod as string,
 			client_id_issued_at: now,
+			...(optionalUris['client_uri'] ? { client_uri: optionalUris['client_uri'] } : {}),
+			...(optionalUris['logo_uri'] ? { logo_uri: optionalUris['logo_uri'] } : {}),
+			...(optionalUris['tos_uri'] ? { tos_uri: optionalUris['tos_uri'] } : {}),
+			...(optionalUris['policy_uri'] ? { policy_uri: optionalUris['policy_uri'] } : {}),
 			...(isConfidential ? { client_secret: clientSecret, client_secret_expires_at: 0 } : {}),
 		};
 	}
