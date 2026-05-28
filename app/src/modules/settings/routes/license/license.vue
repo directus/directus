@@ -200,7 +200,7 @@ async function handleDeactivateClick() {
 	try {
 		await licenseStore.hydratePendingResolution({ license_key: null });
 
-		if ((licenseStore.pendingResolution?.length ?? 0) === 0) {
+		if ((licenseStore.pendingResolution?.length ?? 0) === 0 && !licenseStore.aiTranslationsEnabled) {
 			deactivateConfirmOpen.value = true;
 		} else {
 			resolutionDialogOpen.value = true;

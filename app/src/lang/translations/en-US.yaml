@@ -1523,6 +1523,9 @@ licensing:
   resolve_custom_permissions_confirm: Confirm Custom Access Rules Deactivation
   resolve_custom_permissions_caption:
     Any access policies/permissions governed by custom rules will fall back to “No Access”.
+  resolve_section_ai_translations: AI Translations
+  resolve_ai_translations_confirm: Confirm AI Translations Deactivation
+  resolve_ai_translations_caption: AI Translation will be disabled and your translation settings will no longer be used.
   env_managed: Your license key is managed via an environment variable and can't be updated here.
   key_management: License Key Management
   key: License Key
