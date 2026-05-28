@@ -89,13 +89,13 @@ function mountOverview() {
 					ai_openai_api_key: null,
 					ai_openai_allowed_models: null,
 					ai_anthropic_api_key: 'anthropic-key',
-					ai_anthropic_allowed_models: ['claude-sonnet-4-5'],
+					ai_anthropic_allowed_models: ['claude-sonnet-4-6'],
 					ai_google_api_key: null,
 					ai_google_allowed_models: null,
 					ai_openai_compatible_api_key: null,
 					ai_openai_compatible_base_url: null,
 					ai_openai_compatible_models: null,
-					ai_translation_default_model: 'anthropic:claude-sonnet-4-5',
+					ai_translation_default_model: 'anthropic:claude-sonnet-4-6',
 				},
 			},
 			serverStore: {
@@ -142,8 +142,8 @@ describe('settings ai overview', () => {
 
 		expect(getTranslationDefaultField(wrapper)?.meta?.options?.choices).toEqual([
 			{
-				text: 'Claude Sonnet 4.5',
-				value: 'anthropic:claude-sonnet-4-5',
+				text: 'Claude Sonnet 4.6',
+				value: 'anthropic:claude-sonnet-4-6',
 				icon: 'logo_anthropic',
 			},
 		]);
@@ -162,8 +162,8 @@ describe('settings ai overview', () => {
 				icon: 'logo_openai',
 			},
 			{
-				text: 'Claude Sonnet 4.5',
-				value: 'anthropic:claude-sonnet-4-5',
+				text: 'Claude Sonnet 4.6',
+				value: 'anthropic:claude-sonnet-4-6',
 				icon: 'logo_anthropic',
 			},
 		]);
