@@ -1,11 +1,19 @@
 import { getLicenseManager } from '../license/manager.js';
-import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { type ScheduledJob, scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { durationToCron } from './utils/duration-to-cron.js';
 
+let job: ScheduledJob | null = null;
+
+export async function stopLicenseCheck(): Promise<void> {
+	await job?.stop();
+}
+
 /**
- * Schedule a license check in a given license based validation interval
+ * Schedule a license check at the license's validation_interval.
  */
 export default async function schedule(): Promise<boolean> {
+	await stopLicenseCheck();
+
 	const licenseManager = getLicenseManager();
 	const license = await licenseManager.getLicense();
 
@@ -16,12 +24,12 @@ export default async function schedule(): Promise<boolean> {
 
 	if (!validateCron(cron)) return false;
 
-	const { stop } = scheduleSynchronizedJob('license-check', cron, async () => {
+	job = scheduleSynchronizedJob('license-check', cron, async () => {
 		const jobLicense = await licenseManager.getLicense();
 
-		// If interval has changed from a refresh, reschedule job with new
+		// If interval has changed since registration then reschedule
 		if (jobLicense.meta.validation_interval !== license.meta.validation_interval) {
-			await stop();
+			await job?.stop();
 
 			if (jobLicense.meta.validation_interval !== -1) {
 				await schedule();

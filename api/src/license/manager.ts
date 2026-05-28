@@ -30,7 +30,7 @@ import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionCache } from '../permissions/cache.js';
-import licenseCheckSchedule from '../schedules/license.js';
+import licenseCheckSchedule, { stopLicenseCheck } from '../schedules/license.js';
 import { UsersService } from '../services/index.js';
 import { SettingsService } from '../services/settings.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -301,6 +301,11 @@ export class LicenseManager {
 			}
 
 			await this.syncLicense();
+
+			// Register the license check on activate once persisted
+			if (this.initialized) {
+				await licenseCheckSchedule();
+			}
 		} catch (err) {
 			if (err instanceof LicenseServerError) {
 				handleLicenseError(err);
@@ -739,6 +744,9 @@ export class LicenseManager {
 			await settingsService.upsertSingleton({ license_key: null, license_token: null });
 			this.source = null;
 
+			// Stop the periodic check
+			await stopLicenseCheck();
+
 			if (options.reason) {
 				await this.store(async (store) => store.set('invalidStatus', options.reason));
 			}
@@ -754,8 +762,7 @@ export class LicenseManager {
 	}
 
 	public async syncState(options?: { source?: LicenseSource }) {
-		const oldSource = this.source;
-		const { source: keySource, key } = await getLicenseKey();
+		const { key } = await getLicenseKey();
 		const { token } = await getLicenseToken();
 
 		// set local vars
@@ -766,15 +773,6 @@ export class LicenseManager {
 
 		if (options && 'source' in options) {
 			this.source = options.source;
-		}
-
-		/**
-		 *
-		 * Upgrade from core tier requires registering the scheduled check
-		 * De-register on downgrade is handled in the schedule
-		 */
-		if (oldSource === null && keySource === 'settings') {
-			licenseCheckSchedule();
 		}
 
 		// reset cache
