@@ -19,7 +19,7 @@
 		"directory": "packages/schema-builder"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": "Nils Twelker <nils@directus.io>",
 	"type": "module",
 	"exports": {
