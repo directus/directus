@@ -20,7 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
-directus_bsl: BSL de Directus 1.1
+directus_mscl: MSCL de Directus 1.0
 privacy_policy: Política de Privacidad
 contact_our_team: Contacta con nuestro equipo
 setup_welcome: Bienvenido a Directus
@@ -30,8 +30,8 @@ setup_license_notice: >
 setup_license_follow_up: >
   Las entidades que superan este umbral requieren una licencia de pago. Puede continuar evaluando Directus ahora y contactarnos cuando esté listo para hablar sobre el uso en producción.
 setup_save_accept_license: >
-  Al hacer clic en Guardar, acepta los términos de {directusBsl} y {privacyPolicy}.
-setup_accept_license: Acepto los términos de {directusBsl} y {privacyPolicy}
+  Al hacer clic en Guardar, acepta los términos de {directusMscl} y {privacyPolicy}.
+setup_accept_license: Acepto los términos de {directusMscl} y {privacyPolicy}
 setup_marketing_emails: Envíame actualizaciones de productos y notas de lanzamiento
 setup_launch: Iniciar Directus
 setup_project: Configurar Proyecto
@@ -196,22 +196,17 @@ keep: Mantener
 version: Versión
 version_key: Clave de Versión
 version_name: Nombre de Versión
-main_version: Principal
 switch_version: Cambiar Versión
 switch_version_copy: '¿Está seguro de que desea cambiar a la versión "{version}"? Los cambios no guardados se perderán.'
 create_version: Crear Versión
 rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
-promote_version: Promover Versión
 apply: Aplicar
 select_all_differences: Seleccionar todas las diferencias
-main_updated_notice: El elemento principal se ha actualizado desde que se creó esta versión.
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
-delete_on_apply_copy: >-
-  Estás a punto de establecer “{version}” como Principal. ¿Qué debería suceder con “{version}” después de la promoción?
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
@@ -659,7 +654,6 @@ manual_string: Texto introducido manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_and_quit: Guardar y Salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como Copia
 add_existing: Seleccionar
 creating_items: Registros Creados
@@ -2613,9 +2607,9 @@ search_flow: Buscar Flujo...
 percent: Porciento
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
-bsl_banner:
+license_banner:
   title: Aún no has establecido un propietario del proyecto.
-  license: Necesitamos esta información para garantizar el cumplimiento de nuestra licencia BSL 1.1. Esta persona debe ser el contacto principal responsable de tu proyecto.
+  license: Necesitamos esta información para garantizar el cumplimiento de nuestra licencia MSCL 1.0. Esta persona debe ser el contacto principal responsable de tu proyecto.
   set_owner: Asignar Propietario
   remind_later: Recordar más tarde
   remind_next_login: Te lo recordaremos nuevamente en tu próximo inicio de sesión.

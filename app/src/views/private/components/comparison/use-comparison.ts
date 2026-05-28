@@ -520,7 +520,7 @@ export function useComparison(options: UseComparisonOptions) {
 		} else {
 			base = {
 				id: 'base',
-				displayName: i18n.global.t('main_version'),
+				displayName: i18n.global.t('published'),
 				date: normalizeDate(comparisonData.mainVersionMeta?.timestamp || comparisonData.base.date_updated),
 				user:
 					comparisonData.mainVersionMeta?.user ?? comparisonData.base.user_updated ?? comparisonData.base.user_created,

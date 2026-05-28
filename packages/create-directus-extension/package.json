@@ -6,7 +6,7 @@
 		"directus",
 		"extensions"
 	],
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

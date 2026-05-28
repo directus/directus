@@ -8,10 +8,10 @@ import VCardText from '@/components/v-card-text.vue';
 import VCardTitle from '@/components/v-card-title.vue';
 import VCard from '@/components/v-card.vue';
 import VDialog from '@/components/v-dialog.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import VInput from '@/components/v-input.vue';
 import { useFolders } from '@/composables/use-folders';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
 const props = defineProps<{
 	parent?: string;
@@ -54,17 +54,13 @@ async function addFolder() {
 <template>
 	<VDialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
 		<template #activator="{ on }">
-			<VButton
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
-				rounded
-				icon
-				small
-				secondary
-				:disabled="disabled"
+				icon="create_new_folder"
+				variant="ghost"
+				:disabled
 				@click="on"
-			>
-				<VIcon small name="create_new_folder" outline />
-			</VButton>
+			/>
 		</template>
 
 		<VCard>
