@@ -109,7 +109,14 @@ export async function startApi(opts: Options, env: Env, logger: Logger) {
 		apiPorts.map(async (preferredPort) => {
 			const port = await getPort(preferredPort);
 			const newLogger = apiCount > 1 ? logger.addGroup(`API ${port}`) : logger;
-			return startApiInstance({ ...opts, port }, { ...env, PORT: String(port) }, newLogger);
+			// Keep PORT and PUBLIC_URL in sync — getPort may fall back to a
+			// different port (TIME_WAIT after restart, collision with another
+			// sandbox) and the API advertises PUBLIC_URL as its iss/issuer.
+			return startApiInstance(
+				{ ...opts, port },
+				{ ...env, PORT: String(port), PUBLIC_URL: `http://${env.HOST}:${port}` },
+				newLogger,
+			);
 		}),
 	)) as [Api, ...Api[]];
 }

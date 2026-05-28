@@ -328,14 +328,12 @@ describe('/mcp-oauth settings gate', () => {
 describe('/mcp-oauth env gate', () => {
 	test('OAuth routes are not mounted when MCP_OAUTH_ENABLED is false', async () => {
 		// Resources must be unique vs. the beforeAll sandbox: same DB_FILENAME
-		// gets unlinked by the docker step, and getPort defaulting to 8055 can
-		// hand back the same fallback port twice when 8055 is already taken.
+		// gets unlinked by the docker step.
 		const isolationId = randomUUID();
 
 		const oauthDisabledDirectus = await sandbox(database, {
 			inspect: false,
 			prefix: `mcp-oauth-env-disabled-${isolationId}`,
-			port: 8056,
 			env: {
 				MCP_ENABLED: 'true',
 				MCP_OAUTH_ENABLED: 'false',

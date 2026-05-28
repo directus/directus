@@ -112,7 +112,7 @@ export type Sandbox = {
 async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	if ((options as any)?.schema === true) options!.schema = 'snapshot.json';
 
-	const port = await getPort(options?.port ?? 8055);
+	const port = await getPort(options?.port ?? process.env['PORT'] ?? 8055);
 
 	return merge(
 		{
@@ -316,5 +316,16 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		logger.info(`Stopped sandbox ${time}`);
 	}
 
-	return { stop, restartApi, env, logger, apis, knex };
+	return {
+		stop,
+		restartApi,
+		env,
+		logger,
+		// Getter so callers see the current apis after restartApi reassigns the
+		// local — destructuring `apis` off the sandbox will still snapshot.
+		get apis() {
+			return apis!;
+		},
+		knex,
+	};
 }

@@ -147,8 +147,6 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 
 	const env = {
 		...base,
-		PUBLIC_URL: `http://${base.HOST}:${opts.port}`,
-		PORT: String(opts.port),
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
 		NODE_ENV: opts.dev ? 'development' : 'production',
@@ -167,6 +165,11 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		...opts.env,
 		...(process.env as Record<string, any>),
 		...(opts.extras.license ? { NODE_ENV: 'development', LICENSE_API_URL: `http://${base.HOST}:$PORT_LICENSE` } : {}),
+		// PORT/PUBLIC_URL must be authoritative — process.env carries the vitest
+		// per-project PORT baseline, but opts.port is the resolved port the API
+		// actually binds (and what tests reach via apis[0].port).
+		PORT: String(opts.port),
+		PUBLIC_URL: `http://${base.HOST}:${opts.port}`,
 	} satisfies Env;
 
 	if (opts.dbVersion && 'DB_VERSION' in env) {
