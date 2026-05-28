@@ -17,7 +17,7 @@ import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-const LICENSING_EMAIL = 'licensing@directus.io';
+const LICENSING_EMAIL = `licensing@${DIRECTUS_DOMAIN}`;
 
 const model = defineModel<boolean>();
 
