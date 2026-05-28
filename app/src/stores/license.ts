@@ -87,12 +87,12 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 
 	const revisionHistoryTimeframe = computed(() => {
 		const limit = info.value?.entitlements?.revision_historical_timeframe?.limit;
-		return limit ? formatTimeframe(limit) : null;
+		return limit && limit > 0 ? formatTimeframe(limit) : null;
 	});
 
 	const activityHistoryTimeframe = computed(() => {
 		const limit = info.value?.entitlements?.activity_historical_timeframe?.limit;
-		return limit ? formatTimeframe(limit) : null;
+		return limit && limit > 0 ? formatTimeframe(limit) : null;
 	});
 
 	const isTeamPlan = computed(() => info.value?.name.toLowerCase() === 'team');

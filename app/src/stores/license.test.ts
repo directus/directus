@@ -207,3 +207,39 @@ describe('limits', () => {
 		});
 	});
 });
+
+describe('history timeframes', () => {
+	test('returns a formatted timeframe for a positive limit', () => {
+		const licenseStore = useLicenseStore();
+		licenseStore.info = createLicenseInfo();
+
+		expect(licenseStore.revisionHistoryTimeframe).not.toBeNull();
+		expect(licenseStore.activityHistoryTimeframe).not.toBeNull();
+	});
+
+	test('returns null when the limit is -1 (unlimited)', () => {
+		const licenseStore = useLicenseStore();
+
+		licenseStore.info = createLicenseInfo({
+			entitlements: {
+				...entitlements,
+				revision_historical_timeframe: { limit: -1 },
+				activity_historical_timeframe: { limit: -1 },
+			},
+		});
+
+		expect(licenseStore.revisionHistoryTimeframe).toBeNull();
+		expect(licenseStore.activityHistoryTimeframe).toBeNull();
+	});
+
+	test('returns null when the entitlement is missing', () => {
+		const licenseStore = useLicenseStore();
+
+		const { revision_historical_timeframe: _r, activity_historical_timeframe: _a, ...rest } = entitlements;
+
+		licenseStore.info = createLicenseInfo({ entitlements: rest as typeof entitlements });
+
+		expect(licenseStore.revisionHistoryTimeframe).toBeNull();
+		expect(licenseStore.activityHistoryTimeframe).toBeNull();
+	});
+});
