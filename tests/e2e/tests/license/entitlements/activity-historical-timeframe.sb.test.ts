@@ -21,7 +21,7 @@ type Label = 'within' | 'boundary' | 'outside';
 const SEED_PLAN: Array<{ label: Label; daysAgo: number }> = [
 	{ label: 'within', daysAgo: 1 },
 	{ label: 'boundary', daysAgo: TIMEFRAME_DAYS - 1 },
-	{ label: 'outside', daysAgo: 30 },
+	{ label: 'outside', daysAgo: 60 },
 ];
 
 describe('activity_historical_timeframe', () => {
