@@ -134,7 +134,7 @@ export const DEFAULTS: Env = {
 	ASSETS_TRANSFORM_TIMEOUT: '7500ms',
 	ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL: 'warning',
 
-	IP_TRUST_PROXY: true,
+	IP_TRUST_PROXY: false,
 	IP_CUSTOM_HEADER: false,
 
 	IMPORT_EXPORT_NAMESPACE: 'directus:import-export',
