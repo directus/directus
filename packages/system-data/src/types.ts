@@ -43,6 +43,7 @@ export type CollectionMeta = {
 	sort: number | null;
 	group: string | null;
 	collapse: 'open' | 'closed' | 'locked';
+	status: 'active' | 'inactive';
 };
 
 export type BaseCollectionMeta = Pick<
@@ -59,6 +60,7 @@ export type BaseCollectionMeta = Pick<
 	| 'accountability'
 	| 'group'
 	| 'system'
+	| 'status'
 >;
 
 export type DataCollectionMeta = Partial<BaseCollectionMeta> & Pick<BaseCollectionMeta, 'collection' | 'note'>;

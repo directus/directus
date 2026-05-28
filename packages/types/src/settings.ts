@@ -87,19 +87,26 @@ export type Settings = {
 	mcp_system_prompt_enabled: boolean;
 	mcp_system_prompt: string | null;
 	collaborative_editing_enabled: boolean;
+	license_key: string | null;
+	license_token: string | null;
 } & OwnerInformation;
 
 export type OwnerInformation = {
 	project_owner: string | null;
+	product_updates: boolean;
 	project_usage: 'personal' | 'commercial' | 'community' | null;
 	org_name: string | null;
-	product_updates: boolean;
 };
 
 export type SetupForm = {
-	first_name: string | null;
-	last_name: string | null;
-	password: string | null;
+	admin: {
+		email: string | null;
+		password: string | null;
+		first_name: string | null;
+		last_name: string | null;
+	};
 	password_confirm: string | null;
 	license: boolean;
-} & OwnerInformation;
+	license_key: string | null;
+	owner: OwnerInformation;
+};

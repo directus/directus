@@ -51,6 +51,24 @@ vi.mock('./flows', () => ({
 	}),
 }));
 
+vi.mock('./license/index.js', () => ({
+	getLicenseManager: vi.fn().mockImplementation(() => ({
+		initialize: vi.fn(),
+		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
+	})),
+	getEntitlementManager: vi.fn().mockImplementation(() => ({
+		initialize: vi.fn(),
+		isEntitled: vi.fn().mockReturnValue(false),
+	})),
+}));
+
+vi.mock('./license/manager.js', () => ({
+	getLicenseManager: vi.fn().mockImplementation(() => ({
+		initialize: vi.fn(),
+		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
+	})),
+}));
+
 vi.mock('./middleware/schema', () => ({
 	default: Router(),
 }));

@@ -17,6 +17,7 @@ import VTabs from '@/components/v-tabs.vue';
 import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useFlowsStore } from '@/stores/flows';
+import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
@@ -43,6 +44,7 @@ const props = withDefaults(
 const emit = defineEmits(['cancel', 'done']);
 
 const flowsStore = useFlowsStore();
+const licenseStore = useLicenseStore();
 
 const currentTab = ref(['flow_setup']);
 
@@ -143,6 +145,7 @@ async function save() {
 		}
 
 		await flowsStore.hydrate();
+		licenseStore.hydrate();
 
 		emit('done', id);
 	} catch (error) {

@@ -3,7 +3,7 @@ import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
 import api from '@/api';
@@ -16,6 +16,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VInfo from '@/components/v-info.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -36,12 +37,16 @@ const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
 const userStore = useUserStore();
+const licenseStore = useLicenseStore();
+const router = useRouter();
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
+
+const navigateToNewUser = () => router.push(addNewLink.value);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
@@ -145,7 +150,7 @@ function useBatch() {
 			}
 
 			await refresh();
-
+			licenseStore.hydrate();
 			selection.value = [];
 			confirmDelete.value = false;
 		} catch (e) {
@@ -252,9 +257,9 @@ function clearFilters() {
 				<PrivateViewHeaderBarActionButton
 					:tooltip="createAllowed ? undefined : $t('not_allowed')"
 					:label="$t('create')"
-					:to="addNewLink"
 					:disabled="createAllowed === false"
 					icon="add"
+					@click="navigateToNewUser"
 				/>
 			</template>
 
@@ -270,7 +275,7 @@ function clearFilters() {
 						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
-							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton @click="navigateToNewUser">
 								{{ $t('create_user') }}
 							</VButton>
 						</template>
@@ -290,7 +295,7 @@ function clearFilters() {
 						{{ status ? $t('no_status_users_copy', { status }) : $t('no_users_copy') }}
 
 						<template v-if="canInviteUsers && (!status || status === 'active')" #append>
-							<VButton :to="role ? { path: `/users/roles/${role}/+` } : { path: '/users/+' }">
+							<VButton @click="navigateToNewUser">
 								{{ $t('create_user') }}
 							</VButton>
 						</template>

@@ -20,7 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
-directus_bsl: Directus BSL 1.1
+directus_mscl: Directus MSCL 1.0
 privacy_policy: Política de Privacidade
 contact_our_team: Contate nosso Time
 setup_welcome: Bem-Vindo ao Directus
@@ -30,8 +30,8 @@ setup_license_notice: >
 setup_license_follow_up: >
   Entidades acima deste limite requerem uma licença paga. Você pode continuar a avaliar a Directus agora e {contactOurTeam} quando estiver pronto para discutir o uso em produção.
 setup_save_accept_license: >
-  Clicando em salvar você aceita os termos de {directusBsl} e {privacyPolicy}.
-setup_accept_license: Eu aceito os termos de {directusBsl} e {privacyPolicy}
+  Clicando em salvar você aceita os termos de {directusMscl} e {privacyPolicy}.
+setup_accept_license: Eu aceito os termos de {directusMscl} e {privacyPolicy}
 setup_marketing_emails: Receber novidades do produto e notas de lançamento
 setup_launch: Iniciar Directus
 setup_project: Configurar Projeto
