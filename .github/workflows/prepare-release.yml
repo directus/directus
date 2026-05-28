@@ -124,16 +124,17 @@ jobs:
 
           echo "✅ Version updated successfully to ${{ github.event.inputs.version }}"
 
-      - name: Verify changeset cleanup
-        run: |
-          # Count remaining changeset files (excluding config)
-          CHANGESET_COUNT=$(find .changeset -name "*.md" -not -name "config.json" | wc -l)
-          if [ $CHANGESET_COUNT -ne 0 ]; then
-            echo "❌ Changesets not properly cleared. Found $CHANGESET_COUNT remaining files:"
-            find .changeset -name "*.md" -not -name "config.json"
-            exit 1
-          fi
-          echo "✅ Changesets cleared successfully"
+      # Temporary for RC Release
+      # - name: Verify changeset cleanup
+      #   run: |
+      #     # Count remaining changeset files (excluding config)
+      #     CHANGESET_COUNT=$(find .changeset -name "*.md" -not -name "config.json" | wc -l)
+      #     if [ $CHANGESET_COUNT -ne 0 ]; then
+      #       echo "❌ Changesets not properly cleared. Found $CHANGESET_COUNT remaining files:"
+      #       find .changeset -name "*.md" -not -name "config.json"
+      #       exit 1
+      #     fi
+      #     echo "✅ Changesets cleared successfully"
 
       - name: Create release PR
         id: create-pr
