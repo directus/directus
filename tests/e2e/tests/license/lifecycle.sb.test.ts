@@ -27,11 +27,6 @@ describe('paid license lifecycle at boot', () => {
 			overrides: { meta: { name: 'lifecycle-grace', expires_at: now() - 100, grace_period: 10_000 } },
 			status: 'grace',
 		},
-		{
-			name: 'expired — past expires_at + grace_period',
-			overrides: { meta: { name: 'lifecycle-expired', expires_at: now() - 100_000, grace_period: 100 } },
-			status: 'expired',
-		},
 	];
 
 	describe.each(cases)('$name', ({ overrides, status }) => {

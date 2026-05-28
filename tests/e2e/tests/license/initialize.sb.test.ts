@@ -4,7 +4,7 @@ import { type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { createSandboxOptions, mocActivateKey, registerLicense } from './shared.js';
+import { createSandboxOptions, registerLicense } from './shared.js';
 
 describe('env license source', () => {
 	describe('Case D — new LICENSE_KEY', () => {
