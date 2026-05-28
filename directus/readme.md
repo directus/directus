@@ -69,23 +69,28 @@ Directus is made possible with support from our passionate core team, talented c
 
 ## 📄 Understanding Our License
 
-Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](./license), a source-available license derived from the [Fair Core License](https://fcl.dev/). 
+Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](./license), a source-available license
+derived from the [Fair Core License](https://fcl.dev/).
 
-Read about our [evolving our license](https://directus.io/blog/directus-v12-license-change) from BSL to MSCL for long-term sustainability.
+Read about our [evolving our license](https://directus.io/blog/directus-v12-license-change) from BSL to MSCL for
+long-term sustainability.
 
 ### Free for Most Builders
 
-Organizations under **$5M in annual revenue and 50 employees** can use the Directus platform for free under the [Open Innovation Grant](https://directus.com/oig)— no strings attached.
+Organizations under **$5M in annual revenue and 50 employees** can use the Directus platform for free under the
+[Open Innovation Grant](https://directus.com/oig)— no strings attached.
 
 ### Free Core Tier
 
-Even above those thresholds, a free Core tier is available to explore and build on Directus without a commercial license.
+Even above those thresholds, a free Core tier is available to explore and build on Directus without a commercial
+license.
 
 ### Commercial License
 
-Larger organizations using advanced or enterprise features require a commercial license. See [our pricing](https://directus.io/pricing) for details.
-This model helps us maintain a sustainable balance: keeping Directus free for the majority of our community while
-ensuring larger organizations who benefit from the platform contribute to its continued development.
+Larger organizations using advanced or enterprise features require a commercial license. See
+[our pricing](https://directus.io/pricing) for details. This model helps us maintain a sustainable balance: keeping
+Directus free for the majority of our community while ensuring larger organizations who benefit from the platform
+contribute to its continued development.
 
 ### Why This Approach?
 
