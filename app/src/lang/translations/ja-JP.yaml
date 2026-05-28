@@ -20,9 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Directus の概要
-directus_bsl: Directus BSL 1.1
-privacy_policy: プライバシーポリシー 
-contact_our_team: チームへのお問い合わせ  
+directus_mscl: Directus MSCL 1.0
+privacy_policy: プライバシーポリシー
+contact_our_team: チームへのお問い合わせ
 setup_welcome: ようこそ Directus へ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
 setup_license_notice: >
@@ -30,8 +30,8 @@ setup_license_notice: >
 setup_license_follow_up: >
   この上限を超える場合は有料ライセンスが必要です。評価を続けることもできますが、商用利用のご相談は {contactOurTeam} までお願いします。
 setup_save_accept_license: >
-  保存することで、{directusBsl} および {privacyPolicy} に同意したものとみなされます。
-setup_accept_license: '{directusBsl} および {privacyPolicy} に同意します'
+  保存することで、{directusMscl} および {privacyPolicy} に同意したものとみなされます。
+setup_accept_license: '{directusMscl} および {privacyPolicy} に同意します'
 setup_marketing_emails: 製品の更新やリリースノートをメールで受け取る
 setup_launch: Directus を起動
 setup_project: プロジェクトの設定
@@ -2242,9 +2242,9 @@ search_flow: フローを検索 ...
 percent: パーセント
 show_password: パスワードを表示にする
 hide_password: パスワードを非表示にする
-bsl_banner:
+license_banner:
   title: プロジェクトの所有者が設定されていません。
-  license: これは BSL 1.1 ライセンスを遵守するために必要です。プロジェクトに責任を持つ主な担当者を設定してください。
+  license: これは MSCL 1.0 ライセンスを遵守するために必要です。プロジェクトに責任を持つ主な担当者を設定してください。
   set_owner: 所有者を設定
   remind_later: 後で通知
   remind_next_login: 次回のログイン時に再度通知します。

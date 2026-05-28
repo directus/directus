@@ -2561,9 +2561,9 @@ search_flow: 흐름 검색...
 percent: 퍼센트
 show_password: 비밀번호 보이기
 hide_password: 비밀번호 숨기기
-bsl_banner:
+license_banner:
   title: 프로젝트 담당자를 지정하지 않으셨습니다.
-  license: 이는 BSL 1.1 라이선스 준수를 위해 필요합니다. 해당 담당자가 프로젝트 책임자가 되어야 합니다.
+  license: 이는 MSCL 1.0 라이선스 준수를 위해 필요합니다. 해당 담당자가 프로젝트 책임자가 되어야 합니다.
   remind_next_login: 다음 로그인 시 다시 알려드리겠습니다.
 accepted: 수락됨
 text_direction_auto: 자동(일치 언어)

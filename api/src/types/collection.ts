@@ -7,4 +7,4 @@ export type Collection = {
 	fields?: Field[];
 	meta: BaseCollectionMeta | null;
 	schema: Table | null;
-};
+}; 

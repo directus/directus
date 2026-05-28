@@ -9,12 +9,13 @@ import {
 } from './ai-translation';
 
 describe('isAiTranslateAvailable', () => {
-	test('requires AI enabled, providers, models, and an editable interface', () => {
+	test('requires AI enabled, providers, models, license entitlement, and an editable interface', () => {
 		expect(
 			isAiTranslateAvailable({
 				aiEnabled: true,
 				availableProviderCount: 1,
 				availableModelCount: 1,
+				licenseEntitlement: true,
 			}),
 		).toBe(true);
 
@@ -23,6 +24,7 @@ describe('isAiTranslateAvailable', () => {
 				aiEnabled: false,
 				availableProviderCount: 1,
 				availableModelCount: 1,
+				licenseEntitlement: true,
 			}),
 		).toBe(false);
 
@@ -31,6 +33,7 @@ describe('isAiTranslateAvailable', () => {
 				aiEnabled: true,
 				availableProviderCount: 1,
 				availableModelCount: 0,
+				licenseEntitlement: true,
 			}),
 		).toBe(false);
 
@@ -39,6 +42,16 @@ describe('isAiTranslateAvailable', () => {
 				aiEnabled: true,
 				availableProviderCount: 1,
 				availableModelCount: 1,
+				licenseEntitlement: false,
+			}),
+		).toBe(false);
+
+		expect(
+			isAiTranslateAvailable({
+				aiEnabled: true,
+				availableProviderCount: 1,
+				availableModelCount: 1,
+				licenseEntitlement: true,
 				nonEditable: true,
 			}),
 		).toBe(false);

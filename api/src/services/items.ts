@@ -33,7 +33,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { captureSeatCount, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { handleVersion } from '../utils/versioning/handle-version.js';
 import { PayloadService } from './payload.js';
 
@@ -131,6 +131,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(1);
 		}
 
+		if (this.collection === 'directus_users') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 
@@ -149,6 +154,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		 * update tree
 		 */
 		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
+			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
 			const payloadAfterHooks =
@@ -314,7 +321,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex: trx,
+						previousSeatCount,
+					});
 				}
 			}
 
@@ -433,7 +444,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
+		if (this.collection === 'directus_users') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+		}
+
 		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
+			const previousSeatCount = await captureSeatCount(knex, opts.userIntegrityCheckFlags);
+
 			const service = this.fork({ knex });
 
 			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
@@ -469,7 +487,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex,
+						previousSeatCount,
+					});
 				}
 			}
 
@@ -664,6 +686,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		try {
 			await transaction(this.knex, async (knex) => {
+				const previousSeatCount = await captureSeatCount(knex, opts.userIntegrityCheckFlags);
+
 				const service = this.fork({ knex });
 
 				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
@@ -687,7 +711,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					if (opts.onRequireUserIntegrityCheck) {
 						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
 					} else {
-						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+						await validateUserCountIntegrity({
+							flags: userIntegrityCheckFlags,
+							knex,
+							previousSeatCount,
+						});
 					}
 				}
 			});
@@ -708,6 +736,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
+		}
+
+		if (this.collection === 'directus_users' && data['status'] === 'active') {
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -783,6 +816,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		await transaction(this.knex, async (trx) => {
+			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
 				knex: trx,
@@ -843,7 +878,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				} else {
 					// Having no onRequireUserIntegrityCheck callback indicates that
 					// this is the top level invocation of the nested updates, so perform the user integrity check
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: userIntegrityCheckFlags,
+						knex: trx,
+						previousSeatCount,
+					});
 				}
 			}
 
@@ -1112,13 +1151,19 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		await transaction(this.knex, async (trx) => {
+			const previousSeatCount = await captureSeatCount(trx, opts.userIntegrityCheckFlags);
+
 			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();
 
 			if (opts.userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
 					opts.onRequireUserIntegrityCheck(opts.userIntegrityCheckFlags);
 				} else {
-					await validateUserCountIntegrity({ flags: opts.userIntegrityCheckFlags, knex: trx });
+					await validateUserCountIntegrity({
+						flags: opts.userIntegrityCheckFlags,
+						knex: trx,
+						previousSeatCount,
+					});
 				}
 			}
 

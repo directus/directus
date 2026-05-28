@@ -16,6 +16,7 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
@@ -25,6 +26,21 @@ const router = useRouter();
 
 const settingsStore = useSettingsStore();
 const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
+
+const customLLMInputs = new Set([
+	'ai_openai_compatible_name',
+	'ai_openai_compatible_base_url',
+	'ai_openai_compatible_api_key',
+	'ai_openai_compatible_headers',
+	'ai_openai_compatible_models',
+]);
+
+const aiTranslationInputs = new Set([
+	'ai_translation_default_model',
+	'ai_translation_glossary',
+	'ai_translation_style_guide',
+]);
 
 const { fields: allFields } = useCollection('directus_settings');
 
@@ -39,26 +55,39 @@ const availableTranslationModels = computed(() => getAvailableModels(effectiveAi
 
 const aiFields = computed(() =>
 	unref(allFields)
-		.filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group')
-		.map((field) => {
-			if (field.field !== 'ai_translation_default_model') return field;
+		.filter((field) => {
+			if (field.meta?.group !== 'ai_group' && field.field !== 'ai_group') return false;
+			if (field.field === 'ai_translations_notice' && licenseStore.aiTranslationsEnabled === true) return false;
 
-			return {
-				...field,
-				meta: {
-					...field.meta,
-					readonly: availableTranslationModels.value.length === 0,
-					options: {
-						...(field.meta?.options ?? {}),
-						allowNone: true,
-						choices: availableTranslationModels.value.map((modelDefinition) => ({
-							text: modelDefinition.name,
-							value: getModelKey(modelDefinition),
-							icon: getProviderIcon(modelDefinition.provider),
-						})),
+			if (field.field === 'ai_openai_compatible_notice' && licenseStore.customLLMEnabled === true) return false;
+			return true;
+		})
+		.map((field) => {
+			if (field.field === 'ai_translation_default_model') {
+				return {
+					...field,
+					meta: {
+						...field.meta,
+						readonly: availableTranslationModels.value.length === 0 || licenseStore.aiTranslationsEnabled === false,
+						options: {
+							...(field.meta?.options ?? {}),
+							allowNone: true,
+							choices: availableTranslationModels.value.map((modelDefinition) => ({
+								text: modelDefinition.name,
+								value: getModelKey(modelDefinition),
+								icon: getProviderIcon(modelDefinition.provider),
+							})),
+						},
 					},
-				},
-			} as Field;
+				} as Field;
+			}
+
+			if (licenseStore.aiTranslationsEnabled === false && aiTranslationInputs.has(field.field)) {
+				return { ...field, meta: { ...field.meta, readonly: true } } as typeof field;
+			}
+
+			if (licenseStore.customLLMEnabled === true || customLLMInputs.has(field.field) === false) return field;
+			return { ...field, meta: { ...field.meta, readonly: true } } as typeof field;
 		}),
 );
 

@@ -2,7 +2,7 @@
 	"name": "@directus/sandbox",
 	"version": "0.0.0",
 	"description": "Toolkit for spinning up directus test environments",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"scripts": {
 		"cli": "tsx src/cli.ts",
 		"build": "tsdown src/index.ts src/cli.ts --dts --unbundle && copyfiles src/docker/*.yml dist -u 1",
@@ -39,6 +39,7 @@
 		"copyfiles": "catalog:",
 		"detect-port": "catalog:",
 		"get-port": "catalog:",
+		"knex": "catalog:",
 		"lodash-es": "catalog:",
 		"tsdown": "catalog:",
 		"tsx": "catalog:",

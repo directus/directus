@@ -2,7 +2,7 @@
 	"name": "@directus/utils",
 	"version": "13.4.1",
 	"description": "Utilities shared between the Directus packages",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

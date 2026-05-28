@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { sandbox } from '@directus/sandbox';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
@@ -326,18 +327,22 @@ describe('/mcp-oauth settings gate', () => {
 
 describe('/mcp-oauth env gate', () => {
 	test('OAuth routes are not mounted when MCP_OAUTH_ENABLED is false', async () => {
+		// Resources must be unique vs. the beforeAll sandbox: same DB_FILENAME
+		// gets unlinked by the docker step.
+		const isolationId = randomUUID();
+
 		const oauthDisabledDirectus = await sandbox(database, {
 			inspect: false,
-			prefix: `mcp-oauth-env-disabled-${getUID()}`,
+			prefix: `mcp-oauth-env-disabled-${isolationId}`,
 			env: {
 				MCP_ENABLED: 'true',
 				MCP_OAUTH_ENABLED: 'false',
 				RATE_LIMITER_MCP_OAUTH_POINTS: '1000',
 				RATE_LIMITER_MCP_OAUTH_DURATION: '60',
-				DB_FILENAME: `directus_test_${getUID()}.db`,
+				DB_FILENAME: `directus_test_env_${isolationId}.db`,
 			},
 			docker: {
-				suffix: getUID(),
+				suffix: isolationId,
 			},
 			cache: false,
 		});
