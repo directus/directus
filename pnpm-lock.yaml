@@ -3366,6 +3366,9 @@ importers:
       commander:
         specifier: 'catalog:'
         version: 14.0.2
+      date-fns:
+        specifier: 'catalog:'
+        version: 4.1.0
       get-port:
         specifier: 'catalog:'
         version: 7.1.0

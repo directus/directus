@@ -22,6 +22,7 @@
 		"chalk": "catalog:",
 		"commander": "catalog:",
 		"get-port": "catalog:",
+		"date-fns": "catalog:",
 		"jose": "catalog:",
 		"zod": "catalog:",
 		"knex": "catalog:",
