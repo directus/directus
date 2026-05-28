@@ -119,7 +119,6 @@ const {
 	createVersionsAllowed,
 	currentVersion,
 	versions,
-	loading: versionsLoading,
 	addVersion,
 	updateVersion,
 	deleteVersion,
@@ -720,7 +719,6 @@ function revert(values: Record<string, any>) {
 
 const shouldShowVersioning = computed(() => {
 	if (!collectionInfo.value?.meta?.versioning) return false;
-	if (versionsLoading.value) return false;
 	return true;
 });
 
