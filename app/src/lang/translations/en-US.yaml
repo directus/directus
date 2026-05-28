@@ -3285,8 +3285,10 @@ hide_password: Hide password
 license_grace_key_modal:
   optional: Optional
   get_license_key: Get a License Key
-  over_limit_warning_lead: "You've exceeded the allowed usage limit on your current plan."
-  over_limit_warning_tail: 'Please resolve this by {date} ({days} days from now).'
+  over_limit_warning_lead: You've exceeded the allowed usage of the Core plan.
+  over_limit_warning_tail: '{lead} Add a {licenseKey} before {date} ({days} days from now) to keep your current access.'
+  over_limit_customer_help: Already a customer? Email {email} to retrieve your key.
+  license_key_link_label: license key
 license_banner:
   title: You have not set a project owner.
   license:

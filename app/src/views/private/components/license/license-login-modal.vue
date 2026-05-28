@@ -17,6 +17,8 @@ import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
 
+const LICENSING_EMAIL = `licensing@${DIRECTUS_DOMAIN}`;
+
 const model = defineModel<boolean>();
 
 const cookies = useCookies(['license-login-modal-dismissed']);
@@ -99,14 +101,33 @@ function openGetLicenseKey() {
 					</div>
 
 					<VNotice v-if="isOverLimit" type="warning">
-						<strong>{{ $t('license_grace_key_modal.over_limit_warning_lead') }}</strong>
-						{{ ' ' }}
-						<I18nT keypath="license_grace_key_modal.over_limit_warning_tail" tag="span">
-							<template #date>
-								<strong>{{ formattedGraceDeadline }}</strong>
-							</template>
-							<template #days>{{ licenseStore.gracePeriodDaysRemaining ?? 0 }}</template>
-						</I18nT>
+						<p>
+							<I18nT keypath="license_grace_key_modal.over_limit_warning_tail" tag="span">
+								<template #lead>
+									<strong>{{ $t('license_grace_key_modal.over_limit_warning_lead') }}</strong>
+								</template>
+								<template #licenseKey>
+									<a
+										:href="`https://${DIRECTUS_DOMAIN}/docs/licensing/overview`"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										{{ $t('license_grace_key_modal.license_key_link_label') }}
+									</a>
+								</template>
+								<template #date>
+									<strong>{{ formattedGraceDeadline }}</strong>
+								</template>
+								<template #days>{{ licenseStore.gracePeriodDaysRemaining ?? 0 }}</template>
+							</I18nT>
+						</p>
+						<p>
+							<I18nT keypath="license_grace_key_modal.over_limit_customer_help" tag="span">
+								<template #email>
+									<a :href="`mailto:${LICENSING_EMAIL}`">{{ LICENSING_EMAIL }}</a>
+								</template>
+							</I18nT>
+						</p>
 					</VNotice>
 				</VCardText>
 
