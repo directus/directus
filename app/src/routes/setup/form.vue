@@ -45,9 +45,11 @@ type AdminSlice = {
 
 const formSlice = computed({
 	get: (): AdminSlice => ({
-		first_name: value.value?.admin?.first_name ?? null,
-		last_name: value.value?.admin?.last_name ?? null,
-		project_owner: props.register ? (value.value?.admin?.email ?? null) : (value.value?.owner?.project_owner ?? null),
+		first_name: value.value?.admin?.first_name ?? initialValues.value.admin?.first_name ?? null,
+		last_name: value.value?.admin?.last_name ?? initialValues.value.admin?.last_name ?? null,
+		project_owner: props.register
+			? (value.value?.admin?.email ?? initialValues.value.admin?.email ?? null)
+			: (value.value?.owner?.project_owner ?? initialValues.value.owner?.project_owner ?? null),
 		password: value.value?.admin?.password ?? null,
 		password_confirm: value.value?.password_confirm ?? null,
 	}),
