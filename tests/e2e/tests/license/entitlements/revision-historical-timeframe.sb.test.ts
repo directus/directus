@@ -49,7 +49,14 @@ describe('revision_historical_timeframe', () => {
 		let counter = 50;
 
 		for (const { label, daysAgo } of SEED_PLAN) {
-			const timestamp = getHelpers(directus.knex!).date.parse(new Date(Date.now() - daysAgo * DAY_IN_SECONDS * 1000));
+			// writeTimestamp is the INSERT-side helper (returns a Date with
+			// per-dialect TZ adjustment); core uses it for date-created /
+			// date-updated. parse() returns an ISO string with `T`/`Z`, which
+			// is fine for WHERE comparisons but MySQL/MariaDB reject it in
+			// strict mode on DATETIME column bindings.
+			const timestamp = getHelpers(directus.knex!).date.writeTimestamp(
+				new Date(Date.now() - daysAgo * DAY_IN_SECONDS * 1000).toISOString(),
+			);
 
 			for (let i = 0; i < 5; i++) {
 				const collection = getUID();
