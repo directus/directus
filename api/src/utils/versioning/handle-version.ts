@@ -6,12 +6,13 @@ import { getNodeEnv } from '@directus/utils/node';
 import { cloneDeep, intersection, pick, uniq } from 'lodash-es';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
+import { removeCircular } from './remove-circular.js';
 import { splitRecursive } from './split-recursive.js';
 
 export type VersionMeta = {
 	version_id: string;
 	delta?: Item;
-	error?: Error;
+	error?: { message: string; extensions: { code: string; [key: string]: any } };
 };
 
 export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | null, query: Query, opts?: QueryOptions) {
@@ -61,7 +62,9 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	const itemlessErrors: VersionMeta[] = [];
 	const itemMeta: Record<string, VersionMeta> = {};
 	const primaryKeyField = self.schema.collections[self.collection]!.primary;
-	const hasPrimaryKeyInQuery = query.fields?.includes(primaryKeyField);
+
+	const hasPrimaryKeyInQuery =
+		query.fields?.includes(primaryKeyField) || query.fields?.includes('*') || query.fields?.length === 0;
 
 	await transaction(self.knex, async (trx) => {
 		for (const version of versions) {
@@ -82,14 +85,15 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
 			try {
-				await trx.transaction(async (trxInner) => {
-					const sudoItemsService = new ItemsService<Item>(self.collection, {
-						schema: self.schema,
-						knex: trxInner,
-					});
+				await transaction(
+					trx,
+					async (trxInner) => {
+						const sudoItemsService = new ItemsService<Item>(self.collection, {
+							schema: self.schema,
+							knex: trxInner,
+						});
 
-					if (!item) {
-						try {
+						if (!item) {
 							const item = await sudoItemsService.createOne(rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
@@ -105,19 +109,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 							itemMeta[item] = {
 								version_id: id,
 							};
-						} catch (error: any) {
-							trxInner.rollback(error);
-
-							handleError(error);
-
-							itemlessErrors.push({
-								error: error,
-								version_id: id,
-								delta,
-							});
-						}
-					} else {
-						try {
+						} else {
 							await sudoItemsService.updateOne(item, rawDelta, {
 								emitEvents: false,
 								autoPurgeCache: false,
@@ -133,21 +125,31 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 							itemMeta[item] = {
 								version_id: id,
 							};
-						} catch (error: any) {
-							trxInner.rollback(error);
-
-							handleError(error);
-
-							itemMeta[item] = {
-								error: error,
-								version_id: id,
-								delta,
-							};
 						}
-					}
-				});
-			} catch {
-				// Ignore errors
+					},
+					true,
+				);
+			} catch (error: any) {
+				// Throw an error for single item requests
+				if (key) {
+					throw error;
+				}
+
+				sanitizeError(error);
+
+				if (!item) {
+					itemlessErrors.push({
+						error,
+						version_id: id,
+						delta,
+					});
+				} else {
+					itemMeta[item] = {
+						error,
+						version_id: id,
+						delta,
+					};
+				}
 			}
 		}
 
@@ -248,7 +250,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 			result['$meta'] = meta;
 
 			if (meta.error) {
-				Object.assign(result, defaultItem, pick(meta.delta, requestedFields));
+				result = Object.assign({}, defaultItem, result, pick(meta.delta, requestedFields));
 			}
 		}
 
@@ -260,10 +262,10 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	if (results.length < (query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']))) {
 		results.push(
 			...itemlessErrors.map((errorMeta) => {
-				const item = { $meta: errorMeta };
+				let item = { $meta: errorMeta };
 
 				if (errorMeta.error) {
-					Object.assign(item, defaultItem, pick(errorMeta.delta, requestedFields));
+					item = Object.assign({}, defaultItem, item, pick(errorMeta.delta, requestedFields));
 				}
 
 				return item;
@@ -274,8 +276,10 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	return results;
 }
 
-function handleError(error: Error) {
+function sanitizeError(error: Error) {
 	if (getNodeEnv() !== 'development') {
 		delete error.stack;
 	}
+
+	removeCircular(error);
 }
