@@ -189,6 +189,14 @@ const selected = reactive({
 const adminCreds = ref<{ email?: string; password?: string }>({});
 const ssoAdminDialogOpen = ref(false);
 
+function onOpenAdminDialog() {
+	if (!sso.value?.blockers?.length) {
+		onSsoConfirm({});
+	} else {
+		ssoAdminDialogOpen.value = true;
+	}
+}
+
 function onSsoConfirm(creds: { email?: string; password?: string }) {
 	adminCreds.value = creds;
 	selected.sso = true;
@@ -314,7 +322,7 @@ function onEsc() {
 				</p>
 
 				<div v-if="sso || customLLMs || customPermissionRules" class="feature-gate-grid">
-					<ResolutionSsoSection v-if="sso" v-model="selected.sso" @open-admin-dialog="ssoAdminDialogOpen = true" />
+					<ResolutionSsoSection v-if="sso" v-model="selected.sso" @open-admin-dialog="onOpenAdminDialog" />
 
 					<section v-if="customLLMs" class="resolution-feature-section">
 						<header class="section-header">
