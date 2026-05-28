@@ -53,7 +53,6 @@ describe('env license source', () => {
 	});
 
 	describe('Case B — LICENSE_KEY changed', () => {
-		const port = 56885;
 		const license = createLicense({ key: 'D1HH5-N7XMX-V2P45-H457R-2MRT6', meta: { name: 'env-license-key-og' } });
 		const changedLicense = createLicense({ meta: { name: 'env-license-key-changed' } });
 
@@ -67,7 +66,6 @@ describe('env license source', () => {
 			directus = await sandbox(
 				database,
 				createSandboxOptions({
-					port,
 					env: {
 						LICENSE_KEY: changedLicense.key,
 						SECRET: '7f96fdc0-cc0f-4359-b0db-d6d40d6b9982',
@@ -246,6 +244,8 @@ describe('db license source', () => {
 			await api.request(activateLicense({ license_key: license.key }));
 
 			await directus.restartApi();
+
+			api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 		});
 
 		afterAll(async () => {
