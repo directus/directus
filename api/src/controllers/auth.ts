@@ -4,6 +4,7 @@ import type { Accountability } from '@directus/types';
 import type { Request } from 'express';
 import { Router } from 'express';
 import {
+	createFAPIAuthRouter,
 	createLDAPAuthRouter,
 	createLocalAuthRouter,
 	createOAuth2AuthRouter,
@@ -52,6 +53,10 @@ for (const authProvider of authProviders) {
 
 		case 'saml':
 			authRouter = createSAMLAuthRouter(authProvider.name);
+			break;
+
+		case 'fapi':
+			authRouter = createFAPIAuthRouter(authProvider.name);
 			break;
 	}
 

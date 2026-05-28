@@ -3,6 +3,7 @@ import { InvalidProviderConfigError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { AuthDriver } from './auth/auth.js';
 import {
+	FAPIAuthDriver,
 	LDAPAuthDriver,
 	LocalAuthDriver,
 	OAuth2AuthDriver,
@@ -92,6 +93,9 @@ function getProviderInstance(
 
 		case 'saml':
 			return new SAMLAuthDriver(options, config);
+
+		case 'fapi':
+			return new FAPIAuthDriver(options, config);
 	}
 
 	return undefined;
