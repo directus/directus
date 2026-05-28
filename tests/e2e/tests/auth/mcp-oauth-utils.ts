@@ -22,7 +22,7 @@ export type OAuthTokens = {
 };
 
 export type ConfidentialAuthMethod = 'client_secret_basic' | 'client_secret_post';
-export const clientAssertionTypeJwtBearer = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
+export const CLIENT_ASSERTION_TYPE_JWT_BEARER = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer';
 
 export type RegisteredConfidentialClient = {
 	clientId: string;
@@ -551,7 +551,7 @@ export async function exchangeCode(args: {
 	if (args.clientSecret) body['client_secret'] = args.clientSecret;
 
 	if (args.clientAssertion) {
-		body['client_assertion_type'] = clientAssertionTypeJwtBearer;
+		body['client_assertion_type'] = CLIENT_ASSERTION_TYPE_JWT_BEARER;
 		body['client_assertion'] = args.clientAssertion;
 	}
 
@@ -581,7 +581,7 @@ export async function refreshToken(args: {
 	if (args.clientSecret) body['client_secret'] = args.clientSecret;
 
 	if (args.clientAssertion) {
-		body['client_assertion_type'] = clientAssertionTypeJwtBearer;
+		body['client_assertion_type'] = CLIENT_ASSERTION_TYPE_JWT_BEARER;
 		body['client_assertion'] = args.clientAssertion;
 	}
 
@@ -605,7 +605,7 @@ export async function revokeToken(args: {
 	if (args.clientSecret) body['client_secret'] = args.clientSecret;
 
 	if (args.clientAssertion) {
-		body['client_assertion_type'] = clientAssertionTypeJwtBearer;
+		body['client_assertion_type'] = CLIENT_ASSERTION_TYPE_JWT_BEARER;
 		body['client_assertion'] = args.clientAssertion;
 	}
 
