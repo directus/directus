@@ -107,7 +107,11 @@ function openGetLicenseKey() {
 									<strong>{{ $t('license_grace_key_modal.over_limit_warning_lead') }}</strong>
 								</template>
 								<template #licenseKey>
-									<a href="https://directus.io/docs/licensing/overview" target="_blank" rel="noopener noreferrer">
+									<a
+										:href="`https://${DIRECTUS_DOMAIN}/docs/licensing/overview`"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
 										{{ $t('license_grace_key_modal.license_key_link_label') }}
 									</a>
 								</template>
