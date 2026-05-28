@@ -20,31 +20,20 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: درباره
-directus_bsl: BSL 1.1 دایرکتوس
 privacy_policy: سیاست حریم خصوصی
-contact_our_team: با تیم ما تماس بگیرید
 setup_welcome: به دایرکتوس خوش آمدید
 setup_info: بیایید حساب مدیر شما را ایجاد کنیم و پروژه‌تان را راه‌اندازی کنیم.
-setup_license_notice: >
-  دایرکتوس برای استفاده اشخاص با کمتر از ۵ میلیون دلار درآمد، سرمایه‌گذاری یا بودجه عملیاتی سالانه رایگان است.
-setup_license_follow_up: >
-  اشخاص بالاتر از این آستانه نیازمند مجوز پولی هستند. شما می‌توانید حالا به ارزیابی دایرکتوس ادامه دهید و وقتی برای گفتگو درباره استفاده عملیاتی آماده بودید، {contactOurTeam}.
-setup_save_accept_license: >
-  با انتخاب دکمه ذخیره، شما شرایط {directusBsl} و {privacyPolicy} را قبول می‌کنید.
-setup_accept_license: من شرایط {directusBsl} و {privacyPolicy} را قبول می‌کنم
 setup_marketing_emails: به‌روزرسانی‌های محصول و یادداشت‌های انتشار را برای من بفرست
 setup_launch: راه‌اندازی دایرکتوس
 setup_project: راه‌اندازی پروژه
+production: تولید
+skip: رد کردن
+continue: ادامه
 first_name: نام
 last_name: نام خانوادگی
 admin_email: ایمیل مدیر
 owner_email: ایمیل مالک
 email_address: نشانی ایمیل
-organization_name: نام سازمان
-how_do_you_use_directus: از دایرکتوس چه استفاده‌ای می‌کنید؟
-usage_personal: شخصی / یادگیری
-usage_commercial: کسب و کار / تجاری
-usage_community: متن‌باز / جامعه
 identifier: شناساگر
 avatar: آواتار
 application: برنامه
@@ -213,7 +202,6 @@ keep: نگه داشتن
 version: نسخه
 version_key: شماره نسخه
 version_name: نام نسخه
-main_version: اصلی
 your_version: نسخه شما
 switch_version: تغییر نسخه
 switch_version_copy: مطمئنید که می‌خواهید به نسخه «{version}» بروید؟ تغییرات ذخیره‌نشده از دست می‌رود.
@@ -222,17 +210,13 @@ rename_version: ویرایش نسخه
 reserved_version_key: 'کلید نسخه «{key}» رزرو شده است و امکان استفاده ندارد.'
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
-promote_version: ارتقای نسخه
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها
 show_differences_only: تنها تفاوت‌ها را نشان بده
-main_updated_notice: مورد اصلی از زمان ایجاد این نسخه به روز شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
-delete_on_apply_copy: >-
-  شما در شرف ارتقای "{version}" به اصلی هستید. بعد از ارتقا باید چه اتفاقی برای "{version}" بیافتد؟
 content_edited: محتوا ویرایش شده
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
@@ -710,7 +694,6 @@ manual_string: رشته حرفیِ وارد شده به صورت دستی
 save_and_create_new: ذخیره و ساخت آیتم جدید
 save_and_stay: ذخیره و ماندن
 save_and_quit: ذخیره و خروج
-save_and_return_to_main: ذخیره و بازگشت به اصلی
 save_as_copy: ذخیره به عنوان کپی
 save_as_new_file: ذخیره به عنوان فایل جدید
 add_existing: اضافه کردن مورد موجود
@@ -1102,6 +1085,7 @@ no_url_copy: لطفا یک URL در تنظیمات اضافه کنید.
 invalid_url: URL اشتباه
 invalid_url_copy: URL مشخص شده با هیچ یک از URL های مشخص شده در تنظیمات منطبق نیست.
 insights: بینش های داده ای
+overview: نمای کلی
 deployment:
   deployment: استقرار
   overview:
@@ -1357,6 +1341,19 @@ settings_data_model: مدل داده
 settings_roles: نقش‌های کاربر
 settings_permissions: سیاست‌های دسترسی
 settings_project: تنظیمات
+licensing:
+  unlimited: بدون محدودیت
+  addon_manage: مدیریت
+  addon_update: بروزرسانی
+  resolve_continue: ادامه
+  resolve_show_n_more: 'نمایش {count} بیشتر'
+  resolve_section_flows: جریان‌ها
+  resolve_sso_admin_email: نشانی ایمیل
+  resolve_sso_admin_password: رمز عبور
+  entitlements:
+    collections: مجموعه‌ها
+    flows: جریان‌ها
+    production_enabled: تولید
 settings_appearance: ظاهر
 settings_ai: هوش مصنوعی
 model_context_protocol: دستورالعمل زمینه مدل (MCP)
@@ -1821,7 +1818,6 @@ ai:
   always_allow: همیشه اجازه بده
   deny: رد کردن
   approve_tool_execution: اجرای ابزار را تایید می‌کنید؟
-  retry: تلاش مجدد
   prompt_input_placeholder: پیام خود را اینجا بنویسید...
   clear_conversation: خالی کردن گفت‌وگو
   build_with_assistant: با دستیار هوش مصنوعی بسازید
@@ -2905,12 +2901,8 @@ search_flow: جستجوی جریان...
 percent: درصد
 show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
-bsl_banner:
-  title: شما مالک پروژه‌ای تنظیم نکرده‌اید.
-  license: ما برای اطمینان از انطباق با مجوز BSL 1.1 خود به این نیاز داریم. این باید مخاطب اصلی مسئول در برابر پروژه شما باشد.
-  set_owner: تعیین مالک
-  remind_later: بعدا یادآوری کن
-  remind_next_login: هنگام ورود بعدی شما دوباره یادآوری خواهیم کرد.
+license_grace_key_modal:
+  optional: اختیاری
 accepted: پذیرفته شده
 text_direction_auto: خودکار (مطابق زبان)
 text_direction_ltr: چپ به راست (LTR)
