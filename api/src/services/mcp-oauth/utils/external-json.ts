@@ -31,12 +31,18 @@ export interface FetchExternalJsonOptions {
 	redactionContext?: string;
 }
 
+/**
+ * Converts egress failures into OAuth client metadata errors so callers do not leak low-level network details.
+ */
 function externalJsonError(options: FetchExternalJsonOptions, description = 'Failed to fetch external JSON document') {
 	const context = options.redactionContext ? `${options.redactionContext}: ` : '';
 
 	return new OAuthError(400, 'invalid_client_metadata', `${context}${description}`);
 }
 
+/**
+ * Applies the shared SSRF egress policy to a resolved address.
+ */
 function isAllowedAddress(address: string, options: FetchExternalJsonOptions): boolean {
 	if (!isSpecialUseIp(address)) return true;
 
@@ -45,12 +51,18 @@ function isAllowedAddress(address: string, options: FetchExternalJsonOptions): b
 	return Boolean(options.allowHttp && options.allowLoopbackForLocalDevelopment && isLoopbackIp(address));
 }
 
+/**
+ * Throws a caller-safe OAuth error when a resolved address is outside the allowed egress policy.
+ */
 function assertAllowedAddress(address: string, options: FetchExternalJsonOptions): void {
 	if (!isAllowedAddress(address, options)) {
 		throw externalJsonError(options, 'Resolved address is not allowed');
 	}
 }
 
+/**
+ * Validates the caller-provided URL before DNS or HTTP work so rejected inputs never trigger outbound traffic.
+ */
 function validateUrl(input: string, options: FetchExternalJsonOptions): URL {
 	let url: URL;
 
@@ -86,6 +98,9 @@ function validateUrl(input: string, options: FetchExternalJsonOptions): URL {
 	return url;
 }
 
+/**
+ * Preflights every DNS answer for the host before opening a socket.
+ */
 async function resolveHost(hostname: string, options: FetchExternalJsonOptions): Promise<void> {
 	const normalizedHostname = normalizeHostname(hostname);
 
@@ -110,6 +125,9 @@ async function resolveHost(hostname: string, options: FetchExternalJsonOptions):
 	}
 }
 
+/**
+ * Builds a socket-time DNS lookup that repeats the egress policy check after preflight resolution.
+ */
 function createLookup(options: FetchExternalJsonOptions): NonNullable<http.AgentOptions['lookup']> {
 	// Node resolves again while opening the socket. Re-checking the connect-time answer closes the DNS rebinding
 	// gap between preflight resolution and the actual outbound connection.
@@ -143,10 +161,16 @@ function createLookup(options: FetchExternalJsonOptions): NonNullable<http.Agent
 	};
 }
 
+/**
+ * Produces the timeout-specific OAuth error used by both request and stream abort paths.
+ */
 function abortError(options: FetchExternalJsonOptions): OAuthError {
 	return externalJsonError(options, 'External JSON fetch timed out');
 }
 
+/**
+ * Races work that does not natively observe AbortSignal against the request timeout.
+ */
 async function withAbort<T>(promise: Promise<T>, signal: AbortSignal, options: FetchExternalJsonOptions): Promise<T> {
 	if (signal.aborted) {
 		throw abortError(options);
@@ -160,6 +184,9 @@ async function withAbort<T>(promise: Promise<T>, signal: AbortSignal, options: F
 	]);
 }
 
+/**
+ * Reads a streaming response with byte and timeout enforcement before JSON parsing.
+ */
 async function readResponseBody(
 	stream: Readable,
 	maxBytes: number,
@@ -199,6 +226,9 @@ async function readResponseBody(
 	return Buffer.concat(chunks).toString('utf8');
 }
 
+/**
+ * Normalizes Axios header values to the single string form used in OAuth metadata caching.
+ */
 function headerValue(headers: Record<string, unknown>, header: string): string | undefined {
 	const value = headers[header];
 
@@ -208,6 +238,9 @@ function headerValue(headers: Record<string, unknown>, header: string): string |
 	return undefined;
 }
 
+/**
+ * Fetches a JSON metadata document with the egress constraints required for untrusted OAuth client metadata.
+ */
 export async function fetchExternalJson<T = unknown>(
 	input: string,
 	options: FetchExternalJsonOptions = {},
