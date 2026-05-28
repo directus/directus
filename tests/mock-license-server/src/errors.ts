@@ -27,8 +27,6 @@ export const ErrorCode = {
 type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
 export interface ErrorResponse {
-	code: keyof typeof ErrorCode;
-	error: string;
 	[key: string]: unknown;
 }
 
@@ -36,9 +34,16 @@ export function createError(message: string, errorCode?: ErrorCode, context?: Re
 	const code = errorCode ?? ErrorCode.INTERNAL_ERROR;
 
 	return {
-		code,
-		error: message,
-		...context,
+		errors: [
+			{
+				message: message,
+				extensions: {
+					code,
+					message,
+					...context,
+				},
+			},
+		],
 	};
 }
 
