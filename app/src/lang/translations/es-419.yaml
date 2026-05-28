@@ -20,31 +20,19 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
-directus_bsl: BSL de Directus 1.1
 privacy_policy: Política de Privacidad
-contact_our_team: Contacta con nuestro equipo
 setup_welcome: Bienvenido a Directus
 setup_info: Creemos tu cuenta de administrador y pongamos tu proyecto en funcionamiento.
-setup_license_notice: >
-  Directus es de uso gratuito para entidades con ingresos, financiación o presupuesto operativo anuales inferiores a 5 millones de dólares.
-setup_license_follow_up: >
-  Las entidades que superan este umbral requieren una licencia de pago. Puede continuar evaluando Directus ahora y contactarnos cuando esté listo para hablar sobre el uso en producción.
-setup_save_accept_license: >
-  Al hacer clic en Guardar, acepta los términos de {directusBsl} y {privacyPolicy}.
-setup_accept_license: Acepto los términos de {directusBsl} y {privacyPolicy}
 setup_marketing_emails: Envíame actualizaciones de productos y notas de lanzamiento
 setup_launch: Iniciar Directus
 setup_project: Configurar Proyecto
+production: Producción
+continue: Continuar
 first_name: Nombre
 last_name: Apellido
 admin_email: Email del Administrador
 owner_email: E-Mail del propietario
 email_address: Dirección de correo electrónico
-organization_name: Nombre de la organización
-how_do_you_use_directus: '¿Para qué utilizas Directus?'
-usage_personal: Personal / Aprendizaje
-usage_commercial: Negocios / Comercial
-usage_community: Código abierto / Comunidad
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -203,24 +191,19 @@ keep: Mantener
 version: Versión
 version_key: Clave de Versión
 version_name: Nombre de Versión
-main_version: Principal
 switch_version: Cambiar Versión
 switch_version_copy: '¿Está seguro de que desea cambiar a la versión "{version}"? Los cambios no guardados se perderán.'
 create_version: Crear Versión
 rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
-promote_version: Promover Versión
 apply: Aplicar
 discard: Descartar
 select_all_differences: Seleccionar todas las diferencias
 show_differences_only: Solo Mostrar Diferencias
-main_updated_notice: El elemento principal se ha actualizado desde que se creó esta versión.
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
-delete_on_apply_copy: >-
-  Estás a punto de establecer “{version}” como Principal. ¿Qué debería suceder con “{version}” después de la promoción?
 content_edited: Contenido Editado
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
@@ -677,7 +660,6 @@ manual_string: Texto introducido manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_and_quit: Guardar y Salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como Copia
 save_as_new_file: Guardar como Nuevo Archivo
 add_existing: Seleccionar
@@ -1063,6 +1045,7 @@ no_url_copy: Por favor, agregue una URL en la configuración.
 invalid_url: URL no válida
 invalid_url_copy: La URL especificada no coincide con ninguna de las URL definidas en la configuración.
 insights: Informes
+overview: Vista previa
 deployment:
   deployment: Despliegue
   overview:
@@ -1262,6 +1245,19 @@ settings_data_model: Modelo de Datos
 settings_roles: Roles de Usuario
 settings_permissions: Reglas de Acceso
 settings_project: Ajustes
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Administrar
+  addon_update: Actualizar
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Mostrar {count} más'
+  resolve_section_flows: Flujos
+  resolve_sso_admin_email: Dirección de correo electrónico
+  resolve_sso_admin_password: Contraseña
+  entitlements:
+    collections: Colecciones
+    flows: Flujos
+    production_enabled: Producción
 settings_appearance: Apariencia
 settings_ai: IA
 model_context_protocol: Model Context Protocol
@@ -2697,12 +2693,8 @@ search_flow: Buscar Flujo...
 percent: Porciento
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
-bsl_banner:
-  title: Aún no has establecido un propietario del proyecto.
-  license: Necesitamos esta información para garantizar el cumplimiento de nuestra licencia BSL 1.1. Esta persona debe ser el contacto principal responsable de tu proyecto.
-  set_owner: Asignar Propietario
-  remind_later: Recordar más tarde
-  remind_next_login: Te lo recordaremos nuevamente en tu próximo inicio de sesión.
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)
