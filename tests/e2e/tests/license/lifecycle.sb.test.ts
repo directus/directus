@@ -4,6 +4,7 @@ import { createLicense } from '@directus/mock-license-server';
 import { type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import type { Knex } from 'knex';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { createSandboxOptions, registerLicense } from './shared.js';
 
@@ -68,7 +69,7 @@ describe('paid license lifecycle at boot', () => {
 
 describe('core license lifecycle at boot', () => {
 	// Simulate upgrade: oldest non-V12 migration timestamped > 1 day before V12
-	const backdateOldestMigration: BeforeApiHook = async ({ knex }) => {
+	const backdateOldestMigration = async (knex: Knex) => {
 		const oldest = await knex!('directus_migrations')
 			.whereNot('version', V12_MIGRATION_VERSION)
 			.orderBy('timestamp', 'asc')
@@ -79,7 +80,7 @@ describe('core license lifecycle at boot', () => {
 		await knex!('directus_migrations').update({ timestamp: twoDaysAgo }).where({ version: oldest!.version });
 	};
 
-	const insertSurplusFlows: BeforeApiHook = async ({ knex }) => {
+	const insertSurplusFlows = async (knex: Knex) => {
 		await knex!('directus_flows').insert(
 			Array.from({ length: 6 }, (_, i) => ({
 				id: randomUUID(),
@@ -90,8 +91,28 @@ describe('core license lifecycle at boot', () => {
 
 	const cases: Array<{ name: string; status: LicenseStatus; beforeApi?: BeforeApiHook }> = [
 		{ name: 'active — clean install, no license', status: 'active' },
-		{ name: 'grace — upgrade within 30 days', status: 'grace', beforeApi: backdateOldestMigration },
-		{ name: 'locked — flow entitlement violated', status: 'locked', beforeApi: insertSurplusFlows },
+		{
+			name: 'grace — upgrade within 30 days and within limits',
+			status: 'active',
+			async beforeApi({ knex }) {
+				await backdateOldestMigration(knex as Knex);
+			},
+		},
+		{
+			name: 'grace — upgrade within 30 days and over limits',
+			status: 'grace',
+			async beforeApi({ knex }) {
+				await backdateOldestMigration(knex as Knex);
+				await insertSurplusFlows(knex as Knex);
+			},
+		},
+		{
+			name: 'locked — flow entitlement violated',
+			status: 'locked',
+			async beforeApi({ knex }) {
+				await insertSurplusFlows(knex as Knex);
+			},
+		},
 	];
 
 	describe.each(cases)('$name', ({ status, beforeApi }) => {
