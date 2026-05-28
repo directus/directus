@@ -1,12 +1,5 @@
-import {
-	activateLicense,
-	CORE_LICENSE,
-	deactivateLicense,
-	readLicense,
-	type ReadLicenseOutput,
-	updateLicense,
-} from '@directus/license';
-import { createLicense } from '@directus/mock-license-server';
+import { activateLicense, readLicense } from '@directus/license';
+import { createLicense, mockClient } from '@directus/mock-license-server';
 import { sandbox, type Sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
@@ -30,6 +23,12 @@ beforeAll(async () => {
 		env: {
 			CACHE_SCHEMA: 'false',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
+			LICENSE_KEY: license.key,
+		},
+		hooks: {
+			async beforeApi({ env }) {
+				await mockClient.registerLicense(env.LICENSE_API_URL!, license);
+			},
 		},
 		extras: {
 			license: true,
@@ -40,18 +39,10 @@ beforeAll(async () => {
 
 	api1 = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 	api2 = createDirectus<any>(`http://localhost:${directus.apis[1]!.port}`).with(rest()).with(staticToken('admin'));
-
-	await fetch(`http://localhost:${directus.env.LICENSE_PORT}/admin/license`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(license),
-	});
 });
 
 afterAll(async () => {
-	await directus.stop();
+	await directus?.stop();
 });
 
 test('license key being synced on both instances', async () => {

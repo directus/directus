@@ -1,12 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { type LicenseStatus, readLicense } from '@directus/license';
-import { createLicense } from '@directus/mock-license-server';
+import { createLicense, mockClient } from '@directus/mock-license-server';
 import { type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import type { Knex } from 'knex';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { createSandboxOptions, registerLicense } from './shared.js';
+import { createSandboxOptions } from './shared.js';
 
 const now = () => Math.floor(Date.now() / 1000);
 
@@ -43,7 +43,7 @@ describe('paid license lifecycle at boot', () => {
 					env: { LICENSE_KEY: license.key },
 					hooks: {
 						beforeApi: async ({ env }) => {
-							await registerLicense(env.LICENSE_PORT, license);
+							await mockClient.registerLicense(env.LICENSE_API_URL!, license);
 						},
 					},
 					knex: true,
