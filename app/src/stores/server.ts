@@ -28,6 +28,9 @@ export type Info = {
 	};
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
+	mcp_oauth_enabled: boolean;
+	mcp_oauth_dcr_enabled: boolean;
+	mcp_oauth_cimd_enabled: boolean;
 	files?: {
 		mimeTypeAllowList: string[];
 	};
@@ -95,6 +98,9 @@ export const useServerStore = defineStore('serverStore', () => {
 		project: null,
 		mcp_enabled: true,
 		ai_enabled: true,
+		mcp_oauth_enabled: false,
+		mcp_oauth_dcr_enabled: false,
+		mcp_oauth_cimd_enabled: false,
 		files: undefined,
 		setupCompleted: false,
 		extensions: undefined,
@@ -135,6 +141,9 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.project = serverInfoResponse.data.data?.project;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
+		info.mcp_oauth_enabled = serverInfoResponse.data.data?.mcp_oauth_enabled;
+		info.mcp_oauth_dcr_enabled = serverInfoResponse.data.data?.mcp_oauth_dcr_enabled;
+		info.mcp_oauth_cimd_enabled = serverInfoResponse.data.data?.mcp_oauth_cimd_enabled;
 		info.files = serverInfoResponse.data.data?.files;
 		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
