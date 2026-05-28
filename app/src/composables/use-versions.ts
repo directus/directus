@@ -18,7 +18,6 @@ export interface PublishVersionOptions {
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<PrimaryKey | null>) {
 	const currentVersion = ref<ContentVersionMaybeNew | null>(null);
 	const rawVersions = ref<ContentVersion[] | null>(null);
-	const loading = ref(false);
 	const deleteVersionLoading = ref(false);
 	const publishVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
@@ -77,9 +76,15 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			const previouslySelectedKey = currentVersion.value?.key;
 
-			currentVersion.value = newQueryVersion
+			const newSelected = newQueryVersion
 				? (newVersions.find((version) => version.key === newQueryVersion && isVersionSelectable(version)) ?? null)
 				: null;
+
+			if (newSelected && currentVersion.value && newSelected.id === currentVersion.value.id) {
+				Object.assign(currentVersion.value, newSelected);
+			} else {
+				currentVersion.value = newSelected;
+			}
 
 			if (currentVersion.value?.key !== previouslySelectedKey) {
 				validationErrors.value = [];
@@ -117,8 +122,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			return;
 		}
 
-		loading.value = true;
-
 		try {
 			const filterConditions: Filter[] = [{ collection: { _eq: collection.value } }];
 
@@ -144,8 +147,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			rawVersions.value = response.data;
 		} catch (error) {
 			unexpectedError(error);
-		} finally {
-			loading.value = false;
 		}
 	}
 
@@ -319,7 +320,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		createVersionsAllowed,
 		currentVersion,
 		versions,
-		loading,
 		getVersions,
 		addVersion,
 		updateVersion,
