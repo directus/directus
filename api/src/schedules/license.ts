@@ -12,7 +12,7 @@ export async function stopLicenseCheck(): Promise<void> {
  * Schedule a license check at the license's validation_interval.
  */
 export default async function schedule(): Promise<boolean> {
-	await stopLicenseCheck();
+	await job?.stop();
 
 	const licenseManager = getLicenseManager();
 	const license = await licenseManager.getLicense();
