@@ -5,6 +5,7 @@ import { clone } from 'lodash';
 import { computed, ref, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import { getMcpSettingsField } from './mcp-settings';
 import { getAvailableModels, getModelKey, getProviderIcon } from '@/ai/utils/available-models';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
@@ -62,7 +63,10 @@ const aiFields = computed(() =>
 );
 
 const mcpFields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group === 'mcp_group' || field.field === 'mcp_group'),
+	unref(allFields).flatMap((field) => {
+		const mcpField = getMcpSettingsField(field, serverStore.info);
+		return mcpField ? [mcpField] : [];
+	}),
 );
 
 const hasEdits = computed(
