@@ -10,7 +10,7 @@ defineProps<Props>();
 </script>
 
 <template>
-	<TresCanvas alpha window-size :dpr="[1, 2]" class="public-shader-background">
+	<TresCanvas alpha :dpr="[1, 2]" class="public-shader-background">
 		<TresPerspectiveCamera :position="[0, 0, 10]" :look-at="[0, 0, 0]" />
 		<!-- Shader scene goes here -->
 		<ShaderExperience :project-color="projectColor" />

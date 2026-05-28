@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useLoop, useTresContext } from '@tresjs/core';
 import { BufferAttribute, Color, DataTexture, PlaneGeometry, ShaderMaterial, Uniform, Vector2, Vector3 } from 'three';
-import { computed, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue';
 import fragmentShader from '../shaders/fragment.glsl';
 import vertexShader from '../shaders/vertex.glsl';
 
@@ -38,25 +38,43 @@ const displacementTexture = new DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1
 displacementTexture.needsUpdate = true;
 
 // --- Particle geometry: full plane, uniform grid ---
-const aspect = sizes.width.value / sizes.height.value;
 const subdivisions = 64;
 const planeHeight = 10;
-const subdivsX = Math.round(subdivisions * aspect);
-const particlesGeometry = new PlaneGeometry(planeHeight * aspect, planeHeight, subdivsX, subdivisions);
-particlesGeometry.setIndex(null);
-particlesGeometry.deleteAttribute('normal');
 
-const count = particlesGeometry.attributes.position!.count;
-const intensities = new Float32Array(count);
-const angles = new Float32Array(count);
+function createParticlesGeometry(aspect: number) {
+	const safeAspect = aspect > 0 && Number.isFinite(aspect) ? aspect : 1;
+	const subdivsX = Math.max(1, Math.round(subdivisions * safeAspect));
+	const geometry = new PlaneGeometry(planeHeight * safeAspect, planeHeight, subdivsX, subdivisions);
+	geometry.setIndex(null);
+	geometry.deleteAttribute('normal');
 
-for (let i = 0; i < count; i++) {
-	intensities[i] = Math.random();
-	angles[i] = Math.random() * Math.PI * 2;
+	const count = geometry.attributes.position!.count;
+	const intensities = new Float32Array(count);
+	const angles = new Float32Array(count);
+
+	for (let i = 0; i < count; i++) {
+		intensities[i] = Math.random();
+		angles[i] = Math.random() * Math.PI * 2;
+	}
+
+	geometry.setAttribute('aIntensity', new BufferAttribute(intensities, 1));
+	geometry.setAttribute('aAngle', new BufferAttribute(angles, 1));
+	return geometry;
 }
 
-particlesGeometry.setAttribute('aIntensity', new BufferAttribute(intensities, 1));
-particlesGeometry.setAttribute('aAngle', new BufferAttribute(angles, 1));
+const aspect = computed(() => sizes.width.value / sizes.height.value);
+const particlesGeometry = shallowRef(createParticlesGeometry(aspect.value));
+
+watch(aspect, async (next) => {
+	const previous = particlesGeometry.value;
+	particlesGeometry.value = createParticlesGeometry(next);
+	await nextTick();
+	previous.dispose();
+});
+
+onBeforeUnmount(() => {
+	particlesGeometry.value.dispose();
+});
 
 // --- Shader material ---
 const particlesMaterial = new ShaderMaterial({
