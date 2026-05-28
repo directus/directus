@@ -11,7 +11,6 @@ import {
 	rest,
 	type RestClient,
 	staticToken,
-	updatePermission,
 } from '@directus/sdk';
 import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
@@ -20,16 +19,40 @@ import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { createSandboxOptions } from '../shared.js';
 
 const CUSTOM_RULE_SHAPES = [
-	['validation', JSON.stringify({ first_name: { _nnull: true } })],
-	['presets', JSON.stringify({ status: 'draft' })],
-	['permissions', JSON.stringify({ id: { _eq: 1 } })],
+	['validation', { first_name: { _nnull: true } }],
+	['presets', { status: 'draft' }],
+	['permissions', { id: { _eq: 1 } }],
 	['fields', ['email']],
 ] as const;
 
-const FULL_CUSTOM_RULE_SHAPE = CUSTOM_RULE_SHAPES.reduce(
-	(acc, [label, shape]) => ({ ...acc, [label]: JSON.stringify(shape) }),
-	{},
-);
+const FULL_CUSTOM_RULE_SHAPE = Object.fromEntries(CUSTOM_RULE_SHAPES);
+
+function permissionToDb(permission: Record<string, unknown>): Record<string, unknown> {
+	if (Array.isArray(permission['fields'])) {
+		permission['fields'] = permission['fields'].join(',');
+	}
+
+	for (const key of ['permissions', 'validation', 'presets']) {
+		const value = permission[key];
+
+		if (value && typeof value === 'object') {
+			permission[key] = JSON.stringify(value);
+		}
+	}
+
+	return permission;
+}
+
+const restrictedErrorMatcher = {
+	errors: [
+		expect.objectContaining({
+			extensions: expect.objectContaining({
+				code: 'RESOURCE_RESTRICTED',
+				category: 'custom_permission_rules_enabled',
+			}),
+		}),
+	],
+};
 
 function buildPermission(overrides?: Record<string, unknown>) {
 	return merge(
@@ -70,16 +93,15 @@ describe('custom_permission_rules_enabled', () => {
 
 		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
-		// seed permissions
-		await directus.knex!('directus_permissions').insert(buildPermission({ fields: '*' }));
+		const seeds = [
+			buildPermission({ fields: ['*'] }),
+			...CUSTOM_RULE_SHAPES.map(([field, shape]) => buildPermission({ [field]: shape })),
+			buildPermission(FULL_CUSTOM_RULE_SHAPE),
+		];
 
-		for (const [field, shape] of CUSTOM_RULE_SHAPES) {
-			await directus.knex!('directus_permissions').insert(
-				buildPermission({ [field]: field === 'fields' ? shape.join(',') : shape }),
-			);
+		for (const seed of seeds) {
+			await directus.knex!('directus_permissions').insert(permissionToDb(seed));
 		}
-
-		await directus.knex!('directus_permissions').insert(buildPermission(FULL_CUSTOM_RULE_SHAPE));
 	});
 
 	afterAll(async () => {
@@ -90,30 +112,16 @@ describe('custom_permission_rules_enabled', () => {
 		test.each(CUSTOM_RULE_SHAPES)(
 			'POST /permissions with custom %s rejects with RESOURCE_RESTRICTED',
 			async (field, shape) => {
-				await expect(api.request(createPermission(buildPermission({ [field]: shape })))).rejects.toMatchObject({
-					errors: [
-						expect.objectContaining({
-							extensions: expect.objectContaining({
-								code: 'RESOURCE_RESTRICTED',
-								category: 'custom_permission_rules_enabled',
-							}),
-						}),
-					],
-				});
+				await expect(api.request(createPermission(buildPermission({ [field]: shape })))).rejects.toMatchObject(
+					restrictedErrorMatcher,
+				);
 			},
 		);
 
 		test('POST /permissions with all custom fields rejects with RESOURCE_RESTRICTED', async () => {
-			await expect(api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE)))).rejects.toMatchObject({
-				errors: [
-					expect.objectContaining({
-						extensions: expect.objectContaining({
-							code: 'RESOURCE_RESTRICTED',
-							category: 'custom_permission_rules_enabled',
-						}),
-					}),
-				],
-			});
+			await expect(api.request(createPermission(buildPermission(FULL_CUSTOM_RULE_SHAPE)))).rejects.toMatchObject(
+				restrictedErrorMatcher,
+			);
 		});
 
 		test('GET /permissions filters out custom rules', async () => {
@@ -130,27 +138,11 @@ describe('custom_permission_rules_enabled', () => {
 			await expect(
 				api.request(
 					createPermissions([
-						buildPermission({
-							action: 'read',
-							fields: ['*'],
-						}),
-						buildPermission({
-							action: 'read',
-							fields: ['*'],
-							validation: { first_name: { _nnull: true } },
-						}),
+						buildPermission({ action: 'read', fields: ['*'] }),
+						buildPermission({ action: 'read', fields: ['*'], validation: { first_name: { _nnull: true } } }),
 					] as any),
 				),
-			).rejects.toMatchObject({
-				errors: [
-					expect.objectContaining({
-						extensions: expect.objectContaining({
-							code: 'RESOURCE_RESTRICTED',
-							category: 'custom_permission_rules_enabled',
-						}),
-					}),
-				],
-			});
+			).rejects.toMatchObject(restrictedErrorMatcher);
 		});
 
 		// LICENSE-TODO: Relax restrictions on patch requests to allow no fields
@@ -161,17 +153,13 @@ describe('custom_permission_rules_enabled', () => {
 		// });
 
 		test('DELETE /permissions/:id of custom-rule row succeeds', async () => {
+			const collection = `${getUID()}-delete-test`;
+
 			await directus.knex!('directus_permissions').insert(
-				buildPermission({
-					collection: `${getUID()}-delete-test`,
-					validation: JSON.stringify({ first_name: { _nnull: true } }),
-				}),
+				permissionToDb(buildPermission({ collection, validation: { first_name: { _nnull: true } } })),
 			);
 
-			const row = await directus.knex!('directus_permissions')
-				.select('id')
-				.where('collection', `${getUID()}-delete-test`)
-				.first();
+			const row = await directus.knex!('directus_permissions').select('id').where({ collection }).first();
 
 			await expect(api.request(deletePermission(row.id))).resolves.not.toThrow();
 		});
@@ -187,9 +175,7 @@ describe('custom_permission_rules_enabled', () => {
 		});
 
 		test.each(CUSTOM_RULE_SHAPES)('POST /permissions with custom %s succeeds', async (field, shape) => {
-			await expect(
-				api.request(createPermission(buildPermission({ [field]: JSON.stringify(shape) }))),
-			).resolves.toBeDefined();
+			await expect(api.request(createPermission(buildPermission({ [field]: shape })))).resolves.toBeDefined();
 		});
 
 		test('POST /permissions with all custom fields succeeds', async () => {
