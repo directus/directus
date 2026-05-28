@@ -38,6 +38,7 @@ describe('/mcp-oauth discovery endpoints', () => {
 			resource: getResourceUrl(),
 			authorization_servers: [baseUrl],
 			scopes_supported: ['mcp:access'],
+			bearer_methods_supported: ['header'],
 		});
 	});
 
@@ -49,6 +50,7 @@ describe('/mcp-oauth discovery endpoints', () => {
 			resource: getResourceUrl(),
 			authorization_servers: [baseUrl],
 			scopes_supported: ['mcp:access'],
+			bearer_methods_supported: ['header'],
 		});
 	});
 
@@ -101,6 +103,10 @@ describe('POST /mcp-oauth/register', () => {
 			redirect_uris: [`${baseUrl}/callback`],
 			grant_types: ['authorization_code', 'refresh_token'],
 			token_endpoint_auth_method: 'none',
+			client_uri: 'https://client.example.com',
+			logo_uri: 'https://client.example.com/logo.png',
+			tos_uri: 'https://client.example.com/terms',
+			policy_uri: 'https://client.example.com/privacy',
 		});
 
 		const body = await expectJsonResponse(response, 201);
@@ -113,6 +119,26 @@ describe('POST /mcp-oauth/register', () => {
 			response_types: ['code'],
 			token_endpoint_auth_method: 'none',
 			client_id_issued_at: expect.any(Number),
+			client_uri: 'https://client.example.com',
+			logo_uri: 'https://client.example.com/logo.png',
+			tos_uri: 'https://client.example.com/terms',
+			policy_uri: 'https://client.example.com/privacy',
+		});
+	});
+
+	test('defaults omitted grant_types to authorization_code', async () => {
+		const response = await postJson('/mcp-oauth/register', {
+			client_name: 'Default Grant MCP Client',
+			redirect_uris: [`${baseUrl}/callback-default-grant`],
+			token_endpoint_auth_method: 'none',
+		});
+
+		const body = await expectJsonResponse(response, 201);
+
+		expect(body).toMatchObject({
+			client_id: expect.any(String),
+			grant_types: ['authorization_code'],
+			response_types: ['code'],
 		});
 	});
 
