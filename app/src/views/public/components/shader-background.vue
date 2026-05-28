@@ -18,7 +18,7 @@ const clearColor = computed(() => {
 	try {
 		const hsl = { h: 0, s: 0, l: 0 };
 		new Color(props.projectColor).getHSL(hsl);
-		return new Color().setHSL(hsl.h, Math.min(hsl.s, 0.6), 0.001).getStyle();
+		return new Color().setHSL(hsl.h, Math.min(hsl.s, 0.6), 0.005).getStyle();
 	} catch {
 		return DEFAULT_CLEAR;
 	}
