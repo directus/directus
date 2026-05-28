@@ -81,7 +81,7 @@ Even above those thresholds, a free Core tier is available to explore and build 
 
 ### Commercial License
 
-Larger organizations using advanced or enterprise features require a commercial license. See [our pricing](https://directus.io/pricing/self-hosted) for details.
+Larger organizations using advanced or enterprise features require a commercial license. See [our pricing](https://directus.io/pricing) for details.
 This model helps us maintain a sustainable balance: keeping Directus free for the majority of our community while
 ensuring larger organizations who benefit from the platform contribute to its continued development.
 
