@@ -23,7 +23,6 @@ beforeAll(async () => {
 		env: {
 			CACHE_SCHEMA: 'false',
 			DB_FILENAME: `directus_test_${getUID()}.db`,
-			LICENSE_KEY: license.key,
 		},
 		hooks: {
 			async beforeApi({ env }) {
