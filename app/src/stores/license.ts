@@ -171,7 +171,7 @@ export const useLicenseStore = defineStore('licenseStore', () => {
 	async function hydrateAddons() {
 		if (!useUserStore().isAdmin) return;
 
-		if (!info.value || info.value.source === null) {
+		if (!info.value || info.value.source === null || info.value.offline === true) {
 			addons.value = null;
 			return;
 		}
