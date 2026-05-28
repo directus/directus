@@ -1,5 +1,5 @@
 import { activateLicense, readLicense } from '@directus/license';
-import { createLicense } from '@directus/mock-license-server';
+import { createLicense, mockClient } from '@directus/mock-license-server';
 import { type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, type DirectusClient, rest, type RestClient, staticToken } from '@directus/sdk';
 import { database } from '@utils/constants.js';
@@ -20,7 +20,7 @@ describe('env license source', () => {
 					env: { LICENSE_KEY: license.key },
 					hooks: {
 						beforeApi: async ({ env }) => {
-							await registerLicense(env.LICENSE_PORT, license);
+							await mockClient.registerLicense(env.LICENSE_API_URL!, license);
 						},
 					},
 					extras: {
@@ -72,15 +72,16 @@ describe('env license source', () => {
 						LICENSE_KEY: changedLicense.key,
 						SECRET: '7f96fdc0-cc0f-4359-b0db-d6d40d6b9982',
 					},
+					knex: true,
 					hooks: {
 						beforeApi: async ({ env, knex }) => {
-							await registerLicense(env.LICENSE_PORT, license);
-							await registerLicense(env.LICENSE_PORT, changedLicense);
+							await mockClient.registerLicense(env.LICENSE_API_URL!, license);
+							await mockClient.registerLicense(env.LICENSE_API_URL!, changedLicense);
 
 							const settings = await knex!.select('id', 'project_id').from('directus_settings').limit(1).first();
 
 							// simulate activation of the original license against the mock server
-							await mocActivateKey(env.LICENSE_PORT, {
+							await mockClient.activateKey(env.LICENSE_API_URL!, {
 								license_key: license.key,
 								project_id: settings.project_id,
 								public_url: env.PUBLIC_URL,
@@ -88,6 +89,9 @@ describe('env license source', () => {
 
 							await knex!('directus_settings').update({ license_key: encryptedicenseKey }).where({ id: settings.id });
 						},
+					},
+					extras: {
+						license: true,
 					},
 				}),
 			);
@@ -130,6 +134,9 @@ describe('env license source', () => {
 						beforeApi: async ({ env }) => {
 							await registerLicense(env.LICENSE_PORT, license);
 						},
+					},
+					extras: {
+						license: true,
 					},
 				}),
 			);
@@ -175,6 +182,7 @@ describe('db license source', () => {
 				database,
 				createSandboxOptions({
 					env: { SECRET: 'b05c5a1d-be33-4dbc-bb79-91c8492a8b00' },
+					knex: true,
 					hooks: {
 						beforeApi: async ({ env, knex }) => {
 							await registerLicense(env.LICENSE_PORT, license);
@@ -182,6 +190,9 @@ describe('db license source', () => {
 							const settings = await knex!.select('id').from('directus_settings').limit(1).first();
 							await knex!('directus_settings').update({ license_key: encryptedLicenseKey }).where({ id: settings.id });
 						},
+					},
+					extras: {
+						license: true,
 					},
 				}),
 			);
@@ -223,6 +234,9 @@ describe('db license source', () => {
 						beforeApi: async ({ env }) => {
 							await registerLicense(env.LICENSE_PORT, license);
 						},
+					},
+					extras: {
+						license: true,
 					},
 				}),
 			);
