@@ -28,57 +28,56 @@ const fields = [
 const item: DeepPartial<Articles> = {
 	title: 'Article 1',
 	author: {
-		id: 1,
 		name: 'Author 1',
 	},
-	links: [
-		{
-			id: 1,
-			link: 'Link A',
-		},
-		{
-			id: 2,
-			link: 'Link B',
-		},
-	],
-	tags: [
-		{
-			id: 1,
-			tags_id: {
-				id: 1,
-				tag: 'Tag A',
-			},
-		},
-		{
-			id: 2,
-			tags_id: {
-				id: 2,
-				tag: 'Tag B',
-			},
-		},
-	],
+	links: [{ link: 'Link A' }, { link: 'Link B' }],
+	tags: [{ tags_id: { tag: 'Tag A' } }, { tags_id: { tag: 'Tag B' } }],
 	blocks: [
 		{
-			id: 1,
 			collection: collections.text_blocks,
-			item: {
-				id: 1,
-				text: 'Text A',
-			},
+			item: { text: 'Text A' },
 		},
 		{
-			id: 2,
 			collection: collections.date_blocks,
-			item: {
-				id: 1,
-				date: `2026-05-28`,
-			},
+			item: { date: `2026-05-28` },
 		},
 	],
 } as const;
 
 test(`version response`, async () => {
-	const result = await api.request(createItem(collections.articles, item));
+	const result = await api.request(
+		createItem(collections.articles, item, {
+			fields: [
+				'id',
+				'author',
+				{ links: ['id'] },
+				{ tags: ['id', { tags_id: ['id'] }] },
+				{ blocks: ['id', 'collection', 'item.*' as any] },
+			],
+		}),
+	);
+
+	const authorId = result.author as number;
+	const [{ id: linkAId }, { id: linkBId }] = result.links as unknown as [{ id: number }, { id: number }];
+
+	const [
+		{
+			id: tagAJunctionId,
+			tags_id: { id: tagAId },
+		},
+		{
+			id: tagBJunctionId,
+			tags_id: { id: tagBId },
+		},
+	] = result.tags as unknown as [{ id: number; tags_id: { id: number } }, { id: number; tags_id: { id: number } }];
+
+	const [
+		{
+			id: blockAJunctionId,
+			item: { id: textAId },
+		},
+		{ id: blockBJunctionId },
+	] = result.blocks as unknown as [{ id: number; item: { id: number } }, { id: number; item: { id: number } }];
 
 	const versionResult = await api.request(
 		createContentVersion({
@@ -101,39 +100,39 @@ test(`version response`, async () => {
 	expect(response).toMatchObject({
 		id: result.id,
 		title: 'Changed',
-		author: 1,
-		tags: [1, 2],
-		blocks: [1, 2],
-		links: [1, 2],
+		author: authorId,
+		tags: [tagAJunctionId, tagBJunctionId],
+		blocks: [blockAJunctionId, blockBJunctionId],
+		links: [linkAId, linkBId],
 	});
 
 	let delta: Record<string, any> = {
 		title: 'Changed',
 		author: {
-			id: 1,
+			id: authorId,
 			name: 'Changed',
 		},
 		links: [
 			{
-				id: 1,
+				id: linkAId,
 				link: 'Link A Changed',
 			},
 		],
 		tags: [
 			{
-				id: 1,
+				id: tagAJunctionId,
 				tags_id: {
-					id: 1,
+					id: tagAId,
 					tag: 'Tag A Changed',
 				},
 			},
 		],
 		blocks: [
 			{
-				id: 1,
+				id: blockAJunctionId,
 				collection: collections.text_blocks,
 				item: {
-					id: 1,
+					id: textAId,
 					text: 'Text A Changed',
 				},
 			},
@@ -153,28 +152,28 @@ test(`version response`, async () => {
 		id: result.id,
 		title: 'Changed',
 		author: {
-			id: 1,
+			id: authorId,
 			name: 'Changed',
 		},
 		tags: [
 			{
-				id: 1,
+				id: tagAJunctionId,
 				tags_id: {
-					id: 1,
+					id: tagAId,
 					tag: 'Tag A Changed',
 				},
 			},
 		],
 		blocks: [
 			{
-				id: 1,
-				item: { id: 1, text: 'Text A Changed' },
+				id: blockAJunctionId,
+				item: { id: textAId, text: 'Text A Changed' },
 				collection: collections.text_blocks,
 			},
 		],
 		links: [
 			{
-				id: 1,
+				id: linkAId,
 				link: 'Link A Changed',
 			},
 		],
@@ -192,11 +191,11 @@ test(`version response`, async () => {
 			],
 			update: [
 				{
-					id: 2,
+					id: linkBId,
 					link: 'Link B Changed',
 				},
 			],
-			delete: [1],
+			delete: [linkAId],
 		},
 		tags: {
 			create: [
@@ -208,14 +207,14 @@ test(`version response`, async () => {
 			],
 			update: [
 				{
-					id: 2,
+					id: tagBJunctionId,
 					tags_id: {
-						id: 2,
+						id: tagBId,
 						tag: 'Tag B Changed',
 					},
 				},
 			],
-			delete: [1],
+			delete: [tagAJunctionId],
 		},
 		blocks: {
 			create: [
@@ -228,15 +227,15 @@ test(`version response`, async () => {
 			],
 			update: [
 				{
-					id: 1,
+					id: blockAJunctionId,
 					collection: collections.text_blocks,
 					item: {
-						id: 1,
+						id: textAId,
 						text: 'Text B Changed',
 					},
 				},
 			],
-			delete: [2],
+			delete: [blockBJunctionId],
 		},
 	};
 
@@ -252,7 +251,7 @@ test(`version response`, async () => {
 	expect(response).toMatchObject({
 		links: [
 			{
-				id: 2,
+				id: linkBId,
 				link: 'Link B Changed',
 			},
 			{
@@ -262,9 +261,9 @@ test(`version response`, async () => {
 		],
 		tags: [
 			{
-				id: 2,
+				id: tagBJunctionId,
 				tags_id: {
-					id: 2,
+					id: tagBId,
 					tag: 'Tag B Changed',
 				},
 			},
@@ -278,8 +277,8 @@ test(`version response`, async () => {
 		],
 		blocks: [
 			{
-				id: 1,
-				item: { id: 1, text: 'Text B Changed' },
+				id: blockAJunctionId,
+				item: { id: textAId, text: 'Text B Changed' },
 				collection: collections.text_blocks,
 			},
 			{
