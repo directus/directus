@@ -1,12 +1,12 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InternalServerError, isDirectusError } from '@directus/errors';
+import { ForbiddenError } from '@directus/errors';
 import type { Filter, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { deepMapWithSchema, getRelationInfo } from '@directus/utils';
 import { getNodeEnv } from '@directus/utils/node';
 import { cloneDeep, intersection, pick, uniq } from 'lodash-es';
-import { useLogger } from '../../logger/index.js';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
+import { removeCircular } from './remove-circular.js';
 import { splitRecursive } from './split-recursive.js';
 
 export type VersionMeta = {
@@ -135,17 +135,17 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 					throw error;
 				}
 
-				const sanitized = sanitizeError(error);
+				sanitizeError(error);
 
 				if (!item) {
 					itemlessErrors.push({
-						error: sanitized,
+						error,
 						version_id: id,
 						delta,
 					});
 				} else {
 					itemMeta[item] = {
-						error: sanitized,
+						error,
 						version_id: id,
 						delta,
 					};
@@ -276,28 +276,10 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey | nu
 	return results;
 }
 
-function sanitizeError(error: unknown): NonNullable<VersionMeta['error']> {
-	if (isDirectusError(error)) {
-		const extensions: { code: string; [key: string]: any } = {
-			...(error.extensions ?? {}),
-			code: error.code,
-		};
-
-		if (getNodeEnv() === 'development' && error.stack) {
-			extensions['stack'] = error.stack;
-		}
-
-		return { message: error.message, extensions };
+function sanitizeError(error: Error) {
+	if (getNodeEnv() !== 'development') {
+		delete error.stack;
 	}
 
-	useLogger().error(error);
-
-	const fallback = new InternalServerError();
-	const extensions: { code: string; [key: string]: any } = { code: fallback.code };
-
-	if (getNodeEnv() === 'development' && error instanceof Error && error.stack) {
-		extensions['stack'] = error.stack;
-	}
-
-	return { message: fallback.message, extensions };
+	removeCircular(error);
 }
