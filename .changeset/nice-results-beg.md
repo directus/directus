@@ -16,4 +16,8 @@
 
 Changed license to MSCL-1.0-GPL
 
+::: notice
 
+- Breaking Change: Relicensed from BUSL-1.1 to MSCL-1.0-GPL (Monospace Sustainable Core License, Version 1.0).
+
+:::
