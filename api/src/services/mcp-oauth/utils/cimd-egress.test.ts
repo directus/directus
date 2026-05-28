@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { CimdEgressError, type CimdResolver, createCimdLookup, validateCimdHostnameEgress } from './cimd-egress.js';
+import { CimdEgressError, type CimdResolver, validateCimdHostnameEgress } from './cimd-egress.js';
 import { isSpecialUseIp } from './egress-policy.js';
 
 function createResolver(
@@ -22,18 +22,6 @@ function dnsError(code: string) {
 	const error = new Error(code) as NodeJS.ErrnoException;
 	error.code = code;
 	return error;
-}
-
-function deferred<T>() {
-	let resolve!: (value: T) => void;
-	let reject!: (error: Error) => void;
-
-	const promise = new Promise<T>((res, rej) => {
-		resolve = res;
-		reject = rej;
-	});
-
-	return { promise, resolve, reject };
 }
 
 async function expectCimdError(promise: Promise<unknown>, reason: CimdEgressError['reason']) {
@@ -200,127 +188,5 @@ describe('validateCimdHostnameEgress', () => {
 
 		expect(resolver.resolve4).not.toHaveBeenCalled();
 		expect(resolver.resolve6).not.toHaveBeenCalled();
-	});
-});
-
-describe('createCimdLookup', () => {
-	it('shapes options.all lookup results for both families', async () => {
-		const resolver = createResolver({
-			A: ['8.8.8.8'],
-			AAAA: ['2606:4700:4700::1111'],
-		});
-
-		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
-		const callback = vi.fn();
-
-		lookup('directus.io', { all: true }, callback);
-
-		await vi.waitFor(() => {
-			expect(callback).toHaveBeenCalledOnce();
-		});
-
-		expect(callback).toHaveBeenCalledWith(null, [
-			{ address: '8.8.8.8', family: 4 },
-			{ address: '2606:4700:4700::1111', family: 6 },
-		]);
-	});
-
-	it('shapes family-specific all lookup results after validating both DNS families', async () => {
-		const resolver = createResolver({
-			A: ['8.8.8.8'],
-			AAAA: ['2606:4700:4700::1111'],
-		});
-
-		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
-		const callback = vi.fn();
-
-		lookup('directus.io', { all: true, family: 6 }, callback);
-
-		await vi.waitFor(() => {
-			expect(callback).toHaveBeenCalledOnce();
-		});
-
-		expect(resolver.resolve4).toHaveBeenCalledOnce();
-		expect(callback).toHaveBeenCalledWith(null, [{ address: '2606:4700:4700::1111', family: 6 }]);
-	});
-
-	it('fails lookup when an unrequested family contains a special-use address', async () => {
-		const resolver = createResolver({
-			A: ['127.0.0.1'],
-			AAAA: ['2606:4700:4700::1111'],
-		});
-
-		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
-		const callback = vi.fn();
-
-		lookup('directus.io', { all: true, family: 6 }, callback);
-
-		await vi.waitFor(() => {
-			expect(callback).toHaveBeenCalledOnce();
-		});
-
-		expect(callback.mock.calls[0]?.[0]).toMatchObject({ reason: 'cimd_dns_special_use_ip' });
-	});
-
-	it('shapes single-address lookup results', async () => {
-		const resolver = createResolver({
-			A: ['8.8.8.8'],
-			AAAA: ['2606:4700:4700::1111'],
-		});
-
-		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
-		const callback = vi.fn();
-
-		lookup('directus.io', { family: 4 }, callback);
-
-		await vi.waitFor(() => {
-			expect(callback).toHaveBeenCalledOnce();
-		});
-
-		expect(callback).toHaveBeenCalledWith(null, '8.8.8.8', 4);
-	});
-
-	it('fails closed when the requested family has no validated address after full validation', async () => {
-		const resolver = createResolver({ AAAA: ['2606:4700:4700::1111'] }, { A: dnsError('ENODATA') });
-
-		const lookup = createCimdLookup({ deadlineAt: performance.now() + 1_000, resolver });
-		const callback = vi.fn();
-
-		lookup('directus.io', { family: 4 }, callback);
-
-		await vi.waitFor(() => {
-			expect(callback).toHaveBeenCalledOnce();
-		});
-
-		expect(callback.mock.calls[0]?.[0]).toBeInstanceOf(CimdEgressError);
-		expect(callback.mock.calls[0]?.[0]).toMatchObject({ reason: 'cimd_dns_empty_result' });
-	});
-
-	it('settles the callback only once when resolver completion arrives after timeout', async () => {
-		const pendingA = deferred<string[]>();
-		const pendingAAAA = deferred<string[]>();
-
-		const resolver: CimdResolver = {
-			resolve4: vi.fn(() => pendingA.promise),
-			resolve6: vi.fn(() => pendingAAAA.promise),
-		};
-
-		const lookup = createCimdLookup({ deadlineAt: performance.now() + 5, resolver });
-		const callback = vi.fn();
-
-		lookup('directus.io', { family: 4 }, callback);
-
-		await vi.waitFor(() => {
-			expect(callback).toHaveBeenCalledOnce();
-		});
-
-		expect(callback.mock.calls[0]?.[0]).toMatchObject({ reason: 'cimd_dns_timeout' });
-
-		pendingA.resolve(['8.8.8.8']);
-		pendingAAAA.resolve(['2606:4700:4700::1111']);
-
-		await new Promise((resolve) => setTimeout(resolve, 10));
-
-		expect(callback).toHaveBeenCalledOnce();
 	});
 });

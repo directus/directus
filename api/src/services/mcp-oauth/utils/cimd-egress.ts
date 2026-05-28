@@ -42,78 +42,10 @@ export interface ValidatedCimdAddresses {
 	addresses6: string[];
 }
 
-type AddressFamily = 4 | 6 | undefined;
-
-interface CimdLookupAddress {
-	address: string;
-	family?: AddressFamily;
-}
-
-type LookupCallback = (
-	error: Error | null,
-	address: string | CimdLookupAddress | CimdLookupAddress[],
-	family?: AddressFamily,
-) => void;
-
-interface CimdLookupOptions {
-	all?: boolean;
-	family?: unknown;
-}
-
-type CimdLookup = (hostname: string, options: object, callback: LookupCallback) => void;
-
 const defaultResolver: CimdResolver = {
 	resolve4,
 	resolve6,
 };
-
-/*
- * Axios passes this function down to Node's http/https stack as the per-request
- * DNS lookup hook. Returning our already-validated address prevents Node from
- * doing a second unchecked lookup immediately before opening the socket.
- */
-export function createCimdLookup(options: { deadlineAt: number; resolver?: CimdResolver }): CimdLookup {
-	return (hostname: string, optionsOrCallback: object, callback: LookupCallback) => {
-		const lookupOptions = normalizeLookupOptions(optionsOrCallback);
-
-		let settled = false;
-
-		const settleOnce = (settle: () => void) => {
-			if (settled) return;
-
-			settled = true;
-			settle();
-		};
-
-		const validationOptions: { deadlineAt: number; resolver?: CimdResolver } = { deadlineAt: options.deadlineAt };
-
-		if (options.resolver) {
-			validationOptions.resolver = options.resolver;
-		}
-
-		validateCimdHostnameEgress(hostname, validationOptions)
-			.then((addresses) => {
-				const family = lookupOptions.family;
-				const selected = selectAddresses(addresses, family);
-
-				if (selected.length === 0) {
-					settleOnce(() => callback(new CimdEgressError('cimd_dns_empty_result'), ''));
-					return;
-				}
-
-				if (lookupOptions.all) {
-					settleOnce(() => callback(null, selected));
-					return;
-				}
-
-				const first = selected[0]!;
-				settleOnce(() => callback(null, first.address, first.family));
-			})
-			.catch((error: Error) => {
-				settleOnce(() => callback(error, ''));
-			});
-	};
-}
 
 /*
  * Fetch and refresh paths validate the hostname immediately before outbound
@@ -202,32 +134,4 @@ async function withDeadline<T>(promise: Promise<T>, deadlineAt: number): Promise
 	} finally {
 		if (timeoutId) clearTimeout(timeoutId);
 	}
-}
-
-function normalizeLookupOptions(options: object): {
-	all: boolean;
-	family: 0 | 4 | 6;
-} {
-	const lookupOptions = options as CimdLookupOptions;
-
-	return {
-		all: lookupOptions.all === true,
-		family: normalizeFamily(lookupOptions.family),
-	};
-}
-
-function normalizeFamily(family: unknown): 0 | 4 | 6 {
-	if (family === 4 || family === 'IPv4') return 4;
-	if (family === 6 || family === 'IPv6') return 6;
-	return 0;
-}
-
-function selectAddresses(addresses: ValidatedCimdAddresses, family: 0 | 4 | 6): CimdLookupAddress[] {
-	const addresses4 = addresses.addresses4.map((address) => ({ address, family: 4 as const }));
-	const addresses6 = addresses.addresses6.map((address) => ({ address, family: 6 as const }));
-
-	if (family === 4) return addresses4;
-	if (family === 6) return addresses6;
-
-	return [...addresses4, ...addresses6];
 }
