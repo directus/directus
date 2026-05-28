@@ -34,6 +34,12 @@ const mockServerInfo = {
 		public_registration_verify_email: null,
 	},
 	license: null,
+	mcp_enabled: true,
+	ai_enabled: true,
+	mcp_oauth_enabled: true,
+	mcp_oauth_dcr_enabled: false,
+	mcp_oauth_cimd_enabled: true,
+	setupCompleted: true,
 };
 
 const mockAuthProviders: Auth['providers'] = [
@@ -80,6 +86,35 @@ describe('hydrate action', async () => {
 
 		expect(serverStore.info.project).toEqual(mockServerInfo.project);
 		expect(serverStore.info.license).toEqual(mockServerInfo.license);
+	});
+
+	test('should hydrate MCP OAuth env capability flags', async () => {
+		apiGetSpy.mockImplementation((path: string) => {
+			if (path === '/server/info') {
+				return Promise.resolve({
+					data: {
+						data: {
+							mcp_oauth_enabled: true,
+							mcp_oauth_dcr_enabled: false,
+							mcp_oauth_cimd_enabled: true,
+						},
+					},
+				});
+			}
+
+			if (path.startsWith('/auth')) {
+				return Promise.resolve({ data: {} });
+			}
+
+			return;
+		});
+
+		const serverStore = useServerStore();
+		await serverStore.hydrate();
+
+		expect(serverStore.info.mcp_oauth_enabled).toBe(true);
+		expect(serverStore.info.mcp_oauth_dcr_enabled).toBe(false);
+		expect(serverStore.info.mcp_oauth_cimd_enabled).toBe(true);
 	});
 
 	test('should hydrate auth', async () => {

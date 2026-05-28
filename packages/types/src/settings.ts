@@ -81,6 +81,7 @@ export type Settings = {
 	ai_translation_glossary: Array<{ term: string; translation_note?: string }> | null;
 	ai_translation_style_guide: string | null;
 	mcp_enabled: boolean;
+	mcp_oauth_enabled: boolean;
 	mcp_allow_deletes: boolean;
 	mcp_prompts_collection: string | null;
 	mcp_system_prompt_enabled: boolean;
