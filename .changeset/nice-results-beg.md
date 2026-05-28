@@ -1,4 +1,6 @@
 ---
+'@directus/api': major
+'@directus/app': major
 '@directus/extensions': major
 '@directus/extensions-registry': major
 '@directus/extensions-sdk': major
