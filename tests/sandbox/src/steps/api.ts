@@ -103,20 +103,15 @@ export type Api = {
 export async function startApi(opts: Options, env: Env, logger: Logger) {
 	const apiCount = Math.max(1, Number(opts.instances));
 
+	// Trust env.PORT/opts.port — port resolution is the responsibility of
+	// getOptions (initial boot) or restartApi (restart-after-TIME_WAIT).
+	// Re-resolving here would deadlock against get-port's 15s lockedPorts cache.
 	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * (opts.inspect ? 2 : 1));
 
 	return (await Promise.all(
-		apiPorts.map(async (preferredPort) => {
-			const port = await getPort(preferredPort);
+		apiPorts.map(async (port) => {
 			const newLogger = apiCount > 1 ? logger.addGroup(`API ${port}`) : logger;
-			// Keep PORT and PUBLIC_URL in sync — getPort may fall back to a
-			// different port (TIME_WAIT after restart, collision with another
-			// sandbox) and the API advertises PUBLIC_URL as its iss/issuer.
-			return startApiInstance(
-				{ ...opts, port },
-				{ ...env, PORT: String(port), PUBLIC_URL: `http://${env.HOST}:${port}` },
-				newLogger,
-			);
+			return startApiInstance({ ...opts, port }, { ...env, PORT: String(port) }, newLogger);
 		}),
 	)) as [Api, ...Api[]];
 }

@@ -295,6 +295,23 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 	async function restartApi() {
 		apis?.forEach((api) => kill(api.process));
+
+		// Re-resolve the port — the just-killed API may keep the port in
+		// TIME_WAIT for a short window. getPort falls back to a free port if
+		// the requested one is taken, and we propagate that everywhere
+		// (opts.port, env.PORT, env.PUBLIC_URL) so the API and any consumer of
+		// directus.apis/env stay in lockstep.
+		const resolvedPort = await getPort(opts.port);
+
+		if (resolvedPort !== opts.port) {
+			opts.port = resolvedPort;
+			env.PORT = String(resolvedPort);
+
+			const publicUrl = new URL(env.PUBLIC_URL);
+			publicUrl.port = String(resolvedPort);
+			env.PUBLIC_URL = publicUrl.toString().replace(/\/$/, '');
+		}
+
 		apis = await startApi(opts, env, logger);
 	}
 
