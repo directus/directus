@@ -28,7 +28,7 @@
 		"directory": "api"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "MSCL-1.0-GPL",
 	"author": {
 		"name": "Monospace Inc",
 		"email": "info@monospace.io",
