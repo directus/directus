@@ -15,12 +15,19 @@ uniform float uGridCellSize;
 uniform float uDisplacementStrength;
 uniform float uMinCellSize;
 uniform float uMaxCellSize;
-
-attribute float aIntensity;
-attribute float aAngle;
+uniform float uPlaneWidth;
+uniform float uMaskRightOffset;
 
 varying vec3 vColor;
 varying float vMask;
+
+// Stable 2D hash — used to derive per-particle randomness from world position.
+// Same position → same value across resizes, so rebuilding the grid doesn't reshuffle the look.
+float hash21(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
+}
 
 // Ashima Arts simplex noise
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -71,6 +78,9 @@ void main() {
   vec3 newPosition = position;
   float t = uTime * uSpeed;
 
+  float aIntensity = hash21(position.xy * 0.37);
+  float aAngle = hash21(position.xy * 0.73 + 13.7) * 6.2831853;
+
   // --- Domain-warped FBM → waveIntensity ---
   vec2 q = vec2(
     fbm(uv * 2.0 + t * 0.02),
@@ -86,10 +96,12 @@ void main() {
   float noiseBlend = snoise(uv * 3.0 + t * 0.005) * 0.5 + 0.5;
   vColor = mix(uColorSecondary, uColorPrimary, waveIntensity * noiseBlend);
 
-  // --- Scrolling sine mask ---
+  // --- Scrolling sine mask (anchored to plane's right edge in world units) ---
+  float worldX = (uv.x - 0.5) * uPlaneWidth;
+  float maskCenterX = uPlaneWidth * 0.5 - uMaskRightOffset;
   float sineEdge = uSineAmplitude * sin(uv.y * uSineFrequency * PI + uTime * uSineSpeed);
-  float maskX = uv.x - (0.45 + sineEdge);
-  vMask = smoothstep(-0.05, 0.08, maskX);
+  float maskX = worldX - (maskCenterX + sineEdge);
+  vMask = smoothstep(-0.5, 0.8, maskX);
 
   // --- Cursor displacement (subtle) ---
   float displacementIntensity = texture2D(uDisplacementTexture, uv).r;

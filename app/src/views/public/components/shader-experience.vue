@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLoop, useTresContext } from '@tresjs/core';
-import { BufferAttribute, Color, DataTexture, PlaneGeometry, ShaderMaterial, Uniform, Vector2, Vector3 } from 'three';
+import { Color, DataTexture, PlaneGeometry, ShaderMaterial, Uniform, Vector2, Vector3 } from 'three';
 import { computed, nextTick, onBeforeUnmount, shallowRef, watch } from 'vue';
 import fragmentShader from '../shaders/fragment.glsl';
 import vertexShader from '../shaders/vertex.glsl';
@@ -38,36 +38,36 @@ const displacementTexture = new DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1
 displacementTexture.needsUpdate = true;
 
 // --- Particle geometry: full plane, uniform grid ---
-const subdivisions = 64;
+// Cells are sized in screen pixels so particle density stays constant across viewport sizes.
+const TARGET_CELL_PX = 14;
 const planeHeight = 10;
 
-function createParticlesGeometry(aspect: number) {
-	const safeAspect = aspect > 0 && Number.isFinite(aspect) ? aspect : 1;
-	const subdivsX = Math.max(1, Math.round(subdivisions * safeAspect));
-	const geometry = new PlaneGeometry(planeHeight * safeAspect, planeHeight, subdivsX, subdivisions);
+function createParticlesGeometry(widthPx: number, heightPx: number) {
+	const safeHeightPx = heightPx > 0 ? heightPx : 1;
+	const safeWidthPx = widthPx > 0 ? widthPx : 1;
+	const subdivsY = Math.max(1, Math.round(safeHeightPx / TARGET_CELL_PX));
+	const subdivsX = Math.max(1, Math.round(safeWidthPx / TARGET_CELL_PX));
+	const aspect = safeWidthPx / safeHeightPx;
+	const geometry = new PlaneGeometry(planeHeight * aspect, planeHeight, subdivsX, subdivsY);
 	geometry.setIndex(null);
 	geometry.deleteAttribute('normal');
-
-	const count = geometry.attributes.position!.count;
-	const intensities = new Float32Array(count);
-	const angles = new Float32Array(count);
-
-	for (let i = 0; i < count; i++) {
-		intensities[i] = Math.random();
-		angles[i] = Math.random() * Math.PI * 2;
-	}
-
-	geometry.setAttribute('aIntensity', new BufferAttribute(intensities, 1));
-	geometry.setAttribute('aAngle', new BufferAttribute(angles, 1));
-	return geometry;
+	return { geometry, subdivsY };
 }
 
-const aspect = computed(() => sizes.width.value / sizes.height.value);
-const particlesGeometry = shallowRef(createParticlesGeometry(aspect.value));
+const canvasSize = computed(() => ({
+	width: sizes.width.value,
+	height: sizes.height.value,
+}));
 
-watch(aspect, async (next) => {
+const initial = createParticlesGeometry(canvasSize.value.width, canvasSize.value.height);
+const particlesGeometry = shallowRef(initial.geometry);
+const cellWorldSize = shallowRef(planeHeight / initial.subdivsY);
+
+watch(canvasSize, async (next) => {
 	const previous = particlesGeometry.value;
-	particlesGeometry.value = createParticlesGeometry(next);
+	const { geometry, subdivsY } = createParticlesGeometry(next.width, next.height);
+	particlesGeometry.value = geometry;
+	cellWorldSize.value = planeHeight / subdivsY;
 	await nextTick();
 	previous.dispose();
 });
@@ -88,14 +88,17 @@ const particlesMaterial = new ShaderMaterial({
 		uColorSecondary: new Uniform(initialColors.secondary),
 		uZoom: new Uniform(0.7),
 		uSizeContrast: new Uniform(3.0),
-		uSpeed: new Uniform(0.2),
+		uSpeed: new Uniform(0.05),
 		uSineFrequency: new Uniform(1.0),
-		uSineSpeed: new Uniform(0.15),
-		uSineAmplitude: new Uniform(0.12),
-		uGridCellSize: new Uniform(planeHeight / subdivisions),
+		uSineSpeed: new Uniform(0.2),
+		uSineAmplitude: new Uniform(1.2),
+		uGridCellSize: new Uniform(cellWorldSize.value),
 		uDisplacementStrength: new Uniform(0.5),
 		uMinCellSize: new Uniform(0.5),
 		uMaxCellSize: new Uniform(50.0),
+		uPlaneWidth: new Uniform(planeHeight * (canvasSize.value.width / Math.max(1, canvasSize.value.height))),
+		// World units from the plane's right edge to the mask center — keeps the mask docked to the right.
+		uMaskRightOffset: new Uniform(8.0),
 	},
 	transparent: true,
 	depthWrite: false,
@@ -106,6 +109,18 @@ const resolution = computed(
 );
 
 watch(resolution, (res) => particlesMaterial.uniforms.uResolution!.value.copy(res), { immediate: true });
+
+watch(cellWorldSize, (size) => {
+	particlesMaterial.uniforms.uGridCellSize!.value = size;
+});
+
+watch(
+	canvasSize,
+	({ width, height }) => {
+		particlesMaterial.uniforms.uPlaneWidth!.value = planeHeight * (width / Math.max(1, height));
+	},
+	{ immediate: true },
+);
 
 watch(
 	() => props.projectColor,
