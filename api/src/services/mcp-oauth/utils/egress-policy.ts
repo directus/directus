@@ -6,6 +6,15 @@ import { IpBlocklist } from '@directus/utils/node';
  * These ranges cover private, loopback, link-local, documentation, multicast, and other special-purpose addresses.
  * Keeping the table explicit makes policy review deterministic and avoids consulting the network before deciding
  * whether an outbound request is safe.
+ *
+ * Sources to check when updating this table:
+ * - IANA IPv4 Special-Purpose Address Space:
+ *   https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
+ * - IANA IPv6 Special-Purpose Address Space:
+ *   https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
+ * - IANA IPv4/IPv6 Address Space registries for multicast and reserved blocks:
+ *   https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.xhtml
+ *   https://www.iana.org/assignments/ipv6-address-space/ipv6-address-space.xhtml
  */
 const IPV4_BLOCKED_CIDRS = [
 	'0.0.0.0/8',
