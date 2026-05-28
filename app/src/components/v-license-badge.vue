@@ -43,15 +43,19 @@ const link = computed(() => {
 a {
 	position: fixed;
 	z-index: 99;
-	inset-block-end: 4rem;
-	inset-inline-end: 4rem;
-	background-color: var(--theme--background);
+	inset-block-end: var(--public-view--container--padding-y);
+	inset-inline-end: var(--public-view--container--padding-x);
+	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 	padding: 0.375rem 1.2rem;
 	font-size: 0.6875rem;
 	line-height: 1rem;
 	font-weight: 600;
 	cursor: pointer;
+
+	&:hover {
+		background-color: var(--theme--background-accent);
+	}
 
 	div {
 		display: flex;
@@ -79,7 +83,6 @@ a {
 		position: relative;
 		inset-block-end: unset;
 		inset-inline-end: unset;
-		background-color: var(--theme--background-normal);
 		display: flex;
 		justify-content: space-around;
 		inline-size: 100%;
