@@ -21,18 +21,12 @@
 #'Proxy', 'Intl'
 about: À propos
 privacy_policy: Politique de confidentialité
-contact_our_team: Contactez notre équipe
 setup_welcome: Bienvenue sur Directus
-setup_license_notice: >
-  Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
+continue: Continuer
 first_name: Prénom
 last_name: Nom
-how_do_you_use_directus: Pour quoi utilisez-vous Directus ?
-usage_personal: Personnel / Apprentissage
-usage_commercial: Entreprise / Commercial
-usage_community: Open Source / Communauté
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -191,7 +185,6 @@ keep: Conserver
 version: Version
 version_key: Identifiant de la version
 version_name: Nom de la version
-main_version: Principale
 your_version: Votre version
 switch_version: Changer de version
 switch_version_copy: Êtes-vous sûr de vouloir basculer vers la version "{version}" ? Les modifications non enregistrées seront perdues.
@@ -200,17 +193,13 @@ rename_version: Renommer la version
 reserved_version_key: 'L''identifiant de version "{key}" est réservé et ne peut pas être utilisé.'
 compare_version: Comparer la version
 save_version: Enregistrer la version
-promote_version: Promouvoir la version
 apply: Appliquer
 discard: Abandonner
 select_all_differences: Sélectionner toutes les différences
 show_differences_only: Afficher uniquement les différences
-main_updated_notice: L'élément principal a été mis à jour depuis la création de cette version.
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
-delete_on_apply_copy: >-
-  Vous êtes sur le point de promouvoir "{version}" vers Principale. Que doit-il arriver à "{version}" après la promotion ?
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -656,7 +645,6 @@ manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_and_quit: Enregistrer et quitter
-save_and_return_to_main: Enregistrer et revenir au menu principal
 save_as_copy: Enregistrer une copie
 save_as_new_file: Enregistrer comme nouveau fichier
 add_existing: Sélectionner
@@ -1199,6 +1187,17 @@ settings_data_model: Modèle de données
 settings_roles: Rôles Utilisateur
 settings_permissions: Règles d'accès
 settings_project: Réglages
+licensing:
+  unlimited: Illimité
+  addon_manage: Gérer
+  addon_update: Mettre à jour
+  resolve_continue: Continuer
+  resolve_show_n_more: 'Afficher {count} de plus'
+  resolve_section_flows: Flux
+  resolve_sso_admin_password: Mot de passe
+  entitlements:
+    collections: Collections
+    flows: Flux
 settings_appearance: Personnalisation du Thème
 settings_ai: IA
 settings_flows: Flux
@@ -2556,4 +2555,6 @@ search_flow: Rechercher le flux...
 percent: Pourcent
 show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
+license_grace_key_modal:
+  optional: Facultatif
 set_to_now: Configurer à maintenant
