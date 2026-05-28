@@ -1,0 +1,69 @@
+{
+	"id": "fapi2",
+	"realm": "fapi2",
+	"displayName": "FAPI 2.0 Test Realm",
+	"enabled": true,
+	"sslRequired": "none",
+	"registrationAllowed": false,
+	"bruteForceProtected": false,
+	"defaultSignatureAlgorithm": "ES256",
+	"clients": [
+		{
+			"clientId": "directus-fapi2-client",
+			"name": "Directus FAPI 2.0 Client",
+			"enabled": true,
+			"clientAuthenticatorType": "client-jwt",
+			"protocol": "openid-connect",
+			"publicClient": false,
+			"standardFlowEnabled": true,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": false,
+			"serviceAccountsEnabled": false,
+			"redirectUris": ["http://localhost:8055/auth/login/fapi2test/callback", "http://localhost:8055/*"],
+			"webOrigins": ["http://localhost:8055"],
+			"attributes": {
+				"pkce.code.challenge.method": "S256",
+				"require.pushed.authorization.requests": "true",
+				"dpop.bound.access.tokens": "true",
+				"token.endpoint.auth.signing.alg": "ES256",
+				"id.token.signed.response.alg": "ES256",
+				"use.refresh.tokens": "true",
+				"backchannel.logout.session.required": "false",
+				"use.jwks.url": "true",
+				"jwks.url": "http://host.docker.internal:8055/auth/login/fapi2test/jwks.json"
+			},
+			"protocolMappers": [
+				{
+					"name": "sub",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-sub-mapper",
+					"consentRequired": false,
+					"config": {
+						"access.token.claim": "false",
+						"id.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
+				}
+			]
+		}
+	],
+	"users": [
+		{
+			"username": "testuser",
+			"enabled": true,
+			"emailVerified": true,
+			"email": "testuser@example.com",
+			"firstName": "Test",
+			"lastName": "User",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "Test@password1",
+					"temporary": false
+				}
+			]
+		}
+	],
+	"scopeMappings": [],
+	"clientScopeMappings": {}
+}
