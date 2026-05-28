@@ -21,20 +21,16 @@
 #'Proxy', 'Intl'
 about: Acerca de
 privacy_policy: Política de Privacidad
-contact_our_team: Contácta a nuestro Equipo
 setup_welcome: Bienvenido a Directus
 setup_marketing_emails: Envíame actualizaciones de producto y notas de publicaciones
 setup_launch: Iniciar Directus
 setup_project: Configurar Proyecto
+continue: Continuar
 first_name: Nombre
 last_name: Apellido
 admin_email: Email del Administrador
 owner_email: Email del Dueño
 email_address: Dirección de Email
-organization_name: Nombre de la Organización
-usage_personal: Personal / Aprendizaje
-usage_commercial: Negocios / Comercial
-usage_community: Open Source / Comunidad
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -179,14 +175,12 @@ keep: Conservar
 version: Versión
 version_key: Version Key
 version_name: Version Name
-main_version: Principal
 switch_version: Cambiar versión
 switch_version_copy: '¿Está seguro que desea cambiar a la versión "{version}"? Se perderán los cambios no guardados.'
 create_version: Crear versión
 rename_version: Renombrar versión
 compare_version: Comparar versión
 save_version: Guardar versión
-promote_version: Promover versión
 delete_version: Eleminar versión
 delete_version_copy: >-
   ¿Está seguro que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
@@ -623,7 +617,6 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_and_quit: Guardar y salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como Copia
 add_existing: Añadir existente
 creating_items: Creando elementos
@@ -1151,6 +1144,18 @@ settings_data_model: Modelo de datos
 settings_roles: Roles de usuario
 settings_permissions: Políticas de acceso
 settings_project: Ajustes
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Administrar
+  addon_update: Actualización
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Mostrar {count} más'
+  resolve_section_flows: Flujos
+  resolve_sso_admin_email: Dirección de Email
+  resolve_sso_admin_password: Contraseña
+  entitlements:
+    collections: Colecciones
+    flows: Flujos
 settings_appearance: Apariencia
 settings_flows: Flujos
 settings_system_logs: Registros del sistema
@@ -2516,6 +2521,8 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar contraseña
 hide_password: Ocultar contraseña
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)
