@@ -62,6 +62,12 @@ vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js', () 
 	fetchGlobalAccess: vi.fn().mockResolvedValue({ app: false, admin: false }),
 }));
 
+vi.mock('../license/manager.js', () => ({
+	getLicenseManager: vi.fn().mockReturnValue({
+		isLocked: vi.fn().mockResolvedValue(false),
+	}),
+}));
+
 vi.mock('../utils/get-secret.js', () => ({
 	getSecret: vi.fn().mockReturnValue('test-secret'),
 }));
