@@ -1,4 +1,4 @@
-import { lookup as dnsLookup, promises as dnsPromises } from 'node:dns';
+import { lookup as dnsLookup, type LookupAddress as DnsLookupAddress, promises as dnsPromises } from 'node:dns';
 import http from 'node:http';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OAuthError } from '../types/error.js';
@@ -27,10 +27,9 @@ vi.mock('node:dns', async (importOriginal) => {
 
 const { fetchExternalJson } = await import('./external-json.js');
 
-type LookupAddress = { address: string; family: 4 | 6 };
-
 const mockLookup = vi.mocked(dnsLookup);
 const mockLookupAsync = vi.mocked(dnsPromises.lookup);
+const LOCAL_HTTP_LOOPBACK_OPTIONS = { allowHttp: true, allowLoopbackForLocalDevelopment: true } as const;
 
 async function withServer(
 	handler: http.RequestListener,
@@ -65,7 +64,7 @@ async function withServer(
 }
 
 function resolveTo(address: string, family: 4 | 6 = 4) {
-	const resolved = [{ address, family }] satisfies LookupAddress[];
+	const resolved = [{ address, family }] satisfies DnsLookupAddress[];
 
 	mockLookupAsync.mockResolvedValue(resolved as never);
 
@@ -117,10 +116,10 @@ describe('fetchExternalJson', () => {
 				res.end(JSON.stringify({ keys: [{ kid: 'one' }] }));
 			},
 			async ({ url }) => {
-				const result = await fetchExternalJson<{ keys: Array<{ kid: string }> }>(`${url}/jwks.json`, {
-					allowHttp: true,
-					allowLoopbackForLocalDevelopment: true,
-				});
+				const result = await fetchExternalJson<{ keys: Array<{ kid: string }> }>(
+					`${url}/jwks.json`,
+					LOCAL_HTTP_LOOPBACK_OPTIONS,
+				);
 
 				expect(result).toEqual({
 					status: 200,
@@ -145,8 +144,7 @@ describe('fetchExternalJson', () => {
 			},
 			async ({ url }) => {
 				const result = await fetchExternalJson(`${url}/jwks.json`, {
-					allowHttp: true,
-					allowLoopbackForLocalDevelopment: true,
+					...LOCAL_HTTP_LOOPBACK_OPTIONS,
 					allowNotModified: true,
 					headers: { 'If-None-Match': '"v1"' },
 				});
@@ -163,12 +161,7 @@ describe('fetchExternalJson', () => {
 				res.end();
 			},
 			async ({ url }) => {
-				await expectOAuthError(
-					fetchExternalJson(`${url}/metadata.json`, {
-						allowHttp: true,
-						allowLoopbackForLocalDevelopment: true,
-					}),
-				);
+				await expectOAuthError(fetchExternalJson(`${url}/metadata.json`, LOCAL_HTTP_LOOPBACK_OPTIONS));
 			},
 		);
 	});
@@ -188,10 +181,7 @@ describe('fetchExternalJson', () => {
 						res.end(JSON.stringify({ direct: true }));
 					},
 					async ({ url }) => {
-						const result = await fetchExternalJson(`${url}/metadata.json`, {
-							allowHttp: true,
-							allowLoopbackForLocalDevelopment: true,
-						});
+						const result = await fetchExternalJson(`${url}/metadata.json`, LOCAL_HTTP_LOOPBACK_OPTIONS);
 
 						expect(result).toMatchObject({ status: 200, data: { direct: true } });
 						expect(proxy.requests).toHaveLength(0);
@@ -233,10 +223,7 @@ describe('fetchExternalJson', () => {
 			async ({ url }) => {
 				await expectOAuthError(fetchExternalJson(`${url}/jwks.json`, { allowHttp: true }));
 
-				const result = await fetchExternalJson(`${url}/jwks.json`, {
-					allowHttp: true,
-					allowLoopbackForLocalDevelopment: true,
-				});
+				const result = await fetchExternalJson(`${url}/jwks.json`, LOCAL_HTTP_LOOPBACK_OPTIONS);
 
 				expect(result).toMatchObject({ status: 200, data: { ok: true } });
 			},
@@ -249,10 +236,7 @@ describe('fetchExternalJson', () => {
 			resolveTo(address);
 
 			await expectOAuthError(
-				fetchExternalJson('https://metadata.directus.test/jwks.json', {
-					allowHttp: true,
-					allowLoopbackForLocalDevelopment: true,
-				}),
+				fetchExternalJson('https://metadata.directus.test/jwks.json', LOCAL_HTTP_LOOPBACK_OPTIONS),
 			);
 		},
 	);
@@ -272,10 +256,7 @@ describe('fetchExternalJson', () => {
 			resolveTo(address, 6);
 
 			await expectOAuthError(
-				fetchExternalJson('https://metadata.directus.test/jwks.json', {
-					allowHttp: true,
-					allowLoopbackForLocalDevelopment: true,
-				}),
+				fetchExternalJson('https://metadata.directus.test/jwks.json', LOCAL_HTTP_LOOPBACK_OPTIONS),
 			);
 		},
 	);
@@ -294,8 +275,7 @@ describe('fetchExternalJson', () => {
 
 		await expectOAuthError(
 			fetchExternalJson('http://metadata.directus.test/jwks.json', {
-				allowHttp: true,
-				allowLoopbackForLocalDevelopment: true,
+				...LOCAL_HTTP_LOOPBACK_OPTIONS,
 			}),
 		);
 	});
@@ -314,8 +294,7 @@ describe('fetchExternalJson', () => {
 
 		await expectOAuthError(
 			fetchExternalJson('https://metadata.directus.test/jwks.json', {
-				allowHttp: true,
-				allowLoopbackForLocalDevelopment: true,
+				...LOCAL_HTTP_LOOPBACK_OPTIONS,
 				timeoutMs: 25,
 			}),
 		);
@@ -330,8 +309,7 @@ describe('fetchExternalJson', () => {
 			async ({ url }) => {
 				await expectOAuthError(
 					fetchExternalJson(`${url}/metadata.json`, {
-						allowHttp: true,
-						allowLoopbackForLocalDevelopment: true,
+						...LOCAL_HTTP_LOOPBACK_OPTIONS,
 						maxBytes: 16,
 					}),
 				);
@@ -346,12 +324,7 @@ describe('fetchExternalJson', () => {
 				res.end('<html></html>');
 			},
 			async ({ url }) => {
-				await expectOAuthError(
-					fetchExternalJson(`${url}/metadata.json`, {
-						allowHttp: true,
-						allowLoopbackForLocalDevelopment: true,
-					}),
-				);
+				await expectOAuthError(fetchExternalJson(`${url}/metadata.json`, LOCAL_HTTP_LOOPBACK_OPTIONS));
 			},
 		);
 	});
@@ -367,8 +340,7 @@ describe('fetchExternalJson', () => {
 			async ({ url }) => {
 				await expectOAuthError(
 					fetchExternalJson(`${url}/metadata.json`, {
-						allowHttp: true,
-						allowLoopbackForLocalDevelopment: true,
+						...LOCAL_HTTP_LOOPBACK_OPTIONS,
 						timeoutMs: 25,
 					}),
 				);
@@ -396,8 +368,7 @@ describe('fetchExternalJson', () => {
 			async ({ url }) => {
 				await expectOAuthError(
 					fetchExternalJson(`${url}/metadata.json`, {
-						allowHttp: true,
-						allowLoopbackForLocalDevelopment: true,
+						...LOCAL_HTTP_LOOPBACK_OPTIONS,
 						timeoutMs: 50,
 						maxBytes: 1024,
 					}),

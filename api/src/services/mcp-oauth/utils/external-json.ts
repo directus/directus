@@ -1,4 +1,9 @@
-import { lookup as dnsLookup, promises as dnsPromises, type LookupOneOptions } from 'node:dns';
+import {
+	lookup as dnsLookup,
+	type LookupAddress as DnsLookupAddress,
+	promises as dnsPromises,
+	type LookupOneOptions,
+} from 'node:dns';
 import http from 'node:http';
 import https from 'node:https';
 import { isIP } from 'node:net';
@@ -25,8 +30,6 @@ export interface FetchExternalJsonOptions {
 	allowNotModified?: boolean;
 	redactionContext?: string;
 }
-
-type LookupAddress = { address: string; family: 4 | 6 };
 
 function externalJsonError(options: FetchExternalJsonOptions, description = 'Failed to fetch external JSON document') {
 	const context = options.redactionContext ? `${options.redactionContext}: ` : '';
@@ -88,11 +91,10 @@ async function resolveHost(hostname: string, options: FetchExternalJsonOptions):
 
 	if (isIP(normalizedHostname) !== 0) return;
 
-	let addresses: LookupAddress[];
+	let addresses: DnsLookupAddress[];
 
 	try {
-		const resolved = await dnsPromises.lookup(normalizedHostname, { all: true, verbatim: true });
-		addresses = resolved.map(({ address, family }) => ({ address, family: family as 4 | 6 }));
+		addresses = await dnsPromises.lookup(normalizedHostname, { all: true, verbatim: true });
 	} catch {
 		throw externalJsonError(options, 'Host could not be resolved');
 	}
