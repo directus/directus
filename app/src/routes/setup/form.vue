@@ -19,7 +19,7 @@ const props = withDefaults(
 		skipLicense?: boolean;
 		modelValue?: Partial<SetupForm>;
 		errors?: Record<string, any>[];
-		initialValues?: SetupForm;
+		initialValues?: Partial<SetupForm>;
 		utmLocation?: string;
 	}>(),
 	{
@@ -33,7 +33,7 @@ const props = withDefaults(
 
 const initialValues = toRef(props, 'initialValues');
 
-const value = defineModel<SetupForm>();
+const value = defineModel<Partial<SetupForm>>();
 
 type AdminSlice = {
 	first_name: string | null;
