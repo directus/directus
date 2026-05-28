@@ -78,8 +78,8 @@ Directus is made possible with support from our passionate core team, talented c
 
 ## 📄 Understanding Our License
 
-Directus is licensed under [the Business Source License (BSL) 1.1](./license) with a permissive additional use grant.
-For most users, it operates just like open source! Here's what that means for you:
+Directus is licensed under [the Monospace Sustainable Core License (MSCL) 1.0](./license) with a permissive additional
+use grant. For most users, it operates just like open source! Here's what that means for you:
 
 ### Free for Most Users
 
