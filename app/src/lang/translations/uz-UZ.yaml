@@ -22,11 +22,6 @@
 about: Haqida
 setup_welcome: Directusga xush kelibsiz
 setup_info: Keling, admin hisobingizni yarating va loyihangizni ishga tushiring.
-setup_license_notice: >
-  Directus yillik daromadi, moliyalashtirish yoki operatsion byudjeti $5 milliondan kam bo'lgan tashkilotlar uchun bepul foydalanish mumkin.
-setup_save_accept_license: >
-  Saqlash tugmasini bosish orqali siz {directusBsl} va {privacyPolicy} shartlarini qabul qilasiz.
-setup_accept_license: Men {directusBsl} va {privacyPolicy} shartlarini qabul qilaman
 setup_marketing_emails: Menga mahsulot yangiliklari va reliz eslatmalarini yuboring
 setup_launch: Directusni ishga tushirish
 setup_project: Loyihani sozlash
@@ -35,11 +30,6 @@ last_name: Familiya
 admin_email: Admin elektron pochta manzili
 owner_email: Egasining elektron pochta manzili
 email_address: Elektron pochta manzili
-organization_name: Tashkilot nomi
-how_do_you_use_directus: Directusdan qanday maqsadda foydalanayapsiz?
-usage_personal: Shaxsiy / O'rganish
-usage_commercial: Biznes / Tijorat
-usage_community: Ochiq manba / Jamiyat
 identifier: Identifikator
 avatar: Avatar
 application: IlovaUsul
@@ -121,17 +111,13 @@ rename_version: Versiyani qayta nomlash
 reserved_version_key: '"{key}" versiya kaliti zahiralangan va undan foydalanib bo''lmaydi.'
 compare_version: Versiyani solishtirish
 save_version: Versiyani saqlash
-promote_version: Versiyani asosiy qilish
 apply: Tatbiq qilish
 discard: Bekor qilish
 select_all_differences: Barcha farqlarni tanlash
 show_differences_only: Faqat farqlarni ko'rsatish
-main_updated_notice: Ushbu versiya yaratilganidan beri asosiy element yangilandi.
 delete_version: Versiyani o'chirish
 delete_version_copy: >-
   "{version}" versiyasini o'chirishni xohlaysizmi? Bu amal qaytarib bo'lmaydi.
-delete_on_apply_copy: >-
-  Siz "{version}" ni Asosiy sifatida belgilayapsiz. Ko'tarilgandan so'ng "{version}" bilan nima qilmoqchisiz?
 content_edited: Kontent tahrirlandi
 reset_bookmark: Xatcho'pni tiklash
 update_bookmark: Xatcho'pni yangilash
@@ -461,6 +447,9 @@ errors:
 wysiwyg_options:
   forecolor: Old fon rangi
   backcolor: Fon rangi
+licensing:
+  addon_manage: Boshqarish
+  resolve_sso_admin_email: Elektron pochta manzili
 settings_translations: Tarjimalar
 source_registry: Bozor
 fields:
