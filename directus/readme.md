@@ -69,17 +69,15 @@ Directus is made possible with support from our passionate core team, talented c
 
 ## 📄 Understanding Our License
 
-Directus is licensed under [the Monospace Sustainable Core License (MSCL) 1.0](./license) with a permissive additional
-use grant. For most users, it operates just like open source! Here's what that means for you:
+Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](./license), a source-available license derived from the [Fair Core License](https://fcl.dev/).
 
-### Free for Most Users
+### Free for Most Builders
 
-If your organization has less than $5M in annual revenue and/or funding combined, you can use Directus freely in any way
-you'd like. Build that side project, launch your startup, or experiment with the platform — no strings attached.
+Organizations under **$5M in annual revenue and 50 employees** can use the Directus platform for free under the [Open Innovation Grant](https://directus.com/oig)— no strings attached.
 
-### Enterprise Usage
+### Commercial License
 
-For larger organizations (>$5M in annual revenue/funding) using Directus in production, we require a commercial license.
+Larger organizations using advanced or enterprise features require a commercial license. See [our pricing](https://directus.io/pricing/self-hosted) for details.
 This model helps us maintain a sustainable balance: keeping Directus free for the majority of our community while
 ensuring larger organizations who benefit from the platform contribute to its continued development.
 
