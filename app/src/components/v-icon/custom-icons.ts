@@ -18,6 +18,10 @@ import CustomIconSignalWifi1Bar from './custom-icons/signal_wifi_1_bar.vue';
 import CustomIconSignalWifi2Bar from './custom-icons/signal_wifi_2_bar.vue';
 import CustomIconSignalWifi3Bar from './custom-icons/signal_wifi_3_bar.vue';
 import CustomIconVercel from './custom-icons/vercel.vue';
+import CustomIconLogoAnthropic from '@/ai/components/logos/claude.vue';
+import CustomIconLogoCustomProvider from '@/ai/components/logos/custom.vue';
+import CustomIconLogoGoogle from '@/ai/components/logos/google.vue';
+import CustomIconLogoOpenai from '@/ai/components/logos/openai.vue';
 
 export const components: Record<string, any> = {
 	CustomIconDirectus,
@@ -37,6 +41,10 @@ export const components: Record<string, any> = {
 	CustomIconFlipVertical,
 	CustomIconFolderMove,
 	CustomIconFolderLock,
+	CustomIconLogoAnthropic,
+	CustomIconLogoCustomProvider,
+	CustomIconLogoGoogle,
+	CustomIconLogoOpenai,
 	CustomIconLogout,
 	CustomIconNetlify,
 	CustomIconVercel,

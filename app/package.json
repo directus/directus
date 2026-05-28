@@ -2,14 +2,14 @@
 	"name": "@directus/app",
 	"version": "15.10.0",
 	"description": "App dashboard for Directus",
-	"homepage": "https://directus.io",
+	"homepage": "https://directus.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "app"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"type": "module",
 	"exports": {
@@ -42,6 +42,7 @@
 		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "workspace:*",
+		"@directus/license": "catalog:",
 		"@directus/sdk": "workspace:*",
 		"@directus/stores": "workspace:*",
 		"@directus/system-data": "workspace:*",

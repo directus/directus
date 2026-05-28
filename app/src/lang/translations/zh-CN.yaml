@@ -20,7 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 关于
-directus_bsl: Directus BSL 1.1 许可证
+directus_mscl: Directus MSCL 1.0 许可证
 privacy_policy: 隐私政策
 contact_our_team: 联系我们团队
 setup_welcome: 欢迎使用 Directus
@@ -30,8 +30,8 @@ setup_license_notice: >
 setup_license_follow_up: >
   超过此阈值的实体需要付费许可证。您现在可以继续评估 Directus，并在准备讨论生产使用时{contactOurTeam}。
 setup_save_accept_license: >
-  点击保存即表示您接受 {directusBsl} 和 {privacyPolicy} 的条款。
-setup_accept_license: 我接受 {directusBsl} 和 {privacyPolicy} 的条款
+  点击保存即表示您接受 {directusMscl} 和 {privacyPolicy} 的条款。
+setup_accept_license: 我接受 {directusMscl} 和 {privacyPolicy} 的条款
 setup_marketing_emails: 向我发送产品更新和发行说明
 setup_launch: 启动 Directus
 setup_project: 设置项目
@@ -198,22 +198,17 @@ keep: 保持
 version: 版本号
 version_key: 版本密钥
 version_name: 版本名称
-main_version: 主要
 switch_version: 切换版本
 switch_version_copy: 确定要切换到"{version}"版本？未保存的更改将会丢失。
 create_version: 创建新版本
 rename_version: 重命名版本
 compare_version: 对比版本
 save_version: 保存版本
-promote_version: 推广版本
 apply: 应用
 select_all_differences: 选择所有差异
-main_updated_notice: 自此版本创建以来，主条目已更新。
 delete_version: 删除版本
 delete_version_copy: >-
   你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
-delete_on_apply_copy: >-
-  您即将将 "{version}" 提升为主版本。提升后 "{version}" 应该如何处理？
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
@@ -661,7 +656,6 @@ manual_string: 手动输入字符串
 save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_and_quit: 保存并退出
-save_and_return_to_main: 保存并返回到主页面
 save_as_copy: 另存为
 add_existing: 添加现有
 creating_items: 创建条目
@@ -2623,9 +2617,9 @@ search_flow: 搜索流程...
 percent: 百分比
 show_password: 显示密码
 hide_password: 隐藏密码
-bsl_banner:
+license_banner:
   title: 您没有设置项目的所有者。
-  license: 我们需要此信息以确保符合我们的 BSL 1.1 许可证。这应该是负责您项目的主要联系人。
+  license: 我们需要此信息以确保符合我们的 MSCL 1.0 许可证。这应该是负责您项目的主要联系人。
   set_owner: 设置所有者
   remind_later: 稍后提醒
   remind_next_login: 我们会在您下次登录时再次提醒。

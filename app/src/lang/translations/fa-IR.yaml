@@ -20,7 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: درباره
-directus_bsl: BSL 1.1 دایرکتوس
+directus_mscl: MSCL 1.0 دایرکتوس
 privacy_policy: سیاست حریم خصوصی
 contact_our_team: با تیم ما تماس بگیرید
 setup_welcome: به دایرکتوس خوش آمدید
@@ -30,8 +30,8 @@ setup_license_notice: >
 setup_license_follow_up: >
   اشخاص بالاتر از این آستانه نیازمند مجوز پولی هستند. شما می‌توانید حالا به ارزیابی دایرکتوس ادامه دهید و وقتی برای گفتگو درباره استفاده عملیاتی آماده بودید، {contactOurTeam}.
 setup_save_accept_license: >
-  با انتخاب دکمه ذخیره، شما شرایط {directusBsl} و {privacyPolicy} را قبول می‌کنید.
-setup_accept_license: من شرایط {directusBsl} و {privacyPolicy} را قبول می‌کنم
+  با انتخاب دکمه ذخیره، شما شرایط {directusMscl} و {privacyPolicy} را قبول می‌کنید.
+setup_accept_license: من شرایط {directusMscl} و {privacyPolicy} را قبول می‌کنم
 setup_marketing_emails: به‌روزرسانی‌های محصول و یادداشت‌های انتشار را برای من بفرست
 setup_launch: راه‌اندازی دایرکتوس
 setup_project: راه‌اندازی پروژه
@@ -213,7 +213,6 @@ keep: نگه داشتن
 version: نسخه
 version_key: شماره نسخه
 version_name: نام نسخه
-main_version: اصلی
 your_version: نسخه شما
 switch_version: تغییر نسخه
 switch_version_copy: مطمئنید که می‌خواهید به نسخه «{version}» بروید؟ تغییرات ذخیره‌نشده از دست می‌رود.
@@ -221,16 +220,12 @@ create_version: ایجاد نسخه
 rename_version: ویرایش نسخه
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
-promote_version: ارتقای نسخه
 apply: اعمال
 discard: لغو
 select_all_differences: انتخاب همه تفاوت‌ها
-main_updated_notice: مورد اصلی از زمان ایجاد این نسخه به روز شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
-delete_on_apply_copy: >-
-  شما در شرف ارتقای "{version}" به اصلی هستید. بعد از ارتقا باید چه اتفاقی برای "{version}" بیافتد؟
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
@@ -681,7 +676,6 @@ manual_string: رشته حرفیِ وارد شده به صورت دستی
 save_and_create_new: ذخیره و ساخت آیتم جدید
 save_and_stay: ذخیره و ماندن
 save_and_quit: ذخیره و خروج
-save_and_return_to_main: ذخیره و بازگشت به اصلی
 save_as_copy: ذخیره به عنوان کپی
 add_existing: اضافه کردن مورد موجود
 creating_items: ساختن موارد
@@ -2830,9 +2824,9 @@ search_flow: جستجوی جریان...
 percent: درصد
 show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
-bsl_banner:
+license_banner:
   title: شما مالک پروژه‌ای تنظیم نکرده‌اید.
-  license: ما برای اطمینان از انطباق با مجوز BSL 1.1 خود به این نیاز داریم. این باید مخاطب اصلی مسئول در برابر پروژه شما باشد.
+  license: ما برای اطمینان از انطباق با مجوز MSCL 1.0 خود به این نیاز داریم. این باید مخاطب اصلی مسئول در برابر پروژه شما باشد.
   set_owner: تعیین مالک
   remind_later: بعدا یادآوری کن
   remind_next_login: هنگام ورود بعدی شما دوباره یادآوری خواهیم کرد.

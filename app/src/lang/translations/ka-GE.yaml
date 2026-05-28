@@ -161,14 +161,12 @@ keep: შენარჩუნება
 version: ვერსია
 version_key: ვერსიის გასაღები
 version_name: ვერსიის სახელი
-main_version: მთავარი
 switch_version: ვერსიის ცვლილება
 switch_version_copy: დარწმუნებული ხართ, რომ გსურთ "{version}" ვერსიაზე გადართვა? შეუნახავი ცვლილებები დაიკარგება.
 create_version: ვერსიის შექმნა
 rename_version: ვერსიის სახელის გადარქმევა
 compare_version: ვერსიების შეადარება
 save_version: ვერსიის შენახვა
-promote_version: ვერსიის დაწინაურება
 delete_version: ვერსიის წაშლა
 delete_version_copy: >-
   დარწმუნებული ხართ, რომ გსურთ წაშალოთ "{version}" ვერსია? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
@@ -605,7 +603,6 @@ manual_string: ხელით შეყვანილი სტრიქონ
 save_and_create_new: შენახვა და ახლის შექმნა
 save_and_stay: შენახვა და დარჩენა
 save_and_quit: შენახვა და გასვლა
-save_and_return_to_main: შენახვა და მთავარზე დაბრუნება
 save_as_copy: ასლად შენახვა
 add_existing: არსებულის დამატება
 creating_items: ჩანაწერების შექმნა
