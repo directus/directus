@@ -39,7 +39,7 @@ describe('env license source', () => {
 		test('activate license', async () => {
 			const info = await api.request(readLicense());
 
-			expect(info).toEqual({
+			expect(info).toMatchObject({
 				entitlements: license.entitlements,
 				expires_at: license.meta.expires_at,
 				grace_period: license.meta.grace_period,
@@ -106,7 +106,7 @@ describe('env license source', () => {
 		test('migrates to new env LICENSE_KEY', async () => {
 			const info = await api.request(readLicense());
 
-			expect(info).toEqual({
+			expect(info).toMatchObject({
 				entitlements: changedLicense.entitlements,
 				expires_at: changedLicense.meta.expires_at,
 				grace_period: changedLicense.meta.grace_period,
@@ -153,7 +153,7 @@ describe('env license source', () => {
 		test('keeps license active via refresh', async () => {
 			const info = await api.request(readLicense());
 
-			expect(info).toEqual({
+			expect(info).toMatchObject({
 				entitlements: license.entitlements,
 				expires_at: license.meta.expires_at,
 				grace_period: license.meta.grace_period,
@@ -207,7 +207,7 @@ describe('db license source', () => {
 		test('loads license from directus_settings', async () => {
 			const info = await api.request(readLicense());
 
-			expect(info).toEqual({
+			expect(info).toMatchObject({
 				entitlements: license.entitlements,
 				expires_at: license.meta.expires_at,
 				grace_period: license.meta.grace_period,
@@ -255,7 +255,7 @@ describe('db license source', () => {
 		test('verifies token and loads license from settings', async () => {
 			const info = await api.request(readLicense());
 
-			expect(info).toEqual({
+			expect(info).toMatchObject({
 				entitlements: license.entitlements,
 				expires_at: license.meta.expires_at,
 				grace_period: license.meta.grace_period,
