@@ -46,8 +46,6 @@ describe('revision_historical_timeframe', () => {
 		api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 
 		// seed activity data for the test scenarios
-		let counter = 50;
-
 		for (const { label, daysAgo } of SEED_PLAN) {
 			// writeTimestamp is the INSERT-side helper (returns a Date with
 			// per-dialect TZ adjustment); core uses it for date-created /
@@ -61,10 +59,7 @@ describe('revision_historical_timeframe', () => {
 			for (let i = 0; i < 5; i++) {
 				const collection = getUID();
 
-				const activityId = counter;
-
 				await directus.knex!('directus_activity').insert({
-					id: activityId,
 					action: 'create',
 					user: null,
 					timestamp,
@@ -72,9 +67,14 @@ describe('revision_historical_timeframe', () => {
 					item: label,
 				});
 
-				await directus.knex!('directus_revisions').insert({ activity: activityId, collection, item: label });
+				// get last inserted id, workaround for returning not db agnostic
+				const record = await directus.knex!('directus_activity').max('id', { as: 'id' }).first();
 
-				counter++;
+				await directus.knex!('directus_revisions').insert({
+					activity: record?.['id'] as number,
+					collection,
+					item: label,
+				});
 			}
 		}
 	});
