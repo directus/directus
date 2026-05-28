@@ -16,7 +16,7 @@ const editing = ref(false);
 const isSaving = ref(false);
 
 const form = ref<Partial<Form>>({});
-const fields = useSetupFields(false, form);
+const fields = useSetupFields(false);
 
 const isSaveAllowed = computed(
 	() =>
@@ -40,7 +40,7 @@ const initialValues = computed<Form>(() => ({
 async function save() {
 	const value = { ...initialValues.value, ...form.value };
 
-	errors.value = validate(value, fields);
+	errors.value = validate({ project_owner: value.owner.project_owner }, fields);
 
 	if (errors.value.length > 0) return;
 
