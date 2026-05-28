@@ -52,6 +52,13 @@ test('license key being synced on both instances', async () => {
 
 	await api1.request(activateLicense({ license_key: license.key }));
 
+	// wait for rpc to complete
+	await new Promise<void>((resolve) => {
+		setTimeout(() => {
+			resolve();
+		}, 3000);
+	});
+
 	license1 = await api1.request(readLicense());
 	license2 = await api2.request(readLicense());
 

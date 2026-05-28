@@ -106,7 +106,8 @@ export async function startApi(opts: Options, env: Env, logger: Logger) {
 	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * (opts.inspect ? 2 : 1));
 
 	return (await Promise.all(
-		apiPorts.map((port) => {
+		apiPorts.map(async (preferredPort) => {
+			const port = await getPort(preferredPort);
 			const newLogger = apiCount > 1 ? logger.addGroup(`API ${port}`) : logger;
 			return startApiInstance({ ...opts, port }, { ...env, PORT: String(port) }, newLogger);
 		}),
