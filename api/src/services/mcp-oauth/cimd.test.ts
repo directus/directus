@@ -57,10 +57,23 @@ const { detectClientIdType, isValidCimdClientId, getAllowedDomains, resolveCache
 );
 
 const { useEnv } = await import('@directus/env');
+const { useLogger } = await import('../../logger/index.js');
 
 const invalidClientMetadata = { status: 400, code: 'invalid_client_metadata' } as const;
+const MIN_CACHE_TTL_MS = 300_000;
+const MAX_CACHE_TTL_MS = 86_400_000;
+const DEFAULT_CACHE_TTL_MS = 3_600_000;
 
-async function expectOAuthError(promise: Promise<unknown>, expected: { status: number; code: string }) {
+const PRIVATE_KEY_JWT_METADATA = {
+	token_endpoint_auth_method: 'private_key_jwt',
+	jwks_uri: 'https://myapp.example.com/jwks.json',
+	token_endpoint_auth_signing_alg: 'RS256',
+} as const;
+
+async function expectOAuthError(
+	promise: Promise<unknown>,
+	expected: { status: number; code: string; description?: string },
+) {
 	let error: unknown;
 
 	try {
@@ -326,7 +339,42 @@ describe('fetchCimdMetadata', () => {
 		);
 	});
 
+	it('uses Expires for 200 response cache TTL when Cache-Control is absent', async () => {
+		const expires = new Date(Date.now() + 7_200_000).toUTCString();
+
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json', expires },
+			data: validMetadata,
+		});
+
+		const result = await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client');
+
+		expect(result.ttlMs).toBeGreaterThanOrEqual(MIN_CACHE_TTL_MS);
+		expect(result.ttlMs).toBeLessThanOrEqual(MAX_CACHE_TTL_MS);
+		expect(result.ttlMs).not.toBe(DEFAULT_CACHE_TTL_MS);
+	});
+
+	it('uses Expires for 304 response cache TTL when Cache-Control is absent', async () => {
+		const expires = new Date(Date.now() + 7_200_000).toUTCString();
+
+		mockAxiosGet.mockResolvedValue({
+			status: 304,
+			headers: { etag: '"abc123"', expires },
+			data: null,
+		});
+
+		const result = await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client', '"old"');
+
+		expect(result.notModified).toBe(true);
+		expect(result.ttlMs).toBeGreaterThanOrEqual(MIN_CACHE_TTL_MS);
+		expect(result.ttlMs).toBeLessThanOrEqual(MAX_CACHE_TTL_MS);
+		expect(result.ttlMs).not.toBeNull();
+	});
+
 	it('rejects client_id mismatch', async () => {
+		const logger = useLogger();
+
 		mockAxiosGet.mockResolvedValue({
 			status: 200,
 			headers: { 'content-type': 'application/json' },
@@ -336,6 +384,11 @@ describe('fetchCimdMetadata', () => {
 		await expectOAuthError(
 			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
 			invalidClientMetadata,
+		);
+
+		expect(logger.debug).not.toHaveBeenCalledWith(
+			expect.objectContaining({ doc_client_id: 'https://other.example.com/client' }),
+			expect.any(String),
 		);
 	});
 
@@ -430,17 +483,154 @@ describe('fetchCimdMetadata', () => {
 		);
 	});
 
-	it('rejects private_key_jwt (not supported by server)', async () => {
+	it('CIMD accepts private_key_jwt with same-origin jwks_uri and RS256 signing alg', async () => {
 		mockAxiosGet.mockResolvedValue({
 			status: 200,
 			headers: { 'content-type': 'application/json' },
-			data: { ...validMetadata, token_endpoint_auth_method: 'private_key_jwt' },
+			data: { ...validMetadata, ...PRIVATE_KEY_JWT_METADATA },
+		});
+
+		const result = await fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client');
+
+		expect(result.metadata).toMatchObject(PRIVATE_KEY_JWT_METADATA);
+		expect(mockAxiosGet).toHaveBeenCalledTimes(1);
+	});
+
+	it('CIMD rejects private_key_jwt without jwks_uri', async () => {
+		const { jwks_uri: _, ...privateKeyJwtWithoutJwksUri } = PRIVATE_KEY_JWT_METADATA;
+
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...privateKeyJwtWithoutJwksUri },
 		});
 
 		await expectOAuthError(
 			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
 			invalidClientMetadata,
 		);
+	});
+
+	it('CIMD rejects private_key_jwt without token_endpoint_auth_signing_alg', async () => {
+		const { token_endpoint_auth_signing_alg: _, ...privateKeyJwtWithoutAlg } = PRIVATE_KEY_JWT_METADATA;
+
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...privateKeyJwtWithoutAlg },
+		});
+
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
+	});
+
+	it('CIMD rejects private_key_jwt with non-RS256 signing alg', async () => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...PRIVATE_KEY_JWT_METADATA, token_endpoint_auth_signing_alg: 'ES256' },
+		});
+
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
+	});
+
+	it('CIMD rejects cross-origin private_key_jwt jwks_uri', async () => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...PRIVATE_KEY_JWT_METADATA, jwks_uri: 'https://keys.example.net/jwks.json' },
+		});
+
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
+	});
+
+	it('CIMD rejects private_key_jwt jwks_uri outside the CIMD domain allowlist', async () => {
+		vi.mocked(useEnv).mockReturnValue({
+			MCP_OAUTH_CIMD_ALLOW_HTTP: false,
+			MCP_OAUTH_CIMD_BLOCKED_TLDS: [],
+			MCP_OAUTH_CIMD_ALLOWED_DOMAINS: ['allowed.example.com'],
+		} as any);
+
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...PRIVATE_KEY_JWT_METADATA },
+		});
+
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
+	});
+
+	it('CIMD rejects malformed private_key_jwt jwks_uri', async () => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...PRIVATE_KEY_JWT_METADATA, jwks_uri: 'not-a-url' },
+		});
+
+		await expectOAuthError(
+			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
+			invalidClientMetadata,
+		);
+	});
+
+	it.each([
+		['overlong URL', `https://myapp.example.com/${'a'.repeat(256)}`, 'jwks_uri is too long'],
+		['http', 'http://myapp.example.com/jwks.json', 'jwks_uri must use HTTPS'],
+		['credentials', 'https://user:pass@myapp.example.com/jwks.json', 'jwks_uri must not contain credentials'],
+		['fragment', 'https://myapp.example.com/jwks.json#keys', 'jwks_uri must not contain a fragment'],
+		['empty fragment', 'https://myapp.example.com/jwks.json#', 'jwks_uri must not contain a fragment'],
+		['dot segment', 'https://myapp.example.com/oauth/../jwks.json', 'jwks_uri must not contain dot segments'],
+		['IP literal', 'https://192.0.2.1/jwks.json', 'jwks_uri must not use an IP address'],
+		['non-canonical default port', 'https://myapp.example.com:443/jwks.json', 'jwks_uri must be canonical'],
+	])('CIMD rejects private_key_jwt jwks_uri with %s', async (_name, jwksUri, description) => {
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: { ...validMetadata, ...PRIVATE_KEY_JWT_METADATA, jwks_uri: jwksUri },
+		});
+
+		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), {
+			...invalidClientMetadata,
+			description,
+		});
+	});
+
+	it('CIMD rejects HTTP private_key_jwt jwks_uri when HTTP CIMD is explicitly enabled', async () => {
+		vi.mocked(useEnv).mockReturnValue({
+			MCP_OAUTH_CIMD_ALLOW_HTTP: true,
+			MCP_OAUTH_CIMD_BLOCKED_TLDS: [],
+			MCP_OAUTH_CIMD_ALLOWED_DOMAINS: [],
+		} as any);
+
+		const httpClientId = 'http://myapp.example.com/.well-known/oauth-client';
+
+		mockAxiosGet.mockResolvedValue({
+			status: 200,
+			headers: { 'content-type': 'application/json' },
+			data: {
+				...validMetadata,
+				...PRIVATE_KEY_JWT_METADATA,
+				client_id: httpClientId,
+				redirect_uris: ['http://localhost:9876/callback'],
+				jwks_uri: 'http://myapp.example.com/jwks.json',
+			},
+		});
+
+		await expectOAuthError(fetchCimdMetadata(httpClientId), {
+			...invalidClientMetadata,
+			description: 'jwks_uri must use HTTPS',
+		});
 	});
 
 	it('rejects null response body', async () => {
@@ -470,10 +660,10 @@ describe('fetchCimdMetadata', () => {
 			data: validMetadata,
 		});
 
-		await expectOAuthError(
-			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
-			invalidClientMetadata,
-		);
+		await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), {
+			...invalidClientMetadata,
+			description: 'Client metadata document must be JSON',
+		});
 	});
 
 	it.each(['application/jsonp', 'application/json-seq', 'application/jsonxyz'])(
@@ -485,10 +675,10 @@ describe('fetchCimdMetadata', () => {
 				data: validMetadata,
 			});
 
-			await expectOAuthError(
-				fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
-				invalidClientMetadata,
-			);
+			await expectOAuthError(fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'), {
+				...invalidClientMetadata,
+				description: 'Client metadata document must be JSON',
+			});
 		},
 	);
 

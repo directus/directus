@@ -1,0 +1,16 @@
+table: directus_oauth_client_assertions
+
+fields:
+  - field: jti_hash
+    special:
+      - conceal
+    hidden: true
+    width: half
+  - field: client
+    special:
+      - m2o
+    width: half
+  - field: expires_at
+    special:
+      - cast-timestamp
+    width: half

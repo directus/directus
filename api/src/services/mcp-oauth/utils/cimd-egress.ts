@@ -1,6 +1,6 @@
 import { resolve4, resolve6 } from 'node:dns/promises';
 import { isIP } from 'node:net';
-import { IpBlocklist } from '@directus/utils/node';
+import { isSpecialUseIp } from './egress-policy.js';
 
 const DEFAULT_DNS_DEADLINE_MS = 1_000;
 
@@ -12,81 +12,9 @@ const DEFAULT_DNS_DEADLINE_MS = 1_000;
  * explicitly permitted. Directus does not allow loopback CIMD fetches, so this
  * helper treats every special-use answer as blocked.
  *
- * Keep this table explicit instead of deriving it at runtime. It makes review of
- * the egress policy deterministic and avoids taking a network dependency before
- * deciding whether a network request is safe.
- *
- * These CIDRs intentionally mirror the active IANA Special-Purpose Address
- * Registry rows selected for CIMD egress validation. Do not add multicast
- * ranges such as 224.0.0.0/4 or ff00::/8 here unless the CIMD policy is updated
- * to require those rows too.
+ * The IP classification table is shared with JWKS fetching so metadata and key
+ * retrieval cannot drift to different SSRF policies.
  */
-const IPV4_SPECIAL_USE_CIDRS = [
-	'0.0.0.0/8',
-	'0.0.0.0/32',
-	'10.0.0.0/8',
-	'100.64.0.0/10',
-	'127.0.0.0/8',
-	'169.254.0.0/16',
-	'172.16.0.0/12',
-	'192.0.0.0/24',
-	'192.0.0.0/29',
-	'192.0.0.8/32',
-	'192.0.0.9/32',
-	'192.0.0.10/32',
-	'192.0.0.170/32',
-	'192.0.0.171/32',
-	'192.0.2.0/24',
-	'192.31.196.0/24',
-	'192.52.193.0/24',
-	'192.88.99.2/32',
-	'192.168.0.0/16',
-	'192.175.48.0/24',
-	'198.18.0.0/15',
-	'198.51.100.0/24',
-	'203.0.113.0/24',
-	'240.0.0.0/4',
-	'255.255.255.255/32',
-];
-
-const IPV6_SPECIAL_USE_CIDRS = [
-	'::/128',
-	'::1/128',
-	'::ffff:0:0/96',
-	'64:ff9b::/96',
-	'64:ff9b:1::/48',
-	'100::/64',
-	'100:0:0:1::/64',
-	'2001::/23',
-	'2001::/32',
-	'2001:1::1/128',
-	'2001:1::2/128',
-	'2001:1::3/128',
-	'2001:2::/48',
-	'2001:3::/32',
-	'2001:4:112::/48',
-	'2001:20::/28',
-	'2001:30::/28',
-	'2001:db8::/32',
-	'2002::/16',
-	'2620:4f:8000::/48',
-	'3fff::/20',
-	'5f00::/16',
-	'fc00::/7',
-	'fe80::/10',
-];
-
-const specialUseIpv4Blocklist = new IpBlocklist();
-const specialUseIpv6Blocklist = new IpBlocklist();
-
-for (const cidr of IPV4_SPECIAL_USE_CIDRS) {
-	specialUseIpv4Blocklist.parseSubnet(cidr);
-}
-
-for (const cidr of IPV6_SPECIAL_USE_CIDRS) {
-	specialUseIpv6Blocklist.parseSubnet(cidr);
-}
-
 export type CimdEgressErrorReason =
 	| 'cimd_dns_empty_result'
 	| 'cimd_dns_error'
@@ -138,19 +66,6 @@ const defaultResolver: CimdResolver = {
 	resolve4,
 	resolve6,
 };
-
-/** Fail-closed IP classifier for the CIMD egress policy. */
-export function isSpecialUseIp(ip: string): boolean {
-	const family = isIP(ip);
-
-	if (family === 0) return true;
-
-	try {
-		return family === 4 ? specialUseIpv4Blocklist.check(ip, 'ipv4') : specialUseIpv6Blocklist.check(ip, 'ipv6');
-	} catch {
-		return true;
-	}
-}
 
 /*
  * Axios passes this function down to Node's http/https stack as the per-request

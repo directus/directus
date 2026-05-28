@@ -278,6 +278,10 @@ data:
     one_collection: directus_users
 
   ### OAuth
+  - many_collection: directus_oauth_client_assertions
+    many_field: client
+    one_collection: directus_oauth_clients
+
   - many_collection: directus_oauth_codes
     many_field: client
     one_collection: directus_oauth_clients

@@ -1,11 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import {
-	CimdEgressError,
-	type CimdResolver,
-	createCimdLookup,
-	isSpecialUseIp,
-	validateCimdHostnameEgress,
-} from './cimd-egress.js';
+import { CimdEgressError, type CimdResolver, createCimdLookup, validateCimdHostnameEgress } from './cimd-egress.js';
+import { isSpecialUseIp } from './egress-policy.js';
 
 function createResolver(
 	records: { A?: string[]; AAAA?: string[] },
@@ -63,15 +58,16 @@ describe('isSpecialUseIp', () => {
 		expect(isSpecialUseIp('169.254.169.254')).toBe(true);
 		expect(isSpecialUseIp('172.16.0.1')).toBe(true);
 		expect(isSpecialUseIp('192.0.0.8')).toBe(true);
+		expect(isSpecialUseIp('192.88.99.1')).toBe(true);
 		expect(isSpecialUseIp('192.168.1.1')).toBe(true);
 		expect(isSpecialUseIp('198.18.0.1')).toBe(true);
 		expect(isSpecialUseIp('203.0.113.1')).toBe(true);
+		expect(isSpecialUseIp('224.0.0.1')).toBe(true);
 		expect(isSpecialUseIp('240.0.0.1')).toBe(true);
 		expect(isSpecialUseIp('255.255.255.255')).toBe(true);
 
 		expect(isSpecialUseIp('8.8.8.8')).toBe(false);
 		expect(isSpecialUseIp('1.1.1.1')).toBe(false);
-		expect(isSpecialUseIp('224.0.0.1')).toBe(false);
 	});
 
 	it('rejects representative IPv6 special-use ranges and allows public IPv6 addresses', () => {
@@ -82,10 +78,10 @@ describe('isSpecialUseIp', () => {
 		expect(isSpecialUseIp('2001:db8::1')).toBe(true);
 		expect(isSpecialUseIp('fc00::1')).toBe(true);
 		expect(isSpecialUseIp('fe80::1')).toBe(true);
+		expect(isSpecialUseIp('ff00::1')).toBe(true);
 
 		expect(isSpecialUseIp('2606:4700:4700::1111')).toBe(false);
 		expect(isSpecialUseIp('2001:4860:4860::8888')).toBe(false);
-		expect(isSpecialUseIp('ff00::1')).toBe(false);
 	});
 
 	it.each(['::ffff:8.8.8.8', '::ffff:127.0.0.1', '::ffff:169.254.169.254'])('rejects IPv4-mapped address %s', (ip) => {

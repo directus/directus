@@ -6,6 +6,11 @@ import { useLogger } from '../../logger/index.js';
 import { getAxios } from '../../request/index.js';
 import { OAuthError } from './types/error.js';
 import { CimdEgressError, createCimdLookup } from './utils/cimd-egress.js';
+import {
+	JwksUriValidationError,
+	type JwksUriValidationErrorReason,
+	validateJwksUri as validateJwksUriPolicy,
+} from './utils/jwks-uri.js';
 import { validateRedirectUri } from './utils/redirect.js';
 
 const MIN_TTL_MS = 300_000; // 5 minutes
@@ -22,6 +27,8 @@ const DEFAULT_BLOCKED_TLDS = ['test', 'localhost', 'invalid', 'example', 'local'
  * client_secret_jwt, or any other method based around a shared symmetric secret."
  */
 const FORBIDDEN_AUTH_METHODS = new Set(['client_secret_basic', 'client_secret_post', 'client_secret_jwt']);
+const PRIVATE_KEY_JWT_AUTH_METHOD = 'private_key_jwt';
+const PRIVATE_KEY_JWT_SIGNING_ALG = 'RS256';
 
 export interface CimdMetadata {
 	client_id: string;
@@ -30,6 +37,8 @@ export interface CimdMetadata {
 	grant_types: string[];
 	response_types?: string[];
 	token_endpoint_auth_method: string;
+	jwks_uri?: string;
+	token_endpoint_auth_signing_alg?: string;
 	client_uri?: string;
 	logo_uri?: string;
 	tos_uri?: string;
@@ -227,6 +236,48 @@ function validateOptionalHttpsUri(value: unknown, field: string): void {
 	}
 }
 
+function validateJwksUri(value: unknown, clientId: string): string {
+	try {
+		return validateJwksUriPolicy(value, clientId, {
+			allowedDomains: getAllowedDomains(),
+			maxLength: MAX_URL_LENGTH,
+		});
+	} catch (err) {
+		if (err instanceof JwksUriValidationError) {
+			throw new OAuthError(400, 'invalid_client_metadata', jwksUriErrorDescription(err.reason));
+		}
+
+		throw err;
+	}
+}
+
+function jwksUriErrorDescription(reason: JwksUriValidationErrorReason): string {
+	switch (reason) {
+		case 'required':
+			return 'jwks_uri is required for private_key_jwt';
+		case 'too_long':
+			return 'jwks_uri is too long';
+		case 'invalid_url':
+			return 'jwks_uri is not a valid URL';
+		case 'invalid_scheme':
+			return 'jwks_uri must use HTTPS';
+		case 'credentials':
+			return 'jwks_uri must not contain credentials';
+		case 'fragment':
+			return 'jwks_uri must not contain a fragment';
+		case 'dot_segments':
+			return 'jwks_uri must not contain dot segments';
+		case 'ip_literal':
+			return 'jwks_uri must not use an IP address';
+		case 'cross_origin':
+			return 'jwks_uri must share the client_id origin';
+		case 'non_canonical':
+			return 'jwks_uri must be canonical';
+		case 'disallowed_domain':
+			return 'jwks_uri domain is not allowed';
+	}
+}
+
 const CONTENT_TYPE_JSON_RE = /^application\/(?:json|[\w.-]+\+json)(?:\s*;|$)/i;
 
 /**
@@ -293,13 +344,19 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 
 	// 304 Not Modified
 	if (response.status === 304) {
-		const respHeaders = response.headers as Record<string, string>;
-		const hasCacheControl = !!respHeaders['cache-control'];
-		return { notModified: true, ttlMs: hasCacheControl ? resolveCacheTtl(respHeaders) : null };
+		const responseHeaders = response.headers as Record<string, string>;
+		const hasCacheHeaders = !!responseHeaders['cache-control'] || !!responseHeaders['expires'];
+
+		return {
+			notModified: true,
+			etag: (responseHeaders['etag'] as string) ?? null,
+			ttlMs: hasCacheHeaders ? resolveCacheTtl(responseHeaders) : null,
+		};
 	}
 
 	// Content-Type validation
-	const contentType = response.headers['content-type'] as string | undefined;
+	const responseHeaders = response.headers as Record<string, string>;
+	const contentType = responseHeaders['content-type'] as string | undefined;
 
 	if (!contentType || !CONTENT_TYPE_JSON_RE.test(contentType)) {
 		throw new OAuthError(400, 'invalid_client_metadata', 'Client metadata document must be JSON');
@@ -313,7 +370,7 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 
 	// client_id must match fetch URL exactly
 	if (doc.client_id !== clientId) {
-		logger.debug({ client_id: clientId, doc_client_id: doc.client_id }, 'CIMD client_id mismatch');
+		logger.debug({ client_id: clientId }, 'CIMD client_id mismatch');
 
 		throw new OAuthError(400, 'invalid_client_metadata', 'client_id in document does not match fetch URL');
 	}
@@ -372,7 +429,8 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 		}
 	}
 
-	// token_endpoint_auth_method: default to "none", only "none" accepted
+	// token_endpoint_auth_method defaults to "none"; shared-secret methods are forbidden, and private_key_jwt
+	// is accepted only with HTTPS JWKS metadata.
 	if (doc.token_endpoint_auth_method !== undefined && typeof doc.token_endpoint_auth_method !== 'string') {
 		throw new OAuthError(400, 'invalid_client_metadata', 'token_endpoint_auth_method must be a string');
 	}
@@ -383,7 +441,26 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 		throw new OAuthError(400, 'invalid_client_metadata', 'Shared-secret authentication methods are forbidden for CIMD');
 	}
 
-	if (authMethod !== 'none') {
+	let jwksUri: string | undefined;
+	let signingAlg: string | undefined;
+
+	if (authMethod === PRIVATE_KEY_JWT_AUTH_METHOD) {
+		jwksUri = validateJwksUri(doc.jwks_uri, clientId);
+
+		if (typeof doc.token_endpoint_auth_signing_alg !== 'string' || doc.token_endpoint_auth_signing_alg.length === 0) {
+			throw new OAuthError(
+				400,
+				'invalid_client_metadata',
+				'token_endpoint_auth_signing_alg is required for private_key_jwt',
+			);
+		}
+
+		if (doc.token_endpoint_auth_signing_alg !== PRIVATE_KEY_JWT_SIGNING_ALG) {
+			throw new OAuthError(400, 'invalid_client_metadata', 'Unsupported token_endpoint_auth_signing_alg');
+		}
+
+		signingAlg = doc.token_endpoint_auth_signing_alg;
+	} else if (authMethod !== 'none') {
 		throw new OAuthError(400, 'invalid_client_metadata', `Unsupported token_endpoint_auth_method: ${authMethod}`);
 	}
 
@@ -394,8 +471,6 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 		}
 	}
 
-	const responseHeaders = response.headers as Record<string, string>;
-
 	const metadata: CimdMetadata = {
 		client_id: doc.client_id,
 		client_name: doc.client_name,
@@ -403,6 +478,8 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 		grant_types: grantTypes,
 		response_types: doc.response_types,
 		token_endpoint_auth_method: authMethod,
+		...(jwksUri && { jwks_uri: jwksUri }),
+		...(signingAlg && { token_endpoint_auth_signing_alg: signingAlg }),
 		...(doc.client_uri && { client_uri: doc.client_uri }),
 		...(doc.logo_uri && { logo_uri: doc.logo_uri }),
 		...(doc.tos_uri && { tos_uri: doc.tos_uri }),

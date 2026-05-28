@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { hasSystemIndex, isSystemField } from './index.js';
+import { hasSystemIndex, isSystemField, systemFieldRows } from './index.js';
 
 describe('hasSystemIndex', () => {
 	test('should return true when collection and field match an indexed field', () => {
@@ -108,3 +108,36 @@ describe('isSystemField', () => {
 		expect(isSystemField('a', 'b')).toBe(false);
 	});
 });
+
+describe('OAuth private_key_jwt fields', () => {
+	test('should hide and conceal OAuth client assertion replay markers', () => {
+		expect(getSystemField('directus_oauth_client_assertions', 'jti_hash')).toMatchObject({
+			hidden: true,
+			special: ['conceal'],
+		});
+	});
+
+	test('should register OAuth client assertion relation and expiry fields', () => {
+		expect(getSystemField('directus_oauth_client_assertions', 'client')).toMatchObject({
+			special: ['m2o'],
+		});
+
+		expect(getSystemField('directus_oauth_client_assertions', 'expires_at')).toMatchObject({
+			special: ['cast-timestamp'],
+		});
+	});
+
+	test('should keep CIMD-derived private_key_jwt client metadata out of admin editing', () => {
+		expect(getSystemField('directus_oauth_clients', 'jwks_uri')).toMatchObject({
+			readonly: true,
+		});
+
+		expect(getSystemField('directus_oauth_clients', 'token_endpoint_auth_signing_alg')).toMatchObject({
+			hidden: true,
+		});
+	});
+});
+
+function getSystemField(collection: string, field: string) {
+	return systemFieldRows.find((row) => row.collection === collection && row.field === field);
+}
