@@ -20,7 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
-directus_bsl: Directus BSL 1,1
+directus_mscl: Directus MSCL 1.0
 privacy_policy: Політика конфіденційності
 contact_our_team: Звʼязок із нашою командою
 setup_welcome: Ласкаво просимо до Directus
@@ -30,8 +30,8 @@ setup_license_notice: >
 setup_license_follow_up: >
   Об’єкти, що перевищують цей поріг, потребують платної ліцензії. Ви можете продовжити оцінку Directus зараз і {contactOurTeam}, коли будете готові обговорити використання у виробництві.
 setup_save_accept_license: >
-  Натискаючи «Зберегти», ви погоджуєтесь з умовами {directusBsl} та {privacyPolicy}.
-setup_accept_license: Я погоджуюсь з умовами {directusBsl} та {privacyPolicy}
+  Натискаючи «Зберегти», ви погоджуєтесь з умовами {directusMscl} та {privacyPolicy}.
+setup_accept_license: Я погоджуюсь з умовами {directusMscl} та {privacyPolicy}
 setup_marketing_emails: Надіслати мені оновлення продукту та нотатки про випуск
 setup_launch: Запустити Directus
 setup_project: Запустити проєкт
@@ -2607,9 +2607,9 @@ search_flow: Пошуковий потік...
 percent: Відсоток
 show_password: Показати пароль
 hide_password: Приховати пароль
-bsl_banner:
+license_banner:
   title: Ви не встановили власника проєкту.
-  license: Нам потрібно це, щоб забезпечити дотримання нашої BSL 1.1 ліцензії. Це має бути основний контакт з відповіддю за ваш проєкт.
+  license: Нам потрібно це, щоб забезпечити дотримання нашої MSCL 1.0 ліцензії. Це має бути основний контакт з відповіддю за ваш проєкт.
   set_owner: Встановити власника
   remind_later: Нагадати пізніше
   remind_next_login: Ми нагадаємо вам про це під час наступного входу.
