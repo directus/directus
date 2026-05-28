@@ -769,7 +769,6 @@ export class LicenseManager {
 		}
 
 		/**
-		 * LICENSE-TODO: Rework
 		 *
 		 * Upgrade from core tier requires registering the scheduled check
 		 * De-register on downgrade is handled in the schedule
