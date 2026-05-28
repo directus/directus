@@ -238,6 +238,8 @@ function validateOptionalHttpsUri(value: unknown, field: string): void {
 
 function validateJwksUri(value: unknown, clientId: string): string {
 	try {
+		// CIMD registration and runtime assertion verification share the same JWKS URI rules so valid metadata
+		// does not depend on two subtly different interpretations of the key URL.
 		return validateJwksUriPolicy(value, clientId, {
 			allowedDomains: getAllowedDomains(),
 			maxLength: MAX_URL_LENGTH,

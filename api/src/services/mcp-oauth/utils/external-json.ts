@@ -37,6 +37,8 @@ function externalJsonError(options: FetchExternalJsonOptions, description = 'Fai
 function isAllowedAddress(address: string, options: FetchExternalJsonOptions): boolean {
 	if (!isSpecialUseIp(address)) return true;
 
+	// Loopback is only useful for local development metadata fixtures. Callers that fetch trusted key material
+	// can leave allowLoopbackForLocalDevelopment false even if they permit HTTP elsewhere.
 	return Boolean(options.allowHttp && options.allowLoopbackForLocalDevelopment && isLoopbackIp(address));
 }
 
@@ -73,6 +75,7 @@ function validateUrl(input: string, options: FetchExternalJsonOptions): URL {
 
 	const hostname = normalizeHostname(url.hostname);
 
+	// IP literals bypass DNS, so apply the same egress policy before any request is attempted.
 	if (isIP(hostname) !== 0) {
 		assertAllowedAddress(hostname, options);
 	}
@@ -98,12 +101,16 @@ async function resolveHost(hostname: string, options: FetchExternalJsonOptions):
 		throw externalJsonError(options, 'Host could not be resolved');
 	}
 
+	// Preflight all resolved addresses because an attacker-controlled hostname can publish both public and private
+	// answers; one blocked answer is enough to reject the request.
 	for (const { address } of addresses) {
 		assertAllowedAddress(address, options);
 	}
 }
 
 function createLookup(options: FetchExternalJsonOptions): NonNullable<http.AgentOptions['lookup']> {
+	// Node resolves again while opening the socket. Re-checking the connect-time answer closes the DNS rebinding
+	// gap between preflight resolution and the actual outbound connection.
 	return (hostname, lookupOptions, callback) => {
 		dnsLookup(hostname, lookupOptions as LookupOneOptions, (error, address, family) => {
 			if (error) {
@@ -172,6 +179,7 @@ async function readResponseBody(
 			const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
 			bytes += buffer.byteLength;
 
+			// Count bytes while streaming so a large response is stopped before it is buffered or parsed.
 			if (bytes > maxBytes) {
 				stream.destroy();
 				throw externalJsonError(options, 'External JSON response exceeded the maximum allowed size');
@@ -216,6 +224,8 @@ export async function fetchExternalJson<T = unknown>(
 		httpAgent = new http.Agent({ lookup });
 		httpsAgent = new https.Agent({ lookup });
 
+		// Do not follow redirects or proxy through ambient environment config. The URL was validated for one
+		// origin and one resolved address set; redirects/proxies would create a second, unvalidated egress target.
 		const requestConfig: AxiosRequestConfig = {
 			httpAgent,
 			httpsAgent,

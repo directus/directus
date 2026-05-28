@@ -27,6 +27,9 @@ export interface ValidateJwksUriOptions {
 	maxLength: number;
 }
 
+// This is stricter than generic URI validation because the JWKS URI becomes the source of truth for client
+// authentication keys. Require same-origin HTTPS metadata and reject forms that could be interpreted differently
+// by URL parsers, caches, or downstream HTTP clients.
 export function validateJwksUri(value: unknown, clientId: string, options: ValidateJwksUriOptions): string {
 	if (typeof value !== 'string' || value.length === 0) {
 		throw new JwksUriValidationError('required');
@@ -60,6 +63,7 @@ export function validateJwksUri(value: unknown, clientId: string, options: Valid
 
 	const rawPath = value.slice(parsed.origin.length).split(/[?#]/, 1)[0] ?? '';
 
+	// URL normalisation removes dot segments from parsed.pathname, so also inspect the original path text.
 	if (/(?:^|\/)\.\.?(?:\/|$)/.test(parsed.pathname) || /(?:^|\/)\.\.?(?:\/|$)/.test(rawPath)) {
 		throw new JwksUriValidationError('dot_segments');
 	}

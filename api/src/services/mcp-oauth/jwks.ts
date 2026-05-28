@@ -92,6 +92,8 @@ export async function verifyClientAssertion(options: VerifyClientAssertionOption
 	let keys = await getJwks(options.jwksUri, options.clientId, now, false);
 	let selected = selectVerificationKey(keys, header);
 
+	// A missing kid can simply mean the client rotated its JWKS after our last successful fetch.
+	// Refresh once before failing, then briefly negative-cache misses so bad assertions cannot force refetch loops.
 	if (selected.status === 'no_match') {
 		if (!isNegativeCacheActive(unknownKeyNegativeCache, options.jwksUri, now)) {
 			try {
@@ -134,6 +136,7 @@ export async function verifyClientAssertion(options: VerifyClientAssertionOption
 }
 
 function validateAssertionHeader(assertion: string): ProtectedHeaderParameters {
+	// Bound assertion size before decoding so malformed requests cannot spend unbounded CPU/memory in JOSE parsing.
 	if (typeof assertion !== 'string' || Buffer.byteLength(assertion, 'utf8') > ASSERTION_MAX_BYTES) {
 		throw new JwksVerificationError('invalid_assertion');
 	}
@@ -154,6 +157,8 @@ function validateAssertionHeader(assertion: string): ProtectedHeaderParameters {
 		throw new JwksVerificationError('invalid_header');
 	}
 
+	// We only accept a plain signed client assertion. Headers that point at attacker-controlled key material,
+	// embed keys/certificates, or introduce critical/encryption semantics are outside this verifier's trust model.
 	if (header.typ !== undefined && header.typ !== 'JWT' && header.typ !== 'client-authentication+jwt') {
 		throw new JwksVerificationError('invalid_header');
 	}
@@ -178,6 +183,8 @@ function validateAssertionHeader(assertion: string): ProtectedHeaderParameters {
 }
 
 function validatePayloadClaims(payload: JWTPayload, clientId: string, now: Date): VerifiedClientAssertion['claims'] {
+	// RFC 7523 client authentication identifies the client with both iss and sub; requiring both to match avoids
+	// accepting an assertion minted by one subject for another client_id.
 	if (payload.iss !== clientId || payload.sub !== clientId) {
 		throw new JwksVerificationError('invalid_claims');
 	}
@@ -204,6 +211,7 @@ function validatePayloadClaims(payload: JWTPayload, clientId: string, now: Date)
 		throw new JwksVerificationError('invalid_claims');
 	}
 
+	// Keep assertions short-lived so replay markers only need to be retained for a bounded window.
 	let issuedAt: number | undefined;
 
 	if (iat !== undefined) {
@@ -240,6 +248,7 @@ function isStringOrStringArray(value: unknown): value is string | string[] {
 }
 
 async function getJwks(jwksUri: string, clientId: string, now: Date, forceRefresh: boolean): Promise<CompatibleJwk[]> {
+	// Stored metadata is revalidated at use time so older rows cannot bypass stricter runtime JWKS policy.
 	validateJwksUri(jwksUri, clientId);
 	pruneExpiredCacheEntries(now);
 
@@ -256,6 +265,7 @@ async function getJwks(jwksUri: string, clientId: string, now: Date, forceRefres
 	const inFlight = inFlightFetches.get(jwksUri);
 	if (inFlight) return await inFlight;
 
+	// Collapse concurrent JWKS misses for the same URI into one network request.
 	const fetchPromise = fetchAndValidateJwks(jwksUri)
 		.then((keys) => {
 			positiveCache.set(jwksUri, { keys, expiresAt: now.getTime() + POSITIVE_CACHE_TTL_MS });
@@ -281,6 +291,8 @@ async function fetchAndValidateJwks(jwksUri: string): Promise<CompatibleJwk[]> {
 	let response;
 
 	try {
+		// private_key_jwt trusts this document as public key material, so it stays HTTPS-only even when HTTP CIMD
+		// is enabled for local/public-client development.
 		response = await fetchExternalJson<unknown>(jwksUri, {
 			maxBytes: JWKS_MAX_BYTES,
 			timeoutMs: JWKS_TIMEOUT_MS,
@@ -304,11 +316,14 @@ function validateJwks(value: unknown): CompatibleJwk[] {
 		throw new JwksVerificationError('invalid_jwks');
 	}
 
+	// Ignore incompatible keys but reject malformed compatible-looking keys. This lets clients publish mixed-use
+	// JWKS documents while still applying strict checks to keys we might actually use for assertions.
 	const keys = (value as { keys: unknown[] }).keys.flatMap((key) => {
 		if (!isCompatibleJwkCandidate(key)) return [];
 		return [validateCompatibleJwk(key)];
 	});
 
+	// A small cap keeps key selection bounded for attacker-controlled JWKS documents.
 	if (keys.length > MAX_COMPATIBLE_KEYS) {
 		throw new JwksVerificationError('invalid_jwks');
 	}
@@ -332,6 +347,7 @@ function isCompatibleJwkCandidate(value: unknown): value is JWK {
 function hasCompatibleKeyOps(keyOps: JWK['key_ops']): boolean {
 	if (keyOps === undefined) return true;
 
+	// If a key declares operations, accept only a key that is explicitly and exclusively usable for verification.
 	if (!Array.isArray(keyOps) || keyOps.some((operation) => typeof operation !== 'string')) {
 		throw new JwksVerificationError('invalid_jwks');
 	}
@@ -368,6 +384,8 @@ function validateCompatibleJwk(value: unknown): CompatibleJwk {
 		}
 	}
 
+	// RS256 is the only advertised signing algorithm for this feature, so RSA keys are constrained to a
+	// conservative public-key shape before jose imports them.
 	if (rsaModulusBits(jwk.n) < 2048) {
 		throw new JwksVerificationError('invalid_jwks');
 	}
@@ -407,6 +425,8 @@ function decodeBase64Url(value: string): Buffer {
 	const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
 	const bytes = Buffer.from(base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '='), 'base64');
 
+	// Re-encoding catches non-canonical encodings; leading zero octets would let the same modulus have multiple
+	// textual representations, so reject those too.
 	if (bytes.toString('base64url') !== value || (bytes.length > 1 && bytes[0] === 0)) {
 		throw new JwksVerificationError('invalid_jwks');
 	}
@@ -429,6 +449,7 @@ function selectVerificationKey(keys: CompatibleJwk[], header: ProtectedHeaderPar
 	if (keys.length === 1) return { status: 'selected', key: keys[0]! };
 	if (keys.length === 0) return { status: 'no_match' };
 
+	// Without kid, multiple compatible keys are ambiguous. Guessing would make verification depend on JWKS order.
 	return { status: 'ambiguous' };
 }
 

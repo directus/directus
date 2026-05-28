@@ -1994,6 +1994,8 @@ export class McpOAuthService {
 
 		const hasClientAssertionParams = hasAssertionParams(params);
 
+		// A client assertion is its own authentication method. Mixing it with Basic or client_secret would make
+		// failures ambiguous and could let clients accidentally fall back to shared-secret authentication.
 		if (!hasClientAssertionParams && options.hasBasicHeader) {
 			throw new OAuthError(
 				401,
@@ -2049,6 +2051,8 @@ export class McpOAuthService {
 	}
 
 	private async insertClientAssertionReplayMarker(clientId: string, jti: string, exp: number): Promise<void> {
+		// Hash client_id + jti before storage so the replay table enforces uniqueness without retaining raw
+		// assertion identifiers from client-controlled JWTs.
 		const row = {
 			client: clientId,
 			jti_hash: crypto.createHash('sha256').update(`${clientId}\0${jti}`).digest('hex'),

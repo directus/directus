@@ -2,9 +2,10 @@ import { isIP } from 'node:net';
 import { IpBlocklist } from '@directus/utils/node';
 
 /*
- * Shared outbound egress classifier for OAuth metadata/JWKS requests whose
- * target is controlled by an OAuth client. Keep the table explicit so policy
- * review is deterministic and does not require network access.
+ * Shared outbound egress classifier for OAuth metadata/JWKS requests whose target is controlled by an OAuth client.
+ * These ranges cover private, loopback, link-local, documentation, multicast, and other special-purpose addresses.
+ * Keeping the table explicit makes policy review deterministic and avoids consulting the network before deciding
+ * whether an outbound request is safe.
  */
 const IPV4_BLOCKED_CIDRS = [
 	'0.0.0.0/8',
@@ -110,6 +111,8 @@ export function isSpecialUseIp(ip: string): boolean {
 export function isLoopbackIp(ip: string): boolean {
 	const family = isIP(ip);
 
+	// Malformed input should not be treated as loopback because callers use this as a narrow local-development
+	// exception after the broader special-use check has already failed closed.
 	if (family === 0) return false;
 
 	try {
