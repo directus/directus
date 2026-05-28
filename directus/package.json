@@ -27,7 +27,7 @@
 		"url": "https://github.com/directus/directus.git"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": {
 		"name": "Monospace Inc",
 		"email": "info@monospace.io",

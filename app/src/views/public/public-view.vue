@@ -107,6 +107,14 @@ const logoURL = computed<string | null>(() => {
 @use '@/styles/mixins';
 
 .public-view {
+	--public-view--container--padding-x: 1.125rem;
+	--public-view--container--padding-y: 1.125rem;
+
+	@media (width >= 28.125rem) {
+		--public-view--container--padding-x: 4.5rem;
+		--public-view--container--padding-y: 2.25rem;
+	}
+
 	display: flex;
 	inline-size: 100%;
 	block-size: 100%;
@@ -144,7 +152,7 @@ const logoURL = computed<string | null>(() => {
 		inline-size: 100%;
 		max-inline-size: var(--public-view--container--max-width);
 		block-size: 100%;
-		padding: 1.125rem;
+		padding: var(--public-view--container--padding-y) var(--public-view--container--padding-x);
 		overflow: hidden auto;
 		background: var(--theme--public--background);
 		color: var(--theme--public--foreground);
@@ -169,10 +177,6 @@ const logoURL = computed<string | null>(() => {
 		&.wide {
 			--public-view--container--max-width: 49.0625rem;
 			--public-view--container--content--width: 40.0625rem;
-		}
-
-		@media (width >= 28.125rem) {
-			padding: 2.25rem 4.5rem;
 		}
 	}
 

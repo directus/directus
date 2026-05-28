@@ -1,0 +1,29 @@
+table: directus_oauth_consents
+
+fields:
+  - field: id
+    special:
+      - uuid
+    width: half
+  - field: user
+    special:
+      - m2o
+    width: half
+  - field: client
+    special:
+      - m2o
+    width: half
+  - field: redirect_uri
+    width: full
+  - field: scope
+    width: half
+  - field: date_created
+    special:
+      - date-created
+      - cast-timestamp
+    width: half
+  - field: date_updated
+    special:
+      - date-updated
+      - cast-timestamp
+    width: half

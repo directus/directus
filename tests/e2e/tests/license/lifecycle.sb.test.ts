@@ -50,6 +50,10 @@ describe('paid license lifecycle at boot', () => {
 							await registerLicense(env.LICENSE_PORT, license);
 						},
 					},
+					knex: true,
+					extras: {
+						license: true,
+					},
 				}),
 			);
 
@@ -100,7 +104,10 @@ describe('core license lifecycle at boot', () => {
 		let api: DirectusClient<any> & RestClient<any>;
 
 		beforeAll(async () => {
-			directus = await sandbox(database, createSandboxOptions(beforeApi ? { hooks: { beforeApi } } : undefined));
+			directus = await sandbox(
+				database,
+				createSandboxOptions({ hooks: { beforeApi }, knex: true, extras: { license: true } }),
+			);
 
 			api = createDirectus<any>(`http://localhost:${directus.apis[0].port}`).with(rest()).with(staticToken('admin'));
 		});

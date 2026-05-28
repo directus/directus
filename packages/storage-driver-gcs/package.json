@@ -9,7 +9,7 @@
 		"directory": "packages/storage-driver-gcs"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "SEE LICENSE IN license",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"type": "module",
 	"exports": {

@@ -165,6 +165,10 @@ const customPermissionRules = computed<LicensePendingResolutionFeatureGateCustom
 			| undefined,
 );
 
+const aiTranslations = computed(
+	() => (scope.value === 'manual' || scope.value === 'no_resolution') && licenseStore.aiTranslationsEnabled,
+);
+
 function find(kind: LicensePendingResolution['kind'], key: string): LicensePendingResolution | undefined {
 	return pendingResolution.value?.find((entry: LicensePendingResolution) => entry.kind === kind && entry.key === key);
 }
@@ -184,6 +188,7 @@ const selected = reactive({
 	sso: false,
 	customLLMs: false,
 	customPermissionRules: false,
+	aiTranslations: false,
 });
 
 const adminCreds = ref<{ email?: string; password?: string }>({});
@@ -214,6 +219,7 @@ const isValid = computed(() => {
 	if (sso.value && !selected.sso) return false;
 	if (customLLMs.value && !selected.customLLMs) return false;
 	if (customPermissionRules.value && !selected.customPermissionRules) return false;
+	if (aiTranslations.value && !selected.aiTranslations) return false;
 	return true;
 });
 
@@ -313,7 +319,7 @@ function onEsc() {
 					{{ t('licensing.resolve_countdown', graceCountdown, graceCountdown.days) }}
 				</p>
 
-				<div v-if="sso || customLLMs || customPermissionRules" class="feature-gate-grid">
+				<div v-if="sso || customLLMs || customPermissionRules || aiTranslations" class="feature-gate-grid">
 					<ResolutionSsoSection v-if="sso" v-model="selected.sso" @open-admin-dialog="ssoAdminDialogOpen = true" />
 
 					<section v-if="customLLMs" class="resolution-feature-section">
@@ -346,6 +352,22 @@ function onEsc() {
 							<span>{{ t('licensing.resolve_custom_permissions_confirm') }}</span>
 						</button>
 						<p class="feature-caption">{{ t('licensing.resolve_custom_permissions_caption') }}</p>
+					</section>
+
+					<section v-if="aiTranslations" class="resolution-feature-section">
+						<header class="section-header">
+							<span class="section-title">{{ t('licensing.resolve_section_ai_translations') }}</span>
+						</header>
+						<button
+							type="button"
+							class="confirm"
+							:class="{ selected: selected.aiTranslations }"
+							@click="selected.aiTranslations = !selected.aiTranslations"
+						>
+							<VCheckbox :checked="selected.aiTranslations" style="pointer-events: none" />
+							<span>{{ t('licensing.resolve_ai_translations_confirm') }}</span>
+						</button>
+						<p class="feature-caption">{{ t('licensing.resolve_ai_translations_caption') }}</p>
 					</section>
 				</div>
 
