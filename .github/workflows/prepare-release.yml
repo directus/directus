@@ -100,6 +100,7 @@ jobs:
           echo "🔄 Running changeset version..."
 
           # Capture the changeset version output
+          pnpm changeset pre enter rc
           OUTPUT=$(pnpm changeset version 2>&1)
           echo "$OUTPUT"
 
