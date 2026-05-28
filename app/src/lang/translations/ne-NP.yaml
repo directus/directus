@@ -1,4 +1,5 @@
 ---
+continue: जारी राख्नुहोस्
 first_name: नाम
 last_name: थर
 identifier: पहिचान
@@ -876,6 +877,16 @@ editing_in_batch: '{count} वस्तुहरू ब्याच सम्प
 no_options_available: कुनै विकल्प उपलब्ध छैन
 settings_data_model: डाटा मोडेल
 settings_project: सेटिंग्सहरु
+licensing:
+  unlimited: असीमित
+  addon_update: अद्यावधिक
+  resolve_continue: जारी राख्नुहोस्
+  resolve_show_n_more: 'थप {count} देखाउनुहोस्'
+  resolve_section_flows: फ्लोहरु
+  resolve_sso_admin_password: पासवर्ड
+  entitlements:
+    collections: सङ्ग्रहहरू
+    flows: फ्लोहरु
 settings_flows: फ्लोहरु
 settings_presets: बुकमार्कहरू
 settings_translations: अनुवादहरू
@@ -1819,3 +1830,5 @@ fonts:
   black: कालो
   italic: इटालिक
   auto: स्वतः
+license_grace_key_modal:
+  optional: ऐच्छिक
