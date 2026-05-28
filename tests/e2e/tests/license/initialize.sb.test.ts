@@ -23,6 +23,9 @@ describe('env license source', () => {
 							await registerLicense(env.LICENSE_PORT, license);
 						},
 					},
+					extras: {
+						license: true,
+					},
 				}),
 			);
 

@@ -164,7 +164,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-	await directus.stop();
+	await directus?.stop();
 });
 
 describe('GET /license', () => {
