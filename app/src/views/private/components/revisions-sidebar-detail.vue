@@ -93,7 +93,6 @@ function closeModal() {
 }
 
 function onToggle(open: boolean) {
-	if (isNewUnsavedVersion.value) return;
 	if (open && revisions.value === null) getRevisions();
 }
 
