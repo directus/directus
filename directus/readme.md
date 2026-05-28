@@ -69,7 +69,9 @@ Directus is made possible with support from our passionate core team, talented c
 
 ## 📄 Understanding Our License
 
-Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](./license), a source-available license derived from the [Fair Core License](https://fcl.dev/).
+Directus is licensed under the [Monospace Sustainable Core License (MSCL) 1.0](./license), a source-available license derived from the [Fair Core License](https://fcl.dev/). 
+
+Read about our [evolving our license](https://directus.io/blog/directus-v12-license-change) from BSL to MSCL for long-term sustainability.
 
 ### Free for Most Builders
 
