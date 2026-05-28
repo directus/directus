@@ -519,10 +519,8 @@ export class LicenseManager {
 
 		const entitlementManager = getEntitlementManager();
 
-		let token: string;
-
 		try {
-			const updateAddonResponse = await updateAddonQuantity(
+			const { token } = await updateAddonQuantity(
 				{
 					license_key: this.licenseKey!,
 					project_id: project_id!,
@@ -544,16 +542,18 @@ export class LicenseManager {
 				},
 			);
 
-			token = updateAddonResponse.token;
+			await settingsService.upsertSingleton({
+				license_token: token,
+			});
+
+			await this.syncLicense();
 		} catch (err) {
-			handleLicenseError(err);
+			if (err instanceof LicenseServerError) {
+				handleLicenseError(err);
+			}
+
+			throw err;
 		}
-
-		await settingsService.upsertSingleton({
-			license_token: token,
-		});
-
-		await this.syncLicense();
 	}
 
 	public async removeAddon(addonId: string) {
