@@ -747,7 +747,7 @@ describe('Schema Snapshots', () => {
 
 					// Assert
 					expect(response.statusCode).toEqual(400);
-					expect(response.text).toContain('Please generate a new diff and try again.');
+					expect(response.text).toContain("Provided hash does not match the current instance's schema hash");
 				},
 				1_200_000,
 			);
@@ -791,7 +791,7 @@ describe('Schema Snapshots', () => {
 
 					// Assert
 					expect(response.statusCode).toEqual(400);
-					expect(response.text).toContain('Please generate a new diff and try again.');
+					expect(response.text).toContain("Provided hash does not match the current instance's schema hash");
 				},
 				1_200_000,
 			);

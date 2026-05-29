@@ -17,6 +17,8 @@ export type FnHelperOptions = {
 		  }
 		| undefined;
 	jsonPath: string | undefined;
+	/** Controls the return type of the JSON extraction expression. 'text' for WHERE/ORDER BY clauses, 'numeric' for numeric comparisons. Omit (or pass undefined) for native JSON output. */
+	jsonReturnType?: 'text' | 'numeric' | undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {

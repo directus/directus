@@ -398,7 +398,7 @@ function useInlineWarning() {
 	--v-input-background-color    [--theme--form--field--input--background]
 	--v-input-border-color        [--theme--form--field--input--border-color]
 	--v-input-border-color-hover  [--theme--form--field--input--border-color-hover]
-	--v-input-border-color-focus  [--theme--form--field--input--border-color-focus]
+	--v-input-focus-ring-color    [--theme--form--field--input--focus-ring-color]
 	--v-input-border-radius       [--theme--border-radius]
 */
 
@@ -429,8 +429,7 @@ function useInlineWarning() {
 		border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--v-input-border-radius, var(--theme--border-radius));
 		transition: var(--fast) var(--transition);
-		transition-property: border-color, box-shadow;
-		box-shadow: var(--theme--form--field--input--box-shadow);
+		transition-property: border-color;
 
 		.prepend {
 			margin-inline-end: 0.4375rem;
@@ -471,7 +470,6 @@ function useInlineWarning() {
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
 			border-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
-			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
 		&:focus-within:not(.disabled),
@@ -480,8 +478,9 @@ function useInlineWarning() {
 
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
-			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
-			box-shadow: var(--theme--form--field--input--box-shadow-focus);
+			outline: var(--focus-ring-width) solid
+				var(--v-input-focus-ring-color, var(--theme--form--field--input--focus-ring-color));
+			outline-offset: var(--focus-ring-offset-invert);
 		}
 
 		&.disabled:not(.non-editable) {
@@ -522,10 +521,6 @@ function useInlineWarning() {
 		&::-webkit-inner-spin-button {
 			margin: 0;
 			appearance: none;
-		}
-
-		&:focus {
-			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		}
 
 		/* Firefox */
