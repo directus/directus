@@ -3199,10 +3199,10 @@ importers:
         specifier: 'catalog:'
         version: 4.0.0
       '@directus/types':
-        specifier: 'workspace:'
+        specifier: workspace:*
         version: link:../types
       '@directus/utils':
-        specifier: 'workspace:'
+        specifier: workspace:*
         version: link:../utils
       happy-dom:
         specifier: 'catalog:'

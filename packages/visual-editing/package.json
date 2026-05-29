@@ -71,8 +71,8 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@directus/types": "workspace:",
-		"@directus/utils": "workspace:",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"happy-dom": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
