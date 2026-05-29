@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "17.1.4",
+	"version": "18.0.0-rc.0",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.com",
 	"repository": {
