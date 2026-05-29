@@ -46,15 +46,20 @@ describe('hasCustomRule', () => {
 		expect(hasCustomRule(makePermission({ fields: null }))).toBe(true);
 	});
 
-	// #RC-TODO
-	// On a PATCH the payload can be a  partial: missing `fields` should NOT mean custom rule
-	// test('no fields key (fields:undefined) return false', () => {
-	// 	expect(hasCustomRule(makePermission({ permissions: {} }))).toBe(false);
-	// });
-
 	test('specific field selection allowed (fields:["name"]) returns true', () => {
 		expect(hasCustomRule(makePermission({ fields: ['name'] }))).toBe(true);
 	});
+
+	// #RC-TODO: Add `fields` to check, a PATCH can be partial and should NOT mean custom rule
+	test.each(['permissions', 'validation', 'presets'] as const)(
+		'missing %s key (fields:["*"], other rule keys empty) returns false',
+		(missingKey) => {
+			const permission: Partial<Permission> = { fields: ['*'], permissions: {}, validation: {}, presets: {} };
+			delete permission[missingKey];
+
+			expect(hasCustomRule(makePermission(permission))).toBe(false);
+		},
+	);
 
 	test('system permissions (system:true) always return false', () => {
 		expect(hasCustomRule(makePermission({ system: true, permissions: { name: { _eq: 'x' } } }))).toBe(false);
