@@ -965,6 +965,7 @@ catalogs:
       version: 4.0.2
 
 overrides:
+  '@directus/license>@directus/types': workspace:*
   fast-xml-parser: 5.8.0
   '@yarnpkg/shell>cross-spawn': 7.0.6
   tar: 7.5.15
@@ -4187,7 +4188,7 @@ packages:
   '@directus/license@0.2.0':
     resolution: {integrity: sha512-8zHpa8Hb+FwIwh8qQ8abqWvkwTzkTp2QWSsQXCBTRYCEK14fhWj8tPjx/EZwXe6z/MV3Db1TNEe0FqC9DEDRTQ==}
     peerDependencies:
-      '@directus/types': ^15.0.3
+      '@directus/types': workspace:*
 
   '@directus/sdk@21.3.0':
     resolution: {integrity: sha512-ozK2OmlaBiCuP5RuL046CaGGqEnlOdl4Rg690qaOgbC0C45XnDZVeBlb+NDLTUqEj88iSX8Cv74G3qh0L2i7Yw==}

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 앱 정보
+continue: 계속
 first_name: 이름/별명
 last_name: 성
 identifier: 식별자
@@ -1146,6 +1147,17 @@ settings_data_model: 데이터 모델
 settings_roles: 사용자 역할
 settings_permissions: 액세스 정책
 settings_project: 설정
+licensing:
+  unlimited: 제한 없는
+  addon_manage: 관리
+  addon_update: 수정
+  resolve_continue: 계속
+  resolve_show_n_more: '{count}개 더 보기'
+  resolve_section_flows: 플로우
+  resolve_sso_admin_password: 비밀번호
+  entitlements:
+    collections: 컬렉션
+    flows: 플로우
 settings_appearance: 외관
 settings_ai: AI
 model_context_protocol: 모델 컨텍스트 프로토콜
@@ -2080,7 +2092,9 @@ interfaces:
     value_securely_saved: 값이 안전하기 저장 됨
     generate: 토큰 생성
     regenerate: 토큰 재생성
+    regenerate_confirm_title: 토큰 재생성
     remove_token: 토큰 제거
+    remove_confirm_title: 토큰 제거
   system-raw-editor:
     system-raw-editor: RAW 편집기
     description: RAW 또는 콧수염 템플릿 값 입력 허용
@@ -2565,6 +2579,8 @@ license_banner:
   title: 프로젝트 담당자를 지정하지 않으셨습니다.
   license: 이는 MSCL 1.0 라이선스 준수를 위해 필요합니다. 해당 담당자가 프로젝트 책임자가 되어야 합니다.
   remind_next_login: 다음 로그인 시 다시 알려드리겠습니다.
+license_grace_key_modal:
+  optional: 선택 과목
 accepted: 수락됨
 text_direction_auto: 자동(일치 언어)
 text_direction_ltr: 왼쪽에서 오른쪽으로(LTR)
