@@ -35,6 +35,7 @@ setup_accept_license: 我接受 {directusMscl} 和 {privacyPolicy} 的条款
 setup_marketing_emails: 向我发送产品更新和发行说明
 setup_launch: 启动 Directus
 setup_project: 设置项目
+continue: 继续
 first_name: 名
 last_name: 姓
 admin_email: 管理员邮箱
@@ -1191,6 +1192,18 @@ settings_data_model: 数据模型
 settings_roles: 用户角色
 settings_permissions: 访问策略
 settings_project: 设置
+licensing:
+  unlimited: 无限制
+  addon_manage: 管理
+  addon_update: 更新
+  resolve_continue: 继续
+  resolve_show_n_more: '显示更多 {count}'
+  resolve_section_flows: 流程
+  resolve_sso_admin_email: 邮箱地址
+  resolve_sso_admin_password: 密码
+  entitlements:
+    collections: 数据模型
+    flows: 流程
 settings_appearance: 外观
 settings_ai: AI
 model_context_protocol: 模型上下文协议
@@ -2147,7 +2160,9 @@ interfaces:
     value_securely_saved: 值已安全保存
     generate: 生成令牌
     regenerate: 重新生成令牌
+    regenerate_confirm_title: 重新生成令牌
     remove_token: 删除令牌
+    remove_confirm_title: 删除令牌
   system-raw-editor:
     system-raw-editor: 原始编辑器
     description: 允许输入原始或mustache 模板值
@@ -2623,6 +2638,8 @@ license_banner:
   set_owner: 设置所有者
   remind_later: 稍后提醒
   remind_next_login: 我们会在您下次登录时再次提醒。
+license_grace_key_modal:
+  optional: 可选的
 accepted: 已接受
 text_direction_auto: 自动(匹配语言)
 text_direction_ltr: 从左到右 (LTR)

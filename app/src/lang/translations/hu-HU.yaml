@@ -35,6 +35,7 @@ setup_accept_license: Elfogadom a {directusMscl} és a {privacyPolicy} feltétel
 setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
 setup_launch: Directus indítása
 setup_project: Projekt beállítása
+continue: Folytatás
 first_name: Keresztnév
 last_name: Vezetéknév
 admin_email: Adminisztrátor e-mail címe
@@ -1070,6 +1071,18 @@ editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adatmodell
 settings_project: Beállítások
+licensing:
+  unlimited: Korlátlan
+  addon_manage: Kezelés
+  addon_update: Frissítés
+  resolve_continue: Folytatás
+  resolve_show_n_more: 'További {count} mutatása'
+  resolve_section_flows: Folyamatok
+  resolve_sso_admin_email: E-mail cím
+  resolve_sso_admin_password: Jelszó
+  entitlements:
+    collections: Gyűjtemények
+    flows: Folyamatok
 settings_flows: Folyamatok
 settings_presets: Könyvjelzők
 settings_translations: Fordítások
@@ -1849,7 +1862,9 @@ interfaces:
     value_securely_saved: Érték biztonságosan mentve
     generate: Token generálása
     regenerate: Token újragenerálása
+    regenerate_confirm_title: Token újragenerálása
     remove_token: Token eltávolítása
+    remove_confirm_title: Token eltávolítása
   system-raw-editor:
     system-raw-editor: Nyers szerkesztő
     description: Lehetővé teszi a nyers vagy kapcsos zárójeles sablonértékek megadását
@@ -2250,4 +2265,6 @@ fonts:
   black: Fekete
   italic: Dőlt
   auto: Automatikus
+license_grace_key_modal:
+  optional: Opcionális
 set_to_now: Mai nap

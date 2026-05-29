@@ -35,6 +35,7 @@ setup_accept_license: Я принимаю условия {directusMscl} и {priv
 setup_marketing_emails: Присылать мне обновления и заметки к выпуску
 setup_launch: Запустить Directus
 setup_project: Организовать проект
+continue: Продолжить
 first_name: Имя
 last_name: Фамилия
 admin_email: Почта админа
@@ -213,6 +214,7 @@ rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
 apply: Применить
+discard: Отменить
 select_all_differences: Выбрать все различия
 delete_version: Удалить версию
 delete_version_copy: >-
@@ -520,10 +522,15 @@ related_collection: Связанная коллекция
 related_collections: Связанные коллекции
 translations_collection: Коллекция переводов
 languages_collection: Коллекция языков
+fields_to_translate: Поля для перевода
+add_fields: Добавление полей
 translations_preview_collections: Коллекции
 translations_preview_fields: Поля
+translations_preview_relations: Отношения
+ungrouped: Без группировки
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Начать импорт
+import_background: Импорт в фоновом режиме
 import_data_indeterminate: Импорт данных...
 import_data_success: Данные успешно импортированы из {filename}
 import_data_errors: Ошибка импорта
@@ -1031,6 +1038,7 @@ no_url_copy: Пожалуйста, добавьте URL в настройках.
 invalid_url: Недопустимый URL
 invalid_url_copy: Указанный URL не совпадает ни с одним URL, указанным в настройках.
 insights: Аналитика
+overview: Обзор
 deployment:
   overview:
     overview: Обзор
@@ -1212,6 +1220,18 @@ settings_data_model: Модель данных
 settings_roles: Роли пользователей
 settings_permissions: Политики доступа
 settings_project: Настройки
+licensing:
+  unlimited: Не ограничено
+  addon_manage: Управлять
+  addon_update: Обновить
+  resolve_continue: Продолжить
+  resolve_show_n_more: 'Показать еще {count}'
+  resolve_section_flows: Процессы
+  resolve_sso_admin_email: Адрес электронной почты
+  resolve_sso_admin_password: Пароль
+  entitlements:
+    collections: Коллекции
+    flows: Процессы
 settings_appearance: Внешний вид
 settings_ai: ИИ
 model_context_protocol: Model Context Protocol
@@ -1667,6 +1687,7 @@ no_permissions: Нет прав доступа
 permission_add_collection: Добавить коллекцию
 default_label: По умолчанию
 delete_label: Удалить
+discard_label: Отменить
 delete_are_you_sure: >-
   Это действие является необратимым и не может быть отменено. Вы уверены, что хотите продолжить?
 delete_field_are_you_sure: >-
@@ -2114,7 +2135,9 @@ interfaces:
     value_securely_saved: Значение сохранено безопасным способом
     generate: Сгенерировать Токен
     regenerate: Перевыпустить Токен
+    regenerate_confirm_title: Перевыпустить Токен
     remove_token: Удалить ключ доступа
+    remove_confirm_title: Удалить ключ доступа
   system-raw-editor:
     system-raw-editor: Редактор сырых данных
     description: Разрешить ввод простых или шаблонных значений без логики
@@ -2579,5 +2602,7 @@ search_flow: Последовательность поиска...
 percent: Процент
 show_password: Показать пароль
 hide_password: Скрыть пароль
+license_grace_key_modal:
+  optional: Необязательно
 accepted: Принято
 set_to_now: Установить Сейчас
