@@ -238,6 +238,7 @@ jobs:
               --body "$PR_BODY" \
               --label "Release" \
               --label "Run Blackbox" \
+              --label "Run E2E" \
               --label "No Changeset" \
               --head "$BRANCH_NAME" \
               --base "main" \
