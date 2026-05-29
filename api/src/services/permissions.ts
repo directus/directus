@@ -1,4 +1,4 @@
-import { ForbiddenError, ResourceRestrictedError } from '@directus/errors';
+import { ForbiddenError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	Item,
