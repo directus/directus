@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O nás
+continue: Pokračovat
 first_name: Křestní jméno
 last_name: Příjmení
 identifier: Identifikátor
@@ -164,14 +165,12 @@ keep: Ponechat
 version: Verze
 version_key: Klíč verze
 version_name: Název verze
-main_version: Hlavní
 switch_version: Přepnout verzi
 switch_version_copy: Opravdu chcete přepnout na verzi "{version}"? Neuložené změny budou ztraceny.
 create_version: Vytvořit verzi
 rename_version: Přejmenovat verzi
 compare_version: Porovnat verzi
 save_version: Uložit verzi
-promote_version: Povýšit verzi
 delete_version: Smazat verzi
 delete_version_copy: >-
   Opravdu chcete smazat verzi "{version}"? Tuto akci nelze vrátit zpět.
@@ -1118,6 +1117,17 @@ settings_data_model: Datový model
 settings_roles: Uživatelské role
 settings_permissions: Přístupová práva
 settings_project: Nastavení
+licensing:
+  unlimited: Bez omezení
+  addon_manage: Spravovat
+  addon_update: Úpravy
+  resolve_continue: Pokračovat
+  resolve_show_n_more: 'Zobrazit dalších {count}'
+  resolve_section_flows: Toky
+  resolve_sso_admin_password: Heslo
+  entitlements:
+    collections: Kategorie
+    flows: Toky
 settings_appearance: Vzhled
 settings_flows: Toky
 settings_system_logs: Systémové protokoly
@@ -2002,7 +2012,9 @@ interfaces:
     value_securely_saved: Hodnota bezpečně uložena
     generate: Generovat token
     regenerate: Obnovit token
+    regenerate_confirm_title: Obnovit token
     remove_token: Odstranit token
+    remove_confirm_title: Odstranit token
   system-raw-editor:
     system-raw-editor: Editor surových hodnot
     description: Povolit zadávání syrových hodnot nebo mustache šablon
@@ -2454,4 +2466,6 @@ search_flow: Prohledat tok...
 percent: '%'
 show_password: Zobrazit heslo
 hide_password: Skrýt heslo
+license_grace_key_modal:
+  optional: Nepovinné
 set_to_now: Nastavit na teď

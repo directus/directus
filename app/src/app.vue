@@ -2,11 +2,14 @@
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
+import { storeToRefs } from 'pinia';
 import { TooltipProvider } from 'reka-ui';
-import { computed, onMounted, onUnmounted, toRefs } from 'vue';
-import { RouterView } from 'vue-router';
+import { computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { RouterView, useRouter } from 'vue-router';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { ALLOWED_WHILE_LOCKED } from './router';
+import { useLicenseStore } from './stores/license';
 import { useUserStore } from './stores/user';
 import AppTooltip from '@/components/app-tooltip.vue';
 import VButton from '@/components/v-button.vue';
@@ -20,6 +23,19 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 const appStore = useAppStore();
 const serverStore = useServerStore();
 const userStore = useUserStore();
+const licenseStore = useLicenseStore();
+const router = useRouter();
+
+const { isLocked } = storeToRefs(licenseStore);
+
+// React to the license becoming locked while the admin is browsing —
+// the router guard only fires on navigation, so we need a reactive watch here.
+watch(isLocked, (locked) => {
+	if (!locked || !userStore.isAdmin) return;
+	const currentPath = router.currentRoute.value.path;
+	if (ALLOWED_WHILE_LOCKED.includes(currentPath)) return;
+	router.push('/license-recovery');
+});
 
 const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
 
