@@ -20,9 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: درباره
+directus_mscl: MSCL 1.0 دایرکتوس
 privacy_policy: سیاست حریم خصوصی
+contact_our_team: با تیم ما تماس بگیرید
 setup_welcome: به دایرکتوس خوش آمدید
 setup_info: بیایید حساب مدیر شما را ایجاد کنیم و پروژه‌تان را راه‌اندازی کنیم.
+setup_license_notice: >
+  دایرکتوس برای استفاده اشخاص با کمتر از ۵ میلیون دلار درآمد، سرمایه‌گذاری یا بودجه عملیاتی سالانه رایگان است.
+setup_license_follow_up: >
+  اشخاص بالاتر از این آستانه نیازمند مجوز پولی هستند. شما می‌توانید حالا به ارزیابی دایرکتوس ادامه دهید و وقتی برای گفتگو درباره استفاده عملیاتی آماده بودید، {contactOurTeam}.
+setup_save_accept_license: >
+  با انتخاب دکمه ذخیره، شما شرایط {directusMscl} و {privacyPolicy} را قبول می‌کنید.
+setup_accept_license: من شرایط {directusMscl} و {privacyPolicy} را قبول می‌کنم
 setup_marketing_emails: به‌روزرسانی‌های محصول و یادداشت‌های انتشار را برای من بفرست
 setup_launch: راه‌اندازی دایرکتوس
 setup_project: راه‌اندازی پروژه
@@ -34,6 +43,11 @@ last_name: نام خانوادگی
 admin_email: ایمیل مدیر
 owner_email: ایمیل مالک
 email_address: نشانی ایمیل
+organization_name: نام سازمان
+how_do_you_use_directus: از دایرکتوس چه استفاده‌ای می‌کنید؟
+usage_personal: شخصی / یادگیری
+usage_commercial: کسب و کار / تجاری
+usage_community: متن‌باز / جامعه
 identifier: شناساگر
 avatar: آواتار
 application: برنامه
@@ -1818,6 +1832,7 @@ ai:
   always_allow: همیشه اجازه بده
   deny: رد کردن
   approve_tool_execution: اجرای ابزار را تایید می‌کنید؟
+  retry: تلاش مجدد
   prompt_input_placeholder: پیام خود را اینجا بنویسید...
   clear_conversation: خالی کردن گفت‌وگو
   build_with_assistant: با دستیار هوش مصنوعی بسازید
@@ -2901,6 +2916,12 @@ search_flow: جستجوی جریان...
 percent: درصد
 show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
+license_banner:
+  title: شما مالک پروژه‌ای تنظیم نکرده‌اید.
+  license: ما برای اطمینان از انطباق با مجوز MSCL 1.0 خود به این نیاز داریم. این باید مخاطب اصلی مسئول در برابر پروژه شما باشد.
+  set_owner: تعیین مالک
+  remind_later: بعدا یادآوری کن
+  remind_next_login: هنگام ورود بعدی شما دوباره یادآوری خواهیم کرد.
 license_grace_key_modal:
   optional: اختیاری
 accepted: پذیرفته شده

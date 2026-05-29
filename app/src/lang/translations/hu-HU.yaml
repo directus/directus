@@ -20,9 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rólunk
+directus_mscl: Directus MSCL 1.0
 privacy_policy: Adatvédelmi irányelvek
+contact_our_team: Lépjen kapcsolatba velünk
 setup_welcome: Üdvözöljük a Directusnál
 setup_info: Hozza létre rendszergazda fiókját, és indítsa el projektjét
+setup_license_notice: >
+  A Directus ingyenes az 5 millió dollár alatti forgalmú cégeknek, valamint alapítványoknak és költségvetési szervezetnek.
+setup_license_follow_up: >
+  A küszöbértéket meghaladó cégek kötelesek licencet vásárolni. Folytassa bátran a Directus tesztelését; és amint készen áll a bevezetésre, lépjen kapcsolatba {contactOurTeam}-mel.
+setup_save_accept_license: >
+  A mentés gombra kattintva elfogadja a {directusMscl} és a {privacyPolicy} feltételeit.
+setup_accept_license: Elfogadom a {directusMscl} és a {privacyPolicy} feltételeit.
 setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
 setup_launch: Directus indítása
 setup_project: Projekt beállítása
@@ -32,6 +41,11 @@ last_name: Vezetéknév
 admin_email: Adminisztrátor e-mail címe
 owner_email: Tulajdonos e-mail címe
 email_address: E-mail cím
+organization_name: Szervezet neve
+how_do_you_use_directus: Mire használja a Directust?
+usage_personal: Egyéni használat / Tanulás
+usage_commercial: Üzleti / Kereskedelmi
+usage_community: Nyílt forráskódú / Közösségi
 identifier: Azonosító
 avatar: Profilkép
 application: Alkalmazás

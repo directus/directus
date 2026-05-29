@@ -20,9 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Directus の概要
+directus_mscl: Directus MSCL 1.0
 privacy_policy: プライバシーポリシー 
+contact_our_team: チームへのお問い合わせ
 setup_welcome: ようこそ Directus へ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
+setup_license_notice: >
+  年間収益、資金調達額、または運営予算が 5 百万ドル未満の団体は、Directus を無料で利用できます。
+setup_license_follow_up: >
+  この上限を超える場合は有料ライセンスが必要です。評価を続けることもできますが、商用利用のご相談は {contactOurTeam} までお願いします。
+setup_save_accept_license: >
+  保存することで、{directusMscl} および {privacyPolicy} に同意したものとみなされます。
+setup_accept_license: '{directusMscl} および {privacyPolicy} に同意します'
 setup_marketing_emails: 製品の更新やリリースノートをメールで受け取る
 setup_launch: Directus を起動
 setup_project: プロジェクトの設定
@@ -31,6 +40,11 @@ last_name: 姓
 admin_email: 管理者メールアドレス
 owner_email: オーナーメールアドレス
 email_address: メールアドレス
+organization_name: 組織名
+how_do_you_use_directus: Directus をどのような目的で使用していますか ?
+usage_personal: 個人利用 / 学習
+usage_commercial: ビジネス / 商用
+usage_community: オープンソース / コミュニティ
 identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
@@ -1643,6 +1657,7 @@ ai:
   always_allow: 常に許可
   deny: 却下
   approve_tool_execution: ツールの実行を承認しますか ?
+  retry: 再試行
   prompt_input_placeholder: ここにメッセージを入力…
   clear_conversation: 会話をクリア
   build_with_assistant: AI アシスタントで構築
@@ -2237,6 +2252,12 @@ search_flow: フローを検索 ...
 percent: パーセント
 show_password: パスワードを表示にする
 hide_password: パスワードを非表示にする
+license_banner:
+  title: プロジェクトの所有者が設定されていません。
+  license: これは MSCL 1.0 ライセンスを遵守するために必要です。プロジェクトに責任を持つ主な担当者を設定してください。
+  set_owner: 所有者を設定
+  remind_later: 後で通知
+  remind_next_login: 次回のログイン時に再度通知します。
 license_grace_key_modal:
   optional: オプション
 accepted: 承認済み
