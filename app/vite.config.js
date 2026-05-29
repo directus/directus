@@ -11,12 +11,13 @@ import { defineConfig } from 'vitest/config';
 
 const API_PATH = path.join('..', 'api');
 
-/*
- * @TODO This extension path is hardcoded to the env default (./extensions). This won't work
- * as expected when extensions are read from a different location locally through the
- * EXTENSIONS_LOCATION env var
- */
-const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
+// api/.env is not loaded automatically when running `pnpm --filter app dev`
+const apiEnvFile = path.join(API_PATH, '.env');
+if (fs.existsSync(apiEnvFile)) process.loadEnvFile(apiEnvFile);
+
+const EXTENSIONS_PATH = process.env.EXTENSIONS_PATH
+	? path.resolve(API_PATH, process.env.EXTENSIONS_PATH)
+	: path.join(API_PATH, 'extensions');
 
 const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
