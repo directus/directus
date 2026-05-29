@@ -201,6 +201,7 @@ jobs:
           ${{ steps.crowdin-check.outputs.crowdin_task }}
           - [ ] PR reviewed and approved
           - [ ] Blackbox tests passed
+          - [ ] E2E tests passed
 
           ### 🚀 Release Notes
           ```md
@@ -238,6 +239,7 @@ jobs:
               --body "$PR_BODY" \
               --label "Release" \
               --label "Run Blackbox" \
+              --label "Run E2E" \
               --label "No Changeset" \
               --head "$BRANCH_NAME" \
               --base "main" \
