@@ -2,7 +2,6 @@
 import { DIRECTUS_LICENSING_DOCS_URL } from '@directus/constants';
 import { SetupForm } from '@directus/types';
 import { computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { defaultValues, useKycFields, useLicenseFields } from './form';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -11,8 +10,6 @@ import VRadioCards from '@/components/v-radio-cards.vue';
 import { useLicenseForm } from '@/composables/use-license-form';
 import { useServerStore } from '@/stores/server';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
-
-const { t } = useI18n();
 
 withDefaults(
 	defineProps<{
