@@ -34,6 +34,7 @@
 	},
 	"pnpm": {
 		"overrides": {
+			"@directus/license>@directus/types": "workspace:*",
 			"fast-xml-parser": "5.8.0",
 			"@yarnpkg/shell>cross-spawn": "7.0.6",
 			"tar": "7.5.15",
