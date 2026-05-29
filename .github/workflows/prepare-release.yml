@@ -31,7 +31,7 @@ jobs:
           REPO="${{ github.repository }}"
 
           # Check for stable or RC semver format
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]]; then
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.(0|[1-9][0-9]*))?$ ]]; then
             echo "❌ Invalid version format for '$VERSION'. Expected: x.y.z or x.y.z-rc.N"
             exit 1
           fi
