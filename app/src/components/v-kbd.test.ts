@@ -44,15 +44,15 @@ test('slot takes precedence over value prop', () => {
 });
 
 test('size prop adds correct class', () => {
-	for (const size of ['small', 'medium', 'large'] as const) {
+	for (const size of ['xs', 'sm', 'md', 'lg', 'xl'] as const) {
 		const wrapper = mount(VKbd, { props: { size } });
 		expect(wrapper.classes()).toContain(size);
 	}
 });
 
-test('defaults to medium size', () => {
+test('defaults to md size', () => {
 	const wrapper = mount(VKbd);
-	expect(wrapper.classes()).toContain('medium');
+	expect(wrapper.classes()).toContain('md');
 });
 
 test('variant prop adds correct class', () => {

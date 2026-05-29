@@ -26,7 +26,7 @@ onUnmounted(unwatch);
 			>
 				{{ state.content }}
 				<span v-if="state.kbd" class="tooltip-kbd">
-					<VKbd v-for="key in state.kbd" :key="key" :value="key" size="small" variant="inverted" />
+					<VKbd v-for="key in state.kbd" :key="key" :value="key" size="sm" variant="inverted" />
 				</span>
 				<TooltipArrow />
 			</TooltipContent>

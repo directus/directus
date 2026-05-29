@@ -6,13 +6,13 @@ export interface Props {
 	/** Keyboard key name to display, translated per platform (e.g. 'meta' → '⌘' on Mac) */
 	value?: string;
 	/** Size of the key cap */
-	size?: 'small' | 'medium' | 'large';
+	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 	/** Visual style variant */
 	variant?: 'outlined' | 'soft' | 'inverted';
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	size: 'medium',
+	size: 'md',
 	variant: 'outlined',
 });
 
@@ -52,22 +52,34 @@ const translatedValue = computed(() => {
 	text-transform: uppercase;
 	border-radius: var(--theme--border-radius);
 
-	&.small {
+	&.xs {
+		min-inline-size: 0.75rem;
+		block-size: 0.75rem;
+		font-size: 0.5625rem;
+	}
+
+	&.sm {
 		min-inline-size: 1rem;
 		block-size: 1rem;
 		font-size: 0.625rem;
 	}
 
-	&.medium {
+	&.md {
 		min-inline-size: 1.25rem;
 		block-size: 1.25rem;
 		font-size: 0.6875rem;
 	}
 
-	&.large {
+	&.lg {
 		min-inline-size: 1.5rem;
 		block-size: 1.5rem;
 		font-size: 0.75rem;
+	}
+
+	&.xl {
+		min-inline-size: 1.75rem;
+		block-size: 1.75rem;
+		font-size: 0.875rem;
 	}
 
 	&.outlined {
