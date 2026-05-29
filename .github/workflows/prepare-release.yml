@@ -25,8 +25,9 @@ jobs:
       - name: Validate version format and existence
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION_INPUT: ${{ github.event.inputs.version }}
         run: |
-          VERSION="${{ github.event.inputs.version }}"
+          VERSION="$VERSION_INPUT"
           TAG="v$VERSION"
           REPO="${{ github.repository }}"
 
@@ -97,7 +98,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           DIRECTUS_VERSION: ${{ github.event.inputs.version }}
         run: |
-          VERSION="${{ github.event.inputs.version }}"
+          VERSION="$DIRECTUS_VERSION"
 
           echo "🔄 Running changeset version..."
 
@@ -155,12 +156,12 @@ jobs:
 
           # Verify version was updated in main package
           PACKAGE_VERSION=$(node -p "require('./directus/package.json').version")
-          if [ "$PACKAGE_VERSION" != "${{ github.event.inputs.version }}" ]; then
-            echo "❌ Version mismatch: package.json shows $PACKAGE_VERSION, expected ${{ github.event.inputs.version }}"
+          if [ "$PACKAGE_VERSION" != "$VERSION" ]; then
+            echo "❌ Version mismatch: package.json shows $PACKAGE_VERSION, expected $VERSION"
             exit 1
           fi
 
-          echo "✅ Version updated successfully to ${{ github.event.inputs.version }}"
+          echo "✅ Version updated successfully to $VERSION"
 
       - name: Verify changeset cleanup
         if: steps.changeset-version.outputs.is_prerelease != 'true'
@@ -184,8 +185,9 @@ jobs:
         id: create-pr
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+          VERSION_INPUT: ${{ github.event.inputs.version }}
         run: |
-          VERSION="${{ github.event.inputs.version }}"
+          VERSION="$VERSION_INPUT"
           TAG="v$VERSION"
           BRANCH_NAME="release-$VERSION"
           PR_TITLE="Release $VERSION"
