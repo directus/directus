@@ -157,14 +157,12 @@ keep: Үлдээх
 version: Хувилбар
 version_key: Хувилбарын түлхүүр
 version_name: Хувилбарын нэр
-main_version: Үндсэн
 switch_version: Хувилбар солих
 switch_version_copy: Та {version} хувилбар руу солихыг хүсэж байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
 create_version: Хувилбар үүсгэх
 rename_version: Хувилбарын нэр солих
 compare_version: Хувилбар харьцуулах
 save_version: Хувилбар хадгалах
-promote_version: Хувилбар дэвшүүлэх
 delete_version: Хувилбар устгах
 delete_version_copy: >-
   Хувилбар {version}-ийг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.

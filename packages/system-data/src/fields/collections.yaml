@@ -153,6 +153,30 @@ fields:
       label: $t:field_options.directus_collections.enable_versioning
     width: half
 
+  - field: autosave_revision_interval
+    interface: select-dropdown
+    options:
+      choices:
+        - text: $t:field_options.directus_collections.interval_default
+          value: null
+        - text: 30s
+          value: 30
+        - text: 1m
+          value: 60
+        - text: 5m
+          value: 300
+        - text: 10m
+          value: 600
+    conditions:
+      - rule:
+          _or:
+            - versioning:
+                _neq: true
+            - accountability:
+                _neq: all
+        readonly: true
+    width: half
+
   - field: archive_divider
     special:
       - alias
@@ -169,6 +193,9 @@ fields:
       collectionField: collection
       allowNone: true
       placeholder: $t:field_options.directus_collections.archive_field_placeholder
+      typeAllowList:
+        - string
+        - boolean
     width: half
 
   - field: archive_app_filter

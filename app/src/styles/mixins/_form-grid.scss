@@ -1,3 +1,16 @@
+@mixin form-grid-breakpoint-full {
+	// Keep the `inline-size > 44.5rem` breakpoint in sync with the value in app/src/components/v-form/v-form.vue#L105
+	@container (inline-size > 44.5rem) {
+		@content;
+	}
+}
+
+@mixin form-grid-breakpoint-half {
+	@container (inline-size >= 31.25rem) {
+		@content;
+	}
+}
+
 @mixin form-grid {
 	display: grid;
 	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
@@ -22,7 +35,7 @@
 	.field {
 		grid-column: start / fill;
 
-		@container (inline-size >= 31.25rem) {
+		@include form-grid-breakpoint-full {
 			grid-column: start / full;
 		}
 	}
@@ -32,7 +45,7 @@
 	.half-space {
 		grid-column: start / fill;
 
-		@container (inline-size >= 31.25rem) {
+		@include form-grid-breakpoint-half {
 			grid-column: start / half;
 		}
 	}
@@ -41,7 +54,11 @@
 	.half-right {
 		grid-column: start / fill;
 
-		@container (inline-size >= 31.25rem) {
+		@include form-grid-breakpoint-half {
+			grid-column: half / fill;
+		}
+
+		@include form-grid-breakpoint-full {
 			grid-column: half / full;
 		}
 	}
@@ -49,7 +66,7 @@
 	.full {
 		grid-column: start / fill;
 
-		@container (inline-size >= 31.25rem) {
+		@include form-grid-breakpoint-full {
 			grid-column: start / full;
 		}
 	}

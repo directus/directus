@@ -4,7 +4,7 @@ import { extractErrorCode } from '@/utils/extract-error-code';
 
 let store: any;
 
-export function unexpectedError(error: unknown): void {
+export function unexpectedError(error: unknown, options?: { dismissAction?: () => void | Promise<void> }): void {
 	if (!store) store = useNotificationsStore();
 
 	const code = extractErrorCode(error);
@@ -18,5 +18,6 @@ export function unexpectedError(error: unknown): void {
 		code,
 		dialog: true,
 		error,
+		dismissAction: options?.dismissAction,
 	});
 }

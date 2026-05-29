@@ -152,7 +152,6 @@ prefix: Præfiks
 suffix: Suffiks
 keep: Behold
 version: Version
-main_version: Primær
 switch_version: Skift Version
 switch_version_copy: Er du sikker på, at du vil skifte til "{version}"-versionen? Ændringer, der ikke er gemt, går tabt.
 create_version: Opret Version
