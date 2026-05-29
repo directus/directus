@@ -3,6 +3,7 @@ import { TresCanvas } from '@tresjs/core';
 import { Color } from 'three';
 import { computed } from 'vue';
 import ShaderExperience from './shader-experience.vue';
+import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 
 interface Props {
 	projectColor?: string | null;
@@ -10,7 +11,9 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const DEFAULT_CLEAR = '#0a0718';
+const { darkMode } = useThemeConfiguration();
+
+const DEFAULT_CLEAR = '#6644ff';
 
 const clearColor = computed(() => {
 	if (!props.projectColor) return DEFAULT_CLEAR;
@@ -18,7 +21,7 @@ const clearColor = computed(() => {
 	try {
 		const hsl = { h: 0, s: 0, l: 0 };
 		new Color(props.projectColor).getHSL(hsl);
-		return new Color().setHSL(hsl.h, Math.min(hsl.s, 0.6), 0.005).getStyle();
+		return new Color().setHSL(hsl.h, hsl.s, darkMode.value ? 0.002 : 0.008).getStyle();
 	} catch {
 		return DEFAULT_CLEAR;
 	}
