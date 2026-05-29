@@ -77,3 +77,30 @@ test('defaults to 0% fill when modelValue is undefined', () => {
 	const style = wrapper.find('.v-slider').attributes('style');
 	expect(style).toContain('--_v-slider-percentage: 0');
 });
+
+test('renders ticks when tick count is within limit', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: 0,
+			max: 10,
+			step: 1,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(true);
+	expect(wrapper.findAll('.tick')).toHaveLength(11);
+});
+
+test('does not render ticks when tick count exceeds limit', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: -9999,
+			max: 9999,
+			step: 1,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(false);
+});
