@@ -1,6 +1,6 @@
 export const DIRECTUS_DOMAIN = 'directus.com';
 
-export const DIRECTUS_HOME_URL: string = `https://${DIRECTUS_DOMAIN}`;
+export const DIRECTUS_HOME_URL: string = `https://${DIRECTUS_DOMAIN}/`;
 export const DIRECTUS_OIG_URL: string = `https://${DIRECTUS_DOMAIN}/oig`;
 export const DIRECTUS_PRICING_URL: string = `https://${DIRECTUS_DOMAIN}/pricing`;
 export const DIRECTUS_SALES_URL: string = `https://${DIRECTUS_DOMAIN}/sales`;
