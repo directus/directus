@@ -201,6 +201,7 @@ jobs:
           ${{ steps.crowdin-check.outputs.crowdin_task }}
           - [ ] PR reviewed and approved
           - [ ] Blackbox tests passed
+          - [ ] E2E tests passed
 
           ### 🚀 Release Notes
           ```md
