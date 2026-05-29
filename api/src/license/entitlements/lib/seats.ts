@@ -8,20 +8,10 @@ import { AccessService, UsersService } from '../../../services/index.js';
 import { fetchAccessRoles } from '../../../utils/fetch-user-count/fetch-access-roles.js';
 import { getSchema } from '../../../utils/get-schema.js';
 
-export async function getActiveSeats(opts?: {
-	adminId?: string;
-	knex?: Knex | undefined;
-}): Promise<LicensePendingResolutionLimitSeats['candidates']> {
-	const knex = opts?.knex ?? getDatabase();
-	const schema = await getSchema({ database: knex });
-
-	const accessService = new AccessService({ schema, knex });
-
-	const accessRows = await accessService.readByQuery({
-		fields: ['role', 'user.id', 'user.status', 'user.role', 'policy.app_access', 'policy.admin_access'],
-		limit: -1,
-	});
-
+/**
+ * Group access rows to the admin/app users and roles that occupy a seat.
+ */
+export function getSeatUsersAndRoles(accessRows: Record<string, any>[]) {
 	const adminRoles = new Set<string>();
 	const appRoles = new Set<string>();
 	const adminUsers = new Set<string>();
@@ -49,6 +39,25 @@ export async function getActiveSeats(opts?: {
 			}
 		}
 	}
+
+	return { adminUsers, appUsers, adminRoles, appRoles };
+}
+
+export async function getActiveSeats(opts?: {
+	adminId?: string;
+	knex?: Knex | undefined;
+}): Promise<LicensePendingResolutionLimitSeats['candidates']> {
+	const knex = opts?.knex ?? getDatabase();
+	const schema = await getSchema({ database: knex });
+
+	const accessService = new AccessService({ schema, knex });
+
+	const accessRows = await accessService.readByQuery({
+		fields: ['role', 'user.id', 'user.status', 'user.role', 'policy.app_access', 'policy.admin_access'],
+		limit: -1,
+	});
+
+	const { adminUsers, appUsers, adminRoles, appRoles } = getSeatUsersAndRoles(accessRows);
 
 	const { adminRoles: allAdminRoles, appRoles: allAppRoles } = await fetchAccessRoles(
 		{
