@@ -56,7 +56,7 @@ test('defaults to md size', () => {
 });
 
 test('variant prop adds correct class', () => {
-	for (const variant of ['outlined', 'soft', 'inverted'] as const) {
+	for (const variant of ['outlined', 'solid', 'inverted'] as const) {
 		const wrapper = mount(VKbd, { props: { variant } });
 		expect(wrapper.classes()).toContain(variant);
 	}
