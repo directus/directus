@@ -35,6 +35,7 @@ setup_accept_license: Eu aceito os termos de {directusMscl} e {privacyPolicy}
 setup_marketing_emails: Receber novidades do produto e notas de lançamento
 setup_launch: Iniciar Directus
 setup_project: Configurar Projeto
+continue: Continuar
 first_name: Primeiro Nome
 last_name: Sobrenome
 admin_email: Email de Administrador
@@ -1197,6 +1198,18 @@ settings_data_model: Modelo de dados
 settings_roles: Funções do usuário
 settings_permissions: Políticas de acesso
 settings_project: Configurações
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Gerenciar
+  addon_update: Alteração
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Exibir {count} mais'
+  resolve_section_flows: Fluxos
+  resolve_sso_admin_email: Endereço de Email
+  resolve_sso_admin_password: Senha
+  entitlements:
+    collections: Coleções
+    flows: Fluxos
 settings_appearance: Aparência
 settings_ai: IA
 model_context_protocol: Protocolo de Contexto de Modelo (MCP)
@@ -2104,7 +2117,9 @@ interfaces:
     value_securely_saved: Valor secretamente salvo
     generate: Gerar token
     regenerate: Regerar token
+    regenerate_confirm_title: Regerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor "Raw"
     description: Permitir valores com templates "raw" ou "mustache"
@@ -2556,11 +2571,14 @@ series_grouping: Agrupamento de Série
 date_precision: Precisão de Data
 export_dashboard: Exportar Painel
 duplicate_dashboard: Duplicar Painel
+duplicate_policy: Duplicar Política
 search_dashboard: Procurar Painel...
 search_flow: Procurar Fluxo...
 percent: Porcentagem
 show_password: Mostrar senha
 hide_password: Ocultar Senha
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceitado
 text_direction_auto: Automático (Adequar o Idioma)
 text_direction_ltr: Da Esquerda para a Direita (EPD)
