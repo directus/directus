@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_SALES_URL } from '@directus/constants';
 import type { LicenseAddon } from '@directus/license';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -45,7 +45,7 @@ const buttonIcon = computed(() => {
 	}
 });
 
-const salesHref = `https://${DIRECTUS_DOMAIN}/sales`;
+const salesHref = DIRECTUS_SALES_URL;
 
 function onClick() {
 	dialogOpen.value = true;
