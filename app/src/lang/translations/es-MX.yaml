@@ -59,8 +59,6 @@ condition_rules: Reglas condicionales
 input: Entrada
 invalid_input: Entrada no válida
 invalid_file_type: Tipo de Archivo Inválido
-invalid_files_selected: ''
-files_wrong_type: ''
 not_a_number: No es un número
 maps: Mapas
 switch_user: Cambiar de usuario
