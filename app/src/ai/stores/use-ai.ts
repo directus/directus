@@ -530,6 +530,13 @@ export const useAiStore = defineStore('ai-store', () => {
 	const approveToolCall = (approvalId: string) => respondToToolCall(approvalId, true);
 	const denyToolCall = (approvalId: string) => respondToToolCall(approvalId, false);
 
+	// Clear conversation when switching models to prevent context mismatch
+	watch(selectedModelId, (newId, oldId) => {
+		if (oldId && newId !== oldId && chat.messages.length > 0) {
+			reset();
+		}
+	});
+
 	return {
 		// UI State
 		input,
