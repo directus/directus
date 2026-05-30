@@ -107,7 +107,7 @@ function onFocusOut(event: FocusEvent) {
 
 function emitValue() {
 	if (!input.value) return;
-	const value = input.value?.value;
+	const value = input.value.value.trim();
 	emit('update:modelValue', value);
 }
 </script>
