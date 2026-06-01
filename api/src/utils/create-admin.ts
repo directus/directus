@@ -29,7 +29,12 @@ export const defaultAdminPolicy: Partial<Policy> = {
 
 export async function createAdmin(
 	schema: SchemaOverview,
-	admin?: { email?: string; password?: string; first_name?: string; last_name?: string },
+	admin?: {
+		email?: string | undefined;
+		password?: string | undefined;
+		first_name?: string | undefined;
+		last_name?: string | undefined;
+	},
 ): Promise<void> {
 	const logger = useLogger();
 	const env = useEnv();

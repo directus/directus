@@ -341,6 +341,18 @@ describe('search', () => {
 
 		expect(sanitizedQuery.search).toBeUndefined();
 	});
+
+	test('should trim leading and trailing spaces', async () => {
+		const sanitizedQuery = await sanitizeQuery({ search: '  glaglagla !  ' }, null as any);
+
+		expect(sanitizedQuery.search).toBe('glaglagla !');
+	});
+
+	test('should still allow for a whitespace-only search', async () => {
+		const sanitizedQuery = await sanitizeQuery({ search: '   ' }, null as any);
+
+		expect(sanitizedQuery.search).toBe('   ');
+	});
 });
 
 describe('export', () => {

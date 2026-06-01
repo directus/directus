@@ -103,9 +103,9 @@ function onDeleted() {
 	const newParent = props.folder.parent;
 
 	if (newParent) {
-		router.replace(`/files/folders/${newParent}`);
+		router.replace({ name: 'folders-collection', params: { folder: newParent } });
 	} else {
-		router.replace('/files');
+		router.replace({ name: 'files-collection' });
 	}
 
 	fetchFolders();

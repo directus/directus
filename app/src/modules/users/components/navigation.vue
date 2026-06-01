@@ -23,13 +23,25 @@ const router = useRouter();
 const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
 
 function handleClick({ role }: { role: string }) {
-	router.push(`/users/roles/${role}`);
+	router.push({ name: 'roles-collection', params: { role } });
 }
 </script>
 
 <template>
 	<VList nav>
-		<VListItem to="/users" exact :active="!currentRole">
+		<VListItem :to="{ name: 'users-active' }" exact>
+			<VListItemIcon><VIcon name="group" /></VListItemIcon>
+			<VListItemContent>{{ $t('active_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem :to="{ name: 'users-suspended' }" exact>
+			<VListItemIcon><VIcon name="group_off" /></VListItemIcon>
+			<VListItemContent>{{ $t('suspended_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem :to="{ name: 'users-invited' }" exact>
+			<VListItemIcon><VIcon name="person_add" /></VListItemIcon>
+			<VListItemContent>{{ $t('invited_users') }}</VListItemContent>
+		</VListItem>
+		<VListItem :to="{ name: 'users-all' }" exact>
 			<VListItemIcon><VIcon name="folder_shared" /></VListItemIcon>
 			<VListItemContent>{{ $t('all_users') }}</VListItemContent>
 		</VListItem>

@@ -1,9 +1,10 @@
 import type { ProviderType } from '@directus/ai';
 import { useEnv } from '@directus/env';
+import type { TelemetrySettings } from 'ai';
 import { useLogger } from '../../logger/index.js';
 
 type TracerProviderLike = {
-	getTracer: (name: string) => unknown;
+	getTracer: (name: string) => NonNullable<TelemetrySettings['tracer']>;
 	shutdown: () => Promise<void>;
 };
 
@@ -84,16 +85,26 @@ export const initAITelemetry = async (): Promise<void> => {
 	return initPromise;
 };
 
-export const getAITelemetryConfig = (metadata: AITelemetryMetadata): Record<string, unknown> | undefined => {
+export const getAITelemetryConfig = (
+	metadata: AITelemetryMetadata,
+	functionId = 'directus-ai-chat',
+): TelemetrySettings | undefined => {
 	if (!telemetryState) return undefined;
+
+	const telemetryMetadata: NonNullable<TelemetrySettings['metadata']> = {
+		provider: metadata.provider,
+		model: metadata.model,
+		...(metadata.userId != null ? { userId: metadata.userId } : {}),
+		...(metadata.role != null ? { role: metadata.role } : {}),
+	};
 
 	return {
 		isEnabled: true,
 		tracer: telemetryState.tracerProvider.getTracer('directus-ai'),
-		functionId: 'directus-ai-chat',
+		functionId,
 		recordInputs: telemetryState.recordIO,
 		recordOutputs: telemetryState.recordIO,
-		metadata,
+		metadata: telemetryMetadata,
 	};
 };
 

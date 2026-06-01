@@ -26,6 +26,7 @@ const imageFields = [
 	'type',
 	'filesize',
 	'filename_download',
+	'folder',
 	'width',
 	'height',
 	'focal_point_x',
@@ -37,11 +38,13 @@ type Image = Pick<File, (typeof imageFields)[number]>;
 const props = defineProps<{
 	id: string;
 	modelValue?: boolean;
+	createAllowed?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
 	(e: 'refresh'): void;
+	(e: 'new-file', id: string): void;
 }>();
 
 const { n } = useI18n();
@@ -60,7 +63,8 @@ const internalActive = computed({
 	},
 });
 
-const { loading, error, imageData, imageElement, hasEdits, save, saving, fetchImage, onImageLoad } = useImage();
+const { loading, error, imageData, imageElement, hasEdits, save, saveAsNew, saving, fetchImage, onImageLoad } =
+	useImage();
 
 const {
 	cropperInstance,
@@ -149,6 +153,7 @@ function useImage() {
 		imageElement,
 		hasEdits,
 		save,
+		saveAsNew,
 		saving,
 		onImageLoad,
 	};
@@ -198,6 +203,48 @@ function useImage() {
 					);
 				}, imageData.value?.type ?? undefined);
 		});
+	}
+
+	async function saveAsNew() {
+		if (!hasEdits.value || saving.value) return;
+
+		saving.value = true;
+
+		const postRequest = new Promise<string>((resolve, reject) => {
+			cropperInstance.value
+				?.getCroppedCanvas({
+					imageSmoothingQuality: 'high',
+				})
+				.toBlob(async (blob) => {
+					if (blob === null) {
+						return reject(`Couldn't process and save edited image`);
+					}
+
+					const formData = new FormData();
+
+					if (imageData.value?.folder) {
+						formData.append('folder', imageData.value.folder as string);
+					}
+
+					formData.append('file', blob, imageData.value?.filename_download);
+
+					api.post('/files', formData).then(
+						(response) => resolve(response.data.data.id),
+						(err) => reject(err),
+					);
+				}, imageData.value?.type ?? undefined);
+		});
+
+		try {
+			const newId = await postRequest;
+			emit('new-file', newId);
+			localDragMode.value = 'move';
+			internalActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			saving.value = false;
+		}
 	}
 
 	async function save() {
@@ -463,8 +510,8 @@ function setAspectRatio() {
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<template #subtitle>
-			<span class="warning">{{ $t('changes_are_permanent') }}</span>
+		<template #title-outer:append>
+			<VIcon v-tooltip.bottom="$t('changes_are_permanent')" name="error" class="warning-icon" />
 		</template>
 
 		<div v-if="loading" class="loader">
@@ -587,14 +634,23 @@ function setAspectRatio() {
 			</div>
 		</div>
 
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
 				icon="check"
 				@click="save"
-			/>
+			>
+				<template v-if="props.createAllowed" #split-menu>
+					<VList>
+						<VListItem clickable @click="saveAsNew">
+							<VListItemIcon><VIcon name="add_photo_alternate" /></VListItemIcon>
+							<VListItemContent>{{ $t('save_as_new_file') }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</template>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 	</VDrawer>
 </template>
@@ -623,7 +679,7 @@ function setAspectRatio() {
 
 .editor-container {
 	inline-size: 100%;
-	block-size: calc(100% - (3.6875rem + 1.375rem + 1.375rem)); /* header height + 2x margin */
+	block-size: 100%;
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
@@ -672,8 +728,12 @@ function setAspectRatio() {
 	font-feature-settings: 'tnum';
 }
 
-.warning {
-	color: var(--theme--warning);
+.warning-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+
+	&:hover {
+		--v-icon-color: var(--theme--warning);
+	}
 }
 
 .toolbar-button {

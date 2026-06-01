@@ -8,7 +8,7 @@ packages:
 
 catalog:
   '@ai-sdk/anthropic': 3.0.58
-  '@ai-sdk/devtools': 0.0.13
+  '@ai-sdk/devtools': 0.0.15
   '@ai-sdk/google': 3.0.43
   '@ai-sdk/openai': 3.0.41
   '@ai-sdk/openai-compatible': 2.0.35
@@ -18,9 +18,12 @@ catalog:
   '@aws-sdk/client-sesv2': 3.928.0
   '@aws-sdk/lib-storage': 3.928.0
   '@azure/storage-blob': 12.29.1
+  '@braintrust/otel': 0.2.0
   '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
+  '@directus/errors': 2.3.1
+  '@directus/license': 0.2.0
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 4.0.0
   '@directus/types': workspace:*
@@ -41,6 +44,7 @@ catalog:
   '@editorjs/table': 2.4.5
   '@editorjs/underline': 1.2.1
   '@eslint/js': 9.39.1
+  '@fastify/type-provider-typebox': 6.1.0
   '@fortawesome/fontawesome-svg-core': 6.7.2
   '@fortawesome/free-brands-svg-icons': 6.7.2
   '@fullcalendar/core': 6.1.19
@@ -55,12 +59,11 @@ catalog:
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 3.0.1
-  '@braintrust/otel': 0.2.0
   '@langfuse/otel': 4.0.0
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
-  '@modelcontextprotocol/sdk': 1.26.0
+  '@modelcontextprotocol/sdk': 1.29.0
   '@netlify/api': 14.0.14
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
@@ -70,6 +73,7 @@ catalog:
   '@pnpm/workspace.find-packages': 1000.0.43
   '@pnpm/workspace.pkgs-graph': 1000.0.25
   '@popperjs/core': 2.11.8
+  '@reach/observe-rect': 1.2.0
   '@rollup/plugin-alias': 5.1.1
   '@rollup/plugin-commonjs': 28.0.9
   '@rollup/plugin-json': 6.1.0
@@ -80,7 +84,6 @@ catalog:
   '@rollup/plugin-yaml': 4.1.2
   '@sesamecare-oss/redlock': 1.4.0
   '@shopify/semaphore': 3.1.0
-  '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
   '@supabase/storage-js': 2.81.0
@@ -106,6 +109,7 @@ catalog:
   '@types/express': 4.17.21
   '@types/express-serve-static-core': 4.19.6
   '@types/file-saver': 2.0.7
+  '@types/find-process': 1.2.2
   '@types/fs-extra': 11.0.4
   '@types/geojson': 7946.0.16
   '@types/glob-to-regexp': 0.4.4
@@ -150,7 +154,7 @@ catalog:
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.13.5
+  axios: 1.16.1
   axios-cache-interceptor: 1.11.1
   base-64: 1.0.0
   boxen: 8.0.1
@@ -175,6 +179,8 @@ catalog:
   date-fns-tz: 3.2.0
   decamelize: 6.0.1
   deep-diff: 1.0.2
+  destroy: 1.2.0
+  detect-port: 2.1.0
   diacritics: 1.3.0
   diff: 7.0.0
   dompurify: 3.3.2
@@ -192,8 +198,11 @@ catalog:
   execa: 9.6.0
   exif-reader: 2.0.2
   express: 4.21.2
+  fastify: 5.8.5
+  fastify-type-provider-zod: 6.1.0
   file-saver: 2.0.5
   find-cache-directory: 6.0.0
+  find-process: 2.0.0
   flat: 6.0.1
   focus-trap: 7.6.6
   form-data: 4.0.4
@@ -215,6 +224,7 @@ catalog:
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
   joi: 18.0.1
+  jose: 6.2.3
   js-yaml: 4.1.1
   js2xmlparser: 5.0.0
   json-to-graphql-query: 2.3.0
@@ -227,9 +237,9 @@ catalog:
   knex-mock-client: 3.0.2
   ky: 1.14.0
   ldapts: 8.1.3
-  liquidjs: 10.25.0
-  lodash: 4.17.23
-  lodash-es: 4.17.23
+  liquidjs: 10.26.0
+  lodash: 4.18.1
+  lodash-es: 4.18.1
   log-symbols: 7.0.1
   lru-cache: 11.2.2
   mapbox-gl: 1.13.3
@@ -238,14 +248,15 @@ catalog:
   micromustache: 8.0.3
   mime: 4.1.0
   mime-types: 3.0.1
-  minimatch: 10.2.4
+  minimatch: 10.2.5
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
+  mysql: 2.18.1
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
-  nodemailer: 7.0.11
+  nodemailer: 8.0.5
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
@@ -259,6 +270,7 @@ catalog:
   p-queue: 8.1.0
   papaparse: 5.5.3
   pg: 8.16.3
+  pid-port: 1.0.2
   pinia: 2.3.1
   pino: 9.7.0
   pino-http: 10.5.0
@@ -280,18 +292,19 @@ catalog:
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
-  samlify: 2.11.0
+  samlify: 2.13.1
   sanitize-filename: 1.6.3
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3
   semver: 7.7.3
   sharp: 0.34.5
+  signal-polyfill: 0.2.2
   snappy: 7.3.3
   sqlite3: 5.1.7
   stream-json: 1.9.1
   string-width: 7.2.0
   strip-ansi: 7.1.2
-  stylelint: 16.25.0
+  stylelint: 16.26.1
   stylelint-config-standard: 39.0.1
   stylelint-config-standard-scss: 15.0.1
   stylelint-config-standard-vue: 1.0.0
@@ -300,10 +313,13 @@ catalog:
   tar: 7.5.8
   tedious: 18.6.1
   tinymce: 6.8.6
-  tmp: 0.2.5
+  tmp: 0.2.6
   tsdown: 0.15.11
   tsx: 4.20.6
   tus-js-client: 4.3.1
+  typebox: 1.1.37
+  typedoc: 0.28.12
+  typedoc-plugin-markdown: 4.8.1
   typescript: 5.9.3
   typescript-eslint: 8.46.4
   undici: 7.24.5
@@ -312,14 +328,15 @@ catalog:
   unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 8.0.0
+  vite: 8.0.8
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
+  vite-tsconfig-paths: 5.1.4
   vitest: 3.2.4
   vue: 3.5.24
   vue-i18n: 11.1.12
   vue-router: 4.6.3
-  vue-tsc: 3.1.3
+  vue-tsc: 3.1.8
   vue-virtual-scroller: 2.0.0-beta.8
   vuedraggable: 4.1.0
   wellknown: 0.5.0

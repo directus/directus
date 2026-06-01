@@ -23,8 +23,13 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Call NF deploy webhook
+        env:
+          NEXT_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PREVIEW_TOKEN: ${{ secrets.NORTHFLANK_PREVIEW_TOKEN }}
+          PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
+          REPO_URL: ${{ github.event.pull_request.head.repo.clone_url }}
         run: |
-          curl -G "https://webhooks.northflank.com/previews/${{ secrets.NORTHFLANK_PREVIEW_TOKEN }}" \
-          --data-urlencode "preview-source.pullRequestId=${{ github.event.pull_request.number }}" \
-          --data-urlencode "preview-source.repoUrl=${{ github.event.pull_request.head.repo.clone_url }}" \
-          --data-urlencode "next.branch=${{ github.event.pull_request.head.ref }}"
+          curl -G "https://webhooks.northflank.com/previews/${PREVIEW_TOKEN}" \
+          --data-urlencode "preview-source.pullRequestId=${PULL_REQUEST_ID}" \
+          --data-urlencode "preview-source.repoUrl=${REPO_URL}" \
+          --data-urlencode "next.branch=${NEXT_BRANCH}"

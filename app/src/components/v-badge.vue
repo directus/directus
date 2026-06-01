@@ -67,6 +67,7 @@ withDefaults(
 		inset-block-start: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-y, 0rem));
 		inset-inline-end: calc(var(--v-badge-size, 0.875rem) / -2 + var(--v-badge-offset-x, 0rem));
 		z-index: 1;
+		pointer-events: none;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;

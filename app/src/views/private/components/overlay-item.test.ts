@@ -34,7 +34,8 @@ vi.mock('@/composables/use-collab', () => ({
 	}),
 }));
 
-vi.mock('@directus/composables', () => ({
+vi.mock('@directus/composables', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@directus/composables')>()),
 	useCollection: () => ({
 		info: computed(() => ({ name: 'Articles', collection: 'articles', meta: null })),
 		primaryKeyField: computed(() => ({ field: 'id' })),
@@ -42,6 +43,7 @@ vi.mock('@directus/composables', () => ({
 	}),
 	useGroupable: () => ({ active: ref(false), toggle: vi.fn() }),
 	useSizeClass: () => computed(() => ''),
+	useShortcut: vi.fn(),
 }));
 
 vi.mock('vue-router', async (importOriginal) => ({
@@ -75,7 +77,6 @@ const globalStubs: GlobalMountOptions = {
 		VCardActions: { template: '<div><slot /></div>' },
 		VButton: { template: '<button><slot /></button>' },
 		VIcon: true,
-		VBreadcrumb: true,
 		VSkeletonLoader: true,
 		OverlayItemContent: true,
 		CollabIndicatorHeader: true,
@@ -140,7 +141,7 @@ describe('isSavable', () => {
 				...global,
 				stubs: {
 					...globalStubs.stubs,
-					VDrawer: { template: '<div><slot /><slot name="actions" /></div>' },
+					VDrawer: { template: '<div><slot /><slot name="actions" /><slot name="actions:primary" /></div>' },
 				},
 			},
 		});
@@ -202,5 +203,25 @@ describe('isSavable', () => {
 
 		const saveButton = getSaveButton(wrapper);
 		expect(saveButton.attributes('disabled')).toBe('true');
+	});
+});
+
+describe('popoverProps callback', () => {
+	it('is invoked with popoverWidth context in popover mode', () => {
+		const popoverProps = vi.fn().mockReturnValue({});
+
+		mount(OverlayItem, {
+			props: {
+				collection: 'articles',
+				active: true,
+				primaryKey: '+',
+				overlay: 'popover',
+				popoverProps,
+			},
+			global,
+		});
+
+		expect(popoverProps).toHaveBeenCalled();
+		expect(popoverProps.mock.calls[0]![0]).toEqual({ popoverWidth: expect.any(Number) });
 	});
 });

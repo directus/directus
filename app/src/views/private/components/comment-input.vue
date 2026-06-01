@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { Comment, User } from '@directus/types';
 import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
@@ -16,7 +17,6 @@ import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
 import VTemplateInput from '@/components/v-template-input.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
@@ -317,9 +317,9 @@ function pressedEnter() {
 					@click="insertUser(user)"
 				>
 					<VListItemIcon>
-						<VAvatar x-small>
+						<VAvatar x-small round>
 							<VImage v-if="user.avatar" :src="avatarSource(user.avatar)" />
-							<VIcon v-else name="person_outline" />
+							<VIcon v-else name="person_outline" small />
 						</VAvatar>
 					</VListItemIcon>
 
@@ -389,7 +389,8 @@ function pressedEnter() {
 .new-comment:focus {
 	position: relative;
 	overflow: scroll;
-	border-color: var(--theme--form--field--input--border-color-focus);
+	outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+	outline-offset: var(--focus-ring-offset-invert);
 	transition: margin-block-end var(--fast) var(--transition);
 }
 
@@ -441,14 +442,6 @@ function pressedEnter() {
 		--v-button-background-color: transparent;
 		--v-button-color: var(--theme--foreground-subdued);
 		--v-button-color-hover: var(--theme--primary);
-	}
-
-	.cancel {
-		--v-button-color: var(--theme--foreground-subdued);
-	}
-
-	.post-comment {
-		--v-button-background-color-disabled: var(--theme--background-accent);
 	}
 }
 

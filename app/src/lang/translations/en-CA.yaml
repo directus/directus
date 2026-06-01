@@ -1,4 +1,5 @@
 ---
+continue: Continue
 first_name: First Name
 last_name: Last Name
 identifier: Identifier
@@ -746,6 +747,14 @@ editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
 settings_project: Settings
+licensing:
+  unlimited: Unlimited
+  addon_update: Update
+  resolve_continue: Continue
+  resolve_show_n_more: 'Show {count} more'
+  resolve_sso_admin_password: Password
+  entitlements:
+    collections: Collections
 settings_presets: Bookmarks
 settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing

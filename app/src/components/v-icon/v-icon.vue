@@ -58,12 +58,14 @@ const sizeClass = computed<string | null>(() => {
 });
 
 const customIconName = computed(() => {
+	if (!props.name) return null;
 	const name = `CustomIcon${upperFirst(camelCase(props.name.replace(/_/g, '-')))}`;
 	if (name in components) return components[name];
 	return null;
 });
 
 const socialIconName = computed<IconName | null>(() => {
+	if (!props.name) return null;
 	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-') as IconName;
 	return null;
 });
@@ -88,7 +90,7 @@ function emitClick(event: MouseEvent) {
 	>
 		<component :is="customIconName" v-if="customIconName" class="custom-icon-svg" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else :class="{ filled }" :data-icon="name"></i>
+		<i v-else-if="name" :class="{ filled }" :data-icon="name"></i>
 	</component>
 </template>
 
@@ -99,16 +101,16 @@ function emitClick(event: MouseEvent) {
 
 		--v-icon-color        [currentColor]
 		--v-icon-color-hover  [currentColor]
-		--v-icon-size         [1.375rem]
+		--v-icon-size         [var(--icon-size-default)]
 
 */
 
 .v-icon {
 	position: relative;
 	display: inline-block;
-	inline-size: var(--v-icon-size, 1.375rem);
-	min-inline-size: var(--v-icon-size, 1.375rem);
-	block-size: var(--v-icon-size, 1.375rem);
+	inline-size: var(--v-icon-size, var(--icon-size-default));
+	min-inline-size: var(--v-icon-size, var(--icon-size-default));
+	block-size: var(--v-icon-size, var(--icon-size-default));
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -117,7 +119,7 @@ function emitClick(event: MouseEvent) {
 		display: block;
 		font-family: 'Material Symbols';
 		font-weight: normal;
-		font-size: var(--v-icon-size, 1.375rem);
+		font-size: var(--v-icon-size, var(--icon-size-default));
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;
