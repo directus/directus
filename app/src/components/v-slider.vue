@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const MAX_TICK_COUNT = 100;
+const MAX_TICK_COUNT = 101;
 
 interface Props {
 	/** Disables the slider */
