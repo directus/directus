@@ -172,7 +172,7 @@ onMounted(() => {
 			<I18nT keypath="setup_license_invalid" tag="span">
 				<template #contactSupport>
 					<a
-						:href="`https://${DIRECTUS_DOMAIN}/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_key_invalid_contact_support_link`"
+						:href="`https://${DIRECTUS_DOMAIN}/support?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_key_invalid_contact_support_link`"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
