@@ -103,6 +103,33 @@ test('renders ticks with default min, max, and step', () => {
 	expect(wrapper.findAll('.tick')).toHaveLength(101);
 });
 
+test('renders ticks at the threshold (tick count === 101)', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: 0,
+			max: 200,
+			step: 2,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(true);
+	expect(wrapper.findAll('.tick')).toHaveLength(101);
+});
+
+test('does not render ticks just past the threshold (tick count === 102)', () => {
+	const wrapper = mount(VSlider, {
+		props: {
+			showTicks: true,
+			min: 0,
+			max: 101,
+			step: 1,
+		},
+	});
+
+	expect(wrapper.find('.ticks').exists()).toBe(false);
+});
+
 test('does not render ticks when tick count exceeds limit', () => {
 	const wrapper = mount(VSlider, {
 		props: {
