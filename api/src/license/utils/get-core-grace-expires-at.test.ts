@@ -13,7 +13,6 @@ vi.mock('../../utils/get-schema.js', () => ({
 
 const FIXED_NOW_MS = 1_735_689_600_000; // 2025-01-01T00:00:00Z
 const DAY_MS = 24 * 60 * 60 * 1000;
-const V12_MIGRATION_VERSION = '20260507A';
 
 beforeEach(() => {
 	vi.useFakeTimers({ now: FIXED_NOW_MS });
