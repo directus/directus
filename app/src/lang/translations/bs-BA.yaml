@@ -1,4 +1,5 @@
 ---
+continue: Nastavi
 first_name: Ime
 last_name: Prezime
 identifier: Identifikator
@@ -862,6 +863,16 @@ editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
 settings_project: Postavke
+licensing:
+  unlimited: Neograničeno
+  addon_update: Ažuriraj
+  resolve_continue: Nastavi
+  resolve_show_n_more: 'Prikaži još {count}'
+  resolve_section_flows: Tokovi
+  resolve_sso_admin_password: Lozinka
+  entitlements:
+    collections: Kolekcije
+    flows: Tokovi
 settings_flows: Tokovi
 settings_translations: Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
@@ -1585,7 +1596,9 @@ interfaces:
     value_securely_saved: Vrijednost sigurno sačuvana
     generate: Generiši token
     regenerate: Ponovno generiši token
+    regenerate_confirm_title: Ponovno generiši token
     remove_token: Ukloni token
+    remove_confirm_title: Ukloni token
   system-raw-editor:
     system-raw-editor: Uređivač sirovog sadržaja
     description: Omogućuje unos neobrađenih ili "mustache" predložaka
@@ -1906,4 +1919,6 @@ fonts:
   black: Crna
   italic: Kurziv
   auto: Automatski
+license_grace_key_modal:
+  optional: Opcionalno
 set_to_now: Postavi na sad

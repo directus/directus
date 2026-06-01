@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: دەربارە
+continue: بەردەوام بوون
 first_name: ناوی یەکەم
 last_name: ناوی باوک
 identifier: ناسەرەوە
@@ -157,14 +158,12 @@ keep: پاراستن
 version: وەشان
 version_key: کلیلی وەشان
 version_name: ناوی وەشان
-main_version: سەرەکی
 switch_version: گۆڕینی وەشان
 switch_version_copy: ئایا دڵنیایت لە گۆڕینی بۆ وەشانی "{version}"؟ گۆڕانکارییە هەڵنەگیراوەکان لە دەست دەچن.
 create_version: دروستکردنی وەشان
 rename_version: ناوی وەشان بگۆڕە
 compare_version: بەراوردکردنی وەشان
 save_version: پاشەکەوتکردنی وەشان
-promote_version: پەرەپێدانی وەشان
 delete_version: سڕینەوەی وەشان
 delete_version_copy: >-
   ئایا دڵنیای دەتەوێت وەشانی "{version}" بسڕیتەوە؟ ئەم کردارە گەڕانەوەی نییە.
@@ -595,7 +594,6 @@ manual_string: دەقی دەستی دانراو
 save_and_create_new: پاشەکەوتکردن و دروستکردنی نوێ
 save_and_stay: پاشەکەوتکردن و مانەوە
 save_and_quit: پاشەکەوتکردن و وازهێنان
-save_and_return_to_main: پاشەکەوت بکە و بگەڕێوە بۆ سەرەکی
 save_as_copy: پاشەکەوتکردن وەک لەبەرگرتنەوە
 add_existing: زیادکردنی بەردەست
 creating_items: دروستکردنی مادەکان
@@ -1120,6 +1118,17 @@ settings_data_model: مۆدێلی داتا
 settings_roles: پلەکانی بەکارهێنەر
 settings_permissions: سیاسەتەکانی دەستگەیشتن
 settings_project: ڕێکخستنەکان
+licensing:
+  unlimited: بێ سنوور
+  addon_manage: Manage
+  addon_update: نوێکردنەوە
+  resolve_continue: بەردەوام بوون
+  resolve_show_n_more: 'نیشاندانی {count} یتر'
+  resolve_section_flows: لێشاوەکان
+  resolve_sso_admin_password: تێپەڕەوشە
+  entitlements:
+    collections: کۆمەڵەکان
+    flows: لێشاوەکان
 settings_appearance: ڕووکار
 settings_flows: لێشاوەکان
 settings_system_logs: تۆمارەکانی سیستەم
@@ -2008,7 +2017,9 @@ interfaces:
     value_securely_saved: بەها بە پارێزراوی پاشەکەوتکرا
     generate: تۆکن دروست بکە
     regenerate: تۆکن دروست بکەوە
+    regenerate_confirm_title: تۆکن دروست بکەوە
     remove_token: لابردنی تۆکن
+    remove_confirm_title: لابردنی تۆکن
   system-raw-editor:
     system-raw-editor: دەستکاریکەری خام
     description: ڕێگە بدە بە دانانی بەهای خام یان قاڵبی Mustache
@@ -2471,4 +2482,6 @@ search_flow: گەڕان لە لێشاو...
 percent: ڕێژە
 show_password: نیشاندانی تێپەڕەوشە
 hide_password: شاردنەوەی تێپەڕەوشە
+license_grace_key_modal:
+  optional: ئارەزوومەندانە
 set_to_now: ئێستا دابنێ

@@ -1,4 +1,5 @@
 import { performance } from 'perf_hooks';
+import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidInviteError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type {
@@ -19,6 +20,7 @@ import type { StringValue } from 'ms';
 import { clearSystemCache } from '../cache.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
+import { getEntitlementManager } from '../license/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
@@ -311,7 +313,8 @@ export class UsersService extends ItemsService {
 				opts.userIntegrityCheckFlags =
 					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 			} else {
-				opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+				opts.userIntegrityCheckFlags =
+					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.RemainingAdmins;
 			}
 		}
 
@@ -356,6 +359,9 @@ export class UsersService extends ItemsService {
 
 		await super.deleteMany(keys, opts);
 		await this.clearUserSessions(keys);
+
+		// `super.deleteMany` doesn't set integrity flags, so clear explicitly.
+		await getEntitlementManager().clearCache('seats', 'sso_enabled');
 
 		return keys;
 	}
@@ -434,7 +440,10 @@ export class UsersService extends ItemsService {
 			schema: this.schema,
 		});
 
-		await service.updateOne(user.id, { password, status: 'active' });
+		const { allowed: isWithinLicenseLimits } = await getEntitlementManager().check('seats');
+		const status = isWithinLicenseLimits ? 'active' : USER_INACTIVE_LICENSE_STATUS;
+
+		await service.updateOne(user.id, { password, status });
 	}
 
 	async registerUser(input: RegisterUserInput) {
@@ -503,7 +512,7 @@ export class UsersService extends ItemsService {
 			const mailService = new MailService(serviceOptions);
 			const payload = { email: input.email, scope: 'pending-registration' };
 
-			const token = jwt.sign(payload, env['SECRET'] as string, {
+			const token = jwt.sign(payload, getSecret(), {
 				expiresIn: env['EMAIL_VERIFICATION_TOKEN_TTL'] as StringValue | number,
 				issuer: 'directus',
 			});
@@ -539,7 +548,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async verifyRegistration(token: string): Promise<string> {
-		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+		const { email, scope } = verifyJWT(token, getSecret()) as {
 			email: string;
 			scope: string;
 		};

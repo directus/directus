@@ -5,8 +5,8 @@ info:
   contact:
     email: contact@directus.io
   license:
-    name: BUSL-1.1
-    url: 'https://directus.io/bsl'
+    name: MSCL-1.0-GPL
+    url: 'https://directus.com/mscl'
   version: '10'
 externalDocs:
   description: Directus Docs

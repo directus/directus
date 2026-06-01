@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+continue: Continuar
 first_name: Primer nombre
 last_name: Apellido
 identifier: Identificador
@@ -163,14 +164,12 @@ keep: Mantener
 version: Versión
 version_key: Clave de Versión
 version_name: Nombre de Versión
-main_version: Principal
 switch_version: Cambiar Versión
 switch_version_copy: '¿Está seguro de que desea cambiar a la versión ''{version}''? Los cambios sin guardar se perderán.'
 create_version: Crear Versión
 rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
-promote_version: Promocionar Versión
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión '{version}'? Esta acción no se puede deshacer.
@@ -607,7 +606,6 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y quedarse
 save_and_quit: Guardar y Salir
-save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como copia
 add_existing: Agregar Existente
 creating_items: Creando elementos
@@ -1135,6 +1133,17 @@ settings_data_model: Modelo de Datos
 settings_roles: Roles de Usuario
 settings_permissions: Reglas de Acceso
 settings_project: Configuración
+licensing:
+  unlimited: Ilimitado
+  addon_manage: Administrar
+  addon_update: Actualizar
+  resolve_continue: Continuar
+  resolve_show_n_more: 'Mostrar {count} más'
+  resolve_section_flows: Flujos
+  resolve_sso_admin_password: Contraseña
+  entitlements:
+    collections: Colecciones
+    flows: Flujos
 settings_appearance: Apariencia
 settings_flows: Flujos
 settings_system_logs: Registros del Sistema
@@ -2028,7 +2037,9 @@ interfaces:
     value_securely_saved: Valor guardado de forma segura
     generate: Generar token
     regenerate: Regenerar token
+    regenerate_confirm_title: Regenerar token
     remove_token: Remover token
+    remove_confirm_title: Remover token
   system-raw-editor:
     system-raw-editor: Editor bruto
     description: Permitir la introducción de valores de plantillas en crudo o en mostacho
@@ -2498,6 +2509,8 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
+license_grace_key_modal:
+  optional: Opcional
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)

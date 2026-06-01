@@ -24,6 +24,41 @@ export function calculateJsonPathDepth(path: string): number {
 }
 
 /**
+ * Validates and normalizes a bare JSON path string (e.g. "color" or "settings.theme").
+ * Adds a leading dot if absent. Throws on unsupported expressions or depth overflow.
+ */
+export function parseJsonPath(path: string): string {
+	const normalized = path.startsWith('[') ? path : `.${path}`;
+
+	// Reject: empty brackets ([]), recursive descent (..),
+	// special JSONPath characters (*?@$), and negative array indexes ([-).
+	if (/\[\]|\.\.|[*?@$]|\[-/.test(normalized)) {
+		throw new InvalidQueryError({ reason: 'Invalid JSON path: unsupported path expression' });
+	}
+
+	// Allowlist: Unicode letters/numbers/emoji, ASCII word characters, dots, and square brackets.
+	// This prevents SQL injection in dialects that must inline the path as a SQL string
+	// literal (Oracle's JSON_VALUE/JSON_QUERY do not accept bind parameters for the path).
+	// The only SQL-dangerous character in a single-quoted Oracle string is a single quote;
+	// Unicode letters, digits, and pictographic emoji cannot break out of a string literal.
+	// \p{Extended_Pictographic} is used instead of \p{Emoji} to avoid false-positives on
+	// digits and punctuation that are technically in the Emoji Unicode category.
+	if (!/^[\p{L}\p{N}\p{Extended_Pictographic}\w.[\]]+$/u.test(normalized)) {
+		throw new InvalidQueryError({ reason: 'Invalid JSON path: unsupported path expression' });
+	}
+
+	const depth = calculateJsonPathDepth(normalized);
+
+	if (depth > MAX_JSON_QUERY_DEPTH) {
+		throw new InvalidQueryError({
+			reason: `JSON path depth (${depth}) exceeds allowed maximum of ${MAX_JSON_QUERY_DEPTH}`,
+		});
+	}
+
+	return normalized;
+}
+
+/**
  * Parses a json function selection into its field and path components.
  * Expects relational prefixes to have already been extracted by parseFilterFunctionPath,
  * so the field should always be a simple column name.
@@ -60,21 +95,7 @@ export function parseJsonFunction(functionString: string): { field: string; path
 		throw new InvalidQueryError({ reason: 'Invalid json() syntax: missing path' });
 	}
 
-	if (pathContent.includes('[]') || /[*?@$]/.test(pathContent)) {
-		throw new InvalidQueryError({ reason: 'Invalid json() syntax: unsupported path expression' });
-	}
-
-	// Normalize path to always start with dot or bracket
-	const path = pathContent.startsWith('[') ? pathContent : '.' + pathContent;
-
-	// Validate JSON path depth
-	const depth = calculateJsonPathDepth(path);
-
-	if (depth > MAX_JSON_QUERY_DEPTH) {
-		throw new InvalidQueryError({
-			reason: `JSON path depth (${depth}) exceeds allowed maximum of ${MAX_JSON_QUERY_DEPTH}`,
-		});
-	}
+	const path = parseJsonPath(pathContent);
 
 	return {
 		field,

@@ -55,6 +55,8 @@ watch(
 	() => props.value,
 	(newValue) => {
 		if (newValue && !regexp.test(newValue)) return;
+		// Collab's receiveSave calls getItem(), updating props.value to the masked value and clearing the display.
+		if (localValue.value && newValue) return;
 		localValue.value = null;
 		tokenSavedInline.value = false;
 		generateError.value = null;

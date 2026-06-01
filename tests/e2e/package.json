@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest --project sqlite",
-		"test:dev": "DEV=true vitest --project sqlite",
+		"test:dev": "FORCE_COLOR=true NODE_ENV=development vitest --project sqlite",
 		"test:all": "ALL=true vitest"
 	},
 	"keywords": [],
@@ -12,19 +12,27 @@
 	"type": "module",
 	"license": "MIT",
 	"packageManager": "pnpm@10.14.0",
-	"devDependencies": {
+	"dependencies": {
+		"@directus/license": "catalog:",
+		"@directus/mock-license-server": "workspace:*",
 		"@directus/sandbox": "workspace:*",
 		"@directus/sdk": "workspace:*",
-		"@directus/tsconfig": "catalog:",
-		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@types/lodash-es": "catalog:",
-		"@types/node": "catalog:",
 		"async-mutex": "catalog:",
 		"chalk": "catalog:",
 		"commander": "catalog:",
 		"get-port": "catalog:",
-		"lodash-es": "catalog:",
+		"date-fns": "catalog:",
+		"jose": "catalog:",
+		"zod": "catalog:",
+		"knex": "catalog:",
+		"lodash-es": "catalog:"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:",
 		"vite-tsconfig-paths": "catalog:",
