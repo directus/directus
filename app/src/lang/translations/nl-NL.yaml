@@ -35,6 +35,7 @@ setup_accept_license: Ik accepteer de voorwaarden van de {directusMscl} en {priv
 setup_marketing_emails: Stuur mij productupdates en release-info
 setup_launch: Start Directus
 setup_project: Project Setup
+continue: Doorgaan
 first_name: Voornaam
 last_name: Achternaam
 admin_email: E-mailadres Beheerder
@@ -1194,6 +1195,18 @@ settings_data_model: Datamodel
 settings_roles: Gebruikersrollen
 settings_permissions: Toegangsbeleid
 settings_project: Instellingen
+licensing:
+  unlimited: Onbeperkt
+  addon_manage: Beheren
+  addon_update: Updaten
+  resolve_continue: Doorgaan
+  resolve_show_n_more: 'Toon {count} meer'
+  resolve_section_flows: Flows
+  resolve_sso_admin_email: E-mailadres
+  resolve_sso_admin_password: Wachtwoord
+  entitlements:
+    collections: Collecties
+    flows: Flows
 settings_appearance: Uiterlijk
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -2176,7 +2189,9 @@ interfaces:
     value_securely_saved: Waarde veilig opgeslagen
     generate: Genereer Token
     regenerate: Token opnieuw genereren
+    regenerate_confirm_title: Token opnieuw genereren
     remove_token: Verwijder Token
+    remove_confirm_title: Verwijder Token
   system-raw-editor:
     system-raw-editor: Ruwe Editor
     description: Sta invoer van ruwe of mustache sjabloonwaarden toe
@@ -2652,6 +2667,8 @@ search_flow: Zoek Flow...
 percent: Procent
 show_password: Toon wachtwoord
 hide_password: Verberg wachtwoord
+license_grace_key_modal:
+  optional: Optioneel
 accepted: Geaccepteerd
 text_direction_auto: Automatisch (gelijk aan taal)
 text_direction_ltr: Links naar rechts (LTR)

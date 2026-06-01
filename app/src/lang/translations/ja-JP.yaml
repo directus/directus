@@ -21,7 +21,7 @@
 #'Proxy', 'Intl'
 about: Directus の概要
 directus_mscl: Directus MSCL 1.0
-privacy_policy: プライバシーポリシー
+privacy_policy: プライバシーポリシー 
 contact_our_team: チームへのお問い合わせ
 setup_welcome: ようこそ Directus へ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
@@ -1199,6 +1199,16 @@ settings_data_model: データモデル
 settings_roles: ユーザー権限グループ
 settings_permissions: アクセスポリシー
 settings_project: 設定
+licensing:
+  unlimited: 無制限
+  addon_manage: 管理
+  addon_update: 更新
+  resolve_section_flows: フロー
+  resolve_sso_admin_email: メールアドレス
+  resolve_sso_admin_password: パスワード
+  entitlements:
+    collections: コレクション
+    flows: フロー
 settings_appearance: 外観
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -2248,6 +2258,8 @@ license_banner:
   set_owner: 所有者を設定
   remind_later: 後で通知
   remind_next_login: 次回のログイン時に再度通知します。
+license_grace_key_modal:
+  optional: オプション
 accepted: 承認済み
 text_direction_auto: 自動 (言語に合わせる)
 text_direction_ltr: 左書き (LTR)

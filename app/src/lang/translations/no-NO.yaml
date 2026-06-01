@@ -687,6 +687,11 @@ deselect: Velg bort
 creating_in: 'Oppretter element i {collection}'
 editing_in_batch: 'Batch Editing {count} elementer'
 settings_project: Innstillinger
+licensing:
+  addon_update: Oppdater
+  resolve_sso_admin_password: Passord
+  entitlements:
+    collections: Kolleksjoner
 settings_presets: Bokmerke
 settings_translations: Oversettelser
 discard_changes: Forkast endringer
