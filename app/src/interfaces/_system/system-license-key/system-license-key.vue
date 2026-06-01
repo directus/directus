@@ -145,7 +145,7 @@ onMounted(() => {
 
 			<span v-if="licenseInfo.plan_name">
 				<VIcon name="check_circle" />
-				<span>{{ licenseInfo.plan_name }}</span>
+				<span>{{ $t('plan_prefix', { plan: licenseInfo.plan_name }) }}</span>
 			</span>
 
 			<div v-if="licenseInfo.expires_at ?? licenseInfo.renews_at">
