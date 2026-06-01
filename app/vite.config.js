@@ -15,9 +15,14 @@ const API_PATH = path.join('..', 'api');
 const apiEnvFile = path.join(API_PATH, '.env');
 if (fs.existsSync(apiEnvFile)) process.loadEnvFile(apiEnvFile);
 
-const EXTENSIONS_PATH = process.env.EXTENSIONS_PATH
-	? path.resolve(API_PATH, process.env.EXTENSIONS_PATH)
-	: path.join(API_PATH, 'extensions');
+// Mirror the API's getExtensionsPath() resolution so the dev server reads from
+// the same location. In remote mode (EXTENSIONS_LOCATION) the API syncs remote
+// extensions into TEMP_PATH/extensions at boot, and EXTENSIONS_PATH is ignored.
+// The './node_modules/.directus' and './extensions' fallbacks mirror the
+// TEMP_PATH and EXTENSIONS_PATH defaults from @directus/env's DEFAULTS
+const EXTENSIONS_PATH = process.env.EXTENSIONS_LOCATION
+	? path.resolve(API_PATH, process.env.TEMP_PATH ?? './node_modules/.directus', 'extensions')
+	: path.resolve(API_PATH, process.env.EXTENSIONS_PATH ?? './extensions');
 
 const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
@@ -96,13 +101,13 @@ export default defineConfig({
 function getExtensionsRealPaths() {
 	return extensionsPathExists
 		? fs
-				.readdirSync(EXTENSIONS_PATH)
-				.flatMap((typeDir) => {
-					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-					if (!fs.statSync(extensionTypeDir).isDirectory()) return;
-					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
-				})
-				.filter((v) => v)
+			.readdirSync(EXTENSIONS_PATH)
+			.flatMap((typeDir) => {
+				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+				if (!fs.statSync(extensionTypeDir).isDirectory()) return;
+				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+			})
+			.filter((v) => v)
 		: [];
 }
 
