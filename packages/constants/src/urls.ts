@@ -9,4 +9,4 @@ export const DIRECTUS_LICENSING_DOCS_URL: string = `https://${DIRECTUS_DOMAIN}/d
 export const DIRECTUS_MSCL_URL: string = `https://${DIRECTUS_DOMAIN}/mscl`;
 export const DIRECTUS_PRIVACY_URL: string = `https://${DIRECTUS_DOMAIN}/privacy`;
 
-export const LICENSING_EMAIL: string = `licensing@${DIRECTUS_DOMAIN}`;
+export const LICENSING_EMAIL: string = 'licensing@directus.io';
