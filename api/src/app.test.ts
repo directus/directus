@@ -5,6 +5,10 @@ import { Router } from 'express';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import createApp from './app.js';
 
+const { mockMcpOAuthGuard } = vi.hoisted(() => ({
+	mockMcpOAuthGuard: vi.fn((_req: unknown, _res: unknown, next: () => void) => next()),
+}));
+
 vi.mock('./database', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -47,8 +51,30 @@ vi.mock('./flows', () => ({
 	}),
 }));
 
+vi.mock('./license/index.js', () => ({
+	getLicenseManager: vi.fn().mockImplementation(() => ({
+		initialize: vi.fn(),
+		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
+	})),
+	getEntitlementManager: vi.fn().mockImplementation(() => ({
+		initialize: vi.fn(),
+		isEntitled: vi.fn().mockReturnValue(false),
+	})),
+}));
+
+vi.mock('./license/manager.js', () => ({
+	getLicenseManager: vi.fn().mockImplementation(() => ({
+		initialize: vi.fn(),
+		getLicense: vi.fn().mockResolvedValue({ meta: { validation_interval: -1 } }),
+	})),
+}));
+
 vi.mock('./middleware/schema', () => ({
 	default: Router(),
+}));
+
+vi.mock('./middleware/mcp-oauth-guard.js', () => ({
+	default: mockMcpOAuthGuard,
 }));
 
 vi.mock('./auth', () => ({
@@ -62,7 +88,7 @@ vi.mock('./deployment.js', () => ({
 
 vi.mock('./utils/validate-env.js');
 
-beforeEach(() => {
+function mockAppEnv(overrides: Partial<ReturnType<typeof useEnv>> = {}) {
 	vi.mocked(useEnv).mockReturnValue({
 		SECRET: 'abcdef',
 		SERVE_APP: 'true',
@@ -74,7 +100,12 @@ beforeEach(() => {
 		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 		ROOT_REDIRECT: './admin',
 		IP_TRUST_PROXY: true,
+		...overrides,
 	});
+}
+
+beforeEach(() => {
+	mockAppEnv();
 });
 
 afterEach(() => {
@@ -166,6 +197,24 @@ describe('createApp', async () => {
 			const body = await response.text();
 
 			expect(body).toEqual('pong');
+		});
+	});
+
+	describe('MCP OAuth guard', () => {
+		test('Should mount after authenticate even when OAuth endpoints are disabled', async () => {
+			mockAppEnv({ MCP_OAUTH_ENABLED: false });
+
+			await request('/items/test');
+
+			expect(mockMcpOAuthGuard).toHaveBeenCalledTimes(1);
+		});
+
+		test('Should mount OAuth guard once when OAuth endpoints are enabled', async () => {
+			mockAppEnv({ MCP_ENABLED: true, MCP_OAUTH_ENABLED: true });
+
+			await request('/items/test');
+
+			expect(mockMcpOAuthGuard).toHaveBeenCalledTimes(1);
 		});
 	});
 

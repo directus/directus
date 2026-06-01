@@ -1,0 +1,13 @@
+{
+	"extends": "@directus/tsconfig/node22",
+	"compilerOptions": {
+		"lib": ["ES2023", "DOM"],
+		"allowImportingTsExtensions": true,
+		"isolatedDeclarations": false,
+		"noEmit": true
+	},
+	"include": ["src", "tests"],
+	"typedocOptions": {
+		"entryPoints": ["./src/*/index.ts"]
+	}
+}

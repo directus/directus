@@ -1,4 +1,5 @@
 ---
+continue: Lanjut
 first_name: Nama Depan
 last_name: Nama belakang
 identifier: Pengenal
@@ -94,7 +95,6 @@ keep: Jaga
 version: Versi
 version_key: Versi kunci
 version_name: Nama Versi
-main_version: Utama
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
@@ -915,6 +915,16 @@ editing_in_batch: 'Mengedit Masal {count} item'
 no_options_available: Tidak ada opsi tersedia
 settings_data_model: Model Data
 settings_project: Pengaturan
+licensing:
+  unlimited: Tak terbatas
+  addon_update: Perbarui
+  resolve_continue: Lanjut
+  resolve_show_n_more: 'Tampilkan {count} lebih banyak'
+  resolve_section_flows: Kumpulan Alur
+  resolve_sso_admin_password: Kata Sandi
+  entitlements:
+    collections: Pengumpulan
+    flows: Kumpulan Alur
 settings_flows: Kumpulan Alur
 settings_presets: Markah
 settings_translations: Terjemahan

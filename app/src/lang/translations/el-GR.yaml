@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Σχετικά
+continue: Συνέχεια
 first_name: Όνομα
 last_name: Επώνυμο
 identifier: Ταυτοποιητής
@@ -143,13 +144,11 @@ keep: Διατήρηση
 version: Έκδοση
 version_key: Κλειδί Έκδοσης
 version_name: Όνομα έκδοσης
-main_version: Αρχή
 switch_version: Εναλλαγή Έκδοσης
 create_version: Δημιουργία Έκδοσης
 rename_version: Μετονομασία Έκδοσης
 compare_version: Σύγκριση Έκδοσης
 save_version: Αποθήκευση Έκδοσης
-promote_version: Προώθηση Έκδοσης
 reset_bookmark: Επαναφορά Σελιδοδείκτη
 update_bookmark: Ενημέρωση Σελιδοδείκτη
 delete_bookmark: Διαγραφή σελιδοδείκτη
@@ -330,6 +329,14 @@ editing_unit: 'Επεξεργασία στοιχείου {unit}'
 editing_in_batch: 'Μαζική Επεξεργασία {count} Στοιχείων'
 settings_data_model: Μοντέλο Δεδομένων
 settings_project: Ρυθμίσεις
+licensing:
+  addon_update: Ενημέρωση
+  resolve_continue: Συνέχεια
+  resolve_section_flows: Ροές
+  resolve_sso_admin_password: Κωδικός
+  entitlements:
+    collections: Συλλογές
+    flows: Ροές
 settings_flows: Ροές
 settings_presets: Σελιδοδείκτες
 layout: Διάταξη

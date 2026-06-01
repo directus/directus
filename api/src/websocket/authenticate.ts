@@ -66,6 +66,10 @@ export async function authenticateConnection(
 			authenticationState.accountability = await getAccountabilityForToken(access_token, defaultAccountability);
 		}
 
+		if (authenticationState.accountability.oauth) {
+			throw new Error('OAuth sessions are not allowed on WebSocket connections');
+		}
+
 		return authenticationState;
 	} catch {
 		throw new WebSocketError('auth', 'AUTH_FAILED', 'Authentication failed.', message['uid']);

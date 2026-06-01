@@ -23,7 +23,12 @@ export default typescriptEslint.config(
 
 	// Ignored files
 	{
-		ignores: ['**/dist/', 'packages/extensions-sdk/templates/', 'api/extensions/'],
+		ignores: [
+			'**/dist/',
+			'packages/extensions-sdk/templates/',
+			'api/extensions/',
+			'packages/visual-editing/test-website/**',
+		],
 	},
 
 	// Enable recommended rules for JS files

@@ -598,6 +598,13 @@ editing_in_batch: 'Kemm a-stroll {count} elfenn'
 no_options_available: N'eus dibarzh ebet
 settings_data_model: Patrom roadennoù
 settings_project: Arventennoù
+licensing:
+  unlimited: Didermen
+  addon_update: Hizivaat
+  resolve_show_n_more: 'Diskwel {count} ouzhpenn'
+  resolve_sso_admin_password: Ger-tremen
+  entitlements:
+    collections: Dastumadoù
 settings_presets: Pennrolloù
 settings_translations: Troidigezhioù
 one_or_more_options_are_missing: Mankout a ra un dibarzh pe meur a hini
