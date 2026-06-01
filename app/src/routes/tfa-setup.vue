@@ -131,7 +131,7 @@ useHead({
 <template>
 	<PublicView>
 		<div class="header">
-			<h1 class="type-title">{{ $t('tfa_setup') }}</h1>
+			<h1 class="type-display type-display-public">{{ $t('tfa_setup') }}</h1>
 		</div>
 
 		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generate">

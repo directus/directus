@@ -121,3 +121,23 @@ data:
 
   - collection: directus_deployment_runs
     note: $t:directus_collection.directus_deployment_runs
+
+  - collection: directus_oauth_clients
+    note: $t:directus_collection.directus_oauth_clients
+    accountability: null
+    hidden: true
+
+  - collection: directus_oauth_codes
+    note: $t:directus_collection.directus_oauth_codes
+    accountability: null
+    hidden: true
+
+  - collection: directus_oauth_consents
+    note: $t:directus_collection.directus_oauth_consents
+    accountability: null
+    hidden: true
+
+  - collection: directus_oauth_tokens
+    note: $t:directus_collection.directus_oauth_tokens
+    accountability: null
+    hidden: true
