@@ -227,7 +227,6 @@ catalog:
   jose: 6.2.3
   js-yaml: 4.1.1
   js2xmlparser: 5.0.0
-  jose: 6.1.3
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6

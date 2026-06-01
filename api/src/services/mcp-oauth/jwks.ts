@@ -1,3 +1,4 @@
+import { performance } from 'node:perf_hooks';
 import { useEnv } from '@directus/env';
 import {
 	decodeProtectedHeader,
@@ -10,6 +11,7 @@ import {
 import { OAuthError } from './types/error.js';
 import { fetchExternalJson } from './utils/external-json.js';
 import { JwksUriValidationError, validateJwksUri as validateJwksUriPolicy } from './utils/jwks-uri.js';
+import { createMcpOAuthEgressLookup } from './utils/mcp-oauth-egress.js';
 
 const ASSERTION_MAX_BYTES = 16 * 1024;
 const JWKS_MAX_BYTES = 32 * 1024;
@@ -291,6 +293,8 @@ async function fetchAndValidateJwks(jwksUri: string): Promise<CompatibleJwk[]> {
 	let response;
 
 	try {
+		const deadlineAt = performance.now() + JWKS_TIMEOUT_MS;
+
 		// private_key_jwt trusts this document as public key material, so it stays HTTPS-only even when HTTP CIMD
 		// is enabled for local/public-client development.
 		response = await fetchExternalJson<unknown>(jwksUri, {
@@ -298,6 +302,7 @@ async function fetchAndValidateJwks(jwksUri: string): Promise<CompatibleJwk[]> {
 			timeoutMs: JWKS_TIMEOUT_MS,
 			allowHttp: false,
 			allowLoopbackForLocalDevelopment: false,
+			lookup: createMcpOAuthEgressLookup({ deadlineAt }),
 			redactionContext: 'MCP OAuth JWKS',
 		});
 	} catch {

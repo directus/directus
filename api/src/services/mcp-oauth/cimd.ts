@@ -1,14 +1,19 @@
 import { isIP } from 'node:net';
+import { performance } from 'node:perf_hooks';
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
 import { OAuthError } from './types/error.js';
-import { CimdEgressError, validateCimdHostnameEgress } from './utils/cimd-egress.js';
 import { type ExternalJsonResult, fetchExternalJson } from './utils/external-json.js';
 import {
 	JwksUriValidationError,
 	type JwksUriValidationErrorReason,
 	validateJwksUri as validateJwksUriPolicy,
 } from './utils/jwks-uri.js';
+import {
+	createMcpOAuthEgressLookup,
+	McpOAuthEgressError,
+	validateMcpOAuthHostnameEgress,
+} from './utils/mcp-oauth-egress.js';
 import { validateRedirectUri } from './utils/redirect.js';
 
 const MIN_TTL_MS = 300_000; // 5 minutes
@@ -315,9 +320,9 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 	let result: ExternalJsonResult<unknown>;
 
 	try {
-		await validateCimdHostnameEgress(url.hostname);
+		await validateMcpOAuthHostnameEgress(url.hostname);
 	} catch (err) {
-		if (err instanceof CimdEgressError) {
+		if (err instanceof McpOAuthEgressError) {
 			const reason = (err as { reason?: unknown }).reason;
 
 			logger.debug(
@@ -338,11 +343,14 @@ export async function fetchCimdMetadata(clientId: string, etag?: string): Promis
 
 	try {
 		// MCP OAuth uses its own special-use egress policy here instead of the shared import/request denylist.
+		const deadlineAt = performance.now() + 3_000;
+
 		result = await fetchExternalJson(clientId, {
 			...(etag && { headers: { 'If-None-Match': etag } }),
 			allowHttp: env['MCP_OAUTH_CIMD_ALLOW_HTTP'] as boolean,
 			allowLoopbackForLocalDevelopment: false,
 			allowNotModified: Boolean(etag),
+			lookup: createMcpOAuthEgressLookup({ deadlineAt }),
 			redactionContext: 'CIMD metadata',
 		});
 	} catch (err) {

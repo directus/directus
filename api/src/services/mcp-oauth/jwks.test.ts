@@ -3,6 +3,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OAuthError } from './types/error.js';
 
 const mockFetchExternalJson = vi.fn();
+const mockMcpOAuthEgressLookup = vi.fn();
+const mockCreateMcpOAuthEgressLookup = vi.fn((_options: unknown) => mockMcpOAuthEgressLookup);
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
@@ -13,6 +15,10 @@ vi.mock('@directus/env', () => ({
 
 vi.mock('./utils/external-json.js', () => ({
 	fetchExternalJson: async (...args: unknown[]) => mockFetchExternalJson(...args),
+}));
+
+vi.mock('./utils/mcp-oauth-egress.js', () => ({
+	createMcpOAuthEgressLookup: (options: unknown) => mockCreateMcpOAuthEgressLookup(options),
 }));
 
 const { useEnv } = await import('@directus/env');
@@ -67,7 +73,7 @@ function mockJwks(keys: JWK[]) {
 }
 
 async function signAssertion(options: {
-	kid?: string;
+	kid?: string | undefined;
 	key?: CryptoKey;
 	clientId?: string;
 	audience?: string;
@@ -151,6 +157,8 @@ describe('verifyClientAssertion', () => {
 		} as any);
 
 		mockFetchExternalJson.mockReset();
+		mockCreateMcpOAuthEgressLookup.mockClear();
+		mockMcpOAuthEgressLookup.mockClear();
 		__clearJwksCachesForTests();
 	});
 
@@ -173,8 +181,11 @@ describe('verifyClientAssertion', () => {
 			timeoutMs: 3_000,
 			allowHttp: false,
 			allowLoopbackForLocalDevelopment: false,
+			lookup: mockMcpOAuthEgressLookup,
 			redactionContext: 'MCP OAuth JWKS',
 		});
+
+		expect(mockCreateMcpOAuthEgressLookup).toHaveBeenCalledWith({ deadlineAt: expect.any(Number) });
 	});
 
 	it('rejects HTTP JWKS even when HTTP CIMD is explicitly enabled', async () => {

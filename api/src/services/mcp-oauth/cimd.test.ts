@@ -1,21 +1,31 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OAuthError } from './types/error.js';
 
-const { MockCimdEgressError, mockFetchExternalJson, mockValidateCimdHostnameEgress } = vi.hoisted(() => {
-	class MockCimdEgressError extends Error {
+const {
+	MockMcpOAuthEgressError,
+	mockMcpOAuthEgressLookup,
+	mockCreateMcpOAuthEgressLookup,
+	mockFetchExternalJson,
+	mockValidateMcpOAuthHostnameEgress,
+} = vi.hoisted(() => {
+	class MockMcpOAuthEgressError extends Error {
 		reason: string;
 
 		constructor(reason: string) {
-			super(`CIMD egress rejected: ${reason}`);
-			this.name = 'CimdEgressError';
+			super(`MCP OAuth egress rejected: ${reason}`);
+			this.name = 'McpOAuthEgressError';
 			this.reason = reason;
 		}
 	}
 
+	const mockMcpOAuthEgressLookup = vi.fn();
+
 	return {
-		MockCimdEgressError,
+		MockMcpOAuthEgressError,
+		mockMcpOAuthEgressLookup,
+		mockCreateMcpOAuthEgressLookup: vi.fn((_options: unknown) => mockMcpOAuthEgressLookup),
 		mockFetchExternalJson: vi.fn(),
-		mockValidateCimdHostnameEgress: vi.fn(),
+		mockValidateMcpOAuthHostnameEgress: vi.fn(),
 	};
 });
 
@@ -35,9 +45,10 @@ vi.mock('../../logger/index.js', () => ({
 	}),
 }));
 
-vi.mock('./utils/cimd-egress.js', () => ({
-	CimdEgressError: MockCimdEgressError,
-	validateCimdHostnameEgress: (...args: unknown[]) => mockValidateCimdHostnameEgress(...args),
+vi.mock('./utils/mcp-oauth-egress.js', () => ({
+	McpOAuthEgressError: MockMcpOAuthEgressError,
+	createMcpOAuthEgressLookup: (options: unknown) => mockCreateMcpOAuthEgressLookup(options),
+	validateMcpOAuthHostnameEgress: (...args: unknown[]) => mockValidateMcpOAuthHostnameEgress(...args),
 }));
 
 vi.mock('./utils/external-json.js', () => ({
@@ -304,8 +315,10 @@ describe('resolveCacheTtl', () => {
 describe('fetchCimdMetadata', () => {
 	beforeEach(() => {
 		mockFetchExternalJson.mockReset();
-		mockValidateCimdHostnameEgress.mockReset();
-		mockValidateCimdHostnameEgress.mockResolvedValue({ addresses4: ['93.184.216.34'], addresses6: [] });
+		mockCreateMcpOAuthEgressLookup.mockClear();
+		mockMcpOAuthEgressLookup.mockClear();
+		mockValidateMcpOAuthHostnameEgress.mockReset();
+		mockValidateMcpOAuthHostnameEgress.mockResolvedValue({ addresses4: ['93.184.216.34'], addresses6: [] });
 	});
 
 	const validMetadata = {
@@ -327,12 +340,14 @@ describe('fetchCimdMetadata', () => {
 		expect(result.metadata!.client_id).toBe(validMetadata.client_id);
 		expect(result.etag).toBe('"abc123"');
 		expect(result.ttlMs).toBe(3_600_000);
-		expect(mockValidateCimdHostnameEgress).toHaveBeenCalledWith('myapp.example.com');
+		expect(mockValidateMcpOAuthHostnameEgress).toHaveBeenCalledWith('myapp.example.com');
+		expect(mockCreateMcpOAuthEgressLookup).toHaveBeenCalledWith({ deadlineAt: expect.any(Number) });
 
 		expect(mockFetchExternalJson).toHaveBeenCalledWith('https://myapp.example.com/.well-known/oauth-client', {
 			allowHttp: false,
 			allowLoopbackForLocalDevelopment: false,
 			allowNotModified: false,
+			lookup: mockMcpOAuthEgressLookup,
 			redactionContext: 'CIMD metadata',
 		});
 	});
@@ -340,19 +355,19 @@ describe('fetchCimdMetadata', () => {
 	it('rejects IP-literal URL hostnames before dispatch', async () => {
 		await expectOAuthError(fetchCimdMetadata('https://[::1]/.well-known/oauth-client'), invalidClientMetadata);
 
-		expect(mockValidateCimdHostnameEgress).not.toHaveBeenCalled();
+		expect(mockValidateMcpOAuthHostnameEgress).not.toHaveBeenCalled();
 		expect(mockFetchExternalJson).not.toHaveBeenCalled();
 	});
 
 	it('rejects public IP-literal URL hostnames before dispatch', async () => {
 		await expectOAuthError(fetchCimdMetadata('https://8.8.8.8/.well-known/oauth-client'), invalidClientMetadata);
 
-		expect(mockValidateCimdHostnameEgress).not.toHaveBeenCalled();
+		expect(mockValidateMcpOAuthHostnameEgress).not.toHaveBeenCalled();
 		expect(mockFetchExternalJson).not.toHaveBeenCalled();
 	});
 
-	it('maps CimdEgressError from preflight path to invalid_client_metadata', async () => {
-		mockValidateCimdHostnameEgress.mockRejectedValue(new MockCimdEgressError('cimd_dns_special_use_ip'));
+	it('maps McpOAuthEgressError from preflight path to invalid_client_metadata', async () => {
+		mockValidateMcpOAuthHostnameEgress.mockRejectedValue(new MockMcpOAuthEgressError('mcp_oauth_dns_special_use_ip'));
 
 		await expectOAuthError(
 			fetchCimdMetadata('https://myapp.example.com/.well-known/oauth-client'),
@@ -632,6 +647,7 @@ describe('fetchCimdMetadata', () => {
 			allowHttp: true,
 			allowLoopbackForLocalDevelopment: false,
 			allowNotModified: true,
+			lookup: mockMcpOAuthEgressLookup,
 			redactionContext: 'CIMD metadata',
 		});
 	});

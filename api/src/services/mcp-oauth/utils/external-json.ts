@@ -28,6 +28,7 @@ export interface FetchExternalJsonOptions {
 	allowHttp?: boolean;
 	allowLoopbackForLocalDevelopment?: boolean;
 	allowNotModified?: boolean;
+	lookup?: NonNullable<http.AgentOptions['lookup']>;
 	redactionContext?: string;
 }
 
@@ -255,7 +256,7 @@ export async function fetchExternalJson<T = unknown>(
 	try {
 		await withAbort(resolveHost(url.hostname, options), abortController.signal, options);
 
-		const lookup = createLookup(options);
+		const lookup = options.lookup ?? createLookup(options);
 		httpAgent = new http.Agent({ lookup });
 		httpsAgent = new https.Agent({ lookup });
 
