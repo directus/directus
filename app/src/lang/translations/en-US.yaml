@@ -57,7 +57,7 @@ open_innovation_grant: Open Innovation Grant
 setup_project: Setup Project
 enter_license_key: Enter Your License Key
 license_valid: License Valid
-plan: Plan
+plan_prefix: 'Plan: {plan}'
 license_key: License Key
 no_license_key: Don't have a license key?
 get_license_key: Get License Key
