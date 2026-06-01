@@ -17,23 +17,44 @@ export function getSeatUsersAndRoles(accessRows: Record<string, any>[]) {
 	const adminUsers = new Set<string>();
 	const appUsers = new Set<string>();
 
+	// Track app users who role may be marked as admin from later acess row
+	const appUsersByRole = new Map<string, Set<string>>();
+
 	for (const accessRow of accessRows) {
-		const isAdmin = toBoolean(accessRow['policy']?.['admin_access']);
-		const isApp = !isAdmin && toBoolean(accessRow['policy']?.['app_access']);
+		const { admin_access, app_access } = accessRow['policy'] || {};
+
+		const isAdmin = toBoolean(admin_access);
+		const isApp = !isAdmin && toBoolean(app_access);
 
 		if (!isAdmin && !isApp) continue;
 
 		if (accessRow['user'] && accessRow['user'].status === 'active') {
+			const { id, role } = accessRow['user'];
+
 			if (isAdmin) {
-				adminUsers.add(accessRow['user'].id);
-			} else if (adminUsers.has(accessRow['user'].id) === false && adminRoles.has(accessRow['user']?.role) === false) {
-				appUsers.add(accessRow['user'].id);
+				adminUsers.add(id);
+
+				// remove if previously marked as app user from previous access/policy
+				appUsers.delete(id);
+			} else if (adminUsers.has(id) === false && (!role || adminRoles.has(role) === false)) {
+				appUsers.add(id);
+
+				if (role) {
+					const roleUsers = appUsersByRole.get(role) ?? new Set<string>();
+
+					appUsersByRole.set(role, roleUsers.add(id));
+				}
 			}
 		}
 
 		if (accessRow['role']) {
 			if (isAdmin) {
 				adminRoles.add(accessRow['role']);
+
+				// remove any app user whose role was admin
+				for (const id of appUsersByRole.get(accessRow['role']) ?? []) {
+					appUsers.delete(id);
+				}
 			} else {
 				appRoles.add(accessRow['role']);
 			}
