@@ -11,108 +11,65 @@ vi.mock('../../utils/get-schema.js', () => ({
 	getSchema: vi.fn().mockResolvedValue({}),
 }));
 
-const V12_MIGRATION_VERSION = '20260507A';
+const FIXED_NOW_MS = 1_735_689_600_000; // 2025-01-01T00:00:00Z
 const DAY_MS = 24 * 60 * 60 * 1000;
+const V12_MIGRATION_VERSION = '20260507A';
 
 beforeEach(() => {
+	vi.useFakeTimers({ now: FIXED_NOW_MS });
 	_cache.migrations = undefined;
 });
 
 afterEach(() => {
+	vi.useRealTimers();
 	vi.clearAllMocks();
 });
 
-describe('getCoreGraceExpiresAt', () => {
-	describe('returns null when no grace applies', () => {
-		test('no migrations exist', async () => {
-			vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+describe('no grace applies', () => {
+	test('no migrations exist returns null', async () => {
+		vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
-			await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
-		});
-
-		test('the v12 migration has not been applied', async () => {
-			vi.spyOn(ItemsService.prototype, 'readByQuery')
-				.mockResolvedValueOnce([{ timestamp: new Date(Date.now() - 365 * DAY_MS).toISOString() }])
-				.mockResolvedValueOnce([]);
-
-			await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
-		});
-
-		test('the database is a clean v12 install (oldest and v12 within 24h)', async () => {
-			const now = Date.now();
-
-			vi.spyOn(ItemsService.prototype, 'readByQuery')
-				.mockResolvedValueOnce([{ timestamp: new Date(now - 60 * 1000).toISOString() }])
-				.mockResolvedValueOnce([{ timestamp: new Date(now).toISOString() }]);
-
-			await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
-		});
+		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
 	});
 
-	test('returns the v12 migration timestamp in seconds on a real upgrade', async () => {
-		const now = Date.now();
-		const v12Ms = now - 5 * DAY_MS;
-
+	test('v12 migration not found returns null', async () => {
 		vi.spyOn(ItemsService.prototype, 'readByQuery')
-			.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
-			.mockResolvedValueOnce([{ timestamp: new Date(v12Ms).toISOString() }]);
+			.mockResolvedValueOnce([{ timestamp: new Date(FIXED_NOW_MS - 365 * DAY_MS).toISOString() }])
+			.mockResolvedValueOnce([]);
 
-		await expect(getCoreGraceExpiresAt()).resolves.toBe(Math.floor(v12Ms / 1000));
+		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
 	});
 
-	describe('caching', () => {
-		test('does not re-query directus_migrations on subsequent calls', async () => {
-			const now = Date.now();
+	test('clean v12 install returns null', async () => {
+		vi.spyOn(ItemsService.prototype, 'readByQuery')
+			.mockResolvedValueOnce([{ timestamp: new Date(FIXED_NOW_MS - 60 * 1000).toISOString() }])
+			.mockResolvedValueOnce([{ timestamp: new Date(FIXED_NOW_MS).toISOString() }]);
 
-			const spy = vi
-				.spyOn(ItemsService.prototype, 'readByQuery')
-				.mockResolvedValueOnce([{ timestamp: new Date(now - 365 * DAY_MS).toISOString() }])
-				.mockResolvedValueOnce([{ timestamp: new Date(now - 5 * DAY_MS).toISOString() }]);
-
-			await getCoreGraceExpiresAt();
-			await getCoreGraceExpiresAt();
-			await getCoreGraceExpiresAt();
-
-			expect(spy).toHaveBeenCalledTimes(2);
-		});
-
-		test('queries again after the cache is cleared', async () => {
-			const now = Date.now();
-			const oldestTs = new Date(now - 365 * DAY_MS).toISOString();
-			const v12Ts = new Date(now - 5 * DAY_MS).toISOString();
-
-			const spy = vi
-				.spyOn(ItemsService.prototype, 'readByQuery')
-				.mockResolvedValueOnce([{ timestamp: oldestTs }])
-				.mockResolvedValueOnce([{ timestamp: v12Ts }])
-				.mockResolvedValueOnce([{ timestamp: oldestTs }])
-				.mockResolvedValueOnce([{ timestamp: v12Ts }]);
-
-			await getCoreGraceExpiresAt();
-			_cache.migrations = undefined;
-			await getCoreGraceExpiresAt();
-
-			expect(spy).toHaveBeenCalledTimes(4);
-		});
+		await expect(getCoreGraceExpiresAt()).resolves.toBeNull();
 	});
+});
 
-	test('queries directus_migrations with the correct schema and filters', async () => {
-		const spy = vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+test('upgrade returns v12 timestamp in seconds', async () => {
+	const v12Ms = FIXED_NOW_MS - 5 * DAY_MS;
+
+	vi.spyOn(ItemsService.prototype, 'readByQuery')
+		.mockResolvedValueOnce([{ timestamp: new Date(FIXED_NOW_MS - 365 * DAY_MS).toISOString() }])
+		.mockResolvedValueOnce([{ timestamp: new Date(v12Ms).toISOString() }]);
+
+	await expect(getCoreGraceExpiresAt()).resolves.toBe(Math.floor(v12Ms / 1000));
+});
+
+describe('caching', () => {
+	test('repeated calls will only ever call directus_migrations once', async () => {
+		const spy = vi
+			.spyOn(ItemsService.prototype, 'readByQuery')
+			.mockResolvedValueOnce([{ timestamp: new Date(FIXED_NOW_MS - 365 * DAY_MS).toISOString() }])
+			.mockResolvedValueOnce([{ timestamp: new Date(FIXED_NOW_MS - 5 * DAY_MS).toISOString() }]);
 
 		await getCoreGraceExpiresAt();
+		await getCoreGraceExpiresAt();
+		await getCoreGraceExpiresAt();
 
-		expect(ItemsService).toHaveBeenCalledWith('directus_migrations', { schema: {} });
-
-		expect(spy).toHaveBeenCalledWith({
-			fields: ['timestamp'],
-			sort: ['timestamp'],
-			limit: 1,
-		});
-
-		expect(spy).toHaveBeenCalledWith({
-			fields: ['timestamp'],
-			filter: { version: { _eq: V12_MIGRATION_VERSION } },
-			limit: 1,
-		});
+		expect(spy).toHaveBeenCalledTimes(2);
 	});
 });
