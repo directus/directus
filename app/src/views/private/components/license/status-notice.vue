@@ -94,7 +94,7 @@ const oigUrl = computed(
 			</template>
 		</I18nT>
 	</VNotice>
-	<VNotice v-if="showOig" type="info" class="status-notice">
+	<VNotice v-if="showOig" type="info" class="status-notice" icon="workspace_premium">
 		<I18nT keypath="license.unlicensed_status_notice.oig_eligible" tag="span">
 			<template #oig>
 				<a :href="oigUrl" target="_blank" rel="noopener noreferrer">{{ $t('open_innovation_grant') }}</a>
