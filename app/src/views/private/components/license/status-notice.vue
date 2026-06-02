@@ -106,10 +106,10 @@ const oigUrl = computed(
 <style lang="scss" scoped>
 .status-notice {
 	--v-notice-color: var(--theme--foreground);
-	margin-block: 2.25rem 1rem;
+	margin-block: 2.25rem 0.5rem;
 
 	& + .status-notice {
-		margin-block-start: 1rem;
+		margin-block-start: 0.5rem;
 	}
 
 	a {
