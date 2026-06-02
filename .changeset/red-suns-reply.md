@@ -3,5 +3,4 @@
 '@directus/app': patch
 ---
 
-Adds handling for Joi's number.unsafe error (triggered by numbers exceeding JavaScript's safe number range, e.g.,
-1e+24). Previously this caused an API crash; now it shows a user-friendly validation message.
+Fixed API error when validating numbers outside the JavaScript safe range, now returning a proper validation message
