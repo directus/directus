@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_LICENSING_DOCS_URL, DIRECTUS_OIG_URL, DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { I18nT } from 'vue-i18n';
@@ -7,6 +7,7 @@ import VNotice from '@/components/v-notice.vue';
 import { GRACE_DANGER_THRESHOLD_DAYS, useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 
 const serverStore = useServerStore();
 const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline } = storeToRefs(useLicenseStore());
@@ -31,16 +32,14 @@ const severity = computed(() =>
 		: 'warning',
 );
 
-const lockedSupportUrl = computed(
-	() =>
-		`https://${DIRECTUS_DOMAIN}/support?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info?.version}&utm_content=status_notice_locked_contact_support_link`,
+const lockedSupportUrl = computed(() =>
+	getDirectusUrlWithUtm(DIRECTUS_SUPPORT_URL, serverStore.info?.version, 'status_notice_locked_contact_support_link'),
 );
 
-const coreGraceLicensingUrl = `https://${DIRECTUS_DOMAIN}/docs/licensing/overview`;
+const coreGraceLicensingUrl = DIRECTUS_LICENSING_DOCS_URL;
 
-const oigUrl = computed(
-	() =>
-		`https://${DIRECTUS_DOMAIN}/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info?.version}&utm_content=status_notice_open_innovation_grant_link`,
+const oigUrl = computed(() =>
+	getDirectusUrlWithUtm(DIRECTUS_OIG_URL, serverStore.info?.version, 'status_notice_open_innovation_grant_link'),
 );
 </script>
 

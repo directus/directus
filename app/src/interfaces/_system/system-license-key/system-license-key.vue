@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -10,6 +10,7 @@ import VInput from '@/components/v-input.vue';
 import VNotice from '@/components/v-notice.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useServerStore } from '@/stores/server';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 
 const { t } = useI18n();
 const serverStore = useServerStore();
@@ -172,7 +173,13 @@ onMounted(() => {
 			<I18nT keypath="setup_license_invalid" tag="span">
 				<template #contactSupport>
 					<a
-						:href="`https://${DIRECTUS_DOMAIN}/support?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=license_key_invalid_contact_support_link`"
+						:href="
+							getDirectusUrlWithUtm(
+								DIRECTUS_SUPPORT_URL,
+								serverStore.info.version,
+								'license_key_invalid_contact_support_link',
+							)
+						"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
