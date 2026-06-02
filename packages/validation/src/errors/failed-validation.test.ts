@@ -83,6 +83,7 @@ describe('Unsafe number', () => {
 			invalid: 10000000000,
 			path,
 		});
+
 		expect(message).toMatchSnapshot();
 	});
 });
