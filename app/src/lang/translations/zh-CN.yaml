@@ -276,7 +276,6 @@ validationError:
   niends_with: 值不能以"{substring}"结尾
   confirm_password: 密码不匹配
   org_name: 请包含组织名称
-  unsafe: 值不是安全的数字 {invalid}
 all_access: 允许所有
 no_access: 禁止访问
 use_custom: 自定义

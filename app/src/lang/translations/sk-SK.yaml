@@ -228,7 +228,6 @@ validationError:
   iends_with: Hodnota musí končiť na {substring}
   nends_with: Hodnota nesmie končiť na {substring}
   niends_with: Hodnota nesmie končiť na {substring}
-  unsafe: Hodnota nie je bezpečné číslo {invalid}
 all_access: Plný prístup
 no_access: Žiadny prístup
 use_custom: Použiť vlastné

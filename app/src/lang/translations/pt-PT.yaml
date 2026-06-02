@@ -241,7 +241,6 @@ validationError:
   iends_with: O valor tem que terminar com {substring}
   nends_with: O valor não pode terminar com {substring}
   niends_with: O valor não pode terminar com {substring}
-  unsafe: Valor não é um número seguro {invalid}
 all_access: Acesso Global
 no_access: Sem Acesso
 use_custom: Usar personalizado

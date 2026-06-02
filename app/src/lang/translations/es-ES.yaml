@@ -234,7 +234,6 @@ validationError:
   iends_with: El valor debe terminar en {substring}
   nends_with: El valor no puede terminar en {substring}
   niends_with: El valor no puede terminar en {substring}
-  unsafe: El valor no es un número seguro {invalid}
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar uso

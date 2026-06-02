@@ -228,7 +228,6 @@ validationError:
   iends_with: بەها دەبێت کۆتایی بێت بە {substring}
   nends_with: بەها نابێت کۆتایی بێت بە {substring}
   niends_with: بەها نابێت کۆتایی بێت بە {substring}
-  unsafe: نرخەکە ژمارەیەکی پارێزراو نییە {invalid}
 all_access: دەسەڵاتی هەمووی
 no_access: بێ دەسەڵات
 use_custom: بەکارهێنانی تایبەت

@@ -228,7 +228,6 @@ validationError:
   iends_with: Утга {substring}-р төгссөн байх ёстой
   nends_with: Утга {substring}-р төгссөн байж болохгүй
   niends_with: Утга {substring}-р төгссөн байж болохгүй
-  unsafe: Утга нь аюулгүй тоо биш {invalid}
 all_access: Бүх хандалт
 no_access: Хандалт байхгүй
 use_custom: Тохируулгат хандалт

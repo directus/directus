@@ -201,7 +201,6 @@ validationError:
   iends_with: Giá trị phải kết thúc với {substring}
   nends_with: Giá trị không thể kết thúc với {substring}
   niends_with: Giá trị không thể kết thúc với {substring}
-  unsafe: Giá trị không phải là một số an toàn {invalid}
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc

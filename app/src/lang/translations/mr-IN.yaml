@@ -228,7 +228,6 @@ validationError:
   iends_with: व्हॅल्यू {substring} नंतर संपली पाहिजे
   nends_with: व्हॅल्यू {substring} सोबत संपवू शकत नाही
   niends_with: व्हॅल्यू {substring} सोबत संपवू शकत नाही
-  unsafe: मूल्य सुरक्षित संख्या नाही {invalid}
 all_access: पूर्ण अधिकार
 no_access: अधिकार नाही
 use_custom: कस्टम वापरा

@@ -238,7 +238,6 @@ validationError:
   iends_with: Değer {substring} ile bitmelidir
   nends_with: Değer {substring} ile bitemez
   niends_with: Değer {substring} ile bitemez
-  unsafe: Değer güvenli bir sayı değil {invalid}
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş

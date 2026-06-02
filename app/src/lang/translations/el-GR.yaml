@@ -183,7 +183,6 @@ validationError:
   unique: Η τιμή πρέπει να είναι μοναδική
   regex: Η τιμή δεν έχει τη σωστή μορφή
   nistarts_with: Η τιμή δεν μπορεί να ξεκινάει με {substring}
-  unsafe: Η τιμή δεν είναι ασφαλής αριθμός {invalid}
 all_access: Όλη Η Πρόσβαση
 no_access: Καμία Πρόσβαση
 use_custom: Χρήση προσαρμοσμένου

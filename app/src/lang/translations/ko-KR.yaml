@@ -240,7 +240,6 @@ validationError:
   iends_with: 값은 {substring}(으)로 끝나야 합니다.
   nends_with: 값은 {substring}(으)로 끝날 수 없습니다.
   niends_with: 값은 {substring}(으)로 끝날 수 없습니다.
-  unsafe: 값은 안전한 숫자가 아닙니다 {invalid}
 all_access: 모든 액세스
 no_access: 접근 불가
 use_custom: 직접 설정

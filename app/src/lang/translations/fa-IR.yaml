@@ -294,7 +294,6 @@ validationError:
   niends_with: مقدار نمی‌تواند با {substring} پایان یابد
   confirm_password: رمزهای عبور مطابقت ندارند
   org_name: لطفا یک نام سازمان ذکر کنید
-  unsafe: مقدار یک عدد ایمن نیست {invalid}
 all_access: دسترسی کامل
 no_access: بدون دسترسی
 use_custom: استفاده از حالت سفارشی

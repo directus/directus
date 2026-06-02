@@ -228,7 +228,6 @@ validationError:
   istarts_with: Wert muss mit {substring} beginnen
   nstarts_with: Wert kann nicht mit {substring} beginnen
   nistarts_with: Wert kann nicht mit {substring} beginnen
-  unsafe: Wert ist keine sichere Zahl {invalid}
   ends_with: Wert muss mit {substring} enden
   iends_with: Wert muss mit {substring} enden
   nends_with: Wert kann nicht mit {substring} enden

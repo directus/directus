@@ -228,7 +228,6 @@ validationError:
   iends_with: Reikšmė turi baigtis su "{substring}"
   nends_with: Reikšmė negali baigtis su "{substring}"
   niends_with: Reikšmė negali baigtis su "{substring}"
-  unsafe: Vertė nėra saugus skaičius {invalid}
 all_access: Pilna prieiga
 no_access: Jokios prieigos
 use_custom: Pasirinktinai

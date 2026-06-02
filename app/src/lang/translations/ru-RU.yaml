@@ -275,7 +275,6 @@ validationError:
   istarts_with: Значение должно начинаться с "{substring}"
   nstarts_with: Значение не может начинаться с "{substring}"
   nistarts_with: Значение не может начинаться с "{substring}"
-  unsafe: Значение не является безопасным числом {invalid}
   ends_with: Значение должно заканчиваться на "{substring}"
   iends_with: Значение должно заканчиваться на "{substring}"
   nends_with: Значение не может заканчиваться на "{substring}"

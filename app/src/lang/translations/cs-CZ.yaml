@@ -231,7 +231,6 @@ validationError:
   istarts_with: Hodnota musí začínat s {substring}
   nstarts_with: Hodnota nemůže začínat s {substring}
   nistarts_with: Hodnota nemůže začínat s {substring}
-  unsafe: Hodnota není bezpečné číslo {invalid}
   ends_with: Hodnota musí končit s {substring}
   iends_with: Hodnota musí končit s {substring}
   nends_with: Hodnota nemůže končit s {substring}

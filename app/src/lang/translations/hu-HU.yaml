@@ -273,7 +273,6 @@ validationError:
   niends_with: Az érték nem végződhet {substring} karakterlánccal
   confirm_password: A jelszavak nem egyeznek meg
   org_name: Kérjük, adja meg a szervezet nevét
-  unsafe: Az érték nem biztonságos szám {invalid}
 all_access: Teljes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata

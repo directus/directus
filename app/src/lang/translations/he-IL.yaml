@@ -184,7 +184,6 @@ validationError:
   iends_with: ערך צריך להסתיים ב{substring}
   nends_with: ערך לא יכול יכול להסתיים ב{substring}
   niends_with: ערך לא יכול יכול להסתיים ב{substring}
-  unsafe: הערך אינו מספר בטוח {invalid}
 all_access: גישה פתוחה
 no_access: אין גישה
 use_custom: השתמש במותאם אישית

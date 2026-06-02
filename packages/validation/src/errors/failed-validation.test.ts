@@ -74,3 +74,15 @@ describe('Substring', () => {
 		expect(message).toMatchSnapshot();
 	});
 });
+
+describe('Unsafe number', () => {
+	test('Constructs message for "unsafe"', () => {
+		const message = messageConstructor({
+			field,
+			type: 'unsafe',
+			invalid: 10000000000,
+			path,
+		});
+		expect(message).toMatchSnapshot();
+	});
+});

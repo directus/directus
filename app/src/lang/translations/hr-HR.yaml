@@ -228,7 +228,6 @@ validationError:
   iends_with: Vrijednost mora završiti sa {substring}
   nends_with: Vrijednost ne može završiti sa {substring}
   niends_with: Vrijednost ne može završiti sa {substring}
-  unsafe: Vrijednost nije siguran broj {invalid}
 all_access: Puni prostup
 no_access: Bez pristupa
 use_custom: Prilagođeno

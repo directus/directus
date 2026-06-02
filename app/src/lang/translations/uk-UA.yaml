@@ -274,7 +274,6 @@ validationError:
   niends_with: Рядок не може закінчуватися на {substring}
   confirm_password: Паролі не збігаються
   org_name: Будь ласка, вкажіть назву організації
-  unsafe: Значення не є безпечним числом {invalid}
 all_access: Повний доступ
 no_access: Немає доступу
 use_custom: Використайте Користувацькі налаштування

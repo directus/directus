@@ -175,7 +175,6 @@ validationError:
   iends_with: Dəyər {substring} ilə bitməlidir
   nends_with: Dəyər {substring} ilə bitə bilməz
   niends_with: Dəyər {substring} ilə bitə bilməz
-  unsafe: Dəyər təhlükəsiz ədəd deyil {invalid}
 all_access: Bütün Giriş
 no_access: Giriş yoxdur
 use_custom: Özəl halı istifadə et

@@ -125,7 +125,6 @@ validationError:
   required: मान आवश्यक है
   unique: मान अद्वितीय होना चाहिए
   regex: मान का प्रारूप सही नहीं है
-  unsafe: मान सुरक्षित संख्या नहीं है {invalid}
 all_access: ऑल एक्सेस
 no_access: नो एक्सेस
 use_custom: कस्टम

@@ -243,7 +243,6 @@ validationError:
   istarts_with: La valeur doit commencer par {substring}
   nstarts_with: La valeur ne peut pas commencer par {substring}
   nistarts_with: La valeur ne peut pas commencer par {substring}
-  unsafe: La valeur n’est pas un nombre sécuritaire {invalid}
   ends_with: La valeur doit se terminer par {substring}
   iends_with: La valeur doit se terminer par {substring}
   nends_with: La valeur ne peut pas se terminer par {substring}

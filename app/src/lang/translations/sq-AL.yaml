@@ -228,7 +228,6 @@ validationError:
   iends_with: Vlera duhet të mbarojë me {substring}
   nends_with: Vlera nuk mund të mbarojë me {substring}
   niends_with: Vlera nuk mund të mbarojë me {substring}
-  unsafe: Vlera nuk është një numër i sigurt {invalid}
 all_access: Qasje e Plote
 no_access: Pa Qasje
 use_custom: Përdor të personalizuar

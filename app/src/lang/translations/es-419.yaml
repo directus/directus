@@ -274,7 +274,6 @@ validationError:
   niends_with: El valor no puede terminar con {substring}
   confirm_password: Las contraseñas no coinciden
   org_name: Por favor, incluye un nombre de organización
-  unsafe: El valor no es un número seguro {invalid}
 all_access: Acceso total
 no_access: Sin acceso
 use_custom: Usar personalizado

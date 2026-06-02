@@ -198,7 +198,6 @@ validationError:
   iends_with: Väärtuse lõpus peab olema {substring}
   nends_with: Väärtuse lõpus ei tohi olla {substring}
   niends_with: Väärtuse lõpus ei tohi olla {substring}
-  unsafe: Väärtus ei ole turvaline arv {invalid}
 all_access: Ligipääs Kõigele
 no_access: Ei Ole Ligipääsu
 use_custom: Kasuta Kohandatud

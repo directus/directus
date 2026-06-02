@@ -228,7 +228,6 @@ validationError:
   iends_with: Wartość musi kończyć się {substring}
   nends_with: Wartość nie może kończyć się {substring}
   niends_with: Wartość nie może kończyć się {substring}
-  unsafe: Wartość nie jest bezpieczną liczbą {invalid}
 all_access: Pełny Dostęp
 no_access: Brak dostępu
 use_custom: Użyj niestandardowych

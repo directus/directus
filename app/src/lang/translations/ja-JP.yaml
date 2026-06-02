@@ -280,7 +280,6 @@ validationError:
   niends_with: 値は {substring} で終わらせることはできません
   confirm_password: パスワードが一致しません
   org_name: 組織名を入力してください
-  unsafe: 値は安全な数値ではありません {invalid}
 all_access: すべてのアクセス
 no_access: アクセスなし
 use_custom: カスタムを使う

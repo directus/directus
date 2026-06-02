@@ -222,7 +222,6 @@ validationError:
   iends_with: Стойността трябва да завършва с {substring}
   nends_with: Стойността не може да завършва с {substring}
   niends_with: Стойността не може да завършва с {substring}
-  unsafe: Стойността не е безопасно число {invalid}
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран

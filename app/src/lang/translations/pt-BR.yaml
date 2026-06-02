@@ -280,7 +280,6 @@ validationError:
   niends_with: O valor não pode terminar com {substring}
   confirm_password: Senha não corresponde
   org_name: Por favor, incluir um nome de organização
-  unsafe: Valor não é um número seguro {invalid}
 all_access: Acesso Total
 no_access: Sem Acesso
 use_custom: Usar Personalizado

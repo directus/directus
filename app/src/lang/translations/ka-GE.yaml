@@ -232,7 +232,6 @@ validationError:
   iends_with: მნიშვნელობა უნდა მთავრდებოდეს {substring} - ით
   nends_with: მნიშვნელობა არუნდა მთავრდებოდეს {substring} - ით
   niends_with: მნიშვნელობა არუნდა მთავრდებოდეს {substring} - ით
-  unsafe: მნიშვნელობა არ არის უსაფრთხო რიცხვი {invalid}
 all_access: სრული წვდომა
 no_access: წვდომის გარეშე
 use_custom: მორგებულის გამოყენება

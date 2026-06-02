@@ -240,7 +240,6 @@ validationError:
   iends_with: Värdet måste sluta med {substring}
   nends_with: Värdet kan inte sluta med {substring}
   niends_with: Värdet kan inte sluta med {substring}
-  unsafe: Värde är inte ett säkert tal {invalid}
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad

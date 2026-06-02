@@ -207,7 +207,6 @@ validationError:
   istarts_with: Valoarea trebuie să înceapă cu {substring}
   nstarts_with: Valoarea nu poate începe cu {substring}
   nistarts_with: Valoarea nu poate începe cu {substring}
-  unsafe: Valoarea nu este un număr sigur {invalid}
 all_access: Acces complet
 no_access: Fără acces
 use_custom: Acces personalizat

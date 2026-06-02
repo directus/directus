@@ -229,7 +229,6 @@ validationError:
   iends_with: القيمة يجب أن تنتهي بـ {substring}
   nends_with: القيمة لا يمكن أن تنتهي بـ {substring}
   niends_with: القيمة لا يمكن أن تنتهي بـ {substring}
-  unsafe: القيمة ليست رقمًا آمنًا {invalid}
 all_access: دخول كامل للترجمات
 no_access: ممنوع الدخول
 use_custom: تخصيص

@@ -275,7 +275,6 @@ validationError:
   niends_with: Waarde mag niet eindigen met {substring}
   confirm_password: Wachtwoorden komen niet overeen
   org_name: Voeg een organisatienaam toe
-  unsafe: Waarde is geen veilig getal {invalid}
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
