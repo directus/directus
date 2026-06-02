@@ -240,9 +240,19 @@ function handleMonthChange(value: number | null): void {
 	setCalendarMonth(value);
 }
 
+/**
+ * Largest year the picker accepts.
+ *
+ * Bounded to a 4-digit ISO 8601 year.
+ * Without this cap, typing many digits yields a year
+ * beyond JS Date's representable range, making `new Date(year, month, 0).getDate()` return NaN
+ * in `setCalendarYear` and emitting an invalid string like "9999-06-NaN".
+ */
+const MAX_YEAR = 9999;
+
 function handleYearChange(value: number | string | undefined): void {
 	const numValue = typeof value === 'string' ? Number.parseInt(value, 10) : value;
-	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1) return;
+	if (numValue === undefined || !Number.isFinite(numValue) || numValue < 1 || numValue > MAX_YEAR) return;
 	setCalendarYear(numValue);
 }
 
