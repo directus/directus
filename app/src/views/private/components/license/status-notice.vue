@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_LICENSE_REQUEST_URL, DIRECTUS_LICENSING_DOCS_URL } from '@directus/constants';
+import { DIRECTUS_LICENSING_DOCS_URL, DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { I18nT } from 'vue-i18n';
@@ -32,7 +32,7 @@ const severity = computed(() =>
 
 const lockedSupportUrl = computed(() =>
 	getDirectusUrlWithUtm(
-		DIRECTUS_LICENSE_REQUEST_URL,
+		DIRECTUS_SUPPORT_URL,
 		serverStore.info?.version,
 		'status_notice_locked_contact_support_link',
 	),

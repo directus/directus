@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_LICENSE_REQUEST_URL } from '@directus/constants';
+import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { LICENSE_KEY, normalizeLicenseKey } from '@directus/license';
 import { throttle } from 'lodash';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -146,7 +146,7 @@ onMounted(() => {
 
 			<span v-if="licenseInfo.plan_name">
 				<VIcon name="check_circle" />
-				<span>{{ licenseInfo.plan_name }}</span>
+				<span>{{ $t('plan_prefix', { plan: licenseInfo.plan_name }) }}</span>
 			</span>
 
 			<div v-if="licenseInfo.expires_at ?? licenseInfo.renews_at">
@@ -175,7 +175,7 @@ onMounted(() => {
 					<a
 						:href="
 							getDirectusUrlWithUtm(
-								DIRECTUS_LICENSE_REQUEST_URL,
+								DIRECTUS_SUPPORT_URL,
 								serverStore.info.version,
 								'license_key_invalid_contact_support_link',
 							)

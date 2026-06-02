@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_LICENSE_REQUEST_URL } from '@directus/constants';
+import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
@@ -115,7 +115,7 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 				<template #oig>
 					<a
 						:href="
-							getDirectusUrlWithUtm(DIRECTUS_LICENSE_REQUEST_URL, info.version, 'onboarding_contact_our_team_link')
+							getDirectusUrlWithUtm(DIRECTUS_SUPPORT_URL, info.version, 'onboarding_contact_our_team_link')
 						"
 						target="_blank"
 					>

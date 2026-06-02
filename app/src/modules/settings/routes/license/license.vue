@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_LICENSE_REQUEST_URL, DIRECTUS_PRICING_URL } from '@directus/constants';
+import { DIRECTUS_OIG_URL, DIRECTUS_PRICING_URL } from '@directus/constants';
 import { deactivateLicense, type Entitlements } from '@directus/license';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref } from 'vue';
@@ -393,7 +393,7 @@ async function handleDeactivateConfirm() {
 						<a
 							:href="
 								getDirectusUrlWithUtm(
-									DIRECTUS_LICENSE_REQUEST_URL,
+									DIRECTUS_OIG_URL,
 									serverStore.info.version,
 									'settings_license_drawer_open_innovation_grant_link',
 								)
