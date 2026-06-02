@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
@@ -15,6 +15,7 @@ import VButton from '@/components/v-button.vue';
 import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
 import { useServerStore } from '@/stores/server';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import PublicView from '@/views/public';
 
 const { t } = useI18n();
@@ -113,7 +114,7 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 			<I18nT keypath="setup_license_key_notice" tag="p">
 				<template #oig>
 					<a
-						:href="`https://${DIRECTUS_DOMAIN}/support?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=onboarding_contact_our_team_link`"
+						:href="getDirectusUrlWithUtm(DIRECTUS_SUPPORT_URL, info.version, 'onboarding_contact_our_team_link')"
 						target="_blank"
 					>
 						{{ $t('open_innovation_grant') }}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_MSCL_URL, DIRECTUS_PRIVACY_URL } from '@directus/constants';
 import { ValidationError as DirectusValidationError, SetupForm } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, toRef } from 'vue';
@@ -10,6 +10,7 @@ import VCheckbox from '@/components/v-checkbox.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VNotice from '@/components/v-notice.vue';
 import { useServerStore } from '@/stores/server';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 
 const { info } = storeToRefs(useServerStore());
 
@@ -133,7 +134,7 @@ const mergedErrors = computed<DirectusValidationError[]>(() => {
 			<I18nT keypath="setup_save_accept_license" tag="span">
 				<template #directusMscl>
 					<a
-						:href="`https://${DIRECTUS_DOMAIN}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_mscl_1.0_gpl_link`"
+						:href="getDirectusUrlWithUtm(DIRECTUS_MSCL_URL, info.version, `${utmLocation}_mscl_1.0_gpl_link`)"
 						target="_blank"
 					>
 						{{ $t('directus_mscl') }}
@@ -141,7 +142,7 @@ const mergedErrors = computed<DirectusValidationError[]>(() => {
 				</template>
 				<template #privacyPolicy>
 					<a
-						:href="`https://${DIRECTUS_DOMAIN}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
+						:href="getDirectusUrlWithUtm(DIRECTUS_PRIVACY_URL, info.version, `${utmLocation}_privacy_link`)"
 						target="_blank"
 					>
 						{{ $t('privacy_policy') }}
@@ -154,18 +155,12 @@ const mergedErrors = computed<DirectusValidationError[]>(() => {
 			<VCheckbox v-if="!skipLicense" v-model="license">
 				<I18nT keypath="setup_accept_license" tag="span">
 					<template #directusMscl>
-						<a
-							:href="`https://${DIRECTUS_DOMAIN}/mscl?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=mscl_1.0_gpl_link`"
-							target="_blank"
-						>
+						<a :href="getDirectusUrlWithUtm(DIRECTUS_MSCL_URL, info.version, 'mscl_1.0_gpl_link')" target="_blank">
 							{{ $t('directus_mscl') }}
 						</a>
 					</template>
 					<template #privacyPolicy>
-						<a
-							:href="`https://${DIRECTUS_DOMAIN}/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${info.version}&utm_content=privacy_link`"
-							target="_blank"
-						>
+						<a :href="getDirectusUrlWithUtm(DIRECTUS_PRIVACY_URL, info.version, 'privacy_link')" target="_blank">
 							{{ $t('privacy_policy') }}
 						</a>
 					</template>
