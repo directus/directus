@@ -3,6 +3,16 @@ export type FetchInterface = (input: string | any, init?: RequestInit | any) => 
 
 export type UrlInterface = typeof URL;
 
+/* v8 ignore start -- fallback type aliases for non-DOM TypeScript environments */
+export type RequestCredentials = 'include' | 'omit' | 'same-origin';
+
+export type WebSocketCloseEvent = Event & {
+	readonly code: number;
+	readonly reason: string;
+	readonly wasClean: boolean;
+};
+/* v8 ignore stop */
+
 /** While the standard says 'string | URL' for the 'url' parameter, some implementations (e.g. React Native) only accept 'string' */
 export type WebSocketConstructor = {
 	new (url: string, protocols?: string | string[]): WebSocketInterface;

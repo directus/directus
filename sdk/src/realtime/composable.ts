@@ -1,5 +1,5 @@
 import type { AuthenticationClient } from '../auth/types.js';
-import type { ConsoleInterface, ExtendedQuery, WebSocketInterface } from '../index.js';
+import type { ConsoleInterface, ExtendedQuery, WebSocketCloseEvent, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { queryToParams } from '../utils/query-to-params.js';
 import { auth } from './commands/auth.js';
@@ -341,7 +341,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					if (!resolved) reject(evt);
 				});
 
-				ws.addEventListener('close', (evt: CloseEvent) => {
+				ws.addEventListener('close', (evt: WebSocketCloseEvent) => {
 					debug('info', `Connection closed.`);
 					eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 					uid = generateUid();
@@ -359,7 +359,10 @@ export function realtime(config: WebSocketConfig = {}) {
 					state.connection.close();
 				}
 			},
-			onWebSocket(event: WebSocketEvents, callback: (this: WebSocketInterface, ev: Event | CloseEvent | any) => any) {
+			onWebSocket(
+				event: WebSocketEvents,
+				callback: (this: WebSocketInterface, ev: Event | WebSocketCloseEvent | any) => any,
+			) {
 				if (event === 'message') {
 					// add some message parsing
 					const updatedCallback = function (this: WebSocketInterface, event: MessageEvent<any>) {
