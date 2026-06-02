@@ -23,7 +23,7 @@ const show = computed(
 	() => isAdmin.value && (gracePeriodDaysRemaining.value !== null || isLocked.value || isCoreGrace.value),
 );
 
-const showOig = computed(() => isAdmin.value && isCore.value && !isCoreGrace.value && !isLocked.value);
+const showOig = computed(() => isAdmin.value && isCore.value && !isLocked.value);
 
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
