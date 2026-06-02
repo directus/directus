@@ -12,7 +12,6 @@ import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -20,7 +19,6 @@ import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
@@ -32,7 +30,7 @@ import { formatDurationMs } from '@/utils/format-duration-ms';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
 
 type Run = DeploymentRunsOutput;
@@ -222,47 +220,35 @@ watch(statsRange, loadStats);
 
 <template>
 	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}`">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
 
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
+		</template>
 
-			<VButton
-				:tooltip="$t('deployment.deploy')"
-				rounded
-				icon
-				small
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton
+				:label="$t('deployment.deploy')"
+				icon="rocket_launch"
 				:loading="deploying"
 				:disabled="!canDeploy"
 				@click="deploy()"
 			>
-				<VIcon name="rocket_launch" small />
-
-				<template #append-outer>
-					<VMenu show-arrow>
-						<template #activator="{ toggle }">
-							<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
-						</template>
-
-						<VList>
-							<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
-								<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
-							</VListItem>
-							<VListItem clickable @click="refresh">
-								<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
+				<template #split-menu>
+					<VList>
+						<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
+							<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
+							<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
+						</VListItem>
+						<VListItem clickable @click="refresh">
+							<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
+							<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
+						</VListItem>
+					</VList>
 				</template>
-			</VButton>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<VProgressCircular v-if="loading" class="spinner" indeterminate />
@@ -445,15 +431,5 @@ watch(statsRange, loadStats);
 	display: flex;
 	justify-content: center;
 	margin-block-start: 1.375rem;
-}
-
-.more-options.v-icon {
-	--focus-ring-offset: var(--focus-ring-offset-invert);
-
-	color: var(--theme--foreground-subdued);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
 }
 </style>

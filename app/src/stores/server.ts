@@ -28,10 +28,21 @@ export type Info = {
 	};
 	mcp_enabled: boolean;
 	ai_enabled: boolean;
+	mcp_oauth_enabled: boolean;
+	mcp_oauth_dcr_enabled: boolean;
+	mcp_oauth_cimd_enabled: boolean;
 	files?: {
 		mimeTypeAllowList: string[];
 	};
 	setupCompleted: boolean;
+	setup: {
+		license_complete: boolean;
+		owner_complete: boolean;
+	} | null;
+	license: {
+		source: string | null;
+		entitlements: Record<string, unknown>;
+	} | null;
 	rateLimit?:
 		| false
 		| {
@@ -80,6 +91,9 @@ export type Info = {
 		chunkSize?: number;
 		maxConcurrency?: number;
 	};
+	autoSave?: {
+		revisionInterval: number;
+	};
 };
 
 export type Auth = {
@@ -92,13 +106,19 @@ export const useServerStore = defineStore('serverStore', () => {
 		project: null,
 		mcp_enabled: true,
 		ai_enabled: true,
+		mcp_oauth_enabled: false,
+		mcp_oauth_dcr_enabled: false,
+		mcp_oauth_cimd_enabled: false,
 		files: undefined,
 		setupCompleted: false,
+		setup: null,
+		license: null,
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
 		websocket: undefined,
 		uploads: undefined,
+		autoSave: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -131,13 +151,19 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.project = serverInfoResponse.data.data?.project;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.ai_enabled = serverInfoResponse.data.data?.ai_enabled;
+		info.mcp_oauth_enabled = serverInfoResponse.data.data?.mcp_oauth_enabled;
+		info.mcp_oauth_dcr_enabled = serverInfoResponse.data.data?.mcp_oauth_dcr_enabled;
+		info.mcp_oauth_cimd_enabled = serverInfoResponse.data.data?.mcp_oauth_cimd_enabled;
 		info.files = serverInfoResponse.data.data?.files;
-		info.setupCompleted = serverInfoResponse.data.data?.setupCompleted;
+		info.setup = serverInfoResponse.data.data?.setup ?? null;
+		info.setupCompleted = !info.setup;
+		info.license = serverInfoResponse.data.data?.license ?? null;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.websocket = serverInfoResponse.data.data?.websocket;
 		info.version = serverInfoResponse.data.data?.version;
 		info.uploads = serverInfoResponse.data.data?.uploads;
+		info.autoSave = serverInfoResponse.data.data?.autoSave;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;

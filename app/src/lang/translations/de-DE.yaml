@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Über
+continue: Weiter
 first_name: Vorname
 last_name: Nachname
 identifier: Identifikator
@@ -161,14 +162,12 @@ keep: Behalten
 version: Version
 version_key: Versionsschlüssel
 version_name: Versionsname
-main_version: Main
 switch_version: Version wechseln
 switch_version_copy: Sind Sie sicher, dass Sie zur "{version}" Version wechseln möchten? Ungespeicherte Änderungen gehen verloren.
 create_version: Version erstellen
 rename_version: Version umbenennen
 compare_version: Version vergleichen
 save_version: Version speichern
-promote_version: Version überführen
 delete_version: Version löschen
 delete_version_copy: >-
   Möchten Sie die "{version}" Version wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
@@ -601,7 +600,6 @@ manual_string: Manuell eingegebene Zeichenkette
 save_and_create_new: Speichern und neues Element anlegen
 save_and_stay: Speichern und auf der Seite bleiben
 save_and_quit: Speichern und schließen
-save_and_return_to_main: Speichern und zurück
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
 creating_items: Elemente erstellen
@@ -1122,6 +1120,17 @@ settings_data_model: Datenmodell
 settings_roles: Benutzerrollen
 settings_permissions: Zugangsrichtlinien
 settings_project: Einstellungen
+licensing:
+  unlimited: Unlimitiert
+  addon_manage: Verwalten
+  addon_update: Aktualisieren
+  resolve_continue: Weiter
+  resolve_show_n_more: 'Zeige {count} mehr'
+  resolve_section_flows: Flows
+  resolve_sso_admin_password: Passwort
+  entitlements:
+    collections: Sammlungen
+    flows: Flows
 settings_appearance: Erscheinung
 settings_flows: Flows
 settings_system_logs: Systemprotokolle
@@ -2009,7 +2018,9 @@ interfaces:
     value_securely_saved: Wert sicher gespeichert
     generate: Token generieren
     regenerate: Token neu generieren
+    regenerate_confirm_title: Token neu generieren
     remove_token: Token löschen
+    remove_confirm_title: Token löschen
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
     description: Eingabe von Rohwerten oder Mustache-Templates erlauben
@@ -2471,4 +2482,6 @@ search_flow: Flow suchen...
 percent: Prozent
 show_password: Passwort anzeigen
 hide_password: Passwort ausblenden
+license_grace_key_modal:
+  optional: Optional
 set_to_now: Auf Jetzt setzen

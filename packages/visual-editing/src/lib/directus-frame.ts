@@ -1,7 +1,15 @@
 import { sameOrigin } from '@directus/utils/browser';
 import type { EditableElement } from './editable-element.ts';
 import { EditableStore } from './editable-store.ts';
-import type { ConfirmData, HighlightElementData, ReceiveData, SavedData, SendAction } from './types/index.ts';
+import type {
+	ConfirmData,
+	HighlightElementData,
+	ReceiveData,
+	SavedData,
+	SendAction,
+	VisualEditingMessages,
+	VisualEditingTheme,
+} from './types/index.ts';
 
 /**
  * *Singleton* class to handle communication with Directus in parent frame.
@@ -13,6 +21,8 @@ export class DirectusFrame {
 	private origin: string | null = null;
 	private confirmed = false;
 	private aiEnabled = false;
+	private theme: VisualEditingTheme | null = null;
+	private messages: VisualEditingMessages | null = null;
 
 	constructor() {
 		if (DirectusFrame.SINGLETON) return DirectusFrame.SINGLETON;
@@ -23,6 +33,14 @@ export class DirectusFrame {
 
 	isAiEnabled() {
 		return this.aiEnabled;
+	}
+
+	getTheme() {
+		return this.theme;
+	}
+
+	getMessages() {
+		return this.messages;
 	}
 
 	send(action: SendAction, data?: unknown) {
@@ -75,8 +93,11 @@ export class DirectusFrame {
 	}
 
 	private receiveConfirmAction(data: unknown) {
+		const confirmData = data as ConfirmData;
 		this.confirmed = true;
-		this.aiEnabled = !!(data as ConfirmData)?.aiEnabled;
+		this.aiEnabled = !!confirmData?.aiEnabled;
+		this.theme = confirmData?.theme ?? null;
+		this.messages = confirmData?.messages ?? null;
 	}
 
 	private receiveActivateElements(data: unknown) {

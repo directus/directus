@@ -44,12 +44,6 @@ vi.mock('../../permissions/utils/create-default-accountability.js', () => ({
 	createDefaultAccountability: vi.fn().mockReturnValue({ ip: '127.0.0.1' }),
 }));
 
-// Mock constants
-vi.mock('../../constants.js', () => ({
-	REFRESH_COOKIE_OPTIONS: {},
-	SESSION_COOKIE_OPTIONS: {},
-}));
-
 vi.mock('ldapts', () => {
 	const Client = vi.fn();
 	Client.prototype.bind = vi.fn();

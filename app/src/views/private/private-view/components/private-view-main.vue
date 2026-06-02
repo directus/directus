@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
-import { useBreakpoints, useResizeObserver, useScroll } from '@vueuse/core';
-import { computed, type ComputedRef, inject, provide, ref, unref, useTemplateRef, watch } from 'vue';
+import { useBreakpoints } from '@vueuse/core';
+import { computed, type ComputedRef, inject, provide, useTemplateRef, watch } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
-import { useSidebarStore } from '../stores/sidebar';
+import { useNavBarStore } from '../stores/nav-bar';
+import { SIDEBAR_DEFAULT_SIZE, SIDEBAR_MIN_SIZE, useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
@@ -13,7 +14,7 @@ import type { PrivateViewProps } from './private-view.vue';
 import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 
-const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
+defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
 
@@ -21,47 +22,12 @@ const contentEl = useTemplateRef('content-el');
 provide('main-element', contentEl);
 
 const userStore = useUserStore();
+const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
-
-const scrollContainerRef = useTemplateRef('scroll-container');
-
-const { y, x } = useScroll(scrollContainerRef);
-
-const containerWidth = ref(0);
-const scrollableWidth = ref(0);
-
-useResizeObserver(scrollContainerRef, ([entry]) => {
-	const el = entry?.target as HTMLElement | undefined;
-	if (!el) return;
-	containerWidth.value = el.clientWidth;
-	scrollableWidth.value = el.scrollWidth;
-});
-
-const enforceShadows = computed(() => props.sidebarShadow || false);
-
-const contentPadding = computed(() => {
-	const el = contentEl.value;
-	if (!el) return 11;
-	return parseFloat(getComputedStyle(el).paddingInlineStart) || 11;
-});
-
-const showStartShadow = computed(() => {
-	if (enforceShadows.value) return true;
-	return x.value >= contentPadding.value;
-});
-
-const showEndShadow = computed(() => {
-	if (enforceShadows.value) return true;
-	return scrollableWidth.value - containerWidth.value - x.value >= contentPadding.value;
-});
 
 const livePreviewActive = inject<ComputedRef<boolean>>(
 	'live-preview-active',
 	computed(() => false),
-);
-
-const showHeaderShadow = computed(
-	() => enforceShadows.value || props.showHeaderShadow || y.value > 0 || unref(livePreviewActive),
 );
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
@@ -87,6 +53,17 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 
 <template>
 	<div ref="content-el" v-bind="$attrs" class="content">
+		<PrivateViewHeaderBar :title :inline-nav :icon :icon-color :show-back :back-to>
+			<template #actions:prepend><slot name="actions:prepend" /></template>
+			<template #actions><slot name="actions" /></template>
+			<template #actions:primary><slot name="actions:primary" /></template>
+			<template #title-outer:append><slot name="title-outer:append" /></template>
+			<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
+			<template #title:append><slot name="title:append" /></template>
+			<template #title:prepend><slot name="title:prepend" /></template>
+			<template #title><slot name="title" /></template>
+		</PrivateViewHeaderBar>
+
 		<SplitPanel
 			v-model:size="sidebarStore.size"
 			v-model:collapsed="splitterCollapsed"
@@ -95,40 +72,19 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 			collapsible
 			:collapsed-size="isMobile ? 0 : 54"
 			:collapse-threshold="70"
-			:min-size="252"
+			:min-size="SIDEBAR_MIN_SIZE"
 			:max-size="540"
-			:snap-points="[333]"
+			:snap-points="[SIDEBAR_DEFAULT_SIZE]"
 			:direction="userStore.textDirection"
 			:snap-threshold="6"
 			divider-hit-area="4px"
 			:transition-duration="125"
 			class="main-split"
+			:class="{ 'nav-collapsed': navBarStore.collapsed }"
 			:disabled="isMobile"
 		>
 			<template #start>
-				<div class="scroll-shadow start" :class="{ visible: showStartShadow }" />
-				<div class="scroll-shadow end" :class="{ visible: showEndShadow }" />
 				<div ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
-					<PrivateViewHeaderBar
-						:title="props.title"
-						:shadow="showHeaderShadow"
-						:inline-nav
-						:icon
-						:icon-color
-						:show-back
-						:back-to
-					>
-						<template #actions:append><slot name="actions:append" /></template>
-						<template #actions:prepend><slot name="actions:prepend" /></template>
-						<template #actions><slot name="actions" /></template>
-						<template #headline><slot name="headline" /></template>
-						<template #title-outer:append><slot name="title-outer:append" /></template>
-						<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
-						<template #title:append><slot name="title:append" /></template>
-						<template #title:prepend><slot name="title:prepend" /></template>
-						<template #title><slot name="title" /></template>
-					</PrivateViewHeaderBar>
-
 					<main ref="mainEl" class="main-content-container">
 						<slot />
 					</main>
@@ -163,9 +119,13 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 	</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .content {
 	block-size: 100%;
+	display: flex;
+	flex-direction: column;
 
 	&:deep(.sp-start) {
 		position: relative;
@@ -176,41 +136,26 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 	}
 }
 
-.scroll-shadow {
-	position: absolute;
-	inset-block: 0;
-	inline-size: 0.375rem;
-	pointer-events: none;
-	z-index: 6;
-	opacity: 0;
-	transition: opacity var(--medium) var(--transition);
-}
-
-.scroll-shadow.visible {
-	opacity: 1;
-}
-
-.scroll-shadow.start {
-	inset-inline-start: 0;
-	background: linear-gradient(to right, var(--shadow-color, transparent), transparent);
-}
-
-.scroll-shadow.end {
-	inset-inline-end: 0;
-	background: linear-gradient(to left, var(--shadow-color, transparent), transparent);
-}
-
-:dir(rtl) .scroll-shadow.start {
-	background: linear-gradient(to left, var(--shadow-color, transparent), transparent);
-}
-
-:dir(rtl) .scroll-shadow.end {
-	background: linear-gradient(to right, var(--shadow-color, transparent), transparent);
-}
-
 .main-split {
-	block-size: 100%;
+	flex: 1;
+	min-block-size: 0;
 	position: relative;
+	border-block-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+	border-inline-start: var(--theme--shell--border-width) solid var(--theme--shell--border-color);
+	border-start-start-radius: var(--theme--border-radius);
+	overflow: hidden;
+	background: var(--theme--background);
+
+	&.nav-collapsed {
+		border-inline-start: none;
+		border-start-start-radius: 0;
+	}
+
+	&:deep(> .sp-start) {
+		@include mixins.breakpoint-up('sm') {
+			border-inline-end: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+		}
+	}
 }
 
 .scrolling-container {
@@ -231,7 +176,7 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 }
 
 .mobile-sidebar {
-	max-inline-size: 19.125rem;
+	max-inline-size: var(--sidebar-mobile-width);
 }
 
 .sidebar-outlet {
@@ -241,6 +186,6 @@ const teleportTarget = computed(() => (isMobile.value ? '#sidebar-mobile-outlet'
 
 .main-content-container {
 	inline-size: 100%;
-	block-size: calc(100% - 3.375rem);
+	block-size: 100%;
 }
 </style>

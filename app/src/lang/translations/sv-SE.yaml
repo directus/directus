@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+continue: Fortsätt
 first_name: Förnamn
 last_name: Efternamn
 identifier: Identifierare
@@ -169,14 +170,12 @@ keep: Behåll
 version: Version
 version_key: Versionsnyckel
 version_name: Versionsnamn
-main_version: Huvud
 switch_version: Byt Version
 switch_version_copy: Är du säker på att du vill byta till "{version}" versionen? Osparade ändringar kommer att försvinna.
 create_version: Skapa Version
 rename_version: Byt namn på version
 compare_version: Jämför versioner
 save_version: Spara version
-promote_version: Promota version
 delete_version: Ta bort version
 delete_version_copy: >-
   Är du säker på att du vill ta bort versionen "{version}"? Denna åtgärd kan inte ångras.
@@ -1050,6 +1049,17 @@ settings_data_model: Datamodell
 settings_roles: Användarroller
 settings_permissions: Åtkomstpolicyer
 settings_project: Inställningar
+licensing:
+  unlimited: Obegränsad
+  addon_manage: Hantera
+  addon_update: Uppdatera
+  resolve_continue: Fortsätt
+  resolve_show_n_more: 'Visa {count} till'
+  resolve_section_flows: Flöden
+  resolve_sso_admin_password: Lösenord
+  entitlements:
+    collections: Kollektioner
+    flows: Flöden
 settings_appearance: Utseende
 settings_flows: Flöden
 settings_system_logs: Systemloggar
@@ -1825,7 +1835,9 @@ interfaces:
     description: Hantera statisk åtkomsttoken
     generate: Generera token
     regenerate: Regenerera token
+    regenerate_confirm_title: Regenerera token
     remove_token: Ta bort token
+    remove_confirm_title: Ta bort token
   system-raw-editor:
     system-raw-editor: Råredigerare
   input-password:
@@ -2167,5 +2179,7 @@ date_precision: Datumprecision
 percent: Procent
 show_password: Visa lösenord
 hide_password: Dölj lösenord
+license_grace_key_modal:
+  optional: Valfri
 accepted: Accepterad
 set_to_now: Ställ in till nu
