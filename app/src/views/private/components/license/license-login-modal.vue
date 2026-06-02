@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_LICENSING_DOCS_URL, DIRECTUS_OIG_URL, LICENSING_EMAIL } from '@directus/constants';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
@@ -15,9 +15,8 @@ import VNotice from '@/components/v-notice.vue';
 import SystemLicenseKey from '@/interfaces/_system/system-license-key/system-license-key.vue';
 import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-const LICENSING_EMAIL = `licensing@${DIRECTUS_DOMAIN}`;
 
 const model = defineModel<boolean>();
 
@@ -61,7 +60,7 @@ function dismiss() {
 
 function openGetLicenseKey() {
 	window.open(
-		`https://${DIRECTUS_DOMAIN}/docs/licensing/overview?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=upgrade_modal_open_get_license`,
+		getDirectusUrlWithUtm(DIRECTUS_LICENSING_DOCS_URL, serverStore.info.version, 'upgrade_modal_open_get_license'),
 		'_blank',
 		'noopener,noreferrer',
 	);
@@ -78,7 +77,13 @@ function openGetLicenseKey() {
 					<I18nT keypath="license_onboarding_desc" tag="p">
 						<template #oig>
 							<a
-								:href="`https://${DIRECTUS_DOMAIN}/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=upgrade_modal_open_innovation_grant_link`"
+								:href="
+									getDirectusUrlWithUtm(
+										DIRECTUS_OIG_URL,
+										serverStore.info.version,
+										'upgrade_modal_open_innovation_grant_link',
+									)
+								"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
@@ -107,11 +112,7 @@ function openGetLicenseKey() {
 									<strong>{{ $t('license_grace_key_modal.over_limit_warning_lead') }}</strong>
 								</template>
 								<template #licenseKey>
-									<a
-										:href="`https://${DIRECTUS_DOMAIN}/docs/licensing/overview`"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
+									<a :href="DIRECTUS_LICENSING_DOCS_URL" target="_blank" rel="noopener noreferrer">
 										{{ $t('license_grace_key_modal.license_key_link_label') }}
 									</a>
 								</template>
