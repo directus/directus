@@ -204,58 +204,54 @@ function pointerLeave() {
 		@pointerleave="pointerLeave"
 	>
 		<template #body>
-			<div
+			<button
 				v-if="editMode || panel?.resolve"
 				class="button add-resolve"
-				x-small
-				icon
-				rounded
+				type="button"
 				@pointerdown.stop="pointerdown('resolve')"
 			>
 				<VIcon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
-			</div>
+			</button>
 			<Transition name="fade">
-				<div
+				<button
 					v-if="editMode && !panel?.resolve && !moving && (panel.id === '$trigger' || isHovered)"
 					class="hint resolve-hint"
+					type="button"
 				>
-					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
+					<div class="button-hint" @pointerdown.stop="pointerdown('resolve')">
 						<VIcon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
 					</div>
-				</div>
+				</button>
 			</Transition>
-			<div
+			<button
 				v-if="panel.id !== '$trigger' && (editMode || panel?.reject)"
-				x-small
-				icon
-				rounded
 				class="button add-reject"
+				type="button"
 				@pointerdown.stop="pointerdown('reject')"
 			>
 				<VIcon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
-			</div>
+			</button>
 			<Transition name="fade">
-				<div
+				<button
 					v-if="editMode && !panel?.reject && !moving && panel.id !== '$trigger' && isHovered"
 					class="hint reject-hint"
+					type="button"
 				>
-					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
+					<div class="button-hint" @pointerdown.stop="pointerdown('reject')">
 						<VIcon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
 					</div>
-				</div>
+				</button>
 			</Transition>
 
-			<div
+			<button
 				v-if="panel.id !== '$trigger'"
-				x-small
-				icon
-				rounded
 				class="button attachment"
 				:class="{ reject: parent?.type === 'reject' }"
+				type="button"
 				@pointerdown.stop="pointerdown('parent')"
 			>
 				<VIcon name="adjust" />
-			</div>
+			</button>
 		</template>
 		<VErrorBoundary
 			v-if="typeof currentOperation?.overview === 'function'"
@@ -417,11 +413,7 @@ function pointerLeave() {
 		align-items: center;
 		padding: 1.125rem;
 		padding-inline-start: 3.375rem;
-		transform: translate(-0.0625rem, calc(-50% - 0.125rem));
-
-		html[dir='rtl'] & {
-			transform: translate(0.0625rem, calc(-50% - 0.125rem));
-		}
+		transform: translateY(-50%);
 	}
 
 	.button {
@@ -431,10 +423,10 @@ function pointerLeave() {
 		justify-content: center;
 		align-items: center;
 		background-color: var(--theme--background);
-		transform: translate(calc(-50% - 0.0625rem), calc(-50% - 0.0625rem));
+		transform: translate(-50%, -50%);
 
 		html[dir='rtl'] & {
-			transform: translate(calc(50% + 0.0625rem), calc(-50% - 0.0625rem));
+			transform: translate(50%, -50%);
 		}
 
 		--v-icon-color: var(--theme--primary);

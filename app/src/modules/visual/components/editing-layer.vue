@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { VERSION_KEY_DRAFT } from '@directus/constants';
 import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { sameOrigin } from '@directus/utils/browser';
@@ -10,6 +11,7 @@ import type {
 	HighlightElementData,
 	SavedData,
 	SendAction,
+	VisualEditingTheme,
 } from '@directus/visual-editing/types';
 import { useEventListener } from '@vueuse/core';
 import { computed, nextTick, onUnmounted, ref, toRaw, useTemplateRef, watch } from 'vue';
@@ -21,7 +23,6 @@ import { useAiContextStore } from '@/ai/stores/use-ai-context';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import VButton from '@/components/v-button.vue';
-import VIcon from '@/components/v-icon/v-icon.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -32,6 +33,7 @@ import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 
 const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
@@ -44,20 +46,28 @@ const { frameSrc, frameEl, showEditableElements, version } = defineProps<{
 const emit = defineEmits<{
 	navigation: [data: NavigationData];
 	saved: [data: { collection: string; primaryKey: PrimaryKey }];
+	switchVersion: [versionKey: ContentVersion['key'], onSwitched: () => void];
 }>();
 
 const { t } = useI18n();
 
-const { collection, primaryKey, fields, mode, position, isNew, edits, editOverlayActive, itemRoute, onClickEdit } =
-	useItemWithEdits();
-
-const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : null));
+const {
+	collection,
+	primaryKey,
+	fields,
+	mode,
+	position,
+	isNew,
+	edits,
+	editOverlayActive,
+	itemRoute,
+	hidePopoverArrow,
+	onClickEdit,
+} = useItemWithEdits();
 
 const { sendSaved, sendHighlightElement } = useWebsiteFrame({ onClickEdit });
 
 useVisualEditingAi({ sendSaved, sendHighlightElement });
-
-const { popoverWidth } = usePopoverWidth();
 
 // Clear highlight when edit overlay closes
 watch(editOverlayActive, (isActive) => {
@@ -158,7 +168,41 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	function sendConfirm() {
 		const aiEnabled = serverStore.info.ai_enabled && settingsStore.availableAiProviders.length > 0;
-		send('confirm', { aiEnabled });
+
+		send('confirm', {
+			aiEnabled,
+			theme: getTheme(),
+			messages: {
+				edit: t('edit'),
+				addToContext: t('add_to_ai_context'),
+			},
+		});
+	}
+
+	function getTheme(): VisualEditingTheme {
+		const style = getComputedStyle(document.documentElement);
+
+		return {
+			primaryColor: read('--theme--primary'),
+			primaryAccentColor: read('--theme--primary-accent'),
+			borderRadius: read('--theme--border-radius'),
+			buttonSize: resolveButtonHeightFromDom(),
+			focusRingWidth: read('--focus-ring-width'),
+			focusRingOffset: read('--focus-ring-offset'),
+		};
+
+		function read(name: string) {
+			return style.getPropertyValue(name).trim() || undefined;
+		}
+
+		function resolveButtonHeightFromDom() {
+			const probe = document.createElement('div');
+			probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;height:var(--button-height-xs);';
+			document.body.append(probe);
+			const size = getComputedStyle(probe).height || undefined;
+			probe.remove();
+			return size;
+		}
 	}
 
 	function sendShowEditableElements(show: boolean) {
@@ -239,6 +283,7 @@ function useItemWithEdits() {
 	const edits = ref<Record<string, any>>({});
 	const saving = ref(false);
 	const editOverlayActive = ref(false);
+	const hidePopoverArrow = ref(false);
 	const msgKey = ref('');
 	const collection = ref<EditConfig['collection']>('');
 	const primaryKey = ref<PrimaryKey>('');
@@ -271,6 +316,7 @@ function useItemWithEdits() {
 		edits,
 		editOverlayActive,
 		itemRoute,
+		hidePopoverArrow,
 		onClickEdit,
 	};
 
@@ -405,6 +451,18 @@ function useItemWithEdits() {
 		if (!success) return;
 		await nextTick();
 
+		const switchToDraftVersion = version === null && !!collectionInfo.value?.meta?.versioning;
+		hidePopoverArrow.value = switchToDraftVersion;
+
+		if (switchToDraftVersion) {
+			await new Promise<void>((resolve) => emit('switchVersion', VERSION_KEY_DRAFT, resolve));
+
+			notificationsStore.add({
+				title: t('editing_draft_version'),
+				icon: 'edit',
+			});
+		}
+
 		// `setFocusTemporarily()` makes sure that after clicking an edit button inside the iframe, the :focus moves to the Studio module, so the shortcuts work as expected.
 		setFocusTemporarily();
 
@@ -421,20 +479,6 @@ function useItemWithEdits() {
 		editingLayerEl.value.removeAttribute('tabindex');
 	}
 }
-
-function usePopoverWidth() {
-	/**
-	 * Hardcode this value, since its parts probably won't change. However, keep it in sync with the `width` of `.popover-item-content` in app/src/views/private/components/overlay-item.vue
-	 *
-	 * Parts:
-	 * const formColumnWidth = 300; // app/src/styles/_variables.scss
-	 * const popoverColumnGap = 16;
-	 * const popoverPadding = 16 * 2;
-	 * const popoverWidth = 2 * formColumnWidth + popoverColumnGap + popoverPadding;
-	 */
-
-	return { popoverWidth: 648 };
-}
 </script>
 
 <template>
@@ -448,7 +492,12 @@ function usePopoverWidth() {
 			:selected-fields="fields"
 			:edits="edits"
 			:version="version?.key"
-			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
+			:popover-props="
+				({ popoverWidth }) => ({
+					...(position.width > popoverWidth ? { arrowPlacement: 'start' } : {}),
+					showArrow: !hidePopoverArrow,
+				})
+			"
 			apply-shortcut="meta+s"
 			prevent-cancel-with-edits
 			@input="(value: any) => (edits = value)"
@@ -466,23 +515,25 @@ function usePopoverWidth() {
 
 			<template #actions>
 				<template v-if="primaryKey">
-					<VButton v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
+					<VButton
+						v-if="mode === 'modal' || mode === 'popover'"
+						:to="itemRoute"
+						:active="false"
+						:disabled="isNew"
+						:x-small="mode === 'popover'"
+						secondary
+					>
 						{{ t('navigate_to_item') }}
 					</VButton>
 
-					<VButton
+					<PrivateViewHeaderBarActionButton
 						v-else
-						v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
+						v-tooltip.bottom="t('navigate_to_item')"
 						:to="itemRoute"
 						:disabled="isNew"
-						:x-small="mode === 'popover'"
-						:small="mode !== 'popover'"
-						secondary
-						icon
-						rounded
-					>
-						<VIcon name="launch" small />
-					</VButton>
+						icon="launch"
+						variant="ghost"
+					/>
 				</template>
 			</template>
 		</OverlayItem>

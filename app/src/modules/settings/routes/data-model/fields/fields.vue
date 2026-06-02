@@ -2,11 +2,11 @@
 import { useShortcut } from '@directus/composables';
 import formatTitle from '@directus/format-title';
 import { isSystemCollection } from '@directus/system-data';
+import type { Field } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -16,8 +16,11 @@ import VDialog from '@/components/v-dialog.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
+import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
+import { useServerStore } from '@/stores/server';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
 
@@ -33,8 +36,40 @@ const router = useRouter();
 const { collection } = toRefs(props);
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
+const licenseStore = useLicenseStore();
+const serverStore = useServerStore();
 
 const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
+
+const collectionMetaFields = computed<Field[]>(() => {
+	const fields = fieldsStore.getFieldsForCollection('directus_collections');
+	const envSeconds = serverStore.info.autoSave?.revisionInterval ?? 300;
+
+	const label =
+		envSeconds < 60
+			? i18n.global.t('field_options.directus_collections.interval_default_seconds', {
+					seconds: envSeconds,
+				})
+			: i18n.global.t('field_options.directus_collections.interval_default', {
+					minutes: Math.round(envSeconds / 60),
+				});
+
+	return fields.map((field) => {
+		if (field.field !== 'autosave_revision_interval') return field;
+
+		const choices = field.meta?.options?.['choices']?.map((choice: { text: string; value: unknown }) =>
+			choice.value === null ? { ...choice, text: label } : choice,
+		);
+
+		return {
+			...field,
+			meta: field.meta && {
+				...field.meta,
+				options: { ...field.meta.options, choices },
+			},
+		};
+	});
+});
 
 const hasEdits = computed<boolean>(() => {
 	if (!edits.value.meta) return false;
@@ -53,19 +88,19 @@ async function deleteAndQuit() {
 	if (deleting.value) return;
 
 	await remove();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), licenseStore.hydrate()]);
 	edits.value = {};
 	router.replace({ name: 'settings-collections' });
 }
 
 async function saveAndStay() {
 	await save();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), licenseStore.hydrate()]);
 }
 
 async function saveAndQuit() {
 	await save();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), licenseStore.hydrate()]);
 	router.push({ name: 'settings-collections' });
 }
 
@@ -79,18 +114,14 @@ function discardAndLeave() {
 
 <template>
 	<PrivateView :title="formatTitle(collection)" show-back back-to="/settings/data-model">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
-		</template>
-
 		<template #actions>
 			<VDialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-if="isSystemCollection(collection) === false"
 						v-tooltip.bottom="$t('delete_collection')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="!item"
 						icon="delete"
 						@click="on"
@@ -110,9 +141,11 @@ function discardAndLeave() {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
+				:label="$t('save')"
 				:loading="saving"
 				:disabled="hasEdits === false"
 				icon="check"
@@ -137,7 +170,7 @@ function discardAndLeave() {
 
 			<VForm
 				v-model="edits.meta"
-				collection="directus_collections"
+				:fields="collectionMetaFields"
 				:loading="loading"
 				:initial-values="item?.meta"
 				:primary-key="collection"
@@ -171,17 +204,12 @@ function discardAndLeave() {
 }
 
 .collections-item {
-	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .fields {
 	max-inline-size: 45rem;
 	margin-block-end: 2.6875rem;
-}
-
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
 }
 </style>

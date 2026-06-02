@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Quant a
+continue: Continua
 first_name: Nom
 last_name: Cognoms
 identifier: Indentificador
@@ -887,6 +888,16 @@ editing_in_batch: 'Editant {count} elements'
 no_options_available: Sense opcions disponibles
 settings_data_model: Model de dades
 settings_project: Configuració
+licensing:
+  unlimited: Il·limitat
+  addon_update: Actualitzar
+  resolve_continue: Continua
+  resolve_show_n_more: 'Mostra {count} més'
+  resolve_section_flows: Fluxes
+  resolve_sso_admin_password: Contrasenya
+  entitlements:
+    collections: Col·leccions
+    flows: Fluxes
 settings_flows: Fluxes
 settings_presets: Favorits
 settings_translations: Traduccions

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Derbarê
+continue: Berdewam Bike
 first_name: Navê Pêşîn
 last_name: Navê Paşîn
 identifier: Nasname
@@ -157,14 +158,12 @@ keep: Hêlan
 version: Guherto
 version_key: Mifteya Guhertoye
 version_name: Navê Guhertoye
-main_version: Guhertoya Sereke
 switch_version: Guhertoye Biguherîne
 switch_version_copy: Tu bi rastî dixwazî derbazî guhertoya "{version}" bibî? Guherînên tomarnekirî wê winda bibin.
 create_version: Guherto Biafirîne
 rename_version: Navê Guhertoye Biguherîne
 compare_version: Guhertoyê Berhev Bike
 save_version: Guhertoye Tomar Bike
-promote_version: Guhertoye Bilind Bike
 delete_version: Guhertoye Jê Bibe
 delete_version_copy: >-
   Tu bi rastî dixwazî guhertoya "{version}" jê bibî? Ev çalakî nayê vegerandin.
@@ -595,7 +594,6 @@ manual_string: Rêzeka bi destî
 save_and_create_new: Tomar Bike û Nû Biafirîne
 save_and_stay: Tomar Bike û Bimîne
 save_and_quit: Tomar Bike û Derkeve
-save_and_return_to_main: Tomar Bike û Vegere Serekê
 save_as_copy: Wek Kopiyê Tomar Bike
 add_existing: Yê Heyî Zêde Bike
 creating_items: Afirandina Hêmanan
@@ -1119,6 +1117,17 @@ settings_data_model: Modela Daneyê
 settings_roles: Rolên Bikarhêner
 settings_permissions: Polîtîkayên Gihîştinê
 settings_project: Mîhengkarî
+licensing:
+  unlimited: Bêsînor
+  addon_manage: Birêve Bibe
+  addon_update: Nûbike
+  resolve_continue: Berdewam Bike
+  resolve_show_n_more: '{count} bêtir nîşan bide'
+  resolve_section_flows: Herikîn
+  resolve_sso_admin_password: Şîfre
+  entitlements:
+    collections: Koleksiyon
+    flows: Herikîn
 settings_appearance: Xuyang
 settings_flows: Herikîn
 settings_system_logs: Têketinên Pergalê
@@ -2007,7 +2016,9 @@ interfaces:
     value_securely_saved: Nirx bi Ewlehî Tê Tomarkirin
     generate: Tokena Biafirîne
     regenerate: Tokena Dîsa Biafirîne
+    regenerate_confirm_title: Tokena Dîsa Biafirîne
     remove_token: Tokenê Rake
+    remove_confirm_title: Tokenê Rake
   system-raw-editor:
     system-raw-editor: Edîtora Xav
     description: Destûr dide nivîsandina nirxên xav an şablonsaziya bi mustacheê
@@ -2470,4 +2481,6 @@ search_flow: Herikînê Bigere...
 percent: Rêje
 show_password: Şîfreyê nîşan bide
 hide_password: Şîfreyê veşêre
+license_grace_key_modal:
+  optional: Nebicî
 set_to_now: Dayne li Niha

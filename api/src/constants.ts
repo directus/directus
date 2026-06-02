@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { TransformationParams } from '@directus/types';
+import type { Settings, TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
 import type { CookieOptions } from 'express';
@@ -109,3 +109,11 @@ export const RESUMABLE_UPLOADS = {
 };
 
 export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];
+
+export const CUSTOM_LLM_FIELDS = [
+	'ai_openai_compatible_api_key',
+	'ai_openai_compatible_base_url',
+	'ai_openai_compatible_name',
+	'ai_openai_compatible_models',
+	'ai_openai_compatible_headers',
+] as const satisfies readonly (keyof Settings)[];
