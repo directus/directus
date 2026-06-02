@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import VImage from '@/components/v-image.vue';
+import VLicenseBadge from '@/components/v-license-badge.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -55,7 +56,7 @@ const logoURL = computed<string | null>(() => {
 					class="logo"
 					:style="info?.project.project_color ? { backgroundColor: info.project.project_color } : {}"
 				>
-					<VImage :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+					<VImage :src="logoURL!" :alt="info?.project.project_name || 'Logo'" />
 				</div>
 				<div
 					v-else
@@ -65,7 +66,7 @@ const logoURL = computed<string | null>(() => {
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
 				</div>
 				<div class="title">
-					<h1 class="type-title"><VTextOverflow :text="info?.project?.project_name" placement="bottom" /></h1>
+					<h1 class="title-heading"><VTextOverflow :text="info?.project?.project_name ?? ''" placement="bottom" /></h1>
 					<VTextOverflow
 						class="subtitle"
 						:text="info?.project?.project_descriptor ?? $t('application')"
@@ -97,11 +98,23 @@ const logoURL = computed<string | null>(() => {
 				<div v-if="info?.project?.public_note" v-md="info?.project.public_note" class="note" />
 			</div>
 		</div>
+
+		<VLicenseBadge />
 	</div>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .public-view {
+	--public-view--container--padding-x: 1.125rem;
+	--public-view--container--padding-y: 1.125rem;
+
+	@media (width >= 28.125rem) {
+		--public-view--container--padding-x: 4.5rem;
+		--public-view--container--padding-y: 2.25rem;
+	}
+
 	display: flex;
 	inline-size: 100%;
 	block-size: 100%;
@@ -117,28 +130,29 @@ const logoURL = computed<string | null>(() => {
 		--theme--form--row-gap: var(--theme--public--form--row-gap);
 		--theme--form--field--input--background-subdued: var(--theme--public--form--field--input--background);
 		--theme--form--field--input--background: var(--theme--public--form--field--input--background);
-		--theme--form--field--input--border-color-focus: var(--theme--public--form--field--input--border-color-focus);
 		--theme--form--field--input--border-color-hover: var(--theme--public--form--field--input--border-color-hover);
 		--theme--form--field--input--border-color: var(--theme--public--form--field--input--border-color);
-		--theme--form--field--input--box-shadow-focus: var(--theme--public--form--field--input--box-shadow-focus);
-		--theme--form--field--input--box-shadow-hover: var(--theme--public--form--field--input--box-shadow-hover);
 		--theme--form--field--input--box-shadow: var(--theme--public--form--field--input--box-shadow);
+		--theme--form--field--input--focus-ring-color: var(--theme--public--form--field--input--focus-ring-color);
 		--theme--form--field--input--foreground-subdued: var(--theme--public--form--field--input--foreground-subdued);
 		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--public--form--field--input--height);
 		--theme--form--field--input--padding: var(--theme--public--form--field--input--padding);
 		--theme--form--field--label--font-family: var(--theme--public--form--field--label--font-family);
 		--theme--form--field--label--foreground: var(--theme--public--form--field--label--foreground);
+		--public-view--container--max-width: 28.125rem;
+		--public-view--container--content--width: 19.125rem;
 
 		z-index: 2;
 		display: flex;
 		flex-shrink: 0;
 		flex-direction: column;
 		justify-content: space-between;
+		align-items: center;
 		inline-size: 100%;
-		max-inline-size: 28.125rem;
+		max-inline-size: var(--public-view--container--max-width);
 		block-size: 100%;
-		padding: 1.125rem;
+		padding: var(--public-view--container--padding-y) var(--public-view--container--padding-x);
 		overflow: hidden auto;
 		background: var(--theme--public--background);
 		color: var(--theme--public--foreground);
@@ -149,27 +163,20 @@ const logoURL = computed<string | null>(() => {
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-inline-size var(--medium) var(--transition);
 
-		:slotted(.type-title) {
+		:slotted(.type-display.type-display-public) {
 			font-size: 2.375rem;
 			line-height: 1.2368;
 			color: var(--theme--public--foreground-accent);
 		}
 
 		.content {
-			inline-size: 19.125rem;
-			max-inline-size: 100%;
+			inline-size: 100%;
+			max-inline-size: var(--public-view--container--content--width);
 		}
 
 		&.wide {
-			max-inline-size: 49.0625rem;
-
-			.content {
-				inline-size: 40.0625rem;
-			}
-		}
-
-		@media (width >= 28.125rem) {
-			padding: 2.25rem 4.5rem;
+			--public-view--container--max-width: 49.0625rem;
+			--public-view--container--content--width: 40.0625rem;
 		}
 	}
 
@@ -183,6 +190,7 @@ const logoURL = computed<string | null>(() => {
 		block-size: 100%;
 		background-position: center center;
 		background-size: cover;
+		container-type: inline-size;
 
 		video {
 			inline-size: 100%;
@@ -357,10 +365,14 @@ const logoURL = computed<string | null>(() => {
 			position: absolute;
 			inset-inline: 0;
 			inset-block-end: 1.9375rem;
-			display: flex;
+			display: none;
 			align-items: flex-end;
 			justify-content: center;
 			block-size: 0.5625rem;
+
+			@container (inline-size >= 20.5rem) {
+				display: flex;
+			}
 
 			.note {
 				max-inline-size: 19.125rem;
@@ -383,25 +395,27 @@ const logoURL = computed<string | null>(() => {
 
 	.notice {
 		display: flex;
+		inline-size: 100%;
+		max-inline-size: var(--public-view--container--content--width);
 		color: var(--theme--foreground-subdued);
 	}
 
 	.title-box {
 		display: flex;
 		align-items: center;
-		inline-size: max-content;
-		max-inline-size: 100%;
-		block-size: 3.625rem;
+		inline-size: 100%;
+		max-inline-size: var(--public-view--container--content--width);
 
 		.title {
 			margin-block-start: 0.125rem;
 			margin-inline-start: 0.875rem;
 			overflow: hidden;
 
-			h1 {
-				font-weight: 700;
+			.title-heading {
+				color: var(--theme--foreground-accent);
 				font-size: 1rem;
 				line-height: 1;
+				font-weight: 700;
 			}
 
 			.subtitle {
@@ -427,6 +441,12 @@ const logoURL = computed<string | null>(() => {
 			object-position: center center;
 		}
 	}
+
+	@include mixins.breakpoint-down('xl') {
+		.license-badge {
+			display: none;
+		}
+	}
 }
 
 .scale-enter-active,
@@ -441,4 +461,3 @@ const logoURL = computed<string | null>(() => {
 	opacity: 0;
 }
 </style>
-@/utils/get-appearance

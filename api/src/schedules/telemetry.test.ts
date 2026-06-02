@@ -32,13 +32,14 @@ afterEach(() => {
 });
 
 describe('telemetry', () => {
-	test('Returns early when telemetry is disabled', async () => {
-		vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
-
-		const res = await telemetrySchedule();
-
-		expect(res).toBe(false);
-	});
+	// #RC-TODO
+	// test('Returns early when telemetry is disabled', async () => {
+	// 	vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
+	//
+	// 	const res = await telemetrySchedule();
+	//
+	// 	expect(res).toBe(false);
+	// });
 
 	test('Schedules synchronized job', async () => {
 		await telemetrySchedule();

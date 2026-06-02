@@ -241,6 +241,7 @@ export function useFlows(options: UseFlowsOptions) {
 				});
 			}
 
+			selection.value = [];
 			onRefreshCallback();
 
 			notify({

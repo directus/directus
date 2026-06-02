@@ -1,5 +1,7 @@
 import type { Query } from '@directus/types';
 import { isEqual, uniqWith } from 'lodash-es';
+import { parseJsonFunction } from '../../../../database/helpers/fn/json/parse-function.js';
+import { extractFunctionName } from '../../../../utils/extract-function-name.js';
 import type { FieldKey } from '../types.js';
 import { flattenFilter } from './flatten-filter.js';
 
@@ -30,7 +32,19 @@ export function extractPathsFromQuery(query: Query) {
 			// Sort can have dot notation fields for sorting on m2o values Sort fields can start with
 			// `-` to indicate descending order, which should be dropped for permissions checks
 
-			const parts = field.split('.').map((field) => (field.startsWith('-') ? field.substring(1) : field));
+			const stripped = field.startsWith('-') ? field.substring(1) : field;
+
+			// Resolve alias (e.g. `my_color` → `json(metadata, color)`)
+			const resolved = query.alias?.[stripped] ?? stripped;
+
+			// json() expressions are not field paths — extract the underlying field name for permission checks
+			if (extractFunctionName(resolved) === 'json') {
+				const { field: jsonField } = parseJsonFunction(resolved);
+				readOnlyPaths.push([jsonField as FieldKey]);
+				continue;
+			}
+
+			const parts = resolved.split('.') as FieldKey[];
 
 			if (query.aggregate && parts.length > 0 && parts[0]! in query.aggregate) {
 				// If query is an aggregate query and the first part is a requested aggregate operation, ignore the whole field.
