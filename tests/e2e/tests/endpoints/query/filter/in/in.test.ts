@@ -10,12 +10,14 @@ const { collections } = await useSnapshot<Schema>(api);
 beforeAll(async () => {
 	const ids = await api.request(readItems(collections.articles));
 
-	await api.request(
-		deleteItems(
-			collections.articles,
-			ids.map((id) => String(id.id)),
-		),
-	);
+	if (ids.length > 0) {
+		await api.request(
+			deleteItems(
+				collections.articles,
+				ids.map((id) => String(id.id)),
+			),
+		);
+	}
 
 	await api.request(
 		createItems(collections.articles, [
