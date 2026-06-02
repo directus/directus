@@ -9,7 +9,7 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 
 const serverStore = useServerStore();
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, graceDeadline } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline } = storeToRefs(useLicenseStore());
 
 const formattedCoreGraceDate = computed(() =>
 	graceDeadline.value
@@ -23,6 +23,8 @@ const show = computed(
 	() => isAdmin.value && (gracePeriodDaysRemaining.value !== null || isLocked.value || isCoreGrace.value),
 );
 
+const showOig = computed(() => isAdmin.value && isCore.value && !isCoreGrace.value && !isLocked.value);
+
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
 		? 'danger'
@@ -35,6 +37,11 @@ const lockedSupportUrl = computed(
 );
 
 const coreGraceLicensingUrl = `https://${DIRECTUS_DOMAIN}/docs/licensing/overview`;
+
+const oigUrl = computed(
+	() =>
+		`https://${DIRECTUS_DOMAIN}/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info?.version}&utm_content=status_notice_open_innovation_grant_link`,
+);
 </script>
 
 <template>
@@ -71,6 +78,9 @@ const coreGraceLicensingUrl = `https://${DIRECTUS_DOMAIN}/docs/licensing/overvie
 					{{ $t('license.unlicensed_status_notice.upgrade') }}
 				</a>
 			</template>
+			<template #oig>
+				<a :href="oigUrl" target="_blank" rel="noopener noreferrer">{{ $t('open_innovation_grant') }}</a>
+			</template>
 		</I18nT>
 	</VNotice>
 	<VNotice v-else-if="show" :type="severity" class="status-notice">
@@ -81,6 +91,13 @@ const coreGraceLicensingUrl = `https://${DIRECTUS_DOMAIN}/docs/licensing/overvie
 						$t('license.status_notice.grace_days', { days: gracePeriodDaysRemaining }, gracePeriodDaysRemaining ?? 0)
 					}}
 				</strong>
+			</template>
+		</I18nT>
+	</VNotice>
+	<VNotice v-else-if="showOig" type="info" class="status-notice">
+		<I18nT keypath="license.unlicensed_status_notice.oig_eligible" tag="span">
+			<template #oig>
+				<a :href="oigUrl" target="_blank" rel="noopener noreferrer">{{ $t('open_innovation_grant') }}</a>
 			</template>
 		</I18nT>
 	</VNotice>

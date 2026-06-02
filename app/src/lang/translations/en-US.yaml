@@ -1648,10 +1648,11 @@ license:
   unlicensed_status_notice:
     grace_period:
       'You have {daysLeft} in your grace period — until {date}. After that, Core tier resource limits will apply.
-      {retrieveLicenseKey} or {upgrade} to increase your limits.'
+      {retrieveLicenseKey} or {upgrade} to increase your limits. You might be eligible for an {oig}.'
     grace_days_left: '{days} day left | {days} days left'
     retrieve_license_key: Retrieve license key
     upgrade: Upgrade
+    oig_eligible: 'You might be eligible for an {oig}.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
   pinned_status_notice:
     grace_period_title: 'Grace Period ({days}d left)'
