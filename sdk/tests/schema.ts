@@ -10,7 +10,7 @@ export type TestSchema = {
 	collection_a_b_m2a: CollectionAB_Any[];
 	// extend the provided DirectusUser type
 	// https://directus.com/docs/tutorials/tips-and-tricks/advanced-types-with-the-directus-sdk#custom-fields-on-core-collections
-	directus_users: CustomUser
+	directus_users: CustomUser;
 };
 
 export type CollectionA = {

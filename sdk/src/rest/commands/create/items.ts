@@ -27,7 +27,7 @@ export const createItems =
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');
-		throwIfCoreCollection(collection, 'Cannot use createItems for core collections')
+		throwIfCoreCollection(collection, 'Cannot use createItems for core collections');
 
 		return {
 			path: `/items/${collection as string}`,
@@ -56,7 +56,7 @@ export const createItem =
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');
-		throwIfCoreCollection(collection, 'Cannot use createItem for core collections')
+		throwIfCoreCollection(collection, 'Cannot use createItem for core collections');
 
 		return {
 			path: `/items/${collection as string}`,

@@ -39,9 +39,9 @@ describe('MergeCoreCollection', () => {
 	test('builtin fields cannot be overriden by custom core collection fields', () => {
 		type MergedUser = MergeCoreCollection<TestSchema, 'directus_users', { id: string; email: string | null }>;
 
-		expectTypeOf<MergedUser['id']>().toEqualTypeOf<string>()
-		expectTypeOf<MergedUser['custom_field']>().toEqualTypeOf<boolean | undefined>()
-	})
+		expectTypeOf<MergedUser['id']>().toEqualTypeOf<string>();
+		expectTypeOf<MergedUser['custom_field']>().toEqualTypeOf<boolean | undefined>();
+	});
 
 	test('custom fields absent when schema has no extension for that collection', () => {
 		type SchemaWithoutUsers = { articles: { id: number }[] };
