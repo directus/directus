@@ -31,11 +31,7 @@ const severity = computed(() =>
 );
 
 const lockedSupportUrl = computed(() =>
-	getDirectusUrlWithUtm(
-		DIRECTUS_SUPPORT_URL,
-		serverStore.info?.version,
-		'status_notice_locked_contact_support_link',
-	),
+	getDirectusUrlWithUtm(DIRECTUS_SUPPORT_URL, serverStore.info?.version, 'status_notice_locked_contact_support_link'),
 );
 
 const coreGraceLicensingUrl = DIRECTUS_LICENSING_DOCS_URL;

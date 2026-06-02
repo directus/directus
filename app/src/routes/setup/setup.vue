@@ -114,9 +114,7 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 			<I18nT keypath="setup_license_key_notice" tag="p">
 				<template #oig>
 					<a
-						:href="
-							getDirectusUrlWithUtm(DIRECTUS_SUPPORT_URL, info.version, 'onboarding_contact_our_team_link')
-						"
+						:href="getDirectusUrlWithUtm(DIRECTUS_SUPPORT_URL, info.version, 'onboarding_contact_our_team_link')"
 						target="_blank"
 					>
 						{{ $t('open_innovation_grant') }}
