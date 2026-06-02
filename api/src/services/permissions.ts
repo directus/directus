@@ -1,4 +1,4 @@
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, ResourceRestrictedError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	Item,
@@ -62,8 +62,12 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
-		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			await getEntitlementManager().assert('custom_permission_rules_enabled', { knex: this.knex });
+		if (
+			!getEntitlementManager().isEntitled('custom_permission_rules_enabled') &&
+			hasCustomRule(data) &&
+			!isRecommendedAppPermission(data)
+		) {
+			throw new ResourceRestrictedError({ category: 'custom_permission_rules_enabled' });
 		}
 
 		const res = await super.createOne(data, opts);
@@ -74,8 +78,12 @@ export class PermissionsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
-		if (hasCustomRule(data) && !isRecommendedAppPermission(data)) {
-			await getEntitlementManager().assert('custom_permission_rules_enabled', { knex: this.knex });
+		if (
+			!getEntitlementManager().isEntitled('custom_permission_rules_enabled') &&
+			hasCustomRule(data) &&
+			!isRecommendedAppPermission(data)
+		) {
+			throw new ResourceRestrictedError({ category: 'custom_permission_rules_enabled' });
 		}
 
 		const res = await super.updateMany(keys, data, opts);
