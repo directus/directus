@@ -1650,7 +1650,7 @@ license:
       'You have {daysLeft} in your grace period — until {date}. After that, Core tier resource limits will apply.
       {retrieveLicenseKey} or {upgrade} to increase your limits. You might be eligible for an {oig}.'
     grace_days_left: '{days} day left | {days} days left'
-    retrieve_license_key: Retrieve license key
+    retrieve_license_key: Retrieve license key
     upgrade: Upgrade
     oig_eligible: 'You might be eligible for an {oig}. Apply and get full access to Directus for free.'
   locked_status_notice: 'Your Directus instance is locked. Manage license or {contactSupport} to resolve.'
