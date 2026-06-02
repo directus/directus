@@ -384,7 +384,7 @@ async function handleDeactivateConfirm() {
 				<I18nT keypath="setup_license_key_notice" tag="span">
 					<template #oig>
 						<a
-							:href="`https://${DIRECTUS_DOMAIN}/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_drawer_open_innovation_grant_link`"
+							:href="`https://${DIRECTUS_DOMAIN}/oig?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=settings_license_drawer_open_innovation_grant_link`"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
