@@ -311,6 +311,76 @@ test(`m2a alias on the junction field (REST)`, async () => {
 	});
 });
 
+test(`m2o original + alias inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				author: { name: 'Author A' },
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				author {
+					name
+				}
+				aliased: author {
+					name
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		author: { name: 'Author A' },
+		aliased: { name: 'Author A' },
+	});
+});
+
+test(`o2m original + alias inside a fragment`, async () => {
+	const id = (
+		await api.request(
+			createItem(collections.articles, {
+				title: `Article A`,
+				links: [{ link: 'Link A' }],
+			}),
+		)
+	).id!;
+
+	const result = (
+		await api.query(`
+			fragment ArticleSummary on ${collections.articles} {
+				links {
+					link
+				}
+				aliased: links {
+					link
+				}
+			}
+
+			query {
+				${collections.articles} (filter: { id: { _eq: "${id}" }}) {
+					...ArticleSummary
+				}
+			}
+		`)
+	)[collections.articles][0];
+
+	expect(result).toEqual({
+		links: [{ link: 'Link A' }],
+		aliased: [{ link: 'Link A' }],
+	});
+});
+
 test(`m2a alias on a scalar field inside the m2a result (GraphQL)`, async () => {
 	const id = (
 		await api.request(
