@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-ignore required for presentation fields
+Fixed presentation fields marked as required incorrectly blocking item save
