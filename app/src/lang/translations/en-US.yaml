@@ -49,7 +49,7 @@ org_name: Organization Name
 org_name_placeholder: Acme Inc.
 license_key_option: I have a license key
 license_key_option_desc: 'OIG, Team, or Enterprise plan'
-core_option: I'm using Core
+core_option: I'm using Core plan
 core_option_desc: Free, no key required
 remind_later: Remind Later
 remind_next_login: We'll remind you next time you log in
@@ -57,6 +57,7 @@ open_innovation_grant: Open Innovation Grant
 setup_project: Setup Project
 enter_license_key: Enter Your License Key
 license_valid: License Valid
+plan_prefix: 'Plan: {plan}'
 license_key: License Key
 no_license_key: Don't have a license key?
 get_license_key: Get License Key
