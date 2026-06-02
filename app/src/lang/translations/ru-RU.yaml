@@ -21,10 +21,14 @@
 #'Proxy', 'Intl'
 about: О программе
 privacy_policy: Политика конфиденциальности
+contact_support: свяжитесь со службой поддержки
 setup_welcome: Добро пожаловать в Directus
 setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
+setup_save_accept_license: >
+  Нажав сохранить, вы принимаете условия [{directusMscl} и {privacyPolicy}.
 setup_marketing_emails: Присылать мне обновления и заметки к выпуску
 setup_launch: Запустить Directus
+remind_next_login: Мы напомним вам при следующем входе
 setup_project: Организовать проект
 continue: Продолжить
 first_name: Имя
