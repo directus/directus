@@ -869,10 +869,11 @@ describe('v-date-picker', () => {
 			await yearInput.setValue('999999999');
 			await nextTick();
 
-			// The out-of-range year must be ignored: no new emission, and no NaN day leaks through.
+			// The out-of-range year must be ignored: no emission happens, so no invalid value
+			// (and no NaN day) can leak through.
 			const finalCallCount = vi.mocked(formatDatePickerModelValue).mock.calls.length;
 			expect(finalCallCount).toBe(initialCallCount);
-			expect(capturedCalendarValue?.day).not.toBeNaN();
+			expect(capturedCalendarValue).toBeUndefined();
 		});
 
 		it('clamps day when changing to month with fewer days', async () => {

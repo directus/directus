@@ -301,11 +301,12 @@ function setToNow() {
 							@update:model-value="handleMonthChange"
 						/>
 						<VInput
-							type="number"
+							type="text"
+							inputmode="numeric"
 							:model-value="date?.year"
+							:max-length="4"
 							class="calendar-year-input"
 							:full-width="false"
-							hide-arrows
 							@update:model-value="handleYearChange"
 						/>
 					</div>
