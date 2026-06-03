@@ -1,4 +1,3 @@
-import type { GraphQLResolveInfo } from 'graphql';
 import {
 	GraphQLBoolean,
 	GraphQLFloat,
@@ -24,7 +23,9 @@ import { GraphQLBigInt } from '../types/bigint.js';
 import { GraphQLDate } from '../types/date.js';
 import { GraphQLGeoJSON } from '../types/geojson.js';
 import { GraphQLHash } from '../types/hash.js';
+import { GraphQLJsonFilter } from '../types/json-filter.js';
 import { GraphQLStringOrFloat } from '../types/string-or-float.js';
+import { dedupeRelationalResolver } from '../utils/dedupe-resolvers.js';
 import { getTypes } from './get-types.js';
 import { type InconsistentFields, type Schema, SYSTEM_DENY_LIST } from './index.js';
 
@@ -371,6 +372,15 @@ export async function getReadableTypes(
 		},
 	});
 
+	const JsonFilterOperators = schemaComposer.createInputTC({
+		name: 'json_filter_operators',
+		fields: {
+			_json: { type: GraphQLJsonFilter },
+			_null: { type: GraphQLBoolean },
+			_nnull: { type: GraphQLBoolean },
+		},
+	});
+
 	const CountFunctionFilterOperators = schemaComposer.createInputTC({
 		name: 'count_function_filter_operators',
 		fields: {
@@ -457,6 +467,9 @@ export async function getReadableTypes(
 						break;
 					case GraphQLDate:
 						filterOperatorType = DateFilterOperators;
+						break;
+					case GraphQLJSON:
+						filterOperatorType = JsonFilterOperators;
 						break;
 					case GraphQLGeoJSON:
 						filterOperatorType = GeometryFilterOperators;
@@ -617,11 +630,7 @@ export async function getReadableTypes(
 				: new GraphQLNonNull(
 						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
 					),
-			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-				const result = await resolveQuery(gql, info);
-				context['data'] = result;
-				return result;
-			},
+			resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 		};
 
 		if (collection.singleton === false) {
@@ -675,12 +684,7 @@ export async function getReadableTypes(
 					type: new GraphQLList(GraphQLString),
 				},
 			},
-			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-				const result = await resolveQuery(gql, info);
-				context['data'] = result;
-
-				return result;
-			},
+			resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 		});
 
 		if (collection.singleton === false) {
@@ -691,11 +695,7 @@ export async function getReadableTypes(
 					id: new GraphQLNonNull(GraphQLID),
 					version: GraphQLString,
 				},
-				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-					const result = await resolveQuery(gql, info);
-					context['data'] = result;
-					return result;
-				},
+				resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 			});
 		}
 
@@ -709,11 +709,7 @@ export async function getReadableTypes(
 							version: new GraphQLNonNull(GraphQLString),
 							id: new GraphQLNonNull(GraphQLID),
 						},
-				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
-					const result = await resolveQuery(gql, info);
-					context['data'] = result;
-					return result;
-				},
+				resolve: dedupeRelationalResolver(({ info }) => resolveQuery(gql, info)),
 			});
 		}
 

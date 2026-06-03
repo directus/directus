@@ -33,6 +33,7 @@ export * from './number-generator.js';
 export * from './parse-filter-function-path.js';
 export * from './parse-filter.js';
 export * from './parse-json.js';
+export * from './parse-now.js';
 export * from './pluralize.js';
 export * from './process-chunk.js';
 export * from './sieve-functions.js';

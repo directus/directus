@@ -215,43 +215,41 @@ watch(selectedProviderName, (val) => {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-notice {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .otp-input {
-	margin-block: 12px;
+	margin-block: 0.6875rem;
 }
 
 .signin-actions {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 0.6875rem;
 }
 
 .sso-link {
-	$sso-link-border-width: 2px;
-
 	display: flex;
 	inline-size: 100%;
 	block-size: var(--theme--form--field--input--height);
 	background-color: var(--theme--background-normal);
-	border: $sso-link-border-width var(--theme--background-normal) solid;
+	border: var(--theme--border-width) var(--theme--background-normal) solid;
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
 	cursor: pointer;
 
 	.sso-icon {
-		--v-icon-size: 28px;
+		--v-icon-size: 1.5625rem;
 
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		inline-size: var(--theme--form--field--input--height);
-		margin: -$sso-link-border-width;
+		margin: calc(-1 * var(--theme--border-width));
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 	}
@@ -259,8 +257,8 @@ watch(selectedProviderName, (val) => {
 	.sso-title {
 		display: flex;
 		align-items: center;
-		padding: 0 16px 0 20px;
-		font-size: 16px;
+		padding: 0 0.875rem 0 1.125rem;
+		font-size: 0.875rem;
 		overflow: hidden;
 	}
 
@@ -269,7 +267,7 @@ watch(selectedProviderName, (val) => {
 	}
 
 	& + & {
-		margin-block-start: 12px;
+		margin-block-start: 0.6875rem;
 	}
 }
 </style>

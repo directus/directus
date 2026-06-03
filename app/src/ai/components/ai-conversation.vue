@@ -114,7 +114,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 			<VInfo v-if="emptyState" icon="magic_button" type="primary" :title="$t(emptyState.title)" class="empty-state">
 				{{ $t(emptyState.description) }}
 				<template v-if="emptyState.showSettings" #append>
-					<VButton to="/settings/ai">{{ $t('ai.go_to_settings') }}</VButton>
+					<VButton :to="{ name: 'settings-ai' }">{{ $t('ai.go_to_settings') }}</VButton>
 				</template>
 			</VInfo>
 
@@ -128,9 +128,9 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 				<div class="error-buttons-container">
 					<VButton outlined class="retry-button" x-small danger @click="aiStore.retry()">
 						<VIcon name="refresh" x-small />
-						{{ $t('ai.retry') }}
+						{{ $t('retry') }}
 					</VButton>
-					<VButton class="clear-button" outline x-small danger @click="aiStore.reset()">
+					<VButton class="clear-button" outlined x-small danger @click="aiStore.reset()">
 						{{ $t('ai.clear_conversation') }}
 					</VButton>
 				</div>
@@ -141,7 +141,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 		<div v-if="hasProviders" class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
-				<VButton icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
+				<VButton icon secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
 					<VIcon small name="arrow_downward" />
 				</VButton>
 			</div>
@@ -159,7 +159,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 <style scoped>
 .error-notice {
-	margin-block-end: 1rem;
+	margin-block-end: 0.8125rem;
 	max-inline-size: 100%;
 	overflow: hidden;
 }
@@ -175,7 +175,6 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .messages-container {
 	position: relative;
-	padding-inline: 8px;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -187,18 +186,17 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 #scroll-anchor {
 	overflow-anchor: auto;
-	block-size: 1px;
+	block-size: 0.0625rem;
 }
 
 .input-container {
 	flex-shrink: 0;
 	position: relative;
-	padding-inline-end: 12px;
 }
 
 .error-message {
-	margin-block-end: 1rem;
-	font-size: 0.875rem;
+	margin-block-end: 0.8125rem;
+	font-size: 0.6875rem;
 	inline-size: 100%;
 	max-inline-size: 100%;
 	overflow-wrap: break-word;
@@ -207,13 +205,13 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .error-buttons-container {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 1rem;
+	gap: 0.8125rem;
 
-	margin-block-start: 1rem;
+	margin-block-start: 0.8125rem;
 	align-items: center;
 
 	.v-icon {
-		margin-inline-end: 0.25rem;
+		margin-inline-end: 0.1875rem;
 	}
 }
 
@@ -223,7 +221,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .scroll-to-bottom-container {
 	position: absolute;
-	inset-block-start: -36px;
+	inset-block-start: -2rem;
 	inset-inline-start: 50%;
 	translate: -50% 0;
 	z-index: 4;
@@ -233,7 +231,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	pointer-events: none;
 }
 
-.scroll-to-bottom-btn {
+.scroll-to-bottom-btn :deep(.button) {
 	box-shadow: 0 0 8px rgb(0 0 0 / 0.15);
 	pointer-events: all;
 }
@@ -243,7 +241,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	inset: 0;
 	z-index: 100;
 	background-color: var(--theme--primary-background);
-	border: 2px dashed var(--theme--primary);
+	border: var(--theme--border-width) dashed var(--theme--primary);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -252,7 +250,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	pointer-events: none;
 
 	.upload-icon {
-		margin-block-end: 12px;
+		margin-block-end: 0.6875rem;
 	}
 }
 </style>

@@ -4,9 +4,9 @@
 			{
 				"matcher": "Edit|Write",
 				"hooks": [
-					{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/prettier.sh" },
-					{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/eslint.sh" },
-					{ "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stylelint.sh" }
+					{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/prettier.mjs" },
+					{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/eslint.mjs" },
+					{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stylelint.mjs" }
 				]
 			}
 		]

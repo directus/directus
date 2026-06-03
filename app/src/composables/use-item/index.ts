@@ -3,8 +3,8 @@ import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint, isObject } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { cloneDeep, mergeWith } from 'lodash';
-import { computed, ComputedRef, isRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
+import { cloneDeep, isEqual, mergeWith } from 'lodash';
+import { computed, ComputedRef, MaybeRef, ref, Ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 import { transformM2AAliases } from './lib/transform-m2a-aliases';
@@ -15,15 +15,18 @@ import sdk, { requestEndpoint } from '@/sdk';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
-import { applyConditions } from '@/utils/apply-conditions';
+import type { ContentVersionMaybeNew } from '@/types/versions';
+import { clearHiddenFieldsByCondition } from '@/utils/clear-hidden-fields-by-condition';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { mergeItemData } from '@/utils/merge-item-data';
 import { notify } from '@/utils/notify';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+
+/** Max URL length before switching to SEARCH method to avoid 414/431 errors */
+const MAX_QUERY_URL_LENGTH = 8192;
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -42,14 +45,23 @@ type UsableItem<T extends Item> = {
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
 	saveAsCopy: () => Promise<PrimaryKey | null>;
-	getItem: () => Promise<void>;
+	getItem: (opts?: { silent?: boolean }) => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
+
+function coerceArchiveValue(value: string | null): string | boolean | null {
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	return value;
+}
 
 export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
-	query: MaybeRef<Query> = {},
+	currentVersion: Ref<ContentVersionMaybeNew | null> | null = null,
+	isItemlessVersion: ComputedRef<boolean> = computed(() => false),
+	extraQuery: MaybeRef<Omit<Query, 'version' | 'versionRaw'>> = {},
+	saveOptions: { onSaveError?: (error: APIError) => boolean } = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -67,14 +79,24 @@ export function useItem<T extends Item>(
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
 
-		if (collectionInfo.value.meta.archive_value === 'true') {
-			return item.value?.[collectionInfo.value.meta.archive_field] === true;
-		}
+		const { archive_field, archive_value } = collectionInfo.value.meta;
 
-		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
+		return item.value?.[archive_field] === coerceArchiveValue(archive_value);
 	});
 
-	const permissions = usePermissions(collection, primaryKey, isNew);
+	const query = computed<Query>((prev) => {
+		const version = unref(currentVersion);
+		const extra = unref(extraQuery);
+
+		const next: Query =
+			!version || version.id === '+' ? { ...extra } : { ...extra, version: version.key, versionRaw: true };
+
+		// Preserve reference on equivalent shapes; otherwise the auto-switch to a new ('+') draft would refetch and disable form fields mid-edit.
+		return prev && isEqual(prev, next) ? prev : next;
+	});
+
+	const isVersion = computed(() => unref(currentVersion) !== null);
+	const permissions = usePermissions(collection, primaryKey, isNew, isVersion);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
 
 	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);
@@ -89,7 +111,14 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
+	watch([collection, primaryKey], refresh);
+
+	watch(query, () => {
+		const canRefetchSilently = item.value !== null;
+
+		if (canRefetchSilently) getItem({ silent: true });
+		else refresh();
+	});
 
 	refreshItem();
 
@@ -116,65 +145,24 @@ export function useItem<T extends Item>(
 		validationErrors,
 	};
 
-	async function getItem() {
-		loadingItem.value = true;
+	async function getItem(opts?: { silent?: boolean }) {
+		if (!opts?.silent) loadingItem.value = true;
 		error.value = null;
 
 		try {
-			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
+			if (isItemlessVersion.value) {
+				const { delta } = await sdk.request<T>(() => ({ path: `versions/${currentVersion!.value!.id}` }));
+				setItemValueToResponse(delta);
+				return;
+			}
 
+			const item = await sdk.request<T>(requestEndpoint(itemEndpoint.value, { params: unref(query) }));
 			setItemValueToResponse(item);
 		} catch (err) {
 			error.value = err;
 		} finally {
 			loadingItem.value = false;
 		}
-	}
-
-	function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
-		if (!field.meta?.conditions) return false;
-
-		const fieldWithConditions = applyConditions(currentValues, field);
-		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
-	}
-
-	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
-		const currentValues = mergeItemData(defaultValues, item, edits);
-
-		const fieldsToClearMap: Map<string, any> = new Map();
-
-		function addFieldToClear(field: Field) {
-			const defaultValue = field.schema?.default_value;
-			fieldsToClearMap.set(field.field, defaultValue !== undefined ? defaultValue : null);
-		}
-
-		for (const field of fields) {
-			if (shouldClearField(field, currentValues)) {
-				// If this is a group field that should be cleared, clear all fields within the group
-				if (field.meta?.special?.includes('group')) {
-					const fieldsInGroup = getFieldsInGroup(field.field, fields);
-
-					for (const groupField of fieldsInGroup) {
-						addFieldToClear(groupField);
-					}
-				} else {
-					// For non-group fields, add the field itself to be cleared
-					addFieldToClear(field);
-				}
-			}
-		}
-
-		if (fieldsToClearMap.size === 0) {
-			return edits;
-		}
-
-		const editsWithClearedValues = cloneDeep(edits);
-
-		for (const [field, defaultValue] of fieldsToClearMap) {
-			editsWithClearedValues[field] = defaultValue;
-		}
-
-		return editsWithClearedValues;
 	}
 
 	async function save() {
@@ -412,16 +400,21 @@ export function useItem<T extends Item>(
 
 			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
 
-			const response = await sdk.request<Item[]>(
-				requestEndpoint(getEndpoint(relation.collection), {
-					params: {
-						fields: Array.from(fieldsToFetch),
-						[`filter[${relation.field}][_eq]`]: primaryKey.value,
-					},
-				}),
-			);
+			const endpoint = getEndpoint(relation.collection);
+			const requestFields = Array.from(fieldsToFetch);
+			const filter = { [relation.field]: { _eq: primaryKey.value } };
+			const query = { fields: requestFields, filter };
 
-			return response;
+			const queryString = new URLSearchParams({
+				fields: requestFields.join(','),
+				filter: JSON.stringify(filter),
+			}).toString();
+
+			const useSearch = queryString.length + endpoint.length > MAX_QUERY_URL_LENGTH;
+
+			const options = useSearch ? { method: 'SEARCH' as const, body: { query } } : { params: query };
+
+			return await sdk.request<Item[]>(requestEndpoint(endpoint, options));
 		}
 
 		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
@@ -465,10 +458,16 @@ export function useItem<T extends Item>(
 			const otherErrors = error.errors.filter((err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code));
 
 			if (otherErrors.length > 0) {
-				otherErrors.forEach(unexpectedError);
+				otherErrors.forEach((err: APIError) => {
+					if (!saveOptions.onSaveError?.(err)) {
+						unexpectedError(err);
+					}
+				});
 			}
 		} else {
-			unexpectedError(error);
+			if (!saveOptions.onSaveError?.(error)) {
+				unexpectedError(error);
+			}
 		}
 
 		throw error;
@@ -480,20 +479,11 @@ export function useItem<T extends Item>(
 		archiving.value = true;
 
 		const field = collectionInfo.value.meta.archive_field;
-
-		let archiveValue: any = collectionInfo.value.meta.archive_value;
-		if (archiveValue === 'true') archiveValue = true;
-		if (archiveValue === 'false') archiveValue = false;
-
-		let unarchiveValue: any = collectionInfo.value.meta.unarchive_value;
-		if (unarchiveValue === 'true') unarchiveValue = true;
-		if (unarchiveValue === 'false') unarchiveValue = false;
+		const archiveValue = coerceArchiveValue(collectionInfo.value.meta.archive_value);
+		const unarchiveValue = coerceArchiveValue(collectionInfo.value.meta.unarchive_value);
 
 		try {
-			let value: any = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
-
-			if (value === 'true') value = true;
-			if (value === 'false') value = false;
+			const value = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
 			await sdk.request(
 				requestEndpoint(itemEndpoint.value, {
@@ -555,7 +545,7 @@ export function useItem<T extends Item>(
 	}
 
 	function refreshItem() {
-		if (isNew.value) {
+		if (isNew.value && !isItemlessVersion.value) {
 			item.value = null;
 		} else {
 			getItem();

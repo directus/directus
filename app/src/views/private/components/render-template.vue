@@ -177,7 +177,6 @@ const parts = computed(() =>
 	block-size: 100%;
 	position: relative;
 	max-inline-size: 100%;
-	padding-inline-end: 8px;
 	@include mixins.no-wrap;
 
 	.vertical-aligner {

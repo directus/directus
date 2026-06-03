@@ -159,7 +159,7 @@ function parseFolder(id: string) {
 	--v-list-item-background-color-hover: var(--folder-picker-color, var(--theme--background-accent));
 	--v-list-item-background-color-active: var(--folder-picker-color, var(--theme--background-accent));
 
-	padding: 12px;
+	padding: 0.6875rem;
 	background-color: var(--folder-picker-background-color, var(--theme--background-normal));
 	border-radius: var(--theme--border-radius);
 	max-block-size: calc(var(--input-height-md) * 2);

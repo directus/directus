@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { keyMap, systemKeys } from '@directus/composables';
 import slugify from '@sindresorhus/slugify';
 import { isNil, omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VIcon from './v-icon/v-icon.vue';
-import { keyMap, systemKeys } from '@/composables/use-shortcut';
 
 defineOptions({ inheritAttrs: false });
 
@@ -398,7 +398,7 @@ function useInlineWarning() {
 	--v-input-background-color    [--theme--form--field--input--background]
 	--v-input-border-color        [--theme--form--field--input--border-color]
 	--v-input-border-color-hover  [--theme--form--field--input--border-color-hover]
-	--v-input-border-color-focus  [--theme--form--field--input--border-color-focus]
+	--v-input-focus-ring-color    [--theme--form--field--input--focus-ring-color]
 	--v-input-border-radius       [--theme--border-radius]
 */
 
@@ -412,7 +412,7 @@ function useInlineWarning() {
 	block-size: var(--theme--form--field--input--height);
 
 	.prepend-outer {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	.input {
@@ -429,19 +429,18 @@ function useInlineWarning() {
 		border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--v-input-border-radius, var(--theme--border-radius));
 		transition: var(--fast) var(--transition);
-		transition-property: border-color, box-shadow;
-		box-shadow: var(--theme--form--field--input--box-shadow);
+		transition-property: border-color;
 
 		.prepend {
-			margin-inline-end: 8px;
+			margin-inline-end: 0.4375rem;
 		}
 
 		.step-up {
-			margin-block-end: -8px;
+			margin-block-end: -0.4375rem;
 		}
 
 		.step-down {
-			margin-block-start: -8px;
+			margin-block-start: -0.4375rem;
 		}
 
 		.step-up,
@@ -471,7 +470,6 @@ function useInlineWarning() {
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
 			border-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
-			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
 		&:focus-within:not(.disabled),
@@ -480,8 +478,9 @@ function useInlineWarning() {
 
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
-			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
-			box-shadow: var(--theme--form--field--input--box-shadow-focus);
+			outline: var(--focus-ring-width) solid
+				var(--v-input-focus-ring-color, var(--theme--form--field--input--focus-ring-color));
+			outline-offset: var(--focus-ring-offset-invert);
 		}
 
 		&.disabled:not(.non-editable) {
@@ -499,13 +498,13 @@ function useInlineWarning() {
 
 		.append {
 			flex-shrink: 0;
-			margin-inline-start: 8px;
+			margin-inline-start: 0.4375rem;
 		}
 	}
 
 	input {
 		flex-grow: 1;
-		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
+		inline-size: 1.125rem; /* allows flex to grow/shrink to allow for slots */
 		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
 		padding-inline: 0;
@@ -524,10 +523,6 @@ function useInlineWarning() {
 			appearance: none;
 		}
 
-		&:focus {
-			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
-		}
-
 		/* Firefox */
 
 		&[type='number'] {
@@ -536,10 +531,10 @@ function useInlineWarning() {
 	}
 
 	&.small {
-		block-size: 38px;
+		block-size: 2.125rem;
 
 		.input {
-			padding: 8px 12px;
+			padding: 0.4375rem 0.6875rem;
 		}
 	}
 
@@ -574,7 +569,7 @@ function useInlineWarning() {
 		}
 
 		.append-outer {
-			margin-inline-start: 8px;
+			margin-inline-start: 0.4375rem;
 		}
 	}
 
@@ -586,7 +581,7 @@ function useInlineWarning() {
 	.inline-warning {
 		--v-icon-color: var(--theme--warning);
 
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	&.disabled .inline-warning {

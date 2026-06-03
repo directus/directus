@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import { DEFAULT_REGISTRY } from '../../../constants.js';
 import type { AccountOptions } from '../types/account-options.js';
 
@@ -22,7 +23,7 @@ import type { AccountOptions } from '../types/account-options.js';
  * console.log(customUrl.toString()); // "https://custom-registry.example.com/accounts/user456"
  * ```
  */
-export const constructUrl = (id: string, options?: AccountOptions) => {
+export const constructUrl = (id: string, options?: AccountOptions): URL => {
 	const registry = options?.registry ?? DEFAULT_REGISTRY;
 	const url = new URL(`/accounts/${id}`, registry);
 	return url;

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O programe
+continue: Pokračovať
 first_name: Meno
 last_name: Priezvisko
 identifier: Identifikátor
@@ -157,14 +158,12 @@ keep: Ponechať
 version: Verzia
 version_key: Kľúč verzie
 version_name: Názov verzie
-main_version: Hlavné
 switch_version: Prepnúť verziu
 switch_version_copy: Naozaj chcete prepnúť na verziu "{version}"? Neuložené zmeny sa stratia.
 create_version: Vytvoriť verziu
 rename_version: Premenovať verziu
 compare_version: Porovnať verzie
 save_version: Uložiť verziu
-promote_version: Povýšiť verziu
 delete_version: Odstrániť verziu
 delete_version_copy: >-
   Naozaj chcete odstrániť verziu "{version}"? Táto akcia sa nedá vrátiť.
@@ -463,6 +462,8 @@ related_collection: Súvisiaca zbierka
 related_collections: Súvisiace zbierky
 translations_collection: Zbierka prekladov
 languages_collection: Zbierka jazykov
+translations_preview_collections: Zbierky
+translations_preview_fields: Polia
 import_data_input_placeholder: CSV alebo JSON...
 import_data_button: Spustiť import
 import_data_indeterminate: Prebieha import dát...
@@ -636,7 +637,6 @@ no_collections: Žiadna zbierka
 create_collection: Vytvoriť zbierku
 no_collections_copy_admin: Zatiaľ nemáte žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
 no_collections_copy: Zatiaľ nemáte žiadne zbierky. Prosím kontaktujte svojho správu.
-relationship_not_setup: Tento vzťah nebol správne nastavený
 no_singleton_relations: Vzťahy so singletonmi nie sú podporované
 display_template_not_setup: Šablóna zobrazenia je zle nakonfigurovaná
 collection_field_not_setup: Voľby poľa zbierky sú zle nastavené
@@ -1108,6 +1108,17 @@ settings_data_model: Dátový model
 settings_roles: Role používateľa
 settings_permissions: Prístupové politiky
 settings_project: Nastavenia
+licensing:
+  unlimited: Neobmedzené
+  addon_manage: Spravovať
+  addon_update: Upraviť
+  resolve_continue: Pokračovať
+  resolve_show_n_more: 'Zobraziť ďalších {count}'
+  resolve_section_flows: Toky
+  resolve_sso_admin_password: Heslo
+  entitlements:
+    collections: Zbierky
+    flows: Toky
 settings_appearance: Vzhľad
 settings_flows: Toky
 settings_system_logs: Systémové logy
@@ -1676,6 +1687,8 @@ interfaces:
     all_opened: Všetko otvorené
     accordion_mode: Režim akordeónu
     max_one_section_open: Max 1 sekcia otvorená
+  group-tabs:
+    fill_width: Vyplniť šírku
   presentation-links:
     presentation-links: Tlačidlá
     style: Štýl
@@ -1991,8 +2004,9 @@ interfaces:
     value_securely_saved: Hodnota bezpečne uložená
     generate: Vygenerovať Token
     regenerate: Pregenerovať Token
-    generate_success_copy: Uistite sa o zálohovaní kópie vyššie uvedeného tokenu. Z bezpečnostných dôvodov, nebudete môcť druhý krát zobraziť token po uložení odchode z tejto stránky.
+    regenerate_confirm_title: Pregenerovať Token
     remove_token: Odstrániť token
+    remove_confirm_title: Odstrániť token
   system-raw-editor:
     system-raw-editor: Surový editor
     description: Povolí zadávanie surovej hodnoty mustache šablóny
@@ -2444,4 +2458,6 @@ search_flow: Hľadať tok...
 percent: Percent
 show_password: Zobraziť heslo
 hide_password: Skryť heslo
+license_grace_key_modal:
+  optional: Voliteľné
 set_to_now: Nastaviť na teraz

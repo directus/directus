@@ -204,16 +204,17 @@ function addKeyAsNode() {
 			<button @click="addNode('$group')">{{ $t('interfaces.filter.add_group') }}</button>
 		</div>
 		<div v-else class="buttons">
-			<VMenu ref="menuEl" placement="bottom-start" show-arrow>
+			<VMenu ref="menuEl" placement="bottom-start" show-arrow :attached="inline">
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
 						<VIcon v-if="inline" name="add" class="add" small />
 						<span>{{ $t('interfaces.filter.add_filter') }}</span>
-						<VIcon name="expand_more" class="expand_more" />
+						<VIcon name="arrow_drop_down" class="expand_more" />
 					</button>
 				</template>
 				<VFieldList
 					v-if="collectionRequired"
+					:attached="inline"
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
@@ -264,15 +265,15 @@ function addKeyAsNode() {
 	}
 
 	:deep(.group) {
-		margin-inline-start: 18px;
-		padding-inline-start: 10px;
+		margin-inline-start: 1rem;
+		padding-inline-start: 0.5625rem;
 		border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.v-list {
 		min-inline-size: auto;
-		margin: 0 0 10px;
-		padding: 20px 20px 12px;
+		margin: 0 0 0.5625rem;
+		padding: 1.125rem 1.125rem 0.6875rem;
 		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 		background: var(--theme--form--field--input--background);
 
@@ -284,7 +285,7 @@ function addKeyAsNode() {
 	}
 
 	.buttons {
-		padding: 0 10px;
+		padding: 0 0.5625rem;
 		font-weight: 600;
 
 		span {
@@ -331,29 +332,25 @@ function addKeyAsNode() {
 			display: flex;
 			align-items: center;
 			inline-size: 100%;
-			block-size: 30px;
+			block-size: 1.6875rem;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
 			background-color: var(--theme--form--field--input--background);
 			border: var(--theme--border-width) solid var(--theme--border-color-subdued);
-			border-radius: 100px;
+			border-radius: 5.625rem;
 			transition: border-color var(--fast) var(--transition);
+
 			&:hover,
 			&.active {
 				border-color: var(--theme--form--field--input--border-color);
 			}
-			&.active {
-				.expand_more {
-					transform: scaleY(-1);
-					transition-timing-function: var(--transition-in);
-				}
-			}
+
 			.add {
-				margin-inline: 6px 4px;
+				margin-inline: 0.3125rem 0.25rem;
 			}
+
 			.expand_more {
-				margin-inline: auto 6px;
-				transition: transform var(--medium) var(--transition-out);
+				margin-inline: auto 0.3125rem;
 			}
 		}
 	}
@@ -367,7 +364,7 @@ function addKeyAsNode() {
 	}
 
 	button + button {
-		margin-inline-start: 24px;
+		margin-inline-start: 1.375rem;
 	}
 }
 

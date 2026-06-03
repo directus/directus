@@ -1,4 +1,4 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface ValueOutOfRangeErrorExtensions {
 	collection: string | null;
@@ -6,7 +6,7 @@ export interface ValueOutOfRangeErrorExtensions {
 	value: string | null;
 }
 
-export const messageConstructor = ({ collection, field, value }: ValueOutOfRangeErrorExtensions) => {
+export const messageConstructor = ({ collection, field, value }: ValueOutOfRangeErrorExtensions): string => {
 	let message = 'Numeric value ';
 
 	if (value) {
@@ -26,8 +26,5 @@ export const messageConstructor = ({ collection, field, value }: ValueOutOfRange
 	return message;
 };
 
-export const ValueOutOfRangeError = createError<ValueOutOfRangeErrorExtensions>(
-	ErrorCode.ValueOutOfRange,
-	messageConstructor,
-	400,
-);
+export const ValueOutOfRangeError: DirectusErrorConstructor<ValueOutOfRangeErrorExtensions> =
+	createError<ValueOutOfRangeErrorExtensions>(ErrorCode.ValueOutOfRange, messageConstructor, 400);

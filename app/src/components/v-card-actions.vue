@@ -6,10 +6,10 @@
 .v-card-actions {
 	display: flex;
 	justify-content: flex-end;
-	padding: var(--v-card-padding, 16px);
+	padding: var(--v-card-padding, 0.875rem);
 }
 
 .v-card-actions > :slotted(.v-button + .v-button) {
-	margin-inline-start: 12px;
+	margin-inline-start: 0.6875rem;
 }
 </style>

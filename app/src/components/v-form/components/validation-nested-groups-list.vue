@@ -29,7 +29,7 @@ const props = defineProps<{
 		:style="{
 			listStyleType: (props.listLogic ?? 'and') === 'and' ? 'disc' : 'square',
 			listStylePosition: 'outside',
-			paddingInlineStart: props.depth === 0 ? '22px' : '18px',
+			paddingInlineStart: props.depth === 0 ? '1.25rem' : '1rem',
 		}"
 	>
 		<li v-for="(item, idx) in props.items" :key="idx" class="group-item">
@@ -69,11 +69,11 @@ const props = defineProps<{
 }
 
 .group-item + .group-item {
-	margin-block-start: var(--validation-errors-line-gap, 4px);
+	margin-block-start: var(--validation-errors-line-gap, 0.25rem);
 }
 
 .group-item > .group-list {
-	margin-block-start: var(--validation-errors-line-gap, 4px);
+	margin-block-start: var(--validation-errors-line-gap, 0.25rem);
 }
 
 .group-prefix {

@@ -111,13 +111,13 @@ function isAppExtension(type?: ExtensionType) {
 					v-if="extension.meta.source === 'registry' && !extension.bundle"
 					v-tooltip="$t('open_in_marketplace')"
 					class="marketplace-link"
-					:to="`/settings/marketplace/extension/${extension.id}`"
+					:to="{ name: 'marketplace-extension', params: { extensionId: extension.id } }"
 				>
 					{{ name }}
 				</RouterLink>
 				<span v-else>{{ name }}</span>
 				{{ ' ' }}
-				<VChip v-if="version" class="version" small>
+				<VChip v-if="version" class="version" :label="false" small>
 					{{ version }}
 				</VChip>
 			</span>
@@ -127,7 +127,7 @@ function isAppExtension(type?: ExtensionType) {
 			<VProgressCircular indeterminate small />
 		</span>
 
-		<VChip v-if="type !== 'missing'" class="state" :class="state.value" small>
+		<VChip v-if="type !== 'missing'" class="state" :class="state.value" :label="false" small>
 			{{ state.text }}
 		</VChip>
 
@@ -160,7 +160,7 @@ function isAppExtension(type?: ExtensionType) {
 	}
 
 	.version {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 	}
 
 	&.disabled {
@@ -171,7 +171,7 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .spinner {
-	margin-inline-end: 8px;
+	margin-inline-end: 0.4375rem;
 }
 
 .state {
@@ -190,11 +190,11 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .options {
-	margin-inline-start: 12px;
+	margin-inline-start: 0.6875rem;
 }
 
 .nested {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 
 	&:not(.partial) .options {
 		display: none;

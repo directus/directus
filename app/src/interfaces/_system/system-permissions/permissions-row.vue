@@ -69,8 +69,8 @@ const emit = defineEmits<{
 
 	.name {
 		flex: 1;
-		inline-size: 1px;
-		padding: 0 12px;
+		inline-size: 0.0625rem;
+		padding: 0 0.6875rem;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -82,10 +82,10 @@ const emit = defineEmits<{
 		background: var(--theme--background);
 		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
-		font-size: 12px;
+		font-size: 0.6875rem;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
-		padding-inline-end: 12px;
+		padding-inline-end: 0.6875rem;
 		box-shadow:
 			-12px 0 10px 2px var(--theme--background),
 			-12px 0 12px 2px var(--theme--background);
@@ -105,7 +105,7 @@ const emit = defineEmits<{
 		}
 
 		.divider {
-			margin: 0 6px;
+			margin: 0 0.3125rem;
 		}
 	}
 
@@ -115,13 +115,13 @@ const emit = defineEmits<{
 	}
 
 	.action {
-		block-size: 48px;
-		padding-inline-start: 12px;
+		block-size: 2.6875rem;
+		padding-inline-start: 0.6875rem;
 		text-align: center;
 	}
 
 	.action + .action {
-		padding-inline-start: 4px;
+		padding-inline-start: 0.25rem;
 	}
 
 	.null {
@@ -129,7 +129,7 @@ const emit = defineEmits<{
 	}
 
 	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
-		margin-inline-start: 20px;
+		margin-inline-start: 1.125rem;
 	}
 
 	& + .permissions-row td {
@@ -137,10 +137,10 @@ const emit = defineEmits<{
 	}
 
 	.remove {
-		padding: 0 12px;
+		padding: 0 0.6875rem;
 
 		.v-icon {
-			--v-icon-size: 20px;
+			--v-icon-size: 1.125rem;
 			--v-icon-color: var(--theme--foreground-subdued);
 			&:hover {
 				--v-icon-color: var(--theme--foreground);

@@ -34,7 +34,7 @@ export type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 export type IsAny<T> = IfAny<T, true, never>;
 
 export type IsNullable<T, Y = true, N = never> = T | null extends T ? Y : N;
-export type IsDateTime<T, Y, N> = T extends 'datetime' ? Y : N;
+export type IsDateTime<T, Y, N> = T extends 'datetime' | 'date' | 'time' ? Y : N;
 export type IsNumber<T, Y, N> = T extends number ? Y : N;
 export type IsString<T, Y, N> = T extends string ? Y : N;
 

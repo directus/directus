@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Pri
+continue: Daŭrigi
 first_name: Pesona nomo
 last_name: Familia nomo
 identifier: Identigilo
@@ -270,6 +271,8 @@ related_collection: Rilata kolekto
 related_collections: Rilataj kolektoj
 translations_collection: Kolekto de tradukoj
 languages_collection: Kolekto de lingvoj
+translations_preview_collections: Kolektoj
+translations_preview_fields: Kampoj
 import_data_input_placeholder: CSV aŭ JSON...
 import_data_button: Komenci importi
 import_data_success: Datumoj sukcese importitaj de {filename}
@@ -610,6 +613,14 @@ adding_user: Aldoni uzanton
 unknown_user: Nekonata uzanto
 settings_data_model: Datummodelo
 settings_project: Agordoj
+licensing:
+  unlimited: Senlima
+  resolve_continue: Daŭrigi
+  resolve_section_flows: Fluoj
+  resolve_sso_admin_password: Pasvorto
+  entitlements:
+    collections: Kolektoj
+    flows: Fluoj
 settings_appearance: Aspekto
 settings_flows: Fluoj
 settings_presets: Legosignoj
@@ -1048,7 +1059,9 @@ interfaces:
     system-token: Ĵetono
     generate: Generi ĵetonon
     regenerate: Regeneri ĵetonon
+    regenerate_confirm_title: Regeneri ĵetonon
     remove_token: Forigi la ĵetonon
+    remove_confirm_title: Forigi la ĵetonon
   system-raw-editor:
     system-raw-editor: Kruda redaktilo
   header:
@@ -1288,3 +1301,5 @@ fonts:
   black: Nigra
   italic: Kursiva
   auto: Aŭtomata
+license_grace_key_modal:
+  optional: Nedeviga

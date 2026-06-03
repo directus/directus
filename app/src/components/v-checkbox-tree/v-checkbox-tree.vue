@@ -170,6 +170,6 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 
 <style scoped>
 .v-list {
-	--v-list-padding: 4px;
+	--v-list-padding: 0.25rem;
 }
 </style>

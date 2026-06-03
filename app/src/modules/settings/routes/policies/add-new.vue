@@ -24,7 +24,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 </script>
 
 <template>
-	<VDialog :model-value="isOpen" persistent @esc="router.push('/settings/policies')" @apply="save">
+	<VDialog :model-value="isOpen" persistent @esc="router.push({ name: 'settings-policies-collection' })" @apply="save">
 		<VCard>
 			<VCardTitle>
 				{{ $t('create_policy') }}
@@ -47,7 +47,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 				</div>
 			</VCardText>
 			<VCardActions>
-				<VButton to="/settings/policies" secondary>{{ $t('cancel') }}</VButton>
+				<VButton :to="{ name: 'settings-policies-collection' }" secondary>{{ $t('cancel') }}</VButton>
 				<VButton :disabled="name === null" :loading="saving" @click="save">{{ $t('save') }}</VButton>
 			</VCardActions>
 		</VCard>
@@ -56,11 +56,11 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 
 <style lang="scss" scoped>
 .form-grid {
-	--theme--form--column-gap: 12px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 0.6875rem;
+	--theme--form--row-gap: 1.375rem;
 
 	.type-label {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

@@ -244,13 +244,20 @@ function selectLog(index: number) {
 			class="unread-chip"
 			:active="unreadLogsChipVisible && unreadLogsCount > 0"
 			small
-			close
 			clickable
 			@click="scrollToBottom"
-			@close="unreadLogsChipVisible = false"
 		>
-			<VIcon name="arrow_downward" x-small />
+			<VIcon class="arrow" name="arrow_downward" x-small />
 			<span class="label">{{ $t('logs_unread_count', { count: n(unreadLogsCount) }) }}</span>
+
+			<button
+				type="button"
+				class="close-button"
+				:aria-label="$t('dismiss')"
+				@click.stop="unreadLogsChipVisible = false"
+			>
+				<VIcon class="close" name="close" x-small />
+			</button>
 		</VChip>
 	</div>
 </template>
@@ -262,14 +269,14 @@ function selectLog(index: number) {
 }
 
 .notice {
-	margin: 6px;
-	padding-inline-start: 6px;
+	margin: 0.3125rem;
+	padding-inline-start: 0.3125rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground-subdued);
 }
 
 .logs-display {
-	min-block-size: 200px;
+	min-block-size: 11.25rem;
 	block-size: 100%;
 	scroll-snap-type: y proximity;
 	align-content: end;
@@ -291,12 +298,12 @@ function selectLog(index: number) {
 	justify-content: space-between;
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground);
-	padding: 6px;
+	padding: 0.3125rem;
 	cursor: pointer;
 }
 
 .log-entry > span {
-	padding: 0 6px;
+	padding: 0 0.3125rem;
 }
 
 .message {
@@ -313,26 +320,46 @@ function selectLog(index: number) {
 .unread-logs {
 	position: relative;
 	inline-size: 100%;
-	inset-block-end: 60px;
+	inset-block-end: 3.375rem;
 	text-align: center;
 }
 
 .unread-chip {
 	--v-chip-color: var(--white);
+	--v-chip-color-hover: var(--v-chip-color);
 	--v-chip-background-color: var(--theme--primary);
-	--v-chip-close-color: var(--theme--primary);
+	--v-chip-background-color-hover: var(--theme--primary-accent);
 
 	cursor: pointer;
-	box-shadow: var(--sidebar-shadow);
+	box-shadow: -4px 0 7px -4px var(--shadow-color);
 
-	.v-icon {
-		margin-inline-end: 8px;
+	.arrow {
+		margin-inline-end: 0.4375rem;
 	}
 
 	.label {
 		font-weight: bold;
-		font-size: 12px;
+		font-size: 0.6875rem;
 		text-transform: uppercase;
+	}
+
+	.close-button {
+		position: relative;
+		inset-inline-end: -0.25rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 0.8125rem;
+		block-size: 0.8125rem;
+		margin-inline-start: 0.25rem;
+		padding: 0;
+		background-color: var(--theme--primary);
+		border: none;
+		border-radius: 0.5625rem;
+
+		&:hover {
+			background-color: var(--theme--primary-accent);
+		}
 	}
 }
 

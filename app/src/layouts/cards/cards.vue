@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useElementSize, useSync } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { inject, ref, Ref, watch } from 'vue';
+import { computed, inject, type Ref, ref, watch } from 'vue';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
 import VPagination from '@/components/v-pagination.vue';
@@ -30,7 +31,7 @@ const props = withDefaults(
 		totalPages: number;
 		page: number;
 		toPage: (newPage: number) => void;
-		getLinkForItem: (item: Record<string, any>) => string | undefined;
+		onClick: (payload: { item: Record<string, any>; event: MouseEvent | KeyboardEvent }) => void;
 		fieldsInCollection: Field[];
 		selectAll: () => void;
 		resetPresetAndRefresh: () => Promise<void>;
@@ -48,15 +49,28 @@ const props = withDefaults(
 		info?: Collection;
 		filterUser?: Filter;
 		search?: string;
+		hasPrependContent?: boolean;
+		extraSelection?: (number | string)[];
+		versionKey?: string | null;
 	}>(),
 	{
 		showSelect: 'multiple',
+		extraSelection: () => [],
 	},
 );
 
-const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
+const emit = defineEmits([
+	'update:selection',
+	'update:extraSelection',
+	'update:limit',
+	'update:size',
+	'update:sort',
+	'update:width',
+	'select-all',
+]);
 
 const selectionWritable = useSync(props, 'selection', emit);
+const extraSelectionWritable = useSync(props, 'extraSelection', emit);
 const limitWritable = useSync(props, 'limit', emit);
 const sizeWritable = useSync(props, 'size', emit);
 const sortWritable = useSync(props, 'sort', emit);
@@ -66,6 +80,8 @@ const mainElement = inject<Ref<Element | undefined>>('main-element');
 const layoutElement = ref<HTMLElement>();
 
 const { width: innerWidth } = useElementSize(layoutElement);
+
+const columnSize = computed(() => `${props.size * 2.25}rem`);
 
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
@@ -85,35 +101,43 @@ watch(
 watch(innerWidth, (value) => {
 	emit('update:width', value);
 });
+
+function onSelectAll() {
+	props.selectAll();
+	emit('select-all');
+}
 </script>
 
 <template>
-	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || (items.length > 0 && !error)">
+	<div ref="layoutElement" class="layout-cards">
+		<template v-if="loading || (items.length > 0 && !error) || hasPrependContent">
 			<CardsHeader
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
+				v-model:extra-selection="extraSelectionWritable"
 				v-model:sort="sortWritable"
+				class="header"
 				:fields="fieldsInCollection"
 				:show-select="showSelect"
-				@select-all="selectAll"
+				@select-all="onSelectAll"
 			/>
 
-			<VProgressCircular v-if="loading" indeterminate rounded />
+			<VProgressCircular v-if="loading && !hasPrependContent" indeterminate rounded />
 
-			<div v-else class="grid" :class="{ 'single-row': isSingleRow }">
+			<div v-if="!loading || hasPrependContent" class="grid" :class="{ 'single-row': isSingleRow }">
+				<slot name="prepend" />
 				<Card
 					v-for="item in items"
-					:key="item[primaryKeyField!.field]"
+					:key="versionKey && !isPublishedVersionKey(versionKey) ? item._versionId : item[primaryKeyField!.field]"
 					v-model="selectionWritable"
-					:item-key="primaryKeyField!.field"
+					:item-key="versionKey && !isPublishedVersionKey(versionKey) ? '_versionId' : primaryKeyField!.field"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
 					:item="item"
 					:select-mode="selectMode || (selection && selection.length > 0)"
-					:to="getLinkForItem(item)"
 					:readonly="readonly"
+					@click="onClick"
 				>
 					<template v-if="title" #title>
 						<RenderTemplate :collection="collection" :item="item" :template="title" />
@@ -156,10 +180,16 @@ watch(innerWidth, (value) => {
 	padding-block-start: 0;
 }
 
+.header {
+	margin-block-end: var(--content-padding);
+}
+
 .grid {
+	--size: v-bind(columnSize);
+
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--size), 1fr));
-	gap: 32px 24px;
+	gap: 1.8125rem 1.375rem;
 
 	&.single-row {
 		grid-template-columns: repeat(auto-fit, var(--size));
@@ -170,7 +200,7 @@ watch(innerWidth, (value) => {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding-block-start: 40px;
+	padding-block-start: 2.25rem;
 
 	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
@@ -180,12 +210,12 @@ watch(innerWidth, (value) => {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		inline-size: 240px;
+		inline-size: 13.5rem;
 		color: var(--theme--foreground-subdued);
 
 		span {
 			inline-size: auto;
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 
 		.v-select {

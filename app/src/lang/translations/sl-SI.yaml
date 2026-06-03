@@ -1,4 +1,5 @@
 ---
+continue: Nadaljuj
 first_name: Ime
 last_name: Priimek
 identifier: Identifikator
@@ -307,6 +308,7 @@ related_collection: Povezana zbirka
 related_collections: Povezane zbirke
 translations_collection: Zbirka prevodov
 languages_collection: Zbirka jezikov
+translations_preview_collections: Zbirke
 label_import: Uvoz
 format: Oblika
 last_page: Zadnja stran
@@ -423,7 +425,6 @@ no_collections: Ni zbirk
 create_collection: Ustvari zbirko
 no_collections_copy_admin: Ni zbirk. Pritisnite gumb spodaj, da usvarite prvo.
 no_collections_copy: Ni zbirk. Kontaktirajte administratorja.
-relationship_not_setup: Povezava ni pravilno nastavljenja
 display_template_not_setup: Oblika prikaza ni nastavljena
 collection_field_not_setup: Polje zbirke ni nastavljeno
 select_a_collection: Izberite zbirko
@@ -704,6 +705,14 @@ editing_in_batch: 'Masovno urejanje {count} zapisov'
 no_options_available: Ni opcij
 settings_data_model: Podatkovni model
 settings_project: Nastavitve
+licensing:
+  unlimited: Neomejeno
+  addon_update: Posodobi
+  resolve_continue: Nadaljuj
+  resolve_show_n_more: 'Pokaži še {count}'
+  resolve_sso_admin_password: Geslo
+  entitlements:
+    collections: Zbirke
 settings_presets: Zaznamki
 settings_translations: Prevodi
 one_or_more_options_are_missing: Manjka ena ali več opcij
@@ -1033,6 +1042,8 @@ interfaces:
     all_opened: Vse odprto
     accordion_mode: Način harmonike
     max_one_section_open: Največ ena odprta sekcija
+  group-tabs:
+    fill_width: Zapolni širino
   presentation-links:
     presentation-links: Gumbi
     style: Slog

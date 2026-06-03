@@ -26,13 +26,25 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 </script>
 
 <template>
-	<VListItem class="extension-list-item" block grow clickable :to="`/settings/marketplace/extension/${extension.id}`">
+	<VListItem
+		class="extension-list-item"
+		block
+		grow
+		clickable
+		:to="{ name: 'marketplace-extension', params: { extensionId: extension.id } }"
+	>
 		<div class="icon"><VIcon :name="icon" /></div>
 		<VListItemContent>
 			<div class="name">
 				{{ formatName(extension) }}
-				<VChip v-if="showType" outlined x-small class="chip">{{ chip }}</VChip>
-				<VChip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
+				<VChip v-if="showType" kind="primary" :label="false" x-small class="chip">{{ chip }}</VChip>
+				<VChip
+					v-if="extensionsStore.extensionIds.includes(extension.id)"
+					kind="primary"
+					:label="false"
+					x-small
+					class="chip"
+				>
 					{{ $t('installed') }}
 				</VChip>
 			</div>
@@ -64,7 +76,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 
 <style scoped>
 .extension-list-item {
-	--v-list-item-padding: 20px;
+	--v-list-item-padding: 1.125rem;
 }
 
 .icon-container {
@@ -72,16 +84,16 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 }
 
 .icon {
-	inline-size: 48px;
-	block-size: 48px;
-	border-radius: 24px;
+	inline-size: 2.6875rem;
+	block-size: 2.6875rem;
+	border-radius: 1.375rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background-color: var(--theme--primary);
 
 	--v-icon-color: var(--foreground-inverted);
-	margin-inline-end: 20px;
+	margin-inline-end: 1.125rem;
 }
 
 .name {
@@ -100,17 +112,14 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 }
 
 .meta {
-	margin-inline-start: 20px;
+	margin-inline-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: end;
 }
 
 .chip {
-	margin-inline-start: 4px;
-	vertical-align: 2px;
-
-	--v-chip-color: var(--theme--primary);
-	--v-chip-background-color: var(--theme--primary-subdued);
+	margin-inline-start: 0.25rem;
+	vertical-align: 0.125rem;
 }
 
 .license.known {

@@ -78,6 +78,7 @@ function onToggle(open: boolean) {
 <template>
 	<SidebarDetail
 		id="logs"
+		class="logs-detail"
 		:title
 		icon="fact_check"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : undefined"
@@ -100,7 +101,7 @@ function onToggle(open: boolean) {
 				v-for="group in revisionsByDate"
 				:key="group.dateFormatted"
 				:label="group.dateFormatted"
-				class="revisions-date-group"
+				class="logs-group"
 				start-open
 			>
 				<div class="scroll-container">
@@ -123,11 +124,11 @@ function onToggle(open: boolean) {
 
 <style lang="scss" scoped>
 .v-progress-linear {
-	margin: 24px 0;
+	margin: 1.375rem 0;
 }
 
 .v-detail + .v-detail {
-	margin-block-start: 12px;
+	margin-block-start: 0.6875rem;
 }
 
 .v-icon {
@@ -137,11 +138,17 @@ function onToggle(open: boolean) {
 .toggle-failed {
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
-	margin-block-end: 24px;
+	margin-block-end: 1.375rem;
+	display: flex;
+	align-items: center;
 
 	&.active,
 	&:hover {
 		color: var(--theme--foreground);
+	}
+
+	.v-icon {
+		margin-inline: 0.125rem 0.375rem;
 	}
 }
 
@@ -152,19 +159,20 @@ function onToggle(open: boolean) {
 	button {
 		position: relative;
 		z-index: 2;
-		display: block;
+		display: flex;
+		align-items: center;
 		inline-size: 100%;
 		text-align: start;
 	}
 
 	&::before {
 		position: absolute;
-		inset-block-start: -4px;
-		inset-inline-start: -4px;
+		inset-block-start: -0.25rem;
+		inset-inline-start: -0.25rem;
 		z-index: 1;
-		inline-size: calc(100% + 8px);
-		block-size: calc(100% + 8px);
-		background-color: var(--theme--background-accent);
+		inline-size: calc(100% + 0.4375rem);
+		block-size: calc(100% + 0.4375rem);
+		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -187,18 +195,22 @@ function onToggle(open: boolean) {
 	}
 
 	& + & {
-		margin-block-start: 8px;
+		margin-block-start: 0.4375rem;
+	}
+
+	.v-icon {
+		margin-inline: 0.125rem 0.375rem;
 	}
 }
 
 .empty {
-	margin-inline-start: 2px;
+	margin-inline-start: 0.125rem;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .v-pagination {
 	justify-content: center;
-	margin-block-start: 32px;
+	margin-block-start: 1.8125rem;
 }
 </style>

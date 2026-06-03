@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Về chúng tôi
+continue: Tiếp tục
 first_name: Tên
 last_name: Họ
 identifier: Định danh
@@ -383,6 +384,7 @@ related_collection: Danh mục liên quan
 related_collections: Những Danh mục liên quan
 translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
+translations_preview_collections: Danh mục
 import_data_input_placeholder: CSV hoặc JSON...
 import_data_button: Bắt đầu nhập
 import_data_indeterminate: Đang nhập dữ liệu...
@@ -522,7 +524,6 @@ no_collections: Chưa có Bảng nào
 create_collection: Tạo Danh mục mới
 no_collections_copy_admin: Bạn chưa có Bộ sưu tập nào. Bấm nút bên dưới để bắt đầu.
 no_collections_copy: Bạn chưa có Bộ sưu tập nào. Vui lòng liên hệ với quản trị viên hệ thống.
-relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 select_a_collection: Chọn Bảng
 select_a_field: Chọn một trường
 active: Kích hoạt
@@ -825,6 +826,14 @@ no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
 settings_roles: Vai trò người dùng
 settings_project: Cài đặt
+licensing:
+  unlimited: Không giới hạn
+  addon_update: Cập nhật
+  resolve_continue: Tiếp tục
+  resolve_show_n_more: 'Hiển thị thêm {count}'
+  resolve_sso_admin_password: Mật khẩu
+  entitlements:
+    collections: Danh mục
 settings_presets: Đánh dấu
 settings_translations: Các Bản Dịch
 one_or_more_options_are_missing: Một hoặc nhiều tùy chọn còn thiếu
@@ -1071,6 +1080,8 @@ interfaces:
     all: Tất cả
     any: Bất kỳ
     no_rules: Không có quy tắc nào được thiết lập
+  group-tabs:
+    fill_width: Rộng toàn bộ
   presentation-links:
     primary: Khóa chính
   select-multiple-checkbox:

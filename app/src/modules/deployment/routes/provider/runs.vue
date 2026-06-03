@@ -12,7 +12,6 @@ import DeploymentStatus from '../../components/deployment-status.vue';
 import DeploymentNavigation from '../../components/navigation.vue';
 import { useDeploymentNavigation } from '../../composables/use-deployment-navigation';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VInfo from '@/components/v-info.vue';
@@ -20,7 +19,6 @@ import VListItemContent from '@/components/v-list-item-content.vue';
 import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
-import VMenu from '@/components/v-menu.vue';
 import VPagination from '@/components/v-pagination.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
@@ -32,7 +30,7 @@ import { formatDurationMs } from '@/utils/format-duration-ms';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { PrivateView } from '@/views/private';
+import { PrivateView, PrivateViewHeaderBarActionButton } from '@/views/private';
 import SearchInput from '@/views/private/components/search-input.vue';
 
 type Run = DeploymentRunsOutput;
@@ -189,7 +187,10 @@ async function deploy(preview = false) {
 			triggerDeployment(props.provider, props.projectId, preview ? { preview: true } : undefined),
 		);
 
-		router.push(`/deployments/${props.provider}/${props.projectId}/runs/${result.id}`);
+		router.push({
+			name: 'deployments-provider-run',
+			params: { provider: props.provider, projectId: props.projectId, runId: result.id },
+		});
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -219,47 +220,35 @@ watch(statsRange, loadStats);
 
 <template>
 	<PrivateView :title="pageTitle" show-back :back-to="`/deployments/${provider}`">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t(`deployment.provider.${provider}.name`), to: `/deployments/${provider}` }]" />
-		</template>
-
 		<template #navigation>
 			<DeploymentNavigation />
 		</template>
 
 		<template #actions>
 			<SearchInput v-if="totalCount > 0 || search" v-model="search" :show-filter="false" small />
+		</template>
 
-			<VButton
-				:tooltip="$t('deployment.deploy')"
-				rounded
-				icon
-				small
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton
+				:label="$t('deployment.deploy')"
+				icon="rocket_launch"
 				:loading="deploying"
 				:disabled="!canDeploy"
 				@click="deploy()"
 			>
-				<VIcon name="rocket_launch" small />
-
-				<template #append-outer>
-					<VMenu show-arrow>
-						<template #activator="{ toggle }">
-							<VIcon class="more-options" name="more_vert" clickable @click="toggle" />
-						</template>
-
-						<VList>
-							<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
-								<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
-							</VListItem>
-							<VListItem clickable @click="refresh">
-								<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
-								<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
-							</VListItem>
-						</VList>
-					</VMenu>
+				<template #split-menu>
+					<VList>
+						<VListItem clickable :disabled="deploying || !canDeploy" @click="deploy(true)">
+							<VListItemIcon><VIcon name="rocket_launch" /></VListItemIcon>
+							<VListItemContent>{{ $t('deployment.provider.runs.deploy_preview') }}</VListItemContent>
+						</VListItem>
+						<VListItem clickable @click="refresh">
+							<VListItemIcon><VIcon name="refresh" /></VListItemIcon>
+							<VListItemContent>{{ $t('deployment.provider.runs.refresh') }}</VListItemContent>
+						</VListItem>
+					</VList>
 				</template>
-			</VButton>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<VProgressCircular v-if="loading" class="spinner" indeterminate />
@@ -322,7 +311,10 @@ watch(statsRange, loadStats);
 					show-resize
 					fixed-header
 					item-key="id"
-					@click:row="({ item }) => $router.push(`/deployments/${provider}/${projectId}/runs/${item.id}`)"
+					@click:row="
+						({ item }) =>
+							$router.push({ name: 'deployments-provider-run', params: { provider, projectId, runId: item.id } })
+					"
 				>
 					<template #[`item.name`]="{ item }">
 						<span class="run-name">{{ item.name || item.external_id }}</span>
@@ -358,6 +350,8 @@ watch(statsRange, loadStats);
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .container {
 	padding: var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
@@ -365,24 +359,24 @@ watch(statsRange, loadStats);
 
 .range-select {
 	display: block;
-	margin-block-end: 16px;
+	margin-block-end: 0.875rem;
 }
 
 .stats-bar {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: 16px;
-	margin-block-end: 16px;
+	gap: 0.875rem;
+	margin-block-end: 0.875rem;
 
-	@media (max-width: 1512px) {
+	@media (width < 85.0625rem) {
 		grid-template-columns: repeat(3, 1fr);
 	}
 
-	@media (max-width: 1024px) {
+	@include mixins.breakpoint-down('lg') {
 		grid-template-columns: repeat(2, 1fr);
 	}
 
-	@media (max-width: 768px) {
+	@media (width < 43.1875rem) {
 		grid-template-columns: 1fr;
 	}
 }
@@ -390,8 +384,8 @@ watch(statsRange, loadStats);
 .stat-card {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 6px 10px;
+	gap: 0.4375rem;
+	padding: 0.3125rem 0.5625rem;
 	background-color: var(--theme--background-subdued);
 	border-radius: var(--theme--border-radius);
 	overflow: hidden;
@@ -421,12 +415,12 @@ watch(statsRange, loadStats);
 }
 
 .spinner {
-	margin: 120px auto;
+	margin: 6.75rem auto;
 }
 
 .run-name {
 	font-family: var(--theme--fonts--monospace--font-family);
-	font-size: 13px;
+	font-size: 0.75rem;
 }
 
 :deep(.v-table .table-row) {
@@ -436,16 +430,6 @@ watch(statsRange, loadStats);
 .pagination {
 	display: flex;
 	justify-content: center;
-	margin-block-start: 24px;
-}
-
-.more-options.v-icon {
-	--focus-ring-offset: var(--focus-ring-offset-invert);
-
-	color: var(--theme--foreground-subdued);
-
-	&:hover {
-		color: var(--theme--foreground);
-	}
+	margin-block-start: 1.375rem;
 }
 </style>

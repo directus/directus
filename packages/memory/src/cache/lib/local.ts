@@ -1,4 +1,5 @@
 import { createKv, type Kv } from '../../kv/index.js';
+import type { Lock } from '../../kv/types/lock.js';
 import type { Cache } from '../types/class.js';
 import type { CacheConfigLocal } from '../types/config.js';
 
@@ -9,19 +10,19 @@ export class CacheLocal implements Cache {
 		this.store = createKv({ type: 'local', ...config });
 	}
 
-	async get<T = unknown>(key: string) {
+	async get<T = unknown>(key: string): Promise<T | undefined> {
 		return await this.store.get<T>(key);
 	}
 
-	async set(key: string, value: unknown) {
+	async set(key: string, value: unknown): Promise<void> {
 		return await this.store.set(key, value);
 	}
 
-	async delete(key: string) {
+	async delete(key: string): Promise<void> {
 		await this.store.delete(key);
 	}
 
-	async has(key: string) {
+	async has(key: string): Promise<boolean> {
 		return await this.store.has(key);
 	}
 
@@ -29,7 +30,7 @@ export class CacheLocal implements Cache {
 		await this.store.clear();
 	}
 
-	async acquireLock(key: string) {
+	async acquireLock(key: string): Promise<Lock> {
 		return await this.store.acquireLock(key);
 	}
 

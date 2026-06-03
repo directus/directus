@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Despre
+continue: Continuă
 first_name: Prenume
 last_name: Nume
 identifier: Identificator
@@ -145,14 +146,12 @@ keep: Păstrează
 version: Versiune
 version_key: Cheie de versiune
 version_name: Nume Versiune
-main_version: Principal
 switch_version: Schimbă versiunea
 switch_version_copy: Ești sigur că vrei să treci la versiunea “{version}”? Modificările nesalvate vor fi pierdute.
 create_version: Creați versiune
 rename_version: Redenumiți versiunea
 compare_version: Comparați versiunile
 save_version: Salvează versiunea
-promote_version: Promovați versiunea
 delete_version: Ștergeți versiunea
 delete_version_copy: >-
   Ești sigur că vrei să ștergi versiunea "{version}"? Această acțiune nu poate fi anulată.
@@ -409,6 +408,8 @@ related_collection: Colecție conexă
 related_collections: Colecții conexe
 translations_collection: Colecție de traduceri
 languages_collection: Colecție de limbi
+translations_preview_collections: Colecții
+translations_preview_fields: Câmpuri
 import_data_input_placeholder: CSV sau JSON...
 import_data_button: Începe importul
 import_data_indeterminate: Se importă datele...
@@ -551,7 +552,6 @@ no_collections: Nicio colecție
 create_collection: Creează Colecție
 no_collections_copy_admin: Încă nu aveți nicio colecție. Click pe butonul de mai jos pentru a începe.
 no_collections_copy: Încă nu aveți nicio colecție. Vă rugăm să contactați administratorul de sistem.
-relationship_not_setup: Relația nu a fost configurată corect
 display_template_not_setup: Opțiunea de afișare a șablonului este configurată greșit
 collection_field_not_setup: Opțiunea câmpului de colecții este configurată greșit
 select_a_collection: Selectează o colecție
@@ -895,6 +895,14 @@ editing_in_batch: 'Editare lot de {count} elemente'
 no_options_available: Nicio opțiune disponibilă
 settings_data_model: Model de date
 settings_project: Setări
+licensing:
+  unlimited: Nelimitat
+  addon_update: Actualizare
+  resolve_continue: Continuă
+  resolve_show_n_more: 'Arată încă {count}'
+  resolve_sso_admin_password: Parolă
+  entitlements:
+    collections: Colecții
 settings_presets: Semne de carte
 settings_translations: Traduceri
 one_or_more_options_are_missing: Una sau mai multe opțiuni lipsesc
@@ -1347,6 +1355,8 @@ interfaces:
     all_opened: Toate deschise
     accordion_mode: Mod acordeon
     max_one_section_open: Cel mult o secțiune deschisă
+  group-tabs:
+    fill_width: Umple lățimea
   presentation-links:
     presentation-links: Butoane
     style: Stil
@@ -1836,4 +1846,6 @@ fonts:
   black: Negru
   italic: Cursiv
   auto: Automat
+license_grace_key_modal:
+  optional: Opţional
 set_to_now: Setează acum

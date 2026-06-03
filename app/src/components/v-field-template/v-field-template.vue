@@ -310,17 +310,18 @@ function setContent() {
 
 <style scoped lang="scss">
 .content {
+	--focus-ring-offset: 0;
+
 	display: block;
 	flex-grow: 1;
-	block-size: 100%;
-	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
-	font-size: 14px;
+	padding-block: calc(2 * var(--focus-ring-width)); /* leave vertical space for focus ring */
+	font-size: 0.8125rem;
 	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
 
 	:deep(span) {
-		min-inline-size: 1px;
+		min-inline-size: 0.0625rem;
 		min-block-size: 1em;
 		white-space: pre;
 	}
@@ -330,8 +331,8 @@ function setContent() {
 	}
 
 	:deep(.selected-field) {
-		margin: -1px 4px 0;
-		padding: 2px 4px 0;
+		margin: -0.0625rem 0.25rem 0;
+		padding: 0.125rem 0.25rem 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
@@ -348,7 +349,7 @@ function setContent() {
 .placeholder {
 	position: absolute;
 	inset-block-start: 50%;
-	inset-inline-start: 14px;
+	inset-inline-start: 0.8125rem;
 	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);
 	-webkit-user-select: none;

@@ -5,8 +5,8 @@
 		content: '';
 		position: absolute;
 		inset-block: 0;
-		inset-inline-start: -12px;
-		inline-size: 4px;
+		inset-inline-start: -0.6875rem;
+		inline-size: 0.25rem;
 		z-index: 1;
 
 		@if $type == 'muted' {

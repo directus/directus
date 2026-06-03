@@ -70,6 +70,6 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 
 <style scoped>
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 </style>

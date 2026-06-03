@@ -1,5 +1,5 @@
 // https://cloudinary.com/documentation/image_transformations#supported_image_formats
-export const IMAGE_EXTENSIONS = [
+export const IMAGE_EXTENSIONS: string[] = [
 	'.ai',
 	'.avif',
 	'.png',
@@ -45,7 +45,7 @@ export const IMAGE_EXTENSIONS = [
 ];
 
 // https://cloudinary.com/documentation/video_manipulation_and_delivery#supported_video_formats
-export const VIDEO_EXTENSIONS = [
+export const VIDEO_EXTENSIONS: string[] = [
 	'.3g2',
 	'.3gp',
 	'.avi',

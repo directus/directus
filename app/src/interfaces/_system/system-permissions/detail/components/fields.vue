@@ -165,7 +165,7 @@ function useExpandCollapseAll() {
 
 <style lang="scss" scoped>
 .v-notice {
-	margin-block-end: 36px;
+	margin-block-end: 2rem;
 }
 
 .label-wrapper {
@@ -175,7 +175,7 @@ function useExpandCollapseAll() {
 }
 
 .type-label {
-	margin-block-end: 8px;
+	margin-block-end: 0.4375rem;
 }
 
 .expand-collapse-action {
@@ -193,7 +193,7 @@ function useExpandCollapseAll() {
 }
 
 .permissions-field-tree {
-	--v-list-padding: 20px 4px;
+	--v-list-padding: 1.125rem 0.25rem;
 
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

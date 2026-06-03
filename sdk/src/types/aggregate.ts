@@ -1,4 +1,11 @@
-import type { ArrayFunctions, DateTimeFunctions, MappedFieldNames, MappedFunctionFields } from './functions.js';
+import type {
+	ArrayFunctions,
+	DateFunctions,
+	DateTimeFunctions,
+	MappedFieldNames,
+	MappedFunctionFields,
+	TimeFunctions,
+} from './functions.js';
 import type { AllCollections, GetCollection, LiteralFields, Query, RelationalFields, UnpackList } from './index.js';
 
 export type GroupingFunctions = {
@@ -57,6 +64,8 @@ export type AggregateRecord<Fields = string> = {
  */
 export type GroupByFields<Schema, Item> =
 	| WrappedFields<LiteralFields<Item, 'datetime'>, DateTimeFunctions>
+	| WrappedFields<LiteralFields<Item, 'date'>, DateFunctions>
+	| WrappedFields<LiteralFields<Item, 'time'>, TimeFunctions>
 	| WrappedFields<RelationalFields<Schema, Item>, ArrayFunctions>;
 
 /**

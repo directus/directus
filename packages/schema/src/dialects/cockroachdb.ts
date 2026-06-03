@@ -10,7 +10,7 @@ import { stripQuotes } from '../utils/strip-quotes.js';
  * Converts CockroachDB default value to JS
  * Eg `'example'::character varying` => `example`
  */
-export function parseDefaultValue(value: string | null) {
+export function parseDefaultValue(value: string | null): string | null {
 	if (value === null) return null;
 	if (value.startsWith('nextval(')) return value;
 
@@ -76,7 +76,7 @@ export default class CockroachDB implements SchemaInspector {
 	/**
 	 * Set the schema to be used in other methods
 	 */
-	withSchema(schema: string) {
+	withSchema(schema: string): this {
 		this.schema = schema;
 		this.explodedSchema = [this.schema];
 		return this;

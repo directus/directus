@@ -58,12 +58,14 @@ const sizeClass = computed<string | null>(() => {
 });
 
 const customIconName = computed(() => {
+	if (!props.name) return null;
 	const name = `CustomIcon${upperFirst(camelCase(props.name.replace(/_/g, '-')))}`;
 	if (name in components) return components[name];
 	return null;
 });
 
 const socialIconName = computed<IconName | null>(() => {
+	if (!props.name) return null;
 	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-') as IconName;
 	return null;
 });
@@ -88,7 +90,7 @@ function emitClick(event: MouseEvent) {
 	>
 		<component :is="customIconName" v-if="customIconName" class="custom-icon-svg" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
-		<i v-else :class="{ filled }" :data-icon="name"></i>
+		<i v-else-if="name" :class="{ filled }" :data-icon="name"></i>
 	</component>
 </template>
 
@@ -99,16 +101,16 @@ function emitClick(event: MouseEvent) {
 
 		--v-icon-color        [currentColor]
 		--v-icon-color-hover  [currentColor]
-		--v-icon-size         [24px]
+		--v-icon-size         [var(--icon-size-default)]
 
 */
 
 .v-icon {
 	position: relative;
 	display: inline-block;
-	inline-size: var(--v-icon-size, 24px);
-	min-inline-size: var(--v-icon-size, 24px);
-	block-size: var(--v-icon-size, 24px);
+	inline-size: var(--v-icon-size, var(--icon-size-default));
+	min-inline-size: var(--v-icon-size, var(--icon-size-default));
+	block-size: var(--v-icon-size, var(--icon-size-default));
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -117,7 +119,7 @@ function emitClick(event: MouseEvent) {
 		display: block;
 		font-family: 'Material Symbols';
 		font-weight: normal;
-		font-size: var(--v-icon-size, 24px);
+		font-size: var(--v-icon-size, var(--icon-size-default));
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;
@@ -172,40 +174,40 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.sup {
-		--v-icon-size: 8px;
+		--v-icon-size: 0.4375rem;
 
-		vertical-align: 5px;
+		vertical-align: 0.3125rem;
 	}
 
 	&.x-small {
-		--v-icon-size: 12px;
+		--v-icon-size: 0.6875rem;
 	}
 
 	&.small {
-		--v-icon-size: 18px;
+		--v-icon-size: 1rem;
 	}
 
 	&.large {
-		--v-icon-size: 36px;
+		--v-icon-size: 2rem;
 	}
 
 	&.x-large {
-		--v-icon-size: 48px;
+		--v-icon-size: 2.6875rem;
 	}
 
 	&.left {
-		margin-inline-end: 8px;
+		margin-inline-end: 0.4375rem;
 
 		&.small {
-			margin-inline-end: 4px;
+			margin-inline-end: 0.25rem;
 		}
 	}
 
 	&.right {
-		margin-inline-start: 6px;
+		margin-inline-start: 0.3125rem;
 
 		&.small {
-			margin-inline-start: 4px;
+			margin-inline-start: 0.25rem;
 		}
 	}
 

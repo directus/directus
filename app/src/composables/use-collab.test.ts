@@ -1,5 +1,5 @@
 import { ErrorCode } from '@directus/errors';
-import { ACTION } from '@directus/types/collab';
+import { ACTION } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { nextTick, ref, type Ref } from 'vue';
 import { useCollab } from './use-collab';
@@ -761,7 +761,11 @@ describe('useCollab', () => {
 		});
 
 		expect(mockNotificationsStore.add).toHaveBeenCalledWith(expect.objectContaining({ title: 'item_deleted' }));
-		expect(mockRouter.push).toHaveBeenCalledWith('/content/test_collection');
+
+		expect(mockRouter.push).toHaveBeenCalledWith({
+			name: 'content-collection',
+			params: { collection: 'test_collection' },
+		});
 	});
 
 	test('handles INIT and populates users', async () => {

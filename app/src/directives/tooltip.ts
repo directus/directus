@@ -2,7 +2,18 @@ import { nanoid } from 'nanoid';
 import { Directive, DirectiveBinding } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-const tooltipDelay = 500;
+const DELAYS = {
+	tooltip: 500,
+	tooltipDisabled: 125,
+};
+
+export function isDisabled(element: HTMLElement): boolean {
+	return (
+		element.hasAttribute('disabled') ||
+		element.getAttribute('aria-disabled') === 'true' ||
+		element.querySelector(':scope > :disabled, :scope > [aria-disabled="true"]') !== null
+	);
+}
 
 const handlers: Record<string, () => void> = {};
 
@@ -53,10 +64,13 @@ export function createEnterHandler(element: HTMLElement, binding: DirectiveBindi
 		} else {
 			clearTimeout(tooltipTimer);
 
-			tooltipTimer = window.setTimeout(() => {
-				animateIn(tooltip);
-				updateTooltip(element, binding, tooltip);
-			}, tooltipDelay);
+			tooltipTimer = window.setTimeout(
+				() => {
+					animateIn(tooltip);
+					updateTooltip(element, binding, tooltip);
+				},
+				isDisabled(element) ? DELAYS.tooltipDisabled : DELAYS.tooltip,
+			);
 		}
 	};
 }

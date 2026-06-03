@@ -20,9 +20,9 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Directus の概要
-directus_bsl: Directus BSL 1.1
+directus_mscl: Directus MSCL 1.0
 privacy_policy: プライバシーポリシー 
-contact_our_team: チームへのお問い合わせ  
+contact_our_team: チームへのお問い合わせ
 setup_welcome: ようこそ Directus へ
 setup_info: 管理者アカウントを作成して、プロジェクトを開始しましょう。
 setup_license_notice: >
@@ -30,8 +30,8 @@ setup_license_notice: >
 setup_license_follow_up: >
   この上限を超える場合は有料ライセンスが必要です。評価を続けることもできますが、商用利用のご相談は {contactOurTeam} までお願いします。
 setup_save_accept_license: >
-  保存することで、{directusBsl} および {privacyPolicy} に同意したものとみなされます。
-setup_accept_license: '{directusBsl} および {privacyPolicy} に同意します'
+  保存することで、{directusMscl} および {privacyPolicy} に同意したものとみなされます。
+setup_accept_license: '{directusMscl} および {privacyPolicy} に同意します'
 setup_marketing_emails: 製品の更新やリリースノートをメールで受け取る
 setup_launch: Directus を起動
 setup_project: プロジェクトの設定
@@ -201,22 +201,17 @@ keep: 保持
 version: Version
 version_key: バージョンキー
 version_name: バージョン名
-main_version: メイン
 switch_version: バージョンを切り替える
 switch_version_copy: バージョン {version} に切り替えますか ? 保存されていない変更は失われます。
 create_version: バージョンを作成
 rename_version: バージョン名を変更
 compare_version: バージョンを比較
 save_version: バージョンを保存
-promote_version: バージョンを反映
 apply: 適用
 select_all_differences: すべての差異を選択
-main_updated_notice: このバージョンが作成された後、メインアイテムが更新されました。
 delete_version: バージョンを削除
 delete_version_copy: >-
   バージョン {version} を削除してもよろしいですか ? この操作は元に戻せません。
-delete_on_apply_copy: >-
-  {version} をメインに反映しようとしています。反映後の {version} の処理を選択してください。
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
@@ -525,6 +520,8 @@ related_collection: 関連するコレクション
 related_collections: 関連するコレクション
 translations_collection: 翻訳コレクション
 languages_collection: 言語コレクション
+translations_preview_collections: コレクション
+translations_preview_relations: リレーション
 import_data_input_placeholder: CSV または JSON
 import_data_button: インポートを開始
 import_data_indeterminate: データをインポート中...
@@ -664,7 +661,6 @@ manual_string: 値を手動で入力する
 save_and_create_new: 保存して新規作成
 save_and_stay: 保存してページに留まる
 save_and_quit: 保存して終了
-save_and_return_to_main: 保存してメインに戻る
 save_as_copy: 複製として保存
 add_existing: 既存を追加
 creating_items: アイテムの作成
@@ -712,7 +708,6 @@ no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
 no_collections_copy: コレクションはまだありません。システム管理者にお問い合わせ下さい。
-relationship_not_setup: リレーションシップが正しく設定されていません
 no_singleton_relations: シングルトンへのリレーションシップはサポートされていません
 display_template_not_setup: 表示テンプレートのオプションが間違っています
 collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
@@ -1204,6 +1199,16 @@ settings_data_model: データモデル
 settings_roles: ユーザー権限グループ
 settings_permissions: アクセスポリシー
 settings_project: 設定
+licensing:
+  unlimited: 無制限
+  addon_manage: 管理
+  addon_update: 更新
+  resolve_section_flows: フロー
+  resolve_sso_admin_email: メールアドレス
+  resolve_sso_admin_password: パスワード
+  entitlements:
+    collections: コレクション
+    flows: フロー
 settings_appearance: 外観
 settings_ai: AI
 model_context_protocol: Model Context Protocol
@@ -1827,6 +1832,8 @@ interfaces:
     no_rules: 設定済みのルールはありません
   group-accordion:
     start: 開始
+  group-tabs:
+    fill_width: 幅埋め
   presentation-links:
     primary: プライマリー
   input-code:
@@ -2245,12 +2252,14 @@ search_flow: フローを検索 ...
 percent: パーセント
 show_password: パスワードを表示にする
 hide_password: パスワードを非表示にする
-bsl_banner:
+license_banner:
   title: プロジェクトの所有者が設定されていません。
-  license: これは BSL 1.1 ライセンスを遵守するために必要です。プロジェクトに責任を持つ主な担当者を設定してください。
+  license: これは MSCL 1.0 ライセンスを遵守するために必要です。プロジェクトに責任を持つ主な担当者を設定してください。
   set_owner: 所有者を設定
   remind_later: 後で通知
   remind_next_login: 次回のログイン時に再度通知します。
+license_grace_key_modal:
+  optional: オプション
 accepted: 承認済み
 text_direction_auto: 自動 (言語に合わせる)
 text_direction_ltr: 左書き (LTR)

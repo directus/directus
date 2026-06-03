@@ -33,8 +33,9 @@ import { getSchema } from '../../utils/get-schema.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
+import { checkSsoEnabled } from '../utils/check-sso-enabled.js';
 import { generateCallbackUrl } from '../utils/generate-callback-url.js';
-import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
+import { resolveLoginRedirect } from '../utils/resolve-login-redirect.js';
 import { LocalAuthDriver } from './local.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
@@ -351,6 +352,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 	const router = Router();
 	const env = useEnv();
 
+	router.use(checkSsoEnabled);
+
 	router.get(
 		'/',
 		(req, res) => {
@@ -358,9 +361,12 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
 			const otp = req.query['otp'];
-			const redirect = req.query['redirect'];
+			let redirect = req.query['redirect'];
 
-			if (!isLoginRedirectAllowed(providerName, redirect)) {
+			try {
+				redirect = resolveLoginRedirect(redirect, { provider: providerName });
+			} catch (e) {
+				useLogger().error(e);
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
@@ -384,6 +390,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			res.cookie(`oauth2.${providerName}`, token, {
 				httpOnly: true,
 				sameSite: 'lax',
+				secure: Boolean(env[`AUTH_${providerName.toUpperCase()}_COOKIE_SECURE`]),
 			});
 
 			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
@@ -484,7 +491,11 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 				if (claims?.enforce_tfa === true) {
 					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
-					if (redirect) url.setQuery('redirect', redirect);
+
+					if (redirect) {
+						url.setQuery('redirect', redirect);
+						url.setQuery('provider', providerName);
+					}
 
 					redirect = url.toString();
 				}

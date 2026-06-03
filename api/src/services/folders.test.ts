@@ -20,7 +20,7 @@ describe('FoldersService', () => {
 		relations: [],
 	} as SchemaOverview;
 
-	const foldersService = new FoldersService({
+	let foldersService = new FoldersService({
 		schema: mockSchema,
 	});
 
@@ -131,8 +131,12 @@ describe('FoldersService', () => {
 
 		describe('permissions', () => {
 			test('throws error when user lacks access to root', async () => {
-				const accountability = { admin: false, user: 'user-123' };
-				ItemsService.prototype.accountability = { admin: false, user: 'user-123' } as Accountability;
+				const accountability = { admin: false, user: 'user-123' } as Accountability;
+
+				foldersService = new FoldersService({
+					schema: mockSchema,
+					accountability,
+				});
 
 				vi.mocked(validateAccess).mockRejectedValue(new ForbiddenError());
 
@@ -145,10 +149,7 @@ describe('FoldersService', () => {
 						action: 'read',
 						primaryKeys: ['root-1'],
 					},
-					{
-						knex: ItemsService.prototype.knex,
-						schema: ItemsService.prototype.schema,
-					},
+					expect.any(Object),
 				);
 			});
 
@@ -179,7 +180,12 @@ describe('FoldersService', () => {
 			});
 
 			test('skips validation for admin users', async () => {
-				ItemsService.prototype.accountability = { admin: true, user: 'user-123' } as Accountability;
+				const accountability = { admin: true, user: 'user-123' } as Accountability;
+
+				foldersService = new FoldersService({
+					schema: mockSchema,
+					accountability,
+				});
 
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 					{ id: 'root-id', name: 'parent', parent: null },
@@ -191,7 +197,9 @@ describe('FoldersService', () => {
 			});
 
 			test('skips validation for admin users (null)', async () => {
-				ItemsService.prototype.accountability = null;
+				foldersService = new FoldersService({
+					schema: mockSchema,
+				});
 
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
 					{ id: 'root-id', name: 'parent', parent: null },

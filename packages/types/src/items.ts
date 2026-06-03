@@ -28,6 +28,7 @@ export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
 	emitEvents?: boolean;
+	key?: PrimaryKey | null;
 };
 
 export type DefaultOverwrite = {
@@ -91,7 +92,7 @@ export type MutationOptions = {
 	/*
 	 * The validation error to throw right before the mutation takes place
 	 */
-	preMutationError?: DirectusError | undefined;
+	preMutationError?: DirectusError<unknown> | undefined;
 
 	bypassAutoIncrementSequenceReset?: boolean;
 

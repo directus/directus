@@ -20,7 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rólunk
-directus_bsl: Directus BSL 1.1
+directus_mscl: Directus MSCL 1.0
 privacy_policy: Adatvédelmi irányelvek
 contact_our_team: Lépjen kapcsolatba velünk
 setup_welcome: Üdvözöljük a Directusnál
@@ -30,11 +30,12 @@ setup_license_notice: >
 setup_license_follow_up: >
   A küszöbértéket meghaladó cégek kötelesek licencet vásárolni. Folytassa bátran a Directus tesztelését; és amint készen áll a bevezetésre, lépjen kapcsolatba {contactOurTeam}-mel.
 setup_save_accept_license: >
-  A mentés gombra kattintva elfogadja a {directusBsl} és a {privacyPolicy} feltételeit.
-setup_accept_license: Elfogadom a {directusBsl} és a {privacyPolicy} feltételeit.
+  A mentés gombra kattintva elfogadja a {directusMscl} és a {privacyPolicy} feltételeit.
+setup_accept_license: Elfogadom a {directusMscl} és a {privacyPolicy} feltételeit.
 setup_marketing_emails: Küldjenek részemre információkat a termék frissítéséről és az új verziók módosításairól
 setup_launch: Directus indítása
 setup_project: Projekt beállítása
+continue: Folytatás
 first_name: Keresztnév
 last_name: Vezetéknév
 admin_email: Adminisztrátor e-mail címe
@@ -197,22 +198,17 @@ keep: Megtart
 version: Verzió
 version_key: Verzió kulcs
 version_name: Verzió név
-main_version: Fő
 switch_version: Verzióváltás
 switch_version_copy: Biztosan át szeretne váltani a(z) „{version}” verzióra? A nem mentett módosítások elvesznek.
 create_version: Verzió készítés
 rename_version: Verzió átnevezés
 compare_version: Verzió összehasonlítás
 save_version: Verzió mentés
-promote_version: Verzió előléptetés
 apply: Alkalmaz
 select_all_differences: Összes különbség kijelölése
-main_updated_notice: A fő elem megváltozott a jelenlegi verzió létrehozása óta.
 delete_version: Verzió törlése
 delete_version_copy: >-
   Biztosan törölni szeretné a(z) „{version}” verziót? Ez a művelet nem vonható vissza.
-delete_on_apply_copy: >-
-  A(z) „{version}” verziót készül előléptetni a fő verzióra. Mi történjen a(z) „{version}” verzióval az előléptetés után?
 reset_bookmark: Könyvjelző visszaállítása
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
@@ -511,6 +507,8 @@ related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
+translations_preview_collections: Gyűjtemények
+translations_preview_fields: Mezők
 import_data_input_placeholder: CSV vagy JSON...
 import_data_button: Importálás indítása
 import_data_indeterminate: Adatok importálása...
@@ -657,7 +655,6 @@ no_collections: Nincsenek gyűjtemények
 create_collection: Gyűjtemény létrehozása
 no_collections_copy_admin: Még nem hoztál létre gyűjteményt. Kattints az alábbi gombra a kezdéshez.
 no_collections_copy: Ön még nem rendelkezik Gyűjteményekkel. Lépjen kapcsolatba a rendszeradminisztrátorral!
-relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
 display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
 collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
 select_a_collection: Gyűjtemény kiválasztása
@@ -1074,6 +1071,18 @@ editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adatmodell
 settings_project: Beállítások
+licensing:
+  unlimited: Korlátlan
+  addon_manage: Kezelés
+  addon_update: Frissítés
+  resolve_continue: Folytatás
+  resolve_show_n_more: 'További {count} mutatása'
+  resolve_section_flows: Folyamatok
+  resolve_sso_admin_email: E-mail cím
+  resolve_sso_admin_password: Jelszó
+  entitlements:
+    collections: Gyűjtemények
+    flows: Folyamatok
 settings_flows: Folyamatok
 settings_presets: Könyvjelzők
 settings_translations: Fordítások
@@ -1550,6 +1559,8 @@ interfaces:
     all_opened: Mind nyitva
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
+  group-tabs:
+    fill_width: Teret kitöltő
   presentation-links:
     presentation-links: Gombok
     style: Stílus
@@ -1851,8 +1862,9 @@ interfaces:
     value_securely_saved: Érték biztonságosan mentve
     generate: Token generálása
     regenerate: Token újragenerálása
-    generate_success_copy: Készítsen biztonsági másolatot a fenti tokenről. Biztonsági okokból nem tudja újra megnézni a tokent az oldal elhagyása után.
+    regenerate_confirm_title: Token újragenerálása
     remove_token: Token eltávolítása
+    remove_confirm_title: Token eltávolítása
   system-raw-editor:
     system-raw-editor: Nyers szerkesztő
     description: Lehetővé teszi a nyers vagy kapcsos zárójeles sablonértékek megadását
@@ -2253,4 +2265,6 @@ fonts:
   black: Fekete
   italic: Dőlt
   auto: Automatikus
+license_grace_key_modal:
+  optional: Opcionális
 set_to_now: Mai nap

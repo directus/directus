@@ -28,6 +28,6 @@ defineProps<{
 
 <style lang="scss" scoped>
 .add-margin-block-start {
-	margin-block-start: 40px;
+	margin-block-start: 2.25rem;
 }
 </style>

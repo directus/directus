@@ -1,7 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
-import { type WebSocketClient, WS_TYPE } from '@directus/types';
-import { ClientMessage } from '@directus/types/collab';
+import { ClientMessage, type WebSocketClient, WS_TYPE } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { difference, intersection, isEmpty, upperFirst } from 'lodash-es';
 import getDatabase from '../../database/index.js';

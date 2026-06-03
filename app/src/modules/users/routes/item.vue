@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
+import { useShortcut } from '@directus/composables';
+import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import type { User } from '@directus/types';
 import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -7,7 +9,6 @@ import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { logout } from '@/auth';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -22,9 +23,9 @@ import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -34,6 +35,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -51,10 +53,27 @@ const fieldsStore = useFieldsStore();
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
+const seatsLimitModalOpen = ref(false);
+
+async function saveAsInactive() {
+	edits.value = { ...edits.value, status: USER_INACTIVE_LICENSE_STATUS };
+
+	try {
+		const savedItem = await save();
+
+		if (savedItem) {
+			await setLang(savedItem);
+			await refreshCurrentUser();
+			licenseStore.hydrate();
+			router.push({ name: 'users-active' });
+		}
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
 
 const { primaryKey } = toRefs(props);
-const { breadcrumb } = useBreadcrumb();
-
 const { info: collectionInfo } = useCollection('directus_users');
 
 const revisionsSidebarDetail = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
@@ -80,11 +99,21 @@ const {
 } = useItem<User>(
 	ref('directus_users'),
 	primaryKey,
-	props.primaryKey !== '+'
-		? {
-				fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
+	null,
+	computed(() => false),
+	{
+		fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
+	},
+	{
+		onSaveError: (err) => {
+			if (err?.extensions?.code === 'LIMIT_EXCEEDED') {
+				seatsLimitModalOpen.value = true;
+				return true;
 			}
-		: undefined,
+
+			return false;
+		},
+	},
 );
 
 const {
@@ -123,6 +152,7 @@ const confirmDiscard = ref(false);
 
 // Provide the discard functionality to field interfaces
 provide('discardAllChanges', discardAndStay);
+provide('refresh', refresh);
 
 const avatarSrc = computed(() => {
 	if (!item.value?.avatar) return null;
@@ -169,23 +199,13 @@ const archiveTooltip = computed(() => {
 useShortcut('meta+s', saveAndStay, form);
 useShortcut('meta+shift+s', saveAndAddNew, form);
 
-function useBreadcrumb() {
-	const breadcrumb = computed(() => [
-		{
-			name: t('user_directory'),
-			to: `/users`,
-		},
-	]);
-
-	return { breadcrumb };
-}
-
 async function saveAndQuit() {
 	try {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
-		router.push(`/users`);
+		licenseStore.hydrate();
+		router.push({ name: 'users-active' });
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -196,10 +216,11 @@ async function saveAndStay() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
+		licenseStore.hydrate();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem.id;
-			router.replace(`/users/${newPrimaryKey}`);
+			router.replace({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
 		} else {
 			revisionsSidebarDetail.value?.refresh?.();
 			refresh();
@@ -214,7 +235,8 @@ async function saveAndAddNew() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
-		router.push(`/users/+`);
+		licenseStore.hydrate();
+		router.push({ name: 'users-item', params: { primaryKey: '+' } });
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -223,7 +245,11 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.push(`/users/${newPrimaryKey}`);
+
+		if (newPrimaryKey) {
+			licenseStore.hydrate();
+			router.push({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
+		}
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -243,8 +269,9 @@ async function deleteAndQuit() {
 		}
 
 		await remove();
+		licenseStore.hydrate();
 		edits.value = {};
-		router.replace(`/users`);
+		router.replace({ name: 'users-active' });
 	} catch {
 		// `remove` will show the unexpected error dialog
 	}
@@ -293,7 +320,7 @@ async function toggleArchive() {
 	await archive();
 
 	if (isArchived.value === true) {
-		router.push('/users');
+		router.push({ name: 'users-active' });
 	} else {
 		confirmArchive.value = false;
 	}
@@ -309,18 +336,16 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<PrivateView :title="title" show-back back-to="/users">
-		<template #headline>
-			<VBreadcrumb :items="breadcrumb" />
-		</template>
-
-		<template #actions>
+		<template #actions:prepend>
 			<CollabIndicatorHeader
 				:model-value="collabUsers"
 				:connected="connected"
 				:focuses="focused"
 				:current-connection="connectionId"
 			/>
+		</template>
 
+		<template #actions>
 			<VDialog
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
@@ -330,8 +355,8 @@ function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						class="action-delete"
-						secondary
+						kind="danger"
+						variant="ghost"
 						:disabled="item === null || deleteAllowed !== true"
 						icon="delete"
 						@click="on"
@@ -363,7 +388,7 @@ function revert(values: Record<string, any>) {
 					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						secondary
+						variant="ghost"
 						:disabled="item === null || archiveAllowed !== true"
 						:icon="isArchived ? 'unarchive' : 'archive'"
 						@click="on"
@@ -383,17 +408,19 @@ function revert(values: Record<string, any>) {
 					</VCardActions>
 				</VCard>
 			</VDialog>
+		</template>
 
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
+				:label="$t('save')"
+				:tooltip="saveAllowed ? undefined : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				icon="check"
 				@click="saveAndQuit"
 			>
-				<template #append-outer>
+				<template #split-menu>
 					<SaveOptions
-						v-if="isSavable"
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -495,13 +522,11 @@ function revert(values: Record<string, any>) {
 
 		<ComparisonModal
 			:model-value="collabCollision !== undefined"
+			mode="collab"
 			collection="directus_users"
 			:primary-key="primaryKey"
 			:current-collab="collabCollision"
 			:collab-context="collabContext"
-			mode="collab"
-			:delete-versions-allowed="false"
-			:current-version="null"
 			@confirm="updateCollab"
 			@cancel="clearCollidingChanges"
 		/>
@@ -517,14 +542,18 @@ function revert(values: Record<string, any>) {
 			/>
 			<CommentsSidebarDetail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
+
+		<EntitlementLimitModal
+			v-model="seatsLimitModalOpen"
+			entitlement-key="seats"
+			:is-admin="userStore.isAdmin"
+			:on-save="saveAsInactive"
+		/>
 	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
+@use '@/styles/mixins';
 
 .header-icon.secondary {
 	--v-button-background-color: var(--theme--background-normal);
@@ -541,11 +570,11 @@ function revert(values: Record<string, any>) {
 	display: flex;
 	align-items: center;
 	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
-	block-size: 112px;
+	block-size: 6.3125rem;
 	margin-block-end: var(--theme--form--row-gap);
-	padding: 20px;
+	padding: 1.125rem;
 	background-color: var(--theme--background-normal);
-	border-radius: calc(var(--theme--border-radius) + 4px);
+	border-radius: calc(var(--theme--border-radius) + 0.25rem);
 
 	.avatar {
 		--v-icon-color: var(--theme--foreground-subdued);
@@ -554,9 +583,9 @@ function revert(values: Record<string, any>) {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		inline-size: 84px;
-		block-size: 84px;
-		margin-inline-end: 16px;
+		inline-size: 4.75rem;
+		block-size: 4.75rem;
+		margin-inline-end: 0.875rem;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
@@ -573,10 +602,10 @@ function revert(values: Record<string, any>) {
 			object-fit: cover;
 		}
 
-		@media (width > 640px) {
-			inline-size: 144px;
-			block-size: 144px;
-			margin-inline-end: 22px;
+		@include mixins.breakpoint-up('sm') {
+			inline-size: 8.125rem;
+			block-size: 8.125rem;
+			margin-inline-end: 1.25rem;
 		}
 	}
 
@@ -585,11 +614,11 @@ function revert(values: Record<string, any>) {
 		overflow: hidden;
 
 		.v-skeleton-loader {
-			inline-size: 175px;
+			inline-size: 9.875rem;
 		}
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-block-end: 16px;
+			margin-block-end: 0.875rem;
 		}
 
 		.v-chip {
@@ -598,7 +627,7 @@ function revert(values: Record<string, any>) {
 			--v-chip-color-hover: var(--theme--foreground-subdued);
 			--v-chip-background-color-hover: var(--theme--background-subdued);
 
-			margin-block-start: 4px;
+			margin-block-start: 0.25rem;
 
 			&.active {
 				--v-chip-color: var(--theme--primary);
@@ -623,8 +652,8 @@ function revert(values: Record<string, any>) {
 		}
 	}
 
-	@media (width > 640px) {
-		block-size: 188px;
+	@include mixins.breakpoint-up('sm') {
+		block-size: 10.5625rem;
 
 		.user-box-content .location {
 			display: block;

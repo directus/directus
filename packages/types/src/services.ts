@@ -217,7 +217,7 @@ interface FileService<T = File> {
 	 */
 	uploadOne(
 		stream: BusboyFileStream | Readable,
-		data: Partial<T> & { storage: string },
+		data: Partial<T>,
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PrimaryKey>;
@@ -344,7 +344,7 @@ interface PayloadService {
 		parent: PrimaryKey,
 		opts?: MutationOptions,
 	): Promise<PayloadServiceProcessRelationResult>;
-	prepareDelta(data: Partial<Item>): Promise<string | null>;
+	prepareDelta(data: Partial<Item>): Promise<Partial<Item> | null>;
 }
 
 /**
@@ -388,7 +388,7 @@ interface RevisionsService {
  */
 interface SchemaService {
 	snapshot(): Promise<Snapshot>;
-	apply(payload: SnapshotDiffWithHash): Promise<void>;
+	apply(payload: SnapshotDiffWithHash, options?: { force?: boolean }): Promise<void>;
 	diff(snapshot: Snapshot, options?: { currentSnapshot?: Snapshot; force?: boolean }): Promise<SnapshotDiff | null>;
 	getHashedSnapshot(snapshot: Snapshot): SnapshotWithHash;
 }
@@ -500,9 +500,14 @@ interface UtilsService {
 interface VersionsService {
 	getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item>;
 	verifyHash(collection: string, item: PrimaryKey, hash: string): Promise<{ outdated: boolean; mainHash: string }>;
-	getVersionSave(key: string, collection: string, item: string | undefined): Promise<ContentVersion | undefined>;
+	getVersionSaves(
+		key: string,
+		collection: string,
+		item: PrimaryKey | null,
+		mapDelta: boolean,
+	): Promise<ContentVersion[]>;
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
-	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
+	promote(version: PrimaryKey, opts?: { mainHash: string; fields?: string[] }): Promise<PrimaryKey>;
 }
 
 /**

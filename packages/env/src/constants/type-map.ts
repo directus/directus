@@ -23,9 +23,16 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 
 	IMPORT_IP_DENY_LIST: 'array',
+	IMPORT_TIMEOUT: 'string',
+	IMPORT_MAX_CONCURRENCY: 'number',
+	IMPORT_EXPORT_NAMESPACE: 'string',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
+	FILES_DELETE_ORIGINAL_ON_MOVE: 'boolean',
 
+	ASSETS_CACHE_REVALIDATE: 'boolean',
+
+	OPENAPI_ENABLED: 'boolean',
 	GRAPHQL_INTROSPECTION: 'boolean',
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 
@@ -38,6 +45,11 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	REDIS_ENABLED: 'boolean',
 	REDIS_PASSWORD: 'string',
+	REDIS_BUS_NAMESPACE: 'string',
+	REDIS_LOCK_NAMESPACE: 'string',
+	REDIS_COUNTERS_NAMESPACE: 'string',
+	REDIS_PERMISSIONS_NAMESPACE: 'string',
+	METRICS_HEALTH_CHECK_PREFIX: 'string',
 
 	METRICS_TOKENS: 'array',
 	METRICS_SERVICES: 'array',
@@ -51,6 +63,21 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	EXTENSIONS_ROLLDOWN: 'boolean',
 
+	MCP_OAUTH_ENABLED: 'boolean',
+	MCP_OAUTH_AUTH_CODE_TTL: 'string',
+	MCP_OAUTH_MAX_CLIENTS: 'number',
+	MCP_OAUTH_CLIENT_UNUSED_TTL: 'string',
+	MCP_OAUTH_CLIENT_IDLE_TTL: 'string',
+	MCP_OAUTH_REQUIRE_RESOURCE: 'boolean',
+	MCP_OAUTH_CLEANUP_SCHEDULE: 'string',
+	MCP_OAUTH_ALLOWED_REDIRECT_DOMAINS: 'array',
+	MCP_OAUTH_ALLOWED_CUSTOM_REDIRECTS: 'array',
+	MCP_OAUTH_DCR_ENABLED: 'boolean',
+	MCP_OAUTH_CIMD_ENABLED: 'boolean',
+	MCP_OAUTH_CIMD_ALLOW_HTTP: 'boolean',
+	MCP_OAUTH_CIMD_ALLOWED_DOMAINS: 'array',
+	MCP_OAUTH_CIMD_BLOCKED_TLDS: 'array',
+
 	EMAIL_SMTP_PASSWORD: 'string',
 
 	'STORAGE_.+_SECRET': 'string',
@@ -59,6 +86,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	'AUTH_.+_USER_DN': 'string',
 	'AUTH_.+_GROUP_DN': 'string',
 	'AUTH_.+_BIND_PASSWORD': 'string',
+	'AUTH_.+_COOKIE_SECURE': 'boolean',
 } as const;
 
 export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [

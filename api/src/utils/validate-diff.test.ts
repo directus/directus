@@ -32,6 +32,17 @@ test('should fail on invalid hash', () => {
 	);
 });
 
+test('should bypass hash validation when force option is true', () => {
+	const diff = {
+		hash: 'abc',
+		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], systemFields: [], relations: [] },
+	} as SnapshotDiffWithHash;
+
+	const snapshot = { hash: 'xyz' } as SnapshotWithHash;
+
+	expect(() => validateApplyDiff(diff, snapshot, true)).not.toThrowError();
+});
+
 describe('should throw accurate error', () => {
 	const baseDiff = (partialDiff: Partial<SnapshotDiff>): SnapshotDiffWithHash => {
 		return {

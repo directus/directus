@@ -140,7 +140,7 @@ const translations = computed(() => {
 
 <style lang="scss" scoped>
 .v-list {
-	inline-size: 300px;
+	inline-size: 16.875rem;
 }
 
 .display-translations {
@@ -165,35 +165,35 @@ const translations = computed(() => {
 
 .header {
 	display: flex;
-	gap: 20px;
+	gap: 1.125rem;
 	align-items: center;
 	justify-content: space-between;
 	color: var(--theme--foreground-subdued);
-	font-size: 12px;
+	font-size: 0.6875rem;
 
 	.lang {
 		font-weight: 600;
 	}
 
 	.v-icon {
-		margin-inline-end: 4px;
+		margin-inline-end: 0.25rem;
 	}
 
 	.v-progress-linear {
 		flex: 1;
 		inline-size: unset;
-		max-inline-size: 100px;
-		border-radius: 4px;
+		max-inline-size: 5.625rem;
+		border-radius: 0.25rem;
 	}
 }
 
 .v-list-item-content {
-	padding-block: 4px 2px;
+	padding-block: 0.25rem 0.125rem;
 }
 
 .v-list-item:not(:first-child) {
 	.header {
-		padding-block-start: 8px;
+		padding-block-start: 0.4375rem;
 		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }

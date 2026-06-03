@@ -44,7 +44,7 @@ defineEmits<{
 	position: relative;
 	flex-shrink: 0;
 	inline-size: 100%;
-	block-size: 60px;
+	block-size: 3.375rem;
 	color: var(--theme--foreground-accent);
 	background-color: var(--theme--background-accent);
 
@@ -52,14 +52,14 @@ defineEmits<{
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 60px;
+		inline-size: 3.375rem;
 		block-size: 100%;
 	}
 
 	.title {
 		position: absolute;
 		inset-block-start: 50%;
-		inset-inline-start: 52px;
+		inset-inline-start: 2.9375rem;
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);

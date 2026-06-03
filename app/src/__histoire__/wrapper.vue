@@ -96,8 +96,8 @@ if (isIframe && topHtmlElement) {
 
 .histoire-generic-render-story:not(.__histoire-render-custom-controls) .custom-wrapper {
 	position: relative;
-	height: calc(100vh - 2 * 24px);
-	padding: 24px;
+	height: calc(100vh - 2 * 1.375rem);
+	padding: 1.375rem;
 
 	background-color: var(--theme--background);
 }

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+continue: Fortsæt
 first_name: Fornavn
 last_name: Efternavn
 identifier: Identifier
@@ -152,7 +153,6 @@ prefix: Præfiks
 suffix: Suffiks
 keep: Behold
 version: Version
-main_version: Primær
 switch_version: Skift Version
 switch_version_copy: Er du sikker på, at du vil skifte til "{version}"-versionen? Ændringer, der ikke er gemt, går tabt.
 create_version: Opret Version
@@ -405,6 +405,8 @@ related_collection: Relateret samling
 related_collections: Relaterede samlinger
 translations_collection: Oversættelse samling
 languages_collection: Sprog samling
+translations_preview_collections: Samlinger
+translations_preview_fields: Felter
 import_data_input_placeholder: CSV eller JSON...
 import_data_button: Begynd import
 import_data_indeterminate: Importerer data...
@@ -552,7 +554,6 @@ no_collections: Ingen samlinger
 create_collection: Opret samling
 no_collections_copy_admin: Du har endnu ikke nogen samlinger. Klik på knappen nedenfor for at komme i gang.
 no_collections_copy: Du har endnu ikke nogen samlinger. Kontakt venligst din systemadministrator.
-relationship_not_setup: Forholdet er ikke konfigureret korrekt
 display_template_not_setup: Visningsskabelonen er forkert konfigureret
 collection_field_not_setup: Indstillingen for samlingsfelt er forkert konfigureret
 select_a_collection: Vælg en samling
@@ -961,6 +962,14 @@ editing_in_batch: 'Masseredigerer {count} elementer'
 no_options_available: Ingen tilgængelige valgmuligheder
 settings_data_model: Data model
 settings_project: Indstillinger
+licensing:
+  unlimited: Ubegrænset
+  addon_update: Opdater
+  resolve_continue: Fortsæt
+  resolve_show_n_more: 'Vis {count} mere'
+  resolve_sso_admin_password: Adgangskode
+  entitlements:
+    collections: Samlinger
 settings_presets: Foretrukne
 settings_translations: Oversættelser
 one_or_more_options_are_missing: En eller flere muligheder mangler
@@ -1425,6 +1434,8 @@ interfaces:
     all_opened: Alle åbnede
     accordion_mode: Harmonika tilstand
     max_one_section_open: Maks en sektion åben
+  group-tabs:
+    fill_width: Fuld bredde
   presentation-links:
     presentation-links: Knapper
     style: Stil
@@ -1708,8 +1719,9 @@ interfaces:
     value_securely_saved: Værdi sikkert gemt
     generate: Generer nøgle
     regenerate: Regenerer nøgle
-    generate_success_copy: Sørg for at sikkerhedskopiere og kopiere nøglen ovenfor. Af sikkerhedsmæssige årsager vil du ikke være i stand til at se nøglen igen efter at have gemt og navigeret væk fra denne side.
+    regenerate_confirm_title: Regenerer nøgle
     remove_token: Fjern nøgle
+    remove_confirm_title: Fjern nøgle
   system-raw-editor:
     system-raw-editor: Rå redigering
     description: Tillad indtastning af rå- eller overskægsskabelonværdier
@@ -2064,4 +2076,6 @@ fonts:
   black: Sort
   italic: Kursiv
   auto: Automatisk
+license_grace_key_modal:
+  optional: Valgfri
 set_to_now: Indstil til nu

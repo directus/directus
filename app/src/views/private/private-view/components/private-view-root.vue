@@ -4,7 +4,7 @@ import { useBreakpoints } from '@vueuse/core';
 import { computed, watch } from 'vue';
 import ModuleBar from '../../components/module-bar.vue';
 import SkipMenu from '../../components/skip-menu.vue';
-import { useNavBarStore } from '../stores/nav-bar';
+import { NAV_BAR_DEFAULT_SIZE, NAV_BAR_MIN_SIZE, useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewMain from './private-view-main.vue';
@@ -56,12 +56,12 @@ const splitterCollapsed = computed({
 			size-unit="px"
 			collapsible
 			:collapse-threshold="70"
-			:min-size="220"
-			:max-size="340"
-			:snap-points="[250]"
+			:min-size="NAV_BAR_MIN_SIZE"
+			:max-size="306"
+			:snap-points="[NAV_BAR_DEFAULT_SIZE]"
 			:snap-threshold="6"
 			:direction="userStore.textDirection"
-			divider-hit-area="24px"
+			divider-hit-area="4px"
 			:transition-duration="125"
 			primary="start"
 			class="root-split"
@@ -93,10 +93,9 @@ const splitterCollapsed = computed({
 			<template #end>
 				<SkipMenu section="main-content" />
 				<PrivateViewMain id="main-content" v-bind="$props" :inline-nav>
-					<template #actions:append><slot name="actions:append" /></template>
 					<template #actions:prepend><slot name="actions:prepend" /></template>
 					<template #actions><slot name="actions" /></template>
-					<template #headline><slot name="headline" /></template>
+					<template #actions:primary><slot name="actions:primary" /></template>
 					<template #title-outer:append><slot name="title-outer:append" /></template>
 					<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
 					<template #title:append><slot name="title:append" /></template>
@@ -124,6 +123,7 @@ const splitterCollapsed = computed({
 	flex-grow: 1;
 	block-size: 100%;
 	position: relative;
+	background: var(--theme--shell--background);
 }
 
 :deep(.root-split > :is(.sp-start, .sp-end)) {
@@ -131,13 +131,13 @@ const splitterCollapsed = computed({
 }
 
 .v-list.skip-menu.mobile-skip-menu {
-	/* 60 (module-bar) + 4 (spacing) */
-	inset-inline-start: 64px;
+	/* 54 (module-bar) + 4 (spacing) */
+	inset-inline-start: 3.625rem;
 }
 
 .mobile-nav {
 	inline-size: 0;
-	max-inline-size: 340px;
+	max-inline-size: var(--sidebar-mobile-width);
 	flex-grow: 1;
 	flex-shrink: 1;
 }

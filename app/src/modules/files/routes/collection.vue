@@ -6,8 +6,8 @@ import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, RouterView, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
+import FolderSection from '../components/folder-section.vue';
 import api from '@/api';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -20,6 +20,7 @@ import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
+import DeleteFolderDialog from '@/modules/files/components/delete-folder-dialog.vue';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useServerStore } from '@/stores/server';
@@ -47,21 +48,30 @@ const router = useRouter();
 
 const notificationsStore = useNotificationsStore();
 const { info } = useServerStore();
-const { folders } = useFolders();
+const { folders, fetchFolders } = useFolders();
 
 const layoutRef = ref();
 const selection = ref<string[]>([]);
+const folderSelection = ref<string[]>([]);
+const selectedFolderObjects = computed(() => (folders.value ?? []).filter((f) => folderSelection.value.includes(f.id)));
 
 const userStore = useUserStore();
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
 
-const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
+const confirmDelete = ref(false);
+const batchEditActive = ref(false);
+const isTransitioning = ref(false);
 
-const { breadcrumb, title } = useBreadcrumb();
+const { title } = useTitle();
 
 const folderFilter = computed(() => {
 	return getFolderFilter(props.folder, props.special, userStore?.currentUser?.id);
+});
+
+const subfolders = computed(() => {
+	if (props.special || !folders.value) return [];
+	return folders.value.filter((f) => (f.parent ?? null) === (props.folder ?? null));
 });
 
 const { layoutWrapper } = useLayout(layout);
@@ -70,11 +80,23 @@ const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFo
 
 onBeforeRouteLeave(() => {
 	selection.value = [];
+	folderSelection.value = [];
+	confirmDelete.value = false;
 });
 
 onBeforeRouteUpdate(() => {
 	selection.value = [];
+	folderSelection.value = [];
+	confirmDelete.value = false;
 });
+
+watch(
+	() => [props.folder, props.special],
+	() => {
+		isTransitioning.value = true;
+	},
+	{ flush: 'sync' },
+);
 
 const { isAnyUploadActive, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
@@ -89,50 +111,62 @@ watch(isAnyUploadActive, (isUploading, wasUploading) => {
 	}
 });
 
+// Refresh file list when folders change (e.g. sidebar delete moves files into current folder)
+watch(folders, (_newVal, oldVal) => {
+	if (oldVal === null) return; // skip initial load
+	refresh();
+});
+
+watch(
+	() => layoutRef.value?.state?.items,
+	() => {
+		isTransitioning.value = false;
+	},
+);
+
 const {
 	updateAllowed: batchEditAllowed,
 	deleteAllowed: batchDeleteAllowed,
 	createAllowed,
 } = useCollectionPermissions('directus_files');
 
-const { createAllowed: createFolderAllowed } = useCollectionPermissions('directus_folders');
+const { createAllowed: createFolderAllowed, deleteAllowed: folderDeleteAllowed } =
+	useCollectionPermissions('directus_folders');
 
-function useBatch() {
-	const confirmDelete = ref(false);
-	const deleting = ref(false);
-
-	const batchEditActive = ref(false);
-
-	const error = ref<any>();
-
-	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
-
-	async function batchDelete() {
-		if (deleting.value) return;
-
-		deleting.value = true;
-
-		const batchPrimaryKeys = selection.value;
-
-		try {
-			await api.delete('/files', {
-				data: batchPrimaryKeys,
-			});
-
-			await refresh();
-
-			selection.value = [];
-		} catch (e) {
-			unexpectedError(e);
-			error.value = e;
-		} finally {
-			confirmDelete.value = false;
-			deleting.value = false;
+async function onFolderDeleteDone() {
+	try {
+		if (selection.value.length > 0) {
+			await api.delete('/files', { data: selection.value });
 		}
+	} catch (e) {
+		unexpectedError(e);
+	}
+
+	selection.value = [];
+	folderSelection.value = [];
+	confirmDelete.value = false;
+	fetchFolders();
+}
+
+const deletingFiles = ref(false);
+
+async function batchDeleteFiles() {
+	if (deletingFiles.value) return;
+	deletingFiles.value = true;
+
+	try {
+		await api.delete('/files', { data: selection.value });
+		selection.value = [];
+		confirmDelete.value = false;
+		await refresh();
+	} catch (e) {
+		unexpectedError(e);
+	} finally {
+		deletingFiles.value = false;
 	}
 }
 
-function useBreadcrumb() {
+function useTitle() {
 	const title = computed(() => {
 		if (props.special === 'all') {
 			return t('all_files');
@@ -157,20 +191,7 @@ function useBreadcrumb() {
 		return t('file_library');
 	});
 
-	const breadcrumb = computed(() => {
-		if (title.value !== t('file_library')) {
-			return [
-				{
-					name: t('file_library'),
-					to: `/files`,
-				},
-			];
-		}
-
-		return null;
-	});
-
-	return { breadcrumb, title };
+	return { title };
 }
 
 function useMovetoFolder() {
@@ -196,7 +217,7 @@ function useMovetoFolder() {
 			selection.value = [];
 
 			if (selectedFolder.value) {
-				router.push(`/files/folders/${selectedFolder.value}`);
+				router.push({ name: 'folders-collection', params: { folder: selectedFolder.value } });
 			}
 
 			await nextTick();
@@ -409,13 +430,10 @@ async function downloadFiles() {
 		:filter-system="folderFilter"
 		:search="search"
 		collection="directus_files"
+		:select-mode="folderSelection.length > 0"
 		:reset-preset="resetPreset"
 	>
 		<PrivateView :title="title" icon="folder" :class="{ dragging }">
-			<template v-if="breadcrumb" #headline>
-				<VBreadcrumb :items="breadcrumb" />
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
@@ -426,7 +444,7 @@ async function downloadFiles() {
 				<AddFolder :parent="folder" :disabled="createFolderAllowed !== true" />
 
 				<VDialog
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-model="moveToDialogActive"
 					@esc="moveToDialogActive = false"
 					@apply="moveToFolder"
@@ -437,7 +455,7 @@ async function downloadFiles() {
 							class="folder"
 							:disabled="!batchEditAllowed"
 							icon="folder_move"
-							secondary
+							variant="ghost"
 							@click="on"
 						/>
 					</template>
@@ -460,18 +478,33 @@ async function downloadFiles() {
 					</VCard>
 				</VDialog>
 
-				<VDialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
-					<template #activator="{ on }">
-						<PrivateViewHeaderBarActionButton
-							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
-							:disabled="batchDeleteAllowed !== true"
-							class="action-delete"
-							secondary
-							icon="delete"
-							@click="on"
-						/>
-					</template>
+				<PrivateViewHeaderBarActionButton
+					v-if="selection.length > 0 || folderSelection.length > 0"
+					v-tooltip.bottom="
+						batchDeleteAllowed && (folderSelection.length === 0 || folderDeleteAllowed)
+							? $t('delete_label')
+							: $t('not_allowed')
+					"
+					:disabled="batchDeleteAllowed !== true || (folderSelection.length > 0 && folderDeleteAllowed !== true)"
+					kind="danger"
+					variant="ghost"
+					icon="delete"
+					@click="confirmDelete = true"
+				/>
 
+				<DeleteFolderDialog
+					v-if="folderSelection.length > 0"
+					v-model="confirmDelete"
+					:folders="selectedFolderObjects"
+					:all-folders="folders ?? []"
+					@done="onFolderDeleteDone"
+				/>
+
+				<VDialog
+					v-if="folderSelection.length === 0 && selection.length > 0"
+					v-model="confirmDelete"
+					@esc="confirmDelete = false"
+				>
 					<VCard>
 						<VCardTitle>{{ $t('batch_delete_confirm', selection.length) }}</VCardTitle>
 
@@ -479,7 +512,7 @@ async function downloadFiles() {
 							<VButton secondary @click="confirmDelete = false">
 								{{ $t('cancel') }}
 							</VButton>
-							<VButton kind="danger" :loading="deleting" @click="batchDelete">
+							<VButton kind="danger" :loading="deletingFiles" @click="batchDeleteFiles">
 								{{ $t('delete_label') }}
 							</VButton>
 						</VCardActions>
@@ -487,24 +520,27 @@ async function downloadFiles() {
 				</VDialog>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					secondary
+					variant="ghost"
 					:disabled="batchEditAllowed === false"
 					icon="edit"
 					@click="batchEditActive = true"
 				/>
 
 				<PrivateViewHeaderBarActionButton
-					v-if="selection.length > 0"
+					v-if="selection.length > 0 && folderSelection.length === 0"
 					v-tooltip.bottom="$t('download')"
-					secondary
+					variant="ghost"
 					icon="download"
 					@click="downloadFiles"
 				/>
+			</template>
 
+			<template #actions:primary>
 				<PrivateViewHeaderBarActionButton
-					v-tooltip.bottom="createAllowed ? $t('upload_file') : $t('not_allowed')"
+					:tooltip="createAllowed ? undefined : $t('not_allowed')"
+					:label="$t('upload_file')"
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 					:disabled="createAllowed === false"
 					icon="add"
@@ -515,7 +551,23 @@ async function downloadFiles() {
 				<FilesNavigation :current-folder="folder" :current-special="special" />
 			</template>
 
-			<component :is="`layout-${layout}`" v-bind="layoutState">
+			<component
+				:is="`layout-${layout}`"
+				v-bind="layoutState"
+				v-model:extra-selection="folderSelection"
+				:loading="layoutState.loading || isTransitioning"
+				:has-prepend-content="!isTransitioning && subfolders.length > 0 && !search && !filter"
+				:select-mode="layoutState.selectMode"
+				@select-all="folderSelection = subfolders.map((f) => f.id)"
+			>
+				<template v-if="!special && !search && !filter" #prepend>
+					<FolderSection
+						v-model:selection="folderSelection"
+						:subfolders="subfolders"
+						:any-selection="selection.length > 0"
+					/>
+				</template>
+
 				<template #no-results>
 					<VInfo v-if="!filter && !search" :title="$t('file_count', 0)" icon="folder" center>
 						{{ $t('no_files_copy') }}
@@ -587,11 +639,6 @@ async function downloadFiles() {
 </template>
 
 <style lang="scss" scoped>
-.action-delete {
-	--v-button-background-color-hover: var(--theme--danger) !important;
-	--v-button-color-hover: var(--white) !important;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
 }
@@ -604,12 +651,12 @@ async function downloadFiles() {
 	&.top,
 	&.bottom {
 		inline-size: 100%;
-		block-size: 4px;
+		block-size: 0.25rem;
 	}
 
 	&.left,
 	&.right {
-		inline-size: 4px;
+		inline-size: 0.25rem;
 		block-size: 100%;
 	}
 

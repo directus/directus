@@ -164,27 +164,27 @@ const options = computed({
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	@media (min-width: 400px) {
+	@media (width >= 22.5rem) {
 		--columns: 2;
 	}
 
-	@media (width > 640px) {
+	@include mixins.breakpoint-up('sm') {
 		--columns: 3;
 	}
 
-	@media (min-width: 840px) {
+	@media (width >= 47.25rem) {
 		--columns: 4;
 	}
 }
 
 .setup {
-	--theme--form--row-gap: 20px;
+	--theme--form--row-gap: 1.125rem;
 
-	margin: 34px;
+	margin: 1.9375rem;
 }
 
 .schema {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 	@include mixins.form-grid;
 }
 
@@ -193,11 +193,11 @@ const options = computed({
 }
 
 .save {
-	margin-block-start: 40px;
+	margin-block-start: 2.25rem;
 }
 
 .v-divider {
-	margin: 28px 0;
+	margin: 1.5625rem 0;
 }
 
 :deep(.v-notice.normal) {
@@ -206,7 +206,7 @@ const options = computed({
 
 .toggle-advanced {
 	inline-size: 100%;
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	transition: color var(--fast) var(--transition);

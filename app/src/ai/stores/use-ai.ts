@@ -1,25 +1,59 @@
 import { Chat } from '@ai-sdk/vue';
-import { type ContextAttachment, type PrimaryKey, type StandardProviderType, type SystemTool } from '@directus/ai';
+import { type ContextAttachment, type PrimaryKey, type SystemTool } from '@directus/ai';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
-import {
-	DefaultChatTransport,
-	type FileUIPart,
-	lastAssistantMessageIsCompleteWithApprovalResponses,
-	lastAssistantMessageIsCompleteWithToolCalls,
-	type UIMessage,
-} from 'ai';
+import { DefaultChatTransport, type FileUIPart, lastAssistantMessageIsCompleteWithToolCalls, type UIMessage } from 'ai';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { z } from 'zod';
 import type { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODELS, type AppModelDefinition, buildCustomModelDefinition, buildCustomModels } from '../models';
+import type { AppModelDefinition } from '../models';
 import { isVisualElement, type UploadedFileResult } from '../types/context';
+import { getAvailableModels, getModelKey, resolveModelByKey } from '../utils/available-models';
 import { useAiContextStore } from './use-ai-context';
 import { useAiToolsStore } from './use-ai-tools';
 import { useSettingsStore } from '@/stores/settings';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+
+const lastAssistantMessageIsCompleteWithToolApprovalResponses = ({ messages }: { messages: UIMessage[] }) => {
+	const message = messages.at(-1);
+
+	if (!message || message.role !== 'assistant') {
+		return false;
+	}
+
+	const lastStepStartIndex = message.parts.reduce((lastIndex, part, index) => {
+		return part.type === 'step-start' ? index : lastIndex;
+	}, -1);
+
+	const lastStepToolInvocations = message.parts
+		.slice(lastStepStartIndex + 1)
+		.filter((part) => part.type === 'dynamic-tool' || part.type.startsWith('tool-')) as Array<{ state: string }>;
+
+	// Include provider-executed tools here. We still need to trigger a new request
+	// after approval responses so the server can continue execution.
+	return (
+		lastStepToolInvocations.some((part) => part.state === 'approval-responded') &&
+		lastStepToolInvocations.every(
+			(part) =>
+				part.state === 'output-available' || part.state === 'output-error' || part.state === 'approval-responded',
+		)
+	);
+};
+
+type ToolPartLike = { state?: string; approval?: { id: string; approved?: boolean; reason?: string } };
+
+const getEffectiveToolPartState = (part: ToolPartLike) => {
+	if (!part.state) return undefined;
+	if (!part.approval?.id || part.approval.approved !== undefined) return part.state;
+
+	if (part.state === 'input-streaming' || part.state === 'input-available') {
+		return 'approval-requested';
+	}
+
+	return part.state;
+};
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -57,66 +91,20 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	// Model selection
-	const models = computed(() => {
-		const customModels = buildCustomModels(settingsStore.settings?.ai_openai_compatible_models ?? null);
-		const allModels = [...AI_MODELS, ...customModels];
-
-		const allowedModelsMap: Record<StandardProviderType, string[] | null> = {
-			openai: settingsStore.settings?.ai_openai_allowed_models ?? null,
-			anthropic: settingsStore.settings?.ai_anthropic_allowed_models ?? null,
-			google: settingsStore.settings?.ai_google_allowed_models ?? null,
-		};
-
-		const result: AppModelDefinition[] = [];
-
-		// Add models that are allowed or explicitly configured
-		for (const modelDef of allModels) {
-			if (!settingsStore.availableAiProviders.includes(modelDef.provider)) continue;
-
-			// openai-compatible models are always allowed (user explicitly configured them)
-			if (modelDef.provider === 'openai-compatible') {
-				result.push(modelDef);
-				continue;
-			}
-
-			const allowedModels = allowedModelsMap[modelDef.provider];
-
-			if (!allowedModels || allowedModels.length === 0) continue;
-
-			if (allowedModels.includes(modelDef.model)) {
-				result.push(modelDef);
-			}
-		}
-
-		// Add custom model IDs that are in allowed list but not in predefined models
-		for (const [provider, allowedModels] of Object.entries(allowedModelsMap)) {
-			if (!allowedModels || allowedModels.length === 0) continue;
-			if (!settingsStore.availableAiProviders.includes(provider)) continue;
-
-			for (const modelId of allowedModels) {
-				const exists = result.some((m) => m.provider === provider && m.model === modelId);
-
-				if (!exists) {
-					result.push(buildCustomModelDefinition(provider as StandardProviderType, modelId));
-				}
-			}
-		}
-
-		return result;
-	});
+	const models = computed<AppModelDefinition[]>(() => getAvailableModels(settingsStore.settings));
 
 	const defaultModel = computed(() => models.value[0] ?? null);
 
 	const selectedModelId = useLocalStorage<string | null>(
 		'selected-ai-model',
-		defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null,
+		defaultModel.value ? getModelKey(defaultModel.value) : null,
 	);
 
 	watch(
 		() => defaultModel.value,
 		(newDefaultModel) => {
 			if (selectedModelId.value === null && newDefaultModel) {
-				selectedModelId.value = `${newDefaultModel.provider}:${newDefaultModel.model}`;
+				selectedModelId.value = getModelKey(newDefaultModel);
 			}
 		},
 		{ immediate: true },
@@ -125,23 +113,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const selectedModel = computed(() => {
 		if (!selectedModelId.value) return null;
 
-		// Split only on first colon - model IDs may contain colons (e.g., "gpt-oss:20b")
-		const colonIndex = selectedModelId.value.indexOf(':');
-
-		if (colonIndex === -1) return null;
-
-		const provider = selectedModelId.value.slice(0, colonIndex);
-		const model = selectedModelId.value.slice(colonIndex + 1);
-
-		if (!provider || !model) return null;
-
-		return (
-			models.value.find((modelDefinition) => {
-				return modelDefinition.provider === provider && modelDefinition.model === model;
-			}) ??
-			defaultModel.value ??
-			null
-		);
+		return resolveModelByKey(selectedModelId.value, models.value) ?? defaultModel.value ?? null;
 	});
 
 	const supportsFileUpload = computed(() => selectedModel.value?.provider !== 'openai-compatible');
@@ -151,7 +123,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			return;
 		}
 
-		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+		selectedModelId.value = getModelKey(modelDefinition);
 	};
 
 	const sanitizeMessages = (messageList: UIMessage[]): UIMessage[] =>
@@ -194,61 +166,63 @@ export const useAiStore = defineStore('ai-store', () => {
 	const pendingContextSnapshot = ref<ContextAttachment[]>([]);
 	const isPreparingSubmission = ref(false);
 
+	const transport = new DefaultChatTransport({
+		api: '/ai/chat',
+		credentials: 'include',
+		body: () => {
+			const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
+
+			// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
+			const approvals: Record<string, 'always' | 'ask'> = {};
+
+			for (const [toolName, mode] of Object.entries(toolsStore.toolApprovals)) {
+				if (mode === 'always' || mode === 'ask') {
+					approvals[toolName] = mode;
+				}
+			}
+
+			// Build context for system prompt
+			const context: {
+				attachments?: ContextAttachment[];
+				page?: { path: string; collection?: string; item?: string | number; module?: string };
+			} = {
+				page: currentPageContext.value,
+			};
+
+			if (pendingContextSnapshot.value.length > 0) {
+				context.attachments = pendingContextSnapshot.value;
+			}
+
+			return {
+				provider: selectedModel.value?.provider,
+				model: selectedModel.value?.model,
+				tools,
+				toolApprovals: approvals,
+				context,
+			};
+		},
+		prepareSendMessagesRequest: (req) => {
+			const limitedMessages =
+				estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
+
+			const messages = sanitizeMessages(limitedMessages);
+
+			return {
+				...req,
+				body: {
+					...req.body,
+					messages,
+				},
+			};
+		},
+	});
+
 	// Chat instance
 	const chat = new Chat<UIMessage>({
 		messages: storedMessages.value,
-		transport: new DefaultChatTransport({
-			api: '/ai/chat',
-			credentials: 'include',
-			body: () => {
-				const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
-
-				// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
-				const approvals: Record<string, 'always' | 'ask'> = {};
-
-				for (const [toolName, mode] of Object.entries(toolsStore.toolApprovals)) {
-					if (mode === 'always' || mode === 'ask') {
-						approvals[toolName] = mode;
-					}
-				}
-
-				// Build context for system prompt
-				const context: {
-					attachments?: ContextAttachment[];
-					page?: { path: string; collection?: string; item?: string | number; module?: string };
-				} = {
-					page: currentPageContext.value,
-				};
-
-				if (pendingContextSnapshot.value.length > 0) {
-					context.attachments = pendingContextSnapshot.value;
-				}
-
-				return {
-					provider: selectedModel.value?.provider,
-					model: selectedModel.value?.model,
-					tools,
-					toolApprovals: approvals,
-					context,
-				};
-			},
-			prepareSendMessagesRequest: (req) => {
-				const limitedMessages =
-					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
-
-				const messages = sanitizeMessages(limitedMessages);
-
-				return {
-					...req,
-					body: {
-						...req.body,
-						messages,
-					},
-				};
-			},
-		}),
+		transport,
 		sendAutomaticallyWhen: ({ messages }) =>
-			lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
+			lastAssistantMessageIsCompleteWithToolApprovalResponses({ messages }) ||
 			lastAssistantMessageIsCompleteWithToolCalls({ messages }),
 		onData: (data) => {
 			if (data.type === 'data-usage') {
@@ -311,7 +285,21 @@ export const useAiStore = defineStore('ai-store', () => {
 	const messages = computed(() =>
 		chat.messages.map((msg) => ({
 			...msg,
-			parts: [...(msg.parts ?? [])],
+			parts: (msg.parts ?? []).map((part) => {
+				if (part.type !== 'dynamic-tool' && !part.type.startsWith('tool-')) {
+					return part;
+				}
+
+				const toolPart = part as ToolPartLike;
+
+				// Always clone tool parts to force Vue prop updates when the SDK mutates
+				// nested fields (state/approval) in place.
+				return {
+					...part,
+					state: getEffectiveToolPartState(toolPart) ?? toolPart.state,
+					...(toolPart.approval ? { approval: { ...toolPart.approval } } : {}),
+				};
+			}),
 		})),
 	);
 
@@ -464,7 +452,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const dehydrate = async () => {
 		reset();
 		input.value = '';
-		selectedModelId.value = defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null;
+		selectedModelId.value = defaultModel.value ? getModelKey(defaultModel.value) : null;
 		chatOpen.value = false;
 
 		// Dehydrate sub-stores
@@ -486,13 +474,61 @@ export const useAiStore = defineStore('ai-store', () => {
 		return context;
 	});
 
-	const approveToolCall = (approvalId: string) => {
-		chat.addToolApprovalResponse({ id: approvalId, approved: true });
+	const findMatchingApprovalPart = (approvalId: string) => {
+		const lastMessage = chat.messages.at(-1);
+		if (!lastMessage || lastMessage.role !== 'assistant') return undefined;
+
+		return lastMessage.parts.find((part) => {
+			if (part.type !== 'dynamic-tool' && !part.type.startsWith('tool-')) return false;
+			return 'approval' in part && part.approval?.id === approvalId;
+		}) as (ToolPartLike & { state: string }) | undefined;
 	};
 
-	const denyToolCall = (approvalId: string) => {
-		chat.addToolApprovalResponse({ id: approvalId, approved: false });
+	const normalizePendingApprovalState = (approvalId: string) => {
+		const matchingPart = findMatchingApprovalPart(approvalId);
+		if (!matchingPart) return;
+
+		// Some streams provide approval metadata before state settles to
+		// approval-requested. Normalize so addToolApprovalResponse can always apply.
+		if (matchingPart.state === 'input-streaming' || matchingPart.state === 'input-available') {
+			matchingPart.state = 'approval-requested';
+		}
 	};
+
+	const applyLocalApprovalResponseFallback = (approvalId: string, approved: boolean) => {
+		const matchingPart = findMatchingApprovalPart(approvalId);
+		if (!matchingPart) return;
+
+		matchingPart.state = 'approval-responded';
+
+		matchingPart.approval = {
+			id: approvalId,
+			approved,
+			...(matchingPart.approval?.reason ? { reason: matchingPart.approval.reason } : {}),
+		};
+	};
+
+	const maybeContinueAfterApprovalResponse = () => {
+		if (chat.status === 'streaming' || chat.status === 'submitted') return;
+		if (!lastAssistantMessageIsCompleteWithToolApprovalResponses({ messages: chat.messages })) return;
+
+		void chat.sendMessage().catch(unexpectedError);
+	};
+
+	const respondToToolCall = (approvalId: string, approved: boolean) => {
+		normalizePendingApprovalState(approvalId);
+
+		void chat
+			.addToolApprovalResponse({ id: approvalId, approved })
+			.then(() => {
+				applyLocalApprovalResponseFallback(approvalId, approved);
+				maybeContinueAfterApprovalResponse();
+			})
+			.catch(unexpectedError);
+	};
+
+	const approveToolCall = (approvalId: string) => respondToToolCall(approvalId, true);
+	const denyToolCall = (approvalId: string) => respondToToolCall(approvalId, false);
 
 	return {
 		// UI State

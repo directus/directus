@@ -1,11 +1,11 @@
-import { createError, ErrorCode } from '../index.js';
+import { createError, type DirectusErrorConstructor, ErrorCode } from '../index.js';
 
 export interface NotNullViolationErrorExtensions {
 	collection: string | null;
 	field: string | null;
 }
 
-export const messageConstructor = ({ collection, field }: NotNullViolationErrorExtensions) => {
+export const messageConstructor = ({ collection, field }: NotNullViolationErrorExtensions): string => {
 	let message = 'Value ';
 
 	if (field) {
@@ -21,8 +21,5 @@ export const messageConstructor = ({ collection, field }: NotNullViolationErrorE
 	return message;
 };
 
-export const NotNullViolationError = createError<NotNullViolationErrorExtensions>(
-	ErrorCode.NotNullViolation,
-	messageConstructor,
-	400,
-);
+export const NotNullViolationError: DirectusErrorConstructor<NotNullViolationErrorExtensions> =
+	createError<NotNullViolationErrorExtensions>(ErrorCode.NotNullViolation, messageConstructor, 400);

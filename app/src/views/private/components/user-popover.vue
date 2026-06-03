@@ -69,7 +69,7 @@ async function fetchUser() {
 }
 
 function navigateToUser() {
-	if (data.value) router.push(`/users/${data.value.id}`);
+	if (data.value) router.push({ name: 'users-item', params: { primaryKey: data.value.id } });
 }
 </script>
 
@@ -96,11 +96,11 @@ function navigateToUser() {
 				<VIcon v-else name="person" />
 			</VAvatar>
 			<div class="data">
-				<div class="name type-title">{{ userName(data) }}</div>
-				<VChip class="status" :class="data.status" small>
+				<div class="name type-label">{{ userName(data) }}</div>
+				<VChip class="status" :class="data.status" :label="false" small>
 					{{ $t(`fields.directus_users.status_${data.status}`) }}
 				</VChip>
-				<VChip v-if="data.role?.name" small>{{ data.role.name }}</VChip>
+				<VChip v-if="data.role?.name" :label="false" small>{{ data.role.name }}</VChip>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>
@@ -114,16 +114,17 @@ function navigateToUser() {
 
 .user-box {
 	display: flex;
-	min-inline-size: 300px;
-	padding: 8px 4px;
+	min-inline-size: 16.875rem;
+	padding: 0.4375rem 0.25rem;
 	cursor: pointer;
 
 	.v-avatar {
-		margin-inline-end: 16px;
+		margin-inline-end: 0.875rem;
 	}
 
 	.status {
-		margin-inline-end: 4px;
+		margin-block: 0.25rem;
+		margin-inline-end: 0.1875rem;
 
 		&.active {
 			--v-chip-color: var(--theme--success);
@@ -169,20 +170,20 @@ function navigateToUser() {
 
 	display: flex;
 	align-items: center;
-	block-size: 80px;
-	margin: 8px 4px;
+	block-size: 4.5rem;
+	margin: 0.4375rem 0.25rem;
 
 	.avatar {
-		inline-size: 80px;
-		block-size: 80px;
-		margin-inline-end: 16px;
+		inline-size: 4.5rem;
+		block-size: 4.5rem;
+		margin-inline-end: 0.875rem;
 	}
 
 	div {
-		inline-size: 140px;
+		inline-size: 7.875rem;
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-block-end: 12px;
+			margin-block-end: 0.6875rem;
 		}
 	}
 }

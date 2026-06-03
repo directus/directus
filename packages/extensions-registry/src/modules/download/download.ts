@@ -1,3 +1,4 @@
+import type { ReadableStream } from 'stream/web';
 import ky from 'ky';
 import { assertVersionCompatibility } from '../../utils/assert-version-compatibility.js';
 import { constructUrl } from './lib/construct-url.js';
@@ -57,7 +58,11 @@ export type { DownloadOptions } from './types/download-options.js';
  * }
  * ```
  */
-export const download = async (versionId: string, requireSandbox = false, options?: DownloadOptions) => {
+export const download = async (
+	versionId: string,
+	requireSandbox = false,
+	options?: DownloadOptions,
+): Promise<ReadableStream<any> | null> => {
 	await assertVersionCompatibility(options);
 	const url = constructUrl(versionId, requireSandbox, options);
 	const response = await ky.get(url);

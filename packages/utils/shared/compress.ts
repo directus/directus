@@ -27,7 +27,7 @@ type NestedToken = ['@' | '$', ...(Token | NestedToken)[]];
  * Compress any input object or array down to a minimal size reproduction in a string
  * Inspired by `jsonpack`
  */
-export function compress(obj: Record<string, any> | Record<string, any>[]) {
+export function compress(obj: Record<string, any> | Record<string, any>[]): string {
 	const strings = new Map<string, number>();
 	const integers = new Map<string, number>();
 	const floats = new Map<number, number>();
@@ -280,7 +280,7 @@ export function mapToSortedArray(map: Map<string | number, number>): (string | n
 	return output;
 }
 
-export function encode(str: string) {
+export function encode(str: string): string {
 	return str.replace(/[+ |^%]/g, (a) => {
 		switch (a) {
 			case ' ':
@@ -299,7 +299,7 @@ export function encode(str: string) {
 	});
 }
 
-export function decode(str: string) {
+export function decode(str: string): string {
 	return str.replace(/\+|%2B|%7C|%5E|%25/g, (a) => {
 		switch (a) {
 			case '%25':
@@ -326,7 +326,7 @@ export function to10(str: string): number {
 	return parseInt(str, 36);
 }
 
-export function getValueForToken(token: Tokens) {
+export function getValueForToken(token: Tokens): boolean | '' | null | undefined {
 	switch (token) {
 		case Tokens.TRUE:
 			return true;

@@ -17,8 +17,8 @@ describe('findBestPosition', () => {
 	describe('basic functionality', () => {
 		it('should find optimal x position with no panels', () => {
 			const panels: Panel[] = [];
-			const from = new Vector2(100, 200);
-			const to = new Vector2(300, 400);
+			const from = new Vector2(90, 198);
+			const to = new Vector2(306, 396);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -28,8 +28,8 @@ describe('findBestPosition', () => {
 
 		it('should find optimal y position with no panels', () => {
 			const panels: Panel[] = [];
-			const from = new Vector2(100, 200);
-			const to = new Vector2(300, 400);
+			const from = new Vector2(90, 198);
+			const to = new Vector2(306, 396);
 
 			const result = findBestPosition(panels, from, to, 'y');
 
@@ -53,8 +53,8 @@ describe('findBestPosition', () => {
 	describe('collision avoidance', () => {
 		it('should avoid panel collisions along x-axis', () => {
 			const panels = [createPanel(5, 5)];
-			const from = new Vector2(80, 100);
-			const to = new Vector2(120, 100);
+			const from = new Vector2(72, 90);
+			const to = new Vector2(108, 90);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -65,8 +65,8 @@ describe('findBestPosition', () => {
 
 		it('should avoid panel collisions along y-axis', () => {
 			const panels = [createPanel(5, 5)];
-			const from = new Vector2(100, 80);
-			const to = new Vector2(100, 120);
+			const from = new Vector2(90, 72);
+			const to = new Vector2(90, 108);
 
 			const result = findBestPosition(panels, from, to, 'y');
 
@@ -77,8 +77,8 @@ describe('findBestPosition', () => {
 		it('should handle multiple panels', () => {
 			const panels = [createPanel(3, 3, 'panel1'), createPanel(7, 7, 'panel2'), createPanel(10, 5, 'panel3')];
 
-			const from = new Vector2(40, 60);
-			const to = new Vector2(240, 160);
+			const from = new Vector2(36, 54);
+			const to = new Vector2(234, 162);
 
 			const xResult = findBestPosition(panels, from, to, 'x');
 			const yResult = findBestPosition(panels, from, to, 'y');
@@ -91,13 +91,13 @@ describe('findBestPosition', () => {
 	describe('center-out search algorithm', () => {
 		it('should prefer center positions when no collisions', () => {
 			const panels: Panel[] = [];
-			const from = new Vector2(0, 100);
-			const to = new Vector2(200, 100);
+			const from = new Vector2(0, 90);
+			const to = new Vector2(198, 90);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
 			// Should be close to the center of the range
-			const expectedCenter = Math.floor((0 + 200) / 2 / GRID_SIZE) * GRID_SIZE;
+			const expectedCenter = Math.floor((0 + 198) / 2 / GRID_SIZE) * GRID_SIZE;
 			expect(Math.abs(result - expectedCenter)).toBeLessThanOrEqual(GRID_SIZE);
 		});
 
@@ -105,8 +105,8 @@ describe('findBestPosition', () => {
 			// Create panels that block the center area
 			const panels = [createPanel(4, 4), createPanel(5, 5), createPanel(6, 6)];
 
-			const from = new Vector2(80, 80);
-			const to = new Vector2(140, 140);
+			const from = new Vector2(72, 72);
+			const to = new Vector2(126, 126);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -127,8 +127,8 @@ describe('findBestPosition', () => {
 				}
 			}
 
-			const from = new Vector2(100, 200);
-			const to = new Vector2(300, 400);
+			const from = new Vector2(90, 198);
+			const to = new Vector2(306, 396);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -139,7 +139,7 @@ describe('findBestPosition', () => {
 
 		it('should handle identical from and to points', () => {
 			const panels: Panel[] = [];
-			const point = new Vector2(100, 100);
+			const point = new Vector2(90, 90);
 
 			const xResult = findBestPosition(panels, point, point, 'x');
 			const yResult = findBestPosition(panels, point, point, 'y');
@@ -152,8 +152,8 @@ describe('findBestPosition', () => {
 	describe('axis-specific behavior', () => {
 		it('should handle x-axis calculations correctly', () => {
 			const panels = [createPanel(5, 5)];
-			const from = new Vector2(40, 80);
-			const to = new Vector2(160, 120);
+			const from = new Vector2(36, 72);
+			const to = new Vector2(162, 108);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -164,8 +164,8 @@ describe('findBestPosition', () => {
 
 		it('should handle y-axis calculations correctly', () => {
 			const panels = [createPanel(5, 5)];
-			const from = new Vector2(80, 40);
-			const to = new Vector2(120, 160);
+			const from = new Vector2(72, 36);
+			const to = new Vector2(108, 162);
 
 			const result = findBestPosition(panels, from, to, 'y');
 
@@ -178,8 +178,8 @@ describe('findBestPosition', () => {
 	describe('edge cases', () => {
 		it('should handle negative coordinates', () => {
 			const panels: Panel[] = [];
-			const from = new Vector2(-100, -200);
-			const to = new Vector2(-50, -150);
+			const from = new Vector2(-90, -198);
+			const to = new Vector2(-54, -144);
 
 			const xResult = findBestPosition(panels, from, to, 'x');
 			const yResult = findBestPosition(panels, from, to, 'y');
@@ -190,8 +190,8 @@ describe('findBestPosition', () => {
 
 		it('should handle very large coordinates', () => {
 			const panels: Panel[] = [];
-			const from = new Vector2(10000, 20000);
-			const to = new Vector2(15000, 25000);
+			const from = new Vector2(9990, 19998);
+			const to = new Vector2(14994, 24984);
 
 			const xResult = findBestPosition(panels, from, to, 'x');
 			const yResult = findBestPosition(panels, from, to, 'y');
@@ -203,7 +203,7 @@ describe('findBestPosition', () => {
 		it('should handle zero coordinates', () => {
 			const panels: Panel[] = [];
 			const from = new Vector2(0, 0);
-			const to = new Vector2(100, 100);
+			const to = new Vector2(90, 90);
 
 			const xResult = findBestPosition(panels, from, to, 'x');
 			const yResult = findBestPosition(panels, from, to, 'y');
@@ -214,8 +214,8 @@ describe('findBestPosition', () => {
 
 		it('should handle swapped from/to coordinates', () => {
 			const panels: Panel[] = [];
-			const from = new Vector2(200, 300);
-			const to = new Vector2(100, 200);
+			const from = new Vector2(198, 306);
+			const to = new Vector2(90, 198);
 
 			const xResult = findBestPosition(panels, from, to, 'x');
 			const yResult = findBestPosition(panels, from, to, 'y');
@@ -229,7 +229,7 @@ describe('findBestPosition', () => {
 		it('should handle panels at grid boundaries', () => {
 			const panels = [createPanel(0, 0), createPanel(1, 1)];
 			const from = new Vector2(0, 0);
-			const to = new Vector2(40, 40);
+			const to = new Vector2(36, 36);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -240,8 +240,8 @@ describe('findBestPosition', () => {
 		it('should handle panels with decimal grid positions', () => {
 			// Edge case where panel positions might not be perfect integers
 			const panels: Panel[] = [{ x: 5.1, y: 5.1, id: 'decimal-panel', resolve: 'resolve', reject: 'reject' }];
-			const from = new Vector2(80, 80);
-			const to = new Vector2(120, 120);
+			const from = new Vector2(72, 72);
+			const to = new Vector2(108, 108);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -260,8 +260,8 @@ describe('findBestPosition', () => {
 				// Leave position 4 and 8 free, should prefer 6 (closer to 5-6 center)
 			];
 
-			const from = new Vector2(80, 100);
-			const to = new Vector2(140, 100);
+			const from = new Vector2(72, 90);
+			const to = new Vector2(126, 90);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -273,8 +273,8 @@ describe('findBestPosition', () => {
 	describe('integration with utility functions', () => {
 		it('should work correctly with minMaxPoint results', () => {
 			const panels = [createPanel(5, 5)];
-			const from = new Vector2(60, 80);
-			const to = new Vector2(140, 160);
+			const from = new Vector2(54, 72);
+			const to = new Vector2(126, 162);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
@@ -287,15 +287,15 @@ describe('findBestPosition', () => {
 
 		it('should work correctly with range generation', () => {
 			const panels: Panel[] = [];
-			const from = new Vector2(20, 40);
-			const to = new Vector2(100, 120);
+			const from = new Vector2(18, 36);
+			const to = new Vector2(90, 108);
 
 			const result = findBestPosition(panels, from, to, 'x');
 
 			// Result should be a valid grid position from the range
 			expect(result % GRID_SIZE).toBe(0);
-			expect(result).toBeGreaterThanOrEqual(20);
-			expect(result).toBeLessThanOrEqual(100);
+			expect(result).toBeGreaterThanOrEqual(18);
+			expect(result).toBeLessThanOrEqual(90);
 		});
 	});
 });

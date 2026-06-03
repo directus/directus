@@ -34,7 +34,9 @@ useHead({
 <template>
 	<PublicView>
 		<div class="header">
-			<h1 class="type-title">{{ wasSuccessful ? $t('registration_successful_headline') : $t('register') }}</h1>
+			<h1 class="type-display type-display-public">
+				{{ wasSuccessful ? $t('registration_successful_headline') : $t('register') }}
+			</h1>
 		</div>
 
 		<div v-if="wasSuccessful" class="after-success">
@@ -75,7 +77,7 @@ useHead({
 
 <style lang="scss" scoped>
 h1 {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .login {
@@ -91,24 +93,24 @@ h1 {
 	display: flex;
 	align-items: end;
 	justify-content: space-between;
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 
-	.type-title {
+	.type-display {
 		margin-block-end: 0;
 	}
 
 	.provider-select {
-		margin-block-end: 8px;
+		margin-block-end: 0.4375rem;
 	}
 }
 
 .login-wrapper {
-	margin-block-start: 3rem;
+	margin-block-start: 2.375rem;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
-	gap: 0.5rem;
+	gap: 0.375rem;
 	text-align: center;
 	color: var(--theme--foreground-subdued);
 }
@@ -120,6 +122,6 @@ h1 {
 .after-success {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 1.125rem;
 }
 </style>

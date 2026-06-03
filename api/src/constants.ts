@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { TransformationParams } from '@directus/types';
+import type { Settings, TransformationParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import bytes from 'bytes';
 import type { CookieOptions } from 'express';
@@ -61,16 +61,6 @@ export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
-export const GENERATE_SPECIAL = [
-	'uuid',
-	'date-created',
-	'date-updated',
-	'role-created',
-	'role-updated',
-	'user-created',
-	'user-updated',
-] as const;
-
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
 export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
@@ -119,3 +109,11 @@ export const RESUMABLE_UPLOADS = {
 };
 
 export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];
+
+export const CUSTOM_LLM_FIELDS = [
+	'ai_openai_compatible_api_key',
+	'ai_openai_compatible_base_url',
+	'ai_openai_compatible_name',
+	'ai_openai_compatible_models',
+	'ai_openai_compatible_headers',
+] as const satisfies readonly (keyof Settings)[];

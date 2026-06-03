@@ -57,7 +57,7 @@ async function copyError() {
 <style lang="scss" scoped>
 .v-error {
 	max-block-size: 50vh;
-	padding: 6px 12px;
+	padding: 0.3125rem 0.6875rem;
 	overflow: auto;
 	color: var(--theme--danger);
 	font-family: var(--theme--fonts--monospace--font-family);
@@ -65,7 +65,7 @@ async function copyError() {
 	border-radius: var(--theme--border-radius);
 
 	.copy-error {
-		margin-inline-start: 12px;
+		margin-inline-start: 0.6875rem;
 	}
 }
 </style>

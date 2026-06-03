@@ -16,7 +16,7 @@
 		> .container.right:not(.dialog-leave-active):nth-last-of-type(#{$i}):not(:last-of-type) .v-drawer {
 			transform: translateX(-#{($i - 1) * 30}px) scale(#{1 - (0.05 * ($i - 1))});
 			transform-origin: left;
-			border-radius: 20px;
+			border-radius: 1.125rem;
 
 			html[dir='rtl'] & {
 				transform-origin: right;

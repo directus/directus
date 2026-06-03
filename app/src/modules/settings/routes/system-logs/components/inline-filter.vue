@@ -85,7 +85,7 @@ const sortOptions = computed(() => {
 <style scoped>
 .inline-filter {
 	display: flex;
-	gap: 4px 32px;
+	gap: 0.25rem 1.8125rem;
 	flex-wrap: wrap;
 	inline-size: 100%;
 }
@@ -95,7 +95,7 @@ const sortOptions = computed(() => {
 	border: none;
 	border-radius: 0;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
-	inline-size: 180px;
+	inline-size: 10.125rem;
 	background: transparent;
 
 	&::placeholder {
@@ -114,6 +114,6 @@ const sortOptions = computed(() => {
 }
 
 .icon {
-	margin-inline-end: 4px;
+	margin-inline-end: 0.25rem;
 }
 </style>

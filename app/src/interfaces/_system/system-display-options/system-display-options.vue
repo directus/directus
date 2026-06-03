@@ -114,15 +114,15 @@ const optionsFields = computed(() => {
 
 <style lang="scss" scoped>
 .inset {
-	--theme--form--column-gap: 24px;
-	--theme--form--row-gap: 24px;
+	--theme--form--column-gap: 1.375rem;
+	--theme--form--row-gap: 1.375rem;
 
-	padding: 12px;
+	padding: 0.6875rem;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.type-label) {
-		font-size: 1rem;
+		font-size: 0.8125rem;
 	}
 }
 </style>

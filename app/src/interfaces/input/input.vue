@@ -125,7 +125,7 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 
 .remaining {
 	display: none;
-	inline-size: 24px;
+	inline-size: 1.375rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: end;

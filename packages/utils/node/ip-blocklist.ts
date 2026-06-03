@@ -21,7 +21,7 @@ export class IpBlocklist extends BlockList {
 	 * Internal interfaces are added as subnets (using CIDR notation),
 	 * while external interfaces are added as individual addresses.
 	 */
-	addLocalNetworkInterfaces() {
+	addLocalNetworkInterfaces(): void {
 		const networkInterfaces = Object.values(os.networkInterfaces());
 
 		for (const networkInfo of networkInterfaces) {
@@ -42,7 +42,7 @@ export class IpBlocklist extends BlockList {
 	 * Automatically detects the IP version.
 	 * @param input - The IP address to block (IPv4 or IPv6)
 	 */
-	parseAddress(input: string) {
+	parseAddress(input: string): void {
 		const ipVersion = this.getIpVersion(input);
 		this.addAddress(input, ipVersion);
 	}
@@ -52,7 +52,7 @@ export class IpBlocklist extends BlockList {
 	 * @param input - The subnet in CIDR notation (e.g., '192.168.1.0/24' or '::1/128')
 	 * @throws {Error} Throws 'ERR_INVALID_SUBNET' if the input format is invalid
 	 */
-	parseSubnet(input: string) {
+	parseSubnet(input: string): void {
 		const parts = input.split('/');
 
 		if (parts.length !== 2 || !parts[0] || !parts[1]) {
@@ -69,7 +69,7 @@ export class IpBlocklist extends BlockList {
 	 * @param input - The IP range in 'start-end' format (e.g., '192.168.1.1-192.168.1.255')
 	 * @throws {Error} Throws 'ERR_INVALID_RANGE' if the input format is invalid
 	 */
-	parseRange(input: string) {
+	parseRange(input: string): void {
 		const parts = input.split('-');
 
 		if (parts.length !== 2 || !parts[0] || !parts[1]) {

@@ -1,0 +1,137 @@
+# Adopted from the nuxt/nuxt agent scan workflow. Kudos to Julien and Matteo
+# Source: https://github.com/nuxt/nuxt/blob/bbd970e06c4a50e4c2b2a28b800ed22db5c36ed0/.github/workflows/agent-scan.yml
+#
+# Copyright (c) 2026 - Nuxt Team
+#
+# Licensed under the MIT License (MIT). You may obtain a copy of the License at:
+#    https://github.com/nuxt/nuxt/blob/bbd970e06c4a50e4c2b2a28b800ed22db5c36ed0/LICENSE
+#
+# Modifications:
+#    - Comment wording
+#    - Label name
+
+name: agent-scan
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+
+concurrency:
+  group: agent-scan-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  agentscan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+      - name: Cache AgentScan analysis
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7
+        with:
+          path: .agentscan-cache
+          key: agentscan-cache-${{ github.actor }}
+          restore-keys: agentscan-cache-
+      - name: AgentScan
+        id: agentscan
+        uses: MatteoGabriele/agentscan-action@6b02b7903ab24fbd23da0314b1b04dbaad98151b
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-members: 'dependabot[bot],renovate[bot]'
+          agent-scan-comment: false
+          cache-path: .agentscan-cache
+      - name: Set AgentScan flag
+        if:
+          ${{ contains(fromJSON('["automation","suspicious"]'), steps.agentscan.outputs.classification) &&
+          !contains(steps.agentscan.outputs.community-flagged, 'true') }}
+        run: echo "AGENT_FLAG=true" >> "$GITHUB_ENV"
+      - name: Set opted-in agent flag
+        if:
+          ${{ endsWith(github.event.pull_request.title, '🤖🤖🤖') || endsWith(github.event.pull_request.title,
+          ':robot::robot::robot:') }}
+        run: echo "AGENT_FLAG=true" >> "$GITHUB_ENV"
+      - name: Label flagged PR
+        if: ${{ env.AGENT_FLAG == 'true' }}
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const classification = '${{ steps.agentscan.outputs.classification }}';
+
+            const issue = context.payload.pull_request
+            const labels = issue.labels?.map(l => l.name) || []
+
+            if (!labels.includes('Maybe Slop')) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: ['Maybe Slop'],
+              })
+            }
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              per_page: 30,
+            })
+
+            const alreadyCommented = comments.data.some(
+              c => c.user.type === 'Bot' && c.body.includes('AI-assisted contribution guidelines')
+            )
+
+            if (alreadyCommented) {
+              core.info('Maybe Slop comment already exists. Skipping...')
+              return
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: [
+                "We've flagged this as a potential contribution without meaningful human involvement. We welcome the use of AI tools to assist with development in this repository, but AI must remain a tool, not a substitute for understanding or accountability.",
+                '',
+                'All contributors must keep a human in the loop at all times:',
+                '',
+                '- You must fully understand any AI-assisted code you submit.',
+                '- You are responsible for verifying correctness, security, performance, and project fit.',
+                '- Contributions must meet project standards and show meaningful human involvement.',
+                '- Fully autonomous agents may not create issues, pull requests, or other contributions.',
+                '- Comments, issues, pull requests, and replies must be your own words, not copy-pasted AI output.',
+                '',
+                'Please review our [AI usage policy](https://github.com/directus/directus/blob/main/ai_policy.md).',
+                '',
+                'If this was flagged in error, we apologize! 😳 Just let us know. 🙏',
+              ].join('\n'),
+            })
+
+            core.summary
+              .addHeading('AgentScan: Maybe Slop Flag', 2)
+              .addTable([
+                [{ data: 'Property', header: true }, { data: 'Value', header: true }],
+                ['Pull Request', `#${prNumber}`],
+                ['Classification', classification],
+                ['Action', 'Added \'Maybe Slop\' label and posted policy comment'],
+              ])
+
+            await core.summary.write()
+      - name: Close community flagged accounts
+        if: steps.agentscan.outputs.community-flagged == 'true'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              state: 'closed',
+            });

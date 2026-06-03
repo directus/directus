@@ -77,13 +77,13 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 
 		&::before {
 			content: '';
-			inline-size: 4px;
-			block-size: 4px;
+			inline-size: 0.25rem;
+			block-size: 0.25rem;
 			background-color: var(--theme--form--field--input--foreground-subdued);
-			border-radius: 4px;
+			border-radius: 0.25rem;
 			position: absolute;
-			inset-block-start: 11px;
-			inset-inline-start: -10px;
+			inset-block-start: 0.625rem;
+			inset-inline-start: -0.5625rem;
 			display: block;
 		}
 	}

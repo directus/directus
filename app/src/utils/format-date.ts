@@ -1,4 +1,6 @@
+import { formatInTimeZone } from 'date-fns-tz';
 import { i18n } from '@/lang';
+import { getDateFNSLocale } from '@/utils/get-date-fns-locale';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
@@ -14,6 +16,8 @@ export interface FormatDateOptions {
 	suffix?: boolean;
 	includeSeconds?: boolean;
 	use24?: boolean;
+	/** IANA timezone identifier (e.g., 'America/New_York', 'Europe/London', 'UTC'). If not provided, uses local timezone. */
+	tz?: string;
 }
 
 /**
@@ -66,5 +70,20 @@ export function formatDate(value: string, options: FormatDateOptions) {
 		format = options.format;
 	}
 
-	return localizedFormat(parseDate(value, options.type), format);
+	const date = parseDate(value, options.type);
+
+	if (options.type === 'timestamp' && options.tz?.trim()) {
+		return formatInTimeZone(date, options.tz, format, { locale: getDateFNSLocale() });
+	}
+
+	return localizedFormat(date, format);
+}
+
+/**
+ * Returns a human-readable timezone label with its current offset, e.g. "Asia/Tokyo (GMT+9)"
+ */
+export function formatTimezoneLabel(tz: string, value: string): string {
+	const date = parseDate(value, 'timestamp');
+	const offset = formatInTimeZone(date, tz, 'O');
+	return `${tz} (${offset})`;
 }

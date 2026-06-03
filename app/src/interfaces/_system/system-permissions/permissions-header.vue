@@ -11,7 +11,7 @@
 .permissions-overview-header {
 	th {
 		text-align: start;
-		padding: 12px;
+		padding: 0.6875rem;
 		font-weight: 600;
 		background-color: var(--theme--form--field--input--background);
 		border-start-start-radius: var(--theme--border-radius);

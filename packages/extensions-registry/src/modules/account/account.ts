@@ -45,7 +45,7 @@ export type { AccountOptions } from './types/account-options.js';
  * }
  * ```
  */
-export const account = async (id: string, options?: AccountOptions) => {
+export const account = async (id: string, options?: AccountOptions): Promise<RegistryAccountResponse> => {
 	await assertVersionCompatibility(options);
 	const url = constructUrl(id, options);
 	const response = await ky.get(url).json();

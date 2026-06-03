@@ -244,8 +244,8 @@ function useTranslationsFields() {
 		@cancel="cancel"
 		@apply="save"
 	>
-		<template #actions>
-			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" :loading="saving" icon="check" @click="save" />
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton :label="$t('save')" :loading="saving" icon="check" @click="save" />
 		</template>
 
 		<div class="drawer-batch-content">
@@ -262,7 +262,7 @@ function useTranslationsFields() {
 
 <style lang="scss" scoped>
 .v-divider {
-	margin: 52px 0;
+	margin: 2.9375rem 0;
 }
 
 .drawer-batch-content {

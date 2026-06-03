@@ -4,6 +4,7 @@
  */
 
 import { vi } from 'vitest';
+import type { ItemsService } from '../../services/index.js';
 
 /**
  * Creates a standard ItemsService mock for service tests
@@ -22,18 +23,31 @@ import { vi } from 'vitest';
  * ```
  */
 export function mockItemsService() {
-	const ItemsService = vi.fn();
+	const service = vi.fn(function (this: ItemsService, collection, options) {
+		this.collection = collection;
+		this.knex = options?.knex;
+		this.accountability = options?.accountability || null;
+		this.schema = options?.schema ?? { collections: {}, relations: [] };
+		return this;
+	});
+
 	// Provide sensible default return values for common operations
-	ItemsService.prototype.createOne = vi.fn().mockResolvedValue(1);
-	ItemsService.prototype.createMany = vi.fn().mockResolvedValue([1]);
-	ItemsService.prototype.readByQuery = vi.fn().mockResolvedValue([]);
-	ItemsService.prototype.readOne = vi.fn().mockResolvedValue({});
-	ItemsService.prototype.readMany = vi.fn().mockResolvedValue([]);
-	ItemsService.prototype.updateOne = vi.fn().mockResolvedValue(1);
-	ItemsService.prototype.updateMany = vi.fn().mockResolvedValue([1]);
-	ItemsService.prototype.updateByQuery = vi.fn().mockResolvedValue([1]);
-	ItemsService.prototype.deleteOne = vi.fn().mockResolvedValue(1);
-	ItemsService.prototype.deleteMany = vi.fn().mockResolvedValue([1]);
-	ItemsService.prototype.deleteByQuery = vi.fn().mockResolvedValue([1]);
-	return { ItemsService };
+	service.prototype.createOne = vi.fn().mockResolvedValue(1);
+	service.prototype.createMany = vi.fn().mockResolvedValue([1]);
+	service.prototype.readOne = vi.fn().mockResolvedValue({});
+	service.prototype.readMany = vi.fn().mockResolvedValue([]);
+	service.prototype.readByQuery = vi.fn().mockResolvedValue([]);
+	service.prototype.updateOne = vi.fn().mockResolvedValue(1);
+	service.prototype.updateMany = vi.fn().mockResolvedValue([1]);
+	service.prototype.updateBatch = vi.fn().mockResolvedValue([1]);
+	service.prototype.updateByQuery = vi.fn().mockResolvedValue([1]);
+	service.prototype.upsertOne = vi.fn().mockResolvedValue(1);
+	service.prototype.upsertMany = vi.fn().mockResolvedValue([1]);
+	service.prototype.deleteOne = vi.fn().mockResolvedValue(1);
+	service.prototype.deleteMany = vi.fn().mockResolvedValue([1]);
+	service.prototype.deleteByQuery = vi.fn().mockResolvedValue([1]);
+	service.prototype.readSingleton = vi.fn().mockResolvedValue({});
+	service.prototype.upsertSingleton = vi.fn().mockResolvedValue(1);
+
+	return { ItemsService: service };
 }

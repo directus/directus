@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@directus/composables';
 import { realtime } from '@directus/sdk';
 import { useLocalStorage } from '@vueuse/core';
 import CodeMirror from 'codemirror';
@@ -8,13 +9,11 @@ import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
 import LogsDisplay from './components/logs-display.vue';
 import { Log } from './types';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useClipboard } from '@/composables/use-clipboard';
-import { useShortcut } from '@/composables/use-shortcut';
 import InterfaceInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
@@ -425,10 +424,8 @@ onUnmounted(() => {
 
 <template>
 	<PrivateView :title="$t('settings_system_logs')" icon="terminal">
-		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
 		<template #actions>
-			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
+			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" icon disabled small>
 				<VProgressCircular small indeterminate />
 			</VButton>
 
@@ -449,8 +446,9 @@ onUnmounted(() => {
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('clear_logs')"
 				:disabled="logs.length === 0"
-				class="action-clear"
 				icon="mop"
+				kind="danger"
+				variant="ghost"
 				@click="clearLogs"
 			/>
 		</template>
@@ -525,23 +523,16 @@ onUnmounted(() => {
 	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
-.action-clear {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-color: var(--theme--foreground);
-	--v-button-background-color-hover: var(--theme--danger);
-	--v-button-color-hover: var(--white);
-}
-
 .logs-container {
 	inline-size: 100%;
-	block-size: calc(100% - 110px);
-	min-block-size: 600px;
+	block-size: calc(100% - 6.1875rem);
+	min-block-size: 33.75rem;
 	padding: var(--content-padding);
 	padding-block-start: 0;
 }
 
 .filter {
-	margin-block: 24px 20px;
+	margin-block: 1.375rem 1.125rem;
 }
 
 .v-form {
@@ -551,7 +542,7 @@ onUnmounted(() => {
 .split-view {
 	display: flex;
 	flex-direction: column;
-	block-size: calc(100% - 50px);
+	block-size: calc(100% - 2.8125rem);
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
@@ -568,43 +559,43 @@ onUnmounted(() => {
 
 .logs-display {
 	flex: 2;
-	min-block-size: 200px;
+	min-block-size: 11.25rem;
 }
 
 .log-detail {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	padding: 6px;
-	min-block-size: 300px;
+	padding: 0.3125rem;
+	min-block-size: 16.875rem;
 	background-color: var(--theme--background-subdued);
 	border-block-start: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	box-shadow: var(--sidebar-shadow);
+	box-shadow: -4px 0 7px -4px var(--shadow-color);
 	z-index: 1;
 }
 
 .log-detail-controls {
 	display: flex;
-	padding: 5px;
+	padding: 0.3125rem;
 }
 
 .close-button {
-	margin-inline-end: 10px;
+	margin-inline-end: 0.5625rem;
 }
 
 .copy-button {
 	float: inline-end;
 	position: absolute;
-	inset-block-start: 10px;
-	inset-inline-end: 10px;
+	inset-block-start: 0.5625rem;
+	inset-inline-end: 0.5625rem;
 	z-index: 2;
 }
 
 .raw-log {
 	block-size: 100%;
-	min-block-size: 100px;
-	margin: 4px;
+	min-block-size: 5.625rem;
+	margin: 0.25rem;
 	position: relative;
 	overflow: auto;
 	background-color: var(--theme--background);
@@ -635,17 +626,17 @@ onUnmounted(() => {
 }
 
 .actions {
-	padding: 0 9px;
+	padding: 0 0.5rem;
 	margin-inline-start: auto;
 }
 
-@media (min-width: 960px) {
+@media (width >= 54rem) {
 	.logs-container {
 		margin-block-end: 0;
 	}
 }
 
-@media (min-width: 1200px) {
+@media (width >= 67.5rem) {
 	.split-view {
 		flex-direction: row;
 	}

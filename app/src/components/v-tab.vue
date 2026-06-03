@@ -40,7 +40,7 @@ function onClick() {
 .v-tab.horizontal {
 	color: var(--theme--foreground-subdued);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 0.8125rem;
 	background-color: var(--theme--background);
 	transition: color var(--fast) var(--transition);
 

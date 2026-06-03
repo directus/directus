@@ -15,7 +15,21 @@ export function replaceFragmentsInSelections(
 		selections.map((selection) => {
 			// Fragments can contains fragments themselves. This allows for nested fragments
 			if (selection.kind === 'FragmentSpread') {
-				return replaceFragmentsInSelections(fragments[selection.name.value]!.selectionSet.selections, fragments);
+				const fragment = fragments[selection.name.value]!;
+
+				const replacedSelections = replaceFragmentsInSelections(fragment.selectionSet.selections, fragments);
+
+				// Wrap in InlineFragment to preserve typeCondition
+				return [
+					{
+						kind: 'InlineFragment' as const,
+						typeCondition: fragment.typeCondition,
+						selectionSet: {
+							kind: 'SelectionSet' as const,
+							selections: replacedSelections ?? [],
+						},
+					} as SelectionNode,
+				];
 			}
 
 			// Nested relational fields can also contain fragments

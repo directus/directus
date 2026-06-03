@@ -10,6 +10,7 @@ import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
+import checkIsLocked from '../middleware/is-locked.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -22,6 +23,7 @@ const router = express.Router();
 const env = useEnv();
 
 router.use(useCollection('directus_files'));
+router.use(checkIsLocked('files'));
 
 export const multipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('multipart/form-data') === false) return next();
@@ -56,7 +58,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	 * the row in directus_files async during the upload of the actual file.
 	 */
 
-	let disk: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 	let payload: any = {};
 	let fileCount = 0;
 
@@ -66,10 +67,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'null') fieldValue = null;
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'false') fieldValue = false;
 		if (typeof fieldValue === 'string' && fieldValue.trim() === 'true') fieldValue = true;
-
-		if (fieldname === 'storage') {
-			disk = val;
-		}
 
 		payload[fieldname] = fieldValue;
 	});
@@ -99,7 +96,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		const payloadWithRequiredFields = {
 			...payload,
 			type: mimeType,
-			storage: payload.storage || disk,
 		};
 
 		// Clear the payload for the next to-be-uploaded file

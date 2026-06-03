@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { translateShortcut, useShortcut } from '@directus/composables';
 import CodeMirror from 'codemirror';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { Alteration, applyEdit, CustomSyntax } from './edits';
@@ -19,12 +20,10 @@ import VMenu from '@/components/v-menu.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
 import VUpload from '@/components/v-upload.vue';
 import { parseGlobalMimeTypeAllowList } from '@/composables/use-mime-type-filter';
-import { useShortcut } from '@/composables/use-shortcut';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
-import { translateShortcut } from '@/utils/translate-shortcut';
 
 import 'codemirror/addon/display/placeholder.js';
 import 'codemirror/mode/markdown/markdown';
@@ -392,7 +391,6 @@ const menuActive = computed(() => imageDialogOpen.value);
 				:model-value="[view]"
 				class="view"
 				mandatory
-				rounded
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
 				<VButton x-small value="editor" :disabled="disabled && !nonEditable" :class="[{ active: view !== 'preview' }]">
@@ -404,7 +402,7 @@ const menuActive = computed(() => imageDialogOpen.value);
 			</VItemGroup>
 		</div>
 
-		<div ref="codemirrorEl"></div>
+		<div ref="codemirrorEl" class="codemirror-no-bg-color"></div>
 		<template v-if="softLength">
 			<span
 				class="remaining"
@@ -450,7 +448,7 @@ const menuActive = computed(() => imageDialogOpen.value);
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 	--editor-min-height: var(--input-height-lg);
-	--editor-toolbar-height: 40px;
+	--editor-toolbar-height: 2.25rem;
 	--editor-body-min-height: calc(var(--editor-min-height) - var(--editor-toolbar-height));
 
 	min-block-size: var(--editor-min-height);
@@ -458,15 +456,15 @@ const menuActive = computed(() => imageDialogOpen.value);
 	font-family: var(--theme--fonts--sans--font-family);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
-	box-shadow: var(--theme--form--field--input--box-shadow);
 	transition-duration: var(--fast);
 	transition-timing-function: var(--transition);
-	transition-property: box-shadow, border-color;
+	transition-property: border-color;
+	background-color: var(--theme--form--field--input--background);
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
 	min-block-size: var(--editor-body-min-height);
-	max-block-size: min(1000px, 80vh);
+	max-block-size: min(56.25rem, 80vh);
 }
 
 .interface-input-rich-text-md.disabled:not(.non-editable) {
@@ -479,12 +477,15 @@ const menuActive = computed(() => imageDialogOpen.value);
 
 .interface-input-rich-text-md:not(.disabled):hover {
 	border-color: var(--theme--form--field--input--border-color-hover);
-	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
 .interface-input-rich-text-md:not(.disabled):focus-within {
-	border-color: var(--theme--form--field--input--border-color-focus);
-	box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+	outline-offset: var(--focus-ring-offset-invert);
+}
+
+.interface-input-rich-text-md :deep(.CodeMirror.CodeMirror-focused) {
+	outline: 0;
 }
 
 textarea {
@@ -493,7 +494,7 @@ textarea {
 
 .preview-box {
 	display: none;
-	padding: 20px 24px;
+	padding: 1.125rem 1.375rem;
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {
@@ -503,8 +504,8 @@ textarea {
 
 .remaining {
 	position: absolute;
-	inset-inline-end: 10px;
-	inset-block-end: 5px;
+	inset-inline-end: 0.5625rem;
+	inset-block-end: 0.3125rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
 	text-align: end;
@@ -528,15 +529,15 @@ textarea {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {
-	padding: 0 20px;
+	padding: 0 1.125rem;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:first-of-type) {
-	margin-block-start: 20px;
+	margin-block-start: 1.125rem;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:last-of-type) {
-	margin-block-end: 20px;
+	margin-block-end: 1.125rem;
 }
 
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {
@@ -550,7 +551,7 @@ textarea {
 	flex-wrap: wrap;
 	align-items: center;
 	min-block-size: var(--editor-toolbar-height);
-	padding: 4px;
+	padding: 0.25rem;
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
@@ -558,7 +559,7 @@ textarea {
 		--focus-ring-offset: var(--focus-ring-offset-invert);
 
 		+ .v-button {
-			margin-inline-start: 2px;
+			margin-inline-start: 0.125rem;
 		}
 	}
 
@@ -577,14 +578,14 @@ textarea {
 }
 
 .table-options {
-	--theme--form--row-gap: 12px;
-	--theme--form--column-gap: 12px;
-	min-inline-size: 280px;
-	padding: 12px;
+	--theme--form--row-gap: 0.6875rem;
+	--theme--form--column-gap: 0.6875rem;
+	min-inline-size: 15.75rem;
+	padding: 0.6875rem;
 	@include mixins.form-grid;
 
 	.v-input {
-		min-inline-size: 100px;
+		min-inline-size: 5.625rem;
 	}
 }
 </style>

@@ -12,6 +12,11 @@ vi.mock('@ai-sdk/openai', () => ({
 
 vi.mock('@ai-sdk/anthropic', () => ({
 	createAnthropic: vi.fn(() => (model: string) => ({ id: `anthropic:${model}` })),
+	anthropic: {
+		tools: {
+			toolSearchBm25_20251119: vi.fn(() => ({})),
+		},
+	},
 }));
 
 vi.mock('@ai-sdk/google', () => ({

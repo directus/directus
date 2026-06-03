@@ -92,7 +92,7 @@ async function loadActivity() {
 }
 
 function close() {
-	router.push('/activity');
+	router.push({ name: 'activity-collection' });
 }
 </script>
 
@@ -150,7 +150,7 @@ function close() {
 
 <style lang="scss" scoped>
 .type-label:not(:first-child) {
-	margin-block-start: 24px;
+	margin-block-start: 1.375rem;
 }
 
 .content {
