@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Prevented setting a custom user `provider` when not entitled
+Prevented setting a custom user `provider` when not entitled to SSO
