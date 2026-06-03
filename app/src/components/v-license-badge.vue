@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_HOME_URL, DIRECTUS_OIG_URL } from '@directus/constants';
 import { computed } from 'vue';
 import VIcon from './v-icon/v-icon.vue';
 import { useServerStore } from '@/stores/server';
@@ -11,10 +11,8 @@ const serverStore = useServerStore();
 const displayPoweredBy = computed(() => serverStore.info?.license?.entitlements?.display_powered_by);
 
 const link = computed(() => {
-	if (displayPoweredBy.value === 'DIRECTUS') return `https://${DIRECTUS_DOMAIN}/`;
-
-	if (displayPoweredBy.value === 'OIG') return `https://${DIRECTUS_DOMAIN}/oig`;
-
+	if (displayPoweredBy.value === 'DIRECTUS') return DIRECTUS_HOME_URL;
+	if (displayPoweredBy.value === 'OIG') return DIRECTUS_OIG_URL;
 	return '';
 });
 </script>
