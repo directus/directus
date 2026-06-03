@@ -1,4 +1,5 @@
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { isPublishedVersionKey } from '@directus/constants';
 import { defineLayout } from '@directus/extensions';
 import { Field, Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
@@ -18,6 +19,7 @@ import { LayoutOptions } from './types';
 import { useAiToolsStore } from '@/ai/stores/use-ai-tools';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
+import { useVersionQuery } from '@/composables/use-version-query';
 import { useServerStore } from '@/stores/server';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
@@ -58,7 +60,9 @@ export default defineLayout<LayoutOptions>({
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
+		const versionKey = useVersionQuery();
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField, versionKey });
 
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
@@ -140,7 +144,10 @@ export default defineLayout<LayoutOptions>({
 			filter: filterWithCalendarView,
 			search: search,
 			filterSystem,
+			version: versionKey,
 		});
+
+		const isVersion = computed(() => !!versionKey.value && !isPublishedVersionKey(versionKey.value));
 
 		const events = computed<EventInput>(
 			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],
@@ -150,10 +157,10 @@ export default defineLayout<LayoutOptions>({
 			const displayEventTime = startDateFieldInfo.value?.type !== 'date';
 
 			const options: FullCalendarOptions = {
-				editable: true,
-				eventStartEditable: true,
-				eventResizableFromStart: true,
-				eventDurationEditable: true,
+				editable: !isVersion.value,
+				eventStartEditable: !isVersion.value,
+				eventResizableFromStart: !isVersion.value,
+				eventDurationEditable: !isVersion.value,
 				dayMaxEventRows: true,
 				height: (props.layoutProps.height ?? '100%') as CssDimValue,
 				firstDay: firstDay.value ?? 0,
@@ -182,7 +189,9 @@ export default defineLayout<LayoutOptions>({
 				eventClick(info) {
 					if (!collection.value) return;
 
-					const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
+					const item = isVersion.value
+						? items.value.find((item) => item.$meta?.version_id == info.event.id)
+						: items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
 
 					if (item) {
 						onClick({ item, event: info.jsEvent });
@@ -191,6 +200,11 @@ export default defineLayout<LayoutOptions>({
 				},
 				async eventChange(info) {
 					if (!collection.value || !startDateField.value || !startDateFieldInfo.value) return;
+
+					if (isVersion.value) {
+						info.revert();
+						return;
+					}
 
 					const itemChanges: Partial<Item> = {
 						[startDateField.value]: adjustDateTimeType(info.event.startStr, startDateFieldInfo.value.type),
@@ -291,8 +305,8 @@ export default defineLayout<LayoutOptions>({
 
 		function refresh() {
 			getItems();
-			getTotalCount();
-			getItemCount();
+			getTotalCount(true);
+			getItemCount(true);
 		}
 
 		function download() {
@@ -349,9 +363,10 @@ export default defineLayout<LayoutOptions>({
 			}
 
 			const primaryKey = item[primaryKeyField.value.field];
+			const eventId = isVersion.value ? item.$meta?.version_id : primaryKey;
 
 			return {
-				id: primaryKey,
+				id: eventId,
 				title:
 					renderDisplayStringTemplate(
 						collection.value!,
@@ -361,7 +376,7 @@ export default defineLayout<LayoutOptions>({
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,
-				className: selection.value.includes(primaryKey) ? 'selected' : undefined,
+				className: selection.value.includes(eventId) ? 'selected' : undefined,
 			};
 		}
 

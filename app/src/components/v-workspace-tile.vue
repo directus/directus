@@ -389,7 +389,7 @@ function useDragDrop() {
 
 		&.dragging {
 			z-index: 3 !important;
-			border-color: var(--theme--form--field--input--border-color-focus);
+			border-color: var(--theme--primary);
 			box-shadow: 0 0 0 calc(var(--theme--border-width) / 2) var(--theme--primary);
 			-webkit-user-select: none;
 			user-select: none;
@@ -451,7 +451,7 @@ function useDragDrop() {
 
 .footer {
 	padding: 0 0.6875rem;
-	border-block-start: 2px solid var(--theme--border-color-subdued);
+	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	margin-block-start: auto;
 	padding-block-start: 0.4375rem;
 }

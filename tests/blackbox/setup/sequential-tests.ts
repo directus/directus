@@ -16,7 +16,6 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 			'/tests/db/routes/collections/crud.test.ts',
 			'/tests/db/routes/fields/change-fields.test.ts',
 			'/tests/db/routes/fields/crud.test.ts',
-			'/tests/db/routes/items/version.test.ts',
 		],
 		after: [
 			'/tests/db/websocket/collab/multi-instance.test.ts',
@@ -33,7 +32,7 @@ export const sequentialTestsList: Record<'db' | 'common', SequentialTestsList> =
 		// If specified, only run these tests sequentially
 		only: [
 			// '/tests/db/seed-database.test.ts',
-			// '/common/common.test.ts',
+			// '/common/common.test.ts'
 		],
 	},
 };

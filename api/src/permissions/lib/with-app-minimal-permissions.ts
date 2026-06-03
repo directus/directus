@@ -7,7 +7,17 @@ export function withAppMinimalPermissions(
 	accountability: Pick<Accountability, 'app'> | null,
 	permissions: Permission[],
 	filter: Query['filter'],
-): Permission[] {
+): Permission[];
+export function withAppMinimalPermissions(
+	accountability: Pick<Accountability, 'app'> | null,
+	permissions: Partial<Permission>[],
+	filter: Query['filter'],
+): Partial<Permission>[];
+export function withAppMinimalPermissions(
+	accountability: Pick<Accountability, 'app'> | null,
+	permissions: Partial<Permission>[],
+	filter: Query['filter'],
+): Partial<Permission>[] {
 	if (accountability?.app === true) {
 		const filteredAppMinimalPermissions = cloneDeep(filterItems(appAccessMinimalPermissions, filter));
 		return [...permissions, ...filteredAppMinimalPermissions];

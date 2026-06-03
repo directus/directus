@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: حول
+continue: متابعة
 first_name: الاسم الأول
 last_name: الاسم الأخير
 identifier: المعرِّف
@@ -158,14 +159,12 @@ keep: احتفظ
 version: إصدار
 version_key: مفتاح الإصدار
 version_name: اسم الإصدار
-main_version: رئيسي
 switch_version: تبديل الإصدار
 switch_version_copy: هل أنت متأكد من أنك تريد التبديل إلى الإصدار "{version}"؟ سيتم فقدان التغييرات الغير محفوظة.
 create_version: إنشاء إصدار
 rename_version: إعادة تسمية الإصدار
 compare_version: مقارنة الإصدار
 save_version: حفظ الإصدار
-promote_version: تحديث الإصدار
 delete_version: حذف الإصدار
 delete_version_copy: >-
   هل أنت متأكد من أنك تريد حذف الإصدار "{version}"؟ لا يمكن التراجع عن هذا الإجراء.
@@ -1091,6 +1090,17 @@ settings_data_model: نموذج البيانات
 settings_roles: أدوار المستخدم
 settings_permissions: سياسات الوصول
 settings_project: إعدادات
+licensing:
+  unlimited: غير محدود
+  addon_manage: إدارة
+  addon_update: تحديث
+  resolve_continue: متابعة
+  resolve_show_n_more: 'أظهر {count} أكثر'
+  resolve_section_flows: التدفقات
+  resolve_sso_admin_password: كلمة المرور
+  entitlements:
+    collections: مجموعات
+    flows: التدفقات
 settings_appearance: المظهر
 settings_flows: التدفقات
 settings_system_logs: سجلات النظام

@@ -7,7 +7,7 @@ export interface DirectusApiError {
 	};
 }
 
-export interface DirectusError<R = Response> {
+export interface DirectusError<R = Response> extends Error {
 	message: string;
 	errors: DirectusApiError[];
 	response: R;
