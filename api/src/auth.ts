@@ -49,7 +49,7 @@ export async function registerAuthProviders(): Promise<void> {
 	}
 
 	// Register configured providers
-	for (const name of providerNames) {
+	for (let name of providerNames) {
 		name = name.trim();
 
 		if (name === DEFAULT_AUTH_PROVIDER) {
