@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DIRECTUS_LICENSING_DOCS_URL, DIRECTUS_SUPPORT_URL } from '@directus/constants';
+import { DIRECTUS_LICENSING_DOCS_URL, DIRECTUS_OIG_URL, DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { I18nT } from 'vue-i18n';
@@ -10,7 +10,7 @@ import { useUserStore } from '@/stores/user';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 
 const serverStore = useServerStore();
-const { gracePeriodDaysRemaining, isLocked, isCoreGrace, graceDeadline } = storeToRefs(useLicenseStore());
+const { gracePeriodDaysRemaining, isLocked, isCoreGrace, isCore, graceDeadline } = storeToRefs(useLicenseStore());
 
 const formattedCoreGraceDate = computed(() =>
 	graceDeadline.value
@@ -24,6 +24,8 @@ const show = computed(
 	() => isAdmin.value && (gracePeriodDaysRemaining.value !== null || isLocked.value || isCoreGrace.value),
 );
 
+const showOig = computed(() => isAdmin.value && isCore.value && !isLocked.value);
+
 const severity = computed(() =>
 	gracePeriodDaysRemaining.value !== null && gracePeriodDaysRemaining.value <= GRACE_DANGER_THRESHOLD_DAYS
 		? 'danger'
@@ -35,6 +37,10 @@ const lockedSupportUrl = computed(() =>
 );
 
 const coreGraceLicensingUrl = DIRECTUS_LICENSING_DOCS_URL;
+
+const oigUrl = computed(() =>
+	getDirectusUrlWithUtm(DIRECTUS_OIG_URL, serverStore.info?.version, 'status_notice_open_innovation_grant_link'),
+);
 </script>
 
 <template>
@@ -71,6 +77,9 @@ const coreGraceLicensingUrl = DIRECTUS_LICENSING_DOCS_URL;
 					{{ $t('license.unlicensed_status_notice.upgrade') }}
 				</a>
 			</template>
+			<template #oig>
+				<a :href="oigUrl" target="_blank" rel="noopener noreferrer">{{ $t('open_innovation_grant') }}</a>
+			</template>
 		</I18nT>
 	</VNotice>
 	<VNotice v-else-if="show" :type="severity" class="status-notice">
@@ -84,11 +93,23 @@ const coreGraceLicensingUrl = DIRECTUS_LICENSING_DOCS_URL;
 			</template>
 		</I18nT>
 	</VNotice>
+	<VNotice v-if="showOig" type="info" class="status-notice" icon="workspace_premium">
+		<I18nT keypath="license.unlicensed_status_notice.oig_eligible" tag="span">
+			<template #oig>
+				<a :href="oigUrl" target="_blank" rel="noopener noreferrer">{{ $t('open_innovation_grant') }}</a>
+			</template>
+		</I18nT>
+	</VNotice>
 </template>
 
 <style lang="scss" scoped>
 .status-notice {
 	--v-notice-color: var(--theme--foreground);
+	margin-block: 2.25rem 0.5rem;
+
+	& + .status-notice {
+		margin-block-start: 0.5rem;
+	}
 
 	a {
 		text-decoration: underline;
