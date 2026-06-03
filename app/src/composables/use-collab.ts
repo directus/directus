@@ -114,7 +114,7 @@ export function useCollab(
 	version: Ref<ContentVersionMaybeNew | null>,
 	initialValues: Ref<Item | null>,
 	edits: Ref<Item>,
-	getItem: () => Promise<void>,
+	getItem: (opts?: { silent?: boolean }) => Promise<void>,
 	active?: Ref<boolean>,
 ): {
 	update: (changes: Item) => void;
@@ -466,7 +466,7 @@ export function useCollab(
 	}
 
 	async function receiveSave() {
-		await getItem();
+		await getItem({ silent: true });
 
 		if (!initialValues.value) return;
 
@@ -490,6 +490,9 @@ export function useCollab(
 				}
 			}
 		}
+
+		// Skip the toast in auto-save (versioned) mode — every keystroke would surface it.
+		if (version.value !== null) return;
 
 		// Prevent duplicate messages on sender side, kinda hacky
 		if (!notificationsStore.queue.some((notify) => notify.title === t('item_update_success')))

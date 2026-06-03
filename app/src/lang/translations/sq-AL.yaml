@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rreth
+continue: Vazhdo
 first_name: Emri
 last_name: Mbiemri
 identifier: Identifikues
@@ -157,14 +158,12 @@ keep: Ruaj
 version: Version
 version_key: Çelësi i Versionit
 version_name: Emri i Versionit
-main_version: Kryesore
 switch_version: Ndërro Versionin
 switch_version_copy: A jeni i sigurt që doni të ndërroni në versionin "{version}"? Ndryshimet e paruajtura do të humbasin.
 create_version: Krijo Version
 rename_version: Riemërto Versionin
 compare_version: Krahaso Versionin
 save_version: Ruaj Versionin
-promote_version: Promovo Versionin
 delete_version: Fshi Versionin
 delete_version_copy: >-
   A jeni i sigurt që doni të fshini versionin "{version}"? Kjo veprim nuk mund të zhbëhet.
@@ -1111,6 +1110,17 @@ settings_data_model: Modeli i të Dhënave
 settings_roles: Rolet e Përdoruesve
 settings_permissions: Drejtimet e Aksesit
 settings_project: Parametra
+licensing:
+  unlimited: I pakufizuar
+  addon_manage: Menaxho
+  addon_update: Përditëso
+  resolve_continue: Vazhdo
+  resolve_show_n_more: 'Shfaq {count} më shumë'
+  resolve_section_flows: Rrjedha
+  resolve_sso_admin_password: Fjalëkalimi
+  entitlements:
+    collections: Koleksione
+    flows: Rrjedha
 settings_appearance: Pamja
 settings_flows: Rrjedha
 settings_system_logs: Regjistrat e Sistemit
@@ -1998,7 +2008,9 @@ interfaces:
     value_securely_saved: Vlera U Ruajt në mënyrë të Sigurt
     generate: Gjenero Token
     regenerate: Rrigjenero Token
+    regenerate_confirm_title: Rrigjenero Token
     remove_token: Hiq Tokenin
+    remove_confirm_title: Hiq Tokenin
   system-raw-editor:
     system-raw-editor: Redaktor i Papërpunuar
     description: Lejo futjen e vlerave të papërpunuara ose të vlerave të modelit të mustaqes
@@ -2451,4 +2463,6 @@ search_flow: Kërko në Rrjedhë...
 percent: Përqind
 show_password: Shfaq fjalëkalimin
 hide_password: Fshih fjalëkalimin
+license_grace_key_modal:
+  optional: Opsionale
 set_to_now: Cakto Tani

@@ -129,7 +129,6 @@ export function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Compo
 			const state: Record<string, unknown> = reactive({
 				...layout.setup(props, { emit }),
 				...toRefs(props),
-				sidebarShadow: layout.sidebarShadow ?? false,
 			});
 
 			for (const key in state) {

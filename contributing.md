@@ -1,4 +1,4 @@
 # Contributing
 
 Please see our contributing guidelines on
-[https://docs.directus.io/contributing/introduction](https://docs.directus.io/contributing/introduction)
+[https://directus.com/docs/community/contribution/translations](https://directus.com/docs/community/contribution/translations)
