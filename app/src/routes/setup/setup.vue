@@ -13,7 +13,6 @@ import api from '@/api';
 import { login } from '@/auth';
 import VButton from '@/components/v-button.vue';
 import VNotice from '@/components/v-notice.vue';
-import { translateAPIError } from '@/lang';
 import { useServerStore } from '@/stores/server';
 import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 import PublicView from '@/views/public';
@@ -92,8 +91,14 @@ async function launch() {
 	}
 }
 
-const errorMessage = computed(() => {
-	return error.value?.response?.data?.errors?.[0]?.message || error.value?.message || t('unexpected_error');
+const errorFormatted = computed(() => {
+	let message = error.value?.response?.data?.errors?.[0]?.message || error.value?.message || t('unexpected_error');
+
+	if (message.length > 200) {
+		message = message.substring(0, 197) + '...';
+	}
+
+	return message;
 });
 
 const setupComplete = computed(() => SetupValidator.safeParse(form.value).success);
@@ -123,6 +128,9 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 			</I18nT>
 
 			<LicenseForm ref="licenseFormRef" v-model="form" :errors="errors"></LicenseForm>
+			<VNotice v-if="error" type="danger">
+				{{ errorFormatted }}
+			</VNotice>
 			<div class="actions">
 				<VButton v-if="showAdminStep" secondary @click="page = 'setup'">
 					{{ $t('back') }}
@@ -132,15 +140,6 @@ const setupComplete = computed(() => SetupValidator.safeParse(form.value).succes
 				</VButton>
 			</div>
 		</template>
-
-		<VNotice v-if="error" type="danger">
-			<p class="error-code">
-				{{ translateAPIError(error) }}
-			</p>
-			<p>
-				{{ errorMessage }}
-			</p>
-		</VNotice>
 	</PublicView>
 </template>
 
@@ -163,11 +162,6 @@ p {
 
 .v-notice {
 	margin-block-start: 1.375rem;
-}
-
-.error-code {
-	font-weight: 700;
-	margin-block-end: 0.25rem;
 }
 
 .actions {
