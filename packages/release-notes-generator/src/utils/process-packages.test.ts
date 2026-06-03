@@ -37,6 +37,7 @@ vi.doMock('@pnpm/workspace.find-packages', () => ({
 
 beforeEach(() => {
 	vi.unstubAllEnvs();
+	mockChangesetPreFile = undefined;
 	packages = [];
 });
 
@@ -64,7 +65,7 @@ test('should return main version and package versions', async () => {
 });
 
 test('should fail if main version is missing', async () => {
-	expect(() => processPackages()).rejects.toThrow(/Main version .* is missing or invalid/);
+	await expect(() => processPackages()).rejects.toThrow(/Main version .* is missing or invalid/);
 });
 
 test('should respect manually defined version', async () => {
@@ -81,7 +82,7 @@ test('should respect manually defined version', async () => {
 test('should fail with manually defined version when not in prerelease mode', async () => {
 	vi.stubEnv('DIRECTUS_VERSION', '2.0.0-beta.0');
 
-	expect(() => processPackages()).rejects.toThrow(
+	await expect(() => processPackages()).rejects.toThrow(
 		`Main version is a prerelease but changesets isn't in prerelease mode`,
 	);
 });
@@ -148,14 +149,15 @@ test('should return correct version for linked packages in prerelease mode with 
 	expect(packageVersions).toEqual(expect.arrayContaining([{ name: 'target', version: '1.1.1-beta.1' }]));
 });
 
-test('should fix version for private packages', async () => {
+test('should ignore private packages', async () => {
 	mockChangesetPreFile = JSON.stringify({ tag: 'beta' });
 
 	const privatePackage = generatePackage('private', '0.0.1', { additional: { private: true } });
 
 	packages = [generatePackage('main', '1.0.0'), privatePackage];
 
-	await processPackages();
+	const { packageVersions } = await processPackages();
 
-	expect(privatePackage.writeProjectManifest).toHaveBeenCalledWith(expect.objectContaining({ version: '0.0.0' }));
+	expect(privatePackage.writeProjectManifest).not.toHaveBeenCalled();
+	expect(packageVersions).not.toContainEqual(expect.objectContaining({ name: 'private' }));
 });

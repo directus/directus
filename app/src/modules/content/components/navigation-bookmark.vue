@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Preset } from '@directus/types';
 import { computed, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useDeleteBookmark } from '../composables/use-delete-bookmark';
+import { getBookmarkScope } from '../utils/get-bookmark-scope';
+import BookmarkDelete from './bookmark-delete.vue';
 import VButton from '@/components/v-button.vue';
 import VCardActions from '@/components/v-card-actions.vue';
 import VCardText from '@/components/v-card-text.vue';
@@ -30,9 +32,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const router = useRouter();
-const route = useRoute();
-
 const userStore = useUserStore();
 const presetsStore = usePresetsStore();
 
@@ -40,11 +39,7 @@ const isMine = computed(() => props.bookmark.user === userStore.currentUser!.id)
 
 const hasPermission = computed(() => isMine.value || userStore.isAdmin);
 
-const scope = computed(() => {
-	if (props.bookmark.user && !props.bookmark.role) return 'personal';
-	if (!props.bookmark.user && props.bookmark.role) return 'role';
-	return 'global';
-});
+const scope = computed(() => getBookmarkScope(props.bookmark));
 
 const { editActive, editValue, editSave, editSaving, editCancel, isEditDisabled } = useEditBookmark();
 const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
@@ -94,38 +89,6 @@ function useEditBookmark() {
 		editValue.color = props.bookmark?.color ?? null;
 	}
 }
-
-function useDeleteBookmark() {
-	const deleteActive = ref(false);
-	const deleteSaving = ref(false);
-
-	return { deleteActive, deleteSave, deleteSaving };
-
-	async function deleteSave() {
-		if (deleteSaving.value) return;
-
-		deleteSaving.value = true;
-
-		try {
-			let navigateTo: string | null = null;
-
-			if (route.query?.bookmark && +route.query.bookmark === props.bookmark.id) {
-				navigateTo = getCollectionRoute(props.bookmark.collection);
-			}
-
-			await presetsStore.delete([props.bookmark.id!]);
-			deleteActive.value = false;
-
-			if (navigateTo) {
-				router.replace(navigateTo);
-			}
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			deleteSaving.value = false;
-		}
-	}
-}
 </script>
 
 <template>
@@ -147,7 +110,6 @@ function useDeleteBookmark() {
 					v-tooltip.bottom="!hasPermission && $t(`cannot_edit_${scope}_bookmarks`)"
 					:name="hasPermission ? 'more_vert' : 'lock'"
 					:clickable="hasPermission"
-					small
 					class="ctx-toggle"
 					:class="{ active }"
 					@click.prevent="hasPermission ? toggle() : null"
@@ -167,15 +129,13 @@ function useDeleteBookmark() {
 					</VListItemContent>
 				</VListItem>
 				<VListItem clickable class="danger" @click="deleteActive = true">
-					<VListItemIcon>
-						<VIcon name="delete" outline />
-					</VListItemIcon>
-					<VListItemContent>
-						<VTextOverflow :text="$t(`delete_${scope}_bookmark`)" />
-					</VListItemContent>
+					<VListItemIcon><VIcon name="delete" outline /></VListItemIcon>
+					<VListItemContent><VTextOverflow :text="$t(`delete_${scope}_bookmark`)" /></VListItemContent>
 				</VListItem>
 			</VList>
 		</VMenu>
+
+		<BookmarkDelete v-model="deleteActive" :bookmark="bookmark" :saving="deleteSaving" @delete="deleteSave(bookmark)" />
 
 		<VDialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
 			<VCard>
@@ -196,18 +156,6 @@ function useDeleteBookmark() {
 					<VButton secondary @click="editCancel">{{ $t('cancel') }}</VButton>
 					<VButton :disabled="isEditDisabled" :loading="editSaving" @click="editSave">
 						{{ $t('save') }}
-					</VButton>
-				</VCardActions>
-			</VCard>
-		</VDialog>
-
-		<VDialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
-			<VCard>
-				<VCardTitle>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</VCardTitle>
-				<VCardActions>
-					<VButton secondary @click="deleteActive = false">{{ $t('cancel') }}</VButton>
-					<VButton :loading="deleteSaving" kind="danger" @click="deleteSave">
-						{{ $t('delete_label') }}
 					</VButton>
 				</VCardActions>
 			</VCard>

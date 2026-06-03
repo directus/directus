@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: შესახებ
+continue: გაგრძელება
 first_name: სახელი
 last_name: გვარი
 identifier: იდენტიფიკატორი
@@ -161,14 +162,12 @@ keep: შენარჩუნება
 version: ვერსია
 version_key: ვერსიის გასაღები
 version_name: ვერსიის სახელი
-main_version: მთავარი
 switch_version: ვერსიის ცვლილება
 switch_version_copy: დარწმუნებული ხართ, რომ გსურთ "{version}" ვერსიაზე გადართვა? შეუნახავი ცვლილებები დაიკარგება.
 create_version: ვერსიის შექმნა
 rename_version: ვერსიის სახელის გადარქმევა
 compare_version: ვერსიების შეადარება
 save_version: ვერსიის შენახვა
-promote_version: ვერსიის დაწინაურება
 delete_version: ვერსიის წაშლა
 delete_version_copy: >-
   დარწმუნებული ხართ, რომ გსურთ წაშალოთ "{version}" ვერსია? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
@@ -605,7 +604,6 @@ manual_string: ხელით შეყვანილი სტრიქონ
 save_and_create_new: შენახვა და ახლის შექმნა
 save_and_stay: შენახვა და დარჩენა
 save_and_quit: შენახვა და გასვლა
-save_and_return_to_main: შენახვა და მთავარზე დაბრუნება
 save_as_copy: ასლად შენახვა
 add_existing: არსებულის დამატება
 creating_items: ჩანაწერების შექმნა
@@ -1133,6 +1131,17 @@ settings_data_model: მონაცემთა მოდელი
 settings_roles: მომხმარებლის როლები
 settings_permissions: წვდომის პოლიტიკები
 settings_project: პარამეტრები
+licensing:
+  unlimited: შეუზღუდავი
+  addon_manage: მართვა
+  addon_update: განახლება
+  resolve_continue: გაგრძელება
+  resolve_show_n_more: '{count} მეტის ჩვენება'
+  resolve_section_flows: ნაკადები
+  resolve_sso_admin_password: პაროლი
+  entitlements:
+    collections: კოლექციები
+    flows: ნაკადები
 settings_appearance: გარეგნობა
 settings_flows: ნაკადები
 settings_system_logs: სისტემის ჟურნალები
@@ -2023,7 +2032,9 @@ interfaces:
     value_securely_saved: მნიშვნელობა უსაფრთხოდ შეინახა
     generate: ტოკენის გენერირება
     regenerate: ტოკენის ხელახლა გენერირება
+    regenerate_confirm_title: ტოკენის ხელახლა გენერირება
     remove_token: ტოკენის წაშლა
+    remove_confirm_title: ტოკენის წაშლა
   system-raw-editor:
     system-raw-editor: პირველადი რედაქტორი
     description: პირველადი ან mustache შაბლონური მნიშვნელობების შეყვანის დაშვება
@@ -2487,5 +2498,7 @@ search_flow: Flow-ს ძებნა...
 percent: პროცენტი
 show_password: პაროლის ჩვენება
 hide_password: პაროლის დამალვა
+license_grace_key_modal:
+  optional: არჩევითი
 accepted: დათანხმება
 set_to_now: ახლანდელ დროზე დაყენება

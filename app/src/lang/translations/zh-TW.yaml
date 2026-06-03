@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 關於
+continue: 繼續
 first_name: 名字
 last_name: 姓氏
 identifier: 識別
@@ -161,14 +162,12 @@ keep: 保留
 version: 版本
 version_key: 版本鍵值
 version_name: 版本名稱
-main_version: 主要
 switch_version: 切換版本
 switch_version_copy: 您確定要切換到 「{version}」 版本嗎？未保存的變更將會遺失。
 create_version: 創建新版本
 rename_version: 重新命名版本
 compare_version: 比較版本
 save_version: 儲存版本
-promote_version: 發布版本
 delete_version: 刪除版本
 reset_bookmark: 重設書籤
 update_bookmark: 更新書籤
@@ -989,6 +988,17 @@ editing_in_batch: '批次編輯 {count} 個項目'
 no_options_available: 沒有可用的選項
 settings_data_model: 資料模型
 settings_project: 設定
+licensing:
+  unlimited: 無限制
+  addon_manage: 管理
+  addon_update: 更新
+  resolve_continue: 繼續
+  resolve_show_n_more: '顯示其餘 {count} 項'
+  resolve_section_flows: 流程
+  resolve_sso_admin_password: 密碼
+  entitlements:
+    collections: 資料集
+    flows: 流程
 ai_assistant: AI助手
 settings_flows: 流程
 settings_presets: 書籤
@@ -1766,7 +1776,9 @@ interfaces:
     value_securely_saved: 值已安全加密
     generate: 產生 Token
     regenerate: 重新產生 token
+    regenerate_confirm_title: 重新產生 token
     remove_token: 移除 Token
+    remove_confirm_title: 移除 Token
   system-raw-editor:
     system-raw-editor: 原始資料編輯器
     description: 讓您透過編輯器編輯範本
@@ -2104,4 +2116,6 @@ fonts:
   black: 黑色
   italic: 斜體
   auto: 自動
+license_grace_key_modal:
+  optional: 非必填
 set_to_now: 設為現在

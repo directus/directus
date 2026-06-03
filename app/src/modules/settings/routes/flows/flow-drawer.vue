@@ -17,6 +17,7 @@ import VTabs from '@/components/v-tabs.vue';
 import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
 import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useFlowsStore } from '@/stores/flows';
+import { useLicenseStore } from '@/stores/license';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 
@@ -43,6 +44,7 @@ const props = withDefaults(
 const emit = defineEmits(['cancel', 'done']);
 
 const flowsStore = useFlowsStore();
+const licenseStore = useLicenseStore();
 
 const currentTab = ref(['flow_setup']);
 
@@ -143,6 +145,7 @@ async function save() {
 		}
 
 		await flowsStore.hydrate();
+		licenseStore.hydrate();
 
 		emit('done', id);
 	} catch (error) {
@@ -270,10 +273,10 @@ function onApply() {
 			</VTabItem>
 		</VTabsItems>
 
-		<template #actions>
+		<template #actions:primary>
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'flow_setup'"
-				v-tooltip.bottom="isNew ? $t('next') : $t('save')"
+				:label="isNew ? $t('next') : $t('save')"
 				:disabled="isFlowSetupDisabled"
 				:loading="saving"
 				:icon="isNew ? 'arrow_forward' : 'check'"
@@ -282,7 +285,7 @@ function onApply() {
 
 			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'trigger_setup'"
-				v-tooltip.bottom="isNew ? $t('finish_setup') : $t('save')"
+				:label="isNew ? $t('finish_setup') : $t('save')"
 				:disabled="isFlowTriggerDisabled"
 				:loading="saving"
 				icon="check"

@@ -18,7 +18,15 @@ const props = defineProps<{
 	disableDrag?: boolean;
 }>();
 
-const emit = defineEmits(['setNestedSort', 'editCollection', 'toggleCollapse']);
+const emit = defineEmits([
+	'setNestedSort',
+	'editCollection',
+	'toggleCollapse',
+	'activateCollection',
+	'deactivateCollection',
+]);
+
+const isDeactivated = computed(() => props.collection.meta?.status === 'inactive');
 
 const toggleCollapse = () => {
 	emit('toggleCollapse', props.collection.collection);
@@ -45,10 +53,10 @@ function onGroupSortChange(collections: Collection[]) {
 		<VListItem
 			block
 			dense
-			clickable
-			:class="{ hidden: collection.meta?.hidden }"
-			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
-			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
+			:clickable="!isDeactivated"
+			:class="{ hidden: collection.meta?.hidden, deactivated: isDeactivated }"
+			:to="!isDeactivated && collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
+			@click.self="!isDeactivated && !collection.schema ? $emit('editCollection', collection) : null"
 		>
 			<VListItemIcon>
 				<VIcon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
@@ -82,6 +90,8 @@ function onGroupSortChange(collections: Collection[]) {
 				:has-nested-collections="nestedCollections.length > 0"
 				:collection="collection"
 				@collection-toggle="toggleCollapse"
+				@activate-collection="$emit('activateCollection', $event)"
+				@deactivate-collection="$emit('deactivateCollection', $event)"
 			/>
 		</VListItem>
 
@@ -106,6 +116,8 @@ function onGroupSortChange(collections: Collection[]) {
 						@edit-collection="$emit('editCollection', $event)"
 						@set-nested-sort="$emit('setNestedSort', $event)"
 						@toggle-collapse="$emit('toggleCollapse', $event)"
+						@activate-collection="$emit('activateCollection', $event)"
+						@deactivate-collection="$emit('deactivateCollection', $event)"
 					/>
 				</template>
 			</Draggable>
@@ -139,6 +151,15 @@ function onGroupSortChange(collections: Collection[]) {
 
 .hidden .collection-name {
 	color: var(--theme--foreground-subdued);
+}
+
+.deactivated {
+	opacity: 0.6;
+
+	.collection-icon,
+	.collection-name {
+		color: var(--theme--foreground-subdued);
+	}
 }
 
 .collection-note {

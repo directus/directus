@@ -9,7 +9,6 @@ import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
 import LogsDisplay from './components/logs-display.vue';
 import { Log } from './types';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -425,10 +424,8 @@ onUnmounted(() => {
 
 <template>
 	<PrivateView :title="$t('settings_system_logs')" icon="terminal">
-		<template #headline><VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
 		<template #actions>
-			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
+			<VButton v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" icon disabled small>
 				<VProgressCircular small indeterminate />
 			</VButton>
 
@@ -449,8 +446,9 @@ onUnmounted(() => {
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('clear_logs')"
 				:disabled="logs.length === 0"
-				class="action-clear"
 				icon="mop"
+				kind="danger"
+				variant="ghost"
 				@click="clearLogs"
 			/>
 		</template>
@@ -525,13 +523,6 @@ onUnmounted(() => {
 	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
-.action-clear {
-	--v-button-background-color: var(--theme--background-normal);
-	--v-button-color: var(--theme--foreground);
-	--v-button-background-color-hover: var(--theme--danger);
-	--v-button-color-hover: var(--white);
-}
-
 .logs-container {
 	inline-size: 100%;
 	block-size: calc(100% - 6.1875rem);
@@ -580,7 +571,7 @@ onUnmounted(() => {
 	background-color: var(--theme--background-subdued);
 	border-block-start: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	box-shadow: var(--sidebar-shadow);
+	box-shadow: -4px 0 7px -4px var(--shadow-color);
 	z-index: 1;
 }
 
