@@ -42,6 +42,7 @@ const emit = defineEmits(['add']);
 
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
+	if (props.field.type === 'json') return [];
 	return getFunctionsForType(props.field.type);
 });
 
