@@ -180,7 +180,7 @@ async function setupChart() {
 				show: false,
 			},
 			x: {
-				formatter: (value: number) => n(value / 100),
+				formatter: (value: number) => n(props.decimals === 0 ? value : value / 100),
 			},
 			y: {
 				title: {
