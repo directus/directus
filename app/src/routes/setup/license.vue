@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { DIRECTUS_DOMAIN } from '@directus/constants';
+import { DIRECTUS_LICENSING_DOCS_URL } from '@directus/constants';
 import { SetupForm } from '@directus/types';
 import { computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { defaultValues, useKycFields, useLicenseFields } from './form';
 import VButton from '@/components/v-button.vue';
 import VForm from '@/components/v-form/v-form.vue';
@@ -10,8 +9,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import VRadioCards from '@/components/v-radio-cards.vue';
 import { useLicenseForm } from '@/composables/use-license-form';
 import { useServerStore } from '@/stores/server';
-
-const { t } = useI18n();
+import { getDirectusUrlWithUtm } from '@/utils/directus-url';
 
 withDefaults(
 	defineProps<{
@@ -119,7 +117,9 @@ defineExpose({ canProceed });
 			{{ $t('no_license_key') }}
 			<VButton
 				secondary
-				:href="`https://${DIRECTUS_DOMAIN}/docs/licensing/overview?utm_source=self_hosted&utm_medium=product&utm_campaign=2026_05_licensing&utm_term=${serverStore.info.version}&utm_content=onboarding_get_license_link`"
+				:href="
+					getDirectusUrlWithUtm(DIRECTUS_LICENSING_DOCS_URL, serverStore.info.version, 'onboarding_get_license_link')
+				"
 				target="_blank"
 			>
 				<VIcon name="key" />

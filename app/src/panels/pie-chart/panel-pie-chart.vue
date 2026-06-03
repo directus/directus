@@ -180,14 +180,16 @@ async function setupChart() {
 				show: false,
 			},
 			x: {
-				formatter: (value: number) => n(value / 100),
+				formatter: (value: number) => n(props.decimals === 0 ? value : value / 100),
 			},
 			y: {
 				title: {
 					formatter: (seriesName: string) => `${seriesName}: `,
 				},
 				formatter: function (outOfOneHundred: number) {
-					return `${getPercentage((outOfOneHundred / total) * 100)}% (${n(outOfOneHundred / 100)})`;
+					const rawValue = props.decimals === 0 ? outOfOneHundred : outOfOneHundred / 100;
+
+					return `${getPercentage((outOfOneHundred / total) * 100)}% (${n(rawValue)})`;
 				},
 			},
 		},
