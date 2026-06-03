@@ -20,7 +20,7 @@ import {
 import { database } from '@utils/constants.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { LICENSE_KEYS } from './__fixtures__/licenses.js';
-import { createSandboxOptions } from './shared.js';
+import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const LIMIT_EXCEEDED = {
 	errors: [expect.objectContaining({ extensions: expect.objectContaining({ code: 'LIMIT_EXCEEDED' }) })],
@@ -33,7 +33,7 @@ let adminRole: string;
 beforeAll(async () => {
 	directus = await sandbox(
 		database,
-		createSandboxOptions({
+		withDefaultSandboxOptions({
 			env: { LICENSE_KEY: LICENSE_KEYS.TINY },
 			extras: { license: true },
 			knex: true,

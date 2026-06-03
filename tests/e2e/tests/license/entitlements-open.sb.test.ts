@@ -20,7 +20,7 @@ import { database } from '@utils/constants.js';
 import { getHelpers } from '@utils/db-helpers/index.js';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { LICENSE_KEYS } from './__fixtures__/licenses.js';
-import { createSandboxOptions } from './shared.js';
+import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const DAY_SEC = 24 * 60 * 60;
 
@@ -30,7 +30,7 @@ let api: DirectusClient<any> & RestClient<any>;
 beforeAll(async () => {
 	directus = await sandbox(
 		database,
-		createSandboxOptions({
+		withDefaultSandboxOptions({
 			env: { LICENSE_KEY: LICENSE_KEYS.UNLIMITED },
 			extras: { license: true },
 			knex: true,

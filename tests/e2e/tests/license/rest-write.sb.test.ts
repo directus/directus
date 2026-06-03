@@ -34,7 +34,7 @@ import {
 import { database } from '@utils/constants.js';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { createLicense, LICENSE_KEYS } from './__fixtures__/licenses.js';
-import { createSandboxOptions } from './shared.js';
+import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const SEATS_ADDON_ID = randomUUID();
 const COLLECTIONS_ADDON_ID = randomUUID();
@@ -86,7 +86,7 @@ let api: DirectusClient<any> & RestClient<any>;
 beforeAll(async () => {
 	directus = await sandbox(
 		database,
-		createSandboxOptions({
+		withDefaultSandboxOptions({
 			extras: { license: true },
 		}),
 	);

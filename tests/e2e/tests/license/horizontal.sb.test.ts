@@ -5,7 +5,7 @@ import { createDirectus, type DirectusClient, rest, type RestClient, staticToken
 import { database } from '@utils/constants.js';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 import { createLicense } from './__fixtures__/licenses.js';
-import { createSandboxOptions } from './shared.js';
+import { withDefaultSandboxOptions } from './__fixtures__/sandbox.js';
 
 const license = createLicense({ meta: { name: 'horizontal-test' } });
 
@@ -16,7 +16,7 @@ let api2: DirectusClient<any> & RestClient<any>;
 beforeAll(async () => {
 	directus = await sandbox(
 		database,
-		createSandboxOptions({
+		withDefaultSandboxOptions({
 			instances: '2',
 			hooks: {
 				async beforeApi({ env }) {
