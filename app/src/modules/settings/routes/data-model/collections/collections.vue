@@ -11,7 +11,6 @@ import CollectionItem from './components/CollectionItem.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
 import api from '@/api';
 import TransitionExpand from '@/components/transition/expand.vue';
-import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import VButton from '@/components/v-button.vue';
 import VDetail from '@/components/v-detail.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -20,11 +19,16 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { useLicenseStore } from '@/stores/license';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
+import EntitlementRemaining from '@/views/private/components/license/entitlement-remaining.vue';
+import MaxCapacityAlert from '@/views/private/components/license/max-capacity-alert.vue';
+import { useLicenseGuard } from '@/views/private/components/license/use-license-guard';
 import SearchInput from '@/views/private/components/search-input.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 
@@ -33,6 +37,14 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+const licenseStore = useLicenseStore();
+
+const { limitModalOpen: collectionsLimitModalOpen, navigate } = useLicenseGuard(
+	() => licenseStore.limits.collections.hasRemaining,
+);
+
+const navigateToNewCollection = () => navigate({ name: 'settings-add-new' });
+
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
@@ -43,8 +55,30 @@ const collections = computed(() => {
 });
 
 const rootCollections = computed(() => {
-	return collections.value.filter((collection) => !collection.meta?.group);
+	return collections.value.filter((collection) => !collection.meta?.group && collection.meta?.status === 'active');
 });
+
+const deactivatedRootCollections = computed(() => {
+	return collections.value.filter((collection) => !collection.meta?.group && collection.meta?.status !== 'active');
+});
+
+async function activateCollection(collectionKey: string) {
+	try {
+		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'active' } });
+		await collectionsStore.hydrate();
+	} catch (error: any) {
+		unexpectedError(error);
+	}
+}
+
+async function deactivateCollection(collectionKey: string) {
+	try {
+		await api.patch(`/collections/${collectionKey}`, { meta: { status: 'inactive' } });
+		await collectionsStore.hydrate();
+	} catch (error) {
+		unexpectedError(error);
+	}
+}
 
 export type CollectionTree = {
 	collection: string;
@@ -152,8 +186,8 @@ async function downloadSnapshot() {
 
 <template>
 	<PrivateView :title="$t('settings_data_model')" icon="database">
-		<template #headline>
-			<VBreadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
+		<template #actions:prepend>
+			<EntitlementRemaining />
 		</template>
 
 		<template #actions>
@@ -169,30 +203,30 @@ async function downloadSnapshot() {
 				<template #activator="{ on }">
 					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('create_folder')"
-						secondary
+						variant="ghost"
 						icon="create_new_folder"
 						@click="on"
 					/>
 				</template>
 			</CollectionDialog>
+		</template>
 
-			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('create_collection')"
-				:to="{ name: 'settings-add-new' }"
-				icon="add"
-			/>
+		<template #actions:primary>
+			<PrivateViewHeaderBarActionButton :label="$t('create')" icon="add" @click="navigateToNewCollection" />
 		</template>
 
 		<template #navigation>
 			<SettingsNavigation />
 		</template>
 
-		<div class="padding-box">
+		<div class="padding-box" :class="{ 'has-action': hasExpandableCollections }">
+			<MaxCapacityAlert />
+
 			<VInfo v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
 				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<VButton :to="{ name: 'settings-add-new' }">{{ $t('create_collection') }}</VButton>
+					<VButton @click="navigateToNewCollection">{{ $t('create_collection') }}</VButton>
 				</template>
 			</VInfo>
 
@@ -225,9 +259,25 @@ async function downloadSnapshot() {
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
 							@toggle-collapse="toggleCollapse"
+							@activate-collection="activateCollection"
+							@deactivate-collection="deactivateCollection"
 						/>
 					</template>
 				</Draggable>
+
+				<VDetail v-if="deactivatedRootCollections.length" :label="$t('deactivated_collections')" start-open>
+					<CollectionItem
+						v-for="collection of deactivatedRootCollections"
+						:key="collection.collection"
+						:collection="collection"
+						:collections="collections"
+						:is-collapsed="false"
+						:visibility-tree="findVisibilityChild(collection.collection)!"
+						disable-drag
+						@activate-collection="activateCollection"
+						@deactivate-collection="deactivateCollection"
+					/>
+				</VDetail>
 			</template>
 
 			<VList class="db-only">
@@ -289,12 +339,22 @@ async function downloadSnapshot() {
 			:collection="editCollection"
 			@update:model-value="editCollection = null"
 		/>
+
+		<EntitlementLimitModal v-model="collectionsLimitModalOpen" entitlement-key="collections" is-admin />
 	</PrivateView>
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
 .padding-box {
 	padding: var(--content-padding);
+
+	&.has-action {
+		@include mixins.breakpoint-up('sm') {
+			padding-block-start: 1.875rem;
+		}
+	}
 }
 
 .v-info {

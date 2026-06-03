@@ -1,6 +1,0 @@
-packages: []
-
-# Pin unimport to avoid duplicate-import warning from nitropack+@nuxt/nitro-server.
-# https://github.com/nuxt/nuxt/issues/34812 / https://github.com/unjs/unimport/issues/524
-overrides:
-  unimport: 6.0.2

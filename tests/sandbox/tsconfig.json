@@ -1,6 +1,7 @@
 {
 	"extends": "@directus/tsconfig/node22",
 	"compilerOptions": {
+		"lib": ["ES2024"],
 		"rootDir": ".",
 		"outDir": "dist",
 		"isolatedDeclarations": false

@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O aplikacji
+continue: Kontynuuj
 first_name: Imię
 last_name: Nazwisko
 identifier: Identyfikator
@@ -157,14 +158,12 @@ keep: Zachowaj
 version: Wersja
 version_key: Klucz wersji
 version_name: Nazwa wersji
-main_version: Główny
 switch_version: Przełącz wersję
 switch_version_copy: Czy na pewno chcesz przełączyć się na wersję "{version}"? Niezapisane zmiany zostaną utracone.
 create_version: Utwórz wersję
 rename_version: Zmień nazwę wersji
 compare_version: Porównaj wersję
 save_version: Zapisz wersję
-promote_version: Promuj wersję
 delete_version: Usuń wersję
 delete_version_copy: >-
   Czy na pewno chcesz usunąć wersję "{version}"? Tej akcji nie można cofnąć.
@@ -1100,6 +1099,17 @@ settings_data_model: Model danych
 settings_roles: Role użytkownika
 settings_permissions: Polityki dostępu
 settings_project: Ustawienia
+licensing:
+  unlimited: Nielimitowany
+  addon_manage: Zarządzaj
+  addon_update: Zaktualizuj
+  resolve_continue: Kontynuuj
+  resolve_show_n_more: 'Pokaż {count} więcej'
+  resolve_section_flows: Przepływy
+  resolve_sso_admin_password: Hasło
+  entitlements:
+    collections: Kolekcje
+    flows: Przepływy
 settings_appearance: Wygląd
 settings_flows: Przepływy
 settings_system_logs: Dzienniki systemowe
@@ -1971,7 +1981,9 @@ interfaces:
     value_securely_saved: Wartość bezpiecznie zapisana
     generate: Generuj token
     regenerate: Wygeneruj ponownie token
+    regenerate_confirm_title: Wygeneruj ponownie token
     remove_token: Usuń token
+    remove_confirm_title: Usuń token
   system-raw-editor:
     system-raw-editor: Edycja bezpośrednia
     description: Zezwalaj na wprowadzanie wartości szablonów surowych lub muszlowych
@@ -2423,4 +2435,6 @@ search_flow: Szukaj przepływu...
 percent: Procent
 show_password: Pokaż hasło
 hide_password: Schowaj hasło
+license_grace_key_modal:
+  optional: Opcjonalnie
 set_to_now: Ustaw na teraz

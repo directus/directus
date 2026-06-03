@@ -1,4 +1,5 @@
 ---
+continue: Jatka
 first_name: Etunimi
 last_name: Sukunimi
 identifier: Tunniste
@@ -870,6 +871,16 @@ editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
 settings_project: Asetukset
+licensing:
+  unlimited: Rajoittamaton
+  addon_update: Päivitä
+  resolve_continue: Jatka
+  resolve_show_n_more: 'Näytä {count} lisää'
+  resolve_section_flows: Toiminnot
+  resolve_sso_admin_password: Salasana
+  entitlements:
+    collections: Kokoelmat
+    flows: Toiminnot
 settings_flows: Toiminnot
 settings_presets: Kirjainmerkit
 settings_translations: Käännökset

@@ -103,8 +103,7 @@ function trimIfEnabled() {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
-	transition-property: border-color, box-shadow;
-	box-shadow: var(--theme--form--field--input--box-shadow);
+	transition-property: border-color;
 
 	.append,
 	.prepend {
@@ -141,13 +140,12 @@ function trimIfEnabled() {
 
 	&:hover:not(.disabled) {
 		border-color: var(--theme--form--field--input--border-color-hover);
-		box-shadow: var(--theme--form--field--input--box-shadow-hover);
 	}
 
 	&:focus:not(.disabled),
 	&:focus-within:not(.disabled) {
-		border-color: var(--theme--form--field--input--border-color-focus);
-		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+		outline: var(--focus-ring-width) solid var(--theme--form--field--input--focus-ring-color);
+		outline-offset: var(--focus-ring-offset-invert);
 	}
 
 	textarea {

@@ -10,15 +10,15 @@ your website.
 ## Documentation
 
 Documentation covering the setup and functionality for both the frontend library and the studio module can be found in
-the [Directus documentation](https://directus.io/docs/guides/content/visual-editor).
+the [Directus documentation](https://directus.com/docs/guides/content/visual-editor).
 
 ## Test Website
 
-A test website pre-configured to work with the Directus Visual Editor module is included in the library’s repository.
-This can be used for example purposes and to make it easy to set up an environment for testing or contributing.
+A test website pre-configured to work with the Directus Visual Editor module can be found in a separate repository. This
+can be used for example purposes and to make it easy to set up an environment for testing or contributing.
 
 For detailed instructions on setting up the test environment see the
-[test website's readme.md](./test-website/readme.md).
+[test website's repository](https://github.com/directus/visual-editing-test-website).
 
 ## License
 
@@ -26,5 +26,5 @@ This package is licensed under the MIT License. See the LICENSE file for more in
 
 ## Additional Resources
 
-- [Directus Website](https://directus.io)
+- [Directus Website](https://directus.com)
 - [Directus GitHub Repository](https://github.com/directus/directus)

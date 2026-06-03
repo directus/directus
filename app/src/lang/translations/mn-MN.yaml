@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Тухай
+continue: Үргэлжлүүлэх
 first_name: Нэр
 last_name: Овог
 identifier: Тодохойлогч
@@ -157,14 +158,12 @@ keep: Үлдээх
 version: Хувилбар
 version_key: Хувилбарын түлхүүр
 version_name: Хувилбарын нэр
-main_version: Үндсэн
 switch_version: Хувилбар солих
 switch_version_copy: Та {version} хувилбар руу солихыг хүсэж байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
 create_version: Хувилбар үүсгэх
 rename_version: Хувилбарын нэр солих
 compare_version: Хувилбар харьцуулах
 save_version: Хувилбар хадгалах
-promote_version: Хувилбар дэвшүүлэх
 delete_version: Хувилбар устгах
 delete_version_copy: >-
   Хувилбар {version}-ийг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
@@ -1111,6 +1110,17 @@ settings_data_model: Өгөгдлийн загвар
 settings_roles: Хэрэглэгчийн үүргүүд
 settings_permissions: Хандах бодлогууд
 settings_project: Тохиргоо
+licensing:
+  unlimited: Хязгааргүй
+  addon_manage: Удирдах
+  addon_update: Шинэчлэх
+  resolve_continue: Үргэлжлүүлэх
+  resolve_show_n_more: '{count}-г нэмж харуулах'
+  resolve_section_flows: Урсгалууд
+  resolve_sso_admin_password: Нууц үг
+  entitlements:
+    collections: Бүрдлүүд
+    flows: Урсгалууд
 settings_appearance: Харагдах байдал
 settings_flows: Урсгалууд
 settings_system_logs: Системийн логууд
@@ -1998,7 +2008,9 @@ interfaces:
     value_securely_saved: Утгыг аюулгүй хадгалсан
     generate: Токен үүсгэх
     regenerate: Токен дахин үүсгэх
+    regenerate_confirm_title: Токен дахин үүсгэх
     remove_token: Токен устгах
+    remove_confirm_title: Токен устгах
   system-raw-editor:
     system-raw-editor: Raw засварлагч
     description: Логикгүйгээр энгийн эсвэл орлуулагч тэмдэгтийн утгыг оруулахыг зөвшөөрөх
@@ -2450,4 +2462,6 @@ search_flow: Урсгал хайх...
 percent: Хувь
 show_password: Нууц үг харуулах
 hide_password: Нууц үг нуух
+license_grace_key_modal:
+  optional: Нэмэлт
 set_to_now: Одоогоор тохируулах

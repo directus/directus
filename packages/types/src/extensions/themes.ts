@@ -34,11 +34,9 @@ const FormRules = z
 
 						borderColor: Color.optional(),
 						borderColorHover: Color.optional(),
-						borderColorFocus: Color.optional(),
+						focusRingColor: Color.optional(),
 
 						boxShadow: BoxShadow.optional(),
-						boxShadowHover: BoxShadow.optional(),
-						boxShadowFocus: BoxShadow.optional(),
 
 						height: Size.optional(),
 						padding: z.union([Length, Percentage]).optional(),
@@ -106,6 +104,12 @@ const Rules = z.object({
 					fontWeight: FontWeight.optional(),
 				})
 				.optional(),
+			title: z
+				.object({
+					fontFamily: FamilyName.optional(),
+					fontWeight: FontWeight.optional(),
+				})
+				.optional(),
 			sans: z
 				.object({
 					fontFamily: FamilyName.optional(),
@@ -129,21 +133,21 @@ const Rules = z.object({
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Scopes
-	navigation: z
+	shell: z
 		.object({
 			background: Color.optional(),
 			backgroundAccent: Color.optional(),
-
 			borderWidth: LineWidth.optional(),
 			borderColor: Color.optional(),
+		})
+		.optional(),
 
+	navigation: z
+		.object({
 			project: z
 				.object({
-					background: Color.optional(),
 					foreground: Color.optional(),
 					fontFamily: FamilyName.optional(),
-					borderWidth: LineWidth.optional(),
-					borderColor: Color.optional(),
 				})
 				.optional(),
 
@@ -198,16 +202,6 @@ const Rules = z.object({
 
 	header: z
 		.object({
-			background: Color.optional(),
-			borderWidth: LineWidth.optional(),
-			borderColor: Color.optional(),
-			boxShadow: BoxShadow.optional(),
-			headline: z
-				.object({
-					foreground: Color.optional(),
-					fontFamily: FamilyName.optional(),
-				})
-				.optional(),
 			title: z
 				.object({
 					foreground: Color.optional(),
@@ -230,6 +224,16 @@ const Rules = z.object({
 
 			section: z
 				.object({
+					borderWidth: LineWidth.optional(),
+					borderColor: Color.optional(),
+
+					active: z
+						.object({
+							borderWidth: LineWidth.optional(),
+							borderColor: Color.optional(),
+						})
+						.optional(),
+
 					toggle: z
 						.object({
 							icon: z
@@ -249,9 +253,6 @@ const Rules = z.object({
 							backgroundActive: Color.optional(),
 
 							fontFamily: FamilyName.optional(),
-
-							borderWidth: LineWidth.optional(),
-							borderColor: Color.optional(),
 						})
 						.optional(),
 

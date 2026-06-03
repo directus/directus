@@ -106,6 +106,8 @@ export function usePreset(
 		if (!bookmarkExists.value) return;
 		const newBookmark = presetsStore.getBookmark(Number(bookmark.value));
 		localPreset.value.bookmark = newBookmark?.bookmark;
+		localPreset.value.icon = newBookmark?.icon;
+		localPreset.value.color = newBookmark?.color;
 	});
 
 	const layoutOptions = computed<Record<string, any>>({
