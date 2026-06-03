@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-remove unsupported json filter function from ui
+Removed unsupported json filter function from the studio
