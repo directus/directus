@@ -40,6 +40,14 @@ data:
     many_field: avatar
     one_collection: directus_files
 
+  - many_collection: directus_users
+    many_field: user_created
+    one_collection: directus_users
+
+  - many_collection: directus_users
+    many_field: user_updated
+    one_collection: directus_users
+
   ### Revisions
   - many_collection: directus_revisions
     many_field: activity

@@ -261,9 +261,13 @@ fields:
       - cast-timestamp
 
   - field: user_created
+    width: half
+    readonly: true
     special:
       - user-created
 
   - field: user_updated
+    width: half
+    readonly: true
     special:
       - user-updated
