@@ -52,7 +52,6 @@ import serverRouter from './controllers/server.js';
 import settingsRouter from './controllers/settings.js';
 import sharesRouter from './controllers/shares.js';
 import translationsRouter from './controllers/translations.js';
-import tusRouter from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
@@ -85,7 +84,6 @@ import scheduleOAuthCleanup from './schedules/oauth-cleanup.js';
 import projectSchedule from './schedules/project.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
-import tusSchedule from './schedules/tus.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
@@ -359,6 +357,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/fields', fieldsRouter);
 
 	if (env['TUS_ENABLED'] === true) {
+		const tusRouter = (await import('./controllers/tus.js')).default;
 		app.use('/files/tus', tusRouter);
 	}
 
@@ -418,6 +417,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await retentionSchedule();
 	await telemetrySchedule();
+	const tusSchedule = (await import('./schedules/tus.js')).default;
 	await tusSchedule();
 	await metricsSchedule();
 	await projectSchedule();

@@ -29,16 +29,11 @@ import type {
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
-import aliasDefault from '@rollup/plugin-alias';
-import nodeResolveDefault from '@rollup/plugin-node-resolve';
-import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
 import PQueue from 'p-queue';
-import { rolldown } from 'rolldown';
-import { rollup } from 'rollup';
 import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
@@ -60,11 +55,6 @@ import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-a
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { type ExtensionSyncOptions, syncExtensions } from './lib/sync/sync.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
-
-// Workaround for https://github.com/rollup/plugins/issues/1329
-const virtual = virtualDefault as unknown as typeof virtualDefault.default;
-const alias = aliasDefault as unknown as typeof aliasDefault.default;
-const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -583,6 +573,19 @@ export class ExtensionManager {
 		);
 
 		try {
+			// Lazy-load bundler and plugins to avoid importing them when not needed
+			const aliasDefault = await import('@rollup/plugin-alias');
+			const nodeResolveDefault = await import('@rollup/plugin-node-resolve');
+			const virtualDefault = await import('@rollup/plugin-virtual');
+
+			// Workaround for https://github.com/rollup/plugins/issues/1329
+			const virtual = virtualDefault.default as typeof virtualDefault.default;
+			const alias = aliasDefault.default as typeof aliasDefault.default;
+			const nodeResolve = nodeResolveDefault.default as typeof nodeResolveDefault.default;
+
+			const { rolldown } = await import('rolldown');
+			const { rollup } = await import('rollup');
+
 			/** Opt In for now. Should be @deprecated later to always use rolldown! */
 			const rollDirection = (env['EXTENSIONS_ROLLDOWN'] ?? false) ? rolldown : rollup;
 

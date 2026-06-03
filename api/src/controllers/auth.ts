@@ -4,13 +4,6 @@ import type { Accountability } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import type { Request } from 'express';
 import { Router } from 'express';
-import {
-	createLDAPAuthRouter,
-	createLocalAuthRouter,
-	createOAuth2AuthRouter,
-	createOpenIDAuthRouter,
-	createSAMLAuthRouter,
-} from '../auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { getEntitlementManager } from '../license/index.js';
 import { isSSOBypassAllowed } from '../license/utils/is-sso-bypass-allowed.js';
@@ -31,31 +24,42 @@ const router = Router();
 const env = useEnv();
 const logger = useLogger();
 
+// Lazy-load auth driver routers to avoid importing heavy SSO dependencies upfront
 const authProviders = getAuthProviders();
 
 for (const authProvider of authProviders) {
 	let authRouter: Router | undefined;
 
 	switch (authProvider.driver) {
-		case 'local':
+		case 'local': {
+			const { createLocalAuthRouter } = await import('../auth/drivers/local.js');
 			authRouter = createLocalAuthRouter(authProvider.name);
 			break;
+		}
 
-		case 'oauth2':
+		case 'oauth2': {
+			const { createOAuth2AuthRouter } = await import('../auth/drivers/oauth2.js');
 			authRouter = createOAuth2AuthRouter(authProvider.name);
 			break;
+		}
 
-		case 'openid':
+		case 'openid': {
+			const { createOpenIDAuthRouter } = await import('../auth/drivers/openid.js');
 			authRouter = createOpenIDAuthRouter(authProvider.name);
 			break;
+		}
 
-		case 'ldap':
+		case 'ldap': {
+			const { createLDAPAuthRouter } = await import('../auth/drivers/ldap.js');
 			authRouter = createLDAPAuthRouter(authProvider.name);
 			break;
+		}
 
-		case 'saml':
+		case 'saml': {
+			const { createSAMLAuthRouter } = await import('../auth/drivers/saml.js');
 			authRouter = createSAMLAuthRouter(authProvider.name);
 			break;
+		}
 	}
 
 	if (!authRouter) {
@@ -100,6 +104,7 @@ function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string 
 }
 
 // Always register local auth, blocked at runtime when applicable
+const { createLocalAuthRouter } = await import('../auth/drivers/local.js');
 router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 
 router.post(

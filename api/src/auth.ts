@@ -2,13 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError } from '@directus/errors';
 import { toArray, toBoolean } from '@directus/utils';
 import type { AuthDriver } from './auth/auth.js';
-import {
-	LDAPAuthDriver,
-	LocalAuthDriver,
-	OAuth2AuthDriver,
-	OpenIDAuthDriver,
-	SAMLAuthDriver,
-} from './auth/drivers/index.js';
+import { LocalAuthDriver } from './auth/drivers/local.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
 import { getEntitlementManager } from './license/index.js';
@@ -47,7 +41,7 @@ export async function registerAuthProviders(): Promise<void> {
 	}
 
 	// Always register default provider
-	const defaultProvider = getProviderInstance('local', options)!;
+	const defaultProvider = (await getProviderInstance('local', options))!;
 	providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
 
 	if (!env['AUTH_PROVIDERS']) {
@@ -55,7 +49,7 @@ export async function registerAuthProviders(): Promise<void> {
 	}
 
 	// Register configured providers
-	providerNames.forEach((name: string) => {
+	for (const name of providerNames) {
 		name = name.trim();
 
 		if (name === DEFAULT_AUTH_PROVIDER) {
@@ -67,40 +61,48 @@ export async function registerAuthProviders(): Promise<void> {
 
 		if (!driver) {
 			logger.warn(`Missing driver definition for "${name}" auth provider.`);
-			return;
+			continue;
 		}
 
-		const provider = getProviderInstance(driver, options, { provider: name, ...config });
+		const provider = await getProviderInstance(driver, options, { provider: name, ...config });
 
 		if (!provider) {
 			logger.warn(`Invalid "${driver}" auth driver.`);
-			return;
+			continue;
 		}
 
 		providers.set(name, provider);
-	});
+	}
 }
 
-function getProviderInstance(
+async function getProviderInstance(
 	driver: string,
 	options: AuthDriverOptions,
 	config: Record<string, any> = {},
-): AuthDriver | undefined {
+): Promise<AuthDriver | undefined> {
 	switch (driver) {
 		case 'local':
 			return new LocalAuthDriver(options, config);
 
-		case 'oauth2':
+		case 'oauth2': {
+			const { OAuth2AuthDriver } = await import('./auth/drivers/oauth2.js');
 			return new OAuth2AuthDriver(options, config);
+		}
 
-		case 'openid':
+		case 'openid': {
+			const { OpenIDAuthDriver } = await import('./auth/drivers/openid.js');
 			return new OpenIDAuthDriver(options, config);
+		}
 
-		case 'ldap':
+		case 'ldap': {
+			const { LDAPAuthDriver } = await import('./auth/drivers/ldap.js');
 			return new LDAPAuthDriver(options, config);
+		}
 
-		case 'saml':
+		case 'saml': {
+			const { SAMLAuthDriver } = await import('./auth/drivers/saml.js');
 			return new SAMLAuthDriver(options, config);
+		}
 	}
 
 	return undefined;
