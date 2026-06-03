@@ -50,6 +50,22 @@ afterAll(async () => {
 	await directus?.stop();
 });
 
+async function seedActiveAdmins(count: number) {
+	const ids: string[] = Array.from({ length: count }, () => randomUUID());
+
+	await directus.knex!('directus_users').insert(
+		ids.map((id) => ({
+			id,
+			first_name: `seat_extra_${id}`,
+			email: `seat_extra_${id}@test.com`,
+			status: 'active',
+			role: adminRole,
+		})),
+	);
+
+	return ids;
+}
+
 describe('entitlements limits restrictions', () => {
 	describe('collections (limit=1)', () => {
 		test('creating 2nd collection rejects with LIMIT_EXCEEDED', async () => {
@@ -229,40 +245,46 @@ describe('entitlements limits restrictions', () => {
 			}
 		});
 
-		test('creating a non-seat user after editing a seat user does not throw LIMIT_EXCEEDED', async () => {
-			// The admin (static token) already occupies the single seat. Push further over the
-			// limit with two extra active admins seeded directly via knex.
-			const extras = [randomUUID(), randomUUID()];
-			const created: string[] = [];
+		test('suspending a user while over the limit succeeds', async () => {
+			const ids = await seedActiveAdmins(2);
 
 			try {
-				for (const id of extras) {
-					await directus.knex!('directus_users').insert({
-						id,
-						first_name: `seat_extra_${id}`,
-						email: `seat_extra_${id}@test.com`,
-						status: 'active',
-						role: adminRole,
-					});
-				}
+				await expect(api.request(updateUser(ids[0]!, { status: 'suspended' }))).resolves.toBeDefined();
+			} finally {
+				await directus.knex!('directus_users').whereIn('id', ids).delete();
+			}
+		});
 
-				// A fresh role-less user is not a seat, so it must not trip the (now over-limit) seat check.
+		test("clearing a user's role while over the limit succeeds", async () => {
+			const ids = await seedActiveAdmins(2);
+
+			try {
+				await expect(api.request(updateUser(ids[0]!, { role: null }))).resolves.toBeDefined();
+			} finally {
+				await directus.knex!('directus_users').whereIn('id', ids).delete();
+			}
+		});
+
+		test('creating a non-seat (role:null) user while over the limit succeeds', async () => {
+			const ids = await seedActiveAdmins(2);
+
+			try {
+				await api.request(updateUser(ids[0]!, { role: null }));
+
 				const apiUser = await api.request(
 					createUser({
-						first_name: 'seat_non_seat',
-						email: `seat_non_seat_${randomUUID()}@test.com`,
+						first_name: 'non_seat',
+						email: `non_seat_${randomUUID()}@test.com`,
 						status: 'active',
 						role: null,
 					}),
 				);
 
-				created.push(apiUser['id'] as string);
+				ids.push(apiUser['id'] as string);
 
 				expect(apiUser).toBeDefined();
 			} finally {
-				for (const id of [...extras, ...created]) {
-					await api.request(deleteUser(id)).catch(() => {});
-				}
+				await directus.knex!('directus_users').whereIn('id', ids).delete();
 			}
 		});
 	});
