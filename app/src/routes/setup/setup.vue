@@ -3,7 +3,7 @@ import { DIRECTUS_SUPPORT_URL } from '@directus/constants';
 import { SetupForm as Form } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { I18nT, useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { buildSetupPayload, defaultValues, SetupValidator, useSetupFields, validate, ValidationError } from './form';
@@ -34,6 +34,15 @@ const errors = ref<ValidationError[]>([]);
 const error = ref<any>(null);
 const isSaving = ref(false);
 const page = ref<'setup' | 'license'>('setup');
+
+watch(
+	form,
+	() => {
+		// Clear error on any form change
+		error.value = null;
+	},
+	{ deep: true },
+);
 
 const showAdminStep = computed(() => !info.value.setupCompleted);
 
