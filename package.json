@@ -53,7 +53,7 @@
 			"@xmldom/xmldom": "0.8.13",
 			"protobufjs": "7.5.6",
 			"vitest@3>vite": "7.3.2",
-			"esbuild": "0.28.0"
+			"esbuild": "0.28.0",
 			"js-beautify>js-cookie": "3.0.7",
 			"pm2-sysmonit>systeminformation": "5.31.6",
 			"braintrust>simple-git": "3.36.0"
