@@ -26,6 +26,7 @@ import DisplayFormattedValue from '@/displays/formatted-value/formatted-value.vu
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { useLicenseStore } from '@/stores/license';
+import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -109,7 +110,8 @@ const internalSort = ref<Sort>({ by: 'name', desc: false });
 const flowsStore = useFlowsStore();
 
 const flows = computed(() => {
-	const sortedFlows = sortBy(flowsStore.flows, [internalSort.value.by]);
+	const translatedFlows = flowsStore.flows.map((flow) => ({ ...flow, name: translate(flow.name) }));
+	const sortedFlows = sortBy(translatedFlows, [internalSort.value.by]);
 	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
 });
 
