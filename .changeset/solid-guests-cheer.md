@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed itemless drafts with errors silently dropped when limit=-1
+Fixed failed itemless drafts being dropped from version reads when limit=-1
