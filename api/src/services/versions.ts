@@ -97,11 +97,16 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		if (itemLess) {
-			await this.verifySingletonNotPopulated(data['collection'], 'create');
+		const isSingleton = !!this.schema.collections[data['collection']]?.singleton;
 
-			// Skip checking for existing versions if the version is item-less.
-			return;
+		// singleton collections should only allow one item-less version,
+		// regular collections can have unlimited
+		if (itemLess) {
+			if (isSingleton) {
+				await this.assertSingletonEmpty(data['collection']);
+			} else {
+				return;
+			}
 		}
 
 		const sudoService = new VersionsService({
@@ -111,12 +116,18 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const existingVersions = (await sudoService.readByQuery({
 			aggregate: { count: ['*'] },
-			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
+			filter: {
+				key: { _eq: data['key'] },
+				collection: { _eq: data['collection'] },
+				item: itemLess ? { _null: true } : { _eq: data['item'] },
+			},
 		})) as any[];
 
 		if (existingVersions[0]['count'] > 0) {
 			throw new UnprocessableContentError({
-				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
+				reason: itemLess
+					? `Singleton collection "${data['collection']}" already has an item-less version`
+					: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
 		}
 	}
@@ -243,6 +254,13 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			if (key !== VERSION_KEY_DRAFT && item === null) {
 				throw new InvalidPayloadError({
 					reason: `"key" must be "${VERSION_KEY_DRAFT}" for versions not linked to an item`,
+				});
+			}
+
+			// Singletons cannot have itemless once publish is present
+			if (item === null && existingVersion.item !== null && this.schema.collections[collection]?.singleton) {
+				throw new UnprocessableContentError({
+					reason: `Item-linked versions on singleton collection "${collection}" cannot be converted to item-less`,
 				});
 			}
 
@@ -476,7 +494,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				overwriteDefaults: defaultOverwrites as any,
 			});
 		} else {
-			await this.verifySingletonNotPopulated(collection, 'publish');
+			await this.assertSingletonEmpty(collection);
 
 			updatedItemKey = await itemsService.createOne(payloadAfterHooks, {
 				overwriteDefaults: defaultOverwrites as any,
@@ -503,16 +521,16 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return updatedItemKey;
 	}
 
-	private async verifySingletonNotPopulated(collection: string, action: 'create' | 'publish'): Promise<void> {
+	private async assertSingletonEmpty(collection: string): Promise<void> {
 		const collectionMeta = this.schema.collections[collection];
 
 		if (!collectionMeta?.singleton) return;
 
-		const existingRow = await this.knex.select(collectionMeta.primary).from(collection).limit(1).first();
+		const existingRow = await this.knex(collection).first(collectionMeta.primary);
 
 		if (existingRow) {
 			throw new UnprocessableContentError({
-				reason: `Cannot ${action} an item-less version on singleton collection "${collection}" because it already contains an item`,
+				reason: `Singleton collection "${collection}" already contains an item`,
 			});
 		}
 	}

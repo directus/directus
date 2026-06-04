@@ -1,4 +1,3 @@
-import { UnprocessableContentError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { createMockKnex, resetKnexMocks } from '../test-utils/knex.js';
@@ -46,6 +45,16 @@ vi.mock('./revisions.js', async () => {
 vi.mock('./activity.js', async () => {
 	const { mockActivityService } = await import('../test-utils/services/activity-service.js');
 	return mockActivityService();
+});
+
+vi.mock('./collections.js', () => {
+	const CollectionsService = vi.fn(function (this: any) {
+		return this;
+	});
+
+	CollectionsService.prototype.readOne = vi.fn().mockResolvedValue({ meta: { versioning: true } });
+
+	return { CollectionsService };
 });
 
 const schema = new SchemaBuilder()
@@ -249,35 +258,57 @@ describe('Integration Tests', () => {
 			});
 		});
 
-		describe('verifySingletonNotPopulated', () => {
+		describe('assertSingletonEmpty', () => {
 			test('does not throw when collection is not a singleton', async () => {
-				await expect(
-					(service as any).verifySingletonNotPopulated('articles_track_all', 'create'),
-				).resolves.toBeUndefined();
+				await expect((service as any).assertSingletonEmpty('articles_track_all')).resolves.toBeUndefined();
 			});
 
 			test('does not throw when singleton collection is empty', async () => {
 				tracker.on.select('singleton_collection').response([]);
 
-				await expect(
-					(service as any).verifySingletonNotPopulated('singleton_collection', 'create'),
-				).resolves.toBeUndefined();
+				await expect((service as any).assertSingletonEmpty('singleton_collection')).resolves.toBeUndefined();
 			});
 
-			test('throws UnprocessableContentError when creating on populated singleton', async () => {
+			test('throws when singleton collection is populated', async () => {
+				tracker.on.select('singleton_collection').response([{ id: 1 }]);
+
+				await expect((service as any).assertSingletonEmpty('singleton_collection')).rejects.toThrowError(
+					/Singleton collection "singleton_collection" already contains an item/,
+				);
+			});
+		});
+
+		describe('createOne forbids item-less version on singleton when already present', () => {
+			test('throws when the singleton already contains a published item', async () => {
 				tracker.on.select('singleton_collection').response([{ id: 1 }]);
 
 				await expect(
-					(service as any).verifySingletonNotPopulated('singleton_collection', 'create'),
-				).rejects.toThrowError(UnprocessableContentError);
+					service.createOne({ key: 'draft', collection: 'singleton_collection', item: null }),
+				).rejects.toThrowError(/already contains an item/);
 			});
 
-			test('throws with publish wording when publishing on populated singleton', async () => {
-				tracker.on.select('singleton_collection').response([{ id: 1 }]);
+			test('throws when the singleton already has an item-less version', async () => {
+				tracker.on.select('singleton_collection').response([]);
+
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ count: 1 }] as any);
 
 				await expect(
-					(service as any).verifySingletonNotPopulated('singleton_collection', 'publish'),
-				).rejects.toThrowError(/Cannot publish an item-less version on singleton collection "singleton_collection"/);
+					service.createOne({ key: 'draft', collection: 'singleton_collection', item: null }),
+				).rejects.toThrowError(/already has an item-less version/);
+			});
+		});
+
+		describe('updateMany forbids item-less transition on singleton', () => {
+			test('throws when transitioning an itemed version to item-less on a singleton, regardless of singleton state', async () => {
+				vi.spyOn(VersionsService.prototype, 'readOne').mockResolvedValue({
+					collection: 'singleton_collection',
+					item: '1',
+					key: 'draft',
+				} as any);
+
+				await expect(service.updateMany(['version-id'], { item: null })).rejects.toThrowError(
+					/cannot be converted to item-less/,
+				);
 			});
 		});
 	});
