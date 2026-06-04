@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCollection } from '@directus/composables';
 import { useShortcut } from '@directus/composables';
+import { USER_INACTIVE_LICENSE_STATUS } from '@directus/constants';
 import type { User } from '@directus/types';
 import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -24,6 +25,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -33,6 +35,7 @@ import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import CollabIndicatorHeader from '@/views/private/components/collab/CollabIndicatorHeader.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import EntitlementLimitModal from '@/views/private/components/license/entitlement-limit-modal.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 
@@ -50,6 +53,25 @@ const fieldsStore = useFieldsStore();
 const collectionsStore = useCollectionsStore();
 const userStore = useUserStore();
 const serverStore = useServerStore();
+const licenseStore = useLicenseStore();
+const seatsLimitModalOpen = ref(false);
+
+async function saveAsInactive() {
+	edits.value = { ...edits.value, status: USER_INACTIVE_LICENSE_STATUS };
+
+	try {
+		const savedItem = await save();
+
+		if (savedItem) {
+			await setLang(savedItem);
+			await refreshCurrentUser();
+			licenseStore.hydrate();
+			router.push({ name: 'users-active' });
+		}
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
 
 const { primaryKey } = toRefs(props);
 const { info: collectionInfo } = useCollection('directus_users');
@@ -74,9 +96,25 @@ const {
 	validationErrors,
 	refresh,
 	getItem,
-} = useItem<User>(ref('directus_users'), primaryKey, null, {
-	fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
-});
+} = useItem<User>(
+	ref('directus_users'),
+	primaryKey,
+	null,
+	computed(() => false),
+	{
+		fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
+	},
+	{
+		onSaveError: (err) => {
+			if (err?.extensions?.code === 'LIMIT_EXCEEDED') {
+				seatsLimitModalOpen.value = true;
+				return true;
+			}
+
+			return false;
+		},
+	},
+);
 
 const {
 	users: collabUsers,
@@ -166,6 +204,7 @@ async function saveAndQuit() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
+		licenseStore.hydrate();
 		router.push({ name: 'users-active' });
 	} catch {
 		// `save` will show unexpected error dialog
@@ -177,6 +216,7 @@ async function saveAndStay() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
+		licenseStore.hydrate();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem.id;
@@ -195,6 +235,7 @@ async function saveAndAddNew() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
+		licenseStore.hydrate();
 		router.push({ name: 'users-item', params: { primaryKey: '+' } });
 	} catch {
 		// `save` will show unexpected error dialog
@@ -204,7 +245,11 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.push({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
+
+		if (newPrimaryKey) {
+			licenseStore.hydrate();
+			router.push({ name: 'users-item', params: { primaryKey: newPrimaryKey } });
+		}
 	} catch {
 		// `save` will show unexpected error dialog
 	}
@@ -224,6 +269,7 @@ async function deleteAndQuit() {
 		}
 
 		await remove();
+		licenseStore.hydrate();
 		edits.value = {};
 		router.replace({ name: 'users-active' });
 	} catch {
@@ -496,6 +542,13 @@ function revert(values: Record<string, any>) {
 			/>
 			<CommentsSidebarDetail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
+
+		<EntitlementLimitModal
+			v-model="seatsLimitModalOpen"
+			entitlement-key="seats"
+			:is-admin="userStore.isAdmin"
+			:on-save="saveAsInactive"
+		/>
 	</PrivateView>
 </template>
 

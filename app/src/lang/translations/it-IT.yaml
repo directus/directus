@@ -20,6 +20,7 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: About
+continue: Continua
 first_name: Nome
 last_name: Cognome
 organization_name: Nome Organizzazione
@@ -1121,6 +1122,17 @@ settings_data_model: Modello dei dati
 settings_roles: Ruoli utente
 settings_permissions: Policy di accesso
 settings_project: Impostazioni
+licensing:
+  unlimited: Illimitato
+  addon_manage: Gestisci
+  addon_update: Modifica
+  resolve_continue: Continua
+  resolve_show_n_more: 'Mostra altri {count}'
+  resolve_section_flows: Flussi
+  resolve_sso_admin_password: Password
+  entitlements:
+    collections: Raccolte
+    flows: Flussi
 settings_appearance: Aspetto
 settings_flows: Flussi
 settings_system_logs: Log di sistema
@@ -2011,7 +2023,9 @@ interfaces:
     value_securely_saved: Valore salvato in sicurezza
     generate: Genera token
     regenerate: Rigenera Token
+    regenerate_confirm_title: Rigenera Token
     remove_token: Cancellare il token
+    remove_confirm_title: Cancellare il token
   system-raw-editor:
     system-raw-editor: Editor Grezzo
     description: Permetti l'inserimento di valori di template grezzi o di mustache
@@ -2474,4 +2488,6 @@ search_flow: Cerca flusso...
 percent: Percentuale
 show_password: Mostra password
 hide_password: Nascondi password
+license_grace_key_modal:
+  optional: Opzionale
 set_to_now: Imposta ad adesso

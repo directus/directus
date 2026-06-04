@@ -19,6 +19,7 @@ import { useItem } from '@/composables/use-item';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useLicenseStore } from '@/stores/license';
 import { useServerStore } from '@/stores/server';
 import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { PrivateView } from '@/views/private';
@@ -35,6 +36,7 @@ const router = useRouter();
 const { collection } = toRefs(props);
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
+const licenseStore = useLicenseStore();
 const serverStore = useServerStore();
 
 const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
@@ -86,19 +88,19 @@ async function deleteAndQuit() {
 	if (deleting.value) return;
 
 	await remove();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), licenseStore.hydrate()]);
 	edits.value = {};
 	router.replace({ name: 'settings-collections' });
 }
 
 async function saveAndStay() {
 	await save();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), licenseStore.hydrate()]);
 }
 
 async function saveAndQuit() {
 	await save();
-	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate(), licenseStore.hydrate()]);
 	router.push({ name: 'settings-collections' });
 }
 

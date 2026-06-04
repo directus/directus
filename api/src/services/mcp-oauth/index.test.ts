@@ -266,9 +266,9 @@ describe('McpOAuthService', () => {
 			expect(meta.authorization_servers).toContain('https://example.com/directus');
 		});
 
-		it('does NOT include bearer_methods_supported', () => {
+		it('includes bearer_methods_supported: ["header"]', () => {
 			const meta = service.getProtectedResourceMetadata();
-			expect(meta).not.toHaveProperty('bearer_methods_supported');
+			expect(meta.bearer_methods_supported).toEqual(['header']);
 		});
 
 		it('subpath: PUBLIC_URL=https://example.com/directus produces correct resource', async () => {
@@ -606,10 +606,34 @@ describe('McpOAuthService', () => {
 			});
 		});
 
-		it('omitted grant_types rejected with invalid_client_metadata', async () => {
-			await assertOAuthError(() => service.registerClient(createTestClient({ grant_types: undefined })), {
+		it('omitted grant_types defaults to authorization_code per RFC 7591', async () => {
+			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
+			tracker.on.insert('directus_oauth_clients').response([]);
+
+			const result = await service.registerClient(createTestClient({ grant_types: undefined }));
+
+			expect(result.grant_types).toEqual(['authorization_code']);
+		});
+
+		it('non-array grant_types rejected with invalid_client_metadata', async () => {
+			await assertOAuthError(() => service.registerClient(createTestClient({ grant_types: 'authorization_code' })), {
 				error: 'invalid_client_metadata',
 			});
+		});
+
+		it('null grant_types rejected with invalid_client_metadata', async () => {
+			await assertOAuthError(() => service.registerClient(createTestClient({ grant_types: null })), {
+				error: 'invalid_client_metadata',
+			});
+		});
+
+		it('non-string grant_types rejected with invalid_client_metadata', async () => {
+			await assertOAuthError(
+				() => service.registerClient(createTestClient({ grant_types: ['authorization_code', 123] })),
+				{
+					error: 'invalid_client_metadata',
+				},
+			);
 		});
 
 		it('unknown grant type rejected', async () => {
@@ -834,7 +858,7 @@ describe('McpOAuthService', () => {
 			});
 		});
 
-		it('missing client_name rejected', async () => {
+		it('missing client_name rejected by Directus policy for consent UX', async () => {
 			await assertOAuthError(() => service.registerClient(createTestClient({ client_name: undefined })), {
 				error: 'invalid_client_metadata',
 			});
@@ -855,7 +879,7 @@ describe('McpOAuthService', () => {
 			tracker.on.select('directus_oauth_clients').response([{ count: 0 }]);
 			tracker.on.insert('directus_oauth_clients').response([]);
 
-			await service.registerClient(
+			const result = await service.registerClient(
 				createTestClient({
 					client_uri: 'https://example.com',
 					logo_uri: 'https://example.com/logo.png',
@@ -864,10 +888,12 @@ describe('McpOAuthService', () => {
 				}),
 			);
 
-			const insertHistory = queryHistory('insert', 'directus_oauth_clients');
-			expect(insertHistory.length).toBe(1);
-			expect(insertHistory[0]!.bindings).toContain('https://example.com');
-			expect(insertHistory[0]!.bindings).toContain('https://example.com/logo.png');
+			expect(result).toMatchObject({
+				client_uri: 'https://example.com',
+				logo_uri: 'https://example.com/logo.png',
+				tos_uri: 'https://example.com/tos',
+				policy_uri: 'https://example.com/policy',
+			});
 		});
 
 		it('rejects non-HTTPS client_uri', async () => {

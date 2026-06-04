@@ -134,7 +134,7 @@ export const DEFAULTS: Env = {
 	ASSETS_TRANSFORM_TIMEOUT: '7500ms',
 	ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL: 'warning',
 
-	IP_TRUST_PROXY: true,
+	IP_TRUST_PROXY: false,
 	IP_CUSTOM_HEADER: false,
 
 	IMPORT_EXPORT_NAMESPACE: 'directus:import-export',
@@ -250,4 +250,6 @@ export const DEFAULTS: Env = {
 	BRAINTRUST_API_KEY: '',
 	BRAINTRUST_PROJECT_NAME: '',
 	BRAINTRUST_API_URL: '',
+
+	LICENSE_NAMESPACE: 'license',
 } as const;

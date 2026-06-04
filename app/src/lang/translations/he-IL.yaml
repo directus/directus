@@ -367,6 +367,8 @@ width: רוחב
 height: גובה
 wysiwyg_options:
   backcolor: צבע רקע
+licensing:
+  resolve_sso_admin_password: סיסמה
 settings_translations: תרגומים
 source_registry: חנות
 collection: מאגר

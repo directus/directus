@@ -20,11 +20,16 @@ export interface PrivateViewProps {
 <script setup lang="ts">
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed } from 'vue';
+import LicenseLoginModal from '../../components/license/license-login-modal.vue';
 import LicenseBanner from '../../components/license-banner.vue';
+import LicenseOnboarding from '../../components/license-onboarding.vue';
+import LicenseResolutionPrompt from '../../components/license-resolution-prompt.vue';
 import NotificationDialogs from '../../components/notification-dialogs.vue';
 import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
+import { useLicenseStore } from '@/stores/license';
+import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 
@@ -56,12 +61,51 @@ const appAccess = computed(() => {
 	return userStore.currentUser?.app_access || false;
 });
 
-const cookies = useCookies(['license-banner-dismissed']);
-const settingsStore = useSettingsStore();
+const cookies = useCookies([
+	'license-banner-dismissed',
+	'license-onboarding-dismissed',
+	'license-login-modal-dismissed',
+]);
 
-const showLicenseBanner = computed(
-	() => userStore.isAdmin && !settingsStore.settings?.project_owner && !cookies.get('license-banner-dismissed'),
-);
+const serverStore = useServerStore();
+const settingsStore = useSettingsStore();
+const licenseStore = useLicenseStore();
+
+const showLicenseBanner = computed({
+	get: () =>
+		userStore.isAdmin &&
+		!settingsStore.settings?.project_owner &&
+		!showLicenseOnboarding.value &&
+		!licenseStore.isCoreGrace &&
+		!cookies.get('license-banner-dismissed'),
+	set: () => {
+		// close is handled by cookie and hydrate inside the modal
+	},
+});
+
+const showLicenseOnboarding = computed({
+	get: () =>
+		userStore.isAdmin &&
+		serverStore.info.setupCompleted &&
+		!serverStore.info.license?.source &&
+		!settingsStore.settings?.project_usage &&
+		!licenseStore.isCoreGrace &&
+		!cookies.get('license-onboarding-dismissed'),
+	set: () => {
+		// close is handled by cookie and hydrate inside the modal
+	},
+});
+
+const showLicenseLoginModal = computed({
+	get: () =>
+		userStore.isAdmin &&
+		licenseStore.isCoreGrace &&
+		!showLicenseOnboarding.value &&
+		!cookies.get('license-login-modal-dismissed'),
+	set: () => {
+		// close is handled by cookie inside the modal
+	},
+});
 </script>
 
 <template>
@@ -91,4 +135,7 @@ const showLicenseBanner = computed(
 	<NotificationDialogs />
 
 	<LicenseBanner v-model="showLicenseBanner" />
+	<LicenseOnboarding v-model="showLicenseOnboarding" />
+	<LicenseLoginModal v-model="showLicenseLoginModal" />
+	<LicenseResolutionPrompt />
 </template>
