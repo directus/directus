@@ -18,15 +18,15 @@ const link = computed(() => {
 </script>
 
 <template>
-	<template v-if="displayPoweredBy === 'DIRECTUS' || displayPoweredBy === 'OIG'">
+	<div v-if="displayPoweredBy === 'DIRECTUS' || displayPoweredBy === 'OIG'" class="license-badge">
 		<hr v-if="isPrivate" class="badge-divider" />
-		<a :href="link" class="license-badge" :class="{ private: isPrivate }" target="_blank" rel="noopener noreferrer">
+		<a :href="link" :class="{ private: isPrivate }" target="_blank" rel="noopener noreferrer">
 			<div class="link-inner">
 				<VIcon name="directus" class="directus-logo" />
 				{{ displayPoweredBy === 'DIRECTUS' ? $t('licensing.badge.directus') : $t('licensing.badge.oig') }}
 			</div>
 		</a>
-	</template>
+	</div>
 </template>
 
 <style lang="scss" scoped>

@@ -42,7 +42,13 @@ const emit = defineEmits(['add']);
 
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
-	return getFunctionsForType(props.field.type);
+	const funcs = getFunctionsForType(props.field.type);
+
+	if (props.field.type === 'json') {
+		return funcs.filter((f) => f !== 'json');
+	}
+
+	return funcs;
 });
 
 const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
