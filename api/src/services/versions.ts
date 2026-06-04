@@ -257,15 +257,28 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				});
 			}
 
-			// Singletons cannot have itemless once publish is present
-			if (item === null && existingVersion.item !== null && this.schema.collections[collection]?.singleton) {
-				throw new UnprocessableContentError({
-					reason: `Item-linked versions on singleton collection "${collection}" cannot be converted to item-less`,
-				});
-			}
+			if (item === null) {
+				if (this.schema.collections[collection]?.singleton) {
+					await this.assertSingletonEmpty(collection);
 
-			// Skip checking for existing versions or duplicates if the version is item-less.
-			if (item === null) continue;
+					const existingItemless = (await super.readByQuery({
+						aggregate: { count: ['*'] },
+						filter: {
+							id: { _neq: pk },
+							collection: { _eq: collection },
+							item: { _null: true },
+						},
+					})) as any[];
+
+					if (existingItemless[0]['count'] > 0) {
+						throw new UnprocessableContentError({
+							reason: `Singleton collection "${collection}" already has an item-less version`,
+						});
+					}
+				}
+
+				continue;
+			}
 
 			const keyCombo = `${key}-${collection}-${item}`;
 
