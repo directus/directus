@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed nested `deep` query parameters sometimes being dropped on authenticated requests
+Fixed nested `deep` query parameters being dropped when filters use dynamic variables
